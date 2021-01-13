@@ -2,270 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9752F51C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BD22F51E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728188AbhAMSRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 13:17:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
+        id S1728239AbhAMSXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 13:23:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727963AbhAMSRG (ORCPT
+        with ESMTP id S1727560AbhAMSXR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 13:17:06 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE10C061786;
-        Wed, 13 Jan 2021 10:16:26 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id w1so4394248ejf.11;
-        Wed, 13 Jan 2021 10:16:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EvTiuc+2xyLYeRcrb0/52TJi7BbIHLk9GXdghe1/ck8=;
-        b=pZPUepV9NQObFtttTju09UoUXtYfPvhPFMxJJB/J23vy/w7suSvVg4SitD9bojoBvX
-         tZHoOYT/vsEeRa3TCCYHp3xxQfoUllu44wefJBFlV51UiI84FmW0Ccx+rFgH/qXDfVyx
-         XGoS6McIM2OwNfboCHh9qUKM7FSTeWpqFwKMxOspG/Gi6huHl69CcfKpyCkSgs3SSNg8
-         1fuRawRQDqcKdpLD0a3C7MCb+1Dju9aDuQ2u+SrVUAP7GnxXh1T8UtEMLJ1dKhUn5eCx
-         jcoW1Sj3lQAJWvYsy30ygSj+FmotUiEM7c945ROEuwgk4FwuWJQtyrXZQSVnDiKJQ9pp
-         YtQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EvTiuc+2xyLYeRcrb0/52TJi7BbIHLk9GXdghe1/ck8=;
-        b=ffZeiPil3x14t628ZMmbSMhNSqUhHCqVdCpQecKrkhTUsf5f4wB+xfpbacwU1ozPY+
-         puNVOoWbZrD6GA1TIxLoqpn05hkpbk2kLDAWFXBdAYRBrYghQbBM3GRXtrZTLLNv1R8O
-         jwrM5exxq6UoMt0DvA6surQtPlYjhaXpLsSm97t8/cL7PKBj4hc5jqTnWa5kpZsjRuIH
-         VZL5tUqTYfNMm3mwaKKp8Fya1cJ57uiO4XLhUqd1ankxxmdtjlMJFtkVCSaKOFlb/krZ
-         ewW71SKz9sK9lTGc33gH104tnvPo8D44P4MZBECTxENSqZW3g3aNxkI+0UeBrl+k/wqw
-         ISvg==
-X-Gm-Message-State: AOAM533kZ5+fH4TPcPSBqtBuyA5hnfk+DxuW68jk3xccXZPGmhEZAFqg
-        f/sR0mzBpSpFxAU5yNZJN6ImsPEGxJBaoPg8kdk=
-X-Google-Smtp-Source: ABdhPJxKf+o87lFKMsfYidQ89N1P8F5iDs2JRQ1uKOS/Fdx6rj7HQIU4g9yoy/JxQWjP2BUmUsOFyCecnWuNpcRGlGM=
-X-Received: by 2002:a17:907:546:: with SMTP id wk6mr2432952ejb.238.1610561784993;
- Wed, 13 Jan 2021 10:16:24 -0800 (PST)
+        Wed, 13 Jan 2021 13:23:17 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDDBC061575;
+        Wed, 13 Jan 2021 10:22:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NM1NHS03oZT+cgkZEfeOOqKXZsTG8FXo5mlNcVCKTd4=; b=ZhKASQAK9OkXRMJZqdyVUgezni
+        +rXa4zptbIMA2QW+wfRaR01JGtYh2ltreq+2ZwHui9hMcFdwWWGDXOgygWRQnNcdZRNPJF/UUGPad
+        bZQSCE03y6GrwkaUjbFlltdVjZYR3w7H/r7wZJAORR0bSUL/CgReOu1n0Rc6qB07tGIysooADS5xc
+        ilfA8XFV4TNvQQ33ISynxQRqZn31M6p7gnNBJ4jFieFPpvKFPES26l5tEfH1nJM/ZarNpiWVVFBQC
+        pjQI2xMvtHdDUgUob8CUrwSX6YF6HyBNUM2N1YtlUfvGZbF7XDcLD5FotBLV8yzR3P+eQKB59nbpB
+        c63k2t5A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kzkmb-0000oP-Ux; Wed, 13 Jan 2021 18:22:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 797313010C8;
+        Wed, 13 Jan 2021 19:22:09 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6050B211618D2; Wed, 13 Jan 2021 19:22:09 +0100 (CET)
+Date:   Wed, 13 Jan 2021 19:22:09 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Kan Liang <kan.liang@linux.intel.com>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 04/17] perf: x86/ds: Handle guest PEBS overflow PMI
+ and inject it to guest
+Message-ID: <X/86UWuV/9yt14hQ@hirez.programming.kicks-ass.net>
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <20210104131542.495413-5-like.xu@linux.intel.com>
 MIME-Version: 1.0
-References: <20210105225817.1036378-1-shy828301@gmail.com> <20210105225817.1036378-4-shy828301@gmail.com>
- <56d26993-1577-3747-2d89-1275d92f7a15@virtuozzo.com> <CAHbLzkqS2b7Eb_xDU3-6wR=LN5yr4nDeyyaynfLCzFJOinuUZw@mail.gmail.com>
- <35543012-882c-2e1e-f23b-d25a6fa41e67@virtuozzo.com> <CAHbLzkpXjzN_730iqR_PnU0-vv_rbHZM1dKdjhzEdY8rstzZDg@mail.gmail.com>
- <dca605d9-ace9-3660-3dc6-6b413e342053@virtuozzo.com> <CAHbLzkqebxLaBt2Ok=rrYHCJ1U1zT+VXGsjzHsOZq37D6eeP-A@mail.gmail.com>
-In-Reply-To: <CAHbLzkqebxLaBt2Ok=rrYHCJ1U1zT+VXGsjzHsOZq37D6eeP-A@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 13 Jan 2021 10:16:13 -0800
-Message-ID: <CAHbLzkrHKTm0kvHSGXziFjv4b_jbkyY4R+RYePPB89_4yT7W7A@mail.gmail.com>
-Subject: Re: [v3 PATCH 03/11] mm: vmscan: use shrinker_rwsem to protect
- shrinker_maps allocation
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     Roman Gushchin <guro@fb.com>, Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104131542.495413-5-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 1:23 PM Yang Shi <shy828301@gmail.com> wrote:
->
-> On Mon, Jan 11, 2021 at 1:34 PM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
-> >
-> > On 11.01.2021 21:57, Yang Shi wrote:
-> > > On Mon, Jan 11, 2021 at 9:34 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
-> > >>
-> > >> On 11.01.2021 20:08, Yang Shi wrote:
-> > >>> On Wed, Jan 6, 2021 at 1:55 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
-> > >>>>
-> > >>>> On 06.01.2021 01:58, Yang Shi wrote:
-> > >>>>> Since memcg_shrinker_map_size just can be changd under holding shrinker_rwsem
-> > >>>>> exclusively, the read side can be protected by holding read lock, so it sounds
-> > >>>>> superfluous to have a dedicated mutex.  This should not exacerbate the contention
-> > >>>>> to shrinker_rwsem since just one read side critical section is added.
-> > >>>>>
-> > >>>>> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > >>>>> ---
-> > >>>>>  mm/vmscan.c | 16 ++++++----------
-> > >>>>>  1 file changed, 6 insertions(+), 10 deletions(-)
-> > >>>>>
-> > >>>>> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > >>>>> index 9db7b4d6d0ae..ddb9f972f856 100644
-> > >>>>> --- a/mm/vmscan.c
-> > >>>>> +++ b/mm/vmscan.c
-> > >>>>> @@ -187,7 +187,6 @@ static DECLARE_RWSEM(shrinker_rwsem);
-> > >>>>>  #ifdef CONFIG_MEMCG
-> > >>>>>
-> > >>>>>  static int memcg_shrinker_map_size;
-> > >>>>> -static DEFINE_MUTEX(memcg_shrinker_map_mutex);
-> > >>>>>
-> > >>>>>  static void memcg_free_shrinker_map_rcu(struct rcu_head *head)
-> > >>>>>  {
-> > >>>>> @@ -200,8 +199,6 @@ static int memcg_expand_one_shrinker_map(struct mem_cgroup *memcg,
-> > >>>>>       struct memcg_shrinker_map *new, *old;
-> > >>>>>       int nid;
-> > >>>>>
-> > >>>>> -     lockdep_assert_held(&memcg_shrinker_map_mutex);
-> > >>>>> -
-> > >>>>>       for_each_node(nid) {
-> > >>>>>               old = rcu_dereference_protected(
-> > >>>>>                       mem_cgroup_nodeinfo(memcg, nid)->shrinker_map, true);
-> > >>>>> @@ -250,7 +247,7 @@ int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg)
-> > >>>>>       if (mem_cgroup_is_root(memcg))
-> > >>>>>               return 0;
-> > >>>>>
-> > >>>>> -     mutex_lock(&memcg_shrinker_map_mutex);
-> > >>>>> +     down_read(&shrinker_rwsem);
-> > >>>>>       size = memcg_shrinker_map_size;
-> > >>>>>       for_each_node(nid) {
-> > >>>>>               map = kvzalloc(sizeof(*map) + size, GFP_KERNEL);
-> > >>>>> @@ -261,7 +258,7 @@ int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg)
-> > >>>>>               }
-> > >>>>>               rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, map);
-> > >>>>
-> > >>>> Here we do STORE operation, and since we want the assignment is visible
-> > >>>> for shrink_slab_memcg() under down_read(), we have to use down_write()
-> > >>>> in memcg_alloc_shrinker_maps().
-> > >>>
-> > >>> I apologize for the late reply, these emails went to my SPAM again.
-> > >>
-> > >> This is the second time the problem appeared. Just add my email address to allow list,
-> > >> and there won't be this problem again.
-> > >
-> > > Yes, I thought clicking "not spam" would add your email address to the
-> > > allow list automatically. But it turns out not true.
-> > >
-> > >>
-> > >>> Before this patch it was not serialized by any lock either, right? Do
-> > >>> we have to serialize it? As Johannes mentioned if shrinker_maps has
-> > >>> not been initialized yet, it means the memcg is a newborn, there
-> > >>> should not be significant amount of reclaimable slab caches, so it is
-> > >>> fine to skip it. The point makes some sense to me.
-> > >>>
-> > >>> So, the read lock seems good enough.
-> > >>
-> > >> No, this is not so.
-> > >>
-> > >> Patch "[v3 PATCH 07/11] mm: vmscan: add per memcg shrinker nr_deferred" adds
-> > >> new assignments:
-> > >>
-> > >> +               info->map = (unsigned long *)((unsigned long)info + sizeof(*info));
-> > >> +               info->nr_deferred = (atomic_long_t *)((unsigned long)info +
-> > >> +                                       sizeof(*info) + m_size);
-> > >>
-> > >> info->map and info->nr_deferred are not visible under READ lock in shrink_slab_memcg(),
-> > >> unless you use WRITE lock in memcg_alloc_shrinker_maps().
-> > >
-> > > However map and nr_deferred are assigned before
-> > > rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new). The
-> > > shrink_slab_memcg() checks shrinker_info pointer.
-> > > But that order might be not guaranteed, so it seems a memory barrier
-> > > before rcu_assign_pointer should be good enough, right?
-> >
-> > Yes, and here are some more:
-> >
-> > 1)There is rcu_dereference_protected() dereferrencing in rcu_dereference_protected(),
-> >   but in case of we use READ lock in memcg_alloc_shrinker_maps(), the dereferrencing
-> >   is not actually protected.
-> >
-> > 2)READ lock makes memcg_alloc_shrinker_info() racy against memory allocation fail.
-> >   memcg_alloc_shrinker_info()->memcg_free_shrinker_info() may free memory right
-> >   after shrink_slab_memcg() dereferenced it. You may say shrink_slab_memcg()->mem_cgroup_online()
-> >   protects us from it?! Yes, sure, but this is not the thing we want to remember
-> >   in the future, since this spreads modularity.
-> >
-> > Why don't we use WRITE lock? It prohibits shrinking of SLAB during memcg_alloc_shrinker_info()->kvzalloc()?
->
-> Yes, it is the main concern.
->
-> > Yes, but it is not a problem, since page cache is still shrinkable, and we are able to
-> > allocate memory. WRITE lock means better modularity, and it gives us a possibility
-> > not to think about corner cases.
->
-> I do agree using write lock makes life easier. I'm just not sure how
-> bad the impact would be, particularly with vfs metadata heavy workload
-> (the most memory is consumed by slab cache rather than page cache).
-> But I think I can design a simple test case, which generates global
-> memory pressure with slab cache (i.e. negative dentry cache), then
-> create significant amount of memcgs (i.e. 10k), then check if the
-> memcgs creation time is lengthened or not.
+On Mon, Jan 04, 2021 at 09:15:29PM +0800, Like Xu wrote:
 
-Did a test on a VM with two nodes (80 cpus) + 16GB memory. The test
-does the below firstly:
-* Generate negative dentry cache from all cpus to fill up the memory
-* Run kernel build with 80 processes
+> diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+> index b47cc4226934..c499bdb58373 100644
+> --- a/arch/x86/events/intel/ds.c
+> +++ b/arch/x86/events/intel/ds.c
+> @@ -1721,6 +1721,65 @@ intel_pmu_save_and_restart_reload(struct perf_event *event, int count)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * We may be running with guest PEBS events created by KVM, and the
+> + * PEBS records are logged into the guest's DS and invisible to host.
+> + *
+> + * In the case of guest PEBS overflow, we only trigger a fake event
+> + * to emulate the PEBS overflow PMI for guest PBES counters in KVM.
+> + * The guest will then vm-entry and check the guest DS area to read
+> + * the guest PEBS records.
+> + *
+> + * The guest PEBS overflow PMI may be dropped when both the guest and
+> + * the host use PEBS. Therefore, KVM will not enable guest PEBS once
+> + * the host PEBS is enabled since it may bring a confused unknown NMI.
+> + *
+> + * The contents and other behavior of the guest event do not matter.
+> + */
+> +static int intel_pmu_handle_guest_pebs(struct cpu_hw_events *cpuc,
+> +				       struct pt_regs *iregs,
+> +				       struct debug_store *ds)
+> +{
+> +	struct perf_sample_data data;
+> +	struct perf_event *event = NULL;
+> +	u64 guest_pebs_idxs = cpuc->pebs_enabled & ~cpuc->intel_ctrl_host_mask;
+> +	int bit;
+> +
+> +	/*
+> +	 * Ideally, we should check guest DS to understand if it's
+> +	 * a guest PEBS overflow PMI from guest PEBS counters.
+> +	 * However, it brings high overhead to retrieve guest DS in host.
+> +	 * So we check host DS instead for performance.
 
-The memory would be filled up and there should be multiple parallel
-reclaimers running simultaneously (at least 2 kswapd processes, at
-most 80 reclaimers), then create 10K memcgs (memcgs creation need
-allocate shrinker_info with acquiring shrinker_rwsem).
+Again; for the virt illiterate people here (me); why is it expensive to
+check guest DS?
 
-The result is:
+Why do we need to? Can't we simply always forward the PMI if the guest
+has bits set in MSR_IA32_PEBS_ENABLE ? Surely we can access the guest
+MSRs at a reasonable rate..
 
-Read lock
-real    7m17.891s
-user    0m28.061s
-sys     2m33.170s
+Sure, it'll send too many PMIs, but is that really a problem?
 
-Write lock
-real    7m5.431s
-user    0m20.400s
-sys     2m53.162s
+> +	 *
+> +	 * If PEBS interrupt threshold on host is not exceeded in a NMI, there
+> +	 * must be a PEBS overflow PMI generated from the guest PEBS counters.
+> +	 * There is no ambiguity since the reported event in the PMI is guest
+> +	 * only. It gets handled correctly on a case by case base for each event.
+> +	 *
+> +	 * Note: KVM disables the co-existence of guest PEBS and host PEBS.
 
-The one with write lock has longer sys time, it should not be caused
-by the lock contention since the lock is rwsem, it might spend more
-time in reclaiming pages. But it had a little bit shorter wall time
-spent. And OOMs didn't happen either.
+Where; I need a code reference here.
 
-So, it seems using write lock didn't have a noticeable impact.
+> +	 */
+> +	if (!guest_pebs_idxs || !in_nmi() ||
 
->
-> >
-> > >>
-> > >> Nowhere in your patchset you convert READ lock to WRITE lock in memcg_alloc_shrinker_maps().
-> > >>
-> > >> So, just use the true lock in this patch from the first time.
-> > >>
-> > >>>>
-> > >>>>>       }
-> > >>>>> -     mutex_unlock(&memcg_shrinker_map_mutex);
-> > >>>>> +     up_read(&shrinker_rwsem);
-> > >>>>>
-> > >>>>>       return ret;
-> > >>>>>  }
-> > >>>>> @@ -276,9 +273,8 @@ static int memcg_expand_shrinker_maps(int new_id)
-> > >>>>>       if (size <= old_size)
-> > >>>>>               return 0;
-> > >>>>>
-> > >>>>> -     mutex_lock(&memcg_shrinker_map_mutex);
-> > >>>>>       if (!root_mem_cgroup)
-> > >>>>> -             goto unlock;
-> > >>>>> +             goto out;
-> > >>>>>
-> > >>>>>       memcg = mem_cgroup_iter(NULL, NULL, NULL);
-> > >>>>>       do {
-> > >>>>> @@ -287,13 +283,13 @@ static int memcg_expand_shrinker_maps(int new_id)
-> > >>>>>               ret = memcg_expand_one_shrinker_map(memcg, size, old_size);
-> > >>>>>               if (ret) {
-> > >>>>>                       mem_cgroup_iter_break(NULL, memcg);
-> > >>>>> -                     goto unlock;
-> > >>>>> +                     goto out;
-> > >>>>>               }
-> > >>>>>       } while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
-> > >>>>> -unlock:
-> > >>>>> +out:
-> > >>>>>       if (!ret)
-> > >>>>>               memcg_shrinker_map_size = size;
-> > >>>>> -     mutex_unlock(&memcg_shrinker_map_mutex);
-> > >>>>> +
-> > >>>>>       return ret;
-> > >>>>>  }
-> > >>>>>
-> > >>>>>
-> > >>>>
-> > >>>>
-> > >>
-> > >>
-> >
-> >
+All the other code uses !iregs instead of !in_nmi(), also your
+indentation is broken.
+
+> +		ds->pebs_index >= ds->pebs_interrupt_threshold)
+> +		return 0;
+> +
+> +	for_each_set_bit(bit, (unsigned long *)&guest_pebs_idxs,
+> +			INTEL_PMC_IDX_FIXED + x86_pmu.num_counters_fixed) {
+> +
+> +		event = cpuc->events[bit];
+> +		if (!event->attr.precise_ip)
+> +			continue;
+> +
+> +		perf_sample_data_init(&data, 0, event->hw.last_period);
+> +		if (perf_event_overflow(event, &data, iregs))
+> +			x86_pmu_stop(event, 0);
+> +
+> +		/* Inject one fake event is enough. */
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static __always_inline void
+>  __intel_pmu_pebs_event(struct perf_event *event,
+>  		       struct pt_regs *iregs,
+> @@ -1965,6 +2024,9 @@ static void intel_pmu_drain_pebs_icl(struct pt_regs *iregs, struct perf_sample_d
+>  	if (!x86_pmu.pebs_active)
+>  		return;
+>  
+> +	if (intel_pmu_handle_guest_pebs(cpuc, iregs, ds))
+> +		return;
+> +
+>  	base = (struct pebs_basic *)(unsigned long)ds->pebs_buffer_base;
+>  	top = (struct pebs_basic *)(unsigned long)ds->pebs_index;
+>  
+> -- 
+> 2.29.2
+> 
