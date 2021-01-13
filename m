@@ -2,103 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7FC2F4378
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:04:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D822F437B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726184AbhAMFEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 00:04:37 -0500
-Received: from foss.arm.com ([217.140.110.172]:58490 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725873AbhAMFEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 00:04:36 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 727961042;
-        Tue, 12 Jan 2021 21:03:50 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2E6A73F70D;
-        Tue, 12 Jan 2021 21:03:45 -0800 (PST)
-Subject: Re: [PATCH V2 1/3] mm/hotplug: Prevalidate the address range being
- added with platform
-To:     David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, hca@linux.ibm.com,
-        catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1608218912-28932-1-git-send-email-anshuman.khandual@arm.com>
- <1608218912-28932-2-git-send-email-anshuman.khandual@arm.com>
- <10e733fa-4568-d38f-9b95-2ccc5dc627b8@redhat.com>
- <20210111134303.GA3031@linux> <e2b53f0a-482d-2045-6162-6de2510c9690@arm.com>
- <556a8a62-7bb2-d16b-67ea-57c87c1a6aa7@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <041d9344-b07c-c6f9-c41a-01057470c350@arm.com>
-Date:   Wed, 13 Jan 2021 10:34:04 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725977AbhAMFFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 00:05:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725818AbhAMFFw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 00:05:52 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F542C061794;
+        Tue, 12 Jan 2021 21:05:12 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id g4so985947ybo.11;
+        Tue, 12 Jan 2021 21:05:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=H2fJ/axecH/6J+gsobPUGUVGWusfX311kFU3BlwJyaw=;
+        b=WdUKppHh5qE2nA/G2cqUSZgTE18MWaSdNoakRvX046FhmCZ7Ouqhy11j5jqFhEsx7+
+         ZrJk5+BKCXJuiT0CjYMC7Clj/gilwyFxQUF5WR2k2YiShWhoHSF4i2q0s7JZ568PojuG
+         PgpVcLcPz9GuBSwWEZecqTVUrWWJpW7fx+pw9DJ0pbhQ1Glj9XEiztH/3Iq66SUQjT4X
+         /shzjl/k74NjNNj/SmsXNmQo0yKfdlbeGsIBXm1S7ypGtWq5lLiojgwkF/ImqvfwWHpL
+         IchiUjjal3JJ3/GF5ArYvNdyu+7Wb3MzPs3/Y+uQ5l+/lZT67nnyBwWTB0Wv/jigNqqv
+         A3iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=H2fJ/axecH/6J+gsobPUGUVGWusfX311kFU3BlwJyaw=;
+        b=OBVFB2KPBb5BOvfG08lVC/eIlYOZHKuSlVgVOio9OKYwV222sARp+JkC09RZU5cb2G
+         WqB9C/BBPG8nPA8LJRzdGbth9iQtTFTGxvL/y4bvdgMtOWpqWmfilgABiourov58f4uK
+         HzQXeu9ACjFbfgTswIM0QGm37/KAJKchXVQVi2W8Bto/N/+SgQlnSYx3bMsnV9+7ndlQ
+         YpDVghmOJxG47iM+U+hAxlxtJtHRroXhN8uvvhUnGRqTVfX6T03FRCg93cfaZlWUphiA
+         YDO43PEk47wH03moS9cPwqlTKJjwnoUf2gtKkPt+dFn4wVlUBt3FY35Pr6k3xOTuaP8A
+         SrSg==
+X-Gm-Message-State: AOAM5307ZAjKLsfmCxV2AirKkuqfZvpukwhI68ovj0fZZAl4egcC0UBU
+        RiOmrCC3HK0ZLDraocQt57Y/3g/Ehmxvi+IU3/FqUU9JpCfvhrnr
+X-Google-Smtp-Source: ABdhPJwWR5KSECnDvOvXv6NvLQlRekb3+GXlW2S+NzrNMmuR5ehuW0T0YGRFcXu/k0xODwLSL3lxja4jF5Sj55pjyfU=
+X-Received: by 2002:a25:3457:: with SMTP id b84mr796341yba.167.1610514311118;
+ Tue, 12 Jan 2021 21:05:11 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <556a8a62-7bb2-d16b-67ea-57c87c1a6aa7@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Wed, 13 Jan 2021 13:04:44 +0800
+Message-ID: <CAD-N9QW-zm37f9PW-iF-NaAH5LLePWFba3aG5LkXD2a07YBZpg@mail.gmail.com>
+Subject: "UBSAN: shift-out-of-bounds in mceusb_dev_recv" should share the same
+ root cause with "UBSAN: shift-out-of-bounds in mceusb_dev_printdata"
+To:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-media@vger.kernel.org, mchehab@kernel.org, sean@mess.org,
+        anant.thazhemadam@gmail.com,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Greg KH <greg@kroah.com>, Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi developers,
 
+I found that "UBSAN: shift-out-of-bounds in mceusb_dev_recv" and
+"UBSAN: shift-out-of-bounds in mceusb_dev_printdata" should share the
+same root cause.
+The reason is that the PoCs after minimization has a high similarity
+with the other. And their stack trace only diverges at the last
+function call. The following is some analysis for this bug.
 
-On 1/12/21 3:39 PM, David Hildenbrand wrote:
-> On 12.01.21 04:51, Anshuman Khandual wrote:
->>
->>
->> On 1/11/21 7:13 PM, Oscar Salvador wrote:
->>> On Mon, Jan 11, 2021 at 11:51:47AM +0100, David Hildenbrand wrote:
->>>> AFAIKs, all memhp_get_pluggable_range() users pass "1".
->>>>
->>>> What about the "add_pages()-only" path?
->>>
->>> I guess you refer to memremap_pages(), right?
->>
->> Right, via pagemap_range().
->>
->>> If so, moving the added memhp_range_allowed() check above the if-else might do
->>> the trick
->>>
->> We had that code in the earlier version. But dropped it, as we did
->> not want to add any new checks in the generic code. Can add it back
->> if that is preferred.
-> 
-> I remember discussing replacing the check in __add_pages() instead. But
+The following code in the mceusb_process_ir_data is the vulnerable
+--------------------------------------------------------------------------------------------------------------------------
+for (; i < buf_len; i++) {
+     switch (ir->parser_state) {
+     case SUBCMD:
+             ir->rem = mceusb_cmd_datasize(ir->cmd, ir->buf_in[i]);
+             mceusb_dev_printdata(ir, ir->buf_in, buf_len, i - 1,
+                                                   ir->rem + 2, false);
+             if (i + ir->rem < buf_len)
+             mceusb_handle_command(ir, &ir->buf_in[i - 1]);
+--------------------------------------------------------------------------------------------------------------------------
 
-The proposed change for __add_pages() now seems misleading. Instead of
-VM_BUG_ON(), memhp_range_allowed() should be checked directly for a non
-linear mapping i.e with 'false' argument and return prematurely in case
-that check fails.
+The first report crashes at a shift operation(1<<*hi) in mceusb_handle_command.
+--------------------------------------------------------------------------------------------------------------------------
+static void mceusb_handle_command(struct mceusb_dev *ir, u8 *buf_in)
+{
+u8 *hi = &buf_in[2]; /* read only when required */
+if (cmd == MCE_CMD_PORT_SYS) {
+      switch (subcmd) {
+      case MCE_RSP_GETPORTSTATUS:
+              if (buf_in[5] == 0)
+                     ir->txports_cabled |= 1 << *hi;
+--------------------------------------------------------------------------------------------------------------------------
 
-s/VM_BUG_ON(!memhp_range_allowed(.., 1)/!memhp_range_allowed(.., 0)/
+The second report crashes at another shift operation (1U << data[0])
+in mceusb_dev_printdata.
+--------------------------------------------------------------------------------------------------------------------------
+static void mceusb_dev_printdata(struct mceusb_dev *ir, u8 *buf, int buf_len,
+int offset, int len, bool out)
+{
+data   = &buf[offset] + 2;
 
- /*
-  * Reasonably generic function for adding memory.  It is
-  * expected that archs that support memory hotplug will
-@@ -317,10 +304,7 @@ int __ref __add_pages(int nid, unsigned long pfn, unsigned long nr_pages,
- 	if (WARN_ON_ONCE(!params->pgprot.pgprot))
- 		return -EINVAL;
- 
--	err = check_hotplug_memory_addressable(pfn, nr_pages);
--	if (err)
--		return err;
--
-+	VM_BUG_ON(!memhp_range_allowed(PFN_PHYS(pfn), nr_pages * PAGE_SIZE, 1));
- 	if (altmap) {
- 		/*
- 		 * Validate altmap is within bounds of the total request
-@@ -1181,6 +1165,61 @@ int add_memory_driver_managed(int nid, u64 start, u64 size,
+          period = DIV_ROUND_CLOSEST((1U << data[0] * 2) *
+                        (data[1] + 1), 10);
+--------------------------------------------------------------------------------------------------------------------------
 
+From the analysis, we can know the data[0] and *hi access the same
+memory cell - ``ir->buf_in[i+1]``. So the root cause should be that it
+misses the check of ir->buf_in[i+1].
 
-> I don't really care where the check ends up being. As discussed, at some
-> point, we should provide versions of add_pages() and arch_add_pages()
-> that don't immediately end in arch-code.
+For the patch of this bug, there is one from anant.thazhemadam@gmail.com:
+--------------------------------------------------------------------------------------------------------------------------
+diff --git a/drivers/media/rc/mceusb.c b/drivers/media/rc/mceusb.c
+index f1dbd059ed08..79de721b1c4a 100644
+--- a/drivers/media/rc/mceusb.c
++++ b/drivers/media/rc/mceusb.c
+@@ -1169,7 +1169,7 @@ static void mceusb_handle_command(struct
+mceusb_dev *ir, u8 *buf_in)
+  switch (subcmd) {
+  /* the one and only 5-byte return value command */
+  case MCE_RSP_GETPORTSTATUS:
+- if (buf_in[5] == 0)
++ if ((buf_in[5] == 0) && (*hi <= 32))
+  ir->txports_cabled |= 1 << *hi;
+  break;
+--------------------------------------------------------------------------------------------------------------------------
+I tried this patch in the second crash report and found it does not
+work. I think we should add another filter for the value in
+``ir->buf_in[i+1]``.
 
-Sure. But for now, AFAICS the above replacement should be sufficient.
+With this grouping, I think developers can take into consideration the
+issue in mceusb_dev_printdata and generate a complete patch for this
+bug.
+
+If any of my understanding is incorrect or has issues, please let me
+know. Thanks very much.
+
+--
+My best regards to you.
+
+     No System Is Safe!
+     Dongliang Mu
