@@ -2,252 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735062F4AFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CED12F4AF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbhAMMGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 07:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34472 "EHLO
+        id S1727102AbhAMMGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 07:06:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726571AbhAMMGj (ORCPT
+        with ESMTP id S1726509AbhAMMGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 07:06:39 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915ADC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 04:05:59 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id i5so1383129pgo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 04:05:59 -0800 (PST)
+        Wed, 13 Jan 2021 07:06:11 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3F4C061575;
+        Wed, 13 Jan 2021 04:05:31 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id jx16so2667183ejb.10;
+        Wed, 13 Jan 2021 04:05:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=rgkuTBsatwNJSFukk7YicMTbt2SY0ukVzdRGr/VFZys=;
-        b=cOl6Zhu2dw/c+w51im0JfCjpG4zEg1ObDsz9irQYpzF7Hwyiq0EwAR0u9cWEn2j/Ic
-         j2Yxgd2Je0BYzG9kqyToJLcYgI9M1UG3+H4R4HVjRmN3D71I7UYRxqmNYiRSwBqUbbgG
-         VFpZ6xP6GFO0KWEm6EQe/zgLczvO6HlHDXsoxwYk+37SvMofk0JGzljpabRtOpM8gI2q
-         o3XQK05ukfBLV3VpxJ8psg4JNhZmnnqIS1A9X4kQurhgglyakOoWgQ5KHsU+Hy780Yyx
-         hjTZHwsNXJGCsg01J4xaHHlCRdvqVnvU3/8C6MIW6vHR70INpLIuHNKB0hnGHPOWYzlm
-         WvwA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KLddFM7Ct0ZzIGnlm6iZDFsPVXgrYGbAJWbAjweQIpc=;
+        b=uEnlxlSjkPZ3m4eJPwM8x6E1SemvIcHCEXpbFKzAeeaivi4SwJUXJyERWClsV+Q03R
+         JW5in+6gXdM9UvjzWnOeGWZ3+MqLlTEfoteyIwY/ImvV3ZoEqgeOpyORjuirsoOylVT6
+         Nsn+NH3mbWj/Mesma2QaiWwaa9qIm1RLxmwCGxtOlCa4tBhdeUWfQ9jtpNU8ZrJD0NG8
+         zH62MvmbwC+ZY+GlHf2S6qT2iY8ujBRDy+FLGONlr5V2dj+8dXnXTya3xZByQ049Qrjz
+         7MQHeUcdb4y5C7DKcbFd/Wf6lTAK6Ro1mE6CR5ZhDQvh3AFfATy5qbGZxNbMKfgvOnvz
+         h2oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=rgkuTBsatwNJSFukk7YicMTbt2SY0ukVzdRGr/VFZys=;
-        b=EbLPTw1ByJHm6qjILdMIP5zs/evL6ChCrKKZpuOHtTPByhDACOfpTuh/Xwi93x1hAp
-         ek8OyqP2kvIdypg9GNEpmg0mLjtVYHfVH6/Oob5cd50fd5yLNW+nKXNMVhLJfhFigphq
-         fc9SbLXWPCKCox1D7MF4ULFuQPvFH741AXDI1eTIjQtFlzK2tfTjCybFpIVhPo0OQxHW
-         6xPxLk+VKJHMIltuUJQZ2V3ZZIc20Y7ZpR3JWLpU+mBpsMTJqf0Dbf9QS/WrkHxmu52A
-         lUD1qzdwRtB8igkbfQsz3IgNaBc6fTFHvk7YW8aGP2sfp9VnZStcmQVEqUn8XDZm+75t
-         h7wA==
-X-Gm-Message-State: AOAM532X2iRu47oDInyXlUeK3FzQzd7PZOiSZ1g5D41u9176Rw+7Xa64
-        56V+KuVFLHRnU9ihAUr2nkYExYq914onSw==
-X-Google-Smtp-Source: ABdhPJxnF/0Q5Vw3ffGbiKIGpIFa1PEf6zSvspzFG3LaIOefe/P+oTi+74uT8h+tnwQkVG9sV997Dg==
-X-Received: by 2002:a63:dd53:: with SMTP id g19mr1766273pgj.291.1610539559087;
-        Wed, 13 Jan 2021 04:05:59 -0800 (PST)
-Received: from ?IPv6:240e:45b:406:3726:19ba:7333:19c1:ecbe? ([240e:45b:406:3726:19ba:7333:19c1:ecbe])
-        by smtp.gmail.com with ESMTPSA id g16sm2288805pfh.187.2021.01.13.04.05.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 04:05:58 -0800 (PST)
-Subject: Re: [PATCH] PCI: Add a quirk to enable SVA for HiSilicon chip
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        jean-philippe <jean-philippe@linaro.org>,
-        kenneth-lee-2012@foxmail.com, wangzhou1@hisilicon.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wanghuiqiang <wanghuiqiang@huawei.com>
-References: <20210112170230.GA1838341@bjorn-Precision-5520>
-From:   Zhangfei Gao <zhangfei.gao@linaro.org>
-Message-ID: <b9fd8097-85f9-408d-f58c-b26dd21f3aa0@linaro.org>
-Date:   Wed, 13 Jan 2021 20:05:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KLddFM7Ct0ZzIGnlm6iZDFsPVXgrYGbAJWbAjweQIpc=;
+        b=DhUIQRpvEwMOmADMtSv1fULnePHsLY+CDWibVVZMKzC9p000gL3YmN1nzCL/Jg/Or7
+         gV6cnFCoDCqzBeU01dzfAY8l61fTs5TQ3CiOak/qtKyPHokaiN3yZe4Iy5WCVpm+WYOk
+         Gpw+/rGaRPOJ4o2s5+ikM20MPzQ3InRty0ZU/AwJaC39CBndQQfvrG3WvdDeE3biUO+0
+         BfWuKVi/bJ2gMxnAPRg6QnORV+hPDwLsY0U9rVNUscbZrJNSqTcdBCwIZEgxQx0YFVDo
+         41LnaEDQ1l/0yWNabwBBAzwuoqSJ1XMMCT+29VMn412skwJEMc/7FEZh9uxnREdiyO2L
+         S6AQ==
+X-Gm-Message-State: AOAM533fJZFoQZTu7EniAR/TXIfYm5j1A2IJv2djrtwytBINptMhulAU
+        T3Lxn1M6UXQVaAuZ8HtYPJrLeN/fnK0Q2bqrbcM=
+X-Google-Smtp-Source: ABdhPJyxDzdRBgA9m006VOsEmMuVwU+jGuo6QNzvtRQNY+GRXcD9plNi7OTnRbAHVDabgzpXjZL9IpoxAHgrXoFwCwQ=
+X-Received: by 2002:a17:906:4c55:: with SMTP id d21mr1356389ejw.116.1610539529892;
+ Wed, 13 Jan 2021 04:05:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210112170230.GA1838341@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <CAOuPNLiUBhJdsgw9bjQxxhkeBHQFoE_vN_Na6kw3ksr89r+HOg@mail.gmail.com>
+ <X/2Rr5LDNbxGz456@kroah.com>
+In-Reply-To: <X/2Rr5LDNbxGz456@kroah.com>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Wed, 13 Jan 2021 17:35:18 +0530
+Message-ID: <CAOuPNLiVP2d29td0b20Tx7=UBy5fGk5S9Yt=usUH+VtSYORe+w@mail.gmail.com>
+Subject: Re: [BUG]: Kernel 4.9: Kernel crash at fs/sysfs/file.c : sysfs_kf_seq_show
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>, landy.gross@linaro.org,
+        David Brown <david.brown@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        indranilghsh428@gmail.com, stephen@networkplumber.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Bjorn
-
-Thanks for the suggestion.
-
-On 2021/1/13 上午1:02, Bjorn Helgaas wrote:
-> On Tue, Jan 12, 2021 at 02:49:52PM +0800, Zhangfei Gao wrote:
->> HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
->> actually on the AMBA bus. These fake PCI devices can not support tlp
->> and have to enable SMMU stall mode to use the SVA feature.
->>
->> Add a quirk to set dma-can-stall property and enable tlp for these devices.
-> s/tlp/TLP/
+On Tue, 12 Jan 2021 at 17:39, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> I don't think "enable TLP" really captures what's going on here.  You
-> must be referring to the fact that you set pdev->eetlp_prefix_path.
->
-> That is normally set by pci_configure_eetlp_prefix() if the Device
-> Capabilities 2 register has the End-End TLP Prefix Supported bit set
-> *and* all devices in the upstream path also have it set.
->
-> The only place we currently test eetlp_prefix_path is in
-> pci_enable_pasid().  In PCIe, PASID is implemented using the PASID TLP
-> prefix, so we only enable PASID if TLP prefixes are supported.
->
-> If I understand correctly, a PASID-like feature is implemented on AMBA
-> without using TLP prefixes, and setting eetlp_prefix_path makes that
-> work.
-Yes, that's the requirement.
->
-> I don't think you should do this by setting eetlp_prefix_path because
-> TLP prefixes are used for other features, e.g., TPH.  Setting
-> eetlp_prefix_path implies these devices can also support things like
-> TLP, and I don't think that's necessarily true.
-Thanks for the remainder.
->
-> Apparently these devices have a PASID capability.  I think you should
-> add a new pci_dev bit that is specific to this idea of "PASID works
-> without TLP prefixes" and then change pci_enable_pasid() to look at
-> that bit as well as eetlp_prefix_path.
-That's great, this solution is much simpler.
-we can set the bit before pci_enable_pasid.
->
-> It seems like dma-can-stall is a separate thing from PASID?  If so,
-> this should be two separate patches.
->
-> If they can be separated, I would probably make the PASID thing the
-> first patch, and then the "dma-can-stall" can be on its own as a
-> broken DT workaround (if that's what it is) and it's easier to remove
-> that if it become obsolete.
->
->> Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
->> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
->> Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
->> ---
->> Property dma-can-stall depends on patchset
->> https://lore.kernel.org/linux-iommu/20210108145217.2254447-1-jean-philippe@linaro.org/
->>
->> drivers/pci/quirks.c | 25 +++++++++++++++++++++++++
->>   1 file changed, 25 insertions(+)
->>
->> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
->> index 653660e..a27f327 100644
->> --- a/drivers/pci/quirks.c
->> +++ b/drivers/pci/quirks.c
->> @@ -1825,6 +1825,31 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL,	PCI_DEVICE_ID_INTEL_E7525_MCH,	quir
->>   
->>   DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_HUAWEI, 0x1610, PCI_CLASS_BRIDGE_PCI, 8, quirk_pcie_mch);
->>   
->> +static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
->> +{
->> +	struct property_entry properties[] = {
->> +		PROPERTY_ENTRY_BOOL("dma-can-stall"),
->> +		{},
->> +	};
->> +
->> +	if ((pdev->revision != 0x21) && (pdev->revision != 0x30))
->> +		return;
->> +
->> +	pdev->eetlp_prefix_path = 1;
->> +
->> +	/* Device-tree can set the stall property */
->> +	if (!pdev->dev.of_node &&
->> +	    device_add_properties(&pdev->dev, properties))
-> Does this mean "dma-can-stall" *can* be set via DT, and if it is, this
-> quirk is not needed?  So is this quirk basically a workaround for an
-> old or broken DT?
-The quirk is still needed for uefi case, since uefi can not describe the 
-endpoints (peripheral devices).
->
->> +		pci_warn(pdev, "could not add stall property");
->> +}
->> +
-> Remove this blank line to follow the style of the rest of the file.
->
->> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
->> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa251, quirk_huawei_pcie_sva);
->> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa255, quirk_huawei_pcie_sva);
->> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa256, quirk_huawei_pcie_sva);
->> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa258, quirk_huawei_pcie_sva);
->> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa259, quirk_huawei_pcie_sva);
->> +
->>   /*
->>    * It's possible for the MSI to get corrupted if SHPC and ACPI are used
->>    * together on certain PXH-based systems.
+> On Tue, Jan 12, 2021 at 05:31:54PM +0530, Pintu Agarwal wrote:
+> > Hi,
+> >
+> > I am using Kernel: 4.9.217 for one of the ARM32 boards for Qualcomm SOC.
+> > https://github.com/android-linux-stable/msm-4.9
+> >
+> > But I think this is a general bug applicable to :Kernel 4.9 under
+> > fs/sysfs/file.c
+> > So, I wanted to quickly check here if others are familiar with this
+> > issue and if it is fixed already.
+> > Note, this issue does not occur in 4.14 Kernel.
+> >
+> > When I execute below command, the Kernel is crashing.
+> > I tried to add few debug prints to find more details. I see that the
+> > ops->show pointer is not valid (seems corrupted).
+> > So I wanted to understand how this can happen only for this particular node.
+> > Other sysfs entries are working fine.
+> >
 
-How about changes like this
+I see that this issue was reported earlier as well by others.
+https://syzkaller.appspot.com/bug?id=2ec2a9da5c711df3d3d12071bac487b96e75e103
+https://gitlab.freedesktop.org/drm/amd/-/issues/413
+https://bugzilla.redhat.com/show_bug.cgi?id=1615070
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c 
-b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 68f53f7..886ea26 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2466,6 +2466,9 @@ static int arm_smmu_enable_pasid(struct 
-arm_smmu_master *master)
-      if (num_pasids <= 0)
-          return num_pasids;
+So it seems to be common issue and thus I wanted to check here if its similar.
 
-+    if (master->stall_enabled)
-+        pdev->pasid_no_tlp = 1;
-+
-      ret = pci_enable_pasid(pdev, features);
-      if (ret) {
-          dev_err(&pdev->dev, "Failed to enable PASID\n");
-@@ -2860,6 +2863,11 @@ static struct iommu_device 
-*arm_smmu_probe_device(struct device *dev)
-      device_property_read_u32(dev, "pasid-num-bits", &master->ssid_bits);
-      master->ssid_bits = min(smmu->ssid_bits, master->ssid_bits);
-
-+    if ((smmu->features & ARM_SMMU_FEAT_STALLS &&
-+         device_property_read_bool(dev, "dma-can-stall")) ||
-+        smmu->features & ARM_SMMU_FEAT_STALL_FORCE)
-+        master->stall_enabled = true;
-+
-      /*
-       * Note that PASID must be enabled before, and disabled after ATS:
-       * PCI Express Base 4.0r1.0 - 10.5.1.3 ATS Control Register
-@@ -2874,11 +2882,6 @@ static struct iommu_device 
-*arm_smmu_probe_device(struct device *dev)
-          master->ssid_bits = min_t(u8, master->ssid_bits,
-                        CTXDESC_LINEAR_CDMAX);
-
--    if ((smmu->features & ARM_SMMU_FEAT_STALLS &&
--         device_property_read_bool(dev, "dma-can-stall")) ||
--        smmu->features & ARM_SMMU_FEAT_STALL_FORCE)
--        master->stall_enabled = true;
--
-      arm_smmu_init_pri(master);
-
-      return &smmu->iommu;
-diff --git a/drivers/pci/ats.c b/drivers/pci/ats.c
-index e36d601..fe604b5 100644
---- a/drivers/pci/ats.c
-+++ b/drivers/pci/ats.c
-@@ -386,7 +386,7 @@ int pci_enable_pasid(struct pci_dev *pdev, int features)
-      if (WARN_ON(pdev->pasid_enabled))
-          return -EBUSY;
-
--    if (!pdev->eetlp_prefix_path)
-+    if ((!pdev->eetlp_prefix_path) && (!pdev->pasid_no_tlp))
-          return -EINVAL;
-
-      if (!pasid)
-
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index f1f26f8..fbee7fe 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -388,6 +388,7 @@ struct pci_dev {
-                         supported from root to here */
-      u16        l1ss;        /* L1SS Capability pointer */
-  #endif
-+    unsigned int    pasid_no_tlp:1;        /* PASID can be supported 
-without TLP Prefix */
-      unsigned int    eetlp_prefix_path:1;    /* End-to-End TLP Prefix */
-
-      pci_channel_state_t error_state;    /* Current connectivity state */
-
-Thanks
+Thanks,
+Pintu
