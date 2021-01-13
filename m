@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FBD2F5181
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:56:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DAF72F5184
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728203AbhAMRxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:53:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33150 "EHLO mail.kernel.org"
+        id S1728225AbhAMRzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:55:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728188AbhAMRxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:53:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 002A321534;
-        Wed, 13 Jan 2021 17:52:49 +0000 (UTC)
+        id S1727785AbhAMRzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 12:55:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B06D52337F;
+        Wed, 13 Jan 2021 17:54:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610560370;
-        bh=QIX3z2ysr8s8Asq7NOVUBpnrn77/hUqe9WzwRVOSgXA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=a5UnOiYFEWqVyFbBUgEkIGW1azHdtRvHpf8MRocjd47G6aWEv/N4hnTcUowHf+7Qw
-         P785XuK3RfHw6WBC/3yGxuFDUbvTp4t/G4coXttHWUGFeCxdjF0HqfGqt/FC9pLpib
-         P4m02JR/uZyF90N4PUWzS9vrc3Q0h8rBR4bo01TdO/8nMB3JajY+ZDsDjuk1hYROYj
-         Lz9gP696IOCTI0q32j3HOou2ILJ94wDdcKD/MC+hs3AmUqYrc8kvfdyxBOFjnQnfB3
-         9qPKkfwrUYBGU/o4YiQ0aP8LPHlJPznOvswiKwPJh2KM+6ty4H4yJjcMQ50IucHRrp
-         E94J3mPVMhaFA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B33703522AC3; Wed, 13 Jan 2021 09:52:49 -0800 (PST)
-Date:   Wed, 13 Jan 2021 09:52:49 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 3/4] workqueue: Tag bound workers with KTHREAD_IS_PER_CPU
-Message-ID: <20210113175249.GA27312@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210112144344.850850975@infradead.org>
- <20210112144843.849135905@infradead.org>
- <CAJhGHyD_xuSpYOp5A9PumWGsBA=DNqM0ge3_NgRkfro7fafGqA@mail.gmail.com>
- <jhjturkzzv9.mognet@arm.com>
+        s=k20201202; t=1610560500;
+        bh=x9rFdBeqTSdaYYBmWzZqpRoQH69zN2/eeBVqYuzyn5A=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=BFC+HDYxW+dFc2wL45vtNQIO9IUi7SfXNxrMsRqSQTF3mOPSeg4445ZMtI+6n2m5o
+         hjCNSA9dzu+vTu+/mBJXxsulYYY4DQImRypNxMorqpa5EhBNupDaDPDMh9EcOn0O9a
+         KufhZPx5J2P5vdon8RiU7DAbQP8Ew9Ar+kVAPVCaVswQigjbnre7Uz9Ex+XpF6/bAt
+         Q26TfM306RRysaD3D3V0/jN2UEGSB4SxbmH+F2GZuSes4czmsT75sT892i1aWtAax2
+         YWkvG//h631rhut9WgzLeVVHv89I+HYdrff4sxs32ks67CDV0JTY/SlP+qZ7Y5gAp8
+         lH0h138kSOU2w==
+From:   Mark Brown <broonie@kernel.org>
+To:     sbranden@broadcom.com, rjui@broadcom.com, f.fainelli@gmail.com,
+        nsaenzjulienne@suse.de,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     linux-rpi-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, patches@opensource.cirrus.com
+In-Reply-To: <20210107164825.21919-1-rf@opensource.cirrus.com>
+References: <20210107164825.21919-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH] spi: bcm2835: Set controller max_speed_hz
+Message-Id: <161056046630.11960.4692892345837780609.b4-ty@kernel.org>
+Date:   Wed, 13 Jan 2021 17:54:26 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jhjturkzzv9.mognet@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 02:16:10PM +0000, Valentin Schneider wrote:
-> On 13/01/21 21:28, Lai Jiangshan wrote:
-> > On Tue, Jan 12, 2021 at 10:51 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >> @@ -4972,9 +4977,11 @@ static void rebind_workers(struct worker
-> >>          * of all workers first and then clear UNBOUND.  As we're called
-> >>          * from CPU_ONLINE, the following shouldn't fail.
-> >>          */
-> >> -       for_each_pool_worker(worker, pool)
-> >> +       for_each_pool_worker(worker, pool) {
-> >>                 WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task,
-> >>                                                   pool->attrs->cpumask) < 0);
-> >> +               kthread_set_per_cpu(worker->task, true);
-> >
-> > Will the schedule break affinity in the middle of these two lines due to
-> > patch4 allowing it and result in Paul's reported splat.
-> >
+On Thu, 7 Jan 2021 16:48:25 +0000, Richard Fitzgerald wrote:
+> Set the struct spi_controller max_speed_hz. This is based on the
+> reported source clock frequency during probe. The maximum bus clock
+> is half the source clock (as per the code in bcm2835_spi_transfer_one).
 > 
-> You might be right; at this point we would still have BALANCE_PUSH set,
-> so something like the below could happen
-> 
->   rebind_workers()
->     set_cpus_allowed_ptr()
->       affine_move_task()
->         task_running() => stop_one_cpu()
-> 
->   ... // Stopper migrates the kworker here in the meantime
-> 
->   switch_to(<pcpu kworker>) // Both cpuhp thread and kworker should be enqueued
->                             // here, so one or the other could be picked
->   balance_switch()
->     balance_push()
->     ^-- no KTHREAD_IS_PER_CPU !
-> 
-> This should however trigger the WARN_ON_ONCE() in kthread_set_per_cpu()
-> *before* the one in process_one_work(), which I haven't seen in Paul's
-> mails.
+> If the controller max_speed_hz is not set, the spi core will limit all
+> transfers to 0 Hz so only the minimum possible bus frequency would be used.
 
-The 56 instances of one-hour SRCU-P scenarios hit the WARN_ON_ONCE()
-in process_one_work() once, but there is no sign of a WARN_ON_ONCE()
-from kthread_set_per_cpu().  But to your point, this does appear to be
-a rather low-probability race condition, once per some tens of hours
-of SRCU-P.
+Applied to
 
-Is there a more focused check for the race condition above?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-							Thanx, Paul
+Thanks!
+
+[1/1] spi: bcm2835: Set controller max_speed_hz
+      commit: c6892892a95debac8050579b0709214b7b28b514
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
