@@ -2,103 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7622F4DEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 007D72F4DF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727929AbhAMOxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:53:35 -0500
-Received: from mail-lf1-f46.google.com ([209.85.167.46]:38516 "EHLO
-        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727172AbhAMOx3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:53:29 -0500
-Received: by mail-lf1-f46.google.com with SMTP id h205so3154786lfd.5;
-        Wed, 13 Jan 2021 06:53:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
-         :content-transfer-encoding;
-        bh=l5ZLL3HVbz3X8xP5ZmbGilDYTblL2ih6VXU4JrkBYVE=;
-        b=d+AjSmd312bzQtmQpEPZ8bPKBfXgXS5vOUoQBgVPFpwhKm94vTc1CSOYaZ+N56WuI7
-         E0+poT2wwKb9xlJ2udxPhOqlOVltQWNFX/n2Rb1GxichxXyOg8tNKQHTesEPNs0t1i5y
-         L3ifX/vHsvwrzpGTRa2WewBSdY5YY5I3AI/nIL7mR+V/ZA8Q9fm/qeC2xSWJJL9QHtUL
-         pG/ducgm3T5wwOog2eXLrA6e4Nzb/RtuhvJNelxgs84k0O6RFqL7MbykMXwuIcP2amDT
-         nGdXnwvdzrpEwCrMjcPtS3p9yfZpW/d3zc8WiMo6VfUOp1qhfLyRw+1XXuVz2o2+VCoO
-         2Kiw==
-X-Gm-Message-State: AOAM530Ck/gPlWgdvtShRrrUXASJk0z8+2yq4TjamNDISXefCK0rvVBY
-        1AzQABDqxb8LYzPYWrN5WVg=
-X-Google-Smtp-Source: ABdhPJxVJAozLF+NK9vI49rngSl80ul7RvHhKpviU+vgCXuE0XnVTsokwh+rPxpgWRga6oaBKmbUeA==
-X-Received: by 2002:ac2:4437:: with SMTP id w23mr1069721lfl.618.1610549566561;
-        Wed, 13 Jan 2021 06:52:46 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id 68sm202199ljj.23.2021.01.13.06.52.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 06:52:45 -0800 (PST)
-Message-ID: <629dbc81badc9facea538733bfa8ddc0842b1df7.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH 04/15] dt_bindings: bd71828: Add clock output mode
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org
-In-Reply-To: <20210113135201.GA2328369@robh.at.kernel.org>
-References: <cover.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
-         <a91eb6288331bb80b30534a31049cde508307fc0.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
-         <20210113135201.GA2328369@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727726AbhAMOyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:54:20 -0500
+Received: from mga07.intel.com ([134.134.136.100]:53443 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727041AbhAMOyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 09:54:15 -0500
+IronPort-SDR: fxRouFCrlRLTzqU1GvSXi2yReE8qK38AfldbKQIMpA0HxbTellqNgBdV2o44Gbo1JRAi7oMKRI
+ eu2djEfgh/cw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="242288236"
+X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
+   d="scan'208";a="242288236"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 06:53:34 -0800
+IronPort-SDR: HzcL5yAEpBEgCs+I1a3Zyi5Mnl2vl1gGIreeiUkOSjuip/oBB8/sf2Kxd+FjwuXfwLRcW93BGq
+ vCRseHr1fwrA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
+   d="scan'208";a="464925238"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Jan 2021 06:53:29 -0800
+Subject: Re: [PATCH v4 2/2] scsi: ufs: Protect PM ops and err_handler from
+ user access through sysfs
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Nitin Rawat <nitirawa@codeaurora.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+References: <1610546230-14732-1-git-send-email-cang@codeaurora.org>
+ <1610546230-14732-3-git-send-email-cang@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <b32a2064-4ff9-509c-cdaf-434264837917@intel.com>
+Date:   Wed, 13 Jan 2021 16:53:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Date:   Wed, 13 Jan 2021 16:52:42 +0200
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+In-Reply-To: <1610546230-14732-3-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed, 2021-01-13 at 07:52 -0600, Rob Herring wrote:
-> On Fri, Jan 08, 2021 at 03:34:16PM +0200, Matti Vaittinen wrote:
-> > The BD71828 allows configuring the clk32kout pin mode to CMOS or
-> > open-drain. Add device-tree property for specifying the preferred
-> > mode.
-> > 
-> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > ---
-> >  .../devicetree/bindings/mfd/rohm,bd71828-pmic.yaml         | 7
-> > +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd71828-
-> > pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd71828-
-> > pmic.yaml
-> > index 3a6a1a26e2b3..cba085836bc0 100644
-> > --- a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
-> > +++ b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
-> > @@ -44,6 +44,13 @@ properties:
-> >    clock-output-names:
-> >      const: bd71828-32k-out
-> >  
-> > +  rohm,clkout-mode:
-> > +    description: clk32kout mode. Can be set to "open-drain" or
-> > "cmos".
-> > +    $ref: "/schemas/types.yaml#/definitions/string"
-> > +    enum:
-> > +      - open-drain
-> > +      - cmos
-> > +
+On 13/01/21 3:57 pm, Can Guo wrote:
+> User layer may access sysfs nodes when system PM ops or error handling
+> is running, which can cause various problems. Rename eh_sem to host_sem
+> and use it to protect PM ops and error handling from user layer intervene.
 > 
-> I think a boolean or tristate ((0/1/not present) if you need 'leave 
-> default') would be better.
+> Acked-by: Avri Altman <avri.altman@wdc.com>
+> Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> ---
+>  drivers/scsi/ufs/ufs-sysfs.c | 106 ++++++++++++++++++++++++++++++++++++-------
+>  drivers/scsi/ufs/ufshcd.c    |  42 ++++++++++-------
+>  drivers/scsi/ufs/ufshcd.h    |  10 +++-
+>  3 files changed, 125 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
+> index 0e14384..7cafffc 100644
+> --- a/drivers/scsi/ufs/ufs-sysfs.c
+> +++ b/drivers/scsi/ufs/ufs-sysfs.c
+> @@ -154,18 +154,29 @@ static ssize_t auto_hibern8_show(struct device *dev,
+>  				 struct device_attribute *attr, char *buf)
+>  {
+>  	u32 ahit;
+> +	int ret;
+>  	struct ufs_hba *hba = dev_get_drvdata(dev);
+>  
+>  	if (!ufshcd_is_auto_hibern8_supported(hba))
+>  		return -EOPNOTSUPP;
+>  
+> +	down(&hba->host_sem);
+> +	if (!ufshcd_is_sysfs_allowed(hba)) {
 
-I was thinking of boolean but I hit the exact problem of leaving the
-default. (Booleans are so tempting for a lazy coder like me :] ) Do you
-mean uint with allowed values of 0/1 with the tristated? I can sure do
-that - but wouldn't open-drain / cmos be more descriptive?
+I expect debugfs has the same potential problem, so maybe
+ufshcd_is_sysfs_allowed() is not quite the right name.
 
-Best Regards
-	Matti Vaittinen
-
+> +		ret = -EBUSY;
+> +		goto out;
+> +	}
+> +
