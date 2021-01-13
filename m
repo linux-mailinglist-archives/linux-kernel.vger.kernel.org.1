@@ -2,91 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430982F40CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F14002F40D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:57:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392360AbhAMAnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 19:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392358AbhAMA1F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 19:27:05 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCF8C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:26:25 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id w2so107242pfc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:26:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P5cep6q7xr6t9kLaivrV7idzLK5AQ7vlZX4sAVxDVuo=;
-        b=fD2bqF0VHgRb3wN28oaLJ2r6nRVEHcID7ozo+dKpSqImokp7jo1Dnks9lAwMp1OU2e
-         LKDvKcQkPpkRqksrGprFTd9tf/s1aBw4CYL5/mMRv6crxJePDqW1d2bOs97Zn2GKBW0Q
-         qZh7DnUEyWkliISDzQEVJp4YJEpDuSsx3R2/0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P5cep6q7xr6t9kLaivrV7idzLK5AQ7vlZX4sAVxDVuo=;
-        b=uAJIoxavn5rxN4bLeJ4IJVFTvhr4keKdzRjUafbwXAxjbngsymr/fX9do/V1L2ALu5
-         8TFm6Pb43NnoFSujzy+T4/zQVCyDx3nqHrGwDlPh/3qUwh9zuN/UVa/uAiLJ1JVvyP+x
-         ME4197//Uz1HKPlwGjrCqNBLjXuQTOJps1ZRh+H797t2oM7TS2TrrvqIMlXZF3a47xmr
-         J9DBzaW8LPCZqu+YfsAKUn/7VQwEDck/Rb1R6hPxgECJZfrIo07YaW89HvQDM9131kCz
-         7b6fNpS+vt+SUqn0bKiwV9ZE5XtDre09R/cTKI3GWwb7Ms4ojpnHrK8gy0S1c/HPQDVO
-         T9JQ==
-X-Gm-Message-State: AOAM533gVwqROWur9sUnFM7NqJBAspI5hFImpbWDwMZxaAAlphnCXC69
-        uCdd5pCQh5WVRllKuNcygK7mAw==
-X-Google-Smtp-Source: ABdhPJyD+hXJ2C6UE9S3spN4vWkdQDn/M2cSB0mVGVds2IGeT6BY0kPf2x1dFVfgMUuecjbhznXfjQ==
-X-Received: by 2002:a63:31ce:: with SMTP id x197mr1637187pgx.262.1610497584553;
-        Tue, 12 Jan 2021 16:26:24 -0800 (PST)
-Received: from localhost (136.247.83.34.bc.googleusercontent.com. [34.83.247.136])
-        by smtp.gmail.com with ESMTPSA id h17sm270397pfc.119.2021.01.12.16.26.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 16:26:23 -0800 (PST)
-From:   Fritz Koenig <frkoenig@chromium.org>
-To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stanimir.varbanov@linaro.org,
-        vgarodia@codeaurora.org, dikshita@codeaurora.org,
-        acourbot@chromium.org
-Cc:     Fritz Koenig <frkoenig@chromium.org>
-Subject: [PATCH] venus: Check for valid device instance
-Date:   Wed, 13 Jan 2021 00:26:16 +0000
-Message-Id: <20210113002616.1501493-1-frkoenig@chromium.org>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+        id S2393726AbhAMAnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 19:43:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392371AbhAMA2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 19:28:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C41E23131;
+        Wed, 13 Jan 2021 00:28:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610497686;
+        bh=l4bVjGN9qa62D6wIsCNthuTsg43yfh9U+sM3Nr9Q01A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NsYNsfscXOjB992DWmXvmkKLILvNkU5uOiJF3LFcW4ab7paVBPn2tk7DKrM86ZjHL
+         WosGC6EhT6ddPy7DX7aRmuGKVrjZv/1JYoEjZeb+9bsGw4EhC1ImJPjV++jZLD6Zts
+         EHhNL4Ioc0wiY/VyGMdzfy05bwsvHwxjiPerMtSrCyf68iC+WvQ0+0Mi4Tq4D9kIdF
+         3N/FPEIFLbf6aJ5UZXv4G39dkVrCgkD8mfReuK6MZiR4UcAYTbH/86mnfHnlUw66aX
+         /3hG2GNTYd0dVdWLkd4bpk4Yo1NE/1Y0uNO5HiLPLebe8QQpQzoaOoM+sXDw6xsO2B
+         8JjkEQyPrJ/JA==
+Received: by mail-io1-f52.google.com with SMTP id u26so659938iof.3;
+        Tue, 12 Jan 2021 16:28:06 -0800 (PST)
+X-Gm-Message-State: AOAM533kJwieoez16PHYrUOVRPmgsA0E6EBQWHXQmEzBgxCeA+iQ4C1T
+        TA2KoJdsasCKP4JKMAsz1I4eUHPQDYDJ4b5i8Gc=
+X-Google-Smtp-Source: ABdhPJyGl93Rw4UJu1ToLzTJj1orHdU7rEc+4tfveQ2c9YxPJzAvtJO+VytyGstWVWin0EBD6hfxhs65LZX7Q9WSNEo=
+X-Received: by 2002:a92:870b:: with SMTP id m11mr1714638ild.134.1610497685872;
+ Tue, 12 Jan 2021 16:28:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1610454557-25867-1-git-send-email-hejinyang@loongson.cn> <1610454557-25867-2-git-send-email-hejinyang@loongson.cn>
+In-Reply-To: <1610454557-25867-2-git-send-email-hejinyang@loongson.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Wed, 13 Jan 2021 08:27:54 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7Y_iBpr8t-RKghLf=1mb0Z4djxnwfKg8QBnUXgB=+SRQ@mail.gmail.com>
+Message-ID: <CAAhV-H7Y_iBpr8t-RKghLf=1mb0Z4djxnwfKg8QBnUXgB=+SRQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] MIPS: process: Reorder header files
+To:     Jinyang He <hejinyang@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Jun-Ru Chang <jrjang@realtek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-core->dev_dec and core-dev->enc are set up
-by the corresponding vdec_probe and venc_probe.
-If the probe fails, they will not be set
-and so could be null when venus_sys_error_handler
-is called.
+Reviewed-by: Huacai Chen <chenhuacai@kernel.org>
 
-Fixes: 43e221e485e5 ("media: venus: Rework recovery mechanism")
-Signed-off by: Fritz Koenig <frkoenig@chromium.org>
----
- drivers/media/platform/qcom/venus/core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-index bdd293faaad0..979fcada4d3b 100644
---- a/drivers/media/platform/qcom/venus/core.c
-+++ b/drivers/media/platform/qcom/venus/core.c
-@@ -62,7 +62,8 @@ static void venus_sys_error_handler(struct work_struct *work)
- 
- 	mutex_lock(&core->lock);
- 
--	while (pm_runtime_active(core->dev_dec) || pm_runtime_active(core->dev_enc))
-+	while ((core->dev_dec && pm_runtime_active(core->dev_dec)) ||
-+			(core->dev_enc && pm_runtime_active(core->dev_enc)))
- 		msleep(10);
- 
- 	venus_shutdown(core);
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
-
+On Tue, Jan 12, 2021 at 9:07 PM Jinyang He <hejinyang@loongson.cn> wrote:
+>
+> Just reorder the header files.
+>
+> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+> ---
+>  arch/mips/kernel/process.c | 44 ++++++++++++++++++++++----------------------
+>  1 file changed, 22 insertions(+), 22 deletions(-)
+>
+> diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+> index d7e288f..361bd28 100644
+> --- a/arch/mips/kernel/process.c
+> +++ b/arch/mips/kernel/process.c
+> @@ -9,28 +9,29 @@
+>   * Copyright (C) 2004 Thiemo Seufer
+>   * Copyright (C) 2013  Imagination Technologies Ltd.
+>   */
+> +#include <linux/completion.h>
+> +#include <linux/cpu.h>
+>  #include <linux/errno.h>
+> +#include <linux/export.h>
+> +#include <linux/init.h>
+> +#include <linux/kallsyms.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mm.h>
+> +#include <linux/mman.h>
+> +#include <linux/nmi.h>
+> +#include <linux/personality.h>
+> +#include <linux/ptrace.h>
+> +#include <linux/prctl.h>
+> +#include <linux/random.h>
+>  #include <linux/sched.h>
+>  #include <linux/sched/debug.h>
+>  #include <linux/sched/task.h>
+>  #include <linux/sched/task_stack.h>
+> -#include <linux/tick.h>
+> -#include <linux/kernel.h>
+> -#include <linux/mm.h>
+>  #include <linux/stddef.h>
+> -#include <linux/unistd.h>
+> -#include <linux/export.h>
+> -#include <linux/ptrace.h>
+> -#include <linux/mman.h>
+> -#include <linux/personality.h>
+>  #include <linux/sys.h>
+> -#include <linux/init.h>
+> -#include <linux/completion.h>
+> -#include <linux/kallsyms.h>
+> -#include <linux/random.h>
+> -#include <linux/prctl.h>
+> -#include <linux/nmi.h>
+> -#include <linux/cpu.h>
+> +#include <linux/tick.h>
+> +#include <linux/uaccess.h>
+> +#include <linux/unistd.h>
+>
+>  #include <asm/abi.h>
+>  #include <asm/asm.h>
+> @@ -38,21 +39,20 @@
+>  #include <asm/cpu.h>
+>  #include <asm/dsemul.h>
+>  #include <asm/dsp.h>
+> +#include <asm/elf.h>
+> +#include <asm/exec.h>
+>  #include <asm/fpu.h>
+> +#include <asm/inst.h>
+> +#include <asm/io.h>
+>  #include <asm/irq.h>
+> +#include <asm/irq_regs.h>
+> +#include <asm/isadep.h>
+>  #include <asm/mips-cps.h>
+>  #include <asm/msa.h>
+>  #include <asm/mipsregs.h>
+>  #include <asm/processor.h>
+>  #include <asm/reg.h>
+> -#include <linux/uaccess.h>
+> -#include <asm/io.h>
+> -#include <asm/elf.h>
+> -#include <asm/isadep.h>
+> -#include <asm/inst.h>
+>  #include <asm/stacktrace.h>
+> -#include <asm/irq_regs.h>
+> -#include <asm/exec.h>
+>
+>  #ifdef CONFIG_HOTPLUG_CPU
+>  void arch_cpu_idle_dead(void)
+> --
+> 2.1.0
+>
