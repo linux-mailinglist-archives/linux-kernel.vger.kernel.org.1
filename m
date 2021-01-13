@@ -2,82 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C472F453E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5064C2F454C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbhAMHeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 02:34:05 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:60875 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725681AbhAMHeE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 02:34:04 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0ULbG-a5_1610523195;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0ULbG-a5_1610523195)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 13 Jan 2021 15:33:16 +0800
-Subject: Re: [PATCH for doc-next] doc/zh_CN: adjust table markup in
- mips/ingenic-tcu.rst
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Harry Wei <harryxiyou@gmail.com>, linux-doc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210113070023.25064-1-lukas.bulwahn@gmail.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <6040230e-5710-6580-aeb3-70d3f1859197@linux.alibaba.com>
-Date:   Wed, 13 Jan 2021 15:33:15 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.0; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1726254AbhAMHgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 02:36:02 -0500
+Received: from mga07.intel.com ([134.134.136.100]:20971 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725773AbhAMHgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 02:36:01 -0500
+IronPort-SDR: TNdWSHV2JbGEdHO1NabWomeULgWmrj243HsvUzor6nAxO2q7Ek/0gq0TKfWQQAeEZq9xFvUJR7
+ nwW+26exSAJw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="242238101"
+X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
+   d="scan'208";a="242238101"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 23:35:19 -0800
+IronPort-SDR: R7U7SOlxIAask0dFOPSZ+iv/4TSvK3885rmAPXftCa0I6o/KodFyfMs5MpYz6914ji5DT++mEY
+ igedmqs3aGCA==
+X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
+   d="scan'208";a="400456436"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 23:35:15 -0800
+Subject: [PATCH v3 0/6] mm: Fix pfn_to_online_page() with respect to
+ ZONE_DEVICE
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     linux-mm@kvack.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, stable@vger.kernel.org,
+        Naoya Horiguchi <nao.horiguchi@gmail.com>,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
+Date:   Tue, 12 Jan 2021 23:35:15 -0800
+Message-ID: <161052331545.1805594.2356512831689786960.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-In-Reply-To: <20210113070023.25064-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
+Changes since v2 [1]:
+- Collect some reviewed-by's from David and Oscar
 
-在 2021/1/13 下午3:00, Lukas Bulwahn 写道:
-> Commit 419b1d4ed1cb ("doc/zh_CN: add mips ingenic-tcu.rst translation")
-> introduces a warning with make htmldocs:
-> 
->   ./Documentation/translations/zh_CN/mips/ingenic-tcu.rst:
->     61: WARNING: Malformed table. Text in column margin in table line 6.
-> 
-> Adjust the table markup to address this warning.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> applies cleanly on next-20210113
-> 
-> Yanteng, please ack.
-> 
-> Jonathan, please pick this doc warning fixup on your -next tree. 
-> 
->  Documentation/translations/zh_CN/mips/ingenic-tcu.rst | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/translations/zh_CN/mips/ingenic-tcu.rst b/Documentation/translations/zh_CN/mips/ingenic-tcu.rst
-> index 72b5d409ed89..9324a0a26430 100644
-> --- a/Documentation/translations/zh_CN/mips/ingenic-tcu.rst
-> +++ b/Documentation/translations/zh_CN/mips/ingenic-tcu.rst
-> @@ -53,14 +53,14 @@
->  
->  TCU硬件的功能分布在多个驱动程序：
->  
-> -===========         =====
-> +==============      ===================================
->  时钟                drivers/clk/ingenic/tcu.c
->  中断                drivers/irqchip/irq-ingenic-tcu.c
->  定时器              drivers/clocksource/ingenic-timer.c
->  OST                 drivers/clocksource/ingenic-ost.c
->  脉冲宽度调制器      drivers/pwm/pwm-jz4740.c
->  看门狗              drivers/watchdog/jz4740_wdt.c
-> -===========         =====
-> +==============      ===================================
->  
->  因为可以从相同的寄存器控制属于不同驱动程序和框架的TCU的各种功能，所以
->  所有这些驱动程序都通过相同的控制总线通用接口访问它们的寄存器。
-> 
+- Rework subsection validity to include pfn_valid() gated by
+  CONFIG_HAVE_ARCH_PFN_VALID (David, Oscar)
+
+- Introduce pgmap_pfn_valid() to validate metadata vs data in a pgmap (David)
+
+! Kill put_ref_page(): the extra "if (ref_page) put_page(ref_page)" still
+  feels more cluttered than adding a tiny helper. (Oscar)
+
+[1]: http://lore.kernel.org/r/161044407603.1482714.16630477578392768273.stgit@dwillia2-desk3.amr.corp.intel.com
+
+---
+
+Michal reminds that the discussion about how to ensure pfn-walkers do
+not get confused by ZONE_DEVICE pages never resolved. A pfn-walker that
+uses pfn_to_online_page() may inadvertently translate a pfn as online
+and in the page allocator, when it is offline managed by a ZONE_DEVICE
+mapping (details in Patch 3: ("mm: Teach pfn_to_online_page() about
+ZONE_DEVICE section collisions")).
+
+The 2 proposals under consideration are teach pfn_to_online_page() to be
+precise in the presence of mixed-zone sections, or teach the memory-add
+code to drop the System RAM associated with ZONE_DEVICE collisions. In
+order to not regress memory capacity by a few 10s to 100s of MiB the
+approach taken in this set is to add precision to pfn_to_online_page().
+
+In the course of validating pfn_to_online_page() a couple other fixes
+fell out:
+
+1/ soft_offline_page() fails to drop the reference taken in the
+   madvise(..., MADV_SOFT_OFFLINE) case.
+
+2/ The libnvdimm sysfs attribute visibility code was failing to publish
+   the resource base for memmap=ss!nn defined namespaces. This is needed
+   for the regression test for soft_offline_page().
+
+3/ memory_failure() uses get_dev_pagemap() to lookup ZONE_DEVICE pages,
+   however that mapping may contain data pages and metadata raw pfns.
+   Introduce pgmap_pfn_valid() to delineate the 2 types and fail the
+   handling of raw metadata pfns.
+
+---
+
+Dan Williams (6):
+      mm: Move pfn_to_online_page() out of line
+      mm: Teach pfn_to_online_page() to consider subsection validity
+      mm: Teach pfn_to_online_page() about ZONE_DEVICE section collisions
+      mm: Fix page reference leak in soft_offline_page()
+      mm: Fix memory_failure() handling of dax-namespace metadata
+      libnvdimm/namespace: Fix visibility of namespace resource attribute
+
+
+ drivers/nvdimm/namespace_devs.c |   10 +++---
+ include/linux/memory_hotplug.h  |   17 +--------
+ include/linux/memremap.h        |    6 +++
+ include/linux/mmzone.h          |   22 ++++++++----
+ mm/memory-failure.c             |   26 ++++++++++++--
+ mm/memory_hotplug.c             |   70 +++++++++++++++++++++++++++++++++++++++
+ mm/memremap.c                   |   15 ++++++++
+ 7 files changed, 134 insertions(+), 32 deletions(-)
