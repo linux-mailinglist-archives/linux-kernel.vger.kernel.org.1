@@ -2,226 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2297C2F4CAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 188962F4CB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726959AbhAMOCC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Jan 2021 09:02:02 -0500
-Received: from mail.savoirfairelinux.com ([208.88.110.44]:46878 "EHLO
-        mail.savoirfairelinux.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbhAMOCB (ORCPT
+        id S1726562AbhAMOFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:05:14 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:46525 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726398AbhAMOFN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:02:01 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.savoirfairelinux.com (Postfix) with ESMTP id 1099E9C0DC1;
-        Wed, 13 Jan 2021 09:01:20 -0500 (EST)
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
-        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id dEgDgiRf_U4e; Wed, 13 Jan 2021 09:01:19 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.savoirfairelinux.com (Postfix) with ESMTP id 716FE9C0DD5;
-        Wed, 13 Jan 2021 09:01:19 -0500 (EST)
-X-Virus-Scanned: amavisd-new at mail.savoirfairelinux.com
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
-        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ijHyM6KBQP8K; Wed, 13 Jan 2021 09:01:19 -0500 (EST)
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [192.168.48.237])
-        by mail.savoirfairelinux.com (Postfix) with ESMTP id 468639C0DC1;
-        Wed, 13 Jan 2021 09:01:19 -0500 (EST)
-Date:   Wed, 13 Jan 2021 09:01:19 -0500 (EST)
-From:   Gilles Doffe <gilles.doffe@savoirfairelinux.com>
-To:     netdev@vger.kernel.org
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <309642574.258062.1610546479144.JavaMail.zimbra@savoirfairelinux.com>
-In-Reply-To: <c5c35fb4a3e4784a5e26a7b7181a0a2925674712.1610540603.git.gilles.doffe@savoirfairelinux.com>
-References: <cover.1610540603.git.gilles.doffe@savoirfairelinux.com> <c5c35fb4a3e4784a5e26a7b7181a0a2925674712.1610540603.git.gilles.doffe@savoirfairelinux.com>
-Subject: Re: [PATCH net 1/6] net: dsa: ksz: fix FID management
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Mailer: Zimbra 8.8.15_GA_3991 (ZimbraWebClient - GC87 (Linux)/8.8.15_GA_3980)
-Thread-Topic: fix FID management
-Thread-Index: dwYe9SMrlEHtiii9DTEZkWte16xAwA==
+        Wed, 13 Jan 2021 09:05:13 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610546694; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=kk8JFI24A13gOE/9zp1nevr+Dpd0ltUMl4RWOmeOO1g=; b=Oz5PiLaKmD0rEQnpwTECmmqH2ILEnYpDG9v54RlId2tWLzB2YJRKNCpo6VZyqxK2pUHhrFJf
+ v244SBxdRrNRtbi0wYYTXMyI+/gF5wMxLgNXcsBx4BASiU96r+nKhvktkCKGMwgBtCsxV4LB
+ e6epHvzhre+QHmBd8At2dnwXVJA=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5ffefdb5c88af0610783af6b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 14:03:33
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B9735C43462; Wed, 13 Jan 2021 14:03:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from charante-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F0EB3C433C6;
+        Wed, 13 Jan 2021 14:03:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F0EB3C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+From:   Charan Teja Reddy <charante@codeaurora.org>
+To:     akpm@linux-foundation.org, mhocko@suse.com, vbabka@suse.cz,
+        khalid.aziz@oracle.com, ngupta@nitingupta.dev,
+        vinmenon@codeaurora.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Charan Teja Reddy <charante@codeaurora.org>
+Subject: [PATCH] mm/compaction: return proper state in should_proactive_compact_node
+Date:   Wed, 13 Jan 2021 19:33:06 +0530
+Message-Id: <1610546586-18998-1-git-send-email-charante@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Le 13 Jan 21, à 13:45, Gilles Doffe gilles.doffe@savoirfairelinux.com a écrit :
+should_proactive_compact_node() returns true when sum of the
+fragmentation score of all the zones in the node is greater than the
+wmark_high of compaction which then triggers the proactive compaction
+that operates on the individual zones of the node. But proactive
+compaction runs on the zone only when the fragmentation score of the
+zone is greater than wmark_low(=wmark_high - 10).
 
-> The FID (Filter ID) is a 7 bits field used to link the VLAN table
-> to the static and dynamic mac address tables.
-> Until now the KSZ8795 driver could only add one VLAN as the FID was
-> always set to 1.
-> This commit allows setting a FID for each new active VLAN.
-> The FID list is stored in a static table dynamically allocated from
-> ks8795_fid structure.
-> Each newly activated VLAN is associated to the next available FID.
-> Only the VLAN 0 is not added to the list as it is a special VLAN.
-> As it has a special meaning, see IEEE 802.1q.
-> When a VLAN is no more used, the associated FID table entry is reset
-> to 0.
-> 
-> Signed-off-by: Gilles DOFFE <gilles.doffe@savoirfairelinux.com>
-> ---
-> drivers/net/dsa/microchip/ksz8795.c     | 59 +++++++++++++++++++++++--
-> drivers/net/dsa/microchip/ksz8795_reg.h |  1 +
-> drivers/net/dsa/microchip/ksz_common.h  |  1 +
-> 3 files changed, 57 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/microchip/ksz8795.c
-> b/drivers/net/dsa/microchip/ksz8795.c
-> index c973db101b72..6962ba4ee125 100644
-> --- a/drivers/net/dsa/microchip/ksz8795.c
-> +++ b/drivers/net/dsa/microchip/ksz8795.c
-> @@ -648,7 +648,7 @@ static enum dsa_tag_protocol ksz8795_get_tag_protocol(struct
-> dsa_switch *ds,
-> 						      int port,
-> 						      enum dsa_tag_protocol mp)
-> {
-> -	return DSA_TAG_PROTO_KSZ8795;
-> +	return DSA_TAG_PROTO_NONE;
+This means that the sum of the fragmentation scores of all the zones can
+exceed the wmark_high but individual zone scores can still be less than
+the wmark_low which makes the unnecessary trigger of the proactive
+compaction only to return doing nothing.
 
-This is an oversight, will be removed in V2.
+Another issue with the return of proactive compaction with out even
+trying is its deferral. It is simply deferred for 1 <<
+COMPACT_MAX_DEFER_SHIFT if the scores across the proactive compaction is
+same, thinking that compaction didn't make any progress but in reality
+it didn't even try. With the delay between successive retries for
+proactive compaction is 500msec, it can result into the deferral for
+~30sec with out even trying the proactive compaction.
 
-> }
-> 
-> static void ksz8795_get_strings(struct dsa_switch *ds, int port,
-> @@ -796,6 +796,41 @@ static int ksz8795_port_vlan_filtering(struct dsa_switch
-> *ds, int port,
-> 	return 0;
-> }
-> 
-> +static void ksz8795_del_fid(u16 *ksz_fid_table, u16 vid)
-> +{
-> +	u8 i = 0;
-> +
-> +	if (!ksz_fid_table)
-> +		return;
-> +
-> +	for (i = 0; i < VLAN_TABLE_FID_SIZE; i++) {
-> +		if (ksz_fid_table[i] == vid) {
-> +			ksz_fid_table[i] = 0;
-> +			break;
-> +		}
-> +	}
-> +}
-> +
-> +static int ksz8795_get_next_fid(u16 *ksz_fid_table, u16 vid, u8 *fid)
-> +{
-> +	u8 i = 0;
-> +	int ret = -EOVERFLOW;
-> +
-> +	if (!ksz_fid_table)
-> +		return ret;
-> +
-> +	for (i = 0; i < VLAN_TABLE_FID_SIZE; i++) {
-> +		if (!ksz_fid_table[i]) {
-> +			ksz_fid_table[i] = vid;
-> +			*fid = i;
-> +			ret = 0;
-> +			break;
-> +		}
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> static void ksz8795_port_vlan_add(struct dsa_switch *ds, int port,
-> 				  const struct switchdev_obj_port_vlan *vlan)
-> {
-> @@ -803,17 +838,24 @@ static void ksz8795_port_vlan_add(struct dsa_switch *ds,
-> int port,
-> 	struct ksz_device *dev = ds->priv;
-> 	u16 data, vid, new_pvid = 0;
-> 	u8 fid, member, valid;
-> +	int ret;
-> 
-> 	ksz_port_cfg(dev, port, P_TAG_CTRL, PORT_REMOVE_TAG, untagged);
-> 
-> 	for (vid = vlan->vid_begin; vid <= vlan->vid_end; vid++) {
-> +		if (vid == 0)
-> +			continue;
-> +
-> 		ksz8795_r_vlan_table(dev, vid, &data);
-> 		ksz8795_from_vlan(data, &fid, &member, &valid);
-> 
-> 		/* First time to setup the VLAN entry. */
-> 		if (!valid) {
-> -			/* Need to find a way to map VID to FID. */
-> -			fid = 1;
-> +			ret = ksz8795_get_next_fid(dev->ksz_fid_table, vid, &fid);
-> +			if (ret) {
-> +				dev_err(ds->dev, "Switch FID table is full, cannot add");
-> +				return;
-> +			}
-> 			valid = 1;
-> 		}
-> 		member |= BIT(port);
-> @@ -855,7 +897,7 @@ static int ksz8795_port_vlan_del(struct dsa_switch *ds, int
-> port,
-> 
-> 		/* Invalidate the entry if no more member. */
-> 		if (!member) {
-> -			fid = 0;
-> +			ksz8795_del_fid(dev->ksz_fid_table, vid);
-> 			valid = 0;
-> 		}
-> 
-> @@ -1087,6 +1129,9 @@ static int ksz8795_setup(struct dsa_switch *ds)
-> 	for (i = 0; i < (dev->num_vlans / 4); i++)
-> 		ksz8795_r_vlan_entries(dev, i);
-> 
-> +	/* Assign first FID to VLAN 1 and always return FID=0 for this vlan */
-> +	dev->ksz_fid_table[0] = 1;
-> +
-> 	/* Setup STP address for STP operation. */
-> 	memset(&alu, 0, sizeof(alu));
-> 	ether_addr_copy(alu.mac, eth_stp_addr);
-> @@ -1261,6 +1306,12 @@ static int ksz8795_switch_init(struct ksz_device *dev)
-> 	/* set the real number of ports */
-> 	dev->ds->num_ports = dev->port_cnt;
-> 
-> +	dev->ksz_fid_table = devm_kzalloc(dev->dev,
-> +					  VLAN_TABLE_FID_SIZE * sizeof(u16),
-> +					  GFP_KERNEL);
-> +	if (!dev->ksz_fid_table)
-> +		return -ENOMEM;
-> +
-> 	return 0;
-> }
-> 
-> diff --git a/drivers/net/dsa/microchip/ksz8795_reg.h
-> b/drivers/net/dsa/microchip/ksz8795_reg.h
-> index 40372047d40d..fe4c4f7fdd47 100644
-> --- a/drivers/net/dsa/microchip/ksz8795_reg.h
-> +++ b/drivers/net/dsa/microchip/ksz8795_reg.h
-> @@ -915,6 +915,7 @@
->  */
-> 
-> #define VLAN_TABLE_FID			0x007F
-> +#define VLAN_TABLE_FID_SIZE		128
-> #define VLAN_TABLE_MEMBERSHIP		0x0F80
-> #define VLAN_TABLE_VALID		0x1000
-> 
-> diff --git a/drivers/net/dsa/microchip/ksz_common.h
-> b/drivers/net/dsa/microchip/ksz_common.h
-> index 720f22275c84..44e97c55c2da 100644
-> --- a/drivers/net/dsa/microchip/ksz_common.h
-> +++ b/drivers/net/dsa/microchip/ksz_common.h
-> @@ -77,6 +77,7 @@ struct ksz_device {
-> 	bool synclko_125;
-> 
-> 	struct vlan_table *vlan_cache;
-> +	u16 *ksz_fid_table;
-> 
-> 	struct ksz_port *ports;
-> 	struct delayed_work mib_read;
-> --
-> 2.25.1
+Test scenario is that: compaction_proactiveness=50 thus the wmark_low =
+50 and wmark_high = 60. System have 2 zones(Normal and Movable) with
+sizes 5GB and 6GB respectively. After opening some apps on the android,
+the fragmentation scores of these zones are 47 and 49 respectively.
+Since the sum of these fragmentation scores are above the wmark_high
+which triggers the proactive compaction and there since the individual
+zone scores are below wmark_low, it returns without trying the
+compaction. As a result the fragmentation scores of the zones are still
+47 and 49 which makes the existing logic to defer the compaction
+thinking that noprogress is made across the compaction.
+
+So, run the proactive compaction on the node zones only when atleast one
+of the zones fragmentation score is greater than wmark_low. This avoids
+the unnecessary deferral and retries of the compaction.
+
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+---
+ mm/compaction.c | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/mm/compaction.c b/mm/compaction.c
+index e5acb97..f7a772a 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -1964,6 +1964,26 @@ static unsigned int fragmentation_score_node(pg_data_t *pgdat)
+ 	return score;
+ }
+ 
++/*
++ * Returns the maximum of fragmentation scores of zones in a node. This is
++ * used in taking the decission of whether to trigger the proactive compaction
++ * on the zones of this node.
++ */
++static unsigned int fragmentation_score_node_zones_max(pg_data_t *pgdat)
++{
++	int zoneid;
++	unsigned int max = 0;
++
++	for (zoneid = 0; zoneid < MAX_NR_ZONES; zoneid++) {
++		struct zone *zone;
++
++		zone = &pgdat->node_zones[zoneid];
++		max = max_t(unsigned int, fragmentation_score_zone(zone), max);
++	}
++
++	return max;
++}
++
+ static unsigned int fragmentation_score_wmark(pg_data_t *pgdat, bool low)
+ {
+ 	unsigned int wmark_low;
+@@ -1979,13 +1999,16 @@ static unsigned int fragmentation_score_wmark(pg_data_t *pgdat, bool low)
+ 
+ static bool should_proactive_compact_node(pg_data_t *pgdat)
+ {
+-	int wmark_high;
++	int wmark_low, wmark_high;
+ 
+ 	if (!sysctl_compaction_proactiveness || kswapd_is_running(pgdat))
+ 		return false;
+ 
+ 	wmark_high = fragmentation_score_wmark(pgdat, false);
+-	return fragmentation_score_node(pgdat) > wmark_high;
++	wmark_low = fragmentation_score_wmark(pgdat, true);
++
++	return fragmentation_score_node(pgdat) > wmark_high &&
++		fragmentation_score_node_zones_max(pgdat) > wmark_low;
+ }
+ 
+ static enum compact_result __compact_finished(struct compact_control *cc)
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
+
