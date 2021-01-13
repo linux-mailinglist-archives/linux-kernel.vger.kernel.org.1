@@ -2,91 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007A82F4D27
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:35:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3ACE2F4D2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbhAMOeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:34:25 -0500
-Received: from gofer.mess.org ([88.97.38.141]:50591 "EHLO gofer.mess.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725843AbhAMOeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:34:25 -0500
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 62E44C6378; Wed, 13 Jan 2021 14:33:43 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1610548423; bh=mEnNij7JtIsgICbFjxm+XkheIaJlysr8bzezKdXpPkw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T7WMkVijJRJ16g0Fr2qpEN8GGavduKlAN2AQWhQqh1KOk9KGJ1mIiwLDYEXE8st95
-         17TgOxns/z69eqWtVXQvo7o9FUDpORK5YHvBs/KloWUCmrlPwKTVMZDBoA8v8vPNro
-         Cd+3K9wPRwQmDQ2v2xOq1Z9zGAp1svJutxlPulMkg+muLzM7AVr9oaiQRBrPGQYMCO
-         c1/nivxi7uKZVd/UUj5lk5ycR4f3N8NkknHm+Y7q63vwEafeUNZoYbYbsnBRXpU+ci
-         Vl/CAJr99jf3x7aEZVtNkugYnOi62ZwgmhAZCztI80fLvIQbMK2WsNHBlSawfM3M2c
-         cJ2uq3zMxEBzw==
-Date:   Wed, 13 Jan 2021 14:33:43 +0000
-From:   Sean Young <sean@mess.org>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-Subject: Re: [PATCH 1/4] media: sunxi-cir: Clean up dead register writes
-Message-ID: <20210113143343.GA8430@gofer.mess.org>
-References: <20210113045132.31430-1-samuel@sholland.org>
- <20210113045132.31430-2-samuel@sholland.org>
+        id S1726733AbhAMOfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:35:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbhAMOfb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 09:35:31 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36345C061575;
+        Wed, 13 Jan 2021 06:34:51 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id k10so1792922wmi.3;
+        Wed, 13 Jan 2021 06:34:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NZrRlmJpZKjEgBKlGXdvljjzCJ+E8Zrv7ZKX7eaCDQw=;
+        b=oUN5RjffDrgTe/s8rEZ9uxnydZTrlbRdRWweSzCNuy0IdG6XWnppYLvISq9L5BH4gQ
+         UFjSHkQEcyIXmWz1dUtXJb1LJHQPulqZvvCF17xSYYXz6hBuRU9cXK0YrTXGjBxlzqNt
+         Nta+PuaSE1GRYoCdqccpQkMWXOC8x7q3WRb2e6fe5UrKdOI+Run2hxIjO+Bgv2KZiwip
+         GDpXzUhmWqcpZQInn9rvo1cyuelreunEnx7uI6cKBnYEoivKGzGsOJBsJJyrfeblvpJ9
+         ljCVrDqm0YKNGBMsvQbfMXQ0HxoStD75KA5PQ0Dg3Ai4WmQJri56vUhn4DvBBwPtHbaU
+         6shg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NZrRlmJpZKjEgBKlGXdvljjzCJ+E8Zrv7ZKX7eaCDQw=;
+        b=AVGRVG5EDc3xzvfft8jF8f2X9YEn1gO7N/Z1DAe43gU1rPqKs0RFyZUEy6TLksXngC
+         fxREfmyENgiqy0gSq7f3T+uvtQyE3XwgMCJngbtYt38iM0ZClw2/qUhGd9ID9BhTITcr
+         z27nYY0nazHDL/uXiLHMH700Re8A5XqPMwDi/aogsx2OMZOv42zPW2FSqOl8wgFhbsoB
+         FPKBFdh36jzirqdq1r0SttrAW/Rg8DBk76C66MfIP8X/7Pd3uDhD04/+PfPaq0203U8X
+         JIMyvbYrFwdTCHI79bZMPAPKlPCuakc27FuX5rLbPNIIXXzmSdtP56f39Vi1hGStbdFj
+         nsoA==
+X-Gm-Message-State: AOAM5335deiGqhxE89MqOt1hrPUE6aTkbQH3mSYnHdxfhuCoSVLVlAx4
+        jNzHftlL4UqwCeDYtG/Uwrc=
+X-Google-Smtp-Source: ABdhPJyDC1cnuC5m5ve4pRP9dUOtpKF9M6+NzDXUoVBoYGiNgcLs2bunNrO+Ja1oy1axQfrOSHtl0Q==
+X-Received: by 2002:a1c:87:: with SMTP id 129mr2439406wma.183.1610548489843;
+        Wed, 13 Jan 2021 06:34:49 -0800 (PST)
+Received: from localhost.localdomain (2a01cb0008bd27000d88c7723353ad1a.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:d88:c772:3353:ad1a])
+        by smtp.gmail.com with ESMTPSA id h13sm3720502wrm.28.2021.01.13.06.34.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 06:34:49 -0800 (PST)
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     krzk@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Adrien Grassein <adrien.grassein@gmail.com>
+Subject: [PATCH v2 0/3] Add support for Boundary Nitrogen8M Mini SBC
+Date:   Wed, 13 Jan 2021 15:34:40 +0100
+Message-Id: <20210113143443.1148506-1-adrien.grassein@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113045132.31430-2-samuel@sholland.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 10:51:29PM -0600, Samuel Holland wrote:
-> The register writes during driver removal occur after the device is
-> already put back in reset, so they never had any effect.
-> 
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  drivers/media/rc/sunxi-cir.c | 10 ----------
->  1 file changed, 10 deletions(-)
-> 
-> diff --git a/drivers/media/rc/sunxi-cir.c b/drivers/media/rc/sunxi-cir.c
-> index 8555c7798706..0a7f7eab3cc3 100644
-> --- a/drivers/media/rc/sunxi-cir.c
-> +++ b/drivers/media/rc/sunxi-cir.c
-> @@ -342,22 +342,12 @@ static int sunxi_ir_probe(struct platform_device *pdev)
->  
->  static int sunxi_ir_remove(struct platform_device *pdev)
->  {
-> -	unsigned long flags;
->  	struct sunxi_ir *ir = platform_get_drvdata(pdev);
->  
->  	clk_disable_unprepare(ir->clk);
->  	clk_disable_unprepare(ir->apb_clk);
->  	reset_control_assert(ir->rst);
->  
-> -	spin_lock_irqsave(&ir->ir_lock, flags);
-> -	/* disable IR IRQ */
-> -	writel(0, ir->base + SUNXI_IR_RXINT_REG);
-> -	/* clear All Rx Interrupt Status */
-> -	writel(REG_RXSTA_CLEARALL, ir->base + SUNXI_IR_RXSTA_REG);
-> -	/* disable IR */
-> -	writel(0, ir->base + SUNXI_IR_CTL_REG);
-> -	spin_unlock_irqrestore(&ir->ir_lock, flags);
-> -
->  	rc_unregister_device(ir->rc);
->  	return 0;
->  }
+Hello,
 
-I don't think there is anything wrong with the patch, however here the
-driver does rc_unregister_device() *after* disabling it. Userspace can
-still hold a file descriptor open, and call e.g. LIRC_SET_REC_TIMEOUT
-ioctl, which causes various writes the sunxi-cir registers.
+This patch set aims is to add the support of the Nitrogen8M Mini SBC
+from Boundary Devices.
 
-The order should be reversed.
+Thanks,
 
+Update in v2:
+  - Rewrite the dts (Remove the unused wlan and audio);
+  - Remove useless definition;
+  - Take in account review.
 
-Sean
+Adrien Grassein (3):
+  dt-bindings: arm: imx: add imx8mm nitrogen support
+  arm64: dts: imx: Add i.mx8mm nitrogen8mm basic dts support
+  arm64: defconfig: Enable PF8x00 as builtin
+
+ .../devicetree/bindings/arm/fsl.yaml          |   1 +
+ arch/arm64/boot/dts/freescale/Makefile        |   1 +
+ .../dts/freescale/imx8mm-nitrogen8mm_rev2.dts | 364 ++++++++++++++++++
+ arch/arm64/configs/defconfig                  |   1 +
+ 4 files changed, 367 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-nitrogen8mm_rev2.dts
+
+-- 
+2.25.1
+
