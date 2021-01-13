@@ -2,149 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138D02F4FF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 059632F4FFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727205AbhAMQ3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 11:29:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
+        id S1727401AbhAMQar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 11:30:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbhAMQ3c (ORCPT
+        with ESMTP id S1727250AbhAMQaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 11:29:32 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA96BC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:28:52 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id q205so2662261oig.13
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:28:52 -0800 (PST)
+        Wed, 13 Jan 2021 11:30:46 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6A0C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:30:06 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id l23so1522853pjg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:30:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dtGuPSqxThBxFFND3TAs3eyezmIFF8iGuQhEPWlxFw4=;
-        b=sI9xRXQ7bmuA7TJRkjDPjXW3Ct3TrbkRYINplcqCriT13wqmazifZhtY86WTBfwKH7
-         Qnm3ZuZ0BSgVgVCCqgqYeq5LKetbMAelGxJtIjxrFWGYmLPmnLOion0np3ee7rcJWKsy
-         4HzkMR3p38leCj5/TqSUAJG6Qtt9DoOsCjLD4eI5M0hLzMJ9lEYnS7yeXxbI2Rr2k7IL
-         2RDBQPzCtb+RV/q9vvIDtJQhBzyBrpJ5lQuZEsnrM39dRv4np8it98qsVfldq3tIIZ0T
-         fGKih1JACcHtcIaockL+Q1Zuma3IuY9KxJJeJnM+Cd9Qc4Tr5H9Vz7wbbcJtP0yzvDdB
-         R28w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=30DVT29WJpeEZlk/+prLAyzCIsLavOL7AA+B+M6ksUY=;
+        b=ZmvqCdr4T+giCmTNO6m9QDhxYhzCQVAYiG9xgQd27O7tvuMHXCLWAucRvgnYBcHgHl
+         jnpsyK3nfjhClbk+BXW/l+XHOl33n48PVlGIQlBeg0SkLDDKqkBIA7wadl71FqLKK5sG
+         M3F020c+WP4SpYalQ0NL0RyPXwKJQ3WftywfwJsnZxw4F3n3QXjDweNgE7+2wCyhT0PG
+         Wn68rJrdmX9BtmY5Tu+iB0rmNE1zSZEDc1JFzjw/Dx7s1aeBrWBSA9K3tA8qQY7hdXOK
+         TbGkmHlSBG9fTYKkxySHNPwaCL1TM+sE0erwCC8n8DJ1rtZMNE5wWjE86ENFMSdIQrDY
+         RgHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dtGuPSqxThBxFFND3TAs3eyezmIFF8iGuQhEPWlxFw4=;
-        b=QOtN0VuIViXwmtGE2EjJMVLZuqt4aNKG+6NXrIohJp13xLMeMPQYogtJ4OqIUQ5YgU
-         5pEH+uDUaVHp5pydB/Oxre/cZBi2d5xsZSW+rKon32cSW2KFb4SzglNtjW7HvQSW+cSt
-         7Uvhqp+cfggLI4sbcLT999NCpOwSPwgdzSPy3Qt0V63msv7l84AKWb2usTT8NENpJJ6T
-         CyvCFZkxDg3aerbnRPMwBKIAozUHeODWkj2h5C5kBYqg8bCn+2a3eLHD6eDonXuoWpQQ
-         ZeVnibBVe+9nhHGpiov8OpMnn++TCiSHRdoe0/2N9fnxlMBOHPq4ZF7DLKFWQQTmHLei
-         wCJA==
-X-Gm-Message-State: AOAM531AnfgfOOJzvC1In3e7UJw4uvDeWlROmVineoispSCtqgTb/XNY
-        cDs9EVQIhqJZLZAYUexE8kUwetBgjMT+oE+TRHTm5A==
-X-Google-Smtp-Source: ABdhPJwjAqoLrcLjVn73P0G0ScKT22CiHCZFlltMrKpWnEEY7dhsvs+jpP4CxMAsDdiNDcHys/8s8d1eZAiLWUF0MBg=
-X-Received: by 2002:aca:58d6:: with SMTP id m205mr23481oib.121.1610555331853;
- Wed, 13 Jan 2021 08:28:51 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=30DVT29WJpeEZlk/+prLAyzCIsLavOL7AA+B+M6ksUY=;
+        b=UhJ2Wd1axj45FoG/GTCowMSGc8lxeWcQ6Rrq9plw3pvzS6A8nP5rhj5aDakK2HE4b9
+         kOMArZ2+eF2v1wQ2xv1vy7St375cyaonmxeqPUpRBG1H6b12qHwuktfkoEGBH62Xgjds
+         t3R2FeyoEoM5Sz5VjwbJPoOiv6cTIZAuUoRZ1gtKgCxQYAc7+U88DASyWjcNwSamM12Z
+         eWAZEj2YbjPS1op35PZOPRksm+QUvgLK2f5skQfHHTaevlVDOq+3SaHAU9F0dZN+aiL5
+         uSk6QZt7s+/GldpPvV/ugO0MITNKwQVETNhmnDJ5mEjY4rvU3ctPILBJx4edmDFM91Sk
+         msXw==
+X-Gm-Message-State: AOAM533vhq9mDvx8yP8Mv0p/AadoaJetyO9aU4Ec84u80P3tDajx9GQu
+        JYdPnf3Q+ecSDUU8ZPDHuNW3Pw==
+X-Google-Smtp-Source: ABdhPJwCAsIJBdELayl098j41Up0FVi5XjPlNxB6sNY82/FLJEY8cw1GPWj4POka2GPEsNtbMUJr9g==
+X-Received: by 2002:a17:902:26a:b029:da:af47:77c7 with SMTP id 97-20020a170902026ab02900daaf4777c7mr3192693plc.10.1610555406044;
+        Wed, 13 Jan 2021 08:30:06 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id bx17sm3538084pjb.12.2021.01.13.08.30.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 08:30:05 -0800 (PST)
+Date:   Wed, 13 Jan 2021 08:29:58 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Jason Baron <jbaron@akamai.com>, kvm@vger.kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        peterz@infradead.org, aarcange@redhat.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] KVM: x86: introduce definitions to support static
+ calls for kvm_x86_ops
+Message-ID: <X/8gBuTlYYfBQjva@google.com>
+References: <cover.1610379877.git.jbaron@akamai.com>
+ <ce483ce4a1920a3c1c4e5deea11648d75f2a7b80.1610379877.git.jbaron@akamai.com>
+ <X/4q/OKvW9RKQ+gk@google.com>
+ <1784355c-e53e-5363-31e3-faeba4ba9e8f@akamai.com>
+ <86972c56-4d2e-a6ab-11ad-c972a395386a@redhat.com>
 MIME-Version: 1.0
-References: <cover.1610554432.git.andreyknvl@google.com> <e75010281350ff3a4380006218f81e1233fa4e6b.1610554432.git.andreyknvl@google.com>
-In-Reply-To: <e75010281350ff3a4380006218f81e1233fa4e6b.1610554432.git.andreyknvl@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 13 Jan 2021 17:28:40 +0100
-Message-ID: <CANpmjNPYKzY+xPAddAjsry1RC2Y84pSCFZ0VuVMMEu+LN3A0EQ@mail.gmail.com>
-Subject: Re: [PATCH v2 08/14] kasan: add compiler barriers to KUNIT_EXPECT_KASAN_FAIL
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86972c56-4d2e-a6ab-11ad-c972a395386a@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021 at 17:22, Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> It might not be obvious to the compiler that the expression must be
-> executed between writing and reading to fail_data. In this case, the
-> compiler might reorder or optimize away some of the accesses, and
-> the tests will fail.
->
-> Add compiler barriers around the expression in KUNIT_EXPECT_KASAN_FAIL
-> and use READ/WRITE_ONCE() for accessing fail_data fields.
->
-> Link: https://linux-review.googlesource.com/id/I046079f48641a1d36fe627fc8827a9249102fd50
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+On Wed, Jan 13, 2021, Paolo Bonzini wrote:
+> On 13/01/21 05:12, Jason Baron wrote:
+> > > 
+> > Looking at the vmx definitions I see quite a few that don't
+> > match that naming. For example:
+> > 
+> > hardware_unsetup,
+> > hardware_enable,
+> > hardware_disable,
+> > report_flexpriority,
+> > update_exception_bitmap,
+> > enable_nmi_window,
+> > enable_irq_window,
+> > update_cr8_intercept,
+> > pi_has_pending_interrupt,
+> > cpu_has_vmx_wbinvd_exit,
+> > pi_update_irte,
+> > kvm_complete_insn_gp,
+> > 
+> > So I'm not sure if we want to extend these macros to
+> > vmx/svm.
+> 
+> Don't do it yourself, but once you introduce the new header it becomes a
+> no-brainer to switch the declarations to use it.  So let's plan the new
+> header to make that switch easy.
 
-Reviewed-by: Marco Elver <elver@google.com>
-
-> ---
->  lib/test_kasan.c  | 17 ++++++++++++-----
->  mm/kasan/report.c |  2 +-
->  2 files changed, 13 insertions(+), 6 deletions(-)
->
-> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> index 5c8aa3a5ce93..283feda9882a 100644
-> --- a/lib/test_kasan.c
-> +++ b/lib/test_kasan.c
-> @@ -68,23 +68,30 @@ static void kasan_test_exit(struct kunit *test)
->   * normally auto-disabled. When this happens, this test handler reenables
->   * tag checking. As tag checking can be only disabled or enabled per CPU, this
->   * handler disables migration (preemption).
-> + *
-> + * Since the compiler doesn't see that the expression can change the fail_data
-> + * fields, it can reorder or optimize away the accesses to those fields.
-> + * Use READ/WRITE_ONCE() for the accesses and compiler barriers around the
-> + * expression to prevent that.
->   */
->  #define KUNIT_EXPECT_KASAN_FAIL(test, expression) do {         \
->         if (IS_ENABLED(CONFIG_KASAN_HW_TAGS))                   \
->                 migrate_disable();                              \
-> -       fail_data.report_expected = true;                       \
-> -       fail_data.report_found = false;                         \
-> +       WRITE_ONCE(fail_data.report_expected, true);            \
-> +       WRITE_ONCE(fail_data.report_found, false);              \
->         kunit_add_named_resource(test,                          \
->                                 NULL,                           \
->                                 NULL,                           \
->                                 &resource,                      \
->                                 "kasan_data", &fail_data);      \
-> +       barrier();                                              \
->         expression;                                             \
-> +       barrier();                                              \
->         KUNIT_EXPECT_EQ(test,                                   \
-> -                       fail_data.report_expected,              \
-> -                       fail_data.report_found);                \
-> +                       READ_ONCE(fail_data.report_expected),   \
-> +                       READ_ONCE(fail_data.report_found));     \
->         if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {                 \
-> -               if (fail_data.report_found)                     \
-> +               if (READ_ONCE(fail_data.report_found))          \
->                         hw_enable_tagging();                    \
->                 migrate_enable();                               \
->         }                                                       \
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index e93d7973792e..234f35a84f19 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -331,7 +331,7 @@ static void kasan_update_kunit_status(struct kunit *cur_test)
->         }
->
->         kasan_data = (struct kunit_kasan_expectation *)resource->data;
-> -       kasan_data->report_found = true;
-> +       WRITE_ONCE(kasan_data->report_found, true);
->         kunit_put_resource(resource);
->  }
->  #endif /* IS_ENABLED(CONFIG_KUNIT) */
-> --
-> 2.30.0.284.gd98b1dd5eaa7-goog
->
+Ya, sorry if I didn't make it clear that the vmx/svm conversion is firmly out
+of scope for this series.
