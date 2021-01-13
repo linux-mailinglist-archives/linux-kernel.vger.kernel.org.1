@@ -2,80 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859B92F5713
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:59:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990032F5703
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728880AbhANB6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:58:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729544AbhAMXkO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 18:40:14 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6873EC061384;
-        Wed, 13 Jan 2021 15:39:32 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id g1so3163169edu.4;
-        Wed, 13 Jan 2021 15:39:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=egYNssqgRcswRNH1skLRAUiu45TpWsk2pFXggn83jwE=;
-        b=Fg69qKV9CXscWnFSBov/if1L+293kc8tZiDS2z52GAiM12z0BmWMIuRH2H8e5dJsy1
-         p4xAq0flJxSG2EbB3gSIwC8Awwrez7ElCZlJNqVGUjDfmhMxBvp+f0Ukp1Atgrk4gIrJ
-         31tU6hcgWhFN+9EJUS5kuO8fF9W4PhW22fVvFbUeRvBDOa1YPGPLjiD7LX+CbeXpk/Uo
-         x/fpSTVWkXfe9TvHGv8bjtOBzgQ3dSOVKc+D+w8FOUxegBficrXTyJZuNBiG0mVeMQ3D
-         bGIteWnemF9bhRw0A/RTNIP5hoh4fDWsV+upwP7wjrztQ40EUr+0kUlQ9WrDR1xi9oaZ
-         VJsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=egYNssqgRcswRNH1skLRAUiu45TpWsk2pFXggn83jwE=;
-        b=QnMuotsRaup20J9fpiQd6uBWsTQZf3cXu+tvt4Yl9Yzt02qb0iDGH7rZkoqFTAS93p
-         mxBV6bmXs6+9/+SrJ9GtvCTQfrTHofIh/u2jZFRwCOf5WwCTP3ninaXQh/OuGdXFl56y
-         ky70Jh6mo5Uw23t8EDDGeHOXtLDlKDXoD0OTbc04E34TsV5Ri6jLQRAeIxK+BPa9HSX2
-         qvm6BgJJDcYtmQ2dJuOaqiA6Agb8tzXckijE7Dq4VdKXoGfdY7ze/4/KLhJGNdpi7tsz
-         MUMVqGRdB9hVkusH5oXkrgR8M7kYPPCqb3acJmxIv1SAxtiwMAk0cswwBWh6KEot2clC
-         rvBg==
-X-Gm-Message-State: AOAM532aQBQYY3J6yXryw+LkZerGkdiLxofpw/RUarNiB+L+FzkKjFsH
-        v7S/L1ga4eF37HsoFczY5Jc=
-X-Google-Smtp-Source: ABdhPJwZK5/5TpMS09kO8Vtl6Wm+PGYmP4pVR/uFaCgIGeS1CxYMwywulHGAyLI/f2Q3BA1kFBOfig==
-X-Received: by 2002:a50:ccc3:: with SMTP id b3mr3086356edj.41.1610581169645;
-        Wed, 13 Jan 2021 15:39:29 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id i15sm1281269ejj.28.2021.01.13.15.39.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 15:39:28 -0800 (PST)
-Date:   Thu, 14 Jan 2021 01:39:27 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Gilles DOFFE <gilles.doffe@savoirfairelinux.com>
-Cc:     netdev@vger.kernel.org, Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 6/6] net: dsa: ksz: fix wrong read cast to u64
-Message-ID: <20210113233927.njnrwuduo77bbma2@skbuf>
-References: <cover.1610540603.git.gilles.doffe@savoirfairelinux.com>
- <28e0730f2bdac275384fac85c4a342fb91f9455f.1610540603.git.gilles.doffe@savoirfairelinux.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <28e0730f2bdac275384fac85c4a342fb91f9455f.1610540603.git.gilles.doffe@savoirfairelinux.com>
+        id S1728226AbhANB5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:57:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729576AbhAMXnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 18:43:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67A2B22248;
+        Wed, 13 Jan 2021 23:42:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1610581370;
+        bh=ertrlZE0rwiNSTRbz6JlyUmrWKabmyACTp9lthgNjBo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=riRbTyls2G1jpPe9KSJLt4CMRENZtXdUGbOsfSHcRN9pOksh/W8eajnRztz7kvNg2
+         C0IAt/wIFbQs/5iqnTYpPCsP6X8zyAxjeVsjsXbUYntOUgBsBWZoJhvNehnxGMnXDK
+         9/2H6Oy/1LNWTnOGQ+j+CVsgC5EuOcf9bLIfNRjI=
+Date:   Wed, 13 Jan 2021 15:42:49 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Charan Teja Reddy <charante@codeaurora.org>
+Cc:     mhocko@suse.com, vbabka@suse.cz, khalid.aziz@oracle.com,
+        ngupta@nitingupta.dev, vinmenon@codeaurora.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/compaction: return proper state in
+ should_proactive_compact_node
+Message-Id: <20210113154249.51d3410f3c658d6bedd2bff4@linux-foundation.org>
+In-Reply-To: <1610546586-18998-1-git-send-email-charante@codeaurora.org>
+References: <1610546586-18998-1-git-send-email-charante@codeaurora.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 01:45:22PM +0100, Gilles DOFFE wrote:
-> '(u64)*value' casts a u32 to a u64. So depending on endianness,
-> LSB or MSB is lost.
-> The pointer needs to be cast to read the full u64:
-> '*((u64 *)value)'
-> 
-> Signed-off-by: Gilles DOFFE <gilles.doffe@savoirfairelinux.com>
-> ---
+On Wed, 13 Jan 2021 19:33:06 +0530 Charan Teja Reddy <charante@codeaurora.org> wrote:
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+> should_proactive_compact_node() returns true when sum of the
+> fragmentation score of all the zones in the node is greater than the
+> wmark_high of compaction which then triggers the proactive compaction
+> that operates on the individual zones of the node. But proactive
+> compaction runs on the zone only when the fragmentation score of the
+> zone is greater than wmark_low(=wmark_high - 10).
+> 
+> This means that the sum of the fragmentation scores of all the zones can
+> exceed the wmark_high but individual zone scores can still be less than
+> the wmark_low which makes the unnecessary trigger of the proactive
+> compaction only to return doing nothing.
+> 
+> Another issue with the return of proactive compaction with out even
+> trying is its deferral. It is simply deferred for 1 <<
+> COMPACT_MAX_DEFER_SHIFT if the scores across the proactive compaction is
+> same, thinking that compaction didn't make any progress but in reality
+> it didn't even try. With the delay between successive retries for
+> proactive compaction is 500msec, it can result into the deferral for
+> ~30sec with out even trying the proactive compaction.
+> 
+> Test scenario is that: compaction_proactiveness=50 thus the wmark_low =
+> 50 and wmark_high = 60. System have 2 zones(Normal and Movable) with
+> sizes 5GB and 6GB respectively. After opening some apps on the android,
+> the fragmentation scores of these zones are 47 and 49 respectively.
+> Since the sum of these fragmentation scores are above the wmark_high
+> which triggers the proactive compaction and there since the individual
+> zone scores are below wmark_low, it returns without trying the
+> compaction. As a result the fragmentation scores of the zones are still
+> 47 and 49 which makes the existing logic to defer the compaction
+> thinking that noprogress is made across the compaction.
+> 
+> So, run the proactive compaction on the node zones only when atleast one
+> of the zones fragmentation score is greater than wmark_low. This avoids
+> the unnecessary deferral and retries of the compaction.
+> 
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1964,6 +1964,26 @@ static unsigned int fragmentation_score_node(pg_data_t *pgdat)
+>  	return score;
+>  }
+>  
+> +/*
+> + * Returns the maximum of fragmentation scores of zones in a node. This is
+> + * used in taking the decission of whether to trigger the proactive compaction
+> + * on the zones of this node.
+> + */
+> +static unsigned int fragmentation_score_node_zones_max(pg_data_t *pgdat)
+> +{
+> +	int zoneid;
+> +	unsigned int max = 0;
+> +
+> +	for (zoneid = 0; zoneid < MAX_NR_ZONES; zoneid++) {
+> +		struct zone *zone;
+> +
+> +		zone = &pgdat->node_zones[zoneid];
+> +		max = max_t(unsigned int, fragmentation_score_zone(zone), max);
+
+Both args are unsigned int, so I think the max_t is unnecessary?
+
+--- a/mm/compaction.c~mm-compaction-return-proper-state-in-should_proactive_compact_node-fix
++++ a/mm/compaction.c
+@@ -1975,7 +1975,7 @@ static unsigned int fragmentation_score_
+ 		struct zone *zone;
+ 
+ 		zone = &pgdat->node_zones[zoneid];
+-		max = max_t(unsigned int, fragmentation_score_zone(zone), max);
++		max = max(fragmentation_score_zone(zone), max);
+ 	}
+ 
+ 	return max;
+_
+
+
+
