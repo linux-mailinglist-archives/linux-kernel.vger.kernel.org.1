@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF6B2F4A11
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D6B2F4A12
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:29:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728315AbhAML0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:26:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
+        id S1728371AbhAML05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:26:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728268AbhAML0w (ORCPT
+        with ESMTP id S1726594AbhAML04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:26:52 -0500
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D1D1C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:25:44 -0800 (PST)
-Received: by mail-vs1-xe36.google.com with SMTP id k30so909221vsp.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:25:44 -0800 (PST)
+        Wed, 13 Jan 2021 06:26:56 -0500
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0B9C0617A9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:25:47 -0800 (PST)
+Received: by mail-vk1-xa2d.google.com with SMTP id a6so422301vkb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:25:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+6c0jaVgiPZUTWx3FWeCKRMV7GRdUXOup2JSIVMvzG8=;
-        b=gNXTPYsFPMysLFn3dCllIUoARg68sve0A5NvDm0LecEB74K0w3aX0o3Oy8RftNHLmM
-         0UHhr2JZv1DbNSXaaFzvQchVhJZ+PU7RnaDayZiD0UTU05stT6yagTaGsCprysBvazRt
-         PuZFGBKck3t/OL500aa3m+GgiD84sDgRi4I9wDnmGo93HA8W01dE5Qbg8B6hDWkpCjU7
-         hDBKO9XW6xxvcQdQoNjZ4T4H/fV0j0TXXOjJLPvWM7uq6CJ9SU2bnyzw1oQSrR3GyeTD
-         EWIFnQGAWZIrYQRt9NCWN/sOSLoaIFhLsHba1ehQPuHjSBRLZT+pSzfdqpTEe079ZS/d
-         UYvA==
+        bh=OZjBC9IS3ALIShgw1ZhhoVFP1AZzmhy3hY6ZT3+U1ss=;
+        b=V2uMbNbhNZst+H/TYGRgtysleA3JPsjdK4sECoBkAvVuDCXwiRjcheJf8Lo78ew8D6
+         xWx8cZgq0zq0eOta627uTeJZX8LPBS3qJi/o20ewOXSGjsj9F8LoJNZCq24zU2hlmqwF
+         /Ol2P4F/1CUI5h2bFH0AR+1sgecOluUjKHzktJZoN5Vr9s9Ece6rkMZ9RWQc+tF+kU/l
+         CIco4YwTX37KwW8JHRmD73XnMq+zVVz0Iwp4wNZzdlJM8AMy1lI++03Bte0XB/gsm4Tv
+         /AXoPZ+8UZK5gIRqY+2ZRU8JxOUzzHXs8gEYijpk9iZHZBK3b3ati00kaRBt9xPMv7+n
+         kO0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+6c0jaVgiPZUTWx3FWeCKRMV7GRdUXOup2JSIVMvzG8=;
-        b=NeC3jA/7ZCJO9xPt6u5ehNXx/6ofnJWEp7mwEaed3XoPdzJhOsH1rudUvXvdjJXCRo
-         OJ+WdNzby3xTOuf5MJFixA1CLfLekuc7ZakxHOuk511WERukitjly3IQ5Zg6WCcg5HI+
-         w6n1gtoDl1H4q3j5WKXTf78SGVMldn7QefU0fg0Ipe2IipCxWUvzI6mQyTwboV+pfPbf
-         02tbRpx36izglq5WAGkBxoqQbzfH/dDJ4MUYS5/ejW7VO9s3i+zxTHnPl3hbSo+x5oYn
-         6IOsvQIsOvB+2DyI+hYC1YZZWCfelj60jMKGlVTyAHtScpwz2Uzmwx93RLxBNcntk0KQ
-         3Giw==
-X-Gm-Message-State: AOAM530iioQxKBulVDQUatp6Q9MmSi4G519tyT/god0+kspz5ggmldfF
-        TEEAQ7Y5Fit/CakrjIufprNa4/jd6U9RmH1UGWVWOg==
-X-Google-Smtp-Source: ABdhPJzBZUATGCHxXNENn1oOCawpmSFAUuZxF8+zv4IBBiT0lha9aGQM7yiT0C4pte1egzsVpJXEtDvM8ee8/7wmcJE=
-X-Received: by 2002:a05:6102:2127:: with SMTP id f7mr1456131vsg.48.1610537143857;
- Wed, 13 Jan 2021 03:25:43 -0800 (PST)
+        bh=OZjBC9IS3ALIShgw1ZhhoVFP1AZzmhy3hY6ZT3+U1ss=;
+        b=G3DRyfT+OqGhsPVH1q75uhn90ymzJ47viZf5j5SUwpZe1YjcmLjmJZCNNa8Pl/3BmF
+         /t+pofJgRwq8mzW2cBxX8O6VWzmD9beW3eMFrAsplbZWQ+kjC9fa27qTeWvQmMREFkNG
+         uni7rWWbvVP5e6DV76meJMz0i+4ohLSXXlPa8OoTL0XYqxu+LrHLE/PEef/ri6+vWP5h
+         swTwy903mqLQf7zTRInPH6pjcepAa9mH5sV0+IAoQsiGUHhMqrnMPDqp6zWX+ccfwv09
+         kZnSatAm2tGUqwL+S5gr4O2xNWoL7WvXIDHnZArd75qH8boqdrTxTNzGbG/adF/EFW9/
+         XTAA==
+X-Gm-Message-State: AOAM532W7nvSemLA7jnVxAfLstE2RxgpEZU7xVsw0Cc4wvrUXDoX2ZNm
+        30guzdQZPzEnvs666/sFVSVmAMMEJx5qiJi3eWhvKQ==
+X-Google-Smtp-Source: ABdhPJxE0pjNPFnk6j4rT66SlZyUcOMUI+HVkflRZ3WAqPhd0uZgXyN8uFdovzRTWPocXRoEK+SywdQ3L6hunKqmNUk=
+X-Received: by 2002:a1f:4582:: with SMTP id s124mr1477335vka.7.1610537146860;
+ Wed, 13 Jan 2021 03:25:46 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1608714110.git.hns@goldelico.com> <415ea1cb85eedc12f0c2f70da9a1ae3885bdd091.1608714110.git.hns@goldelico.com>
-In-Reply-To: <415ea1cb85eedc12f0c2f70da9a1ae3885bdd091.1608714110.git.hns@goldelico.com>
+References: <cover.1608714110.git.hns@goldelico.com> <b6f2168b863e4273c6bca5a22fbd4a3a8ddf68d6.1608714110.git.hns@goldelico.com>
+In-Reply-To: <b6f2168b863e4273c6bca5a22fbd4a3a8ddf68d6.1608714110.git.hns@goldelico.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 13 Jan 2021 12:25:07 +0100
-Message-ID: <CAPDyKFqfUrOy7dKTHE7O4RFpJa9OsPh2XTb3c7b_ukbN55e3cQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mmc: jz4740: remove unused struct component card_detect_irq
+Date:   Wed, 13 Jan 2021 12:25:10 +0100
+Message-ID: <CAPDyKFpe5v=05rgUAjC7vSyE-GJjbS_Yvk+65G067Y7dR=XcVg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mmc: omap: remove unused struct component card_detect_irq
 To:     "H. Nikolaus Schaller" <hns@goldelico.com>
 Cc:     Paul Cercueil <paul@crapouillou.net>,
         Lee Jones <lee.jones@linaro.org>,
@@ -77,21 +77,23 @@ Uffe
 
 
 > ---
->  drivers/mmc/host/jz4740_mmc.c | 1 -
->  1 file changed, 1 deletion(-)
+>  include/linux/platform_data/mmc-omap.h | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> diff --git a/drivers/mmc/host/jz4740_mmc.c b/drivers/mmc/host/jz4740_mmc.c
-> index a1f92fed2a55b7..b3c636edbb4610 100644
-> --- a/drivers/mmc/host/jz4740_mmc.c
-> +++ b/drivers/mmc/host/jz4740_mmc.c
-> @@ -152,7 +152,6 @@ struct jz4740_mmc_host {
->         enum jz4740_mmc_version version;
+> diff --git a/include/linux/platform_data/mmc-omap.h b/include/linux/platform_data/mmc-omap.h
+> index f0b8947e6b07d8..91051e9907f34e 100644
+> --- a/include/linux/platform_data/mmc-omap.h
+> +++ b/include/linux/platform_data/mmc-omap.h
+> @@ -108,8 +108,7 @@ struct omap_mmc_platform_data {
+>                 const char *name;
+>                 u32 ocr_mask;
 >
->         int irq;
-> -       int card_detect_irq;
+> -               /* Card detection IRQs */
+> -               int card_detect_irq;
+> +               /* Card detection */
+>                 int (*card_detect)(struct device *dev, int slot);
 >
->         void __iomem *base;
->         struct resource *mem_res;
+>                 unsigned int ban_openended:1;
 > --
 > 2.26.2
 >
