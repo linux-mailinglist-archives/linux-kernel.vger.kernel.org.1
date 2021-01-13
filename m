@@ -2,223 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901782F434B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3276D2F434F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725858AbhAMEmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 23:42:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52052 "EHLO
+        id S1726082AbhAMEq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 23:46:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbhAMEmX (ORCPT
+        with ESMTP id S1725824AbhAMEq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 23:42:23 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E8FC061575;
-        Tue, 12 Jan 2021 20:41:43 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id a188so457024pfa.11;
-        Tue, 12 Jan 2021 20:41:43 -0800 (PST)
+        Tue, 12 Jan 2021 23:46:58 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B31FC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:46:18 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id w18so1706913iot.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:46:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KvQ2yMS8fLkXK342PvW0uslM8ZlXd39fo1Po12xDqaQ=;
-        b=avdfFgTkaBibOVpcEf2XR+8TzRftglYeCpXQi8+D1HMwpIOkD7NkRtIUsc8mUk0s2Z
-         uB+NCl2ETqVqZu0HEWsAPxXGOJfklLqHqylL8JLnPkGURCT0Rr91r3d22C9ChX+4xOUa
-         0+/zxN+7tE3QoOiYsE/ZQ/wPF/VA588kdPh0Ougg38W4Cv/AoTVa0JYnRMmr2WARDcHl
-         v8fvvCq6DsKX5OdSGhN1HNKIz8q3cbU17isYsDfTtguubxnD10O9uu6ccz3Y/qgusZpl
-         Cud+aVxghpfL6SrKtq34b4bAKNxgGqnLbGXPQtA6+DGdpIMhLyHHFSzJVWpdKkBqK0hF
-         2NWA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tOWy8KhOizbd2Dn5a2Cj2vcBNaHIiB2CBvkXn3Ip+EE=;
+        b=d2NYmxC2uL6xEKj/wkCG8Sa3jmX1U1Uj7nFnDywZfdP0ZvKieml5KnAgVwy3X1iNHw
+         v21pdcqXK691gbaofSUUiZQIt367J/hM+bXGAuID6SJmwNZe2KQKflt6imTBloG86oP/
+         SDGMF8bVPwVW9aFpnNBL0iLeUX6bEo5hQT5ZXJop22oSGZgXIS1qGrYlSpmwjXZ7G+Ng
+         7528zhJjZn4LNTMp1gMUxmxx5T2bVUpQeWmTC699GvesPVxT794KXGjhy57J+c/25hNA
+         amfiO0H4WuutwudKyx1KU2gYhasQUZEgaWP8iBC80yYn+J+yIOIaeTe3V/EtHGOY4V2d
+         3N3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KvQ2yMS8fLkXK342PvW0uslM8ZlXd39fo1Po12xDqaQ=;
-        b=PlhbUYofVmINIadjR02ZEghs/zaf0AbmzigoDesj97eq2GetIGGw+CjrGKMtjsJhGI
-         I4kP4ba9y+0jA6KvUKq9NiQF8GLVu/xe1gB5xjTOUDlu/xN33khIs0b3EOnRjbs1Ey0a
-         JHogjB4659KIm3wFSljKYFFwwVReowZJMaDZaBspzUqQwExvMQqsnza6QX55kiODOO8V
-         kvbxqva2b3MdXNTHArmWI07KvWKcHoXTycubNZLchDAioThT+KvxAOIgtkPIkAFDLC1g
-         4yQwHhTbc/kqU9P43pWv59Gm9vq/LAOLytB+FtpdKc6yZM93VwWJC7WcwGgg3nDpBi+V
-         raeQ==
-X-Gm-Message-State: AOAM533P6qzu9Pup0ucg1MOVGuD64GnZ1AjbdrnUu+xBHKOG7GuTlLyK
-        z7zlxDKuEHx2hk18133FDCo=
-X-Google-Smtp-Source: ABdhPJx2iI7J7lxafaYbeUXbTz84477oydmyZRD61uJyjC45YSxKcvn04KDiXDcVGjLQgp6TP7cnLg==
-X-Received: by 2002:a63:e108:: with SMTP id z8mr315659pgh.363.1610512902499;
-        Tue, 12 Jan 2021 20:41:42 -0800 (PST)
-Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id 6sm769816pfj.216.2021.01.12.20.41.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 20:41:41 -0800 (PST)
-Subject: Re: [RFC PATCH v3 0/6] Restricted DMA
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Claire Chang <tientzu@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
-        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
-        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>
-References: <20210106034124.30560-1-tientzu@chromium.org>
- <d7043239-12cf-3636-4726-2e3b90917dc6@gmail.com>
- <CALiNf28sU1VtGB7LeTXExkMwQiCeg8N5arqyEjw0CPZP72R4dg@mail.gmail.com>
- <78871151-947d-b085-db03-0d0bd0b55632@gmail.com>
- <CALiNf29_PmLJTVLksSHp3NFAaL52idqehSMOtatJ=jaM2Muq1g@mail.gmail.com>
- <23a09b9a-70fc-a7a8-f3ea-b0bfa60507f0@gmail.com>
- <CAAFQd5DX=AdaYSYQbxgnrYYojkM5q7EE_Qs-BYPOiNjcQWbN1A@mail.gmail.com>
- <c7f7941d-b8bd-f0f3-4e40-b899a77188bf@gmail.com>
- <CAAFQd5AGm4U8hD4jHmw10S7MRS1-ZUSq7eGgoUifMMyfZgP2NA@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <7fe99ad2-79a7-9c8b-65ce-ce8353e9d9bf@gmail.com>
-Date:   Tue, 12 Jan 2021 20:41:24 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tOWy8KhOizbd2Dn5a2Cj2vcBNaHIiB2CBvkXn3Ip+EE=;
+        b=O7TYsyAIwrS71yf6ffnJdcQ9jgidZGlEUDzJV3dxzEhioolWRjqVtf/OCbJH2xtlSR
+         r9UbHZ6OXCHuigAaEmIlmgO8im7RBBr0Wxw10vr3bwT6G+Wfj5uqe3qPOPm3JHjm71bW
+         MK4IB912SuxDxBfJCtUyZ/3/VhXpTSFvB5Oq3MhsasxqsAvJcPQkkJ38EwhMfAODZR2Q
+         Rmrz7Qkj6wOes3zgxILQ+lkGePH10EF01MwqrEcJP6CV/RNtQbzGAD+H9lfCjOxjrp/F
+         kr1ZAhLUfVnue9dgvCX1pijRaRmvEvjoC4Ka/yxt9OErAz/UpcQc0SyZX8iddYVCZAtG
+         sVqw==
+X-Gm-Message-State: AOAM5318T3Nud6qVRGJFZBFfGJjlu+KakXXdiQCCcBo0hWYD/FoB4rOX
+        mk+ucF2vWYz5nJCgC6zC1lHwi0wr6BsKXqN7Gt+h/g==
+X-Google-Smtp-Source: ABdhPJwnBeA2ec/2H8aOEf+fFHqLpYaEfN6ZYygIV52IDKJSjBiTX+tgp41wMMOPpYRMXHYpQjb+5rAxM50iiA1LgAg=
+X-Received: by 2002:a05:6e02:42:: with SMTP id i2mr582043ilr.68.1610513177471;
+ Tue, 12 Jan 2021 20:46:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAAFQd5AGm4U8hD4jHmw10S7MRS1-ZUSq7eGgoUifMMyfZgP2NA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210111182655.12159-1-alobakin@pm.me> <d4f4b6ba-fb3b-d873-23b2-4b5ba9cf4db8@gmail.com>
+ <20210112110802.3914-1-alobakin@pm.me> <CANn89iKEc_8_ySqV+KrbheTDKRL4Ws6JUKYeKXfogJNhfd+pGQ@mail.gmail.com>
+ <20210112170242.414b8664@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210112170242.414b8664@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 13 Jan 2021 05:46:05 +0100
+Message-ID: <CANn89i+ppTAPYwQ2mH5cZtcMqanFU8hXzD4szdygrjOBewPb+Q@mail.gmail.com>
+Subject: Re: [PATCH net-next 0/5] skbuff: introduce skbuff_heads bulking and reusing
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Edward Cree <ecree@solarflare.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yadu Kishore <kyk.segfault@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jan 13, 2021 at 2:02 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Tue, 12 Jan 2021 13:23:16 +0100 Eric Dumazet wrote:
+> > On Tue, Jan 12, 2021 at 12:08 PM Alexander Lobakin <alobakin@pm.me> wrote:
+> > >
+> > > From: Edward Cree <ecree.xilinx@gmail.com>
+> > > Date: Tue, 12 Jan 2021 09:54:04 +0000
+> > >
+> > > > Without wishing to weigh in on whether this caching is a good idea...
+> > >
+> > > Well, we already have a cache to bulk flush "consumed" skbs, although
+> > > kmem_cache_free() is generally lighter than kmem_cache_alloc(), and
+> > > a page frag cache to allocate skb->head that is also bulking the
+> > > operations, since it contains a (compound) page with the size of
+> > > min(SZ_32K, PAGE_SIZE).
+> > > If they wouldn't give any visible boosts, I think they wouldn't hit
+> > > mainline.
+> > >
+> > > > Wouldn't it be simpler, rather than having two separate "alloc" and "flush"
+> > > >  caches, to have a single larger cache, such that whenever it becomes full
+> > > >  we bulk flush the top half, and when it's empty we bulk alloc the bottom
+> > > >  half?  That should mean fewer branches, fewer instructions etc. than
+> > > >  having to decide which cache to act upon every time.
+> > >
+> > > I though about a unified cache, but couldn't decide whether to flush
+> > > or to allocate heads and how much to process. Your suggestion answers
+> > > these questions and generally seems great. I'll try that one, thanks!
+> >
+> > The thing is : kmalloc() is supposed to have batches already, and nice
+> > per-cpu caches.
+> >
+> > This looks like an mm issue, are we sure we want to get over it ?
+> >
+> > I would like a full analysis of why SLAB/SLUB does not work well for
+> > your test workload.
+>
+> +1, it does feel like we're getting into mm territory
 
+I read the existing code, and with Edward Cree idea of reusing the
+existing cache (storage of pointers),
+ths now all makes sense, since there will be not much added code (and
+new storage of 64 pointers)
 
-On 1/12/2021 8:25 PM, Tomasz Figa wrote:
-> On Wed, Jan 13, 2021 at 12:56 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->>
->>
->>
->> On 1/12/2021 6:29 PM, Tomasz Figa wrote:
->>> Hi Florian,
->>>
->>> On Wed, Jan 13, 2021 at 3:01 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
->>>>
->>>> On 1/11/21 11:48 PM, Claire Chang wrote:
->>>>> On Fri, Jan 8, 2021 at 1:59 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
->>>>>>
->>>>>> On 1/7/21 9:42 AM, Claire Chang wrote:
->>>>>>
->>>>>>>> Can you explain how ATF gets involved and to what extent it does help,
->>>>>>>> besides enforcing a secure region from the ARM CPU's perpsective? Does
->>>>>>>> the PCIe root complex not have an IOMMU but can somehow be denied access
->>>>>>>> to a region that is marked NS=0 in the ARM CPU's MMU? If so, that is
->>>>>>>> still some sort of basic protection that the HW enforces, right?
->>>>>>>
->>>>>>> We need the ATF support for memory MPU (memory protection unit).
->>>>>>> Restricted DMA (with reserved-memory in dts) makes sure the predefined memory
->>>>>>> region is for PCIe DMA only, but we still need MPU to locks down PCIe access to
->>>>>>> that specific regions.
->>>>>>
->>>>>> OK so you do have a protection unit of some sort to enforce which region
->>>>>> in DRAM the PCIE bridge is allowed to access, that makes sense,
->>>>>> otherwise the restricted DMA region would only be a hint but nothing you
->>>>>> can really enforce. This is almost entirely analogous to our systems then.
->>>>>
->>>>> Here is the example of setting the MPU:
->>>>> https://github.com/ARM-software/arm-trusted-firmware/blob/master/plat/mediatek/mt8183/drivers/emi_mpu/emi_mpu.c#L132
->>>>>
->>>>>>
->>>>>> There may be some value in standardizing on an ARM SMCCC call then since
->>>>>> you already support two different SoC vendors.
->>>>>>
->>>>>>>
->>>>>>>>
->>>>>>>> On Broadcom STB SoCs we have had something similar for a while however
->>>>>>>> and while we don't have an IOMMU for the PCIe bridge, we do have a a
->>>>>>>> basic protection mechanism whereby we can configure a region in DRAM to
->>>>>>>> be PCIe read/write and CPU read/write which then gets used as the PCIe
->>>>>>>> inbound region for the PCIe EP. By default the PCIe bridge is not
->>>>>>>> allowed access to DRAM so we must call into a security agent to allow
->>>>>>>> the PCIe bridge to access the designated DRAM region.
->>>>>>>>
->>>>>>>> We have done this using a private CMA area region assigned via Device
->>>>>>>> Tree, assigned with a and requiring the PCIe EP driver to use
->>>>>>>> dma_alloc_from_contiguous() in order to allocate from this device
->>>>>>>> private CMA area. The only drawback with that approach is that it
->>>>>>>> requires knowing how much memory you need up front for buffers and DMA
->>>>>>>> descriptors that the PCIe EP will need to process. The problem is that
->>>>>>>> it requires driver modifications and that does not scale over the number
->>>>>>>> of PCIe EP drivers, some we absolutely do not control, but there is no
->>>>>>>> need to bounce buffer. Your approach scales better across PCIe EP
->>>>>>>> drivers however it does require bounce buffering which could be a
->>>>>>>> performance hit.
->>>>>>>
->>>>>>> Only the streaming DMA (map/unmap) needs bounce buffering.
->>>>>>
->>>>>> True, and typically only on transmit since you don't really control
->>>>>> where the sk_buff are allocated from, right? On RX since you need to
->>>>>> hand buffer addresses to the WLAN chip prior to DMA, you can allocate
->>>>>> them from a pool that already falls within the restricted DMA region, right?
->>>>>>
->>>>>
->>>>> Right, but applying bounce buffering to RX will make it more secure.
->>>>> The device won't be able to modify the content after unmap. Just like what
->>>>> iommu_unmap does.
->>>>
->>>> Sure, however the goals of using bounce buffering equally applies to RX
->>>> and TX in that this is the only layer sitting between a stack (block,
->>>> networking, USB, etc.) and the underlying device driver that scales well
->>>> in order to massage a dma_addr_t to be within a particular physical range.
->>>>
->>>> There is however room for improvement if the drivers are willing to
->>>> change their buffer allocation strategy. When you receive Wi-Fi frames
->>>> you need to allocate buffers for the Wi-Fi device to DMA into, and that
->>>> happens ahead of the DMA transfers by the Wi-Fi device. At buffer
->>>> allocation time you could very well allocate these frames from the
->>>> restricted DMA region without having to bounce buffer them since the
->>>> host CPU is in control over where and when to DMA into.
->>>>
->>>
->>> That is, however, still a trade-off between saving that one copy and
->>> protection from the DMA tampering with the packet contents when the
->>> kernel is reading them. Notice how the copy effectively makes a
->>> snapshot of the contents, guaranteeing that the kernel has a
->>> consistent view of the packet, which is not true if the DMA could
->>> modify the buffer contents in the middle of CPU accesses.
->>
->> I would say that the window just became so much narrower for the PCIe
->> end-point to overwrite contents with the copy because it would have to
->> happen within the dma_unmap_{page,single} time and before the copy is
->> finished to the bounce buffer.
-> 
-> Not only. Imagine this:
-> 
-> a) Without bouncing:
-> 
-> - RX interrupt
-> - Pass the packet to the network stack
-> - Network stack validates the packet
-> - DMA overwrites the packet
-> - Network stack goes boom, because the packet changed after validation
-> 
-> b) With bouncing:
-> 
-> - RX interrupt
-> - Copy the packet to a DMA-inaccessible buffer
-> - Network stack validates the packet
-> - Network stack is happy, because the packet is guaranteed to stay the
-> same after validation
+The remaining issue is to make sure KASAN will still work, we need
+this to detect old and new bugs.
 
-Yes that's a much safer set of operations, thanks for walking through a
-practical example.
--- 
-Florian
+Thanks !
