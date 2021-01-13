@@ -2,150 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C530C2F5371
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8BE2F5377
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbhAMTgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 14:36:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52580 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725997AbhAMTgx (ORCPT
+        id S1728705AbhAMTiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 14:38:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727860AbhAMTiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 14:36:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610566526;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VbEtyqBdwcJzKeG1wyZKRO8aTEA6+w3GGKg392l/7SU=;
-        b=OGGwrtNqTmNVud44aHrtAeUMKiUVW5Efl119INtlaDwIOBcpwv1ADqiqsB5JvEv4bxuGWz
-        GSjjmyjXy0yD4igpJgZk0AX1EgTIRDqcJ03+GyZajAKkW0L4dcCCc+/2wrVGs2GOrq9qcP
-        7DUfk6UDzRDPaNZYxzguwjfTn387RhI=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-105-sOyHBoM2M42naALBunZJbQ-1; Wed, 13 Jan 2021 14:35:24 -0500
-X-MC-Unique: sOyHBoM2M42naALBunZJbQ-1
-Received: by mail-pj1-f72.google.com with SMTP id z17so1918863pjr.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 11:35:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VbEtyqBdwcJzKeG1wyZKRO8aTEA6+w3GGKg392l/7SU=;
-        b=DSFDMxJPoTHj+FuMAxHvS58jXRcnyVxrgSHOL/lVhIswT4rIlvWV+3fm3oSvGrmF5i
-         ff3QAscNqP3XED2yPyyoMQPUs4eDAWt3KCWgMMr+HvxV6dY5g6QygPE1iiukQplxkJPS
-         zcfxCSTENnr8A0u5CVTJUt/MbOpwcQalsZnCjeYauvCYTfqFl90qy+C8Z4aI2zyQHOlb
-         +0AcpQEGQLPnQvAPewSo97d8Gss9r0c1W0FkH/ZFFEm1pNnrMVkRF1lknLmucrqVa94j
-         KaJnneKIoWDVWr9neGzhUdTBjwmKvTzUsIjxSvJ4c2HgbUGRHX8/wWIgn9Gab0eq4kR1
-         Wc4g==
-X-Gm-Message-State: AOAM533yp4OYn7qj97k1/qDSElR2eVJxbJlmHzr3ZQoP6n0KoK9WQC5b
-        7kul6j4qlIut4m/NVSqB+wO4s0zkDnucfUmr2tBKJeMz5SmJivo9ZufLVkJGdFTVLCcTKFG4IOz
-        oUtI+tyYVzcROiCG97pGYUcGLw3bJvFqs3CtzjM4r
-X-Received: by 2002:a17:90a:4bc3:: with SMTP id u3mr897606pjl.56.1610566523640;
-        Wed, 13 Jan 2021 11:35:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz2fp4B6076gDor+MKRDmZygwIeP4EAAXjFgkA3mR5JdkHoL53cyA3W5wgmGsBrvY5bwF+aXTr6Q8622nmc0XE=
-X-Received: by 2002:a17:90a:4bc3:: with SMTP id u3mr897578pjl.56.1610566523391;
- Wed, 13 Jan 2021 11:35:23 -0800 (PST)
+        Wed, 13 Jan 2021 14:38:51 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79505C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 11:38:11 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kzly1-0000vP-Js; Wed, 13 Jan 2021 20:38:05 +0100
+Received: from [IPv6:2a03:f580:87bc:d400:52e5:4d6c:6d7b:9ff3] (unknown [IPv6:2a03:f580:87bc:d400:52e5:4d6c:6d7b:9ff3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 3DDD65C2F84;
+        Wed, 13 Jan 2021 19:38:03 +0000 (UTC)
+Subject: Re: [PATCH 1/2] can: c_can: support 64 message objects for D_CAN
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     Andrejs Cainikovs <Andrejs.Cainikovs@netmodule.com>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Patrick Zysset <Patrick.Zysset@netmodule.com>,
+        "Federico Rossi (fede.a.rossi@gmail.com)" <fede.a.rossi@gmail.com>,
+        Maximiliano Sonnaillon <msonnaillon@gmail.com>
+References: <20190208131738.27668-1-andrejs.cainikovs@netmodule.com>
+ <20190208131738.27668-2-andrejs.cainikovs@netmodule.com>
+ <080346c5-eace-f0bc-ef3a-0354988b9fb4@pengutronix.de>
+ <CAAEAJfAJs4fpTX=_caS3f7GA1V-bouVQ_G913MXb80Cn_DmFWw@mail.gmail.com>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <0414be3e-381e-a97a-3b59-f96191cb9ef1@pengutronix.de>
+Date:   Wed, 13 Jan 2021 20:37:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201211222448.2115188-1-dianders@chromium.org>
- <CAD=FV=Ve4wGJ=KxQjraYsiAQZHG_5qEeFW0ZhmBBkRmtdm7Gwg@mail.gmail.com>
- <CAO-hwJK+=537C-EbgNXPY3=m5LvM8SVKCDB5X145BfSMHgUMdw@mail.gmail.com>
- <CAO-hwJLuzAccZbLSCvyP0JnkCW8fgswrm8RJfMaVKjtyF5Yg_A@mail.gmail.com> <CAD=FV=W3uzNPwAGPCUfjC-zoWEPyY4bF8TE4JgPP21s-3MAfpQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=W3uzNPwAGPCUfjC-zoWEPyY4bF8TE4JgPP21s-3MAfpQ@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Wed, 13 Jan 2021 20:35:12 +0100
-Message-ID: <CAO-hwJ+Gz_yp_vn1prREvhcU=YqVatqd_Hp+95L5i2=bcwfhbA@mail.gmail.com>
-Subject: Re: [PATCH v8 0/4] HID: i2c-hid: Reorganize to allow supporting goodix,gt7375p
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andrea Borgia <andrea@borgia.bo.it>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Playfair Cal <daniel.playfair.cal@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Jiri Kosina <jikos@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Max Krummenacher <max.oss.09@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Pavel Balan <admin@kryma.net>, Shawn Guo <shawnguo@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, Will Deacon <will@kernel.org>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAAEAJfAJs4fpTX=_caS3f7GA1V-bouVQ_G913MXb80Cn_DmFWw@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="cmEvJbCTSbjZ1PVxqoCOFjr5UgzNIAC72"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 5:05 PM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Wed, Jan 13, 2021 at 7:09 AM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
-> >
-> > > I wanted to apply the series yesterday, but for these kinds of changes
-> > > I like giving it a spin on actual hardware. Turns out that my XPS-13
-> > > can not boot to v5.11-rc2, which makes testing the new branch slightly
-> > > more difficult.
-> > >
-> > > I'll give it a spin next week, but I think I should be able to land it for 5.12.
-> > >
-> > > Regarding the defconfig conflict, no worries, we can handle it with
-> > > Stephen and Linus.
-> > >
-> >
-> > After 2 full kernel bisects (I messed up the first because I am an
-> > idiot and inverted good and bad after the first reboot), I found my
-> > culprit, and I was able to test the series today.
-> >
-> > The series works fine regarding enumeration and removing of devices,
-> > but it prevents my system from being suspended. If I rmmod
-> > i2c-hid-acpi, suspend works fine, but if it is present, it immediately
-> > comes back, which makes me think that something must be wrong.
-> >
-> > I also just reverted the series and confirmed that suspend/resume now
-> > works, meaning that patch 1/4 needs to be checked.
->
-> Can you give me any hints about what type of failure you're seeing?
-> Any logs?  I don't have an ACPI system to test with...
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--cmEvJbCTSbjZ1PVxqoCOFjr5UgzNIAC72
+Content-Type: multipart/mixed; boundary="RBWbMJvyttqlbQ3035qZ7FUoN33ZpVqEX";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Andrejs Cainikovs <Andrejs.Cainikovs@netmodule.com>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Patrick Zysset <Patrick.Zysset@netmodule.com>,
+ "Federico Rossi (fede.a.rossi@gmail.com)" <fede.a.rossi@gmail.com>,
+ Maximiliano Sonnaillon <msonnaillon@gmail.com>
+Message-ID: <0414be3e-381e-a97a-3b59-f96191cb9ef1@pengutronix.de>
+Subject: Re: [PATCH 1/2] can: c_can: support 64 message objects for D_CAN
+References: <20190208131738.27668-1-andrejs.cainikovs@netmodule.com>
+ <20190208131738.27668-2-andrejs.cainikovs@netmodule.com>
+ <080346c5-eace-f0bc-ef3a-0354988b9fb4@pengutronix.de>
+ <CAAEAJfAJs4fpTX=_caS3f7GA1V-bouVQ_G913MXb80Cn_DmFWw@mail.gmail.com>
+In-Reply-To: <CAAEAJfAJs4fpTX=_caS3f7GA1V-bouVQ_G913MXb80Cn_DmFWw@mail.gmail.com>
 
-I don't have any logs, just that the system comes back up. There is a
-chance we are not powering the device down correctly, which triggers
-an IRQ and which puts the system back on.
+--RBWbMJvyttqlbQ3035qZ7FUoN33ZpVqEX
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
->
-> Is there any chance that some type of userspace / udev rule is getting
-> tripped up by the driver being renamed?  We ran into something like
-> this recently on Chrome OS where we had a tool that was hardcoded to
-> look for "i2c-hid" and needed to be adapted to account for the new
-> driver name.  Often userspace tweaks with wakeup rules based on driver
-> name...
+On 1/13/21 7:49 PM, Ezequiel Garcia wrote:
+[...]
 
-I don't think there is anything like that on a regular desktop.
+>> You probably have to pass it via "struct c_can_priv" so that it's
+>> available in the c_can.c
+>>
+>=20
+> I came here to make the same suggestion :-)
+>=20
+> Andrejs, do you think you could respin this patch? Or perhaps I can fin=
+d
+> some time to do that myself, if that's OK with you.
 
->
-> I'll go stare at the code now and see if anything jumps out.
->
+Take the patches as is and improve them.
 
-Thanks, but don't spend too much time on it, unless something really
-jumps out. I'll debug that tomorrow. It's much easier with an actual
-device than by just looking at the code.
+Marc
 
-Cheers,
-Benjamin
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-> -Doug
->
 
+--RBWbMJvyttqlbQ3035qZ7FUoN33ZpVqEX--
+
+--cmEvJbCTSbjZ1PVxqoCOFjr5UgzNIAC72
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl//TBcACgkQqclaivrt
+76ksYAf+MbdQ7zRCdBeGV19+F13eCsBLfvawyYadilH1HXOFzIKqN5usfPGXqFzE
+LAajhS478M2EJHIeFTv9e9/nLVDMjDz5mxpdRo3WFp1KT1cXGbRxFJWcGBFDj7x2
+frG548ULh+1kZVG+jPfgthQDm4gLh3OP4pX7dTrw3Qx3MIiTkighTdavQEjDn6pb
+bWreL6n+Ckm1WIcaCfviT4TV3oHN7v0810/lsShMSTYXEOWBAIUloHwIHN6DTCIS
+jaYYldbNnOQV898DslixPuCnskhJA3YefXr7TGHfnmJ+k5lfsfveQ1r63uarOtZw
+N0IRlQCxGY1T+2z0mZTALxpI9mesQw==
+=qLdX
+-----END PGP SIGNATURE-----
+
+--cmEvJbCTSbjZ1PVxqoCOFjr5UgzNIAC72--
