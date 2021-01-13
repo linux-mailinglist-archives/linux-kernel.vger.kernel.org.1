@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1656C2F42E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:11:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6412F42E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbhAMEKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 23:10:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50196 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbhAMEKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 23:10:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id A779623139;
-        Wed, 13 Jan 2021 04:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610511010;
-        bh=pc2nukmgCXvmb0R4vhA95RrsCn1ry3/qbveoL/SB2EI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=WeRyyERgZ+3iFNCZ9Iqz27GEjO+ojjVDOnKnmganu83q3O1Gy7RGep//GVBJROs/j
-         Y2SQAKfXIwimuIH1rTGHdMn86bS/eo4lQs2oyd6GB/S77HE7hYp2chBvQFhWRQqfKP
-         Y88Fr4v07G6S+BtBOJrEiku9IisOFxwRmi/MUME7FhTqoMXgzKQbvQpvT+cTI8zzf4
-         KZ4G7n0IooM1sbRTWl7w8x8enr546Mzr9w1aWmwZUPCCf/KKhXELYl98iThgMAHS/S
-         OSAHbGiIpiGq4Abt7rD4l/6+qGz/3Bn9oFzjvESM2EtIcQIGzHhtWeaieO20OPHIws
-         knvFfMEfsP1fA==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id A220C604FD;
-        Wed, 13 Jan 2021 04:10:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1726698AbhAMELL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 23:11:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbhAMELL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 23:11:11 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62B0C061575;
+        Tue, 12 Jan 2021 20:10:30 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DFv9w1jNKz9sVR;
+        Wed, 13 Jan 2021 15:10:28 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610511028;
+        bh=L2CO6aHoctYXi1Ljpf7cCifbo388qd6rWI80hXgv0VA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fiSQXiNLbVapGsnem4L6Ho4L7fPrGmXoQjC1IY5GafsW7JK+ZOtnztuxi/j1459e+
+         dhk5EoGKpsSh0osa2wA4Q/O5uNgXNs6QapVNqfqnlRl2m0EfmViHV+5mmIsR5u2pFD
+         UZskwqbXOJGn/HZXFl965a1InqAvwfTXsJv6yQdJlcAUr8yB3DHec5RiHdmHOWXAcC
+         OSlDE9bAsdk5ya+pM1+rvRJdLwgz8VYuD58rGscgLY/x+yHYZxAC9KbDvZQ8kykHRa
+         XRklcrJepf9juPm0nPjLGMUs/MPQMSioUUzhpc6rRCAwgebOpsIqnCWP//700TgPNu
+         mM/W5Oyiht6CQ==
+Date:   Wed, 13 Jan 2021 15:10:27 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the v4l-dvb tree
+Message-ID: <20210113151027.21f3f1de@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 0/3] hv_netvsc: Prevent packet loss during VF add/remove
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161051101065.28597.1139365549910801459.git-patchwork-notify@kernel.org>
-Date:   Wed, 13 Jan 2021 04:10:10 +0000
-References: <1610153623-17500-1-git-send-email-longli@linuxonhyperv.com>
-In-Reply-To: <1610153623-17500-1-git-send-email-longli@linuxonhyperv.com>
-To:     Long Li <longli@linuxonhyperv.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, longli@microsoft.com
+Content-Type: multipart/signed; boundary="Sig_/GcDbE141J8WohQn/63Xr9Rm";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+--Sig_/GcDbE141J8WohQn/63Xr9Rm
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+Hi all,
 
-On Fri,  8 Jan 2021 16:53:40 -0800 you wrote:
-> From: Long Li <longli@microsoft.com>
-> 
-> This patch set fixes issues with packet loss on VF add/remove.
-> 
-> Long Li (3):
->   hv_netvsc: Check VF datapath when sending traffic to VF
->   hv_netvsc: Wait for completion on request SWITCH_DATA_PATH
->   hv_netvsc: Process NETDEV_GOING_DOWN on VF hot remove
-> 
-> [...]
+After merging the v4l-dvb tree, today's linux-next build (htmldocs)
+produced this warning:
 
-Here is the summary with links:
-  - [v2,1/3] hv_netvsc: Check VF datapath when sending traffic to VF
-    https://git.kernel.org/netdev/net-next/c/69d25a6cf4ca
-  - [v2,2/3] hv_netvsc: Wait for completion on request SWITCH_DATA_PATH
-    https://git.kernel.org/netdev/net-next/c/8b31f8c982b7
-  - [v2,3/3] hv_netvsc: Process NETDEV_GOING_DOWN on VF hot remove
-    https://git.kernel.org/netdev/net-next/c/34b06a2eee44
+Documentation/driver-api/media/v4l2-subdev.rst:125: WARNING: Inline interpr=
+eted text or phrase reference start-string without end-string.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Introduced by commit
 
+  25c8d9a7689e ("media: Documentation: v4l: Document that link_validate op =
+is valid for sink only")
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/GcDbE141J8WohQn/63Xr9Rm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/+crMACgkQAVBC80lX
+0Gxj1Qf+N47rzQYihDZfjH05iVJtu48/55wo/PEgQ99S+XugNimsMVfp86n7fE9l
+Ehto6mXVYvlRsK5EecScPutEksWWa/kmlSpOqIW2Z4eyocBRajW9AgSkGmgwzQ64
+R9EF53Owp9Dgl+jB7Ij+m2QwsyaGomqfVo419M8Rq+p7U+1pmOl7If4tSCtIZLrL
+KKa+dIy4D4YW05uW1qGLPhD6TrA4+EQR7vLq2pPzZpCPq8A4O+kpFozu9C90BmlH
+UKdMgVpjyLS76awkreIw6p5CNTY/PGnCNl8mQtm2oYjDehTUBmbAxKO/gfwkokTz
+OTBi4V7PmNY3BIwcEJf7BIEB6U8UCQ==
+=wDkX
+-----END PGP SIGNATURE-----
+
+--Sig_/GcDbE141J8WohQn/63Xr9Rm--
