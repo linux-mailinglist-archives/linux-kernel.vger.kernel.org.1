@@ -2,166 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCAC2F427F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 04:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D882F4286
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 04:32:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728557AbhAMD2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 22:28:36 -0500
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:38020 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726593AbhAMD2f (ORCPT
+        id S1727998AbhAMDcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 22:32:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbhAMDcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 22:28:35 -0500
-Received: by mail-oi1-f179.google.com with SMTP id x13so694187oic.5;
-        Tue, 12 Jan 2021 19:28:19 -0800 (PST)
+        Tue, 12 Jan 2021 22:32:06 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CCEC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 19:31:26 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id s26so656494lfc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 19:31:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CH+xsIRM+IV0uinVWZZSPxYmWLGJmAD6nwl0cbAWTi4=;
+        b=Vgjl7SKuukjWFtnm7i3ijVQrIXWvFzxtoe/B4OnSHO3sGSWu7IPVs4gEMtptVVrJH9
+         rGL5Gzd9pD0dU+kkbFRXafvsqm107Yx5JFtNWGTnl6xau+f57pdALjQESjacpWyhmt57
+         e8wmN5OnfVL4Iv/iOEQ9nCjD9Yb7schG5pB+E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=slEzrGNA4kdUyiamf2I44u1Nkx8BiRwusAekuEA0O4g=;
-        b=eXyFfMceEVaTls2O1BC8a3Rw28EpYrJcKDKyTj7dsAS7xqThq6Ml8PG0TNrUikT1PC
-         +VKR3VRniIQArQ11eba4T3BeBS0P+h+frI/iRC9H/n81mhWlGpSLylwXbqrGPmgqiTt+
-         j8EDmbC8363RngAyiEMQD3Nr3n9xnFtZBpArgDPcvkniQOr4V6SoqCkVllKFnnI9/a2d
-         nXUfFaCiRo8EICXfvdV3eKIRtMoAy+7U9pqT+h1ruQc4QZokn0JxQPFkwtsahgPFcqcF
-         BxEFFzaWc6KHP4pvHewKIrz1gUgqZfHjLQrLQy8kf4qcH5GiHGhEN+t6Sul8RtPJE4Tq
-         icwA==
-X-Gm-Message-State: AOAM533w64A1CH7/2Cu+B4RZO/oXfk5sqnCWcpk3i3/WO/j+8nxAtozP
-        wBFPgqu6tNxOlBQJoY5UYA==
-X-Google-Smtp-Source: ABdhPJzIH9Ah9EsFqJBtr56qrwsRUef/QvPW3xzgU4qgXt6BCVltIgoO4BJeGbL7X7/0Oj8ep0lQIA==
-X-Received: by 2002:aca:4355:: with SMTP id q82mr127313oia.132.1610508474095;
-        Tue, 12 Jan 2021 19:27:54 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id f201sm176766oig.21.2021.01.12.19.27.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 19:27:53 -0800 (PST)
-Received: (nullmailer pid 1475163 invoked by uid 1000);
-        Wed, 13 Jan 2021 03:27:52 -0000
-Date:   Tue, 12 Jan 2021 21:27:52 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        jassisinghbrar@gmail.com, viresh.kumar@linaro.org,
-        ulf.hansson@linaro.org, bjorn.andersson@linaro.org,
-        agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] dt-bindings: mailbox: Add binding for SDX55 APCS
-Message-ID: <20210113032752.GA1472520@robh.at.kernel.org>
-References: <20210108113233.75418-1-manivannan.sadhasivam@linaro.org>
- <20210108113233.75418-2-manivannan.sadhasivam@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CH+xsIRM+IV0uinVWZZSPxYmWLGJmAD6nwl0cbAWTi4=;
+        b=laLJga+UbZ5jHznzeMuJn38qNAqYqHVSgl5efIl03KRKTrKS5Rr+i+jJIJpabJe8Yk
+         sYxg/GYhyvyasoe+TIJMyqoeONqxQ3sO6Q0toNwn092inJRsj0FmrQknGaW8g/OfAzGl
+         PqyFMQAn9vFUozIXJah8NlsBtX911eiZOl6Xzf2Gbj8S5BH/iECnIqVrv5PGDzkkSgmf
+         3009P0q+DEK3bURdJW66pbb4seXug793tXD7QCDTKHuXGZq1SM3GH3LLu43PNqH857+X
+         NlG+ZE9w0gX3IxOD6porY2G626G8ZeLMEZWIE98UgGAjMC3XB6O2w7MVdhlo6g3j6Bye
+         uNDA==
+X-Gm-Message-State: AOAM532ZllvJbDUso2TBaFZOwei01Kt95mYBg0wZKe3iy85bU6sx5vM2
+        EwYeeTPjoNdnVu3CHaVEWrGHvPb54Kex3w==
+X-Google-Smtp-Source: ABdhPJwpk8fV8jqtSAP3aUzp4dDvGuoMAf5c124EsTzXBAw6XXTaGk7g/aNZ0z+9lJD0n1oxBEq0DA==
+X-Received: by 2002:ac2:4d28:: with SMTP id h8mr913805lfk.263.1610508684480;
+        Tue, 12 Jan 2021 19:31:24 -0800 (PST)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id a7sm64879lfb.78.2021.01.12.19.31.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 19:31:24 -0800 (PST)
+Received: by mail-lj1-f182.google.com with SMTP id m13so916668ljo.11
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 19:31:23 -0800 (PST)
+X-Received: by 2002:a2e:b4af:: with SMTP id q15mr1030700ljm.507.1610508683314;
+ Tue, 12 Jan 2021 19:31:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108113233.75418-2-manivannan.sadhasivam@linaro.org>
+References: <20210110004435.26382-1-aarcange@redhat.com> <CAHk-=wghqNywtf=sRv_5FmG=+hPGqj=KWakw34tNeoZ1wPuaHg@mail.gmail.com>
+ <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com>
+ <X/prosulFrEoNnoF@redhat.com> <CAHk-=wjZTMsv0_GOyQpLRk_5U1r5W8e21f8sV0jykK=z47hjGQ@mail.gmail.com>
+ <CAHk-=wgi31FKc9AL6m87+pb2B79V2g_QjdhmtJNW8Pnq2ERQ-Q@mail.gmail.com>
+ <45806a5a-65c2-67ce-fc92-dc8c2144d766@nvidia.com> <CAHk-=wipa-9wEuWHBjourmXAVHdeqDa59UxW6ZJ_Oqg6-Dwvdw@mail.gmail.com>
+ <CAHk-=wje9r3fREBdZcOu=NihGczBtkqkhXRPDhY-ZkNVv=thiQ@mail.gmail.com> <20210113021619.GL35215@casper.infradead.org>
+In-Reply-To: <20210113021619.GL35215@casper.infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 12 Jan 2021 19:31:07 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjWMieNV3nAJgoG5prEHBEcOZiREmLUr499tA9NMttEqQ@mail.gmail.com>
+Message-ID: <CAHk-=wjWMieNV3nAJgoG5prEHBEcOZiREmLUr499tA9NMttEqQ@mail.gmail.com>
+Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 05:02:29PM +0530, Manivannan Sadhasivam wrote:
-> Add devicetree YAML binding for SDX55 APCS GCC block. The APCS block
-> acts as the mailbox controller and also provides a clock output and
-> takes 3 clock sources (pll, aux, ref) as input.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  .../mailbox/qcom,apcs-kpss-global.yaml        | 59 ++++++++++++++++---
->  1 file changed, 50 insertions(+), 9 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml b/Documentation/devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml
-> index ffd09b664ff5..3c75ea0b6040 100644
-> --- a/Documentation/devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml
-> +++ b/Documentation/devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml
-> @@ -27,26 +27,24 @@ properties:
->        - qcom,sdm660-apcs-hmss-global
->        - qcom,sdm845-apss-shared
->        - qcom,sm8150-apss-shared
-> +      - qcom,sdx55-apcs-gcc
->  
->    reg:
->      maxItems: 1
->  
-> -  clocks:
-> -    description: phandles to the parent clocks of the clock driver
-> -    items:
-> -      - description: primary pll parent of the clock driver
-> -      - description: auxiliary parent
+On Tue, Jan 12, 2021 at 6:16 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> The thing about the speculative page cache references is that they can
+> temporarily bump a refcount on a page which _used_ to be in the page
+> cache and has now been reallocated as some other kind of page.
 
-Keep this here and add the 3rd item and:
+Oh, and thinking about this made me think we might actually have a
+serious bug here, and it has nothing what-so-ever to do with COW, GUP,
+or even the page count itself.
 
-minItems: 2
+It's unlikely enough that I think it's mostly theoretical, but tell me
+I'm wrong.
 
-Then the if/then can just restrict things to 2 or 3 items.
+PLEASE tell me I'm wrong:
 
-> -
->    '#mbox-cells':
->      const: 1
->  
->    '#clock-cells':
->      const: 0
->  
-> +  clocks:
-> +    minItems: 2
-> +    maxItems: 3
-> +
->    clock-names:
-> -    items:
-> -      - const: pll
-> -      - const: aux
-> +    minItems: 2
-> +    maxItems: 3
->  
->  required:
->    - compatible
-> @@ -55,6 +53,49 @@ required:
->  
->  additionalProperties: false
->  
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          enum:
-> +            - qcom,ipq6018-apcs-apps-global
-> +            - qcom,ipq8074-apcs-apps-global
-> +            - qcom,msm8916-apcs-kpss-global
-> +            - qcom,msm8994-apcs-kpss-global
-> +            - qcom,msm8996-apcs-hmss-global
-> +            - qcom,msm8998-apcs-hmss-global
-> +            - qcom,qcs404-apcs-apps-global
-> +            - qcom,sc7180-apss-shared
-> +            - qcom,sdm660-apcs-hmss-global
-> +            - qcom,sdm845-apss-shared
-> +            - qcom,sm8150-apss-shared
-> +    then:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: Primary PLL parent of the clock driver
-> +            - description: Auxiliary parent
-> +        clock-names:
-> +          items:
-> +            - const: pll
-> +            - const: aux
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          enum:
-> +            - qcom,sdx55-apcs-gcc
-> +    then:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: Primary PLL parent of the clock driver
-> +            - description: Auxiliary parent
-> +            - description: Reference clock
-> +        clock-names:
-> +          items:
-> +            - const: pll
-> +            - const: aux
-> +            - const: ref
->  examples:
->  
->    # Example apcs with msm8996
-> -- 
-> 2.25.1
-> 
+CPU1 does page_cache_get_speculative under RCU lock
+
+CPU2 frees and re-uses the page
+
+    CPU1                CPU2
+    ----                ----
+
+    page = xas_load(&xas);
+    if (!page_cache_get_speculative(page))
+            goto repeat;
+    .. succeeds ..
+
+                        remove page from XA
+                        release page
+                        reuse for something else
+
+    .. and then re-check ..
+    if (unlikely(page != xas_reload(&xas))) {
+            put_page(page);
+            goto repeat;
+    }
+
+ok, the above all looks fine. We got the speculative ref, but then we
+noticed that its' not valid any more, so we put it again. All good,
+right?
+
+Wrong.
+
+What if that "reuse for something else" was actually really quick, and
+both allocated and released it?
+
+That still sounds good, right? Yes, now the "put_page()" will be the
+one that _actually_ releases the page, but we're still fine, right?
+
+Very very wrong.
+
+The "reuse for something else" on CPU2 might have gotten not an
+order-0 page, but a *high-order* page. So it allocated (and then
+immediately free'd) maybe an order-2 allocation with _four_ pages, and
+the re-use happened when we had coalesced the buddy pages.
+
+But when we release the page on CPU1, we will release just _one_ page,
+and the other three pages will be lost forever.
+
+IOW, we restored the page count perfectly fine, but we screwed up the
+page sizes and buddy information.
+
+Ok, so the above is so unlikely from a timing standpoint that I don't
+think it ever happens, but I don't see why it couldn't happen in
+theory.
+
+Please somebody tell me I'm missing some clever thing we do to make
+sure this can actually not happen..
+
+         Linus
