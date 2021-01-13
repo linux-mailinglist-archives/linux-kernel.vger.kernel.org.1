@@ -2,161 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E882F51A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9752F51AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728180AbhAMSEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 13:04:14 -0500
-Received: from foss.arm.com ([217.140.110.172]:40062 "EHLO foss.arm.com"
+        id S1728214AbhAMSGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 13:06:50 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:39242 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727893AbhAMSEN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 13:04:13 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1C051FB;
-        Wed, 13 Jan 2021 10:03:27 -0800 (PST)
-Received: from [10.57.56.43] (unknown [10.57.56.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D66F23F66E;
-        Wed, 13 Jan 2021 10:03:18 -0800 (PST)
-Subject: Re: [RFC PATCH v3 2/6] swiotlb: Add restricted DMA pool
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Claire Chang <tientzu@chromium.org>, robh+dt@kernel.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        joro@8bytes.org, will@kernel.org, frowand.list@gmail.com,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, hch@lst.de,
-        m.szyprowski@samsung.com
-Cc:     drinkcat@chromium.org, devicetree@vger.kernel.org,
-        heikki.krogerus@linux.intel.com, saravanak@google.com,
-        peterz@infradead.org, xypron.glpk@gmx.de,
-        rafael.j.wysocki@intel.com, linux-kernel@vger.kernel.org,
-        andriy.shevchenko@linux.intel.com, bgolaszewski@baylibre.com,
-        iommu@lists.linux-foundation.org, grant.likely@arm.com,
-        rdunlap@infradead.org, gregkh@linuxfoundation.org,
-        xen-devel@lists.xenproject.org, dan.j.williams@intel.com,
-        treding@nvidia.com, linuxppc-dev@lists.ozlabs.org, mingo@kernel.org
-References: <20210106034124.30560-1-tientzu@chromium.org>
- <20210106034124.30560-3-tientzu@chromium.org>
- <95ae9c1e-c1f1-5736-fe86-12ced1f648f9@gmail.com>
- <7ed51025f051f65f3dfe10a88caeb648821994b1.camel@suse.de>
- <4c4989b5-f825-7e04-ca66-038cf6b9d5e9@arm.com>
- <9b4fe35f-a880-fcea-0591-b65406abbfa8@gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <7cb70e95-f352-5fde-cc0a-b2a65b07ef29@arm.com>
-Date:   Wed, 13 Jan 2021 18:03:16 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1727446AbhAMSGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 13:06:50 -0500
+Received: from zn.tnic (p200300ec2f0b5c0053dfdcdd1c139e2a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:5c00:53df:dcdd:1c13:9e2a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DEB8D1EC0423;
+        Wed, 13 Jan 2021 19:06:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610561169;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=ecb58dV5s1Q6ZkbAHlIZLthrr/+0Gu1KFqXCmL6iNQo=;
+        b=EGQ3ALvr+Scr+so54frXBNdjhWypBvU/uP1MiT4VYSvV7xPo5OVAgYrhluTHlOUTXuIJLb
+        Pb9jag1rkd40sl+NRhw8567fnNimM7dCn6pISiUk5O2r3mDeGyd1tDDiL8Yv+K+7Ovvm+Z
+        wmlXWPQwvOx+lrFjX+yd9Js2FuERufw=
+Date:   Wed, 13 Jan 2021 19:06:09 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Andy Lutomirski <luto@amacapital.net>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH v1 03/19] x86/insn: Add an insn_decode() API
+Message-ID: <20210113180609.GH16960@zn.tnic>
+References: <20201223174233.28638-1-bp@alien8.de>
+ <20201223174233.28638-4-bp@alien8.de>
+ <20201228101510.49082d470ed328d81486ef04@kernel.org>
+ <20201229200654.GF29947@zn.tnic>
+ <20201230180052.7e1931b4e1b17079023b65b7@kernel.org>
+ <20201230092833.GE22022@zn.tnic>
+ <20210106142114.5e9ce2cc107f6386e36b4ff4@kernel.org>
+ <20210108185950.GG4042@zn.tnic>
+ <20210112203446.04c37db1cbb329f37b4b4a5c@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <9b4fe35f-a880-fcea-0591-b65406abbfa8@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210112203446.04c37db1cbb329f37b4b4a5c@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-13 17:43, Florian Fainelli wrote:
-> On 1/13/21 7:27 AM, Robin Murphy wrote:
->> On 2021-01-13 13:59, Nicolas Saenz Julienne wrote:
->>> Hi All,
->>>
->>> On Tue, 2021-01-12 at 16:03 -0800, Florian Fainelli wrote:
->>>> On 1/5/21 7:41 PM, Claire Chang wrote:
->>>>> Add the initialization function to create restricted DMA pools from
->>>>> matching reserved-memory nodes in the device tree.
->>>>>
->>>>> Signed-off-by: Claire Chang <tientzu@chromium.org>
->>>>> ---
->>>>>    include/linux/device.h  |   4 ++
->>>>>    include/linux/swiotlb.h |   7 +-
->>>>>    kernel/dma/Kconfig      |   1 +
->>>>>    kernel/dma/swiotlb.c    | 144
->>>>> ++++++++++++++++++++++++++++++++++------
->>>>>    4 files changed, 131 insertions(+), 25 deletions(-)
->>>>>
->>>>> diff --git a/include/linux/device.h b/include/linux/device.h
->>>>> index 89bb8b84173e..ca6f71ec8871 100644
->>>>> --- a/include/linux/device.h
->>>>> +++ b/include/linux/device.h
->>>>> @@ -413,6 +413,7 @@ struct dev_links_info {
->>>>>     * @dma_pools:    Dma pools (if dma'ble device).
->>>>>     * @dma_mem:    Internal for coherent mem override.
->>>>>     * @cma_area:    Contiguous memory area for dma allocations
->>>>> + * @dma_io_tlb_mem: Internal for swiotlb io_tlb_mem override.
->>>>>     * @archdata:    For arch-specific additions.
->>>>>     * @of_node:    Associated device tree node.
->>>>>     * @fwnode:    Associated device node supplied by platform firmware.
->>>>> @@ -515,6 +516,9 @@ struct device {
->>>>>    #ifdef CONFIG_DMA_CMA
->>>>>        struct cma *cma_area;        /* contiguous memory area for dma
->>>>>                           allocations */
->>>>> +#endif
->>>>> +#ifdef CONFIG_SWIOTLB
->>>>> +    struct io_tlb_mem    *dma_io_tlb_mem;
->>>>>    #endif
->>>>>        /* arch specific additions */
->>>>>        struct dev_archdata    archdata;
->>>>> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
->>>>> index dd8eb57cbb8f..a1bbd7788885 100644
->>>>> --- a/include/linux/swiotlb.h
->>>>> +++ b/include/linux/swiotlb.h
->>>>> @@ -76,12 +76,13 @@ extern enum swiotlb_force swiotlb_force;
->>>>>     *
->>>>>     * @start:    The start address of the swiotlb memory pool. Used
->>>>> to do a quick
->>>>>     *        range check to see if the memory was in fact allocated
->>>>> by this
->>>>> - *        API.
->>>>> + *        API. For restricted DMA pool, this is device tree
->>>>> adjustable.
->>>>
->>>> Maybe write it as this is "firmware adjustable" such that when/if ACPI
->>>> needs something like this, the description does not need updating.
->>
->> TBH I really don't think this needs calling out at all. Even in the
->> regular case, the details of exactly how and where the pool is allocated
->> are beyond the scope of this code - architectures already have several
->> ways to control that and make their own decisions.
->>
->>>>
->>>> [snip]
->>>>
->>>>> +static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
->>>>> +                    struct device *dev)
->>>>> +{
->>>>> +    struct io_tlb_mem *mem = rmem->priv;
->>>>> +    int ret;
->>>>> +
->>>>> +    if (dev->dma_io_tlb_mem)
->>>>> +        return -EBUSY;
->>>>> +
->>>>> +    if (!mem) {
->>>>> +        mem = kzalloc(sizeof(*mem), GFP_KERNEL);
->>>>> +        if (!mem)
->>>>> +            return -ENOMEM;
->>>>> +
->>>>> +        if (!memremap(rmem->base, rmem->size, MEMREMAP_WB)) {
->>>>
->>>> MEMREMAP_WB sounds appropriate as a default.
->>>
->>> As per the binding 'no-map' has to be disabled here. So AFAIU, this
->>> memory will
->>> be part of the linear mapping. Is this really needed then?
->>
->> More than that, I'd assume that we *have* to use the linear/direct map
->> address rather than anything that has any possibility of being a vmalloc
->> remap, otherwise we can no longer safely rely on
->> phys_to_dma/dma_to_phys, no?
+On Tue, Jan 12, 2021 at 08:34:46PM +0900, Masami Hiramatsu wrote:
+> Or, add one definition before that line.
 > 
-> I believe you are right, which means that if we want to make use of the
-> restricted DMA pool on a 32-bit architecture (and we do, at least, I do)
-> we should probably add some error checking/warning to ensure the
-> restricted DMA pool falls within the linear map.
+> #define INSN_MODE_KERN -1	/* __ignore_sync_check__ */
 
-Oh, good point - I'm so used to 64-bit that I instinctively just blanked 
-out the !PageHighMem() condition in try_ram_remap(). So maybe the 
-original intent here *was* to effectively just implement that check, but 
-if so it could still do with being a lot more explicit.
+I like that idea, thanks! And it seems to work:
 
-Cheers,
-Robin.
+---
+
+diff --git a/arch/x86/include/asm/inat.h b/arch/x86/include/asm/inat.h
+index 4cf2ad521f65..b56c5741581a 100644
+--- a/arch/x86/include/asm/inat.h
++++ b/arch/x86/include/asm/inat.h
+@@ -6,7 +6,7 @@
+  *
+  * Written by Masami Hiramatsu <mhiramat@redhat.com>
+  */
+-#include <asm/inat_types.h>
++#include <asm/inat_types.h> /* __ignore_sync_check__ */
+ 
+ /*
+  * Internal bits. Don't use bitmasks directly, because these bits are
+diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
+index 9f1910284861..6df0d3da0d86 100644
+--- a/arch/x86/include/asm/insn.h
++++ b/arch/x86/include/asm/insn.h
+@@ -8,7 +8,7 @@
+  */
+ 
+ /* insn_attr_t is defined in inat.h */
+-#include <asm/inat.h>
++#include <asm/inat.h> /* __ignore_sync_check__ */
+ 
+ struct insn_field {
+ 	union {
+diff --git a/arch/x86/lib/inat.c b/arch/x86/lib/inat.c
+index 12539fca75c4..b0f3b2a62ae2 100644
+--- a/arch/x86/lib/inat.c
++++ b/arch/x86/lib/inat.c
+@@ -4,7 +4,7 @@
+  *
+  * Written by Masami Hiramatsu <mhiramat@redhat.com>
+  */
+-#include <asm/insn.h>
++#include <asm/insn.h> /* __ignore_sync_check__ */
+ 
+ /* Attribute tables are generated from opcode map */
+ #include "inat-tables.c"
+diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+index 2ab1d0256313..aa6ee796a987 100644
+--- a/arch/x86/lib/insn.c
++++ b/arch/x86/lib/insn.c
+@@ -10,13 +10,13 @@
+ #else
+ #include <string.h>
+ #endif
+-#include <asm/inat.h>
+-#include <asm/insn.h>
++#include <asm/inat.h> /*__ignore_sync_check__ */
++#include <asm/insn.h> /* __ignore_sync_check__ */
+ 
+ #include <linux/errno.h>
+ #include <linux/kconfig.h>
+ 
+-#include <asm/emulate_prefix.h>
++#include <asm/emulate_prefix.h> /* __ignore_sync_check__ */
+ 
+ /* Verify next sizeof(t) bytes can be on the same instruction */
+ #define validate_next(t, insn, n)	\
+@@ -748,6 +748,8 @@ int insn_decode(struct insn *insn, const void *kaddr, int buf_len, enum insn_mod
+ {
+ 	int ret;
+ 
++/* #define INSN_MODE_KERN	-1 __ignore_sync_check__ mode is only valid in the kernel */
++
+ 	if (m == INSN_MODE_KERN)
+ 		insn_init(insn, kaddr, buf_len, IS_ENABLED(CONFIG_X86_64));
+ 	else
+diff --git a/tools/arch/x86/include/asm/inat.h b/tools/arch/x86/include/asm/inat.h
+index 877827b7c2c3..a61051400311 100644
+--- a/tools/arch/x86/include/asm/inat.h
++++ b/tools/arch/x86/include/asm/inat.h
+@@ -6,7 +6,7 @@
+  *
+  * Written by Masami Hiramatsu <mhiramat@redhat.com>
+  */
+-#include "inat_types.h"
++#include "inat_types.h" /* __ignore_sync_check__ */
+ 
+ /*
+  * Internal bits. Don't use bitmasks directly, because these bits are
+diff --git a/tools/arch/x86/include/asm/insn.h b/tools/arch/x86/include/asm/insn.h
+index f8772b371452..4f219e3ae817 100644
+--- a/tools/arch/x86/include/asm/insn.h
++++ b/tools/arch/x86/include/asm/insn.h
+@@ -8,7 +8,7 @@
+  */
+ 
+ /* insn_attr_t is defined in inat.h */
+-#include "inat.h"
++#include "inat.h" /* __ignore_sync_check__ */
+ 
+ struct insn_field {
+ 	union {
+diff --git a/tools/arch/x86/lib/inat.c b/tools/arch/x86/lib/inat.c
+index 4f5ed49e1b4e..dfbcc6405941 100644
+--- a/tools/arch/x86/lib/inat.c
++++ b/tools/arch/x86/lib/inat.c
+@@ -4,7 +4,7 @@
+  *
+  * Written by Masami Hiramatsu <mhiramat@redhat.com>
+  */
+-#include "../include/asm/insn.h"
++#include "../include/asm/insn.h" /* __ignore_sync_check__ */
+ 
+ /* Attribute tables are generated from opcode map */
+ #include "inat-tables.c"
+diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+index c224e1569034..13e8615edc15 100644
+--- a/tools/arch/x86/lib/insn.c
++++ b/tools/arch/x86/lib/insn.c
+@@ -10,13 +10,13 @@
+ #else
+ #include <string.h>
+ #endif
+-#include "../include/asm/inat.h"
+-#include "../include/asm/insn.h"
++#include "../include/asm/inat.h" /* __ignore_sync_check__ */
++#include "../include/asm/insn.h" /* __ignore_sync_check__ */
+ 
+ #include <linux/errno.h>
+ #include <linux/kconfig.h>
+ 
+-#include "../include/asm/emulate_prefix.h"
++#include "../include/asm/emulate_prefix.h" /* __ignore_sync_check__ */
+ 
+ /* Verify next sizeof(t) bytes can be on the same instruction */
+ #define validate_next(t, insn, n)	\
+@@ -748,6 +748,8 @@ int insn_decode(struct insn *insn, const void *kaddr, int buf_len, enum insn_mod
+ {
+ 	int ret;
+ 
++#define INSN_MODE_KERN	-1 /* __ignore_sync_check__ mode is only valid in the kernel */
++
+ 	if (m == INSN_MODE_KERN)
+ 		insn_init(insn, kaddr, buf_len, IS_ENABLED(CONFIG_X86_64));
+ 	else
+diff --git a/tools/objtool/sync-check.sh b/tools/objtool/sync-check.sh
+index 606a4b5e929f..4bbabaecab14 100755
+--- a/tools/objtool/sync-check.sh
++++ b/tools/objtool/sync-check.sh
+@@ -16,11 +16,14 @@ arch/x86/include/asm/emulate_prefix.h
+ arch/x86/lib/x86-opcode-map.txt
+ arch/x86/tools/gen-insn-attr-x86.awk
+ include/linux/static_call_types.h
+-arch/x86/include/asm/inat.h     -I '^#include [\"<]\(asm/\)*inat_types.h[\">]'
+-arch/x86/include/asm/insn.h     -I '^#include [\"<]\(asm/\)*inat.h[\">]'
+-arch/x86/lib/inat.c             -I '^#include [\"<]\(../include/\)*asm/insn.h[\">]'
+-arch/x86/lib/insn.c             -I '^#include [\"<]\(../include/\)*asm/in\(at\|sn\).h[\">]' -I '^#include [\"<]\(../include/\)*asm/emulate_prefix.h[\">]'
+ "
++
++SYNC_CHECK_FILES='
++arch/x86/include/asm/inat.h
++arch/x86/include/asm/insn.h
++arch/x86/lib/inat.c
++arch/x86/lib/insn.c
++'
+ fi
+ 
+ check_2 () {
+@@ -63,3 +66,9 @@ while read -r file_entry; do
+ done <<EOF
+ $FILES
+ EOF
++
++if [ "$SRCARCH" = "x86" ]; then
++	for i in $SYNC_CHECK_FILES; do
++		check $i '-I "^.*\/\*.*__ignore_sync_check__.*\*\/.*$"'
++	done
++fi
+diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
+index dded93a2bc89..07857dfb4d91 100755
+--- a/tools/perf/check-headers.sh
++++ b/tools/perf/check-headers.sh
+@@ -75,6 +75,13 @@ include/uapi/asm-generic/mman-common.h
+ include/uapi/asm-generic/unistd.h
+ '
+ 
++SYNC_CHECK_FILES='
++arch/x86/include/asm/inat.h
++arch/x86/include/asm/insn.h
++arch/x86/lib/inat.c
++arch/x86/lib/insn.c
++'
++
+ # These copies are under tools/perf/trace/beauty/ as they are not used to in
+ # building object files only by scripts in tools/perf/trace/beauty/ to generate
+ # tables that then gets included in .c files for things like id->string syscall
+@@ -129,6 +136,10 @@ for i in $FILES; do
+   check $i -B
+ done
+ 
++for i in $SYNC_CHECK_FILES; do
++  check $i '-I "^.*\/\*.*__ignore_sync_check__.*\*\/.*$"'
++done
++
+ # diff with extra ignore lines
+ check arch/x86/lib/memcpy_64.S        '-I "^EXPORT_SYMBOL" -I "^#include <asm/export.h>" -I"^SYM_FUNC_START\(_LOCAL\)*(memcpy_\(erms\|orig\))"'
+ check arch/x86/lib/memset_64.S        '-I "^EXPORT_SYMBOL" -I "^#include <asm/export.h>" -I"^SYM_FUNC_START\(_LOCAL\)*(memset_\(erms\|orig\))"'
+@@ -137,10 +148,6 @@ check include/uapi/linux/mman.h       '-I "^#include <\(uapi/\)*asm/mman.h>"'
+ check include/linux/build_bug.h       '-I "^#\(ifndef\|endif\)\( \/\/\)* static_assert$"'
+ check include/linux/ctype.h	      '-I "isdigit("'
+ check lib/ctype.c		      '-I "^EXPORT_SYMBOL" -I "^#include <linux/export.h>" -B'
+-check arch/x86/include/asm/inat.h     '-I "^#include [\"<]\(asm/\)*inat_types.h[\">]"'
+-check arch/x86/include/asm/insn.h     '-I "^#include [\"<]\(asm/\)*inat.h[\">]"'
+-check arch/x86/lib/inat.c	      '-I "^#include [\"<]\(../include/\)*asm/insn.h[\">]"'
+-check arch/x86/lib/insn.c             '-I "^#include [\"<]\(../include/\)*asm/in\(at\|sn\).h[\">]" -I "^#include [\"<]\(../include/\)*asm/emulate_prefix.h[\">]"'
+ 
+ # diff non-symmetric files
+ check_2 tools/perf/arch/x86/entry/syscalls/syscall_64.tbl arch/x86/entry/syscalls/syscall_64.tbl
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
