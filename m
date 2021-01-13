@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6335C2F45FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5E42F45FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727209AbhAMIKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:10:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40032 "EHLO
+        id S1727197AbhAMIKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:10:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727164AbhAMIKC (ORCPT
+        with ESMTP id S1727167AbhAMIKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Jan 2021 03:10:02 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA97C06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:08:32 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id m4so1056610wrx.9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:08:32 -0800 (PST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFFEC06138C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:08:33 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id a12so1053787wrv.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:08:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1qkAO/aGHo5CcrKre6xluwg8dEdIWKSiyZUvz4qO5fI=;
-        b=fK1nyW2AuJAUc4P3U08Io3K5pslY3Qe+t7ZLNtrnVRB0J22NU2/CdxFP096XibmbmF
-         TPgZ014z9pkUJeqBZgCb+LqDnEj1wZTKn1K9vsS8BP2fRvu8MqEADkgJC4iSAVRExKvH
-         TFVcuQId+YR1/mySwfbskaUpIhXx5/dFTrDmiJpp7n2rpSnm+qhsWDAWEzZyiCmweMeU
-         9CU49nydxJsRPbqrX5Fma0dooI88HQ/C5U6sM6XS3myuJla2FvTJxSYFijuSF4lPBFeO
-         sK747r7kYb2EQ6Cj1yhQK99qglrQNrSY/svRrKZuJPG4KgceTPFb/EO2bpA2wMtsOfTY
-         lDuw==
+        bh=S4npnZBZUdB9VpRylBzLja8pV22PiHGoMVGeBjYnlKk=;
+        b=ITSzPdTHABER1VheL/3HTMsa+peAOHNXWe9qQVNaliJwdCllNgkrjqNGUnnUoW1L8f
+         TdK83gGX3FP7vDXmcFOgJx7vm9TGReb81hw6E4oTH2UM1IL3zW+q4gHPxvPDvd5AjKLm
+         Gs+Fq4hVcFU/+NCK9s027XGyClxfE7KC/iXRoIU7sHz+fsTZAVPw6tV+wEsphAIL4kdI
+         vHHXbjRGuiWVqmI3Q42dhbmNicEJpdsE38hcFJOwBPnn4jEboyFgMChQtAy+mNGDRQjX
+         oTNmSqc/Gg8k9NpklmMiKL/QTj+29a6HQsHmlyC25nwS1XH3rQt7Qi7xdVTyOam0d9fo
+         bzNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1qkAO/aGHo5CcrKre6xluwg8dEdIWKSiyZUvz4qO5fI=;
-        b=Ew8SzCrp7DTxbg+WFpPk14pUbgeIq+tfoemqzfwlXsRTco4wUWmu4cso0cLhtDGFeL
-         EkB0OE1Zfro/hPLkSI7R/CIFjhjgc5U7LX0WFZckIW5AHnIOMUjV3HSbgkEmTBYhgYDA
-         tIDe5ylYtpvBj77gE/cqwFFpxAWEPFLUta/veR3w+LL8WDeoTs0GtG2/+VeFEtg4MAdm
-         GcKa7bXsp7CSBny/0bFg9KzZlNEs3wUVx+PvE9qFWyR+pB0XESZHGCkxWomDXfTgElET
-         CFjg91rxe1F1SkMtY5qfVWUc5Obmc/FsMyIRf4Utyv09jQc3cTSjX9A5buw1F+CFMIAn
-         NwjQ==
-X-Gm-Message-State: AOAM5303DcpuuXLeQaC0fa3DizxNhkxUU0fxrHwHVDn4gh+IU1qUGddK
-        Ted5xWjbX2W6OThGqvU0kSywJQ==
-X-Google-Smtp-Source: ABdhPJwm1hXgI8m72Rvsxy8t+CaS4V32+7aBrAamJKyyaKIMciFMNOVopmGGOLhsccFZBjF4t5GjWA==
-X-Received: by 2002:a5d:4905:: with SMTP id x5mr1179688wrq.75.1610525311521;
-        Wed, 13 Jan 2021 00:08:31 -0800 (PST)
+        bh=S4npnZBZUdB9VpRylBzLja8pV22PiHGoMVGeBjYnlKk=;
+        b=S9KtJ9siT3VB16tuWdp+sgP/rCk2Lxtl/KkLiDL5ifqs5ktO8GpiIHnaYHFitIz4gw
+         snr1qFx2V+M5Vm3vOMrSnqfoTgNwl3RLEo5m8wp5zhGbXpSYTO7Qri0rPx+SqqRM2C4y
+         GFzdYXqSH/hYslFQy6FkPCo6GkM2AKRfhDn+3eIcMhxONkEebc3sR1Ro7x0D8pHW/RYn
+         kWK7Ls9VBI7jhLJtycdTO8zvr2Td4rci/b99VwK5dNsIWOhxoUq/NYmKUe4oa64HI7Mq
+         kgpQLQCV9q/2OIE0l+F8bPTub3PL872WsqMIcN+r5VxUhBwzAaU7Ej9YrYwFVGdLaT1Q
+         Dwkg==
+X-Gm-Message-State: AOAM5332hhm6m59BgzUC8fw6sQNpGgS9iacj+sCsE+pRrJNN5HPE/GR/
+        R585NvTP5ysYtzqfkdqoPUUo91YX7JSNjeaz
+X-Google-Smtp-Source: ABdhPJyl/Qhbk6jkk5C3J8WRijqVE/SpDxKAue04bKado0wqe6IdXSv6///j096igmmNz7SjwqECMQ==
+X-Received: by 2002:adf:f989:: with SMTP id f9mr1164742wrr.299.1610525312650;
+        Wed, 13 Jan 2021 00:08:32 -0800 (PST)
 Received: from dell.default ([91.110.221.229])
-        by smtp.gmail.com with ESMTPSA id r20sm1642486wmh.15.2021.01.13.00.08.30
+        by smtp.gmail.com with ESMTPSA id r20sm1642486wmh.15.2021.01.13.00.08.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 00:08:30 -0800 (PST)
+        Wed, 13 Jan 2021 00:08:32 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
-Subject: [PATCH 29/30] drm/nouveau/nv50_display: Remove superfluous prototype for local static functions
-Date:   Wed, 13 Jan 2021 08:07:51 +0000
-Message-Id: <20210113080752.1003793-30-lee.jones@linaro.org>
+Subject: [PATCH 30/30] drm/nouveau/dispnv50/disp: Include header containing our prototypes
+Date:   Wed, 13 Jan 2021 08:07:52 +0000
+Message-Id: <20210113080752.1003793-31-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210113080752.1003793-1-lee.jones@linaro.org>
 References: <20210113080752.1003793-1-lee.jones@linaro.org>
@@ -67,16 +67,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following build error:
+Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/nouveau/dispnv50/disp.c:2530:1: error: conflicting types for ‘nv50_display_fini’
- In file included from drivers/gpu/drm/nouveau/dispnv50/disp.c:71:
- drivers/gpu/drm/nouveau/nv50_display.h:36:6: note: previous declaration of ‘nv50_display_fini’ was her
- In file included from drivers/gpu/drm/nouveau/dispnv50/disp.c:71:
- drivers/gpu/drm/nouveau/nv50_display.h:35:6: note: previous declaration of ‘nv50_display_init’ was here
- drivers/gpu/drm/nouveau/dispnv50/disp.c:2581:1: error: static declaration of ‘nv50_display_destroy’ follows non-static declaration
- In file included from drivers/gpu/drm/nouveau/dispnv50/disp.c:71:
- drivers/gpu/drm/nouveau/nv50_display.h:34:6: note: previous declaration of ‘nv50_display_destroy’ was here
+ drivers/gpu/drm/nouveau/dispnv50/disp.c:2599:1: warning: no previous prototype for ‘nv50_display_create’ [-Wmissing-prototypes]
 
 Cc: Ben Skeggs <bskeggs@redhat.com>
 Cc: David Airlie <airlied@linux.ie>
@@ -85,21 +78,22 @@ Cc: dri-devel@lists.freedesktop.org
 Cc: nouveau@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/nouveau/nv50_display.h | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/gpu/drm/nouveau/dispnv50/disp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/nouveau/nv50_display.h b/drivers/gpu/drm/nouveau/nv50_display.h
-index fbd3b15583bc8..2421401d12636 100644
---- a/drivers/gpu/drm/nouveau/nv50_display.h
-+++ b/drivers/gpu/drm/nouveau/nv50_display.h
-@@ -31,7 +31,4 @@
- #include "nouveau_reg.h"
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+index 809a9b20a6899..d82965893b6bc 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+@@ -68,6 +68,8 @@
  
- int  nv50_display_create(struct drm_device *);
--void nv50_display_destroy(struct drm_device *);
--int  nv50_display_init(struct drm_device *);
--void nv50_display_fini(struct drm_device *);
- #endif /* __NV50_DISPLAY_H__ */
+ #include <subdev/bios/dp.h>
+ 
++#include "nv50_display.h"
++
+ /******************************************************************************
+  * EVO channel
+  *****************************************************************************/
 -- 
 2.25.1
 
