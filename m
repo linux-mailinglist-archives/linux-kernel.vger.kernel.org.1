@@ -2,75 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99FEC2F49F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7182F49FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbhAMLVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:21:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41060 "EHLO mx2.suse.de"
+        id S1728391AbhAMLWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:22:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728292AbhAMLVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:21:48 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 624B1AF2D;
-        Wed, 13 Jan 2021 11:21:06 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Paul Zimmerman <Paul.Zimmerman@synopsys.com>,
-        Felipe Balbi <balbi@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Hudson <skrll@netbsd.org>, linux-usb@vger.kernel.org,
-        Minas Harutyunyan <hminas@synopsys.com>
-Cc:     linux@roeck-us.net, dianders@chromium.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] usb: dwc2: Make "trimming xfer length" a debug message
-Date:   Wed, 13 Jan 2021 12:20:51 +0100
-Message-Id: <20210113112052.17063-4-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210113112052.17063-1-nsaenzjulienne@suse.de>
-References: <20210113112052.17063-1-nsaenzjulienne@suse.de>
+        id S1726010AbhAMLWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 06:22:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDAA62336F;
+        Wed, 13 Jan 2021 11:21:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610536898;
+        bh=EggYq6wuwwH0lRrHpU74Cm7tyux54OWhkraFooh7AGQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=otMtiQT338TVUD+EuBT9iUhd46X16JT7yz/8HrszkYDc+0cnbxkNz3qLMeYYy62KB
+         5dA3brkTlMvabkodCaiOFhC3cEocaMLpfsbF7XLaAr2Vwv6tUC9oQ8OtsC/9DsDonj
+         kF2l+9vwW6/hgj2l8RFsDMMvLRl2o3m2Kp8tTnlMDydlcJFHn0pKy19NhnjhFXRMg9
+         Q336dZbHbsl4eKn2NIZclONETvNwi5VigLMXi9vRxUyy7+JfektnIpQ3I5p4ZFOtnx
+         Omlj98W2Y/RLUOApPdengfvipshDT5x8AXYDIjdshrncAsU/TzvE2A2HnzomwWPiWy
+         5wHr1+4xiJO5w==
+Date:   Wed, 13 Jan 2021 16:51:32 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] dmaengine: qcom: Always inline gpi_update_reg
+Message-ID: <20210113112132.GA2771@vkoul-mobl>
+References: <20210112191214.1264793-1-natechancellor@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112191214.1264793-1-natechancellor@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+On 12-01-21, 12:12, Nathan Chancellor wrote:
+> When building with CONFIG_UBSAN_UNSIGNED_OVERFLOW, clang decides not to
+> inline gpi_update_reg, which causes a linkage failure around __bad_mask:
+> 
+> ld.lld: error: undefined symbol: __bad_mask
+> >>> referenced by bitfield.h:119 (include/linux/bitfield.h:119)
+> >>>               dma/qcom/gpi.o:(gpi_update_reg) in archive drivers/built-in.a
+> >>> referenced by bitfield.h:119 (include/linux/bitfield.h:119)
+> >>>               dma/qcom/gpi.o:(gpi_update_reg) in archive drivers/built-in.a
+> 
+> If gpi_update_reg is not inlined, the mask value will not be known at
+> compile time so the check in field_multiplier stays in the final
+> object file, causing the above linkage failure. Always inline
+> gpi_update_reg so that this check can never fail.
 
-With some USB network adapters, such as DM96xx, the following message
-is seen for each maximum size receive packet.
+Applied, thanks
 
-dwc2 ff540000.usb: dwc2_update_urb_state(): trimming xfer length
-
-This happens because the packet size requested by the driver is 1522
-bytes, wMaxPacketSize is 64, the dwc2 driver configures the chip to
-receive 24*64 = 1536 bytes, and the chip does indeed send more than
-1522 bytes of data. Since the event does not indicate an error condition,
-the message is just noise. Demote it to debug level.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Fixes: 7359d482eb4d3 ("staging: HCD files for the DWC2 driver")
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Tested-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
----
- drivers/usb/dwc2/hcd_intr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/usb/dwc2/hcd_intr.c b/drivers/usb/dwc2/hcd_intr.c
-index 12819e019e13..d5f4ec1b73b1 100644
---- a/drivers/usb/dwc2/hcd_intr.c
-+++ b/drivers/usb/dwc2/hcd_intr.c
-@@ -500,7 +500,7 @@ static int dwc2_update_urb_state(struct dwc2_hsotg *hsotg,
- 						      &short_read);
- 
- 	if (urb->actual_length + xfer_length > urb->length) {
--		dev_warn(hsotg->dev, "%s(): trimming xfer length\n", __func__);
-+		dev_dbg(hsotg->dev, "%s(): trimming xfer length\n", __func__);
- 		xfer_length = urb->length - urb->actual_length;
- 	}
- 
 -- 
-2.29.2
-
+~Vinod
