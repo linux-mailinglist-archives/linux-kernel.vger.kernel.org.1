@@ -2,125 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D48A2F4B4B
+	by mail.lfdr.de (Postfix) with ESMTP id C923B2F4B4C
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725899AbhAMMbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 07:31:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39754 "EHLO
+        id S1726456AbhAMMb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 07:31:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbhAMMbO (ORCPT
+        with ESMTP id S1726003AbhAMMbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 07:31:14 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D632C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 04:30:34 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id z20so952376qtq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 04:30:34 -0800 (PST)
+        Wed, 13 Jan 2021 07:31:25 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264FEC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 04:30:45 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id r9so3646295ioo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 04:30:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YHb853OW+nOYLu/IE6QCDFLb71LosLe9lCUBT46DGFo=;
-        b=A4DDeU2VTnUM/WugpeuuSLcq9DsDKZjW0otZi4DeSSn3tJzX8FHHFbhlUurXyQRR4p
-         PiIgYMuNq97TrI5EQsmI1BzT66qkEfU5AuW1i02BlbKZ44VFVxHmLB9rjtDfH7/RK9OJ
-         FS3SOC1fw1P/VWiCX6FK2U1QqrbCQVIGSgqu/KDe+h5MaJ7GTRNQZ+1+0I9k4t6+LOBl
-         PNDRukfZWdk3Ue13Ow6DENqwIhn7TeIkUR0nTSBygPjK6T4TFDqPsVlTpMDWXvjkR9IM
-         /Dsn21BJ3wSZnwOAW9hc1ZXARRdSKj9vniM1aNMeir7rOy4EIsqw3ss75pR+mlAQMC5p
-         K6Sg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Qy2n0EEDF/FIPv3Pjpgkrjv/e7EmHyQ07JOMBlAK9gc=;
+        b=gWIe/OZx+ut9emsJYi4FUSOeyMRsbSg1TgDmmceyc5HZwcopY6Ze9fXZBLextW/X+D
+         UeCeFrR2FszDUAQiwRKRnrKXs/f0S4oTC3ura65e0NMnX25fYf272bUsmxfy8Hka7vg+
+         2Mkx1ro66wsrp7Y8VWsBxkpmfjEaE+fQ6xDhORYvpDe7yO0MDCEO0Xik3ANSvvTcxaRB
+         omxuvkfYbbS3X9irycc2dwvGf6AIDb911TmDHP+EJ0G4FsAE80hxOSSnl9FptW62UFEC
+         jYDpUEo2OJMP+3DQnJmoBx4aNAk6Qskh3xllJn5xm9nKNw2dfq8ES954fBOp4oiA5GdZ
+         i2sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YHb853OW+nOYLu/IE6QCDFLb71LosLe9lCUBT46DGFo=;
-        b=TWm1DDAzi5vGtx23Uy82NuNNva1k5oGK6lxPc6aH2Xz65nWDBu1p6Le3rYrNvDnCEj
-         uzy2NQXYZvr0Hn6ZtnjkoE+hIte+NChB0P3CpMMs1O2IPAwgVerdH/7RoM1oQMlzkbAB
-         lOGAmOjkL5InEl5bsYvu/l1MOMTMTt3aylG1NC5qULKVaASUNycRX37F+h8X5WZho+yD
-         4VMVfgQSYxxIIFtFcDx2ch74yQdt4TPV/aj6kF6Cv4J97RUNpXii/jcMxTQITnqDsJX4
-         mx3gWGTE6bTOljVhJQab/L5JnyAS1d0NXYK0oTbUh9xVnvWehut3y/PtHwTXRsvnHXtD
-         1MUg==
-X-Gm-Message-State: AOAM532Z8kBibH3v1/jKuZpAefNQYRSUPP8NG0E54ox6YhfFYaI6Sh4L
-        V+1huHl3okcWFf9UdwaM784IW5/qlfev3QZzT2EfPQ==
-X-Google-Smtp-Source: ABdhPJzKGyNdIflFErZkBaYeIIgatGIdJmqQZ/ahgW1INpCbqgO3B6lUZSe/Ve2mjALp83/bCAe0T/tIFtiJL5pfZGs=
-X-Received: by 2002:ac8:6f32:: with SMTP id i18mr1908368qtv.175.1610541033304;
- Wed, 13 Jan 2021 04:30:33 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1609871239.git.andreyknvl@google.com> <0c51a7266ea851797dc9816405fc40d860a48db1.1609871239.git.andreyknvl@google.com>
- <CAG_fn=VXe2AZZ3q6+HoV+zB=9GLP+kgyW_r9hfqvX-NJHurTRg@mail.gmail.com> <CAAeHK+xbYpuipd3+Jew7=fL8Mn2J1ZzOVyzK+X6bvtLCeiGFuw@mail.gmail.com>
-In-Reply-To: <CAAeHK+xbYpuipd3+Jew7=fL8Mn2J1ZzOVyzK+X6bvtLCeiGFuw@mail.gmail.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 13 Jan 2021 13:30:22 +0100
-Message-ID: <CAG_fn=XfNb_tuUiGDhRAyihTQhW8RQ8zVjT+gXM_Efhw0cBg6Q@mail.gmail.com>
-Subject: Re: [PATCH 09/11] kasan: fix memory corruption in kasan_bitops_tags test
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Qy2n0EEDF/FIPv3Pjpgkrjv/e7EmHyQ07JOMBlAK9gc=;
+        b=IDkdPOSy9+Iqsgm/FN7SQBNLXyfoL1Z5G28yyCQPeaOEI8hRso50YQciJOHINtG45D
+         dqVc1Mbku+B7ROHrS8O6v3oatTb7nv0W83SxDToI92WwBS8hmEMrcjrsGe76lMcCZipa
+         gQuNPaduu6xePGfw88RLJoA97QiLJS2HmvuO28+Jekqf6K9Lf6vabzuUOV2F15ZRD7jr
+         awXIfLj0OzoQ71Jc3/h4f16desKNJwyHdn5V5QF8c0SnGkmdPAgKGPcSizrYxp83qEii
+         vF+k8bx/M2MCrqWk0VztHhH1C0f9alW2if/DHxEXXAORL/WXRzWMhfmPi/7NadYFgsAu
+         XkKA==
+X-Gm-Message-State: AOAM530UwLYjyqtldmYEftwelKCnU4D/wWaOti6MUfgnuJLdhIx8QYC5
+        Vd7AH4t8tbDvVt4yFulthJM=
+X-Google-Smtp-Source: ABdhPJw3CfCDPyXHI9c7glMB6li8HciyUIXwUkOxRUfs7DHf4hBFHnUmdCstrIQBWU4VQucFnjqpxQ==
+X-Received: by 2002:a6b:db01:: with SMTP id t1mr1546900ioc.10.1610541044564;
+        Wed, 13 Jan 2021 04:30:44 -0800 (PST)
+Received: from shinobu ([193.27.12.132])
+        by smtp.gmail.com with ESMTPSA id t17sm1142070ioc.8.2021.01.13.04.30.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 04:30:43 -0800 (PST)
+Date:   Wed, 13 Jan 2021 21:30:28 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Arnd Bergmann <arnd@kernel.org>, Willy Tarreau <w@1wt.eu>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.osdn.me>,
+        Mark Salter <msalter@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: Old platforms: bring out your dead
+Message-ID: <X/7n5JQLQrBLKGaf@shinobu>
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <20210109055645.GA2009@1wt.eu>
+ <CAK8P3a1C+EUvyLm3fo8TGOV39hhaxhtDM3cX_QLc-=WCzRksMw@mail.gmail.com>
+ <6fb7e3f5035d44fab9801001f1811b59@AcuMS.aculab.com>
+ <CAHp75Vf43_zqDX9K4GmkRd7fujY2zC8=LneSMFpC2qnJL_uG1A@mail.gmail.com>
+ <CACRpkdaH-1s8DnRUPVRSQgqUE99MdWjKGLv_y6iYnXU6p4dwUg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UmhiVe9cN4Tq8lpv"
+Content-Disposition: inline
+In-Reply-To: <CACRpkdaH-1s8DnRUPVRSQgqUE99MdWjKGLv_y6iYnXU6p4dwUg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 9:07 PM 'Andrey Konovalov' via kasan-dev
-<kasan-dev@googlegroups.com> wrote:
->
-> On Tue, Jan 12, 2021 at 9:30 AM Alexander Potapenko <glider@google.com> wrote:
+
+--UmhiVe9cN4Tq8lpv
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jan 13, 2021 at 01:02:20PM +0100, Linus Walleij wrote:
+> On Wed, Jan 13, 2021 at 11:27 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Mon, Jan 11, 2021 at 11:55 AM David Laight <David.Laight@aculab.com>=
+ wrote:
+>=20
+> > > basically 486 but have a few extra instructions - probably just cpuid
+> > > and (IIRC) rdtsc.
+> > > Designed for low power embedded use they won't ever have been suitable
+> > > for a desktop - but are probably fast enough for some uses.
+> > > I'm not sure how much keeping 486 support actually costs, 386 was a
+> > > PITA - but the 486 fixed most of those issues.
 > >
-> > On Tue, Jan 5, 2021 at 7:28 PM Andrey Konovalov <andreyknvl@google.com> wrote:
-> > >
-> > > Since the hardware tag-based KASAN mode might not have a redzone that
-> > > comes after an allocated object (when kasan.mode=prod is enabled), the
-> > > kasan_bitops_tags() test ends up corrupting the next object in memory.
-> > >
-> > > Change the test so it always accesses the redzone that lies within the
-> > > allocated object's boundaries.
-> > >
-> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > > Link: https://linux-review.googlesource.com/id/I67f51d1ee48f0a8d0fe2658c2a39e4879fe0832a
-Reviewed-by: Alexander Potapenko <glider@google.com>
+> > Right, we have "last of mohicans" (to date) Intel Quark family of CPUs
+> > (486 core + few i586 features).
+> > This is for the embedded world and probably not for powerful use.
+>=20
+> What is the status of PC/104?
+> https://en.wikipedia.org/wiki/PC/104
+>=20
+> I have three GPIO drivers for PC/104 machines and these are for
+> embedded industrial usecases. I am curious about what CPUs these
+> beasts run on in practice? Are they getting upgraded?
+>=20
+> Paging William, I think he work on these daily.
+>=20
+> Yours,
+> Linus Walleij
 
-> > > ---
-> > >  lib/test_kasan.c | 12 ++++++------
-> > >  1 file changed, 6 insertions(+), 6 deletions(-)
-> > >
-> > > diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> > > index b67da7f6e17f..3ea52da52714 100644
-> > > --- a/lib/test_kasan.c
-> > > +++ b/lib/test_kasan.c
-> > > @@ -771,17 +771,17 @@ static void kasan_bitops_tags(struct kunit *test)
-> > >
-> > >         /* This test is specifically crafted for the tag-based mode. */
-> > >         if (IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-> > > -               kunit_info(test, "skipping, CONFIG_KASAN_SW_TAGS required");
-> > > +               kunit_info(test, "skipping, CONFIG_KASAN_SW/HW_TAGS required");
-> > >                 return;
-> > >         }
-> > >
-> > > -       /* Allocation size will be rounded to up granule size, which is 16. */
-> > > -       bits = kzalloc(sizeof(*bits), GFP_KERNEL);
-> > > +       /* kmalloc-64 cache will be used and the last 16 bytes will be the redzone. */
-> > > +       bits = kzalloc(48, GFP_KERNEL);
-> >
-> > I think it might make sense to call ksize() here to ensure we have
-> > these spare bytes.
->
-> Calling ksize() will unpoison the whole object.
+I don't really see pure PC/104 systems around that much anymore, but
+there are still plenty of PC/104-Plus and PCI-104 setups in production.
+The PC/104 form factor is popular because users can stack PC/104
+compatible modules easily together to build custom solutions; see for
+example the diagram on this page:
+https://www.advantech.com/embedded-boards-design-in-services/embedded-singl=
+e-board-computers/pc104-and-pc104-plus
 
-Ah, that's right.
+As far as the CPU is concerned, these systems are typically for
+industrial applications and run CPUs geared for low-power consumption --
+you're looking at processor series such as the Intel Bay trail
+(https://www.winsystems.com/product/epx-c414/), DMP Vortex86DX
+(http://www.diamondsystems.com/products/helios), and AMD G-series
+(https://www.advantech.com/products/1-2jkltu/pcm-3356/mod_0706f4d5-2e44-473=
+a-a7b7-53bd1a7bd1a0).
 
-> I think it's OK to make assumptions about KASAN internals in tests. I
-> would actually say that we need more tests that check such internal
-> properties.
+TLDR; PC/104 is certainly a niche market focused on industrial
+consumers, but the form factor and devices are still popular and
+upgraded reguarly.
 
-Agreed.
+William Breathitt Gray
+
+--UmhiVe9cN4Tq8lpv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl/+58sACgkQhvpINdm7
+VJI8BRAArRPORTMYpY/tyUB0frIrCrrKW42Iu8h+qE4a9snxWF+5V6Iul58auY9e
+AQXFU1TUYcFHKcNglXb5YzGJ8zoafXl7RPAE7DKIcPIzIS8MAh3+rEXvRFdTcJ2s
+KE9bwo0+uBg3qu3YqKccWbTKT7gAKIZmAGKOYGQpxmRGYfiYqXb5Fb0VPD/ColAk
+b38WMUIBhXAo11DmHuGsGgah1Cz9H4blRU4fmUkw2jyhtGiTYRnTytv0Q76ZV+LY
+1zH2eGPsd6RFsKeE3TWJQx6jDZI26DLvPFYmam6R2acNUdYGgH69izmRpAkVa/JJ
+3ZIuWVctVUpm58JjjJ9rjekzZAHIOiw9wIRajHV3NCMjNBdJgDqYNVZjRFvF0WCZ
+s3kMhpxwURkefPUecHkQV7SY0NKZQH9noH44aRw0+M9FDSASwtJLDhOAaMSbgSA+
+YCr4DsDe94I5HxpJNIAiBhAKq28NISSAorOlFFbtvDbXuzB4DHBsogiDCv1BbBCV
+jce3c2eRO/eB1fOgybtozGAizkPu0HloKgpOui0yPwjkowM4v/SZP9CX5T/GgxMA
+qt3c5y2wr19F1e9GEcjbObPW/hiYFRGkKxUCcQYZpdpsh4chNBJZDGUwvl6pjjtQ
+uTrqZyRll7sjCFcqE6FnNEOe6G+QL+fwQ5DlVnhVDQC6YiSgX04=
+=c68M
+-----END PGP SIGNATURE-----
+
+--UmhiVe9cN4Tq8lpv--
