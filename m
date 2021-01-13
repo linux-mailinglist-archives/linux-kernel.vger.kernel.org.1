@@ -2,109 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410842F53C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8FD2F53C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728656AbhAMUAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 15:00:34 -0500
-Received: from smtprelay03.ispgateway.de ([80.67.18.15]:61233 "EHLO
-        smtprelay03.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbhAMUAd (ORCPT
+        id S1728853AbhAMUBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 15:01:12 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:54832 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728793AbhAMUBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 15:00:33 -0500
-Received: from [84.39.76.69] (helo=thinkstation.fritz.box)
-        by smtprelay03.ispgateway.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92.3)
-        (envelope-from <vogelchr@vogel.cx>)
-        id 1kzm9z-0006Vv-Go; Wed, 13 Jan 2021 20:50:27 +0100
-From:   Christian Vogel <vogelchr@vogel.cx>
-To:     greg@kroah.com
-Cc:     zbr@ioremap.net, vogelchr@vogel.cx, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] w1/masters/ds2490: queue up found IDs during scan
-Date:   Wed, 13 Jan 2021 20:50:18 +0100
-Message-Id: <20210113195018.7498-3-vogelchr@vogel.cx>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210113195018.7498-1-vogelchr@vogel.cx>
-References: <20210113195018.7498-1-vogelchr@vogel.cx>
+        Wed, 13 Jan 2021 15:01:11 -0500
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610568029;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=bbKNxaytHHc7ERAboHvLD0eJLsglL3VCsCRU4d9xpZk=;
+        b=svCYZ9QYuxi/9XqlIcW1DtTtFDSxYkzzwfXgNyYQzHtFlCKExMU0TkzVEw55goezuBUPsE
+        3QTHXNU/B8+DGVFFlOU45z0hDCX1dbu7YcasBVodI7vjk4UKb/u++ZV8pH3/xQ8tLEurfC
+        3ouUSTMmTE/OGf4y9IjFXYQRPL03ijaFkJq4lmFQhItCSBbcbKLKAZ2GmQrOHIh62LNjq5
+        wstuiITGPjrMYAi/0dp+8xVOUCgO7EqLADpXN2wyo3t1cpFI6DYGSCoH1Q5nLVKbKIrRJB
+        OEa7NFVQhfqhV35EhrlnJkQ3+oIbUMK1jM3LN6n9ZO6ZxjhpjX5GOlRrqfCO6g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610568029;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=bbKNxaytHHc7ERAboHvLD0eJLsglL3VCsCRU4d9xpZk=;
+        b=QYgTWB4AnZQ8n/igl0sF7HYGASwfhOnVW/EcyyjWYerCwigNEZi170UpP3WtbaawloSy5J
+        aJHj5BQm72mStBAw==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: RFC: printk: kmsg_dump_get_line_nolock() buffer overflow
+Date:   Wed, 13 Jan 2021 21:06:28 +0106
+Message-ID: <87im8038v7.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Df-Sender: Y2hyaXNAb21ncHduaWVzLmRl
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Queue up found IDs in a buffer and run the callback once for each found ID
-at the end. This is necessary because we hold the bus_mutex during the
-whole scan, and some of the "add-device" callbacks deadlock as they
-themselves want to mutex_lock(bus_mutex).
+Hello,
 
-Acked-by: Evgeniy Polyakov <zbr@ioremap.net>
-Signed-off-by: Christian Vogel <vogelchr@vogel.cx>
----
- drivers/w1/masters/ds2490.c | 25 ++++++++++++++++++++-----
- 1 file changed, 20 insertions(+), 5 deletions(-)
+I have discovered that kmsg_dump_get_line_nolock() is not allowed to
+fill the full buffer that it is provided. It should leave at least 1
+byte free so that callers can append a terminator.
 
-diff --git a/drivers/w1/masters/ds2490.c b/drivers/w1/masters/ds2490.c
-index e17c8f70dcd0..cd8821580f71 100644
---- a/drivers/w1/masters/ds2490.c
-+++ b/drivers/w1/masters/ds2490.c
-@@ -688,12 +688,22 @@ static void ds9490r_search(void *data, struct w1_master *master,
- 	 * packet size.
- 	 */
- 	const size_t bufsize = 2 * 64;
--	u64 *buf;
-+	u64 *buf, *found_ids;
+Example from arch/powerpc/xmon/xmon.c:
+
+    kmsg_dump_get_line_nolock(&dumper, false, buf, sizeof(buf), &len);
+    buf[len] = '\0';
+
+This unusual behavior was not noticed and with commit 896fbe20b4e2
+("printk: use the lockless ringbuffer") the implementation of
+kmsg_dump_get_line_nolock() was changed so that the full buffer can be
+filled. This means that the two kmsg_dump_get_line*() users currently
+can have a 1-byte buffer overflow.
+
+This unusual kmsg_dump_get_line_nolock() behavior seems to have been
+accidentally introduced with commit 3ce9a7c0ac28 ("printk() - restore
+prefix/timestamp printing for multi-newline strings"). Indeed, the
+whitespace on the line that causes this behavior is not conform, leading
+me to think it was a last-minute change or a typo. (The behavior is
+caused by the ">=" instead of an expected ">".)
+
++    if (print_prefix(msg, syslog, NULL) +
++        text_len + 1>= size - len)
++            break;
+
+Perhaps there was some paranoia involved because this same commit also
+fixes a buffer overflow in the old implementation:
+
+-    if (len + msg->text_len > size)
+-            return -EINVAL;
+-    memcpy(text + len, log_text(msg), msg->text_len);
+-    len += msg->text_len;
+-    text[len++] = '\n';
+
+Anyways, we currently have this 1-byte buffer overflow in 5.10 and it
+needs to be corrected. I see two possibilties.
+
+1. We leave kmsg_dump_get_line_nolock() as it is and modify the callers
+   to properly terminate their buffer. This is my preferred
+   approach. The patch would look like this:
+
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index dcd817ca2edf..9c3faab3a7a5 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -3019,7 +3019,7 @@ dump_log_buf(void)
  
- 	buf = kmalloc(bufsize, GFP_KERNEL);
- 	if (!buf)
+ 	kmsg_dump_rewind_nolock(&dumper);
+ 	xmon_start_pagination();
+-	while (kmsg_dump_get_line_nolock(&dumper, false, buf, sizeof(buf), &len)) {
++	while (kmsg_dump_get_line_nolock(&dumper, false, buf, sizeof(buf) - 1, &len)) {
+ 		buf[len] = '\0';
+ 		printf("%s", buf);
+ 	}
+diff --git a/arch/um/kernel/kmsg_dump.c b/arch/um/kernel/kmsg_dump.c
+index e4abac6c9727..acc1b399fbe2 100644
+--- a/arch/um/kernel/kmsg_dump.c
++++ b/arch/um/kernel/kmsg_dump.c
+@@ -25,7 +25,7 @@ static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
  		return;
  
-+	/*
-+	 * We are holding the bus mutex during the scan, but adding devices via the
-+	 * callback needs the bus to be unlocked. So we queue up found ids here.
-+	 */
-+	found_ids = kmalloc_array(master->max_slave_count, sizeof(u64), GFP_KERNEL);
-+	if (!found_ids) {
-+		kfree(buf);
-+		return;
-+	}
-+
- 	mutex_lock(&master->bus_mutex);
- 
- 	/* address to start searching at */
-@@ -729,13 +739,13 @@ static void ds9490r_search(void *data, struct w1_master *master,
- 			if (err < 0)
- 				break;
- 			for (i = 0; i < err/8; ++i) {
--				++found;
--				if (found <= search_limit)
--					callback(master, buf[i]);
-+				found_ids[found++] = buf[i];
- 				/* can't know if there will be a discrepancy
- 				 * value after until the next id */
--				if (found == search_limit)
-+				if (found == search_limit) {
- 					master->search_id = buf[i];
-+					break;
-+				}
- 			}
- 		}
- 
-@@ -759,9 +769,14 @@ static void ds9490r_search(void *data, struct w1_master *master,
- 			master->max_slave_count);
- 		set_bit(W1_WARN_MAX_COUNT, &master->flags);
+ 	printf("kmsg_dump:\n");
+-	while (kmsg_dump_get_line(dumper, true, line, sizeof(line), &len)) {
++	while (kmsg_dump_get_line(dumper, true, line, sizeof(line) - 1, &len)) {
+ 		line[len] = '\0';
+ 		printf("%s", line);
  	}
-+
- search_out:
- 	mutex_unlock(&master->bus_mutex);
- 	kfree(buf);
-+
-+	for (i = 0; i < found; i++) /* run callback for all queued up IDs */
-+		callback(master, found_ids[i]);
-+	kfree(found_ids);
- }
- 
- #if 0
--- 
-2.30.0
 
+2. We modify kmsg_dump_get_line_nolock() so that it goes back to the
+   unusual behavior. The patch would look like this:
+
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 848b56efc9d7..f0c03e432648 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3314,6 +3314,13 @@ bool kmsg_dump_get_line_nolock(struct kmsg_dumper *dumper, bool syslog,
+ 	size_t l = 0;
+ 	bool ret = false;
+ 
++	/*
++	 * Callers expect this function to never fill more than
++	 * @size-1 bytes so reduce the provided size.
++	 */
++	if (size > 0)
++		size--;
++
+ 	prb_rec_init_rd(&r, &info, line, size);
+ 
+ 	if (!dumper->active)
+
+Since kmsg_dump_get_line() is an exported symbol, my preferred approach
+(which changes the semantics) may not be acceptible. In that case, we
+can take the 2nd approach.
+
+Please let me know your thoughts so I can post a patch for 5.10-stable
+and 5.11-rc.
+
+John Ogness
