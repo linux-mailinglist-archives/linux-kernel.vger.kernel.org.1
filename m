@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEC82F4416
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BE22F442A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbhAMFsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 00:48:52 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:15339 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725787AbhAMFsw (ORCPT
+        id S1726113AbhAMFve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 00:51:34 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:35260 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbhAMFvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 00:48:52 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610516911; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=wPOaHcYXsBgh6toaW+x3a5mbEPNNqwuR7H+0C33xnJs=; b=hlsYHCrXSzx6KtWZo9a8XYw6mOz7oEI/IEy8xWBKqc2HqDq0XxjuvkU517u0T2m5mVDrrr6e
- o4Z+gMV5fPr2Fd6p9oG1QBSDSGrrizRPbVIZu3I8JklyPywdOGv3ihluIbzW9yVwABu27BGm
- d3VhBoSGxq5KTFtFHKWtRLzhwZE=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5ffe8990415a6293c55410f4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 05:48:00
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 32341C43465; Wed, 13 Jan 2021 05:48:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.43.20] (unknown [157.46.227.198])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D2963C433CA;
-        Wed, 13 Jan 2021 05:47:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D2963C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-Subject: Re: [PATCH] mm: slub: Convert sys slab alloc_calls, free_calls to bin
- attribute
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        vinmenon@codeaurora.org
-References: <1610443287-23933-1-git-send-email-faiyazm@codeaurora.org>
- <20210112122245.GK35215@casper.infradead.org>
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-Message-ID: <5d0c8891-40ea-2860-555a-570494993397@codeaurora.org>
-Date:   Wed, 13 Jan 2021 11:17:51 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 13 Jan 2021 00:51:33 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10D5npu9170814;
+        Wed, 13 Jan 2021 05:50:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=3aTGR28ZQ7/qlWyIHk7iuIcdv1I6c3bO857k2v3eGD4=;
+ b=Y5VmEnfSL3qYCRIGz8Us9+YPgHUGLk/6IY/hIY9CB39aG56oFTCSavoi60rDTbc78mOI
+ yjvFfMJmkO4MQln3Te58AA/FqxxSb/SK8EnWEYepdbb33M0cvZN+Z5JpSOKuEbnXxo/s
+ /dwfPr1bqf72I8jH/iXcYnMxuN+SQUc4EA7tar5tOFUNTUrEy3s+Gka7ZAJiuUsTFZJE
+ p+XtnkX3GgDAYVMSJl2HRhYmDxhmmHNEGocl1vdHb4xjTypynXD+IPoz9g6ZbsahzFIR
+ TzrO7iJv6HT3Cf2ZmF3ZfQfzt7eSj6bQdBPBeMATI+QmaXMW638/DR0KZO/oFBEl4Xbf Wg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 360kg1sp05-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 05:50:39 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10D5eWPr058820;
+        Wed, 13 Jan 2021 05:48:39 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 360kf6vyt5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 05:48:39 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10D5mUUu028497;
+        Wed, 13 Jan 2021 05:48:33 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 12 Jan 2021 21:48:30 -0800
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     stanley.chu@mediatek.com, beanhuo@micron.com, jejb@linux.ibm.com,
+        Bean Huo <huobean@gmail.com>, alim.akhtar@samsung.com,
+        bvanassche@acm.org, tomas.winkler@intel.com,
+        asutoshd@codeaurora.org, avri.altman@wdc.com, cang@codeaurora.org
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
+Subject: Re: [PATCH v3] scsi: ufs: Replace sprintf and snprintf with sysfs_emit
+Date:   Wed, 13 Jan 2021 00:48:21 -0500
+Message-Id: <161050726819.14224.2936301272114808437.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210106211541.23039-1-huobean@gmail.com>
+References: <20210106211541.23039-1-huobean@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210112122245.GK35215@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxlogscore=958 phishscore=0 bulkscore=0 spamscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101130034
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 mlxlogscore=968 bulkscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101130035
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 6 Jan 2021 22:15:41 +0100, Bean Huo wrote:
 
+> sprintf and snprintf may cause output defect in sysfs content, it is
+> better to use new added sysfs_emit function which knows the size of the
+> temporary buffer.
 
-On 1/12/2021 5:52 PM, Matthew Wilcox wrote:
-> On Tue, Jan 12, 2021 at 02:51:27PM +0530, Faiyaz Mohammed wrote:
->> @@ -5180,6 +5187,7 @@ static int any_slab_objects(struct kmem_cache *s)
->>  
->>  struct slab_attribute {
->>  	struct attribute attr;
->> +	struct bin_attribute bin_attr;
->>  	ssize_t (*show)(struct kmem_cache *s, char *buf);
->>  	ssize_t (*store)(struct kmem_cache *s, const char *x, size_t count);
->>  };
-> 
-> I'd rather you added a struct slab_bin_attribute.  If that's even
-> needed ..  I think you could just use the bin_attribute directly instead
-> of embedding it in this struct.
-> 
+Applied to 5.12/scsi-queue, thanks!
 
-Okay, I will use bin_attribute directly, but I added the bin_attribute
-inside the slab_attribute to maintain similar code like sysfs attribute
-and slab_attribute is embedded with it's all slab attributes.
+[1/1] scsi: ufs: Replace sprintf and snprintf with sysfs_emit
+      https://git.kernel.org/mkp/scsi/c/d9edeb8b4768
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
