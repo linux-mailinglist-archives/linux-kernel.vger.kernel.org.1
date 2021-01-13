@@ -2,148 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2872F45B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B86A2F45B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbhAMIEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:04:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbhAMIEL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:04:11 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C131C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:03:31 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 3so699579wmg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:03:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=x/0jlx5sSaKGGvb82wT8NsfZQdjIWktlt2hn75IM74U=;
-        b=UOSU3aE4iuyQkGOW+qRrl9/F6PrWS+AL3kvnJ6uiz+kv99SwWb/xGubQERauz2hPwy
-         G3j5vLn3i4ZU1FME8RQHcOH8vsT235Xq5WVVsOUj5H8jQSnawcM+w4sWsDBKgRaBMRRZ
-         wjHmeBk0IP1np7qyCxkcTMJ8so2OLtf+KJ1YVebD6A+Va6GkpO55SqyL9FW0XBidcd7H
-         H/QYGlcEd3L6nFQalTRd3ZwO4cx1uXbENOO4bS4oKG+NcUztO89pQ8z3veYXCDQigzY0
-         477bwjCXj6xfANnOv9MrPvNQ+3OXFXrJ0ae1lz9MuRdscRW9DgKfuSF8+q1UZEHrSqIQ
-         qwNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=x/0jlx5sSaKGGvb82wT8NsfZQdjIWktlt2hn75IM74U=;
-        b=GuvCmjNkHfUSh0RY7CEoK3KWQYZFNUAePyPaOLwN+nwjJWTZEKv7W53ZIdJrbXtasa
-         qiIADPKfpNABMX+3ZznIpv86VVemZnzxNT4CAj4A1szEMM9iUzcKaIIyS+A2Y7a2/hrL
-         YPwljksU/3vwLZyh+vEqw8+HUl7tRowssxEvGALUKBsu+/SlaqHmLdzQdlmHLN69nu2R
-         0zE71tsg3OUTqDtmqEx7ISeAhjgR1cKrH5wjWKj/G0N08nnALR2pU1O7V4nEvytCgcMK
-         PUg5pmj+PAUcLAAglJKzGFySmrAItTPgBQ8HJrBcYe80QN0DeGLuwBNMl+6iZ9B78imi
-         NE+A==
-X-Gm-Message-State: AOAM532B01Ro/izQkRe6dNdkaQP/ZZe0zKrdbQGmoQ2ky5A8C9BbNm55
-        fFEIZtJX3sNIYcF8KsaYjUOwqA==
-X-Google-Smtp-Source: ABdhPJxpCDBiFWnjkppzs22ouEjB8n2LOdUBFP8RAquah+kSxU4xDjx22C+43u1cMHh/poxxgAVVpg==
-X-Received: by 2002:a7b:cb09:: with SMTP id u9mr944114wmj.61.1610525010138;
-        Wed, 13 Jan 2021 00:03:30 -0800 (PST)
-Received: from dell ([91.110.221.229])
-        by smtp.gmail.com with ESMTPSA id y68sm1844813wmc.0.2021.01.13.00.03.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 00:03:29 -0800 (PST)
-Date:   Wed, 13 Jan 2021 08:03:27 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v7 3/7] mfd: Add base driver for Netronix embedded
- controller
-Message-ID: <20210113080327.GB3975472@dell>
-References: <20210109180220.121511-1-j.neuschaefer@gmx.net>
- <20210109180220.121511-4-j.neuschaefer@gmx.net>
- <20210112203649.67f66996@aktux>
+        id S1726494AbhAMIGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:06:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725949AbhAMIGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 03:06:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BA7A2333B;
+        Wed, 13 Jan 2021 08:05:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610525140;
+        bh=Alzz0M7HPrwFAwKGdcZMCSI7QCWigUYNKGF1r+SA0eg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KbrONTYyabwBIbrDB8RpM1AnhUNLG2KisiBIlsWBzPJtLJd2iS87M6cAtBYtWcwoz
+         b2SkNSan3UZ9QtwTBy1MQLNzKav3DcGFh2ruiyk55o/4J5Sn4B6ain6X4FIXwW1lEi
+         VMqQVcxKQVnCYVazE4hND8XWV7cxM+yTUp2LGB3RpUs1yFsK9CYV1FZy4jFFvmiudV
+         5LrYC840qq5juTxft8hJIKyxV8U1H/KEg609DwWymFQhVCprqsKfaNsRA1J+KKA8IA
+         u+ZIo99fh6V4F7RiY50HUH2PCpx696Ej50RgyGKKnoAeo39WhrN4USDalKw0glhdpS
+         4ec7GX4L8nLvQ==
+Received: by mail-oi1-f169.google.com with SMTP id w124so1225778oia.6;
+        Wed, 13 Jan 2021 00:05:40 -0800 (PST)
+X-Gm-Message-State: AOAM530R30Zitkpl3tZWeVJ6mQQ4FKkjy4cCJssgk4J2XxeKpqlJ/U6k
+        Ac5A7RxZ9ox4rhWBAE3aZrjfAbmf2Ik1PlCyYAw=
+X-Google-Smtp-Source: ABdhPJyNVCdIK7R8b9QgE46aj8NKwV72zrszTQgMRnTLfVfcjVNY9F65+xTqtCuNdx1Y/ECwmNhUsqB45daUMiJy1K0=
+X-Received: by 2002:aca:e103:: with SMTP id y3mr491018oig.11.1610525139188;
+ Wed, 13 Jan 2021 00:05:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210112203649.67f66996@aktux>
+References: <20201016090833.1892-1-thunder.leizhen@huawei.com>
+ <20201016090833.1892-2-thunder.leizhen@huawei.com> <20201128045328.2411772-1-f.fainelli@gmail.com>
+ <CAK8P3a1_5RgcPz+bgo1bbUBk8NTJd=1-Y5-=CsQYkFgLfTE3_A@mail.gmail.com>
+ <9c6c6b7e-8c39-8c49-5c87-9b560c027841@broadcom.com> <CAK8P3a2XYk8D80XARrpUSBHk1yye3KHXOdaQge4HNSZZOC=xKw@mail.gmail.com>
+ <CACvutz9v+TBUbrCo3X-u5ebbs04nR0y0yQN3qWfSAyZVy9RM2g@mail.gmail.com>
+ <c38cf11a-ed1d-d150-52fb-e3b4a0a30712@gmail.com> <CAK8P3a1TViQopQNFE4+Dtac0v2CneGiy22WYu5BuYv8HX2r8Lg@mail.gmail.com>
+ <18112862-a42e-95b1-39a3-2e414667f39b@broadcom.com> <CAK8P3a2+EfOKAo3HLb+_qd-gnqWD55dyW0juSw1TM8jHKiZYoQ@mail.gmail.com>
+ <8aaa7bb9-a81e-cd0e-8e67-360515313748@broadcom.com> <3fc2b0174965ec6b911ab4bd73da1525@mail.gmail.com>
+In-Reply-To: <3fc2b0174965ec6b911ab4bd73da1525@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 13 Jan 2021 09:05:22 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3SdvOk=chp39-ypvHsqCJkuqFG1qn+tyJ3h71OrzgDWw@mail.gmail.com>
+Message-ID: <CAK8P3a3SdvOk=chp39-ypvHsqCJkuqFG1qn+tyJ3h71OrzgDWw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] arm64: dts: broadcom: clear the warnings caused by
+ empty dma-ranges
+To:     Bharat Gooty <bharat.gooty@broadcom.com>
+Cc:     Ray Jui <ray.jui@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Scott Branden <sbranden@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Jan 2021, Andreas Kemnade wrote:
+On Wed, Jan 13, 2021 at 4:42 AM Bharat Gooty <bharat.gooty@broadcom.com> wrote:
+>
+> Hello Ray,
+>
+> I had cross checked with Design and integration team.
+> Yes we can set the "dma-rages" to 40 bit DMA ranges. Tested, it is working.
+>
+> -----Original Message-----
+> From: Ray Jui <ray.jui@broadcom.com>
+>
+> Bharat can correct me if I'm wrong, but I don't think we have a bug in
+> the USB DMA engine that causes it can only address 32-bit. I believe we
+> can set dma-ranges size to 40-bit here.
+>
+> The dma-range property is though required to be specified, instead of
+> leaving it as empty, with the use of IOMMU. That seems to be a v5.10
+> specific behavior as I described below.
 
-> On Sat,  9 Jan 2021 19:02:16 +0100
-> Jonathan Neuschäfer <j.neuschaefer@gmx.net> wrote:
-> 
-> > The Netronix embedded controller is a microcontroller found in some
-> > e-book readers designed by the original design manufacturer Netronix,
-> > Inc. It contains RTC, battery monitoring, system power management, and
-> > PWM functionality.
-> > 
-> > This driver implements register access and version detection.
-> > 
-> > Third-party hardware documentation is available at:
-> > 
-> >   https://github.com/neuschaefer/linux/wiki/Netronix-MSP430-embedded-controller
-> > 
-> > The EC supports interrupts, but the driver doesn't make use of them so
-> > far.
-> > 
-> > Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+Ok, thanks for double-checking. I had misremembered the version
+that actually went into the as the one that used 64-bit dma-ranges
+and thought that was what broke, rather than the version without
+dma-ranges.
 
-[...]
+If any of you want to send me that bugfix directly, or have Florian
+pick it up through his fixes branch, I'll make sure we get it into v5.11.
 
-> > +static const struct of_device_id of_ntxec_match_table[] = {
-> > +	{ .compatible = "netronix,ntxec", },
-> > +	{}
-> > +};
-> > +
-> MODULE_DEVICE_TABLE?
-> 
-> > +static struct i2c_driver ntxec_driver = {
-> > +	.driver = {
-> > +		.name = "ntxec",
-> > +		.of_match_table = of_ntxec_match_table,
-> > +	},
-> > +	.probe_new = ntxec_probe,
-> > +	.remove = ntxec_remove,
-> > +};
-> > +module_i2c_driver(ntxec_driver);
-> 
-> MODULE_LICENSE()?
-> 
-> modpost moans about that here.
-
-Andreas, would you be kind enough to snip/trim your replies in future
-please.  It would save a *lot* of people a little bit of time (which
-adds up fast).  TIA.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+       Arnd
