@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9B62F4421
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5822F441B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:51:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbhAMFts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 00:49:48 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:46298 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbhAMFtr (ORCPT
+        id S1726355AbhAMFtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 00:49:43 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:36916 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbhAMFtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 00:49:47 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10D5jDhg130811;
-        Wed, 13 Jan 2021 05:49:03 GMT
+        Wed, 13 Jan 2021 00:49:43 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10D5hrpM096106;
+        Wed, 13 Jan 2021 05:48:59 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=qPgT6qmqM6VWnaO5L7GXiNS/NRV+/paYlAjkqbjJaPo=;
- b=mK2uzAaO2kTQW4/wNRWJqwXub9221P4QDUUvUsg/DrmpEkrUMeWsTRl2OwZZC/xwZ69e
- Gfa7K1i82wMyy3ztxTUYRiyK0VEPqvkKSdOkuJGNmEQbOqy1ps8dk8g8O83MlW6cEyu6
- PUufFI3ENeFkrH9/1OZWOEzK9y+ZldmtVmy0T56073GhzvG4Md/meKz9HAnn3auIMGQ4
- l5VxbWHBXp/A73ZhYQb7Xa3xrmtSFSqtx3FGo3d4SF3755Sk55xrAoSKXXApo5/HaJly
- fl3nrGPa/VgG3Mj6zgScD6YFHcJMJAP0HUqXsLfJkAWTDXb9f8pg0VAKbHpOl75a1XB+ ig== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 360kvk1k5k-1
+ bh=ZkHrcYYV5Akk6uzT+EdKBUBcNo8KiHkTc+tKaCmAVFk=;
+ b=Wyp7IYKwOIvT64CBbNSyB65TGDFvs0W78C4DuwGnJ5YYC6P/lmGf1ZZ4f6qf35Cl5gRc
+ 8Cf9HlSD6IbEfEkU0WFH2WKXN785UvvvVOkti7TgWNZtjMWFTEdFJd4MfONyOrSTnr4N
+ HYZd/ncw7KQc/6MSOR2AgOuJOQWHn1/FbwaGNIVKNHvegBBkKuAl1OW9HhSNDarnmNvN
+ 2IpWl6JrSFWXiGqX4DZajqtC2xNY8NwG/SB+cQllbecDj2W8lMR9i0jezWjOpm+tHVrH
+ 7HsYr/iQWpzDI4B7gaCqqgTwM2a25/Qv9v83i/HCe0/WqQHr+4lUR5BZH/79o2f3DFDu Ng== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 360kcysp29-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 05:49:03 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10D5e5Db133927;
-        Wed, 13 Jan 2021 05:49:02 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 360kf00pyh-1
+        Wed, 13 Jan 2021 05:48:59 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10D5eVSw058726;
+        Wed, 13 Jan 2021 05:48:58 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 360kf6w0j0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 05:49:02 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10D5mtV7028808;
-        Wed, 13 Jan 2021 05:48:56 GMT
+        Wed, 13 Jan 2021 05:48:58 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10D5mvRS023930;
+        Wed, 13 Jan 2021 05:48:58 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 12 Jan 2021 21:48:55 -0800
+        with ESMTP ; Tue, 12 Jan 2021 21:48:57 -0800
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
+To:     linux-scsi@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Satish Kharat <satishkh@cisco.com>,
-        linux-kernel@vger.kernel.org,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH] scsi: fnic: Fix memleak in vnic_dev_init_devcmd2
-Date:   Wed, 13 Jan 2021 00:48:51 -0500
-Message-Id: <161051681548.32710.4649918812732187400.b4-ty@oracle.com>
+        kernel-janitors@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] scsi: docs: ABI: sysfs-driver-ufs: rectify table formatting
+Date:   Wed, 13 Jan 2021 00:48:53 -0500
+Message-Id: <161051681546.32710.5582070513683033836.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201225083520.22015-1-dinghao.liu@zju.edu.cn>
-References: <20201225083520.22015-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20210111102212.19377-1-lukas.bulwahn@gmail.com>
+References: <20210111102212.19377-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=607 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101130034
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=618 phishscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
- clxscore=1015 impostorscore=0 spamscore=0 mlxscore=0 suspectscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 bulkscore=0 spamscore=0 mlxscore=0
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101130034
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1011 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2101130034
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Dec 2020 16:35:20 +0800, Dinghao Liu wrote:
+On Mon, 11 Jan 2021 11:22:12 +0100, Lukas Bulwahn wrote:
 
-> When ioread32() returns 0xFFFFFFFF, we should execute
-> cleanup functions like other error handling paths before
-> returning.
+> Commit 0b2894cd0fdf ("scsi: docs: ABI: sysfs-driver-ufs: Add DeepSleep
+> power mode") adds new entries in tables of sysfs-driver-ufs ABI
+> documentation, but formatted the table incorrectly.
+> 
+> Hence, make htmldocs warns:
+> 
+>   ./Documentation/ABI/testing/sysfs-driver-ufs:{915,956}:
+>   WARNING: Malformed table. Text in column margin in table line 15.
+> 
+> [...]
 
 Applied to 5.11/scsi-fixes, thanks!
 
-[1/1] scsi: fnic: Fix memleak in vnic_dev_init_devcmd2
-      https://git.kernel.org/mkp/scsi/c/d6e3ae76728c
+[1/1] scsi: docs: ABI: sysfs-driver-ufs: rectify table formatting
+      https://git.kernel.org/mkp/scsi/c/f2cb4b2397ca
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
