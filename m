@@ -2,110 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5186E2F4C8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9BB2F4C93
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbhAMNz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 08:55:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57736 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726549AbhAMNz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 08:55:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9664DAC24;
-        Wed, 13 Jan 2021 13:54:46 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 14:54:44 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 1/3] hugetlb: use page.private for hugetlb specific
- page flags
-Message-ID: <20210113135439.GA29271@linux>
-References: <20210111210152.118394-1-mike.kravetz@oracle.com>
- <20210111210152.118394-2-mike.kravetz@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111210152.118394-2-mike.kravetz@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726729AbhAMN6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 08:58:04 -0500
+Received: from labrats.qualcomm.com ([199.106.110.90]:10371 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbhAMN6D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 08:58:03 -0500
+IronPort-SDR: G2OWrMpnBVYEIU36IqQ9q5rCcsBn2X7PItLcCW3e/o26XxbfRQTCp/IOApGWrsu9LsZLvxST/p
+ qBqe03IW1OATbotxAG9pxIJwv+8zWalGrxd211NC4NCBgw4mmlyxFZ4UuToclLrn7oY1BDtHzR
+ WObXTkmb3+K9LS9pueiPg/VduWy45zgGs3kfBobx9lm+NVvyaADt2DWDeOW0WrBjYJnNS4Nm8Z
+ hgdAH7+TNbL/C9QNJtURZEQDoZcjSYSr6yi+1oz0krHl4j5R//5uVutZ3hq8n1hsGbicIgMfzS
+ 9XE=
+X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
+   d="scan'208";a="47660257"
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by labrats.qualcomm.com with ESMTP; 13 Jan 2021 05:57:22 -0800
+X-QCInternal: smtphost
+Received: from stor-presley.qualcomm.com ([192.168.140.85])
+  by ironmsg04-sd.qualcomm.com with ESMTP; 13 Jan 2021 05:57:20 -0800
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id 81E542191C; Wed, 13 Jan 2021 05:57:20 -0800 (PST)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: [PATCH v4 1/2] scsi: ufs: Fix a possible NULL pointer issue
+Date:   Wed, 13 Jan 2021 05:57:08 -0800
+Message-Id: <1610546230-14732-2-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1610546230-14732-1-git-send-email-cang@codeaurora.org>
+References: <1610546230-14732-1-git-send-email-cang@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 01:01:50PM -0800, Mike Kravetz wrote:
-> As hugetlbfs evolved, state information about hugetlb pages was added.
-> One 'convenient' way of doing this was to use available fields in tail
-> pages.  Over time, it has become difficult to know the meaning or contents
-> of fields simply be looking at a small bit of code.  Sometimes, the
-> naming is just confusing.  For example: The PagePrivate flag indicates
-> a huge page reservation was consumed and needs to be restored if an error
-> is encountered and the page is freed before it is instantiated.  The
-> page.private field contains the pointer to a subpool if the page is
-> associated with one.
-> 
-> In an effort to make the code more readable, use page.private to contain
-> hugetlb specific flags.  These flags will have test, set and clear functions
-> similar to those used for 'normal' page flags.  More importantly, the
-> flags will have names which actually reflect their purpose.
-> 
-> In this patch,
-> - Create infrastructure for huge page flag functions
-> - Move subpool pointer to page[1].private to make way for flags
->   Create routines with meaningful names to modify subpool field
-> - Use new HPageRestoreReserve reserve flag instead of PagePrivate
-> 
-> Conversion of other state information will happen in subsequent patches.
+During system resume/suspend, hba could be NULL. In this case, do not touch
+eh_sem.
 
-I like this idea, it would make the code much easier to follow, and together
-with Muchun's gathering indiscrete index hugetlb code will start looking less
-scarier.
+Fixes: 88a92d6ae4fe ("scsi: ufs: Serialize eh_work with system PM events and async scan")
 
-I do have a question below:
+Acked-by: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-> +enum htlb_page_flags {
-> +	HPAGE_RestoreReserve = 0,
-> +};
-> +
-> +/*
-> + * Macros to create function definitions for hpage flags
-> + */
-> +#define TESTHPAGEFLAG(flname)					\
-> +static inline int HPage##flname(struct page *page)		\
-> +	{ return test_bit(HPAGE_##flname, &(page->private)); }
-> +
-> +#define SETHPAGEFLAG(flname)					\
-> +static inline void SetHPage##flname(struct page *page)		\
-> +	{ set_bit(HPAGE_##flname, &(page->private)); }
-> +
-> +#define CLEARHPAGEFLAG(flname)					\
-> +static inline void ClearHPage##flname(struct page *page)	\
-> +	{ clear_bit(HPAGE_##flname, &(page->private)); }
-> +
-> +#define HPAGEFLAG(flname)					\
-> +	TESTHPAGEFLAG(flname)					\
-> +	SETHPAGEFLAG(flname)					\
-> +	CLEARHPAGEFLAG(flname)
-> +
-> +HPAGEFLAG(RestoreReserve)
-
-I have mixed feelings about this.
-Could we have a single function that sets/clears the bit/flag?
-e.g:
-
- static inline void hugetlb_set_flag(struct page *p, page_flag)
- {
-         set_bit(flag, &(page->private));
- }
-
-etc.
-It would look less of an overkill?
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 53fd59c..969aed9 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -94,6 +94,8 @@
+ 		       16, 4, buf, __len, false);                        \
+ } while (0)
  
++static bool early_suspend;
++
+ int ufshcd_dump_regs(struct ufs_hba *hba, size_t offset, size_t len,
+ 		     const char *prefix)
+ {
+@@ -8953,8 +8955,14 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
+ 	int ret = 0;
+ 	ktime_t start = ktime_get();
+ 
++	if (!hba) {
++		early_suspend = true;
++		return 0;
++	}
++
+ 	down(&hba->eh_sem);
+-	if (!hba || !hba->is_powered)
++
++	if (!hba->is_powered)
+ 		return 0;
+ 
+ 	if ((ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl) ==
+@@ -9002,9 +9010,12 @@ int ufshcd_system_resume(struct ufs_hba *hba)
+ 	int ret = 0;
+ 	ktime_t start = ktime_get();
+ 
+-	if (!hba) {
+-		up(&hba->eh_sem);
++	if (!hba)
+ 		return -EINVAL;
++
++	if (unlikely(early_suspend)) {
++		early_suspend = false;
++		down(&hba->eh_sem);
+ 	}
+ 
+ 	if (!hba->is_powered || pm_runtime_suspended(hba->dev))
 -- 
-Oscar Salvador
-SUSE L3
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
