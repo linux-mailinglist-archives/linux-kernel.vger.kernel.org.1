@@ -2,92 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4022B2F442B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF682F4425
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbhAMFvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 00:51:39 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:48984 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbhAMFvi (ORCPT
+        id S1726514AbhAMFuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 00:50:13 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:37256 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbhAMFuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 00:51:38 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10D5jQbf130857;
-        Wed, 13 Jan 2021 05:48:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
+        Wed, 13 Jan 2021 00:50:13 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10D5i7jT096277;
+        Wed, 13 Jan 2021 05:49:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
+ message-id : date : from : to : cc : subject : references : in-reply-to :
  content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=r2rtWbXj971eyIQw5ArGeGHMu1GGTCgz39vo01Wh9jY=;
- b=US+42WjJy5IHG0xWrYdyg87NKgzHjhoAfnvwxAntx4O3qSKq1ZOXI3AS46+vrMxTnY7v
- qx5xhRX2Fj7IiXTIWcisPGYVog0PB8wnd0RGKcSMOTkVDWpT3LF1O09fLPuQQ3Ua+7dC
- nbtKP3Z35xVqa1SyRw+iiNJPdZLxI6l7HeqQQFuVPvB1C517n5SBNIpls3D0wRRxI01z
- 7cmUwN1C7ZHegAfhu4b2oUpcjIpdgeG2VURuP5s0DfXKJpUIS03HjwXX6dDGt/GINOce
- ubWCdhuzUlHn5uVdwOtBqjtGyASAmSAneTINc2iY0aOVzNXOVu7xT1vHt8AHdzY5D343 5w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 360kvk1k49-1
+ bh=Gf1QDWGX+0TpoVLmuwqjv9HvqUj0wHUQztxmJ0/kLSI=;
+ b=nlW0jzhWd4GUjwvAaPgwpCwVCEQEic6rMyBLXdHKQWJU6JrNXodDZlmrW36QTyfv1ujQ
+ OU2RrZNRjUG9nrSmEJNy8bjddQ1j9SPVLNyuySJo3BKmvcv0H+TlMYEagQx4aCSHmQFp
+ PcFky7hJLoM+xqkSd8gcNJgAz412PFZnt4pba5vTrfiyzecZvmfQvNjXJcmJhv+H9oj+
+ 68Lv2wmnKaUWFIF/eC5Pkna1MYnkAdgjCmTuvIDW9KlK5Xbev0lsm8xbbIO+T0guOPzz
+ dSy7oUMBygU31YiPMpd3YTEb2iRtkw3a31OP9dEHze1/JMDWtt/2IwPRIzhUnZCGcvzr hg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 360kcysp4p-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 05:48:37 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10D5e5Dr133924;
-        Wed, 13 Jan 2021 05:48:37 GMT
+        Wed, 13 Jan 2021 05:49:25 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10D5dhJS159263;
+        Wed, 13 Jan 2021 05:49:25 GMT
 Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 360kf00pn4-1
+        by aserp3020.oracle.com with ESMTP id 360ke7rmb1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 05:48:37 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10D5mYpt023666;
-        Wed, 13 Jan 2021 05:48:34 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 12 Jan 2021 21:48:33 -0800
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     John Garry <john.garry@huawei.com>, jejb@linux.ibm.com
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>, maz@kernel.org,
-        kashyap.desai@broadcom.com, linux-scsi@vger.kernel.org,
-        linuxarm@openeuler.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] hisi_sas: Expose hw queues for v2 hw and remove unused code
-Date:   Wed, 13 Jan 2021 00:48:23 -0500
-Message-Id: <161050726820.14224.8904013687589214502.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <1609763622-34119-1-git-send-email-john.garry@huawei.com>
-References: <1609763622-34119-1-git-send-email-john.garry@huawei.com>
+        Wed, 13 Jan 2021 05:49:25 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10D5nNHL024123;
+        Wed, 13 Jan 2021 05:49:23 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201) by default (Oracle
+ Beehive Gateway v4.0) with ESMTP ; Tue, 12 Jan 2021 21:48:39 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Message-ID: <161050726820.14224.523425689626280700.b4-ty@oracle.com>
+Date:   Tue, 12 Jan 2021 21:48:26 -0800 (PST)
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+Subject: Re: [PATCH 0/3] scsi: storvsc: Validate length of incoming packet in
+ storvsc_on_channel_callback() -- Take 2
+References: <20201217203321.4539-1-parri.andrea@gmail.com>
+In-Reply-To: <20201217203321.4539-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.29.2
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=800 mlxscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=998 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2101130034
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=811 phishscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
- clxscore=1015 impostorscore=0 spamscore=0 mlxscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2101130034
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Jan 2021 20:33:40 +0800, John Garry wrote:
+On Thu, 17 Dec 2020 21:33:18 +0100, Andrea Parri (Microsoft) wrote:
 
-> Patch "scsi: hisi_sas: Expose HW queues for v2 hw" was not merged for
-> v5.11, so resending for v5.12.
+> This series is to address the problems mentioned in:
 > 
-> Unused module param auto_affine_msi_experimental for v3 hw is also
-> removed in the other patch.
+>   4da3a54f5a0258 ("Revert "scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()"")
 > 
-> John Garry (2):
->   scsi: hisi_sas: Remove auto_affine_msi_experimental module_param
->   scsi: hisi_sas: Expose HW queues for v2 hw
+> (cf., in particular, patch 2/3) and to re-introduce the validation in
+> question (patch 3/3); patch 1/3 emerged from internal review of these
+> two patches and is a related fix.
 > 
 > [...]
 
 Applied to 5.12/scsi-queue, thanks!
 
-[1/2] scsi: hisi_sas: Remove auto_affine_msi_experimental module_param
-      https://git.kernel.org/mkp/scsi/c/3997e0fdd587
+[1/3] scsi: storvsc: Fix max_outstanding_req_per_channel for Win8 and newer
+      https://git.kernel.org/mkp/scsi/c/ab548fd21e1c
+[2/3] scsi: storvsc: Resolve data race in storvsc_probe()
+      https://git.kernel.org/mkp/scsi/c/244808e03029
+[3/3] scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()
+      https://git.kernel.org/mkp/scsi/c/91b1b640b834
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
