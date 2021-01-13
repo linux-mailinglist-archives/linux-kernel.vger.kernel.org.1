@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5ED2F4B81
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D64C32F4B8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727152AbhAMMm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 07:42:56 -0500
-Received: from verein.lst.de ([213.95.11.211]:60024 "EHLO verein.lst.de"
+        id S1726398AbhAMMpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 07:45:01 -0500
+Received: from verein.lst.de ([213.95.11.211]:60054 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbhAMMmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 07:42:55 -0500
+        id S1725773AbhAMMpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 07:45:01 -0500
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3EA2768B02; Wed, 13 Jan 2021 13:42:09 +0100 (CET)
-Date:   Wed, 13 Jan 2021 13:42:09 +0100
+        id 5DAEB68AFE; Wed, 13 Jan 2021 13:44:16 +0100 (CET)
+Date:   Wed, 13 Jan 2021 13:44:16 +0100
 From:   Christoph Hellwig <hch@lst.de>
 To:     Claire Chang <tientzu@chromium.org>
 Cc:     robh+dt@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
@@ -31,44 +31,35 @@ Cc:     robh+dt@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
         linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         iommu@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
         tfiga@chromium.org, drinkcat@chromium.org
-Subject: Re: [RFC PATCH v3 2/6] swiotlb: Add restricted DMA pool
-Message-ID: <20210113124209.GA1383@lst.de>
-References: <20210106034124.30560-1-tientzu@chromium.org> <20210106034124.30560-3-tientzu@chromium.org>
+Subject: Re: [RFC PATCH v3 3/6] swiotlb: Use restricted DMA pool if
+ available
+Message-ID: <20210113124416.GB1383@lst.de>
+References: <20210106034124.30560-1-tientzu@chromium.org> <20210106034124.30560-4-tientzu@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210106034124.30560-3-tientzu@chromium.org>
+In-Reply-To: <20210106034124.30560-4-tientzu@chromium.org>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 > +#ifdef CONFIG_SWIOTLB
-> +	struct io_tlb_mem	*dma_io_tlb_mem;
->  #endif
+> +	if (unlikely(swiotlb_force == SWIOTLB_FORCE) || dev->dma_io_tlb_mem)
+>  		return swiotlb_map(dev, phys, size, dir, attrs);
+> +#endif
 
-Please add a new config option for this code instead of always building
-it when swiotlb is enabled.
+Please provide a wrapper for the dev->dma_io_tlb_mem check that
+always returns false if the per-device swiotlb support is not enabled.
 
-> +static int swiotlb_init_io_tlb_mem(struct io_tlb_mem *mem, phys_addr_t start,
-> +				   size_t size)
+> index 7fb2ac087d23..1f05af09e61a 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -222,7 +222,6 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
+>  		mem->orig_addr[i] = INVALID_PHYS_ADDR;
+>  	}
+>  	mem->index = 0;
+> -	no_iotlb_memory = false;
 
-Can you split the refactoring in swiotlb.c into one or more prep
-patches?
+How does this fit in here?
 
-> +static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
-> +				    struct device *dev)
-> +{
-> +	struct io_tlb_mem *mem = rmem->priv;
-> +	int ret;
-> +
-> +	if (dev->dma_io_tlb_mem)
-> +		return -EBUSY;
-> +
-> +	if (!mem) {
-> +		mem = kzalloc(sizeof(*mem), GFP_KERNEL);
-> +		if (!mem)
-> +			return -ENOMEM;
-
-What is the calling convention here that allows for a NULL and non-NULL
-private data?
