@@ -2,228 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6242F57BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 512242F57BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729582AbhANCF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:05:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55130 "EHLO
+        id S1726405AbhANCFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:05:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729322AbhAMW1B (ORCPT
+        with ESMTP id S1726565AbhAMW3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 17:27:01 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58457C0617BA
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:24:53 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id t30so3800822wrb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:24:53 -0800 (PST)
+        Wed, 13 Jan 2021 17:29:04 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB70C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:28:08 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id h17so2768264wmq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:28:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lRxYEjgHGRKQJGTWgD8P0bRQPkdIAl462MhbH6w8fIU=;
-        b=BsekyHdH2erAZaQOFg5oBpvrJU4q3QQyWSK5EP8gAo2AV4ik5w+HeDmXXpY7i75Gbh
-         u4ZCoF42VFFKoGxYA/XNZrm6CkUZktgIS0H7AtzJspWhR+A1rPaNGmGscVJcij5WCCRL
-         +OyWhd0dbO2axwpBQsJWQ+aNs/iGnfoqNa5ufCHyRNAkCfa4+pXlFE3SxNMhMCvDo4We
-         zw/hXeW+BWXDu8gcibTYkyLNt1lQR8vlMTPzW40yUypRvRxldtEj+TdvpeiLQ2Buukoz
-         gCpnHoyezuNadre/90f69Em/DKdiRdGtMCcldNzkK2tP/25Kv2dHu/V+/sVV3RQ84Oh6
-         ZsNw==
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gw6KCQyZlAETzQeR8t7iFTKSpvbq9ubGSQ+L/qE5s5U=;
+        b=NZeJhs0dFJ/mCp9Qk77D1/8Ha5gNn26QuSCGj7G8sCNDD/is2aU0Xqgo+FoerLqx/h
+         FjmAiZ5Duy3qX7H49qyCrvlcEshZUqa93hJ/zSEnxlFMUwUn3IUdVCbJ3JxWtX1+mi4T
+         6KLAfg3fK5ThetV+pociHxf0ims1tHXb9W8iCRcKWoNz+GpY72Scm9SDo4daXCkSZdnr
+         5d0rK5O+3UAFwHEmqzin8r8ylbqMWm7LYFEtoRFGqlZLUFFV/uoAfeK4W8wckza5cRhT
+         OcZsjhShT9BXii67BoKG6MCY/oUiEbR1x0fUOxN7byQgtRjr1qEucLo6OfFONt260nP+
+         eKSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lRxYEjgHGRKQJGTWgD8P0bRQPkdIAl462MhbH6w8fIU=;
-        b=tRJiu9f9xuHTPEQ/jxkWBXtRfcoE5y4SRoB/4gvdEek0N2DMudBrzqKSf8ETdb8wnE
-         Mr/xh750vjRNLh3WKjAGOPLiwEMkJDxlkGl46Gr6PMmh+mWqrp/JgKHHv0+BHxiyl9bx
-         AmlkKDWti3vEilOTlF+M1azx/o4rYVhvWUHDihy4Zr4GrjZQwUPHE/7bF7VlZZe7QtkJ
-         vb/KxL1YfSrq8PMbN7C6WgwhNsIXNDNIdpq8HBplG4O+CotkeZpj/r/QI5d7G5XKg82c
-         rIJyTtzRlmijESVntK4vohsrq9yfmsK+2ZyTYuZwnDpZVyhEy4ykf80d/UWKgVjg9CyE
-         j+Tw==
-X-Gm-Message-State: AOAM531VTttOQucVRIbxeExjcvk9n6+J1r8HSX1EAChbqTaL/cJuzKSx
-        pJUn9DMCChoF4b2vlRyXWssJUE1L5MLUbw==
-X-Google-Smtp-Source: ABdhPJxOzCfKgbthX8z87pSAA2z2oS1X3eWZiaMypRpcouk9CsbGHEdOnPnfUCuDJjCAwyPuoYVaJQ==
-X-Received: by 2002:adf:fd42:: with SMTP id h2mr4695380wrs.142.1610576691623;
-        Wed, 13 Jan 2021 14:24:51 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id u26sm4694782wmm.24.2021.01.13.14.24.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Jan 2021 14:24:50 -0800 (PST)
-Subject: Re: [PATCH v11 0/7] Qualcomm's lpass-hdmi ASoC driver to support
- audio over dp port
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        bgoswami@codeaurora.org,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com,
-        agross@kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com,
-        broonie@kernel.org, rohitkr@codeaurora.org,
-        bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org
-References: <1602134223-2562-1-git-send-email-srivasam@codeaurora.org>
- <244e74f6-fa8c-692a-aa84-4677a0fd815b@linaro.org>
- <X/9TS6bQa3Zh+EXa@gerhold.net>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <4b34bd4f-e7bc-84f9-5e8a-b2348c17b7aa@linaro.org>
-Date:   Wed, 13 Jan 2021 22:24:49 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Gw6KCQyZlAETzQeR8t7iFTKSpvbq9ubGSQ+L/qE5s5U=;
+        b=dfuo0UaXYbyLuF5m1/EyTshgpTKiExC8dAfcLtm7wX/01JtQrLIU3plEe59a7e9Pzi
+         yu1WmXEzq+d6UigLLTIkC4nRQi98KiV63LuSLpIszAfFstKMePFbIh4FH4vB6veeWKMv
+         KJ6ZDRRH4BIiU68674uYKwPUgYlhcUz7fVWl+qfqoZV79uiq7691cd/7DjkBxqTbpmy7
+         q53lWj3IE9no8jQrG53JIKEDM9RRy2mLkviEEfWzvdsDFiwL3WwAixkdxi3or5YMeVAo
+         8aLqw4BBZTz+7Mq2iYDopRzHOvLIJwXRx83JxkC8rN/KruzUKRVaatEJdl3ZOIq4P3BT
+         Ixhg==
+X-Gm-Message-State: AOAM532ZUrUWlKMc/CpSm+uLvAMO8kkEbqzdR09khzgv9bqb4xn2qkbO
+        t2vy8p5OtgkXd4b3g0i731k=
+X-Google-Smtp-Source: ABdhPJxEAmpHTfv6Ma7Z5qo9QVvYRwp4sEliKWEwEqjQKxrl6Q/ZeoUSkbjzBwgtdM7Ds9YxYdqbaA==
+X-Received: by 2002:a7b:cb93:: with SMTP id m19mr1186200wmi.45.1610576887338;
+        Wed, 13 Jan 2021 14:28:07 -0800 (PST)
+Received: from rz.localhost.localdomain (dynamic-002-247-253-074.2.247.pool.telefonica.de. [2.247.253.74])
+        by smtp.gmail.com with ESMTPSA id h5sm5898239wrp.56.2021.01.13.14.28.05
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 13 Jan 2021 14:28:06 -0800 (PST)
+Sender: "Richard Z." <rdzidlic@gmail.com>
+From:   Richard Z <rz@linux-m68k.org>
+X-Google-Original-From: Richard Z <rz>
+Date:   Wed, 13 Jan 2021 23:27:57 +0100
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Mark Salter <msalter@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: Old platforms: bring out your dead
+Message-ID: <20210113222757.GA6265@rz.localhost.localdomain>
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <X/9TS6bQa3Zh+EXa@gerhold.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="9amGYk9869ThD9tj"
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephan,
 
-On 13/01/2021 20:08, Stephan Gerhold wrote:
-> Hi Srinivas,
-> 
-> On Thu, Oct 08, 2020 at 06:37:40AM +0100, Srinivas Kandagatla wrote:
->> On 08/10/2020 06:16, Srinivasa Rao Mandadapu wrote:
->>> These patches are to support audio over DP port on Qualcomm's SC7180 LPASS
->>> Asoc. It includes machine driver, cpu driver, platform driver updates for
->>> HDMI path support, device tree documention, lpass variant structure
->>> optimization and configuration changes.
->>> These patches depends on the DP patch series
->>> https://patchwork.kernel.org/project/dri-devel/list/?series=332029
->>> https://lore.kernel.org/patchwork/project/lkml/list/?series=464856
->>>
->>> changes since V10:
->>>       -- Moved hdmi regmap functions from lpass-hdmi.c to lpass-cpu.c
->>>       -- Moved QCOM_REGMAP_FIELD_ALLOC macro from lpass-hdmi.c to lpass.h
->>> changes since V9:
->>>       -- Removed unused structures lpass_hdmi.h
->>> changes since V8:
->>>       -- Removed redundant structure wrapper for reg map field memebrs
->>>       -- Updated lpass_hdmi_regmap_volatile API with appropriate registers as true
->>>          and others as false.
->>> changes since V7:
->>>       -- Fixed typo errors
->>>       -- Created Separate patch for buffer size change
->>> changes since V6:
->>>       -- Removed compile time define flag, which used for enabling
->>>        HDMI code, based on corresponding config param is included.
->>>       -- Updated reg map alloc API with reg map bulk API.
->>>       -- Removed unnecessary line splits
->>> changes since V5:
->>>       -- Removed unused struct regmap *map in lpass_platform_alloc_hdmidmactl_fields.
->>>       -- DMA alloc and free API signature change in lpass-apq8016.c, lpass-ipq806x.c
->>>       -- Keeping API "irqreturn_t lpass_platform_hdmiif_irq" under ifdef macro
->>> Changes Since v4:
->>>       -- Updated with single compatible node for both I2S and HDMI.
->>> Changes Since v3:
->>>       -- Removed id in lpass variant structure and used snd_soc_dai_driver id.
->>> Changes Since v2:
->>>       -- Audio buffer size(i.e. LPASS_PLATFORM_BUFFER_SIZE) in lpass-platform.c increased.
->>> Changes Since v1:
->>>       -- Commit messages are updated
->>>       -- Addressed Rob Herring review comments
->>>
->>> V Sujith Kumar Reddy (7):
->>>     ASoC: Add sc7180-lpass binding header hdmi define
->>>     ASoC: dt-bindings: Add dt binding for lpass hdmi
->>>     Asoc:qcom:lpass-cpu:Update dts property read API
->>>     Asoc: qcom: lpass:Update lpaif_dmactl members order
->>>     ASoC: qcom: Add support for lpass hdmi driver
->>>     Asoc: qcom: lpass-platform : Increase buffer size
->>>     ASoC: qcom: sc7180: Add support for audio over DP
->>>
->>>    .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  74 ++--
->>>    include/dt-bindings/sound/sc7180-lpass.h           |   1 +
->>>    sound/soc/qcom/Kconfig                             |   5 +
->>>    sound/soc/qcom/Makefile                            |   2 +
->>>    sound/soc/qcom/lpass-apq8016.c                     |   4 +-
->>>    sound/soc/qcom/lpass-cpu.c                         | 249 ++++++++++++-
->>>    sound/soc/qcom/lpass-hdmi.c                        | 258 ++++++++++++++
->>>    sound/soc/qcom/lpass-hdmi.h                        | 102 ++++++
->>>    sound/soc/qcom/lpass-ipq806x.c                     |   4 +-
->>>    sound/soc/qcom/lpass-lpaif-reg.h                   |  49 ++-
->>>    sound/soc/qcom/lpass-platform.c                    | 395 +++++++++++++++++----
->>>    sound/soc/qcom/lpass-sc7180.c                      | 116 +++++-
->>>    sound/soc/qcom/lpass.h                             | 124 ++++++-
->>>    13 files changed, 1240 insertions(+), 143 deletions(-)
->>>    create mode 100644 sound/soc/qcom/lpass-hdmi.c
->>>    create mode 100644 sound/soc/qcom/lpass-hdmi.h
->>>
->>
->> Tested this series on DragonBoard 410c
->>
->> Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> 
-> I spent quite some time today trying to track down another regression
-> for MSM8916/DragonBoard 410c audio in 5.10 and identified this patch
-> series as the cause. So I'm very surprised that you successfully tested
-> this on DB410c.
-> 
-> Attempting to play HDMI audio results in:
-> 
->    ADV7533: lpass_platform_pcmops_hw_params: invalid  interface: 3
->    ADV7533: lpass_platform_pcmops_trigger: invalid 3 interface
->    apq8016-lpass-cpu 7708000.audio-controller: ASoC: error at soc_component_trigger on 7708000.audio-controller: -22
-> 
-> Attempting to record analog audio results in:
-> 
->    Unable to handle kernel NULL pointer dereference at virtual address 00000000000001e4
->    Internal error: Oops: 96000004 [#1] PREEMPT SMP
->    CPU: 1 PID: 1568 Comm: arecord Not tainted 5.11.0-rc3 #20
->    Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
->    pc : regmap_write+0x14/0x80
->    lr : lpass_platform_pcmops_open+0xd8/0x210 [snd_soc_lpass_platform]
->    Call trace:
->     regmap_write+0x14/0x80
->     lpass_platform_pcmops_open+0xd8/0x210 [snd_soc_lpass_platform]
->     snd_soc_component_open+0x2c/0x94
->     ...
-> 
-> Looking at the changes in "ASoC: qcom: Add support for lpass hdmi driver"
-> there is a quite obvious mistake there. lpass.h now contains
->
+--9amGYk9869ThD9tj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-We did hit these two bugs recently while June was testing a platform 
-based of 410c.
+On Fri, Jan 08, 2021 at 11:55:06PM +0100, Arnd Bergmann wrote:
+> After v5.10 was officially declared an LTS kernel, I had a look around
+> the Arm platforms that look like they have not seen any patches from
+> their maintainers or users that are actually running the hardware for
+> at least five years (2015 or earlier). I made some statistics and lists
+> for my lwn.net article last year [1], so I'd thought I'd share a summary
+> here for discussion about what we should remove. As I found three
+> years ago when I removed several CPU architectures, it makes sense
+> to do this in bulk, to simplify a scripted search for device drivers, hea=
+der
+> files and Kconfig options that become unused in the process.
+>=20
 
-we had to these 2 fixes in his dev branch
+> * m68k/{apollo,hp300,sun3,q40} these are all presumably dead and have not
+>    seen updates in many years (atari/amiga/mac and coldfire are very much
+>    alive)
 
-https://paste.ubuntu.com/p/MCbpBgH7JV/
+me and a few other guys are still running m68k/q40. I did not compile
+a new kernel for some time but will try.
 
-and a hack:
-https://paste.ubuntu.com/p/GYDSDmJt7Y/
+Regards
+Richard
 
-I got side tracked with other stuff, so I could not cleanup the lpass 
-hack patch to send it!
+--9amGYk9869ThD9tj
+Content-Type: application/pgp-signature
 
-With this two patches June was able to test all the usecases for 410c.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-> #include <dt-bindings/sound/sc7180-lpass.h>
-> 
-> and then the SC7810 DAI IDs are hardcoded all over lpass-cpu.c and
-> lpass-platform.c. But apq8016 and ipq806x have completely different
-> DAI IDs so now MI2S_QUATERNARY (HDMI) is invalid and
-> MI2S_TERTIARY (= LPASS_DP_RX in sc7180-lpass.h) is treated as HDMI port.
-> 
-Yes, this basically overwritten some of the defines. Specially 
-MI2S_TERTIARY and MI2S_QUATERNARY
+iQIVAwUBX/9z7Ks1ukX5mVu3AQL2RhAApyetHb4tTSC0l6iQ3NNvE6wZ91SZ8XIj
+cQnYc06ZoKjCnc61XaQsGnE9wxLdgQGff/xRvnZscujlzu0wOJO7e4gsJP3yJooE
+uPcH/jvJ+/N4JBN8koPbY5buj60XK/LddzXJaNtYCZpUF21/y5E43CXP6Glp+oxg
+ynQlcRWqBFkFKIH7toZnJNvS3sqo6nWzTCTn5TvPnYruu3HAYunZhf8A6EzR06Gb
+rjydy0B69xEhicmouPDYRSSZ1/2B9hRzWeOWjJGiSbf7H6BVMQRmueWMoCqI04iI
+twbnNiyt9YhqqTWfkMhpRNrWZQOi3NaOi+truqIaEPjJJINk8y+vl+lKimcWF5Gb
+XC9M2WqAhdkvItk0U5fVMtRYtqXjIfqIuPmKcRAEA5VGyCilRsP3hMdTIvCWf1uT
+0eDLYQPcV0Vl/nP547XAqwNb3Z5qcU0VnThd0MFNeG+o4OY376IUoZVnt8NjFxP1
+xpSaaNGOF09o1oQpvcIn3vPHyxRoaOJCT3S1a8hRVjapPryFf+inY01eU7o3Wz7K
+sybjFk6OoTfvayFKgxluG8fGXw+w0EkjfKu3PjtJhLxW8neqqlU0nuEuy3wd7vyl
+YGhQIdCT4EYGeBbW4BtCwkCTjYyU4j5+FQnGyYThIMRG1QGtoczMVF7q+dQl/bnE
+gGOUyq8xkog=
+=Bo9S
+-----END PGP SIGNATURE-----
 
-We should probably consolidate these defines to a single lpass.h file in 
-include/dt-bindings/ and not split them into soc specific.
-
-> Effectively LPASS is broken on all platforms except SC7810.
-> 
-> I have a patch prepared to fix this (will send it tomorrow),
-> but I wonder how you have tested this successfully on DB410c. :)
-My tests are pretty basic headset/speaker playback cases, this basically 
-tests PRIMARY and SECONDARY MI2S and not MI2S_TERTIARY or QUAT MI2S.
-
-June reported this to me some time during Christmas.
-
-Look forward to review your patches!
-
---srini
-
-> 
-> Stephan
-> 
+--9amGYk9869ThD9tj--
