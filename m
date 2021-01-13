@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E854E2F4F4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B99F82F4F55
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727380AbhAMPzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 10:55:50 -0500
-Received: from mga05.intel.com ([192.55.52.43]:9961 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726523AbhAMPzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 10:55:49 -0500
-IronPort-SDR: BzopvCSuqR2jlMbSyzpwt+fRD6u3HMHPr/V1DbyqMNsDZ+wskKz0xqf62YZLkqE6m16ngEZPTI
- 6FJI4zIVtyGw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="263010353"
-X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
-   d="scan'208";a="263010353"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 07:54:04 -0800
-IronPort-SDR: 1rzca7Kk7wvv6I7yM/uzJhVuvdBNIiGuOrg55KJI6KKD/Zop4q5DlhD6+mH3f3F4iqkLwogQMU
- Of6bdw9/LXHA==
-X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
-   d="scan'208";a="464946026"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 07:54:02 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kziUC-00DF9Y-JU; Wed, 13 Jan 2021 17:55:04 +0200
-Date:   Wed, 13 Jan 2021 17:55:04 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] software node: Introduce
- device_add_software_node()
-Message-ID: <20210113155504.GS4077@smile.fi.intel.com>
-References: <20210111141045.14027-1-heikki.krogerus@linux.intel.com>
- <20210111141045.14027-2-heikki.krogerus@linux.intel.com>
- <2f552de5-4839-a1e5-3012-c56f9fa3bdd5@gmail.com>
+        id S1727053AbhAMP7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 10:59:06 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:58947 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726238AbhAMP7F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 10:59:05 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id D01B75C0069;
+        Wed, 13 Jan 2021 10:57:59 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 13 Jan 2021 10:57:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=6PB1tXFd2dtUi8aal28nQaiReMQ
+        TWfsLz2xfa+zelHI=; b=W48ZSPKAdBblf+pSvLPXC3kK78QVEhR8YsIRHSwE6r/
+        i7xl81J1mpTwezmeCMwVUMSN5dgfWlebgacFdAL8laNJP/CSDaVoFT+0uh0GsJ1w
+        CMvDjAOpnswWvQm+SiTfIHQQk1XbuEjHoTjFldE1JAH/e+hxLBoJ5UpMQb0G1lp/
+        TVAx5uXNaUDwJUTqGV2aRy8qTlq8GDoVycuF0dChezRMenVmMpIiOnrQYhwfdAX9
+        Wgn4DXCFW4AqJOUbPjPeZh+71BW0junYcLAx5goKRiYUEVjsWoMB49mkOZUqJm0o
+        Z/874QtP4m6e3go7vtZWo9RAjv+DlmXi+sZvwEUWnFg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=6PB1tX
+        Fd2dtUi8aal28nQaiReMQTWfsLz2xfa+zelHI=; b=a/QPPv+AVkIm4Q9djYBpze
+        AnO0xec6su/2n288R5x3xO7hbzyV5zPJRnFiPSFt2TjN5PegSdXCF1+i1B4soXM+
+        SUZFZye805llsrIfunhkaSn81uIHBaCYY+f36kljJVHB+gjiodhF9TqsaNByd6Nb
+        zxIJRb9kFtH6NELjMAEkw0KvC7yY/VwjW9JHmvn3qyCDCZIFR0mfmkKhg4sSAzns
+        bGbaX/oV2A+Lxm6G/MXvPEu4swqJYrIhoETy8MhWHuAnj8OerVFzixE5a36u3/4p
+        NlmdsTDZ0uAJzik/RYgXw9c3qDI4pjB4nk5oS7ypcJaRiGJw8NrrD0YO1tXJwOuQ
+        ==
+X-ME-Sender: <xms:hhj_X6DtfWAabW9spaY31_EBiFLX9ONINuY7Db4u9XA-YHS8ENglkA>
+    <xme:hhj_X0gJklCh99jsmhRwIj9XnOBDJCVbjhfvNSGwsdGc6JF2734YUsX65t3nM6kBC
+    j4itIGxL2eg6p6g_A8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtdefgdekvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujggfsehttdertddtreejnecuhfhrohhmpeeuvghnuceu
+    ohgvtghkvghluceomhgvsegsvghnsghovggtkhgvlhdrnhgvtheqnecuggftrfgrthhtvg
+    hrnhepvefftdettefgtddtkeeufeegtddttdeuueegkeegteffueetffejudeihefhkedt
+    necukfhppedvgedrudeiledrvddtrddvheehnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgvsegsvghnsghovggtkhgvlhdrnhgvth
+X-ME-Proxy: <xmx:hhj_X9n7RHhcsd5WfWnn2NeE13jyveIDi6XJs_gY8jHm1g2ELGP79g>
+    <xmx:hhj_X4ydk86SlzKHwkdn-tf-EaGJNElmwFpcm5dlsj8pIoOiRXpIcA>
+    <xmx:hhj_X_SguXWYoK2SYFEoavRcyrs1X1ISByi1AQPVH5mMQ2sYVdJr_g>
+    <xmx:hxj_X5fSotFp7-JCIVEOR5rIZJkbMEzgwQ5foknoK1PCaum_mv0Bxw>
+Received: from localhost (unknown [24.169.20.255])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9313124005D;
+        Wed, 13 Jan 2021 10:57:58 -0500 (EST)
+Date:   Wed, 13 Jan 2021 10:57:57 -0500
+From:   Ben Boeckel <me@benboeckel.net>
+To:     Rolf Eike Beer <eb@emlix.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH v5] scripts: use pkg-config to locate libcrypto
+Message-ID: <20210113155757.GA3081990@erythro>
+References: <20538915.Wj2CyUsUYa@devpool35>
+ <2278760.8Yd83Mgoko@devpool35>
+ <3394639.6NgGvCfkNl@devpool47>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2f552de5-4839-a1e5-3012-c56f9fa3bdd5@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <3394639.6NgGvCfkNl@devpool47>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 12:40:03AM +0000, Daniel Scally wrote:
-> On 11/01/2021 14:10, Heikki Krogerus wrote:
-
-...
-
-> > +/**
-> > + * device_remove_software_node - Remove device's software node
-> > + * @dev: The device with the software node.
-> > + *
-> > + * This function will unregister the software node of @dev.
-> > + */
-> > +void device_remove_software_node(struct device *dev)
-> > +{
-> > +	struct swnode *swnode;
-> > +
-> > +	swnode = dev_to_swnode(dev);
-> > +	if (!swnode)
-> > +		return;
-> > +
-> > +	kobject_put(&swnode->kobj);
-> > +}
-> > +EXPORT_SYMBOL_GPL(device_remove_software_node);
+On Wed, Jan 13, 2021 at 13:49:12 +0100, Rolf Eike Beer wrote:
+> Otherwise build fails if the headers are not in the default location. While at
+> it also ask pkg-config for the libs, with fallback to the existing value.
 > 
-> I wonder if this also ought to set dev_fwnode(dev)->secondary back to
-> ERR_PTR(-ENODEV)?
+> Signed-off-by: Rolf Eike Beer <eb@emlix.com>
 
-Looking more into this code I think we need to call
+Reviewed-by: Ben Boeckel <mathstuf@gmail.com>
 
-	set_secondary_fwnode(dev, NULL);
+> Cc: stable@vger.kernel.org # 5.6.x
 
-among these lines.
+Note that keyutils is not in the kernel, so I don't know how useful this
+is.
 
-The real problem is that set_primary_fwnode() and set_secondary_fwnode() have
-no reference counting. If we have a chain ->primary->secondary->-ENODEV is
-being used somewhere we can't tell from here.
-
-So, in practice it means that we lack of some kind of primary node to increment
-reference count of the secondary node when the latter is chained to the given
-primary. But it makes things too complicated. Any other options for shared
-primary-secondary chain? Standalone primary along with standalone (exclusive)
-secondary doesn't need this AFAICS. Perhaps a flag to primary like shared /
-exclusive that will prevent breaking the chain in set_secondary_fwnode()?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+--Ben
