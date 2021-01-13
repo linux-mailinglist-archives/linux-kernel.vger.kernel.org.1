@@ -2,168 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41802F409D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5352F40A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:57:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404971AbhAMAnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 19:43:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48386 "EHLO
+        id S2393604AbhAMAnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 19:43:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392108AbhAMADA (ORCPT
+        with ESMTP id S2392141AbhAMADC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 19:03:00 -0500
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48ECCC0617A9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:01:46 -0800 (PST)
-Received: by mail-ua1-x931.google.com with SMTP id p2so133417uac.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:01:46 -0800 (PST)
+        Tue, 12 Jan 2021 19:03:02 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF89C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:02:21 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id k10so11868wmi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:02:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3BtruZqMnfhWC8c+dyxQjHk/A/qVpuTj2wP4eiHZiZg=;
-        b=QLG6Rs/Kl7iv0RZCYBM7+LdcLP8MYmiFoPiRCbRaC8fqyruBzgxDQNLkoCnnYckqCX
-         07Iv6NK3sO1gPQkH75J4yoQmJStnUVf7GmBIwUXaAt+T8gFaooSktmqLbLGShghaGq4Y
-         7NAKEZO4aTboVunWQoZcuCbxgpsgxdwUMTdto=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O0+3ejHD3NuIeLjJtpGcKRQHmuMdhFptU0OyF3oj24o=;
+        b=nmp8vHHFqcTim728WOa/l61IOZJFBzAZxv7o3C+dlc7QXSZQrCEejQXWhFdJduBW3S
+         DZCOYscC83ntVgp5/WNgtPcm+jq8Zz7M6SKnQHe5Oe87zoi+VxAuhYr14OIL51zgtnGb
+         ARydBRuL82YZmlAJCvk/vp6/iRGtr3UIXFT6MBkUjzkG9jUQle9MHUDRWi0oLzrhW+sN
+         1EMlplHncwSYyr1rCwAHpSzrmCl6cg/ANuvi2UtS0KykN+iv7bBtnqBGzW0Kp+zeqXIB
+         PM2vka0v4Vdlgut7Im2Z6yiJVHYM31KpC8jHcCssWBSGX5+kYlud3jZaEQ8u9gG7do24
+         SLiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3BtruZqMnfhWC8c+dyxQjHk/A/qVpuTj2wP4eiHZiZg=;
-        b=ZLSDg9JTPLVT2iut7aTeGFNO9rdGi+PkxNSXj0hyKeACqfZ15ec9Wi4mKT9lkDeMhn
-         cxDbGPE7xE0K4WJwHAWKm4b6joNCq6hdI9jQzMwd5O/s1ZS1DbOFL44Fpp54UGFFJGGT
-         Cc3PgmYK1DGPCirie7LPdfGATt44hCk109mcpgvTbwgmuLGnAbS1zWsYajTahKrHXdN5
-         PruDJtbnGjwG7fYAQN2tpRdEQROnn4gZC9HQjUV+n6Bb73WBmuvbvDRzXoY17mjck84s
-         f0wvU1kcbCXj9d7UXYvXVZZML5ToDJHymtw/M4l7+MGxH7SLXgZknmnCRsu6gxMEd5Os
-         KUcg==
-X-Gm-Message-State: AOAM532i8nB6q7eupRYQRatJWej0Ys2L2JJ10y4A79RpX/yRC0Maty/X
-        k1np7i0OOOleLnjGe8dJttRnG6eZ8B+hVg==
-X-Google-Smtp-Source: ABdhPJwQ4hsEJHAItlqYkAFAg4alPUc5XLMNxgMBdZ3YgSTSknY5WlXASHTga4CsFn9hRxwLFgzyKA==
-X-Received: by 2002:ab0:7811:: with SMTP id x17mr1755662uaq.51.1610496104728;
-        Tue, 12 Jan 2021 16:01:44 -0800 (PST)
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com. [209.85.217.47])
-        by smtp.gmail.com with ESMTPSA id n200sm72618vkn.19.2021.01.12.16.01.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 16:01:43 -0800 (PST)
-Received: by mail-vs1-f47.google.com with SMTP id b23so156228vsp.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:01:43 -0800 (PST)
-X-Received: by 2002:a67:ec45:: with SMTP id z5mr2070809vso.10.1610496103001;
- Tue, 12 Jan 2021 16:01:43 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O0+3ejHD3NuIeLjJtpGcKRQHmuMdhFptU0OyF3oj24o=;
+        b=ct0KGRGEWr4+x1dOBhPrQngN9GYclY5xIoIqoKBBoJzLgukOcHlypT8mP92YRCilg6
+         qYiOHOW+DJGpXadFTmpXR4Ku3ByV2jsEJtJFfDLBjQWN2WNANo5Uy9U2ceSg+51APQC8
+         u+IyyYcnh7vgWTJZAiIka2tHceytmP8rMOtJd1JOwkyMNa3txiSMwjxV8LfHOkROXNVa
+         yH6s5Vis79PpFmVbT4X7xaFpoGUh2s1EWf2efk8pfjyPfgRjtOSybk5sNCLepbB6+/t0
+         baBNkO4wTRCJww80elDyL6MY4vpHhEh+GmQpTWPZ8iwVZqsKjGING5CKpbe9HHlVPDUL
+         5ILg==
+X-Gm-Message-State: AOAM5324evl1nB/aXhKYG1YmldXRAb8C7p74lDOBqjpu78eG28/WYCvy
+        GEAGrvB1n91dRpyvI96BPX1iiGyVY0o=
+X-Google-Smtp-Source: ABdhPJw8WUXo/fAiR9ZDJt1s/BY7FtYb0C5Aurx14tBz9fIZK2HbyaFPsmrpvjRkowKp92kps6rgQw==
+X-Received: by 2002:a05:600c:22c6:: with SMTP id 6mr118775wmg.33.1610496140443;
+        Tue, 12 Jan 2021 16:02:20 -0800 (PST)
+Received: from valhalla.home ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id m14sm76269wrh.94.2021.01.12.16.02.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 16:02:19 -0800 (PST)
+From:   Daniel Scally <djrscally@gmail.com>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com, sakari.ailus@linux.intel.com,
+        andriy.shevchenko@linux.intel.com
+Subject: [PATCH v2] software_node: Add kernel-doc comments to exported symbols
+Date:   Wed, 13 Jan 2021 00:02:09 +0000
+Message-Id: <20210113000209.322218-1-djrscally@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210111151651.1616813-1-vkoul@kernel.org> <20210111151651.1616813-4-vkoul@kernel.org>
-In-Reply-To: <20210111151651.1616813-4-vkoul@kernel.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 12 Jan 2021 16:01:30 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=UOR2vxo7_gpjiv-djagq5bVwztCuDoCj5kjY7UtXR2PQ@mail.gmail.com>
-Message-ID: <CAD=FV=UOR2vxo7_gpjiv-djagq5bVwztCuDoCj5kjY7UtXR2PQ@mail.gmail.com>
-Subject: Re: [PATCH 3/7] soc: qcom: geni: Add support for gpi dma
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        linux-spi <linux-spi@vger.kernel.org>, linux-i2c@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+A number of functions which are exported via EXPORT_SYMBOL_GPL() lack any
+kernel-doc comments; add those in so all exported symbols are documented.
 
-On Mon, Jan 11, 2021 at 7:17 AM Vinod Koul <vkoul@kernel.org> wrote:
->
-> +static int geni_se_select_gpi_mode(struct geni_se *se)
-> +{
-> +       unsigned int geni_dma_mode = 0;
-> +       unsigned int gpi_event_en = 0;
-> +       unsigned int common_geni_m_irq_en = 0;
-> +       unsigned int common_geni_s_irq_en = 0;
-> +
-> +       common_geni_m_irq_en = readl_relaxed(se->base + SE_GENI_M_IRQ_EN);
-> +       common_geni_s_irq_en = readl_relaxed(se->base + SE_GENI_S_IRQ_EN);
-> +       common_geni_m_irq_en &=
-> +                       ~(M_CMD_DONE_EN | M_TX_FIFO_WATERMARK_EN |
-> +                       M_RX_FIFO_WATERMARK_EN | M_RX_FIFO_LAST_EN);
-> +       common_geni_s_irq_en &= ~S_CMD_DONE_EN;
-> +       geni_dma_mode = readl_relaxed(se->base + SE_GENI_DMA_MODE_EN);
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Daniel Scally <djrscally@gmail.com>
+---
+Changes in version 2:
+	- Replaced "fwnode_handle" with either @fwnode or natural language
+	reference to a firmware node handle as appropriate.
 
-Do you really need to do a read/modify/write of SE_GENI_DMA_MODE_EN?
-It's a register with a single bit in it.  Just set the bit, no?  There
-are cases where read-modify-write is the correct thing to do but IMO
-it shouldn't be the default way of working.  If code is initting a
-register to a default state it should just be setting the register.
-If some later incarnation of the hardware comes along and adds extra
-bits to this register then, sure, we might have to modify the code.
-However, it has the advantage where we aren't left at the whims of
-whatever was programmed by whatever version of whatever firmware was
-running on the device.  I've been bitten way more often by firmware
-leaving registers in some random / unexpected state than by new bits
-introduced by new versions of hardware.
+ drivers/base/swnode.c | 53 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-...same for other registers in your patch that you can just init.
+diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+index 4a4b2008fbc2..e98018aa8b2f 100644
+--- a/drivers/base/swnode.c
++++ b/drivers/base/swnode.c
+@@ -33,6 +33,13 @@ static struct kset *swnode_kset;
+ 
+ static const struct fwnode_operations software_node_ops;
+ 
++/**
++ * is_software_node() - check if given fwnode was created from a software_node
++ * @fwnode: The &struct fwnode_handle to check
++ *
++ * This function is used to check whether a given firmware node handle was
++ * created by registering a &struct software_node or not.
++ */
+ bool is_software_node(const struct fwnode_handle *fwnode)
+ {
+ 	return !IS_ERR_OR_NULL(fwnode) && fwnode->ops == &software_node_ops;
+@@ -71,6 +78,14 @@ software_node_to_swnode(const struct software_node *node)
+ 	return swnode;
+ }
+ 
++/**
++ * to_software_node() - Fetch software node associated with a firmware node handle
++ * @fwnode: The pointer to a &struct fwnode_handle to parse
++ *
++ * This function attempts to fetch a pointer to the &struct software_node which
++ * was used to create the given @fwnode. Note that this will only work if the
++ * software node has **not** been released.
++ */
+ const struct software_node *to_software_node(const struct fwnode_handle *fwnode)
+ {
+ 	const struct swnode *swnode = to_swnode(fwnode);
+@@ -79,6 +94,14 @@ const struct software_node *to_software_node(const struct fwnode_handle *fwnode)
+ }
+ EXPORT_SYMBOL_GPL(to_software_node);
+ 
++/**
++ * software_node_fwnode() - Fetch firmware node associated with a given software node
++ * @node: The pointer to a &struct software_node to parse
++ *
++ * This function attempts to fetch a pointer to the &struct fwnode_handle which
++ * was created from the given @node. Note that this will only work after the
++ * software node has been registered.
++ */
+ struct fwnode_handle *software_node_fwnode(const struct software_node *node)
+ {
+ 	struct swnode *swnode = software_node_to_swnode(node);
+@@ -800,6 +823,27 @@ void software_node_unregister(const struct software_node *node)
+ }
+ EXPORT_SYMBOL_GPL(software_node_unregister);
+ 
++/**
++ * fwnode_create_software_node() - Create and register a new software_node
++ * @properties: NULL terminated array of properties to assign to the new node
++ * @parent: Pointer to a &struct fwnode_handle to assign as parent to the new
++ *	    node
++ *
++ * NOTE: The pointer passed to @parent **must** be to a firmware node handle
++ * that was created by registering a software node, meaning is_software_node()
++ * must return true when passed that pointer.
++ *
++ * This function creates a new instance of &struct software_node, assigns it a
++ * copy of the given array of properties and registers it as a new fwnode_handle.
++ * Freeing of the allocated memory when the fwnode_handle is no longer needed is
++ * handled via software_node_release() and does not need to be done separately.
++ *
++ * Returns:
++ * * fwnode_handle *	- On success
++ * * -EINVAL		- When @parent is not associated with a software_node
++ * * -ENOMEM		- When memory allocation fails
++ * * -Other		- Propagated errors from sub-functions
++ */
+ struct fwnode_handle *
+ fwnode_create_software_node(const struct property_entry *properties,
+ 			    const struct fwnode_handle *parent)
+@@ -832,6 +876,15 @@ fwnode_create_software_node(const struct property_entry *properties,
+ }
+ EXPORT_SYMBOL_GPL(fwnode_create_software_node);
+ 
++/**
++ * fwnode_remove_software_node() - Put a reference to a registered software_node
++ * @fwnode: The pointer to the &struct fwnode_handle you want to release
++ *
++ * Release a reference to a registered &struct software_node. This function
++ * differs from software_node_put() in that it takes no action if the
++ * firmware node handle passed to @fwnode turns out not to have been created by
++ * registering a software_node.
++ */
+ void fwnode_remove_software_node(struct fwnode_handle *fwnode)
+ {
+ 	struct swnode *swnode = to_swnode(fwnode);
+-- 
+2.25.1
 
-(this is true throughout lots of Qualcomm code, but I figure might as
-well start trying to do something about it?)
-
-
-> +       gpi_event_en = readl_relaxed(se->base + SE_GSI_EVENT_EN);
-> +
-> +       geni_dma_mode |= GENI_DMA_MODE_EN;
-> +       gpi_event_en |= (DMA_RX_EVENT_EN | DMA_TX_EVENT_EN |
-> +                               GENI_M_EVENT_EN | GENI_S_EVENT_EN);
-> +
-> +       writel_relaxed(0, se->base + SE_IRQ_EN);
-> +       writel_relaxed(common_geni_s_irq_en, se->base + SE_GENI_S_IRQ_EN);
-> +       writel_relaxed(common_geni_m_irq_en, se->base + SE_GENI_M_IRQ_EN);
-
-Last time I touched this bit of code I think folks agreed that it
-would be better to move managing of the interrupt enables out of the
-common code and move them to the various drivers using geni [1].  I
-was hoping that someone from Qualcomm would be able to pick this up.
-Managing them in the wrapper just ends up causing a whole bunch of
-special cases.  Any chance you could take that on as part of your
-series?
-
-Presumably if this was mananged in individual drivers you also might
-be able to do less read-modify-write type stuff, too...
-
-[1] https://lore.kernel.org/linux-arm-msm/CAD=FV=VWPqswOXJejyXjYT_Yspdu75ELq42cffN87FrpTwPUQg@mail.gmail.com/
-
-
-> +       writel_relaxed(0xFFFFFFFF, se->base + SE_GENI_M_IRQ_CLEAR);
-> +       writel_relaxed(0xFFFFFFFF, se->base + SE_GENI_S_IRQ_CLEAR);
-> +       writel_relaxed(0xFFFFFFFF, se->base + SE_DMA_TX_IRQ_CLR);
-> +       writel_relaxed(0xFFFFFFFF, se->base + SE_DMA_RX_IRQ_CLR);
-
-This looks mostly like geni_se_irq_clear().  Should they somehow share code?
-
-
-> diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
-> index cb4e40908f9f..12003a6cb133 100644
-> --- a/include/linux/qcom-geni-se.h
-> +++ b/include/linux/qcom-geni-se.h
-> @@ -12,6 +12,7 @@
->  enum geni_se_xfer_mode {
->         GENI_SE_INVALID,
->         GENI_SE_FIFO,
-> +       GENI_GPI_DMA,
-
-Add a comment like "Also known as GSI" here to help people figure out
-what's going on when they're trying to parse the manual or #defines
-like "SE_GSI_EVENT_EN"
-
-
-> @@ -123,6 +124,9 @@ struct geni_se {
->  #define CLK_DIV_MSK                    GENMASK(15, 4)
->  #define CLK_DIV_SHFT                   4
->
-> +/* GENI_IF_DISABLE_RO fields */
-> +#define FIFO_IF_DISABLE                        (BIT(0))
-
-Maybe this define belonged in patch #1?  It doesn't seem related to this patch?
