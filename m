@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFC42F52B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A573A2F52BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:57:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728527AbhAMSut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 13:50:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728342AbhAMSus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 13:50:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4D535207B5;
-        Wed, 13 Jan 2021 18:50:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610563808;
-        bh=I2NQq37r81nX9WW9hD6QbUbvjSDEHWYim8uzxI9yy8E=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=fFM3SJB/1/X3nUnPKQdjvsO2a9H5KTClBgQTsQCmP73KQsxUk2qiGADbgaRRH1A+4
-         WA7SlJ5GRjUeYxx5iZ4xAgiWxnl08hdbij5xSwECVqedqptOrIcRf+QyOGBRQ0ZdKm
-         2uvSpAcw6imLCsW0sTxi/XbrO6w18GOQIsIi7xVdHqxXGaL85PQC52MVvcOxjccjjS
-         esMO/+bjJmFw49I57bGyJPBGdAuOnXcfJ/qpvZOoWuSVe3v50YOTYWPpBbd6kkEaoj
-         Zrruqjzp3Abf5GPhwMY3oUW7ioykZDJDEHvi/t0z0O63ZSkFYIga79eAfbbSPNIyJX
-         Yitnjnjo2fpAQ==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 41DB4604E9;
-        Wed, 13 Jan 2021 18:50:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1728323AbhAMSzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 13:55:40 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:41953 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726803AbhAMSzk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 13:55:40 -0500
+X-Originating-IP: 93.61.96.190
+Received: from uno.LocalDomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 247B11C0006;
+        Wed, 13 Jan 2021 18:54:55 +0000 (UTC)
+From:   Jacopo Mondi <jacopo+renesas@jmondi.org>
+To:     kieran.bingham+renesas@ideasonboard.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        sergei.shtylyov@gmail.com
+Subject: [PATCH v7 0/7] media: i2c: Add RDACM21 camera module
+Date:   Wed, 13 Jan 2021 19:54:58 +0100
+Message-Id: <20210113185506.119808-1-jacopo+renesas@jmondi.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] rxrpc: Fix handling of an unsupported token type in
- rxrpc_read()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161056380826.22635.6329144263801911858.git-patchwork-notify@kernel.org>
-Date:   Wed, 13 Jan 2021 18:50:08 +0000
-References: <161046503122.2445787.16714129930607546635.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161046503122.2445787.16714129930607546635.stgit@warthog.procyon.org.uk>
-To:     David Howells <dhowells@redhat.com>
-Cc:     netdev@vger.kernel.org, trix@redhat.com,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+This iteration is only to ease review of the RDACM21 as it contains two
+broken out patches marked as fixups
 
-This patch was applied to netdev/net.git (refs/heads/master):
+I've taken Laurent's comments on v6 in the driver, but once I've rebased on
+the GPIO handling fixes applied to the MAX9271 driver, I've opened the pandora
+can of properly resetting the OV490 ISP @_@
 
-On Tue, 12 Jan 2021 15:23:51 +0000 you wrote:
-> Clang static analysis reports the following:
-> 
-> net/rxrpc/key.c:657:11: warning: Assigned value is garbage or undefined
->                 toksize = toksizes[tok++];
->                         ^ ~~~~~~~~~~~~~~~
-> 
-> rxrpc_read() contains two consecutive loops.  The first loop calculates the
-> token sizes and stores the results in toksizes[] and the second one uses
-> the array.  When there is an error in identifying the token in the first
-> loop, the token is skipped, no change is made to the toksizes[] array.
-> When the same error happens in the second loop, the token is not skipped.
-> This will cause the toksizes[] array to be out of step and will overrun
-> past the calculated sizes.
-> 
-> [...]
+The two broken out patches serve to show the difference on top of the v6
+version instead of having reviewers going through the changes  that might get
+lost between the two versions.
 
-Here is the summary with links:
-  - [net] rxrpc: Fix handling of an unsupported token type in rxrpc_read()
-    https://git.kernel.org/netdev/net/c/d52e419ac8b5
+With acks on the fixups patches, I'll squash in v8.
 
-You are awesome, thank you!
+All the other patches are reviewed already, so I hope if nothing big is in
+this version, v8 will be good for merging.
+
+Thanks
+  j
+
+Jacopo Mondi (7):
+  media: i2c: Add driver for RDACM21 camera module
+  fixup! media: i2c: rdacm21: Fix GPIO handling
+  fixup! media: i2c: rdacm21: Break-out ov10640 initialization
+  dt-bindings: media: max9286: Document
+    'maxim,reverse-channel-microvolt'
+  media: i2c: max9286: Break-out reverse channel setup
+  media: i2c: max9286: Make channel amplitude programmable
+  media: i2c: max9286: Configure reverse channel amplitude
+
+ .../bindings/media/i2c/maxim,max9286.yaml     |  22 +
+ MAINTAINERS                                   |  12 +
+ drivers/media/i2c/Kconfig                     |  13 +
+ drivers/media/i2c/Makefile                    |   2 +
+ drivers/media/i2c/max9286.c                   |  60 +-
+ drivers/media/i2c/rdacm21.c                   | 623 ++++++++++++++++++
+ 6 files changed, 719 insertions(+), 13 deletions(-)
+ create mode 100644 drivers/media/i2c/rdacm21.c
+
 --
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.29.2
 
