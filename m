@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CABF2F430D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE942F4301
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbhAMEUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 23:20:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:58008 "EHLO foss.arm.com"
+        id S1726234AbhAMETL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 23:19:11 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:49467 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726481AbhAMEUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 23:20:03 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 041ED1474;
-        Tue, 12 Jan 2021 20:18:58 -0800 (PST)
-Received: from p8cg001049571a15.blr.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C4F723F719;
-        Tue, 12 Jan 2021 20:18:54 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Cc:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
-        mike.leach@linaro.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        devicetree@vger.kernel.org
-Subject: [PATCH V2 11/11] dts: bindings: Document device tree bindings for Arm TRBE
-Date:   Wed, 13 Jan 2021 09:48:18 +0530
-Message-Id: <1610511498-4058-12-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1610511498-4058-1-git-send-email-anshuman.khandual@arm.com>
-References: <1610511498-4058-1-git-send-email-anshuman.khandual@arm.com>
+        id S1725372AbhAMETJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 23:19:09 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DFvM72kBLz9sVR;
+        Wed, 13 Jan 2021 15:18:26 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610511507;
+        bh=IlUxPAYnSr4hw1LXKEuVmx8u+KU3KYGYTEv56jfUBYA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jymkbG1SMauBdMsQ9ipftrEfRBIqkYID5bDlX3mdBeYTvpqmy9y3/TR8EJMn0PJ7A
+         xNGJEVhJFLJNpL5RIL8Kg5tNwE/rXUYldoI3PIL+LDoMML6YWgwHlCbFkFEIRi0Ec0
+         EMtEu4odxSDP/ynTyMD5NA2e91U00/lYNz+mBQcCpBAghNnRxRJ5EPfbTw7GDL+Uoz
+         Mocym4N9tb+kNUyzV7AQV007TRUatIYePBiUH0aDLwwRiWgwPhjhfn9s82CcwoakjW
+         SKpJ2BCHyhvAU1F1u/H+8Nm9Lf5DjGD2jzmlUjmP5Zw9vt/Yp6pbjLGWji4LvYjNFo
+         tES22e8swRgIQ==
+Date:   Wed, 13 Jan 2021 15:18:25 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Yanteng Si <siyanteng@loongson.cn>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the jc_docs tree
+Message-ID: <20210113151825.31669f1a@canb.auug.org.au>
+In-Reply-To: <20210113151254.74b9a295@canb.auug.org.au>
+References: <20210113151254.74b9a295@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/7.dBLHBoEm_ATVUaJ_BJ1Ve";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
+--Sig_/7.dBLHBoEm_ATVUaJ_BJ1Ve
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Document the device tree bindings for Trace Buffer Extension (TRBE).
+Hi all,
 
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- Documentation/devicetree/bindings/arm/trbe.yaml | 46 +++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/arm/trbe.yaml
+On Wed, 13 Jan 2021 15:12:54 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the jc_docs tree, today's linux-next build (htmldocs)
+> produced this warning:
+>=20
+> Documentation/translations/zh_CN/mips/booting.rst:5: WARNING: undefined l=
+abel: booting (if the link has no caption the label must precede a section =
+header)
+>=20
+> Introduced by commit
+>=20
+>   7fd3954b0c52 ("doc/zh_CN: add mips booting.rst translation")
 
-diff --git a/Documentation/devicetree/bindings/arm/trbe.yaml b/Documentation/devicetree/bindings/arm/trbe.yaml
-new file mode 100644
-index 0000000..2258595
---- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/trbe.yaml
-@@ -0,0 +1,46 @@
-+# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
-+# Copyright 2021, Arm Ltd
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/arm/trbe.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: ARM Trace Buffer Extensions
-+
-+maintainers:
-+  - Anshuman Khandual <anshuman.khandual@arm.com>
-+
-+description: |
-+  Description of TRBE hw
-+
-+properties:
-+  $nodename:
-+    pattern: "trbe"
-+  compatible:
-+    items:
-+      - const: arm,trace-buffer-extension
-+
-+  interrupts:
-+    description: |
-+       Exactly 1 PPI must be listed. For heterogeneous systems where
-+       TRBE is only supported on a subset of the CPUs, please consult
-+       the arm,gic-v3 binding for details on describing a PPI partition.
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - interrupts
-+
-+additionalProperties: false
-+
-+
-+examples:
-+
-+ - |
-+   #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+   trbe {
-+     compatible = "arm,trace-buffer-extension";
-+     interrupts = <GIC_PPI 15 IRQ_TYPE_LEVEL_HIGH>;
-+   };
-+...
--- 
-2.7.4
+Similarly,
 
+Documentation/translations/zh_CN/mips/features.rst:5: WARNING: undefined la=
+bel: features (if the link has no caption the label must precede a section =
+header)
+
+from commit
+
+  72bc9d08868d ("doc/zh_CN: add mips features.rst translation")
+
+and
+
+Documentation/translations/zh_CN/mips/ingenic-tcu.rst:5: WARNING: undefined=
+ label: ingenic-tcu (if the link has no caption the label must precede a se=
+ction header)
+
+from commit
+
+  419b1d4ed1cb ("doc/zh_CN: add mips ingenic-tcu.rst translation")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/7.dBLHBoEm_ATVUaJ_BJ1Ve
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/+dJEACgkQAVBC80lX
+0Gw2kAf/Xr22YMpT+xF1yQv4RiLTvS2JVpXF79OlB40oVKDG1LfvvtGdszu4E+fj
+K+j479S5l+18zKeHaRQ0BxcXNIHLkCsCRhmo/I7jlY8rt3s4ie5c44FnZSadDnWh
+w/bowTn26Lws1lSMLtLE19swUrX1Z2mN48rs24oXJAnhYWPHbcIKSvAQ6YJMCiAm
+3/opYJIS5iTQlTzhCiPQA7hLGJEMjTCFtovUSzt+n4S8aeoNgkvWW1PMTYe3Dk8O
+GJaWmBUm2dvWvCZBnlWzoR66uJ3QonboXiFfGJT975froo9AHKQwqNP6xOfvVxNj
+LrSQ8UlmM0YaiqndzRUTKe11jNZFMQ==
+=MbEr
+-----END PGP SIGNATURE-----
+
+--Sig_/7.dBLHBoEm_ATVUaJ_BJ1Ve--
