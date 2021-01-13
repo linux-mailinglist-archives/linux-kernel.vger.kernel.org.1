@@ -2,100 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5092F52F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DB62F531D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728594AbhAMTCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 14:02:20 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:37096 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728108AbhAMTCT (ORCPT
+        id S1728550AbhAMTKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 14:10:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728335AbhAMTKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 14:02:19 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 6981F804E7;
-        Wed, 13 Jan 2021 20:01:20 +0100 (CET)
-Date:   Wed, 13 Jan 2021 20:01:18 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Jakub Jelinek <jakub@redhat.com>, linux-fbdev@vger.kernel.org,
-        Anthony Tong <atong@uiuc.edu>, Alex Kern <alex.kern@gmx.de>,
-        dri-devel@lists.freedesktop.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Software Engineering <lg@denx.de>,
-        Paul Mundt <lethal@chaoticdreams.org>,
-        Frodo Looijaard <frodol@dds.nl>,
-        "Thomas J. Moore" <dark@mama.indstate.edu>,
-        "Mark D. Studebaker" <mdsxyz123@yahoo.com>,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        Thibaut VARENE <varenet@parisc-linux.org>,
-        Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
-        Evgeny Novikov <novikov@ispras.ru>,
-        Helge Deller <deller@gmx.de>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Ani Joshi <ajoshi@unixbox.com>, daniel.mantione@freepascal.org,
-        James Simmons <jsimmons@users.sf.net>,
-        Emmanuel Marty <core@ggi-project.org>,
-        carter@compsci.bristol.ac.uk, Alan Cox <alan@redhat.com>,
-        Oliver Kropp <dok@directfb.org>,
-        Jeff Garzik <jgarzik@pobox.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "Eddie C. Dost" <ecd@skynet.be>,
-        Ani Joshi <ajoshi@shell.unixbox.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        John Fremlin <vii@users.sourceforge.net>,
-        Ilario Nardinocchi <nardinoc@cs.unibo.it>,
-        Thomas Winischhofer <thomas@winischhofer.net>,
-        Jakub Jelinek <jj@ultra.linux.cz>, Urs Ganse <ursg@uni.de>,
-        William Rucklidge <wjr@cs.cornell.edu>,
-        Antonino Daplas <adaplas@pol.net>,
-        Brad Douglas <brad@neruo.com>,
-        Ralph Metzler <rjkm@thp.uni-koeln.de>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Jim Hague <jim.hague@acm.org>,
-        Egbert Eich <Egbert.Eich@physik.tu-darmstadt.de>,
-        Jes Sorensen <jds@kom.auc.dk>,
-        Gerd Knorr <kraxel@goldbach.in-berlin.de>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        linux-kernel@vger.kernel.org, Martin Mares <mj@ucw.cz>,
-        Philip Edelbrock <phil@netroedge.com>,
-        Ben Dooks <ben@simtec.co.uk>, Hannu Mallat <hmallat@cc.hut.fi>,
-        Kristoffer Ericson <kristoffer.ericson@gmail.com>,
-        Ghozlane Toumi <gtoumi@laposte.net>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH 00/31] Rid W=1 warnings from Video
-Message-ID: <20210113190118.GA180942@ravnborg.org>
-References: <20210113145009.1272040-1-lee.jones@linaro.org>
+        Wed, 13 Jan 2021 14:10:31 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7C1C061795
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 11:09:51 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id h10so1818151pfo.9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 11:09:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q/rwB9IGmYGXKEdyxERO/RMtuQyegJ2ezK1yKddRsKM=;
+        b=BILMQKHiVPNCrVLaJLItwSYYBvq1KXBBwxjz3U729YaDaTZWnPFea1z3ISVB+ZXrM3
+         HnPeffQc6l5f+ViVYd/GylOnhlcUU600usiqzqxzVx8L95dtO1YH80YZg/eF+ftQtW28
+         ljUktuOqaV8kYyiapXYn9G92YeHn3lbxIqduq/H3jcELHcbUCosrIfkbFxyAZLliYQq2
+         Lx40846nVctqekHIEKMtV33PyYY33dRrIpeUoeCK91wGSQ7OaAzwJjXue3HcIAK5WiJm
+         ub17oOiGhFrx5jr5yc7cPbr9iDj8XT3m/zYYptnqwroQVZEnd5yvPvW4QFxnJl6eSjcM
+         UsNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q/rwB9IGmYGXKEdyxERO/RMtuQyegJ2ezK1yKddRsKM=;
+        b=pcOBa8g6Gat5rbdP0N3cDcWVuzQ1EDItv7+9MP96wNkZ36yitxW/Djwj5wYwbUvbCA
+         2B2jJnqVRIghy9mlU1XFpcvVFn0eZY93/6JiI14Y23GUGjCCYworukSXofhsA74lfW7U
+         3e5S7vDnGimOYB2gRD5FdU4wYSeZfQSYTdjiUlDOsE0rDuG/Ov7tdXV8X2ZqsGOmg3Ca
+         NF+8fgAtyHuS2+qSUvq7+45mU+4zzZ1KILI8xj5/SUB9yb+D0OUn85zSo2lRxNu8p2Dh
+         yrRMG7810FvjJWbvEKFxwAow8R50JMlbfODE686eeWKYnMJJl9ciahnzh9khhc+lwDjX
+         9RTw==
+X-Gm-Message-State: AOAM530oH5rMxSgxHBd2DT4aTvtuCIqtqWvIOjj3fk6pEoo3lfWmaQIN
+        4wZulaViYDQolndt8r4xU+SOUmiV202/vyN569AvEg==
+X-Google-Smtp-Source: ABdhPJz6nMplWM1nG9H3HC7AGus8AUvLvbB3n9iV93VQduqW7+VsS8RK24W9X0m/UliCwbI4tvLLsBBLUxD5OY4qGQg=
+X-Received: by 2002:a65:64da:: with SMTP id t26mr3447631pgv.145.1610564990634;
+ Wed, 13 Jan 2021 11:09:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113145009.1272040-1-lee.jones@linaro.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=Itgwjo3g c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=agyv3xnNEhhBd4aT2ugA:9 a=CjuIK1q_8ugA:10
+References: <20210112214105.1440932-1-shakeelb@google.com> <20210112233108.GD99586@carbon.dhcp.thefacebook.com>
+ <CAOFY-A3=mCvfvMYBJvDL1LfjgYgc3kzebRNgeg0F+e=E1hMPXA@mail.gmail.com>
+ <20210112234822.GA134064@carbon.dhcp.thefacebook.com> <CAOFY-A2YbE3_GGq-QpVOHTmd=35Lt-rxi8gpXBcNVKvUzrzSNg@mail.gmail.com>
+ <20210113184753.GB355124@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20210113184753.GB355124@carbon.dhcp.thefacebook.com>
+From:   Arjun Roy <arjunroy@google.com>
+Date:   Wed, 13 Jan 2021 11:09:39 -0800
+Message-ID: <CAOFY-A0hkOReG3qp2XLBkg5oigs3XNkKFZ8ieOHLoOVXFqAP0g@mail.gmail.com>
+Subject: Re: [PATCH] mm: net: memcg accounting for TCP rx zerocopy
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+On Wed, Jan 13, 2021 at 10:48 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Tue, Jan 12, 2021 at 04:12:08PM -0800, Arjun Roy wrote:
+> > On Tue, Jan 12, 2021 at 3:48 PM Roman Gushchin <guro@fb.com> wrote:
+> > >
+> > > On Tue, Jan 12, 2021 at 03:36:18PM -0800, Arjun Roy wrote:
+> > > > On Tue, Jan 12, 2021 at 3:31 PM Roman Gushchin <guro@fb.com> wrote:
+> > > > >
+> > > > > On Tue, Jan 12, 2021 at 01:41:05PM -0800, Shakeel Butt wrote:
+> > > > > > From: Arjun Roy <arjunroy@google.com>
+> > > > > >
+> > > > > > TCP zerocopy receive is used by high performance network applications to
+> > > > > > further scale. For RX zerocopy, the memory containing the network data
+> > > > > > filled by network driver is directly mapped into the address space of
+> > > > > > high performance applications. To keep the TLB cost low, these
+> > > > > > applications unmaps the network memory in big batches. So, this memory
+> > > > > > can remain mapped for long time. This can cause memory isolation issue
+> > > > > > as this memory becomes unaccounted after getting mapped into the
+> > > > > > application address space. This patch adds the memcg accounting for such
+> > > > > > memory.
+> > > > > >
+> > > > > > Accounting the network memory comes with its own unique challenge. The
+> > > > > > high performance NIC drivers use page pooling to reuse the pages to
+> > > > > > eliminate/reduce the expensive setup steps like IOMMU. These drivers
+> > > > > > keep an extra reference on the pages and thus we can not depends on the
+> > > > > > page reference for the uncharging. The page in the pool may keep a memcg
+> > > > > > pinned for arbitrary long time or may get used by other memcg.
+> > > > > >
+> > > > > > This patch decouples the uncharging of the page from the refcnt and
+> > > > > > associate it with the map count i.e. the page gets uncharged when the
+> > > > > > last address space unmaps it. Now the question what if the driver drops
+> > > > > > its reference while the page is still mapped. That is fine as the
+> > > > > > address space also holds a reference to the page i.e. the reference
+> > > > > > count can not drop to zero before the map count.
+> > > > > >
+> > > > > > Signed-off-by: Arjun Roy <arjunroy@google.com>
+> > > > > > Co-developed-by: Shakeel Butt <shakeelb@google.com>
+> > > > > > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > > > > > ---
+> > > > > >  include/linux/memcontrol.h | 34 +++++++++++++++++++--
+> > > > > >  mm/memcontrol.c            | 60 ++++++++++++++++++++++++++++++++++++++
+> > > > > >  mm/rmap.c                  |  3 ++
+> > > > > >  net/ipv4/tcp.c             | 27 +++++++++++++----
+> > > > > >  4 files changed, 116 insertions(+), 8 deletions(-)
+> > > > > >
+> > > > > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > > > > > index 7a38a1517a05..0b0e3b4615cf 100644
+> > > > > > --- a/include/linux/memcontrol.h
+> > > > > > +++ b/include/linux/memcontrol.h
+> > > > > > @@ -349,11 +349,13 @@ extern struct mem_cgroup *root_mem_cgroup;
+> > > > > >
+> > > > > >  enum page_memcg_data_flags {
+> > > > > >       /* page->memcg_data is a pointer to an objcgs vector */
+> > > > > > -     MEMCG_DATA_OBJCGS = (1UL << 0),
+> > > > > > +     MEMCG_DATA_OBJCGS       = (1UL << 0),
+> > > > > >       /* page has been accounted as a non-slab kernel page */
+> > > > > > -     MEMCG_DATA_KMEM = (1UL << 1),
+> > > > > > +     MEMCG_DATA_KMEM         = (1UL << 1),
+> > > > > > +     /* page has been accounted as network memory */
+> > > > > > +     MEMCG_DATA_SOCK         = (1UL << 2),
+> > > > > >       /* the next bit after the last actual flag */
+> > > > > > -     __NR_MEMCG_DATA_FLAGS  = (1UL << 2),
+> > > > > > +     __NR_MEMCG_DATA_FLAGS   = (1UL << 3),
+> > > > > >  };
+> > > > > >
+> > > > > >  #define MEMCG_DATA_FLAGS_MASK (__NR_MEMCG_DATA_FLAGS - 1)
+> > > > > > @@ -444,6 +446,11 @@ static inline bool PageMemcgKmem(struct page *page)
+> > > > > >       return page->memcg_data & MEMCG_DATA_KMEM;
+> > > > > >  }
+> > > > > >
+> > > > > > +static inline bool PageMemcgSock(struct page *page)
+> > > > > > +{
+> > > > > > +     return page->memcg_data & MEMCG_DATA_SOCK;
+> > > > > > +}
+> > > > > > +
+> > > > > >  #ifdef CONFIG_MEMCG_KMEM
+> > > > > >  /*
+> > > > > >   * page_objcgs - get the object cgroups vector associated with a page
+> > > > > > @@ -1095,6 +1102,11 @@ static inline bool PageMemcgKmem(struct page *page)
+> > > > > >       return false;
+> > > > > >  }
+> > > > > >
+> > > > > > +static inline bool PageMemcgSock(struct page *page)
+> > > > > > +{
+> > > > > > +     return false;
+> > > > > > +}
+> > > > > > +
+> > > > > >  static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
+> > > > > >  {
+> > > > > >       return true;
+> > > > > > @@ -1561,6 +1573,10 @@ extern struct static_key_false memcg_sockets_enabled_key;
+> > > > > >  #define mem_cgroup_sockets_enabled static_branch_unlikely(&memcg_sockets_enabled_key)
+> > > > > >  void mem_cgroup_sk_alloc(struct sock *sk);
+> > > > > >  void mem_cgroup_sk_free(struct sock *sk);
+> > > > > > +int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg, struct page **pages,
+> > > > > > +                              unsigned int nr_pages);
+> > > > > > +void mem_cgroup_uncharge_sock_pages(struct page **pages, unsigned int nr_pages);
+> > > > > > +
+> > > > > >  static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
+> > > > > >  {
+> > > > > >       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_pressure)
+> > > > > > @@ -1589,6 +1605,18 @@ static inline void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
+> > > > > >                                         int nid, int shrinker_id)
+> > > > > >  {
+> > > > > >  }
+> > > > > > +
+> > > > > > +static inline int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg,
+> > > > > > +                                            struct page **pages,
+> > > > > > +                                            unsigned int nr_pages)
+> > > > > > +{
+> > > > > > +     return 0;
+> > > > > > +}
+> > > > > > +
+> > > > > > +static inline void mem_cgroup_uncharge_sock_pages(struct page **pages,
+> > > > > > +                                               unsigned int nr_pages)
+> > > > > > +{
+> > > > > > +}
+> > > > > >  #endif
+> > > > > >
+> > > > > >  #ifdef CONFIG_MEMCG_KMEM
+> > > > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > > > > index db9836f4b64b..38e94538e081 100644
+> > > > > > --- a/mm/memcontrol.c
+> > > > > > +++ b/mm/memcontrol.c
+> > > > > > @@ -7061,6 +7061,66 @@ void mem_cgroup_uncharge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages)
+> > > > > >       refill_stock(memcg, nr_pages);
+> > > > > >  }
+> > > > > >
+> > > > > > +/**
+> > > > > > + * mem_cgroup_charge_sock_pages - charge socket memory
+> > > > > > + * @memcg: memcg to charge
+> > > > > > + * @pages: array of pages to charge
+> > > > > > + * @nr_pages: number of pages
+> > > > > > + *
+> > > > > > + * Charges all @pages to current's memcg. The caller should have a reference on
+> > > > > > + * the given memcg.
+> > > > > > + *
+> > > > > > + * Returns 0 on success.
+> > > > > > + */
+> > > > > > +int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg, struct page **pages,
+> > > > > > +                              unsigned int nr_pages)
+> > > > > > +{
+> > > > > > +     int ret = 0;
+> > > > > > +
+> > > > > > +     if (mem_cgroup_disabled() || mem_cgroup_is_root(memcg))
+> > > > > > +             goto out;
+> > > > > > +
+> > > > > > +     ret = try_charge(memcg, GFP_KERNEL, nr_pages);
+> > > > > > +
+> > > > > > +     if (!ret) {
+> > > > > > +             int i;
+> > > > > > +
+> > > > > > +             for (i = 0; i < nr_pages; i++)
+> > > > > > +                     pages[i]->memcg_data = (unsigned long)memcg |
+> > > > > > +                             MEMCG_DATA_SOCK;
+> > > > > > +             css_get_many(&memcg->css, nr_pages);
+> > > > > > +     }
+> > > > > > +out:
+> > > > > > +     return ret;
+> > > > > > +}
+> > > > > > +
+> > > > > > +/**
+> > > > > > + * mem_cgroup_uncharge_sock_pages - uncharge socket pages
+> > > > > > + * @pages: array of pages to uncharge
+> > > > > > + * @nr_pages: number of pages
+> > > > > > + *
+> > > > > > + * This assumes all pages are charged to the same memcg.
+> > > > > > + */
+> > > > > > +void mem_cgroup_uncharge_sock_pages(struct page **pages, unsigned int nr_pages)
+> > > > > > +{
+> > > > > > +     int i;
+> > > > > > +     struct mem_cgroup *memcg;
+> > > > > > +
+> > > > > > +     if (mem_cgroup_disabled())
+> > > > > > +             return;
+> > > > > > +
+> > > > > > +     memcg = page_memcg(pages[0]);
+> > > > > > +
+> > > > > > +     if (unlikely(!memcg))
+> > > > > > +             return;
+> > > > > > +
+> > > > > > +     refill_stock(memcg, nr_pages);
+> > > > > > +
+> > > > > > +     for (i = 0; i < nr_pages; i++)
+> > > > > > +             pages[i]->memcg_data = 0;
+> > > > > > +     css_put_many(&memcg->css, nr_pages);
+> > > > > > +}
+> > > > >
+> > > > > What about statistics? Should it be accounted towards "sock", "slab/kmem" or deserves
+> > > > > a separate counter? Do we plan to eventually have shrinkers for this type of memory?
+> > > > >
+> > > >
+> > > > While the pages in question are part of an sk_buff, they may be
+> > > > accounted towards sockmem. However, that charge is unaccounted when
+> > > > the skb is freed after the receive operation. When they are in use by
+> > > > the user application I do not think sockmem is the right place to have
+> > > > a break-out counter.
+> > >
+> > > Does it mean that a page can be accounted twice (even temporarily)?
+> > >
+> >
+> > This was an actual consideration for this patchset that we went back
+> > and forth on a little bit.
+> > Short answer, for this patch in its current form: yes. We're calling
+> > mem_cgroup_charge_sock_pages() immediately prior to vm_insert_pages();
+> > and the skb isn't cleaned up until afterwards. Thus we have a period
+> > of double charging.
+> >
+> > The pseudocode for the approach in this patch is:
+> >
+> > while skb = next skb in queue is not null:
+> >     charge_skb_pages(skb.pages) // sets page.memcg for each page
+> >     // at this point pages are double counted
+> >     vm_insert_pages(skb.pages)
+> >     free(skb) // unrefs the pages, no longer double counted
+> >
+> > An alternative version of this patch went the other way: have a short
+> > period of undercharging.
+> >
+> > while skb = next skb in queue is not null:
+> >     for page in skb.pages set page.memcg
+> >     vm_insert_pages(skb.pages)
+> >     free(skb) // unrefs the pages. pages are now undercounted
+> > charge_skb_pages(nr_pages_mapped, FORCE_CHARGE) // count is now correct again
+> > ret
+>
+> I have to think more, but at the first look the second approach is better.
+> IMO forcing the charge is less of a problem than double accounting
+> (we're forcing sock memory charging anyway). I'm afraid that even if the
+> double counting is temporarily for each individual page, with a constant
+> traffic it will create a permanent difference.
+>
+> Btw, what is a typical size of the TCP zerocopy data per-memcg? MBs? GBs?
+>
 
-On Wed, Jan 13, 2021 at 02:49:38PM +0000, Lee Jones wrote:
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
-> 
-> This patch-set clears all of the W=1 warnings currently residing
-> in drivers/video.
+This will depend a lot on the application - the flow is:
+1. Packet arrives at NIC => ... => skb in queue with page frag
+2. Zerocopy receive maps page to userspace, now it's charged to memcg
+3. <application can hold onto this page for potentially arbitrary
+amount of time>
+4. Application calls munmap, or MADV_DONTNEED: now it's uncharged from memcg.
 
-I am sorry to say that I expect most of your nice patches to clash
-with patches that is already present in drm-misc-next.
+Depending on what happens in step 3, I think it's hard to say what is
+typical. But I will note that it's a few tens of milliseconds at line
+rate to get to 1GB of backlog data, and I can imagine an application
+taking at least a few milliseconds to handle a request depending on
+what kind of computation is required.
 
-drivers/video/ are warning free with W=1 in drm-misc-next today.
+-Arjun
 
-I do not know why drm-misc-next is not yet pullled into linux-next.
 
-	Sam
+> Thanks!
