@@ -2,128 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4542F5868
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 449122F585F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728527AbhANCSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:18:51 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:40406 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728199AbhAMVE0 (ORCPT
+        id S1728852AbhANCSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:18:17 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34836 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728380AbhAMVNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 16:04:26 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10DL44TQ070614;
-        Wed, 13 Jan 2021 21:04:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=GJ7vjga36dfwoDDtErzjuJmGMnm3mXTdnriFHhqccJo=;
- b=xZblP0O94OAJW/MKDqJKYtMairWXPCLwbAPGyLxnVFTKXYWWQeoCuz7zkSy/6XZSHWz8
- D2NhjLUJO+GmPKmnBI2IgpZSXMx2tAOFkCy1sp/o+TTtzXsgaOQa0+EpL/IOQtFz9DYA
- b7ar80vRzkF7rdE0il6J2PQ8z4XO5oPXolVG6cjEIECTZWHlIltXxuVvh/DyAB6UHNvu
- 8JrNmapVnKYdRoPQ+BpyJrnRt2/LBCFjgb0glYeVcdC0TeokOfO99uB/MVwTVIRWHRtv
- Eb6JtO79G0DgtAg7f68ZSY0LfZrHl7Q7IQlIaOCBf0lZHgP9yaQya0P6BUIrPSTTNF8n dw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 360kcywhvc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 21:04:06 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10DKtfo3018286;
-        Wed, 13 Jan 2021 21:04:05 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 360ke91nyc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 21:04:05 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10DL44Lq026541;
-        Wed, 13 Jan 2021 21:04:04 GMT
-Received: from [20.15.0.204] (/73.88.28.6)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 13 Jan 2021 13:04:04 -0800
-Subject: Re: [PATCH] scsi: target: tcmu: Fix wrong uio handling causing big
- memory leak
-To:     Bodo Stroesser <bostroesser@gmail.com>, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20201218141534.9918-1-bostroesser@gmail.com>
- <73dc2d01-6398-c1d1-df47-66034d184eec@oracle.com>
- <aa95b4db-ca88-e38c-3871-fb935f1e2212@gmail.com>
-From:   Mike Christie <michael.christie@oracle.com>
-Message-ID: <3caa89ba-47b8-d85c-e7a5-54d84d1471f0@oracle.com>
-Date:   Wed, 13 Jan 2021 15:04:02 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <aa95b4db-ca88-e38c-3871-fb935f1e2212@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        Wed, 13 Jan 2021 16:13:36 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10DL30Eg133717;
+        Wed, 13 Jan 2021 16:11:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=QhuL9Gz2bxSFv4rXqkxZpAJq3ZeRITP9eZdUj9QObPw=;
+ b=k1RFcphbsG2oKqUQ+/BhkBZbB/T0zxfrXdrw0CgWrZr2hQ72eCyM4VlQQ9g9hFJ1/KEu
+ EfhQWFNmeTZ+Ad5hi6oxxHDXyx66glvQw4WGTSCRs2cjxildWB+9SeI9SnIVbyJpO6Jw
+ cYF1iOQLl/bbxyT1jeKq7cqREfu1f8R0DcJGpQVj4AyPcH7tvZIYXLwFA6PtbvV9SMcs
+ siArdxDixICILS4WxRdsBNpEaPduGq4ILpajyce6q8z9ug22DE3bgEbcNtCyvXBXmPA+
+ TfJq2UiE686tV/Du/nh84Xi1jlyBPv+K0GGdlGbe+XQrjh+mOyAi8+hH8UzSqOQIHIqC Ug== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36284jgmvc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 16:11:18 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10DL3e7i140759;
+        Wed, 13 Jan 2021 16:11:18 -0500
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36284jgmun-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 16:11:18 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10DL3H72023444;
+        Wed, 13 Jan 2021 21:11:16 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma05fra.de.ibm.com with ESMTP id 35y448auv3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 21:11:16 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10DLBEen40632698
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 21:11:14 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E3AF642041;
+        Wed, 13 Jan 2021 21:11:13 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 74C4A42049;
+        Wed, 13 Jan 2021 21:11:10 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.57.196])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 13 Jan 2021 21:11:10 +0000 (GMT)
+Message-ID: <71cddb6c8676ccd63c89364d805cfca76d32cb6e.camel@linux.ibm.com>
+Subject: Re: [PATCH v10 8/8] selinux: include a consumer of the new IMA
+ critical data hook
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, tyhicks@linux.microsoft.com,
+        sashal@kernel.org, James Morris <jmorris@namei.org>,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Wed, 13 Jan 2021 16:11:09 -0500
+In-Reply-To: <CAHC9VhTzaQ_q8gJ0oeok_yJ54XLETNvOuhhKnyRwgqsqvpBLCw@mail.gmail.com>
+References: <20210108040708.8389-1-tusharsu@linux.microsoft.com>
+         <20210108040708.8389-9-tusharsu@linux.microsoft.com>
+         <CAHC9VhSJk0wG=WzO3bwsueiy19mMi9m6MamTrQfH8C=gXUtvGw@mail.gmail.com>
+         <97328fc71687a0e1c327f6821548be9ba35bb193.camel@linux.ibm.com>
+         <CAHC9VhTzaQ_q8gJ0oeok_yJ54XLETNvOuhhKnyRwgqsqvpBLCw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9863 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101130127
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9863 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
- impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101130128
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-13_11:2021-01-13,2021-01-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 phishscore=0 mlxlogscore=999 spamscore=0
+ clxscore=1015 mlxscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101130124
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/13/21 11:59 AM, Bodo Stroesser wrote:
-> On 12.01.21 19:36, Mike Christie wrote:
->> On 12/18/20 8:15 AM, Bodo Stroesser wrote:
->>> tcmu calls uio_unregister_device from tcmu_destroy_device.
->>> After that uio will never call tcmu_release for this device.
->>> If userspace still had the uio device open and / or mmap'ed
->>> during uio_unregister_device, tcmu_release will not be called and
->>> udev->kref will never go down to 0.
->>>
->>
->> I didn't get why the release function is not called if you call
->> uio_unregister_device while a device is open. Does the device_destroy call in
->> uio_unregister_device completely free the device or does it set some bits so
->> uio_release is not called later?
+On Wed, 2021-01-13 at 14:19 -0500, Paul Moore wrote:
+> On Wed, Jan 13, 2021 at 2:13 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > On Tue, 2021-01-12 at 11:27 -0500, Paul Moore wrote:
+> > > On Thu, Jan 7, 2021 at 11:07 PM Tushar Sugandhi
+> > > <tusharsu@linux.microsoft.com> wrote:
+> > > > From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> > > >
+> > > > SELinux stores the active policy in memory, so the changes to this data
+> > > > at runtime would have an impact on the security guarantees provided
+> > > > by SELinux.  Measuring in-memory SELinux policy through IMA subsystem
+> > > > provides a secure way for the attestation service to remotely validate
+> > > > the policy contents at runtime.
+> > > >
+> > > > Measure the hash of the loaded policy by calling the IMA hook
+> > > > ima_measure_critical_data().  Since the size of the loaded policy
+> > > > can be large (several MB), measure the hash of the policy instead of
+> > > > the entire policy to avoid bloating the IMA log entry.
+> > > >
+> > > > To enable SELinux data measurement, the following steps are required:
+> > > >
+> > > > 1, Add "ima_policy=critical_data" to the kernel command line arguments
+> > > >    to enable measuring SELinux data at boot time.
+> > > > For example,
+> > > >   BOOT_IMAGE=/boot/vmlinuz-5.10.0-rc1+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
+> > > >
+> > > > 2, Add the following rule to /etc/ima/ima-policy
+> > > >    measure func=CRITICAL_DATA label=selinux
+> > > >
+> > > > Sample measurement of the hash of SELinux policy:
+> > > >
+> > > > To verify the measured data with the current SELinux policy run
+> > > > the following commands and verify the output hash values match.
+> > > >
+> > > >   sha256sum /sys/fs/selinux/policy | cut -d' ' -f 1
+> > > >
+> > > >   grep "selinux-policy-hash" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6
+> > > >
+> > > > Note that the actual verification of SELinux policy would require loading
+> > > > the expected policy into an identical kernel on a pristine/known-safe
+> > > > system and run the sha256sum /sys/kernel/selinux/policy there to get
+> > > > the expected hash.
+> > > >
+> > > > Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> > > > Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> > > > Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > > > ---
+> > > >  Documentation/ABI/testing/ima_policy |  3 +-
+> > > >  security/selinux/Makefile            |  2 +
+> > > >  security/selinux/ima.c               | 64 ++++++++++++++++++++++++++++
+> > > >  security/selinux/include/ima.h       | 24 +++++++++++
+> > > >  security/selinux/include/security.h  |  3 +-
+> > > >  security/selinux/ss/services.c       | 64 ++++++++++++++++++++++++----
+> > > >  6 files changed, 149 insertions(+), 11 deletions(-)
+> > > >  create mode 100644 security/selinux/ima.c
+> > > >  create mode 100644 security/selinux/include/ima.h
+> > >
+> > > I remain concerned about the possibility of bypassing a measurement by
+> > > tampering with the time, but I appear to be the only one who is
+> > > worried about this so I'm not going to block this patch on those
+> > > grounds.
+> > >
+> > > Acked-by: Paul Moore <paul@paul-moore.com>
+> >
+> > Thanks, Paul.
+> >
+> > Including any unique string would cause the buffer hash to change,
+> > forcing a new measurement.  Perhaps they were concerned with
+> > overflowing a counter.
 > 
-> uio_unregister_device() resets the pointer (idev->info) to the struct uio_info which tcmu provided in uio_register_device().
-> The uio device itself AFAICS is kept while it is open / mmap'ed.
-> But no matter what userspace does, uio will not call tcmu's callbacks
-> since info pointer now is NULL.
-> 
-> When userspace finally closes the uio device, uio_release is called, but
-> tcmu_release can not be called.
-> 
->>
->> Do other drivers hit this? Should uio have refcounting so uio_release is called
->> when the last ref (from userspace open/close/mmap calls and from the kernel by
->> drivers like target_core_user) is done?
->>
-> 
-> To be honest I don't know exactly.
-> tcmu seems to be a special case in that is has it's own mmap callback.
-> That allows us to map pages allocated by tcmu.
-> As long as userspace still holds the mapping, we should not unmap those
-> pages, because userspace then could get killed by SIGSEGV.
-> So we have to wait for userspace closing uio before we may unmap and
-> free the pages.
+> My understanding is that Lakshmi wanted to force a new measurement
+> each time and felt using a timestamp would be the best way to do that.
+> A counter, even if it wraps, would have a different value each time
+> whereas a timestamp is vulnerable to time adjustments.  While a
+> properly controlled and audited system could be configured and
+> monitored to detect such an event (I *think*), why rely on that if it
+> isn't necessary?
+
+Why are you saying that even if the counter wraps a new measurement is
+guaranteed.   I agree with the rest of what you said.
+
+Mimi
 
 
-If we removed the clearing of idev->info in uio_unregister_device, and
-then moved the idev->info->release call from uio_release to
-uio_device_release it would work like you need right? The release callback
-would always be called and called when userspace has dropped it's refs.
-You need to also fix up the module refcount and some other bits because
-it looks like uio uses the uio->info check to determine if the device is
-being removed.
-
-I don't know if that is the correct approach. It looks like non
-target_core_user drivers could hit a similar issue. It seems like drivers
-like qedi/bnx2i could hit the issue if their port is removed from the
-kernel before their uio daemon closes the device. However, they also
-could do a driver specific fix and handle the issue by adding some extra
-kernel/userspace bits to sync the port removal.
