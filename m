@@ -2,211 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8E32F448E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 008742F4490
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726244AbhAMG3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 01:29:47 -0500
-Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:4908 "EHLO
-        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725988AbhAMG3q (ORCPT
+        id S1726308AbhAMGay convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Jan 2021 01:30:54 -0500
+Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25692 "EHLO
+        sender2-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725988AbhAMGax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 01:29:46 -0500
-Received: from pps.filterd (m0170390.ppops.net [127.0.0.1])
-        by mx0a-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10D6NY6M008099;
-        Wed, 13 Jan 2021 01:28:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=smtpout1;
- bh=RuhS2s3YKYVFNaRP5+ACHQjgvP+R67knH8gqimARRII=;
- b=gIBOCSlTNONrujLfglGdid0GsBCsIxqR2EAN6R1CvR0xx3j+FfCCVGqJef/Js/zMAy3Q
- ZVFpc2aMi64sID0KLhyUPnuxplpOlq8WM/40mT3yTgEZYTSzK9/73X8itoVrVt7tobSI
- PjGCzy0EYzyBR0YOnQzicDbDN58xKdrnojOFYOTt5xWjoPUVJteFtWKi4th5lBpxUdrX
- AI5cc9ZVboz5+E3lO8whlbxRER6lXrWlXT1sJQyqTjW8S4vNTNdXRZ74bgAtgm+acnzw
- 9kgCGoSqOgfd3wIF4an/xkQBtYqZvzTUWKH2hTxI1hIH1R9JiVDcBoOorb8p8h05YaAP yg== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0a-00154904.pphosted.com with ESMTP id 361fy9j42u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Jan 2021 01:28:06 -0500
-Received: from pps.filterd (m0090351.ppops.net [127.0.0.1])
-        by mx0b-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10D6OuRZ082647;
-        Wed, 13 Jan 2021 01:28:06 -0500
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2177.outbound.protection.outlook.com [104.47.57.177])
-        by mx0b-00154901.pphosted.com with ESMTP id 361tsw0hv3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 01:28:06 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jShAjPGBqPPmdLmrR+iHft0ChxzcgZf7xlofUZmidOb958qJvrTuSNFyngwrYNdq0+Xxu5rXFJ3jZZZN5UmtCl6hk+pQe6XRKTZCX6ZOlQ/H5FtVDDucd6C1wFSlTkgKt+qFXhyNGNZ8VxHjqNrPqcz/Dz4AhIJN13O/JumdmamRRcA0fv6uAVIe6dHhmaEBeKOywAuSWyvyE2gshmP0Wungzy9hSIg38tSFf9PlDGrZqx7HaPOcl33DPl7qcZFJv/29W9ypF5wRV26gBXqnajAI2PTPB4gMSaRMUaKBAD/W/YBCq3yeKwutmXUD+ptMWCGaM9px29b+8AB3k2btYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RuhS2s3YKYVFNaRP5+ACHQjgvP+R67knH8gqimARRII=;
- b=kAsBmQ8IG9f9y0KBE28vlvuMWGo2EgEzadKd3Kt1tbclRLzkOBx3OJO++P2Tpq6AQDjbu0cH+/DeRKMKdXRFSD9k73ew517t9eZOs9BqKEDgFztWEpsgkV+egZmrDnNQMHwIX84BGqdqkPAzS9DH1PiFsUAEuSu6ZZH11ONtZkcVwMgzy0q6UhMzRlR6gdNjYV2MDSWHPmnUd6rbrqCWe6okH9h7hnQHlKEt/nPudkvr7BVhqBT1vn/4wvm4SkePFVxw3eJ7qx2fybj8frxZF6aypkHQNA4v89EdrB6I+vhv5G6ON+uX4sta/1MUVJ91q7NQAPvcdJCFXI2qXxQudQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
- dkim=pass header.d=dell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
- s=selector1-Dell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RuhS2s3YKYVFNaRP5+ACHQjgvP+R67knH8gqimARRII=;
- b=GQaAVDSW6Gff8K8a0u5shvfnfHwCfbsnfAsxil/st3/QcUZOfUq6AYdrfN+H1bpTvE3bR9dw4uIYRulUmA2S7/tBCAKgLGlGmG81mtGdF3Ul5NBDlEk8yFfr4WPCFD+PkvGmpxzMCo8TJF38tobZ1B15YkThYEvAYhPf7JClbSg=
-Received: from SJ0PR19MB4528.namprd19.prod.outlook.com (2603:10b6:a03:28a::6)
- by SJ0PR19MB4542.namprd19.prod.outlook.com (2603:10b6:a03:28b::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Wed, 13 Jan
- 2021 06:28:04 +0000
-Received: from SJ0PR19MB4528.namprd19.prod.outlook.com
- ([fe80::f49a:eb87:f48b:9e13]) by SJ0PR19MB4528.namprd19.prod.outlook.com
- ([fe80::f49a:eb87:f48b:9e13%5]) with mapi id 15.20.3742.012; Wed, 13 Jan 2021
- 06:28:04 +0000
-From:   "Yuan, Perry" <Perry.Yuan@dell.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>
-CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 2/2] ASoC: rt715:add Mic Mute LED control support
-Thread-Topic: [PATCH v2 2/2] ASoC: rt715:add Mic Mute LED control support
-Thread-Index: AQHW3R7JEBZDYV5120aC5Vics2sfNKoizuyAgAC7FFCAAJ95AIAAtLhQgAASy4CAAD76AA==
-Date:   Wed, 13 Jan 2021 06:28:04 +0000
-Message-ID: <SJ0PR19MB4528CF1FC801D7E3A253F20984A90@SJ0PR19MB4528.namprd19.prod.outlook.com>
-References: <20201228133831.17464-1-Perry_Yuan@Dell.com>
- <a12075b1-09f3-a993-eace-008224ca5f52@linux.intel.com>
- <SJ0PR19MB4528225B226C4F9AA7F7ECBE84AA0@SJ0PR19MB4528.namprd19.prod.outlook.com>
- <BY3PR19MB49130372226D65A235757BA1FAAA0@BY3PR19MB4913.namprd19.prod.outlook.com>
- <SJ0PR19MB4528FA846E29C0BB197725CA84A90@SJ0PR19MB4528.namprd19.prod.outlook.com>
- <d133c0fe-c9c6-fc55-8c08-5e9a3cf0d6e7@linux.intel.com>
-In-Reply-To: <d133c0fe-c9c6-fc55-8c08-5e9a3cf0d6e7@linux.intel.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Perry_Yuan@Dell.com;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2021-01-13T06:28:02.4069049Z;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=c08def18-07fb-48e6-a39d-5c6e1d60fc92;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=Dell.com;
-x-originating-ip: [114.84.248.83]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f96705be-0719-449b-bc52-08d8b78c6253
-x-ms-traffictypediagnostic: SJ0PR19MB4542:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR19MB4542FE3D627FDD98B834E2FF84A90@SJ0PR19MB4542.namprd19.prod.outlook.com>
-x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: SJhYz2exWEIsjv1Q8pyMGLPRAD0S+cSLFG7PQanpyo85prbwHb9oAgz5km1D4lfC7TcjiL68zsLh3+lMqmwUlflsvV4GCb+x8EM4yUQhxkS3vcg0Fr8khZC5clZvjdvFHeAmMzChyUnsRN8XerQtHGELLBXt0i2FYgWgGpGuEdYW7pJbgYtmtsVGWuv2IxzTq71u4QZdOc91yCA9MiqNSzfDJ1Rxa0vhyvsy9M3ClZ8oLdRSHVQfITHgd5ov63CRPLsQRK9gcUdbFNkKidk/pJBoPYerhSuuJtT2JkU0sHZBkVFUP9Qc4bD+SdlbvEu1292n1MrLRQG66PfVus5NtkzNmbajA75XYwRTeFQtTJxl845tltwaxnt7XFG5ati6vQH4AE1NmG/HiPefPXNUtg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR19MB4528.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(39860400002)(396003)(55016002)(26005)(478600001)(53546011)(316002)(52536014)(64756008)(54906003)(7696005)(71200400001)(8936002)(6506007)(186003)(66476007)(33656002)(83380400001)(8676002)(66946007)(66556008)(66446008)(786003)(9686003)(76116006)(5660300002)(4326008)(2906002)(110136005)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?Wmt0MnhDMEgwY3FpcEhMeTJpMUkzVnUwZ3RVcE01QUljenlNRmUwemYrUEta?=
- =?utf-8?B?RVVIdWwzcHZ4UVpBZVRHa3E2dzF6a0ZxSm9BeG8rUEVkWEVXTEpRdWU1dUFM?=
- =?utf-8?B?b1RoQk11ZlZXOFlrSHJwOEwweWtlM2FvalR6ZFhkT2lPdTlRRTI0cFZoNktY?=
- =?utf-8?B?K1MxbndGNXFlNUdOYjVUZFNFbFQwWlZ4d1VLSFNBdU9ORjIrNnRmeTVLNjkr?=
- =?utf-8?B?WE5sNEZ0WktucExWd0IrRzhkd3lnaDJsNjIvZ1Q5ZFlUL1VqRUhJQ1pXWit5?=
- =?utf-8?B?aWVZcG8rV0dMaFVBQ3VKcFNTWkdGNXRFZzl4VXl5S2tKMzI0Q1Q4OWJjeUVr?=
- =?utf-8?B?T0E1TmRvL1lqUXpVM0kvODZmd0pCS250eGJSV2gzWXFoVWRPSUI2RDBsd1RH?=
- =?utf-8?B?WlpxVlVaaitoSkZMR2l6Q3VkL0RFYUhrZUlFV1pQbGNWNkh2dWNzMXUvcnhs?=
- =?utf-8?B?OVJvajM1aEkwdk11czZjYXkxNnVSTkJzUlVqL0YyZjAza0VaNDc4OFR4Y1dV?=
- =?utf-8?B?L0d5WGd6bEp1UEJPMTlFdGpTcWNaOFgzcXJZQWdwS0FIK21kQlRCbjNMQm5L?=
- =?utf-8?B?S2o4UmJBYjdCVWFDSGNvanNoV1RLd0tUWmRaR3F3QlJLb09NZjhLZ1FvOFVK?=
- =?utf-8?B?bU1pbkNjdnRhaWZNNmt5Sk9YZnA4V1JTR0ZxazYwd0JXdENBZDM1Nk54eFEx?=
- =?utf-8?B?VlovdGZYNzBrZEVVeGlGR0dWZmMrOGVEUkNwRk0wNkwxQVBEdFg5VjZwaGxt?=
- =?utf-8?B?ZFczSzljQ1pLa2YzSDlBUjNtZDJqUkZyTGJ1cjVuUWpTbW1PRW1BTkh6UGxF?=
- =?utf-8?B?YXpiYjQxVWdnMXFzNkY3UDByVnhLZzFXSkcvanY4OVIyUnVQeDQxOFJCMmpP?=
- =?utf-8?B?dnR4dk1FaUQyUi9YM2ErNWt6ZU1jbTFsdWJ1VVlaQit6ZzJSeXpqamt0OXd1?=
- =?utf-8?B?d21YL2NFemYxcitGcExrZ2NhcXNzQnJRd3M4TnZGeXBML2lTS0ZtUUlvZzZv?=
- =?utf-8?B?NGpFZlJMZkdLL2lvN3pFaGhuVlFDb2EyeGwrbEh4bm5CUkZVQzVJWGs3QmdP?=
- =?utf-8?B?MHBoSU5pbVd3RmMyeEpGcVZBNkUyS0M5SW9SS2FOODhPVE5pdEl5cFRTWEFn?=
- =?utf-8?B?aHlJcGR4VUl2QkkvQjlyRGphTHQ3VnY2OStpeWFGWVI1STc5WllOaUlJY1VI?=
- =?utf-8?B?MXgxZ0JhQ05RWGJnSTZ2cVo4SVRZdS9PdGxRVTBEdzN6dWUrZlVZVkdNc2l3?=
- =?utf-8?B?ZzkxSkI2NDA3NzkrZmFIeDRZVHpHMEkzMmV4SW83aHRUalZ6aUxYQWFKOUhN?=
- =?utf-8?Q?NTCPG9axu6uz8=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 13 Jan 2021 01:30:53 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1610519378; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=AzY0una2dr5icUhDu4lNzz1sgrc+V2ouDrf899s1Eyof7X10qnOw9Z7U499Bz5Lg3W5PyGnwg88pDKHUasBCLs0P6wUW5WSl1jud1Qxu6lN+bAtLNDhK8FkqicnI7EowTnRrLNQmOIFtGvAMxSqEMACkqHEqVLBAf69D/7bamiI=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1610519378; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=EunE2JE8gNgn5uPLjhfmYDZKnwinSngHILvntoS58Vw=; 
+        b=aNzoM/mwp5LeNaHJC4PpzMl740Ug0RW+w/aCX1aWN5t+TwU/kBUDX0Q0kObSU12WAxQuo9tsHm4LM61u6p1XEJw9Uwh1kuK6GyyC238A0CYm4O9d1x5pzypWZ8FlpuHg6v/FEwlccmkZsMediNNzA+ZOaqLuPy4Rb8+dYnKgpWM=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        spf=pass  smtp.mailfrom=lifeng2221dd1@zoho.com.cn;
+        dmarc=pass header.from=<lifeng2221dd1@zoho.com.cn> header.from=<lifeng2221dd1@zoho.com.cn>
+Received: from localhost.localdomain (119.3.119.20 [119.3.119.20]) by mx.zoho.com.cn
+        with SMTPS id 1610519377806976.0436234871487; Wed, 13 Jan 2021 14:29:37 +0800 (CST)
+From:   Li Feng <lifeng2221dd1@zoho.com.cn>
+To:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Li Feng <lifeng2221dd1@zoho.com.cn>
+Message-ID: <20210113062929.303858-1-lifeng2221dd1@zoho.com.cn>
+Subject: [PATCH] cgroup: Remove stale comments
+Date:   Wed, 13 Jan 2021 14:29:29 +0800
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: Dell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR19MB4528.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f96705be-0719-449b-bc52-08d8b78c6253
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jan 2021 06:28:04.5038
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cfjECXwEH79gEXIwqa8UbTCCo+w/aVeioeUWCwDJt4xi+ptbMJRtS6hM9+4N8rk8ujNv8F4hzUsxPwxJQL8scA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR19MB4542
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-13_02:2021-01-12,2021-01-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 mlxlogscore=999 impostorscore=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 clxscore=1015 malwarescore=0 spamscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101130038
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 mlxscore=0
- spamscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101130038
+Content-Transfer-Encoding: 8BIT
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFBpZXJyZS1Mb3VpcyBCb3Nz
-YXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+DQo+IFNlbnQ6IDIwMjHl
-ubQx5pyIMTPml6UgMTA6NDINCj4gVG86IFl1YW4sIFBlcnJ5OyBMaW1vbmNpZWxsbywgTWFyaW87
-IG9kZXJfY2hpb3VAcmVhbHRlay5jb207DQo+IHBlcmV4QHBlcmV4LmN6OyB0aXdhaUBzdXNlLmNv
-bQ0KPiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBicm9vbmllQGtlcm5lbC5vcmc7
-IGxnaXJkd29vZEBnbWFpbC5jb207DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4g
-U3ViamVjdDogUmU6IFtQQVRDSCB2MiAyLzJdIEFTb0M6IHJ0NzE1OmFkZCBNaWMgTXV0ZSBMRUQg
-Y29udHJvbCBzdXBwb3J0DQo+IA0KPiANCj4gW0VYVEVSTkFMIEVNQUlMXQ0KPiANCj4gDQo+ID4+
-Pj4+ICsjaWYgSVNfRU5BQkxFRChDT05GSUdfREVMTF9QUklWQUNZKQ0KPiA+Pj4+PiArCS8qIFBy
-aXZhY3kgTEVEIFRyaWdnZXIgU3RhdGUgQ2hhbmdlZCBieSBtdXRlZC91bm11dGUgc3dpdGNoICov
-DQo+ID4+Pj4+ICsJaWYgKG1jLT5pbnZlcnQpIHsNCj4gPj4+Pj4gKwkJdmFsMCA9IHVjb250cm9s
-LT52YWx1ZS5pbnRlZ2VyLnZhbHVlWzBdOw0KPiA+Pj4+PiArCQl2YWwxID0gdWNvbnRyb2wtPnZh
-bHVlLmludGVnZXIudmFsdWVbMV07DQo+ID4+Pj4+ICsJCWlmICh2YWwwID09IDEgJiYgdmFsMSA9
-PSAxKSB7DQo+ID4+Pj4+ICsJCQlydDcxNS0+bWljbXV0ZV9sZWQgPSBMRURfT0ZGOw0KPiA+Pj4+
-PiArCQkJbGVkdHJpZ19hdWRpb19zZXQoTEVEX0FVRElPX01JQ01VVEUsDQo+ID4+Pj4+ICsJCQkJ
-CXJ0NzE1LT5taWNtdXRlX2xlZCA/IExFRF9PTiA6DQo+ID4+Pj4gTEVEX09GRik7DQo+ID4+Pj4+
-ICsJCX0gZWxzZSBpZiAodmFsMCA9PSAwICYmIHZhbDEgPT0gMCkgew0KPiA+Pj4+PiArCQkJcnQ3
-MTUtPm1pY211dGVfbGVkID0gTEVEX09OOw0KPiA+Pj4+PiArCQkJbGVkdHJpZ19hdWRpb19zZXQo
-TEVEX0FVRElPX01JQ01VVEUsDQo+ID4+Pj4+ICsJCQkJCXJ0NzE1LT5taWNtdXRlX2xlZCA/IExF
-RF9PTiA6DQo+ID4+Pj4gTEVEX09GRik7DQo+ID4+Pj4+ICsJCX0NCj4gPj4+Pj4gKwl9DQo+ID4+
-Pj4+ICsjZW5kaWYNCj4gPj4+Pg0KPiA+Pj4+IFNob3VsZCB0aGlzIGJlIGFjdGl2YXRlZCBmb3Ig
-c3BlY2lmaWMgRE1JIHF1aXJrcz8gVGhpcyBkcml2ZXIgaXMNCj4gPj4+PiB1c2VkIGluDQo+ID4+
-PiBub24tRGVsbA0KPiA+Pj4+IHBsYXRmb3JtcyAoSSBhbSB0aGlua2luZyBvZiBJbnRlbCBSVlBz
-IG9yIFJlYWx0ZWsgZGF1Z2h0ZXJib2FyZHMpLA0KPiA+Pj4+IEkgYW0gbm90IHN1cmUgaWYgYSBi
-dWlsZC10aW1lIGJlaGF2aW9yIGNoYW5nZSBtYWtlcyBzZW5zZS4NCj4gPj4+Pg0KPiA+Pj4+IE9y
-IGNvbnZlcnNlbHkgY291bGQgd2UganVzdCBzZXQgdGhlIExFRHMgdW5jb25kaXRpb25hbGx5IGlm
-IGRvaW5nDQo+ID4+Pj4gc28gaXMgaGFybWxlc3M/DQo+ID4+Pg0KPiA+Pj4gVGhlIGN1cnJlbnQg
-bWljIG11dGUgbGVkIHNldHRpbmcgcGF0aCBpcyBub3QgY29tbW9uIHVzZWQgZm9yIG90aGVyDQo+
-ID4+PiB2ZW5kb3JzLCBqdXN0IERlbGwgcGxhdGZvcm0gc3VwcG9ydCB0aGlzIG1pYyBtdXRlIGxl
-ZCBzZXQgb3BlcmF0aW9uLg0KPiA+Pj4NCj4gPj4+IERvIHlvdSB0aGluayB0aGF0IEkgbmVlZCB0
-byBhZGQgb25lIERNSSBxdWlyayBpbiB0aGUgbmV4dCB2ZXJzaW9uID8NCj4gPj4+IElmIHNvLCBJ
-IGNhbiBhZGQgdGhhdC4NCj4gPj4+DQo+ID4+Pg0KPiA+Pg0KPiA+Pg0KPiA+PiBJbiB0aGUgSERB
-IGF1ZGlvIGNhc2UgdGhpcyBpcyBtb2RlbGVkIG9mZiBvZiwgdGhlIGNvZGUgcnVucyB3aGV0aGVy
-DQo+ID4+IG9yIG5vdCBhIHZlbmRvciBoYXMgc3VwcG9ydCBmb3IgYSBtaWMgbXV0ZSBMRUQuICBU
-aGUgY2FsbHMgdG8NCj4gPj4gbGVkdHJpZ19hdWRpb19zZXQgc2hvdWxkIGJlIGEgbm8tb3AuICBJ
-IGFncmVlIHdpdGggQFBpZXJyZS1Mb3Vpcw0KPiA+PiBCb3NzYXJ0IGluIHRoaXMgY2FzZSwgd2Ug
-c2hvdWxkIGp1c3QgYmUgcnVubmluZyBpdCB3aGV0aGVyIG9yIG5vdA0KPiA+PiBkZWxsLXByaXZh
-Y3kgaXMgY29tcGlsZWQgaW4uICBJZiBhbm90aGVyIHZlbmRvciBjaG9vc2VzIHRvIGFkZCBMRUQN
-Cj4gPj4gc3VwcG9ydCB0aGV5J2xsIGp1c3QgbmVlZCB0byBzZXQgdXAgdGhlaXIgbGVkdHJpZyBz
-dXBwb3J0ZWQgYmFja2VuZCBhbmQgbm90DQo+IGNoYW5nZSBjb2RlYyBjb2RlLg0KPiA+DQo+ID4g
-SGkgQFBpZXJyZS1Mb3VpcyBCb3NzYXJ0DQo+ID4gU2VlbXMgbGlrZSB0aGF0IHdlIGhhdmUgdHdv
-IHdheSB0byBnby4NCj4gPiAqIERNSSBxdWlya3Msc2VlbXMgbGlrZSB0aGF0IGl0IG5lZWRzIHRv
-IG1haW50YWluIHRoZSBxdWlyayBsaXN0IHdoZW4gdmVuZG9ycw0KPiBoYXZlIG5ldyBzeXN0ZW0g
-dG8gc3VwcG9ydC4NCj4gPiAqIFdlIGp1c3Qgc2V0IHRoZSBtaWMgbXV0ZSBsZWQgc3RhdGUgdW5j
-b25kaXRpb25hbGx5IC4NCj4gPg0KPiA+IFdoaWNoIHdheSB3b3VsZCB5b3UgcHJlZmVyIGZvciBu
-ZXh0IHBhdGNoIHJldmlldz8NCj4gDQo+IE1haW50YWluaW5nIHF1aXJrcyBpcyBhIGhhc3NsZSwg
-aXQncyBtdWNoIHNpbXBsZXIgYW5kIGNvbnNpc3RlbnQgd2l0aCBIRGF1ZGlvDQo+IGlmIHRoZSBs
-ZWRzIGFyZSBzZXQgdW5jb25kaXRpb25hbGx5LiBUaGFua3MhDQoNClRoYW5rIHlvdSBmb3IgeW91
-ciBjb25maXJtLiANCkkgd2lsbCB0YWtlIHRoaXMgdG8gbmV4dCBwYXRjaCBWNC4NCg0KUGVycnkg
-IFl1YW4NCkRlbGwgfCBDbGllbnQgU29mdHdhcmUgR3JvdXAgfCBDREMgTGludXggT1MgIA0K
+The function "cgroup_mount" had beed removed, remove related comments
+to prevent confusion.
+
+Related commit:90129625d9203a917f(cgroup: start switching to fs_context)
+
+Signed-off-by: Li Feng <lifeng2221dd1@zoho.com.cn>
+---
+ kernel/cgroup/cgroup.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 613845769103..493547b4941c 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2139,7 +2139,6 @@ static void cgroup_kill_sb(struct super_block *sb)
+ 	/*
+ 	 * If @root doesn't have any children, start killing it.
+ 	 * This prevents new mounts by disabling percpu_ref_tryget_live().
+-	 * cgroup_mount() may wait for @root's release.
+ 	 *
+ 	 * And don't kill the default root.
+ 	 */
+-- 
+2.25.1
+
+
