@@ -2,61 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7D42F581C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FFD2F580F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:01:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727513AbhANCOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:14:19 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:38644 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729113AbhAMVbB (ORCPT
+        id S1728479AbhANCNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:13:31 -0500
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:39735 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729159AbhAMVqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 16:31:01 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 9F71B1F45140
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, matthias.bgg@gmail.com,
-        drinkcat@chromium.org, hsinyi@chromium.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH] soc: mediatek: pm-domains: Don't print an error if child domain is deferred
-Date:   Wed, 13 Jan 2021 22:30:12 +0100
-Message-Id: <20210113213012.67643-1-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.29.2
+        Wed, 13 Jan 2021 16:46:00 -0500
+Received: from dread.disaster.area (pa49-179-167-107.pa.nsw.optusnet.com.au [49.179.167.107])
+        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id BB84511042C;
+        Thu, 14 Jan 2021 08:44:37 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kznwS-006ADD-F8; Thu, 14 Jan 2021 08:44:36 +1100
+Date:   Thu, 14 Jan 2021 08:44:36 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     Donald Buczek <buczek@molgen.mpg.de>, linux-xfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+linux-xfs@molgen.mpg.de
+Subject: Re: [PATCH] xfs: Wake CIL push waiters more reliably
+Message-ID: <20210113214436.GH331610@dread.disaster.area>
+References: <1705b481-16db-391e-48a8-a932d1f137e7@molgen.mpg.de>
+ <20201229235627.33289-1-buczek@molgen.mpg.de>
+ <20201230221611.GC164134@dread.disaster.area>
+ <20210104162353.GA254939@bfoster>
+ <20210107215444.GG331610@dread.disaster.area>
+ <20210108165657.GC893097@bfoster>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108165657.GC893097@bfoster>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
+        a=+wqVUQIkAh0lLYI+QRsciw==:117 a=+wqVUQIkAh0lLYI+QRsciw==:17
+        a=kj9zAlcOel0A:10 a=EmqxpYm9HcoA:10 a=7-415B0cAAAA:8
+        a=HcGIDgX5mWfwRt8FoaAA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Child domains can be deferred by the core because one of its resources
-is not available yet, in such case, it will print an error, but
-later it will succeed to probe. Fix that using the dev_err_probe()
-function so it only prints an error on a real error.
+On Fri, Jan 08, 2021 at 11:56:57AM -0500, Brian Foster wrote:
+> On Fri, Jan 08, 2021 at 08:54:44AM +1100, Dave Chinner wrote:
+> > e.g. we run the first transaction into the CIL, it steals the sapce
+> > needed for the cil checkpoint headers for the transaciton. Then if
+> > the space returned by the item formatting is negative (because it is
+> > in the AIL and being relogged), the CIL checkpoint now doesn't have
+> > the space reserved it needs to run a checkpoint. That transaction is
+> > a sync transaction, so it forces the log, and now we push the CIL
+> > without sufficient reservation to write out the log headers and the
+> > items we just formatted....
+> > 
+> 
+> Hmmm... that seems like an odd scenario because I'd expect the space
+> usage delta to reflect what might or might not have already been added
+> to the CIL context, not necessarily the AIL. IOW, shouldn't a negative
+> delta only occur for items being relogged while still CIL resident
+> (regardless of AIL residency)?
+>
+> From a code standpoint, the way a particular log item delta comes out
+> negative is from having a shadow lv size smaller than the ->li_lv size.
+> Thus, xlog_cil_insert_format_items() subtracts the currently formatted
+> lv size from the delta, formats the current state of the item, and
+> xfs_cil_prepare_item() adds the new (presumably smaller) size to the
+> delta. We reuse ->li_lv in this scenario so both it and the shadow
+> buffer remain, but a CIL push pulls ->li_lv from all log items and
+> chains them to the CIL context for writing, so I don't see how we could
+> have an item return a negative delta on an empty CIL. Hm?
 
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
+In theory, yes. But like I said, I've made a bunch of assumptions
+that this won't happen, and so without actually auditting the code
+I'm not actually sure that it won't. i.e. I need to go check what
+happens with items being marked stale, how shadow buffer
+reallocation interacts with items that end up being smaller than the
+existing buffer, etc. I've paged a lot of this detail out of my
+brain, so until I spend the time to go over it all again I'm not
+going to be able to answer definitively.
 
- drivers/soc/mediatek/mtk-pm-domains.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> (I was also wondering whether repeated smaller relogs of an item could
+> be a vector for this to go wrong, but it looks like
+> xlog_cil_insert_format_items() always uses the formatted size of the
+> current buffer...).
 
-diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
-index ae255aa7b1a9..8055fb019ba6 100644
---- a/drivers/soc/mediatek/mtk-pm-domains.c
-+++ b/drivers/soc/mediatek/mtk-pm-domains.c
-@@ -480,8 +480,8 @@ static int scpsys_add_subdomain(struct scpsys *scpsys, struct device_node *paren
- 
- 		child_pd = scpsys_add_one_domain(scpsys, child);
- 		if (IS_ERR(child_pd)) {
--			ret = PTR_ERR(child_pd);
--			dev_err(scpsys->dev, "%pOF: failed to get child domain id\n", child);
-+			dev_err_probe(scpsys->dev, PTR_ERR(child_pd),
-+				      "%pOF: failed to get child domain id\n", child);
- 			goto err_put_node;
- 		}
- 
+That's my nagging doubt about all this - that there's an interaction
+of this nature that I haven't considered due to the assumptions I've
+made that allows underflow to occur. That would be much worse than
+the current situation of hanging on a missing wakeup when the CIL is
+full and used_space goes backwards....
+
+Cheers,
+
+Dave.
 -- 
-2.29.2
-
+Dave Chinner
+david@fromorbit.com
