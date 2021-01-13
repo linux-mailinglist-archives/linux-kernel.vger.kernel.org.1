@@ -2,198 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1442F4E29
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 255502F4E2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbhAMPKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 10:10:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28684 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726289AbhAMPKX (ORCPT
+        id S1726996AbhAMPKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 10:10:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbhAMPKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 10:10:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610550536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kWipm+X2j1RbsimdpvIAl9U3K5QN86SQ19iK5SoxS1o=;
-        b=STkhg0Pybd7hUHilPx5Zh89F671FWSeS9kQ/FP1UD64lIjIfT3mfwRXqiR7+MOfWUVaT80
-        a1ll+EXbFgFUQC5JgXpusFn4LGBYTQVixp1oFYl6egwtrG9w6G75tSoxesUK1BkhtVt/FQ
-        55Bd9QQbBrlWwtK07vOfSDyXicyCV9Q=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-7r4zH3TRPruaiOxfQJf_pQ-1; Wed, 13 Jan 2021 10:08:54 -0500
-X-MC-Unique: 7r4zH3TRPruaiOxfQJf_pQ-1
-Received: by mail-pf1-f198.google.com with SMTP id 15so1499850pfu.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 07:08:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kWipm+X2j1RbsimdpvIAl9U3K5QN86SQ19iK5SoxS1o=;
-        b=dzPYmj7k9MP2UuanBZU7g3fYFFLcR6QCPbVv1JAzDAPvK29s+LfP3IWgiwsIMIM48t
-         p9F70NnBft2d6QAIRM/+xI6GSjEEv7Ia9nMNzkv05oF/WLUlln4UFriGNcvuKPj7J9LV
-         /fysmcpFye4RK0vPJoa4QlMLePJiIgvLfADQwmeSTM/m0XgbvEywRsSS5LRSausCutb8
-         Uyb+Vnl181+OzjhOM+xQH9eMoyIoJM4+wiYRTFpuNP2Fsvjcok4tExKmjU1Wj6xowGnG
-         bxEfc7QVt8qDJy4HRmCdPmA6CRRky1Tk4fDda5gixzE7XTvh2948fdzk1R0jEJU5Zamf
-         aUrg==
-X-Gm-Message-State: AOAM531KN4IZWy/WJ3ULdombwXI60haeUMTGi8UL6Buk6O/IyAAzBmsj
-        Ofh00OibRgYk9R89WL8JfvIoBgs8Bi+gClGYDaglWUBa0VZMRBIC1IXz/x8CaGpL8J9rHCoHeIp
-        Ehi13pP0J+LeHBu4a/MqzJr6HS9ucmmK57Skmn6GU
-X-Received: by 2002:a63:4d41:: with SMTP id n1mr2439836pgl.147.1610550532830;
-        Wed, 13 Jan 2021 07:08:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzvxkW7BMeeEqiByfe7FaWReWauDte5vCp+7LTLQQFvoJcFAxS9Ug7HUmiUfgfocS9TC46d93Yz9Z3rprm9ksw=
-X-Received: by 2002:a63:4d41:: with SMTP id n1mr2439815pgl.147.1610550532579;
- Wed, 13 Jan 2021 07:08:52 -0800 (PST)
+        Wed, 13 Jan 2021 10:10:37 -0500
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA30C061786;
+        Wed, 13 Jan 2021 07:09:56 -0800 (PST)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id A3DF0C6378; Wed, 13 Jan 2021 15:09:54 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1610550594; bh=vnBpzQjOx+cBmpfoVZKB5QgB9eUJOE6mIeUphxb+gS4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FPlHsRBP2IkKFSRIA8lDfHbV+q6nlASaPczF9f8wLdVYQ2DwO14XH9mQzsnDTDdGa
+         N5nYLoSaBRCxluH09pYuG0sq6Z55+wLIDgqWGScOHDrTYxug0ocR1T5hThvhLt6WZm
+         MlTL6bcZmtig2rOSFwl0On0arZKVnjlUd6SH92d4mQ0TZsLYRzuhF/1DYWCbYN0Cfr
+         SB1xyPw8WMDO9g0tttyHUF8/JmDEsu/jQiYb1Z40OUKjKZ5N2FQ8MUw2QznStnx13E
+         Zeqv0NaoZI8W5jcUi4tN/GT0ZW4XHO9Eesf4JrXo8oqiXeiXOWYBybszwa81ttxbXM
+         Lpa7GBWWfrt1g==
+Date:   Wed, 13 Jan 2021 15:09:54 +0000
+From:   Sean Young <sean@mess.org>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 3/4] media: sunxi-cir: Factor out hardware initialization
+Message-ID: <20210113150954.GA8867@gofer.mess.org>
+References: <20210113045132.31430-1-samuel@sholland.org>
+ <20210113045132.31430-4-samuel@sholland.org>
+ <20210113143633.GB8430@gofer.mess.org>
+ <ec69da79-4d96-0672-9610-5749ec881b4f@sholland.org>
 MIME-Version: 1.0
-References: <20201211222448.2115188-1-dianders@chromium.org>
- <CAD=FV=Ve4wGJ=KxQjraYsiAQZHG_5qEeFW0ZhmBBkRmtdm7Gwg@mail.gmail.com> <CAO-hwJK+=537C-EbgNXPY3=m5LvM8SVKCDB5X145BfSMHgUMdw@mail.gmail.com>
-In-Reply-To: <CAO-hwJK+=537C-EbgNXPY3=m5LvM8SVKCDB5X145BfSMHgUMdw@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Wed, 13 Jan 2021 16:08:41 +0100
-Message-ID: <CAO-hwJLuzAccZbLSCvyP0JnkCW8fgswrm8RJfMaVKjtyF5Yg_A@mail.gmail.com>
-Subject: Re: [PATCH v8 0/4] HID: i2c-hid: Reorganize to allow supporting goodix,gt7375p
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andrea Borgia <andrea@borgia.bo.it>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Playfair Cal <daniel.playfair.cal@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Jiri Kosina <jikos@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Max Krummenacher <max.oss.09@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Pavel Balan <admin@kryma.net>, Shawn Guo <shawnguo@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, Will Deacon <will@kernel.org>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ec69da79-4d96-0672-9610-5749ec881b4f@sholland.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 6:52 PM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> Hi Doug,
->
-> On Wed, Jan 6, 2021 at 2:35 AM Doug Anderson <dianders@chromium.org> wrote:
-> >
-> > Benjamin,
-> >
-> > On Fri, Dec 11, 2020 at 2:24 PM Douglas Anderson <dianders@chromium.org> wrote:
-> > >
-> > > The goal of this series is to support the Goodix GT7375P touchscreen.
-> > > This touchscreen is special because it has power sequencing
-> > > requirements that necessitate driving a reset GPIO.
-> > >
-> > > To do this, we totally rejigger the way i2c-hid is organized so that
-> > > it's easier to jam the Goodix support in there.
-> > >
-> > > This series was:
-> > > - Tested on a device that uses normal i2c-hid.
-> > > - Tested on a device that has a Goodix i2c-hid device.
-> > > - Tested on an ACPI device, but an earlier version of the series.
-> > >
-> > > I believe the plan is for Benjamin to land the whole series.  Will
-> > > said this about the arm64 defconfig change (and provided his Ack):
-> > > > ...there are a few things I really care about
-> > > > in defconfig (e.g. things like page size!), generally speaking we don't
-> > > > need to Ack everything that changes in there.
-> > > >
-> > > > That said, might be worth checking whether arm-soc have any defconfig
-> > > > changes queued in -next so you don't end up with conflicts.
-> > >
-> > > Changes in v8:
-> > > - Mark suspend/resume as static as per patches robot.
-> > >
-> > > Changes in v7:
-> > > - Rebase atop commit afdd34c5fa40 ("HID: i2c-hid: show the error ...")
-> > >
-> > > Changes in v6:
-> > > - ACPI probe function should have been "static"
-> > > - Don't export suspend/resume, just export dev_pm_ops from core.
-> > > - Fixed crash in ACPI module (missing init of "client")
-> > > - No need for regulator include in the core.
-> > > - Removed i2c_device_id table from ACPI module.
-> > > - Suspend/resume are no longer exported from the core.
-> > >
-> > > Changes in v5:
-> > > - Add shutdown_tail op and use it in ACPI.
-> > > - Added mention of i2c-hid in the yaml itself as per Rob.
-> > > - Adjusted subject as per Rob.
-> > > - i2chid_subclass_data => i2chid_ops.
-> > > - power_up_device => power_up (same with power_down).
-> > > - subclass => ops.
-> > >
-> > > Changes in v4:
-> > > - ("arm64: defconfig: Update config names for i2c-hid rejigger") new for v4.
-> > > - Fully rejigger so ACPI and OF are full subclasses.
-> > > - Totally redid based on the new subclass system.
-> > >
-> > > Changes in v3:
-> > > - Fixed compatible in example.
-> > > - Removed Benjamin as a maintainer.
-> > > - Rework to use subclassing.
-> > > - Updated description.
-> > >
-> > > Changes in v2:
-> > > - ("dt-bindings: HID: i2c-hid: Introduce bindings for the Goodix GT7375P") new in v2.
-> > > - Get timings based on the compatible string.
-> > > - Use a separate compatible string for this new touchscreen.
-> > >
-> > > Douglas Anderson (4):
-> > >   HID: i2c-hid: Reorganize so ACPI and OF are separate modules
-> > >   arm64: defconfig: Update config names for i2c-hid rejigger
-> > >   dt-bindings: input: HID: i2c-hid: Introduce bindings for the Goodix
-> > >     GT7375P
-> > >   HID: i2c-hid: Introduce goodix-i2c-hid using i2c-hid core
-> >
-> > I think this series is ready to land.  The "defconfig" has a trivial
-> > conflict with commit 74b87103b3d0 ("arm64: defconfig: Enable HID
-> > multitouch") against linuxnext, but it's so simple that hopefully
-> > folks will be OK with that when it lands.
-> >
-> > Please let me know if there's anything else you need me to do.  :-)
-> >
->
-> I wanted to apply the series yesterday, but for these kinds of changes
-> I like giving it a spin on actual hardware. Turns out that my XPS-13
-> can not boot to v5.11-rc2, which makes testing the new branch slightly
-> more difficult.
->
-> I'll give it a spin next week, but I think I should be able to land it for 5.12.
->
-> Regarding the defconfig conflict, no worries, we can handle it with
-> Stephen and Linus.
->
+Hi Samuel,
 
-After 2 full kernel bisects (I messed up the first because I am an
-idiot and inverted good and bad after the first reboot), I found my
-culprit, and I was able to test the series today.
+On Wed, Jan 13, 2021 at 09:00:20AM -0600, Samuel Holland wrote:
+> On 1/13/21 8:36 AM, Sean Young wrote:
+> > On Tue, Jan 12, 2021 at 10:51:31PM -0600, Samuel Holland wrote:
+> >> In preparation for adding suspend/resume hooks, factor out the hardware
+> >> initialization from the driver probe/remove functions.
+> >>
+> >> The timeout programmed during init is taken from the `struct rc_dev` so
+> >> it is maintained across an exit/init cycle.
+> >>
+> >> This resolves some trivial issues with the probe function: throwing away
+> >> the error from clk_prepare_enable and using the wrong type for the
+> >> temporary register value.
+> >>
+> >> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> >> ---
+> >>  drivers/media/rc/sunxi-cir.c | 128 ++++++++++++++++++++---------------
+> >>  1 file changed, 74 insertions(+), 54 deletions(-)
+> >>
+> >> diff --git a/drivers/media/rc/sunxi-cir.c b/drivers/media/rc/sunxi-cir.c
+> >> index 48be400421cd..ccb9d6b4225d 100644
+> >> --- a/drivers/media/rc/sunxi-cir.c
+> >> +++ b/drivers/media/rc/sunxi-cir.c
+> >> @@ -169,10 +169,74 @@ static int sunxi_ir_set_timeout(struct rc_dev *rc_dev, unsigned int timeout)
+> >>  	return 0;
+> >>  }
+> >>  
+> >> +static int sunxi_ir_hw_init(struct device *dev)
+> >> +{
+> >> +	struct sunxi_ir *ir = dev_get_drvdata(dev);
+> >> +	u32 tmp;
+> >> +	int ret;
+> >> +
+> >> +	ret = reset_control_deassert(ir->rst);
+> >> +	if (ret)
+> >> +		return ret;
+> >> +
+> >> +	ret = clk_prepare_enable(ir->apb_clk);
+> >> +	if (ret) {
+> >> +		dev_err(dev, "failed to enable apb clk\n");
+> >> +		goto exit_assert_reset;
+> >> +	}
+> >> +
+> >> +	ret = clk_prepare_enable(ir->clk);
+> >> +	if (ret) {
+> >> +		dev_err(dev, "failed to enable ir clk\n");
+> >> +		goto exit_disable_apb_clk;
+> >> +	}
+> >> +
+> >> +	/* Enable CIR Mode */
+> >> +	writel(REG_CTL_MD, ir->base + SUNXI_IR_CTL_REG);
+> >> +
+> >> +	/* Set noise threshold and idle threshold */
+> >> +	sunxi_ir_set_timeout(ir->rc, ir->rc->timeout);
+> 
+> Initializing ir->rc->timeout in .probe is needed because of this line.
+> As the changelog mentions, this reprograms the user-configured timeout
+> after an exit/init (suspend/resume) cycle. It needs some default value
+> the first time, when called from .probe.
 
-The series works fine regarding enumeration and removing of devices,
-but it prevents my system from being suspended. If I rmmod
-i2c-hid-acpi, suspend works fine, but if it is present, it immediately
-comes back, which makes me think that something must be wrong.
+Yes, you're completely right. Sorry about that.
 
-I also just reverted the series and confirmed that suspend/resume now
-works, meaning that patch 1/4 needs to be checked.
+> >> +
+> >> +	/* Invert Input Signal */
+> >> +	writel(REG_RXCTL_RPPI, ir->base + SUNXI_IR_RXCTL_REG);
+> >> +
+> >> +	/* Clear All Rx Interrupt Status */
+> >> +	writel(REG_RXSTA_CLEARALL, ir->base + SUNXI_IR_RXSTA_REG);
+> >> +
+> >> +	/*
+> >> +	 * Enable IRQ on overflow, packet end, FIFO available with trigger
+> >> +	 * level
+> >> +	 */
+> >> +	writel(REG_RXINT_ROI_EN | REG_RXINT_RPEI_EN |
+> >> +	       REG_RXINT_RAI_EN | REG_RXINT_RAL(ir->fifo_size / 2 - 1),
+> >> +	       ir->base + SUNXI_IR_RXINT_REG);
+> >> +
+> >> +	/* Enable IR Module */
+> >> +	tmp = readl(ir->base + SUNXI_IR_CTL_REG);
+> >> +	writel(tmp | REG_CTL_GEN | REG_CTL_RXEN, ir->base + SUNXI_IR_CTL_REG);
+> >> +
+> >> +	return 0;
+> >> +
+> >> +exit_disable_apb_clk:
+> >> +	clk_disable_unprepare(ir->apb_clk);
+> >> +exit_assert_reset:
+> >> +	reset_control_assert(ir->rst);
+> >> +
+> >> +	return ret;
+> >> +}
+> >> +
+> >> +static void sunxi_ir_hw_exit(struct device *dev)
+> >> +{
+> >> +	struct sunxi_ir *ir = dev_get_drvdata(dev);
+> >> +
+> >> +	clk_disable_unprepare(ir->clk);
+> >> +	clk_disable_unprepare(ir->apb_clk);
+> >> +	reset_control_assert(ir->rst);
+> >> +}
+> >> +
+> >>  static int sunxi_ir_probe(struct platform_device *pdev)
+> >>  {
+> >>  	int ret = 0;
+> >> -	unsigned long tmp = 0;
+> >>  
+> >>  	struct device *dev = &pdev->dev;
+> >>  	struct device_node *dn = dev->of_node;
+> >> @@ -213,43 +277,26 @@ static int sunxi_ir_probe(struct platform_device *pdev)
+> >>  		ir->rst = devm_reset_control_get_exclusive(dev, NULL);
+> >>  		if (IS_ERR(ir->rst))
+> >>  			return PTR_ERR(ir->rst);
+> >> -		ret = reset_control_deassert(ir->rst);
+> >> -		if (ret)
+> >> -			return ret;
+> >>  	}
+> >>  
+> >>  	ret = clk_set_rate(ir->clk, b_clk_freq);
+> >>  	if (ret) {
+> >>  		dev_err(dev, "set ir base clock failed!\n");
+> >> -		goto exit_reset_assert;
+> >> +		return ret;
+> >>  	}
+> >>  	dev_dbg(dev, "set base clock frequency to %d Hz.\n", b_clk_freq);
+> >>  
+> >> -	if (clk_prepare_enable(ir->apb_clk)) {
+> >> -		dev_err(dev, "try to enable apb_ir_clk failed\n");
+> >> -		ret = -EINVAL;
+> >> -		goto exit_reset_assert;
+> >> -	}
+> >> -
+> >> -	if (clk_prepare_enable(ir->clk)) {
+> >> -		dev_err(dev, "try to enable ir_clk failed\n");
+> >> -		ret = -EINVAL;
+> >> -		goto exit_clkdisable_apb_clk;
+> >> -	}
+> >> -
+> >>  	/* IO */
+> >>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> >>  	ir->base = devm_ioremap_resource(dev, res);
+> >>  	if (IS_ERR(ir->base)) {
+> >> -		ret = PTR_ERR(ir->base);
+> >> -		goto exit_clkdisable_clk;
+> >> +		return PTR_ERR(ir->base);
+> >>  	}
+> >>  
+> >>  	ir->rc = rc_allocate_device(RC_DRIVER_IR_RAW);
+> >>  	if (!ir->rc) {
+> >>  		dev_err(dev, "failed to allocate device\n");
+> >> -		ret = -ENOMEM;
+> >> -		goto exit_clkdisable_clk;
+> >> +		return -ENOMEM;
+> >>  	}
+> >>  
+> >>  	ir->rc->priv = ir;
+> >> @@ -265,6 +312,7 @@ static int sunxi_ir_probe(struct platform_device *pdev)
+> >>  	ir->rc->allowed_protocols = RC_PROTO_BIT_ALL_IR_DECODER;
+> >>  	/* Frequency after IR internal divider with sample period in us */
+> >>  	ir->rc->rx_resolution = (USEC_PER_SEC / (b_clk_freq / 64));
+> >> +	ir->rc->timeout = IR_DEFAULT_TIMEOUT;
+> > 
+> > Why? This is set from sunxi_ir_set_timeout().
+> 
+> Because it is also sent as an argument to sunxi_ir_set_timeout().
 
-Cheers,
-Benjamin
+Indeed it is.
 
+> >>  	ir->rc->min_timeout = sunxi_ithr_to_usec(b_clk_freq, 0);
+> >>  	ir->rc->max_timeout = sunxi_ithr_to_usec(b_clk_freq, 255);
+> >>  	ir->rc->s_timeout = sunxi_ir_set_timeout;
+> >> @@ -291,41 +339,15 @@ static int sunxi_ir_probe(struct platform_device *pdev)
+> >>  		goto exit_free_dev;
+> >>  	}
+> >>  
+> >> -	/* Enable CIR Mode */
+> >> -	writel(REG_CTL_MD, ir->base+SUNXI_IR_CTL_REG);
+> >> -
+> >> -	/* Set noise threshold and idle threshold */
+> >> -	sunxi_ir_set_timeout(ir->rc, IR_DEFAULT_TIMEOUT);
+> 
+> This is where the default timeout was originally programmed.
+> 
+> >> -
+> >> -	/* Invert Input Signal */
+> >> -	writel(REG_RXCTL_RPPI, ir->base + SUNXI_IR_RXCTL_REG);
+> >> -
+> >> -	/* Clear All Rx Interrupt Status */
+> >> -	writel(REG_RXSTA_CLEARALL, ir->base + SUNXI_IR_RXSTA_REG);
+> >> -
+> >> -	/*
+> >> -	 * Enable IRQ on overflow, packet end, FIFO available with trigger
+> >> -	 * level
+> >> -	 */
+> >> -	writel(REG_RXINT_ROI_EN | REG_RXINT_RPEI_EN |
+> >> -	       REG_RXINT_RAI_EN | REG_RXINT_RAL(ir->fifo_size / 2 - 1),
+> >> -	       ir->base + SUNXI_IR_RXINT_REG);
+> >> -
+> >> -	/* Enable IR Module */
+> >> -	tmp = readl(ir->base + SUNXI_IR_CTL_REG);
+> >> -	writel(tmp | REG_CTL_GEN | REG_CTL_RXEN, ir->base + SUNXI_IR_CTL_REG);
+> >> +	ret = sunxi_ir_hw_init(dev);
+> >> +	if (ret)
+> >> +		goto exit_free_dev;
+> >>  
+> >>  	dev_info(dev, "initialized sunXi IR driver\n");
+> >>  	return 0;
+> >>  
+> >>  exit_free_dev:
+> >>  	rc_free_device(ir->rc);
+> >> -exit_clkdisable_clk:
+> >> -	clk_disable_unprepare(ir->clk);
+> >> -exit_clkdisable_apb_clk:
+> >> -	clk_disable_unprepare(ir->apb_clk);
+> >> -exit_reset_assert:
+> >> -	reset_control_assert(ir->rst);
+> >>  
+> >>  	return ret;
+> >>  }
+> >> @@ -334,11 +356,9 @@ static int sunxi_ir_remove(struct platform_device *pdev)
+> >>  {
+> >>  	struct sunxi_ir *ir = platform_get_drvdata(pdev);
+> >>  
+> >> -	clk_disable_unprepare(ir->clk);
+> >> -	clk_disable_unprepare(ir->apb_clk);
+> >> -	reset_control_assert(ir->rst);
+> >> -
+> >> +	sunxi_ir_hw_exit(&pdev->dev);
+> >>  	rc_unregister_device(ir->rc);
+> 
+> I can swap these lines to fix your comment on patch 1.
+
+Please do, and mention it in the commit message.
+
+It might be harmless to write to SUNXI_IR_CIR_REG but it's not really the
+right thing to do. It should be idiomatic to call rc_unregister_device()
+first in the remove() function.
+
+Thank you for that.
+
+Sean
+
+> 
+> >> +
+> >>  	return 0;
+> >>  }
+> >>  
+> >> -- 
+> >> 2.26.2
