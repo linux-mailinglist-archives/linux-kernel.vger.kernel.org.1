@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5322F4213
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4032F421B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728276AbhAMCwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 21:52:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726578AbhAMCwg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 21:52:36 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3804DC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 18:51:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=Y3cSTQ7bwTuCw33mdA1gB8+xZ8waUgpIwwqi/7rCY+M=; b=VwRLdWCa3EozsDMTNj4Hs/PJhH
-        3WU1I0bIT37QvoPraUFi4CbsdFqxPBPSRvxWsu0GTXJK5dGk/qJ+mgakId3r781X49+S3HNh1Yc80
-        SQbFIBQEV0cXY09CA2LNqAeRCsqiK0yoo+5KPKlxkuJzuWzhqbyXz0RN8ArXVBt2cb2f4KD3up5JE
-        6lyMLVJARPcFmMuzDvifxIJslCDQw6xoYs8dFyzFyIlp4OKakZpsou/s/y8PTYTmuci7a5zWpTyoN
-        B63KTkeeKafh7SLd/APOMsomd/l6aV6iB0lgiFzv2coGz4sVOJAb2QhjeJzCxii+pXeUsbqjK7RG9
-        ZXO2ZEOw==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kzWGE-0007uQ-Jb; Wed, 13 Jan 2021 02:51:50 +0000
-Subject: Re: [PATCH V4] arch: kernel: cpu: x86/resctrl: Takes a letter away
- and append a colon to match below struct member
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, reinette.chatre@intel.com
-References: <20210113020333.29803-1-unixbhaskar@gmail.com>
- <f20be5e1-a2a6-14d4-5813-1fb716783bb2@embeddedor.com>
- <20210113024838.GA28337@debian>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a6e94a78-9841-96bb-f07f-4bd01d6a6903@infradead.org>
-Date:   Tue, 12 Jan 2021 18:51:44 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1728705AbhAMCzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 21:55:00 -0500
+Received: from foss.arm.com ([217.140.110.172]:57196 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726578AbhAMCy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 21:54:59 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D8231042;
+        Tue, 12 Jan 2021 18:54:14 -0800 (PST)
+Received: from [10.57.56.43] (unknown [10.57.56.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D06E3F719;
+        Tue, 12 Jan 2021 18:54:12 -0800 (PST)
+Subject: Re: [PATCH v2 0/5] Optimize iommu_map_sg() performance
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Isaac J. Manjarres" <isaacm@codeaurora.org>, will@kernel.org,
+        joro@8bytes.org, pdaly@codeaurora.org, pratikp@codeaurora.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <1610376862-927-1-git-send-email-isaacm@codeaurora.org>
+ <8ad6db90-1d86-db2a-ccb5-dc3f01213289@arm.com>
+ <20210112163307.GA1199965@infradead.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <ef9390bc-57de-07fa-30fd-863672685788@arm.com>
+Date:   Wed, 13 Jan 2021 02:54:11 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210113024838.GA28337@debian>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+In-Reply-To: <20210112163307.GA1199965@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/12/21 6:48 PM, Bhaskar Chowdhury wrote:
-> On 20:24 Tue 12 Jan 2021, Gustavo A. R. Silva wrote:
->>
->>
->> On 1/12/21 20:03, Bhaskar Chowdhury wrote:
->>> s/kernlfs/kernfs/
->>> s/@mon_data_kn/@mon_data_kn:/
->>>
->>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->>> ---
->>> Changes from V3: Fix the subject line typo stuc to struct and mention cpu architecture
->>
->> ...and what changed from v1 to v2 and from v2 to v3?
->>
+On 2021-01-12 16:33, Christoph Hellwig wrote:
+> On Tue, Jan 12, 2021 at 04:00:59PM +0000, Robin Murphy wrote:
+>> Out of curiosity, how much of the difference is attributable to actual
+>> indirect call overhead vs. the additional massive reduction in visits to
+>> arm_smmu_rpm_{get,put} that you fail to mention? There are ways to optimise
+>> indirect calling that would benefit *all* cases, rather than just one
+>> operation for one particular driver.
 > 
-> Gustavo, it seems you are not following up properly ....could you please put
-> little more effort for know it????
-> 
-> There were mails....pls scan and read ..
+> Do we have systems that use different iommu_ops at the same time?
+> If not this would be a prime candidate for static call optimizations.
 
+They're not at all common, but such systems do technically exist. It's 
+hard to make them work in the current "one set of ops per bus" model, 
+but I still have a long-term dream of sorting that out so such setups 
+*can* be supported properly. I certainly wouldn't want to make any 
+changes that completely close the door on that idea, but any static call 
+optimisation that can be done in a config-gated manner should be viable 
+for x86 at least. Even better if we could do it with a dynamic 
+branch-patching solution that keeps the indirect case as a fallback; 
+AFAICS that should be feasible to eagerly apply somewhere around 
+iommu_device_register(), then just undo again if another driver ever 
+does show up registering a new set of ops that don't match. I'm pretty 
+confident that the systems where performance matters most are going to 
+be sensible homogeneous ones - on the Arm side the SBSA should see to 
+that. The weird mix-and-match cases are typically going to be FPGA 
+prototyping systems and esoteric embedded stuff that are worlds away 
+from worrying about keeping up with line rate on a 40GbE NIC...
 
-All of these version change logs should be in this patch, under the "---" line.
+> Also I've been pondering adding direct calls to the iommu dma ops like
+> we do for DMA direct.  This would allow to stop using dma_ops entirely
+> for arm64.
 
+Yes, now that we're starting to get things sufficiently consolidated 
+behind iommu-dma that might be a reasonable thing to try, although given 
+the amount of inherent work further down in the IOVA and IOMMU layers 
+that dwarfs that of the direct case, I doubt that reducing the initial 
+dispatch overhead would make any noticeable difference in practice.
 
--- 
-~Randy
-You can't do anything without having to do something else first.
--- Belefant's Law
+Robin.
