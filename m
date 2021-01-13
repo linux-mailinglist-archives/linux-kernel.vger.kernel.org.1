@@ -2,227 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FA02F4E22
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:09:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1442F4E29
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbhAMPGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 10:06:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726289AbhAMPGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 10:06:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15354235FA;
-        Wed, 13 Jan 2021 15:06:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610550363;
-        bh=b5XQ5VQi1ydi6Acbcs0QgbR5+83izO6xIkNa7gvE4MI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lGIvzxZvPBIDNUg2ePHQWtpYZMLnP6qtZhWF3XaToA+R5x4fDOb42qnDYpjEE6XFf
-         nrCJ+fCT2nrNHu4e+o56IVBNQ39xrQbVwSwkAhZSkUpHI4+hYi5/Unqow6p6JD6Fw8
-         2RLfEHdf6XG/gQ1mOL3TqIoG/HAAlY0ITDrkOAxSb4IGiULNirYWn50cdDGfGoTUqc
-         3+ce7WsPXSUiWyELdVC+NZD/hF2ruOpA0B+j6MVuYAIYQ1TZdNCgYHM+76du6PnZmx
-         pcx9/drRMM/wVmxGKb3MXTPnIxOyYcWPTslC5tE4lNiBztEQzc9Wm55abXneGw65et
-         h5lRY60kduT0w==
-Received: by mail-ej1-f47.google.com with SMTP id f4so3521920ejx.7;
-        Wed, 13 Jan 2021 07:06:02 -0800 (PST)
-X-Gm-Message-State: AOAM533hyp78do0ZaUJnqp3Pov4GSUmb/zzSlud/HvUfgrEVxyy4L+Ur
-        oQk7/8N6dGfz4PLysBR67IqQquMv/V+UAC9nzw==
-X-Google-Smtp-Source: ABdhPJzFt5i0YwXprGIcfxJikdqpkeAmgIaE0hG5P9AqMXYUn0300XFVv4qNgNs4uU0MJyfZEzOrDmvU3Ph90obJroQ=
-X-Received: by 2002:a17:906:25c4:: with SMTP id n4mr1687083ejb.359.1610550361362;
- Wed, 13 Jan 2021 07:06:01 -0800 (PST)
+        id S1726828AbhAMPKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 10:10:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28684 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726289AbhAMPKX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 10:10:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610550536;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kWipm+X2j1RbsimdpvIAl9U3K5QN86SQ19iK5SoxS1o=;
+        b=STkhg0Pybd7hUHilPx5Zh89F671FWSeS9kQ/FP1UD64lIjIfT3mfwRXqiR7+MOfWUVaT80
+        a1ll+EXbFgFUQC5JgXpusFn4LGBYTQVixp1oFYl6egwtrG9w6G75tSoxesUK1BkhtVt/FQ
+        55Bd9QQbBrlWwtK07vOfSDyXicyCV9Q=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-357-7r4zH3TRPruaiOxfQJf_pQ-1; Wed, 13 Jan 2021 10:08:54 -0500
+X-MC-Unique: 7r4zH3TRPruaiOxfQJf_pQ-1
+Received: by mail-pf1-f198.google.com with SMTP id 15so1499850pfu.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 07:08:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kWipm+X2j1RbsimdpvIAl9U3K5QN86SQ19iK5SoxS1o=;
+        b=dzPYmj7k9MP2UuanBZU7g3fYFFLcR6QCPbVv1JAzDAPvK29s+LfP3IWgiwsIMIM48t
+         p9F70NnBft2d6QAIRM/+xI6GSjEEv7Ia9nMNzkv05oF/WLUlln4UFriGNcvuKPj7J9LV
+         /fysmcpFye4RK0vPJoa4QlMLePJiIgvLfADQwmeSTM/m0XgbvEywRsSS5LRSausCutb8
+         Uyb+Vnl181+OzjhOM+xQH9eMoyIoJM4+wiYRTFpuNP2Fsvjcok4tExKmjU1Wj6xowGnG
+         bxEfc7QVt8qDJy4HRmCdPmA6CRRky1Tk4fDda5gixzE7XTvh2948fdzk1R0jEJU5Zamf
+         aUrg==
+X-Gm-Message-State: AOAM531KN4IZWy/WJ3ULdombwXI60haeUMTGi8UL6Buk6O/IyAAzBmsj
+        Ofh00OibRgYk9R89WL8JfvIoBgs8Bi+gClGYDaglWUBa0VZMRBIC1IXz/x8CaGpL8J9rHCoHeIp
+        Ehi13pP0J+LeHBu4a/MqzJr6HS9ucmmK57Skmn6GU
+X-Received: by 2002:a63:4d41:: with SMTP id n1mr2439836pgl.147.1610550532830;
+        Wed, 13 Jan 2021 07:08:52 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzvxkW7BMeeEqiByfe7FaWReWauDte5vCp+7LTLQQFvoJcFAxS9Ug7HUmiUfgfocS9TC46d93Yz9Z3rprm9ksw=
+X-Received: by 2002:a63:4d41:: with SMTP id n1mr2439815pgl.147.1610550532579;
+ Wed, 13 Jan 2021 07:08:52 -0800 (PST)
 MIME-Version: 1.0
-References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
- <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
- <23e16d20-36eb-87d9-4473-142504ad8a95@gmail.com> <CAL_JsqKqSVGCjcue=ka2=bB1Os9pczNTCqDeaoFPFfRxnvsteQ@mail.gmail.com>
- <e549c7ce-d01e-08a3-9ed0-7325a34e9c29@gmail.com> <CAL_Jsq+W4X5H2myCzX1bGTEqJG9dpwLXdmqbpq6oGm5wpF7WMQ@mail.gmail.com>
- <de50f7a5-d0d7-86b0-a1eb-84a91438b586@gmail.com> <CAL_JsqLMeX_f-TpX4j5tgxJOxDafP9tiunvcF_Ed4MGV90982A@mail.gmail.com>
- <5a243fb8-b264-0529-4213-ffd47799f873@gmail.com>
-In-Reply-To: <5a243fb8-b264-0529-4213-ffd47799f873@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 13 Jan 2021 09:05:49 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqL-HgQ__sVR4hL85AT0DC7e0SCNy3gnrzu4=CuX2f8xMw@mail.gmail.com>
-Message-ID: <CAL_JsqL-HgQ__sVR4hL85AT0DC7e0SCNy3gnrzu4=CuX2f8xMw@mail.gmail.com>
-Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
+References: <20201211222448.2115188-1-dianders@chromium.org>
+ <CAD=FV=Ve4wGJ=KxQjraYsiAQZHG_5qEeFW0ZhmBBkRmtdm7Gwg@mail.gmail.com> <CAO-hwJK+=537C-EbgNXPY3=m5LvM8SVKCDB5X145BfSMHgUMdw@mail.gmail.com>
+In-Reply-To: <CAO-hwJK+=537C-EbgNXPY3=m5LvM8SVKCDB5X145BfSMHgUMdw@mail.gmail.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Wed, 13 Jan 2021 16:08:41 +0100
+Message-ID: <CAO-hwJLuzAccZbLSCvyP0JnkCW8fgswrm8RJfMaVKjtyF5Yg_A@mail.gmail.com>
+Subject: Re: [PATCH v8 0/4] HID: i2c-hid: Reorganize to allow supporting goodix,gt7375p
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Jiri Kosina <jkosina@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andrea Borgia <andrea@borgia.bo.it>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Playfair Cal <daniel.playfair.cal@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
+        Jiri Kosina <jikos@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Max Krummenacher <max.oss.09@gmail.com>,
+        Michael Walle <michael@walle.cc>,
+        Pavel Balan <admin@kryma.net>, Shawn Guo <shawnguo@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, Will Deacon <will@kernel.org>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 8:20 PM Frank Rowand <frowand.list@gmail.com> wrote:
+On Fri, Jan 8, 2021 at 6:52 PM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
 >
-> On 1/12/21 2:46 PM, Rob Herring wrote:
-> > On Tue, Jan 12, 2021 at 2:05 PM Frank Rowand <frowand.list@gmail.com> wrote:
-> >>
-> >> On 1/12/21 1:41 PM, Rob Herring wrote:
-> >>> On Tue, Jan 12, 2021 at 1:06 PM Frank Rowand <frowand.list@gmail.com> wrote:
-> >>>>
-> >>>> On 1/12/21 8:04 AM, Rob Herring wrote:
-> >>>>> On Mon, Jan 11, 2021 at 4:06 PM Frank Rowand <frowand.list@gmail.com> wrote:
-> >>>>>>
-> >>>>>> On 1/8/21 2:41 AM, Viresh Kumar wrote:
-> >>>>>>> Now that fdtoverlay is part of the kernel build, start using it to test
-> >>>>>>> the unitest overlays we have by applying them statically.
-> >>>>>>>
-> >>>>>>> The file overlay_base.dtb have symbols of its own and we need to apply
-> >>>>>>> overlay.dtb to overlay_base.dtb alone first to make it work, which gives
-> >>>>>>> us intermediate-overlay.dtb file.
-> >>>>>>>
-> >>>>>>> The intermediate-overlay.dtb file along with all other overlays is them
-> >>>>>>> applied to testcases.dtb to generate the master.dtb file.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> >>>>>>
-> >>>>>> NACK to this specific patch, in its current form.
-> >>>>>>
-> >>>>>> There are restrictions on applying an overlay at runtime that do not apply
-> >>>>>> to applying an overlay to an FDT that will be loaded by the kernel during
-> >>>>>> early boot.  Thus the unittest overlays _must_ be applied using the kernel
-> >>>>>> overlay loading methods to test the kernel runtime overlay loading feature.
-> >>>>>
-> >>>>> This patch doesn't take away from any of that and it completely orthogonal.
-> >>>>
-> >>>> Mea culpa.  I took the patch header comment at face value, and read more into
-> >>>> the header comment than what was written there.  I then skimmed the patch
-> >>>> instead of actually reading what it was doing.
-> >>>>
-> >>>> I incorrectly _assumed_ (bad!) that the intent was to replace applying the
-> >>>> individual overlay dtb's with the master.dtb.  Reading more closely, I see
-> >>>> that the assumed final step of actually _using_ master.dtb does not exist.
-> >>>>
-> >>>> So, yes, I agree that the patch as written is orthogonal to my concern.
-> >>>>
-> >>>> My updated understanding is that this patch is attempting to use the existing
-> >>>> unittest overlay dts files as source to test fdtoverlay.  And that the resulting
-> >>>> dtb from fdtoverlay is not intended to be consumed by the kernel unittest.
-> >>>
-> >>> The goal is not to test fdtoverlay. dtc unittests do that. The goal is
-> >>> testing overlays we expect to be able to apply can actually apply and
-> >>> doing this at build time. That's also the goal for all the 'real'
-> >>> overlays which get added.
-> >>>
-> >>>> I do not agree that this is a good approach to testing fdtoverlay.  The
-> >>>> unittest overlay dts files are constructed specifically to test various
-> >>>> parts of the kernel overlay code and dynamic OF code.  Some of the content
-> >>>> of the overlays is constructed to trigger error conditions in that code,
-> >>>> and thus will not be able to be processed without error by fdtoverlay.
-> >>>
-> >>> Then those should be omitted.
-> >>>
-> >>>> Trying to use overlay dts files that are constructed to test runtime kernel
-> >>>> code as fdtoverlay input data mixes two different test environments and
-> >>>> objectives.  If fdtoverlay test cases are desired, then fdtoverlay specific
-> >>>> dts files should be created.
-> >>>>
-> >>>>>
-> >>>>>> I agree that testing fdtoverlay is a good idea.  I have not looked at the
-> >>>>>> parent project to see how much testing of fdtoverlay occurs there, but I
-> >>>>>> would prefer that fdtoverlay tests reside in the parent project if practical
-> >>>>>> and reasonable.  If there is some reason that some fdtoverlay tests are
-> >>>>>> more practical in the Linux kernel repository then I am open to adding
-> >>>>>> them to the Linux kernel tree.
-> >>>>>
-> >>>>> If you (or more importantly someone else sending us patches) make
-> >>>>> changes to the overlays, you can test that they apply at build time
-> >>>>> rather than runtime. I'll take it! So please help on fixing the issue
-> >>>>> because I want to apply this.
-> >>>>
-> >>>> If the tests can be added to the upstream project, I would much prefer
-> >>>> they reside there.  If there is some reason a certain test is more
-> >>>> suited to be in the Linux kernel source tree then I also would like
-> >>>> it to be accepted here.
-> >>>
-> >>> Again, this is just about doing sanity checks at build time rather
-> >>> than *only* rely on runtime.
-> >>
-> >> I'm fine with adding tests for applying overlays at build time (in
-> >> other words, tests of fdtoverlay).
+> Hi Doug,
+>
+> On Wed, Jan 6, 2021 at 2:35 AM Doug Anderson <dianders@chromium.org> wrote:
+> >
+> > Benjamin,
+> >
+> > On Fri, Dec 11, 2020 at 2:24 PM Douglas Anderson <dianders@chromium.org> wrote:
+> > >
+> > > The goal of this series is to support the Goodix GT7375P touchscreen.
+> > > This touchscreen is special because it has power sequencing
+> > > requirements that necessitate driving a reset GPIO.
+> > >
+> > > To do this, we totally rejigger the way i2c-hid is organized so that
+> > > it's easier to jam the Goodix support in there.
+> > >
+> > > This series was:
+> > > - Tested on a device that uses normal i2c-hid.
+> > > - Tested on a device that has a Goodix i2c-hid device.
+> > > - Tested on an ACPI device, but an earlier version of the series.
+> > >
+> > > I believe the plan is for Benjamin to land the whole series.  Will
+> > > said this about the arm64 defconfig change (and provided his Ack):
+> > > > ...there are a few things I really care about
+> > > > in defconfig (e.g. things like page size!), generally speaking we don't
+> > > > need to Ack everything that changes in there.
+> > > >
+> > > > That said, might be worth checking whether arm-soc have any defconfig
+> > > > changes queued in -next so you don't end up with conflicts.
+> > >
+> > > Changes in v8:
+> > > - Mark suspend/resume as static as per patches robot.
+> > >
+> > > Changes in v7:
+> > > - Rebase atop commit afdd34c5fa40 ("HID: i2c-hid: show the error ...")
+> > >
+> > > Changes in v6:
+> > > - ACPI probe function should have been "static"
+> > > - Don't export suspend/resume, just export dev_pm_ops from core.
+> > > - Fixed crash in ACPI module (missing init of "client")
+> > > - No need for regulator include in the core.
+> > > - Removed i2c_device_id table from ACPI module.
+> > > - Suspend/resume are no longer exported from the core.
+> > >
+> > > Changes in v5:
+> > > - Add shutdown_tail op and use it in ACPI.
+> > > - Added mention of i2c-hid in the yaml itself as per Rob.
+> > > - Adjusted subject as per Rob.
+> > > - i2chid_subclass_data => i2chid_ops.
+> > > - power_up_device => power_up (same with power_down).
+> > > - subclass => ops.
+> > >
+> > > Changes in v4:
+> > > - ("arm64: defconfig: Update config names for i2c-hid rejigger") new for v4.
+> > > - Fully rejigger so ACPI and OF are full subclasses.
+> > > - Totally redid based on the new subclass system.
+> > >
+> > > Changes in v3:
+> > > - Fixed compatible in example.
+> > > - Removed Benjamin as a maintainer.
+> > > - Rework to use subclassing.
+> > > - Updated description.
+> > >
+> > > Changes in v2:
+> > > - ("dt-bindings: HID: i2c-hid: Introduce bindings for the Goodix GT7375P") new in v2.
+> > > - Get timings based on the compatible string.
+> > > - Use a separate compatible string for this new touchscreen.
+> > >
+> > > Douglas Anderson (4):
+> > >   HID: i2c-hid: Reorganize so ACPI and OF are separate modules
+> > >   arm64: defconfig: Update config names for i2c-hid rejigger
+> > >   dt-bindings: input: HID: i2c-hid: Introduce bindings for the Goodix
+> > >     GT7375P
+> > >   HID: i2c-hid: Introduce goodix-i2c-hid using i2c-hid core
+> >
+> > I think this series is ready to land.  The "defconfig" has a trivial
+> > conflict with commit 74b87103b3d0 ("arm64: defconfig: Enable HID
+> > multitouch") against linuxnext, but it's so simple that hopefully
+> > folks will be OK with that when it lands.
+> >
+> > Please let me know if there's anything else you need me to do.  :-)
 > >
 >
-> > Again, it's not tests of fdtoverlay. It's a test of the dts files. We
-> > are testing that an overlay dts can apply to the base dts we claim it
-> > applies. If the overlay dts has crap then we'll catch it.
-> >
-> > We shouldn't accept overlays that can't apply to a base in the kernel
-> > tree. That's either because it's broken or because the base doesn't
-> > exist. With the exception of overlays designed to fail for tests,
-> > unittest overlays should not be any different.
+> I wanted to apply the series yesterday, but for these kinds of changes
+> I like giving it a spin on actual hardware. Turns out that my XPS-13
+> can not boot to v5.11-rc2, which makes testing the new branch slightly
+> more difficult.
 >
-> I understood the goal to be testing fdtoverlay.  I'll switch my mind
-> set to the goal being a test of dts files.
+> I'll give it a spin next week, but I think I should be able to land it for 5.12.
 >
-> We already know that unittest overlays that are expected to be valid
-> can apply successfully.  The run time unittests already check for that.
-
-As soon as I apply a patch to one I don't know it's valid or can apply anymore.
-
-> I don't see any value in adding a build time test for the same thing
-> _for unittest overlay dts files_.  And I do see an ongoing maintenance
-> cost for _unittest overlay dts files_.
-
-0-day, kernelci, etc. will all build time test it. Actually, everyone
-doing allmodconfig builds will. Runtime testing requires *my* time.
-I'd like to say runtime testing is part of my highly automated
-workflow and unittests get run all the time, but they don't.
-
-> If you want to add build time tests for all (or some) non-unittest overlay
-> dts files, then I am not particularly opposed to that (but being aware that
-> an overlay dtb could apply on top of more than one base dtb, so there
-> is a possibility of an "explosion" of combinations to be maintained
-> in the build system).
-
-Yes, that could be a problem. I think reality is most overlays we're
-willing to accept will be board specific.
-
-> I see value in having build time testing that overlay dtbs apply cleanly
-> on a base dtb.  I have heard frustration from the out of tree users of
-> overlays that apply the overlays via the bootloader, because if the
-> bootloader fails to apply an overlay it can be difficult to debug or
-> fix on the target computer.  Having a mechanism to specify what overlays
-> are intended to be applied to a base dtb, and verify that they do
-> apply would resolve some of those issues, assuming the boot loader
-> and fdtoverlay are consistent with each other.
-
-Yes, that's one main reason to require applying them at build time.
-
-The other is if people want to refactor a current dtb into a base and
-overlay, then we should still produce the original combined dtb.
-
-> >> But the constraints on applying an overlay at build time are different
-> >> than the runtime constraints.
-> >
-> > Like what specifically? Runtime is more constrained than build time.
-> > Or at least it should be. It's not really and that's why we have
-> > limited runtime applied overlay support.
-> >
-> >> The existing unittest overlay dts files are not designed to test applying
-> >> overlays at build time.  Tests for fdtoverlay should be designed to test
-> >> that overlays that meet the build time constraints can be applied
-> >> properly by fdtoverlay, and that overlays that fail to meet those
-> >> constraints are rejected by fdtoverlay.
-> >>
-> >> Trying to use the same data (dts) files for tests that have different
-> >> constraints is likely to make both tests more fragile when a data file
-> >> is modified for one environment without careful consideration of the
-> >> other environment.
-> >
-> > We're not changing nor constraining the data files. Just adding
-> > another sanity test on them.
+> Regarding the defconfig conflict, no worries, we can handle it with
+> Stephen and Linus.
 >
-> For _unittest_ dts files, I see no value add.  And the cost of needing
-> to track _in the build system_ which unittest dts files are expected fail
-> to apply and which are expected to succeed.
 
-It costs nothing to add it (well, it would have been before this
-thread). If it becomes problematic, then we can drop it.
+After 2 full kernel bisects (I messed up the first because I am an
+idiot and inverted good and bad after the first reboot), I found my
+culprit, and I was able to test the series today.
 
-Rob
+The series works fine regarding enumeration and removing of devices,
+but it prevents my system from being suspended. If I rmmod
+i2c-hid-acpi, suspend works fine, but if it is present, it immediately
+comes back, which makes me think that something must be wrong.
+
+I also just reverted the series and confirmed that suspend/resume now
+works, meaning that patch 1/4 needs to be checked.
+
+Cheers,
+Benjamin
+
