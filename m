@@ -2,99 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF4D2F4107
+	by mail.lfdr.de (Postfix) with ESMTP id A3A452F4108
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 02:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbhAMBUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 20:20:05 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:42374 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbhAMBUE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 20:20:04 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610500779; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=sR9mKM5fZj3Onoi6nrIzD0sEYuGwuHWAJnaDB43NL3k=; b=wEDdvgZ6VwXzNgbA9Br15onmO4jizFkwdCUydn8MTUJsZr7Uf2CPf5LkiYQ5bQk+5XRJr7KM
- CZb9rURZ7ulVH9FiRCK8+jYDABQjYRTGVQjJzlQUIBq4hPkyxL1JRWvLVx4e2d6IqRby4gEx
- 0ped27S2raB9DJb90AvlNe/9FBQ=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 5ffe4a8df1be2d22c41f2768 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 01:19:09
- GMT
-Sender: jjohnson=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 24700C433CA; Wed, 13 Jan 2021 01:19:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jjohnson)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 26A71C433C6;
-        Wed, 13 Jan 2021 01:19:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 26A71C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jjohnson@codeaurora.org
-From:   Jeff Johnson <jjohnson@codeaurora.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     psodagud@quicinc.com, eberman@quicinc.com,
-        Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>,
-        Jeff Johnson <jjohnson@codeaurora.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] kbuild: handle excessively long argument lists
-Date:   Tue, 12 Jan 2021 17:18:51 -0800
-Message-Id: <1610500731-30960-2-git-send-email-jjohnson@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1610500731-30960-1-git-send-email-jjohnson@codeaurora.org>
-References: <1610500731-30960-1-git-send-email-jjohnson@codeaurora.org>
+        id S1726608AbhAMBUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 20:20:02 -0500
+Received: from mail-eopbgr750049.outbound.protection.outlook.com ([40.107.75.49]:6422
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726449AbhAMBT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 20:19:59 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SVDgay178Gwse+jWUnup5HkOrVExYQ/+CWee5JFPI6cTi7Ez3mA5UOwk1yCBh8MbcIrusSLPYTxiQ6fN5ZDD25GulOmF5xaJo8gJsEoFJf79G1Rln/+b+hA5k1BpssiQMf8KrCVp7qsrS3XVcIhSyel5fWrUojgDvCat/qDun+MEJYvFHlha4SEGdDowYnzF7slylp7vMDGSljsgkfLR8CEKAYFjPS8YtQf25GUlvD+uD2S6L3ojzqfHM9/7brwc8AglHzOFriWcPe1HPA4c0H8sg9lMrSm3UJqOUgN3h8rP4/Pr3oXofX3a7Q1v7WJy5qmQJ6+LBnBH/e7FBg8Fkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=txyxzjYE4nXvsxr+LYJPsb19d8ssy3/HsrXgAPdMclU=;
+ b=LEj25A6vvibKOge3gUskleUfu2TAfQr39gyjCReagZehkhxvnRZB9aBIy9SpldlfJ3SEDjuon+kQyN/YUCtJp5Vv1XCNqpz9oN3wXVVRD9MhJZAAnk8B77IJY86ixcWG4sFVyhu9/J7+himAhoG6G6Fjptjnpa/vurdWXbUBpb3ItPGQxLW2jZKkd2eDN+cbwdKdT2Jn2kr5IzC1fORJELhAWA0Mh6pmHFNN3YSWXQBwy31bEy9ufuPdIzdI6GPBmWCb6WXGwmS5eipt15wAqUF47RLCOTS17eB5naFUwNfVTH/DenrRFlPExtBuwvlnwpNv8ATUnxRcdU8s5KLTgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=txyxzjYE4nXvsxr+LYJPsb19d8ssy3/HsrXgAPdMclU=;
+ b=AIZItQTTGJ+TNy9Wq/WCKNeeOp+0Xvv9H3g1+MXvnZiwfFvCH9oX2Z/G8F2jl0jFDpV18IphJos7/VftDMgOZt3Uwt1AXftxMNRa09/Bc76Y1UaHXVMDQvAG7wYrwH5Wr0cwjVrwmdGUv/VbzOVHUhRGtIx6jsw/idskq1KQV6s=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR12MB1248.namprd12.prod.outlook.com (2603:10b6:300:12::21)
+ by MWHPR1201MB0031.namprd12.prod.outlook.com (2603:10b6:301:57::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Wed, 13 Jan
+ 2021 01:19:11 +0000
+Received: from MWHPR12MB1248.namprd12.prod.outlook.com
+ ([fe80::8c0d:7831:bfa8:d98]) by MWHPR12MB1248.namprd12.prod.outlook.com
+ ([fe80::8c0d:7831:bfa8:d98%6]) with mapi id 15.20.3742.012; Wed, 13 Jan 2021
+ 01:19:11 +0000
+Date:   Wed, 13 Jan 2021 09:19:01 +0800
+From:   Huang Rui <ray.huang@amd.com>
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
+        "Quan, Evan" <Evan.Quan@amd.com>,
+        "Lazar, Lijo" <Lijo.Lazar@amd.com>,
+        "Su, Jinzhou (Joe)" <Jinzhou.Su@amd.com>,
+        "Hou, Xiaomeng (Matthew)" <Xiaomeng.Hou@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm: amdgpu: pm: Mark vangogh_clk_dpm_is_enabled() as
+ static
+Message-ID: <20210113011901.GA135176@hr-amd>
+References: <1610481442-6606-1-git-send-email-jrdr.linux@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610481442-6606-1-git-send-email-jrdr.linux@gmail.com>
+X-Originating-IP: [180.167.199.189]
+X-ClientProxiedBy: HK2PR03CA0062.apcprd03.prod.outlook.com
+ (2603:1096:202:17::32) To MWHPR12MB1248.namprd12.prod.outlook.com
+ (2603:10b6:300:12::21)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from hr-amd (180.167.199.189) by HK2PR03CA0062.apcprd03.prod.outlook.com (2603:1096:202:17::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.2 via Frontend Transport; Wed, 13 Jan 2021 01:19:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: c97688c8-4a1f-4714-d2b2-08d8b7613bab
+X-MS-TrafficTypeDiagnostic: MWHPR1201MB0031:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR1201MB0031728951A92C1854D7B84EECA90@MWHPR1201MB0031.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1169;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DBlMwqPliRShg2JqedQTJiumzniYUAdvaper8Mp/p1yzdZPKmI1LRNoANQzkCZhx/Wsqq1LPCpPCIw3G3Zddjm8LQ8hMT2bsNTZzGVM3B0DNMXPKXK+0MBvH51rJCoE/oiNMB5p8DFsajzpBlXqObDr3NiyrfS0+olDNNegkOUcAQL9LZ1jwT68FJiSKDdfuySRnT09fwGcRdLSyYOebm8qooELiANqn7J7QqGIAWQDpEll9uPARQ/4OjlhMFGBzX+DWPJEp3KGkj4kDEO+IZgHgsKRRN9kooDqFJoTsG6GAwl1eGrYpod3V0Ee7bHwgYbA9wMdJQpZ6CnPCI8RQLmFw8h3UiFYNgrtRceCRTTtoRQ2DSX9U5j+pK5DfZYWh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1248.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(39860400002)(136003)(346002)(366004)(6666004)(26005)(9686003)(54906003)(66946007)(55016002)(186003)(66556008)(16526019)(2906002)(1076003)(33716001)(4326008)(66476007)(52116002)(86362001)(6496006)(83380400001)(956004)(5660300002)(8936002)(8676002)(316002)(478600001)(33656002)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?BmDrVFX3WkhuI2t/cd8GNSHTf22MA6YA38kJctTf5YylxhnBevGqqUrpzlJ1?=
+ =?us-ascii?Q?aZbnhMSRvO92QbIA6HadXmXYMdB3f3ZmErqY/IhlS0oTSCbXWEqynQZbrZ9u?=
+ =?us-ascii?Q?OOm4ohLmV2YR7c8xQyonLUcdJksycJKx7ad7+Uto261VDO8rR1uBpdjO+xsQ?=
+ =?us-ascii?Q?5HzFAhxchn2cpWk2p4dvTE4EEkUUZsVCoLFvBuioIpS93c7k+EBFa1RYyqkd?=
+ =?us-ascii?Q?JiD6AXPadJfFPlIC6hppd1LUudP0XlctOhFIXWDOKQcDHIbikrVUv57CJzS7?=
+ =?us-ascii?Q?BKE+gTKvqr3oHAtZus6PlXOuqTXJuU/DEWMGokN1+DWDvl48YH+dWEqPoxcW?=
+ =?us-ascii?Q?eQGoYuBew0ydsYmhFV3yPfv42fX6IxWHq86XA1tX6pmt4yDBFv3iObPAsV3F?=
+ =?us-ascii?Q?KXf82g5HI4mq0s1nwiI43w51zELrKekZRZHRgWIQsu+ZMCm1dBZzxi0RcfaZ?=
+ =?us-ascii?Q?e3BZvZwBdO7GBIFfDoxP03Llkobva4mrnwjBh/UaaBguZfHAK180gf8wOmuM?=
+ =?us-ascii?Q?Cau4WQrSmRkbph+hRh8feIW2IF3RvhML50hhYbqCgTf/A5LPowTD9+WxOkRB?=
+ =?us-ascii?Q?cVB2nU5lEQD5rrDvxbTVIkUOCvXfFsAM4gQ6Vfnz3M/35D2EvHpPv7McB1SU?=
+ =?us-ascii?Q?/J/Vgiu2gJcx3voALZY1FLcFNTUmm1iM7Pl8HxfwetlxvohMTcP36tQ+AzIe?=
+ =?us-ascii?Q?9ZsG/bukg4/q8ADRHJ2bNTurhN50yFho7g/EZ0ZA6fL2QtXp7xtYTXQs5Ybo?=
+ =?us-ascii?Q?iSPb/mxmk92gCVgDmxq0/SkPRvM5XaTuHlG15qGD6j6UwFPCveMTF387eUc2?=
+ =?us-ascii?Q?RURJjQBOPSjZjfabIn/FIvHPPI+3iwhdpMNKzcFdJsYNTZUdJ1Ta7ZjYIaBy?=
+ =?us-ascii?Q?q52zh6NRWfIaUWTUEod8ZLB2b9V3FyMWJJ0idxeQdgLPSFSM5rZIDdpi5J9T?=
+ =?us-ascii?Q?rA9L/TsX0jpsnRvvDl4w3AIcVp6N2Z9inSe/jn739FOcZyQs/tQkfkZiOIfj?=
+ =?us-ascii?Q?W3yu?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1248.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2021 01:19:11.1423
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: c97688c8-4a1f-4714-d2b2-08d8b7613bab
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YFdbuGVnWbZ54EpVvoij9TzhWI63kA2vGyQ6PoNPL7Ln5CBQGrcR/679VUqviPTv1T03tkIBwWB97+2Cm2n/qA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0031
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
+On Wed, Jan 13, 2021 at 03:57:22AM +0800, Souptick Joarder wrote:
+> kernel test robot throws below warnings ->
+> 
+> drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:594:6:
+> warning: no previous prototype for 'vangogh_clk_dpm_is_enabled'
+> [-Wmissing-prototypes]
+> drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:594:6:
+> warning: no previous prototype for function 'vangogh_clk_dpm_is_enabled'
+> [-Wmissing-prototypes]
+> 
+> Mark vangogh_clk_dpm_is_enabled() as static.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> ---
+>  drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> index 75ddcad..3ffe56e 100644
+> --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> @@ -610,7 +610,7 @@ static int vangogh_get_profiling_clk_mask(struct smu_context *smu,
+>  	return 0;
+>  }
+>  
+> -bool vangogh_clk_dpm_is_enabled(struct smu_context *smu,
+> +static bool vangogh_clk_dpm_is_enabled(struct smu_context *smu,
+>  				enum smu_clk_type clk_type)
 
-Modules with a large number of compilation units may be
-exceeding AR and LD command argument list. Handle this gracefully by
-writing the long argument list in a file. The command line options
-read from file are inserted in place of the original @file option.
+Ah, I have another patch which will use this function in another file.
 
-The usage is well documented at
-https://www.gnu.org/software/make/manual/html_node/File-Function.html
+Thanks,
+Ray
 
-Signed-off-by: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
-Signed-off-by: Jeff Johnson <jjohnson@codeaurora.org>
----
- scripts/Makefile.build | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 252b7d2..d5ef345 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -425,7 +425,11 @@ $(obj)/lib.a: $(lib-y) FORCE
- # module is turned into a multi object module, $^ will contain header file
- # dependencies recorded in the .*.cmd file.
- quiet_cmd_link_multi-m = LD [M]  $@
--      cmd_link_multi-m = $(LD) $(ld_flags) -r -o $@ $(filter %.o,$^)
-+      cmd_link_multi-m =					\
-+	$(file >$@.in,$(filter %.o,$^))				\
-+	$(LD) $(ld_flags) -r -o $@ @$@.in;			\
-+	rm -f $@.in
-+endif
- 
- $(multi-used-m): FORCE
- 	$(call if_changed,link_multi-m)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+>  {
+>  	enum smu_feature_mask feature_id = 0;
+> -- 
+> 1.9.1
+> 
