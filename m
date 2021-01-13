@@ -2,121 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AACF82F5369
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:35:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5872E2F536B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:37:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728617AbhAMTew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 14:34:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47780 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725859AbhAMTew (ORCPT
+        id S1728709AbhAMTfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 14:35:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728519AbhAMTfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 14:34:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610566406;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BvxbEyyhBtCq7uGHAUkz6B6eLyqDhX07ZV2UU6Kj9M4=;
-        b=LdimAM2cuD2womkMDjEHvo0BkgGZhbpbIESSe9EDsz1o7HfmJJvFeH1MBuT2Q/a8r+QxBM
-        KwJSOecU5rQJqUERAvChMtnUyH97oZp/YsRwyhDbghi62PAWYjkNUlZ2zHdFfuUr+lWVx4
-        0VhLTSqnR5XNg9R6M4wDsxv5veyYpFY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-595-TdjqVTxnO4mYhvHFaR1sXw-1; Wed, 13 Jan 2021 14:33:22 -0500
-X-MC-Unique: TdjqVTxnO4mYhvHFaR1sXw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B36F8799F8;
-        Wed, 13 Jan 2021 19:33:20 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8411B5D9DD;
-        Wed, 13 Jan 2021 19:33:15 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 13:33:13 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH] Documentation: livepatch: document reliable stacktrace
-Message-ID: <20210113192735.rg2fxwlfrzueinci@treble>
-References: <20210113165743.3385-1-broonie@kernel.org>
+        Wed, 13 Jan 2021 14:35:40 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE60C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 11:34:59 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id u25so4513289lfc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 11:34:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5x9peSoztZZwP3wRwUEonf3kp2KcQ+8lUkdq4yGVsyU=;
+        b=dKHEpR8cis9PjPy0+s2wYpOJqK1jNlMC+AYrUDzd55sLM4EjSEbWjXCDMiHPNN4zdh
+         2P193WmaFtrb6GOXbsiKGuG1Wloi2abeZNrFAXtpZZhUOExC5T4Y7XhFOH8g2JUDuMnr
+         7QJY6Z40GpV8nHxvfUpsZW3+7c7FoTJPu26hvBTPXgk9p7lrw8JYrysx/Pf29BLn4Ty0
+         Dpb5apB5yMbdw7ne2ezOVgWBtKfjA9ZjEpVGRlisyGCZ8Cmxlhu2O9RiI/lRFnLeCCOf
+         lwBWTa7PnreEl+34r7HT3Tqu5FroOmAPNFcg2K+79LHu/GPJQHjGE8eCdAyPJW+rJsMh
+         C7Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5x9peSoztZZwP3wRwUEonf3kp2KcQ+8lUkdq4yGVsyU=;
+        b=jY7aydyhFrtMycf2bcgwlHVuB4yRF7KtWPSJrz5Z/MDgkgpnA8IUIjY9iD92GQMlHe
+         j++JUF8NvwjL3UoXVZySYdSaaC8Bn93NAEZga85Dr820/5WOj1yWtHw+3f2dEdKwo8Zq
+         GC3IlKOSjEp5smUSelZf0EkT9RmWyvA98pixETw0gxwBlcc9FS06I0JtCSusT5NuYRNW
+         zSgmzfsjU1Jpsl+zurXPfFPJGnUrsIVAln4CQSnhxGNKJl6rhrJ3OP7G1pUG+vmPLk8O
+         MD9ZYeN/z5KBnpsoxzELao2Y6NK1wFLrDI9NMmRrFvLD1EXJbXH1hRUpsgcLm3NFE15W
+         oQKQ==
+X-Gm-Message-State: AOAM530FVdr+IocDK6W0poDvjly4H19ozV2yM44ZBtbi18IOazRe3x0A
+        z9TcYWMKQnaLn1UahccErLTHLU9ux+EYMgBBj758fg==
+X-Google-Smtp-Source: ABdhPJzgEk/DkNFqYOJv7Wp3xvz2mFJqsh5LD2B6QlApDjIaztQLZ1/D3AGlb0+PbTDL2rcNBlcg0ARxuR8CLhhhOiY=
+X-Received: by 2002:a05:6512:32ad:: with SMTP id q13mr1443000lfe.83.1610566497883;
+ Wed, 13 Jan 2021 11:34:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210113165743.3385-1-broonie@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210112214105.1440932-1-shakeelb@google.com> <20210112233108.GD99586@carbon.dhcp.thefacebook.com>
+ <CAOFY-A3=mCvfvMYBJvDL1LfjgYgc3kzebRNgeg0F+e=E1hMPXA@mail.gmail.com>
+ <20210112234822.GA134064@carbon.dhcp.thefacebook.com> <CAOFY-A2YbE3_GGq-QpVOHTmd=35Lt-rxi8gpXBcNVKvUzrzSNg@mail.gmail.com>
+ <20210113184753.GB355124@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20210113184753.GB355124@carbon.dhcp.thefacebook.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 13 Jan 2021 11:34:46 -0800
+Message-ID: <CALvZod57bG02rP7-Pyb_myssxDeROrU_+L6X9bwrrdEzQTxqYg@mail.gmail.com>
+Subject: Re: [PATCH] mm: net: memcg accounting for TCP rx zerocopy
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Arjun Roy <arjunroy@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 04:57:43PM +0000, Mark Brown wrote:
-> From: Mark Rutland <mark.rutland@arm.com>
-> 
-> Add documentation for reliable stacktrace. This is intended to describe
-> the semantics and to be an aid for implementing architecture support for
-> HAVE_RELIABLE_STACKTRACE.
-> 
-> Unwinding is a subtle area, and architectures vary greatly in both
-> implementation and the set of concerns that affect them, so I've tried
-> to avoid making this too specific to any given architecture. I've used
-> examples from both x86_64 and arm64 to explain corner cases in more
-> detail, but I've tried to keep the descriptions sufficient for those who
-> are unfamiliar with the particular architecture.
-> 
-> I've tried to give rationale for all the recommendations/requirements,
-> since that makes it easier to spot nearby issues, or when a check
-> happens to catch a few things at once. I believe what I have written is
-> sound, but as some of this was reverse-engineered I may have missed
-> things worth noting.
-> 
-> I've made a few assumptions about preferred behaviour, notably:
-> 
-> * If you can reliably unwind through exceptions, you should (as x86_64
->   does).
-> 
-> * It's fine to omit ftrace_return_to_handler and other return
->   trampolines so long as these are not subject to patching and the
->   original return address is reported. Most architectures do this for
->   ftrace_return_handler, but not other return trampolines.
-> 
-> * For cases where link register unreliability could result in duplicate
->   entries in the trace or an inverted trace, I've assumed this should be
->   treated as unreliable. This specific case shouldn't matter to
->   livepatching, but I assume that that we want a reliable trace to have
->   the correct order.
+On Wed, Jan 13, 2021 at 10:48 AM Roman Gushchin <guro@fb.com> wrote:
+>
+[snip]
+> > > Does it mean that a page can be accounted twice (even temporarily)?
+> > >
+> >
+> > This was an actual consideration for this patchset that we went back
+> > and forth on a little bit.
+> > Short answer, for this patch in its current form: yes. We're calling
+> > mem_cgroup_charge_sock_pages() immediately prior to vm_insert_pages();
+> > and the skb isn't cleaned up until afterwards. Thus we have a period
+> > of double charging.
+> >
+> > The pseudocode for the approach in this patch is:
+> >
+> > while skb = next skb in queue is not null:
+> >     charge_skb_pages(skb.pages) // sets page.memcg for each page
+> >     // at this point pages are double counted
+> >     vm_insert_pages(skb.pages)
+> >     free(skb) // unrefs the pages, no longer double counted
+> >
+> > An alternative version of this patch went the other way: have a short
+> > period of undercharging.
+> >
+> > while skb = next skb in queue is not null:
+> >     for page in skb.pages set page.memcg
+> >     vm_insert_pages(skb.pages)
+> >     free(skb) // unrefs the pages. pages are now undercounted
+> > charge_skb_pages(nr_pages_mapped, FORCE_CHARGE) // count is now correct again
+> > ret
+>
+> I have to think more, but at the first look the second approach is better.
+> IMO forcing the charge is less of a problem than double accounting
+> (we're forcing sock memory charging anyway). I'm afraid that even if the
+> double counting is temporarily for each individual page, with a constant
+> traffic it will create a permanent difference.
+>
 
-Thanks to you and Mark for getting this documented properly!
-
-I think it's worth mentioning a little more about objtool.  There are a
-few passing mentions of objtool's generation of metadata (i.e. ORC), but
-objtool has another relevant purpose: stack validation.  That's
-particularly important when it comes to frame pointers.
-
-For some architectures like x86_64 and arm64 (but not powerpc/s390),
-it's far too easy for a human to write asm and/or inline asm which
-violates frame pointer protocol, silently causing the violater's callee
-to get skipped in the unwind.  Such architectures need objtool
-implemented for CONFIG_STACK_VALIDATION.
-
-> +There are several ways an architecture may identify kernel code which is deemed
-> +unreliable to unwind from, e.g.
-> +
-> +* Using metadata created by objtool, with such code annotated with
-> +  SYM_CODE_{START,END} or STACKFRAME_NON_STANDARD().
-
-I'm not sure why SYM_CODE_{START,END} is mentioned here, but it doesn't
-necessarily mean the code is unreliable, and objtool doesn't treat it as
-such.  Its mention can probably be removed unless there was some other
-point I'm missing.
-
-Also, s/STACKFRAME/STACK_FRAME/
-
--- 
-Josh
-
+The double accounting behavior is a bit different in cgroup v1 vs v2
+world as skmem is accounted in memory for v2 and a separate tcp
+counter for v1. I am fine with either approaches mentioned by Arjun
+but I would prefer to not add complexity by doing one approach for v1
+and the other for v2.
