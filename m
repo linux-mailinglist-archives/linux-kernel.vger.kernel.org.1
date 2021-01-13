@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 700D22F5086
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8994F2F5084
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727719AbhAMRBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:01:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26934 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727122AbhAMRBA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:01:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610557174;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wHuSXn68MXq05QNKWqpSBophf9IckcirUGXPjI7wnpE=;
-        b=D+bzi3NFw0WzrBYsDtnj66HEuGHbWZosx4heNdQ0p7qqf6BymblxttPaeWmGQZRJ1+pS3y
-        3VpHRRbHwq8oJdUKLVfZjnrAkRvTNHbYjV1kYFQmmn2G0l7gdNtV7qC3+JxRCzX9Wi/yvD
-        Wu7nSwlAapgxN8MSLxYMvPSlkdK0GYM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-Z6M00Pe0OyuQDMedSbNh8g-1; Wed, 13 Jan 2021 11:59:30 -0500
-X-MC-Unique: Z6M00Pe0OyuQDMedSbNh8g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACC048030A0;
-        Wed, 13 Jan 2021 16:59:27 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 76C0419934;
-        Wed, 13 Jan 2021 16:59:25 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 10:59:23 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Fangrui Song <maskray@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v4] x86/entry: emit a symbol for register restoring thunk
-Message-ID: <20210113165923.acvycpcu5tzksbbi@treble>
-References: <20210112115421.GB13086@zn.tnic>
- <20210112194625.4181814-1-ndesaulniers@google.com>
- <20210112210154.GI4646@sirena.org.uk>
+        id S1727296AbhAMRA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:00:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50428 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725977AbhAMRA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 12:00:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6D039AB92;
+        Wed, 13 Jan 2021 16:59:47 +0000 (UTC)
+To:     Johannes Berg <johannes@sipsolutions.net>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Pekka Enberg <penberg@kernel.org>
+References: <20210113170931.929f808099d2.I117b6764e725b3192318bbcf4269b13b709539ae@changeid>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm/slub: disable user tracing for kmemleak caches
+Message-ID: <1db7c986-25c4-884e-4fbf-9af348bdff6f@suse.cz>
+Date:   Wed, 13 Jan 2021 17:59:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <20210113170931.929f808099d2.I117b6764e725b3192318bbcf4269b13b709539ae@changeid>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210112210154.GI4646@sirena.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 09:01:54PM +0000, Mark Brown wrote:
-> On Tue, Jan 12, 2021 at 11:46:24AM -0800, Nick Desaulniers wrote:
+On 1/13/21 5:09 PM, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
 > 
-> This:
+> If kmemleak is enabled, it uses a kmem cache for its own objects.
+> These objects are used to hold information kmemleak uses, including
+> a stack trace. If slub_debug is also turned on, each of them has
+> *another* stack trace, so the overhead adds up, and on my tests (on
+> ARCH=um, admittedly) 2/3rds of the allocations end up being doing
+> the stack tracing.
 > 
-> > when building with LLVM_IAS=1 (Clang's integrated assembler). Josh
-> > notes:
+> Turn off SLAB_STORE_USER if SLAB_NOLEAKTRACE was given, to avoid
+> storing the essentially same data twice.
 > 
-> >   So basically, you can use an .L symbol *inside* a function or a code
-> >   segment, you just can't use the .L symbol to contain the code using a
-> >   SYM_*_START/END annotation pair.
-> 
-> is a stronger statement than this:
-> 
-> > +  Developers should avoid using local symbol names that are prefixed with
-> > +  ``.L``, as this has special meaning for the assembler; a symbol entry will
-> > +  not be emitted into the symbol table. This can prevent ``objtool`` from
-> > +  generating correct unwind info. Symbols with STB_LOCAL binding may still be
-> > +  used, and ``.L`` prefixed local symbol names are still generally useable
-> > +  within a function, but ``.L`` prefixed local symbol names should not be used
-> > +  to denote the beginning or end of code regions via
-> > +  ``SYM_CODE_START_LOCAL``/``SYM_CODE_END``.
-> 
-> and seems more what I'd expect - SYM_FUNC* is also affected for example.
-> Even though other usages are probably not very likely it seems better to
-> keep the stronger statement in case someone comes up with one, and to
-> stop anyone spending time wondering why only SYM_CODE_START_LOCAL is
-> affected.
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 
-Agreed, I think the comment is misleading/wrong/unclear in multiple
-ways.  In most cases the use of .L symbols is still fine.  What's no
-longer fine is when they're used to contain code in any kind of
-START/END pair.
+How about stripping away SLAB_STORE_USER only if it's added from the global
+slub_debug variable? In case somebody lists one of the kmemleak caches
+explicitly in "slub_debug=..." instead of just booting with "slub_debug", we
+should honor that.
 
-> This also looks like a good candiate for a checkpatch rule, but that can
-> be done separately of course.
-
-I like the idea of a checkpatch rule.
-
--- 
-Josh
+> ---
+> Perhaps instead it should go the other way around, and kmemleak
+> could even use/access the stack trace that's already in there ...
+> But I don't really care too much, I can just turn off slub debug
+> for the kmemleak caches via the command line anyway :-)
+> 
+> ---
+>  mm/slub.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 34dcc09e2ec9..625a32a6645b 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -1446,7 +1446,16 @@ slab_flags_t kmem_cache_flags(unsigned int object_size,
+>  		}
+>  	}
+>  
+> -	return flags | slub_debug;
+> +	flags |= slub_debug;
+> +
+> +	/*
+> +	 * If the slab cache is for debugging (e.g. kmemleak) then
+> +	 * don't store user (stack trace) information.
+> +	 */
+> +	if (flags & SLAB_NOLEAKTRACE)
+> +		flags &= ~SLAB_STORE_USER;
+> +
+> +	return flags;
+>  }
+>  #else /* !CONFIG_SLUB_DEBUG */
+>  static inline void setup_object_debug(struct kmem_cache *s,
+> 
 
