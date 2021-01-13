@@ -2,128 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC17B2F4D83
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0386D2F4D98
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:50:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727197AbhAMOrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:47:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58200 "EHLO mx2.suse.de"
+        id S1726626AbhAMOt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:49:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727102AbhAMOrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:47:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610549215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nt0P3UB52tUXihhKnY0EGJSOwPIXl2w0VfMCeDXigfg=;
-        b=MaYTpfeBCSb+4GfytJrC3yMQ85mJn3wsQrdPMm3X8mJpdVwihUs+pt5UikXfQ4Js75AVXa
-        p+88RPnduouIF3z9abzeMfvM3SCYKBhdqRIhhKakryDlNAwM89t/a65OMRWqoBMjPH7Fg8
-        YApkvhaPiozFN1PYsTU6iJ2/ww75CGU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 62A00AB92;
-        Wed, 13 Jan 2021 14:46:55 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 15:46:54 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing
- memory.high
-Message-ID: <20210113144654.GD22493@dhcp22.suse.cz>
-References: <20210112163011.127833-1-hannes@cmpxchg.org>
+        id S1726113AbhAMOt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 09:49:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F7BF2313C;
+        Wed, 13 Jan 2021 14:48:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610549326;
+        bh=2otNbm5t7xt3YbxV8p6/1iGGkAtXuJ7ieg1zr6BOh3s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M4ZfwrgfTYFxxAc4KddnHZhHUxzQxMlE03U8ORnVEy1u5dg/eaRzFQGfoAC4hS6XK
+         nD0gno38GZj1jmvo3xy9G5WanHtUbbXe2gaEjqF75nvlARdOt7QU452r9CYxQV2lmW
+         oD/AimEFcMbzOQFRN0jmsaja64DbYnIZeKguqXpCaEobJ3LhLRT7ByYJotWKbNLfY2
+         XmWqgc4aOMfaFO3i+5CFcuIrHpu2yGs+6bGs5maNVP9Wk9uBfH2CEXX8zona7Rt8UM
+         HCiIEnq3BcFVRfYM7gGaAyZH6QsDE9Jaxhw6SV6pYQ+Ko1CSWUIIVN18dzHcDReIxL
+         sUPatbD5x7kFQ==
+Date:   Wed, 13 Jan 2021 15:48:42 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Frank van der Linden <fllinden@amazon.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] module: harden ELF info handling
+Message-ID: <20210113144841.GB17705@linux-8ccs>
+References: <20210107193001.12039-1-fllinden@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210112163011.127833-1-hannes@cmpxchg.org>
+In-Reply-To: <20210107193001.12039-1-fllinden@amazon.com>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.28-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 12-01-21 11:30:11, Johannes Weiner wrote:
-> When a value is written to a cgroup's memory.high control file, the
-> write() context first tries to reclaim the cgroup to size before
-> putting the limit in place for the workload. Concurrent charges from
-> the workload can keep such a write() looping in reclaim indefinitely.
-> 
-> In the past, a write to memory.high would first put the limit in place
-> for the workload, then do targeted reclaim until the new limit has
-> been met - similar to how we do it for memory.max. This wasn't prone
-> to the described starvation issue. However, this sequence could cause
-> excessive latencies in the workload, when allocating threads could be
-> put into long penalty sleeps on the sudden memory.high overage created
-> by the write(), before that had a chance to work it off.
-> 
-> Now that memory_high_write() performs reclaim before enforcing the new
-> limit, reflect that the cgroup may well fail to converge due to
-> concurrent workload activity. Bail out of the loop after a few tries.
++++ Frank van der Linden [07/01/21 19:30 +0000]:
+>5fdc7db644 ("module: setup load info before module_sig_check()")
+>moved the ELF setup, so that it was done before the signature
+>check. This made the module name available to signature error
+>messages.
+>
+>However, the checks for ELF correctness in setup_load_info
+>are not sufficient to prevent bad memory references due to
+>corrupted offset fields, indices, etc.
+>
+>So, there's a regression in behavior here: a corrupt and unsigned
+>(or badly signed) module, which might previously have been rejected
+>immediately, can now cause an oops/crash.
+>
+>Harden ELF handling for module loading by doing the following:
+>
+>- Move the signature check back up so that it comes before ELF
+>  initialization. It's best to do the signature check to see
+>  if we can trust the module, before using the ELF structures
+>  inside it. This also makes checks against info->len
+>  more accurate again, as this field will be reduced by the
+>  length of the signature in mod_check_sig().
+>
+>  The module name is now once again not available for error
+>  messages during the signature check, but that seems like
+>  a fair tradeoff.
+>
+>- Check if sections have offset / size fields that at least don't
+>  exceed the length of the module.
+>
+>- Check if sections have section name offsets that don't fall
+>  outside the section name table.
+>
+>- Add a few other sanity checks against invalid section indices,
+>  etc.
+>
+>This is not an exhaustive consistency check, but the idea is to
+>at least get through the signature and blacklist checks without
+>crashing because of corrupted ELF info, and to error out gracefully
+>for most issues that would have caused problems later on.
+>
+>Fixes: 5fdc7db644 ("module: setup load info before module_sig_check()")
+>Signed-off-by: Frank van der Linden <fllinden@amazon.com>
+>---
+> kernel/module.c           | 143 ++++++++++++++++++++++++++++++++++++++++------
+> kernel/module_signature.c |   2 +-
+> kernel/module_signing.c   |   2 +-
+> 3 files changed, 126 insertions(+), 21 deletions(-)
+>
+>diff --git a/kernel/module.c b/kernel/module.c
+>index 4bf30e4b3eaa..34fc6c85eb65 100644
+>--- a/kernel/module.c
+>+++ b/kernel/module.c
+>@@ -2964,7 +2964,7 @@ static int module_sig_check(struct load_info *info, int flags)
+> 	}
+>
+> 	if (is_module_sig_enforced()) {
+>-		pr_notice("%s: loading of %s is rejected\n", info->name, reason);
+>+		pr_notice("Loading of %s is rejected\n", reason);
+> 		return -EKEYREJECTED;
+> 	}
+>
+>@@ -2977,9 +2977,33 @@ static int module_sig_check(struct load_info *info, int flags)
+> }
+> #endif /* !CONFIG_MODULE_SIG */
+>
+>-/* Sanity checks against invalid binaries, wrong arch, weird elf version. */
+>-static int elf_header_check(struct load_info *info)
+>+static int validate_section_offset(struct load_info *info, Elf_Shdr *shdr)
+> {
+>+	unsigned long secend;
+>+
+>+	/*
+>+	 * Check for both overflow and offset/size being
+>+	 * too large.
+>+	 */
+>+	secend = shdr->sh_offset + shdr->sh_size;
+>+	if (secend < shdr->sh_offset || secend > info->len)
+>+		return -ENOEXEC;
+>+
+>+	return 0;
+>+}
+>+
+>+/*
+>+ * Sanity checks against invalid binaries, wrong arch, weird elf version.
+>+ *
+>+ * Also do basic validity checks against section offsets and sizes, the
+>+ * section name string table, and the indices used for it (sh_name).
+>+ */
+>+static int elf_validity_check(struct load_info *info)
+>+{
+>+	unsigned int i;
+>+	Elf_Shdr *shdr, *strhdr;
+>+	int err;
+>+
+> 	if (info->len < sizeof(*(info->hdr)))
+> 		return -ENOEXEC;
+>
+>@@ -2989,11 +3013,78 @@ static int elf_header_check(struct load_info *info)
+> 	    || info->hdr->e_shentsize != sizeof(Elf_Shdr))
+> 		return -ENOEXEC;
+>
+>+	/*
+>+	 * e_shnum is 16 bits, and sizeof(Elf_Shdr) is
+>+	 * known and small. So e_shnum * sizeof(Elf_Shdr)
+>+	 * will not overflow unsigned long on any platform.
+>+	 */
+> 	if (info->hdr->e_shoff >= info->len
+> 	    || (info->hdr->e_shnum * sizeof(Elf_Shdr) >
+> 		info->len - info->hdr->e_shoff))
+> 		return -ENOEXEC;
+>
+>+	info->sechdrs = (void *)info->hdr + info->hdr->e_shoff;
+>+
+>+	/*
+>+	 * Verify if the section name table index is valid.
+>+	 */
+>+	if (info->hdr->e_shstrndx == SHN_UNDEF
+>+	    || info->hdr->e_shstrndx >= info->hdr->e_shnum)
+>+		return -ENOEXEC;
+>+
+>+	strhdr = &info->sechdrs[info->hdr->e_shstrndx];
+>+	err = validate_section_offset(info, strhdr);
+>+	if (err < 0)
+>+		return err;
+>+
+>+	/*
+>+	 * The section name table must be NUL-terminated, as required
+>+	 * by the spec. This makes strcmp and pr_* calls that access
+>+	 * strings in the section safe.
+>+	 */
+>+	info->secstrings = (void *)info->hdr + strhdr->sh_offset;
+>+	if (info->secstrings[strhdr->sh_size - 1] != '\0')
+>+		return -ENOEXEC;
+>+
+>+	/*
+>+	 * The code assumes that section 0 has a length of zero and
+>+	 * an addr of zero, so check for it.
+>+	 */
+>+	if (info->sechdrs[0].sh_type != SHT_NULL
+>+	    || info->sechdrs[0].sh_size != 0
+>+	    || info->sechdrs[0].sh_addr != 0)
+>+		return -ENOEXEC;
+>+
+>+	for (i = 1; i < info->hdr->e_shnum; i++) {
+>+		shdr = &info->sechdrs[i];
+>+		switch (shdr->sh_type) {
+>+		case SHT_NULL:
+>+		case SHT_NOBITS:
+>+			continue;
+>+		case SHT_SYMTAB:
+>+			if (shdr->sh_link == SHN_UNDEF
+>+			    || shdr->sh_link >= info->hdr->e_shnum)
+>+				return -ENOEXEC;
+>+			fallthrough;
+>+		default:
+>+			err = validate_section_offset(info, shdr);
+>+			if (err < 0) {
+>+				pr_err("Invalid ELF section in module (section %u type %u)\n",
+>+					i, shdr->sh_type);
+>+				return err;
+>+			}
+>+
+>+			if (shdr->sh_flags & SHF_ALLOC) {
+>+				if (shdr->sh_name >= strhdr->sh_size) {
+>+					pr_err("Invalid ELF section name in module (section num %u type %u)\n",
 
-I can see that you have provided some more details in follow up replies
-but I do not see any explicit argument why an excessive time for writer
-is an actual problem. Could you be more specific?
+Small nit: Maybe remove "num", to be consistent with the other pr_err() above.
 
-If the writer is time sensitive then there is a trivial way to
-workaround that and kill it by a signal (timeout 30s echo ....).
+>+					       i, shdr->sh_type);
+>+					return -ENOEXEC;
+>+				}
+>+			}
+>+			break;
+>+		}
+>+	}
+>+
+> 	return 0;
+> }
+>
+>@@ -3095,11 +3186,6 @@ static int rewrite_section_headers(struct load_info *info, int flags)
+>
+> 	for (i = 1; i < info->hdr->e_shnum; i++) {
+> 		Elf_Shdr *shdr = &info->sechdrs[i];
+>-		if (shdr->sh_type != SHT_NOBITS
+>-		    && info->len < shdr->sh_offset + shdr->sh_size) {
+>-			pr_err("Module len %lu truncated\n", info->len);
+>-			return -ENOEXEC;
+>-		}
+>
+> 		/*
+> 		 * Mark all sections sh_addr with their address in the
+>@@ -3133,11 +3219,6 @@ static int setup_load_info(struct load_info *info, int flags)
+> {
+> 	unsigned int i;
+>
+>-	/* Set up the convenience variables */
+>-	info->sechdrs = (void *)info->hdr + info->hdr->e_shoff;
+>-	info->secstrings = (void *)info->hdr
+>-		+ info->sechdrs[info->hdr->e_shstrndx].sh_offset;
+>-
+> 	/* Try to find a name early so we can log errors with a module name */
+> 	info->index.info = find_sec(info, ".modinfo");
+> 	if (info->index.info)
+>@@ -3894,26 +3975,50 @@ static int load_module(struct load_info *info, const char __user *uargs,
+> 	long err = 0;
+> 	char *after_dashes;
+>
+>-	err = elf_header_check(info);
+>+	/*
+>+	 * Do the signature check (if any) first. All that
+>+	 * the signature check needs is info->len, it does
+>+	 * not need any of the section info. That can be
+>+	 * set up later. This will minimize the chances
+>+	 * of a corrupt module causing problems before
+>+	 * we even get to the signature check.
+>+	 *
+>+	 * The check will also adjust info->len by stripping
+>+	 * off the sig length at the end of the module, making
+>+	 * checks against info->len more correct.
+>+	 */
+>+	err = module_sig_check(info, flags);
+>+	if (err)
+>+		goto free_copy;
+>+
+>+	/*
+>+	 * Do basic sanity checks against the ELF header and
+>+	 * sections.
+>+	 */
+>+	err = elf_validity_check(info);
+> 	if (err) {
+>-		pr_err("Module has invalid ELF header\n");
+>+		pr_err("Module has invalid ELF structures\n");
+> 		goto free_copy;
+> 	}
+>
+>+	/*
+>+	 * Everything checks out, so set up the section info
+>+	 * in the info structure.
+>+	 */
+> 	err = setup_load_info(info, flags);
+> 	if (err)
+> 		goto free_copy;
+>
+>+	/*
+>+	 * Now that we know we have the correct module name, check
+>+	 * if it's blacklisted.
+>+	 */
+> 	if (blacklisted(info->name)) {
+> 		err = -EPERM;
+> 		pr_err("Module %s is blacklisted\n", info->name);
+> 		goto free_copy;
+> 	}
+>
+>-	err = module_sig_check(info, flags);
+>-	if (err)
+>-		goto free_copy;
+>-
+> 	err = rewrite_section_headers(info, flags);
+> 	if (err)
+> 		goto free_copy;
+>diff --git a/kernel/module_signature.c b/kernel/module_signature.c
+>index 4224a1086b7d..00132d12487c 100644
+>--- a/kernel/module_signature.c
+>+++ b/kernel/module_signature.c
+>@@ -25,7 +25,7 @@ int mod_check_sig(const struct module_signature *ms, size_t file_len,
+> 		return -EBADMSG;
+>
+> 	if (ms->id_type != PKEY_ID_PKCS7) {
+>-		pr_err("%s: Module is not signed with expected PKCS#7 message\n",
+>+		pr_err("%s: not signed with expected PKCS#7 message\n",
+> 		       name);
+> 		return -ENOPKG;
+> 	}
+>diff --git a/kernel/module_signing.c b/kernel/module_signing.c
+>index 9d9fc678c91d..9a057c5d1d4d 100644
+>--- a/kernel/module_signing.c
+>+++ b/kernel/module_signing.c
+>@@ -30,7 +30,7 @@ int mod_verify_sig(const void *mod, struct load_info *info)
+>
+> 	memcpy(&ms, mod + (modlen - sizeof(ms)), sizeof(ms));
+>
+>-	ret = mod_check_sig(&ms, modlen, info->name);
+>+	ret = mod_check_sig(&ms, modlen, info->name ?: "module");
 
-Btw. this behavior has been considered http://lkml.kernel.org/r/20200710122917.GB3022@dhcp22.suse.cz/
-"
-With this change
-the reclaim here might be just playing never ending catch up. On the
-plus side a break out from the reclaim loop would just enforce the limit
-so if the operation takes too long then the reclaim burden will move
-over to consumers eventually. So I do not see any real danger.
-"
+Since info->name is not expected to be valid anymore, as we're back to
+calling mod_sig_check() first thing, perhaps just stick with
+"module"? Or was there another reason for checking info->name here?
 
-> Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
-> Cc: <stable@vger.kernel.org> # 5.8+
+Thanks,
 
-Why is this worth backporting to stable? The behavior is different but I
-do not think any of them is harmful.
+Jessica
 
-> Reported-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-
-I am not against the patch. The existing interface doesn't provide any
-meaningful feedback to the userspace anyway. User would have to re check
-to see the result of the operation. So how hard we try is really an
-implementation detail.
-
-> ---
->  mm/memcontrol.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 605f671203ef..63a8d47c1cd3 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6275,7 +6275,6 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
->  
->  	for (;;) {
->  		unsigned long nr_pages = page_counter_read(&memcg->memory);
-> -		unsigned long reclaimed;
->  
->  		if (nr_pages <= high)
->  			break;
-> @@ -6289,10 +6288,10 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
->  			continue;
->  		}
->  
-> -		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> -							 GFP_KERNEL, true);
-> +		try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> +					     GFP_KERNEL, true);
->  
-> -		if (!reclaimed && !nr_retries--)
-> +		if (!nr_retries--)
->  			break;
->  	}
->  
-> -- 
-> 2.30.0
-> 
-
--- 
-Michal Hocko
-SUSE Labs
