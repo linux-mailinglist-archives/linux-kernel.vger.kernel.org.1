@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB9D2F46B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EFC42F46B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbhAMIli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:41:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41176 "EHLO mail.kernel.org"
+        id S1726846AbhAMImZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:42:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726288AbhAMIlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:41:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A37C920719;
-        Wed, 13 Jan 2021 08:40:54 +0000 (UTC)
+        id S1726803AbhAMImY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 03:42:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9B6320719;
+        Wed, 13 Jan 2021 08:41:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610527257;
-        bh=dTsZF39Nf+fdYEmRGhq+1JcvfbZkxUZaN7AXNb0cDq8=;
+        s=k20201202; t=1610527303;
+        bh=UBeEHhwjMpwzR8qlGgYmu/wtrE8922DVkLRWwf8BFBs=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=BUMPVgEIMWDBzxMgixEtxCeyXcF8mm07/unBODK4XWYvCjkwC+6sLX7eyVMqubxtu
-         YIz+gT+mTIIFvHBCpW64FyoHvm74b5k5UTh8igGAASfXRGQB4GfKFOMG/fSoecZ+zc
-         HIObSvnuv4n+juU+2JeiYkiRqeXLPz5K5etgBi1ONq/2G0PHJoDlT28u0U6k0xdTQq
-         BJbfupr6BfIhwmXsep5T3XhLuPxQcOUPtm7T3/4k4fYOQPXXACgjaRu+E5ePsMSja+
-         ZFr6lAG3W/nR7n5iwuE+dOVGPhMqJrGLKjIHFu86Wb0vo0wOvKdw8yW+HE9NBSOG6z
-         /0zhW1/GJtxSQ==
+        b=q0F7p1MGDgVvK6VWJZdT4LYYAyH6r3/82yBp1wXxsedktWDP7ZMQo6UqW68Smu1AV
+         PRDsrtxja1L+Vb/aZq8pm72UUPA6A2F7jOeuP6N9l/2G9BTq4EZ4BpkLEp7g8hY8TQ
+         3P2m8zS2YXJh5BGOLZGTehICK+22Y0gRlKILZ7VgNk27t+AV01FXcg11HvBweKWoxj
+         uvtG3UVxuIGnSXAnmt6OZvaSlIjjWgShbjxf51A+g+W0lIAuU3D07we7I83lI7avSv
+         unW+OnDkSNUEGcjxClk6L/Y1ZJ4cSG+OVIkNwkblslWiukkFnj9HbbiCc4TML8wzXG
+         ymg/oo/oNnVdw==
 From:   Felipe Balbi <balbi@kernel.org>
 To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
 Cc:     Florian Fainelli <f.fainelli@gmail.com>,
@@ -33,12 +33,13 @@ Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org,
         Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: Re: [PATCH RESEND v4 01/11] usb: gadget: bdc: fix improper SPDX
- comment style for header file
-In-Reply-To: <1610505748-30616-1-git-send-email-chunfeng.yun@mediatek.com>
+Subject: Re: [PATCH RESEND v4 02/11] usb: gadget: bdc: remove
+ bdc_ep_set_halt() declaration
+In-Reply-To: <1610505748-30616-2-git-send-email-chunfeng.yun@mediatek.com>
 References: <1610505748-30616-1-git-send-email-chunfeng.yun@mediatek.com>
-Date:   Wed, 13 Jan 2021 10:40:48 +0200
-Message-ID: <87pn2944bz.fsf@kernel.org>
+ <1610505748-30616-2-git-send-email-chunfeng.yun@mediatek.com>
+Date:   Wed, 13 Jan 2021 10:41:35 +0200
+Message-ID: <87mtxd44ao.fsf@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; boundary="=-=-=";
         micalg=pgp-sha256; protocol="application/pgp-signature"
@@ -52,9 +53,7 @@ Content-Transfer-Encoding: quoted-printable
 
 Chunfeng Yun <chunfeng.yun@mediatek.com> writes:
 
-> For C header files Documentation/process/license-rules.rst
-> mandates C-like comments (opposed to C source files where
-> C++ style should be used).
+> No definition for bdc_ep_set_halt(), so remove it.
 >
 > Cc: Florian Fainelli <f.fainelli@gmail.com>
 > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
@@ -70,19 +69,19 @@ Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl/+shARHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQavuBAAg30ZpKD5auMw0mLPTT1xg4DL63rJ4KVr
-CW8ln8OQVGoj6mXYlJmALMw0UPGGYMT5RPzL7Cnu8NTl5Ft8UH9rAjmO1kTM1fN/
-RxZXmbuei4n08W0BvkLCIaPk8aBjYHCh853ckseV1yPk1v2ihRga9FVKa67ZbNBd
-OyuYlxjflMdZ1ZAcB1Sda1FQI7sIw2VPxti6NAC/g0jYME6GrQQGyEdo2T7PnKup
-tEl9d2geaIGbgC87du+S9ojB/lqhFoasecZj/p62OF7UMYohyEfwr9H4GSSko6kg
-pWf5DHf8PSFTiH/vWzCiNRIVRSZ3VRbXDp6osacPPEZ2vUAhScI17MZw0r1zFDrS
-xWZn8y1Kzkty5UKOt9S1p/cfsluub+wUIE4pYtik47Swb4iPbpusDKfAMN75QQ/K
-4uiILFoALlZqavJsBpXF0bhct91iG/JvoSiqUpy6TsXHnwTcHy7uTSgh9o6rE5FE
-cQvVARSkGS8GEiDH2mnOutrcCdKKwee2/yk5uYRW/2SsMC5/Wd6mxxzX62Vjx2UM
-l76HxnweYziy1OvT4sDgz3aHd6B0Wk7jyx5gBWVACmwC+QjvP9Woww5wqGlV4iXI
-cARf1BgOXH1v0Hk0bzLjasE9GYpolu8fqlKMQtKYGG7IKM9XUDUk0OUbC0HaGAfV
-rToxNkIfQNA=
-=QIEo
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl/+sj8RHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQYMchAAjJXRHz+hDcN8OKrC5mKHu4MzFsCCvMC5
+Hm2JbtVgh3iQyGjTQvxJh+AW9vTxeBv1UNhhSmjZHkvhk/L5pmf5ZNbout9qOa8C
+Dh283lheX1/qi8AwwUE12k27KkBeXSKHO6hS/ycsnYWJsMEd55bhN0U3KpKmCPPr
+UL8hRWcPNZL+O9auzcfHJjJxIqf4Hmgx3X8/7K+i+Qu8wkylQQ8bK83yxixHlrRH
+bqhZf51X7qvigqCfhriIoMaobK7+/VTHfDXkeO2dbVsVbz7/vCLudvGB3nnq9Ubu
+4t5f6pt+dnebBIsWpqsvGpZeJcMWPYQ3RTbzLDjfWkRtDKi66eQQWR5nc1P05in3
+CCx2t/t3cpqOx4T65mfQF6M2NMr5mifKCARfITLC+mpyaN+oovVtwIdTZwOj2pqG
+2oOAGqt4bXJwY//WAfsz6JaYOs6SiW7/BaH0x5HRP0AMZRowd9ajMbs9pPCih+o1
+k/xIGWacB5msXnxrJJC5CSOOEWfGhlD9YFkzkRpPmW33BylgLQesitiUNuQf9QxY
+4mq8+yGTXSBBon3kvF5cNjEDeQ7BtWNIWIjQR9f7Iul+GD0PEl0deUmA4QU0oWhy
+o0pOhbT1LtPFEkjCgkbWPk1FUyq0RxKU/gUFFGIo9zPHgFOmPZKQZpUy3kuuwIwy
+VPfL0dfWLsI=
+=+7SS
 -----END PGP SIGNATURE-----
 --=-=-=--
