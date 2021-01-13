@@ -2,93 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079982F4A28
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2389E2F4A26
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728448AbhAML3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:29:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54638 "EHLO
+        id S1728372AbhAML26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:28:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728307AbhAML3D (ORCPT
+        with ESMTP id S1727635AbhAML26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:29:03 -0500
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7844CC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:28:23 -0800 (PST)
-Received: by mail-vk1-xa35.google.com with SMTP id p128so419732vkf.12
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:28:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SBYo6W/p5JZvDAn/qFQUoh+980h8QORlUqiOC9iDQIw=;
-        b=F97GImsPv7LovRmqDSB0+LmGy8/qg5nuYKbrVVbTOmKjLBVlJGr3xHiQSy9dZwiiZx
-         8z1ClPYmkK1R4FwWocCAqAAhSENQi1nIc26a+wYqXyHEqpXaRCvCRO2RlW54PJD2oJS8
-         ECv1DAX9E+eseL8/HfGTI1fAksoGC6WF/8HmdefH3Ebkc/+GWiHmiPT8SRnUE82F8r5O
-         ybP9j1AzOPFVUxYeXcnhFlxOXe3hNtQMNKA00ljGsHKM+C7b5/l/6pGNcUxc9QdJgXlE
-         GBMsawzmK/eNTp9K0KNcvBZk9YC6kK3GKWPG+v/uhTjckwsLEdc/FudCd1V23omgWwQl
-         kXYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SBYo6W/p5JZvDAn/qFQUoh+980h8QORlUqiOC9iDQIw=;
-        b=GNrfCaOirDqIV1gZdnlrQZSMO4VYj1YSyVuBF4FZS4gjrE04d8nJX0eVcgzI0+KcCZ
-         uZvNQ87XRT8fJ2ijXOn0w7w6xDC8/CMh0B0ApFjX2OTR8ZAdYdBPi8+y7zb6yydNwHJe
-         OIFv0PoFcuujuoj4yd9jcRKR2HZq8VMGOBGaslm11fqUVeyxMiJ7NCIboD/qCkwSZCT5
-         cQIgqU6f7Nf+KTjTFx5fNdGWYtAgHua8QfC0cMKET+VZzFjW7moildD7irT8tLYM/Xin
-         P+uBwNkoSiMsDoY21ry7WYvPU8Kcf0Df+6jgftk7O0VViAGZIoEy5NRzbP+YJlgRyShn
-         UjGA==
-X-Gm-Message-State: AOAM532LLVMdGVfd4aBuCHRMJxCSbIyxreVnxQpeQ85TdEukdcTld7Uv
-        FMI2L2VnVkWqWxd/47SQEHsoERmNE+GYGijYiPZCJg==
-X-Google-Smtp-Source: ABdhPJybCIKTJASUutX1qGCq7mRxFP1jaeKd4zmFJeMiCkz2FmVuxo081IaEVXn0JDNL1EvE8aRX8tzZuazzfVsTeZI=
-X-Received: by 2002:a1f:4582:: with SMTP id s124mr1483220vka.7.1610537302692;
- Wed, 13 Jan 2021 03:28:22 -0800 (PST)
+        Wed, 13 Jan 2021 06:28:58 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99E8C061575;
+        Wed, 13 Jan 2021 03:28:17 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 1AEB11F456C3
+Subject: Re: [PATCH v4 1/3] arm64: dts: mt8183: config dsi node
+To:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210113110400.616319-1-hsinyi@chromium.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <c8ebbaf6-fe92-0986-3f42-a74a515948bb@collabora.com>
+Date:   Wed, 13 Jan 2021 12:28:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210107055457.14948-1-a-govindraju@ti.com> <CAPDyKFp89zPwr-SS9wgR6C5RM+KhSLWbkXivxAttRqTxtiVGDQ@mail.gmail.com>
- <9ad5f3a3-2175-8f43-2481-7bef17828ce2@ti.com>
-In-Reply-To: <9ad5f3a3-2175-8f43-2481-7bef17828ce2@ti.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 13 Jan 2021 12:27:45 +0100
-Message-ID: <CAPDyKFpTSME=NTZdDUq3+tLpKNdzoBKFZ-B_WDyWzLqNOsx0EQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mmc: sdhci-am654: Add compatible string for
- AM64 SoC
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210113110400.616319-1-hsinyi@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021 at 12:20, Aswath Govindraju <a-govindraju@ti.com> wrote:
->
-> Hi Uffe,
->
-> On 13/01/21 4:26 pm, Ulf Hansson wrote:
-> > On Thu, 7 Jan 2021 at 06:55, Aswath Govindraju <a-govindraju@ti.com> wrote:
-> >>
-> >> Add compatible string for AM64 SoC in device tree binding of AM654 SDHCI
-> >> module as the same IP is used.
-> >>
-> >> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> >
-> > Do you have a corresponding patch for the driver as well? I would like
-> > to apply them together.
-> >
->
-> Yes, I do. Here is the link to the patch,
-> https://lore.kernel.org/patchwork/patch/1364589/
+Hi Hsin-Yi,
 
-Great. Can you please re-submit them together to the linux-mmc list,
-then I can pick them up.
+On 13/1/21 12:03, Hsin-Yi Wang wrote:
+> Config dsi node for mt8183 kukui. Set panel and ports.
+> 
+> Several kukui boards share the same panel property and only compatible
+> is different. So compatible will be set in board dts for comparison
+> convenience.
+> 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
 
-[...]
+Tested on my Lenovo Ideapad Duet. Display is working.
 
-Kind regards
-Uffe
+Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+> ---
+> change:
+> v4: add backlight and enable mipi_tx0
+> ---
+>  .../mediatek/mt8183-kukui-krane-sku176.dts    |  5 +++
+>  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 42 +++++++++++++++++++
+>  2 files changed, 47 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
+> index 47113e275cb52..721d16f9c3b4f 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
+> @@ -16,3 +16,8 @@ / {
+>  	model = "MediaTek krane sku176 board";
+>  	compatible = "google,krane-sku176", "google,krane", "mediatek,mt8183";
+>  };
+> +
+> +&panel {
+> +        status = "okay";
+> +        compatible = "boe,tv101wum-nl6";
+> +};
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> index bf2ad1294dd30..da1e947587074 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> @@ -249,6 +249,36 @@ &cpu7 {
+>  	proc-supply = <&mt6358_vproc11_reg>;
+>  };
+>  
+> +&dsi0 {
+> +	status = "okay";
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	panel: panel@0 {
+> +		/* compatible will be set in board dts */
+> +		reg = <0>;
+> +		enable-gpios = <&pio 45 0>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&panel_pins_default>;
+> +		avdd-supply = <&ppvarn_lcd>;
+> +		avee-supply = <&ppvarp_lcd>;
+> +		pp1800-supply = <&pp1800_lcd>;
+> +		backlight = <&backlight_lcd0>;
+> +		port {
+> +			panel_in: endpoint {
+> +				remote-endpoint = <&dsi_out>;
+> +			};
+> +		};
+> +	};
+> +
+> +	ports {
+> +		port {
+> +			dsi_out: endpoint {
+> +				remote-endpoint = <&panel_in>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+>  &i2c0 {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&i2c0_pins>;
+> @@ -290,6 +320,10 @@ &i2c6 {
+>  	clock-frequency = <100000>;
+>  };
+>  
+> +&mipi_tx0 {
+> +	status = "okay";
+> +};
+> +
+>  &mmc0 {
+>  	status = "okay";
+>  	pinctrl-names = "default", "state_uhs";
+> @@ -547,6 +581,14 @@ pins_clk {
+>  		};
+>  	};
+>  
+> +	panel_pins_default: panel_pins_default {
+> +		panel_reset {
+> +			pinmux = <PINMUX_GPIO45__FUNC_GPIO45>;
+> +			output-low;
+> +			bias-pull-up;
+> +		};
+> +	};
+> +
+>  	pwm0_pin_default: pwm0_pin_default {
+>  		pins1 {
+>  			pinmux = <PINMUX_GPIO176__FUNC_GPIO176>;
+> 
