@@ -2,204 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564522F44B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA2A2F44B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725949AbhAMGzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 01:55:07 -0500
-Received: from mga17.intel.com ([192.55.52.151]:52343 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbhAMGzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 01:55:06 -0500
-IronPort-SDR: DKscY5yaYSbBnuKlabjxl9By+ut3VzJ1cwitIds2L0QkmZov6ADfnzjxveRq+vAAQvbtaHA1EY
- QVDVCkTtgfNQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="157936670"
-X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
-   d="scan'208";a="157936670"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 22:54:26 -0800
-IronPort-SDR: SSnvnwDjVgNZ6jXzHSwPuN71q+JW3ci1fmcFYO5NHYmxgBOXmsZ0G1rhG6ZSGYq8R4mTytI/PU
- lu7N9O1dt3lQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
-   d="scan'208";a="424454162"
-Received: from lkp-server01.sh.intel.com (HELO d5d1a9a2c6bb) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 12 Jan 2021 22:54:24 -0800
-Received: from kbuild by d5d1a9a2c6bb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kza2x-00005I-TE; Wed, 13 Jan 2021 06:54:23 +0000
-Date:   Wed, 13 Jan 2021 14:54:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.01.11b] BUILD SUCCESS
- 3f91ff7fd4f76e7eb48bad79666c466bc3530324
-Message-ID: <5ffe9913.FiJ5EcJGrfNfl6Vw%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726215AbhAMGzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 01:55:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725998AbhAMGzW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 01:55:22 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BAC3C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 22:54:42 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id s15so531241plr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 22:54:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=qIzSFaJn0FV4+gH+m7p2CH+i+vBGSXoqXRe/PphI9GE=;
+        b=RT2d5E/rPk+9t6CZy1xVT732nLbD343U9m5o4mfKELaR6aLv5jAvRTSp/4aAAQPVxi
+         iHmNtEmklCFfs7CU8K/I0XSJIFpI0lQt5R+DGqHibLLUMvpO9O0GwUItXLrz8UO4rATt
+         hRX+Brqe2wsOUTgwNm/ELeO+BidoIFH7iKuck=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=qIzSFaJn0FV4+gH+m7p2CH+i+vBGSXoqXRe/PphI9GE=;
+        b=KRFUtw5fDkijQYgK+ixdmffyqvk23ljcncVAPhUBSKqbU53TCPr/YpOB7cbGTBaavy
+         StskCfdbvojtvQo/kEH5+gp+bC1M0zNUj/o/bKpPk6wUxuz6f6keJYjAabU27FFIHYsa
+         o8zK+Db1OtuOeUYHbAgWP3sunskCRV/YCRiTuzlibvinurl1ff0dc4/Opwcng3WvkeVm
+         I1cBOCLVz1HZHSZzbFdxBWHwWk2Qn4gCkxkUDe8xSe/RpChZUEFWX0d2Ne4b/qai/iOx
+         Bbr3npIkvg0BjOCYw4+OCyMft/kCPHr5l8KFtBPjSpuo2hKt6MuJet9tkHO+sILZRC5x
+         4g1Q==
+X-Gm-Message-State: AOAM5310jAjNnVzrAXZZmxVTPcMJGKWafBWRTzZF50ErF32Q6zkgybGz
+        Yo+M7Zjt87idKPsARjWHMluXVg==
+X-Google-Smtp-Source: ABdhPJzMkz23cJKP0paRkkTSsY82QftftvcCPG3Ruv/ETUrI3H5mSAMZ9konil1VBXTHGhwEpJIGgA==
+X-Received: by 2002:a17:902:b484:b029:dc:984f:8c5f with SMTP id y4-20020a170902b484b02900dc984f8c5fmr931715plr.4.1610520881526;
+        Tue, 12 Jan 2021 22:54:41 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id b13sm1307187pfi.162.2021.01.12.22.54.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 22:54:40 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210108150545.2018-2-rojay@codeaurora.org>
+References: <20210108150545.2018-1-rojay@codeaurora.org> <20210108150545.2018-2-rojay@codeaurora.org>
+Subject: Re: [PATCH V8 1/1] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
+        gregkh@linuxfoundation.org, mka@chromium.org,
+        akashast@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>, wsa@kernel.org
+Date:   Tue, 12 Jan 2021 22:54:39 -0800
+Message-ID: <161052087940.3661239.14609415796697267628@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2021.01.11b
-branch HEAD: 3f91ff7fd4f76e7eb48bad79666c466bc3530324  rcu: Remove spurious instrumentation_end() in rcu_nmi_enter()
+Quoting Roja Rani Yarubandi (2021-01-08 07:05:45)
+> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-=
+qcom-geni.c
+> index 214b4c913a13..c3f584795911 100644
+> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+> @@ -375,6 +375,32 @@ static void geni_i2c_tx_msg_cleanup(struct geni_i2c_=
+dev *gi2c,
+>         }
+>  }
+> =20
+> +static void geni_i2c_stop_xfer(struct geni_i2c_dev *gi2c)
+> +{
+> +       int ret;
+> +       u32 geni_status;
+> +       struct i2c_msg *cur;
+> +
+> +       /* Resume device, as runtime suspend can happen anytime during tr=
+ansfer */
+> +       ret =3D pm_runtime_get_sync(gi2c->se.dev);
+> +       if (ret < 0) {
+> +               dev_err(gi2c->se.dev, "Failed to resume device: %d\n", re=
+t);
+> +               return;
+> +       }
+> +
+> +       geni_status =3D readl_relaxed(gi2c->se.base + SE_GENI_STATUS);
+> +       if (geni_status & M_GENI_CMD_ACTIVE) {
+> +               cur =3D gi2c->cur;
 
-elapsed time: 722m
+Why don't we need to hold the spinlock gi2c::lock here?
 
-configs tested: 142
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                  colibri_pxa300_defconfig
-sh                           se7206_defconfig
-arc                 nsimosci_hs_smp_defconfig
-powerpc                   lite5200b_defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                       lemote2f_defconfig
-arm                      tct_hammer_defconfig
-c6x                                 defconfig
-riscv                    nommu_virt_defconfig
-xtensa                           alldefconfig
-arm                        trizeps4_defconfig
-mips                     decstation_defconfig
-sh                   sh7770_generic_defconfig
-arm                            hisi_defconfig
-c6x                        evmc6472_defconfig
-microblaze                          defconfig
-xtensa                  cadence_csp_defconfig
-arm                           sama5_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                         shannon_defconfig
-m68k                          amiga_defconfig
-mips                        qi_lb60_defconfig
-ia64                         bigsur_defconfig
-powerpc                 mpc836x_mds_defconfig
-sh                           se7780_defconfig
-arm                          moxart_defconfig
-powerpc                      arches_defconfig
-arm                             rpc_defconfig
-arc                        nsimosci_defconfig
-m68k                          multi_defconfig
-mips                  cavium_octeon_defconfig
-riscv                            alldefconfig
-arc                            hsdk_defconfig
-arm                            xcep_defconfig
-powerpc                     ksi8560_defconfig
-arm                           corgi_defconfig
-sh                          r7785rp_defconfig
-powerpc                       eiger_defconfig
-m68k                            mac_defconfig
-powerpc                     tqm8548_defconfig
-arm                       spear13xx_defconfig
-powerpc                      ep88xc_defconfig
-sh                          rsk7264_defconfig
-sh                        apsh4ad0a_defconfig
-mips                       rbtx49xx_defconfig
-arm                            qcom_defconfig
-sh                ecovec24-romimage_defconfig
-arm                          tango4_defconfig
-mips                          ath25_defconfig
-sh                           sh2007_defconfig
-powerpc                     rainier_defconfig
-m68k                         amcore_defconfig
-arm                         lubbock_defconfig
-h8300                            alldefconfig
-arm                         orion5x_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20210112
-i386                 randconfig-a005-20210112
-i386                 randconfig-a006-20210112
-i386                 randconfig-a003-20210112
-i386                 randconfig-a001-20210112
-i386                 randconfig-a004-20210112
-i386                 randconfig-a002-20210113
-i386                 randconfig-a005-20210113
-i386                 randconfig-a006-20210113
-i386                 randconfig-a003-20210113
-i386                 randconfig-a001-20210113
-i386                 randconfig-a004-20210113
-x86_64               randconfig-a015-20210112
-x86_64               randconfig-a012-20210112
-x86_64               randconfig-a013-20210112
-x86_64               randconfig-a016-20210112
-x86_64               randconfig-a014-20210112
-x86_64               randconfig-a011-20210112
-i386                 randconfig-a012-20210112
-i386                 randconfig-a011-20210112
-i386                 randconfig-a016-20210112
-i386                 randconfig-a013-20210112
-i386                 randconfig-a015-20210112
-i386                 randconfig-a014-20210112
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20210112
-x86_64               randconfig-a004-20210112
-x86_64               randconfig-a001-20210112
-x86_64               randconfig-a005-20210112
-x86_64               randconfig-a003-20210112
-x86_64               randconfig-a002-20210112
-x86_64               randconfig-a015-20210113
-x86_64               randconfig-a012-20210113
-x86_64               randconfig-a013-20210113
-x86_64               randconfig-a016-20210113
-x86_64               randconfig-a014-20210113
-x86_64               randconfig-a011-20210113
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> +               geni_i2c_abort_xfer(gi2c);
+> +               if (cur->flags & I2C_M_RD)
+> +                       geni_i2c_rx_msg_cleanup(gi2c, cur);
+> +               else
+> +                       geni_i2c_tx_msg_cleanup(gi2c, cur);
+> +       }
+> +
+> +       pm_runtime_put_sync_suspend(gi2c->se.dev);
+> +}
+> +
+>  static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg=
+ *msg,
+>                                 u32 m_param)
+>  {
