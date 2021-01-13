@@ -2,144 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49E92F4F9C
+	by mail.lfdr.de (Postfix) with ESMTP id 0B4D62F4F9A
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727699AbhAMQKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 11:10:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727309AbhAMQKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 11:10:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6D4023435;
-        Wed, 13 Jan 2021 16:09:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610554191;
-        bh=/V4uSeR8OSBZFOFVIDMw/BcMXL4VolcqPFbIKUiERHo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CIcwspXmZRh8pc/udeumy8UpzYBjmrX7dpcqHVBi+30uP1j3j4zU+0B10FqVEKafh
-         zYFna+tu0fTLy5NZW/+OxsohzEOeAjA+CH5Tr1A5js5pnPLHEoc9/gzjUyvx/1p91Y
-         YYwmVWgZAHyoZY4pYdT0ia5ZpErjCFa6mRI4+fPFeYRKY3nUj3aeO2k0e29sjipaFh
-         i8McAAFGMhCslAq/p6obQEr3RbKhxC09pzYp/p0JwRk6SB3DFC3DoaAAYyrj4Qgoax
-         zUHGMwuJv8rPnp6y8Q2ebD+pmNBb3VvMORqK8F/SLQLVb35ax0hThFX/HLs6hksODv
-         YBgNPtvxo0NXA==
-Date:   Wed, 13 Jan 2021 16:09:17 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>,
-        kuninori.morimoto.gx@renesas.com, nsaenzjulienne@suse.de,
-        f.fainelli@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        patches@opensource.cirrus.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 2/6] dt-bindings: audio-graph-card: Add plls and
- sysclks properties
-Message-ID: <20210113160917.GF4641@sirena.org.uk>
-References: <20210108160501.7638-1-rf@opensource.cirrus.com>
- <20210108160501.7638-3-rf@opensource.cirrus.com>
- <20210113152225.GA2334778@robh.at.kernel.org>
+        id S1727305AbhAMQK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 11:10:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726996AbhAMQKZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 11:10:25 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA2DC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:09:45 -0800 (PST)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1kziiM-005q3K-Du; Wed, 13 Jan 2021 17:09:42 +0100
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH] mm/slub: disable user tracing for kmemleak caches
+Date:   Wed, 13 Jan 2021 17:09:31 +0100
+Message-Id: <20210113170931.929f808099d2.I117b6764e725b3192318bbcf4269b13b709539ae@changeid>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kbCYTQG2MZjuOjyn"
-Content-Disposition: inline
-In-Reply-To: <20210113152225.GA2334778@robh.at.kernel.org>
-X-Cookie: Ignore previous fortune.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Johannes Berg <johannes.berg@intel.com>
 
---kbCYTQG2MZjuOjyn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If kmemleak is enabled, it uses a kmem cache for its own objects.
+These objects are used to hold information kmemleak uses, including
+a stack trace. If slub_debug is also turned on, each of them has
+*another* stack trace, so the overhead adds up, and on my tests (on
+ARCH=um, admittedly) 2/3rds of the allocations end up being doing
+the stack tracing.
 
-On Wed, Jan 13, 2021 at 09:22:25AM -0600, Rob Herring wrote:
+Turn off SLAB_STORE_USER if SLAB_NOLEAKTRACE was given, to avoid
+storing the essentially same data twice.
 
-> I'm not sure this makes sense to be generic, but if so, we already have=
-=20
-> the clock binding and should use (and possibly extend) that.
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+Perhaps instead it should go the other way around, and kmemleak
+could even use/access the stack trace that's already in there ...
+But I don't really care too much, I can just turn off slub debug
+for the kmemleak caches via the command line anyway :-)
 
-> This appears to all be configuration of clocks within the codec, so=20
-> these properties belong in the codec or cpu nodes.
+---
+ mm/slub.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-Right, I think this should just be the clock binding.=20
+diff --git a/mm/slub.c b/mm/slub.c
+index 34dcc09e2ec9..625a32a6645b 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -1446,7 +1446,16 @@ slab_flags_t kmem_cache_flags(unsigned int object_size,
+ 		}
+ 	}
+ 
+-	return flags | slub_debug;
++	flags |= slub_debug;
++
++	/*
++	 * If the slab cache is for debugging (e.g. kmemleak) then
++	 * don't store user (stack trace) information.
++	 */
++	if (flags & SLAB_NOLEAKTRACE)
++		flags &= ~SLAB_STORE_USER;
++
++	return flags;
+ }
+ #else /* !CONFIG_SLUB_DEBUG */
+ static inline void setup_object_debug(struct kmem_cache *s,
+-- 
+2.26.2
 
-> > +      The PLL id and clock source id are specific to the particular co=
-mponent
-> > +      so see the relevant component driver for the ids. Typically the
-
-This should refer to the bindings for components, not to their drivers.
-
-> > +      clock source id indicates the pin the source clock is connected =
-to.
-> > +      The same phandle can appear in multiple entries so that several =
-plls
-> > +      can be set in the same component.
-> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> > +
-> > +  plls-clocks:
-> > +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-> > +    description: |
-> > +      A list of clock names giving the source clock for each setting
-> > +      in the plls property.
-> > +
-> > +  sysclks:
-> > +    description: |
-> > +      A list of component sysclk settings. There are 4 cells per sysclk
-> > +      setting:
-> > +        - phandle to the node of the codec or cpu component,
-> > +        - component sysclk id,
-> > +        - component clock source id,
-> > +        - direction of the clock: 0 if the clock is an input to the co=
-mponent,
-> > +          1 if it is an output.
->=20
-> A clock provider and consumer would provide the direction.
->=20
-> > +      The sysclk id and clock source id are specific to the particular
-> > +      component so see the relevant component driver for the ids. Typi=
-cally
-> > +      the clock source id indicates the pin the source clock is connec=
-ted to.
-> > +      The same phandle can appear in multiple entries so that several =
-sysclks
-> > +      can be set in the same component.
-> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> > +
-> > +  sysclks-clocks:
-> > +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-> > +    description: |
-> > +      A list of clock names giving the source clock for each setting
-> > +      in the sysclks property.
-> > +
-> > +dependencies:
-> > +  plls: [ plls-clocks ]
-> > +  sysclks: [ sysclks-clocks ]
-> > +
-> >  required:
-> >    - dais
-> > =20
-> > --=20
-> > 2.20.1
-> >=20
-
---kbCYTQG2MZjuOjyn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl//GywACgkQJNaLcl1U
-h9DmuwgAg4bSMDfqbeSbsp70+FR5h2BrfLgwsLwRE0uEEsHpMnvplu67Sb5EaYg7
-43mnbG/ru3uKHlU5gpqyXHFlqCGsbpr3s3+Drn6MfToxDD+lgk38LWADAPwgWOAi
-/Y3moCJTzxBEq1DuGk8w1PQqllu1+heWuVCiuo7iOXPJwrPhF5qtrL7P/f69RoFD
-JmfdGqGstHUQRc+rj4r3mGo1+61XFbin0Ptdvm8ST1Zx7D9FOKEfu7gL+UJK6ha8
-BfBUFCVU9Ov9zaBi1HRslnVULJ4h0i3JRao7rb2h7ajI9IzCr6PNuPkK1St1DDT6
-YJ/zH7Zd13mdMSqHWDgJVcGbPRT3Sg==
-=zuCm
------END PGP SIGNATURE-----
-
---kbCYTQG2MZjuOjyn--
