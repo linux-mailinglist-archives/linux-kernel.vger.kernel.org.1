@@ -2,83 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A077A2F4193
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:15:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9FC12F4199
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727757AbhAMCPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 21:15:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727739AbhAMCPn (ORCPT
+        id S1727784AbhAMCQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 21:16:20 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4676 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726011AbhAMCQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 21:15:43 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8387C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 18:14:56 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id f17so761108ljg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 18:14:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uWtOVLLhnfRlekLf7TTZvaRWA1bOE7DsFIut1MbSMrk=;
-        b=bDjjHynMAd/WOMFFw4X9/TwdXnzZuwqaeDny4WGpTyzdYpUYDc1hDV+wiswsBOT1rF
-         BucwWA9OYFcFvhgupaACwkBfOdTZXdQYm5oMN/A+vtzVL2pQIudCbEKPFWuIUJsKot4p
-         IuThZ28Da7vVkvzFDIVq4+oT8gwcMbiVLI9iU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uWtOVLLhnfRlekLf7TTZvaRWA1bOE7DsFIut1MbSMrk=;
-        b=dREmOFvUmjBU1FN19zM7wE1X1rsqhlwV5saMvLTe/14BoNW18p5X3pthnxYQe4c5i4
-         4TwUJjfUGFp7UohS71fESzYgdXZRXgspOZObDzS/oTFNyz2Yerc/3rnrKjwPRcjTVyEq
-         wXPfxWCqgEMMPIHyrjGW6rCjERiH3i+MhC0VNu8BuoO+ksWQpzRiK9ZXt7n6CoCVO9dx
-         Iasu0tq+shDQqxWY0Zc15/q7W5snCxcRh7gH+lO2XX9Lx22iCiuS+HHl5wrmwCLegXmS
-         6DTFaLQ5n8QCMSohD+msbs4ycGiweDO+F9wiwnewij+2+rrwDcgSjPDG2QxKFWgD13b6
-         NhZw==
-X-Gm-Message-State: AOAM531UZWWCOcHN0+L5RqwuTcXo2ngddQahyAXHdUzC8DqhloMwnKP8
-        ZCG2zBzNZLm/8ZiFTTSjl8AOJJcPYYODTg==
-X-Google-Smtp-Source: ABdhPJz2g43rBKq7D803MFP/4RSUAr4CUwL/yNj5SR/ZE0g4YVGzoVl5A80iea/Dje7zMJ1HHWS4Tw==
-X-Received: by 2002:a2e:9757:: with SMTP id f23mr901886ljj.55.1610504094928;
-        Tue, 12 Jan 2021 18:14:54 -0800 (PST)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id p6sm50315lfh.50.2021.01.12.18.14.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 18:14:54 -0800 (PST)
-Received: by mail-lf1-f53.google.com with SMTP id x20so432434lfe.12
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 18:14:53 -0800 (PST)
-X-Received: by 2002:a05:6512:789:: with SMTP id x9mr723687lfr.487.1610504093548;
- Tue, 12 Jan 2021 18:14:53 -0800 (PST)
+        Tue, 12 Jan 2021 21:16:18 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10D2ClZb126584;
+        Tue, 12 Jan 2021 21:15:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=b33gMCYFoiY2cA7DlohE+j9s5rwIBiiXa3jsXsZw+dU=;
+ b=LPA0Jihqx013+hCofHhMLCHhTKGHn/cwFsrSpz3lL8nFmMPrOEvISeJBcy9Zq4Zrfw05
+ O9a5Vm6PAh275BV8ZWOZkTU5q253yWJBlgW568ur8UHvQpk1+w03zcL1jsn4h6w4AjFr
+ YXSEW4nRsh7dn2UBi4XiBtTPKTUtQyq0fzXXvZoh7d3vYBqs3tf+OsYKA9Hsj1RjnE5Q
+ VXW6IwA24G+xAlSIapG08xvQcraoGFsfZCYbB6MCmzt0CjudPayKGVkLuMUvZ5xH/lZN
+ n6ImG8/JAvPf1RUabeTf72X0PfVZLvD14xPC7DyxYh2M03nkUjBMl7ZSoItOITe/Og6M 7g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 361qvn00tt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 21:15:04 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10D2D7bU126823;
+        Tue, 12 Jan 2021 21:15:03 -0500
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 361qvn00tc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 21:15:03 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10D2C42M017573;
+        Wed, 13 Jan 2021 02:15:02 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma02dal.us.ibm.com with ESMTP id 35y449gxdt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 02:15:02 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10D2F1k110289646
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 02:15:01 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 579697805C;
+        Wed, 13 Jan 2021 02:15:01 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4066678060;
+        Wed, 13 Jan 2021 02:14:53 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.80.217.205])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Wed, 13 Jan 2021 02:14:52 +0000 (GMT)
+References: <20210104192602.10131-1-nramas@linux.microsoft.com>
+ <20210104192602.10131-3-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@vger.kernel.org
+Subject: Re: [PATCH v14 2/6] powerpc: Move arch independent ima kexec
+ functions to drivers/of/kexec.c
+In-reply-to: <20210104192602.10131-3-nramas@linux.microsoft.com>
+Date:   Tue, 12 Jan 2021 23:14:50 -0300
+Message-ID: <87bldtshut.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-References: <20210112224832.10980-1-will@kernel.org>
-In-Reply-To: <20210112224832.10980-1-will@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 12 Jan 2021 18:14:37 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wi5oACdjFwnaonTWPVpBpwohxeJJJDvLvMS85RzrX5SYQ@mail.gmail.com>
-Message-ID: <CAHk-=wi5oACdjFwnaonTWPVpBpwohxeJJJDvLvMS85RzrX5SYQ@mail.gmail.com>
-Subject: Re: [PATCH] compiler.h: Raise minimum version of GCC to 5.1 for arm64
-To:     Will Deacon <will@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-12_21:2021-01-12,2021-01-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 spamscore=0 bulkscore=0 mlxlogscore=820 phishscore=0
+ malwarescore=0 lowpriorityscore=0 suspectscore=0 impostorscore=0
+ mlxscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101130005
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 2:48 PM Will Deacon <will@kernel.org> wrote:
+
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+
+> The functions defined in "arch/powerpc/kexec/ima.c" handle setting up
+> and freeing the resources required to carry over the IMA measurement
+> list from the current kernel to the next kernel across kexec system call.
+> These functions do not have architecture specific code, but are
+> currently limited to powerpc.
 >
-> Life is too short for buggy compilers, so raise the minimum GCC version
-> required by arm64 to 5.1.
+> Move setup_ima_buffer() call into of_kexec_setup_new_fdt() defined in
+> "drivers/of/kexec.c".
+>
+> Move the remaining architecture independent functions from
+> "arch/powerpc/kexec/ima.c" to "drivers/of/kexec.c".
+> Delete "arch/powerpc/kexec/ima.c" and "arch/powerpc/include/asm/ima.h".
+> Remove references to the deleted files in powerpc and in ima.
+>
+> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> ---
+>  arch/powerpc/Kconfig               |   2 +-
+>  arch/powerpc/include/asm/ima.h     |  27 ----
+>  arch/powerpc/kexec/Makefile        |   7 -
+>  arch/powerpc/kexec/file_load.c     |   7 -
+>  arch/powerpc/kexec/ima.c           | 202 ------------------------
+>  drivers/of/kexec.c                 | 240 +++++++++++++++++++++++++++++
+>  include/linux/of.h                 |   2 +
+>  security/integrity/ima/ima.h       |   4 -
+>  security/integrity/ima/ima_kexec.c |   1 +
+>  9 files changed, 244 insertions(+), 248 deletions(-)
+>  delete mode 100644 arch/powerpc/include/asm/ima.h
+>  delete mode 100644 arch/powerpc/kexec/ima.c
 
-Ack. I'll assume I get this the usual ways from the arm64 tree..
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
 
-           Linus
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
