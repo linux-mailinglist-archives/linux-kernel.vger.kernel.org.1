@@ -2,134 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7142F4C6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 368472F4C72
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725902AbhAMNqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 08:46:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40214 "EHLO mail.kernel.org"
+        id S1726787AbhAMNsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 08:48:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725747AbhAMNp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 08:45:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18F84235F9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 13:45:18 +0000 (UTC)
+        id S1725772AbhAMNsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 08:48:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E566223339;
+        Wed, 13 Jan 2021 13:47:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610545518;
-        bh=RtlaE9J65v12+J/6lbmgii2+Y3BY+wZws9oPMNRLbyw=;
+        s=k20201202; t=1610545660;
+        bh=c9ZEmZC+OGzOHSTlleqwkNhpgxSo3+qwJ9ptpSoPBMY=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bwt77kQzi3TUQ3xGOdoqZYt9J0R1/7yQGCsTaMsjG1QPB/92EMmML2cJWqV4aaSt9
-         VMAGoQAI9Yel8nl0qw+QsfGHPyc0/HGPEzpWrqlZZ5jDB3q5Ot7nra8AGCNI7snRHm
-         bWgHbs1Gg5jY5tFXkRkE+9pLjB70VIR8DDTcsPhcr03gFUTVSKMAzInXlJMajmwg1a
-         X8gFWnCK3dJ4l0IU2/8wsqzOFUW+kjZsoJyRA24/1bkwejXH7vmS45kMgB3GjMrtZM
-         LlWtOmk0m/TDxaGdZGxQLp0cZyxgCSn6gviV6rAXxCQxSHkfPBRb3kOXu8vdwBcxjV
-         rRK5agVcZgbdA==
-Received: by mail-ot1-f48.google.com with SMTP id w3so1869462otp.13
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 05:45:17 -0800 (PST)
-X-Gm-Message-State: AOAM532iWxkOIiFVvKbSvzF5KzQmbH5HSJenblTK8/WWRNpnJ6W2f3jk
-        Dsscxacr4Ns36vsaN4PnFvF9uFQYzLGNjiFGifg=
-X-Google-Smtp-Source: ABdhPJx2v6CKPuAGtI2BQ/naF3Kn3i6GYnzkXFTxcVDUbUl5u9LFkg7OLK4TAHz1wQBhfS+590IiFSovP/PAJvXkK9w=
-X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr1247229otm.305.1610545517013;
- Wed, 13 Jan 2021 05:45:17 -0800 (PST)
+        b=FYu658AOWNtizhfGOXbNeL8NnWsMtHC+dTrt2yedfVOtoG8JKtBG1y0MjODTu7GW+
+         740oAJD+fJqb5Ts7VVV3U0RQNlu6RbHic5mtnopKPl5jioiqWOOkaKbt2dcLn/u+s7
+         rtGUDgKHYO2vy3z9WftyjNDrcEPDtYydLA3YzkWaUcPIt82pnUA9FwbgpXRQXjsmcB
+         W0vRdNUQjbeEwzz3seUsYoyKP0i2R+Fd0JWpH/RrqeAmXPff4JzKQiknxZ1BCcrRAj
+         IIhLhSyZ2S1JQDGgRP4Zv3xbeB/GUxEAOljYrPV9vib4zsFj0Ixwzj+Ay81CUJHG6E
+         IqT8rXjjuXBfA==
+Received: by mail-ed1-f46.google.com with SMTP id r5so1940047eda.12;
+        Wed, 13 Jan 2021 05:47:39 -0800 (PST)
+X-Gm-Message-State: AOAM533YTLpB1UJ406gnZoay+zQciRRzTIJdgzQQfWQeObYCVxLb3q5r
+        Q7UlMGN2tqns+A0vpvSgjq/Tlo3W1f6UKvMb7g==
+X-Google-Smtp-Source: ABdhPJwFnnxsacTgDF7sATccpJCIWFohXy1lChGnPrWia0Dd45sGfr2h+/uzWLycVLhW0t1rfVN+jlHpRT5er6uxUkA=
+X-Received: by 2002:a50:e78b:: with SMTP id b11mr1817862edn.165.1610545658364;
+ Wed, 13 Jan 2021 05:47:38 -0800 (PST)
 MIME-Version: 1.0
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <20210109055645.GA2009@1wt.eu> <CAK8P3a1C+EUvyLm3fo8TGOV39hhaxhtDM3cX_QLc-=WCzRksMw@mail.gmail.com>
- <6fb7e3f5035d44fab9801001f1811b59@AcuMS.aculab.com> <CAHp75Vf43_zqDX9K4GmkRd7fujY2zC8=LneSMFpC2qnJL_uG1A@mail.gmail.com>
- <CACRpkdaH-1s8DnRUPVRSQgqUE99MdWjKGLv_y6iYnXU6p4dwUg@mail.gmail.com>
-In-Reply-To: <CACRpkdaH-1s8DnRUPVRSQgqUE99MdWjKGLv_y6iYnXU6p4dwUg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 13 Jan 2021 14:44:59 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1QLdPOcQoNWOYNGgN1vMNv2oOtittr1H1pVLrbbN4pPA@mail.gmail.com>
-Message-ID: <CAK8P3a1QLdPOcQoNWOYNGgN1vMNv2oOtittr1H1pVLrbbN4pPA@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Willy Tarreau <w@1wt.eu>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+References: <20201223111633.1711477-1-zhang.lyra@gmail.com>
+ <20210108022545.GA1744725@robh.at.kernel.org> <CAAfSe-svn4ACvhk3McO7APLLSKdC=9ei7bvmD9ZhnSosnLQ1AA@mail.gmail.com>
+In-Reply-To: <CAAfSe-svn4ACvhk3McO7APLLSKdC=9ei7bvmD9ZhnSosnLQ1AA@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 13 Jan 2021 07:47:26 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKqi_tngaR0nHpjbQz2Q8QnwJ+Ea=DghT6xqR9U8o-5CQ@mail.gmail.com>
+Message-ID: <CAL_JsqKqi_tngaR0nHpjbQz2Q8QnwJ+Ea=DghT6xqR9U8o-5CQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] dt-bindings: iommu: add bindings for sprd iommu
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.osdn.me>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+        Orson Zhai <orsonzhai@gmail.com>,
+        Sheng Xu <sheng.xu@unisoc.com>,
+        Kevin Tang <kevin.tang@unisoc.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 1:02 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Wed, Jan 13, 2021 at 11:27 AM Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > On Mon, Jan 11, 2021 at 11:55 AM David Laight <David.Laight@aculab.com> wrote:
-> > > basically 486 but have a few extra instructions - probably just cpuid
-> > > and (IIRC) rdtsc.
-> > > Designed for low power embedded use they won't ever have been suitable
-> > > for a desktop - but are probably fast enough for some uses.
-> > > I'm not sure how much keeping 486 support actually costs, 386 was a
-> > > PITA - but the 486 fixed most of those issues.
+On Fri, Jan 8, 2021 at 5:34 AM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
+>
+> On Fri, 8 Jan 2021 at 10:25, Rob Herring <robh@kernel.org> wrote:
 > >
-> > Right, we have "last of mohicans" (to date) Intel Quark family of CPUs
-> > (486 core + few i586 features).
-> > This is for the embedded world and probably not for powerful use.
+> > On Wed, Dec 23, 2020 at 07:16:32PM +0800, Chunyan Zhang wrote:
+> > > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > >
+> > > This patch only adds bindings to support display iommu, support for others
+> > > would be added once finished tests with those devices, such as Image
+> > > codec(jpeg) processor, a few signal processors, including VSP(video),
+> > > GSP(graphic), ISP(image), and camera CPP, etc.
+> > >
+> > > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > > ---
+> > >  .../devicetree/bindings/iommu/sprd,iommu.yaml | 44 +++++++++++++++++++
+> > >  1 file changed, 44 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml b/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
+> > > new file mode 100644
+> > > index 000000000000..4d9a578a7cc9
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
+> > > @@ -0,0 +1,44 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +# Copyright 2020 Unisoc Inc.
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/iommu/sprd,iommu.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Unisoc IOMMU and Multi-media MMU
+> > > +
+> > > +maintainers:
+> > > +  - Chunyan Zhang <zhang.lyra@gmail.com>
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - sprd,iommu-disp
+> >
+> > Needs to be Soc specific.
 >
-> What is the status of PC/104?
-> https://en.wikipedia.org/wiki/PC/104
+> All SoCs so far use the same iommu IP, there's a little different
+> among different iommu users.
+
+That's what everyone says. Be warned that you cannot add properties
+for any differences that come up whether features or errata.
+
+> > Is this block specific to display subsys or
+> > that just happens to be where the instance is?
 >
-> I have three GPIO drivers for PC/104 machines and these are for
-> embedded industrial usecases. I am curious about what CPUs these
-> beasts run on in practice? Are they getting upgraded?
+> This iommu driver can serve many subsystem devices, such as Video,
+> Camera, Image, etc., but they have their own iommu module which looks
+> like a subdevice embedded in the master devices.
+> I will add more compatible strings for those devices when needed.
+> For now, only this one was listed here because I just tested this
+> iommu driver with DPU only.
 
-I had a look at those earlier when trying to find out what the remaining
-users of CONFIG_ISA are. It turns out that you can still easily get new
-x86 hardware with PC/104+ (combined ISA and PCI, not PCIe)
-connectors, see e.g. https://www.versalogic.com/product/SandCat/.
+The iommu binding takes care of what each one is connected to. Is each
+instance different in terms of features or programming model? If not,
+then you shouldn't have different compatible strings for each
+instance.
 
-Like the older VMEbus based systems, these would have at least 10
-years of hardware availability (sometimes much more) and are indeed
-designed for use over decades after that.
-
-On the other hand, the set of ISA-style peripherals that you would
-connect here has little overlap with the those you'd find on a 1990's
-PC or Unix workstation, and I would expect that a lot of device
-drivers for them were never submitted for mainline because they are
-application specific.
-
-We have a couple of ARMv5-generation systems with PC/104
-support,  added before the start of the git history:
-
-* s3c2410/bast
-* s3c2410/vr1000
-* pxa25x/viper
-* pxa27x/zeus
-
-I would assume that some of those are still operational somewhere
-in the world (along with similar machines without mainline support),
-but none have seen in field kernel updates for years.
-
-There is also ep93xx/ts72xx, which has a  PC/104 connector
-but no Linux support for it. A new version of the board was
-added in 2017, so there are clearly still users, but they would
-need add-on patches to use PC/104.
-
-      Arnd
+Rob
