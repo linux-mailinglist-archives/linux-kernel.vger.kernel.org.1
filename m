@@ -2,125 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3BD2F467F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3679D2F4685
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbhAMI3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:29:47 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:42739 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725834AbhAMI3q (ORCPT
+        id S1726803AbhAMIag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:30:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41776 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726546AbhAMIaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:29:46 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 292A55C003F;
-        Wed, 13 Jan 2021 03:28:40 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 13 Jan 2021 03:28:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=TzU6WcM+BIQSy4nmgiJ5TPU0ge7
-        8zp+Iupe9d0GMyic=; b=USIsB8FCx2ut10qMVZojg5teN6Z+OE1ivil6ojt/wkK
-        Y61vL6i+vIoEWDZSUFXMsEjF6mGoOa9PEKzyjjVH4bdhe7KFTd2Fe7UMehPVH/z2
-        yePIED3L08YQtQ5ndVKzED2WWtfxnB8zdfi5/o3R75FiIeMgLFCe2VXTTZ8JQrTt
-        Ps8Q0AR1jyyyrs7pdUkwzNX7HcOg2dEXSW8j+xqfgizP2cKvTmYZHabmRE1nmqid
-        lyrdF9yRbt+s13dhq+3ngVTy41zSMa6M5Y1lH471OPKjcZHSOCY4mv3JwYDNudZc
-        Y+Ub8ZlGRsHTL7kA7nQ/LKoT4rpagMk8Gzjono8mDyQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TzU6Wc
-        M+BIQSy4nmgiJ5TPU0ge78zp+Iupe9d0GMyic=; b=f+eRvpzLwJiv1ros6GwI1F
-        KUPPqbnHPYYIq5dId5jhyu/x+uzkRAnO65U6NNv1ouBlu5MLG8cWv1nF4xCqWold
-        qt+rTIpo64E3Ml0wNXdezEhU5Oko7E9iy+sy1DbdKiB3HBFE/ZdSxxSbDnDa4d6K
-        JnAArBuOtDn68xg1nkhEuq+htaxMjVv4F8q/Xnfqu0fOhgtgdGB038gtDzYqaV80
-        NrD+QBxDdF9jQwnAem049EUG9bnDKU4RP3vLtwFi39QSKqfwrOmVekUBajwO12Yz
-        twHvDSb2WRwuWrpacy7PckjNbSCcMnkqqMrAIhvCtVTwWq2AJlT63IphzI/wtEeA
-        ==
-X-ME-Sender: <xms:N6_-X3vfrWSJP2-GjWDl3GWKHyiZzUiNK9AWpBoB9mqd83fv6P_mmw>
-    <xme:N6_-X4fFKgw2-ekt31CMg4unA4PjeDmOVNqhJbWDXSzVgaizCpZ70Nh369MpPs-5K
-    7vvhgCEKgERjtEIIMg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtddugdduvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepudenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:N6_-X6y8gb1ChGqa5OoN7HlW288uQCwa1-giZnfMcKA2x-odwQtdsg>
-    <xmx:N6_-X2NJM5uHQrWrPfBWHD6W7rPKWBSAmKq3Z17avnLpZClcDCS-uQ>
-    <xmx:N6_-X3_1TOblX_b6Ny3hfzmAaZfwflpF5A-vZvxqiiE2YbVFPymu1w>
-    <xmx:OK_-X4O__H-k0tEDnNqoFEdy94wpaL6Jdwjb0Jg-7LeQqqrZ0KkEcA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7D515108005F;
-        Wed, 13 Jan 2021 03:28:39 -0500 (EST)
-Date:   Wed, 13 Jan 2021 09:28:38 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH v2 0/3] PinePhone volume key (LRADC) wakeup support
-Message-ID: <20210113082838.kwwekwwsnpobk7bg@gilmour>
-References: <20210113040542.34247-1-samuel@sholland.org>
+        Wed, 13 Jan 2021 03:30:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610526549;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SnkNq7WMI2CVWcX/yAHgyPl0w9p5JWaNoF5mq+QCvB0=;
+        b=JWaw/395giL7SrqN1yqJBJL5Ttl96cL/DO9EcBFuomRltIz+NUNZLUrYVvPwA9luADsCch
+        BebzMpRgWveM+rsNHln5iqX658zkkNRbrlMz7a0uPVwjEkEWDUorTdX9ERwfmLS/yH5cPg
+        7H4RecTcE9lm6Uz80oMIpXd4/BtfijE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-577-XqfY1E7jNbO_kaHy5Xz8Hg-1; Wed, 13 Jan 2021 03:29:05 -0500
+X-MC-Unique: XqfY1E7jNbO_kaHy5Xz8Hg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BAD7A801F98;
+        Wed, 13 Jan 2021 08:29:03 +0000 (UTC)
+Received: from [10.36.114.135] (ovpn-114-135.ams2.redhat.com [10.36.114.135])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C095F7046A;
+        Wed, 13 Jan 2021 08:29:01 +0000 (UTC)
+Subject: Re: [PATCH v3 2/6] mm: Teach pfn_to_online_page() to consider
+ subsection validity
+To:     Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org
+Cc:     Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>, vishal.l.verma@intel.com,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
+References: <161052331545.1805594.2356512831689786960.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161052332755.1805594.9846390935351758277.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <230efa36-9192-fe52-b8b6-16b2feafb70b@redhat.com>
+Date:   Wed, 13 Jan 2021 09:29:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vhpp6qqqfwdpuanf"
-Content-Disposition: inline
-In-Reply-To: <20210113040542.34247-1-samuel@sholland.org>
+In-Reply-To: <161052332755.1805594.9846390935351758277.stgit@dwillia2-desk3.amr.corp.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13.01.21 08:35, Dan Williams wrote:
+> pfn_section_valid() determines pfn validity on subsection granularity
+> where pfn_valid() may be limited to coarse section granularity.
+> Explicitly validate subsections after pfn_valid() succeeds.
+> 
+> Fixes: b13bc35193d9 ("mm/hotplug: invalid PFNs from pfn_to_online_page()")
+> Cc: Qian Cai <cai@lca.pw>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Reported-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+>  mm/memory_hotplug.c |   24 ++++++++++++++++++++----
+>  1 file changed, 20 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 55a69d4396e7..9f37f8a68da4 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -308,11 +308,27 @@ static int check_hotplug_memory_addressable(unsigned long pfn,
+>  struct page *pfn_to_online_page(unsigned long pfn)
+>  {
+>  	unsigned long nr = pfn_to_section_nr(pfn);
+> +	struct mem_section *ms;
+> +
+> +	if (nr >= NR_MEM_SECTIONS)
+> +		return NULL;
+> +
+> +	ms = __nr_to_section(nr);
+> +	if (!online_section(ms))
+> +		return NULL;
+> +
+> +	/*
+> +	 * Save some code text when online_section() +
+> +	 * pfn_section_valid() are sufficient.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID))
+> +		if (!pfn_valid(pfn))
+> +			return NULL;
 
---vhpp6qqqfwdpuanf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Nit:
 
-On Tue, Jan 12, 2021 at 10:05:39PM -0600, Samuel Holland wrote:
-> This series allows the volume keys on the PinePhone to wake up the
-> device. As pointed out for v1, wakeup should only be enabled when a
-> "wakeup-source" property is present, so v2 requires DT and binding
-> changes in addition to the driver change.
->=20
-> Changes since v1:
->   - Add requisite DT binding change
->   - Only add wakeup capability if "wakeup-source" is present
->   - Warn but do not error out if setting the wake IRQ fails
->   - Add "wakeup-source" property to PinePhone device tree
->=20
-> Ondrej Jirman (1):
->   input: sun4i-lradc-keys -  Add wakup support
->=20
-> Samuel Holland (2):
->   dt-bindings: sun4i-a10-lradc-keys: Accept wakeup-source property
->   arm64: dts: allwinner: pinephone: Support volume key wakeup
->=20
->  .../input/allwinner,sun4i-a10-lradc-keys.yaml |  2 ++
->  .../dts/allwinner/sun50i-a64-pinephone.dtsi   |  1 +
->  drivers/input/keyboard/sun4i-lradc-keys.c     | 22 +++++++++++++++----
->  3 files changed, 21 insertions(+), 4 deletions(-)
+if (IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) &&
+    !pfn_valid(pfn))
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-I've applied patch 3
+-- 
+Thanks,
 
-Maxime
+David / dhildenb
 
---vhpp6qqqfwdpuanf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX/6vNgAKCRDj7w1vZxhR
-xfMtAQDVdffEBMyH+3xfy28vcNPZ4l3C99AYGTCUmy62qTwl1QEA7N4GZ/dALQDD
-c2AAwHc05QFZinkvyfVZbSBNmIVoqwE=
-=qhju
------END PGP SIGNATURE-----
-
---vhpp6qqqfwdpuanf--
