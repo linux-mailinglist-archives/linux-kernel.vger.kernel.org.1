@@ -2,236 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 380F62F42C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:03:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 266BC2F42CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbhAMECf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 23:02:35 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:10795 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726461AbhAMECd (ORCPT
+        id S1726708AbhAMEGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 23:06:52 -0500
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:37359 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726680AbhAMEGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 23:02:33 -0500
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210113040150epoutp04e610c0ea0da78785c83d9c7564506343~Zrsa5Ca1e1370113701epoutp04e
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 04:01:50 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210113040150epoutp04e610c0ea0da78785c83d9c7564506343~Zrsa5Ca1e1370113701epoutp04e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1610510510;
-        bh=VIxUrzTKhnvccK/onLUwZD5UiGdrKREn4EwdF+BvVsE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cSFKafnrHk4CbJ7dDKCOnRLSO+oaK/Iy4kIYGjaC7mdhUoZYBq5eGyxjVJWJE60+j
-         ZfWuksIrKhoPb1YdWAcOzbwa8milpxi645K+sKhfVIL3CgamDEWSG3jRpywEYcHrbw
-         Iy3RIIeqAdzBpR1vdUTbN68XsG2dnokgTKw0N3r4=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210113040148epcas1p2bcf737fc903dec87166c92277ce74e28~ZrsZRZcNs1933319333epcas1p2V;
-        Wed, 13 Jan 2021 04:01:48 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.164]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DFtzv1MBnz4x9Q5; Wed, 13 Jan
-        2021 04:01:47 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DE.99.02418.BA07EFF5; Wed, 13 Jan 2021 13:01:47 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210113040146epcas1p230596c7c3760471dca442d1f7ce4dc55~ZrsXZaHkl1710017100epcas1p2p;
-        Wed, 13 Jan 2021 04:01:46 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210113040146epsmtrp29ce2847c5beead1becfd772b427467c6~ZrsXYW4KU1299012990epsmtrp2M;
-        Wed, 13 Jan 2021 04:01:46 +0000 (GMT)
-X-AuditID: b6c32a35-c23ff70000010972-46-5ffe70ab143e
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4A.B3.13470.AA07EFF5; Wed, 13 Jan 2021 13:01:46 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210113040146epsmtip23fae37dc9881f478a8d7d7049c8e0535~ZrsXKOAYS3256232562epsmtip2C;
-        Wed, 13 Jan 2021 04:01:46 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     damien.lemoal@wdc.com
-Cc:     Johannes.Thumshirn@wdc.com, axboe@kernel.dk,
-        jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mj0123.lee@samsung.com, nanich.lee@samsung.com,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        tj@kernel.org, yt0928.kim@samsung.com, woosung2.lee@samsung.com
-Subject: Re: Re: [PATCH] bio: limit bio max size.
-Date:   Wed, 13 Jan 2021 12:46:37 +0900
-Message-Id: <20210113034637.1382-1-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <CH2PR04MB65225EDDA7069CCD47A459A5E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
+        Tue, 12 Jan 2021 23:06:52 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id 57F9F19E8;
+        Tue, 12 Jan 2021 23:05:45 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 12 Jan 2021 23:05:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=BhWOvfo7H2XzrPkb8Fylthz2bV
+        LD4XJzNdlGE7vWgs0=; b=cqoj8wbbjV5OoHLqszrKBq1FsZnIjbnh0lVkJXP2tN
+        E2tDBBQw7jQiHCpwTOQv4wtxCpRCuCjgy7CVXQU2H9ID2YwGMuHHaJkq5RqvEzLM
+        +37mlKZVjVskjtSghhkoFlHmyKLDpgfKETkmtbl2lOh4++Ax5Xw+humiwY4FgBQE
+        pieQ3VLrcsg4FQDgq3yzER2928biEizMoWMUwy+rW3wp/4AtEPCzVeLaLGBt6eca
+        L+GFa/ALAbCjTeY9YZmU+JVtO+xA6MtarNUuZlG/TEhF3jnZ07K8na9hpYKf5onf
+        2ERURvS760mMkV3m9VUCXNbbrTwP/oX3CaQRAwwk3/vg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=BhWOvfo7H2XzrPkb8
+        Fylthz2bVLD4XJzNdlGE7vWgs0=; b=elhoO/JEQUR+wyY8m2zcDlTqb6ON7qIhP
+        93pd1/FbsJUE++6mnxruegYILjCy9bLAWMahHT2gFYiz8C3FAijdynFm5LAe7mht
+        gt2bLevdIhwUb+wn2dREcWtQfuTXMndNMpTAjo8BWhZGyIaaoOljSClFB1PxG/us
+        F/Hx6dJtrQwhuqIXJkxhkqkuP+QQLeKYD5A3lc7uPKBVNcYfj5MrGdx7QABfWxWu
+        wgK+/feLFe2YUtXSWHMVDQ9pAeHR8Pxqusxu+ZFz5hzItPxb2nSM0zhk3LeFG4On
+        yDAOdPRKLM84gRRkSS9xWTUBffUjHM13XHw3bAw3HMR5NYFOCmsPQ==
+X-ME-Sender: <xms:mHH-X3QVUH8t7Pnmliw6cgkko7-mn33soSsbV0MQ5Fm5rSFKVZcz2Q>
+    <xme:mHH-X4x2Rc_311wJd9U5LSuGL7Km9WtFlRQWv-V-qXEpQaH-2n7T55g9BXg6LQPpz
+    YRSHsgmJr7X7qh6Hg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtddugdeilecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
+    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
+    htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
+    tdevnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdho
+    rhhg
+X-ME-Proxy: <xmx:mHH-X82ZhVERbJuoRmH21ynduH2ZEMgRbwk_n44Wfx_J_-3WfLuQHg>
+    <xmx:mHH-X3AW8JEnqNgURohRkFJ42EhOp9s1ira16BLBNdHwpL57auixdA>
+    <xmx:mHH-Xwjy5eKlhyBkj3Sm7Fziytl45GlnC_iaMJX8AIfxfisWpfxKww>
+    <xmx:mHH-X5WPsoZ4YLt3y8-RyJpVB3Gg6I-6UatUVTXW5IHZcXe_tu9V6fbmchc>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id A6B13240057;
+        Tue, 12 Jan 2021 23:05:43 -0500 (EST)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     devicetree@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH v2 0/3] PinePhone volume key (LRADC) wakeup support
+Date:   Tue, 12 Jan 2021 22:05:39 -0600
+Message-Id: <20210113040542.34247-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNJsWRmVeSWpSXmKPExsWy7bCmvu7qgn/xBneWs1msvtvPZtHa/o3J
-        oudJE6vF3657TBZfHxZb7L2lbXF51xw2i+mb5zBbXLt/ht3i3MlPrBbzHjtY/Fp+lNHi1I7J
-        zBbr9/5kc+DzuHy21GPTqk42j74tqxg9Pm+S82g/0M0UwBqVY5ORmpiSWqSQmpecn5KZl26r
-        5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkDdKWSQlliTilQKCCxuFhJ386mKL+0JFUh
-        I7+4xFYptSAlp8DQoECvODG3uDQvXS85P9fK0MDAyBSoMiEn4+XcTUwFM9Urem5NZ25g3Cbf
-        xcjJISFgIvHvzBkmEFtIYAejxNp9HhD2J0aJbVclIOxvjBLTu21g6h9dec7WxcgFFN/LKDHz
-        wmpmiKLPjBKX12qC2GwCOhJ9b2+xgdgiApISp15+AWtgFjjHJPFizT0WkISwgKHE+eP7wYpY
-        BFQlbi0+ywpi8wpYSbzru8QEsU1e4mnvcqAFHBycArESdzdFQpQISpyc+QRsDDNQSfPW2cwg
-        8yUEZnJIPH3Rww7R6yKxY/8uZghbWOLV8S1QcSmJz+/2skE0dDNKNLfNZ4RwJjBKLHm+DGqz
-        scSnz58ZQTYzC2hKrN+lDxFWlNj5ey4jxGY+iXdfe1hBSiQEeCU62oQgSlQkzrTcZ4bZ9Xzt
-        TqiJHhIvrp5jh4TcBkaJv3++sk5gVJiF5KFZSB6ahbB5ASPzKkax1ILi3PTUYsMCQ+QI3sQI
-        TrVapjsYJ779oHeIkYmD8RCjBAezkghvUfffeCHelMTKqtSi/Pii0pzU4kOMpsDQnsgsJZqc
-        D0z2eSXxhqZGxsbGFiZm5mamxkrivEkGD+KFBNITS1KzU1MLUotg+pg4OKUamFSCxO5zRF4P
-        ChNXc5e31izIyzwfdWdB35/nuW/svb1sf7FIn1v5NXFCY9Lr6bkGJQ8Lp79NaF+g0pC+enJb
-        0fK7MbHrJ0QdemvD5Wbx9r3X/yOp/WpLIw637pryRnlliuKEs3ZPy23qeHOWVaSoveSr73ew
-        jHP8+WDrh2vB2fxy/zYyRec+8t3I8Lr1YvjHZ8Hbi0XvOZccfJliVqN10aLZv7fgm4beIZ32
-        hD62A+9/hW2/eOtSwsu1C5bEiylM7vq6NYrD7oHeL53Qz9GVLra3i7+Hnd9S0PnpW5bqBqV4
-        zp8NNZuefoqbdfHBPMmDE6SrU8L3/z/HP7sj6ewxl2f1c39bvdJcOlXr/JwFZ5VYijMSDbWY
-        i4oTAX54FDM+BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKLMWRmVeSWpSXmKPExsWy7bCSvO6qgn/xBjvWS1usvtvPZtHa/o3J
-        oudJE6vF3657TBZfHxZb7L2lbXF51xw2i+mb5zBbXLt/ht3i3MlPrBbzHjtY/Fp+lNHi1I7J
-        zBbr9/5kc+DzuHy21GPTqk42j74tqxg9Pm+S82g/0M0UwBrFZZOSmpNZllqkb5fAlfFy7iam
-        gpnqFT23pjM3MG6T72Lk5JAQMJF4dOU5WxcjF4eQwG5GiVVX3rFAJKQkjp94y9rFyAFkC0sc
-        PlwMUfORUeL2vzNsIDVsAjoSfW9vgdkiApISp15+ARvELHCHSWJR501mkISwgKHE+eP7wYpY
-        BFQlbi0+ywpi8wpYSbzru8QEsUxe4mnvcmaQZZwCsRJ3N0WChIUEYiS+r5rCDlEuKHFy5hOw
-        25iBypu3zmaewCgwC0lqFpLUAkamVYySqQXFuem5xYYFhnmp5XrFibnFpXnpesn5uZsYwTGh
-        pbmDcfuqD3qHGJk4GA8xSnAwK4nwFnX/jRfiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6HrZLyQ
-        QHpiSWp2ampBahFMlomDU6qBSZdZe/tySfc242ylbfkT/HgvyyY1iHy/4JUo9Wft4yjJt9Mu
-        K0+fODXw2KtDRqfU12Xqrl4t7Ch9esqm2XePz7WsNuewnpQXx1diOlU64Nwy1orcC9d/L7NK
-        YS1T3ZwpLue81jjEt9A1vML0PFvqvCfhTCJNoSqpgUWfOxqKWI45VuRmz9DQ80ljVDi7bklE
-        ywWdz5x7t8a/OhL21LqOZ9Xiky/X8F9/ektf6aJH3nFF90Y256Cbi4JUc8pjZq6bNP+JvMuO
-        FSpW0kqmf/d9SInc4Rut6F8wed7yEgsfkxi+401qrvKV+8NMVWovadl5m/+6zaRR8uyImLfX
-        7rLF/rkz+5yEvkyQlLBesFuJpTgj0VCLuag4EQDvCtIe+AIAAA==
-X-CMS-MailID: 20210113040146epcas1p230596c7c3760471dca442d1f7ce4dc55
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210113040146epcas1p230596c7c3760471dca442d1f7ce4dc55
-References: <CH2PR04MB65225EDDA7069CCD47A459A5E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
-        <CGME20210113040146epcas1p230596c7c3760471dca442d1f7ce4dc55@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 2021/01/12 21:14, Changheun Lee wrote:
->>> On 2021/01/12 17:52, Changheun Lee wrote:
->>>> From: "Changheun Lee" <nanich.lee@samsung.com>
->>>>
->>>> bio size can grow up to 4GB when muli-page bvec is enabled.
->>>> but sometimes it would lead to inefficient behaviors.
->>>> in case of large chunk direct I/O, - 64MB chunk read in user space -
->>>> all pages for 64MB would be merged to a bio structure if memory address is
->>>> continued phsycally. it makes some delay to submit until merge complete.
->>>> bio max size should be limited as a proper size.
->>>
->>> But merging physically contiguous pages into the same bvec + later automatic bio
->>> split on submit should give you better throughput for large IOs compared to
->>> having to issue a bio chain of smaller BIOs that are arbitrarily sized and will
->>> likely need splitting anyway (because of DMA boundaries etc).
->>>
->>> Do you have a specific case where you see higher performance with this patch
->>> applied ? On Intel, BIO_MAX_SIZE would be 1MB... That is arbitrary and too small
->>> considering that many hardware can execute larger IOs than that.
->>>
->> 
->> When I tested 32MB chunk read with O_DIRECT in android, all pages of 32MB
->> is merged into a bio structure.
->> And elapsed time to merge complete was about 2ms.
->> It means first bio-submit is after 2ms.
->> If bio size is limited with 1MB with this patch, first bio-submit is about
->> 100us by bio_full operation.
->
->bio_submit() will split the large BIO case into multiple requests while the
->small BIO case will likely result one or two requests only. That likely explain
->the time difference here. However, for the large case, the 2ms will issue ALL
->requests needed for processing the entire 32MB user IO while the 1MB bio case
->will need 32 different bio_submit() calls. So what is the actual total latency
->difference for the entire 32MB user IO ? That is I think what needs to be
->compared here.
->
->Also, what is your device max_sectors_kb and max queue depth ?
->
+This series allows the volume keys on the PinePhone to wake up the
+device. As pointed out for v1, wakeup should only be enabled when a
+"wakeup-source" property is present, so v2 requires DT and binding
+changes in addition to the driver change.
 
-32MB total latency is about 19ms including merge time without this patch.
-But with this patch, total latency is about 17ms including merge time too.
-Actually 32MB read time from device is same - about 16.7ms - in driver layer.
-No need to hold more I/O than max_sectors_kb during bio merge.
-My device is UFS. and max_sectors_kb is 1MB, queue depth is 32.
+Changes since v1:
+  - Add requisite DT binding change
+  - Only add wakeup capability if "wakeup-source" is present
+  - Warn but do not error out if setting the wake IRQ fails
+  - Add "wakeup-source" property to PinePhone device tree
 
->> It's not large delay and can't be observed with low speed device.
->> But it's needed to reduce merge delay for high speed device.
->> I improved 512MB sequential read performance from 1900MB/s to 2000MB/s
->> with this patch on android platform.
->> As you said, 1MB might be small for some device.
->> But method is needed to re-size, or select the bio max size.
->
->At the very least, I think that such limit should not be arbitrary as your patch
->proposes but rely on the device characteristics (e.g.
->max_hw_sectors_kb/max_sectors_kb and queue depth).
->
+Ondrej Jirman (1):
+  input: sun4i-lradc-keys -  Add wakup support
 
-I agree with your opinion, I thought same as your idea. For that, deep research
-is needed, proper timing to set and bio structure modification, etc ...
-Current is simple patch for default bio max size.
-Before applying of multipage bvec, bio max size was 1MB in kernel 4.x by BIO_MAX_PAGES.
-So I think 1MB bio max size is reasonable as a default.
+Samuel Holland (2):
+  dt-bindings: sun4i-a10-lradc-keys: Accept wakeup-source property
+  arm64: dts: allwinner: pinephone: Support volume key wakeup
 
->> 
->>>
->>>>
->>>> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
->>>> ---
->>>>  block/bio.c         | 2 +-
->>>>  include/linux/bio.h | 3 ++-
->>>>  2 files changed, 3 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/block/bio.c b/block/bio.c
->>>> index 1f2cc1fbe283..dbe14d675f28 100644
->>>> --- a/block/bio.c
->>>> +++ b/block/bio.c
->>>> @@ -877,7 +877,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
->>>>  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
->>>>  
->>>>  		if (page_is_mergeable(bv, page, len, off, same_page)) {
->>>> -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
->>>> +			if (bio->bi_iter.bi_size > BIO_MAX_SIZE - len) {
->>>>  				*same_page = false;
->>>>  				return false;
->>>>  			}
->>>> diff --git a/include/linux/bio.h b/include/linux/bio.h
->>>> index 1edda614f7ce..0f49b354b1f6 100644
->>>> --- a/include/linux/bio.h
->>>> +++ b/include/linux/bio.h
->>>> @@ -20,6 +20,7 @@
->>>>  #endif
->>>>  
->>>>  #define BIO_MAX_PAGES		256
->>>> +#define BIO_MAX_SIZE		(BIO_MAX_PAGES * PAGE_SIZE)
->>>>  
->>>>  #define bio_prio(bio)			(bio)->bi_ioprio
->>>>  #define bio_set_prio(bio, prio)		((bio)->bi_ioprio = prio)
->>>> @@ -113,7 +114,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
->>>>  	if (bio->bi_vcnt >= bio->bi_max_vecs)
->>>>  		return true;
->>>>  
->>>> -	if (bio->bi_iter.bi_size > UINT_MAX - len)
->>>> +	if (bio->bi_iter.bi_size > BIO_MAX_SIZE - len)
->>>>  		return true;
->>>>  
->>>>  	return false;
->>>>
->>>
->>>
->>> -- 
->>> Damien Le Moal
->>> Western Digital Research
->> 
->
->
->-- 
->Damien Le Moal
->Western Digital Research
->
+ .../input/allwinner,sun4i-a10-lradc-keys.yaml |  2 ++
+ .../dts/allwinner/sun50i-a64-pinephone.dtsi   |  1 +
+ drivers/input/keyboard/sun4i-lradc-keys.c     | 22 +++++++++++++++----
+ 3 files changed, 21 insertions(+), 4 deletions(-)
 
----
-Changheun Lee
-Samsung Electronics
+-- 
+2.26.2
 
