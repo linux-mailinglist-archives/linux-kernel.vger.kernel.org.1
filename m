@@ -2,73 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D9B2F46E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADDB2F46EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbhAMIw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:52:26 -0500
-Received: from mail-vs1-f54.google.com ([209.85.217.54]:40789 "EHLO
-        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbhAMIwZ (ORCPT
+        id S1727191AbhAMIyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:54:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33851 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727053AbhAMIye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:52:25 -0500
-Received: by mail-vs1-f54.google.com with SMTP id x4so703048vsp.7;
-        Wed, 13 Jan 2021 00:52:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FxOjpIvjq4FtUsKB+JjsIoReLosXdu7ZabiRjS0D6o0=;
-        b=pyNcZ1HInMfkRzTSDD9i0iWP2d+dRUzUNDf3Qz6Kk4bXF5BizcFxGVM6HWB2QIGtL0
-         psl6ZqIx6j98ynsOUJk2O5+8N9jMiT2DozIQ5gBblxCKa7+d+2Vg+GGI6LB4CLicb//8
-         H4pbKEOUNU+cth6ODPRaw3E7MiHW/cLrJ1Er0SLXEsb/30ttrDAF2eT8F9f3Ua4G+KtQ
-         dVLi5/28VnKVJ+MdA1lLY6KLvw8xpda5cy9G/wsLF9SqDicMLnb9LuWb3nLNp6y7iXB9
-         HlCpSS1lENBdbvCTThnaAiNg0vLZOI3n5medNgovROOGy++F084XgmKfWgyazb1jd7ht
-         4M4w==
-X-Gm-Message-State: AOAM531fgcLShfd6mSm7v0qp7uKCvuPpKjNXAt6DXiRnzXeQbcSjPzMO
-        oWorcqfzuoaMySNpUbo/Za4nOpO7G+qOsA==
-X-Google-Smtp-Source: ABdhPJxW/KsR7OidRJNRnmYK5ufYsvuP6yMuvcfWq9U7pgK47+e9qtM8i3jwl20xMUngE+UKzY75tw==
-X-Received: by 2002:a67:d898:: with SMTP id f24mr1052008vsj.19.1610527903785;
-        Wed, 13 Jan 2021 00:51:43 -0800 (PST)
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com. [209.85.221.181])
-        by smtp.gmail.com with ESMTPSA id q23sm161744vsm.27.2021.01.13.00.51.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 00:51:43 -0800 (PST)
-Received: by mail-vk1-f181.google.com with SMTP id t16so332658vkl.10;
-        Wed, 13 Jan 2021 00:51:42 -0800 (PST)
-X-Received: by 2002:a1f:2f81:: with SMTP id v123mr1054394vkv.24.1610527902050;
- Wed, 13 Jan 2021 00:51:42 -0800 (PST)
+        Wed, 13 Jan 2021 03:54:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610527987;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SOjJkqULa4ZLAAYrZfKYkDgM6Fbu5xv0gKR0egm7r+0=;
+        b=A8tdLQvJkqQ4MCJWD/XISBfjXok45Y+LG9MDvUPzZB6e1sWtAQV/dCSLz8P/qm8DqK/SJV
+        iXt5Wdi6mDTnW+w0Rbr7duLP4z0LMSSvqMyf//ZNkkJkxBu1xNQy7yYnwuRqTUewSoM0dQ
+        T9ZnWDAuWUG7CUy0o9GhmzBaxSr3+88=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-97-ejCqgblAN5GlsaoRrl4inw-1; Wed, 13 Jan 2021 03:53:04 -0500
+X-MC-Unique: ejCqgblAN5GlsaoRrl4inw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1B7F806660;
+        Wed, 13 Jan 2021 08:53:00 +0000 (UTC)
+Received: from [10.36.114.135] (ovpn-114-135.ams2.redhat.com [10.36.114.135])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1CB0E6A911;
+        Wed, 13 Jan 2021 08:52:48 +0000 (UTC)
+Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
+References: <20210110004435.26382-1-aarcange@redhat.com>
+ <CAHk-=wghqNywtf=sRv_5FmG=+hPGqj=KWakw34tNeoZ1wPuaHg@mail.gmail.com>
+ <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com>
+ <X/prosulFrEoNnoF@redhat.com>
+ <CAHk-=wjZTMsv0_GOyQpLRk_5U1r5W8e21f8sV0jykK=z47hjGQ@mail.gmail.com>
+ <CAHk-=wgi31FKc9AL6m87+pb2B79V2g_QjdhmtJNW8Pnq2ERQ-Q@mail.gmail.com>
+ <45806a5a-65c2-67ce-fc92-dc8c2144d766@nvidia.com>
+ <CAHk-=wipa-9wEuWHBjourmXAVHdeqDa59UxW6ZJ_Oqg6-Dwvdw@mail.gmail.com>
+ <CAHk-=wje9r3fREBdZcOu=NihGczBtkqkhXRPDhY-ZkNVv=thiQ@mail.gmail.com>
+ <20210113021619.GL35215@casper.infradead.org>
+ <CAHk-=wjWMieNV3nAJgoG5prEHBEcOZiREmLUr499tA9NMttEqQ@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <0cbefee2-70e9-9666-2d0c-ee2807e0fef9@redhat.com>
+Date:   Wed, 13 Jan 2021 09:52:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20210110211606.3733056-1-jernej.skrabec@siol.net>
-In-Reply-To: <20210110211606.3733056-1-jernej.skrabec@siol.net>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Wed, 13 Jan 2021 16:51:29 +0800
-X-Gmail-Original-Message-ID: <CAGb2v66NCu_GY9Yp=xBt=T6MLEjc81MFKmBSKj550OUaHYk9pA@mail.gmail.com>
-Message-ID: <CAGb2v66NCu_GY9Yp=xBt=T6MLEjc81MFKmBSKj550OUaHYk9pA@mail.gmail.com>
-Subject: Re: [linux-sunxi] [PATCH] arm64: dts: allwinner: h6: PineH64 model B:
- Add bluetooth
-To:     Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHk-=wjWMieNV3nAJgoG5prEHBEcOZiREmLUr499tA9NMttEqQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 5:16 AM Jernej Skrabec <jernej.skrabec@siol.net> wrote:
->
-> PineH64 model B has wifi+bt combo module. Wifi is already supported, so
-> lets add also bluetooth node.
->
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+On 13.01.21 04:31, Linus Torvalds wrote:
+> On Tue, Jan 12, 2021 at 6:16 PM Matthew Wilcox <willy@infradead.org> wrote:
+>>
+>> The thing about the speculative page cache references is that they can
+>> temporarily bump a refcount on a page which _used_ to be in the page
+>> cache and has now been reallocated as some other kind of page.
+> 
+> Oh, and thinking about this made me think we might actually have a
+> serious bug here, and it has nothing what-so-ever to do with COW, GUP,
+> or even the page count itself.
+> 
+> It's unlikely enough that I think it's mostly theoretical, but tell me
+> I'm wrong.
+> 
+> PLEASE tell me I'm wrong:
+> 
+> CPU1 does page_cache_get_speculative under RCU lock
+> 
+> CPU2 frees and re-uses the page
+> 
+>     CPU1                CPU2
+>     ----                ----
+> 
+>     page = xas_load(&xas);
+>     if (!page_cache_get_speculative(page))
+>             goto repeat;
+>     .. succeeds ..
+> 
+>                         remove page from XA
+>                         release page
+>                         reuse for something else
+> 
+>     .. and then re-check ..
+>     if (unlikely(page != xas_reload(&xas))) {
+>             put_page(page);
+>             goto repeat;
+>     }
+> 
+> ok, the above all looks fine. We got the speculative ref, but then we
+> noticed that its' not valid any more, so we put it again. All good,
+> right?
+> 
+> Wrong.
+> 
+> What if that "reuse for something else" was actually really quick, and
+> both allocated and released it?
+> 
+> That still sounds good, right? Yes, now the "put_page()" will be the
+> one that _actually_ releases the page, but we're still fine, right?
+> 
+> Very very wrong.
+> 
+> The "reuse for something else" on CPU2 might have gotten not an
+> order-0 page, but a *high-order* page. So it allocated (and then
+> immediately free'd) maybe an order-2 allocation with _four_ pages, and
+> the re-use happened when we had coalesced the buddy pages.
+> 
+> But when we release the page on CPU1, we will release just _one_ page,
+> and the other three pages will be lost forever.
+> 
+> IOW, we restored the page count perfectly fine, but we screwed up the
+> page sizes and buddy information.
+> 
+> Ok, so the above is so unlikely from a timing standpoint that I don't
+> think it ever happens, but I don't see why it couldn't happen in
+> theory.
+> 
+> Please somebody tell me I'm missing some clever thing we do to make
+> sure this can actually not happen..
 
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+Wasn't that tackled by latest (not merged AFAIKs) __free_pages() changes?
 
-Looks good to me, though I couldn't find anything on the polarity
-of the interrupt lines.
+I'm only able to come up with the doc update, not with the oroginal
+fix/change
 
-ChenYu
+https://lkml.kernel.org/r/20201027025523.3235-1-willy@infradead.org
+
+-- 
+Thanks,
+
+David / dhildenb
+
