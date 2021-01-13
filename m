@@ -2,69 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0612F4442
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C5B2F4450
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726110AbhAMGFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 01:05:25 -0500
-Received: from mail-wm1-f49.google.com ([209.85.128.49]:37087 "EHLO
-        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbhAMGFY (ORCPT
+        id S1726433AbhAMGHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 01:07:25 -0500
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:60971 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725831AbhAMGHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 01:05:24 -0500
-Received: by mail-wm1-f49.google.com with SMTP id g10so484621wmh.2;
-        Tue, 12 Jan 2021 22:05:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M6RP7/pPMMjBYm8VlmfmSTLWwW3y/ULVDt749IgZo84=;
-        b=pCbVjxiAxzdX1czu8Vbu8OBYa9Mv3A1mBs2CtZHiuL4QhNLw/7YJUbhflOzSCb0jjJ
-         /6ti/YLLMC8OYf6aONLGknvlqDgJ/pP6lYBRAlyLLKuDadTTStQGeAd5gez4Hod/DrMt
-         HVwxgdYhFjzb4/BqlvZMFXGdFontF/NqN2R0NkCZqqy8RZtvNRqEOF5m7gymrRE4cC+L
-         zV/RyiWlEC2CtT0JMgG9qusk058mZidaSquXr+m2RiZv5npIw2XnOQolyYX2VgVYxo0e
-         ZCibtPAvCcFWOLW1Wcf4PIpsRStr1qoi9BlmSnuJssQZD/WkQ5G0cEArvuiXqCUATSjr
-         S1+g==
-X-Gm-Message-State: AOAM53078h3G2xlpr7dfy0jWW3dVztNGDNLkSl7AfAua4iiHulT/JIZo
-        4Ot+P0W8Yp+G7r+oegj18kU=
-X-Google-Smtp-Source: ABdhPJxMDZDmiAGJUgo2x7GtI57MCobXYrci+N5hoWi7tgULDOR3UijGwA6sQn1pbKXvqmavpcdMMg==
-X-Received: by 2002:a1c:1f54:: with SMTP id f81mr530796wmf.44.1610517883110;
-        Tue, 12 Jan 2021 22:04:43 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id u17sm1173602wmj.35.2021.01.12.22.04.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 22:04:42 -0800 (PST)
-Date:   Wed, 13 Jan 2021 07:04:40 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: imx8mm-beacon: add more pinctrl states for
- usdhc1
-Message-ID: <20210113060440.GB12275@kozik-lap>
-References: <20210110113826.1257293-1-aford173@gmail.com>
+        Wed, 13 Jan 2021 01:07:24 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id 7FD8F1B95;
+        Wed, 13 Jan 2021 01:06:18 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Wed, 13 Jan 2021 01:06:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=KmMtZW3LZXLFSWy68G91BENlig
+        LhFytnhm96lSzkJKY=; b=UXIuD5U6hOM1PeSc76T8bghdTxcioJVx11QwovyKYd
+        4PvuSq6WbgYFQ/X2QqjaC/EHW+TQ4PG+yIBD/aDBEWkwzV+wmuSdp9KRy/ZWxhzt
+        n6IEk2A/uLm6pHu6P6l+1yzcWGqxSxkJbfyDiDOvKnhPMIudZLN5j4DH+3xMY/nq
+        BRmZSB6yGwEXnJTL/5CzqdiK/rQqwxdXgjd7nNL9c+/NHgtuPqMHrLo8XzKsYqL9
+        YPWGll7ksbhXh0Kgw4LIgJTzuB8qNOPwVO+X4bmDJZ+CFfNUMcrKeMt5ZcJ806YP
+        ME18OzW5KrBW7y5efSOKGBfF80Ch6hGewVOTfKDHmNIA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=KmMtZW3LZXLFSWy68
+        G91BENligLhFytnhm96lSzkJKY=; b=jWbYxSHimgfdzYv1kRqdLmv56bVvP+IPP
+        uYO4Nmg1ZCYswJAfvT0pWoYcCQU8EuBzl3eQS1SZ08HfMljGjbETvmO8yesQoCbm
+        i2MQkkJRGp+/yuLa6pb898L4rdM1uQc3vDzJD2FMT+J1Fo0ADqLp+v5E3fBV12z/
+        LI7wqoUp3iq6LI91FY4cIe7NR2dZZ1p/PsuzuqKl562xvsiEnkpBHPImXkq4LwAd
+        T8u+TmI3MbrtQvaz55iK2RYXAgxPbEXpU8mkPwIUdN0T55EAaqx0V4yRBRAYRZ+y
+        d+UOJ3AhMuLdaPLEOGlu4aS9+VbqYGZy3oeBJgbH54b4n4mTKXA3Q==
+X-ME-Sender: <xms:2I3-X6fTgSHlfhlUYrVesWYjQW5XlPqG0gF8Vc0mOjJGWxFY2lLsyw>
+    <xme:2I3-X0NEWSAl6ug8PcjDZBJcdLaam4C_t3yWAJ9DquzIeE0p226FbJtJ9GHNS2RYn
+    JbcDssthugniljh5Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtddugdelfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
+    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
+    htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
+    tdevnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdho
+    rhhg
+X-ME-Proxy: <xmx:2I3-X7iaevjNiQOIx9nS208QHLFMirvUGN_RNzdQnXzeM7U8kpYzJg>
+    <xmx:2I3-X3-cuGkeIDb24Ti7hJ4CvIXQavn48cKT10BMtNTboT349yzfPw>
+    <xmx:2I3-X2uAjIMOKnhlHTq7JnMjtrRVhFK35AUVqEnFyx1iS2eOCWGkpg>
+    <xmx:2o3-X0ChZV9Zn_C8kQ7CEA2MEwN77Y-tt905xHzVQVvsjBCeL_SfN2mWJkw>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 629A5240057;
+        Wed, 13 Jan 2021 01:06:16 -0500 (EST)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH v2 0/7] PinePhone BT audio bringup
+Date:   Wed, 13 Jan 2021 00:06:08 -0600
+Message-Id: <20210113060615.53088-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210110113826.1257293-1-aford173@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 05:38:26AM -0600, Adam Ford wrote:
-> The WiFi chip is capable of communication at SDR104 speeds.
-> Enable 100Mhz and 200MHz pinmux to support this.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> 
+This series makes use of the additional DAIs recently added to the
+sun8i-codec driver to add hardware routing for BT SCO (headset) audio
+on the PinePhone.
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+The BT audio connection is represented by the "dummy" bt-sco codec. The
+connection to the Quectel EG-25G modem via AIF2 works as well, but I do
+not include it here because there is no appropriate codec driver in
+tree. We have been using an out-of-tree "dummy" codec driver for the
+modem similar to bt-sco, and I'm not sure if such a driver would be
+desired upstream.
 
-Best regards,
-Krzysztof
+Changes from v1:
+  - Fixed DT binding example to follow new binding
+
+Arnaud Ferraris (1):
+  arm64: dts: allwinner: pinephone: Set audio card name
+
+Samuel Holland (6):
+  ASoC: dt-bindings: sun8i-codec: Increase #sound-dai-cells
+  ARM: dts: sun8i-a33: Allow using multiple codec DAIs
+  arm64: dts: allwinner: a64: Allow using multiple codec DAIs
+  arm64: dts: allwinner: a64: Add pinmux nodes for AIF2/AIF3
+  arm64: dts: allwinner: a64: Allow multiple DAI links
+  arm64: dts: allwinner: pinephone: Add support for Bluetooth audio
+
+ .../sound/allwinner,sun8i-a33-codec.yaml      |  4 +-
+ arch/arm/boot/dts/sun8i-a33.dtsi              |  4 +-
+ .../dts/allwinner/sun50i-a64-pinephone.dtsi   | 25 +++++++++++++
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 37 ++++++++++++++-----
+ 4 files changed, 56 insertions(+), 14 deletions(-)
+
+-- 
+2.26.2
+
