@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52FD2F50DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6412F50DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728105AbhAMRQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:16:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45350 "EHLO
+        id S1728155AbhAMRQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:16:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728065AbhAMRQx (ORCPT
+        with ESMTP id S1727937AbhAMRQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:16:53 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F2EC0617A4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:15:39 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id u17so5692356iow.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:15:39 -0800 (PST)
+        Wed, 13 Jan 2021 12:16:58 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95DBC0617A6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:15:40 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id o6so5577543iob.10
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:15:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GXvZPSGq6x3yeoMxoYd+JlpMOpfBxN00Vmli9SdjOe4=;
-        b=xXal6/FBYvLJt9S3Aum1Mf3YrBTGnLOJkLzQ1bFhtl6Jgg7XxrBNvHLTkSGE5IcYzT
-         S7EstxEHuf6Tk+5ZD16TsO7bbyBuU7bpzUUUmXsXgq98YFPCEkw9RTCIUP1VNaI4fykw
-         W7/wup2Kk4Ksdtq+Q5E140LGW2bdqsc8CJRJWMUCAWZkTHLXNYjitx+5rIWMzARgJXwV
-         LoIOcquX6A0K+f6uid+H7G1Nn5xpQt+3jXa3JX4taT0eEeZ+PVXp/Dhv0zwkBx71890F
-         MvvaxHoRY1r+tA0nm5B5krkv84Hhr5ErtUvsseHRxKHEfPl2lGQGJ0r/G1lehygSYZnd
-         2vhA==
+        bh=l1IOSEu+vyCQsNm2sF39ZzPXY+5QREQKKoylCV6H1Jg=;
+        b=r1J29VmGqzEuZBHBu8w8M6gaA/yEBauw84YklgDIGC8Me5dWwVlqJEmQ9g6mUeH0f7
+         neiyLIkHJ+WYeG54zWirQgT48uRaz2Nk0O4otQnLjCUVFMl+XqOzCM0f5rMemd/LDAvB
+         1aa0v+tDSVv/WAbxNf/JumsXXXmcf0uEzBvbQ5gVxK3A+nkdu0gV7DgjfvH6QhLoxY3X
+         kvjf4geDG88wbhVr4Opf/6pCQWkjrsukt9Fk+RFNdycpjk9u7mr1WshMH5L8nBUAO1Fy
+         7K/GUWOUKAnuhN/l8GkVXYPdjQ63V8f3Ge23VRzJJa1n43a+ehLUZy8uc8yn4+VA3boT
+         3mgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GXvZPSGq6x3yeoMxoYd+JlpMOpfBxN00Vmli9SdjOe4=;
-        b=obTGVM3AOVv95ZkofGoMg4Cup8b+EnARhHMi/SfBzgdE4uAyIC7CNt1GXt3djy15FJ
-         zAbpz8EqLmF8lF/0CrYyPvU9rJu4VUW/ivBaBnrqGLNobeZrotj7xZMG51+YbnSDASJO
-         WZhAOhldVlH9ZElA7uw/5DN4/F9MRakGGYgW3mafi4f/swnjdOk7yKl6n8/qt9cbgpCP
-         TeM/sxQZJCwEBnCwkW4fsRNL/T9YIqqncw/pl6RfYLIIGA87zUiI6D+0HFsiY4GEXde0
-         j6MH2uJiPbWbLXfNV5iRKrZd7yDOtmjt32RlmmXM8Mz+L9AARy8sDs1xFELsv4P6BtGp
-         sb2g==
-X-Gm-Message-State: AOAM530Y0miR6cvCgHoobcZZ5nNjrcNh75fNFxUBZQc/mk0Dd6HgnR/t
-        xl3/P89NIrK10kAuWyEmHX70eA==
-X-Google-Smtp-Source: ABdhPJy6/3uTg/SGPGO8lmIATCEf7rvP3WZKgI+71wO7E0jKmQJ1Lq1E94TnUSM51Xm2bv/nxjDZ5w==
-X-Received: by 2002:a92:db52:: with SMTP id w18mr2517597ilq.56.1610558138911;
-        Wed, 13 Jan 2021 09:15:38 -0800 (PST)
+        bh=l1IOSEu+vyCQsNm2sF39ZzPXY+5QREQKKoylCV6H1Jg=;
+        b=lwco9f5s7iIyFFLSOvWoC7+TG93cIDGK38KIfMYHeXw2tCjkzP1rvgPQF5tBvYS2h1
+         i2W6bwDpmmBxoCGTUEA0vQJnA/xDBFI8b5ViiJgNDs9G3Mo2zaYSaSwYfEprnvAzutX2
+         eJfQknipL/t7LGMmij6kTCACmnSRpfpsrwvQXkUymICmcckXeUy6h1rhRm6wT1tm3AAC
+         RIvLEiJGIwv++fzqYAo8+ODPu4QHz3SsfMYhj/wX2HMcbSagHg3Z+bRHMoZwpeftGPRx
+         CvlyxVNUddKbxOo5+5LcOmJedh5FXVhpjGZ4iDWrP74GuwqDoV/zqnYH0z5Hxvnet1Um
+         bl4Q==
+X-Gm-Message-State: AOAM5333cZAKAYHQ9ru0EEHfU+W54t8qq28icXcggIV5S+Rj1I8kdot3
+        g4Aakj5PaPk9ofs5pGvHrK/+QA==
+X-Google-Smtp-Source: ABdhPJxm7gYHJB7apQRYjR8zQpXumSWaySY7r83l6ly50Epp/7LV1S/UqlovAbe+zT5ENtBbO3eCZg==
+X-Received: by 2002:a92:4906:: with SMTP id w6mr3225429ila.234.1610558140086;
+        Wed, 13 Jan 2021 09:15:40 -0800 (PST)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id h9sm1120579ili.43.2021.01.13.09.15.37
+        by smtp.gmail.com with ESMTPSA id h9sm1120579ili.43.2021.01.13.09.15.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 09:15:38 -0800 (PST)
+        Wed, 13 Jan 2021 09:15:39 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     evgreen@chromium.org, bjorn.andersson@linaro.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/6] net: ipa: introduce some interrupt helpers
-Date:   Wed, 13 Jan 2021 11:15:28 -0600
-Message-Id: <20210113171532.19248-3-elder@linaro.org>
+Subject: [PATCH net-next 3/6] net: ipa: use usleep_range()
+Date:   Wed, 13 Jan 2021 11:15:29 -0600
+Message-Id: <20210113171532.19248-4-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210113171532.19248-1-elder@linaro.org>
 References: <20210113171532.19248-1-elder@linaro.org>
@@ -65,154 +65,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create a new function gsi_irq_ev_ctrl_enable() that encapsulates
-enabling the event ring control GSI interrupt type, and enables a
-single event ring to signal that interrupt.  When an event ring
-changes state as a result of an event ring command, it triggers this
-interrupt.
+The use of msleep() for small periods (less than 20 milliseconds) is
+not recommended because the actual delay can be much different than
+expected.
 
-Create an inverse function gsi_irq_ev_ctrl_disable() as well.
-Because only one event ring at a time is enabled for this interrupt,
-we can simply disable the interrupt for *all* channels.
+We use msleep(1) in several places in the IPA driver to insert short
+delays.  Replace them with usleep_range calls, which should reliably
+delay a period in the range requested.
 
-Create a pair of helpers that serve the same purpose for channel
-commands.
-
+Fixes: 650d1603825d8 ("soc: qcom: ipa: the generic software interface")
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/gsi.c | 94 ++++++++++++++++++++++++++-----------------
- 1 file changed, 58 insertions(+), 36 deletions(-)
+ drivers/net/ipa/gsi.c          | 5 +++--
+ drivers/net/ipa/ipa_endpoint.c | 4 ++--
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index b5913ce0bc943..e5681a39b5fc6 100644
+index e5681a39b5fc6..93b143ba92be5 100644
 --- a/drivers/net/ipa/gsi.c
 +++ b/drivers/net/ipa/gsi.c
-@@ -220,6 +220,58 @@ static void gsi_irq_teardown(struct gsi *gsi)
- 	/* Nothing to do */
- }
+@@ -611,7 +611,8 @@ static void gsi_channel_reset_command(struct gsi_channel *channel)
+ 	struct device *dev = channel->gsi->dev;
+ 	enum gsi_channel_state state;
  
-+/* Event ring commands are performed one at a time.  Their completion
-+ * is signaled by the event ring control GSI interrupt type, which is
-+ * only enabled when we issue an event ring command.  Only the event
-+ * ring being operated on has this interrupt enabled.
-+ */
-+static void gsi_irq_ev_ctrl_enable(struct gsi *gsi, u32 evt_ring_id)
-+{
-+	u32 val = BIT(evt_ring_id);
-+
-+	/* There's a small chance that a previous command completed
-+	 * after the interrupt was disabled, so make sure we have no
-+	 * pending interrupts before we enable them.
-+	 */
-+	iowrite32(~0, gsi->virt + GSI_CNTXT_SRC_EV_CH_IRQ_CLR_OFFSET);
-+
-+	iowrite32(val, gsi->virt + GSI_CNTXT_SRC_EV_CH_IRQ_MSK_OFFSET);
-+	gsi_irq_type_enable(gsi, GSI_EV_CTRL);
-+}
-+
-+/* Disable event ring control interrupts */
-+static void gsi_irq_ev_ctrl_disable(struct gsi *gsi)
-+{
-+	gsi_irq_type_disable(gsi, GSI_EV_CTRL);
-+	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_EV_CH_IRQ_MSK_OFFSET);
-+}
-+
-+/* Channel commands are performed one at a time.  Their completion is
-+ * signaled by the channel control GSI interrupt type, which is only
-+ * enabled when we issue a channel command.  Only the channel being
-+ * operated on has this interrupt enabled.
-+ */
-+static void gsi_irq_ch_ctrl_enable(struct gsi *gsi, u32 channel_id)
-+{
-+	u32 val = BIT(channel_id);
-+
-+	/* There's a small chance that a previous command completed
-+	 * after the interrupt was disabled, so make sure we have no
-+	 * pending interrupts before we enable them.
-+	 */
-+	iowrite32(~0, gsi->virt + GSI_CNTXT_SRC_CH_IRQ_CLR_OFFSET);
-+
-+	iowrite32(val, gsi->virt + GSI_CNTXT_SRC_CH_IRQ_MSK_OFFSET);
-+	gsi_irq_type_enable(gsi, GSI_CH_CTRL);
-+}
-+
-+/* Disable channel control interrupts */
-+static void gsi_irq_ch_ctrl_disable(struct gsi *gsi)
-+{
-+	gsi_irq_type_disable(gsi, GSI_CH_CTRL);
-+	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_CH_IRQ_MSK_OFFSET);
-+}
-+
- static void gsi_irq_ieob_enable(struct gsi *gsi, u32 evt_ring_id)
- {
- 	bool enable_ieob = !gsi->ieob_enabled_bitmap;
-@@ -335,30 +387,15 @@ static void gsi_evt_ring_command(struct gsi *gsi, u32 evt_ring_id,
- 	bool timeout;
- 	u32 val;
+-	msleep(1);	/* A short delay is required before a RESET command */
++	/* A short delay is required before a RESET command */
++	usleep_range(USEC_PER_MSEC, 2 * USEC_PER_MSEC);
  
--	/* We only perform one event ring command at a time, and event
--	 * control interrupts should only occur when such a command
--	 * is issued here.  Only permit *this* event ring to trigger
--	 * an interrupt, and only enable the event control IRQ type
--	 * when we expect it to occur.
--	 *
--	 * There's a small chance that a previous command completed
--	 * after the interrupt was disabled, so make sure we have no
--	 * pending interrupts before we enable them.
--	 */
--	iowrite32(~0, gsi->virt + GSI_CNTXT_SRC_EV_CH_IRQ_CLR_OFFSET);
--
--	val = BIT(evt_ring_id);
--	iowrite32(val, gsi->virt + GSI_CNTXT_SRC_EV_CH_IRQ_MSK_OFFSET);
--	gsi_irq_type_enable(gsi, GSI_EV_CTRL);
-+	/* Enable the completion interrupt for the command */
-+	gsi_irq_ev_ctrl_enable(gsi, evt_ring_id);
+ 	state = gsi_channel_state(channel);
+ 	if (state != GSI_CHANNEL_STATE_STOPPED &&
+@@ -900,7 +901,7 @@ int gsi_channel_stop(struct gsi *gsi, u32 channel_id)
+ 		ret = gsi_channel_stop_command(channel);
+ 		if (ret != -EAGAIN)
+ 			break;
+-		msleep(1);
++		usleep_range(USEC_PER_MSEC, 2 * USEC_PER_MSEC);
+ 	} while (retries--);
  
- 	val = u32_encode_bits(evt_ring_id, EV_CHID_FMASK);
- 	val |= u32_encode_bits(opcode, EV_OPCODE_FMASK);
+ 	mutex_unlock(&gsi->mutex);
+diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
+index 9f4be9812a1f3..688a3dd40510a 100644
+--- a/drivers/net/ipa/ipa_endpoint.c
++++ b/drivers/net/ipa/ipa_endpoint.c
+@@ -1378,7 +1378,7 @@ static int ipa_endpoint_reset_rx_aggr(struct ipa_endpoint *endpoint)
+ 	do {
+ 		if (!ipa_endpoint_aggr_active(endpoint))
+ 			break;
+-		msleep(1);
++		usleep_range(USEC_PER_MSEC, 2 * USEC_PER_MSEC);
+ 	} while (retries--);
  
- 	timeout = !gsi_command(gsi, GSI_EV_CH_CMD_OFFSET, val, completion);
+ 	/* Check one last time */
+@@ -1399,7 +1399,7 @@ static int ipa_endpoint_reset_rx_aggr(struct ipa_endpoint *endpoint)
+ 	 */
+ 	gsi_channel_reset(gsi, endpoint->channel_id, true);
  
--	/* Disable the interrupt again */
--	gsi_irq_type_disable(gsi, GSI_EV_CTRL);
--	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_EV_CH_IRQ_MSK_OFFSET);
-+	gsi_irq_ev_ctrl_disable(gsi);
+-	msleep(1);
++	usleep_range(USEC_PER_MSEC, 2 * USEC_PER_MSEC);
  
- 	if (!timeout)
- 		return;
-@@ -459,29 +496,14 @@ gsi_channel_command(struct gsi_channel *channel, enum gsi_ch_cmd_opcode opcode)
- 	bool timeout;
- 	u32 val;
+ 	goto out_suspend_again;
  
--	/* We only perform one channel command at a time, and channel
--	 * control interrupts should only occur when such a command is
--	 * issued here.  So we only permit *this* channel to trigger
--	 * an interrupt and only enable the channel control IRQ type
--	 * when we expect it to occur.
--	 *
--	 * There's a small chance that a previous command completed
--	 * after the interrupt was disabled, so make sure we have no
--	 * pending interrupts before we enable them.
--	 */
--	iowrite32(~0, gsi->virt + GSI_CNTXT_SRC_CH_IRQ_CLR_OFFSET);
--
--	val = BIT(channel_id);
--	iowrite32(val, gsi->virt + GSI_CNTXT_SRC_CH_IRQ_MSK_OFFSET);
--	gsi_irq_type_enable(gsi, GSI_CH_CTRL);
-+	/* Enable the completion interrupt for the command */
-+	gsi_irq_ch_ctrl_enable(gsi, channel_id);
- 
- 	val = u32_encode_bits(channel_id, CH_CHID_FMASK);
- 	val |= u32_encode_bits(opcode, CH_OPCODE_FMASK);
- 	timeout = !gsi_command(gsi, GSI_CH_CMD_OFFSET, val, completion);
- 
--	/* Disable the interrupt again */
--	gsi_irq_type_disable(gsi, GSI_CH_CTRL);
--	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_CH_IRQ_MSK_OFFSET);
-+	gsi_irq_ch_ctrl_disable(gsi);
- 
- 	if (!timeout)
- 		return;
 -- 
 2.20.1
 
