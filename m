@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED362F4FE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CC12F4FE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbhAMQXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 11:23:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33748 "EHLO
+        id S1727813AbhAMQXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 11:23:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727748AbhAMQXL (ORCPT
+        with ESMTP id S1727753AbhAMQXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 11:23:11 -0500
+        Wed, 13 Jan 2021 11:23:12 -0500
 Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1E0C0617A5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:22:06 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id k126so1716945qkf.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:22:06 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F69C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:22:08 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id u9so1720779qkk.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:22:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=1ElsZsJrO3cOsYp/vFzZufoQKn9+sd3vP1RO0nASQZ0=;
-        b=vLdGASrWREAy+wj9sfLUQB8j+yuVmoSbMdRaRJXHZRPSwkP8jB8knKlgUr+3AQR9Ve
-         +r4vu4nQaMgAPKzfyhmAnJD0GwU6xEzluvKdeR9lktNoMnhyjqR2SbxVWzWiTKW3yd8A
-         dxzNhIdB5+2+uFtg8x0VySNNDiMNMTODEvZz/GwlMWaIXxmHrfBNWrul1YExWcwZe8dq
-         ErFPQ5XWd+oRZYvm3QY1ynahqe5O0lzPJ4CWD5ZbJ02KeB2Jlc94Cg++JguL9yPQXGhb
-         Dnm7IxJww7M1CbKv0pids9Wc5g1KRkXybcD1YhSQUrQhlRSOZpo13kWx8rJLimwmCi4/
-         gOhA==
+        bh=AYU8RiBMDoH8LqbcE5Bsl4HVhMUvTlIJH5ygAkCw1uo=;
+        b=sK8w4/7+bFlRogPbbwsMzQZGIyJaLfruaGQq1NyTZoKuRV8kkSuJYSTajYObeb5BhB
+         j5B0aO7AYdjA/X7h/55sqn/8eJ3L98sNWt0usa6ZKYeOu2Bu8A8yH7kyedWNIqOTdyrK
+         7CS2smIDxfMMUEU7+r5sUDMO6AU5v0dCsYRHfTm3snA0bdsu5Ihim6C+QorZWPCWRicw
+         Qj0JSwE5rlQKQmMPulAWV7Qb3+JbCq4sEEKb5k2sIlwQpL768ladXTwg9PV88ssTPbGC
+         ghBTXXxjBAM5WcVjFFrHK6/Ml9RcY1l1gksA/BDruf31RYSvG4PiPSYoNNlzTZKxcYQA
+         r4hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=1ElsZsJrO3cOsYp/vFzZufoQKn9+sd3vP1RO0nASQZ0=;
-        b=Ts3svAeKDJDlpxIdt26CFilp9foMqW7JrtIV9BDQNpUp0gAbq3ktvnCdbpXRwNsiMs
-         UXCCwvI6h60j6XrHkBTdvU6wEkyBUNI+TtctiTU2c0nOBfvPUm66yClHov+MTmt9bVMY
-         xUjQqY2omIuSpKra6WqGctXLEVzPhkpjjbDkgORvl8bb/0UlP5G9JO2bmMg0x7veE8kT
-         /AyanUHWLx/Zh58D/WQSBp9CNq5lNjJ9pDDUI08ei659ruXYUdg78EglAh4Z9kWR8AQF
-         ZE6bY/bxzWtOxu7dESMrMB8nEfCpXhckueEm3+TGDFMT2FRxEpLXRLBiCfnTH1NZ6iHK
-         1mlg==
-X-Gm-Message-State: AOAM531AcudR9vG40Ix2zQV9c0u71SPuWWHoAUs+Zv1dvuWXmySFAmFH
-        nFaX2Hm57xAk1s9H9xW9HpO3DVNuFj3nDS4R
-X-Google-Smtp-Source: ABdhPJzRVpbzs6eSZ4YpS+Iv4DdXN1T6DSp2/3sND1u+wQPzWYQWt3sUVkNPSbg16ucwUAEsnMF3mPkHaU9ACJ77
+        bh=AYU8RiBMDoH8LqbcE5Bsl4HVhMUvTlIJH5ygAkCw1uo=;
+        b=q75sucSlySryZYeAkaFIeWgFz922YRBHvwEV5AHu8D3wRKPv/dJ25by3wiL4mNEq1A
+         Z7u1RJTGbCxNHWZUIiYNgOF73OKEjU3K/m+EjczloINjcvjElieiRFDqTB+8lHfn9/rE
+         9b7mfEVRhu1qxTwO3Tvj3sjBrJ9UBYPPVzs0vG0zMzjcDg6uVi3D9c9NnTreCojXc25x
+         GLowqAloy6n+elgFEtSN15NckATuozTymx4B7SYH86UVmExwXxzG35q/pziDecJYrY3E
+         zUEMOdFy44M77DgdqNbuVqdX+gqWonY042aOIrkb4QKWhVFijZ09JIAwQbVuu7jUdYY7
+         BE4Q==
+X-Gm-Message-State: AOAM533NSiDMmjkKApZihncfJi+XQjFjoAeiExirxzsx2gJGEEWCqytR
+        61ybu5BbaYpfqXAlBX8AwoUOLGDa9UmSzNw7
+X-Google-Smtp-Source: ABdhPJzAk8lbAA2oeZ/5LkBz1EFW7U5GssDQ0xOiO1RZBV9k+c3FKD7ufLGB+DknkADCLYH+T0s3FGzAptjFgwj6
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a0c:fd89:: with SMTP id
- p9mr3153133qvr.8.1610554925220; Wed, 13 Jan 2021 08:22:05 -0800 (PST)
-Date:   Wed, 13 Jan 2021 17:21:35 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a0c:fe91:: with SMTP id
+ d17mr3133660qvs.50.1610554927401; Wed, 13 Jan 2021 08:22:07 -0800 (PST)
+Date:   Wed, 13 Jan 2021 17:21:36 +0100
 In-Reply-To: <cover.1610554432.git.andreyknvl@google.com>
-Message-Id: <e75010281350ff3a4380006218f81e1233fa4e6b.1610554432.git.andreyknvl@google.com>
+Message-Id: <1b884616c85091d6d173f7c1a8647d25424f1e7e.1610554432.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1610554432.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v2 08/14] kasan: add compiler barriers to KUNIT_EXPECT_KASAN_FAIL
+Subject: [PATCH v2 09/14] kasan: adapt kmalloc_uaf2 test to HW_TAGS mode
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -74,74 +74,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It might not be obvious to the compiler that the expression must be
-executed between writing and reading to fail_data. In this case, the
-compiler might reorder or optimize away some of the accesses, and
-the tests will fail.
+In the kmalloc_uaf2() test, the pointers to the two allocated memory
+blocks might happen to be the same, and the test will fail. With the
+software tag-based mode, the probability of the that is 1/254, so it's
+hard to observe the failure. For the hardware tag-based mode though,
+the probablity is 1/14, which is quite noticable.
 
-Add compiler barriers around the expression in KUNIT_EXPECT_KASAN_FAIL
-and use READ/WRITE_ONCE() for accessing fail_data fields.
+Allow up to 16 attempts at generating different tags for the tag-based
+modes.
 
-Link: https://linux-review.googlesource.com/id/I046079f48641a1d36fe627fc8827a9249102fd50
+Link: https://linux-review.googlesource.com/id/Ibfa458ef2804ff465d8eb07434a300bf36388d55
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- lib/test_kasan.c  | 17 ++++++++++++-----
- mm/kasan/report.c |  2 +-
- 2 files changed, 13 insertions(+), 6 deletions(-)
+ lib/test_kasan.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 5c8aa3a5ce93..283feda9882a 100644
+index 283feda9882a..a1a35d75ee1e 100644
 --- a/lib/test_kasan.c
 +++ b/lib/test_kasan.c
-@@ -68,23 +68,30 @@ static void kasan_test_exit(struct kunit *test)
-  * normally auto-disabled. When this happens, this test handler reenables
-  * tag checking. As tag checking can be only disabled or enabled per CPU, this
-  * handler disables migration (preemption).
-+ *
-+ * Since the compiler doesn't see that the expression can change the fail_data
-+ * fields, it can reorder or optimize away the accesses to those fields.
-+ * Use READ/WRITE_ONCE() for the accesses and compiler barriers around the
-+ * expression to prevent that.
-  */
- #define KUNIT_EXPECT_KASAN_FAIL(test, expression) do {		\
- 	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS))			\
- 		migrate_disable();				\
--	fail_data.report_expected = true;			\
--	fail_data.report_found = false;				\
-+	WRITE_ONCE(fail_data.report_expected, true);		\
-+	WRITE_ONCE(fail_data.report_found, false);		\
- 	kunit_add_named_resource(test,				\
- 				NULL,				\
- 				NULL,				\
- 				&resource,			\
- 				"kasan_data", &fail_data);	\
-+	barrier();						\
- 	expression;						\
-+	barrier();						\
- 	KUNIT_EXPECT_EQ(test,					\
--			fail_data.report_expected,		\
--			fail_data.report_found);		\
-+			READ_ONCE(fail_data.report_expected),	\
-+			READ_ONCE(fail_data.report_found));	\
- 	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {			\
--		if (fail_data.report_found)			\
-+		if (READ_ONCE(fail_data.report_found))		\
- 			hw_enable_tagging();			\
- 		migrate_enable();				\
- 	}							\
-diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-index e93d7973792e..234f35a84f19 100644
---- a/mm/kasan/report.c
-+++ b/mm/kasan/report.c
-@@ -331,7 +331,7 @@ static void kasan_update_kunit_status(struct kunit *cur_test)
- 	}
+@@ -382,7 +382,9 @@ static void kmalloc_uaf2(struct kunit *test)
+ {
+ 	char *ptr1, *ptr2;
+ 	size_t size = 43;
++	int counter = 0;
  
- 	kasan_data = (struct kunit_kasan_expectation *)resource->data;
--	kasan_data->report_found = true;
-+	WRITE_ONCE(kasan_data->report_found, true);
- 	kunit_put_resource(resource);
- }
- #endif /* IS_ENABLED(CONFIG_KUNIT) */
++again:
+ 	ptr1 = kmalloc(size, GFP_KERNEL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr1);
+ 
+@@ -391,6 +393,15 @@ static void kmalloc_uaf2(struct kunit *test)
+ 	ptr2 = kmalloc(size, GFP_KERNEL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr2);
+ 
++	/*
++	 * For tag-based KASAN ptr1 and ptr2 tags might happen to be the same.
++	 * Allow up to 16 attempts at generating different tags.
++	 */
++	if (!IS_ENABLED(CONFIG_KASAN_GENERIC) && ptr1 == ptr2 && counter++ < 16) {
++		kfree(ptr2);
++		goto again;
++	}
++
+ 	KUNIT_EXPECT_KASAN_FAIL(test, ptr1[40] = 'x');
+ 	KUNIT_EXPECT_PTR_NE(test, ptr1, ptr2);
+ 
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
