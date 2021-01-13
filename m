@@ -2,106 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24ACD2F48BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:36:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 846522F48BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbhAMKdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:33:40 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:40628 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbhAMKdk (ORCPT
+        id S1727265AbhAMKeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:34:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725949AbhAMKeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:33:40 -0500
-Date:   Wed, 13 Jan 2021 10:32:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610533977; bh=EpolZpTKC5oUdKcjdBe4f+ZlCuhQ3GPo5fWCiOJXzzo=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=ESJ+CGICyHNXyAKgaElVkQrx/j8flou2v19wfQB2Btb8PSNWKcf1FRUDK2eH16rVH
-         xim7jt88xJjRNPu9dnf+0qZo4GxEzEycF80B5xl80NSFHpCw7GjmMK8nC1FEiXl55r
-         NROmrXT8VrhUKsW0wclTeqyV9uh5NIHGSEl2AvIy37iS2EcdHCeu4bBlmeufeKdUe8
-         uyaw/KsR035fJf7ZK737shkcxpdERu5Imsu4PqQm1/8j+BXzpOVd/ftGTs0A4a50da
-         QheM7mPIeR0JMmFmglx8usXx6uw8T4f18GGIrPJk8ePRy69biKSvFgs0kl4mJ/kkJH
-         Xf1gbV06EbG6Q==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Dongseok Yi <dseok.yi@samsung.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        Wed, 13 Jan 2021 05:34:08 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77749C061786;
+        Wed, 13 Jan 2021 02:33:28 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 9547A1F4102A
+Subject: Re: [PATCH v3 1/2] arm64: dts: mt8183: config dsi node
+To:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v2 net-next] udp: allow forwarding of plain (non-fraglisted) UDP GRO packets
-Message-ID: <20210113103232.4761-1-alobakin@pm.me>
+References: <20210113062834.4043956-1-hsinyi@chromium.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <6f4c11c7-ee1e-0308-2328-d71906a8c0c8@collabora.com>
+Date:   Wed, 13 Jan 2021 11:33:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <20210113062834.4043956-1-hsinyi@chromium.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 9fd1ff5d2ac7 ("udp: Support UDP fraglist GRO/GSO.") actually
-not only added a support for fraglisted UDP GRO, but also tweaked
-some logics the way that non-fraglisted UDP GRO started to work for
-forwarding too.
-Commit 2e4ef10f5850 ("net: add GSO UDP L4 and GSO fraglists to the
-list of software-backed types") added GSO UDP L4 to the list of
-software GSO to allow virtual netdevs to forward them as is up to
-the real drivers.
+Hi Hsin-Yi,
 
-Tests showed that currently forwarding and NATing of plain UDP GRO
-packets are performed fully correctly, regardless if the target
-netdevice has a support for hardware/driver GSO UDP L4 or not.
-Add the last element and allow to form plain UDP GRO packets if
-there is no socket -> we are on forwarding path.
+Thank you for the patch.
 
-Plain UDP GRO forwarding even shows better performance than fraglisted
-UDP GRO in some cases due to not wasting one skbuff_head per every
-segment.
+On 13/1/21 7:28, Hsin-Yi Wang wrote:
+> Config dsi node for mt8183 kukui. Set panel and ports.
+> 
+> Several kukui boards share the same panel property and only compatible
+> is different. So compatible will be set in board dts for comparison
+> convenience.
+> 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
+> ---
+>  .../mediatek/mt8183-kukui-krane-sku176.dts    |  5 +++
+>  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 37 +++++++++++++++++++
+>  2 files changed, 42 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
+> index 47113e275cb52..721d16f9c3b4f 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
+> @@ -16,3 +16,8 @@ / {
+>  	model = "MediaTek krane sku176 board";
+>  	compatible = "google,krane-sku176", "google,krane", "mediatek,mt8183";
+>  };
+> +
+> +&panel {
+> +        status = "okay";
+> +        compatible = "boe,tv101wum-nl6";
+> +};
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> index bf2ad1294dd30..c5f41b94f154e 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> @@ -249,6 +249,35 @@ &cpu7 {
+>  	proc-supply = <&mt6358_vproc11_reg>;
+>  };
+>  
+> +&dsi0 {
+> +	status = "okay";
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	panel: panel@0 {
+> +		/* compatible will be set in board dts */
+> +		reg = <0>;
+> +		enable-gpios = <&pio 45 0>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&panel_pins_default>;
+> +		avdd-supply = <&ppvarn_lcd>;
+> +		avee-supply = <&ppvarp_lcd>;
+> +		pp1800-supply = <&pp1800_lcd>;
 
-Since v1 [0]:
- - drop redundant 'if (sk)' check (Alexander Duyck);
- - add a ref in the commit message to one more commit that was
-   an important step for UDP GRO forwarding.
+It'd make sense to add also the backlight here?
 
-[0] https://lore.kernel.org/netdev/20210112211536.261172-1-alobakin@pm.me
++               backlight = <&backlight_lcd0>;
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/ipv4/udp_offload.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> +		port {
+> +			panel_in: endpoint {
+> +				remote-endpoint = <&dsi_out>;
+> +			};
+> +		};
+> +	};
+> +
+> +	ports {
+> +		port {
+> +			dsi_out: endpoint {
+> +				remote-endpoint = <&panel_in>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
 
-diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index ff39e94781bf..6f5237a0d181 100644
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -460,12 +460,12 @@ struct sk_buff *udp_gro_receive(struct list_head *hea=
-d, struct sk_buff *skb,
- =09if (skb->dev->features & NETIF_F_GRO_FRAGLIST)
- =09=09NAPI_GRO_CB(skb)->is_flist =3D sk ? !udp_sk(sk)->gro_enabled: 1;
-=20
--=09if ((sk && udp_sk(sk)->gro_enabled) || NAPI_GRO_CB(skb)->is_flist) {
-+=09if (!sk || udp_sk(sk)->gro_enabled || NAPI_GRO_CB(skb)->is_flist) {
- =09=09pp =3D call_gro_receive(udp_gro_receive_segment, head, skb);
- =09=09return pp;
- =09}
-=20
--=09if (!sk || NAPI_GRO_CB(skb)->encap_mark ||
-+=09if (NAPI_GRO_CB(skb)->encap_mark ||
- =09    (skb->ip_summed !=3D CHECKSUM_PARTIAL &&
- =09     NAPI_GRO_CB(skb)->csum_cnt =3D=3D 0 &&
- =09     !NAPI_GRO_CB(skb)->csum_valid) ||
---=20
-2.30.0
+I think you should enable the MIPI TX to have DSI and panel working?
+
++&mipi_tx0 {
++       status = "okay";
++};
 
 
+>  &i2c0 {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&i2c0_pins>;
+> @@ -547,6 +576,14 @@ pins_clk {
+>  		};
+>  	};
+>  
+> +	panel_pins_default: panel_pins_default {
+> +		panel_reset {
+> +			pinmux = <PINMUX_GPIO45__FUNC_GPIO45>;
+> +			output-low;
+> +			bias-pull-up;
+> +		};
+> +	};
+> +
+>  	pwm0_pin_default: pwm0_pin_default {
+>  		pins1 {
+>  			pinmux = <PINMUX_GPIO176__FUNC_GPIO176>;
+> 
