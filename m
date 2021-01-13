@@ -2,76 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB55B2F53BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 410842F53C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728891AbhAMT5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 14:57:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728712AbhAMT5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 14:57:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEC642074A;
-        Wed, 13 Jan 2021 19:56:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610567795;
-        bh=9jQZjFnRRXETKWmHlHdcb266jCQ0g5AH3jf+EwgTbiQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lHjrij22PtUHViWHFwAIiyKbKCk63PJk5WmUsrxKmQK5DybhTKrSF79NQMUnD2/ZE
-         cwIerK1W6kZydKyEYwAJJmMQiXWamRkDXFC15R9mR7INZOQkQqrvjLbnivZar5Ayad
-         oZmRdsNWT9gASnyuKFewZH2R21awNvInl2C8uCuU59B5MUutdKKUaeAoaZIKQpFRi4
-         kLSSCDe3Kl7+Szf38kXqDgW2Dl1WmvvMswASWqwskibNtFQJCJZN51CDCk4aEe3mOk
-         MHHuvdf5i47IHfYzH6jtk8cvx58pmKde4vfgg64SuoqyjZUqN0FxwP8jV/SvI8B7WF
-         uLrrb1z00obeQ==
-Date:   Wed, 13 Jan 2021 19:56:01 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: asm-annotation: clarify .L local symbol
- names
-Message-ID: <20210113195601.GH4641@sirena.org.uk>
-References: <20210113165923.acvycpcu5tzksbbi@treble>
- <20210113174620.958429-1-ndesaulniers@google.com>
+        id S1728656AbhAMUAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 15:00:34 -0500
+Received: from smtprelay03.ispgateway.de ([80.67.18.15]:61233 "EHLO
+        smtprelay03.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726599AbhAMUAd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 15:00:33 -0500
+Received: from [84.39.76.69] (helo=thinkstation.fritz.box)
+        by smtprelay03.ispgateway.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92.3)
+        (envelope-from <vogelchr@vogel.cx>)
+        id 1kzm9z-0006Vv-Go; Wed, 13 Jan 2021 20:50:27 +0100
+From:   Christian Vogel <vogelchr@vogel.cx>
+To:     greg@kroah.com
+Cc:     zbr@ioremap.net, vogelchr@vogel.cx, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] w1/masters/ds2490: queue up found IDs during scan
+Date:   Wed, 13 Jan 2021 20:50:18 +0100
+Message-Id: <20210113195018.7498-3-vogelchr@vogel.cx>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210113195018.7498-1-vogelchr@vogel.cx>
+References: <20210113195018.7498-1-vogelchr@vogel.cx>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mhjHhnbe5PrRcwjY"
-Content-Disposition: inline
-In-Reply-To: <20210113174620.958429-1-ndesaulniers@google.com>
-X-Cookie: Ignore previous fortune.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Df-Sender: Y2hyaXNAb21ncHduaWVzLmRl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Queue up found IDs in a buffer and run the callback once for each found ID
+at the end. This is necessary because we hold the bus_mutex during the
+whole scan, and some of the "add-device" callbacks deadlock as they
+themselves want to mutex_lock(bus_mutex).
 
---mhjHhnbe5PrRcwjY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Acked-by: Evgeniy Polyakov <zbr@ioremap.net>
+Signed-off-by: Christian Vogel <vogelchr@vogel.cx>
+---
+ drivers/w1/masters/ds2490.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
-On Wed, Jan 13, 2021 at 09:46:20AM -0800, Nick Desaulniers wrote:
-> Use more precise language and move the text to a region in the docs to
-> show that this constraint is not just for SYM_CODE_START*.
+diff --git a/drivers/w1/masters/ds2490.c b/drivers/w1/masters/ds2490.c
+index e17c8f70dcd0..cd8821580f71 100644
+--- a/drivers/w1/masters/ds2490.c
++++ b/drivers/w1/masters/ds2490.c
+@@ -688,12 +688,22 @@ static void ds9490r_search(void *data, struct w1_master *master,
+ 	 * packet size.
+ 	 */
+ 	const size_t bufsize = 2 * 64;
+-	u64 *buf;
++	u64 *buf, *found_ids;
+ 
+ 	buf = kmalloc(bufsize, GFP_KERNEL);
+ 	if (!buf)
+ 		return;
+ 
++	/*
++	 * We are holding the bus mutex during the scan, but adding devices via the
++	 * callback needs the bus to be unlocked. So we queue up found ids here.
++	 */
++	found_ids = kmalloc_array(master->max_slave_count, sizeof(u64), GFP_KERNEL);
++	if (!found_ids) {
++		kfree(buf);
++		return;
++	}
++
+ 	mutex_lock(&master->bus_mutex);
+ 
+ 	/* address to start searching at */
+@@ -729,13 +739,13 @@ static void ds9490r_search(void *data, struct w1_master *master,
+ 			if (err < 0)
+ 				break;
+ 			for (i = 0; i < err/8; ++i) {
+-				++found;
+-				if (found <= search_limit)
+-					callback(master, buf[i]);
++				found_ids[found++] = buf[i];
+ 				/* can't know if there will be a discrepancy
+ 				 * value after until the next id */
+-				if (found == search_limit)
++				if (found == search_limit) {
+ 					master->search_id = buf[i];
++					break;
++				}
+ 			}
+ 		}
+ 
+@@ -759,9 +769,14 @@ static void ds9490r_search(void *data, struct w1_master *master,
+ 			master->max_slave_count);
+ 		set_bit(W1_WARN_MAX_COUNT, &master->flags);
+ 	}
++
+ search_out:
+ 	mutex_unlock(&master->bus_mutex);
+ 	kfree(buf);
++
++	for (i = 0; i < found; i++) /* run callback for all queued up IDs */
++		callback(master, found_ids[i]);
++	kfree(found_ids);
+ }
+ 
+ #if 0
+-- 
+2.30.0
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
-
---mhjHhnbe5PrRcwjY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl//UFAACgkQJNaLcl1U
-h9BIVAf/WpmBBmie3tfOZiThvDtrWYEWvmxUIzs/fQpmCJgRU6VMXCEyvJME9Zm4
-9GG0PRk7OgBZJEfRnrR6ObHe1kzItzYYqM1eDOqaN6WVR4hFU0eS6u62OM12K/pX
-T86Zan3bnKeY/ojPiwSDngTbfH7vwFkw/4hJaU0EisF60J0xPG0+KvkS9kl5mIut
-aznGysyovGjwTPTsLF9c/rD3HwOkvt/oCsGE8SKpT5FwsNXUhNvCVE9iGYvCOrsD
-duTSOQxJn4sPldBsCanOW6IokAkCcgqvsdkCLuOhy4SnNFTMtu8+igzaZ3+OnGA5
-/F9fsrjAvMNN/vMDKzkWgvcMw6csHA==
-=aXmY
------END PGP SIGNATURE-----
-
---mhjHhnbe5PrRcwjY--
