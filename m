@@ -2,175 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477ED2F54B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 22:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B282F54CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729190AbhAMV6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 16:58:35 -0500
-Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:42426 "EHLO
-        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729229AbhAMVzK (ORCPT
+        id S1729232AbhAMWEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 17:04:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729229AbhAMWAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 16:55:10 -0500
-Received: from dread.disaster.area (pa49-179-167-107.pa.nsw.optusnet.com.au [49.179.167.107])
-        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id A94981ACDFD;
-        Thu, 14 Jan 2021 08:53:49 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kzo5M-006AIU-SC; Thu, 14 Jan 2021 08:53:48 +1100
-Date:   Thu, 14 Jan 2021 08:53:48 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     Donald Buczek <buczek@molgen.mpg.de>, linux-xfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+linux-xfs@molgen.mpg.de
-Subject: Re: [PATCH] xfs: Wake CIL push waiters more reliably
-Message-ID: <20210113215348.GI331610@dread.disaster.area>
-References: <1705b481-16db-391e-48a8-a932d1f137e7@molgen.mpg.de>
- <20201229235627.33289-1-buczek@molgen.mpg.de>
- <20201230221611.GC164134@dread.disaster.area>
- <20210104162353.GA254939@bfoster>
- <20210107215444.GG331610@dread.disaster.area>
- <20210108165657.GC893097@bfoster>
- <20210111163848.GC1091932@bfoster>
+        Wed, 13 Jan 2021 17:00:35 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E34C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 13:52:25 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id r5so3543709eda.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 13:52:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tkCEm6n1O2YDsdNDXJh8BIEgy3kecFF0HQkrvLtX2UM=;
+        b=SRVHAUkpjdzGINze2D0SPtwgt3b82Lz/3p99J6k6sZtsuYKAjn5691k8Rp8b7FUCS9
+         6Rl0wbuf5DR1iOh0Bu8H2VEZHjnIko2IpIeXpeyK7UoEOQcvVEg5ATgpU7ILN8FvrLOJ
+         tU3S5Kbj9+NbosbQygaXJCjPhAON9p+WjNYl7vNEwbEZCP9WYe8jbt/lceuyN/JtZNF5
+         +lFs1SUeHRZFbP1fqinWUwwE0BMOo8UJwXrlPxyWIiOOAWjRy+q03pNsCcP6kNzLLcBO
+         RuItbDUV2Wl4/PPqfv0rryUy9n2oc//db/8GySCvN+q/K5oHMfeMYIBqGtgHAkGv+XnY
+         d9Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tkCEm6n1O2YDsdNDXJh8BIEgy3kecFF0HQkrvLtX2UM=;
+        b=Xrb+Kml+FyDhEbPGgFSvvpApgcBc8IHBPMGgT1GcQKTWs+qCnvuhxh8LIH0m55/zLu
+         ZGt0pw4KNrexuRtWuXPBYpc0S8gDUkS7Lef9YHfqoKICL9OJI8wy5FMBlfcj2WP6lFLH
+         rRgGhKT6Cu6CQJyMSxtrcveTvJdm+ESK0Bx9AXsybXqzrzb7raUcEeRFrglmTHcaym/4
+         tcnfR7iotET8i1JKxA5KbOxxYE2NfQwIv62ayrrd+RStdJFYL1OFXWyeCrtiXfGlrtIf
+         UrbWFjHn8Jeqku2qC621WK7iHNJnbfWZLQ1Qr1l+E1n+VuwhlRaVqvBPW44s6jUvFrJA
+         wc+A==
+X-Gm-Message-State: AOAM533IGiiktxmG9YiP/TC9Fn+Efd2DNTPBt/gnFuecvAUWntO+7yGv
+        K3wikLAqzxDXGEKBx1h+9L8lftwODZdNXtCOO/lVlg==
+X-Google-Smtp-Source: ABdhPJzSD6+Rzk4Z+duLWEpDKBIxKbqxC88SAUZRbhvaMudyDSDTALy3KwUquixL/d2ZtGuR3ksAPlHMa75yFMUJrmM=
+X-Received: by 2002:aa7:c3cd:: with SMTP id l13mr3362518edr.97.1610574743900;
+ Wed, 13 Jan 2021 13:52:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111163848.GC1091932@bfoster>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
-        a=+wqVUQIkAh0lLYI+QRsciw==:117 a=+wqVUQIkAh0lLYI+QRsciw==:17
-        a=kj9zAlcOel0A:10 a=EmqxpYm9HcoA:10 a=7-415B0cAAAA:8
-        a=jeGTqxCbE2Z_5-kZt_IA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+References: <161052331545.1805594.2356512831689786960.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161052332755.1805594.9846390935351758277.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <230efa36-9192-fe52-b8b6-16b2feafb70b@redhat.com>
+In-Reply-To: <230efa36-9192-fe52-b8b6-16b2feafb70b@redhat.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 13 Jan 2021 13:52:14 -0800
+Message-ID: <CAPcyv4i4yGjsMf2SyixLicDjzRGes97vaSa+mF4=Y9Uagk_0jg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/6] mm: Teach pfn_to_online_page() to consider
+ subsection validity
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Linux MM <linux-mm@kvack.org>, Qian Cai <cai@lca.pw>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 11:38:48AM -0500, Brian Foster wrote:
-> On Fri, Jan 08, 2021 at 11:56:57AM -0500, Brian Foster wrote:
-> > On Fri, Jan 08, 2021 at 08:54:44AM +1100, Dave Chinner wrote:
-> > > On Mon, Jan 04, 2021 at 11:23:53AM -0500, Brian Foster wrote:
-> > > > On Thu, Dec 31, 2020 at 09:16:11AM +1100, Dave Chinner wrote:
-> > > > > On Wed, Dec 30, 2020 at 12:56:27AM +0100, Donald Buczek wrote:
-> > > > > > If the value goes below the limit while some threads are
-> > > > > > already waiting but before the push worker gets to it, these threads are
-> > > > > > not woken.
-> > > > > > 
-> > > > > > Always wake all CIL push waiters. Test with waitqueue_active() as an
-> > > > > > optimization. This is possible, because we hold the xc_push_lock
-> > > > > > spinlock, which prevents additions to the waitqueue.
-> > > > > > 
-> > > > > > Signed-off-by: Donald Buczek <buczek@molgen.mpg.de>
-> > > > > > ---
-> > > > > >  fs/xfs/xfs_log_cil.c | 2 +-
-> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/fs/xfs/xfs_log_cil.c b/fs/xfs/xfs_log_cil.c
-> > > > > > index b0ef071b3cb5..d620de8e217c 100644
-> > > > > > --- a/fs/xfs/xfs_log_cil.c
-> > > > > > +++ b/fs/xfs/xfs_log_cil.c
-> > > > > > @@ -670,7 +670,7 @@ xlog_cil_push_work(
-> > > > > >  	/*
-> > > > > >  	 * Wake up any background push waiters now this context is being pushed.
-> > > > > >  	 */
-> > > > > > -	if (ctx->space_used >= XLOG_CIL_BLOCKING_SPACE_LIMIT(log))
-> > > > > > +	if (waitqueue_active(&cil->xc_push_wait))
-> > > > > >  		wake_up_all(&cil->xc_push_wait);
-> > > > > 
-> > > > > That just smells wrong to me. It *might* be correct, but this
-> > > > > condition should pair with the sleep condition, as space used by a
-> > > > > CIL context should never actually decrease....
-> > > > > 
-> > > > 
-> > > > ... but I'm a little confused by this assertion. The shadow buffer
-> > > > allocation code refers to the possibility of shadow buffers falling out
-> > > > that are smaller than currently allocated buffers. Further, the
-> > > > _insert_format_items() code appears to explicitly optimize for this
-> > > > possibility by reusing the active buffer, subtracting the old size/count
-> > > > values from the diff variables and then reformatting the latest
-> > > > (presumably smaller) item to the lv.
-> > > 
-> > > Individual items might shrink, but the overall transaction should
-> > > grow. Think of a extent to btree conversion of an inode fork. THe
-> > > data in the inode fork decreases from a list of extents to a btree
-> > > root block pointer, so the inode item shrinks. But then we add a new
-> > > btree root block that contains all the extents + the btree block
-> > > header, and it gets rounded up to ithe 128 byte buffer logging chunk
-> > > size.
-> > > 
-> > > IOWs, while the inode item has decreased in size, the overall
-> > > space consumed by the transaction has gone up and so the CIL ctx
-> > > used_space should increase. Hence we can't just look at individual
-> > > log items and whether they have decreased in size - we have to look
-> > > at all the items in the transaction to understand how the space used
-> > > in that transaction has changed. i.e. it's the aggregation of all
-> > > items in the transaction that matter here, not so much the
-> > > individual items.
-> > > 
-> > 
-> > Ok, that makes more sense...
-> > 
-> > > > Of course this could just be implementation detail. I haven't dug into
-> > > > the details in the remainder of this thread and I don't have specific
-> > > > examples off the top of my head, but perhaps based on the ability of
-> > > > various structures to change formats and the ability of log vectors to
-> > > > shrink in size, shouldn't we expect the possibility of a CIL context to
-> > > > shrink in size as well? Just from poking around the CIL it seems like
-> > > > the surrounding code supports it (xlog_cil_insert_items() checks len > 0
-> > > > for recalculating split res as well)...
-> > > 
-> > > Yes, there may be situations where it decreases. It may be this is
-> > > fine, but the assumption *I've made* in lots of the CIL push code is
-> > > that ctx->used_space rarely, if ever, will go backwards.
-> > > 
-> > 
-> > ... and rarely seems a bit more pragmatic than never.
-> > 
-> 
-> FWIW, a cursory look at the inode size/format code (motivated by
-> Donald's recent log dump that appears to show inode log items changing
-> size) suggested that a simple local format size change might be enough
-> to cause this condition on an item. A subsequent test to create and
-> immediately remove a file from an otherwise empty directory triggers a
-> tracepoint I injected in xlog_cil_insert_items() to detect a negative
-> transaction delta. As expected, the absolute value of the delta does
-> seem to increase with a larger filename. This also produces a negative
-> iovec delta, fwiw. E.g.:
-> 
-> # touch `for i in $(seq 0 63); do echo -n a; done`
-> # rm -f `for i in $(seq 0 63); do echo -n a; done`
-> #
-> 
-> rm-9265    [001] ....  4660.177806: xfs_log_commit_cil: 409: len -72 diff_iovecs 0
-> rm-9265    [001] .N.1  4660.177913: xfs_log_commit_cil: 419: len -72 diff_iovecs 0
-> rm-9265    [001] ....  4660.178313: xfs_log_commit_cil: 409: len -52 diff_iovecs -1
-> rm-9265    [001] ...1  4660.178336: xfs_log_commit_cil: 419: len -64 diff_iovecs -1
-> 
-> ... and this only seems to occur when the unlink occurs before the CIL
-> has been checkpointed and pushed out the inode (i.e. a freeze/unfreeze
-> cycle prevents it).
+On Wed, Jan 13, 2021 at 12:29 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 13.01.21 08:35, Dan Williams wrote:
+> > pfn_section_valid() determines pfn validity on subsection granularity
+> > where pfn_valid() may be limited to coarse section granularity.
+> > Explicitly validate subsections after pfn_valid() succeeds.
+> >
+> > Fixes: b13bc35193d9 ("mm/hotplug: invalid PFNs from pfn_to_online_page()")
+> > Cc: Qian Cai <cai@lca.pw>
+> > Cc: Michal Hocko <mhocko@suse.com>
+> > Cc: Oscar Salvador <osalvador@suse.de>
+> > Reported-by: David Hildenbrand <david@redhat.com>
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > ---
+> >  mm/memory_hotplug.c |   24 ++++++++++++++++++++----
+> >  1 file changed, 20 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> > index 55a69d4396e7..9f37f8a68da4 100644
+> > --- a/mm/memory_hotplug.c
+> > +++ b/mm/memory_hotplug.c
+> > @@ -308,11 +308,27 @@ static int check_hotplug_memory_addressable(unsigned long pfn,
+> >  struct page *pfn_to_online_page(unsigned long pfn)
+> >  {
+> >       unsigned long nr = pfn_to_section_nr(pfn);
+> > +     struct mem_section *ms;
+> > +
+> > +     if (nr >= NR_MEM_SECTIONS)
+> > +             return NULL;
+> > +
+> > +     ms = __nr_to_section(nr);
+> > +     if (!online_section(ms))
+> > +             return NULL;
+> > +
+> > +     /*
+> > +      * Save some code text when online_section() +
+> > +      * pfn_section_valid() are sufficient.
+> > +      */
+> > +     if (IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID))
+> > +             if (!pfn_valid(pfn))
+> > +                     return NULL;
+>
+> Nit:
+>
+> if (IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) &&
+>     !pfn_valid(pfn))
+>
 
-Yeha, it's a shortform directory removal that triggers it easily
-because the other items being modified in the transaction aren't
-changing size on relogging (AGI unlink list pointer, unlinked inode
-core for nlink change). Hence the reduction in size of the directory
-inode reduces the overall CIL size...
-
-> I've not dug into the transaction details and have no idea if this is
-> the variant that Donald reproduces; it wouldn't surprise me a ton if
-> there were various others. This is pretty straightforward, however, and
-> shows the negative item delta carry through the transaction. IMO, that
-> seems to justify a throttling fix...
-
-I agree that a throttling fix is needed, but I'm trying to
-understand the scope and breadth of the problem first instead of
-jumping the gun and making the wrong fix for the wrong reasons that
-just papers over the underlying problems that the throttling bug has
-made us aware of...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Ok... I'll do a final resend "To: akpm" after the kbuild robot
+finishes chewing on this series.
