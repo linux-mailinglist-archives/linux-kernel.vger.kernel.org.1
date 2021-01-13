@@ -2,30 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CA32F452D
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE6B2F452E
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbhAMH0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 02:26:12 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:10962 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbhAMH0M (ORCPT
+        id S1726576AbhAMH0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 02:26:15 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10719 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726235AbhAMH0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 02:26:12 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DFzTz3FmLzj4bs;
-        Wed, 13 Jan 2021 15:24:39 +0800 (CST)
+        Wed, 13 Jan 2021 02:26:14 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DFzTS32hbzl4FT;
+        Wed, 13 Jan 2021 15:24:12 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 13 Jan 2021 15:25:20 +0800
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 13 Jan 2021 15:25:21 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH] ACPI: configfs: add missing check after configfs_register_default_group
-Date:   Wed, 13 Jan 2021 15:30:58 +0800
-Message-ID: <20210113073058.79506-1-miaoqinglang@huawei.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Thomas Kopp <thomas.kopp@microchip.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH] can: mcp251xfd: fix wrong check in mcp251xfd_handle_rxif_one
+Date:   Wed, 13 Jan 2021 15:31:00 +0800
+Message-ID: <20210113073100.79552-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -36,48 +41,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A list_add corruption is reported by Hulk Robot like this:
-==============
-list_add corruption.
-Call Trace:
-link_obj+0xc0/0x1c0
-link_group+0x21/0x140
-configfs_register_subsystem+0xdb/0x380
-acpi_configfs_init+0x25/0x1000 [acpi_configfs]
-do_one_initcall+0x149/0x820
-do_init_module+0x1ef/0x720
-load_module+0x35c8/0x4380
-__do_sys_finit_module+0x10d/0x1a0
-do_syscall_64+0x34/0x80
+If alloc_canfd_skb returns NULL, 'cfg' is an uninitialized
+variable, so we should check 'skb' rather than 'cfd' after
+calling alloc_canfd_skb(priv->ndev, &cfd).
 
-It's because of the missing check after configfs_register_default_group,
-where configfs_unregister_subsystem should be called once failure.
-
-Fixes: 612bd01fc6e0 ("ACPI: add support for loading SSDTs via configfs")
-Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip MCP25xxFD SPI CAN")
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/acpi/acpi_configfs.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/acpi_configfs.c b/drivers/acpi/acpi_configfs.c
-index cf91f4910..25512ab0e 100644
---- a/drivers/acpi/acpi_configfs.c
-+++ b/drivers/acpi/acpi_configfs.c
-@@ -268,7 +268,12 @@ static int __init acpi_configfs_init(void)
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 77129d5f4..792d55ba4 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -1492,7 +1492,7 @@ mcp251xfd_handle_rxif_one(struct mcp251xfd_priv *priv,
+ 	else
+ 		skb = alloc_can_skb(priv->ndev, (struct can_frame **)&cfd);
  
- 	acpi_table_group = configfs_register_default_group(root, "table",
- 							   &acpi_tables_type);
--	return PTR_ERR_OR_ZERO(acpi_table_group);
-+	if (IS_ERR(acpi_table_group)) {
-+		configfs_register_subsystem(&acpi_configfs);
-+		return PTR_ERR(acpi_table_group);
-+	}
-+
-+	return 0;
- }
- module_init(acpi_configfs_init);
- 
+-	if (!cfd) {
++	if (!skb) {
+ 		stats->rx_dropped++;
+ 		return 0;
+ 	}
 -- 
 2.23.0
 
