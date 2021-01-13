@@ -2,108 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896952F4F94
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E49E92F4F9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727471AbhAMQJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 11:09:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbhAMQJn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 11:09:43 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0336CC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:09:03 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id c5so2699123wrp.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:09:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=zGaFG6Yz9aSW0b45VX30cQ6Ygah6IcUybvH0IP7gJ9E=;
-        b=rpG1n6IkSCxRPm/Ihn3e2VN0Z41A3uNhZ5++D6iXnTZhg8lTapbhxAp5to4zK49J62
-         kauwMOoXXnxOr4yroJd9JpAdaimUX4J0iwzbG14eHKvp1l+gjpFErKOhSXjFzBnLAcEZ
-         9sVbFbZ03S2RqV1JAON07pt1UYHiAa+3pNwgUHWwuQoF6x6lUiviFFL8ogZwquj7Vh6K
-         Q9HA/UVmn3O+0gk9JyBrTzePbyKqmKVjvvagjbl6tILyr7JXdUv2pZ9nHsjage06sbPw
-         M5Y62NkKbF4J75OAWc7Uf5+EN3/GOdCN0Gt08y/lXvxseinlO12kC6ABb3x1xGnxnP5m
-         +K+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zGaFG6Yz9aSW0b45VX30cQ6Ygah6IcUybvH0IP7gJ9E=;
-        b=BYmufyjjsk8ivEpHzaxsAQh6vaYvMeIKTBSYA+E3j9USD1tQw7RrN2ULrmgVdDldU4
-         cJemqSECLuAgekj4FkZh5ZRr3Maco2NBsyegKdt0cMOi733VR6k89T2aBxCPfo7C2Kab
-         x+giLJqBusWPI6wJG7Jigild4kmhyh93al3ZFe1btMDsvHDyZsQMsb2nPfYj4/Eqd9TD
-         2nafFy2SlEYZ7Hsne3M2Aym3Pzgh7B5rQjSR/JIEWitlF8jWTilGDb7SxOOnJRiibncJ
-         F9ABiKoR6F8fKa5S//gJfWBRiizkK0GEfM42davMQuV4Qdoy6B+wkbf/4XaOmJVx1/Qw
-         XTpQ==
-X-Gm-Message-State: AOAM531xDtU9bklXGM24dxydmbJEam6cP2QBYdPFiSOd1eVZgzzLvHDY
-        d8DVV8dXycW1s3IouD6h0aAIKQ==
-X-Google-Smtp-Source: ABdhPJzqvHtdgJahhofmO5YKsploUOpWJy7B0mEzcByyg9gwr10NixDhD+8JJZXMQFxUgoU5u9JCKg==
-X-Received: by 2002:a5d:504d:: with SMTP id h13mr3446999wrt.246.1610554141784;
-        Wed, 13 Jan 2021 08:09:01 -0800 (PST)
-Received: from dell ([91.110.221.229])
-        by smtp.gmail.com with ESMTPSA id n8sm4071875wrs.34.2021.01.13.08.09.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 08:09:01 -0800 (PST)
-Date:   Wed, 13 Jan 2021 16:08:59 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 1/1] docs: submitting-patches: Emphasise the requirement
- to Cc: stable when using Fixes: tag
-Message-ID: <20210113160859.GE3975472@dell>
-References: <20210113142347.1263024-1-lee.jones@linaro.org>
- <X/8XUMW709ThubH1@kroah.com>
+        id S1727699AbhAMQKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 11:10:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727309AbhAMQKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 11:10:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6D4023435;
+        Wed, 13 Jan 2021 16:09:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610554191;
+        bh=/V4uSeR8OSBZFOFVIDMw/BcMXL4VolcqPFbIKUiERHo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CIcwspXmZRh8pc/udeumy8UpzYBjmrX7dpcqHVBi+30uP1j3j4zU+0B10FqVEKafh
+         zYFna+tu0fTLy5NZW/+OxsohzEOeAjA+CH5Tr1A5js5pnPLHEoc9/gzjUyvx/1p91Y
+         YYwmVWgZAHyoZY4pYdT0ia5ZpErjCFa6mRI4+fPFeYRKY3nUj3aeO2k0e29sjipaFh
+         i8McAAFGMhCslAq/p6obQEr3RbKhxC09pzYp/p0JwRk6SB3DFC3DoaAAYyrj4Qgoax
+         zUHGMwuJv8rPnp6y8Q2ebD+pmNBb3VvMORqK8F/SLQLVb35ax0hThFX/HLs6hksODv
+         YBgNPtvxo0NXA==
+Date:   Wed, 13 Jan 2021 16:09:17 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>,
+        kuninori.morimoto.gx@renesas.com, nsaenzjulienne@suse.de,
+        f.fainelli@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 2/6] dt-bindings: audio-graph-card: Add plls and
+ sysclks properties
+Message-ID: <20210113160917.GF4641@sirena.org.uk>
+References: <20210108160501.7638-1-rf@opensource.cirrus.com>
+ <20210108160501.7638-3-rf@opensource.cirrus.com>
+ <20210113152225.GA2334778@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kbCYTQG2MZjuOjyn"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <X/8XUMW709ThubH1@kroah.com>
+In-Reply-To: <20210113152225.GA2334778@robh.at.kernel.org>
+X-Cookie: Ignore previous fortune.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021, Greg Kroah-Hartman wrote:
 
-> On Wed, Jan 13, 2021 at 02:23:47PM +0000, Lee Jones wrote:
-> > Clear-up any confusion surrounding the Fixes: tag with regards to the
-> > need to Cc: the stable mailing list when submitting stable patch
-> > candidates.
-> > 
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: Jonathan Corbet <corbet@lwn.net>
-> > Cc: linux-doc@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  Documentation/process/submitting-patches.rst | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
-> > index 7c97ad580e7d0..636ef067c1565 100644
-> > --- a/Documentation/process/submitting-patches.rst
-> > +++ b/Documentation/process/submitting-patches.rst
-> > @@ -554,7 +554,8 @@ is used to make it easy to determine where a bug originated, which can help
-> >  review a bug fix. This tag also assists the stable kernel team in determining
-> >  which stable kernel versions should receive your fix. This is the preferred
-> >  method for indicating a bug fixed by the patch. See :ref:`describe_changes`
-> > -for more details.
-> > +for more details. Attaching a Fixes: tag does not replace the requirement to
-> > +Cc: stable@vger.kernel.org on all stable patch candidates.
-> 
-> Want to just link to the "stable kernel rules" document here to show
-> the proper way to do this is documented there?
+--kbCYTQG2MZjuOjyn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think this needs to be clearly stated here.
+On Wed, Jan 13, 2021 at 09:22:25AM -0600, Rob Herring wrote:
 
-What if we linked to the rules document *as well*?
+> I'm not sure this makes sense to be generic, but if so, we already have=
+=20
+> the clock binding and should use (and possibly extend) that.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> This appears to all be configuration of clocks within the codec, so=20
+> these properties belong in the codec or cpu nodes.
+
+Right, I think this should just be the clock binding.=20
+
+> > +      The PLL id and clock source id are specific to the particular co=
+mponent
+> > +      so see the relevant component driver for the ids. Typically the
+
+This should refer to the bindings for components, not to their drivers.
+
+> > +      clock source id indicates the pin the source clock is connected =
+to.
+> > +      The same phandle can appear in multiple entries so that several =
+plls
+> > +      can be set in the same component.
+> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +
+> > +  plls-clocks:
+> > +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> > +    description: |
+> > +      A list of clock names giving the source clock for each setting
+> > +      in the plls property.
+> > +
+> > +  sysclks:
+> > +    description: |
+> > +      A list of component sysclk settings. There are 4 cells per sysclk
+> > +      setting:
+> > +        - phandle to the node of the codec or cpu component,
+> > +        - component sysclk id,
+> > +        - component clock source id,
+> > +        - direction of the clock: 0 if the clock is an input to the co=
+mponent,
+> > +          1 if it is an output.
+>=20
+> A clock provider and consumer would provide the direction.
+>=20
+> > +      The sysclk id and clock source id are specific to the particular
+> > +      component so see the relevant component driver for the ids. Typi=
+cally
+> > +      the clock source id indicates the pin the source clock is connec=
+ted to.
+> > +      The same phandle can appear in multiple entries so that several =
+sysclks
+> > +      can be set in the same component.
+> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +
+> > +  sysclks-clocks:
+> > +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> > +    description: |
+> > +      A list of clock names giving the source clock for each setting
+> > +      in the sysclks property.
+> > +
+> > +dependencies:
+> > +  plls: [ plls-clocks ]
+> > +  sysclks: [ sysclks-clocks ]
+> > +
+> >  required:
+> >    - dais
+> > =20
+> > --=20
+> > 2.20.1
+> >=20
+
+--kbCYTQG2MZjuOjyn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl//GywACgkQJNaLcl1U
+h9DmuwgAg4bSMDfqbeSbsp70+FR5h2BrfLgwsLwRE0uEEsHpMnvplu67Sb5EaYg7
+43mnbG/ru3uKHlU5gpqyXHFlqCGsbpr3s3+Drn6MfToxDD+lgk38LWADAPwgWOAi
+/Y3moCJTzxBEq1DuGk8w1PQqllu1+heWuVCiuo7iOXPJwrPhF5qtrL7P/f69RoFD
+JmfdGqGstHUQRc+rj4r3mGo1+61XFbin0Ptdvm8ST1Zx7D9FOKEfu7gL+UJK6ha8
+BfBUFCVU9Ov9zaBi1HRslnVULJ4h0i3JRao7rb2h7ajI9IzCr6PNuPkK1St1DDT6
+YJ/zH7Zd13mdMSqHWDgJVcGbPRT3Sg==
+=zuCm
+-----END PGP SIGNATURE-----
+
+--kbCYTQG2MZjuOjyn--
