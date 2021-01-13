@@ -2,121 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F392F4F0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5AE62F4F10
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbhAMPpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 10:45:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36186 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725977AbhAMPpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 10:45:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D01FA208BA;
-        Wed, 13 Jan 2021 15:44:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610552661;
-        bh=+rZ1G0MM72WaqgZtoKvVZ0XdQ+wClUuZnuEWYmqhNAg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K8P+Ll0pkHS0co8mduKu2x4XQGzTmwp/re9ivY0Rm6Y1SaRk8tCzdlCMgVW/Qqs3q
-         cSRjWLsbk8Knxh7HzOYiZK2NwryIfOEO8iSHNGCdtVI6yZvrs4tEJy3hj8uQa07WEr
-         eWw+IQ2YYMOTevQ/oEeUGlVWF7fofd0qjyVxJVFS9PigiDSr+AHPBtpomjpgV8cQN/
-         AOG/1qqHCNkggeEipinOedyNFqdzAJg5OTfwuaUFad32FMACRtwbwOasrGCpMQRqTR
-         DDprXhjv2lobyQFXua7wUfZZKJN1o+14+R8r2G4ZNJltSNFsY5qyvrQAN9guO2DgUD
-         PpEL+qjJ3Hbww==
-Date:   Wed, 13 Jan 2021 15:44:15 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Yanan Wang <wangyanan55@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
-        zhukeqian1@huawei.com, yuzenghui@huawei.com
-Subject: Re: [PATCH v2 2/3] KVM: arm64: Add prejudgement for relaxing
- permissions only case in stage2 translation fault handler
-Message-ID: <20210113154414.GA11892@willie-the-truck>
-References: <20201216122844.25092-1-wangyanan55@huawei.com>
- <20201216122844.25092-3-wangyanan55@huawei.com>
+        id S1727117AbhAMPps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 10:45:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726693AbhAMPpr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 10:45:47 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8D4C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 07:45:06 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id 91so2610046wrj.7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 07:45:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=jilZrI+RmYVgG4Z+y9i7C0wTauSiN6ryBINcA136TDY=;
+        b=pHbMHZsbRZqCJZNHIj5Q4eo3iNWwbm8uio2Df/L7M2KkVfbI9hxA0dQ7Wqj91kaUvj
+         NGR65+VNC001MYb7eUoVV1U7w6/pIV1+DXzNE3aTqyjXYyDn+9roJ1sOtYWBQuXlbFZn
+         6EGT9CT0+OnFPtxxTXTq7Dzu7ltn9FtRJOr0n2+CW7EkVB3fnFQBrCnxjvmF02MxXNXc
+         qlb35Xo7TMuqFIR/kKgTON2Nmoiz4SJRVwDuVYy83YVASKZLeYAA3eUMp0fa6AObRRJW
+         5HKgxBHw9tgv2Y33Bxcj5ernIaUEQahlymZ4m3AGRt0dRDf7855cNxMbDEK1vulxQb5s
+         6Liw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=jilZrI+RmYVgG4Z+y9i7C0wTauSiN6ryBINcA136TDY=;
+        b=ZGu3BD1jLe2MER3DweKNr+dfyGs0sjcVOxy9mADbsOIM2vukGA7tgXWiHicDulED03
+         x22hZnCmSaVGwqloA9dRdKrlNFmiyirw/JETMj41z46s8ZayRVlaDNfxpPm3NrGKtpr1
+         UckG6K3rd8502k8VRCfYuy8JruljZpkdDzxQV3l1IVP5GGynEh9L9ADapa8trYfhvrWh
+         NSh6cxyZIpmOjX5tuZW75ro2hTGITwNtHLUPwkBAEHoY0O04HbCZTEPObo+vPj0ITFJr
+         lcryiS36ZOxq+f1FJCwnyFh0lQzfScIGmzxk/Blt8SnaeP+CPuREQH+KwvtCJexNSOmX
+         72IA==
+X-Gm-Message-State: AOAM530hZ5PmvSl9DWv+nv3SgwzCUQFGbWsuv83/8NIxEFBQOHdGEcmQ
+        vVqZaNIxg0LzmrRL3xsdcNVCWg==
+X-Google-Smtp-Source: ABdhPJzqrERn/dDttB73B0YdhAneozcMUw1VFgp6txkY+IVWPvM27AcW7s9nl/hMjf+ddsQJc1qKww==
+X-Received: by 2002:adf:ef01:: with SMTP id e1mr3227461wro.59.1610552705461;
+        Wed, 13 Jan 2021 07:45:05 -0800 (PST)
+Received: from dell ([91.110.221.229])
+        by smtp.gmail.com with ESMTPSA id 14sm3397949wmk.37.2021.01.13.07.45.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 07:45:04 -0800 (PST)
+Date:   Wed, 13 Jan 2021 15:45:03 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     =?iso-8859-1?Q?Dani=EBl?= Mantione 
+        <daniel.mantione@freepascal.org>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH 14/31] video: fbdev: aty: mach64_ct: Remove some set but
+ unused variables
+Message-ID: <20210113154503.GD3975472@dell>
+References: <20210113145009.1272040-1-lee.jones@linaro.org>
+ <20210113145009.1272040-15-lee.jones@linaro.org>
+ <alpine.DEB.2.21.2101131618160.8079@idefix.freepascal.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201216122844.25092-3-wangyanan55@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.DEB.2.21.2101131618160.8079@idefix.freepascal.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 08:28:43PM +0800, Yanan Wang wrote:
-> In dirty-logging, or dirty-logging-stopped time, even normal running
-> time of a guest configed with huge mappings and numbers of vCPUs,
-> translation faults by different vCPUs on the same GPA could occur
-> successively almost at the same time. There are two reasons for it.
-> 
-> (1) If there are some vCPUs accessing the same GPA at the same time and
-> the leaf PTE is not set yet, then they will all cause translation faults
-> and the first vCPU holding mmu_lock will set valid leaf PTE, and the
-> others will later update the old PTE with a new one if they are different.
-> 
-> (2) When changing a leaf entry or a table entry with break-before-make,
-> if there are some vCPUs accessing the same GPA just catch the moment when
-> the target PTE is set invalid in a BBM procedure coincidentally, they will
-> all cause translation faults and will later update the old PTE with a new
-> one if they are different.
-> 
-> The worst case can be like this: vCPU A causes a translation fault with RW
-> prot and sets the leaf PTE with RW permissions, and then the next vCPU B
-> with RO prot updates the PTE back to RO permissions with break-before-make.
-> And the BBM-invalid moment may trigger more unnecessary translation faults,
-> then some useless small loops might occur which could lead to vCPU stuck.
-> 
-> To avoid unnecessary update and small loops, add prejudgement in the
-> translation fault handler: Skip updating the PTE with break-before-make
-> if we are trying to recreate the exact same mapping or only change the
-> access permissions. Actually, change of permissions will be handled
-> through the relax_perms path next time if necessary.
-> 
-> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
-> ---
->  arch/arm64/kvm/hyp/pgtable.c | 28 +++++++++++++++++++---------
->  1 file changed, 19 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index 350f9f810930..8225ced49bad 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -45,6 +45,10 @@
->  
->  #define KVM_PTE_LEAF_ATTR_HI_S2_XN	BIT(54)
->  
-> +#define KVM_PTE_LEAF_ATTR_S2_PERMS	(KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R | \
-> +					 KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W | \
-> +					 KVM_PTE_LEAF_ATTR_HI_S2_XN)
-> +
->  struct kvm_pgtable_walk_data {
->  	struct kvm_pgtable		*pgt;
->  	struct kvm_pgtable_walker	*walker;
-> @@ -460,7 +464,7 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
->  	return 0;
->  }
->  
-> -static bool stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
-> +static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
->  				       kvm_pte_t *ptep,
->  				       struct stage2_map_data *data)
->  {
-> @@ -469,13 +473,18 @@ static bool stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
->  	struct page *page = virt_to_page(ptep);
->  
->  	if (!kvm_block_mapping_supported(addr, end, phys, level))
-> -		return false;
-> +		return 1;
+On Wed, 13 Jan 2021, Daniël Mantione wrote:
 
-It would probably be cleaner to return another error code here, as we
-have failed to install a mapping (e.g. E2BIG or perhaps more perversely,
-ENOTBLK). Then the caller can decide to install a trable.
+> Hi,
+> 
+> If I remember well, the removed lines have to do with the VGA/accelerator
+> mode of the chip. The current driver always runs the chip in accelerator
+> mode. Suppose you would want to support high resolution hardware text modes
+> with the driver (fbdev bpp=0), then you would need to switch the chip into
+> VGA mode mode and then the removed lines become relevant.
+> 
+> I did some experiments with this when I was working on the driver, but
+> because the documentation was silent about the behaviour of extended CRTC
+> registers in VGA mode, I failed to make hardware text modes to work
+> properly.
+> 
+> The #if 0 was there so code was already there in case me or someone else
+> would pick it up again.
 
-Will
+This code has been commented out for *at least* 16 years.
+
+Probably time to let it go. :)
+
+> Best regards,
+> 
+> Daniël Mantione
+> 
+> Op Wed, 13 Jan 2021, schreef Lee Jones:
+> 
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> > drivers/video/fbdev/aty/mach64_ct.c: In function ‘aty_init_pll_ct’:
+> > drivers/video/fbdev/aty/mach64_ct.c:405:46: warning: variable ‘vga_dsp_on_off’ set but not used [-Wunused-but-set-variable]
+> > drivers/video/fbdev/aty/mach64_ct.c:405:30: warning: variable ‘vga_dsp_config’ set but not used [-Wunused-but-set-variable]
+> > drivers/video/fbdev/aty/mach64_ct.c:405:18: warning: variable ‘dsp_on_off’ set but not used [-Wunused-but-set-variable]
+> > 
+> > Cc: daniel.mantione@freepascal.org
+> > Cc: dri-devel@lists.freedesktop.org
+> > Cc: linux-fbdev@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> > drivers/video/fbdev/aty/mach64_ct.c | 19 ++-----------------
+> > 1 file changed, 2 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/drivers/video/fbdev/aty/mach64_ct.c b/drivers/video/fbdev/aty/mach64_ct.c
+> > index f87cc81f4fa2b..23eececa1e9d7 100644
+> > --- a/drivers/video/fbdev/aty/mach64_ct.c
+> > +++ b/drivers/video/fbdev/aty/mach64_ct.c
+> > @@ -402,7 +402,7 @@ static int aty_init_pll_ct(const struct fb_info *info, union aty_pll *pll)
+> > 	struct atyfb_par *par = (struct atyfb_par *) info->par;
+> > 	u8 mpost_div, xpost_div, sclk_post_div_real;
+> > 	u32 q, memcntl, trp;
+> > -	u32 dsp_config, dsp_on_off, vga_dsp_config, vga_dsp_on_off;
+> > +	u32 dsp_config;
+> > #ifdef DEBUG
+> > 	int pllmclk, pllsclk;
+> > #endif
+> > @@ -488,25 +488,10 @@ static int aty_init_pll_ct(const struct fb_info *info, union aty_pll *pll)
+> > 
+> > 	/* Allow BIOS to override */
+> > 	dsp_config = aty_ld_le32(DSP_CONFIG, par);
+> > -	dsp_on_off = aty_ld_le32(DSP_ON_OFF, par);
+> > -	vga_dsp_config = aty_ld_le32(VGA_DSP_CONFIG, par);
+> > -	vga_dsp_on_off = aty_ld_le32(VGA_DSP_ON_OFF, par);
+> > 
+> > 	if (dsp_config)
+> > 		pll->ct.dsp_loop_latency = (dsp_config & DSP_LOOP_LATENCY) >> 16;
+> > -#if 0
+> > -	FIXME: is it relevant for us?
+> > -	if ((!dsp_on_off && !M64_HAS(RESET_3D)) ||
+> > -		((dsp_on_off == vga_dsp_on_off) &&
+> > -		(!dsp_config || !((dsp_config ^ vga_dsp_config) & DSP_XCLKS_PER_QW)))) {
+> > -		vga_dsp_on_off &= VGA_DSP_OFF;
+> > -		vga_dsp_config &= VGA_DSP_XCLKS_PER_QW;
+> > -		if (ATIDivide(vga_dsp_on_off, vga_dsp_config, 5, 1) > 24)
+> > -			pll->ct.fifo_size = 32;
+> > -		else
+> > -			pll->ct.fifo_size = 24;
+> > -	}
+> > -#endif
+> > +
+> > 	/* Exit if the user does not want us to tamper with the clock
+> > 	rates of her chip. */
+> > 	if (par->mclk_per == 0) {
+
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
