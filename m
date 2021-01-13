@@ -2,152 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90972F4BF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E37ED2F4BFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbhAMNEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 08:04:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46992 "EHLO
+        id S1726810AbhAMNGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 08:06:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbhAMNEs (ORCPT
+        with ESMTP id S1725857AbhAMNGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 08:04:48 -0500
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FAA7C061786;
-        Wed, 13 Jan 2021 05:04:08 -0800 (PST)
-Received: by mail-vs1-xe33.google.com with SMTP id h18so1048709vsg.8;
-        Wed, 13 Jan 2021 05:04:08 -0800 (PST)
+        Wed, 13 Jan 2021 08:06:20 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D2EC061575;
+        Wed, 13 Jan 2021 05:05:39 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id m6so1178269pfm.6;
+        Wed, 13 Jan 2021 05:05:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=D8lh1l6ZLQaTdOGk6daqASYfqhv/iz1lSmX/JechmhY=;
-        b=uPzOhwF2vqlNK184Al+jGmiwNMBMZJKSwCTqX2FydGcIlv4Qc6FupcXoz058JWTfaS
-         il28OO3LTFnM3dGLEfDV7VPOq4OT7AcTVQAvMur6w53JKQaccDjE61X1AHjq3V7Az1+H
-         4c3eraOST0UKez3/JeXcK3Xj1RjnynYznFsK+lHsNkMhily5i8XTgJmlWkEAfuUh/NgX
-         nkjkjbi5qQ+3ux4uWt42NUA/1zRYi6sYnBUac+4zR3Wk6XQgTz+z/EDULs3+n5To9tS9
-         PpfHD/hZY3c3T325BHOqNeYNm4Z+ptt54YNh2x+Jbh+gh0hEQScIJbhBVLwAcvHMpYRq
-         IwEQ==
+        bh=IVJs+wfp4qreGTLYzgt4gXDakLeTUHDUIVeds1NEB3w=;
+        b=Q603ItwbofIDv0BZdc0l/fkr0heq3s6JMUNYsCKrXLGNOwpfASDzD0aOEo6EOcqcN/
+         yApmddQBQh952j8W9gTxwosqY49Ch6DnCSoftFF2uFDMpND0UkAbu0NlXNSdoomGZVMB
+         I/+13VBhsQTHaz6rfN6o5VZUAfV/e/fPkxCnvM2MXqxqwMuVSPUDE4UlP2ADrmd0766n
+         MYRzd2n3ULDqL+H/qCZgjOjEjDI17pMmZH0WDsynKMAEdysHufuBUaEnZ0cG9WdRKrmU
+         gPZgIQb3FqE5gKGLSYLThp9qOlzLRBIZlX+z3rVH6uX7DDWMAVv8sfqZ/tAO8BXTKK6f
+         PjFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=D8lh1l6ZLQaTdOGk6daqASYfqhv/iz1lSmX/JechmhY=;
-        b=OnZgqltD/NlRpc3RbpcKiBGZ7rPHiMKzNjfKuXQnOfzpD7H/ON5VgweAZXWqa1DzLn
-         uFYEhD5uL88yqllKfzipD58+j1kpaE+InmoG5L3X3JoyhwdZDbTY3b44FGa/bUfAUmmp
-         kOxnxEzZmvQcweiah8voC7NNRohw5sUbBSofq4ITcABihmp54KygWofZepgEdTmwxOkv
-         B7V6qKKxDtwbzoBx7GOpX+s6/bvX7muAEcjiS+gWpu3tQQtN0GM9YL8zSGKvYHT8Ld9Q
-         LdCIpS/yWhEEAkQoKBz+6IwBlBXZnKeNSJxa+ADk+IMUX0ch8zZKvfsDvUEpCeZltf4/
-         hxbg==
-X-Gm-Message-State: AOAM532woUj7v2PfMOGBfCN+2TMNqZY7wPhqmTNqXalEP+ZJeIVZ4a3E
-        jvLhRfkfltovDzFm4tZIiFLgfPlMLs8dOCAVREDPWP4a
-X-Google-Smtp-Source: ABdhPJxH4pUKl3HjC4qDdhMbscxyVzUV6v+3zgFfTI+63OdVYs19Au57LoQPJO5Nog4B3Hsls09YfBfGPNcqvypURvA=
-X-Received: by 2002:a05:6102:93:: with SMTP id t19mr1610961vsp.57.1610543047338;
- Wed, 13 Jan 2021 05:04:07 -0800 (PST)
+        bh=IVJs+wfp4qreGTLYzgt4gXDakLeTUHDUIVeds1NEB3w=;
+        b=pAxusdDDzYMCKyZxrrT08z6xaoDSIBaFbvBa90Sf1OZ7gnr2+ovvX21zr0folPjHjn
+         qDszubeEOH7PUgEehxxsxCPaeGpqmlso36Z2CHhhRZf1FxJE9Y7fNHOFTU62iVU3qof7
+         +eBtkvNofSlnR+pVNISBgvtEzs+txviM3xDm0+MiB9mO+YTVVw/BX+Kazq6o6bSi064Q
+         gNsm6GthlmkPUafgHFjsNDTFhytqnI5KXPnIoNnRj4VAixpc+RFMby8zpYazbP95gKM3
+         bHC18JQhT/f4cM8FaJlc61NUYB6OieQyV3K4s9t74wavMDLTjX4sVlVk699NwZCC5UBq
+         aOhg==
+X-Gm-Message-State: AOAM531Tro4LaZt5unvnHcaM4S6VPaDFwPiM/KfKNlqEnLtODlyGn3eC
+        b6ttOXP6tPt2Yd1OwgVJsqB+FbgoY9Ji0nnousY=
+X-Google-Smtp-Source: ABdhPJy8RRQw2FZhD1iGuFKtD3o12SiBXCQ5m32xkaCAoscgSF+q0Z8Yv/ePpmOKrfck14S7L7Wzwnrk+5DNSUl49/w=
+X-Received: by 2002:a63:c04b:: with SMTP id z11mr2029372pgi.74.1610543139443;
+ Wed, 13 Jan 2021 05:05:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20201028221302.66583-1-kholk11@gmail.com> <20201028221302.66583-3-kholk11@gmail.com>
- <X83PDBKOq9bwSI0N@google.com>
-In-Reply-To: <X83PDBKOq9bwSI0N@google.com>
-From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
-Date:   Wed, 13 Jan 2021 14:03:56 +0100
-Message-ID: <CAK7fi1Y62YhoQvsU++_u=Z5Y3d6KC1_C4bWr6R8QZmDgyVV86g@mail.gmail.com>
-Subject: Re: [PATCH v9 2/3] Input: Add Novatek NT36xxx touchscreen driver
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, rydberg@bitmath.org,
-        priv.luk@gmail.com, linux-input@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>, marijns95@gmail.com,
-        Konrad Dybcio <konradybcio@gmail.com>, martin.botka1@gmail.com,
-        phone-devel@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        andy.shevchenko@gmail.com
+References: <20210112223749.97036-1-ftoth@exalondelft.nl>
+In-Reply-To: <20210112223749.97036-1-ftoth@exalondelft.nl>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 13 Jan 2021 15:05:23 +0200
+Message-ID: <CAHp75VfLOcMxUCU7urFi0Kz6RS4FNLA2y9T0rK_5Y0g8+UrE0w@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] hsu_dma_pci: disable spurious interrupt
+To:     Ferry Toth <ftoth@exalondelft.nl>
+Cc:     dmaengine <dmaengine@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno lun 7 dic 2020 alle ore 07:43 Dmitry Torokhov
-<dmitry.torokhov@gmail.com> ha scritto:
+On Wed, Jan 13, 2021 at 5:23 AM Ferry Toth <ftoth@exalondelft.nl> wrote:
 >
-> Hi AngeloGioacchino,
+> On Intel Tangier B0 and Anniedale the interrupt line, disregarding
+> to have different numbers, is shared between HSU DMA and UART IPs.
+> Thus on such SoCs we are expecting that IRQ handler is called in
+> UART driver only. hsu_pci_irq was handling the spurious interrupt
+
+hsu_pci_irq()
+
+> from HSU DMA by returning immediately. This wastes CPU time and
+> since HSU DMA and HSU UART interrupt occur simultaneously they race
+> to be handled causing delay to the HSU UART interrupt handling.
+> Fix this by disabling the interrupt entirely.
+
+Title should be "dmaengine: hsu: ..."
+
+After addressing above
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+
+> Fixes: 4831e0d9054c ("serial: 8250_mid: handle interrupt correctly in DMA case")
+> Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+> ---
+>  drivers/dma/hsu/pci.c | 21 +++++++++++----------
+>  1 file changed, 11 insertions(+), 10 deletions(-)
 >
-> On Wed, Oct 28, 2020 at 11:13:01PM +0100, kholk11@gmail.com wrote:
-> > +/**
-> > + * nt36xxx_set_page - Set page number for read/write
-> > + * @ts: Main driver structure
-> > + *
-> > + * Return: Always zero for success, negative number for error
-> > + */
-> > +static int nt36xxx_set_page(struct nt36xxx_i2c *ts, u32 pageaddr)
-> > +{
-> > +     u32 data = cpu_to_be32(pageaddr) >> 8;
-> > +     int ret;
-> > +
-> > +     ret = regmap_noinc_write(ts->fw_regmap, NT36XXX_CMD_SET_PAGE,
-> > +                              &data, sizeof(data));
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     usleep_range(100, 200);
-> > +     return ret;
-> > +}
+> diff --git a/drivers/dma/hsu/pci.c b/drivers/dma/hsu/pci.c
+> index 07cc7320a614..9045a6f7f589 100644
+> --- a/drivers/dma/hsu/pci.c
+> +++ b/drivers/dma/hsu/pci.c
+> @@ -26,22 +26,12 @@
+>  static irqreturn_t hsu_pci_irq(int irq, void *dev)
+>  {
+>         struct hsu_dma_chip *chip = dev;
+> -       struct pci_dev *pdev = to_pci_dev(chip->dev);
+>         u32 dmaisr;
+>         u32 status;
+>         unsigned short i;
+>         int ret = 0;
+>         int err;
 >
-> Regmap is supposed to handle paged access for you as long as you set it
-> up for paged access. Why do you need custom page handling here?
+> -       /*
+> -        * On Intel Tangier B0 and Anniedale the interrupt line, disregarding
+> -        * to have different numbers, is shared between HSU DMA and UART IPs.
+> -        * Thus on such SoCs we are expecting that IRQ handler is called in
+> -        * UART driver only.
+> -        */
+> -       if (pdev->device == PCI_DEVICE_ID_INTEL_MRFLD_HSU_DMA)
+> -               return IRQ_HANDLED;
+> -
+>         dmaisr = readl(chip->regs + HSU_PCI_DMAISR);
+>         for (i = 0; i < chip->hsu->nr_channels; i++) {
+>                 if (dmaisr & 0x1) {
+> @@ -105,6 +95,17 @@ static int hsu_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>         if (ret)
+>                 goto err_register_irq;
 >
-> Thanks.
+> +       /*
+> +        * On Intel Tangier B0 and Anniedale the interrupt line, disregarding
+> +        * to have different numbers, is shared between HSU DMA and UART IPs.
+> +        * Thus on such SoCs we are expecting that IRQ handler is called in
+> +        * UART driver only. Instead of handling the spurious interrupt
+> +        * from HSU DMA here and waste CPU time and delay HSU UART interrupt
+> +        * handling, disable the interrupt entirely.
+> +        */
+> +       if (pdev->device == PCI_DEVICE_ID_INTEL_MRFLD_HSU_DMA)
+> +               disable_irq_nosync(chip->irq);
+> +
+>         pci_set_drvdata(pdev, chip);
 >
+>         return 0;
 > --
-> Dmitry
+> 2.27.0
+>
 
-Regmap's page handling is using regmap_update_bits, hence calling a
-regmap_read for each page switch and this is not always possible on
-this MCU: especially, but not only, in the CRC reboot case, calling
-a regmap_read before the page-switch will result in invalid data.
 
-Hacking through the invalid data, we would still be able to set the
-page at this point, but then in the reset-idle sequence handling the
-CRC failure, we are setting page again: keeping in mind that this is
-a i2c connected MCU, calling a regmap_read while sending the "special"
-reset sequence is not in the likes of this MCU SW design, as it is
-expecting a specific, precise command sequence.
-
-If that happens, the MCU won't recognize the CRC reset-idle sequence
-and will never recover from the error.
-
-This can surely be solved by setting up a FLAT regcache and resetting
-the register cache in (many) strategic places but, in my opinion,
-that's going to be seriously messy, as I would have to do that in
-basically every place - but the CRC reboot loop function, so we'd have
-a register cache for *only* one special case in one function (which is
-not even supposed to be ever called during regular functionality,
-unless the MCU firmware panics somehow).
-
-There is also another reason why I dislike using the paged access that
-comes from the regmap API here: as you see, the event buffer address
-is different for some ICs (probably for MCU FW differences) and this
-would require me to dynamically set the regmap_range_cfg structure in
-the probe function, then casting it to a const and setting it into the
-regmap_config before registering regmap (which, by the way, is another
-const struct).
-
-Ah, also, as you can see the set_page function is doing:
-        u32 data = cpu_to_be32(pageaddr) >> 8;
-clearly, using the regmap page switching, I would have to change the
-pages definitions *and* the nt36xxx_mem_map at least partially (because
-"win_page << range->selector_shift"), and all of these definitions,
-right now, are representing the same addresses that are referenced into
-the MCU firmware, other than being basically 1:1 with what the downstream
-driver provides.
-Changing them around would not only, in some way, "hide" precious infos
-on a series of MCUs that are not publicly documented, but would also make
-the eventual porting of new ICs/MCUs that would be compatible with this
-driver harder for who knows what's going on and *way harder* for other
-"casual" developers.
-
-So, for the aforementioned reasons, all summed together, I chose to not
-use the regmap paged access.
-
-Yours,
--- Angelo
+-- 
+With Best Regards,
+Andy Shevchenko
