@@ -2,160 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765DE2F4764
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB0F2F476A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727766AbhAMJST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 04:18:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54636 "EHLO
+        id S1727771AbhAMJUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 04:20:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727475AbhAMJSS (ORCPT
+        with ESMTP id S1727387AbhAMJUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 04:18:18 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9946C0617A2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 01:17:11 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id v7so651315wra.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 01:17:11 -0800 (PST)
+        Wed, 13 Jan 2021 04:20:08 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C09B9C061575;
+        Wed, 13 Jan 2021 01:19:27 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id y4so1533863ybn.3;
+        Wed, 13 Jan 2021 01:19:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=pMSZunVusBFa2srMdPuW53fXoOwDSFeZUvebF05YN08=;
-        b=d4C0PW5sZc0HlVWTO9j0oxt1OwJCzegOR6uDyERunOBnLuzZup+teT4aMNmJkI0FDn
-         YRedWuQrB8arw/Jt5f8VUq/+QPbJDWhLsUjf1ZxaiubNyBX1+XCSQbCj1uQDXMeQkhp5
-         GOvnj696GHLj2reYj7W8v95JYL5Vxhix7bSbLO6+LFHeyzUutxwmps9ehUheOdsomQdq
-         fLmcjcKFWYgCaPfrwh4ypvmCy3SGwBt5fgt6xepe9j3qHUOtjqEkW3xbA/EILaM2WqSg
-         W3Ni7DYvcAe0Z6iOax0ObnSz4PSTOvl4dBpwTNHucMLpFH1ZAnrA1c4dDYuhwm/E3rA2
-         YgIg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4xHV72iPm1ITS/y3yBUV429ONkrf7HXSCrv4hwpk0AA=;
+        b=b9d4g4uoJ8wpveFIO1Ih3SbWNvmJGA9TTTyEAP3a+wAChA1XkfiKg0+Kxgcuc8os58
+         tMYiCXn3ZJ5ru8gDwzxMW3aNWzP94SWlchJ0uVGsXWPMfc+Yqk0V55Hln9jcqbVod1ek
+         A7baTm1Ni+RaYL7etar8ReSLoHwHjswsZgd6KAhe1eT+mmLm+PVD4g40oPJe7t7CCLVt
+         44M2xhbFcVSHGYYzVULH/yNtxZCqikDrz5U1zkh2hH6JIKXntkIxYazA9FR41eNzuIlf
+         v/ZeLv2MIGk5KTtpIZ8VBqXYwSjRz4/WhF/e2kIfZY/KlhgawkYyL5l9YNixLduDkxQP
+         Gvuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=pMSZunVusBFa2srMdPuW53fXoOwDSFeZUvebF05YN08=;
-        b=ZzbjSEQHOmsQAlT+S1fdi05Baz2xBshiOp7aTe9cCgS1qh814thG3X8gcJAXE5Bqvm
-         uMgFE1utBLqS9/oHOm4ycZlGMD4y4HMX23DNMgQZ7GoLIybTHBD876NNiIwh9rIeYy/S
-         wQS4bEukd6I7VRMeTbGuV5QxzIxlKhMzqhPWVX0rh/OXz7vjVj1xMkV0X4rRXENpcxmL
-         KF1xBZqfmd8b3AApeT8Mnop1nmpuuEcCyW8HHlaZam1bUcSUuHM0uRGPAbihcNbrTFxa
-         UumuVYUrFyZ1HXFsL5U98CHpV1ojopqfpGp1vM7y1fT4FZDUe7LHLxsPlkm+VMWntL2K
-         g32w==
-X-Gm-Message-State: AOAM532FyI4fTX7rNC/aTto2OBczrxNY0eddGQnt81wU/A6CNtB5r+Im
-        XelyoIgzwNlmN8zzDVaj8iNP5/ZtswY=
-X-Google-Smtp-Source: ABdhPJz3jt64c/gcj+wvuQCEziz78fmMWTAdkDanZ1a8Y5QATUBLbztfMzxaMeklY7WCE2FLqh5B8RbPUvY=
-Sender: "glider via sendgmr" <glider@glider.muc.corp.google.com>
-X-Received: from glider.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:9ff])
- (user=glider job=sendgmr) by 2002:a1c:5644:: with SMTP id k65mr1225748wmb.62.1610529430509;
- Wed, 13 Jan 2021 01:17:10 -0800 (PST)
-Date:   Wed, 13 Jan 2021 10:16:57 +0100
-In-Reply-To: <20210113091657.1456216-1-glider@google.com>
-Message-Id: <20210113091657.1456216-5-glider@google.com>
-Mime-Version: 1.0
-References: <20210113091657.1456216-1-glider@google.com>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH 4/4] kasan: use error_report_start and error_report_end tracepoints
-From:   Alexander Potapenko <glider@google.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-Cc:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-mm@kvack.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4xHV72iPm1ITS/y3yBUV429ONkrf7HXSCrv4hwpk0AA=;
+        b=phmLGOlubQHQwDVCLFkuXcgrMIyW3Ft9Z2rnTIew20f22SY3HEdCheKKgcMpDFBvkw
+         pW4R8M8INfoanQ4M6Fx7lHBiC9i/Ktt4ZJhH3Nneu49nUHa80oRQBGuJoiwWUpS/l8Zx
+         I2MPoHWPnOdoiTVA4MLX1SON0QGhC+t29v6GsLGFhTmzhtyK3DgUxfDLFGDh/1b4RWx9
+         i+kbe5e6T9c2+kSPcC1cePWUYezUGP6lrr1Xi3JAQ7wof56ChbI+c/1DnA6oBitV5G9u
+         kbHxh2kNj7oDPf0eaCsOztj5bWOICuLBRVGQ1s61VWfUm4TCQ3pbF7v+8B7tBX7eGUPb
+         wKxA==
+X-Gm-Message-State: AOAM5314f2FitZHs8Hf26DXxgdMR/SoddH5jTD0eSwI7x0f3CUwTYM5k
+        3kdtK2C8qkxZoatBSdVRbBFqLFR/ZGipAW3JmQk=
+X-Google-Smtp-Source: ABdhPJz6P0/yVNcimAVgk8zvEu7lAVc7RhHvApUF4bzr0QG4rKm7eEVCeNQa/mBOHjGBydpO49xzf1+aHtVN4v9JRLA=
+X-Received: by 2002:a25:9885:: with SMTP id l5mr1877548ybo.501.1610529567021;
+ Wed, 13 Jan 2021 01:19:27 -0800 (PST)
+MIME-Version: 1.0
+References: <CGME20210113040146epcas1p230596c7c3760471dca442d1f7ce4dc55@epcas1p2.samsung.com>
+ <CH2PR04MB65225EDDA7069CCD47A459A5E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
+ <20210113034637.1382-1-nanich.lee@samsung.com>
+In-Reply-To: <20210113034637.1382-1-nanich.lee@samsung.com>
+From:   Ming Lei <tom.leiming@gmail.com>
+Date:   Wed, 13 Jan 2021 17:19:15 +0800
+Message-ID: <CACVXFVMb0eE5-yo2k3KvnJjKN+aDLzOuT9rKQ7LY5-4WTgM3jw@mail.gmail.com>
+Subject: Re: Re: [PATCH] bio: limit bio max size.
+To:     Changheun Lee <nanich.lee@samsung.com>
+Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Jens Axboe <axboe@kernel.dk>, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, Tejun Heo <tj@kernel.org>,
+        yt0928.kim@samsung.com, woosung2.lee@samsung.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make it possible to trace KASAN error reporting (in particular, for
-compatibility with CONFIG_ERROR_REPORT_NOTIFY).
+On Wed, Jan 13, 2021 at 12:09 PM Changheun Lee <nanich.lee@samsung.com> wrote:
+>
+> >On 2021/01/12 21:14, Changheun Lee wrote:
+> >>> On 2021/01/12 17:52, Changheun Lee wrote:
+> >>>> From: "Changheun Lee" <nanich.lee@samsung.com>
+> >>>>
+> >>>> bio size can grow up to 4GB when muli-page bvec is enabled.
+> >>>> but sometimes it would lead to inefficient behaviors.
+> >>>> in case of large chunk direct I/O, - 64MB chunk read in user space -
+> >>>> all pages for 64MB would be merged to a bio structure if memory address is
+> >>>> continued phsycally. it makes some delay to submit until merge complete.
+> >>>> bio max size should be limited as a proper size.
+> >>>
+> >>> But merging physically contiguous pages into the same bvec + later automatic bio
+> >>> split on submit should give you better throughput for large IOs compared to
+> >>> having to issue a bio chain of smaller BIOs that are arbitrarily sized and will
+> >>> likely need splitting anyway (because of DMA boundaries etc).
+> >>>
+> >>> Do you have a specific case where you see higher performance with this patch
+> >>> applied ? On Intel, BIO_MAX_SIZE would be 1MB... That is arbitrary and too small
+> >>> considering that many hardware can execute larger IOs than that.
+> >>>
+> >>
+> >> When I tested 32MB chunk read with O_DIRECT in android, all pages of 32MB
+> >> is merged into a bio structure.
+> >> And elapsed time to merge complete was about 2ms.
+> >> It means first bio-submit is after 2ms.
+> >> If bio size is limited with 1MB with this patch, first bio-submit is about
+> >> 100us by bio_full operation.
+> >
+> >bio_submit() will split the large BIO case into multiple requests while the
+> >small BIO case will likely result one or two requests only. That likely explain
+> >the time difference here. However, for the large case, the 2ms will issue ALL
+> >requests needed for processing the entire 32MB user IO while the 1MB bio case
+> >will need 32 different bio_submit() calls. So what is the actual total latency
+> >difference for the entire 32MB user IO ? That is I think what needs to be
+> >compared here.
+> >
+> >Also, what is your device max_sectors_kb and max queue depth ?
+> >
+>
+> 32MB total latency is about 19ms including merge time without this patch.
+> But with this patch, total latency is about 17ms including merge time too.
 
-Suggested-by: Marco Elver <elver@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Marco Elver <elver@google.com>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc: linux-mm@kvack.org
-Signed-off-by: Alexander Potapenko <glider@google.com>
----
- mm/kasan/report.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+19ms looks too big just for preparing one 32MB sized bio, which isn't
+supposed to
+take so long.  Can you investigate where the 19ms is taken just for
+preparing one
+32MB sized bio?
 
-diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-index c0fb21797550..fd015dd5dd39 100644
---- a/mm/kasan/report.c
-+++ b/mm/kasan/report.c
-@@ -25,6 +25,7 @@
- #include <linux/module.h>
- #include <linux/sched/task_stack.h>
- #include <linux/uaccess.h>
-+#include <trace/events/error_report.h>
- 
- #include <asm/sections.h>
- 
-@@ -74,7 +75,7 @@ static void print_error_description(struct kasan_access_info *info)
- 
- static DEFINE_SPINLOCK(report_lock);
- 
--static void start_report(unsigned long *flags)
-+static void start_report(unsigned long *flags, unsigned long addr)
- {
- 	/*
- 	 * Make sure we don't end up in loop.
-@@ -82,10 +83,12 @@ static void start_report(unsigned long *flags)
- 	kasan_disable_current();
- 	spin_lock_irqsave(&report_lock, *flags);
- 	pr_err("==================================================================\n");
-+	trace_error_report_start("kasan", addr);
- }
- 
--static void end_report(unsigned long *flags)
-+static void end_report(unsigned long *flags, unsigned long addr)
- {
-+	trace_error_report_end("kasan", addr);
- 	pr_err("==================================================================\n");
- 	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
- 	spin_unlock_irqrestore(&report_lock, *flags);
-@@ -348,14 +351,14 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
- 		kasan_update_kunit_status(current->kunit_test);
- #endif /* IS_ENABLED(CONFIG_KUNIT) */
- 
--	start_report(&flags);
-+	start_report(&flags, (unsigned long)object);
- 	pr_err("BUG: KASAN: double-free or invalid-free in %pS\n", (void *)ip);
- 	print_tags(tag, object);
- 	pr_err("\n");
- 	print_address_description(object, tag);
- 	pr_err("\n");
- 	print_memory_metadata(object);
--	end_report(&flags);
-+	end_report(&flags, (unsigned long)object);
- }
- 
- static void __kasan_report(unsigned long addr, size_t size, bool is_write,
-@@ -385,7 +388,7 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
- 	info.is_write = is_write;
- 	info.ip = ip;
- 
--	start_report(&flags);
-+	start_report(&flags, addr);
- 
- 	print_error_description(&info);
- 	if (addr_has_metadata(untagged_addr))
-@@ -400,7 +403,7 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
- 		dump_stack();
- 	}
- 
--	end_report(&flags);
-+	end_report(&flags, addr);
- }
- 
- bool kasan_report(unsigned long addr, size_t size, bool is_write,
+It might be iov_iter_get_pages() for handling page fault. If yes, one suggestion
+is to enable THP(Transparent HugePage Support) in your application.
+
+
 -- 
-2.30.0.284.gd98b1dd5eaa7-goog
-
+Ming Lei
