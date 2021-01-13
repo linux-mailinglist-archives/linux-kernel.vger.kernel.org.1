@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB5A2F493B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9651A2F493D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727307AbhAMLAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:00:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38266 "EHLO mail.kernel.org"
+        id S1727366AbhAMLAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:00:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726652AbhAMLAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726654AbhAMLAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Jan 2021 06:00:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75EC2224B0;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94DF32333F;
         Wed, 13 Jan 2021 10:59:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1610535569;
-        bh=y+ENxO6fogU99ORCO8xr4UpDZT49yjmxWCfiIejsSWs=;
+        bh=wLPtDikaEr2WKIz4STdFMo8JbsgQLRoWtqG1j7dtivs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eIIr2laNWy4rQidI2P9Wn6xsT6XmK1DpDnb8FKyY+xMBbgnpFuY9c4jrbrLm+GwR2
-         GfIc197OxegviK5gKq9HG9ZUW2v/9tlOwiGqmGkum6KA0BV4cmwLIuocxtgpvc+gMJ
-         gyN6cReyFHKIXKCK9RR/LKaGvaGBZqL+pTiwTb8jskXdgsncxIFPy955OuahneDGLB
-         tKa1MuBClTN6C79Tz8Sna7h+AyYwIEiG/U96owfsm5krW0A6eAsu3XSxtr0AWdBrZB
-         LabyGQvzU7aIRFUCRBxBKg6fR02L9bjufI0A29owCrEUSRDTwOE6Pz5udNuSgk9I6/
-         GSTuUWuTqK4oQ==
+        b=J5br75HKFNEdTlmPmoMKPHHZZf8vgUo9uoBlvh4/1+WT5Yek+el7vWTyRK8bhZBFh
+         6SmsRQVKUfJUDpZ0rK+8wJnbzj/PYxgT9lIc1ykbaR2kvbvQW3RXSQfBAXNaxUoeVH
+         j+xEHiKU2CZmk8WWdTLYprZNaY10zof1ff6FQqhxCS9y4K9xiZ0xtbMh/e1J5OMooc
+         WhjvXALnIkWcMirx8TX/mne/K/mBUwo7t416gd17TPRRcyZfgx6HtG8j2BgA6tXLuf
+         Xuye0aYZWpAXTOjGGf/ol/2SSADYlabIGec1h9WooQpYVDmbbQFXubtzLf7sTf/5XT
+         pst1hBaFV6tQg==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kzds7-00DpFq-31; Wed, 13 Jan 2021 11:59:27 +0100
+        id 1kzds7-00DpFu-58; Wed, 13 Jan 2021 11:59:27 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 01/24] MAINTAINERS: update adi,ad5758.yaml reference
-Date:   Wed, 13 Jan 2021 11:59:02 +0100
-Message-Id: <f492bd7d4c1717f04b59ee364459bf0d999fc4c7.1610535349.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 03/24] MAINTAINERS: update st,hts221.yaml reference
+Date:   Wed, 13 Jan 2021 11:59:04 +0100
+Message-Id: <c2f39f957d717a28b4e05a371d22a67ab20562f6.1610535349.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1610535349.git.mchehab+huawei@kernel.org>
 References: <cover.1610535349.git.mchehab+huawei@kernel.org>
@@ -43,9 +43,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 1e6536ee349b ("dt-bindings:iio:dac:adi,ad5758 yaml conversion")
-renamed: Documentation/devicetree/bindings/iio/dac/ad5758.txt
-to: Documentation/devicetree/bindings/iio/dac/adi,ad5758.yaml.
+Changeset 9a6ac3138258 ("dt-bindings:iio:humidity:st,hts221 yaml conversion.")
+renamed: Documentation/devicetree/bindings/iio/humidity/hts221.txt
+to: Documentation/devicetree/bindings/iio/humidity/st,hts221.yaml.
 
 Update its cross-reference accordingly.
 
@@ -55,18 +55,18 @@ Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 289465785e88..68f43b83235b 100644
+index 7578b9798bfe..b3fe85038eb8 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -1132,7 +1132,7 @@ W:	http://ez.analog.com/community/linux-device-drivers
- F:	Documentation/ABI/testing/sysfs-bus-iio-frequency-ad9523
- F:	Documentation/ABI/testing/sysfs-bus-iio-frequency-adf4350
- F:	Documentation/devicetree/bindings/iio/*/adi,*
--F:	Documentation/devicetree/bindings/iio/dac/ad5758.txt
-+F:	Documentation/devicetree/bindings/iio/dac/adi,ad5758.yaml
- F:	drivers/iio/*/ad*
- F:	drivers/iio/adc/ltc249*
- F:	drivers/iio/amplifiers/hmc425a.c
+@@ -8215,7 +8215,7 @@ M:	Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>
+ L:	linux-iio@vger.kernel.org
+ S:	Maintained
+ W:	http://www.st.com/
+-F:	Documentation/devicetree/bindings/iio/humidity/hts221.txt
++F:	Documentation/devicetree/bindings/iio/humidity/st,hts221.yaml
+ F:	drivers/iio/humidity/hts221*
+ 
+ HUAWEI ETHERNET DRIVER
 -- 
 2.29.2
 
