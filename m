@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104982F4340
+	by mail.lfdr.de (Postfix) with ESMTP id E90E92F4342
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725901AbhAMEhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 23:37:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50926 "EHLO
+        id S1726125AbhAMEhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 23:37:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbhAMEhI (ORCPT
+        with ESMTP id S1725781AbhAMEhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 23:37:08 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAF5C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:36:28 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id a188so450478pfa.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:36:28 -0800 (PST)
+        Tue, 12 Jan 2021 23:37:12 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705BDC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:36:32 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id w2so444293pfc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:36:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=v8M6I4uoOoWPXGUxC7pSdwXF3g2dnNPkk0v2MpAf+W8=;
-        b=lfLH3Q7jtZb/zf63+ZlMqsMcC8w3F5TQb86l4tvMJ69W3kq9KJ3fNfaGxUiHB8IYVt
-         YZiKcz792a4vWjRFEsZ28UV0IDQJqaC0PAx7LIIXajyJrdb2MaWTfCyiUvS0PsjapXoX
-         2mHjkVOv/ewD8RJZrwRx+okz602BY2KY1CKhHe2l4UNTvgBQvkmAy1rYeQKaqyPS5CFs
-         OeF02veA+IG+TauO/+YvgLo+mdhPRq0rPMFV4Zik2UZJtky4dN4uyg714S6z7FPVTOKh
-         0rM4JDCiWKFVR/krPTch5aK/hRh2CMSAzd5fkJC1+2FjLdMxhn1iD8U87o0q8cpdywkK
-         wlGw==
+        bh=ogtrVGZ6pAo0ADV9qwAesULOZDDOSRXRQwB1gmpCX8s=;
+        b=JNhHVXk/UfFxEOuGHLDZxxdRz1GzMEbSz/1g2abyF+tnPs89EwF+oUHBl/iUnN2nB7
+         ZBFIe+8+vaOSORcohr2CIiZgPS0JcspM7MA2KNFtlDMc7fROec2PxygF7aMY/4w4eDDD
+         nCZV4Owfn2uRfJAPdDDUHOLJzbcVWmOUaN8S5OuwzYeYjvAIwMPuVXYfc9bapC35N54I
+         EAhu8TUwqdg3MKG3P7ka9e69K9oxhoExLRsraaeuIWagPnh4UKhR1oBlq8Yr6hgXAiGs
+         bvOsXbIMH8ob1IA1dzYdQNBSYnzfM6hD0GampWUI8HEHlIcETCUyVdf/JVbOazJq7n5R
+         OpAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=v8M6I4uoOoWPXGUxC7pSdwXF3g2dnNPkk0v2MpAf+W8=;
-        b=kceWPBKTuTMDyY1AiyJMHjH/Fj1VqbNx0Viq5O8MHNVG00XpjErh8rLmpWAwEQWYXn
-         /DWQlaAjgfomb4cUq60fT6+yQ1au9hNWItRv8TOO73izsUvz6qQlxrFSbVFVvEoaCRn0
-         rQNHRvRK9s64R2IaVkZVwBFRi9wUWH5RkgmamFg/WX4+CD1h9k9PxFe/USBpqTR0JKQg
-         zePBh5sM8c75KL/y0O1ovHPGOh5DglhVg3zhSICW+nkM1UGY5efBbcjLX53Lf5YDUcTy
-         BlZvyxauMOCEQ1Pts3W7P35lHx2cyiCzs+RXUMbgsdfUaPgCpbfG4paOTf4W6fo54gnX
-         zacw==
-X-Gm-Message-State: AOAM530X00elkfZB4iLw1SoOGBbzSBzrr0J34OAWhjGtDXp0JRsks+Jw
-        mP07UPk1elzTMkKeNRQYGHJVSz/RfoIC3g==
-X-Google-Smtp-Source: ABdhPJytECWo9XHp2+7rMUBWFv2+jhZFSXfHRB71mo37McQGfiaXyJ4UdNIVwo05BSbwt6jorS/6VA==
-X-Received: by 2002:a63:f64c:: with SMTP id u12mr343978pgj.98.1610512587525;
-        Tue, 12 Jan 2021 20:36:27 -0800 (PST)
+        bh=ogtrVGZ6pAo0ADV9qwAesULOZDDOSRXRQwB1gmpCX8s=;
+        b=c4Ic0T9JNuFzy662IpmLlMgZxNXX7bznZveZRYD/6cg1G1mMeaNHQCEddicY8qSRZV
+         Nj4dn2FQnyhtvfojlpfUyuNN/AY+vAl7jn0JvwnCLRmJ4sH5sABvBW3SjxgP5MTFZiCb
+         e6ZVYoCCqrQlNhYO238gHhExTv4fy4H+LMNYNzdK9fJlCBpS6Uwz2fUBYivrs4eF8qo7
+         bpCm8cYMU1sNONhxNAyjI9qVTx+oJGpuuKdbFmXpIrZ769W7NRdkNOLJDCkHJWE0fk45
+         0BT+fzKwyQtQfka2dUuZYeSlYonpZS4yz+561axvsTncrASd0yXGNbJW1iBJEKzXDa0x
+         al2Q==
+X-Gm-Message-State: AOAM530P7RdiNHmJ6O37w/blVB5sRUZqycfHUZlN0/QKSpI6ZFVlW/3r
+        E9FLONvvOfYDrZQXmmYU8Yq2eQ==
+X-Google-Smtp-Source: ABdhPJyZQ4/PvLkpMLQMJw9Yk9cgwnCJD0Cvh1T6jj83SqfE84Pw82Sr82NFhWGF8VJvPwBXBeP7cA==
+X-Received: by 2002:aa7:8209:0:b029:19f:3002:513 with SMTP id k9-20020aa782090000b029019f30020513mr257917pfi.49.1610512591844;
+        Tue, 12 Jan 2021 20:36:31 -0800 (PST)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id a136sm786958pfd.149.2021.01.12.20.36.26
+        by smtp.gmail.com with ESMTPSA id a22sm747129pfa.215.2021.01.12.20.36.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 20:36:26 -0800 (PST)
-Date:   Tue, 12 Jan 2021 20:36:26 -0800 (PST)
-X-Google-Original-Date: Tue, 12 Jan 2021 20:16:53 PST (-0800)
-Subject:     Re: [PATCH] riscv: Trace irq on only interrupt is enabled
-In-Reply-To: <20201219002051.2891577-1-atish.patra@wdc.com>
-CC:     linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
-        stable@vger.kernel.org, aou@eecs.berkeley.edu,
-        Anup Patel <Anup.Patel@wdc.com>, guoren@linux.alibaba.com,
-        linux-riscv@lists.infradead.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Atish Patra <Atish.Patra@wdc.com>
-Message-ID: <mhng-46e80f20-f58a-4f1b-b162-e2ad7b6df816@palmerdabbelt-glaptop>
+        Tue, 12 Jan 2021 20:36:31 -0800 (PST)
+Date:   Tue, 12 Jan 2021 20:36:31 -0800 (PST)
+X-Google-Original-Date: Tue, 12 Jan 2021 20:36:21 PST (-0800)
+Subject:     Re: [PATCH] riscv: Fixup CONFIG_GENERIC_TIME_VSYSCALL
+In-Reply-To: <CAOJsxLGwdrw6t665+Q8k5o_2P8y7fxNV3s_SpQLD_toPg8Db_w@mail.gmail.com>
+CC:     guoren@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
+        anup@brainfault.org, Atish Patra <Atish.Patra@wdc.com>,
+        guoren@linux.alibaba.com, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, vincent.chen@sifive.com,
+        linux-riscv@lists.infradead.org
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     penberg@gmail.com
+Message-ID: <mhng-2092c5f2-ec27-4a8e-bb91-4c4ccdc1c5e1@palmerdabbelt-glaptop>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -68,58 +67,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Dec 2020 16:20:51 PST (-0800), Atish Patra wrote:
-> We should call irq trace only if interrupt is going to be enabled during
-> excecption handling. Otherwise, it results in following warning during
-> boot with lock debugging enabled.
+On Sun, 03 Jan 2021 02:11:35 PST (-0800), penberg@gmail.com wrote:
+> On Sat, Jan 2, 2021 at 3:26 PM <guoren@kernel.org> wrote:
+>>
+>> From: Guo Ren <guoren@linux.alibaba.com>
+>>
+>> The patch fix commit: ad5d112 ("riscv: use vDSO common flow to
+>> reduce the latency of the time-related functions").
+>>
+>> The GENERIC_TIME_VSYSCALL should be CONFIG_GENERIC_TIME_VSYSCALL
+>> or vgettimeofday won't work.
+>>
+>> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+>> Cc: Atish Patra <atish.patra@wdc.com>
+>> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+>> Cc: Vincent Chen <vincent.chen@sifive.com>
 >
-> [    0.000000] ------------[ cut here ]------------
-> [    0.000000] DEBUG_LOCKS_WARN_ON(early_boot_irqs_disabled)
-> [    0.000000] WARNING: CPU: 0 PID: 0 at kernel/locking/lockdep.c:4085 lockdep_hardirqs_on_prepare+0x22a/0x22e
-> [    0.000000] Modules linked in:
-> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.10.0-00022-ge20097fb37e2-dirty #548
-> [    0.000000] epc: c005d5d4 ra : c005d5d4 sp : c1c01e80
-> [    0.000000]  gp : c1d456e0 tp : c1c0a980 t0 : 00000000
-> [    0.000000]  t1 : ffffffff t2 : 00000000 s0 : c1c01ea0
-> [    0.000000]  s1 : c100f360 a0 : 0000002d a1 : c00666ee
-> [    0.000000]  a2 : 00000000 a3 : 00000000 a4 : 00000000
-> [    0.000000]  a5 : 00000000 a6 : c1c6b390 a7 : 3ffff00e
-> [    0.000000]  s2 : c2384fe8 s3 : 00000000 s4 : 00000001
-> [    0.000000]  s5 : c1c0a980 s6 : c1d48000 s7 : c1613b4c
-> [    0.000000]  s8 : 00000fff s9 : 80000200 s10: c1613b40
-> [    0.000000]  s11: 00000000 t3 : 00000000 t4 : 00000000
-> [    0.000000]  t5 : 00000001 t6 : 00000000
->
-> Fixes: 3c4697982982 ("riscv:Enable LOCKDEP_SUPPORT & fixup TRACE_IRQFLAGS_SUPPORT")
-> Cc: stable@vger.kernel.org
->
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> ---
->  arch/riscv/kernel/entry.S | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-> index 524d918f3601..7dea5ee5a3ac 100644
-> --- a/arch/riscv/kernel/entry.S
-> +++ b/arch/riscv/kernel/entry.S
-> @@ -124,15 +124,15 @@ skip_context_tracking:
->  	REG_L a1, (a1)
->  	jr a1
->  1:
-> -#ifdef CONFIG_TRACE_IRQFLAGS
-> -	call trace_hardirqs_on
-> -#endif
->  	/*
->  	 * Exceptions run with interrupts enabled or disabled depending on the
->  	 * state of SR_PIE in m/sstatus.
->  	 */
->  	andi t0, s1, SR_PIE
->  	beqz t0, 1f
-> +#ifdef CONFIG_TRACE_IRQFLAGS
-> +	call trace_hardirqs_on
-> +#endif
->  	csrs CSR_STATUS, SR_IE
->
->  1:
+> Reviewed-by: Pekka Enberg <penberg@kernel.org>
 
 Thanks, this is on fixes.
