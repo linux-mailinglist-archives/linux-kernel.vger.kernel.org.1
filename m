@@ -2,120 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D6E2F49B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D332F49B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbhAMLHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:07:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727762AbhAMLHY (ORCPT
+        id S1727891AbhAMLIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:08:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40826 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727286AbhAMLIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:07:24 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6EEBC0617A5;
-        Wed, 13 Jan 2021 03:06:13 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id t16so2411408ejf.13;
-        Wed, 13 Jan 2021 03:06:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YX793nA8glqiZM8wxhoAMRaUWaqDOXtDUvGcyOuuTxE=;
-        b=Ll6IeaTNwpZeKWZ5djowMvUPvSB/AHBX6HhGi0/xdvCkE85dzSPUReZLVo6E5I/Q68
-         P6kUwTlYWtK9atlcV4wWnFoRa3A9HEsWrT2HTMbfKTVcjJ8HSWrzguivGgapv/HZcKSd
-         p57h/ZrTXtRR1jalsQMymvfgWCtgc1fdmQR2qrK9pRhvNSTEkQ1IljT3LaipfvLvASB7
-         lfnZktXfKbrYwf1/ArxRYZGtNk+sJ6s1w0UBTEgtzj5vizmWKv6xYXRtpz4tP6oZtfkO
-         poxxjCg+rrFlS0NGELnprX1c7o/L10HI9Z9nPsXXYvZ1KLWd1uDknjy90T0NrNJdiCC8
-         GL4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YX793nA8glqiZM8wxhoAMRaUWaqDOXtDUvGcyOuuTxE=;
-        b=SXwY8cnRytWXIQoiJ5Hqb0j1iU0IhIH+zAKhdrxmR1kdADQbu8hXy0M5hkrqkK5lvB
-         0jHlwUHmz0CJjW63uB6sHH0cfhbf/7xPrEJeg0ZWtS+HmE1tnnvWQ5g/q+imHowWyoOO
-         Usa/OOvws0XY5jfIOqKWPhRkc+e4MICjyqqXziGdPoGmQ7WUse9QKn5MA1K8NPvzbUdC
-         vhAApkLDkIcR4NWcVJwV5dgRVv6UWVCOcwkPLTJAt/Lxi5QeBQSpJZsuomhqInnDHiBt
-         8NbEez/50zZnVr6lZHsGL1u9HPVAz7VS5q1Yetu2rGHJj9enAWClDu178MZLg451j7In
-         kz2w==
-X-Gm-Message-State: AOAM531JiKXkHlPoUH44jB9/EmpARDxHbfAFjZzUL5nI28Xg7XwXEspA
-        odC/RGaOUP/r25OPOJ8CZ8I=
-X-Google-Smtp-Source: ABdhPJwxPwEm3vlWdbgOjDf1es5xf7Ay8on23IVVrmyjyIiRw/cHKZXCV201CW82DzPJ68uLAysIjA==
-X-Received: by 2002:a17:906:4d8d:: with SMTP id s13mr1156985eju.305.1610535972494;
-        Wed, 13 Jan 2021 03:06:12 -0800 (PST)
-Received: from localhost.localdomain ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id zn8sm597343ejb.39.2021.01.13.03.06.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 03:06:11 -0800 (PST)
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [PATCH v5 7/7] MAINTAINERS: Add entry for ATC260x PMIC
-Date:   Wed, 13 Jan 2021 13:05:57 +0200
-Message-Id: <ca8a8d5c150d5d67cd62a67bd20287aa556a8763.1610534765.git.cristian.ciocaltea@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <cover.1610534765.git.cristian.ciocaltea@gmail.com>
-References: <cover.1610534765.git.cristian.ciocaltea@gmail.com>
+        Wed, 13 Jan 2021 06:08:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610536040;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0H/STPC0cOKGWSV6K6J3rtRcmnK1lr7pkC/7lVdfCz0=;
+        b=DUOXbro98wKDCSVxat158bBsiwSfbSeB/JMNT2k2oMwUOZrEitqa78Ir6nOTz29IMal/6m
+        /Xm2LID+nYm02r1PEahhvx4pBlWLYCnV12iH5m/LKvXCjY7AehjGBcALuF6DrWt2Ks2E2Z
+        t1McfAEZxh0/CbknWMOSDJ452s8iqmo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-320-5KxiTM1CPKmsvtWvDecOgA-1; Wed, 13 Jan 2021 06:07:18 -0500
+X-MC-Unique: 5KxiTM1CPKmsvtWvDecOgA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B9171922960;
+        Wed, 13 Jan 2021 11:07:17 +0000 (UTC)
+Received: from krava (unknown [10.40.195.134])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 0E25860BF1;
+        Wed, 13 Jan 2021 11:07:10 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 12:07:01 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v5] perf stat: Fix wrong skipping for per-die aggregation
+Message-ID: <20210113110701.GC1331835@krava>
+References: <20210113015631.8748-1-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113015631.8748-1-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+On Wed, Jan 13, 2021 at 09:56:31AM +0800, Jin Yao wrote:
 
-Add MAINTAINERS entry for ATC260x PMIC.
+SNIP
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-[cristian: change binding doc file path, add file patterns for onkey and
-           poweroff drivers, fix ordering, add myself as co-maintainer]
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
----
-Changes in v5:
- - None
+> 
+> root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
+>      1.001586691 S0-D0           1            1229440 Bytes llc_misses.mem_read
+>      1.001586691 S0-D1           1             976832 Bytes llc_misses.mem_read
+>      1.001586691 S1-D0           1             938304 Bytes llc_misses.mem_read
+>      1.001586691 S1-D1           1            1227328 Bytes llc_misses.mem_read
+>      2.003776312 S0-D0           1            1586752 Bytes llc_misses.mem_read
+>      2.003776312 S0-D1           1             875392 Bytes llc_misses.mem_read
+>      2.003776312 S1-D0           1             855616 Bytes llc_misses.mem_read
+>      2.003776312 S1-D1           1             949376 Bytes llc_misses.mem_read
+>      3.006512788 S0-D0           1            1338880 Bytes llc_misses.mem_read
+>      3.006512788 S0-D1           1             920064 Bytes llc_misses.mem_read
+>      3.006512788 S1-D0           1             877184 Bytes llc_misses.mem_read
+>      3.006512788 S1-D1           1            1020736 Bytes llc_misses.mem_read
+>      4.008895291 S0-D0           1             926592 Bytes llc_misses.mem_read
+>      4.008895291 S0-D1           1             906368 Bytes llc_misses.mem_read
+>      4.008895291 S1-D0           1             892224 Bytes llc_misses.mem_read
+>      4.008895291 S1-D1           1             987712 Bytes llc_misses.mem_read
+>      5.001590993 S0-D0           1             962624 Bytes llc_misses.mem_read
+>      5.001590993 S0-D1           1             912512 Bytes llc_misses.mem_read
+>      5.001590993 S1-D0           1             891200 Bytes llc_misses.mem_read
+>      5.001590993 S1-D1           1             978432 Bytes llc_misses.mem_read
+> 
+> On no-die system, die_id is 0, actually it's hashmap(socket,0), original behavior
+> is not changed.
+> 
+> Reported-by: Huang Ying <ying.huang@intel.com>
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> ---
+> v5:
+>  Hash key is changed to die_id << 32 | socket.
+>  In pkg_id_hash, return (int64_t)key & 0xffffffff; actually it's socket.
 
-Changes in v4:
- - None
+seems ok, but I'm getting python test fail:
 
-Changes in v3:
- - Restored the authorship of the patch to Mani
+	$ sudo ./perf test python -v
+	19: 'import perf' in python                                         :
+	--- start ---
+	test child forked, pid 1352066
+	python usage test: "echo "import sys ; sys.path.append('python'); import perf" | '/usr/bin/python2' "
+	Traceback (most recent call last):
+	  File "<stdin>", line 1, in <module>
+	ImportError: python/perf.so: undefined symbol: hashmap__free
+	test child finished with -1
+	---- end ----
+	'import perf' in python: FAILED!
 
- MAINTAINERS | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 844f05410509..e5e3429a6026 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2892,6 +2892,18 @@ W:	http://www.openaoe.org/
- F:	Documentation/admin-guide/aoe/
- F:	drivers/block/aoe/
- 
-+ATC260X PMIC MFD DRIVER
-+M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-+M:	Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-+L:	linux-actions@lists.infradead.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/mfd/actions,atc260x.yaml
-+F:	drivers/input/misc/atc260x-onkey.c
-+F:	drivers/mfd/atc260*
-+F:	drivers/power/reset/atc260x-poweroff.c
-+F:	drivers/regulator/atc260x-regulator.c
-+F:	include/linux/mfd/atc260x/*
-+
- ATHEROS 71XX/9XXX GPIO DRIVER
- M:	Alban Bedel <albeu@free.fr>
- S:	Maintained
--- 
-2.30.0
+jirka
 
