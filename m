@@ -2,101 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A1D2F4D17
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A81B02F4D1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:31:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbhAMO2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:28:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
+        id S1726693AbhAMO3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:29:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbhAMO23 (ORCPT
+        with ESMTP id S1725747AbhAMO3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:28:29 -0500
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFD8C061575;
-        Wed, 13 Jan 2021 06:27:49 -0800 (PST)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 0AB5DC6378; Wed, 13 Jan 2021 14:27:46 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1610548066; bh=UktXgG9wkBHTGV//3PGFQd/yEA8ExzR/nxPRJulSGQA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Facmcd+CkeoNSgGoSfHw7RKuh9lt4n46w1p2uqfH6iFCzcgOyNzY2eLZMxF2Yyx0N
-         Dh8UHI+BjVsuYsRzm/WY+8Hb01/cPeVzgHJfcSXr0ElscF0aJbNpWZqo3jeNsMvp61
-         xJ8Y3MRBhDbqJajQsnz6xKnBxDRYZ6TodbL1BvA+7APXBgW7Vow3QXo4u8EOxbQdlL
-         iOGfnzDnvxs9Ar5AQoKjh0MDZvO8pqvZurneYfiSHdoRekyEGr0seyar0FJYHxWM0x
-         rIiTeVvbwSu0cZNB09aRzDjarNB3v3w9QKBjGDVwe8ZVfNIEgOr6FlUvXUj5TCepwD
-         WnQzxV3uJfoCg==
-Date:   Wed, 13 Jan 2021 14:27:45 +0000
-From:   Sean Young <sean@mess.org>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Fix shift-out-of-bound in mceusb_process_ir_data
-Message-ID: <20210113142745.GA8138@gofer.mess.org>
-References: <20210113111122.1739478-1-mudongliangabcd@gmail.com>
+        Wed, 13 Jan 2021 09:29:03 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01376C061786;
+        Wed, 13 Jan 2021 06:28:23 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id u11so2715253ljo.13;
+        Wed, 13 Jan 2021 06:28:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BQkLYxNw2hBfYRvo6J97P4nDGHACpyQNsZu0INKchuc=;
+        b=JM0Vc3Z52w5ZNpDweGcxig4GF5gVF8EidkRTBBjIwcPjWmBxzU2SVCM0+ObhZ/OKz6
+         GMtPSd5/6zDFO7db1i7oRXQ2oId9D8nULAqEubfFA+oX5TfUFKZNz3OjSZaD/tS4Q/zO
+         kXTvyknJt89ulCo49F/LOtejL6T3Fat1PRL1M54ie+M4WJZLz5+QD5bm5jIyhdJIwT1t
+         hxNLEe2nBjVELRkv5IH+/9vvdiSx0rw7kohH6Nt2NyycGWcOOMTuLT4AB86SErde9L3t
+         XvYtRqOQusSbcmwSqOjgKSDxnQvbwashmFzqxOeVYvrytGKV0KYoRzQQNAkoeMfogTVf
+         3Ngg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BQkLYxNw2hBfYRvo6J97P4nDGHACpyQNsZu0INKchuc=;
+        b=sHYheHx26GmPgHcUROIeIAR6Sz+Q31WmFp+zFBdTysc4QDID3PhslrHjqtCFb7O5hV
+         Gx6PfCIW1JUQQvm8XUYTwBmhN/JPfkc3+8kGLK1L+gMgMmXJ0KIAuva6PaybmSth9UP+
+         3Zxs+6/6tGJVtLlHGNiTRRljwNJwXCrwm+CSVY+j33bkgFsGPh0U3Kw+ozuZPJuA0iGB
+         p82Ozq2rHe2Wfe6i1fD7PUyvoRshWj2l7UzAkrzB1diEC+vPx711SjUJmdG04HWwlwc/
+         fzwT4r3qN83+ODQzFS1ilHMoasK0Q+Pe4nPTqvvtPs3cSuIjEwgokRGmK7G9V5uSr5vp
+         mg+Q==
+X-Gm-Message-State: AOAM533TC6ZBywDq4fXqmJYrQ9tU4PSnAJF7zh7+Bf0MZbwaT8O5V2m4
+        T9eC0KoWEaeZ+9PxUGzCeW6dZPEgA8g=
+X-Google-Smtp-Source: ABdhPJz1qHbR88Qom5UR9GN0WOhaW4QYBx2GxOhNj5Mqhfj3zIdtBT3voak2LHTeQ8k+yvMSzKpijw==
+X-Received: by 2002:a2e:8046:: with SMTP id p6mr1065662ljg.132.1610548101127;
+        Wed, 13 Jan 2021 06:28:21 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id d19sm225390lfi.128.2021.01.13.06.28.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jan 2021 06:28:20 -0800 (PST)
+Subject: Re: [PATCH v3 0/9] Support Runtime PM and host mode by Tegra ChipIdea
+ USB driver
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Peter Chen <hzpeterchen@gmail.com>,
+        Peter Chen <peter.chen@nxp.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Ion Agorria <ion@agorria.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201218120246.7759-1-digetx@gmail.com>
+ <20201229051615.GA5823@b29397-desktop>
+ <b2c21687-4cb9-ba0a-a724-3a82ddd8daff@gmail.com>
+ <713c4b1a-a4b3-41ad-7aad-c49e594f778b@gmail.com>
+ <20210113012036.GA1560@b29397-desktop>
+ <5cfc067a-0b3b-05fc-7567-4b2b475dd6e4@gmail.com> <X/7K9tB4B3DkjfKk@kroah.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <9d8e26b2-b9fc-103c-5126-be3c105468c8@gmail.com>
+Date:   Wed, 13 Jan 2021 17:28:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113111122.1739478-1-mudongliangabcd@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <X/7K9tB4B3DkjfKk@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 07:11:22PM +0800, Dongliang Mu wrote:
-> The missing check of ir->buf_in[i+1] can lead to an shift-out-of-bound
-> in mceusb_handle_command or mceusb_dev_printdata. This patch adds a
-> check to limit its value lower than 16. The concrete report of UBSAN is
-> as follows.
+13.01.2021 13:27, Greg Kroah-Hartman пишет:
+> On Wed, Jan 13, 2021 at 12:01:51PM +0300, Dmitry Osipenko wrote:
+>> 13.01.2021 04:20, Peter Chen пишет:
+>>> On 21-01-12 09:56:37, Dmitry Osipenko wrote:
+>>>> 29.12.2020 17:26, Dmitry Osipenko пишет:
+>>>>> 29.12.2020 08:16, Peter Chen пишет:
+>>>>>> On 20-12-18 15:02:37, Dmitry Osipenko wrote:
+>>>>>>> This series implements Runtime PM support for the Tegra ChipIdea USB driver.
+>>>>>>> It also squashes the older ehci-tegra driver into the ChipIdea driver, hence
+>>>>>>> the RPM is supported by both UDC and host controllers, secondly this opens
+>>>>>>> opportunity for implementing OTG support in the future.
+>>>>>>>
+>>>>>>> Patchset was tested on various Tegra20, Tegra30 and Tegra124 devices.
+>>>>>>> Thanks to Peter Geis, Matt Merhar, Nicolas Chauvet and Ion Agorria for
+>>>>>>> helping with the extensive and productive testing!
+>>>>>>>
+>>>>>>> Changelog:
+>>>>>>>
+>>>>>>> v3: - Replaced "goto" with if-statements as was suggested by Thierry Reding.
+>>>>>>>
+>>>>>>>     - Improved wording of the deprecated Kconfig entry as was suggested
+>>>>>>>       by Alan Stern.
+>>>>>>>
+>>>>>>>     - Added ACKs from Thierry Reding and Alan Stern.
+>>>>>>>
+>>>>>>>     - Added a new minor patch "Specify TX FIFO threshold in UDC SoC info"
+>>>>>>>       just for completeness, since we can now switch OTG to host mode in
+>>>>>>>       the ChipIdea driver. Although, OTG support remains a work-in-progress
+>>>>>>>       for now.
+>>>>>>>
+>>>>>>> v2: - Improved comments in the code as it was suggested by Peter Chen and
+>>>>>>>       Sergei Shtylyov for v1.
+>>>>>>>
+>>>>>>>     - Replaced mdelay() with fsleep() and made ci->hdc to reset to NULL in
+>>>>>>>       a error code path, like it was suggested by Peter Chen.
+>>>>>>>
+>>>>>>>     - Redirected deprecated USB_EHCI_TEGRA Kconfig entry to USB_CHIPIDEA_TEGRA
+>>>>>>>       as was suggested by Alan Stern.
+>>>>>>>
+>>>>>>>     - Improved commit message and added ACK from Thierry Reding to the patch
+>>>>>>>       that removes MODULE_ALIAS.
+>>>>>>>
+>>>>>>>     - Fixed UDC PHY waking up on ASUS TF201 tablet device by utilizing
+>>>>>>>       additional VBUS sensor. This was reported and tested by Ion Agorria.
+>>>>>>>
+>>>>>>>     - Added t-b from Ion Agorria.
+>>>>>>>
+>>>>>>> Dmitry Osipenko (8):
+>>>>>>>   usb: phy: tegra: Add delay after power up
+>>>>>>>   usb: phy: tegra: Support waking up from a low power mode
+>>>>>>>   usb: chipidea: tegra: Remove MODULE_ALIAS
+>>>>>>>   usb: chipidea: tegra: Rename UDC to USB
+>>>>>>>   usb: chipidea: tegra: Support runtime PM
+>>>>>>>   usb: chipidea: tegra: Specify TX FIFO threshold in UDC SoC info
+>>>>>>>   usb: host: ehci-tegra: Remove the driver
+>>>>>>>   ARM: tegra_defconfig: Enable USB_CHIPIDEA_HOST and remove
+>>>>>>>     USB_EHCI_TEGRA
+>>>>>>>
+>>>>>>> Peter Geis (1):
+>>>>>>>   usb: chipidea: tegra: Support host mode
+>>>>>>
+>>>>>> Chipidea related (patch 3-7) are applied, thanks.
+>>>>>
+>>>>> Hello Peter,
+>>>>>
+>>>>> Thank you for applying the patches.
+>>>>>
+>>>>> Who will apply the remaining patches?
+>>>>>
+>>>>> The Chipidea patch #6 depends on the PHY changes, otherwise USB will
+>>>>> suspend and never resume.
+>>>>>
+>>>>
+>>>> Peter, could you please apply the PHY and defconfig patches along with
+>>>> the CI patches to -next? I.e. the whole series. Preferentially in
+>>>> original ordering of patches should be preserved.
+>>>>
+>>>
+>>> Hi Dmitry,
+>>>
+>>> Usually, Greg could apply all USB patches, if I apply other USB related
+>>> patches, it may cause conflict with other patches in other's tree.
+>>> Greg, free feel to apply this series with 
+>>> Acked-by: Peter Chen <peter.chen@kernel.org>
+>>> for chipidea part.
+>>>
+>>> For ARM defconfig patch, I think it should go ARM's tree.
+>>>
+>>
+>> Thank you for the answer!
+>>
+>> It's not the ARM defconfig, but a local tegra_defconfig. It should be
+>> fine to take the patch via the USB tree since Thierry already acked it
+>> and asked to do so.
+>>
+>> Greg, please take this whole series. Thanks in advance!
 > 
-> UBSAN: shift-out-of-bounds in drivers/media/rc/mceusb.c:704:13
-> shift exponent 230 is too large for 32-bit type 'unsigned int'
-> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.0-syzkaller #0
-> Call Trace:
->  <IRQ>
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x107/0x163 lib/dump_stack.c:120
->  ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
->  __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
->  mceusb_dev_printdata.cold+0x19/0x1e drivers/media/rc/mceusb.c:704
->  mceusb_process_ir_data drivers/media/rc/mceusb.c:1275 [inline]
->  mceusb_dev_recv+0x3cb/0x1990 drivers/media/rc/mceusb.c:1376
->  __usb_hcd_giveback_urb+0x2b0/0x5c0 drivers/usb/core/hcd.c:1657
->  usb_hcd_giveback_urb+0x38c/0x430 drivers/usb/core/hcd.c:1728
->  dummy_timer+0x11f4/0x32a0 drivers/usb/gadget/udc/dummy_hcd.c:1971
-> 
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
->  drivers/media/rc/mceusb.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/media/rc/mceusb.c b/drivers/media/rc/mceusb.c
-> index f9616158bcf4..755808c6e747 100644
-> --- a/drivers/media/rc/mceusb.c
-> +++ b/drivers/media/rc/mceusb.c
-> @@ -1272,6 +1272,8 @@ static void mceusb_process_ir_data(struct mceusb_dev *ir, int buf_len)
->  		switch (ir->parser_state) {
->  		case SUBCMD:
->  			ir->rem = mceusb_cmd_datasize(ir->cmd, ir->buf_in[i]);
-> +			if (ir->buf_in[i+1] >= 16)
-> +				continue;
+> All now applied, thanks!
 
-I'm not sure this is correct. This checks the second byte for *any* response,
-not just MCE_RSP_EQIRCFS response which is causing the "shift out of bounds"
-issue.
+Thank you!
 
-I think the check belongs within the MCE_RSP_EQIRCFS case.
-
-Lastly it should have been break, not continue.
-
-Thanks
-
-Sean
-
-
-
->  			mceusb_dev_printdata(ir, ir->buf_in, buf_len, i - 1,
->  					     ir->rem + 2, false);
->  			if (i + ir->rem < buf_len)
-> -- 
-> 2.25.1
