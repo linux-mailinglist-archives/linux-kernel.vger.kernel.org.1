@@ -2,297 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8C82F47C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:44:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B146E2F47E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727324AbhAMJlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 04:41:37 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10655 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbhAMJlf (ORCPT
+        id S1727566AbhAMJnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 04:43:25 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:41407 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727527AbhAMJnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 04:41:35 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DG2Ty0Qc6z15sJx;
-        Wed, 13 Jan 2021 17:39:50 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.176.220) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 13 Jan 2021 17:40:40 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Russell King <rmk+kernel@arm.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        "Haojian Zhuang" <haojian.zhuang@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v4 3/3] ARM: Add support for Hisilicon Kunpeng L3 cache controller
-Date:   Wed, 13 Jan 2021 17:39:42 +0800
-Message-ID: <20210113093942.809-4-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210113093942.809-1-thunder.leizhen@huawei.com>
-References: <20210113093942.809-1-thunder.leizhen@huawei.com>
+        Wed, 13 Jan 2021 04:43:23 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 1A7F5580586;
+        Wed, 13 Jan 2021 04:42:17 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 13 Jan 2021 04:42:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=sVZ0Ztx5fNdK6Yp0rBrMipg88ee
+        9YvaTdVl+dEFZNiw=; b=lyircXQnL3ZlZTqSl9Rnjh0HFim1x1RDvXqUKs9mUNX
+        NunsMGruChk9EeIRa9QfNAD2FcAmh77ifVWaOy1VolhYuLZ6vdUnfKlVywpIStCl
+        B7LeYLM80joNXTZlmo/4YnwUsOAdX24y/+v+o1d719Z0qaC0bFIxhHixNJpl77DM
+        Fk4qhKRqqkpB3PpWll9T5L/iBXSv8/6tQOPsL7QNa3T77gY4BMc33kLfO8eokijO
+        Top2jaiq8AIPeqoiNK96Wc7X9fFZp5t/REMqy7GVucKdPpb/F3kgLiVz2pbU1yCa
+        X2OUb7EViuF7KoWTrc2O2oGLbRLwBBJq1K0GjI18lcQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=sVZ0Zt
+        x5fNdK6Yp0rBrMipg88ee9YvaTdVl+dEFZNiw=; b=QJon1VjEvJDnJ7Z9NG7LQF
+        uIQBTqKff688IJhFdIaVv4djYs3iKGFhs+P9YV2U6PaTlGIYpaLyjdOQPy+CyQbT
+        mZizDN1y4XZI69dFr/tGXLqdus4MHOKhULhFB6ODJpONAuu9nBYNpzVjN631lCXl
+        yyX9ohmjZzhtB9qKoRjMoqqw01qOACoA0vzyT14ErMZOUYlBQYUuTtsrHWjBu1P7
+        +7M8xNHGgwLwSTAELuPaogRchPoqnTzK23islM98RXHwW2s4hSiHgWTQK9dL3DGV
+        BWotFKOWKiVpikB9djHdcB+lpmX/SU7MUa7fLBAyyDQFGD8RwqPPIX86PAuQeA6A
+        ==
+X-ME-Sender: <xms:d8D-X3REvTWqTPAs7-ie20OFJlZ2BTfJFyM_7VfiJCMLogZIdBPe8A>
+    <xme:d8D-X4x5_OdlCEd20Ity9W4nidYNzFt7p7L9q0Fy7aNYFMaaamgSlij4mq0HaIU_V
+    Mz6PdlfZaU8mA3fDMQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtdefgddtjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
+    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:d8D-X83gIwjv8X0xiNHAyOcOYU0NHKbsdqy9PWEsIshC088BzFyXMQ>
+    <xmx:d8D-X3BRHvsiDPf9_SDm8bazgLRLnrX2bR5RwruyIR6ZA6TSIgofvA>
+    <xmx:d8D-XwgRl5jSKhrJXJqJzsz5fGr9x6FwvtknGx-MsXJXb_4kUNjoUg>
+    <xmx:ecD-X5WWcE1P6LVSmF_xBRhZFY4C-G5CEgTnUHjIs2-Rrr-bnb665w>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5F45924005C;
+        Wed, 13 Jan 2021 04:42:15 -0500 (EST)
+Date:   Wed, 13 Jan 2021 10:42:14 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Marjan Pascolo <marjan.pascolo@trexom.it>, wens@csie.org,
+        daniel@ffwll.ch, airlied@linux.ie, treding@nvidia.com,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Giulio Benetti <giulio.benetti@micronovasrl.com>
+Subject: Re: [PATCH v3] drm/sun4i: tcon: fix inverted DCLK polarity
+Message-ID: <20210113094214.5ijq3inmffticym6@gilmour>
+References: <20210111172052.7v522xam74xkq6se@gilmour>
+ <20210111174616.904674-1-giulio.benetti@benettiengineering.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3pcmprkewkka3w63"
+Content-Disposition: inline
+In-Reply-To: <20210111174616.904674-1-giulio.benetti@benettiengineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the Hisilicon Kunpeng L3 cache controller as used with
-Kunpeng506 and Kunpeng509 SoCs.
 
-These Hisilicon SoCs support LPAE, so the physical addresses is wider than
-32-bits, but the actual bit width does not exceed 36 bits. When the cache
-operation is performed based on the address range, the upper 30 bits of
-the physical address are recorded in registers L3_MAINT_START and
-L3_MAINT_END, and ignore the lower 6 bits cacheline offset.
+--3pcmprkewkka3w63
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- arch/arm/mm/Kconfig            |  10 +++
- arch/arm/mm/Makefile           |   1 +
- arch/arm/mm/cache-kunpeng-l3.c | 153 +++++++++++++++++++++++++++++++++
- arch/arm/mm/cache-kunpeng-l3.h |  30 +++++++
- 4 files changed, 194 insertions(+)
- create mode 100644 arch/arm/mm/cache-kunpeng-l3.c
- create mode 100644 arch/arm/mm/cache-kunpeng-l3.h
+Hi,
 
-diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
-index 02692fbe2db5c59..8cc16695a12fd2a 100644
---- a/arch/arm/mm/Kconfig
-+++ b/arch/arm/mm/Kconfig
-@@ -1070,6 +1070,16 @@ config CACHE_XSC3L2
- 	help
- 	  This option enables the L2 cache on XScale3.
- 
-+config CACHE_KUNPENG_L3
-+	bool "Enable the Hisilicon Kunpeng L3 cache controller"
-+	depends on ARCH_HISI && OF
-+	default y
-+	select OUTER_CACHE
-+	help
-+	  This option enables the Kunpeng L3 cache controller on Hisilicon
-+	  Kunpeng506 and Kunpeng509 SoCs. It supports a maximum of 36-bit
-+	  physical addresses.
-+
- config ARM_L1_CACHE_SHIFT_6
- 	bool
- 	default y if CPU_V7
-diff --git a/arch/arm/mm/Makefile b/arch/arm/mm/Makefile
-index 3510503bc5e688b..ececc5489e353eb 100644
---- a/arch/arm/mm/Makefile
-+++ b/arch/arm/mm/Makefile
-@@ -112,6 +112,7 @@ obj-$(CONFIG_CACHE_L2X0_PMU)	+= cache-l2x0-pmu.o
- obj-$(CONFIG_CACHE_XSC3L2)	+= cache-xsc3l2.o
- obj-$(CONFIG_CACHE_TAUROS2)	+= cache-tauros2.o
- obj-$(CONFIG_CACHE_UNIPHIER)	+= cache-uniphier.o
-+obj-$(CONFIG_CACHE_KUNPENG_L3)	+= cache-kunpeng-l3.o
- 
- KASAN_SANITIZE_kasan_init.o	:= n
- obj-$(CONFIG_KASAN)		+= kasan_init.o
-diff --git a/arch/arm/mm/cache-kunpeng-l3.c b/arch/arm/mm/cache-kunpeng-l3.c
-new file mode 100644
-index 000000000000000..cb81f15d26a0cf2
---- /dev/null
-+++ b/arch/arm/mm/cache-kunpeng-l3.c
-@@ -0,0 +1,153 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2021 Hisilicon Limited.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/spinlock.h>
-+#include <linux/io.h>
-+#include <linux/of_address.h>
-+
-+#include <asm/cacheflush.h>
-+
-+#include "cache-kunpeng-l3.h"
-+
-+static DEFINE_SPINLOCK(l3cache_lock);
-+static void __iomem *l3_ctrl_base;
-+
-+
-+static void l3cache_maint_common(u32 range, u32 op_type)
-+{
-+	u32 reg;
-+
-+	reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
-+	reg &= ~(L3_MAINT_RANGE_MASK | L3_MAINT_TYPE_MASK);
-+	reg |= range | op_type;
-+	reg |= L3_MAINT_STATUS_START;
-+	writel(reg, l3_ctrl_base + L3_MAINT_CTRL);
-+
-+	/* Wait until the hardware maintenance operation is complete. */
-+	do {
-+		cpu_relax();
-+		reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
-+	} while ((reg & L3_MAINT_STATUS_MASK) != L3_MAINT_STATUS_END);
-+}
-+
-+static void l3cache_maint_range(phys_addr_t start, phys_addr_t end, u32 op_type)
-+{
-+	start = start >> L3_CACHE_LINE_SHITF;
-+	end = ((end - 1) >> L3_CACHE_LINE_SHITF) + 1;
-+
-+	writel(start, l3_ctrl_base + L3_MAINT_START);
-+	writel(end, l3_ctrl_base + L3_MAINT_END);
-+
-+	l3cache_maint_common(L3_MAINT_RANGE_ADDR, op_type);
-+}
-+
-+static inline void l3cache_flush_all_nolock(void)
-+{
-+	l3cache_maint_common(L3_MAINT_RANGE_ALL, L3_MAINT_TYPE_FLUSH);
-+}
-+
-+static void l3cache_flush_all(void)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&l3cache_lock, flags);
-+	l3cache_flush_all_nolock();
-+	spin_unlock_irqrestore(&l3cache_lock, flags);
-+}
-+
-+static void l3cache_inv_range(phys_addr_t start, phys_addr_t end)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&l3cache_lock, flags);
-+	l3cache_maint_range(start, end, L3_MAINT_TYPE_INV);
-+	spin_unlock_irqrestore(&l3cache_lock, flags);
-+}
-+
-+static void l3cache_clean_range(phys_addr_t start, phys_addr_t end)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&l3cache_lock, flags);
-+	l3cache_maint_range(start, end, L3_MAINT_TYPE_CLEAN);
-+	spin_unlock_irqrestore(&l3cache_lock, flags);
-+}
-+
-+static void l3cache_flush_range(phys_addr_t start, phys_addr_t end)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&l3cache_lock, flags);
-+	l3cache_maint_range(start, end, L3_MAINT_TYPE_FLUSH);
-+	spin_unlock_irqrestore(&l3cache_lock, flags);
-+}
-+
-+static void l3cache_disable(void)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&l3cache_lock, flags);
-+	l3cache_flush_all_nolock();
-+	writel(L3_CTRL_DISABLE, l3_ctrl_base + L3_CTRL);
-+	spin_unlock_irqrestore(&l3cache_lock, flags);
-+}
-+
-+static const struct of_device_id l3cache_ids[] __initconst = {
-+	{.compatible = "hisilicon,kunpeng-l3cache", .data = NULL},
-+	{}
-+};
-+
-+static int __init l3cache_init(void)
-+{
-+	u32 reg;
-+	struct device_node *node;
-+
-+	node = of_find_matching_node(NULL, l3cache_ids);
-+	if (!node)
-+		return -ENODEV;
-+
-+	l3_ctrl_base = of_iomap(node, 0);
-+	if (!l3_ctrl_base) {
-+		pr_err("failed to map Kunpeng L3 cache controller registers\n");
-+		return -ENOMEM;
-+	}
-+
-+	reg = readl(l3_ctrl_base + L3_CTRL);
-+	if (!(reg & L3_CTRL_ENABLE)) {
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&l3cache_lock, flags);
-+
-+		/*
-+		 * Ensure that no L3 cache hardware maintenance operations are
-+		 * being performed before enabling the L3 cache. Wait for it to
-+		 * finish.
-+		 */
-+		do {
-+			cpu_relax();
-+			reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
-+		} while ((reg & L3_MAINT_STATUS_MASK) != L3_MAINT_STATUS_END);
-+
-+		reg = readl(l3_ctrl_base + L3_AUCTRL);
-+		reg |= L3_AUCTRL_EVENT_EN | L3_AUCTRL_ECC_EN;
-+		writel(reg, l3_ctrl_base + L3_AUCTRL);
-+
-+		writel(L3_CTRL_ENABLE, l3_ctrl_base + L3_CTRL);
-+
-+		spin_unlock_irqrestore(&l3cache_lock, flags);
-+	}
-+
-+	outer_cache.inv_range = l3cache_inv_range;
-+	outer_cache.clean_range = l3cache_clean_range;
-+	outer_cache.flush_range = l3cache_flush_range;
-+	outer_cache.flush_all = l3cache_flush_all;
-+	outer_cache.disable = l3cache_disable;
-+
-+	pr_info("Hisilicon Kunpeng L3 cache controller enabled\n");
-+
-+	return 0;
-+}
-+arch_initcall(l3cache_init);
-diff --git a/arch/arm/mm/cache-kunpeng-l3.h b/arch/arm/mm/cache-kunpeng-l3.h
-new file mode 100644
-index 000000000000000..9ef6a53e7d4db49
---- /dev/null
-+++ b/arch/arm/mm/cache-kunpeng-l3.h
-@@ -0,0 +1,30 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __CACHE_KUNPENG_L3_H
-+#define __CACHE_KUNPENG_L3_H
-+
-+#define L3_CACHE_LINE_SHITF		6
-+
-+#define L3_CTRL				0x0
-+#define L3_CTRL_ENABLE			(1U << 0)
-+#define L3_CTRL_DISABLE			(0U << 0)
-+
-+#define L3_AUCTRL			0x4
-+#define L3_AUCTRL_EVENT_EN		BIT(23)
-+#define L3_AUCTRL_ECC_EN		BIT(8)
-+
-+#define L3_MAINT_CTRL			0x20
-+#define L3_MAINT_RANGE_MASK		GENMASK(3, 3)
-+#define L3_MAINT_RANGE_ALL		(0U << 3)
-+#define L3_MAINT_RANGE_ADDR		(1U << 3)
-+#define L3_MAINT_TYPE_MASK		GENMASK(2, 1)
-+#define L3_MAINT_TYPE_CLEAN		(1U << 1)
-+#define L3_MAINT_TYPE_INV		(2U << 1)
-+#define L3_MAINT_TYPE_FLUSH		(3U << 1)
-+#define L3_MAINT_STATUS_MASK		GENMASK(0, 0)
-+#define L3_MAINT_STATUS_START		(1U << 0)
-+#define L3_MAINT_STATUS_END		(0U << 0)
-+
-+#define L3_MAINT_START			0x24
-+#define L3_MAINT_END			0x28
-+
-+#endif
--- 
-2.26.0.106.g9fadedd
+On Mon, Jan 11, 2021 at 06:46:16PM +0100, Giulio Benetti wrote:
+> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
+>=20
+> During commit 88bc4178568b ("drm: Use new
+> DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags") DRM_BUS_FLAG_*
+> macros have been changed to avoid ambiguity but just because of this
+> ambiguity previous DRM_BUS_FLAG_PIXDATA_(POS/NEG)EDGE were used meaning
+> _SAMPLE_ not _DRIVE_. This leads to DLCK inversion and need to fix but
+> instead of swapping phase values, let's adopt an easier approach Maxime
+> suggested:
+> It turned out that bit 26 of SUN4I_TCON0_IO_POL_REG is dedicated to
+> invert DCLK polarity and this makes things really easier than before. So
+> let's handle DCLK polarity by adding SUN4I_TCON0_IO_POL_DCLK_POSITIVE as
+> bit 26 and activating according to bus_flags the same way it is done for
+> all the other signals polarity.
+>=20
+> Fixes: 88bc4178568b ("drm: Use new DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG=
+)EDGE flags")
+> Suggested-by: Maxime Ripard <maxime@cerno.tech>
+> Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
+> ---
+>  drivers/gpu/drm/sun4i/sun4i_tcon.c | 20 +-------------------
+>  drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
+>  2 files changed, 2 insertions(+), 19 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/s=
+un4i_tcon.c
+> index eaaf5d70e352..30171ccd87e5 100644
+> --- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> @@ -569,26 +569,8 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tc=
+on *tcon,
+>  	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
+>  		val |=3D SUN4I_TCON0_IO_POL_DE_NEGATIVE;
+> =20
+> -	/*
+> -	 * On A20 and similar SoCs, the only way to achieve Positive Edge
+> -	 * (Rising Edge), is setting dclk clock phase to 2/3(240=B0).
+> -	 * By default TCON works in Negative Edge(Falling Edge),
+> -	 * this is why phase is set to 0 in that case.
+> -	 * Unfortunately there's no way to logically invert dclk through
+> -	 * IO_POL register.
+> -	 * The only acceptable way to work, triple checked with scope,
+> -	 * is using clock phase set to 0=B0 for Negative Edge and set to 240=B0
+> -	 * for Positive Edge.
+> -	 * On A33 and similar SoCs there would be a 90=B0 phase option,
+> -	 * but it divides also dclk by 2.
+> -	 * Following code is a way to avoid quirks all around TCON
+> -	 * and DOTCLOCK drivers.
+> -	 */
+>  	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
+> -		clk_set_phase(tcon->dclk, 240);
+> -
+> -	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
+> -		clk_set_phase(tcon->dclk, 0);
+> +		val |=3D SUN4I_TCON0_IO_POL_DCLK_POSITIVE;
+> =20
+>  	regmap_update_bits(tcon->regs, SUN4I_TCON0_IO_POL_REG,
+>  			   SUN4I_TCON0_IO_POL_HSYNC_POSITIVE |
 
+You need to add SUN4I_TCON0_IO_POL_DCLK_POSITIVE to the mask you're
+going to change here too
 
+Maxime
+
+--3pcmprkewkka3w63
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX/7AdQAKCRDj7w1vZxhR
+xQLGAP0X8oNPTVI87XmeOmU+YDgckqjJxAB9WYOy6S4UiDCqwQD/fK9mZpYgZ7X7
+hB6CJ260O2sFzlshJPpkkTPLwNW7ego=
+=Gijn
+-----END PGP SIGNATURE-----
+
+--3pcmprkewkka3w63--
