@@ -2,171 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D432F4AA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AEF2F4A9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727130AbhAMLti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:49:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59016 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727099AbhAMLth (ORCPT
+        id S1726711AbhAMLsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:48:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725787AbhAMLsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:49:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610538491;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IClFT8HZFNG03FqV8ORG/u8ZO82v0K22MlBeqxe2bMY=;
-        b=Boi7hjxOVwlrJhZ8KP5Izxzd1SQc0DfeGzV19O2wXzon/6yBY3Hjks7bYqMSEjLiVuH4RY
-        Yodq2Ew6Mkfvb3dVmC98FUMAbljVWEFsaatgiCH/AWXChxW3KQR/1bWSh/kSA+gkRGcSML
-        GAUgR0rbeW+rcUqw1BxiwfLbCG7V8Ks=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-479-gIujwRqWMsKmguwkOV2RMg-1; Wed, 13 Jan 2021 06:48:07 -0500
-X-MC-Unique: gIujwRqWMsKmguwkOV2RMg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 29BA61005D44;
-        Wed, 13 Jan 2021 11:48:05 +0000 (UTC)
-Received: from T590 (ovpn-12-124.pek2.redhat.com [10.72.12.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3FF9360871;
-        Wed, 13 Jan 2021 11:47:27 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 19:47:22 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     Ming Lei <tom.leiming@gmail.com>,
-        Changheun Lee <nanich.lee@samsung.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "jisoo2146.oh@samsung.com" <jisoo2146.oh@samsung.com>,
-        "junho89.kim@samsung.com" <junho89.kim@samsung.com>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "mj0123.lee@samsung.com" <mj0123.lee@samsung.com>,
-        "seunghwan.hyun@samsung.com" <seunghwan.hyun@samsung.com>,
-        "sookwan7.kim@samsung.com" <sookwan7.kim@samsung.com>,
-        Tejun Heo <tj@kernel.org>,
-        "yt0928.kim@samsung.com" <yt0928.kim@samsung.com>,
-        "woosung2.lee@samsung.com" <woosung2.lee@samsung.com>
-Subject: Re: [PATCH] bio: limit bio max size.
-Message-ID: <20210113114722.GA233746@T590>
-References: <CGME20210113040146epcas1p230596c7c3760471dca442d1f7ce4dc55@epcas1p2.samsung.com>
- <CH2PR04MB65225EDDA7069CCD47A459A5E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
- <20210113034637.1382-1-nanich.lee@samsung.com>
- <CACVXFVMb0eE5-yo2k3KvnJjKN+aDLzOuT9rKQ7LY5-4WTgM3jw@mail.gmail.com>
- <CH2PR04MB65228D54F66068DA125CCE47E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
- <20210113102450.GA220440@T590>
- <CH2PR04MB6522CF231DAA4615DABA8457E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
+        Wed, 13 Jan 2021 06:48:38 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0C9C061575;
+        Wed, 13 Jan 2021 03:47:57 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id z1so1891926ybr.4;
+        Wed, 13 Jan 2021 03:47:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=OgFoj8A8iH+xHmxdpvqXBMUS1oxib043+v3N6AYNDEs=;
+        b=JcPYAhk3ZGBKAFXDOwpNt/X9DrNPFhd1bGuLFR5lSfXhDI9Vq+jBid/7wbZBvuWMAy
+         AEhQQTNel27g9y6pS9AyOnT0Xe+8eMmA+p+2nqz+gSEMMW1YNAVF5QcNNEdC2KEs17x7
+         djzgx0RsEsGcxDzX/KksJmBwsvGckLqhs7OmHWWMo9b3nHEDZ5+mXybruvwISJ2yBjho
+         2Jv8u+k36j5M7Iqd7dyF3oYCAtNE/51rDBsmbW0RgzArXXxLn0ECv5olEFWIHTmiw9rC
+         GBUWA+rhmPT5yFLOEyJ+XmJcWpIy/Yq2H09Bin58xuBWLcCkNgK1TlN4ZX4ifP4g1i00
+         TWEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=OgFoj8A8iH+xHmxdpvqXBMUS1oxib043+v3N6AYNDEs=;
+        b=cKQkms2oJMZnpXUkylrfRObjU3oQyI5rnOPxkp6qNcsXTqA1+zgT1eJgtiZca83Kw0
+         dITJ9hBljmIJVi9Pjh4/p4U3Tlh8GM3AgbUme1ciN5gMhvou5kjrYVXpxWXn3VIqKo+1
+         B60+mAX2V3E+Vvo03Rw4WbJGA6J60eWuGgaZMRaEN1SKEvDG1jGW0EKy9DtjaJwDgzym
+         HtxrIJxz9EaHFqCqW1J79fMxG1sAgltIr71Ihz+/yEJNcbRhIcvgzbE20kEqlOcF0Ski
+         GhOJFyKLpUZsawi177DyF5W3703XDKWrsrROScu79tauVS67AocJK0/lyNAWuYby/7D+
+         t2eg==
+X-Gm-Message-State: AOAM530tL9TeGvGfT3GaDwy94f/IMJZtqWnU/JJwp+Mrh9xMmcLmhGB1
+        7FBx0yq5+uo2itFQTHMsKapu5h0+cA5cXe1GSzc=
+X-Google-Smtp-Source: ABdhPJyXLchdXSWvR3e0BYha1dSL/cMPRj2jOrT8OesBcOuuXG8yixGN2aAbOwrRIqRGOguo0l07uU86WPFPAKfrbf0=
+X-Received: by 2002:a25:538a:: with SMTP id h132mr2528613ybb.247.1610538477096;
+ Wed, 13 Jan 2021 03:47:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CH2PR04MB6522CF231DAA4615DABA8457E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Wed, 13 Jan 2021 19:47:31 +0800
+Message-ID: <CAD-N9QUvu8D0qbdy6HqKfVF2Lu2Z+e7Huf_vpHumE=dhqfUGgw@mail.gmail.com>
+Subject: KASAN: use-after-free Read in ath9k_hif_usb_rx_cb (2) should share
+ the same root cause with "KASAN: slab-out-of-bounds Read in
+ ath9k_hif_usb_rx_cb (2)"
+To:     ath9k-devel@qca.qualcomm.com, davem@davemloft.net, kuba@kernel.org,
+        kvalo@codeaurora.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 11:16:11AM +0000, Damien Le Moal wrote:
-> On 2021/01/13 19:25, Ming Lei wrote:
-> > On Wed, Jan 13, 2021 at 09:28:02AM +0000, Damien Le Moal wrote:
-> >> On 2021/01/13 18:19, Ming Lei wrote:
-> >>> On Wed, Jan 13, 2021 at 12:09 PM Changheun Lee <nanich.lee@samsung.com> wrote:
-> >>>>
-> >>>>> On 2021/01/12 21:14, Changheun Lee wrote:
-> >>>>>>> On 2021/01/12 17:52, Changheun Lee wrote:
-> >>>>>>>> From: "Changheun Lee" <nanich.lee@samsung.com>
-> >>>>>>>>
-> >>>>>>>> bio size can grow up to 4GB when muli-page bvec is enabled.
-> >>>>>>>> but sometimes it would lead to inefficient behaviors.
-> >>>>>>>> in case of large chunk direct I/O, - 64MB chunk read in user space -
-> >>>>>>>> all pages for 64MB would be merged to a bio structure if memory address is
-> >>>>>>>> continued phsycally. it makes some delay to submit until merge complete.
-> >>>>>>>> bio max size should be limited as a proper size.
-> >>>>>>>
-> >>>>>>> But merging physically contiguous pages into the same bvec + later automatic bio
-> >>>>>>> split on submit should give you better throughput for large IOs compared to
-> >>>>>>> having to issue a bio chain of smaller BIOs that are arbitrarily sized and will
-> >>>>>>> likely need splitting anyway (because of DMA boundaries etc).
-> >>>>>>>
-> >>>>>>> Do you have a specific case where you see higher performance with this patch
-> >>>>>>> applied ? On Intel, BIO_MAX_SIZE would be 1MB... That is arbitrary and too small
-> >>>>>>> considering that many hardware can execute larger IOs than that.
-> >>>>>>>
-> >>>>>>
-> >>>>>> When I tested 32MB chunk read with O_DIRECT in android, all pages of 32MB
-> >>>>>> is merged into a bio structure.
-> >>>>>> And elapsed time to merge complete was about 2ms.
-> >>>>>> It means first bio-submit is after 2ms.
-> >>>>>> If bio size is limited with 1MB with this patch, first bio-submit is about
-> >>>>>> 100us by bio_full operation.
-> >>>>>
-> >>>>> bio_submit() will split the large BIO case into multiple requests while the
-> >>>>> small BIO case will likely result one or two requests only. That likely explain
-> >>>>> the time difference here. However, for the large case, the 2ms will issue ALL
-> >>>>> requests needed for processing the entire 32MB user IO while the 1MB bio case
-> >>>>> will need 32 different bio_submit() calls. So what is the actual total latency
-> >>>>> difference for the entire 32MB user IO ? That is I think what needs to be
-> >>>>> compared here.
-> >>>>>
-> >>>>> Also, what is your device max_sectors_kb and max queue depth ?
-> >>>>>
-> >>>>
-> >>>> 32MB total latency is about 19ms including merge time without this patch.
-> >>>> But with this patch, total latency is about 17ms including merge time too.
-> >>>
-> >>> 19ms looks too big just for preparing one 32MB sized bio, which isn't
-> >>> supposed to
-> >>> take so long.  Can you investigate where the 19ms is taken just for
-> >>> preparing one
-> >>> 32MB sized bio?
-> >>
-> >> Changheun mentioned that the device side IO latency is 16.7ms out of the 19ms
-> >> total. So the BIO handling, submission+completion takes about 2.3ms, and
-> >> Changheun points above to 2ms for the submission part.
-> > 
-> > OK, looks I misunderstood the data.
-> > 
-> >>
-> >>>
-> >>> It might be iov_iter_get_pages() for handling page fault. If yes, one suggestion
-> >>> is to enable THP(Transparent HugePage Support) in your application.
-> >>
-> >> But if that was due to page faults, the same large-ish time would be taken for
-> >> the preparing the size-limited BIOs too, no ? No matter how the BIOs are diced,
-> >> all 32MB of pages of the user IO are referenced...
-> > 
-> > If bio size is reduced to 1MB, just 256 pages need to be faulted before submitting this
-> > bio, instead of 256*32 pages, that is why the following words are mentioned:
-> > 
-> > 	It means first bio-submit is after 2ms.
-> > 	If bio size is limited with 1MB with this patch, first bio-submit is about
-> > 	100us by bio_full operation.
-> 
-> Yes, but eventually, all pages for the 32MB IO will be faulted in, just not in
-> one go. Overall number of page faults is likely the same as with the large BIO
-> preparation. So I think we are back to my previous point, that is, reducing the
-> device idle time by starting a BIO more quickly, even a small one, leads to
-> overlap between CPU time needed for the next BIO preparation and previous BIO
-> execution, reducing overall the latency for the entire 32MB user IO.
+Dear kernel developers,
 
-When bio size is reduced from 32M to 1M:
+I found that KASAN: use-after-free Read in ath9k_hif_usb_rx_cb (2) and
+"KASAN: slab-out-of-bounds Read in ath9k_hif_usb_rx_cb (2)" should
+share the same root cause.
 
-1MB/(P(1M) + D(1M)) may become bigger than 32MB/(P(1M) + D(1M)), so
-throughput is improved.
+The reasons for my above statement,  1) the stack trace is the same;
+2) we observed two crash behaviors appear alternatively when you run
+one PoC in its building environment multiple times. 3) their PoCs have
+a really high similarity
 
-P(x) means time for preparing 'x' sized IO
-D(x) means time for device to handle 'x' sized IO 
+If you can have any issues with this statement or our information is
+useful for you, please let us know. Thanks very much.
 
-I depend on both CPU and the UFS drive.
+--
+My best regards to you.
 
-> I don't think that the reason is page faulting in itself.
-
-What I meant is that page faulting might contribute most part of the
-100us(preparing 1MB data) and 2ms(preparing 32MB data). It can be others,
-but should be easy to figure out.
-
--- 
-Ming
-
+     No System Is Safe!
+     Dongliang Mu
