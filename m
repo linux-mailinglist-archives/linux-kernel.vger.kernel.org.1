@@ -2,164 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EE72F57F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 905A72F57ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:01:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729374AbhANCLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:11:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52216 "EHLO
+        id S1730354AbhANCL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:11:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729261AbhAMWLL (ORCPT
+        with ESMTP id S1729272AbhAMWP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 17:11:11 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6CBC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:10:31 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id e18so5258679ejt.12
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:10:31 -0800 (PST)
+        Wed, 13 Jan 2021 17:15:59 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225A4C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:15:08 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id u4so2052082pjn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:15:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cHpWTw6lcPxz7z8H8yQJbwdU01y9cP5VFlHIAcOYlIE=;
-        b=B2jvRWZJURQ5oLNMwvJfonm7dSdUz89Ple+ZJuYOXcXZ7dhHpGH7Q7+w3X36ZBWmKC
-         SZVY4kP8zTNT+/eQZiiqp5eK+9C6x1UFd4NdwG8nWK0baXnQTowRKcF6x3D5gHX0yQcF
-         sfgeCszX8SGM2ryM3QdOT+nct7lR9nxs0DCnMjPMr4wOp7Lk/zuDSxlnHLC4M0d3KB1V
-         ExMz9YrKyBAlaH3WiDJZkFL6Usft206o7TZMgfl2/anU6vg/vQUQ3YUElFP3jasCt8PG
-         Di8oWLX2naDdKMFQpSipQdpaWBSpYJ41I7KJ+HQLM0ttURYXt111lDa6pMOpcLdOH5yD
-         jMBg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ywqlXS0DMFG48gu1pC9iNZc0yRyZGXmZHZluYtDfIDk=;
+        b=JF2n2/kFR1I4vQ/3jfDshz9Iy2j2pfeShNSXOby6ltPbc1M+aRIuKML9KuG/K0sMMR
+         83CndVVFkxgLsxwx7WmmwBZ4IsSiDiHAAcrZroy95nWIeOuTnreMnX3ciO0Rfa6KjcsE
+         Bu6yOBtWXa9sMh5MhqvlYo2/A8vyKdaSa5yh0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cHpWTw6lcPxz7z8H8yQJbwdU01y9cP5VFlHIAcOYlIE=;
-        b=o+zFaqM1jJxW8QMVa77GHoBSO5n9S2rHU4Dy+UxMTeQRSyupo5wtIbHr6V6ooHrmii
-         6Atlw08GTlpL5kJT5u1DyraWh3oyOSlG3Ry3iN7f3/8fvyqWjerC6dc8b9zU4D0wSlPJ
-         4uFnvGJhmaVazkSK/Hlyv/D8ZWpoUkDntiEf11lj7oLA8eJ9ICcmrBCIB9ywCgfILJdT
-         sRu/7BWGE45D5lFVAR7dpDbuYz4kHd82kiXLT9BVSK7A5QQnrjQ1Maaoe9NL5ZN3n9qO
-         Jlhc2XaTWTdBmyymI/4wHSTui4s6PkukIzwaGFYhHAoKzagebPYG088ihgM+7eUVZONP
-         JnkQ==
-X-Gm-Message-State: AOAM533PNdUg8HfURH00ZqBmLIH0bTgj9P5FjahJqhMKRM7RINKorAtb
-        6tcvqmF0vW8+NYIetylWlRJVYOgZhcTyG/6KC6/y
-X-Google-Smtp-Source: ABdhPJyQ+Tv7FzDHXgquLSuHzkUCDHhbnr+LMfzfd+uUbDk6LddmjJQuH97q0w+D3HgxnXmUDLfKkBaytbA3dCAnK58=
-X-Received: by 2002:a17:906:3712:: with SMTP id d18mr3206433ejc.178.1610575829813;
- Wed, 13 Jan 2021 14:10:29 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ywqlXS0DMFG48gu1pC9iNZc0yRyZGXmZHZluYtDfIDk=;
+        b=Nm38KRWMGArIyrYmsfLQFkXxqM6vO81a2tRYaQnGEhs3tPwmhkRHNhKZppcNoz68Dh
+         U1O9RBtG0p/X9yvvYUlZL2mwn67MH9LK/NPbAt+6Q216bZrQMZsdYODQX24b0Svn8tIr
+         p8xQ3crgu+86CBKzrHzu+05zhK/GPAYiOQ7qB6WUxioThJb427bD1Q31KCOWedfiYC2X
+         4BfZJ46l39hEr9w85L3eeO+E69TQBwlVhCMkAk/o1IfMnzFGqbCuK7rd6vBgPg2r8DO7
+         1eVoC1YighYr93JEWxyHua63aQa/RbHXqnifCsqLdTshUPU1VhMg8z43uDkYzyN/176E
+         5xhg==
+X-Gm-Message-State: AOAM530oS6N2VRTLi70InB6i9den1dhwHjtrJwcQxAzUw09UYWtaD9gO
+        8dZDP6Sgr3StP1KK2rabPEyP4wXY9Wz31A==
+X-Google-Smtp-Source: ABdhPJwFz6YCHswDPqBzEjeVpxIIZk55eDUvkFbc6iMpgd327hKVjJ/8csvSBpdg178i+bv0BTVytw==
+X-Received: by 2002:a17:902:7c0a:b029:da:62c8:90cb with SMTP id x10-20020a1709027c0ab02900da62c890cbmr4456228pll.59.1610576107403;
+        Wed, 13 Jan 2021 14:15:07 -0800 (PST)
+Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:a6ae:11ff:fe11:fd59])
+        by smtp.gmail.com with ESMTPSA id o190sm3538477pga.2.2021.01.13.14.15.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 14:15:06 -0800 (PST)
+From:   Philip Chen <philipchen@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>, dmitry.torokhov@gmail.com
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        Philip Chen <philipchen@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: [PATCH v5 1/2] dt-bindings: input: Create macros for cros-ec keymap
+Date:   Wed, 13 Jan 2021 14:15:01 -0800
+Message-Id: <20210113141426.v5.1.Iaa8a60cf2ed4b7ad5e2fbb4ad76a1c600ee36113@changeid>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210108040708.8389-1-tusharsu@linux.microsoft.com>
- <20210108040708.8389-9-tusharsu@linux.microsoft.com> <CAHC9VhSJk0wG=WzO3bwsueiy19mMi9m6MamTrQfH8C=gXUtvGw@mail.gmail.com>
- <97328fc71687a0e1c327f6821548be9ba35bb193.camel@linux.ibm.com>
- <CAHC9VhTzaQ_q8gJ0oeok_yJ54XLETNvOuhhKnyRwgqsqvpBLCw@mail.gmail.com> <71cddb6c8676ccd63c89364d805cfca76d32cb6e.camel@linux.ibm.com>
-In-Reply-To: <71cddb6c8676ccd63c89364d805cfca76d32cb6e.camel@linux.ibm.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 13 Jan 2021 17:10:18 -0500
-Message-ID: <CAHC9VhRhYWEcK7TepZ=LK1m=9Zn_gtOZyAYfamP-TFU3rRH+zw@mail.gmail.com>
-Subject: Re: [PATCH v10 8/8] selinux: include a consumer of the new IMA
- critical data hook
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, tyhicks@linux.microsoft.com,
-        sashal@kernel.org, James Morris <jmorris@namei.org>,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 4:11 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
-> On Wed, 2021-01-13 at 14:19 -0500, Paul Moore wrote:
-> > On Wed, Jan 13, 2021 at 2:13 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
-> > > On Tue, 2021-01-12 at 11:27 -0500, Paul Moore wrote:
-> > > > On Thu, Jan 7, 2021 at 11:07 PM Tushar Sugandhi
-> > > > <tusharsu@linux.microsoft.com> wrote:
-> > > > > From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> > > > >
-> > > > > SELinux stores the active policy in memory, so the changes to this data
-> > > > > at runtime would have an impact on the security guarantees provided
-> > > > > by SELinux.  Measuring in-memory SELinux policy through IMA subsystem
-> > > > > provides a secure way for the attestation service to remotely validate
-> > > > > the policy contents at runtime.
-> > > > >
-> > > > > Measure the hash of the loaded policy by calling the IMA hook
-> > > > > ima_measure_critical_data().  Since the size of the loaded policy
-> > > > > can be large (several MB), measure the hash of the policy instead of
-> > > > > the entire policy to avoid bloating the IMA log entry.
-> > > > >
-> > > > > To enable SELinux data measurement, the following steps are required:
-> > > > >
-> > > > > 1, Add "ima_policy=critical_data" to the kernel command line arguments
-> > > > >    to enable measuring SELinux data at boot time.
-> > > > > For example,
-> > > > >   BOOT_IMAGE=/boot/vmlinuz-5.10.0-rc1+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
-> > > > >
-> > > > > 2, Add the following rule to /etc/ima/ima-policy
-> > > > >    measure func=CRITICAL_DATA label=selinux
-> > > > >
-> > > > > Sample measurement of the hash of SELinux policy:
-> > > > >
-> > > > > To verify the measured data with the current SELinux policy run
-> > > > > the following commands and verify the output hash values match.
-> > > > >
-> > > > >   sha256sum /sys/fs/selinux/policy | cut -d' ' -f 1
-> > > > >
-> > > > >   grep "selinux-policy-hash" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6
-> > > > >
-> > > > > Note that the actual verification of SELinux policy would require loading
-> > > > > the expected policy into an identical kernel on a pristine/known-safe
-> > > > > system and run the sha256sum /sys/kernel/selinux/policy there to get
-> > > > > the expected hash.
-> > > > >
-> > > > > Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> > > > > Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-> > > > > Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > > > > ---
-> > > > >  Documentation/ABI/testing/ima_policy |  3 +-
-> > > > >  security/selinux/Makefile            |  2 +
-> > > > >  security/selinux/ima.c               | 64 ++++++++++++++++++++++++++++
-> > > > >  security/selinux/include/ima.h       | 24 +++++++++++
-> > > > >  security/selinux/include/security.h  |  3 +-
-> > > > >  security/selinux/ss/services.c       | 64 ++++++++++++++++++++++++----
-> > > > >  6 files changed, 149 insertions(+), 11 deletions(-)
-> > > > >  create mode 100644 security/selinux/ima.c
-> > > > >  create mode 100644 security/selinux/include/ima.h
-> > > >
-> > > > I remain concerned about the possibility of bypassing a measurement by
-> > > > tampering with the time, but I appear to be the only one who is
-> > > > worried about this so I'm not going to block this patch on those
-> > > > grounds.
-> > > >
-> > > > Acked-by: Paul Moore <paul@paul-moore.com>
-> > >
-> > > Thanks, Paul.
-> > >
-> > > Including any unique string would cause the buffer hash to change,
-> > > forcing a new measurement.  Perhaps they were concerned with
-> > > overflowing a counter.
-> >
-> > My understanding is that Lakshmi wanted to force a new measurement
-> > each time and felt using a timestamp would be the best way to do that.
-> > A counter, even if it wraps, would have a different value each time
-> > whereas a timestamp is vulnerable to time adjustments.  While a
-> > properly controlled and audited system could be configured and
-> > monitored to detect such an event (I *think*), why rely on that if it
-> > isn't necessary?
->
-> Why are you saying that even if the counter wraps a new measurement is
-> guaranteed.   I agree with the rest of what you said.
+In Chrome OS, the keyboard matrix can be split to two groups:
 
-I was assuming that the IMA code simply compares the passed
-"policy_event_name" value to the previous value, if they are different
-a new measurement is taken, if they are the same the measurement
-request is ignored.  If this is the case the counter value is only
-important in as much as that it is different from the previous value,
-even simply toggling a single bit back and forth would suffice in this
-case.  IMA doesn't keep a record of every previous "policy_event_name"
-value does it?  Am I misunderstanding how
-ima_measure_critical_data(...) works?
+The keymap for the top row keys can be customized based on OEM
+preference, while the keymap for the other keys is generic/fixed
+across boards.
 
+This patch creates marcos for the keymaps of these two groups, making
+it easier to reuse the generic portion of keymap when we override the
+keymap in the board-specific dts for custom top row design.
+
+Signed-off-by: Philip Chen <philipchen@chromium.org>
+---
+
+(no changes since v2)
+
+Changes in v2:
+- Rename CROS_STD_NON_TOP_ROW_KEYMAP to CROS_STD_MAIN_KEYMAP
+
+ include/dt-bindings/input/cros-ec-keyboard.h | 103 +++++++++++++++++++
+ 1 file changed, 103 insertions(+)
+ create mode 100644 include/dt-bindings/input/cros-ec-keyboard.h
+
+diff --git a/include/dt-bindings/input/cros-ec-keyboard.h b/include/dt-bindings/input/cros-ec-keyboard.h
+new file mode 100644
+index 0000000000000..a37a8c5701219
+--- /dev/null
++++ b/include/dt-bindings/input/cros-ec-keyboard.h
+@@ -0,0 +1,103 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * This header provides the constants of the standard Chrome OS key matrix
++ * for cros-ec keyboard-controller bindings.
++ *
++ * Copyright (c) 2021 Google, Inc
++ */
++
++#ifndef _CROS_EC_KEYBOARD_H
++#define _CROS_EC_KEYBOARD_H
++
++#define CROS_STD_TOP_ROW_KEYMAP	\
++	MATRIX_KEY(0x00, 0x02, KEY_F1)	\
++	MATRIX_KEY(0x03, 0x02, KEY_F2)	\
++	MATRIX_KEY(0x02, 0x02, KEY_F3)	\
++	MATRIX_KEY(0x01, 0x02, KEY_F4)	\
++	MATRIX_KEY(0x03, 0x04, KEY_F5)	\
++	MATRIX_KEY(0x02, 0x04, KEY_F6)	\
++	MATRIX_KEY(0x01, 0x04, KEY_F7)	\
++	MATRIX_KEY(0x02, 0x09, KEY_F8)	\
++	MATRIX_KEY(0x01, 0x09, KEY_F9)	\
++	MATRIX_KEY(0x00, 0x04, KEY_F10)	\
++	MATRIX_KEY(0x03, 0x09, KEY_F13)
++
++#define CROS_STD_MAIN_KEYMAP	\
++	MATRIX_KEY(0x00, 0x01, KEY_LEFTMETA)	\
++	MATRIX_KEY(0x00, 0x03, KEY_B)		\
++	MATRIX_KEY(0x00, 0x05, KEY_RO)		\
++	MATRIX_KEY(0x00, 0x06, KEY_N)		\
++	MATRIX_KEY(0x00, 0x08, KEY_EQUAL)	\
++	MATRIX_KEY(0x00, 0x0a, KEY_RIGHTALT)	\
++	MATRIX_KEY(0x01, 0x01, KEY_ESC)		\
++	MATRIX_KEY(0x01, 0x03, KEY_G)		\
++	MATRIX_KEY(0x01, 0x06, KEY_H)		\
++	MATRIX_KEY(0x01, 0x08, KEY_APOSTROPHE)	\
++	MATRIX_KEY(0x01, 0x0b, KEY_BACKSPACE)	\
++	MATRIX_KEY(0x01, 0x0c, KEY_HENKAN)	\
++						\
++	MATRIX_KEY(0x02, 0x00, KEY_LEFTCTRL)	\
++	MATRIX_KEY(0x02, 0x01, KEY_TAB)		\
++	MATRIX_KEY(0x02, 0x03, KEY_T)		\
++	MATRIX_KEY(0x02, 0x05, KEY_RIGHTBRACE)	\
++	MATRIX_KEY(0x02, 0x06, KEY_Y)		\
++	MATRIX_KEY(0x02, 0x07, KEY_102ND)	\
++	MATRIX_KEY(0x02, 0x08, KEY_LEFTBRACE)	\
++	MATRIX_KEY(0x02, 0x0a, KEY_YEN)		\
++						\
++	MATRIX_KEY(0x03, 0x00, KEY_LEFTMETA)	\
++	MATRIX_KEY(0x03, 0x01, KEY_GRAVE)	\
++	MATRIX_KEY(0x03, 0x03, KEY_5)		\
++	MATRIX_KEY(0x03, 0x06, KEY_6)		\
++	MATRIX_KEY(0x03, 0x08, KEY_MINUS)	\
++	MATRIX_KEY(0x03, 0x0b, KEY_BACKSLASH)	\
++	MATRIX_KEY(0x03, 0x0c, KEY_MUHENKAN)	\
++						\
++	MATRIX_KEY(0x04, 0x00, KEY_RIGHTCTRL)	\
++	MATRIX_KEY(0x04, 0x01, KEY_A)		\
++	MATRIX_KEY(0x04, 0x02, KEY_D)		\
++	MATRIX_KEY(0x04, 0x03, KEY_F)		\
++	MATRIX_KEY(0x04, 0x04, KEY_S)		\
++	MATRIX_KEY(0x04, 0x05, KEY_K)		\
++	MATRIX_KEY(0x04, 0x06, KEY_J)		\
++	MATRIX_KEY(0x04, 0x08, KEY_SEMICOLON)	\
++	MATRIX_KEY(0x04, 0x09, KEY_L)		\
++	MATRIX_KEY(0x04, 0x0a, KEY_BACKSLASH)	\
++	MATRIX_KEY(0x04, 0x0b, KEY_ENTER)	\
++						\
++	MATRIX_KEY(0x05, 0x01, KEY_Z)		\
++	MATRIX_KEY(0x05, 0x02, KEY_C)		\
++	MATRIX_KEY(0x05, 0x03, KEY_V)		\
++	MATRIX_KEY(0x05, 0x04, KEY_X)		\
++	MATRIX_KEY(0x05, 0x05, KEY_COMMA)	\
++	MATRIX_KEY(0x05, 0x06, KEY_M)		\
++	MATRIX_KEY(0x05, 0x07, KEY_LEFTSHIFT)	\
++	MATRIX_KEY(0x05, 0x08, KEY_SLASH)	\
++	MATRIX_KEY(0x05, 0x09, KEY_DOT)		\
++	MATRIX_KEY(0x05, 0x0b, KEY_SPACE)	\
++						\
++	MATRIX_KEY(0x06, 0x01, KEY_1)		\
++	MATRIX_KEY(0x06, 0x02, KEY_3)		\
++	MATRIX_KEY(0x06, 0x03, KEY_4)		\
++	MATRIX_KEY(0x06, 0x04, KEY_2)		\
++	MATRIX_KEY(0x06, 0x05, KEY_8)		\
++	MATRIX_KEY(0x06, 0x06, KEY_7)		\
++	MATRIX_KEY(0x06, 0x08, KEY_0)		\
++	MATRIX_KEY(0x06, 0x09, KEY_9)		\
++	MATRIX_KEY(0x06, 0x0a, KEY_LEFTALT)	\
++	MATRIX_KEY(0x06, 0x0b, KEY_DOWN)	\
++	MATRIX_KEY(0x06, 0x0c, KEY_RIGHT)	\
++						\
++	MATRIX_KEY(0x07, 0x01, KEY_Q)		\
++	MATRIX_KEY(0x07, 0x02, KEY_E)		\
++	MATRIX_KEY(0x07, 0x03, KEY_R)		\
++	MATRIX_KEY(0x07, 0x04, KEY_W)		\
++	MATRIX_KEY(0x07, 0x05, KEY_I)		\
++	MATRIX_KEY(0x07, 0x06, KEY_U)		\
++	MATRIX_KEY(0x07, 0x07, KEY_RIGHTSHIFT)	\
++	MATRIX_KEY(0x07, 0x08, KEY_P)		\
++	MATRIX_KEY(0x07, 0x09, KEY_O)		\
++	MATRIX_KEY(0x07, 0x0b, KEY_UP)		\
++	MATRIX_KEY(0x07, 0x0c, KEY_LEFT)
++
++#endif /* _CROS_EC_KEYBOARD_H */
 -- 
-paul moore
-www.paul-moore.com
+2.26.2
+
