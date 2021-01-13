@@ -2,174 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79CB2F554F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 00:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D7F2F5575
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 01:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729583AbhAMXwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 18:52:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729555AbhAMXtV (ORCPT
+        id S1729637AbhANAGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 19:06:25 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9836 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729659AbhAMX4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 18:49:21 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB28C061575;
-        Wed, 13 Jan 2021 15:48:40 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id 6so5615684ejz.5;
-        Wed, 13 Jan 2021 15:48:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qxBGvawjchkt3PkBeFPglNIYbXfNwIwM3XGy8lG49Os=;
-        b=AfdoteZDe3xUjLlIDNDLWd9Uf3cGhaAjkvrrCqckV1VoC8npQcL2xFuorx8afbtim+
-         SQuh4mC0lT44zU8JH6P+bDEl2pf6kvZoOKWYiQp9cA96lI0DgtLS12IVYGgL+rC5wkm8
-         cS8F+nZfJQaE5TfdqhW0AotCJEVT27up6WF3tSAHmbn/UeDkVkFUOo2z2+iywe5zJYbe
-         RVq7VRqszIGny+V3aVIG6wQKR0WnXGFttX8jNrL9IilvGENapTjbcX036MAkr4rZPmuZ
-         T8rKrx5rlF/F9g0rY1u5AtDyz4NvTeFJr8KMhHh9EqpMYW8uI1F86HNkCiVHK36hKaGQ
-         JQ2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qxBGvawjchkt3PkBeFPglNIYbXfNwIwM3XGy8lG49Os=;
-        b=ql+Ff0mpC5YnSL+pKyp/qQM42i21dE09CaWDMoGAPE95D7528AbEtFRxb2IzegavZM
-         3hDIW6O7pQ3sKB3V0IWLRIubhlBsUpLGZkT2IXmKVWzq6mI61+Rye+fI/yjcWVl+0WOM
-         XemZd167KREEaUKgUQEGxOv/2JbynYKXSxO9tQGWE+sBao4FktwIf1bk2ykbP8kOqLWl
-         kCU4NY16+U+ABQWuGsQDKpDcv2bnKbDMczK7AVwkuxVOi42GBACCp523cO+oYCFA0KJY
-         lrccQpPlN13nzddHCLTFl2C99WmtWrSe10JLNO7fCgNdObBUf13VOD6+uP9LarXrsPU4
-         cJGQ==
-X-Gm-Message-State: AOAM533/eTFO10Jq38w+hnQpeMrhx84vYoQq03ACdCtT7r5JxtNL5VMi
-        hP6D5wG9AD7psZpD9Oi2qZWw5jOlhZC/nuduTu+lDSXCvYy4/w==
-X-Google-Smtp-Source: ABdhPJzo5LMkPw9QOaRIWmHNxXmPhpnoc1H63/T35dxn5b2PlL41yBvCJpVtev2FCnnftyWiGi3AmQuhX6au8I8gl+4=
-X-Received: by 2002:a17:906:1a4e:: with SMTP id j14mr3231194ejf.507.1610581719097;
- Wed, 13 Jan 2021 15:48:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20210105225817.1036378-1-shy828301@gmail.com> <20210105225817.1036378-5-shy828301@gmail.com>
- <955422c5-0703-e9fb-f309-6ed6b5fc0e0a@virtuozzo.com>
-In-Reply-To: <955422c5-0703-e9fb-f309-6ed6b5fc0e0a@virtuozzo.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 13 Jan 2021 15:48:27 -0800
-Message-ID: <CAHbLzkqo=bHcrLBPd68teEAtfLcOsZZ+e3Eds9EfGakhDbW8zA@mail.gmail.com>
-Subject: Re: [v3 PATCH 04/11] mm: vmscan: remove memcg_shrinker_map_size
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     Roman Gushchin <guro@fb.com>, Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 13 Jan 2021 18:56:08 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10DMVhg2060390;
+        Wed, 13 Jan 2021 18:10:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=Xt90LCg0qaOlKGxEbOWGEnIk/v3NINrYoq35wSel8cY=;
+ b=khVJhO19imV7lRt2oObdmSe2aDoZnSMlBB1auJ94mZJkz2eEGpX/ABDMjVzyADp4ROIf
+ tlR7/a2FRA+AAP6yUOOOGhyykKPyjuBYl15WKnFU/6RWBQgXgxoSIlk9OwmSSVPJxhG6
+ nbuRHBoAHWZL7Lcm4nJSS59qgkiV2R4kxIAtJB/1gxRTC2xGAdeNde2x50iqXWUA6j9y
+ mzajosnKbltjglsdy7AXKlgR24kdRDtLdb79gc65TIZBC0ZKP4qYasoDtcAQUkjnPiQb
+ bgu0mxOClR6gOj0zK+mz1j51R1HNs4sIK9ndqw0mYw9kFo5uW3R3LaPAVT/XPvr5mR0Q WA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36296wsmc1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 18:10:59 -0500
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10DMvi9a140702;
+        Wed, 13 Jan 2021 18:10:58 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36296wsmbm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 18:10:58 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10DN8Aea029585;
+        Wed, 13 Jan 2021 23:10:56 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 35ydrdd9qa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 23:10:56 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10DNAnMM26214902
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 23:10:49 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 950675204E;
+        Wed, 13 Jan 2021 23:10:54 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.57.196])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 46DF752050;
+        Wed, 13 Jan 2021 23:10:51 +0000 (GMT)
+Message-ID: <e29a618645b0e73ec06960a02b6da465614689ff.camel@linux.ibm.com>
+Subject: Re: [PATCH v10 8/8] selinux: include a consumer of the new IMA
+ critical data hook
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, tyhicks@linux.microsoft.com,
+        sashal@kernel.org, James Morris <jmorris@namei.org>,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Wed, 13 Jan 2021 18:10:50 -0500
+In-Reply-To: <CAHC9VhRhYWEcK7TepZ=LK1m=9Zn_gtOZyAYfamP-TFU3rRH+zw@mail.gmail.com>
+References: <20210108040708.8389-1-tusharsu@linux.microsoft.com>
+         <20210108040708.8389-9-tusharsu@linux.microsoft.com>
+         <CAHC9VhSJk0wG=WzO3bwsueiy19mMi9m6MamTrQfH8C=gXUtvGw@mail.gmail.com>
+         <97328fc71687a0e1c327f6821548be9ba35bb193.camel@linux.ibm.com>
+         <CAHC9VhTzaQ_q8gJ0oeok_yJ54XLETNvOuhhKnyRwgqsqvpBLCw@mail.gmail.com>
+         <71cddb6c8676ccd63c89364d805cfca76d32cb6e.camel@linux.ibm.com>
+         <CAHC9VhRhYWEcK7TepZ=LK1m=9Zn_gtOZyAYfamP-TFU3rRH+zw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-13_12:2021-01-13,2021-01-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ spamscore=0 mlxlogscore=999 adultscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 mlxscore=0 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101130131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 2:16 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
->
-> On 06.01.2021 01:58, Yang Shi wrote:
-> > Both memcg_shrinker_map_size and shrinker_nr_max is maintained, but actually the
-> > map size can be calculated via shrinker_nr_max, so it seems unnecessary to keep both.
-> > Remove memcg_shrinker_map_size since shrinker_nr_max is also used by iterating the
-> > bit map.
+On Wed, 2021-01-13 at 17:10 -0500, Paul Moore wrote:
+> On Wed, Jan 13, 2021 at 4:11 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > On Wed, 2021-01-13 at 14:19 -0500, Paul Moore wrote:
+> > > On Wed, Jan 13, 2021 at 2:13 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > > > On Tue, 2021-01-12 at 11:27 -0500, Paul Moore wrote:
+> > > > > On Thu, Jan 7, 2021 at 11:07 PM Tushar Sugandhi
+> > > > > <tusharsu@linux.microsoft.com> wrote:
+> > > > > > From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> > > > > >
+> > > > > > SELinux stores the active policy in memory, so the changes to this data
+> > > > > > at runtime would have an impact on the security guarantees provided
+> > > > > > by SELinux.  Measuring in-memory SELinux policy through IMA subsystem
+> > > > > > provides a secure way for the attestation service to remotely validate
+> > > > > > the policy contents at runtime.
+> > > > > >
+> > > > > > Measure the hash of the loaded policy by calling the IMA hook
+> > > > > > ima_measure_critical_data().  Since the size of the loaded policy
+> > > > > > can be large (several MB), measure the hash of the policy instead of
+> > > > > > the entire policy to avoid bloating the IMA log entry.
+> > > > > >
+> > > > > > To enable SELinux data measurement, the following steps are required:
+> > > > > >
+> > > > > > 1, Add "ima_policy=critical_data" to the kernel command line arguments
+> > > > > >    to enable measuring SELinux data at boot time.
+> > > > > > For example,
+> > > > > >   BOOT_IMAGE=/boot/vmlinuz-5.10.0-rc1+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
+> > > > > >
+> > > > > > 2, Add the following rule to /etc/ima/ima-policy
+> > > > > >    measure func=CRITICAL_DATA label=selinux
+> > > > > >
+> > > > > > Sample measurement of the hash of SELinux policy:
+> > > > > >
+> > > > > > To verify the measured data with the current SELinux policy run
+> > > > > > the following commands and verify the output hash values match.
+> > > > > >
+> > > > > >   sha256sum /sys/fs/selinux/policy | cut -d' ' -f 1
+> > > > > >
+> > > > > >   grep "selinux-policy-hash" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6
+> > > > > >
+> > > > > > Note that the actual verification of SELinux policy would require loading
+> > > > > > the expected policy into an identical kernel on a pristine/known-safe
+> > > > > > system and run the sha256sum /sys/kernel/selinux/policy there to get
+> > > > > > the expected hash.
+> > > > > >
+> > > > > > Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> > > > > > Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> > > > > > Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > > > > > ---
+> > > > > >  Documentation/ABI/testing/ima_policy |  3 +-
+> > > > > >  security/selinux/Makefile            |  2 +
+> > > > > >  security/selinux/ima.c               | 64 ++++++++++++++++++++++++++++
+> > > > > >  security/selinux/include/ima.h       | 24 +++++++++++
+> > > > > >  security/selinux/include/security.h  |  3 +-
+> > > > > >  security/selinux/ss/services.c       | 64 ++++++++++++++++++++++++----
+> > > > > >  6 files changed, 149 insertions(+), 11 deletions(-)
+> > > > > >  create mode 100644 security/selinux/ima.c
+> > > > > >  create mode 100644 security/selinux/include/ima.h
+> > > > >
+> > > > > I remain concerned about the possibility of bypassing a measurement by
+> > > > > tampering with the time, but I appear to be the only one who is
+> > > > > worried about this so I'm not going to block this patch on those
+> > > > > grounds.
+> > > > >
+> > > > > Acked-by: Paul Moore <paul@paul-moore.com>
+> > > >
+> > > > Thanks, Paul.
+> > > >
+> > > > Including any unique string would cause the buffer hash to change,
+> > > > forcing a new measurement.  Perhaps they were concerned with
+> > > > overflowing a counter.
+> > >
+> > > My understanding is that Lakshmi wanted to force a new measurement
+> > > each time and felt using a timestamp would be the best way to do that.
+> > > A counter, even if it wraps, would have a different value each time
+> > > whereas a timestamp is vulnerable to time adjustments.  While a
+> > > properly controlled and audited system could be configured and
+> > > monitored to detect such an event (I *think*), why rely on that if it
+> > > isn't necessary?
 > >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > ---
-> >  mm/vmscan.c | 12 ++++--------
-> >  1 file changed, 4 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index ddb9f972f856..8da765a85569 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -185,8 +185,7 @@ static LIST_HEAD(shrinker_list);
-> >  static DECLARE_RWSEM(shrinker_rwsem);
-> >
-> >  #ifdef CONFIG_MEMCG
-> > -
-> > -static int memcg_shrinker_map_size;
-> > +static int shrinker_nr_max;
-> >
-> >  static void memcg_free_shrinker_map_rcu(struct rcu_head *head)
-> >  {
-> > @@ -248,7 +247,7 @@ int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg)
-> >               return 0;
-> >
-> >       down_read(&shrinker_rwsem);
-> > -     size = memcg_shrinker_map_size;
-> > +     size = DIV_ROUND_UP(shrinker_nr_max, BITS_PER_LONG) * sizeof(unsigned long);
-> >       for_each_node(nid) {
-> >               map = kvzalloc(sizeof(*map) + size, GFP_KERNEL);
-> >               if (!map) {
-> > @@ -269,7 +268,7 @@ static int memcg_expand_shrinker_maps(int new_id)
-> >       struct mem_cgroup *memcg;
-> >
-> >       size = DIV_ROUND_UP(new_id + 1, BITS_PER_LONG) * sizeof(unsigned long);
-> > -     old_size = memcg_shrinker_map_size;
-> > +     old_size = DIV_ROUND_UP(shrinker_nr_max, BITS_PER_LONG) * sizeof(unsigned long);
-> >       if (size <= old_size)
-> >               return 0;
->
-> These bunch of DIV_ROUND_UP() looks too complex. Since now all the shrinker maps allocation
-> logic in the only file, can't we simplify this to look better? I mean something like below
-> to merge in your patch:
->
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index b951c289ef3a..27b6371a1656 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -247,7 +247,7 @@ int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg)
->                 return 0;
->
->         down_read(&shrinker_rwsem);
-> -       size = DIV_ROUND_UP(shrinker_nr_max, BITS_PER_LONG) * sizeof(unsigned long);
-> +       size = shrinker_nr_max / BITS_PER_BYTE;
+> > Why are you saying that even if the counter wraps a new measurement is
+> > guaranteed.   I agree with the rest of what you said.
+> 
+> I was assuming that the IMA code simply compares the passed
+> "policy_event_name" value to the previous value, if they are different
+> a new measurement is taken, if they are the same the measurement
+> request is ignored.  If this is the case the counter value is only
+> important in as much as that it is different from the previous value,
+> even simply toggling a single bit back and forth would suffice in this
+> case.  IMA doesn't keep a record of every previous "policy_event_name"
+> value does it?  Am I misunderstanding how
+> ima_measure_critical_data(...) works?
 
-The type of shrinker_maps->map is "unsigned long *", I think we should
-do "(shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long)".
+Originally, there was quite a bit of discussion as to how much or how
+little should be measured for a number of reasons.  One reason is that
+the TPM is relatively slow.  Another reason is to limit the size of the
+measurement list.  For this reason, duplicate hashes aren't added to
+the measurement list or extended into the TPM.
 
-And the "/ BITS_PER_BYTE" makes calculating the pointer of nr_deferred
-array harder in the following patch since the length of the map array
-may be not multiple of "unsigned long". Without the nr_deferred array,
-this change seems fine.
+When a dentry is removed from cache, its also removed from IMA's iint
+cache.  A subsequent file read would result in adding the measurement
+and extending the TPM again.  ima_lookup_digest_entry() is called to
+prevent adding the duplicate entry. 
 
->         for_each_node(nid) {
->                 map = kvzalloc(sizeof(*map) + size, GFP_KERNEL);
->                 if (!map) {
-> @@ -264,13 +264,11 @@ int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg)
->
->  static int memcg_expand_shrinker_maps(int new_id)
->  {
-> -       int size, old_size, ret = 0;
-> +       int size, old_size, new_nr_max, ret = 0;
->         struct mem_cgroup *memcg;
->
->         size = DIV_ROUND_UP(new_id + 1, BITS_PER_LONG) * sizeof(unsigned long);
-> -       old_size = DIV_ROUND_UP(shrinker_nr_max, BITS_PER_LONG) * sizeof(unsigned long);
-> -       if (size <= old_size)
-> -               return 0;
-> +       new_nr_max = size * BITS_PER_BYTE;
->
->         if (!root_mem_cgroup)
->                 goto out;
-> @@ -287,6 +285,9 @@ static int memcg_expand_shrinker_maps(int new_id)
->         } while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
->
->  out:
-> +       if (ret == 0)
-> +               shrinker_nr_max = new_nr_max;
-> +
->         return ret;
->  }
->
-> @@ -334,8 +335,6 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
->                         idr_remove(&shrinker_idr, id);
->                         goto unlock;
->                 }
-> -
-> -               shrinker_nr_max = id + 1;
->         }
->         shrinker->id = id;
->         ret = 0;
->
+Lakshmi is trying to address the situation where an event changes a
+value, but then is restored to the original value.  The original and
+subsequent events are measured, but restoring to the original value
+isn't re-measured.  This isn't any different than when a file is
+modified and then reverted.
+
+Instead of changing the name like this, which doesn't work for files,
+allowing duplicate measurements should be generic, based on policy.
+
+Mimi
+
