@@ -2,85 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1412F505C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD422F505E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727728AbhAMQsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 11:48:52 -0500
-Received: from mga14.intel.com ([192.55.52.115]:22765 "EHLO mga14.intel.com"
+        id S1727833AbhAMQtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 11:49:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727517AbhAMQsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 11:48:52 -0500
-IronPort-SDR: 8FbAnB4pPF4fzJ/I4JHUCjYWaNFtEFuyA7H3GDzYeem7iFSzLUxo8vxSjrOaiYKZAnq+/+mDmN
- BsAnujnZWFtg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="177456810"
-X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
-   d="scan'208";a="177456810"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 08:48:11 -0800
-IronPort-SDR: Th6CDM74jDvuyeWHESONbz6vbFGqakg8IK27aUAK4eko+QDPk9wdfpnYi6TCUwi3ORuKUWliwu
- ZPLs2FAR0SiA==
-X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
-   d="scan'208";a="381922871"
-Received: from iklein-mobl.ger.corp.intel.com (HELO localhost) ([10.249.40.83])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 08:48:08 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Lee Jones <lee.jones@linaro.org>, lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] docs: submitting-patches: Emphasise the requirement to Cc: stable when using Fixes: tag
-In-Reply-To: <20210113163315.1331064-1-lee.jones@linaro.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210113163315.1331064-1-lee.jones@linaro.org>
-Date:   Wed, 13 Jan 2021 18:48:05 +0200
-Message-ID: <87bldssrzu.fsf@intel.com>
+        id S1727763AbhAMQtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 11:49:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEAC3233F6;
+        Wed, 13 Jan 2021 16:48:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610556510;
+        bh=DnL73vKlQSXlWUYZg/eWP8NDNE5x28qj3Gv+Ku3NoTo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Pkt1JARf98QPcGtbmKSASRKHfIk/DDZqSGH/Ea6KdL1TrPgS1tVUCvpA9nS+EbYF0
+         qRri12p1oAw6iljdnizhmnxTMTBMv1vSLMmzmW1BsDXnOLLWc9SffaIGwDBSZ9r3D4
+         UICd50FGkKfHNxkKMJdW6Il71G+UfH7J1L0TWu5kRQKV2KAEq/ynHMgMis7KFEkFcp
+         oqkW38Qy5qmJLmnglO9YCoxAbpPyWNq5n5v6MhFCf+hnEi0IkllNrMa8SWJ8l+fqvO
+         MbZCADTuC8e+CsVAxdOhxEk9G0/Xhaq52GtdqPKZeQRH9by3FlbrWA8b1xObyQCNR6
+         BRX0ICm1+A96g==
+Date:   Wed, 13 Jan 2021 11:48:28 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH for 4.9/4.14] powerpc: Fix incorrect stw{, ux, u, x}
+ instructions in __set_pte_at
+Message-ID: <20210113164828.GQ4035784@sasha-vm>
+References: <af07f8f0bb734bc1f906c1f79219f81c13c6ad2c.1610521804.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <af07f8f0bb734bc1f906c1f79219f81c13c6ad2c.1610521804.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021, Lee Jones <lee.jones@linaro.org> wrote:
-> Clear-up any confusion surrounding the Fixes: tag with regards to the
-> need to Cc: the stable mailing list when submitting stable patch
-> candidates.
+On Wed, Jan 13, 2021 at 07:12:44AM +0000, Christophe Leroy wrote:
+>From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 >
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
-> v2:
->  - Link to the 'stable-kernel-rules' document as per Greg's request
+>Backport for 4.9 and 4.14
 >
->  Documentation/process/submitting-patches.rst | 5 +++++
->  1 file changed, 5 insertions(+)
+>(cherry picked from commit d85be8a49e733dcd23674aa6202870d54bf5600d)
 >
-> diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
-> index 7c97ad580e7d0..7f48cccc75cdf 100644
-> --- a/Documentation/process/submitting-patches.rst
-> +++ b/Documentation/process/submitting-patches.rst
-> @@ -556,6 +556,11 @@ which stable kernel versions should receive your fix. This is the preferred
->  method for indicating a bug fixed by the patch. See :ref:`describe_changes`
->  for more details.
->  
-> +Note: Attaching a Fixes: tag does not subvert the stable kernel rules
-> +process nor the requirement to Cc: stable@vger.kernel.org on all stable 
-> +patch candidates. For more information, please read
-> +:ref:`Documentation/process/stable-kernel-rules.rst <stable_kernel_rules>`
+>The placeholder for instruction selection should use the second
+>argument's operand, which is %1, not %0. This could generate incorrect
+>assembly code if the memory addressing of operand %0 is a different
+>form from that of operand %1.
+>
+>Also remove the %Un placeholder because having %Un placeholders
+>for two operands which are based on the same local var (ptep) doesn't
+>make much sense. By the way, it doesn't change the current behaviour
+>because "<>" constraint is missing for the associated "=m".
+>
+>[chleroy: revised commit log iaw segher's comments and removed %U0]
+>
+>Fixes: 9bf2b5cdc5fe ("powerpc: Fixes for CONFIG_PTE_64BIT for SMP support")
+>Cc: <stable@vger.kernel.org> # v2.6.28+
+>Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>Acked-by: Segher Boessenkool <segher@kernel.crashing.org>
+>Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+>Link: https://lore.kernel.org/r/96354bd77977a6a933fe9020da57629007fdb920.1603358942.git.christophe.leroy@csgroup.eu
 
-Has there been a process change, or should I take it that a Fixes: tag
-without Cc: stable *may* still end up being backported to stable?
-
-BR,
-Jani.
-
-
-> +     
->  .. _the_canonical_patch_format:
->  
->  The canonical patch format
+I took this and the 4.4 backport, thanks!
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+Thanks,
+Sasha
