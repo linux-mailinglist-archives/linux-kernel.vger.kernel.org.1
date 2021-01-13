@@ -2,166 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF3A2F4F28
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31ED12F4F36
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727217AbhAMPsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 10:48:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37098 "EHLO mail.kernel.org"
+        id S1727177AbhAMPvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 10:51:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726612AbhAMPsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 10:48:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5422823406;
-        Wed, 13 Jan 2021 15:48:13 +0000 (UTC)
+        id S1726531AbhAMPvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 10:51:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E50042339F;
+        Wed, 13 Jan 2021 15:51:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610552893;
-        bh=vl/j9fY04Q4QKepnlpWcEBboiOHtYd5YlcbSUw/UEiw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bG7zO7Kh5L+sFUiW/N1k3sqkVj2KQI6mrcwtvVmoV/3e9VmkRZ3M9HFNrxCijvu2V
-         pSv0ZCjR8hnC9LYXKv1DjwW5kxmKz91q+tNMi2+KnpPaHdvqx8qhkI4LdG8Php0ai2
-         gKA2AcaLeAvbV6TkDRvkMesJaNUY1sPbc86YX0ljutBurBMVLIQJKGW35mFdUbp/WR
-         P8zJSVcFRKRbmi30daabu7F/LFOBe3Suz+Nwp6X+P8kRF1XJBlyfxOraqVAH/N6YuN
-         N/EIr3qfB2bAdaMTaLlIi5LOWk2UV195bWLsJtN5+uf3rKg9X9i/D+7ASzyMcdfJeg
-         JACkTO1fV2s2Q==
-Received: by mail-ej1-f48.google.com with SMTP id n26so3727513eju.6;
-        Wed, 13 Jan 2021 07:48:13 -0800 (PST)
-X-Gm-Message-State: AOAM5331Vul+C4JnHIfma8Uhy187Zul5AdsnHDmm7BYQWxe8ev0nRCBl
-        Em+a7wkUMcgQ8+Iz9pwWT8WgK78IEtz8sRakcg==
-X-Google-Smtp-Source: ABdhPJzZZzBuNWt4zBP6oYChCdDAG8dOO3P0AP/b5Es8D36Y7ObsNG06lrcvG5s0YbH/HHYPqG29t3s3Un8yiIKd8P0=
-X-Received: by 2002:a17:906:dfdb:: with SMTP id jt27mr775014ejc.360.1610552891782;
- Wed, 13 Jan 2021 07:48:11 -0800 (PST)
+        s=k20201202; t=1610553067;
+        bh=1Z8kzuRj8UI/6fvft+ap1+v80qkzAnNOJX1YJ8zkw2w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A2x/KI16upUQfU/SupIDBtGzUJm/3Ba0U76DvtygD4kBsZT4yL320QjAc8pGXdhD5
+         jpp52yBL1NW6dHqL+ADNpodo95YEUm7rCTF0QmTuKWktEilswXn9z9FwxPLsxJua5h
+         IB48KpyHJu/JSGn8WbDbKp1QyGPPDo7F8Q/tqY367FG3Xa4hHl1S6r8DTlE/AREnIo
+         d7UMs90WTpNmBegxk3rVDvHn8Wyh3gF27h1eoALdDp1SPblwOgmqZik21LE9b4ida7
+         9nVPN/ZmX+qD8twK0+twH7adJ9tZbV7JcGUaGwNV7bqwi5Al4sjBJ/CPkM6e4apk/f
+         bAg0AFwUa7RZw==
+Date:   Wed, 13 Jan 2021 15:51:01 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
+        zhukeqian1@huawei.com, yuzenghui@huawei.com
+Subject: Re: [PATCH v2 3/3] KVM: arm64: Mark the page dirty only if the fault
+ is handled successfully
+Message-ID: <20210113155101.GB11892@willie-the-truck>
+References: <20201216122844.25092-1-wangyanan55@huawei.com>
+ <20201216122844.25092-4-wangyanan55@huawei.com>
 MIME-Version: 1.0
-References: <cover.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
- <3ca03c3b76d6898c46ee645ddb5fa25cbfc62367.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
- <20210111190953.GB2890911@robh.at.kernel.org> <c953405d630efba5377b89931ae4e0aa1abfa4dd.camel@fi.rohmeurope.com>
- <20210113135345.GA2332349@robh.at.kernel.org> <55d19aaa27522c06c1a34f2a6422b82d069117c8.camel@fi.rohmeurope.com>
-In-Reply-To: <55d19aaa27522c06c1a34f2a6422b82d069117c8.camel@fi.rohmeurope.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 13 Jan 2021 09:47:59 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJH4C31db4Q_D_pme1=YSK6nJCxucVc4MnrU9tvBirNYg@mail.gmail.com>
-Message-ID: <CAL_JsqJH4C31db4Q_D_pme1=YSK6nJCxucVc4MnrU9tvBirNYg@mail.gmail.com>
-Subject: Re: [PATCH 06/15] dt_bindings: regulator: Add ROHM BD71815 PMIC regulators
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     "broonie@kernel.org" <broonie@kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201216122844.25092-4-wangyanan55@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 8:23 AM Vaittinen, Matti
-<Matti.Vaittinen@fi.rohmeurope.com> wrote:
->
->
-> On Wed, 2021-01-13 at 07:53 -0600, Rob Herring wrote:
-> > On Tue, Jan 12, 2021 at 08:10:14AM +0200, Matti Vaittinen wrote:
-> > > On Mon, 2021-01-11 at 13:09 -0600, Rob Herring wrote:
-> > > > On Fri, Jan 08, 2021 at 03:36:38PM +0200, Matti Vaittinen wrote:
-> > > > > Add binding documentation for regulators on ROHM BD71815 PMIC.
-> > > > > 5 bucks, 7 LDOs and a boost for LED.
-> > > > >
-> > > > > Signed-off-by: Matti Vaittinen <
-> > > > > matti.vaittinen@fi.rohmeurope.com>
-> > > > > ---
-> > > > >  .../regulator/rohm,bd71815-regulator.yaml     | 104
-> > > > > ++++++++++++++++++
-> > > > >  1 file changed, 104 insertions(+)
-> > > > >  create mode 100644
-> > > > > Documentation/devicetree/bindings/regulator/rohm,bd71815-
-> > > > > regulator.yaml
-> > > > >
-> > > > > diff --git
-> > > > > a/Documentation/devicetree/bindings/regulator/rohm,bd71815-
-> > > > > regulator.yaml
-> > > > > b/Documentation/devicetree/bindings/regulator/rohm,bd71815-
-> > > > > regulator.yaml
-> > > > > new file mode 100644
-> > > > > index 000000000000..2aa21603698c
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/devicetree/bindings/regulator/rohm,bd71815-
-> > > > > regulator.yaml
-> > > > > @@ -0,0 +1,104 @@
-> > > > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > > > > +%YAML 1.2
-> > > > > +---
-> > > > > +$id:
-> > > > > http://devicetree.org/schemas/regulator/rohm,bd71815-regulator.yaml#
-> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > +
-> > > > > +title: ROHM BD71815 Power Management Integrated Circuit
-> > > > > regulators
-> > > > > +
-> > > > > +maintainers:
-> > > > > +  - Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > > > > +
-> > > > > +description: |
-> > > > > +  This module is part of the ROHM BD718215 MFD device. For
-> > > > > more
-> > > > > details
-> > > > > +  see Documentation/devicetree/bindings/mfd/rohm,bd71815-
-> > > > > pmic.yaml.
-> > > > > +
-> > > > > +  The regulator controller is represented as a sub-node of the
-> > > > > PMIC node
-> > > > > +  on the device tree.
-> > > > > +
-> > > > > +  The valid names for BD71815 regulator nodes are
-> > > > > +  buck1, buck2, buck3, buck4, buck5,
-> > > > > +  ldo1, ldo2, ldo3, ldo4, ldo5,
-> > > > > +  ldodvref, ldolpsr, wled
-> > > >
-> > > > No schema for the last 3?
-> > >
-> > > Thanks Rob. I'm unsure what I have been thinking of :( I'll fix
-> > > this
-> > > for next version.
-> > >
-> > > > > +
-> > > > > +patternProperties:
-> > > > > +  "^(ldo|buck)[1-5]$":
-> > > > > +    type: object
-> > > > > +    description:
-> > > > > +      Properties for single LDO/BUCK regulator.
-> > > > > +    $ref: regulator.yaml#
-> > > > > +
-> > > > > +    properties:
-> > > > > +      regulator-name:
-> > > > > +        pattern: "^(ldo|buck)[1-5]$"
-> > > > > +        description:
-> > > > > +          should be "ldo1", ..., "ldo5" and "buck1", ...,
-> > > > > "buck5"
-> > > > > +
-> > > > > +      rohm,vsel-gpios:
-> > > > > +        description:
-> > > > > +          GPIO used to control ldo4 state (when ldo4 is
-> > > > > controlled
-> > > > > by GPIO).
-> > > > > +
-> > > > > +      rohm,dvs-run-voltage:
-> > > >
-> > > > These should have a unit suffix.
-> > >
-> > > I know but these are existing properties. I'd like to re-use them
-> > > as
-> > > they have exported parser helpers - and I am unsure what kind of
-> > > breakages changing them would cause. (The BD71837/BD71847 which
-> > > introduced these properties are one of the PMICs which are pretty
-> > > widely used.)
-> >
-> > Okay. Hopefully I remember next time I see this...
->
-> Actually, I think I can add support for rohm,dvs-run-microvolt and
-> fellows to these same helpers so new devices can use appropriately
-> named properties. That would mean there is duplicate properties for
-> same purpose - but maybe it allows us to eventually deprecate the old
-> ones... Which of these options would you prefer?
+On Wed, Dec 16, 2020 at 08:28:44PM +0800, Yanan Wang wrote:
+> We now mark the page dirty and set the bitmap before calling fault handlers
+> in user_mem_abort(), and we might end up having spurious dirty pages if
+> update of permissions or mapping has failed.
+> So, mark the page dirty only if the fault is handled successfully.
+> 
+> Let the guest directly enter again but not return to userspace if we were
+> trying to recreate the same mapping or only change access permissions
+> with BBM, which is not permitted in the mapping path.
+> 
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> ---
+>  arch/arm64/kvm/mmu.c | 18 ++++++++++++++----
+>  1 file changed, 14 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 75814a02d189..72e516a10914 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -879,11 +879,8 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  	if (vma_pagesize == PAGE_SIZE && !force_pte)
+>  		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
+>  							   &pfn, &fault_ipa);
+> -	if (writable) {
+> +	if (writable)
+>  		prot |= KVM_PGTABLE_PROT_W;
+> -		kvm_set_pfn_dirty(pfn);
+> -		mark_page_dirty(kvm, gfn);
+> -	}
+>  
+>  	if (fault_status != FSC_PERM && !device)
+>  		clean_dcache_guest_page(pfn, vma_pagesize);
+> @@ -911,6 +908,19 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  					     memcache);
+>  	}
+>  
+> +	/* Mark the page dirty only if the fault is handled successfully */
+> +	if (writable && !ret) {
+> +		kvm_set_pfn_dirty(pfn);
+> +		mark_page_dirty(kvm, gfn);
+> +	}
+> +
+> +	/* Let the guest directly enter again if we were trying to recreate the
+> +	 * same mapping or only change access permissions with BBM, which is not
+> +	 * permitted in the mapping path.
+> +	 */
+> +	if (ret == -EAGAIN)
+> +		ret = 0;
 
-Just keep the existing ones.
+Maybe just 'return ret != -EAGAIN ? ret : 0;' at the end of the function?
 
-Rob
+Will
