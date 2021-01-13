@@ -2,176 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900472F43E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B0C2F43E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbhAMFbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 00:31:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbhAMFbW (ORCPT
+        id S1726498AbhAMFbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 00:31:36 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:51016 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbhAMFbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 00:31:22 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78699C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:30:41 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id i24so546500edj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:30:41 -0800 (PST)
+        Wed, 13 Jan 2021 00:31:35 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10D5NhTS122835;
+        Wed, 13 Jan 2021 05:30:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=/z9MzkHjy6CPuN8XOjE3BFouQcgX9VHmcBUnHUTK4FA=;
+ b=lag08anJCUQsbY61NVtnSllAusWMrbZ6WkpFUXh273fa3uCtRzkYQNQG8fF3yqFIkOyL
+ buIYTeRIo3DkRmoohAPFTZlHSjrbVwCzLutR6b5DuK0U1fAyFbQLY7weXelZVJR/kWVJ
+ VhNk29+7wBOdNC5OpE6o0yxpE1UdApjyFt+JhDiV1sNSwH1WMeLWWXwWwqtPsrJwoXK4
+ 7w9dSBlYitEfvBejCatNYC3Ko5Gz8ol4qVXce2JrgOat3YhyUcqqOjmiWn6yBhkeMayl
+ CCX71zJdX0MwITB/DUQenTjCqRjAs6X+5k8UAe129Caxe7jp/LGrtHghWzWKhkChIO8u bA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 360kg1smdv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 05:30:34 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10D5Pd7w127637;
+        Wed, 13 Jan 2021 05:30:34 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2175.outbound.protection.outlook.com [104.47.57.175])
+        by aserp3020.oracle.com with ESMTP id 360ke7qs8p-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 05:30:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nffbQe2ce9JkUDdGL506m7J8xxxEiCgX+H7sDOU+Ug9MxQpvvjYMqEF8XX5i86kIiV+KqWhnGKE+gL9Ez7aa7kl6Jb18ff/ZIyZQ2Z796KY2GXydhIUp83CiUWZ8pxRtWTB0v57QAkD01qNrWEshPA9fZKLQiiQuoSpbRS52vHHM6n0t0i6T4veehjOH5Bu2MZbTrO5eQYuW2P6IB6pggaud7TB//F07Qik5YWuciJbyJKPXNDn25v2QjLi1Xj73K7LktNc4s9pg1j2OLXiMbLm6vUe00g3j17v+TqJLbYcI8SgbfeRMmGnY0qriImk/FpdmJrmzGLo+T7WLEnVdEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/z9MzkHjy6CPuN8XOjE3BFouQcgX9VHmcBUnHUTK4FA=;
+ b=K34KwX877mvkU3gwpWBLmKPC87xZ/yEbS0P85VSvyXHb4+GKgAVi+B4SUtKLsz/y3g50+Ho9LxTZnqf4bdUPFO00M3fzrtH9lNGbEgYQM1IzXtEUZrSiQj5s9flj/V3hSLFYYC5LPlYFzGap0xVPclNIZ0V5jzUyZBbxN6+ZlFnMOs6fjSNdaRo8mktYq2jalnkfqyJ81xwBqd9bfDMNQqKwGpaCSeZFEnGUVtLm1Z+KshFeM46dQ8fnUdoNVex1V7315leNeb54D+ehkhFYBxd+5zwQUTKJG4n6St7TURSaXvD0j22USPcPNLTaw7HCSOA+E+kjV2D53atSoSAtjg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3eSHLU0tsnB/8YZodS1JHYyVuvZP1q+Jh72EF+LlqTo=;
-        b=kH9y5HDmn14mKPIgiSh0+j61km8jiNYl7Jz2izQAcbV/5id9R9NlXd1WoPfZ4Cqp12
-         DC2YZgYFU3CAG0ZYQdxFQiMKzJqP8Q+nkXFfCI9yrpeJDZ6lzD4Ld6GCkOfgQtLnoGLA
-         KxDo2CyZ1EsNF43VAwEawZpbStfqt1FOzQm8I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3eSHLU0tsnB/8YZodS1JHYyVuvZP1q+Jh72EF+LlqTo=;
-        b=QRxAvFlJKG4D5QDw7Ak+Tl6YNN9LsLNs1UouFPoiv+K/v2yw+gP/1aDYAHcwXVPNgL
-         Pjcj8NfaludsjNczE3vZe8I83dGkkxzqaEUuacpq2J0ycbXfOdhfkcoWUlAcoNQb0SXW
-         22aYyLK0nAg7Q9SRSueDN0f+HrfJcY0kPtaH8p1lBR3XHpu9fF/Zz/4N1UlNVCSwRPUQ
-         kXFLoVBtEu7f0NVS8A3fJd1nmIKCA+yI4c8PVNPdjgyUa70yqX+dpJkK8Bqd5X8yAS8m
-         /cw7xkWet16mzRPSCebzZiy9UVG/WiBq5BWYAfQY98T+66Hmi3N0JtnPxjA5ldOPGNbK
-         vyDg==
-X-Gm-Message-State: AOAM533K4lTnWK/KusZ8U5BVmQeWrO9/1YMEBywEoxzu3vlq0m9pCku6
-        WKxUoclYXta3nWw5IYISkjVTmYj2ZCmzwMQC
-X-Google-Smtp-Source: ABdhPJwu22VQ66dY4Li1ZSBy5sop6ELXSMgv7DM+eOwDLl0sB2lpLW4Su4FXn1i6zxOQSB2x6YCgzA==
-X-Received: by 2002:a50:8387:: with SMTP id 7mr383285edi.131.1610515839860;
-        Tue, 12 Jan 2021 21:30:39 -0800 (PST)
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com. [209.85.128.54])
-        by smtp.gmail.com with ESMTPSA id g17sm112797edb.39.2021.01.12.21.30.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 21:30:38 -0800 (PST)
-Received: by mail-wm1-f54.google.com with SMTP id 3so433510wmg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:30:37 -0800 (PST)
-X-Received: by 2002:a7b:c773:: with SMTP id x19mr382042wmk.127.1610515837254;
- Tue, 12 Jan 2021 21:30:37 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/z9MzkHjy6CPuN8XOjE3BFouQcgX9VHmcBUnHUTK4FA=;
+ b=kKTNpb00uYq689TCq8SJu+GmWvPyUyDYLvixg9iyYM3gBpKoWkizIl7FJNm9vNZJvPbJHtThXUCDtDSRmwtkwry1iVTxZzOqt7B0ZPigHNnO9rPZ9aKyLA1eeJZ6X8qH6ji69fi1UR2RmPrkPnGPkGR4+AV4If/uLwVb8iMB7I4=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4694.namprd10.prod.outlook.com (2603:10b6:510:3e::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Wed, 13 Jan
+ 2021 05:30:29 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3763.009; Wed, 13 Jan 2021
+ 05:30:29 +0000
+To:     Bean Huo <huobean@gmail.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        john.garry@huawei.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, ebiggers@google.com, satyat@google.com,
+        shipujin.t@gmail.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bean Huo <beanhuo@micron.com>
+Subject: Re: [PATCH v3] scsi: ufs: Remove unnecessary devm_kfree
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1turl2ykz.fsf@ca-mkp.ca.oracle.com>
+References: <20210112092128.19295-1-huobean@gmail.com>
+Date:   Wed, 13 Jan 2021 00:30:27 -0500
+In-Reply-To: <20210112092128.19295-1-huobean@gmail.com> (Bean Huo's message of
+        "Tue, 12 Jan 2021 10:21:28 +0100")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: SJ0PR05CA0122.namprd05.prod.outlook.com
+ (2603:10b6:a03:33d::7) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-References: <20201209080102.26626-1-yong.wu@mediatek.com> <20201209080102.26626-7-yong.wu@mediatek.com>
- <X+L9XpkoII7tw/tX@chromium.org> <1608809713.26323.262.camel@mhfsdcap03>
-In-Reply-To: <1608809713.26323.262.camel@mhfsdcap03>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Wed, 13 Jan 2021 14:30:24 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5CCJv=0q=V45Z7mtq7FSq1c5TcH6vyqfp3MWxaA=ZexJQ@mail.gmail.com>
-Message-ID: <CAAFQd5CCJv=0q=V45Z7mtq7FSq1c5TcH6vyqfp3MWxaA=ZexJQ@mail.gmail.com>
-Subject: Re: [PATCH v5 06/27] dt-bindings: mediatek: Add binding for mt8192 IOMMU
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>, youlin.pei@mediatek.com,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        chao.hao@mediatek.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>, anan.sun@mediatek.com,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR05CA0122.namprd05.prod.outlook.com (2603:10b6:a03:33d::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.2 via Frontend Transport; Wed, 13 Jan 2021 05:30:29 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 39f2d0cd-c58e-4c40-3049-08d8b784571c
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4694:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB469474A7E49066DF1AFB079A8EA90@PH0PR10MB4694.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: K12/WCjG/4bBzm1mtQXdr4BLfBLbBNfrP9d7/0TjVZj5KcJ+nPjN5MYMNTp1EsfTcsHLYHW5hCcDHwU7HEVxrdNcU+ikV1kQZrKhCUF+tSCcAovrW8bxBfRElYY0DZ1GDJPqhxTI1veJNw99pBbIEuai8KTGAs7+fyyBbVc+UrOShdyt+iIlMo4moYQTgoOPxxZ44pBh4R9s7MjiQ+M3xfZ2y2Df6sN+XIXuriaF9brNrFY1Nm+4o4yKiLYGUQcznAR34IJn19RwBwojdD8vmOvJMtYh/DCNKgsPKelCZ7lYMvkFx52n3zq1z1NgX1jEuqfBeY+OafMPCsqTSs854JwIokmFKuD48meTGwQz38hYbKWtuvDWFnwjElNd/Q3VrA9dZmExMwMX40CORPVKYg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(136003)(376002)(396003)(39850400004)(55016002)(66556008)(66476007)(316002)(66946007)(186003)(8676002)(16526019)(4326008)(86362001)(956004)(5660300002)(7696005)(6916009)(52116002)(83380400001)(8936002)(2906002)(36916002)(478600001)(7416002)(26005)(558084003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ycIWLDIitujIa2UGeo/5r/rBaVQ98j1NpLr2wTlOGjho27rm7kXry7lOAZbH?=
+ =?us-ascii?Q?Xz7l45qnWnbVW72+IyUCu94WqYsbayTHBt5xqd4NnNS68TONTBT35/BlepHz?=
+ =?us-ascii?Q?JAN95F1gM1LJGMNl6AwKPTpij8DDSuNyAxCbqhle0zp7aSuaDXlWUZYBMLLr?=
+ =?us-ascii?Q?j6Ls9C7uAXIGJbNZ+o7kpc6x5cxUfyuM+hStvs6sU+jS13pVJxgc3cYoDGfs?=
+ =?us-ascii?Q?S2dcheVtJnwbeVPwBC/6VwNffw4rUcswo2/dOtJ+mrlGqFbjxb4n8otV7epy?=
+ =?us-ascii?Q?E3DOT9Ibk54iLNVekiBIPsXcUJ47lRXxdHRfLMu3+D60epJ0G5XTCkjj/7+y?=
+ =?us-ascii?Q?UEJkOEvgd9h91qkPYJSn3oCj2TwEdb51FSOnLSszB7nf3U/Wcti5ZH+mo78A?=
+ =?us-ascii?Q?pc0skCaowFLxKqWIrp6ooIzgBLv7c6bqJnHGRqpsLEaAC/qBZG2sDIutmPwa?=
+ =?us-ascii?Q?SRCXgwgn3KJa8637VfvGlD/HgfTxwQeAzjTTgJ+WfxbuSSwDRoA6+BeGpz3k?=
+ =?us-ascii?Q?WPIOAKBMETTrMwEQjDtooB+jhAm1ypVuLO+5mIsOn706bOJAOhHWURixXuL5?=
+ =?us-ascii?Q?TUaPRjHFDfgYGL8rxIZL318+EF1/I43YmevuzDYdyQ2JBDyHK/HsBc05cq+v?=
+ =?us-ascii?Q?Xj7xhQUxprMi+/bZzvr1LCmAb6ywYRkM5+Ke+wBTbfqsWwOS+dgPK1CDK4e8?=
+ =?us-ascii?Q?GaiROuTRH4Io8oENFBvrYftVQLGz2YuC/WPK+aVhyY5tMkTCbWAbm8DLtudT?=
+ =?us-ascii?Q?ZP/UpZlKOYMxrrIavkmHk5CZs7AJ7LDozDpov2NR+QSF7JBxus7cQF8rELOS?=
+ =?us-ascii?Q?qWucay/VED3I2ehvVth14Dh7rFpMlvzoOdf7ycYy7tBw8dkQ0gT4oUIuY00o?=
+ =?us-ascii?Q?+wjm2h7QWihazybHFx6/Qr1eOlgf8Hnfp3F0ntXDj5Ps5q2kwV02Yqg2Etgb?=
+ =?us-ascii?Q?Dgs92HH687bPH1Y7MoY3YyYcxVQpLB8nU9ljBgen5PA=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2021 05:30:29.6453
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 39f2d0cd-c58e-4c40-3049-08d8b784571c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: t4oKbTR67nw8KSgSQJBZ4CYCS07Aie9uJM0v90wPwvhThhBM3+SXjwJ3Lk3iOvD7gcBpPxqn7L5jNwhyTCx9BIY+b6SQKcv1y7NRtt+tuxw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4694
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101130032
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ clxscore=1011 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101130032
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 8:35 PM Yong Wu <yong.wu@mediatek.com> wrote:
->
-> On Wed, 2020-12-23 at 17:18 +0900, Tomasz Figa wrote:
-> > On Wed, Dec 09, 2020 at 04:00:41PM +0800, Yong Wu wrote:
-> > > This patch adds decriptions for mt8192 IOMMU and SMI.
-> > >
-> > > mt8192 also is MTK IOMMU gen2 which uses ARM Short-Descriptor translation
-> > > table format. The M4U-SMI HW diagram is as below:
-> > >
-> > >                           EMI
-> > >                            |
-> > >                           M4U
-> > >                            |
-> > >                       ------------
-> > >                        SMI Common
-> > >                       ------------
-> > >                            |
-> > >   +-------+------+------+----------------------+-------+
-> > >   |       |      |      |       ......         |       |
-> > >   |       |      |      |                      |       |
-> > > larb0   larb1  larb2  larb4     ......      larb19   larb20
-> > > disp0   disp1   mdp    vdec                   IPE      IPE
-> > >
-> > > All the connections are HW fixed, SW can NOT adjust it.
-> > >
-> > > mt8192 M4U support 0~16GB iova range. we preassign different engines
-> > > into different iova ranges:
-> > >
-> > > domain-id  module     iova-range                  larbs
-> > >    0       disp        0 ~ 4G                      larb0/1
-> > >    1       vcodec      4G ~ 8G                     larb4/5/7
-> > >    2       cam/mdp     8G ~ 12G             larb2/9/11/13/14/16/17/18/19/20
-> >
-> > Why do we preassign these addresses in DT? Shouldn't it be a user's or
-> > integrator's decision to split the 16 GB address range into sub-ranges
-> > and define which larbs those sub-ranges are shared with?
->
-> The problem is that we can't split the 16GB range with the larb as unit.
-> The example is the below ccu0(larb13 port9/10) is a independent
-> range(domain), the others ports in larb13 is in another domain.
->
-> disp/vcodec/cam/mdp don't have special iova requirement, they could
-> access any range. vcodec also can locate 8G~12G. it don't care about
-> where its iova locate. here I preassign like this following with our
-> internal project setting.
 
-Let me try to understand this a bit more. Given the split you're
-proposing, is there actually any isolation enforced between particular
-domains? For example, if I program vcodec to with a DMA address from
-the 0-4G range, would the IOMMU actually generate a fault, even if
-disp had some memory mapped at that address?
+Bean,
 
->
-> Why set this in DT?, this is only for simplifying the code. Assume we
-> put it in the platform data. We have up to 32 larbs, each larb has up to
-> 32 ports, each port may be in different iommu domains. we should have a
-> big array for this..however we only use a macro to get the domain in the
-> DT method.
->
-> When replying this mail, I happen to see there is a "dev->dev_range_map"
-> which has "dma-range" information, I think I could use this value to get
-> which domain the device belong to. then no need put domid in DT. I will
-> test this.
+> The memory allocated with devm_kzalloc() is freed automatically no
+> need to explicitly call devm_kfree, so delete it and save some
+> instruction cycles.
 
-My feeling is that the only part that needs to be enforced statically
-is the reserved IOVA range for CCUs. The other ranges should be
-determined dynamically, although I think I need to understand better
-how the hardware and your proposed design work to tell what would be
-likely the best choice here.
+Applied to 5.12/scsi-staging, thanks!
 
-Best regards,
-Tomasz
-
->
-> Thanks.
-> >
-> > Best regards,
-> > Tomasz
-> >
-> > >    3       CCU0    0x4000_0000 ~ 0x43ff_ffff     larb13: port 9/10
-> > >    4       CCU1    0x4400_0000 ~ 0x47ff_ffff     larb14: port 4/5
-> > >
-> > > The iova range for CCU0/1(camera control unit) is HW requirement.
-> > >
-> > > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > >  .../bindings/iommu/mediatek,iommu.yaml        |  18 +-
-> > >  include/dt-bindings/memory/mt8192-larb-port.h | 240 ++++++++++++++++++
-> > >  2 files changed, 257 insertions(+), 1 deletion(-)
-> > >  create mode 100644 include/dt-bindings/memory/mt8192-larb-port.h
-> > >
-> [snip]
+-- 
+Martin K. Petersen	Oracle Linux Engineering
