@@ -2,51 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998882F4958
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70FE02F4967
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:10:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727682AbhAMLBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:01:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38844 "EHLO mail.kernel.org"
+        id S1727758AbhAMLBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:01:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727624AbhAMLBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:01:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C344235E4;
+        id S1726974AbhAMLBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 06:01:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 383A023441;
         Wed, 13 Jan 2021 10:59:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1610535570;
-        bh=7SV1Wf2cFeBmyKYHN4PvxFbldMRcWaVnyyuX1AnarXg=;
+        bh=YW4QjGYFsbAuui1Vift+SPuhkkmUUaZythToMJo1+vw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jaTx/lCPLSeff37VJI9Yr0ga83qchFGKD7Df8bbk6VmWbWcoOXlEzQaqmiliPvGmJ
-         OMAqdjH6KH6IytBqX5JIVRdTVvYpO9l8f4yL9oiVEHf0KEtITHY/kwV/Vzp+KNbZhI
-         uiIzgQ+HPREo63B5roTTnOlzvxeg+1X4EMvnj91ESRAGRdYK7fb49fao/56VsKeJ3a
-         M6r9dwMKQ8+u2eMKkzTgvJNv20AejljQ6EruRZo0qZlceQIjsgPFh1Ipg9cuaDyEYV
-         O17ofYv0bFFtYitmmkRHfg07C/8PwUhCr8ELzz8T2H7WwM5N9nt1xHjeZ53k5f3FQx
-         Zqr6hmOS5G4SA==
+        b=OyRNuc2fpe0Hj3u2FvUgrww9G6rTIjDEsi0ww87FsoxfQMGZ0M3HZSlEM0J73t73Q
+         J/fYjXEZdqw1dVE0T0O2ethPSuAg8raN6fmokKnAMpoRhiwfvrmrV8/kvWCi5NpLN3
+         GpXR1aJ2DC/BEykKU6+8pM2W7Sm/sXjlwZctGJ0LU0tjxZ3MrBvRCZwy+hmRMhCL4l
+         lr0lebDfK1kVO6cM+Omx1g8PQ3/EUm2oa/R3vYENYDe3gKvzmm+tL5FQMd0cKYOg7y
+         8DqNep3l1QmHAJ/vw5rrUhaH17PCGPG5mujVaKfEGdUscb7a/TgjAD/viwLxu1nEez
+         DsXtqSUj1jlCA==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kzds7-00DpGh-PF; Wed, 13 Jan 2021 11:59:27 +0100
+        id 1kzds7-00DpGl-QQ; Wed, 13 Jan 2021 11:59:27 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+To:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
+        "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 19/24] doc: update rcu_dereference.rst reference
-Date:   Wed, 13 Jan 2021 11:59:20 +0100
-Message-Id: <e2293b68eefdd00ea0f4795bc0672ef70f8627e2.1610535350.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 20/24] ASoC: audio-graph-card: update audio-graph-card.yaml reference
+Date:   Wed, 13 Jan 2021 11:59:21 +0100
+Message-Id: <8a779e6b9644d19c5d77b382059f6ccf9781434d.1610535350.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1610535349.git.mchehab+huawei@kernel.org>
 References: <cover.1610535349.git.mchehab+huawei@kernel.org>
@@ -57,30 +50,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset b00aedf978aa ("doc: Convert to rcu_dereference.txt to rcu_dereference.rst")
-renamed: Documentation/RCU/rcu_dereference.txt
-to: Documentation/RCU/rcu_dereference.rst.
+Changeset 97198614f6c3 ("ASoC: audio-graph-card: switch to yaml base Documentation")
+renamed: Documentation/devicetree/bindings/sound/audio-graph-card.txt
+to: Documentation/devicetree/bindings/sound/audio-graph-card.yaml.
 
 Update its cross-reference accordingly.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- tools/memory-model/Documentation/glossary.txt | 2 +-
+ Documentation/devicetree/bindings/display/bridge/sii902x.txt | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/memory-model/Documentation/glossary.txt b/tools/memory-model/Documentation/glossary.txt
-index b2da6365be63..6f3d16dbf467 100644
---- a/tools/memory-model/Documentation/glossary.txt
-+++ b/tools/memory-model/Documentation/glossary.txt
-@@ -19,7 +19,7 @@ Address Dependency:  When the address of a later memory access is computed
- 	 from the value returned by the rcu_dereference() on line 2, the
- 	 address dependency extends from that rcu_dereference() to that
- 	 "p->a".  In rare cases, optimizing compilers can destroy address
--	 dependencies.	Please see Documentation/RCU/rcu_dereference.txt
-+	 dependencies.	Please see Documentation/RCU/rcu_dereference.rst
- 	 for more information.
+diff --git a/Documentation/devicetree/bindings/display/bridge/sii902x.txt b/Documentation/devicetree/bindings/display/bridge/sii902x.txt
+index 02c21b584741..3bc760cc31cb 100644
+--- a/Documentation/devicetree/bindings/display/bridge/sii902x.txt
++++ b/Documentation/devicetree/bindings/display/bridge/sii902x.txt
+@@ -40,7 +40,7 @@ Optional properties:
+ 	documents on how to describe the way the sii902x device is
+ 	connected to the rest of the audio system:
+ 	Documentation/devicetree/bindings/sound/simple-card.yaml
+-	Documentation/devicetree/bindings/sound/audio-graph-card.txt
++	Documentation/devicetree/bindings/sound/audio-graph-card.yaml
+ 	Note: In case of the audio-graph-card binding the used port
+ 	index should be 3.
  
- 	 See also "Control Dependency" and "Data Dependency".
 -- 
 2.29.2
 
