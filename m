@@ -2,236 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4142F41B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEDE2F41B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727980AbhAMCVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 21:21:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727961AbhAMCVd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 21:21:33 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D90C061575;
-        Tue, 12 Jan 2021 18:20:53 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id h16so170511qvu.8;
-        Tue, 12 Jan 2021 18:20:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NgfCLjdwiV5IrR3V5SLx5kGDk48Gn9FbHwenzcY7+rk=;
-        b=VfLpcZJMdB9v9AqwCKEMsMPi/PjXlimaCzfo1oC6qPni5B+ehy6IGyA0W+e4uyW3Vx
-         cWOYOElkYhdhzsghvFAkW7rKTammIBSohMa1+18xwRSpsYdUvnbFXcozxR5Af9wjuUwz
-         xhn/C7ZZGbafTaFZ8KVgYz+Y1coNJV/VA8cmam1vTZJl7MgPaqUBY2IMeCa0CyMO0JeI
-         1sieeEyLl1tve7HbQ+hxSjGta0lTvtDEfUsqdF+Io7vDw99DiNuIqraC/7iIaxcdRfRR
-         vgWhpw1btdBuKlfFufgcR3xTvvhk45d1XBWGpZKjcKpVFutWetKK/by3veOqqIQAsbCi
-         8g+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NgfCLjdwiV5IrR3V5SLx5kGDk48Gn9FbHwenzcY7+rk=;
-        b=Te/ysK77+xqGxxA+//0eRDBCeFdukyZ97VMQNJAq/bsLBEe/sxRqX6dKQU2EySvdrI
-         j0qfR4pmVlWDi8ELkalblmsv0WKlYjmKmbkMziXzKYNZxq7ETL7qm2vXTBdBQCoaT+6p
-         imgvY+KHkoxhd3zXM0jM3kzKg4QbvI4lM7XAqATWyOKQdw0+oidoGgrPLBfthUIpfsfW
-         kMTGgFPnE4bRO3VRRtLgRDlVE6znmYpvUTzK+Zl4Lui1hLEj8Rus5hS5ORaO2+QtYcBZ
-         HvEj77BpT56+ZQeMAISqanH7R5GymI9Qek5P+2aTNTb1TwUyXGew6LCh98vSyqjiyjdU
-         QUOA==
-X-Gm-Message-State: AOAM531ER3CmU6DGODG67KCaZ/57hIuReZWwJEsffxtXxgZ7rxjxmqOq
-        pEgpt3exzS0eonNxN4A2/Jg=
-X-Google-Smtp-Source: ABdhPJy7K3o2EKyUD6DXtbtRoXSjnG5m9QHY73yrysPBjQgPvzMVMLsqnE435PDzn6dQVdj9fBuNmQ==
-X-Received: by 2002:ad4:584b:: with SMTP id de11mr2288170qvb.15.1610504452307;
-        Tue, 12 Jan 2021 18:20:52 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id u4sm280080qtv.49.2021.01.12.18.20.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 18:20:51 -0800 (PST)
-Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
+        id S1728025AbhAMCWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 21:22:16 -0500
+Received: from mail-eopbgr760089.outbound.protection.outlook.com ([40.107.76.89]:14661
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727623AbhAMCWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 21:22:15 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KsU5meUrCcqyhhRaghbHC5B2bGgbJGg4jQZTof6a4d2xY2UjaYLkQmhoYRvnc9Y7JSWmZ7k9wXPWsycRV/yfAhAh9RDMLU7/EJeTDtN7ZKkkjTa13WNvV+UYYm5pZgm4Cs2cFskC/vqXc1zStSh4U7FL1gRCMXSo+nP7TqgCrxc7MwHPX9dYGpMj/5BXnq+4yiZ9815cBZWTZUDHO4UH72AZH3MEYNDaVgVxyk09DwprY8XE46MPm6dKwQzfkBwuqNNO1TZ6HsCKZszaRmS1WNDwwmo55jiAuSHZyuOaJ/4PudDT+LQ3yDEcTPwpDEFI/3UPXyTXKm6abPVGAXJ0zA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R8ZDm3CEedrnijPTyrpHEeej6fwRh9ZV0KFMJHg6zys=;
+ b=Hv36Lb14iVmbOs/XPwVojqp9/anW+6Lj5YNRVv0w07qTyNR530CpnwK8R/m6P3l+nkwE5LwzENB84uhBRzEqi3WkgtCpph4D6kZozGjxm+jA4qhjtHIzVGUy5Mo//U1qkbxhgb2I7dNrszNkwLJeZDXs8/YgKlxVL4EJk49SFCu51ctT83w25VMwRtNoiHfHXukx0rCeMX99XMlY1bXKgmMffKagW/cSIdHjSDZVEdJPwwToePCz8zlnvXFF4Mt0AZ/kSI05Rnb/CVEYLYGAX1+xXLF793xYHfYWAgsUCV7zuM/P+jlNdMxtGUEqSfT431ZwubZK0+OUaz311QlsjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R8ZDm3CEedrnijPTyrpHEeej6fwRh9ZV0KFMJHg6zys=;
+ b=RpyRd3Wyryt5Tky9IB5tDzRgrXbB8WJ20wgThaGKjtG09zA3xb8EYoXS+10laUI5nDfoMOEZTVF/NP+RL9J0iRQpi5BT70OEh9vh83tOip35w8HkciVZGNoD4uwzWkorCsnN/9CT8JK0zzf81MS72Gu5NVjPSc9DmhxlWKEgB7o=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR12MB1248.namprd12.prod.outlook.com (2603:10b6:300:12::21)
+ by MWHPR12MB1949.namprd12.prod.outlook.com (2603:10b6:300:107::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.10; Wed, 13 Jan
+ 2021 02:21:25 +0000
+Received: from MWHPR12MB1248.namprd12.prod.outlook.com
+ ([fe80::8c0d:7831:bfa8:d98]) by MWHPR12MB1248.namprd12.prod.outlook.com
+ ([fe80::8c0d:7831:bfa8:d98%6]) with mapi id 15.20.3742.012; Wed, 13 Jan 2021
+ 02:21:25 +0000
+Date:   Wed, 13 Jan 2021 10:21:15 +0800
+From:   Huang Rui <ray.huang@amd.com>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Souptick Joarder <jrdr.linux@gmail.com>,
+        "Su, Jinzhou (Joe)" <Jinzhou.Su@amd.com>,
+        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "Lazar, Lijo" <Lijo.Lazar@amd.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
- <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
- <23e16d20-36eb-87d9-4473-142504ad8a95@gmail.com>
- <CAL_JsqKqSVGCjcue=ka2=bB1Os9pczNTCqDeaoFPFfRxnvsteQ@mail.gmail.com>
- <e549c7ce-d01e-08a3-9ed0-7325a34e9c29@gmail.com>
- <CAL_Jsq+W4X5H2myCzX1bGTEqJG9dpwLXdmqbpq6oGm5wpF7WMQ@mail.gmail.com>
- <de50f7a5-d0d7-86b0-a1eb-84a91438b586@gmail.com>
- <CAL_JsqLMeX_f-TpX4j5tgxJOxDafP9tiunvcF_Ed4MGV90982A@mail.gmail.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <5a243fb8-b264-0529-4213-ffd47799f873@gmail.com>
-Date:   Tue, 12 Jan 2021 20:20:51 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "Hou, Xiaomeng (Matthew)" <Xiaomeng.Hou@amd.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Quan, Evan" <Evan.Quan@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>
+Subject: Re: [PATCH] drm: amdgpu: pm: Mark vangogh_clk_dpm_is_enabled() as
+ static
+Message-ID: <20210113022115.GB135893@hr-amd>
+References: <1610481442-6606-1-git-send-email-jrdr.linux@gmail.com>
+ <20210113011901.GA135176@hr-amd>
+ <CADnq5_NUaqHWW7A32M1BeQ+rHPS8WZ-0OnVXtD3m7pB3ZpHyYA@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADnq5_NUaqHWW7A32M1BeQ+rHPS8WZ-0OnVXtD3m7pB3ZpHyYA@mail.gmail.com>
+X-Originating-IP: [180.167.199.189]
+X-ClientProxiedBy: HK2PR04CA0067.apcprd04.prod.outlook.com
+ (2603:1096:202:15::11) To MWHPR12MB1248.namprd12.prod.outlook.com
+ (2603:10b6:300:12::21)
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqLMeX_f-TpX4j5tgxJOxDafP9tiunvcF_Ed4MGV90982A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from hr-amd (180.167.199.189) by HK2PR04CA0067.apcprd04.prod.outlook.com (2603:1096:202:15::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Wed, 13 Jan 2021 02:21:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 96bf2110-f858-4e77-97c2-08d8b769ed8b
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1949:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1949EA1551BB68AE401A5A81ECA90@MWHPR12MB1949.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: y05hVlqKrYaKs21jwCBv32ok3clP3Kcm+rLe9kdG+BIymjPlVybQSTDP32w3+YEku5GbOHoEiBSwz1zUVEOVTKsCKTvqMfTlRj39O6/ytG7em3E/3+R/V103BExrHfHUWtDtZefyQEcZLEqv8O9jVoHo4wgr/9GgckWV2pzC8q5QYp1ZzHCTyteQQpVNySk77vD51XBht5cHL8Ek81kQMUSY41j1dRETrvIGYvYo86OLhwj6N3zr2aSKjneUziQreLrO4oly17OBSOEsjCEwrirYUlsxD+Ln3vX8UiA1GHvBbmOa0fUpbMfmQztScUdiWT07S3tuTuKLoiZFsyS0Hf7Uj4OLzK74HLsybUFiKlkyL2tj/nHY0mULXPgH7WPelBrzZ/n5ZVZpxHyQKsH4xL0fbCfDwOnUBeTmKtAFnfU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1248.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39860400002)(366004)(396003)(52116002)(6496006)(54906003)(6666004)(8936002)(316002)(66946007)(956004)(16526019)(186003)(83380400001)(66556008)(66476007)(26005)(86362001)(5660300002)(478600001)(45080400002)(1076003)(2906002)(9686003)(6916009)(33716001)(4326008)(53546011)(55016002)(8676002)(33656002)(966005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?W9kWXyVtDDtZX+HrUSQ04rkmExMtOWNTTKZ73u5NDWkmYwZezvj/MAXRbvti?=
+ =?us-ascii?Q?oGwM6fbjM8F7qt4KIN3B3cKROnELXzhjw2YDe5bRVtrxfrh4j9SmD68PFWkh?=
+ =?us-ascii?Q?oqAiozO/DC4jvfECN69HSQFkojO/VXjJwv6M8kHhhS1lJNm6nob5+64ZUMxd?=
+ =?us-ascii?Q?RiMEAGpVhHVnBuqL8vpQZvqfC+bX0fw/s5MxG8UdKvKwO/pv0zfScJ0qm7dX?=
+ =?us-ascii?Q?8VmKr2aPnALLsKBAyAvppLZRSlWUbY2XNbRA0p2LShVL/p4nXW9WlOFIWQUa?=
+ =?us-ascii?Q?Cbuesz+I8BfktBjXoESmEhIVErgsYGPZMSUEFqCWKep7x2+dYrq9jkCZVOXY?=
+ =?us-ascii?Q?scZb1wdsebxQcVNU9IDcP05qthILWPPA7D/XHax8/4iOBslXCxn3bekOluq7?=
+ =?us-ascii?Q?oQ729KBkfqToapIBLgcYBC8Ggm9wWmSS4/HOREuQvfqRcxGTHYdE2EDAUGy2?=
+ =?us-ascii?Q?lF5Y9CcJ3ut21HDTUahpgv8jTHDLO355lCPQhVvqJSIFT5zxaDepHDZ13QCK?=
+ =?us-ascii?Q?BlRbkfswGOhW4gSchcWiZedlCXy39D/YWXDOUIkaId75eKF+NYB/umHjL1bY?=
+ =?us-ascii?Q?5n4ZCXXpXl/YJOPYmf0psvbGPnODNTYsndS91wzNrTgQHtmhVk8yKUfyM2Bt?=
+ =?us-ascii?Q?O8mjAPmAXRy40yaslBGRU7cFRro8GXT14zFPwR3KpBwdM9sJXiPWhlSz5DU2?=
+ =?us-ascii?Q?glnFa2IW0Y5SH4QJ1g3PPaD2HW8NISann9dgJV1NId4jv+3q9PknGDdjrqvj?=
+ =?us-ascii?Q?REYDJ5rfj0E9wTHYwJ3Yk/L/YQli+Hcs4m6yR9wwUt4B69l0725p8CZPgUgA?=
+ =?us-ascii?Q?xFtr5Xp+ME6IsFeXhEYJsOmo7EHX2wTXsb4ZJUaJBJ7/PnPbBFmvdcseiQzR?=
+ =?us-ascii?Q?B5fn82/BXlCPDyT7Kq65DeNym+KDzSAmvp/0OFECMBRepS2ugqi80cZvFCkR?=
+ =?us-ascii?Q?QHAsXyYAD1CpJLLLaCc3YjZ1WavDW/MP7DIhYy8NdhxgPPe4t/XmlBDJPWth?=
+ =?us-ascii?Q?+b6B?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1248.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2021 02:21:25.5643
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96bf2110-f858-4e77-97c2-08d8b769ed8b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hI4ALuh5rhkFxnUHSKbdqQ3ISVFY5ihxLx7XRwWDnY2vRxilwEYlZNUqrFBN9/+L2r+hNwBkZwjz+2uVKgJ6Uw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1949
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/12/21 2:46 PM, Rob Herring wrote:
-> On Tue, Jan 12, 2021 at 2:05 PM Frank Rowand <frowand.list@gmail.com> wrote:
->>
->> On 1/12/21 1:41 PM, Rob Herring wrote:
->>> On Tue, Jan 12, 2021 at 1:06 PM Frank Rowand <frowand.list@gmail.com> wrote:
->>>>
->>>> On 1/12/21 8:04 AM, Rob Herring wrote:
->>>>> On Mon, Jan 11, 2021 at 4:06 PM Frank Rowand <frowand.list@gmail.com> wrote:
->>>>>>
->>>>>> On 1/8/21 2:41 AM, Viresh Kumar wrote:
->>>>>>> Now that fdtoverlay is part of the kernel build, start using it to test
->>>>>>> the unitest overlays we have by applying them statically.
->>>>>>>
->>>>>>> The file overlay_base.dtb have symbols of its own and we need to apply
->>>>>>> overlay.dtb to overlay_base.dtb alone first to make it work, which gives
->>>>>>> us intermediate-overlay.dtb file.
->>>>>>>
->>>>>>> The intermediate-overlay.dtb file along with all other overlays is them
->>>>>>> applied to testcases.dtb to generate the master.dtb file.
->>>>>>>
->>>>>>> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
->>>>>>
->>>>>> NACK to this specific patch, in its current form.
->>>>>>
->>>>>> There are restrictions on applying an overlay at runtime that do not apply
->>>>>> to applying an overlay to an FDT that will be loaded by the kernel during
->>>>>> early boot.  Thus the unittest overlays _must_ be applied using the kernel
->>>>>> overlay loading methods to test the kernel runtime overlay loading feature.
->>>>>
->>>>> This patch doesn't take away from any of that and it completely orthogonal.
->>>>
->>>> Mea culpa.  I took the patch header comment at face value, and read more into
->>>> the header comment than what was written there.  I then skimmed the patch
->>>> instead of actually reading what it was doing.
->>>>
->>>> I incorrectly _assumed_ (bad!) that the intent was to replace applying the
->>>> individual overlay dtb's with the master.dtb.  Reading more closely, I see
->>>> that the assumed final step of actually _using_ master.dtb does not exist.
->>>>
->>>> So, yes, I agree that the patch as written is orthogonal to my concern.
->>>>
->>>> My updated understanding is that this patch is attempting to use the existing
->>>> unittest overlay dts files as source to test fdtoverlay.  And that the resulting
->>>> dtb from fdtoverlay is not intended to be consumed by the kernel unittest.
->>>
->>> The goal is not to test fdtoverlay. dtc unittests do that. The goal is
->>> testing overlays we expect to be able to apply can actually apply and
->>> doing this at build time. That's also the goal for all the 'real'
->>> overlays which get added.
->>>
->>>> I do not agree that this is a good approach to testing fdtoverlay.  The
->>>> unittest overlay dts files are constructed specifically to test various
->>>> parts of the kernel overlay code and dynamic OF code.  Some of the content
->>>> of the overlays is constructed to trigger error conditions in that code,
->>>> and thus will not be able to be processed without error by fdtoverlay.
->>>
->>> Then those should be omitted.
->>>
->>>> Trying to use overlay dts files that are constructed to test runtime kernel
->>>> code as fdtoverlay input data mixes two different test environments and
->>>> objectives.  If fdtoverlay test cases are desired, then fdtoverlay specific
->>>> dts files should be created.
->>>>
->>>>>
->>>>>> I agree that testing fdtoverlay is a good idea.  I have not looked at the
->>>>>> parent project to see how much testing of fdtoverlay occurs there, but I
->>>>>> would prefer that fdtoverlay tests reside in the parent project if practical
->>>>>> and reasonable.  If there is some reason that some fdtoverlay tests are
->>>>>> more practical in the Linux kernel repository then I am open to adding
->>>>>> them to the Linux kernel tree.
->>>>>
->>>>> If you (or more importantly someone else sending us patches) make
->>>>> changes to the overlays, you can test that they apply at build time
->>>>> rather than runtime. I'll take it! So please help on fixing the issue
->>>>> because I want to apply this.
->>>>
->>>> If the tests can be added to the upstream project, I would much prefer
->>>> they reside there.  If there is some reason a certain test is more
->>>> suited to be in the Linux kernel source tree then I also would like
->>>> it to be accepted here.
->>>
->>> Again, this is just about doing sanity checks at build time rather
->>> than *only* rely on runtime.
->>
->> I'm fine with adding tests for applying overlays at build time (in
->> other words, tests of fdtoverlay).
+On Wed, Jan 13, 2021 at 10:13:02AM +0800, Alex Deucher wrote:
+> On Tue, Jan 12, 2021 at 8:19 PM Huang Rui <ray.huang@amd.com> wrote:
+> >
+> > On Wed, Jan 13, 2021 at 03:57:22AM +0800, Souptick Joarder wrote:
+> > > kernel test robot throws below warnings ->
+> > >
+> > > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:594:6:
+> > > warning: no previous prototype for 'vangogh_clk_dpm_is_enabled'
+> > > [-Wmissing-prototypes]
+> > > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:594:6:
+> > > warning: no previous prototype for function 'vangogh_clk_dpm_is_enabled'
+> > > [-Wmissing-prototypes]
+> > >
+> > > Mark vangogh_clk_dpm_is_enabled() as static.
+> > >
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> > > ---
+> > >  drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> > > index 75ddcad..3ffe56e 100644
+> > > --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> > > +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> > > @@ -610,7 +610,7 @@ static int vangogh_get_profiling_clk_mask(struct smu_context *smu,
+> > >       return 0;
+> > >  }
+> > >
+> > > -bool vangogh_clk_dpm_is_enabled(struct smu_context *smu,
+> > > +static bool vangogh_clk_dpm_is_enabled(struct smu_context *smu,
+> > >                               enum smu_clk_type clk_type)
+> >
+> > Ah, I have another patch which will use this function in another file.
+> >
 > 
+> I can drop it if you plan to land those patches soon.
 
-> Again, it's not tests of fdtoverlay. It's a test of the dts files. We
-> are testing that an overlay dts can apply to the base dts we claim it
-> applies. If the overlay dts has crap then we'll catch it.
-> 
-> We shouldn't accept overlays that can't apply to a base in the kernel
-> tree. That's either because it's broken or because the base doesn't
-> exist. With the exception of overlays designed to fail for tests,
-> unittest overlays should not be any different.
+Thanks Alex. Yes, I will upload them after verify them on the new firmware
+today.
 
-I understood the goal to be testing fdtoverlay.  I'll switch my mind
-set to the goal being a test of dts files.
-
-We already know that unittest overlays that are expected to be valid
-can apply successfully.  The run time unittests already check for that.
-I don't see any value in adding a build time test for the same thing
-_for unittest overlay dts files_.  And I do see an ongoing maintenance
-cost for _unittest overlay dts files_.
-
-If you want to add build time tests for all (or some) non-unittest overlay
-dts files, then I am not particularly opposed to that (but being aware that
-an overlay dtb could apply on top of more than one base dtb, so there
-is a possibility of an "explosion" of combinations to be maintained
-in the build system).
-
-I see value in having build time testing that overlay dtbs apply cleanly
-on a base dtb.  I have heard frustration from the out of tree users of
-overlays that apply the overlays via the bootloader, because if the
-bootloader fails to apply an overlay it can be difficult to debug or
-fix on the target computer.  Having a mechanism to specify what overlays
-are intended to be applied to a base dtb, and verify that they do
-apply would resolve some of those issues, assuming the boot loader
-and fdtoverlay are consistent with each other.
+Thanks,
+Ray
 
 > 
->> But the constraints on applying an overlay at build time are different
->> than the runtime constraints.
+> Alex
 > 
-> Like what specifically? Runtime is more constrained than build time.
-> Or at least it should be. It's not really and that's why we have
-> limited runtime applied overlay support.
 > 
->> The existing unittest overlay dts files are not designed to test applying
->> overlays at build time.  Tests for fdtoverlay should be designed to test
->> that overlays that meet the build time constraints can be applied
->> properly by fdtoverlay, and that overlays that fail to meet those
->> constraints are rejected by fdtoverlay.
->>
->> Trying to use the same data (dts) files for tests that have different
->> constraints is likely to make both tests more fragile when a data file
->> is modified for one environment without careful consideration of the
->> other environment.
-> 
-> We're not changing nor constraining the data files. Just adding
-> another sanity test on them.
-
-For _unittest_ dts files, I see no value add.  And the cost of needing
-to track _in the build system_ which unittest dts files are expected fail
-to apply and which are expected to succeed.
-
--Frank
-
-> 
-> Rob
-> 
-
+> > Thanks,
+> > Ray
+> >
+> > >  {
+> > >       enum smu_feature_mask feature_id = 0;
+> > > --
+> > > 1.9.1
+> > >
+> > _______________________________________________
+> > amd-gfx mailing list
+> > amd-gfx@lists.freedesktop.org
+> > https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flists.freedesktop.org%2Fmailman%2Flistinfo%2Famd-gfx&amp;data=04%7C01%7Cray.huang%40amd.com%7C19fce6891f2d4f6df7de08d8b768c8a9%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637461007972405505%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=v2JGTkklMHOE2hN1s4dYZ1hT7ctLeUHpwkpn1M3nyi8%3D&amp;reserved=0
