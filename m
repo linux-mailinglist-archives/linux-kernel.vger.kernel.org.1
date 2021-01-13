@@ -2,160 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8402F4CA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:01:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2297C2F4CAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726952AbhAMOAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:00:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60430 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726549AbhAMOAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:00:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 17911AB92;
-        Wed, 13 Jan 2021 13:59:39 +0000 (UTC)
-Message-ID: <7ed51025f051f65f3dfe10a88caeb648821994b1.camel@suse.de>
-Subject: Re: [RFC PATCH v3 2/6] swiotlb: Add restricted DMA pool
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Claire Chang <tientzu@chromium.org>, robh+dt@kernel.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        joro@8bytes.org, will@kernel.org, frowand.list@gmail.com,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com
-Cc:     drinkcat@chromium.org, devicetree@vger.kernel.org,
-        heikki.krogerus@linux.intel.com, saravanak@google.com,
-        peterz@infradead.org, xypron.glpk@gmx.de,
-        rafael.j.wysocki@intel.com, linux-kernel@vger.kernel.org,
-        andriy.shevchenko@linux.intel.com, bgolaszewski@baylibre.com,
-        iommu@lists.linux-foundation.org, grant.likely@arm.com,
-        rdunlap@infradead.org, gregkh@linuxfoundation.org,
-        xen-devel@lists.xenproject.org, dan.j.williams@intel.com,
-        treding@nvidia.com, linuxppc-dev@lists.ozlabs.org, mingo@kernel.org
-Date:   Wed, 13 Jan 2021 14:59:34 +0100
-In-Reply-To: <95ae9c1e-c1f1-5736-fe86-12ced1f648f9@gmail.com>
-References: <20210106034124.30560-1-tientzu@chromium.org>
-         <20210106034124.30560-3-tientzu@chromium.org>
-         <95ae9c1e-c1f1-5736-fe86-12ced1f648f9@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-t4If4GPTxFUMkhdNPchG"
-User-Agent: Evolution 3.38.2 
+        id S1726959AbhAMOCC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Jan 2021 09:02:02 -0500
+Received: from mail.savoirfairelinux.com ([208.88.110.44]:46878 "EHLO
+        mail.savoirfairelinux.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726510AbhAMOCB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 09:02:01 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.savoirfairelinux.com (Postfix) with ESMTP id 1099E9C0DC1;
+        Wed, 13 Jan 2021 09:01:20 -0500 (EST)
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id dEgDgiRf_U4e; Wed, 13 Jan 2021 09:01:19 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.savoirfairelinux.com (Postfix) with ESMTP id 716FE9C0DD5;
+        Wed, 13 Jan 2021 09:01:19 -0500 (EST)
+X-Virus-Scanned: amavisd-new at mail.savoirfairelinux.com
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ijHyM6KBQP8K; Wed, 13 Jan 2021 09:01:19 -0500 (EST)
+Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [192.168.48.237])
+        by mail.savoirfairelinux.com (Postfix) with ESMTP id 468639C0DC1;
+        Wed, 13 Jan 2021 09:01:19 -0500 (EST)
+Date:   Wed, 13 Jan 2021 09:01:19 -0500 (EST)
+From:   Gilles Doffe <gilles.doffe@savoirfairelinux.com>
+To:     netdev@vger.kernel.org
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <309642574.258062.1610546479144.JavaMail.zimbra@savoirfairelinux.com>
+In-Reply-To: <c5c35fb4a3e4784a5e26a7b7181a0a2925674712.1610540603.git.gilles.doffe@savoirfairelinux.com>
+References: <cover.1610540603.git.gilles.doffe@savoirfairelinux.com> <c5c35fb4a3e4784a5e26a7b7181a0a2925674712.1610540603.git.gilles.doffe@savoirfairelinux.com>
+Subject: Re: [PATCH net 1/6] net: dsa: ksz: fix FID management
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Mailer: Zimbra 8.8.15_GA_3991 (ZimbraWebClient - GC87 (Linux)/8.8.15_GA_3980)
+Thread-Topic: fix FID management
+Thread-Index: dwYe9SMrlEHtiii9DTEZkWte16xAwA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+----- Le 13 Jan 21, à 13:45, Gilles Doffe gilles.doffe@savoirfairelinux.com a écrit :
 
---=-t4If4GPTxFUMkhdNPchG
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> The FID (Filter ID) is a 7 bits field used to link the VLAN table
+> to the static and dynamic mac address tables.
+> Until now the KSZ8795 driver could only add one VLAN as the FID was
+> always set to 1.
+> This commit allows setting a FID for each new active VLAN.
+> The FID list is stored in a static table dynamically allocated from
+> ks8795_fid structure.
+> Each newly activated VLAN is associated to the next available FID.
+> Only the VLAN 0 is not added to the list as it is a special VLAN.
+> As it has a special meaning, see IEEE 802.1q.
+> When a VLAN is no more used, the associated FID table entry is reset
+> to 0.
+> 
+> Signed-off-by: Gilles DOFFE <gilles.doffe@savoirfairelinux.com>
+> ---
+> drivers/net/dsa/microchip/ksz8795.c     | 59 +++++++++++++++++++++++--
+> drivers/net/dsa/microchip/ksz8795_reg.h |  1 +
+> drivers/net/dsa/microchip/ksz_common.h  |  1 +
+> 3 files changed, 57 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/dsa/microchip/ksz8795.c
+> b/drivers/net/dsa/microchip/ksz8795.c
+> index c973db101b72..6962ba4ee125 100644
+> --- a/drivers/net/dsa/microchip/ksz8795.c
+> +++ b/drivers/net/dsa/microchip/ksz8795.c
+> @@ -648,7 +648,7 @@ static enum dsa_tag_protocol ksz8795_get_tag_protocol(struct
+> dsa_switch *ds,
+> 						      int port,
+> 						      enum dsa_tag_protocol mp)
+> {
+> -	return DSA_TAG_PROTO_KSZ8795;
+> +	return DSA_TAG_PROTO_NONE;
 
-Hi All,
+This is an oversight, will be removed in V2.
 
-On Tue, 2021-01-12 at 16:03 -0800, Florian Fainelli wrote:
-> On 1/5/21 7:41 PM, Claire Chang wrote:
-> > Add the initialization function to create restricted DMA pools from
-> > matching reserved-memory nodes in the device tree.
-> >=20
-> > Signed-off-by: Claire Chang <tientzu@chromium.org>
-> > ---
-> > =C2=A0include/linux/device.h  |   4 ++
-> > =C2=A0include/linux/swiotlb.h |   7 +-
-> > =C2=A0kernel/dma/Kconfig      |   1 +
-> > =C2=A0kernel/dma/swiotlb.c    | 144 ++++++++++++++++++++++++++++++++++-=
------
-> > =C2=A04 files changed, 131 insertions(+), 25 deletions(-)
-> >=20
-> > diff --git a/include/linux/device.h b/include/linux/device.h
-> > index 89bb8b84173e..ca6f71ec8871 100644
-> > --- a/include/linux/device.h
-> > +++ b/include/linux/device.h
-> > @@ -413,6 +413,7 @@ struct dev_links_info {
-> > =C2=A0=C2=A0* @dma_pools:	Dma pools (if dma'ble device).
-> > =C2=A0=C2=A0* @dma_mem:	Internal for coherent mem override.
-> > =C2=A0=C2=A0* @cma_area:	Contiguous memory area for dma allocations
-> > + * @dma_io_tlb_mem: Internal for swiotlb io_tlb_mem override.
-> > =C2=A0=C2=A0* @archdata:	For arch-specific additions.
-> > =C2=A0=C2=A0* @of_node:	Associated device tree node.
-> > =C2=A0=C2=A0* @fwnode:	Associated device node supplied by platform firm=
-ware.
-> > @@ -515,6 +516,9 @@ struct device {
-> > =C2=A0#ifdef CONFIG_DMA_CMA
-> > =C2=A0	struct cma *cma_area;		/* contiguous memory area for dma
-> > =C2=A0					   allocations */
-> > +#endif
-> > +#ifdef CONFIG_SWIOTLB
-> > +	struct io_tlb_mem	*dma_io_tlb_mem;
-> > =C2=A0#endif
-> > =C2=A0	/* arch specific additions */
-> > =C2=A0	struct dev_archdata	archdata;
-> > diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-> > index dd8eb57cbb8f..a1bbd7788885 100644
-> > --- a/include/linux/swiotlb.h
-> > +++ b/include/linux/swiotlb.h
-> > @@ -76,12 +76,13 @@ extern enum swiotlb_force swiotlb_force;
-> > =C2=A0=C2=A0*
-> > =C2=A0=C2=A0* @start:	The start address of the swiotlb memory pool. Use=
-d to do a quick
-> > =C2=A0=C2=A0*		range check to see if the memory was in fact allocated b=
-y this
-> > - *		API.
-> > + *		API. For restricted DMA pool, this is device tree adjustable.
->=20
-> Maybe write it as this is "firmware adjustable" such that when/if ACPI
-> needs something like this, the description does not need updating.
->=20
-> [snip]
->=20
-> > +static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
-> > +				    struct device *dev)
-> > +{
-> > +	struct io_tlb_mem *mem =3D rmem->priv;
-> > +	int ret;
-> > +
-> > +	if (dev->dma_io_tlb_mem)
-> > +		return -EBUSY;
-> > +
-> > +	if (!mem) {
-> > +		mem =3D kzalloc(sizeof(*mem), GFP_KERNEL);
-> > +		if (!mem)
-> > +			return -ENOMEM;
-> > +
-> > +		if (!memremap(rmem->base, rmem->size, MEMREMAP_WB)) {
->=20
-> MEMREMAP_WB sounds appropriate as a default.
-
-As per the binding 'no-map' has to be disabled here. So AFAIU, this memory =
-will
-be part of the linear mapping. Is this really needed then?
-
-> Documentation/devicetree/bindings/reserved-memory/ramoops.txt does
-> define an "unbuffered" property which in premise could be applied to the
-> generic reserved memory binding as well and that we may have to be
-> honoring here, if we were to make it more generic. Oh well, this does
-> not need to be addressed right now I guess.
-
-
-
-
---=-t4If4GPTxFUMkhdNPchG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl/+/MYACgkQlfZmHno8
-x/57/wf8DfucOc1/3ySk20PkRc6qv7RWXbGw5RAUSZfXGpnHv1mAOnBMd6ProWeU
-mJiYuCGcljwaI92Dc4Yca/JpWSeZmXWl/HZ+T0GIF9SegR36L8j5Fwop/zptM3kF
-Je0VZZ/VIXKkgr7rp0yqFNRFB0vGuXdQz022npLJ4YKgyN1uvEaVgVCEeKuB/gSc
-7BYPkilOLaUXaBxRcA6l7mcQZc4vqCMW3Lzl/9IM+mKhrhFllZI3pvBFnWed+k2J
-JVdA5hjLI3QQrsXYH8+AfKlhLjzzMCGn5E5Gw1IPluIoeObgEwwLfYuMHbOvFplQ
-3LHRL6KrY2rpsuzPeVMDM0TFPae/Hw==
-=L05t
------END PGP SIGNATURE-----
-
---=-t4If4GPTxFUMkhdNPchG--
-
+> }
+> 
+> static void ksz8795_get_strings(struct dsa_switch *ds, int port,
+> @@ -796,6 +796,41 @@ static int ksz8795_port_vlan_filtering(struct dsa_switch
+> *ds, int port,
+> 	return 0;
+> }
+> 
+> +static void ksz8795_del_fid(u16 *ksz_fid_table, u16 vid)
+> +{
+> +	u8 i = 0;
+> +
+> +	if (!ksz_fid_table)
+> +		return;
+> +
+> +	for (i = 0; i < VLAN_TABLE_FID_SIZE; i++) {
+> +		if (ksz_fid_table[i] == vid) {
+> +			ksz_fid_table[i] = 0;
+> +			break;
+> +		}
+> +	}
+> +}
+> +
+> +static int ksz8795_get_next_fid(u16 *ksz_fid_table, u16 vid, u8 *fid)
+> +{
+> +	u8 i = 0;
+> +	int ret = -EOVERFLOW;
+> +
+> +	if (!ksz_fid_table)
+> +		return ret;
+> +
+> +	for (i = 0; i < VLAN_TABLE_FID_SIZE; i++) {
+> +		if (!ksz_fid_table[i]) {
+> +			ksz_fid_table[i] = vid;
+> +			*fid = i;
+> +			ret = 0;
+> +			break;
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> static void ksz8795_port_vlan_add(struct dsa_switch *ds, int port,
+> 				  const struct switchdev_obj_port_vlan *vlan)
+> {
+> @@ -803,17 +838,24 @@ static void ksz8795_port_vlan_add(struct dsa_switch *ds,
+> int port,
+> 	struct ksz_device *dev = ds->priv;
+> 	u16 data, vid, new_pvid = 0;
+> 	u8 fid, member, valid;
+> +	int ret;
+> 
+> 	ksz_port_cfg(dev, port, P_TAG_CTRL, PORT_REMOVE_TAG, untagged);
+> 
+> 	for (vid = vlan->vid_begin; vid <= vlan->vid_end; vid++) {
+> +		if (vid == 0)
+> +			continue;
+> +
+> 		ksz8795_r_vlan_table(dev, vid, &data);
+> 		ksz8795_from_vlan(data, &fid, &member, &valid);
+> 
+> 		/* First time to setup the VLAN entry. */
+> 		if (!valid) {
+> -			/* Need to find a way to map VID to FID. */
+> -			fid = 1;
+> +			ret = ksz8795_get_next_fid(dev->ksz_fid_table, vid, &fid);
+> +			if (ret) {
+> +				dev_err(ds->dev, "Switch FID table is full, cannot add");
+> +				return;
+> +			}
+> 			valid = 1;
+> 		}
+> 		member |= BIT(port);
+> @@ -855,7 +897,7 @@ static int ksz8795_port_vlan_del(struct dsa_switch *ds, int
+> port,
+> 
+> 		/* Invalidate the entry if no more member. */
+> 		if (!member) {
+> -			fid = 0;
+> +			ksz8795_del_fid(dev->ksz_fid_table, vid);
+> 			valid = 0;
+> 		}
+> 
+> @@ -1087,6 +1129,9 @@ static int ksz8795_setup(struct dsa_switch *ds)
+> 	for (i = 0; i < (dev->num_vlans / 4); i++)
+> 		ksz8795_r_vlan_entries(dev, i);
+> 
+> +	/* Assign first FID to VLAN 1 and always return FID=0 for this vlan */
+> +	dev->ksz_fid_table[0] = 1;
+> +
+> 	/* Setup STP address for STP operation. */
+> 	memset(&alu, 0, sizeof(alu));
+> 	ether_addr_copy(alu.mac, eth_stp_addr);
+> @@ -1261,6 +1306,12 @@ static int ksz8795_switch_init(struct ksz_device *dev)
+> 	/* set the real number of ports */
+> 	dev->ds->num_ports = dev->port_cnt;
+> 
+> +	dev->ksz_fid_table = devm_kzalloc(dev->dev,
+> +					  VLAN_TABLE_FID_SIZE * sizeof(u16),
+> +					  GFP_KERNEL);
+> +	if (!dev->ksz_fid_table)
+> +		return -ENOMEM;
+> +
+> 	return 0;
+> }
+> 
+> diff --git a/drivers/net/dsa/microchip/ksz8795_reg.h
+> b/drivers/net/dsa/microchip/ksz8795_reg.h
+> index 40372047d40d..fe4c4f7fdd47 100644
+> --- a/drivers/net/dsa/microchip/ksz8795_reg.h
+> +++ b/drivers/net/dsa/microchip/ksz8795_reg.h
+> @@ -915,6 +915,7 @@
+>  */
+> 
+> #define VLAN_TABLE_FID			0x007F
+> +#define VLAN_TABLE_FID_SIZE		128
+> #define VLAN_TABLE_MEMBERSHIP		0x0F80
+> #define VLAN_TABLE_VALID		0x1000
+> 
+> diff --git a/drivers/net/dsa/microchip/ksz_common.h
+> b/drivers/net/dsa/microchip/ksz_common.h
+> index 720f22275c84..44e97c55c2da 100644
+> --- a/drivers/net/dsa/microchip/ksz_common.h
+> +++ b/drivers/net/dsa/microchip/ksz_common.h
+> @@ -77,6 +77,7 @@ struct ksz_device {
+> 	bool synclko_125;
+> 
+> 	struct vlan_table *vlan_cache;
+> +	u16 *ksz_fid_table;
+> 
+> 	struct ksz_port *ports;
+> 	struct delayed_work mib_read;
+> --
+> 2.25.1
