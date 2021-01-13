@@ -2,127 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D78E2F40D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C47612F40DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437790AbhAMAnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 19:43:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
+        id S2393737AbhAMAnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 19:43:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392389AbhAMAcY (ORCPT
+        with ESMTP id S2392393AbhAMAd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 19:32:24 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB68C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:31:44 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id t6so88238plq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:31:43 -0800 (PST)
+        Tue, 12 Jan 2021 19:33:28 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C195AC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:32:47 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id m203so619547ybf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:32:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=ExLznwThawuTbJyTIm5Arp9VEpqF0RS06oUV/Yikwmk=;
-        b=H5KRgSNPwE1C8dCIrYHz4KtK0VDnitGlIiJ5wkmflzfdAWNYBWrjI+x0lE0zO2SNoA
-         FXlp6wgVDUsVJQRm3vvVn3Shs9HVLKgdwJNlBF0dNbKnzo1+BuCvl34LTSL9ZzmiYsLl
-         F3nQJXVhKj5lG+Mgv+zKysbXn4t4oRHQJFQRKgfVQlrxlI8XN575A4gBpNiAoD6I9NQP
-         5tewyt0Jmput92WVXpSlMwal47KHRr8phA5wL8rRRZ5VGLR0kaOlkMchU5uxhGxd70q5
-         6Pk6WBhRao7xFx9VDFX+btxBzDOb75c7fyf1OiD4On7J7qPFe6GGhrvWZeFHO4zWw9se
-         IzNQ==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=5rko6s7/MxxtN4vVcBpBg113Pb8TIp2GhMMzMhRrSK4=;
+        b=p4mDtQ/JWBQVcqiSngiVHj1RDJXheN9j4tRJZdYqOef3abOmLeMAEwfLvwCSZaq72V
+         G+vUc4J+fzLAMEur0uasAO4tZTA5D+eRIvWKG6bK0GwnwBgnyCe/P3TDCE/ZVxj/33iW
+         nI7HNKVv87dAHunABvsFKROzqxByZa2P1XtgX+yh6cVQuPHUtAiwQ78s1ui09zTayJbN
+         HS2wFLIEu9gMfxL7BaqP8CrMPeoTys7pn1IOwKxGpH91mGB46UBdoqFiKjkGWXF6exUH
+         pbPMt7PkH59Kw0zzF1wq9mDSqSdLTBVqOfplGUeTXNf3oKX3HMCJmxz7+IAUaLi6fvpE
+         N41Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=ExLznwThawuTbJyTIm5Arp9VEpqF0RS06oUV/Yikwmk=;
-        b=A67qe2mW9jXZbAQQ5SMN025FnlorTqOiXn2EPNpTAVwNvOOGZnuvMthCvH75VDwXUq
-         l2YS5RsezqKNwRXO5k2L8K1sUOfKF5Di8urjnRk1BpRq8n1nzEhV5IyGydgeN84qCmem
-         JAvN2LyA8RYbepV7DiRqQVicUN/Gq+TkfPeso0K6zUnXUFatrhjynvL6E29qPaFVlnrM
-         gUMumUF8Jkd5Qt0cNN2veukfp6asFh6pTV6SzmqDF29mPvxi92gcDI/lKJoyjODbV9YE
-         Dsu5E4W2KObKjL7aO9fVdggAyXQZBrousw1yRYK4/iwMlEyB+TKRq7N7xADxivcCoarO
-         CpMg==
-X-Gm-Message-State: AOAM530fHtjp+2cTdRnS+7Mc85xE6XNTuxW6HRgsRSstpclNlXB5JWy9
-        gni7Wqce/UcVjk+xFn4t2LyYDw==
-X-Google-Smtp-Source: ABdhPJxKjI1QJE3Zr82VBGjhwlRDU5OYeWqJ0iNY8jIT5kAoV1QMdVIdo6Opm2h/41rbYVBjjab6Sw==
-X-Received: by 2002:a17:90a:5405:: with SMTP id z5mr306369pjh.13.1610497903418;
-        Tue, 12 Jan 2021 16:31:43 -0800 (PST)
-Received: from ?IPv6:2600:1010:b015:9bd0:bda1:66ef:aea3:7e99? ([2600:1010:b015:9bd0:bda1:66ef:aea3:7e99])
-        by smtp.gmail.com with ESMTPSA id 73sm152935pga.26.2021.01.12.16.31.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 16:31:42 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Date:   Tue, 12 Jan 2021 16:31:41 -0800
-Message-Id: <68095DFB-7D72-480E-BDF3-3C88B8428867@amacapital.net>
-References: <F33D2DD9-97D5-44A0-890B-35FE686E36DC@gmail.com>
-Cc:     Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Laurent Dufour <ldufour@linux.vnet.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>, surenb@google.com
-In-Reply-To: <F33D2DD9-97D5-44A0-890B-35FE686E36DC@gmail.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-X-Mailer: iPhone Mail (18C66)
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=5rko6s7/MxxtN4vVcBpBg113Pb8TIp2GhMMzMhRrSK4=;
+        b=ecqvYsQTOJsn1tgynPqWQZ39wQkre/SfgRBCvY6InbJZnyGOHtIIgJ/oBeaS+AWKNe
+         aZSOA+6S2Q/NNkrBTjJMwuf3YLDBC0nWlmNCaOlaQaJO+lTNWxe0n1YnRN4NobTgzGXJ
+         /U2GZOa7pq7Lt5QbeOyWewAOmluWDNPF3Bg0d0XBqnolF5BQOwMIaWbxuhXgGG+O+ZXv
+         88diUrpDJYARgFKUttBpWshuzugQD0Igmr+CiGK6dykTEHcSWaTppOWlxMq8sj4Ka39M
+         9wscjVKSSb4ARhjA6tCVPsm1Kr3+XfLLO2o+S7g3ynZNGCAcrCcKAfPRXkUY4ZKLs66p
+         nQFA==
+X-Gm-Message-State: AOAM532vHzt2CHR7rIvxJAzgCSzoXn73u47k9PvqTr3xMctyuMbP6PSg
+        bkyzWDpKz8iIvUZ39FWxB/85uyAc8F/XxiYGtMs=
+X-Google-Smtp-Source: ABdhPJyz29k5mHwumIN/WLsewxzzQWULrBkzUA+/LMCzZdq219IKRBifSlFkuKDLgTPRlO+O4yjAZg9VmDmhK0cKzJM=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:9387:: with SMTP id
+ a7mr3131575ybm.73.1610497966973; Tue, 12 Jan 2021 16:32:46 -0800 (PST)
+Date:   Tue, 12 Jan 2021 16:32:32 -0800
+Message-Id: <20210113003235.716547-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH v4 0/3] Kbuild: DWARF v5 support
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+DWARF v5 is the latest standard of the DWARF debug info format.
 
+DWARF5 wins significantly in terms of size when mixed with compression
+(CONFIG_DEBUG_INFO_COMPRESSED).
 
-> On Jan 12, 2021, at 2:29 PM, Nadav Amit <nadav.amit@gmail.com> wrote:
->=20
-> =EF=BB=BF
->>=20
->> On Jan 12, 2021, at 1:43 PM, Will Deacon <will@kernel.org> wrote:
->>=20
->> On Tue, Jan 12, 2021 at 12:38:34PM -0800, Nadav Amit wrote:
->>>> On Jan 12, 2021, at 11:56 AM, Yu Zhao <yuzhao@google.com> wrote:
->>>>> On Tue, Jan 12, 2021 at 11:15:43AM -0800, Nadav Amit wrote:
->>>>>> I will send an RFC soon for per-table deferred TLB flushes tracking.
->>>>>> The basic idea is to save a generation in the page-struct that tracks=
+Link: http://www.dwarfstd.org/doc/DWARF5.pdf
 
->>>>>> when deferred PTE change took place, and track whenever a TLB flush
->>>>>> completed. In addition, other users - such as mprotect - would use
->>>>>> the tlb_gather interface.
->>>>>>=20
->>>>>> Unfortunately, due to limited space in page-struct this would only
->>>>>> be possible for 64-bit (and my implementation is only for x86-64).
->>>>>=20
->>>>> I don't want to discourage you but I don't think this would end up
->>>>> well. PPC doesn't necessarily follow one-page-struct-per-table rule,
->>>>> and I've run into problems with this before while trying to do
->>>>> something similar.
->>>=20
->>> Discourage, discourage. Better now than later.
->>>=20
->>> It will be relatively easy to extend the scheme to be per-VMA instead of=
+Patch 1 is a cleanup from Masahiro and isn't DWARF v5 specific.
+Patch 2 is a cleanup that lays the ground work and isn't DWARF
+v5 specific.
+Patch 3 implements Kconfig and Kbuild support for DWARFv5.
 
->>> per-table for architectures that prefer it this way. It does require
->>> TLB-generation tracking though, which Andy only implemented for x86, so I=
+Changes from v3:
 
->>> will focus on x86-64 right now.
->>=20
->> Can you remind me of what we're missing on arm64 in this area, please? I'=
-m
->> happy to help get this up and running once you have something I can build=
+Changes as per Arvind:
+* only add -Wa,-gdwarf-5 for (LLVM=1|CC=clang)+LLVM_IAS=0 builds.
+* add -gdwarf-5 to Kconfig shell script.
+* only run Kconfig shell script for Clang.
 
->> on.
->=20
-> Let me first finish making something that we can use as a basis for a
-> discussion. I do not waste your time before I have something ready.
+Apologies to Sedat and Nathan; I appreciate previous testing/review, but
+I did no carry forward your Tested-by and Reviewed-by tags, as the
+patches have changed too much IMO.
 
-If you want a hand, let me know.  I suspect you understand the x86 code as w=
-ell as I do at this point, though :)
+Changes from v2:
+* Drop two of the earlier patches that have been accepted already.
+* Add measurements with GCC 10.2 to commit message.
+* Update help text as per Arvind with help from Caroline.
+* Improve case/wording between DWARF Versions as per Masahiro.
 
+Changes from the RFC:
+* split patch in 3 patch series, include Fangrui's patch, too.
+* prefer `DWARF vX` format, as per Fangrui.
+* use spaces between assignment in Makefile as per Masahiro.
+* simplify setting dwarf-version-y as per Masahiro.
+* indent `prompt` in Kconfig change as per Masahiro.
+* remove explicit default in Kconfig as per Masahiro.
+* add comments to test_dwarf5_support.sh.
+* change echo in test_dwarf5_support.sh as per Masahiro.
+* remove -u from test_dwarf5_support.sh as per Masahiro.
+* add a -gdwarf-5 cc-option check to Kconfig as per Jakub.
+
+Masahiro Yamada (1):
+  Remove $(cc-option,-gdwarf-4) dependency from CONFIG_DEBUG_INFO_DWARF4
+
+Nick Desaulniers (2):
+  Kbuild: make DWARF version a choice
+  Kbuild: implement support for DWARF v5
+
+ Makefile                          | 15 +++++++----
+ include/asm-generic/vmlinux.lds.h |  6 ++++-
+ lib/Kconfig.debug                 | 41 +++++++++++++++++++++++++------
+ scripts/test_dwarf5_support.sh    |  9 +++++++
+ 4 files changed, 58 insertions(+), 13 deletions(-)
+ create mode 100755 scripts/test_dwarf5_support.sh
+
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
