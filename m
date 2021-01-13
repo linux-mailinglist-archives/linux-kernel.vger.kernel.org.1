@@ -2,112 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9961F2F4D63
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B40AA2F4D6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:44:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727312AbhAMOkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:40:19 -0500
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:54778 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725858AbhAMOkS (ORCPT
+        id S1726779AbhAMOnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:43:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726433AbhAMOnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:40:18 -0500
-Received: from [185.56.157.72] (port=39782 helo=[192.168.101.73])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1kzhJA-00E61H-5h; Wed, 13 Jan 2021 15:39:36 +0100
-Subject: Re: [RFC 1/2] dt-bindings: clk: versaclock5: Add load capacitance
- properties
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-clk <linux-clk@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210106173900.388758-1-aford173@gmail.com>
- <833e228f-6fb5-ae98-a367-9566cf5fcf69@lucaceresoli.net>
- <CAHCN7x+57x4WLbq0+7OCPhJs-1=7SJidVHD2jYjdbqn_F+d3dA@mail.gmail.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <7bad753d-a551-8810-7b12-5ec5ea9263d4@lucaceresoli.net>
-Date:   Wed, 13 Jan 2021 15:39:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 13 Jan 2021 09:43:18 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA38BC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:42:37 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610548955;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fj88E4Kjvnw1x0rsUVu+x2lWiR9tSl/7uxT/V662qo4=;
+        b=K+Xv8OqlRYo4Q2mZsyqj+5hu8XbTXzuvf+Fr5hbDMutjzXp6d4a7ARjN5hwicTieQbkO6B
+        3rufam2vXqqNF1LNryPP+0LkFKPEASyo06iBf3zPKiWVFDSc1FNrzaVcDqfV9mXNBtKFtl
+        nCqEg70a+Z64mxhB0fBmyfKB4BjIdFl2jM5/DnBeyPDmhwAserDa1dnY5Qz3jfSC5VNzNA
+        p4vURXK2R5ez8eria5wOsi3tJAfSL4mibcVKz+/bp9IjcuGIHEgtsUJ9EsDEudliQZrbKH
+        Vow27uwIlf+eMCZXq9mZdhuBWAazJ4++dbFpUNIP9ygapuCrnokjBxcRyzQ3IA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610548955;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fj88E4Kjvnw1x0rsUVu+x2lWiR9tSl/7uxT/V662qo4=;
+        b=nctvjqMXS6fCaacHeyEXLuBR/gWwknxfDYtFYByO+es3VXTPwS5/VeRgDSp/cEuVnXMnh2
+        75YATH7omjc56TDg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] printk: ringbuffer: fix line counting
+Date:   Wed, 13 Jan 2021 15:48:34 +0106
+Message-Id: <20210113144234.6545-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CAHCN7x+57x4WLbq0+7OCPhJs-1=7SJidVHD2jYjdbqn_F+d3dA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+Counting text lines in a record simply involves counting the number
+of newline characters (+1). However, it is searching the full data
+block for newline characters, even though the text data can be (and
+often is) a subset of that area. Since the extra area in the data
+block was never initialized, the result is that extra newlines may
+be seen and counted.
 
-On 09/01/21 03:48, Adam Ford wrote:
-> On Fri, Jan 8, 2021 at 4:49 PM Luca Ceresoli <luca@lucaceresoli.net> wrote:
->>
->> Hi Adam,
->>
->> On 06/01/21 18:38, Adam Ford wrote:
->>> There are two registers which can set the load capacitance for
->>> XTAL1 and XTAL2. These are optional registers when using an
->>> external crystal.  Update the bindings to support them.
->>>
->>> Signed-off-by: Adam Ford <aford173@gmail.com>
->>> ---
->>>  .../devicetree/bindings/clock/idt,versaclock5.yaml   | 12 ++++++++++++
->>>  1 file changed, 12 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
->>> index 2ac1131fd922..e5e55ffb266e 100644
->>> --- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
->>> +++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
->>> @@ -59,6 +59,18 @@ properties:
->>>      minItems: 1
->>>      maxItems: 2
->>>
->>> +  idt,xtal1-load-femtofarads:
->>
->> I wonder whether we should have a common, vendor independent property.
-> 
-> That would be nice.
-> 
->> In mainline we have xtal-load-pf (ti,cdce925.txt bindings) which has no
->> vendor prefix. However I don't know how much common it is to need
-> 
-> rtc-pcf85063.c uses  quartz-load-femtofarads, so there is already some
-> discrepancy.
-> 
-> Since the unit of measure here is femtofarads, using pF in the name seems wrong.
-> We need to read the data as a u32, so femtofarads works better than
-> pF, which would require a decimal point.
-> 
->> different loads for x1 and x2. Any hardware engineer around?
-> 
-> I talked to a hardware engineer where I work, and he said it makes
-> sense to keep them the same.  I only separated them because there are
-> two registers, and I assumed there might be a reason to have X1 and X2
-> be different, but I'm ok with reading one value and writing it to two
-> different registers.
+Restrict newline searching to the text data length.
 
-If both your HW engineer and the Renesas docs say setting different
-values is not useful in real life, and other drivers don't set different
-values as well, it looks like that is the reasonable way. I think it
-also increases likelihood of establishing a unique property name to be
-used for all future chips.
+Fixes: b6cf8b3f3312 ("printk: add lockless ringbuffer")
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+ kernel/printk/printk_ringbuffer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
+index 6704f06e0417..8a7b7362c0dd 100644
+--- a/kernel/printk/printk_ringbuffer.c
++++ b/kernel/printk/printk_ringbuffer.c
+@@ -1718,7 +1718,7 @@ static bool copy_data(struct prb_data_ring *data_ring,
+ 
+ 	/* Caller interested in the line count? */
+ 	if (line_count)
+-		*line_count = count_lines(data, data_size);
++		*line_count = count_lines(data, len);
+ 
+ 	/* Caller interested in the data content? */
+ 	if (!buf || !buf_size)
 -- 
-Luca
+2.20.1
+
