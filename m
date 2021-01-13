@@ -2,92 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863DC2F4646
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D96AA2F4649
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727202AbhAMIQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:16:50 -0500
-Received: from mail-oo1-f46.google.com ([209.85.161.46]:46396 "EHLO
-        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726830AbhAMIQt (ORCPT
+        id S1727136AbhAMISh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:18:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726740AbhAMISg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:16:49 -0500
-Received: by mail-oo1-f46.google.com with SMTP id n127so305069ooa.13;
-        Wed, 13 Jan 2021 00:16:34 -0800 (PST)
+        Wed, 13 Jan 2021 03:18:36 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACDCC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:17:56 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id x126so766012pfc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:17:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eSwrQDNKHkzE/dLDIoYSI3CUIjVfpzTys6BbyA061tg=;
+        b=XWuA0GqQJlv9CPO1QVW/xD81wP6jUTcdIxtE7xUYoRhYAFViBwsw3vxHmiEJp6kUms
+         Zf2iphER7VLdMPL9ISdkGh8XyH5marNYSPFcGwGlonvueHUD7FO2n9T/soP/jRTH1h1h
+         F54mfyb5irhszfs0p/byYQnbDl6d8dXcoFyY0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gL8dlZU5CEc25kMMeeMh2Bo2TlA35T4It3X5Z9IzzG4=;
-        b=qd3FR7Z0ZvrNweQFfOOkzJEIlUOBMub6LaXWr+TwnOjDkLLKttRodsw8yuNBLypHsn
-         et6DK5gvquLT9ADwvcabml9FE3qJmL4J1vL7YdSLdGlVIDRbc+NyhseLvwyITCBvyjjQ
-         NK3tYc/qgS1pj33CjcU0Ms0Nd+EQOdeGrOrWR3P2v89f73HkpI6Nj4d+LZkFVyD8JIGf
-         przEwYEiHe54QG8u7DiEMvn9+4/z/1ZKo0thKpOO9J792/dF9Y+AhbuIXWsufmdCmrrT
-         0OABb0lVew463NDvw+ZHQGgDvn17RdmSqKPEMfP/5+RqiO5zae9oaDYkoKLEYbZbMdzV
-         6wPQ==
-X-Gm-Message-State: AOAM530E6lDvBirmhTN8y2g4T+WpiHPrU4OXwqPtDWJTWqEATpCNY0Pk
-        EDIoCb7IjwkLq9FjaOJH80Vh1xJ0BJLNty6CZWM=
-X-Google-Smtp-Source: ABdhPJzsiFgzr7YIJkn2Ea9XwM8kh+zZp30nhTue66iCHJrovMKrzTiErpRCatYd9PU0PgIlAu7c1wxa8qzPJVJx+fY=
-X-Received: by 2002:a4a:c191:: with SMTP id w17mr464489oop.1.1610525768621;
- Wed, 13 Jan 2021 00:16:08 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eSwrQDNKHkzE/dLDIoYSI3CUIjVfpzTys6BbyA061tg=;
+        b=DUzVzTihjJ1XmDVr3Xz5P3UpLaKaBqfla8YPHG8C7fiaXklEwbAZxzk2GmCi8ewBtx
+         XzhvAphybuLfOt+B7L2/wWEzlXlsAQwcCCJhYi0Kv+/HgaRd0HaDX4w6BenTBLZAc4CF
+         x0f8xLWjE4bzXHfKBCfFAWn4coDPrl2cTtaSfIqmxxXqUlui7yq5lGn472lD3mCQo7xe
+         TmmEuXLMdbyle8mHV31bTjflKTnVl757M98I7uhYh5nXeU4IWE8laiO4A9dCngIrK8ot
+         3lPQ77EzGkP6taU1ZUgucczRbZpLMICS2oLoj2+2wZ1auntKpeKrD5Bx+EPBePHF3Sn6
+         0mFA==
+X-Gm-Message-State: AOAM5334LeDM5x3YZaSRZhJ6lqhYWfqzjwOQAi8NDz0qC/mEm/7f9WAD
+        m1SGUzJYeSmu0AM3JGyxHFKCGDeZa8sOf1SD
+X-Google-Smtp-Source: ABdhPJwhI66piFVQyHBpPG6KmSS1fIvEVrO+IxPb3NcF8YnYVW5iAr4z92ZPdkY5o3LV+5JWa5aYzQ==
+X-Received: by 2002:a63:9dc1:: with SMTP id i184mr1010816pgd.409.1610525875259;
+        Wed, 13 Jan 2021 00:17:55 -0800 (PST)
+Received: from localhost ([2401:fa00:1:10:725a:fff:fe46:44eb])
+        by smtp.gmail.com with ESMTPSA id i67sm1675487pfc.153.2021.01.13.00.17.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jan 2021 00:17:54 -0800 (PST)
+From:   Yu-Hsuan Hsu <yuhsuan@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH v5] ASoC: cros_ec_codec: Reset I2S RX when probing
+Date:   Wed, 13 Jan 2021 16:17:45 +0800
+Message-Id: <20210113081745.2543882-1-yuhsuan@chromium.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 MIME-Version: 1.0
-References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
- <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net> <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
- <CACRpkda4E2NwNw29J7x5gehtqn_m3M_Z2dHpc7xRgvb0b-p22A@mail.gmail.com>
-In-Reply-To: <CACRpkda4E2NwNw29J7x5gehtqn_m3M_Z2dHpc7xRgvb0b-p22A@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 13 Jan 2021 09:15:56 +0100
-Message-ID: <CAMuHMdU3s9hvenrRFibggT=hGDfauhh2hPcN7f3E0uG-iVG7iw@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Gerhard Pircher <gerhard_pircher@gmx.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+It is not guaranteed that I2S RX is disabled when the kernel booting.
+For example, if the kernel crashes while it is enabled, it will keep
+enabled until the next time EC reboots. Reset I2S RX when probing to
+fix this issue.
 
-On Wed, Jan 13, 2021 at 4:20 AM Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Tue, Jan 12, 2021 at 3:45 PM John Paul Adrian Glaubitz
-> <glaubitz@physik.fu-berlin.de> wrote:
-> That said there are a three things that people should really be doing if they
-> want to keep their pet archs/subarchs around as good community
-> members, and they are in essence to:
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+---
+This patch checks the return value. If it is -ENOPROTOOPT
+(EC_RES_INVALID_VERSION), it will ask clients to update EC firmware.
 
-> 2. Migrate existing drivers to newly appeared and
->     appropriate subsystems (I think there are some hacky heartbeat LED
->     drivers down in arch/* for example) there is also the feature matrix
->     core maintainers like and which appears if you type
->     Documentation/features/list-arch.sh <archname>
->     would be nice if you work on them if you can support them!
->     Or at least take a look.
+Previous patches
 
-The choir is listening ;-)
+v1: https://patchwork.kernel.org/project/alsa-devel/patch/20200708071117.3070707-1-yuhsuan@chromium.org/
 
-For Amiga, that would require writing a real GPIO driver (modifying
-gpio-mmio?) for the CIAs, and converting its users (amiflop, amijoy,
-amimouse, parport_amiga, amiserial, and dmasound_paula) from direct CIA
-register access to GPIO access (mctrl_gpio for amiserial)).
-Note that the heartbeat LED is shared by heartbeat and audio.
+v2: https://patchwork.kernel.org/project/alsa-devel/patch/20200716170914.3623060-1-yuhsuan@chromium.org/
 
-An interim solution might be to just write a simple gpio driver for the
-single CIA pin driving the heartbeat LED, allowing the user to set up
-ledtrig-heartbeat.
+v3: https://patchwork.kernel.org/project/alsa-devel/patch/20210106050559.1459027-1-yuhsuan@chromium.org/
 
-Gr{oetje,eeting}s,
+v4: https://patchwork.kernel.org/project/alsa-devel/patch/20210107085942.2891525-2-yuhsuan@chromium.org/
 
-                        Geert
+ include/linux/platform_data/cros_ec_commands.h |  1 +
+ sound/soc/codecs/cros_ec_codec.c               | 11 +++++++++++
+ 2 files changed, 12 insertions(+)
 
+diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+index 86376779ab31..95889ada83a3 100644
+--- a/include/linux/platform_data/cros_ec_commands.h
++++ b/include/linux/platform_data/cros_ec_commands.h
+@@ -4600,6 +4600,7 @@ enum ec_codec_i2s_rx_subcmd {
+ 	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
+ 	EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
+ 	EC_CODEC_I2S_RX_SET_BCLK = 0x4,
++	EC_CODEC_I2S_RX_RESET = 0x5,
+ 	EC_CODEC_I2S_RX_SUBCMD_COUNT,
+ };
+ 
+diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+index f33a2a9654e7..d35c57724b45 100644
+--- a/sound/soc/codecs/cros_ec_codec.c
++++ b/sound/soc/codecs/cros_ec_codec.c
+@@ -1011,6 +1011,17 @@ static int cros_ec_codec_platform_probe(struct platform_device *pdev)
+ 	}
+ 	priv->ec_capabilities = r.capabilities;
+ 
++	/* Reset EC codec i2s rx. */
++	p.cmd = EC_CODEC_I2S_RX_RESET;
++	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
++				   (uint8_t *)&p, sizeof(p), NULL, 0);
++	if (ret == -ENOPROTOOPT) {
++		dev_info(dev,
++			 "Command not found. Please update the EC firmware.\n");
++	} else if (ret) {
++		dev_err(dev, "failed to EC_CODEC_I2S_RESET: %d\n", ret);
++	}
++
+ 	platform_set_drvdata(pdev, priv);
+ 
+ 	ret = devm_snd_soc_register_component(dev, &i2s_rx_component_driver,
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.30.0.284.gd98b1dd5eaa7-goog
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
