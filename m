@@ -2,261 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1282F4FEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 354752F4FF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbhAMQY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 11:24:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727309AbhAMQY4 (ORCPT
+        id S1727105AbhAMQ1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 11:27:17 -0500
+Received: from out01.mta.xmission.com ([166.70.13.231]:56942 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726010AbhAMQ1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 11:24:56 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C6EC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:24:16 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id d189so2673238oig.11
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:24:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GyTHDPIRlWLUaLwyKAW0evEpBngzgktQyEH3p/lXCIQ=;
-        b=tlmb7Dtm51MoH15iZg/lhbLEU6E68eF7hqHr1ps+iDOD9RNrV57MUjlTOEoiDYpx69
-         2YAEmHX3h7QQSxfCGnPtws3q+v+8qoDfQgCAX/6c5bnqVjNrNclTcfs88p4Ts0qyke/v
-         ZlCAK0KNdVFHCc/68pduQuHGmlZ+rAqUP1e16Pxj2qGysyZQe1ElKbcaJYO/2BQrFCKa
-         BwcWhOlEbJPZrmymNTXoiudyzG6dgf19wjbt8WJxM0qyLERrMKqDZgCfl8rEZlDio16m
-         GRYglcqBDhqtJofwb28SiGQ3j6arsVBTJccjuQnqdI/ztty+oWz6GQNyTFbNlwdDE1qX
-         3kvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GyTHDPIRlWLUaLwyKAW0evEpBngzgktQyEH3p/lXCIQ=;
-        b=mvx3BK1ogN6SJ13u2h+OWAj9YbEVfvVa5/YoFH7lwvCvKrXW3/QT3sxn8oIr9+J4F3
-         jRKD7DUmEwCDndZAOsHfWi4rn9uGb0bCp2PQZB6cvU9+CT3dYGQwCsuOGdzURgIoRxdA
-         Ez5yew98EzS/V1BcZDQPx8h2OQ4sA91BlVGiYcjCM1pBxexqjEQ8+UTQdnW3Y3q6tp+z
-         78gTRsQx7XJcPdiDqUxGOnR+GjzlKH9zllJ9IPS05Q8FyOryhpNBoGeETpdPWpgHPFCX
-         mXIHgz5yF1GLcxQSIF7ViSJ5qCfrQQ24KGUEwAMokqUIdD3dOIFWp8EVQPF1JD5QYNAE
-         4R6g==
-X-Gm-Message-State: AOAM531RIFXk8ET3f8sqAu9e6SlirD2pvcg3lB0FYiT9roUwV6DrrKz0
-        xK41A2rOZkOvqTx/WYbkwZgTAY1gxIwTdF250N18jA==
-X-Google-Smtp-Source: ABdhPJzTX1NywOTNPaOnaT0/36HRmD8HHFaXd0vCHiUeKsmc7RWZZTe0P8Mxj/7ZesW69I5KXUm9LuyLJUSGubltUn8=
-X-Received: by 2002:aca:c085:: with SMTP id q127mr58645oif.70.1610555055524;
- Wed, 13 Jan 2021 08:24:15 -0800 (PST)
+        Wed, 13 Jan 2021 11:27:15 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kziyf-00Dkd9-BK; Wed, 13 Jan 2021 09:26:33 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kziye-009ULz-1I; Wed, 13 Jan 2021 09:26:32 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexey Gladkov <gladkov.alexey@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <cover.1610299857.git.gladkov.alexey@gmail.com>
+        <5cef3f3b60e9cda7f4a42820ee333fa2d171a58b.1610299857.git.gladkov.alexey@gmail.com>
+Date:   Wed, 13 Jan 2021 10:25:29 -0600
+In-Reply-To: <5cef3f3b60e9cda7f4a42820ee333fa2d171a58b.1610299857.git.gladkov.alexey@gmail.com>
+        (Alexey Gladkov's message of "Sun, 10 Jan 2021 18:33:41 +0100")
+Message-ID: <87sg74dcsm.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <cover.1610554432.git.andreyknvl@google.com> <2b43049e25dcd04850ba6c205cd6dcc7caa4a886.1610554432.git.andreyknvl@google.com>
-In-Reply-To: <2b43049e25dcd04850ba6c205cd6dcc7caa4a886.1610554432.git.andreyknvl@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 13 Jan 2021 17:24:03 +0100
-Message-ID: <CANpmjNOdax5uH1bG_D+7SWBL6FphCefcKs+5wig9NZxeEghUYA@mail.gmail.com>
-Subject: Re: [PATCH v2 03/14] kasan: clean up comments in tests
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1kziye-009ULz-1I;;;mid=<87sg74dcsm.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18bSWki381+ZQyR9dpaNfWJsBh5GnUmXTk=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.4 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG,XMSubLong,
+        XM_B_SpammyWords,XM_B_Unsub autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.5 XM_B_Unsub Unsubscribe in body of email but missing unsubscribe
+        *       header
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Alexey Gladkov <gladkov.alexey@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 681 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 3.7 (0.5%), b_tie_ro: 2.6 (0.4%), parse: 0.78
+        (0.1%), extract_message_metadata: 4.0 (0.6%), get_uri_detail_list: 2.5
+        (0.4%), tests_pri_-1000: 1.95 (0.3%), tests_pri_-950: 0.95 (0.1%),
+        tests_pri_-900: 0.73 (0.1%), tests_pri_-90: 268 (39.3%), check_bayes:
+        266 (39.1%), b_tokenize: 10 (1.4%), b_tok_get_all: 10 (1.5%),
+        b_comp_prob: 1.74 (0.3%), b_tok_touch_all: 242 (35.5%), b_finish: 0.69
+        (0.1%), tests_pri_0: 389 (57.1%), check_dkim_signature: 0.42 (0.1%),
+        check_dkim_adsp: 2.1 (0.3%), poll_dns_idle: 0.83 (0.1%), tests_pri_10:
+        1.52 (0.2%), tests_pri_500: 5 (0.8%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [RFC PATCH v2 2/8] Add a reference to ucounts for each user
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021 at 17:21, Andrey Konovalov <andreyknvl@google.com> wrote:
+
+The subject is wrong.  This should be:
+[RFC PATCH v2 2/8] Add a reference to ucounts for each cred.
+
+Further the explanation could use a little work.  Something along the
+lines of:
+
+For RLIMIT_NPROC and some other rlimits the user_struct that holds the
+global limit is kept alive for the lifetime of a process by keeping it
+in struct cred.  Add a ucounts reference to struct cred, so that
+RLIMIT_NPROC can switch from using a per user limit to using a per user
+per user namespace limit.
+
+Nits about the code below.
+
+Alexey Gladkov <gladkov.alexey@gmail.com> writes:
+
+> Before this, only the owner of the user namespace had an entry in ucounts.
+> This entry addressed the user in the given user namespace.
 >
-> Clarify and update comments in KASAN tests.
+> Now we create such an entry in ucounts for all users in the user namespace.
+> Each user has only one entry for each user namespace.
 >
-> Link: https://linux-review.googlesource.com/id/I6c816c51fa1e0eb7aa3dead6bda1f339d2af46c8
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-
-Reviewed-by: Marco Elver <elver@google.com>
-
-
+> This commit is in preparation for migrating rlimits to ucounts.
+>
+> Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
 > ---
->  lib/test_kasan.c        | 59 +++++++++++++++++++++++++----------------
->  lib/test_kasan_module.c |  5 ++--
->  2 files changed, 39 insertions(+), 25 deletions(-)
+>  include/linux/cred.h           |  1 +
+>  include/linux/user_namespace.h |  2 ++
+>  kernel/cred.c                  | 17 +++++++++++++++--
+>  kernel/ucount.c                | 12 +++++++++++-
+>  kernel/user_namespace.c        |  1 +
+>  5 files changed, 30 insertions(+), 3 deletions(-)
 >
-> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> index 2947274cc2d3..6f46e27c2af7 100644
-> --- a/lib/test_kasan.c
-> +++ b/lib/test_kasan.c
-> @@ -28,10 +28,9 @@
->  #define OOB_TAG_OFF (IS_ENABLED(CONFIG_KASAN_GENERIC) ? 0 : KASAN_GRANULE_SIZE)
->
->  /*
-> - * We assign some test results to these globals to make sure the tests
-> - * are not eliminated as dead code.
-> + * Some tests use these global variables to store return values from function
-> + * calls that could otherwise be eliminated by the compiler as dead code.
->   */
-> -
->  void *kasan_ptr_result;
->  int kasan_int_result;
->
-> @@ -39,14 +38,13 @@ static struct kunit_resource resource;
->  static struct kunit_kasan_expectation fail_data;
->  static bool multishot;
->
-> +/*
-> + * Temporarily enable multi-shot mode. Otherwise, KASAN would only report the
-> + * first detected bug and panic the kernel if panic_on_warn is enabled.
-> + */
->  static int kasan_test_init(struct kunit *test)
->  {
-> -       /*
-> -        * Temporarily enable multi-shot mode and set panic_on_warn=0.
-> -        * Otherwise, we'd only get a report for the first case.
-> -        */
->         multishot = kasan_save_enable_multi_shot();
-> -
->         return 0;
+> diff --git a/include/linux/cred.h b/include/linux/cred.h
+> index 18639c069263..307744fcc387 100644
+> --- a/include/linux/cred.h
+> +++ b/include/linux/cred.h
+> @@ -144,6 +144,7 @@ struct cred {
+>  #endif
+>  	struct user_struct *user;	/* real user ID subscription */
+>  	struct user_namespace *user_ns; /* user_ns the caps and keyrings are relative to. */
+> +	struct ucounts *ucounts;
+>  	struct group_info *group_info;	/* supplementary groups for euid/fsgid */
+>  	/* RCU deletion */
+>  	union {
+> diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
+> index 84fefa9247c4..483568a56f7f 100644
+> --- a/include/linux/user_namespace.h
+> +++ b/include/linux/user_namespace.h
+> @@ -102,6 +102,8 @@ bool setup_userns_sysctls(struct user_namespace *ns);
+>  void retire_userns_sysctls(struct user_namespace *ns);
+>  struct ucounts *inc_ucount(struct user_namespace *ns, kuid_t uid, enum ucount_type type);
+>  void dec_ucount(struct ucounts *ucounts, enum ucount_type type);
+> +void put_ucounts(struct ucounts *ucounts);
+> +void set_cred_ucounts(const struct cred *cred, struct user_namespace *ns, kuid_t uid);
+>  
+>  #ifdef CONFIG_USER_NS
+>  
+> diff --git a/kernel/cred.c b/kernel/cred.c
+> index 421b1149c651..d19e2e97092c 100644
+> --- a/kernel/cred.c
+> +++ b/kernel/cred.c
+> @@ -119,6 +119,7 @@ static void put_cred_rcu(struct rcu_head *rcu)
+>  	if (cred->group_info)
+>  		put_group_info(cred->group_info);
+>  	free_uid(cred->user);
+> +	put_ucounts(cred->ucounts);
+>  	put_user_ns(cred->user_ns);
+>  	kmem_cache_free(cred_jar, cred);
 >  }
->
-> @@ -56,12 +54,12 @@ static void kasan_test_exit(struct kunit *test)
+> @@ -144,6 +145,9 @@ void __put_cred(struct cred *cred)
+>  	BUG_ON(cred == current->cred);
+>  	BUG_ON(cred == current->real_cred);
+>  
+> +	BUG_ON(cred->ucounts == NULL);
+> +	BUG_ON(cred->ucounts->ns != cred->user_ns);
+> +
+>  	if (cred->non_rcu)
+>  		put_cred_rcu(&cred->rcu);
+>  	else
+> @@ -271,6 +275,9 @@ struct cred *prepare_creds(void)
+>  	get_uid(new->user);
+>  	get_user_ns(new->user_ns);
+>  
+> +	new->ucounts = NULL;
+> +	set_cred_ucounts(new, new->user_ns, new->euid);
+> +
+This hunk should be:
+	atomic_inc(&new->count);
+
+That means you get to skip the lookup by uid and user_ns which while it
+should be cheap is completely unnecessary in this case.
+
+>  #ifdef CONFIG_KEYS
+>  	key_get(new->session_keyring);
+>  	key_get(new->process_keyring);
+> @@ -363,6 +370,7 @@ int copy_creds(struct task_struct *p, unsigned long clone_flags)
+>  		ret = create_user_ns(new);
+>  		if (ret < 0)
+>  			goto error_put;
+> +		set_cred_ucounts(new, new->user_ns, new->euid);
+>  	}
+>  
+>  #ifdef CONFIG_KEYS
+> @@ -485,8 +493,11 @@ int commit_creds(struct cred *new)
+>  	 * in set_user().
+>  	 */
+>  	alter_cred_subscribers(new, 2);
+> -	if (new->user != old->user)
+> -		atomic_inc(&new->user->processes);
+> +	if (new->user != old->user || new->user_ns != old->user_ns) {
+> +		if (new->user != old->user)
+> +			atomic_inc(&new->user->processes);
+> +		set_cred_ucounts(new, new->user_ns, new->euid);
+> +	}
+>  	rcu_assign_pointer(task->real_cred, new);
+>  	rcu_assign_pointer(task->cred, new);
+>  	if (new->user != old->user)
+> @@ -661,6 +672,7 @@ void __init cred_init(void)
+>  	/* allocate a slab in which we can store credentials */
+>  	cred_jar = kmem_cache_create("cred_jar", sizeof(struct cred), 0,
+>  			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT, NULL);
+> +	set_cred_ucounts(&init_cred, &init_user_ns, GLOBAL_ROOT_UID);
+	Unfortuantely this is needed here because this is the first cred
+        and there is no ucount reference to copy.
 >  }
->
+>  
 >  /**
-> - * KUNIT_EXPECT_KASAN_FAIL() - Causes a test failure when the expression does
-> - * not cause a KASAN error. This uses a KUnit resource named "kasan_data." Do
-> - * Do not use this name for a KUnit resource outside here.
-> - *
-> + * KUNIT_EXPECT_KASAN_FAIL() - check that the executed expression produces a
-> + * KASAN report; causes a test failure otherwise. This relies on a KUnit
-> + * resource named "kasan_data". Do not use this name for KUnit resources
-> + * outside of KASAN tests.
->   */
-> -#define KUNIT_EXPECT_KASAN_FAIL(test, condition) do { \
-> +#define KUNIT_EXPECT_KASAN_FAIL(test, expression) do { \
->         fail_data.report_expected = true; \
->         fail_data.report_found = false; \
->         kunit_add_named_resource(test, \
-> @@ -69,7 +67,7 @@ static void kasan_test_exit(struct kunit *test)
->                                 NULL, \
->                                 &resource, \
->                                 "kasan_data", &fail_data); \
-> -       condition; \
-> +       expression; \
->         KUNIT_EXPECT_EQ(test, \
->                         fail_data.report_expected, \
->                         fail_data.report_found); \
-> @@ -121,7 +119,8 @@ static void kmalloc_pagealloc_oob_right(struct kunit *test)
->                 return;
->         }
->
-> -       /* Allocate a chunk that does not fit into a SLUB cache to trigger
-> +       /*
-> +        * Allocate a chunk that does not fit into a SLUB cache to trigger
->          * the page allocator fallback.
->          */
->         ptr = kmalloc(size, GFP_KERNEL);
-> @@ -168,7 +167,9 @@ static void kmalloc_large_oob_right(struct kunit *test)
->  {
->         char *ptr;
->         size_t size = KMALLOC_MAX_CACHE_SIZE - 256;
-> -       /* Allocate a chunk that is large enough, but still fits into a slab
-> +
-> +       /*
-> +        * Allocate a chunk that is large enough, but still fits into a slab
->          * and does not trigger the page allocator fallback in SLUB.
->          */
->         ptr = kmalloc(size, GFP_KERNEL);
-> @@ -469,10 +470,13 @@ static void ksize_unpoisons_memory(struct kunit *test)
->         ptr = kmalloc(size, GFP_KERNEL);
->         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
->         real_size = ksize(ptr);
-> -       /* This access doesn't trigger an error. */
-> +
-> +       /* This access shouldn't trigger a KASAN report. */
->         ptr[size] = 'x';
-> -       /* This one does. */
-> +
-> +       /* This one must. */
->         KUNIT_EXPECT_KASAN_FAIL(test, ptr[real_size] = 'y');
-> +
->         kfree(ptr);
+> @@ -704,6 +716,7 @@ struct cred *prepare_kernel_cred(struct task_struct *daemon)
+>  	get_uid(new->user);
+>  	get_user_ns(new->user_ns);
+>  	get_group_info(new->group_info);
+> +	set_cred_ucounts(new, new->user_ns, new->euid);
+This hunk should be:
+	atomic_inc(&new->count);
+
+>  
+>  #ifdef CONFIG_KEYS
+>  	new->session_keyring = NULL;
+> diff --git a/kernel/ucount.c b/kernel/ucount.c
+> index 0f2c7c11df19..80a39073bcef 100644
+> --- a/kernel/ucount.c
+> +++ b/kernel/ucount.c
+> @@ -161,7 +161,7 @@ static struct ucounts *get_ucounts(struct user_namespace *ns, kuid_t uid)
+>  	return ucounts;
 >  }
->
-> @@ -568,7 +572,7 @@ static void kmem_cache_invalid_free(struct kunit *test)
->                 return;
->         }
->
-> -       /* Trigger invalid free, the object doesn't get freed */
-> +       /* Trigger invalid free, the object doesn't get freed. */
->         KUNIT_EXPECT_KASAN_FAIL(test, kmem_cache_free(cache, p + 1));
->
->         /*
-> @@ -585,7 +589,10 @@ static void kasan_memchr(struct kunit *test)
->         char *ptr;
->         size_t size = 24;
->
-> -       /* See https://bugzilla.kernel.org/show_bug.cgi?id=206337 */
-> +       /*
-> +        * str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT.
-> +        * See https://bugzilla.kernel.org/show_bug.cgi?id=206337 for details.
-> +        */
->         if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
->                 kunit_info(test,
->                         "str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT");
-> @@ -610,7 +617,10 @@ static void kasan_memcmp(struct kunit *test)
->         size_t size = 24;
->         int arr[9];
->
-> -       /* See https://bugzilla.kernel.org/show_bug.cgi?id=206337 */
-> +       /*
-> +        * str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT.
-> +        * See https://bugzilla.kernel.org/show_bug.cgi?id=206337 for details.
-> +        */
->         if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
->                 kunit_info(test,
->                         "str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT");
-> @@ -634,7 +644,10 @@ static void kasan_strings(struct kunit *test)
->         char *ptr;
->         size_t size = 24;
->
-> -       /* See https://bugzilla.kernel.org/show_bug.cgi?id=206337 */
-> +       /*
-> +        * str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT.
-> +        * See https://bugzilla.kernel.org/show_bug.cgi?id=206337 for details.
-> +        */
->         if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
->                 kunit_info(test,
->                         "str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT");
-> @@ -706,7 +719,7 @@ static void kasan_bitops_generic(struct kunit *test)
->         }
->
->         /*
-> -        * Allocate 1 more byte, which causes kzalloc to round up to 16-bytes;
-> +        * Allocate 1 more byte, which causes kzalloc to round up to 16 bytes;
->          * this way we do not actually corrupt other memory.
->          */
->         bits = kzalloc(sizeof(*bits) + 1, GFP_KERNEL);
-> diff --git a/lib/test_kasan_module.c b/lib/test_kasan_module.c
-> index 3b4cc77992d2..eee017ff8980 100644
-> --- a/lib/test_kasan_module.c
-> +++ b/lib/test_kasan_module.c
-> @@ -123,8 +123,9 @@ static noinline void __init kasan_workqueue_uaf(void)
->  static int __init test_kasan_module_init(void)
+>  
+> -static void put_ucounts(struct ucounts *ucounts)
+> +void put_ucounts(struct ucounts *ucounts)
 >  {
->         /*
-> -        * Temporarily enable multi-shot mode. Otherwise, we'd only get a
-> -        * report for the first case.
-> +        * Temporarily enable multi-shot mode. Otherwise, KASAN would only
-> +        * report the first detected bug and panic the kernel if panic_on_warn
-> +        * is enabled.
->          */
->         bool multishot = kasan_save_enable_multi_shot();
->
-> --
-> 2.30.0.284.gd98b1dd5eaa7-goog
->
+>  	unsigned long flags;
+>  
+> @@ -175,6 +175,16 @@ static void put_ucounts(struct ucounts *ucounts)
+>  	kfree(ucounts);
+>  }
+>  
+> +void set_cred_ucounts(const struct cred *cred, struct user_namespace *ns, kuid_t uid)
+> +{
+> +	if (cred->ucounts) {
+> +		if (cred->ucounts->ns == ns && uid_eq(cred->ucounts->uid, uid))
+> +			return;
+> +		put_ucounts(cred->ucounts);
+> +	}
+> +	((struct cred *) cred)->ucounts = get_ucounts(ns, uid);
+> +}
+> +
+
+That can become:
+void reset_cred_ucounts(struct cred *cred, struct user_namespace *ns, kuid_t uid)
+{
+	struct ucounts *old = cred->ucounts;
+
+	if (old && old->ns && uid_eq(old->uid, uid))
+        	return;
+
+	cred->ucounts = get_ucounts(ns, uid);
+        if (old)
+        	put_ucounts(old);
+}
+
+Removing the const on struct cred will make any mistakes where you use
+this with anything except a brand new cred show up at compile time.
+
+Changing the tests around just makes it a little clearer what the code
+is doing.
+
+Changing the name emphasises that prepare_cred should not be using this
+only commit_cred and friends where the ucounts may have changed.
+
+
+>  static inline bool atomic_inc_below(atomic_t *v, int u)
+>  {
+>  	int c, old;
+> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+> index af612945a4d0..4b8a4468d391 100644
+> --- a/kernel/user_namespace.c
+> +++ b/kernel/user_namespace.c
+> @@ -1280,6 +1280,7 @@ static int userns_install(struct nsset *nsset, struct ns_common *ns)
+>  
+>  	put_user_ns(cred->user_ns);
+>  	set_cred_user_ns(cred, get_user_ns(user_ns));
+> +	set_cred_ucounts(cred, user_ns, cred->euid);
+>  
+>  	return 0;
+>  }
