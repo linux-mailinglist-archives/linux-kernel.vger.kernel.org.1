@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FFF82F4551
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 080112F4552
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726599AbhAMHgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 02:36:25 -0500
-Received: from mga01.intel.com ([192.55.52.88]:51022 "EHLO mga01.intel.com"
+        id S1726645AbhAMHg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 02:36:26 -0500
+Received: from mga18.intel.com ([134.134.136.126]:49262 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725998AbhAMHgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 02:36:24 -0500
-IronPort-SDR: z62sIIfSwKnvnT74uLslIcc3VWzWnTOPsU4U88SEPOcDDnT3H/rZlrw3RnnPGL/l1tq+F7oD8b
- Rpa/eDNE92fA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="196799249"
+        id S1725998AbhAMHg0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 02:36:26 -0500
+IronPort-SDR: 0ZTcUgkjIh/yNbNuPlFX4Eh92VIxNAeqlXDa0fTzULOzdI+p3Exj+AiRGCygEphNA+NIqUJRUQ
+ VtvaMQdQ1zig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="165840226"
 X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
-   d="scan'208";a="196799249"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 23:35:43 -0800
-IronPort-SDR: ezqcf/6BUl4DeaFj02snXJ1RB3gza6UdaG1mXU+AXURDPOlEORbq7fRGK5E8JXNg2KsddJlPwd
- vbMgW9RkpGMg==
+   d="scan'208";a="165840226"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 23:35:45 -0800
+IronPort-SDR: 28I6HWqP63FwqhG/TATVhk4nMwwVx7CHClvMWqbcNPp9L92oWGDI0LkiW3eGlN1BmewynFs+zC
+ hb9ByskkHLYQ==
 X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
-   d="scan'208";a="389412785"
+   d="scan'208";a="571943662"
 Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 23:35:39 -0800
-Subject: [PATCH v3 4/6] mm: Fix page reference leak in soft_offline_page()
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 23:35:44 -0800
+Subject: [PATCH v3 5/6] mm: Fix memory_failure() handling of dax-namespace
+ metadata
 From:   Dan Williams <dan.j.williams@intel.com>
 To:     linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>, stable@vger.kernel.org,
-        vishal.l.verma@intel.com, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 12 Jan 2021 23:35:38 -0800
-Message-ID: <161052333875.1805594.3046789655044320351.stgit@dwillia2-desk3.amr.corp.intel.com>
+Cc:     Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>, vishal.l.verma@intel.com,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
+Date:   Tue, 12 Jan 2021 23:35:44 -0800
+Message-ID: <161052334425.1805594.17861842381807251887.stgit@dwillia2-desk3.amr.corp.intel.com>
 In-Reply-To: <161052331545.1805594.2356512831689786960.stgit@dwillia2-desk3.amr.corp.intel.com>
 References: <161052331545.1805594.2356512831689786960.stgit@dwillia2-desk3.amr.corp.intel.com>
 User-Agent: StGit/0.18-3-g996c
@@ -46,74 +44,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The conversion to move pfn_to_online_page() internal to
-soft_offline_page() missed that the get_user_pages() reference taken by
-the madvise() path needs to be dropped when pfn_to_online_page() fails.
-Note the direct sysfs-path to soft_offline_page() does not perform a
-get_user_pages() lookup.
+Given 'struct dev_pagemap' spans both data pages and metadata pages be
+careful to consult the altmap if present to delineate metadata. In fact
+the pfn_first() helper already identifies the first valid data pfn, so
+export that helper for other code paths via pgmap_pfn_valid().
 
-When soft_offline_page() is handed a pfn_valid() &&
-!pfn_to_online_page() pfn the kernel hangs at dax-device shutdown due to
-a leaked reference.
+Other usage of get_dev_pagemap() are not a concern because those are
+operating on known data pfns having been looking up by get_user_pages().
+I.e. metadata pfns are never user mapped.
 
-Fixes: feec24a6139d ("mm, soft-offline: convert parameter to pfn")
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Naoya Horiguchi <nao.horiguchi@gmail.com>
-Cc: Michal Hocko <mhocko@kernel.org>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-Cc: <stable@vger.kernel.org>
+Reported-by: David Hildenbrand <david@redhat.com>
 Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 ---
- mm/memory-failure.c |   20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ include/linux/memremap.h |    6 ++++++
+ mm/memory-failure.c      |    6 ++++++
+ mm/memremap.c            |   15 +++++++++++++++
+ 3 files changed, 27 insertions(+)
 
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 5a38e9eade94..78b173c7190c 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1885,6 +1885,12 @@ static int soft_offline_free_page(struct page *page)
- 	return rc;
+diff --git a/include/linux/memremap.h b/include/linux/memremap.h
+index 79c49e7f5c30..f5b464daeeca 100644
+--- a/include/linux/memremap.h
++++ b/include/linux/memremap.h
+@@ -137,6 +137,7 @@ void *devm_memremap_pages(struct device *dev, struct dev_pagemap *pgmap);
+ void devm_memunmap_pages(struct device *dev, struct dev_pagemap *pgmap);
+ struct dev_pagemap *get_dev_pagemap(unsigned long pfn,
+ 		struct dev_pagemap *pgmap);
++bool pgmap_pfn_valid(struct dev_pagemap *pgmap, unsigned long pfn);
+ 
+ unsigned long vmem_altmap_offset(struct vmem_altmap *altmap);
+ void vmem_altmap_free(struct vmem_altmap *altmap, unsigned long nr_pfns);
+@@ -165,6 +166,11 @@ static inline struct dev_pagemap *get_dev_pagemap(unsigned long pfn,
+ 	return NULL;
  }
  
-+static void put_ref_page(struct page *page)
++static inline bool pgmap_pfn_valid(struct dev_pagemap *pgmap, unsigned long pfn)
 +{
-+	if (page)
-+		put_page(page);
++	return false;
 +}
 +
- /**
-  * soft_offline_page - Soft offline a page.
-  * @pfn: pfn to soft-offline
-@@ -1910,20 +1916,26 @@ static int soft_offline_free_page(struct page *page)
- int soft_offline_page(unsigned long pfn, int flags)
+ static inline unsigned long vmem_altmap_offset(struct vmem_altmap *altmap)
  {
- 	int ret;
--	struct page *page;
- 	bool try_again = true;
-+	struct page *page, *ref_page = NULL;
-+
-+	WARN_ON_ONCE(!pfn_valid(pfn) && (flags & MF_COUNT_INCREASED));
+ 	return 0;
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 78b173c7190c..541569cb4a99 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1308,6 +1308,12 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+ 		 */
+ 		put_page(page);
  
- 	if (!pfn_valid(pfn))
- 		return -ENXIO;
-+	if (flags & MF_COUNT_INCREASED)
-+		ref_page = pfn_to_page(pfn);
-+
- 	/* Only online pages can be soft-offlined (esp., not ZONE_DEVICE). */
- 	page = pfn_to_online_page(pfn);
--	if (!page)
-+	if (!page) {
-+		put_ref_page(ref_page);
- 		return -EIO;
++	/* device metadata space is not recoverable */
++	if (!pgmap_pfn_valid(pgmap, pfn)) {
++		rc = -ENXIO;
++		goto out;
 +	}
++
+ 	/*
+ 	 * Prevent the inode from being freed while we are interrogating
+ 	 * the address_space, typically this would be handled by
+diff --git a/mm/memremap.c b/mm/memremap.c
+index 16b2fb482da1..2455bac89506 100644
+--- a/mm/memremap.c
++++ b/mm/memremap.c
+@@ -80,6 +80,21 @@ static unsigned long pfn_first(struct dev_pagemap *pgmap, int range_id)
+ 	return pfn + vmem_altmap_offset(pgmap_altmap(pgmap));
+ }
  
- 	if (PageHWPoison(page)) {
- 		pr_info("%s: %#lx page already poisoned\n", __func__, pfn);
--		if (flags & MF_COUNT_INCREASED)
--			put_page(page);
-+		put_ref_page(ref_page);
- 		return 0;
- 	}
- 
++bool pgmap_pfn_valid(struct dev_pagemap *pgmap, unsigned long pfn)
++{
++	int i;
++
++	for (i = 0; i < pgmap->nr_range; i++) {
++		struct range *range = &pgmap->ranges[i];
++
++		if (pfn >= PHYS_PFN(range->start) &&
++		    pfn <= PHYS_PFN(range->end))
++			return pfn >= pfn_first(pgmap, i);
++	}
++
++	return false;
++}
++
+ static unsigned long pfn_end(struct dev_pagemap *pgmap, int range_id)
+ {
+ 	const struct range *range = &pgmap->ranges[range_id];
 
