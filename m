@@ -2,75 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40AC2F4AAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0322F4AB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:57:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbhAMLuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:50:24 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51736 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725924AbhAMLuX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:50:23 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 2AC0F1C0B8F; Wed, 13 Jan 2021 12:49:41 +0100 (CET)
-Date:   Wed, 13 Jan 2021 12:49:34 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Christian Labisch <clnetbox@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 4.19 67/77] ALSA: hda/via: Fix runtime PM for Clevo W35xSS
-Message-ID: <20210113114934.GB2843@duo.ucw.cz>
-References: <20210111130036.414620026@linuxfoundation.org>
- <20210111130039.628452970@linuxfoundation.org>
+        id S1726810AbhAMLuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:50:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725924AbhAMLub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 06:50:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67DB5233ED;
+        Wed, 13 Jan 2021 11:49:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610538591;
+        bh=+S0tzqjMh0ZwiuGG6yUIeAgxYJd7e/XUIrh4pdYISfU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mfDZ21d1SRBkJt5eo3mICWuARqMGAJPu0FLRUvtRdqyBymBOcD4iXxP5A46Z9COYK
+         da2HAsXcGvLSTvWRqAV4Psr3thuSMStDm0UE8mwC5qzK4aL+3x2CU/ipSE8LyTslvB
+         Wtye7VubiqwzirkwzUX+71QdzoR4MdbdT/YRrexTvPSwJagSjMkbz/Rtpjmbwq/bLU
+         MHGySri9V2xoHrwItMpwkkFb4wYo/j9FcH+LcXwf15FPS8BL79ejCPkAwPZ+2/4OGi
+         6FNhI8Tm9IXud8G0CE+XN5MSC32SMsiXpaUZk9uJgu+qU3UT09lTftDcJGQI2iIHcE
+         HRxKIH5qckVMg==
+Date:   Wed, 13 Jan 2021 17:19:41 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     geert@linux-m68k.org, kishon@ti.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/1] phy: tusb1210: use bitmasks to set
+ VENDOR_SPECIFIC2
+Message-ID: <20210113114941.GD2771@vkoul-mobl>
+References: <20201211191241.21306-1-liambeguin@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="neYutvxvOLaeuPCA"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210111130039.628452970@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201211191241.21306-1-liambeguin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11-12-20, 14:12, Liam Beguin wrote:
+> From: Liam Beguin <lvb@xiphos.com>
+> 
+> Start by reading the content of the VENDOR_SPECIFIC2 register and update
+> each bit field based on device properties when defined.
+> 
+> The use of bit masks prevents fields from overriding each other and
+> enables users to clear bits which are set by default, like datapolarity
+> in this instance.
 
---neYutvxvOLaeuPCA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied, thanks
 
-Hi!
-
-> From: Takashi Iwai <tiwai@suse.de>
->=20
-> commit 4bfd6247fa9164c8e193a55ef9c0ea3ee22f82d8 upstream.
->=20
-> Clevo W35xSS_370SS with VIA codec has had the runtime PM problem that
-> looses the power state of some nodes after the runtime resume.  This
-> was worked around by disabling the default runtime PM via a denylist
-> entry.  Since 5.10.x made the runtime PM applied (casually) even
-> though it's disabled in the denylist, this problem was revisited.  The
-> result was that disabling power_save_node feature suffices for the
-> runtime PM problem.
-
-=46rom changelog it looks like we do not need this for 4.19.
-
-Best regards,
-								Pavel
-								=20
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---neYutvxvOLaeuPCA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX/7eTgAKCRAw5/Bqldv6
-8pXmAJ4phO14s2bVgfq1KWY/uM4jKzhXOQCfdKKU+EvVdK9o0pXWg8i01Uxk8LQ=
-=QL4Y
------END PGP SIGNATURE-----
-
---neYutvxvOLaeuPCA--
+-- 
+~Vinod
