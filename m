@@ -2,90 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217DA2F5501
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBDF72F54FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729403AbhAMWsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 17:48:55 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:58028 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729381AbhAMWll (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 17:41:41 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-245-o5ZQSi_3OTOs2qtHxtjrAw-1; Wed, 13 Jan 2021 22:39:54 +0000
-X-MC-Unique: o5ZQSi_3OTOs2qtHxtjrAw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 13 Jan 2021 22:39:54 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 13 Jan 2021 22:39:54 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Josh Poimboeuf' <jpoimboe@redhat.com>,
-        "vanessa.hack@fau.de" <vanessa.hack@fau.de>
-CC:     "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: objtool/ORC generation for noreturn functions
-Thread-Topic: objtool/ORC generation for noreturn functions
-Thread-Index: AQHW6dvx3EeZ32LrMkWW5+fWAxN3w6omI14A
-Date:   Wed, 13 Jan 2021 22:39:53 +0000
-Message-ID: <8bfda75985c4429297afce9340303e34@AcuMS.aculab.com>
-References: <daf04159-a458-4f0d-9f29-d8ef5a63fae6@email.android.com>
- <20210113184131.yh4zh4olfkdpydv7@treble>
-In-Reply-To: <20210113184131.yh4zh4olfkdpydv7@treble>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1729408AbhAMWpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 17:45:04 -0500
+Received: from foss.arm.com ([217.140.110.172]:41836 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729319AbhAMWmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 17:42:18 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C88B1FB;
+        Wed, 13 Jan 2021 14:40:57 -0800 (PST)
+Received: from mammon-tx2.austin.arm.com (mammon-tx2.austin.arm.com [10.118.28.62])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0F2B53F66E;
+        Wed, 13 Jan 2021 14:40:57 -0800 (PST)
+From:   Jeremy Linton <jeremy.linton@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
+        lorenzo.pieralisi@arm.com, sudeep.holla@arm.com,
+        bhelgaas@google.com, robh@kernel.org, vidyas@nvidia.com,
+        linux-kernel@vger.kernel.org, Jeremy Linton <jeremy.linton@arm.com>
+Subject: [PATCH v2] arm64: PCI: Enable SMC conduit
+Date:   Wed, 13 Jan 2021 16:40:54 -0600
+Message-Id: <20210113224054.1769514-1-jeremy.linton@arm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiBXZWQsIEphbiAxMywgMjAyMSBhdCAxMTo0NDoyMkFNICswMTAwLCB2YW5lc3NhLmhhY2tA
-ZmF1LmRlIHdyb3RlOg0KPiA+ICAgIEhpLA0KPiA+ICAgIEkgYW0gY3VycmVudGx5IHdyaXRpbmcg
-bXkgZmluYWwgdGhlc2lzIGF0IHVuaXZlcnNpdHkgb24gdGhlIHRvcGljIG9mIHN0YWNrDQo+ID4g
-ICAgdW53aW5kaW5nLiBNeSBnb2FsIGlzIHRvIGltcGxlbWVudCBhbmQgZXZhbHVhdGUgc3RhY2sg
-dW53aW5kZXJzIGZvcg0KPiA+ICAgIHJlc2VhcmNoIG9wZXJhdGluZyBzeXN0ZW0gcG9ydHMgdG8g
-eDg2IDMyIGFuZCA2NCBiaXQgYXJjaGl0ZWN0dXJlcyBhbmQNCj4gPiAgICBTUEFSQyBWOC4NCj4g
-PiAgICBGb3IgdGhlIHg4NiBwb3J0cyBJIGNob3NlIE9SQyBhcyB1bndpbmRpbmcgZm9ybWF0IGR1
-ZSB0byBpdHMgc2ltcGxpY2l0eQ0KPiA+ICAgIGFuZCByZWxpYWJpbGl0eS4gU28gZmFyLCBpdCB3
-b3JrcyBxdWl0ZSB3ZWxsIChhbHRob3VnaCBJJ3ZlIHJhbiBpbnRvIHNvbWUNCj4gPiAgICBtaW5v
-ciBpc3N1ZXMgd2l0aCBvYmp0b29sIGFzIHRoZSByZXNlYXJjaCBPUyBpcyB3cml0dGVuIGluIEMr
-KykuDQo+ID4gICAgQnV0IG5vdyBJIGhhdmUgc29tZSBwcm9ibGVtcyB3aXRoIGZ1bmN0aW9ucyB0
-aGF0IGFyZSBleHBsaWNpdGx5IG1hcmtlZCBhcw0KPiA+ICAgIG5vcmV0dXJuIHdpdGggdGhlIFtb
-bm9yZXR1cm5dXSBhdHRyaWJ1dGUsIGFsbCBmb2xsb3dpbmcgdW53aW5kaW5nIHN0ZXBzDQo+ID4g
-ICAgYXJlIHVucmVsaWFibGUuIEkgaGF2ZSByZWFkIGluIHRoZSBvYmp0b29sIGRvY3VtZW50YXRp
-b24gdGhhdCBzdWNoDQo+ID4gICAgZnVuY3Rpb25zIGhhdmUgdG8gYmUgYWRkZWQgdG8gdGhlIG9i
-anRvb2wgZ2xvYmFsX25vcmV0dXJuIGFycmF5Lg0KPiA+ICAgIFVuZm9ydHVuYXRlbHksIEkgZG8g
-bm90IHVuZGVyc3RhbmQgdGhlIHB1cnBvc2Ugb2YgdGhhdCBhcnJheSBhbmQgdGhlDQo+ID4gICAg
-aW50ZW5kZWQgT1JDIGJlaGF2aW91ciBmb3Igbm9yZXR1cm4gZnVuY3Rpb25zLiBBcmUgdGhlIHVu
-d2luZGluZyBzdGVwcw0KPiA+ICAgIHRoYXQgZm9sbG93IGEgbm9yZXR1cm4gaW50ZW5kZWQgdG8g
-YmUgdW5yZWxpYWJsZT8NCg0KVGhlcmUgd2FzIGFuICdpbnRlcmVzdGluZycgdW53aW5kZXIgSSBz
-YXcgYSBmZXcgeWVhcnMgYWdvLg0KKFdoaWNoIGNvdWxkbid0IGhhbmRsZSAnbm9yZXR1cm4nIGZ1
-bmN0aW9ucy4pDQoNClRoZSBpZGVhIGlzIHRvIGZvbGxvdyBmb3J3YXJkcyB0aHJvdWdoIHRoZSBj
-b2RlIHdoaWxlIGtlZXBpbmcNCnRyYWNrIG9mICVzcCBhbmQgJWZwIHVudGlsIGEgcmV0dXJuIGlu
-c3RydWN0aW9uIGlzIGZvdW5kLg0KWW91IG5lZWQgdG8gYmUgYWJsZSB0byBkZXRlY3QgbG9vcHMs
-IGFuZCB0aGVuIGNvbnRpbnVlIGZyb20NCnRoZSBvdGhlciB0YXJnZXQgb2YgYW4gZWFybGllciBj
-b25kaXRpb25hbCBicmFuY2guDQpQcm92aWRlZCBmdW5jdGlvbiBjYWxscyBkb24ndCBjaGFuZ2Ug
-JXNwIHRoZXkgY2FuIGJlIGlnbm9yZWQuDQpJZiB0aGUgJWZwIGlzbid0IHVzZWQgYXMgYSBmcmFt
-ZSBwb2ludGVyIGl0IHdvbid0IGdldCByZWxvYWRlZA0KaW50byAlc3Agc28gaXQgZG9lc24ndCBt
-YXR0ZXINCg0KVGhpcyB3b3JrcyAobW9zdCBvZiB0aGUgdGltZSkgd2l0aCBubyBkZWJ1ZyBpbmZv
-IGFuZCBubyBzeW1ib2wNCnRhYmxlLg0KDQpBZGRpbmcgYSBjb2RlIG1hcmtlciBhZnRlciBhIGNh
-bGwgdG8gYSAnbm90cmV0dXJuJyBmdW5jdGlvbiAoZWcgJ2ptcCAuJykNCm1pZ2h0IGJlIHRoZSBz
-aW1wbGVzdCB3YXkgb2Ygc3RvcHBpbmcgdGhlbSBiZWluZyBhbiBpc3N1ZS4NClRoZSBleHRyYSBp
-bnN0cnVjdGlvbiBpcyB1bmxpa2VseSB0byBiZSBhbiBpc3N1ZS4NCg0KCURhdmlkDQoNCi0NClJl
-Z2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0
-b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykN
-Cg==
+Given that most arm64 platforms' PCI implementations need quirks
+to deal with problematic config accesses, this is a good place
+to apply a firmware abstraction. The ARM PCI Configuration Space
+Access Firmware Interface specification details a standard SMC
+conduit designed to provide a simple PCI config accessor. This
+specification enhances the existing ACPI/PCI abstraction and
+expects power, config, etc., is handled by the platform. It also
+is very explicit that the resulting config space registers must
+behave as is specified by the PCI specification.
+
+Hook the ACPI/PCI config path, and when missing MCFG data is
+detected, attempt to probe the SMC conduit. If the conduit
+exists and responds to the requested segment,  provided by the
+ACPI namespace, attach a custom pci_ecam_ops which redirects
+all config read/write requests to the firmware.
+
+The Arm PCI Configuration Space Access Firmware Interface:
+https://developer.arm.com/documentation/den0115/latest
+
+Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+---
+ arch/arm64/kernel/pci.c   | 109 ++++++++++++++++++++++++++++++++++++++
+ include/linux/arm-smccc.h |  29 ++++++++++
+ 2 files changed, 138 insertions(+)
+
+diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
+index 1006ed2d7c60..bcbca70ef219 100644
+--- a/arch/arm64/kernel/pci.c
++++ b/arch/arm64/kernel/pci.c
+@@ -7,6 +7,7 @@
+  */
+ 
+ #include <linux/acpi.h>
++#include <linux/arm-smccc.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
+@@ -107,6 +108,112 @@ static int pci_acpi_root_prepare_resources(struct acpi_pci_root_info *ci)
+ 	return status;
+ }
+ 
++static int smccc_pcie_has_conduit(void)
++{
++	struct arm_smccc_res res;
++
++	if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE)
++		return -EOPNOTSUPP;
++
++	arm_smccc_smc(SMCCC_PCI_VERSION, 0, 0, 0, 0, 0, 0, 0, &res);
++	if ((int)res.a0 < 0)
++		return -EOPNOTSUPP;
++
++	arm_smccc_smc(SMCCC_PCI_FEATURES,
++		      SMCCC_PCI_WRITE, 0, 0, 0, 0, 0, 0, &res);
++	if ((int)res.a0 < 0)
++		return -EOPNOTSUPP;
++
++	arm_smccc_smc(SMCCC_PCI_FEATURES,
++		      SMCCC_PCI_READ, 0, 0, 0, 0, 0, 0, &res);
++	if ((int)res.a0 < 0)
++		return -EOPNOTSUPP;
++
++	arm_smccc_smc(SMCCC_PCI_FEATURES,
++		      SMCCC_PCI_SEG_INFO, 0, 0, 0, 0, 0, 0, &res);
++	if ((int)res.a0 < 0)
++		return -EOPNOTSUPP;
++
++	return 0;
++}
++
++static int smccc_pcie_config_read(struct pci_bus *bus, unsigned int devfn,
++				  int where, int size, u32 *val)
++{
++	struct arm_smccc_res res;
++
++	devfn |= bus->number << 8;
++	devfn |= bus->domain_nr << 16;
++
++	arm_smccc_smc(SMCCC_PCI_READ, devfn, where, size, 0, 0, 0, 0, &res);
++	if (res.a0) {
++		*val = ~0;
++		return -PCIBIOS_BAD_REGISTER_NUMBER;
++	}
++
++	*val = res.a1;
++	return PCIBIOS_SUCCESSFUL;
++}
++
++static int smccc_pcie_config_write(struct pci_bus *bus, unsigned int devfn,
++				   int where, int size, u32 val)
++{
++	struct arm_smccc_res res;
++
++	devfn |= bus->number << 8;
++	devfn |= bus->domain_nr << 16;
++
++	arm_smccc_smc(SMCCC_PCI_WRITE, devfn, where, size, val, 0, 0, 0, &res);
++	if (res.a0)
++		return -PCIBIOS_BAD_REGISTER_NUMBER;
++
++	return PCIBIOS_SUCCESSFUL;
++}
++
++static const struct pci_ecam_ops smccc_pcie_ops = {
++	.pci_ops	= {
++		.read		= smccc_pcie_config_read,
++		.write		= smccc_pcie_config_write,
++	}
++};
++
++static struct pci_config_window *
++pci_acpi_setup_smccc_mapping(struct acpi_pci_root *root)
++{
++	struct device *dev = &root->device->dev;
++	struct arm_smccc_res res;
++	struct resource *bus_res = &root->secondary;
++	struct pci_config_window *cfg;
++	u16 seg = root->segment;
++
++	arm_smccc_smc(SMCCC_PCI_SEG_INFO, seg, 0, 0, 0, 0, 0, 0, &res);
++	if ((int)res.a0 < 0) {
++		pr_warn("PCI: SMC segment %d doesn't exist\n", seg);
++		return NULL;
++	}
++
++	if (FIELD_GET(SMCCC_PCI_SEG_INFO_START_BUS, res.a1) != bus_res->start ||
++	    FIELD_GET(SMCCC_PCI_SEG_INFO_END_BUS, res.a1) != bus_res->end) {
++		pr_warn("PCI: SMC segment %d doesn't match ACPI description\n", seg);
++		return NULL;
++	}
++
++	cfg = kzalloc(sizeof(*cfg), GFP_KERNEL);
++	if (!cfg)
++		return NULL;
++
++	cfg->parent = dev;
++	cfg->ops = &smccc_pcie_ops;
++	cfg->busr.start = bus_res->start;
++	cfg->busr.end = bus_res->end;
++	cfg->busr.flags = IORESOURCE_BUS;
++	cfg->res.name = "PCI SMCCC";
++
++	pr_info("PCI: SMC conduit attached to segment %d\n", seg);
++
++	return cfg;
++}
++
+ /*
+  * Lookup the bus range for the domain in MCFG, and set up config space
+  * mapping.
+@@ -125,6 +232,8 @@ pci_acpi_setup_ecam_mapping(struct acpi_pci_root *root)
+ 
+ 	ret = pci_mcfg_lookup(root, &cfgres, &ecam_ops);
+ 	if (ret) {
++		if (!smccc_pcie_has_conduit())
++			return pci_acpi_setup_smccc_mapping(root);
+ 		dev_err(dev, "%04x:%pR ECAM region not found\n", seg, bus_res);
+ 		return NULL;
+ 	}
+diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
+index f860645f6512..a1a8fe0ea5aa 100644
+--- a/include/linux/arm-smccc.h
++++ b/include/linux/arm-smccc.h
+@@ -89,6 +89,35 @@
+ 
+ #define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED	1
+ 
++/* PCI ECAM conduit (defined by ARM DEN0115A) */
++#define SMCCC_PCI_VERSION						\
++	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
++			   ARM_SMCCC_SMC_32,				\
++			   ARM_SMCCC_OWNER_STANDARD, 0x0130)
++
++#define SMCCC_PCI_FEATURES						\
++	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
++			   ARM_SMCCC_SMC_32,				\
++			   ARM_SMCCC_OWNER_STANDARD, 0x0131)
++
++#define SMCCC_PCI_READ							\
++	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
++			   ARM_SMCCC_SMC_32,				\
++			   ARM_SMCCC_OWNER_STANDARD, 0x0132)
++
++#define SMCCC_PCI_WRITE							\
++	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
++			   ARM_SMCCC_SMC_32,				\
++			   ARM_SMCCC_OWNER_STANDARD, 0x0133)
++
++#define SMCCC_PCI_SEG_INFO						\
++	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
++			   ARM_SMCCC_SMC_32,				\
++			   ARM_SMCCC_OWNER_STANDARD, 0x0134)
++
++#define SMCCC_PCI_SEG_INFO_START_BUS  GENMASK(7, 0)
++#define SMCCC_PCI_SEG_INFO_END_BUS    GENMASK(15, 8)
++
+ /* Paravirtualised time calls (defined by ARM DEN0057A) */
+ #define ARM_SMCCC_HV_PV_TIME_FEATURES				\
+ 	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
+-- 
+2.26.2
 
