@@ -2,118 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CADAC2F5426
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D20612F542A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:36:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728829AbhAMUc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 15:32:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
+        id S1728910AbhAMUdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 15:33:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727705AbhAMUc1 (ORCPT
+        with ESMTP id S1728847AbhAMUdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 15:32:27 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69AFC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:31:46 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id w2so1942076pfc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:31:46 -0800 (PST)
+        Wed, 13 Jan 2021 15:33:31 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26809C061575;
+        Wed, 13 Jan 2021 12:32:51 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id n11so4057463lji.5;
+        Wed, 13 Jan 2021 12:32:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x3MPhiU2w3/M1LyIYX233yh3l63UHt26Df7c1l4yyS0=;
-        b=lgOrF1vud4CIGB25b7osz+2oIguQZKHERI9D69dBcBVuYXheNY3pX5pbJYPwCckISM
-         +PUkM6LOor5+Ci7YWZAaSLyzjIlqhc8mPtpDrSlVpuE/cNy2l28dog8L7Ttg2reyok5s
-         AD6wE980ogNO2xg3XtyblOQu7cC1Cwm8H9SIvDx6AuQhTKM8dOBuVZX15fEcbL5IuaWt
-         15BQt6H8G1Yj0jnP9f+nRsPX7TJi/lPYpUk0vJx4MW5HNANk+UrbucZTrQuJ3CkG39De
-         NPJj3ROUB7xRlXAxLFVY+yowWEQA30PDa8Bl5C4mCxRGHtAWK0GzBepU4eixiPg3/Ai1
-         PCfg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NqjsfwfE/gvfFJAIpBWNUl53/ddqk06jCLH+ewEiwcs=;
+        b=gXx3rZ4rZ9M8XkujqpimI5YAbVr3nV7IggEqrzbAChPFU3TYq+z4iQvQqM0Sy/khkB
+         mskOtzoPm/1262+nSLNjKbHnOuKNpGO3g67PkNu1z9HwNVbwsI1GD7TuFuXnET5cR1rW
+         PmM6RRsGdfLlPuoBI7vBHtel9HgWHkq/5D8CXnha59x6IbepDql/0YL6SU9Y+/4Z5ZlZ
+         /W5aUuyxG3xb/j96ptdNqjzHqgJGA7CxI0jt2mg2Dq5ycJQp2SrNetVbUPf7Au9WcoVi
+         Y9Y3o4AiexXnKvXacKePazr1wfsEZ88ogmIPDYSLdDJNM5lVvCWWYwhotU7q3AmOL8q2
+         Qimg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x3MPhiU2w3/M1LyIYX233yh3l63UHt26Df7c1l4yyS0=;
-        b=ivitdRn4/WF6SlQTvLMh/KmcXR6Z0wq/GNmcUIlu0prPbaGRKPTWYqdJxfWtTE+Kbs
-         pxPYfRz5Sk94j51y5e2wFQEmTsO4VaiwoBp02yzqnQXUZEDIJfBBSq4RhY+fVpUDdCbf
-         zF047kXomZVowrfGa8AQQ0OEOJ1/YEDo1GxRcfEUiSrUV4aPNuQPo8QijlrSDKUMHJCq
-         f3avCrrKm1d2RfIssYoJElClFX3Q7dos2+t+HxiJLbSULvj8jRzEhtwf3M1UfS8+Elxy
-         FrCvUMcKrj7mW19F8tBgQC9xnOyJiJPaaXhDQBMroyic9nxkKAQBOVE2wN86LbwCbjqG
-         WAxw==
-X-Gm-Message-State: AOAM533ynU0hrQlUMbmfvYhdzy0GgD/x7VlxR2sH+75ZQSnSLrOaWGuc
-        t280FoYHxsvvC1oUbjJTu86cEA==
-X-Google-Smtp-Source: ABdhPJz3B8b/fHkcVhHNh/pEoU/jcb/7vLKk9kpdfzQ2KQQgMT3HCF2wn+oiQYR4k+z1aUBQIzJVXg==
-X-Received: by 2002:a63:3714:: with SMTP id e20mr3792229pga.410.1610569906286;
-        Wed, 13 Jan 2021 12:31:46 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id bx17sm3834222pjb.12.2021.01.13.12.31.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NqjsfwfE/gvfFJAIpBWNUl53/ddqk06jCLH+ewEiwcs=;
+        b=PZjNa0wedXsq1wBQphJNeNt+mLHu5sZAkbwoSPCqX7XWwzSyi0xqfUaUNUDJpEi8vN
+         jYRwpo+fDhkt0QAyO2YulcHIAfgM9yWZfNQA1wd0xXt5s2k2Vt1QBPxZjSd3b8gy2jLn
+         dIPmsVyUwSREBkgfBs6/BEnAD74Wbx+27O6eK7DtGL0mbMj4w3mzqs7XWV0A9XuFHKlo
+         z8DhdymnIgEp5gxGOTEUT7bQt8aJG1rwl9da7dMND/vl9M/LRpVcOfTs28hnXeochLrx
+         e0ifh7LYIC7I1c898nCOpMOdI/CvmOk2vPu2rPcidhe/u0ch1132UJo96ujJe45pYUcZ
+         xOiw==
+X-Gm-Message-State: AOAM531ESnBQFLz/6tBN7RoA2h9y3HonCYd5RirPAarUq1XeGW1pKVHt
+        C/cyHlZ1ST5/yY0aWiwbinw=
+X-Google-Smtp-Source: ABdhPJxVhQM8Vpc83GcI6cMEor4XaFDEvOAI4PCe10tE8mbegBY5PAG/I6cSINKQULYhJ+fQTZtZIg==
+X-Received: by 2002:a2e:5753:: with SMTP id r19mr1578532ljd.240.1610569969676;
+        Wed, 13 Jan 2021 12:32:49 -0800 (PST)
+Received: from localhost.localdomain (h-98-128-228-148.NA.cust.bahnhof.se. [98.128.228.148])
+        by smtp.gmail.com with ESMTPSA id w202sm311194lff.182.2021.01.13.12.32.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 12:31:45 -0800 (PST)
-Date:   Wed, 13 Jan 2021 13:31:43 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 00/16] introduce generic IOCTL interface for RPMsg
- channels management
-Message-ID: <20210113203143.GA229796@xps15>
-References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
+        Wed, 13 Jan 2021 12:32:48 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH 0/2] power: supply: Constify static struct attribute_group
+Date:   Wed, 13 Jan 2021 21:32:41 +0100
+Message-Id: <20210113203243.20146-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaud,
+Constify two static struct attribute_group. The only place they are
+used is to put their address in an array of pointers to const struct
+attribute_group. With these patches applied, all static attribute_group
+structs in drivers/power are const.
 
-[...]
+Rikard Falkeborn (2):
+  power: supply: ltc4162-l: Constify static struct attribute_group
+  power: supply: core: Constify static struct attribute_group
 
-> 
-> Arnaud Pouliquen (16):
->   rpmsg: introduce RPMsg control driver for channel creation
->   rpmsg: add RPMsg control API to register service
->   rpmsg: add override field in channel info
->   rpmsg: ctrl: implement the ioctl function to create device
->   rpmsg: ns: initialize channel info override field
->   rpmsg: add helper to register the rpmsg ctrl device
->   rpmsg: char: clean up rpmsg class
->   rpmsg: char: make char rpmsg a rpmsg device without the control part
->   rpmsg: char: register RPMsg raw service to the ioctl interface.
->   rpmsg: char: allow only one endpoint per device
->   rpmsg: char: check destination address is not null
->   rpmsg: virtio: use the driver_override in channel creation ops
->   rpmsg: virtio: probe the rpmsg_ctl device
->   rpmsg: glink: add create and release rpmsg channel ops
->   rpmsg: smd: add create and release rpmsg channel ops
->   rpmsg: replace rpmsg_chrdev_register_device use
-> 
->  drivers/rpmsg/Kconfig             |   8 +
->  drivers/rpmsg/Makefile            |   1 +
->  drivers/rpmsg/qcom_glink_native.c |  96 +++++++--
->  drivers/rpmsg/qcom_smd.c          |  59 +++++-
->  drivers/rpmsg/rpmsg_char.c        | 246 ++++++-----------------
->  drivers/rpmsg/rpmsg_ctrl.c        | 320 ++++++++++++++++++++++++++++++
->  drivers/rpmsg/rpmsg_internal.h    |  14 --
->  drivers/rpmsg/rpmsg_ns.c          |   1 +
->  drivers/rpmsg/virtio_rpmsg_bus.c  |  38 +++-
->  include/linux/rpmsg.h             |  40 ++++
->  include/uapi/linux/rpmsg.h        |  14 ++
->  11 files changed, 606 insertions(+), 231 deletions(-)
->  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
+ drivers/power/supply/ltc4162-l-charger.c  | 2 +-
+ drivers/power/supply/power_supply_sysfs.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-I am finally coming around to review this set.  I see that you already had an
-extensive conversation with Bjorn - did you want me to have a look as well or
-should I wait for the next revision?
+-- 
+2.30.0
 
-Thanks,
-Mathieu
-
-> 
-> -- 
-> 2.17.1
-> 
