@@ -2,97 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E172F579C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA8F2F5788
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729898AbhANCCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:02:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729389AbhAMXWY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 18:22:24 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F58C0617A9;
-        Wed, 13 Jan 2021 15:07:42 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id y12so2038743pji.1;
-        Wed, 13 Jan 2021 15:07:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m4PIDzYT3CXhoACwt4A5q0aBFravQnGjz5z9j8ZUsEY=;
-        b=kSQ5AATGqJZ1OZcYKgwWY5EamTo6erdhBn8bkSwXMwNhcF7BCVo9sbg80BYZt14h/X
-         WRETpPnEcpfjBwMcAfT6nVWS7rl/zjTc9uqDfmVBydaJkiH80gHIpSxxTchw7nacf0Za
-         gh6XJyD2mZnCktbfjPnCPtUk3wBxDscxfYH+Ryrx1jozwqwLS+f8wSKLkE6kHDFFhjJS
-         ly7S4GM7zj3gxUKPbS9xxituOC9XKYq4TouBRaDT0BfiNP9YFap3ZtsIfWH9gY2H/XRQ
-         XUuOCy9Y1L1RkUbq8pLQhTxUo/UG03EVThoUtbWoL8uLja4Xh6ARab+sw1wtdeCWR+xL
-         73ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m4PIDzYT3CXhoACwt4A5q0aBFravQnGjz5z9j8ZUsEY=;
-        b=d/CuTKqHDrAXaXxDmvUY2cnYkOV4uYeC35p4/83X04DMESNMn6pGX/oR+vkT3YDSOx
-         Mmycbuy/4M5gpu51GncIxQqaoMiKD94KjE+7NTQQJbv/b9dPKa7lMKfVj70cPCyTIMWu
-         XfXvePhUrHPJNcCo4F76gQpsyn9fyL7w1LRfHzRNmw5H8bqctUtZPnKVF1GSC8ruJnZG
-         KB0MYcXsliijIJf0NfJxxKZoUoNZd6CjrO48ehc3pP9KwchvonRgIEs/HRJl6nDt5e8i
-         /61ID96si6kHVciCFmWWfsOdZen2HpFVQ7C7tUfv4wcmy2PktB805bpiR85KEwvf3ngP
-         EfLw==
-X-Gm-Message-State: AOAM531zzS5GiCPv+au5QzZjzKmJDMQUmBPyAUy6dd3wK+9wJWJBZ1Dg
-        NdYRLtFxEehminafAtVJ3ao=
-X-Google-Smtp-Source: ABdhPJxQjXFrORq7aRfjX5AzuzrkieozDdbOI+BgMpe3PbPu7LmqaHSUfdR9PjmJQind1uC0ObZucQ==
-X-Received: by 2002:a17:90a:fd08:: with SMTP id cv8mr1652767pjb.29.1610579261988;
-        Wed, 13 Jan 2021 15:07:41 -0800 (PST)
-Received: from Ryzen-9-3900X.localdomain (ip68-104-204-241.ph.ph.cox.net. [68.104.204.241])
-        by smtp.gmail.com with ESMTPSA id t1sm3515705pfq.154.2021.01.13.15.07.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 15:07:41 -0800 (PST)
-Date:   Wed, 13 Jan 2021 16:07:39 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: Re: [PATCH] bpf: Hoise pahole version checks into Kconfig
-Message-ID: <20210113230739.GA22747@Ryzen-9-3900X.localdomain>
-References: <20210111180609.713998-1-natechancellor@gmail.com>
- <CAK7LNAQ=38BUi-EG5v2UiuAF-BOsVe5BTd-=jVYHHHPD7ikS5A@mail.gmail.com>
- <20210111193400.GA1343746@ubuntu-m3-large-x86>
- <CAK7LNASZuWp=aPOCKo6QkdHwM5KG6MUv8305v3x-2yR7cKEX-w@mail.gmail.com>
- <20210111200010.GA3635011@ubuntu-m3-large-x86>
- <CAEf4BzaL18a2+j3EYaD7jcnbJzqwG2MuBxXR2iRZ3KV9Jwrj6w@mail.gmail.com>
- <CAEf4Bzbv6nrJNxbZAvFx4Djvf1zbWnrV_i90vPGHtV-W7Tz=bQ@mail.gmail.com>
+        id S1729789AbhANCBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:01:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51468 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729470AbhAMXZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 18:25:06 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32DEC233ED;
+        Wed, 13 Jan 2021 23:13:49 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 18:13:47 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Al Viro <viro@ZenIV.linux.org.uk>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2] fs/namei.c: Remove unlikely of status being -ECHILD
+ in lookup_fast()
+Message-ID: <20210113181347.633356a7@gandalf.local.home>
+In-Reply-To: <20201209170928.26b4cda7@gandalf.local.home>
+References: <20201209170928.26b4cda7@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzbv6nrJNxbZAvFx4Djvf1zbWnrV_i90vPGHtV-W7Tz=bQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 02:38:27PM -0800, Andrii Nakryiko wrote:
-> Hm.. Just saw Linus proposing using $(error-if) in Kconfig for an
-> unrelated issue ([0]). If we can make this work, then it would catch
-> such issue early on, yet won't have any downsides of hiding
-> CONFIG_DEBUG_INFO_BTF if pahole is too old. WDYT?
+Ping?
+
+-- Steve
+
+
+On Wed, 9 Dec 2020 17:09:28 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> From:  Steven Rostedt (VMware) <rostedt@goodmis.org>
 > 
->   [0] https://lore.kernel.org/lkml/CAHk-=wh-+TMHPTFo1qs-MYyK7tZh-OQovA=pP3=e06aCVp6_kA@mail.gmail.com/
+> Running my yearly branch profiling code, it detected a 100% wrong branch
+> condition in name.c for lookup_fast(). The code in question has:
+> 
+> 		status = d_revalidate(dentry, nd->flags);
+> 		if (likely(status > 0))
+> 			return dentry;
+> 		if (unlazy_child(nd, dentry, seq))
+> 			return ERR_PTR(-ECHILD);
+> 		if (unlikely(status == -ECHILD))
+> 			/* we'd been told to redo it in non-rcu mode */
+> 			status = d_revalidate(dentry, nd->flags);
+> 
+> If the status of the d_revalidate() is greater than zero, then the function
+> finishes. Otherwise, if it is an "unlazy_child" it returns with -ECHILD.
+> After the above two checks, the status is compared to -ECHILD, as that is
+> what is returned if the original d_revalidate() needed to be done in a
+> non-rcu mode.
+> 
+> Especially this path is called in a condition of:
+> 
+> 	if (nd->flags & LOOKUP_RCU) {
+> 
+> And most of the d_revalidate() functions have:
+> 
+> 	if (flags & LOOKUP_RCU)
+> 		return -ECHILD;
+> 
+> It appears that that is the only case that this if statement is triggered
+> on two of my machines, running in production.
+> 
+> As it is dependent on what filesystem mix is configured in the running
+> kernel, simply remove the unlikely() from the if statement.
+> 
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+> Changes since v1:
+> 
+>  - Remove unlikely() instead of making it a likely()
+> 
+> diff --git a/fs/namei.c b/fs/namei.c
+> index d4a6dd772303..c7b7e83853f3 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -1495,7 +1495,7 @@ static struct dentry *lookup_fast(struct nameidata *nd,
+>  			return dentry;
+>  		if (unlazy_child(nd, dentry, seq))
+>  			return ERR_PTR(-ECHILD);
+> -		if (unlikely(status == -ECHILD))
+> +		if (status == -ECHILD)
+>  			/* we'd been told to redo it in non-rcu mode */
+>  			status = d_revalidate(dentry, nd->flags);
+>  	} else {
 
-Yes, I think that would be exactly what we want because DEBUG_INFO_BTF
-could cause the build to error if PAHOLE_VERSION is not >= 116. I will
-try to keep an eye on that thread to see how it goes then respin this
-based on anything that comes from it.
-
-Cheers,
-Nathan
