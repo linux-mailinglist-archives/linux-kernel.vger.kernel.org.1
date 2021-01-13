@@ -2,138 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399852F53AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8422F53B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728803AbhAMTvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 14:51:22 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:40966 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728776AbhAMTvV (ORCPT
+        id S1728731AbhAMTyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 14:54:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58839 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728519AbhAMTyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 14:51:21 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610567462; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=fmdHGVbp+4tw2+s9vPjb3eiPfcBMojAKFWUgjBhw8hU=;
- b=b0vtV8l+zp+TrqOF6EXc7xOCDp5BiCVj1u42OerFAsRXlFy7VscTz9NkWR5jJotS36gHizGc
- E1PHSrfgOF8P8c0tO31GH5jp967W3/8U7Be3My6c0U1TKpFh1z6uCjPMHb7imCoz0qTPRyji
- iwzpK2ZrO9GtQXzhKQzQuPBf3Aw=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5fff4f05d84bad3547491a77 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 19:50:29
- GMT
-Sender: mdalam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5F7C3C43461; Wed, 13 Jan 2021 19:50:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        Wed, 13 Jan 2021 14:54:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610567593;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r9SifleMQOfzHiaSXVluBcJxxBWa1F3orhMkaXNevsg=;
+        b=TLvIfejwjNEohSPMT9lSbR/FQEJJ7dafaF0N99NIvI9Myv7LKG0Hb+OLYcGs4W6FgJz+Hg
+        MganwzcXz9XoFg+fnrKBNVNhItgeTqfhj9fSIkz00wlFeYDYpJ7N87zoM473zi+UaZKpDS
+        f3jGp6X8zf36/CsxttLGyo99xcTU9Jg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-198-S9hFWNQHNT-CBxPFRSIyUQ-1; Wed, 13 Jan 2021 14:53:10 -0500
+X-MC-Unique: S9hFWNQHNT-CBxPFRSIyUQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: mdalam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6FA37C433CA;
-        Wed, 13 Jan 2021 19:50:28 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B2E931015C8B;
+        Wed, 13 Jan 2021 19:53:07 +0000 (UTC)
+Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 29908100AE41;
+        Wed, 13 Jan 2021 19:53:03 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 13:53:01 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Anand K Mistry <amistry@google.com>
+Cc:     x86@kernel.org, asteinhauser@google.com, tglx@linutronix.de,
+        bp@alien8.de, joelaf@google.com,
+        Anand K Mistry <amistry@chromium.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] x86/speculation: Add finer control for when to issue
+ IBPB
+Message-ID: <20210113195301.tyeeyrf5y7ajd5yw@treble>
+References: <20210113194619.RFC.1.I8f559ecdb01ffa98d5a1ee551cb802f288a81a38@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 14 Jan 2021 01:20:28 +0530
-From:   mdalam@codeaurora.org
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     corbet@lwn.net, agross@kernel.org, bjorn.andersson@linaro.org,
-        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, sricharan@codeaurora.org,
-        mdalam=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Add LOCK and UNLOCK flag bit
- support
-In-Reply-To: <20210112101056.GI2771@vkoul-mobl>
-References: <1608215842-15381-1-git-send-email-mdalam@codeaurora.org>
- <20201221092355.GA3323@vkoul-mobl>
- <efcc74bbdf36b4ddbf764eb6b4ed99f2@codeaurora.org>
- <f7de0117c8ff2e61c09f58acdea0e5b0@codeaurora.org>
- <20210112101056.GI2771@vkoul-mobl>
-Message-ID: <e3cf7c4fc02c54d17fd2fd213f39005b@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210113194619.RFC.1.I8f559ecdb01ffa98d5a1ee551cb802f288a81a38@changeid>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-12 15:40, Vinod Koul wrote:
-> On 12-01-21, 15:01, mdalam@codeaurora.org wrote:
->> On 2020-12-21 23:03, mdalam@codeaurora.org wrote:
->> > On 2020-12-21 14:53, Vinod Koul wrote:
->> > > Hello,
->> > >
->> > > On 17-12-20, 20:07, Md Sadre Alam wrote:
->> > > > This change will add support for LOCK & UNLOCK flag bit support
->> > > > on CMD descriptor.
->> > > >
->> > > > If DMA_PREP_LOCK flag passed in prep_slave_sg then requester of this
->> > > > transaction wanted to lock the DMA controller for this transaction so
->> > > > BAM driver should set LOCK bit for the HW descriptor.
->> > > >
->> > > > If DMA_PREP_UNLOCK flag passed in prep_slave_sg then requester
->> > > > of this
->> > > > transaction wanted to unlock the DMA controller.so BAM driver
->> > > > should set
->> > > > UNLOCK bit for the HW descriptor.
->> > >
->> > > Can you explain why would we need to first lock and then unlock..? How
->> > > would this be used in real world.
->> > >
->> > > I have read a bit of documentation but is unclear to me. Also should
->> > > this be exposed as an API to users, sounds like internal to driver..?
->> > >
->> >
->> > IPQ5018 SoC having only one Crypto Hardware Engine. This Crypto Hardware
->> > Engine
->> > will be shared between A53 core & ubi32 core. There is two separate
->> > driver dedicated
->> > to A53 core and ubi32 core. So to use Crypto Hardware Engine
->> > parallelly for encryption/description
->> > we need bam locking mechanism. if one driver will submit the request
->> > for encryption/description
->> > to Crypto then first it has to set LOCK flag bit on command descriptor
->> > so that other pipes will
->> > get locked.
->> >
->> > The Pipe Locking/Unlocking will be only on command-descriptor. Upon
->> > encountering a command descriptor
+On Wed, Jan 13, 2021 at 07:47:19PM +1100, Anand K Mistry wrote:
+> When IB speculation is conditionally disabled for a process (via prctl()
+> or seccomp), IBPB is issued whenever that process is switched to/from.
+> However, this results more IBPBs than necessary. The goal is to protect
+> a victim process from an attacker poisoning the BTB by issuing IBPB in
+> the attacker->victim switch. However, the current logic will also issue
+> IBPB in the victim->attacker switch, because there's no notion of
+> whether the attacker or victim has IB speculation disabled.
 > 
-> Can you explain what is a cmd descriptor?
-
-   In BAM pipe descriptor structure there is a field called CMD (Command 
-descriptor).
-   CMD allows the SW to create descriptors of type Command which does not 
-generate any data transmissions
-   but configures registers in the Peripheral (write operations, and read 
-registers operations ).
-   Using command descriptor enables the SW to queue new configurations 
-between data transfers in advance.
-
+> Instead of always issuing IBPB when either the previous or next process
+> has IB speculation disabled, add a boot flag to explicitly choose
+> to issue IBPB when the IB spec disabled process is entered or left.
 > 
->> > with LOCK bit set, The BAM will lock all other pipes not related to
->> > the current pipe group, and keep
->> > handling the current pipe only until it sees the UNLOCK set then it
->> > will release all locked pipes.
->> > locked pipe will not fetch new descriptors even if it got event/events
->> > adding more descriptors for
->> > this pipe (locked pipe).
->> >
->> > No need to expose as an API to user because its internal to driver, so
->> > while preparing command descriptor
->> > just we have to update the LOCK/UNLOCK flag.
+> Signed-off-by: Anand K Mistry <amistry@google.com>
+> Signed-off-by: Anand K Mistry <amistry@chromium.org>
+> ---
+> Background:
+> IBPB is slow on some CPUs.
 > 
-> So IIUC, no api right? it would be internal to driver..?
+> More detailed background:
+> On some CPUs, issuing an IBPB can cause the address space switch to be
+> 10x more expensive (yes, 10x, not 10%). On a system that makes heavy use
+> of processes, this can cause a very significant performance hit.
+> Although we can choose which processes will pay the IBPB
+> cost by using prctl(), the performance hit is often still too high
+> because IBPB is being issued more often than necessary.
+> 
+> This proposal attempts to reduce that cost by letting the system
+> developer choose whether to issue the IBPB on entry or exit of an IB
+> speculation disabled process (default is both, which is current
+> behaviour). Documentation/admin-guide/hw-vuln/spectre.rst documents two
+> mitigation strategies that use conditional IBPB;
+> "Protect sensitive programs", and "Sandbox untrusted programs".
 
-   Yes its totally internal to deriver.
+Why make the setting system-wide?  Shouldn't this decision be made on a
+per-task basis, depending on whether the task is sensitive or untrusted?
+
+-- 
+Josh
+
