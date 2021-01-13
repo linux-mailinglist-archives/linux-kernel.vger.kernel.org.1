@@ -2,70 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6EB42F428B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 04:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D027A2F4298
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 04:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729142AbhAMDci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 22:32:38 -0500
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:45856 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbhAMDch (ORCPT
+        id S1726287AbhAMDkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 22:40:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48684 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725988AbhAMDkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 22:32:37 -0500
-Received: by mail-ot1-f49.google.com with SMTP id n42so605971ota.12;
-        Tue, 12 Jan 2021 19:32:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=76sM/7UvGAi4Toez0Erb44XvSRKHH+nk+o9NQbAC1Ac=;
-        b=MBVU41wEEqtJcOThVkU0PZbggHXTNINC49ROenNZk5J8yKyXOr2/DcTwC8G+RoeRnI
-         cmG27Rym5U86ke1WMTvh3hc66DPvt7bzTQjJxmZlXFj+oRCdR2y5StjQ4OOw9yE5imw3
-         h7pVkoIMrD0ak+6ETWHWruJVkpKILJVxlBABy9dzQKd5YVWFefB2j1TvlWd/k0eBZlfT
-         OTs0GodIoQpQWr7LbgrhrsDbDbHFVyWTWeB/6tzHsigMFq3IeUqSCoyqaVMhcT8BMfwL
-         S/O6XcT844waTizzDYBENzpSHcDZQuGHSn49LiK+O9GF+3CIoXaNb1ursNr+u7C9/rUX
-         fQrA==
-X-Gm-Message-State: AOAM531dVLMlZggiTefenqJwKrRbdwzD58ENdsF4fKAEmhcYVzuO8QZI
-        W5NrAkEx+gl5S8dZSnIoqeVsD0kQoQ==
-X-Google-Smtp-Source: ABdhPJwd26Q8pJL1EbruyzwIhkFoAy2BOSR4OUJKOPb9+e50kXEKM1WRN7FR0+eBTx7J1Pz9JkmvfQ==
-X-Received: by 2002:a9d:220b:: with SMTP id o11mr22159ota.212.1610508716473;
-        Tue, 12 Jan 2021 19:31:56 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j11sm157877oos.47.2021.01.12.19.31.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 19:31:55 -0800 (PST)
-Received: (nullmailer pid 1480612 invoked by uid 1000);
-        Wed, 13 Jan 2021 03:31:54 -0000
-Date:   Tue, 12 Jan 2021 21:31:54 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     sboyd@kernel.org, linux-arm-msm@vger.kernel.org,
-        viresh.kumar@linaro.org, mturquette@baylibre.com,
-        jassisinghbrar@gmail.com, robh+dt@kernel.org,
-        bjorn.andersson@linaro.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ulf.hansson@linaro.org,
-        devicetree@vger.kernel.org, agross@kernel.org
-Subject: Re: [PATCH v2 3/5] dt-bindings: clock: Add Qualcomm A7 PLL binding
-Message-ID: <20210113033154.GA1480568@robh.at.kernel.org>
-References: <20210108113233.75418-1-manivannan.sadhasivam@linaro.org>
- <20210108113233.75418-4-manivannan.sadhasivam@linaro.org>
+        Tue, 12 Jan 2021 22:40:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610509125;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fSaLRoG57KvO7g+HhBEQBIyCeK5sYiN7HkTE57zkReU=;
+        b=WGu/K8aYD7DCrnGN7gDIRGROSZBEJEaOxP47+7gCAvYNsVF2AgL8ilT+1C3VFNcs535MgC
+        YjUZ1aNVoaGNdzzu6EV//KVzUfSxh8FJivhu8opmIsaap8UlF2OCgu8riAOKJJIDCdS+hi
+        2vNNsj7xw9TAIchRNythflXdJYQF0Po=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-286-LlhP_UCCPhyJ2DE4Q9BBuA-1; Tue, 12 Jan 2021 22:38:43 -0500
+X-MC-Unique: LlhP_UCCPhyJ2DE4Q9BBuA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D45A805EE3;
+        Wed, 13 Jan 2021 03:38:42 +0000 (UTC)
+Received: from [10.72.12.205] (ovpn-12-205.pek2.redhat.com [10.72.12.205])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F370B60BFA;
+        Wed, 13 Jan 2021 03:38:36 +0000 (UTC)
+Subject: Re: [PATCH v3] vhost_vdpa: fix the problem in
+ vhost_vdpa_set_config_call
+To:     Cindy Lu <lulu@redhat.com>, mst@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        lingshan.zhu@intel.com
+Cc:     stable@vger.kernel.org
+References: <20210112053629.9853-1-lulu@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <1403c336-4493-255f-54e3-c55dd2015c40@redhat.com>
+Date:   Wed, 13 Jan 2021 11:38:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108113233.75418-4-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <20210112053629.9853-1-lulu@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 08 Jan 2021 17:02:31 +0530, Manivannan Sadhasivam wrote:
-> Add devicetree YAML binding for Cortex A7 PLL clock in Qualcomm
-> platforms like SDX55.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  .../devicetree/bindings/clock/qcom,a7pll.yaml | 51 +++++++++++++++++++
->  1 file changed, 51 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/qcom,a7pll.yaml
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On 2021/1/12 下午1:36, Cindy Lu wrote:
+> In vhost_vdpa_set_config_call, the cb.private should be vhost_vdpa.
+> this cb.private will finally use in vhost_vdpa_config_cb as
+> vhost_vdpa. Fix this issue.
+>
+> Fixes: 776f395004d82 ("vhost_vdpa: Support config interrupt in vdpa")
+> Acked-by: Jason Wang <jasowang@redhat.com>
+> Signed-off-by: Cindy Lu <lulu@redhat.com>
+> ---
+
+
+Hi Cindy:
+
+I think at least you forget to cc stable.
+
+Thanks
+
+
+>   drivers/vhost/vdpa.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index ef688c8c0e0e..3fbb9c1f49da 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -319,7 +319,7 @@ static long vhost_vdpa_set_config_call(struct vhost_vdpa *v, u32 __user *argp)
+>   	struct eventfd_ctx *ctx;
+>   
+>   	cb.callback = vhost_vdpa_config_cb;
+> -	cb.private = v->vdpa;
+> +	cb.private = v;
+>   	if (copy_from_user(&fd, argp, sizeof(fd)))
+>   		return  -EFAULT;
+>   
+
