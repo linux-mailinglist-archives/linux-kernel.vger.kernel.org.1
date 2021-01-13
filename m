@@ -2,149 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF5D2F43FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25EB2F43FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbhAMFgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 00:36:07 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:56682 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbhAMFgG (ORCPT
+        id S1726608AbhAMFf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 00:35:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbhAMFf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 00:36:06 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10D5Y0Pg073539;
-        Wed, 13 Jan 2021 05:34:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=tY5jlh7p6ovlIAmbHQa/sM9dxNVff0dmzA98JE7ykuU=;
- b=naICQ/PlL1sUIeNeyRZU+qNyx0lJZhwTStIbtPh3MNzqB/tDZbUNtShgc0QVmJO7RJMw
- OWX3D+ERVWv8qxnawxB6XfqH+S8hOq2SJQ+dkwjySw1qo9BZCPWb4AEImz/rRhtBrIfa
- PmdQZ3UZO1X0FBx7XrlhIHiAR0HXOII1/MIsWjHIHSXgxve2DDcyexkNZ7TW4vaPpYEm
- 8RTG6Ss6dX3wROE22gCv+q+T9YeeWA9ycaacmmEUlfplv4PkbIjpYQLRx+PHfKq4cY73
- ybN4lgv68iyQtfvMhmW35DGuim7od6j5++N5CdclKr4ejfnUPVUXFfSbWyeaVzwbWgcc Ew== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 360kcysmys-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 05:34:43 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10D5Q49s102719;
-        Wed, 13 Jan 2021 05:34:43 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-        by aserp3030.oracle.com with ESMTP id 360kf005fe-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 05:34:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jJKJvqWC4HldAVSXEo61y2LPw5bwI8QB347JYCsckvpME3SI6E4sQqi1oPtINANdscX0jkrHPAHim0pDneKH6BEvjEsFapYMdDQsyKOTFrJpi2K9vdjMXADgMlritDvOhcgn3jtvtGpTRwT92VGij773xBrCEIuF5NdaX+qNg/A6vJ2OXnccuyY3JMsqWrZHW+RRQMd1SrHQY7FA7rR3vUmJed1MSNIUfwK8rgsKCyK08RZKmDey/t/2tjtX0vhiM4h1VifaZkWQh7ZqmBXrPluwwL2i4DSiiBqMadub9TOT5nn09i8/MWVisOOf4nDTfxJuwYbPsbMJr8ZfDHfWJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tY5jlh7p6ovlIAmbHQa/sM9dxNVff0dmzA98JE7ykuU=;
- b=Ju6LLa6bzJQSgkzIGL1MhHCwDIfHCF//A8/ebbntywrA2pRmd0JKP07BIPTUsAtAPnh8GCxJiqPptZkefQccXeG7tpLpYXT2bGVjpz3sjIhaCr++Ak8SENbaMMGmCwIhJyyKmcqBz3nekMnIhz5R6nv8LE779NIOTX6biCvxEZvDlHphuV+AXLY5dmpGzg/760vt3kVNByKLfe2rkqhqK4hVwWVRwW1ObTpYenoP1yZJkJ8zS9qfyix6p+sX5IbS4r5I1Ne+oQaqYbqNZSdDB4+z5d2K8hlfuiBPWhwQ+GJqQY/d7gxFrw7orOprHxTBHqNUKYx+KLlQgDzPbT49PQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 13 Jan 2021 00:35:58 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4E8C061575;
+        Tue, 12 Jan 2021 21:35:17 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id r5so540566eda.12;
+        Tue, 12 Jan 2021 21:35:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tY5jlh7p6ovlIAmbHQa/sM9dxNVff0dmzA98JE7ykuU=;
- b=c8HIUDO5TblzQBjyBIKbAqTbhwTAuD05jc5348FyqbC/pLvrkZw8nj13EVI8UG6ALhCNj/9y8pHDOx1XkzeOupXNgiYprgngSr6kbntADh6g34fq9RqF8y9PCFkVaerqZ2ycFF1U+ylVT3I4MTsCKKQa4fkHJv4ZgRKFRpsaDxg=
-Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
- header.d=none;linux.alibaba.com; dmarc=none action=none
- header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4584.namprd10.prod.outlook.com (2603:10b6:510:37::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Wed, 13 Jan
- 2021 05:34:41 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3763.009; Wed, 13 Jan 2021
- 05:34:41 +0000
-To:     YANG LI <abaci-bugfix@linux.alibaba.com>
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        skashyap@marvell.com, jhasan@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com, linux@armlinux.org.uk,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH] scsi: qedf: style: Simplify bool comparison
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1pn291jto.fsf@ca-mkp.ca.oracle.com>
-References: <1610357368-62866-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Date:   Wed, 13 Jan 2021 00:34:37 -0500
-In-Reply-To: <1610357368-62866-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-        (YANG LI's message of "Mon, 11 Jan 2021 17:29:28 +0800")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: DM5PR2201CA0019.namprd22.prod.outlook.com
- (2603:10b6:4:14::29) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by DM5PR2201CA0019.namprd22.prod.outlook.com (2603:10b6:4:14::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10 via Frontend Transport; Wed, 13 Jan 2021 05:34:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 53fa5221-9b73-427e-7c2e-08d8b784ecf1
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4584:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB4584590DD6C1CD71A89FE9428EA90@PH0PR10MB4584.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jF+uwUw4f2MLeRsqex7pIJLpGoi+yW/wgYXpaEf8YbDcf02JVbvjC3S2vHbPGwmqAMOzFAZgi50gLawxczDrDfiy1lfmvl28/x1G06ghL6eIKs8S2IAQF7RSeJ9J8inGXVk2E9JIklrvj1FiU6OfxVJ+dQ4Dv/KO8J/xkCMw/xdVtFno5q0qpGlkei5gwtyH3vQ2FCy5tIhsQiRXrwsJPod2l/Ul1AUF83Bzdee2pJBAblaEcj7NhIS+IPRTs/fS/Mm3Yl8xd71nbBHn5+5BPA/8NZZ2Bh9alV3Dv1mgJpWzkf/5fk/3SWNdyy1P8KrxAaNody58JENBDMw0urmaARce19X5FRoBi9pstJ/fAffOfgA5h72AEt7pfEMHLN6syw7T9GL51UEJFKzQGqvjPQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(39850400004)(376002)(396003)(346002)(52116002)(956004)(4326008)(8676002)(558084003)(7696005)(316002)(478600001)(36916002)(6666004)(66476007)(26005)(55016002)(6916009)(8936002)(5660300002)(66946007)(66556008)(2906002)(186003)(86362001)(83380400001)(16526019);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?xPxNXv5CH+WJTkGPLcu1hrOkKfdL+zAB2D6SflQ+VnRiArckkIAZhwjaL12Z?=
- =?us-ascii?Q?4GUWPEwOJhatyVmvBk4wJVuzOuMTfC5fem1dGuaT0M/Lt/nfYX3i/JOR+Bua?=
- =?us-ascii?Q?PkdRLvcIhnQ88963J+4JxlymueLVpDp/rOoMPMs1mlVgKLRFKh47L4COP0wn?=
- =?us-ascii?Q?AMFEPQPKI77f9pkI+uVKZPm4FMZBdSPFyPrTatExoF+VarvncTyZQIWXApIG?=
- =?us-ascii?Q?fAxg3gDEQNaLwl6upentuU8bug+TAYLyYIZkgF/rWylYgriehuGAMhdgw9ln?=
- =?us-ascii?Q?Cki9qmtLPEWDojwCsa9ezmXlYJFI5oLLf6mn6q9kjhyl7SFCgN0CKWHkgINi?=
- =?us-ascii?Q?YWwkavClqfqoR9u38tU964OOcYOhtSU5mpFna+owk4b9PhLJAZwtom8VhGMY?=
- =?us-ascii?Q?R9YERKTQ/UjZwV/UCpJz0ummp10EUnEQRCEWz6Gjn9WwFShO+MZPW5nUKZVW?=
- =?us-ascii?Q?N6YTPjKtaZpoCBrqq+xqTpgEcq87Ny8Tnr0ffaBOtnutuyOkFKxWqlcQ2+bK?=
- =?us-ascii?Q?Tt5Iur6pemTvGebpEHcfNVSk6mKpa3+40UXzBIqiFPdW3e41CM/J65BfCX+E?=
- =?us-ascii?Q?ZxqR8Px6eFordzkZ2K1kDN99izRbMfIfwdSJtcHuuCTz7G0q2sGe7yYKUVV/?=
- =?us-ascii?Q?WOkHdh8dHnuKkMnYrYLApSADx0TFHyUbCh8z+cv3HNmUAtw1I2+XmHmbL+QA?=
- =?us-ascii?Q?hVI3QHFJYsUTByHymrWIEdeLc7VYHaLGDdMfiauWRkIA6ReLTCPegTVsLwcL?=
- =?us-ascii?Q?BJVeOA0f7uhaloIwxsTWNqoVo/gpKMVrBTr8EU+R6ajhkO0/DjhmHw62ak/z?=
- =?us-ascii?Q?+otAt6yHYKQmfKojU+qJ4ACt6Gd26nFV+8aESSOKQ75Sr6sr5NPD/x88hhoW?=
- =?us-ascii?Q?0a67RVx8DmRUXFA5ofcFAArV4aWDLzo3BqtyGG7amnsK2VcjPtk3Onxfpxpk?=
- =?us-ascii?Q?FSxMkhh1EvcQvF2j3hPuf2lAtYZtLhXqiu0rcWfvbCfcynClTaaJ8TOJ6jJX?=
- =?us-ascii?Q?OWLF?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2021 05:34:41.0256
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-Network-Message-Id: 53fa5221-9b73-427e-7c2e-08d8b784ecf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bndykdNK62uFFR0GkErNpfY+qDibzHRF2VabxuZ7dd5SYaeAxOqshYsEi8XCVQhWhQg6JJ8Tnt/InsTiSJG/STdfcnpH1hlAOonIULOCbY4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4584
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101130032
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
- impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 clxscore=1011 mlxlogscore=999 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101130033
+        d=gmail.com; s=20161025;
+        h=subject:date:from:to:cc:message-id:in-reply-to:references;
+        bh=+tHov+ldUPE+pcoRYd4a8sxaOI1/2CRBGC1q++RDxYo=;
+        b=rGZoYuRdGgVPhd+NMbxrOHemxgcIcLPUTDeuQshz/5qNyKckkiayl9tk8Tu6+aqvbB
+         xG5EBQOzs/JzNcSBiCtrhdCJvgts0gtRRnNeMVcjm8pniIKGv7W56pgpsz5PxN9CeUWr
+         yJQgd6pAGhH1B4bHvp3RFKOJMdNf2V/pF11aEdMigxUryZlWuVaTPqF9pvtOM7jopUyB
+         RpeE6wukH+8WPsmu9f6lsy+/+YtEOnMtka7lh2TD3YkinKOER7zLso+SrjcVm31LepWf
+         wDHZvp46cUYoW77kcZGSTAL723ANZeCIqGxyiPGJrKhLvpz/i5IYlCXBC8uI8I6Sheqs
+         hJAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:date:from:to:cc:message-id:in-reply-to
+         :references;
+        bh=+tHov+ldUPE+pcoRYd4a8sxaOI1/2CRBGC1q++RDxYo=;
+        b=nnfc+3VbyjK3R3m9PG537VOpaU7ryWKOHVaDv7EVOCg+hRq+7KHRzxMY8O0IQd80BO
+         TxSeT5ALJNclrVxuJl36zdsmtK6sE6IQ2ZHLbOap5V83ryN+53fWuK08d4+I71m5IIzm
+         hxuiOG3x/mUaaYB0yIPMJu11IrtpPh6AZacYVGfhh/Pzlr+VqSKn4SxG5Gj1e9izZp0L
+         bUcl1/pGnPiC40HwnVo34cra1AA+XScQm2kI/TspGyI05gqJxmvldDoCUWhI+uS9Xj+z
+         LOIxjPkH1e3VWqScfZ8z435GpKTAx+BoJgp9ph8Xd4FAyoVaRuPYRDlePAKpSXJh0w+D
+         GVYQ==
+X-Gm-Message-State: AOAM531ePnC3mS36u8gKvZJFCsvPVdWzgJJcL0q1nMHVlXm635o/E5Wn
+        6v5TbA0L/CuLKFQbPkQzwqS5+9lX6nPg0Q==
+X-Google-Smtp-Source: ABdhPJx3/tEdBAPXaw//jEk6tUZbOX1ReXpYc+2YpcDwmoglPU1J7mMuSh5YhQsoLRJGD0Ir8D9lZg==
+X-Received: by 2002:aa7:c0d6:: with SMTP id j22mr415336edp.31.1610516116007;
+        Tue, 12 Jan 2021 21:35:16 -0800 (PST)
+Received: from gmail.com (tor-exit-relay-5.anonymizing-proxy.digitalcourage.de. [185.220.102.251])
+        by smtp.gmail.com with ESMTPSA id u17sm333856edr.0.2021.01.12.21.35.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 21:35:15 -0800 (PST)
+Subject: [PATCH v2] docs: driver-model: bus.rst: Clean up the formatting, expound, modernize
+Date:   Wed, 13 Jan 2021 05:35:00 -0000
+From:   Michael Witten <mfwitten@gmail.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <bca1170d131b4b46905f030232da3339@gmail.com>
+In-Reply-To: <20210111133158.34923b4c@lwn.net>
+References: <3dc7d8abd06941fca5071b0ede9b6088@gmail.com>
+  <20210111133158.34923b4c@lwn.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks for your guidance.
 
-Yang,
+  * Save this patch to:
 
-> Fix the following coccicheck warning:
-> ./drivers/scsi/qedf/qedf_main.c:3716:5-31: WARNING: Comparison to bool
+      /path/to/email
 
-Applied to 5.12/scsi-staging, thanks!
+    Then apply it with:
 
+      git am --scissors /path/to/email
+
+  * Here are the changes from the last patch:
+
+       Definition
+       ~~~~~~~~~~
+      -* ``struct bus_type``;
+      -* ``int bus_register(struct bus_type *bus);``
+      +
+      +::
+      +
+      +	struct bus_type;
+      +	int bus_register(struct bus_type *bus);
+
+
+       Declaration
+       ~~~~~~~~~~~
+
+       For each bus type (PCI, USB, etc), there should be code that defines
+      -one object of type ``struct bus_type``:
+      +one object of type struct bus_type:
+
+       1. The definition should declare a file-scope identifier that has
+          external linkage.
+      @@ -53,7 +56,7 @@ The relevant API header should include the following declaration::
+       Registration
+       ~~~~~~~~~~~~
+
+      -During initialization of a bus driver, ``bus_register()`` is called; this
+      +During initialization of a bus driver, bus_register() is called; this
+       initializes the rest of the fields in the bus type object and inserts it
+       into a global list of bus types. Once the bus type object is registered,
+       the fields in it are usable by the bus driver.
+      @@ -77,8 +80,8 @@ particular device, without sacrificing bus-specific functionality or
+       type-safety.
+
+       When a driver is registered with the bus, the bus's list of devices is
+      -iterated over, and the match callback is called for each device that
+      -does not have a driver associated with it.
+      +iterated over, and the ``match`` callback is called for each device that
+      +does not already have a driver associated with it.
+
+
+
+      @@ -87,8 +90,8 @@ Device and Driver Lists
+
+       There are generic facilities for keeping lists of devices and drivers:
+
+      -* There is a list of ``struct device`` objects.
+      -* There is a list of ``struct device_driver`` objects.
+      +* There is a list of struct device objects.
+      +* There is a list of struct device_driver objects.
+
+       Bus drivers are free to use the lists as they please, but conversion
+       to a bus-specific type may be necessary.
+      @@ -156,12 +159,21 @@ Exporting Attributes
+       		ssize_t (*store)(struct bus_type *, const char *buf, size_t count);
+       	};
+
+      -Bus drivers can export attributes using the ``BUS_ATTR_RW()`` macro that works
+      -similarly to the ``DEVICE_ATTR_RW()`` macro for devices. For example, the
+      +Bus drivers can export attributes using the BUS_ATTR_RW() macro that works
+      +similarly to the DEVICE_ATTR_RW() macro for devices. For example, the
+       following are equivalent:
+
+      -* ``static BUS_ATTR_RW(debug);``
+      -* ``static bus_attribute bus_attr_debug;``
+      +* ::
+      +
+      +	static BUS_ATTR_RW(something);
+      +
+      +* ::
+      +
+      +	static struct bus_attribute bus_attr_something = {
+      +		.attr  = { .name = "something", .mode = 0644 },
+      +		.show  = something_show,   // These functions must be
+      +		.store = something_store   // defined or declared already.
+      +	};
+
+       This can then be used to add or remove the attribute from the bus's
+       sysfs directory using::
+
+Sincerely,
+Michael Witten
+
+--8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<--
+
+* The reStructuredText had some indentation issues (I only fixed the
+  areas I touched).
+
+* The HTML output was not properly formatted in places.
+
+* Some of the details were lacking or needed clarification (especially
+  with regard to how a `struct bus_type` object should be defined).
+
+* The sysfs example hierarchy appeared outdated; I've updated it with
+  output based on what my own system currently displays.
+
+Signed-off-by: Michael Witten <mfwitten@gmail.com>
+---
+ Documentation/driver-api/driver-model/bus.rst | 120 ++++++++++++------
+ 1 file changed, 78 insertions(+), 42 deletions(-)
+
+diff --git a/Documentation/driver-api/driver-model/bus.rst b/Documentation/driver-api/driver-model/bus.rst
+index 016b15a6e8ea..9a4cf15df8b9 100644
+--- a/Documentation/driver-api/driver-model/bus.rst
++++ b/Documentation/driver-api/driver-model/bus.rst
+@@ -4,34 +4,61 @@ Bus Types
+ 
+ Definition
+ ~~~~~~~~~~
+-See the kerneldoc for the struct bus_type.
+ 
+-int bus_register(struct bus_type * bus);
++::
++
++	struct bus_type;
++	int bus_register(struct bus_type *bus);
+ 
+ 
+ Declaration
+ ~~~~~~~~~~~
+ 
+-Each bus type in the kernel (PCI, USB, etc) should declare one static
+-object of this type. They must initialize the name field, and may
+-optionally initialize the match callback::
++For each bus type (PCI, USB, etc), there should be code that defines
++one object of type struct bus_type:
++
++1. The definition should declare a file-scope identifier that has
++   external linkage.
++
++   * There should be a header that provides a declaration of this
++     identifier.
++
++   * The identifier should be explicitly exported.
++
++2. The definition should initialize the ``name`` member. Other
++   members may also be initialized (such as the ``match`` callback
++   member).
+ 
+-   struct bus_type pci_bus_type = {
+-          .name	= "pci",
+-          .match	= pci_bus_match,
+-   };
++For instance, here is the definition for the PCI bus type::
+ 
+-The structure should be exported to drivers in a header file:
++	struct bus_type pci_bus_type = {
++		.name          = "pci",               // REQUIRED
++		.match         = pci_bus_match,
++		.uevent        = pci_uevent,
++		.probe         = pci_device_probe,
++		.remove        = pci_device_remove,
++		.shutdown      = pci_device_shutdown,
++		.dev_groups    = pci_dev_groups,
++		.bus_groups    = pci_bus_groups,
++		.drv_groups    = pci_drv_groups,
++		.pm            = PCI_PM_OPS_PTR,
++		.num_vf        = pci_bus_num_vf,
++		.dma_configure = pci_dma_configure,
++	};
+ 
+-extern struct bus_type pci_bus_type;
++	EXPORT_SYMBOL(pci_bus_type);
++
++The relevant API header should include the following declaration::
++
++	extern struct bus_type pci_bus_type;
+ 
+ 
+ Registration
+ ~~~~~~~~~~~~
+ 
+-When a bus driver is initialized, it calls bus_register. This
+-initializes the rest of the fields in the bus object and inserts it
+-into a global list of bus types. Once the bus object is registered,
++During initialization of a bus driver, bus_register() is called; this
++initializes the rest of the fields in the bus type object and inserts it
++into a global list of bus types. Once the bus type object is registered,
+ the fields in it are usable by the bus driver.
+ 
+ 
+@@ -53,30 +80,33 @@ particular device, without sacrificing bus-specific functionality or
+ type-safety.
+ 
+ When a driver is registered with the bus, the bus's list of devices is
+-iterated over, and the match callback is called for each device that
+-does not have a driver associated with it.
++iterated over, and the ``match`` callback is called for each device that
++does not already have a driver associated with it.
+ 
+ 
+ 
+ Device and Driver Lists
+ ~~~~~~~~~~~~~~~~~~~~~~~
+ 
+-The lists of devices and drivers are intended to replace the local
+-lists that many buses keep. They are lists of struct devices and
+-struct device_drivers, respectively. Bus drivers are free to use the
+-lists as they please, but conversion to the bus-specific type may be
+-necessary.
++There are generic facilities for keeping lists of devices and drivers:
++
++* There is a list of struct device objects.
++* There is a list of struct device_driver objects.
++
++Bus drivers are free to use the lists as they please, but conversion
++to a bus-specific type may be necessary.
+ 
+ The LDM core provides helper functions for iterating over each list::
+ 
+-  int bus_for_each_dev(struct bus_type * bus, struct device * start,
+-		       void * data,
+-		       int (*fn)(struct device *, void *));
++	int bus_for_each_dev(struct bus_type *bus, struct device *start,
++	                     void *data,
++	                     int (*fn)(struct device *, void *));
+ 
+-  int bus_for_each_drv(struct bus_type * bus, struct device_driver * start,
+-		       void * data, int (*fn)(struct device_driver *, void *));
++	int bus_for_each_drv(struct bus_type *bus, struct device_driver *start,
++	                     void *data,
++	                     int (*fn)(struct device_driver *, void *));
+ 
+-These helpers iterate over the respective list, and call the callback
++These helpers iterate over the respective list, and call the callback (``fn``)
+ for each device or driver in the list. All list accesses are
+ synchronized by taking the bus's lock (read currently). The reference
+ count on each object in the list is incremented before the callback is
+@@ -112,9 +142,9 @@ hierarchy::
+ 
+ 	/sys/bus/pci/
+ 	|-- devices
+-	|   |-- 00:00.0 -> ../../../root/pci0/00:00.0
+-	|   |-- 00:01.0 -> ../../../root/pci0/00:01.0
+-	|   `-- 00:02.0 -> ../../../root/pci0/00:02.0
++	|   |-- 0000:00:00.0 -> ../../../devices/pci0000:00/0000:00:00.0
++	|   |-- 0000:00:02.0 -> ../../../devices/pci0000:00/0000:00:02.0
++	|   `-- 0000:00:14.0 -> ../../../devices/pci0000:00/0000:00:14.0
+ 	`-- drivers
+ 
+ 
+@@ -123,23 +153,29 @@ Exporting Attributes
+ 
+ ::
+ 
+-  struct bus_attribute {
+-	struct attribute	attr;
+-	ssize_t (*show)(struct bus_type *, char * buf);
+-	ssize_t (*store)(struct bus_type *, const char * buf, size_t count);
+-  };
++	struct bus_attribute {
++		struct attribute attr;
++		ssize_t (*show)(struct bus_type *, char *buf);
++		ssize_t (*store)(struct bus_type *, const char *buf, size_t count);
++	};
++
++Bus drivers can export attributes using the BUS_ATTR_RW() macro that works
++similarly to the DEVICE_ATTR_RW() macro for devices. For example, the
++following are equivalent:
+ 
+-Bus drivers can export attributes using the BUS_ATTR_RW macro that works
+-similarly to the DEVICE_ATTR_RW macro for devices. For example, a
+-definition like this::
++* ::
+ 
+-	static BUS_ATTR_RW(debug);
++	static BUS_ATTR_RW(something);
+ 
+-is equivalent to declaring::
++* ::
+ 
+-	static bus_attribute bus_attr_debug;
++	static struct bus_attribute bus_attr_something = {
++		.attr  = { .name = "something", .mode = 0644 },
++		.show  = something_show,   // These functions must be
++		.store = something_store   // defined or declared already.
++	};
+ 
+-This can then be used to add and remove the attribute from the bus's
++This can then be used to add or remove the attribute from the bus's
+ sysfs directory using::
+ 
+ 	int bus_create_file(struct bus_type *, struct bus_attribute *);
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.22.0
+
