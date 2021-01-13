@@ -2,133 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394C22F51B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:09:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E032F51FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:28:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbhAMSJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 13:09:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56594 "EHLO
+        id S1728383AbhAMS1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 13:27:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727827AbhAMSJB (ORCPT
+        with ESMTP id S1727896AbhAMS1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 13:09:01 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04ABC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 10:08:20 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id d26so3093875wrb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 10:08:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yH5u9y2wy1keEH/7cm+6LpeR3BpSRhAV0Ow7SdVvy58=;
-        b=Bdwk6nUFlCU+LPWRFAuXQj2yM2oD/qD5nc1ASW24XvBCfyLvhbRO7i0GT9uj20AayT
-         4B+343KPnyqctxOjxfYPws509SjQuI5J8b/pPdcgSc+uDXEV6LyPX+J9ayTX+9A2OCCZ
-         h+nDYj7pStlw/LGEB/Bb2bXgqu1XoeRv1PKo8d5i/nE0KuKXr0kVsdZENuXc4+boAk8x
-         fYxlXgqy4kH8FIaLjvInn0JaKu2+v9aqajNCZ87OH3iY/0siM7zeqtK00jRVHa7r6oOv
-         MoTOEk69/OTdcIZa2OWgDqZDRLKXQNyg0L4+hSEcDw3lwZWMWXI4xYb7hZ6bVxYPZvuG
-         mxUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yH5u9y2wy1keEH/7cm+6LpeR3BpSRhAV0Ow7SdVvy58=;
-        b=Wkk3qPyJ5LrcE2iebSQNeMWFduDg1/1s6abzDMz2DxLD1oinc8m/XZBTSPHuKDZRBn
-         AHktLho/klyheV7NvjTIOI6qOd9NfHbVjtmuzPYwYRaiHDxdlbBCiFxkIABXUu5Zxntu
-         xEnF9wSafLNH4o1BPkEt3JvD+036JN+K6jSVkL7tVE37kSRX7Ru9omQzMAB5E2cvdaHG
-         NrqR/5RWja6p/ntnSnLJKxqpkXOLF6M/D2It0d90VYZMHNUVOeA9xh7AlvbB6euuMaVi
-         5FZ6kHtAT7uNkZOliy+cG8CccZoRmVNNhgqq+GHEDa00OXv6UoIniU9+4hmYsUt4CJzX
-         vj4A==
-X-Gm-Message-State: AOAM530+4Dsms43ROQ4tAUHRb/DRK1GFvwN9g87LQgN41X6YFQqc0tg/
-        FMWz5ueuenfMCnt4CleXC4P510W5bgtxoB+RnubH/A==
-X-Google-Smtp-Source: ABdhPJzvfLlFhauGSP5N6MGXJl9v13+O6cX+vTvVC9ye8FhSO5okdudU++QgL2t0g5Ek15bT4blDIQNiAZWIwiPjFRE=
-X-Received: by 2002:a5d:4a44:: with SMTP id v4mr4006181wrs.106.1610561299128;
- Wed, 13 Jan 2021 10:08:19 -0800 (PST)
+        Wed, 13 Jan 2021 13:27:04 -0500
+Received: from mxwww.masterlogin.de (mxwww.masterlogin.de [IPv6:2a03:2900:1:1::a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C923C061786;
+        Wed, 13 Jan 2021 10:26:18 -0800 (PST)
+Received: from mxout1.routing.net (unknown [192.168.10.81])
+        by backup.mxwww.masterlogin.de (Postfix) with ESMTPS id F1EFB2C42D;
+        Wed, 13 Jan 2021 18:10:36 +0000 (UTC)
+Received: from mxbox4.masterlogin.de (unknown [192.168.10.79])
+        by mxout1.routing.net (Postfix) with ESMTP id B79043FF07;
+        Wed, 13 Jan 2021 18:09:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1610561380;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=E2lk75BZSz27MihA13aYu0dHFwcD4S99yuODfKDmRY4=;
+        b=p7KbIaT2J3AJYD/JahEVLjPrQ4jj7GjomcnVJ1/fcmhVkIq5wT9Poun1UJTkfxPJgCRs2E
+        ZIwh4ylWARf/gJ8NRKEki06Nr2tg/vW8um66hjs/vhUbrUAh4m3HNYVjaLDlJI1z0NsXEj
+        pMpCAGQ/8uCMPo41Ebg8aqi654rZ5k4=
+Received: from localhost.localdomain (fttx-pool-185.75.74.15.bambit.de [185.75.74.15])
+        by mxbox4.masterlogin.de (Postfix) with ESMTPSA id 884FD80AFA;
+        Wed, 13 Jan 2021 18:09:39 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Jimin Wang <jimin.wang@mediatek.com>,
+        Ryder Lee <ryder.lee@mediatek.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        sin_wenjiehu <sin_wenjiehu@mediatek.com>,
+        Wenbin.Mei@mediatek.com, skylake.huang@mediatek.com,
+        stable@vger.kernel.org
+Subject: [PATCH v2] dts64: mt7622: fix slow sd card access
+Date:   Wed, 13 Jan 2021 19:09:19 +0100
+Message-Id: <20210113180919.49523-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210111170622.2613577-1-surenb@google.com> <20210112074629.GG22493@dhcp22.suse.cz>
- <20210112174507.GA23780@redhat.com> <CAJuCfpFQz=x-LvONO3c4iqjKP4NKJMgUuiYc8HACKHAv1Omu0w@mail.gmail.com>
- <20210113142202.GC22493@dhcp22.suse.cz>
-In-Reply-To: <20210113142202.GC22493@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 13 Jan 2021 10:08:08 -0800
-Message-ID: <CAJuCfpEccYMENy_6PrVFTC1_Xx3wV2E2805wsSLENbW+C_mbfg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        linux-mm <linux-mm@kvack.org>, selinux@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Mail-ID: a4fbb957-4fd1-4532-9841-53bdb81f3d8c
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 6:22 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Tue 12-01-21 09:51:24, Suren Baghdasaryan wrote:
-> > On Tue, Jan 12, 2021 at 9:45 AM Oleg Nesterov <oleg@redhat.com> wrote:
-> > >
-> > > On 01/12, Michal Hocko wrote:
-> > > >
-> > > > On Mon 11-01-21 09:06:22, Suren Baghdasaryan wrote:
-> > > >
-> > > > > What we want is the ability for one process to influence another process
-> > > > > in order to optimize performance across the entire system while leaving
-> > > > > the security boundary intact.
-> > > > > Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
-> > > > > and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
-> > > > > and CAP_SYS_NICE for influencing process performance.
-> > > >
-> > > > I have to say that ptrace modes are rather obscure to me. So I cannot
-> > > > really judge whether MODE_READ is sufficient. My understanding has
-> > > > always been that this is requred to RO access to the address space. But
-> > > > this operation clearly has a visible side effect. Do we have any actual
-> > > > documentation for the existing modes?
-> > > >
-> > > > I would be really curious to hear from Jann and Oleg (now Cced).
-> > >
-> > > Can't comment, sorry. I never understood these security checks and never tried.
-> > > IIUC only selinux/etc can treat ATTACH/READ differently and I have no idea what
-> > > is the difference.
-> >
-> > I haven't seen a written explanation on ptrace modes but when I
-> > consulted Jann his explanation was:
-> >
-> > PTRACE_MODE_READ means you can inspect metadata about processes with
-> > the specified domain, across UID boundaries.
-> > PTRACE_MODE_ATTACH means you can fully impersonate processes with the
-> > specified domain, across UID boundaries.
->
-> Maybe this would be a good start to document expectations. Some more
-> practical examples where the difference is visible would be great as
-> well.
+From: Frank Wunderlich <frank-w@public-files.de>
 
-I'll do my best but I'm also not a security expert. Will post the next
-version with a draft for the man page (this syscall does not have a
-man page yet AFAIKT) and we can iterate on the wording there.
+Fix extreme slow speed (200MB takes ~20 min) on writing sdcard on
+bananapi-r64 by adding reset-control for mmc1 like it's done for mmc0/emmc.
 
-> > He did agree that in this case PTRACE_MODE_ATTACH seems too
-> > restrictive (we do not try to gain full control or impersonate a
-> > process) and PTRACE_MODE_READ is a better choice.
->
-> All that being said, I am not against the changed behavior but I do not
-> feel competent to give an ack.
+Cc: stable@vger.kernel.org
+Fixes: 2c002a3049f7 ("arm64: dts: mt7622: add mmc related device nodes")
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+---
+changes since v1:
+ - drop change to uhs-mode because mt7622 does not support it
+---
+ arch/arm64/boot/dts/mediatek/mt7622.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Great. SOunds like the only missing piece is the man page with more
-details. I'll work on it but since it's the first time I will be
-contributing to man pages it might take me a couple days. Thanks
-everyone for the reviews!
+diff --git a/arch/arm64/boot/dts/mediatek/mt7622.dtsi b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+index 5b9ec032ce8d..7c6d871538a6 100644
+--- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+@@ -698,6 +698,8 @@ mmc1: mmc@11240000 {
+ 		clocks = <&pericfg CLK_PERI_MSDC30_1_PD>,
+ 			 <&topckgen CLK_TOP_AXI_SEL>;
+ 		clock-names = "source", "hclk";
++		resets = <&pericfg MT7622_PERI_MSDC1_SW_RST>;
++		reset-names = "hrst";
+ 		status = "disabled";
+ 	};
+ 
+-- 
+2.25.1
 
-> --
-> Michal Hocko
-> SUSE Labs
