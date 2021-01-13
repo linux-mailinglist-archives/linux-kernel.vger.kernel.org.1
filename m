@@ -2,106 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D332F49B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:11:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF7C2F49B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727891AbhAMLIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:08:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40826 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727286AbhAMLIr (ORCPT
+        id S1727881AbhAMLKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:10:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727716AbhAMLKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:08:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610536040;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0H/STPC0cOKGWSV6K6J3rtRcmnK1lr7pkC/7lVdfCz0=;
-        b=DUOXbro98wKDCSVxat158bBsiwSfbSeB/JMNT2k2oMwUOZrEitqa78Ir6nOTz29IMal/6m
-        /Xm2LID+nYm02r1PEahhvx4pBlWLYCnV12iH5m/LKvXCjY7AehjGBcALuF6DrWt2Ks2E2Z
-        t1McfAEZxh0/CbknWMOSDJ452s8iqmo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-320-5KxiTM1CPKmsvtWvDecOgA-1; Wed, 13 Jan 2021 06:07:18 -0500
-X-MC-Unique: 5KxiTM1CPKmsvtWvDecOgA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B9171922960;
-        Wed, 13 Jan 2021 11:07:17 +0000 (UTC)
-Received: from krava (unknown [10.40.195.134])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0E25860BF1;
-        Wed, 13 Jan 2021 11:07:10 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 12:07:01 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v5] perf stat: Fix wrong skipping for per-die aggregation
-Message-ID: <20210113110701.GC1331835@krava>
-References: <20210113015631.8748-1-yao.jin@linux.intel.com>
+        Wed, 13 Jan 2021 06:10:24 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8A9C061575;
+        Wed, 13 Jan 2021 03:09:43 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id h17so1018794wmq.1;
+        Wed, 13 Jan 2021 03:09:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UMQi/tBvEKdEimXx+EFDrWUxg58rI/isxR33AmE9DZQ=;
+        b=sHxBp11HxkeBq5dpd3LoxrqfkeetD4G8db6oe7+kucTgDw9cxn/PKaduCtWWtuNz4N
+         XDo2nKRN7DfJ1WPRzwYbU6Fg4hl7AIgdQZiAolIQVKIIEevR3zMcWFdqZE8hTQ0pf7y5
+         5JJd6BxKhJPJdKZ5Qv6LE5NO7U+sx1p2+Gj9PLGx079xvImEFMSM9auwJ4W3YjGXzj8z
+         N2TFYGz5GhiSp8HyUjJYVnJk3GDgd859WoCC6MiAyuWgTNFdst1MXN9Vht1kjkoQvtUb
+         xQj2GxfZ21YZIvAJGAr6KbIpCIehF05/BQ/MUwyDmFU+RHBCIlvAt/52V4BCIZKwYgAx
+         HpOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UMQi/tBvEKdEimXx+EFDrWUxg58rI/isxR33AmE9DZQ=;
+        b=EFZLQdBSITGzhr1gK4IDYUX/CQn6zW/JE4GwLJy7kYuxzAEsG+mkXwsEABW1okQdwq
+         LXVkuT2iwp6/XUZGtoIsuJRH5qbm9m+9D0vGTMJAc3MTcgyaBJucV5kvnaH84UE0tGaw
+         hk93uO5BkYW/nWZSXoDpsscOEC2vhn4gGYteOtTZ8V3RyZ13qQcWRba5ZUqLnS/63SL1
+         U68r+lrD6OpH1C+l7Ite4smpmHk2SNtxnyr/HbTQ7uVQHB8nPtV2oHdJXAoXyorMvo1X
+         1Bkx1i4tIgPs2ZNV4tTLjgDcsligE/16yWp+O6Ke8XADAocYr62bXXjRpn2LvMHvDX+M
+         4Btw==
+X-Gm-Message-State: AOAM533QNPf4Gpgd2fMkY0jRqj4emExelvPxPkjGvs1L+pvDa0cXyxsj
+        lT5oP6J7XmRruujls3G/UCWtP7zWFS8=
+X-Google-Smtp-Source: ABdhPJwh0w6DilTj8o3+r2xlFBs0NrlQBzN77ulhHtuSo+0EZnSuxSYNPPHOxskJzuLMfaUmNNlzqg==
+X-Received: by 2002:a1c:5406:: with SMTP id i6mr1647564wmb.137.1610536182334;
+        Wed, 13 Jan 2021 03:09:42 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f06:5500:88b8:675a:f9a7:fc44? (p200300ea8f06550088b8675af9a7fc44.dip0.t-ipconnect.de. [2003:ea:8f06:5500:88b8:675a:f9a7:fc44])
+        by smtp.googlemail.com with ESMTPSA id u3sm3237824wre.54.2021.01.13.03.09.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jan 2021 03:09:41 -0800 (PST)
+To:     Claudiu.Beznea@microchip.com, andrew@lunn.ch,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1610120754-14331-1-git-send-email-claudiu.beznea@microchip.com>
+ <25ec943f-ddfc-9bcd-ef30-d0baf3c6b2a2@gmail.com>
+ <ce20d4f3-3e43-154a-0f57-2c2d42752597@microchip.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH] net: phy: micrel: reconfigure the phy on resume
+Message-ID: <ee0fd287-c737-faa5-eee1-99ffa120540a@gmail.com>
+Date:   Wed, 13 Jan 2021 12:09:35 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113015631.8748-1-yao.jin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <ce20d4f3-3e43-154a-0f57-2c2d42752597@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 09:56:31AM +0800, Jin Yao wrote:
-
-SNIP
-
+On 13.01.2021 10:29, Claudiu.Beznea@microchip.com wrote:
+> Hi Heiner,
 > 
-> root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
->      1.001586691 S0-D0           1            1229440 Bytes llc_misses.mem_read
->      1.001586691 S0-D1           1             976832 Bytes llc_misses.mem_read
->      1.001586691 S1-D0           1             938304 Bytes llc_misses.mem_read
->      1.001586691 S1-D1           1            1227328 Bytes llc_misses.mem_read
->      2.003776312 S0-D0           1            1586752 Bytes llc_misses.mem_read
->      2.003776312 S0-D1           1             875392 Bytes llc_misses.mem_read
->      2.003776312 S1-D0           1             855616 Bytes llc_misses.mem_read
->      2.003776312 S1-D1           1             949376 Bytes llc_misses.mem_read
->      3.006512788 S0-D0           1            1338880 Bytes llc_misses.mem_read
->      3.006512788 S0-D1           1             920064 Bytes llc_misses.mem_read
->      3.006512788 S1-D0           1             877184 Bytes llc_misses.mem_read
->      3.006512788 S1-D1           1            1020736 Bytes llc_misses.mem_read
->      4.008895291 S0-D0           1             926592 Bytes llc_misses.mem_read
->      4.008895291 S0-D1           1             906368 Bytes llc_misses.mem_read
->      4.008895291 S1-D0           1             892224 Bytes llc_misses.mem_read
->      4.008895291 S1-D1           1             987712 Bytes llc_misses.mem_read
->      5.001590993 S0-D0           1             962624 Bytes llc_misses.mem_read
->      5.001590993 S0-D1           1             912512 Bytes llc_misses.mem_read
->      5.001590993 S1-D0           1             891200 Bytes llc_misses.mem_read
->      5.001590993 S1-D1           1             978432 Bytes llc_misses.mem_read
+> On 08.01.2021 18:31, Heiner Kallweit wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>
+>> On 08.01.2021 16:45, Claudiu Beznea wrote:
+>>> KSZ9131 is used in setups with SAMA7G5. SAMA7G5 supports a special
+>>> power saving mode (backup mode) that cuts the power for almost all
+>>> parts of the SoC. The rail powering the ethernet PHY is also cut off.
+>>> When resuming, in case the PHY has been configured on probe with
+>>> slew rate or DLL settings these needs to be restored thus call
+>>> driver's config_init() on resume.
+>>>
+>> When would the SoC enter this backup mode?
 > 
-> On no-die system, die_id is 0, actually it's hashmap(socket,0), original behavior
-> is not changed.
+> It could enter in this mode based on request for standby or suspend-to-mem:
+> echo mem > /sys/power/state
+> echo standby > /sys/power/state
 > 
-> Reported-by: Huang Ying <ying.huang@intel.com>
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> ---
-> v5:
->  Hash key is changed to die_id << 32 | socket.
->  In pkg_id_hash, return (int64_t)key & 0xffffffff; actually it's socket.
+> What I didn't mentioned previously is that the RAM remains in self-refresh
+> while the rest of the SoC is powered down.
+> 
 
-seems ok, but I'm getting python test fail:
+This leaves the question which driver sets backup mode in the SoC.
+Whatever/whoever wakes the SoC later would have to take care that basically
+everything that was switched off is reconfigured (incl. calling phy_init_hw()). 
+So it' more or less the same as waking up from hibernation. Therefore I think
+the .restore of all subsystems would have to be executed, incl. .restore of
+the MDIO bus. Having said that I don't think that change belongs into the
+PHY driver.
+Just imagine tomorrow another PHY type is used in a SAMA7G5 setup.
+Then you would have to do same change in another PHY driver.
 
-	$ sudo ./perf test python -v
-	19: 'import perf' in python                                         :
-	--- start ---
-	test child forked, pid 1352066
-	python usage test: "echo "import sys ; sys.path.append('python'); import perf" | '/usr/bin/python2' "
-	Traceback (most recent call last):
-	  File "<stdin>", line 1, in <module>
-	ImportError: python/perf.so: undefined symbol: hashmap__free
-	test child finished with -1
-	---- end ----
-	'import perf' in python: FAILED!
 
-jirka
+>> And would it suspend the
+>> MDIO bus before cutting power to the PHY?
+> 
+> SAMA7G5 embeds Cadence macb driver which has a integrated MDIO bus. Inside
+> macb driver the bus is registered with of_mdiobus_register() or
+> mdiobus_register() based on the PHY devices present in DT or not. On macb
+> suspend()/resume() functions there are calls to
+> phylink_stop()/phylink_start() before cutting/after enabling the power to
+> the PHY.
+> 
+>> I'm asking because in mdio_bus_phy_restore() we call phy_init_hw()
+>> already (that calls the driver's config_init).
+> 
+> As far as I can see from documentation the .restore API of dev_pm_ops is
+> hibernation specific (please correct me if I'm wrong). On transitions to
+> backup mode the suspend()/resume() PM APIs are called on the drivers.
+> 
+> Thank you,
+> Claudiu Beznea
+> 
+>>
+>>> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+>>> ---
+>>>  drivers/net/phy/micrel.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+>>> index 3fe552675dd2..52d3a0480158 100644
+>>> --- a/drivers/net/phy/micrel.c
+>>> +++ b/drivers/net/phy/micrel.c
+>>> @@ -1077,7 +1077,7 @@ static int kszphy_resume(struct phy_device *phydev)
+>>>        */
+>>>       usleep_range(1000, 2000);
+>>>
+>>> -     ret = kszphy_config_reset(phydev);
+>>> +     ret = phydev->drv->config_init(phydev);
+>>>       if (ret)
+>>>               return ret;
+>>>
+>>>
 
