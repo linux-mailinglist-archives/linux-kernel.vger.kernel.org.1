@@ -2,189 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E902F46FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D2F2F46FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727366AbhAMI7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:59:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57493 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727118AbhAMI7o (ORCPT
+        id S1727387AbhAMJA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 04:00:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727322AbhAMJA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:59:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610528297;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mVNNiUHtKnN+lrpIVyZO4RzDAKrpGJ9Oe0vLEJ6Epqc=;
-        b=azt4/+/E/ux3vGxbZ+BBSGV1JlKjvZYjeMCs0nYzxGDjZ7O2m2Vw0hdEYzCrQob+ui4739
-        LqUi8BfBUejLE8bHK+QUl6nr/tpxosounI8ngZLEXWLWYrqD/qBCLyLn7wC4VGEm+SSFUX
-        mhPhAjG3SITo7Iji970le1EnS0sKaAc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-530-6UqFg2SxOjKvrJS-nDy2Jg-1; Wed, 13 Jan 2021 03:58:13 -0500
-X-MC-Unique: 6UqFg2SxOjKvrJS-nDy2Jg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66276AFA81;
-        Wed, 13 Jan 2021 08:58:10 +0000 (UTC)
-Received: from [10.36.114.135] (ovpn-114-135.ams2.redhat.com [10.36.114.135])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EE56574453;
-        Wed, 13 Jan 2021 08:57:59 +0000 (UTC)
-Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
-From:   David Hildenbrand <david@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
-References: <20210110004435.26382-1-aarcange@redhat.com>
- <CAHk-=wghqNywtf=sRv_5FmG=+hPGqj=KWakw34tNeoZ1wPuaHg@mail.gmail.com>
- <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com>
- <X/prosulFrEoNnoF@redhat.com>
- <CAHk-=wjZTMsv0_GOyQpLRk_5U1r5W8e21f8sV0jykK=z47hjGQ@mail.gmail.com>
- <CAHk-=wgi31FKc9AL6m87+pb2B79V2g_QjdhmtJNW8Pnq2ERQ-Q@mail.gmail.com>
- <45806a5a-65c2-67ce-fc92-dc8c2144d766@nvidia.com>
- <CAHk-=wipa-9wEuWHBjourmXAVHdeqDa59UxW6ZJ_Oqg6-Dwvdw@mail.gmail.com>
- <CAHk-=wje9r3fREBdZcOu=NihGczBtkqkhXRPDhY-ZkNVv=thiQ@mail.gmail.com>
- <20210113021619.GL35215@casper.infradead.org>
- <CAHk-=wjWMieNV3nAJgoG5prEHBEcOZiREmLUr499tA9NMttEqQ@mail.gmail.com>
- <0cbefee2-70e9-9666-2d0c-ee2807e0fef9@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <ad270819-31c4-82c2-25c8-7c8436495805@redhat.com>
-Date:   Wed, 13 Jan 2021 09:57:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 13 Jan 2021 04:00:28 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDEAAC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:59:47 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id q7so1082713pgm.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:59:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=khY3b9nNLG3pn8j5ObMad/IKodRFErErRiM9bDM1Hc4=;
+        b=m6cG2SZeoQC7z+233pF69aduzYVErPg7kpJnAwKckGrYeox/3cz6OJTflqkC44PiAA
+         Ua3Dnyw7IzJqquKUSYJT8KQNhPwx/nBUt+TMamSiADca5useKtiXMpzEHpsr0yAW9muC
+         jeANNgo8BBvZTjbXVu0nauEXPnwXC+FSgBVFUQYVJwMwOYOo9saJkLZD6BIkz7JDKVR2
+         pLzx/RtBzX8qVvXQ5W1+1ttaxU+EtbysSUCzkXMVGYWcUD+i61vC9rRSD4ttddp5Jesx
+         uxlQgYEDUlk/5/yBIopyVL7CSZ2GQ+AMakMnm7G6Dx2eldCI/JXBv3SwktDO5jhdL+ej
+         QURA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=khY3b9nNLG3pn8j5ObMad/IKodRFErErRiM9bDM1Hc4=;
+        b=oRPjwvp5jdyzqXFT7U1jWywkAimRDscaIzztNzVV/L4B0M+9WlpiGKtGk/41ZhuCG9
+         umVBaQugBDf5061fC1213k41gnaw8uC16FzHxikQkowFsMh5jyXs3LOffpobbA38e/Lp
+         9rr7GWvbTVqP6M21lMw7c1LCdesk3LGUxl7HK8k5Pejz8GWaCppTn6quhQWYupnAbaBQ
+         2nwVu5d2OU5+lizau3T7ZZVPSiUq0SgGo/bDjVGSuqPVluRzpdEpKxSjpOTCoAdieII+
+         YqmHm/6wh+cyqpW6DnpSyTq+o8FDQBtOI+TEGTOuwGNlWqTx2VSm3xdF5PZiS6mWtB2i
+         Rmyg==
+X-Gm-Message-State: AOAM533RuUGyT4dp3sBfOMnG9REB6voglkzW9cHLkHEX20E3FVa9yaFe
+        utU9hbJ0f+kBboziMcLTxfmZB5DfQXbg1bepoQ==
+X-Google-Smtp-Source: ABdhPJwVWFuNi6dvy6mSyvRbPP0hwlr8Ien7QxybRLxE1DP9YCSVorjq8qfBj9l8qV1Qf5GS6SEOog==
+X-Received: by 2002:a65:688a:: with SMTP id e10mr1141158pgt.347.1610528387165;
+        Wed, 13 Jan 2021 00:59:47 -0800 (PST)
+Received: from [10.85.112.53] ([139.177.225.228])
+        by smtp.gmail.com with ESMTPSA id e10sm1738764pgu.42.2021.01.13.00.59.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jan 2021 00:59:46 -0800 (PST)
+Subject: [PATCH v2 2/2] MAINTAINERS: Update my email address
+From:   Zefan Li <lizefan.x@bytedance.com>
+To:     tj@kernel.org
+Cc:     Steve Wahl <steve.wahl@hpe.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <75494a75-a74b-3dba-9846-7f51d805023a@bytedance.com>
+Message-ID: <f8fe9c3b-db08-50da-d207-0952be5d2b85@bytedance.com>
+Date:   Wed, 13 Jan 2021 16:59:42 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <0cbefee2-70e9-9666-2d0c-ee2807e0fef9@redhat.com>
+In-Reply-To: <75494a75-a74b-3dba-9846-7f51d805023a@bytedance.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.01.21 09:52, David Hildenbrand wrote:
-> On 13.01.21 04:31, Linus Torvalds wrote:
->> On Tue, Jan 12, 2021 at 6:16 PM Matthew Wilcox <willy@infradead.org> wrote:
->>>
->>> The thing about the speculative page cache references is that they can
->>> temporarily bump a refcount on a page which _used_ to be in the page
->>> cache and has now been reallocated as some other kind of page.
->>
->> Oh, and thinking about this made me think we might actually have a
->> serious bug here, and it has nothing what-so-ever to do with COW, GUP,
->> or even the page count itself.
->>
->> It's unlikely enough that I think it's mostly theoretical, but tell me
->> I'm wrong.
->>
->> PLEASE tell me I'm wrong:
->>
->> CPU1 does page_cache_get_speculative under RCU lock
->>
->> CPU2 frees and re-uses the page
->>
->>     CPU1                CPU2
->>     ----                ----
->>
->>     page = xas_load(&xas);
->>     if (!page_cache_get_speculative(page))
->>             goto repeat;
->>     .. succeeds ..
->>
->>                         remove page from XA
->>                         release page
->>                         reuse for something else
->>
->>     .. and then re-check ..
->>     if (unlikely(page != xas_reload(&xas))) {
->>             put_page(page);
->>             goto repeat;
->>     }
->>
->> ok, the above all looks fine. We got the speculative ref, but then we
->> noticed that its' not valid any more, so we put it again. All good,
->> right?
->>
->> Wrong.
->>
->> What if that "reuse for something else" was actually really quick, and
->> both allocated and released it?
->>
->> That still sounds good, right? Yes, now the "put_page()" will be the
->> one that _actually_ releases the page, but we're still fine, right?
->>
->> Very very wrong.
->>
->> The "reuse for something else" on CPU2 might have gotten not an
->> order-0 page, but a *high-order* page. So it allocated (and then
->> immediately free'd) maybe an order-2 allocation with _four_ pages, and
->> the re-use happened when we had coalesced the buddy pages.
->>
->> But when we release the page on CPU1, we will release just _one_ page,
->> and the other three pages will be lost forever.
->>
->> IOW, we restored the page count perfectly fine, but we screwed up the
->> page sizes and buddy information.
->>
->> Ok, so the above is so unlikely from a timing standpoint that I don't
->> think it ever happens, but I don't see why it couldn't happen in
->> theory.
->>
->> Please somebody tell me I'm missing some clever thing we do to make
->> sure this can actually not happen..
-> 
-> Wasn't that tackled by latest (not merged AFAIKs) __free_pages() changes?
-> 
-> I'm only able to come up with the doc update, not with the oroginal
-> fix/change
-> 
-> https://lkml.kernel.org/r/20201027025523.3235-1-willy@infradead.org
-> 
+Signed-off-by: Zefan Li <lizefan.x@bytedance.com>
+---
+ MAINTAINERS | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Sorry, found it, it's in v5.10
-
-commit e320d3012d25b1fb5f3df4edb7bd44a1c362ec10
-Author: Matthew Wilcox (Oracle) <willy@infradead.org>
-Date:   Tue Oct 13 16:56:04 2020 -0700
-
-    mm/page_alloc.c: fix freeing non-compound pages
-
-and
-
-commit 7f194fbb2dd75e9346b305b8902e177b423b1062
-Author: Matthew Wilcox (Oracle) <willy@infradead.org>
-Date:   Mon Dec 14 19:11:09 2020 -0800
-
-    mm/page_alloc: add __free_pages() documentation
-
-is in v5.11-rc1
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2a01cd3e0a2b..4987d1ce9ac6 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4448,7 +4448,7 @@ F:	include/linux/console*
+ 
+ CONTROL GROUP (CGROUP)
+ M:	Tejun Heo <tj@kernel.org>
+-M:	Li Zefan <lizefan@huawei.com>
++M:	Zefan Li <lizefan.x@bytedance.com>
+ M:	Johannes Weiner <hannes@cmpxchg.org>
+ L:	cgroups@vger.kernel.org
+ S:	Maintained
+@@ -4472,7 +4472,7 @@ F:	block/blk-throttle.c
+ F:	include/linux/blk-cgroup.h
+ 
+ CONTROL GROUP - CPUSET
+-M:	Li Zefan <lizefan@huawei.com>
++M:	Zefan Li <lizefan.x@bytedance.com>
+ L:	cgroups@vger.kernel.org
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git
 -- 
-Thanks,
-
-David / dhildenb
+2.11.0
 
