@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFC42F46B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F8F2F46B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbhAMImZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:42:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41406 "EHLO mail.kernel.org"
+        id S1726788AbhAMImt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:42:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726803AbhAMImY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:42:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9B6320719;
-        Wed, 13 Jan 2021 08:41:40 +0000 (UTC)
+        id S1725681AbhAMIms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 03:42:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF85923340;
+        Wed, 13 Jan 2021 08:42:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610527303;
-        bh=UBeEHhwjMpwzR8qlGgYmu/wtrE8922DVkLRWwf8BFBs=;
+        s=k20201202; t=1610527327;
+        bh=+o6TzP0nndi2fNSkUToIVPdHCEVZXxgMvHv50ZLtAbU=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=q0F7p1MGDgVvK6VWJZdT4LYYAyH6r3/82yBp1wXxsedktWDP7ZMQo6UqW68Smu1AV
-         PRDsrtxja1L+Vb/aZq8pm72UUPA6A2F7jOeuP6N9l/2G9BTq4EZ4BpkLEp7g8hY8TQ
-         3P2m8zS2YXJh5BGOLZGTehICK+22Y0gRlKILZ7VgNk27t+AV01FXcg11HvBweKWoxj
-         uvtG3UVxuIGnSXAnmt6OZvaSlIjjWgShbjxf51A+g+W0lIAuU3D07we7I83lI7avSv
-         unW+OnDkSNUEGcjxClk6L/Y1ZJ4cSG+OVIkNwkblslWiukkFnj9HbbiCc4TML8wzXG
-         ymg/oo/oNnVdw==
+        b=P9W0F+gMnvNMnIOg4TAHS+/fodhMja/o4R00hQCZI4YSF3QJFVDz8oT/pZj0Jw5K6
+         ckU85NNJ6oprSQLGYjjZnZ8xxzPDkVIAZceOwtG6qm5Az4l37khA/mwL/DYFMQJCZS
+         rJAh6xZpUHAmEKvIA63hPSEb7jbOIe3oaMQqqCUNPMGYaLlaDeJ3MytiuE78K5z22R
+         UcH/jM+C4DYVV60cevfzGZ53hHDGLgOvdJeY4OYY4WbwEjVShjaL050/fGQnMMd1DG
+         tWaBO8X4H5GyQEqBCITa5vMhr//mwl57KzLwcwgJQxBp9BTtzUU9lltXY50ZgkUiK+
+         kRu3o9N6mH1VQ==
 From:   Felipe Balbi <balbi@kernel.org>
 To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
 Cc:     Florian Fainelli <f.fainelli@gmail.com>,
@@ -33,13 +33,13 @@ Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org,
         Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: Re: [PATCH RESEND v4 02/11] usb: gadget: bdc: remove
- bdc_ep_set_halt() declaration
-In-Reply-To: <1610505748-30616-2-git-send-email-chunfeng.yun@mediatek.com>
+Subject: Re: [PATCH RESEND v4 03/11] usb: gadget: bdc: prefer pointer
+ dereference to pointer type
+In-Reply-To: <1610505748-30616-3-git-send-email-chunfeng.yun@mediatek.com>
 References: <1610505748-30616-1-git-send-email-chunfeng.yun@mediatek.com>
- <1610505748-30616-2-git-send-email-chunfeng.yun@mediatek.com>
-Date:   Wed, 13 Jan 2021 10:41:35 +0200
-Message-ID: <87mtxd44ao.fsf@kernel.org>
+ <1610505748-30616-3-git-send-email-chunfeng.yun@mediatek.com>
+Date:   Wed, 13 Jan 2021 10:41:59 +0200
+Message-ID: <87k0sh44a0.fsf@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; boundary="=-=-=";
         micalg=pgp-sha256; protocol="application/pgp-signature"
@@ -53,7 +53,8 @@ Content-Transfer-Encoding: quoted-printable
 
 Chunfeng Yun <chunfeng.yun@mediatek.com> writes:
 
-> No definition for bdc_ep_set_halt(), so remove it.
+> Prefer kzalloc(sizeof(*bd_table)...) over
+> kzalloc(sizeof(struct bd_table)
 >
 > Cc: Florian Fainelli <f.fainelli@gmail.com>
 > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
@@ -69,19 +70,19 @@ Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl/+sj8RHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQYMchAAjJXRHz+hDcN8OKrC5mKHu4MzFsCCvMC5
-Hm2JbtVgh3iQyGjTQvxJh+AW9vTxeBv1UNhhSmjZHkvhk/L5pmf5ZNbout9qOa8C
-Dh283lheX1/qi8AwwUE12k27KkBeXSKHO6hS/ycsnYWJsMEd55bhN0U3KpKmCPPr
-UL8hRWcPNZL+O9auzcfHJjJxIqf4Hmgx3X8/7K+i+Qu8wkylQQ8bK83yxixHlrRH
-bqhZf51X7qvigqCfhriIoMaobK7+/VTHfDXkeO2dbVsVbz7/vCLudvGB3nnq9Ubu
-4t5f6pt+dnebBIsWpqsvGpZeJcMWPYQ3RTbzLDjfWkRtDKi66eQQWR5nc1P05in3
-CCx2t/t3cpqOx4T65mfQF6M2NMr5mifKCARfITLC+mpyaN+oovVtwIdTZwOj2pqG
-2oOAGqt4bXJwY//WAfsz6JaYOs6SiW7/BaH0x5HRP0AMZRowd9ajMbs9pPCih+o1
-k/xIGWacB5msXnxrJJC5CSOOEWfGhlD9YFkzkRpPmW33BylgLQesitiUNuQf9QxY
-4mq8+yGTXSBBon3kvF5cNjEDeQ7BtWNIWIjQR9f7Iul+GD0PEl0deUmA4QU0oWhy
-o0pOhbT1LtPFEkjCgkbWPk1FUyq0RxKU/gUFFGIo9zPHgFOmPZKQZpUy3kuuwIwy
-VPfL0dfWLsI=
-=+7SS
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl/+slcRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQaK8hAA1BEVKIDixWHvpuNPU54brKOvFJpMwHVP
+RDJko1UeJ3Ol2ndhplwKE8JkoJxZpSN0WGjOa9ESzOGDT937iE1MFWgFh04ypBtr
+TLeOEbKVV/6pe5eod6KXtbg24SguepmiZuhnxubQKgqdszST86zlK+qcAZfI0yrc
+/jFGFwpopcXCWRJu1dgUceaj4a/eBYGRsgIs4+el6rYAlSDRCxb/VaVBSy1dE7Xd
+1wVTwfZyKZ/Vf7HVPh/b9ALBwkxosJIDGS9HTOcKsRg+msAMpNDH0GwDAuLR7AnI
+zC6fx3MMsaSdvhONaD4S9+4Uq3n6Les33MEckgyUPWKoBSNGDuANzHBBSqvSWKI7
+253W1D1KBN2GnI6Qu1Qe3pMKMh+sy2Qpqe1Jvw2ePHumklt9ieeTqi7ox5vtbDAn
+lqOoYfotlWN7+JnGpnB1TmnQJa7ReHvCRYMeRdowt6lS9vJAj6cnGurRbRLJ0L/J
+mPbSrwzOjLz4pbjpb1hU7cJrwfHLO7RlSoJ+pNnfL4e51UhMCr1LjOWZNFfCDf0e
+AEvH7Yi560ZMZXLRYXH6g1oRAn6QiJ5XxF+H7TP5PZF0ZvITVOBlHpS5lhSFQa9q
+YDTd06aJZYpB6+NhFBfRkMXpxsfU8dChvWVniEZEKrJV/vq8kcT15x/LklCP7oCM
+JTq7C3DztGM=
+=lIKo
 -----END PGP SIGNATURE-----
 --=-=-=--
