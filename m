@@ -2,209 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1B22F5799
+	by mail.lfdr.de (Postfix) with ESMTP id DC78C2F579A
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729860AbhANCCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:02:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727009AbhAMXYZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 18:24:25 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C084C0617B1;
-        Wed, 13 Jan 2021 15:23:44 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D74A82B3;
-        Thu, 14 Jan 2021 00:23:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1610580223;
-        bh=5S2iSaf/NmC3AEKI99ksJq5/SvaCPBBUy0hssBB/JbE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XyDuOQttLypaHaVfrW5+YsVK3ZAFwPW9kHLL/A9LcZ+Ga7lezOooyYix/R+88VcSD
-         LlpdU9YCsepZ5zqOWsxCZhqeuLLcJ4tTr/bDkWn1lyRDvQ+I/tzz4XEV/IeTMCgoUM
-         LJmanIYMCFnu8pG+rlrjmNBmfSjlLEU56wc2caeM=
-Date:   Thu, 14 Jan 2021 01:23:25 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        sergei.shtylyov@gmail.com
-Subject: Re: [PATCH v7 3/7] fixup! media: i2c: rdacm21: Break-out ov10640
- initialization
-Message-ID: <X/+A7btfIZpdktrL@pendragon.ideasonboard.com>
-References: <20210113185506.119808-1-jacopo+renesas@jmondi.org>
- <20210113185506.119808-4-jacopo+renesas@jmondi.org>
+        id S1729874AbhANCCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:02:18 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:39162 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729414AbhAMXYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 18:24:42 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kzpUT-000Qg1-4B; Thu, 14 Jan 2021 00:23:49 +0100
+Date:   Thu, 14 Jan 2021 00:23:49 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/3] reset: mchp: sparx5: add switch reset driver
+Message-ID: <X/+BBaYqLciJ5PsA@lunn.ch>
+References: <20210113201915.2734205-1-steen.hegelund@microchip.com>
+ <20210113201915.2734205-3-steen.hegelund@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210113185506.119808-4-jacopo+renesas@jmondi.org>
+In-Reply-To: <20210113201915.2734205-3-steen.hegelund@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
-
-Thank you for the patch.
-
-On Wed, Jan 13, 2021 at 07:55:01PM +0100, Jacopo Mondi wrote:
-> The embedded OV490 ISP chip provides a secondary SCCB interface and
-> two GPIO lines to control the connected OV10640 image sensor.
-> 
-> Break out the OV10640 initialization from the OV490 initialization and
-> explicitely control the powerdown and reset GPIOs. After the image
-
-s/explicitely/explicitly/
-
-> sensor has been hard reset, implement a more clear handling of the
-> secondary SCCB interface to read the image sensor chip ID.
-> 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  drivers/media/i2c/rdacm21.c | 75 ++++++++++++++++++++++++++++++-------
->  1 file changed, 61 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
-> index 0428e3209463..944009687de5 100644
-> --- a/drivers/media/i2c/rdacm21.c
-> +++ b/drivers/media/i2c/rdacm21.c
-> @@ -30,11 +30,24 @@
->  #define OV490_PAGE_HIGH_REG		0xfffd
->  #define OV490_PAGE_LOW_REG		0xfffe
->  
-> +/*
-> + * The SCCB slave handling is undocumented; the registers naming scheme is
-> + * totally arbitrary.
-> + */
-> +#define OV490_SCCB_SLAVE_WRITE		0x00
-> +#define OV490_SCCB_SLAVE_READ		0x01
-> +#define OV490_SCCB_SLAVE0_DIR		0x80195000
-> +#define OV490_SCCB_SLAVE0_ADDR_HIGH	0x80195001
-> +#define OV490_SCCB_SLAVE0_ADDR_LOW	0x80195002
-> +
->  #define OV490_DVP_CTRL3			0x80286009
->  
->  #define OV490_ODS_CTRL_FRAME_OUTPUT_EN	0x0c
->  #define OV490_ODS_CTRL			0x8029d000
->  
-> +#define OV490_HOST_CMD			0x808000c0
-> +#define OV490_HOST_CMD_TRIGGER		0xc1
-> +
->  #define OV490_ID_VAL			0x0490
->  #define OV490_ID(_p, _v)		((((_p) & 0xff) << 8) | ((_v) & 0xff))
->  #define OV490_PID			0x8080300a
-> @@ -42,12 +55,22 @@
->  #define OV490_PID_TIMEOUT		20
->  #define OV490_OUTPUT_EN_TIMEOUT		300
->  
-> +#define OV490_GPIO0_RESETB		0x01
-
-Shouldn't this be named just OV490_GPIO0 ? The fact that it's connected
-to the RESETB signal of the OV10640 is board-specific, not an OV490
-intrinsic property.
-
-BIT(0) ?
-
-> +#define OV490_SPWDN0			0x01
-
-Same here.
-
-> +#define OV490_GPIO_SEL0			0x80800050
-> +#define OV490_GPIO_SEL1			0x80800051
-> +#define OV490_GPIO_DIRECTION0		0x80800054
-> +#define OV490_GPIO_DIRECTION1		0x80800055
-> +#define OV490_GPIO_OUTPUT_VALUE0	0x80800058
-> +#define OV490_GPIO_OUTPUT_VALUE1	0x80800059
-> +
->  #define OV490_ISP_HSIZE_LOW		0x80820060
->  #define OV490_ISP_HSIZE_HIGH		0x80820061
->  #define OV490_ISP_VSIZE_LOW		0x80820062
->  #define OV490_ISP_VSIZE_HIGH		0x80820063
->  
-> -#define OV10640_ID_LOW			0xa6
-> +#define OV10640_ID_HIGH			0xa6
-> +#define OV10640_CHIP_ID			0x300a
->  #define OV10640_PIXEL_RATE		55000000
->  
->  struct rdacm21_device {
-> @@ -306,6 +329,39 @@ static const struct v4l2_subdev_ops rdacm21_subdev_ops = {
->  	.pad		= &rdacm21_subdev_pad_ops,
->  };
->  
-> +static int ov10640_initialize(struct rdacm21_device *dev)
+> +static int sparx5_switch_reset(struct reset_controller_dev *rcdev,
+> +				      unsigned long id)
 > +{
-> +	u8 val;
+> +	struct mchp_reset_context *ctx =
+> +		container_of(rcdev, struct mchp_reset_context, reset_ctrl);
+> +	u32 val;
 > +
-> +	/* Power-up OV10640 by setting RESETB and PWDNB pins high. */
-> +	ov490_write_reg(dev, OV490_GPIO_SEL0, OV490_GPIO0_RESETB);
-> +	ov490_write_reg(dev, OV490_GPIO_SEL1, OV490_SPWDN0);
-> +	ov490_write_reg(dev, OV490_GPIO_DIRECTION0, OV490_GPIO0_RESETB);
-> +	ov490_write_reg(dev, OV490_GPIO_DIRECTION1, OV490_SPWDN0);
-> +	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_GPIO0_RESETB);
-> +	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_SPWDN0);
-> +	usleep_range(3000, 5000);
+> +	/* Make sure the core is PROTECTED from reset */
+> +	regmap_update_bits(ctx->cpu_ctrl, PROTECT_REG, PROTECT_BIT, PROTECT_BIT);
+> +
+> +	dev_info(ctx->dev, "soft reset of switchcore\n");
 
-So the OV490 firmware doesn't handle this ?
+dev_dbg()?
 
 > +
-> +	/* Read OV10640 ID to test communications. */
-> +	ov490_write_reg(dev, OV490_SCCB_SLAVE0_DIR, OV490_SCCB_SLAVE_READ);
-> +	ov490_write_reg(dev, OV490_SCCB_SLAVE0_ADDR_HIGH, OV10640_CHIP_ID >> 8);
-> +	ov490_write_reg(dev, OV490_SCCB_SLAVE0_ADDR_LOW, (u8)OV10640_CHIP_ID);
+> +	/* Start soft reset */
+> +	regmap_write(ctx->gcb_ctrl, SOFT_RESET_REG, SOFT_RESET_BIT);
 > +
-> +	/* Trigger SCCB slave transaction and give it some time to complete. */
-> +	ov490_write_reg(dev, OV490_HOST_CMD, OV490_HOST_CMD_TRIGGER);
-> +	usleep_range(1000, 1500);
+> +	/* Wait for soft reset done */
+> +	return read_poll_timeout(sparx5_read_soft_rst, val,
+> +				 (val & SOFT_RESET_BIT) == 0,
+> +				 1, 100, false,
+> +				 ctx);
+> +}
+
+> +static int mchp_sparx5_reset_config(struct platform_device *pdev,
+> +				    struct mchp_reset_context *ctx)
+> +{
+> +	struct device_node *dn = pdev->dev.of_node;
+> +	struct regmap *cpu_ctrl, *gcb_ctrl;
+> +	struct device_node *syscon_np;
+> +	int err;
 > +
-> +	ov490_read_reg(dev, OV490_SCCB_SLAVE0_DIR, &val);
-> +	if (val != OV10640_ID_HIGH) {
-> +		dev_err(dev->dev, "OV10640 ID mismatch: (0x%02x)\n", val);
+> +	syscon_np = of_parse_phandle(dn, "syscons", 0);
+> +	if (!syscon_np)
 > +		return -ENODEV;
-> +	}
-
-Would it make sense to create an ov490_sensor_read() helper ?
-
+> +	cpu_ctrl = syscon_node_to_regmap(syscon_np);
+> +	if (IS_ERR(cpu_ctrl))
+> +		goto err_cpu;
+> +	of_node_put(syscon_np);
 > +
-> +	dev_dbg(dev->dev, "OV10640 ID = 0x%2x\n", val);
+> +	syscon_np = of_parse_phandle(dn, "syscons", 1);
+> +	if (!syscon_np)
+> +		return -ENODEV;
+> +	gcb_ctrl = syscon_node_to_regmap(syscon_np);
+> +	if (IS_ERR(gcb_ctrl))
+> +		goto err_gcb;
+> +	of_node_put(syscon_np);
 > +
-> +	return 0;
+> +	ctx->cpu_ctrl = cpu_ctrl;
+> +	ctx->gcb_ctrl = gcb_ctrl;
+> +
+> +	ctx->reset_ctrl.owner = THIS_MODULE;
+> +	ctx->reset_ctrl.nr_resets = 1;
+> +	ctx->reset_ctrl.ops = &sparx5_reset_ops;
+> +	ctx->reset_ctrl.of_node = dn;
+> +
+> +	err = devm_reset_controller_register(&pdev->dev, &ctx->reset_ctrl);
+> +	if (err)
+> +		dev_err(&pdev->dev, "could not register reset controller\n");
+> +	pr_info("%s:%d\n", __func__, __LINE__);
+> +	return err;
+> +err_cpu:
+> +	of_node_put(syscon_np);
+> +	dev_err(&pdev->dev, "No cpu syscon map\n");
+> +	return PTR_ERR(cpu_ctrl);
+> +err_gcb:
+> +	of_node_put(syscon_np);
+> +	dev_err(&pdev->dev, "No gcb syscon map\n");
+> +	return PTR_ERR(gcb_ctrl);
+
+It would be normal to put the dev_err() before the goto, set err =
+PTR_ERR() and then goto out;
+
+
 > +}
 > +
->  static int ov490_initialize(struct rdacm21_device *dev)
->  {
->  	u8 pid, ver, val;
-> @@ -349,20 +405,11 @@ static int ov490_initialize(struct rdacm21_device *dev)
->  		return -ENODEV;
->  	}
->  
-> -	/* Read OV10640 Id to test communications. */
-> -	ov490_write_reg(dev, 0x80195000, 0x01);
-> -	ov490_write_reg(dev, 0x80195001, 0x30);
-> -	ov490_write_reg(dev, 0x80195002, 0x0a);
-> -	ov490_write_reg(dev, 0x808000c0, 0xc1);
-> -
-> -	ov490_read_reg(dev, 0x80195000, &val);
-> -	if (val != OV10640_ID_LOW) {
-> -		dev_err(dev->dev, "OV10640 ID mismatch: (0x%02x)\n", val);
-> -		return -ENODEV;
-> -	}
-> -
-> -	dev_dbg(dev->dev, "OV10640 ID = 0x%2x\n", val);
-> +	ret = ov10640_initialize(dev);
-> +	if (ret)
-> +		return ret;
->  
-> +	/* Program OV490 with register-value table. */
->  	for (i = 0; i < ARRAY_SIZE(ov490_regs_wizard); ++i) {
->  		ret = ov490_write(dev, ov490_regs_wizard[i].reg,
->  				  ov490_regs_wizard[i].val);
+> +static int mchp_sparx5_reset_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct mchp_reset_context *ctx;
+> +
+> +	pr_info("%s:%d\n", __func__, __LINE__);
 
--- 
-Regards,
+More left over debug.
 
-Laurent Pinchart
+> +	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
+> +	if (!ctx)
+> +		return -ENOMEM;
+> +	ctx->dev = dev;
+> +	return mchp_sparx5_reset_config(pdev, ctx);
+> +}
+> +
+> +static const struct of_device_id mchp_sparx5_reset_of_match[] = {
+> +	{
+> +		.compatible = "microchip,sparx5-switch-reset",
+> +	},
+> +	{ /*sentinel*/ }
+> +};
+
+> +static int __init mchp_sparx5_reset_init(void)
+> +{
+> +	return platform_driver_register(&mchp_sparx5_reset_driver);
+> +}
+> +
+> +postcore_initcall(mchp_sparx5_reset_init);
+
+Does it actually need to be postcore? The users of the reset should
+look for -EPROBE_DEFER and try again later. And this then becomes just
+a normal driver.
+
+  Andrew
