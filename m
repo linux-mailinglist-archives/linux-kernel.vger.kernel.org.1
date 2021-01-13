@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF1B2F4887
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26832F4889
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbhAMKVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:21:32 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:52241 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbhAMKVb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:21:31 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10DAKhN72023201, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs03.realtek.com.tw[172.21.6.96])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10DAKhN72023201
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 13 Jan 2021 18:20:43 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 13 Jan 2021 18:20:42 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::5d07:e256:a2a2:81ee]) by
- RTEXMBS01.realtek.com.tw ([fe80::5d07:e256:a2a2:81ee%5]) with mapi id
- 15.01.2106.006; Wed, 13 Jan 2021 18:20:42 +0800
-From:   =?utf-8?B?5ZCz5piK5r6EIFJpY2t5?= <ricky_wu@realtek.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rui Feng <rui_feng@realsil.com.cn>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/2] mmc: rtsx: add delay before power on
-Thread-Topic: [PATCH 1/2] mmc: rtsx: add delay before power on
-Thread-Index: AQHW3oq7dTZYnibKgUy6H8tXIkxRlaok4hsAgACICwA=
-Date:   Wed, 13 Jan 2021 10:20:42 +0000
-Message-ID: <d71300e7cf6d4ad8b1e8e3c7430d2c58@realtek.com>
-References: <20201230090401.12627-1-ricky_wu@realtek.com>
- <CAPDyKFro-dWCOVx=a1BhEJ=J=Hj_+nU+FmTUZjkeAkCqtML=kA@mail.gmail.com>
-In-Reply-To: <CAPDyKFro-dWCOVx=a1BhEJ=J=Hj_+nU+FmTUZjkeAkCqtML=kA@mail.gmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.88.99]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1727207AbhAMKWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:22:21 -0500
+Received: from foss.arm.com ([217.140.110.172]:33734 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727036AbhAMKWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 05:22:21 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CA631042;
+        Wed, 13 Jan 2021 02:21:35 -0800 (PST)
+Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E65913F66E;
+        Wed, 13 Jan 2021 02:21:33 -0800 (PST)
+Date:   Wed, 13 Jan 2021 10:21:31 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 2/2] selftests: bpf: Add a new test for bare
+ tracepoints
+Message-ID: <20210113102131.mjxpqpoi4n6rhbny@e107158-lin>
+References: <20210111182027.1448538-1-qais.yousef@arm.com>
+ <20210111182027.1448538-3-qais.yousef@arm.com>
+ <CAEf4BzYwOAHGOiZBUx86yZ1ofwJ1WqCDR3dyRMrTeQa2ZU7ftA@mail.gmail.com>
+ <20210112192729.q47avnmnzl54nekg@e107158-lin>
+ <CAEf4BzZiYv1M04FBmuzMH5cxLUXzLthDfpp4nORMEmvkcfzyRQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZiYv1M04FBmuzMH5cxLUXzLthDfpp4nORMEmvkcfzyRQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiBXZWQsIDMwIERlYyAyMDIwIGF0IDEwOjA0LCA8cmlja3lfd3VAcmVhbHRlay5jb20+IHdy
-b3RlOg0KPiA+DQo+ID4gRnJvbTogUmlja3kgV3UgPHJpY2t5X3d1QHJlYWx0ZWsuY29tPg0KPiA+
-DQo+ID4gTWFrZSBzdXJlIHZvbHRhZ2UgYmVsb3cgMC41ViBiZWZvcmUgcG93ZXIgb24gd2hlbiBk
-byBwb3dlciBjeWNsZQ0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogUmlja3kgV3UgPHJpY2t5X3d1
-QHJlYWx0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL21tYy9ob3N0L3J0c3hfcGNpX3Nk
-bW1jLmMgfCAyICsrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykNCj4gPg0K
-PiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21tYy9ob3N0L3J0c3hfcGNpX3NkbW1jLmMNCj4gPiBi
-L2RyaXZlcnMvbW1jL2hvc3QvcnRzeF9wY2lfc2RtbWMuYw0KPiA+IGluZGV4IGU2ZjViYmNlNTY4
-NS4uZDIxYjk5OTYyYjM2IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbW1jL2hvc3QvcnRzeF9w
-Y2lfc2RtbWMuYw0KPiA+ICsrKyBiL2RyaXZlcnMvbW1jL2hvc3QvcnRzeF9wY2lfc2RtbWMuYw0K
-PiA+IEBAIC05MDYsNiArOTA2LDggQEAgc3RhdGljIGludCBzZF9wb3dlcl9vbihzdHJ1Y3QgcmVh
-bHRla19wY2lfc2RtbWMNCj4gKmhvc3QpDQo+ID4gICAgICAgICBpZiAoaG9zdC0+cG93ZXJfc3Rh
-dGUgPT0gU0RNTUNfUE9XRVJfT04pDQo+ID4gICAgICAgICAgICAgICAgIHJldHVybiAwOw0KPiA+
-DQo+ID4gKyAgICAgICBtZGVsYXkoMTAwKTsNCj4gPiArDQo+IA0KPiBXaHkgZXhhY3RseSAxMDAg
-bXM/IENhbiB5b3UgYXQgbGVhc3QgYWRkIGEgY29tbWVudCBhYm91dCB3aHkgaW4gdGhlIGNvZGU/
-DQo+IA0KPiBNb3Jlb3ZlciwgSSB0aGluayB5b3Ugc2hvdWxkIGNvbnZlcnQgdG8gdXNlIG1zbGVl
-cCgpIHJhdGhlciB0aGFuIG1kZWxheS4NCj4gDQoNCkJlY2F1c2Ugd2UgbmVlZCB0byBtYWtlIHN1
-cmUgdm9sdGFnZSBiZWxvdyAwLjVWIGJlZm9yZSBwb3dlciBvbg0KbW1jLWNvcmUgd2lsbCBkbyBx
-dWlja2x5IHBvd2VyIGN5Y2xlIGF0IHJlY29nbml0aW9uIGNhcmQgcGhhc2UsIA0Kd2UgbmVlZCBh
-dCBsZWFzdCAxMDBtcyB0byBtYWtlIG91ciBkZXZpY2Ugdm9sdGFnZSBiZWxvdyAwLjVWIA0KDQpJ
-IHdpbGwgY2hhbmdlIG1kZWxheSgpIHRvIG1zbGVlcCgpDQoNCj4gPiAgICAgICAgIHJ0c3hfcGNp
-X2luaXRfY21kKHBjcik7DQo+ID4gICAgICAgICBydHN4X3BjaV9hZGRfY21kKHBjciwgV1JJVEVf
-UkVHX0NNRCwgQ0FSRF9TRUxFQ1QsIDB4MDcsDQo+IFNEX01PRF9TRUwpOw0KPiA+ICAgICAgICAg
-cnRzeF9wY2lfYWRkX2NtZChwY3IsIFdSSVRFX1JFR19DTUQsIENBUkRfU0hBUkVfTU9ERSwNCj4g
-PiAtLQ0KPiA+IDIuMTcuMQ0KPiA+DQo+IA0KPiBLaW5kIHJlZ2FyZHMNCj4gVWZmZQ0KPiANCj4g
-LS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJpbnRpbmcgdGhp
-cyBlLW1haWwuDQo=
+On 01/12/21 12:07, Andrii Nakryiko wrote:
+> > > >         $ sudo ./test_progs -v -t module_attach
+> > >
+> > > use -vv when debugging stuff like that with test_progs, it will output
+> > > libbpf detailed logs, that often are very helpful
+> >
+> > I tried that but it didn't help me. Full output is here
+> >
+> >         https://paste.debian.net/1180846
+> >
+> 
+> It did help a bit for me to make sure that you have bpf_testmod
+> properly loaded and its BTF was found, so the problem is somewhere
+> else. Also, given load succeeded and attach failed with OPNOTSUPP, I
+> suspect you are missing some of FTRACE configs, which seems to be
+> missing from selftests's config as well. Check that you have
+> CONFIG_FTRACE=y and CONFIG_DYNAMIC_FTRACE=y, and you might need some
+> more. See [0] for a real config we are using to run all tests in
+> libbpf CI. If you figure out what you were missing, please also
+> contribute a patch to selftests' config.
+> 
+>   [0] https://github.com/libbpf/libbpf/blob/master/travis-ci/vmtest/configs/latest.config
+
+Yeah that occurred to me too. I do have all necessary FTRACE options enabled,
+including DYNAMIC_FTRACE. I think I did try enabling fault injection too just
+in case. I have CONFIG_FAULT_INJECTION=y and CONFIG_FUNCTION_ERROR_INJECTION=y.
+
+I will look at the CI config and see if I can figure it out.
+
+I will likely get a chance to look at all of this and send v2  over the
+weekend.
+
+Thanks
+
+--
+Qais Yousef
