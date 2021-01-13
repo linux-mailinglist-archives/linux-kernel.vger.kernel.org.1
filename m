@@ -2,146 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D852A2F402C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D574E2F406D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438007AbhAMAnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 19:43:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392455AbhAMAkr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 19:40:47 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32124C061575;
-        Tue, 12 Jan 2021 16:40:07 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id 91so286425wrj.7;
-        Tue, 12 Jan 2021 16:40:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=agaH5FJUb4ubbdgR/UcbnaFztHWYbAMVBCEVNxmNcy8=;
-        b=AEiVjcsifZD/SApb4CWBqPM8yQ6WK74QGMmg2REtPE/Tdx+vurF8XkOdcLWRXrxdPU
-         bQmqmRBuCE2cCYeK2XH2DHYBG6gT3IgNU0qZGQXy794LDOIS5/1U50L9IDAf2dD8G3iN
-         2budy9g2NYNdLUH3UPmHas//5wOJFn8R1LReu6FQsgJLvC7JzbAeFW+0eTfjJRlfwZMe
-         1IDCPT0oiFffYb4mQO5khNTAa+zHrtXbuIKksIIn4mkzTMUx3d5/HvSlAhgDMAyNRdk4
-         79z2PIuoH7rMivFXbDKjLi84he2EQA578J+tgcyEPFVIMSSuhXFfFi5bgyZV7GL/Fl4A
-         Z2wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=agaH5FJUb4ubbdgR/UcbnaFztHWYbAMVBCEVNxmNcy8=;
-        b=oR0ntZh3YRo3LFHC+BYtK4rn1MyRT/TQgijs3csb1M53T+Qmu4Uq8TWpZKbZVF4c0+
-         NDEfObIUXJzAUH2TO6uXf9869k4wu3SjFIfcIEKt1LaptUOgG+rwacKb6MmktDunq8dB
-         GOegmKRaT4xVIz6n2GoqRfxHGnlsbB184JNpGjoirSRfcUESXOrttPI7CzeTIA/oVgko
-         0W6Q6YPOlXkalTCiIUzSBSZ34mFfo4WBwpsvjUQYag8AFi5CiDA0+G2clgGayes6fI1v
-         GTUV6Wdlk5vg2atmkcwIGbvHZsgMruOpmRrx09U+qznt6JQ0ot6YZNxtBvAGKxfikETn
-         n9Uw==
-X-Gm-Message-State: AOAM5309a8fgOMKwWsDGqEKnU7yQ9kGJmhKIiBeWt9dULsX/dl2zHFbZ
-        AqaiGrXEgnTJDC3vqOPZs2cvaYyYX+E=
-X-Google-Smtp-Source: ABdhPJwvzNZjqoLMW8eDlE/oWXuA09aJJIhBO4f5MUR/UDgX93JftIaiVDErBWpr2ggyhb/0tiuEjw==
-X-Received: by 2002:adf:9467:: with SMTP id 94mr1295788wrq.235.1610498405779;
-        Tue, 12 Jan 2021 16:40:05 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id l8sm202548wrb.73.2021.01.12.16.40.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 16:40:04 -0800 (PST)
-Subject: Re: [PATCH v2 1/3] software node: Introduce
- device_add_software_node()
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-References: <20210111141045.14027-1-heikki.krogerus@linux.intel.com>
- <20210111141045.14027-2-heikki.krogerus@linux.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <2f552de5-4839-a1e5-3012-c56f9fa3bdd5@gmail.com>
-Date:   Wed, 13 Jan 2021 00:40:03 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732992AbhAMAoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 19:44:24 -0500
+Received: from mga04.intel.com ([192.55.52.120]:32711 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728206AbhAMAnq (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 19:43:46 -0500
+IronPort-SDR: 05Pgf308bvC9AzpW60l0XhG4s2bKur5i0aC5Aun6/6cGpGTEqeS0FfO9OnnMsNyjH+dYlw4dkX
+ NpZShOETil2A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="175548296"
+X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
+   d="scan'208";a="175548296"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 16:42:00 -0800
+IronPort-SDR: xm80uJzFWdo4c2Bj8uSE9MoKXNd2A96Kd/I8AQxau2VSKF6gfqBtHIKoVnV7oCv+fn+S1c5Ft3
+ L6YmJnDP8xlw==
+X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
+   d="scan'208";a="381641805"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 16:41:56 -0800
+Subject: Re: [PATCH v4] perf stat: Fix wrong skipping for per-die aggregation
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com, ying.huang@intel.com
+References: <20210105023615.5761-1-yao.jin@linux.intel.com>
+ <20210112100452.GA1273297@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <05e6bb37-0193-341d-3460-f5eb1d04bd05@linux.intel.com>
+Date:   Wed, 13 Jan 2021 08:41:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210111141045.14027-2-heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210112100452.GA1273297@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heikki
+Hi Jiri,
 
-On 11/01/2021 14:10, Heikki Krogerus wrote:
-> This helper will register a software node and then assign
-> it to device at the same time. The function will also make
-> sure that the device can't have more than one software node.
+On 1/12/2021 6:04 PM, Jiri Olsa wrote:
+> On Tue, Jan 05, 2021 at 10:36:15AM +0800, Jin Yao wrote:
 > 
-> Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> ---
-
-I like this change. One comment below, but for what it's worth:
-
-Reviewed-by: Daniel Scally <djrscally@gmail.com>
-
-> +/**
-> + * device_remove_software_node - Remove device's software node
-> + * @dev: The device with the software node.
-> + *
-> + * This function will unregister the software node of @dev.
-> + */
-> +void device_remove_software_node(struct device *dev)
-> +{
-> +	struct swnode *swnode;
-> +
-> +	swnode = dev_to_swnode(dev);
-> +	if (!swnode)
-> +		return;
-> +
-> +	kobject_put(&swnode->kobj);
-> +}
-> +EXPORT_SYMBOL_GPL(device_remove_software_node);
-
-I wonder if this also ought to set dev_fwnode(dev)->secondary back to
-ERR_PTR(-ENODEV)?
-
-> +
->  int software_node_notify(struct device *dev, unsigned long action)
->  {
-> -	struct fwnode_handle *fwnode = dev_fwnode(dev);
->  	struct swnode *swnode;
->  	int ret;
->  
-> -	if (!fwnode)
-> -		return 0;
-> -
-> -	if (!is_software_node(fwnode))
-> -		fwnode = fwnode->secondary;
-> -	if (!is_software_node(fwnode))
-> +	swnode = dev_to_swnode(dev);
-> +	if (!swnode)
->  		return 0;
->  
-> -	swnode = to_swnode(fwnode);
-> -
->  	switch (action) {
->  	case KOBJ_ADD:
->  		ret = sysfs_create_link(&dev->kobj, &swnode->kobj,
-> diff --git a/include/linux/property.h b/include/linux/property.h
-> index 0a9001fe7aeab..b0e413dc59271 100644
-> --- a/include/linux/property.h
-> +++ b/include/linux/property.h
-> @@ -488,4 +488,7 @@ fwnode_create_software_node(const struct property_entry *properties,
->  			    const struct fwnode_handle *parent);
->  void fwnode_remove_software_node(struct fwnode_handle *fwnode);
->  
-> +int device_add_software_node(struct device *dev, const struct software_node *swnode);
-> +void device_remove_software_node(struct device *dev);
-> +
->  #endif /* _LINUX_PROPERTY_H_ */
+> SNIP
+> 
+>> diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+>> index 8ce1479c98f0..a658e0ffaf2a 100644
+>> --- a/tools/perf/util/stat.c
+>> +++ b/tools/perf/util/stat.c
+>> @@ -13,6 +13,7 @@
+>>   #include "evlist.h"
+>>   #include "evsel.h"
+>>   #include "thread_map.h"
+>> +#include "hashmap.h"
+>>   #include <linux/zalloc.h>
+>>   
+>>   void update_stats(struct stats *stats, u64 val)
+>> @@ -276,15 +277,29 @@ void evlist__save_aggr_prev_raw_counts(struct evlist *evlist)
+>>   static void zero_per_pkg(struct evsel *counter)
+>>   {
+>>   	if (counter->per_pkg_mask)
+>> -		memset(counter->per_pkg_mask, 0, cpu__max_cpu());
+>> +		hashmap__clear(counter->per_pkg_mask);
+>> +}
+>> +
+>> +static size_t pkg_id_hash(const void *key, void *ctx __maybe_unused)
+>> +{
+>> +	int socket = (int64_t)key >> 32;
+>> +
+>> +	return socket;
+> 
+> could be just simple return right, why the variable?
 > 
 
+Sure, just simple return should be OK.
+
+>> +}
+>> +
+>> +static bool pkg_id_equal(const void *key1, const void *key2,
+>> +			 void *ctx __maybe_unused)
+>> +{
+>> +	return (int64_t)key1 == (int64_t)key2;
+>>   }
+>>   
+>>   static int check_per_pkg(struct evsel *counter,
+>>   			 struct perf_counts_values *vals, int cpu, bool *skip)
+>>   {
+>> -	unsigned long *mask = counter->per_pkg_mask;
+>> +	struct hashmap *mask = counter->per_pkg_mask;
+>>   	struct perf_cpu_map *cpus = evsel__cpus(counter);
+>> -	int s;
+>> +	int s, d, ret;
+>> +	uint64_t key;
+>>   
+>>   	*skip = false;
+>>   
+>> @@ -295,7 +310,7 @@ static int check_per_pkg(struct evsel *counter,
+>>   		return 0;
+>>   
+>>   	if (!mask) {
+>> -		mask = zalloc(cpu__max_cpu());
+>> +		mask = hashmap__new(pkg_id_hash, pkg_id_equal, NULL);
+>>   		if (!mask)
+>>   			return -ENOMEM;
+>>   
+>> @@ -317,7 +332,23 @@ static int check_per_pkg(struct evsel *counter,
+>>   	if (s < 0)
+>>   		return -1;
+>>   
+>> -	*skip = test_and_set_bit(s, mask) == 1;
+>> +	/*
+>> +	 * On multi-die system, 0 < die_id < 256. On no-die system, die_id = 0.
+>> +	 * We use hashmap(socket, die) to check the used socket+die pair.
+>> +	 */
+>> +	d = cpu_map__get_die(cpus, cpu, NULL).die;
+>> +	if (d < 0)
+>> +		return -1;
+>> +
+>> +	key = (uint64_t)s << 32 | (d & 0xff);
+> 
+> why the masking for d? also I thought it could be bigger than 256
+> 
+
+I remember in previous perf tool it would show a warning "The die id number is too big" if die_id > 
+256 and cpu_map__get_die() returned -1. See commit db5742b6849e ("perf stat: Support per-die 
+aggregation").
+
+But now the die_id checking is removed.
+
+> would it better to do it the other way around?
+> 
+>     die << 32 | socket
+> 
+
+I think this way is OK, thanks! I will use it in v5.
+
+> 
+>> +	if (hashmap__find(mask, (void *)key, NULL)) {
+>> +		*skip = true;
+>> +	} else {
+>> +		ret = hashmap__add(mask, (void *)key, (void *)1);
+>> +		if (ret)
+>> +			return -1;
+> 
+> you could 'return ret' at the end and skip this extra check
+> 
+
+Yes, define int ret = 0 and just 'return ret' at the end of function.
+
+Thanks
+Jin Yao
+
+> thanks,
+> jirka
+> 
+>> +	}
+>> +
+>>   	return 0;
+>>   }
+>>   
+>> -- 
+>> 2.17.1
+>>
+> 
