@@ -2,119 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4002D2F4C0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F942F4C16
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbhAMNJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 08:09:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48004 "EHLO
+        id S1726516AbhAMNN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 08:13:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725924AbhAMNJ2 (ORCPT
+        with ESMTP id S1725681AbhAMNN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 08:09:28 -0500
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873B4C0617A2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 05:08:14 -0800 (PST)
-Received: by mail-vs1-xe2c.google.com with SMTP id s2so1068467vsk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 05:08:14 -0800 (PST)
+        Wed, 13 Jan 2021 08:13:26 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C23C061575;
+        Wed, 13 Jan 2021 05:12:46 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id 18so2122996ybx.2;
+        Wed, 13 Jan 2021 05:12:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TtnXd+iTDg9Rg+Mw0g6+815d+x7k6NpX0spOlvkZURM=;
-        b=K3ThR3oAwHsQDZ7xbu/9Z6R2rjT8kKSP3SkyMW0wlSYsB51z5XKfnUKwBX4AKvt9KM
-         tA5GcrNpQvXFDqTJQtPi0kTXaO/Zp6IStPrlpHHNiBaqGOqEXnYUQpL53QFEKvODpWZO
-         imW7tIAKGQuoFxvHjS+dbmymtQA4Kyt6Wcu79PG+IfS2dNoz/cz6ZrEZojn2dxKPtVqh
-         fsqvFG3GUVjy6V84g4+u6egXd8SNRXYZWg+rYQLI1nQhTi//6pkCUUJtS4SaD4UOsKV8
-         CL7EXYn8eEwQSr0T8JOVDX/JMekYRwf6E/9RMLwh8Ul9kLeJTXj2bsrNzJGgFwV0nGsT
-         WcUg==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ZM1NJioel4M66Wv6WkWIoMAY0vNPXOkS6Y95M9Fqtp4=;
+        b=II//dHYhJKfqntuOSd+wyYjZTAXDxFu7wseVJTatnSM7lwANbcz1y1slNkdACJQ4QO
+         V+KQqck59jvRwPofOEc7qnGK+APb3eluwhYyiXg0CWSsLpWdu8U+3zMuBwaXRWa6hPGV
+         x1PWUkU/GoMsRuJ4I9J3jT5RgQnaN97/Mr3hSGRY4dEEo2GDwqT6xF4EQFybjLs6WLDc
+         JwdhEME6a8jMvmMAJdt+yOpb1rH3m+aXOn9pWn7LY8uwTi5iHwZony2oDhDfKAcns3o+
+         suhzOc5SRJMf5SNqUcIbxjy0MFjRwyuo+9TzO2iLf0BfofQmXVrBd0cOloXj3tAW5Jfq
+         GL9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TtnXd+iTDg9Rg+Mw0g6+815d+x7k6NpX0spOlvkZURM=;
-        b=Oyn3PlShGXipx4iEtZNxv/rBdpG/ekXYxgJEd0eOvhlNuH5GwdC0ZnByFcDzp9Bm1u
-         b2ka+BAW7IjmG2Kmf6TviY60fcHQiC2Icxzd4QBXOTtt4FsjFJBjB9h14IKOMgosZh0H
-         cI3KnlVkL5Tbh0xEEXgXwklUZE7PR0IIqX63W3K82yWif/Lcn7OLLztVZzq3EGvgb842
-         zKMyb3YR+AOiOkXTIQXF5/MBwRrRstdpMqbewAcZtF25lr3hK5NBQfYX9fTYrvLpWdfr
-         CmIP6nwz/Z+qKrInXI5J25LFsI2gy/KfqLmECiz34kMtqUjxhUcINB8cypxQoo1mHwWO
-         zPow==
-X-Gm-Message-State: AOAM530CK9x5/q4/OGju4wZHm6TkEuiXZw2ne0SkNB4sXJqjvJomqUAX
-        3HDf77aR8JvxuQKFoBUEIRUQCbwuxc6aHU0TUCBgPjYnatFDbg==
-X-Google-Smtp-Source: ABdhPJxBxJLzhErcrlYsDsTsERCk05HcKbtoPrJ+uP6qmTZlC6tz44CDMpxLSFjXCO26CrdrMiUdnEXasFsZ32t/om0=
-X-Received: by 2002:a67:e286:: with SMTP id g6mr1920721vsf.42.1610543293702;
- Wed, 13 Jan 2021 05:08:13 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ZM1NJioel4M66Wv6WkWIoMAY0vNPXOkS6Y95M9Fqtp4=;
+        b=OtiqewB22y8u1Vh9vvf7n7lgcHGI0jcfsL9yPRRxuU6d6epJsSdr7t17G5uN/U3JSU
+         +DiosYu4SBdzyWIOFUBsQg3N6LJVLSAxL/TofAeaPBibVIWfJc7HCsykm0YsWm4BTMLf
+         1zKWLy/9C0BhNL4p0APYsyLX+WSqYTW4pBBuJ+SIv0wB1IzuUfzN4P3HfAdsYvQEMvsx
+         jU4HX75i53OfHgbLIleHNjpv8d7Cftukr4ORjXXbVAKxDuhbIORH4EomJrBcnYvbKVrE
+         7tFLrbO4hPJ+ybiyxllk5983i+ETE088+QviiOt9rIK/bmbhDIK7Sd/3agkDtpx2bWxL
+         Zwvw==
+X-Gm-Message-State: AOAM5330rq7C1dRIY2/D5f/yIYQaVOkOmByj3mD5502GGpxFrULmDHU1
+        k4F9tnA2U7fZxrEI+E4plzY/O7S02Ds/BMBbPd0SueDONJoDhSl1
+X-Google-Smtp-Source: ABdhPJz9qP4YyI8w0g+/ScsAbWhgMM8gPmAmAoUVtFKNOjw3zB/1pK5MUeUalJ4oIYx/krzqLuwXWXYh5b/Pd/r3S6Y=
+X-Received: by 2002:a25:3457:: with SMTP id b84mr3006251yba.167.1610543565396;
+ Wed, 13 Jan 2021 05:12:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20210113113431.522-1-zbestahu@gmail.com>
-In-Reply-To: <20210113113431.522-1-zbestahu@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 13 Jan 2021 14:07:36 +0100
-Message-ID: <CAPDyKFqzKf44RV29c+ncKffgRQrz7gSHNGmmKqeYWJMj5rQ0hw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: remove needless err = 0 in mmc_init_card()
-To:     Yue Hu <zbestahu@gmail.com>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yue Hu <huyue2@yulong.com>, zbestahu@163.com
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Wed, 13 Jan 2021 21:12:19 +0800
+Message-ID: <CAD-N9QWYDUHhG1vRMOCRniHW3vk6VDLmiJmKWC+h_H_23RvEFA@mail.gmail.com>
+Subject: "WARNING: locking bug in do_ipv6_setsockopt" should share the same
+ root cause with "WARNING: locking bug in do_ipv6_getsockopt"
+To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, yoshfuji@linux-ipv6.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021 at 12:34, Yue Hu <zbestahu@gmail.com> wrote:
->
-> From: Yue Hu <huyue2@yulong.com>
->
-> Since they will always being in successful path to return 0 directly,
-> no need to set err = 0.
->
-> Signed-off-by: Yue Hu <huyue2@yulong.com>
+I found that on the syzbot dashboard, =E2=80=9CWARNING: locking bug in
+do_ipv6_setsockopt=E2=80=9D(https://syzkaller.appspot.com/bug?id=3D6a970baf=
+20aa5a64455be86fb920f468def703c6)
+and
+"WARNING: locking bug in do_ipv6_getsockopt"
+(https://syzkaller.appspot.com/bug?id=3De97be0bf4d30813e951bcc6249e72c592a7=
+90164)
+should share the same root cause.
 
-Applied for next, thanks!
+The reason for my above statement is that their PoCs have a high
+similarity except for the last syscall - "setsockopt vs getsockopt".
+In the last syscall, when it invokes lock_sock(sk) and accesses
+sk->sk_lock.slock, the WARNING happens.
 
-Kind regards
-Uffe
+If you can have any issues with this statement or our information is
+useful to you, please let us know. Thanks very much.
 
+--
+My best regards to you.
 
-> ---
->  drivers/mmc/core/mmc.c | 4 ----
->  1 file changed, 4 deletions(-)
->
-> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-> index ff3063c..54ab1c7 100644
-> --- a/drivers/mmc/core/mmc.c
-> +++ b/drivers/mmc/core/mmc.c
-> @@ -1697,7 +1697,6 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
->                         goto free_card;
->
->                 if (err) {
-> -                       err = 0;
->                         /*
->                          * Just disable enhanced area off & sz
->                          * will try to enable ERASE_GROUP_DEF
-> @@ -1802,7 +1801,6 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
->                         pr_warn("%s: Enabling HPI failed\n",
->                                 mmc_hostname(card->host));
->                         card->ext_csd.hpi_en = 0;
-> -                       err = 0;
->                 } else {
->                         card->ext_csd.hpi_en = 1;
->                 }
-> @@ -1831,7 +1829,6 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
->                         pr_warn("%s: Cache is supported, but failed to turn on (%d)\n",
->                                 mmc_hostname(card->host), err);
->                         card->ext_csd.cache_ctrl = 0;
-> -                       err = 0;
->                 } else {
->                         card->ext_csd.cache_ctrl = 1;
->                 }
-> @@ -1851,7 +1848,6 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
->                                 mmc_hostname(card->host));
->                         card->ext_csd.cmdq_support = false;
->                         card->ext_csd.cmdq_depth = 0;
-> -                       err = 0;
->                 }
->         }
->         /*
-> --
-> 1.9.1
->
+     No System Is Safe!
+     Dongliang Mu
