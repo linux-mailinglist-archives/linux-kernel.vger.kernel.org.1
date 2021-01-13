@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB152F497F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C72CC2F4952
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727877AbhAMLCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:02:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38852 "EHLO mail.kernel.org"
+        id S1727555AbhAMLBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:01:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727480AbhAMLAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727448AbhAMLAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Jan 2021 06:00:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC5F1233F7;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3534233CE;
         Wed, 13 Jan 2021 10:59:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610535570;
-        bh=a+dkjYxr1JQcyA3F/5+J8go+yX3JsyBH4EIlx2hcACo=;
+        s=k20201202; t=1610535569;
+        bh=9tGeeLO4hOolI7+7NkhkSi1HaErIWgKThp7sxRk1wlM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fj42FGSOoNm/vx1BoyMwr0HbtVrkNXX4g+/0Kn5WrFhqsx/uueN0rR7dV8BNVPlgN
-         1/tuJQgvWGXPDtis3yygXGtPHY7ubK69F7/59fFSMiv/vGuOkYMp0PE6RSeV69N62I
-         99BIYjhn4g2YfqGjZYbv2niAIL7N3tkptbaPnTGP9x+TtIZ0hE0SoXb8HiXuwN0gOQ
-         vWqFIwR9PZPQ4dY6b5Z7ydBYqFMuRY3nTW412dK2QPwF+mdPBZ7dVKwdhbKrTR8QUA
-         hcWyEiuWVsGEHOBFy/LcsAhaiLGw95TLOfOxTxV3ynFMUhffS4tTzBdhneiq9eQURv
-         WQoukiHRoTy5A==
+        b=ZpOJxbPbH5aE0rd33M++ikf/7usgqJAJdNzgMlQiIF69vnRinGpID5WhyB7vCbnSV
+         T0iKXg4nNMRYIDd+/9rdaL6dxTS9RGZ7HuK9Tejr01boWDlNsnRJ1iA0SBfQGzPuBE
+         rDuQSl1hmTld3y8MC7epz8HXBQkmqPETVCGa1fG/uv33SbxvDkngfNirDoJv8wNKAZ
+         VBr+Ytmj9ickrY0s13y03tA0CibZuN/NxvH740JuHnuGwX3hx4u/HzHZPNAZzJhizV
+         exuRiuEbRuF8gJHD5yu8XTjlzCHBE+6tGtIOeP3S/Vuf82BMi4S1P8hyKXsIklp2ia
+         mL3QRuv6OdUtQ==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kzds7-00DpFw-6a; Wed, 13 Jan 2021 11:59:27 +0100
+        id 1kzds7-00DpG4-9t; Wed, 13 Jan 2021 11:59:27 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 04/24] MAINTAINERS: update dpot-dac.yaml reference
-Date:   Wed, 13 Jan 2021 11:59:05 +0100
-Message-Id: <15b0ff7bfe9ba7ca6d438e1ca7880061cfce05b3.1610535349.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 07/24] MAINTAINERS: update current-sense-shunt.yaml reference
+Date:   Wed, 13 Jan 2021 11:59:08 +0100
+Message-Id: <e1ecac5b4faf048a5e85393223a4da7f6d28d070.1610535349.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1610535349.git.mchehab+huawei@kernel.org>
 References: <cover.1610535349.git.mchehab+huawei@kernel.org>
@@ -43,9 +43,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 06d2ff6fe11e ("dt-bindings:iio:dac:dpot-dac: yaml conversion.")
-renamed: Documentation/devicetree/bindings/iio/dac/dpot-dac.txt
-to: Documentation/devicetree/bindings/iio/dac/dpot-dac.yaml.
+Changeset ce66e52b6c16 ("dt-bindings:iio:afe:current-sense-shunt: txt to yaml conversion.")
+renamed: Documentation/devicetree/bindings/iio/afe/current-sense-shunt.txt
+to: Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml.
 
 Update its cross-reference accordingly.
 
@@ -55,18 +55,18 @@ Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index b3fe85038eb8..0ff692445967 100644
+index 832297460974..a699a221a48b 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -8683,7 +8683,7 @@ M:	Peter Rosin <peda@axentia.se>
+@@ -8721,7 +8721,7 @@ M:	Peter Rosin <peda@axentia.se>
  L:	linux-iio@vger.kernel.org
  S:	Maintained
- F:	Documentation/ABI/testing/sysfs-bus-iio-dac-dpot-dac
--F:	Documentation/devicetree/bindings/iio/dac/dpot-dac.txt
-+F:	Documentation/devicetree/bindings/iio/dac/dpot-dac.yaml
- F:	drivers/iio/dac/dpot-dac.c
+ F:	Documentation/devicetree/bindings/iio/afe/current-sense-amplifier.yaml
+-F:	Documentation/devicetree/bindings/iio/afe/current-sense-shunt.txt
++F:	Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
+ F:	Documentation/devicetree/bindings/iio/afe/voltage-divider.txt
+ F:	drivers/iio/afe/iio-rescale.c
  
- IIO ENVELOPE DETECTOR
 -- 
 2.29.2
 
