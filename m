@@ -2,218 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245D92F48D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FD22F48D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727550AbhAMKi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:38:57 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:48546 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726988AbhAMKi5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:38:57 -0500
-Received: by mail-io1-f71.google.com with SMTP id 191so2105535iob.15
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:38:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Rf0qkGcLKZcXOCwuSoJ3U1uuRWEpE0nNPdXTF3l2hL4=;
-        b=f+IRPRUKP0GnrKTDse2xVC7wsjrvPgqRSrOSKACEupLR5Ul6TtIEXKP14NTscx0Uw0
-         DTv2QE5cK0G78d6qVc+0WP84Y6rgbxdrDJE2Y8Ax+UbTxhZwI2/Xd7WFEKY8GmsLoFi4
-         INJdnMB8mewOaxkI5YOqzYX3ii7VJWE+PWHk+sPjoMuo+RlZI8Q5BlU8KrVnTitpLQu4
-         kquqtCqy3rgoOR0xqRdEHYu9Jzxr/n6gwwXFfF1p9/JAwRcPDClLdO4nGj/A5BqykXIU
-         UJlJCmTedfDpdphYi+36NpqHa4WIkwWnQq5fC88xOhlftm8cyWtyFsQM16kViOxwrdxz
-         P18g==
-X-Gm-Message-State: AOAM5302FgqFv/YQf0PQb1CnVCU1DXL8vwKukfQtYGk8+KJUUT9ikIzd
-        +cYr71E2fTTgQbrn9o2a5h/5fHb607geqjkBVDYtXQyX63wS
-X-Google-Smtp-Source: ABdhPJxIhbMxWbqH09VI31IeFE5tniINNYJsm+xRvLC1RO/aVt96bC7M+rTNvvoBEMKrvWy0erLgmcwV3LR6kmS2XHxJrP6DxWSC
+        id S1727611AbhAMKj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:39:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35050 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727557AbhAMKj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 05:39:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610534319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L9WjQjeV/bLcwajRiCZA3UtPCYTm19xe+pqGl6o2F8c=;
+        b=hSHguEU6fg658n4LF4FN7DjB0xPVe4GXgD9RYR9OxVcqKqevW2N5oT1y4wzCYVmm3KZrCU
+        raxhsLdMKEgykt79BYTHK9QQ1OY2Sdk832B0Hq/X0Uw3mOXPMb72+fiOXtm5545TJ3kFNQ
+        NRpq3wbh86YRYGbT+4IccWex8PGlXdM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DEF0FAC5B;
+        Wed, 13 Jan 2021 10:38:38 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 11:38:36 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v4 4/6] mm: hugetlb: retry dissolve page
+ when hitting race
+Message-ID: <20210113103836.GW22493@dhcp22.suse.cz>
+References: <20210113052209.75531-1-songmuchun@bytedance.com>
+ <20210113052209.75531-5-songmuchun@bytedance.com>
+ <20210113093331.GV22493@dhcp22.suse.cz>
+ <CAMZfGtUObSSyRZfv8CHucp6WmUZZBupKD9hbNHVpAv_PuWtMhw@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:b008:: with SMTP id x8mr1773225ilh.297.1610534295232;
- Wed, 13 Jan 2021 02:38:15 -0800 (PST)
-Date:   Wed, 13 Jan 2021 02:38:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000090e80805b8c5bc59@google.com>
-Subject: memory leak in fbcon_set_font
-From:   syzbot <syzbot+2f2c18881a450f22d1bf@syzkaller.appspotmail.com>
-To:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
-        dri-devel@lists.freedesktop.org, george.kennedy@oracle.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, yepeilin.cs@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtUObSSyRZfv8CHucp6WmUZZBupKD9hbNHVpAv_PuWtMhw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed 13-01-21 18:14:55, Muchun Song wrote:
+> On Wed, Jan 13, 2021 at 5:33 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Wed 13-01-21 13:22:07, Muchun Song wrote:
+> > > There is a race between dissolve_free_huge_page() and put_page().
+> > > Theoretically, we should return -EBUSY when we encounter this race.
+> > > In fact, we have a chance to successfully dissolve the page if we
+> > > do a retry. Because the race window is quite small. If we seize
+> > > this opportunity, it is an optimization for increasing the success
+> > > rate of dissolving page.
+> > >
+> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > ---
+> > >  mm/hugetlb.c | 20 ++++++++++++++++++--
+> > >  1 file changed, 18 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > > index 4a9011e12175..898e4ea43e13 100644
+> > > --- a/mm/hugetlb.c
+> > > +++ b/mm/hugetlb.c
+> > > @@ -1772,6 +1772,7 @@ int dissolve_free_huge_page(struct page *page)
+> > >  {
+> > >       int rc = -EBUSY;
+> > >
+> > > +retry:
+> > >       /* Not to disrupt normal path by vainly holding hugetlb_lock */
+> > >       if (!PageHuge(page))
+> > >               return 0;
+> > > @@ -1793,8 +1794,23 @@ int dissolve_free_huge_page(struct page *page)
+> > >                * We should make sure that the page is already on the free list
+> > >                * when it is dissolved.
+> > >                */
+> > > -             if (unlikely(!PageHugeFreed(head)))
+> > > -                     goto out;
+> > > +             if (unlikely(!PageHugeFreed(head))) {
+> > > +                     spin_unlock(&hugetlb_lock);
+> > > +
+> > > +                     /*
+> > > +                      * Theoretically, we should return -EBUSY when we
+> > > +                      * encounter this race. In fact, we have a chance
+> > > +                      * to successfully dissolve the page if we do a
+> > > +                      * retry. Because the race window is quite small.
+> > > +                      * If we seize this opportunity, it is an optimization
+> > > +                      * for increasing the success rate of dissolving page.
+> > > +                      */
+> > > +                     while (PageHeadHuge(head) && !PageHugeFreed(head)) {
+> > > +                             cond_resched();
+> > > +                             cpu_relax();
+> > > +                     }
+> > > +                     goto retry;
+> >
+> > OK, so you have done the retry here. Please fold it into the previous
+> > patch. Also do we need cpu_relax on top of cond_resched as well?
+> 
+> Because the previous patch is a bugfix and should be backprt to the other
+> stable tree, right?
 
-syzbot found the following issue on:
+Yes, it is a bugfix but it arguably opens another issue so the follow up
+patch should better be applied along with it.
 
-HEAD commit:    e609571b Merge tag 'nfs-for-5.11-2' of git://git.linux-nfs..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=165261e0d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=850b6de5f8959443
-dashboard link: https://syzkaller.appspot.com/bug?extid=2f2c18881a450f22d1bf
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16ab20c7500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1008b770d00000
+> I just want the fix patch to be small enough.
+> So I do the retry in this patch. If you do not agree with this. I
+> will fold this into the previous patch.
+> 
+> Do you mean this?
+> 
+> cpu_relax();
+> cond_resched();
+> cpu_relax();
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2f2c18881a450f22d1bf@syzkaller.appspotmail.com
+No, I am questiong the use of cpu_relax. What is the point?
 
-BUG: memory leak
-unreferenced object 0xffff88811813ea00 (size 512):
-  comm "syz-executor939", pid 10246, jiffies 4294971847 (age 34.510s)
-  hex dump (first 32 bytes):
-    b0 55 1f 9b 00 00 00 00 00 01 00 00 06 00 00 00  .U..............
-    11 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000062fad90>] kmalloc include/linux/slab.h:557 [inline]
-    [<00000000062fad90>] fbcon_set_font+0x128/0x370 drivers/video/fbdev/core/fbcon.c:2454
-    [<00000000ed2d1b1e>] con_font_set drivers/tty/vt/vt.c:4667 [inline]
-    [<00000000ed2d1b1e>] con_font_op+0x497/0x740 drivers/tty/vt/vt.c:4711
-    [<00000000fd6b18ad>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:596 [inline]
-    [<00000000fd6b18ad>] vt_ioctl+0xeab/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000369331c6>] tty_ioctl+0x6c3/0xc40 drivers/tty/tty_io.c:2658
-    [<00000000a092c047>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<00000000a092c047>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<00000000a092c047>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<00000000a092c047>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000705a3959>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000f35163f9>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff88811813ea00 (size 512):
-  comm "syz-executor939", pid 10246, jiffies 4294971847 (age 36.030s)
-  hex dump (first 32 bytes):
-    b0 55 1f 9b 00 00 00 00 00 01 00 00 06 00 00 00  .U..............
-    11 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000062fad90>] kmalloc include/linux/slab.h:557 [inline]
-    [<00000000062fad90>] fbcon_set_font+0x128/0x370 drivers/video/fbdev/core/fbcon.c:2454
-    [<00000000ed2d1b1e>] con_font_set drivers/tty/vt/vt.c:4667 [inline]
-    [<00000000ed2d1b1e>] con_font_op+0x497/0x740 drivers/tty/vt/vt.c:4711
-    [<00000000fd6b18ad>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:596 [inline]
-    [<00000000fd6b18ad>] vt_ioctl+0xeab/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000369331c6>] tty_ioctl+0x6c3/0xc40 drivers/tty/tty_io.c:2658
-    [<00000000a092c047>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<00000000a092c047>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<00000000a092c047>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<00000000a092c047>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000705a3959>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000f35163f9>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff88811813ea00 (size 512):
-  comm "syz-executor939", pid 10246, jiffies 4294971847 (age 37.550s)
-  hex dump (first 32 bytes):
-    b0 55 1f 9b 00 00 00 00 00 01 00 00 06 00 00 00  .U..............
-    11 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000062fad90>] kmalloc include/linux/slab.h:557 [inline]
-    [<00000000062fad90>] fbcon_set_font+0x128/0x370 drivers/video/fbdev/core/fbcon.c:2454
-    [<00000000ed2d1b1e>] con_font_set drivers/tty/vt/vt.c:4667 [inline]
-    [<00000000ed2d1b1e>] con_font_op+0x497/0x740 drivers/tty/vt/vt.c:4711
-    [<00000000fd6b18ad>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:596 [inline]
-    [<00000000fd6b18ad>] vt_ioctl+0xeab/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000369331c6>] tty_ioctl+0x6c3/0xc40 drivers/tty/tty_io.c:2658
-    [<00000000a092c047>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<00000000a092c047>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<00000000a092c047>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<00000000a092c047>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000705a3959>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000f35163f9>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff88811813ea00 (size 512):
-  comm "syz-executor939", pid 10246, jiffies 4294971847 (age 37.630s)
-  hex dump (first 32 bytes):
-    b0 55 1f 9b 00 00 00 00 00 01 00 00 06 00 00 00  .U..............
-    11 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000062fad90>] kmalloc include/linux/slab.h:557 [inline]
-    [<00000000062fad90>] fbcon_set_font+0x128/0x370 drivers/video/fbdev/core/fbcon.c:2454
-    [<00000000ed2d1b1e>] con_font_set drivers/tty/vt/vt.c:4667 [inline]
-    [<00000000ed2d1b1e>] con_font_op+0x497/0x740 drivers/tty/vt/vt.c:4711
-    [<00000000fd6b18ad>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:596 [inline]
-    [<00000000fd6b18ad>] vt_ioctl+0xeab/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000369331c6>] tty_ioctl+0x6c3/0xc40 drivers/tty/tty_io.c:2658
-    [<00000000a092c047>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<00000000a092c047>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<00000000a092c047>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<00000000a092c047>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000705a3959>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000f35163f9>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff88811813ea00 (size 512):
-  comm "syz-executor939", pid 10246, jiffies 4294971847 (age 37.720s)
-  hex dump (first 32 bytes):
-    b0 55 1f 9b 00 00 00 00 00 01 00 00 06 00 00 00  .U..............
-    11 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000062fad90>] kmalloc include/linux/slab.h:557 [inline]
-    [<00000000062fad90>] fbcon_set_font+0x128/0x370 drivers/video/fbdev/core/fbcon.c:2454
-    [<00000000ed2d1b1e>] con_font_set drivers/tty/vt/vt.c:4667 [inline]
-    [<00000000ed2d1b1e>] con_font_op+0x497/0x740 drivers/tty/vt/vt.c:4711
-    [<00000000fd6b18ad>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:596 [inline]
-    [<00000000fd6b18ad>] vt_ioctl+0xeab/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000369331c6>] tty_ioctl+0x6c3/0xc40 drivers/tty/tty_io.c:2658
-    [<00000000a092c047>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<00000000a092c047>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<00000000a092c047>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<00000000a092c047>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000705a3959>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000f35163f9>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff88811813ea00 (size 512):
-  comm "syz-executor939", pid 10246, jiffies 4294971847 (age 37.810s)
-  hex dump (first 32 bytes):
-    b0 55 1f 9b 00 00 00 00 00 01 00 00 06 00 00 00  .U..............
-    11 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000062fad90>] kmalloc include/linux/slab.h:557 [inline]
-    [<00000000062fad90>] fbcon_set_font+0x128/0x370 drivers/video/fbdev/core/fbcon.c:2454
-    [<00000000ed2d1b1e>] con_font_set drivers/tty/vt/vt.c:4667 [inline]
-    [<00000000ed2d1b1e>] con_font_op+0x497/0x740 drivers/tty/vt/vt.c:4711
-    [<00000000fd6b18ad>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:596 [inline]
-    [<00000000fd6b18ad>] vt_ioctl+0xeab/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000369331c6>] tty_ioctl+0x6c3/0xc40 drivers/tty/tty_io.c:2658
-    [<00000000a092c047>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<00000000a092c047>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<00000000a092c047>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<00000000a092c047>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000705a3959>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000f35163f9>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-executing program
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-executing program
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+-- 
+Michal Hocko
+SUSE Labs
