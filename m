@@ -2,129 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EE62F4142
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 02:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D99F2F4148
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 02:41:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbhAMBhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 20:37:22 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:31739 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbhAMBhV (ORCPT
+        id S1727385AbhAMBkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 20:40:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726382AbhAMBku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 20:37:21 -0500
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210113013636epoutp020e86c8d865a5e19cfb799a3c5bb7584a~ZptnxRpz52577625776epoutp02k
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 01:36:36 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210113013636epoutp020e86c8d865a5e19cfb799a3c5bb7584a~ZptnxRpz52577625776epoutp02k
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1610501796;
-        bh=i60jqufl/+QsJPjiXupuapwad2yXKwzNnWbdSGptqx4=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=btpvWd5o9E3947LeWAp1ViiSlDKsjiYIRsO19iFa6cfPf95UXij9UYs0YiVD0wv4U
-         A/QYUI/fCMRhDJacjSLc/lHmFHgrPmlr0cglSlhBzdnxQPQ3iKU3OIJqMsTKpSbHU9
-         aQFgnpq/oibNQtwPavIYA5Es6EVPqguRJ03n/AKU=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20210113013635epcas2p2853a2c20874d171f695519df17640888~Zptm2FBWB0602406024epcas2p2m;
-        Wed, 13 Jan 2021 01:36:35 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.183]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4DFqmL44yrz4x9Pp; Wed, 13 Jan
-        2021 01:36:34 +0000 (GMT)
-X-AuditID: b6c32a45-34dff7000001297d-e4-5ffe4ea147f9
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        74.B4.10621.1AE4EFF5; Wed, 13 Jan 2021 10:36:33 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v18 3/3] scsi: ufs: Prepare HPB read for cached
- sub-region
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Can Guo <cang@codeaurora.org>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <e9b2479d0371e3cbe8aeb6c90ffb5d72@codeaurora.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210113013633epcms2p60b9dccaa405ff568a18d28b94089665b@epcms2p6>
-Date:   Wed, 13 Jan 2021 10:36:33 +0900
-X-CMS-MailID: 20210113013633epcms2p60b9dccaa405ff568a18d28b94089665b
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOLsWRmVeSWpSXmKPExsWy7bCmqe5Cv3/xBrt7VS023n3FavFg3jY2
-        i71tJ9gtXv68ymZx+PY7dotpH34yW3xav4zV4uUhTYtVD8ItmhevZ7OYc7aByaK3fyubxaIb
-        25gsLu+aw2bRfX0Hm8Xy4/+YLG5v4bJYuvUmo0Xn9DUsFosW7mZxEPG4fMXb43JfL5PHzll3
-        2T0mLDrA6LF/7hp2j5aT+1k8Pj69xeLRt2UVo8fnTXIe7Qe6mQK4ohoYbRKLkjMyy1IVUvOS
-        81My89JtlUJD3HQtlBQy8otLbJWiDS2M9AwtTfVMLPWMzGOtDA0MjEyVFPISc1NtlSp0obqV
-        FIqSC4CqS1KLS4pSk1OBQkUOxSWJ6al6xYm5xaV56XrJ+blKCmWJOaVAfUr6djYZqYkpqUUK
-        CU8YM3p2X2ArOMZa8f9/fAPjJpYuRk4OCQETiXtnLzF3MXJxCAnsYJS4sXI+excjBwevgKDE
-        3x3CIKawQIjEzj2BIOVCAkoS6y/OYgexhQX0JG49XMMIYrMJ6EhMP3EfLC4i4CnxdfJqVpCR
-        zAKL2SQm/DzIBrGLV2JG+1OovdIS25dvBWvmFLCT6Dv+mB0iriHxY1kvM4QtKnFz9Vt2GPv9
-        sfmMELaIROu9s1A1ghIPfu6GiktKHNv9gQnCrpfYeucXI8gREgI9jBKHd95ihUjoS1zr2Ah2
-        BK+Ar8TWDT1gx7EIqErs6VsMdZyLxJZ5E8DqmQXkJba/ncMMCghmAU2J9bv0QUwJAWWJI7dY
-        YN5q2PibHZ3NLMAn0XH4L1x8x7wnUKepSaz7uZ5pAqPyLERAz0KyaxbCrgWMzKsYxVILinPT
-        U4uNCgyRo3kTIzjxa7nuYJz89oPeIUYmDsZDjBIczEoivEXdf+OFeFMSK6tSi/Lji0pzUosP
-        MVYBfTmRWUo0OR+Ye/JK4g3NDIzMTI1NjI1NTUzJFjY1MjMzsDS1MDUzslAS5y02eBAvJJCe
-        WJKanZpakFoEs5yJg1OqgSnWJtVBcI9VSByD1NuXv2TifLRZz2bMujfp5fUVxsIZx6X8jDib
-        cviE7SrS62JbBSX3Tgu/EvSy9K9zTFnsvZ5LWY7bLwTbe//oaLf5JPb114+N7JNrfEKuv+Rv
-        D3zPUMY2VfTEwpyo3jSTFEOvI5s/baqJKokwvRe6d+qSXEaezPv2zNknpnZHVyXP/VUn+v2+
-        04RltsJ3H0h/Px838aoyz+Lri5UUDxWvWmbrr35MJljEeHMQX1tqHPfkJ6anFi2/w6l9yu9w
-        IdvX24UM1/Q/Z2isOPSpvPRV0YLva1MFL4jfnGZZ5Hf8123hFPu1rLfF3zMu3escOln0xQ2W
-        WHuuTxMOrunZmWJ+ZlP/TiWW4oxEQy3mouJEAOs62rDKBAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201222015704epcms2p643f0c5011064a7ce56b08331811a8509
-References: <e9b2479d0371e3cbe8aeb6c90ffb5d72@codeaurora.org>
-        <20201222015704epcms2p643f0c5011064a7ce56b08331811a8509@epcms2p6>
-        <20201222015854epcms2p1bdc30b8fab8ef01502451b75e7fbaf49@epcms2p1>
-        <CGME20201222015704epcms2p643f0c5011064a7ce56b08331811a8509@epcms2p6>
+        Tue, 12 Jan 2021 20:40:50 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 590A3C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 17:40:10 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id c22so417492pgg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 17:40:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I0c6HHoktXki3GZbMqs3WroLaVoqrCxFNA0EKtNCuyI=;
+        b=bmfJtT5Ab3iuEMPkkGQIC6QXCxOJRTnNRr15T3O0NkEyhaOqKve4fLbPntIVv6Y9f9
+         NWRIQH6dswLJYLp6XA7ztbbGjZhcUgdS/OOhHo2zpVJroaWxcnqcU2YEwX75RnPO1/ii
+         k2pQLuOXd+yjpPP6EnndoEhHu39lgQE0AtjrYXpZvJkR7CJO+bN06vHoRTtqd68wN/qk
+         LN+8w3ZdRLcLaYWvwqhODiNZmlVmaMgczsMsUF2WT17oK5jb2Nv00cn+fDStkxdCTK1a
+         kLqfYGvizIgy+Dg55HlIYMPBdc1mDflB68VMAtZ3GBTlE+Pi51t6U8rCKkEqCIhoTL2Y
+         4fhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I0c6HHoktXki3GZbMqs3WroLaVoqrCxFNA0EKtNCuyI=;
+        b=HMjqv1H0iKNSEgvBX8Mwgz1C5gnJMtYsbIHce70k/RSpIXK2WvSkdJbyanvyoCTFji
+         IiUn4fXj7JJHFjmMJGupB3RpYdFAMjSmSeADxQYTfXyZiWCIjDbFEr2eEKa6Jh9V/Gjg
+         6NvSHplvdUm1eq4gGjmfhkrhgrRonFkJQkWqzRF8xJDkRI19+CIR4haJ9zZD6mP0EPN8
+         7B5CZHtF+tgY/SoUFZq6g/vX0tTM+wN/7YqyTSD/BSnjXyvuzW/g3TIUZTTS18pJ0VtN
+         V7oY8yu0SQ8ArGyVTGkeBaasZhxFytMiarEN/3t3REw2VOSsqspOOJ05KTm/yNySkMP9
+         1PqA==
+X-Gm-Message-State: AOAM530ZAaFBjCI1Vd9EHnfHJPsUc6Ho+7w53eGqMWTqRWH1qYMIQBAM
+        uWXhVzZpIJTlTUBhC6Dz5yZVGoZ0x62nVaxnqY22SQ==
+X-Google-Smtp-Source: ABdhPJyw6Mz+MPpx9tD2Z77Xsr6+ygudw61mE7415SNo1Ix7CMwzPxpla3/gtO13mI9AMuHLfPL8nqGo/ir2++CbxhI=
+X-Received: by 2002:a63:1142:: with SMTP id 2mr1905914pgr.263.1610502009086;
+ Tue, 12 Jan 2021 17:40:09 -0800 (PST)
+MIME-Version: 1.0
+References: <20210112205542.1375847-1-natechancellor@gmail.com>
+ <202101130859.JSORPQUn-lkp@intel.com> <20210113013130.GA3446359@ubuntu-m3-large-x86>
+In-Reply-To: <20210113013130.GA3446359@ubuntu-m3-large-x86>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 12 Jan 2021 17:39:57 -0800
+Message-ID: <CAKwvOdnx99YTGhP-mH-9E6YTLLUfauuteFtqZSeXLv5Vy+XowA@mail.gmail.com>
+Subject: Re: [PATCH] ubsan: Implement __ubsan_handle_alignment_assumption
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Can Guo,
+On Tue, Jan 12, 2021 at 5:31 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Wed, Jan 13, 2021 at 08:39:52AM +0800, kernel test robot wrote:
+> > Hi Nathan,
+> >
+> > I love your patch! Perhaps something to improve:
+> >
+> > [auto build test WARNING on 7c53f6b671f4aba70ff15e1b05148b10d58c2837]
+> >
+> > url:    https://github.com/0day-ci/linux/commits/Nathan-Chancellor/ubsan-Implement-__ubsan_handle_alignment_assumption/20210113-055714
+> > base:    7c53f6b671f4aba70ff15e1b05148b10d58c2837
+> > config: arm64-randconfig-r031-20210112 (attached as .config)
+> > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 32bcfcda4e28375e5a85268d2acfabcfcc011abf)
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # install arm64 cross compiling tool for clang build
+> >         # apt-get install binutils-aarch64-linux-gnu
+> >         # https://github.com/0day-ci/linux/commit/775adad26a60878926c0ee6cd460a1375bbe51e6
+> >         git remote add linux-review https://github.com/0day-ci/linux
+> >         git fetch --no-tags linux-review Nathan-Chancellor/ubsan-Implement-__ubsan_handle_alignment_assumption/20210113-055714
+> >         git checkout 775adad26a60878926c0ee6cd460a1375bbe51e6
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All warnings (new ones prefixed by >>):
+> >
+> >    lib/ubsan.c:192:6: warning: no previous prototype for function '__ubsan_handle_add_overflow' [-Wmissing-prototypes]
+> >    void __ubsan_handle_add_overflow(void *data,
+> >         ^
+> >    lib/ubsan.c:192:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> >    void __ubsan_handle_add_overflow(void *data,
+> >    ^
+> >    static
+> >    lib/ubsan.c:200:6: warning: no previous prototype for function '__ubsan_handle_sub_overflow' [-Wmissing-prototypes]
+> >    void __ubsan_handle_sub_overflow(void *data,
+> >         ^
+> >    lib/ubsan.c:200:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> >    void __ubsan_handle_sub_overflow(void *data,
+> >    ^
+>
+> Given that these are compiler inserted functions, there is not much of a
+> point to having prototypes to them. If people feel shutting these
+> warnings up is worthwhile, we can just add the prototypes right above
+> the function definition in a follow up patch.
 
-> > +static void
-> > +ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb 
-> > *lrbp,
-> > +				  u32 lpn, u64 ppn,  unsigned int transfer_len)
-> > +{
-> > +	unsigned char *cdb = lrbp->ucd_req_ptr->sc.cdb;
-> > +
-> > +	cdb[0] = UFSHPB_READ;
-> 
-> You are only replacing opcode in cdb[0], but ufshcd_add_command_trace() 
-> is
-> counting on lrbp->cmd->cmnd. This will lead to wrong opcode recorded by 
-> UFS ftrace.
-> 
-You're comment is good point for improving this patch. But there is no "case" for HPB read (0xF8) in ufshcd_add_command_trace().
-So I will add codes to support tracing HPB read command in ufshcd_add_command_trace() on next patch.
-
+Same as stpcpy; it would be nice though. ;)
+-- 
 Thanks,
-Daejun
+~Nick Desaulniers
