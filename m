@@ -2,124 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F212F4243
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 04:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 161432F4241
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 04:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728903AbhAMDNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 22:13:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33104 "EHLO
+        id S1728861AbhAMDM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 22:12:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728874AbhAMDNc (ORCPT
+        with ESMTP id S1726499AbhAMDM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 22:13:32 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BBCC061786;
-        Tue, 12 Jan 2021 19:12:52 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id c132so586944pga.3;
-        Tue, 12 Jan 2021 19:12:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=n+GtAJdX02GEobGs/GY4hI1xOo4ulcWjQuscSmciDpA=;
-        b=nSaZ1ABEqPUOTcU+VP9TtnSmHLljgDsCErzkwBQhku4uuJWzXnLxU6iWNrGrMj+xrl
-         hprOlTkdSOyiE/kd6A7Q24LAyNMAptoAgjdEngZETNoF8LZImoZb9ra/qzECPkETvJwS
-         /EqjXJepj6qnrm2AS8cR2QL63jsACbDsXx3TiANJWBq5OFsd0/VSn8wlrgz7sx2Xv9+b
-         kQnmp8NVYc5BvQOnL2zdBHwap1XABHTpUZOHuh3PuA+LfD0GZ6NaUTsosDxcMqol/wyN
-         sx+9TSrsKzMvruWl/xl9KCrLzZKjyDiO0M2+/rQ0njsvN+B31VqXnhfK4Xmz99Rv2Gin
-         /cZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n+GtAJdX02GEobGs/GY4hI1xOo4ulcWjQuscSmciDpA=;
-        b=M4bmthLrH9J1c5WNaUGREJijwrkJhoCNLuLRKi+JR0Gggrvq7bsewNWz9EbQWpMprq
-         e+jqw5hjWx6WQ9UiQ4lAUJsJzj01iNu70Zk5YFb6XlyszTy3bNVQERKzNZBgK9RmFPjb
-         MxAVjNAJyxIrXv4s1jklSKxM62HaeBqVMQ8FhMoL/8LPX1FZ4/TsLZoBEZSTxsKHq8ao
-         pyfhis79mexqNRpeTxKQPbfSyLCis0VoVCAFN7LDp9WIjFxQ8qGitRLyhivPaqbjddVj
-         t5RAujvufqrxFSKDV26MtpnuMSV+nE6f1GUFKP0EJWQ+zyBFZ0qRcahK2H7yDngrGrQS
-         8ZCg==
-X-Gm-Message-State: AOAM533RF+Yt1WtLCFMyGdWVgM/BqpsSYooM6I8XNMEVeWtVmcKP5DhQ
-        vCbhxp85hXzYuD1s90YYKuPaaymo3VYODw==
-X-Google-Smtp-Source: ABdhPJzfVxrsYSEZpfVIxbqsJ7UFxyAo14LDuc/ebkzHfgGyO3dAAFvHId6rl6uMV/cvf7Y84bAU4w==
-X-Received: by 2002:a63:c444:: with SMTP id m4mr44594pgg.420.1610507571950;
-        Tue, 12 Jan 2021 19:12:51 -0800 (PST)
-Received: from [192.168.1.188] ([50.39.189.65])
-        by smtp.googlemail.com with ESMTPSA id i25sm528341pfo.137.2021.01.12.19.12.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 19:12:51 -0800 (PST)
-Subject: Re: [PATCH net-next] udp: allow forwarding of plain (non-fraglisted)
- UDP GRO packets
-To:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210112211536.261172-1-alobakin@pm.me>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Message-ID: <6fb72534-d4d4-94d8-28d1-aabf16e11488@gmail.com>
-Date:   Tue, 12 Jan 2021 19:10:40 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 12 Jan 2021 22:12:56 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2B4C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 19:12:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PYhcFKwwl0qxGd2eQaH6HOLWjqEIHN+Z3aPsFEpq6Q0=; b=ZJYaRnvu9JQb8emm9CbCbaQEL+
+        prn8E19JIq/+NxNLM1ivFdQzHZleH6HBFaq7/LNEy9EmQq26Crka71IevTkkYev66Pe94H5BZ2u4s
+        SffB4QJSn2EkHyN6WeYPPxWP+uWJsj24717am0PrYZP2StcdtGYUdvuThlE8eQa36+2k3ljbRWKnh
+        M8vfQIiqO4ltnOQAR228GlUewfPKa171pq9yIzIHbc8DD9NWbpeXsg1SGknK0INCmnpnx+lRy1SrM
+        ATlRevnatzFrkoF034uRrtF1SaQlSZjQHNQMygEYVmF3gtE/URASAv32oQSjAMc9wjJl2grVq7w/b
+        64uGyV9Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1kzWZS-005j83-8K; Wed, 13 Jan 2021 03:11:50 +0000
+Date:   Wed, 13 Jan 2021 03:11:42 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     huang ying <huang.ying.caritas@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH] mm: Free unused swap cache page in write protection
+ fault handler
+Message-ID: <20210113031142.GM35215@casper.infradead.org>
+References: <20210113024241.179113-1-ying.huang@intel.com>
+ <CAHk-=whn5kVxEitkC0AyzvWRyxbF91rMrO9ZG6JHBNYLckpDDw@mail.gmail.com>
+ <CAC=cRTNpoqHpbtZM1uDvVQYQZVyRbfPh+Dirb=-Xgoh22u_W1A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210112211536.261172-1-alobakin@pm.me>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-MW
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAC=cRTNpoqHpbtZM1uDvVQYQZVyRbfPh+Dirb=-Xgoh22u_W1A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/12/21 1:16 PM, Alexander Lobakin wrote:
-> Commit 9fd1ff5d2ac7 ("udp: Support UDP fraglist GRO/GSO.") actually
-> not only added a support for fraglisted UDP GRO, but also tweaked
-> some logics the way that non-fraglisted UDP GRO started to work for
-> forwarding too.
-> Tests showed that currently forwarding and NATing of plain UDP GRO
-> packets are performed fully correctly, regardless if the target
-> netdevice has a support for hardware/driver GSO UDP L4 or not.
-> Add the last element and allow to form plain UDP GRO packets if
-> there is no socket -> we are on forwarding path.
+On Wed, Jan 13, 2021 at 11:08:56AM +0800, huang ying wrote:
+> On Wed, Jan 13, 2021 at 10:47 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Tue, Jan 12, 2021 at 6:43 PM Huang Ying <ying.huang@intel.com> wrote:
+> > >
+> > > So in this patch, at the end of wp_page_copy(), the old unused swap
+> > > cache page will be tried to be freed.
+> >
+> > I'd much rather free it later when needed, rather than when you're in
+> > a COW section.
 > 
-> Plain UDP GRO forwarding even shows better performance than fraglisted
-> UDP GRO in some cases due to not wasting one skbuff_head per every
-> segment.
-> 
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> ---
->   net/ipv4/udp_offload.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-> index ff39e94781bf..9d71df3d52ce 100644
-> --- a/net/ipv4/udp_offload.c
-> +++ b/net/ipv4/udp_offload.c
-> @@ -460,12 +460,13 @@ struct sk_buff *udp_gro_receive(struct list_head *head, struct sk_buff *skb,
->   	if (skb->dev->features & NETIF_F_GRO_FRAGLIST)
->   		NAPI_GRO_CB(skb)->is_flist = sk ? !udp_sk(sk)->gro_enabled: 1;
->   
-> -	if ((sk && udp_sk(sk)->gro_enabled) || NAPI_GRO_CB(skb)->is_flist) {
-> +	if (!sk || (sk && udp_sk(sk)->gro_enabled) ||
-> +	    NAPI_GRO_CB(skb)->is_flist) {
->   		pp = call_gro_receive(udp_gro_receive_segment, head, skb);
->   		return pp;
->   	}
->   
+> Unused swap cache isn't unused file cache.  Nobody can reuse them
+> directly before freeing them firstly.  It will make COW a little
+> faster via keeping them.  But I think the overhead to free them isn't
+> high.  While keeping them in system will confuse users (users will
+> expect file cache to use free memory, but not expect unused swap cache
+> to use much free memory), make the swap space more fragmented, and add
+> system overall overhead (scanning LRU list, etc.).
 
-The second check for sk in "(sk && udp_sk(sk)->gro_enabled)" is 
-redundant and can be dropped. You already verified it is present when 
-you checked for !sk before the logical OR.
-
-> -	if (!sk || NAPI_GRO_CB(skb)->encap_mark ||
-> +	if (NAPI_GRO_CB(skb)->encap_mark ||
->   	    (skb->ip_summed != CHECKSUM_PARTIAL &&
->   	     NAPI_GRO_CB(skb)->csum_cnt == 0 &&
->   	     !NAPI_GRO_CB(skb)->csum_valid) ||
-> 
-
+Couldn't we just move it to the tail of the LRU list so it's reclaimed
+first?  Or is locking going to be a problem here?
