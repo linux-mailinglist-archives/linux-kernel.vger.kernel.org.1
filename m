@@ -2,139 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9263D2F469D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 116862F46AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbhAMIgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:36:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726723AbhAMIgs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:36:48 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB64C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:36:07 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kzbdF-0006KQ-PH; Wed, 13 Jan 2021 09:35:57 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kzbdE-00073P-23; Wed, 13 Jan 2021 09:35:56 +0100
-Date:   Wed, 13 Jan 2021 09:35:53 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Philipp Rosenberger <p.rosenberger@kunbus.com>
-Cc:     linux-rtc@vger.kernel.org, dan.carpenter@oracle.com,
-        biwen.li@nxp.com, lvb@xiphos.com, bruno.thomsen@gmail.com,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] rtc: pcf2127: Disable Power-On Reset Override
-Message-ID: <20210113083553.vsrc5xksssmpdw2f@pengutronix.de>
-References: <20210104161910.9144-1-p.rosenberger@kunbus.com>
- <20210104161910.9144-2-p.rosenberger@kunbus.com>
- <20210112192633.yl7nx474r6njfynd@pengutronix.de>
- <8bd2f360-c43d-10a4-58ef-804833de4779@kunbus.com>
+        id S1726700AbhAMIlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:41:22 -0500
+Received: from mga01.intel.com ([192.55.52.88]:56042 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726634AbhAMIlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 03:41:21 -0500
+IronPort-SDR: XNLsjDIDMZ0eVnkJ3oIFo3i5hF7tnrjl7WGxW/XVfRuN6LAjwIbSXbYstgZkRcgXoRhmklvMVi
+ TX54H8FdF35A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="196807315"
+X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
+   d="scan'208";a="196807315"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 00:39:32 -0800
+IronPort-SDR: y6c/uPMlHWU9i8L6dyLaduYNUjuU3S2kRoIXIr/sJfBiIbfWdEm4uJVPTAkDrACCwaLPpAaBUv
+ FYPYQ0WaOB6A==
+X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
+   d="scan'208";a="353374255"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 00:39:28 -0800
+Date:   Wed, 13 Jan 2021 10:36:25 +0200 (EET)
+From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+cc:     tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+        lgirdwood@gmail.com, ranjani.sridharan@linux.intel.com,
+        kai.vehmanen@linux.intel.com, daniel.baluta@nxp.com,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Marcin Rajwa <marcin.rajwa@linux.intel.com>,
+        broonie@kernel.org, Keyon Jie <yang.jie@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Payal Kshirsagar <payalskshirsagar1234@gmail.com>,
+        "moderated list:SOUND - SOUND OPEN FIRMWARE SOF DRIVERS" 
+        <sound-open-firmware@alsa-project.org>
+Subject: Re: [PATCH v4 3/3] ASoC: SOF: Intel: hda: Avoid checking jack on
+ system suspend
+In-Reply-To: <20210112181128.1229827-3-kai.heng.feng@canonical.com>
+Message-ID: <alpine.DEB.2.22.394.2101130932480.864696@eliteleevi.tm.intel.com>
+References: <20210112181128.1229827-1-kai.heng.feng@canonical.com> <20210112181128.1229827-3-kai.heng.feng@canonical.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yapg2yybic44ha35"
-Content-Disposition: inline
-In-Reply-To: <8bd2f360-c43d-10a4-58ef-804833de4779@kunbus.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---yapg2yybic44ha35
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, 13 Jan 2021, Kai-Heng Feng wrote:
 
-On Wed, Jan 13, 2021 at 09:18:31AM +0100, Philipp Rosenberger wrote:
-> Hi Uwe,
->=20
-> On 12.01.21 20:26, Uwe Kleine-K=F6nig wrote:
-> > Hello,
-> >=20
-> > On Mon, Jan 04, 2021 at 05:19:09PM +0100, Philipp Rosenberger wrote:
-> > > If the PCF2127/2129 has lost all power and is then powered again it g=
-oes
-> > > into "Power-On Reset Override" mode. In this mode the RTC seems to wo=
-rk
-> > > fine. Also the watchdog can be configured. The watchdog timer counts =
-as
-> > > expected and the WDTF (watchdog timer flag) gets set. But no interrupt
-> > > is generated on the INT pin. The same applies to the alarm function.
-> > >=20
-> > > The POR_OVRD bit on the Control_1 register must be cleared first. In
-> > > some cases the bootloader or firmware might have done this already. B=
-ut
-> > > we clear the bit nevertheless to guarantee correct behavior the
-> > > watchdog and alarm function.
-> >=20
-> > I don't understand this. The reference manual tells us about this bit:
-> >=20
-> > | The POR duration is directly related to the crystal oscillator
-> > | start-up time. Due to the long start-up times experienced by these
-> > | types of circuits, a mechanism has been built in to disable the POR
-> > | and therefore speed up the on-board test of the device.
-> > | The setting of the PORO mode requires that POR_OVRD in register
-> > | Control_1 is set logic 1 and that the signals at the interface pins
-> > | SDA/CE and SCL are toggled as illustrated in Figure 18.
-> >=20
-> > So this means that with the bit set (i.e. with this patch added) after a
-> > power-on the oscillator isn't properly reset. This means the chip might
-> > not work correctly, right? Does "speed up the on-board test" suggest,
-> > this is a feature that is to be used while testing the chip and not for
-> > production use? You missed to ensure that the requested toggling is
-> > done. Did you test how much time this actually saves? I doubt it is
-> > worth to trade correct operation for quicker startup time is the thing
-> > we want here.
-> >=20
-> > If you still think this is a good idea I guess you need a much better
-> > commit log (and code comment).
->=20
-> Yes I guess the commit log and the comment are not good enough. I took me=
- a
-> long time to find what was wrong with my setup until I realized the the P=
-ORO
-> was the problem. I find the description in the manual not very clear. But
-> from my tests and from the description in Table 7 Bit 3 it is pretty clear
-> that the PORO bit should not be set during normal operation.
+> System takes a very long time to suspend after commit 215a22ed31a1
+> ("ALSA: hda: Refactor codec PM to use direct-complete optimization"):
+[...]
+> [  321.262505] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
+> [  328.426919] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
+> [  329.490933] ACPI: EC: interrupt blocked
+> 
+> That commit keeps the codec suspended during the system suspend. However,
+> mute/micmute LED will clear codec's direct-complete flag by
+> dpm_clear_superiors_direct_complete().
 
-Ah, I misunderstood your intention. I though you want to enable this
-bit, after rereading the commit log and patch I don't know why though. I
-think the part "If the PCF2127/2129 has lost all power and is then
-powered again it goes into "Power-On Reset Override" mode." is wrong in
-general. So there is still something to improve (which we seem to agree
-on). So I look forward to your v2.
+thanks Kai-Heng. This indeed explains why the regression is only seen on 
+some systems (those with mute/micmute LED).
 
-Best regards
-Uwe
+> This doesn't play well with SOF driver. When its runtime resume is
+> called for system suspend, hda_codec_jack_check() schedules
+> jackpoll_work which uses snd_hdac_is_power_on() to check whether codec
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+The commit explanation is a bit long, but this is indeed the problem. 
+jackpoll_work() is common code (also used by snd-hda-intel) and SOF should 
+align to snd-hda-intel and not call this directly to check jack status,
+and especially not when going to system suspend.
 
---yapg2yybic44ha35
-Content-Type: application/pgp-signature; name="signature.asc"
+There are a lot of details related to exact conditions when this problem 
+triggers, but in the end, this is the main point.
+ 
+> When direct-complete path is taken, snd_hdac_is_power_on() returns true
+> and hda_jackpoll_work() is skipped by accident. So this is still not
+> correct.
 
------BEGIN PGP SIGNATURE-----
+This doesn't really affect correctness of the patch, but I'm not sure if 
+"accident" is the best characterization. This just explains why the bug 
+was not hit in all cases.
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/+sOYACgkQwfwUeK3K
-7AltVgf+NG398rmrZEjGqF8NdcKRddAozUAdnEXpwldJ6pbvTOxfT8hf1QOfoh0n
-IyReFuN2K6olAoehfu54IIcsncafsmpfGLk7dsip0CFcMd6vyLH9KwtOvR1Uw+P2
-sJXZj+h09J6/ioucVgcbmwC5xBYqSYjJ7IAhALuHWD4S3I+vSTIxbR8wjw8ckdDk
-Sdk/ebQrPZF7HoS4IU9th9VUmEf9CiAlgOi32JHkBSrVIsqaVVmKDnxtWz0m8Vm8
-51VK2/3cFAu7cj0PPujbqLgEvAPIslsmxS4z7y8vKB0+0/D8ns1kT4ZLCTt5JiSS
-GCGCDqW3Wk+DhtbL1LRIhX5qGWPh6Q==
-=fhGE
------END PGP SIGNATURE-----
+snd_hdac_is_power_on() is called in a few places:
+ - hda_jackpoll_work()
+ - snd_hda_bus_reset_codecs()
+ - snd_hda_update_power_acct()
 
---yapg2yybic44ha35--
+In first two, the current logic seems appropriate (if runtime-pm is 
+disabled, the action guarded by is_power_on() should not be taken). The 
+third case seems suspicious and not sure if current is_power_on()
+is appropriate.
+
+So it's not quite clear whether hdaudio.h:snd_hdac_is_power_on() is
+wrong or not. But that's now a separate discussion to have, and not 
+related to this patchset anymore.
+
+> Because devices suspend in reverse order (i.e. child first), it doesn't
+> make much sense to resume an already suspended codec from audio
+> controller. So avoid the issue by making sure jackpoll isn't used in
+> system PM process.
+
+The commit explanation is a bit long, but it is probably useful to have 
+the background included. 
+
+For the whole series:
+
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+
+Br, Kai
