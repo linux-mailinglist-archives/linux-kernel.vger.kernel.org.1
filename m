@@ -2,131 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB4F2F4C22
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A291F2F4C2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbhAMNR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 08:17:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56652 "EHLO mx2.suse.de"
+        id S1725912AbhAMNZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 08:25:04 -0500
+Received: from mga01.intel.com ([192.55.52.88]:46597 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725809AbhAMNR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 08:17:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DD262B803;
-        Wed, 13 Jan 2021 13:16:44 +0000 (UTC)
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Qian Cai <cai@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH 3/3] mm, slab, slub: stop taking cpu hotplug lock
-Date:   Wed, 13 Jan 2021 14:16:34 +0100
-Message-Id: <20210113131634.3671-4-vbabka@suse.cz>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210113131634.3671-1-vbabka@suse.cz>
-References: <20210113131634.3671-1-vbabka@suse.cz>
+        id S1725681AbhAMNZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 08:25:03 -0500
+IronPort-SDR: 1kz0cKtco43MR/jXMHW0BEKIAHKKtfi5f20AqH8vqjlFap0EyI4cqQ9JjFqCeS7Hba2KvaL0jV
+ mSVXcX5aC41Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="196836962"
+X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
+   d="scan'208";a="196836962"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 05:23:17 -0800
+IronPort-SDR: RD+Ub80QGEiN/6IouSEmhG6/MxR+JvKF9uSFPztpT9gX2Gh2hXdr8B6zNjX/fZbyS9s3lQReJF
+ RubQhHVF2VCA==
+X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
+   d="scan'208";a="353470294"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 05:23:11 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id EA5C2207BF; Wed, 13 Jan 2021 15:23:09 +0200 (EET)
+Date:   Wed, 13 Jan 2021 15:23:09 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org, mchehab@kernel.org,
+        yong.zhi@intel.com, bingbu.cao@intel.com, tian.shu.qiu@intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com,
+        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
+        niklas.soderlund+renesas@ragnatech.se,
+        prabhakar.mahadev-lad.rj@bp.renesas.com, slongerbeam@gmail.com,
+        heikki.krogerus@linux.intel.com
+Subject: Re: [PATCH v5 09/15] lib/test_printf.c: Use helper function to
+ unwind array of software_nodes
+Message-ID: <20210113132309.GK11878@paasikivi.fi.intel.com>
+References: <20210107132838.396641-1-djrscally@gmail.com>
+ <20210107132838.396641-10-djrscally@gmail.com>
+ <X/kOYeZtkCspoAC5@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/kOYeZtkCspoAC5@pendragon.ideasonboard.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SLAB has been using get/put_online_cpus() around creating, destroying and
-shrinking kmem caches since 95402b382901 ("cpu-hotplug: replace per-subsystem
-mutexes with get_online_cpus()") in 2008, which is supposed to be replacing
-a private mutex (cache_chain_mutex, called slab_mutex today) with system-wide
-mechanism, but in case of SLAB it's in fact used in addition to the existing
-mutex, without explanation why.
+Hello all,
 
-SLUB appears to have avoided the cpu hotplug lock initially, but gained it due
-to common code unification, such as 20cea9683ecc ("mm, sl[aou]b: Move
-kmem_cache_create mutex handling to common code").
+On Sat, Jan 09, 2021 at 04:01:05AM +0200, Laurent Pinchart wrote:
+> Hi Peter, Steven and Sergey,
+> 
+> Could you please let us know if you're fine with this patch getting
+> merged in v5.12 through the linux-media tree ? The cover letter contains
+> additional details (in a nutshell, this is a cross-tree series and we
+> would like to avoid topic branches if possible).
 
-Regardless of the history, checking if the hotplug lock is actually needed
-today suggests that it's not, and therefore it's better to avoid this
-system-wide lock and the ordering this imposes wrt other locks (such as
-slab_mutex).
+I'll proceed to merge this patch through the media tree.
 
-Specifically, in SLAB we have for_each_online_cpu() in do_tune_cpucache()
-protected by slab_mutex, and cpu hotplug callbacks that also take the
-slab_mutex, which is also taken by the common slab function that currently also
-take the hotplug lock. Thus the slab_mutex protection should be sufficient.
-Also per-cpu array caches are allocated for each possible cpu, so not affected
-by their online/offline state.
+Thanks.
 
-In SLUB we have for_each_online_cpu() in functions that show statistics and are
-already unprotected today, as racing with hotplug is not harmful. Otherwise
-SLUB relies on percpu allocator. The slub_cpu_dead() hotplug callback takes the
-slab_mutex.
-
-To sum up, this patch removes get/put_online_cpus() calls from slab as it
-should be safe without further adjustments.
-
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/slab_common.c | 10 ----------
- 1 file changed, 10 deletions(-)
-
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index e040b3820a75..0ca99ebefbf2 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -310,8 +310,6 @@ kmem_cache_create_usercopy(const char *name,
- 	const char *cache_name;
- 	int err;
- 
--	get_online_cpus();
--
- 	mutex_lock(&slab_mutex);
- 
- 	err = kmem_cache_sanity_check(name, size);
-@@ -360,8 +358,6 @@ kmem_cache_create_usercopy(const char *name,
- out_unlock:
- 	mutex_unlock(&slab_mutex);
- 
--	put_online_cpus();
--
- 	if (err) {
- 		if (flags & SLAB_PANIC)
- 			panic("kmem_cache_create: Failed to create slab '%s'. Error %d\n",
-@@ -487,8 +483,6 @@ void kmem_cache_destroy(struct kmem_cache *s)
- 	if (unlikely(!s))
- 		return;
- 
--	get_online_cpus();
--
- 	mutex_lock(&slab_mutex);
- 
- 	s->refcount--;
-@@ -503,8 +497,6 @@ void kmem_cache_destroy(struct kmem_cache *s)
- 	}
- out_unlock:
- 	mutex_unlock(&slab_mutex);
--
--	put_online_cpus();
- }
- EXPORT_SYMBOL(kmem_cache_destroy);
- 
-@@ -521,12 +513,10 @@ int kmem_cache_shrink(struct kmem_cache *cachep)
- {
- 	int ret;
- 
--	get_online_cpus();
- 
- 	kasan_cache_shrink(cachep);
- 	ret = __kmem_cache_shrink(cachep);
- 
--	put_online_cpus();
- 	return ret;
- }
- EXPORT_SYMBOL(kmem_cache_shrink);
 -- 
-2.29.2
+Kind regards,
 
+Sakari Ailus
