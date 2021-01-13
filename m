@@ -2,189 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5D92F436A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A688C2F4369
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbhAME4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 23:56:33 -0500
-Received: from mail-eopbgr690042.outbound.protection.outlook.com ([40.107.69.42]:12578
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726342AbhAME4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 23:56:32 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LyeAbEO+UsoNaWnE2xHCEV4pDzwkcGTiudKDKlQ52QeF6bTPadTzf7DgiWUdnWMNOW0UhJBsy0CJZsu0cMk6qQOx2EOX8lwZajU3u7wwXQsA9OlJ+GoOT4yod1zeSCHhArf4uHana/99Qom1T+voKrz4QNMOVlTeh8SNKmJ+PRwDxxFTMNc1GJ0Dq6COe37x1YS0jjrAAavWM6ldagET9avOh3fFOqOKl+B7b/7yC8WU0biU0njDM4j4LmvD+GRr16xJ6HHLXhMig1zJlkRvhJIdTXeAGR4XInmnvEPmWNQZ18DbAZfqp3QoBdv3dXOvx/orGyp3tqkqs89Gf4EDHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=El8SAMhbM+uzfbmXAc6qrXp3sVP5MSyxglbXJnm1UCE=;
- b=Phme0EgXGRY6JctSYyvqBX4yzTjMm6vsSnJ0Y6N/tv3f5rlzUlvAD/nlih9q6aZFA/IcQdFCjYBvnZYysOMe2v8JSna2wbNipjJ4a19hndDveVGGgclBxiI9BmI6Bsn9S7qVH2Q6kvNYm/HNE5HtYCJS5hJImD0NDcK8lNT/gQbFoGXHvLi/Oj1mPosvydzKJQYvADKM2F01y+IujhbrxA+/5eulo6ydUyZDESLMdJBZRXUubIY7IkI7LGO+6enVsJO3rkLcFdALWy+PTaNSgw/V+PTm/xINAlQ6WgtgbymXrY3zDLwfqkRa6RU1gkvQAIUUmXpvg5grb31BBuwmlA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=El8SAMhbM+uzfbmXAc6qrXp3sVP5MSyxglbXJnm1UCE=;
- b=UHv2mIa1jSY/ACzAXILiotEUNJX42aFU/fA6pEfQg58tEoxhxPNVso8Qz/KzmSPQR4m5xI+CFvln1+ImXueMe3Os7cGGV0t4S+1hsVGJ2G8VpgDZEjz0SG1X9oBc2J4hrWy2PZVH4PWg6/NiPqOlXVFQUwmIpvg9ylp2XUBS0j8=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from CY4PR12MB1494.namprd12.prod.outlook.com (2603:10b6:910:f::22)
- by CY4PR1201MB2487.namprd12.prod.outlook.com (2603:10b6:903:d0::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.11; Wed, 13 Jan
- 2021 04:55:43 +0000
-Received: from CY4PR12MB1494.namprd12.prod.outlook.com
- ([fe80::25d2:a078:e7b:a819]) by CY4PR12MB1494.namprd12.prod.outlook.com
- ([fe80::25d2:a078:e7b:a819%11]) with mapi id 15.20.3763.010; Wed, 13 Jan 2021
- 04:55:42 +0000
-Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by
- VM instructions
-To:     Sean Christopherson <seanjc@google.com>,
-        Andy Lutomirski <luto@amacapital.net>
-Cc:     Bandan Das <bsd@redhat.com>, Maxim Levitsky <mlevitsk@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com, joro@8bytes.org,
-        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, dgilbert@redhat.com
-References: <jpgturmgnu6.fsf@linux.bootlegged.copy>
- <8FAC639B-5EC6-42EE-B886-33AEF3CD5E26@amacapital.net>
- <X/3i5Pjg1gEwupJD@google.com>
-From:   Wei Huang <wei.huang2@amd.com>
-Message-ID: <551670d3-3a0b-1a70-c586-6ab41b83094f@amd.com>
-Date:   Tue, 12 Jan 2021 22:55:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-In-Reply-To: <X/3i5Pjg1gEwupJD@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [70.113.46.183]
-X-ClientProxiedBy: SN6PR2101CA0027.namprd21.prod.outlook.com
- (2603:10b6:805:106::37) To CY4PR12MB1494.namprd12.prod.outlook.com
- (2603:10b6:910:f::22)
+        id S1726329AbhAME40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 23:56:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726202AbhAME4Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 23:56:24 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA577C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:55:43 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id b3so498921pft.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:55:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mJKCusvpWtBfKn+y4mKbIiTTyEFF53qpNFGSZqmXVHU=;
+        b=AYTgJ9tRKgK3HRW4hrmMHj7DhGnGUEPMNrO18Lx+slvosqt5RDGqMOsTVNyNUVVTCo
+         v1pZVH7seXJuz8HaKjdXfJ0lu1ZsmXbEMoDxpSZ/JSrF1Xw0EeiP9M0EEIScTOoKzJG5
+         woivZntD0iYcGQ8Gid/i9jTxPu3iGVOMIjqIaSd367us82Nkt/bHZYjrWdKudDQ2CX3V
+         kaZyFOPTicOcFAZ5XTx/WGX9MV5XaLfCJOwcxELeXwitDZPj0xChg15Q6vTR5IiJbeZ9
+         YmoVMSLr+9m8EffMMzXJpT45GB4+QFPV1tXCSQGpCMDVnwlSKbsKzgXmkYu5caRB+gbe
+         oGZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mJKCusvpWtBfKn+y4mKbIiTTyEFF53qpNFGSZqmXVHU=;
+        b=YGj6L878qpDUauBVicj0K+bgIyYem6yWdox8YDQ4632y0Zmmw3m5jKvAyPct/yvfL3
+         kcqDVPJztm6qaNCqeM2wwAaxhcvNijHzb67c8hsvbHlYU6CcxZLrdr9i7wasdS1TfRhc
+         TXBBPtPuKubKIb/TpGCvrdJH9v1+wxYjrXsoMyYWUySdcGaWFlJISGF2sf04+JekyJM8
+         3lcdUkaYSnSv5DXcztGLPNKYQPNZbqcArWpyoo/C++TyWyZ+F6wYDjzyYAcwFAhFtV9b
+         TT98vbBNpGzeM8rMvrLTUreAE7TrTej20DMiH3o5TsmmHVGtJy+nm9P7Y63Z4K/FY9ex
+         TdPg==
+X-Gm-Message-State: AOAM530uVtW4AcnkQChMIo+lDwctbgWlySR/d3tyDGYgTFu6khe5a/Fo
+        /5QPEelu1uikQt9raaMvrY/m9w==
+X-Google-Smtp-Source: ABdhPJwTqmk4iglhe8G2D21L3QujLbLeXjPAv+epZYprG0ZGWLUyfbPvPghFsk9qSH1TBXR8r1PVFg==
+X-Received: by 2002:a63:e246:: with SMTP id y6mr383697pgj.412.1610513743224;
+        Tue, 12 Jan 2021 20:55:43 -0800 (PST)
+Received: from localhost ([122.172.85.111])
+        by smtp.gmail.com with ESMTPSA id a198sm820054pfa.7.2021.01.12.20.55.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 12 Jan 2021 20:55:42 -0800 (PST)
+Date:   Wed, 13 Jan 2021 10:25:40 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH V3 2/2] scripts: dtc: Build fdtoverlay and fdtdump tools
+Message-ID: <20210113045540.s2hg2dxldsyelzkd@vireshk-i7>
+References: <CAK7LNAQT5nVHGAZDhj4dct0v8UMzQ+-mdfBXJsfedR-7mZTnyA@mail.gmail.com>
+ <72c3a4f63dde3c172c11153e9a5b19fb6cdb4498.1610000585.git.viresh.kumar@linaro.org>
+ <1d9369aa-b7aa-6d06-0d44-6ef21bc639e3@gmail.com>
+ <20210112050818.s6ctvd6ihd2dt2d2@vireshk-i7>
+ <3f0c733a-641f-290f-41b8-62ca22e355b7@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.38] (70.113.46.183) by SN6PR2101CA0027.namprd21.prod.outlook.com (2603:10b6:805:106::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.0 via Frontend Transport; Wed, 13 Jan 2021 04:55:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9e04b7f8-55c0-4a60-555e-08d8b77f7b45
-X-MS-TrafficTypeDiagnostic: CY4PR1201MB2487:
-X-Microsoft-Antispam-PRVS: <CY4PR1201MB248770B699DC88E6A20B5426CFA90@CY4PR1201MB2487.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iMpO3gGB1uXDttcWOZYx2Rc/bZvyDVVSba9k54c5+dmeJziQUTwXnPCRrfzev1P1puff5BaRy6QvP5tcNNpQSLFd2YNFKC+lUyQG+N6xaBGBd5gPa4Fy0dtIPrYZm6+yS/rs+gHuhM/nVMUt06kZA1M+khubLKfxSI+JvFd20TKKjlMSMyjvz56/KNN0ZFarE5BIo7UQHib9yTcfAO2ICn/TYocjfY/1HWb3xnqc2KGUkuLzNajlrrBVNF+DjToiEJiG5sv5tKwn4CgFnvHtpwwZ4TNYd3FlroB1ykLhTNNzz63+xE0DVEsOjL5echIB4+6r074UFzrBgx4t4FeBdqfsLla8Y+rVo0Zx2YqkjI/AJhJRcfplqOrKvwwZeDU9JyxPRmFKizvrjvMTS6ztlrHR3r893tKEsHhGu807n/Nq2NbiBTbw57ADBG74RjPRV1bAqU2zMBxmrwmqjFan4GN7Yvh5sOEDsjfq9Z8HzzY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1494.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(39860400002)(136003)(366004)(26005)(16526019)(6486002)(53546011)(2906002)(86362001)(4326008)(186003)(316002)(52116002)(8676002)(2616005)(16576012)(110136005)(478600001)(83380400001)(31696002)(31686004)(36756003)(66946007)(5660300002)(8936002)(66556008)(7416002)(956004)(66476007)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dG5WVG0yVm9WQ3VxZUtJRFhLemR3YTdjYW9JMlZIZTBtVkpqSndvMHBBMUJi?=
- =?utf-8?B?V1RQVy9rWm5kajZaTURGSVRRL3ZPQWdqVTFrVFdkMnBVMjZITFc1eVp4cDNQ?=
- =?utf-8?B?UzV6c3NrUFFwNUt6cTdpamsyNjRLeXpHSUVVc3B6V0RJZ0Q0V3puRXYyZzFl?=
- =?utf-8?B?NnZTenpILzdGSXROREdYSnJyQis2K2ZNSnpTVEhzQWhGWVBtdjh0dlBGNXVt?=
- =?utf-8?B?VjdPRkxpd0czN01KcE9EYmZEVW1INjFVSi9kM2VqQWpGN1BGSGF4QW5pK20z?=
- =?utf-8?B?VS91M3RCd0xCbGZXd2FCZjVGZ2lVcGwyemg4cEhKQnlod0pxeEVYdGtLU1N3?=
- =?utf-8?B?WGptRHZ0WVlnNHljQ1h0WkdLN0RrQXdlbmNiakJuVHAzemRuTjUxZEhvTFlR?=
- =?utf-8?B?VUJ5T1d0VkNuTHFkZ0ZOR1FrSHpReVM4eWVTc1BpSFlvTDdVREFEQVBkQzR0?=
- =?utf-8?B?NHk3cUluRTU2NXBqM1BqSytNazVuRXltVGhtMHk2WnpWWlJCV1Y5dlFudkp5?=
- =?utf-8?B?Q0VzRFNpWTJWS3N4SzY5NUxwTWdDM0xxUU94STUrb21zVjdmWGpST0NjL0FG?=
- =?utf-8?B?K3hnWG1kb3g2WEVGU0lOUGlnN2xXWHV5WlFnZXd6ejFDVDFvRnpIRWRpWGxw?=
- =?utf-8?B?T05Qc2dwT2p4cEExNXloRk1LYzcycHVaTHVVY3Bwb1hIbk1xRWFqMWlDUGxh?=
- =?utf-8?B?Vkd6MzJqdi96bDU3Y2JtajVFNnNLWHFLQ2tTMXozdllrc2UwK1djaXdnL3Uz?=
- =?utf-8?B?alZhSzFWdlVQTzRQWE4zRGpRS3Jmai8yVGFLUVcxNnR5VmJSbjhJUnljTUd2?=
- =?utf-8?B?M1RSaWtsVmRkQS95Mm5jNy9DZnFqeTJzNzNXWEdEOGJuczE2TDZuT0tDTWM4?=
- =?utf-8?B?UUVNcFl3V0xOQ0hNTTEvaHpQdDJkbDRHeGo4NUgrcTFINHBZaHhnazB0UTRr?=
- =?utf-8?B?MHIwbitCWXRBaHRHNGlNeS9PRE1QK1g0VTZHOSs5Z2s1aU9Ia1RNY0JpbGxi?=
- =?utf-8?B?MzVRNHg4MGxQYU9qYW9yM0R2TFBqVnBCSlU2cnQrcmdaVkl4eG9NVzFCNXhq?=
- =?utf-8?B?eFM2K3Y0dEZJWFhMV1h6Z1Z0YkttdzJTTXVaTUVsbEVuK1ptOHhZNjlZWDdT?=
- =?utf-8?B?MklKbjd3Vk9rNGt5U0FPZndOSW5EbnIxUmsrY3lOVW9PQVpYTTB3SmY3b0Vj?=
- =?utf-8?B?VGpGeDg2ZXJIV01VSXdVRFpnUm84YVZIbVNqVzhFaWtHTDEwQzRKak82YTNs?=
- =?utf-8?B?RmF3ZVJhRHFTeVNWN2NUQTNleVh6VGp1UUJLeG10TG1PbUFURkUrWTNxUUxj?=
- =?utf-8?Q?j6Z0K11r1oc5yypXG3ELbWH69ICAIDo+Cz?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1494.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2021 04:55:42.8746
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e04b7f8-55c0-4a60-555e-08d8b77f7b45
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: G8AluK6OPh29JCiLOX5KYbnPQ/eYo6IUdU7cHUSfS4es4usFEs2Zz0pZK15C4a+W
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB2487
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3f0c733a-641f-290f-41b8-62ca22e355b7@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/12/21 11:56 AM, Sean Christopherson wrote:
-> On Tue, Jan 12, 2021, Andy Lutomirski wrote:
->>
->>> On Jan 12, 2021, at 7:46 AM, Bandan Das <bsd@redhat.com> wrote:
->>>
->>> ﻿Andy Lutomirski <luto@amacapital.net> writes:
->>> ...
->>>>>>>> #endif diff --git a/arch/x86/kvm/mmu/mmu.c
->>>>>>>> b/arch/x86/kvm/mmu/mmu.c index 6d16481aa29d..c5c4aaf01a1a 100644
->>>>>>>> --- a/arch/x86/kvm/mmu/mmu.c +++ b/arch/x86/kvm/mmu/mmu.c @@
->>>>>>>> -50,6 +50,7 @@ #include <asm/io.h> #include <asm/vmx.h> #include
->>>>>>>> <asm/kvm_page_track.h> +#include <asm/e820/api.h> #include
->>>>>>>> "trace.h"
->>>>>>>>
->>>>>>>> extern bool itlb_multihit_kvm_mitigation; @@ -5675,6 +5676,12 @@
->>>>>>>> void kvm_mmu_slot_set_dirty(struct kvm *kvm, }
->>>>>>>> EXPORT_SYMBOL_GPL(kvm_mmu_slot_set_dirty);
->>>>>>>>
->>>>>>>> +bool kvm_is_host_reserved_region(u64 gpa) +{ + return
->>>>>>>> e820__mbapped_raw_any(gpa-1, gpa+1, E820_TYPE_RESERVED); +}
->>>>>>> While _e820__mapped_any()'s doc says '..  checks if any part of
->>>>>>> the range <start,end> is mapped ..' it seems to me that the real
->>>>>>> check is [start, end) so we should use 'gpa' instead of 'gpa-1',
->>>>>>> no?
->>>>>> Why do you need to check GPA at all?
->>>>>>
->>>>> To reduce the scope of the workaround.
->>>>>
->>>>> The errata only happens when you use one of SVM instructions in the
->>>>> guest with EAX that happens to be inside one of the host reserved
->>>>> memory regions (for example SMM).
->>>>
->>>> This code reduces the scope of the workaround at the cost of
->>>> increasing the complexity of the workaround and adding a nonsensical
->>>> coupling between KVM and host details and adding an export that really
->>>> doesn’t deserve to be exported.
->>>>
->>>> Is there an actual concrete benefit to this check?
->>>
->>> Besides reducing the scope, my intention for the check was that we should
->>> know if such exceptions occur for any other undiscovered reasons with other
->>> memory types rather than hiding them under this workaround.
->>
->> Ask AMD?
-
-There are several checking before VMRUN launch. The function, 
-e820__mapped_raw_any(), was definitely one of the easies way to figure 
-out the problematic regions we had.
-
->>
->> I would also believe that someone somewhere has a firmware that simply omits
->> the problematic region instead of listing it as reserved.
+On 12-01-21, 12:34, Frank Rowand wrote:
+> On 1/11/21 11:08 PM, Viresh Kumar wrote:
+> > On 11-01-21, 18:44, Frank Rowand wrote:
+> >> On 1/7/21 12:25 AM, Viresh Kumar wrote:
+> >>> We will start building overlays for platforms soon in the kernel and
+> >>> would need these tools going forward. Lets start building them.
+> >>>
+> >>> The fdtoverlay program applies (or merges) one ore more overlay dtb
+> >>> blobs to a base dtb blob. The kernel build system would later use
+> >>> fdtoverlay to generate the overlaid blobs based on platform specific
+> >>> configurations.
+> >>>
+> >>> The fdtdump program prints a readable version of a flat device-tree
+> >>> file. This is a very useful tool to analyze the details of the overlay's
+> >>> dtb and the final dtb produced by fdtoverlay after applying the
+> >>> overlay's dtb to a base dtb.
+> >>
+> >> You can calso dump an FDT with:
+> >>
+> >>    dtc -O dts XXX.dtb
+> >>
+> >> Is this sufficient for the desired functionality, or is there something
+> >> additional in fdtdump that is needed?
+> > 
 > 
-> I agree with Andy, odds are very good that attempting to be precise will lead to
-> pain due to false negatives.
+> comment 1:
 > 
-> And, KVM's SVM instruction emulation needs to be be rock solid regardless of
-> this behavior since KVM unconditionally intercepts the instruction, i.e. there's
-> basically zero risk to KVM.
+> > Not for my usecase at least.
+
+I answered this question here (and yes I could have been more clear):
+
+"is there something additional in fdtdump that is needed?"
+
 > 
+> > 
+> >> If nothing additional needed, and there is no other justification for adding
+> >> another program, I would prefer to leave fdtdump out.
+> > 
+> 
+> comment 2:
+> 
+> > Okay, then I will also remove the stale version of fdtdump which is
+> > already there in kernel since a long time.
+> > 
+> 
+> I'm confused.  I read comment 1 as saying that fdtdump does provide a feature
+> that you need to analyze the dtb created by fdtoverlay.  But I read comment 2
+> as implying that you are accepting that fdtdump will not be added to the
+> Linux kernel source.
 
-Are you saying that the instruction decode before 
-kvm_is_host_reserved_region() already guarantee the instructions #GP hit 
-are SVM execution instructions (see below)? If so, I think this argument 
-is fair.
-
-+	switch (ctxt->modrm) {
-+	case 0xd8: /* VMRUN */
-+	case 0xda: /* VMLOAD */
-+	case 0xdb: /* VMSAVE */
-
-Bandan: What is your thoughts about removing kvm_is_host_reserved_region()?
-
+-- 
+viresh
