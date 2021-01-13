@@ -2,201 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A571D2F50F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4752F50F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728025AbhAMRTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:19:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53156 "EHLO mail.kernel.org"
+        id S1728259AbhAMRTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:19:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727484AbhAMRTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:19:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61A4E23437;
-        Wed, 13 Jan 2021 17:18:27 +0000 (UTC)
+        id S1727484AbhAMRTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 12:19:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 174EA23432;
+        Wed, 13 Jan 2021 17:18:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610558309;
-        bh=T2ryWm/RgQ4JTQ8kAJI8O40dQjLImKZXnrRkXQR5Mjs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PjpqngxqgFOkSDRqwYX+/b6/LxSRXocCno1ihzE+5pggwUuOjgHmzduKfrEPUr9hM
-         P2eQyFlQ7MFZrGXNM4Pt4sDKhJ7fbXJKvJWc5MgQVKWkIvdl5dZYzQitj98Pwfh636
-         2eRk3GIzlbfOSNitwdbagLnkZ9DTld4DZYtiFUwNGL66+7eFbqIe3QZfrTeuuaVjq8
-         jNgkLlGKiSDgtTvcGIg6pgeput/PmK52Y/2cBeoE7lncHotFouBs9zZsAOwutryZT5
-         uATMrbCqWorfEhdXufeWmaeeVodBpe01bwti3wnPLPl6hztjCNKU+7e4g/0G8vT57m
-         hQJ9VvlXxi5Zg==
-Date:   Wed, 13 Jan 2021 19:18:23 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH v3] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
-Message-ID: <X/8rX1yFxiN79QCn@kernel.org>
-References: <20201216134920.21161-1-jarkko@kernel.org>
- <20210105145749.GF28649@zn.tnic>
- <X/zoarV7gd/LNo4A@kernel.org>
- <20210112183550.GK13086@zn.tnic>
+        s=k20201202; t=1610558320;
+        bh=J3ThT5svqpbNq60NwKF+UZW3loRr+WCvQ6JW8Pa+z+A=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=R8S+pvN02iQXicDIkb/2K9LOycTjmAnjb6GtrSmDYs8e3TB6uGFbB5xvKqFSrKRlW
+         l2rla6QL1iNMaii4jy5JO+YT857DhvVxLLq7COo2Fdae+yMTfYQ7O4c3J3Y0iaEAdr
+         /32NRcgXJxvQAXJ3S6tQFHTGBSgAp/KFNUIUO+a5mhmtXlSOOJa38BVlW04qpaPmrB
+         3hDlGyvqmDXDUlfjwOXq8bvC5k0HGh1LiOp4eJzRsXzoWByMgW7bo4KY9alAn6OAyD
+         MUcVdXrhGrwAJDaGyvrlDeTjMmgRE7DE8oo3YQ1LF5w3Q4qwP3Jt17bwCpgpJKg1tO
+         SFieSVyLxomAw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B6FBB3522AC3; Wed, 13 Jan 2021 09:18:39 -0800 (PST)
+Date:   Wed, 13 Jan 2021 09:18:39 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, maz@kernel.org, peterz@infradead.org,
+        tglx@linutronix.de
+Subject: Re: [PATCH 0/2] irq: detect slow IRQ handlers
+Message-ID: <20210113171839.GU2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210112135950.30607-1-mark.rutland@arm.com>
+ <20210113000953.GN2743@paulmck-ThinkPad-P72>
+ <20210113123915.GA19011@C02TD0UTHF1T.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210112183550.GK13086@zn.tnic>
+In-Reply-To: <20210113123915.GA19011@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 07:35:50PM +0100, Borislav Petkov wrote:
-> + paulmck.
-> 
-> On Tue, Jan 12, 2021 at 02:08:10AM +0200, Jarkko Sakkinen wrote:
-> > On Tue, Jan 05, 2021 at 03:57:49PM +0100, Borislav Petkov wrote:
-> > > On Wed, Dec 16, 2020 at 03:49:20PM +0200, Jarkko Sakkinen wrote:
-> > > > Add synchronize_srcu_expedited() to sgx_encl_release() to catch a grace
-> > > > period initiated by sgx_mmu_notifier_release().
-> > > > 
-> > > > A trivial example of a failing sequence with tasks A and B:
-> > > > 
-> > > > 1. A: -> sgx_release()
-> > > > 2. B: -> sgx_mmu_notifier_release()
-> > > > 3. B: -> list_del_rcu()
-> > > > 3. A: -> sgx_encl_release()
-> > > > 4. A: -> cleanup_srcu_struct()
-> > > > 
-> > > > The loop in sgx_release() observes an empty list because B has removed its
-> > > > entry in the middle, and calls cleanup_srcu_struct() before B has a chance
-> > > > to calls synchronize_srcu().
+On Wed, Jan 13, 2021 at 12:39:15PM +0000, Mark Rutland wrote:
+> On Tue, Jan 12, 2021 at 04:09:53PM -0800, Paul E. McKenney wrote:
+> > On Tue, Jan 12, 2021 at 01:59:48PM +0000, Mark Rutland wrote:
+> > > Hi,
 > > > 
-> > > Leading to what? NULL ptr?
+> > > While fuzzing arm64 with Syzkaller (under QEMU+KVM) over a number of releases,
+> > > I've occasionally seen some ridiculously long stalls (20+ seconds), where it
+> > > appears that a CPU is stuck in a hard IRQ context. As this gets detected after
+> > > the CPU returns to the interrupted context, it's difficult to identify where
+> > > exactly the stall is coming from.
 > > > 
-> > > https://lkml.kernel.org/r/X9e2jOWz1hfXVpQ5@google.com
+> > > These patches are intended to help tracking this down, with a WARN() if an IRQ
+> > > handler takes longer than a given timout (1 second by default), logging the
+> > > specific IRQ and handler function. While it's possible to achieve similar with
+> > > tracing, it's harder to integrate that into an automated fuzzing setup.
 > > > 
-> > > already suggested that you should explain the bug better and add the
-> > > splat but I'm still missing that explanation.
+> > > I've been running this for a short while, and haven't yet seen any of the
+> > > stalls with this applied, but I've tested with smaller timeout periods in the 1
+> > > millisecond range by overloading the host, so I'm confident that the check
+> > > works.
+> > > 
+> > > Thanks,
+> > > Mark.
 > > 
-> > OK, I'll try to explain it how I understand the issue.
+> > Nice!
 > > 
-> > Consider this loop in the VFS release hook (sgx_release):
+> > Acked-by: Paul E. McKenney <paulmck@kernel.org>
 > > 
-> > 	/*
-> > 	 * Drain the remaining mm_list entries. At this point the list contains
-> > 	 * entries for processes, which have closed the enclave file but have
-> > 	 * not exited yet. The processes, which have exited, are gone from the
-> > 	 * list by sgx_mmu_notifier_release().
-> > 	 */
-> > 	for ( ; ; )  {
-> > 		spin_lock(&encl->mm_lock);
-> > 
-> > 		if (list_empty(&encl->mm_list)) {
-> > 			encl_mm = NULL;
-> > 		} else {
-> > 			encl_mm = list_first_entry(&encl->mm_list,
-> > 						   struct sgx_encl_mm, list);
-> > 			list_del_rcu(&encl_mm->list);
-> > 		}
-> > 
-> > 		spin_unlock(&encl->mm_lock);
-> > 
-> > 		/* The enclave is no longer mapped by any mm. */
-> > 		if (!encl_mm)
-> > 			break;
-> > 
-> > 		synchronize_srcu(&encl->srcu);
-> > 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
-> > 		kfree(encl_mm);
-> > 	}
-> > 
-> > 
-> > At this point all processes have closed the enclave file, but that doesn't
-> > mean that they all have exited yet.
-> > 
-> > Now, let's imagine that there is exactly one entry in the encl->mm_list.
-> > and sgx_release() execution gets scheduled right after returning from
-> > synchronize_srcu().
-> > 
-> > With some bad luck, some process comes and removes that last entry befoe
-> > sgx_release() acquires mm_lock. The loop in sgx_release() just leaves
-> > 
-> > 		/* The enclave is no longer mapped by any mm. */
-> > 		if (!encl_mm)
-> > 			break;
-> > 
-> > No synchronize_srcu().
-> > 
-> > After writing this, I think that the placement for synchronize_srcu()
-> > in this patch is not best possible. It should be rather that the
-> > above loop would also call synchronize_srcu() when leaving.
-> > 
-> > I.e. the code change would result:
-> > 
-> > 	for ( ; ; )  {
-> > 		spin_lock(&encl->mm_lock);
-> > 
-> > 		if (list_empty(&encl->mm_list)) {
-> > 			encl_mm = NULL;
-> > 		} else {
-> > 			encl_mm = list_first_entry(&encl->mm_list,
-> > 						   struct sgx_encl_mm, list);
-> > 			list_del_rcu(&encl_mm->list);
-> > 		}
-> > 
-> > 		spin_unlock(&encl->mm_lock);
-> > 
-> >                 /* 
-> >                  * synchronize_srcu() is mandatory *even* when the list was
-> >                  * empty, in order make sure that grace periods stays in
-> >                  * sync even when another task took away the last entry
-> >                  * (i.e. exiting process when it deletes its mm_list).
-> >                  */
-> > 		synchronize_srcu(&encl->srcu);
-> > 
-> > 		/* The enclave is no longer mapped by any mm. */
-> > 		if (!encl_mm)
-> > 			break;
-> > 
-> > 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
-> > 		kfree(encl_mm);
-> > 	}
-> > 
-> > What do you think? Does this start to make more sense now?
-> > I don't have logs for this but the bug can be also reasoned.
+> > I added the patch below to add a three-second delay to the scheduling
+> > clock interrupt handler.  This executed, but did not cause your warning
+> > to be emitted, probably because rcutorture runs under qemu/KVM.  So no
+> > Tested-by, not yet, anyway.
 > 
-> It does. Now you need to write it up in a detailed form so that it is
-> clear to readers months/years from now what exactly can happen. You can
-> use a two-column format like
+> I think this is because on x86, APIC timer interrupts are handled in
+> arch code without going through the usual IRQ management infrastructure.
+> A dump_stack() in rcu_sched_clock_irq() shows:
 > 
-> 	CPU A				CPU B
+> [   75.131594] rcu: rcu_sched_clock_irq: 3-second delay.
+> [   75.132557] CPU: 2 PID: 135 Comm: sh Not tainted 5.11.0-rc3+ #12
+> [   75.133610] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> [   75.135639] Call Trace:
+> [   75.136100]  dump_stack+0x57/0x6a
+> [   75.136713]  rcu_sched_clock_irq+0x76d/0x880
+> [   75.137493]  update_process_times+0x77/0xb0
+> [   75.138254]  tick_sched_handle.isra.17+0x2b/0x40
+> [   75.139105]  tick_sched_timer+0x36/0x70
+> [   75.139803]  ? tick_sched_handle.isra.17+0x40/0x40
+> [   75.140665]  __hrtimer_run_queues+0xf8/0x230
+> [   75.141441]  hrtimer_interrupt+0xfc/0x240
+> [   75.142169]  ? asm_sysvec_apic_timer_interrupt+0xa/0x20
+> [   75.143117]  __sysvec_apic_timer_interrupt+0x58/0xf0
+> [   75.144017]  sysvec_apic_timer_interrupt+0x27/0x80
+> [   75.144892]  asm_sysvec_apic_timer_interrupt+0x12/0x20
 > 
-> Bla
-> 					Blu
-> 
-> This happens now here
-> 					But this needs to happen there
-> 
-> and so on.
-> 
-> Also, from reading up a bit on this, Documentation/RCU/checklist.rst says
-> 
-> "Use of the expedited primitives should be restricted to rare
-> configuration-change operations that would not normally be undertaken
-> while a real-time workload is running."
-> 
-> so why are you using synchronize_srcu_expedited()? Grepping the tree
-> reveals only a couple of call sites only... but I've almost no clue of
-> RCU so lemme CC Paul.
+> Here __sysvec_apic_timer_interrupt() calls local_apic_timer_interrupt()
+> which calls the clock_event_device::event_handler() directly. Since that
+> never goes via an irqaction handler, the code I add is never invoked in
+> this path. I believe this is true for a number of IRQs on x86 (e.g.
+> IPIs). A slow handler for a peripheral interrupt should still be caught,
+> though.
 
-It spun out of this discussion:
+This seems to me to be the most important case.  IPIs are already covered
+by CONFIG_CSD_LOCK_WAIT_DEBUG=y already, which prints out additional
+IPI-specific information.
 
-https://lore.kernel.org/linux-sgx/20201215213517.GA34761@kernel.org/raw
-
-My reasoning was that this is not a common case. The main loop
-that uses synchronize_srcu().
-
+> On arm64, timer interrupts (and IIUC IPIs too) go though the usual IRQ
+> management code, and so delays there get caught:
 > 
-> -- 
-> Regards/Gruss,
->     Boris.
+> [  311.703932] rcu: rcu_sched_clock_irq: 3-second delay.
+> [  311.705012] CPU: 3 PID: 199 Comm: bash Not tainted 5.11.0-rc3-00003-gbe60490b2295-dirty #13
+> [  311.706694] Hardware name: linux,dummy-virt (DT)
+> [  311.707688] Call trace:
+> [  311.708233]  dump_backtrace+0x0/0x1a0
+> [  311.709053]  show_stack+0x18/0x70
+> [  311.709774]  dump_stack+0xd0/0x12c
+> [  311.710468]  rcu_sched_clock_irq+0x7d4/0xcf0
+> [  311.711356]  update_process_times+0x9c/0xec
+> [  311.712288]  tick_sched_handle+0x34/0x60
+> [  311.713191]  tick_sched_timer+0x4c/0xa4
+> [  311.714043]  __hrtimer_run_queues+0x140/0x1e0
+> [  311.715012]  hrtimer_interrupt+0xe8/0x290
+> [  311.715943]  arch_timer_handler_virt+0x38/0x4c
+> [  311.716951]  handle_percpu_devid_irq+0x94/0x190
+> [  311.717953]  __handle_domain_irq+0x7c/0xe0
+> [  311.718890]  gic_handle_irq+0xc0/0x140
+> [  311.719729]  el0_irq_naked+0x4c/0x54
+> [  314.720833] ------------[ cut here ]------------
+> [  314.721950] IRQ 11 handler arch_timer_handler_virt took 3016901740 ns
+> [  314.723421] WARNING: CPU: 3 PID: 199 at kernel/irq/internals.h:140 handle_percpu_devid_irq+0x158/0x190
 
-/Jarkko
+And that is in fact the trace in my case.  ;-)
+
+> I think our options are:
+> 
+> 1) Live with it, and don't check these special cases.
+> 
+> 2) Rework the special cases to go though the regular irqaction
+>    processing.
+> 
+> 3) Open-code checks in each special case.
+> 
+> 4) Add a helper/wrapper function that can be called in each special
+>    case, and update each one accordingly.
+> 
+> ... and I reckon some mixture of #3 and #4 is plausible. We could add a
+> __handle_check_irq_function() or similar and use that to wrap the call
+> to local_apic_timer_interrupt() from sysvec_apic_timer_interrupt(), but
+> I'm not sure exactly what that needs to look like to cover any other
+> special cases.
+
+I believe that what you have is a good starting point.
+
+							Thanx, Paul
