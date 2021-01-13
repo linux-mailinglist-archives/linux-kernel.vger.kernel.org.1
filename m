@@ -2,23 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846522F48BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BAD62F48C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727265AbhAMKeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:34:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725949AbhAMKeI (ORCPT
+        id S1727154AbhAMKgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:36:37 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55510 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726874AbhAMKgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:34:08 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77749C061786;
-        Wed, 13 Jan 2021 02:33:28 -0800 (PST)
+        Wed, 13 Jan 2021 05:36:37 -0500
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: eballetbo)
-        with ESMTPSA id 9547A1F4102A
-Subject: Re: [PATCH v3 1/2] arm64: dts: mt8183: config dsi node
+        with ESMTPSA id F08FD1F41028
+Subject: Re: [PATCH v3 2/2] arm64: dts: mt8183: Add krane-sku0 board.
 To:     Hsin-Yi Wang <hsinyi@chromium.org>,
         linux-arm-kernel@lists.infradead.org,
         Matthias Brugger <matthias.bgg@gmail.com>
@@ -27,13 +24,14 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
         linux-kernel@vger.kernel.org
 References: <20210113062834.4043956-1-hsinyi@chromium.org>
+ <20210113062834.4043956-2-hsinyi@chromium.org>
 From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <6f4c11c7-ee1e-0308-2328-d71906a8c0c8@collabora.com>
-Date:   Wed, 13 Jan 2021 11:33:23 +0100
+Message-ID: <4ccea266-a840-7954-e7b1-ff6a321a9411@collabora.com>
+Date:   Wed, 13 Jan 2021 11:35:51 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210113062834.4043956-1-hsinyi@chromium.org>
+In-Reply-To: <20210113062834.4043956-2-hsinyi@chromium.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -43,101 +41,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Hsin-Yi,
 
-Thank you for the patch.
+Thank you for your patch.
 
 On 13/1/21 7:28, Hsin-Yi Wang wrote:
-> Config dsi node for mt8183 kukui. Set panel and ports.
-> 
-> Several kukui boards share the same panel property and only compatible
-> is different. So compatible will be set in board dts for comparison
-> convenience.
+> Similar to krane-sku176 but using a different panel source.
 > 
 > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
 > ---
->  .../mediatek/mt8183-kukui-krane-sku176.dts    |  5 +++
->  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 37 +++++++++++++++++++
->  2 files changed, 42 insertions(+)
+> change:
+> v3: fix yaml
+> ---
+>  .../devicetree/bindings/arm/mediatek.yaml     |  4 +++-
+
+I think the binding should be a separate patch? (Rob to confirm). Other than that.
+
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+>  arch/arm64/boot/dts/mediatek/Makefile         |  1 +
+>  .../dts/mediatek/mt8183-kukui-krane-sku0.dts  | 23 +++++++++++++++++++
+>  3 files changed, 27 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dts
 > 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
-> index 47113e275cb52..721d16f9c3b4f 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
-> @@ -16,3 +16,8 @@ / {
->  	model = "MediaTek krane sku176 board";
->  	compatible = "google,krane-sku176", "google,krane", "mediatek,mt8183";
->  };
+> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> index 53f0d4e3ea982..93b3bdf6eaeb7 100644
+> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
+> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> @@ -120,7 +120,9 @@ properties:
+>            - const: mediatek,mt8183
+>        - description: Google Krane (Lenovo IdeaPad Duet, 10e,...)
+>          items:
+> -          - const: google,krane-sku176
+> +          - enum:
+> +              - google,krane-sku0
+> +              - google,krane-sku176
+>            - const: google,krane
+>            - const: mediatek,mt8183
+>  
+> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
+> index 18f7b46c4095b..deba27ab76574 100644
+> --- a/arch/arm64/boot/dts/mediatek/Makefile
+> +++ b/arch/arm64/boot/dts/mediatek/Makefile
+> @@ -13,6 +13,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana-rev7.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-evb.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-evb.dtb
+> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku0.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-evb.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8516-pumpkin.dtb
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dts
+> new file mode 100644
+> index 0000000000000..fb5ee91b6fe0e
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dts
+> @@ -0,0 +1,23 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +/*
+> + * Copyright 2019 Google LLC
+> + *
+> + * Device-tree for Krane sku0.
+> + *
+> + * SKU is a 8-bit value (0x00 == 0):
+> + *  - Bits 7..4: Panel ID: 0x0 (AUO)
+> + *  - Bits 3..0: SKU ID:   0x0 (default)
+> + */
+> +
+> +/dts-v1/;
+> +#include "mt8183-kukui-krane.dtsi"
+> +
+> +/ {
+> +	model = "MediaTek krane sku0 board";
+> +	compatible = "google,krane-sku0", "google,krane", "mediatek,mt8183";
+> +};
 > +
 > +&panel {
-> +        status = "okay";
-> +        compatible = "boe,tv101wum-nl6";
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> index bf2ad1294dd30..c5f41b94f154e 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> @@ -249,6 +249,35 @@ &cpu7 {
->  	proc-supply = <&mt6358_vproc11_reg>;
->  };
->  
-> +&dsi0 {
 > +	status = "okay";
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	panel: panel@0 {
-> +		/* compatible will be set in board dts */
-> +		reg = <0>;
-> +		enable-gpios = <&pio 45 0>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&panel_pins_default>;
-> +		avdd-supply = <&ppvarn_lcd>;
-> +		avee-supply = <&ppvarp_lcd>;
-> +		pp1800-supply = <&pp1800_lcd>;
-
-It'd make sense to add also the backlight here?
-
-+               backlight = <&backlight_lcd0>;
-
-> +		port {
-> +			panel_in: endpoint {
-> +				remote-endpoint = <&dsi_out>;
-> +			};
-> +		};
-> +	};
-> +
-> +	ports {
-> +		port {
-> +			dsi_out: endpoint {
-> +				remote-endpoint = <&panel_in>;
-> +			};
-> +		};
-> +	};
+> +	compatible = "auo,kd101n80-45na";
 > +};
-> +
-
-I think you should enable the MIPI TX to have DSI and panel working?
-
-+&mipi_tx0 {
-+       status = "okay";
-+};
-
-
->  &i2c0 {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&i2c0_pins>;
-> @@ -547,6 +576,14 @@ pins_clk {
->  		};
->  	};
->  
-> +	panel_pins_default: panel_pins_default {
-> +		panel_reset {
-> +			pinmux = <PINMUX_GPIO45__FUNC_GPIO45>;
-> +			output-low;
-> +			bias-pull-up;
-> +		};
-> +	};
-> +
->  	pwm0_pin_default: pwm0_pin_default {
->  		pins1 {
->  			pinmux = <PINMUX_GPIO176__FUNC_GPIO176>;
 > 
