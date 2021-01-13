@@ -2,469 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 078442F4869
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:15:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 572742F4872
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727364AbhAMKP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:15:27 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:54596 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbhAMKP0 (ORCPT
+        id S1726238AbhAMKQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:16:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725681AbhAMKQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:15:26 -0500
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210113101441epoutp04a892fd45ab262a2e20a64049af526dca~Zwx9mxxDq1805018050epoutp04T
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 10:14:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210113101441epoutp04a892fd45ab262a2e20a64049af526dca~Zwx9mxxDq1805018050epoutp04T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1610532881;
-        bh=GtBgGY2uu8S1emKkD17/2NwSO/VizCGoRSWaCbl4FY4=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=ViXVfu7DMoc4IDJpETTb1tIaer7K+Qnr2ikhUc7SzxSYGj9S8OhuJozWOBxLiesVy
-         j3HltQ2WLefBhx5+Amp9VV6N/Dp0yH/CnMWH0iXURhgvf/iDLm4LnLWyQ5fyjZWTNe
-         GeJGybfR3G6OfEjDaoYtEIR8/nldHJZLYN9nGezc=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210113101440epcas1p1c5fb7e83122f74d5f999767b1960651e~Zwx8iZleh1068210682epcas1p18;
-        Wed, 13 Jan 2021 10:14:40 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.162]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4DG3G71NkSz4x9Q7; Wed, 13 Jan
-        2021 10:14:39 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        8A.B0.09577.E08CEFF5; Wed, 13 Jan 2021 19:14:39 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210113101438epcas1p21192b49fa1a079353ab36555478f32d8~Zwx6qlsWh1972119721epcas1p20;
-        Wed, 13 Jan 2021 10:14:38 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210113101438epsmtrp1c25ee3a672055e6013578803f612bde0~Zwx6pE6HR2677826778epsmtrp1a;
-        Wed, 13 Jan 2021 10:14:38 +0000 (GMT)
-X-AuditID: b6c32a39-bfdff70000002569-33-5ffec80eedbd
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C6.6E.08745.E08CEFF5; Wed, 13 Jan 2021 19:14:38 +0900 (KST)
-Received: from dh0421hwang01 (unknown [10.253.101.58]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210113101437epsmtip295e6e151b66a4e7ccb5aa49773559265~Zwx6YSJyB1780517805epsmtip2V;
-        Wed, 13 Jan 2021 10:14:37 +0000 (GMT)
-From:   =?UTF-8?B?7Zmp65GQ7ZiE?= <dh0421.hwang@samsung.com>
-To:     <cang@codeaurora.org>
-Cc:     <adrian.hunter@intel.com>, <alim.akhtar@samsung.com>,
-        <asutoshd@codeaurora.org>, <avri.altman@wdc.com>,
-        <beanhuo@micron.com>, <hongwus@codeaurora.org>,
-        <jejb@linux.ibm.com>, <kernel-team@android.com>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <martin.petersen@oracle.com>, <nguyenb@codeaurora.org>,
-        <rnayak@codeaurora.org>, <salyzyn@google.com>,
-        <saravanak@google.com>, <satyat@google.com>,
-        <stanley.chu@mediatek.com>, <grant.jung@samsung.com>,
-        <jt77.jang@samsung.com>, <junwoo80.lee@samsung.com>,
-        <dh0421.hwang@samsung.com>, <sh043.lee@samsung.com>,
-        <jangsub.yi@samsung.com>, <cw9316.lee@samsung.com>,
-        <sh8267.baek@samsung.com>, <wkon.kim@samsung.com>
-Subject: Re: [PATCH v9 1/3] scsi: ufs: Protect some contexts from unexpected
- clock scaling
-Date:   Wed, 13 Jan 2021 19:14:37 +0900
-Message-ID: <00e401d6e994$e62e1660$b28a4320$@samsung.com>
+        Wed, 13 Jan 2021 05:16:15 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77FAC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:15:34 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id i5so1211559pgo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:15:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rcaLsuqlhl7AUPdK1MZqrBVd9AgtDva3ByblrNRXVVQ=;
+        b=QBthpibIbhXcNn0sING9h1ZwCyVuLKDCxT12fHrKn8pifxGsxaFYAvbHyPvl6qEdfz
+         pFQzsPSd4EDq33qYmPxHQwnR4VMI6dzQQ62FjSmJpPogUXABQQN8Bjm4JtF534gmDh7k
+         7RpU4Ln6XAiRj12yBYmtxTXmBIHCGu8yzsMkRx7HKIpq29DQjB+E0Ez7fJnMjqvB6N7v
+         QWRVmwjr+ueQbdvJtoFqlgFN1c57T6roP8LRbc1RURwe48P4JrsYJWAauB+fBtfs4CL2
+         boOFGKsbU2WT1a0q8+sWr1UH72TLZNF4wk1V7Jcp4x1CBYMTHpSleNUPqDlQiaYLZkhH
+         fuwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rcaLsuqlhl7AUPdK1MZqrBVd9AgtDva3ByblrNRXVVQ=;
+        b=tg/G5qvxm7exz33V0xHWFo+W6ZNPDYa+RwPq+QM8sbznrOHNryoNlsiPpuBxiPdhtU
+         TDxADSTlcI0NIFrfPmFCGXQM0dzpqixI280bc35WhyHM1pa/uJcJWCNpX4x0UsPUeTjJ
+         Wg2nCaNSaCWE8/midSK8qmP36PAd01KD+Ve15KS0B0ltwy+C789Oc5Ilg/iDgL31IQSf
+         Pll/fESYbSgUnYNuG2fVYfjdea1GKemxIvR690xWJstYPVFeNHez1sFkRB9V12YL/BW7
+         Wc/UI50TNvjfB7qQizR1DfTJhDK2wzhEct3wVvtMxLqPCl+YI2S2E/+lRm1C7PfG9t6E
+         1JAA==
+X-Gm-Message-State: AOAM5321NxMG/zc93BsicSo9QoBJ8mKl/77mHdBfvbwSBWZvFbeaDdvF
+        E5CNqVUGY3yBlifQrjWRvPrUqYaY3Y0fiHbT6GClBw==
+X-Google-Smtp-Source: ABdhPJyiYaQx1lHd114SOzLARU4DDZgoo6iWc/G7lrJC+z7xCIHbNZzFRzLYmo/YYcyr5zLYNJ83/U9UJIdsG47fBSI=
+X-Received: by 2002:a63:50a:: with SMTP id 10mr1416399pgf.273.1610532934323;
+ Wed, 13 Jan 2021 02:15:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: Adbpi0VvOKpznDNeQeiKo4PsMofnQA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA01TbUxTZxTee/vJp3cV3EtlpjbBBRzQWgsvBtjMmLkGtpDwYw5Jugo3gJa2
-        6aWbDjQwt1ooX/MjCtjZYSyEGWtKqRXwq9sCBUZi+ZiYGQHFDXBs0G0EXWGXXsz495xznud9
-        zjlvDp8laOQJ+cXqUlKnVqrE3GC28/vYhPhNfSsKyU/dGPI8vcpFE984ueiWoY+HZpZHueje
-        ZBUbLdqsHHSh38BBt8c8PPTCb+OhgWfzPGTsPIOhlgdODLl+HeShLv9JGt2IQMNdF7nI9LOL
-        i1p7VzC0UN0MkHWkg4OuVNKvV7v9XFT/3SMu+uLf22w0NthHFzrHAerw/sN+dyvh7HZyiOG6
-        Woyw2PXE5Z4ZjGhouQuILz132MSSzcglFqYfsok6RzsgfPZtxKm7Jiw7JFeVWkQqC0idiFTn
-        awqK1YVp4swcxXsKeZJEGi9NQclikVpZQqaJM7Ky4/cVq+g1iEWfKlV6OpWtpChxYnqqTqMv
-        JUVFGqo0TUxqC1RaqUSbQClLKL26MCFfU7JHKpHsktPMT1RFL56scrQWxdHhc6d4FWDqw2oQ
-        xIf4bmiodYFqEMwX4C4An3t/YzHBIoDX+gd4TOADcHpsEnslMTsG2UyhC8DWv+zrkjkAjZ5H
-        YI3FxVOg3/ScvYYj8Cg4tHw9QGLhLg70NAwFntqM50GL72KAxMZjYPv5ugAOo8X2Ki/G4Neh
-        p/FpIM/Cd0Lrt3Mspg0RXJ62chiDBOi0XVrnRMDmKkPADOIdQdA0ynQB8Qw4O3xzXbwZzvY6
-        eAwWwpl6wzo2AVjvTmfEDQAO99ZwmYIMLvp89Gh82iEW2roSmfR2ePOlGTDG4XD+7xrOGgXi
-        YdBoEDCUHfDyyhJN4dE4GlaGMFkCrlZMgQawvWnDkE0bhmzaMEzT/7YWwG4HW0gtVVJIUlKt
-        fONv20HgRuJSXOD8738muAHGB24A+SxxRJjO5FcIwgqUxz4ndRqFTq8iKTeQ02v/miWMzNfQ
-        R6YuVUjlu2QyGdqdlJwkl4nfCDskmVAI8EJlKXmEJLWk7pUO4wcJK7Da5hMToLt1r/6sOtZm
-        1lKiksPXf2hpDD/geul9J+bNTSZ/bfC9H83mxLzO9sfz5UvnIhP8n7k9p+O0hozymmz9B3li
-        31l3k+dSblzuW673c7YFRcz3Jo/CQ1TZXPleKjPmuHd8xWEMik109DhWUztIL2UhQndUtXlj
-        iNNtV44MTFXuORgl+NjTe+2Pj0Kqx0O9DyoNM9FLt8IrBoYOnrF2lJcJ99X33Tn+mjmKzd0f
-        eTR0Nvqkbn/Lk8MxaQt5Iy0X7Fuq8uKzthqEj/syZQ6L8pdnydbJ9Kz++23BD++X8b66cdWH
-        RgQH0AmsRoznGIXhdtvbx4TWpJ4uVW3iznkxmypSSuNYOkr5HxjcaOqsBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0xSYRjHe885HI426mRWb5lZ2NUK09V8a5Vu1nZyrsvauriaUZ7MKWCH
-        7OLWLClTGOjWUsNLZkmJJYmBlNcgSop1saL7uixrZLOsrbLAAq3Nb789/8vzfHgoPKiHmESl
-        SfewnFScISQDCbNNGDZ/VOdA8oIXX/nI8e4CiV5XmknUmtfJR+7+RyS69qaAQF8NOh4qvZXH
-        Q20uBx/98hr46Pb7Xj7KNx3HUPUTM4YsH5x8dNWr8FFTMHpwtZxEqscWEp27OYChPmUZQLqH
-        jTxUc9jXrrR6SVRY95JEuZ42ArmcnT7B9BSgxq7vRFwIY24285gHGjXGVBmzmDMtbowpqu4A
-        zBFHO8H8MOSTTF/3M4LRXNYD5ptxCnOsQ4WtHZkUuDSFzUjby3KRy7cF7nKe0ZGZiq373b3l
-        2CHQlKgEARSkF8KKy05CCQKpINoCoEJrwoeEyVD1qpWvBJSPx0KbTT7kcQNYoikk/R6SXgy9
-        qk+En4PpifBO/yXcb8JpFw/WFw8AvzCWToIVzt+Ynwl6BtSXaAYDAl/YWNCFDfEY6Dj5bnCO
-        03Oh+s1R8J91p3v+HTQV9nfreEPLRNBsOPXPHwzLCvLwIjBGO6xKO6xKO6xKOyxSBQg9mMhm
-        yiWpEnlUZrSU3SeSiyXyLGmqaIdMYgSD/xARYQEt+i8iK8AoYAWQwoXBAk7lTQ4SpIgPZLOc
-        LJnLymDlVhBCEcIJgntKR3IQnSrew6azbCbL/VcxKmDSIawpdOc5j8db2wBvLIpZ/U2v6TwY
-        H38xPT/7T8oHU4wi4ebZj+7eV4+fTO4l1l9E4aHrRU7tuOuxVbzIxfZlp9WtnuPz1HjO6i/2
-        SkOCPrtjtnXNjbjubZE9KZb2tjkzNouN7QXqafV3pyg/901veBtwZMWLWt35ylFcYs7KH9aZ
-        Lm94Rdic2B715vyVkcWqEyGfQPrPnKRH+JXm0tqculsjpLLPZVxM0aoGLXL+ibbbN4Tk2n7+
-        3uipwerq42LvfW9No4vtale8YufIjGpb2/aZuQkXbEsSw2SjWwT3j9YZx28Zvzs0enlzTGM5
-        9fzlLEfhFlPSpihJadd+Zdg6JJUxQkK+SxwVgXNy8V+BPmnufgMAAA==
-X-CMS-MailID: 20210113101438epcas1p21192b49fa1a079353ab36555478f32d8
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210113101438epcas1p21192b49fa1a079353ab36555478f32d8
-References: <CGME20210113101438epcas1p21192b49fa1a079353ab36555478f32d8@epcas1p2.samsung.com>
+References: <20210113052209.75531-1-songmuchun@bytedance.com>
+ <20210113052209.75531-5-songmuchun@bytedance.com> <20210113093331.GV22493@dhcp22.suse.cz>
+In-Reply-To: <20210113093331.GV22493@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 13 Jan 2021 18:14:55 +0800
+Message-ID: <CAMZfGtUObSSyRZfv8CHucp6WmUZZBupKD9hbNHVpAv_PuWtMhw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v4 4/6] mm: hugetlb: retry dissolve page
+ when hitting race
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Can Guo <cang=40codeaurora.org>
->=20
-> In contexts like suspend, shutdown and error handling, we need to suspend
-> devfreq to make sure these contexts won't be disturbed by clock scaling.
-> However, suspending devfreq is not enough since users can still trigger a
-> clock scaling by manipulating the devfreq sysfs nodes like min/max_freq a=
-nd
-> governor even after devfreq is suspended. Moreover, mere suspending devfr=
-eq
-> cannot synchroinze a clock scaling which has already been invoked through
-> these sysfs nodes. Add one more flag in struct clk_scaling and wrap the
-> entire func ufshcd_devfreq_scale() with the clk_scaling_lock, so that we
-> can use this flag and clk_scaling_lock to control and synchronize clock
-> scaling invoked through devfreq sysfs nodes.
->=20
-> Signed-off-by: Can Guo <cang=40codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufshcd.c =7C 86 +++++++++++++++++++++++++++++----------=
---------
->  drivers/scsi/ufs/ufshcd.h =7C  6 +++-
->  2 files changed, 59 insertions(+), 33 deletions(-)
->=20
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 82ad317..64218e6 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> =40=40 -1181,19 +1181,33 =40=40 static int ufshcd_clock_scaling_prepare(s=
-truct ufs_hba *hba)
->  	 */
->  	ufshcd_scsi_block_requests(hba);
->  	down_write(&hba->clk_scaling_lock);
-> -	if (ufshcd_wait_for_doorbell_clr(hba, DOORBELL_CLR_TOUT_US)) =7B
-> +
+On Wed, Jan 13, 2021 at 5:33 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 13-01-21 13:22:07, Muchun Song wrote:
+> > There is a race between dissolve_free_huge_page() and put_page().
+> > Theoretically, we should return -EBUSY when we encounter this race.
+> > In fact, we have a chance to successfully dissolve the page if we
+> > do a retry. Because the race window is quite small. If we seize
+> > this opportunity, it is an optimization for increasing the success
+> > rate of dissolving page.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  mm/hugetlb.c | 20 ++++++++++++++++++--
+> >  1 file changed, 18 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > index 4a9011e12175..898e4ea43e13 100644
+> > --- a/mm/hugetlb.c
+> > +++ b/mm/hugetlb.c
+> > @@ -1772,6 +1772,7 @@ int dissolve_free_huge_page(struct page *page)
+> >  {
+> >       int rc = -EBUSY;
+> >
+> > +retry:
+> >       /* Not to disrupt normal path by vainly holding hugetlb_lock */
+> >       if (!PageHuge(page))
+> >               return 0;
+> > @@ -1793,8 +1794,23 @@ int dissolve_free_huge_page(struct page *page)
+> >                * We should make sure that the page is already on the free list
+> >                * when it is dissolved.
+> >                */
+> > -             if (unlikely(!PageHugeFreed(head)))
+> > -                     goto out;
+> > +             if (unlikely(!PageHugeFreed(head))) {
+> > +                     spin_unlock(&hugetlb_lock);
+> > +
+> > +                     /*
+> > +                      * Theoretically, we should return -EBUSY when we
+> > +                      * encounter this race. In fact, we have a chance
+> > +                      * to successfully dissolve the page if we do a
+> > +                      * retry. Because the race window is quite small.
+> > +                      * If we seize this opportunity, it is an optimization
+> > +                      * for increasing the success rate of dissolving page.
+> > +                      */
+> > +                     while (PageHeadHuge(head) && !PageHugeFreed(head)) {
+> > +                             cond_resched();
+> > +                             cpu_relax();
+> > +                     }
+> > +                     goto retry;
+>
+> OK, so you have done the retry here. Please fold it into the previous
+> patch. Also do we need cpu_relax on top of cond_resched as well?
 
-I think another value is better than -EAGAIN.
-Ex) -EPERM because the clk scaling is not allowed state.
+Because the previous patch is a bugfix and should be backprt to the other
+stable tree, right? I just want the fix patch to be small enough.
+So I do the retry in this patch. If you do not agree with this. I
+will fold this into the previous patch.
 
-> +	if (=21hba->clk_scaling.is_allowed)
-> +		ret =3D -EAGAIN;
+Do you mean this?
 
-I think ufshcd_hold() has to be called before access host registers,
-so calling ufshcd_hold() is better before calling ufshcd_clock_scaling_prep=
-are().
+cpu_relax();
+cond_resched();
+cpu_relax();
 
-If you want to do not anything when hba->clk_scaling.is_allowed is false,
-it is recommended to check hba->clk_scaling.is_allowed before calling ufshc=
-d_hold() in ufshcd_devfreq_scale().
+If yes, IMHO, I don't think it is necessary.
 
-> +	else if (ufshcd_wait_for_doorbell_clr(hba, DOORBELL_CLR_TOUT_US))
->  		ret =3D -EBUSY;
-> +
-> +	if (ret) =7B
->  		up_write(&hba->clk_scaling_lock);
->  		ufshcd_scsi_unblock_requests(hba);
-> +		goto out;
->  	=7D
-> =20
-> +	/* let's not get into low power until clock scaling is completed */
-> +	ufshcd_hold(hba, false);
-> +
-> +out:
->  	return ret;
->  =7D
-> =20
-> -static void ufshcd_clock_scaling_unprepare(struct ufs_hba *hba)
-> +static void ufshcd_clock_scaling_unprepare(struct ufs_hba *hba, bool wri=
-telock)
->  =7B
-> -	up_write(&hba->clk_scaling_lock);
-> +	if (writelock)
-> +		up_write(&hba->clk_scaling_lock);
-> +	else
-> +		up_read(&hba->clk_scaling_lock);
->  	ufshcd_scsi_unblock_requests(hba);
-> +	ufshcd_release(hba);
->  =7D
-> =20
->  /**
-> =40=40 -1208,13 +1222,11 =40=40 static void ufshcd_clock_scaling_unprepar=
-e(struct ufs_hba *hba)
->  static int ufshcd_devfreq_scale(struct ufs_hba *hba, bool scale_up)
->  =7B
->  	int ret =3D 0;
-> -
-> -	/* let's not get into low power until clock scaling is completed */
-> -	ufshcd_hold(hba, false);
-> +	bool is_writelock =3D true;
-> =20
-
-I think it would be nice to call ufshcd_hold() here.
-
->  	ret =3D ufshcd_clock_scaling_prepare(hba);
->  	if (ret)
-
-Below change is not needed if calling ufshcd_hold() is before calling ufshc=
-d_clock_scaling_prepare().
-
-> -		goto out;
-> +		return ret;
-> =20
->  	/* scale down the gear before scaling down clocks */
->  	if (=21scale_up) =7B
-> =40=40 -1240,14 +1252,12 =40=40 static int ufshcd_devfreq_scale(struct uf=
-s_hba *hba, bool scale_up)
->  	=7D
-> =20
->  	/* Enable Write Booster if we have scaled up else disable it */
-> -	up_write(&hba->clk_scaling_lock);
-> +	downgrade_write(&hba->clk_scaling_lock);
-> +	is_writelock =3D false;
->  	ufshcd_wb_ctrl(hba, scale_up);
-> -	down_write(&hba->clk_scaling_lock);
-> =20
->  out_unprepare:
-> -	ufshcd_clock_scaling_unprepare(hba);
-> -out:
-> -	ufshcd_release(hba);
-> +	ufshcd_clock_scaling_unprepare(hba, is_writelock);
->  	return ret;
->  =7D
-> =20
-> =40=40 -1521,7 +1531,7 =40=40 static ssize_t ufshcd_clkscale_enable_show(=
-struct device *dev,
->  =7B
->  	struct ufs_hba *hba =3D dev_get_drvdata(dev);
-> =20
-> -	return snprintf(buf, PAGE_SIZE, =22%d=5Cn=22, hba->clk_scaling.is_allow=
-ed);
-> +	return snprintf(buf, PAGE_SIZE, =22%d=5Cn=22, hba->clk_scaling.is_enabl=
-ed);
->  =7D
-> =20
->  static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
-> =40=40 -1535,7 +1545,7 =40=40 static ssize_t ufshcd_clkscale_enable_store=
-(struct device *dev,
->  		return -EINVAL;
-> =20
->  	value =3D =21=21value;
-> -	if (value =3D=3D hba->clk_scaling.is_allowed)
-> +	if (value =3D=3D hba->clk_scaling.is_enabled)
->  		goto out;
-> =20
->  	pm_runtime_get_sync(hba->dev);
-> =40=40 -1544,7 +1554,7 =40=40 static ssize_t ufshcd_clkscale_enable_store=
-(struct device *dev,
->  	cancel_work_sync(&hba->clk_scaling.suspend_work);
->  	cancel_work_sync(&hba->clk_scaling.resume_work);
-> =20
-> -	hba->clk_scaling.is_allowed =3D value;
-> +	hba->clk_scaling.is_enabled =3D value;
-> =20
->  	if (value) =7B
->  		ufshcd_resume_clkscaling(hba);
-> =40=40 -1882,8 +1892,6 =40=40 static void ufshcd_init_clk_scaling(struct =
-ufs_hba *hba)
->  	snprintf(wq_name, sizeof(wq_name), =22ufs_clkscaling_%d=22,
->  		 hba->host->host_no);
->  	hba->clk_scaling.workq =3D create_singlethread_workqueue(wq_name);
-> -
-> -	ufshcd_clkscaling_init_sysfs(hba);
->  =7D
-> =20
->  static void ufshcd_exit_clk_scaling(struct ufs_hba *hba)
-> =40=40 -1891,6 +1899,8 =40=40 static void ufshcd_exit_clk_scaling(struct =
-ufs_hba *hba)
->  	if (=21ufshcd_is_clkscaling_supported(hba))
->  		return;
-> =20
-> +	if (hba->clk_scaling.enable_attr.attr.name)
-> +		device_remove_file(hba->dev, &hba->clk_scaling.enable_attr);
->  	destroy_workqueue(hba->clk_scaling.workq);
->  	ufshcd_devfreq_remove(hba);
->  =7D
-> =40=40 -1955,7 +1965,7 =40=40 static void ufshcd_clk_scaling_start_busy(s=
-truct ufs_hba *hba)
->  	if (=21hba->clk_scaling.active_reqs++)
->  		queue_resume_work =3D true;
-> =20
-> -	if (=21hba->clk_scaling.is_allowed =7C=7C hba->pm_op_in_progress)
-> +	if (=21hba->clk_scaling.is_enabled =7C=7C hba->pm_op_in_progress)
->  		return;
-> =20
->  	if (queue_resume_work)
-> =40=40 -5071,7 +5081,8 =40=40 static void __ufshcd_transfer_req_compl(str=
-uct ufs_hba *hba,
->  				update_scaling =3D true;
->  			=7D
->  		=7D
-> -		if (ufshcd_is_clkscaling_supported(hba) && update_scaling)
-> +		if (ufshcd_is_clkscaling_supported(hba) && update_scaling &&
-> +		    hba->clk_scaling.active_reqs > 0)
->  			hba->clk_scaling.active_reqs--;
->  	=7D
-> =20
-> =40=40 -5737,18 +5748,24 =40=40 static void ufshcd_err_handling_prepare(s=
-truct ufs_hba *hba)
->  		ufshcd_vops_resume(hba, pm_op);
->  	=7D else =7B
->  		ufshcd_hold(hba, false);
-> -		if (hba->clk_scaling.is_allowed) =7B
-> +		if (hba->clk_scaling.is_enabled) =7B
->  			cancel_work_sync(&hba->clk_scaling.suspend_work);
->  			cancel_work_sync(&hba->clk_scaling.resume_work);
->  			ufshcd_suspend_clkscaling(hba);
->  		=7D
-> +		down_write(&hba->clk_scaling_lock);
-> +		hba->clk_scaling.is_allowed =3D false;
-> +		up_write(&hba->clk_scaling_lock);
->  	=7D
->  =7D
-> =20
->  static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
->  =7B
->  	ufshcd_release(hba);
-> -	if (hba->clk_scaling.is_allowed)
-> +	down_write(&hba->clk_scaling_lock);
-> +	hba->clk_scaling.is_allowed =3D true;
-> +	up_write(&hba->clk_scaling_lock);
-> +	if (hba->clk_scaling.is_enabled)
->  		ufshcd_resume_clkscaling(hba);
->  	pm_runtime_put(hba->dev);
->  =7D
-> =40=40 -7728,12 +7745,14 =40=40 static int ufshcd_add_lus(struct ufs_hba =
-*hba)
->  			sizeof(struct ufs_pa_layer_attr));
->  		hba->clk_scaling.saved_pwr_info.is_valid =3D true;
->  		if (=21hba->devfreq) =7B
-> +			hba->clk_scaling.is_allowed =3D true;
->  			ret =3D ufshcd_devfreq_init(hba);
->  			if (ret)
->  				goto out;
-> -		=7D
-> =20
-> -		hba->clk_scaling.is_allowed =3D true;
-> +			hba->clk_scaling.is_enabled =3D true;
-> +			ufshcd_clkscaling_init_sysfs(hba);
-> +		=7D
->  	=7D
-> =20
->  	ufs_bsg_probe(hba);
-> =40=40 -8650,11 +8669,14 =40=40 static int ufshcd_suspend(struct ufs_hba =
-*hba, enum ufs_pm_op pm_op)
->  	ufshcd_hold(hba, false);
->  	hba->clk_gating.is_suspended =3D true;
-> =20
-> -	if (hba->clk_scaling.is_allowed) =7B
-> +	if (hba->clk_scaling.is_enabled) =7B
->  		cancel_work_sync(&hba->clk_scaling.suspend_work);
->  		cancel_work_sync(&hba->clk_scaling.resume_work);
->  		ufshcd_suspend_clkscaling(hba);
->  	=7D
-> +	down_write(&hba->clk_scaling_lock);
-> +	hba->clk_scaling.is_allowed =3D false;
-> +	up_write(&hba->clk_scaling_lock);
-> =20
->  	if (req_dev_pwr_mode =3D=3D UFS_ACTIVE_PWR_MODE &&
->  			req_link_state =3D=3D UIC_LINK_ACTIVE_STATE) =7B
-> =40=40 -8751,8 +8773,6 =40=40 static int ufshcd_suspend(struct ufs_hba *h=
-ba, enum ufs_pm_op pm_op)
->  	goto out;
-> =20
->  set_link_active:
-> -	if (hba->clk_scaling.is_allowed)
-> -		ufshcd_resume_clkscaling(hba);
->  	ufshcd_vreg_set_hpm(hba);
->  	/*
->  	 * Device hardware reset is required to exit DeepSleep. Also, for
-> =40=40 -8776,7 +8796,10 =40=40 static int ufshcd_suspend(struct ufs_hba *=
-hba, enum ufs_pm_op pm_op)
->  	if (=21ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE))
->  		ufshcd_disable_auto_bkops(hba);
->  enable_gating:
-> -	if (hba->clk_scaling.is_allowed)
-> +	down_write(&hba->clk_scaling_lock);
-> +	hba->clk_scaling.is_allowed =3D true;
-> +	up_write(&hba->clk_scaling_lock);
-> +	if (hba->clk_scaling.is_enabled)
->  		ufshcd_resume_clkscaling(hba);
->  	hba->clk_gating.is_suspended =3D false;
->  	hba->dev_info.b_rpm_dev_flush_capable =3D false;
-> =40=40 -8879,7 +8902,10 =40=40 static int ufshcd_resume(struct ufs_hba *h=
-ba, enum ufs_pm_op pm_op)
-> =20
->  	hba->clk_gating.is_suspended =3D false;
-> =20
-> -	if (hba->clk_scaling.is_allowed)
-> +	down_write(&hba->clk_scaling_lock);
-> +	hba->clk_scaling.is_allowed =3D true;
-> +	up_write(&hba->clk_scaling_lock);
-> +	if (hba->clk_scaling.is_enabled)
->  		ufshcd_resume_clkscaling(hba);
-> =20
->  	/* Enable Auto-Hibernate if configured */
-> =40=40 -8903,8 +8929,6 =40=40 static int ufshcd_resume(struct ufs_hba *hb=
-a, enum ufs_pm_op pm_op)
->  	ufshcd_vreg_set_lpm(hba);
->  disable_irq_and_vops_clks:
->  	ufshcd_disable_irq(hba);
-> -	if (hba->clk_scaling.is_allowed)
-> -		ufshcd_suspend_clkscaling(hba);
->  	ufshcd_setup_clocks(hba, false);
->  	if (ufshcd_is_clkgating_allowed(hba)) =7B
->  		hba->clk_gating.state =3D CLKS_OFF;
-> =40=40 -9131,8 +9155,6 =40=40 void ufshcd_remove(struct ufs_hba *hba)
-> =20
->  	ufshcd_exit_clk_scaling(hba);
->  	ufshcd_exit_clk_gating(hba);
-> -	if (ufshcd_is_clkscaling_supported(hba))
-> -		device_remove_file(hba->dev, &hba->clk_scaling.enable_attr);
->  	ufshcd_hba_exit(hba);
->  =7D
->  EXPORT_SYMBOL_GPL(ufshcd_remove);
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index aa9ea35..2863af1 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> =40=40 -419,7 +419,10 =40=40 struct ufs_saved_pwr_info =7B
->   * =40suspend_work: worker to suspend devfreq
->   * =40resume_work: worker to resume devfreq
->   * =40min_gear: lowest HS gear to scale down to
-> - * =40is_allowed: tracks if scaling is currently allowed or not
-> + * =40is_enabled: tracks if scaling is currently enabled or not, control=
-led by
-> +		clkscale_enable sysfs node
-> + * =40is_allowed: tracks if scaling is currently allowed or not, used to=
- block
-> +		clock scaling which is not invoked from devfreq governor
->   * =40is_busy_started: tracks if busy period has started or not
->   * =40is_suspended: tracks if devfreq is suspended or not
->   */
-> =40=40 -434,6 +437,7 =40=40 struct ufs_clk_scaling =7B
->  	struct work_struct suspend_work;
->  	struct work_struct resume_work;
->  	u32 min_gear;
-> +	bool is_enabled;
->  	bool is_allowed;
->  	bool is_busy_started;
->  	bool is_suspended;
-> --=20
-> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linu=
-x Foundation Collaborative Project.
-
---
-DooHyun Hwang
-Samsung Electronics
-
+>
+> > +             }
+> >
+> >               /*
+> >                * Move PageHWPoison flag from head page to the raw error page,
+> > --
+> > 2.11.0
+>
+> --
+> Michal Hocko
+> SUSE Labs
