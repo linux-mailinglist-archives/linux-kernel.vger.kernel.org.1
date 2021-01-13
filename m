@@ -2,132 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15D02F54B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:02:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEE92F54D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729230AbhAMWAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 17:00:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28745 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729205AbhAMV6g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 16:58:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610575022;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q3AL2hFTE8XLIenXG1MWNstHJ1MIfu4paLFzoc+bKbA=;
-        b=ffheJ3AocN8b5gQ30oXpjy8M/w+X2cIr/W18yM/ZV6ScDtwwbFkUT8s3wpw8LxKrdAJmcs
-        VEM33QoDCmUwrUPwTalnGl91cNUEqYHKxC8BFAwK6g3xMHCv3ZpinB/d2Lpkj7fLep75Zg
-        +q7/kNBd6XJKFliNPUbRGVmD6MYruG0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-52-IJ3mGltiN4qt4DxWlhHPig-1; Wed, 13 Jan 2021 16:57:00 -0500
-X-MC-Unique: IJ3mGltiN4qt4DxWlhHPig-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 03137107ACF7;
-        Wed, 13 Jan 2021 21:56:58 +0000 (UTC)
-Received: from redhat.com (ovpn-112-31.rdu2.redhat.com [10.10.112.31])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 720DC1F401;
-        Wed, 13 Jan 2021 21:56:40 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 16:56:38 -0500
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Yu Zhao <yuzhao@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>
-Subject: Re: [PATCH 0/2] page_count can't be used to decide when wp_page_copy
-Message-ID: <20210113215638.GA528828@redhat.com>
-References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
- <20210107200402.31095-1-aarcange@redhat.com>
- <20210107202525.GD504133@ziepe.ca>
- <X/eA/f1r5GXvcRWH@redhat.com>
- <20210108133649.GE504133@ziepe.ca>
- <X/iPtCktcQHwuK5T@redhat.com>
- <20210108181945.GF504133@ziepe.ca>
- <X/jgLGPgPb+Xms1t@redhat.com>
- <20210109004255.GG504133@ziepe.ca>
+        id S1726017AbhAMWGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 17:06:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729243AbhAMWDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 17:03:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2EEA2313E;
+        Wed, 13 Jan 2021 22:02:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610575364;
+        bh=vgAWQxFCD1RnVnag6Zl+ygDWgEGgKsZJZtQ105YCsCA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=t2P3lEWudStifbAwPDjY3gE524FL6xnFUDZ/gKfsuTHnROuhDuJJKdrlrdkwy3cUE
+         2tRyMXpPRiiTJXz6lFm7CLHXPD/WLGEiZbgqjCc8JOXLh05J+BCVD97jiRom8zBjI3
+         58AP4JKMdrb+kQeXe62cbCHW4CsjFSSfyES59rKef8UsRMK/e7QBTN3DliALMAywwo
+         VYtgo2WgPaglx6FJUAWwv/0+ajCOFzsJorOV/ObnwAelsKOcI/Jfkz8MxFJyDw454X
+         DSX7KQ6J3qRuqTqw8XP+K7D62FqKWc1ECED2kdkEtS2zJaW8QlwqOQ15S4LRVmGeTp
+         o1hRDtXM1PUcg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 8A3053522AC3; Wed, 13 Jan 2021 14:02:44 -0800 (PST)
+Date:   Wed, 13 Jan 2021 14:02:44 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@kernel.org, tglx@linutronix.de, jiangshanlai@gmail.com,
+        cai@redhat.com, vincent.donnefort@arm.com, decui@microsoft.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org, tj@kernel.org
+Subject: Re: [PATCH] sched/core: Print out straggler tasks in
+ sched_cpu_dying()
+Message-ID: <20210113220244.GC2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210113183141.11974-1-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210109004255.GG504133@ziepe.ca>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20210113183141.11974-1-valentin.schneider@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 08:42:55PM -0400, Jason Gunthorpe wrote:
-> On Fri, Jan 08, 2021 at 05:43:56PM -0500, Andrea Arcangeli wrote:
-> > On Fri, Jan 08, 2021 at 02:19:45PM -0400, Jason Gunthorpe wrote:
-> > > On Fri, Jan 08, 2021 at 12:00:36PM -0500, Andrea Arcangeli wrote:
-> > > > > The majority cannot be converted to notifiers because they are DMA
-> > > > > based. Every one of those is an ABI for something, and does not expect
-> > > > > extra privilege to function. It would be a major breaking change to
-> > > > > have pin_user_pages require some cap.
-> > > > 
-> > > > ... what makes them safe is to be transient GUP pin and not long
-> > > > term.
-> > > > 
-> > > > Please note the "long term" in the underlined line.
-> > > 
-> > > Many of them are long term, though only 50 or so have been marked
-> > > specifically with FOLL_LONGTERM. I don't see how we can make such a
-> > > major ABI break.
-> > 
-> > io_uring is one of those indeed and I already flagged it.
-> > 
-> > This isn't a black and white issue, kernel memory is also pinned but
-> > it's not in movable pageblocks... How do you tell the VM in GUP to
-> > migrate memory to a non movable pageblock before pinning it? Because
-> > that's what it should do to create less breakage.
+On Wed, Jan 13, 2021 at 06:31:41PM +0000, Valentin Schneider wrote:
+> Since commit
 > 
-> There is already a patch series floating about to do exactly that for
-> FOLL_LONGTERM pins based on the existing code in GUP for CMA migration
+>   1cf12e08bc4d ("sched/hotplug: Consolidate task migration on CPU unplug")
 > 
-> > For example iommu obviously need to be privileged, if your argument
-> > that it's enough to use the right API to take long term pins
-> > unconstrained, that's not the case. Pins are pins and prevent moving
-> > or freeing the memory, their effect is the same and again worse than
-> > mlock on many levels.
+> tasks are expected to move themselves out of a out-going CPU. For most
+> tasks this will be done automagically via BALANCE_PUSH, but percpu kthreads
+> will have to cooperate and move themselves away one way or another.
 > 
-> The ship sailed on this a decade ago, it is completely infeasible to
-> go back now, it would completely break widely used things like GPU,
-> RDMA and more.
+> Currently, some percpu kthreads (workqueues being a notable exemple) do not
+> cooperate nicely and can end up on an out-going CPU at the time
+> sched_cpu_dying() is invoked.
 > 
+> Print the dying rq's tasks to shed some light on the stragglers.
+> 
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+> As Peter pointed out, this should really be caught much earlier than
+> sched_cpu_dying().
+> 
+> If we go down the route of preventing kthreads from being affined to
+> !active CPUs in __set_cpus_allowed_ptr() (genuine percpu kthreads sidestep
+> it via kthread_bind_mask()), then I *think* we could catch this in wakeups,
+> i.e. select_task_rq(). I've been playing around there, but it's not as
+> straightforward as I'd have hoped.
+> ---
 
-I am late to this but GPU should not be use as an excuse for GUP. GUP
-is a broken model and the way GPU use GUP is less broken then RDMA. In
-GPU driver GUP contract with userspace is that the data the GPU can
-access is a snapshot of what the process memory was at the time you
-asked for the GUP. Process can start using different pages right after.
-There is no constant coherency contract (ie CPU and GPU can be working
-on different pages).
+Given that I am not seeing much sched_cpu_dying(), this patch didn't
+produce any output.  (I will try other configurations.)
 
-If you want coherency ie always have CPU and GPU work on the same page
-then you need to use mmu notifier and avoid pinning pages. Anything that
-does not abide by mmu notifier is broken and can not be fix.
+However, it did produce the following new-to-me splat, which will
+hopefully be of some help.
 
-Cheers,
-Jérôme
+							Thanx, Paul
 
+------------------------------------------------------------------------
+
+WARNING: CPU: 2 PID: 23 at kernel/kthread.c:508 kthread_set_per_cpu+0x3b/0x50
+Modules linked in:
+CPU: 2 PID: 23 Comm: cpuhp/2 Not tainted 5.11.0-rc3+ #1180
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.11.0-2.el7 04/01/2014
+RIP: 0010:kthread_set_per_cpu+0x3b/0x50
+Code: 00 48 85 c0 74 1f 40 84 f6 74 16 81 e2 00 00 00 04 74 1b 83 bf a0 03 00 00
++01 75 0e f0 80 08 01 c3 f0 80 20 fe c3 0f 0b eb d0 <0f> 0b eb ee 0f 0b eb e1 0f
++1f 00 66 2e 0f 1f 84 00 00 00 00 00 f6
+RSP: 0000:ffffb25c80103df8 EFLAGS: 00010202
+RAX: ffff94ac8188ec00 RBX: ffff94ac81390240 RCX: 0000000000000000
+RDX: 0000000004000000 RSI: 0000000000000001 RDI: ffff94ac818fde00
+RBP: ffff94ac9f4aadc0 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000004 R11: 0000000000000000 R12: ffff94ac9f4ab0e8
+R13: 0000000000000002 R14: ffffffffb9868c40 R15: 00000000ffffffff
+FS:  0000000000000000(0000) GS:ffff94ac9f480000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000001b022000 CR4: 00000000000006e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ workqueue_online_cpu+0x19c/0x360
+ ? workqueue_prepare_cpu+0x70/0x70
+ cpuhp_invoke_callback+0x9e/0x890
+ cpuhp_thread_fun+0x199/0x230
+ ? _raw_spin_unlock_irqrestore+0x2f/0x50
+ ? sort_range+0x20/0x20
+ smpboot_thread_fn+0x193/0x230
+ kthread+0x13b/0x160
+ ? kthread_insert_work_sanity_check+0x50/0x50
+ ret_from_fork+0x22/0x30
+irq event stamp: 38113
+hardirqs last  enabled at (38121): [<ffffffffb80dafaa>]
++console_unlock+0x46a/0x550
+hardirqs last disabled at (38130): [<ffffffffb80daf16>]
++console_unlock+0x3d6/0x550
+softirqs last  enabled at (37574): [<ffffffffb9000342>] __do_softirq+0x342/0x48e
+softirqs last disabled at (37567): [<ffffffffb8e00f92>]
++asm_call_irq_on_stack+0x12/0x20
+---[ end trace 0b77ae0f211adc14 ]---
