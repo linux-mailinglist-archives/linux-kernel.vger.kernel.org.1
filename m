@@ -2,96 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647D22F42D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1656C2F42E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:11:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbhAMEId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 23:08:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbhAMEIc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 23:08:32 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0557FC061575;
-        Tue, 12 Jan 2021 20:07:52 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DFv6s4yjcz9sVy;
-        Wed, 13 Jan 2021 15:07:49 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1610510870;
-        bh=cPCprq+igt09bDytTuJWW1YSwjM9mNKZqXRpo9xf/Wc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=i34Nbfj3DD05TJxn9cQwq+FSy8IOty6PThdv5n02x/M4oT5Sj68njUgtIaJh3Ns9G
-         DISYsqCEA1Z4JfoU37JfPPu3Hb0Z0bNWmW6pz2seBkwPIbpCCyRa+CHYPQBqrXGJTX
-         Iw/3xn+L9x/cxz5046J2ePI7jzgdAMicuLbWjglShGQBr7EkFrHWXgD21yfvjfr01b
-         1RQBfr7NSTSR1Dhk5d+nZfEyp/13OgUpLdZSnBBgFEx/isPBDyKbo5no475rKHdOzM
-         dTtS2rJyG1MX/bc2WF3ANLP+v6CCI/VQHZCk7aNJsgkgqQ2HtdtsuHQ4Yr5FEKX5Qx
-         VOjEPH7gMV83A==
-Date:   Wed, 13 Jan 2021 15:07:48 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Yanteng Si <siyanteng@loongson.cn>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the jc_docs tree
-Message-ID: <20210113150748.1efc75aa@canb.auug.org.au>
+        id S1726571AbhAMEKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 23:10:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50196 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726381AbhAMEKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 23:10:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id A779623139;
+        Wed, 13 Jan 2021 04:10:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610511010;
+        bh=pc2nukmgCXvmb0R4vhA95RrsCn1ry3/qbveoL/SB2EI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=WeRyyERgZ+3iFNCZ9Iqz27GEjO+ojjVDOnKnmganu83q3O1Gy7RGep//GVBJROs/j
+         Y2SQAKfXIwimuIH1rTGHdMn86bS/eo4lQs2oyd6GB/S77HE7hYp2chBvQFhWRQqfKP
+         Y88Fr4v07G6S+BtBOJrEiku9IisOFxwRmi/MUME7FhTqoMXgzKQbvQpvT+cTI8zzf4
+         KZ4G7n0IooM1sbRTWl7w8x8enr546Mzr9w1aWmwZUPCCf/KKhXELYl98iThgMAHS/S
+         OSAHbGiIpiGq4Abt7rD4l/6+qGz/3Bn9oFzjvESM2EtIcQIGzHhtWeaieO20OPHIws
+         knvFfMEfsP1fA==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id A220C604FD;
+        Wed, 13 Jan 2021 04:10:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/A=stXcj/=6v.FTDSelqBLqg";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 0/3] hv_netvsc: Prevent packet loss during VF add/remove
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161051101065.28597.1139365549910801459.git-patchwork-notify@kernel.org>
+Date:   Wed, 13 Jan 2021 04:10:10 +0000
+References: <1610153623-17500-1-git-send-email-longli@linuxonhyperv.com>
+In-Reply-To: <1610153623-17500-1-git-send-email-longli@linuxonhyperv.com>
+To:     Long Li <longli@linuxonhyperv.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, longli@microsoft.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/A=stXcj/=6v.FTDSelqBLqg
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi all,
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-After merging the jc_docs tree, today's linux-next build (htmldocs)
-produced this warning:
+On Fri,  8 Jan 2021 16:53:40 -0800 you wrote:
+> From: Long Li <longli@microsoft.com>
+> 
+> This patch set fixes issues with packet loss on VF add/remove.
+> 
+> Long Li (3):
+>   hv_netvsc: Check VF datapath when sending traffic to VF
+>   hv_netvsc: Wait for completion on request SWITCH_DATA_PATH
+>   hv_netvsc: Process NETDEV_GOING_DOWN on VF hot remove
+> 
+> [...]
 
-Documentation/translations/zh_CN/mips/ingenic-tcu.rst:61: WARNING: Malforme=
-d table.
-Text in column margin in table line 6.
+Here is the summary with links:
+  - [v2,1/3] hv_netvsc: Check VF datapath when sending traffic to VF
+    https://git.kernel.org/netdev/net-next/c/69d25a6cf4ca
+  - [v2,2/3] hv_netvsc: Wait for completion on request SWITCH_DATA_PATH
+    https://git.kernel.org/netdev/net-next/c/8b31f8c982b7
+  - [v2,3/3] hv_netvsc: Process NETDEV_GOING_DOWN on VF hot remove
+    https://git.kernel.org/netdev/net-next/c/34b06a2eee44
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D         =3D=3D=3D=3D=3D
-=E6=97=B6=E9=92=9F                drivers/clk/ingenic/tcu.c
-=E4=B8=AD=E6=96=AD                drivers/irqchip/irq-ingenic-tcu.c
-=E5=AE=9A=E6=97=B6=E5=99=A8              drivers/clocksource/ingenic-timer.c
-OST                 drivers/clocksource/ingenic-ost.c
-=E8=84=89=E5=86=B2=E5=AE=BD=E5=BA=A6=E8=B0=83=E5=88=B6=E5=99=A8      driver=
-s/pwm/pwm-jz4740.c
-=E7=9C=8B=E9=97=A8=E7=8B=97              drivers/watchdog/jz4740_wdt.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D         =3D=3D=3D=3D=3D
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Introduced by commit
 
-  419b1d4ed1cb ("doc/zh_CN: add mips ingenic-tcu.rst translation")
-
-This looks different in my editor :-(  I guess the font matters.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/A=stXcj/=6v.FTDSelqBLqg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/+chQACgkQAVBC80lX
-0GzPUgf9HtHTzlqiIIFckftFTCTuoKIAbG/j9OGh9HdfjB4ZhGsxbB3AtjF+P7gR
-CrfZSXV0P9/EXxlpO9kTx1cfNKnHzHp+IN1L840iTx5+bGbSnd2SLPjT3LvaRUEK
-7Dcnh9X18ubCB/lUqw9/ZpYt5bUn92aOzzsyP+4Ittedeu/u34EOh4S0jpz1LHPM
-HS8CPd77ZVOUoQZjiKWc3dBiC6VnUEYr4NJYKCOgUA8cB4NvfRDj3cyGzGEsJBOZ
-ZxD9gWku7zAo+2PkaHQ2Sb7F3p4r9aQy+Wl1h2NbSW1eZXbBWTFcDVXkknoXIbNx
-Chay1EemPp2DjJsBphFsWsFhu67eUQ==
-=U4p0
------END PGP SIGNATURE-----
-
---Sig_/A=stXcj/=6v.FTDSelqBLqg--
