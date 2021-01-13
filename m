@@ -2,74 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191A52F42FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:17:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2F52F42FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbhAMEQy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Jan 2021 23:16:54 -0500
-Received: from mail-ed1-f54.google.com ([209.85.208.54]:36011 "EHLO
-        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbhAMEQy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 23:16:54 -0500
-Received: by mail-ed1-f54.google.com with SMTP id b2so445509edm.3;
-        Tue, 12 Jan 2021 20:16:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=aZQU5TTp8WmB5JcdthK5Ea6GRsreOA1AnbF1mdWFvaY=;
-        b=aBse3I+4U2FSTLIrPBw4djiYOYjqvkd12k7bpjS7VUszUg3oGler6x3yl24nUofLht
-         QYmKgX1cyzXngfLFqMUR51g3M6xOJFcgwNWcTXrCO+BaSWPqSMoSrLLnspkTS7I6+IN6
-         AErR7JegBEqEdHgziTvsKnlO4s7+BGijBgak+EwlQX4GPFCn8kiQsa+x3p3Bc2JeDokV
-         btqXArf7gm8/nk7llh4l5c+yAPJaSL/YkUoqAsKZz0qHJI3Mp+eJHTNVNJ+kDq1rVwMQ
-         VJS4jS/j03gvAooVugdnuFx0rWcA1QGnbOkbli7lDqZllTY4e4tuwigWKm61NmyE1TCB
-         8C8Q==
-X-Gm-Message-State: AOAM531PnNwVrPLoNuSM/iO7ticx0LfQtpkbdSfVTRkp8S5m8QB24bif
-        iw0DjX5oJ84QUkmFKI+JU2JdPC485vc=
-X-Google-Smtp-Source: ABdhPJyF2tN+lhjlmlMAFGu5UdSf28cdAJuWzyGKTbaL4NGbvdOsy2YaaZ5PokUGEvXGrjqfCy/ZCg==
-X-Received: by 2002:a05:6402:17cb:: with SMTP id s11mr236559edy.119.1610511371857;
-        Tue, 12 Jan 2021 20:16:11 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id n16sm266798edq.62.2021.01.12.20.16.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 20:16:11 -0800 (PST)
-Date:   Wed, 13 Jan 2021 05:16:07 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     robh@kernel.org, shawnguo@kernel.org, festevam@gmail.com,
-        kernel@pengutronix.de, linux-imx@nxp.com, catalin.marinas@arm.com,
-        will@kernel.org, kernel@puri.sm, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>
-Subject: Re: [PATCH 2/9] arm64: dts: imx8mq-librem5: Mark charger IRQ as
- High-Z
-Message-ID: <20210113041607.GC5974@kozik-lap>
-References: <20210112095151.4995-1-martin.kepplinger@puri.sm>
- <20210112095151.4995-3-martin.kepplinger@puri.sm>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20210112095151.4995-3-martin.kepplinger@puri.sm>
+        id S1725868AbhAMETH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 23:19:07 -0500
+Received: from foss.arm.com ([217.140.110.172]:57856 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725775AbhAMETG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 23:19:06 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB4F81042;
+        Tue, 12 Jan 2021 20:18:20 -0800 (PST)
+Received: from p8cg001049571a15.blr.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E6D673F719;
+        Tue, 12 Jan 2021 20:18:17 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Cc:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
+        mike.leach@linaro.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2 00/11] arm64: coresight: Enable ETE and TRBE
+Date:   Wed, 13 Jan 2021 09:48:07 +0530
+Message-Id: <1610511498-4058-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 10:51:44AM +0100, Martin Kepplinger wrote:
-> From: Guido Günther <agx@sigxcpu.org>
-> 
-> This is consistent with other IRQs and makes keeps currents low.
-> 
-> Signed-off-by: Guido Günther <agx@sigxcpu.org>
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> ---
->  arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+This series enables future IP trace features Embedded Trace Extension (ETE)
+and Trace Buffer Extension (TRBE). This series depends on the ETM system
+register instruction support series [0] which is available here [1]. This
+series which applies on [1] is avaialble here [2] for quick access.
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+ETE is the PE (CPU) trace unit for CPUs, implementing future architecture
+extensions. ETE overlaps with the ETMv4 architecture, with additions to
+support the newer architecture features and some restrictions on the
+supported features w.r.t ETMv4. The ETE support is added by extending the
+ETMv4 driver to recognise the ETE and handle the features as exposed by the
+TRCIDRx registers. ETE only supports system instructions access from the
+host CPU. The ETE could be integrated with a TRBE (see below), or with the
+legacy CoreSight trace bus (e.g, ETRs). Thus the ETE follows same firmware
+description as the ETMs and requires a node per instance. 
 
-Best regards,
-Krzysztof
+Trace Buffer Extensions (TRBE) implements a per CPU trace buffer, which is
+accessible via the system registers and can be combined with the ETE to
+provide a 1x1 configuration of source & sink. TRBE is being represented
+here as a CoreSight sink. Primary reason is that the ETE source could work
+with other traditional CoreSight sink devices. As TRBE captures the trace
+data which is produced by ETE, it cannot work alone.
+
+TRBE representation here have some distinct deviations from a traditional
+CoreSight sink device. Coresight path between ETE and TRBE are not built
+during boot looking at respective DT or ACPI entries.
+
+Unlike traditional sinks, TRBE can generate interrupts to signal including
+many other things, buffer got filled. The interrupt is a PPI and should be
+communicated from the platform. DT or ACPI entry representing TRBE should
+have the PPI number for a given platform. During perf session, the TRBE IRQ
+handler should capture trace for perf auxiliary buffer before restarting it
+back. System registers being used here to configure ETE and TRBE could be
+referred in the link below.
+
+https://developer.arm.com/docs/ddi0601/g/aarch64-system-registers.
+
+Question:
+
+- Should we implement sysfs based trace sessions for TRBE ?
+
+[0] https://lore.kernel.org/linux-arm-kernel/20210110224850.1880240-1-suzuki.poulose@arm.com/
+[1] https://gitlab.arm.com/linux-arm/linux-skp/-/tree/coresight/etm/sysreg-v7
+[2] https://gitlab.arm.com/linux-arm/linux-anshuman/-/tree/coresight/ete_trbe_v2
+
+Changes in V2:
+
+- Converted both ETE and TRBE DT bindings into Yaml
+- TRBE changes have been captured in the respective patches
+ 
+Changes in V1:
+
+https://lore.kernel.org/linux-arm-kernel/1608717823-18387-1-git-send-email-anshuman.khandual@arm.com/
+
+- There are not much ETE changes from Suzuki apart from splitting of the ETE DTS patch
+- TRBE changes have been captured in the respective patches
+
+Changes in RFC:
+
+https://lore.kernel.org/linux-arm-kernel/1605012309-24812-1-git-send-email-anshuman.khandual@arm.com/
+
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Linu Cherian <lcherian@marvell.com>
+Cc: coresight@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+
+Anshuman Khandual (4):
+  arm64: Add TRBE definitions
+  coresight: core: Add support for dedicated percpu sinks
+  coresight: etm-perf: Truncate the perf record if handle has no space
+  coresight: sink: Add TRBE driver
+
+Suzuki K Poulose (7):
+  coresight: etm-perf: Allow an event to use different sinks
+  coresight: Do not scan for graph if none is present
+  coresight: etm4x: Add support for PE OS lock
+  coresight: ete: Add support for ETE sysreg access
+  coresight: ete: Add support for ETE tracing
+  dts: bindings: Document device tree bindings for ETE
+  dts: bindings: Document device tree bindings for Arm TRBE
+
+ Documentation/devicetree/bindings/arm/ete.yaml     |  71 ++
+ Documentation/devicetree/bindings/arm/trbe.yaml    |  46 +
+ Documentation/trace/coresight/coresight-trbe.rst   |  39 +
+ arch/arm64/include/asm/sysreg.h                    |  51 ++
+ drivers/hwtracing/coresight/Kconfig                |  21 +-
+ drivers/hwtracing/coresight/Makefile               |   1 +
+ drivers/hwtracing/coresight/coresight-core.c       |  14 +
+ drivers/hwtracing/coresight/coresight-etm-perf.c   |  51 +-
+ drivers/hwtracing/coresight/coresight-etm4x-core.c | 138 ++-
+ .../hwtracing/coresight/coresight-etm4x-sysfs.c    |  19 +-
+ drivers/hwtracing/coresight/coresight-etm4x.h      |  81 +-
+ drivers/hwtracing/coresight/coresight-platform.c   |   6 +
+ drivers/hwtracing/coresight/coresight-trbe.c       | 966 +++++++++++++++++++++
+ drivers/hwtracing/coresight/coresight-trbe.h       | 216 +++++
+ include/linux/coresight.h                          |  12 +
+ 15 files changed, 1683 insertions(+), 49 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/ete.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/trbe.yaml
+ create mode 100644 Documentation/trace/coresight/coresight-trbe.rst
+ create mode 100644 drivers/hwtracing/coresight/coresight-trbe.c
+ create mode 100644 drivers/hwtracing/coresight/coresight-trbe.h
+
+-- 
+2.7.4
+
