@@ -2,99 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB952F4BFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C90972F4BF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:05:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbhAMNFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 08:05:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21183 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725681AbhAMNFa (ORCPT
+        id S1726492AbhAMNEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 08:04:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbhAMNEs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 08:05:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610543044;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=5e4skfGyhzhqHoZS57vTcqyCiFx434Q2RXOk76VK6sY=;
-        b=iXa/9pJzIl/cXxIUTViyvuQQ04Y06zM/YzOL3fCAyY3eWjv1UF4ZiRL3rZm7xfs0sSlOk2
-        e0wH5fvfOtaJnGF33Dhb1/5Xb9nuBdN/tlLIQ/fVBkIUVcJ7VYrz1eI8IAdUoJ1qgGFovg
-        c5zMisSj1YGaG1dQPuN9ZZOaQPiR/NQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-209-YBeO2Qx_NqOfzK_awOm4EA-1; Wed, 13 Jan 2021 08:04:00 -0500
-X-MC-Unique: YBeO2Qx_NqOfzK_awOm4EA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04F4B192D786;
-        Wed, 13 Jan 2021 13:03:59 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2FF8D19C47;
-        Wed, 13 Jan 2021 13:03:57 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] X.509: Fix crash caused by NULL pointer
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     stable@vger.kernel.org#v5.10+,
-        Tobias Markus <tobias@markus-regensburg.de>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        dhowells@redhat.com, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 13 Jan 2021 13:03:56 +0000
-Message-ID: <161054303634.2657259.11011286561405860797.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Wed, 13 Jan 2021 08:04:48 -0500
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FAA7C061786;
+        Wed, 13 Jan 2021 05:04:08 -0800 (PST)
+Received: by mail-vs1-xe33.google.com with SMTP id h18so1048709vsg.8;
+        Wed, 13 Jan 2021 05:04:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D8lh1l6ZLQaTdOGk6daqASYfqhv/iz1lSmX/JechmhY=;
+        b=uPzOhwF2vqlNK184Al+jGmiwNMBMZJKSwCTqX2FydGcIlv4Qc6FupcXoz058JWTfaS
+         il28OO3LTFnM3dGLEfDV7VPOq4OT7AcTVQAvMur6w53JKQaccDjE61X1AHjq3V7Az1+H
+         4c3eraOST0UKez3/JeXcK3Xj1RjnynYznFsK+lHsNkMhily5i8XTgJmlWkEAfuUh/NgX
+         nkjkjbi5qQ+3ux4uWt42NUA/1zRYi6sYnBUac+4zR3Wk6XQgTz+z/EDULs3+n5To9tS9
+         PpfHD/hZY3c3T325BHOqNeYNm4Z+ptt54YNh2x+Jbh+gh0hEQScIJbhBVLwAcvHMpYRq
+         IwEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D8lh1l6ZLQaTdOGk6daqASYfqhv/iz1lSmX/JechmhY=;
+        b=OnZgqltD/NlRpc3RbpcKiBGZ7rPHiMKzNjfKuXQnOfzpD7H/ON5VgweAZXWqa1DzLn
+         uFYEhD5uL88yqllKfzipD58+j1kpaE+InmoG5L3X3JoyhwdZDbTY3b44FGa/bUfAUmmp
+         kOxnxEzZmvQcweiah8voC7NNRohw5sUbBSofq4ITcABihmp54KygWofZepgEdTmwxOkv
+         B7V6qKKxDtwbzoBx7GOpX+s6/bvX7muAEcjiS+gWpu3tQQtN0GM9YL8zSGKvYHT8Ld9Q
+         LdCIpS/yWhEEAkQoKBz+6IwBlBXZnKeNSJxa+ADk+IMUX0ch8zZKvfsDvUEpCeZltf4/
+         hxbg==
+X-Gm-Message-State: AOAM532woUj7v2PfMOGBfCN+2TMNqZY7wPhqmTNqXalEP+ZJeIVZ4a3E
+        jvLhRfkfltovDzFm4tZIiFLgfPlMLs8dOCAVREDPWP4a
+X-Google-Smtp-Source: ABdhPJxH4pUKl3HjC4qDdhMbscxyVzUV6v+3zgFfTI+63OdVYs19Au57LoQPJO5Nog4B3Hsls09YfBfGPNcqvypURvA=
+X-Received: by 2002:a05:6102:93:: with SMTP id t19mr1610961vsp.57.1610543047338;
+ Wed, 13 Jan 2021 05:04:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20201028221302.66583-1-kholk11@gmail.com> <20201028221302.66583-3-kholk11@gmail.com>
+ <X83PDBKOq9bwSI0N@google.com>
+In-Reply-To: <X83PDBKOq9bwSI0N@google.com>
+From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
+Date:   Wed, 13 Jan 2021 14:03:56 +0100
+Message-ID: <CAK7fi1Y62YhoQvsU++_u=Z5Y3d6KC1_C4bWr6R8QZmDgyVV86g@mail.gmail.com>
+Subject: Re: [PATCH v9 2/3] Input: Add Novatek NT36xxx touchscreen driver
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, rydberg@bitmath.org,
+        priv.luk@gmail.com, linux-input@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>, marijns95@gmail.com,
+        Konrad Dybcio <konradybcio@gmail.com>, martin.botka1@gmail.com,
+        phone-devel@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        andy.shevchenko@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Il giorno lun 7 dic 2020 alle ore 07:43 Dmitry Torokhov
+<dmitry.torokhov@gmail.com> ha scritto:
+>
+> Hi AngeloGioacchino,
+>
+> On Wed, Oct 28, 2020 at 11:13:01PM +0100, kholk11@gmail.com wrote:
+> > +/**
+> > + * nt36xxx_set_page - Set page number for read/write
+> > + * @ts: Main driver structure
+> > + *
+> > + * Return: Always zero for success, negative number for error
+> > + */
+> > +static int nt36xxx_set_page(struct nt36xxx_i2c *ts, u32 pageaddr)
+> > +{
+> > +     u32 data = cpu_to_be32(pageaddr) >> 8;
+> > +     int ret;
+> > +
+> > +     ret = regmap_noinc_write(ts->fw_regmap, NT36XXX_CMD_SET_PAGE,
+> > +                              &data, sizeof(data));
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     usleep_range(100, 200);
+> > +     return ret;
+> > +}
+>
+> Regmap is supposed to handle paged access for you as long as you set it
+> up for paged access. Why do you need custom page handling here?
+>
+> Thanks.
+>
+> --
+> Dmitry
 
-On the following call path, `sig->pkey_algo` is not assigned
-in asymmetric_key_verify_signature(), which causes runtime
-crash in public_key_verify_signature().
+Regmap's page handling is using regmap_update_bits, hence calling a
+regmap_read for each page switch and this is not always possible on
+this MCU: especially, but not only, in the CRC reboot case, calling
+a regmap_read before the page-switch will result in invalid data.
 
-  keyctl_pkey_verify
-    asymmetric_key_verify_signature
-      verify_signature
-        public_key_verify_signature
+Hacking through the invalid data, we would still be able to set the
+page at this point, but then in the reset-idle sequence handling the
+CRC failure, we are setting page again: keeping in mind that this is
+a i2c connected MCU, calling a regmap_read while sending the "special"
+reset sequence is not in the likes of this MCU SW design, as it is
+expecting a specific, precise command sequence.
 
-This patch simply check this situation and fixes the crash
-caused by NULL pointer.
+If that happens, the MCU won't recognize the CRC reset-idle sequence
+and will never recover from the error.
 
-Fixes: 215525639631 ("X.509: support OSCCA SM2-with-SM3 certificate verification")
-Cc: stable@vger.kernel.org # v5.10+
-Reported-by: Tobias Markus <tobias@markus-regensburg.de>
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-and-tested-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
+This can surely be solved by setting up a FLAT regcache and resetting
+the register cache in (many) strategic places but, in my opinion,
+that's going to be seriously messy, as I would have to do that in
+basically every place - but the CRC reboot loop function, so we'd have
+a register cache for *only* one special case in one function (which is
+not even supposed to be ever called during regular functionality,
+unless the MCU firmware panics somehow).
 
- crypto/asymmetric_keys/public_key.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+There is also another reason why I dislike using the paged access that
+comes from the regmap API here: as you see, the event buffer address
+is different for some ICs (probably for MCU FW differences) and this
+would require me to dynamically set the regmap_range_cfg structure in
+the probe function, then casting it to a const and setting it into the
+regmap_config before registering regmap (which, by the way, is another
+const struct).
 
-diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
-index 8892908ad58c..788a4ba1e2e7 100644
---- a/crypto/asymmetric_keys/public_key.c
-+++ b/crypto/asymmetric_keys/public_key.c
-@@ -356,7 +356,8 @@ int public_key_verify_signature(const struct public_key *pkey,
- 	if (ret)
- 		goto error_free_key;
- 
--	if (strcmp(sig->pkey_algo, "sm2") == 0 && sig->data_size) {
-+	if (sig->pkey_algo && strcmp(sig->pkey_algo, "sm2") == 0 &&
-+	    sig->data_size) {
- 		ret = cert_sig_digest_update(sig, tfm);
- 		if (ret)
- 			goto error_free_key;
+Ah, also, as you can see the set_page function is doing:
+        u32 data = cpu_to_be32(pageaddr) >> 8;
+clearly, using the regmap page switching, I would have to change the
+pages definitions *and* the nt36xxx_mem_map at least partially (because
+"win_page << range->selector_shift"), and all of these definitions,
+right now, are representing the same addresses that are referenced into
+the MCU firmware, other than being basically 1:1 with what the downstream
+driver provides.
+Changing them around would not only, in some way, "hide" precious infos
+on a series of MCUs that are not publicly documented, but would also make
+the eventual porting of new ICs/MCUs that would be compatible with this
+driver harder for who knows what's going on and *way harder* for other
+"casual" developers.
 
+So, for the aforementioned reasons, all summed together, I chose to not
+use the regmap paged access.
 
+Yours,
+-- Angelo
