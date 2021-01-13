@@ -2,147 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF7C2F49B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 086F52F49C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:21:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727881AbhAMLKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:10:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50602 "EHLO
+        id S1728123AbhAMLMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:12:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727716AbhAMLKY (ORCPT
+        with ESMTP id S1727884AbhAMLME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:10:24 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8A9C061575;
-        Wed, 13 Jan 2021 03:09:43 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id h17so1018794wmq.1;
-        Wed, 13 Jan 2021 03:09:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UMQi/tBvEKdEimXx+EFDrWUxg58rI/isxR33AmE9DZQ=;
-        b=sHxBp11HxkeBq5dpd3LoxrqfkeetD4G8db6oe7+kucTgDw9cxn/PKaduCtWWtuNz4N
-         XDo2nKRN7DfJ1WPRzwYbU6Fg4hl7AIgdQZiAolIQVKIIEevR3zMcWFdqZE8hTQ0pf7y5
-         5JJd6BxKhJPJdKZ5Qv6LE5NO7U+sx1p2+Gj9PLGx079xvImEFMSM9auwJ4W3YjGXzj8z
-         N2TFYGz5GhiSp8HyUjJYVnJk3GDgd859WoCC6MiAyuWgTNFdst1MXN9Vht1kjkoQvtUb
-         xQj2GxfZ21YZIvAJGAr6KbIpCIehF05/BQ/MUwyDmFU+RHBCIlvAt/52V4BCIZKwYgAx
-         HpOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UMQi/tBvEKdEimXx+EFDrWUxg58rI/isxR33AmE9DZQ=;
-        b=EFZLQdBSITGzhr1gK4IDYUX/CQn6zW/JE4GwLJy7kYuxzAEsG+mkXwsEABW1okQdwq
-         LXVkuT2iwp6/XUZGtoIsuJRH5qbm9m+9D0vGTMJAc3MTcgyaBJucV5kvnaH84UE0tGaw
-         hk93uO5BkYW/nWZSXoDpsscOEC2vhn4gGYteOtTZ8V3RyZ13qQcWRba5ZUqLnS/63SL1
-         U68r+lrD6OpH1C+l7Ite4smpmHk2SNtxnyr/HbTQ7uVQHB8nPtV2oHdJXAoXyorMvo1X
-         1Bkx1i4tIgPs2ZNV4tTLjgDcsligE/16yWp+O6Ke8XADAocYr62bXXjRpn2LvMHvDX+M
-         4Btw==
-X-Gm-Message-State: AOAM533QNPf4Gpgd2fMkY0jRqj4emExelvPxPkjGvs1L+pvDa0cXyxsj
-        lT5oP6J7XmRruujls3G/UCWtP7zWFS8=
-X-Google-Smtp-Source: ABdhPJwh0w6DilTj8o3+r2xlFBs0NrlQBzN77ulhHtuSo+0EZnSuxSYNPPHOxskJzuLMfaUmNNlzqg==
-X-Received: by 2002:a1c:5406:: with SMTP id i6mr1647564wmb.137.1610536182334;
-        Wed, 13 Jan 2021 03:09:42 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f06:5500:88b8:675a:f9a7:fc44? (p200300ea8f06550088b8675af9a7fc44.dip0.t-ipconnect.de. [2003:ea:8f06:5500:88b8:675a:f9a7:fc44])
-        by smtp.googlemail.com with ESMTPSA id u3sm3237824wre.54.2021.01.13.03.09.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 03:09:41 -0800 (PST)
-To:     Claudiu.Beznea@microchip.com, andrew@lunn.ch,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1610120754-14331-1-git-send-email-claudiu.beznea@microchip.com>
- <25ec943f-ddfc-9bcd-ef30-d0baf3c6b2a2@gmail.com>
- <ce20d4f3-3e43-154a-0f57-2c2d42752597@microchip.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH] net: phy: micrel: reconfigure the phy on resume
-Message-ID: <ee0fd287-c737-faa5-eee1-99ffa120540a@gmail.com>
-Date:   Wed, 13 Jan 2021 12:09:35 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Wed, 13 Jan 2021 06:12:04 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BBFC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:11:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=R/C+vi0ZhgENVD3jXY1szgMhn3Gfatr45WqdY9lWpeE=; b=BXPvsgb8VtnIQaEW6ecWhQ9kIO
+        fg4Mn8MOtkQtfUCTxCJmVGWcQWTXhCXOHdI+txpdk680eeUDa7+HQUUTJaDq/o8G3axPNkOd04xge
+        ZZa7I39GWNYaSvgIQVz6e0l5Etjv3FeztLKc+y6KSovKd5PE6kp1ywZwH5JDy/E9D3RcxiimWRTK+
+        0+CCG2EtUko9S3CRtD4awvEh2uugnibuICGJkXYnoqXfOuJPyLXuW0ikCocLu/TDnSrQZSGLHVkhD
+        hmWX62JXx2dONaC3yR05FWzMT5FSP8Of7a2YdZ277HoIX9OQTUCmbZq6CwvHk0ekO+Ty+sU3W48dd
+        BmR85FSw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kze3M-000732-Qr; Wed, 13 Jan 2021 11:11:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 01317300238;
+        Wed, 13 Jan 2021 12:10:59 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DC4FB211618D1; Wed, 13 Jan 2021 12:10:59 +0100 (CET)
+Date:   Wed, 13 Jan 2021 12:10:59 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
+Message-ID: <X/7VQ8pF5h/K+Cj1@hirez.programming.kicks-ass.net>
+References: <20201226025117.2770-1-jiangshanlai@gmail.com>
+ <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
+ <87o8hv7pnd.fsf@nanos.tec.linutronix.de>
+ <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
+ <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net>
+ <jhj7doj1dr1.mognet@arm.com>
+ <X/yzrJw4UbQsK3KB@hirez.programming.kicks-ass.net>
+ <CAJhGHyA0rfR92W7T7RnhPrmLMkmV4Mb7fUSeG2VEHhsH-pSxsw@mail.gmail.com>
+ <X/236obyM0nqL5+X@hirez.programming.kicks-ass.net>
+ <CAJhGHyDtku6PjLtkq7TGmcQnds5cakR6viki=bPoxxkdC0p-Tw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <ce20d4f3-3e43-154a-0f57-2c2d42752597@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJhGHyDtku6PjLtkq7TGmcQnds5cakR6viki=bPoxxkdC0p-Tw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.01.2021 10:29, Claudiu.Beznea@microchip.com wrote:
-> Hi Heiner,
-> 
-> On 08.01.2021 18:31, Heiner Kallweit wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On 08.01.2021 16:45, Claudiu Beznea wrote:
->>> KSZ9131 is used in setups with SAMA7G5. SAMA7G5 supports a special
->>> power saving mode (backup mode) that cuts the power for almost all
->>> parts of the SoC. The rail powering the ethernet PHY is also cut off.
->>> When resuming, in case the PHY has been configured on probe with
->>> slew rate or DLL settings these needs to be restored thus call
->>> driver's config_init() on resume.
->>>
->> When would the SoC enter this backup mode?
-> 
-> It could enter in this mode based on request for standby or suspend-to-mem:
-> echo mem > /sys/power/state
-> echo standby > /sys/power/state
-> 
-> What I didn't mentioned previously is that the RAM remains in self-refresh
-> while the rest of the SoC is powered down.
-> 
+On Tue, Jan 12, 2021 at 11:38:12PM +0800, Lai Jiangshan wrote:
 
-This leaves the question which driver sets backup mode in the SoC.
-Whatever/whoever wakes the SoC later would have to take care that basically
-everything that was switched off is reconfigured (incl. calling phy_init_hw()). 
-So it' more or less the same as waking up from hibernation. Therefore I think
-the .restore of all subsystems would have to be executed, incl. .restore of
-the MDIO bus. Having said that I don't think that change belongs into the
-PHY driver.
-Just imagine tomorrow another PHY type is used in a SAMA7G5 setup.
-Then you would have to do same change in another PHY driver.
+> But the hard problem is "how to suppress the warning of
+> online&!active in __set_cpus_allowed_ptr()" for late spawned
+> unbound workers during hotplug.
+
+I cannot see create_worker() go bad like that.
+
+The thing is, it uses:
+
+  kthread_bind_mask(, pool->attr->cpumask)
+  worker_attach_to_pool()
+    set_cpus_allowed_ptr(, pool->attr->cpumask)
+
+which means set_cpus_allowed_ptr() must be a NOP, because the affinity
+is already set by kthread_bind_mask(). Further, the first wakeup of that
+worker will then hit:
+
+  select_task_rq()
+    is_cpu_allowed()
+      is_per_cpu_kthread() -- false
+    select_fallback_rq()
 
 
->> And would it suspend the
->> MDIO bus before cutting power to the PHY?
-> 
-> SAMA7G5 embeds Cadence macb driver which has a integrated MDIO bus. Inside
-> macb driver the bus is registered with of_mdiobus_register() or
-> mdiobus_register() based on the PHY devices present in DT or not. On macb
-> suspend()/resume() functions there are calls to
-> phylink_stop()/phylink_start() before cutting/after enabling the power to
-> the PHY.
-> 
->> I'm asking because in mdio_bus_phy_restore() we call phy_init_hw()
->> already (that calls the driver's config_init).
-> 
-> As far as I can see from documentation the .restore API of dev_pm_ops is
-> hibernation specific (please correct me if I'm wrong). On transitions to
-> backup mode the suspend()/resume() PM APIs are called on the drivers.
-> 
-> Thank you,
-> Claudiu Beznea
-> 
->>
->>> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
->>> ---
->>>  drivers/net/phy/micrel.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
->>> index 3fe552675dd2..52d3a0480158 100644
->>> --- a/drivers/net/phy/micrel.c
->>> +++ b/drivers/net/phy/micrel.c
->>> @@ -1077,7 +1077,7 @@ static int kszphy_resume(struct phy_device *phydev)
->>>        */
->>>       usleep_range(1000, 2000);
->>>
->>> -     ret = kszphy_config_reset(phydev);
->>> +     ret = phydev->drv->config_init(phydev);
->>>       if (ret)
->>>               return ret;
->>>
->>>
+So normally that really isn't a problem. I can only see a tiny hole
+there, where someone changes the cpumask between kthread_bind_mask() and
+set_cpus_allowed_ptr(). AFAICT that can be fixed in two ways:
 
+ - add wq_pool_mutex around things in create_worker(), or
+ - move the set_cpus_allowed_ptr() out of worker_attach_to_pool() and
+   into rescuer_thread().
+
+Which then brings us to rescuer_thread...  If we manage to trigger the
+rescuer during hotplug, then yes, I think that can go wobbly.
+
+Let me consider that a bit more while I try and make sense of that splat
+Paul reported.
+
+---
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index ec0771e4a3fb..fe05308dc472 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -1844,15 +1844,19 @@ static struct worker *alloc_worker(int node)
+  * cpu-[un]hotplugs.
+  */
+ static void worker_attach_to_pool(struct worker *worker,
+-				   struct worker_pool *pool)
++				  struct worker_pool *pool,
++				  bool set_affinity)
+ {
+ 	mutex_lock(&wq_pool_attach_mutex);
+ 
+-	/*
+-	 * set_cpus_allowed_ptr() will fail if the cpumask doesn't have any
+-	 * online CPUs.  It'll be re-applied when any of the CPUs come up.
+-	 */
+-	set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
++	if (set_affinity) {
++		/*
++		 * set_cpus_allowed_ptr() will fail if the cpumask doesn't have
++		 * any online CPUs.  It'll be re-applied when any of the CPUs
++		 * come up.
++		 */
++		set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
++	}
+ 
+ 	/*
+ 	 * The wq_pool_attach_mutex ensures %POOL_DISASSOCIATED remains
+@@ -1944,7 +1948,7 @@ static struct worker *create_worker(struct worker_pool *pool)
+ 	kthread_bind_mask(worker->task, pool->attrs->cpumask);
+ 
+ 	/* successful, attach the worker to the pool */
+-	worker_attach_to_pool(worker, pool);
++	worker_attach_to_pool(worker, pool, false);
+ 
+ 	/* start the newly created worker */
+ 	raw_spin_lock_irq(&pool->lock);
+@@ -2509,7 +2513,11 @@ static int rescuer_thread(void *__rescuer)
+ 
+ 		raw_spin_unlock_irq(&wq_mayday_lock);
+ 
+-		worker_attach_to_pool(rescuer, pool);
++		/*
++		 * XXX can go splat when running during hot-un-plug and
++		 * the pool affinity is wobbly.
++		 */
++		worker_attach_to_pool(rescuer, pool, true);
+ 
+ 		raw_spin_lock_irq(&pool->lock);
+ 
