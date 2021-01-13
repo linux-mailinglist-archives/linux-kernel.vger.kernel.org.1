@@ -2,61 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FBD2F5423
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CADAC2F5426
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728998AbhAMU3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 15:29:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728386AbhAMU3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 15:29:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8716E22795;
-        Wed, 13 Jan 2021 20:28:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610569738;
-        bh=9QCztcLnLLWMRX4cxjXejBAMFmhqjbOpAc6w3zPseII=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=npSPWvuSEA/x64LxYnE3TbywHxW27oJdw+6qEFD27cjIEd83hETn+aX7fh527i9I4
-         o4sKXMTBfjdzPQsjGIoOodiCbbiegFldjiMw/T9STkp1G43c791Ffm0VLAuIXfMPR+
-         v65+6HpGDfcv5+rNtSeUWKfJ3o1luXz1qYkJknV1P/AdM/JtCmJxq7BgpQGEDkEtau
-         s6AHFDFfRekZgFMPTVB3QE+DQy9kpok6dZvA4lhnDqz+DVPXr7n6V2YjDWR1jycmYT
-         09+qwMA/bbX7sJaN5nhccA8fmfOLQ2Gl5uGXFNo7VWii00c57WLmR8yxdPGzWZa26k
-         9icCuozb0uEGQ==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 7242E604E9;
-        Wed, 13 Jan 2021 20:28:58 +0000 (UTC)
-Subject: Re: [GIT PULL] sound fixes for 5.11-rc4
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <s5h1reoopbh.wl-tiwai@suse.de>
-References: <s5h1reoopbh.wl-tiwai@suse.de>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <s5h1reoopbh.wl-tiwai@suse.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.11-rc4
-X-PR-Tracked-Commit-Id: 20c7842ed8374e1c3ee750b2fe7ca8cdd071bda6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 65f0d2414b7079556fbbcc070b3d1c9f9587606d
-Message-Id: <161056973839.29351.551452150479023263.pr-tracker-bot@kernel.org>
-Date:   Wed, 13 Jan 2021 20:28:58 +0000
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S1728829AbhAMUc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 15:32:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727705AbhAMUc1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 15:32:27 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69AFC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:31:46 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id w2so1942076pfc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:31:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=x3MPhiU2w3/M1LyIYX233yh3l63UHt26Df7c1l4yyS0=;
+        b=lgOrF1vud4CIGB25b7osz+2oIguQZKHERI9D69dBcBVuYXheNY3pX5pbJYPwCckISM
+         +PUkM6LOor5+Ci7YWZAaSLyzjIlqhc8mPtpDrSlVpuE/cNy2l28dog8L7Ttg2reyok5s
+         AD6wE980ogNO2xg3XtyblOQu7cC1Cwm8H9SIvDx6AuQhTKM8dOBuVZX15fEcbL5IuaWt
+         15BQt6H8G1Yj0jnP9f+nRsPX7TJi/lPYpUk0vJx4MW5HNANk+UrbucZTrQuJ3CkG39De
+         NPJj3ROUB7xRlXAxLFVY+yowWEQA30PDa8Bl5C4mCxRGHtAWK0GzBepU4eixiPg3/Ai1
+         PCfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=x3MPhiU2w3/M1LyIYX233yh3l63UHt26Df7c1l4yyS0=;
+        b=ivitdRn4/WF6SlQTvLMh/KmcXR6Z0wq/GNmcUIlu0prPbaGRKPTWYqdJxfWtTE+Kbs
+         pxPYfRz5Sk94j51y5e2wFQEmTsO4VaiwoBp02yzqnQXUZEDIJfBBSq4RhY+fVpUDdCbf
+         zF047kXomZVowrfGa8AQQ0OEOJ1/YEDo1GxRcfEUiSrUV4aPNuQPo8QijlrSDKUMHJCq
+         f3avCrrKm1d2RfIssYoJElClFX3Q7dos2+t+HxiJLbSULvj8jRzEhtwf3M1UfS8+Elxy
+         FrCvUMcKrj7mW19F8tBgQC9xnOyJiJPaaXhDQBMroyic9nxkKAQBOVE2wN86LbwCbjqG
+         WAxw==
+X-Gm-Message-State: AOAM533ynU0hrQlUMbmfvYhdzy0GgD/x7VlxR2sH+75ZQSnSLrOaWGuc
+        t280FoYHxsvvC1oUbjJTu86cEA==
+X-Google-Smtp-Source: ABdhPJz3B8b/fHkcVhHNh/pEoU/jcb/7vLKk9kpdfzQ2KQQgMT3HCF2wn+oiQYR4k+z1aUBQIzJVXg==
+X-Received: by 2002:a63:3714:: with SMTP id e20mr3792229pga.410.1610569906286;
+        Wed, 13 Jan 2021 12:31:46 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id bx17sm3834222pjb.12.2021.01.13.12.31.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 12:31:45 -0800 (PST)
+Date:   Wed, 13 Jan 2021 13:31:43 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Andy Gross <agross@kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 00/16] introduce generic IOCTL interface for RPMsg
+ channels management
+Message-ID: <20210113203143.GA229796@xps15>
+References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 13 Jan 2021 15:59:30 +0100:
+Hi Arnaud,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.11-rc4
+[...]
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/65f0d2414b7079556fbbcc070b3d1c9f9587606d
+> 
+> Arnaud Pouliquen (16):
+>   rpmsg: introduce RPMsg control driver for channel creation
+>   rpmsg: add RPMsg control API to register service
+>   rpmsg: add override field in channel info
+>   rpmsg: ctrl: implement the ioctl function to create device
+>   rpmsg: ns: initialize channel info override field
+>   rpmsg: add helper to register the rpmsg ctrl device
+>   rpmsg: char: clean up rpmsg class
+>   rpmsg: char: make char rpmsg a rpmsg device without the control part
+>   rpmsg: char: register RPMsg raw service to the ioctl interface.
+>   rpmsg: char: allow only one endpoint per device
+>   rpmsg: char: check destination address is not null
+>   rpmsg: virtio: use the driver_override in channel creation ops
+>   rpmsg: virtio: probe the rpmsg_ctl device
+>   rpmsg: glink: add create and release rpmsg channel ops
+>   rpmsg: smd: add create and release rpmsg channel ops
+>   rpmsg: replace rpmsg_chrdev_register_device use
+> 
+>  drivers/rpmsg/Kconfig             |   8 +
+>  drivers/rpmsg/Makefile            |   1 +
+>  drivers/rpmsg/qcom_glink_native.c |  96 +++++++--
+>  drivers/rpmsg/qcom_smd.c          |  59 +++++-
+>  drivers/rpmsg/rpmsg_char.c        | 246 ++++++-----------------
+>  drivers/rpmsg/rpmsg_ctrl.c        | 320 ++++++++++++++++++++++++++++++
+>  drivers/rpmsg/rpmsg_internal.h    |  14 --
+>  drivers/rpmsg/rpmsg_ns.c          |   1 +
+>  drivers/rpmsg/virtio_rpmsg_bus.c  |  38 +++-
+>  include/linux/rpmsg.h             |  40 ++++
+>  include/uapi/linux/rpmsg.h        |  14 ++
+>  11 files changed, 606 insertions(+), 231 deletions(-)
+>  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
 
-Thank you!
+I am finally coming around to review this set.  I see that you already had an
+extensive conversation with Bjorn - did you want me to have a look as well or
+should I wait for the next revision?
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks,
+Mathieu
+
+> 
+> -- 
+> 2.17.1
+> 
