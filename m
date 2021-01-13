@@ -2,89 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F892F4EA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC9E2F4ED7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727292AbhAMP3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 10:29:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbhAMP3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 10:29:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 124E2233F6;
-        Wed, 13 Jan 2021 15:28:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610551706;
-        bh=Mg2ARogJlO660LgGnPMrdN+6ikF0b/JxVj+vxajyk+Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZcVw6Lmqm06Cwx5kwFDHc7g8QO7QcfdqfDCEbWK6E61+n27+/N5vRQPntpD9SbrKI
-         ABSRfhvQzozbH6dX5PN7rXGr6BjLU1ByuA6n7XQrTW0zSnH9R9dP0pWXq688j/KPv0
-         qU/4Mg2JnZeG3NSUd71XnRBTKbaiagC+VLGTAf7RFYkiF1P+EGBSU2YdMIU9jwngJE
-         IzwvZWaNRt/nRG3tTJa7RqhR9pZ5prVYX/36ahpqhJptAqYZc2Uh7pMRLfqmUOeAg/
-         vuR7hxhMS9bKcKU/UTpkpRjuD1HRWpOizh3Rp4dJaht1WqnDnDJWMevIRiAflvG7h0
-         VKoiv+bGw6U4Q==
-Received: by mail-ej1-f43.google.com with SMTP id jx16so3611408ejb.10;
-        Wed, 13 Jan 2021 07:28:25 -0800 (PST)
-X-Gm-Message-State: AOAM5302w6yjcwc5vMBVUlpEsgGdVA4dwN52zCJKWT6CtrJCs7Gne8x9
-        cs1H2OV+zX6az1CULZDIP+n9XWfCc8UamHuftg==
-X-Google-Smtp-Source: ABdhPJwSNSW5WjoC5vVbpHCVn5f5VMr7QuBDfdON7GWyYQI8ef3yATBL0johH1JdQeAE83K0V4Og53LZq9AnwQ2itKw=
-X-Received: by 2002:a17:906:fb1a:: with SMTP id lz26mr1962502ejb.194.1610551704525;
- Wed, 13 Jan 2021 07:28:24 -0800 (PST)
+        id S1727203AbhAMPeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 10:34:44 -0500
+Received: from vps46799.freepascal.org ([85.222.228.11]:39928 "EHLO
+        mail.freepascal.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727117AbhAMPen (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 10:34:43 -0500
+X-Greylist: delayed 577 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Jan 2021 10:34:42 EST
+Received: from localhost (localhost [127.0.0.1])
+        by mail.freepascal.org (Postfix) with ESMTP id B85798003C;
+        Wed, 13 Jan 2021 16:24:22 +0100 (CET)
+Received: from mail.freepascal.org ([127.0.0.1])
+        by localhost (idefix.freepascal.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id pCnIbHmj9EZy; Wed, 13 Jan 2021 16:24:22 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.freepascal.org (Postfix) with ESMTPS id 8FE9480030;
+        Wed, 13 Jan 2021 16:24:22 +0100 (CET)
+Date:   Wed, 13 Jan 2021 16:24:22 +0100 (CET)
+From:   =?ISO-8859-15?Q?Dani=EBl_Mantione?= 
+        <daniel.mantione@freepascal.org>
+X-X-Sender: daniel@idefix.freepascal.org
+To:     Lee Jones <lee.jones@linaro.org>
+cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH 14/31] video: fbdev: aty: mach64_ct: Remove some set but
+ unused variables
+In-Reply-To: <20210113145009.1272040-15-lee.jones@linaro.org>
+Message-ID: <alpine.DEB.2.21.2101131618160.8079@idefix.freepascal.org>
+References: <20210113145009.1272040-1-lee.jones@linaro.org> <20210113145009.1272040-15-lee.jones@linaro.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <1609989081-29353-1-git-send-email-yongqiang.niu@mediatek.com>
- <1609989081-29353-2-git-send-email-yongqiang.niu@mediatek.com> <20210112144921.GA330210@robh.at.kernel.org>
-In-Reply-To: <20210112144921.GA330210@robh.at.kernel.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 13 Jan 2021 23:28:13 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9=TJw6Hj5UOWSJJh_O6B0Ue43LhtCpJwtJiG-93-kgAg@mail.gmail.com>
-Message-ID: <CAAOTY_9=TJw6Hj5UOWSJJh_O6B0Ue43LhtCpJwtJiG-93-kgAg@mail.gmail.com>
-Subject: Re: [PATCH v9, 01/11] dt-bindings: mediatek: add rdma-fifo-size
- description for mt8183 display
-To:     Rob Herring <robh@kernel.org>
-Cc:     Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="-564851740-754536928-1610551462=:8079"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rob Herring <robh@kernel.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=8812=E6=97=A5 =
-=E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8810:49=E5=AF=AB=E9=81=93=EF=BC=9A
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+---564851740-754536928-1610551462=:8079
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+
+Hi,
+
+If I remember well, the removed lines have to do with the VGA/accelerator 
+mode of the chip. The current driver always runs the chip in accelerator 
+mode. Suppose you would want to support high resolution hardware text 
+modes with the driver (fbdev bpp=0), then you would need to switch the 
+chip into VGA mode mode and then the removed lines become relevant.
+
+I did some experiments with this when I was working on the driver, but 
+because the documentation was silent about the behaviour of extended 
+CRTC registers in VGA mode, I failed to make hardware text modes to work 
+properly.
+
+The #if 0 was there so code was already there in case me or someone else 
+would pick it up again.
+
+Best regards,
+
+Daniël Mantione
+
+Op Wed, 13 Jan 2021, schreef Lee Jones:
+
+> Fixes the following W=1 kernel build warning(s):
 >
-> On Thu, 07 Jan 2021 11:11:11 +0800, Yongqiang Niu wrote:
-> > rdma fifo size may be different even in same SOC, add this
-> > property to the corresponding rdma
-
-Applied to mediatek-drm-next [1], thanks.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
-
-Regards,
-Chun-Kuang.
-
-> >
-> > Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> > ---
-> >  .../devicetree/bindings/display/mediatek/mediatek,disp.txt       | 9 +=
-++++++++
-> >  1 file changed, 9 insertions(+)
-> >
+> drivers/video/fbdev/aty/mach64_ct.c: In function ‘aty_init_pll_ct’:
+> drivers/video/fbdev/aty/mach64_ct.c:405:46: warning: variable ‘vga_dsp_on_off’ set but not used [-Wunused-but-set-variable]
+> drivers/video/fbdev/aty/mach64_ct.c:405:30: warning: variable ‘vga_dsp_config’ set but not used [-Wunused-but-set-variable]
+> drivers/video/fbdev/aty/mach64_ct.c:405:18: warning: variable ‘dsp_on_off’ set but not used [-Wunused-but-set-variable]
 >
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> Cc: daniel.mantione@freepascal.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-fbdev@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+> drivers/video/fbdev/aty/mach64_ct.c | 19 ++-----------------
+> 1 file changed, 2 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/video/fbdev/aty/mach64_ct.c b/drivers/video/fbdev/aty/mach64_ct.c
+> index f87cc81f4fa2b..23eececa1e9d7 100644
+> --- a/drivers/video/fbdev/aty/mach64_ct.c
+> +++ b/drivers/video/fbdev/aty/mach64_ct.c
+> @@ -402,7 +402,7 @@ static int aty_init_pll_ct(const struct fb_info *info, union aty_pll *pll)
+> 	struct atyfb_par *par = (struct atyfb_par *) info->par;
+> 	u8 mpost_div, xpost_div, sclk_post_div_real;
+> 	u32 q, memcntl, trp;
+> -	u32 dsp_config, dsp_on_off, vga_dsp_config, vga_dsp_on_off;
+> +	u32 dsp_config;
+> #ifdef DEBUG
+> 	int pllmclk, pllsclk;
+> #endif
+> @@ -488,25 +488,10 @@ static int aty_init_pll_ct(const struct fb_info *info, union aty_pll *pll)
+>
+> 	/* Allow BIOS to override */
+> 	dsp_config = aty_ld_le32(DSP_CONFIG, par);
+> -	dsp_on_off = aty_ld_le32(DSP_ON_OFF, par);
+> -	vga_dsp_config = aty_ld_le32(VGA_DSP_CONFIG, par);
+> -	vga_dsp_on_off = aty_ld_le32(VGA_DSP_ON_OFF, par);
+>
+> 	if (dsp_config)
+> 		pll->ct.dsp_loop_latency = (dsp_config & DSP_LOOP_LATENCY) >> 16;
+> -#if 0
+> -	FIXME: is it relevant for us?
+> -	if ((!dsp_on_off && !M64_HAS(RESET_3D)) ||
+> -		((dsp_on_off == vga_dsp_on_off) &&
+> -		(!dsp_config || !((dsp_config ^ vga_dsp_config) & DSP_XCLKS_PER_QW)))) {
+> -		vga_dsp_on_off &= VGA_DSP_OFF;
+> -		vga_dsp_config &= VGA_DSP_XCLKS_PER_QW;
+> -		if (ATIDivide(vga_dsp_on_off, vga_dsp_config, 5, 1) > 24)
+> -			pll->ct.fifo_size = 32;
+> -		else
+> -			pll->ct.fifo_size = 24;
+> -	}
+> -#endif
+> +
+> 	/* Exit if the user does not want us to tamper with the clock
+> 	rates of her chip. */
+> 	if (par->mclk_per == 0) {
+> -- 
+> 2.25.1
+>
+---564851740-754536928-1610551462=:8079--
