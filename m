@@ -2,105 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045FF2F4650
+	by mail.lfdr.de (Postfix) with ESMTP id 7C12D2F4651
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:23:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727228AbhAMIVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:21:33 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:42961 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726719AbhAMIV1 (ORCPT
+        id S1727457AbhAMIWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:22:05 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:43745 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726921AbhAMIWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:21:27 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 667DA5C0576;
-        Wed, 13 Jan 2021 03:20:35 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 13 Jan 2021 03:20:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=ZJsjaocw9Pk6aOpZYBiht2QvMxn
-        NAp9d3CIT5u5UeKI=; b=vQL0aTNUQFG38MxrlAdRyDoA5jRk2VeTpSlap36sD+y
-        YB+wtobrkzTdd51caSr5GVOFj6yLYyTTJztzKs66hWKFLQyt7ZluOMYPEz5HKl9F
-        w287F4lZwjnTmRSWy89auAoAL37gCSnTPhrpmk5EI80aHn4DR8YCF7+PRLFbWgDH
-        Lr9tX3l4FNGtewr56Uk5dYpH5D3XmJvxc8WLJfwi6hTpV2UYarqEa3fMn6ETqLt0
-        z76XchwkoIn+vdEeP/UWCoV/dESYFBMRnU3uuoe2s6O5Gm6+n16SnfBZZ4G3a+zW
-        twhtOOUg7+L3eWojQhk5yRqjBHJkD9MJ/W2408MnWng==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ZJsjao
-        cw9Pk6aOpZYBiht2QvMxnNAp9d3CIT5u5UeKI=; b=cxVS4GLIuqPcpYMMCafkIw
-        gOAybv9dvJNNnTY0CICUgy/zzFjtmOLJJqWCQge5FQESleUhz2AxQERx2O0TCaqj
-        WRqDCeIdq1BXGjwYR7a1/+avBKVaR9ThK8XU4iqyb2FaCVTl6eC6gvJikF7jrEwH
-        AhA338oyq3mCrjb/X+cC05eflROhPsjz4CqqgtZ5xmdaayZQOAFe8naFNXfY4Hmb
-        Yzp3RYUft/xlGBK80fYC6kjiW38nANmYqs4AvbIuotVZJI5t31bKA4K1Z0D0/bLD
-        lEh63sppxlAj8BB3D17xDKUXxrziJY0f/MxW1ssohEt/uFKw0PRhOJsjymJ0GoQg
-        ==
-X-ME-Sender: <xms:Uq3-X_RIdTQ27F_EkvgKsWmm2v53FCkCG8Ljkm5lCS595OSt0JTKqg>
-    <xme:Uq3-XwvJ4PagrdccSNf8w-b_j15ONhEN1vrYgQuZKyyS4flFR5OKJTzDgH5QHPch_
-    DpSj5ZjKZLfiXEB4xk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtddugdduvddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:Uq3-XxtxnpMyChJwd1jK0X_MeMFWuGLmRa2UqADitW8aGn5bw3yoHw>
-    <xmx:Uq3-X2xXo6Q2G7oIS-br--OBmQD-M40XllT_KIOGy0jcB2U4q4s8Ng>
-    <xmx:Uq3-X3hKpihhp9ol1PKisldKnRXdNlQgjttZYv4l3dbf1o1TAaw6Ng>
-    <xmx:U63-XznKW07YKcaB20S-lEQZUmdxNkp6dSM2GwJtk2XeOy5fCL9N8g>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id CD0951080057;
-        Wed, 13 Jan 2021 03:20:33 -0500 (EST)
-Date:   Wed, 13 Jan 2021 09:20:31 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Sergio Sota <sergiosota@fanamoel.com>
-Cc:     robh+dt@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ARM: dts: sun5i: add A10s/A13 mali gpu support
- fallback
-Message-ID: <20210113082031.foa3kzodk6zxqj54@gilmour>
-References: <20210108103819.322901-1-sergiosota@fanamoel.com>
+        Wed, 13 Jan 2021 03:22:04 -0500
+Received: by mail-oi1-f169.google.com with SMTP id q25so1235430oij.10;
+        Wed, 13 Jan 2021 00:21:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ALKzS1zqUziBFoEG3hQOmy1+PfVqRE4pA7mKb1ctmGA=;
+        b=jCh9UO83am14njMk8Zi/y+BGwS1RQFIfWyTI0FnYjEqmDFNToDTZzUcpwzV8wvKLKO
+         yNISws1ISwochAJI3gwAZ3oezIk857sR91PfBcul4i6Q4ryT/RdeI/p0gpZ0FdcqaY25
+         RcYzFNIsl7M0QcoB3kn2kXVTz33JsI3Lk2g+1ygQfKshNZHJrImfLFrOAqPQJVdSjA2j
+         QEt8DAQE6oDWjlvJpkWG13FDoYJ0U+VdeHklPI5gOe9bMBOhFjLCyQMcFxiyqib6n7h1
+         ZGznO8dwg2KxODTaC369jbh7gtDsKDl7MQlMfsANNutWLoaKvrKH6DtlXiF3Q24vjFlF
+         IQyg==
+X-Gm-Message-State: AOAM533trsSnYHinjnIsBcWI5qijdcsG1z+vhLN3BJr7dWlXglpljxQl
+        ckR6cR/OkZdxwzNiEjwJvMcbVRR8CV1TUK2l5GEeGBzn
+X-Google-Smtp-Source: ABdhPJyRX+4namPERjEdlnCAH4leUHIBxj0SFewD7BSelMI7Pc+tgIaD4qWQrFB6gXrTphwmN2Qmf2TQe+Q+MZw7w4w=
+X-Received: by 2002:aca:ec09:: with SMTP id k9mr516037oih.153.1610526083096;
+ Wed, 13 Jan 2021 00:21:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wzehxqhmyvsmno52"
-Content-Disposition: inline
-In-Reply-To: <20210108103819.322901-1-sergiosota@fanamoel.com>
+References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+ <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net> <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
+ <CACRpkda4E2NwNw29J7x5gehtqn_m3M_Z2dHpc7xRgvb0b-p22A@mail.gmail.com> <b8eb1c83-d2f8-1c72-ca67-4160b90b3845@landley.net>
+In-Reply-To: <b8eb1c83-d2f8-1c72-ca67-4160b90b3845@landley.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 13 Jan 2021 09:21:10 +0100
+Message-ID: <CAMuHMdUNe1A0RpkYdyRy9OJ+RDfUe_3KcAVnsCK+pP0jzJwtVA@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     Rob Landley <rob@landley.net>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Gerhard Pircher <gerhard_pircher@gmx.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
---wzehxqhmyvsmno52
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jan 13, 2021 at 8:58 AM Rob Landley <rob@landley.net> wrote:
+> On 1/12/21 4:46 PM, Linus Walleij wrote:
+> > On Tue, Jan 12, 2021 at 3:45 PM John Paul Adrian Glaubitz
+> > <glaubitz@physik.fu-berlin.de> wrote:
+> >> Yeah, I have the same impression that's the strong commercial interest pushes
+> >> hobbyist use of the Linux kernel a bit down. A lot of these changes feel like
+> >> they're motivated by corporate decisions.
+> >>
+> >> There has to be a healthy balance between hobbyist and commercial use. I understand
+> >> that from a commercial point of view, it doesn't make much sense to run Linux
+> >> on a 30-year-old computer. But it's a hobbyist project for many people and hacking
+> >> Linux stuff for these old machines has a very entertaining and educational factor.
+> >
+> > This is actually one of the most interesting things written in this discussion.
+> >
+> > I have both revamped and deleted subarchitectures in the ARM tree. We
+> > never deleted anyone's pet project *unless* they were clearly unwilling to
+> > work on it (such as simply testning new patches) and agreed that it will
+> > not go on.
+>
+> Another fun aspect of old hardware is it serves as prior art for patents. The
+> j-core hardware implementation schedule has in part been driven by specific
+> patents expiring, as in "we can't do $FEATURE until $DATE".
 
-On Fri, Jan 08, 2021 at 11:38:19AM +0100, Sergio Sota wrote:
-> The A10s/A13 mali gpu was not defined in device tree
-> Add A10 mali gpu as a fallback for A10s/A13
-> Tested with Olimex-A13-SOM / Olimex-A13-OlinuXino-MICRO
-> "kmscube" 3d cube on screen (60fps / 10%cpu)
-> Versions: Lima:1.1.0 EGL:1.4 OpenGLES:2.0 Mesa:20.2.2
->=20
-> Signed-off-by: Sergio Sota <sergiosota@fanamoel.com>
+Indeed, so that's why the release of j4 is postponed to 2016...
+/me runs date (again).
 
-Applied, thanks
-Maxime
+> When I did an sh4 porting contract in 2018 I got that board updated to a
+> current-ish kernel (3 versions back from then-current it hit some intermittent
+> nor flash filesystem corruption that only occurred intermittently under
+> sustained load; had to ship so I backed off one version and never tracked it
+> down). But these days I'm not always on the same continent as my two actual sh4
+> hardware boards, have never gotten my physical sh2 board to boot, and $DAYJOB is
+> all j-core stuff not sh4.
 
---wzehxqhmyvsmno52
-Content-Type: application/pgp-signature; name="signature.asc"
+Which is not upstream, investing in the future?
 
------BEGIN PGP SIGNATURE-----
+> Testing that a basic superh system still builds and boots under qemu and j-core
+> I can commit to doing regularly. Testing specific hardware devices on boards I
+> don't regularly use is a lot harder.
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX/6tTwAKCRDj7w1vZxhR
-xSp8AQD/zV00xouTidXvD/st6pAAAnYwgL40SAbfKj+E7joeswEArfhhKydwf4et
-P/NHuAihw1bVP8h1uiIR30YN8DRgPA8=
-=NOns
------END PGP SIGNATURE-----
+I have the sh7751-based landisk in my board farm, so it's receiving
+regular boot testing.  That's one of the simpler SH-based platforms,
+though.
 
---wzehxqhmyvsmno52--
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
