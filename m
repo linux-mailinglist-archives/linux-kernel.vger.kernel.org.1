@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6012F45E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 006252F45E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:14:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbhAMIJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726828AbhAMIJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 13 Jan 2021 03:09:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39838 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726571AbhAMIJR (ORCPT
+        with ESMTP id S1726584AbhAMIJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Jan 2021 03:09:17 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CCDC0617A2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:08:02 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id g10so713740wmh.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:08:02 -0800 (PST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC49C0617A3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:08:03 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id m4so1055239wrx.9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:08:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YaJ+xpBDvvYC3lW5kV2UczyJUDW/j4U+lHIq9z+JvDw=;
-        b=WsQms4zJiYtT5LVKrCDvJqTzyauR1L7ZrV/ErDeTxtpEOnQQJzux+BCYQydoZtAyo0
-         EPxFeb095dvlkwDkYDE+e60fyWPr+ZnRC2hcA18fuSphilINabII+6TeyMwbwOaOiKfw
-         OC/UxR/UuA7wsll84KPXCHnkzQP08OFr9F63whp9Rp5wAJsdytx4qsc8Ni8DmlLarXxR
-         D5uVCKUaa0MHoo3TVb+28cdBVCnJcJi4RNixwFuvmuKR2hu8JuDCAp8E2MNZJfjLlv5t
-         I34lrVKBpNGDaX9HZFr9LoLI+yLNoiMmSbPAIWwe6PAQRCnK7OFFkIvT37B5tFz8CsXl
-         axIw==
+        bh=uijBif3LDCp6uSB/PBdTvGwhpkhL7Mx60YRAsO0AYy8=;
+        b=fWyttGY5YOrU5xtJtANQdhj0LNwlYyw16LtKgiVGW+KEARU+XsvOkAHJg/PmCEwWVC
+         1XHvUW+k7rB2zYNgC88Up8ZfZzpelyN25otNAF9TXn2iYIyclDpgWNtO90qfzJ/3NhK5
+         uaafJQFVy/vaqjiU0j9y9ebW8oJlif4JBGxyuRvgJx6UFoNFnvbExzKka9eR0uobCKsJ
+         kO6L+t5ue1oa9eTTbmKplUpBaAE/xLNq4yZjdjLXtMZ8DO1cupBORTIM9d3yVLf0nNk8
+         2pUE0Ac/j1MftsxdUyo0oTe9rqFDRgER8g6u6V7EW5Xdx7iMmHS90cBbM5YK/raStG39
+         /v2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YaJ+xpBDvvYC3lW5kV2UczyJUDW/j4U+lHIq9z+JvDw=;
-        b=s6qDuqD8Z802x3Ow3eaw6BdLB7+EYnn0/WXp+FHkfJFpzyQM0yNyKHT4fZYQOh3AvB
-         rPAYpV23GG8SlGE5DiUG+o887Kqvjrt33Nqaisol0RlsaCitDXFe3B3R8tdJGBhMryqa
-         dXyotygnbBZ93eE24d1u/MvSBufJOsky4guqmK8g+rNyjCxxCxGlGH1b+2gxu0l5cdOB
-         0gHSlhutw2oiVM3qsW6daUFNrE3Anzsph6PuTZhFVwm2t1BrXaZrsWgRenKHINYLL2fE
-         O9eHnqMKJyRkLpYXmIqNe1UbBM3DLT4ge3XETUUsfi6PQlU9i9pT8r4599guNVAaaCQb
-         4zAA==
-X-Gm-Message-State: AOAM533B+aZY78AanSv0aoyZIy5QLP6SXrQGmhPZtZ38yYo3pFPpiJWQ
-        SvVA/iOhbPDcHNaUZCbdrsDwEA==
-X-Google-Smtp-Source: ABdhPJzYql5/UWMI/LumOt2JvYksf/Z9CIRastCwWreEyNI3i2UayobU2A3/YhQZL+8jW8Jyw8t5mw==
-X-Received: by 2002:a7b:cc87:: with SMTP id p7mr991968wma.112.1610525281314;
-        Wed, 13 Jan 2021 00:08:01 -0800 (PST)
+        bh=uijBif3LDCp6uSB/PBdTvGwhpkhL7Mx60YRAsO0AYy8=;
+        b=CAsVtPCSmf/XA45GYZXXqIjtHJZSw8AqpykurGGMzUCRlv2ah74TRM3gJkdsiO0hyx
+         +jmeVVlFXVv0CFdWLysOUc7+oRGdAXxpAsol0L56XhmqZlSuOyusesdDSUWcHdJFnsNN
+         fYw2dV+BV3uOyWbUhOzruhtwHoLM580pAcsw50/Vayc2tOJfUvofxg5dI8EB3cZdW/x2
+         7FgLusXoathOh3SNxgjES9YmY8YDOJgLZ7CmKXuaatc8v1xrfYRh5EO/udHuT/pDOfT1
+         QgPA/eH1YgHFo7+89dNUNmXmPE2HgGwPt4Pa0KVo108Jm+3mFt07P40L5DegtkkYGB5c
+         0ryQ==
+X-Gm-Message-State: AOAM532hiQ7KWhwJrycqe8bERbBRNGlkPItrWrjh9xOlFVzlpELyHU16
+        fgyoLRgX3TEjjiVFUsC9+RI9mA==
+X-Google-Smtp-Source: ABdhPJyOQUs/awLYYca6/4bn7RF3frSY5UBrKKCm/uO/5uxt7oQu7dpIBVHi4TVCij2NMs44m6v1mA==
+X-Received: by 2002:a5d:4112:: with SMTP id l18mr1190946wrp.116.1610525282432;
+        Wed, 13 Jan 2021 00:08:02 -0800 (PST)
 Received: from dell.default ([91.110.221.229])
-        by smtp.gmail.com with ESMTPSA id r20sm1642486wmh.15.2021.01.13.00.07.59
+        by smtp.gmail.com with ESMTPSA id r20sm1642486wmh.15.2021.01.13.00.08.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 00:08:00 -0800 (PST)
+        Wed, 13 Jan 2021 00:08:01 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,12 +56,11 @@ Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH 04/30] drm/amd/display/modules/power/power_helpers: Staticify local functions
-Date:   Wed, 13 Jan 2021 08:07:26 +0000
-Message-Id: <20210113080752.1003793-5-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 05/30] drm/amd/display/modules/info_packet/info_packet: Correct kernel-doc formatting
+Date:   Wed, 13 Jan 2021 08:07:27 +0000
+Message-Id: <20210113080752.1003793-6-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210113080752.1003793-1-lee.jones@linaro.org>
 References: <20210113080752.1003793-1-lee.jones@linaro.org>
@@ -74,9 +73,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../display/modules/power/power_helpers.c:281:6: warning: no previous prototype for ‘fill_iram_v_2’ [-Wmissing-prototypes]
- drivers/gpu/drm/amd/amdgpu/../display/modules/power/power_helpers.c:455:6: warning: no previous prototype for ‘fill_iram_v_2_2’ [-Wmissing-prototypes]
- drivers/gpu/drm/amd/amdgpu/../display/modules/power/power_helpers.c:601:6: warning: no previous prototype for ‘fill_iram_v_2_3’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/modules/info_packet/info_packet.c:412: warning: Cannot understand  *****************************************************************************
 
 Cc: Harry Wentland <harry.wentland@amd.com>
 Cc: Leo Li <sunpeng.li@amd.com>
@@ -84,45 +81,38 @@ Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/display/modules/power/power_helpers.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../amd/display/modules/info_packet/info_packet.c   | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/modules/power/power_helpers.c b/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
-index 4fd8bce95d843..3d4c66933f518 100644
---- a/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
-+++ b/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
-@@ -278,7 +278,7 @@ static void fill_backlight_transform_table_v_2_2(struct dmcu_iram_parameters par
- 	}
+diff --git a/drivers/gpu/drm/amd/display/modules/info_packet/info_packet.c b/drivers/gpu/drm/amd/display/modules/info_packet/info_packet.c
+index 0fdf7a3e96dea..57f198de5e2cb 100644
+--- a/drivers/gpu/drm/amd/display/modules/info_packet/info_packet.c
++++ b/drivers/gpu/drm/amd/display/modules/info_packet/info_packet.c
+@@ -409,16 +409,11 @@ void mod_build_vsc_infopacket(const struct dc_stream_state *stream,
  }
  
--void fill_iram_v_2(struct iram_table_v_2 *ram_table, struct dmcu_iram_parameters params)
-+static void fill_iram_v_2(struct iram_table_v_2 *ram_table, struct dmcu_iram_parameters params)
- {
- 	unsigned int set = params.set;
- 
-@@ -452,7 +452,7 @@ void fill_iram_v_2(struct iram_table_v_2 *ram_table, struct dmcu_iram_parameters
- 			params, ram_table);
- }
- 
--void fill_iram_v_2_2(struct iram_table_v_2_2 *ram_table, struct dmcu_iram_parameters params)
-+static void fill_iram_v_2_2(struct iram_table_v_2_2 *ram_table, struct dmcu_iram_parameters params)
- {
- 	unsigned int set = params.set;
- 
-@@ -598,7 +598,7 @@ void fill_iram_v_2_2(struct iram_table_v_2_2 *ram_table, struct dmcu_iram_parame
- 			params, ram_table, true);
- }
- 
--void fill_iram_v_2_3(struct iram_table_v_2_2 *ram_table, struct dmcu_iram_parameters params, bool big_endian)
-+static void fill_iram_v_2_3(struct iram_table_v_2_2 *ram_table, struct dmcu_iram_parameters params, bool big_endian)
- {
- 	unsigned int i, j;
- 	unsigned int set = params.set;
+ /**
+- *****************************************************************************
+- *  Function: mod_build_hf_vsif_infopacket
++ *  mod_build_hf_vsif_infopacket - Prepare HDMI Vendor Specific info frame.
++ *                                 Follows HDMI Spec to build up Vendor Specific info frame
+  *
+- *  @brief
+- *     Prepare HDMI Vendor Specific info frame.
+- *     Follows HDMI Spec to build up Vendor Specific info frame
+- *
+- *  @param [in] stream: contains data we may need to construct VSIF (i.e. timing_3d_format, etc.)
+- *  @param [out] info_packet:   output structure where to store VSIF
+- *****************************************************************************
++ *  @stream:      contains data we may need to construct VSIF (i.e. timing_3d_format, etc.)
++ *  @info_packet: output structure where to store VSIF
+  */
+ void mod_build_hf_vsif_infopacket(const struct dc_stream_state *stream,
+ 		struct dc_info_packet *info_packet)
 -- 
 2.25.1
 
