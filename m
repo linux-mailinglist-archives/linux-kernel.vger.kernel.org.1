@@ -2,122 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1332F57FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35EE72F57F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730331AbhANCMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:12:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51634 "EHLO
+        id S1729374AbhANCLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:11:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729238AbhAMWIy (ORCPT
+        with ESMTP id S1729261AbhAMWLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 17:08:54 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7A1C061575;
-        Wed, 13 Jan 2021 14:07:48 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id h16so3610363edt.7;
-        Wed, 13 Jan 2021 14:07:48 -0800 (PST)
+        Wed, 13 Jan 2021 17:11:11 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6CBC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:10:31 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id e18so5258679ejt.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:10:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=Fjx4x9CJD2wWjKON/wheiuq+1EzL46Iryc22xTN24oY=;
-        b=va4GwRxtMiYIKSA/SqIIQIDY1vPL/tulMkOywZckEhLZbkhHpEMpYvfhLrH13087EN
-         kXM2l8Jf61kJJXZttzxj3aSr3wdcXQ3NiOK/1XYg5lwTvXKffuuaxQKICLn8mwRhoiez
-         7KNyrcUunR+dYvmVagw8isyRG7MvR5ZtxwcoZgoSZ5lKIx5/3EejSzfQlYdS0zYagmev
-         cPIsk0AJvOACpUU+da4NawTYTwixhknA+O6n4rxx5TmITa1OIsGTEg86Y9Xol9aSUYWP
-         tJMSk0r8RKd98RiFQc/HOsUK2zSr4NVbZSraJ+tgb4CMpTMF87CAs02UeyIbmSdq3xqG
-         KXgg==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cHpWTw6lcPxz7z8H8yQJbwdU01y9cP5VFlHIAcOYlIE=;
+        b=B2jvRWZJURQ5oLNMwvJfonm7dSdUz89Ple+ZJuYOXcXZ7dhHpGH7Q7+w3X36ZBWmKC
+         SZVY4kP8zTNT+/eQZiiqp5eK+9C6x1UFd4NdwG8nWK0baXnQTowRKcF6x3D5gHX0yQcF
+         sfgeCszX8SGM2ryM3QdOT+nct7lR9nxs0DCnMjPMr4wOp7Lk/zuDSxlnHLC4M0d3KB1V
+         ExMz9YrKyBAlaH3WiDJZkFL6Usft206o7TZMgfl2/anU6vg/vQUQ3YUElFP3jasCt8PG
+         Di8oWLX2naDdKMFQpSipQdpaWBSpYJ41I7KJ+HQLM0ttURYXt111lDa6pMOpcLdOH5yD
+         jMBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:references:date
-         :in-reply-to:message-id:user-agent:mime-version;
-        bh=Fjx4x9CJD2wWjKON/wheiuq+1EzL46Iryc22xTN24oY=;
-        b=CgL744oy/hNzjwT+pI2yPFgx/+Puvk6q77KeUomTOp+295yPR3OOx7vLkfZDSDy5oG
-         jfJTWcfyp3zh8SsKCSWyNNmwsg1AQF8ncUghoH+HvlMkLDkuDwKSR1GkCa1tB8KqpyAW
-         gREANaDlXFZf9vlGc4dmWxedLRnmi/8k+P8xbw5UoFfD3qcg4/rIM69BJPY/lj8UDKTt
-         5m/C3yRFMD2soCxlNj64mN4pEUtXNN/0uPUHeC+7kkmmMfNL52XhA2BLs6vYiDiUrUgS
-         72G3T5OKsN3A8+oDIUifpyd3rBOdi4kZ0EWnwZVuTAY80OgWfR/j6zwZhRMtpeONnMij
-         1Uuw==
-X-Gm-Message-State: AOAM5306Qnw2RRvtxbXM6S1qy5591Xvo7x83IA2xWh90bsgA2M3CDA4R
-        Mo0akocU3CxF5CQewKt0ojPok9SlO30=
-X-Google-Smtp-Source: ABdhPJxUKBGh3JepPbB6R+MrqeDdFx9YTBcgjZ4Pvjh9UD5YwM/YStAH0Z8jRgQKOwNMRp6Mt1XMwQ==
-X-Received: by 2002:a50:c34b:: with SMTP id q11mr449809edb.214.1610575667713;
-        Wed, 13 Jan 2021 14:07:47 -0800 (PST)
-Received: from dell.be.48ers.dk (d51A5BC31.access.telenet.be. [81.165.188.49])
-        by smtp.gmail.com with ESMTPSA id b14sm1403781edu.3.2021.01.13.14.07.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 14:07:46 -0800 (PST)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-Received: from peko by dell.be.48ers.dk with local (Exim 4.92)
-        (envelope-from <peter@korsgaard.com>)
-        id 1kzoIr-0004d2-QY; Wed, 13 Jan 2021 23:07:45 +0100
-From:   Peter Korsgaard <peter@korsgaard.com>
-To:     Vineet Gupta <vgupta@synopsys.com>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-arch@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        buildroot@busybox.net, arcml <linux-snps-arc@lists.infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        shreyasjoshi15@gmail.com, Guenter Roeck <linux@roeck-us.net>
-Subject: Re: ARC no console output (was Re: [PATCH 1/2] init/console: Use ttynull as a fallback when there is no console)
-References: <20201111135450.11214-1-pmladek@suse.com>
-        <20201111135450.11214-2-pmladek@suse.com>
-        <d2a3b3c0-e548-7dd1-730f-59bc5c04e191@synopsys.com>
-        <8735zdm86m.fsf@jogness.linutronix.de>
-        <50ade852-c598-6476-1f4b-9a3f8d11d143@synopsys.com>
-        <X/c/ONCYz2QQdvOP@alley>
-        <466644f5-bed7-caef-9fcd-e66208f65545@synopsys.com>
-Date:   Wed, 13 Jan 2021 23:07:45 +0100
-In-Reply-To: <466644f5-bed7-caef-9fcd-e66208f65545@synopsys.com> (Vineet
-        Gupta's message of "Thu, 7 Jan 2021 09:58:05 -0800")
-Message-ID: <87turkfq32.fsf@dell.be.48ers.dk>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cHpWTw6lcPxz7z8H8yQJbwdU01y9cP5VFlHIAcOYlIE=;
+        b=o+zFaqM1jJxW8QMVa77GHoBSO5n9S2rHU4Dy+UxMTeQRSyupo5wtIbHr6V6ooHrmii
+         6Atlw08GTlpL5kJT5u1DyraWh3oyOSlG3Ry3iN7f3/8fvyqWjerC6dc8b9zU4D0wSlPJ
+         4uFnvGJhmaVazkSK/Hlyv/D8ZWpoUkDntiEf11lj7oLA8eJ9ICcmrBCIB9ywCgfILJdT
+         sRu/7BWGE45D5lFVAR7dpDbuYz4kHd82kiXLT9BVSK7A5QQnrjQ1Maaoe9NL5ZN3n9qO
+         Jlhc2XaTWTdBmyymI/4wHSTui4s6PkukIzwaGFYhHAoKzagebPYG088ihgM+7eUVZONP
+         JnkQ==
+X-Gm-Message-State: AOAM533PNdUg8HfURH00ZqBmLIH0bTgj9P5FjahJqhMKRM7RINKorAtb
+        6tcvqmF0vW8+NYIetylWlRJVYOgZhcTyG/6KC6/y
+X-Google-Smtp-Source: ABdhPJyQ+Tv7FzDHXgquLSuHzkUCDHhbnr+LMfzfd+uUbDk6LddmjJQuH97q0w+D3HgxnXmUDLfKkBaytbA3dCAnK58=
+X-Received: by 2002:a17:906:3712:: with SMTP id d18mr3206433ejc.178.1610575829813;
+ Wed, 13 Jan 2021 14:10:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210108040708.8389-1-tusharsu@linux.microsoft.com>
+ <20210108040708.8389-9-tusharsu@linux.microsoft.com> <CAHC9VhSJk0wG=WzO3bwsueiy19mMi9m6MamTrQfH8C=gXUtvGw@mail.gmail.com>
+ <97328fc71687a0e1c327f6821548be9ba35bb193.camel@linux.ibm.com>
+ <CAHC9VhTzaQ_q8gJ0oeok_yJ54XLETNvOuhhKnyRwgqsqvpBLCw@mail.gmail.com> <71cddb6c8676ccd63c89364d805cfca76d32cb6e.camel@linux.ibm.com>
+In-Reply-To: <71cddb6c8676ccd63c89364d805cfca76d32cb6e.camel@linux.ibm.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 13 Jan 2021 17:10:18 -0500
+Message-ID: <CAHC9VhRhYWEcK7TepZ=LK1m=9Zn_gtOZyAYfamP-TFU3rRH+zw@mail.gmail.com>
+Subject: Re: [PATCH v10 8/8] selinux: include a consumer of the new IMA
+ critical data hook
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, tyhicks@linux.microsoft.com,
+        sashal@kernel.org, James Morris <jmorris@namei.org>,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>>> "Vineet" == Vineet Gupta <vgupta@synopsys.com> writes:
+On Wed, Jan 13, 2021 at 4:11 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> On Wed, 2021-01-13 at 14:19 -0500, Paul Moore wrote:
+> > On Wed, Jan 13, 2021 at 2:13 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > > On Tue, 2021-01-12 at 11:27 -0500, Paul Moore wrote:
+> > > > On Thu, Jan 7, 2021 at 11:07 PM Tushar Sugandhi
+> > > > <tusharsu@linux.microsoft.com> wrote:
+> > > > > From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> > > > >
+> > > > > SELinux stores the active policy in memory, so the changes to this data
+> > > > > at runtime would have an impact on the security guarantees provided
+> > > > > by SELinux.  Measuring in-memory SELinux policy through IMA subsystem
+> > > > > provides a secure way for the attestation service to remotely validate
+> > > > > the policy contents at runtime.
+> > > > >
+> > > > > Measure the hash of the loaded policy by calling the IMA hook
+> > > > > ima_measure_critical_data().  Since the size of the loaded policy
+> > > > > can be large (several MB), measure the hash of the policy instead of
+> > > > > the entire policy to avoid bloating the IMA log entry.
+> > > > >
+> > > > > To enable SELinux data measurement, the following steps are required:
+> > > > >
+> > > > > 1, Add "ima_policy=critical_data" to the kernel command line arguments
+> > > > >    to enable measuring SELinux data at boot time.
+> > > > > For example,
+> > > > >   BOOT_IMAGE=/boot/vmlinuz-5.10.0-rc1+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
+> > > > >
+> > > > > 2, Add the following rule to /etc/ima/ima-policy
+> > > > >    measure func=CRITICAL_DATA label=selinux
+> > > > >
+> > > > > Sample measurement of the hash of SELinux policy:
+> > > > >
+> > > > > To verify the measured data with the current SELinux policy run
+> > > > > the following commands and verify the output hash values match.
+> > > > >
+> > > > >   sha256sum /sys/fs/selinux/policy | cut -d' ' -f 1
+> > > > >
+> > > > >   grep "selinux-policy-hash" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6
+> > > > >
+> > > > > Note that the actual verification of SELinux policy would require loading
+> > > > > the expected policy into an identical kernel on a pristine/known-safe
+> > > > > system and run the sha256sum /sys/kernel/selinux/policy there to get
+> > > > > the expected hash.
+> > > > >
+> > > > > Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> > > > > Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> > > > > Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > > > > ---
+> > > > >  Documentation/ABI/testing/ima_policy |  3 +-
+> > > > >  security/selinux/Makefile            |  2 +
+> > > > >  security/selinux/ima.c               | 64 ++++++++++++++++++++++++++++
+> > > > >  security/selinux/include/ima.h       | 24 +++++++++++
+> > > > >  security/selinux/include/security.h  |  3 +-
+> > > > >  security/selinux/ss/services.c       | 64 ++++++++++++++++++++++++----
+> > > > >  6 files changed, 149 insertions(+), 11 deletions(-)
+> > > > >  create mode 100644 security/selinux/ima.c
+> > > > >  create mode 100644 security/selinux/include/ima.h
+> > > >
+> > > > I remain concerned about the possibility of bypassing a measurement by
+> > > > tampering with the time, but I appear to be the only one who is
+> > > > worried about this so I'm not going to block this patch on those
+> > > > grounds.
+> > > >
+> > > > Acked-by: Paul Moore <paul@paul-moore.com>
+> > >
+> > > Thanks, Paul.
+> > >
+> > > Including any unique string would cause the buffer hash to change,
+> > > forcing a new measurement.  Perhaps they were concerned with
+> > > overflowing a counter.
+> >
+> > My understanding is that Lakshmi wanted to force a new measurement
+> > each time and felt using a timestamp would be the best way to do that.
+> > A counter, even if it wraps, would have a different value each time
+> > whereas a timestamp is vulnerable to time adjustments.  While a
+> > properly controlled and audited system could be configured and
+> > monitored to detect such an event (I *think*), why rely on that if it
+> > isn't necessary?
+>
+> Why are you saying that even if the counter wraps a new measurement is
+> guaranteed.   I agree with the rest of what you said.
 
- > On 1/7/21 9:04 AM, Petr Mladek wrote:
- >> On Thu 2021-01-07 08:43:16, Vineet Gupta wrote:
- >>> Hi John,
- >>> 
- >>> On 1/7/21 1:02 AM, John Ogness wrote:
- >>>> Hi Vineet,
- >>>> 
- >>>> On 2021-01-06, Vineet Gupta <vgupta@synopsys.com> wrote:
- >>>>> This breaks ARC booting (no output on console).
- >>>> 
- >>>> Could you provide the kernel boot arguments that you use? This series is
- >>>> partly about addressing users that have used boot arguments that are
- >>>> technically incorrect (even if had worked). Seeing the boot arguments of
- >>>> users that are not experiencing problems may help to reveal some of the
- >>>> unusual console usages until now.
- >>> 
- >>> 
- >>> Kernel command line: earlycon=uart8250,mmio32,0xf0005000,115200n8
- >>> console=ttyS0,115200n8 debug print-fatal-signals=1
- >> 
- >> This is strange, the problematic patch should use ttynull
- >> only as a fallback. It should not be used when a particular console
- >> is defined on the command line.
-
- > What happens in my case is console_on_rootfs() doesn't find
- > /dev/console and switching to ttynull. /dev is not present because
- > devtmpfs doesn't automount for initramfs.
-
-But our initramfs/cpio logic ensures that the initramfs has a static
-/dev/console device node, so how can that be?
-
-https://git.buildroot.net/buildroot/tree/fs/cpio/cpio.mk#n25
+I was assuming that the IMA code simply compares the passed
+"policy_event_name" value to the previous value, if they are different
+a new measurement is taken, if they are the same the measurement
+request is ignored.  If this is the case the counter value is only
+important in as much as that it is different from the previous value,
+even simply toggling a single bit back and forth would suffice in this
+case.  IMA doesn't keep a record of every previous "policy_event_name"
+value does it?  Am I misunderstanding how
+ima_measure_critical_data(...) works?
 
 -- 
-Bye, Peter Korsgaard
+paul moore
+www.paul-moore.com
