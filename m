@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE932F43D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AACDD2F43C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbhAMF1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 00:27:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33362 "EHLO
+        id S1725868AbhAMFZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 00:25:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725858AbhAMF1A (ORCPT
+        with ESMTP id S1725787AbhAMFY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 00:27:00 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC92CC0617A7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:25:57 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id b5so446078pjl.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:25:57 -0800 (PST)
+        Wed, 13 Jan 2021 00:24:59 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F65DC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:24:19 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id w18so1833348iot.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:24:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=t1Dj1BnCFYHHEbXxpzLfGjPuUeLA5YyfxkXrd8ZYcB0=;
-        b=CkA9nt2K6f+62+T51zdVrYDbufK9iilFrW0pvsAhNTKoNhtmriES3uoKM1sUakUZZ5
-         F/v6UK2sK8O39JyDaqatm8tzyyn0AJoI7H+IDejD4uJmwSTg6K9E1yy89mdOJnCEYjcW
-         k69OZYyJnR0MBsFEE1C9ZZVCWBqjSkk7uH/vBI3RCr0KaxPha+Iow4xZr7VKSwS52VRL
-         s8JtrAKwI/5cHrpqLI4hhvXK/oKOErZGwvmjzdqAbBNT+xCp3nPOswceWh3laeh0nZ89
-         bkTQXsBeOJe6rDwxwZjLMtfYp2T+RluwSz5yFLGdXoqWtHGonU/iHNrM5mdXNrjzpb0c
-         DcaA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F/OA+LEep844St+cLlN9bVuByZKQc9ECoZJDuSzWDXM=;
+        b=pM2UxjNfimjxWa+YA7Vc6k4xjRxRbAliS/VyfsvmN2KD+U4L9sFrImXRd5NSwWrYIF
+         qixPKyw8S4nzL7HHDqBg0+zxsBrq7hBytISqZs6qOK/N3TwAWWoBcm1zzhDiyvFcsRbl
+         T6guDKnfqBUORiWuBzAlAz7uXih5uvczPcqewlEFtu/66bwj3HF4ELC4o6eKplzA+nB2
+         R8n9/lDh+nt29C6ZgZxu1WYSs/N5LiJIHzpcAwYDytH/n31RMAX0ePUo/S60y+HTnEDO
+         UJRjD/38h4Mkss3d/uMCuwVxtl6pCGgrYuVS7iTPBJqOxq4i6HdxYlGU6F8PgqM5MG8o
+         oXow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=t1Dj1BnCFYHHEbXxpzLfGjPuUeLA5YyfxkXrd8ZYcB0=;
-        b=Il4ezMSTdF4ApBetOTlQOfEUYqanlHjoRlqNbLrU2UfCxhb5B94Qc4BsBjoFSBEAsn
-         uYUHXQs1414hzOWSLLp0xbhVuflzjIWxKGU+OKQ3IjcfYHDwS3VHCIgbSZ18U3Vwq8n5
-         /Kg2lF6qsKfm9voNFck9WlXkL1qvxawAqUUqqS1OeG18TkdzCunfzxuFLqFQVn2XRUuN
-         WVKFviDvpuoFf0XrajIJS/ERAJ0dNbmoYQ6QQMbyKRcRvxKH7r64ewVt+N//VvF6jekh
-         QvY0Y8W3PN5HO+OE2X0yHyjAsISjUapW0Sx9l2FjVhKhkQsmRutBT+A62B6Xct/khEmM
-         tEdA==
-X-Gm-Message-State: AOAM530TH/a51F3wgS7XuazL3lFI1GJTLeshg4AZVb/QXVD1HB9La8fv
-        ZKRIrMM7bSFv15S4VqVjuQYqUzHdYyVCELgOXvM=
-X-Google-Smtp-Source: ABdhPJy6z9arm0rLeW481RViIUW3vRvWLSVKc/kfyfaVXhVXVXDdIrIVxIDcum+7oWvZIYQX1oAJ8Q==
-X-Received: by 2002:a17:90b:3011:: with SMTP id hg17mr424575pjb.22.1610515557266;
-        Tue, 12 Jan 2021 21:25:57 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.247])
-        by smtp.gmail.com with ESMTPSA id x15sm893081pfa.80.2021.01.12.21.25.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Jan 2021 21:25:56 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
-Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@suse.com>, stable@vger.kernel.org
-Subject: [PATCH v4 6/6] mm: hugetlb: remove VM_BUG_ON_PAGE from page_huge_active
-Date:   Wed, 13 Jan 2021 13:22:09 +0800
-Message-Id: <20210113052209.75531-7-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210113052209.75531-1-songmuchun@bytedance.com>
-References: <20210113052209.75531-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F/OA+LEep844St+cLlN9bVuByZKQc9ECoZJDuSzWDXM=;
+        b=lp3AMwyL4OS6In4ezAGXUAAFSUJjJILXNus+AQs/zz84hv2J+aaJCEkNR7fGbiQcap
+         LvJ1E34xPDKhQORUnTnWD60AS6MSHmwgNAFB5ifN6T37+euNqWqtoQBEueCQDr5OLPIE
+         3TjraFbxL/BczEVAzigS2XS0sgUO0XaMXxhS6dpE9MyURzpW2XYTXFee/t5ECWWYUyFp
+         rSgqk9/WA5mpHDIZmcAXPUMqqw3ZxAOYURMzzlgTVqX8GMDlI1yr1Hal+rXWTK7wDPoB
+         rBtdsqbKICW6sWmQV9qotQw0TrOnUyIaacZfbyvv/E0PQXCwYlxTdlpluRVsNzRWP3Nu
+         hBCA==
+X-Gm-Message-State: AOAM5300ZVyShkhtVvNY6HfwVtOJjssA8wPzGYYZ1xATT3fqWiyxPPBP
+        t+RQqVxMs2xACFbOpVFJvyW2TNb/x9r14wXw/dU=
+X-Google-Smtp-Source: ABdhPJyL0YYvYyzO8fms7Tt132zPWXgDIVrVPUF/0TpbLxbDoeyxjZ55FsZVk1YbvzSwgi0ALEDFidNoPecLUwiI8vE=
+X-Received: by 2002:a02:c7cb:: with SMTP id s11mr885489jao.94.1610515458507;
+ Tue, 12 Jan 2021 21:24:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210113024241.179113-1-ying.huang@intel.com> <CAHk-=whn5kVxEitkC0AyzvWRyxbF91rMrO9ZG6JHBNYLckpDDw@mail.gmail.com>
+ <CAC=cRTNpoqHpbtZM1uDvVQYQZVyRbfPh+Dirb=-Xgoh22u_W1A@mail.gmail.com> <20210113031142.GM35215@casper.infradead.org>
+In-Reply-To: <20210113031142.GM35215@casper.infradead.org>
+From:   huang ying <huang.ying.caritas@gmail.com>
+Date:   Wed, 13 Jan 2021 13:24:07 +0800
+Message-ID: <CAC=cRTNMN5Pmz2PC8p3N2-uJkqLUCW95wr=VWTZmodoECmj6nQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: Free unused swap cache page in write protection fault handler
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The page_huge_active() can be called from scan_movable_pages() which
-do not hold a reference count to the HugeTLB page. So when we call
-page_huge_active() from scan_movable_pages(), the HugeTLB page can
-be freed parallel. Then we will trigger a BUG_ON which is in the
-page_huge_active() when CONFIG_DEBUG_VM is enabled. Just remove the
-VM_BUG_ON_PAGE.
+On Wed, Jan 13, 2021 at 11:12 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Wed, Jan 13, 2021 at 11:08:56AM +0800, huang ying wrote:
+> > On Wed, Jan 13, 2021 at 10:47 AM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > On Tue, Jan 12, 2021 at 6:43 PM Huang Ying <ying.huang@intel.com> wrote:
+> > > >
+> > > > So in this patch, at the end of wp_page_copy(), the old unused swap
+> > > > cache page will be tried to be freed.
+> > >
+> > > I'd much rather free it later when needed, rather than when you're in
+> > > a COW section.
+> >
+> > Unused swap cache isn't unused file cache.  Nobody can reuse them
+> > directly before freeing them firstly.  It will make COW a little
+> > faster via keeping them.  But I think the overhead to free them isn't
+> > high.  While keeping them in system will confuse users (users will
+> > expect file cache to use free memory, but not expect unused swap cache
+> > to use much free memory), make the swap space more fragmented, and add
+> > system overall overhead (scanning LRU list, etc.).
+>
+> Couldn't we just move it to the tail of the LRU list so it's reclaimed
+> first?  Or is locking going to be a problem here?
 
-Fixes: 7e1f049efb86 ("mm: hugetlb: cleanup using paeg_huge_active()")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: stable@vger.kernel.org
----
- mm/hugetlb.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Yes.  That's a way to reduce the disturbance to the page reclaiming.
+For LRU lock contention, is it sufficient to use another pagevec?
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index a7ed22811672..8c6005a538a2 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1360,8 +1360,7 @@ struct hstate *size_to_hstate(unsigned long size)
-  */
- bool page_huge_active(struct page *page)
- {
--	VM_BUG_ON_PAGE(!PageHuge(page), page);
--	return PageHead(page) && PagePrivate(&page[1]);
-+	return PageHeadHuge(page) && PagePrivate(&page[1]);
- }
- 
- /* never called for tail page */
--- 
-2.11.0
-
+Best Regards,
+Huang, Ying
