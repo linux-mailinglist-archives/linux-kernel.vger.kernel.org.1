@@ -2,138 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1B82F44D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A36022F44E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbhAMHGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 02:06:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbhAMHGr (ORCPT
+        id S1726576AbhAMHLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 02:11:44 -0500
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:52876 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726460AbhAMHLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 02:06:47 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D60CC061575;
-        Tue, 12 Jan 2021 23:06:06 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id 190so560388wmz.0;
-        Tue, 12 Jan 2021 23:06:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=K6LXLHuWbF+xM2SfRipuVJYLEQmCNog+ujbAtjwHjzo=;
-        b=Zhax2sWm7ZDLEzkyANWjjwnitRdN1lFpLCw+4XU5kgh/hfhd3jy6HrKhWjX+FEp0x+
-         i4/XSoiX4BrLXsK7xjdIb10XHx2M7/MznrSCzwFolANU13h/8cpTUAse2U9xVjTrkvnQ
-         fuC984HCYfcYwGym67/aV4BPrmPjbDq2HNLXxM6CrPal7qJS0Jbid5F5Lt1KufN5OGT6
-         EyQyqtkOCBGfKjh0jyEhGZnBBhRHKKW4+xjI/EvSqaYjAsFp+lGVfGyVgurvV7gbFXgR
-         9l7KqGAjOZmADAjbZcJHDys0w5w65YtzwmKgCP9y70Fini+uvTFV71GJycIJmOR3QOkd
-         M60g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=K6LXLHuWbF+xM2SfRipuVJYLEQmCNog+ujbAtjwHjzo=;
-        b=EXvkVI3R7jvBa3JZiQ4k1WXGowmIpK0rmEXysn2egFoZeTbOn4uVDWjVAjvpC3OjvA
-         GAmosjvwahwUqymxAauDyq1+zowBp8q0Oy05vHjGfp2DOe7ohLPW7NgGEou7ZRbGZZss
-         XnUVSdlIfGlxqeROKAQU/BixtAupPqjJdMj1l67XYsTlqc2goR/DfMnEFQzrqDVsUET7
-         B1RgU4Yr/m//IjnVDAaLVb7wZ8kzQHdd8ABuUDD7ylmJtOEsJYwqmmt3aZHJXY8sQCrc
-         /XseakhQ0YkusOKQqUwSNmEW3TNq6vDt5YE52EnfXR2G9IZsioRPbqdeOWCRuBYxGI6r
-         cz2g==
-X-Gm-Message-State: AOAM532b4rGyoxrdNkZfzuKgwTUYCdiJFDroZ7NJvEfD2Mn+nlRjSMft
-        myMm77jiqxS6KQcPOsEJGY4=
-X-Google-Smtp-Source: ABdhPJyvPrftwrv0Z/YTop6vlMbiZwyo5t/0RulUbrFKB3GycoWYphh7SmtQwr9xAxDdNRQTcj5vKA==
-X-Received: by 2002:a1c:2e43:: with SMTP id u64mr707547wmu.105.1610521565262;
-        Tue, 12 Jan 2021 23:06:05 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2dc9:b100:30ef:8b8a:711:895d])
-        by smtp.gmail.com with ESMTPSA id t1sm1584623wro.27.2021.01.12.23.06.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 23:06:04 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        linux-doc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH for doc-next] doc/zh_CN: mips: use doc references instead
-Date:   Wed, 13 Jan 2021 08:05:57 +0100
-Message-Id: <20210113070557.28792-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 13 Jan 2021 02:11:44 -0500
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 10D73sa0005372;
+        Wed, 13 Jan 2021 15:03:54 +0800 (GMT-8)
+        (envelope-from troy_lee@aspeedtech.com)
+Received: from localhost.localdomain (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 13 Jan
+ 2021 15:08:54 +0800
+From:   Troy Lee <troy_lee@aspeedtech.com>
+To:     <openbmc@lists.ozlabs.org>, Jean Delvare <jdelvare@suse.com>,
+        "Guenter Roeck" <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        "open list:HARDWARE MONITORING" <linux-hwmon@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+CC:     <chiawei_wang@aspeedtech.com>, <leetroy@gmail.com>,
+        <troy_lee@aspeedtech.com>
+Subject: [PATCH v2 0/4] hwmon: aspeed2600-pwm-tacho: Add driver support
+Date:   Wed, 13 Jan 2021 07:08:44 +0000
+Message-ID: <20210113070850.1184506-1-troy_lee@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 10D73sa0005372
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Chinese mips translations refer to non-existing labels in the original
-documentation. Hence, make htmldocs warns about those undefined labels on
-all files in ./Documentation/translations/zh_CN/mips/.
+Aspeed AST2600 is a server management SoC which has 16 PWM channels and
+16 fan tacho channel.
 
-Replace the references to non-existing labels with suitable doc references.
+This series of patch provides AST2600 PWM/Fan tacho support in hwmon
+class.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20210113
+The driver provides a sysfs interface, and user can configure PWM duty
+cycle and read current FAN speed in RPM.
 
-Yanteng, please ack.
 
-Jonathan, please pick this doc warning fixup on your -next tree. 
+Change since v1:
+- dt-binding rewrote with dt schema format
+- register hwmon driver with devm_hwmon_device_register_with_info()
+- moving default configurations to device tree
 
- Documentation/translations/zh_CN/mips/booting.rst     | 2 +-
- Documentation/translations/zh_CN/mips/features.rst    | 2 +-
- Documentation/translations/zh_CN/mips/index.rst       | 2 +-
- Documentation/translations/zh_CN/mips/ingenic-tcu.rst | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+*** BLURB HERE ***
 
-diff --git a/Documentation/translations/zh_CN/mips/booting.rst b/Documentation/translations/zh_CN/mips/booting.rst
-index 3099d0fff7a6..96453e1b962e 100644
---- a/Documentation/translations/zh_CN/mips/booting.rst
-+++ b/Documentation/translations/zh_CN/mips/booting.rst
-@@ -2,7 +2,7 @@
- 
- .. include:: ../disclaimer-zh_CN.rst
- 
--:Original: :ref:`Documentation/mips/booting.rst <booting>`
-+:Original: :doc:`../../../mips/booting`
- :Translator: Yanteng Si <siyanteng@loongson.cn>
- 
- .. _cn_booting:
-diff --git a/Documentation/translations/zh_CN/mips/features.rst b/Documentation/translations/zh_CN/mips/features.rst
-index 7e67f81a0982..93d93d06b1b3 100644
---- a/Documentation/translations/zh_CN/mips/features.rst
-+++ b/Documentation/translations/zh_CN/mips/features.rst
-@@ -2,7 +2,7 @@
- 
- .. include:: ../disclaimer-zh_CN.rst
- 
--:Original: :ref:`Documentation/mips/features.rst <features>`
-+:Original: :doc:`../../../mips/features`
- :Translator: Yanteng Si <siyanteng@loongson.cn>
- 
- .. _cn_features:
-diff --git a/Documentation/translations/zh_CN/mips/index.rst b/Documentation/translations/zh_CN/mips/index.rst
-index 2c7b836a3da5..27a2eae8484a 100644
---- a/Documentation/translations/zh_CN/mips/index.rst
-+++ b/Documentation/translations/zh_CN/mips/index.rst
-@@ -2,7 +2,7 @@
- 
- .. include:: ../disclaimer-zh_CN.rst
- 
--:Original: :ref:`Documentation/mips/index.rst <index>`
-+:Original: :doc:`../../../mips/index`
- :Translator: Yanteng Si <siyanteng@loongson.cn>
- 
- .. _cn_index:
-diff --git a/Documentation/translations/zh_CN/mips/ingenic-tcu.rst b/Documentation/translations/zh_CN/mips/ingenic-tcu.rst
-index 9324a0a26430..f04ba407384a 100644
---- a/Documentation/translations/zh_CN/mips/ingenic-tcu.rst
-+++ b/Documentation/translations/zh_CN/mips/ingenic-tcu.rst
-@@ -2,7 +2,7 @@
- 
- .. include:: ../disclaimer-zh_CN.rst
- 
--:Original: :ref:`Documentation/mips/ingenic-tcu.rst <ingenic-tcu>`
-+:Original: :doc:`../../../mips/ingenic-tcu`
- :Translator: Yanteng Si <siyanteng@loongson.cn>
- 
- .. _cn_ingenic-tcu:
+Troy Lee (4):
+  dt-bindings: hwmon: Add Aspeed AST2600 PWM/Fan
+  hwmon: Add Aspeed AST2600 support
+  ARM: dts: aspeed: Add Aspeed AST2600 PWM/Fan node in devicetree
+  hwmon: Support Aspeed AST2600 PWM/Fan tachometer
+
+ .../hwmon/aspeed,ast2600-pwm-tachometer.yaml  | 137 ++++
+ .../hwmon/aspeed2600-pwm-tachometer.rst       |  27 +
+ Documentation/hwmon/index.rst                 |   1 +
+ arch/arm/boot/dts/aspeed-ast2600-evb.dts      | 152 ++++
+ arch/arm/boot/dts/aspeed-g6.dtsi              |  10 +
+ drivers/hwmon/Kconfig                         |  10 +
+ drivers/hwmon/Makefile                        |   1 +
+ drivers/hwmon/aspeed2600-pwm-tacho.c          | 756 ++++++++++++++++++
+ 8 files changed, 1094 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,ast2600-pwm-tachometer.yaml
+ create mode 100644 Documentation/hwmon/aspeed2600-pwm-tachometer.rst
+ create mode 100644 drivers/hwmon/aspeed2600-pwm-tacho.c
+
 -- 
-2.17.1
+2.25.1
 
