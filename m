@@ -2,82 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10AE2F4675
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2E92F4679
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727450AbhAMIZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:25:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60545 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727117AbhAMIZ0 (ORCPT
+        id S1726919AbhAMI1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:27:52 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:33577 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726235AbhAMI1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:25:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610526239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tZ5zssNLjbWPBBlPoWwdC0E0uJ9x0pd9V4VxEY62kGU=;
-        b=cy4sjbebPZDqujdvVG2jSgiTW+cFbamH8wgFvIyxlMLFsThcCBLAEI0YAaa2aYGpsI5pOf
-        D6Hju2y3p3a2bPIaJYepZhuyr20pjZe1LLUhd041uznAanASI+PRabXmt6K+mQAdjuReTo
-        7w92mK5C8vhSQT/R2aTqp2CmPC0CMNo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-66-lLBpzd3jM66giHU3uJ5AJQ-1; Wed, 13 Jan 2021 03:23:57 -0500
-X-MC-Unique: lLBpzd3jM66giHU3uJ5AJQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BCED1005D4C;
-        Wed, 13 Jan 2021 08:23:56 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 562C050F7D;
-        Wed, 13 Jan 2021 08:23:55 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210112182533.13b1c787@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210112182533.13b1c787@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <161046715522.2450566.488819910256264150.stgit@warthog.procyon.org.uk>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     dhowells@redhat.com, netdev@vger.kernel.org,
-        Baptiste Lepers <baptiste.lepers@gmail.com>,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] rxrpc: Call state should be read with READ_ONCE() under some circumstances
+        Wed, 13 Jan 2021 03:27:52 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id B61E75C0491;
+        Wed, 13 Jan 2021 03:26:45 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 13 Jan 2021 03:26:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=+eb9MYVKw8kOQcjSGqOAjHWpQQ6
+        2lU5ysMR3PLKD6qk=; b=B7syX42b4uZJYZaZITSe21+OF6hk1Q3B3hbmES1vZhb
+        romumOtcSvsw2jC631FJ/Na5e8aHQHEui51obsb3sPuMQZ0wZI6DCmmo0DrynaCc
+        bp7n5+94H7RILlnCdcYLUMdcAo7uEBNSX68LnwkNYc6EudnSaj3CEY+IIjLhumqm
+        HL+q1jkzcZHIFMxJKBwrT+7WPJ2ARV4h3fdRi2wxywZNj3Ws4LYekK4Tl+XeY21l
+        uBr6nKUyAg7045EdodPqbiLtnt4stfPz4y3mJG4s1oBlRAd04TtA80F4fDhRNOkI
+        Ku12OKj0AKIShstqT1fWY91o5uy6oYu/GVOhENUeUGg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=+eb9MY
+        VKw8kOQcjSGqOAjHWpQQ62lU5ysMR3PLKD6qk=; b=MfousZkgr07aOL1veQ1uF5
+        FINfbd/MaNfUE49zqbL5aQCAsV/gB4Peu2K6kNsiJYepOe/N9ECotwpSoza0P+WV
+        eaMZ/0GI/noxLM8tVT0A2nprGTVIa7wU/CSdD/SR9tFepTwjQ95eXJLpiDFk4pRW
+        oooeAV1JzG21nI6rGykp3CHqSd8iqShs1agwj5GxA4mF0YtYCKNtgjmWtjnzV73f
+        FmA9T/hbBKpzUdph99kxcHhzo6n2s4HhBYVFLZaGBGjXek0LBYhR3IELdXjj6PSk
+        /en9fBPyJFcOHY7RmPsqUbsWq+I/RAokZzu8qXUkUejG/sDLmMNBRPllayN4D3hg
+        ==
+X-ME-Sender: <xms:xK7-X4u2ptIIOBJ1FPvfEXxFUi8O_Lf7YgcnA4UwF8ihw4IsjYIDVw>
+    <xme:xK7-X1e3FpMjcX02RF9zGxWLZWfeboZm98pa43jk3u5e9yobNkE9A9p3h5NxTo3nX
+    IfVbc1X6Wv4qmUNH_w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtddugdduvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:xK7-XzyS-HZWUquiltqpCk3oNzT1gV-Ppr4C9-g_-gzORylxqXIZFA>
+    <xmx:xK7-X7OXaxd2VQ9RaxJWk6gblkNEp0ox2eIie2lJ5xveBmYcks2Hwg>
+    <xmx:xK7-X48tYvKbkIdHpqX7a243TdjrYgexS_9hG8hqrt3SKqTNfbTr0A>
+    <xmx:xa7-X3nqmDeyFI9dSeTxUMkmKmY4tDjgypLYHiBJqOEoWxOUsfhfcA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 77790240064;
+        Wed, 13 Jan 2021 03:26:44 -0500 (EST)
+Date:   Wed, 13 Jan 2021 09:26:42 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 0/4] media: sunxi-cir: Cleanup and power management
+Message-ID: <20210113082642.v4gdvnllk7mzihdj@gilmour>
+References: <20210113045132.31430-1-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2630108.1610526234.1@warthog.procyon.org.uk>
-Date:   Wed, 13 Jan 2021 08:23:54 +0000
-Message-ID: <2630109.1610526234@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="mjtxpnmpjvho7jip"
+Content-Disposition: inline
+In-Reply-To: <20210113045132.31430-1-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jakub Kicinski <kuba@kernel.org> wrote:
 
-> On Tue, 12 Jan 2021 15:59:15 +0000 David Howells wrote:
-> > From: Baptiste Lepers <baptiste.lepers@gmail.com>
-> > 
-> > The call state may be changed at any time by the data-ready routine in
-> > response to received packets, so if the call state is to be read and acted
-> > upon several times in a function, READ_ONCE() must be used unless the call
-> > state lock is held.
-> > 
-> > As it happens, we used READ_ONCE() to read the state a few lines above the
-> > unmarked read in rxrpc_input_data(), so use that value rather than
-> > re-reading it.
-> > 
-> > Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
-> > Signed-off-by: David Howells <dhowells@redhat.com>
-> 
-> Fixes: a158bdd3247b ("rxrpc: Fix call timeouts")
-> 
-> maybe?
+--mjtxpnmpjvho7jip
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Ah, yes.  I missed there wasn't a Fixes line.  Can you add that one in, or do
-I need to resubmit the patch?
+On Tue, Jan 12, 2021 at 10:51:28PM -0600, Samuel Holland wrote:
+> This series cleans up some dead code in the sunxi-cir driver and adds
+> system power management hooks.
 
-David
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
+Thanks!
+Maxime
+
+--mjtxpnmpjvho7jip
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX/6uwQAKCRDj7w1vZxhR
+xb1LAP0XUvRBBMpXiuX3EtTe9jOWFfkmdtxcvMhWPed0R+u8uwEA1VWVV3Y8gI8f
+kSozGZox57nNdNnM678q/9kfMiPRXA8=
+=AMac
+-----END PGP SIGNATURE-----
+
+--mjtxpnmpjvho7jip--
