@@ -2,178 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEF92F50C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A08BD2F50D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727967AbhAMROW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:14:22 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42918 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727403AbhAMROV (ORCPT
+        id S1728031AbhAMRQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:16:02 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63692 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727593AbhAMRQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:14:21 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10DH4tto051009;
-        Wed, 13 Jan 2021 12:13:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=MNu69AKjJm3nG53SgMHXypE4CI8PDaFzLPocZJuT2zo=;
- b=TqSDKmxKJnzq6KrKhrcYuRdzcXOjpTBNPAYgty9wNUrlsJW9FZtNYi2Cstk7ojJn+BR1
- psfQVXlJl3SUHR4aImKWhBZ0311lWIa5ZujUGAg85lHD239ng1ps0IoYlspGYSz6Cm65
- QmpSe1v06rbFQqPo35DFbcxenK6TZZ/4BkYHGh3OhnbDmWL7T2I2y7O+te1bo7tB1xJH
- ErfHl+jODssT1N+O8fd7K46SAlvgyN5s9MmLA3hv0DoP3njEfwFYrCK2s6SVYUcvxZua
- VwVQQndnX8a8R3EGRI+j1W3G856WGuf5Fd1pbliatz4IwdVv1WXxyGTOCELQiIxG/9T4 eg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3624ech2es-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Jan 2021 12:13:27 -0500
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10DH54fX051294;
-        Wed, 13 Jan 2021 12:13:13 -0500
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3624ech2d8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Jan 2021 12:13:12 -0500
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10DH2W1i025433;
-        Wed, 13 Jan 2021 17:13:10 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma05wdc.us.ibm.com with ESMTP id 35y44972pc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Jan 2021 17:13:10 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10DHD9Lh36831742
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 17:13:09 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A44E6B205F;
-        Wed, 13 Jan 2021 17:13:09 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 62E6FB2064;
-        Wed, 13 Jan 2021 17:13:08 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.211.128.152])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 13 Jan 2021 17:13:08 +0000 (GMT)
-Subject: Re: [PATCH v4 01/21] ibmvfc: add vhost fields and defaults for MQ
- enablement
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com, james.smart@broadcom.com,
-        Ming Lei <ming.lei@redhat.com>
-References: <20210111231225.105347-1-tyreld@linux.ibm.com>
- <20210111231225.105347-2-tyreld@linux.ibm.com>
- <0525bee7-433f-dcc7-9e35-e8706d6edee5@linux.vnet.ibm.com>
- <a8623705-6d49-2056-09bb-80190e0b6f52@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <51bfc34b-c2c4-bf14-c903-d37015f65361@linux.vnet.ibm.com>
-Date:   Wed, 13 Jan 2021 11:13:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <a8623705-6d49-2056-09bb-80190e0b6f52@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
+        Wed, 13 Jan 2021 12:16:01 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 10DH2f7f020552;
+        Wed, 13 Jan 2021 09:14:59 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=QT5aHI96lETRbjD4P5/zctV1fOoqBQGEbAYdVcvVk9U=;
+ b=GrF/4GTiCOj/RSVexi5vG5lnKGzcuNcb5uqezqfDqgPZ+7sq4A5zOoiw9mMJttI5bfFb
+ 0uzvT1RZXD/+rMuxX8V5y5Zdb5IVC4hE9lqK5uYlzt2AWCDBk4MckytrDbqR9i3ScP56
+ 4JEsmaW45Di/yJMetgVnmPXzSZE4Yre/nGE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 361fpqp872-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 13 Jan 2021 09:14:59 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 13 Jan 2021 09:14:52 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gGXTaEum8QYd2m7vrGJ6y3nCXFXUuFHcitf5ejXl8m/so0rPgxtt2wwTk3TzpjQFsXq8c2jcXUnBoH88olwQeH7mdEMvUz5SQDx47lzpK4iz7Lzse1M018TfaIlNvVkVh9MgNGDXwI2w4M0hXkGXCZpETAK1XMMIT/ZwNK1g42yOQJOZxgaYQbAo0B4s3CKCAQitwosrbOh2P5V8agroSChmjVTkGTMoP56W0iMniRtLuVwO3pU7S79Jk6/UcxGEg2e8zMAqYKZ7/9BmesKunjhIJ1hKA6osVQEJKe8aCUYhjlAQE7i/9i4ZhpOutgKCRQ6ePfLKjy5j7akWly/xxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QT5aHI96lETRbjD4P5/zctV1fOoqBQGEbAYdVcvVk9U=;
+ b=ax5rBb6nu+Chlph+iw1QoZHCEe6ktkhz/XLgzZqBrz0LYozTC3k+efIYIG4yLIzL4G0a8GsyyxWnW2zBFjNJK+sHm9gMhydGwNB67ZuehkYgiXkuqNl+QLemVq9hlHTre4G7V7t+xxiVFxUn/QEUOeUCUW65dbCH8LEe4o1K4vn0nVNy8ZhWTmhsliuNKnAoC5E4ZXt+hRyjuGmOhT4N7DQn/8k5w5RZVa9YxhjKZeYY7MYvQPsCbypLaN/xGSQTFjZM5ESmv6GbTNtunyYQs1BvH62suXLhEFlsIDuS15s3T1pxhrtMnTtCTzzPDe8G7UTlXYaQYJ8/9kM7w+jBIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QT5aHI96lETRbjD4P5/zctV1fOoqBQGEbAYdVcvVk9U=;
+ b=SfazGhJLPAQWzIs1Z0Uzb9l7zlm+ye/AEszuo/bU8YFL+BdzvFin5eu0G2z8CSxTDbCzYCKhgWGTC+dl11d+y1bMMK66RZGziGwhIJPRFNhZ5UorHOtYI+PV98BBQnSyCRHTdrSDegYuu5YjSrZ5yqpIk0l261W1D+NcDV4VskQ=
+Authentication-Results: loongson.cn; dkim=none (message not signed)
+ header.d=none;loongson.cn; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by SJ0PR15MB4204.namprd15.prod.outlook.com (2603:10b6:a03:2c8::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Wed, 13 Jan
+ 2021 17:14:51 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3742.012; Wed, 13 Jan 2021
+ 17:14:51 +0000
+Subject: Re: [PATCH 2/2] compiler.h: Include asm/rwonce.h under ARM64 and
+ ALPHA to fix build errors
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+CC:     <linux-sparse@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <clang-built-linux@googlegroups.com>,
+        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+References: <1610535453-2352-1-git-send-email-yangtiezhu@loongson.cn>
+ <1610535453-2352-3-git-send-email-yangtiezhu@loongson.cn>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <33050fcc-a4a0-af2e-6fba-dca248f5f23b@fb.com>
+Date:   Wed, 13 Jan 2021 09:14:47 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
+In-Reply-To: <1610535453-2352-3-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
+X-Originating-IP: [2620:10d:c090:400::5:e777]
+X-ClientProxiedBy: MW4PR04CA0439.namprd04.prod.outlook.com
+ (2603:10b6:303:8b::24) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::13f6] (2620:10d:c090:400::5:e777) by MW4PR04CA0439.namprd04.prod.outlook.com (2603:10b6:303:8b::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10 via Frontend Transport; Wed, 13 Jan 2021 17:14:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7b45e420-af04-4a05-4f80-08d8b7e6bcfb
+X-MS-TrafficTypeDiagnostic: SJ0PR15MB4204:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR15MB42048A3A54505C89F4A4F5DFD3A90@SJ0PR15MB4204.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jovECfrSPHpmYSEJMp+W+mk3Wt+qkCIx4TviaoxDu2axMG+AvU6HDDbuW8DomdBonxbNFnWyYWVnXYNUBxiB9FmvYL7HzeYNGhzaGwlnsB3u4oQRGQuOq4aYAGjJc1+bIDpbylCkb5RNkEheoeRHQp/bIcxOT57DeU2cjOjrO37tFA42XaBrEnSc9on9g7HMh61lDqXoPdCKg/lTSu0pUv/Xk8d6Yz5aoOUSE62b81PwTn53gnmjNEciCJy4J5j2DYo04qyvkLFNR/xHxWbMvGGwp3SA7CdrD0E1q6nLtPLB4pwt9xQnKj/evAgbsaHB2b9NkHkoViku9ITB6juCZU6CeVajCXTLG8dF6lFCWisoGkibH1fn7mLUmhAeKq7SAwy+t0ZRF4GhY6ws1RVvWQQMd2yPNAclSxXAIa1fBcSztjc82pnmSEi/HMgfGzPtL7BYT/uEUTeiVj/q+y+PHb6o1VfxXtU9SIg5/YNbpRd3+uYEofdvRUpavlZxhq0S
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(366004)(136003)(346002)(39860400002)(6486002)(2906002)(921005)(53546011)(86362001)(316002)(4326008)(16526019)(8676002)(31696002)(2616005)(66476007)(52116002)(66556008)(66946007)(110136005)(8936002)(31686004)(36756003)(7416002)(5660300002)(186003)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?YnEzeDMwc3hDU1JCTFhlTnVCTVllbk9weU5uYWx0bnZid1VyelJCOUlJcW5L?=
+ =?utf-8?B?VWU0ZzhHOUYrWWZxZm51ZTVYbE10RXRyNEtuZU4zQnE4OFpiRWQwUGgraVly?=
+ =?utf-8?B?ZG1FUEJuQ3N2NWs4ekpKck1HRUlsTUNVTFFwK0ltamlOY1dlaG05bmJZVUdS?=
+ =?utf-8?B?U1JtZVJnbEx4cEwrbkROUm5FZ0UrSXd6MkVYeWFqaWtuUEJ6QURVMU9sNXZi?=
+ =?utf-8?B?dzNwVG9QQjBEa3RKK2pxcGdOaTVZdTRJa1BDUW5ramh3V3ZWSEVnK3BDNVRG?=
+ =?utf-8?B?KzcyMm1xNHp6a0pQYW5VVjU2OER0S1NQU2FuVnlzcXplbUpwRTl0ZUZKZGNY?=
+ =?utf-8?B?L2pIY1NreFIwd0lCWWhtYXlMMkpUNHdTUkdUNVNnZVM3cnhVU256TVZwNDhr?=
+ =?utf-8?B?cmhTZUdZSHY2L2t0cjlJQjhmY0xuWm9KZlRwRTBmVVRkNWorTHA2Z2kwdE1S?=
+ =?utf-8?B?QkYxRFJEZXFPU0haVDdqZnJWVHV5UFZjUVJVS0JsQ2tJRmtBSktJcnJBNk1G?=
+ =?utf-8?B?VUhicVdWTERDa29SYkJ1SWswQWpSVGxNUDB1Q1N1U0lEMEh3SmhRcUNPN1Zv?=
+ =?utf-8?B?NGorOW4rdUhxSU1zTytQTzdXN3lrdnpXN050VHpGMGdoa3M4bkdxeUhHWkdr?=
+ =?utf-8?B?TU1EeVFKVlA0WlRUUUgxVURUQU95aXo4QW9kZTZzSWk0RkhLNmhtRG9VdWlp?=
+ =?utf-8?B?elFxVzlXQzd1NWJHTThFaDdTMWdDa29DNUFCY0gzNys4bkhobkl0c0FBcmhV?=
+ =?utf-8?B?c3psQ2RJSlJpd2E1R0k4R3dUb01VRHgyWCtjSU94Yy9NckI0WmlLSUNTYmJI?=
+ =?utf-8?B?UjQxVVpaOTJHcDJ4N0IweDcrR2MrZDBDL21HL0RaNXNZNDBQQ2pCVk56UHM0?=
+ =?utf-8?B?NzJrOXBtMDFkVmxHc2RFMWhMZVE3OWJyWWwvcEd6MFkzcFArVEdSREt5Z2RX?=
+ =?utf-8?B?bVd2VjI5SHQ1cFh0dTVTOGNQSUdNcHN3eGpuN0lCRFZ0TGtOaHA3NDY1V2Nj?=
+ =?utf-8?B?QmdqUkFsQVdiTW9rQ0xJZTRKT0UwV1JUeFV3TDRNakIzYlJ0OW95UTU1d3B5?=
+ =?utf-8?B?RkFKU0FEM2s1ckJPVjE0dkZ4eEo5TXdybFZPSEljamNYcTJ1SDE2NWRlT3Jv?=
+ =?utf-8?B?VSt5a1cxUmVraFdXbVU3a2xBWXZqcjlBaGRSak1Dc0ZFWnhIeEkwaVdEaFA3?=
+ =?utf-8?B?N3FjZmVSbmxxbGlmTE5rS0h6VjVTTjcxT0hVMXJIOFcwVXVPSDVGVkU4N0Fx?=
+ =?utf-8?B?b29qNnNUWm5UOUJnTnViV2JoYlFmbWJNUGZVNmdjZW9GZE1GZGZXbWphdmRN?=
+ =?utf-8?B?b1REZ1RMeWR0dVhESzBYcy9vN1UwVm5HdExZb2V6OW5CWU9DNXE4MnFrdUFS?=
+ =?utf-8?B?TXl1ekVqZFhhT1E9PQ==?=
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2021 17:14:50.7816
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b45e420-af04-4a05-4f80-08d8b7e6bcfb
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XPLHhCvxMm22NPSvBhqEHh68eMFFpRp8SlBupLuWPdHAye7QatVYGn/pPYbYiawM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4204
+X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-13_07:2021-01-13,2021-01-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- adultscore=0 impostorscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0
- mlxlogscore=999 spamscore=0 priorityscore=1501 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101130100
+ definitions=2021-01-13_09:2021-01-13,2021-01-13 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ impostorscore=0 suspectscore=0 phishscore=0 malwarescore=0 adultscore=0
+ mlxlogscore=999 spamscore=0 bulkscore=0 clxscore=1015 priorityscore=1501
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101130103
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/12/21 6:33 PM, Tyrel Datwyler wrote:
-> On 1/12/21 2:54 PM, Brian King wrote:
->> On 1/11/21 5:12 PM, Tyrel Datwyler wrote:
->>> Introduce several new vhost fields for managing MQ state of the adapter
->>> as well as initial defaults for MQ enablement.
->>>
->>> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->>> ---
->>>  drivers/scsi/ibmvscsi/ibmvfc.c | 8 ++++++++
->>>  drivers/scsi/ibmvscsi/ibmvfc.h | 9 +++++++++
->>>  2 files changed, 17 insertions(+)
->>>
->>> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
->>> index ba95438a8912..9200fe49c57e 100644
->>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
->>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
->>> @@ -3302,6 +3302,7 @@ static struct scsi_host_template driver_template = {
->>>  	.max_sectors = IBMVFC_MAX_SECTORS,
->>>  	.shost_attrs = ibmvfc_attrs,
->>>  	.track_queue_depth = 1,
->>> +	.host_tagset = 1,
->>
->> This doesn't seem right. You are setting host_tagset, which means you want a
->> shared, host wide, tag set for commands. It also means that the total
->> queue depth for the host is can_queue. However, it looks like you are allocating
->> max_requests events for each sub crq, which means you are over allocating memory.
+
+
+On 1/13/21 2:57 AM, Tiezhu Yang wrote:
+> When make M=samples/bpf on the Loongson 3A3000 platform which
+> belongs to MIPS arch, there exists many similar build errors
+> about 'asm/rwonce.h' file not found, so include it only under
+> CONFIG_ARM64 and CONFIG_ALPHA due to it exists only in arm64
+> and alpha arch.
 > 
-> With the shared tagset yes the queue depth for the host is can_queue, but this
-> also implies that the max queue depth for each hw queue is also can_queue. So,
-> in the worst case that all commands are queued down the same hw queue we need an
-> event pool with can_queue commands.
+>    CLANG-bpf  samples/bpf/xdpsock_kern.o
+> In file included from samples/bpf/xdpsock_kern.c:2:
+> In file included from ./include/linux/bpf.h:9:
+> In file included from ./include/linux/workqueue.h:9:
+> In file included from ./include/linux/timer.h:5:
+> In file included from ./include/linux/list.h:9:
+> In file included from ./include/linux/kernel.h:10:
+> ./include/linux/compiler.h:246:10: fatal error: 'asm/rwonce.h' file not found
+>           ^~~~~~~~~~~~~~
+> 1 error generated.
 > 
->>
->> Looking at this closer, we might have bigger problems. There is a host wide
->> max number of commands that the VFC host supports, which gets returned on
->> NPIV Login. This value can change across a live migration event.
+> $ find . -name rwonce.h
+> ./include/asm-generic/rwonce.h
+> ./arch/arm64/include/asm/rwonce.h
+> ./arch/alpha/include/asm/rwonce.h
 > 
-> From what I understand the max commands can only become less.
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>   include/linux/compiler.h | 6 ++++++
+>   1 file changed, 6 insertions(+)
 > 
->>
->> The ibmvfc driver, which does the same thing the lpfc driver does, modifies
->> can_queue on the scsi_host *after* the tag set has been allocated. This looks
->> to be a concern with ibmvfc, not sure about lpfc, as it doesn't look like
->> we look at can_queue once the tag set is setup, and I'm not seeing a good way
->> to dynamically change the host queue depth once the tag set is setup. 
->>
->> Unless I'm missing something, our best options appear to either be to implement
->> our own host wide busy reference counting, which doesn't sound very good, or
->> we need to add some API to block / scsi that allows us to dynamically change
->> can_queue.
+> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+> index b8fe0c2..bdbe759 100644
+> --- a/include/linux/compiler.h
+> +++ b/include/linux/compiler.h
+> @@ -243,6 +243,12 @@ static inline void *offset_to_ptr(const int *off)
+>    */
+>   #define prevent_tail_call_optimization()	mb()
+>   
+> +#ifdef CONFIG_ARM64
+>   #include <asm/rwonce.h>
+> +#endif
+> +
+> +#ifdef CONFIG_ALPHA
+> +#include <asm/rwonce.h>
+> +#endif
+
+I do not think this fix is correct. x86 does not define its own
+rwonce.h and still compiles fine.
+
+As noted in the above, we have include/asm-generic/rwonce.h.
+Once you do a proper build, you will have rwonce.h in arch
+generated directory like
+
+-bash-4.4$ find . -name rwonce.h
+./include/asm-generic/rwonce.h
+./arch/alpha/include/asm/rwonce.h
+./arch/arm64/include/asm/rwonce.h
+./arch/x86/include/generated/asm/rwonce.h
+
+for mips, it should generated in 
+arch/mips/include/generated/asm/rwonce.h. Please double check why this 
+does not happen.
+
+>   
+>   #endif /* __LINUX_COMPILER_H */
 > 
-> Changing can_queue won't do use any good with the shared tagset becasue each
-> queue still needs to be able to queue can_queue number of commands in the worst
-> case.
-
-The issue I'm trying to highlight here is the following scenario:
-
-1. We set shost->can_queue, then call scsi_add_host, which allocates the tag set.
-
-2. On our NPIV login response from the VIOS, we might get a lower value than we
-initially set in shost->can_queue, so we update it, but nobody ever looks at it
-again, and we don't have any protection against sending too many commands to the host.
-
-
-Basically, we no longer have any code that ensures we don't send more
-commands to the VIOS than we are told it supports. According to the architecture,
-if we actually do this, the VIOS will do an h_free_crq, which would be a bit
-of a bug on our part.
-
-I don't think it was ever clearly defined in the API that a driver can
-change shost->can_queue after calling scsi_add_host, but up until
-commit 6eb045e092efefafc6687409a6fa6d1dabf0fb69, this worked and now
-it doesn't. 
-
-I started looking through drivers that do this, and so far, it looks like the
-following drivers do: ibmvfc, lpfc, aix94xx, libfc, BusLogic, and likely others...
-
-We probably need an API that lets us change shost->can_queue dynamically.
-
-Thanks,
-
-Brian
-
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
-
