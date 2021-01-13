@@ -2,104 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898D92F481A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE0D2F481D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:58:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726695AbhAMJ4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 04:56:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726288AbhAMJ4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 04:56:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A06E1233CE;
-        Wed, 13 Jan 2021 09:56:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610531769;
-        bh=PavsLJy5AvB8V+H/9/J4zxNIvFWCs0IilnDc/LFH19I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qN9L5CNXDr1eXpDKkeB/HAgCcrWWsfTkF9APPU4IrQDnQ3lg8s91JHFDGbk1ydp8C
-         Oqzul/QOr2wB1OSlAGelie81gBlmCK+GFnkE+NXnklnjuh4hY4tr+G2QztFW5N3uPq
-         SC/mjgpkqjnimB8efZK+h04AjKD2Se8VLVwjjjMj/h9DGJiapl7FuTxUdgN+Q7XNs3
-         DkbWZ9gX/438kOuA0McgXLAJD/t40NB1UhfPNL5JVzky7+uF5qphpmaNuAEWaoutGj
-         DjZdq3dS8S6nEZ7BvWkULYG55x9a5y1nGiCBiyvaO1uk7neU6HkCTeoJAIjdWY/4t4
-         Sy+P9jmbg+Efg==
-Received: by mail-ot1-f41.google.com with SMTP id r9so1325595otk.11;
-        Wed, 13 Jan 2021 01:56:09 -0800 (PST)
-X-Gm-Message-State: AOAM531QvuWQaOUpKwXcsgC9SF3qz5YbJY734Azg2Exdm/dx/3dAuk1C
-        hLA2ClFFUF787dKmnGZiGrMY37dw4oOxiFCLlZ0=
-X-Google-Smtp-Source: ABdhPJxT5BvCqmOpK4kasyQXmqEr7TJFFwvo3P8aUy4qHJcoxJQFQj1+vriju4Zim24/TfpNOO77V9WoOfz1hLYDcMs=
-X-Received: by 2002:a9d:12c:: with SMTP id 41mr641161otu.77.1610531768832;
- Wed, 13 Jan 2021 01:56:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20210109095353.13417-1-ardb@kernel.org> <20210112224919.GA1859692@bjorn-Precision-5520>
-In-Reply-To: <20210112224919.GA1859692@bjorn-Precision-5520>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 13 Jan 2021 10:55:57 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHLPvaQ74fnDCfz-5ZSmCjkeZddiq+C-nd_Xmh2k-x1bg@mail.gmail.com>
-Message-ID: <CAMj1kXHLPvaQ74fnDCfz-5ZSmCjkeZddiq+C-nd_Xmh2k-x1bg@mail.gmail.com>
-Subject: Re: [PATCH] PCI: decline to resize resources if boot config must be preserved
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726855AbhAMJ6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 04:58:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725797AbhAMJ6O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 04:58:14 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4E8C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 01:57:33 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id b9so2241703ejy.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 01:57:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=L4xQZl7+36KMU2/wIiB68+QeODvGN5IdQvwifWOg93A=;
+        b=PuTWWoI2Va9z2ZLcPYk9yFzCkLHR3Uin79vK5c4lCfplOKz+I+LQ1kcdJOF/XsWlnm
+         plsTIkD7rWAHR4Wwg0Smsu9/k6fMxWVx90ma+clezW2v+Qkp+4/j7ElJUOFGE41n2Klm
+         hmAUR0Yqu5FLIS+kXYZUXxAlDRHl2IwiV1OraMG4c0+ta6hTS7Tj0gfWIg/WMr6qbHnh
+         LXJNv0ToBN5H+AjO/zOYB0DYRbl9BQt9a56leVVlW+TcGY9mk9YwoZlrch5+fE8wE4Et
+         d5M/J15GOIXRY18c0s5/VoSUJU9UFMKovPlTaN4pYVJHMi+yagZcH/Zc5L/UnDZUvt1L
+         IJGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=L4xQZl7+36KMU2/wIiB68+QeODvGN5IdQvwifWOg93A=;
+        b=V1OKI653KGmvOCrzwr37vSoQOckUaGAo0I1KJMwKVYBpoUgLOId7xSh180Cr6pB57p
+         Yhfoyfsk5XrZK41KYL5sWJgkXfU9Ogeyyoj3tYJEhOu3e091nxeXr4g4A5/tmzsAQadt
+         qXUFN0Jm6jciNVGK5cpF/tQDdnpYikS6dQO39bZLPxopjAKOPSIgHbN4VSQ+F+WzNBaM
+         lfiXPM9/syA2c4WPHhOLxumPwOovlFeI1efNPsQMJLY49/rqZC/YQmBR7GRISY4FPMWm
+         jh727cApVSmiZp1l/8hcnV8RegQQ8GJ/yaGpTQQa6ij4kDp52HMtF1MQW7EOIHfU8D/P
+         IKMQ==
+X-Gm-Message-State: AOAM530CqqLA3irY6W4WlwXGmiw7KvelaajC4U2b8PvDbu1JoYHhAMFK
+        KL3/fqX77NL8YAEAT0agWpTs3w==
+X-Google-Smtp-Source: ABdhPJx6zO3wLuQC3IZHag66xi+Wlx7Hc/0ssUMmA+U3IsKK7HAyMqUsbqsmV1wYhbLXmkGLMTG3cA==
+X-Received: by 2002:a17:907:20f1:: with SMTP id rh17mr974811ejb.147.1610531850905;
+        Wed, 13 Jan 2021 01:57:30 -0800 (PST)
+Received: from localhost.localdomain (hst-221-43.medicom.bg. [84.238.221.43])
+        by smtp.gmail.com with ESMTPSA id l1sm508950eje.12.2021.01.13.01.57.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 01:57:30 -0800 (PST)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fritz Koenig <frkoenig@chromium.org>,
+        Dikshita Agarwal <dikshita@codeaurora.org>,
+        Mansur Alisha Shaik <mansur@codeaurora.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH v2] venus: pm_helpers: Control core power domain manually
+Date:   Wed, 13 Jan 2021 11:57:16 +0200
+Message-Id: <20210113095716.15802-1-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Jan 2021 at 23:49, Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Sat, Jan 09, 2021 at 10:53:53AM +0100, Ard Biesheuvel wrote:
-> > The _DSM #5 method in the ACPI host bridge object tells us whether the
-> > OS is permitted to deviate from the resource assignment configured by
-> > the firmware. If this is not the case, we should not permit drivers to
-> > resize BARs on the fly. So make pci_resize_resource() take this into
-> > account.
-> >
-> > Cc: <stable@vger.kernel.org> # v5.4+
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
->
-> Capitalized subject to match convention and applied to pci/resource
-> for v5.11, thanks!
->
-> Is there an email, bug report, etc that prompted this change?
->
+Presently we use device_link to control core power domain. But this
+leads to issues because the genpd doesn't guarantee synchronous on/off
+for supplier devices. Switch to manually control by pmruntime calls.
 
-No, I was just reviewing the recent Tianocore changes to perform BAR
-resizing before resource assignment even takes places, which is
-obviously a more appropriate time to do it, as it does not require the
-OS to modify the firmware configuration at all. This reminded me of
-_DSM #5 and the fact that the OS may not even be permitted to make any
-changes.
+Tested-by: Fritz Koenig <frkoenig@chromium.org>
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+---
 
+changes since v1:
+ * drop pd_dl_venus from struct description (Fritz)
 
-> > ---
-> >  drivers/pci/setup-res.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/drivers/pci/setup-res.c b/drivers/pci/setup-res.c
-> > index 43eda101fcf4..3b38be081e93 100644
-> > --- a/drivers/pci/setup-res.c
-> > +++ b/drivers/pci/setup-res.c
-> > @@ -410,10 +410,16 @@ EXPORT_SYMBOL(pci_release_resource);
-> >  int pci_resize_resource(struct pci_dev *dev, int resno, int size)
-> >  {
-> >       struct resource *res = dev->resource + resno;
-> > +     struct pci_host_bridge *host;
-> >       int old, ret;
-> >       u32 sizes;
-> >       u16 cmd;
-> >
-> > +     /* Check if we must preserve the firmware's resource assignment */
-> > +     host = pci_find_host_bridge(dev->bus);
-> > +     if (host->preserve_config)
-> > +             return -ENOTSUPP;
-> > +
-> >       /* Make sure the resource isn't assigned before resizing it. */
-> >       if (!(res->flags & IORESOURCE_UNSET))
-> >               return -EBUSY;
-> > --
-> > 2.17.1
-> >
+ drivers/media/platform/qcom/venus/core.h      |  2 --
+ .../media/platform/qcom/venus/pm_helpers.c    | 36 ++++++++++---------
+ 2 files changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+index e886023afbe9..d2482dff518e 100644
+--- a/drivers/media/platform/qcom/venus/core.h
++++ b/drivers/media/platform/qcom/venus/core.h
+@@ -91,7 +91,6 @@ struct venus_format {
+  * @clks:	an array of struct clk pointers
+  * @vcodec0_clks: an array of vcodec0 struct clk pointers
+  * @vcodec1_clks: an array of vcodec1 struct clk pointers
+- * @pd_dl_venus: pmdomain device-link for venus domain
+  * @pmdomains:	an array of pmdomains struct device pointers
+  * @vdev_dec:	a reference to video device structure for decoder instances
+  * @vdev_enc:	a reference to video device structure for encoder instances
+@@ -128,7 +127,6 @@ struct venus_core {
+ 	struct icc_path *cpucfg_path;
+ 	struct opp_table *opp_table;
+ 	bool has_opp_table;
+-	struct device_link *pd_dl_venus;
+ 	struct device *pmdomains[VIDC_PMDOMAINS_NUM_MAX];
+ 	struct device_link *opp_dl_venus;
+ 	struct device *opp_pmdomain;
+diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
+index 0011c3aa3a73..43c4e3d9e281 100644
+--- a/drivers/media/platform/qcom/venus/pm_helpers.c
++++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+@@ -774,13 +774,6 @@ static int vcodec_domains_get(struct device *dev)
+ 		core->pmdomains[i] = pd;
+ 	}
+ 
+-	core->pd_dl_venus = device_link_add(dev, core->pmdomains[0],
+-					    DL_FLAG_PM_RUNTIME |
+-					    DL_FLAG_STATELESS |
+-					    DL_FLAG_RPM_ACTIVE);
+-	if (!core->pd_dl_venus)
+-		return -ENODEV;
+-
+ skip_pmdomains:
+ 	if (!core->has_opp_table)
+ 		return 0;
+@@ -807,14 +800,12 @@ static int vcodec_domains_get(struct device *dev)
+ opp_dl_add_err:
+ 	dev_pm_opp_detach_genpd(core->opp_table);
+ opp_attach_err:
+-	if (core->pd_dl_venus) {
+-		device_link_del(core->pd_dl_venus);
+-		for (i = 0; i < res->vcodec_pmdomains_num; i++) {
+-			if (IS_ERR_OR_NULL(core->pmdomains[i]))
+-				continue;
+-			dev_pm_domain_detach(core->pmdomains[i], true);
+-		}
++	for (i = 0; i < res->vcodec_pmdomains_num; i++) {
++		if (IS_ERR_OR_NULL(core->pmdomains[i]))
++			continue;
++		dev_pm_domain_detach(core->pmdomains[i], true);
+ 	}
++
+ 	return ret;
+ }
+ 
+@@ -827,9 +818,6 @@ static void vcodec_domains_put(struct device *dev)
+ 	if (!res->vcodec_pmdomains_num)
+ 		goto skip_pmdomains;
+ 
+-	if (core->pd_dl_venus)
+-		device_link_del(core->pd_dl_venus);
+-
+ 	for (i = 0; i < res->vcodec_pmdomains_num; i++) {
+ 		if (IS_ERR_OR_NULL(core->pmdomains[i]))
+ 			continue;
+@@ -916,16 +904,30 @@ static void core_put_v4(struct device *dev)
+ static int core_power_v4(struct device *dev, int on)
+ {
+ 	struct venus_core *core = dev_get_drvdata(dev);
++	struct device *pmctrl = core->pmdomains[0];
+ 	int ret = 0;
+ 
+ 	if (on == POWER_ON) {
++		if (pmctrl) {
++			ret = pm_runtime_get_sync(pmctrl);
++			if (ret < 0) {
++				pm_runtime_put_noidle(pmctrl);
++				return ret;
++			}
++		}
++
+ 		ret = core_clks_enable(core);
++		if (ret < 0 && pmctrl)
++			pm_runtime_put_sync(pmctrl);
+ 	} else {
+ 		/* Drop the performance state vote */
+ 		if (core->opp_pmdomain)
+ 			dev_pm_opp_set_rate(dev, 0);
+ 
+ 		core_clks_disable(core);
++
++		if (pmctrl)
++			pm_runtime_put_sync(pmctrl);
+ 	}
+ 
+ 	return ret;
+-- 
+2.17.1
+
