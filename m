@@ -2,235 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136AE2F4CD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C57772F4CE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbhAMOMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:12:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725747AbhAMOMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:12:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 054AB233F8;
-        Wed, 13 Jan 2021 14:12:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610547131;
-        bh=CYzpYJ/zSgUm4o/5ROL9LQckIZPsZNyRnCVwmm4rHe4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c0oQ6mQBnbYPPhigkVShQGfwXtq13TNBpPLLdh44s11xhxb7ZKGVuFcDq8kvb9Uaw
-         RsWD8a7K/uXlzNLVdPx9900hotGw++TGkBs0FmIgKNxqX7a0ERBgfAGg2A57bjXk6C
-         9oyfUJY9J5/ALoxeNqYkFsZvhTWChzf9IfqsFbL39Iv62XGjL/OYV12CJBAKLFsrc5
-         agrGuoJ3pAXSAFu5LeZidhcDTwZ2khHtaSsydC0j3Ys0AzGIP8/huHhaBUon1/1esQ
-         POawySCuBJbVpvHk4r7WH3MTRYOkctgvwUmJmk8PdC8p3zpUqukiEnDfIITac7Kgwo
-         EZUY7Vzorioxw==
-Date:   Wed, 13 Jan 2021 19:42:06 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Swapnil Jakhade <sjakhade@cadence.com>,
-        Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 6/7] phy: ti: j721e-wiz: Enable reference clock output in
- cmn_refclk_<p/m>
-Message-ID: <20210113141206.GQ2771@vkoul-mobl>
-References: <20201224114250.1083-1-kishon@ti.com>
- <20201224114250.1083-7-kishon@ti.com>
+        id S1726952AbhAMOM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:12:59 -0500
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:33371 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725747AbhAMOM6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 09:12:58 -0500
+Received: from [185.56.157.72] (port=39402 helo=[192.168.101.73])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1kzgse-00DmxP-Vt; Wed, 13 Jan 2021 15:12:13 +0100
+Subject: Re: [RFC 2/2] clk: vc5: Add support for optional load capacitance
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-clk <linux-clk@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210106173900.388758-1-aford173@gmail.com>
+ <20210106173900.388758-2-aford173@gmail.com>
+ <c5a97aca-ce74-bbd3-e99d-358e079c4c4a@lucaceresoli.net>
+ <CAHCN7x+gUQwv4cWgg7Jt2oca1n4KW=o08rzoK9TB1Z_rKE0qog@mail.gmail.com>
+ <e64a590d-1b3a-73cd-fb93-970013385224@lucaceresoli.net>
+ <CAHCN7x+NFTn9Jqzbdm7d2UZt68DSAZ9Z-r+7Txwqi1=eE=W3Ug@mail.gmail.com>
+ <e50740b9-4ab1-bb14-da51-acd3f98fab1b@lucaceresoli.net>
+ <CAHCN7x+3HPa1TMjWNhP0W3-Jf+tZ0yLtfVKp4dNHu43T2LxOeA@mail.gmail.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <10320483-c996-e33b-00cf-0629d899b82c@lucaceresoli.net>
+Date:   Wed, 13 Jan 2021 15:12:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201224114250.1083-7-kishon@ti.com>
+In-Reply-To: <CAHCN7x+3HPa1TMjWNhP0W3-Jf+tZ0yLtfVKp4dNHu43T2LxOeA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-12-20, 17:12, Kishon Vijay Abraham I wrote:
-> cmn_refclk_<p/m> lines in Torrent SERDES is used for connecting external
-> reference clock. cmn_refclk_<p/m> can also be configured to output the
-> reference clock. In order to drive the refclk out from the SERDES
-> (Cadence Torrent), PHY_EN_REFCLK should be set in SERDES_RST of WIZ.
-> Model PHY_EN_REFCLK as a clock, so that platforms like AM642 EVM can
-> enable it.
+Hi Adam,
+
+On 12/01/21 18:00, Adam Ford wrote:
+> On Tue, Jan 12, 2021 at 10:45 AM Luca Ceresoli <luca@lucaceresoli.net> wrote:
+>>
+>> Hi Adam,
+>>
+>> On 11/01/21 17:40, Adam Ford wrote:
+>>> On Sat, Jan 9, 2021 at 12:02 PM Luca Ceresoli <luca@lucaceresoli.net> wrote:
+>>>>
+>>>> Hi Adam,
+>>>>
+>>>> On 09/01/21 04:00, Adam Ford wrote:
+>>>>> On Fri, Jan 8, 2021 at 4:49 PM Luca Ceresoli <luca@lucaceresoli.net> wrote:
+>>>>>>
+>>>>>> Hi Adam,
+>>>>>>
+>>>>>> On 06/01/21 18:39, Adam Ford wrote:
+>>>>>>> There are two registers which can set the load capacitance for
+>>>>>>> XTAL1 and XTAL2. These are optional registers when using an
+>>>>>>> external crystal.  Parse the device tree and set the
+>>>>>>> corresponding registers accordingly.
+>>>>>>
+>>>>>> No need to repeat the first 2 sentences, they are already in patch 1.
+>>>>>
+>>>>> The reason I did that was because if someone does a git log on the
+>>>>> individual file, they'd see the comment.  While it's redundant not, it
+>>>>> might not be as obvious in the future when looking back.   Not
+>>>>> everyone reviews the history of the binding, but the source files' git
+>>>>> logs usually have some value.   However, if you want me to drop it or
+>>>>> rephrase it, I can do that.
+>>>>
+>>>> Makes sense, I had never considered that before.
+>>>>
+>>>>>>> +static int vc5_map_cap_value(u32 femtofarads)
+>>>>>>> +{
+>>>>>>> +     int mapped_value;
+>>>>>>> +
+>>>>>>> +     /* The datasheet explicitly states 9000 - 25000 */
+>>>>>>> +     if ((femtofarads < 9000) || (femtofarads > 25000))
+>>>>>>> +             return -EINVAL;
+>>>>>>> +
+>>>>>>> +     /* The lowest target we can hit is 9430, so exit if it's less */
+>>>>>>> +     if (femtofarads < 9430)
+>>>>>>> +             return 0;
+>>>>>>> +
+>>>>>>> +     /*
+>>>>>>> +      * According to VersaClock 6E Programming Guide, there are 6
+>>>>>>> +      * bits which translate to 64 entries in XTAL registers 12 and
+>>>>>>> +      * 13. Because bits 0 and 1 increase the capacitance the
+>>>>>>> +      * same, some of the values can be repeated.  Plugging this
+>>>>>>> +      * into a spreadsheet and generating a trendline, the output
+>>>>>>> +      * equation becomes x = (y-9098.29) / 216.44, where 'y' is
+>>>>>>> +      * the desired capacitance in femtofarads, and x is the value
+>>>>>>> +      * of XTAL[5:0].
+>>>>>>> +      * To help with rounding, do fixed point math
+>>>>>>> +      */
+>>>>>>> +     femtofarads *= 100;
+>>>>>>> +     mapped_value = (femtofarads - 909829) / 21644;
+>>>>>>
+>>>>>> Thanks for the extensive comment, but I am confused. Not by your code
+>>>>>> which is very clean and readable, but by the chip documentation
+>>>>>> (disclaimer: I haven't read it in full depth).
+>>>>>
+>>>>> I was confused too since the datasheet and programmers manual differ a bit.
+>>>>>>
+>>>>>> The 5P49V6965 datasheet at page 17 clearly states capacitance can be
+>>>>>> increased in 0.5 pF steps. The "VersaClock 6E Family Register
+>>>>>> Descriptions and Programming Guide" at page 18 shows a table that allows
+>>>>>> 0.43 pF. Can you clarify how the thing works?
+>>>>>
+>>>>> I used the Versaclock 6E doc which is based on the following:
+>>>>>
+>>>>> BIT 5 - Add 6.92pF
+>>>>> BIT 4 - Add 3.46pF
+>>>>> BIT 3 - Add 1.73pF
+>>>>> BIT 2 - Add 0.86pF
+>>>>> Bit 1 - Add 0.43pF
+>>>>> Bit 0 - Add 0.43pF
+>>>>>
+>>>>> Because the Datasheet starts at 9pF, the math I used, assumes these
+>>>>> numbers are added to 9pF.
+>>>>> Because the datasheet shows the increments are in .5pF increments, the
+>>>>> 430nF seems close.  The datasheet shows 9pF - 25pF and based on the
+>>>>> programmer table, we could get close to 25pF by enabling all bits and
+>>>>> adding 9pF, however the math doesn't quite hit 25pF.
+>>>>>
+>>>>> For what it's worth I needed around 11.5pF, and with this patch, the
+>>>>> hardware engineer said our ppm went from around 70 ppm to around 4ppm.
+>>>>
+>>>> Did he measure what happens if you set the register according to the 0.5
+>>>> pF interpretation? Does it improve? I understand the difference is
+>>>> probably olwer than the noise, but who knows.
+>>>>
+>>>>>>> +
+>>>>>>> +     /*
+>>>>>>> +      * The datasheet states, the maximum capacitance is 25000,
+>>>>>>> +      * but the programmer guide shows a max value is 22832,
+>>>>>>> +      * so values higher values could overflow, so cap it.
+>>>>>>> +      */
+>>>>>>
+>>>>>> The 22832 limit is if you assume 0.43 pF steps. Assuming 0.5 pF steps
+>>>>>> leads to 25000. Now I am more confused than before.
+>>>>>
+>>>>> I agree.  It would be nice to get some clarification from Renesas.
+>>>>
+>>>> Definitely. Do you have access to some support from them?
+>>>
+>>> Luca,
+>>>
+>>> We reached out to  Renesas with the following questions:
+>>>
+>>> 1)
+>>> I'm seeing a discrepancy between the datasheet and programming guide
+>>> we have for the Versaclock 6e in regard to the crystal load
+>>> programming registers.  The datasheet for the 5P49V6965A000NLGI
+>>> indicates a 9pF minimum with 0.5pF steps, while the programming guide
+>>> says that the lower two register bits both add 0.43pF, which would
+>>> make the equation:
+>>>
+>>> Ci = 9pF + 0.43pF * XTAL[5:1] instead of
+>>> Ci = 9pF + 0.5pF * XTAL[5:0] as is published in the datasheet.
+>>>
+>>> 2)  The programming guide shows that the default setting is 01b, but
+>>> the note says it's reserved, use D1 D0 = 00.  Can you confirm that we
+>>> should set switch mode to 00 instead of the default 01?
+>>>
+>>> And we got the following answers:
+>>>
+>>> 1)
+>>>      The first one with 0.43pF steps is the correct one. Ci = 9pF +
+>>> 0.43pF * XTAL[5:1]
+>>>      0.5pF steps was the design target.  When measuring actual
+>>> silicon, we found 0.43pF steps.
+>>>
+>>>      There are 6 bits reserved for the CL setting but bits 0 and 1
+>>> have the same 0.43pF step.  So it is actually 5 bits with an extra LSB
+>>> of 0.43pF.
+>>>
+>>> 2)
+>>>       Please use D1 D0 = 01.   The “00” is a typo…..
+>>
+>> Great thing you got all those info from Renesas!
+>>
+>>>
+>>> Based on the above response I think we should always assume XTAL bit 0
+>>> is 0, and only use XTAL[5:1] which should make the math go easier,
+>>> because the desired value in femtofarads would just be offset by 9000
+>>> and divided by 430 and that value would be shifted 3 places instead fo
+>>> two, and the  fixed-point math calculation can go away.
+>>>
+>>> In addition to that, I would also need to make sure that D0 is set to
+>>> 1, so instead of just writing the shifted XTAL value, I would also
+>>> have to do a logic OR with 1 to set the low bit.
+>>>
+>>> I talked with the hardware guys from work who also suggested that we
+>>> always write the same value to X1 and X2, so I can remove the X1 and
+>>> X2 references from the bindings.
+>>>
+>>> Does that work for you?
+>>
+>> Yes.
+>>
+>> We are only losing the ability to set 9 + (0.43 * 32) pF using all bits.
 > 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  drivers/phy/ti/phy-j721e-wiz.c | 115 +++++++++++++++++++++++++++++++++
->  1 file changed, 115 insertions(+)
+> We'd be doing this with XTAL[5:1] which mathematically makes more sense.
 > 
-> diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
-> index 08acfab1ebe6..d60a9a01a8b2 100644
-> --- a/drivers/phy/ti/phy-j721e-wiz.c
-> +++ b/drivers/phy/ti/phy-j721e-wiz.c
-> @@ -54,6 +54,7 @@ enum wiz_refclk_div_sel {
->  
->  static const struct reg_field por_en = REG_FIELD(WIZ_SERDES_CTRL, 31, 31);
->  static const struct reg_field phy_reset_n = REG_FIELD(WIZ_SERDES_RST, 31, 31);
-> +static const struct reg_field phy_en_refclk = REG_FIELD(WIZ_SERDES_RST, 30, 30);
->  static const struct reg_field pll1_refclk_mux_sel =
->  					REG_FIELD(WIZ_SERDES_RST, 29, 29);
->  static const struct reg_field pll0_refclk_mux_sel =
-> @@ -141,6 +142,15 @@ struct wiz_clk_div_sel {
->  	const char		*node_name;
->  };
->  
-> +struct wiz_phy_en_refclk {
-> +	struct clk_hw		hw;
-> +	struct regmap_field	*phy_en_refclk;
-> +	struct clk_init_data	clk_data;
-> +};
-> +
-> +#define to_wiz_phy_en_refclk(_hw)	\
-> +			container_of(_hw, struct wiz_phy_en_refclk, hw)
-> +
->  static struct wiz_clk_mux_sel clk_mux_sel_16g[] = {
->  	{
->  		/*
-> @@ -214,6 +224,7 @@ struct wiz {
->  	unsigned int		clk_div_sel_num;
->  	struct regmap_field	*por_en;
->  	struct regmap_field	*phy_reset_n;
-> +	struct regmap_field	*phy_en_refclk;
->  	struct regmap_field	*p_enable[WIZ_MAX_LANES];
->  	struct regmap_field	*p_align[WIZ_MAX_LANES];
->  	struct regmap_field	*p_raw_auto_start[WIZ_MAX_LANES];
-> @@ -450,9 +461,96 @@ static int wiz_regfield_init(struct wiz *wiz)
->  		return PTR_ERR(wiz->typec_ln10_swap);
->  	}
->  
-> +	wiz->phy_en_refclk = devm_regmap_field_alloc(dev, regmap,
-> +						     phy_en_refclk);
-> +	if (IS_ERR(wiz->phy_en_refclk)) {
-> +		dev_err(dev, "PHY_EN_REFCLK reg field init failed\n");
-> +		return PTR_ERR(wiz->phy_en_refclk);
-> +	}
-> +
->  	return 0;
->  }
->  
-> +static int wiz_phy_en_refclk_enable(struct clk_hw *hw)
-> +{
-> +	struct wiz_phy_en_refclk *wiz_phy_en_refclk = to_wiz_phy_en_refclk(hw);
-> +	struct regmap_field *phy_en_refclk = wiz_phy_en_refclk->phy_en_refclk;
-> +
-> +	regmap_field_write(phy_en_refclk, 1);
-> +
-> +	return 0;
-> +}
-> +
-> +static void wiz_phy_en_refclk_disable(struct clk_hw *hw)
-> +{
-> +	struct wiz_phy_en_refclk *wiz_phy_en_refclk = to_wiz_phy_en_refclk(hw);
-> +	struct regmap_field *phy_en_refclk = wiz_phy_en_refclk->phy_en_refclk;
-> +
-> +	regmap_field_write(phy_en_refclk, 0);
-> +}
-> +
-> +static int wiz_phy_en_refclk_is_enabled(struct clk_hw *hw)
-> +{
-> +	struct wiz_phy_en_refclk *wiz_phy_en_refclk = to_wiz_phy_en_refclk(hw);
-> +	struct regmap_field *phy_en_refclk = wiz_phy_en_refclk->phy_en_refclk;
+>> I'm OK with that. Should it be needed in the future we can just add it
+>> as a special case, maybe just add a comment saying that, like "XTAL[5:0]
+>> = b111111 not supported".
+> 
+> XTAL[0] won't be supported at all by my updated algorithm, not just b111111
 
-get_phy_wiz_regmap() macro for this repeated patter..?
+I think we are saying the same thing in two different ways. According to
+table 28 of the "Regiter description and programming guide", we have:
 
-> +	int val;
-> +
-> +	regmap_field_read(phy_en_refclk, &val);
-> +
-> +	return !!val;
-> +}
-> +
-> +static const struct clk_ops wiz_phy_en_refclk_ops = {
-> +	.enable = wiz_phy_en_refclk_enable,
-> +	.disable = wiz_phy_en_refclk_disable,
-> +	.is_enabled = wiz_phy_en_refclk_is_enabled,
-> +};
-> +
-> +static int wiz_phy_en_refclk_register(struct wiz *wiz, struct device_node *node,
-> +				      struct regmap_field *phy_en_refclk)
-> +{
-> +	struct wiz_phy_en_refclk *wiz_phy_en_refclk;
-> +	struct device *dev = wiz->dev;
-> +	struct clk_init_data *init;
-> +	unsigned int num_parents;
-> +	const char *parent_name;
-> +	char clk_name[100];
-> +	struct clk *clk;
-> +	int ret;
-> +
-> +	wiz_phy_en_refclk = devm_kzalloc(dev, sizeof(*wiz_phy_en_refclk),
-> +					 GFP_KERNEL);
+  Ci = 9 + (0.43 * N) pF
 
-single line :)
+where N can be any integer between 0 and 32 (inclusive).
 
-> +	if (!wiz_phy_en_refclk)
-> +		return -ENOMEM;
-> +
-> +	num_parents = of_clk_get_parent_count(node);
-> +	parent_name = of_clk_get_parent_name(node, 0);
-> +
-> +	snprintf(clk_name, sizeof(clk_name), "%s_%s", dev_name(dev),
-> +		 node->name);
+Your proposed implementation is:
 
-here too and few other places
+reg_0x12 = (N << 3) | 0x1;
 
-> +
-> +	init = &wiz_phy_en_refclk->clk_data;
-> +
-> +	init->ops = &wiz_phy_en_refclk_ops;
-> +	init->flags = 0;
-> +	init->parent_names = parent_name ? &parent_name : NULL;
-> +	init->num_parents = num_parents ? 1 : 0;
-> +	init->name = clk_name;
-> +
-> +	wiz_phy_en_refclk->phy_en_refclk = phy_en_refclk;
-> +	wiz_phy_en_refclk->hw.init = init;
-> +
-> +	clk = devm_clk_register(dev, &wiz_phy_en_refclk->hw);
-> +	if (IS_ERR(clk))
-> +		return PTR_ERR(clk);
-> +
-> +	ret = of_clk_add_provider(node, of_clk_src_simple_get, clk);
-> +	if (ret)
-> +		dev_err(dev, "Fail to add clock provider: %s\n", clk_name);
-> +
-> +	return ret;
-> +}
-> +
->  static u8 wiz_clk_mux_get_parent(struct clk_hw *hw)
->  {
->  	struct wiz_clk_mux *mux = to_wiz_clk_mux(hw);
-> @@ -713,6 +811,20 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
->  		of_node_put(clk_node);
->  	}
->  
-> +	clk_node = of_get_child_by_name(node, "phy-en-refclk");
-> +	if (clk_node) {
-> +		ret = wiz_phy_en_refclk_register(wiz, clk_node,
-> +						 wiz->phy_en_refclk);
-> +		if (ret) {
-> +			dev_err(dev, "Failed to register %s clock\n",
-> +				node_name);
-> +			of_node_put(clk_node);
-> +			goto err;
-> +		}
-> +
-> +		of_node_put(clk_node);
-> +	}
-> +
->  	return 0;
->  err:
->  	wiz_clock_cleanup(wiz, node);
-> @@ -828,6 +940,9 @@ static int wiz_get_lane_phy_types(struct device *dev, struct wiz *wiz)
->  		      of_node_name_eq(subnode, "link")))
->  			continue;
->  
-> +		if (!(of_node_name_eq(subnode, "link")))
-> +			continue;
-> +
->  		ret = of_property_read_u32(subnode, "reg", &reg);
->  		if (ret) {
->  			dev_err(dev,
-> -- 
-> 2.17.1
+i.e. using only XTAL bits [5:1], not [0], so we can have any value in
+the range [0..31], but not 32. This is OK for me.
+
+Should we need value 32 at some point we can simply augment it as:
+
+if (N == 32)
+  reg_0x12 = (b111111 << 2) | 0x1;
+else
+  reg_0x12 = (N << 3) | 0x1; // your current proposal
+
+Among all register XTAL values having XTAL[0] == 1, only b111111 is
+interesting. All other values have an equivalent with XTAL[0] == 0.
+
+Correct?
 
 -- 
-~Vinod
+Luca
