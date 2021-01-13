@@ -2,132 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B762F54D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:11:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9AB72F54DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbhAMWKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 17:10:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727137AbhAMWFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 17:05:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1BBF23370;
-        Wed, 13 Jan 2021 22:04:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610575484;
-        bh=kaPg4tNbVSYG15sLbgGUHHLryojTzxy4vySqBttv3Ug=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SJaCDlxt+GHp9o2HTovqWg+cAk1bdIhy9M3+2dDZxKd/4ZC0D8of+KVDkdW9VWUpD
-         yvS/PZsibm85+XKq7CHzoLbD3lNGcFNzxFHpF7gKH4de6Rr9PMsag8xOVol79XwMWU
-         BEd9TiAejkD3nYHeOufpWOy8wEHkd/MRajYw8WcYLc8J3osGc6l2FdLwpuVXQE53Xl
-         JLP/9hXBE7NnbbGaw/8grFzDHNEcwEfGnhMGFHOCeMtr87SaWp8PXmIFiC8DZosi1e
-         +maaOLIjpELAkiIf6UuHcBOtNsDqRWEFiENvsD4AG4rMX/u0KvCJ9vT5L/+aVFQd9H
-         BWbLQvwFouVVg==
-Date:   Thu, 14 Jan 2021 00:04:37 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
-        bp@suse.de, x86@kernel.org
-Subject: Re: [PATCH] x86/sgx: rename and document SGX bit lock
-Message-ID: <X/9udYTX+k2G+tiZ@kernel.org>
-References: <20210112221901.2CE31C8E@viggo.jf.intel.com>
+        id S1729277AbhAMWMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 17:12:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729253AbhAMWJL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 17:09:11 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02590C061795
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:08:30 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id b26so5051100lff.9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:08:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/qpRsvWTUoPBimP/fo2jeNBuh57czhavnYXwy3EGUNQ=;
+        b=O5tD7VX8Mw1Uqj4pHOrzf+txpuEcvVOqvDrs/kAgC+/pePEkQty3XvzGM/Ge6lKAam
+         BwY186f3pvtuJS1Tk+stRMAPL1/LYVfS49sZoBf3yWAtCywFqXwngOIPsxeNQwW6PgGw
+         9noPxfBNWI0yfKSt50EuHP4VdFSbA9pwM4ixw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/qpRsvWTUoPBimP/fo2jeNBuh57czhavnYXwy3EGUNQ=;
+        b=pIFl3FXf8uTuRpUvDs/8fSDLjaZaqwWJwDxTAl0n/A2CGR2+q8b0iAh9HGUaBiQuKt
+         fOgkJ9fDdeDCp9CBKVIQkxXPMrAJPLzPLk/F7hAYUfJ093SPzQLl8GEp/hqaZm2G7GFD
+         5cMFtZ3CqOxhemQ/rPU7lBNhARe741e1dqKaqFeAkN8odmdvb3rgg5VPcQZzWYOt3HtY
+         980mkmW7oq911MfSjjoNq5LJL+HsBA3CwQbgt3lcrhl7TD0O7UrNHdUrikTtuToxBXmS
+         /MXekNpE4CC3ptAxVk7uuluDlYApi72CKiRpaMrlQbIBzwuSb3ixkY4m6vv8oysI6aD8
+         tUkg==
+X-Gm-Message-State: AOAM532p32K5KXDv+tgpwL7THE0HJPPhi/+iDPOBXFi2ZLYvqSrcYdR5
+        puKagc/Fv1cNJifNN7xZia+rGwkOxv/rlg==
+X-Google-Smtp-Source: ABdhPJx0p13K5ivKeqhtolNtmA45BpTLl2HxUeAz7YjjxLAdysLEeWOHrrpLsvONuKz9roAzbSRugw==
+X-Received: by 2002:ac2:5c08:: with SMTP id r8mr1718922lfp.12.1610575707875;
+        Wed, 13 Jan 2021 14:08:27 -0800 (PST)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id v7sm335015lfg.9.2021.01.13.14.08.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jan 2021 14:08:26 -0800 (PST)
+Received: by mail-lj1-f170.google.com with SMTP id f17so4268546ljg.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:08:26 -0800 (PST)
+X-Received: by 2002:a2e:6f17:: with SMTP id k23mr1742942ljc.411.1610575705754;
+ Wed, 13 Jan 2021 14:08:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210112221901.2CE31C8E@viggo.jf.intel.com>
+References: <20210112224832.10980-1-will@kernel.org> <161055398865.21762.12236232732054213928.b4-ty@arm.com>
+ <CAK7LNASs6dvU6D3jL2GG3jW58fXfaj6VNOe55NJnTB8UPuk2pA@mail.gmail.com>
+ <CAHk-=wiQ_tp8NmKV8PJ-6WMo3dTEZwDo3a0hYjcUFqMdviNTYw@mail.gmail.com> <20210113214436.GL1551@shell.armlinux.org.uk>
+In-Reply-To: <20210113214436.GL1551@shell.armlinux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 13 Jan 2021 14:08:09 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjqGRXUp6KOdx-eHYEotGvY=a5tSY1mF-BkAcX2YAuBYw@mail.gmail.com>
+Message-ID: <CAHk-=wjqGRXUp6KOdx-eHYEotGvY=a5tSY1mF-BkAcX2YAuBYw@mail.gmail.com>
+Subject: Re: [PATCH] compiler.h: Raise minimum version of GCC to 5.1 for arm64
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Florian Weimer <fweimer@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 02:19:01PM -0800, Dave Hansen wrote:
-> 
-> SGX ioctl() calls are serialized with a lock.  It's a weird open-coded
-> lock that is not even called a "lock".  That makes it a weird beast,
-> but Sean has convinced me it's a good idea without better alternatives.
-> 
-> Give the lock bit a better name, and document what it actually trying
-> to do.
-> 
-> Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-> Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: x86@kernel.org
-> 
-> ---
-> 
->  b/arch/x86/kernel/cpu/sgx/encl.h  |    2 +-
->  b/arch/x86/kernel/cpu/sgx/ioctl.c |   19 ++++++++++++++++---
->  2 files changed, 17 insertions(+), 4 deletions(-)
-> 
-> diff -puN arch/x86/kernel/cpu/sgx/ioctl.c~sgx-encl-flags arch/x86/kernel/cpu/sgx/ioctl.c
-> --- a/arch/x86/kernel/cpu/sgx/ioctl.c~sgx-encl-flags	2021-01-12 14:02:24.480689006 -0800
-> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c	2021-01-12 14:02:24.486689006 -0800
-> @@ -690,8 +690,21 @@ long sgx_ioctl(struct file *filep, unsig
->  	struct sgx_encl *encl = filep->private_data;
->  	int ret;
->  
-> -	if (test_and_set_bit(SGX_ENCL_IOCTL, &encl->flags))
-> -		return -EBUSY;
-> +	/*
-> +	 * Behold, the Big SGX Lock
-> +	 *
-> +	 * The primary function of this "lock" is to actively discourage
-> +	 * attempts at multi-threaded enclave management.  Enclave management
-> +	 * is fundamentally a single-threaded affair.  Enclave measurement,
-> +	 * for instance would be worthless if two ADD_PAGES instances raced
-> +	 * and occurred in different orders.
-> +	 *
-> +	 * encl->lock is ill suited for this because it would need to be
-> +	 * conditionally dropped and reqacuired for operations like enclave
-> +	 * page allocation and reclaim.
-> +	 */
-> +	if (test_and_set_bit(SGX_ENCL_IOCTL_LOCK, &encl->flags))
-> +		return -EINVAL;
+On Wed, Jan 13, 2021 at 1:44 PM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+>
+> So, maybe the Sparc issue was just a similar but different bug in gcc
+> 4.9.x.
 
-Precisely this come down to SGX_IOC_ENCLAVE_ADD_PAGES ioctl where
-you need to do multiple sgx_alloc_epc_pages() calls. Other ioctl's
-are not bound to this.
+Good catch. And I know this bug has happened independently on
+different architectures several times (I remember this on x86-64 as
+well), so I started looking around.
 
-In other words, two threads could have ABBA race if they wait for each
-other locks while swapping. Since cryptographic measurements require
-strict order anyway, this is a simple way to sort out the issue.
+And in fact, 4.9 was buggy on x86-64 too:
 
-Other way to sort this out would be to pre-allocate the amount of
-pages and VA pages required to add new pages before taking the
-lock but that its own set problems (like the being non-swappable
-for a while).
+    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61904
 
-Maybe these details could be sharpened in the comment? I agree with
-the name change. I.e.
+And yeah, _that_ gcc bug wasn't actually x86-64 specific, but
+apparently a generic instruction scheduling bug.
 
-1. We do this because the add page flow requires this.
-2. The order must be sequential anyway so no harm done.
-3. Pre-allocating variable number of pages is not an alternative.
+So it's an independent bug, but I do have to admit that the arguments
+against 4.9 are piling up (even if that particular fix apparently got
+fixed in the gcc branches and apparently backported to distro
+compilers too).
 
-/Jarkko
-
->  
->  	switch (cmd) {
->  	case SGX_IOC_ENCLAVE_CREATE:
-> @@ -711,6 +724,6 @@ long sgx_ioctl(struct file *filep, unsig
->  		break;
->  	}
->  
-> -	clear_bit(SGX_ENCL_IOCTL, &encl->flags);
-> +	clear_bit(SGX_ENCL_IOCTL_LOCK, &encl->flags);
->  	return ret;
->  }
-> diff -puN arch/x86/kernel/cpu/sgx/encl.h~sgx-encl-flags arch/x86/kernel/cpu/sgx/encl.h
-> --- a/arch/x86/kernel/cpu/sgx/encl.h~sgx-encl-flags	2021-01-12 14:02:24.482689006 -0800
-> +++ b/arch/x86/kernel/cpu/sgx/encl.h	2021-01-12 14:16:37.511686879 -0800
-> @@ -34,7 +34,7 @@ struct sgx_encl_page {
->  };
->  
->  enum sgx_encl_flags {
-> -	SGX_ENCL_IOCTL		= BIT(0),
-> +	SGX_ENCL_IOCTL_LOCK	= BIT(0), /* See sgx_ioctl() */
->  	SGX_ENCL_DEBUG		= BIT(1),
->  	SGX_ENCL_CREATED	= BIT(2),
->  	SGX_ENCL_INITIALIZED	= BIT(3),
-> _
-> 
+         Linus
