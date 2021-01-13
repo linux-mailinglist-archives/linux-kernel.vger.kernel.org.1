@@ -2,58 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B3F2F4809
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 898D92F481A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727530AbhAMJvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 04:51:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55066 "EHLO mail.kernel.org"
+        id S1726695AbhAMJ4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 04:56:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727345AbhAMJvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 04:51:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DDA92339D;
-        Wed, 13 Jan 2021 09:50:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610531458;
-        bh=s+TQ8rts7lmiJdFM0O7RqCAnHpUbbxPN8CamKyMJOKs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K5xW4Vsr7NUsaey8Me3rE69z6s9oEp2kv5U2f83ZNjCF+PWal990ejhGycHNJVuhn
-         smhe2xVzSPuK9Y2AFLTKcklrDLq6TNpHO1DcaUoQatsh+qaqmRVg+q905QUwhGDh5i
-         giYF7C7RP1LjAWNSXkW3D1ufYuvEPeG/rRoDKH68=
-Date:   Wed, 13 Jan 2021 10:52:00 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Oded Gabbay <ogabbay@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [git pull] habanalabs fixes for 5.11-rc4
-Message-ID: <X/7CwKWCwmVoKW7h@kroah.com>
-References: <20210113075253.GA27799@CORE.localdomain>
+        id S1726288AbhAMJ4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 04:56:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A06E1233CE;
+        Wed, 13 Jan 2021 09:56:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610531769;
+        bh=PavsLJy5AvB8V+H/9/J4zxNIvFWCs0IilnDc/LFH19I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qN9L5CNXDr1eXpDKkeB/HAgCcrWWsfTkF9APPU4IrQDnQ3lg8s91JHFDGbk1ydp8C
+         Oqzul/QOr2wB1OSlAGelie81gBlmCK+GFnkE+NXnklnjuh4hY4tr+G2QztFW5N3uPq
+         SC/mjgpkqjnimB8efZK+h04AjKD2Se8VLVwjjjMj/h9DGJiapl7FuTxUdgN+Q7XNs3
+         DkbWZ9gX/438kOuA0McgXLAJD/t40NB1UhfPNL5JVzky7+uF5qphpmaNuAEWaoutGj
+         DjZdq3dS8S6nEZ7BvWkULYG55x9a5y1nGiCBiyvaO1uk7neU6HkCTeoJAIjdWY/4t4
+         Sy+P9jmbg+Efg==
+Received: by mail-ot1-f41.google.com with SMTP id r9so1325595otk.11;
+        Wed, 13 Jan 2021 01:56:09 -0800 (PST)
+X-Gm-Message-State: AOAM531QvuWQaOUpKwXcsgC9SF3qz5YbJY734Azg2Exdm/dx/3dAuk1C
+        hLA2ClFFUF787dKmnGZiGrMY37dw4oOxiFCLlZ0=
+X-Google-Smtp-Source: ABdhPJxT5BvCqmOpK4kasyQXmqEr7TJFFwvo3P8aUy4qHJcoxJQFQj1+vriju4Zim24/TfpNOO77V9WoOfz1hLYDcMs=
+X-Received: by 2002:a9d:12c:: with SMTP id 41mr641161otu.77.1610531768832;
+ Wed, 13 Jan 2021 01:56:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113075253.GA27799@CORE.localdomain>
+References: <20210109095353.13417-1-ardb@kernel.org> <20210112224919.GA1859692@bjorn-Precision-5520>
+In-Reply-To: <20210112224919.GA1859692@bjorn-Precision-5520>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 13 Jan 2021 10:55:57 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHLPvaQ74fnDCfz-5ZSmCjkeZddiq+C-nd_Xmh2k-x1bg@mail.gmail.com>
+Message-ID: <CAMj1kXHLPvaQ74fnDCfz-5ZSmCjkeZddiq+C-nd_Xmh2k-x1bg@mail.gmail.com>
+Subject: Re: [PATCH] PCI: decline to resize resources if boot config must be preserved
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 09:52:53AM +0200, Oded Gabbay wrote:
-> Hi Greg,
-> 
-> This pull request contains three important bug fixes for 5.11-rc4.
-> Basically the driver won't work without the dma address fix, and 
-> IMO the two other fixes are also improtant enough to be included 
-> at this stage.
-> 
-> Thanks,
-> Oded
-> 
-> The following changes since commit f970d1d01af8606233f47901c1cf39f3ae21fd74:
-> 
->   Merge tag 'phy-fixes-5.11' of git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy into char-misc-next (2021-01-11 15:37:40 +0100)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2021-01-13
+On Tue, 12 Jan 2021 at 23:49, Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Sat, Jan 09, 2021 at 10:53:53AM +0100, Ard Biesheuvel wrote:
+> > The _DSM #5 method in the ACPI host bridge object tells us whether the
+> > OS is permitted to deviate from the resource assignment configured by
+> > the firmware. If this is not the case, we should not permit drivers to
+> > resize BARs on the fly. So make pci_resize_resource() take this into
+> > account.
+> >
+> > Cc: <stable@vger.kernel.org> # v5.4+
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+>
+> Capitalized subject to match convention and applied to pci/resource
+> for v5.11, thanks!
+>
+> Is there an email, bug report, etc that prompted this change?
+>
 
-Pulled and pushed out, thanks.
+No, I was just reviewing the recent Tianocore changes to perform BAR
+resizing before resource assignment even takes places, which is
+obviously a more appropriate time to do it, as it does not require the
+OS to modify the firmware configuration at all. This reminded me of
+_DSM #5 and the fact that the OS may not even be permitted to make any
+changes.
 
-greg k-h
+
+> > ---
+> >  drivers/pci/setup-res.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/drivers/pci/setup-res.c b/drivers/pci/setup-res.c
+> > index 43eda101fcf4..3b38be081e93 100644
+> > --- a/drivers/pci/setup-res.c
+> > +++ b/drivers/pci/setup-res.c
+> > @@ -410,10 +410,16 @@ EXPORT_SYMBOL(pci_release_resource);
+> >  int pci_resize_resource(struct pci_dev *dev, int resno, int size)
+> >  {
+> >       struct resource *res = dev->resource + resno;
+> > +     struct pci_host_bridge *host;
+> >       int old, ret;
+> >       u32 sizes;
+> >       u16 cmd;
+> >
+> > +     /* Check if we must preserve the firmware's resource assignment */
+> > +     host = pci_find_host_bridge(dev->bus);
+> > +     if (host->preserve_config)
+> > +             return -ENOTSUPP;
+> > +
+> >       /* Make sure the resource isn't assigned before resizing it. */
+> >       if (!(res->flags & IORESOURCE_UNSET))
+> >               return -EBUSY;
+> > --
+> > 2.17.1
+> >
