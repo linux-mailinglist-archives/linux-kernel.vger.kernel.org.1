@@ -2,83 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0FF2F483C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 383832F4840
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbhAMKE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:04:59 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:37676 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726948AbhAMKE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:04:57 -0500
-Received: from zn.tnic (p200300ec2f0b5c00b2d62b1c55c494d5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:5c00:b2d6:2b1c:55c4:94d5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 052ED1EC0373;
-        Wed, 13 Jan 2021 11:04:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610532256;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=6Q836lvEI8WL7BDS9FwTyp3jQYCAq9tax7h39eSviyg=;
-        b=QGhyTjv+8jrsJmW04auJ2WzRUI8x3z3h3Nxe1Iofsa5h9SNwPhWVcm/kTr2VofD+ot0uEi
-        bR8WMYNsVxyzR9uzfEztPrm+Wzta+YIiesKnMhkrnCnIz5NiIFbiNmce9zipmTdW9b6nvc
-        PUt9/J0L3nIz3b7JgjwDsvnXLiuuciE=
-Date:   Wed, 13 Jan 2021 11:04:16 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Subject: Re: [PATCH v17 04/26] x86/cpufeatures: Introduce X86_FEATURE_CET and
- setup functions
-Message-ID: <20210113100416.GB16960@zn.tnic>
-References: <20201229213053.16395-5-yu-cheng.yu@intel.com>
- <20210111230900.5916-1-yu-cheng.yu@intel.com>
- <20210112123854.GE13086@zn.tnic>
- <0b144668-a989-6bc7-0b0d-2195d2d73397@intel.com>
+        id S1727102AbhAMKFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:05:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726989AbhAMKFP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 05:05:15 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BD8C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:04:35 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id m6so935462pfk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:04:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wquRWJ+XSdWEkC1CKLlpx83RnASpvB9JfJs+0o8pqSw=;
+        b=my4TThoY1QY04zJXin/7iCneXOx2awY7h5fcxmkmNVUKjCWvA6MfexjBCtKp16/Ub/
+         T3YGu1Yw78e2PmJKbPxJ0vc7mSZhq/IelGudOEcncdBpeDAkBSZEZ53KqDwAgxaHMhFa
+         LCgdNbiaFQPt55lNXCZ6LBZZkT6Q+ZqYgR3aSkdp+VYLlyx1hR7m9Fa6BPeZQzMm1t/f
+         D9eFAVELVgg66Z6DsRdmZajRpQihlEWm1aOGjg5dFXE7dZAU27DXfj4ak8XBtGE0zz8H
+         aHWlcNh8jZkq6Q6Uxiq0cqciZnF1A8yaQDJtkHIOk9z4MXrmORuNE9lNLVYiT3I/haay
+         DxqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wquRWJ+XSdWEkC1CKLlpx83RnASpvB9JfJs+0o8pqSw=;
+        b=MoTgpU9147zFxQvem+YTHSUtT21wxbqD7HFDu1NRszwFtB8J2bcp6okBZF/kJ3Kq6D
+         8thX7Yz99ONdn4JYeiJ/gYF35qBABp7SScBatlkpm2NSfKn2YavDaW1YGqJ1HOpIQbUu
+         w0uZwQEpkDdvZMTxEt1XwkD98eetbezU+cFhLAv3/fxcRdXDp1hanQni9GXEjPc12FhT
+         uzmvBE8lnfhE1e3kbtXR7zhmdUnj/oVyxX08c6xXn0onT62LVUUpEvn/NO7hZKXiDere
+         3ZAhp6FnfnVcOdkWsnhhuRqKk0BUHwmQIXPoqGK5Fahd4Ep2jJmjRc3gmt1+cgsz0evJ
+         bOcw==
+X-Gm-Message-State: AOAM530MRccvJ0Hm0SZ/pbYiNj5XqFsgX/dRRC0WJRUI6WlBBioOAq0T
+        OjjQRAOAEWL4U1kXCmWzkUtlJnM0XMMXnrZWa8SOlw==
+X-Google-Smtp-Source: ABdhPJy4A6h7Yl1bmD5zFijMJFck5yvrhVoaKXZKAFR8qf0yCrO11pB7cjnmhRIPdpNASxw+lEjoEg5de41q+buNfTA=
+X-Received: by 2002:a63:e151:: with SMTP id h17mr1383808pgk.120.1610532275264;
+ Wed, 13 Jan 2021 02:04:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <0b144668-a989-6bc7-0b0d-2195d2d73397@intel.com>
+References: <20210108120429.895046-1-robert.foss@linaro.org>
+ <20210108120429.895046-2-robert.foss@linaro.org> <X/ippoemGT9d28Sd@builder.lan>
+In-Reply-To: <X/ippoemGT9d28Sd@builder.lan>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Wed, 13 Jan 2021 11:04:24 +0100
+Message-ID: <CAG3jFyv4Bnk1c0fm3wQ5CkXA9POEXM1JbmE4SqAFQ23hBvftBw@mail.gmail.com>
+Subject: Re: [PATCH v1 01/17] media: camss: Fix comment using wrong function name
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Todor Tomov <todor.too@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, catalin.marinas@arm.com,
+        will@kernel.org, shawnguo@kernel.org, leoyang.li@nxp.com,
+        geert+renesas@glider.be, arnd@arndb.de, Anson.Huang@nxp.com,
+        michael@walle.cc, agx@sigxcpu.org, max.oss.09@gmail.com,
+        linux-arm-msm@vger.kernel.org,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 03:02:06PM -0800, Yu, Yu-cheng wrote:
-> Should I send an updated patch?  Thanks!
+Thanks Bj=C3=B6rn!
 
-No, this is not how review works.
+On Fri, 8 Jan 2021 at 19:51, Bjorn Andersson <bjorn.andersson@linaro.org> w=
+rote:
+>
+> On Fri 08 Jan 06:04 CST 2021, Robert Foss wrote:
+>
+> > Function name is comment is wrong, and was changed to be
+> > the same as the actual function name.
+> >
+> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> > ---
+> >  drivers/media/platform/qcom/camss/camss-vfe.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/me=
+dia/platform/qcom/camss/camss-vfe.c
+> > index fae2b513b2f9..478be4f0cab5 100644
+> > --- a/drivers/media/platform/qcom/camss/camss-vfe.c
+> > +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+> > @@ -1077,7 +1077,7 @@ static void vfe_isr_wm_done(struct vfe_device *vf=
+e, u8 wm)
+> >  }
+> >
+> >  /*
+> > - * vfe_isr_wm_done - Process composite image done interrupt
+> > + * vfe_isr_comp_done - Process composite image done interrupt
+>
+> It's a function, so it should be "vfe_isr_comp_done()", but unless the
+> comment is denoted kerneldoc by starting with '/' followed by two '*' it
+> "doesn't matter".
+>
+> As a matter of fact, none of the kerneldoc in this file has the proper
+> '/**' start, so this file is "undocumented".
+>
+> So please add another '*' and some () throughout the file.
 
-Usually, you send your patchset, wait a week or two to gather feedback,
-incorporate that feedback or discuss/dispute it and you send your next
-version. You should know the process by now...
+Ack
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>
+> Regards,
+> Bjorn
+>
+> >   * @vfe: VFE Device
+> >   * @comp: Composite image id
+> >   */
+> > --
+> > 2.27.0
+> >
