@@ -2,77 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515772F451F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:24:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5582C2F4527
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbhAMHVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 02:21:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53472 "EHLO mail.kernel.org"
+        id S1726030AbhAMHYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 02:24:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726741AbhAMHVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 02:21:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B83E221E2;
-        Wed, 13 Jan 2021 07:21:09 +0000 (UTC)
+        id S1725823AbhAMHYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 02:24:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 810A6221E2;
+        Wed, 13 Jan 2021 07:23:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610522470;
-        bh=Mvi+9ZB26e7kwWopE/JrOTsi3ksANLPXPUSYb5Y1k/A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ojeS2YxspW2+lSL/fOIiIm+2HHH/r8w2ap0+lm0uyFxvRa8oU4rQ6M5gjd6ZUNVXj
-         VBm/72SloxB1SPKHgrsgjHe84eW/MDP+1kx/Z3IgK+ZXkpiW9k2QPSepQOH/VTxdEp
-         nbgT38xWkjgP8X86Jt/bUUsxEfwmzdj/bVnI0c5x/z/Rw791Imywl8TkmM1dV0yvi3
-         sDQwF99BXVxXschtabSpHWjwjarErv4wzf0Bc8N3uM4spmwKjP2brpqcnbydpwh8pf
-         N2aLwnp92q9l0hhX8OGE7kRG/4kVBRU8s0JwN4TPPWrFeUovB66T0Gp5KdpzgSlzDx
-         qtoZHNE3h/nnQ==
-Date:   Wed, 13 Jan 2021 09:21:04 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Shradha Todi <shradha.t@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, kishon@ti.com, lorenzo.pieralisi@arm.com,
-        pankaj.dubey@samsung.com, sriram.dash@samsung.com,
-        niyas.ahmed@samsung.com, p.rajanbabu@samsung.com,
-        l.mehra@samsung.com, hari.tv@samsung.com
-Subject: Re: [PATCH v4] PCI: endpoint: Fix NULL pointer dereference for
- ->get_features()
-Message-ID: <20210113072104.GH4678@unreal>
-References: <CGME20210112140234epcas5p4f97e9cf12e68df9fb55d1270bd14280c@epcas5p4.samsung.com>
- <1610460145-14645-1-git-send-email-shradha.t@samsung.com>
+        s=k20201202; t=1610522617;
+        bh=QaN5LDnossHe47dAwYOWY0s6AXx7yNBh+zG6KLDXjvM=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=FqityJjgWnQzpOyyQAwQdv84Zaurt+fRpeqdUeVBfk3qthFwbbU7f41jOFhRPgSYw
+         VKrmoW+rffzrs0Wrf5J4ifM3/IVtpNS+m4kypH+dR7M2unqVrC0bat5erIHEr5SMDx
+         t6llNbjjgu7k13+qsBGcjq7CH1qVFJTNN6Ea3XFqvLmE6l/5WYB6JnrpnNl0Bpmdko
+         CZLMNDLtBzuhm6ORU4OB8HjLesw/4aElxBa3lQ/y793skFh9qbb7mHa4UMXojGMaIr
+         ljLJU+Yu7RP/LLiRRaZYb6x04vREgXsWKOu9BXOtk7H15qggEAufD8GtCJtXnCG0IA
+         M8ZW5ELiOK0IQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610460145-14645-1-git-send-email-shradha.t@samsung.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210106173900.388758-2-aford173@gmail.com>
+References: <20210106173900.388758-1-aford173@gmail.com> <20210106173900.388758-2-aford173@gmail.com>
+Subject: Re: [RFC 2/2] clk: vc5: Add support for optional load capacitance
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+To:     Adam Ford <aford173@gmail.com>, linux-clk@vger.kernel.org
+Date:   Tue, 12 Jan 2021 23:23:36 -0800
+Message-ID: <161052261603.3661239.1571828963550428923@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 07:32:25PM +0530, Shradha Todi wrote:
-> get_features ops of pci_epc_ops may return NULL, causing NULL pointer
-> dereference in pci_epf_test_bind function. Let us add a check for
-> pci_epc_feature pointer in pci_epf_test_bind before we access it to avoid
-> any such NULL pointer dereference and return -ENOTSUPP in case
-> pci_epc_feature is not found.
->
-> When the patch is not applied and EPC features is not implemented in the
-> platform driver, we see the following dump due to kernel NULL pointer
-> dereference.
->
-> [  105.135936] Call trace:
-> [  105.138363]  pci_epf_test_bind+0xf4/0x388
-> [  105.142354]  pci_epf_bind+0x3c/0x80
-> [  105.145817]  pci_epc_epf_link+0xa8/0xcc
-> [  105.149632]  configfs_symlink+0x1a4/0x48c
-> [  105.153616]  vfs_symlink+0x104/0x184
-> [  105.157169]  do_symlinkat+0x80/0xd4
-> [  105.160636]  __arm64_sys_symlinkat+0x1c/0x24
-> [  105.164885]  el0_svc_common.constprop.3+0xb8/0x170
-> [  105.169649]  el0_svc_handler+0x70/0x88
-> [  105.173377]  el0_svc+0x8/0x640
-> [  105.176411] Code: d2800581 b9403ab9 f9404ebb 8b394f60 (f9400400)
-> [  105.182478] ---[ end trace a438e3c5a24f9df0 ]---
+Quoting Adam Ford (2021-01-06 09:39:00)
+> There are two registers which can set the load capacitance for
+> XTAL1 and XTAL2. These are optional registers when using an
+> external crystal.  Parse the device tree and set the
+> corresponding registers accordingly.
+>=20
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+>  drivers/clk/clk-versaclock5.c | 64 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+>=20
+> diff --git a/drivers/clk/clk-versaclock5.c b/drivers/clk/clk-versaclock5.c
+> index 43db67337bc0..445abc3731fb 100644
+> --- a/drivers/clk/clk-versaclock5.c
+> +++ b/drivers/clk/clk-versaclock5.c
+> @@ -759,6 +759,63 @@ static int vc5_update_power(struct device_node *np_o=
+utput,
+>         return 0;
+>  }
+> =20
+> +static int vc5_map_cap_value(u32 femtofarads)
+> +{
+> +       int mapped_value;
+> +
+> +       /* The datasheet explicitly states 9000 - 25000 */
+> +       if ((femtofarads < 9000) || (femtofarads > 25000))
 
+Please remove useless parenthesis.
 
-Description and call trace don't correlate with the proposed code change.
+> +               return -EINVAL;
+> +
+> +       /* The lowest target we can hit is 9430, so exit if it's less */
+> +       if (femtofarads < 9430)
+> +               return 0;
+> +
+> +       /*
+> +        * According to VersaClock 6E Programming Guide, there are 6
+> +        * bits which translate to 64 entries in XTAL registers 12 and
+> +        * 13. Because bits 0 and 1 increase the capacitance the
+> +        * same, some of the values can be repeated.  Plugging this
+> +        * into a spreadsheet and generating a trendline, the output
+> +        * equation becomes x =3D (y-9098.29) / 216.44, where 'y' is
+> +        * the desired capacitance in femtofarads, and x is the value
+> +        * of XTAL[5:0].
+> +        * To help with rounding, do fixed point math
+> +        */
+> +       femtofarads *=3D 100;
+> +       mapped_value =3D (femtofarads - 909829) / 21644;
+> +
+> +       /*
+> +        * The datasheet states, the maximum capacitance is 25000,
+> +        * but the programmer guide shows a max value is 22832,
+> +        * so values higher values could overflow, so cap it.
+> +        */
+> +       mapped_value =3D max(mapped_value/100, 0x3f);
+> +
+> +       return mapped_value;
+> +}
+> +static int vc5_update_cap_load(struct device_node *node, struct vc5_driv=
+er_data *vc5)
+> +{
+> +       u32 value, mapped_value;
+> +
+> +       if (!of_property_read_u32(node, "idt,xtal1-load-femtofarads", &va=
+lue)) {
+> +               mapped_value =3D vc5_map_cap_value(value);
+> +               if (mapped_value < 0)
 
-The code in pci_epf_test_bind() doesn't dereference epc_features, at
-least in direct manner.
+How can it be less than 0? It's unsigned.
 
-Thanks
+> +                       return mapped_value;
+> +
+> +               regmap_write(vc5->regmap, VC5_XTAL_X1_LOAD_CAP, (mapped_v=
+alue << 2));
+> +       }
+> +
+> +       if (!of_property_read_u32(node, "idt,xtal2-load-femtofarads", &va=
+lue)) {
+> +               mapped_value =3D vc5_map_cap_value(value);
+> +               if (mapped_value < 0)
+
+Same!
+
+> +                       return mapped_value;
+> +               regmap_write(vc5->regmap, VC5_XTAL_X2_LOAD_CAP, (mapped_v=
+alue << 2));
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int vc5_update_slew(struct device_node *np_output,
+>                            struct vc5_out_data *clk_out)
+>  {
