@@ -2,147 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180E32F4760
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D952F475B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727725AbhAMJRr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Jan 2021 04:17:47 -0500
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:39920 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727527AbhAMJRm (ORCPT
+        id S1727690AbhAMJRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 04:17:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727660AbhAMJRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Jan 2021 04:17:42 -0500
-Received: by mail-lf1-f51.google.com with SMTP id a12so1703483lfl.6;
-        Wed, 13 Jan 2021 01:17:25 -0800 (PST)
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5288C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 01:17:01 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id 22so891768qty.14
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 01:17:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=63pl/aS2wHam/AsylCEoY/1tqy/k+q1Go1i6UVadOa8=;
+        b=S5jEmBDfc5/GL0JdOJPWuSgqdiB03H3YFCF63TgKOBBQ/pzGsvZ6xnZDy/0pyE3tCF
+         W0dux4Oqj6j6OA8SRJhrJpw+DV5XVRr6nw+MRgP6tc+tnk5jSWD/8r4SBUgU01qwq8jL
+         erJCU6lgMGpvEhIJ6+2A25JizThP2kMQGTq4Z9t8DNULGnYCs0derrIm2bTMvKk5clG7
+         31SxhfRZu2gVfMSlQEAA9UQPo7JaYKdyi3xWhSw8eOt4mKqtnprHbHy4IrOBWUEFXOnL
+         Q971ohdSsdefgtSIbokvzFXh2PeDeK+2QN//atuZkXqBX39EgV1D3xzpqO2ElXuWk0vp
+         Z74w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PL83MRTZmSl5in+hjwvHUEdnS7fuD7aTllMQF6TPQJw=;
-        b=To2PeUjCYja5GfpSI5cn2aPh0tn3r5X2Uro2mtMGtDuKZiVqooEivUKHtgyplplANi
-         jOwNTAGj2Dl3Dei4iH0t4EsGO37+Mn7KkF50U3RJTcLDi7FpUtALqhi6kSTjEOSNMYB4
-         NnsvmvPT64QlZgJtZGMsedr5aQ0U/NRVBo4T9f5VexJ50qTpqkXkCWv0uPHU41QIUsXx
-         W3PvDn5Uq09nosUFjbmjkMy1HSCgDbKLAGn1uv0fnyxa2id2cBPVhNusVn5HITtDmm0D
-         CuVt+Bj19rZQ/HDuy2AWISBoxxsShniK2F4+n9h8NaCNCd701KwDx9oT8kxVr24YBYFI
-         vLCA==
-X-Gm-Message-State: AOAM5301FXWPum0hqHklIp8a1Ue4AUBZuEmRV5ZLkk8jWqZdNSHWCzOk
-        ujf+udmF8PtONvDhIfj7eGr5FiaDbSejUg==
-X-Google-Smtp-Source: ABdhPJxMs8TGw/WO/U6CBuzxxYeCb6wQJSZv+knK+N/KsCy1J9DWa22BPpVXxArcWcE95V5xJKQUOA==
-X-Received: by 2002:ac2:498f:: with SMTP id f15mr489815lfl.60.1610529419373;
-        Wed, 13 Jan 2021 01:16:59 -0800 (PST)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id f7sm122179ljk.4.2021.01.13.01.16.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 01:16:58 -0800 (PST)
-Received: by mail-lf1-f54.google.com with SMTP id m25so1667861lfc.11;
-        Wed, 13 Jan 2021 01:16:58 -0800 (PST)
-X-Received: by 2002:ac2:5979:: with SMTP id h25mr453376lfp.57.1610529418335;
- Wed, 13 Jan 2021 01:16:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20210103100007.32867-1-samuel@sholland.org> <20210103100007.32867-5-samuel@sholland.org>
- <a6c2eac4-7e98-ecb4-ee8a-d67a7f1b6871@arm.com> <20210106110643.agq3mjyhgvg3w4i6@gilmour>
- <CAGb2v64mcLogZax8vVJJxG9feBzmGc8VyazTvp7XkBAoLXw9JA@mail.gmail.com> <bc95a8d2-ebec-489c-10af-fd5a80ea1276@sholland.org>
-In-Reply-To: <bc95a8d2-ebec-489c-10af-fd5a80ea1276@sholland.org>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Wed, 13 Jan 2021 17:16:46 +0800
-X-Gmail-Original-Message-ID: <CAGb2v679L8fDbaE6dpEdo2q=fJdF=e6AfzOXvHLBuwZ_5YbDeQ@mail.gmail.com>
-Message-ID: <CAGb2v679L8fDbaE6dpEdo2q=fJdF=e6AfzOXvHLBuwZ_5YbDeQ@mail.gmail.com>
-Subject: Re: [linux-sunxi] Re: [PATCH v2 4/4] arm64: dts: allwinner: h6: Use
- RSB for AXP805 PMIC connection
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Maxime Ripard <maxime@cerno.tech>,
-        =?UTF-8?Q?Andr=C3=A9_Przywara?= <andre.przywara@arm.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=63pl/aS2wHam/AsylCEoY/1tqy/k+q1Go1i6UVadOa8=;
+        b=L0AVJwuzOeEGNWd6nZ+0DJLLRFnkoMu8ykHmuiRXX3OR69KDbJjCdsI4B8UlbYu4uY
+         KM2qGyUuvCeWpVudKScW2DVOWycvBfAyLhFPeURCncdUdWxijNW/hasBetZ+F5UjM+DM
+         BwsYu9zRTEVP+OIhLevm0Qhe9V+9Zqjrzi6wAlFpQKaFaAncq1yfYm4V7pyCeF/PQD5w
+         jh3bGDfzMZ4OLK72uBJ5yZMD/o5yO2XIQFvIoYGKir+wvV5xidRx3b/yQ2yhEZrsP9MU
+         qgVQDzbeZQf+MsvWD5IZagd1QwsD22Uaht5QpKnQmFdv6LqzUglx+u8abNvARlpDWTpi
+         EJsA==
+X-Gm-Message-State: AOAM531qvH1BSAad/mVfW8SleweHQYpYfqenaQfrznAM2V00dUs8M01I
+        FTZOe0OCgjVM+1oyhU9uhEPwQdFtjso=
+X-Google-Smtp-Source: ABdhPJwmJllYPVYu7xBhe2K6A43qMvIolCEIaxhTK2SDRI13ePR+mHoVUmKF0j3hzBIH6v05khmN4YdZOpI=
+Sender: "glider via sendgmr" <glider@glider.muc.corp.google.com>
+X-Received: from glider.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:9ff])
+ (user=glider job=sendgmr) by 2002:a05:6214:321:: with SMTP id
+ j1mr1452876qvu.32.1610529421134; Wed, 13 Jan 2021 01:17:01 -0800 (PST)
+Date:   Wed, 13 Jan 2021 10:16:53 +0100
+Message-Id: <20210113091657.1456216-1-glider@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH 0/4] Add sysfs interface to collect reports from debugging tools
+From:   Alexander Potapenko <glider@google.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org
+Cc:     Alexander Potapenko <glider@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 6:27 PM Samuel Holland <samuel@sholland.org> wrote:
->
-> On 1/6/21 5:38 AM, Chen-Yu Tsai wrote:
-> > On Wed, Jan 6, 2021 at 7:06 PM Maxime Ripard <maxime@cerno.tech> wrote:
-> >>
-> >> On Mon, Jan 04, 2021 at 10:54:19AM +0000, André Przywara wrote:
-> >>> On 03/01/2021 10:00, Samuel Holland wrote:
-> >>>> On boards where the only peripheral connected to PL0/PL1 is an X-Powers
-> >>>> PMIC, configure the connection to use the RSB bus rather than the I2C
-> >>>> bus. Compared to the I2C controller that shares the pins, the RSB
-> >>>> controller allows a higher bus frequency, and it is more CPU-efficient.
-> >>>
-> >>> But is it really necessary to change the DTs for those boards in this
-> >>> way? It means those newer DTs now become incompatible with older
-> >>> kernels, and I don't know if those reasons above really justify this.
-> >>>
-> >>> I understand that we officially don't care about "newer DTs on older
-> >>> kernels", but do we really need to break this deliberately, for no
-> >>> pressing reasons?
-> >>>
-> >>> P.S. I am fine with supporting RSB on H6, and even using it on new DTs,
-> >>> just want to avoid breaking existing ones.
-> >>
-> >> Doing so would also introduce some inconsistencies, one more thing to
-> >> consider during reviews, and would require more testing effort.
-> >>
-> >> I'm not sure that stretching our - already fairly sparse - resources
-> >> thin would be very wise here, especially for something that we don't
-> >> have to do and for a setup that isn't really used that much.
-> >
-> > As soon as some software component starts running RSB, (which I assume
-> > is what Samuel is planning to do in Crust?), there's a chance that it
-> > doesn't switch the chip back to I2C. And then Linux won't be able to
-> > access it.
->
-> Crust can handle either way via a config option, which currently
-> defaults to I2C for H6. It must use the same selection as Linux, not
-> only because of the PMIC mode, but also because of the pinctrl.
+This patchset adds a library that captures error reports from debugging
+tools like KASAN or KFENCE and exposes those reports to userspace via
+sysfs. Report capturing is controlled by two new types of tracepoints:
+error_report_start and error_report_end, that must be added to the tools
+that want to use this new feature.
 
-Could Crust be made to also handle pinctrl?
+Alexander Potapenko (4):
+  tracing: add error_report trace points
+  lib: add error_report_notify to collect debugging tools' reports
+  kfence: use error_report_start and error_report_end tracepoints
+  kasan: use error_report_start and error_report_end tracepoints
 
-> TF-A is already converted to use RSB[1], and it does switch the PMIC
-> back to I2C before handing off to U-Boot[2]. So new TF-A + old Linux is
-> fine. However, Linux currently does not switch the PMIC back. So the
-> most likely problem from this patch is that, with new Linux + old TF-A,
-> TF-A will be unable to power down the board or access regulators after
-> an SoC reset.
->
-> I expect there will be a TF-A release between now and when 5.12 hits
-> stable, but people tend not upgrade their U-Boot/TF-A very often.
->
-> We could solve this by having the Linux RSB driver switch all child
-> devices back to I2C in .shutdown, or by dropping this patch and only
-> using RSB for new boards (which would also address Andre's concern).
+ include/trace/events/error_report.h |  51 +++++
+ kernel/trace/Makefile               |   1 +
+ kernel/trace/error_report-traces.c  |  11 ++
+ lib/Kconfig.debug                   |  14 ++
+ lib/Makefile                        |   2 +
+ lib/error_report_notify.c           | 278 ++++++++++++++++++++++++++++
+ mm/kasan/report.c                   |  15 +-
+ mm/kfence/report.c                  |   3 +
+ 8 files changed, 369 insertions(+), 6 deletions(-)
+ create mode 100644 include/trace/events/error_report.h
+ create mode 100644 kernel/trace/error_report-traces.c
+ create mode 100644 lib/error_report_notify.c
 
-This will work for most cases, except in a kernel panic or IIRC direct
-reboot using sysrq. So it's not robust as we'd like it to be.
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
-ChenYu
-
-> Cheers,
-> Samuel
->
-> [1]: https://review.trustedfirmware.org/c/TF-A/trusted-firmware-a/+/7576
-> [2]: https://review.trustedfirmware.org/c/TF-A/trusted-firmware-a/+/7575
->
-> > So I'm for keeping things consistent and converting all users to RSB.
-> >
-> >
-> > ChenYu
-> >
->
-> --
-> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
-> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/bc95a8d2-ebec-489c-10af-fd5a80ea1276%40sholland.org.
