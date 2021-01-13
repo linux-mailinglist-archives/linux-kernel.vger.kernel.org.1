@@ -2,70 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6C32F55F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F61B2F56BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729651AbhANATw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 19:19:52 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:50511 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727219AbhANAEp (ORCPT
+        id S1727678AbhANBwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:52:45 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:53920 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729615AbhANADn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 19:04:45 -0500
-Received: by mail-io1-f70.google.com with SMTP id l5so5669614ioj.17
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:04:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=8vA6KH4yTnBPhCjwbGkm46PU7mMjPjZzD/vxDkOo7Gc=;
-        b=k8Jl2TZq8pgBg28OYpwOJ18b/s1+cjQqIzKubSRfQK8HEoJNGecF/ewRS6JbEta3S/
-         nCB9Id7WwXrJwxn6QXctDcqyBFdD3ZCciSspeKC8+6cIRPLAH93ftUSm9ZHZ5tqFh0mS
-         TDMx4Jfoq8mXF6dkS/8wiBwyDLd7diAIUSMp52OBS864qb/tt6xjBQ0h0OEoCjMSd+T0
-         esuw/QLwjfpQJrdEySWQDjrHefqExLY2ZqZWLP+u/OnxaT5L2Hvi3v850rG3a/SuYL6c
-         B4v0hqucXRc0HjYs5CirdMAXDwNtbYMT+7gmCV3VTfdwniNhqZ+n/KTC2Vc1v1jthFyI
-         7BxQ==
-X-Gm-Message-State: AOAM530kqmXTUgJVWdH8wf3CjejWMfQUxQVWs1T5dxhzJ/nB114LCN3Q
-        ul/Yobaltx5PMYTWp3NtFjujzLTgSLI6pi9X2NqspE3ANKzw
-X-Google-Smtp-Source: ABdhPJyhwL31qQQQGIahEokxTy2M35uYNUcO7+u8PL7IugimTmxbyHHSFEY+nHdvbGotyb7u+HkHJ8hr8j+0vf2SMhtXcO2wBbm6
+        Wed, 13 Jan 2021 19:03:43 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610582602; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=fhLpL3AKfQEqE54s/9FR9dcv2eIlTCG3NXQOw4ROGzg=; b=e7vj7/F2A8gZUtroxMgyQwzx4hHhJw9/iu3X9Em48bmPjSUw4mRvGP/h1c+1NoBwR0+zPMKr
+ wyrLVxbyHXw3KhJde/eoWHZsDGPCbf6LmYce9GSXE51dFAAM/V6Z4uGnaSyiGxbclSAj2SM/
+ H9n2UvZ/zfQzSnZj07rVuJfm/Bc=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5fff7bc2415a6293c5ff1efb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 23:01:22
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C7B22C433ED; Wed, 13 Jan 2021 23:01:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C799C433CA;
+        Wed, 13 Jan 2021 23:01:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4C799C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+Subject: Re: [PATCH 3/3] soc: qcom: mdt_loader: Read hash from firmware blob
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, ohad@wizery.com, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        psodagud@codeaurora.org, rishabhb@codeaurora.org
+References: <1609968211-7579-1-git-send-email-sidgup@codeaurora.org>
+ <1609968211-7579-4-git-send-email-sidgup@codeaurora.org>
+ <X/elgO+66ibjeL+3@builder.lan>
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+Message-ID: <ec2a7223-d785-a9f3-d864-3c03e4965be5@codeaurora.org>
+Date:   Wed, 13 Jan 2021 15:01:18 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:11a6:: with SMTP id 6mr2381658ilj.87.1610578871736;
- Wed, 13 Jan 2021 15:01:11 -0800 (PST)
-Date:   Wed, 13 Jan 2021 15:01:11 -0800
-In-Reply-To: <000000000000c19e7b05b4c35440@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000885f7605b8d01d5e@google.com>
-Subject: Re: WARNING in cm109_submit_buzz_toggle/usb_submit_urb
-From:   syzbot <syzbot+c7e665956b189738fe5e@syzkaller.appspotmail.com>
-To:     eli.billauer@gmail.com, gregkh@linuxfoundation.org,
-        gustavoars@kernel.org, ingrassia@epigenesys.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        oneukum@suse.com, stern@rowland.harvard.edu,
-        syzkaller-bugs@googlegroups.com, tiwai@suse.de
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <X/elgO+66ibjeL+3@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
 
-commit c318840fb2a42ce25febc95c4c19357acf1ae5ca
-Author: Alan Stern <stern@rowland.harvard.edu>
-Date:   Wed Dec 30 16:20:44 2020 +0000
+On 1/7/2021 4:21 PM, Bjorn Andersson wrote:
+> On Wed 06 Jan 15:23 CST 2021, Siddharth Gupta wrote:
+>
+>> Since the split elf blobs will always contain the hash segment, we rely on
+> I think it will sounds better if we add "should" in "we should rely on..."
+Sure
+>
+>> the blob file to get the hash rather than assume that it will be present in
+>> the mdt file. This change uses the hash index to read the appropriate elf
+>> blob to get the hash segment.
+>>
+>> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+>> ---
+>>   drivers/remoteproc/qcom_q6v5_mss.c  |  4 ++--
+>>   drivers/soc/qcom/mdt_loader.c       | 38 +++++++++++++++++++++++++++----------
+>>   include/linux/soc/qcom/mdt_loader.h |  3 ++-
+>>   3 files changed, 32 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+>> index 66106ba..74c0229 100644
+>> --- a/drivers/remoteproc/qcom_q6v5_mss.c
+>> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
+>> @@ -4,7 +4,7 @@
+>>    *
+>>    * Copyright (C) 2016 Linaro Ltd.
+>>    * Copyright (C) 2014 Sony Mobile Communications AB
+>> - * Copyright (c) 2012-2013, The Linux Foundation. All rights reserved.
+>> + * Copyright (c) 2012-2013, 2020 The Linux Foundation. All rights reserved.
+>>    */
+>>   
+>>   #include <linux/clk.h>
+>> @@ -828,7 +828,7 @@ static int q6v5_mpss_init_image(struct q6v5 *qproc, const struct firmware *fw)
+>>   	void *ptr;
+>>   	int ret;
+>>   
+>> -	metadata = qcom_mdt_read_metadata(fw, &size);
+>> +	metadata = qcom_mdt_read_metadata(qproc->dev, fw, qproc->hexagon_mdt_image, &size);
+>>   	if (IS_ERR(metadata))
+>>   		return PTR_ERR(metadata);
+>>   
+>> diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
+>> index c9bbd8c..6876c0b 100644
+>> --- a/drivers/soc/qcom/mdt_loader.c
+>> +++ b/drivers/soc/qcom/mdt_loader.c
+>> @@ -103,15 +103,18 @@ EXPORT_SYMBOL_GPL(qcom_mdt_get_size);
+>>    *
+>>    * Return: pointer to data, or ERR_PTR()
+>>    */
+>> -void *qcom_mdt_read_metadata(const struct firmware *fw, size_t *data_len)
+>> +void *qcom_mdt_read_metadata(struct device *dev, const struct firmware *fw, const char *firmware,
+>> +			     size_t *data_len)
+>>   {
+>>   	const struct elf32_phdr *phdrs;
+>>   	const struct elf32_hdr *ehdr;
+>> -	size_t hash_offset;
+>> +	const struct firmware *seg_fw;
+>>   	size_t hash_index;
+>>   	size_t hash_size;
+>>   	size_t ehdr_size;
+>> +	char *fw_name;
+>>   	void *data;
+>> +	int ret;
+>>   
+>>   	ehdr = (struct elf32_hdr *)fw->data;
+>>   	phdrs = (struct elf32_phdr *)(ehdr + 1);
+>> @@ -137,14 +140,29 @@ void *qcom_mdt_read_metadata(const struct firmware *fw, size_t *data_len)
+>>   	if (!data)
+>>   		return ERR_PTR(-ENOMEM);
+>>   
+>> -	/* Is the header and hash already packed */
+>> -	if (qcom_mdt_bins_are_split(fw))
+>> -		hash_offset = phdrs[0].p_filesz;
+>> -	else
+>> -		hash_offset = phdrs[hash_index].p_offset;
+>> -
+>> +	/* copy elf header */
+>>   	memcpy(data, fw->data, ehdr_size);
+>> -	memcpy(data + ehdr_size, fw->data + hash_offset, hash_size);
+>> +
+> This seems to duplicates parts of the loop in __qcom_mdt_load(), how
+> about breaking this out to a separate
+>
+> static int mdt_load_segment(struct device *dev, const struct firmware *fw,
+> 			    int idx, void *buf, size_t len, bool is_split)
+>
+> Which either just memcpy from @fw or does the filename and loading
+> dance, based on @is_split?
+Since mdt_load_segment won't know the name of the firmware without a 
+global variable
+(which in turn will make it non-reentrant), the idea of creating such a 
+function and not passing
+the actual name of the firmware seemed wrong.
 
-    USB: Gadget: dummy-hcd: Fix shift-out-of-bounds bug
+If we want to pass the firmware name in this function the code size will 
+be more or equal to
+what we started with. If that is not a problem I can make the changes.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1075dcaf500000
-start commit:   fa02fcd9 Merge tag 'media/v5.10-2' of git://git.kernel.org..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cb8d1a3819ba4356
-dashboard link: https://syzkaller.appspot.com/bug?extid=c7e665956b189738fe5e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ba912d500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10dfad85500000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: USB: Gadget: dummy-hcd: Fix shift-out-of-bounds bug
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Thanks,
+Sid
+>
+> Regards,
+> Bjorn
+>
+>> +	if (qcom_mdt_bins_are_split(fw)) {
+>> +		fw_name = kstrdup(firmware, GFP_KERNEL);
+>> +		if (!fw_name) {
+>> +			kfree(data);
+>> +			return ERR_PTR(-ENOMEM);
+>> +		}
+>> +		snprintf(fw_name + strlen(fw_name) - 3, 4, "b%02d", hash_index);
+>> +
+>> +		ret = request_firmware_into_buf(&seg_fw, fw_name, dev, data + ehdr_size, hash_size);
+>> +		kfree(fw_name);
+>> +
+>> +		if (ret) {
+>> +			kfree(data);
+>> +			return ERR_PTR(ret);
+>> +		}
+>> +
+>> +		release_firmware(seg_fw);
+>> +	} else {
+>> +		memcpy(data + ehdr_size, fw->data + phdrs[hash_index].p_offset, hash_size);
+>> +	}
+>>   
+>>   	*data_len = ehdr_size + hash_size;
+>>   
+>> @@ -191,7 +209,7 @@ static int __qcom_mdt_load(struct device *dev, const struct firmware *fw,
+>>   		return -ENOMEM;
+>>   
+>>   	if (pas_init) {
+>> -		metadata = qcom_mdt_read_metadata(fw, &metadata_len);
+>> +		metadata = qcom_mdt_read_metadata(dev, fw, firmware, &metadata_len);
+>>   		if (IS_ERR(metadata)) {
+>>   			ret = PTR_ERR(metadata);
+>>   			goto out;
+>> diff --git a/include/linux/soc/qcom/mdt_loader.h b/include/linux/soc/qcom/mdt_loader.h
+>> index e600bae..04ba5e8 100644
+>> --- a/include/linux/soc/qcom/mdt_loader.h
+>> +++ b/include/linux/soc/qcom/mdt_loader.h
+>> @@ -21,6 +21,7 @@ int qcom_mdt_load_no_init(struct device *dev, const struct firmware *fw,
+>>   			  const char *fw_name, int pas_id, void *mem_region,
+>>   			  phys_addr_t mem_phys, size_t mem_size,
+>>   			  phys_addr_t *reloc_base);
+>> -void *qcom_mdt_read_metadata(const struct firmware *fw, size_t *data_len);
+>> +void *qcom_mdt_read_metadata(struct device *dev, const struct firmware *fw, const char *firmware,
+>> +			     size_t *data_len);
+>>   
+>>   #endif
+>> -- 
+>> Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+>> a Linux Foundation Collaborative Project
+>>
