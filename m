@@ -2,148 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959B92F44C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B82F2F44C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbhAMG7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 01:59:31 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:39430 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbhAMG7a (ORCPT
+        id S1726514AbhAMG7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 01:59:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbhAMG7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 01:59:30 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610521149; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=s6hrVhIIAAhRoWH4ooGcWE7J9388oETD1zaTZL8KtrM=; b=ZTTTws+e/zrELPQELGWR6r29XNScRXQtIF5TqI650JEnmdDlXcMDSP4IjTx6UhF/mWir9jXw
- erC+F9zIFL/5xraFmVbwPSxHsHCRETtURbTSRlFCvBE3HQurE8L02Vd+qR3ucicTQzbcMr7F
- Ixm02SNx4LCpvtPu5B1kguQk/hA=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 5ffe9a23f1be2d22c4bd6197 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 06:58:43
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C7990C43463; Wed, 13 Jan 2021 06:58:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BA536C433C6;
-        Wed, 13 Jan 2021 06:58:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BA536C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Michal Kubecek <mkubecek@suse.cz>, linux-wireless@vger.kernel.org,
-        Mordechay Goodstein <mordechay.goodstein@intel.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arjen de Korte <suse+build@de-korte.org>,
-        Luca Coelho <luciano.coelho@intel.com>
-Subject: Re: regression in iwlwifi: page fault in iwl_dbg_tlv_alloc_region() (commit ba8f6f4ae254)
-References: <20201228115814.GA5880@lion.mk-sys.cz>
-        <87v9c2qtj9.fsf@tynnyri.adurom.net> <s5ha6tes58m.wl-tiwai@suse.de>
-        <87v9c2ias2.fsf@codeaurora.org> <s5h5z42s44x.wl-tiwai@suse.de>
-        <8735z6taya.fsf@codeaurora.org> <s5h7doiqh7j.wl-tiwai@suse.de>
-Date:   Wed, 13 Jan 2021 08:58:37 +0200
-In-Reply-To: <s5h7doiqh7j.wl-tiwai@suse.de> (Takashi Iwai's message of "Tue,
-        12 Jan 2021 16:59:28 +0100")
-Message-ID: <87h7nls4pu.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Wed, 13 Jan 2021 01:59:33 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B08C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 22:58:53 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id g25so3043683wmh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 22:58:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=HwL4VtEmHEKSYqG0Wvuo3dQa7ufy0vjsTEWXXFOnu14=;
+        b=CnqsXl9UR6w85yvNdQL0vLBU7n+ka9WgCSzhuPnh63gS7svyKH9TbaWEdN008kdcgm
+         nEhgm615vMhPE76ZyPVOrwE1graAlb0iSk8+QF2z9FoyUOnNSZvm4A5M7eqEtPSFu0nO
+         tYbs95sfEvBTrTQ9QrnG4FegciWkcfnaCaa1U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HwL4VtEmHEKSYqG0Wvuo3dQa7ufy0vjsTEWXXFOnu14=;
+        b=F7KmvhBFQwqgUI5q4czz5yLq1sfHchrHSImTIL97UMnGrw8RVvpO+W0Z5XFqWPdT/7
+         suigc1FZX6+piQYv7iQLs0tdL8EhZF+bW3X6bIrODR9fyBLyYmp6ZtuVc66EQNs1rg0/
+         D9xYtiqRVfIic5dbeStTIi85rh/uCzPsTzHSUx27QwUOTe7IWyk5qrK4qOo5vul8oS/C
+         KerxFxNvDqc/dfv92PAbeBhp19Bsj+EVFBF/uXVSLiHtw9JMIvMbMzpjEP7HDEklwza8
+         28BAdB7pfvW485PP3ZAyCkmo+RIjv5QD47vAzRpy6h9NB63wWKvuqtPkKGfYMr6W0kBf
+         uGBw==
+X-Gm-Message-State: AOAM533PYGOb9ln9sPc5BKQk3nuqLYkw+h3DoJYNJLoKZesOcG8Ngaft
+        Y+0lDeYvajTTCVOqYA1C77/7GutPTmGDVt1j1G0e4w==
+X-Google-Smtp-Source: ABdhPJxJ2zKxWypWcN01Y4eovqmIhyQQ3G4CzLNK/AUV76xJBTd5zeoVZVdAEIhClMuvvC9i5OrUSe+LmtrXR8YHkck=
+X-Received: by 2002:a1c:a145:: with SMTP id k66mr694572wme.18.1610521131935;
+ Tue, 12 Jan 2021 22:58:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210107085942.2891525-1-yuhsuan@chromium.org>
+ <20210107085942.2891525-2-yuhsuan@chromium.org> <e6c33a5f-1765-7cb6-8479-ff049992f2b7@collabora.com>
+In-Reply-To: <e6c33a5f-1765-7cb6-8479-ff049992f2b7@collabora.com>
+From:   Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Date:   Wed, 13 Jan 2021 14:58:41 +0800
+Message-ID: <CAGvk5Ppm_+twECMf2x6P4U24vkcwn7WPOCZtnjwNHG=CtmOenA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: cros_ec_codec: Reset I2S RX when probing
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA development <alsa-devel@alsa-project.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Prashant Malani <pmalani@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Takashi Iwai <tiwai@suse.de> writes:
-
-> On Tue, 12 Jan 2021 16:46:21 +0100,
-> Kalle Valo wrote:
->> 
->> Takashi Iwai <tiwai@suse.de> writes:
->> 
->> > On Tue, 12 Jan 2021 13:45:33 +0100,
->> > Kalle Valo wrote:
->> >> 
->> >> Takashi Iwai <tiwai@suse.de> writes:
->> >> 
->> >> > On Tue, 12 Jan 2021 12:33:14 +0100,
->> >> > Kalle Valo wrote:
->> >> >> 
->> >> >> (adding luca)
->> >> >> 
->> >> >> Michal Kubecek <mkubecek@suse.cz> writes:
->> >> >> 
->> >> >> > FYI, there is a regression in iwlwifi driver caused by commit
->> >> >> > ba8f6f4ae254 ("iwlwifi: dbg: add dumping special device memory")
->> >> >> > reported at
->> >> >> >
->> >> >> >   https://bugzilla.kernel.org/show_bug.cgi?id=210733
->> >> >> >   https://bugzilla.suse.com/show_bug.cgi?id=1180344
->> >> >> >
->> >> >> > The problem seems to be an attempt to write terminating null character
->> >> >> > into a string which may be read only. There is also a proposed fix.
->> >> >> 
->> >> >> Can someone submit a proper patch, please? See instructions below how to
->> >> >> submit.
->> >> >> 
->> >> >> And please add Fixes tag to the commit log:
->> >> >> 
->> >> >> Fixes: ba8f6f4ae254 ("iwlwifi: dbg: add dumping special device memory")
->> >> >
->> >> > OK, I'll do it for my own
->> >> 
->> >> Thanks.
->> >> 
->> >> > but really I hoped that someone would have reacted on the bugzilla
->> >> > report before the official patch submission. So far no one from the
->> >> > upstream devs showed interest in the bug at all, unfortunately.
->> >> 
->> >> Bugzilla is problematic as I don't know if anyone tracks it actively, at
->> >> least I don't have time for that. I recommend reporting all wireless
->> >> issues to mailing lists to make sure everyone see it.
->> >
->> > I share your feeling as a subsystem maintainer, but at the same time,
->> > I see it's a big problem if the whole bugzilla reports are just
->> > silently ignored.  If it's a void, shouldn't we rather shut it down?
->> 
->> I'm all for shutting down bugzilla.kernel.org as silent bug reports are
->> frustrating the users. But I don't know what others would think about
->> that, maybe some subsystems use it actively?
+Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC 2021=E5=B9=
+=B41=E6=9C=8813=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=8812:34=E5=AF=
+=AB=E9=81=93=EF=BC=9A
 >
-> Yes, I'm still checking bugzilla.kernel.org for sound bug reports.
-> Not always promptly reacting like the distro bugzilla, but it's
-> regularly scanned and covered in the best effort basis.
+> Hi Yu-Hsuan,
 >
-> Graphics people already moved out of bugzilla to gitlab Issues in
-> their own gitlab.freedesktop.org.  Not sure about others.
+> Thank you for the patch.
 >
->> At least there should be a big warning for wireless bugs.
+> On 7/1/21 9:59, Yu-Hsuan Hsu wrote:
+> > It is not guaranteed that I2S RX is disabled when the kernel booting.
+> > For example, if the kernel crashes while it is enabled, it will keep
+> > enabled until the next time EC reboots. Reset I2S RX when probing to
+> > fix this issue.
+> >
+> > Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
 >
-> Maybe we can ask Konstantin about that at least for wireless
-> components?
-
-Yeah, that would be a good idea. Can someone ask that?
-
-BTW, I checked our wiki and it states[1] that bug reports should be sent
-to the mailing list. But of course that information is pretty well
-hidden within the wiki so I doubt anyone sees it. Also there should be a
-big warning about bugzilla bugs. Any volunteers to improve our wiki? :)
-
-[1] https://wireless.wiki.kernel.org/en/users/documentation/reporting_bugs#drivers_mac80211_cfg80211_--_kernel_wireless_bugs
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> If I am not mistaken this is the four version of this patchset (see [1]).=
+ Please
+> prefix your patches with the proper version and maintain a changelog for =
+them,
+> otherwise makes difficult to follow all the discussions already done.
+>
+> [1]
+> v1: https://lkml.org/lkml/2020/7/8/173
+> v2: https://mailman.alsa-project.org/pipermail/alsa-devel/2020-July/17093=
+3.html
+> v3:
+> https://patchwork.kernel.org/project/alsa-devel/patch/20210106050559.1459=
+027-1-yuhsuan@chromium.org/
+> v4: https://patchwork.kernel.org/project/alsa-devel/list/?series=3D410441
+Sorry that I forgot to add version. Will add v5 in the next patch. Thanks!
+>
+> > ---
+> >  sound/soc/codecs/cros_ec_codec.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_e=
+c_codec.c
+> > index f33a2a9654e7..28b3e2c48c86 100644
+> > --- a/sound/soc/codecs/cros_ec_codec.c
+> > +++ b/sound/soc/codecs/cros_ec_codec.c
+> > @@ -1011,6 +1011,13 @@ static int cros_ec_codec_platform_probe(struct p=
+latform_device *pdev)
+> >       }
+> >       priv->ec_capabilities =3D r.capabilities;
+> >
+> > +     /* Reset EC codec i2s rx. */
+> > +     p.cmd =3D EC_CODEC_I2S_RX_RESET;
+> > +     ret =3D send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S=
+_RX,
+> > +                                (uint8_t *)&p, sizeof(p), NULL, 0);
+> > +     if (ret)
+> > +             dev_warn(dev, "failed to EC_CODEC_I2S_RESET: %d\n", ret);
+> > +
+>
+> My comment in the first version is still valid, I guess. This command was
+> introduced later and with an old firmware I suspect this message will app=
+ear on
+> every boot, right? So, to solve the issue and get rid of this warn you're=
+ forced
+> to upgrade the firmware. Would make sense to handle returned error value =
+to warn
+> when the firmware needs to be updated and error and break when is really =
+an error?
+>
+> We have mapped ec error codes to linux error codes. So, it should be poss=
+ible now.
+Oh, I didn't notice it. Thanks for the remind. I will work on it.
+>
+> Thanks,
+>  Enric
+>
+> >       platform_set_drvdata(pdev, priv);
+> >
+> >       ret =3D devm_snd_soc_register_component(dev, &i2s_rx_component_dr=
+iver,
+> >
