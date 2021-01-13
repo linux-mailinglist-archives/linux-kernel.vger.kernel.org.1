@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0892F5252
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACDD2F5271
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbhAMSi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 13:38:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30482 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728305AbhAMSi5 (ORCPT
+        id S1728520AbhAMSjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 13:39:17 -0500
+Received: from m-r1.th.seeweb.it ([5.144.164.170]:53903 "EHLO
+        m-r1.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728486AbhAMSjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 13:38:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610563050;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JYLa2cOxqmc+CvxuI8h3Yk6+SIJRgLOEwT+NkOwhWow=;
-        b=MgASPrcigAmzVflg+S9+jyGkd5+teMwkpBJGvSK094mMZpA5nTr/3zvTPkHaPv4SVzehgY
-        l3kq6UM3UMqZ9HQ+U/34uE+rgRS+j1G7caXjSdo6YfvbKrFmayeguLvFIOveTdipQFl0ik
-        uRU9DOz/LEG1LQ1/QT6Gt1MiWbdfbB4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-rBzvAVxYO7q4tdJY0Df7tw-1; Wed, 13 Jan 2021 13:37:27 -0500
-X-MC-Unique: rBzvAVxYO7q4tdJY0Df7tw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 13 Jan 2021 13:39:16 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF673180E460;
-        Wed, 13 Jan 2021 18:37:23 +0000 (UTC)
-Received: from ovpn-115-228.ams2.redhat.com (ovpn-115-228.ams2.redhat.com [10.36.115.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 01AA319C47;
-        Wed, 13 Jan 2021 18:37:19 +0000 (UTC)
-Message-ID: <532f2d63cc7b842f6d75a22da277c2a841dcb40e.camel@redhat.com>
-Subject: Re: [PATCH v2 net-next] udp: allow forwarding of plain
- (non-fraglisted) UDP GRO packets
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Dongseok Yi <dseok.yi@samsung.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 13 Jan 2021 19:37:18 +0100
-In-Reply-To: <20210113103232.4761-1-alobakin@pm.me>
-References: <20210113103232.4761-1-alobakin@pm.me>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 3368620072;
+        Wed, 13 Jan 2021 19:38:19 +0100 (CET)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     agross@kernel.org
+Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH v2 0/9] SDM630/660 GCC/MMCC/GPUCC clock controllers
+Date:   Wed, 13 Jan 2021 19:38:08 +0100
+Message-Id: <20210113183817.447866-1-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-13 at 10:32 +0000, Alexander Lobakin wrote:
-> Commit 9fd1ff5d2ac7 ("udp: Support UDP fraglist GRO/GSO.") actually
-> not only added a support for fraglisted UDP GRO, but also tweaked
-> some logics the way that non-fraglisted UDP GRO started to work for
-> forwarding too.
-> Commit 2e4ef10f5850 ("net: add GSO UDP L4 and GSO fraglists to the
-> list of software-backed types") added GSO UDP L4 to the list of
-> software GSO to allow virtual netdevs to forward them as is up to
-> the real drivers.
-> 
-> Tests showed that currently forwarding and NATing of plain UDP GRO
-> packets are performed fully correctly, regardless if the target
-> netdevice has a support for hardware/driver GSO UDP L4 or not.
-> Add the last element and allow to form plain UDP GRO packets if
-> there is no socket -> we are on forwarding path.
+This patch series brings up the MultiMedia Clock Controller (MMCC)
+and the GPU Clock Controller (GPUCC), plus includes some fixes for
+the SDM660 GCC, which are necessary for correct functionality of
+the clocks from the two new drivers, without causing lockups.
 
-If I read correctly, the above will make UDP GRO in the forwarding path
-always enabled (admin can't disable that, if forwarding is enabled).
+There is also a change in the RCG2 GFX3D, which generalizes the
+gfx3d pingpong handling functions, in order to be able to reuse
+them for more than just one specific SoC (MSM8996), bringing no
+functional changes to the aforementioned SoC, which got a MMCC
+driver gfx3d clock fix for the generalization... obviously.
 
-UDP GRO can introduce measurable latency for UDP packets staging in the
-napi GRO hash (no push flag for UDP ;).
+This patch series has been tested against the following devices:
+ - Sony Xperia XA2 Ultra (SDM630 Nile Discovery)
+ - Sony Xperia 10        (SDM630 Ganges Kirin)
+ - Sony Xperia 10 Plus   (SDM636 Ganges Mermaid)
 
-Currently the admin (for fraglist) or the application (for socket-based 
-"plain" GRO) have to explicitly enable the feature, but this change
-will impact every user.
+AngeloGioacchino Del Regno (8):
+  clk: qcom: gcc-sdm660: Mark MMSS NoC CFG AHB clock as critical
+  clk: qcom: gcc-sdm660: Mark GPU CFG AHB clock as critical
+  dt-bindings: clock: Add support for the SDM630 and SDM660 mmcc
+  clk: qcom: rcg2: Stop hardcoding gfx3d pingpong parent numbers
+  clk: qcom: mmcc-msm8996: Migrate gfx3d clock to clk_rcg2_gfx3d
+  clk: qcom: gdsc: Implement NO_RET_PERIPH flag
+  clk: qcom: Add SDM660 GPU Clock Controller (GPUCC) driver
+  dt-bindings: clock: Add QCOM SDM630 and SDM660 graphics clock bindings
 
-I think we need at lest an explict switch for this.
+Martin Botka (1):
+  clk: qcom: Add SDM660 Multimedia Clock Controller (MMCC) driver
 
-Cheers,
+ .../bindings/clock/qcom,gpucc-sdm660.yaml     |   76 +
+ .../devicetree/bindings/clock/qcom,mmcc.yaml  |    2 +
+ drivers/clk/qcom/Kconfig                      |   18 +
+ drivers/clk/qcom/Makefile                     |    2 +
+ drivers/clk/qcom/clk-rcg.h                    |    9 +
+ drivers/clk/qcom/clk-rcg2.c                   |   56 +-
+ drivers/clk/qcom/gcc-sdm660.c                 |    7 +
+ drivers/clk/qcom/gdsc.c                       |   10 +-
+ drivers/clk/qcom/gdsc.h                       |    3 +-
+ drivers/clk/qcom/gpucc-sdm660.c               |  349 ++
+ drivers/clk/qcom/mmcc-msm8996.c               |   29 +-
+ drivers/clk/qcom/mmcc-sdm660.c                | 2864 +++++++++++++++++
+ include/dt-bindings/clock/qcom,gpucc-sdm660.h |   28 +
+ include/dt-bindings/clock/qcom,mmcc-sdm660.h  |  162 +
+ 14 files changed, 3581 insertions(+), 34 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gpucc-sdm660.yaml
+ create mode 100644 drivers/clk/qcom/gpucc-sdm660.c
+ create mode 100644 drivers/clk/qcom/mmcc-sdm660.c
+ create mode 100644 include/dt-bindings/clock/qcom,gpucc-sdm660.h
+ create mode 100644 include/dt-bindings/clock/qcom,mmcc-sdm660.h
 
-Paolo
+-- 
+2.29.2
 
