@@ -2,130 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC9E2F4ED7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 306C42F4EB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727203AbhAMPeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 10:34:44 -0500
-Received: from vps46799.freepascal.org ([85.222.228.11]:39928 "EHLO
-        mail.freepascal.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727117AbhAMPen (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 10:34:43 -0500
-X-Greylist: delayed 577 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Jan 2021 10:34:42 EST
-Received: from localhost (localhost [127.0.0.1])
-        by mail.freepascal.org (Postfix) with ESMTP id B85798003C;
-        Wed, 13 Jan 2021 16:24:22 +0100 (CET)
-Received: from mail.freepascal.org ([127.0.0.1])
-        by localhost (idefix.freepascal.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id pCnIbHmj9EZy; Wed, 13 Jan 2021 16:24:22 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.freepascal.org (Postfix) with ESMTPS id 8FE9480030;
-        Wed, 13 Jan 2021 16:24:22 +0100 (CET)
-Date:   Wed, 13 Jan 2021 16:24:22 +0100 (CET)
-From:   =?ISO-8859-15?Q?Dani=EBl_Mantione?= 
-        <daniel.mantione@freepascal.org>
-X-X-Sender: daniel@idefix.freepascal.org
-To:     Lee Jones <lee.jones@linaro.org>
-cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH 14/31] video: fbdev: aty: mach64_ct: Remove some set but
- unused variables
-In-Reply-To: <20210113145009.1272040-15-lee.jones@linaro.org>
-Message-ID: <alpine.DEB.2.21.2101131618160.8079@idefix.freepascal.org>
-References: <20210113145009.1272040-1-lee.jones@linaro.org> <20210113145009.1272040-15-lee.jones@linaro.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1727349AbhAMP3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 10:29:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725902AbhAMP3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 10:29:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2CD023383;
+        Wed, 13 Jan 2021 15:28:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610551719;
+        bh=hcGs1Tg0VufYsb/dAGJ/HYrAhRwx1KfX3wrMxZl1WmA=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=r42+QDFRgzE7RTf3UN6N/mnFBikdAs7xXESJxilBqwFo1Tq//KMOIeDeZi1rbNyxb
+         qXxyDoTlbb2ggr4s//FjgjbvqigzxNr5orUOMgAcUfdhooQJwVjU8YHc1EhEEOElFt
+         KjAMQH3twqejNlU3M4+v7BouOLRRTbqNmGlfcM+4pggZc6BEojXQYmI7yuD2bMiBjG
+         I+UgaT8lSFchxIoKMlR0PtbXwlrb99/7ZPSaT4WzE+y746bb9IhOD9TIwaC3ZadlkF
+         XMjE3Iz4utMv3/n8iskq5yAV99CocLWxpCzk2twQwHTqyEuf8ZEAH3oFvjpAnSIZz1
+         AXbZXyX0ug1lQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <20201204140342.1640941-1-linus.walleij@linaro.org>
+References: <20201204140342.1640941-1-linus.walleij@linaro.org>
+Subject: Re: [PATCH 1/2] regulator: ab8500: Remove unused platform data
+Message-Id: <161055168025.21791.13396170836042035409.b4-ty@kernel.org>
+Date:   Wed, 13 Jan 2021 15:28:00 +0000
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-564851740-754536928-1610551462=:8079"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Fri, 4 Dec 2020 15:03:41 +0100, Linus Walleij wrote:
+> The struct ab8500_regulator_platform_data was a leftover
+> since the days before we probed all regulators from the
+> device tree. The ab8500-ext regulator was the only used,
+> defining platform data and register intialization that
+> was never used for anything, a copy of a boardfile no
+> longer in use.
+> 
+> [...]
 
----564851740-754536928-1610551462=:8079
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Applied to
 
-Hi,
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-If I remember well, the removed lines have to do with the VGA/accelerator 
-mode of the chip. The current driver always runs the chip in accelerator 
-mode. Suppose you would want to support high resolution hardware text 
-modes with the driver (fbdev bpp=0), then you would need to switch the 
-chip into VGA mode mode and then the removed lines become relevant.
+Thanks!
 
-I did some experiments with this when I was working on the driver, but 
-because the documentation was silent about the behaviour of extended 
-CRTC registers in VGA mode, I failed to make hardware text modes to work 
-properly.
+[1/2] regulator: ab8500: Remove unused platform data
+      commit: c512150b266b5d173c5ba841e9c09e4830ea4eca
+[2/2] regulator: ab8500: Decomission platform data header
+      commit: 3acb64c07e95a75dc0af0bc958f2d09a44a9fd0d
 
-The #if 0 was there so code was already there in case me or someone else 
-would pick it up again.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Best regards,
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Daniël Mantione
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Op Wed, 13 Jan 2021, schreef Lee Jones:
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> Fixes the following W=1 kernel build warning(s):
->
-> drivers/video/fbdev/aty/mach64_ct.c: In function ‘aty_init_pll_ct’:
-> drivers/video/fbdev/aty/mach64_ct.c:405:46: warning: variable ‘vga_dsp_on_off’ set but not used [-Wunused-but-set-variable]
-> drivers/video/fbdev/aty/mach64_ct.c:405:30: warning: variable ‘vga_dsp_config’ set but not used [-Wunused-but-set-variable]
-> drivers/video/fbdev/aty/mach64_ct.c:405:18: warning: variable ‘dsp_on_off’ set but not used [-Wunused-but-set-variable]
->
-> Cc: daniel.mantione@freepascal.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-fbdev@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
-> drivers/video/fbdev/aty/mach64_ct.c | 19 ++-----------------
-> 1 file changed, 2 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/video/fbdev/aty/mach64_ct.c b/drivers/video/fbdev/aty/mach64_ct.c
-> index f87cc81f4fa2b..23eececa1e9d7 100644
-> --- a/drivers/video/fbdev/aty/mach64_ct.c
-> +++ b/drivers/video/fbdev/aty/mach64_ct.c
-> @@ -402,7 +402,7 @@ static int aty_init_pll_ct(const struct fb_info *info, union aty_pll *pll)
-> 	struct atyfb_par *par = (struct atyfb_par *) info->par;
-> 	u8 mpost_div, xpost_div, sclk_post_div_real;
-> 	u32 q, memcntl, trp;
-> -	u32 dsp_config, dsp_on_off, vga_dsp_config, vga_dsp_on_off;
-> +	u32 dsp_config;
-> #ifdef DEBUG
-> 	int pllmclk, pllsclk;
-> #endif
-> @@ -488,25 +488,10 @@ static int aty_init_pll_ct(const struct fb_info *info, union aty_pll *pll)
->
-> 	/* Allow BIOS to override */
-> 	dsp_config = aty_ld_le32(DSP_CONFIG, par);
-> -	dsp_on_off = aty_ld_le32(DSP_ON_OFF, par);
-> -	vga_dsp_config = aty_ld_le32(VGA_DSP_CONFIG, par);
-> -	vga_dsp_on_off = aty_ld_le32(VGA_DSP_ON_OFF, par);
->
-> 	if (dsp_config)
-> 		pll->ct.dsp_loop_latency = (dsp_config & DSP_LOOP_LATENCY) >> 16;
-> -#if 0
-> -	FIXME: is it relevant for us?
-> -	if ((!dsp_on_off && !M64_HAS(RESET_3D)) ||
-> -		((dsp_on_off == vga_dsp_on_off) &&
-> -		(!dsp_config || !((dsp_config ^ vga_dsp_config) & DSP_XCLKS_PER_QW)))) {
-> -		vga_dsp_on_off &= VGA_DSP_OFF;
-> -		vga_dsp_config &= VGA_DSP_XCLKS_PER_QW;
-> -		if (ATIDivide(vga_dsp_on_off, vga_dsp_config, 5, 1) > 24)
-> -			pll->ct.fifo_size = 32;
-> -		else
-> -			pll->ct.fifo_size = 24;
-> -	}
-> -#endif
-> +
-> 	/* Exit if the user does not want us to tamper with the clock
-> 	rates of her chip. */
-> 	if (par->mclk_per == 0) {
-> -- 
-> 2.25.1
->
----564851740-754536928-1610551462=:8079--
+Thanks,
+Mark
