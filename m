@@ -2,1076 +2,1391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6659F2F4472
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 710922F447C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbhAMGMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 01:12:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
+        id S1725949AbhAMGUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 01:20:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbhAMGML (ORCPT
+        with ESMTP id S1725885AbhAMGUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 01:12:11 -0500
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F005C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 22:11:30 -0800 (PST)
-Received: by mail-vs1-xe34.google.com with SMTP id o19so537421vsn.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 22:11:30 -0800 (PST)
+        Wed, 13 Jan 2021 01:20:44 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594B2C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 22:20:04 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id l7so641816qth.15
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 22:20:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PLKGTqR4YIA54UtgH9njfuQanLAdx3EcJ3Fabab5+Pc=;
-        b=J1lAhmnn51VrXPEqxlqR5GN9UVG0CXgmbVsa5DmgXicYGhuSs15fB40BY+wIb+ho4M
-         J7DuR8dIUzFZ7aR/vMG7Iv9LfnPqszSRStrrqg271Jbzok7D+FgXyoZy+JyK1+1y6L0A
-         /GBOCEjqahJgZcRVkc9BD+1RSqky/vyyPo+XDv+RUts9aM69LJ0BXNzhKbAhH04f1Btv
-         QCtjjTZPY6eUSvjOVb5uSb4mId9QIGGqJ9A2RtHz8/VCdoYC/uLzJcFteIFdF6cRQEUP
-         +LZ6QvFlNZRT/84VQKl5/22Sub376qkapa23QfZDcf50Gi7ZSV84m3C7REPrptYTajhp
-         znlg==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=bCT8bxqEaDS0BUup2WiNPNU6ee+Jt+jStfX8R806lXA=;
+        b=wHuV8tWUkWTbAcdrN4CZTV1citViJLO5jC5T+kKZS2GNvL/BjWi1ywhBSvVr21f6Hf
+         m+3A+cU5CLG8Dm2cOoM0KCMDfGjuAxdUKxKy8sHDq/hlhjG5MjoWWyVOfTsBTMyxazAf
+         yeha9qyqohTcPoXCum4PMVif3R/5pF+33RhYcFXJ8S4/qK42H6Tpkazs2o1X9tZijkrM
+         Rs64zqX4DmjsGL4Bf7ZunBlj8S+Xl7525X8c7PuZyeqVW3wOKS2/q0NJGnhvwAUH+Vb+
+         zxORQMVEWkZ+a6o+3Wi7z1X6PRRLN5NK4rjwH9sSoJO2BXygTHBvSROK7XHbLrWXXYJD
+         oIpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PLKGTqR4YIA54UtgH9njfuQanLAdx3EcJ3Fabab5+Pc=;
-        b=HoqCqOBYfNdohQV2MZH39ZaYVL8Ad/8YKlM1llKGc0BL+j1WU91x/xUZ+Sc1Fv0yqv
-         KmdIYExgjy5p7jDdf+0Ck+EctYMpGXeJwvFrX+3L725NKnjFIeo9GH4wF7V8xI3jWN67
-         Q8Q4b3iDZHE8zeMMs1lIsllyCT5bSDMvQ9q062mRz5IDmEVoDQ1avdz3bbmGY1JlE82x
-         AbYsCCq6hv+V6itls5Emnbr5k/IQh/v/Ln1X7mB8vxojs60zbRJqM9/27EFioVTGVZy0
-         j2y2EYVS70+S6virOlP4l2okVRbXN4y5E4roos/4xUR0Ng0aZ+0fFdBSTH0H4Fzz3Oa0
-         Wggw==
-X-Gm-Message-State: AOAM532mqWY73SHVEX0jLerrKnXS+cJlE2EFL7tHoRbFsDM1Z3Go2iau
-        u8NdgV4ifzr831D7048D6bx4pQHLcE9rnfyf0NBRZg==
-X-Google-Smtp-Source: ABdhPJyWcac/hNJlIZShizsWq+B6ydWaBN31seyaFBmiqggI5tTA29feVBmlTtW+DgydkUMoW1606/xQfVF4Ys4JohE=
-X-Received: by 2002:a67:f7c5:: with SMTP id a5mr553984vsp.16.1610518288887;
- Tue, 12 Jan 2021 22:11:28 -0800 (PST)
-MIME-Version: 1.0
-References: <20210105163927.1376770-1-kyletso@google.com> <20210105163927.1376770-2-kyletso@google.com>
- <20210112132925.GC2020859@kuha.fi.intel.com>
-In-Reply-To: <20210112132925.GC2020859@kuha.fi.intel.com>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Tue, 12 Jan 2021 22:10:52 -0800
-Message-ID: <CAPTae5LLtjQAt4db+ZVttEGxnueydmEZ4eu+gQSEOaZE4B=u0A@mail.gmail.com>
-Subject: Re: [PATCH v5 1/3] usb: typec: tcpm: AMS and Collision Avoidance
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Kyle Tso <kyletso@google.com>, Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Will McVicker <willmcvicker@google.com>
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=bCT8bxqEaDS0BUup2WiNPNU6ee+Jt+jStfX8R806lXA=;
+        b=R3NUCnfqCDBKHeNiZx4NOsENEIg3lF6lD2QmL5sZ91ceHBdVr2R2BaV1c5nnwGejmu
+         V8X69wN9WF+FucFoIjG3u7AAsolzFPDBbqqRGcGWc1/b2xVoTdZIbMmlEPqN7y0BXJ5K
+         orNdST4Kwvw4Y0GZX+brSJfbOz6X4TB33ORHRDl4Yn29bEDU1n3vJN9uRj2l5Mb+pw6P
+         nbJNbXXZz2hrWkh9flCFGo1Vib+Lp3kTu17GbBIk/F0uOaBVr7lAPfrTVve6l/wQeURT
+         g2T0HL4PYi0QSNFPZGvWzaNaSBWKHhDjwQSCwCCFtW04uym+C9xPQQqkJXpJgbl52t/u
+         D7og==
+X-Gm-Message-State: AOAM5330WXJ2IAFnXsZqW6CsPHBkNQYalkMZYswXJUfSRfOjS0B/exEw
+        u9tQwwme+m2/bCPN8JvtjojZ4/wC
+X-Google-Smtp-Source: ABdhPJwLOs4fPewTQfL4kwFvohTHEVooEmVMK6BoIAJsbGVtWPR2zX2bqhZxmV19lZdkQCdM7+/epGY4qg==
+Sender: "morbo via sendgmr" <morbo@fawn.svl.corp.google.com>
+X-Received: from fawn.svl.corp.google.com ([2620:15c:2cd:202:7220:84ff:fe0f:9f6a])
+ (user=morbo job=sendgmr) by 2002:ad4:4f0c:: with SMTP id fb12mr715896qvb.16.1610518803320;
+ Tue, 12 Jan 2021 22:20:03 -0800 (PST)
+Date:   Tue, 12 Jan 2021 22:19:58 -0800
+In-Reply-To: <20210112053113.4180271-1-morbo@google.com>
+Message-Id: <20210113061958.886723-1-morbo@google.com>
+Mime-Version: 1.0
+References: <20210112053113.4180271-1-morbo@google.com>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH v4] pgo: add clang's Profile Guided Optimization infrastructure
+From:   Bill Wendling <morbo@google.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Bill Wendling <morbo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kyle,
+From: Sami Tolvanen <samitolvanen@google.com>
 
-Do you want to handle the FAST_ROLE_SWAP case as well ?
+Enable the use of clang's Profile-Guided Optimization[1]. To generate a
+profile, the kernel is instrumented with PGO counters, a representative
+workload is run, and the raw profile data is collected from
+/sys/kernel/debug/pgo/profraw.
 
-You would have to fix up in two places:
+The raw profile data must be processed by clang's "llvm-profdata" tool
+before it can be used during recompilation:
 
-#1
--                       if (port->state == SNK_READY)
--                               tcpm_set_state(port, FR_SWAP_SEND, 0);
--                       else
-+                       if (port->state == SNK_READY) {
-+                               int ret;
+  $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
+  $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
+
+Multiple raw profiles may be merged during this step.
+
+The data can now be used by the compiler:
+
+  $ make LLVM=1 KCFLAGS=-fprofile-use=vmlinux.profdata ...
+
+This initial submission is restricted to x86, as that's the platform we
+know works. This restriction can be lifted once other platforms have
+been verified to work with PGO.
+
+Note that this method of profiling the kernel is clang-native, unlike
+the clang support in kernel/gcov.
+
+[1] https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
+
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Co-developed-by: Bill Wendling <morbo@google.com>
+Signed-off-by: Bill Wendling <morbo@google.com>
+Change-Id: Ic78e69c682286d3a44c4549a0138578c98138b77
+---
+v2: - Added "__llvm_profile_instrument_memop" based on Nathan Chancellor's
+      testing.
+    - Corrected documentation, re PGO flags when using LTO, based on Fangrui
+      Song's comments.
+v3: - Added change log section based on Sedat Dilek's comments.
+v4: - Remove non-x86 Makfile changes and se "hweight64" instead of using our
+      own popcount implementation, based on Nick Desaulniers's comment.
+---
+ Documentation/dev-tools/index.rst     |   1 +
+ Documentation/dev-tools/pgo.rst       | 127 +++++++++
+ MAINTAINERS                           |   9 +
+ Makefile                              |   3 +
+ arch/Kconfig                          |   1 +
+ arch/x86/Kconfig                      |   1 +
+ arch/x86/boot/Makefile                |   1 +
+ arch/x86/boot/compressed/Makefile     |   1 +
+ arch/x86/entry/vdso/Makefile          |   1 +
+ arch/x86/kernel/vmlinux.lds.S         |   2 +
+ arch/x86/platform/efi/Makefile        |   1 +
+ arch/x86/purgatory/Makefile           |   1 +
+ arch/x86/realmode/rm/Makefile         |   1 +
+ arch/x86/um/vdso/Makefile             |   1 +
+ drivers/firmware/efi/libstub/Makefile |   1 +
+ include/asm-generic/vmlinux.lds.h     |  44 +++
+ kernel/Makefile                       |   1 +
+ kernel/pgo/Kconfig                    |  34 +++
+ kernel/pgo/Makefile                   |   5 +
+ kernel/pgo/fs.c                       | 382 ++++++++++++++++++++++++++
+ kernel/pgo/instrument.c               | 185 +++++++++++++
+ kernel/pgo/pgo.h                      | 206 ++++++++++++++
+ scripts/Makefile.lib                  |  10 +
+ 23 files changed, 1019 insertions(+)
+ create mode 100644 Documentation/dev-tools/pgo.rst
+ create mode 100644 kernel/pgo/Kconfig
+ create mode 100644 kernel/pgo/Makefile
+ create mode 100644 kernel/pgo/fs.c
+ create mode 100644 kernel/pgo/instrument.c
+ create mode 100644 kernel/pgo/pgo.h
+
+diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/index.rst
+index f7809c7b1ba9e..8d6418e858062 100644
+--- a/Documentation/dev-tools/index.rst
++++ b/Documentation/dev-tools/index.rst
+@@ -26,6 +26,7 @@ whole; patches welcome!
+    kgdb
+    kselftest
+    kunit/index
++   pgo
+ 
+ 
+ .. only::  subproject and html
+diff --git a/Documentation/dev-tools/pgo.rst b/Documentation/dev-tools/pgo.rst
+new file mode 100644
+index 0000000000000..b7f11d8405b73
+--- /dev/null
++++ b/Documentation/dev-tools/pgo.rst
+@@ -0,0 +1,127 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+                               port->upcoming_state = FR_SWAP_SEND;
-+                               ret = tcpm_ams_start(port, FAST_ROLE_SWAP);
-+                               if (ret == -EAGAIN)
-+                                       port->upcoming_state = INVALID_STATE;
-+                       } else {
-                                tcpm_log(port, "Discarding FRS_SIGNAL!
-Not in sink ready");
-+                       }
++===============================
++Using PGO with the Linux kernel
++===============================
++
++Clang's profiling kernel support (PGO_) enables profiling of the Linux kernel
++when building with Clang. The profiling data is exported via the ``pgo``
++debugfs directory.
++
++.. _PGO: https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
++
++
++Preparation
++===========
++
++Configure the kernel with:
++
++.. code-block:: make
++
++   CONFIG_DEBUG_FS=y
++   CONFIG_PGO_CLANG=y
++
++Note that kernels compiled with profiling flags will be significantly larger
++and run slower.
++
++Profiling data will only become accessible once debugfs has been mounted:
++
++.. code-block:: sh
++
++   mount -t debugfs none /sys/kernel/debug
++
++
++Customization
++=============
++
++You can enable or disable profiling for individual file and directories by
++adding a line similar to the following to the respective kernel Makefile:
++
++- For a single file (e.g. main.o)
++
++  .. code-block:: make
++
++     PGO_PROFILE_main.o := y
++
++- For all files in one directory
++
++  .. code-block:: make
++
++     PGO_PROFILE := y
++
++To exclude files from being profiled use
++
++  .. code-block:: make
++
++     PGO_PROFILE_main.o := n
++
++and
++
++  .. code-block:: make
++
++     PGO_PROFILE := n
++
++Only files which are linked to the main kernel image or are compiled as kernel
++modules are supported by this mechanism.
++
++
++Files
++=====
++
++The PGO kernel support creates the following files in debugfs:
++
++``/sys/kernel/debug/pgo``
++	Parent directory for all PGO-related files.
++
++``/sys/kernel/debug/pgo/reset``
++	Global reset file: resets all coverage data to zero when written to.
++
++``/sys/kernel/debug/profraw``
++	The raw PGO data that must be processed with ``llvm_profdata``.
++
++
++Workflow
++========
++
++The PGO kernel can be run on the host or test machines. The data though should
++be analyzed with Clang's tools from the same Clang version as the kernel was
++compiled. Clang's tolerant of version skew, but it's easier to use the same
++Clang version.
++
++The profiling data is useful for optimizing the kernel, analyzing coverage,
++etc. Clang offers tools to perform these tasks.
++
++Here is an example workflow for profiling an instrumented kernel with PGO and
++using the result to optimize the kernel:
++
++1) Install the kernel on the TEST machine.
++
++2) Reset the data counters right before running the load tests
++
++   .. code-block:: sh
++
++      $ echo 1 > /sys/kernel/debug/pgo/reset
++
++3) Run the load tests.
++
++4) Collect the raw profile data
++
++   .. code-block:: sh
++
++      $ cp -a /sys/kernel/debug/pgo/profraw /tmp/vmlinux.profraw
++
++5) (Optional) Download the raw profile data to the HOST machine.
++
++6) Process the raw profile data
++
++   .. code-block:: sh
++
++      $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
++
++   Note that multiple raw profile data files can be merged during this step.
++
++7) Rebuild the kernel using the profile data (PGO disabled)
++
++   .. code-block:: sh
++
++      $ make LLVM=1 KCFLAGS=-fprofile-use=vmlinux.profdata ...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index cc1e6a5ee6e67..1b979da316fa4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13954,6 +13954,15 @@ S:	Maintained
+ F:	include/linux/personality.h
+ F:	include/uapi/linux/personality.h
+ 
++PGO BASED KERNEL PROFILING
++M:	Sami Tolvanen <samitolvanen@google.com>
++M:	Bill Wendling <wcw@google.com>
++R:	Nathan Chancellor <natechancellor@gmail.com>
++R:	Nick Desaulniers <ndesaulniers@google.com>
++S:	Supported
++F:	Documentation/dev-tools/pgo.rst
++F:	kernel/pgo
++
+ PHOENIX RC FLIGHT CONTROLLER ADAPTER
+ M:	Marcus Folkesson <marcus.folkesson@gmail.com>
+ L:	linux-input@vger.kernel.org
+diff --git a/Makefile b/Makefile
+index 9e73f82e0d863..9128bfe1ccc97 100644
+--- a/Makefile
++++ b/Makefile
+@@ -659,6 +659,9 @@ endif # KBUILD_EXTMOD
+ # Defaults to vmlinux, but the arch makefile usually adds further targets
+ all: vmlinux
+ 
++CFLAGS_PGO_CLANG := -fprofile-generate
++export CFLAGS_PGO_CLANG
++
+ CFLAGS_GCOV	:= -fprofile-arcs -ftest-coverage \
+ 	$(call cc-option,-fno-tree-loop-im) \
+ 	$(call cc-disable-warning,maybe-uninitialized,)
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 24862d15f3a36..f39d3991f6bfe 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -1112,6 +1112,7 @@ config ARCH_SPLIT_ARG64
+ 	   pairs of 32-bit arguments, select this option.
+ 
+ source "kernel/gcov/Kconfig"
++source "kernel/pgo/Kconfig"
+ 
+ source "scripts/gcc-plugins/Kconfig"
+ 
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 21f851179ff08..36305ea61dc09 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -96,6 +96,7 @@ config X86
+ 	select ARCH_SUPPORTS_DEBUG_PAGEALLOC
+ 	select ARCH_SUPPORTS_NUMA_BALANCING	if X86_64
+ 	select ARCH_SUPPORTS_KMAP_LOCAL_FORCE_MAP	if NR_CPUS <= 4096
++	select ARCH_SUPPORTS_PGO_CLANG		if X86_64
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
+diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
+index fe605205b4ce2..383853e32f673 100644
+--- a/arch/x86/boot/Makefile
++++ b/arch/x86/boot/Makefile
+@@ -71,6 +71,7 @@ KBUILD_AFLAGS	:= $(KBUILD_CFLAGS) -D__ASSEMBLY__
+ KBUILD_CFLAGS	+= $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+ KBUILD_CFLAGS	+= -fno-asynchronous-unwind-tables
+ GCOV_PROFILE := n
++PGO_PROFILE := n
+ UBSAN_SANITIZE := n
+ 
+ $(obj)/bzImage: asflags-y  := $(SVGA_MODE)
+diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+index e0bc3988c3faa..ed12ab65f6065 100644
+--- a/arch/x86/boot/compressed/Makefile
++++ b/arch/x86/boot/compressed/Makefile
+@@ -54,6 +54,7 @@ CFLAGS_sev-es.o += -I$(objtree)/arch/x86/lib/
+ 
+ KBUILD_AFLAGS  := $(KBUILD_CFLAGS) -D__ASSEMBLY__
+ GCOV_PROFILE := n
++PGO_PROFILE := n
+ UBSAN_SANITIZE :=n
+ 
+ KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
+diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
+index 02e3e42f380bd..26e2b3af0145c 100644
+--- a/arch/x86/entry/vdso/Makefile
++++ b/arch/x86/entry/vdso/Makefile
+@@ -179,6 +179,7 @@ quiet_cmd_vdso = VDSO    $@
+ VDSO_LDFLAGS = -shared --hash-style=both --build-id=sha1 \
+ 	$(call ld-option, --eh-frame-hdr) -Bsymbolic
+ GCOV_PROFILE := n
++PGO_PROFILE := n
+ 
+ quiet_cmd_vdso_and_check = VDSO    $@
+       cmd_vdso_and_check = $(cmd_vdso); $(cmd_vdso_check)
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index efd9e9ea17f25..f6cab2316c46a 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -184,6 +184,8 @@ SECTIONS
+ 
+ 	BUG_TABLE
+ 
++	PGO_CLANG_DATA
++
+ 	ORC_UNWIND_TABLE
+ 
+ 	. = ALIGN(PAGE_SIZE);
+diff --git a/arch/x86/platform/efi/Makefile b/arch/x86/platform/efi/Makefile
+index 84b09c230cbd5..5f22b31446ad4 100644
+--- a/arch/x86/platform/efi/Makefile
++++ b/arch/x86/platform/efi/Makefile
+@@ -2,6 +2,7 @@
+ OBJECT_FILES_NON_STANDARD_efi_thunk_$(BITS).o := y
+ KASAN_SANITIZE := n
+ GCOV_PROFILE := n
++PGO_PROFILE := n
+ 
+ obj-$(CONFIG_EFI) 		+= quirks.o efi.o efi_$(BITS).o efi_stub_$(BITS).o
+ obj-$(CONFIG_EFI_MIXED)		+= efi_thunk_$(BITS).o
+diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
+index 95ea17a9d20cb..36f20e99da0bc 100644
+--- a/arch/x86/purgatory/Makefile
++++ b/arch/x86/purgatory/Makefile
+@@ -23,6 +23,7 @@ targets += purgatory.ro purgatory.chk
+ 
+ # Sanitizer, etc. runtimes are unavailable and cannot be linked here.
+ GCOV_PROFILE	:= n
++PGO_PROFILE	:= n
+ KASAN_SANITIZE	:= n
+ UBSAN_SANITIZE	:= n
+ KCSAN_SANITIZE	:= n
+diff --git a/arch/x86/realmode/rm/Makefile b/arch/x86/realmode/rm/Makefile
+index 83f1b6a56449f..21797192f958f 100644
+--- a/arch/x86/realmode/rm/Makefile
++++ b/arch/x86/realmode/rm/Makefile
+@@ -76,4 +76,5 @@ KBUILD_CFLAGS	:= $(REALMODE_CFLAGS) -D_SETUP -D_WAKEUP \
+ KBUILD_AFLAGS	:= $(KBUILD_CFLAGS) -D__ASSEMBLY__
+ KBUILD_CFLAGS	+= -fno-asynchronous-unwind-tables
+ GCOV_PROFILE := n
++PGO_PROFILE := n
+ UBSAN_SANITIZE := n
+diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
+index 5943387e3f357..54f5768f58530 100644
+--- a/arch/x86/um/vdso/Makefile
++++ b/arch/x86/um/vdso/Makefile
+@@ -64,6 +64,7 @@ quiet_cmd_vdso = VDSO    $@
+ 
+ VDSO_LDFLAGS = -fPIC -shared -Wl,--hash-style=sysv
+ GCOV_PROFILE := n
++PGO_PROFILE := n
+ 
+ #
+ # Install the unstripped copy of vdso*.so listed in $(vdso-install-y).
+diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
+index 8a94388e38b33..2d81623b33f29 100644
+--- a/drivers/firmware/efi/libstub/Makefile
++++ b/drivers/firmware/efi/libstub/Makefile
+@@ -40,6 +40,7 @@ KBUILD_CFLAGS			:= $(cflags-y) -Os -DDISABLE_BRANCH_PROFILING \
+ KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_SCS), $(KBUILD_CFLAGS))
+ 
+ GCOV_PROFILE			:= n
++PGO_PROFILE			:= n
+ # Sanitizer runtimes are unavailable and cannot be linked here.
+ KASAN_SANITIZE			:= n
+ KCSAN_SANITIZE			:= n
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index b2b3d81b1535a..3a591bb18c5fb 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -316,6 +316,49 @@
+ #define THERMAL_TABLE(name)
+ #endif
+ 
++#ifdef CONFIG_PGO_CLANG
++#define PGO_CLANG_DATA							\
++	__llvm_prf_data : AT(ADDR(__llvm_prf_data) - LOAD_OFFSET) {	\
++		. = ALIGN(8);						\
++		__llvm_prf_start = .;					\
++		__llvm_prf_data_start = .;				\
++		KEEP(*(__llvm_prf_data))				\
++		. = ALIGN(8);						\
++		__llvm_prf_data_end = .;				\
++	}								\
++	__llvm_prf_cnts : AT(ADDR(__llvm_prf_cnts) - LOAD_OFFSET) {	\
++		. = ALIGN(8);						\
++		__llvm_prf_cnts_start = .;				\
++		KEEP(*(__llvm_prf_cnts))				\
++		. = ALIGN(8);						\
++		__llvm_prf_cnts_end = .;				\
++	}								\
++	__llvm_prf_names : AT(ADDR(__llvm_prf_names) - LOAD_OFFSET) {	\
++		. = ALIGN(8);						\
++		__llvm_prf_names_start = .;				\
++		KEEP(*(__llvm_prf_names))				\
++		. = ALIGN(8);						\
++		__llvm_prf_names_end = .;				\
++		. = ALIGN(8);						\
++	}								\
++	__llvm_prf_vals : AT(ADDR(__llvm_prf_vals) - LOAD_OFFSET) {	\
++		__llvm_prf_vals_start = .;				\
++		KEEP(*(__llvm_prf_vals))				\
++		. = ALIGN(8);						\
++		__llvm_prf_vals_end = .;				\
++		. = ALIGN(8);						\
++	}								\
++	__llvm_prf_vnds : AT(ADDR(__llvm_prf_vnds) - LOAD_OFFSET) {	\
++		__llvm_prf_vnds_start = .;				\
++		KEEP(*(__llvm_prf_vnds))				\
++		. = ALIGN(8);						\
++		__llvm_prf_vnds_end = .;				\
++		__llvm_prf_end = .;					\
++	}
++#else
++#define PGO_CLANG_DATA
++#endif
++
+ #define KERNEL_DTB()							\
+ 	STRUCT_ALIGN();							\
+ 	__dtb_start = .;						\
+@@ -1125,6 +1168,7 @@
+ 		CONSTRUCTORS						\
+ 	}								\
+ 	BUG_TABLE							\
++	PGO_CLANG_DATA
+ 
+ #define INIT_TEXT_SECTION(inittext_align)				\
+ 	. = ALIGN(inittext_align);					\
+diff --git a/kernel/Makefile b/kernel/Makefile
+index aa7368c7eabf3..0b34ca228ba46 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -111,6 +111,7 @@ obj-$(CONFIG_BPF) += bpf/
+ obj-$(CONFIG_KCSAN) += kcsan/
+ obj-$(CONFIG_SHADOW_CALL_STACK) += scs.o
+ obj-$(CONFIG_HAVE_STATIC_CALL_INLINE) += static_call.o
++obj-$(CONFIG_PGO_CLANG) += pgo/
+ 
+ obj-$(CONFIG_PERF_EVENTS) += events/
+ 
+diff --git a/kernel/pgo/Kconfig b/kernel/pgo/Kconfig
+new file mode 100644
+index 0000000000000..318d36bb3d106
+--- /dev/null
++++ b/kernel/pgo/Kconfig
+@@ -0,0 +1,34 @@
++# SPDX-License-Identifier: GPL-2.0-only
++menu "Profile Guided Optimization (PGO) (EXPERIMENTAL)"
++
++config ARCH_SUPPORTS_PGO_CLANG
++	bool
++
++config PGO_CLANG
++	bool "Enable clang's PGO-based kernel profiling"
++	depends on DEBUG_FS
++	depends on ARCH_SUPPORTS_PGO_CLANG
++	help
++	  This option enables clang's PGO (Profile Guided Optimization) based
++	  code profiling to better optimize the kernel.
++
++	  If unsure, say N.
++
++	  Run a representative workload for your application on a kernel
++	  compiled with this option and download the raw profile file from
++	  /sys/kernel/debug/pgo/profraw. This file needs to be processed with
++	  llvm-profdata. It may be merged with other collected raw profiles.
++
++	  Copy the resulting profile file into vmlinux.profdata, and enable
++	  KCFLAGS=-fprofile-use=vmlinux.profdata to produce an optimized
++	  kernel.
++
++	  Note that a kernel compiled with profiling flags will be
++	  significatnly larger and run slower. Also be sure to exclude files
++	  from profiling which are not linked to the kernel image to prevent
++	  linker errors.
++
++	  Note that the debugfs filesystem has to be mounted to access
++	  profiling data.
++
++endmenu
+diff --git a/kernel/pgo/Makefile b/kernel/pgo/Makefile
+new file mode 100644
+index 0000000000000..41e27cefd9a47
+--- /dev/null
++++ b/kernel/pgo/Makefile
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: GPL-2.0
++GCOV_PROFILE	:= n
++PGO_PROFILE	:= n
++
++obj-y	+= fs.o instrument.o
+diff --git a/kernel/pgo/fs.c b/kernel/pgo/fs.c
+new file mode 100644
+index 0000000000000..790a8df037bfc
+--- /dev/null
++++ b/kernel/pgo/fs.c
+@@ -0,0 +1,382 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2019 Google, Inc.
++ *
++ * Author:
++ *	Sami Tolvanen <samitolvanen@google.com>
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#define pr_fmt(fmt)	"pgo: " fmt
++
++#include <linux/kernel.h>
++#include <linux/debugfs.h>
++#include <linux/fs.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/vmalloc.h>
++#include "pgo.h"
++
++static struct dentry *directory;
++
++struct prf_private_data {
++	void *buffer;
++	unsigned long size;
++};
++
++/*
++ * Raw profile data format:
++ *
++ *	- llvm_prf_header
++ *	- __llvm_prf_data
++ *	- __llvm_prf_cnts
++ *	- __llvm_prf_names
++ *	- zero padding to 8 bytes
++ *	- for each llvm_prf_data in __llvm_prf_data:
++ *		- llvm_prf_value_data
++ *			- llvm_prf_value_record + site count array
++ *				- llvm_prf_value_node_data
++ *				...
++ *			...
++ *		...
++ */
++
++static void prf_fill_header(void **buffer)
++{
++	struct llvm_prf_header *header = *(struct llvm_prf_header **)buffer;
++
++	header->magic = LLVM_PRF_MAGIC;
++	header->version = LLVM_PRF_VARIANT_MASK_IR | LLVM_PRF_VERSION;
++	header->data_size = prf_data_count();
++	header->padding_bytes_before_counters = 0;
++	header->counters_size = prf_cnts_count();
++	header->padding_bytes_after_counters = 0;
++	header->names_size = prf_names_count();
++	header->counters_delta = (u64)__llvm_prf_cnts_start;
++	header->names_delta = (u64)__llvm_prf_names_start;
++	header->value_kind_last = LLVM_PRF_IPVK_LAST;
++
++	*buffer += sizeof(*header);
++}
++
++/*
++ * Copy the source into the buffer, incrementing the pointer into buffer in the
++ * process.
++ */
++static void prf_copy_to_buffer(void **buffer, void *src, unsigned long size)
++{
++	memcpy(*buffer, src, size);
++	*buffer += size;
++}
++
++static u32 __prf_get_value_size(struct llvm_prf_data *p, u32 *value_kinds)
++{
++	struct llvm_prf_value_node **nodes =
++		(struct llvm_prf_value_node **)p->values;
++	u32 kinds = 0;
++	u32 size = 0;
++	unsigned int kind;
++	unsigned int n;
++	unsigned int s = 0;
++
++	for (kind = 0; kind < ARRAY_SIZE(p->num_value_sites); kind++) {
++		unsigned int sites = p->num_value_sites[kind];
++
++		if (!sites)
++			continue;
++
++		/* Record + site count array */
++		size += prf_get_value_record_size(sites);
++		kinds++;
++
++		if (!nodes)
++			continue;
++
++		for (n = 0; n < sites; n++) {
++			u32 count = 0;
++			struct llvm_prf_value_node *site = nodes[s + n];
++
++			while (site && ++count <= U8_MAX)
++				site = site->next;
++
++			size += count *
++				sizeof(struct llvm_prf_value_node_data);
++		}
++
++		s += sites;
++	}
++
++	if (size)
++		size += sizeof(struct llvm_prf_value_data);
++
++	if (value_kinds)
++		*value_kinds = kinds;
++
++	return size;
++}
++
++static u32 prf_get_value_size(void)
++{
++	u32 size = 0;
++	struct llvm_prf_data *p;
++
++	for (p = __llvm_prf_data_start; p < __llvm_prf_data_end; p++)
++		size += __prf_get_value_size(p, NULL);
++
++	return size;
++}
++
++/* Serialize the profiling's value. */
++static void prf_serialize_value(struct llvm_prf_data *p, void **buffer)
++{
++	struct llvm_prf_value_data header;
++	struct llvm_prf_value_node **nodes =
++		(struct llvm_prf_value_node **)p->values;
++	unsigned int kind;
++	unsigned int n;
++	unsigned int s = 0;
++
++	header.total_size = __prf_get_value_size(p, &header.num_value_kinds);
++
++	if (!header.num_value_kinds)
++		/* Nothing to write. */
++		return;
++
++	prf_copy_to_buffer(buffer, &header, sizeof(header));
++
++	for (kind = 0; kind < ARRAY_SIZE(p->num_value_sites); kind++) {
++		struct llvm_prf_value_record *record;
++		u8 *counts;
++		unsigned int sites = p->num_value_sites[kind];
++
++		if (!sites)
++			continue;
++
++		/* Profiling value record. */
++		record = *(struct llvm_prf_value_record **)buffer;
++		*buffer += prf_get_value_record_header_size();
++
++		record->kind = kind;
++		record->num_value_sites = sites;
++
++		/* Site count array. */
++		counts = *(u8 **)buffer;
++		*buffer += prf_get_value_record_site_count_size(sites);
++
++		/*
++		 * If we don't have nodes, we can skip updating the site count
++		 * array, because the buffer is zero filled.
++		 */
++		if (!nodes)
++			continue;
++
++		for (n = 0; n < sites; n++) {
++			u32 count = 0;
++			struct llvm_prf_value_node *site = nodes[s + n];
++
++			while (site && ++count <= U8_MAX) {
++				prf_copy_to_buffer(buffer, site,
++						   sizeof(struct llvm_prf_value_node_data));
++				site = site->next;
++			}
++
++			counts[n] = (u8)count;
++		}
++
++		s += sites;
++	}
++}
++
++static void prf_serialize_values(void **buffer)
++{
++	struct llvm_prf_data *p;
++
++	for (p = __llvm_prf_data_start; p < __llvm_prf_data_end; p++)
++		prf_serialize_value(p, buffer);
++}
++
++static inline unsigned long prf_get_padding(unsigned long size)
++{
++	return 8 - (size % 8);
++}
++
++static unsigned long prf_buffer_size(void)
++{
++	return sizeof(struct llvm_prf_header) +
++			prf_data_size()	+
++			prf_cnts_size() +
++			prf_names_size() +
++			prf_get_padding(prf_names_size()) +
++			prf_get_value_size();
++}
++
++/* Serialize the profling data into a format LLVM's tools can understand. */
++static int prf_serialize(struct prf_private_data *p)
++{
++	int err = 0;
++	void *buffer;
++
++	p->size = prf_buffer_size();
++	p->buffer = vzalloc(p->size);
++
++	if (!p->buffer) {
++		err = -ENOMEM;
++		goto out;
++	}
++
++	buffer = p->buffer;
++
++	prf_fill_header(&buffer);
++	prf_copy_to_buffer(&buffer, __llvm_prf_data_start,  prf_data_size());
++	prf_copy_to_buffer(&buffer, __llvm_prf_cnts_start,  prf_cnts_size());
++	prf_copy_to_buffer(&buffer, __llvm_prf_names_start, prf_names_size());
++	buffer += prf_get_padding(prf_names_size());
++
++	prf_serialize_values(&buffer);
++
++out:
++	return err;
++}
++
++/* open() implementation for PGO. Creates a copy of the profiling data set. */
++static int prf_open(struct inode *inode, struct file *file)
++{
++	struct prf_private_data *data;
++	unsigned long flags;
++	int err;
++
++	data = kzalloc(sizeof(*data), GFP_KERNEL);
++	if (!data) {
++		err = -ENOMEM;
++		goto out;
++	}
++
++	flags = prf_lock();
++
++	err = prf_serialize(data);
++	if (err) {
++		kfree(data);
++		goto out_unlock;
++	}
++
++	file->private_data = data;
++
++out_unlock:
++	prf_unlock(flags);
++out:
++	return err;
++}
++
++/* read() implementation for PGO. */
++static ssize_t prf_read(struct file *file, char __user *buf, size_t count,
++			loff_t *ppos)
++{
++	struct prf_private_data *data = file->private_data;
++
++	BUG_ON(!data);
++
++	return simple_read_from_buffer(buf, count, ppos, data->buffer,
++				       data->size);
++}
++
++/* release() implementation for PGO. Release resources allocated by open(). */
++static int prf_release(struct inode *inode, struct file *file)
++{
++	struct prf_private_data *data = file->private_data;
++
++	if (data) {
++		vfree(data->buffer);
++		kfree(data);
++	}
++
++	return 0;
++}
++
++static const struct file_operations prf_fops = {
++	.owner		= THIS_MODULE,
++	.open		= prf_open,
++	.read		= prf_read,
++	.llseek		= default_llseek,
++	.release	= prf_release
++};
++
++/* write() implementation for resetting PGO's profile data. */
++static ssize_t reset_write(struct file *file, const char __user *addr,
++			   size_t len, loff_t *pos)
++{
++	struct llvm_prf_data *data;
++
++	memset(__llvm_prf_cnts_start, 0, prf_cnts_size());
++
++	for (data = __llvm_prf_data_start; data < __llvm_prf_data_end; ++data) {
++		struct llvm_prf_value_node **vnodes;
++		u64 current_vsite_count;
++		u32 i;
++
++		if (!data->values)
++			continue;
++
++		current_vsite_count = 0;
++		vnodes = (struct llvm_prf_value_node **)data->values;
++
++		for (i = LLVM_PRF_IPVK_FIRST; i <= LLVM_PRF_IPVK_LAST; ++i)
++			current_vsite_count += data->num_value_sites[i];
++
++		for (i = 0; i < current_vsite_count; ++i) {
++			struct llvm_prf_value_node *current_vnode = vnodes[i];
++
++			while (current_vnode) {
++				current_vnode->count = 0;
++				current_vnode = current_vnode->next;
++			}
++		}
++	}
++
++	return len;
++}
++
++static const struct file_operations prf_reset_fops = {
++	.owner		= THIS_MODULE,
++	.write		= reset_write,
++	.llseek		= noop_llseek,
++};
++
++/* Create debugfs entries. */
++static int __init pgo_init(void)
++{
++	directory = debugfs_create_dir("pgo", NULL);
++	if (!directory)
++		goto err_remove;
++
++	if (!debugfs_create_file("profraw", 0600, directory, NULL,
++				 &prf_fops))
++		goto err_remove;
++
++	if (!debugfs_create_file("reset", 0200, directory, NULL,
++				 &prf_reset_fops))
++		goto err_remove;
++
++	return 0;
++
++err_remove:
++	pr_err("initialization failed\n");
++	return -EIO;
++}
++
++/* Remove debufs entries. */
++static void __exit pgo_exit(void)
++{
++	debugfs_remove_recursive(directory);
++}
++
++module_init(pgo_init);
++module_exit(pgo_exit);
+diff --git a/kernel/pgo/instrument.c b/kernel/pgo/instrument.c
+new file mode 100644
+index 0000000000000..6084ff0652e85
+--- /dev/null
++++ b/kernel/pgo/instrument.c
+@@ -0,0 +1,185 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2019 Google, Inc.
++ *
++ * Author:
++ *	Sami Tolvanen <samitolvanen@google.com>
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#define pr_fmt(fmt)	"pgo: " fmt
++
++#include <linux/bitops.h>
++#include <linux/kernel.h>
++#include <linux/export.h>
++#include <linux/spinlock.h>
++#include <linux/types.h>
++#include "pgo.h"
++
++/* Lock guarding value node access and serialization. */
++static DEFINE_SPINLOCK(pgo_lock);
++static int current_node;
++
++unsigned long prf_lock(void)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&pgo_lock, flags);
++
++	return flags;
++}
++
++void prf_unlock(unsigned long flags)
++{
++	spin_unlock_irqrestore(&pgo_lock, flags);
++}
++
++/*
++ * Return a newly allocated profiling value node which contains the tracked
++ * value by the value profiler.
++ * Note: caller *must* hold pgo_lock.
++ */
++static struct llvm_prf_value_node *allocate_node(struct llvm_prf_data *p,
++						 u32 index, u64 value)
++{
++	if (&__llvm_prf_vnds_start[current_node + 1] >= __llvm_prf_vnds_end)
++		return NULL; /* Out of nodes */
++
++	current_node++;
++
++	/* Make sure the node is entirely within the section */
++	if (&__llvm_prf_vnds_start[current_node] >= __llvm_prf_vnds_end ||
++	    &__llvm_prf_vnds_start[current_node + 1] > __llvm_prf_vnds_end)
++		return NULL;
++
++	return &__llvm_prf_vnds_start[current_node];
++}
++
++/*
++ * Counts the number of times a target value is seen.
++ *
++ * Records the target value for the CounterIndex if not seen before. Otherwise,
++ * increments the counter associated w/ the target value.
++ */
++void __llvm_profile_instrument_target(u64 target_value, void *data, u32 index);
++void __llvm_profile_instrument_target(u64 target_value, void *data, u32 index)
++{
++	struct llvm_prf_data *p = (struct llvm_prf_data *)data;
++	struct llvm_prf_value_node **counters;
++	struct llvm_prf_value_node *curr;
++	struct llvm_prf_value_node *min = NULL;
++	struct llvm_prf_value_node *prev = NULL;
++	u64 min_count = U64_MAX;
++	u8 values = 0;
++	unsigned long flags;
++
++	if (!p || !p->values)
++		return;
++
++	counters = (struct llvm_prf_value_node **)p->values;
++	curr = counters[index];
++
++	while (curr) {
++		if (target_value == curr->value) {
++			curr->count++;
++			return;
++		}
++
++		if (curr->count < min_count) {
++			min_count = curr->count;
++			min = curr;
++		}
++
++		prev = curr;
++		curr = curr->next;
++		values++;
++	}
++
++	if (values >= LLVM_PRF_MAX_NUM_VALS_PER_SITE) {
++		if (!min->count || !(--min->count)) {
++			curr = min;
++			curr->value = target_value;
++			curr->count++;
++		}
++		return;
++	}
++
++	/* Lock when updating the value node structure. */
++	flags = prf_lock();
++
++	curr = allocate_node(p, index, target_value);
++	if (!curr)
++		goto out;
++
++	curr->value = target_value;
++	curr->count++;
++
++	if (!counters[index])
++		counters[index] = curr;
++	else if (prev && !prev->next)
++		prev->next = curr;
++
++out:
++	prf_unlock(flags);
++}
++EXPORT_SYMBOL(__llvm_profile_instrument_target);
++
++/* Counts the number of times a range of targets values are seen. */
++void __llvm_profile_instrument_range(u64 target_value, void *data,
++				     u32 index, s64 precise_start,
++				     s64 precise_last, s64 large_value);
++void __llvm_profile_instrument_range(u64 target_value, void *data,
++				     u32 index, s64 precise_start,
++				     s64 precise_last, s64 large_value)
++{
++	if (large_value != S64_MIN && (s64)target_value >= large_value)
++		target_value = large_value;
++	else if ((s64)target_value < precise_start ||
++		 (s64)target_value > precise_last)
++		target_value = precise_last + 1;
++
++	__llvm_profile_instrument_target(target_value, data, index);
++}
++EXPORT_SYMBOL(__llvm_profile_instrument_range);
++
++static u64 inst_prof_get_range_rep_value(u64 value)
++{
++	if (value <= 8)
++		/* The first ranges are individually tracked, us it as is. */
++		return value;
++	else if (value >= 513)
++		/* The last range is mapped to its lowest value. */
++		return 513;
++	else if (hweight64(value) == 1)
++		/* If it's a power of two, use it as is. */
++		return value;
++
++	/* Otherwise, take to the previous power of two + 1. */
++	return (1 << (64 - __builtin_clzll(value) - 1)) + 1;
++}
++
++/*
++ * The target values are partitioned into multiple ranges. The range spec is
++ * defined in compiler-rt/include/profile/InstrProfData.inc.
++ */
++void __llvm_profile_instrument_memop(u64 target_value, void *data,
++				     u32 counter_index);
++void __llvm_profile_instrument_memop(u64 target_value, void *data,
++				     u32 counter_index)
++{
++	u64 rep_value;
++
++	/* Map the target value to the representative value of its range. */
++	rep_value = inst_prof_get_range_rep_value(target_value);
++	__llvm_profile_instrument_target(rep_value, data, counter_index);
++}
++EXPORT_SYMBOL(__llvm_profile_instrument_memop);
+diff --git a/kernel/pgo/pgo.h b/kernel/pgo/pgo.h
+new file mode 100644
+index 0000000000000..df0aa278f28bd
+--- /dev/null
++++ b/kernel/pgo/pgo.h
+@@ -0,0 +1,206 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2019 Google, Inc.
++ *
++ * Author:
++ *	Sami Tolvanen <samitolvanen@google.com>
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#ifndef _PGO_H
++#define _PGO_H
++
++/*
++ * Note: These internal LLVM definitions must match the compiler version.
++ * See llvm/include/llvm/ProfileData/InstrProfData.inc in LLVM's source code.
++ */
++
++#ifdef CONFIG_64BIT
++	#define LLVM_PRF_MAGIC		\
++		((u64)255 << 56 |	\
++		 (u64)'l' << 48 |	\
++		 (u64)'p' << 40 |	\
++		 (u64)'r' << 32 |	\
++		 (u64)'o' << 24 |	\
++		 (u64)'f' << 16 |	\
++		 (u64)'r' << 8  |	\
++		 (u64)129)
++#else
++	#define LLVM_PRF_MAGIC		\
++		((u64)255 << 56 |	\
++		 (u64)'l' << 48 |	\
++		 (u64)'p' << 40 |	\
++		 (u64)'r' << 32 |	\
++		 (u64)'o' << 24 |	\
++		 (u64)'f' << 16 |	\
++		 (u64)'R' << 8  |	\
++		 (u64)129)
++#endif
++
++#define LLVM_PRF_VERSION		5
++#define LLVM_PRF_DATA_ALIGN		8
++#define LLVM_PRF_IPVK_FIRST		0
++#define LLVM_PRF_IPVK_LAST		1
++#define LLVM_PRF_MAX_NUM_VALS_PER_SITE	16
++
++#define LLVM_PRF_VARIANT_MASK_IR	(0x1ull << 56)
++#define LLVM_PRF_VARIANT_MASK_CSIR	(0x1ull << 57)
++
++/**
++ * struct llvm_prf_header - represents the raw profile header data structure.
++ * @magic: the magic token for the file format.
++ * @version: the version of the file format.
++ * @data_size: the number of entries in the profile data section.
++ * @padding_bytes_before_counters: the number of padding bytes before the
++ *   counters.
++ * @counters_size: the size in bytes of the LLVM profile section containing the
++ *   counters.
++ * @padding_bytes_after_counters: the number of padding bytes after the
++ *   counters.
++ * @names_size: the size in bytes of the LLVM profile section containing the
++ *   counters' names.
++ * @counters_delta: the beginning of the LLMV profile counters section.
++ * @names_delta: the beginning of the LLMV profile names section.
++ * @value_kind_last: the last profile value kind.
++ */
++struct llvm_prf_header {
++	u64 magic;
++	u64 version;
++	u64 data_size;
++	u64 padding_bytes_before_counters;
++	u64 counters_size;
++	u64 padding_bytes_after_counters;
++	u64 names_size;
++	u64 counters_delta;
++	u64 names_delta;
++	u64 value_kind_last;
++};
++
++/**
++ * struct llvm_prf_data - represents the per-function control structure.
++ * @name_ref: the reference to the function's name.
++ * @func_hash: the hash value of the function.
++ * @counter_ptr: a pointer to the profile counter.
++ * @function_ptr: a pointer to the function.
++ * @values: the profiling values associated with this function.
++ * @num_counters: the number of counters in the function.
++ * @num_value_sites: the number of value profile sites.
++ */
++struct llvm_prf_data {
++	const u64 name_ref;
++	const u64 func_hash;
++	const void *counter_ptr;
++	const void *function_ptr;
++	void *values;
++	const u32 num_counters;
++	const u16 num_value_sites[LLVM_PRF_IPVK_LAST + 1];
++} __aligned(LLVM_PRF_DATA_ALIGN);
++
++/**
++ * structure llvm_prf_value_node_data - represents the data part of the struct
++ *   llvm_prf_value_node data structure.
++ * @value: the value counters.
++ * @count: the counters' count.
++ */
++struct llvm_prf_value_node_data {
++	u64 value;
++	u64 count;
++};
++
++/**
++ * struct llvm_prf_value_node - represents an internal data structure used by
++ *   the value profiler.
++ * @value: the value counters.
++ * @count: the counters' count.
++ * @next: the next value node.
++ */
++struct llvm_prf_value_node {
++	u64 value;
++	u64 count;
++	struct llvm_prf_value_node *next;
++};
++
++/**
++ * struct llvm_prf_value_data - represents the value profiling data in indexed
++ *   format.
++ * @total_size: the total size in bytes including this field.
++ * @num_value_kinds: the number of value profile kinds that has value profile
++ *   data.
++ */
++struct llvm_prf_value_data {
++	u32 total_size;
++	u32 num_value_kinds;
++};
++
++/**
++ * struct llvm_prf_value_record - represents the on-disk layout of the value
++ *   profile data of a particular kind for one function.
++ * @kind: the kind of the value profile record.
++ * @num_value_sites: the number of value profile sites.
++ * @site_count_array: the first element of the array that stores the number
++ *   of profiled values for each value site.
++ */
++struct llvm_prf_value_record {
++	u32 kind;
++	u32 num_value_sites;
++	u8 site_count_array[];
++};
++
++#define prf_get_value_record_header_size()		\
++	offsetof(struct llvm_prf_value_record, site_count_array)
++#define prf_get_value_record_site_count_size(sites)	\
++	roundup((sites), 8)
++#define prf_get_value_record_size(sites)		\
++	(prf_get_value_record_header_size() +		\
++	 prf_get_value_record_site_count_size((sites)))
++
++/* Data sections */
++extern struct llvm_prf_data __llvm_prf_data_start[];
++extern struct llvm_prf_data __llvm_prf_data_end[];
++
++extern u64 __llvm_prf_cnts_start[];
++extern u64 __llvm_prf_cnts_end[];
++
++extern char __llvm_prf_names_start[];
++extern char __llvm_prf_names_end[];
++
++extern struct llvm_prf_value_node __llvm_prf_vnds_start[];
++extern struct llvm_prf_value_node __llvm_prf_vnds_end[];
++
++/* Locking for vnodes */
++extern unsigned long prf_lock(void);
++extern void prf_unlock(unsigned long flags);
++
++#define __DEFINE_PRF_SIZE(s) \
++	static inline unsigned long prf_ ## s ## _size(void)		\
++	{								\
++		unsigned long start =					\
++			(unsigned long)__llvm_prf_ ## s ## _start;	\
++		unsigned long end =					\
++			(unsigned long)__llvm_prf_ ## s ## _end;	\
++		return roundup(end - start,				\
++				sizeof(__llvm_prf_ ## s ## _start[0]));	\
++	}								\
++	static inline unsigned long prf_ ## s ## _count(void)		\
++	{								\
++		return prf_ ## s ## _size() /				\
++			sizeof(__llvm_prf_ ## s ## _start[0]);		\
++	}
++
++__DEFINE_PRF_SIZE(data);
++__DEFINE_PRF_SIZE(cnts);
++__DEFINE_PRF_SIZE(names);
++__DEFINE_PRF_SIZE(vnds);
++
++#undef __DEFINE_PRF_SIZE
++
++#endif /* _PGO_H */
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 213677a5ed33e..9b218afb5cb87 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -143,6 +143,16 @@ _c_flags += $(if $(patsubst n%,, \
+ 		$(CFLAGS_GCOV))
+ endif
+ 
++#
++# Enable clang's PGO profiling flags for a file or directory depending on
++# variables PGO_PROFILE_obj.o and PGO_PROFILE.
++#
++ifeq ($(CONFIG_PGO_CLANG),y)
++_c_flags += $(if $(patsubst n%,, \
++		$(PGO_PROFILE_$(basetarget).o)$(PGO_PROFILE)y), \
++		$(CFLAGS_PGO_CLANG))
++endif
++
+ #
+ # Enable address sanitizer flags for kernel except some files or directories
+ # we don't want to check (depends on variables KASAN_SANITIZE_obj.o, KASAN_SANITIZE)
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
-#2
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -4449,9 +4449,14 @@ static void tcpm_enable_frs_work(struct
-kthread_work *work)
-        if (port->state != SNK_READY || port->vdm_state !=
-VDM_STATE_DONE || port->send_discover)
-                goto resched;
-
--       tcpm_set_state(port, GET_SINK_CAP, 0);
--       port->sink_cap_done = true;
--
-+       port->upcoming_state = GET_SINK_CAP;
-+       ret = tcpm_ams_start(port, GET_SINK_CAPABILITIES);
-+       if (ret == -EAGAIN) {
-+               port->upcoming_state = INVALID_STATE;
-+       } else {
-+               port->sink_cap_done = true;
-+               goto unlock;
-+       }
-
-Thanks,
-Badhri
-
-
-On Tue, Jan 12, 2021 at 5:29 AM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> On Wed, Jan 06, 2021 at 12:39:25AM +0800, Kyle Tso wrote:
-> > This patch provides the implementation of Collision Avoidance introduced
-> > in PD3.0. The start of each Atomic Message Sequence (AMS) initiated by
-> > the port will be denied if the current AMS is not interruptible. The
-> > Source port will set the CC to SinkTxNG if it is going to initiate an
-> > AMS, and SinkTxOk otherwise. Meanwhile, any AMS initiated by a Sink port
-> > will be denied in TCPM if the port partner (Source) sets SinkTxNG except
-> > for HARD_RESET and SOFT_RESET.
-> >
-> > Signed-off-by: Kyle Tso <kyletso@google.com>
-> > Signed-off-by: Will McVicker <willmcvicker@google.com>
->
-> So did you and Will develop this patch together?
->
-> Few nitpicks below.
->
-> > ---
-> > Changelog since v4:
-> >  - rebased to ToT
-> >
-> >  drivers/usb/typec/tcpm/tcpm.c | 533 ++++++++++++++++++++++++++++++----
-> >  include/linux/usb/pd.h        |   1 +
-> >  include/linux/usb/tcpm.h      |   4 +
-> >  3 files changed, 479 insertions(+), 59 deletions(-)
-> >
-> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> > index 22a85b396f69..9fb3ec176f42 100644
-> > --- a/drivers/usb/typec/tcpm/tcpm.c
-> > +++ b/drivers/usb/typec/tcpm/tcpm.c
-> > @@ -76,6 +76,8 @@
-> >       S(SNK_HARD_RESET_SINK_ON),              \
-> >                                               \
-> >       S(SOFT_RESET),                          \
-> > +     S(SRC_SOFT_RESET_WAIT_SNK_TX),          \
-> > +     S(SNK_SOFT_RESET),                      \
-> >       S(SOFT_RESET_SEND),                     \
-> >                                               \
-> >       S(DR_SWAP_ACCEPT),                      \
-> > @@ -139,7 +141,45 @@
-> >                                               \
-> >       S(ERROR_RECOVERY),                      \
-> >       S(PORT_RESET),                          \
-> > -     S(PORT_RESET_WAIT_OFF)
-> > +     S(PORT_RESET_WAIT_OFF),                 \
-> > +                                             \
-> > +     S(AMS_START)
-> > +
-> > +#define FOREACH_AMS(S)                               \
-> > +     S(NONE_AMS),                            \
-> > +     S(POWER_NEGOTIATION),                   \
-> > +     S(GOTOMIN),                             \
-> > +     S(SOFT_RESET_AMS),                      \
-> > +     S(HARD_RESET),                          \
-> > +     S(CABLE_RESET),                         \
-> > +     S(GET_SOURCE_CAPABILITIES),             \
-> > +     S(GET_SINK_CAPABILITIES),               \
-> > +     S(POWER_ROLE_SWAP),                     \
-> > +     S(FAST_ROLE_SWAP),                      \
-> > +     S(DATA_ROLE_SWAP),                      \
-> > +     S(VCONN_SWAP),                          \
-> > +     S(SOURCE_ALERT),                        \
-> > +     S(GETTING_SOURCE_EXTENDED_CAPABILITIES),\
-> > +     S(GETTING_SOURCE_SINK_STATUS),          \
-> > +     S(GETTING_BATTERY_CAPABILITIES),        \
-> > +     S(GETTING_BATTERY_STATUS),              \
-> > +     S(GETTING_MANUFACTURER_INFORMATION),    \
-> > +     S(SECURITY),                            \
-> > +     S(FIRMWARE_UPDATE),                     \
-> > +     S(DISCOVER_IDENTITY),                   \
-> > +     S(SOURCE_STARTUP_CABLE_PLUG_DISCOVER_IDENTITY), \
-> > +     S(DISCOVER_SVIDS),                      \
-> > +     S(DISCOVER_MODES),                      \
-> > +     S(DFP_TO_UFP_ENTER_MODE),               \
-> > +     S(DFP_TO_UFP_EXIT_MODE),                \
-> > +     S(DFP_TO_CABLE_PLUG_ENTER_MODE),        \
-> > +     S(DFP_TO_CABLE_PLUG_EXIT_MODE),         \
-> > +     S(ATTENTION),                           \
-> > +     S(BIST),                                \
-> > +     S(UNSTRUCTURED_VDMS),                   \
-> > +     S(STRUCTURED_VDMS),                     \
-> > +     S(COUNTRY_INFO),                        \
-> > +     S(COUNTRY_CODES)
-> >
-> >  #define GENERATE_ENUM(e)     e
-> >  #define GENERATE_STRING(s)   #s
-> > @@ -152,6 +192,14 @@ static const char * const tcpm_states[] = {
-> >       FOREACH_STATE(GENERATE_STRING)
-> >  };
-> >
-> > +enum tcpm_ams {
-> > +     FOREACH_AMS(GENERATE_ENUM)
-> > +};
-> > +
-> > +static const char * const tcpm_ams_str[] = {
-> > +     FOREACH_AMS(GENERATE_STRING)
-> > +};
-> > +
-> >  enum vdm_states {
-> >       VDM_STATE_ERR_BUSY = -3,
-> >       VDM_STATE_ERR_SEND = -2,
-> > @@ -161,6 +209,7 @@ enum vdm_states {
-> >       VDM_STATE_READY = 1,
-> >       VDM_STATE_BUSY = 2,
-> >       VDM_STATE_WAIT_RSP_BUSY = 3,
-> > +     VDM_STATE_SEND_MESSAGE = 4,
-> >  };
-> >
-> >  enum pd_msg_request {
-> > @@ -381,6 +430,11 @@ struct tcpm_port {
-> >       /* Sink caps have been queried */
-> >       bool sink_cap_done;
-> >
-> > +     /* Collision Avoidance and Atomic Message Sequence */
-> > +     enum tcpm_state upcoming_state;
-> > +     enum tcpm_ams ams;
-> > +     bool in_ams;
-> > +
-> >  #ifdef CONFIG_DEBUG_FS
-> >       struct dentry *dentry;
-> >       struct mutex logbuffer_lock;    /* log buffer access lock */
-> > @@ -396,6 +450,12 @@ struct pd_rx_event {
-> >       struct pd_message msg;
-> >  };
-> >
-> > +static const char * const pd_rev[] = {
-> > +     [PD_REV10]              = "rev1",
-> > +     [PD_REV20]              = "rev2",
-> > +     [PD_REV30]              = "rev3",
-> > +};
-> > +
-> >  #define tcpm_cc_is_sink(cc) \
-> >       ((cc) == TYPEC_CC_RP_DEF || (cc) == TYPEC_CC_RP_1_5 || \
-> >        (cc) == TYPEC_CC_RP_3_0)
-> > @@ -440,6 +500,10 @@ struct pd_rx_event {
-> >       ((port)->typec_caps.data == TYPEC_PORT_DFP ? \
-> >       TYPEC_HOST : TYPEC_DEVICE)
-> >
-> > +#define tcpm_sink_tx_ok(port) \
-> > +     (tcpm_port_is_sink(port) && \
-> > +     ((port)->cc1 == TYPEC_CC_RP_3_0 || (port)->cc2 == TYPEC_CC_RP_3_0))
-> > +
-> >  static enum tcpm_state tcpm_default_state(struct tcpm_port *port)
-> >  {
-> >       if (port->port_type == TYPEC_PORT_DRP) {
-> > @@ -666,6 +730,35 @@ static void tcpm_debugfs_exit(const struct tcpm_port *port) { }
-> >
-> >  #endif
-> >
-> > +static void tcpm_set_cc(struct tcpm_port *port, enum typec_cc_status cc)
-> > +{
-> > +     tcpm_log(port, "cc:=%d", cc);
-> > +     port->cc_req = cc;
-> > +     port->tcpc->set_cc(port->tcpc, cc);
-> > +}
-> > +
-> > +static enum typec_cc_status tcpm_rp_cc(struct tcpm_port *port);
->
-> I think you should move the function here instead of adding the
-> prototype for it.
->
-> > +static int tcpm_ams_finish(struct tcpm_port *port)
-> > +{
-> > +     int ret = 0;
-> > +
-> > +     tcpm_log(port, "AMS %s finished", tcpm_ams_str[port->ams]);
-> > +
-> > +     if (port->pd_capable && port->pwr_role == TYPEC_SOURCE) {
-> > +             if (port->negotiated_rev >= PD_REV30)
-> > +                     tcpm_set_cc(port, SINK_TX_OK);
-> > +             else
-> > +                     tcpm_set_cc(port, SINK_TX_NG);
-> > +     } else if (port->pwr_role == TYPEC_SOURCE) {
-> > +             tcpm_set_cc(port, tcpm_rp_cc(port));
-> > +     }
-> > +
-> > +     port->in_ams = false;
-> > +     port->ams = NONE_AMS;
-> > +
-> > +     return ret;
-> > +}
-> > +
-> >  static int tcpm_pd_transmit(struct tcpm_port *port,
-> >                           enum tcpm_transmit_type type,
-> >                           const struct pd_message *msg)
-> > @@ -693,13 +786,30 @@ static int tcpm_pd_transmit(struct tcpm_port *port,
-> >       switch (port->tx_status) {
-> >       case TCPC_TX_SUCCESS:
-> >               port->message_id = (port->message_id + 1) & PD_HEADER_ID_MASK;
-> > -             return 0;
-> > +             /*
-> > +              * USB PD rev 2.0, 8.3.2.2.1:
-> > +              * USB PD rev 3.0, 8.3.2.1.3:
-> > +              * "... Note that every AMS is Interruptible until the first
-> > +              * Message in the sequence has been successfully sent (GoodCRC
-> > +              * Message received)."
-> > +              */
-> > +             if (port->ams != NONE_AMS)
-> > +                     port->in_ams = true;
-> > +             break;
-> >       case TCPC_TX_DISCARDED:
-> > -             return -EAGAIN;
-> > +             ret = -EAGAIN;
-> > +             break;
-> >       case TCPC_TX_FAILED:
-> >       default:
-> > -             return -EIO;
-> > +             ret = -EIO;
-> > +             break;
-> >       }
-> > +
-> > +     /* Some AMS don't expect responses. Finish them here. */
-> > +     if (port->ams == ATTENTION || port->ams == SOURCE_ALERT)
-> > +             tcpm_ams_finish(port);
-> > +
-> > +     return ret;
-> >  }
-> >
-> >  void tcpm_pd_transmit_complete(struct tcpm_port *port,
-> > @@ -1000,16 +1110,17 @@ static void tcpm_set_state(struct tcpm_port *port, enum tcpm_state state,
-> >                          unsigned int delay_ms)
-> >  {
-> >       if (delay_ms) {
-> > -             tcpm_log(port, "pending state change %s -> %s @ %u ms",
-> > -                      tcpm_states[port->state], tcpm_states[state],
-> > -                      delay_ms);
-> > +             tcpm_log(port, "pending state change %s -> %s @ %u ms [%s %s]",
-> > +                      tcpm_states[port->state], tcpm_states[state], delay_ms,
-> > +                      pd_rev[port->negotiated_rev], tcpm_ams_str[port->ams]);
-> >               port->delayed_state = state;
-> >               mod_tcpm_delayed_work(port, delay_ms);
-> >               port->delayed_runtime = ktime_add(ktime_get(), ms_to_ktime(delay_ms));
-> >               port->delay_ms = delay_ms;
-> >       } else {
-> > -             tcpm_log(port, "state change %s -> %s",
-> > -                      tcpm_states[port->state], tcpm_states[state]);
-> > +             tcpm_log(port, "state change %s -> %s [%s %s]",
-> > +                      tcpm_states[port->state], tcpm_states[state],
-> > +                      pd_rev[port->negotiated_rev], tcpm_ams_str[port->ams]);
-> >               port->delayed_state = INVALID_STATE;
-> >               port->prev_state = port->state;
-> >               port->state = state;
-> > @@ -1031,10 +1142,11 @@ static void tcpm_set_state_cond(struct tcpm_port *port, enum tcpm_state state,
-> >               tcpm_set_state(port, state, delay_ms);
-> >       else
-> >               tcpm_log(port,
-> > -                      "skipped %sstate change %s -> %s [%u ms], context state %s",
-> > +                      "skipped %sstate change %s -> %s [%u ms], context state %s [%s %s]",
-> >                        delay_ms ? "delayed " : "",
-> >                        tcpm_states[port->state], tcpm_states[state],
-> > -                      delay_ms, tcpm_states[port->enter_state]);
-> > +                      delay_ms, tcpm_states[port->enter_state],
-> > +                      pd_rev[port->negotiated_rev], tcpm_ams_str[port->ams]);
-> >  }
-> >
-> >  static void tcpm_queue_message(struct tcpm_port *port,
-> > @@ -1044,6 +1156,149 @@ static void tcpm_queue_message(struct tcpm_port *port,
-> >       mod_tcpm_delayed_work(port, 0);
-> >  }
-> >
-> > +static bool tcpm_vdm_ams(struct tcpm_port *port)
-> > +{
-> > +     switch (port->ams) {
-> > +     case DISCOVER_IDENTITY:
-> > +     case SOURCE_STARTUP_CABLE_PLUG_DISCOVER_IDENTITY:
-> > +     case DISCOVER_SVIDS:
-> > +     case DISCOVER_MODES:
-> > +     case DFP_TO_UFP_ENTER_MODE:
-> > +     case DFP_TO_UFP_EXIT_MODE:
-> > +     case DFP_TO_CABLE_PLUG_ENTER_MODE:
-> > +     case DFP_TO_CABLE_PLUG_EXIT_MODE:
-> > +     case ATTENTION:
-> > +     case UNSTRUCTURED_VDMS:
-> > +     case STRUCTURED_VDMS:
-> > +             break;
-> > +     default:
-> > +             return false;
-> > +     }
-> > +
-> > +     return true;
-> > +}
-> > +
-> > +static bool tcpm_ams_interruptible(struct tcpm_port *port)
-> > +{
-> > +     switch (port->ams) {
-> > +     /* Interruptible AMS */
-> > +     case NONE_AMS:
-> > +     case SECURITY:
-> > +     case FIRMWARE_UPDATE:
-> > +     case DISCOVER_IDENTITY:
-> > +     case SOURCE_STARTUP_CABLE_PLUG_DISCOVER_IDENTITY:
-> > +     case DISCOVER_SVIDS:
-> > +     case DISCOVER_MODES:
-> > +     case DFP_TO_UFP_ENTER_MODE:
-> > +     case DFP_TO_UFP_EXIT_MODE:
-> > +     case DFP_TO_CABLE_PLUG_ENTER_MODE:
-> > +     case DFP_TO_CABLE_PLUG_EXIT_MODE:
-> > +     case UNSTRUCTURED_VDMS:
-> > +     case STRUCTURED_VDMS:
-> > +     case COUNTRY_INFO:
-> > +     case COUNTRY_CODES:
-> > +             break;
-> > +     /* Non-Interruptible AMS */
-> > +     default:
-> > +             if (port->in_ams)
-> > +                     return false;
-> > +             break;
-> > +     }
-> > +
-> > +     return true;
-> > +}
-> > +
-> > +static int tcpm_ams_start(struct tcpm_port *port, enum tcpm_ams ams)
-> > +{
-> > +     int ret = 0;
-> > +
-> > +     tcpm_log(port, "AMS %s start", tcpm_ams_str[ams]);
-> > +
-> > +     if (!tcpm_ams_interruptible(port) && ams != HARD_RESET) {
-> > +             port->upcoming_state = INVALID_STATE;
-> > +             tcpm_log(port, "AMS %s not interruptible, aborting",
-> > +                      tcpm_ams_str[port->ams]);
-> > +             return -EAGAIN;
-> > +     }
-> > +
-> > +     if (port->pwr_role == TYPEC_SOURCE) {
-> > +             enum typec_cc_status cc_req = port->cc_req;
-> > +
-> > +             port->ams = ams;
-> > +
-> > +             if (ams == HARD_RESET) {
-> > +                     tcpm_set_cc(port, tcpm_rp_cc(port));
-> > +                     tcpm_pd_transmit(port, TCPC_TX_HARD_RESET, NULL);
-> > +                     tcpm_set_state(port, HARD_RESET_START, 0);
-> > +                     return ret;
-> > +             } else if (ams == SOFT_RESET_AMS) {
-> > +                     if (!port->explicit_contract) {
-> > +                             port->upcoming_state = INVALID_STATE;
-> > +                             tcpm_set_cc(port, tcpm_rp_cc(port));
-> > +                             return ret;
-> > +                     }
-> > +             } else if (tcpm_vdm_ams(port)) {
-> > +                     /* tSinkTx is enforced in vdm_run_state_machine */
-> > +                     if (port->negotiated_rev >= PD_REV30)
-> > +                             tcpm_set_cc(port, SINK_TX_NG);
-> > +                     return ret;
-> > +             }
-> > +
-> > +             if (port->negotiated_rev >= PD_REV30)
-> > +                     tcpm_set_cc(port, SINK_TX_NG);
-> > +
-> > +             switch (port->state) {
-> > +             case SRC_READY:
-> > +             case SRC_STARTUP:
-> > +             case SRC_SOFT_RESET_WAIT_SNK_TX:
-> > +             case SOFT_RESET:
-> > +             case SOFT_RESET_SEND:
-> > +                     if (port->negotiated_rev >= PD_REV30)
-> > +                             tcpm_set_state(port, AMS_START,
-> > +                                            cc_req == SINK_TX_OK ?
-> > +                                            PD_T_SINK_TX : 0);
-> > +                     else
-> > +                             tcpm_set_state(port, AMS_START, 0);
-> > +                     break;
-> > +             default:
-> > +                     if (port->negotiated_rev >= PD_REV30)
-> > +                             tcpm_set_state(port, SRC_READY,
-> > +                                            cc_req == SINK_TX_OK ?
-> > +                                            PD_T_SINK_TX : 0);
-> > +                     else
-> > +                             tcpm_set_state(port, SRC_READY, 0);
-> > +                     break;
-> > +             }
-> > +     } else {
-> > +             if (port->negotiated_rev >= PD_REV30 &&
-> > +                 !tcpm_sink_tx_ok(port) &&
-> > +                 ams != SOFT_RESET_AMS &&
-> > +                 ams != HARD_RESET) {
-> > +                     port->upcoming_state = INVALID_STATE;
-> > +                     tcpm_log(port, "Sink TX No Go");
-> > +                     return -EAGAIN;
-> > +             }
-> > +
-> > +             port->ams = ams;
-> > +
-> > +             if (ams == HARD_RESET) {
-> > +                     tcpm_pd_transmit(port, TCPC_TX_HARD_RESET, NULL);
-> > +                     tcpm_set_state(port, HARD_RESET_START, 0);
-> > +                     return ret;
-> > +             } else if (tcpm_vdm_ams(port)) {
-> > +                     return ret;
-> > +             }
-> > +
-> > +             if (port->state == SNK_READY ||
-> > +                 port->state == SNK_SOFT_RESET)
-> > +                     tcpm_set_state(port, AMS_START, 0);
-> > +             else
-> > +                     tcpm_set_state(port, SNK_READY, 0);
-> > +     }
-> > +
-> > +     return ret;
-> > +}
-> > +
-> >  /*
-> >   * VDM/VDO handling functions
-> >   */
-> > @@ -1236,6 +1491,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
-> >               if (IS_ERR_OR_NULL(port->partner))
-> >                       break;
-> >
-> > +             tcpm_ams_finish(port);
-> > +
-> >               switch (cmd) {
-> >               case CMD_DISCOVER_IDENT:
-> >                       /* 6.4.4.3.1 */
-> > @@ -1286,6 +1543,7 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
-> >               }
-> >               break;
-> >       case CMDT_RSP_NAK:
-> > +             tcpm_ams_finish(port);
-> >               switch (cmd) {
-> >               case CMD_ENTER_MODE:
-> >                       /* Back to USB Operation */
-> > @@ -1435,7 +1693,8 @@ static unsigned int vdm_ready_timeout(u32 vdm_hdr)
-> >  static void vdm_run_state_machine(struct tcpm_port *port)
-> >  {
-> >       struct pd_message msg;
-> > -     int i, res;
-> > +     int i, res = 0;
-> > +     u32 vdo_hdr = port->vdo_data[0];
-> >
-> >       switch (port->vdm_state) {
-> >       case VDM_STATE_READY:
-> > @@ -1452,26 +1711,47 @@ static void vdm_run_state_machine(struct tcpm_port *port)
-> >               if (port->state != SRC_READY && port->state != SNK_READY)
-> >                       break;
-> >
-> > -             /* Prepare and send VDM */
-> > -             memset(&msg, 0, sizeof(msg));
-> > -             msg.header = PD_HEADER_LE(PD_DATA_VENDOR_DEF,
-> > -                                       port->pwr_role,
-> > -                                       port->data_role,
-> > -                                       port->negotiated_rev,
-> > -                                       port->message_id, port->vdo_count);
-> > -             for (i = 0; i < port->vdo_count; i++)
-> > -                     msg.payload[i] = cpu_to_le32(port->vdo_data[i]);
-> > -             res = tcpm_pd_transmit(port, TCPC_TX_SOP, &msg);
-> > -             if (res < 0) {
-> > -                     port->vdm_state = VDM_STATE_ERR_SEND;
-> > -             } else {
-> > -                     unsigned long timeout;
-> > +             /* TODO: AMS operation for Unstructured VDM */
-> > +             if (PD_VDO_SVDM(vdo_hdr) && PD_VDO_CMDT(vdo_hdr) == CMDT_INIT) {
-> > +                     switch (PD_VDO_CMD(vdo_hdr)) {
-> > +                     case CMD_DISCOVER_IDENT:
-> > +                             res = tcpm_ams_start(port, DISCOVER_IDENTITY);
-> > +                             break;
-> > +                     case CMD_DISCOVER_SVID:
-> > +                             res = tcpm_ams_start(port, DISCOVER_SVIDS);
-> > +                             break;
-> > +                     case CMD_DISCOVER_MODES:
-> > +                             res = tcpm_ams_start(port, DISCOVER_MODES);
-> > +                             break;
-> > +                     case CMD_ENTER_MODE:
-> > +                             res = tcpm_ams_start(port,
-> > +                                                  DFP_TO_UFP_ENTER_MODE);
->
-> One line is enough:
->
->                                 res = tcpm_ams_start(port, DFP_TO_UFP_ENTER_MODE);
->
-> > +                             break;
-> > +                     case CMD_EXIT_MODE:
-> > +                             res = tcpm_ams_start(port,
-> > +                                                  DFP_TO_UFP_EXIT_MODE);
->
-> Ditto.
->
-> > +                             break;
-> > +                     case CMD_ATTENTION:
-> > +                             res = tcpm_ams_start(port, ATTENTION);
-> > +                             break;
-> > +                     case VDO_CMD_VENDOR(0) ... VDO_CMD_VENDOR(15):
-> > +                             res = tcpm_ams_start(port, STRUCTURED_VDMS);
-> > +                             break;
-> > +                     default:
-> > +                             res = -EOPNOTSUPP;
-> > +                             break;
-> > +                     }
-> >
-> > -                     port->vdm_retries = 0;
-> > -                     port->vdm_state = VDM_STATE_BUSY;
-> > -                     timeout = vdm_ready_timeout(port->vdo_data[0]);
-> > -                     mod_vdm_delayed_work(port, timeout);
-> > +                     if (res < 0)
-> > +                             return;
-> >               }
-> > +
-> > +             port->vdm_state = VDM_STATE_SEND_MESSAGE;
-> > +             mod_vdm_delayed_work(port, (port->negotiated_rev >= PD_REV30) &&
-> > +                                        (port->pwr_role == TYPEC_SOURCE) &&
-> > +                                        (PD_VDO_SVDM(vdo_hdr)) &&
-> > +                                        (PD_VDO_CMDT(vdo_hdr) == CMDT_INIT) ?
-> > +                                        PD_T_SINK_TX : 0);
->
-> I don't think you need all those brackets. This would look better, and
-> I bet it would make also scripts/checkpatch.pl happy:
->
->                 mod_vdm_delayed_work(port, (port->negotiated_rev >= PD_REV30 &&
->                                             port->pwr_role == TYPEC_SOURCE &&
->                                             PD_VDO_SVDM(vdo_hdr) &&
->                                             PD_VDO_CMDT(vdo_hdr) == CMDT_INIT) ?
->                                            PD_T_SINK_TX : 0);
->
-> >               break;
-> >       case VDM_STATE_WAIT_RSP_BUSY:
-> >               port->vdo_data[0] = port->vdo_retry;
-> > @@ -1480,6 +1760,8 @@ static void vdm_run_state_machine(struct tcpm_port *port)
-> >               break;
-> >       case VDM_STATE_BUSY:
-> >               port->vdm_state = VDM_STATE_ERR_TMOUT;
-> > +             if (port->ams != NONE_AMS)
-> > +                     tcpm_ams_finish(port);
-> >               break;
-> >       case VDM_STATE_ERR_SEND:
-> >               /*
-> > @@ -1492,6 +1774,29 @@ static void vdm_run_state_machine(struct tcpm_port *port)
-> >                       tcpm_log(port, "VDM Tx error, retry");
-> >                       port->vdm_retries++;
-> >                       port->vdm_state = VDM_STATE_READY;
-> > +                     tcpm_ams_finish(port);
-> > +             }
-> > +             break;
-> > +     case VDM_STATE_SEND_MESSAGE:
-> > +             /* Prepare and send VDM */
-> > +             memset(&msg, 0, sizeof(msg));
-> > +             msg.header = PD_HEADER_LE(PD_DATA_VENDOR_DEF,
-> > +                                       port->pwr_role,
-> > +                                       port->data_role,
-> > +                                       port->negotiated_rev,
-> > +                                       port->message_id, port->vdo_count);
-> > +             for (i = 0; i < port->vdo_count; i++)
-> > +                     msg.payload[i] = cpu_to_le32(port->vdo_data[i]);
-> > +             res = tcpm_pd_transmit(port, TCPC_TX_SOP, &msg);
-> > +             if (res < 0) {
-> > +                     port->vdm_state = VDM_STATE_ERR_SEND;
-> > +             } else {
-> > +                     unsigned long timeout;
-> > +
-> > +                     port->vdm_retries = 0;
-> > +                     port->vdm_state = VDM_STATE_BUSY;
-> > +                     timeout = vdm_ready_timeout(vdo_hdr);
-> > +                     mod_vdm_delayed_work(port, timeout);
-> >               }
-> >               break;
-> >       default:
-> > @@ -1514,7 +1819,8 @@ static void vdm_state_machine_work(struct kthread_work *work)
-> >               prev_state = port->vdm_state;
-> >               vdm_run_state_machine(port);
-> >       } while (port->vdm_state != prev_state &&
-> > -              port->vdm_state != VDM_STATE_BUSY);
-> > +              port->vdm_state != VDM_STATE_BUSY &&
-> > +              port->vdm_state != VDM_STATE_SEND_MESSAGE);
-> >
-> >       mutex_unlock(&port->lock);
-> >  }
-> > @@ -1997,11 +2303,14 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
-> >               case SOFT_RESET_SEND:
-> >                       port->message_id = 0;
-> >                       port->rx_msgid = -1;
-> > -                     if (port->pwr_role == TYPEC_SOURCE)
-> > -                             next_state = SRC_SEND_CAPABILITIES;
-> > -                     else
-> > -                             next_state = SNK_WAIT_CAPABILITIES;
-> > -                     tcpm_set_state(port, next_state, 0);
-> > +                     if (port->ams == SOFT_RESET_AMS)
-> > +                             tcpm_ams_finish(port);
-> > +                     if (port->pwr_role == TYPEC_SOURCE) {
-> > +                             port->upcoming_state = SRC_SEND_CAPABILITIES;
-> > +                             tcpm_ams_start(port, POWER_NEGOTIATION);
-> > +                     } else {
-> > +                             tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
-> > +                     }
-> >                       break;
-> >               case DR_SWAP_SEND:
-> >                       tcpm_set_state(port, DR_SWAP_CHANGE_DR, 0);
-> > @@ -2776,13 +3085,6 @@ static bool tcpm_start_toggling(struct tcpm_port *port, enum typec_cc_status cc)
-> >       return ret == 0;
-> >  }
-> >
-> > -static void tcpm_set_cc(struct tcpm_port *port, enum typec_cc_status cc)
-> > -{
-> > -     tcpm_log(port, "cc:=%d", cc);
-> > -     port->cc_req = cc;
-> > -     port->tcpc->set_cc(port->tcpc, cc);
-> > -}
-> > -
-> >  static int tcpm_init_vbus(struct tcpm_port *port)
-> >  {
-> >       int ret;
-> > @@ -2912,6 +3214,8 @@ static void tcpm_reset_port(struct tcpm_port *port)
-> >               ret = port->tcpc->enable_auto_vbus_discharge(port->tcpc, false);
-> >               tcpm_log_force(port, "Disable vbus discharge ret:%d", ret);
-> >       }
-> > +     port->in_ams = false;
-> > +     port->ams = NONE_AMS;
-> >       tcpm_unregister_altmodes(port);
-> >       tcpm_typec_disconnect(port);
-> >       port->attached = false;
-> > @@ -3090,6 +3394,7 @@ static void run_state_machine(struct tcpm_port *port)
-> >       int ret;
-> >       enum typec_pwr_opmode opmode;
-> >       unsigned int msecs;
-> > +     enum tcpm_state upcoming_state;
-> >
-> >       port->enter_state = port->state;
-> >       switch (port->state) {
-> > @@ -3190,7 +3495,12 @@ static void run_state_machine(struct tcpm_port *port)
-> >               port->message_id = 0;
-> >               port->rx_msgid = -1;
-> >               port->explicit_contract = false;
-> > -             tcpm_set_state(port, SRC_SEND_CAPABILITIES, 0);
-> > +             /* SNK -> SRC POWER/FAST_ROLE_SWAP finished */
-> > +             if (port->ams == POWER_ROLE_SWAP ||
-> > +                 port->ams == FAST_ROLE_SWAP)
-> > +                     tcpm_ams_finish(port);
-> > +             port->upcoming_state = SRC_SEND_CAPABILITIES;
-> > +             tcpm_ams_start(port, POWER_NEGOTIATION);
-> >               break;
-> >       case SRC_SEND_CAPABILITIES:
-> >               port->caps_count++;
-> > @@ -3272,6 +3582,19 @@ static void run_state_machine(struct tcpm_port *port)
-> >               tcpm_swap_complete(port, 0);
-> >               tcpm_typec_connect(port);
-> >
-> > +             if (port->ams != NONE_AMS)
-> > +                     tcpm_ams_finish(port);
-> > +             /*
-> > +              * If previous AMS is interrupted, switch to the upcoming
-> > +              * state.
-> > +              */
-> > +             upcoming_state = port->upcoming_state;
-> > +             if (port->upcoming_state != INVALID_STATE) {
-> > +                     port->upcoming_state = INVALID_STATE;
-> > +                     tcpm_set_state(port, upcoming_state, 0);
-> > +                     break;
-> > +             }
->
-> I don't see the local upcoming_state variable is being used anywhere
-> outside of these conditions, so please set it inside the condition
-> block:
->
->                 if (port->upcoming_state != INVALID_STATE) {
->                         upcoming_state = port->upcoming_state;
->                         port->upcoming_state = INVALID_STATE;
->                         tcpm_set_state(port, upcoming_state, 0);
->                         break;
->                 }
->
-> >               tcpm_check_send_discover(port);
-> >               /*
-> >                * 6.3.5
-> > @@ -3389,6 +3712,12 @@ static void run_state_machine(struct tcpm_port *port)
-> >               port->message_id = 0;
-> >               port->rx_msgid = -1;
-> >               port->explicit_contract = false;
-> > +
-> > +             if (port->ams == POWER_ROLE_SWAP ||
-> > +                 port->ams == FAST_ROLE_SWAP)
-> > +                     /* SRC -> SNK POWER/FAST_ROLE_SWAP finished */
-> > +                     tcpm_ams_finish(port);
-> > +
-> >               tcpm_set_state(port, SNK_DISCOVERY, 0);
-> >               break;
-> >       case SNK_DISCOVERY:
-> > @@ -3437,7 +3766,7 @@ static void run_state_machine(struct tcpm_port *port)
-> >                */
-> >               if (port->vbus_never_low) {
-> >                       port->vbus_never_low = false;
-> > -                     tcpm_set_state(port, SOFT_RESET_SEND,
-> > +                     tcpm_set_state(port, SNK_SOFT_RESET,
-> >                                      PD_T_SINK_WAIT_CAP);
-> >               } else {
-> >                       tcpm_set_state(port, hard_reset_state(port),
-> > @@ -3490,9 +3819,23 @@ static void run_state_machine(struct tcpm_port *port)
-> >
-> >               tcpm_swap_complete(port, 0);
-> >               tcpm_typec_connect(port);
-> > -             tcpm_check_send_discover(port);
-> >               mod_enable_frs_delayed_work(port, 0);
-> >               tcpm_pps_complete(port, port->pps_status);
-> > +
-> > +             if (port->ams != NONE_AMS)
-> > +                     tcpm_ams_finish(port);
-> > +             /*
-> > +              * If previous AMS is interrupted, switch to the upcoming
-> > +              * state.
-> > +              */
-> > +             upcoming_state = port->upcoming_state;
-> > +             if (port->upcoming_state != INVALID_STATE) {
-> > +                     port->upcoming_state = INVALID_STATE;
-> > +                     tcpm_set_state(port, upcoming_state, 0);
-> > +                     break;
-> > +             }
->
-> Same here.
->
-> > +             tcpm_check_send_discover(port);
-> >               power_supply_changed(port->psy);
-> >               break;
-> >
-> > @@ -3513,8 +3856,14 @@ static void run_state_machine(struct tcpm_port *port)
-> >
-> >       /* Hard_Reset states */
-> >       case HARD_RESET_SEND:
-> > -             tcpm_pd_transmit(port, TCPC_TX_HARD_RESET, NULL);
-> > -             tcpm_set_state(port, HARD_RESET_START, 0);
-> > +             if (port->ams != NONE_AMS)
-> > +                     tcpm_ams_finish(port);
-> > +             /*
-> > +              * State machine will be directed to HARD_RESET_START,
-> > +              * thus set upcoming_state to INVALID_STATE.
-> > +              */
-> > +             port->upcoming_state = INVALID_STATE;
-> > +             tcpm_ams_start(port, HARD_RESET);
-> >               break;
-> >       case HARD_RESET_START:
-> >               port->sink_cap_done = false;
-> > @@ -3558,6 +3907,8 @@ static void run_state_machine(struct tcpm_port *port)
-> >       case SRC_HARD_RESET_VBUS_ON:
-> >               tcpm_set_vconn(port, true);
-> >               tcpm_set_vbus(port, true);
-> > +             if (port->ams == HARD_RESET)
-> > +                     tcpm_ams_finish(port);
-> >               port->tcpc->set_pd_rx(port->tcpc, true);
-> >               tcpm_set_attached_state(port, true);
-> >               tcpm_set_state(port, SRC_UNATTACHED, PD_T_PS_SOURCE_ON);
-> > @@ -3579,6 +3930,8 @@ static void run_state_machine(struct tcpm_port *port)
-> >               tcpm_set_state(port, SNK_HARD_RESET_SINK_ON, PD_T_SAFE_0V);
-> >               break;
-> >       case SNK_HARD_RESET_WAIT_VBUS:
-> > +             if (port->ams == HARD_RESET)
-> > +                     tcpm_ams_finish(port);
-> >               /* Assume we're disconnected if VBUS doesn't come back. */
-> >               tcpm_set_state(port, SNK_UNATTACHED,
-> >                              PD_T_SRC_RECOVER_MAX + PD_T_SRC_TURN_ON);
-> > @@ -3606,6 +3959,8 @@ static void run_state_machine(struct tcpm_port *port)
-> >                                              5000);
-> >                       tcpm_set_charge(port, true);
-> >               }
-> > +             if (port->ams == HARD_RESET)
-> > +                     tcpm_ams_finish(port);
-> >               tcpm_set_attached_state(port, true);
-> >               tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, VSAFE5V);
-> >               tcpm_set_state(port, SNK_STARTUP, 0);
-> > @@ -3616,10 +3971,19 @@ static void run_state_machine(struct tcpm_port *port)
-> >               port->message_id = 0;
-> >               port->rx_msgid = -1;
-> >               tcpm_pd_send_control(port, PD_CTRL_ACCEPT);
-> > -             if (port->pwr_role == TYPEC_SOURCE)
-> > -                     tcpm_set_state(port, SRC_SEND_CAPABILITIES, 0);
-> > -             else
-> > +             if (port->pwr_role == TYPEC_SOURCE) {
-> > +                     port->upcoming_state = SRC_SEND_CAPABILITIES;
-> > +                     tcpm_ams_start(port, POWER_NEGOTIATION);
-> > +             } else {
-> >                       tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
-> > +             }
-> > +             break;
-> > +     case SRC_SOFT_RESET_WAIT_SNK_TX:
-> > +     case SNK_SOFT_RESET:
-> > +             if (port->ams != NONE_AMS)
-> > +                     tcpm_ams_finish(port);
-> > +             port->upcoming_state = SOFT_RESET_SEND;
-> > +             tcpm_ams_start(port, SOFT_RESET_AMS);
-> >               break;
-> >       case SOFT_RESET_SEND:
-> >               port->message_id = 0;
-> > @@ -3886,6 +4250,19 @@ static void run_state_machine(struct tcpm_port *port)
-> >                              tcpm_default_state(port),
-> >                              port->vbus_present ? PD_T_PS_SOURCE_OFF : 0);
-> >               break;
-> > +
-> > +     /* AMS intermediate state */
-> > +     case AMS_START:
-> > +             if (port->upcoming_state == INVALID_STATE) {
-> > +                     tcpm_set_state(port, port->pwr_role == TYPEC_SOURCE ?
-> > +                                    SRC_READY : SNK_READY, 0);
-> > +                     break;
-> > +             }
-> > +
-> > +             upcoming_state = port->upcoming_state;
-> > +             port->upcoming_state = INVALID_STATE;
-> > +             tcpm_set_state(port, upcoming_state, 0);
-> > +             break;
-> >       default:
-> >               WARN(1, "Unexpected port state %d\n", port->state);
-> >               break;
-> > @@ -4313,6 +4690,8 @@ static void _tcpm_pd_hard_reset(struct tcpm_port *port)
-> >       if (port->bist_request == BDO_MODE_TESTDATA && port->tcpc->set_bist_data)
-> >               port->tcpc->set_bist_data(port->tcpc, false);
-> >
-> > +     if (port->ams != NONE_AMS)
-> > +             port->ams = NONE_AMS;
-> >       /*
-> >        * If we keep receiving hard reset requests, executing the hard reset
-> >        * must have failed. Revert to error recovery if that happens.
-> > @@ -4501,7 +4880,12 @@ static int tcpm_dr_set(struct typec_port *p, enum typec_data_role data)
-> >               port->non_pd_role_swap = true;
-> >               tcpm_set_state(port, PORT_RESET, 0);
-> >       } else {
-> > -             tcpm_set_state(port, DR_SWAP_SEND, 0);
-> > +             port->upcoming_state = DR_SWAP_SEND;
-> > +             ret = tcpm_ams_start(port, DATA_ROLE_SWAP);
-> > +             if (ret == -EAGAIN) {
-> > +                     port->upcoming_state = INVALID_STATE;
-> > +                     goto port_unlock;
-> > +             }
-> >       }
-> >
-> >       port->swap_status = 0;
-> > @@ -4547,10 +4931,16 @@ static int tcpm_pr_set(struct typec_port *p, enum typec_role role)
-> >               goto port_unlock;
-> >       }
-> >
-> > +     port->upcoming_state = PR_SWAP_SEND;
-> > +     ret = tcpm_ams_start(port, POWER_ROLE_SWAP);
-> > +     if (ret == -EAGAIN) {
-> > +             port->upcoming_state = INVALID_STATE;
-> > +             goto port_unlock;
-> > +     }
-> > +
-> >       port->swap_status = 0;
-> >       port->swap_pending = true;
-> >       reinit_completion(&port->swap_complete);
-> > -     tcpm_set_state(port, PR_SWAP_SEND, 0);
-> >       mutex_unlock(&port->lock);
-> >
-> >       if (!wait_for_completion_timeout(&port->swap_complete,
-> > @@ -4586,10 +4976,16 @@ static int tcpm_vconn_set(struct typec_port *p, enum typec_role role)
-> >               goto port_unlock;
-> >       }
-> >
-> > +     port->upcoming_state = VCONN_SWAP_SEND;
-> > +     ret = tcpm_ams_start(port, VCONN_SWAP);
-> > +     if (ret == -EAGAIN) {
-> > +             port->upcoming_state = INVALID_STATE;
-> > +             goto port_unlock;
-> > +     }
-> > +
-> >       port->swap_status = 0;
-> >       port->swap_pending = true;
-> >       reinit_completion(&port->swap_complete);
-> > -     tcpm_set_state(port, VCONN_SWAP_SEND, 0);
-> >       mutex_unlock(&port->lock);
-> >
-> >       if (!wait_for_completion_timeout(&port->swap_complete,
-> > @@ -4654,6 +5050,13 @@ static int tcpm_pps_set_op_curr(struct tcpm_port *port, u16 op_curr)
-> >               goto port_unlock;
-> >       }
-> >
-> > +     port->upcoming_state = SNK_NEGOTIATE_PPS_CAPABILITIES;
-> > +     ret = tcpm_ams_start(port, POWER_NEGOTIATION);
-> > +     if (ret == -EAGAIN) {
-> > +             port->upcoming_state = INVALID_STATE;
-> > +             goto port_unlock;
-> > +     }
-> > +
-> >       /* Round down operating current to align with PPS valid steps */
-> >       op_curr = op_curr - (op_curr % RDO_PROG_CURR_MA_STEP);
-> >
-> > @@ -4661,7 +5064,6 @@ static int tcpm_pps_set_op_curr(struct tcpm_port *port, u16 op_curr)
-> >       port->pps_data.op_curr = op_curr;
-> >       port->pps_status = 0;
-> >       port->pps_pending = true;
-> > -     tcpm_set_state(port, SNK_NEGOTIATE_PPS_CAPABILITIES, 0);
-> >       mutex_unlock(&port->lock);
-> >
-> >       if (!wait_for_completion_timeout(&port->pps_complete,
-> > @@ -4710,6 +5112,13 @@ static int tcpm_pps_set_out_volt(struct tcpm_port *port, u16 out_volt)
-> >               goto port_unlock;
-> >       }
-> >
-> > +     port->upcoming_state = SNK_NEGOTIATE_PPS_CAPABILITIES;
-> > +     ret = tcpm_ams_start(port, POWER_NEGOTIATION);
-> > +     if (ret == -EAGAIN) {
-> > +             port->upcoming_state = INVALID_STATE;
-> > +             goto port_unlock;
-> > +     }
-> > +
-> >       /* Round down output voltage to align with PPS valid steps */
-> >       out_volt = out_volt - (out_volt % RDO_PROG_VOLT_MV_STEP);
-> >
-> > @@ -4717,7 +5126,6 @@ static int tcpm_pps_set_out_volt(struct tcpm_port *port, u16 out_volt)
-> >       port->pps_data.out_volt = out_volt;
-> >       port->pps_status = 0;
-> >       port->pps_pending = true;
-> > -     tcpm_set_state(port, SNK_NEGOTIATE_PPS_CAPABILITIES, 0);
-> >       mutex_unlock(&port->lock);
-> >
-> >       if (!wait_for_completion_timeout(&port->pps_complete,
-> > @@ -4757,6 +5165,16 @@ static int tcpm_pps_activate(struct tcpm_port *port, bool activate)
-> >               goto port_unlock;
-> >       }
-> >
-> > +     if (activate)
-> > +             port->upcoming_state = SNK_NEGOTIATE_PPS_CAPABILITIES;
-> > +     else
-> > +             port->upcoming_state = SNK_NEGOTIATE_CAPABILITIES;
-> > +     ret = tcpm_ams_start(port, POWER_NEGOTIATION);
-> > +     if (ret == -EAGAIN) {
-> > +             port->upcoming_state = INVALID_STATE;
-> > +             goto port_unlock;
-> > +     }
-> > +
-> >       reinit_completion(&port->pps_complete);
-> >       port->pps_status = 0;
-> >       port->pps_pending = true;
-> > @@ -4765,9 +5183,6 @@ static int tcpm_pps_activate(struct tcpm_port *port, bool activate)
-> >       if (activate) {
-> >               port->pps_data.out_volt = port->supply_voltage;
-> >               port->pps_data.op_curr = port->current_limit;
-> > -             tcpm_set_state(port, SNK_NEGOTIATE_PPS_CAPABILITIES, 0);
-> > -     } else {
-> > -             tcpm_set_state(port, SNK_NEGOTIATE_CAPABILITIES, 0);
-> >       }
-> >       mutex_unlock(&port->lock);
-> >
-> > diff --git a/include/linux/usb/pd.h b/include/linux/usb/pd.h
-> > index bb9a782e1411..79599b90ba55 100644
-> > --- a/include/linux/usb/pd.h
-> > +++ b/include/linux/usb/pd.h
-> > @@ -479,6 +479,7 @@ static inline unsigned int rdo_max_power(u32 rdo)
-> >  #define PD_T_NEWSRC          250     /* Maximum of 275ms */
-> >  #define PD_T_SWAP_SRC_START  20      /* Minimum of 20ms */
-> >  #define PD_T_BIST_CONT_MODE  50      /* 30 - 60 ms */
-> > +#define PD_T_SINK_TX         16      /* 16 - 20 ms */
-> >
-> >  #define PD_T_DRP_TRY         100     /* 75 - 150 ms */
-> >  #define PD_T_DRP_TRYWAIT     600     /* 400 - 800 ms */
-> > diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
-> > index f4a18427f5c4..3af99f85e8b9 100644
-> > --- a/include/linux/usb/tcpm.h
-> > +++ b/include/linux/usb/tcpm.h
-> > @@ -19,6 +19,10 @@ enum typec_cc_status {
-> >       TYPEC_CC_RP_3_0,
-> >  };
-> >
-> > +/* Collision Avoidance */
-> > +#define SINK_TX_NG   TYPEC_CC_RP_1_5
-> > +#define SINK_TX_OK   TYPEC_CC_RP_3_0
-> > +
-> >  enum typec_cc_polarity {
-> >       TYPEC_POLARITY_CC1,
-> >       TYPEC_POLARITY_CC2,
-> > --
-> > 2.29.2.729.g45daf8777d-goog
->
-> thanks,
->
-> --
-> heikki
