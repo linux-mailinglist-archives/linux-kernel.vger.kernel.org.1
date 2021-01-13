@@ -2,206 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D4A2F4034
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6D42F406E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393941AbhAMAnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 19:43:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392434AbhAMAeJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 19:34:09 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D17C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:32:53 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id b131so611617ybc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:32:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=zQ4L+JyR4fS6Zw/UsbG4Lq16kk6cB+cu31P+ux/3yCo=;
-        b=ql7lCCLN0Vi4dQcb6GQ6Qrp5gTZNlhpyTebxqOI9UPcv53OutigfkcnE+PEXkZXn5t
-         xhUjovlh1+RY36gsZTtiFOolMjGJwV7ckXkY62kXNdpn59bgDYtNAiC6U1EDkJo2dLc7
-         1xWLksinunOBKoChx2szDVln2wIdtYG51o+9WXW2cCg6y2IjKMjI0Vj99zjNEXYliMa2
-         vUEzOukvGHC4qCaRlZ20gw8JmY9WaY8I2/fhZXxviUj+dBzj2484i5x6R3FvAGrXAPYt
-         SM0trZBcHZq9yeF/SsFdPJy5D2t3bW5b+GUdbHS/7/Un9y8x89LyY6qsoWuIJjIIsWPK
-         xg4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=zQ4L+JyR4fS6Zw/UsbG4Lq16kk6cB+cu31P+ux/3yCo=;
-        b=OoR1FC7VdZGwexFml/OrDJT1mnHeHU/3rfWzj3CbzU1u4EiKrZDZ/KhCUZ3a/38rZX
-         RNrFvYpruMnPEe5i/Z2w2Khk9cdyj3Q7b56ITmXXkqL+fKgGAWsihaE9FEeySoaJER4d
-         LZWNqlcmQ4MibqlfkQmOn+idUdT9dFxHAGx8S/KAbhwW168QRwPbxlgjvw7hE+WU/vdq
-         DUQFAZR6GiaGkezJR5gJR1PuZzQbes6ujL2AHOVdYdns9PnP7KjssO0Yy2qW7xBQ7HcT
-         /zN4swsDMIqOUdtraGvwiGTrJOr0wKMLcCdURBWkeY++IvUX+vhX39ewKCF4pGVEZvxV
-         XhEw==
-X-Gm-Message-State: AOAM533QykR9y/EE68FNodasmHD/zHGUPNufThVR6DMvBVwB/zIZzluJ
-        TLF/MH06DUgg/jEpVW/J6mj1xdAEebz6Lj21qLU=
-X-Google-Smtp-Source: ABdhPJzoumFmS+f0N4/EEA9rkIp1PJMKNYQ3GTLb8hXE1dg30o5aG4Xe6GonfUs5Mq4O//EAy0Rrxc4Fw5WMimqEUMA=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a05:6902:6b1:: with SMTP id
- j17mr3137592ybt.438.1610497973189; Tue, 12 Jan 2021 16:32:53 -0800 (PST)
-Date:   Tue, 12 Jan 2021 16:32:35 -0800
-In-Reply-To: <20210113003235.716547-1-ndesaulniers@google.com>
-Message-Id: <20210113003235.716547-4-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <20210113003235.716547-1-ndesaulniers@google.com>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v4 3/3] Kbuild: implement support for DWARF v5
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+        id S2393765AbhAMAnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 19:43:13 -0500
+Received: from pi3.com.pl ([185.238.74.129]:35080 "EHLO pi3.com.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392407AbhAMAdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 19:33:55 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by pi3.com.pl (Postfix) with ESMTP id 152784C155F;
+        Wed, 13 Jan 2021 01:33:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pi3.com.pl; s=default;
+        t=1610497993; bh=3GMYFpp/wbG8Z6D6XI2O885Jn+5orTUbhJhnccxH358=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ca51V4lPI1fCGxdyr252WPg2GWATr7c++/brRfmOso261/iFjyVuYm2s+RRHg8Fsr
+         MLNeDHDNvwMf0nmyGELlhtiyXz4SXZfDhv3jPeluPc9jvxgPSG3Ki4l0MwBT8pxQ5n
+         9NQELzqh8Kc8aPsXW3LLd5wNqlBVykls1qE90vkmB2kqrstsKs/EzG3cE5OzFcoROY
+         JcR6LQeEHQY4M3UoCP8DeMg4HfemANaiTb3apo/v8KHtrKzQMXvm8+DNSVE+jER+YF
+         1nLLnHfxEVujScJLDBRunYWMP7/VARUr8CVRARNFLRtj760EZ5LO7ikiL6RIFFGhpb
+         wKJd4i2/CCqzA==
+X-Virus-Scanned: Debian amavisd-new at pi3.com.pl
+Received: from pi3.com.pl ([127.0.0.1])
+        by localhost (pi3.com.pl [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id y2xVfl7luCgv; Wed, 13 Jan 2021 01:33:10 +0100 (CET)
+Received: by pi3.com.pl (Postfix, from userid 1000)
+        id 947074C140B; Wed, 13 Jan 2021 01:33:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pi3.com.pl; s=default;
+        t=1610497990; bh=3GMYFpp/wbG8Z6D6XI2O885Jn+5orTUbhJhnccxH358=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c33SNwuNVqNWf8FPvTEfYnc35lPN+MlXQZaOikIu/AuT+j/ERdFZgemyyDS5yYD1B
+         9x2qLlncfjAiKt12sDNlsZ7D/M39gkDcYs8xyHBQnRGz44s/cxJNfj8DQm46P4Gxa6
+         +IB96C8nY3tzwch/UWhIJgJsTl4M64+p+jnzOYA0WBco2psRGTnjvrcNU6JaHcyDkI
+         jy9JaGSpe8r/ZcHoE9fDPewk5z+fSWeslaHh2KZxgO66cX9WdTVYMek1pu9FwlP++d
+         c5rt+C+vnllHktBkWWBWapZ+BmioZPfT4iduFCGK3WP/RLZFQrjp1o4HpIBinNXcpw
+         vD8QbWDQ2Vgow==
+Date:   Wed, 13 Jan 2021 01:33:10 +0100
+From:   Adam Zabrocki <pi3@pi3.com.pl>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Solar Designer <solar@openwall.com>
+Subject: [PATCH] module: invoke kobject uevent before sending LIVE
+ notification
+Message-ID: <20210113003310.GA3040@pi3.com.pl>
+References: <20210110175401.GB32505@pi3.com.pl>
+ <20210111142048.GA27038@linux-8ccs>
+ <20210112001559.GA20073@pi3.com.pl>
+ <20210112104654.GA26122@linux-8ccs>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210112104654.GA26122@linux-8ccs>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DWARF v5 is the latest standard of the DWARF debug info format.
+The recent change "module: delay kobject uevent until after module init
+call", while helping avoid a race between udev/systemd and the module
+loader, made it unnecessarily more difficult to monitor kernel module
+integrity by out-of-tree projects such as Linux Kernel Runtime Guard.
 
-Feature detection of DWARF5 is onerous, especially given that we've
-removed $(AS), so we must query $(CC) for DWARF5 assembler directive
-support.  GNU `as` only recently gained support for specifying
--gdwarf-5.
+Specifically, that change delayed the kobject uevent unnecessarily too far,
+to until after sending a MODULE_STATE_LIVE notification.  As the uevent
+modifies internal state of the KOBJ itself, this violated the assumption
+(non-guaranteed yet handy while we can maintain it) that the KOBJ remains
+consistent and can be integrity-checked as soon as the module is LIVE.
 
-The DWARF version of a binary can be validated with:
-$ llvm-dwarfdump vmlinux | head -n 4 | grep version
-or
-$ readelf --debug-dump=info vmlinux 2>/dev/null | grep Version
+To make all of these projects happy at once, move the kobject KOBJ_ADD
+uevent to just before sending the MODULE_STATE_LIVE notification.
 
-DWARF5 wins significantly in terms of size when mixed with compression
-(CONFIG_DEBUG_INFO_COMPRESSED).
-
-363M    vmlinux.clang12.dwarf5.compressed
-434M    vmlinux.clang12.dwarf4.compressed
-439M    vmlinux.clang12.dwarf2.compressed
-457M    vmlinux.clang12.dwarf5
-536M    vmlinux.clang12.dwarf4
-548M    vmlinux.clang12.dwarf2
-
-515M    vmlinux.gcc10.2.dwarf5.compressed
-599M    vmlinux.gcc10.2.dwarf4.compressed
-624M    vmlinux.gcc10.2.dwarf2.compressed
-630M    vmlinux.gcc10.2.dwarf5
-765M    vmlinux.gcc10.2.dwarf4
-809M    vmlinux.gcc10.2.dwarf2
-
-Though the quality of debug info is harder to quantify; size is not a
-proxy for quality.
-
-Jakub notes:
-  All [GCC] 5.1 - 6.x did was start accepting -gdwarf-5 as experimental
-  option that enabled some small DWARF subset (initially only a few
-  DW_LANG_* codes newly added to DWARF5 drafts).  Only GCC 7 (released
-  after DWARF 5 has been finalized) started emitting DWARF5 section
-  headers and got most of the DWARF5 changes in...
-
-Version check GCC so that we don't need to worry about the difference in
-command line args between GNU readelf and llvm-readelf/llvm-dwarfdump to
-validate the DWARF Version in the assembler feature detection script.
-
-Link: http://www.dwarfstd.org/doc/DWARF5.pdf
-Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-Suggested-by: Jakub Jelinek <jakub@redhat.com>
-Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-Suggested-by: Fangrui Song <maskray@google.com>
-Suggested-by: Caroline Tice <cmtice@google.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Fixes: 38dc717e9715 ("module: delay kobject uevent until after module init call")
+Signed-off-by: Adam Zabrocki <pi3@pi3.com.pl>
 ---
- Makefile                          |  1 +
- include/asm-generic/vmlinux.lds.h |  6 +++++-
- lib/Kconfig.debug                 | 17 +++++++++++++++++
- scripts/test_dwarf5_support.sh    |  9 +++++++++
- 4 files changed, 32 insertions(+), 1 deletion(-)
- create mode 100755 scripts/test_dwarf5_support.sh
+ kernel/module.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 656fff17b331..1067cfd98249 100644
---- a/Makefile
-+++ b/Makefile
-@@ -828,6 +828,7 @@ endif
- 
- dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
- dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-+dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
- DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
- ifneq ($(dwarf-version-y)$(LLVM_IAS),21)
- # Binutils 2.35+ required for -gdwarf-4+ support.
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 49944f00d2b3..37dc4110875e 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -843,7 +843,11 @@
- 		.debug_types	0 : { *(.debug_types) }			\
- 		/* DWARF 5 */						\
- 		.debug_macro	0 : { *(.debug_macro) }			\
--		.debug_addr	0 : { *(.debug_addr) }
-+		.debug_addr	0 : { *(.debug_addr) }			\
-+		.debug_line_str	0 : { *(.debug_line_str) }		\
-+		.debug_loclists	0 : { *(.debug_loclists) }		\
-+		.debug_rnglists	0 : { *(.debug_rnglists) }		\
-+		.debug_str_offsets	0 : { *(.debug_str_offsets) }
- 
- /* Stabs debugging sections. */
- #define STABS_DEBUG							\
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index e80770fac4f0..60a4f5e27ada 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -273,6 +273,23 @@ config DEBUG_INFO_DWARF4
- 	  It makes the debug information larger, but it significantly
- 	  improves the success of resolving variables in gdb on optimized code.
- 
-+config DEBUG_INFO_DWARF5
-+	bool "Generate DWARF Version 5 debuginfo"
-+	depends on GCC_VERSION >= 50000 || CC_IS_CLANG
-+	depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
-+	help
-+	  Generate DWARF v5 debug info. Requires binutils 2.35, gcc 5.0+ (gcc
-+	  5.0+ accepts the -gdwarf-5 flag but only had partial support for some
-+	  draft features until 7.0), and gdb 8.0+.
-+
-+	  Changes to the structure of debug info in Version 5 allow for around
-+	  15-18% savings in resulting image and debug info section sizes as
-+	  compared to DWARF Version 4. DWARF Version 5 standardizes previous
-+	  extensions such as accelerators for symbol indexing and the format
-+	  for fission (.dwo/.dwp) files. Users may not want to select this
-+	  config if they rely on tooling that has not yet been updated to
-+	  support DWARF Version 5.
-+
- endchoice # "DWARF version"
- 
- config DEBUG_INFO_BTF
-diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
-new file mode 100755
-index 000000000000..142a1b5c7fa2
---- /dev/null
-+++ b/scripts/test_dwarf5_support.sh
-@@ -0,0 +1,9 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+
-+# Test that assembler accepts -gdwarf-5 and .file 0 directives, which were bugs
-+# in binutils < 2.35.
-+# https://sourceware.org/bugzilla/show_bug.cgi?id=25612
-+# https://sourceware.org/bugzilla/show_bug.cgi?id=25614
-+set -e
-+echo '.file 0 "filename"' | $* -gdwarf-5 -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
+diff --git a/kernel/module.c b/kernel/module.c
+index 4bf30e4b3eaa..7d56b1b07237 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -3681,14 +3681,14 @@ static noinline int do_init_module(struct module *mod)
+                dump_stack();
+        }
 
++       /* Delay uevent until module has finished its init routine */
++       kobject_uevent(&mod->mkobj.kobj, KOBJ_ADD);
++
+        /* Now it's a first class citizen! */
+        mod->state = MODULE_STATE_LIVE;
+        blocking_notifier_call_chain(&module_notify_list,
+                                     MODULE_STATE_LIVE, mod);
+
+-       /* Delay uevent until module has finished its init routine */
+-       kobject_uevent(&mod->mkobj.kobj, KOBJ_ADD);
+-
+        /*
+         * We need to finish all async code before the module init sequence
+         * is done.  This has potential to deadlock.  For example, a newly
