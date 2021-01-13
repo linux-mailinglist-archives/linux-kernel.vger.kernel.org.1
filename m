@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1FF2F4BA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C02C2F4BA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbhAMMte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 07:49:34 -0500
-Received: from verein.lst.de ([213.95.11.211]:60093 "EHLO verein.lst.de"
+        id S1726877AbhAMMt4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Jan 2021 07:49:56 -0500
+Received: from mx1.emlix.com ([136.243.223.33]:34712 "EHLO mx1.emlix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725857AbhAMMtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 07:49:33 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id D787F68AFE; Wed, 13 Jan 2021 13:48:47 +0100 (CET)
-Date:   Wed, 13 Jan 2021 13:48:47 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     robh+dt@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, joro@8bytes.org, will@kernel.org,
-        frowand.list@gmail.com, konrad.wilk@oracle.com,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, hch@lst.de, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, grant.likely@arm.com, xypron.glpk@gmx.de,
-        treding@nvidia.com, mingo@kernel.org, bauerman@linux.ibm.com,
-        peterz@infradead.org, gregkh@linuxfoundation.org,
-        saravanak@google.com, rafael.j.wysocki@intel.com,
-        heikki.krogerus@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        rdunlap@infradead.org, dan.j.williams@intel.com,
-        bgolaszewski@baylibre.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        iommu@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
-        tfiga@chromium.org, drinkcat@chromium.org
-Subject: Re: [RFC PATCH v3 4/6] swiotlb: Add restricted DMA alloc/free
- support.
-Message-ID: <20210113124847.GC1383@lst.de>
-References: <20210106034124.30560-1-tientzu@chromium.org> <20210106034124.30560-5-tientzu@chromium.org>
+        id S1725809AbhAMMtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 07:49:55 -0500
+Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.emlix.com (Postfix) with ESMTPS id 5386F5FA09;
+        Wed, 13 Jan 2021 13:49:13 +0100 (CET)
+From:   Rolf Eike Beer <eb@emlix.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: [PATCH v5] scripts: use pkg-config to locate libcrypto
+Date:   Wed, 13 Jan 2021 13:49:12 +0100
+Message-ID: <3394639.6NgGvCfkNl@devpool47>
+Organization: emlix GmbH
+In-Reply-To: <2278760.8Yd83Mgoko@devpool35>
+References: <20538915.Wj2CyUsUYa@devpool35> <2278760.8Yd83Mgoko@devpool35>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106034124.30560-5-tientzu@chromium.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +#ifdef CONFIG_SWIOTLB
-> +	if (unlikely(dev->dma_io_tlb_mem))
-> +		return swiotlb_alloc(dev, size, dma_handle, attrs);
-> +#endif
+Otherwise build fails if the headers are not in the default location. While at
+it also ask pkg-config for the libs, with fallback to the existing value.
 
-Another place where the dma_io_tlb_mem is useful to avoid the ifdef.
+Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+Cc: stable@vger.kernel.org # 5.6.x
+---
+ scripts/Makefile | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-> -phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
-> -		size_t mapping_size, size_t alloc_size,
-> -		enum dma_data_direction dir, unsigned long attrs)
-> +static int swiotlb_tbl_find_free_region(struct device *hwdev,
-> +					dma_addr_t tbl_dma_addr,
-> +					size_t alloc_size,
-> +					unsigned long attrs)
-
-> +static void swiotlb_tbl_release_region(struct device *hwdev, int index,
-> +				       size_t size)
-
-This refactoring should be another prep patch.
+This has been sent multiple times since more than 2 year, please pick it up 
+through whatever tree. I need to patch every new stable kernel version to 
+make them build in our chrooted environment.
 
 
-> +void *swiotlb_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle,
-> +		    unsigned long attrs)
+diff --git a/scripts/Makefile b/scripts/Makefile
+index b5418ec587fb..7553692d241f 100644
+--- a/scripts/Makefile
++++ b/scripts/Makefile
+@@ -3,6 +3,11 @@
+ # scripts contains sources for various helper programs used throughout
+ # the kernel for the build process.
+ 
++PKG_CONFIG ?= pkg-config
++
++CRYPTO_LIBS = $(shell $(PKG_CONFIG) --libs libcrypto 2> /dev/null || echo -lcrypto)
++CRYPTO_CFLAGS = $(shell $(PKG_CONFIG) --cflags libcrypto 2> /dev/null)
++
+ hostprogs-always-$(CONFIG_BUILD_BIN2C)			+= bin2c
+ hostprogs-always-$(CONFIG_KALLSYMS)			+= kallsyms
+ hostprogs-always-$(BUILD_C_RECORDMCOUNT)		+= recordmcount
+@@ -14,8 +19,9 @@ hostprogs-always-$(CONFIG_SYSTEM_EXTRA_CERTIFICATE)	+= insert-sys-cert
+ 
+ HOSTCFLAGS_sorttable.o = -I$(srctree)/tools/include
+ HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
+-HOSTLDLIBS_sign-file = -lcrypto
+-HOSTLDLIBS_extract-cert = -lcrypto
++HOSTLDLIBS_sign-file = $(CRYPTO_LIBS)
++HOSTCFLAGS_extract-cert.o = $(CRYPTO_CFLAGS)
++HOSTLDLIBS_extract-cert = $(CRYPTO_LIBS)
+ 
+ ifdef CONFIG_UNWINDER_ORC
+ ifeq ($(ARCH),x86_64)
+-- 
+2.29.2
+-- 
+Rolf Eike Beer, emlix GmbH, http://www.emlix.com
+Fon +49 551 30664-0, Fax +49 551 30664-11
+Gothaer Platz 3, 37083 Göttingen, Germany
+Sitz der Gesellschaft: Göttingen, Amtsgericht Göttingen HR B 3160
+Geschäftsführung: Heike Jordan, Dr. Uwe Kracke – Ust-IdNr.: DE 205 198 055
 
-I'd rather have the names convey there are for the per-device bounce
-buffer in some form.
+emlix - smart embedded open source
 
-> +	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
 
-While we're at it I wonder if the io_tlb is something we could change
-while we're at it.  Maybe replace io_tlb_mem with struct swiotlb
-and rename the field in struct device to dev_swiotlb?
 
-> +	int index;
-> +	void *vaddr;
-> +	phys_addr_t tlb_addr;
-> +
-> +	size = PAGE_ALIGN(size);
-> +	index = swiotlb_tbl_find_free_region(dev, mem->start, size, attrs);
-> +	if (index < 0)
-> +		return NULL;
-> +
-> +	tlb_addr = mem->start + (index << IO_TLB_SHIFT);
-> +	*dma_handle = phys_to_dma_unencrypted(dev, tlb_addr);
-> +
-> +	if (!dev_is_dma_coherent(dev)) {
-> +		unsigned long pfn = PFN_DOWN(tlb_addr);
-> +
-> +		/* remove any dirty cache lines on the kernel alias */
-> +		arch_dma_prep_coherent(pfn_to_page(pfn), size);
-
-Can we hook in somewhat lower level in the dma-direct code so that all
-the remapping in dma-direct can be reused instead of duplicated?  That
-also becomes important if we want to use non-remapping uncached support,
-e.g. on mips or x86, or the direct changing of the attributes that Will
-planned to look into for arm64.
