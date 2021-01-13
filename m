@@ -2,153 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5C02F5172
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE072F517E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbhAMRwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:52:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbhAMRwH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:52:07 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48491C061575;
-        Wed, 13 Jan 2021 09:51:27 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id w79so2959562qkb.5;
-        Wed, 13 Jan 2021 09:51:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=phNMVGOT8C1SF9CCO/PujkTaq0U+NXoha8y1/r4kCQY=;
-        b=kT4D5XuLD2lvcKR+ovpDo4Eh/HtUuSJFKh0+5hJbBIgDVlSsh8/yMC2KAUTSNcsR6Q
-         6Tqbi0+2IOrctM/0PBwx452S4rw9x9xtWxNNCP7MAv3gmv9yUWGyAchKgll6r39N6xaB
-         JqXNbOOD8YgqId8PzKj0Ssfgto75YwbWZrAj4MaJ8WBpNe+ZTgu5s0cRMN0AfJ1Q3IZd
-         NR+tPpRB/9qZy6iDrJyhoZv+qk6QNZT5+qeKaWEgySJbBRqICAs3TFAD08TrZ3VjW7pF
-         p4xZnYJd3SWwwnv7o+ZaJVcBTvY3+SRCl0A2FLmysteyL1KiOyE/cPtJNJeFhcqA2uKD
-         WLyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=phNMVGOT8C1SF9CCO/PujkTaq0U+NXoha8y1/r4kCQY=;
-        b=GlDFo0eD4+wI2btRmCzolsNk55EasZOucb+F8xAq1Houg/BbopzsZ2rA2zPgdMlWfR
-         cZd/6i6NtQE68fMMZwcR9HHXg6KRJKinIGun+8+aKWpcwZaUQCTSOsxjt5x3EjT/0Whm
-         HuCxHUlT/rycI1iX0SoWcx/mp4feMgOLL0uuZP4rkJ6ihVDAXcjCQtEZPfJBOq2GVspr
-         iIzzwI5B0qH6IclSgZfCRrIUl80TkdZUbbdOEXnDOKsKH4JH7Y69ADtkqGvjEXBaiN+o
-         y/GALryXbkxFDo4N1yst9e5A7bU13ZlQ9lupMqph47BV7YZGj8E0bBP6jRcb+lejKJDX
-         YOXQ==
-X-Gm-Message-State: AOAM533i00SYmkuI3ZkuVsCA6TJJwLQHSSIrGsm+EvAM1DgBkzhnCkkh
-        nf9uoMWhLBAl+0D6n790/cM=
-X-Google-Smtp-Source: ABdhPJxs33thgKGgieEbI1p2yYVwC5v03/TUhLo1O0DVEAGaAnGckUHh8P1SNcdLqKgSEvAqdPXsJw==
-X-Received: by 2002:ae9:ef12:: with SMTP id d18mr3347716qkg.473.1610560286030;
-        Wed, 13 Jan 2021 09:51:26 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id k7sm1340519qtg.65.2021.01.13.09.51.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 09:51:25 -0800 (PST)
-Date:   Wed, 13 Jan 2021 10:51:23 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>
-Subject: Re: [PATCH v4 2/3] Kbuild: make DWARF version a choice
-Message-ID: <20210113175123.GB4158893@ubuntu-m3-large-x86>
-References: <20210113003235.716547-1-ndesaulniers@google.com>
- <20210113003235.716547-3-ndesaulniers@google.com>
+        id S1728145AbhAMRwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:52:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728028AbhAMRww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 12:52:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AE8F23444;
+        Wed, 13 Jan 2021 17:52:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610560331;
+        bh=DlYHZfCCpmtKD2iA6iFDDmBTIg4oFcFxKoR31k+rmT8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cd2LEA8JLCiaW87SV/HkvynYXNoBxc2A9QLFkSMJtQBqkut6/Zj18uD3G2Y0uMdcF
+         Bo5uL8StWQKJeA1t6lJ45/VlIypGlE5AF3TQ05o/vxlDb7g/Z+Fnpf8jvYcjUdwy0S
+         j0kLXZRNoDD9zS7wboi1EAe9PoNeXwwEBaNVBdKMTO6r+/JYFtAv4mpDJ4w6+ThHkh
+         FiF4Qx94em0NlqC+Rtgjl7qvqe8fxOiXX9WQs3oYvNDOP2LVEISd5CHr71ZDOGrXP5
+         H9ax/LxX9orjkeUORnh6E3/EX16H45lRfCcHrMErjdutXehKj69C272uh/dZX9ya7R
+         iSfwz9pM6l1/Q==
+Received: by mail-oi1-f177.google.com with SMTP id d189so2990288oig.11;
+        Wed, 13 Jan 2021 09:52:11 -0800 (PST)
+X-Gm-Message-State: AOAM533UcbCS2kdiFGi0BQaMSAI6xrIhq1EMOwt6eh33+qZjFiQNSlm5
+        hvaAg1qBqUR5FeDFkjKfTonpIIqZykVA6T+V040=
+X-Google-Smtp-Source: ABdhPJzzvtcIKBlmebJ+RPFNOL6VH7OwwahKaSDopkWZ8XRgq/3f31wHNIqnED4Q2va6+gbrWfLNGEdlzOy2HD3vNhg=
+X-Received: by 2002:aca:210f:: with SMTP id 15mr263013oiz.174.1610560330694;
+ Wed, 13 Jan 2021 09:52:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113003235.716547-3-ndesaulniers@google.com>
+References: <20210107223424.4135538-1-arnd@kernel.org>
+In-Reply-To: <20210107223424.4135538-1-arnd@kernel.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 13 Jan 2021 18:51:59 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGLO3TxH8oVYq+iT1f_kdunobY9C7a6dmFNmFQoSnzQcQ@mail.gmail.com>
+Message-ID: <CAMj1kXGLO3TxH8oVYq+iT1f_kdunobY9C7a6dmFNmFQoSnzQcQ@mail.gmail.com>
+Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 04:32:34PM -0800, Nick Desaulniers wrote:
-> Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
-> explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
-> way that's forward compatible with existing configs, and makes adding
-> future versions more straightforward.
-> 
-> Suggested-by: Fangrui Song <maskray@google.com>
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+On Thu, 7 Jan 2021 at 23:34, Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> When 5-level page tables are enabled, clang triggers a BUILD_BUG_ON():
+>
+> x86_64-linux-ld: arch/x86/platform/efi/efi_64.o: in function `efi_sync_low_kernel_mappings':
+> efi_64.c:(.text+0x22c): undefined reference to `__compiletime_assert_354'
+>
+> Use the same method as in commit c65e774fb3f6 ("x86/mm: Make PGDIR_SHIFT
+> and PTRS_PER_P4D variable") and change it to MAYBE_BUILD_BUG_ON(),
+> so it only triggers for constant input.
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/256
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+
+This can go via the x86 tree directly, IMO
 
 > ---
->  Makefile          | 14 +++++++++-----
->  lib/Kconfig.debug | 21 ++++++++++++++++-----
->  2 files changed, 25 insertions(+), 10 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index d49c3f39ceb4..656fff17b331 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -826,12 +826,16 @@ else
->  DEBUG_CFLAGS	+= -g
->  endif
->  
-> -ifneq ($(LLVM_IAS),1)
-> -KBUILD_AFLAGS	+= -Wa,-gdwarf-2
-> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
-> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-> +DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
-> +ifneq ($(dwarf-version-y)$(LLVM_IAS),21)
-> +# Binutils 2.35+ required for -gdwarf-4+ support.
-> +dwarf-aflag	:= $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-version-y))
-> +ifdef CONFIG_CC_IS_CLANG
-> +DEBUG_CFLAGS	+= $(dwarf-aflag)
->  endif
-> -
-> -ifdef CONFIG_DEBUG_INFO_DWARF4
-> -DEBUG_CFLAGS	+= -gdwarf-4
-> +KBUILD_AFLAGS	+= $(dwarf-aflag)
->  endif
->  
->  ifdef CONFIG_DEBUG_INFO_REDUCED
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index dd7d8d35b2a5..e80770fac4f0 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -256,13 +256,24 @@ config DEBUG_INFO_SPLIT
->  	  to know about the .dwo files and include them.
->  	  Incompatible with older versions of ccache.
->  
-> +choice
-> +	prompt "DWARF version"
-> +	help
-> +	  Which version of DWARF debug info to emit.
-> +
-> +config DEBUG_INFO_DWARF2
-> +	bool "Generate DWARF Version 2 debuginfo"
-> +	help
-> +	  Generate DWARF v2 debug info.
-> +
->  config DEBUG_INFO_DWARF4
-> -	bool "Generate dwarf4 debuginfo"
-> +	bool "Generate DWARF Version 4 debuginfo"
->  	help
-> -	  Generate dwarf4 debug info. This requires recent versions
-> -	  of gcc and gdb. It makes the debug information larger.
-> -	  But it significantly improves the success of resolving
-> -	  variables in gdb on optimized code.
-> +	  Generate DWARF v4 debug info. This requires gcc 4.5+ and gdb 7.0+.
-> +	  It makes the debug information larger, but it significantly
-> +	  improves the success of resolving variables in gdb on optimized code.
-> +
-> +endchoice # "DWARF version"
->  
->  config DEBUG_INFO_BTF
->  	bool "Generate BTF typeinfo"
-> -- 
-> 2.30.0.284.gd98b1dd5eaa7-goog
-> 
+>  arch/x86/platform/efi/efi_64.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
+> index e1e8d4e3a213..62bb1616b4a5 100644
+> --- a/arch/x86/platform/efi/efi_64.c
+> +++ b/arch/x86/platform/efi/efi_64.c
+> @@ -137,8 +137,8 @@ void efi_sync_low_kernel_mappings(void)
+>          * As with PGDs, we share all P4D entries apart from the one entry
+>          * that covers the EFI runtime mapping space.
+>          */
+> -       BUILD_BUG_ON(p4d_index(EFI_VA_END) != p4d_index(MODULES_END));
+> -       BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != (EFI_VA_END & P4D_MASK));
+> +       MAYBE_BUILD_BUG_ON(p4d_index(EFI_VA_END) != p4d_index(MODULES_END));
+> +       MAYBE_BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != (EFI_VA_END & P4D_MASK));
+>
+>         pgd_efi = efi_pgd + pgd_index(EFI_VA_END);
+>         pgd_k = pgd_offset_k(EFI_VA_END);
+> --
+> 2.29.2
+>
