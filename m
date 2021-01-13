@@ -2,148 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5AF2F4AD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:02:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B35162F4AE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727524AbhAML6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:58:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:35246 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727233AbhAML6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:58:41 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E7351042;
-        Wed, 13 Jan 2021 03:57:55 -0800 (PST)
-Received: from [10.57.55.99] (unknown [10.57.55.99])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 262FA3F70D;
-        Wed, 13 Jan 2021 03:57:50 -0800 (PST)
-Subject: Re: [PATCH v6 3/4] scmi-cpufreq: Get opp_shared_cpus from opp-v2 for
- EM
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, sudeep.holla@arm.com, rjw@rjwysocki.net,
-        vireshk@kernel.org, cristian.marussi@arm.com,
-        morten.rasmussen@arm.com, chris.redpath@arm.com
-References: <20210111154524.20196-1-nicola.mazzucato@arm.com>
- <20210111154524.20196-4-nicola.mazzucato@arm.com>
- <20210112112041.7kjjrrgsqfbuq5mh@vireshk-i7>
-From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
-Message-ID: <9264baca-e4af-c4fd-1de6-17a6147151ef@arm.com>
-Date:   Wed, 13 Jan 2021 12:00:32 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726523AbhAMMBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 07:01:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbhAMMBd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 07:01:33 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCB8C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 04:00:52 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id u17so3552030iow.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 04:00:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+LA1GuJKcbqCWCGBVFrg1djl2K55ygdfBsa654vAMCo=;
+        b=pk3475P6QFH6JUljjpgIKcK5d81dUjL0j2Y8ESVQEaERi2FSlCmS/bwsn9pBDXUuTF
+         jOFcPzXedDxMdVdH8DRYkMaIdOth8TwaQRyVQuHwMC/ojCwRxgcweLqrc1yv/lMZ1Ekj
+         NR6lVkDSa+rl8oEWwGl0PWyAaRAijgNege86C8eFYqcrX0KMEYNZ/q23pu/jAPEEQFek
+         e+zpXtcPaMImCxHMTHRfFukwosFhMNeebntsayZewyRWgV3xRcdwi9uaQSlIZDGFSuYd
+         ty0Xvz6V9AUIs9ooFj64CT/LJ2JGzBwzHpxpLv/BvIjqr3qNPYJpDhdxcIV5eMOKumfZ
+         qc+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+LA1GuJKcbqCWCGBVFrg1djl2K55ygdfBsa654vAMCo=;
+        b=FpA4XOTijwbLBxn//RNsNFlpSkzCWFEFyBJ0vXhKvLpCGfe+i+yGMO/hlHNbCA9oRj
+         +qXwSxNLLFSQLBjF3/OblQszr3Oa3241gHV03OLZH0fBpFrAtNxxXaAQ8eASPrvly3Os
+         4V7y4wBG8p5MFgbMbpYNXM4FPMCIsnT1ZYvfPy0UCRtpRtL+XgeDp7iuxZDBhrnsQbeN
+         LJRER/ENRy8EnGic2XOKvWJRYFGgNXZRN5NQrsSZ7xb+eCPesV0+dgqiqyP65n/VQfYb
+         0SDGAa/F3/sA8jNrws6F+/6th35F21rgavAL4Dk9Yv02ojKaGhekevMD+b47zoeMyo0B
+         3amQ==
+X-Gm-Message-State: AOAM53163JgLF+M02ITsB/VG8PfhKKLLc9mGTTGJpZ3KJgGkrWPzfhkK
+        y3nd52YOgzl2difUt/q2mjf0+kxoqxrga377UiIqdqsZ
+X-Google-Smtp-Source: ABdhPJzfe496emQL2ga8lY0noF9wxQqNekAn647s6h8+4tIT/jgvClJkhw+v1K9MXLUgekCbFDdL9HFrwlhyeOklRgI=
+X-Received: by 2002:a92:2802:: with SMTP id l2mr1946024ilf.47.1610539252174;
+ Wed, 13 Jan 2021 04:00:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210112112041.7kjjrrgsqfbuq5mh@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201226025117.2770-1-jiangshanlai@gmail.com> <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
+ <87o8hv7pnd.fsf@nanos.tec.linutronix.de> <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
+ <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net> <jhj7doj1dr1.mognet@arm.com>
+ <X/yzrJw4UbQsK3KB@hirez.programming.kicks-ass.net> <CAJhGHyA0rfR92W7T7RnhPrmLMkmV4Mb7fUSeG2VEHhsH-pSxsw@mail.gmail.com>
+ <X/236obyM0nqL5+X@hirez.programming.kicks-ass.net> <CAJhGHyDtku6PjLtkq7TGmcQnds5cakR6viki=bPoxxkdC0p-Tw@mail.gmail.com>
+ <X/7VQ8pF5h/K+Cj1@hirez.programming.kicks-ass.net>
+In-Reply-To: <X/7VQ8pF5h/K+Cj1@hirez.programming.kicks-ass.net>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Wed, 13 Jan 2021 20:00:40 +0800
+Message-ID: <CAJhGHyDZMGtHztzZSfBjXzhZfqo07HUTXXDxV3JSyM0+vOwqdA@mail.gmail.com>
+Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jens Axboe <axboe@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh, thanks for looking into this.
-Please see below.
+On Wed, Jan 13, 2021 at 7:11 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Jan 12, 2021 at 11:38:12PM +0800, Lai Jiangshan wrote:
+>
+> > But the hard problem is "how to suppress the warning of
+> > online&!active in __set_cpus_allowed_ptr()" for late spawned
+> > unbound workers during hotplug.
+>
+> I cannot see create_worker() go bad like that.
+>
+> The thing is, it uses:
+>
+>   kthread_bind_mask(, pool->attr->cpumask)
+>   worker_attach_to_pool()
+>     set_cpus_allowed_ptr(, pool->attr->cpumask)
+>
+> which means set_cpus_allowed_ptr() must be a NOP, because the affinity
+> is already set by kthread_bind_mask(). Further, the first wakeup of that
+> worker will then hit:
+>
+>   select_task_rq()
+>     is_cpu_allowed()
+>       is_per_cpu_kthread() -- false
+>     select_fallback_rq()
+>
+>
+> So normally that really isn't a problem. I can only see a tiny hole
+> there, where someone changes the cpumask between kthread_bind_mask() and
+> set_cpus_allowed_ptr(). AFAICT that can be fixed in two ways:
+>
+>  - add wq_pool_mutex around things in create_worker(), or
+>  - move the set_cpus_allowed_ptr() out of worker_attach_to_pool() and
+>    into rescuer_thread().
+>
+> Which then brings us to rescuer_thread...  If we manage to trigger the
+> rescuer during hotplug, then yes, I think that can go wobbly.
 
-On 1/12/21 11:20 AM, Viresh Kumar wrote:
-> On 11-01-21, 15:45, Nicola Mazzucato wrote:
->> By design, SCMI performance domains define the granularity of
->> performance controls, they do not describe any underlying hardware
->> dependencies (although they may match in many cases).
->>
->> It is therefore possible to have some platforms where hardware may have
->> the ability to control CPU performance at different granularity and choose
->> to describe fine-grained performance control through SCMI.
->>
->> In such situations, the energy model would be provided with inaccurate
->> information based on controls, while it still needs to know the
->> performance boundaries.
->>
->> To restore correct functionality, retrieve information of CPUs under the
->> same performance domain from operating-points-v2 in DT, and pass it on to
->> EM.
->>
->> Signed-off-by: Nicola Mazzucato <nicola.mazzucato@arm.com>
->> ---
->>  drivers/cpufreq/scmi-cpufreq.c | 22 ++++++++++++++++++++--
->>  1 file changed, 20 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
->> index 4aa97cdc5997..ff6ba6fab58b 100644
->> --- a/drivers/cpufreq/scmi-cpufreq.c
->> +++ b/drivers/cpufreq/scmi-cpufreq.c
->> @@ -226,9 +226,12 @@ static int scmi_init_device(const struct scmi_handle *handle, int cpu)
->>  	struct em_data_callback em_cb = EM_DATA_CB(scmi_get_cpu_power);
->>  	bool power_scale_mw;
->>  	cpumask_var_t scmi_cpus;
->> +	cpumask_var_t opp_shared_cpus;
->>  
->>  	if (!zalloc_cpumask_var(&scmi_cpus, GFP_KERNEL))
->>  		return -ENOMEM;
->> +	if (!zalloc_cpumask_var(&opp_shared_cpus, GFP_KERNEL))
->> +		return -ENOMEM;
->>  
->>  	cpumask_set_cpu(cpu, scmi_cpus);
->>  
->> @@ -240,6 +243,20 @@ static int scmi_init_device(const struct scmi_handle *handle, int cpu)
->>  		goto free_cpumask;
->>  	}
->>  
->> +	/*
->> +	 * The OPP 'sharing cpus' info may come from dt through an empty opp
->> +	 * table and opp-shared. If found, it takes precedence over the SCMI
->> +	 * domain IDs info.
->> +	 */
->> +	ret = dev_pm_opp_of_get_sharing_cpus(cpu_dev, opp_shared_cpus);
-> 
-> If this succeeds, you shouldn't even try to call the other
-> get_sharing_cpus variant.
+Oh, I forgot set_cpus_allowed_ptr() is NOP when combined with
+kthread_bind_mask()(create_worker()).
 
-IIUC you mean the above scmi_get_sharing_cpus() ?
-It is actually required to do so, cause we need the info of SCMI domains,
-regardless of the clock-sharing lines. When we have opp-sharing cpus we still
-need to control the SCMI domains as usual.
+So the problem becomes "how to suppress the warning of online&!active in
+__set_cpus_allowed_ptr()" for late *attached unbound rescuer* workers
+during hotplug.
 
-> 
->> +	if (ret || !cpumask_weight(opp_shared_cpus)) {
->> +		/*
->> +		 * Either opp-table is not set or no opp-shared was found,
->> +		 * use the information from SCMI domain IDs.
->> +		 */
->> +		cpumask_copy(opp_shared_cpus, scmi_cpus);
->> +	}
->> +
->>  	/*
->>  	 * We get here for each CPU. Add OPPs only on those CPUs for which we
->>  	 * haven't already done so, or set their OPPs as shared.
->> @@ -252,7 +269,7 @@ static int scmi_init_device(const struct scmi_handle *handle, int cpu)
->>  			goto free_cpumask;
->>  		}
->>  
->> -		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, scmi_cpus);
->> +		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, opp_shared_cpus);
->>  		if (ret) {
->>  			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
->>  				__func__, ret);
->> @@ -269,7 +286,7 @@ static int scmi_init_device(const struct scmi_handle *handle, int cpu)
->>  		}
->>  
->>  		power_scale_mw = handle->perf_ops->power_scale_mw_get(handle);
->> -		em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, scmi_cpus,
->> +		em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, opp_shared_cpus,
->>  					    power_scale_mw);
->>  	}
->>  
->> @@ -284,6 +301,7 @@ static int scmi_init_device(const struct scmi_handle *handle, int cpu)
->>  
->>  free_cpumask:
->>  	free_cpumask_var(scmi_cpus);
->> +	free_cpumask_var(opp_shared_cpus);
->>  	return ret;
->>  }
->>  
->> -- 
->> 2.27.0
-> 
 
-Many thanks,
-Nicola
+>
+> Let me consider that a bit more while I try and make sense of that splat
+> Paul reported.
+>
+> ---
+>
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index ec0771e4a3fb..fe05308dc472 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -1844,15 +1844,19 @@ static struct worker *alloc_worker(int node)
+>   * cpu-[un]hotplugs.
+>   */
+>  static void worker_attach_to_pool(struct worker *worker,
+> -                                  struct worker_pool *pool)
+> +                                 struct worker_pool *pool,
+> +                                 bool set_affinity)
+>  {
+>         mutex_lock(&wq_pool_attach_mutex);
+>
+> -       /*
+> -        * set_cpus_allowed_ptr() will fail if the cpumask doesn't have any
+> -        * online CPUs.  It'll be re-applied when any of the CPUs come up.
+> -        */
+> -       set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
+> +       if (set_affinity) {
+> +               /*
+> +                * set_cpus_allowed_ptr() will fail if the cpumask doesn't have
+> +                * any online CPUs.  It'll be re-applied when any of the CPUs
+> +                * come up.
+> +                */
+> +               set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
+> +       }
+>
+>         /*
+>          * The wq_pool_attach_mutex ensures %POOL_DISASSOCIATED remains
+> @@ -1944,7 +1948,7 @@ static struct worker *create_worker(struct worker_pool *pool)
+>         kthread_bind_mask(worker->task, pool->attrs->cpumask);
+>
+>         /* successful, attach the worker to the pool */
+> -       worker_attach_to_pool(worker, pool);
+> +       worker_attach_to_pool(worker, pool, false);
+>
+>         /* start the newly created worker */
+>         raw_spin_lock_irq(&pool->lock);
+> @@ -2509,7 +2513,11 @@ static int rescuer_thread(void *__rescuer)
+>
+>                 raw_spin_unlock_irq(&wq_mayday_lock);
+>
+> -               worker_attach_to_pool(rescuer, pool);
+> +               /*
+> +                * XXX can go splat when running during hot-un-plug and
+> +                * the pool affinity is wobbly.
+> +                */
+> +               worker_attach_to_pool(rescuer, pool, true);
+>
+>                 raw_spin_lock_irq(&pool->lock);
+>
