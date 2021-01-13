@@ -2,173 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566F82F410C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 02:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3D62F4115
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 02:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbhAMBV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 20:21:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37024 "EHLO
+        id S1727049AbhAMBWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 20:22:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726345AbhAMBV2 (ORCPT
+        with ESMTP id S1726278AbhAMBWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 20:21:28 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08ABCC061575;
-        Tue, 12 Jan 2021 17:20:48 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id p15so29690pjv.3;
-        Tue, 12 Jan 2021 17:20:48 -0800 (PST)
+        Tue, 12 Jan 2021 20:22:34 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65C9C061575;
+        Tue, 12 Jan 2021 17:21:53 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id q20so204713pfu.8;
+        Tue, 12 Jan 2021 17:21:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=LWJKx5e/3nBhUYP+sVXTWgSC9bn3CdJLTBX9fjR0myY=;
-        b=GDX+7VGOIINqOYBqiCBUfaOL/XOcA6euoO0h3za//aZwedDlehD3Si+8V8Fovqu8tw
-         O5oCO7pqbncIw+mKm+1ZiNGpz5jBM85FBCIDMPnDckkAsx+vSh6BLOZ25V5UP4vmExaq
-         kbqEOIAP+6Z6k/zjluH1RooZ5HNa/XFXbE1QR4Dzt4AkZQxB4YerdxLq2S0BOJGpvvmY
-         W+D2byFS5vrHkSHjH0SYe137KRV6QPHQ5ZClQiuBh4x6nTvQwHBZXVxZoPrF1qB7JHGh
-         TpCbCgiFKN9T3EsAoIFHnTPTPySNBI717DUgI26gOo7oAKDtIS1rfsDCgtn9Y0mW5nfJ
-         RFiw==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OF1vzKHCoB9FbkveX0jDIMlRTwuLz60PQrD10fcsFvo=;
+        b=UH6sv5ytYE04PK0iHS7mRqn5lcCiexxf2Xe/PoK4fkM38pimasFBp9BCAd/TmTSoS9
+         Y4fVpf/+DWDnHW5kmP6xjFsK6xAfA0q5HreB3l3g4q9VKhRRf+pccwYFmP56UvofNi1G
+         3b0+4KQFMRB32GMMzMyUlx8kc30ezji0D8deRhI+tWRphT+7hx4Sj9EUc0E5GcaekxJw
+         td6bgRnXqduBYHBGBdHIdCtFeAnohT6yU4EvXnGXShnNj53hjVxDAfoO8lMKPjL3wTnT
+         4iQecTf1TQq/T/ElIygy0BI8zamN3WGw9kxQuoUjcQB8/HMNai/6Gc6O9tzrT38Eq2EY
+         cq2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=LWJKx5e/3nBhUYP+sVXTWgSC9bn3CdJLTBX9fjR0myY=;
-        b=hVsjA2uxntGeCozfW02Lffj40b8PWl8Bx/jUu7wSUgmPVBKUxtNpjCwd7dxVDzSo4D
-         O1T8glXaF39o7Z4K+6vOgapsT0hWSL/O/HQJKx6wA1RDkFyF1mKqvfTYnecI+ODCgUHP
-         hkspWePgvhd0ori0GPsiEWc/KpWUPj/KUxd11PmMqZGGMqy2gV3wIEXQI3UR3uRnVlST
-         lM4KbEDSSL0NIGmsEhzZ+hOxuA3O5sq0kpzpFQcvr1Bwz3zOKYsouW7TjW8agAQ4pKtS
-         fZowNSshLcfRNQie2pJ4DEnFCZZgYFu3MAO2OsdRGqcDQVv0wQkygLnUAiUbaUlugPIY
-         J9gw==
-X-Gm-Message-State: AOAM533OE8tzbiJ7c7Txp0MxIeJejwYE8K6Jo2V0JZUEaYogJlMAL80K
-        ujLfxBXyCeSO787XNNnGIjU=
-X-Google-Smtp-Source: ABdhPJxm6gvC8e5Szk4GNsXqMZ73c0ahtHKRbf0g00YQY0/ymdib8nTj09R21K+oIPgXLDG2hZZ0FQ==
-X-Received: by 2002:a17:90a:ae02:: with SMTP id t2mr466890pjq.169.1610500847583;
-        Tue, 12 Jan 2021 17:20:47 -0800 (PST)
-Received: from b29397-desktop ([84.17.34.154])
-        by smtp.gmail.com with ESMTPSA id g30sm319909pfr.152.2021.01.12.17.20.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 12 Jan 2021 17:20:46 -0800 (PST)
-Date:   Wed, 13 Jan 2021 09:20:36 +0800
-From:   Peter Chen <hzpeterchen@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Peter Chen <peter.chen@nxp.com>, Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Ion Agorria <ion@agorria.com>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/9] Support Runtime PM and host mode by Tegra
- ChipIdea USB driver
-Message-ID: <20210113012036.GA1560@b29397-desktop>
-References: <20201218120246.7759-1-digetx@gmail.com>
- <20201229051615.GA5823@b29397-desktop>
- <b2c21687-4cb9-ba0a-a724-3a82ddd8daff@gmail.com>
- <713c4b1a-a4b3-41ad-7aad-c49e594f778b@gmail.com>
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=OF1vzKHCoB9FbkveX0jDIMlRTwuLz60PQrD10fcsFvo=;
+        b=GamozwIPHzR9QeXtKsvW6bJpe2axLB3nXX+ehJYidKJGoi1CDKzS8876VJu2yzA7XE
+         H436BLm047xnbJTr0FlduRZmShcZedegoOlvkgn7sn+3Pazb0z54imlxrwu8KtJbPB+J
+         r5GMHXDdS0ucC1zCb2UCBmV4SMfF2bIVS3g++4HhAnFqrjvPBVUO1j1O/cF5PrBcKAE9
+         t0vuCAcETPuK0IrqdlO90Jgu9Gd2vaITXg5KmDMtXX6ntZCb2yKmCPTidfsNJhLBF2BW
+         AzE8coVws5JJ5NdzZ8Wxu4qtKuHzVbrp3EWs/U06R17XqQRZLL5+kRJukR1QcINeZjMb
+         dovA==
+X-Gm-Message-State: AOAM530wNIiCb646Kj680tE/3HL7ZSvVeDcg5ZiY5Fde0VC+KIFkOw05
+        1RHZi66uMGDJ/Th09dLO03vc8rSxX6g=
+X-Google-Smtp-Source: ABdhPJzYrt3TdM44/itCkvsZ36dDJ69idE7ohZq5unbjsjwFA2k+bmee0Jqg9Tmdb+3ZMwABk51ytA==
+X-Received: by 2002:aa7:95aa:0:b029:1ad:d810:42be with SMTP id a10-20020aa795aa0000b02901add81042bemr2009988pfk.51.1610500913498;
+        Tue, 12 Jan 2021 17:21:53 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id b2sm355197pff.79.2021.01.12.17.21.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 17:21:52 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        hyesoo.yu@samsung.com, david@redhat.com, mhocko@suse.com,
+        surenb@google.com, pullip.cho@samsung.com, joaodias@google.com,
+        hridya@google.com, john.stultz@linaro.org, sumit.semwal@linaro.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        hch@infradead.org, robh+dt@kernel.org,
+        linaro-mm-sig@lists.linaro.org, Minchan Kim <minchan@kernel.org>
+Subject: [PATCH v3 0/4] Chunk Heap Support on DMA-HEAP
+Date:   Tue, 12 Jan 2021 17:21:39 -0800
+Message-Id: <20210113012143.1201105-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <713c4b1a-a4b3-41ad-7aad-c49e594f778b@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-12 09:56:37, Dmitry Osipenko wrote:
-> 29.12.2020 17:26, Dmitry Osipenko пишет:
-> > 29.12.2020 08:16, Peter Chen пишет:
-> >> On 20-12-18 15:02:37, Dmitry Osipenko wrote:
-> >>> This series implements Runtime PM support for the Tegra ChipIdea USB driver.
-> >>> It also squashes the older ehci-tegra driver into the ChipIdea driver, hence
-> >>> the RPM is supported by both UDC and host controllers, secondly this opens
-> >>> opportunity for implementing OTG support in the future.
-> >>>
-> >>> Patchset was tested on various Tegra20, Tegra30 and Tegra124 devices.
-> >>> Thanks to Peter Geis, Matt Merhar, Nicolas Chauvet and Ion Agorria for
-> >>> helping with the extensive and productive testing!
-> >>>
-> >>> Changelog:
-> >>>
-> >>> v3: - Replaced "goto" with if-statements as was suggested by Thierry Reding.
-> >>>
-> >>>     - Improved wording of the deprecated Kconfig entry as was suggested
-> >>>       by Alan Stern.
-> >>>
-> >>>     - Added ACKs from Thierry Reding and Alan Stern.
-> >>>
-> >>>     - Added a new minor patch "Specify TX FIFO threshold in UDC SoC info"
-> >>>       just for completeness, since we can now switch OTG to host mode in
-> >>>       the ChipIdea driver. Although, OTG support remains a work-in-progress
-> >>>       for now.
-> >>>
-> >>> v2: - Improved comments in the code as it was suggested by Peter Chen and
-> >>>       Sergei Shtylyov for v1.
-> >>>
-> >>>     - Replaced mdelay() with fsleep() and made ci->hdc to reset to NULL in
-> >>>       a error code path, like it was suggested by Peter Chen.
-> >>>
-> >>>     - Redirected deprecated USB_EHCI_TEGRA Kconfig entry to USB_CHIPIDEA_TEGRA
-> >>>       as was suggested by Alan Stern.
-> >>>
-> >>>     - Improved commit message and added ACK from Thierry Reding to the patch
-> >>>       that removes MODULE_ALIAS.
-> >>>
-> >>>     - Fixed UDC PHY waking up on ASUS TF201 tablet device by utilizing
-> >>>       additional VBUS sensor. This was reported and tested by Ion Agorria.
-> >>>
-> >>>     - Added t-b from Ion Agorria.
-> >>>
-> >>> Dmitry Osipenko (8):
-> >>>   usb: phy: tegra: Add delay after power up
-> >>>   usb: phy: tegra: Support waking up from a low power mode
-> >>>   usb: chipidea: tegra: Remove MODULE_ALIAS
-> >>>   usb: chipidea: tegra: Rename UDC to USB
-> >>>   usb: chipidea: tegra: Support runtime PM
-> >>>   usb: chipidea: tegra: Specify TX FIFO threshold in UDC SoC info
-> >>>   usb: host: ehci-tegra: Remove the driver
-> >>>   ARM: tegra_defconfig: Enable USB_CHIPIDEA_HOST and remove
-> >>>     USB_EHCI_TEGRA
-> >>>
-> >>> Peter Geis (1):
-> >>>   usb: chipidea: tegra: Support host mode
-> >>
-> >> Chipidea related (patch 3-7) are applied, thanks.
-> > 
-> > Hello Peter,
-> > 
-> > Thank you for applying the patches.
-> > 
-> > Who will apply the remaining patches?
-> > 
-> > The Chipidea patch #6 depends on the PHY changes, otherwise USB will
-> > suspend and never resume.
-> > 
-> 
-> Peter, could you please apply the PHY and defconfig patches along with
-> the CI patches to -next? I.e. the whole series. Preferentially in
-> original ordering of patches should be preserved.
-> 
+This patchset introduces a new dma heap, "chunk-heap" that makes it
+easy to perform the bulk allocation of high order pages.
+It has been created to help optimize the 4K/8K HDR video playback
+with secure DRM HW to protect contents on memory. The HW needs
+physically contiguous memory chunks(e.g, 64K) up to several hundred
+MB memory.
 
-Hi Dmitry,
+To make such high-order big bulk allocations work, chunk-heap uses
+CMA area. To avoid CMA allocation long stall on blocking pages(e.g.,
+page writeback and/or page locking), it uses failfast mode of the
+CMA API(i.e., __GFP_NORETRY) so it will continue to find easy
+migratable pages in different pageblocks without stalling. At last
+resort, it will allow the blocking only if it couldn't find the
+available memory in the end.
 
-Usually, Greg could apply all USB patches, if I apply other USB related
-patches, it may cause conflict with other patches in other's tree.
-Greg, free feel to apply this series with 
-Acked-by: Peter Chen <peter.chen@kernel.org>
-for chipidea part.
+First two patches introduces the failfast mode as __GFP_NORETRY
+in alloc_contig_range and the allow to use it from the CMA API.
+Third patch introduces device tree syntax for chunk-heap to bind
+the specific CMA area with chunk-heap.
+Finally, last patch implements chunk-heap as dma-buf heap.
 
-For ARM defconfig patch, I think it should go ARM's tree.
+* since v2 -
+  * introduce gfp_mask with __GFP_NORETRY on cma_alloc - mhocko
+  * do not expoert CMA APIs - Christoph
+  * use compatible string for DT instead of dma-heap specific property - Hridya
+
+* Since v1 - https://lore.kernel.org/linux-mm/20201117181935.3613581-1-minchan@kernel.org/
+  * introduce alloc_contig_mode - David
+  * use default CMA instead of device tree - John
+
+Hyesoo Yu (2):
+  dt-bindings: reserved-memory: Make DMA-BUF CMA heap DT-configurable
+  dma-buf: heaps: add chunk heap to dmabuf heaps
+
+Minchan Kim (2):
+  mm: cma: introduce gfp flag in cma_alloc instead of no_warn
+  mm: failfast mode with __GFP_NORETRY in alloc_contig_range
+
+ .../reserved-memory/dma_heap_chunk.yaml       |  58 +++
+ drivers/dma-buf/heaps/Kconfig                 |   8 +
+ drivers/dma-buf/heaps/Makefile                |   1 +
+ drivers/dma-buf/heaps/chunk_heap.c            | 477 ++++++++++++++++++
+ drivers/dma-buf/heaps/cma_heap.c              |   2 +-
+ drivers/s390/char/vmcp.c                      |   2 +-
+ include/linux/cma.h                           |   2 +-
+ kernel/dma/contiguous.c                       |   3 +-
+ mm/cma.c                                      |  12 +-
+ mm/cma_debug.c                                |   2 +-
+ mm/hugetlb.c                                  |   6 +-
+ mm/page_alloc.c                               |   8 +-
+ mm/secretmem.c                                |   3 +-
+ 13 files changed, 568 insertions(+), 16 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/reserved-memory/dma_heap_chunk.yaml
+ create mode 100644 drivers/dma-buf/heaps/chunk_heap.c
 
 -- 
-
-Thanks,
-Peter Chen
+2.30.0.284.gd98b1dd5eaa7-goog
 
