@@ -2,105 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E422F48B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:32:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24ACD2F48BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727391AbhAMKcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:32:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30197 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727332AbhAMKcG (ORCPT
+        id S1726899AbhAMKdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:33:40 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:40628 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725927AbhAMKdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:32:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610533840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9vkCftPdD64IjNVXtqSPBFjDBI5sJygX7kG3TTiImoQ=;
-        b=VAWtpPy8j+szZSWlQYIB9auR5kZHnFyv0XQCvxH0g1BsClPlTomVd6IoL5sIWtWSRiP9S+
-        BWBY3NCU9XuTo5iYTomTcHK62OlMNHD4dPqmrT34D6/GXGMxuyAaBiyfg2fOeV85tV3yi+
-        A5n83zFNtE6ZDoDc+0iSvpXeVZ+SegI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-438-ocJjl9RmNrOKVkax0d_Big-1; Wed, 13 Jan 2021 05:30:36 -0500
-X-MC-Unique: ocJjl9RmNrOKVkax0d_Big-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C56CB107ACF8;
-        Wed, 13 Jan 2021 10:30:34 +0000 (UTC)
-Received: from [10.36.114.135] (ovpn-114-135.ams2.redhat.com [10.36.114.135])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3F68774440;
-        Wed, 13 Jan 2021 10:30:32 +0000 (UTC)
-Subject: Re: [PATCH v4 1/6] mm: migrate: do not migrate HugeTLB page whose
- refcount is one
-To:     Muchun Song <songmuchun@bytedance.com>, mike.kravetz@oracle.com,
-        akpm@linux-foundation.org
-Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>
-References: <20210113052209.75531-1-songmuchun@bytedance.com>
- <20210113052209.75531-2-songmuchun@bytedance.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <82b0f54d-4138-ee72-4c57-27fda40e0f98@redhat.com>
-Date:   Wed, 13 Jan 2021 11:30:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 13 Jan 2021 05:33:40 -0500
+Date:   Wed, 13 Jan 2021 10:32:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610533977; bh=EpolZpTKC5oUdKcjdBe4f+ZlCuhQ3GPo5fWCiOJXzzo=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=ESJ+CGICyHNXyAKgaElVkQrx/j8flou2v19wfQB2Btb8PSNWKcf1FRUDK2eH16rVH
+         xim7jt88xJjRNPu9dnf+0qZo4GxEzEycF80B5xl80NSFHpCw7GjmMK8nC1FEiXl55r
+         NROmrXT8VrhUKsW0wclTeqyV9uh5NIHGSEl2AvIy37iS2EcdHCeu4bBlmeufeKdUe8
+         uyaw/KsR035fJf7ZK737shkcxpdERu5Imsu4PqQm1/8j+BXzpOVd/ftGTs0A4a50da
+         QheM7mPIeR0JMmFmglx8usXx6uw8T4f18GGIrPJk8ePRy69biKSvFgs0kl4mJ/kkJH
+         Xf1gbV06EbG6Q==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Dongseok Yi <dseok.yi@samsung.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v2 net-next] udp: allow forwarding of plain (non-fraglisted) UDP GRO packets
+Message-ID: <20210113103232.4761-1-alobakin@pm.me>
 MIME-Version: 1.0
-In-Reply-To: <20210113052209.75531-2-songmuchun@bytedance.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.01.21 06:22, Muchun Song wrote:
-> All pages isolated for the migration have an elevated reference count
-> and therefore seeing a reference count equal to 1 means that the last
-> user of the page has dropped the reference and the page has became
-> unused and there doesn't make much sense to migrate it anymore. This has
-> been done for regular pages and this patch does the same for hugetlb
-> pages. Although the likelyhood of the race is rather small for hugetlb
-> pages it makes sense the two code paths in sync.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> Acked-by: Yang Shi <shy828301@gmail.com>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> ---
->  mm/migrate.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 4385f2fb5d18..a6631c4eb6a6 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
->  		return -ENOSYS;
->  	}
->  
-> +	if (page_count(hpage) == 1) {
-> +		/* page was freed from under us. So we are done. */
-> +		putback_active_hugepage(hpage);
-> +		return MIGRATEPAGE_SUCCESS;
-> +	}
-> +
->  	new_hpage = get_new_page(hpage, private);
->  	if (!new_hpage)
->  		return -ENOMEM;
-> 
+Commit 9fd1ff5d2ac7 ("udp: Support UDP fraglist GRO/GSO.") actually
+not only added a support for fraglisted UDP GRO, but also tweaked
+some logics the way that non-fraglisted UDP GRO started to work for
+forwarding too.
+Commit 2e4ef10f5850 ("net: add GSO UDP L4 and GSO fraglists to the
+list of software-backed types") added GSO UDP L4 to the list of
+software GSO to allow virtual netdevs to forward them as is up to
+the real drivers.
 
-Happy to say that I now know understand what's going on here
+Tests showed that currently forwarding and NATing of plain UDP GRO
+packets are performed fully correctly, regardless if the target
+netdevice has a support for hardware/driver GSO UDP L4 or not.
+Add the last element and allow to form plain UDP GRO packets if
+there is no socket -> we are on forwarding path.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Plain UDP GRO forwarding even shows better performance than fraglisted
+UDP GRO in some cases due to not wasting one skbuff_head per every
+segment.
 
--- 
-Thanks,
+Since v1 [0]:
+ - drop redundant 'if (sk)' check (Alexander Duyck);
+ - add a ref in the commit message to one more commit that was
+   an important step for UDP GRO forwarding.
 
-David / dhildenb
+[0] https://lore.kernel.org/netdev/20210112211536.261172-1-alobakin@pm.me
+
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ net/ipv4/udp_offload.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+index ff39e94781bf..6f5237a0d181 100644
+--- a/net/ipv4/udp_offload.c
++++ b/net/ipv4/udp_offload.c
+@@ -460,12 +460,12 @@ struct sk_buff *udp_gro_receive(struct list_head *hea=
+d, struct sk_buff *skb,
+ =09if (skb->dev->features & NETIF_F_GRO_FRAGLIST)
+ =09=09NAPI_GRO_CB(skb)->is_flist =3D sk ? !udp_sk(sk)->gro_enabled: 1;
+=20
+-=09if ((sk && udp_sk(sk)->gro_enabled) || NAPI_GRO_CB(skb)->is_flist) {
++=09if (!sk || udp_sk(sk)->gro_enabled || NAPI_GRO_CB(skb)->is_flist) {
+ =09=09pp =3D call_gro_receive(udp_gro_receive_segment, head, skb);
+ =09=09return pp;
+ =09}
+=20
+-=09if (!sk || NAPI_GRO_CB(skb)->encap_mark ||
++=09if (NAPI_GRO_CB(skb)->encap_mark ||
+ =09    (skb->ip_summed !=3D CHECKSUM_PARTIAL &&
+ =09     NAPI_GRO_CB(skb)->csum_cnt =3D=3D 0 &&
+ =09     !NAPI_GRO_CB(skb)->csum_valid) ||
+--=20
+2.30.0
+
 
