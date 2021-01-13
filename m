@@ -2,123 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA6A2F50BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:14:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEF92F50C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727557AbhAMRM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:12:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726544AbhAMRMz (ORCPT
+        id S1727967AbhAMROW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:14:22 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42918 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727403AbhAMROV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:12:55 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37714C06179F
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:12:15 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id e25so2306335wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:12:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=c7b4E16YOwgpza0HIydnpFyNMAoTuzbuWt8Po2GaTu8=;
-        b=m+HZYJrqh0DnFL+2Ra1oBihA6B5f1/bGTOMg83bfd5JsRI55Pg6cOawpyYGVSenaVE
-         oqsRkZEih94Lc5xrZivWic5I2fo+hBgV8CA/rw/XW8CdbxoWNCg1NoA/ozazJVBLxv/E
-         dwgW4iQ/0yJUfbMPfpbiJOijdgndcqw6JEballW1qqGkfrgvMoAgDgXbJd8uD01jaVuc
-         dEMZpau/AvxuZWMfbxltkg1MbihefKZiKT2+6eUQDD4Pp2d3QlWrC8ZnECKuu5MQeZ2U
-         BUqh4Xg7Pt23+SWYKkb+cn5rL6k0h6lAnETwP6z5zduPBo4sQQ8+wnwHzE3vclmaPGS7
-         Zl/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=c7b4E16YOwgpza0HIydnpFyNMAoTuzbuWt8Po2GaTu8=;
-        b=RTvGOLhrA58uUajI93z7ea4kXRPHFdkb4DQhIafsmLDkPx6SqKLMtIKLOoIf/oVqvS
-         8Shp9fSRWlmCB+zLwiS3F9hpNjNydkojI3zSha1+XQhs5ixz8CnGpOWDra14r/7HU40I
-         prKGRPEBoQu+aTn4IUzNBVRCDkw7sN+/c0e5LsZmWOqMifB+pNnmUGq0VZr37Z+QGqiW
-         djpNG48nGeZspPd99qJ1yONCudJRxkXAGthMt73P4ZxlOwu/jwz2IRvrUMsCLD7fplOo
-         Oda2NpFcTu5Urz7vdZfDZS8fNYM11Ksa5t2VNJYp5ssqvIt00aHIQ5N70v+zYD/aFwDq
-         +LKg==
-X-Gm-Message-State: AOAM53340PdJB4di6SNzlom7fZWCm2b6kwlsD82mE1uyT0prspr2fe4v
-        Y9YtKtgwv4nl0n0yhDTfogtm6A==
-X-Google-Smtp-Source: ABdhPJzZ3LZrsLfZHiK6m5IEDbaQ3BoXy5i+lpcBWgVqY5sLOcN7RPj+H0NtaHgq93jnNZEQ32lqhw==
-X-Received: by 2002:a05:600c:19cb:: with SMTP id u11mr251737wmq.110.1610557933899;
-        Wed, 13 Jan 2021 09:12:13 -0800 (PST)
-Received: from dell ([91.110.221.229])
-        by smtp.gmail.com with ESMTPSA id r16sm4329471wrx.36.2021.01.13.09.12.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 09:12:13 -0800 (PST)
-Date:   Wed, 13 Jan 2021 17:12:11 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] docs: submitting-patches: Emphasise the
- requirement to Cc: stable when using Fixes: tag
-Message-ID: <20210113171211.GF3975472@dell>
-References: <20210113163315.1331064-1-lee.jones@linaro.org>
- <87bldssrzu.fsf@intel.com>
+        Wed, 13 Jan 2021 12:14:21 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10DH4tto051009;
+        Wed, 13 Jan 2021 12:13:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=MNu69AKjJm3nG53SgMHXypE4CI8PDaFzLPocZJuT2zo=;
+ b=TqSDKmxKJnzq6KrKhrcYuRdzcXOjpTBNPAYgty9wNUrlsJW9FZtNYi2Cstk7ojJn+BR1
+ psfQVXlJl3SUHR4aImKWhBZ0311lWIa5ZujUGAg85lHD239ng1ps0IoYlspGYSz6Cm65
+ QmpSe1v06rbFQqPo35DFbcxenK6TZZ/4BkYHGh3OhnbDmWL7T2I2y7O+te1bo7tB1xJH
+ ErfHl+jODssT1N+O8fd7K46SAlvgyN5s9MmLA3hv0DoP3njEfwFYrCK2s6SVYUcvxZua
+ VwVQQndnX8a8R3EGRI+j1W3G856WGuf5Fd1pbliatz4IwdVv1WXxyGTOCELQiIxG/9T4 eg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3624ech2es-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 12:13:27 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10DH54fX051294;
+        Wed, 13 Jan 2021 12:13:13 -0500
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3624ech2d8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 12:13:12 -0500
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10DH2W1i025433;
+        Wed, 13 Jan 2021 17:13:10 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma05wdc.us.ibm.com with ESMTP id 35y44972pc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 17:13:10 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10DHD9Lh36831742
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 17:13:09 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A44E6B205F;
+        Wed, 13 Jan 2021 17:13:09 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 62E6FB2064;
+        Wed, 13 Jan 2021 17:13:08 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.211.128.152])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 13 Jan 2021 17:13:08 +0000 (GMT)
+Subject: Re: [PATCH v4 01/21] ibmvfc: add vhost fields and defaults for MQ
+ enablement
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, james.smart@broadcom.com,
+        Ming Lei <ming.lei@redhat.com>
+References: <20210111231225.105347-1-tyreld@linux.ibm.com>
+ <20210111231225.105347-2-tyreld@linux.ibm.com>
+ <0525bee7-433f-dcc7-9e35-e8706d6edee5@linux.vnet.ibm.com>
+ <a8623705-6d49-2056-09bb-80190e0b6f52@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <51bfc34b-c2c4-bf14-c903-d37015f65361@linux.vnet.ibm.com>
+Date:   Wed, 13 Jan 2021 11:13:07 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <a8623705-6d49-2056-09bb-80190e0b6f52@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87bldssrzu.fsf@intel.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-13_07:2021-01-13,2021-01-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
+ adultscore=0 impostorscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0
+ mlxlogscore=999 spamscore=0 priorityscore=1501 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101130100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021, Jani Nikula wrote:
-
-> On Wed, 13 Jan 2021, Lee Jones <lee.jones@linaro.org> wrote:
-> > Clear-up any confusion surrounding the Fixes: tag with regards to the
-> > need to Cc: the stable mailing list when submitting stable patch
-> > candidates.
-> >
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: Jonathan Corbet <corbet@lwn.net>
-> > Cc: linux-doc@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> > v2:
-> >  - Link to the 'stable-kernel-rules' document as per Greg's request
-> >
-> >  Documentation/process/submitting-patches.rst | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
-> > index 7c97ad580e7d0..7f48cccc75cdf 100644
-> > --- a/Documentation/process/submitting-patches.rst
-> > +++ b/Documentation/process/submitting-patches.rst
-> > @@ -556,6 +556,11 @@ which stable kernel versions should receive your fix. This is the preferred
-> >  method for indicating a bug fixed by the patch. See :ref:`describe_changes`
-> >  for more details.
-> >  
-> > +Note: Attaching a Fixes: tag does not subvert the stable kernel rules
-> > +process nor the requirement to Cc: stable@vger.kernel.org on all stable 
-> > +patch candidates. For more information, please read
-> > +:ref:`Documentation/process/stable-kernel-rules.rst <stable_kernel_rules>`
+On 1/12/21 6:33 PM, Tyrel Datwyler wrote:
+> On 1/12/21 2:54 PM, Brian King wrote:
+>> On 1/11/21 5:12 PM, Tyrel Datwyler wrote:
+>>> Introduce several new vhost fields for managing MQ state of the adapter
+>>> as well as initial defaults for MQ enablement.
+>>>
+>>> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+>>> ---
+>>>  drivers/scsi/ibmvscsi/ibmvfc.c | 8 ++++++++
+>>>  drivers/scsi/ibmvscsi/ibmvfc.h | 9 +++++++++
+>>>  2 files changed, 17 insertions(+)
+>>>
+>>> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+>>> index ba95438a8912..9200fe49c57e 100644
+>>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+>>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+>>> @@ -3302,6 +3302,7 @@ static struct scsi_host_template driver_template = {
+>>>  	.max_sectors = IBMVFC_MAX_SECTORS,
+>>>  	.shost_attrs = ibmvfc_attrs,
+>>>  	.track_queue_depth = 1,
+>>> +	.host_tagset = 1,
+>>
+>> This doesn't seem right. You are setting host_tagset, which means you want a
+>> shared, host wide, tag set for commands. It also means that the total
+>> queue depth for the host is can_queue. However, it looks like you are allocating
+>> max_requests events for each sub crq, which means you are over allocating memory.
 > 
-> Has there been a process change, or should I take it that a Fixes: tag
-> without Cc: stable *may* still end up being backported to stable?
+> With the shared tagset yes the queue depth for the host is can_queue, but this
+> also implies that the max queue depth for each hw queue is also can_queue. So,
+> in the worst case that all commands are queued down the same hw queue we need an
+> event pool with can_queue commands.
+> 
+>>
+>> Looking at this closer, we might have bigger problems. There is a host wide
+>> max number of commands that the VFC host supports, which gets returned on
+>> NPIV Login. This value can change across a live migration event.
+> 
+> From what I understand the max commands can only become less.
+> 
+>>
+>> The ibmvfc driver, which does the same thing the lpfc driver does, modifies
+>> can_queue on the scsi_host *after* the tag set has been allocated. This looks
+>> to be a concern with ibmvfc, not sure about lpfc, as it doesn't look like
+>> we look at can_queue once the tag set is setup, and I'm not seeing a good way
+>> to dynamically change the host queue depth once the tag set is setup. 
+>>
+>> Unless I'm missing something, our best options appear to either be to implement
+>> our own host wide busy reference counting, which doesn't sound very good, or
+>> we need to add some API to block / scsi that allows us to dynamically change
+>> can_queue.
+> 
+> Changing can_queue won't do use any good with the shared tagset becasue each
+> queue still needs to be able to queue can_queue number of commands in the worst
+> case.
 
-The 'process' has not changed.  Cc:ing the stable mailing list has
-been a requirement for years.  This patch clears up the misconception
-that you (and I ... and many others by all accounts) hold that the
-Fixes: tag is enough.
+The issue I'm trying to highlight here is the following scenario:
 
-Fixes: only works when/if Greg and/or Sasha run their magical scripts
-to scan for them.  By them doing so has "perpetuated a myth that this
-was the proper thing to do".  It's not.
+1. We set shost->can_queue, then call scsi_add_host, which allocates the tag set.
 
-Greg got fed-up of people asking that same question, so I'm fixing
-that and giving him something to point to and say "RTFD".
+2. On our NPIV login response from the VIOS, we might get a lower value than we
+initially set in shost->can_queue, so we update it, but nobody ever looks at it
+again, and we don't have any protection against sending too many commands to the host.
 
-Hope that clears things up.
+
+Basically, we no longer have any code that ensures we don't send more
+commands to the VIOS than we are told it supports. According to the architecture,
+if we actually do this, the VIOS will do an h_free_crq, which would be a bit
+of a bug on our part.
+
+I don't think it was ever clearly defined in the API that a driver can
+change shost->can_queue after calling scsi_add_host, but up until
+commit 6eb045e092efefafc6687409a6fa6d1dabf0fb69, this worked and now
+it doesn't. 
+
+I started looking through drivers that do this, and so far, it looks like the
+following drivers do: ibmvfc, lpfc, aix94xx, libfc, BusLogic, and likely others...
+
+We probably need an API that lets us change shost->can_queue dynamically.
+
+Thanks,
+
+Brian
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
+
