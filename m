@@ -2,152 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 148D32F500B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:33:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B59E22F5008
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbhAMQd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 11:33:27 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:41676 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbhAMQd0 (ORCPT
+        id S1727759AbhAMQc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 11:32:56 -0500
+Received: from mail-wr1-f43.google.com ([209.85.221.43]:45057 "EHLO
+        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727296AbhAMQcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 11:33:26 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kzj4e-006oSo-Ji; Wed, 13 Jan 2021 09:32:44 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kzj4d-009Vz0-HQ; Wed, 13 Jan 2021 09:32:44 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexey Gladkov <gladkov.alexey@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <cover.1610299857.git.gladkov.alexey@gmail.com>
-        <447547b12bba1894d3f1f79d6408dfc60b219b0c.1610299857.git.gladkov.alexey@gmail.com>
-Date:   Wed, 13 Jan 2021 10:31:40 -0600
-In-Reply-To: <447547b12bba1894d3f1f79d6408dfc60b219b0c.1610299857.git.gladkov.alexey@gmail.com>
-        (Alexey Gladkov's message of "Sun, 10 Jan 2021 18:33:40 +0100")
-Message-ID: <878s8wdcib.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 13 Jan 2021 11:32:55 -0500
+Received: by mail-wr1-f43.google.com with SMTP id d26so2762449wrb.12;
+        Wed, 13 Jan 2021 08:32:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=A/0YpXOLKzCymABC8q5K9YunqMSayJGkNXnIdHA1Xpw=;
+        b=QoeAJ7zWhYpcr80xyWL4fVNJNYPcaxL25mXmV+AdpY7M6cr4cIMSDMuJ/tTrvEoNhS
+         f4ZWRwuXzGCp9qfG43Ty34ybofDsyb4Fsm556Z62TQod0AaUsuFSsteL40PngkQW/JWv
+         c+w9D1w/9f2mkIh9mvCUE6qetWdASBw9at2S6iYLTKUvOU5MGkbTBpGnWM1Rpuy7C9Wh
+         bWjAZwUNZA34fV7u9RlH43lnR67p7bjTRJiZ3CnfE253/QxnuluFuj8FWYQ0VsTqbex0
+         cLQ0zMRe+UxfmAg2bdd7dtWcvmhuOUFfDPPQiPfSjUCbvv9Ulpj9uF2M39//tl+H3Kyq
+         gcyw==
+X-Gm-Message-State: AOAM532gswV8ouo+emNmwIDpIW4X66NYDv7n4EPKZuXtZlSCyPDTiMuK
+        F3epLLATyc0zlwRq4N6lAb4=
+X-Google-Smtp-Source: ABdhPJz6iBVrES/TG1frhHwf+3ytjT14b05yJODt6AFv6FpcEUjBlCxLJfnlooXuyr7dGGoxXzbdow==
+X-Received: by 2002:a5d:6486:: with SMTP id o6mr3558131wri.380.1610555533571;
+        Wed, 13 Jan 2021 08:32:13 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id u83sm3849606wmu.12.2021.01.13.08.32.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 08:32:12 -0800 (PST)
+Date:   Wed, 13 Jan 2021 17:32:11 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: arm: imx: add imx8mm nitrogen support
+Message-ID: <20210113163211.GA5599@kozik-lap>
+References: <20210113143443.1148506-1-adrien.grassein@gmail.com>
+ <20210113143443.1148506-2-adrien.grassein@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kzj4d-009Vz0-HQ;;;mid=<878s8wdcib.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX195fKSBqSZ+lYzEZIXlkNCqt38tQhw2MoY=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4984]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Alexey Gladkov <gladkov.alexey@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 510 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 12 (2.3%), b_tie_ro: 10 (2.0%), parse: 0.77
-        (0.2%), extract_message_metadata: 2.7 (0.5%), get_uri_detail_list:
-        0.96 (0.2%), tests_pri_-1000: 3.4 (0.7%), tests_pri_-950: 1.38 (0.3%),
-        tests_pri_-900: 1.13 (0.2%), tests_pri_-90: 240 (47.1%), check_bayes:
-        239 (46.8%), b_tokenize: 6 (1.1%), b_tok_get_all: 6 (1.2%),
-        b_comp_prob: 1.52 (0.3%), b_tok_touch_all: 221 (43.4%), b_finish: 1.10
-        (0.2%), tests_pri_0: 233 (45.7%), check_dkim_signature: 0.50 (0.1%),
-        check_dkim_adsp: 5 (1.1%), poll_dns_idle: 4.0 (0.8%), tests_pri_10:
-        2.2 (0.4%), tests_pri_500: 7 (1.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC PATCH v2 1/8] Use atomic type for ucounts reference counting
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210113143443.1148506-2-adrien.grassein@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey Gladkov <gladkov.alexey@gmail.com> writes:
-
-We might want to use refcount_t instead of atomic_t.  Not a big deal
-either way.
-
-> Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
+On Wed, Jan 13, 2021 at 03:34:41PM +0100, Adrien Grassein wrote:
+> The Nitrogen8M Mini is an ARM based single board computer (SBC).
+> 
+> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
 > ---
->  include/linux/user_namespace.h |  2 +-
->  kernel/ucount.c                | 10 +++++-----
->  2 files changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
-> index 64cf8ebdc4ec..84fefa9247c4 100644
-> --- a/include/linux/user_namespace.h
-> +++ b/include/linux/user_namespace.h
-> @@ -92,7 +92,7 @@ struct ucounts {
->  	struct hlist_node node;
->  	struct user_namespace *ns;
->  	kuid_t uid;
-> -	int count;
-> +	atomic_t count;
->  	atomic_t ucount[UCOUNT_COUNTS];
->  };
->  
-> diff --git a/kernel/ucount.c b/kernel/ucount.c
-> index 11b1596e2542..0f2c7c11df19 100644
-> --- a/kernel/ucount.c
-> +++ b/kernel/ucount.c
-> @@ -141,7 +141,8 @@ static struct ucounts *get_ucounts(struct user_namespace *ns, kuid_t uid)
->  
->  		new->ns = ns;
->  		new->uid = uid;
-> -		new->count = 0;
-> +
-> +		atomic_set(&new->count, 0);
->  
->  		spin_lock_irq(&ucounts_lock);
->  		ucounts = find_ucounts(ns, uid, hashent);
-> @@ -152,10 +153,10 @@ static struct ucounts *get_ucounts(struct user_namespace *ns, kuid_t uid)
->  			ucounts = new;
->  		}
->  	}
-> -	if (ucounts->count == INT_MAX)
-> +	if (atomic_read(&ucounts->count) == INT_MAX)
->  		ucounts = NULL;
->  	else
-> -		ucounts->count += 1;
-> +		atomic_inc(&ucounts->count);
->  	spin_unlock_irq(&ucounts_lock);
->  	return ucounts;
->  }
-> @@ -165,8 +166,7 @@ static void put_ucounts(struct ucounts *ucounts)
->  	unsigned long flags;
->  
->  	spin_lock_irqsave(&ucounts_lock, flags);
-> -	ucounts->count -= 1;
-> -	if (!ucounts->count)
-> +	if (atomic_dec_and_test(&ucounts->count))
->  		hlist_del_init(&ucounts->node);
->  	else
->  		ucounts = NULL;
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-This can become:
-static void put_ucounts(struct ucounts *ucounts)
-{
-	unsigned long flags;
-
-        if (atomic_dec_and_lock_irqsave(&ucounts->count, &ucounts_lock, flags)) {
-        	hlist_del_init(&ucounts->node);
-                spin_unlock_irqrestore(&ucounts_lock);
-                kfree(ucounts);
-        }
-}
-
+Best regards,
+Krzysztof
