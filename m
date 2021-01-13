@@ -2,146 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C0F2F48AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A5E2F48B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727481AbhAMK2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:28:10 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:37536 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727417AbhAMK2J (ORCPT
+        id S1727085AbhAMKaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:30:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726889AbhAMKaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:28:09 -0500
-Received: by mail-io1-f71.google.com with SMTP id l22so2113751iom.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:27:53 -0800 (PST)
+        Wed, 13 Jan 2021 05:30:11 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07310C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:29:30 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id 6so2321734ejz.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:29:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=O1ISGW1RaU0XNG0J5lpJPahfmekjOSoZHUoUK6eXzeY=;
+        b=tpSYzA/7Owm4gVFs36ogemVFjXeDYR+jzWi4Cp4UMcA7mHlFrB0cpVoAAfLcJR6kET
+         Q6CT4ymmP+DRgWCQVXkiHK3BKdzJgWcpWWRokCgPIGP3vBHT8iVYqaKy/vBq494I0G3O
+         Y5SkiVY7r51r4dU6H779DFjkUJ10nGvUIuv3lNYF7UVMQSi9hxmnZTB5lDVH5Kt2wym0
+         Tv1OARpOnqnjQObG16qloUrd8XMdBsraAmWCwfwDpsJx6WWtBFGPiDKgCsgmRXisNNGl
+         1nkuMIK2jPkcOLTed9cRLlwkRmPVpWtgMKlJPASVIIf3Nhp7uLKkCFw3cec+DUQkWCL/
+         U3GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Jp5VjL+jpjBW595+oPVu2b30QzQh/C/HNqg9KiGkCc4=;
-        b=Y4gzs/PnGsn0TTBXosi1Gp0Bjb5LvnZzrbbkhDbecBDHCmAXqCNInUsWc+5v/g8cvd
-         7gm5VnjZTuhRPtRpySep7OzmEvN/JdhDUzl+f8YMxbyJSdUnod9vWSs3ZUg50RFp4pej
-         05MssuqS3GvoZCI5xm/6Ko8MRup0LG0+hCvW8w7wp40KNnpHq7LVGyjJiNAXQd7uVjeW
-         kua/ReBpSBG7iizIpMH6WrcRRLYCyt4wXN1Uv3VUVZHUOFmwJfH+EqT+Z0930xX+lwC8
-         pU8D2a2XDX7SB90POwQmbl1ghj7n/fkYrEX0L6wFALVswYLJKiANyFBeck9hA9GKOlhq
-         4aAg==
-X-Gm-Message-State: AOAM532c2qV9s0k2ejeNHmZooiBgET0Iyue5FgmKAKC8jWXQR5Nz5ww0
-        wgqPzVY0Y4ux+5DAvsVSXpZsw0NayGvecAa9ICRx6F2AwxUX
-X-Google-Smtp-Source: ABdhPJy7G1VvD9b/lF62lCN9U89knU5g8Cw2lnZokW1Z44DCZM4u/XY579mw0ushu1ahm53ZcxbWDjG0Goj5mAtd9tE0KNfeeOWm
-MIME-Version: 1.0
-X-Received: by 2002:a02:d45:: with SMTP id 66mr1848412jax.120.1610533647748;
- Wed, 13 Jan 2021 02:27:27 -0800 (PST)
-Date:   Wed, 13 Jan 2021 02:27:27 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f9191905b8c59562@google.com>
-Subject: kernel BUG at net/core/dev.c:NUM!
-From:   syzbot <syzbot+2393580080a2da190f04@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        edumazet@google.com, f.fainelli@gmail.com, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, roopa@cumulusnetworks.com,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=O1ISGW1RaU0XNG0J5lpJPahfmekjOSoZHUoUK6eXzeY=;
+        b=qzXlJ/Ut+6GORTmnCrB6SVCP4YLUblRbGn9vBS0XdRaycadS1xmsY8Z7i4LB83q+VR
+         sonYJGkMePiCdiIGEddy8iRqnGajvvpjMWBpNwJzooz0v1oy2aV1lgh2M/4MUW8iND2c
+         4BFsA5pw4ywY5S9RiTBrvueMa1ED7CZQLzkG2vXMkWBkSa/khWS/4lrxjPuzQaoS9pDs
+         mIwYsdMulcGCsGb5jOxQnPGbjyouQIHp9Xr8Hw1HrBFh1v/SE5sqrxAo8merk14nuGdC
+         Cy0aI6xfVxBIbisgnwqbChZfZ+3U0uaVkIre1XEk6GYms1uWjKevRnRgP/eo8+WR1fyE
+         0i7Q==
+X-Gm-Message-State: AOAM530vpWTMS7/+ei4mgXKslZMSxrbDA6md3RTIQ26eXaaA7r0tXYsc
+        tAvoM2GGgmX+u6cDouPEqHS5UUCo3aPXtvJM
+X-Google-Smtp-Source: ABdhPJxmf863ISkG6HUSgsuXyuhC9GiBpmDhAY8DCknXAyR9TX9tYt7SyZfcMin1m25CvnWirp2FMQ==
+X-Received: by 2002:a17:906:1288:: with SMTP id k8mr1063584ejb.206.1610533769627;
+        Wed, 13 Jan 2021 02:29:29 -0800 (PST)
+Received: from localhost.localdomain (hst-221-90.medicom.bg. [84.238.221.90])
+        by smtp.gmail.com with ESMTPSA id h12sm551253ejx.81.2021.01.13.02.29.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 02:29:28 -0800 (PST)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH] venus: hfi_plat: Fix warning for missing function prototype
+Date:   Wed, 13 Jan 2021 12:29:20 +0200
+Message-Id: <20210113102920.12841-1-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The bufreq_enc function should be static.
 
-syzbot found the following issue on:
-
-HEAD commit:    c49243e8 Merge branch 'net-fix-issues-around-register_netd..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=11da7ba8d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bacfc914704718d3
-dashboard link: https://syzkaller.appspot.com/bug?extid=2393580080a2da190f04
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13704c3f500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=160cc357500000
-
-The issue was bisected to:
-
-commit c269a24ce057abfc31130960e96ab197ef6ab196
-Author: Jakub Kicinski <kuba@kernel.org>
-Date:   Wed Jan 6 18:40:06 2021 +0000
-
-    net: make free_netdev() more lenient with unregistering devices
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13901b50d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10501b50d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17901b50d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2393580080a2da190f04@syzkaller.appspotmail.com
-Fixes: c269a24ce057 ("net: make free_netdev() more lenient with unregistering devices")
-
-------------[ cut here ]------------
-kernel BUG at net/core/dev.c:10661!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8459 Comm: syz-executor375 Not tainted 5.11.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:free_netdev+0x4b3/0x5e0 net/core/dev.c:10661
-Code: c0 01 38 d0 7c 08 84 d2 0f 85 1a 01 00 00 0f b7 83 32 02 00 00 48 29 c3 48 89 df e8 d7 77 ac fa e9 47 ff ff ff e8 3d 1e 80 fa <0f> 0b e8 36 1e 80 fa 0f b6 2d 39 e1 e8 05 31 ff 89 ee e8 a6 24 80
-RSP: 0018:ffffc9000163f1a0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88802814a000 RCX: 0000000000000000
-RDX: ffff888021678000 RSI: ffffffff86f25763 RDI: 0000000000000003
-RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffffff86f25683 R11: 0000000000000003 R12: ffff888028149ef8
-R13: ffff88802814a058 R14: dffffc0000000000 R15: ffff888028149ef8
-FS:  00000000010bf880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055ade220a6d8 CR3: 0000000012719000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __rtnl_newlink+0x1484/0x16e0 net/core/rtnetlink.c:3447
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3491
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4404b9
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fff3e934f98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004404b9
-RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000003
-RBP: 00000000006ca018 R08: 0000000000000014 R09: 00000000004002c8
-R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000401cc0
-R13: 0000000000401d50 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace ec4d68ff94a95202 ]---
-RIP: 0010:free_netdev+0x4b3/0x5e0 net/core/dev.c:10661
-Code: c0 01 38 d0 7c 08 84 d2 0f 85 1a 01 00 00 0f b7 83 32 02 00 00 48 29 c3 48 89 df e8 d7 77 ac fa e9 47 ff ff ff e8 3d 1e 80 fa <0f> 0b e8 36 1e 80 fa 0f b6 2d 39 e1 e8 05 31 ff 89 ee e8 a6 24 80
-RSP: 0018:ffffc9000163f1a0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88802814a000 RCX: 0000000000000000
-RDX: ffff888021678000 RSI: ffffffff86f25763 RDI: 0000000000000003
-RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffffff86f25683 R11: 0000000000000003 R12: ffff888028149ef8
-R13: ffff88802814a058 R14: dffffc0000000000 R15: ffff888028149ef8
-FS:  00000000010bf880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd33803e118 CR3: 0000000012719000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c b/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
+index 072e349dd46c..d43d1a53e72d 100644
+--- a/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
++++ b/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
+@@ -1239,8 +1239,8 @@ static int bufreq_dec(struct hfi_plat_buffers_params *params, u32 buftype,
+ 	return 0;
+ }
+ 
+-int bufreq_enc(struct hfi_plat_buffers_params *params, u32 buftype,
+-	       struct hfi_buffer_requirements *bufreq)
++static int bufreq_enc(struct hfi_plat_buffers_params *params, u32 buftype,
++		      struct hfi_buffer_requirements *bufreq)
+ {
+ 	enum hfi_version version = params->version;
+ 	struct enc_bufsize_ops *enc_ops;
+-- 
+2.17.1
+
