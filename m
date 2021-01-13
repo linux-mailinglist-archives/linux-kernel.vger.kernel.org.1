@@ -2,170 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF74A2F4705
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:03:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 216272F4708
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727420AbhAMJBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 04:01:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51004 "EHLO
+        id S1727446AbhAMJCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 04:02:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727389AbhAMJBU (ORCPT
+        with ESMTP id S1727067AbhAMJCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 04:01:20 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA67C061575;
-        Wed, 13 Jan 2021 01:00:39 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id v126so893492qkd.11;
-        Wed, 13 Jan 2021 01:00:39 -0800 (PST)
+        Wed, 13 Jan 2021 04:02:36 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3E0C061575;
+        Wed, 13 Jan 2021 01:01:55 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id y22so1657412ljn.9;
+        Wed, 13 Jan 2021 01:01:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pbIjM7Y2l1QZG495FHuBObshGZMrXbccqmIZVjHdFFY=;
-        b=hbnoG52Fys9E2+Ad9ZZ027ZjhIAoLnyG42xdppfQ3gUSAahiq71f+njlW5c8pawrHF
-         no2oGIFoZiM/1K5kWxlW1kn6jIaQ/v4m0YGaA4H2cnobysRSmkEsxJNoXzX5oEotFpQy
-         S5OlsZ1A0k157geOjY0wW3xvdgvksKao8QANhNbT4b1shlfQC2OIQJBSPYUPIAipOzN6
-         NDkfEHm7adLHT0TedcIvzbTWJTkhaPDqFnraKZy2fqpn2f3bxyQKuALVJIf0YMottcVa
-         idan2jiwyQGOC3FKd3ZSioS7zSEfPij9sPlwqawBL9zIk27y1GTUwzLG68zMtUnKF9sf
-         opdA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zkyW24Nem9pNLyI2wkdK3KzUwBFzPFBOJwsBkINN3LQ=;
+        b=Hn426ULH1yMmh0ZdIKPuTDeQAShrud9SMoAHdN1a1K+5pPyYne1zavl4UhOf8Y5EHu
+         vuz5wjnMKki/EvHzDH3QSMqVWaBLQHcBhOHguS5hFMIFrh0YT8hcLeUxpg9KpIns3+R0
+         2/ldFBLlVoLsVaWrDG+lcAwvTHZ20Sfzz4fICZJJ/tfN31cwx+7LGPdWVx/6CtgTcDfu
+         iKPLXvjmJF50GWJptOBc6khiKZyyraNkuEsk4BV7fHxiEIzlly9n60atGxBb+pmJgdid
+         z2JynXqDhSCODV5gwAtODbBLZxi0yu1JpPZKeNinaTMrsoPSSrey5NzvtHvjH20FnezA
+         azNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pbIjM7Y2l1QZG495FHuBObshGZMrXbccqmIZVjHdFFY=;
-        b=moxsgeO10B0ZwIH+vYs49/TUkTpm8az4G7hihjwm4GjJEt0Zwv8Z0YqiCeUWC/ab4e
-         /EtOB0SjvIYVf+w4o8nMzrGGVoKkcnXqAz5w75sRrW8iIPdktvZkB0CPFFIyzOEQ2IsH
-         EwOvmmStD3RHVKi4g8skHsLVZblkYoo7sG3isZJOmIUNTw9sWVLQaa/jYuMayqmyyort
-         t6eO6aaUloWzQtVo9rHcFN4IOqNjPbTZRmCGvymLmbjnqkSvsdTY7iaiMhst+kuojEvM
-         h/0eHN+fyfKfo18k3ebquqJFdHKLfYTUfS8dKbDiN+fVRZ5LwrUxDUFZKAYRRWJi9aqA
-         f5lA==
-X-Gm-Message-State: AOAM531JBVFjf0jpxPjeNMcO0pihrzkzUtzqpeA9OV8uEfImpqMThgNa
-        gUKERUTO4CYU/wtU4z1ZY/s+B9OhZ9ZFOd8eZSGhEanIxuQ=
-X-Google-Smtp-Source: ABdhPJwMJe+FCIqZLrOZSfzPVTml5CBTjec9zWLucfYDdoJxMHqxs+HusUGQjyg8xb3jZqVxHLgZURsaadYLTZ1tjo4=
-X-Received: by 2002:a37:a893:: with SMTP id r141mr930119qke.459.1610528439051;
- Wed, 13 Jan 2021 01:00:39 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zkyW24Nem9pNLyI2wkdK3KzUwBFzPFBOJwsBkINN3LQ=;
+        b=mtJOgsDuoTkl9Em2P5UG+ODFkQ8y0fHgCG4AGEs3SLCI5NjyBNw6VnI483kX7gMmmN
+         ikJRHU6OAJWYD8Wx5ClqvYwhq2xeBQnUkkpWH5y87mGFuZcKjqkVZE5Sm94xXeaXmSnZ
+         H0CG+bOzWKZYQNqVFx38vOKgwwbAu+XnBNFGi3DgYbBNqwXXmTco+ZIQc5tDjQwZGjZf
+         /lMNYJK0Wt5mSuh1Zkbt2eSVAgLMBHLVUg2omJoh3LxHKeitJUkTIM37W7+XyoifacMZ
+         7MXrhf6HWBTp4O3+BXZESFwL3mdw3qURhrrZ3QQjDpvz75oGf4wnvOA1NCigyZ0Y3Z+W
+         201g==
+X-Gm-Message-State: AOAM533gHwgxzhZtIh47RPioFiwW17Y8Ph2rMKS+diJFjCngKHF3JGc8
+        XJ8FBdscN706HLWpNtWUbbSNjeOUBNo=
+X-Google-Smtp-Source: ABdhPJwMm5gYNC4xZ9bHfrW/x4wSrrarMTzx/yNo4Kg+q5sAU2GFM4WIwlVNPpEFDDt7yin33Gwdeg==
+X-Received: by 2002:a2e:9b47:: with SMTP id o7mr484867ljj.99.1610528513514;
+        Wed, 13 Jan 2021 01:01:53 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id a8sm141538lfo.206.2021.01.13.01.01.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jan 2021 01:01:52 -0800 (PST)
+Subject: Re: [PATCH v3 0/9] Support Runtime PM and host mode by Tegra ChipIdea
+ USB driver
+To:     Peter Chen <hzpeterchen@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Peter Chen <peter.chen@nxp.com>, Felipe Balbi <balbi@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Ion Agorria <ion@agorria.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201218120246.7759-1-digetx@gmail.com>
+ <20201229051615.GA5823@b29397-desktop>
+ <b2c21687-4cb9-ba0a-a724-3a82ddd8daff@gmail.com>
+ <713c4b1a-a4b3-41ad-7aad-c49e594f778b@gmail.com>
+ <20210113012036.GA1560@b29397-desktop>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <5cfc067a-0b3b-05fc-7567-4b2b475dd6e4@gmail.com>
+Date:   Wed, 13 Jan 2021 12:01:51 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-References: <20210112230310.GA149342@jelly>
-In-Reply-To: <20210112230310.GA149342@jelly>
-From:   Benjamin Tissoires <benjamin.tissoires@gmail.com>
-Date:   Wed, 13 Jan 2021 10:00:27 +0100
-Message-ID: <CAN+gG=ER7LndA9facg-EB-0VBdBBkpac+nYu+eOo7wDW6G6fBw@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: input: define ABS_PRESSURE/ABS_MT_PRESSURE
- resolution as grams
-To:     Peter Hutterer <peter.hutterer@who-t.net>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jason Gerecke <killertofu@gmail.com>,
-        Ping Cheng <pinglinux@gmail.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210113012036.GA1560@b29397-desktop>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 12:03 AM Peter Hutterer
-<peter.hutterer@who-t.net> wrote:
->
-> ABS_PRESSURE and ABS_MT_PRESSURE on touch devices usually represent
-> contact size (as a finger flattens with higher pressure the contact size
-> increases) and userspace translates the kernel pressure value back into
-> contact size. For example, libinput has pressure thresholds when a touch is
-> considered a palm (palm == large contact area -> high pressure). The values
-> themselves are on an arbitrary scale and device-specific.
->
-> On pressurepads however, the pressure axis may represent the real physical
-> pressure. Pressurepads are touchpads without a hinge but an actual pressure
-> sensor underneath the device instead, for example the Lenovo Yoga 9i.
->
-> A high-enough pressure is converted to a button click by the firmware.
-> Microsoft does not require a pressure axis to be present, see [1], so as seen
-> from userspace most pressurepads are identical to clickpads - one button and
-> INPUT_PROP_BUTTONPAD set.
->
-> However, pressurepads that export the pressure axis break userspace because
-> that axis no longer represents contact size, resulting in inconsistent touch
-> tracking, e.g. [2]. Userspace needs to know when a pressure axis represents
-> real pressure and the best way to do so is to define what the resolution
-> field means. Userspace can then treat data with a pressure resolution as
-> true pressure.
->
-> This patch documents that the pressure resolution is in units/gram. This
-> allows for fine-grained detail and tops out at roughly ~2000t, enough for the
-> devices we're dealing with. Grams is not a scientific pressure unit but the
-> alternative is:
-> - Pascal: defined as force per area and area is unreliable on many devices and
->   seems like the wrong option here anyway, especially for devices with a
->   single pressure sensor only.
-> - Newton: defined as mass * distance/acceleration and for the purposes of a
->   pressure axis, the distance is tricky to interpret and we get the data to
->   calculate acceleration from event timestamps anyway.
->
-> For the purposes of touch devices and digitizers, grams seems the best choice
-> and the easiest to interpret.
->
-> Bonus side effect: we can use the existing hwdb infrastructure in userspace to
-> fix devices that advertise false pressure.
->
-> [1] https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/windows-precision-touchpad-required-hid-top-level-collections#windows-precision-touchpad-input-reports
-> [2] https://gitlab.freedesktop.org/libinput/libinput/-/issues/562
->
-> Signed-off-by: Peter Hutterer <peter.hutterer@who-t.net>
+13.01.2021 04:20, Peter Chen пишет:
+> On 21-01-12 09:56:37, Dmitry Osipenko wrote:
+>> 29.12.2020 17:26, Dmitry Osipenko пишет:
+>>> 29.12.2020 08:16, Peter Chen пишет:
+>>>> On 20-12-18 15:02:37, Dmitry Osipenko wrote:
+>>>>> This series implements Runtime PM support for the Tegra ChipIdea USB driver.
+>>>>> It also squashes the older ehci-tegra driver into the ChipIdea driver, hence
+>>>>> the RPM is supported by both UDC and host controllers, secondly this opens
+>>>>> opportunity for implementing OTG support in the future.
+>>>>>
+>>>>> Patchset was tested on various Tegra20, Tegra30 and Tegra124 devices.
+>>>>> Thanks to Peter Geis, Matt Merhar, Nicolas Chauvet and Ion Agorria for
+>>>>> helping with the extensive and productive testing!
+>>>>>
+>>>>> Changelog:
+>>>>>
+>>>>> v3: - Replaced "goto" with if-statements as was suggested by Thierry Reding.
+>>>>>
+>>>>>     - Improved wording of the deprecated Kconfig entry as was suggested
+>>>>>       by Alan Stern.
+>>>>>
+>>>>>     - Added ACKs from Thierry Reding and Alan Stern.
+>>>>>
+>>>>>     - Added a new minor patch "Specify TX FIFO threshold in UDC SoC info"
+>>>>>       just for completeness, since we can now switch OTG to host mode in
+>>>>>       the ChipIdea driver. Although, OTG support remains a work-in-progress
+>>>>>       for now.
+>>>>>
+>>>>> v2: - Improved comments in the code as it was suggested by Peter Chen and
+>>>>>       Sergei Shtylyov for v1.
+>>>>>
+>>>>>     - Replaced mdelay() with fsleep() and made ci->hdc to reset to NULL in
+>>>>>       a error code path, like it was suggested by Peter Chen.
+>>>>>
+>>>>>     - Redirected deprecated USB_EHCI_TEGRA Kconfig entry to USB_CHIPIDEA_TEGRA
+>>>>>       as was suggested by Alan Stern.
+>>>>>
+>>>>>     - Improved commit message and added ACK from Thierry Reding to the patch
+>>>>>       that removes MODULE_ALIAS.
+>>>>>
+>>>>>     - Fixed UDC PHY waking up on ASUS TF201 tablet device by utilizing
+>>>>>       additional VBUS sensor. This was reported and tested by Ion Agorria.
+>>>>>
+>>>>>     - Added t-b from Ion Agorria.
+>>>>>
+>>>>> Dmitry Osipenko (8):
+>>>>>   usb: phy: tegra: Add delay after power up
+>>>>>   usb: phy: tegra: Support waking up from a low power mode
+>>>>>   usb: chipidea: tegra: Remove MODULE_ALIAS
+>>>>>   usb: chipidea: tegra: Rename UDC to USB
+>>>>>   usb: chipidea: tegra: Support runtime PM
+>>>>>   usb: chipidea: tegra: Specify TX FIFO threshold in UDC SoC info
+>>>>>   usb: host: ehci-tegra: Remove the driver
+>>>>>   ARM: tegra_defconfig: Enable USB_CHIPIDEA_HOST and remove
+>>>>>     USB_EHCI_TEGRA
+>>>>>
+>>>>> Peter Geis (1):
+>>>>>   usb: chipidea: tegra: Support host mode
+>>>>
+>>>> Chipidea related (patch 3-7) are applied, thanks.
+>>>
+>>> Hello Peter,
+>>>
+>>> Thank you for applying the patches.
+>>>
+>>> Who will apply the remaining patches?
+>>>
+>>> The Chipidea patch #6 depends on the PHY changes, otherwise USB will
+>>> suspend and never resume.
+>>>
+>>
+>> Peter, could you please apply the PHY and defconfig patches along with
+>> the CI patches to -next? I.e. the whole series. Preferentially in
+>> original ordering of patches should be preserved.
+>>
+> 
+> Hi Dmitry,
+> 
+> Usually, Greg could apply all USB patches, if I apply other USB related
+> patches, it may cause conflict with other patches in other's tree.
+> Greg, free feel to apply this series with 
+> Acked-by: Peter Chen <peter.chen@kernel.org>
+> for chipidea part.
+> 
+> For ARM defconfig patch, I think it should go ARM's tree.
+> 
 
-FWIW, and because I was involved in the initial discussion:
-Acked-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Thank you for the answer!
 
-Cheers,
-Benjamin
+It's not the ARM defconfig, but a local tegra_defconfig. It should be
+fine to take the patch via the USB tree since Thierry already acked it
+and asked to do so.
 
-> ---
->  Documentation/input/event-codes.rst          | 15 +++++++++++++++
->  Documentation/input/multi-touch-protocol.rst |  4 ++++
->  2 files changed, 19 insertions(+)
->
-> diff --git a/Documentation/input/event-codes.rst b/Documentation/input/event-codes.rst
-> index b24b5343f5eb..3118fc1c1e26 100644
-> --- a/Documentation/input/event-codes.rst
-> +++ b/Documentation/input/event-codes.rst
-> @@ -236,6 +236,21 @@ A few EV_ABS codes have special meanings:
->    - Used to describe multitouch input events. Please see
->      multi-touch-protocol.txt for details.
->
-> +* ABS_PRESSURE/ABS_MT_PRESSURE:
-> +
-> +   - For touch devices, many devices converted contact size into pressure.
-> +     A finger flattens with pressure, causing a larger contact area and thus
-> +     pressure and contact size are directly related. This is not the case
-> +     for other devices, for example digitizers and touchpads with a true
-> +     pressure sensor ("pressure pads").
-> +
-> +     A device should set the resolution of the axis to indicate whether the
-> +     pressure is in measurable units. If the resolution is zero, the
-> +     pressure data is in arbitrary units. If the resolution is nonzero, the
-> +     pressure data is in units/gram. For example, a value of 10 with a
-> +     resolution of 1 represents 10 gram, a value of 10 with a resolution on
-> +     1000 represents 10 microgram.
-> +
->  EV_SW
->  -----
->
-> diff --git a/Documentation/input/multi-touch-protocol.rst b/Documentation/input/multi-touch-protocol.rst
-> index 307fe22d9668..21c1e6a22888 100644
-> --- a/Documentation/input/multi-touch-protocol.rst
-> +++ b/Documentation/input/multi-touch-protocol.rst
-> @@ -260,6 +260,10 @@ ABS_MT_PRESSURE
->      of TOUCH and WIDTH for pressure-based devices or any device with a spatial
->      signal intensity distribution.
->
-> +    If the resolution is zero, the pressure data is in arbitrary units.
-> +    If the resolution is nonzero, the pressure data is in units/gram. See
-> +    :ref:`input-event-codes` for details.
-> +
->  ABS_MT_DISTANCE
->      The distance, in surface units, between the contact and the surface. Zero
->      distance means the contact is touching the surface. A positive number means
-> --
-> 2.29.2
->
+Greg, please take this whole series. Thanks in advance!
