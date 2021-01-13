@@ -2,80 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB002F550B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 217DA2F5501
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729445AbhAMW5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 17:57:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729423AbhAMWlb (ORCPT
+        id S1729403AbhAMWsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 17:48:55 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:58028 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729381AbhAMWll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 17:41:31 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08A9C0617A9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:39:33 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id b8so1876473plh.12
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:39:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=y7C3/EfXvdxRAVOgUDZ2takH8wh+8RemM6yt45ykHTQ=;
-        b=jWSBWM1f90GuQfdAn+ekbGqXI+T0+VG/9nhPvsH1YoEX0Pvlfp9NhlP+CUsLnUIpLn
-         GgUD1oB5wjrbYTXq6iDD9SeAwphAWRSHYvbG+V4zISpPuOfKL200sYaK3jk6EkpaHLjc
-         yukqMmvIXUuYkPubvdOMQifXSIZjy/zD0I/eI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=y7C3/EfXvdxRAVOgUDZ2takH8wh+8RemM6yt45ykHTQ=;
-        b=MmDiQrl/PopKQcWbiJ9riejpiML7FeyPtxG674Vjw3Q0LChe2Wn4k2tdtfqMgtG+r/
-         PldND7/JlxaARnGl4TnbNLp2lO0NvP4HXk959oPm7fqe0p9T/iqa815EkwRpBLmgf0FF
-         loM5Ui/mF4Dzzu9wcfil6OCu7dVu+3uaRk5SUGkk1nOXojAPTxHwYqRMdjPX/h8Ji0jO
-         cYyMnfB657o9KQl0bDvPpBs7Oa47MTbp9Spjr5KqMPhos1yw1HZO0oL2S457A9T7tbRL
-         u1wmX4rbni4cLRR//1D/O6lVf2lHdpwDU8klOEX8LZRZQPtG5poFGh0kQcdhNwZX2gtu
-         PcaA==
-X-Gm-Message-State: AOAM531CQKydcO/SaRleJlXcov4wFQsrWW9/rz9rYQ62dSOYvXlSN4Du
-        OFutucIbRvOVa/9rRfkTNkX0YQ==
-X-Google-Smtp-Source: ABdhPJwz2R3vXycnrhYnCDSxIhOU0EaGilNeDT6WYkSXYHv8P/0F1Hguaw/OHB9jk73aGRNAJkADaw==
-X-Received: by 2002:a17:902:b282:b029:da:fd05:7766 with SMTP id u2-20020a170902b282b02900dafd057766mr4478015plr.52.1610577573388;
-        Wed, 13 Jan 2021 14:39:33 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id 101sm3142739pjo.38.2021.01.13.14.39.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 14:39:32 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 13 Jan 2021 17:41:41 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-245-o5ZQSi_3OTOs2qtHxtjrAw-1; Wed, 13 Jan 2021 22:39:54 +0000
+X-MC-Unique: o5ZQSi_3OTOs2qtHxtjrAw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 13 Jan 2021 22:39:54 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 13 Jan 2021 22:39:54 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Josh Poimboeuf' <jpoimboe@redhat.com>,
+        "vanessa.hack@fau.de" <vanessa.hack@fau.de>
+CC:     "peterz@infradead.org" <peterz@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: objtool/ORC generation for noreturn functions
+Thread-Topic: objtool/ORC generation for noreturn functions
+Thread-Index: AQHW6dvx3EeZ32LrMkWW5+fWAxN3w6omI14A
+Date:   Wed, 13 Jan 2021 22:39:53 +0000
+Message-ID: <8bfda75985c4429297afce9340303e34@AcuMS.aculab.com>
+References: <daf04159-a458-4f0d-9f29-d8ef5a63fae6@email.android.com>
+ <20210113184131.yh4zh4olfkdpydv7@treble>
+In-Reply-To: <20210113184131.yh4zh4olfkdpydv7@treble>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210113141426.v5.2.I9ec9c3c61eded22a5f7fbff838d23fc95ec7cfe0@changeid>
-References: <20210113141426.v5.1.Iaa8a60cf2ed4b7ad5e2fbb4ad76a1c600ee36113@changeid> <20210113141426.v5.2.I9ec9c3c61eded22a5f7fbff838d23fc95ec7cfe0@changeid>
-Subject: Re: [PATCH v5 2/2] ARM: dts: cros-ec-keyboard: Use keymap macros
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     dianders@chromium.org, Philip Chen <philipchen@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Philip Chen <philipchen@chromium.org>,
-        dmitry.torokhov@gmail.com
-Date:   Wed, 13 Jan 2021 14:39:31 -0800
-Message-ID: <161057757147.3661239.1732471144881622262@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-01-13 14:15:02)
-> The common cros-ec keymap has been defined as macros. This patch uses
-> the macros to simply linux,keymap in cros-ec-keyboard.dtsi file.
->=20
-> This patch also creates an alias for keyboard-controller to make it
-> easier to override the keymap in board-specific dts later.
->=20
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
-> ---
+PiBPbiBXZWQsIEphbiAxMywgMjAyMSBhdCAxMTo0NDoyMkFNICswMTAwLCB2YW5lc3NhLmhhY2tA
+ZmF1LmRlIHdyb3RlOg0KPiA+ICAgIEhpLA0KPiA+ICAgIEkgYW0gY3VycmVudGx5IHdyaXRpbmcg
+bXkgZmluYWwgdGhlc2lzIGF0IHVuaXZlcnNpdHkgb24gdGhlIHRvcGljIG9mIHN0YWNrDQo+ID4g
+ICAgdW53aW5kaW5nLiBNeSBnb2FsIGlzIHRvIGltcGxlbWVudCBhbmQgZXZhbHVhdGUgc3RhY2sg
+dW53aW5kZXJzIGZvcg0KPiA+ICAgIHJlc2VhcmNoIG9wZXJhdGluZyBzeXN0ZW0gcG9ydHMgdG8g
+eDg2IDMyIGFuZCA2NCBiaXQgYXJjaGl0ZWN0dXJlcyBhbmQNCj4gPiAgICBTUEFSQyBWOC4NCj4g
+PiAgICBGb3IgdGhlIHg4NiBwb3J0cyBJIGNob3NlIE9SQyBhcyB1bndpbmRpbmcgZm9ybWF0IGR1
+ZSB0byBpdHMgc2ltcGxpY2l0eQ0KPiA+ICAgIGFuZCByZWxpYWJpbGl0eS4gU28gZmFyLCBpdCB3
+b3JrcyBxdWl0ZSB3ZWxsIChhbHRob3VnaCBJJ3ZlIHJhbiBpbnRvIHNvbWUNCj4gPiAgICBtaW5v
+ciBpc3N1ZXMgd2l0aCBvYmp0b29sIGFzIHRoZSByZXNlYXJjaCBPUyBpcyB3cml0dGVuIGluIEMr
+KykuDQo+ID4gICAgQnV0IG5vdyBJIGhhdmUgc29tZSBwcm9ibGVtcyB3aXRoIGZ1bmN0aW9ucyB0
+aGF0IGFyZSBleHBsaWNpdGx5IG1hcmtlZCBhcw0KPiA+ICAgIG5vcmV0dXJuIHdpdGggdGhlIFtb
+bm9yZXR1cm5dXSBhdHRyaWJ1dGUsIGFsbCBmb2xsb3dpbmcgdW53aW5kaW5nIHN0ZXBzDQo+ID4g
+ICAgYXJlIHVucmVsaWFibGUuIEkgaGF2ZSByZWFkIGluIHRoZSBvYmp0b29sIGRvY3VtZW50YXRp
+b24gdGhhdCBzdWNoDQo+ID4gICAgZnVuY3Rpb25zIGhhdmUgdG8gYmUgYWRkZWQgdG8gdGhlIG9i
+anRvb2wgZ2xvYmFsX25vcmV0dXJuIGFycmF5Lg0KPiA+ICAgIFVuZm9ydHVuYXRlbHksIEkgZG8g
+bm90IHVuZGVyc3RhbmQgdGhlIHB1cnBvc2Ugb2YgdGhhdCBhcnJheSBhbmQgdGhlDQo+ID4gICAg
+aW50ZW5kZWQgT1JDIGJlaGF2aW91ciBmb3Igbm9yZXR1cm4gZnVuY3Rpb25zLiBBcmUgdGhlIHVu
+d2luZGluZyBzdGVwcw0KPiA+ICAgIHRoYXQgZm9sbG93IGEgbm9yZXR1cm4gaW50ZW5kZWQgdG8g
+YmUgdW5yZWxpYWJsZT8NCg0KVGhlcmUgd2FzIGFuICdpbnRlcmVzdGluZycgdW53aW5kZXIgSSBz
+YXcgYSBmZXcgeWVhcnMgYWdvLg0KKFdoaWNoIGNvdWxkbid0IGhhbmRsZSAnbm9yZXR1cm4nIGZ1
+bmN0aW9ucy4pDQoNClRoZSBpZGVhIGlzIHRvIGZvbGxvdyBmb3J3YXJkcyB0aHJvdWdoIHRoZSBj
+b2RlIHdoaWxlIGtlZXBpbmcNCnRyYWNrIG9mICVzcCBhbmQgJWZwIHVudGlsIGEgcmV0dXJuIGlu
+c3RydWN0aW9uIGlzIGZvdW5kLg0KWW91IG5lZWQgdG8gYmUgYWJsZSB0byBkZXRlY3QgbG9vcHMs
+IGFuZCB0aGVuIGNvbnRpbnVlIGZyb20NCnRoZSBvdGhlciB0YXJnZXQgb2YgYW4gZWFybGllciBj
+b25kaXRpb25hbCBicmFuY2guDQpQcm92aWRlZCBmdW5jdGlvbiBjYWxscyBkb24ndCBjaGFuZ2Ug
+JXNwIHRoZXkgY2FuIGJlIGlnbm9yZWQuDQpJZiB0aGUgJWZwIGlzbid0IHVzZWQgYXMgYSBmcmFt
+ZSBwb2ludGVyIGl0IHdvbid0IGdldCByZWxvYWRlZA0KaW50byAlc3Agc28gaXQgZG9lc24ndCBt
+YXR0ZXINCg0KVGhpcyB3b3JrcyAobW9zdCBvZiB0aGUgdGltZSkgd2l0aCBubyBkZWJ1ZyBpbmZv
+IGFuZCBubyBzeW1ib2wNCnRhYmxlLg0KDQpBZGRpbmcgYSBjb2RlIG1hcmtlciBhZnRlciBhIGNh
+bGwgdG8gYSAnbm90cmV0dXJuJyBmdW5jdGlvbiAoZWcgJ2ptcCAuJykNCm1pZ2h0IGJlIHRoZSBz
+aW1wbGVzdCB3YXkgb2Ygc3RvcHBpbmcgdGhlbSBiZWluZyBhbiBpc3N1ZS4NClRoZSBleHRyYSBp
+bnN0cnVjdGlvbiBpcyB1bmxpa2VseSB0byBiZSBhbiBpc3N1ZS4NCg0KCURhdmlkDQoNCi0NClJl
+Z2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0
+b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykN
+Cg==
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
