@@ -2,161 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D882F4286
+	by mail.lfdr.de (Postfix) with ESMTP id CB08F2F4287
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 04:32:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727998AbhAMDcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 22:32:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbhAMDcG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 22:32:06 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CCEC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 19:31:26 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id s26so656494lfc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 19:31:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CH+xsIRM+IV0uinVWZZSPxYmWLGJmAD6nwl0cbAWTi4=;
-        b=Vgjl7SKuukjWFtnm7i3ijVQrIXWvFzxtoe/B4OnSHO3sGSWu7IPVs4gEMtptVVrJH9
-         rGL5Gzd9pD0dU+kkbFRXafvsqm107Yx5JFtNWGTnl6xau+f57pdALjQESjacpWyhmt57
-         e8wmN5OnfVL4Iv/iOEQ9nCjD9Yb7schG5pB+E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CH+xsIRM+IV0uinVWZZSPxYmWLGJmAD6nwl0cbAWTi4=;
-        b=laLJga+UbZ5jHznzeMuJn38qNAqYqHVSgl5efIl03KRKTrKS5Rr+i+jJIJpabJe8Yk
-         sYxg/GYhyvyasoe+TIJMyqoeONqxQ3sO6Q0toNwn092inJRsj0FmrQknGaW8g/OfAzGl
-         PqyFMQAn9vFUozIXJah8NlsBtX911eiZOl6Xzf2Gbj8S5BH/iECnIqVrv5PGDzkkSgmf
-         3009P0q+DEK3bURdJW66pbb4seXug793tXD7QCDTKHuXGZq1SM3GH3LLu43PNqH857+X
-         NlG+ZE9w0gX3IxOD6porY2G626G8ZeLMEZWIE98UgGAjMC3XB6O2w7MVdhlo6g3j6Bye
-         uNDA==
-X-Gm-Message-State: AOAM532ZllvJbDUso2TBaFZOwei01Kt95mYBg0wZKe3iy85bU6sx5vM2
-        EwYeeTPjoNdnVu3CHaVEWrGHvPb54Kex3w==
-X-Google-Smtp-Source: ABdhPJwpk8fV8jqtSAP3aUzp4dDvGuoMAf5c124EsTzXBAw6XXTaGk7g/aNZ0z+9lJD0n1oxBEq0DA==
-X-Received: by 2002:ac2:4d28:: with SMTP id h8mr913805lfk.263.1610508684480;
-        Tue, 12 Jan 2021 19:31:24 -0800 (PST)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id a7sm64879lfb.78.2021.01.12.19.31.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 19:31:24 -0800 (PST)
-Received: by mail-lj1-f182.google.com with SMTP id m13so916668ljo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 19:31:23 -0800 (PST)
-X-Received: by 2002:a2e:b4af:: with SMTP id q15mr1030700ljm.507.1610508683314;
- Tue, 12 Jan 2021 19:31:23 -0800 (PST)
+        id S1729061AbhAMDc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 22:32:26 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:58285 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726310AbhAMDcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 22:32:25 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DFtK92Qg1z9sRK;
+        Wed, 13 Jan 2021 14:31:41 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610508701;
+        bh=df+PBbrEhpZVbvdtf2ZFLzNzjs4lW9MwPOq5lRWon78=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BJQcjoyq/rS41N1eGXY0KOuJOqLKpHDbAAnR1D/49tMldR0fSUZGx1CwdGz0s1Pbh
+         Lpgrl13jGBpfdVS4pmZI2e57EKVdCfO1KxcA+kB02mUAZYQN5vp+5R1XjEd+MsDE6S
+         rWbWLMmjPREvFLX7mHT/xgnKwbMfRj4PUZiqTf+D4pAFhsyF7l9ULg3HAUV9zt+17i
+         8GsZGr3d96jr7DyWFsbiU+EJs2rY80Ilv1VWhB2y0qCTWWLeeqdEqPzGbF7jMczvwA
+         ZSxBRIb1/YcWdCK1HVzhI+qFkVN+xJpfpNWcH6v0L2DuhMaL9MEIxe2EcFBhMGMcmb
+         fh2PaL/t6+4iw==
+Date:   Wed, 13 Jan 2021 14:31:40 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
+Subject: Re: mmotm 2021-01-12-01-57 uploaded (NR_SWAPCACHE in mm/)
+Message-ID: <20210113143140.568dbf53@canb.auug.org.au>
+In-Reply-To: <20210112135010.267508efa85fe98f670ed9e9@linux-foundation.org>
+References: <20210112095806.I2Z6as5al%akpm@linux-foundation.org>
+        <ac517aa0-2396-321c-3396-13aafba46116@infradead.org>
+        <20210112135010.267508efa85fe98f670ed9e9@linux-foundation.org>
 MIME-Version: 1.0
-References: <20210110004435.26382-1-aarcange@redhat.com> <CAHk-=wghqNywtf=sRv_5FmG=+hPGqj=KWakw34tNeoZ1wPuaHg@mail.gmail.com>
- <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com>
- <X/prosulFrEoNnoF@redhat.com> <CAHk-=wjZTMsv0_GOyQpLRk_5U1r5W8e21f8sV0jykK=z47hjGQ@mail.gmail.com>
- <CAHk-=wgi31FKc9AL6m87+pb2B79V2g_QjdhmtJNW8Pnq2ERQ-Q@mail.gmail.com>
- <45806a5a-65c2-67ce-fc92-dc8c2144d766@nvidia.com> <CAHk-=wipa-9wEuWHBjourmXAVHdeqDa59UxW6ZJ_Oqg6-Dwvdw@mail.gmail.com>
- <CAHk-=wje9r3fREBdZcOu=NihGczBtkqkhXRPDhY-ZkNVv=thiQ@mail.gmail.com> <20210113021619.GL35215@casper.infradead.org>
-In-Reply-To: <20210113021619.GL35215@casper.infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 12 Jan 2021 19:31:07 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjWMieNV3nAJgoG5prEHBEcOZiREmLUr499tA9NMttEqQ@mail.gmail.com>
-Message-ID: <CAHk-=wjWMieNV3nAJgoG5prEHBEcOZiREmLUr499tA9NMttEqQ@mail.gmail.com>
-Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/w7eI=p7dXr=HbdLnMuWAzs3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 6:16 PM Matthew Wilcox <willy@infradead.org> wrote:
+--Sig_/w7eI=p7dXr=HbdLnMuWAzs3
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Tue, 12 Jan 2021 13:50:10 -0800 Andrew Morton <akpm@linux-foundation.org=
+> wrote:
 >
-> The thing about the speculative page cache references is that they can
-> temporarily bump a refcount on a page which _used_ to be in the page
-> cache and has now been reallocated as some other kind of page.
+> On Tue, 12 Jan 2021 12:38:18 -0800 Randy Dunlap <rdunlap@infradead.org> w=
+rote:
+>=20
+> > On 1/12/21 1:58 AM, akpm@linux-foundation.org wrote: =20
+> > > The mm-of-the-moment snapshot 2021-01-12-01-57 has been uploaded to
+> > >=20
+> > >    https://www.ozlabs.org/~akpm/mmotm/
+> > >=20
+> > > mmotm-readme.txt says
+> > >=20
+> > > README for mm-of-the-moment:
+> > >=20
+> > > https://www.ozlabs.org/~akpm/mmotm/
+> > >=20
+> > > This is a snapshot of my -mm patch queue.  Uploaded at random hopeful=
+ly
+> > > more than once a week.
+> > >  =20
+> >=20
+> > on i386 and x86_64:
+> >=20
+> > when CONFIG_SWAP is not set/enabled:
+> >=20
+> > ../mm/migrate.c: In function =E2=80=98migrate_page_move_mapping=E2=80=
+=99:
+> > ../mm/migrate.c:504:35: error: =E2=80=98NR_SWAPCACHE=E2=80=99 undeclare=
+d (first use in this function); did you mean =E2=80=98QC_SPACE=E2=80=99?
+> >     __mod_lruvec_state(old_lruvec, NR_SWAPCACHE, -nr);
+> >                                    ^~~~~~~~~~~~
+> >=20
+> > ../mm/memcontrol.c:1529:20: error: =E2=80=98NR_SWAPCACHE=E2=80=99 undec=
+lared here (not in a function); did you mean =E2=80=98SGP_CACHE=E2=80=99?
+> >   { "swapcached",   NR_SWAPCACHE   },
+> >                     ^~~~~~~~~~~~ =20
+>=20
+> Thanks.  I did the below.
+>=20
+> But we're still emitting "Node %d SwapCached: 0 kB" in sysfs when
+> CONFIG_SWAP=3Dn, which is probably wrong.  Shakeel, can you please have a
+> think?
+>=20
+>=20
+> --- a/mm/memcontrol.c~mm-memcg-add-swapcache-stat-for-memcg-v2-fix
+> +++ a/mm/memcontrol.c
+> @@ -1521,7 +1521,9 @@ static const struct memory_stat memory_s
+>  	{ "file_mapped",		NR_FILE_MAPPED			},
+>  	{ "file_dirty",			NR_FILE_DIRTY			},
+>  	{ "file_writeback",		NR_WRITEBACK			},
+> +#ifdef CONFIG_SWAP
+>  	{ "swapcached",			NR_SWAPCACHE			},
+> +#endif
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  	{ "anon_thp",			NR_ANON_THPS			},
+>  	{ "file_thp",			NR_FILE_THPS			},
+> --- a/mm/migrate.c~mm-memcg-add-swapcache-stat-for-memcg-v2-fix
+> +++ a/mm/migrate.c
+> @@ -500,10 +500,12 @@ int migrate_page_move_mapping(struct add
+>  			__mod_lruvec_state(old_lruvec, NR_SHMEM, -nr);
+>  			__mod_lruvec_state(new_lruvec, NR_SHMEM, nr);
+>  		}
+> +#ifdef CONFIG_SWAP
+>  		if (PageSwapCache(page)) {
+>  			__mod_lruvec_state(old_lruvec, NR_SWAPCACHE, -nr);
+>  			__mod_lruvec_state(new_lruvec, NR_SWAPCACHE, nr);
+>  		}
+> +#endif
+>  		if (dirty && mapping_can_writeback(mapping)) {
+>  			__mod_lruvec_state(old_lruvec, NR_FILE_DIRTY, -nr);
+>  			__mod_zone_page_state(oldzone, NR_ZONE_WRITE_PENDING, -nr);
+> _
+>=20
 
-Oh, and thinking about this made me think we might actually have a
-serious bug here, and it has nothing what-so-ever to do with COW, GUP,
-or even the page count itself.
+Applied to linux-next today.
 
-It's unlikely enough that I think it's mostly theoretical, but tell me
-I'm wrong.
+--=20
+Cheers,
+Stephen Rothwell
 
-PLEASE tell me I'm wrong:
+--Sig_/w7eI=p7dXr=HbdLnMuWAzs3
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-CPU1 does page_cache_get_speculative under RCU lock
+-----BEGIN PGP SIGNATURE-----
 
-CPU2 frees and re-uses the page
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/+aZwACgkQAVBC80lX
+0GwRXAf8D166bsfL4hwZk8RE1CvR5PUSAH3voBHK5q1Ip0AmXERUKNgQMRzOZVRf
+MA0vlUaxSmQ618gbWKyBlI2oZP2B7iGl4vfWxO27obeZ1NrU6Jk8Zob28/aNgSWp
+S9jwafnxTCHGnM6CDYZSbdf1PpLfCEq9c3adQLDNpzLfucr/3buAWDEvN2HpqhTI
+tlqRTMWQ4tiOdxYBZRsBLHY2am/YMzeUECIfX4m5x/qLWHZGS6wv7DpbPT8URH02
+tGyHcxMQriK/eLws8PYdT9ErVRCexgTTHYEI3YcmIAjl7UCGxQoV80KYQudOmn1l
+5/nzBOYySlK4k7V5j+HozaZU3+fuGg==
+=6zS1
+-----END PGP SIGNATURE-----
 
-    CPU1                CPU2
-    ----                ----
-
-    page = xas_load(&xas);
-    if (!page_cache_get_speculative(page))
-            goto repeat;
-    .. succeeds ..
-
-                        remove page from XA
-                        release page
-                        reuse for something else
-
-    .. and then re-check ..
-    if (unlikely(page != xas_reload(&xas))) {
-            put_page(page);
-            goto repeat;
-    }
-
-ok, the above all looks fine. We got the speculative ref, but then we
-noticed that its' not valid any more, so we put it again. All good,
-right?
-
-Wrong.
-
-What if that "reuse for something else" was actually really quick, and
-both allocated and released it?
-
-That still sounds good, right? Yes, now the "put_page()" will be the
-one that _actually_ releases the page, but we're still fine, right?
-
-Very very wrong.
-
-The "reuse for something else" on CPU2 might have gotten not an
-order-0 page, but a *high-order* page. So it allocated (and then
-immediately free'd) maybe an order-2 allocation with _four_ pages, and
-the re-use happened when we had coalesced the buddy pages.
-
-But when we release the page on CPU1, we will release just _one_ page,
-and the other three pages will be lost forever.
-
-IOW, we restored the page count perfectly fine, but we screwed up the
-page sizes and buddy information.
-
-Ok, so the above is so unlikely from a timing standpoint that I don't
-think it ever happens, but I don't see why it couldn't happen in
-theory.
-
-Please somebody tell me I'm missing some clever thing we do to make
-sure this can actually not happen..
-
-         Linus
+--Sig_/w7eI=p7dXr=HbdLnMuWAzs3--
