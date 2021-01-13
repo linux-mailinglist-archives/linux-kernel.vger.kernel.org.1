@@ -2,99 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE972F54F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C43832F54FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729402AbhAMWiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 17:38:11 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:48526 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726636AbhAMWdM (ORCPT
+        id S1729273AbhAMWlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 17:41:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729383AbhAMWg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 17:33:12 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10DMO15C022373;
-        Wed, 13 Jan 2021 22:31:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=cbAaYYA369SOVtMavd6SqpAAxPSZNSJN5l6rUr3r578=;
- b=hw1PkC/sUHVQ3mQIsWe5wLnCnD2UBEsLkifv+QVZj58xK8X58jAvZHonkY4pgU3pvEDj
- Qbdg//OBSnnr5KhM1CRI+pUx8YpfyfYH6j9jCGSIiEjGCAW7ADrY1s+JbJ/rPaKRuNJ7
- PqW5Aff7qhKGiz3m9c3YZnYnV0paT2Loxi7cTh/BWnDyVYu5qdlqzBieH8mF1mYGr9+i
- WmNU4hCwh6GoY2StJhoj56q3c00HmJooyE3Mwy2Jczgsm0mtYCv1nuUF0ON7KkDArGIg
- 9BElpiJWUeQU2dZSNnu4fGH2edtGH636RDEeJH74U0UD8GUsWHc3t9/2mS/wRnSnNS1u Mg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 360kcywv8r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 22:31:12 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10DMTfZl061547;
-        Wed, 13 Jan 2021 22:31:11 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 360ke9591t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 22:31:11 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10DMUxqN029174;
-        Wed, 13 Jan 2021 22:31:00 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 13 Jan 2021 14:30:59 -0800
-Subject: Re: [PATCH v12 03/13] mm: Introduce VM_WARN_ON_PAGE macro
-To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
-        willy@infradead.org, osalvador@suse.de, mhocko@suse.com,
-        song.bao.hua@hisilicon.com, david@redhat.com,
-        naoya.horiguchi@nec.com
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-References: <20210106141931.73931-1-songmuchun@bytedance.com>
- <20210106141931.73931-4-songmuchun@bytedance.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <65b2103d-6198-3380-d36e-17dd774359bd@oracle.com>
-Date:   Wed, 13 Jan 2021 14:30:57 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-MIME-Version: 1.0
-In-Reply-To: <20210106141931.73931-4-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9863 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101130135
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9863 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
- impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101130134
+        Wed, 13 Jan 2021 17:36:58 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B43C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:36:17 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id y34so2328879pgk.21
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:36:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=RvmtRhkONMmfhKRRv0A/mu12QKo6Pw33tPGzPMsnY7U=;
+        b=eNg+TgZVgGKOKdnt+s9s+B/MNQiswvTMCwgmo8Ii3RPSXI63/n0z2lZa0uLfn6edAe
+         CqelYSNlg/KPvUyYhf+1H/U2Ulf9zF+gH256Rntm3+MEw48hdJACm34mL+qcU+1QgjSn
+         YBhqF6hrnorqu+sZO3j380PcokaYnk0LzyiFjAUBJyuhyOvdf0DCMwsyjKOJ2wMgNroG
+         f8AJqhwiK5daTSrJdQskC2X+vFNAX78I7MABZIYr6BguQ6hN/u8GeUpaw4C+v7kWNO1x
+         ayhVFWgdpJdPlDacSn3uevpU+Qdpduf0rkz1PDStxciqbonDSVJPOoyXwRVrGRN9xz87
+         tg3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=RvmtRhkONMmfhKRRv0A/mu12QKo6Pw33tPGzPMsnY7U=;
+        b=Yz6mhKumzQucQealj2SrCSx88MbEoi1Xb6HzqZm15/F9QYTtv/GLlK6id2lnwzqpTF
+         4SKdFoPiZzufiJLS0BKWy6NBeBir07SpDe6hfNHG8IyZHDfOPsbWcAlw7DppmtDikk2P
+         sggtw9G8XIUV5Ea05ps5lJ/RtMGNQ+6DtRJZHF+s37z/inUkj9iG2vSh5iaDw4IfNJcD
+         zta+6PdUcD3obUE0vdlE/BUpQGZTzXf3adRenD33Q7X3+Uu9jLFOsQzY1OJter/bU1hW
+         U1PJkcLmDBhdP6v+Wa/ArrWWkWjuFA0KrU4w5YlYCz00O+4rUnOPYZxWYcEYWck7mezn
+         IJGQ==
+X-Gm-Message-State: AOAM532cAE68ntZEVSQKFdgbaMioDH7Bj26lKNGrBYKHod/+pWpbmrHM
+        Kf/kcEAVV7UFu4hZyFtO8zQoPcsMZv9p
+X-Google-Smtp-Source: ABdhPJxuT5GN8uIB0Yk80LlDAp87gi4fAKPUBt19+DQuoK0Q2qZEJ//A/7To9qS2YuaQflTY45diDpaAilnm
+Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
+ (user=irogers job=sendgmr) by 2002:a17:902:12c:b029:da:e63c:dc92 with SMTP id
+ 41-20020a170902012cb02900dae63cdc92mr4528156plb.71.1610577376422; Wed, 13 Jan
+ 2021 14:36:16 -0800 (PST)
+Date:   Wed, 13 Jan 2021 14:36:08 -0800
+Message-Id: <20210113223609.3358812-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH 1/2] bpf, libbpf: Avoid unused function warning on bpf_tail_call_static
+From:   Ian Rogers <irogers@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Ilya Leoshkevich <iii@linux.ibm.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/6/21 6:19 AM, Muchun Song wrote:
-> Very similar to VM_WARN_ON_ONCE_PAGE and VM_BUG_ON_PAGE, add
-> VM_WARN_ON_PAGE macro.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  include/linux/mmdebug.h | 8 ++++++++
->  1 file changed, 8 insertions(+)
+Add inline to __always_inline making it match the linux/compiler.h.
+Adding this avoids an unused function warning on bpf_tail_call_static
+when compining with -Wall.
 
-I was going to question the use/need for this macro in the following
-patch.  Looks like Oscar has already done that, and free_bootmem_page
-will now use VM_BUG_ON_PAGE.  So, this patch can be dropped.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/lib/bpf/bpf_helpers.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+index 72b251110c4d..ae6c975e0b87 100644
+--- a/tools/lib/bpf/bpf_helpers.h
++++ b/tools/lib/bpf/bpf_helpers.h
+@@ -30,7 +30,7 @@
+ #define SEC(NAME) __attribute__((section(NAME), used))
+ 
+ #ifndef __always_inline
+-#define __always_inline __attribute__((always_inline))
++#define __always_inline inline __attribute__((always_inline))
+ #endif
+ #ifndef __noinline
+ #define __noinline __attribute__((noinline))
 -- 
-Mike Kravetz
+2.30.0.284.gd98b1dd5eaa7-goog
+
