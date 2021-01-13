@@ -2,142 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37ED2F4BFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 233842F4C04
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbhAMNGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 08:06:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbhAMNGU (ORCPT
+        id S1726929AbhAMNHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 08:07:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51442 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726721AbhAMNHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 08:06:20 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D2EC061575;
-        Wed, 13 Jan 2021 05:05:39 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id m6so1178269pfm.6;
-        Wed, 13 Jan 2021 05:05:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IVJs+wfp4qreGTLYzgt4gXDakLeTUHDUIVeds1NEB3w=;
-        b=Q603ItwbofIDv0BZdc0l/fkr0heq3s6JMUNYsCKrXLGNOwpfASDzD0aOEo6EOcqcN/
-         yApmddQBQh952j8W9gTxwosqY49Ch6DnCSoftFF2uFDMpND0UkAbu0NlXNSdoomGZVMB
-         I/+13VBhsQTHaz6rfN6o5VZUAfV/e/fPkxCnvM2MXqxqwMuVSPUDE4UlP2ADrmd0766n
-         MYRzd2n3ULDqL+H/qCZgjOjEjDI17pMmZH0WDsynKMAEdysHufuBUaEnZ0cG9WdRKrmU
-         gPZgIQb3FqE5gKGLSYLThp9qOlzLRBIZlX+z3rVH6uX7DDWMAVv8sfqZ/tAO8BXTKK6f
-         PjFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IVJs+wfp4qreGTLYzgt4gXDakLeTUHDUIVeds1NEB3w=;
-        b=pAxusdDDzYMCKyZxrrT08z6xaoDSIBaFbvBa90Sf1OZ7gnr2+ovvX21zr0folPjHjn
-         qDszubeEOH7PUgEehxxsxCPaeGpqmlso36Z2CHhhRZf1FxJE9Y7fNHOFTU62iVU3qof7
-         +eBtkvNofSlnR+pVNISBgvtEzs+txviM3xDm0+MiB9mO+YTVVw/BX+Kazq6o6bSi064Q
-         gNsm6GthlmkPUafgHFjsNDTFhytqnI5KXPnIoNnRj4VAixpc+RFMby8zpYazbP95gKM3
-         bHC18JQhT/f4cM8FaJlc61NUYB6OieQyV3K4s9t74wavMDLTjX4sVlVk699NwZCC5UBq
-         aOhg==
-X-Gm-Message-State: AOAM531Tro4LaZt5unvnHcaM4S6VPaDFwPiM/KfKNlqEnLtODlyGn3eC
-        b6ttOXP6tPt2Yd1OwgVJsqB+FbgoY9Ji0nnousY=
-X-Google-Smtp-Source: ABdhPJy8RRQw2FZhD1iGuFKtD3o12SiBXCQ5m32xkaCAoscgSF+q0Z8Yv/ePpmOKrfck14S7L7Wzwnrk+5DNSUl49/w=
-X-Received: by 2002:a63:c04b:: with SMTP id z11mr2029372pgi.74.1610543139443;
- Wed, 13 Jan 2021 05:05:39 -0800 (PST)
+        Wed, 13 Jan 2021 08:07:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610543171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+3M69g05v+W82UKg6HPFUpIhTfWlraoP91TJmQGhmD0=;
+        b=AYYJpOkB8hIv+eB8vuqwbq5/dFKHjOn5iAWmAiQ6KM2eqmH8nz8T+8a5SmBjCBlL9Xx3Pn
+        Kmf055LdPOT+m83wXeU4ry5QAKRR7g7NWLnThDfw6Z43+BF/iZKCf/Ye0oc/bsqcOc3OWU
+        6vEMIaGfPLdg3SUOn3DHR88FkPElb5Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-5ZHYiINjM0iq8oINTpHbcg-1; Wed, 13 Jan 2021 08:06:07 -0500
+X-MC-Unique: 5ZHYiINjM0iq8oINTpHbcg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C478D107ACF7;
+        Wed, 13 Jan 2021 13:06:05 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E55F65E1A4;
+        Wed, 13 Jan 2021 13:06:03 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] X.509: Fix crash caused by NULL pointer
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     Tobias Markus <tobias@markus-regensburg.de>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        dhowells@redhat.com, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 13 Jan 2021 13:06:03 +0000
+Message-ID: <161054316298.2657535.1498909560459842920.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-References: <20210112223749.97036-1-ftoth@exalondelft.nl>
-In-Reply-To: <20210112223749.97036-1-ftoth@exalondelft.nl>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 13 Jan 2021 15:05:23 +0200
-Message-ID: <CAHp75VfLOcMxUCU7urFi0Kz6RS4FNLA2y9T0rK_5Y0g8+UrE0w@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] hsu_dma_pci: disable spurious interrupt
-To:     Ferry Toth <ftoth@exalondelft.nl>
-Cc:     dmaengine <dmaengine@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 5:23 AM Ferry Toth <ftoth@exalondelft.nl> wrote:
->
-> On Intel Tangier B0 and Anniedale the interrupt line, disregarding
-> to have different numbers, is shared between HSU DMA and UART IPs.
-> Thus on such SoCs we are expecting that IRQ handler is called in
-> UART driver only. hsu_pci_irq was handling the spurious interrupt
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-hsu_pci_irq()
+On the following call path, `sig->pkey_algo` is not assigned
+in asymmetric_key_verify_signature(), which causes runtime
+crash in public_key_verify_signature().
 
-> from HSU DMA by returning immediately. This wastes CPU time and
-> since HSU DMA and HSU UART interrupt occur simultaneously they race
-> to be handled causing delay to the HSU UART interrupt handling.
-> Fix this by disabling the interrupt entirely.
+  keyctl_pkey_verify
+    asymmetric_key_verify_signature
+      verify_signature
+        public_key_verify_signature
 
-Title should be "dmaengine: hsu: ..."
+This patch simply check this situation and fixes the crash
+caused by NULL pointer.
 
-After addressing above
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Fixes: 215525639631 ("X.509: support OSCCA SM2-with-SM3 certificate verification")
+Reported-by: Tobias Markus <tobias@markus-regensburg.de>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-and-tested-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
 
+ crypto/asymmetric_keys/public_key.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> Fixes: 4831e0d9054c ("serial: 8250_mid: handle interrupt correctly in DMA case")
-> Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
-> ---
->  drivers/dma/hsu/pci.c | 21 +++++++++++----------
->  1 file changed, 11 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/dma/hsu/pci.c b/drivers/dma/hsu/pci.c
-> index 07cc7320a614..9045a6f7f589 100644
-> --- a/drivers/dma/hsu/pci.c
-> +++ b/drivers/dma/hsu/pci.c
-> @@ -26,22 +26,12 @@
->  static irqreturn_t hsu_pci_irq(int irq, void *dev)
->  {
->         struct hsu_dma_chip *chip = dev;
-> -       struct pci_dev *pdev = to_pci_dev(chip->dev);
->         u32 dmaisr;
->         u32 status;
->         unsigned short i;
->         int ret = 0;
->         int err;
->
-> -       /*
-> -        * On Intel Tangier B0 and Anniedale the interrupt line, disregarding
-> -        * to have different numbers, is shared between HSU DMA and UART IPs.
-> -        * Thus on such SoCs we are expecting that IRQ handler is called in
-> -        * UART driver only.
-> -        */
-> -       if (pdev->device == PCI_DEVICE_ID_INTEL_MRFLD_HSU_DMA)
-> -               return IRQ_HANDLED;
-> -
->         dmaisr = readl(chip->regs + HSU_PCI_DMAISR);
->         for (i = 0; i < chip->hsu->nr_channels; i++) {
->                 if (dmaisr & 0x1) {
-> @@ -105,6 +95,17 @@ static int hsu_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->         if (ret)
->                 goto err_register_irq;
->
-> +       /*
-> +        * On Intel Tangier B0 and Anniedale the interrupt line, disregarding
-> +        * to have different numbers, is shared between HSU DMA and UART IPs.
-> +        * Thus on such SoCs we are expecting that IRQ handler is called in
-> +        * UART driver only. Instead of handling the spurious interrupt
-> +        * from HSU DMA here and waste CPU time and delay HSU UART interrupt
-> +        * handling, disable the interrupt entirely.
-> +        */
-> +       if (pdev->device == PCI_DEVICE_ID_INTEL_MRFLD_HSU_DMA)
-> +               disable_irq_nosync(chip->irq);
-> +
->         pci_set_drvdata(pdev, chip);
->
->         return 0;
-> --
-> 2.27.0
->
+diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
+index 8892908ad58c..788a4ba1e2e7 100644
+--- a/crypto/asymmetric_keys/public_key.c
++++ b/crypto/asymmetric_keys/public_key.c
+@@ -356,7 +356,8 @@ int public_key_verify_signature(const struct public_key *pkey,
+ 	if (ret)
+ 		goto error_free_key;
+ 
+-	if (strcmp(sig->pkey_algo, "sm2") == 0 && sig->data_size) {
++	if (sig->pkey_algo && strcmp(sig->pkey_algo, "sm2") == 0 &&
++	    sig->data_size) {
+ 		ret = cert_sig_digest_update(sig, tfm);
+ 		if (ret)
+ 			goto error_free_key;
 
 
--- 
-With Best Regards,
-Andy Shevchenko
