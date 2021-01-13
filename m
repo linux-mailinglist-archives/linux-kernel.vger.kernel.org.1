@@ -2,228 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278622F49E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 066632F49EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:29:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728313AbhAMLTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:19:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728138AbhAMLTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:19:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49CA823359;
-        Wed, 13 Jan 2021 11:19:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610536743;
-        bh=jxeOpFgn4sXmDwGs+NaQ9MIkYcOoX+KexmMDrymTMB8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bE9e43DJXOFuPJAKy/yghTS91QvvZEslOyoM5p7BtIMczhrKURZNgs5Ydk9U25hCz
-         6mHYv+w5ZhRu4S2SdJQalDFHHgTz6IJzACgJFWRRbfBGkLF3DruTpl7JbRGVy5A5Lp
-         +IXskGSUG7e49wd45ClMItEfLlNPoGsGbp+h3mYlsrt+3rOwB/4oMyggevx/DTpYU8
-         HzP2Rx7BSnfN79O4/EpVfhnV1dOqjvxuArvyUA+iaiKExPHrvLbZ5SAhI/svFNnaw+
-         G91INEnPA6j8GQy7E9q72AsAAqO2HObKwkszlZTnWmMP5PgARi+AxyhldyRwONY7kF
-         KGnn41LYsReuQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8923D411E9; Wed, 13 Jan 2021 08:19:35 -0300 (-03)
-Date:   Wed, 13 Jan 2021 08:19:35 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     mingo@kernel.org, jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
-        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au
-Subject: Re: [PATCH V3 5/9] perf mem: Support data page size
-Message-ID: <20210113111935.GD3816@kernel.org>
-References: <20201216185805.9981-1-kan.liang@linux.intel.com>
- <20201216185805.9981-6-kan.liang@linux.intel.com>
- <20201219205639.GB363602@kernel.org>
- <52ba235a-93b9-c556-ca7a-7dd2caf3333c@linux.intel.com>
+        id S1728188AbhAMLVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:21:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727850AbhAMLVh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 06:21:37 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68FAC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:20:56 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id x18so889904pln.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:20:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4itm2nFdFTo23gw4YVK9Laikkc7ZPrs4G1cHd0Rl8Ls=;
+        b=a9Oq9XAprkYfHTeno/RpjsivMC4RbCA+3vBkjxxyfqFTC71dxJ2G5qR3WgFOT3jBo/
+         8pgkarOizjJnjl4QQPw0DmOUrDUoNa7g7H7/dHFrgMJtLhoiy2NAz5B1G/Uf2Z0ymdH1
+         dhqIHSIKpt4reg8jmn6//yNnaJIaAavy7ZSQo1m3+TO8NBHbbklUJHg5twUl8OtM687m
+         CbXDwukYkh02uPKsGy/vUQZMF8DmcI1aJ/fDfdy2hs8N3w0nFtrBIIAoz/vqAWBcFjuO
+         slgy8wfoIY3+c4YszaTJPy4A6Ew6cUMPnmxc6cgnQiy7IECZla5FL/LDzL7B9uKsw3pA
+         LUng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4itm2nFdFTo23gw4YVK9Laikkc7ZPrs4G1cHd0Rl8Ls=;
+        b=mtNPXh3oYEyCU0m/WGEhD/MPBbz2oaezigxTh/Gs0KMLOLSErbzmu9A0Efvfdb4/Qh
+         bMG/hM1qbHLWrUxujdmPkDBmtUZRsohZ3NzHmzYo6Pc7RxvZnqGk5IwUnAMgdtX/4YZw
+         VeUv9ptvYhtNgZd3Mw/LzEcenDKSC4qiEQPwpXy8noJOuHT5SxCsXwOgDvCX5VeQxm5d
+         eap2TTRLPVbI48WE9Z08EopykO7px/1ukfmgVWgPZNsnebEr03IapgZR9O0iVVZgeUYj
+         fOgz0MMnB/ecYaZGwjH5Gd6OIJjSI9IiFq4Yiu5UAK6JYQEPYfwWJ8ug1vWX5/6h1zby
+         qlMg==
+X-Gm-Message-State: AOAM533IKKgT9B/HdzwEpS1VUQ2nIl7rjhyZ2JgDR4Kc7damOd17+coy
+        Ny86ci5ViuLD0Ize6tqHe2ETA9HwXjLZluz0TA1/2g==
+X-Google-Smtp-Source: ABdhPJyv8BplOZEuDtAFQyPEJVczxKgdzpmehJ9wH/oHDDrs0Yhu/BkS4+qjxB526x/b//CCgcLydpIqQ/wNwUdvZKA=
+X-Received: by 2002:a17:902:8503:b029:dc:44f:62d8 with SMTP id
+ bj3-20020a1709028503b02900dc044f62d8mr1743880plb.34.1610536856321; Wed, 13
+ Jan 2021 03:20:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <52ba235a-93b9-c556-ca7a-7dd2caf3333c@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+References: <20210113052209.75531-1-songmuchun@bytedance.com>
+ <20210113052209.75531-5-songmuchun@bytedance.com> <20210113093331.GV22493@dhcp22.suse.cz>
+ <CAMZfGtUObSSyRZfv8CHucp6WmUZZBupKD9hbNHVpAv_PuWtMhw@mail.gmail.com>
+ <20210113103836.GW22493@dhcp22.suse.cz> <CAMZfGtUTZZyL6Pdop-SHt2vs2hLuYfB9dumhRHBm7QLzyRNzZA@mail.gmail.com>
+ <20210113111449.GA26873@linux>
+In-Reply-To: <20210113111449.GA26873@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 13 Jan 2021 19:20:17 +0800
+Message-ID: <CAMZfGtWn95u2s11MUk33z4MDVec5j4+usRasTqHxRp9Ud73mSA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v4 4/6] mm: hugetlb: retry dissolve page
+ when hitting race
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jan 05, 2021 at 08:55:27AM -0500, Liang, Kan escreveu:
-> 
-> 
-> On 12/19/2020 3:56 PM, Arnaldo Carvalho de Melo wrote:
-> > Em Wed, Dec 16, 2020 at 10:58:01AM -0800, kan.liang@linux.intel.com escreveu:
-> > > From: Kan Liang <kan.liang@linux.intel.com>
-> > > 
-> > > Add option --data-page-size in "perf mem" to record/report data page
-> > > size.
-> > > 
-> > > Here are some examples.
-> > > perf mem --phys-data --data-page-size report -D
-> > 
-> > So I stopped at this cset, it isn't applying to my tree, I'll test what
-> > I have, which is up to the patch before this one and push to Linus, as
-> > the window is closing.
-> 
-> Hi Arnaldo,
-> 
-> Sorry for the late response. I was on vacation.
-> 
-> I will rebase the rest of the patches on top of your perf/core branch and
-> send them out shortly.
+On Wed, Jan 13, 2021 at 7:15 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Wed, Jan 13, 2021 at 07:11:06PM +0800, Muchun Song wrote:
+> > If there is no task to be scheduled. Here is just a while loop.
+> > The cpu_relax is a good thing to insert into busy-wait loops,
+> > right?
+>
+> But if the race window is that small, does it make sense?
 
-I just came back from vacation, will check this soon :-)
+Actually, there is one exception. The race window could
+become larger. If the page is freed via a workqueue (see
+free_huge_page()). In this case, the cpu_relax() can
+make sense. Right?
 
-- Arnaldo
- 
-> Thanks,
-> Kan
-> 
-> > 
-> > - Arnaldo
-> > >   # PID, TID, IP, ADDR, PHYS ADDR, DATA PAGE SIZE, LOCAL WEIGHT, DSRC,
-> > >   # SYMBOL
-> > > 20134 20134 0xffffffffb5bd2fd0 0x016ffff9a274e96a308 0x000000044e96a308
-> > > 4K  1168 0x5080144
-> > > /lib/modules/4.18.0-rc7+/build/vmlinux:perf_ctx_unlock
-> > > 20134 20134 0xffffffffb63f645c 0xffffffffb752b814 0xcfb52b814 2M 225
-> > > 0x26a100142 /lib/modules/4.18.0-rc7+/build/vmlinux:_raw_spin_lock
-> > > 20134 20134 0xffffffffb660300c 0xfffffe00016b8bb0 0x0 4K 0 0x5080144
-> > > /lib/modules/4.18.0-rc7+/build/vmlinux:__x86_indirect_thunk_rax
-> > > 
-> > > perf mem --phys-data --data-page-size report --stdio
-> > > 
-> > >   # To display the perf.data header info, please use
-> > >   # --header/--header-only options.
-> > >   #
-> > >   #
-> > >   # Total Lost Samples: 0
-> > >   #
-> > >   # Samples: 5K of event 'cpu/mem-loads,ldlat=30/P'
-> > >   # Total weight : 281234
-> > >   # Sort order   :
-> > >   # mem,sym,dso,symbol_daddr,dso_daddr,tlb,locked,phys_daddr,data_page_size
-> > >   #
-> > >   # Overhead       Samples  Memory access             Symbol
-> > >   # Shared Object     Data Symbol                                  Data
-> > >   # Object              TLB access              Locked  Data Physical
-> > >   # Address   Data Page Size
-> > >   # ........  ............  ........................
-> > >   # ................................  ................
-> > >   # ...........................................  .......................
-> > >   # ......................  ......  ......................
-> > >   # ......................
-> > >   #
-> > >      28.54%          1826  L1 or L1 hit              [k]
-> > > __x86_indirect_thunk_rax      [kernel.vmlinux]  [k] 0xffffb0df31b0ff28
-> > > [unknown]                L1 or L2 hit            No      [k]
-> > > 0000000000000000    4K
-> > >       6.02%           256  L1 or L1 hit              [.] touch_buffer
-> > > dtlb              [.] 0x00007ffd50109da8                       [stack]
-> > > L1 or L2 hit            No      [.] 0x000000042454ada8  4K
-> > >       3.23%             5  L1 or L1 hit              [k] clear_huge_page
-> > > [kernel.vmlinux]  [k] 0xffff9a2753b8ce60                       [unknown]
-> > > L1 or L2 hit            No      [k] 0x0000000453b8ce60  2M
-> > >       2.98%             4  L1 or L1 hit              [k] clear_page_erms
-> > > [kernel.vmlinux]  [k] 0xffffb0df31b0fd00                       [unknown]
-> > > L1 or L2 hit            No      [k] 0000000000000000    4K
-> > > 
-> > > Acked-by: Namhyung Kim <namhyung@kernel.org>
-> > > Acked-by: Jiri Olsa <jolsa@redhat.com>
-> > > Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> > > ---
-> > >   tools/perf/Documentation/perf-mem.txt |  3 +++
-> > >   tools/perf/builtin-mem.c              | 20 +++++++++++++++++++-
-> > >   2 files changed, 22 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/tools/perf/Documentation/perf-mem.txt b/tools/perf/Documentation/perf-mem.txt
-> > > index 199ea0f0a6c0..66177511c5c4 100644
-> > > --- a/tools/perf/Documentation/perf-mem.txt
-> > > +++ b/tools/perf/Documentation/perf-mem.txt
-> > > @@ -63,6 +63,9 @@ OPTIONS
-> > >   --phys-data::
-> > >   	Record/Report sample physical addresses
-> > > +--data-page-size::
-> > > +	Record/Report sample data address page size
-> > > +
-> > >   RECORD OPTIONS
-> > >   --------------
-> > >   -e::
-> > > diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
-> > > index 7d6ee2208709..f3aac85aa9d4 100644
-> > > --- a/tools/perf/builtin-mem.c
-> > > +++ b/tools/perf/builtin-mem.c
-> > > @@ -30,6 +30,7 @@ struct perf_mem {
-> > >   	bool			dump_raw;
-> > >   	bool			force;
-> > >   	bool			phys_addr;
-> > > +	bool			data_page_size;
-> > >   	int			operation;
-> > >   	const char		*cpu_list;
-> > >   	DECLARE_BITMAP(cpu_bitmap, MAX_NR_CPUS);
-> > > @@ -124,6 +125,9 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
-> > >   	if (mem->phys_addr)
-> > >   		rec_argv[i++] = "--phys-data";
-> > > +	if (mem->data_page_size)
-> > > +		rec_argv[i++] = "--data-page-size";
-> > > +
-> > >   	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
-> > >   		e = perf_mem_events__ptr(j);
-> > >   		if (!e->record)
-> > > @@ -173,6 +177,7 @@ dump_raw_samples(struct perf_tool *tool,
-> > >   	struct perf_mem *mem = container_of(tool, struct perf_mem, tool);
-> > >   	struct addr_location al;
-> > >   	const char *fmt, *field_sep;
-> > > +	char str[PAGE_SIZE_NAME_LEN];
-> > >   	if (machine__resolve(machine, &al, sample) < 0) {
-> > >   		fprintf(stderr, "problem processing %d event, skipping it.\n",
-> > > @@ -209,6 +214,12 @@ dump_raw_samples(struct perf_tool *tool,
-> > >   			symbol_conf.field_sep);
-> > >   	}
-> > > +	if (mem->data_page_size) {
-> > > +		printf("%s%s",
-> > > +			get_page_size_name(sample->data_page_size, str),
-> > > +			symbol_conf.field_sep);
-> > > +	}
-> > > +
-> > >   	if (field_sep)
-> > >   		fmt = "%"PRIu64"%s0x%"PRIx64"%s%s:%s\n";
-> > >   	else
-> > > @@ -273,6 +284,9 @@ static int report_raw_events(struct perf_mem *mem)
-> > >   	if (mem->phys_addr)
-> > >   		printf("PHYS ADDR, ");
-> > > +	if (mem->data_page_size)
-> > > +		printf("DATA PAGE SIZE, ");
-> > > +
-> > >   	printf("LOCAL WEIGHT, DSRC, SYMBOL\n");
-> > >   	ret = perf_session__process_events(session);
-> > > @@ -283,7 +297,7 @@ static int report_raw_events(struct perf_mem *mem)
-> > >   }
-> > >   static char *get_sort_order(struct perf_mem *mem)
-> > >   {
-> > > -	bool has_extra_options = mem->phys_addr ? true : false;
-> > > +	bool has_extra_options = (mem->phys_addr | mem->data_page_size) ? true : false;
-> > >   	char sort[128];
-> > >   	/*
-> > > @@ -302,6 +316,9 @@ static char *get_sort_order(struct perf_mem *mem)
-> > >   	if (mem->phys_addr)
-> > >   		strcat(sort, ",phys_daddr");
-> > > +	if (mem->data_page_size)
-> > > +		strcat(sort, ",data_page_size");
-> > > +
-> > >   	return strdup(sort);
-> > >   }
-> > > @@ -447,6 +464,7 @@ int cmd_mem(int argc, const char **argv)
-> > >   		   " between columns '.' is reserved."),
-> > >   	OPT_BOOLEAN('f', "force", &mem.force, "don't complain, do it"),
-> > >   	OPT_BOOLEAN('p', "phys-data", &mem.phys_addr, "Record/Report sample physical addresses"),
-> > > +	OPT_BOOLEAN(0, "data-page-size", &mem.data_page_size, "Record/Report sample data address page size"),
-> > >   	OPT_END()
-> > >   	};
-> > >   	const char *const mem_subcommands[] = { "record", "report", NULL };
-> > > -- 
-> > > 2.17.1
-> > > 
-> > 
-
--- 
-
-- Arnaldo
+>
+> --
+> Oscar Salvador
+> SUSE L3
