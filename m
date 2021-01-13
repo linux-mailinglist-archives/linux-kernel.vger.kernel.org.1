@@ -2,138 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F8D2F547A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 22:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 672512F5465
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 22:02:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728989AbhAMVGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 16:06:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726808AbhAMU6x (ORCPT
+        id S1728899AbhAMVAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 16:00:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25689 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728839AbhAMU5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 15:58:53 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0205EC061794;
-        Wed, 13 Jan 2021 12:55:50 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id m6so2010809pfk.1;
-        Wed, 13 Jan 2021 12:55:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=J9lVrM6cSutgG7mLzBj653Ro4jtg4186uGwFWHcVmp8=;
-        b=aRbWDjM0yw+GzgajvHwsGcoM/qQAnLebk4lOpB6oieho/KvR/07e+KyNCPGY5laQw4
-         SPRAXQMAnMCbRMCTC5fqzPugVtDlbETr5J97GgdQ1sAv0cKQW0tL8ofkciZjiXIlwHQq
-         8iKkxV3P+ks7L5tVLOs5lBAmCILODu+eHpjX7VKBnX1JQS8a4gOclyrrGXRCLd3zwPNo
-         MCkmKjfE9QMOM4wJx85TZZ6+jGtD54JDm/5GV3YNyYf7pmQMVps2rBjhXfJo6fVDQ7aD
-         qXJEQZi7fP0/r4g5G+q+mmyoGfG7mcYVVo2RpYgUffvfo1tqWddaZ+KOflabOsP2dq7Z
-         X4RQ==
+        Wed, 13 Jan 2021 15:57:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610571422;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KyeVTvomgCzlV9Xq0HncJHDevMWvQaxSid6diziHy50=;
+        b=iGwsCkDf0987fTSNdrj/aZfBcSZcbABgvQ3f0kNqZv6giuYdf4AEasgKsmVFcNqv2XACe2
+        Ea+BzSWptZfWpZ4ALS40gAaHPsQfY1YEcA3XdGWPI9p4ln+gGP7T6Uh+aeXa5x/NkGh9QC
+        mz0MIYZmFzzv3NzP4g7Uh3eca6mJAuQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-544--URE32o2PNe7apz8LXt7TA-1; Wed, 13 Jan 2021 15:55:52 -0500
+X-MC-Unique: -URE32o2PNe7apz8LXt7TA-1
+Received: by mail-ed1-f71.google.com with SMTP id cm4so1456874edb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:55:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J9lVrM6cSutgG7mLzBj653Ro4jtg4186uGwFWHcVmp8=;
-        b=bSBs7fWvUKQ6G+MRh6k+9pTByg8UahqbwqApmG3oB8Ase0bLA1JoRhuvuqa+VMhGqD
-         nTz5XfARidWnIsq+XX1xiOeEpkMIhEBY/PYUUWepvW0mfe486+zw8XB+5fcKU+3yKUud
-         CQTuglyJdXh/X7uiLqOAv/fMQp4wCJJOx6837CIxOlX198YwBYZ/b8iLSbKxiy+p6lru
-         2IzWS0W2fpOiekFS0SlotlhfUZkxHVAeO7r+d5jAK5+gNPdB3PfepJ8Bk0ceaIkhVulZ
-         NXehBRzIKUKHNY8eJYHTNwaLkBh7d7FDTX4+Q4mgf/kmUG4SArXLLg82Sn4gEzxTNPLE
-         I99Q==
-X-Gm-Message-State: AOAM533ZcpNzLgih5h3qKdjtC2YdDJWVzba2E53l5j/Ps4JDXnxbHu7A
-        gcAjAc+XEHoDMxDMJEE3G3/g8cw3C1+Uvfow
-X-Google-Smtp-Source: ABdhPJwJB5cRbqWwwGBk5Nr7WqzNuqy+CTCQqqVwdvVa0dQ8kEtvDJ3rLMDb9QGF7xp6flDXXyBxZg==
-X-Received: by 2002:a63:f21:: with SMTP id e33mr3991936pgl.84.1610571350379;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KyeVTvomgCzlV9Xq0HncJHDevMWvQaxSid6diziHy50=;
+        b=P3uXNiua9jvCBS9egCWqQEnyAfeVkYwVspSOWD/wNIepN43ZY4H6XWCo3LBStpqKUp
+         Hyxc8xRstqDIHh/DbjNAnQjDyLxV/g+/takCBG4d6SAa+CcFLz6OVrWjNLe6TiCp33rG
+         +1M5uD6mPP7xA4G9PSicFANecTQv5ABIq1w9iKsfkhLRy3tLPQozEClpbXc+R42KJT2i
+         WX0J8m6r1DXyGbE8E6pJ5rJh/a47W63lmt+UKwzBOFiEob6Klk8vBlYqwH+Nz+vFq8nw
+         oanRaLm9WCrijLSozg8XHtQN1XOrnHcj/dmhJrTNdLV4lztuibMGRpK/6R1C+8kB3Lr7
+         S3bw==
+X-Gm-Message-State: AOAM533f4twBm0kXOhsmfOECw110K8uYAoBW0x3LGvQLRiCzhEeFEs5K
+        ix+pp1g0bwsLAgyEdGKAnZBxCPlQBTjoIGpFKRV/UdIblGQrsN2dIOGWnAcgyU7XDkGFXTX1dBb
+        hWe3Ash8YOsqBiBt/Zq4RWxs6
+X-Received: by 2002:a17:906:24d1:: with SMTP id f17mr1985211ejb.21.1610571351326;
+        Wed, 13 Jan 2021 12:55:51 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzIFkrj0zV6MG35I2/95jUJA70odVCeRn+Mht21EoWlSfwxuvEVlcTT4VHqNFVhHDJZ3rHKfQ==
+X-Received: by 2002:a17:906:24d1:: with SMTP id f17mr1985197ejb.21.1610571351193;
+        Wed, 13 Jan 2021 12:55:51 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id i8sm1312749eds.72.2021.01.13.12.55.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Wed, 13 Jan 2021 12:55:50 -0800 (PST)
-Received: from Ryzen-9-3900X.localdomain (ip68-104-204-241.ph.ph.cox.net. [68.104.204.241])
-        by smtp.gmail.com with ESMTPSA id 193sm3564863pfz.36.2021.01.13.12.55.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 12:55:49 -0800 (PST)
-Date:   Wed, 13 Jan 2021 13:55:47 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Bill Wendling <morbo@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: Re: [PATCH v4] pgo: add clang's Profile Guided Optimization
- infrastructure
-Message-ID: <20210113205547.GA21653@Ryzen-9-3900X.localdomain>
-References: <20210112053113.4180271-1-morbo@google.com>
- <20210113061958.886723-1-morbo@google.com>
+Subject: Re: [PATCH v5 1/3] usb: typec: tcpm: AMS and Collision Avoidance
+To:     Kyle Tso <kyletso@google.com>,
+        Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Will McVicker <willmcvicker@google.com>
+References: <20210105163927.1376770-1-kyletso@google.com>
+ <20210105163927.1376770-2-kyletso@google.com>
+ <20210112132925.GC2020859@kuha.fi.intel.com>
+ <CAPTae5LLtjQAt4db+ZVttEGxnueydmEZ4eu+gQSEOaZE4B=u0A@mail.gmail.com>
+ <CAGZ6i=2cQywq82QrJg=t-KVMqSdjME-dkd-8aH3au_RTju2zTA@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <ad606425-8c2c-d95b-5d72-602d55ac6aa2@redhat.com>
+Date:   Wed, 13 Jan 2021 21:55:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113061958.886723-1-morbo@google.com>
+In-Reply-To: <CAGZ6i=2cQywq82QrJg=t-KVMqSdjME-dkd-8aH3au_RTju2zTA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bill,
+Hi,
 
-On Tue, Jan 12, 2021 at 10:19:58PM -0800, Bill Wendling wrote:
-> From: Sami Tolvanen <samitolvanen@google.com>
-> 
-> Enable the use of clang's Profile-Guided Optimization[1]. To generate a
-> profile, the kernel is instrumented with PGO counters, a representative
-> workload is run, and the raw profile data is collected from
-> /sys/kernel/debug/pgo/profraw.
-> 
-> The raw profile data must be processed by clang's "llvm-profdata" tool
-> before it can be used during recompilation:
-> 
->   $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
->   $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
-> 
-> Multiple raw profiles may be merged during this step.
-> 
-> The data can now be used by the compiler:
-> 
->   $ make LLVM=1 KCFLAGS=-fprofile-use=vmlinux.profdata ...
-> 
-> This initial submission is restricted to x86, as that's the platform we
-> know works. This restriction can be lifted once other platforms have
-> been verified to work with PGO.
-> 
-> Note that this method of profiling the kernel is clang-native, unlike
-> the clang support in kernel/gcov.
-> 
-> [1] https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
-> 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> Co-developed-by: Bill Wendling <morbo@google.com>
-> Signed-off-by: Bill Wendling <morbo@google.com>
-> Change-Id: Ic78e69c682286d3a44c4549a0138578c98138b77
+On 1/13/21 3:46 PM, Kyle Tso wrote:
+> On Wed, Jan 13, 2021 at 2:11 PM Badhri Jagan Sridharan
+> <badhri@google.com> wrote:
+>>
+>> Hi Kyle,
+>>
+>> Do you want to handle the FAST_ROLE_SWAP case as well ?
+>>
+> I forgot this part....
+> Thanks for catching this.
+> I will fix it.
 
-Small nit: This should be removed.
+That sounds like a v6 is upcoming which not only will have
+code-style changes but also some functional changes ?
 
-I applied this patch on top of v5.11-rc3, built it with LLVM 12
-(f1d5cbbdee5526bc86eac0a5652b115d9bc158e5 + D94470) with Microsoft's
-WSL 5.4 config [1] + CONFIG_PGO_CLANG=y, and ran it on WSL2.
+In that case I will wait a bit before running the tests
+which I want to run with this patch-set and run those
+tests with v6 so that I don't have to redo them later.
 
-$ zgrep PGO /proc/config.gz
-# Profile Guided Optimization (PGO) (EXPERIMENTAL)
-CONFIG_ARCH_SUPPORTS_PGO_CLANG=y
-CONFIG_PGO_CLANG=y
-# end of Profile Guided Optimization (PGO) (EXPERIMENTAL)
+Regards,
 
-However, I see an issue with actually using the data:
+Hans
 
-$ sudo -s
-# mount -t debugfs none /sys/kernel/debug
-# cp -a /sys/kernel/debug/pgo/profraw vmlinux.profraw
-# chown nathan:nathan vmlinux.profraw
-# exit
-$ tc-build/build/llvm/stage1/bin/llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
-warning: vmlinux.profraw: Invalid instrumentation profile data (bad magic)
-error: No profiles could be merged.
 
-Am I holding it wrong? :) Note, this is virtualized, I do not have any
-"real" x86 hardware that I can afford to test on right now.
 
-[1]: https://github.com/microsoft/WSL2-Linux-Kernel/raw/linux-msft-wsl-5.4.y/Microsoft/config-wsl
+> 
+> 
+>> You would have to fix up in two places:
+>>
+>> #1
+>> -                       if (port->state == SNK_READY)
+>> -                               tcpm_set_state(port, FR_SWAP_SEND, 0);
+>> -                       else
+>> +                       if (port->state == SNK_READY) {
+>> +                               int ret;
+>> +
+>> +                               port->upcoming_state = FR_SWAP_SEND;
+>> +                               ret = tcpm_ams_start(port, FAST_ROLE_SWAP);
+>> +                               if (ret == -EAGAIN)
+>> +                                       port->upcoming_state = INVALID_STATE;
+>> +                       } else {
+>>                                 tcpm_log(port, "Discarding FRS_SIGNAL!
+>> Not in sink ready");
+>> +                       }
+>>
+>> #2
+>> --- a/drivers/usb/typec/tcpm/tcpm.c
+>> +++ b/drivers/usb/typec/tcpm/tcpm.c
+>> @@ -4449,9 +4449,14 @@ static void tcpm_enable_frs_work(struct
+>> kthread_work *work)
+>>         if (port->state != SNK_READY || port->vdm_state !=
+>> VDM_STATE_DONE || port->send_discover)
+>>                 goto resched;
+>>
+>> -       tcpm_set_state(port, GET_SINK_CAP, 0);
+>> -       port->sink_cap_done = true;
+>> -
+>> +       port->upcoming_state = GET_SINK_CAP;
+>> +       ret = tcpm_ams_start(port, GET_SINK_CAPABILITIES);
+>> +       if (ret == -EAGAIN) {
+>> +               port->upcoming_state = INVALID_STATE;
+>> +       } else {
+>> +               port->sink_cap_done = true;
+>> +               goto unlock;
+>> +       }
+>>
+>> Thanks,
+>> Badhri
+>>
+>>
+> 
 
-Cheers,
-Nathan
