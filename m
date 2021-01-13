@@ -2,90 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3961A2F5050
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:47:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBEA2F5052
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbhAMQqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 11:46:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38876 "EHLO
+        id S1728006AbhAMQq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 11:46:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbhAMQqp (ORCPT
+        with ESMTP id S1727953AbhAMQqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 11:46:45 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7AFC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:46:04 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id et9so1028978qvb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:46:04 -0800 (PST)
+        Wed, 13 Jan 2021 11:46:55 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E054C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:46:14 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id be12so1383852plb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:46:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CMjUDnqe142kyL4JCtMxq/r9cprLrjt9yzIWhPD32rs=;
-        b=ZCXXS7+IQX+b5nnhGPIxaiG4vxWmLBUnCaGXoia/IrlW+pr8JOybw/OiHhirlzQmi9
-         1cGmQBedk65vzPaQc7HsJA8sZXvsBMTTjfcZ7HYwobg4U2iZeQQNdNrK9lwSuIqzP+/v
-         7o4kRmmI5rBkjwk2xj6ggane7SBrtqSPqtUVUvFylKzHB20aK6Vt5T1fSHRKboJdd5av
-         y86XJdr3bNMTCh4AdrCBGxPHJ/icQoJDUSks2+sk0/PW4jmS/AYgzj2sTB6SN0p/c08t
-         01k9FoxPcW3uL74WjstRU0BHl1uvtlIDdFJHtalHU1FIS620Ie+sZ7kN8TGK6CyU8Mpx
-         l2Lg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9DZGQQ6YS0FM27yVOlqK/RB1htOmSrpb6OR+gLuEAdA=;
+        b=L3oEpqEAI23s33JBbqwLbts1JqaGwcUIxp37zD+7ODdPNQyjGvNdMSJy3hsmrhInlU
+         m92g3W3GfLosjqnnzp2VHSBNMWVAnMwNYaXXLkxsxzmfBl8/hQhU2OJ/pSBYCRujdvnw
+         1A/4OETHZ2IJs/CK88PWrGoXAabG8wThJwUiSnKEgTS74wReXjeAOHsFrhaRr2jleQ7p
+         5P+aiwC9etXkNfoISD3wwp+Xn9uyRWtBcqZXSQxNOHWeo591cZGvnjL1vSbeNK7JDpAU
+         iqdfXb0psWz6D5gt0In6ntq4vFQS2macvsm0g/hGekJh3yu1CD+Ep/R13CTuABWiMRpf
+         52cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CMjUDnqe142kyL4JCtMxq/r9cprLrjt9yzIWhPD32rs=;
-        b=rNJFN5S2DPJNF3tk0aYN2iwIK90oCNIviw/Gb+qV7A/6n4R3s0Tobwf02yZm7AOKiM
-         UUfqo0EE1jVHfW00T0IF/XhPDLu7y9bZZu2Y4busfC/tvnoiVj1EhnYGyjrz0OuGy2r3
-         qCoP+mdXz6mKOViYoM+FB/sh8nk+6Wps+fsHnkL0hCZJBboWsSMi+7+IjMqzmsCqLmt7
-         ZD97r5lzlC+TKTMEONda5dH7u2p/PiEWYJfck2n/7PLZpFB/ls/3sWgikgDAwtuEGMuY
-         9wI0vXEYuXSueSUF6su7Yw7sLZ8Gt/n3tvKskAJKwX13Y/xlMWnMIrLDd9L9zfPuSgcZ
-         jl8w==
-X-Gm-Message-State: AOAM532HhlkN7P5xiV6y4t2j3jTgcUp9iROqgXoi5NnE+WIePNpQ7k7d
-        lhMfzL7tigOmr7QRz1zZ2DCuJk0Y0HgAyntEoUuf8A==
-X-Google-Smtp-Source: ABdhPJxzxw8dQlb/DvTgDHgtWbnIpOb5DgpvDx26bl6WZOMm+powQlw+Di/sx50x4LksnyBFB4e9ftV1RG4WgzeRw/4=
-X-Received: by 2002:a0c:e90a:: with SMTP id a10mr3297670qvo.38.1610556363951;
- Wed, 13 Jan 2021 08:46:03 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9DZGQQ6YS0FM27yVOlqK/RB1htOmSrpb6OR+gLuEAdA=;
+        b=ESN9PlsvwcPzhO8zeaCgTp94NI0jyyo9uZDw94A91fDUI6ma1spwOv/yokIjxRuei2
+         Ht2MU6RfP24s98H81XwB3tKFivhK+vN1mmDyioaBsuHZo6pf/ixxly6obsALXngvzFno
+         yDfg5rIgnc7FoO2EghxT2MPnQ4cFOUgiASV2H2t/paUloqCN1GKQ2TkCtV4p2JJsF4FR
+         3bclEsVs4uEvw+PnJzz1r4BLC77rEGN7DLh7YqDXuph3iq0UT499Z+BNvtyNj06rdePb
+         +FO21ULFVF+3LFfjN6pXAgLgzhAc8xcy1hV+HS3Cdb3FKihfk1yWtpnY9KLHisBG5tkJ
+         OcQg==
+X-Gm-Message-State: AOAM532BVK+x26LYQODY78oEuM6K39RZymVWqTQ2VMelaGIag10ieUD6
+        aW5S2raBgmiicIV05g9KoQ/pyQ==
+X-Google-Smtp-Source: ABdhPJxdMPm27J2Oc6/EugaAxG/gkAcbAmOOs1mD5eP6nFldX6vpLxzKg9sJbkAC7ohQt1KieDWrYQ==
+X-Received: by 2002:a17:90b:11d8:: with SMTP id gv24mr148563pjb.232.1610556373964;
+        Wed, 13 Jan 2021 08:46:13 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id i67sm3195965pfc.153.2021.01.13.08.46.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 08:46:13 -0800 (PST)
+Date:   Wed, 13 Jan 2021 08:46:06 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Jim Mattson <jmattson@google.com>,
+        syzbot <syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: UBSAN: shift-out-of-bounds in kvm_vcpu_after_set_cpuid
+Message-ID: <X/8jzqzDV35mAnIF@google.com>
+References: <000000000000d5173d05b7097755@google.com>
+ <CALMp9eSKrn0zcmSuOE6GFi400PMgK+yeypS7+prtwBckgdW0vQ@mail.gmail.com>
+ <X/zYsnfXpd6DT34D@google.com>
+ <f1aa1f3c-1dac-2357-ee1c-ab505513382f@redhat.com>
+ <X/3UJ7EtyAb2Ww+6@google.com>
+ <d3cc2a46-6b8b-cf7c-66f0-22fe4c05465e@redhat.com>
 MIME-Version: 1.0
-References: <cover.1610554432.git.andreyknvl@google.com> <0afed913e43017575794de0777b15ef6b2bdd486.1610554432.git.andreyknvl@google.com>
- <CANpmjNMZHiwKDTyBdHzHB6CexJTfN9TUjk=q6zmj_nebtq9=mg@mail.gmail.com>
-In-Reply-To: <CANpmjNMZHiwKDTyBdHzHB6CexJTfN9TUjk=q6zmj_nebtq9=mg@mail.gmail.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 13 Jan 2021 17:45:52 +0100
-Message-ID: <CAG_fn=Ur17=N-Unsi4CdSnx-Qnfjuh1d__zKOHPUAC-3RLHV3w@mail.gmail.com>
-Subject: Re: [PATCH v2 04/14] kasan: add macros to simplify checking test constraints
-To:     Marco Elver <elver@google.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d3cc2a46-6b8b-cf7c-66f0-22fe4c05465e@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 5:25 PM Marco Elver <elver@google.com> wrote:
->
-> On Wed, 13 Jan 2021 at 17:21, Andrey Konovalov <andreyknvl@google.com> wrote:
-> >
-> > Some KASAN tests require specific kernel configs to be enabled.
-> > Instead of copy-pasting the checks for these configs add a few helper
-> > macros and use them.
-> >
-> > Link: https://linux-review.googlesource.com/id/I237484a7fddfedf4a4aae9cc61ecbcdbe85a0a63
-> > Suggested-by: Alexander Potapenko <glider@google.com>
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
->
-> Nice!
->
-> Reviewed-by: Marco Elver <elver@google.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+On Wed, Jan 13, 2021, Paolo Bonzini wrote:
+> On 12/01/21 17:53, Sean Christopherson wrote:
+> > And, masking bits 7:6 is architecturally wrong.  Both the SDM and APM state that
+> > bits 7:0 contain the number of PA bits.
+> 
+> They cannot be higher than 52,
+
+Drat, I was going to argue that it could be >52 with a new paging mode, but both
+the SDM and APM explicitly call out 52 as the max.  Spending cycles on the stuff
+that really matters here... :-)
+
+> therefore bits 7:6 are (architecturally)
+> always zero.  In other words, I interpret "bit 7:0 contain the number of PA
+> bits" as "you need not do an '& 63' yourself", which is basically the
+> opposite of "bit 7:6 might be nonzero".  If masking made any difference, it
+> would be outside the spec already.
+> 
+> In fact another possibility to avoid UB is to do "& 63" of both s and e in
+> rsvd_bits.  This would also be masking bits 7:6 of the CPUID leaf, just done
+> differently.
+
+Hmm, 'e' is hardcoded in all call sites except kvm_mmu_reset_all_pte_masks(),
+and so long as 'e <= 63' holds true, 's &= 63' is unnecessary.  What if we add
+compile-time asserts on hardcoded values, and mask 'e' for the rare case where
+the upper bound isn't hardcoded?  That way bogus things like rsvd_bits(63, 65)
+will fail the build.
+
+diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+index 581925e476d6..261be1d2032b 100644
+--- a/arch/x86/kvm/mmu.h
++++ b/arch/x86/kvm/mmu.h
+@@ -44,8 +44,15 @@
+ #define PT32_ROOT_LEVEL 2
+ #define PT32E_ROOT_LEVEL 3
+
+-static inline u64 rsvd_bits(int s, int e)
++static __always_inline u64 rsvd_bits(int s, int e)
+ {
++       BUILD_BUG_ON(__builtin_constant_p(e) && __builtin_constant_p(s) && e < s);
++
++       if (__builtin_constant_p(e))
++               BUILD_BUG_ON(e > 63);
++       else
++               e &= 63;
++
+        if (e < s)
+                return 0;
