@@ -2,219 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F4E2F4A4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 151852F4A55
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728385AbhAMLd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:33:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726584AbhAMLd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:33:57 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA900233EF;
-        Wed, 13 Jan 2021 11:33:15 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kzeOn-007Epc-Ma; Wed, 13 Jan 2021 11:33:13 +0000
+        id S1728459AbhAMLfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:35:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727403AbhAMLfL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 06:35:11 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79937C061786;
+        Wed, 13 Jan 2021 03:34:31 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id n25so1337701pgb.0;
+        Wed, 13 Jan 2021 03:34:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dth9qsoBxQdg0Q+nb23OtMhlRan8r4Tw7UF7z6sod7E=;
+        b=q66bTbptdxvrBdYbSGImEFekplRIEDpjdsqyrEo+WPMpWnfah/1wOXSQyl9AbbeiWC
+         y/xg6C3m24NRpZQJXJ9EG+p1lbhdIgtjngrRsoC9KaBPN8ISUNjUOgHz2Xfzrn4f7PQy
+         zyN4u7krT8ci6JXbsZRHSR88Vb/9UBMpd+HqxQiPXSWYF/l5HkTjxPo9ZvpUtZbgvr0T
+         ejmIsABe8+E9qpthYtS/bMvEZ+ef7cW7MpuD8UEnvyDzGhB9OeOH7B5g04tGBNGHcsiX
+         u3FO9DY0uFV99S4tOtlTWQ8AqMxCaLI4Ur4h9wFRlVyoSH1grHeFtjGjfxhZ6ELOUnBO
+         EeEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dth9qsoBxQdg0Q+nb23OtMhlRan8r4Tw7UF7z6sod7E=;
+        b=c5gunggot42bMnBuRiuiG/x0+0RtQvZOr/TxBBG8afs7pBO85iGbfpslyusLVv/tT2
+         9yzW5ZQGtunAshNHELLWQRvVC2jwVSrFXDytDAk2L6vkx5XR2vqLQVg1xU80zNMdDYTd
+         Kk2/tttvS0z9IF2Z/mDO6eId3M+daCT1WaRq6YNacSxfVwJ0Lv5TvZuyvDz4J8/41JQr
+         Kw28aBERvQu7TFIkWzigu5qkHbQ/30AuJBiyEJ+xes1boRpgxCEi2Jk5n9JWxx9EiKR/
+         KLZ8N8u4s+Xw1uN+nMZ5s5bcGs+fEREHOdaNUJ6iw0unC+G0Kg94eUuDPvLCpvDONQ9s
+         0MJA==
+X-Gm-Message-State: AOAM531mbEveGTflFXGFkovLfEmtGYzjRI38EuCySE86STCGGqg4SsyZ
+        MegLmqDC1ZFkmyXL27qOnnE=
+X-Google-Smtp-Source: ABdhPJwcVvKok/Q0yW/9KyCHM5jCd6JQ/SwGesVC4emseSMqb2pcXCh+q6oCvyHuMJqdXy3EpolXeA==
+X-Received: by 2002:a62:5b07:0:b029:1ae:177d:69e1 with SMTP id p7-20020a625b070000b02901ae177d69e1mr1750169pfb.25.1610537671050;
+        Wed, 13 Jan 2021 03:34:31 -0800 (PST)
+Received: from localhost ([100.87.84.221])
+        by smtp.gmail.com with ESMTPSA id c62sm2314832pfa.116.2021.01.13.03.34.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 03:34:30 -0800 (PST)
+Date:   Wed, 13 Jan 2021 20:34:12 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Suleiman Souhlal <suleiman@google.com>,
+        linux-fscrypt@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [stable] ext4 fscrypt_get_encryption_info() circular locking
+ dependency
+Message-ID: <X/7atDqEyQTb+sGW@google.com>
+References: <20201211033657.GE1667627@google.com>
+ <X9LsDPsXdLNv0+va@sol.localdomain>
+ <20201211040807.GF1667627@google.com>
+ <X9O0brQ7junfZTfI@sol.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 13 Jan 2021 11:33:13 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 13/26] KVM: arm64: Enable access to sanitized CPU
- features at EL2
-In-Reply-To: <20210108121524.656872-14-qperret@google.com>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-14-qperret@google.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <d55643ea391f73a2297f499f3219ba8a@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: qperret@google.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, robh+dt@kernel.org, frowand.list@gmail.com, devicetree@vger.kernel.org, android-kvm@google.com, linux-kernel@vger.kernel.org, kernel-team@android.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, tabba@google.com, mark.rutland@arm.com, dbrazdil@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X9O0brQ7junfZTfI@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin,
+Hello,
 
-On 2021-01-08 12:15, Quentin Perret wrote:
-> Introduce the infrastructure in KVM enabling to copy CPU feature
-> registers into EL2-owned data-structures, to allow reading sanitised
-> values directly at EL2 in nVHE.
-> 
-> Given that only a subset of these features are being read by the
-> hypervisor, the ones that need to be copied are to be listed under
-> <asm/kvm_cpufeature.h> together with the name of the nVHE variable that
-> will hold the copy.
-> 
-> While at it, introduce the first user of this infrastructure by
-> implementing __flush_dcache_area at EL2, which needs
-> arm64_ftr_reg_ctrel0.
-> 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/include/asm/cpufeature.h     |  1 +
->  arch/arm64/include/asm/kvm_cpufeature.h | 17 ++++++++++++++
->  arch/arm64/kernel/cpufeature.c          | 12 ++++++++++
->  arch/arm64/kvm/arm.c                    | 31 +++++++++++++++++++++++++
->  arch/arm64/kvm/hyp/nvhe/Makefile        |  3 ++-
->  arch/arm64/kvm/hyp/nvhe/cache.S         | 13 +++++++++++
->  arch/arm64/kvm/hyp/nvhe/cpufeature.c    |  8 +++++++
->  7 files changed, 84 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm64/include/asm/kvm_cpufeature.h
->  create mode 100644 arch/arm64/kvm/hyp/nvhe/cache.S
->  create mode 100644 arch/arm64/kvm/hyp/nvhe/cpufeature.c
-> 
-> diff --git a/arch/arm64/include/asm/cpufeature.h
-> b/arch/arm64/include/asm/cpufeature.h
-> index 16063c813dcd..742e9bcc051b 100644
-> --- a/arch/arm64/include/asm/cpufeature.h
-> +++ b/arch/arm64/include/asm/cpufeature.h
-> @@ -600,6 +600,7 @@ void __init setup_cpu_features(void);
->  void check_local_cpu_capabilities(void);
-> 
->  u64 read_sanitised_ftr_reg(u32 id);
-> +int copy_ftr_reg(u32 id, struct arm64_ftr_reg *dst);
-> 
->  static inline bool cpu_supports_mixed_endian_el0(void)
->  {
-> diff --git a/arch/arm64/include/asm/kvm_cpufeature.h
-> b/arch/arm64/include/asm/kvm_cpufeature.h
-> new file mode 100644
-> index 000000000000..d34f85cba358
-> --- /dev/null
-> +++ b/arch/arm64/include/asm/kvm_cpufeature.h
-> @@ -0,0 +1,17 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (C) 2020 - Google LLC
-> + * Author: Quentin Perret <qperret@google.com>
-> + */
-> +
-> +#include <asm/cpufeature.h>
-> +
-> +#ifndef KVM_HYP_CPU_FTR_REG
-> +#if defined(__KVM_NVHE_HYPERVISOR__)
-> +#define KVM_HYP_CPU_FTR_REG(id, name) extern struct arm64_ftr_reg 
-> name;
-> +#else
-> +#define KVM_HYP_CPU_FTR_REG(id, name) DECLARE_KVM_NVHE_SYM(name);
-> +#endif
-> +#endif
-> +
-> +KVM_HYP_CPU_FTR_REG(SYS_CTR_EL0, arm64_ftr_reg_ctrel0)
-> diff --git a/arch/arm64/kernel/cpufeature.c 
-> b/arch/arm64/kernel/cpufeature.c
-> index bc3549663957..c2019aaaadc3 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -1113,6 +1113,18 @@ u64 read_sanitised_ftr_reg(u32 id)
->  }
->  EXPORT_SYMBOL_GPL(read_sanitised_ftr_reg);
-> 
-> +int copy_ftr_reg(u32 id, struct arm64_ftr_reg *dst)
-> +{
-> +	struct arm64_ftr_reg *regp = get_arm64_ftr_reg(id);
-> +
-> +	if (!regp)
-> +		return -EINVAL;
-> +
-> +	memcpy(dst, regp, sizeof(*regp));
-> +
-> +	return 0;
-> +}
-> +
->  #define read_sysreg_case(r)	\
->  	case r:		return read_sysreg_s(r)
-> 
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index 51b53ca36dc5..9fd769349e9e 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -34,6 +34,7 @@
->  #include <asm/virt.h>
->  #include <asm/kvm_arm.h>
->  #include <asm/kvm_asm.h>
-> +#include <asm/kvm_cpufeature.h>
->  #include <asm/kvm_mmu.h>
->  #include <asm/kvm_emulate.h>
->  #include <asm/sections.h>
-> @@ -1697,6 +1698,29 @@ static void teardown_hyp_mode(void)
->  	}
->  }
-> 
-> +#undef KVM_HYP_CPU_FTR_REG
-> +#define KVM_HYP_CPU_FTR_REG(id, name) \
-> +	{ .sys_id = id, .dst = (struct arm64_ftr_reg *)&kvm_nvhe_sym(name) },
-> +static const struct __ftr_reg_copy_entry {
-> +	u32			sys_id;
-> +	struct arm64_ftr_reg	*dst;
+Eric, sorry for the delay.
 
-Why do we need the whole data structure? Can't we just live with 
-sys_val?
-
-> +} hyp_ftr_regs[] = {
-> +	#include <asm/kvm_cpufeature.h>
-> +};
-
-Can't this be made __initdata?
-
-> +
-> +static int copy_cpu_ftr_regs(void)
-> +{
-> +	int i, ret;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(hyp_ftr_regs); i++) {
-> +		ret = copy_ftr_reg(hyp_ftr_regs[i].sys_id, hyp_ftr_regs[i].dst);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  /**
->   * Inits Hyp-mode on all online CPUs
->   */
-> @@ -1705,6 +1729,13 @@ static int init_hyp_mode(void)
->  	int cpu;
->  	int err = 0;
+On (20/12/11 10:03), Eric Biggers wrote:
+> > [..]
+> > 
+> > [ 1598.658233]  __rwsem_down_read_failed_common+0x186/0x201
+> > [ 1598.658235]  call_rwsem_down_read_failed+0x14/0x30
+> > [ 1598.658238]  down_read+0x2e/0x45
+> > [ 1598.658240]  rmap_walk_file+0x73/0x1ce
+> > [ 1598.658242]  page_referenced+0x10d/0x154
+> > [ 1598.658247]  shrink_active_list+0x1d4/0x475
+> > [ 1598.658250]  shrink_node+0x27e/0x661
+> > [ 1598.658254]  try_to_free_pages+0x425/0x7ec
+> > [ 1598.658258]  __alloc_pages_nodemask+0x80b/0x1514
+> > [ 1598.658279]  __do_page_cache_readahead+0xd4/0x1a9
+> > [ 1598.658282]  filemap_fault+0x346/0x573
+> > [ 1598.658287]  ext4_filemap_fault+0x31/0x44
 > 
-> +	/*
-> +	 * Copy the required CPU feature register in their EL2 counterpart
-> +	 */
-> +	err = copy_cpu_ftr_regs();
-> +	if (err)
-> +		return err;
-> +
+> Could you provide some more information about what is causing these actual
+> lockups for you?  Are there more stack traces?
 
-Just to keep things together, please move any sysreg manipulation into
-sys_regs.c, most probably into kvm_sys_reg_table_init().
+I think I have some leads, and, just like you said, this deos not appear
+to be ext4 related.
 
-Thanks,
+A likely root cause for the lockups I'm observing, is that kswapd
+and virtio_balloon have reverse locking order for THP pages:
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+	down_write(mapping->i_mmap_rwsem)  -->  page->PG_locked
+vs
+	page->PG_locked --> down_read(mapping->i_mmap_rwsem)
+
+	-ss
