@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6BB2F40DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B4B2F403A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393750AbhAMAnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 19:43:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
+        id S2393929AbhAMAnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 19:43:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392402AbhAMAd3 (ORCPT
+        with ESMTP id S2392416AbhAMAeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 19:33:29 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B413C061795
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:32:49 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id 18so334298pgf.19
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:32:49 -0800 (PST)
+        Tue, 12 Jan 2021 19:34:08 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8194C0617A3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:32:51 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id d187so600745ybc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:32:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=dP6j6wcQj1tq0vOLcWGfFHo7iRnRUUl3C2I4O7J7Ozg=;
-        b=HZ1OdG3AUYYjnfuIgSl2h48zf8Lc8TWv0B1ET6Q23GEo4BkJjbddMItpDsuFBvKrjp
-         V9Lybk1v5NoyoXQzjgPuD0Ee1SNw1OxfZtUOc8wKcVYm4W1/MwBB6QvZHbqNoY/5YpPI
-         Rs52mOOCneWpnNsEPyrAYvG5JiqK8UYr0BMxT4NCHNiMeH1Q/JCt2u64AbB/Hgo/+8gO
-         0zySVBzWlPqREI+U/ri2WS5YZBEC6gtegTnMcwfo1ee7cyJe3m5EMt1llZJ6L1XQMULn
-         VXuv6CbDtvOq/NBp8KrxjW2cxl8BIqo5o+XRXSPs48u4akZ1PtV6XAaWUyupqa7rX0wb
-         3cMg==
+        bh=uqIln+HstZctFggtrRu2n6nxYwh4ZFHKHHQOBI++guI=;
+        b=pvdFGS6OG2KgZMUrZd158HXq4dc4tWjUyc78+KbjfGWlFFk1MJrL+jUE9o7jJLc1Hj
+         t2TCiMIZKwBGThTs2NswSLciBDyKsrsSxS1Ll6lBF1snZ9sZR93tiExU0dIipgFDeRun
+         0fW7Vrisk711AmpujZzLhlMZldz4VaGa66ZtXLkHUfXQ31Zr9hRz4qliyXzhIFm7xBSJ
+         hIhUapntVkuUk4GDDrnUUbskeYNnIH42HwwqT8cu1ppIykqr+j/rE0pXTS/f7IV1TjHF
+         i92XgCYDkUoX3kpSs4/BTH+3h0uIxGYsuyuRmZF0wo64a5WZ4Yy1eAaVThcKVClYEG3q
+         eC0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=dP6j6wcQj1tq0vOLcWGfFHo7iRnRUUl3C2I4O7J7Ozg=;
-        b=X1M/qNnfnlRqwbfgwuxFbsjosLw0dZekb2m5+IjhyEZbh+Yf8jP5R7EerKTudM/svs
-         DS8HyuTXkSxMI7HnyjkGCUuj5I9pCJkoSQgYU9BgTbpigX9T249Rvep0k9DOFmXfVx6n
-         geWYio3lmB5W7qDn/RK47l+ekt0jJ7Vrghm2cx1C+SsKHvIgegmbwcwKM8LEA/ATHRd+
-         4+GD/2lGfdRB5ROWjSJ+qlRXRg+5JvikoaAVVgw+WY/iSI1asak9isl+lHAYBdEtgY01
-         rApO9v6YUCZJza6KA9CqiZZm+Lpvae/0MH4cw+QYb9I3CQuyEpVYHG7K8eJ/mMlMGtXi
-         laOg==
-X-Gm-Message-State: AOAM530Y6SLlml1mTN1jvST/hojL7IX7x/NbS+h3Hg1Z3G2qw55n5i49
-        KFEmsh4tbD08iiTHYEHVjKj1XbvvA4Bqkg3LUAo=
-X-Google-Smtp-Source: ABdhPJwq5fbkvZctrZiF7pXQ41VncnRxpB/+3veDd4p8cC9GtOVC+KE7VsOZMV/3VwRTIIjPqQle1f8xxEWkHZ/9bMw=
+        bh=uqIln+HstZctFggtrRu2n6nxYwh4ZFHKHHQOBI++guI=;
+        b=tNSEiBwiOR5BgR5msjm0ZQy/kNPx2BNf94+0obf4McIIibAw+QDRpEk1hgbL5rp3Dx
+         XPSYs3sv2h9hf5jOP5sQSEYHnP+cNrt19yJ4paHc55efmFA3NM8QYpAYU7bQdkwdDoam
+         cZhy0vR6ODKLU/mng6wYPjAopOMGRTEOyEtOspOQPLRxHnAHEeH785KuNeCx0X/UWej7
+         1oXvHqyH45mQ/Ps5WteeOH++jbWZESIiAb8K4g7ziHZuRtdzabOdjlg12Qr5mlFAB24S
+         uMZU5X8Ci1nBQ12rtITp3bUuR4sLOJ6fuzbeAtEZ/W2yMgANHZIvYcn3vhkTK7z7Yxb0
+         zRZQ==
+X-Gm-Message-State: AOAM532i8dh1Ux18J40pyew+eJO7w1ijdajedN6iN875lqQRLQWMSOcn
+        6lldz7vxdBLxUsZpj/S3YQ8U45oo5yB4VBXn+YM=
+X-Google-Smtp-Source: ABdhPJxJm9HtYy+kYsBH/PWQjN06dKOIWrIF4tKGocsrMidrfwb4fDMqj6pOBPLr6bEVyRjV9m5PQoN+3rKI/fbp5qk=
 Sender: "ndesaulniers via sendgmr" 
         <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
 X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a17:90a:ce0c:: with SMTP id
- f12mr301315pju.89.1610497969060; Tue, 12 Jan 2021 16:32:49 -0800 (PST)
-Date:   Tue, 12 Jan 2021 16:32:33 -0800
+ (user=ndesaulniers job=sendgmr) by 2002:a5b:2cf:: with SMTP id
+ h15mr2951368ybp.475.1610497971198; Tue, 12 Jan 2021 16:32:51 -0800 (PST)
+Date:   Tue, 12 Jan 2021 16:32:34 -0800
 In-Reply-To: <20210113003235.716547-1-ndesaulniers@google.com>
-Message-Id: <20210113003235.716547-2-ndesaulniers@google.com>
+Message-Id: <20210113003235.716547-3-ndesaulniers@google.com>
 Mime-Version: 1.0
 References: <20210113003235.716547-1-ndesaulniers@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v4 1/3] Remove $(cc-option,-gdwarf-4) dependency from CONFIG_DEBUG_INFO_DWARF4
+Subject: [PATCH v4 2/3] Kbuild: make DWARF version a choice
 From:   Nick Desaulniers <ndesaulniers@google.com>
 To:     Masahiro Yamada <masahiroy@kernel.org>
 Cc:     Nathan Chancellor <natechancellor@gmail.com>,
@@ -71,64 +71,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
+explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
+way that's forward compatible with existing configs, and makes adding
+future versions more straightforward.
 
-The -gdwarf-4 flag is supported by GCC 4.5+, and also by Clang.
-
-You can see it at https://godbolt.org/z/6ed1oW
-
-  For gcc 4.5.3 pane,    line 37:    .value 0x4
-  For clang 10.0.1 pane, line 117:   .short 4
-
-Given Documentation/process/changes.rst stating GCC 4.9 is the minimal
-version, this cc-option is unneeded.
-
-Note
-----
-
-CONFIG_DEBUG_INFO_DWARF4 controls the DWARF version only for C files.
-
-As you can see in the top Makefile, -gdwarf-4 is only passed to CFLAGS.
-
-  ifdef CONFIG_DEBUG_INFO_DWARF4
-  DEBUG_CFLAGS    += -gdwarf-4
-  endif
-
-This flag is used when compiling *.c files.
-
-On the other hand, the assembler is always given -gdwarf-2.
-
-  KBUILD_AFLAGS   += -Wa,-gdwarf-2
-
-Hence, the debug info that comes from *.S files is always DWARF v2.
-This is simply because GAS supported only -gdwarf-2 for a long time.
-
-Recently, GAS gained the support for --dwarf-[3|4|5] options. [1]
-And, also we have Clang integrated assembler. So, the debug info
-for *.S files might be improved if we want.
-
-In my understanding, the current code is intentional, not a bug.
-
-[1] https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=31bf18645d98b4d3d7357353be840e320649a67d
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Suggested-by: Fangrui Song <maskray@google.com>
+Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- lib/Kconfig.debug | 1 -
- 1 file changed, 1 deletion(-)
+ Makefile          | 14 +++++++++-----
+ lib/Kconfig.debug | 21 ++++++++++++++++-----
+ 2 files changed, 25 insertions(+), 10 deletions(-)
 
+diff --git a/Makefile b/Makefile
+index d49c3f39ceb4..656fff17b331 100644
+--- a/Makefile
++++ b/Makefile
+@@ -826,12 +826,16 @@ else
+ DEBUG_CFLAGS	+= -g
+ endif
+ 
+-ifneq ($(LLVM_IAS),1)
+-KBUILD_AFLAGS	+= -Wa,-gdwarf-2
++dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
++dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
++DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
++ifneq ($(dwarf-version-y)$(LLVM_IAS),21)
++# Binutils 2.35+ required for -gdwarf-4+ support.
++dwarf-aflag	:= $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-version-y))
++ifdef CONFIG_CC_IS_CLANG
++DEBUG_CFLAGS	+= $(dwarf-aflag)
+ endif
+-
+-ifdef CONFIG_DEBUG_INFO_DWARF4
+-DEBUG_CFLAGS	+= -gdwarf-4
++KBUILD_AFLAGS	+= $(dwarf-aflag)
+ endif
+ 
+ ifdef CONFIG_DEBUG_INFO_REDUCED
 diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 78361f0abe3a..dd7d8d35b2a5 100644
+index dd7d8d35b2a5..e80770fac4f0 100644
 --- a/lib/Kconfig.debug
 +++ b/lib/Kconfig.debug
-@@ -258,7 +258,6 @@ config DEBUG_INFO_SPLIT
+@@ -256,13 +256,24 @@ config DEBUG_INFO_SPLIT
+ 	  to know about the .dwo files and include them.
+ 	  Incompatible with older versions of ccache.
  
++choice
++	prompt "DWARF version"
++	help
++	  Which version of DWARF debug info to emit.
++
++config DEBUG_INFO_DWARF2
++	bool "Generate DWARF Version 2 debuginfo"
++	help
++	  Generate DWARF v2 debug info.
++
  config DEBUG_INFO_DWARF4
- 	bool "Generate dwarf4 debuginfo"
--	depends on $(cc-option,-gdwarf-4)
+-	bool "Generate dwarf4 debuginfo"
++	bool "Generate DWARF Version 4 debuginfo"
  	help
- 	  Generate dwarf4 debug info. This requires recent versions
- 	  of gcc and gdb. It makes the debug information larger.
+-	  Generate dwarf4 debug info. This requires recent versions
+-	  of gcc and gdb. It makes the debug information larger.
+-	  But it significantly improves the success of resolving
+-	  variables in gdb on optimized code.
++	  Generate DWARF v4 debug info. This requires gcc 4.5+ and gdb 7.0+.
++	  It makes the debug information larger, but it significantly
++	  improves the success of resolving variables in gdb on optimized code.
++
++endchoice # "DWARF version"
+ 
+ config DEBUG_INFO_BTF
+ 	bool "Generate BTF typeinfo"
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
