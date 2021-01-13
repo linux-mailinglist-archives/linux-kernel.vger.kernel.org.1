@@ -2,314 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2622F4346
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:39:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 901782F434B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725934AbhAMEjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 23:39:05 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:34303 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725372AbhAMEi7 (ORCPT
+        id S1725858AbhAMEmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 23:42:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbhAMEmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 23:38:59 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 3BF4A19E3;
-        Tue, 12 Jan 2021 23:38:08 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 12 Jan 2021 23:38:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kdrag0n.dev; h=
-        date:from:subject:to:cc:message-id:in-reply-to:references
-        :mime-version:content-type:content-transfer-encoding; s=fm3; bh=
-        i9/staYSBFGZwUeddOPpV/++fgURKB/7UUSC8iM5JZ4=; b=BwWKJ4n4Z9DL1Xmy
-        Z4uLlBvcWqMwCvnTXyFGJB0ZgnLQSsnHXmLGdlksod/m7gb0CPqZxUZTEGI6GHkV
-        5eJpcjbPqqR9dlVWoCfmiK+scv1+GZ9loE2BUgzB1kb7d4jNKyc8q5+0ug7AunI9
-        v+RcgAlpgYysStQI94REztF5RHuB1uVFq3HPyVlslIxUn3Ag1Gthm+pVW72ZhkAd
-        eSz8z6LtvB5spMadamaIDK6OjNgwAvQoptBeuofYVqgUregjO1nvYDjQMbuLUrhJ
-        mc915EwUQIxKUptLqajOTHIahDQqadgSufRVVoZBlZm5obTtuaHjaqCFLRwSavod
-        mQHbkQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=i9/staYSBFGZwUeddOPpV/++fgURKB/7UUSC8iM5J
-        Z4=; b=Ui0GuB4f+WZmUmf4evU5jyGlHXmpJL+v7TW6VoKiTlsN0pdojkYulVXVK
-        kN+5wWTRtsdQcfRfZBBv9ywYJSbMs2Ng610bQjGxr0W4Fscsh9pO+qgao7/NSMwY
-        9WX61TzjPtkVM1CbxCG74bTJ77WXYm+Nlrb9yl2HeUokph/1wuSJCEUvt+5JLCZG
-        iFnme3bXmynn2wjh20AavQnp4Te1xYtTCuFuRjUgQhoQgiwMn4c2wBSeppXtvHCi
-        YTBLETm1VFJxV+tCxPkm2Vy4G5NZQfsRCdSpk8QzS/jh+LC7BTLtcoogORzIk7M+
-        6EJu3jSNyGE2kQNownqt8AGKYA+zQ==
-X-ME-Sender: <xms:L3n-Xy8r2cBq6VqbVGBA-WZFVOqpMZOe5QxtqlrPlw-oXHVWi-dOjw>
-    <xme:L3n-Xyu5jRJL8cFV4NK-N88o-EMq5xWnG4gtMxcnIpGez3KTRMG3GfCYSFfdxziBx
-    VKw--Yt8YlBOrI2leg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtddugdejhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffuvffkjghfofggtgfgsehtqhertdertdhinecuhfhrohhmpeffrghnnhih
-    ucfnihhnuceouggrnhhnhieskhgurhgrghdtnhdruggvvheqnecuggftrfgrthhtvghrnh
-    epteeufeetieejhfeikefhledtffekvdelueeludegfefgheeiieffheeltdehfeehnecu
-    ffhomhgrihhnpegtohguvggruhhrohhrrgdrohhrghdpghhithhhuhgsrdgtohhmpdgvvg
-    hmsggtrdhorhhgnecukfhppedutdegrddvtddtrdduvdelrddvuddvnecuufhprghmkfhp
-    pfgvthifohhrkhepuddtgedrvddttddruddvledrvdduvdenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegurghnnhihsehkughrrghgtdhnrdgu
-    vghv
-X-ME-Proxy: <xmx:L3n-X4DRuC81AAYBRN9tdYMUkmM-RXCiUmwe3FoWqBvwh9t7QkmlBA>
-    <xmx:L3n-X6efzcR489GI8XnhE6Cplq02AWqTKMhoSuEqzNvZY8l-h8QuHg>
-    <xmx:L3n-X3PINMUY2Z8ZIHMIiNBG9Yl_3G3ZIcye7_I2Ky1r48ko_KEeow>
-    <xmx:L3n-XzC6M4aZjmlnwNHuyPEvuutRs7sDlBOkRi-hGQXHdNJA6sWwEw>
-Received: from [10.65.28.38] (unknown [104.200.129.212])
-        by mail.messagingengine.com (Postfix) with ESMTPA id F3E411080057;
-        Tue, 12 Jan 2021 23:38:04 -0500 (EST)
-Date:   Tue, 12 Jan 2021 20:37:58 -0800
-From:   Danny Lin <danny@kdrag0n.dev>
-Subject: Re: [PATCH] arm64: dts: qcom: sdm660: Fix CPU capacities
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     Alexey Minnekhanov <alexey.min@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexey Minekhanov <alexeymin@postmarketos.org>
-Message-Id: <AJVUMQ.VZV51GZZZD7I2@kdrag0n.dev>
-In-Reply-To: <c6ecc6c0-3a95-0a4e-6a4d-d753dfaa2748@somainline.org>
-References: <20210112013127.414277-1-danny@kdrag0n.dev>
-        <CANi4RBQCpWiyVLyBcevGcmRr=toPxVF2TrxFmM3vHHnYgaQVHg@mail.gmail.com>
-        <c6ecc6c0-3a95-0a4e-6a4d-d753dfaa2748@somainline.org>
-X-Mailer: geary/3.38.1
+        Tue, 12 Jan 2021 23:42:23 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E8FC061575;
+        Tue, 12 Jan 2021 20:41:43 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id a188so457024pfa.11;
+        Tue, 12 Jan 2021 20:41:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KvQ2yMS8fLkXK342PvW0uslM8ZlXd39fo1Po12xDqaQ=;
+        b=avdfFgTkaBibOVpcEf2XR+8TzRftglYeCpXQi8+D1HMwpIOkD7NkRtIUsc8mUk0s2Z
+         uB+NCl2ETqVqZu0HEWsAPxXGOJfklLqHqylL8JLnPkGURCT0Rr91r3d22C9ChX+4xOUa
+         0+/zxN+7tE3QoOiYsE/ZQ/wPF/VA588kdPh0Ougg38W4Cv/AoTVa0JYnRMmr2WARDcHl
+         v8fvvCq6DsKX5OdSGhN1HNKIz8q3cbU17isYsDfTtguubxnD10O9uu6ccz3Y/qgusZpl
+         Cud+aVxghpfL6SrKtq34b4bAKNxgGqnLbGXPQtA6+DGdpIMhLyHHFSzJVWpdKkBqK0hF
+         2NWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KvQ2yMS8fLkXK342PvW0uslM8ZlXd39fo1Po12xDqaQ=;
+        b=PlhbUYofVmINIadjR02ZEghs/zaf0AbmzigoDesj97eq2GetIGGw+CjrGKMtjsJhGI
+         I4kP4ba9y+0jA6KvUKq9NiQF8GLVu/xe1gB5xjTOUDlu/xN33khIs0b3EOnRjbs1Ey0a
+         JHogjB4659KIm3wFSljKYFFwwVReowZJMaDZaBspzUqQwExvMQqsnza6QX55kiODOO8V
+         kvbxqva2b3MdXNTHArmWI07KvWKcHoXTycubNZLchDAioThT+KvxAOIgtkPIkAFDLC1g
+         4yQwHhTbc/kqU9P43pWv59Gm9vq/LAOLytB+FtpdKc6yZM93VwWJC7WcwGgg3nDpBi+V
+         raeQ==
+X-Gm-Message-State: AOAM533P6qzu9Pup0ucg1MOVGuD64GnZ1AjbdrnUu+xBHKOG7GuTlLyK
+        z7zlxDKuEHx2hk18133FDCo=
+X-Google-Smtp-Source: ABdhPJx2iI7J7lxafaYbeUXbTz84477oydmyZRD61uJyjC45YSxKcvn04KDiXDcVGjLQgp6TP7cnLg==
+X-Received: by 2002:a63:e108:: with SMTP id z8mr315659pgh.363.1610512902499;
+        Tue, 12 Jan 2021 20:41:42 -0800 (PST)
+Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id 6sm769816pfj.216.2021.01.12.20.41.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 20:41:41 -0800 (PST)
+Subject: Re: [RFC PATCH v3 0/6] Restricted DMA
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Claire Chang <tientzu@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
+        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
+        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>
+References: <20210106034124.30560-1-tientzu@chromium.org>
+ <d7043239-12cf-3636-4726-2e3b90917dc6@gmail.com>
+ <CALiNf28sU1VtGB7LeTXExkMwQiCeg8N5arqyEjw0CPZP72R4dg@mail.gmail.com>
+ <78871151-947d-b085-db03-0d0bd0b55632@gmail.com>
+ <CALiNf29_PmLJTVLksSHp3NFAaL52idqehSMOtatJ=jaM2Muq1g@mail.gmail.com>
+ <23a09b9a-70fc-a7a8-f3ea-b0bfa60507f0@gmail.com>
+ <CAAFQd5DX=AdaYSYQbxgnrYYojkM5q7EE_Qs-BYPOiNjcQWbN1A@mail.gmail.com>
+ <c7f7941d-b8bd-f0f3-4e40-b899a77188bf@gmail.com>
+ <CAAFQd5AGm4U8hD4jHmw10S7MRS1-ZUSq7eGgoUifMMyfZgP2NA@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <7fe99ad2-79a7-9c8b-65ce-ce8353e9d9bf@gmail.com>
+Date:   Tue, 12 Jan 2021 20:41:24 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-5; format=flowed
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAAFQd5AGm4U8hD4jHmw10S7MRS1-ZUSq7eGgoUifMMyfZgP2NA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Tue, Jan 12, 2021 at 8:04 pm, AngeloGioacchino Del Regno=20
-<angelogioacchino.delregno@somainline.org> wrote:
-> Il 12/01/21 15:59, Alexey Minnekhanov ha scritto:
->> Hi!
->> I always had a feeling something is not right in those cpu
->> definitions, so cpus with reg 100-103 are little cores, and 0-3 big
->> ones?
->> But downstream sdm660.dtsi has a property "efficiency" [1] with=20
->> values
->> which are larger for cores 100-103 than for 0-3 cores (1638 > 1024),
->> I'm confused...
->=20
 
-It appears that in downstream, logical CPUs 0-3 are mapped to the=20
-little CPUs (physical IDs 0x100-0x103) and logical CPUs 4-7 are mapped=20
-to the big CPUs (physical IDs 0x0-0x3), while mainline has it reversed=20
-unlike most other Qualcomm platforms. Thanks for catching the=20
-discrepancy, I wasn't aware that the CPU reg values actually mattered=20
-before this.
+On 1/12/2021 8:25 PM, Tomasz Figa wrote:
+> On Wed, Jan 13, 2021 at 12:56 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>
+>>
+>>
+>> On 1/12/2021 6:29 PM, Tomasz Figa wrote:
+>>> Hi Florian,
+>>>
+>>> On Wed, Jan 13, 2021 at 3:01 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>>>
+>>>> On 1/11/21 11:48 PM, Claire Chang wrote:
+>>>>> On Fri, Jan 8, 2021 at 1:59 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>>>>>
+>>>>>> On 1/7/21 9:42 AM, Claire Chang wrote:
+>>>>>>
+>>>>>>>> Can you explain how ATF gets involved and to what extent it does help,
+>>>>>>>> besides enforcing a secure region from the ARM CPU's perpsective? Does
+>>>>>>>> the PCIe root complex not have an IOMMU but can somehow be denied access
+>>>>>>>> to a region that is marked NS=0 in the ARM CPU's MMU? If so, that is
+>>>>>>>> still some sort of basic protection that the HW enforces, right?
+>>>>>>>
+>>>>>>> We need the ATF support for memory MPU (memory protection unit).
+>>>>>>> Restricted DMA (with reserved-memory in dts) makes sure the predefined memory
+>>>>>>> region is for PCIe DMA only, but we still need MPU to locks down PCIe access to
+>>>>>>> that specific regions.
+>>>>>>
+>>>>>> OK so you do have a protection unit of some sort to enforce which region
+>>>>>> in DRAM the PCIE bridge is allowed to access, that makes sense,
+>>>>>> otherwise the restricted DMA region would only be a hint but nothing you
+>>>>>> can really enforce. This is almost entirely analogous to our systems then.
+>>>>>
+>>>>> Here is the example of setting the MPU:
+>>>>> https://github.com/ARM-software/arm-trusted-firmware/blob/master/plat/mediatek/mt8183/drivers/emi_mpu/emi_mpu.c#L132
+>>>>>
+>>>>>>
+>>>>>> There may be some value in standardizing on an ARM SMCCC call then since
+>>>>>> you already support two different SoC vendors.
+>>>>>>
+>>>>>>>
+>>>>>>>>
+>>>>>>>> On Broadcom STB SoCs we have had something similar for a while however
+>>>>>>>> and while we don't have an IOMMU for the PCIe bridge, we do have a a
+>>>>>>>> basic protection mechanism whereby we can configure a region in DRAM to
+>>>>>>>> be PCIe read/write and CPU read/write which then gets used as the PCIe
+>>>>>>>> inbound region for the PCIe EP. By default the PCIe bridge is not
+>>>>>>>> allowed access to DRAM so we must call into a security agent to allow
+>>>>>>>> the PCIe bridge to access the designated DRAM region.
+>>>>>>>>
+>>>>>>>> We have done this using a private CMA area region assigned via Device
+>>>>>>>> Tree, assigned with a and requiring the PCIe EP driver to use
+>>>>>>>> dma_alloc_from_contiguous() in order to allocate from this device
+>>>>>>>> private CMA area. The only drawback with that approach is that it
+>>>>>>>> requires knowing how much memory you need up front for buffers and DMA
+>>>>>>>> descriptors that the PCIe EP will need to process. The problem is that
+>>>>>>>> it requires driver modifications and that does not scale over the number
+>>>>>>>> of PCIe EP drivers, some we absolutely do not control, but there is no
+>>>>>>>> need to bounce buffer. Your approach scales better across PCIe EP
+>>>>>>>> drivers however it does require bounce buffering which could be a
+>>>>>>>> performance hit.
+>>>>>>>
+>>>>>>> Only the streaming DMA (map/unmap) needs bounce buffering.
+>>>>>>
+>>>>>> True, and typically only on transmit since you don't really control
+>>>>>> where the sk_buff are allocated from, right? On RX since you need to
+>>>>>> hand buffer addresses to the WLAN chip prior to DMA, you can allocate
+>>>>>> them from a pool that already falls within the restricted DMA region, right?
+>>>>>>
+>>>>>
+>>>>> Right, but applying bounce buffering to RX will make it more secure.
+>>>>> The device won't be able to modify the content after unmap. Just like what
+>>>>> iommu_unmap does.
+>>>>
+>>>> Sure, however the goals of using bounce buffering equally applies to RX
+>>>> and TX in that this is the only layer sitting between a stack (block,
+>>>> networking, USB, etc.) and the underlying device driver that scales well
+>>>> in order to massage a dma_addr_t to be within a particular physical range.
+>>>>
+>>>> There is however room for improvement if the drivers are willing to
+>>>> change their buffer allocation strategy. When you receive Wi-Fi frames
+>>>> you need to allocate buffers for the Wi-Fi device to DMA into, and that
+>>>> happens ahead of the DMA transfers by the Wi-Fi device. At buffer
+>>>> allocation time you could very well allocate these frames from the
+>>>> restricted DMA region without having to bounce buffer them since the
+>>>> host CPU is in control over where and when to DMA into.
+>>>>
+>>>
+>>> That is, however, still a trade-off between saving that one copy and
+>>> protection from the DMA tampering with the packet contents when the
+>>> kernel is reading them. Notice how the copy effectively makes a
+>>> snapshot of the contents, guaranteeing that the kernel has a
+>>> consistent view of the packet, which is not true if the DMA could
+>>> modify the buffer contents in the middle of CPU accesses.
+>>
+>> I would say that the window just became so much narrower for the PCIe
+>> end-point to overwrite contents with the copy because it would have to
+>> happen within the dma_unmap_{page,single} time and before the copy is
+>> finished to the bounce buffer.
+> 
+> Not only. Imagine this:
+> 
+> a) Without bouncing:
+> 
+> - RX interrupt
+> - Pass the packet to the network stack
+> - Network stack validates the packet
+> - DMA overwrites the packet
+> - Network stack goes boom, because the packet changed after validation
+> 
+> b) With bouncing:
+> 
+> - RX interrupt
+> - Copy the packet to a DMA-inaccessible buffer
+> - Network stack validates the packet
+> - Network stack is happy, because the packet is guaranteed to stay the
+> same after validation
 
-> All the SDM630, SDM636 and SDM660 smartphones I ever saw are booting=20
-> off of the BIG cluster (and that's why cpu@100 is CPU0), and at 0x100=20
-> you find the first BIG CPU.
-
-It looks like the mainline logical CPU map for SDM660 was originally=20
-copied from SDM630 and was not updated to match the conventional layout=20
-for SDM660. I'm not familiar with SDM630, but on the SDM660 devices=20
-I've seen, the boot CPU is CPU 0 on the little cluster (boot log is=20
-from downstream but logical CPU numbers are not relevant here) as=20
-indicated by the cpuid:
-
-[    0.000000] Boot CPU: AArch64 Processor [51af8014]
-[    0.029322] CPU1: Booted secondary processor [51af8014]
-[    0.034276] CPU2: Booted secondary processor [51af8014]
-[    0.039177] CPU3: Booted secondary processor [51af8014]
-[    0.044637] CPU4: Booted secondary processor [51af8002]
-[    0.049645] CPU5: Booted secondary processor [51af8002]
-[    0.054926] CPU6: Booted secondary processor [51af8002]
-[    0.059934] CPU7: Booted secondary processor [51af8002]
-
-See downstream device trees for SDM630 [1] and SDM660 [2] - the cluster=20
-order is different and only SDM630 matches the behavior you describe.
-
-In either case, it works as long as the capacities are assigned to the=20
-correct logical CPUs, so please disregard this patch if the current CPU=20
-map is retained.
-
-[1]=20
-https://source.codeaurora.org/quic/la/kernel/msm-4.4/tree/arch/arm/boot/dts=
-/qcom/sdm630.dtsi?h=3DLA.UM.6.2.c27-03100-sdm660.0#n49
-[2]=20
-https://source.codeaurora.org/quic/la/kernel/msm-4.4/tree/arch/arm/boot/dts=
-/qcom/sdm660.dtsi?h=3DLA.UM.6.2.c27-03100-sdm660.0#n49
-
->=20
->>=20
->> Property "efficiency" is described in the same tree in [2].
->>=20
->> [1]=20
->> https://source.codeaurora.org/quic/la/kernel/msm-4.4/tree/arch/arm/boot/=
-dts/qcom/sdm660.dtsi?h=3DLA.UM.7.2.c25#n155
->> [2]=20
->> https://source.codeaurora.org/quic/la/kernel/msm-4.4/tree/Documentation/=
-devicetree/bindings/arm/cpus.txt?h=3DLA.UM.7.2.c25#n216
->>=20
->> =D2=E2, 12 =EF=DD=D2. 2021 =D3. =D2 13:51, Danny Lin <danny@kdrag0n.dev>=
-:
->>>=20
->>> sdm660 has a big.LITTLE 4+4 CPU setup with CPUs 0-3 being little=20
->>> cores
->>> and CPUs 4-7 being big cores. The big cores have higher IPC, so they
->>> should have the higher capacity-dmips-mhz, not the other way around=20
->>> as
->>> the device tree currently describes it. Fix the incorrect CPU map to
->>> improve EAS scheduling behavior.
->>>=20
->>> While we're at it, let's replace the old DMIPS/MHz values with new
->>> measurements that reflect the exact IPC of the CPUs as reported by
->>> CoreMark.
->>>=20
->>> Performance measurements were made using my freqbench [1]
->>> benchmark coordinator, which isolates, offlines, and disables the=20
->>> timer
->>> tick on test CPUs to maximize accuracy. It uses EEMBC CoreMark [2]=20
->>> as
->>> the workload and measures power usage using the PM660 PMIC's fuel
->>> gauge.
->>>=20
->>> Normalized DMIPS/MHz capacity scale values for each CPU were=20
->>> calculated
->>> from CoreMarks/MHz (CoreMark iterations per second per MHz), which
->>> serves the same purpose. For each CPU, the final capacity-dmips-mhz
->>> value is the C/MHz value of its maximum frequency normalized to
->>> SCHED_CAPACITY_SCALE (1024) for the fastest CPU in the system.
->>>=20
->>> A Xiaomi Redmi Note 7 device running a downstream Qualcomm 4.4=20
->>> kernel
->>> was used for benchmarking to ensure proper frequency scaling and=20
->>> other
->>> low-level controls.
->>>=20
-> This is wrong, the downstream kernel may be doing "magic" to switch=20
-> clusters the other way around, and this is likely... Please, run your=20
-> benchmark on a upstream kernel: there may be differences.
->=20
->>> Raw benchmark results can be found in the freqbench repository [3].
->>> Below is a human-readable summary:
->>>=20
->>> Frequency domains: cpu1 cpu4
->>> Offline CPUs: cpu1 cpu2 cpu3 cpu4 cpu5 cpu6 cpu7
->>> Baseline power usage: 1130 mW
->>>=20
->>> =3D=3D=3D=3D=3D CPU 1 =3D=3D=3D=3D=3D
->>> Frequencies: 633 902 1113 1401 1536 1747 1843
->>>=20
->>>   633:  2058     3.2 C/MHz     48 mW    5.9 J   42.6 I/mJ   121.5 s
->>>   902:  2930     3.2 C/MHz     72 mW    6.2 J   40.6 I/mJ    85.3 s
->>> 1113:  3616     3.2 C/MHz     79 mW    5.4 J   46.0 I/mJ    69.1 s
->>> 1401:  4551     3.2 C/MHz    125 mW    6.9 J   36.3 I/mJ    54.9 s
->>> 1536:  4988     3.2 C/MHz    134 mW    6.7 J   37.1 I/mJ    50.1 s
->>> 1747:  5674     3.2 C/MHz    179 mW    7.9 J   31.7 I/mJ    44.1 s
->>> 1843:  5986     3.2 C/MHz    228 mW    9.5 J   26.3 I/mJ    41.8 s
->>>=20
->>> =3D=3D=3D=3D=3D CPU 4 =3D=3D=3D=3D=3D
->>> Frequencies: 1113 1401 1747 1958 2150 2208
->>>=20
->>> 1113:  5825     5.2 C/MHz    220 mW    9.4 J   26.5 I/mJ    42.9 s
->>> 1401:  7324     5.2 C/MHz    317 mW   10.8 J   23.1 I/mJ    34.1 s
->>> 1747:  9135     5.2 C/MHz    474 mW   13.0 J   19.2 I/mJ    27.4 s
->>> 1958: 10247     5.2 C/MHz    578 mW   14.1 J   17.7 I/mJ    24.4 s
->>> 2150: 11246     5.2 C/MHz    694 mW   15.4 J   16.2 I/mJ    22.2 s
->>> 2208: 11551     5.2 C/MHz    736 mW   15.9 J   15.7 I/mJ    21.7 s
->>>=20
->>> [1] https://github.com/kdrag0n/freqbench
->>> [2] https://www.eembc.org/coremark/
->>> [3]=20
->>> https://github.com/kdrag0n/freqbench/tree/master/results/sdm660/main
->>>=20
->>> Signed-off-by: Danny Lin <danny@kdrag0n.dev>
->>> ---
->>>   arch/arm64/boot/dts/qcom/sdm660.dtsi | 16 ++++++++--------
->>>   1 file changed, 8 insertions(+), 8 deletions(-)
->>>=20
->>> diff --git a/arch/arm64/boot/dts/qcom/sdm660.dtsi=20
->>> b/arch/arm64/boot/dts/qcom/sdm660.dtsi
->>> index 4abbdd03d1e7..ca985c5429db 100644
->>> --- a/arch/arm64/boot/dts/qcom/sdm660.dtsi
->>> +++ b/arch/arm64/boot/dts/qcom/sdm660.dtsi
->>> @@ -40,7 +40,7 @@ CPU0: cpu@100 {
->>>                          compatible =3D "qcom,kryo260";
->>>                          reg =3D <0x0 0x100>;
->>>                          enable-method =3D "psci";
->>> -                       capacity-dmips-mhz =3D <1024>;
->>> +                       capacity-dmips-mhz =3D <636>;
->>>                          next-level-cache =3D <&L2_1>;
->>>                          L2_1: l2-cache {
->>>                                  compatible =3D "cache";
->>> @@ -59,7 +59,7 @@ CPU1: cpu@101 {
->>>                          compatible =3D "qcom,kryo260";
->>>                          reg =3D <0x0 0x101>;
->>>                          enable-method =3D "psci";
->>> -                       capacity-dmips-mhz =3D <1024>;
->>> +                       capacity-dmips-mhz =3D <636>;
->>>                          next-level-cache =3D <&L2_1>;
->>>                          L1_I_101: l1-icache {
->>>                                  compatible =3D "cache";
->>> @@ -74,7 +74,7 @@ CPU2: cpu@102 {
->>>                          compatible =3D "qcom,kryo260";
->>>                          reg =3D <0x0 0x102>;
->>>                          enable-method =3D "psci";
->>> -                       capacity-dmips-mhz =3D <1024>;
->>> +                       capacity-dmips-mhz =3D <636>;
->>>                          next-level-cache =3D <&L2_1>;
->>>                          L1_I_102: l1-icache {
->>>                                  compatible =3D "cache";
->>> @@ -89,7 +89,7 @@ CPU3: cpu@103 {
->>>                          compatible =3D "qcom,kryo260";
->>>                          reg =3D <0x0 0x103>;
->>>                          enable-method =3D "psci";
->>> -                       capacity-dmips-mhz =3D <1024>;
->>> +                       capacity-dmips-mhz =3D <636>;
->>>                          next-level-cache =3D <&L2_1>;
->>>                          L1_I_103: l1-icache {
->>>                                  compatible =3D "cache";
->>> @@ -104,7 +104,7 @@ CPU4: cpu@0 {
->>>                          compatible =3D "qcom,kryo260";
->>>                          reg =3D <0x0 0x0>;
->>>                          enable-method =3D "psci";
->>> -                       capacity-dmips-mhz =3D <640>;
->>> +                       capacity-dmips-mhz =3D <1024>;
->>>                          next-level-cache =3D <&L2_0>;
->>>                          L2_0: l2-cache {
->>>                                  compatible =3D "cache";
->>> @@ -123,7 +123,7 @@ CPU5: cpu@1 {
->>>                          compatible =3D "qcom,kryo260";
->>>                          reg =3D <0x0 0x1>;
->>>                          enable-method =3D "psci";
->>> -                       capacity-dmips-mhz =3D <640>;
->>> +                       capacity-dmips-mhz =3D <1024>;
->>>                          next-level-cache =3D <&L2_0>;
->>>                          L1_I_1: l1-icache {
->>>                                  compatible =3D "cache";
->>> @@ -138,7 +138,7 @@ CPU6: cpu@2 {
->>>                          compatible =3D "qcom,kryo260";
->>>                          reg =3D <0x0 0x2>;
->>>                          enable-method =3D "psci";
->>> -                       capacity-dmips-mhz =3D <640>;
->>> +                       capacity-dmips-mhz =3D <1024>;
->>>                          next-level-cache =3D <&L2_0>;
->>>                          L1_I_2: l1-icache {
->>>                                  compatible =3D "cache";
->>> @@ -153,7 +153,7 @@ CPU7: cpu@3 {
->>>                          compatible =3D "qcom,kryo260";
->>>                          reg =3D <0x0 0x3>;
->>>                          enable-method =3D "psci";
->>> -                       capacity-dmips-mhz =3D <640>;
->>> +                       capacity-dmips-mhz =3D <1024>;
->>>                          next-level-cache =3D <&L2_0>;
->>>                          L1_I_3: l1-icache {
->>>                                  compatible =3D "cache";
->>> --
->>> 2.29.2
->>>=20
->>=20
->>=20
->=20
-
-
+Yes that's a much safer set of operations, thanks for walking through a
+practical example.
+-- 
+Florian
