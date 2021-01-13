@@ -2,203 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6B32F54A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 22:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 477ED2F54B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 22:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726677AbhAMVop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 16:44:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729168AbhAMVgJ (ORCPT
+        id S1729190AbhAMV6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 16:58:35 -0500
+Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:42426 "EHLO
+        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729229AbhAMVzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 16:36:09 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B78AC061575;
-        Wed, 13 Jan 2021 13:35:01 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id g10so2943929wmh.2;
-        Wed, 13 Jan 2021 13:35:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HQqEP37L3/Yy+zwbGkb0VS0Y9DkWa6qgrFY6AGrzOps=;
-        b=OQ2ZbM8Bq+409g7Ej3ma3SMlADzQRtKTI0nioDlNek56Ye9qDBmM01pFxyRCZBk9Ev
-         CwqRMLuaGedGh8Qi2y7XuBbPkqPJJVdT1O+hF379U0ixzjeTea0F6vHTxXHmm0bcRT2X
-         sMFcd2AAY1R+noqRdPH58M0jyqd4xCie1f6YOr+ZTgpB784EVzmbN1VpFGbaswblUtGc
-         vDuJC8G2ads0yn6vNWeY9yecAiMMyCnPBmb4sN9W78L3nQg5nNbHt/aHG9jytPA53s94
-         /9sfNOY2siDQaSMsJ3Fp0zKb2rPsrB7vErdHc8agohpUTtmvYu3ET7/YWQpnKKyw2BOC
-         B0PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HQqEP37L3/Yy+zwbGkb0VS0Y9DkWa6qgrFY6AGrzOps=;
-        b=RPMw4/7O2KHFE+urK7oyTyc5lqPa7DJdgpGgkv/TFyUo8BK0MpEBqPV6IuLhZO6UcL
-         0CFpzmDLAYKgak+lXhf0yGt6DXxWMayROn+oPyfooC1hEYnY66ChAoclsH3MI6ZHRq6T
-         8mlUOZw4z/t7+i+CxdHqontD6j60EDGNl8dl0fPZsaGOq5WFGTg8cCUBv9Zsl04RG8u2
-         rWXveyT4f91RfapGEfXJ1naiQdiAHwWI9nWOCJ8kZjOrFYCrtTOAITVVHpUCBvkP6UcB
-         dN2Rh4EH71n/n6nKrsa+DpdTIty+nNSaHrBKSJIkb1ByUM/c2gsjEB/yP+SRsytHuJrM
-         9StQ==
-X-Gm-Message-State: AOAM533jjv1O+X4YLe4MtTuUjawkUVVGBH2WbF+NE+W0kWL384LFKsGh
-        K0xa1jPrcWP0MLW7Rq3czeS6E5/KXOM=
-X-Google-Smtp-Source: ABdhPJwQ4sZYxeIUAaFLRDZTmGQ/5loUVIy3uc+7m6lvqK0NutwwFFa16E2wcw2tXK4iD+ILXLLEqQ==
-X-Received: by 2002:a7b:cd91:: with SMTP id y17mr1034602wmj.5.1610573699693;
-        Wed, 13 Jan 2021 13:34:59 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f06:5500:391b:9f3f:c40b:cb6d? (p200300ea8f065500391b9f3fc40bcb6d.dip0.t-ipconnect.de. [2003:ea:8f06:5500:391b:9f3f:c40b:cb6d])
-        by smtp.googlemail.com with ESMTPSA id n9sm5295460wrq.41.2021.01.13.13.34.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 13:34:59 -0800 (PST)
-To:     Claudiu.Beznea@microchip.com, andrew@lunn.ch,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1610120754-14331-1-git-send-email-claudiu.beznea@microchip.com>
- <25ec943f-ddfc-9bcd-ef30-d0baf3c6b2a2@gmail.com>
- <ce20d4f3-3e43-154a-0f57-2c2d42752597@microchip.com>
- <ee0fd287-c737-faa5-eee1-99ffa120540a@gmail.com>
- <ae4e73e9-109f-fdb9-382c-e33513109d1c@microchip.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH] net: phy: micrel: reconfigure the phy on resume
-Message-ID: <7976f7df-c22f-d444-c910-b0462b3d7f61@gmail.com>
-Date:   Wed, 13 Jan 2021 22:34:53 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Wed, 13 Jan 2021 16:55:10 -0500
+Received: from dread.disaster.area (pa49-179-167-107.pa.nsw.optusnet.com.au [49.179.167.107])
+        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id A94981ACDFD;
+        Thu, 14 Jan 2021 08:53:49 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kzo5M-006AIU-SC; Thu, 14 Jan 2021 08:53:48 +1100
+Date:   Thu, 14 Jan 2021 08:53:48 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     Donald Buczek <buczek@molgen.mpg.de>, linux-xfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+linux-xfs@molgen.mpg.de
+Subject: Re: [PATCH] xfs: Wake CIL push waiters more reliably
+Message-ID: <20210113215348.GI331610@dread.disaster.area>
+References: <1705b481-16db-391e-48a8-a932d1f137e7@molgen.mpg.de>
+ <20201229235627.33289-1-buczek@molgen.mpg.de>
+ <20201230221611.GC164134@dread.disaster.area>
+ <20210104162353.GA254939@bfoster>
+ <20210107215444.GG331610@dread.disaster.area>
+ <20210108165657.GC893097@bfoster>
+ <20210111163848.GC1091932@bfoster>
 MIME-Version: 1.0
-In-Reply-To: <ae4e73e9-109f-fdb9-382c-e33513109d1c@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111163848.GC1091932@bfoster>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
+        a=+wqVUQIkAh0lLYI+QRsciw==:117 a=+wqVUQIkAh0lLYI+QRsciw==:17
+        a=kj9zAlcOel0A:10 a=EmqxpYm9HcoA:10 a=7-415B0cAAAA:8
+        a=jeGTqxCbE2Z_5-kZt_IA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.01.2021 13:36, Claudiu.Beznea@microchip.com wrote:
+On Mon, Jan 11, 2021 at 11:38:48AM -0500, Brian Foster wrote:
+> On Fri, Jan 08, 2021 at 11:56:57AM -0500, Brian Foster wrote:
+> > On Fri, Jan 08, 2021 at 08:54:44AM +1100, Dave Chinner wrote:
+> > > On Mon, Jan 04, 2021 at 11:23:53AM -0500, Brian Foster wrote:
+> > > > On Thu, Dec 31, 2020 at 09:16:11AM +1100, Dave Chinner wrote:
+> > > > > On Wed, Dec 30, 2020 at 12:56:27AM +0100, Donald Buczek wrote:
+> > > > > > If the value goes below the limit while some threads are
+> > > > > > already waiting but before the push worker gets to it, these threads are
+> > > > > > not woken.
+> > > > > > 
+> > > > > > Always wake all CIL push waiters. Test with waitqueue_active() as an
+> > > > > > optimization. This is possible, because we hold the xc_push_lock
+> > > > > > spinlock, which prevents additions to the waitqueue.
+> > > > > > 
+> > > > > > Signed-off-by: Donald Buczek <buczek@molgen.mpg.de>
+> > > > > > ---
+> > > > > >  fs/xfs/xfs_log_cil.c | 2 +-
+> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > > 
+> > > > > > diff --git a/fs/xfs/xfs_log_cil.c b/fs/xfs/xfs_log_cil.c
+> > > > > > index b0ef071b3cb5..d620de8e217c 100644
+> > > > > > --- a/fs/xfs/xfs_log_cil.c
+> > > > > > +++ b/fs/xfs/xfs_log_cil.c
+> > > > > > @@ -670,7 +670,7 @@ xlog_cil_push_work(
+> > > > > >  	/*
+> > > > > >  	 * Wake up any background push waiters now this context is being pushed.
+> > > > > >  	 */
+> > > > > > -	if (ctx->space_used >= XLOG_CIL_BLOCKING_SPACE_LIMIT(log))
+> > > > > > +	if (waitqueue_active(&cil->xc_push_wait))
+> > > > > >  		wake_up_all(&cil->xc_push_wait);
+> > > > > 
+> > > > > That just smells wrong to me. It *might* be correct, but this
+> > > > > condition should pair with the sleep condition, as space used by a
+> > > > > CIL context should never actually decrease....
+> > > > > 
+> > > > 
+> > > > ... but I'm a little confused by this assertion. The shadow buffer
+> > > > allocation code refers to the possibility of shadow buffers falling out
+> > > > that are smaller than currently allocated buffers. Further, the
+> > > > _insert_format_items() code appears to explicitly optimize for this
+> > > > possibility by reusing the active buffer, subtracting the old size/count
+> > > > values from the diff variables and then reformatting the latest
+> > > > (presumably smaller) item to the lv.
+> > > 
+> > > Individual items might shrink, but the overall transaction should
+> > > grow. Think of a extent to btree conversion of an inode fork. THe
+> > > data in the inode fork decreases from a list of extents to a btree
+> > > root block pointer, so the inode item shrinks. But then we add a new
+> > > btree root block that contains all the extents + the btree block
+> > > header, and it gets rounded up to ithe 128 byte buffer logging chunk
+> > > size.
+> > > 
+> > > IOWs, while the inode item has decreased in size, the overall
+> > > space consumed by the transaction has gone up and so the CIL ctx
+> > > used_space should increase. Hence we can't just look at individual
+> > > log items and whether they have decreased in size - we have to look
+> > > at all the items in the transaction to understand how the space used
+> > > in that transaction has changed. i.e. it's the aggregation of all
+> > > items in the transaction that matter here, not so much the
+> > > individual items.
+> > > 
+> > 
+> > Ok, that makes more sense...
+> > 
+> > > > Of course this could just be implementation detail. I haven't dug into
+> > > > the details in the remainder of this thread and I don't have specific
+> > > > examples off the top of my head, but perhaps based on the ability of
+> > > > various structures to change formats and the ability of log vectors to
+> > > > shrink in size, shouldn't we expect the possibility of a CIL context to
+> > > > shrink in size as well? Just from poking around the CIL it seems like
+> > > > the surrounding code supports it (xlog_cil_insert_items() checks len > 0
+> > > > for recalculating split res as well)...
+> > > 
+> > > Yes, there may be situations where it decreases. It may be this is
+> > > fine, but the assumption *I've made* in lots of the CIL push code is
+> > > that ctx->used_space rarely, if ever, will go backwards.
+> > > 
+> > 
+> > ... and rarely seems a bit more pragmatic than never.
+> > 
 > 
+> FWIW, a cursory look at the inode size/format code (motivated by
+> Donald's recent log dump that appears to show inode log items changing
+> size) suggested that a simple local format size change might be enough
+> to cause this condition on an item. A subsequent test to create and
+> immediately remove a file from an otherwise empty directory triggers a
+> tracepoint I injected in xlog_cil_insert_items() to detect a negative
+> transaction delta. As expected, the absolute value of the delta does
+> seem to increase with a larger filename. This also produces a negative
+> iovec delta, fwiw. E.g.:
 > 
-> On 13.01.2021 13:09, Heiner Kallweit wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On 13.01.2021 10:29, Claudiu.Beznea@microchip.com wrote:
->>> Hi Heiner,
->>>
->>> On 08.01.2021 18:31, Heiner Kallweit wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>>
->>>> On 08.01.2021 16:45, Claudiu Beznea wrote:
->>>>> KSZ9131 is used in setups with SAMA7G5. SAMA7G5 supports a special
->>>>> power saving mode (backup mode) that cuts the power for almost all
->>>>> parts of the SoC. The rail powering the ethernet PHY is also cut off.
->>>>> When resuming, in case the PHY has been configured on probe with
->>>>> slew rate or DLL settings these needs to be restored thus call
->>>>> driver's config_init() on resume.
->>>>>
->>>> When would the SoC enter this backup mode?
->>>
->>> It could enter in this mode based on request for standby or suspend-to-mem:
->>> echo mem > /sys/power/state
->>> echo standby > /sys/power/state
->>>
->>> What I didn't mentioned previously is that the RAM remains in self-refresh
->>> while the rest of the SoC is powered down.
->>>
->>
->> This leaves the question which driver sets backup mode in the SoC.
+> # touch `for i in $(seq 0 63); do echo -n a; done`
+> # rm -f `for i in $(seq 0 63); do echo -n a; done`
+> #
 > 
-> From Linux point of view the backup mode is a standard suspend-to-mem PM
-> mode. The only difference is in SoC specific PM code
-> (arch/arm/mach-at91/pm_suspend.S) where the SoC shutdown command is
-> executed at the end and the fact that we save the address in RAM of
-> cpu_resume() function in a powered memory. Then, the resume is done with
-> the help of bootloader (it configures necessary clocks) and jump the
-> execution to the previously saved address, resuming Linux.
+> rm-9265    [001] ....  4660.177806: xfs_log_commit_cil: 409: len -72 diff_iovecs 0
+> rm-9265    [001] .N.1  4660.177913: xfs_log_commit_cil: 419: len -72 diff_iovecs 0
+> rm-9265    [001] ....  4660.178313: xfs_log_commit_cil: 409: len -52 diff_iovecs -1
+> rm-9265    [001] ...1  4660.178336: xfs_log_commit_cil: 419: len -64 diff_iovecs -1
 > 
->> Whatever/whoever wakes the SoC later would have to take care that basically
->> everything that was switched off is reconfigured (incl. calling phy_init_hw()).
-> 
-> For this the bootloader should know the PHY settings passed via DT (skew
-> settings or DLL settings). The bootloader runs from a little SRAM which, at
-> the moment doesn't know to parse DT bindings and the DT parsing lib might
-> be big enough that the final bootloader size will cross the SRAM size.
-> 
->> So it' more or less the same as waking up from hibernation. Therefore I think
->> the .restore of all subsystems would have to be executed, incl. .restore of
->> the MDIO bus.
-> 
-> I see your point. I think it has been implemented like a standard
-> suspend-to-mem PM mode because the RAM remains in self-refresh whereas in
-> hibernation it is shut of (as far as I know).
-> 
->> Having said that I don't think that change belongs into the
->> PHY driver.
->> Just imagine tomorrow another PHY type is used in a SAMA7G5 setup.
->> Then you would have to do same change in another PHY driver.
-> 
-> I understand this. At the moment the PM code for drivers in SAMA7G5 are
-> saving/restoring in/from RAM the registers content in suspend/resume()
-> functions of each drivers and I think it has been chosen like this as the
-> RAM remains in self-refresh. Mapping this mode to hibernation will involve
-> saving the content of RAM to a non-volatile support which is not wanted as
-> this increases the suspend/resume time and it wasn't intended.
-> 
->>
->>
->>>> And would it suspend the
->>>> MDIO bus before cutting power to the PHY?
->>>
->>> SAMA7G5 embeds Cadence macb driver which has a integrated MDIO bus. Inside
->>> macb driver the bus is registered with of_mdiobus_register() or
->>> mdiobus_register() based on the PHY devices present in DT or not. On macb
->>> suspend()/resume() functions there are calls to
->>> phylink_stop()/phylink_start() before cutting/after enabling the power to
->>> the PHY.
->>>
->>>> I'm asking because in mdio_bus_phy_restore() we call phy_init_hw()
->>>> already (that calls the driver's config_init).
->>>
->>> As far as I can see from documentation the .restore API of dev_pm_ops is
->>> hibernation specific (please correct me if I'm wrong). On transitions to
->>> backup mode the suspend()/resume() PM APIs are called on the drivers.
->>>
+> ... and this only seems to occur when the unlink occurs before the CIL
+> has been checkpointed and pushed out the inode (i.e. a freeze/unfreeze
+> cycle prevents it).
 
-I'm not a Linux PM expert, to me it seems your use case is somewhere in the
-middle between s2r and hibernation. I *think* the assumption with s2r is
-that one component shouldn't simply cut the power to another component,
-and the kernel has no idea about it.
+Yeha, it's a shortform directory removal that triggers it easily
+because the other items being modified in the transaction aren't
+changing size on relogging (AGI unlink list pointer, unlinked inode
+core for nlink change). Hence the reduction in size of the directory
+inode reduces the overall CIL size...
 
-My personal point of view:
-If a driver cuts power to another component in s2r, it should take care that
-this component is properly re-initialized once power is back.
-Otherwise I would miss to see why we need different callbacks resume and restore.
+> I've not dug into the transaction details and have no idea if this is
+> the variant that Donald reproduces; it wouldn't surprise me a ton if
+> there were various others. This is pretty straightforward, however, and
+> shows the negative item delta carry through the transaction. IMO, that
+> seems to justify a throttling fix...
 
-It may be worth to involve the following people/list:
+I agree that a throttling fix is needed, but I'm trying to
+understand the scope and breadth of the problem first instead of
+jumping the gun and making the wrong fix for the wrong reasons that
+just papers over the underlying problems that the throttling bug has
+made us aware of...
 
-HIBERNATION (aka Software Suspend, aka swsusp)
-M:	"Rafael J. Wysocki" <rjw@rjwysocki.net>
-M:	Pavel Machek <pavel@ucw.cz>
-L:	linux-pm@vger.kernel.org
+Cheers,
 
-
->>> Thank you,
->>> Claudiu Beznea
->>>
->>>>
->>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
->>>>> ---
->>>>>  drivers/net/phy/micrel.c | 2 +-
->>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
->>>>> index 3fe552675dd2..52d3a0480158 100644
->>>>> --- a/drivers/net/phy/micrel.c
->>>>> +++ b/drivers/net/phy/micrel.c
->>>>> @@ -1077,7 +1077,7 @@ static int kszphy_resume(struct phy_device *phydev)
->>>>>        */
->>>>>       usleep_range(1000, 2000);
->>>>>
->>>>> -     ret = kszphy_config_reset(phydev);
->>>>> +     ret = phydev->drv->config_init(phydev);
->>>>>       if (ret)
->>>>>               return ret;
->>>>>
->>>>>
-
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
