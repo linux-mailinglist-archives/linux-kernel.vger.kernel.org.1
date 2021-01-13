@@ -2,95 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A392F4336
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:36:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 104982F4340
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbhAMEer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 23:34:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50424 "EHLO
+        id S1725901AbhAMEhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 23:37:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbhAMEer (ORCPT
+        with ESMTP id S1725781AbhAMEhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 23:34:47 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5DCC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:34:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=8XxsXk2CVJdS4meW65Paa86/Y8/zYBRh1TkhkZFJ18A=; b=RhDkW+TEQ8NcoPn8tJIe0xU7Ei
-        X5pKWuf8JtIwCpZCZu+SBlH7xIHuLg8Gs95b/8YygDH9q+h92OsuvVVv58NeqBdQhXL1+YcVFH+Wz
-        7Nsa+Pt3GfOx+c/eCNZkifG2YIBfkR9arZXOYz6RRjg1p3uV/IjDw0Vj6x8SVSVBz6zXpkaTtXeJN
-        cnr1AoOkXl+YFQ3ZoxpFG6pyu6GOmSDUmzUnBOLbjvVpuWgeGuAxjyAqvbBtTI2U4ONE710SqE5n1
-        36/vHP3ZxaU5zzGji8U8Bfr6rgONpZxh/aDbswpvILz4XmpYMAAAUVADim0yCHSS1mnzU576yyTnS
-        t1zkSiyA==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kzXr6-0005F6-9v; Wed, 13 Jan 2021 04:34:00 +0000
-Subject: Re: [PATCH] cpuset: fix typos in comments
-To:     Aubrey Li <aubrey.li@intel.com>, lizefan@huawei.com, tj@kernel.org,
-        hannes@cmpxchg.org
-Cc:     linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@linux.intel.com>
-References: <1610512661-135383-1-git-send-email-aubrey.li@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <df087a62-ae0d-d7f9-890c-792adabfc77a@infradead.org>
-Date:   Tue, 12 Jan 2021 20:33:54 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <1610512661-135383-1-git-send-email-aubrey.li@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 12 Jan 2021 23:37:08 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAF5C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:36:28 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id a188so450478pfa.11
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:36:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v8M6I4uoOoWPXGUxC7pSdwXF3g2dnNPkk0v2MpAf+W8=;
+        b=lfLH3Q7jtZb/zf63+ZlMqsMcC8w3F5TQb86l4tvMJ69W3kq9KJ3fNfaGxUiHB8IYVt
+         YZiKcz792a4vWjRFEsZ28UV0IDQJqaC0PAx7LIIXajyJrdb2MaWTfCyiUvS0PsjapXoX
+         2mHjkVOv/ewD8RJZrwRx+okz602BY2KY1CKhHe2l4UNTvgBQvkmAy1rYeQKaqyPS5CFs
+         OeF02veA+IG+TauO/+YvgLo+mdhPRq0rPMFV4Zik2UZJtky4dN4uyg714S6z7FPVTOKh
+         0rM4JDCiWKFVR/krPTch5aK/hRh2CMSAzd5fkJC1+2FjLdMxhn1iD8U87o0q8cpdywkK
+         wlGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=v8M6I4uoOoWPXGUxC7pSdwXF3g2dnNPkk0v2MpAf+W8=;
+        b=kceWPBKTuTMDyY1AiyJMHjH/Fj1VqbNx0Viq5O8MHNVG00XpjErh8rLmpWAwEQWYXn
+         /DWQlaAjgfomb4cUq60fT6+yQ1au9hNWItRv8TOO73izsUvz6qQlxrFSbVFVvEoaCRn0
+         rQNHRvRK9s64R2IaVkZVwBFRi9wUWH5RkgmamFg/WX4+CD1h9k9PxFe/USBpqTR0JKQg
+         zePBh5sM8c75KL/y0O1ovHPGOh5DglhVg3zhSICW+nkM1UGY5efBbcjLX53Lf5YDUcTy
+         BlZvyxauMOCEQ1Pts3W7P35lHx2cyiCzs+RXUMbgsdfUaPgCpbfG4paOTf4W6fo54gnX
+         zacw==
+X-Gm-Message-State: AOAM530X00elkfZB4iLw1SoOGBbzSBzrr0J34OAWhjGtDXp0JRsks+Jw
+        mP07UPk1elzTMkKeNRQYGHJVSz/RfoIC3g==
+X-Google-Smtp-Source: ABdhPJytECWo9XHp2+7rMUBWFv2+jhZFSXfHRB71mo37McQGfiaXyJ4UdNIVwo05BSbwt6jorS/6VA==
+X-Received: by 2002:a63:f64c:: with SMTP id u12mr343978pgj.98.1610512587525;
+        Tue, 12 Jan 2021 20:36:27 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id a136sm786958pfd.149.2021.01.12.20.36.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 20:36:26 -0800 (PST)
+Date:   Tue, 12 Jan 2021 20:36:26 -0800 (PST)
+X-Google-Original-Date: Tue, 12 Jan 2021 20:16:53 PST (-0800)
+Subject:     Re: [PATCH] riscv: Trace irq on only interrupt is enabled
+In-Reply-To: <20201219002051.2891577-1-atish.patra@wdc.com>
+CC:     linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
+        stable@vger.kernel.org, aou@eecs.berkeley.edu,
+        Anup Patel <Anup.Patel@wdc.com>, guoren@linux.alibaba.com,
+        linux-riscv@lists.infradead.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Atish Patra <Atish.Patra@wdc.com>
+Message-ID: <mhng-46e80f20-f58a-4f1b-b162-e2ad7b6df816@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/12/21 8:37 PM, Aubrey Li wrote:
-> Change hierachy to hierarchy and congifured to configured, no functionality
-> changed.
-> 
-> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
+On Fri, 18 Dec 2020 16:20:51 PST (-0800), Atish Patra wrote:
+> We should call irq trace only if interrupt is going to be enabled during
+> excecption handling. Otherwise, it results in following warning during
+> boot with lock debugging enabled.
+>
+> [    0.000000] ------------[ cut here ]------------
+> [    0.000000] DEBUG_LOCKS_WARN_ON(early_boot_irqs_disabled)
+> [    0.000000] WARNING: CPU: 0 PID: 0 at kernel/locking/lockdep.c:4085 lockdep_hardirqs_on_prepare+0x22a/0x22e
+> [    0.000000] Modules linked in:
+> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.10.0-00022-ge20097fb37e2-dirty #548
+> [    0.000000] epc: c005d5d4 ra : c005d5d4 sp : c1c01e80
+> [    0.000000]  gp : c1d456e0 tp : c1c0a980 t0 : 00000000
+> [    0.000000]  t1 : ffffffff t2 : 00000000 s0 : c1c01ea0
+> [    0.000000]  s1 : c100f360 a0 : 0000002d a1 : c00666ee
+> [    0.000000]  a2 : 00000000 a3 : 00000000 a4 : 00000000
+> [    0.000000]  a5 : 00000000 a6 : c1c6b390 a7 : 3ffff00e
+> [    0.000000]  s2 : c2384fe8 s3 : 00000000 s4 : 00000001
+> [    0.000000]  s5 : c1c0a980 s6 : c1d48000 s7 : c1613b4c
+> [    0.000000]  s8 : 00000fff s9 : 80000200 s10: c1613b40
+> [    0.000000]  s11: 00000000 t3 : 00000000 t4 : 00000000
+> [    0.000000]  t5 : 00000001 t6 : 00000000
+>
+> Fixes: 3c4697982982 ("riscv:Enable LOCKDEP_SUPPORT & fixup TRACE_IRQFLAGS_SUPPORT")
+> Cc: stable@vger.kernel.org
+>
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
 > ---
->  kernel/cgroup/cpuset.c | 6 +++---
+>  arch/riscv/kernel/entry.S | 6 +++---
 >  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 57b5b5d..15f4300 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -98,7 +98,7 @@ struct cpuset {
->  	 * and if it ends up empty, it will inherit the parent's mask.
->  	 *
->  	 *
-> -	 * On legacy hierachy:
-> +	 * On legacy hierarchy:
->  	 *
->  	 * The user-configured masks are always the same with effective masks.
+>
+> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+> index 524d918f3601..7dea5ee5a3ac 100644
+> --- a/arch/riscv/kernel/entry.S
+> +++ b/arch/riscv/kernel/entry.S
+> @@ -124,15 +124,15 @@ skip_context_tracking:
+>  	REG_L a1, (a1)
+>  	jr a1
+>  1:
+> -#ifdef CONFIG_TRACE_IRQFLAGS
+> -	call trace_hardirqs_on
+> -#endif
+>  	/*
+>  	 * Exceptions run with interrupts enabled or disabled depending on the
+>  	 * state of SR_PIE in m/sstatus.
 >  	 */
-> @@ -1286,10 +1286,10 @@ static int update_parent_subparts_cpumask(struct cpuset *cpuset, int cmd,
->   * @cs:  the cpuset to consider
->   * @tmp: temp variables for calculating effective_cpus & partition setup
->   *
-> - * When congifured cpumask is changed, the effective cpumasks of this cpuset
-> + * When configured cpumask is changed, the effective cpumasks of this cpuset
->   * and all its descendants need to be updated.
->   *
-> - * On legacy hierachy, effective_cpus will be the same with cpu_allowed.
-> + * On legacy hierarchy, effective_cpus will be the same with cpu_allowed.
->   *
->   * Called with cpuset_mutex held
->   */
-> 
+>  	andi t0, s1, SR_PIE
+>  	beqz t0, 1f
+> +#ifdef CONFIG_TRACE_IRQFLAGS
+> +	call trace_hardirqs_on
+> +#endif
+>  	csrs CSR_STATUS, SR_IE
+>
+>  1:
 
-
--- 
-~Randy
-You can't do anything without having to do something else first.
--- Belefant's Law
+Thanks, this is on fixes.
