@@ -2,141 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A452F4578
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DA72F4579
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726389AbhAMHp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 02:45:28 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11008 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbhAMHp1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 02:45:27 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DFzw04xzSzj5x6;
-        Wed, 13 Jan 2021 15:43:44 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Wed, 13 Jan 2021
- 15:44:35 +0800
-Subject: Re: [PATCH v3 2/3] dt-bindings: arm: hisilicon: Add binding for L3
- cache controller
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     Russell King <rmk+kernel@arm.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        "Haojian Zhuang" <haojian.zhuang@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210112015602.497-1-thunder.leizhen@huawei.com>
- <20210112015602.497-3-thunder.leizhen@huawei.com>
- <CAK8P3a0VcLtOrvXKEd2dDuP8HhKzU+uB0U6OiJXtefQQYjTheg@mail.gmail.com>
- <a11515e2-1fc6-be7d-f50c-8e3ad20f9e6c@huawei.com>
- <CAK8P3a1jcg3CEP0QhtTP4gES9MHLdrHPZffkSxtxbr78FScrrg@mail.gmail.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <f563115c-4461-eee0-ee8d-1fd8f4dbbe63@huawei.com>
-Date:   Wed, 13 Jan 2021 15:44:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726510AbhAMHpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 02:45:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726202AbhAMHpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 02:45:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FCF123333;
+        Wed, 13 Jan 2021 07:44:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610523892;
+        bh=eRUXu8yAOS3wyz6COdj6X5ania/Z1vd80fo4W3PoN9Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a0PcAgHKWXcQj3UwGmv/EeIfOAhFP1x3PEuiylN++NfA5jS+GAxcfIKv6EgQdkJVL
+         hABJMYUVOrVtEGNUrLcJvpZugqcaXzJDe8dybnh+LVIJUnQCp6eBzGe7ocWm6A1PTz
+         rldnz1vYNJRzJAUMP+B/+AWdd9MAvc2mHE9T1/qs=
+Date:   Wed, 13 Jan 2021 08:44:47 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Adam Zabrocki <pi3@pi3.com.pl>
+Cc:     Jessica Yu <jeyu@kernel.org>,
+        Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>,
+        linux-kernel@vger.kernel.org, Solar Designer <solar@openwall.com>
+Subject: Re: [PATCH] module: invoke kobject uevent before sending LIVE
+ notification
+Message-ID: <X/6k73cc9ft8be5o@kroah.com>
+References: <20210110175401.GB32505@pi3.com.pl>
+ <20210111142048.GA27038@linux-8ccs>
+ <20210112001559.GA20073@pi3.com.pl>
+ <20210112104654.GA26122@linux-8ccs>
+ <20210113003310.GA3040@pi3.com.pl>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1jcg3CEP0QhtTP4gES9MHLdrHPZffkSxtxbr78FScrrg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113003310.GA3040@pi3.com.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jan 13, 2021 at 01:33:10AM +0100, Adam Zabrocki wrote:
+> The recent change "module: delay kobject uevent until after module init
+> call", while helping avoid a race between udev/systemd and the module
+> loader, made it unnecessarily more difficult to monitor kernel module
+> integrity by out-of-tree projects such as Linux Kernel Runtime Guard.
 
+We don't support out-of-tree kernel code, sorry.
 
-On 2021/1/12 21:55, Arnd Bergmann wrote:
-> On Tue, Jan 12, 2021 at 1:35 PM Leizhen (ThunderTown)
-> <thunder.leizhen@huawei.com> wrote:
->> On 2021/1/12 16:46, Arnd Bergmann wrote:
->>> On Tue, Jan 12, 2021 at 2:56 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->>>
->>>> +---
->>>> +$id: http://devicetree.org/schemas/arm/hisilicon/l3cache.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: Hisilicon L3 cache controller
->>>> +
->>>> +maintainers:
->>>> +  - Wei Xu <xuwei5@hisilicon.com>
->>>> +
->>>> +description: |
->>>> +  The Hisilicon L3 outer cache controller supports a maximum of 36-bit physical
->>>> +  addresses. The data cached in the L3 outer cache can be operated based on the
->>>> +  physical address range or the entire cache.
->>>> +
->>>> +properties:
->>>> +  compatible:
->>>> +    items:
->>>> +      - const: hisilicon,l3cache
->>>> +
->>>
->>> The compatible string needs to be a little more specific, I'm sure
->>> you cannot guarantee that this is the only L3 cache controller ever
->>> designed in the past or future by HiSilicon.
->>>
->>> Normally when you have an IP block that is itself unnamed but that is specific
->>> to one or a few SoCs but that has no na, the convention is to include the name
->>> of the first SoC that contained it.
->>
->> Right, thanks for your suggestion, I will rename it to "hisilicon,hi1381-l3cache"
->> and "hisilicon,hi1215-l3cache".
+> Specifically, that change delayed the kobject uevent unnecessarily too far,
+> to until after sending a MODULE_STATE_LIVE notification.  As the uevent
+> modifies internal state of the KOBJ itself, this violated the assumption
+> (non-guaranteed yet handy while we can maintain it) that the KOBJ remains
+> consistent and can be integrity-checked as soon as the module is LIVE.
+> 
+> To make all of these projects happy at once, move the kobject KOBJ_ADD
+> uevent to just before sending the MODULE_STATE_LIVE notification.
+> 
+> Fixes: 38dc717e9715 ("module: delay kobject uevent until after module init call")
+> Signed-off-by: Adam Zabrocki <pi3@pi3.com.pl>
+> ---
+>  kernel/module.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/module.c b/kernel/module.c
+> index 4bf30e4b3eaa..7d56b1b07237 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -3681,14 +3681,14 @@ static noinline int do_init_module(struct module *mod)
+>                 dump_stack();
+>         }
+> 
+> +       /* Delay uevent until module has finished its init routine */
+> +       kobject_uevent(&mod->mkobj.kobj, KOBJ_ADD);
+> +
+>         /* Now it's a first class citizen! */
+>         mod->state = MODULE_STATE_LIVE;
+>         blocking_notifier_call_chain(&module_notify_list,
+>                                      MODULE_STATE_LIVE, mod);
+> 
+> -       /* Delay uevent until module has finished its init routine */
+> -       kobject_uevent(&mod->mkobj.kobj, KOBJ_ADD);
+> -
 
-Sorry, Just received a response from the hardware developers, the SoC names need to
-be changed:
-hi1381 --> kunpeng509
-hi1215 --> kunpeng506
+No, the code is correct as-is, userspace should be told _after_ the
+kernel itself has handled all of the needed housekeeping of the module
+being added.
 
-So I want to rename the compatible string to "hisilicon,kunpeng-l3v1", Kunpeng L3
-cache controller version 1. This is enough to distinguish other versions of cache
-controller. It also facilitates the naming of the config option and files.
+so consider this:
 
-> 
-> Sounds good.
-> 
->>> Can you share which products actually use this L3 cache controller?
->>
->> This L3 cache controller is used on Hi1381 and Hi1215 board. I don't know where
->> these two boards are used. Our company is too large. Software is delivered level
->> by level. I'm only involved in the Kernel-related part.
->>
->>>
->>> On a related note, what does the memory map look like on this chip?
->>
->> memory@a00000 {
->>      device_type = "memory";
->>      reg = <0x0 0xa00000 0x0 0x1aa00000>, <0x1 0xe0000000 0x0 0x1d000000>, <0x0 0x1f400000 0x0 0xb5c00000>;
->> };
->>
->> Currently, the DTS is being maintained by ourselves, I'll try to upstream it later.
->>
->>> Do you support more than 4GB of total installed memory? If you
->>
->> Currently, the total size does not exceed 4 GB. However, the physical address is wider than 32 bits.
-> 
-> Ok, so it appears that the memory is actually contiguous in the first
-> 3.5GB (with a few holes), plus the remaining 0.5GB being offset in
-> the physical memory by 4GB (starting at 0x1e0000000 instead of
-> 0xe0000000), presumably to allow the use of 32-bit DMA addresses.
-> 
-> This works fine for the moment, but it does require support for
-> a nonlinear virt_to_phys()/phys_to_virt() translation after highmem
-> gets removed, and you would get at most 3.75GB anyway, so it
-> might be easier at that point to just drop the entire last block at
-> 0x1e0000000, but this will depend on how well we get the 4G:4G
-> code to work, and whether the users will still need kernel updates for
-> this platform then.>
->      Arnd
-> 
-> .
-> 
-
+Nacked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
