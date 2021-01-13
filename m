@@ -2,206 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7302F5161
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 958132F5164
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:50:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727962AbhAMRrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:47:48 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50518 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727785AbhAMRrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:47:48 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AF7B1AD11;
-        Wed, 13 Jan 2021 17:47:06 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 58E0F1E0883; Wed, 13 Jan 2021 18:47:06 +0100 (CET)
-Date:   Wed, 13 Jan 2021 18:47:06 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Steve Magnani <magnani@ieee.org>
-Cc:     Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/1] udf: fix silent AED tagLocation corruption
-Message-ID: <20210113174706.GI6854@quack2.suse.cz>
-References: <20210107234116.6190-1-magnani@ieee.org>
+        id S1728086AbhAMRtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:49:15 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:56308 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727990AbhAMRtP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 12:49:15 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610560137; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=NP9L1of0mfv0VlmLgAx+c+h3tPTXbzkvkcqDPng1QsI=;
+ b=N2C8SUf2PwvyhCg2xVVbeGe+jxV6KCbY+QaGyNgHxqqfYnnjODH0pwMoROSz2cwIqM7hHsTh
+ eDW1WrydM+RPAWei+vazEcsKzLGNmh4gzh3Tm+zaiaVQ9DXihlnI5RxXRk9sMrPZGW3ItTek
+ 4cmXXFQpaZVdJnVaW+0z/LFUkQI=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fff326bc88af06107558d89 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 17:48:27
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 088D7C433ED; Wed, 13 Jan 2021 17:48:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A003C433C6;
+        Wed, 13 Jan 2021 17:48:25 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107234116.6190-1-magnani@ieee.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 13 Jan 2021 09:48:25 -0800
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] drm/msm/dp: unplug interrupt missed after irq_hpd
+ handler
+In-Reply-To: <161039484176.3661239.14240346276437866761@swboyd.mtv.corp.google.com>
+References: <y> <1610051425-20632-1-git-send-email-khsieh@codeaurora.org>
+ <1610051425-20632-3-git-send-email-khsieh@codeaurora.org>
+ <161039484176.3661239.14240346276437866761@swboyd.mtv.corp.google.com>
+Message-ID: <e7e1e5f8808fc35a3bed9e6291c76460@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-Thanks for the fixes! This is just to let you know that I haven't forgotten
-about them but I need to think a bit about them. Hopefully I'll be able to
-find more time for them tomorrow.
-
-								Honza
-
-On Thu 07-01-21 17:41:15, Steve Magnani wrote:
-> From: Steven J. Magnani <magnani@ieee.org>
+On 2021-01-11 11:54, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2021-01-07 12:30:25)
+>> There is HPD unplug interrupts missed at scenario of an irq_hpd
+>> followed by unplug interrupts with around 10 ms in between.
+>> Since both AUX_SW_RESET and DP_SW_RESET clear pending HPD interrupts,
+>> irq_hpd handler should not issues either aux or sw reset to avoid
+>> following unplug interrupt be cleared accidentally.
 > 
-> Certain scenarios involving enlargement of a large and/or fragmented file
-> result in corruption of the file's Allocation Extent Descriptor tag.
-> Once this has happened, attempts to read the file in Windows 10 fail with
-> "Data error (cyclic redundancy check)". A "chkdsk /f" in Windows causes
-> extents of the file described by the corrupted AED (and any subsequent
-> chained AEDs) to be truncated.
+> So the problem is that we're resetting the DP aux phy in the middle of
+> the HPD state machine transitioning states?
 > 
-> No problems are noted when the file is accessed in Linux.
+yes, after reset aux, hw clear pending hpd interrupts
+>> 
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>> ---
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c 
+>> b/drivers/gpu/drm/msm/dp/dp_catalog.c
+>> index 44f0c57..9c0ce98 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+>> @@ -190,6 +190,18 @@ int dp_catalog_aux_clear_hw_interrupts(struct 
+>> dp_catalog *dp_catalog)
+>>         return 0;
+>>  }
+>> 
+>> +/**
+>> + * dp_catalog_aux_reset() - reset AUX controller
+>> + *
+>> + * @aux: DP catalog structure
+>> + *
+>> + * return: void
+>> + *
+>> + * This function reset AUX controller
+>> + *
+>> + * NOTE: reset AUX controller will also clear any pending HPD related 
+>> interrupts
+>> + *
+>> + */
+>>  void dp_catalog_aux_reset(struct dp_catalog *dp_catalog)
+>>  {
+>>         u32 aux_ctrl;
+>> @@ -483,6 +495,18 @@ int dp_catalog_ctrl_set_pattern(struct dp_catalog 
+>> *dp_catalog,
+>>         return 0;
+>>  }
+>> 
+>> +/**
+>> + * dp_catalog_ctrl_reset() - reset DP controller
+>> + *
+>> + * @aux: DP catalog structure
 > 
-> The script below creates a toy UDF filesystem to illustrate the problem.
-> The filesystem can be dd'd to a flash disk partition of the same size
-> to observe how Windows handles the corruption.
-> ---
-> #!/bin/bash
+> It's called dp_catalog though.
+registers access are through dp_catalog_xxxx
 > 
-> # Tool to illustrate / test fix for bug in UDF driver
-> # that can result in corruption of Allocation Extent Descriptor tag location
-> # Developed using mkudffs from udftools 2.2.
+>> + *
+>> + * return: void
+>> + *
+>> + * This function reset DP controller
 > 
-> # Terminology:
-> #  LSN == Logical Sector Number (media / volume relative)
-> #  LBN == Logical Block Number  (UDF partition relative)
+> resets the
 > 
+>> + *
+>> + * NOTE: reset DP controller will also clear any pending HPD related 
+>> interrupts
+>> + *
+>> + */
+>>  void dp_catalog_ctrl_reset(struct dp_catalog *dp_catalog)
+>>  {
+>>         u32 sw_reset;
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
+>> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> index e3462f5..f96c415 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> @@ -1296,7 +1296,8 @@ static int dp_ctrl_setup_main_link(struct 
+>> dp_ctrl_private *ctrl,
+>>          * transitioned to PUSH_IDLE. In order to start transmitting
+>>          * a link training pattern, we have to first do soft reset.
+>>          */
+>> -       dp_catalog_ctrl_reset(ctrl->catalog);
+>> +       if (*training_step != DP_TRAINING_NONE)
 > 
-> TEST_UDFFS=/tmp/test.udf
+> Can we check for the positive value instead? i.e.
+> DP_TRAINING_1/DP_TRAINING_2
 > 
-> # Changing these may alter filesystem layout and/or invalidate the test
-> UDFFS_SIZE=1M        # --size argument to 'truncate' command
-> UDF_BLOCKSIZE=512
-> PD_LSN=98            # Expected UDF Partition Descriptor location
-> AED_LSN=1343         # Location of Allocation Extent Descriptor under test
-> 
-> require()
-> {
->     local APP_REALPATH=`which $1`
->     local PACKAGE_NAME=${2:-$1}
->     if [ -z "$APP_REALPATH" ] ; then
->         echo This test requires $1. Please install the $PACKAGE_NAME package.
->         exit 1
->     fi 
-> }
-> 
-> # "Quiet" dd command
-> ddq()
-> {
->     dd $* 2> /dev/null
-> }
-> 
-> # Extract a 16-bit little-endian unsigned value at a specified byte offset ($2)
-> # of a specified LSN ($1)
-> # 
-> extract16()
-> {
->     local value=`ddq if=$TEST_UDFFS bs=$UDF_BLOCKSIZE skip=$1 count=1 | ddq bs=1 skip=$2 count=2 | od -A none -t u2 --endian=little`
->     [ -z "$value" ] && value=0   # Fail in a sane manner
-> 
->     echo -n $value
-> }
-> 
-> # Extract a 32-bit little-endian unsigned value at a specified byte offset ($2)
-> # of a specified LSN ($1)
-> # 
-> extract32()
-> {
->     local value=`ddq if=$TEST_UDFFS bs=$UDF_BLOCKSIZE skip=$1 count=1 | ddq bs=1 skip=$2 count=4 | od -A none -t u4 --endian=little`
->     [ -z "$value" ] && value=0   # Fail in a sane manner
-> 
->     echo -n $value
-> }
-> 
-> 
-> # $1 = LSN
-> # $2 = Expected tag ID value (decimal) - i.e., 266 for EFE
-> require_tag_id()
-> {
->     local found_tag=`extract16 $1 0`
-> 
->     if [ $found_tag -ne $2 ] ; then
->         echo Expected tag $2 in LSN $1, found $found_tag.
->         echo Unexpected test conditions - results must be verified manually
->         exit 1
->     fi
-> }
-> 
-> gen_provoker_data()
-> {
->     ddq if=/dev/zero bs=$UDF_BLOCKSIZE count=1 of=/tmp/hole.$$
-> 
->     openssl rand 172032
->     cat /tmp/hole.$$
->     openssl rand 149504
->     cat /tmp/hole.$$
->     openssl rand 22528
->     cat /tmp/hole.$$
->     openssl rand 2048
->     cat /tmp/hole.$$
->     openssl rand 4096
->     cat /tmp/hole.$$
->     openssl rand 4096
->     cat /tmp/hole.$$
->     openssl rand 8192
->     cat /tmp/hole.$$
->     openssl rand 184320
->     cat /tmp/hole.$$
->     openssl rand 131072
-> 
->     rm -f /tmp/hole.$$
-> }
-> 
-> # $1 == loopback UDF filesystem to create
-> make_test_udf()
-> {
->     rm -f $1
->     truncate --size=$UDFFS_SIZE $1
->     mkudffs --label=SPARSE --uid=$UID --blocksize=$UDF_BLOCKSIZE $1 > /dev/null
-> 
->     mkdir -p /tmp/testudf.mnt
->     echo Mounting test UDF filesystem. Please provide the root password if prompted.
->     sudo mount $1 /tmp/testudf.mnt
->     cp --sparse=always /tmp/provoker.$$ /tmp/testudf.mnt/provoker
->     sync
->     sudo umount /tmp/testudf.mnt
->     rmdir /tmp/testudf.mnt
->     echo Test UDF filesystem generated in $1.
-> }
-> 
-> ### MAIN
-> 
-> require openssl
-> require mkudffs  udftools
-> 
-> if [ -e $TEST_UDFFS ] ; then
->     echo $TEST_UDFFS already exists - please dismount and remove it
->     exit 1
-> fi
-> 
-> gen_provoker_data > /tmp/provoker.$$
-> make_test_udf $TEST_UDFFS
-> 
-> # Verify hardcoded LSNs involved in testing
-> require_tag_id  $PD_LSN   5  # PD
-> require_tag_id $AED_LSN 258  # AED
-> 
-> LBN_BASE=`extract32 $PD_LSN 188`   # Partition Starting Location
-> AED_LBN=`expr $AED_LSN - $LBN_BASE`
-> AED_TAG_LOCATION=`extract32 $AED_LSN 12`
-> 
-> if [ $AED_TAG_LOCATION -ne $AED_LBN ] ; then
->     echo Test FAILED: expected AED tag location $AED_LBN, actual is $AED_TAG_LOCATION
->     exit 1
-> else
->     echo Test PASSED. AED tag location field is correct.
-> fi
-> ------------------------------------------------------------------------
->  Steven J. Magnani               "I claim this network for MARS!
->                                   Earthling, return my space modulator!"
->  #include <standard.disclaimer>
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>> +               dp_catalog_ctrl_reset(ctrl->catalog);
+>> 
+>>         ret = dp_ctrl_link_train(ctrl, cr, training_step);
+>> 
