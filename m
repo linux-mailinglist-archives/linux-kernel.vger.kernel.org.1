@@ -2,100 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1A02F4C74
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4C02F4C7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbhAMNsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 08:48:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
+        id S1726657AbhAMNvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 08:51:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbhAMNst (ORCPT
+        with ESMTP id S1726490AbhAMNvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 08:48:49 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1E4C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 05:48:09 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id c7so1965684edv.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 05:48:08 -0800 (PST)
+        Wed, 13 Jan 2021 08:51:02 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1ABC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 05:50:22 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id r7so2197789wrc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 05:50:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qw6VQNbr/MnGxv6QaGRimh6NhRF2uRUV4EBku2j8OE8=;
-        b=DqL6xvtf1VN44MbClbs2zHC+F7AfTtHbWZKCDloGxMTyzpjTZ0i2r/gppVW+lvsMfI
-         R57GivDirDyGicvdn46ASdf4y8Zt2PmH6PkycgdposUrCQS86Yn9mbjs6Xmzcz/B/tCu
-         XLahc4a9CfnqpS0JPxIP+/gE2qHVTDTd3WAgOs2kUphHR7LMigOuWAM3mqxh1BrVVTgN
-         yZpUF/XMDEh5KCfpLjNwHDgnJHqv5FoY9kAGC9juo+8RclfHd8qtReP+qXrwMGSeyh+l
-         mwOqI3MYRNDgWyEgisV/78gxV8g2KqKqmyiKOgcJNTrnBSLwwQufSnxlgULQoJ1FhAAf
-         z23w==
+        d=ffwll.ch; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZwXBYrJM9qKVPKPYtJI8yjhIvV2KkPeDmKoz+CVJlHc=;
+        b=bzpYCMGS5z3k4l3WIeo2Lh33CM8JjhujxkGFpyyyNRzNKJzzpnLue0cnZxMh4x6oHf
+         eCVl8OSG9Axe1NHmrz+kB6NPuOorAFrwhuNw47MacCmBu0o3Pl3ky2OqtASCKwWM8WIH
+         U9tV1BZt2YEuhGsFV/az7bC5o2QzPVwDZqlBY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qw6VQNbr/MnGxv6QaGRimh6NhRF2uRUV4EBku2j8OE8=;
-        b=UFHxn+Tg4AiZyywMlCL6Ul0UzTMQCgKr9YOZRxsyV37b7AF8277OoopcEbifM33ytO
-         TLGsSG0mkDt0TfHVULusfxnzIs5yB4N4OcNSS8cSf6lFs5Uvtw9KoBfngwyS9wb1anGb
-         BppVp0xMBHBOWg/WnJ1ovarS3MMD0qC3nPzbi2vnAlLCNf+LyyB2BZbQ9VJ+CZzpw5BT
-         vziiRsXAAfPXjUQFtioT+DQs1l7QFfBQvHo6gUlxzyEcKM+qVqGen7tki83MV5OAZ5tK
-         CA8DckUkAQ3LFmYX4j6X9JWq8l26pOQqvSZZXud1NuvCUKxOdwoSqVLkHSWkNW5aZOhD
-         JZLA==
-X-Gm-Message-State: AOAM530poLE4fHKg0tZofV1+/gbpXUFnh/PoQ3PiCDG4dwSr0VLeQFIL
-        NMOHfkC0s/urlUrYtDrOC249VK/BS3Y5JtrUx4TU
-X-Google-Smtp-Source: ABdhPJwB4tmGNdMbAc1D65UZyTgVVNUEtW4KR+KikSXTmEkqME3Uj+9zKG0LG7DEXXVH92c+5/i2cXRJl3qFCKZrFV4=
-X-Received: by 2002:a05:6402:1bcd:: with SMTP id ch13mr629052edb.31.1610545687667;
- Wed, 13 Jan 2021 05:48:07 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZwXBYrJM9qKVPKPYtJI8yjhIvV2KkPeDmKoz+CVJlHc=;
+        b=TQs4Fe2+9S4wJFBAN+Je0UPRLSmJhVwV7MmLV6ZaJ9PmkXX4I4ciZgDwazmalwiipz
+         QAWm/p5HfbwJ4ZlcV17ZiaP1Aob1n5eDs5H0+LpvxqesoshS3r4maQsVi32uKdm9kK/P
+         +9Eu9HaC7vhLtgCgsaiRU4MolQlsI1TDGFZWy+oZKOc4ctYwllkmupSplJ0b30+5jsBx
+         BhAe90VEBxcOChAah1MOhMkR8KexQlimRXxVVuvbxDS1W5AdbswgZo6wP8vlmg0T6Oq/
+         riucyXWdK3GKhGCxzBuzvbs4HPGZQE/k3e+LXkMfAbG9rYfqT+opz8nMufep8/8kh41Q
+         mEag==
+X-Gm-Message-State: AOAM530WfIveCFHnT7yOtBiHa5aq7nnQgcSwrWV3MrSN69MQsRCaVUZG
+        sxAmaQm/FFLGQlNQkILpRFyvF5b5GXMYh1Fo
+X-Google-Smtp-Source: ABdhPJzGWphNJohoIPnV14YY+wwm9p1rbZynTvRFgZcJcJLGZeKlK5X9RsGhgorT4nwIxWDzFr/YtA==
+X-Received: by 2002:a5d:6a4f:: with SMTP id t15mr2841613wrw.62.1610545820608;
+        Wed, 13 Jan 2021 05:50:20 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id u17sm3011205wmj.35.2021.01.13.05.50.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 05:50:19 -0800 (PST)
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Subject: [PATCH 1/2] mm/dmapool: Use might_alloc()
+Date:   Wed, 13 Jan 2021 14:50:08 +0100
+Message-Id: <20210113135009.3606813-1-daniel.vetter@ffwll.ch>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <202101132038409309743@zte.com.cn>
-In-Reply-To: <202101132038409309743@zte.com.cn>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 13 Jan 2021 08:47:56 -0500
-Message-ID: <CAHC9VhSB0UvbQZbCa4hTHgnx23+9FR-P+ytXw547c7YjSH0rMw@mail.gmail.com>
-Subject: Re: [RFC,v1,1/1] audit: speed up syscall rule match while exiting syscall
-To:     yang.yang29@zte.com.cn
-Cc:     Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 7:39 AM <yang.yang29@zte.com.cn> wrote:
-> From 82ebcf43481be21ee3e32ec1749b42f651737880 Mon Sep 17 00:00:00 2001
-> From: Yang Yang <yang.yang29@zte.com.cn>
-> Date: Wed, 13 Jan 2021 20:18:04 +0800
-> Subject: [PATCH] [RFC,v1,1/1] speed up syscall rule match while exiting syscall
->  If user add any syscall rule, in all syscalls, audit_filter_syscall()
->  traverses struct list_head audit_filter_list to find out whether current
->  syscall match one rule. This takes o(n), which is not necessary, specially
->  for user who add a very few syscall rules. On the other hand, user may not
->  much care about rule add/delete speed. So do o(n) calculate at rule changing,
->  and ease the burden of audit_filter_syscall().
->
->  Define audit_syscall[NR_syscalls], every element stands for one syscall.
->  audit_filter_syscall() checks audit_syscall[NR_syscalls].
->  audit_syscall[n] == 0 indicates no rule audit syscall n, do a quick exit.
->  audit_syscall[n] > 0 indicates at least one rule audit syscall n.
->  audit_syscall[n] update when syscall rule changes.
->
-> Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
-> ---
->  include/linux/audit.h |  2 ++
->  kernel/audit.c        |  2 ++
->  kernel/auditfilter.c  | 16 ++++++++++++++++
->  kernel/auditsc.c      |  9 ++++++++-
->  4 files changed, 28 insertions(+), 1 deletion(-)
+Now that my little helper has landed, use it more. On top of the
+existing check this also uses lockdep through the fs_reclaim
+annotations.
 
-Before we go too far into a review of this patch, please provide some
-performance measurements using a variety of rule counts, both common
-and extreme, so that we can better judge the benefits of this patch.
-The measurements should include both the rule add/delete time deltas
-as well as the impact on the syscall invocations.  If non-obvious,
-please also include how you performed the measurements and captured
-the data.
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+--
+v2: git add everything ... :-/
+---
+ mm/dmapool.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-These are good things to include in the commit description when
-submitting patches focused on improving performance.
-
+diff --git a/mm/dmapool.c b/mm/dmapool.c
+index a97c97232337..f3791532fef2 100644
+--- a/mm/dmapool.c
++++ b/mm/dmapool.c
+@@ -28,6 +28,7 @@
+ #include <linux/mutex.h>
+ #include <linux/poison.h>
+ #include <linux/sched.h>
++#include <linux/sched/mm.h>
+ #include <linux/slab.h>
+ #include <linux/stat.h>
+ #include <linux/spinlock.h>
+@@ -319,7 +320,7 @@ void *dma_pool_alloc(struct dma_pool *pool, gfp_t mem_flags,
+ 	size_t offset;
+ 	void *retval;
+ 
+-	might_sleep_if(gfpflags_allow_blocking(mem_flags));
++	might_alloc(mem_flags);
+ 
+ 	spin_lock_irqsave(&pool->lock, flags);
+ 	list_for_each_entry(page, &pool->page_list, page_list) {
 -- 
-paul moore
-www.paul-moore.com
+2.29.2
+
