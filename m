@@ -2,64 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D64C32F4B8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A721C2F4BD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726398AbhAMMpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 07:45:01 -0500
-Received: from verein.lst.de ([213.95.11.211]:60054 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725773AbhAMMpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 07:45:01 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5DAEB68AFE; Wed, 13 Jan 2021 13:44:16 +0100 (CET)
-Date:   Wed, 13 Jan 2021 13:44:16 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     robh+dt@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, joro@8bytes.org, will@kernel.org,
-        frowand.list@gmail.com, konrad.wilk@oracle.com,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, hch@lst.de, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, grant.likely@arm.com, xypron.glpk@gmx.de,
-        treding@nvidia.com, mingo@kernel.org, bauerman@linux.ibm.com,
-        peterz@infradead.org, gregkh@linuxfoundation.org,
-        saravanak@google.com, rafael.j.wysocki@intel.com,
-        heikki.krogerus@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        rdunlap@infradead.org, dan.j.williams@intel.com,
-        bgolaszewski@baylibre.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        iommu@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
-        tfiga@chromium.org, drinkcat@chromium.org
-Subject: Re: [RFC PATCH v3 3/6] swiotlb: Use restricted DMA pool if
- available
-Message-ID: <20210113124416.GB1383@lst.de>
-References: <20210106034124.30560-1-tientzu@chromium.org> <20210106034124.30560-4-tientzu@chromium.org>
+        id S1727496AbhAMM4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 07:56:32 -0500
+Received: from mail.savoirfairelinux.com ([208.88.110.44]:39232 "EHLO
+        mail.savoirfairelinux.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbhAMM4b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 07:56:31 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.savoirfairelinux.com (Postfix) with ESMTP id EFEC99C0DC3;
+        Wed, 13 Jan 2021 07:45:33 -0500 (EST)
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id hVglsFfAEgpd; Wed, 13 Jan 2021 07:45:33 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.savoirfairelinux.com (Postfix) with ESMTP id 901A29C0DC9;
+        Wed, 13 Jan 2021 07:45:33 -0500 (EST)
+X-Virus-Scanned: amavisd-new at mail.savoirfairelinux.com
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 3H0fa3fAiHpI; Wed, 13 Jan 2021 07:45:33 -0500 (EST)
+Received: from gdo-desktop.home (pop.92-184-98-96.mobile.abo.orange.fr [92.184.98.96])
+        by mail.savoirfairelinux.com (Postfix) with ESMTPSA id 7EAE79C0DA5;
+        Wed, 13 Jan 2021 07:45:31 -0500 (EST)
+From:   Gilles DOFFE <gilles.doffe@savoirfairelinux.com>
+To:     netdev@vger.kernel.org
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH net 0/6] Fixes on Microchip KSZ8795 DSA switch driver
+Date:   Wed, 13 Jan 2021 13:45:16 +0100
+Message-Id: <cover.1610540603.git.gilles.doffe@savoirfairelinux.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106034124.30560-4-tientzu@chromium.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +#ifdef CONFIG_SWIOTLB
-> +	if (unlikely(swiotlb_force == SWIOTLB_FORCE) || dev->dma_io_tlb_mem)
->  		return swiotlb_map(dev, phys, size, dir, attrs);
-> +#endif
 
-Please provide a wrapper for the dev->dma_io_tlb_mem check that
-always returns false if the per-device swiotlb support is not enabled.
+This patchset fixes various issues.
+It mainly concerns VLANs support by fixing FID table management to
+allow adding more than one VLAN.
+It also fixes tag/untag behavior on ingress/egress packets.
 
-> index 7fb2ac087d23..1f05af09e61a 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -222,7 +222,6 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
->  		mem->orig_addr[i] = INVALID_PHYS_ADDR;
->  	}
->  	mem->index = 0;
-> -	no_iotlb_memory = false;
+Gilles DOFFE (6):
+  net: dsa: ksz: fix FID management
+  net: dsa: ksz: move tag/untag action
+  net: dsa: ksz: insert tag on ks8795 ingress packets
+  net: dsa: ksz: do not change tagging on del
+  net: dsa: ksz: fix wrong pvid
+  net: dsa: ksz: fix wrong read cast to u64
 
-How does this fit in here?
+ drivers/net/dsa/microchip/ksz8795.c     | 71 +++++++++++++++++++++----
+ drivers/net/dsa/microchip/ksz8795_reg.h |  1 +
+ drivers/net/dsa/microchip/ksz_common.h  |  3 +-
+ 3 files changed, 63 insertions(+), 12 deletions(-)
+
+--=20
+2.25.1
 
