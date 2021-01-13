@@ -2,134 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285FC2F48E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67FD02F48E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727329AbhAMKmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:42:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbhAMKmN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:42:13 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE177C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:41:32 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id r9so3075593ioo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:41:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DscT6ts54kXU0vTk3OFxMe15A/jm4UT4WHeWVW04qNo=;
-        b=Ip7x3onjexU95VglIVS0V27raGBLJaQ5XJo+ALAKUO5GCiykKw+LZi4VNdq+n9Tbaz
-         VOHZhGUIZXmjSQOi6tyaK3slFnb37yxviJ03n7IYN7Lkt74TRBG7HOIzZrnaOAVLQ/TL
-         1w9V2+9f35Q81x1ojNICnhZnW+cwtqyKTXcflL4ddptL1jyHHzNvZWvespFCYpwQMWM+
-         59Pnuh0j3FEKWcqapGNx3NrMBJYOxKdJHw2cjAJcx3zwgkXUUJpXQ3R5hUWhXEr8djY2
-         bkdDqwBumI8UYYfCzz9LxNUHxU7iOuSjmKBCVrFWqpQe/aMvh3CR8vAbT4D5OZPZc+ya
-         o6/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=DscT6ts54kXU0vTk3OFxMe15A/jm4UT4WHeWVW04qNo=;
-        b=VMbnU0HrV/Aaq32keoQQB5uzbCkWp9EvaIzVr9LEPBws9ZXSw858fy8k+6kT2YnJ59
-         f8W6iO7x1riwFwlT/jhGBFUOTl16Ayxhv6oWjbywfX5Drex5i9wJ85vuG/jLRLGmlDi7
-         s3q2s3MeYXNNWTzkHjw0ZGFz7UshT/enAOpt8j9i2o/WkKx5U7hg6/hm46G7PNyexFwh
-         Gv7dco+N+ztTqW7IJX+N49V1be5/f5hY4/fYXxUlLLjEjq/dKOSkk8Zc58+HNnF9Acwy
-         srFmHwt9WYoTsbGmWxR0PyxC69IgqLEauE2ngdxoRtEH29TQnHxyebGrqk7Sgpp+H6K1
-         bUwA==
-X-Gm-Message-State: AOAM532Yrg2iaeLRZm6wQoBp52ZiCJxZ8xpiyTSPaaxOy45NKG/v/OE9
-        XZvn23mU+oKarYogpBMZvSU=
-X-Google-Smtp-Source: ABdhPJxU1aeKNkrAdrXw6HlyW3G5e9KqXC9cDpvH4aKIYdI8iemFstZj/Vlgq2ezYo1PStu5yXJIMA==
-X-Received: by 2002:a6b:c94c:: with SMTP id z73mr1199783iof.95.1610534492156;
-        Wed, 13 Jan 2021 02:41:32 -0800 (PST)
-Received: from debian ([138.199.13.138])
-        by smtp.gmail.com with ESMTPSA id k9sm964924iob.13.2021.01.13.02.41.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 02:41:31 -0800 (PST)
-Date:   Wed, 13 Jan 2021 16:11:22 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org,
-        reinette.chatre@intel.com
-Subject: Re: [PATCH V4] arch: kernel: cpu: x86/resctrl: Takes a letter away
- and append a colon to match below struct member
-Message-ID: <20210113104120.GA591@debian>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org,
-        reinette.chatre@intel.com
-References: <20210113020333.29803-1-unixbhaskar@gmail.com>
- <f20be5e1-a2a6-14d4-5813-1fb716783bb2@embeddedor.com>
- <20210113024838.GA28337@debian>
- <8aafe837-f4e9-1440-890b-f07d83eed30c@embeddedor.com>
+        id S1727496AbhAMKnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:43:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726238AbhAMKnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 05:43:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B126223122;
+        Wed, 13 Jan 2021 10:43:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610534591;
+        bh=IjaLNWMxl7BcN8GIlfrWVAomY1gS2k79ZK0wI+WSQ8M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N/6rT9qmqKve7EQ94uZivUXRrR+xyAoeqXc6HiwcgTuSiEjQOGt59kdawXAv9BnuO
+         TbtEyrBPyVXv/qWXSaScLz/GMd/0aarOit8tayCGUf66BdG6gAJ1dgiojM3AaXFOz8
+         6DYZHPbH4X8E3+RXIgVMm75DVu/cZK82hKGD4LgKdZVTkOJnNXkvQ6VEyTMNHdV9mV
+         pJVEKR7gNBXebEOl54Ch5V24NJml5PzQTe76KgwX9HWJsOd9VSOSprfIL82dtg13KS
+         JXn6XnkpXKqXcqLYsE6nbBRlzfSsbEkzs8Vebyucv5fJK6N0tKUX2QeTTUCziNrD8P
+         okSqjaMCLSOtQ==
+Date:   Wed, 13 Jan 2021 16:13:06 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@gmail.com>
+Cc:     dan.j.williams@intel.com, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org, vigneshr@ti.com,
+        grygorii.strashko@ti.com, kishon@ti.com
+Subject: Re: [PATCH 2/2] dmaengine: ti: k3-udma: Add support for burst_size
+ configuration for mem2mem
+Message-ID: <20210113104306.GZ2771@vkoul-mobl>
+References: <20201214081310.10746-1-peter.ujfalusi@ti.com>
+ <20201214081310.10746-3-peter.ujfalusi@ti.com>
+ <20210112101637.GJ2771@vkoul-mobl>
+ <76cabf10-7747-73ee-1c42-8d5a7eb85b6c@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <8aafe837-f4e9-1440-890b-f07d83eed30c@embeddedor.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <76cabf10-7747-73ee-1c42-8d5a7eb85b6c@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13-01-21, 09:39, Péter Ujfalusi wrote:
+> Hi Vinod,
+> 
+> On 1/12/21 12:16 PM, Vinod Koul wrote:
+> > On 14-12-20, 10:13, Peter Ujfalusi wrote:
+> >> The UDMA and BCDMA can provide higher throughput if the burst_size of the
+> >> channel is changed from it's default (which is 64 bytes) for Ultra-high
+> >> and high capacity channels.
+> >>
+> >> This performance benefit is even more visible when the buffers are aligned
+> >> with the burst_size configuration.
+> >>
+> >> The am654 does not have a way to change the burst size, but it is using
+> >> 64 bytes burst, so increasing the copy_align from 8 bytes to 64 (and
+> >> clients taking that into account) can increase the throughput as well.
+> >>
+> >> Numbers gathered on j721e:
+> >> echo 8000000 > /sys/module/dmatest/parameters/test_buf_size
+> >> echo 2000 > /sys/module/dmatest/parameters/timeout
+> >> echo 50 > /sys/module/dmatest/parameters/iterations
+> >> echo 1 > /sys/module/dmatest/parameters/max_channels
+> >>
+> >> Prior this patch:       ~1.3 GB/s
+> >> After this patch:       ~1.8 GB/s
+> >>  with 1 byte alignment: ~1.7 GB/s
+> >>
+> >> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> >> ---
+> >>  drivers/dma/ti/k3-udma.c | 115 +++++++++++++++++++++++++++++++++++++--
+> >>  1 file changed, 110 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+> >> index 87157cbae1b8..54e4ccb1b37e 100644
+> >> --- a/drivers/dma/ti/k3-udma.c
+> >> +++ b/drivers/dma/ti/k3-udma.c
+> >> @@ -121,6 +121,11 @@ struct udma_oes_offsets {
+> >>  #define UDMA_FLAG_PDMA_ACC32		BIT(0)
+> >>  #define UDMA_FLAG_PDMA_BURST		BIT(1)
+> >>  #define UDMA_FLAG_TDTYPE		BIT(2)
+> >> +#define UDMA_FLAG_BURST_SIZE		BIT(3)
+> >> +#define UDMA_FLAGS_J7_CLASS		(UDMA_FLAG_PDMA_ACC32 | \
+> >> +					 UDMA_FLAG_PDMA_BURST | \
+> >> +					 UDMA_FLAG_TDTYPE | \
+> >> +					 UDMA_FLAG_BURST_SIZE)
+> >>  
+> >>  struct udma_match_data {
+> >>  	enum k3_dma_type type;
+> >> @@ -128,6 +133,7 @@ struct udma_match_data {
+> >>  	bool enable_memcpy_support;
+> >>  	u32 flags;
+> >>  	u32 statictr_z_mask;
+> >> +	u8 burst_size[3];
+> >>  };
+> >>  
+> >>  struct udma_soc_data {
+> >> @@ -436,6 +442,18 @@ static void k3_configure_chan_coherency(struct dma_chan *chan, u32 asel)
+> >>  	}
+> >>  }
+> >>  
+> >> +static u8 udma_get_chan_tpl_index(struct udma_tpl *tpl_map, int chan_id)
+> >> +{
+> >> +	int i;
+> >> +
+> >> +	for (i = 0; i < tpl_map->levels; i++) {
+> >> +		if (chan_id >= tpl_map->start_idx[i])
+> >> +			return i;
+> >> +	}
+> > 
+> > Braces seem not required
+> 
+> True, they are not strictly needed but I prefer to have them when I have
+> any condition in the loop.
 
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+ok
 
-On 00:27 Wed 13 Jan 2021, Gustavo A. R. Silva wrote:
->
->
->On 1/12/21 20:48, Bhaskar Chowdhury wrote:
->> On 20:24 Tue 12 Jan 2021, Gustavo A. R. Silva wrote:
->>>
->>>
->>> On 1/12/21 20:03, Bhaskar Chowdhury wrote:
->>>> s/kernlfs/kernfs/
->>>> s/@mon_data_kn/@mon_data_kn:/
->>>>
->>>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->>>> ---
->>>> Changes from V3: Fix the subject line typo stuc to struct and mention cpu architecture
->>>
->>> ...and what changed from v1 to v2 and from v2 to v3?
->>>
->>
->> Gustavo, it seems you are not following up properly ....could you please put
->> little more effort for know it????
->>
->> There were mails....pls scan and read ..
->
->This is my point... this is exactly what maintainers and reviewers should
->not do: to go back and read emails, trying to understand why are you sending
->a version N of your patch, because you didn't include all the previous change
->logs in the most recent version of your patch.
->
+> >>  static void udma_reset_uchan(struct udma_chan *uc)
+> >>  {
+> >>  	memset(&uc->config, 0, sizeof(uc->config));
+> >> @@ -1811,6 +1829,7 @@ static int udma_tisci_m2m_channel_config(struct udma_chan *uc)
+> >>  	const struct ti_sci_rm_udmap_ops *tisci_ops = tisci_rm->tisci_udmap_ops;
+> >>  	struct udma_tchan *tchan = uc->tchan;
+> >>  	struct udma_rchan *rchan = uc->rchan;
+> >> +	u8 burst_size = 0;
+> >>  	int ret = 0;
+> >>  
+> >>  	/* Non synchronized - mem to mem type of transfer */
+> >> @@ -1818,6 +1837,12 @@ static int udma_tisci_m2m_channel_config(struct udma_chan *uc)
+> >>  	struct ti_sci_msg_rm_udmap_tx_ch_cfg req_tx = { 0 };
+> >>  	struct ti_sci_msg_rm_udmap_rx_ch_cfg req_rx = { 0 };
+> >>  
+> >> +	if (ud->match_data->flags & UDMA_FLAG_BURST_SIZE) {
+> >> +		u8 tpl = udma_get_chan_tpl_index(&ud->tchan_tpl, tchan->id);
+> > 
+> > Can we define variable at function start please
+> 
+> The 'tpl' is only used within this if branch, it looks a bit cleaner
+> imho, but if you insist, I can move the definition.
 
-Thanks, will follow what you advice.
->--
->Gustavo
+yeah lets be consistent and keep them at the start of the function
+please
 
---EeQfGwPcQSOJBaQU
-Content-Type: application/pgp-signature; name="signature.asc"
+> >> +	switch (match_data->burst_size[tpl]) {
+> >> +		case TI_SCI_RM_UDMAP_CHAN_BURST_SIZE_256_BYTES:
+> >> +			return DMAENGINE_ALIGN_256_BYTES;
+> >> +		case TI_SCI_RM_UDMAP_CHAN_BURST_SIZE_128_BYTES:
+> >> +			return DMAENGINE_ALIGN_128_BYTES;
+> >> +		case TI_SCI_RM_UDMAP_CHAN_BURST_SIZE_64_BYTES:
+> >> +		fallthrough;
+> >> +		default:
+> >> +			return DMAENGINE_ALIGN_64_BYTES;
+> > 
+> > ah, we are supposed to have case at same indent as switch, pls run
+> > checkpatch to have these flagged off
+> 
+> Yes, they should be.
+> 
+> The other me did a sloppy job for sure, this should have been screaming
+> even without checkpatch...
+> This has been done in a rush during the last days to close on the
+> backlog item which got the most votes.
 
------BEGIN PGP SIGNATURE-----
+no worries, that is where reviews help :)
 
-iQEzBAABCgAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAl/+zkwACgkQsjqdtxFL
-KRUMtAf/buK7qVzpzDBnnYjJG1kuZWr15ozc44biIsmPhTI7wrmWd171TZii8/dA
-4KP5kC0olP2svDtVF7pRZoz/94D+QoxC1jAc+zeToPF5XZQ3/441vqH4CHqFm+YZ
-eIQQ3E1AueQzGcAKckq3SbwaQa0WEwp7+e9T2CT/CJh7ykeJ+3fEai9yhrOu1E4k
-nNT44A8aajjoCX2U22aQQrDDulFfWG7PGbZwzWfk9432OXSNuvhkZUBk04of+Rzv
-twQopx/ew374DKwCUTJG6xTJ9uppfRJ5yuhPo+yaL0mlhPupRrwb5XF27NmjO5Dg
-t/1ieL8oKRhW4tKE1IxiPmHpUHAWAg==
-=oYD6
------END PGP SIGNATURE-----
-
---EeQfGwPcQSOJBaQU--
+-- 
+~Vinod
