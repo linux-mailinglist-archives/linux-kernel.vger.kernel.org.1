@@ -2,128 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5052F4850
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:09:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0254B2F4844
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727417AbhAMKGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:06:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727378AbhAMKGb (ORCPT
+        id S1727216AbhAMKFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:05:37 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:42756 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725873AbhAMKFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:06:31 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C234AC06179F
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:05:51 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id v1so822562pjr.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:05:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NqSp1CS/tG0K0LycFdJLkNTqrqqEN/+/ECtWrdgLYVw=;
-        b=JtFYECy6FCsgaTEjjunXpOdA9jNdAI44H1uhMIZZlfofaRtiw9MDGEqdcADlmAlUHS
-         2jUII2HZYKKI1pCUuwKR9rYbVTlj412io9rO6/heet4HF7iBaoCGlg0yNLavvqKnFDPA
-         awm8/iiUnvvomkq6X0EN1Lpi+WrDUMVzTwFMJWQ3/m8B2j/qB0wJQHe5DT8VfnsWYZLV
-         +cwqqWC0fCGB+0mgnVnO0lufn9PI4XXTpkJsGf0h3sGvX+5y6aR7NFP+hcM/216nkl81
-         SUVQGLAuDdoHPl+kQKa5+u1PZOYa9dsIAaIW55I2n1eTQK8yC5MmOW6EhWqV6bm6Mxau
-         BxKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NqSp1CS/tG0K0LycFdJLkNTqrqqEN/+/ECtWrdgLYVw=;
-        b=TtcytFcDEoi6I1Q8Xf40JdXwulQI4RiU+VN2ltH6SApV/KBonF/25ZebR3k4ltHlHu
-         HF0PmdKAnLRWAJcQ8XcIDtAg/2wgYkHW2xBir2piLx7hesgux7wHWCIqUZOl1+xxKErp
-         8k4KtQJ2wErvkMBR1OIP5Ku+E3kuCpAidk4AURH9/3zougG1tAH7gA8Ql2T6x25c6ArT
-         9ZkS0P4euRU1ZIjWUcnCR0N0I/7/aGtyRqBMl/K8Q3FP3afy7KavKjT+ygv3A0cfwE9Z
-         bIiFHBlR6AxJki+fY3peTkOReJ+l0srmZBWLUWn4UKEZIjPw53lduWN5Re07L7MRj1h8
-         xjOA==
-X-Gm-Message-State: AOAM532lteDC+P8OcLPqG6jBZzbPtVkcgR3aaYtyfhgw02WqhipbeqI2
-        ZBG+HyZbOqaHC5plTuKHudlhm3/N08EE0uEbAQZuXQ==
-X-Google-Smtp-Source: ABdhPJy30/24xh0ZjTuGG9Ozw/mTLYWg+XGxVN/wykYvTg2cIoVBMd6aMXveyvl+2yBjWVbOXsuhppIny0pJJAb6XCY=
-X-Received: by 2002:a17:90a:e604:: with SMTP id j4mr1548690pjy.19.1610532351366;
- Wed, 13 Jan 2021 02:05:51 -0800 (PST)
+        Wed, 13 Jan 2021 05:05:36 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=zhongjiang-ali@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0ULc.JMJ_1610532286;
+Received: from L-X1DSLVDL-1420.local(mailfrom:zhongjiang-ali@linux.alibaba.com fp:SMTPD_---0ULc.JMJ_1610532286)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 13 Jan 2021 18:04:47 +0800
+Subject: Re: [PATCH 04/10] mm, fsdax: Refactor memory-failure handler for dax
+ mapping
+To:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>, Jan Kara <jack@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        david@fromorbit.com, hch@lst.de, song@kernel.org, rgoldwyn@suse.de,
+        qi.fuli@fujitsu.com, y-goto@fujitsu.com
+References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
+ <20201230165601.845024-5-ruansy.fnst@cn.fujitsu.com>
+ <20210106154132.GC29271@quack2.suse.cz>
+ <75164044-bfdf-b2d6-dff0-d6a8d56d1f62@cn.fujitsu.com>
+From:   zhong jiang <zhongjiang-ali@linux.alibaba.com>
+Message-ID: <781f276b-afdd-091c-3dba-048e415431ab@linux.alibaba.com>
+Date:   Wed, 13 Jan 2021 18:04:46 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:85.0)
+ Gecko/20100101 Thunderbird/85.0
 MIME-Version: 1.0
-References: <20210108120429.895046-1-robert.foss@linaro.org>
- <20210108120429.895046-3-robert.foss@linaro.org> <X/ipyY7o+Grx+lkL@builder.lan>
-In-Reply-To: <X/ipyY7o+Grx+lkL@builder.lan>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Wed, 13 Jan 2021 11:04:45 +0100
-Message-ID: <CAG3jFyt8VdNZFMfM+Ugjo-6v=hVvRdm0LGvzV1ACGTq78aj11Q@mail.gmail.com>
-Subject: Re: [PATCH v1 02/17] media: camss: Fix vfe_isr comment typo
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Todor Tomov <todor.too@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, catalin.marinas@arm.com,
-        will@kernel.org, shawnguo@kernel.org, leoyang.li@nxp.com,
-        geert+renesas@glider.be, arnd@arndb.de, Anson.Huang@nxp.com,
-        michael@walle.cc, agx@sigxcpu.org, max.oss.09@gmail.com,
-        linux-arm-msm@vger.kernel.org,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <75164044-bfdf-b2d6-dff0-d6a8d56d1f62@cn.fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks!
 
-On Fri, 8 Jan 2021 at 19:51, Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
+On 2021/1/12 10:55 上午, Ruan Shiyang wrote:
 >
-> On Fri 08 Jan 06:04 CST 2021, Robert Foss wrote:
 >
-> > Comment refers to ISPIF, but this is incorrect. Only
-> > the VFE interrupts are handled by this function.
-> >
-> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> On 2021/1/6 下午11:41, Jan Kara wrote:
+>> On Thu 31-12-20 00:55:55, Shiyang Ruan wrote:
+>>> The current memory_failure_dev_pagemap() can only handle single-mapped
+>>> dax page for fsdax mode.  The dax page could be mapped by multiple 
+>>> files
+>>> and offsets if we let reflink feature & fsdax mode work together.  So,
+>>> we refactor current implementation to support handle memory failure on
+>>> each file and offset.
+>>>
+>>> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+>>
+>> Overall this looks OK to me, a few comments below.
+>>
+>>> ---
+>>>   fs/dax.c            | 21 +++++++++++
+>>>   include/linux/dax.h |  1 +
+>>>   include/linux/mm.h  |  9 +++++
+>>>   mm/memory-failure.c | 91 
+>>> ++++++++++++++++++++++++++++++++++-----------
+>>>   4 files changed, 100 insertions(+), 22 deletions(-)
 >
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ...
 >
-> Regards,
-> Bjorn
+>>>   @@ -345,9 +348,12 @@ static void add_to_kill(struct task_struct 
+>>> *tsk, struct page *p,
+>>>       }
+>>>         tk->addr = page_address_in_vma(p, vma);
+>>> -    if (is_zone_device_page(p))
+>>> -        tk->size_shift = dev_pagemap_mapping_shift(p, vma);
+>>> -    else
+>>> +    if (is_zone_device_page(p)) {
+>>> +        if (is_device_fsdax_page(p))
+>>> +            tk->addr = vma->vm_start +
+>>> +                    ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+>>
+>> It seems strange to use 'pgoff' for dax pages and not for any other 
+>> page.
+>> Why? I'd rather pass correct pgoff from all callers of add_to_kill() and
+>> avoid this special casing...
 >
-> > ---
-> >  drivers/media/platform/qcom/camss/camss-vfe-4-1.c | 2 +-
-> >  drivers/media/platform/qcom/camss/camss-vfe-4-7.c | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/media/platform/qcom/camss/camss-vfe-4-1.c b/drivers/media/platform/qcom/camss/camss-vfe-4-1.c
-> > index 174a36be6f5d..a1b56b89130d 100644
-> > --- a/drivers/media/platform/qcom/camss/camss-vfe-4-1.c
-> > +++ b/drivers/media/platform/qcom/camss/camss-vfe-4-1.c
-> > @@ -922,7 +922,7 @@ static void vfe_violation_read(struct vfe_device *vfe)
-> >  }
-> >
-> >  /*
-> > - * vfe_isr - ISPIF module interrupt handler
-> > + * vfe_isr - VFE module interrupt handler
-> >   * @irq: Interrupt line
-> >   * @dev: VFE device
-> >   *
-> > diff --git a/drivers/media/platform/qcom/camss/camss-vfe-4-7.c b/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
-> > index b5704a2f119b..84c33b8f9fe3 100644
-> > --- a/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
-> > +++ b/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
-> > @@ -1055,7 +1055,7 @@ static void vfe_violation_read(struct vfe_device *vfe)
-> >  }
-> >
-> >  /*
-> > - * vfe_isr - ISPIF module interrupt handler
-> > + * vfe_isr - VFE module interrupt handler
-> >   * @irq: Interrupt line
-> >   * @dev: VFE device
-> >   *
-> > --
-> > 2.27.0
-> >
+> Because one fsdax page can be shared by multiple pgoffs.  I have to 
+> pass each pgoff in each iteration to calculate the address in vma (for 
+> tk->addr).  Other kinds of pages don't need this. They can get their 
+> unique address by calling "page_address_in_vma()".
+>
+IMO,   an fsdax page can be shared by multiple files rather than 
+multiple pgoffs if fs query support reflink.   Because an page only 
+located in an mapping(page->mapping is exclusive),  hence it  only has 
+an pgoff or index pointing at the node.
+
+  or  I miss something for the feature ?  thanks,
+
+> So, I added this fsdax case here.  This patchset only implemented the 
+> fsdax case, other cases also need to be added here if to be implemented.
+>
+>
+> -- 
+> Thanks,
+> Ruan Shiyang.
+>
+>>
+>>> +        tk->size_shift = dev_pagemap_mapping_shift(p, vma, tk->addr);
+>>> +    } else
+>>>           tk->size_shift = page_shift(compound_head(p));
+>>>         /*
+>>> @@ -495,7 +501,7 @@ static void collect_procs_anon(struct page 
+>>> *page, struct list_head *to_kill,
+>>>               if (!page_mapped_in_vma(page, vma))
+>>>                   continue;
+>>>               if (vma->vm_mm == t->mm)
+>>> -                add_to_kill(t, page, vma, to_kill);
+>>> +                add_to_kill(t, page, NULL, 0, vma, to_kill);
+>>>           }
+>>>       }
+>>>       read_unlock(&tasklist_lock);
+>>> @@ -505,24 +511,19 @@ static void collect_procs_anon(struct page 
+>>> *page, struct list_head *to_kill,
+>>>   /*
+>>>    * Collect processes when the error hit a file mapped page.
+>>>    */
+>>> -static void collect_procs_file(struct page *page, struct list_head 
+>>> *to_kill,
+>>> -                int force_early)
+>>> +static void collect_procs_file(struct page *page, struct 
+>>> address_space *mapping,
+>>> +        pgoff_t pgoff, struct list_head *to_kill, int force_early)
+>>>   {
+>>>       struct vm_area_struct *vma;
+>>>       struct task_struct *tsk;
+>>> -    struct address_space *mapping = page->mapping;
+>>> -    pgoff_t pgoff;
+>>>         i_mmap_lock_read(mapping);
+>>>       read_lock(&tasklist_lock);
+>>> -    pgoff = page_to_pgoff(page);
+>>>       for_each_process(tsk) {
+>>>           struct task_struct *t = task_early_kill(tsk, force_early);
+>>> -
+>>>           if (!t)
+>>>               continue;
+>>> -        vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff,
+>>> -                      pgoff) {
+>>> +        vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, 
+>>> pgoff) {
+>>>               /*
+>>>                * Send early kill signal to tasks where a vma covers
+>>>                * the page but the corrupted page is not necessarily
+>>> @@ -531,7 +532,7 @@ static void collect_procs_file(struct page 
+>>> *page, struct list_head *to_kill,
+>>>                * to be informed of all such data corruptions.
+>>>                */
+>>>               if (vma->vm_mm == t->mm)
+>>> -                add_to_kill(t, page, vma, to_kill);
+>>> +                add_to_kill(t, page, mapping, pgoff, vma, to_kill);
+>>>           }
+>>>       }
+>>>       read_unlock(&tasklist_lock);
+>>> @@ -550,7 +551,8 @@ static void collect_procs(struct page *page, 
+>>> struct list_head *tokill,
+>>>       if (PageAnon(page))
+>>>           collect_procs_anon(page, tokill, force_early);
+>>>       else
+>>> -        collect_procs_file(page, tokill, force_early);
+>>> +        collect_procs_file(page, page->mapping, page_to_pgoff(page),
+>>
+>> Why not use page_mapping() helper here? It would be safer for THPs if 
+>> they
+>> ever get here...
+>>
+>>                                 Honza
+>>
+>
