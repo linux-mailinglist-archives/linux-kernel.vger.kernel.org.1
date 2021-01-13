@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EA72F46CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C58E2F46D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727178AbhAMIps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:45:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42706 "EHLO mail.kernel.org"
+        id S1727248AbhAMIq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:46:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726288AbhAMIpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:45:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B74723357;
-        Wed, 13 Jan 2021 08:45:03 +0000 (UTC)
+        id S1726734AbhAMIqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 03:46:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3A9F23357;
+        Wed, 13 Jan 2021 08:46:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610527506;
-        bh=J5AH/X5ZJBUjsFBjCNo6yI3/HraZf8H+zBvcMaxAtmQ=;
+        s=k20201202; t=1610527574;
+        bh=dWBhkEGaY1sKa/1IcotatPi+FviatCbdyCOdfaKKVyg=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=N6fF53sifO8+DCGfY0fcT5OU8GR24WjZMNjAWGec9gn90Hak4nyAdonHVZuV3R/75
-         G5yck4bWvmuZzdpz68MYtW/1/ytZ8HL2S/nHS/cUFwwXRNgjwYeITWKjdU1abuu9f2
-         +8WtVbWOseRanQuIO0lUc86Q/jQlOWjlSZQzUUmm+Yqbf3UKagv40F3vApOOtyArEp
-         n9+GEPJPNnJ6lRasWKZ8dlCKh0POh/863Oxgbx2TRJKdoMmv71BWZsHUMUR3PDS7Ob
-         G2lmjSsDFnCN7VGyEZUOJIYoLhONze1Pzk1QlgcPbmsYvj9ks4WXo0lHhk4qrg52Uj
-         PlS0c1lLJCkiw==
+        b=NKMshoGHMh7Fqj93A1DiYEHYG5m/IzIPYOAlCVtuM5yOHVehiW4I5OpXUPLVGqYXS
+         7VXdojgtQG+B2YofPN3Y4RkTcWCvzcFDjQnEWatyvqBsaJlpIyHRYdvQldzjrpHN2E
+         r3Ob5/InLfMMDSb3vCieaQNAQUUX3iCR/h3RyPO+DNlBiZWEX6WSXVmYuf+B7RjOqq
+         8uw1FlEs4YR7cHQceKfdQIYAjgqcKH60TkNtkfoDtUH4HYniCOuE5AREu6KXEF3QK/
+         V9gateFPL7psTDb1JTpVtixQYNJW22hHPlINi+eAZMncW8tCvlvDGlb1CN3BHdwPqy
+         a1ko/Nt89qD+g==
 From:   Felipe Balbi <balbi@kernel.org>
 To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
 Cc:     Florian Fainelli <f.fainelli@gmail.com>,
@@ -33,13 +33,13 @@ Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org,
         Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: Re: [PATCH RESEND v4 08/11] usb: gadget: bdc: use the BIT macro to
- define bit filed
-In-Reply-To: <1610505748-30616-8-git-send-email-chunfeng.yun@mediatek.com>
+Subject: Re: [PATCH RESEND v4 09/11] usb: gadget: bdc: fix checkpatch.pl tab
+ warning
+In-Reply-To: <1610505748-30616-9-git-send-email-chunfeng.yun@mediatek.com>
 References: <1610505748-30616-1-git-send-email-chunfeng.yun@mediatek.com>
- <1610505748-30616-8-git-send-email-chunfeng.yun@mediatek.com>
-Date:   Wed, 13 Jan 2021 10:44:58 +0200
-Message-ID: <875z414451.fsf@kernel.org>
+ <1610505748-30616-9-git-send-email-chunfeng.yun@mediatek.com>
+Date:   Wed, 13 Jan 2021 10:46:06 +0200
+Message-ID: <8735z54435.fsf@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; boundary="=-=-=";
         micalg=pgp-sha256; protocol="application/pgp-signature"
@@ -53,7 +53,9 @@ Content-Transfer-Encoding: quoted-printable
 
 Chunfeng Yun <chunfeng.yun@mediatek.com> writes:
 
-> Prefer using the BIT macro to define bit fileds
+> WARNING:SUSPECT_CODE_INDENT: suspect code indent for conditional statemen=
+ts
+> WARNING:TABSTOP: Statements should start on a tabstop
 >
 > Cc: Florian Fainelli <f.fainelli@gmail.com>
 > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
@@ -69,19 +71,19 @@ Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl/+swoRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQZIbBAAyDsUYaTfmSE3fF9yqrmSLkPRQtTqHDVx
-FcKurpUr1GelJpfjnPV2JKcQpS/xnu7nVWAFyKfE4DQigYFp8AvfwHbf3HsduLYH
-dclO9TNnOfqlbqxC4fg/9eO+rJjpl15N7q5lXl7fPrALP/5+AZltIsq4fhXWK/0q
-naxmlM/9ay+ORf8YT9AABmUt6rcV2uN/MRRUGucff9Y6Q8RnvNCQ0ukkFlA2wuF/
-mTfzR6o0j2/wUuCE3rU5BYcVUxE2hsaYu8Td5YBouQ3p0KAWFPUPe6j5KWVZ/QbO
-tVKd0uHCxih/wMxoGJhF+vVcRH+Bch0G/207/kJL2pAZiIpjQD9bxGPZrB9ixF5u
-CSvm7e/6j3whpoKlk3FgmGFVqS8zaoYOXp9FD1djbOi/GuXChYmVjFUQm4CT5Xgj
-cHwik5skerDBtKOIkBLepRtuOEbslhsx5OK8fcqGrH1B+MAjYOa9HRel3iS05FYE
-4S0BqRyE0p6DS9TQlsswiTRqpNttXolGCBh+g3NLDifp+MTsndgudjeArcCChmjr
-7S7ZuPXRN1uhwQVXm6/To7alk/Kv7Ytmp8cPQtqMBDjg/bYkI/AS7b4CEnqXNuXE
-ywS/QuONzokDS6rTtz5oIhMPx6ZksXfnvI0sWBJlTo7CBSrOcXws/60X8DrBDSNq
-T2S+lGYI0Zc=
-=i64L
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl/+s04RHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQaARxAAkN8Iw5o5MHQ04cBBuO/bjxsg8XK9Sqmb
+1xc7uQsIu6pveNQqvI/xMRFZj1CvxMriWutSTfm7S9pnNtpD63V2+LY3ORD6u/E/
+eBKnGmqPIRoe5QV3//7U/cKB/cpg8aLJxRr6Aj1Y/PetuUfb1WiwP5xL5IdA2Sla
+WLcg9y3it8WZ1qBwbFuU3M4hieVfV4FLxe7+75y3RILkRhxljY0D1ucpDhZldLRF
+nL+nrvcgDWTpBxvehZKSsmgwG3vmMX2Rr113Vw0OE0yzZryJwgti5k2N53656I7P
+qs2Fr/4KRdYi6DHL4jWj/+WYb4MByG3ZfjITRWft5DOwIusFt0YbbdC+uRbylmAv
+4qcUlTBXd0NTGmHj4H7xbu68uvme0Bv0SSgt+Y0GgYk+Pq4+4zNNVFv6m7O49M+f
+mxGUjL/VhED8aenSRka3MXSPrptdwiJs0SSu0Qudr53rTFeGn0+4CUX8GPVwOo5K
+O42l9wwu09rICdfO1ZSHPy4O/Gu32gPcU7ee456uPmW3FdbddoZPrRwwFeDkSULG
+bZ+ixR74omEy13iEsMa+dCyY47z/ohe1lhSYTHMtvIKcbuTJ1LLKEB8KfWhBaq0o
+NyAnMK5buM4oriTSGviiBlZdBB7h9JLjNaRu0f++AQyHYqYg40TSOn5vvFz3rcc8
+ZWDG5ChoESc=
+=yHMR
 -----END PGP SIGNATURE-----
 --=-=-=--
