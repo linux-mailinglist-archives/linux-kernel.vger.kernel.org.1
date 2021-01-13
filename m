@@ -2,63 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2952A2F491F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 732642F4924
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbhAMK5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:57:46 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46584 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725858AbhAMK5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:57:45 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BFAFAAB92;
-        Wed, 13 Jan 2021 10:57:04 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 11:57:01 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v4 1/6] mm: migrate: do not migrate HugeTLB page whose
- refcount is one
-Message-ID: <20210113105657.GA26599@linux>
-References: <20210113052209.75531-1-songmuchun@bytedance.com>
- <20210113052209.75531-2-songmuchun@bytedance.com>
+        id S1727041AbhAMK6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:58:17 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:55578 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726459AbhAMK6R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 05:58:17 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10DAvSccD028238, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10DAvSccD028238
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 13 Jan 2021 18:57:28 +0800
+Received: from localhost (172.22.88.222) by RTEXMBS01.realtek.com.tw
+ (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 13 Jan
+ 2021 18:57:28 +0800
+From:   <ricky_wu@realtek.com>
+To:     <ulf.hansson@linaro.org>, <ricky_wu@realtek.com>,
+        <gregkh@linuxfoundation.org>, <feng@realsil.com.cn>,
+        <dianders@chromium.org>, <lee.jones@linaro.org>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] mmc: rtsx: add delay before power on
+Date:   Wed, 13 Jan 2021 18:57:23 +0800
+Message-ID: <20210113105723.7916-1-ricky_wu@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113052209.75531-2-songmuchun@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [172.22.88.222]
+X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
+ RTEXMBS01.realtek.com.tw (172.21.6.94)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 01:22:04PM +0800, Muchun Song wrote:
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 4385f2fb5d18..a6631c4eb6a6 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
->  		return -ENOSYS;
->  	}
->  
-> +	if (page_count(hpage) == 1) {
-> +		/* page was freed from under us. So we are done. */
-> +		putback_active_hugepage(hpage);
-> +		return MIGRATEPAGE_SUCCESS;
-> +	}
-> +
+From: Ricky Wu <ricky_wu@realtek.com>
 
-I was a bit puzzled as why we did not go to the "goto" block that already does
-this, but then I saw the put_new_page/new_hpage handlind further down.
-It could be re-arranged but out of scope, so:
+Make sure voltage below 0.5V before power on
+when do power cycle
+At mmc-core recognition card phase will do
+power cycle quickly so our device need at least 100ms
+to make voltage down to below 0.5V
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+---
+ drivers/mmc/host/rtsx_pci_sdmmc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-
+diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
+index e6f5bbce5685..0e5043a03965 100644
+--- a/drivers/mmc/host/rtsx_pci_sdmmc.c
++++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
+@@ -906,6 +906,8 @@ static int sd_power_on(struct realtek_pci_sdmmc *host)
+ 	if (host->power_state == SDMMC_POWER_ON)
+ 		return 0;
+ 
++	msleep(100);
++
+ 	rtsx_pci_init_cmd(pcr);
+ 	rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, CARD_SELECT, 0x07, SD_MOD_SEL);
+ 	rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, CARD_SHARE_MODE,
 -- 
-Oscar Salvador
-SUSE L3
+2.17.1
+
