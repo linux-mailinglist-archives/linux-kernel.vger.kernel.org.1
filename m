@@ -2,149 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A430F2F4D1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D45C2F4D65
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbhAMObW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:31:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
+        id S1727346AbhAMOkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:40:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbhAMObW (ORCPT
+        with ESMTP id S1725843AbhAMOkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:31:22 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37FFC061575;
-        Wed, 13 Jan 2021 06:30:41 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id m13so2731443ljo.11;
-        Wed, 13 Jan 2021 06:30:41 -0800 (PST)
+        Wed, 13 Jan 2021 09:40:51 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E901C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:40:11 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id b5so1333104pjl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:40:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NNbUko/sDEXjyFBm5d1k4QuQtucNQCWNpX1X2x6xYus=;
-        b=MSVc5ob27+hb55/QE+dcgQpZj5gBv5tbCD54kU7H5/CcvZ0YbPBtWemLdZQQzF9ixo
-         5hvrC/lyLpBsWX4T0SBZKlpG0de3FMhpSOmscGotJjpcxEroxXhqS5/koMP3VMKEoJ/l
-         81qmRMXb+93bZqLl7AAtC3dtvcOkaoJQoKLE16RyNcDfkArnMvETX4JVVIktZqYMHm8g
-         gJTpVfujyPfT2ePG2ZmJwahUr7u4c3mjVSmt+LEUZ6U7ZIVoTKzOdIzrcVfxVdvuPZJn
-         kAT4+YH+eCQIZFLhXB+h4uzpi2VYXUtb7m0xZb9nDOrTf6lEmV5xPH0z3nUMt9tCmKTk
-         0RNA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2ujGnSKYEthvi0rZ2iClFRGUsHpgEMsu727w+G030VY=;
+        b=KUPL716HUHhkSt/RjEEjpWlYVDKM/abejwsbcqehL7DCSQm+pJqoncUorlVw/OV54k
+         YViU+8HHMxFP67B4XdlZeuFHhKN8LFgxxyAuzbMhI/TONKoL8kkMF1z2PUJzY2Z+Gzd3
+         6FVdE8sdiBLfF+nzsTAeDoSVodGoWs6pbHJdyHrDWIya8fLkDBpMubiZhda8l6YVYSQL
+         TQ6gMvrlDp0E9Pb02g8KV/58eBqEYu+BKtSUdEXFQfnPiTe80AhbbzV2fj9dw+KuF5nx
+         E8XWoEDWqy7jLDC+GnO6H3xkacv1NVRiFqCnTzYxIU/DjZQs+qOL0hVLJ+Us+11Zm6ot
+         B0ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NNbUko/sDEXjyFBm5d1k4QuQtucNQCWNpX1X2x6xYus=;
-        b=LmFrVc1gGLsfVh6sW0Jls90BQIIBZhGKE1PNOVP3xOElmqKb7IvBST0sN2zBeCm3An
-         QNp6o66yTSMg8ROs/sBFgBjJBOwh/oNFLHrJ9ptg9x9MP05Rl+Xs5TZ1zm0AlrFejPSC
-         zlBmKFGqxiAo/gRNhODETUAEzjuPeOqrDTXvIS7X6Ts/PVCnzxzLHf3hC3IOmQsTw82O
-         9favCOyvVPp+uikDBWIqCbLRMIWGUzRSbwH35bL+dPShHiU1JL4TPCB9S/cctpW5xS10
-         Gb8ktiRGcfBED3ga1GYnYMYL8nJJ186+gFIeKjevi3pu0PW6/mEsPJ/FW5dIf/2T0+3b
-         iH0w==
-X-Gm-Message-State: AOAM533XEGJvRzYnQopwCDtXO+PHNOeszoAY8lMoThf7IKL4zAmKg9BR
-        Yz/wpY4RRA2oJfgj9ZDSKXo75SfX4RU=
-X-Google-Smtp-Source: ABdhPJytoZuhQkqBalH1EpfzPPM96f7bc65eox1ZSt0tN8GtRnRTbDqY9/LhjpCKVs93L9kC9wC6pA==
-X-Received: by 2002:a05:651c:1b2:: with SMTP id c18mr1054291ljn.385.1610548240016;
-        Wed, 13 Jan 2021 06:30:40 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id p24sm230223lfh.70.2021.01.13.06.30.39
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2ujGnSKYEthvi0rZ2iClFRGUsHpgEMsu727w+G030VY=;
+        b=I+YWYUYkQd9oVP9V+C5h7cfdIGKGsV/4kknae+G5Uz7U1UN5ny8CV8sSdVngYmU43n
+         8ICKOZEEpUrBQH5ZueQxbP5035D2+J6EiumF/eHjwj80SSIsJeed0p3ffk5O5xT0ZjOW
+         ECyvSqvQNUomApTnU/TSlnNtSNqNx+y13jBVMDV2HE1vh+c4bIUk0wuYS4dLMxNTWdl5
+         T5Rml2s7x0TUl/Mm+4GfzC1CVytTLDmsH7g8BpYc2ZLKFPH5iyvIGhg/5iP2nWg6QqHg
+         8US9vopC7s4Z9IP3rSWdSf/WJN5Z7iFcQd2VGOWL5E+/F1OcZqpMj7iAxMHwOKsVa3/r
+         +/+g==
+X-Gm-Message-State: AOAM5310NWpUdPkEP3C9x5H008nG+hnyS9Jbp82PlJPScdttgw+Nfb47
+        9xg1oQUXB0M8+CyHVNBOUJDRVw5rtZ0=
+X-Google-Smtp-Source: ABdhPJwT1Zm0UPK4ODuO//ALggvJHiXbeQCZz14nbGGBW8ZLBLBdmCdeB12XvlBqYuyH2zw6VhQyqQ==
+X-Received: by 2002:a17:90a:aa8d:: with SMTP id l13mr1206923pjq.0.1610548810650;
+        Wed, 13 Jan 2021 06:40:10 -0800 (PST)
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com. [209.85.214.181])
+        by smtp.gmail.com with ESMTPSA id ob6sm2979563pjb.30.2021.01.13.06.40.10
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 06:30:39 -0800 (PST)
-Subject: Re: [PATCH] drivers: core: Detach device from power domain on
- shutdown
-To:     Furquan Shaikh <furquan@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-References: <20201201213019.1558738-1-furquan@google.com>
- <e77e0569-568a-f7fb-9f0d-e64943b467f0@gmail.com>
- <CAJZ5v0jhniqG43F6hCqXdxQiQZRc67GdkdP0BXcRut=P7k7BVQ@mail.gmail.com>
- <X/2fzghPXnuDNBPU@kroah.com>
- <CAEGmHFEpPTuRuWFt0ba022BmGfaDmSTAgEApW9EzAa5CitmtbA@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b4a931cf-5974-64d0-fdf2-693e418f3110@gmail.com>
-Date:   Wed, 13 Jan 2021 17:30:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Wed, 13 Jan 2021 06:40:10 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id g3so1189027plp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:40:10 -0800 (PST)
+X-Received: by 2002:a67:bd0a:: with SMTP id y10mr2141127vsq.28.1610548441862;
+ Wed, 13 Jan 2021 06:34:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAEGmHFEpPTuRuWFt0ba022BmGfaDmSTAgEApW9EzAa5CitmtbA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
+ <CAOEp5OejaX4ZETThrj4-n8_yZoeTZs56CBPHbQqNsR2oni8dWw@mail.gmail.com>
+ <CAOEp5Oc5qif_krU8oC6qhq6X0xRW-9GpWrBzWgPw0WevyhT8Mg@mail.gmail.com>
+ <CA+FuTSfhBZfEf8+LKNUJQpSxt8c5h1wMpARupekqFKuei6YBsA@mail.gmail.com> <78bbc518-4b73-4629-68fb-2713250f8967@redhat.com>
+In-Reply-To: <78bbc518-4b73-4629-68fb-2713250f8967@redhat.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 13 Jan 2021 09:33:25 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSfJJhEYr6gXmjpjjXzg6Xm5wWa-dL1SEV-Zt7RcPXGztg@mail.gmail.com>
+Message-ID: <CA+FuTSfJJhEYr6gXmjpjjXzg6Xm5wWa-dL1SEV-Zt7RcPXGztg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] Support for virtio-net hash reporting
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Yuri Benditovich <yuri.benditovich@daynix.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, rdunlap@infradead.org,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
+        cai@lca.pw, Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        bpf <bpf@vger.kernel.org>, Yan Vugenfirer <yan@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-13.01.2021 04:22, Furquan Shaikh пишет:
-> On Tue, Jan 12, 2021 at 5:09 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
->>
->> On Tue, Jan 12, 2021 at 01:45:25PM +0100, Rafael J. Wysocki wrote:
->>> On Tue, Jan 12, 2021 at 10:55 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->>>>
->>>> 02.12.2020 00:30, Furquan Shaikh пишет:
->>>>> When the system is powered off or rebooted, devices are not detached
->>>>> from their PM domain. This results in ACPI PM not being invoked and
->>>>> hence PowerResouce _OFF method not being invoked for any of the
->>>>> devices. Because the ACPI power resources are not turned off in case
->>>>> of poweroff and reboot, it violates the power sequencing requirements
->>>>> which impacts the reliability of the devices over the lifetime of the
->>>>> platform. This is currently observed on all Chromebooks using ACPI.
->>>>>
->>>>> In order to solve the above problem, this change detaches a device
->>>>> from its PM domain whenever it is shutdown. This action is basically
->>>>> analogous to ->remove() from driver model perspective. Detaching the
->>>>> device from its PM domain ensures that the ACPI PM gets a chance to
->>>>> turn off the power resources for the device thus complying with its
->>>>> power sequencing requirements.
->>>>>
->>>>> Signed-off-by: Furquan Shaikh <furquan@google.com>
->>>>> ---
->>>>>  drivers/base/core.c | 3 +++
->>>>>  1 file changed, 3 insertions(+)
->>>>>
->>>>> diff --git a/drivers/base/core.c b/drivers/base/core.c
->>>>> index d661ada1518f..5823f1d719e1 100644
->>>>> --- a/drivers/base/core.c
->>>>> +++ b/drivers/base/core.c
->>>>> @@ -23,6 +23,7 @@
->>>>>  #include <linux/of_device.h>
->>>>>  #include <linux/genhd.h>
->>>>>  #include <linux/mutex.h>
->>>>> +#include <linux/pm_domain.h>
->>>>>  #include <linux/pm_runtime.h>
->>>>>  #include <linux/netdevice.h>
->>>>>  #include <linux/sched/signal.h>
->>>>> @@ -4057,6 +4058,8 @@ void device_shutdown(void)
->>>>>                       dev->driver->shutdown(dev);
->>>>>               }
->>>>>
->>>>> +             dev_pm_domain_detach(dev, true);
->>>>> +
->>>>>               device_unlock(dev);
->>>>>               if (parent)
->>>>>                       device_unlock(parent);
->>>>>
->>>>
->>>> This patch broke system shutdown on NVIDIA Tegra using today's
->>>> linux-next because power domain can't be turned off until device drivers
->>>> handed control over device resets to the power domain of Power
->>>> Management controller on Tegra. This patch introduced the wrong
->>>> behaviour, apparently it should be made specific to ACPI only.
->>>>
->>>> Please fix, thanks in advance.
-> 
-> Sorry about the breakage. I am working on an alternate solution that
-> Rafael suggested.
-> 
->>>
->>> OK, so Greg please drop it.
->>
->> Now reverted, thanks.
-> 
-> Thanks Greg!
+On Tue, Jan 12, 2021 at 11:11 PM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> On 2021/1/13 =E4=B8=8A=E5=8D=887:47, Willem de Bruijn wrote:
+> > On Tue, Jan 12, 2021 at 3:29 PM Yuri Benditovich
+> > <yuri.benditovich@daynix.com> wrote:
+> >> On Tue, Jan 12, 2021 at 9:49 PM Yuri Benditovich
+> >> <yuri.benditovich@daynix.com> wrote:
+> >>> On Tue, Jan 12, 2021 at 9:41 PM Yuri Benditovich
+> >>> <yuri.benditovich@daynix.com> wrote:
+> >>>> Existing TUN module is able to use provided "steering eBPF" to
+> >>>> calculate per-packet hash and derive the destination queue to
+> >>>> place the packet to. The eBPF uses mapped configuration data
+> >>>> containing a key for hash calculation and indirection table
+> >>>> with array of queues' indices.
+> >>>>
+> >>>> This series of patches adds support for virtio-net hash reporting
+> >>>> feature as defined in virtio specification. It extends the TUN modul=
+e
+> >>>> and the "steering eBPF" as follows:
+> >>>>
+> >>>> Extended steering eBPF calculates the hash value and hash type, keep=
+s
+> >>>> hash value in the skb->hash and returns index of destination virtque=
+ue
+> >>>> and the type of the hash. TUN module keeps returned hash type in
+> >>>> (currently unused) field of the skb.
+> >>>> skb->__unused renamed to 'hash_report_type'.
+> >>>>
+> >>>> When TUN module is called later to allocate and fill the virtio-net
+> >>>> header and push it to destination virtqueue it populates the hash
+> >>>> and the hash type into virtio-net header.
+> >>>>
+> >>>> VHOST driver is made aware of respective virtio-net feature that
+> >>>> extends the virtio-net header to report the hash value and hash repo=
+rt
+> >>>> type.
+> >>> Comment from Willem de Bruijn:
+> >>>
+> >>> Skbuff fields are in short supply. I don't think we need to add one
+> >>> just for this narrow path entirely internal to the tun device.
+> >>>
+> >> We understand that and try to minimize the impact by using an already
+> >> existing unused field of skb.
+> > Not anymore. It was repurposed as a flags field very recently.
+> >
+> > This use case is also very narrow in scope. And a very short path from
+> > data producer to consumer. So I don't think it needs to claim scarce
+> > bits in the skb.
+> >
+> > tun_ebpf_select_queue stores the field, tun_put_user reads it and
+> > converts it to the virtio_net_hdr in the descriptor.
+> >
+> > tun_ebpf_select_queue is called from .ndo_select_queue.  Storing the
+> > field in skb->cb is fragile, as in theory some code could overwrite
+> > that between field between ndo_select_queue and
+> > ndo_start_xmit/tun_net_xmit, from which point it is fully under tun
+> > control again. But in practice, I don't believe anything does.
+> >
+> > Alternatively an existing skb field that is used only on disjoint
+> > datapaths, such as ingress-only, could be viable.
+>
+>
+> A question here. We had metadata support in XDP for cooperation between
+> eBPF programs. Do we have something similar in the skb?
+>
+> E.g in the RSS, if we want to pass some metadata information between
+> eBPF program and the logic that generates the vnet header (either hard
+> logic in the kernel or another eBPF program). Is there any way that can
+> avoid the possible conflicts of qdiscs?
 
-Thank you all for addressing this problem!
+Not that I am aware of. The closest thing is cb[].
 
+It'll have to aliase a field like that, that is known unused for the given =
+path.
+
+One other approach that has been used within linear call stacks is out
+of band. Like percpu variables softnet_data.xmit.more and
+mirred_rec_level. But that is perhaps a bit overwrought for this use
+case.
+
+> >
+> >>> Instead, you could just run the flow_dissector in tun_put_user if the
+> >>> feature is negotiated. Indeed, the flow dissector seems more apt to m=
+e
+> >>> than BPF here. Note that the flow dissector internally can be
+> >>> overridden by a BPF program if the admin so chooses.
+> >>>
+> >> When this set of patches is related to hash delivery in the virtio-net
+> >> packet in general,
+> >> it was prepared in context of RSS feature implementation as defined in
+> >> virtio spec [1]
+> >> In case of RSS it is not enough to run the flow_dissector in tun_put_u=
+ser:
+> >> in tun_ebpf_select_queue the TUN calls eBPF to calculate the hash,
+> >> hash type and queue index
+> >> according to the (mapped) parameters (key, hash types, indirection
+> >> table) received from the guest.
+> > TUNSETSTEERINGEBPF was added to support more diverse queue selection
+> > than the default in case of multiqueue tun. Not sure what the exact
+> > use cases are.
+> >
+> > But RSS is exactly the purpose of the flow dissector. It is used for
+> > that purpose in the software variant RPS. The flow dissector
+> > implements a superset of the RSS spec, and certainly computes a
+> > four-tuple for TCP/IPv6. In the case of RPS, it is skipped if the NIC
+> > has already computed a 4-tuple hash.
+> >
+> > What it does not give is a type indication, such as
+> > VIRTIO_NET_HASH_TYPE_TCPv6. I don't understand how this would be used.
+> > In datapaths where the NIC has already computed the four-tuple hash
+> > and stored it in skb->hash --the common case for servers--, That type
+> > field is the only reason to have to compute again.
+>
+>
+> The problem is there's no guarantee that the packet comes from the NIC,
+> it could be a simple VM2VM or host2VM packet.
+>
+> And even if the packet is coming from the NIC that calculates the hash
+> there's no guarantee that it's the has that guest want (guest may use
+> different RSS keys).
+
+Ah yes, of course.
+
+I would still revisit the need to store a detailed hash_type along with
+the hash, as as far I can tell that conveys no actionable information
+to the guest.
