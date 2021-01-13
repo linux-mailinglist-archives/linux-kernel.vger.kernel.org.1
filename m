@@ -2,142 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6752F4AFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7AC2F4B06
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727003AbhAMMIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 07:08:10 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:45794 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726692AbhAMMIK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 07:08:10 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10DC6V28110714;
-        Wed, 13 Jan 2021 06:06:31 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1610539591;
-        bh=bj1OIoKh7MPlLtR7S7imc28nG0Aa6DWPD3zetxMh0ds=;
-        h=Subject:CC:References:From:Date:In-Reply-To;
-        b=HnHcHYqSMFoLSi7sKS0j1SNbdWGt6tKxfo2AkwgAzKZWtANnGgxdk8mPNIsZawEaR
-         aF0w0WEmi0ZC1vEV+/Jj1rE49YX2UH3P5h0dGJ+EaD/JVaudUwTWhvROuKfkNZLwWm
-         CV0xTU08fO0fi7SPMYLVMVJY8kb7Q5jrWgPhrj94=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10DC6VXh041122
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 Jan 2021 06:06:31 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 13
- Jan 2021 06:06:30 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 13 Jan 2021 06:06:30 -0600
-Received: from [10.250.232.169] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10DC6QGE055184;
-        Wed, 13 Jan 2021 06:06:27 -0600
-Subject: Re: [PATCH 2/2] mmc: sdhci_am654: Add Support for TI's AM64 SoC
-CC:     Sekhar Nori <nsekhar@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Aswath Govindraju <a-govindraju@ti.com>
-References: <20210113115908.3882-1-a-govindraju@ti.com>
- <20210113115908.3882-3-a-govindraju@ti.com>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <a74e6fbf-5a46-e666-83ee-b0e967362630@ti.com>
-Date:   Wed, 13 Jan 2021 17:36:25 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726995AbhAMMJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 07:09:51 -0500
+Received: from mga17.intel.com ([192.55.52.151]:13282 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725787AbhAMMJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 07:09:51 -0500
+IronPort-SDR: U6xqBCBBtgtzqCW+FfI/7ValS5MeB0wEiSu1/r/+R3yFSuTPX2ym6OA+cFmkNAVGRkSCd6FKa1
+ qfGk3Kf42S4Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="157968807"
+X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
+   d="scan'208";a="157968807"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 04:08:06 -0800
+IronPort-SDR: V0B5KThw3Fe8dmOjk4cKpmQmjVRLkZ8jZqsIs/QlwmY01qpmLdGclpU9xtxEL6ZpyGHW+ZwVkF
+ Nn6O44vNYjSw==
+X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
+   d="scan'208";a="381822469"
+Received: from aantonov-mobl.ccr.corp.intel.com (HELO [10.249.225.249]) ([10.249.225.249])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 04:08:02 -0800
+Subject: Re: [PATCH v2 5/6] perf stat: Enable iiostat mode for x86 platforms
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20201223130320.3930-1-alexander.antonov@linux.intel.com>
+ <20201223130320.3930-6-alexander.antonov@linux.intel.com>
+ <CAM9d7cgQC7ap6sDympEoNAtFxNy_ibtW3phMDLh-VmzSDB7FXQ@mail.gmail.com>
+From:   Alexander Antonov <alexander.antonov@linux.intel.com>
+Message-ID: <358dd76f-c6ec-b894-14be-659df0802c87@linux.intel.com>
+Date:   Wed, 13 Jan 2021 15:08:00 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210113115908.3882-3-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAM9d7cgQC7ap6sDympEoNAtFxNy_ibtW3phMDLh-VmzSDB7FXQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 13/01/21 5:29 pm, Aswath Govindraju wrote:
-> From: Faiz Abbas <faiz_abbas@ti.com>
-> 
-> Add support for the controller present on the AM64x SoC.
-> 
-> There are instances:
-> sdhci0: 8bit bus width, max 400 MBps
-> sdhci1: 4bit bus width, max 100 MBps
-> 
-> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> ---
+On 1/6/2021 12:02 PM, Namhyung Kim wrote:
+> On Wed, Dec 23, 2020 at 10:03 PM Alexander Antonov
+> <alexander.antonov@linux.intel.com> wrote:
+>> This functionality is based on recently introduced sysfs attributes
+>> for Intel® Xeon® Scalable processor family (code name Skylake-SP):
+>> Commit bb42b3d39781 ("perf/x86/intel/uncore: Expose an Uncore unit to
+>> IIO PMON mapping")
+>>
+>> Mode is intended to provide four I/O performance metrics in MB per each
+>> IIO stack:
+>>   - Inbound Read: I/O devices below IIO stack read from the host memory
+>>   - Inbound Write: I/O devices below IIO stack write to the host memory
+>>   - Outbound Read: CPU reads from I/O devices below IIO stack
+>>   - Outbound Write: CPU writes to I/O devices below IIO stack
+>>
+>> Each metric requiries only one IIO event which increments at every 4B
+>> transfer in corresponding direction. The formulas to compute metrics
+>> are generic:
+>>      #EventCount * 4B / (1024 * 1024)
+> Hmm.. maybe we can do this with JSON metrics, no?
+Do you mean to add metrics to *-metrics.json file?
+Looks like it's possible but in this case JSON file should be updated 
+for each
+new enabled platform and calculations will be the same.
+I would prefer to leave it as is because perf will work without changing of
+userspace part once IIO sysfs attributes are added for new platforms.
+>
+>> Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
+>> ---
+>>   tools/perf/Documentation/perf-iiostat.txt |  89 ++++++
+>>   tools/perf/Makefile.perf                  |   5 +-
+>>   tools/perf/arch/x86/util/Build            |   1 +
+>>   tools/perf/arch/x86/util/iiostat.c        | 337 ++++++++++++++++++++++
+>>   tools/perf/command-list.txt               |   1 +
+>>   tools/perf/perf-iiostat.sh                |  12 +
+>>   6 files changed, 444 insertions(+), 1 deletion(-)
+>>   create mode 100644 tools/perf/Documentation/perf-iiostat.txt
+>>   create mode 100644 tools/perf/perf-iiostat.sh
+>>
+>> diff --git a/tools/perf/Documentation/perf-iiostat.txt b/tools/perf/Documentation/perf-iiostat.txt
+>> new file mode 100644
+>> index 000000000000..38b5697b0d85
+>> --- /dev/null
+>> +++ b/tools/perf/Documentation/perf-iiostat.txt
+>> @@ -0,0 +1,89 @@
+>> +perf-iiostat(1)
+>> +===============
+>> +
+>> +NAME
+>> +----
+>> +perf-iiostat - Show I/O performance metrics
+>> +
+>> +SYNOPSIS
+>> +--------
+>> +[verse]
+>> +'perf iiostat' show
+>> +'perf iiostat' <ports> -- <command> [<options>]
+>> +
+>> +DESCRIPTION
+>> +-----------
+>> +Mode is intended to provide four I/O performance metrics per each IIO
+>> +stack (PCIe root port):
+>> +
+>> +- Inbound Read   - I/O devices below IIO stack read from the host memory, in MB
+>> +
+>> +- Inbound Write  - I/O devices below IIO stack write to the host memory, in MB
+>> +
+>> +- Outbound Read  - CPU reads from I/O devices below IIO stack, in MB
+>> +
+>> +- Outbound Write - CPU writes to I/O devices below IIO stack, in MB
+>> +
+>> +OPTIONS
+>> +-------
+>> +<command>...::
+>> +       Any command you can specify in a shell.
+>> +
+>> +show::
+>> +       List all IIO stacks.
+> I'd prefer 'list' for this, but not a strong opinion..
+The 'list' is fine for me as well.
+>
+>> +
+>> +<ports>::
+>> +       Select the root ports for monitoring. Comma-separated list is supported.
+>> +
+>> +EXAMPLES
+>> +--------
+>> +
+>> +1. List all IIO stacks (example for 2-S platform):
+>> +
+>> +   $ perf iiostat show
+>> +   S0-uncore_iio_0<0000:00>
+>> +   S1-uncore_iio_0<0000:80>
+>> +   S0-uncore_iio_1<0000:17>
+>> +   S1-uncore_iio_1<0000:85>
+>> +   S0-uncore_iio_2<0000:3a>
+>> +   S1-uncore_iio_2<0000:ae>
+>> +   S0-uncore_iio_3<0000:5d>
+>> +   S1-uncore_iio_3<0000:d7>
+>> +
+>> +2. Collect metrics for all I/O stacks:
+>> +
+>> +   $ perf iiostat -- dd if=/dev/zero of=/dev/nvme0n1 bs=1M oflag=direct
+>> +   357708+0 records in
+>> +   357707+0 records out
+>> +   375083606016 bytes (375 GB, 349 GiB) copied, 215.974 s, 1.7 GB/s
+>> +
+>> +    Performance counter stats for 'system wide':
+>> +
+>> +      port             Inbound Read(MB)    Inbound Write(MB)    Outbound Read(MB)   Outbound Write(MB)
+>> +   0000:00                    1                    0                    2                    3
+>> +   0000:80                    0                    0                    0                    0
+>> +   0000:17               352552                   43                    0                   21
+>> +   0000:85                    0                    0                    0                    0
+>> +   0000:3a                    3                    0                    0                    0
+>> +   0000:ae                    0                    0                    0                    0
+>> +   0000:5d                    0                    0                    0                    0
+>> +   0000:d7                    0                    0                    0                    0
+>> +
+>> +3. Collect metrics for comma-separated list of I/O stacks:
+>> +
+>> +   $ perf iiostat 0000:17,0:3a -- dd if=/dev/zero of=/dev/nvme0n1 bs=1M oflag=direct
+>> +   357708+0 records in
+>> +   357707+0 records out
+>> +   375083606016 bytes (375 GB, 349 GiB) copied, 197.08 s, 1.9 GB/s
+>> +
+>> +    Performance counter stats for 'system wide':
+>> +
+>> +      port             Inbound Read(MB)    Inbound Write(MB)    Outbound Read(MB)   Outbound Write(MB)
+>> +   0000:17               358559                   44                    0                   22
+>> +   0000:3a                    3                    2                    0                    0
+>> +
+>> +        197.081983474 seconds time elapsed
+>> +
+>> +SEE ALSO
+>> +--------
+>> +linkperf:perf-stat[1]
+>> \ No newline at end of file
+> [SNIP]
+>> diff --git a/tools/perf/perf-iiostat.sh b/tools/perf/perf-iiostat.sh
+>> new file mode 100644
+>> index 000000000000..2c5168d2550b
+>> --- /dev/null
+>> +++ b/tools/perf/perf-iiostat.sh
+>> @@ -0,0 +1,12 @@
+>> +#!/bin/bash
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# perf iiostat
+>> +# Alexander Antonov <alexander.antonov@linux.intel.com>
+>> +
+>> +if [[ "$1" == "show" ]] || [[ "$1" =~ ([a-f0-9A-F]{1,}):([a-f0-9A-F]{1,2})(,)? ]]; then
+>> +        DELIMITER="="
+>> +else
+>> +        DELIMITER=" "
+>> +fi
+>> +
+>> +perf stat --iiostat$DELIMITER$*
+> Why is this needed?
+>
+> Thanks,
+> Namhyung
+Arnaldo raised question relates to format of 'perf stat --iiostat' 
+subcommand
+and explained how it can be changed to 'perf iiostat' through the aliases
+mechanism in perf.
 
-Very sorry forgot to add RESEND tag in the subject. The link to the
-original patch,
-https://lore.kernel.org/patchwork/patch/1364589/
-
-Thanks,
-Aswath
-
->  drivers/mmc/host/sdhci_am654.c | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
-> 
-> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-> index a64ea143d185..7a34649b0754 100644
-> --- a/drivers/mmc/host/sdhci_am654.c
-> +++ b/drivers/mmc/host/sdhci_am654.c
-> @@ -514,6 +514,26 @@ static const struct sdhci_am654_driver_data sdhci_j721e_4bit_drvdata = {
->  	.flags = IOMUX_PRESENT,
->  };
->  
-> +static const struct sdhci_pltfm_data sdhci_am64_8bit_pdata = {
-> +	.ops = &sdhci_j721e_8bit_ops,
-> +	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
-> +};
-> +
-> +static const struct sdhci_am654_driver_data sdhci_am64_8bit_drvdata = {
-> +	.pdata = &sdhci_am64_8bit_pdata,
-> +	.flags = DLL_PRESENT | DLL_CALIB,
-> +};
-> +
-> +static const struct sdhci_pltfm_data sdhci_am64_4bit_pdata = {
-> +	.ops = &sdhci_j721e_4bit_ops,
-> +	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
-> +};
-> +
-> +static const struct sdhci_am654_driver_data sdhci_am64_4bit_drvdata = {
-> +	.pdata = &sdhci_am64_4bit_pdata,
-> +	.flags = IOMUX_PRESENT,
-> +};
-> +
->  static const struct soc_device_attribute sdhci_am654_devices[] = {
->  	{ .family = "AM65X",
->  	  .revision = "SR1.0",
-> @@ -737,6 +757,14 @@ static const struct of_device_id sdhci_am654_of_match[] = {
->  		.compatible = "ti,j721e-sdhci-4bit",
->  		.data = &sdhci_j721e_4bit_drvdata,
->  	},
-> +	{
-> +		.compatible = "ti,am64-sdhci-8bit",
-> +		.data = &sdhci_am64_8bit_drvdata,
-> +	},
-> +	{
-> +		.compatible = "ti,am64-sdhci-4bit",
-> +		.data = &sdhci_am64_4bit_drvdata,
-> +	},
->  	{ /* sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, sdhci_am654_of_match);
-> 
-
+Thank you,
+Alexander
+>
+>> \ No newline at end of file
+>> --
+>> 2.19.1
+>>
