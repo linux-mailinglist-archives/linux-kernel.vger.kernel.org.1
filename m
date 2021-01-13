@@ -2,178 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2642B2F4D45
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8FB2F4D47
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727186AbhAMOg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:36:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726701AbhAMOg5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:36:57 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70575C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:36:17 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id w18so4561273iot.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:36:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0W94dDXCvx9LJOldtOq3X07sn95kbaYg17AudZ1qMf0=;
-        b=togBzejOMR3dc3xZWuGAJVxYAeCFTfaSFuj/KL/Oq+4GwlQ04I9bVHZyhKQNziOo+V
-         dHPJQOAhMSzu4NkpjfpU+RN0K/2iNJiN6sjfvSBroEt3ajtjTMPsrGjsLWB4g7XLfQ5/
-         csNPkoLN1TW1BDtH6AwnX9WpwoNrhyRE1QWxftBIJu2HSULKXb4fbDLZRePEeMg26M76
-         34dCjlq+E6NJa+QqFIej6JnK9XaQZO9C+pSXeTQKHH/8VTmUjnnGE2UfHWn5XyQhiwuv
-         m8rADzVBz1XiRomCKiVlQGuome1ifeaBRBSjY1PMJNsn6c9g+vwNadl/yPaH2HXtQw8c
-         9DCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0W94dDXCvx9LJOldtOq3X07sn95kbaYg17AudZ1qMf0=;
-        b=DK5f8J277eD0P2aZTaZYoO70vW2ZAimSj8AMMKrsYurY+RQHDj6CxtLjWmdfYcVfli
-         3CVRT+Q9naK64YWLggfE+6WqP1FNrZvTuJ9J1UO6Brkoh84xg9LZIOoCi+o0S/0IePKB
-         7rGedH72utRTmbafH+t7u6uxnOgK3S5CDmgGioRKa93gI39C/kzN7GP6E1bUgUrKOiPn
-         ncXCuC5+RwGJqMERX0D8XTqf80kJ06hg5iO+cWCbE9ZDEv8z+AzVdNprPYZ/JZisXMpd
-         x0p9Tzl4AYW1nSQpfXOlMn2VXdB4XMf/TKlU9F2NIPg2gN4C+6Aj8KmL/+4PocgxVAUn
-         yoDg==
-X-Gm-Message-State: AOAM530KwdA4hT5VrVZz7p443VyThJVZMqGuNQtQBT65SKq6iKlDAKp6
-        FU+kDwyWvMxik0T25hWRjWvA/i9ABKP2Po1sQEFZHA==
-X-Google-Smtp-Source: ABdhPJytEXInoZolxRLSdaLxORC1HB4ARPjtfhih1uH3a90tL4/8dsBnnZgvOKIzamFWAZlGdRgBlbPXW1jHVf3SDso=
-X-Received: by 2002:a92:9f59:: with SMTP id u86mr2600070ili.205.1610548576533;
- Wed, 13 Jan 2021 06:36:16 -0800 (PST)
+        id S1727220AbhAMOhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:37:16 -0500
+Received: from gofer.mess.org ([88.97.38.141]:46987 "EHLO gofer.mess.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726110AbhAMOhQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 09:37:16 -0500
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 115E0C63DF; Wed, 13 Jan 2021 14:36:33 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1610548594; bh=RIHgUOPzx5ODC6a2TgNhy6EdeQgWi83TeJjRhgc8TG4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cvR1OG6ixWMGJ6uz/vX6b0mQbIriaxa97/UXdOed+ym++XjTTmoQl/6oc+3Amu8nE
+         rTcOr7eQuYZF1xn7AXJpgmKrHVVzABNd3q4Pac6URA/lOd7kGbz/3uxKvU/x0mLb1L
+         cq2/FKGW56msN39O5oUHnakTIPJM6HjJIAfFsdsXa3YiLiUG9EmOTiMuCzqox5JcRy
+         2nrWQIAd7Y36FV+SwmJMPsYDUq/uK5Qqz/o0O3KectYVeRbbI9NjA3SLFyrULGSR4y
+         cHUyKD4SbL41DD+GxVrWA7reX3ijJwotMzXxqyS9uRx2ajoixQTpZNATCeDQBTh91h
+         bmaUugBEoXPWg==
+Date:   Wed, 13 Jan 2021 14:36:33 +0000
+From:   Sean Young <sean@mess.org>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 3/4] media: sunxi-cir: Factor out hardware initialization
+Message-ID: <20210113143633.GB8430@gofer.mess.org>
+References: <20210113045132.31430-1-samuel@sholland.org>
+ <20210113045132.31430-4-samuel@sholland.org>
 MIME-Version: 1.0
-References: <20210113133523.39205-1-alobakin@pm.me> <20210113133635.39402-1-alobakin@pm.me>
- <20210113133635.39402-2-alobakin@pm.me>
-In-Reply-To: <20210113133635.39402-2-alobakin@pm.me>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 13 Jan 2021 15:36:05 +0100
-Message-ID: <CANn89i+azKGzpt4LrVVVCQdf82TLOC=dwUjA4NK3ziQHSKvtFw@mail.gmail.com>
-Subject: Re: [PATCH v2 net-next 2/3] skbuff: (re)use NAPI skb cache on
- allocation path
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113045132.31430-4-samuel@sholland.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 2:37 PM Alexander Lobakin <alobakin@pm.me> wrote:
->
-> Instead of calling kmem_cache_alloc() every time when building a NAPI
-> skb, (re)use skbuff_heads from napi_alloc_cache.skb_cache. Previously
-> this cache was only used for bulk-freeing skbuff_heads consumed via
-> napi_consume_skb() or __kfree_skb_defer().
->
-> Typical path is:
->  - skb is queued for freeing from driver or stack, its skbuff_head
->    goes into the cache instead of immediate freeing;
->  - driver or stack requests NAPI skb allocation, an skbuff_head is
->    taken from the cache instead of allocation.
->
-> Corner cases:
->  - if it's empty on skb allocation, bulk-allocate the first half;
->  - if it's full on skb consuming, bulk-wipe the second half.
->
-> Also try to balance its size after completing network softirqs
-> (__kfree_skb_flush()).
-
-I do not see the point of doing this rebalance (especially if we do not change
-its name describing its purpose more accurately).
-
-For moderate load, we will have a reduced bulk size (typically one or two).
-Number of skbs in the cache is in [0, 64[ , there is really no risk of
-letting skbs there for a long period of time.
-(32 * sizeof(sk_buff) = 8192)
-I would personally get rid of this function completely.
-
-
-Also it seems you missed my KASAN support request ?
-I guess this is a matter of using kasan_unpoison_range(), we can ask for help.
-
-
-
-
->
-> prefetchw() on CONFIG_SLUB is dropped since it makes no sense anymore.
->
-> Suggested-by: Edward Cree <ecree.xilinx@gmail.com>
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+On Tue, Jan 12, 2021 at 10:51:31PM -0600, Samuel Holland wrote:
+> In preparation for adding suspend/resume hooks, factor out the hardware
+> initialization from the driver probe/remove functions.
+> 
+> The timeout programmed during init is taken from the `struct rc_dev` so
+> it is maintained across an exit/init cycle.
+> 
+> This resolves some trivial issues with the probe function: throwing away
+> the error from clk_prepare_enable and using the wrong type for the
+> temporary register value.
+> 
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
 > ---
->  net/core/skbuff.c | 54 ++++++++++++++++++++++++++++++-----------------
->  1 file changed, 35 insertions(+), 19 deletions(-)
->
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index dc3300dc2ac4..f42a3a04b918 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -364,6 +364,7 @@ struct sk_buff *build_skb_around(struct sk_buff *skb,
->  EXPORT_SYMBOL(build_skb_around);
->
->  #define NAPI_SKB_CACHE_SIZE    64
-> +#define NAPI_SKB_CACHE_HALF    (NAPI_SKB_CACHE_SIZE / 2)
->
->  struct napi_alloc_cache {
->         struct page_frag_cache page;
-> @@ -487,7 +488,15 @@ EXPORT_SYMBOL(__netdev_alloc_skb);
->
->  static struct sk_buff *napi_skb_cache_get(struct napi_alloc_cache *nc)
->  {
-> -       return kmem_cache_alloc(skbuff_head_cache, GFP_ATOMIC);
-> +       if (unlikely(!nc->skb_count))
-> +               nc->skb_count = kmem_cache_alloc_bulk(skbuff_head_cache,
-> +                                                     GFP_ATOMIC,
-> +                                                     NAPI_SKB_CACHE_HALF,
-> +                                                     nc->skb_cache);
-> +       if (unlikely(!nc->skb_count))
-> +               return NULL;
-> +
-> +       return nc->skb_cache[--nc->skb_count];
+>  drivers/media/rc/sunxi-cir.c | 128 ++++++++++++++++++++---------------
+>  1 file changed, 74 insertions(+), 54 deletions(-)
+> 
+> diff --git a/drivers/media/rc/sunxi-cir.c b/drivers/media/rc/sunxi-cir.c
+> index 48be400421cd..ccb9d6b4225d 100644
+> --- a/drivers/media/rc/sunxi-cir.c
+> +++ b/drivers/media/rc/sunxi-cir.c
+> @@ -169,10 +169,74 @@ static int sunxi_ir_set_timeout(struct rc_dev *rc_dev, unsigned int timeout)
+>  	return 0;
 >  }
->
->  /**
-> @@ -867,40 +876,47 @@ void __consume_stateless_skb(struct sk_buff *skb)
->  void __kfree_skb_flush(void)
+>  
+> +static int sunxi_ir_hw_init(struct device *dev)
+> +{
+> +	struct sunxi_ir *ir = dev_get_drvdata(dev);
+> +	u32 tmp;
+> +	int ret;
+> +
+> +	ret = reset_control_deassert(ir->rst);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = clk_prepare_enable(ir->apb_clk);
+> +	if (ret) {
+> +		dev_err(dev, "failed to enable apb clk\n");
+> +		goto exit_assert_reset;
+> +	}
+> +
+> +	ret = clk_prepare_enable(ir->clk);
+> +	if (ret) {
+> +		dev_err(dev, "failed to enable ir clk\n");
+> +		goto exit_disable_apb_clk;
+> +	}
+> +
+> +	/* Enable CIR Mode */
+> +	writel(REG_CTL_MD, ir->base + SUNXI_IR_CTL_REG);
+> +
+> +	/* Set noise threshold and idle threshold */
+> +	sunxi_ir_set_timeout(ir->rc, ir->rc->timeout);
+> +
+> +	/* Invert Input Signal */
+> +	writel(REG_RXCTL_RPPI, ir->base + SUNXI_IR_RXCTL_REG);
+> +
+> +	/* Clear All Rx Interrupt Status */
+> +	writel(REG_RXSTA_CLEARALL, ir->base + SUNXI_IR_RXSTA_REG);
+> +
+> +	/*
+> +	 * Enable IRQ on overflow, packet end, FIFO available with trigger
+> +	 * level
+> +	 */
+> +	writel(REG_RXINT_ROI_EN | REG_RXINT_RPEI_EN |
+> +	       REG_RXINT_RAI_EN | REG_RXINT_RAL(ir->fifo_size / 2 - 1),
+> +	       ir->base + SUNXI_IR_RXINT_REG);
+> +
+> +	/* Enable IR Module */
+> +	tmp = readl(ir->base + SUNXI_IR_CTL_REG);
+> +	writel(tmp | REG_CTL_GEN | REG_CTL_RXEN, ir->base + SUNXI_IR_CTL_REG);
+> +
+> +	return 0;
+> +
+> +exit_disable_apb_clk:
+> +	clk_disable_unprepare(ir->apb_clk);
+> +exit_assert_reset:
+> +	reset_control_assert(ir->rst);
+> +
+> +	return ret;
+> +}
+> +
+> +static void sunxi_ir_hw_exit(struct device *dev)
+> +{
+> +	struct sunxi_ir *ir = dev_get_drvdata(dev);
+> +
+> +	clk_disable_unprepare(ir->clk);
+> +	clk_disable_unprepare(ir->apb_clk);
+> +	reset_control_assert(ir->rst);
+> +}
+> +
+>  static int sunxi_ir_probe(struct platform_device *pdev)
 >  {
->         struct napi_alloc_cache *nc = this_cpu_ptr(&napi_alloc_cache);
-> +       size_t count;
-> +       void **ptr;
-> +
-> +       if (unlikely(nc->skb_count == NAPI_SKB_CACHE_HALF))
-> +               return;
-> +
-> +       if (nc->skb_count > NAPI_SKB_CACHE_HALF) {
-> +               count = nc->skb_count - NAPI_SKB_CACHE_HALF;
-> +               ptr = nc->skb_cache + NAPI_SKB_CACHE_HALF;
->
-> -       /* flush skb_cache if containing objects */
-> -       if (nc->skb_count) {
-> -               kmem_cache_free_bulk(skbuff_head_cache, nc->skb_count,
-> -                                    nc->skb_cache);
-> -               nc->skb_count = 0;
-> +               kmem_cache_free_bulk(skbuff_head_cache, count, ptr);
-> +               nc->skb_count = NAPI_SKB_CACHE_HALF;
-> +       } else {
-> +               count = NAPI_SKB_CACHE_HALF - nc->skb_count;
-> +               ptr = nc->skb_cache + nc->skb_count;
-> +
-> +               nc->skb_count += kmem_cache_alloc_bulk(skbuff_head_cache,
-> +                                                      GFP_ATOMIC, count,
-> +                                                      ptr);
->         }
+>  	int ret = 0;
+> -	unsigned long tmp = 0;
+>  
+>  	struct device *dev = &pdev->dev;
+>  	struct device_node *dn = dev->of_node;
+> @@ -213,43 +277,26 @@ static int sunxi_ir_probe(struct platform_device *pdev)
+>  		ir->rst = devm_reset_control_get_exclusive(dev, NULL);
+>  		if (IS_ERR(ir->rst))
+>  			return PTR_ERR(ir->rst);
+> -		ret = reset_control_deassert(ir->rst);
+> -		if (ret)
+> -			return ret;
+>  	}
+>  
+>  	ret = clk_set_rate(ir->clk, b_clk_freq);
+>  	if (ret) {
+>  		dev_err(dev, "set ir base clock failed!\n");
+> -		goto exit_reset_assert;
+> +		return ret;
+>  	}
+>  	dev_dbg(dev, "set base clock frequency to %d Hz.\n", b_clk_freq);
+>  
+> -	if (clk_prepare_enable(ir->apb_clk)) {
+> -		dev_err(dev, "try to enable apb_ir_clk failed\n");
+> -		ret = -EINVAL;
+> -		goto exit_reset_assert;
+> -	}
+> -
+> -	if (clk_prepare_enable(ir->clk)) {
+> -		dev_err(dev, "try to enable ir_clk failed\n");
+> -		ret = -EINVAL;
+> -		goto exit_clkdisable_apb_clk;
+> -	}
+> -
+>  	/* IO */
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	ir->base = devm_ioremap_resource(dev, res);
+>  	if (IS_ERR(ir->base)) {
+> -		ret = PTR_ERR(ir->base);
+> -		goto exit_clkdisable_clk;
+> +		return PTR_ERR(ir->base);
+>  	}
+>  
+>  	ir->rc = rc_allocate_device(RC_DRIVER_IR_RAW);
+>  	if (!ir->rc) {
+>  		dev_err(dev, "failed to allocate device\n");
+> -		ret = -ENOMEM;
+> -		goto exit_clkdisable_clk;
+> +		return -ENOMEM;
+>  	}
+>  
+>  	ir->rc->priv = ir;
+> @@ -265,6 +312,7 @@ static int sunxi_ir_probe(struct platform_device *pdev)
+>  	ir->rc->allowed_protocols = RC_PROTO_BIT_ALL_IR_DECODER;
+>  	/* Frequency after IR internal divider with sample period in us */
+>  	ir->rc->rx_resolution = (USEC_PER_SEC / (b_clk_freq / 64));
+> +	ir->rc->timeout = IR_DEFAULT_TIMEOUT;
+
+Why? This is set from sunxi_ir_set_timeout().
+
+>  	ir->rc->min_timeout = sunxi_ithr_to_usec(b_clk_freq, 0);
+>  	ir->rc->max_timeout = sunxi_ithr_to_usec(b_clk_freq, 255);
+>  	ir->rc->s_timeout = sunxi_ir_set_timeout;
+> @@ -291,41 +339,15 @@ static int sunxi_ir_probe(struct platform_device *pdev)
+>  		goto exit_free_dev;
+>  	}
+>  
+> -	/* Enable CIR Mode */
+> -	writel(REG_CTL_MD, ir->base+SUNXI_IR_CTL_REG);
+> -
+> -	/* Set noise threshold and idle threshold */
+> -	sunxi_ir_set_timeout(ir->rc, IR_DEFAULT_TIMEOUT);
+> -
+> -	/* Invert Input Signal */
+> -	writel(REG_RXCTL_RPPI, ir->base + SUNXI_IR_RXCTL_REG);
+> -
+> -	/* Clear All Rx Interrupt Status */
+> -	writel(REG_RXSTA_CLEARALL, ir->base + SUNXI_IR_RXSTA_REG);
+> -
+> -	/*
+> -	 * Enable IRQ on overflow, packet end, FIFO available with trigger
+> -	 * level
+> -	 */
+> -	writel(REG_RXINT_ROI_EN | REG_RXINT_RPEI_EN |
+> -	       REG_RXINT_RAI_EN | REG_RXINT_RAL(ir->fifo_size / 2 - 1),
+> -	       ir->base + SUNXI_IR_RXINT_REG);
+> -
+> -	/* Enable IR Module */
+> -	tmp = readl(ir->base + SUNXI_IR_CTL_REG);
+> -	writel(tmp | REG_CTL_GEN | REG_CTL_RXEN, ir->base + SUNXI_IR_CTL_REG);
+> +	ret = sunxi_ir_hw_init(dev);
+> +	if (ret)
+> +		goto exit_free_dev;
+>  
+>  	dev_info(dev, "initialized sunXi IR driver\n");
+>  	return 0;
+>  
+>  exit_free_dev:
+>  	rc_free_device(ir->rc);
+> -exit_clkdisable_clk:
+> -	clk_disable_unprepare(ir->clk);
+> -exit_clkdisable_apb_clk:
+> -	clk_disable_unprepare(ir->apb_clk);
+> -exit_reset_assert:
+> -	reset_control_assert(ir->rst);
+>  
+>  	return ret;
 >  }
->
+> @@ -334,11 +356,9 @@ static int sunxi_ir_remove(struct platform_device *pdev)
+>  {
+>  	struct sunxi_ir *ir = platform_get_drvdata(pdev);
+>  
+> -	clk_disable_unprepare(ir->clk);
+> -	clk_disable_unprepare(ir->apb_clk);
+> -	reset_control_assert(ir->rst);
+> -
+> +	sunxi_ir_hw_exit(&pdev->dev);
+>  	rc_unregister_device(ir->rc);
+> +
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.26.2
