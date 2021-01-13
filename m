@@ -2,92 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CAA32F4437
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3922F443A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725910AbhAMGAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 01:00:09 -0500
-Received: from mga12.intel.com ([192.55.52.136]:22208 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725747AbhAMGAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 01:00:09 -0500
-IronPort-SDR: WFA/We/XhjR2iICuhamEyirbxyrHmc9lZgfPUnuPPGM2o1y7ico9wNYkg/ypLurQF6B5EL+DHD
- YuCf8zFc3chQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="157336076"
-X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
-   d="scan'208";a="157336076"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 21:58:23 -0800
-IronPort-SDR: 00jdNjGlZmk0NfEWCPA7W7mk3N5yP1gamiM4n7U/LWJqVLnRU0n2p0jiRDIUHha+IhNN08wyEZ
- TYGNaxV9fyuw==
-X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
-   d="scan'208";a="381717481"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.255.30.69]) ([10.255.30.69])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 21:58:20 -0800
-Subject: Re: [LKP] Re: [btrfs] e076ab2a2c: fio.write_iops -18.3% regression
-To:     dsterba@suse.cz, kernel test robot <oliver.sang@intel.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        =?UTF-8?Q?Ren=c3=a9_Rebe?= <rene@exactcode.de>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
-        linux-btrfs@vger.kernel.org
-References: <20210112153614.GA2015@xsang-OptiPlex-9020>
- <20210112154529.GT6430@twin.jikos.cz>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <979aee28-c603-a187-e03f-29957c7b94d6@linux.intel.com>
-Date:   Wed, 13 Jan 2021 13:58:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1725984AbhAMGAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 01:00:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbhAMGAT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 01:00:19 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C110C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:59:38 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id 73so338576uac.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:59:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uflk09hDM8jdt4VETF4zx5oJUWKH+szab3bAtMaySZM=;
+        b=V3XzRVPHSN8FFVcOv8s7cpuEkmtlGkiiHwAJaarEz7yvvOdfJhsgwyKvQTQNg2o7ZL
+         V/GK4fj9ALPENfCozfr27V58sVnrLv/ZmwzCHf2X68mFcnMuUdhY46ER2c0BLdYLtUly
+         AqfsKcS4XhbLMY3ZWLO+Vk8IPH2OooUGZr9lA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uflk09hDM8jdt4VETF4zx5oJUWKH+szab3bAtMaySZM=;
+        b=l8EK5nXxM7naToTcyrrUU9Tl9reYYpslYop3oAUP/ld7EWRt9jL91gcjuyuNGkRQkJ
+         ElEZQdynvBXiS5pzvEzi0Ydo99iSmxZge1DTerZTNDt+3rfe8eH+hFsiE0T3qawk5lzU
+         idlYAY0PcldKKdJRhe2/P/uTrAacCGXS3gu5Ct2nBxCimCSwxevg+VGrW1yS5ov0CRTU
+         dtQv3bmlVqU+iHOoHAz+vOef3nv81bvgKiijlboqPFXPhg1XadajjzB46KK7q2W42ID1
+         wC49FTwH1/i9WJNLtKUc58zEE3Aar6Z4b+f9Jnxij53ol1XrzvIHPZE58Dd9hmlQBjif
+         7BEw==
+X-Gm-Message-State: AOAM532rMPtcoXLfKhIEQh2OKpAEZxVI26VbiyQqTUht3p2jq3no4ZTu
+        j3q0e8N+7deZnhFPd3mgtc+kSZRpG40Iozp6x8Pfzg==
+X-Google-Smtp-Source: ABdhPJxUOJXjPKGrSYhZlqGURvTegd9S+519z9w10z9Cg+aIQfHXMgodScbQmK240/7XPSZwmWdqBfZO5TB6vzygsss=
+X-Received: by 2002:ab0:74d2:: with SMTP id f18mr516697uaq.48.1610517577824;
+ Tue, 12 Jan 2021 21:59:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210112154529.GT6430@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210108011011.4061575-1-drinkcat@chromium.org>
+ <20210108091005.v9.1.Ie74d3355761aab202d4825ac6f66d990bba0130e@changeid> <20210112150726.GA330364@robh.at.kernel.org>
+In-Reply-To: <20210112150726.GA330364@robh.at.kernel.org>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Wed, 13 Jan 2021 13:59:26 +0800
+Message-ID: <CANMq1KAY+KgXGNaVttESfW+1m3Daec6B-GqHgRW0gdFmOGf=qA@mail.gmail.com>
+Subject: Re: [PATCH v9 1/4] dt-bindings: gpu: mali-bifrost: Add Mediatek MT8183
+To:     Rob Herring <robh@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Fei Shao <fshao@chromium.org>,
+        Kristian Kristensen <hoegsberg@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/12/2021 11:45 PM, David Sterba wrote:
-> On Tue, Jan 12, 2021 at 11:36:14PM +0800, kernel test robot wrote:
->> Greeting,
->>
->> FYI, we noticed a -18.3% regression of fio.write_iops due to commit:
->>
->>
->> commit: e076ab2a2ca70a0270232067cd49f76cd92efe64 ("btrfs: shrink delalloc pages instead of full inodes")
->> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
->>
->>
->> in testcase: fio-basic
->> on test machine: 192 threads Intel(R) Xeon(R) CPU @ 2.20GHz with 192G memory
->> with following parameters:
->>
->> 	disk: 1SSD
->> 	fs: btrfs
->> 	runtime: 300s
->> 	nr_task: 8
->> 	rw: randwrite
->> 	bs: 4k
->> 	ioengine: sync
->> 	test_size: 256g
-> Though I do a similar test (emulating bit torrent workload), it's a bit
-> extreme as it's 4k synchronous on a huge file. It always takes a lot of
-> time but could point out some concurrency issues namely on faster
-> devices. There are 8 threads possibly competing for the same inode lock
-> or other locks related to it.
+On Tue, Jan 12, 2021 at 11:07 PM Rob Herring <robh@kernel.org> wrote:
 >
-> The mentioned commit fixed another perf regression on a much more common
-> workload (untgrring files), so at this point drop in this fio workload
-> is inevitable.
+> On Fri, Jan 08, 2021 at 09:10:08AM +0800, Nicolas Boichat wrote:
+> > Define a compatible string for the Mali Bifrost GPU found in
+> > Mediatek's MT8183 SoCs.
+> >
+> > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> > Reviewed-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+> > ---
+> >
+> > (no changes since v6)
+> >
+> > Changes in v6:
+> >  - Rebased, actually tested with recent mesa driver.
+> >  - No change
+> >
+> > Changes in v5:
+> >  - Rename "2d" power domain to "core2"
+> >
+> > Changes in v4:
+> >  - Add power-domain-names description
+> >    (kept Alyssa's reviewed-by as the change is minor)
+> >
+> > Changes in v3:
+> >  - No change
+> >
+> >  .../bindings/gpu/arm,mali-bifrost.yaml        | 25 +++++++++++++++++++
+> >  1 file changed, 25 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml b/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
+> > index 184492162e7e..71b613ee5bd7 100644
+> > --- a/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
+> > +++ b/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
+> > @@ -17,6 +17,7 @@ properties:
+> >      items:
+> >        - enum:
+> >            - amlogic,meson-g12a-mali
+> > +          - mediatek,mt8183-mali
+> >            - realtek,rtd1619-mali
+> >            - rockchip,px30-mali
+> >        - const: arm,mali-bifrost # Mali Bifrost GPU model/revision is fully discoverable
+> > @@ -87,6 +88,30 @@ allOf:
+> >      then:
+> >        required:
+> >          - resets
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            const: mediatek,mt8183-mali
+> > +    then:
+> > +      properties:
+> > +        sram-supply: true
+>
+> This has to be defined at the top-level or there will be an error when
+> it is present (due to additionalProperties).
+>
+> In this if/then you can do:
+>
+> else:
+>   sram-supply: false
+>
+> to disallow it if not 'mediatek,mt8183-mali'
 
-Do you have a plan to fix it? Thanks.
-> _______________________________________________
-> LKP mailing list -- lkp@lists.01.org
-> To unsubscribe send an email to lkp-leave@lists.01.org
+I see. Thanks Rob, will send a v10.
 
--- 
-Zhengjun Xing
 
+
+>
+> > +        power-domains:
+> > +          description:
+> > +            List of phandle and PM domain specifier as documented in
+> > +            Documentation/devicetree/bindings/power/power_domain.txt
+> > +          minItems: 3
+> > +          maxItems: 3
+> > +        power-domain-names:
+> > +          items:
+> > +            - const: core0
+> > +            - const: core1
+> > +            - const: core2
+> > +
+> > +      required:
+> > +        - sram-supply
+> > +        - power-domains
+> > +        - power-domains-names
+> >
+> >  examples:
+> >    - |
+> > --
+> > 2.29.2.729.g45daf8777d-goog
+> >
