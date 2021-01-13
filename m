@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C042F4A10
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A401A2F4A1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbhAML0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:26:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
+        id S1728299AbhAML1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:27:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbhAML0w (ORCPT
+        with ESMTP id S1727084AbhAML1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:26:52 -0500
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665C3C0617BA
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:25:54 -0800 (PST)
-Received: by mail-vs1-xe2f.google.com with SMTP id h18so903660vsg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:25:54 -0800 (PST)
+        Wed, 13 Jan 2021 06:27:17 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A229C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:25:57 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id y21so576675uag.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:25:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=RY0StSf2+N5zefAWzCUaAzXJcItnmm9Fa8mEZdMQe/Y=;
-        b=NqJxW9NFl6Mpmiw179v+oVixBzv5BFOOzZs4jkT6kMz7Bu4B9hEHxWecVQlqajpiDI
-         u4BINGsA8Z/jvKTUpEgwHKAa91r/bE1I313SR2ab7Hkgul0pvRSbvQH/qIRaDbeq7khZ
-         o2IiSd8oGNQZb+YJh6A67boEZpPAer0R4CJUz8vIHILxQwyF3c83bmAu5s6yQ0U5fT/T
-         Ob/FQXbPFg5IVSFi6ijA9yZq84Wkc1fb9NJWs9ZIA2OOpsyu1HOT7gUQTriGuhN+CzeB
-         bvEmoOxauMNhuyFgJX959/TywUpU15oOCWJPRsMUWL5HbLQa8Q+3uwPCrGXzC4kvbQvI
-         JXiw==
+        bh=1P8nvNrhWNN3MmTi4o9dbNyhPJAsjJF2TM9bdEaNv/0=;
+        b=MxKhynVhLWCoqAXiucMLZT27vjzLyFvoWjJIN/SHUKtPkcZsukFdB+QWZiH+4/Fko1
+         9Ky5zgYKGdHg+qLWs1wqJpz3W1Wv42YtBA8uxrqyUUfDSYf3e87U3grWXW/4AHEG3pty
+         EEixzEu/7osioJarr67QvtrAGiFdpG3SM8NfK7E/R+RBqIcRiDo7NNAN2fp5kQJIX+LL
+         HOrA+7ydhQ9icxeF0KNGp+qGP6E69yMhnoNsDzzScGG6F/KQyN5y25jgBIO+JKYpZKc2
+         jTJ5SueGyd7xnL1xIurjmEqTIvchkjqFzFAsC+U3OBi7qcQcOm9JPqJjR/MvDT7d5UC0
+         XX6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RY0StSf2+N5zefAWzCUaAzXJcItnmm9Fa8mEZdMQe/Y=;
-        b=mKyKspfrhg1jeebWSCaoc7aFqoXG7cHtVG2lQfj0C2WzhCSxD0Kez8gflvg7yM1BOe
-         35WbjP58CFTkl3/Lfpg3yvt4er21Ij5UE7d3hu4bT4sjv/O4sUtGWjJ1r1wsN2ygdh0j
-         zgecnaYvH4VeRT2IPvcdIpiyB5/ZJwbcc16DCTZgDd+ILRzr7auJvK/XUV/CuInEPl15
-         Pb/rJR+GIYcvB+HSpSMUzKUxg6Xtx3oKc1OFjY0r6P55bSgL6C+LMNbUcz1wTrW0lJMd
-         i2AyxDcDkEwalfIIzFV1yKAAzBFqxAOAz4bllo2V+TTcdF4SR1VmkVc/q82Y3INRCs5N
-         KFdw==
-X-Gm-Message-State: AOAM530qhJai01Xb8ep5usfldHoWRUSf//bab61Mcx1UBNGS0Lo7OMge
-        9H/PgJvVbf08mYj5dZC/pdHXXRQVIbhsuHSLtsIRCA==
-X-Google-Smtp-Source: ABdhPJxmIxYl1NunM1cg14JUdbGuw0lAyEMiH7zhCkebWu1/bDnqufJtPRRxfcFqBrE/5wP5Gz7wdB/uYTO3CnEeUIY=
-X-Received: by 2002:a67:e286:: with SMTP id g6mr1629067vsf.42.1610537153628;
- Wed, 13 Jan 2021 03:25:53 -0800 (PST)
+        bh=1P8nvNrhWNN3MmTi4o9dbNyhPJAsjJF2TM9bdEaNv/0=;
+        b=X0yo9LSrjuHAAOeGRzxUkSttYcLb0uiLap93cc0ZPlm4n3lnRzizYPsS+ysN0wCgp9
+         xCWEsYrM7r1RjlLbXGZtBhoJBRNgdoPnSpNU0IjMipYhzVWvpWfGIfsljmerDLMcigNj
+         MCepyxXT6LItExc1ASkeIcf0/FQfCud4j5tCBjtrKGpDahYtamcCb1RqV8HPaxZI7761
+         myadTO8SSUw0yN/Q4U16YLlSivAdEaqM5AS3Flp9Y07IRBx5vgtB46GgEB1szDUA8ViG
+         MU1kTaFfD7cWz7TuzWBUdeOEvfv0Wx6eOMifH8bJ/ryYLQw0vm2fT+fXqfh3H0W1Wf3Y
+         u/7g==
+X-Gm-Message-State: AOAM531WNj6LT7hoC+TUU16UiUto+KxKMGWJg8HwpLSZVc4FVAH7GYsT
+        M7kZkBA7y3bH/S1HEVN7Oew60HtANEktkWzJfDrzWw==
+X-Google-Smtp-Source: ABdhPJxdH05hXsZ/BTVxqZ2D50ftzxWMCHTCzPiYI8GfOnRnYju+WTFC9l7ag1OdLOqg8zBA4Qooo6XiVf4Q6T1c4fc=
+X-Received: by 2002:ab0:78d:: with SMTP id c13mr1289722uaf.129.1610537156300;
+ Wed, 13 Jan 2021 03:25:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20201230090401.12627-1-ricky_wu@realtek.com> <20201230090401.12627-2-ricky_wu@realtek.com>
-In-Reply-To: <20201230090401.12627-2-ricky_wu@realtek.com>
+References: <20210106085332.5494-1-reniuschengl@gmail.com>
+In-Reply-To: <20210106085332.5494-1-reniuschengl@gmail.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 13 Jan 2021 12:25:17 +0100
-Message-ID: <CAPDyKFrL+ykvw85SiLQojF9PnYoYzraOOvkS8qg5w-LL7xPvNA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mmc: rtsx: Add MMC_CAP2_NO_SDIO flag
-To:     =?UTF-8?B?5ZCz5piK5r6EIFJpY2t5?= <ricky_wu@realtek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rui Feng <rui_feng@realsil.com.cn>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
+Date:   Wed, 13 Jan 2021 12:25:20 +0100
+Message-ID: <CAPDyKFo=GE2GNuv0=SXfuSSgE-b0iBhXCxqvd=cgspqX6hph2w@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-pci-gli: Add a switch to enable/disable CQHCI support
+To:     Renius Chen <reniuschengl@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        greg.tu@genesyslogic.com.tw
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Dec 2020 at 10:04, <ricky_wu@realtek.com> wrote:
+On Wed, 6 Jan 2021 at 09:53, Renius Chen <reniuschengl@gmail.com> wrote:
 >
-> From: Ricky Wu <ricky_wu@realtek.com>
+> Add a vendor-specific bit named GLI_9763E_MB_ERP_ON at the bit7 of
+> register 888h to decide whether to enhance random R/W performance
+> of GL9763E. CQHCI support will be enabled if and only if the bit is
+> set and the GLI_9763E_MB_CMQ_OFF bit is not set.
 >
-> Added flag MMC_CAP2_NO_SDIO to mmc->caps2
-> Card Reader not support SDIO
->
-> Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+> Signed-off-by: Renius Chen <reniuschengl@gmail.com>
 
 Applied for next, thanks!
 
@@ -80,23 +78,31 @@ Uffe
 
 
 > ---
->  drivers/mmc/host/rtsx_pci_sdmmc.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/mmc/host/sdhci-pci-gli.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
-> index d21b99962b36..6a8b0282f272 100644
-> --- a/drivers/mmc/host/rtsx_pci_sdmmc.c
-> +++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
-> @@ -1427,7 +1427,8 @@ static void realtek_init_host(struct realtek_pci_sdmmc *host)
->                 MMC_CAP_UHS_SDR12 | MMC_CAP_UHS_SDR25;
->         if (pcr->rtd3_en)
->                 mmc->caps = mmc->caps | MMC_CAP_AGGRESSIVE_PM;
-> -       mmc->caps2 = MMC_CAP2_NO_PRESCAN_POWERUP | MMC_CAP2_FULL_PWR_CYCLE;
-> +       mmc->caps2 = MMC_CAP2_NO_PRESCAN_POWERUP | MMC_CAP2_FULL_PWR_CYCLE |
-> +               MMC_CAP2_NO_SDIO;
->         mmc->max_current_330 = 400;
->         mmc->max_current_180 = 800;
->         mmc->ops = &realtek_pci_sdmmc_ops;
+> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+> index b85edd62e7f0..c6a107d7c742 100644
+> --- a/drivers/mmc/host/sdhci-pci-gli.c
+> +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> @@ -84,6 +84,7 @@
+>  #define   GLI_9763E_VHS_REV_W      0x2
+>  #define PCIE_GLI_9763E_MB       0x888
+>  #define   GLI_9763E_MB_CMDQ_OFF           BIT(19)
+> +#define   GLI_9763E_MB_ERP_ON      BIT(7)
+>  #define PCIE_GLI_9763E_SCR      0x8E0
+>  #define   GLI_9763E_SCR_AXI_REQ           BIT(9)
+>
+> @@ -814,7 +815,8 @@ static int gli_probe_slot_gl9763e(struct sdhci_pci_slot *slot)
+>
+>         pci_read_config_dword(pdev, PCIE_GLI_9763E_MB, &value);
+>         if (!(value & GLI_9763E_MB_CMDQ_OFF))
+> -               host->mmc->caps2 |= MMC_CAP2_CQE | MMC_CAP2_CQE_DCMD;
+> +               if (value & GLI_9763E_MB_ERP_ON)
+> +                       host->mmc->caps2 |= MMC_CAP2_CQE | MMC_CAP2_CQE_DCMD;
+>
+>         gli_pcie_enable_msi(slot);
+>         host->mmc_host_ops.hs400_enhanced_strobe =
 > --
-> 2.17.1
+> 2.27.0
 >
