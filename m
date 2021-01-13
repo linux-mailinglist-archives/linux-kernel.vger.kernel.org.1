@@ -2,200 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A9D2F419E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7785C2F41A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbhAMCRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 21:17:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49306 "EHLO
+        id S1727927AbhAMCSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 21:18:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727834AbhAMCR3 (ORCPT
+        with ESMTP id S1727904AbhAMCSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 21:17:29 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79EF8C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 18:16:43 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id m25so439931lfc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 18:16:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rv4WHoorKcMMwhd//npkAorfZIWJ3XEBWCkV0kYCKfA=;
-        b=puh0Nzdk9rfZREUiPzO88kJc1hVOSWKhpMsUC23cZUr+aExaQDnjkRWzBjNPAoGBHv
-         Na8UBNkdm2DDupak7xiWYeu4s+qzInjUK70uVkKUqWdoG8INjz5VGOz95ZORY4939Z2a
-         Q8PBa1M+qkGETbeY3MU70Q/9uBxVL0yafW+DunaU+vIgjjWzKo6RCS/ZmUmxhaTP0PrQ
-         s7wbb9tcv6i5/+foQt28fzq0MAOuEEHh4AAjMyZpXnKYodSIydc3DsUTQkh3wAnM6994
-         VatKLIbn0Cdq213f0RJTOZcQYLf152zT0tbcsf27ueXqNs5NiBi+8DdVAAtDHHlSyGFx
-         NFFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rv4WHoorKcMMwhd//npkAorfZIWJ3XEBWCkV0kYCKfA=;
-        b=eAHlBXyglbjLOhLTTpafOd2u+9azYE/vKFbKPY6mkc4ghwbvdMmPcQZCCkWEe1Pvgh
-         XygH3fZWgdVtGzssg1cZ53UB6rb8RO2diT1fGp651BzxBlX2z/QoY3YBqc/DySkuWqxW
-         7EKjPutO2JNghGDOKO+zOnRKBc/LQGBh3C1iiHdriUf+YOxfmxYKZTlTxu/o7dzyEgXs
-         Rb6gDTvC2pnCtVk7lWYaXRx9GkFEup8IZvuNmf8mFW1tzThCCLdV12zZhed+Fc98nqbQ
-         a7//2agpqO8+S9HHFb6JvxJgOW5O0DhtIHg3ZSaW8aNJ8mm3N0ou9FL5JvHU5GW7weMX
-         qv5A==
-X-Gm-Message-State: AOAM533nmFS8hHebsbX7dRHacYHgjxNXHCnjYq67gv5sA10PIgHed144
-        UwW7mg3hqNsLlpw4zehCVEZwSMfkwRhmr67FDbNawrrtenx7Nw==
-X-Google-Smtp-Source: ABdhPJzcZTCOKqEWiKtOr3cqY8dpySVBaWHsu2PluaCbkbwShxS7CdHAVkVEzJfg0NN2gxF+S8ns1gn3jF3wShPu/RE=
-X-Received: by 2002:ac2:5472:: with SMTP id e18mr761103lfn.489.1610504201634;
- Tue, 12 Jan 2021 18:16:41 -0800 (PST)
+        Tue, 12 Jan 2021 21:18:04 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C635C0617A3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 18:17:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EmSAjnSYAp9xXMovzqYhVDc85JMGVHpfKia1pHTJ+EI=; b=plJ5Ka5h+hRN7qsXCo+IkoizbM
+        1WIqT+1XMnOZ3E6Zj5Uf/CvzDBRcA4sXIlVNIpSBmS/lJMuB1BKGfkTzAZjewq4zMG35oUjfuqKdr
+        SdcWyDmF7zFD6IvMvAUgPAolJgax8qArixwRf1DwQ/vwHWaWA26B+5P7DpKCjJlJy7Ny2GVYKQe0l
+        x7RY6T7LkT2/2dRMGE5ma1iZtljqMwjM+SakE4U/20LRO/BFWF+8NOJa+yRKZXtU1Nqfsi9cjO/6H
+        x7Nh733IeD4n095VJ+0kUM23Qge30bZYAEi4VpihYrJUWwjHTthsR/HWvQU6andbXrZL9liNjFJYi
+        GXt76XYQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1kzVhr-005g2N-49; Wed, 13 Jan 2021 02:16:23 +0000
+Date:   Wed, 13 Jan 2021 02:16:19 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
+Message-ID: <20210113021619.GL35215@casper.infradead.org>
+References: <20210110004435.26382-1-aarcange@redhat.com>
+ <CAHk-=wghqNywtf=sRv_5FmG=+hPGqj=KWakw34tNeoZ1wPuaHg@mail.gmail.com>
+ <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com>
+ <X/prosulFrEoNnoF@redhat.com>
+ <CAHk-=wjZTMsv0_GOyQpLRk_5U1r5W8e21f8sV0jykK=z47hjGQ@mail.gmail.com>
+ <CAHk-=wgi31FKc9AL6m87+pb2B79V2g_QjdhmtJNW8Pnq2ERQ-Q@mail.gmail.com>
+ <45806a5a-65c2-67ce-fc92-dc8c2144d766@nvidia.com>
+ <CAHk-=wipa-9wEuWHBjourmXAVHdeqDa59UxW6ZJ_Oqg6-Dwvdw@mail.gmail.com>
+ <CAHk-=wje9r3fREBdZcOu=NihGczBtkqkhXRPDhY-ZkNVv=thiQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210112040146.1.I9aa2b9dd39a6ac9235ec55a8c56020538aa212fb@changeid>
- <20210112223228.GA1857596@bjorn-Precision-5520>
-In-Reply-To: <20210112223228.GA1857596@bjorn-Precision-5520>
-From:   Victor Ding <victording@google.com>
-Date:   Wed, 13 Jan 2021 13:16:05 +1100
-Message-ID: <CANqTbdb4gZYQUAZzatwymy-S9Ajb=PhfP53_D2TYLJp0zw4HxQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] PCI/ASPM: Disable ASPM until its LTR and L1ss state
- is restored
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        linux-mmc@vger.kernel.org, Alex Levin <levinale@google.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Sukumar Ghorai <sukumar.ghorai@intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wje9r3fREBdZcOu=NihGczBtkqkhXRPDhY-ZkNVv=thiQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Mon, Jan 11, 2021 at 02:18:13PM -0800, Linus Torvalds wrote:
+> The whole "optimistic page references throigh page cache" etc are
+> complete non-issues, because the whole point is that we already know
+> it's not a page cache page. There is simply no other way to reach that
+> page than through GUP.
 
-On Wed, Jan 13, 2021 at 9:32 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> Hi Victor,
->
-> Thanks for the patch.  Improving suspend/resume performance is always
-> a good thing!
->
-> On Tue, Jan 12, 2021 at 04:02:04AM +0000, Victor Ding wrote:
-> > Right after powering up, the device may have ASPM enabled; however,
-> > its LTR and/or L1ss controls may not be in the desired states; hence,
-> > the device may enter L1.2 undesirably and cause resume performance
-> > penalty. This is especially problematic if ASPM related control
-> > registers are modified before a suspension.
->
-> s/L1ss/L1SS/ (several occurrences) to match existing usage.
->
-I'll update it in the next version.
->
-> > Therefore, ASPM should disabled until its LTR and L1ss states are
-> > fully restored.
-> >
-> > Signed-off-by: Victor Ding <victording@google.com>
-> > ---
-> >
-> >  drivers/pci/pci.c       | 11 +++++++++++
-> >  drivers/pci/pci.h       |  2 ++
-> >  drivers/pci/pcie/aspm.c |  2 +-
-> >  3 files changed, 14 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > index eb323af34f1e..428de433f2e6 100644
-> > --- a/drivers/pci/pci.c
-> > +++ b/drivers/pci/pci.c
-> > @@ -1660,6 +1660,17 @@ void pci_restore_state(struct pci_dev *dev)
-> >       if (!dev->state_saved)
-> >               return;
-> >
-> > +     /*
-> > +      * Right after powering up, the device may have ASPM enabled;
->
-> I think this could be stated more precisely.  "Right after powering
-> up," ASPM should be *disabled* because ASPM Control in the Link
-> Control register powers up as zero (disabled).
->
-Good suggestion; I'll reword in the next version.
-However, ASPM should be *disabled* for the opposite reason - ASPM Control
-in the Link Control register *may* power as non-zero (enabled).
-(More answered in the next section)
->
-> > +      * however, its LTR and/or L1ss controls may not be in the desired
-> > +      * states; as a result, the device may enter L1.2 undesirably and
-> > +      * cause resume performance penalty.
-> > +      * Therefore, ASPM is disabled until its LTR and L1ss states are
-> > +      * fully restored.
-> > +      * (enabling ASPM is part of pci_restore_pcie_state)
->
-> If we're enabling L1.2 before LTR has been configured, that's
-> definitely a bug.  But I don't see how that happens.  The current code
-> looks like:
->
->   pci_restore_state
->     pci_restore_ltr_state
->       pci_write_config_word(dev, ltr + PCI_LTR_MAX_SNOOP_LAT, *cap++)
->       pci_write_config_word(dev, ltr + PCI_LTR_MAX_NOSNOOP_LAT, *cap++)
->     pci_restore_aspm_l1ss_state
->       pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, *cap++)
->     pci_restore_pcie_state
->       pcie_capability_write_word(dev, PCI_EXP_LNKCTL, cap[i++])
->
-> We *do* restore PCI_L1SS_CTL1, which contains "ASPM L1.2 Enable",
-> before we restore PCI_EXP_LNKCTL, which contains "ASPM Control", but I
-> don't think "ASPM L1.2 Enable" by itself should be enough to allow
-> hardware to enter L1.2.
->
-> Reading PCIe r5.0, sec 5.5.1, it seems like hardware should ignore the
-> PCI_L1SS_CTL1 bits unless ASPM L1 entry is enabled in PCI_EXP_LNKCTL.
->
-> What am I missing?
->
-Correct; however, PCI_EXP_LNKCTL may power up as non-zero, i.e. has ASPM
-Control enabled. BIOS may set PCI_EXP_LNKCTL (and PCI_L1SS_CTL1) before
-Kernel takes control. When BIOS does so, there is a brief period
-between powering
-up and Kernel restoring LTR state that L1.2 is enabled but LTR isn't configured.
->
-> > +      */
-> > +     pcie_config_aspm_dev(dev, 0);
-> > +
-> >       /*
-> >        * Restore max latencies (in the LTR capability) before enabling
-> >        * LTR itself (in the PCIe capability).
-> > diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> > index e9ea5dfaa3e0..f774bd6d2555 100644
-> > --- a/drivers/pci/pci.h
-> > +++ b/drivers/pci/pci.h
-> > @@ -564,6 +564,7 @@ void pcie_aspm_init_link_state(struct pci_dev *pdev);
-> >  void pcie_aspm_exit_link_state(struct pci_dev *pdev);
-> >  void pcie_aspm_pm_state_change(struct pci_dev *pdev);
-> >  void pcie_aspm_powersave_config_link(struct pci_dev *pdev);
-> > +void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val);
-> >  void pci_save_aspm_l1ss_state(struct pci_dev *dev);
-> >  void pci_restore_aspm_l1ss_state(struct pci_dev *dev);
-> >  #else
-> > @@ -571,6 +572,7 @@ static inline void pcie_aspm_init_link_state(struct pci_dev *pdev) { }
-> >  static inline void pcie_aspm_exit_link_state(struct pci_dev *pdev) { }
-> >  static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev) { }
-> >  static inline void pcie_aspm_powersave_config_link(struct pci_dev *pdev) { }
-> > +static inline void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val) { }
-> >  static inline void pci_save_aspm_l1ss_state(struct pci_dev *dev) { }
-> >  static inline void pci_restore_aspm_l1ss_state(struct pci_dev *dev) { }
-> >  #endif
-> > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> > index a08e7d6dc248..45535b4e1595 100644
-> > --- a/drivers/pci/pcie/aspm.c
-> > +++ b/drivers/pci/pcie/aspm.c
-> > @@ -778,7 +778,7 @@ void pci_restore_aspm_l1ss_state(struct pci_dev *dev)
-> >       pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL2, *cap++);
-> >  }
-> >
-> > -static void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
-> > +void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
-> >  {
-> >       pcie_capability_clear_and_set_word(pdev, PCI_EXP_LNKCTL,
-> >                                          PCI_EXP_LNKCTL_ASPMC, val);
-> > --
-> > 2.30.0.284.gd98b1dd5eaa7-goog
-> >
+The thing about the speculative page cache references is that they can
+temporarily bump a refcount on a page which _used_ to be in the page
+cache and has now been reallocated as some other kind of page.
+
+Now, this is obviously rare, so if it's only a performance question,
+it'll be fine.  If there's a correctness issue with copying pages that
+would otherwise not have been copied, then it's a problem.
+
