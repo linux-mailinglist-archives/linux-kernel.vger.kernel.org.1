@@ -2,117 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39492F5205
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A402F520B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728393AbhAMS2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 13:28:25 -0500
-Received: from foss.arm.com ([217.140.110.172]:40292 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727984AbhAMS2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 13:28:24 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 938921FB;
-        Wed, 13 Jan 2021 10:27:38 -0800 (PST)
-Received: from [10.57.56.43] (unknown [10.57.56.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 992EC3F66E;
-        Wed, 13 Jan 2021 10:27:09 -0800 (PST)
-Subject: Re: [RFC PATCH v3 4/6] swiotlb: Add restricted DMA alloc/free
- support.
-To:     Christoph Hellwig <hch@lst.de>, Claire Chang <tientzu@chromium.org>
-Cc:     robh+dt@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, joro@8bytes.org, will@kernel.org,
-        frowand.list@gmail.com, konrad.wilk@oracle.com,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, m.szyprowski@samsung.com,
-        grant.likely@arm.com, xypron.glpk@gmx.de, treding@nvidia.com,
-        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
-        gregkh@linuxfoundation.org, saravanak@google.com,
-        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, rdunlap@infradead.org,
-        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, tfiga@chromium.org,
-        drinkcat@chromium.org
-References: <20210106034124.30560-1-tientzu@chromium.org>
- <20210106034124.30560-5-tientzu@chromium.org> <20210113124847.GC1383@lst.de>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <82bb75bc-11e6-ac94-9d24-7c896e3aae98@arm.com>
-Date:   Wed, 13 Jan 2021 18:27:08 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1728412AbhAMSaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 13:30:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728260AbhAMSaN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 13:30:13 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D0DC061575;
+        Wed, 13 Jan 2021 10:29:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5HGRAFQITVRUvJXlrDluatF64Db9+nU6uEXhywkvngg=; b=ATqIEHVY+6AGyqtS0NR9HlbQgO
+        ZUlGt3koP3YMDLhaxHbiwMsFrkulbdojHRkxzrz8cw9LvD/iPNmwguJuKR4qjXD7j0RdIe7ztya46
+        ZU5GH9GhFuTMmnLr9kDqpd5R0X4TwXFapUIsCAuK3+aOL20MNEviSSt3b30TqM5Jn2qzgXPSevasT
+        I7B4tUDAxUIyjo30w0ka9k9BKoxNgbSUsYiMtMWC3nNFVSYgtLpNMZOxGnaJD0zuGBNfVaYd9UOe7
+        wa1liy0Q1VWI4zZ+JBYizeilP2/lVqTPQftD6sBbs3puwtCF72iHIg2RcIeAtrWsb9xFMomuKYXWL
+        CrID3s1g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1kzks1-006Z9G-Bi; Wed, 13 Jan 2021 18:28:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D1A443060C5;
+        Wed, 13 Jan 2021 19:27:48 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BD660211618D3; Wed, 13 Jan 2021 19:27:48 +0100 (CET)
+Date:   Wed, 13 Jan 2021 19:27:48 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Kan Liang <kan.liang@linux.intel.com>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 04/17] perf: x86/ds: Handle guest PEBS overflow PMI
+ and inject it to guest
+Message-ID: <X/87pChioUE7hsK/@hirez.programming.kicks-ass.net>
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <20210104131542.495413-5-like.xu@linux.intel.com>
+ <X/86UWuV/9yt14hQ@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210113124847.GC1383@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/86UWuV/9yt14hQ@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-13 12:48, Christoph Hellwig wrote:
->> +#ifdef CONFIG_SWIOTLB
->> +	if (unlikely(dev->dma_io_tlb_mem))
->> +		return swiotlb_alloc(dev, size, dma_handle, attrs);
->> +#endif
-> 
-> Another place where the dma_io_tlb_mem is useful to avoid the ifdef.
-> 
->> -phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
->> -		size_t mapping_size, size_t alloc_size,
->> -		enum dma_data_direction dir, unsigned long attrs)
->> +static int swiotlb_tbl_find_free_region(struct device *hwdev,
->> +					dma_addr_t tbl_dma_addr,
->> +					size_t alloc_size,
->> +					unsigned long attrs)
-> 
->> +static void swiotlb_tbl_release_region(struct device *hwdev, int index,
->> +				       size_t size)
-> 
-> This refactoring should be another prep patch.
-> 
-> 
->> +void *swiotlb_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle,
->> +		    unsigned long attrs)
-> 
-> I'd rather have the names convey there are for the per-device bounce
-> buffer in some form.
-> 
->> +	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
-> 
-> While we're at it I wonder if the io_tlb is something we could change
-> while we're at it.  Maybe replace io_tlb_mem with struct swiotlb
-> and rename the field in struct device to dev_swiotlb?
-> 
->> +	int index;
->> +	void *vaddr;
->> +	phys_addr_t tlb_addr;
->> +
->> +	size = PAGE_ALIGN(size);
->> +	index = swiotlb_tbl_find_free_region(dev, mem->start, size, attrs);
->> +	if (index < 0)
->> +		return NULL;
->> +
->> +	tlb_addr = mem->start + (index << IO_TLB_SHIFT);
->> +	*dma_handle = phys_to_dma_unencrypted(dev, tlb_addr);
->> +
->> +	if (!dev_is_dma_coherent(dev)) {
->> +		unsigned long pfn = PFN_DOWN(tlb_addr);
->> +
->> +		/* remove any dirty cache lines on the kernel alias */
->> +		arch_dma_prep_coherent(pfn_to_page(pfn), size);
-> 
-> Can we hook in somewhat lower level in the dma-direct code so that all
-> the remapping in dma-direct can be reused instead of duplicated?  That
-> also becomes important if we want to use non-remapping uncached support,
-> e.g. on mips or x86, or the direct changing of the attributes that Will
-> planned to look into for arm64.
+On Wed, Jan 13, 2021 at 07:22:09PM +0100, Peter Zijlstra wrote:
+> Again; for the virt illiterate people here (me); why is it expensive to
+> check guest DS?
 
-Indeed, AFAICS this ought to boil down to a direct equivalent of 
-__dma_direct_alloc_pages() - other than the address there should be no 
-conceptual difference between pages from the restricted pool and those 
-from the regular page allocator, so this probably deserves to be plumbed 
-in as an alternative to that.
+Remember, you're trying to get someone that thinks virt is the devil's
+work (me) to review virt patches. You get to spell things out in detail.
 
-Robin.
