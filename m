@@ -2,124 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E7C2F529F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:45:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4F92F52A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728567AbhAMSol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 13:44:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728195AbhAMSok (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 13:44:40 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB84AC061795
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 10:43:59 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id b6so2582277edx.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 10:43:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/KzoTFWjybD/r1NtUndSBUsrUMAZKtv7j5VbLpYXnf8=;
-        b=icWSwC1XH5N1j1UsZ/I7yXSO2Bv9DrpZ/ESFacPkPRQgTp1eWA3+zVHPoxj1Qm0SZX
-         XRmJOUOfeW4HsHiyTLtZmqOSXY/m2eUjdfixjihZpMeSaqGcuWYhqnxqnvwOOZQrIT6/
-         KWKbi8bS8cgWIac6Ielih93TzACXUza3NWz+BdUlAfelqSaboZMEi3b9UijIKTxG/ysB
-         BrB7pQ62DDbb4S1PBE5RiK2aJ9jt+jZTDZDDicAVmK//PhpUpYfU83v1YvwC7kS8NMea
-         rzlX1xEID3oVPCpG/GkZr696RfGGJIFIhYmsAT52lmQWh/8Gwmv8rp2AYDaSJvskvdnd
-         loSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/KzoTFWjybD/r1NtUndSBUsrUMAZKtv7j5VbLpYXnf8=;
-        b=I6MZXLuhYneVkcooxV4FdH07y+5H/qqmVRCEYrphyHsdb1R1WoxV0YIUDQVElTfrqk
-         y6nGmw3W1dcrnSwMC+vo8dEeCIBPGhc62YfRqXOcc06rqEsod46UfUskIynWmsDxBAkI
-         +wNhAAwoQ4a8hNYRWglKrmRDLw/UvXuo/1n8qd++9OUe1uMZSxIxTaXUk3GXWDlqvMqW
-         hA9rp6a2Jv0LYLuqae31Z2OSJZBKBOIdf6ybSEHp254pwyxAkQMWoWLUYlX2p7/+CxHD
-         VwMwJsjT6OrDltvWfxKlOBf0uV7haXIh0UwBpwG5otJf+w3zTa7L5wLAW4sqVVCX8N+7
-         FcDQ==
-X-Gm-Message-State: AOAM531GITxO3E53+jMMkfTdY3BDPhw831ChFrHBk533iwHSQ7eb5nM2
-        6IXTTdR8nnc6a3rpExMSih4zYCBzU/eDkHcUIt9GMg==
-X-Google-Smtp-Source: ABdhPJz7yGlfZHsDJZRnLziMXfyryL2sAq76aj1N0CBiX2AVdhW2jODpzHCel2BFEEJKxOfntxde1pCc+7MHDoiPUdo=
-X-Received: by 2002:aa7:cf8f:: with SMTP id z15mr2930266edx.17.1610563437312;
- Wed, 13 Jan 2021 10:43:57 -0800 (PST)
+        id S1728586AbhAMSov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 13:44:51 -0500
+Received: from foss.arm.com ([217.140.110.172]:40562 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728346AbhAMSov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 13:44:51 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 481291FB;
+        Wed, 13 Jan 2021 10:44:05 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B623F3F66E;
+        Wed, 13 Jan 2021 10:44:03 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     paulmck@kernel.org
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 3/4] workqueue: Tag bound workers with KTHREAD_IS_PER_CPU
+In-Reply-To: <20210113175249.GA27312@paulmck-ThinkPad-P72>
+References: <20210112144344.850850975@infradead.org> <20210112144843.849135905@infradead.org> <CAJhGHyD_xuSpYOp5A9PumWGsBA=DNqM0ge3_NgRkfro7fafGqA@mail.gmail.com> <jhjturkzzv9.mognet@arm.com> <20210113175249.GA27312@paulmck-ThinkPad-P72>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Wed, 13 Jan 2021 18:43:57 +0000
+Message-ID: <jhjpn28zngy.mognet@arm.com>
 MIME-Version: 1.0
-References: <20190208132954.28166-1-andrejs.cainikovs@netmodule.com>
-In-Reply-To: <20190208132954.28166-1-andrejs.cainikovs@netmodule.com>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Wed, 13 Jan 2021 15:43:46 -0300
-Message-ID: <CAAEAJfBWMWuuVebLjURJE=+UtJ8OQxXtEiPWKeQMgQTJ5rivfA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] D_CAN RX buffer size improvements
-To:     Andrejs Cainikovs <Andrejs.Cainikovs@netmodule.com>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Patrick Zysset <Patrick.Zysset@netmodule.com>,
-        "Federico Rossi (fede.a.rossi@gmail.com)" <fede.a.rossi@gmail.com>,
-        Max Sonnaillon <Max.Sonnaillon@ppst.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everyone,
+On 13/01/21 09:52, Paul E. McKenney wrote:
+> On Wed, Jan 13, 2021 at 02:16:10PM +0000, Valentin Schneider wrote:
+>> You might be right; at this point we would still have BALANCE_PUSH set,
+>> so something like the below could happen
+>>
+>>   rebind_workers()
+>>     set_cpus_allowed_ptr()
+>>       affine_move_task()
+>>         task_running() => stop_one_cpu()
+>>
+>>   ... // Stopper migrates the kworker here in the meantime
+>>
+>>   switch_to(<pcpu kworker>) // Both cpuhp thread and kworker should be enqueued
+>>                             // here, so one or the other could be picked
+>>   balance_switch()
+>>     balance_push()
+>>     ^-- no KTHREAD_IS_PER_CPU !
+>>
+>> This should however trigger the WARN_ON_ONCE() in kthread_set_per_cpu()
+>> *before* the one in process_one_work(), which I haven't seen in Paul's
+>> mails.
+>
+> The 56 instances of one-hour SRCU-P scenarios hit the WARN_ON_ONCE()
+> in process_one_work() once, but there is no sign of a WARN_ON_ONCE()
+> from kthread_set_per_cpu().
 
-This series was recently brought to my attention, in connection to a
-long-standing
-packet drop issue that we had on a Sitara-based product.
+This does make me doubt the above :/ At the same time, the
+process_one_work() warning hinges on POOL_DISASSOCIATED being unset,
+which implies having gone through rebind_workers(), which implies
+kthread_set_per_cpu(), which implies me being quite confused...
 
-I haven't tested this personally, but I've been notified that this was
-backported
-to the v4.19 kernel, and the packet drop was fixed.
+> But to your point, this does appear to be
+> a rather low-probability race condition, once per some tens of hours
+> of SRCU-P.
+>
+> Is there a more focused check for the race condition above?
+>
 
-It seems the series never managed to get upstreamed,
-but I think this should be resurrected and merged (probably with after
-some cleanup/review).
+Not that I'm aware of. I'm thinking that if the pcpu kworker were an RT
+task, then this would guarantee it would get picked in favor of the cpuhp
+thread upon switching out of the stopper, but that still requires the
+kworker running on some CPU (for some reason) during rebind_workers().
 
-Thanks,
-Ezequiel
 
-On Fri, 8 Feb 2019 at 10:31, Andrejs Cainikovs
-<Andrejs.Cainikovs@netmodule.com> wrote:
->
-> Re-sending entire patchset due to missed cover letter, sorry.
->
-> This patchset introduces support for 64 D_CAN message objects with an option of
-> unequal split between RX/TX.
->
-> The rationale behind this is that there are lots of frame loss on higher bus
-> speeds. Below are test results from my custom Sitara AM3352 based board:
->
->   Sender: timeout 15m cangen can0 -g 0 -i x
->   Target: candump can0,0~0,#FFFFFFFF -td -c -d -e
->
->   * Without patches:
->     - 15 minute RX test, 500kbps
->     - 16 RX / 16 TX message objects
->     - 77 received frames lost out of 4649415
->
->   * With patches applied:
->     - 15 hours RX test, 500kbps
->     - 56 RX / 8 TX message objects
->     - 41 received frames lost out of 279303376
->
-> Please note, I do not have ability to test pure C_CAN, so it is left untested.
->
-> ---
->
-> Andrejs Cainikovs (2):
->   can: c_can: support 64 message objects for D_CAN
->   can: c_can: configurable amount of D_CAN RX objects
->
->  drivers/net/can/c_can/Kconfig | 20 ++++++++++
->  drivers/net/can/c_can/c_can.c | 93 +++++++++++++++++++++++++++----------------
->  drivers/net/can/c_can/c_can.h | 20 +++++++---
->  3 files changed, 94 insertions(+), 39 deletions(-)
->
-> ---
-> 2.11.0
->
+
+>                                                       Thanx, Paul
