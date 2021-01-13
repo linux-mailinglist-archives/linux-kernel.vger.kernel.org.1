@@ -2,51 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9876B2F4AE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9190A2F4AEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbhAMMB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 07:01:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbhAMMBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 07:01:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 007E023120;
-        Wed, 13 Jan 2021 12:01:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610539274;
-        bh=0kcsXKcvhtdNBkgEawvGeAle7LC/iJ2XfAp40mhHTn8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p9qIWsuTi9rlA9+GN4Fh2S7HojcR/WP6yeXoqPKmcKxR+YFs12wiHNniQx4mv8HzR
-         KLSvR45DxIY3zNJxjZEamHBZw3MfKIfrq4f35xs34/x1veoaccY//Rv0yRhYKp+AQA
-         lv/s7E87Ir4Uy267BnrvSolox1Kdn8Kl7mzWwwZ+8bpqFVzZqir5o6y+hBi1Lpz9WN
-         FdT5uBuG40OLO+SfYQsO45fNdOAMxooXdj9LjfWerURRwwNhXRCjHQb5TQ/wAk4XaU
-         MNGoHWGntO1IN4pm2yC0j0sPr+Ce41X8Qw1zfkdA2oz2mDdExn1rx8ugAEuxmTuHQQ
-         CMN4XWr/Cs0pw==
-Date:   Wed, 13 Jan 2021 17:31:09 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Swapnil Jakhade <sjakhade@cadence.com>,
-        Yuti Amonkar <yamonkar@cadence.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] phy: cadence-torrent: Fix error code in
- cdns_torrent_phy_probe()
-Message-ID: <20210113120109.GG2771@vkoul-mobl>
-References: <X9s7Wxq+b6ls0q7o@mwanda>
+        id S1726609AbhAMMDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 07:03:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726262AbhAMMDG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 07:03:06 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876B1C061786;
+        Wed, 13 Jan 2021 04:02:26 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id u4so1047834pjn.4;
+        Wed, 13 Jan 2021 04:02:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LT7iT6jRWpTrYUmpGpoJWP0DtBFu24AkFbCwh22awYM=;
+        b=lZalldHbaoEDoVTFL+tWnnqLSXtPak3C3Ux0Xb9U+SqGghzRf+RRUvNUto7qU5+mtO
+         QrUsbpOgTZAWuLTRauetVldYVd9HQn/J8kX6zRMqKNkqxzDed3WvBRnsf+EiGKhSfqUU
+         tfBCc51O8WiC5BaFhss9U0VRADwecQ4CWR6dugu3kFba8LKE0m99HBTfT2ykjgis7Fvq
+         6kHebDPE6+OBNC+WCZPRczR0fXAPQcA+5AH3RZVyisvgjEB0NV4Qc9H0pl0vEQZfDNvf
+         qcPioozxRzgHu1mNQ+VoNJuqwFH8ylnUBFyCMpWI77wIhpr5La7oWiWUx1o2jUlu4lmV
+         OX9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LT7iT6jRWpTrYUmpGpoJWP0DtBFu24AkFbCwh22awYM=;
+        b=UCRNUnfyGKgCScDft36FyrZ1SbPBR4zfmpJfe+5AQoUM3GcnPghpYdtnnRiB74oTRu
+         opqv3iYGyDXGl2TFOLNhlANSuVA2ZzudVhA0vugAlNPN89C4aXlxFVzql/D3c5uHXDL3
+         e/4C4qvKJlIWbrPaGBm889Zp8YCzLIx/3M4S6KbQ/oyk3IqPM95M1hRmkIwHITLbcfz7
+         eTT6E/vgBaDtGMlrK8Rfob3PX7YLV4vDpbBWPrME07KjPQsYbKlA0EQvWBOSiYB57+SQ
+         ZvQkZJHVRKb6bl34kttlvnnbIf8n66rm6uxJsvmWu7LwTqyhYZeFl5t4bWVdVxztJiPX
+         2Iqw==
+X-Gm-Message-State: AOAM531z9IJSk55gOaQqk7Le75gcFFVgCmKqkJpqa/0TfF8RKHcOWI1m
+        Sb23207cmzZ77uNM1fIVKsPjs7a13WiE8mDp88I=
+X-Google-Smtp-Source: ABdhPJw5N4qe3EBN8WiSaMxwCKhSa7X/lCRFzzXC7lDRQ1wUH1+bVcCKJTTP+nzLGQWz3EP8EM93oyqPDOZ0akJAIEA=
+X-Received: by 2002:a17:90a:1050:: with SMTP id y16mr2065862pjd.181.1610539346108;
+ Wed, 13 Jan 2021 04:02:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X9s7Wxq+b6ls0q7o@mwanda>
+References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+ <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net> <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
+ <CACRpkda4E2NwNw29J7x5gehtqn_m3M_Z2dHpc7xRgvb0b-p22A@mail.gmail.com> <b8eb1c83-d2f8-1c72-ca67-4160b90b3845@landley.net>
+In-Reply-To: <b8eb1c83-d2f8-1c72-ca67-4160b90b3845@landley.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 13 Jan 2021 14:02:09 +0200
+Message-ID: <CAHp75VfzUt_kgzNuXt7pYG4UWcZMF9MtnT1n1j8thOys=OJ+ZA@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     Rob Landley <rob@landley.net>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Gerhard Pircher <gerhard_pircher@gmx.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-12-20, 14:04, Dan Carpenter wrote:
-> This error path should return -EINVAL, but currently it returns
-> success.
+On Wed, Jan 13, 2021 at 9:58 AM Rob Landley <rob@landley.net> wrote:
+> On 1/12/21 4:46 PM, Linus Walleij wrote:
 
-Applied, thanks
+...
+
+> Testing that a basic superh system still builds and boots under qemu and j-core
+> I can commit to doing regularly. Testing specific hardware devices on boards I
+> don't regularly use is a lot harder.
+
+In our lab we have different hardware connected (including non-x86,
+mostly due to maintenance and testing drivers) and it allows us to run
+more or less fresh kernels on it. Setup is pretty simple: server with
+connected USB 2 serial, network, etc, power cutters, relays to emulate
+power button presses for the hardware that can't be turned off and on
+by cutting the main power (usual case for tablets / phones) and so on.
+From a software point of view we use a netboot image [1][2] which
+allows us to kexec kernel downloaded via net.
+
+Now to the point, perhaps organizations like LF can set up something
+like this with one technician to support this and pay electricity /
+internet bills?
+
+[1]: https://github.com/andy-shev/linux/tree/netboot (just a set of
+kernel configuration options on top of defaults)
+[2]: https://github.com/andy-shev/buildroot/tree/intel/board/intel/common
+(see README in the folder)
 
 -- 
-~Vinod
+With Best Regards,
+Andy Shevchenko
