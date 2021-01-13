@@ -2,89 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FF02F518D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E7F2F5195
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbhAMR6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:58:52 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:28808 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728064AbhAMR6v (ORCPT
+        id S1728028AbhAMR7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:59:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727198AbhAMR7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:58:51 -0500
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 10DHvsCO008110
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:57:55 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 10DHvsCO008110
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1610560675;
-        bh=5QLVKZuMn5+SASfPyUyRYZJzylR2IbKY13Wi4rwHquM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=P5ZlsuTITcTtH4fgdsfnIRQA/RNX/XwYw6hh3aXjz8I5GBF0JhiJ0OZtOiv2XE9lw
-         IyjCEjvPIOggSlld3JN8PjBDTBFtFT4Gx3ZU5V+2LDN87FkLl8dcGM37oDF7051xXF
-         rVoX6bNtkUEhfe/1YDj1FrN73PpW6iSXXSlTKzepLaYmcxPJiQP9Mjf+gQjlOnDIzl
-         3rtesFZvnvxYANp1TIDBaYnwDtKiQSYpMYakEv+Y74mJ/Iv5iaHo4e0PRndqjygORf
-         ybUEV3l7S3ylfL1u4w8WXp/kbPvvEoRh2yvzkLLZCDMF2qwdc7FNEYjF3hs2LJDrqN
-         TfDmVg07oTQhw==
-X-Nifty-SrcIP: [209.85.210.176]
-Received: by mail-pf1-f176.google.com with SMTP id h186so1711599pfe.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:57:55 -0800 (PST)
-X-Gm-Message-State: AOAM532QCENqHoNk4MDciRUXZSPdW2Ui2/Ca3SBhJ6zTjD8CU0Z/hNuz
-        tTTZRYPhH3zvXfef9kx5ZjHLheACJYEI7V96amY=
-X-Google-Smtp-Source: ABdhPJwe0YwDDNuydX2BebdE5MltJXjy4MJNoOanXcv5kpNBbU3IkW5nMY5kgtTSjSp+VhWkx7IipknxRKQB2gK7of8=
-X-Received: by 2002:aa7:9501:0:b029:155:3b11:d5c4 with SMTP id
- b1-20020aa795010000b02901553b11d5c4mr3156162pfp.76.1610560674180; Wed, 13 Jan
- 2021 09:57:54 -0800 (PST)
+        Wed, 13 Jan 2021 12:59:54 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0237C061786;
+        Wed, 13 Jan 2021 09:59:13 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id e18so4305905ejt.12;
+        Wed, 13 Jan 2021 09:59:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=K3lJSkAmIONPcPf9xd+9VR4Fox3bOonPKOs/UyGeHBg=;
+        b=IiVJwDFjknV0MCeRm+zflcNlKRlgNisAvliRi4aqQzoHrZbPMoS9Wf7DwhquZZTKrM
+         Y0mg8t8ESlugD2Je3+BvIi3QmnBK5kzzgAxlWWR9VJNm7HcCj7/nRVsFMAlx/n1Cnp/a
+         fpAwe5Zn1Y0IDz4CyEwFeLkybolvmLxhXEkxXAbQGA0cvfOET9iIvxawE1ner/q6Kf87
+         Qr15Ikh5cOQK20+X/3GZa3vcDOVtmp1uz3abAfzzSNrctw50jdUmRc5hTGpdPQZYgqgM
+         Xz4CZgOQLgp7/sls8INl4Hx8rxaHSIkHhKhlVaEGaMEa4NWdLeImdrSfPwPy8joUq5hj
+         dD/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K3lJSkAmIONPcPf9xd+9VR4Fox3bOonPKOs/UyGeHBg=;
+        b=MrMcgjMfXho/Pe5mPDeg6K4IAhf0auYOxwB8WNsap2MSdLNGu9AiFlrqo+1iE6nYC8
+         k2XLlxhP8d+6MXGXYK3G1dWgnnPRvbc6eoEW82yaTgy0RRdXaS/MsvYGYnC4u2IHoqK9
+         e18OUaqC6kUJFQHdFWrU9/8ht4gA41vFVCW5J7Mx8LsHaG9yO/uLmgeZj8xiZCrLIE0J
+         VOjR/0mhUoDLvgMAPHIBFTmJvLesTJyDELzYLQ0OeaIe9NIU1maLyd7iyuemQBVvBcyh
+         WjAWMvpXK8kpdLQl/yvQaDUfQjbreyDIXLIee+iN50T9AYQO/4hQIdoBCUpZFcnIVpS1
+         s+Hg==
+X-Gm-Message-State: AOAM530Wa0KM2JiWNMPAKnGsjja5J5LfODzCZWhImqFtinolSB5F2iap
+        RmFebWBY7Y91Ne7zrtOSseg=
+X-Google-Smtp-Source: ABdhPJyGambVBXGSTAkUy+ghOTP6gayM2fFu5Hn60IlqUncvDPpABHsO1R6RzDQwW4DQ9fUwfwXGbA==
+X-Received: by 2002:a17:907:20a6:: with SMTP id pw6mr2503938ejb.73.1610560752516;
+        Wed, 13 Jan 2021 09:59:12 -0800 (PST)
+Received: from [192.168.178.40] (ipbcc05d1b.dynamic.kabel-deutschland.de. [188.192.93.27])
+        by smtp.gmail.com with ESMTPSA id x9sm989146ejd.99.2021.01.13.09.59.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jan 2021 09:59:11 -0800 (PST)
+Subject: Re: [PATCH] scsi: target: tcmu: Fix wrong uio handling causing big
+ memory leak
+To:     Mike Christie <michael.christie@oracle.com>,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20201218141534.9918-1-bostroesser@gmail.com>
+ <73dc2d01-6398-c1d1-df47-66034d184eec@oracle.com>
+From:   Bodo Stroesser <bostroesser@gmail.com>
+Message-ID: <aa95b4db-ca88-e38c-3871-fb935f1e2212@gmail.com>
+Date:   Wed, 13 Jan 2021 18:59:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210112224832.10980-1-will@kernel.org> <161055398865.21762.12236232732054213928.b4-ty@arm.com>
-In-Reply-To: <161055398865.21762.12236232732054213928.b4-ty@arm.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 14 Jan 2021 02:57:17 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASs6dvU6D3jL2GG3jW58fXfaj6VNOe55NJnTB8UPuk2pA@mail.gmail.com>
-Message-ID: <CAK7LNASs6dvU6D3jL2GG3jW58fXfaj6VNOe55NJnTB8UPuk2pA@mail.gmail.com>
-Subject: Re: [PATCH] compiler.h: Raise minimum version of GCC to 5.1 for arm64
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Florian Weimer <fweimer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <73dc2d01-6398-c1d1-df47-66034d184eec@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 1:08 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Tue, 12 Jan 2021 22:48:32 +0000, Will Deacon wrote:
-> > GCC versions >= 4.9 and < 5.1 have been shown to emit memory references
-> > beyond the stack pointer, resulting in memory corruption if an interrupt
-> > is taken after the stack pointer has been adjusted but before the
-> > reference has been executed. This leads to subtle, infrequent data
-> > corruption such as the EXT4 problems reported by Russell King at the
-> > link below.
-> >
-> > [...]
->
-> Applied to arm64 (for-next/fixes), thanks!
->
-> [1/1] compiler.h: Raise minimum version of GCC to 5.1 for arm64
->       https://git.kernel.org/arm64/c/1f1244a5ddb7
->
-> --
-> Catalin
->
+On 12.01.21 19:36, Mike Christie wrote:
+> On 12/18/20 8:15 AM, Bodo Stroesser wrote:
+>> tcmu calls uio_unregister_device from tcmu_destroy_device.
+>> After that uio will never call tcmu_release for this device.
+>> If userspace still had the uio device open and / or mmap'ed
+>> during uio_unregister_device, tcmu_release will not be called and
+>> udev->kref will never go down to 0.
+>>
+> 
+> I didn't get why the release function is not called if you call
+> uio_unregister_device while a device is open. Does the device_destroy call in
+> uio_unregister_device completely free the device or does it set some bits so
+> uio_release is not called later?
 
+uio_unregister_device() resets the pointer (idev->info) to the struct 
+uio_info which tcmu provided in uio_register_device().
+The uio device itself AFAICS is kept while it is open / mmap'ed.
+But no matter what userspace does, uio will not call tcmu's callbacks
+since info pointer now is NULL.
 
-Maybe, we can raise the minimal version to gcc 5.1
-for all architectures.
+When userspace finally closes the uio device, uio_release is called, but
+tcmu_release can not be called.
 
+> 
+> Do other drivers hit this? Should uio have refcounting so uio_release is called
+> when the last ref (from userspace open/close/mmap calls and from the kernel by
+> drivers like target_core_user) is done?
+> 
 
--- 
-Best Regards
-Masahiro Yamada
+To be honest I don't know exactly.
+tcmu seems to be a special case in that is has it's own mmap callback.
+That allows us to map pages allocated by tcmu.
+As long as userspace still holds the mapping, we should not unmap those
+pages, because userspace then could get killed by SIGSEGV.
+So we have to wait for userspace closing uio before we may unmap and
+free the pages.
