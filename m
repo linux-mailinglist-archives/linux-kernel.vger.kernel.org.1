@@ -2,81 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B40AA2F4D6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B00C32F4D6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbhAMOnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:43:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
+        id S1727041AbhAMOn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:43:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726433AbhAMOnS (ORCPT
+        with ESMTP id S1726492AbhAMOn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:43:18 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA38BC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:42:37 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610548955;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=fj88E4Kjvnw1x0rsUVu+x2lWiR9tSl/7uxT/V662qo4=;
-        b=K+Xv8OqlRYo4Q2mZsyqj+5hu8XbTXzuvf+Fr5hbDMutjzXp6d4a7ARjN5hwicTieQbkO6B
-        3rufam2vXqqNF1LNryPP+0LkFKPEASyo06iBf3zPKiWVFDSc1FNrzaVcDqfV9mXNBtKFtl
-        nCqEg70a+Z64mxhB0fBmyfKB4BjIdFl2jM5/DnBeyPDmhwAserDa1dnY5Qz3jfSC5VNzNA
-        p4vURXK2R5ez8eria5wOsi3tJAfSL4mibcVKz+/bp9IjcuGIHEgtsUJ9EsDEudliQZrbKH
-        Vow27uwIlf+eMCZXq9mZdhuBWAazJ4++dbFpUNIP9ygapuCrnokjBxcRyzQ3IA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610548955;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=fj88E4Kjvnw1x0rsUVu+x2lWiR9tSl/7uxT/V662qo4=;
-        b=nctvjqMXS6fCaacHeyEXLuBR/gWwknxfDYtFYByO+es3VXTPwS5/VeRgDSp/cEuVnXMnh2
-        75YATH7omjc56TDg==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] printk: ringbuffer: fix line counting
-Date:   Wed, 13 Jan 2021 15:48:34 +0106
-Message-Id: <20210113144234.6545-1-john.ogness@linutronix.de>
+        Wed, 13 Jan 2021 09:43:56 -0500
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F9DC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:43:16 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by michel.telenet-ops.be with bizsmtp
+        id GEjD2401H4C55Sk06EjDTH; Wed, 13 Jan 2021 15:43:14 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kzhMe-003HhP-N3; Wed, 13 Jan 2021 15:43:12 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kzhMe-005oUh-5n; Wed, 13 Jan 2021 15:43:12 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] nt: usb: USB_RTL8153_ECM should not default to y
+Date:   Wed, 13 Jan 2021 15:43:09 +0100
+Message-Id: <20210113144309.1384615-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Counting text lines in a record simply involves counting the number
-of newline characters (+1). However, it is searching the full data
-block for newline characters, even though the text data can be (and
-often is) a subset of that area. Since the extra area in the data
-block was never initialized, the result is that extra newlines may
-be seen and counted.
+In general, device drivers should not be enabled by default.
 
-Restrict newline searching to the text data length.
-
-Fixes: b6cf8b3f3312 ("printk: add lockless ringbuffer")
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Fixes: 657bc1d10bfc23ac ("r8153_ecm: avoid to be prior to r8152 driver")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- kernel/printk/printk_ringbuffer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/usb/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-index 6704f06e0417..8a7b7362c0dd 100644
---- a/kernel/printk/printk_ringbuffer.c
-+++ b/kernel/printk/printk_ringbuffer.c
-@@ -1718,7 +1718,7 @@ static bool copy_data(struct prb_data_ring *data_ring,
- 
- 	/* Caller interested in the line count? */
- 	if (line_count)
--		*line_count = count_lines(data, data_size);
-+		*line_count = count_lines(data, len);
- 
- 	/* Caller interested in the data content? */
- 	if (!buf || !buf_size)
+diff --git a/drivers/net/usb/Kconfig b/drivers/net/usb/Kconfig
+index 1e37190287808973..fbbe786436319013 100644
+--- a/drivers/net/usb/Kconfig
++++ b/drivers/net/usb/Kconfig
+@@ -631,7 +631,6 @@ config USB_NET_AQC111
+ config USB_RTL8153_ECM
+ 	tristate "RTL8153 ECM support"
+ 	depends on USB_NET_CDCETHER && (USB_RTL8152 || USB_RTL8152=n)
+-	default y
+ 	help
+ 	  This option supports ECM mode for RTL8153 ethernet adapter, when
+ 	  CONFIG_USB_RTL8152 is not set, or the RTL8153 device is not
 -- 
-2.20.1
+2.25.1
 
