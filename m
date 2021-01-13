@@ -2,106 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE942F4301
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC80E2F4311
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726234AbhAMETL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 23:19:11 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:49467 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725372AbhAMETJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 23:19:09 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DFvM72kBLz9sVR;
-        Wed, 13 Jan 2021 15:18:26 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1610511507;
-        bh=IlUxPAYnSr4hw1LXKEuVmx8u+KU3KYGYTEv56jfUBYA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jymkbG1SMauBdMsQ9ipftrEfRBIqkYID5bDlX3mdBeYTvpqmy9y3/TR8EJMn0PJ7A
-         xNGJEVhJFLJNpL5RIL8Kg5tNwE/rXUYldoI3PIL+LDoMML6YWgwHlCbFkFEIRi0Ec0
-         EMtEu4odxSDP/ynTyMD5NA2e91U00/lYNz+mBQcCpBAghNnRxRJ5EPfbTw7GDL+Uoz
-         Mocym4N9tb+kNUyzV7AQV007TRUatIYePBiUH0aDLwwRiWgwPhjhfn9s82CcwoakjW
-         SKpJ2BCHyhvAU1F1u/H+8Nm9Lf5DjGD2jzmlUjmP5Zw9vt/Yp6pbjLGWji4LvYjNFo
-         tES22e8swRgIQ==
-Date:   Wed, 13 Jan 2021 15:18:25 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Yanteng Si <siyanteng@loongson.cn>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the jc_docs tree
-Message-ID: <20210113151825.31669f1a@canb.auug.org.au>
-In-Reply-To: <20210113151254.74b9a295@canb.auug.org.au>
-References: <20210113151254.74b9a295@canb.auug.org.au>
+        id S1726510AbhAMEWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 23:22:40 -0500
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:36458 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725951AbhAMEWj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 23:22:39 -0500
+Received: by mail-wr1-f49.google.com with SMTP id t16so648417wra.3;
+        Tue, 12 Jan 2021 20:22:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t3HagmBJGovu0QvJZ9KkIGiFFpl5tBOZ8sPFd4qVoYI=;
+        b=TJFWOML7H/e22DV9zE09on7UBmd9cnPZTozwpOfRZW3gUus0a5+1+RdQ3zZG7FMiNm
+         YYrJ2yTT8K8gsevziG+Vja7JAokiO5RCgJAUc+bRgGFZTQ079RrmjLv/UI8OA81cen4D
+         pjT4+eR2t6lyaQr0i5o+MtSTD8mMhgwROt449cO0R73NiS7l8td9QX/dgHZvTg6jg5I2
+         ZFtJwU5CJw5DoGnz0bYfPVzWg85V99x8ZxbJmUNK7/PtZckVyqRWcMkFy04qexEOWHfk
+         /sMlfpZfIwZUNmeWhFmzmBY4iwigSXWeBeaFIPsniWqfZTpJxw2tCphN2pjZ3xlNAMty
+         AWXg==
+X-Gm-Message-State: AOAM532SW+So3rYC1sImrchQrXoS/JsgCT8Voiti454p6m7uhQFX5IaM
+        4qivewMFP27pUckCBq/jXV4=
+X-Google-Smtp-Source: ABdhPJzkaHrOeWdlGhY6q6jzcbNwiFHzkRhLH5KAuOzako6cSBOPHauedfAa1PwsFlvx0m3keAHPxw==
+X-Received: by 2002:a5d:4101:: with SMTP id l1mr413041wrp.196.1610511717435;
+        Tue, 12 Jan 2021 20:21:57 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id y11sm886936wmi.0.2021.01.12.20.21.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 20:21:56 -0800 (PST)
+Date:   Wed, 13 Jan 2021 05:21:54 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     robh@kernel.org, shawnguo@kernel.org, festevam@gmail.com,
+        kernel@pengutronix.de, linux-imx@nxp.com, catalin.marinas@arm.com,
+        will@kernel.org, kernel@puri.sm, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 8/9] arm64: dts: Add Librem5 Evergreen
+Message-ID: <20210113042154.GA6486@kozik-lap>
+References: <20210112095151.4995-1-martin.kepplinger@puri.sm>
+ <20210112095151.4995-9-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7.dBLHBoEm_ATVUaJ_BJ1Ve";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210112095151.4995-9-martin.kepplinger@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/7.dBLHBoEm_ATVUaJ_BJ1Ve
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Wed, 13 Jan 2021 15:12:54 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On Tue, Jan 12, 2021 at 10:51:50AM +0100, Martin Kepplinger wrote:
+> Add librem5-r4 with specifics to that revision like the near-level,
+> battery and charger properties. For schematics and more information,
+> see https://developer.puri.sm/Librem5/Hardware_Reference/Evergreen.html
+> 
+> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> ---
+>  arch/arm64/boot/dts/freescale/Makefile        |  1 +
+>  .../boot/dts/freescale/imx8mq-librem5-r4.dts  | 35 +++++++++++++++++++
+>  2 files changed, 36 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-librem5-r4.dts
 >
-> After merging the jc_docs tree, today's linux-next build (htmldocs)
-> produced this warning:
->=20
-> Documentation/translations/zh_CN/mips/booting.rst:5: WARNING: undefined l=
-abel: booting (if the link has no caption the label must precede a section =
-header)
->=20
-> Introduced by commit
->=20
->   7fd3954b0c52 ("doc/zh_CN: add mips booting.rst translation")
 
-Similarly,
+The bindings go before DTS change using them.
 
-Documentation/translations/zh_CN/mips/features.rst:5: WARNING: undefined la=
-bel: features (if the link has no caption the label must precede a section =
-header)
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-from commit
-
-  72bc9d08868d ("doc/zh_CN: add mips features.rst translation")
-
-and
-
-Documentation/translations/zh_CN/mips/ingenic-tcu.rst:5: WARNING: undefined=
- label: ingenic-tcu (if the link has no caption the label must precede a se=
-ction header)
-
-from commit
-
-  419b1d4ed1cb ("doc/zh_CN: add mips ingenic-tcu.rst translation")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/7.dBLHBoEm_ATVUaJ_BJ1Ve
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/+dJEACgkQAVBC80lX
-0Gw2kAf/Xr22YMpT+xF1yQv4RiLTvS2JVpXF79OlB40oVKDG1LfvvtGdszu4E+fj
-K+j479S5l+18zKeHaRQ0BxcXNIHLkCsCRhmo/I7jlY8rt3s4ie5c44FnZSadDnWh
-w/bowTn26Lws1lSMLtLE19swUrX1Z2mN48rs24oXJAnhYWPHbcIKSvAQ6YJMCiAm
-3/opYJIS5iTQlTzhCiPQA7hLGJEMjTCFtovUSzt+n4S8aeoNgkvWW1PMTYe3Dk8O
-GJaWmBUm2dvWvCZBnlWzoR66uJ3QonboXiFfGJT975froo9AHKQwqNP6xOfvVxNj
-LrSQ8UlmM0YaiqndzRUTKe11jNZFMQ==
-=MbEr
------END PGP SIGNATURE-----
-
---Sig_/7.dBLHBoEm_ATVUaJ_BJ1Ve--
+Best regards,
+Krzysztof
