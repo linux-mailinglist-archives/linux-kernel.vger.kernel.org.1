@@ -2,158 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045672F460D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C425E2F4640
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727102AbhAMIO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:14:27 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10653 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727074AbhAMIO0 (ORCPT
+        id S1727143AbhAMIPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:15:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33819 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726917AbhAMIPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:14:26 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DG0YM6s60z15rQ8;
-        Wed, 13 Jan 2021 16:12:39 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Wed, 13 Jan 2021
- 16:13:34 +0800
-Subject: Re: [PATCH v3 2/3] dt-bindings: arm: hisilicon: Add binding for L3
- cache controller
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     devicetree <devicetree@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Haojian Zhuang" <haojian.zhuang@gmail.com>,
+        Wed, 13 Jan 2021 03:15:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610525646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/1vAmJrhkq2OfagK3P6iEhed/uMIynZjuQhF3qxhH8o=;
+        b=Yo+IX3PAvj134ldCL90Fgk0mR0gEqF6wzHuXbjX161G0ZHWFipEIhPZhpTSFGOiYa/0cWb
+        dpSDoV7WUfiq2mrvimOuuWfLF8lFW+G3eALDdCEzPk/bdW56R/vQdamesFxtW2rTy43fi0
+        Js/6SB54xR2C9wfnxzn8H+vyMrsHBnQ=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-323-Pn6P3IMjMfCtvmeJC_NhZA-1; Wed, 13 Jan 2021 03:14:04 -0500
+X-MC-Unique: Pn6P3IMjMfCtvmeJC_NhZA-1
+Received: by mail-ed1-f70.google.com with SMTP id m16so498221edd.21
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:14:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/1vAmJrhkq2OfagK3P6iEhed/uMIynZjuQhF3qxhH8o=;
+        b=iVPMyHmX3Q8rykrjGVh01uL+yggfgSq2KTw9W0UOk3q2Yi0bfTlKU93HGY3SJgPwYE
+         O2TpjN9KljDGUD5PHCynPEK1SGglrpiLisOfJ6PZauKDC/HpA9Tv1c0uvNGl5UZelR6F
+         JDs9M7P4AdIfVIyfCL0tH65NZEJ5sd2EO+yTwumCRoFuMWob2/SyKYWMHaF26150Mb/G
+         6/k/+6u+yFiX7Xq9boTBlN3X6tGNXdqEzLD6qEFtumQ62zldO8Rm6qHGOdwXkDDtES3+
+         fFjwovoWlJ0bC17j9GCiwO6+7iIDg9mRdNTEWkisbkUCZ9QAw6Zid/QTyZDDwKU5o7W9
+         r1DQ==
+X-Gm-Message-State: AOAM531MLxH3xwDxEnxiL6kQiIeuWIuEUi44qgAlaVviIOI6BtjHDdsg
+        0zvDbzjWkw2P/iNmZkRhZWFQQmuJeu2aOk6pFbLHMGnd9+y/zd5v/aE4+hHrMSmdeHqpDa2gUGb
+        3v1McB9aqj9J7wrRkg0xI4WVW
+X-Received: by 2002:a17:906:59a:: with SMTP id 26mr685053ejn.309.1610525643081;
+        Wed, 13 Jan 2021 00:14:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzpBbPK2it/e3/DMPj561v1NJDrZUmv4OrQR0EDu4qwYEu5NzUyBMJt5+9U1Ocwv7e2f0fGdA==
+X-Received: by 2002:a17:906:59a:: with SMTP id 26mr685045ejn.309.1610525642945;
+        Wed, 13 Jan 2021 00:14:02 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id x17sm482923edq.77.2021.01.13.00.14.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jan 2021 00:14:02 -0800 (PST)
+Subject: Re: [PATCH v2 0/3] PinePhone volume key (LRADC) wakeup support
+To:     Samuel Holland <samuel@sholland.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Russell King <rmk+kernel@arm.linux.org.uk>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20210112015602.497-1-thunder.leizhen@huawei.com>
- <20210112015602.497-3-thunder.leizhen@huawei.com>
- <CAK8P3a0VcLtOrvXKEd2dDuP8HhKzU+uB0U6OiJXtefQQYjTheg@mail.gmail.com>
- <a11515e2-1fc6-be7d-f50c-8e3ad20f9e6c@huawei.com>
- <CAK8P3a1jcg3CEP0QhtTP4gES9MHLdrHPZffkSxtxbr78FScrrg@mail.gmail.com>
- <f563115c-4461-eee0-ee8d-1fd8f4dbbe63@huawei.com>
-Message-ID: <82720d56-733d-28e9-b682-bcc769ad70ab@huawei.com>
-Date:   Wed, 13 Jan 2021 16:13:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     devicetree@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
+References: <20210113040542.34247-1-samuel@sholland.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <45344b30-b784-c3d3-e8dc-d2a562c5cb83@redhat.com>
+Date:   Wed, 13 Jan 2021 09:14:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <f563115c-4461-eee0-ee8d-1fd8f4dbbe63@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210113040542.34247-1-samuel@sholland.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+On 1/13/21 5:05 AM, Samuel Holland wrote:
+> This series allows the volume keys on the PinePhone to wake up the
+> device. As pointed out for v1, wakeup should only be enabled when a
+> "wakeup-source" property is present, so v2 requires DT and binding
+> changes in addition to the driver change.
+> 
+> Changes since v1:
+>   - Add requisite DT binding change
+>   - Only add wakeup capability if "wakeup-source" is present
+>   - Warn but do not error out if setting the wake IRQ fails
+>   - Add "wakeup-source" property to PinePhone device tree
+> 
+> Ondrej Jirman (1):
+>   input: sun4i-lradc-keys -  Add wakup support
+> 
+> Samuel Holland (2):
+>   dt-bindings: sun4i-a10-lradc-keys: Accept wakeup-source property
+>   arm64: dts: allwinner: pinephone: Support volume key wakeup
 
-On 2021/1/13 15:44, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2021/1/12 21:55, Arnd Bergmann wrote:
->> On Tue, Jan 12, 2021 at 1:35 PM Leizhen (ThunderTown)
->> <thunder.leizhen@huawei.com> wrote:
->>> On 2021/1/12 16:46, Arnd Bergmann wrote:
->>>> On Tue, Jan 12, 2021 at 2:56 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->>>>
->>>>> +---
->>>>> +$id: http://devicetree.org/schemas/arm/hisilicon/l3cache.yaml#
->>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>>> +
->>>>> +title: Hisilicon L3 cache controller
->>>>> +
->>>>> +maintainers:
->>>>> +  - Wei Xu <xuwei5@hisilicon.com>
->>>>> +
->>>>> +description: |
->>>>> +  The Hisilicon L3 outer cache controller supports a maximum of 36-bit physical
->>>>> +  addresses. The data cached in the L3 outer cache can be operated based on the
->>>>> +  physical address range or the entire cache.
->>>>> +
->>>>> +properties:
->>>>> +  compatible:
->>>>> +    items:
->>>>> +      - const: hisilicon,l3cache
->>>>> +
->>>>
->>>> The compatible string needs to be a little more specific, I'm sure
->>>> you cannot guarantee that this is the only L3 cache controller ever
->>>> designed in the past or future by HiSilicon.
->>>>
->>>> Normally when you have an IP block that is itself unnamed but that is specific
->>>> to one or a few SoCs but that has no na, the convention is to include the name
->>>> of the first SoC that contained it.
->>>
->>> Right, thanks for your suggestion, I will rename it to "hisilicon,hi1381-l3cache"
->>> and "hisilicon,hi1215-l3cache".
-> 
-> Sorry, Just received a response from the hardware developers, the SoC names need to
-> be changed:
-> hi1381 --> kunpeng509
-> hi1215 --> kunpeng506
-> 
-> So I want to rename the compatible string to "hisilicon,kunpeng-l3v1", Kunpeng L3
+Thanks, the entire series looks good to me:
 
-I thought about it. Let's name it "hisilicon,kunpeng-l3cache", and then add v2 in
-the future. Maybe the SoC name is changed later, and v2 is not required.
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-> cache controller version 1. This is enough to distinguish other versions of cache
-> controller. It also facilitates the naming of the config option and files.
-> 
->>
->> Sounds good.
->>
->>>> Can you share which products actually use this L3 cache controller?
->>>
->>> This L3 cache controller is used on Hi1381 and Hi1215 board. I don't know where
->>> these two boards are used. Our company is too large. Software is delivered level
->>> by level. I'm only involved in the Kernel-related part.
->>>
->>>>
->>>> On a related note, what does the memory map look like on this chip?
->>>
->>> memory@a00000 {
->>>      device_type = "memory";
->>>      reg = <0x0 0xa00000 0x0 0x1aa00000>, <0x1 0xe0000000 0x0 0x1d000000>, <0x0 0x1f400000 0x0 0xb5c00000>;
->>> };
->>>
->>> Currently, the DTS is being maintained by ourselves, I'll try to upstream it later.
->>>
->>>> Do you support more than 4GB of total installed memory? If you
->>>
->>> Currently, the total size does not exceed 4 GB. However, the physical address is wider than 32 bits.
->>
->> Ok, so it appears that the memory is actually contiguous in the first
->> 3.5GB (with a few holes), plus the remaining 0.5GB being offset in
->> the physical memory by 4GB (starting at 0x1e0000000 instead of
->> 0xe0000000), presumably to allow the use of 32-bit DMA addresses.
->>
->> This works fine for the moment, but it does require support for
->> a nonlinear virt_to_phys()/phys_to_virt() translation after highmem
->> gets removed, and you would get at most 3.75GB anyway, so it
->> might be easier at that point to just drop the entire last block at
->> 0x1e0000000, but this will depend on how well we get the 4G:4G
->> code to work, and whether the users will still need kernel updates for
->> this platform then.>
->>      Arnd
->>
->> .
->>
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-> .
-> 
+Regards,
+
+Hans
 
