@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2482F51BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC972F51BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728232AbhAMSM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 13:12:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727198AbhAMSM5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 13:12:57 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EEE0C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 10:12:17 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kzkcu-005sJl-BD; Wed, 13 Jan 2021 19:12:12 +0100
-Message-ID: <0f2b134140bc7a8d4a2619a26e1ca87339b220bd.camel@sipsolutions.net>
-Subject: Re: [PATCH] mm/slub: disable user tracing for kmemleak caches
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Pekka Enberg <penberg@kernel.org>
-Date:   Wed, 13 Jan 2021 19:11:55 +0100
-In-Reply-To: <1db7c986-25c4-884e-4fbf-9af348bdff6f@suse.cz>
-References: <20210113170931.929f808099d2.I117b6764e725b3192318bbcf4269b13b709539ae@changeid>
-         <1db7c986-25c4-884e-4fbf-9af348bdff6f@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S1728106AbhAMSMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 13:12:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37038 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727198AbhAMSMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 13:12:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCA88233ED;
+        Wed, 13 Jan 2021 18:12:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610561532;
+        bh=9elX7cNWCe9G39/ZIw1v4prZnJFSz0GD4UUQdqJ6cqE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RgeWmANpXc1zGm081hvR7XF+GkBpB0TC98RrJNkav937ZHj09ykKwwD8xh3/uU97T
+         Vt2UhvNZFdwfsOPFEYKH1H9a/ttv4wSLURnfnZrTrfzkNXPjFKl6+tijxAoEbgVAOk
+         S2Ptnrzty7BXw0YCJWEoYe9NmIQ2RF1gB0VzBtNeoM2uzsRmUCr8CKix9oNXUx3CdS
+         sXLpFNTXSzqFzeXvBczfr3C5qEqCxJKkwfHb856KV8nxGRSTukfB+UFslnUfrYukz6
+         g6iAurhru6LdWCrTZ8xJGbfbLh/PhXu5gdqI2ndxW1p+4CXMLNc06OfaSCI+nJ3ggp
+         tSge7vUBE9q4g==
+Date:   Wed, 13 Jan 2021 10:12:10 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Edward Cree <ecree@solarflare.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yadu Kishore <kyk.segfault@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 0/5] skbuff: introduce skbuff_heads bulking and
+ reusing
+Message-ID: <20210113101210.6d0ad308@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CANn89iJeJR+i-WLi=VwNSmWQ2aFepmFO8w6Yh9DQX6hvV4BceA@mail.gmail.com>
+References: <20210111182655.12159-1-alobakin@pm.me>
+        <d4f4b6ba-fb3b-d873-23b2-4b5ba9cf4db8@gmail.com>
+        <20210112110802.3914-1-alobakin@pm.me>
+        <CANn89iKEc_8_ySqV+KrbheTDKRL4Ws6JUKYeKXfogJNhfd+pGQ@mail.gmail.com>
+        <20210112170242.414b8664@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CANn89i+ppTAPYwQ2mH5cZtcMqanFU8hXzD4szdygrjOBewPb+Q@mail.gmail.com>
+        <20210113090341.74832be9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CANn89iJeJR+i-WLi=VwNSmWQ2aFepmFO8w6Yh9DQX6hvV4BceA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-13 at 17:59 +0100, Vlastimil Babka wrote:
-> On 1/13/21 5:09 PM, Johannes Berg wrote:
-> > From: Johannes Berg <johannes.berg@intel.com>
-> > 
-> > If kmemleak is enabled, it uses a kmem cache for its own objects.
-> > These objects are used to hold information kmemleak uses, including
-> > a stack trace. If slub_debug is also turned on, each of them has
-> > *another* stack trace, so the overhead adds up, and on my tests (on
-> > ARCH=um, admittedly) 2/3rds of the allocations end up being doing
-> > the stack tracing.
-> > 
-> > Turn off SLAB_STORE_USER if SLAB_NOLEAKTRACE was given, to avoid
-> > storing the essentially same data twice.
-> > 
-> > Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+On Wed, 13 Jan 2021 18:15:20 +0100 Eric Dumazet wrote:
+> > IDK much about MM, but we already have a kmem_cache for skbs and now
+> > we're building a cache on top of a cache.  Shouldn't MM take care of
+> > providing a per-CPU BH-only lockless cache?  
 > 
-> How about stripping away SLAB_STORE_USER only if it's added from the global
-> slub_debug variable? In case somebody lists one of the kmemleak caches
-> explicitly in "slub_debug=..." instead of just booting with "slub_debug", we
-> should honor that.
+> I think part of the improvement comes from bulk operations, which are
+> provided by mm layer.
+> 
+> I also note Alexander made no provision for NUMA awareness.
+> Probably reusing skb located on a remote node will not be ideal.
 
-Good point, that makes a lot of sense.
+I was wondering about that yesterday, but couldn't really think 
+of a legitimate reason not to have XPS set up right. Do you have
+particular config in mind, or are we taking "default config"?
 
-TBH, I mostly sent this to see if anyone would think it acceptable. I've
-now disabled slub debugging completely for the kmemleak caches by
-command line, and as expected that improves things further. I'm _hoping_
-of course that kmemleak itself doesn't contain egregious bugs, but seems
-like a fair bet for now :)
+Also can't the skb _itself_ be pfmemalloc?
 
-So what do you/people think? Should we disable this? Disable all?
-Subject to the above constraint, either way.
+My main point is that I'm wondering if this sort of cache would be
+useful when allocating skbs for sockets? Assuming that the network
+stack is not isolated to its own cores, won't fronting alloc_skb() 
+with 
 
-Thanks,
-johannes
+	bh_disable() 
+	try the cache
+	bh_enable()
 
+potentially help? In that sense fronting kmem_cache would feel cleaner
+than our own little ring buffer.
