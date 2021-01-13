@@ -2,91 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3642F56CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C39242F56FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728243AbhANBxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:53:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30837 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729707AbhANABN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 19:01:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610582340;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RG9xUUlRmA1xz/NHX//EJP2iaG6jgVRLD9TcXfS/a5U=;
-        b=K/GSOXLQ68fsxA4osjABmBp6/HvFQ28uU3OWUO4jiR2n1CahtIlM2jLrYXJ/Vqaaz5P5WA
-        BsU8o6gsV4Rt42JCVqknuztF3eUisP3ygHvxHFqAfPQeyWily8DXW4A9M9LqwK7cLn7wDi
-        ArKMSZyUPOMQPuOaVXqaTmaBV11lM0Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-66-k8Mfz5PGNbGEiLFsWRogyA-1; Wed, 13 Jan 2021 17:45:30 -0500
-X-MC-Unique: k8Mfz5PGNbGEiLFsWRogyA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728628AbhANB5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:57:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54440 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729558AbhAMXpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 18:45:07 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA6B7107ACFA;
-        Wed, 13 Jan 2021 22:45:29 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EBAA960BD9;
-        Wed, 13 Jan 2021 22:45:28 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 16:45:26 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "vanessa.hack@fau.de" <vanessa.hack@fau.de>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: objtool/ORC generation for noreturn functions
-Message-ID: <20210113224526.64d244e7a4szftpj@treble>
-References: <daf04159-a458-4f0d-9f29-d8ef5a63fae6@email.android.com>
- <20210113184131.yh4zh4olfkdpydv7@treble>
- <8bfda75985c4429297afce9340303e34@AcuMS.aculab.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id ADD4823370;
+        Wed, 13 Jan 2021 22:48:46 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 17:48:45 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>,
+        <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
+        <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+        <huawei.libin@huawei.com>, <cj.chengjian@huawei.com>
+Subject: Re: [PATCH] kretprobe: avoid re-registration of the same kretprobe
+ earlier
+Message-ID: <20210113174845.7b1da377@gandalf.local.home>
+In-Reply-To: <20201222200356.6910b42c165b8756878cc9b0@kernel.org>
+References: <20201124115719.11799-1-bobo.shaobowang@huawei.com>
+        <20201130161850.34bcfc8a@gandalf.local.home>
+        <20201202083253.9dbc76704149261e131345bf@kernel.org>
+        <9dff21f8-4ab9-f9b2-64fd-cc8c5f731932@huawei.com>
+        <20201215123119.35258dd5006942be247600db@kernel.org>
+        <c584f7e2-1d95-4f6a-7e36-4ff2d610bc78@huawei.com>
+        <20201222200356.6910b42c165b8756878cc9b0@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8bfda75985c4429297afce9340303e34@AcuMS.aculab.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 10:39:53PM +0000, David Laight wrote:
-> > On Wed, Jan 13, 2021 at 11:44:22AM +0100, vanessa.hack@fau.de wrote:
-> > >    Hi,
-> > >    I am currently writing my final thesis at university on the topic of stack
-> > >    unwinding. My goal is to implement and evaluate stack unwinders for
-> > >    research operating system ports to x86 32 and 64 bit architectures and
-> > >    SPARC V8.
-> > >    For the x86 ports I chose ORC as unwinding format due to its simplicity
-> > >    and reliability. So far, it works quite well (although I've ran into some
-> > >    minor issues with objtool as the research OS is written in C++).
-> > >    But now I have some problems with functions that are explicitly marked as
-> > >    noreturn with the [[noreturn]] attribute, all following unwinding steps
-> > >    are unreliable. I have read in the objtool documentation that such
-> > >    functions have to be added to the objtool global_noreturn array.
-> > >    Unfortunately, I do not understand the purpose of that array and the
-> > >    intended ORC behaviour for noreturn functions. Are the unwinding steps
-> > >    that follow a noreturn intended to be unreliable?
-> 
-> There was an 'interesting' unwinder I saw a few years ago.
-> (Which couldn't handle 'noreturn' functions.)
-> 
-> The idea is to follow forwards through the code while keeping
-> track of %sp and %fp until a return instruction is found.
-> You need to be able to detect loops, and then continue from
-> the other target of an earlier conditional branch.
-> Provided function calls don't change %sp they can be ignored.
-> If the %fp isn't used as a frame pointer it won't get reloaded
-> into %sp so it doesn't matter
-> 
-> This works (most of the time) with no debug info and no symbol
-> table.
 
-Almost sounds like an in-kernel version of objtool :-)
+Anything more on this?
 
--- 
-Josh
+-- Steve
+
+
+On Tue, 22 Dec 2020 20:03:56 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> On Mon, 21 Dec 2020 21:31:42 +0800
+> "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com> wrote:
+> 
+> > Hi steven, Masami,
+> > We have encountered a problem, when we attempted to use steven's suggestion as following,
+> >   
+> > >>> If you call this here, you must make sure kprobe_addr() is called on rp->kp.
+> > >>> But if kretprobe_blacklist_size == 0, kprobe_addr() is not called before
+> > >>> this check. So it should be in between kprobe_on_func_entry() and
+> > >>> kretprobe_blacklist_size check, like this
+> > >>>
+> > >>> 	if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
+> > >>> 		return -EINVAL;
+> > >>>
+> > >>> 	addr = kprobe_addr(&rp->kp);
+> > >>> 	if (IS_ERR(addr))
+> > >>> 		return PTR_ERR(addr);
+> > >>> 	rp->kp.addr = addr;  
+> > 
+> > //there exists no-atomic operation risk, we should not modify any rp->kp's information, not all arch ensure atomic operation here.
+> >   
+> > >>>
+> > >>> 	ret = check_kprobe_rereg(&rp->kp);
+> > >>> 	if (WARN_ON(ret))
+> > >>> 		return ret;
+> > >>>
+> > >>>           if (kretprobe_blacklist_size) {
+> > >>> 		for (i = 0; > > +	ret = check_kprobe_rereg(&rp->kp);  
+> > 
+> > it returns failure from register_kprobe() end called by register_kretprobe() when
+> > we registered a kretprobe through .symbol_name at first time(through .addr is OK),
+> > kprobe_addr() called at the begaining of register_kprobe() will recheck and
+> > failed at following place because at this time we symbol_name is not NULL and addr is also.  
+> 
+> Good catch! Yes, it will reject if both kp->addr and kp->symbol are set.
+> 
+> > 
+> >    static kprobe_opcode_t *_kprobe_addr(const char *symbol_name,
+> >                           unsigned int offset)
+> >     {
+> >           if ((symbol_name && addr) || (!symbol_name && !addr))  //we failed here
+> > 
+> > 
+> > So we attempted to move this sentence rp->kp.addr = addr to __get_valid_kprobe() like this to
+> > avoid explict usage of rp->kp.addr = addr in register_kretprobe().
+> > 
+> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > index dd5821f753e6..ea014779edfe 100644
+> > --- a/kernel/kprobes.c
+> > +++ b/kernel/kprobes.c
+> > @@ -1502,10 +1502,15 @@ static kprobe_opcode_t *kprobe_addr(struct kprobe *p)
+> >   static struct kprobe *__get_valid_kprobe(struct kprobe *p)
+> >   {
+> >          struct kprobe *ap, *list_p;
+> > +       void *addr;
+> > 
+> >          lockdep_assert_held(&kprobe_mutex);
+> > 
+> > -       ap = get_kprobe(p->addr);
+> > +       addr = kprobe_addr(p);
+> > +       if (IS_ERR(addr))
+> > +               return NULL;
+> > +
+> > +       ap = get_kprobe(addr);
+> >          if (unlikely(!ap))
+> >                  return NULL;
+> > 
+> > But it also failed when we second time attempted to register a same kretprobe, it is also
+> > becasue symbol_name and addr is not NULL when we used __get_valid_kprobe().  
+> 
+> What the "second time" means? If you reuse the kretprobe (and kprobe) you must
+> reset (cleanup) the kp->addr or kp->symbol_name. That is the initial state.
+> I think the API should not allow users to enter inconsistent information.
+> 
+> > 
+> > So it seems has no idea expect for modifying _kprobe_addr() like following this, the reason is that
+> > the patch 0bd476e6c671 ("kallsyms: unexport kallsyms_lookup_name() and kallsyms_on_each_symbol()")
+> > has telled us we'd better use symbol name to register but not address anymore.
+> > 
+> > -static kprobe_opcode_t *_kprobe_addr(kprobe_opcode_t *addr,
+> > -                       const char *symbol_name, unsigned int offset)
+> > +static kprobe_opcode_t *_kprobe_addr(const char *symbol_name,
+> > +                       unsigned int offset)
+> >   {
+> > -       if ((symbol_name && addr) || (!symbol_name && !addr))
+> > +       kprobe_opcode_t *addr;
+> > +       if (!symbol_name)
+> >                  goto invalid;  
+> 
+> No, there are cases that the user will set only kp->addr, but no kp->symbol_name.
+> 
+> > 
+> > For us, this modification has not caused a big impact on other modules, only expects a little
+> > influence on bpf from calling trace_kprobe_on_func_entry(), it can not use addr to fill in
+> > rp.kp in struct trace_event_call anymore.
+> > 
+> > So i want to know your views, and i will resend this patch soon.  
+> 
+> OK, I think it is simpler to check the rp->kp.addr && rp->kp.symbol_name
+> because it is not allowed (it can lead inconsistent setting).
+> 
+> How about this code? Is this work for you?
+> 
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index 41fdbb7953c6..73500be564be 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -2103,6 +2103,14 @@ int register_kretprobe(struct kretprobe *rp)
+>         int i;
+>         void *addr;
+>  
+> +       /* It is not allowed to specify addr and symbol_name at the same time */
+> +       if (rp->kp.addr && rp->kp.symbol_name)
+> +               return -EINVAL;
+> +
+> +       /* If only rp->kp.addr is specified, check reregistering kprobes */
+> +       if (rp->kp.addr && check_kprobe_rereg(&rp->kp))
+> +               return -EINVAL;
+> +
+>         if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
+>                 return -EINVAL;
+>  
+> 
+> Thank you,
+> 
 
