@@ -2,100 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C742F54F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE972F54F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729377AbhAMWfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 17:35:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38222 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729331AbhAMW12 (ORCPT
+        id S1729402AbhAMWiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 17:38:11 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:48526 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726636AbhAMWdM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 17:27:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610576761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=keqTD1feRGxMu1i6ZV8LKC0UZKTn6b0VdBTOntJphMk=;
-        b=U8ogMtfe7qw8vZkDmFeGWnC38Z9R64K/iv/+6IQkHKX51hSUvyTZzE4ahF1NJfypjPaQ46
-        ChgN1Rn/aJLSnfjewyhvEPWIor/4qAiToWVTzgRP/DpoYHR72Bq/Eu377Mln1UOuQr/xys
-        qgmBF3dLNgckD/fAWo8lEHYYf8lRnUk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-320-j1KIj2juPlK1m70KZ2kQIQ-1; Wed, 13 Jan 2021 17:25:55 -0500
-X-MC-Unique: j1KIj2juPlK1m70KZ2kQIQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9754C1060B08;
-        Wed, 13 Jan 2021 22:25:47 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 36A425D71D;
-        Wed, 13 Jan 2021 22:25:45 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 16:25:41 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH] Documentation: livepatch: document reliable stacktrace
-Message-ID: <20210113222541.ysvtievx4o5r42ym@treble>
-References: <20210113165743.3385-1-broonie@kernel.org>
- <20210113192735.rg2fxwlfrzueinci@treble>
- <20210113202315.GI4641@sirena.org.uk>
+        Wed, 13 Jan 2021 17:33:12 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10DMO15C022373;
+        Wed, 13 Jan 2021 22:31:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=cbAaYYA369SOVtMavd6SqpAAxPSZNSJN5l6rUr3r578=;
+ b=hw1PkC/sUHVQ3mQIsWe5wLnCnD2UBEsLkifv+QVZj58xK8X58jAvZHonkY4pgU3pvEDj
+ Qbdg//OBSnnr5KhM1CRI+pUx8YpfyfYH6j9jCGSIiEjGCAW7ADrY1s+JbJ/rPaKRuNJ7
+ PqW5Aff7qhKGiz3m9c3YZnYnV0paT2Loxi7cTh/BWnDyVYu5qdlqzBieH8mF1mYGr9+i
+ WmNU4hCwh6GoY2StJhoj56q3c00HmJooyE3Mwy2Jczgsm0mtYCv1nuUF0ON7KkDArGIg
+ 9BElpiJWUeQU2dZSNnu4fGH2edtGH636RDEeJH74U0UD8GUsWHc3t9/2mS/wRnSnNS1u Mg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 360kcywv8r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 22:31:12 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10DMTfZl061547;
+        Wed, 13 Jan 2021 22:31:11 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 360ke9591t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 22:31:11 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10DMUxqN029174;
+        Wed, 13 Jan 2021 22:31:00 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 13 Jan 2021 14:30:59 -0800
+Subject: Re: [PATCH v12 03/13] mm: Introduce VM_WARN_ON_PAGE macro
+To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        willy@infradead.org, osalvador@suse.de, mhocko@suse.com,
+        song.bao.hua@hisilicon.com, david@redhat.com,
+        naoya.horiguchi@nec.com
+Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+References: <20210106141931.73931-1-songmuchun@bytedance.com>
+ <20210106141931.73931-4-songmuchun@bytedance.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <65b2103d-6198-3380-d36e-17dd774359bd@oracle.com>
+Date:   Wed, 13 Jan 2021 14:30:57 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
+In-Reply-To: <20210106141931.73931-4-songmuchun@bytedance.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210113202315.GI4641@sirena.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9863 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101130135
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9863 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101130134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 08:23:15PM +0000, Mark Brown wrote:
-> On Wed, Jan 13, 2021 at 01:33:13PM -0600, Josh Poimboeuf wrote:
+On 1/6/21 6:19 AM, Muchun Song wrote:
+> Very similar to VM_WARN_ON_ONCE_PAGE and VM_BUG_ON_PAGE, add
+> VM_WARN_ON_PAGE macro.
 > 
-> > I think it's worth mentioning a little more about objtool.  There are a
-> > few passing mentions of objtool's generation of metadata (i.e. ORC), but
-> > objtool has another relevant purpose: stack validation.  That's
-> > particularly important when it comes to frame pointers.
-> 
-> > For some architectures like x86_64 and arm64 (but not powerpc/s390),
-> > it's far too easy for a human to write asm and/or inline asm which
-> > violates frame pointer protocol, silently causing the violater's callee
-> > to get skipped in the unwind.  Such architectures need objtool
-> > implemented for CONFIG_STACK_VALIDATION.
-> 
-> This basically boils down to just adding a statement saying "you may
-> need to depend on objtool" I think?
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  include/linux/mmdebug.h | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 
-Right, but maybe it would be a short paragraph or two.
-
-> > > +There are several ways an architecture may identify kernel code which is deemed
-> > > +unreliable to unwind from, e.g.
-> 
-> > > +* Using metadata created by objtool, with such code annotated with
-> > > +  SYM_CODE_{START,END} or STACKFRAME_NON_STANDARD().
-> 
-> > I'm not sure why SYM_CODE_{START,END} is mentioned here, but it doesn't
-> > necessarily mean the code is unreliable, and objtool doesn't treat it as
-> > such.  Its mention can probably be removed unless there was some other
-> > point I'm missing.
-> 
-> I was reading that as being a thing that the architecture could possibly
-> do, especially as a first step - it does seem like a reasonable thing to
-> consider using anyway.  I guess you could also use it the other way
-> around and do additional checks for things that are supposed to be
-> regular functions that you relax for SYM_CODE() sections.
-
-Makes sense, but we have to be careful not to imply that objtool already
-does something like that :-)
+I was going to question the use/need for this macro in the following
+patch.  Looks like Oscar has already done that, and free_bootmem_page
+will now use VM_BUG_ON_PAGE.  So, this patch can be dropped.
 
 -- 
-Josh
-
+Mike Kravetz
