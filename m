@@ -2,138 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF5F2F44CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 342DB2F44CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbhAMHDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 02:03:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:59548 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726011AbhAMHDE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 02:03:04 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD715101E;
-        Tue, 12 Jan 2021 23:02:18 -0800 (PST)
-Received: from [10.163.88.174] (unknown [10.163.88.174])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 41C083F70D;
-        Tue, 12 Jan 2021 23:02:14 -0800 (PST)
-Subject: Re: [PATCH V2 3/3] s390/mm: Define arch_get_mappable_range()
-To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org, hca@linux.ibm.com,
-        catalin.marinas@arm.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1608218912-28932-1-git-send-email-anshuman.khandual@arm.com>
- <1608218912-28932-4-git-send-email-anshuman.khandual@arm.com>
- <87ae0b7c-0e95-6068-900e-d813a53f2732@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <1efac09f-3eea-51fd-7754-98659a5e0054@arm.com>
-Date:   Wed, 13 Jan 2021 12:32:34 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726406AbhAMHEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 02:04:49 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:34077 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbhAMHEs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 02:04:48 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210113070405euoutp02c658a71e0adcd508809915ae9eaabcd2~ZuLjQ01on2082120821euoutp02P
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 07:04:05 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210113070405euoutp02c658a71e0adcd508809915ae9eaabcd2~ZuLjQ01on2082120821euoutp02P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1610521445;
+        bh=XyOhINqIAjlKeyzqaH6QdfsikSvA26GQXGomvuh25nA=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=TdIGgyPoVQBg2WngElLIPaQkC7PpyXEXQKs++rcf0t+aDYHnlJUTjP1Ao+ClKkKB1
+         YNRUIyyV0aOjWqtfRVDXf7+2ANOSxPcx5CHmCyJPRIsSvpcdkh5jxr79POxEBfwFNm
+         6cRk6NAV8qpzI8xxPzzMPwIPvsrLDp6Lbd8cRG+c=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210113070405eucas1p116f9b474e92948df2d0479b686a22302~ZuLi9vMw_2776127761eucas1p1x;
+        Wed, 13 Jan 2021 07:04:05 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 8D.80.27958.56B9EFF5; Wed, 13
+        Jan 2021 07:04:05 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210113070404eucas1p13e3439afd5de299b047a85aaa53d896e~ZuLii2ihu2775927759eucas1p1h;
+        Wed, 13 Jan 2021 07:04:04 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210113070404eusmtrp205348b539eb1a9ca984e28358bc8310a~ZuLiiGPoT0636706367eusmtrp2x;
+        Wed, 13 Jan 2021 07:04:04 +0000 (GMT)
+X-AuditID: cbfec7f2-f15ff70000006d36-a3-5ffe9b6505a8
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 27.B7.21957.46B9EFF5; Wed, 13
+        Jan 2021 07:04:04 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210113070404eusmtip29b328805faf4b46bdb114cc6bcff6519~ZuLhu8Pax2109021090eusmtip2W;
+        Wed, 13 Jan 2021 07:04:03 +0000 (GMT)
+Subject: Re: [PATCH v1 5/5] driver core: Set fw_devlink=on by default
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <ed32b9c7-b6d6-bf86-5e43-fd0c4aa75dd6@samsung.com>
+Date:   Wed, 13 Jan 2021 08:04:03 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <87ae0b7c-0e95-6068-900e-d813a53f2732@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAGETcx_QY3h83q1fSr=h_vMQdH-TMhVYPozPuSr=q4uv2Lr48w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0xTdxTH+fXe3t7WlF0LyhEWNxpnookgoviLD0Sjy50ucy76h48IFW8A
+        pcXcWhHNnBFRKMgWdAXLq46xklJeBao8xFjUCiIlUgwQlqG4R8i0QxsjEHyUC5P/Puec73l8
+        k0MTCpc4mE7SHOd4jSpZSclI+71x1wqu8G3sSnetP64rqBHj9LIaChsGzCTumlyBb1wPxOMX
+        G0TY5aqV4N7mIgoXuNpEuKmoQ4ztRjOFi70/E1jvmKJi5Ky9xS5mPf0ZEtZk07E2SxbFDj1u
+        pdhbxVYJm9tgQWz9g9NsnrubYF/ZFn8r2yfbcJhLTjrB8eHRcbLE3Nxb1LGe6JP5mSWis6hj
+        jR5JaWBWQ9+vjcjHCqYCwQX3AT2SfWAvgsnxLokQvEJgqq6TzHacq++fKZgR5LVnUEIwhiBj
+        +AqpRzQdwGwDr/NrX0Mgsxxsj0dIHxOMkYT/crCPKSYC9M/1lI/lTDRU/tE6rSGZL6C25bfp
+        ZQuYQ+BsyyYEzXzouPpsWiNldkHTj4OUMPMzSG8sJAQOgsFnpSLfPcBUSmHgRd/M1VvhjbdL
+        LHAAjDobZvKfwrum2YZ0BE+6qyRCkIOg91wBElTrYah7gvI5I5hlUNMc7kNgNkP76EkB/aH/
+        +XzhBn/Is+cTQloOmRcUwoylYHRW/7/1ds8j4iekNM5xZpzjxjjHjfHjWhMiLSiI02nVCZw2
+        QsOlhmlVaq1OkxAWn6K2oQ8/9+Ct8+UNVDw6FuZAIho5ENCEMlDOZ0/FKuSHVWmnOD4lltcl
+        c1oHCqFJZZDcUmiNVTAJquPcUY47xvGzVREtDT4rKvJD91OSy488/IS96q7s/cETHyVj10YO
+        1T7cY/I0w/kTI0hVmnhN9Xnpl1bNvoO/hzJbAvqlKyPnFXSqi8Jtjr0GQ06JdJhCmk7Us1iy
+        e+Cbu0vu4dVDl8808jez+izdrf/elZlKEnB9nN2qi5+sG9v4+kWlMo9/apBVV3y3v82SMZKa
+        NBETsvdprs6zc+SMX3tZecVA8Ly0vx1HpxTqzZt6lbfbzNvLvr9UsiA0O39XOX2+pi5yZ9Rr
+        /nTDYFZUfL503V/0RMydwRDxL2+uLzxitXs3BGQflKaqXZlmcWhc2o5/Oj040HDZLG5JrXLf
+        7xmtWrV/eL3fV4te/unIOqUktYmqiOUEr1W9B+dD8sviAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMIsWRmVeSWpSXmKPExsVy+t/xe7ops//FG1x5qWOxccZ6VovmxevZ
+        LKbdXM5icea3rsWO7SIWP9u3MFmcP7+B3eLyrjlsFjPO72Oy2DnnJKvFtlnL2SzmfpnKbNF1
+        6C+bA6/Htt3bWD3e32hl91iwqdRj06pONo871/aweeyfu4bdo2/LKkaPzaerPSZdOcfs8XmT
+        XABXlJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1NSmpOZllqkb5dgl5G
+        X99+toILdhXTO+YxNTCeNO1i5OSQEDCRaNp8g72LkYtDSGApo8TR2ddZIRIyEienNUDZwhJ/
+        rnWxQRS9Byp6vpypi5GDQ1jAVeLLcR+QGhEBLYlN1x6zgNQwCyxgkeiYdpgJouEds8T7nccZ
+        QarYBAwlut6CTOLk4BWwk1h9fw8LiM0ioCqxYfcydpChogJJEovfOkGUCEqcnPkErIRTIFBi
+        Z/8tsFZmATOJeZsfMkPY8hLNW2dD2eISt57MZ5rAKDQLSfssJC2zkLTMQtKygJFlFaNIamlx
+        bnpusaFecWJucWleul5yfu4mRmBsbzv2c/MOxnmvPuodYmTiYDzEKMHBrCTCW9T9N16INyWx
+        siq1KD++qDQntfgQoynQOxOZpUST84HJJa8k3tDMwNTQxMzSwNTSzFhJnHfr3DXxQgLpiSWp
+        2ampBalFMH1MHJxSDUzHH75/9eziqoVGs69UnnVTO6CWEstfGcFqqeImxtbTNu2n1hZXfoWy
+        SsEZ+544HWwJSmZ1P39wUewh0Vsr183ob0jZfbqY94nZx8ioq17Xr6qKvc//sf76xKzKdlnh
+        Dz5sBt/i4sU7NkZEHo1Zl9QiX35PZ0owu/ybU+sN84XyTJrkeKcbLiq7weksGHrAWnim16+b
+        G5doybNHqlt4n35svnHlk51bprSc+xrpdCA6ffZNtYVLf6txcP7er1rmqrxy1/lX91NqZPaF
+        cyXkn/cQYL1bHs9lFGNncOq4+J9PQhm/PTOb78xWuBlmeuLgU63u7MjXUUyHJ0jqfDePubHt
+        2OWFBc61UuHTFnxQdlFiKc5INNRiLipOBADb70cfdgMAAA==
+X-CMS-MailID: 20210113070404eucas1p13e3439afd5de299b047a85aaa53d896e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210111141814eucas1p1f388df07b789693a999042b27f0d8c2a
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210111141814eucas1p1f388df07b789693a999042b27f0d8c2a
+References: <20201218031703.3053753-1-saravanak@google.com>
+        <20201218031703.3053753-6-saravanak@google.com>
+        <CGME20210111141814eucas1p1f388df07b789693a999042b27f0d8c2a@eucas1p1.samsung.com>
+        <5484316b-0f27-6c36-9259-5c765bb6b96c@samsung.com>
+        <2556a69b-5da5-bf80-e051-df2d02fbc40f@samsung.com>
+        <CAGETcx8-1YzF2Br0sszJROLAWo3DSm27K071Md9wY5SOwUeLdw@mail.gmail.com>
+        <fde65185-fd00-1f79-0f80-245eaa6c95cb@samsung.com>
+        <CAGETcx_QY3h83q1fSr=h_vMQdH-TMhVYPozPuSr=q4uv2Lr48w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Saravana,
+
+On 12.01.2021 21:51, Saravana Kannan wrote:
+> On Mon, Jan 11, 2021 at 11:11 PM Marek Szyprowski
+> <m.szyprowski@samsung.com> wrote:
+>> On 11.01.2021 22:47, Saravana Kannan wrote:
+>>> On Mon, Jan 11, 2021 at 6:18 AM Marek Szyprowski
+>>> <m.szyprowski@samsung.com> wrote:
+>>>> On 11.01.2021 12:12, Marek Szyprowski wrote:
+>>>>> On 18.12.2020 04:17, Saravana Kannan wrote:
+>>>>>> Cyclic dependencies in some firmware was one of the last remaining
+>>>>>> reasons fw_devlink=on couldn't be set by default. Now that cyclic
+>>>>>> dependencies don't block probing, set fw_devlink=on by default.
+>>>>>>
+>>>>>> Setting fw_devlink=on by default brings a bunch of benefits (currently,
+>>>>>> only for systems with device tree firmware):
+>>>>>> * Significantly cuts down deferred probes.
+>>>>>> * Device probe is effectively attempted in graph order.
+>>>>>> * Makes it much easier to load drivers as modules without having to
+>>>>>>      worry about functional dependencies between modules (depmod is still
+>>>>>>      needed for symbol dependencies).
+>>>>>>
+>>>>>> If this patch prevents some devices from probing, it's very likely due
+>>>>>> to the system having one or more device drivers that "probe"/set up a
+>>>>>> device (DT node with compatible property) without creating a struct
+>>>>>> device for it.  If we hit such cases, the device drivers need to be
+>>>>>> fixed so that they populate struct devices and probe them like normal
+>>>>>> device drivers so that the driver core is aware of the devices and their
+>>>>>> status. See [1] for an example of such a case.
+>>>>>>
+>>>>>> [1] -
+>>>>>> https://lore.kernel.org/lkml/CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com/
+>>>>>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+>>>>> This patch landed recently in linux next-20210111 as commit
+>>>>> e590474768f1 ("driver core: Set fw_devlink=on by default"). Sadly it
+>>>>> breaks Exynos IOMMU operation, what causes lots of devices being
+>>>>> deferred and not probed at all. I've briefly checked and noticed that
+>>>>> exynos_sysmmu_probe() is never called after this patch. This is really
+>>>>> strange for me, as the SYSMMU controllers on Exynos platform are
+>>>>> regular platform devices registered by the OF code. The driver code is
+>>>>> here: drivers/iommu/exynos-iommu.c, example dts:
+>>>>> arch/arm/boot/dts/exynos3250.dtsi (compatible = "samsung,exynos-sysmmu").
+>>>> Okay, I found the source of this problem. It is caused by Exynos power
+>>>> domain driver, which is not platform driver yet. I will post a patch,
+>>>> which converts it to the platform driver.
+>>> Thanks Marek! Hopefully the debug logs I added were sufficient to
+>>> figure out the reason.
+>> Frankly, it took me a while to figure out that device core waits for the
+>> power domain devices. Maybe it would be possible to add some more debug
+>> messages or hints? Like the reason of the deferred probe in
+>> /sys/kernel/debug/devices_deferred ?
+> There's already a /sys/devices/.../<device>/waiting_for_supplier file
+> that tells you if the device is waiting for a supplier device to be
+> added. That file goes away once the device probes. If the file has 1,
+> then it's waiting for the supplier device to be added (like your
+> case). If it's 0, then the device is just waiting on one of the
+> existing suppliers to probe. You can find the existing suppliers
+> through /sys/devices/.../<device>/supplier:*/supplier. Also, flip
+> these dev_dbg() to dev_info() if you need more details about deferred
+> probing.
+
+Frankly speaking I doubt that anyone will find those. Even experienced 
+developer might need some time to figure it out.
+
+I expect that such information will be at least in the mentioned 
+/sys/kernel/debug/devices_deferred file. We already have infrastructure 
+for putting the deferred probe reason there, see dev_err_probe() 
+function. Even such a simple change makes the debugging this issue much 
+easier:
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index cd8e518fadd6..ceb5aed5a84c 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -937,12 +937,13 @@ int device_links_check_suppliers(struct device *dev)
+         mutex_lock(&fwnode_link_lock);
+         if (dev->fwnode && !list_empty(&dev->fwnode->suppliers) &&
+             !fw_devlink_is_permissive()) {
+-               dev_dbg(dev, "probe deferral - wait for supplier %pfwP\n",
++               ret = dev_err_probe(dev, -EPROBE_DEFER,
++                       "probe deferral - wait for supplier %pfwP\n",
+list_first_entry(&dev->fwnode->suppliers,
+                         struct fwnode_link,
+                         c_hook)->supplier);
+                 mutex_unlock(&fwnode_link_lock);
+-               return -EPROBE_DEFER;
++               return ret;
+         }
+         mutex_unlock(&fwnode_link_lock);
+
+@@ -955,9 +956,9 @@ int device_links_check_suppliers(struct device *dev)
+                 if (link->status != DL_STATE_AVAILABLE &&
+                     !(link->flags & DL_FLAG_SYNC_STATE_ONLY)) {
+                         device_links_missing_supplier(dev);
+-                       dev_dbg(dev, "probe deferral - supplier %s not 
+ready\n",
++                       ret = dev_err_probe(dev, -EPROBE_DEFER,
++                               "probe deferral - supplier %s not ready\n",
+                                 dev_name(link->supplier));
+-                       ret = -EPROBE_DEFER;
+                         break;
+                 }
+                 WRITE_ONCE(link->status, DL_STATE_CONSUMER_PROBE);
 
 
-On 1/11/21 4:10 PM, David Hildenbrand wrote:
-> On 17.12.20 16:28, Anshuman Khandual wrote:
->> This overrides arch_get_mappabble_range() on s390 platform which will be
->> used with recently added generic framework. It modifies the existing range
->> check in vmem_add_mapping() using arch_get_mappable_range(). It also adds a
->> VM_BUG_ON() check that would ensure that memhp_range_allowed() has already
->> been called on the hotplug path.
->>
->> Cc: Heiko Carstens <hca@linux.ibm.com>
->> Cc: Vasily Gorbik <gor@linux.ibm.com>
->> Cc: David Hildenbrand <david@redhat.com>
->> Cc: linux-s390@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Acked-by: Heiko Carstens <hca@linux.ibm.com>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  arch/s390/mm/init.c |  1 +
->>  arch/s390/mm/vmem.c | 15 ++++++++++++++-
->>  2 files changed, 15 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
->> index 77767850d0d0..e0e78234ae57 100644
->> --- a/arch/s390/mm/init.c
->> +++ b/arch/s390/mm/init.c
->> @@ -291,6 +291,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
->>  	if (WARN_ON_ONCE(params->pgprot.pgprot != PAGE_KERNEL.pgprot))
->>  		return -EINVAL;
->>  
->> +	VM_BUG_ON(!memhp_range_allowed(start, size, 1));
-> 
-> s/1/true/
+After such change:
 
-Sure, will do.
+# cat /sys/kernet/debug/devices_deferred
+sound
+13620000.sysmmu platform: probe deferral - supplier 
+10023c40.power-domain not ready
+13630000.sysmmu platform: probe deferral - supplier 
+10023c40.power-domain not ready
+12e20000.sysmmu platform: probe deferral - supplier 
+10023c20.power-domain not ready
+11a20000.sysmmu platform: probe deferral - supplier 
+10023c00.power-domain not ready
+11a30000.sysmmu platform: probe deferral - supplier 
+10023c00.power-domain not ready
+11a40000.sysmmu platform: probe deferral - supplier 
+10023c00.power-domain not ready
+11a50000.sysmmu platform: probe deferral - supplier 
+10023c00.power-domain not ready
+11a60000.sysmmu platform: probe deferral - supplier 
+10023c00.power-domain not ready
+11e20000.sysmmu platform: probe deferral - supplier 
+10023c80.power-domain not ready
+12d00000.hdmi   platform: probe deferral - supplier 
+10023c20.power-domain not ready
+10048000.clock-controller       platform: probe deferral - supplier 
+10023ca0.power-domain not ready
+12260000.sysmmu platform: probe deferral - supplier 
+10048000.clock-controller not ready
+12270000.sysmmu platform: probe deferral - supplier 
+10048000.clock-controller not ready
+122a0000.sysmmu platform: probe deferral - supplier 
+10048000.clock-controller not ready
+122b0000.sysmmu platform: probe deferral - supplier 
+10048000.clock-controller not ready
+123b0000.sysmmu platform: probe deferral - supplier 
+10048000.clock-controller not ready
+123c0000.sysmmu platform: probe deferral - supplier 
+10048000.clock-controller not ready
+12c10000.mixer  platform: probe deferral - supplier 
+10023c20.power-domain not ready
+13000000.gpu    platform: probe deferral - supplier 
+10023c60.power-domain not ready
 
-> 
->>  	rc = vmem_add_mapping(start, size);
->>  	if (rc)
->>  		return rc;
->> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
->> index b239f2ba93b0..e10e563ad2b4 100644
->> --- a/arch/s390/mm/vmem.c
->> +++ b/arch/s390/mm/vmem.c
->> @@ -4,6 +4,7 @@
->>   *    Author(s): Heiko Carstens <heiko.carstens@de.ibm.com>
->>   */
->>  
->> +#include <linux/memory_hotplug.h>
->>  #include <linux/memblock.h>
->>  #include <linux/pfn.h>
->>  #include <linux/mm.h>
->> @@ -532,11 +533,23 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
->>  	mutex_unlock(&vmem_mutex);
->>  }
->>  
->> +struct range arch_get_mappable_range(void)
->> +{
->> +	struct range memhp_range;
->> +
->> +	memhp_range.start = 0;
->> +	memhp_range.end =  VMEM_MAX_PHYS;
-> 
-> s/  / /
-> 
-> IIRC, the range is inclusive? "VMEM_MAX_PHYS - 1" then, and adjust the
-> check below.
+Probably the message can be adjusted a bit, this would significantly 
+help me finding that is the source of the problem.
 
-Right, the memory range is inclusive at both ends. Hence will update the
-code here.
+Best regards
 
-diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
-index 21cabe3473d7..afc39ff1cc8d 100644
---- a/arch/s390/mm/vmem.c
-+++ b/arch/s390/mm/vmem.c
-@@ -538,7 +538,7 @@ struct range arch_get_mappable_range(void)
-        struct range memhp_range;
- 
-        memhp_range.start = 0;
--       memhp_range.end =  VMEM_MAX_PHYS;
-+       memhp_range.end =  VMEM_MAX_PHYS - 1;
-        return memhp_range;
- }
- 
-@@ -549,7 +549,7 @@ int vmem_add_mapping(unsigned long start, unsigned long size)
- 
-        range = arch_get_mappable_range();
-        if (start < range.start ||
--           start + size > range.end ||
-+           start + size > range.end + 1 ||
-            start + size < start)
-                return -ERANGE;
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-(start + size - 1) is valid only when it is upto the inclusive range.end value.
