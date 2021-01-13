@@ -2,219 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD662F4566
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AACB72F456D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbhAMHjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 02:39:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726235AbhAMHjD (ORCPT
+        id S1726788AbhAMHl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 02:41:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54021 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726703AbhAMHl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 02:39:03 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE0CC061575;
-        Tue, 12 Jan 2021 23:38:22 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id a12so1330477lfl.6;
-        Tue, 12 Jan 2021 23:38:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=M2N/Z0+D0Z/nN3iaZwlEky/BcBwBwPLBvbnhdo2uPxs=;
-        b=LFRWJCuELJUrDZnPH0lwnNC3gUN9x35pulfcEGroRiLH/jZ39p89IR5pFVCx67/Rwh
-         7M2NUaoUWA7g9N4WR7/hyPcItKUDTGtiWNswNZulZBPRJzgxlW7rqjd9BNYLU3Cf81v7
-         xhYx33M/9JTPFxhpzOvdWdKVi7jbu927Ub4OJGliE6wclihuWdcP7BYqIvBNxlwXNspX
-         kyCDyYxxd/68fev7lC4lyFIHrwywYSo+JkXJOgBa6Bf2AMZhE8p8rRH3hlwcPXO4h9Wo
-         xlhXDXAFcAbN4PdoyKKHiNisSSbx05wY9JXp+eiyPu9fG72CML0WoCP9KGyndSyutaDf
-         Iymg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M2N/Z0+D0Z/nN3iaZwlEky/BcBwBwPLBvbnhdo2uPxs=;
-        b=EQ1g5/3Hm23pcjnw45/By4SAGdDYIOsmFxNu1TJ8E30uzM8sRUlqcpjcELEQGfpIU8
-         Kj1XqHsUdOKz4S7jMZGhN+/YDVIiHKConUnpvZzxgE35nlmSbvKZEGFKgtUPgTKDflqZ
-         R9S6cuLFZ4ruS25pJHvo/kliOI7Bu7sO+OjS51qNczxFwHVWVdwhLsfSl2rTfoPuuFuE
-         2iKTRdAh9aJ1pZ0c4gqTin1LR1zTj47IgttlijlLK+jrJsEy+n9Jth3VpvP6HlB+MJZf
-         iPWrR5CvVUfQ+Zo+At5KWkOh9hhuAZaA3gGM2Deak/A+cC8r3mYlXORRBFGHnBEbSRPG
-         HNRA==
-X-Gm-Message-State: AOAM53393q1e0rDEDFvbsjJo+WfycNMJsb9nQFyn6u8zI7AkMRwmCaOd
-        TvDeEYtOHdbfXqG7ZijHVbc=
-X-Google-Smtp-Source: ABdhPJyEMAYxO2vaMwJ2n1KJOg0uNQa5PlXQklk6QWpMeKFhrJSfgXA8tiLM5L47c5G1S+dG1s/rQQ==
-X-Received: by 2002:a05:6512:21d:: with SMTP id a29mr314970lfo.444.1610523501274;
-        Tue, 12 Jan 2021 23:38:21 -0800 (PST)
-Received: from [10.0.0.113] (91-157-87-152.elisa-laajakaista.fi. [91.157.87.152])
-        by smtp.gmail.com with ESMTPSA id c10sm95106lji.103.2021.01.12.23.38.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 23:38:20 -0800 (PST)
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     dan.j.williams@intel.com, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org, vigneshr@ti.com,
-        grygorii.strashko@ti.com, kishon@ti.com
-References: <20201214081310.10746-1-peter.ujfalusi@ti.com>
- <20201214081310.10746-3-peter.ujfalusi@ti.com>
- <20210112101637.GJ2771@vkoul-mobl>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Subject: Re: [PATCH 2/2] dmaengine: ti: k3-udma: Add support for burst_size
- configuration for mem2mem
-Message-ID: <76cabf10-7747-73ee-1c42-8d5a7eb85b6c@gmail.com>
-Date:   Wed, 13 Jan 2021 09:39:02 +0200
+        Wed, 13 Jan 2021 02:41:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610523602;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eIu5o0GBOvXP1rvJN72lDtnj2/36cMjeG3m4twLkzts=;
+        b=Xm9gIydf1wtvpMIC+H5nKX1ytm/QdScq273VkJi1lxT2L4/YTSbAC5aF1USNPEuIsDEijk
+        e+Em04qf89cjCBq+ovd1FTupJSSrmwj2Oe82wBPdZuJnZQ+2FBgCKJk/I5DGSGTmVHf5Zc
+        AWqUqk82pfWQeYf7IZlikFZSPvZdSls=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-T1d2lRqtMAqyBD-BnKBaDA-1; Wed, 13 Jan 2021 02:40:00 -0500
+X-MC-Unique: T1d2lRqtMAqyBD-BnKBaDA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0807FEC1A1;
+        Wed, 13 Jan 2021 07:39:59 +0000 (UTC)
+Received: from thuth.remote.csb (ovpn-112-122.ams2.redhat.com [10.36.112.122])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A38AC7369F;
+        Wed, 13 Jan 2021 07:39:53 +0000 (UTC)
+Subject: Re: [PATCH 3/6] KVM: selftests: Convert iterations to int in
+ dirty_log_perf_test
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>
+References: <20210112214253.463999-1-bgardon@google.com>
+ <20210112214253.463999-4-bgardon@google.com>
+From:   Thomas Huth <thuth@redhat.com>
+Message-ID: <e0f10f8a-795d-a878-0048-9da4d2a94518@redhat.com>
+Date:   Wed, 13 Jan 2021 08:39:52 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20210112101637.GJ2771@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210112214253.463999-4-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
-
-On 1/12/21 12:16 PM, Vinod Koul wrote:
-> On 14-12-20, 10:13, Peter Ujfalusi wrote:
->> The UDMA and BCDMA can provide higher throughput if the burst_size of the
->> channel is changed from it's default (which is 64 bytes) for Ultra-high
->> and high capacity channels.
->>
->> This performance benefit is even more visible when the buffers are aligned
->> with the burst_size configuration.
->>
->> The am654 does not have a way to change the burst size, but it is using
->> 64 bytes burst, so increasing the copy_align from 8 bytes to 64 (and
->> clients taking that into account) can increase the throughput as well.
->>
->> Numbers gathered on j721e:
->> echo 8000000 > /sys/module/dmatest/parameters/test_buf_size
->> echo 2000 > /sys/module/dmatest/parameters/timeout
->> echo 50 > /sys/module/dmatest/parameters/iterations
->> echo 1 > /sys/module/dmatest/parameters/max_channels
->>
->> Prior this patch:       ~1.3 GB/s
->> After this patch:       ~1.8 GB/s
->>  with 1 byte alignment: ~1.7 GB/s
->>
->> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> ---
->>  drivers/dma/ti/k3-udma.c | 115 +++++++++++++++++++++++++++++++++++++--
->>  1 file changed, 110 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
->> index 87157cbae1b8..54e4ccb1b37e 100644
->> --- a/drivers/dma/ti/k3-udma.c
->> +++ b/drivers/dma/ti/k3-udma.c
->> @@ -121,6 +121,11 @@ struct udma_oes_offsets {
->>  #define UDMA_FLAG_PDMA_ACC32		BIT(0)
->>  #define UDMA_FLAG_PDMA_BURST		BIT(1)
->>  #define UDMA_FLAG_TDTYPE		BIT(2)
->> +#define UDMA_FLAG_BURST_SIZE		BIT(3)
->> +#define UDMA_FLAGS_J7_CLASS		(UDMA_FLAG_PDMA_ACC32 | \
->> +					 UDMA_FLAG_PDMA_BURST | \
->> +					 UDMA_FLAG_TDTYPE | \
->> +					 UDMA_FLAG_BURST_SIZE)
->>  
->>  struct udma_match_data {
->>  	enum k3_dma_type type;
->> @@ -128,6 +133,7 @@ struct udma_match_data {
->>  	bool enable_memcpy_support;
->>  	u32 flags;
->>  	u32 statictr_z_mask;
->> +	u8 burst_size[3];
->>  };
->>  
->>  struct udma_soc_data {
->> @@ -436,6 +442,18 @@ static void k3_configure_chan_coherency(struct dma_chan *chan, u32 asel)
->>  	}
->>  }
->>  
->> +static u8 udma_get_chan_tpl_index(struct udma_tpl *tpl_map, int chan_id)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < tpl_map->levels; i++) {
->> +		if (chan_id >= tpl_map->start_idx[i])
->> +			return i;
->> +	}
+On 12/01/2021 22.42, Ben Gardon wrote:
+> In order to add an iteration -1 to indicate that the memory population
+> phase has not yet completed, convert the interations counters to ints.
 > 
-> Braces seem not required
-
-True, they are not strictly needed but I prefer to have them when I have
-any condition in the loop.
-
->> +
->> +	return 0;
->> +}
->> +
->>  static void udma_reset_uchan(struct udma_chan *uc)
->>  {
->>  	memset(&uc->config, 0, sizeof(uc->config));
->> @@ -1811,6 +1829,7 @@ static int udma_tisci_m2m_channel_config(struct udma_chan *uc)
->>  	const struct ti_sci_rm_udmap_ops *tisci_ops = tisci_rm->tisci_udmap_ops;
->>  	struct udma_tchan *tchan = uc->tchan;
->>  	struct udma_rchan *rchan = uc->rchan;
->> +	u8 burst_size = 0;
->>  	int ret = 0;
->>  
->>  	/* Non synchronized - mem to mem type of transfer */
->> @@ -1818,6 +1837,12 @@ static int udma_tisci_m2m_channel_config(struct udma_chan *uc)
->>  	struct ti_sci_msg_rm_udmap_tx_ch_cfg req_tx = { 0 };
->>  	struct ti_sci_msg_rm_udmap_rx_ch_cfg req_rx = { 0 };
->>  
->> +	if (ud->match_data->flags & UDMA_FLAG_BURST_SIZE) {
->> +		u8 tpl = udma_get_chan_tpl_index(&ud->tchan_tpl, tchan->id);
+> No functional change intended.
 > 
-> Can we define variable at function start please
-
-The 'tpl' is only used within this if branch, it looks a bit cleaner
-imho, but if you insist, I can move the definition.
-
-...
-
->> +static enum dmaengine_alignment udma_get_copy_align(struct udma_dev *ud)
->> +{
->> +	const struct udma_match_data *match_data = ud->match_data;
->> +	u8 tpl;
->> +
->> +	if (!match_data->enable_memcpy_support)
->> +		return DMAENGINE_ALIGN_8_BYTES;
->> +
->> +	/* Get the highest TPL level the device supports for memcpy */
->> +	if (ud->bchan_cnt) {
->> +		tpl = udma_get_chan_tpl_index(&ud->bchan_tpl, 0);
->> +	} else if (ud->tchan_cnt) {
->> +		tpl = udma_get_chan_tpl_index(&ud->tchan_tpl, 0);
->> +	} else {
->> +		return DMAENGINE_ALIGN_8_BYTES;
->> +	}
+> Reviewed-by: Jacob Xu <jacobhxu@google.com>
 > 
-> Braces seem not required
-
-Very true.
-
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>   .../selftests/kvm/dirty_log_perf_test.c       | 26 +++++++++----------
+>   1 file changed, 13 insertions(+), 13 deletions(-)
 > 
->> +
->> +	switch (match_data->burst_size[tpl]) {
->> +		case TI_SCI_RM_UDMAP_CHAN_BURST_SIZE_256_BYTES:
->> +			return DMAENGINE_ALIGN_256_BYTES;
->> +		case TI_SCI_RM_UDMAP_CHAN_BURST_SIZE_128_BYTES:
->> +			return DMAENGINE_ALIGN_128_BYTES;
->> +		case TI_SCI_RM_UDMAP_CHAN_BURST_SIZE_64_BYTES:
->> +		fallthrough;
->> +		default:
->> +			return DMAENGINE_ALIGN_64_BYTES;
-> 
-> ah, we are supposed to have case at same indent as switch, pls run
-> checkpatch to have these flagged off
+> diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> index 15a9c45bdb5f..3875f22d7283 100644
+> --- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> +++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> @@ -28,8 +28,8 @@ static uint64_t guest_percpu_mem_size = DEFAULT_PER_VCPU_MEM_SIZE;
+>   /* Host variables */
+>   static u64 dirty_log_manual_caps;
+>   static bool host_quit;
+> -static uint64_t iteration;
+> -static uint64_t vcpu_last_completed_iteration[KVM_MAX_VCPUS];
+> +static int iteration;
+> +static int vcpu_last_completed_iteration[KVM_MAX_VCPUS];
 
-Yes, they should be.
+Wouldn't it be better to use signed 64-bit variables instead? I.e. "int64_t" ?
 
-The other me did a sloppy job for sure, this should have been screaming
-even without checkpatch...
-This has been done in a rush during the last days to close on the
-backlog item which got the most votes.
+  Thomas
 
--- 
-Péter
