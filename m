@@ -2,204 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9740D2F413B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 02:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 261382F413C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 02:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727362AbhAMBbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 20:31:15 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10717 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726473AbhAMBbN (ORCPT
+        id S1727443AbhAMBcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 20:32:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727053AbhAMBcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 20:31:13 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DFqbp5FB0zl4P4;
-        Wed, 13 Jan 2021 09:29:10 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 13 Jan
- 2021 09:30:22 +0800
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix to keep isolation of atomic write
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201230075557.108818-1-yuchao0@huawei.com>
- <X/Y5pJr4Aaf0bBqj@google.com> <X/ZAS6oyFiudshe2@google.com>
- <X/x9kTlL8E1Wj4Dd@google.com>
- <d146348b-3bbd-c1a5-72eb-b054cbcf0b13@huawei.com>
- <X/4jZY0bzkTCbDTY@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <240391d4-c3bb-882d-0e86-1e30e2fd0ef4@huawei.com>
-Date:   Wed, 13 Jan 2021 09:30:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Tue, 12 Jan 2021 20:32:13 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F35C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 17:31:33 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id z11so274233qkj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 17:31:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fq9Plgov79IhfrzoAKOz8rulKlgb6ke/+f1nKnQxxW0=;
+        b=Z5V6pwugh8tpNgcEBRyoj+Y6Z5AJg6B0zPtKXl64DjRA3KzMducbX7nTwFGIAMeinn
+         OJ5UxJDRPPgeiEUD59NOxYKDcmjU681HofoD+pZcTdXdjrOBGK2zYONOtnVArf4hSNbp
+         bDMD5G67TN8/sI+6XN8v6ysAMejiveE29xmXw6Xa46Yl5Tx0avjB9U0g0iwKzH6IoJnr
+         2rDY2OpNlgN8LdWGEg8JHBWD9ge1MPbVDdh7vs7kF9HwTmomO1vt0YzodX8tAh/cM0+Z
+         ajsVUggdrrI7vUnD2vPsd8rt0PU6ko1ygWfTPs+GUMDk0eoq3v4MpHiy1+2KGCqQ21w8
+         cSzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fq9Plgov79IhfrzoAKOz8rulKlgb6ke/+f1nKnQxxW0=;
+        b=tsqDxU+wLCDqcgr2rxBLP1kZTu5tUsoymG8VCFNU/1X2tjSm7NwuEIpCP0UC2HCQ5z
+         juDuBTwe38lw5o/TqoiORMQH7q0DdIew/9BnhUfJzK250dFDk2hCT01jZZRNuTI82cIK
+         9dgGnNNVoEXJEQZVu/laCrp9B8JSa6yu1Cm64YdltAJEq6nNcw6IKI3kzOLEfxG7bR7U
+         Ij9eb9m/A+ZSOW8IqmTWWMgDROwMNGz6EYAi5aS+4depmlA1ZpuWGaq4+ibcQvtGJeK2
+         opVMlPjzZWwJGonm9s+JpxNuOhd7GzGLOpslSe8YOuuLSBXRbF5KX90a+KCWwMlJqEeY
+         ZKpg==
+X-Gm-Message-State: AOAM532XK0/pCb2V1J6pkbHGPHAxOnWVcFafERYHSNsAdjRQLmDXfgEE
+        F9nNWJis4fS9N0vVkxYd1hM=
+X-Google-Smtp-Source: ABdhPJxLwlEhkHUnqWeAiKaHu6jH5hxYS83PqqIV5mX9qhLsuLjCu2BU4yHY7ertRC4ihze41+Gy6A==
+X-Received: by 2002:a37:9b8a:: with SMTP id d132mr2556778qke.81.1610501492549;
+        Tue, 12 Jan 2021 17:31:32 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id p15sm248369qtu.26.2021.01.12.17.31.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 17:31:31 -0800 (PST)
+Date:   Tue, 12 Jan 2021 18:31:30 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ubsan: Implement __ubsan_handle_alignment_assumption
+Message-ID: <20210113013130.GA3446359@ubuntu-m3-large-x86>
+References: <20210112205542.1375847-1-natechancellor@gmail.com>
+ <202101130859.JSORPQUn-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <X/4jZY0bzkTCbDTY@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202101130859.JSORPQUn-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/13 6:32, Jaegeuk Kim wrote:
-> On 01/12, Chao Yu wrote:
->> On 2021/1/12 0:32, Jaegeuk Kim wrote:
->>> On 01/06, Jaegeuk Kim wrote:
->>>> On 01/06, Jaegeuk Kim wrote:
->>>>> Hi Chao,
->>>>>
->>>>> With a quick test, this patch causes down_write failure resulting in blocking
->>>>> process. I didn't dig in the bug so, please check the code again. :P
->>>>
->>>> nvm. I can see it works now.
->>>
->>> Hmm, this gives a huge perf regression when running sqlite. :(
->>> We may need to check the lock coverage. Thoughts?
->>
->> I added i_mmap_sem lock only, so it can cause atomic_{start,commit,finish}
->> race with mmap and truncation operations in additionally.
->>
->> I'd like to know what's your sqlite testcase?
+On Wed, Jan 13, 2021 at 08:39:52AM +0800, kernel test robot wrote:
+> Hi Nathan,
 > 
-> Nothing special. Just generating multiple sqlite transactions to the same db.
-
-I doubt that start/commit flow race with ->release/->flush interface can cause
-lower concurrency?
-
-f2fs_ioc_start_atomic_write or			->release or ->flush
-f2fs_ioc_commit_atomic_write
-						 - f2fs_drop_inmem_pages
-						  down_write(&F2FS_I(inode)->i_mmap_sem);
-down_write(&F2FS_I(inode)->i_mmap_sem);
-
-How about trying this testcase again after removing i_mmap_sem lock in
-f2fs_drop_inmem_pages()?
-
-Thanks,
-
+> I love your patch! Perhaps something to improve:
 > 
->>
->> Thanks,
->>
->>>
->>>>
->>>>>
->>>>> On 12/30, Chao Yu wrote:
->>>>>> ThreadA					ThreadB
->>>>>> - f2fs_ioc_start_atomic_write
->>>>>> - write
->>>>>> - f2fs_ioc_commit_atomic_write
->>>>>>    - f2fs_commit_inmem_pages
->>>>>>    - f2fs_drop_inmem_pages
->>>>>>    - f2fs_drop_inmem_pages
->>>>>>     - __revoke_inmem_pages
->>>>>> 					- f2fs_vm_page_mkwrite
->>>>>> 					 - set_page_dirty
->>>>>> 					  - tag ATOMIC_WRITTEN_PAGE and add page
->>>>>> 					    to inmem_pages list
->>>>>>     - clear_inode_flag(FI_ATOMIC_FILE)
->>>>>> 					- f2fs_vm_page_mkwrite
->>>>>> 					  - set_page_dirty
->>>>>> 					   - f2fs_update_dirty_page
->>>>>> 					    - f2fs_trace_pid
->>>>>> 					     - tag inmem page private to pid
->>>>>> 					- truncate
->>>>>> 					 - f2fs_invalidate_page
->>>>>> 					 - set page->mapping to NULL
->>>>>> 					  then it will cause panic once we
->>>>>> 					  access page->mapping
->>>>>>
->>>>>> The root cause is we missed to keep isolation of atomic write in the case
->>>>>> of commit_atomic_write vs mkwrite, let commit_atomic_write helds i_mmap_sem
->>>>>> lock to avoid this issue.
->>>>>>
->>>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->>>>>> ---
->>>>>> v2:
->>>>>> - use i_mmap_sem to avoid mkwrite racing with below flows:
->>>>>>    * f2fs_ioc_start_atomic_write
->>>>>>    * f2fs_drop_inmem_pages
->>>>>>    * f2fs_commit_inmem_pages
->>>>>>
->>>>>>    fs/f2fs/file.c    | 3 +++
->>>>>>    fs/f2fs/segment.c | 7 +++++++
->>>>>>    2 files changed, 10 insertions(+)
->>>>>>
->>>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->>>>>> index 4e6d4b9120a8..a48ec650d691 100644
->>>>>> --- a/fs/f2fs/file.c
->>>>>> +++ b/fs/f2fs/file.c
->>>>>> @@ -2050,6 +2050,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->>>>>>    		goto out;
->>>>>>    	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->>>>>> +	down_write(&F2FS_I(inode)->i_mmap_sem);
->>>>>>    	/*
->>>>>>    	 * Should wait end_io to count F2FS_WB_CP_DATA correctly by
->>>>>> @@ -2060,6 +2061,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->>>>>>    			  inode->i_ino, get_dirty_pages(inode));
->>>>>>    	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
->>>>>>    	if (ret) {
->>>>>> +		up_write(&F2FS_I(inode)->i_mmap_sem);
->>>>>>    		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->>>>>>    		goto out;
->>>>>>    	}
->>>>>> @@ -2073,6 +2075,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->>>>>>    	/* add inode in inmem_list first and set atomic_file */
->>>>>>    	set_inode_flag(inode, FI_ATOMIC_FILE);
->>>>>>    	clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
->>>>>> +	up_write(&F2FS_I(inode)->i_mmap_sem);
->>>>>>    	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->>>>>>    	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
->>>>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->>>>>> index d8570b0359f5..dab870d9faf6 100644
->>>>>> --- a/fs/f2fs/segment.c
->>>>>> +++ b/fs/f2fs/segment.c
->>>>>> @@ -327,6 +327,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
->>>>>>    	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->>>>>>    	struct f2fs_inode_info *fi = F2FS_I(inode);
->>>>>> +	down_write(&F2FS_I(inode)->i_mmap_sem);
->>>>>> +
->>>>>>    	while (!list_empty(&fi->inmem_pages)) {
->>>>>>    		mutex_lock(&fi->inmem_lock);
->>>>>>    		__revoke_inmem_pages(inode, &fi->inmem_pages,
->>>>>> @@ -344,6 +346,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
->>>>>>    		sbi->atomic_files--;
->>>>>>    	}
->>>>>>    	spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
->>>>>> +
->>>>>> +	up_write(&F2FS_I(inode)->i_mmap_sem);
->>>>>>    }
->>>>>>    void f2fs_drop_inmem_page(struct inode *inode, struct page *page)
->>>>>> @@ -467,6 +471,7 @@ int f2fs_commit_inmem_pages(struct inode *inode)
->>>>>>    	f2fs_balance_fs(sbi, true);
->>>>>>    	down_write(&fi->i_gc_rwsem[WRITE]);
->>>>>> +	down_write(&F2FS_I(inode)->i_mmap_sem);
->>>>>>    	f2fs_lock_op(sbi);
->>>>>>    	set_inode_flag(inode, FI_ATOMIC_COMMIT);
->>>>>> @@ -478,6 +483,8 @@ int f2fs_commit_inmem_pages(struct inode *inode)
->>>>>>    	clear_inode_flag(inode, FI_ATOMIC_COMMIT);
->>>>>>    	f2fs_unlock_op(sbi);
->>>>>> +
->>>>>> +	up_write(&F2FS_I(inode)->i_mmap_sem);
->>>>>>    	up_write(&fi->i_gc_rwsem[WRITE]);
->>>>>>    	return err;
->>>>>> -- 
->>>>>> 2.29.2
->>>>>
->>>>>
->>>>> _______________________________________________
->>>>> Linux-f2fs-devel mailing list
->>>>> Linux-f2fs-devel@lists.sourceforge.net
->>>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
->>>>
->>>>
->>>> _______________________________________________
->>>> Linux-f2fs-devel mailing list
->>>> Linux-f2fs-devel@lists.sourceforge.net
->>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
->>> .
->>>
-> .
+> [auto build test WARNING on 7c53f6b671f4aba70ff15e1b05148b10d58c2837]
 > 
+> url:    https://github.com/0day-ci/linux/commits/Nathan-Chancellor/ubsan-Implement-__ubsan_handle_alignment_assumption/20210113-055714
+> base:    7c53f6b671f4aba70ff15e1b05148b10d58c2837
+> config: arm64-randconfig-r031-20210112 (attached as .config)
+> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 32bcfcda4e28375e5a85268d2acfabcfcc011abf)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install arm64 cross compiling tool for clang build
+>         # apt-get install binutils-aarch64-linux-gnu
+>         # https://github.com/0day-ci/linux/commit/775adad26a60878926c0ee6cd460a1375bbe51e6
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Nathan-Chancellor/ubsan-Implement-__ubsan_handle_alignment_assumption/20210113-055714
+>         git checkout 775adad26a60878926c0ee6cd460a1375bbe51e6
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    lib/ubsan.c:192:6: warning: no previous prototype for function '__ubsan_handle_add_overflow' [-Wmissing-prototypes]
+>    void __ubsan_handle_add_overflow(void *data,
+>         ^
+>    lib/ubsan.c:192:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+>    void __ubsan_handle_add_overflow(void *data,
+>    ^
+>    static 
+>    lib/ubsan.c:200:6: warning: no previous prototype for function '__ubsan_handle_sub_overflow' [-Wmissing-prototypes]
+>    void __ubsan_handle_sub_overflow(void *data,
+>         ^
+>    lib/ubsan.c:200:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+>    void __ubsan_handle_sub_overflow(void *data,
+>    ^
+
+Given that these are compiler inserted functions, there is not much of a
+point to having prototypes to them. If people feel shutting these
+warnings up is worthwhile, we can just add the prototypes right above
+the function definition in a follow up patch.
+
+Cheers,
+Nathan
