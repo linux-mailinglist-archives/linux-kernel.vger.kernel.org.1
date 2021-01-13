@@ -2,131 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037A72F4DD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:55:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE132F4DD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbhAMOwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:52:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41758 "EHLO
+        id S1727725AbhAMOwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:52:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727743AbhAMOwY (ORCPT
+        with ESMTP id S1727645AbhAMOwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:52:24 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBADC061360
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:50:58 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id i9so2420123wrc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:50:58 -0800 (PST)
+        Wed, 13 Jan 2021 09:52:08 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37931C06134C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:50:49 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id n142so1826221qkn.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:50:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ruS/5Q88or74bT1MGQpJfhS5CAkw8vidMq7dDib2fZs=;
-        b=dw+awuMm/xszxko06x1zbZDXJLrY8h9w46Ii0r1I8t7M23qIokSEWF+lctfR7ifEG+
-         10hTw/DwZRUnEFPhAVSO68dOG3xRMSECzOqgPEZGcaXkIwEZpNzwO47CVeLh022fRJlH
-         jDBbte4+oRAEKQsXCuHQ59dmP92NSYRrJJV3l5taYJRqGkZfD+TVnytK3qk0j65GJPKu
-         2f+mh5IUw8l2pURTp/2Vx0/xKSO+Pb15iZss30ox0FSMT0+dZ7zRgUjqCFkx8UoasarG
-         0QTSmkjRG6zgnWk6plq18kDAdy0dxgi5AzQNxp96r0OLZ3jhu/aqmtWdmf/vSBNmKOFD
-         AtZw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+m95i6hLyIdh7BIpWVUijpi7aowpeDuSUEcNUhIUflw=;
+        b=PMGyBtAHyyDHUjfhdPgvopoExP/J3PoqrqaM88SKXXr7XFW0Qn/1R9K9aFqLo76mhY
+         IMz92xsd+GFA+UC8inMJvluF1vs5pmHzOLAcPGhswXKnRjYt5KHLONhlIshK6NBC756N
+         oQY9WPA9ONgWH9SN3girCOAy8r4wJkZF1GVzpVDChAFusACBTd0LPUHG0jjDDhSjL6R9
+         iGZFL5sJVXxnTSSMhV2xdkRar4NsjvAGdoTGqP7NVKdY9WjWLmqJxAr300iNVirYKuDf
+         wMD7O2UCSmXyjmyCdrXBX9rTWO+S42Cy/XxQbN9I6D4A35pJh9tBA5HAQPSJeIIiBiRX
+         5XeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ruS/5Q88or74bT1MGQpJfhS5CAkw8vidMq7dDib2fZs=;
-        b=YQQ4qFOdA5o4yCpoxRHV6FVgqveHi52gZII5jXvivRhBgqiKcSVsAzJdy/1NWrKz7N
-         3ud0Ii9w03l2X4DT490CgSdlzhRNYVv+VSDDO8ZnfN7GVkNmyoNyRQRtkeAsyvoYMUgd
-         20b4Gvn9R3PaZ9wyO9QFM6u3iU586jGQxHyztyb6PV3DSmeD3z/ZGXZRQMyvWHZTNf/a
-         AiZoyFoT9nozOVFIPIPlbYuzTQmfEwOFSB9esA1nMwIZQS02TMWOumkBICVtybw5CfJo
-         EqLGvDfkLYOulwqlh3rvzjRtk08EJNfdJAJSr2xfNLoJf6LvN438FBpULp6svaje0UjX
-         s1NA==
-X-Gm-Message-State: AOAM531m1o3Ij/ZDkrYZm+GYtJQhcDxHn+C8yirZfxSmAmPsOi+Fxjcc
-        wJ23SLBUuJ051HZYBOXgSy15hw==
-X-Google-Smtp-Source: ABdhPJxI76cMcy6SPfmM5W3HPZ9oHq45qLxC2KpwnypdTX8IGDVuElLlSdIgg82G0B9F5jmQLXJfmQ==
-X-Received: by 2002:a5d:530c:: with SMTP id e12mr3034474wrv.54.1610549457244;
-        Wed, 13 Jan 2021 06:50:57 -0800 (PST)
-Received: from dell.default ([91.110.221.229])
-        by smtp.gmail.com with ESMTPSA id t188sm3273433wmf.9.2021.01.13.06.50.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 06:50:56 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Software Engineering <lg@denx.de>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Subject: [PATCH 31/31] video: fbdev: mx3fb: Fix some kernel-doc issues
-Date:   Wed, 13 Jan 2021 14:50:09 +0000
-Message-Id: <20210113145009.1272040-32-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210113145009.1272040-1-lee.jones@linaro.org>
-References: <20210113145009.1272040-1-lee.jones@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+m95i6hLyIdh7BIpWVUijpi7aowpeDuSUEcNUhIUflw=;
+        b=KPZIMvsXS+qUx2BTmN+V5NL4MKhWZapSNBcBwrFBv6SS7GL7Q5/+RtufYrZqYOvam0
+         5CfVaIBZOhRaBbUjWRgjyhrClW2Cw/ygWHLAEVbJvAWjNhriJ5oOcahrFJLQJm0ib41k
+         p/HN8BRVO8pZBZAxUBv9ZUQzhU9s9viIoX78OvovoILh8Tfyoc0UhjBZX4SGNNQs52vO
+         YH5+LC3xnsNRYB62QVUR6wArGaSv/GVtcjY6ozBiJTwTO2GuEZRjr2DkIImwsm8AKQjI
+         AgUDfH6PtWE+v8wIp1poQkVg3veAag9+Foj1GzdUjeqUfPEFPnWiNnLmZKnmVYZYHXw7
+         2u6A==
+X-Gm-Message-State: AOAM531mdPHgVoQ4K3nVYARlrX2VDlLvtyaJJc6PTBNdZzQX5gAgP+2r
+        zFwq3Fx8BTTTobN0geFbe7uDcirPzBL2WDFXz0ZyxA==
+X-Google-Smtp-Source: ABdhPJw0aDL0SlptH/xSZW1JeFrZkaqZa0ExXeLrBSAiEzPluUHEpYdmVycmPRo4/GkV6qtosMfv87tf3navpNWAK/0=
+X-Received: by 2002:a37:a747:: with SMTP id q68mr2426420qke.352.1610549448103;
+ Wed, 13 Jan 2021 06:50:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210105163927.1376770-1-kyletso@google.com> <20210105163927.1376770-3-kyletso@google.com>
+ <20210112135636.GD2020859@kuha.fi.intel.com>
+In-Reply-To: <20210112135636.GD2020859@kuha.fi.intel.com>
+From:   Kyle Tso <kyletso@google.com>
+Date:   Wed, 13 Jan 2021 22:50:32 +0800
+Message-ID: <CAGZ6i=3PN3trcwqbNL41KPf4CRRRzDtBSaqytTEE-mKKZHW-Lw@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] usb: typec: tcpm: Protocol Error handling
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Will McVicker <willmcvicker@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Tue, Jan 12, 2021 at 9:56 PM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> On Wed, Jan 06, 2021 at 12:39:26AM +0800, Kyle Tso wrote:
+> > PD3.0 Spec 6.8.1 describes how to handle Protocol Error. There are
+> > general rules defined in Table 6-61 which regulate incoming Message
+> > handling. If the incoming Message is unexpected, unsupported, or
+> > unrecognized, Protocol Error occurs. Follow the rules to handle these
+> > situations. Also consider PD2.0 connection (PD2.0 Spec Table 6-36) for
+> > backward compatibilities.
+> >
+> > To know the types of AMS in all the recipient's states, identify those
+> > AMS who are initiated by the port partner but not yet recorded in the
+> > current code.
+> >
+> > Besides, introduce a new state CHUNK_NOT_SUPP to delay the NOT_SUPPORTED
+> > message after receiving a chunked message.
+>
+> Looks good to me. I put a few style related nitpicks below, but
+> nothing major.
+>
 
- drivers/video/fbdev/mx3fb.c:738: warning: Function parameter or member 'fbi' not described in 'mx3fb_set_fix'
- drivers/video/fbdev/mx3fb.c:738: warning: Excess function parameter 'info' description in 'mx3fb_set_fix'
- drivers/video/fbdev/mx3fb.c:1109: warning: Function parameter or member 'blank' not described in 'mx3fb_blank'
- drivers/video/fbdev/mx3fb.c:1109: warning: Function parameter or member 'fbi' not described in 'mx3fb_blank'
- drivers/video/fbdev/mx3fb.c:1134: warning: Function parameter or member 'fbi' not described in 'mx3fb_pan_display'
- drivers/video/fbdev/mx3fb.c:1134: warning: Excess function parameter 'info' description in 'mx3fb_pan_display'
- drivers/video/fbdev/mx3fb.c:1393: warning: Function parameter or member 'dev' not described in 'mx3fb_init_fbinfo'
- drivers/video/fbdev/mx3fb.c:1393: warning: Function parameter or member 'ops' not described in 'mx3fb_init_fbinfo'
+> >
+> > +             if (port->pwr_role == TYPEC_SOURCE) {
+> > +                     if (port->ams == GET_SOURCE_CAPABILITIES)
+> > +                             tcpm_pd_handle_state(port, SRC_READY, NONE_AMS,
+> > +                                                  0);
+> > +                     /* Unexpected Source Capabilities */
+> > +                     else
+> > +                             tcpm_pd_handle_msg(port,
+> > +                                        port->negotiated_rev < PD_REV30 ?
+> > +                                        PD_MSG_CTRL_REJECT :
+> > +                                        PD_MSG_CTRL_NOT_SUPP,
+> > +                                        NONE_AMS);
+>
+> You can align that properly:
+>
+>                                 tcpm_pd_handle_msg(port,
+>                                                    port->negotiated_rev < PD_REV30 ?
+>                                                    PD_MSG_CTRL_REJECT :
+>                                                    PD_MSG_CTRL_NOT_SUPP,
+>                                                    NONE_AMS);
+>
+Yes it looks better. will fix it.
 
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Software Engineering <lg@denx.de>
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-fbdev@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/video/fbdev/mx3fb.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/video/fbdev/mx3fb.c b/drivers/video/fbdev/mx3fb.c
-index d1c8f7a969ac3..a0fad25136fe5 100644
---- a/drivers/video/fbdev/mx3fb.c
-+++ b/drivers/video/fbdev/mx3fb.c
-@@ -731,7 +731,7 @@ static int mx3fb_unmap_video_memory(struct fb_info *fbi);
- 
- /**
-  * mx3fb_set_fix() - set fixed framebuffer parameters from variable settings.
-- * @info:	framebuffer information pointer
-+ * @fbi:	framebuffer information pointer
-  * @return:	0 on success or negative error code on failure.
-  */
- static int mx3fb_set_fix(struct fb_info *fbi)
-@@ -1104,6 +1104,8 @@ static void __blank(int blank, struct fb_info *fbi)
- 
- /**
-  * mx3fb_blank() - blank the display.
-+ * @blank:	blank mode (unblank, normal, {v,h}sync_suspend, powerdown)
-+ * @fbi:	framebuffer information pointer
-  */
- static int mx3fb_blank(int blank, struct fb_info *fbi)
- {
-@@ -1125,7 +1127,7 @@ static int mx3fb_blank(int blank, struct fb_info *fbi)
- /**
-  * mx3fb_pan_display() - pan or wrap the display
-  * @var:	variable screen buffer information.
-- * @info:	framebuffer information pointer.
-+ * @fbi:	framebuffer information pointer.
-  *
-  * We look only at xoffset, yoffset and the FB_VMODE_YWRAP flag
-  */
-@@ -1384,7 +1386,7 @@ static int mx3fb_unmap_video_memory(struct fb_info *fbi)
- 	return 0;
- }
- 
--/**
-+/*
-  * mx3fb_init_fbinfo() - initialize framebuffer information object.
-  * @return:	initialized framebuffer structure.
-  */
--- 
-2.25.1
+> >               case PD_MSG_DATA_SINK_CAP:
+> > -                     tcpm_pd_send_sink_caps(port);
+> > +                     ret = tcpm_pd_send_sink_caps(port);
+> > +                     if (ret < 0) {
+> > +                             tcpm_log(port,
+> > +                                      "Unable to send snk caps, ret=%d",
+> > +                                      ret);
+>
+> One line is enough:
+>
+>                                 tcpm_log(port, "Unable to send snk caps, ret=%d", ret);
+>
+will fix it in the next version.
 
+thanks,
+Kyle
