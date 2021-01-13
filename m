@@ -2,105 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 388222F5838
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4698F2F581D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbhANCP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:15:58 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:64508 "EHLO
+        id S1727981AbhANCOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:14:24 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:36520 "EHLO
         so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729066AbhAMVQ6 (ORCPT
+        with ESMTP id S1729070AbhAMVaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 16:16:58 -0500
+        Wed, 13 Jan 2021 16:30:17 -0500
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610572682; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=Ch2XVgOCR5t+oWiqNZvTCBTunPhnsKohqMu9LnBESb0=; b=i05Rw1KyuFO3d5nsmpoe7KsiUfKZTw3BsiaxVypKRuMOwhyJoRyEUBE3UW7EGRhHBbELxLjR
- gDTUCXutCSXjT6a0blEGK2dFribX44mB6fVyA8XR9JWY8T/WBU8BcCaqm4eXKlscVcY2aPTR
- VyH9RY4ocDuSCJadrs76E5mMeSI=
+ s=smtp; t=1610573397; h=References: In-Reply-To: References:
+ In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=jC6g89gEKfijNaQ/kr8NWtlMPcI3v4LRrcbb5ecBEJ4=; b=FohLRMFNdVfcz22MvOvit3DqtsiRI5L/Rda6HQl74UHWsg6FAeNWkkS0uBZbtZpDAEFAVGXe
+ 2csVqHDnZO9g6pznwHRaSyrzFdHHLQZeOrxNg4+nVPtmKeS5Nlw/tZ3SafBdEO0/v5cU2Kcw
+ Hpzm9KnkWViWAhu8BL8Jl8HCQFw=
 X-Mailgun-Sending-Ip: 198.61.254.31
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fff63708fb3cda82fb0335d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 21:17:36
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5fff6373af68fb3b064438ac (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 21:17:39
  GMT
 Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CB0F4C43463; Wed, 13 Jan 2021 21:17:35 +0000 (UTC)
+        id F1734C433ED; Wed, 13 Jan 2021 21:17:38 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from cgoldswo-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D71CAC433CA;
-        Wed, 13 Jan 2021 21:17:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D71CAC433CA
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 80F9AC433CA;
+        Wed, 13 Jan 2021 21:17:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 80F9AC433CA
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cgoldswo@codeaurora.org
 From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
 To:     Alexander Viro <viro@zeniv.linux.org.uk>
 Cc:     Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Laura Abbott <lauraa@codeaurora.org>,
         Chris Goldsworthy <cgoldswo@codeaurora.org>
-Subject: [PATCH v3] Resolve LRU page-pinning issue for file-backed pages 
-Date:   Wed, 13 Jan 2021 13:17:29 -0800
-Message-Id: <cover.1610572007.git.cgoldswo@codeaurora.org>
+Subject: [PATCH v3] fs/buffer.c: Revoke LRU when trying to drop buffers
+Date:   Wed, 13 Jan 2021 13:17:30 -0800
+Message-Id: <2f13c006ad12b047e9e4d5de008e5d5c41322754.1610572007.git.cgoldswo@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <cover.1610572007.git.cgoldswo@codeaurora.org>
+References: <cover.1610572007.git.cgoldswo@codeaurora.org>
+In-Reply-To: <cover.1610572007.git.cgoldswo@codeaurora.org>
+References: <cover.1610572007.git.cgoldswo@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible for file-backed pages to end up in a contiguous memory area
-(CMA), such that the relevant page must be migrated using the .migratepage()
-callback when its backing physical memory is selected for use in an CMA
-allocation (through cma_alloc()).  However, if a set of address space
-operations (AOPs) for a file-backed page lacks a migratepage() page call-back,
-fallback_migrate_page() will be used instead, which through
-try_to_release_page() calls try_to_free_buffers() (which is called directly or
-through a try_to_free_buffers() callback.  try_to_free_buffers() in turn calls
-drop_buffers()
+From: Laura Abbott <lauraa@codeaurora.org>
 
-drop_buffers() itself can fail due to the buffer_head associated with a page
-being busy. However, it is possible that the buffer_head is on an LRU list for
-a CPU, such that we can try removing the buffer_head from that list, in order
-to successfully release the page.  Do this.
+When a buffer is added to the LRU list, a reference is taken which is
+not dropped until the buffer is evicted from the LRU list. This is the
+correct behavior, however this LRU reference will prevent the buffer
+from being dropped. This means that the buffer can't actually be dropped
+until it is selected for eviction. There's no bound on the time spent
+on the LRU list, which means that the buffer may be undroppable for
+very long periods of time. Given that migration involves dropping
+buffers, the associated page is now unmigratible for long periods of
+time as well. CMA relies on being able to migrate a specific range
+of pages, so these types of failures make CMA significantly
+less reliable, especially under high filesystem usage.
 
-v1: https://lore.kernel.org/lkml/cover.1606194703.git.cgoldswo@codeaurora.org/T/#m3a44b5745054206665455625ccaf27379df8a190
-Original version of the patch (with updates to make to account for changes in
-on_each_cpu_cond()).
+Rather than waiting for the LRU algorithm to eventually kick out
+the buffer, explicitly remove the buffer from the LRU list when trying
+to drop it. There is still the possibility that the buffer
+could be added back on the list, but that indicates the buffer is
+still in use and would probably have other 'in use' indicates to
+prevent dropping.
 
-v2: https://lore.kernel.org/lkml/cover.1609829465.git.cgoldswo@codeaurora.org/
-Follow Matthew Wilcox's suggestion of reducing the number of calls to
-on_each_cpu_cond(), by iterating over a page's busy buffer_heads inside of
-on_each_cpu_cond(). To copy from his e-mail, we go from:
+Note: a bug reported by "kernel test robot" lead to a switch from
+using xas_for_each() to xa_for_each().
 
-for_each_buffer
-	for_each_cpu
-		for_each_lru_entry
-
-to:
-
-for_each_cpu
-	for_each_buffer
-		for_each_lru_entry
-
-This is done using xarrays, which I found to be the cleanest data structure to
-use, though a pre-allocated array of page_size(page) / bh->b_size elements might
-be more performant.
-
-v3: Replace xas_for_each() with xa_for_each() to account for proper locking.
-
-Laura Abbott (1):
-  fs/buffer.c: Revoke LRU when trying to drop buffers
-
+Signed-off-by: Laura Abbott <lauraa@codeaurora.org>
+Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+---
  fs/buffer.c | 81 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
  1 file changed, 76 insertions(+), 5 deletions(-)
 
+diff --git a/fs/buffer.c b/fs/buffer.c
+index 96c7604..d2d1237 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -48,6 +48,7 @@
+ #include <linux/sched/mm.h>
+ #include <trace/events/block.h>
+ #include <linux/fscrypt.h>
++#include <linux/xarray.h>
+ 
+ #include "internal.h"
+ 
+@@ -1471,12 +1472,59 @@ static bool has_bh_in_lru(int cpu, void *dummy)
+ 	return false;
+ }
+ 
++static void __evict_bhs_lru(void *arg)
++{
++	struct bh_lru *b = &get_cpu_var(bh_lrus);
++	struct xarray *busy_bhs = arg;
++	struct buffer_head *bh;
++	unsigned long i, xarray_index;
++
++	xa_for_each(busy_bhs, xarray_index, bh) {
++		for (i = 0; i < BH_LRU_SIZE; i++) {
++			if (b->bhs[i] == bh) {
++				brelse(b->bhs[i]);
++				b->bhs[i] = NULL;
++				break;
++			}
++		}
++
++		bh = bh->b_this_page;
++	}
++
++	put_cpu_var(bh_lrus);
++}
++
++static bool page_has_bhs_in_lru(int cpu, void *arg)
++{
++	struct bh_lru *b = per_cpu_ptr(&bh_lrus, cpu);
++	struct xarray *busy_bhs = arg;
++	struct buffer_head *bh;
++	unsigned long i, xarray_index;
++
++	xa_for_each(busy_bhs, xarray_index, bh) {
++		for (i = 0; i < BH_LRU_SIZE; i++) {
++			if (b->bhs[i] == bh)
++				return true;
++		}
++
++		bh = bh->b_this_page;
++	}
++
++	return false;
++
++}
+ void invalidate_bh_lrus(void)
+ {
+ 	on_each_cpu_cond(has_bh_in_lru, invalidate_bh_lru, NULL, 1);
+ }
+ EXPORT_SYMBOL_GPL(invalidate_bh_lrus);
+ 
++static void evict_bh_lrus(struct xarray *busy_bhs)
++{
++	on_each_cpu_cond(page_has_bhs_in_lru, __evict_bhs_lru,
++			 busy_bhs, 1);
++}
++
+ void set_bh_page(struct buffer_head *bh,
+ 		struct page *page, unsigned long offset)
+ {
+@@ -3242,14 +3290,36 @@ drop_buffers(struct page *page, struct buffer_head **buffers_to_free)
+ {
+ 	struct buffer_head *head = page_buffers(page);
+ 	struct buffer_head *bh;
++	struct xarray busy_bhs;
++	int bh_count = 0;
++	int xa_ret, ret = 0;
++
++	xa_init(&busy_bhs);
+ 
+ 	bh = head;
+ 	do {
+-		if (buffer_busy(bh))
+-			goto failed;
++		if (buffer_busy(bh)) {
++			xa_ret = xa_err(xa_store(&busy_bhs, bh_count++,
++						 bh, GFP_ATOMIC));
++			if (xa_ret)
++				goto out;
++		}
+ 		bh = bh->b_this_page;
+ 	} while (bh != head);
+ 
++	if (bh_count) {
++		/*
++		 * Check if the busy failure was due to an outstanding
++		 * LRU reference
++		 */
++		evict_bh_lrus(&busy_bhs);
++		do {
++			if (buffer_busy(bh))
++				goto out;
++		} while (bh != head);
++	}
++
++	ret = 1;
+ 	do {
+ 		struct buffer_head *next = bh->b_this_page;
+ 
+@@ -3259,9 +3329,10 @@ drop_buffers(struct page *page, struct buffer_head **buffers_to_free)
+ 	} while (bh != head);
+ 	*buffers_to_free = head;
+ 	detach_page_private(page);
+-	return 1;
+-failed:
+-	return 0;
++out:
++	xa_destroy(&busy_bhs);
++
++	return ret;
+ }
+ 
+ int try_to_free_buffers(struct page *page)
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
