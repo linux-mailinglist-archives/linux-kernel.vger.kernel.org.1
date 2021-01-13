@@ -2,122 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9C92F4BA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:50:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1FF2F4BA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726549AbhAMMtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 07:49:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25835 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725857AbhAMMtU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 07:49:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610542073;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MN//j4KfkaQDO4C4FoLF4BEjv0MtOHoXDo9L7ieqXmM=;
-        b=I5CmDh7EO/abyiii09JlW/09xm8GIRfUYlIGc/XoyOjQC9+Vfh+hT+649A5KMYP9jrN227
-        VgSWzwBuR8oSeChb8n86Jb/F5GcrWAWQi19j+wFs02VcXj2P31cApfxe8BRcVyObOgFdo9
-        t/9QeYMQT31G7he8nvAK/0h3YWbI7YQ=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-241-OF6w4_i2PXa9rb90N2oj-A-1; Wed, 13 Jan 2021 07:47:49 -0500
-X-MC-Unique: OF6w4_i2PXa9rb90N2oj-A-1
-Received: by mail-ed1-f72.google.com with SMTP id g14so805768edt.12
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 04:47:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MN//j4KfkaQDO4C4FoLF4BEjv0MtOHoXDo9L7ieqXmM=;
-        b=fdys+Ow9ylGG5knxJTMXBZ9Mbh2ctDwm9JMMgfoC4JC3gXnC02Ll89IVq8oTjwGX+z
-         56DI4euIVrKBtmi+M9ihUxqN4aOLkX90jhIpmhRGZO6AFoTpgmFWFrmxIX83QNfNa2lJ
-         cr15TX0r8HO7BiOwbFwHX9Dd61e839kv7P7f5vQwyfedv7zkq8RIvotHxIFKpIxyeDy+
-         ZJl1J1Gyi5P6CX30gUhHT0AP6u92I1JRCSP8UAZk1Po2S1+RtF1AZLXTW8C2zgmyor1z
-         D2wtKiZJWTvRIeW8u1sEtlyDHeMP0HGydiqeQEWUdtv5setsjBi23DwclfCIvNa6DM7h
-         muhg==
-X-Gm-Message-State: AOAM530Ji8QGIf8ruXF12/y1k4M/kyPEGmsDs2lCGV2dO3crjtwf7FB2
-        6L4xkZ3sPdQEQFWl7hjeZRRTdQrU0jz+RlwQuG9yo/s54cDfBUguj35bK4R0/q0AV3uDdFlPgrA
-        +m9e9qIZ+l58qG5rIjRGYMSpBAkk35iABBjlJHqGf1BYu1shy4CPAhjT35eI0ZCiIOOOQt7O9Mk
-        xP
-X-Received: by 2002:a50:9ee6:: with SMTP id a93mr1676116edf.174.1610542068562;
-        Wed, 13 Jan 2021 04:47:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyikRdfoGYoew5FvAMydezcXlv1r36t0us5uCD3RBdb1UXRawJ6L+W5SY23B2IER8QAu0mx/A==
-X-Received: by 2002:a50:9ee6:: with SMTP id a93mr1676096edf.174.1610542068394;
-        Wed, 13 Jan 2021 04:47:48 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id z25sm684934ejd.23.2021.01.13.04.47.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 04:47:47 -0800 (PST)
-Subject: Re: [PATCH 1/2] KVM: x86: introduce definitions to support static
- calls for kvm_x86_ops
-To:     Jason Baron <jbaron@akamai.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, peterz@infradead.org, aarcange@redhat.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1610379877.git.jbaron@akamai.com>
- <ce483ce4a1920a3c1c4e5deea11648d75f2a7b80.1610379877.git.jbaron@akamai.com>
- <X/4q/OKvW9RKQ+gk@google.com>
- <1784355c-e53e-5363-31e3-faeba4ba9e8f@akamai.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <86972c56-4d2e-a6ab-11ad-c972a395386a@redhat.com>
-Date:   Wed, 13 Jan 2021 13:47:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1726754AbhAMMte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 07:49:34 -0500
+Received: from verein.lst.de ([213.95.11.211]:60093 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725857AbhAMMtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 07:49:33 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id D787F68AFE; Wed, 13 Jan 2021 13:48:47 +0100 (CET)
+Date:   Wed, 13 Jan 2021 13:48:47 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Claire Chang <tientzu@chromium.org>
+Cc:     robh+dt@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, joro@8bytes.org, will@kernel.org,
+        frowand.list@gmail.com, konrad.wilk@oracle.com,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, hch@lst.de, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, grant.likely@arm.com, xypron.glpk@gmx.de,
+        treding@nvidia.com, mingo@kernel.org, bauerman@linux.ibm.com,
+        peterz@infradead.org, gregkh@linuxfoundation.org,
+        saravanak@google.com, rafael.j.wysocki@intel.com,
+        heikki.krogerus@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        rdunlap@infradead.org, dan.j.williams@intel.com,
+        bgolaszewski@baylibre.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        iommu@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
+        tfiga@chromium.org, drinkcat@chromium.org
+Subject: Re: [RFC PATCH v3 4/6] swiotlb: Add restricted DMA alloc/free
+ support.
+Message-ID: <20210113124847.GC1383@lst.de>
+References: <20210106034124.30560-1-tientzu@chromium.org> <20210106034124.30560-5-tientzu@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <1784355c-e53e-5363-31e3-faeba4ba9e8f@akamai.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106034124.30560-5-tientzu@chromium.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/01/21 05:12, Jason Baron wrote:
->>
-> Looking at the vmx definitions I see quite a few that don't
-> match that naming. For example:
-> 
-> hardware_unsetup,
-> hardware_enable,
-> hardware_disable,
-> report_flexpriority,
-> update_exception_bitmap,
-> enable_nmi_window,
-> enable_irq_window,
-> update_cr8_intercept,
-> pi_has_pending_interrupt,
-> cpu_has_vmx_wbinvd_exit,
-> pi_update_irte,
-> kvm_complete_insn_gp,
-> 
-> So I'm not sure if we want to extend these macros to
-> vmx/svm.
+> +#ifdef CONFIG_SWIOTLB
+> +	if (unlikely(dev->dma_io_tlb_mem))
+> +		return swiotlb_alloc(dev, size, dma_handle, attrs);
+> +#endif
 
-Don't do it yourself, but once you introduce the new header it becomes a 
-no-brainer to switch the declarations to use it.  So let's plan the new 
-header to make that switch easy.
+Another place where the dma_io_tlb_mem is useful to avoid the ifdef.
 
-Using trailing commas unconditionally would be okay, i.e.
+> -phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
+> -		size_t mapping_size, size_t alloc_size,
+> -		enum dma_data_direction dir, unsigned long attrs)
+> +static int swiotlb_tbl_find_free_region(struct device *hwdev,
+> +					dma_addr_t tbl_dma_addr,
+> +					size_t alloc_size,
+> +					unsigned long attrs)
 
-#define X86_OP(func)     .func = vmx_##func,
-#include "kvm-x86-ops.h"
+> +static void swiotlb_tbl_release_region(struct device *hwdev, int index,
+> +				       size_t size)
 
-and leave out the terminator/delimiter in kvm-x86-ops.h.  This is 
-similar to how we use vmx/vmcs_shadow_fields.h:
+This refactoring should be another prep patch.
 
-#define SHADOW_FIELD_RO(x, y) { x, offsetof(struct vmcs12, y) },
-#include "vmcs_shadow_fields.h"
 
-#define SHADOW_FIELD_RW(x, y) case x:
-#include "vmcs_shadow_fields.h"
+> +void *swiotlb_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle,
+> +		    unsigned long attrs)
 
-Thanks,
+I'd rather have the names convey there are for the per-device bounce
+buffer in some form.
 
-Paolo
+> +	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
 
+While we're at it I wonder if the io_tlb is something we could change
+while we're at it.  Maybe replace io_tlb_mem with struct swiotlb
+and rename the field in struct device to dev_swiotlb?
+
+> +	int index;
+> +	void *vaddr;
+> +	phys_addr_t tlb_addr;
+> +
+> +	size = PAGE_ALIGN(size);
+> +	index = swiotlb_tbl_find_free_region(dev, mem->start, size, attrs);
+> +	if (index < 0)
+> +		return NULL;
+> +
+> +	tlb_addr = mem->start + (index << IO_TLB_SHIFT);
+> +	*dma_handle = phys_to_dma_unencrypted(dev, tlb_addr);
+> +
+> +	if (!dev_is_dma_coherent(dev)) {
+> +		unsigned long pfn = PFN_DOWN(tlb_addr);
+> +
+> +		/* remove any dirty cache lines on the kernel alias */
+> +		arch_dma_prep_coherent(pfn_to_page(pfn), size);
+
+Can we hook in somewhat lower level in the dma-direct code so that all
+the remapping in dma-direct can be reused instead of duplicated?  That
+also becomes important if we want to use non-remapping uncached support,
+e.g. on mips or x86, or the direct changing of the attributes that Will
+planned to look into for arm64.
