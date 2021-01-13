@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32A42F456B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:42:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442C92F4577
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbhAMHlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 02:41:25 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:46249 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726406AbhAMHlZ (ORCPT
+        id S1726136AbhAMHpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 02:45:22 -0500
+Received: from bin-mail-out-06.binero.net ([195.74.38.229]:37993 "EHLO
+        bin-mail-out-06.binero.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725902AbhAMHpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 02:41:25 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610523665; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=o+bEyOuV8qLl66hULtpvyiZg0Sf1gcXndJpcnNWYXRg=; b=bW61PY0x6DphU30XAqEG4FoSPJlOtP0QYgDpQIoEoY/LZ+BqFhO8jsWx8TMQfqtbBzQ3SVeB
- dUqPWp91neVDVIqkGSVBdxwBo6S2UoMqSjm73B55EoFqNCL18MkmN5+DNHmUJRFjselxwUHb
- 8cPNGwnlY1pPg+U5eCKYTMQQK7g=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 5ffea3e9f1be2d22c4d5c687 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 07:40:25
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 86E30C43461; Wed, 13 Jan 2021 07:40:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CCA8AC433CA;
-        Wed, 13 Jan 2021 07:40:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CCA8AC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Carl Huang <cjhuang@codeaurora.org>, hemantk@codeaurora.org,
-        ath11k@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3] mhi: use irq_flags if controller driver configures it
-References: <20210104101128.8217-1-cjhuang@codeaurora.org>
-        <20210104170359.GE2256@work>
-Date:   Wed, 13 Jan 2021 09:40:19 +0200
-In-Reply-To: <20210104170359.GE2256@work> (Manivannan Sadhasivam's message of
-        "Mon, 4 Jan 2021 22:33:59 +0530")
-Message-ID: <87o8hti8t8.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Wed, 13 Jan 2021 02:45:22 -0500
+X-Halon-ID: 27ebd293-5573-11eb-a076-005056917f90
+Authorized-sender: andreas@gaisler.com
+Received: from andreas.got.gaisler.com (h-98-128-223-123.na.cust.bahnhof.se [98.128.223.123])
+        by bin-vsp-out-02.atm.binero.net (Halon) with ESMTPA
+        id 27ebd293-5573-11eb-a076-005056917f90;
+        Wed, 13 Jan 2021 08:44:33 +0100 (CET)
+Subject: Re: [patch 1/4] sparc/mm/highmem: Flush cache and TLB
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210112170136.078559026@linutronix.de>
+ <20210112170410.905976187@linutronix.de>
+From:   Andreas Larsson <andreas@gaisler.com>
+Message-ID: <8a55c407-4fad-1a2f-5540-152e28b71617@gaisler.com>
+Date:   Wed, 13 Jan 2021 08:44:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210112170410.905976187@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
 
-> On Mon, Jan 04, 2021 at 06:11:28PM +0800, Carl Huang wrote:
->> If controller driver has specified the irq_flags, mhi uses this specified
->> irq_flags. Otherwise, mhi uses default irq_flags.
->> 
->> The purpose of this change is to support one MSI vector for QCA6390.
->> MHI will use one same MSI vector too in this scenario.
->> 
->> In case of one MSI vector, IRQ_NO_BALANCING is needed when irq handler
->> is requested. The reason is if irq migration happens, the msi_data may
->> change too. However, the msi_data is already programmed to QCA6390
->> hardware during initialization phase. This msi_data inconsistence will
->> result in crash in kernel.
->> 
->> Another issue is in case of one MSI vector, IRQF_NO_SUSPEND will trigger
->> WARNINGS because QCA6390 wants to disable the IRQ during the suspend.
->> 
->> To avoid above two issues, QCA6390 driver specifies the irq_flags in case
->> of one MSI vector when mhi_register_controller is called.
->> 
->> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
->> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->
-> Applied to mhi-next!
+On 2021-01-12 18:01, Thomas Gleixner wrote:
+> The recent conversion to the generic kmap_local infrastructure failed to
+> assign the proper pre/post map/unmap flush operations for sparc.
+> 
+> Sparc requires cache flush before map/unmap and tlb flush afterwards.
+> 
+> Fixes: 3293efa97807 ("sparc/mm/highmem: Switch to generic kmap atomic")
+> Reported-by: Andreas Larsson <andreas@gaisler.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: sparclinux@vger.kernel.org
+> ---
+>   arch/sparc/include/asm/highmem.h |    9 +++++----
+>   1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> --- a/arch/sparc/include/asm/highmem.h
+> +++ b/arch/sparc/include/asm/highmem.h
+> @@ -50,10 +50,11 @@ extern pte_t *pkmap_page_table;
+>   
+>   #define flush_cache_kmaps()	flush_cache_all()
+>   
+> -/* FIXME: Use __flush_tlb_one(vaddr) instead of flush_cache_all() -- Anton */
+> -#define arch_kmap_local_post_map(vaddr, pteval)	flush_cache_all()
+> -#define arch_kmap_local_post_unmap(vaddr)	flush_cache_all()
+> -
+> +/* FIXME: Use __flush_*_one(vaddr) instead of flush_*_all() -- Anton */
+> +#define arch_kmap_local_pre_map(vaddr, pteval)	flush_cache_all()
+> +#define arch_kmap_local_pre_unmap(vaddr)	flush_cache_all()
+> +#define arch_kmap_local_post_map(vaddr, pteval)	flush_tlb_all()
+> +#define arch_kmap_local_post_unmap(vaddr)	flush_tlb_all()
+>   
+>   #endif /* __KERNEL__ */
 
-Would it be possible again to have an immutable branch for this commit?
-We need it for implementing one MHI support to ath11k[1] required by
-Dell XPS 13 9310 laptops, which a lot of people are waiting. Otherwise I
-can only apply the feature for v5.13, which will be released on July.
+Yes! I found, just an hour before your patched was posted, that an
+equivalent fix helped back where the switch-to-generic patch first
+occurred. This patch was successfully tested on master.
 
-[1] https://patchwork.kernel.org/project/linux-wireless/list/?series=405591&state=*
+Tested-by: Andreas Larsson <andreas@gaisler.com>
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Andreas Larsson
+Cobham Gaisler
