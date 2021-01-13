@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513932F40B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:57:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1E82F40B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436646AbhAMAnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 19:43:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392184AbhAMAGw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 19:06:52 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CDAC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:06:11 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id v19so259691pgj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:06:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Y2kGns4xF1pdZj5RFaOW+nUX0XbU5fb3TCmG0vbv2qE=;
-        b=beK2eEWcVF132j4Ly6FQuPSVtX61wQCbZw+HdzwPMHKTIsvZwSQcRH6xkvRX4j1uN7
-         TYEchjvGrvl89EfuS3m8hm1g0+bB6xya7NSeSp6tH/k8KD5d2D2O1Dr1cQF5iOIOylnT
-         9Vqb3rk2KmC8zxtEy6SzL3QoJPq3NushBvN7uNMQ0xajamQk4JsFRaoO4o09jvbSACAp
-         oPkZ4VBOKmSc7FZyXbE08jfVSmdXS9IG1d40AbqRpNiktbDhdzr+wq8rSa3XWGrwypMF
-         +yirW+8MgzMTeR2+FFCbAeWJ25JGIKkwgp5x4gNAsrYkp68l8DWmhTgXKRARRWh9JTXX
-         /K/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y2kGns4xF1pdZj5RFaOW+nUX0XbU5fb3TCmG0vbv2qE=;
-        b=jOC+xPKGnOpw22CXz0kR9YbKs0hAMmMop0Js4pNROhPnMoS/ea8RkQ/vr7V6gVDKpp
-         gGkeM7FGAuV2uDiW2DcDYAR4d7yPrajbu48SRPes1meR52XsI1v8DvTioHNEBjl8tQyh
-         i4NVgdwzuFJyT/4jPVBcdzPt0Myqhod4+RZ8F9pDbSforxgE8GTnYck/kFDiWH7qdrB3
-         m0mKtLpa52av3Jxv3i6joo3L8M/C5IqYT0vLDYiaiC0FaN/ZOQoIVYPNi6Qj3jD2GQBf
-         NV8aG8FrPbL+Jjvojv1t8DwGB73f0VTnESk+m1zoRL137kxStQFFWr9DIehSQ7bmLq21
-         TFpA==
-X-Gm-Message-State: AOAM5314iOgl1q35gdrF3iNzThfoBeqAqfkyAIJCxhkZTiU21z9ZFvJZ
-        FiOwdAdeNbfQdKePDXpQu+qcCw==
-X-Google-Smtp-Source: ABdhPJyIttXMshDVY7FFxvSCrWWMpTDLWYWlRXclc1e8tyxRLosFTYlX9VzvSMBmCAWnjZwOPhfLBQ==
-X-Received: by 2002:a62:7b84:0:b029:19c:7146:4bbb with SMTP id w126-20020a627b840000b029019c71464bbbmr1460345pfc.52.1610496371207;
-        Tue, 12 Jan 2021 16:06:11 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id n15sm104711pgl.31.2021.01.12.16.06.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 16:06:10 -0800 (PST)
-Date:   Tue, 12 Jan 2021 16:06:03 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kvm: x86: Mark __kvm_vcpu_halt() as static
-Message-ID: <X/45a2VXX7N5f/rJ@google.com>
-References: <1610161772-5144-1-git-send-email-jrdr.linux@gmail.com>
+        id S2436812AbhAMAnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 19:43:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392221AbhAMAKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 19:10:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68AEA23120;
+        Wed, 13 Jan 2021 00:09:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610496593;
+        bh=17kSMe10Y9bH+urli4hihz1yUqtO6un/+neV6IM2xLM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ccS8oBhcXBCu7tqX0yowCoPCkJZjwDbNK3JzGTKjQm3K+TQ4wP92TXS/Y4eYIVa9u
+         qgSqfoL5cZCdTQEoSQvv7e5HdVN3TikM1pYMQdH6NAj+aiuT3/sS/ohcgtuzjeD0JQ
+         1vJ9gQ5BHoNaETBYvJXEgEsMoPCegDdhCJ6QwexnAuyjx91vzdTMzqQDi1+BRIWJ2a
+         LGV4fgG+9O4MNiBAOn4fJvaQwrzDKcgrcTgvOrwt8c2B36CVM1+JZ3Yn09iguknJzA
+         OqCfKVAAb/222MDXyevmSzoXNFyix50Gz9S35ypEQa82gslaqwQQxMOSLzoI9uKmT/
+         clrO5KkSGFhrQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 3790D3522AC3; Tue, 12 Jan 2021 16:09:53 -0800 (PST)
+Date:   Tue, 12 Jan 2021 16:09:53 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, maz@kernel.org, peterz@infradead.org,
+        tglx@linutronix.de
+Subject: Re: [PATCH 0/2] irq: detect slow IRQ handlers
+Message-ID: <20210113000953.GN2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210112135950.30607-1-mark.rutland@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1610161772-5144-1-git-send-email-jrdr.linux@gmail.com>
+In-Reply-To: <20210112135950.30607-1-mark.rutland@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 09, 2021, Souptick Joarder wrote:
-> Kernel test robot throws below warning ->
+On Tue, Jan 12, 2021 at 01:59:48PM +0000, Mark Rutland wrote:
+> Hi,
 > 
-> >> arch/x86/kvm/x86.c:7979:5: warning: no previous prototype for
-> >> '__kvm_vcpu_halt' [-Wmissing-prototypes]
->     7979 | int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int
-> reason)
->          |     ^~~~~~~~~~~~~~~
+> While fuzzing arm64 with Syzkaller (under QEMU+KVM) over a number of releases,
+> I've occasionally seen some ridiculously long stalls (20+ seconds), where it
+> appears that a CPU is stuck in a hard IRQ context. As this gets detected after
+> the CPU returns to the interrupted context, it's difficult to identify where
+> exactly the stall is coming from.
 > 
-> Marking __kvm_vcpu_halt() as static as it is used inside this file.
-
-Paolo beat you to the punch, commit 872f36eb0b0f ("KVM: x86: __kvm_vcpu_halt
-can be static").
-
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> ---
->  arch/x86/kvm/x86.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> These patches are intended to help tracking this down, with a WARN() if an IRQ
+> handler takes longer than a given timout (1 second by default), logging the
+> specific IRQ and handler function. While it's possible to achieve similar with
+> tracing, it's harder to integrate that into an automated fuzzing setup.
 > 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 61499e1..c2fdf14 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -109,6 +109,7 @@
->  static void __kvm_set_rflags(struct kvm_vcpu *vcpu, unsigned long rflags);
->  static void store_regs(struct kvm_vcpu *vcpu);
->  static int sync_regs(struct kvm_vcpu *vcpu);
-> +static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason);
-
-FWIW, this forward declaration is unnecessary.
-
->  struct kvm_x86_ops kvm_x86_ops __read_mostly;
->  EXPORT_SYMBOL_GPL(kvm_x86_ops);
-> @@ -7976,7 +7977,7 @@ void kvm_arch_exit(void)
->  	kmem_cache_destroy(x86_fpu_cache);
->  }
->  
-> -int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
-> +static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
->  {
->  	++vcpu->stat.halt_exits;
->  	if (lapic_in_kernel(vcpu)) {
-> -- 
-> 1.9.1
+> I've been running this for a short while, and haven't yet seen any of the
+> stalls with this applied, but I've tested with smaller timeout periods in the 1
+> millisecond range by overloading the host, so I'm confident that the check
+> works.
 > 
+> Thanks,
+> Mark.
+
+Nice!
+
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
+
+I added the patch below to add a three-second delay to the scheduling
+clock interrupt handler.  This executed, but did not cause your warning
+to be emitted, probably because rcutorture runs under qemu/KVM.  So no
+Tested-by, not yet, anyway.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index e04e336..dac8c7a 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2606,6 +2606,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
+  */
+ void rcu_sched_clock_irq(int user)
+ {
++	static atomic_t invctr;
++
+ 	trace_rcu_utilization(TPS("Start scheduler-tick"));
+ 	lockdep_assert_irqs_disabled();
+ 	raw_cpu_inc(rcu_data.ticks_this_gp);
+@@ -2623,6 +2625,14 @@ void rcu_sched_clock_irq(int user)
+ 		invoke_rcu_core();
+ 	lockdep_assert_irqs_disabled();
+ 
++	if (atomic_inc_return(&invctr) % 0x3ffff == 0) {
++		int i;
++
++		pr_alert("%s: 3-second delay.\n", __func__);
++		for (i = 0; i < 3000; i++)
++			udelay(1000);
++	}
++
+ 	trace_rcu_utilization(TPS("End scheduler-tick"));
+ }
+ 
