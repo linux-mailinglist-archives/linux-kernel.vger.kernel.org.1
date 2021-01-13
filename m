@@ -2,103 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3962C2F50F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD35F2F50FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:21:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbhAMRSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:18:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727084AbhAMRSK (ORCPT
+        id S1728303AbhAMRUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:20:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45468 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728039AbhAMRUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:18:10 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DB2C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:17:30 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id z21so1905099pgj.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:17:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/3STmS+zatbijavWt2TOuzoxTb1FHjkZNwlSMF11jw0=;
-        b=qGncu76OHOBf70DtOp94s5WPBtUSZQAg9+TESOqjGujjFleamyY7hjpE4ZxMc8dpmu
-         qPPOlr9HEDxXMAWavY5ppT70MRbTVUHv/Te2aS1zBCqVHsQ/GD5hrLLnYv2vNbYKvwPN
-         aDIBZNwv9K8iHbf456M0lrc7C6vMHpjaBY80TSBYK97jXyuZ5cdgo+zBbPRIhgywlF69
-         bbLfS2CLHSJU6ujTMmp7A/L9uiEQmkqyq7tS64XVX5olYQUoQfafMMWdSgtyxw5QPx6q
-         slrDtXpbIOOIltYbkZC/TyVX8TNeC9YDg0A1574F1afRqi7BCmdWQh1ijQg/aeV7dXoU
-         Byug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/3STmS+zatbijavWt2TOuzoxTb1FHjkZNwlSMF11jw0=;
-        b=pyaVsDpKVXnnp277vaOh76qwx5B+jU5V/5dHFNOOY5sZiCJ5ZksQu0hzytmQhrkNpJ
-         pv8zWXl83DsdZeQj/H3Eb1NCLO7KS1ape/b1PySANCD0DaUdaDWA4mSKWeSaSeSfJ3ML
-         dOlic22TrbVUL8PL2lsGNsoIcNklMEnpsFxp5xD9R8vUcHFyJR5s1oFPL2UvjmNreFom
-         MuOh5L+XARhW4Vad8B9PfL/pjStUS7J4l36pHMHhcQJGEkot/72wJdTu1O4eSAi94uV6
-         IIQ2G2R1k/a5pVSIlD6zDCivzNaj5sL6DIsIO9Z1dD5LLyaRuJVADr9SSWTDY4ziCxlS
-         yogg==
-X-Gm-Message-State: AOAM531VidZ7eMt3Y0ne5vBV+7djpwZs35S0eOY9TN2UZPqdPnoc8rLI
-        A3zXQowYMnw/X2Veo4Bjk9PT8A==
-X-Google-Smtp-Source: ABdhPJzQAr5AwCj9j/9lCm0gPeLTxznNLGrNOq388mriy/cQdG48dqpJ/7jgEBs02tqYbK/EN/1gow==
-X-Received: by 2002:a63:e151:: with SMTP id h17mr2963978pgk.120.1610558249502;
-        Wed, 13 Jan 2021 09:17:29 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id d20sm40837423pjz.3.2021.01.13.09.17.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 09:17:28 -0800 (PST)
-Date:   Wed, 13 Jan 2021 09:17:22 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Jason Baron <jbaron@akamai.com>, kvm@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        peterz@infradead.org, aarcange@redhat.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] KVM: x86: introduce definitions to support static
- calls for kvm_x86_ops
-Message-ID: <X/8rIgrMkb61/la9@google.com>
-References: <cover.1610379877.git.jbaron@akamai.com>
- <ce483ce4a1920a3c1c4e5deea11648d75f2a7b80.1610379877.git.jbaron@akamai.com>
- <ee071807-5ce5-60c1-c5df-b0b3e068b2ba@redhat.com>
+        Wed, 13 Jan 2021 12:20:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610558318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A5hNzXnRtBLkRY+uChUouzv6yCzi7yuTb2zBLYxeP94=;
+        b=J1vUH/hoUkf5rwYxU8UNNDXqj9aedtiico9xrcbpLYMSb4NacWUCSSUqqwnvbWNpwaV+f/
+        GOninNBHYrANYcnVAWmORBwV4+m1913ZIiG4sd1K+m4Y1UBgje4NvSSuE0IR9VOrU3Q4RC
+        CkaHlUw7LkwRuqaktKmotpsuIblcgvo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-339-CS-aG-nUM0mMe2mBZ18P1A-1; Wed, 13 Jan 2021 12:18:23 -0500
+X-MC-Unique: CS-aG-nUM0mMe2mBZ18P1A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F62380A5C0;
+        Wed, 13 Jan 2021 17:18:22 +0000 (UTC)
+Received: from [10.36.114.165] (ovpn-114-165.ams2.redhat.com [10.36.114.165])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4581074AA9;
+        Wed, 13 Jan 2021 17:18:19 +0000 (UTC)
+Subject: Re: [PATCH 6/9] docs: kvm: devices/arm-vgic-v3: enhance
+ KVM_DEV_ARM_VGIC_CTRL_INIT doc
+To:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, maz@kernel.org,
+        drjones@redhat.com
+Cc:     james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
+References: <20201212185010.26579-1-eric.auger@redhat.com>
+ <20201212185010.26579-7-eric.auger@redhat.com>
+ <4c0b3988-904c-a922-d0be-87a354c3203c@arm.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <0f6f4848-b7df-9e9f-8b25-5009a5650350@redhat.com>
+Date:   Wed, 13 Jan 2021 18:18:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ee071807-5ce5-60c1-c5df-b0b3e068b2ba@redhat.com>
+In-Reply-To: <4c0b3988-904c-a922-d0be-87a354c3203c@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021, Paolo Bonzini wrote:
-> If you need to choose between DECLARE_STATIC_CALL_NULL and
-> DECLARE_STATIC_CALL, you can have kvm-x86-ops.h use one of two macros
-> KVM_X86_OP_NULL and KVM_X86_OP.
-> 
-> #define KVM_X86_OP(func) \
-> 	DECLARE_STATIC_CALL(kvm_x86_##func,	\
-> 			    *(((struct kvm_x86_ops *)0)->func));
-> 
-> #define KVM_X86_OP_NULL(func) \
-> 	DECLARE_STATIC_CALL_NULL(kvm_x86_##func,	\
+Hi Alexandru,
 
-Gah, DECLARE_STATIC_CALL_NULL doesn't exist, though it's referenced in a comment.
-I assume these should be s/DECLARE/DEFINE?  I haven't fully grokked the static
-call code yet...
+On 1/12/21 4:39 PM, Alexandru Elisei wrote:
+> Hi Eric,
+> 
+> On 12/12/20 6:50 PM, Eric Auger wrote:
+>> kvm_arch_vcpu_precreate() returns -EBUSY if the vgic is
+>> already initialized. So let's document that KVM_DEV_ARM_VGIC_CTRL_INIT
+>> must be called after all vcpu creations.
+> 
+> Checked and this is indeed the case,
+> kvm_vm_ioctl_create_vcpu()->kvm_arch_vcpu_precreate() returns -EBUSY is
+> vgic_initialized() is true.
+thanks!
+> 
+>>
+>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+>> ---
+>>  Documentation/virt/kvm/devices/arm-vgic-v3.rst | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/virt/kvm/devices/arm-vgic-v3.rst b/Documentation/virt/kvm/devices/arm-vgic-v3.rst
+>> index 5dd3bff51978..322de6aebdec 100644
+>> --- a/Documentation/virt/kvm/devices/arm-vgic-v3.rst
+>> +++ b/Documentation/virt/kvm/devices/arm-vgic-v3.rst
+>> @@ -228,7 +228,7 @@ Groups:
+>>  
+>>      KVM_DEV_ARM_VGIC_CTRL_INIT
+>>        request the initialization of the VGIC, no additional parameter in
+>> -      kvm_device_attr.addr.
+>> +      kvm_device_attr.addr. Must be called after all vcpu creations.
+> 
+> Nitpick here: the document writes VCPU with all caps. This also sounds a bit
+> weird, I think something like "Must be called after all VCPUs have been created"
+> is clearer.
+I took your suggestion.
 
-> 			    *(((struct kvm_x86_ops *)0)->func));
+Thanks
+
+Eric
 > 
-> #include <asm/kvm-x86-ops.h>
+> Thanks,
+> Alex
+>>      KVM_DEV_ARM_VGIC_SAVE_PENDING_TABLES
+>>        save all LPI pending bits into guest RAM pending tables.
+>>  
 > 
-> ...
-> 
-> #define KVM_X86_OP(func) \
->   static_call_update(kvm_x86_##func, kvm_x86_ops.func)
-> #define KVM_X86_OP_NULL(func) \
->   static_call_update(kvm_x86_##func, kvm_x86_ops.func)
-> #include <asm/kvm-x86-ops.h>
-> 
-> In that case vmx.c and svm.c could define KVM_X86_OP_NULL to an empty string
-> and list the optional callbacks manually.
-> 
-> Paolo
-> 
+
