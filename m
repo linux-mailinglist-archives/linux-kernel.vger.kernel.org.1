@@ -2,63 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7182F49FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:29:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CE82F4A02
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728391AbhAMLWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:22:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43950 "EHLO mail.kernel.org"
+        id S1728163AbhAMLWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:22:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41494 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726010AbhAMLWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:22:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDAA62336F;
-        Wed, 13 Jan 2021 11:21:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610536898;
-        bh=EggYq6wuwwH0lRrHpU74Cm7tyux54OWhkraFooh7AGQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=otMtiQT338TVUD+EuBT9iUhd46X16JT7yz/8HrszkYDc+0cnbxkNz3qLMeYYy62KB
-         5dA3brkTlMvabkodCaiOFhC3cEocaMLpfsbF7XLaAr2Vwv6tUC9oQ8OtsC/9DsDonj
-         kF2l+9vwW6/hgj2l8RFsDMMvLRl2o3m2Kp8tTnlMDydlcJFHn0pKy19NhnjhFXRMg9
-         Q336dZbHbsl4eKn2NIZclONETvNwi5VigLMXi9vRxUyy7+JfektnIpQ3I5p4ZFOtnx
-         Omlj98W2Y/RLUOApPdengfvipshDT5x8AXYDIjdshrncAsU/TzvE2A2HnzomwWPiWy
-         5wHr1+4xiJO5w==
-Date:   Wed, 13 Jan 2021 16:51:32 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] dmaengine: qcom: Always inline gpi_update_reg
-Message-ID: <20210113112132.GA2771@vkoul-mobl>
-References: <20210112191214.1264793-1-natechancellor@gmail.com>
+        id S1726703AbhAMLWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 06:22:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610536923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BERZzqS3AsWI9fkOEv6JI4kHq6LvsjxZvila2Ua7qOA=;
+        b=fDRKWR84ed7mn2oLjc1fpmb+rNDnDvgFN1pzXTSpqgPd3HlHhfK8vdPNjg4Ga9xLU96GrS
+        0P9OZ4BnjIUQUdYsN/bNs2MDVA33Yw62HKteSLs/ZlqEjYnOjurK2oBG8qvN/VIjcYMWmP
+        pB73oTqIPRGTWVeYzi956G9dkLIvl0s=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E52ECAB92;
+        Wed, 13 Jan 2021 11:22:02 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 12:22:01 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v4 4/6] mm: hugetlb: retry dissolve page
+ when hitting race
+Message-ID: <20210113112201.GX22493@dhcp22.suse.cz>
+References: <20210113052209.75531-1-songmuchun@bytedance.com>
+ <20210113052209.75531-5-songmuchun@bytedance.com>
+ <20210113093331.GV22493@dhcp22.suse.cz>
+ <CAMZfGtUObSSyRZfv8CHucp6WmUZZBupKD9hbNHVpAv_PuWtMhw@mail.gmail.com>
+ <20210113103836.GW22493@dhcp22.suse.cz>
+ <CAMZfGtUTZZyL6Pdop-SHt2vs2hLuYfB9dumhRHBm7QLzyRNzZA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210112191214.1264793-1-natechancellor@gmail.com>
+In-Reply-To: <CAMZfGtUTZZyL6Pdop-SHt2vs2hLuYfB9dumhRHBm7QLzyRNzZA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-01-21, 12:12, Nathan Chancellor wrote:
-> When building with CONFIG_UBSAN_UNSIGNED_OVERFLOW, clang decides not to
-> inline gpi_update_reg, which causes a linkage failure around __bad_mask:
+On Wed 13-01-21 19:11:06, Muchun Song wrote:
+> On Wed, Jan 13, 2021 at 6:38 PM Michal Hocko <mhocko@suse.com> wrote:
+[...]
+> > > I just want the fix patch to be small enough.
+> > > So I do the retry in this patch. If you do not agree with this. I
+> > > will fold this into the previous patch.
+> > >
+> > > Do you mean this?
+> > >
+> > > cpu_relax();
+> > > cond_resched();
+> > > cpu_relax();
+> >
+> > No, I am questiong the use of cpu_relax. What is the point?
 > 
-> ld.lld: error: undefined symbol: __bad_mask
-> >>> referenced by bitfield.h:119 (include/linux/bitfield.h:119)
-> >>>               dma/qcom/gpi.o:(gpi_update_reg) in archive drivers/built-in.a
-> >>> referenced by bitfield.h:119 (include/linux/bitfield.h:119)
-> >>>               dma/qcom/gpi.o:(gpi_update_reg) in archive drivers/built-in.a
-> 
-> If gpi_update_reg is not inlined, the mask value will not be known at
-> compile time so the check in field_multiplier stays in the final
-> object file, causing the above linkage failure. Always inline
-> gpi_update_reg so that this check can never fail.
+> If there is no task to be scheduled. Here is just a while loop.
+> The cpu_relax is a good thing to insert into busy-wait loops,
+> right?
 
-Applied, thanks
+Well in an ideal world we would simply have a way to block and wait for
+the particular page. This is probably an overkill for a rare event like
+this. And while you are right that theoretically there might be nobody
+else to run but I find it rather unlikely considering that this path is
+racing with somebody. Sure there is even less likely possibility that
+the race is actually waiting for worker context but really I would just
+make it simple retry loop. If we ever hit a real busy loop then this
+would be pretty straightforward to spot and fix up.
 
+It's not like I am against the patch with cpu_relax but I find it
+excessive for this purpose. If you feel strongly then just keep it.
+
+Once the two patches are squashed I will ack it.
 -- 
-~Vinod
+Michal Hocko
+SUSE Labs
