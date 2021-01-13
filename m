@@ -2,159 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311F72F484D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:09:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5632F485D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727374AbhAMKGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:06:20 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:47804 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727315AbhAMKGR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:06:17 -0500
-Date:   Wed, 13 Jan 2021 10:05:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610532327; bh=3cMP6aCGpwdrhC9aDRMC5OocIsu8kiFlHn7rlrVByGs=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=D8JWBbn9AoasAMJl2qT4ZipOZpgjg1guuhDDW691mwaz2qDzASMcvwm+OEfd1k+7g
-         66BRcC8oCghHEtSoEhAQfeGcHyJu0qxBBbyqRPSCfv/Zfs5vBFbdIKkEF864erZTIM
-         P0bU/x+HjrTln5wjudx5TKY1++B/AbiBdnb3pxbePrBTml4vAH0f5WJJgWlJnhQGOt
-         NyUuGGrJ9exILBDx4YRx3INS7Llgx/6tRdKqEsGQSeneAkVTgw3vdofTfzSpAEtmpj
-         v7nPucVFA9N7xA/YYzSfh0zXjHYn+sja+Gx9+rFisYpHnquI2IuE9wQyqqBeDmTyVs
-         eJkxFrjrsFC0Q==
-To:     Dongseok Yi <dseok.yi@samsung.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     'Alexander Lobakin' <alobakin@pm.me>,
-        'Alexander Duyck' <alexander.duyck@gmail.com>,
-        "'David S. Miller'" <davem@davemloft.net>,
-        'Jakub Kicinski' <kuba@kernel.org>,
-        'Eric Dumazet' <edumazet@google.com>,
-        'Edward Cree' <ecree@solarflare.com>,
-        'Willem de Bruijn' <willemb@google.com>,
-        'Steffen Klassert' <steffen.klassert@secunet.com>,
-        'Alexey Kuznetsov' <kuznet@ms2.inr.ac.ru>,
-        'Hideaki YOSHIFUJI' <yoshfuji@linux-ipv6.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: RE: [PATCH net-next] udp: allow forwarding of plain (non-fraglisted) UDP GRO packets
-Message-ID: <20210113100438.2061-1-alobakin@pm.me>
-In-Reply-To: <001401d6e960$87cab7b0$97602710$@samsung.com>
-References: <20210112211536.261172-1-alobakin@pm.me> <CGME20210113031405epcas2p265f8a05fd83cf818e8ef4cabd6c687b2@epcas2p2.samsung.com> <6fb72534-d4d4-94d8-28d1-aabf16e11488@gmail.com> <001401d6e960$87cab7b0$97602710$@samsung.com>
+        id S1727197AbhAMKJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:09:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727052AbhAMKJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 05:09:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78E7623370;
+        Wed, 13 Jan 2021 10:09:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610532557;
+        bh=RG5P0L+hCZa+zQYGZl7WdN+Z4YDh+Ch46/n83QaYUKA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j7rFkLM4DaO8lBjpiEOxtMCWk90Nwf8yO1TvQaeXHzEFS4rS+xEKIzHtusg/QEYpN
+         J3MM2zX1hxakT4Myk7qcUeFQIk6K17oe9mT36qGOq9KSZJLGY1A8viFjF2RRJLA2K6
+         gmJX9YuhmhRyStG9mu3JQB6hfntNhxPgdQ1/yErH18++4VYiJ5nAQ8K3/r6tpL5vxE
+         vZ3RPWg859W/IT+2Q2J728S2g7iBP2LiFDr5N857KQIo5p18tRj81YUl9e8RcqNQK3
+         7GiSMnZcZOsPxteOx6GHOK9SHlvOn4tWQb6TSXYmlW5PYhYgEC1qTM3QJat7SDm68q
+         jGeRJaTcnqv2w==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kzd5g-00040R-CA; Wed, 13 Jan 2021 11:09:25 +0100
+Date:   Wed, 13 Jan 2021 11:09:24 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Jin ChenXin <bg4akv@hotmail.com>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drivers: add new VID/PID for supporting Teraoka AD2000
+Message-ID: <X/7G1LAzmTpfbPQF@hovoldconsulting.com>
+References: <ME2PR01MB4483D68A6A925810E9A0B23082A90@ME2PR01MB4483.ausprd01.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ME2PR01MB4483D68A6A925810E9A0B23082A90@ME2PR01MB4483.ausprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "'Alexander Lobakin'" <alobakin@pm.me>
+On Wed, Jan 13, 2021 at 09:03:36AM +0000, Jin ChenXin wrote:
 
-From: Dongseok Yi" <dseok.yi@samsung.com>
-Date: Wed, 13 Jan 2021 12:59:45 +0900
+Thanks for the patch. I've applied it now after fixing up some minor
+nits (so you don't need to resend), but for next time please consider
+the following comments.
 
-> On 2021-01-13 12:10, Alexander Duyck wrote:
->> On 1/12/21 1:16 PM, Alexander Lobakin wrote:
->>> Commit 9fd1ff5d2ac7 ("udp: Support UDP fraglist GRO/GSO.") actually
->>> not only added a support for fraglisted UDP GRO, but also tweaked
->>> some logics the way that non-fraglisted UDP GRO started to work for
->>> forwarding too.
->>> Tests showed that currently forwarding and NATing of plain UDP GRO
->>> packets are performed fully correctly, regardless if the target
->>> netdevice has a support for hardware/driver GSO UDP L4 or not.
->>> Add the last element and allow to form plain UDP GRO packets if
->>> there is no socket -> we are on forwarding path.
->>>
->
-> Your patch is very similar with the RFC what I submitted but has
-> different approach. My concern was NAT forwarding.
-> https://lore.kernel.org/patchwork/patch/1362257/
+> From 905036e81e0d32705379c40acddb634428aff0a6 Mon Sep 17 00:00:00 2001
 
-Not really. You tried to forbid forwarding of fraglisted UDP GRO
-packets, I allow forwarding of plain UDP GRO packets.
-With my patch on, you can switch between plain and fraglisted UDP GRO
-with the command:
+Don't include this line since it prevents git-am from considering the
+following lines.
 
-ethtool -K eth0 rx-gro-list on/off
+It also seems hotmail base64-encoded your message, which you should try
+to avoid (see Documentation/process/email-clients.rst).
 
-> Nevertheless, I agreed with your idea that allow fraglisted UDP GRO
-> if there is socket.
+> From: Chenxin Jin <bg4akv@hotmail.com>
+> Date: Wed, 13 Jan 2021 16:59:05 +0800
+> Subject: [PATCH] drivers: add new VID/PID for supporting Teraoka AD2000
 
-Recheck my change. There's ||, not &&.
+Please use the same commit-summary prefix as other commits for the
+subsystem and driver you're patching (e.g. "USB: serial: cp210x: ")
 
-As I said in the commit message, forwarding and NATing of plain
-UDP GRO packets are performed correctly, both with and without
-driver-side support, so it's safe to enable.
+> Teraoka AD2000 uses the CP210x driver, but the chip VID/PID is
+> customized with 0988/0578. We need the driver to support the new VID/PID.
+> 
+> Signed-off-by: Chenxin Jin <bg4akv@hotmail.com>
+> ---
+>  drivers/usb/serial/cp210x.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+> index fbb10df..c274cc3 100644
+> --- a/drivers/usb/serial/cp210x.c
+> +++ b/drivers/usb/serial/cp210x.c
+> @@ -234,6 +234,7 @@ static int cp210x_tiocmset_port(struct usb_serial_port *port,
+>  	{ USB_DEVICE(0x3195, 0xF281) }, /* Link Instruments MSO-28 */
+>  	{ USB_DEVICE(0x3923, 0x7A0B) }, /* National Instruments USB Serial Console */
+>  	{ USB_DEVICE(0x413C, 0x9500) }, /* DW700 GPS USB interface */
+> +	{ USB_DEVICE(0x0988, 0x0578) }, /* Teraoka AD2000 */
 
-Also, as I said in reply to your RFC, NATing of UDP GRO fraglists
-is performed correctly if driver is aware of it and advertises a
-support for fraglist GSO.
-If not, then there may be problems you described. But the idea to
-forbid forwarding and NATing of any UDP GRO skbs is an absolute
-overkill.
+When possible, try to keep the entries ordered by VID and PID.
 
->>> Plain UDP GRO forwarding even shows better performance than fraglisted
->>> UDP GRO in some cases due to not wasting one skbuff_head per every
->>> segment.
->>>
->>> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
->>> ---
->>>   net/ipv4/udp_offload.c | 5 +++--
->>>   1 file changed, 3 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
->>> index ff39e94781bf..9d71df3d52ce 100644
->>> --- a/net/ipv4/udp_offload.c
->>> +++ b/net/ipv4/udp_offload.c
->>> @@ -460,12 +460,13 @@ struct sk_buff *udp_gro_receive(struct list_head =
-*head, struct sk_buff *skb,
->>>   =09if (skb->dev->features & NETIF_F_GRO_FRAGLIST)
->>>   =09=09NAPI_GRO_CB(skb)->is_flist =3D sk ? !udp_sk(sk)->gro_enabled: 1=
-;
->
-> is_flist can be true even if !sk.
->
->>>
->>> -=09if ((sk && udp_sk(sk)->gro_enabled) || NAPI_GRO_CB(skb)->is_flist) =
-{
->>> +=09if (!sk || (sk && udp_sk(sk)->gro_enabled) ||
->
-> Actually sk would be NULL by udp_encap_needed_key in udp4_gro_receive
-> or udp6_gro_receive.
->
->>> +=09    NAPI_GRO_CB(skb)->is_flist) {
->>>   =09=09pp =3D call_gro_receive(udp_gro_receive_segment, head, skb);
->
-> udp_gro_receive_segment will check is_flist first and try to do
-> fraglisted UDP GRO. Can you check what I'm missing?
+>  	{ } /* Terminating Entry */
+>  };
 
-I think you miss that is_flist is set to true *only* if the receiving
-netdevice has NETIF_F_GRO_FRAGLIST feature on.
-If it's not, stack will form a non-fraglisted UDP GRO skb. That was
-tested multiple times.
+The end-result is here:
 
->>>   =09=09return pp;
->>>   =09}
->>>
->>
->> The second check for sk in "(sk && udp_sk(sk)->gro_enabled)" is
->> redundant and can be dropped. You already verified it is present when
->> you checked for !sk before the logical OR.
+	https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git/commit/?h=usb-linus&id=43377df70480f82919032eb09832e9646a8a5efb
 
-Alex are right, I'll simplify the condition in v2. Thanks!
-
-> Sorry, Alexander Duyck. I believe Alexander Lobakin will answer this.
->
->>> -=09if (!sk || NAPI_GRO_CB(skb)->encap_mark ||
->>> +=09if (NAPI_GRO_CB(skb)->encap_mark ||
->>>   =09    (skb->ip_summed !=3D CHECKSUM_PARTIAL &&
->>>   =09     NAPI_GRO_CB(skb)->csum_cnt =3D=3D 0 &&
->>>   =09     !NAPI_GRO_CB(skb)->csum_valid) ||
->>>
-
-Al
-
+Johan
