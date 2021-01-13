@@ -2,124 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899902F4387
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CD72F4389
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:16:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725818AbhAMFMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 00:12:34 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:22812 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbhAMFMb (ORCPT
+        id S1725883AbhAMFOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 00:14:42 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46680 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbhAMFOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 00:12:31 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610514727; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=lz1rbHEN8q40hJaefWgl9UylDcfTHqHw9eJZzyNgRG0=; b=iPWkC+sx2uN6C1YATa2Icf6dOad2S86F68Ocd0A7JNCQBk4AFfc9RW7Z8rhjzDnGwC3sEijv
- wyaGc5dKGZLFJK13LUTVbdaoBN0NZvTqFRQ7t66FVniJgYUgaYA15Up6cLN2ehnlQtKI0DVW
- /bweg1gW1tGgXUcpndYzGf0DNxg=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5ffe80ffd84bad3547d26847 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 05:11:27
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 95DB5C43465; Wed, 13 Jan 2021 05:11:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.103] (unknown [49.206.37.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 881FEC433CA;
-        Wed, 13 Jan 2021 05:11:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 881FEC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: [PATCH] rcu: Correct cpu offline trace in rcutree_dying_cpu
-To:     paulmck@kernel.org
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1610365558-8330-1-git-send-email-neeraju@codeaurora.org>
- <20210112173116.GG2743@paulmck-ThinkPad-P72>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <c1dd3362-7087-7141-4a4a-28d67db1924e@codeaurora.org>
-Date:   Wed, 13 Jan 2021 10:41:20 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Wed, 13 Jan 2021 00:14:41 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10D5D0uZ100853;
+        Tue, 12 Jan 2021 23:13:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610514780;
+        bh=EcjHrdf3aDug5lDthXl3K8dPfvQJSC+9US0NGk/Se6U=;
+        h=From:To:CC:Subject:Date;
+        b=Z0rkFWrBdrQ24U86Vq8DCSb9/Zy1IIwHWEhQCs0VbjmaTjosIszbM07bDv15JSE/y
+         wwU9GsY1bZauj4PE9naKXUYsu/+uUqpnFiL0eMXxkyFlwarApasF74v/H2sZSH2rRQ
+         8oTOW8mL4Uq+ZjQfD7xbqVPzJtKkklay+ecaiV14=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10D5D0Z3120766
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 Jan 2021 23:13:00 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 12
+ Jan 2021 23:12:59 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 12 Jan 2021 23:12:59 -0600
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10D5Ctf9024926;
+        Tue, 12 Jan 2021 23:12:56 -0600
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] misc: eeprom_93xx46: Add module alias to avoid breaking support for non device tree users
+Date:   Wed, 13 Jan 2021 10:42:52 +0530
+Message-ID: <20210113051253.15061-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210112173116.GG2743@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Module alias "spi:93xx46" is used by non device tree users like
+drivers/misc/eeprom/digsy_mtc_eeprom.c  and removing it will
+break support for them.
 
+Fix this by adding back the module alias "spi:93xx46".
 
-On 1/12/2021 11:01 PM, Paul E. McKenney wrote:
-> On Mon, Jan 11, 2021 at 05:15:58PM +0530, Neeraj Upadhyay wrote:
->> Correctly trace whether the outgoing cpu blocks current gp in
->> rcutree_dying_cpu().
->>
->> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> 
-> Good catch, queued, thank you!  Please see below for my usual
-> wordsmithing, and please lat me know if I messed something up.
-> 
-> 							Thanx, Paul
-> 
+Fixes: 13613a2246bf ("misc: eeprom_93xx46: Fix module alias to enable module autoprobe")
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+---
 
-Thanks Paul, looks good!
+This change has been done based on comments at,
+https://lore.kernel.org/patchwork/patch/1361939/
 
+ drivers/misc/eeprom/eeprom_93xx46.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks
-Neeraj
-
-> ------------------------------------------------------------------------
-> 
-> commit ab6e7609e7590e1bb220ef6b0822a823dde46f6c
-> Author: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Date:   Mon Jan 11 17:15:58 2021 +0530
-> 
->      rcu: Fix CPU-offline trace in rcutree_dying_cpu
->      
->      The condition in the trace_rcu_grace_period() in rcutree_dying_cpu() is
->      backwards, so that it uses the string "cpuofl" when the offline CPU is
->      blocking the current grace period and "cpuofl-bgp" otherwise.  Given that
->      the "-bgp" stands for "blocking grace period", this is at best misleading.
->      This commit therefore switches these strings in order to correctly trace
->      whether the outgoing cpu blocks the current grace period.
->      
->      Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index cc6b6fc..63c6dba 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2387,7 +2387,7 @@ int rcutree_dying_cpu(unsigned int cpu)
->   
->   	blkd = !!(rnp->qsmask & rdp->grpmask);
->   	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
-> -			       blkd ? TPS("cpuofl") : TPS("cpuofl-bgp"));
-> +			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
->   	return 0;
->   }
->   
-> 
-
+diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
+index 849cfea9e294..e130a0d858e9 100644
+--- a/drivers/misc/eeprom/eeprom_93xx46.c
++++ b/drivers/misc/eeprom/eeprom_93xx46.c
+@@ -511,5 +511,6 @@ module_spi_driver(eeprom_93xx46_driver);
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Driver for 93xx46 EEPROMs");
+ MODULE_AUTHOR("Anatolij Gustschin <agust@denx.de>");
++MODULE_ALIAS("spi:93xx46");
+ MODULE_ALIAS("spi:eeprom-93xx46");
+ MODULE_ALIAS("spi:93lc46b");
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
+2.17.1
+
