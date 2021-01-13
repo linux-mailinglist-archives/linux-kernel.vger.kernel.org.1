@@ -2,76 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9EFE2F5004
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:33:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDE52F5005
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727457AbhAMQbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 11:31:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726880AbhAMQbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 11:31:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1EFA2339D;
-        Wed, 13 Jan 2021 16:30:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610555454;
-        bh=ZwgOhhI4AHfEU9tEg0jPf24FQ+Kv3s86YiZ+XYbhOI4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KzfB2jvUagyvI0d9iO5zuPGkkaIq4u7YgubiCGqQ/81nHbM9JzGBuGYrTd+zSklW7
-         FrvEp6Jbhu+oC9nvdEP+6HzNfiUoFc5157zaQCkoyFw4/rZ57k+et9ux6gW3ZdH1OI
-         NlyyJtHg5RALhgp62GYNCvZkSkkloTVNIPoZPcB9/+mkvMgO3PYEBM7w6VYox//O2p
-         vDjxb8TlsnL2sHVwvZN2Ms/APPCJ/yTOkJhJfaxnuBmBK9KwPP3SyN5k0Q+gVuENnS
-         m3Y6W6bD/+iBBTLlhrqvQCGCLN3YbMteOWUICAj5KaBxW0Jad5X3QWqWgPJQy3R+mJ
-         ygy0xJKLzmIDw==
-Date:   Wed, 13 Jan 2021 22:00:48 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Cc:     dan.j.williams@intel.com, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org, vigneshr@ti.com,
-        grygorii.strashko@ti.com, kishon@ti.com
-Subject: Re: [PATCH v2 0/3] dmaengine: ti: k3-udma: memcpy throughput
- improvement
-Message-ID: <20210113163048.GV2771@vkoul-mobl>
-References: <20210113114923.9231-1-peter.ujfalusi@gmail.com>
+        id S1727732AbhAMQcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 11:32:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727296AbhAMQcP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 11:32:15 -0500
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73A5C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:31:34 -0800 (PST)
+Received: by mail-oo1-xc31.google.com with SMTP id k7so668012ooa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:31:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5O0XZaro4xKRzF3tZMIIKYZ6A4RiPSbA4A/IZtlADzQ=;
+        b=lzTuCstBMF+4HZDKsJ2s+dATMMBlbJN4oiCZrltzT7iPCeTLlE7+oAba5DNQXeTy0H
+         qnKfdwCvwwJcYXRKpllziNLCQtKD41I5lhVoPGowMm/CG46eJ+BwQOB6Yo6sHWaXoL64
+         Zttlt6SxFpqtcQTZ2Wlt8mDNiTU8bVQfvuTim1f6Yd6x+ZYZLOgkUfwCxdhCuQaqqiHe
+         zqQU4ViWaQkwZtWNZxM7l4jNac4w4bHWKcQ3M4w7CXgj860cWMXp7y3S8E7/Tv2ElzbY
+         bj5MG0hUvolK/49TUScOj0jqyd2RQAeMaGPKv1Pah9wue2u7bYsy8mIGs02PPCQKFlyd
+         uAog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5O0XZaro4xKRzF3tZMIIKYZ6A4RiPSbA4A/IZtlADzQ=;
+        b=I5WwSpugjw3nz2hlyn4oZ7q5iSQE9QY9yoojC57emqxEJOQmYiyq1w0g6o/wSbJPOn
+         ZjOPxKMDNUhHVkhx+b3WgqlsdmgPq6+EdDSqGvdTyZ6u/a4leHL4MnxolqDbL7PBlhif
+         lNe7kXFatWq1NWmLm1gLAtmAB3X/19HOXTacqRuN1TjVlwQTiS5xu4G7Qh6xJsXI+KeM
+         +SUv0AHSMwaMrWT3K16pRWg4A320fPPPZUdGwNrMrQChwZ3bxl0kSAeFjoQwNLnGW5tf
+         dT7P+l8FSBB47n7BlvUoRV1nPBtnrZ73IYawYoLs91VHKbCZoiczHV12Ey++hlVKWk4s
+         c7Ig==
+X-Gm-Message-State: AOAM5317ialLcza5kS4ms2uWPt52uW1spFIzW+zSnVdPSwwW1cNbAKKV
+        cvOxWuupo2KHp79Anz2GfL59QEwSsvSEyKetwoFsaw==
+X-Google-Smtp-Source: ABdhPJxMHdtWXMdBmVhNTyaR2Hfpgf6YY2QydFrNCbzcFdY/EBICBgCHdnSsfezkhLCPbsegKv261UfVBkRIZ4EGaIs=
+X-Received: by 2002:a4a:a11a:: with SMTP id i26mr1812321ool.54.1610555494097;
+ Wed, 13 Jan 2021 08:31:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113114923.9231-1-peter.ujfalusi@gmail.com>
+References: <cover.1610554432.git.andreyknvl@google.com> <1b884616c85091d6d173f7c1a8647d25424f1e7e.1610554432.git.andreyknvl@google.com>
+In-Reply-To: <1b884616c85091d6d173f7c1a8647d25424f1e7e.1610554432.git.andreyknvl@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 13 Jan 2021 17:31:22 +0100
+Message-ID: <CANpmjNMzQ7v_wwdzf9q72nwJ8paMbvJTA9u7SpyCER858at9EA@mail.gmail.com>
+Subject: Re: [PATCH v2 09/14] kasan: adapt kmalloc_uaf2 test to HW_TAGS mode
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13-01-21, 13:49, Peter Ujfalusi wrote:
-> Hi,
-> 
-> Changes since v1:
-> - Added Kishon's tested-by to the first two patch
-> - Moved the variable definitions to the start of their respective functions
-> - Remove braces where they are not needed
-> - correct indentation of cases
-> - additional patch to clean up the ret = 0 initializations in tisci channel configuration
->   functions, no functional changes.
-> 
-> Newer members of the KS3 family (after AM654) have support for burst_size
-> configuration for each DMA channel.
-> 
-> The HW default value is 64 bytes but on higher throughput channels it can be
-> increased to 256 bytes (UCHANs) or 128 byes (HCHANs).
-> 
-> Aligning the buffers and length of the transfer to the burst size also increases
-> the throughput.
-> 
-> Numbers gathered on j721e (UCHAN pair):
-> echo 8000000 > /sys/module/dmatest/parameters/test_buf_size
-> echo 2000 > /sys/module/dmatest/parameters/timeout
-> echo 50 > /sys/module/dmatest/parameters/iterations
-> echo 1 > /sys/module/dmatest/parameters/max_channels
-> 
-> Prior to  this patch:   ~1.3 GB/s
-> After this patch:       ~1.8 GB/s
->  with 1 byte alignment: ~1.7 GB/s
+On Wed, 13 Jan 2021 at 17:22, Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> In the kmalloc_uaf2() test, the pointers to the two allocated memory
+> blocks might happen to be the same, and the test will fail. With the
+> software tag-based mode, the probability of the that is 1/254, so it's
+> hard to observe the failure. For the hardware tag-based mode though,
+> the probablity is 1/14, which is quite noticable.
+>
+> Allow up to 16 attempts at generating different tags for the tag-based
+> modes.
+>
+> Link: https://linux-review.googlesource.com/id/Ibfa458ef2804ff465d8eb07434a300bf36388d55
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Applied, thanks
+Reviewed-by: Marco Elver <elver@google.com>
 
--- 
-~Vinod
+> ---
+>  lib/test_kasan.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+> index 283feda9882a..a1a35d75ee1e 100644
+> --- a/lib/test_kasan.c
+> +++ b/lib/test_kasan.c
+> @@ -382,7 +382,9 @@ static void kmalloc_uaf2(struct kunit *test)
+>  {
+>         char *ptr1, *ptr2;
+>         size_t size = 43;
+> +       int counter = 0;
+>
+> +again:
+>         ptr1 = kmalloc(size, GFP_KERNEL);
+>         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr1);
+>
+> @@ -391,6 +393,15 @@ static void kmalloc_uaf2(struct kunit *test)
+>         ptr2 = kmalloc(size, GFP_KERNEL);
+>         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr2);
+>
+> +       /*
+> +        * For tag-based KASAN ptr1 and ptr2 tags might happen to be the same.
+> +        * Allow up to 16 attempts at generating different tags.
+> +        */
+> +       if (!IS_ENABLED(CONFIG_KASAN_GENERIC) && ptr1 == ptr2 && counter++ < 16) {
+> +               kfree(ptr2);
+> +               goto again;
+> +       }
+> +
+>         KUNIT_EXPECT_KASAN_FAIL(test, ptr1[40] = 'x');
+>         KUNIT_EXPECT_PTR_NE(test, ptr1, ptr2);
+>
+> --
+> 2.30.0.284.gd98b1dd5eaa7-goog
+>
