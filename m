@@ -2,88 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442C92F4577
+	by mail.lfdr.de (Postfix) with ESMTP id B0A452F4578
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbhAMHpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 02:45:22 -0500
-Received: from bin-mail-out-06.binero.net ([195.74.38.229]:37993 "EHLO
-        bin-mail-out-06.binero.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725902AbhAMHpW (ORCPT
+        id S1726389AbhAMHp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 02:45:28 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11008 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726202AbhAMHp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 02:45:22 -0500
-X-Halon-ID: 27ebd293-5573-11eb-a076-005056917f90
-Authorized-sender: andreas@gaisler.com
-Received: from andreas.got.gaisler.com (h-98-128-223-123.na.cust.bahnhof.se [98.128.223.123])
-        by bin-vsp-out-02.atm.binero.net (Halon) with ESMTPA
-        id 27ebd293-5573-11eb-a076-005056917f90;
-        Wed, 13 Jan 2021 08:44:33 +0100 (CET)
-Subject: Re: [patch 1/4] sparc/mm/highmem: Flush cache and TLB
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210112170136.078559026@linutronix.de>
- <20210112170410.905976187@linutronix.de>
-From:   Andreas Larsson <andreas@gaisler.com>
-Message-ID: <8a55c407-4fad-1a2f-5540-152e28b71617@gaisler.com>
-Date:   Wed, 13 Jan 2021 08:44:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 13 Jan 2021 02:45:27 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DFzw04xzSzj5x6;
+        Wed, 13 Jan 2021 15:43:44 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Wed, 13 Jan 2021
+ 15:44:35 +0800
+Subject: Re: [PATCH v3 2/3] dt-bindings: arm: hisilicon: Add binding for L3
+ cache controller
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Russell King <rmk+kernel@arm.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        "Haojian Zhuang" <haojian.zhuang@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210112015602.497-1-thunder.leizhen@huawei.com>
+ <20210112015602.497-3-thunder.leizhen@huawei.com>
+ <CAK8P3a0VcLtOrvXKEd2dDuP8HhKzU+uB0U6OiJXtefQQYjTheg@mail.gmail.com>
+ <a11515e2-1fc6-be7d-f50c-8e3ad20f9e6c@huawei.com>
+ <CAK8P3a1jcg3CEP0QhtTP4gES9MHLdrHPZffkSxtxbr78FScrrg@mail.gmail.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <f563115c-4461-eee0-ee8d-1fd8f4dbbe63@huawei.com>
+Date:   Wed, 13 Jan 2021 15:44:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210112170410.905976187@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAK8P3a1jcg3CEP0QhtTP4gES9MHLdrHPZffkSxtxbr78FScrrg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2021-01-12 18:01, Thomas Gleixner wrote:
-> The recent conversion to the generic kmap_local infrastructure failed to
-> assign the proper pre/post map/unmap flush operations for sparc.
-> 
-> Sparc requires cache flush before map/unmap and tlb flush afterwards.
-> 
-> Fixes: 3293efa97807 ("sparc/mm/highmem: Switch to generic kmap atomic")
-> Reported-by: Andreas Larsson <andreas@gaisler.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: sparclinux@vger.kernel.org
-> ---
->   arch/sparc/include/asm/highmem.h |    9 +++++----
->   1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> --- a/arch/sparc/include/asm/highmem.h
-> +++ b/arch/sparc/include/asm/highmem.h
-> @@ -50,10 +50,11 @@ extern pte_t *pkmap_page_table;
->   
->   #define flush_cache_kmaps()	flush_cache_all()
->   
-> -/* FIXME: Use __flush_tlb_one(vaddr) instead of flush_cache_all() -- Anton */
-> -#define arch_kmap_local_post_map(vaddr, pteval)	flush_cache_all()
-> -#define arch_kmap_local_post_unmap(vaddr)	flush_cache_all()
-> -
-> +/* FIXME: Use __flush_*_one(vaddr) instead of flush_*_all() -- Anton */
-> +#define arch_kmap_local_pre_map(vaddr, pteval)	flush_cache_all()
-> +#define arch_kmap_local_pre_unmap(vaddr)	flush_cache_all()
-> +#define arch_kmap_local_post_map(vaddr, pteval)	flush_tlb_all()
-> +#define arch_kmap_local_post_unmap(vaddr)	flush_tlb_all()
->   
->   #endif /* __KERNEL__ */
 
-Yes! I found, just an hour before your patched was posted, that an
-equivalent fix helped back where the switch-to-generic patch first
-occurred. This patch was successfully tested on master.
+On 2021/1/12 21:55, Arnd Bergmann wrote:
+> On Tue, Jan 12, 2021 at 1:35 PM Leizhen (ThunderTown)
+> <thunder.leizhen@huawei.com> wrote:
+>> On 2021/1/12 16:46, Arnd Bergmann wrote:
+>>> On Tue, Jan 12, 2021 at 2:56 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>>>
+>>>> +---
+>>>> +$id: http://devicetree.org/schemas/arm/hisilicon/l3cache.yaml#
+>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>> +
+>>>> +title: Hisilicon L3 cache controller
+>>>> +
+>>>> +maintainers:
+>>>> +  - Wei Xu <xuwei5@hisilicon.com>
+>>>> +
+>>>> +description: |
+>>>> +  The Hisilicon L3 outer cache controller supports a maximum of 36-bit physical
+>>>> +  addresses. The data cached in the L3 outer cache can be operated based on the
+>>>> +  physical address range or the entire cache.
+>>>> +
+>>>> +properties:
+>>>> +  compatible:
+>>>> +    items:
+>>>> +      - const: hisilicon,l3cache
+>>>> +
+>>>
+>>> The compatible string needs to be a little more specific, I'm sure
+>>> you cannot guarantee that this is the only L3 cache controller ever
+>>> designed in the past or future by HiSilicon.
+>>>
+>>> Normally when you have an IP block that is itself unnamed but that is specific
+>>> to one or a few SoCs but that has no na, the convention is to include the name
+>>> of the first SoC that contained it.
+>>
+>> Right, thanks for your suggestion, I will rename it to "hisilicon,hi1381-l3cache"
+>> and "hisilicon,hi1215-l3cache".
 
-Tested-by: Andreas Larsson <andreas@gaisler.com>
+Sorry, Just received a response from the hardware developers, the SoC names need to
+be changed:
+hi1381 --> kunpeng509
+hi1215 --> kunpeng506
 
--- 
-Andreas Larsson
-Cobham Gaisler
+So I want to rename the compatible string to "hisilicon,kunpeng-l3v1", Kunpeng L3
+cache controller version 1. This is enough to distinguish other versions of cache
+controller. It also facilitates the naming of the config option and files.
+
+> 
+> Sounds good.
+> 
+>>> Can you share which products actually use this L3 cache controller?
+>>
+>> This L3 cache controller is used on Hi1381 and Hi1215 board. I don't know where
+>> these two boards are used. Our company is too large. Software is delivered level
+>> by level. I'm only involved in the Kernel-related part.
+>>
+>>>
+>>> On a related note, what does the memory map look like on this chip?
+>>
+>> memory@a00000 {
+>>      device_type = "memory";
+>>      reg = <0x0 0xa00000 0x0 0x1aa00000>, <0x1 0xe0000000 0x0 0x1d000000>, <0x0 0x1f400000 0x0 0xb5c00000>;
+>> };
+>>
+>> Currently, the DTS is being maintained by ourselves, I'll try to upstream it later.
+>>
+>>> Do you support more than 4GB of total installed memory? If you
+>>
+>> Currently, the total size does not exceed 4 GB. However, the physical address is wider than 32 bits.
+> 
+> Ok, so it appears that the memory is actually contiguous in the first
+> 3.5GB (with a few holes), plus the remaining 0.5GB being offset in
+> the physical memory by 4GB (starting at 0x1e0000000 instead of
+> 0xe0000000), presumably to allow the use of 32-bit DMA addresses.
+> 
+> This works fine for the moment, but it does require support for
+> a nonlinear virt_to_phys()/phys_to_virt() translation after highmem
+> gets removed, and you would get at most 3.75GB anyway, so it
+> might be easier at that point to just drop the entire last block at
+> 0x1e0000000, but this will depend on how well we get the 4G:4G
+> code to work, and whether the users will still need kernel updates for
+> this platform then.>
+>      Arnd
+> 
+> .
+> 
+
