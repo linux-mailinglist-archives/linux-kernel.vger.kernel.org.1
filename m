@@ -2,113 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5D82F47B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9ECE2F47BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:44:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727261AbhAMJhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 04:37:21 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:54994 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727019AbhAMJhU (ORCPT
+        id S1727197AbhAMJkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 04:40:05 -0500
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:43837 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726995AbhAMJkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 04:37:20 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0ULc.cMI_1610530588;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0ULc.cMI_1610530588)
+        Wed, 13 Jan 2021 04:40:05 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0ULc.clB_1610530708;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0ULc.clB_1610530708)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 13 Jan 2021 17:36:32 +0800
-From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-To:     roopa@nvidia.com
-Cc:     nikolay@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+          Wed, 13 Jan 2021 17:38:36 +0800
+From:   Yang Li <abaci-bugfix@linux.alibaba.com>
+To:     airlied@linux.ie
+Cc:     daniel@ffwll.ch, harry.wentland@amd.com, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] net/bridge: Fix inconsistent format argument types
-Date:   Wed, 13 Jan 2021 17:36:24 +0800
-Message-Id: <1610530584-48554-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+        Yang Li <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] drm/amd/display: Simplify bool comparison
+Date:   Wed, 13 Jan 2021 17:38:27 +0800
+Message-Id: <1610530707-50441-1-git-send-email-abaci-bugfix@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following warnings:
+Fix the following coccicheck warning:
+./drivers/gpu/drm/amd/display/dc/dml/dcn21/display_mode_vba_21.c:5121:14-38:
+WARNING: Comparison to bool
 
-net/bridge/br_sysfs_br.c(833): warning: %u in format string (no. 1)
-requires 'unsigned int' but the argument type is 'signed int'.
-net/bridge/br_sysfs_br.c(817): warning: %u in format string (no. 1)
-requires 'unsigned int' but the argument type is 'signed int'.
-net/bridge/br_sysfs_br.c(261): warning: %ld in format string (no. 1)
-requires 'long' but the argument type is 'unsigned long'.
-net/bridge/br_sysfs_br.c(253): warning: %ld in format string (no. 1)
-requires 'long' but the argument type is 'unsigned long'.
-net/bridge/br_sysfs_br.c(244): warning: %ld in format string (no. 1)
-requires 'long' but the argument type is 'unsigned long'.
-net/bridge/br_sysfs_br.c(236): warning: %ld in format string (no. 1)
-requires 'long' but the argument type is 'unsigned long'.
-
-Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
 ---
- net/bridge/br_sysfs_br.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ .../amd/display/dc/dml/dcn21/display_mode_vba_21.c | 44 +++++++++++-----------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
 
-diff --git a/net/bridge/br_sysfs_br.c b/net/bridge/br_sysfs_br.c
-index 7db06e3..7512921 100644
---- a/net/bridge/br_sysfs_br.c
-+++ b/net/bridge/br_sysfs_br.c
-@@ -233,7 +233,7 @@ static ssize_t hello_timer_show(struct device *d,
- 				struct device_attribute *attr, char *buf)
- {
- 	struct net_bridge *br = to_bridge(d);
--	return sprintf(buf, "%ld\n", br_timer_value(&br->hello_timer));
-+	return sprintf(buf, "%lu\n", br_timer_value(&br->hello_timer));
- }
- static DEVICE_ATTR_RO(hello_timer);
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn21/display_mode_vba_21.c b/drivers/gpu/drm/amd/display/dc/dml/dcn21/display_mode_vba_21.c
+index 86ff24d..0bcec11 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/dcn21/display_mode_vba_21.c
++++ b/drivers/gpu/drm/amd/display/dc/dml/dcn21/display_mode_vba_21.c
+@@ -5121,48 +5121,48 @@ void dml21_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_l
+ 		for (j = 0; j < 2; j++) {
+ 			enum dm_validation_status status = DML_VALIDATION_OK;
  
-@@ -241,7 +241,7 @@ static ssize_t tcn_timer_show(struct device *d, struct device_attribute *attr,
- 			      char *buf)
- {
- 	struct net_bridge *br = to_bridge(d);
--	return sprintf(buf, "%ld\n", br_timer_value(&br->tcn_timer));
-+	return sprintf(buf, "%lu\n", br_timer_value(&br->tcn_timer));
- }
- static DEVICE_ATTR_RO(tcn_timer);
+-			if (mode_lib->vba.ScaleRatioAndTapsSupport != true) {
++			if (!mode_lib->vba.ScaleRatioAndTapsSupport) {
+ 				status = DML_FAIL_SCALE_RATIO_TAP;
+-			} else if (mode_lib->vba.SourceFormatPixelAndScanSupport != true) {
++			} else if (!mode_lib->vba.SourceFormatPixelAndScanSupport) {
+ 				status = DML_FAIL_SOURCE_PIXEL_FORMAT;
+-			} else if (locals->ViewportSizeSupport[i][0] != true) {
++			} else if (!locals->ViewportSizeSupport[i][0]) {
+ 				status = DML_FAIL_VIEWPORT_SIZE;
+-			} else if (locals->DIOSupport[i] != true) {
++			} else if (!locals->DIOSupport[i]) {
+ 				status = DML_FAIL_DIO_SUPPORT;
+-			} else if (locals->NotEnoughDSCUnits[i] != false) {
++			} else if (locals->NotEnoughDSCUnits[i]) {
+ 				status = DML_FAIL_NOT_ENOUGH_DSC;
+-			} else if (locals->DSCCLKRequiredMoreThanSupported[i] != false) {
++			} else if (locals->DSCCLKRequiredMoreThanSupported[i]) {
+ 				status = DML_FAIL_DSC_CLK_REQUIRED;
+-			} else if (locals->ROBSupport[i][0] != true) {
++			} else if (!locals->ROBSupport[i][0]) {
+ 				status = DML_FAIL_REORDERING_BUFFER;
+-			} else if (locals->DISPCLK_DPPCLK_Support[i][j] != true) {
++			} else if (!locals->DISPCLK_DPPCLK_Support[i][j]) {
+ 				status = DML_FAIL_DISPCLK_DPPCLK;
+-			} else if (locals->TotalAvailablePipesSupport[i][j] != true) {
++			} else if (!locals->TotalAvailablePipesSupport[i][j]) {
+ 				status = DML_FAIL_TOTAL_AVAILABLE_PIPES;
+-			} else if (mode_lib->vba.NumberOfOTGSupport != true) {
++			} else if (!mode_lib->vba.NumberOfOTGSupport) {
+ 				status = DML_FAIL_NUM_OTG;
+-			} else if (mode_lib->vba.WritebackModeSupport != true) {
++			} else if (!mode_lib->vba.WritebackModeSupport) {
+ 				status = DML_FAIL_WRITEBACK_MODE;
+-			} else if (mode_lib->vba.WritebackLatencySupport != true) {
++			} else if (!mode_lib->vba.WritebackLatencySupport) {
+ 				status = DML_FAIL_WRITEBACK_LATENCY;
+-			} else if (mode_lib->vba.WritebackScaleRatioAndTapsSupport != true) {
++			} else if (!mode_lib->vba.WritebackScaleRatioAndTapsSupport) {
+ 				status = DML_FAIL_WRITEBACK_SCALE_RATIO_TAP;
+-			} else if (mode_lib->vba.CursorSupport != true) {
++			} else if (!mode_lib->vba.CursorSupport) {
+ 				status = DML_FAIL_CURSOR_SUPPORT;
+-			} else if (mode_lib->vba.PitchSupport != true) {
++			} else if (!mode_lib->vba.PitchSupport) {
+ 				status = DML_FAIL_PITCH_SUPPORT;
+-			} else if (locals->TotalVerticalActiveBandwidthSupport[i][0] != true) {
++			} else if (!locals->TotalVerticalActiveBandwidthSupport[i][0]) {
+ 				status = DML_FAIL_TOTAL_V_ACTIVE_BW;
+-			} else if (locals->PTEBufferSizeNotExceeded[i][j] != true) {
++			} else if (!locals->PTEBufferSizeNotExceeded[i][j]) {
+ 				status = DML_FAIL_PTE_BUFFER_SIZE;
+-			} else if (mode_lib->vba.NonsupportedDSCInputBPC != false) {
++			} else if (mode_lib->vba.NonsupportedDSCInputBPC) {
+ 				status = DML_FAIL_DSC_INPUT_BPC;
+-			} else if ((mode_lib->vba.HostVMEnable != false
+-					&& locals->ImmediateFlipSupportedForState[i][j] != true)) {
++			} else if ((mode_lib->vba.HostVMEnable
++					&& !locals->ImmediateFlipSupportedForState[i][j])) {
+ 				status = DML_FAIL_HOST_VM_IMMEDIATE_FLIP;
+-			} else if (locals->PrefetchSupported[i][j] != true) {
++			} else if (!locals->PrefetchSupported[i][j]) {
+ 				status = DML_FAIL_PREFETCH_SUPPORT;
+-			} else if (locals->VRatioInPrefetchSupported[i][j] != true) {
++			} else if (!locals->VRatioInPrefetchSupported[i][j]) {
+ 				status = DML_FAIL_V_RATIO_PREFETCH;
+ 			}
  
-@@ -250,7 +250,7 @@ static ssize_t topology_change_timer_show(struct device *d,
- 					  char *buf)
- {
- 	struct net_bridge *br = to_bridge(d);
--	return sprintf(buf, "%ld\n", br_timer_value(&br->topology_change_timer));
-+	return sprintf(buf, "%lu\n", br_timer_value(&br->topology_change_timer));
- }
- static DEVICE_ATTR_RO(topology_change_timer);
- 
-@@ -258,7 +258,7 @@ static ssize_t gc_timer_show(struct device *d, struct device_attribute *attr,
- 			     char *buf)
- {
- 	struct net_bridge *br = to_bridge(d);
--	return sprintf(buf, "%ld\n", br_timer_value(&br->gc_work.timer));
-+	return sprintf(buf, "%lu\n", br_timer_value(&br->gc_work.timer));
- }
- static DEVICE_ATTR_RO(gc_timer);
- 
-@@ -814,7 +814,7 @@ static ssize_t vlan_stats_enabled_show(struct device *d,
- 				       char *buf)
- {
- 	struct net_bridge *br = to_bridge(d);
--	return sprintf(buf, "%u\n", br_opt_get(br, BROPT_VLAN_STATS_ENABLED));
-+	return sprintf(buf, "%d\n", br_opt_get(br, BROPT_VLAN_STATS_ENABLED));
- }
- 
- static ssize_t vlan_stats_enabled_store(struct device *d,
-@@ -830,7 +830,7 @@ static ssize_t vlan_stats_per_port_show(struct device *d,
- 					char *buf)
- {
- 	struct net_bridge *br = to_bridge(d);
--	return sprintf(buf, "%u\n", br_opt_get(br, BROPT_VLAN_STATS_PER_PORT));
-+	return sprintf(buf, "%d\n", br_opt_get(br, BROPT_VLAN_STATS_PER_PORT));
- }
- 
- static ssize_t vlan_stats_per_port_store(struct device *d,
 -- 
 1.8.3.1
 
