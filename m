@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C014F2F513E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0197A2F5145
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbhAMRjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:39:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728003AbhAMRjm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:39:42 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922E3C061795;
-        Wed, 13 Jan 2021 09:39:01 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id a6so2357472wmc.2;
-        Wed, 13 Jan 2021 09:39:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JIOSC/i/0EBgHvOloOEK1Z2ZW040Bk9xwSmCAqjjzc0=;
-        b=Im8v1gmfxzjnmpvv3eZYYFQ8mo3yL3PbWyEipNeDBdnsQEizMbbg96tT6qkOwl8oN0
-         oFiI2/bhrCJW13GeNPauMdveMRy0pSVw6lpdV3CVK4Oym3qhaVGX97vaNCna1hmh27yr
-         dsNUn071ZE9LNF3443LafwMcc4exgiwi/aua2mLXW4fIE13zFJ2qM5bqX8+WsaEHqLBo
-         1TN6Gl149WtPuS1cEqk7yhRERCMid7IMQSlWqxU6M8jHgXpmIAPqN0U5y8AfVxxBbL4n
-         cxYz9Rn8yi9CAyTl7GxAsMP5j3qkb+Rx5UafbgvargIrkZu8JxwBkMouVIkOX05tL+uO
-         T9FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JIOSC/i/0EBgHvOloOEK1Z2ZW040Bk9xwSmCAqjjzc0=;
-        b=F9FxP6ZAC1ZDY7vI2VwQuKVl6rPwFUk+piUMWOEN1tOwvIlaiPqwsceY8wHFFs+MEz
-         ffLUhVrIemu4jzNd2XEqiy6KLawSUUCJ/xJStXmUv3Gm3UmJ2y8hhAh4w8v7g7WBuvba
-         PstBin0+pci19DG/bihvU5sjeVBfGi4qKRDIttKk/JBZKUMuUKfbeg6UP188s2hBnfki
-         bv5yk47GyqiWKXfZiT687hkfbw5En0n2CxuWqKbzQaErmshTB9gYTLtmpb/G0xmJVOQM
-         uJ8mrUqa52gmoKAhK6mMrrQTtioFCB6j9WIIGX7EfwJUNlVM0PedGnXk10GRl7iu2ky3
-         JfEQ==
-X-Gm-Message-State: AOAM533GXO6npMlGBFw5/aKmCKhHFfus8QLe41rL6cO8oM+Qj9152V2A
-        6eWvLOnfl/sGCZViaFAaZ8o=
-X-Google-Smtp-Source: ABdhPJz9h7ypoZGZsWgWMtVtklvLLtHEm5JbM51BlX01HbDDHyNKxX/Pz25FZ3l1m1fCGzPj6kgpdg==
-X-Received: by 2002:a7b:c19a:: with SMTP id y26mr356552wmi.20.1610559540351;
-        Wed, 13 Jan 2021 09:39:00 -0800 (PST)
-Received: from localhost.localdomain (2a01cb0008bd27000d88c7723353ad1a.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:d88:c772:3353:ad1a])
-        by smtp.gmail.com with ESMTPSA id w21sm3743843wmi.45.2021.01.13.09.38.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 09:38:59 -0800 (PST)
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     krzk@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH v3 3/3] arm64: defconfig: Enable PF8x00 as builtin
-Date:   Wed, 13 Jan 2021 18:38:55 +0100
-Message-Id: <20210113173855.1509417-4-adrien.grassein@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210113173855.1509417-1-adrien.grassein@gmail.com>
-References: <20210113173855.1509417-1-adrien.grassein@gmail.com>
+        id S1727996AbhAMRlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:41:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727198AbhAMRlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 12:41:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4026E23370;
+        Wed, 13 Jan 2021 17:40:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610559642;
+        bh=8yOVzvugYKAaC/tjc5pFPVw9JmJZhfvsxaSRH5F+3Zs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QTHPw1Zb8Yk1vf7sNy6XJj2KhbPWiuB0ONvJxMhh0WOizzQSBDZy4OdTUBF1kGqMO
+         PeRjSKHPayllWLengAsbxkWhPyPfKCLGJCA0wD+ERutiI0DNb7WrwNMdrQo1TwTRi1
+         c+6hn/QEMjXnH6QdN8HPv1n2qVGCWIbe0/SfAC6u/03exnpWwdxTm1RRIAadMlFDoD
+         Ct38GYr3HjhhxqdAMFsTnJVoBL5m8nR67XiTTFtfBXUNqGnQ6vt8NrWRVrGrvkrg+z
+         g8CklRz8aBszuHQaLvpPMkPpHvkVAD6GB10MnCRnls4LWTNzYiy/Fo5kPGrdHK+l8P
+         KdCPt2BynYIXw==
+Date:   Wed, 13 Jan 2021 17:40:07 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, sumit.semwal@linaro.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org
+Subject: Re: [PATCH 5/7] regulator: qcom-labibb: Implement short-circuit and
+ over-current IRQs
+Message-ID: <20210113174007.GG4641@sirena.org.uk>
+References: <20210109132921.140932-1-angelogioacchino.delregno@somainline.org>
+ <20210109132921.140932-6-angelogioacchino.delregno@somainline.org>
+ <20210111135745.GC4728@sirena.org.uk>
+ <6dee36e4-fc78-c21b-daf8-120ee44535a3@somainline.org>
+ <8115a574-ad43-d3c6-70d4-28c8a2f4a5f6@somainline.org>
+ <09d70d24-5d0d-f1cd-d99e-5c213c8ea98c@somainline.org>
+ <20210112172919.GD4646@sirena.org.uk>
+ <e872bc39-a941-d552-5145-49f40d6fa657@somainline.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EDJsL2R9iCFAt7IV"
+Content-Disposition: inline
+In-Reply-To: <e872bc39-a941-d552-5145-49f40d6fa657@somainline.org>
+X-Cookie: Ignore previous fortune.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is mandatory for the nitrogen8m mini board
-when booting from the sdcard slot.
 
-Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+--EDJsL2R9iCFAt7IV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 3ca9d03d5cb3..bd6ac11ad6fc 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -603,6 +603,7 @@ CONFIG_REGULATOR_HI655X=y
- CONFIG_REGULATOR_MAX77620=y
- CONFIG_REGULATOR_MAX8973=y
- CONFIG_REGULATOR_PCA9450=y
-+CONFIG_REGULATOR_PF8X00=y
- CONFIG_REGULATOR_PFUZE100=y
- CONFIG_REGULATOR_PWM=y
- CONFIG_REGULATOR_QCOM_RPMH=y
--- 
-2.25.1
+On Tue, Jan 12, 2021 at 06:49:53PM +0100, AngeloGioacchino Del Regno wrote:
 
+> I would go for keeping the current binding for the aforementioned reasons.
+> Before I go on sending a V2, I would like to know your opinion.
+> Do you agree?
+
+Sure.
+
+--EDJsL2R9iCFAt7IV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl//MHYACgkQJNaLcl1U
+h9Clowf8CivDid8GP+sEfZILAYJv+b2figb0SJwgw/SiGtk5nrCYsqCGQoF/oqHg
+Gi2skkFvpJNE87ZSdRaRXIGH8P6boLOwioxP2lvNDGjMA5k0oBZQqMiZ068s96XP
++dstLibEM9EugCwcWb4glxtEU2wijycJaJ8FD5su7d0geGQVNb+HYs/isdSQQ9w0
+ZL4arp46cpej18ODy4jHzMv8jpfLwJjYrep1NuF8OJ4Lx0s3jRP7tEG8d0AKeGlO
+PdpucFoFPtwxwzr5OyN7Qlt8PA7bBdiV5YL/usR7TPeRoDNhy4167OdUD7uFrzt/
+LvwjXIxJjae0Fv2jdsTlZz3yk2pXHw==
+=0h9C
+-----END PGP SIGNATURE-----
+
+--EDJsL2R9iCFAt7IV--
