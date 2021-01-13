@@ -2,259 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C145D2F509A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8CE2F509D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727880AbhAMRDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:03:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbhAMRDx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:03:53 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3868EC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:03:13 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id m25so3777803lfc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:03:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uABUKzRBrkvQPh3HDm57mscCiO0O9AshHCQNbV8Z/9M=;
-        b=V0gG3s47KwuyhPSVx4Y1ZodZsDuJVA0HeZBwWJWG+Xg27HbhT85SPr3fHYuUkz+1Oh
-         tfFYV/Z/TEFt/sKQq7oVKvDrwKA6zTHxkfwOUOoquDAotIgvYsy9KsTaUt8E4zPzVl86
-         LIFPBHDMCUp0kvLE+5r6BVx6wqeylVrGcJS+uOVFZzxM1jz8UllFGEn79zcgN9uqDYHv
-         xEBdGGOXegywe95NMJBcFm2FydD68WRN04b+n8blqc5vb+MU+OUR8qMP0iuCs3cJIBnx
-         uq+5OAzbD9hsWEwzP9+dCBIKUITa0pvWXK+txl23IE19AerzUUx7Q2sH+DapRl4jcmkY
-         vZCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uABUKzRBrkvQPh3HDm57mscCiO0O9AshHCQNbV8Z/9M=;
-        b=nwPR9u6cmy0mNHktoFH0qwNTDWSHtPs0iLL8qg4uUxFZ1LzRwhbaM45ZJ2EFRJ4g6C
-         7o9OPoqjq4nUWHomrsyB3KGg4bXfMVf4uXAh69yBsgDJMyDDXrrjclBSxFmec5eWm0rd
-         /jsAs+o1JTHFaruOE0QKKu9/TyGB7sw98Ktaquw7ktEY4h19QAM3t3RVPTPdJ+FLT/py
-         /zXdMkIkZRZ+B1eGEkjO1W/vjZ1ty0sRnku7Y9uUT2cFmgaKuR9vXh2t6Ez2XS6WYemH
-         OEZJwxPvHl+JOxj3mEVdzq3o0Ec9GkZghTjF/PSqjuNY8Uhk+OvEgKUBOTMGCSDOwYg9
-         aL8Q==
-X-Gm-Message-State: AOAM5336/gofUYxXfBlLLLbWC9B4NDi2AODo9yrkTGHTVZdUWyxijaSd
-        2tlPQTK4mV6vCX3BCkoeK/ni38ILNB1/D2FgC/7EVw==
-X-Google-Smtp-Source: ABdhPJzN7rtndShfkdVoaEPcHP/WSvSLmtTmi7vIT4ejS9KABNbaaSrwbLHXSnNzjLC2MGHW02X0lqnqfK1wsGSfZhA=
-X-Received: by 2002:a19:ac45:: with SMTP id r5mr1386793lfc.305.1610557391585;
- Wed, 13 Jan 2021 09:03:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20210111155047.10657-1-mgorman@techsingularity.net> <20210111155047.10657-6-mgorman@techsingularity.net>
-In-Reply-To: <20210111155047.10657-6-mgorman@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 13 Jan 2021 18:03:00 +0100
-Message-ID: <CAKfTPtDPZA1CdE_t+co4DmvfEUys9OiUdgtessFdQe6dYjo4pg@mail.gmail.com>
-Subject: Re: [PATCH 5/5] sched/fair: Merge select_idle_core/cpu()
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Li Aubrey <aubrey.li@linux.intel.com>,
-        Qais Yousef <qais.yousef@arm.com>,
+        id S1727922AbhAMREY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:04:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727536AbhAMREY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 12:04:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FDFE23437;
+        Wed, 13 Jan 2021 17:03:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610557423;
+        bh=wJWj0rmsXwfQIv726JLKYsjPlKPpdeduj5DEQcebtLI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Etz/WcT7yBdVKr4uoLEw2RzjGok1cCu1/obuOfhOnBg0hZiFjEVgsos3pQZSPx9/3
+         sqzTRwnLXrmcObPc+/hW9ZPQDMh0fx2zcwX35caaPf+G514OJorfiKaPTdwO2Ot2ie
+         trDEtDqm3ZSvNooOpVP0e9XYXMeYhUbQj/hMJgOgKXfLni7FFBcT7laNl0ocJ5mrkO
+         4I0FNbi0H1nGVztBFMU97TgNIkc78b2ymtgG//s8sY1pkUqJPu/iut7R9hdWaUBKHR
+         niWjijix0b2bXNZb/lhJ1KQMLt+nmV+BTCr9PA45/MueM0dJGmFdGiQIvlcZr4GK9z
+         lDfoQKYuXnSRQ==
+Date:   Wed, 13 Jan 2021 09:03:41 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Edward Cree <ecree@solarflare.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yadu Kishore <kyk.segfault@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        netdev <netdev@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH net-next 0/5] skbuff: introduce skbuff_heads bulking and
+ reusing
+Message-ID: <20210113090341.74832be9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CANn89i+ppTAPYwQ2mH5cZtcMqanFU8hXzD4szdygrjOBewPb+Q@mail.gmail.com>
+References: <20210111182655.12159-1-alobakin@pm.me>
+        <d4f4b6ba-fb3b-d873-23b2-4b5ba9cf4db8@gmail.com>
+        <20210112110802.3914-1-alobakin@pm.me>
+        <CANn89iKEc_8_ySqV+KrbheTDKRL4Ws6JUKYeKXfogJNhfd+pGQ@mail.gmail.com>
+        <20210112170242.414b8664@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CANn89i+ppTAPYwQ2mH5cZtcMqanFU8hXzD4szdygrjOBewPb+Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021 at 16:50, Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> Both select_idle_core() and select_idle_cpu() do a loop over the same
-> cpumask. Observe that by clearing the already visited CPUs, we can
-> fold the iteration and iterate a core at a time.
->
-> All we need to do is remember any non-idle CPU we encountered while
-> scanning for an idle core. This way we'll only iterate every CPU once.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> ---
->  kernel/sched/fair.c | 97 +++++++++++++++++++++++++++------------------
->  1 file changed, 59 insertions(+), 38 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 12e08da90024..84f02abb29e3 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6006,6 +6006,14 @@ static inline int find_idlest_cpu(struct sched_domain *sd, struct task_struct *p
->         return new_cpu;
->  }
->
-> +static inline int __select_idle_cpu(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
-> +{
-> +       if (available_idle_cpu(core) || sched_idle_cpu(core))
-> +               return core;
-> +
-> +       return -1;
-> +}
-> +
->  #ifdef CONFIG_SCHED_SMT
->  DEFINE_STATIC_KEY_FALSE(sched_smt_present);
->  EXPORT_SYMBOL_GPL(sched_smt_present);
-> @@ -6066,40 +6074,34 @@ void __update_idle_core(struct rq *rq)
->   * there are no idle cores left in the system; tracked through
->   * sd_llc->shared->has_idle_cores and enabled through update_idle_core() above.
->   */
-> -static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
-> +static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
->  {
-> -       struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
-> -       int core, cpu;
-> +       bool idle = true;
-> +       int cpu;
->
->         if (!static_branch_likely(&sched_smt_present))
-> -               return -1;
-> -
-> -       if (!test_idle_cores(target, false))
-> -               return -1;
-> -
-> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> +               return __select_idle_cpu(p, core, cpus, idle_cpu);
->
-> -       for_each_cpu_wrap(core, cpus, target) {
-> -               bool idle = true;
-> -
-> -               for_each_cpu(cpu, cpu_smt_mask(core)) {
-> -                       if (!available_idle_cpu(cpu)) {
-> -                               idle = false;
-> -                               break;
-> +       for_each_cpu(cpu, cpu_smt_mask(core)) {
-> +               if (!available_idle_cpu(cpu)) {
-> +                       idle = false;
-> +                       if (*idle_cpu == -1) {
-> +                               if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, p->cpus_ptr)) {
-> +                                       *idle_cpu = cpu;
-> +                                       break;
-> +                               }
-> +                               continue;
->                         }
-> +                       break;
->                 }
-> -
-> -               if (idle)
-> -                       return core;
-> -
-> -               cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
-> +               if (*idle_cpu == -1 && cpumask_test_cpu(cpu, p->cpus_ptr))
-> +                       *idle_cpu = cpu;
->         }
->
-> -       /*
-> -        * Failed to find an idle core; stop looking for one.
-> -        */
-> -       set_idle_cores(target, 0);
-> +       if (idle)
-> +               return core;
->
-> +       cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
->         return -1;
->  }
->
-> @@ -6107,9 +6109,18 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
->
->  #define sched_smt_weight       1
->
-> -static inline int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
-> +static inline void set_idle_cores(int cpu, int val)
->  {
-> -       return -1;
-> +}
-> +
-> +static inline bool test_idle_cores(int cpu, bool def)
-> +{
-> +       return def;
-> +}
-> +
-> +static inline int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
-> +{
-> +       return __select_idle_cpu(p, core, cpus, idle_cpu);
->  }
->
->  #endif /* CONFIG_SCHED_SMT */
-> @@ -6124,10 +6135,11 @@ static inline int select_idle_core(struct task_struct *p, struct sched_domain *s
->  static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int target)
->  {
->         struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
-> +       int i, cpu, idle_cpu = -1, nr = INT_MAX;
-> +       bool smt = test_idle_cores(target, false);
-> +       int this = smp_processor_id();
->         struct sched_domain *this_sd;
->         u64 time;
-> -       int this = smp_processor_id();
-> -       int cpu, nr = INT_MAX;
->
->         this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
->         if (!this_sd)
-> @@ -6135,7 +6147,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->
->         cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
->
-> -       if (sched_feat(SIS_PROP)) {
-> +       if (sched_feat(SIS_PROP) && !smt) {
->                 u64 avg_cost, avg_idle, span_avg;
->
->                 /*
-> @@ -6159,16 +6171,29 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->         for_each_cpu_wrap(cpu, cpus, target) {
->                 if (!--nr)
->                         return -1;
-> -               if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
-> -                       break;
-> +               if (smt) {
+On Wed, 13 Jan 2021 05:46:05 +0100 Eric Dumazet wrote:
+> On Wed, Jan 13, 2021 at 2:02 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > On Tue, 12 Jan 2021 13:23:16 +0100 Eric Dumazet wrote:  
+> > > On Tue, Jan 12, 2021 at 12:08 PM Alexander Lobakin <alobakin@pm.me> wrote:  
+> > > >
+> > > > From: Edward Cree <ecree.xilinx@gmail.com>
+> > > > Date: Tue, 12 Jan 2021 09:54:04 +0000
+> > > >  
+> > > > > Without wishing to weigh in on whether this caching is a good idea...  
+> > > >
+> > > > Well, we already have a cache to bulk flush "consumed" skbs, although
+> > > > kmem_cache_free() is generally lighter than kmem_cache_alloc(), and
+> > > > a page frag cache to allocate skb->head that is also bulking the
+> > > > operations, since it contains a (compound) page with the size of
+> > > > min(SZ_32K, PAGE_SIZE).
+> > > > If they wouldn't give any visible boosts, I think they wouldn't hit
+> > > > mainline.
+> > > >  
+> > > > > Wouldn't it be simpler, rather than having two separate "alloc" and "flush"
+> > > > >  caches, to have a single larger cache, such that whenever it becomes full
+> > > > >  we bulk flush the top half, and when it's empty we bulk alloc the bottom
+> > > > >  half?  That should mean fewer branches, fewer instructions etc. than
+> > > > >  having to decide which cache to act upon every time.  
+> > > >
+> > > > I though about a unified cache, but couldn't decide whether to flush
+> > > > or to allocate heads and how much to process. Your suggestion answers
+> > > > these questions and generally seems great. I'll try that one, thanks!  
+> > >
+> > > The thing is : kmalloc() is supposed to have batches already, and nice
+> > > per-cpu caches.
+> > >
+> > > This looks like an mm issue, are we sure we want to get over it ?
+> > >
+> > > I would like a full analysis of why SLAB/SLUB does not work well for
+> > > your test workload.  
+> >
+> > +1, it does feel like we're getting into mm territory  
+> 
+> I read the existing code, and with Edward Cree idea of reusing the
+> existing cache (storage of pointers),
+> ths now all makes sense, since there will be not much added code (and
+> new storage of 64 pointers)
+> 
+> The remaining issue is to make sure KASAN will still work, we need
+> this to detect old and new bugs.
 
-If we want to stay on something similar to the previous behavior, we
-want to check on all cores if test_idle_cores is true so nr should be
-set to number of cores
-
-and if there is no idle core, nr should be divided by sched_smt_weight
-so we will only scan a limited number of core
-
-and you can always call select_idle_core()
-
-> +                       i = select_idle_core(p, cpu, cpus, &idle_cpu);
-> +                       if ((unsigned int)i < nr_cpumask_bits)
-> +                               return i;
-> +
-> +               } else {
-> +                       i = __select_idle_cpu(p, cpu, cpus, &idle_cpu);
-> +                       if ((unsigned int)i < nr_cpumask_bits) {
-> +                               idle_cpu = i;
-> +                               break;
-> +                       }
-> +               }
->         }
->
-> -       if (sched_feat(SIS_PROP)) {
-> +       if (smt)
-> +               set_idle_cores(this, false);
-> +
-> +       if (sched_feat(SIS_PROP) && !smt) {
->                 time = cpu_clock(this) - time;
->                 update_avg(&this_sd->avg_scan_cost, time);
->         }
->
-> -       return cpu;
-> +       return idle_cpu;
->  }
->
->  /*
-> @@ -6297,10 +6322,6 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->         if (!sd)
->                 return target;
->
-> -       i = select_idle_core(p, sd, target);
-> -       if ((unsigned)i < nr_cpumask_bits)
-> -               return i;
-> -
->         i = select_idle_cpu(p, sd, target);
->         if ((unsigned)i < nr_cpumask_bits)
->                 return i;
-> --
-> 2.26.2
->
+IDK much about MM, but we already have a kmem_cache for skbs and now
+we're building a cache on top of a cache.  Shouldn't MM take care of
+providing a per-CPU BH-only lockless cache?
