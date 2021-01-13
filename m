@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF22B2F4172
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0646B2F4169
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 02:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727556AbhAMB77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 20:59:59 -0500
-Received: from mga02.intel.com ([134.134.136.20]:20593 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725601AbhAMB76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 20:59:58 -0500
-IronPort-SDR: k+0wFNwN1Q90QwPFh9bSGl19Uxv8SoMgxx0YSUOH6PbDD6bRnIJMCP3h2olcMjHIUYSa+cIYO/
- Ce+Ic7AGjqhg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="165222731"
-X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
-   d="scan'208";a="165222731"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 17:59:17 -0800
-IronPort-SDR: 8V9yMjTis3wyTh7a1t9oICRlztM8UZ2GrXUQvYCKkjUtOqSIO3+FURT8rWqOSDTuUYSuBe7W9l
- 96w7uxxZneVA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
-   d="scan'208";a="363726063"
-Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by orsmga002.jf.intel.com with ESMTP; 12 Jan 2021 17:59:15 -0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com
-Subject: [PATCH v6 2/2] Documentation: fpga: dfl: Add description for DFL UIO support
-Date:   Wed, 13 Jan 2021 09:54:08 +0800
-Message-Id: <1610502848-30345-3-git-send-email-yilun.xu@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1610502848-30345-1-git-send-email-yilun.xu@intel.com>
-References: <1610502848-30345-1-git-send-email-yilun.xu@intel.com>
+        id S1727364AbhAMB4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 20:56:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726876AbhAMB4X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 20:56:23 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED823C061786;
+        Tue, 12 Jan 2021 17:55:42 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id j12so455112ota.7;
+        Tue, 12 Jan 2021 17:55:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vi9vBEa9pJQcyGzap+t16sV/0A2eRr6OduWFyN0i+JE=;
+        b=qH3yK4ajUVncbkZLmND9vGggon72FVjiS/3pC5Ki1JdK0sFSWXVn2xH5mxqfsR8X2K
+         gBbHjBYdJlqq/pJL73mnQTBYsxCeOZ0Px2UdXCgdJNk5QvNRhdzcLREijckZUkbgp6e9
+         MP6XBPpd80NEGK8Te/cZdf0kUjqTuJA+/yW5yHuLbyW7/RrzXPIzIOiWPGVMR2203PsW
+         ht4L9SSh8qUQdbz06FMgBFKI3b7snU1zPdsdZppr6K0Pj/DgavFTz9uI1gzQTSEVsuxe
+         Q0pcUJT/915b6qZegaVnC3rB2I/gdFMMT1ltMD+V8tVpLoE56j5SJZdOeqfXf+OzOFEE
+         qEqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vi9vBEa9pJQcyGzap+t16sV/0A2eRr6OduWFyN0i+JE=;
+        b=KSGw8M1mdeIUYX1PmcigemYakyZvgGUPzNYFXNnaiYh1lI7EUgVr5CwNUYkhU9IocK
+         PddHXxOG9PMQJc4CQWqhGHfIjJ4KTklZBBNnklc7t/4cI4EyZOnCSLfWSqCfxAZRQ7Xf
+         hBvjNplKvvHmmZ2ge8pFl3ZYGUOYPCHZIMEpTRnZby/G6isKBMquDmXo+2RSpJ0xoZE+
+         O1W0RmclVCQjgb2Y0VFNINjFbKrEeTOB3ALenxOkIEKJqtWBGQDmu9r8hf6h61Zfzt5W
+         ZFu1bhlXMw9fz9BmuorFNM3lqrs2D6pajzxsXV4OBw3Kr6/OqJWYgRrr3EXR1jwphRgn
+         pYEQ==
+X-Gm-Message-State: AOAM532aoSvkYA59Z+9pC48Iw6g0kygC64wta8CCt2l4IcJXY/zIHsrU
+        Lh0zGEO3vQcbuFZu3Bx2+aXMIlkMdQiXhMt1/HY=
+X-Google-Smtp-Source: ABdhPJwWhcclT4lGSlNLczythqwnb86JQUvlAErggsPh3BipYFo8PGtwuZMomcEfLUmzcCdaWDsBx20Ct1dXwc/D+nM=
+X-Received: by 2002:a9d:2f67:: with SMTP id h94mr1487955otb.238.1610502942404;
+ Tue, 12 Jan 2021 17:55:42 -0800 (PST)
+MIME-Version: 1.0
+References: <1610440080-68600-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+In-Reply-To: <1610440080-68600-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+From:   Baolin Wang <baolin.wang7@gmail.com>
+Date:   Wed, 13 Jan 2021 09:55:35 +0800
+Message-ID: <CADBw62oXzk8fyCt+gFOH9+8zXenDXrQ14H7nPC3xVbfCKOU4DA@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: sprd: style: Simplify bool comparison
+To:     YANG LI <abaci-bugfix@linux.alibaba.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>, linhua.xu@unisoc.com,
+        linux-gpio@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds description for UIO support for dfl devices on DFL
-bus.
+On Tue, Jan 12, 2021 at 4:28 PM YANG LI <abaci-bugfix@linux.alibaba.com> wrote:
+>
+> Fix the following coccicheck warning:
+> ./drivers/pinctrl/sprd/pinctrl-sprd.c:690:8-23: WARNING: Comparison to
+> bool
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
 
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
----
-v2: no doc in v1, add it for v2.
-v3: some documentation fixes.
-v4: documentation change since the driver matching is changed.
-v5: no change.
-v6: improve the title of the userspace driver support section.
-    some word improvement.
----
- Documentation/fpga/dfl.rst | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+The subject line should be "pinctrl: sprd: Simplify xxx", otherwise
+Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
 
-diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-index 0404fe6..c33b6d0 100644
---- a/Documentation/fpga/dfl.rst
-+++ b/Documentation/fpga/dfl.rst
-@@ -7,6 +7,7 @@ Authors:
- - Enno Luebbers <enno.luebbers@intel.com>
- - Xiao Guangrong <guangrong.xiao@linux.intel.com>
- - Wu Hao <hao.wu@intel.com>
-+- Xu Yilun <yilun.xu@intel.com>
- 
- The Device Feature List (DFL) FPGA framework (and drivers according to
- this framework) hides the very details of low layer hardwares and provides
-@@ -502,6 +503,29 @@ FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
- could be a reference.
- 
- 
-+Userspace driver support for DFL devices
-+========================================
-+The purpose of an FPGA is to be reprogrammed with newly developed hardware
-+components. New hardware can instantiate a new private feature in the DFL, and
-+then get a DFL device in their system. In some cases users may need a userspace
-+driver for the DFL device:
-+
-+* Users may need to run some diagnostic test for their hardwares.
-+* Users may prototype the kernel driver in user space.
-+* Some hardware is designed for specific purposes and does not fit into one of
-+  the standard kernel subsystems.
-+
-+This requires direct access to MMIO space and interrupt handling from
-+userspace. The dfl-uio-pdev module exposes the UIO device interfaces for this
-+purpose. It adds the uio_pdrv_genirq platform device with the resources of
-+the DFL feature, and lets the generic UIO platform device driver provide UIO
-+support to userspace.
-+
-+FPGA_DFL_UIO_PDEV should be selected to enable the dfl-uio-pdev module driver.
-+To support a new DFL feature been directly accessed via UIO, its feature id
-+should be added to the driver's id_table.
-+
-+
- Open discussion
- ===============
- FME driver exports one ioctl (DFL_FPGA_FME_PORT_PR) for partial reconfiguration
+> ---
+>  drivers/pinctrl/sprd/pinctrl-sprd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/pinctrl/sprd/pinctrl-sprd.c b/drivers/pinctrl/sprd/pinctrl-sprd.c
+> index 08dc193..dca7a50 100644
+> --- a/drivers/pinctrl/sprd/pinctrl-sprd.c
+> +++ b/drivers/pinctrl/sprd/pinctrl-sprd.c
+> @@ -687,7 +687,7 @@ static int sprd_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin_id,
+>                                 shift = INPUT_SCHMITT_SHIFT;
+>                                 break;
+>                         case PIN_CONFIG_BIAS_PULL_UP:
+> -                               if (is_sleep_config == true) {
+> +                               if (is_sleep_config) {
+>                                         val |= SLEEP_PULL_UP;
+>                                         mask = SLEEP_PULL_UP_MASK;
+>                                         shift = SLEEP_PULL_UP_SHIFT;
+> --
+> 1.8.3.1
+>
+
+
 -- 
-2.7.4
-
+Baolin Wang
