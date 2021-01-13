@@ -2,64 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385A52F40B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CED02F40BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391670AbhAMAnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 19:43:04 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:39420 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392251AbhAMAM4 (ORCPT
+        id S2393647AbhAMAnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 19:43:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392258AbhAMANA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 19:12:56 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 3DD552B776;
-        Tue, 12 Jan 2021 19:12:12 -0500 (EST)
-Date:   Wed, 13 Jan 2021 11:12:06 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-cc:     Gerhard Pircher <gerhard_pircher@gmx.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Subject: Old platforms never die, was Re: Old platforms: bring out your
- dead
-In-Reply-To: <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
-Message-ID: <alpine.LNX.2.23.453.2101131035500.6@nippy.intranet>
-References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de> <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net> <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
+        Tue, 12 Jan 2021 19:13:00 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603C1C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:12:20 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id x12so42269plr.10
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:12:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3IGkoTRZrnyvZ6jLkwzARD6R+4JtvTtBZjTYPsPzMhg=;
+        b=ic+NBTt7tbBKct5myOxtKhtbhrnYnEpG4HK+1cN8B3IFfYR13kl4Az6h6AkQqZ9J5L
+         Gl37jtYAlUnqAgWz8zrXnTT0Up5j43XdZ5ypScrENwDEylodmYKrHIB3P1dhXpW/g+WY
+         AH3l3F/N0hUA08rS3rymdSnCEa3OiZK9w2FYNR6G5odZ2cfK0qFUurH5zcTfY2gD1Eik
+         kooO5wtapMsszNWJBMRVGIVgMXj4iny5njdtGnEv9rJeBn0zVoqhDiTZQebaNN/q9+d1
+         na6OnCeIVB7lZdWlPzffQL3oncs5HJYhGwqwZWx2s83V9JGmiTBNiSDHTe+CMTljk1nV
+         4JWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3IGkoTRZrnyvZ6jLkwzARD6R+4JtvTtBZjTYPsPzMhg=;
+        b=Fkx8TfBZ5jafTmKm26YAyv2IiRUScrjt3JMUI1hmJc/WXnwiokx4tdgpsyaHt71tNl
+         ixPt8YTr3ASVNt+RHLBL2dGvojtRNN4NyMlcrKhrRTH+AuyO/bQJ9jbK7jW0yVRzcAaT
+         wmyD3DjBshqkLNtyp/SgHCu4LXX2pOlZb2MH02urYnJs8xJGRS8z9+6yS6bO3eIV3ziV
+         xSFvStfMD5GMpXK7eTHYbSxrNtEphpaLZeDyJOy4/zNsbtp9OL9cq8yDu7HmXqpA0d6R
+         T6WRUhN/8emV5m6XVN5NHIyFp5R+gfOI0inZl7uRu/66MQL17yhulhdFdyn0dsa2CUUf
+         bY3Q==
+X-Gm-Message-State: AOAM532dbVliN88Hr29EZRrS5Kpj7jOxabKxi4puzPBTzQH0iTpr1/2P
+        0gluox0wP6SbeitTU0rkD1ir0Zk8K7oo1692KqBNX7XerkAO64o0
+X-Google-Smtp-Source: ABdhPJx48U870v7scKUgnp4MkMOlnmlE2wBiZbZNAzoEdtoIYSJ2i12SKKFy+rtc8neQvWvhRLgNmtEGHlkkkXItydM=
+X-Received: by 2002:a17:902:7242:b029:db:d1ae:46bb with SMTP id
+ c2-20020a1709027242b02900dbd1ae46bbmr1857779pll.77.1610496739477; Tue, 12 Jan
+ 2021 16:12:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210112214105.1440932-1-shakeelb@google.com> <20210112233108.GD99586@carbon.dhcp.thefacebook.com>
+ <CAOFY-A3=mCvfvMYBJvDL1LfjgYgc3kzebRNgeg0F+e=E1hMPXA@mail.gmail.com> <20210112234822.GA134064@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20210112234822.GA134064@carbon.dhcp.thefacebook.com>
+From:   Arjun Roy <arjunroy@google.com>
+Date:   Tue, 12 Jan 2021 16:12:08 -0800
+Message-ID: <CAOFY-A2YbE3_GGq-QpVOHTmd=35Lt-rxi8gpXBcNVKvUzrzSNg@mail.gmail.com>
+Subject: Re: [PATCH] mm: net: memcg accounting for TCP rx zerocopy
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Jan 2021, John Paul Adrian Glaubitz wrote:
+On Tue, Jan 12, 2021 at 3:48 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Tue, Jan 12, 2021 at 03:36:18PM -0800, Arjun Roy wrote:
+> > On Tue, Jan 12, 2021 at 3:31 PM Roman Gushchin <guro@fb.com> wrote:
+> > >
+> > > On Tue, Jan 12, 2021 at 01:41:05PM -0800, Shakeel Butt wrote:
+> > > > From: Arjun Roy <arjunroy@google.com>
+> > > >
+> > > > TCP zerocopy receive is used by high performance network applications to
+> > > > further scale. For RX zerocopy, the memory containing the network data
+> > > > filled by network driver is directly mapped into the address space of
+> > > > high performance applications. To keep the TLB cost low, these
+> > > > applications unmaps the network memory in big batches. So, this memory
+> > > > can remain mapped for long time. This can cause memory isolation issue
+> > > > as this memory becomes unaccounted after getting mapped into the
+> > > > application address space. This patch adds the memcg accounting for such
+> > > > memory.
+> > > >
+> > > > Accounting the network memory comes with its own unique challenge. The
+> > > > high performance NIC drivers use page pooling to reuse the pages to
+> > > > eliminate/reduce the expensive setup steps like IOMMU. These drivers
+> > > > keep an extra reference on the pages and thus we can not depends on the
+> > > > page reference for the uncharging. The page in the pool may keep a memcg
+> > > > pinned for arbitrary long time or may get used by other memcg.
+> > > >
+> > > > This patch decouples the uncharging of the page from the refcnt and
+> > > > associate it with the map count i.e. the page gets uncharged when the
+> > > > last address space unmaps it. Now the question what if the driver drops
+> > > > its reference while the page is still mapped. That is fine as the
+> > > > address space also holds a reference to the page i.e. the reference
+> > > > count can not drop to zero before the map count.
+> > > >
+> > > > Signed-off-by: Arjun Roy <arjunroy@google.com>
+> > > > Co-developed-by: Shakeel Butt <shakeelb@google.com>
+> > > > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > > > ---
+> > > >  include/linux/memcontrol.h | 34 +++++++++++++++++++--
+> > > >  mm/memcontrol.c            | 60 ++++++++++++++++++++++++++++++++++++++
+> > > >  mm/rmap.c                  |  3 ++
+> > > >  net/ipv4/tcp.c             | 27 +++++++++++++----
+> > > >  4 files changed, 116 insertions(+), 8 deletions(-)
+> > > >
+> > > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > > > index 7a38a1517a05..0b0e3b4615cf 100644
+> > > > --- a/include/linux/memcontrol.h
+> > > > +++ b/include/linux/memcontrol.h
+> > > > @@ -349,11 +349,13 @@ extern struct mem_cgroup *root_mem_cgroup;
+> > > >
+> > > >  enum page_memcg_data_flags {
+> > > >       /* page->memcg_data is a pointer to an objcgs vector */
+> > > > -     MEMCG_DATA_OBJCGS = (1UL << 0),
+> > > > +     MEMCG_DATA_OBJCGS       = (1UL << 0),
+> > > >       /* page has been accounted as a non-slab kernel page */
+> > > > -     MEMCG_DATA_KMEM = (1UL << 1),
+> > > > +     MEMCG_DATA_KMEM         = (1UL << 1),
+> > > > +     /* page has been accounted as network memory */
+> > > > +     MEMCG_DATA_SOCK         = (1UL << 2),
+> > > >       /* the next bit after the last actual flag */
+> > > > -     __NR_MEMCG_DATA_FLAGS  = (1UL << 2),
+> > > > +     __NR_MEMCG_DATA_FLAGS   = (1UL << 3),
+> > > >  };
+> > > >
+> > > >  #define MEMCG_DATA_FLAGS_MASK (__NR_MEMCG_DATA_FLAGS - 1)
+> > > > @@ -444,6 +446,11 @@ static inline bool PageMemcgKmem(struct page *page)
+> > > >       return page->memcg_data & MEMCG_DATA_KMEM;
+> > > >  }
+> > > >
+> > > > +static inline bool PageMemcgSock(struct page *page)
+> > > > +{
+> > > > +     return page->memcg_data & MEMCG_DATA_SOCK;
+> > > > +}
+> > > > +
+> > > >  #ifdef CONFIG_MEMCG_KMEM
+> > > >  /*
+> > > >   * page_objcgs - get the object cgroups vector associated with a page
+> > > > @@ -1095,6 +1102,11 @@ static inline bool PageMemcgKmem(struct page *page)
+> > > >       return false;
+> > > >  }
+> > > >
+> > > > +static inline bool PageMemcgSock(struct page *page)
+> > > > +{
+> > > > +     return false;
+> > > > +}
+> > > > +
+> > > >  static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
+> > > >  {
+> > > >       return true;
+> > > > @@ -1561,6 +1573,10 @@ extern struct static_key_false memcg_sockets_enabled_key;
+> > > >  #define mem_cgroup_sockets_enabled static_branch_unlikely(&memcg_sockets_enabled_key)
+> > > >  void mem_cgroup_sk_alloc(struct sock *sk);
+> > > >  void mem_cgroup_sk_free(struct sock *sk);
+> > > > +int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg, struct page **pages,
+> > > > +                              unsigned int nr_pages);
+> > > > +void mem_cgroup_uncharge_sock_pages(struct page **pages, unsigned int nr_pages);
+> > > > +
+> > > >  static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
+> > > >  {
+> > > >       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_pressure)
+> > > > @@ -1589,6 +1605,18 @@ static inline void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
+> > > >                                         int nid, int shrinker_id)
+> > > >  {
+> > > >  }
+> > > > +
+> > > > +static inline int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg,
+> > > > +                                            struct page **pages,
+> > > > +                                            unsigned int nr_pages)
+> > > > +{
+> > > > +     return 0;
+> > > > +}
+> > > > +
+> > > > +static inline void mem_cgroup_uncharge_sock_pages(struct page **pages,
+> > > > +                                               unsigned int nr_pages)
+> > > > +{
+> > > > +}
+> > > >  #endif
+> > > >
+> > > >  #ifdef CONFIG_MEMCG_KMEM
+> > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > > index db9836f4b64b..38e94538e081 100644
+> > > > --- a/mm/memcontrol.c
+> > > > +++ b/mm/memcontrol.c
+> > > > @@ -7061,6 +7061,66 @@ void mem_cgroup_uncharge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages)
+> > > >       refill_stock(memcg, nr_pages);
+> > > >  }
+> > > >
+> > > > +/**
+> > > > + * mem_cgroup_charge_sock_pages - charge socket memory
+> > > > + * @memcg: memcg to charge
+> > > > + * @pages: array of pages to charge
+> > > > + * @nr_pages: number of pages
+> > > > + *
+> > > > + * Charges all @pages to current's memcg. The caller should have a reference on
+> > > > + * the given memcg.
+> > > > + *
+> > > > + * Returns 0 on success.
+> > > > + */
+> > > > +int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg, struct page **pages,
+> > > > +                              unsigned int nr_pages)
+> > > > +{
+> > > > +     int ret = 0;
+> > > > +
+> > > > +     if (mem_cgroup_disabled() || mem_cgroup_is_root(memcg))
+> > > > +             goto out;
+> > > > +
+> > > > +     ret = try_charge(memcg, GFP_KERNEL, nr_pages);
+> > > > +
+> > > > +     if (!ret) {
+> > > > +             int i;
+> > > > +
+> > > > +             for (i = 0; i < nr_pages; i++)
+> > > > +                     pages[i]->memcg_data = (unsigned long)memcg |
+> > > > +                             MEMCG_DATA_SOCK;
+> > > > +             css_get_many(&memcg->css, nr_pages);
+> > > > +     }
+> > > > +out:
+> > > > +     return ret;
+> > > > +}
+> > > > +
+> > > > +/**
+> > > > + * mem_cgroup_uncharge_sock_pages - uncharge socket pages
+> > > > + * @pages: array of pages to uncharge
+> > > > + * @nr_pages: number of pages
+> > > > + *
+> > > > + * This assumes all pages are charged to the same memcg.
+> > > > + */
+> > > > +void mem_cgroup_uncharge_sock_pages(struct page **pages, unsigned int nr_pages)
+> > > > +{
+> > > > +     int i;
+> > > > +     struct mem_cgroup *memcg;
+> > > > +
+> > > > +     if (mem_cgroup_disabled())
+> > > > +             return;
+> > > > +
+> > > > +     memcg = page_memcg(pages[0]);
+> > > > +
+> > > > +     if (unlikely(!memcg))
+> > > > +             return;
+> > > > +
+> > > > +     refill_stock(memcg, nr_pages);
+> > > > +
+> > > > +     for (i = 0; i < nr_pages; i++)
+> > > > +             pages[i]->memcg_data = 0;
+> > > > +     css_put_many(&memcg->css, nr_pages);
+> > > > +}
+> > >
+> > > What about statistics? Should it be accounted towards "sock", "slab/kmem" or deserves
+> > > a separate counter? Do we plan to eventually have shrinkers for this type of memory?
+> > >
+> >
+> > While the pages in question are part of an sk_buff, they may be
+> > accounted towards sockmem. However, that charge is unaccounted when
+> > the skb is freed after the receive operation. When they are in use by
+> > the user application I do not think sockmem is the right place to have
+> > a break-out counter.
+>
+> Does it mean that a page can be accounted twice (even temporarily)?
+>
 
-> 
-> There has to be a healthy balance between hobbyist and commercial use.
-> 
+This was an actual consideration for this patchset that we went back
+and forth on a little bit.
+Short answer, for this patch in its current form: yes. We're calling
+mem_cgroup_charge_sock_pages() immediately prior to vm_insert_pages();
+and the skb isn't cleaned up until afterwards. Thus we have a period
+of double charging.
 
-Yes, both of those, and everything in-between, including for-profit 
-businesses that serve mostly hobbyists. Also start-up companies that may 
-never be commercially viable (which is most of them).
+The pseudocode for the approach in this patch is:
 
-And don't forget government and non-government organisations, 
-not-for-profit organisations, charities, etc.
+while skb = next skb in queue is not null:
+    charge_skb_pages(skb.pages) // sets page.memcg for each page
+    // at this point pages are double counted
+    vm_insert_pages(skb.pages)
+    free(skb) // unrefs the pages, no longer double counted
 
-> I understand that from a commercial point of view, it doesn't make much 
-> sense to run Linux on a 30-year-old computer.
+An alternative version of this patch went the other way: have a short
+period of undercharging.
 
-It ain't necessarily so. I would be surprised if there are no Linux VMs 
-running on old corporate mainframes right now. But the age of the hardware 
-is largely irrelevant.
+while skb = next skb in queue is not null:
+    for page in skb.pages set page.memcg
+    vm_insert_pages(skb.pages)
+    free(skb) // unrefs the pages. pages are now undercounted
+charge_skb_pages(nr_pages_mapped, FORCE_CHARGE) // count is now correct again
+ret
 
-If you're a museum interested in cultural artifacts from decades past, or 
-if you're a business doing data recovery, you're going to need to operate 
-those platforms.
+The latter would have the benefit of having less charge operations
+(less pricey atomics etc.) but would require the charge to be forced
+to succeed since we already made it available to the user. But if one
+assumes that in the common case, that sock->memcg == current->memcg,
+then perhaps a forced charge is ok in that case.
 
-Once removed from mainline Linux, a port becomes basically frozen, and may 
-not be compatible with future emulators, which are a moving target. I say 
-that because last year I fixed bugs in Linux/m68k that made it incomatible 
-with recent QEMU releases (it was only compatible with old QEMU releases).
+
+> Historically we have a corresponding vmstat counter to each charged page.
+> It helps with finding accounting/stastistics issues: we can check that
+> memory.current ~= anon + file + sock + slab + percpu + stack.
+> It would be nice to preserve such ability.
+>
+
+Perhaps one option would be to have it count as a file page, or have a
+new category.
+
+> >
+> > To double check, what do you mean by shrinker?
+>
+> I mean do we plan to implement a mechanism to reclaim memory from these drivers
+> on-demand, if a cgroup is experiencing high memory pressure.
+
+Not that I'm aware of.
+
+Thanks,
+-Arjun
