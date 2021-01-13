@@ -2,83 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F942F4C16
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E83832F4C23
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbhAMNN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 08:13:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbhAMNN0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 08:13:26 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C23C061575;
-        Wed, 13 Jan 2021 05:12:46 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id 18so2122996ybx.2;
-        Wed, 13 Jan 2021 05:12:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ZM1NJioel4M66Wv6WkWIoMAY0vNPXOkS6Y95M9Fqtp4=;
-        b=II//dHYhJKfqntuOSd+wyYjZTAXDxFu7wseVJTatnSM7lwANbcz1y1slNkdACJQ4QO
-         V+KQqck59jvRwPofOEc7qnGK+APb3eluwhYyiXg0CWSsLpWdu8U+3zMuBwaXRWa6hPGV
-         x1PWUkU/GoMsRuJ4I9J3jT5RgQnaN97/Mr3hSGRY4dEEo2GDwqT6xF4EQFybjLs6WLDc
-         JwdhEME6a8jMvmMAJdt+yOpb1rH3m+aXOn9pWn7LY8uwTi5iHwZony2oDhDfKAcns3o+
-         suhzOc5SRJMf5SNqUcIbxjy0MFjRwyuo+9TzO2iLf0BfofQmXVrBd0cOloXj3tAW5Jfq
-         GL9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ZM1NJioel4M66Wv6WkWIoMAY0vNPXOkS6Y95M9Fqtp4=;
-        b=OtiqewB22y8u1Vh9vvf7n7lgcHGI0jcfsL9yPRRxuU6d6epJsSdr7t17G5uN/U3JSU
-         +DiosYu4SBdzyWIOFUBsQg3N6LJVLSAxL/TofAeaPBibVIWfJc7HCsykm0YsWm4BTMLf
-         1zKWLy/9C0BhNL4p0APYsyLX+WSqYTW4pBBuJ+SIv0wB1IzuUfzN4P3HfAdsYvQEMvsx
-         jU4HX75i53OfHgbLIleHNjpv8d7Cftukr4ORjXXbVAKxDuhbIORH4EomJrBcnYvbKVrE
-         7tFLrbO4hPJ+ybiyxllk5983i+ETE088+QviiOt9rIK/bmbhDIK7Sd/3agkDtpx2bWxL
-         Zwvw==
-X-Gm-Message-State: AOAM5330rq7C1dRIY2/D5f/yIYQaVOkOmByj3mD5502GGpxFrULmDHU1
-        k4F9tnA2U7fZxrEI+E4plzY/O7S02Ds/BMBbPd0SueDONJoDhSl1
-X-Google-Smtp-Source: ABdhPJz9qP4YyI8w0g+/ScsAbWhgMM8gPmAmAoUVtFKNOjw3zB/1pK5MUeUalJ4oIYx/krzqLuwXWXYh5b/Pd/r3S6Y=
-X-Received: by 2002:a25:3457:: with SMTP id b84mr3006251yba.167.1610543565396;
- Wed, 13 Jan 2021 05:12:45 -0800 (PST)
+        id S1726735AbhAMNR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 08:17:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56768 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726594AbhAMNR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 08:17:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 61F64B7D4;
+        Wed, 13 Jan 2021 13:16:46 +0000 (UTC)
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Qian Cai <cai@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH 0/3] mm, slab, slub: remove cpu and memory hotplug locks
+Date:   Wed, 13 Jan 2021 14:16:31 +0100
+Message-Id: <20210113131634.3671-1-vbabka@suse.cz>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Date:   Wed, 13 Jan 2021 21:12:19 +0800
-Message-ID: <CAD-N9QWYDUHhG1vRMOCRniHW3vk6VDLmiJmKWC+h_H_23RvEFA@mail.gmail.com>
-Subject: "WARNING: locking bug in do_ipv6_setsockopt" should share the same
- root cause with "WARNING: locking bug in do_ipv6_getsockopt"
-To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, yoshfuji@linux-ipv6.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I found that on the syzbot dashboard, =E2=80=9CWARNING: locking bug in
-do_ipv6_setsockopt=E2=80=9D(https://syzkaller.appspot.com/bug?id=3D6a970baf=
-20aa5a64455be86fb920f468def703c6)
-and
-"WARNING: locking bug in do_ipv6_getsockopt"
-(https://syzkaller.appspot.com/bug?id=3De97be0bf4d30813e951bcc6249e72c592a7=
-90164)
-should share the same root cause.
+Changes since RFC:
+- lockdep didn't like reintroducing slab_mutex in kmem_cache_shrink(), so
+  instead explain why it's not needed after all (in Patch 2)
+- the above is only safe with Patch 1 already in place, so order it first
+  (current Patch 1 was Patch 3 in RFC)
 
-The reason for my above statement is that their PoCs have a high
-similarity except for the last syscall - "setsockopt vs getsockopt".
-In the last syscall, when it invokes lock_sock(sk) and accesses
-sk->sk_lock.slock, the WARNING happens.
+Some related work caused me to look at how we use get/put_mems_online() and
+get/put_online_cpus() during kmem cache creation/descruction/shrinking, and
+realize that it should be actually safe to remove all of that with rather small
+effort (as e.g. Michal Hocko suspected in some of the past discussions
+already). This has the benefit to avoid rather heavy locks that have caused
+locking order issues already in the past. So this is the result, Patches 2 and
+3 remove memory hotplug and cpu hotplug locking, respectively. Patch 1 is due
+to realization that in fact some races exist despite the locks (even if not
+removed), but the most sane solution is not to introduce more of them, but
+rather accept some wasted memory in scenarios that should be rare anyway (full
+memory hot remove), as we do the same in other contexts already.
 
-If you can have any issues with this statement or our information is
-useful to you, please let us know. Thanks very much.
+Vlastimil Babka (3):
+  mm, slub: stop freeing kmem_cache_node structures on node offline
+  mm, slab, slub: stop taking memory hotplug lock
+  mm, slab, slub: stop taking cpu hotplug lock
 
---
-My best regards to you.
+ mm/slab_common.c | 18 ++--------------
+ mm/slub.c        | 56 +++++++++++++++++++++++++++++++-----------------
+ 2 files changed, 38 insertions(+), 36 deletions(-)
 
-     No System Is Safe!
-     Dongliang Mu
+-- 
+2.29.2
+
