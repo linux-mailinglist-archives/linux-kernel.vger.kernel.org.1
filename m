@@ -2,154 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D64B2F4BF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB952F4BFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725977AbhAMNDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 08:03:09 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:58540 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725774AbhAMNDJ (ORCPT
+        id S1726626AbhAMNFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 08:05:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21183 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725681AbhAMNFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 08:03:09 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0ULcnSRR_1610542676;
-Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0ULcnSRR_1610542676)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 13 Jan 2021 20:58:59 +0800
-Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Tejun Heo <tj@kernel.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Paul McKenney <paulmck@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jens Axboe <axboe@kernel.dk>
-References: <20201226025117.2770-1-jiangshanlai@gmail.com>
- <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
- <87o8hv7pnd.fsf@nanos.tec.linutronix.de>
- <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
- <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net>
- <jhj7doj1dr1.mognet@arm.com>
- <X/yzrJw4UbQsK3KB@hirez.programming.kicks-ass.net>
- <CAJhGHyA0rfR92W7T7RnhPrmLMkmV4Mb7fUSeG2VEHhsH-pSxsw@mail.gmail.com>
- <X/236obyM0nqL5+X@hirez.programming.kicks-ass.net>
- <CAJhGHyDtku6PjLtkq7TGmcQnds5cakR6viki=bPoxxkdC0p-Tw@mail.gmail.com>
- <X/7VQ8pF5h/K+Cj1@hirez.programming.kicks-ass.net>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-Message-ID: <7e92d3b2-2323-f608-1090-e2c91aa612ce@linux.alibaba.com>
-Date:   Wed, 13 Jan 2021 20:57:56 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.0
+        Wed, 13 Jan 2021 08:05:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610543044;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=5e4skfGyhzhqHoZS57vTcqyCiFx434Q2RXOk76VK6sY=;
+        b=iXa/9pJzIl/cXxIUTViyvuQQ04Y06zM/YzOL3fCAyY3eWjv1UF4ZiRL3rZm7xfs0sSlOk2
+        e0wH5fvfOtaJnGF33Dhb1/5Xb9nuBdN/tlLIQ/fVBkIUVcJ7VYrz1eI8IAdUoJ1qgGFovg
+        c5zMisSj1YGaG1dQPuN9ZZOaQPiR/NQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209-YBeO2Qx_NqOfzK_awOm4EA-1; Wed, 13 Jan 2021 08:04:00 -0500
+X-MC-Unique: YBeO2Qx_NqOfzK_awOm4EA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04F4B192D786;
+        Wed, 13 Jan 2021 13:03:59 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2FF8D19C47;
+        Wed, 13 Jan 2021 13:03:57 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] X.509: Fix crash caused by NULL pointer
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     stable@vger.kernel.org#v5.10+,
+        Tobias Markus <tobias@markus-regensburg.de>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        dhowells@redhat.com, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 13 Jan 2021 13:03:56 +0000
+Message-ID: <161054303634.2657259.11011286561405860797.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <X/7VQ8pF5h/K+Cj1@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-On 2021/1/13 19:10, Peter Zijlstra wrote:
-> On Tue, Jan 12, 2021 at 11:38:12PM +0800, Lai Jiangshan wrote:
-> 
->> But the hard problem is "how to suppress the warning of
->> online&!active in __set_cpus_allowed_ptr()" for late spawned
->> unbound workers during hotplug.
-> 
-> I cannot see create_worker() go bad like that.
-> 
-> The thing is, it uses:
-> 
->    kthread_bind_mask(, pool->attr->cpumask)
->    worker_attach_to_pool()
->      set_cpus_allowed_ptr(, pool->attr->cpumask)
-> 
-> which means set_cpus_allowed_ptr() must be a NOP, because the affinity
-> is already set by kthread_bind_mask(). Further, the first wakeup of that
-> worker will then hit:
-> 
->    select_task_rq()
->      is_cpu_allowed()
->        is_per_cpu_kthread() -- false
->      select_fallback_rq()
-> 
-> 
-> So normally that really isn't a problem. I can only see a tiny hole
-> there, where someone changes the cpumask between kthread_bind_mask() and
-> set_cpus_allowed_ptr(). AFAICT that can be fixed in two ways:
-> 
->   - add wq_pool_mutex around things in create_worker(), or
->   - move the set_cpus_allowed_ptr() out of worker_attach_to_pool() and
->     into rescuer_thread().
-> 
-> Which then brings us to rescuer_thread...  If we manage to trigger the
-> rescuer during hotplug, then yes, I think that can go wobbly.
-> 
+On the following call path, `sig->pkey_algo` is not assigned
+in asymmetric_key_verify_signature(), which causes runtime
+crash in public_key_verify_signature().
 
-How about the following idea (not complied, not tested).
-It does not call set_cpus_allowed_ptr() for just created workers.
-It does not change cpumask for rescuer except when it is per cpu pool.
+  keyctl_pkey_verify
+    asymmetric_key_verify_signature
+      verify_signature
+        public_key_verify_signature
 
-The only problem is that, unbound rescue worker doesn't comply with
-wq_unbound_cpumask nor wq->unbound_attrs->cpumask.  Another 50 Lines
-of code can make it complied,  but I don't want to type it in email
-and complicated the idea.
+This patch simply check this situation and fixes the crash
+caused by NULL pointer.
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 9880b6c0e272..df2082283c1e 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1849,10 +1849,30 @@ static void worker_attach_to_pool(struct worker *worker,
-  	mutex_lock(&wq_pool_attach_mutex);
+Fixes: 215525639631 ("X.509: support OSCCA SM2-with-SM3 certificate verification")
+Cc: stable@vger.kernel.org # v5.10+
+Reported-by: Tobias Markus <tobias@markus-regensburg.de>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-and-tested-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
 
-  	/*
--	 * set_cpus_allowed_ptr() will fail if the cpumask doesn't have any
--	 * online CPUs.  It'll be re-applied when any of the CPUs come up.
-+	 * If we called from create_worker(), we don't need to call
-+	 * set_cpus_allowed_ptr() since we just kthread_bind_mask() it.
-+	 *
-+	 * The only other path gets us here is rescuer_thread().
-+	 *
-+	 * When !(pool->flags & POOL_DISASSOCIATED), it is per-cpu pool
-+	 * and we should rebind the rescuer worker to the target CPU.
-+	 *
-+	 * When it is a rescuer worker attaching to unbound pool, we keep
-+	 * the affinity for rescuer worker to be cpu_possible_mask.
-+	 *
-+	 * Note: unbound rescue worker doesn't comply with wq_unbound_cpumask
-+	 * nor wq->unbound_attrs->cpumask.  The optimal choice is to keep
-+	 * the affinity for rescuer worker to be
-+	 *	wq_unbound_cpumask & wq->unbound_attrs->cpumask
-+	 * but there is no reliable way to set it back via
-+	 * set_cpus_allowed_ptr() when its affinity is changed by scheduler
-+	 * due to CPU hotplug, so we just use cpu_possible_mask for resuer.
-+	 *
-+	 * set_cpus_allowed_ptr() will not fail since
-+	 * !(pool->flags & POOL_DISASSOCIATED)
-  	 */
--	set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
-+	if (worker->rescue_wq && !(pool->flags & POOL_DISASSOCIATED))
-+		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask) < 0);
+ crypto/asymmetric_keys/public_key.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-  	/*
-  	 * The wq_pool_attach_mutex ensures %POOL_DISASSOCIATED remains
-@@ -5043,7 +5063,8 @@ static void restore_unbound_workers_cpumask(struct worker_pool *pool, int cpu)
-
-  	/* as we're called from CPU_ONLINE, the following shouldn't fail */
-  	for_each_pool_worker(worker, pool)
--		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, &cpumask) < 0);
-+		if (!worker->rescue_wq)
-+			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, &cpumask) < 0);
-  }
-
-  int workqueue_prepare_cpu(unsigned int cpu)
-
-
+diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
+index 8892908ad58c..788a4ba1e2e7 100644
+--- a/crypto/asymmetric_keys/public_key.c
++++ b/crypto/asymmetric_keys/public_key.c
+@@ -356,7 +356,8 @@ int public_key_verify_signature(const struct public_key *pkey,
+ 	if (ret)
+ 		goto error_free_key;
+ 
+-	if (strcmp(sig->pkey_algo, "sm2") == 0 && sig->data_size) {
++	if (sig->pkey_algo && strcmp(sig->pkey_algo, "sm2") == 0 &&
++	    sig->data_size) {
+ 		ret = cert_sig_digest_update(sig, tfm);
+ 		if (ret)
+ 			goto error_free_key;
 
 
