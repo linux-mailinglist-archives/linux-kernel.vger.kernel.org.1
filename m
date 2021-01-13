@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C5B2F4450
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 404EE2F4454
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbhAMGHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 01:07:25 -0500
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:60971 "EHLO
+        id S1726506AbhAMGHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 01:07:31 -0500
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:50533 "EHLO
         wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725831AbhAMGHY (ORCPT
+        by vger.kernel.org with ESMTP id S1726379AbhAMGHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 01:07:24 -0500
+        Wed, 13 Jan 2021 01:07:25 -0500
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id 7FD8F1B95;
+        by mailnew.west.internal (Postfix) with ESMTP id 7DFA91B92;
         Wed, 13 Jan 2021 01:06:18 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
   by compute5.internal (MEProxy); Wed, 13 Jan 2021 01:06:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=KmMtZW3LZXLFSWy68G91BENlig
-        LhFytnhm96lSzkJKY=; b=UXIuD5U6hOM1PeSc76T8bghdTxcioJVx11QwovyKYd
-        4PvuSq6WbgYFQ/X2QqjaC/EHW+TQ4PG+yIBD/aDBEWkwzV+wmuSdp9KRy/ZWxhzt
-        n6IEk2A/uLm6pHu6P6l+1yzcWGqxSxkJbfyDiDOvKnhPMIudZLN5j4DH+3xMY/nq
-        BRmZSB6yGwEXnJTL/5CzqdiK/rQqwxdXgjd7nNL9c+/NHgtuPqMHrLo8XzKsYqL9
-        YPWGll7ksbhXh0Kgw4LIgJTzuB8qNOPwVO+X4bmDJZ+CFfNUMcrKeMt5ZcJ806YP
-        ME18OzW5KrBW7y5efSOKGBfF80Ch6hGewVOTfKDHmNIA==
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm1; bh=satIn0D2dr0dK
+        CzgUTF/ukd8o810xusPKG6T6TQ2h4M=; b=K5JtOKfG3NC+IAjv19T8b28kPDuA3
+        ExXfYx4Tn8eRhY25upypD8x9h2lbAskvmAncoKCz5asRvwgENm9cIoDNiSA9OfdU
+        oZ1Ff9ChwTftwyi6ZSQm/OVeIqquwzIr38CR3jA05f/UFYCztGSGBWPtNzRw7///
+        oDCJTbqMTQO/vJ/7XEmre+iT5Rh1yAfC5eazdz9T7nEz6aZ2O3zL/wrKbG2bkYKL
+        P5w6vfJawiT69lNvyNuYvZi2GPJgVI2q9Z1pixBuu069Y5I6YAPQ2F9xmfgbcZlB
+        LMHQY+b5YgOyonV6miZGUN4797CdV3a/Qu6qP7mcvdboyNLLKzuu5Kf/Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=KmMtZW3LZXLFSWy68
-        G91BENligLhFytnhm96lSzkJKY=; b=jWbYxSHimgfdzYv1kRqdLmv56bVvP+IPP
-        uYO4Nmg1ZCYswJAfvT0pWoYcCQU8EuBzl3eQS1SZ08HfMljGjbETvmO8yesQoCbm
-        i2MQkkJRGp+/yuLa6pb898L4rdM1uQc3vDzJD2FMT+J1Fo0ADqLp+v5E3fBV12z/
-        LI7wqoUp3iq6LI91FY4cIe7NR2dZZ1p/PsuzuqKl562xvsiEnkpBHPImXkq4LwAd
-        T8u+TmI3MbrtQvaz55iK2RYXAgxPbEXpU8mkPwIUdN0T55EAaqx0V4yRBRAYRZ+y
-        d+UOJ3AhMuLdaPLEOGlu4aS9+VbqYGZy3oeBJgbH54b4n4mTKXA3Q==
-X-ME-Sender: <xms:2I3-X6fTgSHlfhlUYrVesWYjQW5XlPqG0gF8Vc0mOjJGWxFY2lLsyw>
-    <xme:2I3-X0NEWSAl6ug8PcjDZBJcdLaam4C_t3yWAJ9DquzIeE0p226FbJtJ9GHNS2RYn
-    JbcDssthugniljh5Q>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=satIn0D2dr0dKCzgUTF/ukd8o810xusPKG6T6TQ2h4M=; b=F2uVzt61
+        cK13UPu9AOkV4FGVyEjgs5sg6m17AeksdwVEWKWkWP7BSmXHOCVAtgi+I/ZSpHsn
+        6xuhXBpZ5NpAYvW3uMs7oVraR8CMTEMcy7Fq4DQT1QpxSds6GZ7FYsMJeRrMTUS2
+        sbEyZ+WxBOZaEHghVhCKza6blKIrkbKfBWy7SkHE69acNY2tt5qddPHb+kltxRQm
+        S7rmRTgBsXc4AOpqEVjRmOGl2ZrvtQpYt+EaFCjwBHoAlZWQQotOlNhGAvxooC8D
+        H+Oj/HabK2cKYLPlWb4oxHwlv68+BxuEbllJ7VWFArf/ZhxbXFGvvAavqZLqxyJP
+        GjLDUSLAMXIAPA==
+X-ME-Sender: <xms:2Y3-X4xRUW5RlDumjdVpeEvlvVUpFQH3WnTtOMehRD20t7qyEx9qLQ>
+    <xme:2Y3-X8Sc6eQ7zW18Tdd1aRPNM_q0Gc1BFJzPdWKXDdmP6zU5R7gF3NdGswLx0NToc
+    xnTwwxa3Tzv1nXXIg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtddugdelfecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
-    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
-    htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
-    tdevnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdho
-    rhhg
-X-ME-Proxy: <xmx:2I3-X7iaevjNiQOIx9nS208QHLFMirvUGN_RNzdQnXzeM7U8kpYzJg>
-    <xmx:2I3-X3-cuGkeIDb24Ti7hJ4CvIXQavn48cKT10BMtNTboT349yzfPw>
-    <xmx:2I3-X2uAjIMOKnhlHTq7JnMjtrRVhFK35AUVqEnFyx1iS2eOCWGkpg>
-    <xmx:2o3-X0ChZV9Zn_C8kQ7CEA2MEwN77Y-tt905xHzVQVvsjBCeL_SfN2mWJkw>
+    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
+    ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
+    grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
+    jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
+    rdhorhhg
+X-ME-Proxy: <xmx:2Y3-X6UvYM6OGfEyZJjhUyHs3kmfUrzIxAVcqiG4HmElmM7N7-nHJQ>
+    <xmx:2Y3-X2jzwZDojQPbW57-XLQ8EQdq9BrteyFwtCgFt6DLtOLM69VWnQ>
+    <xmx:2Y3-X6DXZ7Ms5-M3-MCSF-F1N-ykKGLWrmNISzejbmORFWowjNI7xQ>
+    <xmx:2o3-X21LPtXpFaxTxlqn2etkgNrXdgt9d8ZNaOEMKbGXbVLIWXSsouQYG_o>
 Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 629A5240057;
+        by mail.messagingengine.com (Postfix) with ESMTPA id D504F24005B;
         Wed, 13 Jan 2021 01:06:16 -0500 (EST)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
@@ -64,47 +65,51 @@ To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
 Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v2 0/7] PinePhone BT audio bringup
-Date:   Wed, 13 Jan 2021 00:06:08 -0600
-Message-Id: <20210113060615.53088-1-samuel@sholland.org>
+Subject: [PATCH v2 1/7] ASoC: dt-bindings: sun8i-codec: Increase #sound-dai-cells
+Date:   Wed, 13 Jan 2021 00:06:09 -0600
+Message-Id: <20210113060615.53088-2-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210113060615.53088-1-samuel@sholland.org>
+References: <20210113060615.53088-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series makes use of the additional DAIs recently added to the
-sun8i-codec driver to add hardware routing for BT SCO (headset) audio
-on the PinePhone.
+Increase sound-dai-cells to 1 to allow using the DAIs in the codec
+corresponding to AIF2 and AIF3.
 
-The BT audio connection is represented by the "dummy" bt-sco codec. The
-connection to the Quectel EG-25G modem via AIF2 works as well, but I do
-not include it here because there is no appropriate codec driver in
-tree. We have been using an out-of-tree "dummy" codec driver for the
-modem similar to bt-sco, and I'm not sure if such a driver would be
-desired upstream.
+The generic ASoC OF code supports a #sound-dai-cells value of 0 or 1
+with no impact to the driver, so this is a backward-compatible change.
 
-Changes from v1:
-  - Fixed DT binding example to follow new binding
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ .../devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml  | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Arnaud Ferraris (1):
-  arm64: dts: allwinner: pinephone: Set audio card name
-
-Samuel Holland (6):
-  ASoC: dt-bindings: sun8i-codec: Increase #sound-dai-cells
-  ARM: dts: sun8i-a33: Allow using multiple codec DAIs
-  arm64: dts: allwinner: a64: Allow using multiple codec DAIs
-  arm64: dts: allwinner: a64: Add pinmux nodes for AIF2/AIF3
-  arm64: dts: allwinner: a64: Allow multiple DAI links
-  arm64: dts: allwinner: pinephone: Add support for Bluetooth audio
-
- .../sound/allwinner,sun8i-a33-codec.yaml      |  4 +-
- arch/arm/boot/dts/sun8i-a33.dtsi              |  4 +-
- .../dts/allwinner/sun50i-a64-pinephone.dtsi   | 25 +++++++++++++
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 37 ++++++++++++++-----
- 4 files changed, 56 insertions(+), 14 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
+index 67405e6d8168..3e02baa1d9ce 100644
+--- a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
++++ b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
+@@ -12,7 +12,7 @@ maintainers:
+ 
+ properties:
+   "#sound-dai-cells":
+-    const: 0
++    const: 1
+ 
+   compatible:
+     oneOf:
+@@ -50,7 +50,7 @@ additionalProperties: false
+ examples:
+   - |
+     audio-codec@1c22e00 {
+-      #sound-dai-cells = <0>;
++      #sound-dai-cells = <1>;
+       compatible = "allwinner,sun8i-a33-codec";
+       reg = <0x01c22e00 0x400>;
+       interrupts = <0 29 4>;
 -- 
 2.26.2
 
