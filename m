@@ -2,70 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5812F4A14
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:29:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C042F4A10
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728392AbhAML06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:26:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54164 "EHLO
+        id S1728289AbhAML0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:26:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727108AbhAML04 (ORCPT
+        with ESMTP id S1727068AbhAML0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:26:56 -0500
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57551C0617AA
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:25:51 -0800 (PST)
-Received: by mail-ua1-x931.google.com with SMTP id w7so559087uap.13
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:25:51 -0800 (PST)
+        Wed, 13 Jan 2021 06:26:52 -0500
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665C3C0617BA
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:25:54 -0800 (PST)
+Received: by mail-vs1-xe2f.google.com with SMTP id h18so903660vsg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:25:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cttz/D2YdQLsR3C43ckdGIJQQ5YrOYDnbNf5IhNcLYI=;
-        b=LEcwabxJhci29cnamIgXuHBO/Z3LtbMfhlsaTAGsoL9g8zKCBLZxqcS0ebx87zsJH4
-         uy0zhjszBskdOKPTHR0OK4tdYaz1XJlzAREFfrO+9OW58rvWU+48/NSnwPq02leH4WCp
-         cE4wcDuFxuj4hhLXqbRlGDPpRggYUEB5DzVgCR6M0jnAHD7pNY3MGX0vjOg6ZgD8FnYE
-         qPo0cGJup4guB8Hwshd45R+sII1vauMATFhH1bBybUz64fCPzTizQvw7t5bCs0x8DGr2
-         83s7PBi+V6jdPZYmGjo8OJ+N7Y98lWtA8ijopW+CXpTrCY28bQwhz0IVk8bVfGZE9D0w
-         sJ+A==
+        bh=RY0StSf2+N5zefAWzCUaAzXJcItnmm9Fa8mEZdMQe/Y=;
+        b=NqJxW9NFl6Mpmiw179v+oVixBzv5BFOOzZs4jkT6kMz7Bu4B9hEHxWecVQlqajpiDI
+         u4BINGsA8Z/jvKTUpEgwHKAa91r/bE1I313SR2ab7Hkgul0pvRSbvQH/qIRaDbeq7khZ
+         o2IiSd8oGNQZb+YJh6A67boEZpPAer0R4CJUz8vIHILxQwyF3c83bmAu5s6yQ0U5fT/T
+         Ob/FQXbPFg5IVSFi6ijA9yZq84Wkc1fb9NJWs9ZIA2OOpsyu1HOT7gUQTriGuhN+CzeB
+         bvEmoOxauMNhuyFgJX959/TywUpU15oOCWJPRsMUWL5HbLQa8Q+3uwPCrGXzC4kvbQvI
+         JXiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cttz/D2YdQLsR3C43ckdGIJQQ5YrOYDnbNf5IhNcLYI=;
-        b=YC5nJAxFMmcKJ4/2JxmTecoFOEecY2k+2nfocfySxuwpqLTgIbhoUhEJG5wXhCexEX
-         3Cxz18bZ82UyyAZb78eymGaT61d6Ho0skJM5Rez7fnBS2xe4FmiSsQqXlnSXvcsOqDD7
-         TcnDEdhhpk8HrLRTMwu2L4eGipc99RX2zsMoati7LFd1P/LO3wsIcwAgIKmnYaVAzG5V
-         a8iD0mdRi7csuTp1l0jqfXQWZLGk+tt1EtdySEObFRTGGjiXGffyAuvkPyX6HgTv1DsZ
-         rOtdAkiumWCcWyZymUX2SgzSAfXYgVa9ucQtR6wPKgSpXs4kAM+OS4g78Esd7LgzR/TU
-         LhKQ==
-X-Gm-Message-State: AOAM533QfF+TFl1gzn8DT9zym6k8Iitqp68wQkoblJfLz3e7g216QW5Y
-        2+ef6Le9jYmcNlHLi79YPlJ44CjtCmXpmCQft9nH9Q==
-X-Google-Smtp-Source: ABdhPJwk9cikIsLvk8wBtOv80r3nN6Wd86Yx/Dl91r0NxtDJZtYZrmyEAcUkJnDivNztwQjpv9hIZjRVGl2XX+Dffxk=
-X-Received: by 2002:ab0:2e99:: with SMTP id f25mr1317060uaa.104.1610537150635;
- Wed, 13 Jan 2021 03:25:50 -0800 (PST)
+        bh=RY0StSf2+N5zefAWzCUaAzXJcItnmm9Fa8mEZdMQe/Y=;
+        b=mKyKspfrhg1jeebWSCaoc7aFqoXG7cHtVG2lQfj0C2WzhCSxD0Kez8gflvg7yM1BOe
+         35WbjP58CFTkl3/Lfpg3yvt4er21Ij5UE7d3hu4bT4sjv/O4sUtGWjJ1r1wsN2ygdh0j
+         zgecnaYvH4VeRT2IPvcdIpiyB5/ZJwbcc16DCTZgDd+ILRzr7auJvK/XUV/CuInEPl15
+         Pb/rJR+GIYcvB+HSpSMUzKUxg6Xtx3oKc1OFjY0r6P55bSgL6C+LMNbUcz1wTrW0lJMd
+         i2AyxDcDkEwalfIIzFV1yKAAzBFqxAOAz4bllo2V+TTcdF4SR1VmkVc/q82Y3INRCs5N
+         KFdw==
+X-Gm-Message-State: AOAM530qhJai01Xb8ep5usfldHoWRUSf//bab61Mcx1UBNGS0Lo7OMge
+        9H/PgJvVbf08mYj5dZC/pdHXXRQVIbhsuHSLtsIRCA==
+X-Google-Smtp-Source: ABdhPJxmIxYl1NunM1cg14JUdbGuw0lAyEMiH7zhCkebWu1/bDnqufJtPRRxfcFqBrE/5wP5Gz7wdB/uYTO3CnEeUIY=
+X-Received: by 2002:a67:e286:: with SMTP id g6mr1629067vsf.42.1610537153628;
+ Wed, 13 Jan 2021 03:25:53 -0800 (PST)
 MIME-Version: 1.0
-References: <20201227174202.40834-1-wsa+renesas@sang-engineering.com> <20201227174202.40834-2-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20201227174202.40834-2-wsa+renesas@sang-engineering.com>
+References: <20201230090401.12627-1-ricky_wu@realtek.com> <20201230090401.12627-2-ricky_wu@realtek.com>
+In-Reply-To: <20201230090401.12627-2-ricky_wu@realtek.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 13 Jan 2021 12:25:14 +0100
-Message-ID: <CAPDyKFqBJNiV3M7MFTydLRtR7S+wok6OkLnKFrfzbi0TfPxiUQ@mail.gmail.com>
-Subject: Re: [PATCH 1/6] dt-bindings: mmc: renesas,sdhi: Add r8a779a0 support
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+Date:   Wed, 13 Jan 2021 12:25:17 +0100
+Message-ID: <CAPDyKFrL+ykvw85SiLQojF9PnYoYzraOOvkS8qg5w-LL7xPvNA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mmc: rtsx: Add MMC_CAP2_NO_SDIO flag
+To:     =?UTF-8?B?5ZCz5piK5r6EIFJpY2t5?= <ricky_wu@realtek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rui Feng <rui_feng@realsil.com.cn>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Doug Anderson <dianders@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Dec 2020 at 18:42, Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
+On Wed, 30 Dec 2020 at 10:04, <ricky_wu@realtek.com> wrote:
 >
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> From: Ricky Wu <ricky_wu@realtek.com>
+>
+> Added flag MMC_CAP2_NO_SDIO to mmc->caps2
+> Card Reader not support SDIO
+>
+> Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
 
 Applied for next, thanks!
 
@@ -74,21 +80,23 @@ Uffe
 
 
 > ---
->  Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/mmc/host/rtsx_pci_sdmmc.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> diff --git a/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml b/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
-> index 6bbf29b5c239..5908a717d2e8 100644
-> --- a/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
-> @@ -59,6 +59,7 @@ properties:
->                - renesas,sdhi-r8a77980 # R-Car V3H
->                - renesas,sdhi-r8a77990 # R-Car E3
->                - renesas,sdhi-r8a77995 # R-Car D3
-> +              - renesas,sdhi-r8a779a0 # R-Car V3U
->            - const: renesas,rcar-gen3-sdhi # R-Car Gen3 or RZ/G2
->
->    reg:
+> diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
+> index d21b99962b36..6a8b0282f272 100644
+> --- a/drivers/mmc/host/rtsx_pci_sdmmc.c
+> +++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
+> @@ -1427,7 +1427,8 @@ static void realtek_init_host(struct realtek_pci_sdmmc *host)
+>                 MMC_CAP_UHS_SDR12 | MMC_CAP_UHS_SDR25;
+>         if (pcr->rtd3_en)
+>                 mmc->caps = mmc->caps | MMC_CAP_AGGRESSIVE_PM;
+> -       mmc->caps2 = MMC_CAP2_NO_PRESCAN_POWERUP | MMC_CAP2_FULL_PWR_CYCLE;
+> +       mmc->caps2 = MMC_CAP2_NO_PRESCAN_POWERUP | MMC_CAP2_FULL_PWR_CYCLE |
+> +               MMC_CAP2_NO_SDIO;
+>         mmc->max_current_330 = 400;
+>         mmc->max_current_180 = 800;
+>         mmc->ops = &realtek_pci_sdmmc_ops;
 > --
-> 2.28.0
+> 2.17.1
 >
