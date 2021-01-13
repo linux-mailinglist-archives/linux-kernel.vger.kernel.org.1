@@ -2,119 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9F12F5798
+	by mail.lfdr.de (Postfix) with ESMTP id 12C8C2F5796
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:00:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729844AbhANCCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:02:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50594 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727932AbhAMXWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729827AbhANCCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:02:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729448AbhAMXWd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Jan 2021 18:22:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C0232339D;
-        Wed, 13 Jan 2021 23:21:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610580060;
-        bh=DjPgudHbrnHAGcPGdkrf9UfBtWEcCS9KiLS476ze6qA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XyBmY50wB5phYVMcRm3FMAMiQ1KgmcQP6WqXSqqi7eTaACdd5Q7Q0aUwMvEa5PH+g
-         pQswJX2kbhdgg+vFwxZ+m21qpYKJ71XJVVyFibOMVrYa65IQnfR5m62wxYq5OKKInt
-         /AsY/67mvjlMBfKD2KB3zCenYvYT9G57fps6myOuhXcDiUorWv4aMdhwh2pskTBbQE
-         HiYt4v5Dpsd/J65Rp30w39ppSImgsU1/LM3ZGIGzCmC/QNcZ8FbXmnz1ip+Ca2L7zX
-         RrsFfBmyPvpXtobOrVV8AVsSQvXt+eYgC/PghNzqtyD285NoFEoDSH14Vyo2D0rKOs
-         Q/egy6ur/qvMw==
-Received: by pali.im (Postfix)
-        id D06427C5; Thu, 14 Jan 2021 00:20:57 +0100 (CET)
-Date:   Thu, 14 Jan 2021 00:20:57 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Peter Chen <peter.chen@nxp.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jun Li <jun.li@nxp.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] usb: host: xhci-plat: fix support for
- XHCI_SKIP_PHY_INIT quirk
-Message-ID: <20210113232057.niqamgsqlaw7gojw@pali>
-References: <20201221150903.26630-1-pali@kernel.org>
- <20201223161847.10811-1-pali@kernel.org>
- <20201224055836.GB27629@b29397-desktop>
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE4DC0617BE;
+        Wed, 13 Jan 2021 15:21:28 -0800 (PST)
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id B6685612C;
+        Wed, 13 Jan 2021 23:21:27 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net B6685612C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1610580088; bh=HtK7neyREhRZnKo1DhkVntwSDPRKPQbMPmFOCpss7rc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=obh38bPaqzYcTE+AkjRqELraIkpT6q8jJP8Ed0Rzmn2DICtaA5SScy+nTH/9RvK5c
+         /KVQNcyT51sn3d5GWhSWq7joqCMWdcpQoGpe5ucwEo517GYIU2H7DdIahUZRNRGDDo
+         mwMjp3DzRPMpP1MWppbm2PYx2+rZrGiDUpdeS0Ue8q6nmnWc6vjeIUw/7hyZ7k+RYb
+         CR3gijmMBdf2fT68IEEsRvH2WWHSSIPXy10qx0wbKHfdxqm/nP4xrvftHMUo7ZICpB
+         Wx8byEXRenXDz2p1YQGjtefrICL39vcRtYBlslI6Ot8Z/3M3vY5+DGjh5d0GcVe1iE
+         JK2CajB9pXkaQ==
+Date:   Wed, 13 Jan 2021 16:21:26 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Yanteng Si <siyanteng@loongson.cn>,
+        Harry Wei <harryxiyou@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for doc-next] doc/zh_CN: adjust table markup in
+ mips/ingenic-tcu.rst
+Message-ID: <20210113162126.62e36bd3@lwn.net>
+In-Reply-To: <20210113070023.25064-1-lukas.bulwahn@gmail.com>
+References: <20210113070023.25064-1-lukas.bulwahn@gmail.com>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201224055836.GB27629@b29397-desktop>
-User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 24 December 2020 05:59:05 Peter Chen wrote:
-> On 20-12-23 17:18:47, Pali Rohár wrote:
-> > Currently init_quirk callbacks for xhci platform drivers are called
-> > xhci_plat_setup() function which is called after chip reset completes.
-> > It happens in the middle of the usb_add_hcd() function.
-> > 
-> > But XHCI_SKIP_PHY_INIT quirk is checked in the xhci_plat_probe() function
-> > prior calling usb_add_hcd() function. Therefore this XHCI_SKIP_PHY_INIT
-> > currently does nothing as prior xhci_plat_setup() it is not set.
-> > 
-> > Quirk XHCI_SKIP_PHY_INIT is only setting hcd->skip_phy_initialization value
-> > which really needs to be set prior calling usb_add_hcd() as this function
-> > at its beginning skips PHY init if this member is set.
-> > 
-> > This patch fixes implementation of the XHCI_SKIP_PHY_INIT quirk by calling
-> > init_quirk callbacks (via xhci_priv_init_quirk()) prior checking if
-> > XHCI_SKIP_PHY_INIT is set. Also checking if either xhci->quirks or
-> > priv->quirks contains this XHCI_SKIP_PHY_INIT quirk.
-> > 
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > 
-> > ---
-> > Changes in v2:
-> > * Check also xhci->quirks as xhci_priv_init_quirk() callbacks are setting xhci->quirks
-> > * Tested with "usb: host: xhci: mvebu: make USB 3.0 PHY optional for Armada 3720" patch
-> > * Removed Fixes: line
-> > ---
-> >  drivers/usb/host/xhci-plat.c | 16 ++++++++--------
-> >  1 file changed, 8 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-> > index 4d34f6005381..0eab7cb5a767 100644
-> > --- a/drivers/usb/host/xhci-plat.c
-> > +++ b/drivers/usb/host/xhci-plat.c
-> > @@ -89,13 +89,6 @@ static void xhci_plat_quirks(struct device *dev, struct xhci_hcd *xhci)
-> >  /* called during probe() after chip reset completes */
-> >  static int xhci_plat_setup(struct usb_hcd *hcd)
-> >  {
-> > -	int ret;
-> > -
-> > -
-> > -	ret = xhci_priv_init_quirk(hcd);
-> > -	if (ret)
-> > -		return ret;
-> > -
-> >  	return xhci_gen_setup(hcd, xhci_plat_quirks);
-> >  }
-> >  
-> > @@ -330,7 +323,14 @@ static int xhci_plat_probe(struct platform_device *pdev)
-> >  
-> >  	hcd->tpl_support = of_usb_host_tpl_support(sysdev->of_node);
-> >  	xhci->shared_hcd->tpl_support = hcd->tpl_support;
-> > -	if (priv && (priv->quirks & XHCI_SKIP_PHY_INIT))
-> > +
-> > +	if (priv) {
-> > +		ret = xhci_priv_init_quirk(hcd);
-> > +		if (ret)
-> > +			goto disable_usb_phy;
-> > +	}
-> > +
-> > +	if ((xhci->quirks & XHCI_SKIP_PHY_INIT) || (priv && (priv->quirks & XHCI_SKIP_PHY_INIT)))
-> >  		hcd->skip_phy_initialization = 1;
-> 
-> I am not sure if others agree with you move the position of
-> xhci_priv_init_quirk, Let's see Mathias opinion.
+On Wed, 13 Jan 2021 08:00:23 +0100
+Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
 
-Hello! Do you have an opinion how to handle this issue? As currently it
-is needed for another patch which is fixing issue/regression in xhci-mvebu:
-https://lore.kernel.org/linux-usb/20201223162403.10897-1-pali@kernel.org/
+> Commit 419b1d4ed1cb ("doc/zh_CN: add mips ingenic-tcu.rst translation")
+> introduces a warning with make htmldocs:
+> 
+>   ./Documentation/translations/zh_CN/mips/ingenic-tcu.rst:
+>     61: WARNING: Malformed table. Text in column margin in table line 6.
+> 
+> Adjust the table markup to address this warning.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> applies cleanly on next-20210113
+> 
+> Yanteng, please ack.
+> 
+> Jonathan, please pick this doc warning fixup on your -next tree. 
+
+Not waiting for the ack, I've applied this (with an added Fixes tag),
+thanks.
+
+jon
