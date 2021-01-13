@@ -2,139 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FE32F5168
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:50:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F202F516D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728136AbhAMRtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:49:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727984AbhAMRtY (ORCPT
+        id S1728039AbhAMRu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:50:58 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:33772 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727904AbhAMRu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:49:24 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C2BC061575;
-        Wed, 13 Jan 2021 09:48:44 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id bd6so1132362qvb.9;
-        Wed, 13 Jan 2021 09:48:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9b8V5ldrJPxRBHqA53wu0d+Zi8BaxVZ6cd708HjPwiQ=;
-        b=od8zfmMRP96FRdSxJkv8qPbEH28oasOOMIcp/S8CghoHLT9j9dTarMQaJY2wnukZ1q
-         tbvEYsjanXVAo/ov3R0UzRgACnSszGVrkoUE1K6FMn1onySdJvC51PJcwXXQlRRH8qu5
-         ShH0lpfWXMiYFYCsyFPfB1M+PVT0yKXkMhDNjncxfChbQu2/BazbtCIB3XxOLC4HkjBl
-         5z8U1EcNCeMPJKlLVqEh5qQ0A9r6PkXQCY9C22gSRmdT3caXo4fGrutJIg1nbPXWWOPS
-         mC3ET4D8he+0nk9bl/XlAO5GEu/3vPMHYlYa41kfWTQ/ZBjY1AkBPGjSvfMo9eOeF5J+
-         Z+ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9b8V5ldrJPxRBHqA53wu0d+Zi8BaxVZ6cd708HjPwiQ=;
-        b=QepsfhmkQUyGqAJF28eHTk/pJpd94zI6d/ruwWhkr7sAT7pxRJlKkZsRQE0FlbC4HE
-         ID4tNk5AveupWqiqx/jnxdaxtFkvZAERaf1fm+JbJsQxOZ/YmiSNU/XAMm+S6TY7ya4f
-         pn7t6roaIzfUuTNafZ8thRs3PdPh6yiZIh8bV1swWxapb2wg5RfnkMpnN8bI+kbVJ+P7
-         WJtwsFxkeEmWbnXjPRQ3NLwE2xjs4AkI2RB1/HBFef632RJRpaMpLfQXb6f0OInxZCUG
-         wmSRF2vtGP6mPXpmrA5JOukYCIgBAVZcTN2Xj3asstQri0bimrgmKiWXm+6asBquz/EG
-         9syA==
-X-Gm-Message-State: AOAM530aRZmPeI08jmNCi2Ad4l1TYA5qytLBf4O/JwuJ+H0a8CnB1N2F
-        C+vyt3YrJ61lK7XigiXwtPs=
-X-Google-Smtp-Source: ABdhPJxx5TejvJ1UMbb6Ox5G2kWXTyvjq873WXc0CXR+MyuirCugiGPfDe7uTD981oW+3ZnIYM16fQ==
-X-Received: by 2002:ad4:5187:: with SMTP id b7mr3300492qvp.2.1610560123462;
-        Wed, 13 Jan 2021 09:48:43 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id f22sm1464173qkl.65.2021.01.13.09.48.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 09:48:42 -0800 (PST)
-Date:   Wed, 13 Jan 2021 10:48:41 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>
-Subject: Re: [PATCH v4 1/3] Remove $(cc-option,-gdwarf-4) dependency from
- CONFIG_DEBUG_INFO_DWARF4
-Message-ID: <20210113174841.GA4158893@ubuntu-m3-large-x86>
-References: <20210113003235.716547-1-ndesaulniers@google.com>
- <20210113003235.716547-2-ndesaulniers@google.com>
+        Wed, 13 Jan 2021 12:50:58 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10DHYPmG054016;
+        Wed, 13 Jan 2021 17:50:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
+ message-id : date : from : to : cc : subject : references : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=wo8LZ7eA6a5WktVrAu4Z2fQye1mJht9qUOWl/ksXaI0=;
+ b=lPm0AyYKPvYM1GVU6r3aTkCvNHisCuFiktsGUswyw8YdLRkKtGMDJzYN5TcY/aI5IWvS
+ bPJnAY2MeWTNtNGtiXPUf6yqrAW9V4T94xRoQzcJm1NuQir9s46Az113b4SN3Quiqtdd
+ JlrkDVCV47ouiF0D+BZDlteiANxYZqnRponNB4jpymsb4Dm2f23PEpXyUWhpAuk7Q0BY
+ NwJYKmQbxAIGaVpVQp3l5ESTCUG4dhI+EPhkPQkce52Ds27hHCdQsQzUc4BRONpPJwTu
+ PUfGHdhTqd/S16nmf5k6dqOMD9ft6lccJWyxqG8hLh8xMufPFrzUbrLeWRzxwpwdmmUu ew== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 360kcyvqwd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 17:50:04 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10DHZfom031149;
+        Wed, 13 Jan 2021 17:50:04 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 360ke8rwnx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 17:50:04 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10DHnxs6002288;
+        Wed, 13 Jan 2021 17:49:59 GMT
+Received: from [192.168.2.112] (/50.38.35.18) by default (Oracle Beehive
+ Gateway v4.0) with ESMTP ; Wed, 13 Jan 2021 09:49:47 -0800
+USER-AGENT: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113003235.716547-2-ndesaulniers@google.com>
+Message-ID: <14c4f841-efd2-e5ac-ba6e-567dc2a3461c@oracle.com>
+Date:   Wed, 13 Jan 2021 09:49:46 -0800 (PST)
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 1/3] hugetlb: use page.private for hugetlb specific
+ page flags
+References: <20210111210152.118394-1-mike.kravetz@oracle.com>
+ <20210111210152.118394-2-mike.kravetz@oracle.com>
+ <20210113135439.GA29271@linux>
+In-Reply-To: <20210113135439.GA29271@linux>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9863 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101130106
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9863 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101130106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 04:32:33PM -0800, Nick Desaulniers wrote:
-> From: Masahiro Yamada <masahiroy@kernel.org>
+On 1/13/21 5:54 AM, Oscar Salvador wrote:
+> On Mon, Jan 11, 2021 at 01:01:50PM -0800, Mike Kravetz wrote:
+>> As hugetlbfs evolved, state information about hugetlb pages was added.
+>> One 'convenient' way of doing this was to use available fields in tail
+>> pages.  Over time, it has become difficult to know the meaning or contents
+>> of fields simply be looking at a small bit of code.  Sometimes, the
+>> naming is just confusing.  For example: The PagePrivate flag indicates
+>> a huge page reservation was consumed and needs to be restored if an error
+>> is encountered and the page is freed before it is instantiated.  The
+>> page.private field contains the pointer to a subpool if the page is
+>> associated with one.
+>>
+>> In an effort to make the code more readable, use page.private to contain
+>> hugetlb specific flags.  These flags will have test, set and clear functions
+>> similar to those used for 'normal' page flags.  More importantly, the
+>> flags will have names which actually reflect their purpose.
+>>
+>> In this patch,
+>> - Create infrastructure for huge page flag functions
+>> - Move subpool pointer to page[1].private to make way for flags
+>>   Create routines with meaningful names to modify subpool field
+>> - Use new HPageRestoreReserve reserve flag instead of PagePrivate
+>>
+>> Conversion of other state information will happen in subsequent patches.
 > 
-> The -gdwarf-4 flag is supported by GCC 4.5+, and also by Clang.
-> 
-> You can see it at https://godbolt.org/z/6ed1oW
-> 
->   For gcc 4.5.3 pane,    line 37:    .value 0x4
->   For clang 10.0.1 pane, line 117:   .short 4
-> 
-> Given Documentation/process/changes.rst stating GCC 4.9 is the minimal
-> version, this cc-option is unneeded.
-> 
-> Note
-> ----
-> 
-> CONFIG_DEBUG_INFO_DWARF4 controls the DWARF version only for C files.
-> 
-> As you can see in the top Makefile, -gdwarf-4 is only passed to CFLAGS.
-> 
->   ifdef CONFIG_DEBUG_INFO_DWARF4
->   DEBUG_CFLAGS    += -gdwarf-4
->   endif
-> 
-> This flag is used when compiling *.c files.
-> 
-> On the other hand, the assembler is always given -gdwarf-2.
-> 
->   KBUILD_AFLAGS   += -Wa,-gdwarf-2
-> 
-> Hence, the debug info that comes from *.S files is always DWARF v2.
-> This is simply because GAS supported only -gdwarf-2 for a long time.
-> 
-> Recently, GAS gained the support for --dwarf-[3|4|5] options. [1]
-> And, also we have Clang integrated assembler. So, the debug info
-> for *.S files might be improved if we want.
-> 
-> In my understanding, the current code is intentional, not a bug.
-> 
-> [1] https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=31bf18645d98b4d3d7357353be840e320649a67d
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> I like this idea, it would make the code much easier to follow, and together
+> with Muchun's gathering indiscrete index hugetlb code will start looking less
+> scarier.
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Thanks for taking a look.
 
-> ---
->  lib/Kconfig.debug | 1 -
->  1 file changed, 1 deletion(-)
 > 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 78361f0abe3a..dd7d8d35b2a5 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -258,7 +258,6 @@ config DEBUG_INFO_SPLIT
->  
->  config DEBUG_INFO_DWARF4
->  	bool "Generate dwarf4 debuginfo"
-> -	depends on $(cc-option,-gdwarf-4)
->  	help
->  	  Generate dwarf4 debug info. This requires recent versions
->  	  of gcc and gdb. It makes the debug information larger.
-> -- 
-> 2.30.0.284.gd98b1dd5eaa7-goog
+> I do have a question below:
 > 
+>> +enum htlb_page_flags {
+>> +	HPAGE_RestoreReserve = 0,
+>> +};
+>> +
+>> +/*
+>> + * Macros to create function definitions for hpage flags
+>> + */
+>> +#define TESTHPAGEFLAG(flname)					\
+>> +static inline int HPage##flname(struct page *page)		\
+>> +	{ return test_bit(HPAGE_##flname, &(page->private)); }
+>> +
+>> +#define SETHPAGEFLAG(flname)					\
+>> +static inline void SetHPage##flname(struct page *page)		\
+>> +	{ set_bit(HPAGE_##flname, &(page->private)); }
+>> +
+>> +#define CLEARHPAGEFLAG(flname)					\
+>> +static inline void ClearHPage##flname(struct page *page)	\
+>> +	{ clear_bit(HPAGE_##flname, &(page->private)); }
+>> +
+>> +#define HPAGEFLAG(flname)					\
+>> +	TESTHPAGEFLAG(flname)					\
+>> +	SETHPAGEFLAG(flname)					\
+>> +	CLEARHPAGEFLAG(flname)
+>> +
+>> +HPAGEFLAG(RestoreReserve)
+> 
+> I have mixed feelings about this.
+> Could we have a single function that sets/clears the bit/flag?
+> e.g:
+> 
+>  static inline void hugetlb_set_flag(struct page *p, page_flag)
+>  {
+>          set_bit(flag, &(page->private));
+>  }
+> 
+> etc.
+> It would look less of an overkill?
+
+Sure, we could do this.  As noted, I simply patterned this after the
+page flag routines in page-flags.h.  If we go to single functions as
+you suggest, I would perhaps change the name a bit to indicate the flags
+were associated with the page.  Invoking code comparison would be:
+
+SetHPageRestoreReserve(page)
+	-vs-
+hugetlb_set_pageflag(page, HP_Restore_Reserve)
+
+In either case, code would be more readable and you can easily grep for
+a specific flag.
+
+If we do go with single functions as above, then they would certainly be
+moved to hugetlb.h as some flags need to be accessed outside hugetlb.c.
+Muchun has already suggested this movement.
+-- 
+Mike Kravetz
