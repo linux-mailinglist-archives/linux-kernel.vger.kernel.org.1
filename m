@@ -2,128 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D4E2F4AD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46ACC2F4AE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727599AbhAMMAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 07:00:14 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39740 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726923AbhAMMAO (ORCPT
+        id S1726534AbhAMMBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 07:01:14 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:38158 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725771AbhAMMBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 07:00:14 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10DBxU34045945;
-        Wed, 13 Jan 2021 05:59:30 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1610539170;
-        bh=GUonOkkIARDwv50MiC0wedALt3iHo3HDOz+ceuFKS6k=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Dfwmwo1tUF+rV59CjRE9NXeX0YriplT+NTt1wCnet0BpHyozkQ7XNbH0Rry9X1Tw1
-         6CFQ1hYaQYBg9jahsmDsiIS0ge7KveWxgn8Qq/N63+jpvL4HodQf9D7sbTK6wMYdq7
-         eT+Fn3hTSNtAUcscVC/Y+zn6O/6ieGkCtRfrbbg4=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10DBxUHi030325
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 Jan 2021 05:59:30 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 13
- Jan 2021 05:59:30 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 13 Jan 2021 05:59:30 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10DBxDdl041723;
-        Wed, 13 Jan 2021 05:59:26 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Sekhar Nori <nsekhar@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] mmc: sdhci_am654: Add Support for TI's AM64 SoC
-Date:   Wed, 13 Jan 2021 17:29:08 +0530
-Message-ID: <20210113115908.3882-3-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210113115908.3882-1-a-govindraju@ti.com>
-References: <20210113115908.3882-1-a-govindraju@ti.com>
+        Wed, 13 Jan 2021 07:01:13 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0ULcwkx0_1610539221;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0ULcwkx0_1610539221)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 13 Jan 2021 20:00:21 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH] tpm/tpm_tis: Fix variable reset during IRQ probing
+Date:   Wed, 13 Jan 2021 20:00:21 +0800
+Message-Id: <20210113120021.59045-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Faiz Abbas <faiz_abbas@ti.com>
+In tpm_tis_core_init(), tpm2_probe() will be called first, this
+function will eventually call tpm_tis_send(), and then
+tpm_tis_probe_irq_single() will detect whether the interrupt is
+normal, mainly the installation interrupted, set `priv->irq_tested`
+to false. The logic will eventually be executed to tpm_tis_send()
+to trigger an interrupt.
 
-Add support for the controller present on the AM64x SoC.
+There is currently such a scenario, which will cause the IRQ probe
+code to never be executed, so that the TPM device is in polling
+mode: after setting irq_tested to false, an interrupt occurs
+between entering the ttpm_tis_send() function, and the interrupt
+will be first set irq_tested to true will cause the IRQ probe code
+to never be executed.
 
-There are instances:
-sdhci0: 8bit bus width, max 400 MBps
-sdhci1: 4bit bus width, max 100 MBps
+It seems that this interrupt comes from tpm2_probe(). Although the
+interrupt has not been installed when tpm2_probe() is called, the
+interrupt of tpm2_probe() is only received after IRQ detection.
 
-Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+This patch solves this issue by introducing a new variable, which
+is only used in interrupts, and irq_tested only marks whether the
+interrupt test has been completed.
+
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 ---
- drivers/mmc/host/sdhci_am654.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ drivers/char/tpm/tpm_tis_core.c | 8 ++++----
+ drivers/char/tpm/tpm_tis_core.h | 1 +
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-index a64ea143d185..7a34649b0754 100644
---- a/drivers/mmc/host/sdhci_am654.c
-+++ b/drivers/mmc/host/sdhci_am654.c
-@@ -514,6 +514,26 @@ static const struct sdhci_am654_driver_data sdhci_j721e_4bit_drvdata = {
- 	.flags = IOMUX_PRESENT,
- };
+diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+index 92c51c6cfd1b..d7589b0b3e56 100644
+--- a/drivers/char/tpm/tpm_tis_core.c
++++ b/drivers/char/tpm/tpm_tis_core.c
+@@ -502,7 +502,7 @@ static int tpm_tis_send(struct tpm_chip *chip, u8 *buf, size_t len)
+ 	int rc, irq;
+ 	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
  
-+static const struct sdhci_pltfm_data sdhci_am64_8bit_pdata = {
-+	.ops = &sdhci_j721e_8bit_ops,
-+	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
-+};
-+
-+static const struct sdhci_am654_driver_data sdhci_am64_8bit_drvdata = {
-+	.pdata = &sdhci_am64_8bit_pdata,
-+	.flags = DLL_PRESENT | DLL_CALIB,
-+};
-+
-+static const struct sdhci_pltfm_data sdhci_am64_4bit_pdata = {
-+	.ops = &sdhci_j721e_4bit_ops,
-+	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
-+};
-+
-+static const struct sdhci_am654_driver_data sdhci_am64_4bit_drvdata = {
-+	.pdata = &sdhci_am64_4bit_pdata,
-+	.flags = IOMUX_PRESENT,
-+};
-+
- static const struct soc_device_attribute sdhci_am654_devices[] = {
- 	{ .family = "AM65X",
- 	  .revision = "SR1.0",
-@@ -737,6 +757,14 @@ static const struct of_device_id sdhci_am654_of_match[] = {
- 		.compatible = "ti,j721e-sdhci-4bit",
- 		.data = &sdhci_j721e_4bit_drvdata,
- 	},
-+	{
-+		.compatible = "ti,am64-sdhci-8bit",
-+		.data = &sdhci_am64_8bit_drvdata,
-+	},
-+	{
-+		.compatible = "ti,am64-sdhci-4bit",
-+		.data = &sdhci_am64_4bit_drvdata,
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, sdhci_am654_of_match);
+-	if (!(chip->flags & TPM_CHIP_FLAG_IRQ) || priv->irq_tested)
++	if (priv->irq_tested)
+ 		return tpm_tis_send_main(chip, buf, len);
+ 
+ 	/* Verify receipt of the expected IRQ */
+@@ -512,9 +512,9 @@ static int tpm_tis_send(struct tpm_chip *chip, u8 *buf, size_t len)
+ 	rc = tpm_tis_send_main(chip, buf, len);
+ 	priv->irq = irq;
+ 	chip->flags |= TPM_CHIP_FLAG_IRQ;
+-	if (!priv->irq_tested)
++	if (!priv->int_count)
+ 		tpm_msleep(1);
+-	if (!priv->irq_tested)
++	if (!priv->int_count)
+ 		disable_interrupts(chip);
+ 	priv->irq_tested = true;
+ 	return rc;
+@@ -725,7 +725,7 @@ static irqreturn_t tis_int_handler(int dummy, void *dev_id)
+ 	if (interrupt == 0)
+ 		return IRQ_NONE;
+ 
+-	priv->irq_tested = true;
++	priv->int_count += 1;
+ 	if (interrupt & TPM_INTF_DATA_AVAIL_INT)
+ 		wake_up_interruptible(&priv->read_queue);
+ 	if (interrupt & TPM_INTF_LOCALITY_CHANGE_INT)
+diff --git a/drivers/char/tpm/tpm_tis_core.h b/drivers/char/tpm/tpm_tis_core.h
+index 9b2d32a59f67..c6845672f6f7 100644
+--- a/drivers/char/tpm/tpm_tis_core.h
++++ b/drivers/char/tpm/tpm_tis_core.h
+@@ -90,6 +90,7 @@ struct tpm_tis_data {
+ 	int locality;
+ 	int irq;
+ 	bool irq_tested;
++	unsigned int int_count;
+ 	unsigned int flags;
+ 	void __iomem *ilb_base_addr;
+ 	u16 clkrun_enabled;
 -- 
-2.17.1
+2.19.1.3.ge56e4f7
 
