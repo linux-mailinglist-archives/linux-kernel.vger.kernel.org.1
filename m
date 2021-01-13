@@ -2,126 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A688C2F4369
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C818A2F4379
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbhAME40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 23:56:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbhAME4Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 23:56:24 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA577C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:55:43 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id b3so498921pft.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:55:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mJKCusvpWtBfKn+y4mKbIiTTyEFF53qpNFGSZqmXVHU=;
-        b=AYTgJ9tRKgK3HRW4hrmMHj7DhGnGUEPMNrO18Lx+slvosqt5RDGqMOsTVNyNUVVTCo
-         v1pZVH7seXJuz8HaKjdXfJ0lu1ZsmXbEMoDxpSZ/JSrF1Xw0EeiP9M0EEIScTOoKzJG5
-         woivZntD0iYcGQ8Gid/i9jTxPu3iGVOMIjqIaSd367us82Nkt/bHZYjrWdKudDQ2CX3V
-         kaZyFOPTicOcFAZ5XTx/WGX9MV5XaLfCJOwcxELeXwitDZPj0xChg15Q6vTR5IiJbeZ9
-         YmoVMSLr+9m8EffMMzXJpT45GB4+QFPV1tXCSQGpCMDVnwlSKbsKzgXmkYu5caRB+gbe
-         oGZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mJKCusvpWtBfKn+y4mKbIiTTyEFF53qpNFGSZqmXVHU=;
-        b=YGj6L878qpDUauBVicj0K+bgIyYem6yWdox8YDQ4632y0Zmmw3m5jKvAyPct/yvfL3
-         kcqDVPJztm6qaNCqeM2wwAaxhcvNijHzb67c8hsvbHlYU6CcxZLrdr9i7wasdS1TfRhc
-         TXBBPtPuKubKIb/TpGCvrdJH9v1+wxYjrXsoMyYWUySdcGaWFlJISGF2sf04+JekyJM8
-         3lcdUkaYSnSv5DXcztGLPNKYQPNZbqcArWpyoo/C++TyWyZ+F6wYDjzyYAcwFAhFtV9b
-         TT98vbBNpGzeM8rMvrLTUreAE7TrTej20DMiH3o5TsmmHVGtJy+nm9P7Y63Z4K/FY9ex
-         TdPg==
-X-Gm-Message-State: AOAM530uVtW4AcnkQChMIo+lDwctbgWlySR/d3tyDGYgTFu6khe5a/Fo
-        /5QPEelu1uikQt9raaMvrY/m9w==
-X-Google-Smtp-Source: ABdhPJwTqmk4iglhe8G2D21L3QujLbLeXjPAv+epZYprG0ZGWLUyfbPvPghFsk9qSH1TBXR8r1PVFg==
-X-Received: by 2002:a63:e246:: with SMTP id y6mr383697pgj.412.1610513743224;
-        Tue, 12 Jan 2021 20:55:43 -0800 (PST)
-Received: from localhost ([122.172.85.111])
-        by smtp.gmail.com with ESMTPSA id a198sm820054pfa.7.2021.01.12.20.55.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Jan 2021 20:55:42 -0800 (PST)
-Date:   Wed, 13 Jan 2021 10:25:40 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH V3 2/2] scripts: dtc: Build fdtoverlay and fdtdump tools
-Message-ID: <20210113045540.s2hg2dxldsyelzkd@vireshk-i7>
-References: <CAK7LNAQT5nVHGAZDhj4dct0v8UMzQ+-mdfBXJsfedR-7mZTnyA@mail.gmail.com>
- <72c3a4f63dde3c172c11153e9a5b19fb6cdb4498.1610000585.git.viresh.kumar@linaro.org>
- <1d9369aa-b7aa-6d06-0d44-6ef21bc639e3@gmail.com>
- <20210112050818.s6ctvd6ihd2dt2d2@vireshk-i7>
- <3f0c733a-641f-290f-41b8-62ca22e355b7@gmail.com>
+        id S1725947AbhAMFEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 00:04:55 -0500
+Received: from mail-mw2nam10on2062.outbound.protection.outlook.com ([40.107.94.62]:50657
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725809AbhAMFEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 00:04:54 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XNV/22nyFNCPVugLwsUrIypNfo39m0HjJ9JgVZjifb/eo2STH/65a0YZWYpywzZ6p+py9H04lY51vO+HcvtJoh/U+Q2vQocxOosszWC6Wv6+6Py/ol9cVEsH8DhN3xDDbzfic/YlAjrZHzoX4Aq5RH+TN80poRSS55hPTAdkxCWxIZ33LihfN42tEHs8IhfE8eE5DI/5L5UY2p5eZFpli+FsX7FRxaH9XUjJfpRGmtwD/Q6lTYwbF0OHhNQc52/zKpFV2oOZdTQwywFuxPTTF33f3seC+v1RFu/3Xk3jjahG9NoQN5V92H8iWvdvg2UbqyO5pFn0935BztU5E827Bw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rDE3gQRhySAVUtf0fPRDmewRuMA55VqSghvbGBp7iXU=;
+ b=nNTQ2POlIX/3VeZismYsMyFrUrCb4XTbKruXjMk/7J6Tz7J9mdeklCIHzAsRoHDpYajZ8AyzRsNDTnAmhqmvdKL7sB6O3UEOc/5T9s6/asfh3GzKFuUBiFvSBJGxOMqXpugEql9uvlpL1lC+dGvTs999Lqxtr5GbZy1EbS8f+w9gvDKBhms9l2OTIWIdPs4fHYwMBk1H0qk1DSAXnB3zfyeVBoMI7jew/mu1V2dOypiFVRo+uow8LvECyknSUeLw0cu730vDPR+rULHXxsPNXMak1Wf8R735/3R/K0TqGqAPgX7wynkJFGpGhHLjuMjhKGqVMzmzrpg8Zh7aUwUMoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rDE3gQRhySAVUtf0fPRDmewRuMA55VqSghvbGBp7iXU=;
+ b=ZBWzN9ycpsaVibfGntbYLVcob+tGCCjLlCR+eFotEpx2XZ1NK5AgDsebrruAP3NnNRmBa2FlAcuFFKTHaBLsBYOB+pSretht+txJmDpB+RkKioZbDvJwO2yobRY+j8hLKfyPLm1gyGauwvUor+wQ8C9vWGWBJo3Umi+BJN1jb8s=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from CY4PR12MB1494.namprd12.prod.outlook.com (2603:10b6:910:f::22)
+ by CY4PR1201MB2487.namprd12.prod.outlook.com (2603:10b6:903:d0::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.11; Wed, 13 Jan
+ 2021 05:04:01 +0000
+Received: from CY4PR12MB1494.namprd12.prod.outlook.com
+ ([fe80::25d2:a078:e7b:a819]) by CY4PR12MB1494.namprd12.prod.outlook.com
+ ([fe80::25d2:a078:e7b:a819%11]) with mapi id 15.20.3763.010; Wed, 13 Jan 2021
+ 05:04:01 +0000
+Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by
+ VM instructions
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com, joro@8bytes.org,
+        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
+        dgilbert@redhat.com, mlevitsk@redhat.com
+References: <20210112063703.539893-1-wei.huang2@amd.com>
+ <X/3eAX4ZyqwCmyFi@google.com> <X/3jap249oBJ/a6s@google.com>
+From:   Wei Huang <wei.huang2@amd.com>
+Message-ID: <94312672-3ad2-7cb5-9b03-c3a2fbf34a8f@amd.com>
+Date:   Tue, 12 Jan 2021 23:03:58 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+In-Reply-To: <X/3jap249oBJ/a6s@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [70.113.46.183]
+X-ClientProxiedBy: SA9PR13CA0211.namprd13.prod.outlook.com
+ (2603:10b6:806:25::6) To CY4PR12MB1494.namprd12.prod.outlook.com
+ (2603:10b6:910:f::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3f0c733a-641f-290f-41b8-62ca22e355b7@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.38] (70.113.46.183) by SA9PR13CA0211.namprd13.prod.outlook.com (2603:10b6:806:25::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.3 via Frontend Transport; Wed, 13 Jan 2021 05:04:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 260b6ebf-2c78-4f21-542e-08d8b780a490
+X-MS-TrafficTypeDiagnostic: CY4PR1201MB2487:
+X-Microsoft-Antispam-PRVS: <CY4PR1201MB24873F28502147976DD0971ECFA90@CY4PR1201MB2487.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: n/E5P0zfaIBqqaUNl9J1g8NWg+QWs+2jJKN1i8xxv1V03LQcYqd6CriA2obn01Gk9qhNtANgdO2MgV/GFb/Pp0X3nwcW6qTNSToRkTTleLEDV0lJCWU1RheTmtz4f2xtcwYfxSIUM5DeOJCFKfOT80w5J/V6TkzaVP+/Xd0jaiswoFE07ODiX3b6FAZAD7NFuk1JnZWSRKg1NQ+VaPk6/JPYQM8sbOmeIvfEQM7F093QWvzzjcbMRqaiu0WZlSMvPGvRA6NIac5yu0f35bhsamWycDgECgKB+lrSFxAMMNkN9p3IpWZlot/A2IOK9rTV6bw4rhZwRerlMNiFKLtSsOpkdAJjMB27sTG9NzSaIyHNYOAXAYfjWPxxTDlJbJDr+ZxksW0NzacmpBuQA/htOznshKKVNvkmXddW/xhwGpJqYPd/5FiN6En163eX+ycvcoef2GGxj2zeJOOhJqb/P3tJEIiCZ3jEH8R/a9uhNQc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1494.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39860400002)(376002)(346002)(396003)(6916009)(5660300002)(8936002)(66556008)(36756003)(66946007)(31686004)(7416002)(31696002)(956004)(66476007)(86362001)(4326008)(186003)(6486002)(53546011)(26005)(16526019)(2906002)(478600001)(316002)(16576012)(52116002)(8676002)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?K3Rhcm1YRUV6MUpIRXhaYXZwMVl6VkRJR1duMUVRY0JvQnBob3VER0hXaFlO?=
+ =?utf-8?B?MmRNMXFkNVdNei83dnFiVXhNYWZtbGdtanJDKzhUMWRha1RqcU9HdktNWHRN?=
+ =?utf-8?B?dTcvNlZDQW03WGZMdVhTU3d6RitNTzAyVmswZmlHaW5XQVh3b25PUHJ1eWNa?=
+ =?utf-8?B?UTRpcytJaStkS2w2UUF3bWNjRkFFL1djYWZ4NGJDaHlsZUVwNnVyeDZvUFhY?=
+ =?utf-8?B?V0FNZ3VlWDN5TjkxZHZDSnpEUUpraitKNnFOTjRWYWpxUkhUUDFIWlV6SG5z?=
+ =?utf-8?B?aWZrVEJ0elUvdWFUQ3laU1BrcTJ1L20vV0lUdnNVSW1HaVJ6VU00MVQydHpG?=
+ =?utf-8?B?RVF0a1llSDRtQkNiY3R0VkduWmJtZjY3YmR6M1hsKy84VkEvS3J4NXdKc3lj?=
+ =?utf-8?B?TkpzT0F3eFhOZjFJaC9NWGZwanFnbUlPMERDbXYvUWhjVDhEaGRjUTVxUlNN?=
+ =?utf-8?B?R01CbEhWb1dSYTZiZVU3RE0rSENOWkpZaFh4bktMZThldGlDazhiMEg2TktS?=
+ =?utf-8?B?cERvT3YySjZIb0tXSURIR2IwcVdULytnYUhwVlRnaHYxTCtzbnh6bHhncHFF?=
+ =?utf-8?B?MzJGVUduMWlEbjNwVXZLSU1aUVROcms5V0gycnBjQjVxTlRDcjd4dXJFK2ZS?=
+ =?utf-8?B?QVBTSjVlVnRFcGJXL1UwQ2oya3hDS04rNGY3THdZMGNhaDU2OGlmZnd2ZnZu?=
+ =?utf-8?B?OURCOGhNTnZMTDJRcmM5VkZSb3Vja2VQV2tMTk53MWNnK3BSVlllYk52bzRH?=
+ =?utf-8?B?R0U0b01FOTN2bGU3ZG0rSjRtN3BaaVFPTlk4YUhuR2d5RmpQaTFhY2RtcENT?=
+ =?utf-8?B?aFpZeDZlMXh4SmZtbjlFZFVWNzRSTENTN2xYemN4aVFWVHlsK2c0L2dsOGlZ?=
+ =?utf-8?B?NHI1UlpHOHFLT2pkU29YVGZLRC82aFFJbHBkY08yeEtKR3F3Z3FlY3FGZU1O?=
+ =?utf-8?B?ZEZZRTA3RDlrRmpqRHlneVEvazBCc0hycnlnTzVYUEJwSHBySFJHbVowVy9M?=
+ =?utf-8?B?STFkUHJzdXpPbUxFaTFTbkR2MWRMY3JzbWtiQ0VYRHJGQUtqVkdRUVpjSE0y?=
+ =?utf-8?B?R2tsK3M4Y1lZQm1MdG96NnM0dmF4bG1MVDVCbGsySjMrSkhheisrT2ZTd2pC?=
+ =?utf-8?B?RkdOYktNQmRyMkU4dzhBUlRreW5DakZsenlDOUJxeWEwSmsyNUxqWkcvOUIx?=
+ =?utf-8?B?SDFwN3pkaDBPU3UyYm9NbGJMaXAwU0hjZ1RhQ05mcVFhMU4zTUVVSmdBeEVs?=
+ =?utf-8?B?eTYybnNnMlVFZjRVektxbDBaUUc4bmhoTkkwYnRCOTRIdklIeG53Z29TZUF6?=
+ =?utf-8?Q?/+r0XgUB8aeFm/K2GpiOE56DXLThyZUcxa?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1494.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2021 05:04:01.6954
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 260b6ebf-2c78-4f21-542e-08d8b780a490
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: h82luHNfxX7uHYJvPxxQSD6odIwb01Tm1dzmspm6OdqRXRb1bDXrRuqDkU0Utio/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB2487
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-01-21, 12:34, Frank Rowand wrote:
-> On 1/11/21 11:08 PM, Viresh Kumar wrote:
-> > On 11-01-21, 18:44, Frank Rowand wrote:
-> >> On 1/7/21 12:25 AM, Viresh Kumar wrote:
-> >>> We will start building overlays for platforms soon in the kernel and
-> >>> would need these tools going forward. Lets start building them.
-> >>>
-> >>> The fdtoverlay program applies (or merges) one ore more overlay dtb
-> >>> blobs to a base dtb blob. The kernel build system would later use
-> >>> fdtoverlay to generate the overlaid blobs based on platform specific
-> >>> configurations.
-> >>>
-> >>> The fdtdump program prints a readable version of a flat device-tree
-> >>> file. This is a very useful tool to analyze the details of the overlay's
-> >>> dtb and the final dtb produced by fdtoverlay after applying the
-> >>> overlay's dtb to a base dtb.
-> >>
-> >> You can calso dump an FDT with:
-> >>
-> >>    dtc -O dts XXX.dtb
-> >>
-> >> Is this sufficient for the desired functionality, or is there something
-> >> additional in fdtdump that is needed?
-> > 
-> 
-> comment 1:
-> 
-> > Not for my usecase at least.
 
-I answered this question here (and yes I could have been more clear):
 
-"is there something additional in fdtdump that is needed?"
+On 1/12/21 11:59 AM, Sean Christopherson wrote:
+> On Tue, Jan 12, 2021, Sean Christopherson wrote:
+>> On Tue, Jan 12, 2021, Wei Huang wrote:
+>>> From: Bandan Das <bsd@redhat.com>
+>>>
+>>> While running VM related instructions (VMRUN/VMSAVE/VMLOAD), some AMD
+>>> CPUs check EAX against reserved memory regions (e.g. SMM memory on host)
+>>> before checking VMCB's instruction intercept.
+>>
+>> It would be very helpful to list exactly which CPUs are/aren't affected, even if
+>> that just means stating something like "all CPUs before XYZ".  Given patch 2/2,
+>> I assume it's all CPUs without the new CPUID flag?
+
+This behavior was dated back to fairly old CPUs. It is fair to assume 
+that _most_ CPUs without this CPUID bit can demonstrate such behavior.
 
 > 
-> > 
-> >> If nothing additional needed, and there is no other justification for adding
-> >> another program, I would prefer to leave fdtdump out.
-> > 
+> Ah, despite calling this an 'errata', the bad behavior is explicitly documented
+> in the APM, i.e. it's an architecture bug, not a silicon bug.
 > 
-> comment 2:
-> 
-> > Okay, then I will also remove the stale version of fdtdump which is
-> > already there in kernel since a long time.
-> > 
-> 
-> I'm confused.  I read comment 1 as saying that fdtdump does provide a feature
-> that you need to analyze the dtb created by fdtoverlay.  But I read comment 2
-> as implying that you are accepting that fdtdump will not be added to the
-> Linux kernel source.
+> Can you reword the changelog to make it clear that the premature #GP is the
+> correct architectural behavior for CPUs without the new CPUID flag?
 
--- 
-viresh
+Sure, will do in the next version.
+
+> 
