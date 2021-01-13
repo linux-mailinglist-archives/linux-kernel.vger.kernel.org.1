@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2832F4BB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:56:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26AC32F4BB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbhAMMxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 07:53:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59706 "EHLO mail.kernel.org"
+        id S1726775AbhAMMyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 07:54:04 -0500
+Received: from inva021.nxp.com ([92.121.34.21]:44084 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725809AbhAMMxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 07:53:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF664233F6;
-        Wed, 13 Jan 2021 12:52:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610542373;
-        bh=K7rfJRt7FTyScHAF7Dc1SebMYXDZ9njQhTE1qfF4ZUc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l3zntwyUARbT34Zn/5cgDiko7uTG+bQ0XokCI4osKNhDgqKgLoy0CmYnemvogSu00
-         TMZ0e7XiyjGU2WF06hXeW+bWerZDkuPTrzmRFd2bx6/Va9J81cwgmHJTTsiUnwKqVu
-         YMO/IlSkqrmsPZaxiWbnpQYjgcvGG5ZmBlASJT/RTB2N2eTd/lYLVg86sasG/Y4KtO
-         CF5auJsOgsqrrP6fYDUfl56IZaQi9R0DOF8TFMkLEJNJsX+WwzlRf/3AeiRRFeSWCi
-         GQwFk4ljSf3dhg0i8JLBoqBd3cmxQWp3Czctpu8TWE0pVvrx/PqO3M4mh8W07xY1lu
-         AEnGW/dr4Z0MA==
-Date:   Wed, 13 Jan 2021 18:22:42 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Min Guo <min.guo@mediatek.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-usb@vger.kernel.org,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Subject: Re: [PATCH v5 03/11] dt-bindings: phy: convert phy-mtk-xsphy.txt to
- YAML schema
-Message-ID: <20210113125242.GJ2771@vkoul-mobl>
-References: <20201225075258.33352-1-chunfeng.yun@mediatek.com>
- <20201225075258.33352-3-chunfeng.yun@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201225075258.33352-3-chunfeng.yun@mediatek.com>
+        id S1725951AbhAMMyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 07:54:04 -0500
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3462B200400;
+        Wed, 13 Jan 2021 13:53:17 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2724E2003FE;
+        Wed, 13 Jan 2021 13:53:17 +0100 (CET)
+Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id C673220309;
+        Wed, 13 Jan 2021 13:53:16 +0100 (CET)
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org, Abel Vesa <abel.vesa@nxp.com>
+Subject: [PATCH] MAINTAINERS: Add section for NXP i.MX clock drivers
+Date:   Wed, 13 Jan 2021 14:53:08 +0200
+Message-Id: <1610542388-12078-1-git-send-email-abel.vesa@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-12-20, 15:52, Chunfeng Yun wrote:
-> Convert phy-mtk-xsphy.txt to YAML schema mediatek,xsphy.yaml
+Add a section for NXP i.MX clock drivers and list myself
+as the maintainer.
 
-Applied, thanks
+Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+---
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2894657..9eafd4d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12827,6 +12827,13 @@ F:	drivers/iio/gyro/fxas21002c_core.c
+ F:	drivers/iio/gyro/fxas21002c_i2c.c
+ F:	drivers/iio/gyro/fxas21002c_spi.c
+ 
++NXP i.MX CLOCK DRIVERS
++M:	Abel Vesa <abel.vesa@nxp.com>
++L:	linux-clk@vger.kernel.org
++L:	linux-imx@nxp.com
++S:	Maintained
++F:	drivers/clk/imx/
++
+ NXP i.MX 8MQ DCSS DRIVER
+ M:	Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+ R:	Lucas Stach <l.stach@pengutronix.de>
 -- 
-~Vinod
+2.7.4
+
