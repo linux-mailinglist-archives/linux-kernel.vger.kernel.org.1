@@ -2,233 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF162F41A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAB02F41A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:18:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727877AbhAMCRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 21:17:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727798AbhAMCRm (ORCPT
+        id S1727900AbhAMCRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 21:17:51 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41208 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727798AbhAMCRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 21:17:42 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91132C061795
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 18:17:01 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id n11so809055lji.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 18:17:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0QF0LMsSrVnu1WRqxh2aVOIkN8CA5lClgVWJhJvLqoY=;
-        b=EABsV1DIwxaytHiaDExy2EF2hnI5gqsFa5Gx9qnN7O0MeR830iZ/gR3Ye5gLxa3L1K
-         2UtGBxtD7mrYx3ULibQ1T5dWKujRXcbpnOCOqdfsrDYJU2Xub47VrPKeJWX9xALjvGYh
-         yLNuXwzQv5vPyyRg9c7+tecSHU/3XlMoMtH9ETdVjnSqHuG6CpdudkhAOnybUE0wQApV
-         kq/OuOoBHNUXyrQJGyLse5R2ljD4i9PpMz+xJorPTnKt6nl9kJI8G8zSIONv2Jah8TWj
-         jiI0D1VhcMeiGMTgUehzSW8dgcpNfBplClZbhaKtUcp7OxpVxhi66dDdPIGSYJAQD8fx
-         V6DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0QF0LMsSrVnu1WRqxh2aVOIkN8CA5lClgVWJhJvLqoY=;
-        b=on7l77NAeeB5IA1RrALL89qy19fXmOZfZ68p7Gpk664CZY68AukvGdzCxPSqTp7r2q
-         RoyVzzElviSrkJSoD6v3REJzfB2jdyhe48CXnTyfW/lMH5i7PTgkvF9RTAY3e+5TkJj0
-         OXz96chO/KJMfzOl9JeYjuGA0s4pe4x4HGNGb1ux+tAyowCkWbgxbfQ0S8hNam8edjD8
-         e5Ke1dd9Pd/Yd5hoQUXyS8x5hUZ3CclIAqgUbrCMbiGUhsrXy1k+VipHpvxhZnkULTFF
-         fZZMOlkyKtvzmr1X9UPRd5NOfQ2JSb12ILV+peDkAwGwFE5O7lhLu32rfd4EIIH8ytJf
-         MCSQ==
-X-Gm-Message-State: AOAM531W0BdoUxlOiKL3+blQvRQ9MK6NbWC1+7AoE8HlTLTBv3eYFAsr
-        e4EbRTu1DJk5PMwcfAs69ZYimGy7c+Tjt487WLUQ9A==
-X-Google-Smtp-Source: ABdhPJzogB55M//GtTTPJSuBzmoYOuI3VIr2FIqX2l1NrAlObgnQa9huObiQPGYNZRbyh2BNl2tHUw603ib6Ox2DSyw=
-X-Received: by 2002:a05:651c:301:: with SMTP id a1mr871465ljp.275.1610504219806;
- Tue, 12 Jan 2021 18:16:59 -0800 (PST)
+        Tue, 12 Jan 2021 21:17:50 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10D23JDL010083;
+        Tue, 12 Jan 2021 21:16:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=DeR1Ge39KPlmbMnjjYgg5xHfkOIDQOcFsTFA55GzuBs=;
+ b=S1POk2zrBEerLJte5x69oMYXGI/CHSy7D+fhej+U4hk20o6U9CtgaY13AUXkHhwP+ehq
+ XX3HC+owXQoTou0STCMjlU5X2DouO0fjqPDLX2AAkeOQC3dEC6s4HacWf885HDfguxkn
+ RCoHnQRPm/cvr/qpN90UPPGEsnWwwhv0s22B3wPkzYbk9eYTinSn8GTJGn3za/phDOdv
+ Ukwiux40MPTfO9ktYBu9GJIbqysvusFJxCzUZ+Qx9QftByVQ4sQ9ckyydsgYtjw9tZVp
+ OSFYm0zSzLr28wwq23gSnIIyi3/K9CnRHJMfGvPWPvbzkI0fsQMyST/XiHqs+q+dmAu1 RA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 361qeygm60-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 21:16:39 -0500
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10D24hBr015132;
+        Tue, 12 Jan 2021 21:16:38 -0500
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 361qeygm5n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 21:16:38 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10D2CW4h022162;
+        Wed, 13 Jan 2021 02:16:37 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma04dal.us.ibm.com with ESMTP id 35y4499105-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 02:16:37 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10D2GaJv11534710
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 02:16:36 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B0189AC059;
+        Wed, 13 Jan 2021 02:16:36 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DC438AC062;
+        Wed, 13 Jan 2021 02:16:29 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.80.217.205])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Wed, 13 Jan 2021 02:16:29 +0000 (GMT)
+References: <20210104192602.10131-1-nramas@linux.microsoft.com>
+ <20210104192602.10131-7-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@vger.kernel.org
+Subject: Re: [PATCH v14 6/6] arm64: Add IMA log information in kimage used
+ for kexec
+In-reply-to: <20210104192602.10131-7-nramas@linux.microsoft.com>
+Date:   Tue, 12 Jan 2021 23:16:28 -0300
+Message-ID: <875z41shs3.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-References: <20210112040146.2.Ic902bbd9f04e2d82ac578411e7fafc77b6c750e2@changeid>
- <20210112223830.GA1858627@bjorn-Precision-5520>
-In-Reply-To: <20210112223830.GA1858627@bjorn-Precision-5520>
-From:   Victor Ding <victording@google.com>
-Date:   Wed, 13 Jan 2021 13:16:23 +1100
-Message-ID: <CANqTbdYYSAvpzN2oaPSb2PUCE=rssj19GueTZmkvmukQWj9vUw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mmc: sdhci-pci-gli: Disable ASPM during a suspension
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-12_21:2021-01-12,2021-01-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ spamscore=0 phishscore=0 suspectscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 mlxlogscore=999 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101130009
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 9:38 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Tue, Jan 12, 2021 at 04:02:05AM +0000, Victor Ding wrote:
-> > GL9750 has a 3100us PortTPowerOnTime; however, it enters L1.2 after
-> > only ~4us inactivity per PCIe trace. During a suspend/resume process,
-> > PCI access operations are frequently longer than 4us apart.
-> > Therefore, the device frequently enters and leaves L1.2 during this
-> > process, causing longer than desirable suspend/resume time. The total
-> > time cost due to this L1.2 exit latency could add up to ~200ms.
-> >
-> > Considering that PCI access operations are fairly close to each other
-> > (though sometimes > 4us), the actual time the device could stay in
-> > L1.2 is negligible. Therefore, the little power-saving benefit from
-> > ASPM during suspend/resume does not overweight the performance
-> > degradation caused by long L1.2 exit latency.
-> >
-> > Therefore, this patch proposes to disable ASPM during a suspend/resume
-> > process.
->
-> This sounds like an interesting idea, but it doesn't seem like
-> anything that's really device-dependent.  Drivers should not need to
-> be involved in PCI configuration at this level, and they shouldn't
-> read/write registers like PCI_EXP_LNKCTL directly.
->
-> If we need to disable ASPM during suspend, I'd rather do it in the PCI
-> core so all devices can benefit and drivers don't need to worry about
-> it.
->
-Good point. In theory all devices could encounter this issue, and it
-more-likely occurs on those with low entry timer but high exit latency.
-GL9750 is the only one I have access to that has such characteristics.
 
-I think we should have ASPM disabled during suspend, or at least part
-of the suspend process*, mainly for two reasons:
-1. Power saving is expected to be little. During suspend/resume, we
-    frequently access PCI registers, making it unlikely to stay in low
-    power states;
-2. It could cause performance degradation. Unfortunate timing could
-    put the device into low power states and wake it up very soon after;
-    resulting noticeable delays.
-* By "part if the suspend process", I refer [suspend/resume]_noirq, where
-there are frequent PCI register accesses and suffers most from this issue.
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-Ideally, the entry time could be tune so that it is long enough that the
-device would not go into low power states during suspend; however, it
-may not be feasible mainly because:
-1. Hardware limitations;
-2. The best timing for suspend/resume may not be the best timing for other
-    tasks. Considering suspend/resume is a rare task, we probably do not
-    want to sacrifice other tasks;
-3. If the goal is to avoid entering low power states during suspend, it might
-    be better just to disable it.
-
-What do you think?
+> Address and size of the buffer containing the IMA measurement log need
+> to be passed from the current kernel to the next kernel on kexec.
 >
-> > Signed-off-by: Victor Ding <victording@google.com>
-> > ---
-> >
-> >  drivers/mmc/host/sdhci-pci-core.c |  2 +-
-> >  drivers/mmc/host/sdhci-pci-gli.c  | 46 +++++++++++++++++++++++++++++--
-> >  drivers/mmc/host/sdhci-pci.h      |  1 +
-> >  3 files changed, 46 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
-> > index 9552708846ca..fd7544a498c0 100644
-> > --- a/drivers/mmc/host/sdhci-pci-core.c
-> > +++ b/drivers/mmc/host/sdhci-pci-core.c
-> > @@ -67,7 +67,7 @@ static int sdhci_pci_init_wakeup(struct sdhci_pci_chip *chip)
-> >       return 0;
-> >  }
-> >
-> > -static int sdhci_pci_suspend_host(struct sdhci_pci_chip *chip)
-> > +int sdhci_pci_suspend_host(struct sdhci_pci_chip *chip)
-> >  {
-> >       int i, ret;
-> >
-> > diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-> > index 9887485a4134..c7b788b0e22e 100644
-> > --- a/drivers/mmc/host/sdhci-pci-gli.c
-> > +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> > @@ -109,6 +109,12 @@
-> >
-> >  #define GLI_MAX_TUNING_LOOP 40
-> >
-> > +#ifdef CONFIG_PM_SLEEP
-> > +struct gli_host {
-> > +     u16 linkctl_saved;
-> > +};
-> > +#endif
-> > +
-> >  /* Genesys Logic chipset */
-> >  static inline void gl9750_wt_on(struct sdhci_host *host)
-> >  {
-> > @@ -577,14 +583,48 @@ static u32 sdhci_gl9750_readl(struct sdhci_host *host, int reg)
-> >  }
-> >
-> >  #ifdef CONFIG_PM_SLEEP
-> > +static int sdhci_pci_gli_suspend(struct sdhci_pci_chip *chip)
-> > +{
-> > +     int ret;
-> > +     struct sdhci_pci_slot *slot = chip->slots[0];
-> > +     struct pci_dev *pdev = slot->chip->pdev;
-> > +     struct gli_host *gli_host = sdhci_pci_priv(slot);
-> > +
-> > +     ret = pcie_capability_read_word(pdev, PCI_EXP_LNKCTL,
-> > +                     &gli_host->linkctl_saved);
-> > +     if (ret)
-> > +             goto exit;
-> > +
-> > +     ret = pcie_capability_write_word(pdev, PCI_EXP_LNKCTL,
-> > +                     gli_host->linkctl_saved & ~PCI_EXP_LNKCTL_ASPMC);
-> > +     if (ret)
-> > +             goto exit;
-> > +
-> > +     ret = sdhci_pci_suspend_host(chip);
-> > +
-> > +exit:
-> > +     return ret;
-> > +}
-> > +
-> >  static int sdhci_pci_gli_resume(struct sdhci_pci_chip *chip)
-> >  {
-> > +     int ret;
-> >       struct sdhci_pci_slot *slot = chip->slots[0];
-> > +     struct pci_dev *pdev = slot->chip->pdev;
-> > +     struct gli_host *gli_host = sdhci_pci_priv(slot);
-> >
-> > -     pci_free_irq_vectors(slot->chip->pdev);
-> > +     pci_free_irq_vectors(pdev);
-> >       gli_pcie_enable_msi(slot);
-> >
-> > -     return sdhci_pci_resume_host(chip);
-> > +     ret = sdhci_pci_resume_host(chip);
-> > +     if (ret)
-> > +             goto exit;
-> > +
-> > +     ret = pcie_capability_clear_and_set_word(pdev, PCI_EXP_LNKCTL,
-> > +                     PCI_EXP_LNKCTL_ASPMC, gli_host->linkctl_saved);
-> > +
-> > +exit:
-> > +     return ret;
-> >  }
-> >
-> >  static int sdhci_cqhci_gli_resume(struct sdhci_pci_chip *chip)
-> > @@ -834,7 +874,9 @@ const struct sdhci_pci_fixes sdhci_gl9750 = {
-> >       .probe_slot     = gli_probe_slot_gl9750,
-> >       .ops            = &sdhci_gl9750_ops,
-> >  #ifdef CONFIG_PM_SLEEP
-> > +     .suspend        = sdhci_pci_gli_suspend,
-> >       .resume         = sdhci_pci_gli_resume,
-> > +     .priv_size      = sizeof(struct gli_host),
-> >  #endif
-> >  };
-> >
-> > diff --git a/drivers/mmc/host/sdhci-pci.h b/drivers/mmc/host/sdhci-pci.h
-> > index d0ed232af0eb..16187a265e63 100644
-> > --- a/drivers/mmc/host/sdhci-pci.h
-> > +++ b/drivers/mmc/host/sdhci-pci.h
-> > @@ -187,6 +187,7 @@ static inline void *sdhci_pci_priv(struct sdhci_pci_slot *slot)
-> >  }
-> >
-> >  #ifdef CONFIG_PM_SLEEP
-> > +int sdhci_pci_suspend_host(struct sdhci_pci_chip *chip);
-> >  int sdhci_pci_resume_host(struct sdhci_pci_chip *chip);
-> >  #endif
-> >  int sdhci_pci_enable_dma(struct sdhci_host *host);
-> > --
-> > 2.30.0.284.gd98b1dd5eaa7-goog
-> >
+> Any existing "linux,ima-kexec-buffer" property in the device tree
+> needs to be removed and its corresponding memory reservation in
+> the currently running kernel needs to be freed. The address and
+> size of the current kernel's IMA measurement log need to be added
+> to the device tree's IMA kexec buffer node and memory for the buffer
+> needs to be reserved for the log to be carried over to the next kernel
+> on the kexec call.
+>
+> Add address and size fields to "struct kimage_arch" for ARM64 platform
+> to hold the address and size of the IMA measurement log buffer. Remove
+> any existing "linux,ima-kexec-buffer" property in the device tree and
+> free the corresponding memory reservation in the currently running
+> kernel. Add "linux,ima-kexec-buffer" property to the device tree and
+> reserve the memory for storing the IMA log that needs to be passed from
+> the current kernel to the next one.
+>
+> Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC to indicate
+> that the IMA measurement log information is present in the device tree
+> for ARM64.
+>
+> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> ---
+>  arch/arm64/Kconfig             | 1 +
+>  arch/arm64/include/asm/kexec.h | 5 +++++
+>  2 files changed, 6 insertions(+)
+
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
