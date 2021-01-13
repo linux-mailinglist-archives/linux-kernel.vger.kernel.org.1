@@ -2,161 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4952F4F79
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60ECA2F4F84
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727217AbhAMQGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 11:06:24 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:28528 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725801AbhAMQGX (ORCPT
+        id S1727356AbhAMQGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 11:06:42 -0500
+Received: from smtpweb147.aruba.it ([62.149.158.147]:43151 "EHLO
+        smtpweb147.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbhAMQGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 11:06:23 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10DFPvkV022210;
-        Wed, 13 Jan 2021 08:05:28 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=x2JOW2zlRsUtINi/XEwulTn2Kpfd7WaL7NODJGJ3XAQ=;
- b=IdZm+tWekX9tTTCs7kAu/3zG6rFll8PnFEEvL/C1bUnYkF6we5LbcVd/N/hESP1QjVT9
- CNYenQkOMe7vdWAAupaycrleafmAENaojQsNd7ya3e7wvL9HILjkE6j2QJQZ1o0kEnU+
- c4A+0bGkIgYSTNEIEsgwAI4TdWb0dVNAP4Q= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 361fpe5t7w-9
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 13 Jan 2021 08:05:28 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 13 Jan 2021 08:05:10 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UUXtwSX/t3KLBvccxqy1r60soZ9MYI+AisGEr+kgZrf4psXLvaSUqWBr5GBStkSiX3MVkVmTu+nq6KOaQOeXL2Mx61xcDzUUAIOlcAZlaE5b7ms8re4heAnqG69yegVRHerc73b0z7eXrnJbLooCu1CRS3l6KNbvhlvk1ayaWA9SrK9gjtIbQacldRB5zeqDHoOX5ihsEe+qQ6iGKVEzkg01hBrCd45ntxd469rnMB8ZF5v72rHulvlcpXXbYLjZJjCqdLY+PC5K+UN3//SFRxcr47UwvQwrSStDTdeDjEv5f2X7L9p4vR+N6UypYyKmhzcFQsM08dA6nK6bBzfBdg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x2JOW2zlRsUtINi/XEwulTn2Kpfd7WaL7NODJGJ3XAQ=;
- b=RF62ne3S/vBWhGqy9Cm/G+Gb/a6czuc3hnjX3Pm3a+3eb2+aR4IujAS5hfMMQuPRVCGV6eB3LQc6JTyDN2qDaWWLBG7dnWMKfz5QG3vNF3q686VcI2pJwouPhi5GB7SlaHXAgQ22gW+wNCiaKgzQaiAqkeJFC9Y6LvOBmH9bzTwKAopgJ1pMhtR+goeL/JeQ4R88GGJsGFxR5TuulMoeGe+xmjmo3w6gS7NEUsdEtCzV13aeq8iK0qE2vHGq+V5v1uzlmDnlTYO8aMPKJHGgIRIQkVA19oLiN3O04sx/d0XuvzHcpLAeaN102NpIpk5YJv9yGpWleHjk4EltI+cNgw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x2JOW2zlRsUtINi/XEwulTn2Kpfd7WaL7NODJGJ3XAQ=;
- b=Vi/IsXqCo2I8cHpxlPYmct5gpXp5WMndGsDScecuhqGBAvpzx3lZJAbe++81o5XOEhgJj2ClYiiy+gXQV5Ob7Y+b2a+Et4oimBHIraSe2p2AKDJW/LrKxQkyal+qNgyiFQYxn9W03D2RykAwlMFTv08HPtP0GCXxFKm6CSJQBtQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3190.namprd15.prod.outlook.com (2603:10b6:a03:111::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Wed, 13 Jan
- 2021 16:05:09 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3742.012; Wed, 13 Jan 2021
- 16:05:09 +0000
-Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: add verifier test for
- PTR_TO_MEM spill
-To:     Gilad Reti <gilad.reti@gmail.com>, <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>
-References: <20210113053810.13518-1-gilad.reti@gmail.com>
- <20210113053810.13518-2-gilad.reti@gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <c245e747-85e6-e9be-2dff-064f64555fd7@fb.com>
-Date:   Wed, 13 Jan 2021 08:05:04 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
-In-Reply-To: <20210113053810.13518-2-gilad.reti@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:e777]
-X-ClientProxiedBy: MWHPR07CA0010.namprd07.prod.outlook.com
- (2603:10b6:300:116::20) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        Wed, 13 Jan 2021 11:06:41 -0500
+Received: from ubuntu.localdomain ([146.241.213.249])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id zieJkU4CD5BgLzieJkLwdj; Wed, 13 Jan 2021 17:05:34 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1610553934; bh=vVVA4Opin9OtrAi4JKFF69zz8U3z+kSm0iZZv2AXo0E=;
+        h=From:To:Subject:Date:MIME-Version:Content-Type;
+        b=C8vaE1KcaPwamF1yndjEovf1ptF5PZIFv4880+ztpTxyOUqEL6AyODRy3kOxy2RZQ
+         6UDgyeQZbNKu55pzl9EbkhywVz14j/ieB8osZYCXdCFgWBE6njH+1L5NCo/NrYhZA1
+         HIa8HwoSvclNRLI229zA6euTFtPrmfUCmUVNg3VO/Gy1Cf2ViIohgZcE/NEkmnPde6
+         DbSl6NlmCunbP7k9Z9xa2XKKiJkO7eRTFy+i1BfkSf9+YD+9dZzIAoofb+8cX/TpGj
+         uPDmAQjpPalMIHuOi1k/6QR5GOxKFlDEw1HwoUBQi2iZZhALZ4xuU1RFcCS27xdoOO
+         8xHuL0wCzTshQ==
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Marjan Pascolo <marjan.pascolo@trexom.it>, wens@csie.org,
+        daniel@ffwll.ch, airlied@linux.ie, treding@nvidia.com,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Giulio Benetti <giulio.benetti@micronovasrl.com>
+Subject: [PATCH v5] drm/sun4i: tcon: fix inverted DCLK polarity
+Date:   Wed, 13 Jan 2021 17:05:26 +0100
+Message-Id: <20210113160526.928766-1-giulio.benetti@benettiengineering.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210113104725.770459-1-giulio.benetti@benettiengineering.com>
+References: <20210113104725.770459-1-giulio.benetti@benettiengineering.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e1::13f6] (2620:10d:c090:400::5:e777) by MWHPR07CA0010.namprd07.prod.outlook.com (2603:10b6:300:116::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Wed, 13 Jan 2021 16:05:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 81f4a268-f1d8-4c1b-2a3f-08d8b7dd0034
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3190:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB31909BF888D79A13412B4076D3A90@BYAPR15MB3190.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qSp1Nwq1o9hsWksmH8mw/hQRo/szP1VL2kM86l1trVJpo1hM4xNav5dK8vFp/dRqJIz2D3UYsp/KuVNZT+BUmkFRoJe+YZgfowIQ3p9GMz8PoFmjTHSrzcM+qPiSrdA49aLAALWZz3D/w30co0tXO42+CmzNALu8WMnQNNIte6g+hrGyhwHnMB+/YRWEbxDDybyqMF310C5qgD1GPqxPHVkc6c9mUjCsCcReBV1562WHTGzcYKS40Ne9lJHS11WNrjGaFsRNKf3hy3jSXudnMu/ZCjsZu38EodebUimkdA39eOnIzg7X6E4eOPjd/s9ne48gRKDLp+Oaen5y+AJJLotVTNcRphJoQt4Z2CJj+5wJx70OOI5HU1MaoyL+YrB4zvYN3vDkdN+GVOvDhWICvoGB7RIoCxP982OXfajNCvzzUh/64VD/W16Q6W6VH7y2XR1v7dEEGGoUYqlDw80bS+kBlGeB+RmsyIQ8IJNgAVk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(136003)(346002)(396003)(366004)(4326008)(5660300002)(16526019)(478600001)(31686004)(86362001)(36756003)(66946007)(186003)(4744005)(316002)(83380400001)(54906003)(6666004)(66476007)(2906002)(8936002)(6486002)(31696002)(8676002)(53546011)(2616005)(7416002)(52116002)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?d3Bnc0srcXFUV3pLM09ST0Q5MDhBRkJsdWtrNzNucG45a0tucUhMYjhidTVm?=
- =?utf-8?B?cU5WbHpVQktJNXpmZDJDUi81TDZRUm1UM09rQzFHNDIvWmV6ZWt3RHl3YVpC?=
- =?utf-8?B?VGZuRXNTRUVPbU40bXFqYzI2MlZtTHNsNTM4MXpyc1hqUmIwN0duRlZpNlVB?=
- =?utf-8?B?dFZtekxCOUJYMlpoMStHSVdHWGkra3RwSW1kVFlIdTBIaTE4c2tCQXI3WW5G?=
- =?utf-8?B?bXc2b3BJU2haV1NWMzY2NjM3ZmdCSDBzU0M5Z2Q1SXcyS0ZqWlh5aEhrZWw2?=
- =?utf-8?B?aGJxQVB5U2Z3UlBwYmxhblB6dis2SUZ6UTJwVXViZlhsYXNqVEtGamlGSERk?=
- =?utf-8?B?TUNjMXVOUTdoMHhDTTJOQXhzbDQwQndKNHF3VEJXejBoWUxpdGR4ckdsT2N6?=
- =?utf-8?B?Y2luMkdLQTJBQUJaY3ZwdzBnRkQ4djhDWmFVY3ZtSzV2UUZpVEFZSkVJbDFF?=
- =?utf-8?B?Mm1CRnJHSXo0LytKUjJKRUs5ZU5HOGNHMWxYTHUrcjRrNlFZbklLbm0ycnNC?=
- =?utf-8?B?d3pIb3FnYnQxZTB1eFBIVmhNK2JmNy9UVGpxTjFtQ0dSUWpVcnpEYVI4S2t5?=
- =?utf-8?B?Q2xiV25QQUZnbUlYY2NKK1JNdDRCWUNLRWd6STJNbjl3emNnMThrS05lRjhs?=
- =?utf-8?B?ZmpmaGYrSTRLdTgycFlmbzkrWlZUaHVzbUlwbWd0aXZRWUUzRDBmdjBHcXRo?=
- =?utf-8?B?UWhWbGkzTUZTcndyWmZTNUpRZXRFbzRyQVJMb21BaTFMZXlHSFp6RU40VlJt?=
- =?utf-8?B?Wmw1eVdCOWVJUDI4NEg1UU5kR09EcTl2RDhwcitiRFJocWNld2hmV2RWSnJy?=
- =?utf-8?B?YTJRQUlzbGJtVktoaGVwdzhTVFhZWjdxL2lvbjVnTFMzeENDSW9TUFZIWVdl?=
- =?utf-8?B?ek1ZOTZodTFTdnFvTzZiQmo1ek9IdXlXT2VFamhMNHNWM2NCTzZ3MHFWSFVt?=
- =?utf-8?B?NHQxWEoxU1hXRHYrL1ZsYndYRHBsekFreDljMTFBMFRhdVdNMDA4VThndks0?=
- =?utf-8?B?WFU3eURJc1NKd0JaZCtQbUZVcW5rRG5DVDBaZ2g0WEEyZ1lTRzI2V0tJVkxE?=
- =?utf-8?B?ODk0dk5hZVVvbnpvWE00NzcyZlNvaFQvNCtqOHhoYTlLK1EzUnlZVk1JL0x0?=
- =?utf-8?B?bWlyMjZOOXZsRlVjRjNDQ2MrcWtGRGFaUjgvbnpJUGY4bUE2ekR4UnhUbHAr?=
- =?utf-8?B?VHJJMmtRY0FKbDRTcTNmamdYeUcyUXM0NDBTbEdqL1A3bDZqVWtJNlFuQ2Zp?=
- =?utf-8?B?d1FzcEVqbGtFNEJQZktXdEZvdVlNZi9pSkRocGxlckx3b002d1E0SGpXbVVL?=
- =?utf-8?B?amlYaUVDd2FBMUpNY2xTNWdJU0tyQTZPR3FtZW5xYkxpVzBOQzdqVzNRSFk0?=
- =?utf-8?B?OUQwNmNUT2cySmc9PQ==?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2021 16:05:09.0770
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 81f4a268-f1d8-4c1b-2a3f-08d8b7dd0034
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z/Ytp9wWhei8oJwAnc56wfqKRZFI+jkfPHuWzN2Ce1YbddcwSlCbSsb4Xp+2sS57
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3190
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-13_07:2021-01-13,2021-01-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- spamscore=0 priorityscore=1501 clxscore=1015 mlxscore=0 suspectscore=0
- mlxlogscore=999 adultscore=0 impostorscore=0 malwarescore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101130096
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfPHjKTt1umdvQBS37mgZ8A8jNdkItS6XleUm2Vrj7oIZQNMEu7RIrkrck8ANEZ/VyNbwxA7UzXqsfIpXinJ0DkgiSQNMcbskc30Ozi0vz1C4EuhPNf+x
+ KYwN/yfo/M4iavqbBWlxbgNTvVRq+tUIYvwriIVNE5t+TN10cNw834AkAJyOuD8Gv6ATCu01CMJl7exSUQ3nAYgVSuIahlDchlKLzVoNsKli6Do5frNL4NNz
+ EvYK9UcxbeZQXNuNGSVG2OF590S22rW09FnmvR9ydXr1xR1s3fWVUbY0u02a2ncSHC//CxFkKBmUfvXlBTkNvjofH0udhtW+tUJSVN6/0AZ8XBeg+X76hrPd
+ vnn94DBkoVVMuJonw4NuSdnMH4fJwapE3LuyPqj6t9BoqJB7qVkp2ZLitTU1gOvHihhPzq6EL2IdPQ0fI+3AJSKAI11ZJL3FHJyIoJ/v3sxsIE+H5weUiWNn
+ Zavh592HQNSGNedWDS01T14+9zOjcXDfbrsHg4SIqUciKkx+t30Jl6ntRfNRpewKhK2CVbSf0yWLdKmi4JVm3g9LfBHL8wAS0hsfkQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Giulio Benetti <giulio.benetti@micronovasrl.com>
 
+During commit 88bc4178568b ("drm: Use new
+DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags") DRM_BUS_FLAG_*
+macros have been changed to avoid ambiguity but just because of this
+ambiguity previous DRM_BUS_FLAG_PIXDATA_(POS/NEG)EDGE were used meaning
+_SAMPLE_ not _DRIVE_. This leads to DLCK inversion and need to fix but
+instead of swapping phase values, let's adopt an easier approach Maxime
+suggested:
+It turned out that bit 26 of SUN4I_TCON0_IO_POL_REG is dedicated to
+invert DCLK polarity and this makes things really easier than before. So
+let's handle DCLK polarity by adding SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE
+as bit 26 and activating according to bus_flags the same way it is done
+for all the other signals polarity.
 
-On 1/12/21 9:38 PM, Gilad Reti wrote:
-> Add a test to check that the verifier is able to recognize spilling of
-> PTR_TO_MEM registers, by reserving a ringbuf buffer, forcing the spill
-> of a pointer holding the buffer address to the stack, filling it back
-> in from the stack and writing to the memory area pointed by it.
-> 
-> The patch was partially contributed by CyberArk Software, Inc.
-> 
-> Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
+Fixes: 88bc4178568b ("drm: Use new DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags")
+Suggested-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
+---
+V2->V3:
+- squash 2 patches into 1
+V3->V4:
+- add SUN4I_TCON0_IO_POL_DCLK_POSITIVE to regmap_update_bits()
+V4->V5:
+polarity is still wrong so:
+- let's use SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE macro
+  instead of _DCLK_POSITIVE(that would make sense only in realtion with DCLK)
+- invert condition using _NEGEDGE instead of _POSEDGE and then matching with
+  register bit SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE
+- correct commit log according to V4->V5 changes
+---
+ drivers/gpu/drm/sun4i/sun4i_tcon.c | 21 ++-------------------
+ drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
+ 2 files changed, 3 insertions(+), 19 deletions(-)
 
-I didn't verify result_unpriv = ACCEPT part. I think it is correct
-by checking code.
+diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+index eaaf5d70e352..c172ccfff7e5 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
++++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+@@ -569,30 +569,13 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tcon *tcon,
+ 	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
+ 		val |= SUN4I_TCON0_IO_POL_DE_NEGATIVE;
+ 
+-	/*
+-	 * On A20 and similar SoCs, the only way to achieve Positive Edge
+-	 * (Rising Edge), is setting dclk clock phase to 2/3(240°).
+-	 * By default TCON works in Negative Edge(Falling Edge),
+-	 * this is why phase is set to 0 in that case.
+-	 * Unfortunately there's no way to logically invert dclk through
+-	 * IO_POL register.
+-	 * The only acceptable way to work, triple checked with scope,
+-	 * is using clock phase set to 0° for Negative Edge and set to 240°
+-	 * for Positive Edge.
+-	 * On A33 and similar SoCs there would be a 90° phase option,
+-	 * but it divides also dclk by 2.
+-	 * Following code is a way to avoid quirks all around TCON
+-	 * and DOTCLOCK drivers.
+-	 */
+-	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
+-		clk_set_phase(tcon->dclk, 240);
+-
+ 	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
+-		clk_set_phase(tcon->dclk, 0);
++		val |= SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE;
+ 
+ 	regmap_update_bits(tcon->regs, SUN4I_TCON0_IO_POL_REG,
+ 			   SUN4I_TCON0_IO_POL_HSYNC_POSITIVE |
+ 			   SUN4I_TCON0_IO_POL_VSYNC_POSITIVE |
++			   SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGDGE |
+ 			   SUN4I_TCON0_IO_POL_DE_NEGATIVE,
+ 			   val);
+ 
+diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.h b/drivers/gpu/drm/sun4i/sun4i_tcon.h
+index cfbf4e6c1679..c5ac1b02482c 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_tcon.h
++++ b/drivers/gpu/drm/sun4i/sun4i_tcon.h
+@@ -113,6 +113,7 @@
+ #define SUN4I_TCON0_IO_POL_REG			0x88
+ #define SUN4I_TCON0_IO_POL_DCLK_PHASE(phase)		((phase & 3) << 28)
+ #define SUN4I_TCON0_IO_POL_DE_NEGATIVE			BIT(27)
++#define SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE		BIT(26)
+ #define SUN4I_TCON0_IO_POL_HSYNC_POSITIVE		BIT(25)
+ #define SUN4I_TCON0_IO_POL_VSYNC_POSITIVE		BIT(24)
+ 
+-- 
+2.25.1
 
-Acked-by: Yonghong Song <yhs@fb.com>
