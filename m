@@ -2,140 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D442F5413
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2002F5414
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728922AbhAMU0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 15:26:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58056 "EHLO
+        id S1728947AbhAMU0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 15:26:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbhAMU0b (ORCPT
+        with ESMTP id S1726599AbhAMU0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 15:26:31 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C4CC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:25:50 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id r4so2784285wmh.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:25:50 -0800 (PST)
+        Wed, 13 Jan 2021 15:26:37 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D389AC06179F
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:25:56 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id j1so1727512pld.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:25:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=w+kZv9kbYsmHr/JGy5iDhtegSxFGC5KTV0tLyw8dvw8=;
-        b=ohigjfj+Kvg5LKBxNhr5js1B2AdGOZOnQHG0tH9Gv+QjQ3iarEg2hAGF+pPhuNUrkN
-         mU/z9MRWz7VHMUC23GzaqdRFROIFJmeRJ+Aos1Snd1/8vvz793NH4QkFr0/Ykk7ny+45
-         vvE7qPV/VZArWZimeNpeTaBi/gpjz2FMqusxom2KBRRYHmnXNx6RKagghLLD758gNoP1
-         cWEJGc21SupCW30xsd+KXw5J8gU3BjMwMMn0Fbpq4LQBb9PPcG6xc4sPgOnCLLqNYRRp
-         3+KLe4hGxby3BpakC80ATrAMZrER1juRp3IPouRwdu6HCqntA9EJb/8ery1YiNVirI4L
-         /2HA==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=gcin89rV0I7IqOVbv9QUmTeBAufbW/EP7UVT7uECDZc=;
+        b=W3/hfnVx1RKsL4BcMpubo4sIVkeHPQNvBiKClmnTGfqiZIKSQNo4mDZfx0kJQnXQm7
+         D6jatbyMCWCHJMfpg2HfYmnwgMGkzs5HYGM0kgMjpRA0wpvjZq/pIqVf6PJsRt+Kx6XW
+         r/YcVR2l5+N25gm2DaDM+Ap+SK+7GQuvK7rx4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=w+kZv9kbYsmHr/JGy5iDhtegSxFGC5KTV0tLyw8dvw8=;
-        b=nFzqoYQJlTiPlmd+2do3uIL+NivzejJy3ovSNuQIya0TdeTMeF+fCS6TYxjxFSJoRT
-         liwGpUCg33N3OJjniTad3TBrZxuwyww1ZVfsohWkUFfPxzzCeAbJSazIazGEtQQhfKGG
-         htaoOYUJa8R+Tip/PJTiJvQ1O4TYT5kA/nd7U9oqQcSyHKn6nNUb2WEBnFEvNq++LXUs
-         oeK/K/D71u3YkUWr2Du3aWqbRNy4DCDMmEu1j1pvWGdxnb7qrkfZvM6beG8Vkxp13ser
-         jFFS1l/BW3cUk4/3+QkE+YC1H17KHYL5oQBqs9DWlmcE4DtNdHUBgPqo6M6gyjFa6YDk
-         +3ZQ==
-X-Gm-Message-State: AOAM530rU7+xu0aXZ3N27s8vkGdlVD0/ACfV8boV12W3pDTCx4aEdJ6N
-        aTIPXBaSi6rrqzP5f3hjUxwemA==
-X-Google-Smtp-Source: ABdhPJz/+lJZkI7anapuMcRBn/lk43KTNF/diGn2gD6fqYtQDwiTQc1zvndtf8bPqr6YQRCy/2y+KQ==
-X-Received: by 2002:a1c:c2d4:: with SMTP id s203mr878238wmf.58.1610569549645;
-        Wed, 13 Jan 2021 12:25:49 -0800 (PST)
-Received: from dell ([91.110.221.193])
-        by smtp.gmail.com with ESMTPSA id v20sm4490293wml.34.2021.01.13.12.25.47
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=gcin89rV0I7IqOVbv9QUmTeBAufbW/EP7UVT7uECDZc=;
+        b=OqNVPGSfiAwnq/jzYn8dDLy+cYujw3UXD7aF6nNcFE3r1KrWLkSOGeAUAnuccuZqLS
+         2d+U4Wx/FdJ4FH4+UQjnd6WzGzS3w5S4BkUtV0aVhjY3h4xccB240YBSK8PB6PnfgwMt
+         2RVzgno3smE0Xo+RPxC7D/N0zv6I6YDlrir1ybyv/u65eJxJY5QKvqR0Y31wb7JTEMf5
+         4tkZn2Hyk+ULsrOPTc522/wdJfTiEiicy624a0dutrIasYFqopzAYDHS2oYr5qhR+CaV
+         Y5BSUNfd6qIz25495zYMNu3slJsm2hs66QMoaerlT6uZuMtuHeIbYvdlB3VW2cQWRfWh
+         im9A==
+X-Gm-Message-State: AOAM531iyI/Y89Q6SdRXojh3aZ/ziYEDfgI8ZbOhqRCiw5FkwYWdT2+J
+        67Dx3qpWkffK5g1ZD5glWfq49A==
+X-Google-Smtp-Source: ABdhPJycCWJ3lRjFwltpCDQVyM6m4HdsDCiUKkLSp4ACw4lxoBY0IFDGY9PSQ9YLIGnXpVCrdx04ug==
+X-Received: by 2002:a17:902:9009:b029:dc:52a6:575 with SMTP id a9-20020a1709029009b02900dc52a60575mr3869284plp.57.1610569556468;
+        Wed, 13 Jan 2021 12:25:56 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id 36sm3511232pgr.56.2021.01.13.12.25.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 12:25:48 -0800 (PST)
-Date:   Wed, 13 Jan 2021 20:25:46 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Jakub Jelinek <jakub@redhat.com>, linux-fbdev@vger.kernel.org,
-        Anthony Tong <atong@uiuc.edu>, Alex Kern <alex.kern@gmx.de>,
-        dri-devel@lists.freedesktop.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Software Engineering <lg@denx.de>,
-        Paul Mundt <lethal@chaoticdreams.org>,
-        Frodo Looijaard <frodol@dds.nl>,
-        "Thomas J. Moore" <dark@mama.indstate.edu>,
-        "Mark D. Studebaker" <mdsxyz123@yahoo.com>,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        Thibaut VARENE <varenet@parisc-linux.org>,
-        Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
-        Evgeny Novikov <novikov@ispras.ru>,
-        Helge Deller <deller@gmx.de>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Ani Joshi <ajoshi@unixbox.com>, daniel.mantione@freepascal.org,
-        James Simmons <jsimmons@users.sf.net>,
-        Emmanuel Marty <core@ggi-project.org>,
-        carter@compsci.bristol.ac.uk, Alan Cox <alan@redhat.com>,
-        Oliver Kropp <dok@directfb.org>,
-        Jeff Garzik <jgarzik@pobox.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "Eddie C. Dost" <ecd@skynet.be>,
-        Ani Joshi <ajoshi@shell.unixbox.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        John Fremlin <vii@users.sourceforge.net>,
-        Ilario Nardinocchi <nardinoc@cs.unibo.it>,
-        Thomas Winischhofer <thomas@winischhofer.net>,
-        Jakub Jelinek <jj@ultra.linux.cz>, Urs Ganse <ursg@uni.de>,
-        William Rucklidge <wjr@cs.cornell.edu>,
-        Antonino Daplas <adaplas@pol.net>,
-        Brad Douglas <brad@neruo.com>,
-        Ralph Metzler <rjkm@thp.uni-koeln.de>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Jim Hague <jim.hague@acm.org>,
-        Egbert Eich <Egbert.Eich@physik.tu-darmstadt.de>,
-        Jes Sorensen <jds@kom.auc.dk>,
-        Gerd Knorr <kraxel@goldbach.in-berlin.de>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        linux-kernel@vger.kernel.org, Martin Mares <mj@ucw.cz>,
-        Philip Edelbrock <phil@netroedge.com>,
-        Ben Dooks <ben@simtec.co.uk>, Hannu Mallat <hmallat@cc.hut.fi>,
-        Kristoffer Ericson <kristoffer.ericson@gmail.com>,
-        Ghozlane Toumi <gtoumi@laposte.net>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH 00/31] Rid W=1 warnings from Video
-Message-ID: <20210113202546.GG3975472@dell>
-References: <20210113145009.1272040-1-lee.jones@linaro.org>
- <20210113190118.GA180942@ravnborg.org>
+        Wed, 13 Jan 2021 12:25:55 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210113190118.GA180942@ravnborg.org>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1610564400-29788-1-git-send-email-khsieh@codeaurora.org>
+References: <1610564400-29788-1-git-send-email-khsieh@codeaurora.org>
+Subject: Re: [PATCH v2 0/2]  fix missing unplug interrupt problem
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, tanmay@codeaurora.org,
+        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+To:     Kuogee Hsieh <khsieh@codeaurora.org>,
+        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run
+Date:   Wed, 13 Jan 2021 12:25:54 -0800
+Message-ID: <161056955435.3661239.1548841852585636847@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021, Sam Ravnborg wrote:
+Quoting Kuogee Hsieh (2021-01-13 10:59:58)
+> Both AUX_SW_RESET and DP_SW_RESET clear pending HPD interrupts.
+> Therefore irq_hpd handler should not issues either aux or sw reset
+> to avoid following unplug interrupt be cleared accidentally.
+>=20
+> Kuogee Hsieh (2):
+>   drm/msm/dp: return fail when both link lane and rate are 0 at dpcd
+>     read
+>   drm/msm/dp: unplug interrupt missed after irq_hpd handler
 
-> Hi Lee,
-> 
-> On Wed, Jan 13, 2021 at 02:49:38PM +0000, Lee Jones wrote:
-> > This set is part of a larger effort attempting to clean-up W=1
-> > kernel builds, which are currently overwhelmingly riddled with
-> > niggly little warnings.
-> > 
-> > This patch-set clears all of the W=1 warnings currently residing
-> > in drivers/video.
-> 
-> I am sorry to say that I expect most of your nice patches to clash
-> with patches that is already present in drm-misc-next.
-> 
-> drivers/video/ are warning free with W=1 in drm-misc-next today.
-> 
-> I do not know why drm-misc-next is not yet pullled into linux-next.
-
-Well that kinda sucks.  What are the chances of that?
-
-Most of my patches fix issues that have been there for years!
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+It won't apply to the drm msm tree. Please rebase and resend.
