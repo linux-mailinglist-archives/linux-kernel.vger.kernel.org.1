@@ -2,163 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28372F554B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 00:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B79CB2F554F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 00:54:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729509AbhAMXtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 18:49:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
+        id S1729583AbhAMXwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 18:52:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729550AbhAMXmB (ORCPT
+        with ESMTP id S1729555AbhAMXtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 18:42:01 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00149C06138A;
-        Wed, 13 Jan 2021 15:41:30 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id h10so2233680pfo.9;
-        Wed, 13 Jan 2021 15:41:30 -0800 (PST)
+        Wed, 13 Jan 2021 18:49:21 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB28C061575;
+        Wed, 13 Jan 2021 15:48:40 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id 6so5615684ejz.5;
+        Wed, 13 Jan 2021 15:48:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DAslXiykyfrCbfxspz3DRx7/iwOfMiAsjoyyNclRZrU=;
-        b=LoDHNNHFSlinbZ7pnvZkSRlBVxioHc33Il9J3oJhYP+2Mm7aJ2gGaujO3IRsoeSexX
-         t5Y3PIDgdXVyXNX7dE5ZQ7uDmgQvU0l4HQEb4L6JNjlHl3RHv0igUkH9EZzs8gxk5v8W
-         MlDBxrsSLq9HmC64oURhjH0oF17LqAWgKe0GdMYyl03u/rUJImg6104orAihoi42ylGu
-         /TnB5YMg3aVSFF+X3HR4C/GfmGMqksWdDOTVuhFGbzTf+mfQIZrlA57zskXqF5IhLdqe
-         n/T0PmWR9U+69xPRIasEzdIs7tU9uwAmUI5IT8+MuOjvUlOopY4/5gMR++JEBzx8YoTL
-         0ebw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qxBGvawjchkt3PkBeFPglNIYbXfNwIwM3XGy8lG49Os=;
+        b=AfdoteZDe3xUjLlIDNDLWd9Uf3cGhaAjkvrrCqckV1VoC8npQcL2xFuorx8afbtim+
+         SQuh4mC0lT44zU8JH6P+bDEl2pf6kvZoOKWYiQp9cA96lI0DgtLS12IVYGgL+rC5wkm8
+         cS8F+nZfJQaE5TfdqhW0AotCJEVT27up6WF3tSAHmbn/UeDkVkFUOo2z2+iywe5zJYbe
+         RVq7VRqszIGny+V3aVIG6wQKR0WnXGFttX8jNrL9IilvGENapTjbcX036MAkr4rZPmuZ
+         T8rKrx5rlF/F9g0rY1u5AtDyz4NvTeFJr8KMhHh9EqpMYW8uI1F86HNkCiVHK36hKaGQ
+         JQ2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=DAslXiykyfrCbfxspz3DRx7/iwOfMiAsjoyyNclRZrU=;
-        b=KVCSGms5GWG8ZFl6mMaXr9Fdw/Cpcebsr1UaYGJ7SoDFFSVQaofxX7G5tWSoQ6QEbP
-         gEf4KJ14zTl6EuBlTmQHEeWsuvhREGpCMeSsyULK4c50pNRmLuLN7AYDCWzYutQZpyKX
-         JiuDhX8R5ORzclHGaKhxCRuaxxZBUbXi06VLY44SGXDbGXT2wU69lKYxLqlvTPQJAzQs
-         qPUA02N5U/CIyfGjs+nSgSdcxRrHRMAQ0wcID9O+8vyLp8aJfOJeJ3/pupZmiXagPoV2
-         MBBBciNtyPjDaRlIycywX4LQ/+VP0Fv13VbH2t7oy6inmZ9oe6csMhbMjdCm7Ha02kQe
-         lr2w==
-X-Gm-Message-State: AOAM531R/dmNm0piVR1ZDm8txOx7JwbRBtwaJaRDK/DZb3/ZNQ/Ew0G6
-        IRzll+jftEHYqDkSv6PiGu+XNtoxyMM=
-X-Google-Smtp-Source: ABdhPJwNrweKbvYBvnn4xRX/BpRAAEJvas78BJff2BuSPzc69PW/1l1OpVkiWyycs/VEn0hXrNPlwQ==
-X-Received: by 2002:a65:6811:: with SMTP id l17mr4436045pgt.342.1610581289965;
-        Wed, 13 Jan 2021 15:41:29 -0800 (PST)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id j20sm3488227pfd.106.2021.01.13.15.41.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 15:41:29 -0800 (PST)
-Subject: Re: [PATCH net 3/6] net: dsa: ksz: insert tag on ks8795 ingress
- packets
-To:     Gilles DOFFE <gilles.doffe@savoirfairelinux.com>,
-        netdev@vger.kernel.org
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-References: <cover.1610540603.git.gilles.doffe@savoirfairelinux.com>
- <bc79946d1dafded91729ee1674c1b88a3beea110.1610540603.git.gilles.doffe@savoirfairelinux.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <65c738f0-40de-6a3b-aa79-a6379364e0fe@gmail.com>
-Date:   Wed, 13 Jan 2021 15:41:24 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qxBGvawjchkt3PkBeFPglNIYbXfNwIwM3XGy8lG49Os=;
+        b=ql+Ff0mpC5YnSL+pKyp/qQM42i21dE09CaWDMoGAPE95D7528AbEtFRxb2IzegavZM
+         3hDIW6O7pQ3sKB3V0IWLRIubhlBsUpLGZkT2IXmKVWzq6mI61+Rye+fI/yjcWVl+0WOM
+         XemZd167KREEaUKgUQEGxOv/2JbynYKXSxO9tQGWE+sBao4FktwIf1bk2ykbP8kOqLWl
+         kCU4NY16+U+ABQWuGsQDKpDcv2bnKbDMczK7AVwkuxVOi42GBACCp523cO+oYCFA0KJY
+         lrccQpPlN13nzddHCLTFl2C99WmtWrSe10JLNO7fCgNdObBUf13VOD6+uP9LarXrsPU4
+         cJGQ==
+X-Gm-Message-State: AOAM533/eTFO10Jq38w+hnQpeMrhx84vYoQq03ACdCtT7r5JxtNL5VMi
+        hP6D5wG9AD7psZpD9Oi2qZWw5jOlhZC/nuduTu+lDSXCvYy4/w==
+X-Google-Smtp-Source: ABdhPJzo5LMkPw9QOaRIWmHNxXmPhpnoc1H63/T35dxn5b2PlL41yBvCJpVtev2FCnnftyWiGi3AmQuhX6au8I8gl+4=
+X-Received: by 2002:a17:906:1a4e:: with SMTP id j14mr3231194ejf.507.1610581719097;
+ Wed, 13 Jan 2021 15:48:39 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <bc79946d1dafded91729ee1674c1b88a3beea110.1610540603.git.gilles.doffe@savoirfairelinux.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210105225817.1036378-1-shy828301@gmail.com> <20210105225817.1036378-5-shy828301@gmail.com>
+ <955422c5-0703-e9fb-f309-6ed6b5fc0e0a@virtuozzo.com>
+In-Reply-To: <955422c5-0703-e9fb-f309-6ed6b5fc0e0a@virtuozzo.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 13 Jan 2021 15:48:27 -0800
+Message-ID: <CAHbLzkqo=bHcrLBPd68teEAtfLcOsZZ+e3Eds9EfGakhDbW8zA@mail.gmail.com>
+Subject: Re: [v3 PATCH 04/11] mm: vmscan: remove memcg_shrinker_map_size
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc:     Roman Gushchin <guro@fb.com>, Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/13/21 4:45 AM, Gilles DOFFE wrote:
-> If 802.1q VLAN tag is removed from egress traffic, ingress
-> traffic should by logic be tagged.
+On Wed, Jan 6, 2021 at 2:16 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+>
+> On 06.01.2021 01:58, Yang Shi wrote:
+> > Both memcg_shrinker_map_size and shrinker_nr_max is maintained, but actually the
+> > map size can be calculated via shrinker_nr_max, so it seems unnecessary to keep both.
+> > Remove memcg_shrinker_map_size since shrinker_nr_max is also used by iterating the
+> > bit map.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  mm/vmscan.c | 12 ++++--------
+> >  1 file changed, 4 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index ddb9f972f856..8da765a85569 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -185,8 +185,7 @@ static LIST_HEAD(shrinker_list);
+> >  static DECLARE_RWSEM(shrinker_rwsem);
+> >
+> >  #ifdef CONFIG_MEMCG
+> > -
+> > -static int memcg_shrinker_map_size;
+> > +static int shrinker_nr_max;
+> >
+> >  static void memcg_free_shrinker_map_rcu(struct rcu_head *head)
+> >  {
+> > @@ -248,7 +247,7 @@ int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg)
+> >               return 0;
+> >
+> >       down_read(&shrinker_rwsem);
+> > -     size = memcg_shrinker_map_size;
+> > +     size = DIV_ROUND_UP(shrinker_nr_max, BITS_PER_LONG) * sizeof(unsigned long);
+> >       for_each_node(nid) {
+> >               map = kvzalloc(sizeof(*map) + size, GFP_KERNEL);
+> >               if (!map) {
+> > @@ -269,7 +268,7 @@ static int memcg_expand_shrinker_maps(int new_id)
+> >       struct mem_cgroup *memcg;
+> >
+> >       size = DIV_ROUND_UP(new_id + 1, BITS_PER_LONG) * sizeof(unsigned long);
+> > -     old_size = memcg_shrinker_map_size;
+> > +     old_size = DIV_ROUND_UP(shrinker_nr_max, BITS_PER_LONG) * sizeof(unsigned long);
+> >       if (size <= old_size)
+> >               return 0;
+>
+> These bunch of DIV_ROUND_UP() looks too complex. Since now all the shrinker maps allocation
+> logic in the only file, can't we simplify this to look better? I mean something like below
+> to merge in your patch:
+>
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index b951c289ef3a..27b6371a1656 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -247,7 +247,7 @@ int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg)
+>                 return 0;
+>
+>         down_read(&shrinker_rwsem);
+> -       size = DIV_ROUND_UP(shrinker_nr_max, BITS_PER_LONG) * sizeof(unsigned long);
+> +       size = shrinker_nr_max / BITS_PER_BYTE;
 
-Which logic do you refer to? Software or hardware? What an user
-configures with the "bridge vlan add ..." commands is the egress
-tagging, but this also affects what egresses the CPU port, and therefore
-what your Ethernet MAC used as a DSA master "sees", so I am not sure why
-this is doing?
+The type of shrinker_maps->map is "unsigned long *", I think we should
+do "(shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long)".
 
-> 
-> Signed-off-by: Gilles DOFFE <gilles.doffe@savoirfairelinux.com>
-> ---
->  drivers/net/dsa/microchip/ksz8795.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-> index 4b060503b2e8..193f03ef9160 100644
-> --- a/drivers/net/dsa/microchip/ksz8795.c
-> +++ b/drivers/net/dsa/microchip/ksz8795.c
-> @@ -874,6 +874,7 @@ static void ksz8795_port_vlan_add(struct dsa_switch *ds, int port,
->  	}
->  
->  	ksz_port_cfg(dev, port, P_TAG_CTRL, PORT_REMOVE_TAG, untagged);
-> +	ksz_port_cfg(dev, port, P_TAG_CTRL, PORT_INSERT_TAG, !untagged);
+And the "/ BITS_PER_BYTE" makes calculating the pointer of nr_deferred
+array harder in the following patch since the length of the map array
+may be not multiple of "unsigned long". Without the nr_deferred array,
+this change seems fine.
+
+>         for_each_node(nid) {
+>                 map = kvzalloc(sizeof(*map) + size, GFP_KERNEL);
+>                 if (!map) {
+> @@ -264,13 +264,11 @@ int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg)
+>
+>  static int memcg_expand_shrinker_maps(int new_id)
+>  {
+> -       int size, old_size, ret = 0;
+> +       int size, old_size, new_nr_max, ret = 0;
+>         struct mem_cgroup *memcg;
+>
+>         size = DIV_ROUND_UP(new_id + 1, BITS_PER_LONG) * sizeof(unsigned long);
+> -       old_size = DIV_ROUND_UP(shrinker_nr_max, BITS_PER_LONG) * sizeof(unsigned long);
+> -       if (size <= old_size)
+> -               return 0;
+> +       new_nr_max = size * BITS_PER_BYTE;
+>
+>         if (!root_mem_cgroup)
+>                 goto out;
+> @@ -287,6 +285,9 @@ static int memcg_expand_shrinker_maps(int new_id)
+>         } while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
+>
+>  out:
+> +       if (ret == 0)
+> +               shrinker_nr_max = new_nr_max;
+> +
+>         return ret;
 >  }
->  
->  static int ksz8795_port_vlan_del(struct dsa_switch *ds, int port,
-> 
-
-
--- 
-Florian
+>
+> @@ -334,8 +335,6 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+>                         idr_remove(&shrinker_idr, id);
+>                         goto unlock;
+>                 }
+> -
+> -               shrinker_nr_max = id + 1;
+>         }
+>         shrinker->id = id;
+>         ret = 0;
+>
