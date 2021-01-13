@@ -2,108 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60B32F4DD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BE12F4DE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727698AbhAMOwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:52:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41756 "EHLO
+        id S1726884AbhAMOxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:53:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727633AbhAMOwI (ORCPT
+        with ESMTP id S1727684AbhAMOwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:52:08 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21272C06134A
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:50:48 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id i9so2419474wrc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:50:48 -0800 (PST)
+        Wed, 13 Jan 2021 09:52:13 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CAD8C06134F
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:50:49 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id r7so2409603wrc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:50:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8R8CrMmu7yuBA/ZNIQZlAyfMprfiOkPW3GpI5ayBsWg=;
-        b=q1+kp8rlc5YHssN6Eq89+XBI9+3PExs7mtj+vKpE1TFKE1rjX2///yzy+zDTZKSmOo
-         veDWfzfkp2jlcqkWf6hyrhxd4ZIDNoNqF9HS7ddPt4booh+FDzx3O5uQ2G8rdhZHcVp3
-         PA1ZgIYstzQ14gHP1p8JOg40/+Qe5fqobxdt9bJb49f5X37fSTQnByGZCt6BqgU83z6p
-         QzAtbnYyN0YvKG7g442YVr2E98ZQvzgo4BnA5yP33ogF0/EDLppn6AMEy+q/dBx0eQ5f
-         Im6lCkgNGn1IZSkhzSUaYdClRbl34RHO4jN1MiOjnXDBZW66eOJRiiEjwIv769RVoAR7
-         qlfA==
+        bh=DvtlGdT5MHeh268WloE5stTLPTvRDEZ8rCCQAdX9t84=;
+        b=k1fbqp18yv8PIWF/VtBZ1OCxmUUxm3DEuDCdGpp/1lf2Qusjjl6Jr0LbNjCDkAYjum
+         1/wwNHwC2fYs6yOsRNYBp7G/0/6EKBrI0OVlE9krnhPcy8pLZI8vfx7yCAVMlSMwGOA+
+         hnp7cTdcUMYNnIJqWcxy66Lo1P3xlU9yPVOVU+OePlvMmIh7A0BSVnlshSywJYQQwzbU
+         5uukjwiQHWY6GeoO+bNuzYazh3MQdjtKvFY6BEa2ztaEJRUBzfF1uDCo9++RfRW+OfdJ
+         ZYE/I/DDBlwjWjQBrwAXZdAbnCrtVk//3HRL1I6mCpS4vkKtNu8uXUKBPssO/APhiy0t
+         CkPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8R8CrMmu7yuBA/ZNIQZlAyfMprfiOkPW3GpI5ayBsWg=;
-        b=lIpw4zds7wdSUs8bQU3jXRnDKNzx1biyLLPX/ZOXwANSi08oVr/g74KgBVwrpejVxb
-         c7XFjWQTvD0Hlb5GvHNbe+iO5wFKLGh5A5qmNSevJm4EkQZ3a073yskUlsWqfAJ4XaEx
-         TJrOyGo0wbcItxWENYQnXrduwrsqjNgCBGjn01w0NXe20ZJMYBtCstE3WysUk1KukrEc
-         Ngc63JCF9ikGSJWs/sb/RNtD/4KzfixwuzctPBwhPTlYNHouFnYPHI6ACeRSW+b2+ZB1
-         DUCTBwA5giFGO1dSP8RzssB7cdCRNtIJ58GeY9w8uYGcD00GttX3z6TEJpVxNWZ2eIc0
-         uYiA==
-X-Gm-Message-State: AOAM532IpSDzojSMAKfzkiieLVeO0TGGG0TQvuDRX0cAC1SqFUhVtbfe
-        PuZ1dZiHbwNAmmlE21jdP0yLTw==
-X-Google-Smtp-Source: ABdhPJwF8QB82NwqEyn+scjHeSXF56DRGMKoUHEnV/4pPFJaM/1IosDrCdd2x+tLam8CZhkoj23PHQ==
-X-Received: by 2002:a5d:4d50:: with SMTP id a16mr2926797wru.43.1610549446928;
-        Wed, 13 Jan 2021 06:50:46 -0800 (PST)
+        bh=DvtlGdT5MHeh268WloE5stTLPTvRDEZ8rCCQAdX9t84=;
+        b=r5gbIgPvniHWWvHAeDiRdck0k00zl3dTzz805VVH3kxkESZpuCEjcAL6FYxHxBrT1V
+         Zjeu27oUVyaI/kKBM/hrGxrFdtYOIZqjEAr/bugpCfc/1vX8iYJnZuRQxTvqvoIfw2Qy
+         Ce+BydY83/F2BgGgIxs5N+hmhsbaIlfR2FzKc3vXzD98UyLj3GocakmG+AF991vGR9fR
+         DXfxGb9sr2F4Q7r3x3VgxDmCwR+EtOd2V8VOkvDawrspYQZ0cUYFRDBexNTsYB0AEhAz
+         T7TPN7f4/TqpptCPZ67yLSceEHfbQkcbsNKT48+X6seXJiBn/O+WC8iBU+pxazxQHxZK
+         JZvQ==
+X-Gm-Message-State: AOAM532jDpNSocIzCDYJe8nBXuc7EYzB1QjrYiBRLEhC5gO5DkgEWkN1
+        40I51P8IYEW2apushEh0Y6t7Dw==
+X-Google-Smtp-Source: ABdhPJzm7B7r7YLa6vfZWKXo9/XfNaBJsRwMRh4mKywkyucObHWaPSbUoL8ihPPgUVWu5+GcPhFQvw==
+X-Received: by 2002:adf:eec6:: with SMTP id a6mr2949891wrp.239.1610549448015;
+        Wed, 13 Jan 2021 06:50:48 -0800 (PST)
 Received: from dell.default ([91.110.221.229])
-        by smtp.gmail.com with ESMTPSA id t188sm3273433wmf.9.2021.01.13.06.50.45
+        by smtp.gmail.com with ESMTPSA id t188sm3273433wmf.9.2021.01.13.06.50.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 06:50:46 -0800 (PST)
+        Wed, 13 Jan 2021 06:50:47 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Kristoffer Ericson <kristoffer.ericson@gmail.com>,
-        Thibaut VARENE <varenet@parisc-linux.org>,
-        Ben Dooks <ben@simtec.co.uk>, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-Subject: [PATCH 23/31] video: fbdev: s1d13xxxfb: Mark debug variables as __maybe_unused
-Date:   Wed, 13 Jan 2021 14:50:01 +0000
-Message-Id: <20210113145009.1272040-24-lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Jingoo Han <jingoohan1@gmail.com>,
+        Ben Dooks <ben@simtec.co.uk>, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 24/31] video: fbdev: s3c-fb: Fix some kernel-doc misdemeanours
+Date:   Wed, 13 Jan 2021 14:50:02 +0000
+Message-Id: <20210113145009.1272040-25-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210113145009.1272040-1-lee.jones@linaro.org>
 References: <20210113145009.1272040-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Can't declare these under the same clause as their use, since
-debugging is enabled manually with an '#if {0,1}', so mark them as
-__maybe_unused instead to notify the compiler that this behaviour is
-expected.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/video/fbdev/s1d13xxxfb.c: In function ‘s1d13xxxfb_fetch_hw_state’:
- drivers/video/fbdev/s1d13xxxfb.c:644:16: warning: variable ‘is_dual’ set but not used [-Wunused-but-set-variable]
- drivers/video/fbdev/s1d13xxxfb.c:643:11: warning: variable ‘lcd_bpp’ set but not used [-Wunused-but-set-variable]
+ drivers/video/fbdev/s3c-fb.c:104: warning: Function parameter or member 'osd_stride' not described in 's3c_fb_variant'
+ drivers/video/fbdev/s3c-fb.c:174: warning: Function parameter or member 'variant' not described in 's3c_fb_win'
+ drivers/video/fbdev/s3c-fb.c:345: warning: Function parameter or member 'pixclk' not described in 's3c_fb_calc_pixclk'
+ drivers/video/fbdev/s3c-fb.c:345: warning: Excess function parameter 'pixclock' description in 's3c_fb_calc_pixclk'
+ drivers/video/fbdev/s3c-fb.c:742: warning: Function parameter or member 'transp' not described in 's3c_fb_setcolreg'
+ drivers/video/fbdev/s3c-fb.c:742: warning: Excess function parameter 'trans' description in 's3c_fb_setcolreg'
+ drivers/video/fbdev/s3c-fb.c:1142: warning: Function parameter or member 'sfb' not described in 's3c_fb_release_win'
+ drivers/video/fbdev/s3c-fb.c:1172: warning: Function parameter or member 'win_no' not described in 's3c_fb_probe_win'
 
-Cc: Kristoffer Ericson <kristoffer.ericson@gmail.com>
-Cc: Thibaut VARENE <varenet@parisc-linux.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>
 Cc: Ben Dooks <ben@simtec.co.uk>
-Cc: dri-devel@lists.freedesktop.org
 Cc: linux-fbdev@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/video/fbdev/s1d13xxxfb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/video/fbdev/s3c-fb.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/video/fbdev/s1d13xxxfb.c b/drivers/video/fbdev/s1d13xxxfb.c
-index 4541afcf9386e..e6e8bc74412c6 100644
---- a/drivers/video/fbdev/s1d13xxxfb.c
-+++ b/drivers/video/fbdev/s1d13xxxfb.c
-@@ -640,8 +640,8 @@ static void s1d13xxxfb_fetch_hw_state(struct fb_info *info)
- 	u16 offset;
- 	u32 xres, yres;
- 	u32 xres_virtual, yres_virtual;
--	int bpp, lcd_bpp;
--	int is_color, is_dual, is_tft;
-+	int bpp, __maybe_unused lcd_bpp;
-+	int is_color, __maybe_unused is_dual, is_tft;
- 	int lcd_enabled, crt_enabled;
+diff --git a/drivers/video/fbdev/s3c-fb.c b/drivers/video/fbdev/s3c-fb.c
+index ba316bd56efd7..d33d7df77a6a5 100644
+--- a/drivers/video/fbdev/s3c-fb.c
++++ b/drivers/video/fbdev/s3c-fb.c
+@@ -75,6 +75,7 @@ struct s3c_fb;
+  * @buf_size: Offset of buffer size registers.
+  * @buf_end: Offset of buffer end registers.
+  * @osd: The base for the OSD registers.
++ * @osd_stride: The OSD stride value.
+  * @palette: Address of palette memory, or 0 if none.
+  * @has_prtcon: Set if has PRTCON register.
+  * @has_shadowcon: Set if has SHADOWCON register.
+@@ -155,7 +156,7 @@ struct s3c_fb_palette {
+  * @windata: The platform data supplied for the window configuration.
+  * @parent: The hardware that this window is part of.
+  * @fbinfo: Pointer pack to the framebuffer info for this window.
+- * @varint: The variant information for this window.
++ * @variant: The variant information for this window.
+  * @palette_buffer: Buffer/cache to hold palette entries.
+  * @pseudo_palette: For use in TRUECOLOUR modes for entries 0..15/
+  * @index: The window number of this window.
+@@ -336,7 +337,7 @@ static int s3c_fb_check_var(struct fb_var_screeninfo *var,
+ /**
+  * s3c_fb_calc_pixclk() - calculate the divider to create the pixel clock.
+  * @sfb: The hardware state.
+- * @pixclock: The pixel clock wanted, in picoseconds.
++ * @pixclk: The pixel clock wanted, in picoseconds.
+  *
+  * Given the specified pixel clock, work out the necessary divider to get
+  * close to the output frequency.
+@@ -733,7 +734,7 @@ static inline unsigned int chan_to_field(unsigned int chan,
+  * @red: The red field for the palette data.
+  * @green: The green field for the palette data.
+  * @blue: The blue field for the palette data.
+- * @trans: The transparency (alpha) field for the palette data.
++ * @transp: The transparency (alpha) field for the palette data.
+  * @info: The framebuffer being changed.
+  */
+ static int s3c_fb_setcolreg(unsigned regno,
+@@ -1133,6 +1134,7 @@ static void s3c_fb_free_memory(struct s3c_fb *sfb, struct s3c_fb_win *win)
  
- 	fix->type = FB_TYPE_PACKED_PIXELS;
+ /**
+  * s3c_fb_release_win() - release resources for a framebuffer window.
++ * @sfb: The base resources for the hardware.
+  * @win: The window to cleanup the resources for.
+  *
+  * Release the resources that where claimed for the hardware window,
+@@ -1160,6 +1162,7 @@ static void s3c_fb_release_win(struct s3c_fb *sfb, struct s3c_fb_win *win)
+ /**
+  * s3c_fb_probe_win() - register an hardware window
+  * @sfb: The base resources for the hardware
++ * @win_no: The ID of the window to be registered
+  * @variant: The variant information for this window.
+  * @res: Pointer to where to place the resultant window.
+  *
 -- 
 2.25.1
 
