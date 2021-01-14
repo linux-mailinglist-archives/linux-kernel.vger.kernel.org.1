@@ -2,83 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3389C2F5C59
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:24:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCCC2F5C5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:26:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727525AbhANIXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 03:23:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726089AbhANIXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 03:23:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 905AB23A05;
-        Thu, 14 Jan 2021 08:23:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610612581;
-        bh=tcP3FAxNWPO+N4kiJcS2Bq7JbQemWOqO+dy+LA9kwSQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fW62+OOb01l+2muJ3PQpw2bl9Hl68xyktuBP5/yvFz8bThGasc6XuEvN3347R7OHS
-         Zxj4CRejF/9OCWcIwgsX2O3p9r/zIuRVrAJtPHvDppCHszohOe6j+laJqeWriLVmsb
-         r4ZvRuGrX8BgeO5v4RYacFocrVlpJSKkhnIk9ft6JlhsTQ+RwCe6Z1GprQVYh1dXJJ
-         QXA2B0rGvmfaeZc+5SwMzIr3cvV0POh6rsIPze19UXZO8sNCbMdsluc4UMZvyd9Ak4
-         MDdERRTnBG3S8qBON0EhGZE1ZPo6Obirf4fvJVRYwZqvVQIKebGbpSk/Tr9xgDKI2S
-         vflt6WRXuuWJA==
-Received: by mail-ot1-f50.google.com with SMTP id n42so4452023ota.12;
-        Thu, 14 Jan 2021 00:23:01 -0800 (PST)
-X-Gm-Message-State: AOAM532YflfVmK274y8Q1D8kcN3dz0OahAdegPiAKEJNKsYix2Mwf1Nd
-        +S6G3SJY0UfcgY+MjGLWvQNlyi+uB1/DzdFt3sw=
-X-Google-Smtp-Source: ABdhPJwHcgXMKdh9dOHzL2cqddSOd8YljSNWI1kjjz2pwydSq/YowUNCd6MfHeKFCFGSl6/v4tcLk9ePu7EpDhm3GhU=
-X-Received: by 2002:a05:6830:1c24:: with SMTP id f4mr3779599ote.108.1610612580759;
- Thu, 14 Jan 2021 00:23:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20201218170106.23280-1-ardb@kernel.org> <20201219020433.GA11077@gondor.apana.org.au>
-In-Reply-To: <20201219020433.GA11077@gondor.apana.org.au>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 14 Jan 2021 09:22:49 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHpXAuyomBi1mTopgfgzZni+oWe7AfZgMaK2gUGaiot_g@mail.gmail.com>
-Message-ID: <CAMj1kXHpXAuyomBi1mTopgfgzZni+oWe7AfZgMaK2gUGaiot_g@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/5] running kernel mode SIMD with softirqs disabled
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Martin <dave.martin@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>
+        id S1727608AbhANI02 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Jan 2021 03:26:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727251AbhANI01 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 03:26:27 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AFCC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 00:25:47 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kzxws-00032n-W1; Thu, 14 Jan 2021 09:25:42 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kzxws-0005SP-Jl; Thu, 14 Jan 2021 09:25:42 +0100
+Message-ID: <e9101eaf68398db4ee607ea583606c744bbb4578.camel@pengutronix.de>
+Subject: Re: [PATCH v6 14/16] reset: core: fix a kernel-doc markup
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-kernel@vger.kernel.org
+Date:   Thu, 14 Jan 2021 09:25:42 +0100
+In-Reply-To: <8defd442bce0cf5524cf1cfbbd028eede90358a7.1610610937.git.mchehab+huawei@kernel.org>
+References: <cover.1610610937.git.mchehab+huawei@kernel.org>
+         <8defd442bce0cf5524cf1cfbbd028eede90358a7.1610610937.git.mchehab+huawei@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 19 Dec 2020 at 03:05, Herbert Xu <herbert@gondor.apana.org.au> wrote:
->
-> On Fri, Dec 18, 2020 at 06:01:01PM +0100, Ard Biesheuvel wrote:
-> >
-> > Questions:
-> > - what did I miss or break horribly?
-> > - does any of this matter for RT? AIUI, RT runs softirqs from a dedicated
-> >   kthread, so I don't think it cares.
-> > - what would be a reasonable upper bound to keep softirqs disabled? I suppose
-> >   100s of cycles or less is overkill, but I'm not sure how to derive a better
-> >   answer.
-> > - could we do the same on x86, now that kernel_fpu_begin/end is no longer
-> >   expensive?
->
-> If this approach works not only would it allow us to support the
-> synchronous users better, it would also allow us to remove loads
-> of cruft in the Crypto API that exist solely to support these SIMD
-> code paths.
->
-> So I eagerly await the assessment of the scheduler/RT folks on this
-> approach.
->
+Hi Mauro,
 
-Any insights here? Is there a ballpark upper bound for the duration of
-a softirq disabled section? Other reasons why dis/enabling softirq
-handling is a bad idea?
+On Thu, 2021-01-14 at 09:04 +0100, Mauro Carvalho Chehab wrote:
+> A function has a different name between their prototype
+> and its kernel-doc markup:
+> 
+> 	../drivers/reset/core.c:888: warning: expecting prototype for device_reset(). Prototype was for __device_reset() instead
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/reset/core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/reset/core.c b/drivers/reset/core.c
+> index 34e89aa0fb5e..dbf881b586d9 100644
+> --- a/drivers/reset/core.c
+> +++ b/drivers/reset/core.c
+> @@ -875,8 +875,8 @@ struct reset_control *__devm_reset_control_get(struct device *dev,
+>  EXPORT_SYMBOL_GPL(__devm_reset_control_get);
+>  
+>  /**
+> - * device_reset - find reset controller associated with the device
+> - *                and perform reset
+> + * __device_reset - find reset controller associated with the device
+> + *                  and perform reset
+>   * @dev: device to be reset by the controller
+>   * @optional: whether it is optional to reset the device
+>   *
+
+Thank you, applied to reset/next.
+
+regards
+Philipp
