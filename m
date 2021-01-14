@@ -2,104 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB8B2F5B91
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 073B22F5B93
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727628AbhANHuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 02:50:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35562 "EHLO
+        id S1727688AbhANHwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 02:52:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727422AbhANHuv (ORCPT
+        with ESMTP id S1726204AbhANHwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 02:50:51 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A85C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 23:50:10 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id 22so6237509qkf.9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 23:50:10 -0800 (PST)
+        Thu, 14 Jan 2021 02:52:01 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2865C061575;
+        Wed, 13 Jan 2021 23:51:14 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id w2so2848809pfc.13;
+        Wed, 13 Jan 2021 23:51:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=37Fv/F4r2vxPobSCHkPJCrrTkh1JQZ6SNQNtiN3ae9E=;
-        b=cPvhtX+rvG2F+gwNH7qLyN19RmrVL56YWFyZGdcO/1X1aEOpCupPPWvgLaqfPV24Jt
-         LU8aIWl+/ebetyfJtLdKOZRbDjCw/H/FpG0jlsfrJocG9XxQCro5h30bI/s2+MuxJalM
-         Yhi0R3K8FAAjXsHcXE3Drhgv4FlGY7CTzcYEWCSie9t5lbCb58/0KPpo1pZLTmjI15Ol
-         yN6fjIsyphPwr5jyhKcacrX0VEREyO7K1XDC3tKRFrRmI/PDinUX7BE0nD3GhSMdk+Lm
-         kstDdNjGd8UBnMNRIk0DdzHIjGfO/lQqtYw5NAQLKTO4AERRmuRR8HYhyg8sf4kpIyYu
-         Na8g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OdOYvLKaoSgVaZejaz21ew2EF1idBOpu4EgqrpcWnb4=;
+        b=HhFwKGeoVFs0hdiatK077VZ4s6B/4MfW+deARy0QD5c0MMKl0X5NPTMoCcLxWesLJC
+         I82426ijG3cvoS8mdIRVftoXwhuY3Y8KXn/RyuJwbDxoPEPJUrIuWClOqR5UbdRBAsh8
+         qEJb/5kRlgSwWvXrb2dxwBDUrWwvv1zsKaXhZMMiCMhnJAwdAbOCiWELAwwhMCixvmf0
+         aEe9IazlXyWoyDnTEAs9Wu0Cj9lPhhLG3dhJYDMjN73AmFDc07y9JtgkiL2CxGV3Q3Or
+         W3AxWOJISUIpirdvnk1uzrWMGsNybumRuJekmfPoqe2a1dwIoGZ58tiTYaTivfLL4wd4
+         ZQpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=37Fv/F4r2vxPobSCHkPJCrrTkh1JQZ6SNQNtiN3ae9E=;
-        b=JKjXBKTpTDEGL2RIM1RakuVuVxZzsN/LMsDdK9VnMWQ7FIw42XLOSjMFJ7X/VWKZz9
-         pr/70u+e5di9tJj05COOpp7TIP9kS2GqPLQ9+/ZfWib4VdkVRJXhgiQoYUgZDrc32ufc
-         h1aYztPCxmrFX0KeuAEEchCX+njO3Bi3Vnq6+SRpqJpl2O1RCMuV0pmZ5qkXWDch4YhT
-         gNr0heAtdlbNS5V798AtT0HLOZdYa1l2UVALtaLZoEAii1AxCKgXtO02bdVopA1AoFBR
-         zqeP3P95iyjtjcp7uuyQJqvOUIJN0WstzDRO30I49Z9LOTBpXc9vcwCyZLDNYeoREKZD
-         fXfg==
-X-Gm-Message-State: AOAM533flOz+ltHHg4Y4uIJ82/mqBgD6X96wjduICrTxLSNdn3Y7X6H8
-        nvj5ri1mGM78udRNX4qIEfjD9B9eL+xZjg4+86HFY8HmzPhTfBGU
-X-Google-Smtp-Source: ABdhPJyKGqkbBrW77m4ChzF2oBS1Qu234IeKUVlYT7Vbhz0/brzPUCnuoEIXN/Lg/cO6zsK9eYdV0jEA/KJwK2yroyM=
-X-Received: by 2002:a05:620a:1372:: with SMTP id d18mr5932329qkl.6.1610610609518;
- Wed, 13 Jan 2021 23:50:09 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OdOYvLKaoSgVaZejaz21ew2EF1idBOpu4EgqrpcWnb4=;
+        b=PFuZL3Pz1bOySi7nxAyssJspLSuX5xsHYHQobcwZ/tF8GN2Qbw4N14teLoMYscPcHn
+         9qSPI7d3t7tqb8JqMQonjxsB9E1Pwf1CTR8b7USKectnhLp2ESYW6aFPgzghnhG10dfv
+         bQkg44uzEwAkFA3itPkwjvKhX8oNcarrgh1Ph8cWNQwj7rbPACdWhOc7JtwTQ1k8zrqi
+         sDPat1OKuizblD0LA/5sJvg2csQEdpSMTHdYUOYkSXPwDleXxD4VoeqddEWw4gUqAiWX
+         IdJV6yXADD1dJ0eA+idfL3GI/9VLOaAo/FqFFPLSie8fcEXZvtpf+Darqkcgnmcd+S06
+         zkXA==
+X-Gm-Message-State: AOAM532PpiJmB/TyrZm/wVxjVdKOmqOgAaY2uHHSu9NgJXEhTdR/hLtC
+        v3X2vCm8EL6iLRR2LM9ALCU=
+X-Google-Smtp-Source: ABdhPJwhk4WiAxKANeqB8opOzwRSzVUBxjOzi0j9376A1upXh4ljMis4eZ81VDG064gXEq1FIkUrPw==
+X-Received: by 2002:aa7:8708:0:b029:19e:924:345a with SMTP id b8-20020aa787080000b029019e0924345amr6328401pfo.54.1610610674530;
+        Wed, 13 Jan 2021 23:51:14 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id p8sm4580160pjo.21.2021.01.13.23.51.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 23:51:13 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     kuba@kernel.org
+Cc:     roopa@nvidia.com, nikolay@nvidia.com, davem@davemloft.net,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH net-next] net: bridge: use eth_type_vlan in br_dev_queue_push_xmit
+Date:   Wed, 13 Jan 2021 23:51:01 -0800
+Message-Id: <20210114075101.6501-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210113091657.1456216-1-glider@google.com> <20210113091657.1456216-2-glider@google.com>
- <20210113161044.43bc1c1a@gandalf.local.home>
-In-Reply-To: <20210113161044.43bc1c1a@gandalf.local.home>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 14 Jan 2021 08:49:57 +0100
-Message-ID: <CAG_fn=XSkOChCwBp=Vg6jWhZ8K44seCo=0Zu38iUpAj6eCUxjQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] tracing: add error_report trace points
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 10:10 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Wed, 13 Jan 2021 10:16:54 +0100
-> Alexander Potapenko <glider@google.com> wrote:
->
-> > +DECLARE_EVENT_CLASS(error_report_template,
-> > +                 TP_PROTO(const char *error_detector, unsigned long id),
->
-> Instead of having a random string, as this should be used by a small finite
-> set of subsystems, why not make the above into an enum?
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-You're probably right.
-I just thought it might be a good idea to minimize the effort needed
-from tools' authors to add these tracepoints to the tools (see the
-following two patches), and leave room for some extensibility (e.g.
-passing bug type together with the tool name etc.)
+Replace the check for ETH_P_8021Q and ETH_P_8021AD in
+br_dev_queue_push_xmit with eth_type_vlan.
 
-> > +                 TP_ARGS(error_detector, id),
-> > +                 TP_STRUCT__entry(__field(const char *, error_detector)
-> > +                                          __field(unsigned long, id)),
-> > +                 TP_fast_assign(__entry->error_detector = error_detector;
-> > +                                __entry->id = id;),
-> > +                 TP_printk("[%s] %lx", __entry->error_detector,
->
-> Then the [%s] portion of this could also be just a __print_symbolic().
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+---
+ net/bridge/br_forward.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-We'll need to explicitly list the enum values once again in
-__print_symbolic(), right? E.g.:
+diff --git a/net/bridge/br_forward.c b/net/bridge/br_forward.c
+index e28ffadd1371..6e9b049ae521 100644
+--- a/net/bridge/br_forward.c
++++ b/net/bridge/br_forward.c
+@@ -39,8 +39,7 @@ int br_dev_queue_push_xmit(struct net *net, struct sock *sk, struct sk_buff *skb
+ 	br_drop_fake_rtable(skb);
+ 
+ 	if (skb->ip_summed == CHECKSUM_PARTIAL &&
+-	    (skb->protocol == htons(ETH_P_8021Q) ||
+-	     skb->protocol == htons(ETH_P_8021AD))) {
++	    eth_type_vlan(skb->protocol)) {
+ 		int depth;
+ 
+ 		if (!__vlan_get_protocol(skb, skb->protocol, &depth))
+-- 
+2.25.1
 
-enum debugging_tool {
-         TOOL_KFENCE,
-         TOOL_KASAN,
-         ...
-}
-
-TP_printk(__print_symbolic(__entry->error_detector, TOOL_KFENCE,
-TOOL_KASAN, ...),
