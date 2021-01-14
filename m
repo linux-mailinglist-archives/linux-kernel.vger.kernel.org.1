@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2336D2F6AB4
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5E52F6AB5
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728992AbhANTR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:17:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725961AbhANTRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:17:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CBEB23B5F;
-        Thu, 14 Jan 2021 19:16:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610651805;
-        bh=7X9U5ZdfFbwBuSKrGL+36qia348201k6vPdFQVshYnI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OiUw60bf+6ht2tnFp2BIEKhtpetyoEyV5Oj/lMr3XSlfBuL4kDfm2zze3EAReELPM
-         patQ7gA9b3RqdY4YrCmWHzezV1heoWoAeASwAfAZHujwVxc1nu/mKa6iqm+1l9wS5f
-         bEvNl6D22O1QJ9vFtJvty+mhDplWnyOppQU6w2qxyElqUs0PTFU6p7F0UjhLZsky1t
-         pmy36bR+wmfcdbNtmALjb78qyMW+5f8I/RhZik9lNiZKiw4n7J3AOy0H57DENEtE9m
-         X+4y6fd/azJykkjow3jnk/SX6KEC32GNAzvydEb5blCLpnwVo+p9p7FmgKlWiYgNwY
-         mizJ1nF+GfP4A==
-Received: by mail-ot1-f43.google.com with SMTP id x5so6213269otp.9;
-        Thu, 14 Jan 2021 11:16:45 -0800 (PST)
-X-Gm-Message-State: AOAM532Hpc4NBwNZGaWeBMiFIdJo4ZYggHh7DkD1QQw+V1+018jaEB7h
-        SL737FMSl3p7CvP8eiQ13BDyYWawGlsgSA9EgJA=
-X-Google-Smtp-Source: ABdhPJxhZ7tcq6R9DNzyjgjWO5HO89pxMNjzgzAwezUYbmvwDwkXM2DXpE5VBx7We/YUohSV+WAP/33KOpzQHkxlQUA=
-X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr5826034ots.251.1610651804235;
- Thu, 14 Jan 2021 11:16:44 -0800 (PST)
-MIME-Version: 1.0
-References: <YACPie55ArIHu3mI@ingrassia.epigenesys.com>
-In-Reply-To: <YACPie55ArIHu3mI@ingrassia.epigenesys.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 14 Jan 2021 20:16:28 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0dJnKiX5minsUNdAcNnxPvZkyK363f1ibj_x0L2MQiPQ@mail.gmail.com>
-Message-ID: <CAK8P3a0dJnKiX5minsUNdAcNnxPvZkyK363f1ibj_x0L2MQiPQ@mail.gmail.com>
-Subject: Re: perf tools build broken for RISCV 32 bit
-To:     Emiliano Ingrassia <ingrassia@epigenesys.com>
-Cc:     "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1729712AbhANTRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:17:36 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:44521 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729055AbhANTRg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 14:17:36 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610651836; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=onyJcvf6Ke96oftUIomBs/l3oJCwnkNYeNPw4g4iwNk=; b=OunPVDhr4psCFWSSGqhWkHwRqDCO5IlfLdUngXPHyo7TTvDkIWJMToBkTDJWDFYIfKvx17E0
+ l13lp8HWKojMoX3VNjsdVNHe8gpAP3o2Zp4NZOFcX7NCVxP5jcGS00GUefJaClayNiRdDt10
+ ZWZBAUbLn4vNEA4XDwcBddfUGek=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6000989c415a6293c51fcec1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 19:16:44
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 042EAC43463; Thu, 14 Jan 2021 19:16:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF459C433C6;
+        Thu, 14 Jan 2021 19:16:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DF459C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v2 0/3] Serialize execution environment changes for MHI
+Date:   Thu, 14 Jan 2021 11:16:32 -0800
+Message-Id: <1610651795-31287-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 7:38 PM Emiliano Ingrassia
-<ingrassia@epigenesys.com> wrote:
->
-> Hi,
->
-> When building perf for RISCV 32 bit (v5.10.7) I got the following
->
-> | In file included from bench/futex-hash.c:29:
-> | bench/futex.h: In function =E2=80=98futex_wait=E2=80=99:
-> | bench/futex.h:37:10: error: =E2=80=98SYS_futex=E2=80=99 undeclared (fir=
-st use in this function); did you mean =E2=80=98SYS_tee=E2=80=99?
->
-> This issue is similar to the one reported in https://lkml.org/lkml/2019/4=
-/19/631
->
-> I found that patching tools/arch/riscv/include/uapi/asm/unistd.h as follo=
-wing:
->
->  #ifdef __LP64__
->  #define __ARCH_WANT_NEW_STAT
->  #define __ARCH_WANT_SET_GET_RLIMIT
-> +#else
-> +#define __ARCH_WANT_TIME32_SYSCALLS
->  #endif /* __LP64__ */
->
-> solved the problem.
->
-> I also found that a similar patch for arch/riscv/include/uapi/asm/unistd.=
-h
-> was removed in commit d4c08b9776b3, so probably this is not the right way=
-(?).
+v2:
+-Add patch to clear devices when moving execution environments
 
-In short, it won't work, as rv32 does not provide the time32 syscalls.
-Your patch will make the application build, but it will not be able to
-call futex().
+During full boot chain firmware download, the PM state worker downloads the AMSS
+image after waiting for the SBL execution environment change in PBL mode itself.
+Since getting rid of the firmware load worker thread, this design needs to
+change and MHI host must download the AMSS image from the SBL mode of PM state
+worker thread instead.
 
-You will in fact run into a related problem on any 32-bit architecture
-if CONFIG_COMPAT_32BIT_TIME is disabled, or if you pass a non-NULL
-timeout parameter and build with a time64-enabled libc.
+Ensure that EE changes are handled only from appropriate places and occur
+one after another and handle only PBL or RDDM EE changes as critical events
+directly from the interrupt handler and the status callback is given to the
+controller drivers promptly.
 
-The fix in the application is to call either __NR_futex or __NR_futex64
-depending on the definition of time_t in the C library. I would recommend
-doing it like
+When moving from SBL to AMSS EE, clear SBL specific client devices by calling
+remove callbacks for them so they are not left opened in a different execution
+environment.
 
-#ifdef __NR_futex
-#define do_futex (sizeof(time_t) =3D=3D sizeof(__kernel_long_t)) ? \
-         __NR_futex : __NR_futex_time64
-#else
-#define do_futex __NR_futex
-#done
+Bhaumik Bhatt (3):
+  bus: mhi: core: Clear devices when moving execution environments
+  bus: mhi: core: Download AMSS image from appropriate function
+  bus: mhi: core: Process execution environment changes serially
 
-       Arnd
+ drivers/bus/mhi/core/boot.c     | 44 ++++++++++++++++++++---------------------
+ drivers/bus/mhi/core/internal.h |  1 +
+ drivers/bus/mhi/core/main.c     | 36 +++++++++++++++++++++++----------
+ drivers/bus/mhi/core/pm.c       | 10 ++++++++--
+ 4 files changed, 56 insertions(+), 35 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
