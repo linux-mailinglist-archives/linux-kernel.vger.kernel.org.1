@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B582F57C9
+	by mail.lfdr.de (Postfix) with ESMTP id 97BBE2F57CA
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:00:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730133AbhANCG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:06:56 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:37851 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729417AbhANCGs (ORCPT
+        id S1730161AbhANCHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:07:05 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:36629 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729436AbhANCGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 21:06:48 -0500
-Received: by mail-ot1-f45.google.com with SMTP id o11so3896576ote.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 18:06:33 -0800 (PST)
+        Wed, 13 Jan 2021 21:06:50 -0500
+Received: by mail-ot1-f43.google.com with SMTP id d20so3907186otl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 18:06:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OQsv2kugxUSbkXU1qFoAJvrH0gFzC7cZx7Q0Cn5ioMA=;
-        b=BQJgiHjzFIx7nvNcV2RWf3ntkRWjNDFAVGIqhVGP/lnFz4pc+0e4uw08DNg9E3qPJ6
-         Fb/PqMC/FqPpYF2xVkrL3qWS1wImsAts1WXBssZVmc8akaC/WqNjW2l1hWco9nDqh4eS
-         xOOgCjQHANa/1AvFkSld8wF9S05Jpy1I2Gisa6ozmMbHzsrOIvzfHQpjF0nUymbxar8Y
-         Y4yhLrB8BKXPAzW0m2dTB/aKlgakDkav+wqb27+x+Cq2QDmS6/Uz9ejKVzTFsOeGkqEI
-         0VA20f+z6qtePjFrChEpeUq/cMKgDGENZmxysspz6WZl+tToZBz3jeDJf3P6OGudWOWe
-         r5wA==
-X-Gm-Message-State: AOAM530UtX4gwAtabPO/4rF5JslzD6kaDnh1qBC2M2In5j/zTLvI7Byr
-        ej22v1nZ3JR1ZLutFwjcQg==
-X-Google-Smtp-Source: ABdhPJxAx5/QxXVFrXMeW8WeFdLtl3+72AUiL4ywOTZ1Fyl6cWR2T2S8M/5tZS9jHezaLRtrtkj6/A==
-X-Received: by 2002:a9d:3ee4:: with SMTP id b91mr3031579otc.86.1610589967775;
-        Wed, 13 Jan 2021 18:06:07 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bgKW8qpo7Yy7tEMcbJXs83Xuaa8pjIwYg8dr4C2Iq2M=;
+        b=rC7Pm2gScpEwBS8cW1usfGQzfkWAPlFimJzxV/qQ/FsOFEP+ap9mkpQt+PAveff5+Z
+         OeFhVuTrG4fcKn4CAj5sbUOtnw3tDN1D/AsCpxgE1A+Tc4obNuraus8Ho3UomJMkmmR/
+         DpYmS9Ln6qTxh6FsEkB5XGpCgvCuBbrgdjmx3BL8wIiHQH77IG+73xSRI039nY0/B8cy
+         V6OhCIyLWSLR1uV50/XxAgsmoVnIqYRKDXBpu1J+PFF3GV34H1j8tcKhMpJ18rDNTd0e
+         4sQiDzjVX1SU9TkQGm4aBWnj3qodR+B/UWyP31NaWITVeRT8PCRnjPeOEhDVh2eKsqCm
+         7NEA==
+X-Gm-Message-State: AOAM532FF5N9oJ01nFk+RgR++6OEU8OAIwmSoC9RXByIdP6UbpW3aNGd
+        2Qn+Dp7/6rQBkdx5RCgAWA==
+X-Google-Smtp-Source: ABdhPJyorcBQnnEbV8eEcGd3433zi6165ApiHevL3R4LhFp+leaR1HQSNgN5H2sSorTfxkTGPObWWQ==
+X-Received: by 2002:a9d:7504:: with SMTP id r4mr3050557otk.245.1610589969736;
+        Wed, 13 Jan 2021 18:06:09 -0800 (PST)
 Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id x20sm814272oov.33.2021.01.13.18.06.06
+        by smtp.googlemail.com with ESMTPSA id x20sm814272oov.33.2021.01.13.18.06.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 18:06:06 -0800 (PST)
+        Wed, 13 Jan 2021 18:06:08 -0800 (PST)
 From:   Rob Herring <robh@kernel.org>
 To:     Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -49,125 +49,101 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Ian Rogers <irogers@google.com>, honnappa.nagarahalli@arm.com,
         Itaru Kitayama <itaru.kitayama@gmail.com>
-Subject: [PATCH v5 0/9] libperf and arm64 userspace counter access support
-Date:   Wed, 13 Jan 2021 20:05:56 -0600
-Message-Id: <20210114020605.3943992-1-robh@kernel.org>
+Subject: [PATCH v5 1/9] arm64: pmu: Add function implementation to update event index in userpage
+Date:   Wed, 13 Jan 2021 20:05:57 -0600
+Message-Id: <20210114020605.3943992-2-robh@kernel.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210114020605.3943992-1-robh@kernel.org>
+References: <20210114020605.3943992-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+From: Raphael Gault <raphael.gault@arm.com>
 
-Another version of libperf and arm64 userspace counter access support.
-This originally resurrected Raphael's series[1] to enable userspace counter
-access on arm64. My previous versions are here[2][3][4][5]. A git branch is
-here[6].
+In order to be able to access the counter directly for userspace,
+we need to provide the index of the counter using the userpage.
+We thus need to override the event_idx function to retrieve and
+convert the perf_event index to armv8 hardware index.
 
-Changes in v5:
- - Limit enabling/disabling access to CPUs associated with the PMU
-   (supported_cpus) and with the mm_struct matching current->active_mm.
-   The x86 method of using mm_cpumask doesn't work for arm64 as it is not
-   updated.
- - Only set cap_user_rdpmc if event is on current cpu. See patch 2.
- - Create an mmap for every event in an evsel. This results in some changes
-   to the libperf mmap API from the last version.
- - Rebase to v5.11-rc2
+Since the arm_pmu driver can be used by any implementation, even
+if not armv8, two components play a role into making sure the
+behaviour is correct and consistent with the PMU capabilities:
 
-Changes in v4:
- - Dropped 'arm64: pmu: Add hook to handle pmu-related undefined instructions'.
-   The onus is on userspace to pin itself to a homogeneous subset of CPUs
-   and avoid any aborts on heterogeneous systems, so the hook is not needed.
- - Make perf_evsel__mmap() take pages rather than bytes for size
- - Fix building arm64 heterogeneous test.
+* the ARMPMU_EL0_RD_CNTR flag which denotes the capability to access
+counter from userspace.
+* the event_idx call back, which is implemented and initialized by
+the PMU implementation: if no callback is provided, the default
+behaviour applies, returning 0 as index value.
 
-Changes in v3:
- - Dropped removing x86 rdpmc test until libperf tests can run via 'perf test'
- - Added verbose prints for tests
- - Split adding perf_evsel__mmap() to separate patch
+Signed-off-by: Raphael Gault <raphael.gault@arm.com>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ arch/arm64/kernel/perf_event.c | 21 +++++++++++++++++++++
+ include/linux/perf/arm_pmu.h   |  2 ++
+ 2 files changed, 23 insertions(+)
 
-
-The following changes to the arm64 support have been made compared to
-Raphael's last version:
-
-The major change is support for heterogeneous systems with some
-restrictions. Specifically, userspace must pin itself to like CPUs, open
-a specific PMU by type, and use h/w specific events. The tests have been
-reworked to demonstrate this.
-
-Chained events are not supported. The problem with supporting chained
-events was there's no way to distinguish between a chained event and a
-native 64-bit counter. We could add some flag, but do self monitoring
-processes really need that? Native 64-bit counters are supported if the
-PMU h/w has support. As there's already an explicit ABI to request 64-bit
-counters, userspace can request 64-bit counters and if user
-access is not enabled, then it must retry with 32-bit counters.
-
-Prior versions broke the build on arm32 (surprisingly never caught by
-0-day). As a result, event_mapped and event_unmapped implementations have
-been moved into the arm64 code.
-
-There was a bug in that pmc_width was not set in the user page. The tests
-now check for this.
-
-The documentation has been converted to rST. I've added sections on
-chained events and heterogeneous.
-
-The tests have been expanded to test the cycle counter access.
-
-Rob
-
-[1] https://lore.kernel.org/r/20190822144220.27860-1-raphael.gault@arm.com/
-[2] https://lore.kernel.org/r/20200707205333.624938-1-robh@kernel.org/
-[3] https://lore.kernel.org/r/20200828205614.3391252-1-robh@kernel.org/
-[4] https://lore.kernel.org/r/20200911215118.2887710-1-robh@kernel.org/
-[5] https://lore.kernel.org/r/20201001140116.651970-1-robh@kernel.org/
-[6] git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git user-perf-event-v5
-
-
-Raphael Gault (3):
-  arm64: pmu: Add function implementation to update event index in
-    userpage
-  arm64: perf: Enable PMU counter direct access for perf event
-  Documentation: arm64: Document PMU counters access from userspace
-
-Rob Herring (6):
-  tools/include: Add an initial math64.h
-  libperf: Add evsel mmap support
-  libperf: tests: Add support for verbose printing
-  libperf: Add support for user space counter access
-  libperf: Add arm64 support to perf_mmap__read_self()
-  perf: arm64: Add test for userspace counter access on heterogeneous
-    systems
-
- Documentation/arm64/index.rst                 |   1 +
- .../arm64/perf_counter_user_access.rst        |  56 ++++++
- arch/arm64/include/asm/mmu.h                  |   5 +
- arch/arm64/include/asm/mmu_context.h          |   2 +
- arch/arm64/include/asm/perf_event.h           |  14 ++
- arch/arm64/kernel/perf_event.c                |  68 +++++++
- include/linux/perf/arm_pmu.h                  |   2 +
- tools/include/linux/math64.h                  |  75 +++++++
- tools/lib/perf/Documentation/libperf.txt      |   2 +
- tools/lib/perf/evsel.c                        |  50 ++++-
- tools/lib/perf/include/internal/evsel.h       |   2 +
- tools/lib/perf/include/internal/mmap.h        |   3 +
- tools/lib/perf/include/internal/tests.h       |  32 +++
- tools/lib/perf/include/perf/evsel.h           |   2 +
- tools/lib/perf/libperf.map                    |   2 +
- tools/lib/perf/mmap.c                         | 186 ++++++++++++++++++
- tools/lib/perf/tests/Makefile                 |   6 +-
- tools/lib/perf/tests/test-evsel.c             |  65 ++++++
- tools/perf/arch/arm64/include/arch-tests.h    |   7 +
- tools/perf/arch/arm64/tests/Build             |   1 +
- tools/perf/arch/arm64/tests/arch-tests.c      |   4 +
- tools/perf/arch/arm64/tests/user-events.c     | 170 ++++++++++++++++
- 22 files changed, 751 insertions(+), 4 deletions(-)
- create mode 100644 Documentation/arm64/perf_counter_user_access.rst
- create mode 100644 tools/include/linux/math64.h
- create mode 100644 tools/perf/arch/arm64/tests/user-events.c
-
---
+diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
+index 38bb07eff872..21f6f4cdd05f 100644
+--- a/arch/arm64/kernel/perf_event.c
++++ b/arch/arm64/kernel/perf_event.c
+@@ -873,6 +873,22 @@ static void armv8pmu_clear_event_idx(struct pmu_hw_events *cpuc,
+ 		clear_bit(idx - 1, cpuc->used_mask);
+ }
+ 
++static int armv8pmu_access_event_idx(struct perf_event *event)
++{
++	if (!(event->hw.flags & ARMPMU_EL0_RD_CNTR))
++		return 0;
++
++	/*
++	 * We remap the cycle counter index to 32 to
++	 * match the offset applied to the rest of
++	 * the counter indices.
++	 */
++	if (event->hw.idx == ARMV8_IDX_CYCLE_COUNTER)
++		return 32;
++
++	return event->hw.idx;
++}
++
+ /*
+  * Add an event filter to a given event.
+  */
+@@ -969,6 +985,9 @@ static int __armv8_pmuv3_map_event(struct perf_event *event,
+ 	if (armv8pmu_event_is_64bit(event))
+ 		event->hw.flags |= ARMPMU_EVT_64BIT;
+ 
++	if (!armv8pmu_event_is_chained(event))
++		event->hw.flags |= ARMPMU_EL0_RD_CNTR;
++
+ 	/* Only expose micro/arch events supported by this PMU */
+ 	if ((hw_event_id > 0) && (hw_event_id < ARMV8_PMUV3_MAX_COMMON_EVENTS)
+ 	    && test_bit(hw_event_id, armpmu->pmceid_bitmap)) {
+@@ -1100,6 +1119,8 @@ static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
+ 	cpu_pmu->set_event_filter	= armv8pmu_set_event_filter;
+ 	cpu_pmu->filter_match		= armv8pmu_filter_match;
+ 
++	cpu_pmu->pmu.event_idx		= armv8pmu_access_event_idx;
++
+ 	cpu_pmu->name			= name;
+ 	cpu_pmu->map_event		= map_event;
+ 	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_EVENTS] = events ?
+diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
+index bf7966776c55..bb69d14eaa82 100644
+--- a/include/linux/perf/arm_pmu.h
++++ b/include/linux/perf/arm_pmu.h
+@@ -26,6 +26,8 @@
+  */
+ /* Event uses a 64bit counter */
+ #define ARMPMU_EVT_64BIT		1
++/* Allow access to hardware counter from userspace */
++#define ARMPMU_EL0_RD_CNTR		2
+ 
+ #define HW_OP_UNSUPPORTED		0xFFFF
+ #define C(_x)				PERF_COUNT_HW_CACHE_##_x
+-- 
 2.27.0
+
