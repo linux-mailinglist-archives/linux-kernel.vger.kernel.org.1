@@ -2,120 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776B62F661B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 585082F6627
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbhANQlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:41:03 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:47901 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726241AbhANQlD (ORCPT
+        id S1727186AbhANQly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:41:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726363AbhANQlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:41:03 -0500
-Received: by mail-io1-f71.google.com with SMTP id q21so9324716ios.14
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:40:47 -0800 (PST)
+        Thu, 14 Jan 2021 11:41:53 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367EBC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:41:13 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id w24so100507ybi.7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:41:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D+BmvCFWRLkA7Rq+8+HAffylejgMTO0t+Xl+DVgoXxA=;
+        b=SuvR1Xho7USYBOUKOMwurqVjLwKuMIaUDHpECDeE7kkjOAAbEr8VbtJ90iTnt5fM/5
+         X8P6lvkesGPjFdWNPstWUpRkiNcqXNFz4JbSVFlTnJz/A9JHLYLgaZw3mpV81Yrl6L9Y
+         +frW1Zt19QP0uhpPthKlLqefHvP2MZd5lMJI8T8T9R7gxf3C5xpaL96Ii+MNISpX9BLe
+         XoZrm8Rv3BeNOHHmzam7W/pi9IteR0Wi5oOIXtcBH5u+Udy+0jQmtZduddyWef3VIX+S
+         o0v+WVgwawULGlJNr+Vp4L9BqpGkVFQbVvKZueA9p8nIhcQ/qS7piHOe7/OCH9Y7r3wS
+         v86Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=7192zlKn16JygXH2LKAVWnZBIVE6P8l/NpsiiaO75NA=;
-        b=dOgGNdw9XrghBbpqEzE6QRPHx2XIln2gZRe7WOaf5SKap+lfPbCa+l00VC1n0hrD8L
-         yGEr56ie9i4LUZTYTrQLvWAXUy+x8/xWeZTozADjpy+EpMLetlL9Nj0TInmCvoUq8/3w
-         4GeaoC2FTAzRWAboZFNfkB+xNDeQxuuTL8On57acVwKoM5uCA7MuoeT6++CDC/xKt88w
-         ICL0iFzxhrgHWI4Ke+8T9jAdwGJgtp6HWlkbVPS0cTnc7QGxi989jPi7lWUjSaC13Pjb
-         bgPkQVCpBOCpdmstC+3+V+kxfYYNVvSM2dkfpw0oF/h68TBOgyZclYx95SDSVrJCBk4r
-         M8jA==
-X-Gm-Message-State: AOAM531+yWp0u2a/+WfBW6/E+NaWJRpm1EcsqI0YClSAAL6sElL0uip5
-        +Afg+ozyfoXUSp8oGuvklVX3CLCHM2++EBkkfXq4EjHwXp3W
-X-Google-Smtp-Source: ABdhPJzjOPE9SnvDLy/rcdcnwqSwSQKdpXj9u2jomn+c0UpG4sqd7H925P5JTRcmtkxSnPTXzkzZ3ArazzfA7iI9aySct8ueT8kn
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D+BmvCFWRLkA7Rq+8+HAffylejgMTO0t+Xl+DVgoXxA=;
+        b=mP2rLinSXlICyj4pleERU0SUuhx+HXIB6I4lqMafwNAZ/D3+D5+gdzcMMDINOtiKek
+         egGpmc25I4gNpaUbFONnIYL3E8I3eUL2HTHi+jaFtWffuN0QYBjdAPOBNUAMryYfDPyk
+         uidlwKLyYqNmCjCiMufp/hF4JtUAHui7b9K1ilq6bIt2yGof+SxX7sUEbMZWJl1hCUu5
+         +SbZcBX4rXcdTVQLMAeL2fzguV1tj4URZMisbHRiNFxKlAoeWKl2VR6YxR2yqnNlUXmf
+         CCgoldhaRkzMs8nqV401/Xiks5DRPJRbBTP6CJ9JTiy4o2MVBtJThozKTJdAyWBlmAWC
+         NnyQ==
+X-Gm-Message-State: AOAM532i65SFcRKi++dQeMuAWJkh/mgSDqDTvVrUtz2mwv/D612lzOol
+        SVkj5XyXj6mCk+27YveCsZVRGKdjlc5sKUt9YM/PYw==
+X-Google-Smtp-Source: ABdhPJzcBka6FCI4W4FK+68t+EIujVLMBcaCKK0eaAK11y+/dlf6iD+d3K5NXDM/fGfqkfMGtSHjX/5c2PiEhkZDM4U=
+X-Received: by 2002:a25:6604:: with SMTP id a4mr12224326ybc.412.1610642472224;
+ Thu, 14 Jan 2021 08:41:12 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:9eda:: with SMTP id s87mr7479532ilk.85.1610642422026;
- Thu, 14 Jan 2021 08:40:22 -0800 (PST)
-Date:   Thu, 14 Jan 2021 08:40:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006cd76105b8dee9e3@google.com>
-Subject: BUG: corrupted list in kobject_add_internal (2)
-From:   syzbot <syzbot+77966d28c046cef546cb@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, syzkaller-bugs@googlegroups.com
+References: <20201218031703.3053753-1-saravanak@google.com>
+ <X/dpkgTnUk+inKHK@kroah.com> <e28e1f38d87c12a3c714a6573beba6e1@kernel.org>
+ <ba2fcbfb-d714-2f73-3bd0-962f49363b62@nvidia.com> <CAGETcx8pdPnH1ndOCoi7Qyz8DDshCfMTzDLQM=oEaCjyds9reA@mail.gmail.com>
+ <17703ac8-2238-0b64-3c98-ddadc7ae8a36@nvidia.com>
+In-Reply-To: <17703ac8-2238-0b64-3c98-ddadc7ae8a36@nvidia.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 14 Jan 2021 08:40:35 -0800
+Message-ID: <CAGETcx-=y4Ps41Lb0b_MTCbNTC_ah0cJTmPP+GajywFBc7kEfw@mail.gmail.com>
+Subject: Re: [PATCH v1 0/5] Enable fw_devlink=on by default
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-tegra <linux-tegra@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Jan 14, 2021 at 3:35 AM Jon Hunter <jonathanh@nvidia.com> wrote:
+>
+>
+> On 13/01/2021 21:29, Saravana Kannan wrote:
+>
+> ...
+>
+> >> I am seeing the same problem on Tegra30 Cardhu A04 where several regulators
+> >> are continuously deferred and prevents the board from booting ...
+> >>
+> >> [    2.518334] platform panel: probe deferral - supplier regulator@11 not ready
+> >>
+> >> [    2.525503] platform regulator@1: probe deferral - supplier 4-002d not ready
+> >>
+> >> [    2.533141] platform regulator@3: probe deferral - supplier regulator@101 not ready
+> >>
+> >> [    2.540856] platform regulator@5: probe deferral - supplier regulator@101 not ready
+> >>
+> >> [    2.548589] platform regulator@6: probe deferral - supplier regulator@101 not ready
+> >>
+> >> [    2.556316] platform regulator@7: probe deferral - supplier regulator@101 not ready
+> >>
+> >> [    2.564041] platform regulator@8: probe deferral - supplier regulator@101 not ready
+> >>
+> >> [    2.571743] platform regulator@9: probe deferral - supplier regulator@101 not ready
+> >>
+> >> [    2.579463] platform regulator@10: probe deferral - supplier regulator@101 not ready
+> >>
+> >> [    2.587273] platform regulator@11: probe deferral - supplier regulator@101 not ready
+> >>
+> >> [    2.595088] platform regulator@12: probe deferral - supplier regulator@104 not ready
+> >>
+> >> [    2.603837] platform regulator@102: probe deferral - supplier regulator@104 not ready
+> >>
+> >> [    2.611726] platform regulator@103: probe deferral - supplier regulator@104 not ready
+> >>
+> >> [    2.620137] platform 3000.pcie: probe deferral - supplier regulator@5 not ready
+> >
+> > Looks like this is not the whole log? Do you see any "wait for
+> > supplier" logs? That's what all these boot issues should boil down to.
+> > And as usual, pointer to DT for this board please.
+>
+> Ah yes I see ...
+>
+>  platform regulator@1: probe deferral - wait for supplier tps65911@2d
 
-syzbot found the following issue on:
+Do you mind sharing the full log please? It's hard to tell you
+anything useful with bits and pieces of logs.
 
-HEAD commit:    2ff90100 Merge tag 'hwmon-for-v5.11-rc3' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12cee4cf500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7c84b50cb7dc0e2f
-dashboard link: https://syzkaller.appspot.com/bug?extid=77966d28c046cef546cb
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+> Yes the device-tree for this board can be found here [0]. Looks like
+> there is a circular dependency between the vddctrl_reg and vddcore_reg.
+> This is part of coupled regulators which have a two-way linkage [1]. So
+> this change appears to conflict with this.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+fw_devlink doesn't track "regulator-coupled-with". So that's probably
+not it. Also, this patch series was made to handle simple cycles
+properly. It'll functionally disable the device links it created when
+it comes to probe ordering. Only two overlapping cycles might cause
+issues -- and even that, not all the time. So yeah, full log please.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+77966d28c046cef546cb@syzkaller.appspotmail.com
+-Saravana
 
-list_add double add: new=ffff888073202420, prev=ffff888073202420, next=ffff88814077de00.
-------------[ cut here ]------------
-kernel BUG at lib/list_debug.c:29!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8482 Comm: kworker/u5:1 Not tainted 5.11.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: hci4 hci_rx_work
-RIP: 0010:__list_add_valid.cold+0x26/0x3c lib/list_debug.c:29
-Code: 77 cf fb fa 4c 89 e1 48 c7 c7 e0 7f 9e 89 e8 36 34 f3 ff 0f 0b 48 89 f2 4c 89 e1 48 89 ee 48 c7 c7 20 81 9e 89 e8 1f 34 f3 ff <0f> 0b 48 89 f1 48 c7 c7 a0 80 9e 89 4c 89 e6 e8 0b 34 f3 ff 0f 0b
-RSP: 0018:ffffc90001b97830 EFLAGS: 00010282
-RAX: 0000000000000058 RBX: ffff88814077de00 RCX: 0000000000000000
-RDX: ffff88806db94240 RSI: ffffffff815b6a45 RDI: fffff52000372ef8
-RBP: ffff888073202420 R08: 0000000000000058 R09: 0000000000000000
-R10: ffffffff815afbee R11: 0000000000000000 R12: ffff88814077de00
-R13: ffff8880a0181298 R14: ffff888073202438 R15: ffff888073202420
-FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000016b9e60 CR3: 000000007a823000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
-Call Trace:
- __list_add include/linux/list.h:67 [inline]
- list_add_tail include/linux/list.h:100 [inline]
- kobj_kset_join lib/kobject.c:196 [inline]
- kobject_add_internal+0x18d/0xa60 lib/kobject.c:246
- kobject_add_varg lib/kobject.c:390 [inline]
- kobject_add+0x150/0x1c0 lib/kobject.c:442
- device_add+0x36a/0x1d90 drivers/base/core.c:3024
- hci_conn_add_sysfs+0x97/0x1a0 net/bluetooth/hci_sysfs.c:53
- hci_conn_complete_evt net/bluetooth/hci_event.c:2643 [inline]
- hci_event_packet+0x9e3/0x7d60 net/bluetooth/hci_event.c:6153
- hci_rx_work+0x511/0xd30 net/bluetooth/hci_core.c:4971
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Modules linked in:
----[ end trace f938414eaac88f6e ]---
-RIP: 0010:__list_add_valid.cold+0x26/0x3c lib/list_debug.c:29
-Code: 77 cf fb fa 4c 89 e1 48 c7 c7 e0 7f 9e 89 e8 36 34 f3 ff 0f 0b 48 89 f2 4c 89 e1 48 89 ee 48 c7 c7 20 81 9e 89 e8 1f 34 f3 ff <0f> 0b 48 89 f1 48 c7 c7 a0 80 9e 89 4c 89 e6 e8 0b 34 f3 ff 0f 0b
-RSP: 0018:ffffc90001b97830 EFLAGS: 00010282
-RAX: 0000000000000058 RBX: ffff88814077de00 RCX: 0000000000000000
-RDX: ffff88806db94240 RSI: ffffffff815b6a45 RDI: fffff52000372ef8
-RBP: ffff888073202420 R08: 0000000000000058 R09: 0000000000000000
-R10: ffffffff815afbee R11: 0000000000000000 R12: ffff88814077de00
-R13: ffff8880a0181298 R14: ffff888073202438 R15: ffff888073202420
-FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000016b9e60 CR3: 000000000b08e000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> Jon
+>
+> [0]
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/tegra30-cardhu-a04.dts
+> [1]
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/regulator/regulator.yaml#n129
+>
+> --
+> nvpublic
