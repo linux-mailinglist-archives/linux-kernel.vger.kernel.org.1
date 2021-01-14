@@ -2,117 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58672F5C9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50AFC2F5CA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727502AbhANItq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 03:49:46 -0500
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:35413 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727199AbhANItq (ORCPT
+        id S1727801AbhANIu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 03:50:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727319AbhANIu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 03:49:46 -0500
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id EC869FF80E;
-        Thu, 14 Jan 2021 08:49:02 +0000 (UTC)
-Date:   Thu, 14 Jan 2021 09:49:02 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        =?utf-8?B?S8OpdmluIEwnaMO0cGl0YWw=?= <kevin.lhopital@bootlin.com>,
-        linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] media: i2c: fix spelling mistakes: "enpoint" ->
- "endpoint"
-Message-ID: <YAAFfh1iytVAvJK2@aptenodytes>
-References: <20210113100517.10959-1-colin.king@canonical.com>
+        Thu, 14 Jan 2021 03:50:57 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF0EC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 00:50:11 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id h186so2965198pfe.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 00:50:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ef5N27J/hvqyljLtO2QT2Ao+PMGxMUjFzwbt45lWy80=;
+        b=JlvtiglqlW/4VDbsrnE4bfF23ZtUjnqlxjuEzDYHFjleZ/p5MtNxEi9QpP1OWy/s6U
+         mLYhT/fk2j76leNtMyPWmzn89gKwQWlucHg7g8Z1lBlxl3ze+lW7SjgZR+UnH6JlyMCU
+         4R0ox42L/l4ID2qICYdYVDXmdGxh4JEiNbiiFO83gin1gcf00LrNG/SMRc6bMm2PAWjV
+         DcmKXVKg4rhBucjKrNEHL8L0BJEYI6HETUfK8/62EBFH6ue7M4pcAEjI5zZapT7Nrlbq
+         7XA3kI6t++xrRRbQG8tLo79dmUZ7rJL1wbtCgul9uviJqkNqCPWCNkX+/4uWWPhg5MGe
+         0Kgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ef5N27J/hvqyljLtO2QT2Ao+PMGxMUjFzwbt45lWy80=;
+        b=tNmJTwXi2o7f/8onLjBoYZDTWCHQgRtSzYfH5i/nhKbOHtGYZUriDgcvcw3mT/1pO8
+         eNhBnjwuSnBmA94hgozxagQEowYjr4xt6tAtbEOb40iT+NrgRtb7xKUvHRufQeOIeXXP
+         NknYyC2WFtP4ml8od7A+bMnQx4Mqm2Y4Iz/1dOGL5F+f4TTiy3YsF8FwlPKfwv+PZVhb
+         jnVlfY1CBDBGW1aoLGKJoLHyLe0VFzby6IhbcqDgE7KJCGxws6m9P9T4ZXVG21eFoSte
+         /sVX2JhQmyM+W0vtiJ6qx8GBfRHYJASwC9WXvsdYYRVK9YDv04ntGWGawL6/Ute7cRoS
+         1kwQ==
+X-Gm-Message-State: AOAM5333B3inaU6jri4YeCmoMzhwNGUSSdtqueMXGqneWp6v8pPHhboO
+        7KeJhMROfP8XYlcxvBb17dJlPMRz6G6fpA==
+X-Google-Smtp-Source: ABdhPJwgzIKsqBDT/Vq9hAMzjH/KJWPDYShr3iM/dZd93iv63xYNpyOr7844c45sin0teorVY4n+4Q==
+X-Received: by 2002:a63:5463:: with SMTP id e35mr6452204pgm.151.1610614210474;
+        Thu, 14 Jan 2021 00:50:10 -0800 (PST)
+Received: from balhae.roam.corp.google.com ([114.129.115.223])
+        by smtp.gmail.com with ESMTPSA id gz5sm4992131pjb.15.2021.01.14.00.50.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 00:50:09 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCH 1/2] perf core: Add PERF_COUNT_SW_CGROUP_SWITCHES event
+Date:   Thu, 14 Jan 2021 17:50:03 +0900
+Message-Id: <20210114085004.26606-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="DMj+727u0fJbYvjc"
-Content-Disposition: inline
-In-Reply-To: <20210113100517.10959-1-colin.king@canonical.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch adds a new software event to count context switches
+involving cgroup switches.  So it's counted only if cgroups of
+previous and next tasks are different.  Note that it only checks the
+cgroups in the perf_event subsystem.  For cgroup v2, it shouldn't
+matter anyway.
 
---DMj+727u0fJbYvjc
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+One can argue that we can do this by using existing sched_switch event
+with eBPF.  But some systems might not have eBPF for some reason so
+I'd like to add this as a simple way.
 
-Hi,
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ include/linux/perf_event.h      | 38 +++++++++++++++------------------
+ include/uapi/linux/perf_event.h |  1 +
+ 2 files changed, 18 insertions(+), 21 deletions(-)
 
-On Wed 13 Jan 21, 10:05, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> There are two spelling mistakes in dev_err messages. Fix these.
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 9a38f579bc76..304ef42d42d1 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -1174,30 +1174,24 @@ DECLARE_PER_CPU(struct pt_regs, __perf_regs[4]);
+  * which is guaranteed by us not actually scheduling inside other swevents
+  * because those disable preemption.
+  */
+-static __always_inline void
+-perf_sw_event_sched(u32 event_id, u64 nr, u64 addr)
++static __always_inline void __perf_sw_event_sched(u32 event_id, u64 nr, u64 addr)
+ {
+-	if (static_key_false(&perf_swevent_enabled[event_id])) {
+-		struct pt_regs *regs = this_cpu_ptr(&__perf_regs[0]);
++	struct pt_regs *regs = this_cpu_ptr(&__perf_regs[0]);
+ 
+-		perf_fetch_caller_regs(regs);
+-		___perf_sw_event(event_id, nr, regs, addr);
+-	}
++	perf_fetch_caller_regs(regs);
++	___perf_sw_event(event_id, nr, regs, addr);
+ }
+ 
+ extern struct static_key_false perf_sched_events;
+ 
+-static __always_inline bool
+-perf_sw_migrate_enabled(void)
++static __always_inline bool __perf_sw_enabled(int swevt)
+ {
+-	if (static_key_false(&perf_swevent_enabled[PERF_COUNT_SW_CPU_MIGRATIONS]))
+-		return true;
+-	return false;
++	return static_key_false(&perf_swevent_enabled[swevt]);
+ }
+ 
+ static inline void perf_event_task_migrate(struct task_struct *task)
+ {
+-	if (perf_sw_migrate_enabled())
++	if (__perf_sw_enabled(PERF_COUNT_SW_CPU_MIGRATIONS))
+ 		task->sched_migrated = 1;
+ }
+ 
+@@ -1207,11 +1201,9 @@ static inline void perf_event_task_sched_in(struct task_struct *prev,
+ 	if (static_branch_unlikely(&perf_sched_events))
+ 		__perf_event_task_sched_in(prev, task);
+ 
+-	if (perf_sw_migrate_enabled() && task->sched_migrated) {
+-		struct pt_regs *regs = this_cpu_ptr(&__perf_regs[0]);
+-
+-		perf_fetch_caller_regs(regs);
+-		___perf_sw_event(PERF_COUNT_SW_CPU_MIGRATIONS, 1, regs, 0);
++	if (__perf_sw_enabled(PERF_COUNT_SW_CPU_MIGRATIONS) &&
++	    task->sched_migrated) {
++		__perf_sw_event_sched(PERF_COUNT_SW_CPU_MIGRATIONS, 1, 0);
+ 		task->sched_migrated = 0;
+ 	}
+ }
+@@ -1219,7 +1211,13 @@ static inline void perf_event_task_sched_in(struct task_struct *prev,
+ static inline void perf_event_task_sched_out(struct task_struct *prev,
+ 					     struct task_struct *next)
+ {
+-	perf_sw_event_sched(PERF_COUNT_SW_CONTEXT_SWITCHES, 1, 0);
++	if (__perf_sw_enabled(PERF_COUNT_SW_CONTEXT_SWITCHES))
++		__perf_sw_event_sched(PERF_COUNT_SW_CONTEXT_SWITCHES, 1, 0);
++
++	if (__perf_sw_enabled(PERF_COUNT_SW_CGROUP_SWITCHES) &&
++	    (task_css_check(prev, perf_event_cgrp_id, 1)->cgroup !=
++	     task_css_check(next, perf_event_cgrp_id, 1)->cgroup))
++		__perf_sw_event_sched(PERF_COUNT_SW_CGROUP_SWITCHES, 1, 0);
+ 
+ 	if (static_branch_unlikely(&perf_sched_events))
+ 		__perf_event_task_sched_out(prev, next);
+@@ -1475,8 +1473,6 @@ static inline int perf_event_refresh(struct perf_event *event, int refresh)
+ static inline void
+ perf_sw_event(u32 event_id, u64 nr, struct pt_regs *regs, u64 addr)	{ }
+ static inline void
+-perf_sw_event_sched(u32 event_id, u64 nr, u64 addr)			{ }
+-static inline void
+ perf_bp_event(struct perf_event *event, void *data)			{ }
+ 
+ static inline int perf_register_guest_info_callbacks
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index b15e3447cd9f..16b9538ad89b 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -112,6 +112,7 @@ enum perf_sw_ids {
+ 	PERF_COUNT_SW_EMULATION_FAULTS		= 8,
+ 	PERF_COUNT_SW_DUMMY			= 9,
+ 	PERF_COUNT_SW_BPF_OUTPUT		= 10,
++	PERF_COUNT_SW_CGROUP_SWITCHES		= 11,
+ 
+ 	PERF_COUNT_SW_MAX,			/* non-ABI */
+ };
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
-Thanks for the patch!
-
-Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-
-Cheers,
-
-Paul
-
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/media/i2c/ov5648.c | 2 +-
->  drivers/media/i2c/ov8865.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/media/i2c/ov5648.c b/drivers/media/i2c/ov5648.c
-> index 609aa67b54ce..46ad0a539853 100644
-> --- a/drivers/media/i2c/ov5648.c
-> +++ b/drivers/media/i2c/ov5648.c
-> @@ -2453,7 +2453,7 @@ static int ov5648_probe(struct i2c_client *client)
-> =20
->  	handle =3D fwnode_graph_get_next_endpoint(dev_fwnode(dev), NULL);
->  	if (!handle) {
-> -		dev_err(dev, "unable to find enpoint node\n");
-> +		dev_err(dev, "unable to find endpoint node\n");
->  		return -EINVAL;
->  	}
-> =20
-> diff --git a/drivers/media/i2c/ov8865.c b/drivers/media/i2c/ov8865.c
-> index fda5a55979aa..fd5be8ef079c 100644
-> --- a/drivers/media/i2c/ov8865.c
-> +++ b/drivers/media/i2c/ov8865.c
-> @@ -2799,7 +2799,7 @@ static int ov8865_probe(struct i2c_client *client)
-> =20
->  	handle =3D fwnode_graph_get_next_endpoint(dev_fwnode(dev), NULL);
->  	if (!handle) {
-> -		dev_err(dev, "unable to find enpoint node\n");
-> +		dev_err(dev, "unable to find endpoint node\n");
->  		return -EINVAL;
->  	}
-> =20
-> --=20
-> 2.29.2
->=20
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---DMj+727u0fJbYvjc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmAABX4ACgkQ3cLmz3+f
-v9H8RAf/fVSXIjjtgpBr2fjzagLAkOv9OO1WvvSMheagyn+1E+t74WB15cEKvTAb
-IZ1C+iNFkkodpmp2bX2YxptrBtLIvxZ6PpuxTp1prS/X0f0yHd2emEl6i+vgBlvi
-MlFNDNRihyNARSeSwtJUmAOo8nxYwwvKnGIzGzIo6hYFFoxvfxD/H1DoFflfbVXK
-1CeI2QeMZu0ZUvHQxCr9/o6uQspnrQoWw38x935H2NYDdQjarKwWp07kLvsnTYAn
-EReG/Y8IK5y7J9VyPx5ig05WzHDkk/J4ngUoOzcWeg+pn4/+TvMrUyDZOZ++M08C
-MbsldPtZX+e5JUEFJvdw9hP8QTeBGw==
-=8PNC
------END PGP SIGNATURE-----
-
---DMj+727u0fJbYvjc--
