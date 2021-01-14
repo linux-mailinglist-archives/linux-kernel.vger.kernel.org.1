@@ -2,113 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F074A2F69D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:44:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7722F69D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729420AbhANSoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:44:15 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:51912 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbhANSoO (ORCPT
+        id S1729467AbhANSoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:44:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726131AbhANSoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:44:14 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 10D0E1F45D90
-Received: by earth.universe (Postfix, from userid 1000)
-        id 4ECAF3C0C94; Thu, 14 Jan 2021 19:43:30 +0100 (CET)
-Date:   Thu, 14 Jan 2021 19:43:30 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com
-Subject: Re: [PATCH] power: supply: bq256xx: Fix BQ256XX_NUM_WD_VAL and
- bq256xx_watchdog_time[] overrun
-Message-ID: <20210114184330.ka6o5cxhe5ikyeoa@earth.universe>
-References: <20210113225352.13099-1-r-rivera-matos@ti.com>
+        Thu, 14 Jan 2021 13:44:30 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72CAC0613C1;
+        Thu, 14 Jan 2021 10:43:49 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id q4so3359945plr.7;
+        Thu, 14 Jan 2021 10:43:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4iP5X9CtkAiw+NO5UyJX7a2+Jw4YMkpaZBzsSINV02c=;
+        b=OVVbX2E7nbmrINYjP2T0gYQWEd+KRnEIZ3vC5thneJre3j1ZolTUDmI2ZL/rI0ZcwP
+         zwQjB/GBSBSGmNPc9m7G0Pdxju4RWR4oSqH5ZJ0miIlyu8tlJM+zoD/2v4fwp/F2SnwA
+         gmbBnyBUraQX5P35foCAxW9StnjSjAGjB0cinvtOO74lNnOuQAM8SaySok0sI9s+yZjZ
+         a1oid31n2zV+KtkPGAlcxXENB8NViCzVXif/QRyzkr8aDtjufsy1l2CxC66hQ0Z5CHrp
+         UXopKYb6zVcbeiYnesmhyParag4hPsD1uP05izssAmHSMMlVlkRpCWE5dJyhE00rz83t
+         nOXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4iP5X9CtkAiw+NO5UyJX7a2+Jw4YMkpaZBzsSINV02c=;
+        b=MFe9LKludoWq0KPpy+XHaToKkEj9EdPcpcCQgKGSRn0nwIhBwYk6/pJSkWmEGLDMGh
+         8wvU8WFD5O57KgJgp5w2dVYxsxBe3Th2EM9OzzbTCn09Z+XgNM6T9MJ9XM4+0F7mCJ7N
+         8gECJIwShf77xeSkpMpTIQRBg+CsYrSJrP+NQQMTs/aBGMSJPx6sUtHS+KtwapNcgGkU
+         THgB78/hgdHB2YLHqJaob4OlHgHCsMLm66GodDERHIh4f6LHzxU5ZB7BsFSjMdvCqraq
+         94kohQnQEQsil/npStk1QAiegEvYm4TzQdWgwNPeeb3y87jNTjpOHBMVe4IJzFhHt13L
+         lXAA==
+X-Gm-Message-State: AOAM533HusCBoynfu2jiVzwrzUP8VCw1cX5ft8nOF7uMFh0Dm2frcCrY
+        p2maxdqOGeFx/hgAaWTR9EM=
+X-Google-Smtp-Source: ABdhPJy6eguagOv37xUEQKBPjIQ4ZXsxAbBFkj9QmE2oQFJtPaclhelQ1pJFhIja95ZMSvNe2fwbOQ==
+X-Received: by 2002:a17:90a:e00f:: with SMTP id u15mr2304027pjy.130.1610649829294;
+        Thu, 14 Jan 2021 10:43:49 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id w2sm6012270pfj.110.2021.01.14.10.43.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 10:43:47 -0800 (PST)
+Date:   Thu, 14 Jan 2021 10:43:45 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        Sean O'Brien <seobrien@chromium.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] HID: hid-input: avoid splitting keyboard, system and
+ consumer controls
+Message-ID: <YACQ4aPfH8y+9gkK@google.com>
+References: <X//jjawwbm8FxbQU@google.com>
+ <CAO-hwJK5QxxX26hFiVfQr2EfnwdZSEB2paCsZBbX58iPxJvfww@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fm75k6rgj6vu3jnf"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210113225352.13099-1-r-rivera-matos@ti.com>
+In-Reply-To: <CAO-hwJK5QxxX26hFiVfQr2EfnwdZSEB2paCsZBbX58iPxJvfww@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Benjamin,
 
---fm75k6rgj6vu3jnf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jan 14, 2021 at 10:23:02AM +0100, Benjamin Tissoires wrote:
+> Hi Dmitry,
+> 
+> On Thu, Jan 14, 2021 at 7:24 AM Dmitry Torokhov
+> <dmitry.torokhov@gmail.com> wrote:
+> >
+> > A typical USB keyboard usually splits its keys into several reports:
+> >
+> > - one for the basic alphanumeric keys, modifier keys, F<n> keys, six pack
+> >   keys and keypad. This report's application is normally listed as
+> >   GenericDesktop.Keyboard
+> > - a GenericDesktop.SystemControl report for the system control keys, such
+> >   as power and sleep
+> > - Consumer.ConsumerControl report for multimedia (forward, rewind,
+> >   play/pause, mute, etc) and other extended keys.
+> > - additional output, vendor specific, and feature reports
+> >
+> > Splitting each report into a separate input device is wasteful and even
+> > hurts userspace as it makes it harder to determine the true capabilities
+> > (set of available keys) of a keyboard, so let's adjust application
+> > matching to merge system control and consumer control reports with
+> > keyboard report, if one has already been processed.
+> >
+> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > ---
+> >  drivers/hid/hid-input.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+> > index f797659cb9d9..df45d8d07dc2 100644
+> > --- a/drivers/hid/hid-input.c
+> > +++ b/drivers/hid/hid-input.c
+> > @@ -1851,6 +1851,16 @@ static struct hid_input *hidinput_match_application(struct hid_report *report)
+> >         list_for_each_entry(hidinput, &hid->inputs, list) {
+> >                 if (hidinput->application == report->application)
+> >                         return hidinput;
+> > +
+> > +               /*
+> > +                * Keep SystemControl and ConsumerControl applications together
+> > +                * with the main keyboard, if present.
+> > +                */
+> > +               if ((report->application == HID_GD_SYSTEM_CONTROL ||
+> > +                    report->application == HID_CP_CONSUMER_CONTROL) &&
+> > +                   hidinput->application == HID_GD_KEYBOARD) {
+> 
+> I am not fundamentally against the patch, but I think that if the
+> device exposes first a HID_CP_CONSUMER_CONTROL and then a
+> HID_GD_KEYBOARD we will end up with 2 different input nodes. We likely
+> need to "convert" HID_GD_SYSTEM_CONTROL and HID_CP_CONSUMER_CONTROL to
+> HID_GD_KEYBOARD when creating the hidinput.
 
-Hi,
+While it is technically possible that consumer control or system control
+comes first, before main keyboard report, in reality all keyboards that
+I have seen so far have the main keyboard report first, so I opted not
+to handle the uncommon case to keep the code simple.
 
-On Wed, Jan 13, 2021 at 04:53:52PM -0600, Ricardo Rivera-Matos wrote:
-> Corrects BQ256XX_NUM_WD_VAL from value of "8" to "4" and fixes the issue =
-when 'i'
-> is equal to array size then array index over runs the array
->=20
-> Fixes: 32e4978bb92 ("power: supply: bq256xx: Introduce the BQ256XX charge=
-r driver")
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-> ---
+I could add the above as a comment, and we could wait to see if there
+are devices that are exceptions to the common practice, or I can go and
+try to implement the conversion if you feel it is required. Please let
+me know.
 
-Thanks, queued.
+Note that we will still end up with 2+ input nodes if a device uses
+several USB interfaces, but we can't really do much about such cases
+(well, short of having a specialized driver claiming additional
+interfaces while probing the first one, but that is really outside of
+scope of this patch).
 
--- Sebastian
+Thanks!
 
->  drivers/power/supply/bq256xx_charger.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/power/supply/bq256xx_charger.c b/drivers/power/suppl=
-y/bq256xx_charger.c
-> index dc74c44618af..8414472083a6 100644
-> --- a/drivers/power/supply/bq256xx_charger.c
-> +++ b/drivers/power/supply/bq256xx_charger.c
-> @@ -135,7 +135,7 @@
->  #define BQ256XX_NTC_FAULT_COLD		(BIT(2) | BIT(0))
->  #define BQ256XX_NTC_FAULT_HOT		(BIT(2) | BIT(1))
-> =20
-> -#define BQ256XX_NUM_WD_VAL	8
-> +#define BQ256XX_NUM_WD_VAL	4
->  #define BQ256XX_WATCHDOG_MASK	GENMASK(5, 4)
->  #define BQ256XX_WATCHDOG_MAX	1600000
->  #define BQ256XX_WATCHDOG_DIS	0
-> @@ -1508,6 +1508,10 @@ static int bq256xx_hw_init(struct bq256xx_device *=
-bq)
->  	int i;
-> =20
->  	for (i =3D 0; i < BQ256XX_NUM_WD_VAL; i++) {
-> +		if (bq->watchdog_timer =3D=3D bq256xx_watchdog_time[i]) {
-> +			wd_reg_val =3D i;
-> +			break;
-> +		}
->  		if (bq->watchdog_timer > bq256xx_watchdog_time[i] &&
->  		    bq->watchdog_timer < bq256xx_watchdog_time[i + 1])
->  			wd_reg_val =3D i;
-> --=20
-> 2.30.0
->=20
-
---fm75k6rgj6vu3jnf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAAkMwACgkQ2O7X88g7
-+po/GA//TtjqsAJY+5xGVUP/g6dReZlNr4b+JCHexErQ6Adl/0hAkZFqSoio8CM7
-3O0gEtiphJ6skaRjoGMd/UTKkfZmKB4/QXUZu22SrOIUtiHtIVv/stUeTGzLYf4B
-SkZrnoRdrsodQA2+fntLKyiC632xNAA1C2wyYlruvxOS3eyzBfUiwMwmFQk6j06E
-i3aaMOkP9LXJjixY+MwJjtMEd/Vl+WgWtiA/SR13KQ7HQ5Ruf5Cv7+UsmgIrepw0
-18L4r6HP+4Dn3wMrws4oxFxjZTn/qL4SP1kcfwLfwVGBmR/RpQzx8VMg5lmLWsqN
-v9BVE7XZNljBoadr91Px+e3OvgFXWbWlpUHd17pH4KzxHDFuO7xJXa/3+5D11+3W
-pg8/DLEUzBcu2DAh6bGByYBv27OjJG8N/1XBorlxpYQLJDYTFVxVyCrQZiBqOe7/
-/S7qYMyYsWvPshkSz8eQGNTFIRlpVd5/szf81U353+iX8LaMXItQxutc/innYk94
-uZaIHCRigEH6IgwkPagMRF3DKDQoNGD+LIYKcM0a0qmhNFYZnsSCr2oS7sT7NGuU
-j8RmqJKHtRCXj4cuGN+baYQm4FLj7rqupR/RLM5IPfYRETDeoUveXxvy3y83m9zp
-Rq3gyWZLMuFH2wHUZWxz5oGL3+v43vCHALqahsdR7vBvhH7qfDg=
-=ediH
------END PGP SIGNATURE-----
-
---fm75k6rgj6vu3jnf--
+-- 
+Dmitry
