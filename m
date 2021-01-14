@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEDE32F61A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E192F61A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728784AbhANNNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:13:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37682 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726670AbhANNNq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:13:46 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610629980; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GF0WE0Qb6cVvTF2NflEBTiiInZOom4YMvYdVAC+0ETs=;
-        b=ppy0OqvZZFsx46UyvH/Y+mY7fTQiwWlcKuhkEbbFcZdQZtFZ5RhA3BKOnX788tNIk9oJgv
-        AXW70nFIyE03LmllPcvvqAkEoA+3QfjdaTKUed7321bX5vEMuaqx/GRyvuBHLsXMSm4bwu
-        jcSogLSuNsqDLDDJoCVz4AdTFsc9MmI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F1D0AB7A4;
-        Thu, 14 Jan 2021 13:12:59 +0000 (UTC)
-Date:   Thu, 14 Jan 2021 14:12:58 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] cgroup-v1: add disabled controller check in
- cgroup1_parse_param()
-Message-ID: <YABDWvI2PWQpnv59@blackbook>
-References: <20201218061755.121205-1-chenzhou10@huawei.com>
+        id S1728788AbhANNOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 08:14:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725884AbhANNOX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 08:14:23 -0500
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B33C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:13:42 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by albert.telenet-ops.be with bizsmtp
+        id GdDc240094C55Sk06dDcRQ; Thu, 14 Jan 2021 14:13:40 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l02RT-003YlL-HL; Thu, 14 Jan 2021 14:13:35 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l02RT-009NQ3-3Z; Thu, 14 Jan 2021 14:13:35 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Brian Norris <briannorris@chromium.org>,
+        Rajat Jain <rajatja@google.com>, netdev@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 trivial/resend] dt-bindings: net: btusb: DT fix s/interrupt-name/interrupt-names/
+Date:   Thu, 14 Jan 2021 14:13:33 +0100
+Message-Id: <20210114131333.2234932-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="QyWpP+FhytSknTGW"
-Content-Disposition: inline
-In-Reply-To: <20201218061755.121205-1-chenzhou10@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The standard DT property name is "interrupt-names".
 
---QyWpP+FhytSknTGW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Fixes: fd913ef7ce619467 ("Bluetooth: btusb: Add out-of-band wakeup support")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
+Acked-by: Rajat Jain <rajatja@google.com>
+---
+Who takes this patch, before it celebrates its 4th birthday?
 
-Hello Chen.
+v5:
+  - Add Reviewed-by, Acked-by,
 
-On Fri, Dec 18, 2020 at 02:17:55PM +0800, Chen Zhou <chenzhou10@huawei.com> wrote:
-> When mounting a cgroup hierarchy with disabled controller in cgroup v1,
-> all available controllers will be attached.
-Not sure if I understand the situation -- have you observed a v1
-controller attached to a hierarchy while specifying cgroup_no_v1= kernel
-cmdline arg?
+v4:
+  - Add Acked-by,
 
-AFAICS, the disabled controllers are honored thanks to
-check_cgroupfs_options().
+v3:
+  - New.
+---
+ Documentation/devicetree/bindings/net/btusb.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Michal
+diff --git a/Documentation/devicetree/bindings/net/btusb.txt b/Documentation/devicetree/bindings/net/btusb.txt
+index b1ad6ee68e909318..c51dd99dc0d3cb73 100644
+--- a/Documentation/devicetree/bindings/net/btusb.txt
++++ b/Documentation/devicetree/bindings/net/btusb.txt
+@@ -38,7 +38,7 @@ Following example uses irq pin number 3 of gpio0 for out of band wake-on-bt:
+ 	compatible = "usb1286,204e";
+ 	reg = <1>;
+ 	interrupt-parent = <&gpio0>;
+-	interrupt-name = "wakeup";
++	interrupt-names = "wakeup";
+ 	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
+     };
+ };
+-- 
+2.25.1
 
---QyWpP+FhytSknTGW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmAAQ1UACgkQia1+riC5
-qSjfmhAAjoBfZd9q9AjcZUbdDE79xfD2+0B+c03VStMia9Y4uEBWHMUAVLZMK9Vt
-BoOCVFB6V2SdjkB1gV3gxPfShWHIt9iIz9GVqSuGgXBXtt0Lut8nuw/t/Z2mP4pw
-rMHXKR9aOWNQU3dWKIttXMp7TZ2EMLJ/HW73Jth867zXZd8Wc+lYEDrfsbQT1WCI
-fZHr/dJSUb9uEFo7Wr1IpNsR3owLNcZ+0POnPmeUjUleClrwe0C8CAp1ipTcVx+2
-0tA5Yqy0uSHpbrRiuhI2lseHvwOdc7SG1oxRIBe/M4smN/P12GeN6YD6k0V3tRgc
-1PZVpAjsBoHvJl+lVIKWN+X/Qpjh/GlSwHsufZeoKGtR6NAKNEcU39/yACRJBGBx
-M3osYIRcuTT+D822Yq1Rn8wQ9juolImzwWaRAJzlIXNh4PZfJD3ywI0AoO6I69md
-3aokm5YEycI76Y75TNxKbfkr51EmprqNNOgz71qslj2Y7robC7h0Mf4BvRCu/1ns
-M2V0U4bZQy872sfoPu/k+13ki3Bc9cukowl31w7jrhvVAvuxo5FqgDZzNzRwGYRE
-hzKNW0Ed6hX6RL1ZHvxsClHgyh49wgMEIbAJHblkmoIgFGQrBCHe03uoN+DN18ke
-x0LQCS6h5y/WR7STRS1CHM1NPJPQvqpDu92GREfZCXNsVIgK3vc=
-=l74T
------END PGP SIGNATURE-----
-
---QyWpP+FhytSknTGW--
