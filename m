@@ -2,52 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2442C2F6B84
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19FDB2F6B8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:55:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730392AbhANTvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:51:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730066AbhANTvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:51:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 959552343B;
-        Thu, 14 Jan 2021 19:50:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610653827;
-        bh=fGRfb+uzvSfVtSrTeW0rJPLOJ7N2m6M0yi2blEq2sWQ=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=YG+D7Q9QAN2GUysBFmcjGi4pVyq11MhdSb9QD+DKCYTTCXWbTRpmwA32ioBmgwkYt
-         1QBLjucKL9lqqQDiV3ZqzwDmA22TtvIQKDBCbu2fj5DPm4LFCGGdS9M8yZ3n+4bo0T
-         q1A3PUCaRnha4GlnnK1wkCxJ+bsqTg7rZ6eopJFeIn6aaHcbL02wXFM1NoIBThsV4I
-         RiJuVwqHbZKuW+VhrruRD/ELVmIVoRslqvNzsb8B+upF5YQEevubsBFl6ICxC+hUJV
-         k5HS5SDLsRwBbSBv9Y2TJ6eYWCzNREukpl+tY/2gS3LvyVhANhBnn+NcFpNyR6ZwLK
-         QVD/fiJ/JHWOg==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1610542388-12078-1-git-send-email-abel.vesa@nxp.com>
-References: <1610542388-12078-1-git-send-email-abel.vesa@nxp.com>
-Subject: Re: [PATCH] MAINTAINERS: Add section for NXP i.MX clock drivers
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        id S1730395AbhANTwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:52:39 -0500
+Received: from smtprelay0154.hostedemail.com ([216.40.44.154]:34152 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728474AbhANTwj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 14:52:39 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 222B01E02;
+        Thu, 14 Jan 2021 19:51:58 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:6119:6120:6742:7652:7901:7903:10004:10400:10848:11232:11658:11914:12297:12660:12740:12760:12895:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21627:21939:30054:30060:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: rain54_480ec0327529
+X-Filterd-Recvd-Size: 2836
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 14 Jan 2021 19:51:55 +0000 (UTC)
+Message-ID: <fd3f26b7a70d3b90f1368c55532e463ef2fb9fa4.camel@perches.com>
+Subject: Re: [PATCH] compiler.h: Raise minimum version of GCC to 5.1 for
+ arm64
+From:   Joe Perches <joe@perches.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Florian Weimer <fweimer@redhat.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org, Abel Vesa <abel.vesa@nxp.com>
-To:     Abel Vesa <abel.vesa@nxp.com>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Date:   Thu, 14 Jan 2021 11:50:26 -0800
-Message-ID: <161065382626.3661239.1937640801346146443@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Date:   Thu, 14 Jan 2021 11:51:53 -0800
+In-Reply-To: <CAHk-=wjHTpG+gMx9vqrZgo8Uw0NqA2kNjS87o63Zv3=WG2K3zA@mail.gmail.com>
+References: <20210112224832.10980-1-will@kernel.org>
+         <161055398865.21762.12236232732054213928.b4-ty@arm.com>
+         <CAK7LNASs6dvU6D3jL2GG3jW58fXfaj6VNOe55NJnTB8UPuk2pA@mail.gmail.com>
+         <CAHk-=wiQ_tp8NmKV8PJ-6WMo3dTEZwDo3a0hYjcUFqMdviNTYw@mail.gmail.com>
+         <20210113214436.GL1551@shell.armlinux.org.uk>
+         <CAHk-=wjqGRXUp6KOdx-eHYEotGvY=a5tSY1mF-BkAcX2YAuBYw@mail.gmail.com>
+         <CAMj1kXFaDNRbDvr43VLEHFRHHS0sGGcF=iTfES4sxPg-rZ34NA@mail.gmail.com>
+         <CAHk-=wjHTpG+gMx9vqrZgo8Uw0NqA2kNjS87o63Zv3=WG2K3zA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Abel Vesa (2021-01-13 04:53:08)
-> Add a section for NXP i.MX clock drivers and list myself
-> as the maintainer.
->=20
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> ---
+On Thu, 2021-01-14 at 10:43 -0800, Linus Torvalds wrote:
+> On Thu, Jan 14, 2021 at 12:18 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+> > 
+> > So if the arguments are piling up, what is holding us back, other than
+> > inertia?
+> 
+> I think we can most certainly just try increasing the minimum version
+> to 5.1 in the next merge window and see.
+> 
+> > Note that banning 4.9 for arm64 and banning it in general should be
+> > two different changes in any case, as the former will need to be
+> > backported to -stable kernels as well.
+> 
+> Yes. The arm64 issue is a clear and known bug, plus I suspect gcc-4.9
+> is ridiculously old in the arm64 ecosystem anyway.
+> 
+> So the arm64 issue is a bug-fix, the follow-up of just upgrading gcc
+> requirements in general would be a "keep up with the times, and allow
+> those variable declarations in loops".
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+Given the upgrade requirement, and how clang version requirements
+constantly change, how much more difficult would it be for others
+to use gcc 7.1 or higher now instead of later?
+
+
