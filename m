@@ -2,159 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269792F62A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:03:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A69CE2F62AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728382AbhANOC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:02:26 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:33162 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbhANOCZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:02:25 -0500
-Received: by mail-ot1-f53.google.com with SMTP id b24so5264453otj.0;
-        Thu, 14 Jan 2021 06:02:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vmtwqRd+vOOs93CtJZXLHlLxZuc0mcM65taAtteZXlA=;
-        b=hOc+4qoXzcULnot14ryYY8UAkVx3pbyThjZ1/WXmwaGobt2bWNzCk+imAt8CZgVGKm
-         xF+NTRHX70J8HU+/BXapIIY+iCdxEqweNb+d1DxCxUfq9sLXfOWDAsjpQE6MyRyhBccH
-         BWQqrQoQmHD95u+BXul+0mqXlSFu5zDRi3rtcYuNnzbc28UEFXruaSghyvOgvnRV9moD
-         w446zKjW0aLbAQM0iDRP8xMjNF3LY6p8QvXvwPnovddV2a3MUf9hP0glCLu6VaSvk7KH
-         deYu1zyJvtfnecRBAhRRrYQv04dKhi4OVRh6Mm4fILcSNZlc+UCw/02L1j3UyGSA0P5T
-         4U1g==
-X-Gm-Message-State: AOAM532ebI6Q4by3lraHAs4A98ABFeOclgjJ/245N8Ik1LAaKycGvUMW
-        uC3VR0hd1PuBob2WGSGSCw==
-X-Google-Smtp-Source: ABdhPJwA4xSmb7PKCcuU6wjuRg19ZNzvAwR2u8Pzf0moxRyQEWEjN27Dqi5u3i2wZ9eO5cK3Ls+Hmw==
-X-Received: by 2002:a9d:6f8f:: with SMTP id h15mr4838190otq.125.1610632901192;
-        Thu, 14 Jan 2021 06:01:41 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u141sm1036348oie.46.2021.01.14.06.01.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 06:01:40 -0800 (PST)
-Received: (nullmailer pid 2811070 invoked by uid 1000);
-        Thu, 14 Jan 2021 14:01:38 -0000
-Date:   Thu, 14 Jan 2021 08:01:38 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, hyesoo.yu@samsung.com,
-        david@redhat.com, mhocko@suse.com, surenb@google.com,
-        pullip.cho@samsung.com, joaodias@google.com, hridya@google.com,
-        john.stultz@linaro.org, sumit.semwal@linaro.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        hch@infradead.org, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v3 3/4] dt-bindings: reserved-memory: Make DMA-BUF CMA
- heap DT-configurable
-Message-ID: <20210114140138.GA2796092@robh.at.kernel.org>
-References: <20210113012143.1201105-1-minchan@kernel.org>
- <20210113012143.1201105-4-minchan@kernel.org>
+        id S1727478AbhANOEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:04:48 -0500
+Received: from www.zeus03.de ([194.117.254.33]:54222 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725930AbhANOEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:04:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=XYkIYw8kXYr0WVS9+2HEs7b4ExRD
+        AHL7hAMoLwRnuhs=; b=jEynJZOCa0wXW6Sxo/cdadXQbmnkFb0zCbxSlq2NLVRp
+        FzkLrNbJwFB7vC59c7YZuCwh+o3/amsZmNp05TKfzLoQecioj4Gk2I1AKYcZP3MH
+        m4JSAw6v+6MIYVmCwKAwjQ9fzSbCpPsEHXqLlvk016S5fIltsCfEkZZK0vQGbu8=
+Received: (qmail 3538568 invoked from network); 14 Jan 2021 15:04:04 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 14 Jan 2021 15:04:04 +0100
+X-UD-Smtp-Session: l3s3148p1@3JJSuty4NNMgAwDPXwjsANskl+1DI0tg
+Date:   Thu, 14 Jan 2021 15:04:01 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Corey Minyard <minyard@acm.org>
+Cc:     linux-i2c@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        Colin Ian King <colin.king@canonical.com>,
+        Vijay Khemka <vijaykhemka@fb.com>,
+        Asmaa Mnebhi <Asmaa@mellanox.com>
+Subject: Re: [PATCH RFC 3/3] ipmi: remove open coded version of SMBus block
+ write
+Message-ID: <20210114140401.GA973@kunai>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Corey Minyard <minyard@acm.org>, linux-i2c@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        Colin Ian King <colin.king@canonical.com>,
+        Vijay Khemka <vijaykhemka@fb.com>,
+        Asmaa Mnebhi <Asmaa@mellanox.com>
+References: <20210112164130.47895-1-wsa+renesas@sang-engineering.com>
+ <20210112164130.47895-4-wsa+renesas@sang-engineering.com>
+ <20210114004822.GY3348@minyard.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
 Content-Disposition: inline
-In-Reply-To: <20210113012143.1201105-4-minchan@kernel.org>
+In-Reply-To: <20210114004822.GY3348@minyard.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 05:21:42PM -0800, Minchan Kim wrote:
-> From: Hyesoo Yu <hyesoo.yu@samsung.com>
-> 
-> Document devicetree binding for chunk cma heap on dma heap framework.
-> 
-> The DMA chunk heap supports the bulk allocation of higher order pages.
 
-Why do we need this? What does this do that CMA doesn't?
+--tThc/1wpZn/ma/RB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-With a CMA area I can believe a carve out is a common, OS independent 
-thing. This looks too closely tied to some Linux thing to go into DT.
 
-> 
-> Signed-off-by: Hyesoo Yu <hyesoo.yu@samsung.com>
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> Signed-off-by: Hridya Valsaraju <hridya@google.com>
-> Change-Id: I8fb231e5a8360e2d8f65947e155b12aa664dde01
+> I asked the original authors of this about the change, and apparently is
+> results in a stack size warning.  Arnd Bergmann ask for it to be changed
+> from what you are suggesting to what it currently is.  See:
+>=20
+> https://www.lkml.org/lkml/2019/6/19/440
+>=20
+> So apparently this change will cause compile warnings due to the size of
+> struct i2c_client.
 
-Drop this.
+Wow, didn't know that my patch was actually a revert. I replaced now the
+stack usage with kmemdup and will have a second thought about this
+patch. Thanks for the heads up!
 
-> ---
->  .../reserved-memory/dma_heap_chunk.yaml       | 58 +++++++++++++++++++
->  1 file changed, 58 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/reserved-memory/dma_heap_chunk.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/reserved-memory/dma_heap_chunk.yaml b/Documentation/devicetree/bindings/reserved-memory/dma_heap_chunk.yaml
-> new file mode 100644
-> index 000000000000..3e7fed5fb006
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/reserved-memory/dma_heap_chunk.yaml
-> @@ -0,0 +1,58 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/reserved-memory/dma_heap_chunk.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Device tree binding for chunk heap on DMA HEAP FRAMEWORK
-> +
-> +description: |
-> +  The DMA chunk heap is backed by the Contiguous Memory Allocator (CMA) and
-> +  supports bulk allocation of fixed size pages.
-> +
-> +maintainers:
-> +  - Hyesoo Yu <hyesoo.yu@samsung.com>
-> +  - John Stultz <john.stultz@linaro.org>
-> +  - Minchan Kim <minchan@kernel.org>
-> +  - Hridya Valsaraju<hridya@google.com>
 
-space                  ^
+--tThc/1wpZn/ma/RB
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - dma_heap,chunk
+-----BEGIN PGP SIGNATURE-----
 
-The format is <vendor>,<something> and 'dma_heap' is not a vendor.
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAAT0kACgkQFA3kzBSg
+KbYBKA/+KGwiJWaUiU0+N17bTU/45Nmz2omMARKtrKFuDnxqUBSvbp0QVpMvtXvV
+IP9YN0TVopn2OQ4TbUssjPKeF/bsRK9La45lvdDHOpeFKYdXQcTD2O+EWVKGneXR
+Qp8dGNO0aMHcSi1Gmexd0OycizF9NbQ8vGSxXzvMgoLqjTe1RCFCNEEXgYQ+8sgW
+3QMDPYVrDo53A5+d0au3PEvFdJtTI7yZuiG1M9+pn9j/awM26yIDU4+VCsQxoxic
+6oh5DJVQUSzUL2VpEIlwbp32Jl7eDKTz7lrgSIObAY/IFz/siWlwFvaTxbQb9t6V
+4hgZQ0ts4xX/OL64PlA706d6wHajmQ1rxDl0tSrhPMEyxVI20gIn/NxMkWeYVwv3
+pI7FmNqqfHamZM6QTpODv4edzcNgYQvlXjVlFFe67mjmKVzTTsj8hRwVSM77WIct
+FhozjJTQ1nL28UJwqYcbxd4NCUK7xmv/XbG/0LHdgEOE8J0QOwmj9S5CJoyRjz+A
+hVv2elcCtEXFb5UxhZcwdD2lTExbzfJ2LmP54eTHR5iwLcS/HHLmEmMEDiQFbMBt
+1iD5KZNjif+Ep2A3L2+o3AE/QzIMOfutwcZh0WcYw//WnHMbLzIc3pjjBt5l9+dl
+u7Oqn7CsmdtU70IKAUjRFM/jwYMk3jaZwVKMU11ki6NyXZqQ59A=
+=hJuM
+-----END PGP SIGNATURE-----
 
-> +
-> +  chunk-order:
-> +    description: |
-> +            order of pages that will get allocated from the chunk DMA heap.
-> +    maxItems: 1
-> +
-> +  size:
-> +    maxItems: 1
-> +
-> +  alignment:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - size
-> +  - alignment
-> +  - chunk-order
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    reserved-memory {
-> +        #address-cells = <2>;
-> +        #size-cells = <1>;
-> +
-> +        chunk_memory: chunk_memory {
-> +            compatible = "dma_heap,chunk";
-> +            size = <0x3000000>;
-> +            alignment = <0x0 0x00010000>;
-> +            chunk-order = <4>;
-> +        };
-> +    };
-> +
-> +
-> -- 
-> 2.30.0.284.gd98b1dd5eaa7-goog
-> 
+--tThc/1wpZn/ma/RB--
