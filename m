@@ -2,94 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6CC2F6E8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE6B2F6E90
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:51:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730919AbhANWsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 17:48:45 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14872 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729214AbhANWso (ORCPT
+        id S1730925AbhANWtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 17:49:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730815AbhANWtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 17:48:44 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10EMWbKG040426;
-        Thu, 14 Jan 2021 17:47:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=7JxhRXjgGQMFAWopEZRfNvYgI8wAHRs5ArdqbBGBpWI=;
- b=P+zQ5Lm++6HPAYPyV88xIlqGyKcpcv01DxKPNObzzI3xOoOlvPC8EwcRXFVs2TGf/E6c
- 7MOVHYHRar1dIzonyctNifpNCpOX6E2qhjTimNm8z3rK+ICv6T5PsSEaGvVaxM3zVNAq
- Az9SkEjqY27uDgFG8E2Vpl64C5M2H33ciWzY2QCOCOPNTT8NbNQPtFSF1IdrD75gtxCH
- XBx0Q+yN+Cucv8uPRV2GMLDvc76I0xhHiSs+L4bq87F4f7j2Mz9CHI1a7CaB0fl5mwhL
- rdrWLT1psb2VwyfWmecsMKZKsjPYRFliv432HoZsBVkrJ54iMgbG5SP/I5PqV1580eRr nQ== 
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 362vwr3cx3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 17:47:55 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10EMlsjK019940;
-        Thu, 14 Jan 2021 22:47:54 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma02wdc.us.ibm.com with ESMTP id 35y449gg3u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 22:47:54 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10EMlr7o38601210
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Jan 2021 22:47:53 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7B39DC7017;
-        Thu, 14 Jan 2021 22:47:53 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0933EC7016;
-        Thu, 14 Jan 2021 22:47:52 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.163.16.139])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Jan 2021 22:47:52 +0000 (GMT)
-Subject: Re: [PATCH v5 00/21] ibmvfc: initial MQ development/enablement
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20210114203148.246656-1-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <4e35505e-20a7-0b55-23dc-5d0972526e77@linux.vnet.ibm.com>
-Date:   Thu, 14 Jan 2021 16:47:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210114203148.246656-1-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-14_10:2021-01-14,2021-01-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- impostorscore=0 priorityscore=1501 mlxscore=0 phishscore=0
- lowpriorityscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
- bulkscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101140130
+        Thu, 14 Jan 2021 17:49:03 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246B2C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 14:48:23 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id v187so1911691ybv.21
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 14:48:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=RbsfhVoCXn95CjDh/v1ZbeIm2/iYKTwaoq52D6PfEPY=;
+        b=JuCQDAekJiG5HdKehuCqJGAjkuyxlcwDj+qlmc/HReJX5IoAhBrxD4wk92faxiGz0q
+         se8iaJ5om2woDhR+QpQ0gSvGSq801b47MjUYZv04QXCV8DP+OAi/GO7uEF0fJdmFuOpY
+         oUF/exMaBeMhH+2iQDx2kF3N1wFl056I8v7n+WUKaDffCMRHzFQj3GXnpzTwAGtaYCwN
+         JoWc6wM31t1VlGVUbqjK6ML0g1g5jxq96Z5I+v2l1h8s3QGhKvgAciC+fLDadzmdTvXC
+         HD/e8DsQZLZHR7+lTGbaZ3QjC5sCmpDM4lJ0U53AevQTleFRjPzSjGAZMWwPoRMgmf9y
+         A7kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=RbsfhVoCXn95CjDh/v1ZbeIm2/iYKTwaoq52D6PfEPY=;
+        b=chVouDa/e6fYgwUc2AgZGClDEBO1+eauWabbxWfRYNAUxMV6McWdBy63kzkkOF8LKm
+         e6xxooKAXZ0MFeYNWhf019K8rN3AREhgyud8C49XRgwKU+TVhIoPjmfONCc6IC/poMwl
+         3j8gJzbGeUdTg+asePckEZzSJ+lJ0VhuOXbEXwPyM/kzHEsCx/Mmi9q68PKF8o6bF94P
+         QBL7BdLN/Ym0DzfZa94FpW2aoJFgkxnA7+PhiTcw93+/JA9OfrcYmDfyfAAXBBiAn5K+
+         Y8ADls+eTlbMQnTqngjayK+etUisdcqQa8se+51QeDWxW1eJbM0ZvbM1KruX3j0ZFhdD
+         E1dg==
+X-Gm-Message-State: AOAM530U2kzQ5UHI2UsdRBfoJt+pdesecM93tr5SYhWXwldY+6rLq50G
+        8pH0Q85yj154F+Bo6eMlEltfIx38fBzi
+X-Google-Smtp-Source: ABdhPJx8UObKMHmLIz7WMbc2YnjaZFuPfuiYZynWknoXYdD64/vPatlAO9H8PSfqCiFVJX5rE+hWjJURH3yK
+Sender: "maskray via sendgmr" <maskray@maskray1.svl.corp.google.com>
+X-Received: from maskray1.svl.corp.google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
+ (user=maskray job=sendgmr) by 2002:a25:b341:: with SMTP id
+ k1mr14146305ybg.37.1610664502367; Thu, 14 Jan 2021 14:48:22 -0800 (PST)
+Date:   Thu, 14 Jan 2021 14:48:19 -0800
+In-Reply-To: <20210107185555.2781221-1-maskray@google.com>
+Message-Id: <20210114224819.1608929-1-maskray@google.com>
+Mime-Version: 1.0
+References: <20210107185555.2781221-1-maskray@google.com>
+X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
+Subject: [PATCH v3] x86: Treat R_386_PLT32 as R_386_PC32
+From:   Fangrui Song <maskray@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Fangrui Song <maskray@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tyrel,
+This is similar to commit b21ebf2fb4cd ("x86: Treat R_X86_64_PLT32 as
+R_X86_64_PC32"), but for i386.  As far as Linux kernel is concerned,
+R_386_PLT32 can be treated the same as R_386_PC32.
 
-I think this patch series is looking pretty good. I don't think we need
-to wait for resolution of the can_queue issue being discussed, since
-that is an issue that exists prior to this patch series and this patch
-series doesn't make the issue any worse. Let's work that separately.
+R_386_PC32/R_X86_64_PC32 are PC-relative relocation types with the
+requirement that the symbol address is significant.
+R_386_PLT32/R_X86_64_PLT32 are PC-relative relocation types without the
+address significance requirement.
 
-Thanks,
+On x86-64, there is no PIC vs non-PIC PLT distinction and an
+R_X86_64_PLT32 relocation is produced for both `call/jmp foo` and
+`call/jmp foo@PLT` with newer (2018) GNU as/LLVM integrated assembler.
 
-Brian
+On i386, there are 2 types of PLTs, PIC and non-PIC. Currently the
+convention is to use R_386_PC32 for non-PIC PLT and R_386_PLT32 for PIC
+PLT.
 
+clang-12 -fno-pic (since
+https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6)
+can emit R_386_PLT32 for compiler generated function declarations as
+well to avoid a canonical PLT entry (st_shndx=0, st_value!=0) if the
+symbol turns out to be defined externally. GCC/GNU as will likely keep
+using R_386_PC32 because (1) the ABI is legacy (2) the change will drop
+a GNU ld non-default visibility ifunc for shared objects.
+https://sourceware.org/bugzilla/show_bug.cgi?id=27169
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1210
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Fangrui Song <maskray@google.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+
+---
+Change in v2:
+* Improve commit message
+---
+Change in v3:
+* Change the GCC link to the more relevant GNU as link.
+* Fix the relevant llvm-project commit id.
+---
+ arch/x86/kernel/module.c | 1 +
+ arch/x86/tools/relocs.c  | 2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
+index 34b153cbd4ac..5e9a34b5bd74 100644
+--- a/arch/x86/kernel/module.c
++++ b/arch/x86/kernel/module.c
+@@ -114,6 +114,7 @@ int apply_relocate(Elf32_Shdr *sechdrs,
+ 			*location += sym->st_value;
+ 			break;
+ 		case R_386_PC32:
++		case R_386_PLT32:
+ 			/* Add the value, subtract its position */
+ 			*location += sym->st_value - (uint32_t)location;
+ 			break;
+diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
+index ce7188cbdae5..717e48ca28b6 100644
+--- a/arch/x86/tools/relocs.c
++++ b/arch/x86/tools/relocs.c
+@@ -867,6 +867,7 @@ static int do_reloc32(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
+ 	case R_386_PC32:
+ 	case R_386_PC16:
+ 	case R_386_PC8:
++	case R_386_PLT32:
+ 		/*
+ 		 * NONE can be ignored and PC relative relocations don't
+ 		 * need to be adjusted.
+@@ -910,6 +911,7 @@ static int do_reloc_real(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
+ 	case R_386_PC32:
+ 	case R_386_PC16:
+ 	case R_386_PC8:
++	case R_386_PLT32:
+ 		/*
+ 		 * NONE can be ignored and PC relative relocations don't
+ 		 * need to be adjusted.
 -- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
+2.30.0.296.g2bfb1c46d8-goog
 
