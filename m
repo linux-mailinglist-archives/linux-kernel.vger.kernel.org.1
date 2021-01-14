@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 909F52F592F
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE992F592E
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbhANDUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 22:20:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54800 "EHLO mail.kernel.org"
+        id S1727437AbhANDUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 22:20:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725953AbhANDUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 22:20:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0414423788;
-        Thu, 14 Jan 2021 03:20:09 +0000 (UTC)
+        id S1725875AbhANDUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 22:20:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5F14B2368A;
+        Thu, 14 Jan 2021 03:20:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610594409;
-        bh=LK8ZJ5pcQLauLQbDg+w49XDtH69PCpOJ6pQPSfHtE98=;
+        s=k20201202; t=1610594408;
+        bh=DsKff8k2U019nOkgpQIvVwjMpwDccNMnKcyt3nLKKH4=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cac+TxaIGKrUMiva2r3rACLTY94+7DYdPA5cv2+nbyWwYKP/E6GZSZTZDeUYVNqyQ
-         lOz4BkMPTCYg//VuYDw6KWMXMnAwDzktpRkHXONPMPBjx5wlZCXWGUm1pxTqXv80H3
-         gEV6bgkbFFxcgRiTFlFKqtxCw21CHLdUu2xCT4l3L9+dUlPosE/w8YXBWu2G7jMk8r
-         ISacLbbn1igxxA74MudH4e6gcq2rr+Mh4FsheIY03m18f/BIdgE6zXIdHpRspw0VLo
-         Uwf9k69kAJSJOxCgfYCLlbmuV34aF471X/teBuQz9wbSczzY6YNP6QvhIPqs5rMgEu
-         BvjpYKymE2SrQ==
+        b=BAq1PLoImqKJ+pYkWrgnI04JmWOER6IbgrED3ajsXhnZ7C5yZc5yLhb3mPLdUXgfu
+         Ey81HLUXZvRtyZNOVdakRcAaKR3T3G+PJQadqMQYRi4DCDQHtiTfJpelaPh7ulDDO1
+         BRJgtwwelE2JRbXkYdlMPETFAvDQ+1fKOz9c0O9JjU6sjg2fTvB9Ol5dzK62ec+jjA
+         +uD7vNNwu+eldDnKxe0caHjcgdI7zqoeOUnXvCKGKU+RgbNKjnetRP61iILwLhasvq
+         4Cp3VDpAiCcrRSunkWGbXrGYLK41UaEZLvuF/xEzQnNE/EzpluOHRDh/EYVQXU/Kql
+         UGCf9i6MIHdVw==
 Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id EF4686018E;
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 4E6F060105;
         Thu, 14 Jan 2021 03:20:08 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: core: use eth_type_vlan in
- __netif_receive_skb_core
+Subject: Re: [PATCH 1/2] bpf,
+ libbpf: Avoid unused function warning on bpf_tail_call_static
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161059440897.32332.9097025081494728731.git-patchwork-notify@kernel.org>
+Message-Id: <161059440831.32332.1122850052450236500.git-patchwork-notify@kernel.org>
 Date:   Thu, 14 Jan 2021 03:20:08 +0000
-References: <20210111104221.3451-1-dong.menglong@zte.com.cn>
-In-Reply-To: <20210111104221.3451-1-dong.menglong@zte.com.cn>
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, ast@kernel.org,
-        andriin@fb.com, daniel@iogearbox.net, edumazet@google.com,
-        ap420073@gmail.com, xiyou.wangcong@gmail.com, jiri@mellanox.com,
-        bjorn.topel@intel.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dong.menglong@zte.com.cn
+References: <20210113223609.3358812-1-irogers@google.com>
+In-Reply-To: <20210113223609.3358812-1-irogers@google.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        quentin@isovalent.com, jean-philippe@linaro.org,
+        tklauser@distanz.ch, iii@linux.ibm.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+This series was applied to bpf/bpf-next.git (refs/heads/master):
 
-On Mon, 11 Jan 2021 02:42:21 -0800 you wrote:
-> From: Menglong Dong <dong.menglong@zte.com.cn>
+On Wed, 13 Jan 2021 14:36:08 -0800 you wrote:
+> Add inline to __always_inline making it match the linux/compiler.h.
+> Adding this avoids an unused function warning on bpf_tail_call_static
+> when compining with -Wall.
 > 
-> Replace the check for ETH_P_8021Q and ETH_P_8021AD in
-> __netif_receive_skb_core with eth_type_vlan.
-> 
-> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
-> 
-> [...]
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/lib/bpf/bpf_helpers.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - [net-next] net: core: use eth_type_vlan in __netif_receive_skb_core
-    https://git.kernel.org/netdev/net-next/c/324cefaf1c72
+  - [1/2] bpf, libbpf: Avoid unused function warning on bpf_tail_call_static
+    https://git.kernel.org/bpf/bpf-next/c/ce5a518e9de5
+  - [2/2] tools/bpftool: Add -Wall when building BPF programs
+    https://git.kernel.org/bpf/bpf-next/c/bade5c554f1a
 
 You are awesome, thank you!
 --
