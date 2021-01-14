@@ -2,103 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E791D2F6D4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE872F6D50
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729418AbhANVfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 16:35:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726729AbhANVfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 16:35:19 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6820E22BEA;
-        Thu, 14 Jan 2021 21:34:37 +0000 (UTC)
-Date:   Thu, 14 Jan 2021 16:34:35 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        ville.syrjala@linux.intel.com, lukas@wunner.de,
-        chris@chris-wilson.co.uk, jani.nikula@intel.com
-Subject: Re: [BUG] on reboot: bisected to: drm/i915: Shut down displays
- gracefully on reboot
-Message-ID: <20210114163435.767ccbb0@gandalf.local.home>
-In-Reply-To: <20210114163206.4a562d82@gandalf.local.home>
-References: <20210114163206.4a562d82@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1729822AbhANVfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 16:35:52 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7252 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726729AbhANVfu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 16:35:50 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10ELWLH8106930;
+        Thu, 14 Jan 2021 16:35:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=0xlsKXjwk99squno4VH+VrcvLyBZOH7ZSXcQj3fBfVQ=;
+ b=qPAWHLaRP9VsKzjxf4lc5f6w/h+SH+E5XpFRRxrw9oQVfM2y2jsNDta87rlcmk2fxno2
+ PaQujZhrNYGOiMDwRIjxHX/+G8bFaGEaoKqkxM7o02dWhrRjK24NqxJGNFAP/qlqVyWk
+ EDu7Yjo1HjptUoNYHuuijgdVsBQeVoT1q+j7Y9Jso/of+nfl3AZovpMBW66/+oZ2GzKM
+ S7X/ouMq7RuT0BvCaE2qvOGwdvEdx0h/pHoofMj2shJGEz0CEnOWU0sS2z+FPNI02xfz
+ /B281dT83fzQDsFHKhVKEoBRavu6R1Hoi0QH5iqT+Gio7H/1Kqi9mBPvJOWh8K7rpIKW 5Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 362wp20g9q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Jan 2021 16:35:07 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10ELX1wF112505;
+        Thu, 14 Jan 2021 16:35:07 -0500
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 362wp20g97-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Jan 2021 16:35:07 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10ELXRxW014586;
+        Thu, 14 Jan 2021 21:35:06 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma04wdc.us.ibm.com with ESMTP id 35y449g4y1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Jan 2021 21:35:06 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10ELZ3Zp15663442
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Jan 2021 21:35:03 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C1A9D13605D;
+        Thu, 14 Jan 2021 21:35:03 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 090B713604F;
+        Thu, 14 Jan 2021 21:35:01 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.193.150])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Jan 2021 21:35:01 +0000 (GMT)
+Subject: Re: [PATCH v13 07/15] s390/vfio-ap: introduce shadow APCB
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
+ <20201223011606.5265-8-akrowiak@linux.ibm.com>
+ <20210111235058.32ed94b5.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <47a353f5-e34f-db7b-65da-6fcf405959d5@linux.ibm.com>
+Date:   Thu, 14 Jan 2021 16:35:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210111235058.32ed94b5.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-14_08:2021-01-14,2021-01-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ adultscore=0 clxscore=1015 priorityscore=1501 lowpriorityscore=0
+ suspectscore=0 malwarescore=0 bulkscore=0 impostorscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101140122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-[ Forgot to add those on the commit itself ]
 
--- Steve
+On 1/11/21 5:50 PM, Halil Pasic wrote:
+> On Tue, 22 Dec 2020 20:15:58 -0500
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>> The APCB is a field within the CRYCB that provides the AP configuration
+>> to a KVM guest. Let's introduce a shadow copy of the KVM guest's APCB and
+>> maintain it for the lifespan of the guest.
+>>
+>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+>> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+>> ---
+>>   drivers/s390/crypto/vfio_ap_ops.c     | 15 +++++++++++++++
+>>   drivers/s390/crypto/vfio_ap_private.h |  2 ++
+>>   2 files changed, 17 insertions(+)
+>>
+>> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+>> index 2d58b39977be..44b3a81cadfb 100644
+>> --- a/drivers/s390/crypto/vfio_ap_ops.c
+>> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+>> @@ -293,6 +293,20 @@ static void vfio_ap_matrix_init(struct ap_config_info *info,
+>>   	matrix->adm_max = info->apxa ? info->Nd : 15;
+>>   }
+>>   
+>> +static bool vfio_ap_mdev_has_crycb(struct ap_matrix_mdev *matrix_mdev)
+>> +{
+>> +	return (matrix_mdev->kvm && matrix_mdev->kvm->arch.crypto.crycbd);
+>> +}
+>> +
+>> +static void vfio_ap_mdev_commit_shadow_apcb(struct ap_matrix_mdev *matrix_mdev)
+>> +{
+>> +	if (vfio_ap_mdev_has_crycb(matrix_mdev))
+>> +		kvm_arch_crypto_set_masks(matrix_mdev->kvm,
+>> +					  matrix_mdev->shadow_apcb.apm,
+>> +					  matrix_mdev->shadow_apcb.aqm,
+>> +					  matrix_mdev->shadow_apcb.adm);
+>> +}
+>> +
+>>   static int vfio_ap_mdev_create(struct kobject *kobj, struct mdev_device *mdev)
+>>   {
+>>   	struct ap_matrix_mdev *matrix_mdev;
+>> @@ -308,6 +322,7 @@ static int vfio_ap_mdev_create(struct kobject *kobj, struct mdev_device *mdev)
+>>   
+>>   	matrix_mdev->mdev = mdev;
+>>   	vfio_ap_matrix_init(&matrix_dev->info, &matrix_mdev->matrix);
+>> +	vfio_ap_matrix_init(&matrix_dev->info, &matrix_mdev->shadow_apcb);
+>>   	hash_init(matrix_mdev->qtable);
+>>   	mdev_set_drvdata(mdev, matrix_mdev);
+>>   	matrix_mdev->pqap_hook.hook = handle_pqap;
+>> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
+>> index 4e5cc72fc0db..d2d26ba18602 100644
+>> --- a/drivers/s390/crypto/vfio_ap_private.h
+>> +++ b/drivers/s390/crypto/vfio_ap_private.h
+>> @@ -75,6 +75,7 @@ struct ap_matrix {
+>>    * @list:	allows the ap_matrix_mdev struct to be added to a list
+>>    * @matrix:	the adapters, usage domains and control domains assigned to the
+>>    *		mediated matrix device.
+>> + * @shadow_apcb:    the shadow copy of the APCB field of the KVM guest's CRYCB
+>>    * @group_notifier: notifier block used for specifying callback function for
+>>    *		    handling the VFIO_GROUP_NOTIFY_SET_KVM event
+>>    * @kvm:	the struct holding guest's state
+>> @@ -82,6 +83,7 @@ struct ap_matrix {
+>>   struct ap_matrix_mdev {
+>>   	struct list_head node;
+>>   	struct ap_matrix matrix;
+>> +	struct ap_matrix shadow_apcb;
+>>   	struct notifier_block group_notifier;
+>>   	struct notifier_block iommu_notifier;
+>>   	struct kvm *kvm;
+> What happened to the following hunk from v12?
 
+That's a very good question, I'll reinstate it.
 
-On Thu, 14 Jan 2021 16:32:06 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On reboot, one of my test boxes now triggers the following warning:
-> 
->  ------------[ cut here ]------------
->  RPM raw-wakeref not held
->  WARNING: CPU: 4 PID: 1 at drivers/gpu/drm/i915/intel_runtime_pm.h:106 gen6_write32+0x1bc/0x2a0 [i915]
->  Modules linked in: ebtable_filter ebtables bridge stp llc ip6t_REJECT nf_reject_ipv6 vsock vmw_vmci xt_state xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip6table_filter ip6_tables snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_generic le
-> 15 snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hwdep i2c_algo_bit snd_hda_core snd_seq intel_rapl_msr snd_seq_device intel_rapl_common snd_pcm x86_pkg_temp_thermal intel_powerclamp snd_timer snd coretemp kvm_intel soundcore kvm mei_wdt irqbypass joydev 
-> _pmc_bxt hp_wmi wmi_bmof sparse_keymap rfkill iTCO_vendor_support crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel drm_kms_helper i2c_i801 cec drm rapl intel_cstate intel_uncore mei_me i2c_smbus e1000e tpm_infineon wmi serio_raw mei video lpc_i
-> 
->  CPU: 4 PID: 1 Comm: systemd-shutdow Not tainted 5.9.0-rc4-test+ #861
->  Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
->  RIP: 0010:gen6_write32+0x1bc/0x2a0 [i915]
->  Code: 5d 82 e0 0f 0b e9 b5 fe ff ff 80 3d 95 6b 22 00 00 0f 85 b2 fe ff ff 48 c7 c7 04 d2 a4 c0 c6 05 81 6b 22 00 01 e8 f6 5c 82 e0 <0f> 0b e9 98 fe ff ff 80 3d 6d 6b 22 00 00 0f 85 95 fe ff ff 48 c7
->  RSP: 0018:ffffb9c1c002fd08 EFLAGS: 00010296
->  RAX: 0000000000000018 RBX: ffff99aec8881010 RCX: ffff99aeda400000
->  RDX: 0000000000000000 RSI: ffffffffa115d9ef RDI: ffffffffa115d9ef
->  RBP: 0000000000044004 R08: 0000000000000001 R09: 0000000000000000
->  R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
->  R13: 0000000000000001 R14: 00000000ffffffff R15: 0000000000000000
->  FS:  00007f91257a9940(0000) GS:ffff99aeda400000(0000) knlGS:0000000000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 00007f9126829400 CR3: 00000001088f0006 CR4: 00000000001706e0
->  Call Trace:
->   gen3_irq_reset+0x2e/0xd0 [i915]
->   intel_irq_reset+0x59/0x6a0 [i915]
->   intel_runtime_pm_disable_interrupts+0xe/0x30 [i915]
->   i915_driver_shutdown+0x2e/0x40 [i915]
->   pci_device_shutdown+0x34/0x60
->   device_shutdown+0x15d/0x1b3
->   kernel_restart+0xe/0x30
->   __do_sys_reboot+0x1d7/0x210
->   ? vfs_writev+0x9d/0xe0
->   ? syscall_enter_from_user_mode+0x1d/0x70
->   ? trace_hardirqs_on+0x2c/0xe0
->   do_syscall_64+0x33/0x40
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->  RIP: 0033:0x7f912675f2d7
->  Code: 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 89 fa be 69 19 12 28 bf ad de e1 fe b8 a9 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 81 8b 0c 00 f7 d8 64 89 02 b8
->  RSP: 002b:00007ffeca28e148 EFLAGS: 00000206 ORIG_RAX: 00000000000000a9
->  RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f912675f2d7
->  RDX: 0000000001234567 RSI: 0000000028121969 RDI: 00000000fee1dead
->  RBP: 00007ffeca28e3d0 R08: 000000000000000a R09: 0000000000000000
->  R10: 0000000000000232 R11: 0000000000000206 R12: 0000000000000001
->  R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffeca28e4b8
->  ---[ end trace 2ed17eabd3ab6938 ]---
->  ------------[ cut here ]------------
-> 
-> The bisect came to this commit:
-> 
->   fe0f1e3bfdfeb53e18f1206aea4f40b9bd1f291c
->   ("drm/i915: Shut down displays gracefully on reboot")
-> 
-> Which makes sense, as it happens on shutdown.
-> 
-> -- Steve
+>
+> @@ -1218,13 +1233,9 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
+>   	if (ret)
+>   		return NOTIFY_DONE;
+>   
+> -	/* If there is no CRYCB pointer, then we can't copy the masks */
+> -	if (!matrix_mdev->kvm->arch.crypto.crycbd)
+> -		return NOTIFY_DONE;
+> -
+> -	kvm_arch_crypto_set_masks(matrix_mdev->kvm, matrix_mdev->matrix.apm,
+> -				  matrix_mdev->matrix.aqm,
+> -				  matrix_mdev->matrix.adm);
+> +	memcpy(&matrix_mdev->shadow_apcb, &matrix_mdev->matrix,
+> +	       sizeof(matrix_mdev->shadow_apcb));
+> +	vfio_ap_mdev_commit_shadow_apcb(matrix_mdev);
+>   
+>   	return NOTIFY_OK;
+>   }
 
