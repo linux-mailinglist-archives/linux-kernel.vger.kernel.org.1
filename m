@@ -2,128 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B912F69DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 872802F69E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:50:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729267AbhANSpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:45:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39726 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727346AbhANSpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:45:30 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 248D5B77E;
-        Thu, 14 Jan 2021 18:44:48 +0000 (UTC)
-Message-ID: <99a7d6e80646ff7ac6c1fc615146fc4ad1428552.camel@suse.de>
-Subject: Re: [PATCH v6 11/11] pwm: Add Raspberry Pi Firmware based PWM bus
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, f.fainelli@gmail.com,
-        linux-pwm@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        wahrenst@gmx.net, linux-input@vger.kernel.org,
-        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
-        devel@driverdev.osuosl.org, p.zabel@pengutronix.de,
-        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
-        linux-clk@vger.kernel.org, sboyd@kernel.org,
-        linux-rpi-kernel@lists.infradead.org, bgolaszewski@baylibre.com,
-        andy.shevchenko@gmail.com
-Date:   Thu, 14 Jan 2021 19:44:46 +0100
-In-Reply-To: <20210112091842.3th64ardbqjafvuq@pengutronix.de>
-References: <20201211164801.7838-1-nsaenzjulienne@suse.de>
-         <20201211164801.7838-12-nsaenzjulienne@suse.de>
-         <20210112091842.3th64ardbqjafvuq@pengutronix.de>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-Gc66jpwjN4JFK05BfjVR"
-User-Agent: Evolution 3.38.2 
+        id S1729471AbhANSpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:45:53 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:37569 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727346AbhANSpw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 13:45:52 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610649934; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=3zjXkQXLJWqqe3jg+JhaQfBk8Fz3LZHrdbV179oe6tw=;
+ b=tugGo8JJb5Iybi1Z5GaM2ZLHDkpZl71Tb2Wq4dn95k3EBMmkDShKoX4ZPdSwctgtDzs5CflK
+ ZlE/7WuE049wIiW8tPLVVUqtHJ0P40Xf8BtMvY6w4ZrYXNrxy7YusY4HBDUkxLHSsaDyuT0G
+ +gXyAOGcLvybZar/+VPlhtM9W4Y=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 600091314104d9478dc728ad (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 18:45:05
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 54D81C43467; Thu, 14 Jan 2021 18:45:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 09882C433C6;
+        Thu, 14 Jan 2021 18:45:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 09882C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 4/7] wil6210: select CONFIG_CRC32
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210103213645.1994783-4-arnd@kernel.org>
+References: <20210103213645.1994783-4-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Maya Erez <merez@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "John W. Linville" <linville@tuxdriver.com>,
+        Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>,
+        linux-wireless@vger.kernel.org, wil6210@qti.qualcomm.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210114184505.54D81C43467@smtp.codeaurora.org>
+Date:   Thu, 14 Jan 2021 18:45:05 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Arnd Bergmann <arnd@kernel.org> wrote:
 
---=-Gc66jpwjN4JFK05BfjVR
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Without crc32, the driver fails to link:
+> 
+> arm-linux-gnueabi-ld: drivers/net/wireless/ath/wil6210/fw.o: in function `wil_fw_verify':
+> fw.c:(.text+0x74c): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/wireless/ath/wil6210/fw.o:fw.c:(.text+0x758): more undefined references to `crc32_le' follow
+> 
+> Fixes: 151a9706503f ("wil6210: firmware download")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Hi Uwe, thanks for the review.
+Dave had already applied this so dropping from my queue.
 
-On Tue, 2021-01-12 at 10:18 +0100, Uwe Kleine-K=C3=B6nig wrote:
+Patch set to Not Applicable.
 
-[...]
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210103213645.1994783-4-arnd@kernel.org/
 
-> > +                duty_cycle =3D DIV_ROUND_CLOSEST_ULL(state->duty_cycle=
- * RPI_PWM_MAX_DUTY,
-> > +					           RPI_PWM_PERIOD_NS);
->=20
-> ... and round down here.
->=20
-> Just to be sure: writing RPI_PWM_MAX_DUTY (i.e. 255) yields 100% duty
-> cycle, right?
-
-Yes, at 255 the signal is flat.
-
-> > +        else
-> > +                duty_cycle =3D RPI_PWM_MAX_DUTY;
-> > +
-> > +	if (duty_cycle =3D=3D rpipwm->duty_cycle)
-> > +		return 0;
-> > +
-> > +	ret =3D raspberrypi_pwm_set_property(rpipwm->firmware, RPI_PWM_CUR_DU=
-TY_REG,
-> > +					   duty_cycle);
-> > +	if (ret) {
-> > +		dev_err(chip->dev, "Failed to set duty cycle: %d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	/*
-> > +	 * This sets the default duty cycle after resetting the board, we
-> > +	 * updated it every time to mimic Raspberry Pi's downstream's driver
-> > +	 * behaviour.
-> > +	 */
-> > +	ret =3D raspberrypi_pwm_set_property(rpipwm->firmware, RPI_PWM_DEF_DU=
-TY_REG,
-> > +					   duty_cycle);
-> > +	if (ret) {
-> > +		dev_err(chip->dev, "Failed to set default duty cycle: %d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +        rpipwm->duty_cycle =3D duty_cycle;
->=20
-> Please use tabs for indention. (The general hint is to use checkpatch
-> which (I hope) tells you about problems like this.)
-
-Sorry for that.
-
-I took note of the rest of comments and will update the code.
-
-Regards,
-Nicolas
-
-
-
---=-Gc66jpwjN4JFK05BfjVR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmAAkR4ACgkQlfZmHno8
-x/7WpAf+OcmBebYI8HGJFfpFhX3gBSdN6587Todi3RNaMrm6loRFFbe3HDS3rO0u
-pv9Zl7lrjVKV1+Fug2/3rTL4Kh0/w98EZJ5mpf6n5k0EG+EoMqGqfqElaLL0mvW9
-7NpiNF15W4/v/U22BH3jtFUkt0PpjN1J2WPclOl+ZPEe31vjdiEauq7zAhRT9Gpr
-XHH9ZbY9f4oXR2s91ZaYGdni3ikxxB4cG/aS50GAM019KW/RIkEibfYpDjrCNOml
-M4Z4Y15Mqi8aouumlLNKiuxNmNhtyCilx3jHPeNm+2b5GeBp/S9jtAVkVaUaYQ9I
-N8qh4QzVUk4qMeucxLeRRemzuIWCOw==
-=pJN/
------END PGP SIGNATURE-----
-
---=-Gc66jpwjN4JFK05BfjVR--
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
