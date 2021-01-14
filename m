@@ -2,115 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41BF72F57C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9132F57C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730123AbhANCG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:06:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729109AbhANCGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 21:06:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0C9223442;
-        Thu, 14 Jan 2021 02:05:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610589938;
-        bh=NNgK5BZvTtLVTBZUqJP4R8eSarXLcVpD1VeEm8Vu678=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uEbV8/lm9F6iat9HimlHsiyPyU7AtTod+Gg+fJNZtrdkgZzZFz+9JsAWD2RYgolAy
-         zd23Qdv8WM3G/NHSLsEIu07x7B8V0NS0KLE2Cq6nAhkI1a2G7lDOnpvCG7UfwpERtY
-         YSAfuut5osfYLOXLZjDF6T/hbMCAB1kUSspXmMpxzmH0DDX0fSf55dZKV3bBFkThsY
-         AAUY/7Mz8S1jU4JIZahoaTywyTn/kTlM1YPf+vCrPm59ZUvORuNPcy/OlzXnc7K8at
-         qj3qmvqCUzX0XG7wNxM+Csrb3WyJBgHr4QRrdYADo3S7lpxoyTGZPyjinLwkQsZEkz
-         LINZx0hO334Bg==
-Date:   Thu, 14 Jan 2021 04:05:31 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Janne Karhunen <janne.karhunen@gmail.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Markus Wamser <Markus.Wamser@mixed-mode.de>,
-        Luke Hinds <lhinds@redhat.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        op-tee@lists.trustedfirmware.org
-Subject: Re: [PATCH v8 2/4] KEYS: trusted: Introduce TEE based Trusted Keys
-Message-ID: <X/+m6+m2/snYj9Vc@kernel.org>
-References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
- <1604419306-26105-3-git-send-email-sumit.garg@linaro.org>
- <X/x+N0fgrzIZTeNi@kernel.org>
- <CAFA6WYOUvWAZtYfR4q8beZFkX-CtdxqwJaRQM+GHNMDfQiEWOA@mail.gmail.com>
+        id S1730125AbhANCGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:06:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729881AbhANCGZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 21:06:25 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632F8C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 18:05:45 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id w1so3904252pjc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 18:05:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2y4dk7RPy1+H0zBuDXTEaauzgo/RetPwOeAaLDfjsos=;
+        b=UpT9ATiPlrxe65QqRf52h7JcDgIOjOU50wd3rc5S9/fV1avkZ2eqPth/QvTvho4x9w
+         qsTlhFHkubqvIgFbgFHx92IbNW4Y3kv8zfzJfv4tAuMY/DtxjjfucLRzjFgpIcN82NFu
+         /FE54vyYFFQtcmNzhkpjpGtv04Mnk6SM9dkBZ53AhH9ruh4Qf2WIYv+Z+qI9BxN8s9QF
+         U/eGBztIpNLXb+49weYiN70xs4ZdpUMCKIIKsImGXNuVcKfiEPOAjj7VeNUV3hiuDx+0
+         rimY09LTPOCmJZLN0mvnpkZ5D3ycFug3NZKq8vIC086Xu565ybhjJ+ZeQ9cf78tGVMfE
+         1khg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2y4dk7RPy1+H0zBuDXTEaauzgo/RetPwOeAaLDfjsos=;
+        b=kuBqKcFHyWBjzBz3Dw52z28Uw2bZCp74KH312vpgMvXnb3CW7h/8hksr3Vh0IF+vFB
+         ZB3VCvHiHTxwioXOdsrCTUu3APPobWvt0eHK9bbrXO5pisVb5mi97ePnU/bJ5/fO8GCS
+         ALrKZhJknFssjawUh0Bb1vJSGcRL/Iv/2CjnzvWtIcYcN0SHEwwkxkFCTKOMDWnrOYOZ
+         qQeZ4aHxJb+k3fpC5InkOXUMTNZCakidDW0XsbaCByc9na1KrBJzY2DoQTbzRY19GrWq
+         kBKm/jZ8SPEI19BHAKFskkrgbnd/MBPnw8jyvSejbf8onHSf7v+Nzynendowsro0n413
+         gC6A==
+X-Gm-Message-State: AOAM533fsCyFxlH2uPuzQkvIke0ESWMO/ojZQAiOUqIaSYudYra/GYTV
+        m0XlMNCBtv7oEj1vpewR02sqNv2zCtIKJwmqjmJYTw==
+X-Google-Smtp-Source: ABdhPJzzbSwVqR4cFKreQ20J4RGA70jhmZkdQ+qNkNyV4tIa56erUcX5ihAZGP5O/T6NW0QfyYQS2oDli/oYDXvJh6s=
+X-Received: by 2002:a17:90a:9915:: with SMTP id b21mr2352305pjp.101.1610589944646;
+ Wed, 13 Jan 2021 18:05:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFA6WYOUvWAZtYfR4q8beZFkX-CtdxqwJaRQM+GHNMDfQiEWOA@mail.gmail.com>
+References: <20210114003447.7363-1-natechancellor@gmail.com> <CAKwvOdnJ0VUjTX-cyLgtHvy68DHG1VMj7s0huk_FKh1E9pH9Cg@mail.gmail.com>
+In-Reply-To: <CAKwvOdnJ0VUjTX-cyLgtHvy68DHG1VMj7s0huk_FKh1E9pH9Cg@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 13 Jan 2021 18:05:32 -0800
+Message-ID: <CAKwvOdmr7RttdM25wWKiV8t+tzn8W-C_U6avwrQXQWphT8XhXQ@mail.gmail.com>
+Subject: Re: [PATCH] Documentation/llvm: Add a section about supported architectures
+To:     Nathan Chancellor <natechancellor@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 04:47:00PM +0530, Sumit Garg wrote:
-> Hi Jarkko,
-> 
-> On Mon, 11 Jan 2021 at 22:05, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> >
-> > On Tue, Nov 03, 2020 at 09:31:44PM +0530, Sumit Garg wrote:
-> > > Add support for TEE based trusted keys where TEE provides the functionality
-> > > to seal and unseal trusted keys using hardware unique key.
-> > >
-> > > Refer to Documentation/tee.txt for detailed information about TEE.
-> > >
-> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> >
-> > I haven't yet got QEMU environment working with aarch64, this produces
-> > just a blank screen:
-> >
-> > ./output/host/usr/bin/qemu-system-aarch64 -M virt -cpu cortex-a53 -smp 1 -kernel output/images/Image -initrd output/images/rootfs.cpio -serial stdio
-> >
-> > My BuildRoot fork for TPM and keyring testing is located over here:
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/buildroot-tpmdd.git/
-> >
-> > The "ARM version" is at this point in aarch64 branch. Over time I will
-> > define tpmdd-x86_64 and tpmdd-aarch64 boards and everything will be then
-> > in the master branch.
-> >
-> > To create identical images you just need to
-> >
-> > $ make tpmdd_defconfig && make
-> >
-> > Can you check if you see anything obviously wrong? I'm eager to test this
-> > patch set, and in bigger picture I really need to have ready to run
-> > aarch64 environment available.
-> 
-> I would rather suggest you to follow steps listed here [1] as to test
-> this feature on Qemu aarch64 we need to build firmwares such as TF-A,
-> OP-TEE, UEFI etc. which are all integrated into OP-TEE Qemu build
-> system [2]. And then it would be easier to migrate them to your
-> buildroot environment as well.
-> 
-> [1] https://lists.trustedfirmware.org/pipermail/op-tee/2020-May/000027.html
-> [2] https://optee.readthedocs.io/en/latest/building/devices/qemu.html#qemu-v8
-> 
-> -Sumit
+On Wed, Jan 13, 2021 at 5:19 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Patch looks fine, but `make -j htmldocs` seems to be taking forever
+> for me so I can't render it. Is this a known issue?
+>
+> $ make -j htmldocs
 
-Can you provide 'keyctl_change'? Otherwise, the steps are easy to follow.
+Just took a while, lots of warning spew (but not from this addition AFAICT).
+Reviewed-by: Nick Desaulniers <ndesaulnier@google.com>
 
-After I've successfully tested 2/4, I'd suggest that you roll out one more
-version and CC the documentation patch to Elaine and Mini, and clearly
-remark in the commit message that TEE is a standard, with a link to the
-specification.
+>
+> On Wed, Jan 13, 2021 at 4:35 PM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> >
+> > The most common question around building the Linux kernel with clang is
+> > "does it work?" and the answer has always been "it depends on your
+> > architecture, configuration, and LLVM version" with no hard answers for
+> > users wanting to experiment. LLVM support has significantly improved
+> > over the past couple of years, resulting in more architectures and
+> > configurations supported, and continuous integration has made it easier
+> > to see what works and what does not.
+> >
+> > Add a section that goes over what architectures are supported in the
+> > current kernel version, how they should be built (with just clang or the
+> > LLVM utilities as well), and the level of support they receive. This
+> > will make it easier for people to try out building their kernel with
+> > LLVM and reporting issues that come about from it.
+> >
+> > Suggested-by: Miguel Ojeda <ojeda@kernel.org>
+> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> > ---
+> >  Documentation/kbuild/llvm.rst | 44 +++++++++++++++++++++++++++++++++++
+> >  1 file changed, 44 insertions(+)
+> >
+> > diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
+> > index 21c847890d03..b18401d2ba82 100644
+> > --- a/Documentation/kbuild/llvm.rst
+> > +++ b/Documentation/kbuild/llvm.rst
+> > @@ -63,6 +63,50 @@ They can be enabled individually. The full list of the parameters: ::
+> >  Currently, the integrated assembler is disabled by default. You can pass
+> >  ``LLVM_IAS=1`` to enable it.
+> >
+> > +Supported Architectures
+> > +-----------------------
+> > +
+> > +LLVM does not target all of the architectures that Linux supports and
+> > +just because a target is supported in LLVM does not mean that the kernel
+> > +will build or work without any issues. Below is a general summary of
+> > +architectures that currently work with ``CC=clang`` or ``LLVM=1``. Level
+> > +of support corresponds to "S" values in the MAINTAINERS files. If an
+> > +architecture is not present, it either means that LLVM does not target
+> > +it or there are known issues. Using the latest stable version of LLVM or
+> > +even the development tree will generally yield the best results.
+> > +An architecture's ``defconfig`` is generally expected to work well,
+> > +certain configurations may have problems that have not been uncovered
+> > +yet. Bug reports are always welcome at the issue tracker below!
+> > +
+> > +.. list-table::
+> > +   :widths: 10 10 10
+> > +   :header-rows: 1
+> > +
+> > +   * - Architecture
+> > +     - Level of support
+> > +     - ``make`` command
+> > +   * - arm
+> > +     - Supported
+> > +     - ``LLVM=1``
+> > +   * - arm64
+> > +     - Supported
+> > +     - ``LLVM=1``
+> > +   * - mips
+> > +     - Maintained
+> > +     - ``CC=clang``
+> > +   * - powerpc
+> > +     - Maintained
+> > +     - ``CC=clang``
+> > +   * - riscv
+> > +     - Maintained
+> > +     - ``CC=clang``
+> > +   * - s390
+> > +     - Maintained
+> > +     - ``CC=clang``
+> > +   * - x86
+> > +     - Supported
+> > +     - ``LLVM=1``
+> > +
+> >  Getting Help
+> >  ------------
+> >
+> >
+> > base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
+> > --
+> > 2.30.0
+> >
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
 
-/Jarkko
+
+
+-- 
+Thanks,
+~Nick Desaulniers
