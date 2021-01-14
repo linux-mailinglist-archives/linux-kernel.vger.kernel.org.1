@@ -2,68 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8232F6407
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5D22F640A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729315AbhANPOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 10:14:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
+        id S1729424AbhANPO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 10:14:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726259AbhANPOR (ORCPT
+        with ESMTP id S1726578AbhANPO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 10:14:17 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBC5C061574;
-        Thu, 14 Jan 2021 07:13:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=baU0kpJtTWVnL2IPMNaB2SRlSi8la0eAKCzpp9qIWxw=; b=OfoBBeDPHsLncJBNT21TUU4Zx
-        UX8oOxbsPFlBqyIypgyQTRdgrv1D9MtgAeqxazc8t+QGeSia47g+E+hAei9IU97TPNt8o1RABZTlZ
-        h5GlG1X+UUdydRB8Vd1sDxH4cymdf58RmV0Bd7VL2+emfbYyOQsQNOxNxdR36Fe3W6gtJqhZa8AFj
-        DiepzbuF5fNnI2O0XKB+nk76ofzr01InJiuLVEv90Az6rpt93xOouVAoveopCqOqTmO6eK93prmA6
-        P/omSbKEkDfgALHlnFd59CQyZiSRjGY32FUlR5M0iHGgGubaIsiMhKIiA0NWy7TWF3NbJ5kfbmzsB
-        2VY9qN3Zg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47918)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l04JZ-0002b1-LG; Thu, 14 Jan 2021 15:13:33 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l04JY-0008Rg-Tu; Thu, 14 Jan 2021 15:13:32 +0000
-Date:   Thu, 14 Jan 2021 15:13:32 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Bjarni Jonasson <bjarni.jonasson@microchip.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH net-next v2 1/2] net: phy: Add 100 base-x mode
-Message-ID: <20210114151332.GT1551@shell.armlinux.org.uk>
-References: <20210113115626.17381-1-bjarni.jonasson@microchip.com>
- <20210113115626.17381-2-bjarni.jonasson@microchip.com>
+        Thu, 14 Jan 2021 10:14:27 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EA9C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:13:46 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id a12so6120128wrv.8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:13:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AVLo5BPEqp+ye9g7cufxibCuaIAS/DGP9Yi79MJe9kY=;
+        b=won0B5uHrjcqRlYjUBBkQbM3sbSz2hhH2cmVKpt4Ejx9JxdBRVg6pImH5f443q5HOh
+         78JEtbonxLP52mtFifp+IFC3Tg6fLsmPrf2ENbLTvxWeydvjHc81pIIznh5QL8MyioVs
+         esT8hqXtDMpc/g1jAwtv7aClyIwCN0yEgTyNO5K2a+4veWHrb61A0rq4AaUkLeWflNiT
+         zPpdqqHPLGtVNFTw0s4I1HJJcV1178Z4Rcb6qlscDcLRu4XaiiLMzghdoKq54bH8Mcf9
+         CCDsDzVdyyBCrfNofVJNVAJc4l8PXU6JPEjY/u032Sdsc6URYYQQvTMg5RZj464ZOOFp
+         gJSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AVLo5BPEqp+ye9g7cufxibCuaIAS/DGP9Yi79MJe9kY=;
+        b=C6TDtMvm1pSsFaHKrdd34D6bXuR4Q45LnKXZQrEWlsrDJMQzhYhO809Sa3cbWmlOaZ
+         HVUcnj0MHAxT0aLEvDAS9GZnVTfOk3NAjkCgW/nNF/yJwehki+AY0/b4gIOjzL517ayL
+         JpkFCAES/a3qGdtRXDxm+PpGihgRzngNt1yBeMtuIzlU3qdht4Tjo3V+QvOmRDObsmfK
+         Kbyvgu41GeaS1IwovcZDj2TSxh7ptRmxwPH/Fav6BD3Dc4BorB1F19Obe5zPQyrJnb/P
+         EORTXS1HRoy02xL3QgbC2Po7IGIBgjQ0V5CHsdXZzH8NasggsF2lB+zaaDT44iTfmDnq
+         9jWA==
+X-Gm-Message-State: AOAM533Uf6PR86dMqfBRFr7GAVCrI++cPr8iUb8lHAyPotHVVVpzMpBR
+        3swyzhLlBdws+CNdMOmd/1CJ4JVo1zV54DiWnc8B2LtgpBZd3A==
+X-Google-Smtp-Source: ABdhPJxIkBqRfL1TF0JHl+rSbpZvhnN+YU5tGFaa2jlCW3niHYNg6rtHJ77oUw71r3ViG1agFniqfvEOa37mjrVCYbw=
+X-Received: by 2002:adf:a388:: with SMTP id l8mr8389014wrb.354.1610637225415;
+ Thu, 14 Jan 2021 07:13:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113115626.17381-2-bjarni.jonasson@microchip.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <20210107025731.226017-1-warthog618@gmail.com> <20210107025731.226017-7-warthog618@gmail.com>
+In-Reply-To: <20210107025731.226017-7-warthog618@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 14 Jan 2021 16:13:34 +0100
+Message-ID: <CAMpxmJUv4mQXDVY6cVPTFTK02i9LTH-eiWTPMGTyrdAcNM3n4g@mail.gmail.com>
+Subject: Re: [PATCH v2 6/7] selftests: gpio: port to GPIO uAPI v2
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 12:56:25PM +0100, Bjarni Jonasson wrote:
-> Sparx-5 supports this mode and it is missing in the PHY core.
-> 
-> Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
+On Thu, Jan 7, 2021 at 3:59 AM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> Add a port to the GPIO uAPI v2 interface and make it the default.
+>
+> Signed-off-by: Kent Gibson <warthog618@gmail.com>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
