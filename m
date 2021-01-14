@@ -2,195 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1CA2F6588
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 452492F6598
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbhANQPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:15:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725918AbhANQPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:15:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C42C2239EB;
-        Thu, 14 Jan 2021 16:14:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610640866;
-        bh=6xX+JZ3eD7/Whv74i4bNA2VkhHl2m10fENZO3mqzgVo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gj6OI2oPlZD/tTfqVYtRC69HoaY0dP0J80+mt5tUtZdd0AB5ghmxx7VZkTWclBkt4
-         39nyETPm4MJiKouoxR7St2YGFxM6R+WCcriOo2mD6WYjBdL0lo8pdSrvbMHemeCV9Z
-         RtR9u3DB7iGSj5e9m97jLAYsCjWAy86aF6kTo7qM=
-Date:   Thu, 14 Jan 2021 17:14:23 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Viktor Mihajlovski <mihajlov@linux.ibm.com>
-Subject: Re: [RFC 1/1] s390/pci: expose UID checking state in sysfs
-Message-ID: <YABt38yz5BJ8gARG@kroah.com>
-References: <20210113185500.GA1918216@bjorn-Precision-5520>
- <675aa466-59ea-cf8a-6eec-caa6478ba4cd@linux.ibm.com>
- <20210114134453.bkfik4zjt5ehz6d5@wittgenstein>
- <YABOHuejsuriwSPn@kroah.com>
- <a567c3d2-1dd2-6b33-8b1a-0a607b601ef8@linux.ibm.com>
- <YABgcnWPLJxYlWUR@kroah.com>
- <f63d5de5-6a31-8839-72ce-c6e937f91d4a@linux.ibm.com>
+        id S1727450AbhANQR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:17:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbhANQRZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 11:17:25 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC266C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:16:44 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id z21so4103028pgj.4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:16:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EdNTOqOvyf8Tea3ZmWu3U3/lQGFILtHgmE8Sp1YYSBw=;
+        b=mPaB30g+aaNeYsC8ThEUmugQmr7YYF34vDTtDJQ5bSF2ariYpJUXrAKrWcKzQml1Ce
+         BZHHntW620nED3kCQ+r1JnUoQDjP8ItVpFq91JYcbIbfIHkuHd6z6gZDnm16mK/FDifa
+         CtkmsHnS1G8bT813sIqDMpSklmtUMYB8DJbbjdhLNs5shLsb+FOEPIOOxyb5HMTs5uYY
+         9U2gXhOL5uryQ8sV4z2+GTmCUCZ59gdl4kxCN5hlQxlZTfGTcfvr+L/8CODLM/cWx1Eh
+         g2jQqNL7dGAkpZasBARQp0TME7jqU8q/qeU7R49Qv4DH/4AJhCVeDMw3iSSdCHI8/fY/
+         q0Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EdNTOqOvyf8Tea3ZmWu3U3/lQGFILtHgmE8Sp1YYSBw=;
+        b=bvpqfvCmsoI8YhFT4W0L0xnYmfgjdjnwPEAWc+m80vxY+/QC8edRNnbglANn17SXCT
+         oRJNT6e173FPg4EpnXAFYctuW89SChXZKc1c5JpGigxikLlii/8JsWIxuzKzVxGSNilP
+         dbBeOv+DSZSUmZEkOIHvP+VPzsUam6lM1UT4j6/LWL1KPDLoLDTLKZSDedzg2C5fYuWp
+         xHI1YjJFmrWA9uqsVmt4EPkTZ+/hyNbNK59VW9FEOY4gvlM7kc0gQiafN0iq4WgSPqTm
+         CA3JCl42w9NUA5jOUUHZCcTa7xliohzj610+3v7GkNScdgTRCxd0dqm3TdLUd4+oJMg/
+         ah1Q==
+X-Gm-Message-State: AOAM530UW/m+MhVDXZOYYs9N8QK91mJB+8fT/iQpoQKZcJpPwfcvQV5w
+        s0OpThcE/t3Ch+i2Ol1ZtWrclKiNAYcUKzpuPbbxmw==
+X-Google-Smtp-Source: ABdhPJyak9V+7hTS5nAbw63BmX6DhXM6u6obe1PXWk3slHn4QmreKq+n9mbFRtV10UZWIMO1JV5pgg0xda97yeyfIV0=
+X-Received: by 2002:a63:50a:: with SMTP id 10mr8230385pgf.273.1610641004434;
+ Thu, 14 Jan 2021 08:16:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f63d5de5-6a31-8839-72ce-c6e937f91d4a@linux.ibm.com>
+References: <20210114103515.12955-1-songmuchun@bytedance.com>
+ <20210114103515.12955-4-songmuchun@bytedance.com> <20210114132036.GA27777@dhcp22.suse.cz>
+ <CAMZfGtWFikKztN6DrtmuiHFwc2wHmyGefw6up1xE-koj8WE2SQ@mail.gmail.com> <20210114153814.GB27777@dhcp22.suse.cz>
+In-Reply-To: <20210114153814.GB27777@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 15 Jan 2021 00:16:04 +0800
+Message-ID: <CAMZfGtW4N-CMKJUWOxQXCz+8kCLw9Hg1P3aG9nST91=18g-CvQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5 3/5] mm: hugetlb: fix a race between
+ freeing and dissolving the page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 04:51:17PM +0100, Niklas Schnelle wrote:
-> 
-> 
-> On 1/14/21 4:17 PM, Greg Kroah-Hartman wrote:
-> > On Thu, Jan 14, 2021 at 04:06:11PM +0100, Niklas Schnelle wrote:
-> >>
-> >>
-> >> On 1/14/21 2:58 PM, Greg Kroah-Hartman wrote:
-> >>> On Thu, Jan 14, 2021 at 02:44:53PM +0100, Christian Brauner wrote:
-> >>>> On Thu, Jan 14, 2021 at 02:20:10PM +0100, Niklas Schnelle wrote:
-> >>>>>
-> >>>>>
-> >>>>> On 1/13/21 7:55 PM, Bjorn Helgaas wrote:
-> >>>>>> On Wed, Jan 13, 2021 at 08:47:58AM +0100, Niklas Schnelle wrote:
-> >>>>>>> On 1/12/21 10:50 PM, Bjorn Helgaas wrote:
-> >>>>>>>> On Mon, Jan 11, 2021 at 10:38:57AM +0100, Niklas Schnelle wrote:
-> >>>>>>>>> We use the UID of a zPCI adapter, or the UID of the function zero if
-> >>>>>>>>> there are multiple functions in an adapter, as PCI domain if and only if
-> >>>>>>>>> UID Checking is turned on.
-> >>>>>>>>> Otherwise we automatically generate domains as devices appear.
-> >>>>>>>>>
-> >>>>>>>>> The state of UID Checking is thus essential to know if the PCI domain
-> >>>>>>>>> will be stable, yet currently there is no way to access this information
-> >>>>>>>>> from userspace.
-> >>>>>>>>> So let's solve this by showing the state of UID checking as a sysfs
-> >>>>>>>>> attribute in /sys/bus/pci/uid_checking
-> >>>>>>
-> >>>>>>>>> +/* Global zPCI attributes */
-> >>>>>>>>> +static ssize_t uid_checking_show(struct kobject *kobj,
-> >>>>>>>>> +				 struct kobj_attribute *attr, char *buf)
-> >>>>>>>>> +{
-> >>>>>>>>> +	return sprintf(buf, "%i\n", zpci_unique_uid);
-> >>>>>>>>> +}
-> >>>>>>>>> +
-> >>>>>>>>> +static struct kobj_attribute sys_zpci_uid_checking_attr =
-> >>>>>>>>> +	__ATTR(uid_checking, 0444, uid_checking_show, NULL);
-> >>>>>>>>
-> >>>>>>>> Use DEVICE_ATTR_RO instead of __ATTR.
-> >>>>>>>
-> >>>>>>> It's my understanding that DEVICE_ATTR_* is only for
-> >>>>>>> per device attributes. This one is global for the entire
-> >>>>>>> Z PCI. I just tried with BUS_ATTR_RO instead
-> >>>>>>> and that works but only if I put the attribute at
-> >>>>>>> /sys/bus/pci/uid_checking instead of with a zpci
-> >>>>>>> subfolder. This path would work for us too, we
-> >>>>>>> currently don't have any other global attributes
-> >>>>>>> that we are planning to expose but those could of
-> >>>>>>> course come up in the future.
-> >>>>>>
-> >>>>>> Ah, I missed the fact that this is a kobj_attribute, not a
-> >>>>>> device_attribute.  Maybe KERNEL_ATTR_RO()?  Very few uses so far, but
-> >>>>>> seems like it might fit?
-> >>>>>>
-> >>>>>> Bjorn
-> >>>>>>
-> >>>>>
-> >>>>> KERNEL_ATTR_* is currently not exported in any header. After
-> >>>>> adding it to include/linuc/sysfs.h it indeed works perfectly.
-> >>>>> Adding Christian Brauner as suggested by get_maintainers for
-> >>>>> their opinion. I'm of course willing to provide a patch
-> >>>>
-> >>>> Hey Niklas et al. :)
-> >>>>
-> >>>> I think this will need input from Greg. He should be best versed in
-> >>>> sysfs attributes. The problem with KERNEL_ATTR_* to me seems that it's
-> >>>> supposed to be kernel internal. Now, that might just be a matter of
-> >>>> renaming the macro but let's see whether Greg has any better idea or
-> >>>> more questions. :)
-> >>>
-> >>> The big question is, why are you needing this?
-> >>>
-> >>> No driver or driver subsystem should EVER be messing with a "raw"
-> >>> kobject like this.  Just use the existing DEVICE_* macros instead
-> >>> please.
-> >>>
-> >>> If you are using a raw kobject, please ask me how to do this properly,
-> >>> as that is something that should NEVER show up in the /sys/devices/*
-> >>> tree.  Otherwise userspace tools will break.
-> >>>
-> >>> thanks,
-> >>>
-> >>> greg k-h
-> >>
-> >> Hi Greg,
-> >>
-> >> this is for an architecture specific but global i.e. not device bound PCI
-> >> attribute. That's why DEVICE_ATTR_* does not work. BUS_ATTR_* would work
-> >> but only if we place the attribute directly under /sys/bus/pci/new_attr.
-> > 
-> > Then you are doing something wrong :)
-> 
-> That is very possible.
-> 
-> > 
-> > Where _exactly_ are you wanting to put this attribute?
-> 
-> I'm trying for /sys/bus/pci/zpci/uid_checking, I'm using
-> the below code and the attribute even shows up but reading
-> it gives me two 0 bytes only.
-> The relevant code is only a slight alteration of the original patch
-> as follows:
-> 
-> static ssize_t uid_checking_show(struct bus_type *bus, char *buf)
-> {
-> 	return sprintf(buf, "%i\n", zpci_unique_uid);
-> }
-> static BUS_ATTR_RO(uid_checking);
-> 
-> static struct kset *zpci_global_kset;
-> 
-> static struct attribute *zpci_attrs_global[] = {
-> 	&bus_attr_uid_checking.attr,
-> 	NULL,
-> };
-> 
-> static struct attribute_group zpci_attr_group_global = {
-> 	.attrs = zpci_attrs_global,
-> };
+On Thu, Jan 14, 2021 at 11:38 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Thu 14-01-21 21:47:36, Muchun Song wrote:
+> > On Thu, Jan 14, 2021 at 9:20 PM Michal Hocko <mhocko@suse.com> wrote:
+> [...]
+> > > > @@ -1770,6 +1789,28 @@ int dissolve_free_huge_page(struct page *page)
+> > > >               int nid = page_to_nid(head);
+> > > >               if (h->free_huge_pages - h->resv_huge_pages == 0)
+> > > >                       goto out;
+> > > > +
+> > > > +             /*
+> > > > +              * We should make sure that the page is already on the free list
+> > > > +              * when it is dissolved.
+> > > > +              */
+> > > > +             if (unlikely(!PageHugeFreed(head))) {
+> > > > +                     spin_unlock(&hugetlb_lock);
+> > > > +
+> > > > +                     /*
+> > > > +                      * Theoretically, we should return -EBUSY when we
+> > > > +                      * encounter this race. In fact, we have a chance
+> > > > +                      * to successfully dissolve the page if we do a
+> > > > +                      * retry. Because the race window is quite small.
+> > > > +                      * If we seize this opportunity, it is an optimization
+> > > > +                      * for increasing the success rate of dissolving page.
+> > > > +                      */
+> > > > +                     while (PageHeadHuge(head) && !PageHugeFreed(head))
+> > > > +                             cond_resched();
+> > >
+> > > Sorry, I should have raised that when replying to the previous version
+> > > already but we have focused more on other things. Is there any special
+> > > reason that you didn't simply
+> > >         if (!PageHugeFreed(head)) {
+> > >                 spin_unlock(&hugetlb_lock);
+> > >                 cond_resched();
+> > >                 goto retry;
+> > >         }
+> > >
+> > > This would be less code and a very slight advantage would be that the
+> > > waiter might get blocked on the spin lock while the concurrent freeing
+> > > is happening. But maybe you wanted to avoid exactly this contention?
+> > > Please put your thinking into the changelog.
+> >
+> > I want to avoid the lock contention. I will add this reason
+> > to the changelog. Thanks.
+>
+> Please also explain why it matters and whether an unintended contention
+> is a real problem.
 
-Name your attribute group, and then you do not have to mess with a
-"raw" kobject like you are below:
+I have no idea about this, it is just my opinion.
+I will follow your suggestion.
 
-> 
-> int __init zpci_sysfs_init(void)
-> {
-> 	struct kset *pci_bus_kset;
-> 
-> 	pci_bus_kset = bus_get_kset(&pci_bus_type);
-> 
-> 	zpci_global_kset = kset_create_and_add("zpci", NULL, &pci_bus_kset->kobj);
-
-No, do not mess with at kset, just set the default attribute group for
-the bus to the above, and you should be fine.
-
-> 	if (!zpci_global_kset)
-> 		return -ENOMEM;
-> 
-> 	return sysfs_create_group(&zpci_global_kset->kobj, &zpci_attr_group_global);
-
-Huge hint, if in a driver, or bus subsystem, and you call sysfs_*,
-that's usually a huge clue that you are doing something wrong.
-
-Try the above again, with a simple attribute group, and name for it, and
-it should "just work".
-
-thanks,
-
-greg k-h
+> --
+> Michal Hocko
+> SUSE Labs
