@@ -2,117 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9882F5C8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:42:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3C72F5C93
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbhANIlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 03:41:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
+        id S1727983AbhANIli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 03:41:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726893AbhANIle (ORCPT
+        with ESMTP id S1726893AbhANIlg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 03:41:34 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7D0C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 00:40:47 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id dj23so2246813edb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 00:40:47 -0800 (PST)
+        Thu, 14 Jan 2021 03:41:36 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54EAC061794;
+        Thu, 14 Jan 2021 00:40:55 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id f11so5517226ljm.8;
+        Thu, 14 Jan 2021 00:40:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=nCtrmkviUmQktLTVIGnwrV1sO0fnA2RJE1RYOo29das=;
-        b=lnOkDlN7/8UGVYbFJTDV66RwQH6829K2lvepyTWbmrJT5RVZD+omMcYU7c+ztgtF+F
-         GQvcaKrnxeTmT+uFqg7ZFP5F+jQyrI0JJrinGB97LRx+92T8BTpuRjptxdja/JTUk/NK
-         P5mpSfUgYyGncrHLq21yo9pyA4ntXJjDz/zQ/T7mVHUtdyAfFaYFR6VBF8Ut/Eaos0Lr
-         CgFl0md1kZY6NCNowoDCGxyUYkfU0GD91BBsoQvdF3OL0UKZh4nIbYmwcXWSuziVY+BO
-         f2WCAgiSIulOwQNaD9KSXad8Zqau3MKhQhjcvJGHX2NCeyrpc6T0WwMWa1/I3FIg0DT+
-         b0bQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yZyuwqgUBskABVFLYIWGAD2FMF/t9yzwUC2QTWtpxG8=;
+        b=M9TsRLMOYhUEtXeMsks6hjymvFGTAFTtcnSeAioUr1V+e+Ys/w+5+tmqSuQePbJWQN
+         nLX1XzhyCkUuxejX9U0wCBV7ltnfewMSvNOsCBSHvm6lwsiYXfuc7fUQ78au0oc61Jty
+         b86r7TpT/4J5m+IyZw8My3f2eTw/PnR5ILB4rSDdqb7zATPtcCA2ec6OeOPgCj+Lpz3F
+         wDdCpERqEDPy95Q4ktU8XrtwdlPJONjEUnSUHYOPhQYFkg0d3DfV1RUb40UCRj/N8GLN
+         SZG7CNzjeGOBkp4gfx2/FRDLg18C47oM0goFLQC4r41mH/yWXONx4CfJYELM97u6ch54
+         mztw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=nCtrmkviUmQktLTVIGnwrV1sO0fnA2RJE1RYOo29das=;
-        b=pDmxpBMEDv1vktmM/TW1JvGgGIi985PiIGrIj0P8r4z9bCSEDslI0vZrZjkTFUqiMy
-         lQRVSltv82LZN37nJKNXb6OPluQtaH+bkuG4rjWMhhBU5Bu3Hqvf7A5RnYxb7ThA0P2W
-         ybsT1rGQ+mTfhzJtNZilKoGrQ7+eiSkL/MixCuS+bYVQa7TrVksM3EUoqHXUGZuLZh6w
-         SK+8eaqpxGmH2snJJndqxrpfoJew09NcCo82Dqy8ft5HPEdO3nw5iOmLn1UpLu4I8cu6
-         NGGHX1t7pH2XSV+lGD8ZP8lEUlnoR+1XRk+7snjaqMOF5z6aWTvLVoCWnTvo/cJAqtqz
-         +S9g==
-X-Gm-Message-State: AOAM530MWoWZHYU1vGakfvESFh072efj50RV0lhR8wGlyadh2ApAMJlZ
-        xnVhXJ9kxMVPOAW7G9g479NIEPKRpR3j5QzGNf02yBIgegA=
-X-Google-Smtp-Source: ABdhPJwpnHpv7lH6vsWp+Af2WWueJFgZFqWpgXnw12CttLIrK1bc/7sPBUmz9nECBF70QWGeiwHMhlJlnmDqhqRcnWA=
-X-Received: by 2002:a05:6402:17:: with SMTP id d23mr4993820edu.341.1610613646639;
- Thu, 14 Jan 2021 00:40:46 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=yZyuwqgUBskABVFLYIWGAD2FMF/t9yzwUC2QTWtpxG8=;
+        b=ClvHaL9jKNmU54YObMuqaaVlECsovXYBqaVDD4UMk9zyqDp+qr4i0HPbZarb1uIZfR
+         niEbibsq0LMckibcBL22lN7a2YyjeshuxBkvCT13gn2drCYZgAEtnuW9Zgdm0oF5+9a7
+         yHtQT80UHIIr8R0R4fif7mtcvkO0CLi/425xcvn2WW7sfKuIPFdFE5/3LMauECIltgTC
+         7ld6yoHWgUh68EhvKmkiFhDa30KHbdAxTxjg0IQWMgL11bNA0I6PETMOTNf89LekyMQK
+         Qq01qIdiOito9wuIF1uKPBsDtwJwMDfVmoHPfUETcnSVF5yre6mTlUv1dtAd8x9e/ZH+
+         tKzw==
+X-Gm-Message-State: AOAM533x5ChcCI7G+NwNyX07XPlWKxfW3YTUR2iK+2L8WBqxr1jC1JAq
+        8GS6jvrnabWS/4Rxyszv53gjt4vI53HYbQ==
+X-Google-Smtp-Source: ABdhPJxonLgQGhSHZPoirG03V75YnKFqQQBe+h3FFzullyWpE6EXPydwpEsbUTDijMJvfHPA3qrGbA==
+X-Received: by 2002:a2e:8745:: with SMTP id q5mr2546502ljj.77.1610613654215;
+        Thu, 14 Jan 2021 00:40:54 -0800 (PST)
+Received: from [192.168.1.100] ([178.176.79.115])
+        by smtp.gmail.com with ESMTPSA id p5sm476176lfj.295.2021.01.14.00.40.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Jan 2021 00:40:53 -0800 (PST)
+Subject: Re: [PATCH 2/2] compiler.h: Include asm/rwonce.h under ARM64 and
+ ALPHA to fix build errors
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-sparse@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+References: <1610535453-2352-1-git-send-email-yangtiezhu@loongson.cn>
+ <1610535453-2352-3-git-send-email-yangtiezhu@loongson.cn>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <04749e2c-6e80-5316-a575-e4aaf780bb81@gmail.com>
+Date:   Thu, 14 Jan 2021 11:40:39 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20201125152247.30809-1-brgl@bgdev.pl> <20201125152247.30809-4-brgl@bgdev.pl>
- <X/+GQIhGmyHlIe0+@google.com>
-In-Reply-To: <X/+GQIhGmyHlIe0+@google.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 14 Jan 2021 09:40:36 +0100
-Message-ID: <CAMpxmJUQF8DwJzZN0960U10tjADh10GiexKmJv9o7AMp=9=caw@mail.gmail.com>
-Subject: Re: [PATCH 3/4] configfs: implement committable items
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Christoph Hellwig <hch@lst.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1610535453-2352-3-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 12:46 AM Joel Becker <jlbec@evilplan.org> wrote:
->
-> On Wed, Nov 25, 2020 at 04:22:46PM +0100, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > This implements configfs committable items. We mostly follow the
-> > documentation except that we extend config_group_ops with uncommit_item()
-> > callback for reverting the changes made by commit_item().
->
-> Woohoo!  A long time coming, but thank you for working on the
-> implementation!
->
-> > Each committable group has two sub-directories: pending and live. New
-> > items can only be created in pending/. Attributes can only be modified
-> > while the item is in pending/. Once it's ready to be committed, it must
-> > be moved over to live/ using the rename() system call. This is when the
-> > commit_item() function will be called.
->
-> The original API intended for live items to still be modifyable.  The
-> live/ path forbids mkdir()/rmdir(), but it allows store().  Otherwise,
-> items can't be adjusted at all while in use, which is severely limiting.
-> Obviously the store() handler must not allow transitions from
-> valid-value->invalid-value, but the handler would reject invalid values
-> anyway, wouldn't it?
->
-> > diff --git a/fs/configfs/file.c b/fs/configfs/file.c
-> > index 1f0270229d7b..a20e55fd05e8 100644
-> > --- a/fs/configfs/file.c
-> > +++ b/fs/configfs/file.c
-> > @@ -243,9 +243,17 @@ fill_write_buffer(struct configfs_buffer * buffer, const char __user * buf, size
-> >  static int
-> >  flush_write_buffer(struct file *file, struct configfs_buffer *buffer, size_t count)
-> >  {
-> > +     struct config_item *parent_item = buffer->item->ci_parent;
-> >       struct configfs_fragment *frag = to_frag(file);
-> > +     struct configfs_dirent *sd;
-> >       int res = -ENOENT;
-> >
-> > +     if (parent_item && parent_item->ci_dentry) {
-> > +             sd = parent_item->ci_dentry->d_fsdata;
-> > +             if (sd->s_type & CONFIGFS_GROUP_LIVE)
-> > +                     return -EPERM;
-> > +     }
-> > +
-> >       down_read(&frag->frag_sem);
-> >       if (!frag->frag_dead)
-> >               res = buffer->attr->store(buffer->item, buffer->page, count);
->
-> Basically, I would just leave this hunk out.
->
+Hello!
 
-I would make this configurable per-attribute because for the use-case
-I need this for we definitely don't want the items to be modifiable
-once they're "live".
+On 13.01.2021 13:57, Tiezhu Yang wrote:
 
-Bartosz
+> When make M=samples/bpf on the Loongson 3A3000 platform which
+> belongs to MIPS arch, there exists many similar build errors
+> about 'asm/rwonce.h' file not found, so include it only under
+> CONFIG_ARM64 and CONFIG_ALPHA due to it exists only in arm64
+> and alpha arch.
+> 
+>    CLANG-bpf  samples/bpf/xdpsock_kern.o
+> In file included from samples/bpf/xdpsock_kern.c:2:
+> In file included from ./include/linux/bpf.h:9:
+> In file included from ./include/linux/workqueue.h:9:
+> In file included from ./include/linux/timer.h:5:
+> In file included from ./include/linux/list.h:9:
+> In file included from ./include/linux/kernel.h:10:
+> ./include/linux/compiler.h:246:10: fatal error: 'asm/rwonce.h' file not found
+>           ^~~~~~~~~~~~~~
+> 1 error generated.
+> 
+> $ find . -name rwonce.h
+> ./include/asm-generic/rwonce.h
+> ./arch/arm64/include/asm/rwonce.h
+> ./arch/alpha/include/asm/rwonce.h
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>   include/linux/compiler.h | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+> index b8fe0c2..bdbe759 100644
+> --- a/include/linux/compiler.h
+> +++ b/include/linux/compiler.h
+> @@ -243,6 +243,12 @@ static inline void *offset_to_ptr(const int *off)
+>    */
+>   #define prevent_tail_call_optimization()	mb()
+>   
+> +#ifdef CONFIG_ARM64
+
+    Why not #if defined(CONFIG_ALPHA) || defined(CONFIG_ARM64)?
+
+>   #include <asm/rwonce.h>
+> +#endif
+> +
+> +#ifdef CONFIG_ALPHA
+> +#include <asm/rwonce.h>
+> +#endif
+>   
+>   #endif /* __LINUX_COMPILER_H */
+> 
+
+MBR, Sergei
