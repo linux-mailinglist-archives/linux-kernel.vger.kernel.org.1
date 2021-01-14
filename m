@@ -2,116 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312532F5772
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8E12F576A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729481AbhANCAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:00:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727880AbhANB76 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 20:59:58 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C31CAC0617A7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 17:36:47 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id l23so2315519pjg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 17:36:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=vga+wd3Nu9yrCvWtrwJ+7XS8La99u1RixLre7Gn5LkE=;
-        b=b9aAhe38hfmS6Q8Ys2/kESKGyf+1JqmiKscnWbOQNSkNC/UMGevpErTP2h6bExA9sq
-         czZioshGrro5Gyui6STk+DqW8bTvmC46zT69EJX3XGbBgCfF4qmn/430/+D2WzpVRTiT
-         mVu9Bla9RncdgvN8tQ6xtt5rJyLhWMBYkbpeI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=vga+wd3Nu9yrCvWtrwJ+7XS8La99u1RixLre7Gn5LkE=;
-        b=rk7N+q34ndQCVbtB8Sg4SXjtMEb5gylBsbkJdxNWn1c5rrvuBE2S7SnwSh6MhPvR8x
-         Ip41EntEHQGQ0kBvk7JYhiDK6T9VSYssV7YcAVu1LVTUn7SJ+2tclpnfixSEnQF0F+OX
-         I//cCbvXBJlUhNMcvbNFWxWoO5xCes0zO4e7yanLP11ZGCGo2OGHNVbdTHq6h2fU+c8T
-         7OgFy7KFKcE2YEq0hCvWjwFzCcWAn0Xp7x5+Mre4HHMpRCahlWVJg4V4UpkFtNJFBdPX
-         sLi657LG8QMw7vceobcT7loClihiYMX7hKff9NThLdIn2weAdps7X8oYOoSRaT1i311W
-         gTaw==
-X-Gm-Message-State: AOAM530ZqA9WTMn4s0WLj/r7LsWKi/LMzPw5gTw37GLwUS5Dp9rfT1SO
-        sfMfsTIZqwCD83OtqsNSa+4CVQ==
-X-Google-Smtp-Source: ABdhPJyrm4UlHPLatH/x3TAEuOrxXyqF/T8AT69S1E0/EKaPbu5WTZ9HwPhrBNJUqDlf7Y4IdSU0QA==
-X-Received: by 2002:a17:90a:8985:: with SMTP id v5mr2206883pjn.27.1610588207284;
-        Wed, 13 Jan 2021 17:36:47 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id x16sm3821817pfp.62.2021.01.13.17.36.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 17:36:46 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S1728812AbhANB7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:59:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728982AbhANB7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 20:59:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 255A72343B;
+        Thu, 14 Jan 2021 01:58:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610589499;
+        bh=QsmD0Bge8rY2KWlyJvvPy2bG4NjrkNHoKmZWUy8ss98=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YXCALl+P4Z0XSGnzh4uRT1f4bLnwjFdXFDUKE/M+l4MiDTxVYIQx/xDpid3cu+xrJ
+         gk7XGCm/Qi3bqPsTXLKaMkEOhndftXzcwEMg1aJGkJYEkXAUEMZge1NU7kpKsHhErI
+         KpFJk0oUT2+6h0reQ2d0HZAZ6eboABFjLI6sX5kv/a4kkNzaCrwNL0hpNIYS0788ov
+         xxGy++HJVlQ+vxZPzEy66UPv1SDkh6iLOa7L9fOen0ychP0EyfvA/wTJLcKmCYOFN2
+         ycXN2Ps5EyfoUDYeEFiz8g6cbR3PKdogcZq3a+IsiVsi6ziXs7vqV6FIWntbN0ki+G
+         BjEA0/mbFDypA==
+Date:   Wed, 13 Jan 2021 17:58:18 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jarod Wilson <jarod@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v2] bonding: add a vlan+mac tx hashing option
+Message-ID: <20210113175818.7dce3076@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210113223548.1171655-1-jarod@redhat.com>
+References: <20201218193033.6138-1-jarod@redhat.com>
+        <20210113223548.1171655-1-jarod@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210113172450.v5.2.I38e90f114f0311b8aa3bcfff750ba381c09dd3b6@changeid>
-References: <20210113172450.v5.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid> <20210113172450.v5.2.I38e90f114f0311b8aa3bcfff750ba381c09dd3b6@changeid>
-Subject: Re: [PATCH v5 2/2] Input: cros-ec-keyb - Expose function row physical map to userspace
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     dianders@chromium.org, Philip Chen <philipchen@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rajat Jain <rajatja@google.com>, linux-input@vger.kernel.org
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Philip Chen <philipchen@chromium.org>,
-        dmitry.torokhov@gmail.com
-Date:   Wed, 13 Jan 2021 17:36:45 -0800
-Message-ID: <161058820506.3661239.14441197324080899810@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-01-13 17:25:13)
-> diff --git a/drivers/input/keyboard/cros_ec_keyb.c b/drivers/input/keyboa=
-rd/cros_ec_keyb.c
-> index b379ed7628781..273e3c9ba0b03 100644
-> --- a/drivers/input/keyboard/cros_ec_keyb.c
-> +++ b/drivers/input/keyboard/cros_ec_keyb.c
-> @@ -578,6 +590,19 @@ static int cros_ec_keyb_register_matrix(struct cros_=
-ec_keyb *ckdev)
->         ckdev->idev =3D idev;
->         cros_ec_keyb_compute_valid_keys(ckdev);
-> =20
-> +       of_property_for_each_u32(dev->of_node, "function-row-physmap",
-> +                                prop, p, key_pos) {
-> +               if (i >=3D MAX_NUM_TOP_ROW_KEYS) {
-> +                       dev_err(dev, "Only support up to %d top row keys.=
-\n",
+On Wed, 13 Jan 2021 17:35:48 -0500 Jarod Wilson wrote:
+> This comes from an end-user request, where they're running multiple VMs on
+> hosts with bonded interfaces connected to some interest switch topologies,
+> where 802.3ad isn't an option. They're currently running a proprietary
+> solution that effectively achieves load-balancing of VMs and bandwidth
+> utilization improvements with a similar form of transmission algorithm.
+> 
+> Basically, each VM has it's own vlan, so it always sends its traffic out
+> the same interface, unless that interface fails. Traffic gets split
+> between the interfaces, maintaining a consistent path, with failover still
+> available if an interface goes down.
+> 
+> This has been rudimetarily tested to provide similar results, suitable for
+> them to use to move off their current proprietary solution. A patch for
+> iproute2 is forthcoming as well, to properly support the new mode there as
+> well.
 
-dev_warn? And drop the period please as we don't add them in the kernel
-usually.
-
-> +                               MAX_NUM_TOP_ROW_KEYS);
-> +                       break;
-> +               }
-> +               ckdev->function_row_physmap[i] =3D MATRIX_SCAN_CODE(
-
-Maybe grow some more local variables, like for function_row_physmap so
-this can fit on one line?
-
-		row =3D KEY_ROW(key_pos);
-		col =3D KEY_COL(key_pos);
-		map[i] =3D MATRIX_SCAN_CODE(row, col, ckdev->row_shift);
-
-> +                       KEY_ROW(key_pos), KEY_COL(key_pos), ckdev->row_sh=
-ift);
-> +               i++;
-
-We could remove this and just increment num_function_row_keys instead.
-Then that condition check may be a little longer but probably still ok.
-
-
-> +       }
-> +       ckdev->num_function_row_keys =3D i;
+> Signed-off-by: Jarod Wilson <jarod@redhat.com>
+> ---
+> v2: verified netlink interfaces working, added Documentation, changed
+> tx hash mode name to vlan+mac for consistency and clarity.
+> 
+>  Documentation/networking/bonding.rst | 13 +++++++++++++
+>  drivers/net/bonding/bond_main.c      | 27 +++++++++++++++++++++++++--
+>  drivers/net/bonding/bond_options.c   |  1 +
+>  include/linux/netdevice.h            |  1 +
+>  include/uapi/linux/if_bonding.h      |  1 +
+>  5 files changed, 41 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/networking/bonding.rst b/Documentation/networking/bonding.rst
+> index adc314639085..c78ceb7630a0 100644
+> --- a/Documentation/networking/bonding.rst
+> +++ b/Documentation/networking/bonding.rst
+> @@ -951,6 +951,19 @@ xmit_hash_policy
+>  		packets will be distributed according to the encapsulated
+>  		flows.
+>  
+> +	vlan+mac
 > +
->         err =3D input_register_device(ckdev->idev);
->         if (err) {
->                 dev_err(dev, "cannot register input device\n");
+> +		This policy uses a very rudimentary vland ID and source mac
+> +		ID hash to load-balance traffic per-vlan, with failover
+> +		should one leg fail. The intended use case is for a bond
+> +		shared by multiple virtual machines, all configured to
+> +		use their own vlan, to give lacp-like functionality
+> +		without requiring lacp-capable switching hardware.
+> +
+> +		The formula for the hash is simply
+> +
+> +		hash = (vlan ID) XOR (source MAC)
+
+But in the code it's only using one byte of the MAC, currently.
+
+I think that's fine for the particular use case but should we call out
+explicitly in the commit message why it's considered sufficient?
+
+Someone can change it later, if needed, but best if we spell out the
+current motivation.
+
+>  	The default value is layer2.  This option was added in bonding
+>  	version 2.6.3.  In earlier versions of bonding, this parameter
+>  	does not exist, and the layer2 policy is the only policy.  The
+
+> +static inline u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
+
+Can we drop the inline? It's a static function called once.
+
+> +{
+> +	struct ethhdr *mac_hdr = (struct ethhdr *)skb_mac_header(skb);
+
+I don't see anything in the patch making sure the interface actually
+has a L2 header. Should we validate somehow the ifc is Ethernet?
+
+> +	u32 srcmac = mac_hdr->h_source[5];
+> +	u16 vlan;
+> +
+> +	if (!skb_vlan_tag_present(skb))
+> +		return srcmac;
+> +
+> +	vlan = skb_vlan_tag_get(skb);
+> +
+> +	return srcmac ^ vlan;
+> +}
