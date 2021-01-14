@@ -2,122 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694F92F6738
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 393EF2F673D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728863AbhANRPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:15:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        id S1728967AbhANRPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726172AbhANRPp (ORCPT
+        with ESMTP id S1728926AbhANRPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:15:45 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6142C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:15:04 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id q25so5832043otn.10
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:15:04 -0800 (PST)
+        Thu, 14 Jan 2021 12:15:51 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74DAC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:15:10 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id a109so5883099otc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:15:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=v+IWiGsFZpYty9uPEMCbFqjqaqqlfa3/+90RuBzx60o=;
-        b=ten/ALZCvZdzN086fa5oMkKYJcezQlWqXYa+356BpaFzTsBA82jf4vMt0ECAfFgpPu
-         vhqCzyxC9gnklgm/vuVULZWq5T/pEF6Lk5dkAyBWV0/lNWpkgSd5nf/DhiPWvIS2YR9m
-         GApsWRH2deCphZOz04NpVmiGvlCHQuunIQrYbarn4bAh93NUc4O9YD9bvrfP4Xw2yO52
-         p98NMIV1S6RPJRnmykyn95ma9O+PxTUQPipKu4qW2OxqCCbeTuXEsIW9elKEToepCamU
-         cU28kuMX7obX/k8ivRp1vNy/OYXGFitv1UwQFAz+uTA9k+5v+s63Ymw/ot4G5EFMltbG
-         CzeQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qaFSjFq15gJ5kL5BciOwoue8YB8M48nAYhLQvOFNNhY=;
+        b=h1gf3Ri9zlYKv1/Pt/v3LUg3++8O2s/1Owo9/GL5iV43s6JCbl8Eu56f0hAJ2/mtE2
+         K8wSgsL1ZHfGgsp7zJV+74crDethx3ZUxCU39jxneEI2O5ZN+t6FwbwmeDtL9jGw1GpZ
+         2YxuM1mOAlpEgYbzcQhZ8RsYW2WkF1GyqXweLV4jnDt0xX/OChXm34qAavAz11EbOtxN
+         XbAJzG1sICY3TmuIH7hooetViHHwkS8yj7DHGxwUbRJ/xS1im5VjeD5EufJOaC8YE2Nd
+         ifpiyQTkPWd8A8OhQ0AO7GpdnL+Dx9jJmvPuBv/bHU2xkTN7qosp16mFaoCHsxJ3cVm8
+         QDmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=v+IWiGsFZpYty9uPEMCbFqjqaqqlfa3/+90RuBzx60o=;
-        b=NPhYyk8RydH34AOjtACEkHIcsrlBenDdKegtqBDd1eGIBJvfC/Yz0+9lrKW4r2kgeY
-         WtqYY37mW1vyCoN6tktNv5GV2Eg1QDWCCQIRYCmgJmQ22u7i2D72ijuBhWWWFjufRN8k
-         Mcx3r2ya31XWceYrH69iNDt7vEn//Eat+mhAJLSQmCFWLpXQLuSsq8z600mTs7kFgaar
-         YNbwPWLEhClBnEmbObzgHLyLZZbirQ4VJvkP1LJ7BP1mVFNQ32MNQep1eVhW8pRs9lvs
-         3hWccJBqMlEKluTzgMt+ELNUUUxrXmuox//E1VwmqjoxA39peBz8D1b/rt3zqJId9GiG
-         3UEA==
-X-Gm-Message-State: AOAM530nmYedENynTxS1pyMdPSoFLuBSt7ui4KKoF36nU6e1EYnyi3zL
-        C2CxqjRBhPPikWTJkz1zcdHIdDSSPJvUbIRP3i0=
-X-Google-Smtp-Source: ABdhPJyNJkE4H9tRyMCJgxPE3E10+sCah9UThloK7fktb03JAQOwNC6kFkzOOzCmgkcMv9EvXNFYrMoRUM+lxEXjgLo=
-X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr5473943ote.132.1610644504422;
- Thu, 14 Jan 2021 09:15:04 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qaFSjFq15gJ5kL5BciOwoue8YB8M48nAYhLQvOFNNhY=;
+        b=jg4pedjAFd+cOfgE47Yrn07FGzqyaucowAENkE61JSr/sdcPcnDpqFPOBTaJCURh9v
+         nPChbcrixXHXjA6uljqNOIExt2CA8CwWFgs+EjDbUqcUvOWsbCFO+3HZq0+RSw5oXap3
+         IOVU33NGc9vspDT4wWJs0ErtRm1YF0zsN8mgsKrv17xdWdXN+IZnqHTYJAhLz/jd3Yt1
+         ThA8bawXQHeAkM/ODupGEDManYWvy3pDBtKl+76yECSl9kw+S3KjFf5+Reov/3m59InA
+         GXfTs830P2qY2iyyOwFWNzySKPfbE05bDdiP4gfWGDlk93DCzi/GsbqZMbJ/gMzQzyIV
+         8oNQ==
+X-Gm-Message-State: AOAM532KpEEPuFGBWSwVSZAEUXZxVFhV+FJzfALGiHa4eN1seOKYDckC
+        H9z2pRknj/F7G42W2FkY+e8cyg==
+X-Google-Smtp-Source: ABdhPJys2GzDnT5HCru2U+086JIhIuoUHn9W/Swzho2QPCnEX4VWamPgoN/so5v99Q7Tl8RProRR9A==
+X-Received: by 2002:a05:6830:1e41:: with SMTP id e1mr5233569otj.143.1610644510091;
+        Thu, 14 Jan 2021 09:15:10 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id s26sm1175595otd.8.2021.01.14.09.15.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 09:15:09 -0800 (PST)
+Date:   Thu, 14 Jan 2021 11:15:07 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        linux-gpio@vger.kernel.org,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 4/4] pinctrl: qcom: Don't clear pending interrupts
+ when enabling
+Message-ID: <YAB8G137wfisfOqt@builder.lan>
+References: <20210108093339.v5.1.I3ad184e3423d8e479bc3e86f5b393abb1704a1d1@changeid>
+ <20210108093339.v5.4.I7cf3019783720feb57b958c95c2b684940264cd1@changeid>
+ <161060848425.3661239.17417977666663714149@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-References: <20210113080752.1003793-1-lee.jones@linaro.org> <20210113080752.1003793-16-lee.jones@linaro.org>
-In-Reply-To: <20210113080752.1003793-16-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 14 Jan 2021 12:14:53 -0500
-Message-ID: <CADnq5_McjDiGUNYfLaZV4F1rH_NZ-U3GMuEBpjFhEHYoChg3WQ@mail.gmail.com>
-Subject: Re: [PATCH 15/30] drm/amd/display/dc/dce80/dce80_resource: Include
- our own header containing prototypes
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, Anthony Koo <Anthony.Koo@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161060848425.3661239.17417977666663714149@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 3:08 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_resource.c:1126:23:=
- warning: no previous prototype for =E2=80=98dce80_create_resource_pool=E2=
-=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_resource.c:1325:23:=
- warning: no previous prototype for =E2=80=98dce81_create_resource_pool=E2=
-=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_resource.c:1520:23:=
- warning: no previous prototype for =E2=80=98dce83_create_resource_pool=E2=
-=80=99 [-Wmissing-prototypes]
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Anthony Koo <Anthony.Koo@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Thu 14 Jan 01:14 CST 2021, Stephen Boyd wrote:
 
-Applied.  Thanks!
+> Quoting Douglas Anderson (2021-01-08 09:35:16)
+> > Let's deal with the problem like this:
+> > * When we mux away, we'll mask our interrupt.  This isn't necessary in
+> >   the above case since the client already masked us, but it's a good
+> >   idea in general.
+> > * When we mux back will clear any interrupts and unmask.
+> 
+> I'm on board!
+> 
+> > 
+> > Fixes: 4b7618fdc7e6 ("pinctrl: qcom: Add irq_enable callback for msm gpio")
+> > Fixes: 71266d9d3936 ("pinctrl: qcom: Move clearing pending IRQ to .irq_request_resources callback")
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > ---
+> > diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+> > index a6b0c17e2f78..d5d1f3430c6c 100644
+> > --- a/drivers/pinctrl/qcom/pinctrl-msm.c
+> > +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+> > @@ -51,6 +51,7 @@
+> >   * @dual_edge_irqs: Bitmap of irqs that need sw emulated dual edge
+> >   *                  detection.
+> >   * @skip_wake_irqs: Skip IRQs that are handled by wakeup interrupt controller
+> > + * @disabled_for_mux: These IRQs were disabled because we muxed away.
+> >   * @soc:            Reference to soc_data of platform specific data.
+> >   * @regs:           Base addresses for the TLMM tiles.
+> >   * @phys_base:      Physical base address
+> > @@ -72,6 +73,7 @@ struct msm_pinctrl {
+> >         DECLARE_BITMAP(dual_edge_irqs, MAX_NR_GPIO);
+> >         DECLARE_BITMAP(enabled_irqs, MAX_NR_GPIO);
+> >         DECLARE_BITMAP(skip_wake_irqs, MAX_NR_GPIO);
+> > +       DECLARE_BITMAP(disabled_for_mux, MAX_NR_GPIO);
+> >  
+> >         const struct msm_pinctrl_soc_data *soc;
+> >         void __iomem *regs[MAX_NR_TILES];
+> > @@ -179,6 +181,10 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
+> >                               unsigned group)
+> >  {
+> >         struct msm_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> > +       struct gpio_chip *gc = &pctrl->chip;
+> > +       unsigned int irq = irq_find_mapping(gc->irq.domain, group);
+> > +       struct irq_data *d = irq_get_irq_data(irq);
+> > +       unsigned int gpio_func = pctrl->soc->gpio_func;
+> >         const struct msm_pingroup *g;
+> >         unsigned long flags;
+> >         u32 val, mask;
+> > @@ -195,6 +201,20 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
+> >         if (WARN_ON(i == g->nfuncs))
+> >                 return -EINVAL;
+> >  
+> > +       /*
+> > +        * If an GPIO interrupt is setup on this pin then we need special
+> > +        * handling.  Specifically interrupt detection logic will still see
+> > +        * the pin twiddle even when we're muxed away.
+> > +        *
+> > +        * When we see a pin with an interrupt setup on it then we'll disable
+> > +        * (mask) interrupts on it when we mux away until we mux back.  Note
+> > +        * that disable_irq() refcounts and interrupts are disabled as long as
+> > +        * at least one disable_irq() has been called.
+> > +        */
+> > +       if (d && i != gpio_func &&
+> > +           !test_and_set_bit(d->hwirq, pctrl->disabled_for_mux))
+> > +               disable_irq(irq);
+> 
+> Does it need to be forced non-lazy so that it is actually disabled at
+> the GIC? I'm trying to understand how the lazy irq disabling plays into
+> this. I think it's a don't care situation because if the line twiddles
+> and triggers an irq then we'll actually disable it at the GIC in the
+> genirq core and mark it pending for resend. I wonder if we wouldn't have
+> to undo the pending state if we actually ignored it at the GIC
+> forcefully. And I also worry that it may cause a random wakeup if the
+> line twiddles, becomes pending at GIC and thus blocks the CPU from
+> running a WFI but it isn't an irq that Linux cares about because it's
+> muxed to UART, and then lazy handling runs and shuts it down. Is that
+> possible?
+> 
 
-Alex
+I was about to write a question about why we should disable the IRQ
+through the irqchip framework, rather than just do it in the hardware
+directly.
 
-> ---
->  drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c b/driv=
-ers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
-> index fe5d716084363..725d92e40cd30 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
-> @@ -60,6 +60,8 @@
->  #include "dce/dce_i2c.h"
->  /* TODO remove this include */
->
-> +#include "dce80_resource.h"
-> +
->  #ifndef mmMC_HUB_RDREQ_DMIF_LIMIT
->  #include "gmc/gmc_7_1_d.h"
->  #include "gmc/gmc_7_1_sh_mask.h"
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Which I think means that I came to the same conclusion as you, that if
+we have a pin masked to non-gpio, it will still wake the system up, just
+to actually disable the IRQ lazily.
+
+Is there a problem with leaving the irq framework to believe the IRQ is
+enabled while we disable the delivery in hardware?
+
+Regards,
+Bjorn
+
+> > +
+> >         raw_spin_lock_irqsave(&pctrl->lock, flags);
+> >  
+> >         val = msm_readl_ctl(pctrl, g);
+> > @@ -204,6 +224,20 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
+> >  
+> >         raw_spin_unlock_irqrestore(&pctrl->lock, flags);
+> >  
+> > +       if (d && i == gpio_func &&
+> > +           test_and_clear_bit(d->hwirq, pctrl->disabled_for_mux)) {
+> > +               /*
+> > +                * Clear interrupts detected while not GPIO since we only
+> > +                * masked things.
+> > +                */
+> > +               if (d->parent_data && test_bit(d->hwirq, pctrl->skip_wake_irqs))
+> > +                       irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, false);
+> 
+> So if not lazy this could go away? Although I think this is to clear out
+> the pending state in the GIC and not the PDC which is the parent.
+> 
+> > +               else
+> > +                       msm_ack_intr_status(pctrl, g);
+> > +
+> > +               enable_irq(irq);
+> > +       }
+> > +
