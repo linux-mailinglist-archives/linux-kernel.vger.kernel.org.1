@@ -2,111 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBC42F5F78
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B142F5F7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:09:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727130AbhANLGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 06:06:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725918AbhANLGM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 06:06:12 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1402FC061575;
-        Thu, 14 Jan 2021 03:05:32 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id t30so5340973wrb.0;
-        Thu, 14 Jan 2021 03:05:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qY7UfjfyOyVy4TxyfB8diKh+Cr2eV9OL3b/7LpArq6Q=;
-        b=mztol9d2yyRB66mzQ2YydbrgVk3/W2Ej3T9zEE651nFQZo4GN6V9r18l3M5Xi3HWvQ
-         OQ6wxvqctiGzBaLZm3u+JCsexiVgZWdYQEsMNZ5afNbuB71kgoSxeZNO1GzpYo7NuEQh
-         nOTYqmE4ZHtpTWbcZ2lgbHdVOQwx5aQNDY0bpHzomcNXBNNzstgSiDs6Jckh3nMBccJc
-         USHJsLEVCG0eB4PeueI5arSr82O+Wdc8Kstzs6u68PHqojazLJKfSrhs2gzE/bctueEj
-         3wBe64Vlr7qiiXeTaw3fCwBCbtWzZQx4yGtWvKdIETA+c5t3nfV8SwVLxMVu841uh4d4
-         pdNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qY7UfjfyOyVy4TxyfB8diKh+Cr2eV9OL3b/7LpArq6Q=;
-        b=LHqvWFTEHYoEXAWyilZpAGdZGbYiopbsqRUDQHTKVrvI0Ab6x/YTU6GBLDxVL6bAxC
-         rc3S6wvUydXAPwOqf/pRpQKjAJ9Og5CX/vkznSU+uwXUgcmOUOmQGo6j+ZT5ytNVGJHP
-         BncdPXMIwyrQr+Dalfxsc44UGT/aP2m2gnEZymhIZf+rk2G1pv5jiPSvfrhC4Vg8ZGHs
-         ByURYiy95Bziw+LK01f5IqfwNcJfn5Ouxckv4Rp7jeljOtLSxpUKHwyF46rDczu+ckcr
-         SgTY9h8lHg+KZVFeqoL/Q2lT5/86usJzV7n1qdy4aEbQomYXYCd6wedQVPSeuy+lt03M
-         RDxw==
-X-Gm-Message-State: AOAM533aDFae7sOE/jD0diXPIZvDJCTP3VrvwBnswsMbiAVFBhbvAc2H
-        OIR2wpZ5wOl+376GiULxmTwKU3oRWF8=
-X-Google-Smtp-Source: ABdhPJy9vA7UtOgW3/xEA/01Xxp02SuIq3XuvQDe2G0pXmasFG2A0wt27pAVcltlKPNOxYtKtfgTaQ==
-X-Received: by 2002:a05:6000:101:: with SMTP id o1mr7239239wrx.211.1610622330352;
-        Thu, 14 Jan 2021 03:05:30 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f06:5500:3037:2ac5:86bd:e008? (p200300ea8f06550030372ac586bde008.dip0.t-ipconnect.de. [2003:ea:8f06:5500:3037:2ac5:86bd:e008])
-        by smtp.googlemail.com with ESMTPSA id h15sm8951824wru.4.2021.01.14.03.05.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jan 2021 03:05:29 -0800 (PST)
-To:     Claudiu.Beznea@microchip.com, linux@armlinux.org.uk
-Cc:     andrew@lunn.ch, davem@davemloft.net, kuba@kernel.org,
-        rjw@rjwysocki.net, pavel@ucw.cz, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-References: <1610120754-14331-1-git-send-email-claudiu.beznea@microchip.com>
- <25ec943f-ddfc-9bcd-ef30-d0baf3c6b2a2@gmail.com>
- <ce20d4f3-3e43-154a-0f57-2c2d42752597@microchip.com>
- <ee0fd287-c737-faa5-eee1-99ffa120540a@gmail.com>
- <ae4e73e9-109f-fdb9-382c-e33513109d1c@microchip.com>
- <7976f7df-c22f-d444-c910-b0462b3d7f61@gmail.com>
- <d9fcf8da-c0b0-0f18-48e9-a7534948bc93@microchip.com>
- <20210114102508.GO1551@shell.armlinux.org.uk>
- <fe4c31a0-b807-0eb2-1223-c07d7580e1fc@microchip.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH] net: phy: micrel: reconfigure the phy on resume
-Message-ID: <56366231-4a1f-48c3-bc29-6421ed834bdf@gmail.com>
-Date:   Thu, 14 Jan 2021 12:05:21 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1727629AbhANLHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 06:07:34 -0500
+Received: from mout.gmx.net ([212.227.17.22]:58903 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726395AbhANLHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 06:07:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1610622358;
+        bh=I43rMUfK1fo0PlRRUmJRrhdupYUuZAN9RWsx6tHDCI8=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=h1ujnOXsT8YDVGbghezmnySHAbyalsfNQTydCUBQ2A110XuiAoUIYS9HHLkLkAKAG
+         1l8RZzVpfasuoXg/pIwhh0PHoI0y3Fr+kX/RDj3sFucYbefbzvzKFTBVaEplqJC5e4
+         HTmTcCLkOyA2wS8NODO1hjp/61TNKnu6r+0SOSkU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from pinea64lts.fritz.box ([62.143.246.89]) by mail.gmx.com
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MYvcG-1lUr933oum-00UtPs; Thu, 14 Jan 2021 12:05:58 +0100
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+To:     Ivan Hu <ivan.hu@canonical.com>, Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+Subject: [PATCH 1/1] efi/efi_test: read Revision
+Date:   Thu, 14 Jan 2021 12:05:52 +0100
+Message-Id: <20210114110552.1522-1-xypron.glpk@gmx.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <fe4c31a0-b807-0eb2-1223-c07d7580e1fc@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:wpRo9pWEJ8MyjW09beQ9DV70jofyCY5djJFzJAD/pmDXwQPFukn
+ vD9ANEGj0asIFN/tJ+9ScWFLfttcafQ4Q0FvZzZp6ywEqEtx2lpME5hLwiGX/Jd5h16eqf8
+ 9OGndhVDsedsBDAj67YHlNJ0Z6vwBWotlk0+1dR//j29uvfawH1gtWfj4LXvugLmUIvYaCU
+ CGNjVqBa9T+geckoRHNeQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EWuTI7CenPk=:rys905WaERl7wEEuPqMS2a
+ VEqHvTXeJqZRsZPQCgbdgyFoYgGd1pobRgup2ix4lizdGH/c+aPokVN6uBWy+MBSGDl1kuy73
+ eKxKGHSHPnzkMxEHoWJT9LSn09/G6PV6Hm9koIoJZ5D49Q2dkPZAhiRdPjlsNx3qursqL6L0P
+ vjMkNhA2GQdAm8hmdR48F1k6XjPX8XM66XvPFCc6nRWy0a+viXvnTLcdD7yjiG7pS5i1Ys8ns
+ vTZIpmlQIAcs7Qjz+qWADWZdHLDDkFhsIQ7vE/grreP0T788pogfiqa977Q6CP+//1fn6Xk6j
+ SISLjMP2kivHaBDQC3pbRMf56DnRJEKAti0vs14Hk/z32nKFIiPmW0R1PhnOPR1chfSmRRinS
+ f9yufYz/tDSdkdnomwRHUhRfEMt+584b/Rx2IjYxIdGngBTM329U+PbO5ictoH8R5fw29T7fd
+ DWfz4Wo0eAElfumoDzQ9x1C9fLztafwymgSV8uyt7evi5gXLMHO8XfevRJR24f0PfbJTJERnO
+ ClVwfcjc4ICexWvjrAM4slVfb0n+gqdy+x+prnV/yF+HZOoT3SRVNrMAEcP22JBQEsex9MKS8
+ BgASzzxOLMejhBSGcT5/CpnXpyD/MOZKH5ePrWqqkoxi8QfLbS0OugAy3E/2DKFP2Y/DpHeu2
+ cQ1/AQ8ImxzwYJog5DiLnkWXx38AousG74HaVuf+4WfP2A04AUvwWmVWohH3zL8y6vfFvMvmG
+ kC/B5+lZqm17ib5hG3BfFRydn1iMfyQZ82iJhn693e8p0Td8o38bhAzKcsQnx44KasZuusF7c
+ synXuPzY0ReTBuFyCjJ7LocxS9P8d8WZ7Jc3fkj+dJYQIalIY/LJJgzSO2lBOuNrzj9AFb/LY
+ Q9Bu9PztAXDwFSluR2fg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.01.2021 11:41, Claudiu.Beznea@microchip.com wrote:
-> 
-> 
-> On 14.01.2021 12:25, Russell King - ARM Linux admin wrote:
->>
->> As I've said, if phylib/PHY driver is not restoring the state of the
->> PHY on resume from suspend-to-ram, then that's an issue with phylib
->> and/or the phy driver.
-> 
-> In the patch I proposed in this thread the restoring is done in PHY driver.
-> Do you think I should continue the investigation and check if something
-> should be done from the phylib itself?
-> 
-It was the right move to approach the PM maintainers to clarify whether
-the resume PM callback has to assume that power had been cut off and
-it has to completely reconfigure the device. If they confirm this
-understanding, then:
-- the general question remains why there's separate resume and restore
-  callbacks, and what restore is supposed to do that resume doesn't
-  have to do
-- it should be sufficient to use mdio_bus_phy_restore also as resume
-  callback (instead of changing each and every PHY driver's resume),
-  because we can expect that somebody cutting off power to the PHY
-  properly suspends the MDIO bus before
+For testing UEFI conformance using the Firmware Test Suite it is necessary
+to know the revision of the UEFI specification followed by the firmware.
 
-> Thank you,
-> Claudiu Beznea
-> 
->>
->> --
->> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
->> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+With this patch an IOCTL call is provided to read the value of the field
+Revision of the UEFI system table , e.g.
+
+    #define EFI_RUNTIME_GET_REVISION \
+            _IOR('p', 0x0D, unsigned int)
+    unsigned int revision;
+    fd =3D open("/dev/efi_test", O_RDWR);
+    ret =3D ioctl(fd, EFI_RUNTIME_GET_REVISION, &revision);
+
+For UEFI specification 2.8 this will yield
+
+    revision =3D=3D 0x250 =3D=3D (2 << 16) | 80
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+=2D--
+For testing you can use:
+https://github.com/xypron/rtmask
+=2D--
+ drivers/firmware/efi/test/efi_test.c | 16 ++++++++++++++++
+ drivers/firmware/efi/test/efi_test.h |  3 +++
+ 2 files changed, 19 insertions(+)
+
+diff --git a/drivers/firmware/efi/test/efi_test.c b/drivers/firmware/efi/t=
+est/efi_test.c
+index 47d67bb0a516..115e2c8ca8cf 100644
+=2D-- a/drivers/firmware/efi/test/efi_test.c
++++ b/drivers/firmware/efi/test/efi_test.c
+@@ -676,6 +676,19 @@ static long efi_runtime_get_supported_mask(unsigned l=
+ong arg)
+ 	return rv;
+ }
+
++static long efi_runtime_get_revision(unsigned long arg)
++{
++	unsigned int __user *revision;
++	int rv =3D 0;
++
++	revision =3D (unsigned int *)arg;
++
++	if (put_user(efi.runtime_version, revision))
++		rv =3D -EFAULT;
++
++	return rv;
++}
++
+ static long efi_test_ioctl(struct file *file, unsigned int cmd,
+ 							unsigned long arg)
+ {
+@@ -715,6 +728,9 @@ static long efi_test_ioctl(struct file *file, unsigned=
+ int cmd,
+
+ 	case EFI_RUNTIME_GET_SUPPORTED_MASK:
+ 		return efi_runtime_get_supported_mask(arg);
++
++	case EFI_RUNTIME_GET_REVISION:
++		return efi_runtime_get_revision(arg);
+ 	}
+
+ 	return -ENOTTY;
+diff --git a/drivers/firmware/efi/test/efi_test.h b/drivers/firmware/efi/t=
+est/efi_test.h
+index 117349e57993..c8ab162256c8 100644
+=2D-- a/drivers/firmware/efi/test/efi_test.h
++++ b/drivers/firmware/efi/test/efi_test.h
+@@ -121,4 +121,7 @@ struct efi_resetsystem {
+ #define EFI_RUNTIME_GET_SUPPORTED_MASK \
+ 	_IOR('p', 0x0C, unsigned int)
+
++#define EFI_RUNTIME_GET_REVISION \
++	_IOR('p', 0x0D, unsigned int)
++
+ #endif /* _DRIVERS_FIRMWARE_EFI_TEST_H_ */
+=2D-
+2.29.2
 
