@@ -2,115 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A492F60B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D631F2F60BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:06:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728519AbhANMFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 07:05:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727210AbhANMFg (ORCPT
+        id S1728630AbhANMGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 07:06:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50567 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726986AbhANMGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 07:05:36 -0500
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E04CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 04:04:56 -0800 (PST)
-Received: by mail-vs1-xe34.google.com with SMTP id x4so2933364vsp.7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 04:04:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4x4x0Nj/wFI+6ARDdl2ZQ+A+ovOi+cuPXqwiIPE/44Y=;
-        b=R4mJdpV5kJb1NFzjfvZQaR6tfJvyA1KrRUPNmt2lFi1jCHsBMRrdXU8rPgBu0hMEG7
-         yHC3zbGL6UAOt3zP+MrKxxQa+5lLLM079aTkfGMXVmK7O7A65aSHmjJSehodbi08XXrg
-         ZravXhe6OfF0a8brBmI/yajLml5Gdet5gJOIWbjAXFDbbPlJZKG+UUBvisjxhojteDdS
-         9YJ3RWNw6OoFDd5lKS/VBmrpTTJa8xeqFgC8kel0XdOMwLyQSJGE3Q/mJ8JV8LlukjMR
-         AUbatloFhZF2Lne6BgkbrEnjTMTupQtCHhDwYt7+KRwDdqsNIy6Fy9W+vP1MEGIP5rdw
-         VuaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4x4x0Nj/wFI+6ARDdl2ZQ+A+ovOi+cuPXqwiIPE/44Y=;
-        b=CfgEPiSh9SObeoqyS8EG68Lt5uZPDPqKW/PBSnh0yUeIKHLNpr2Q3myGxXZOfz9BlP
-         HTvX6stqFg57W7COZYiceImMndXpelnKfKHbDcmQLatU5NA/6IVpOfCZUIRm4q2MI+6S
-         0YlhfabFC6wbE7A0ZiRD16vucaXDOihvQZmxqT23lKKouDqa7hjrj10JaCn/R4q8Jvhu
-         q4J9geAsxNs0m/+RlDy3sgXDEF+AMRepjEOY79A0eZtdOpmfXErnSIOc9NaYF6i4hnMy
-         s3KUwgu6+yNJ81CBKtKRLRTOz9xa0VOPyXnmcoV67Wf5PxrH0ZnHLbdKK0OOq4xbz7rp
-         O9jA==
-X-Gm-Message-State: AOAM532Ac3+3fzOOnsvxUseJYjStEJQ0qSJKG2EoZEVE11o+YKkndJh1
-        sq0yxOY01/tjhj9KdvgVmIlFFfWAFizDFlURIPL6Hg==
-X-Google-Smtp-Source: ABdhPJwN81B6Ybxy6tJeN4J0+qAqhWeQYoNE/uS0CwfiQYk0pXzqtEnkx86Kr69cCDzQ19v1Yuy0u8gdMHYkmsdX7dg=
-X-Received: by 2002:a05:6102:2127:: with SMTP id f7mr6025568vsg.48.1610625895461;
- Thu, 14 Jan 2021 04:04:55 -0800 (PST)
-MIME-Version: 1.0
-References: <20210106092740.5808-1-reniuschengl@gmail.com> <CAPDyKFq1EVVfU4HU_=-7TmSRinkTCA41pKWtrMD4C+yCUPYECg@mail.gmail.com>
- <CAJU4x8uKHQy_hbMhsErzWb2U5USjMRhAZv=+14a9zDn068vHmw@mail.gmail.com>
-In-Reply-To: <CAJU4x8uKHQy_hbMhsErzWb2U5USjMRhAZv=+14a9zDn068vHmw@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 14 Jan 2021 13:04:19 +0100
-Message-ID: <CAPDyKFrgHgkxFjG5X6v6jx6LYAwx4m5pGROrVY2a42wTPeTKiQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-pci-gli: Enlarge ASPM L1 entry delay of GL9763E
-To:     =?UTF-8?B?6Zmz5bu65a6P?= <reniuschengl@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        greg.tu@genesyslogic.com.tw
+        Thu, 14 Jan 2021 07:06:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610625883;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l3tJ36RqztAwI/4mUqJycCjvUbsiIODgTF0FZus4SkE=;
+        b=QhRj2MJdzJ47vi9RSzeChXpHyu8Sdefx5pR4Kt3Ywn3GqAF13yP6FwgiROnIpnr+WAdydn
+        7d/DmkRw8LbiCE4y8jeZl/kezP2TVOz360106yX5CwRLlQztKsnixJfTL5Qjs7fCtzbsrI
+        SutPkTn9oytoA7BWSXnjutRfKEabBCw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-459-FHRl8kfFNzS0vchBb2NoGw-1; Thu, 14 Jan 2021 07:04:39 -0500
+X-MC-Unique: FHRl8kfFNzS0vchBb2NoGw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB4358042B1;
+        Thu, 14 Jan 2021 12:04:37 +0000 (UTC)
+Received: from starship (unknown [10.35.206.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 924B410016F4;
+        Thu, 14 Jan 2021 12:04:30 +0000 (UTC)
+Message-ID: <e3b48b0d753c9412e8bc163562059ab079984117.camel@redhat.com>
+Subject: Re: [PATCH 2/2] KVM: SVM: Add support for VMCB address check change
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        vkuznets@redhat.com, seanjc@google.com, joro@8bytes.org,
+        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
+        dgilbert@redhat.com
+Date:   Thu, 14 Jan 2021 14:04:29 +0200
+In-Reply-To: <20210112063703.539893-2-wei.huang2@amd.com>
+References: <20210112063703.539893-1-wei.huang2@amd.com>
+         <20210112063703.539893-2-wei.huang2@amd.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 at 07:25, =E9=99=B3=E5=BB=BA=E5=AE=8F <reniuschengl@gma=
-il.com> wrote:
->
-> > Ulf Hansson <ulf.hansson@linaro.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=881=
-3=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=886:53=E5=AF=AB=E9=81=93=EF=
-=BC=9A
-> >
-> > On Wed, 6 Jan 2021 at 10:27, Renius Chen <reniuschengl@gmail.com> wrote=
-:
-> > >
-> > > The R/W performance of GL9763E is low with some platforms, which
-> > > support ASPM mechanism, due to entering L1 state very frequently
-> > > in R/W process. Enlarge its ASPM L1 entry delay to improve the
-> > > R/W performance of GL9763E.
-> >
-> > What do you mean by frequently? In between a burst of request or
-> > during a burst of request?
->
-> GL9763E enters ASPM L1 state after a very short idle in default, even
-> during a burst of request.
+On Tue, 2021-01-12 at 00:37 -0600, Wei Huang wrote:
+> New AMD CPUs have a change that checks VMEXIT intercept on special SVM
+> instructions before checking their EAX against reserved memory region.
+> This change is indicated by CPUID_0x8000000A_EDX[28]. If it is 1, KVM
+> doesn't need to intercept and emulate #GP faults for such instructions
+> because #GP isn't supposed to be triggered.
+> 
+> Co-developed-by: Bandan Das <bsd@redhat.com>
+> Signed-off-by: Bandan Das <bsd@redhat.com>
+> Signed-off-by: Wei Huang <wei.huang2@amd.com>
+> ---
+>  arch/x86/include/asm/cpufeatures.h | 1 +
+>  arch/x86/kvm/svm/svm.c             | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index 84b887825f12..ea89d6fdd79a 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -337,6 +337,7 @@
+>  #define X86_FEATURE_AVIC		(15*32+13) /* Virtual Interrupt Controller */
+>  #define X86_FEATURE_V_VMSAVE_VMLOAD	(15*32+15) /* Virtual VMSAVE VMLOAD */
+>  #define X86_FEATURE_VGIF		(15*32+16) /* Virtual GIF */
+> +#define X86_FEATURE_SVME_ADDR_CHK	(15*32+28) /* "" SVME addr check */
+Why ""?
 
-Okay, then it certainly makes sense to extend the idle period.
+>  
+>  /* Intel-defined CPU features, CPUID level 0x00000007:0 (ECX), word 16 */
+>  #define X86_FEATURE_AVX512VBMI		(16*32+ 1) /* AVX512 Vector Bit Manipulation instructions*/
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 74620d32aa82..451b82df2eab 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -311,7 +311,7 @@ int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
+>  	svm->vmcb->save.efer = efer | EFER_SVME;
+>  	vmcb_mark_dirty(svm->vmcb, VMCB_CR);
+>  	/* Enable GP interception for SVM instructions if needed */
+> -	if (efer & EFER_SVME)
+> +	if ((efer & EFER_SVME) && !boot_cpu_has(X86_FEATURE_SVME_ADDR_CHK))
+>  		set_exception_intercept(svm, GP_VECTOR);
 
-Would you mind extending the commit message with some of this
-information, as I think it's useful.
+As mentioned in the review for the other patch I would add a flag that
+would enable the workaround for the errata, and I would force it disabled
+if X86_FEATURE_SVME_ADDR_CHK is set in CPUID somewhere early in the 
+kvm initialization.
 
->
-> > I am thinking that this could have an effect on energy instead, but I
-> > guess it's not always straightforward to decide what's most important.
-> >
-> > Anyway, what does it mean when you change to use 0x3FF? Are you
-> > increasing the idle period? Then for how long?
->
-> Yes, we considered that having high performance is more important than
-> saving power during a burst of request.
-> So we increased the idle period for 260us, by setting 0x3FF to the
-> ASPM L1 entry delay bits of our vendor-specific register.
-> Anyway, GL9763E can still enter ASPM L1 state by a longer idle.
+And finally that new flag can be used here to enable the #GP interception
+in the above code.
 
-Most mmc controllers that uses runtime PM autosuspend for the same
-reasons, uses and idle period time of ~50us. 260us is in the same
-ballpark, so I am fine with that, if that works for you.
+>  
+>  	return 0;
 
-However, can you please add a comment in the code (and preferably also
-to the commit message) that 0x3FF means using a 260us idle period?
 
-[...]
+Best regards,
+	Maxim Levitsky
 
-Kind regards
-Uffe
