@@ -2,150 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CECA2F6A26
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC612F6A2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729187AbhANSze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:55:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37796 "EHLO
+        id S1729451AbhANS4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:56:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728604AbhANSzd (ORCPT
+        with ESMTP id S1727134AbhANS4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:55:33 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF85C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:54:52 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id k12so5224106qth.23
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:54:52 -0800 (PST)
+        Thu, 14 Jan 2021 13:56:14 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57E5C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:55:34 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id p15so3515517pjv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:55:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=AaPp1q1W8KDgYenpyt0snxhoTAxUV/jsi8fLsxYee9s=;
-        b=AbFdoP4sUQzsnEf7uPBF6d1yyv7CEWy2hdehyosQPrfCEnUbp5VpMDvzXTovH7dvnY
-         BUW7QoXa1ZS5R2g07mGCaB6/MPPcY3Zp6ngE7iLB9LYftWbbW8T6r5heYE4WGpLub/5E
-         119UCT52twmefKyyAjVnpVpDA6PmdAZLdqCzVLm+TNFFfe7inQn5Pd4uaQHnKMJ6Xsf1
-         GhgcRoFiyZyyu8mk20KPHxXF4HxfT0gITpKLYk0fzoNw3VjNZ67X06FS5QqPOH0Nyray
-         X6Tl7++H0WaeBEzOpYY5T6o3n4t/ATRNnhlglQwgg22wG4cJicV1oEpr8LLpEDGritzO
-         tdeg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BZd5vz4hy8Xv+MkxlJJ7ylWIWD/7dL9BLPaHzk7fwBc=;
+        b=C2sF1sIAUAJVx9PwWWwp02Cw3l3B0u/TrqSSltHVQ9OjN7DXJYO7ZtFBcEH1AFHB1j
+         v/waeY6VTZlJJ9p/7QbkMFLAfNuHb/mwxy66ZX4QhI+QVjc5Jc/aMwQ1MfVYDw8kTuMz
+         8I3M8NnbcqDq27BkDm08ayDSChTXb4hBC9Wf6Yz5GqQj34UNP+ygcPvEbtwJO8Ok3kRX
+         Rc+aInAhPqOblsd4T+yD3tuM/lecpBfOM8kU921D8IDxh94HzIl87AioKSrP8Go/iFpe
+         CjdyFFzBGot82Nj5F98G76i46WLJsLBp1cxe/aACXumSfygwbsEmkOx+RE38m//2iAVP
+         wDfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=AaPp1q1W8KDgYenpyt0snxhoTAxUV/jsi8fLsxYee9s=;
-        b=iASFTy0YZrFkz+qeG+DotfFWfoZEsmny9hC8F3XkR/JgKgDCznrVVTsePaFNAnYw4V
-         kMden8p489OoZXVHNj79FKKXAYF5acjwzhc9E8d2vBBj7jg/fFcFdqQjtstN80O8egw3
-         zEzn4RRFj6jIvyqu8vNBwF26mSXPCUK/dbWKNMeF5oY7kEIzrP5vl46hkzv8IerZ8+V6
-         mRrQOIJVjqRRNCEGqyI65yvyOxvmXh2SdHLYtDaTxuTY6NA68huw163qErVvxC0HSFz3
-         f5cKgkddZE1F0EfiMvu4UK+le5DBwtTkkwBzxn/AaTKMacd04HzsjvurSxqWibVpRo3c
-         +oBA==
-X-Gm-Message-State: AOAM532ntQrBnrKW/UXSrTpIONEMVB2P9Ocg5kBAaQget65oZB19Z024
-        e45N0Uu+G5hNyHlLVXGEvF+S8MsooXU=
-X-Google-Smtp-Source: ABdhPJyOjW3fImyvzubc9dkkNbV113IJEHcA3Y5QmRLgEwh56M49ioa1URPWggXJt8Ch2ptbRNX+UA4XhJI=
-Sender: "figiel via sendgmr" <figiel@odra.waw.corp.google.com>
-X-Received: from odra.waw.corp.google.com ([2a00:79e0:2:11:1ea0:b8ff:fe79:fe73])
- (user=figiel job=sendgmr) by 2002:a05:6214:b12:: with SMTP id
- u18mr2482010qvj.21.1610650491811; Thu, 14 Jan 2021 10:54:51 -0800 (PST)
-Date:   Thu, 14 Jan 2021 19:54:45 +0100
-Message-Id: <20210114185445.996-1-figiel@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v2] fs/proc: Expose RSEQ configuration
-From:   Piotr Figiel <figiel@google.com>
-To:     Alexey Dobriyan <adobriyan@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>, mathieu.desnoyers@efficios.com
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        posk@google.com, kyurtsever@google.com, ckennelly@google.com,
-        pjt@google.com, Piotr Figiel <figiel@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BZd5vz4hy8Xv+MkxlJJ7ylWIWD/7dL9BLPaHzk7fwBc=;
+        b=Jnw/rER1h7FWsEkFDWHBXDbwGejjYNogLJua8mN/0mU6WeATiEffILRuRTY7PyKb3t
+         oF+UPvmh36nytApVh2yGXrr0NqevpU1dlvIPmqWSZct0JqTSoSL/PVj4FfYmaH71M6wb
+         xOXstFfyLzt+TP2j1FerZcRCr+5cS6Fcdg+EkrveprBgqblqkFVRXRuwQCnXmm5w769i
+         +qw3PMgpSGVmFqKvnwWOuWnBfKVn1E6x6fpmcmA4Vejm6xFCyccXsPIrAlbqlpjfyq7b
+         pQYIfibETov7zwp/ETdKPpAPnmQwVoeTX5MLsiXyKzoDrc7LxC2aee8Cc/h4Ygh3M0xN
+         uyKw==
+X-Gm-Message-State: AOAM531hs8ZLPiq3HOVmIlUp7n6NjWnu97aGLGDyhD3fPQxpCj0P8Jkb
+        JBaA6btqCqtG+VLn37iEX9MMdA==
+X-Google-Smtp-Source: ABdhPJybpMzaxPsT4F0zX42TRtgXkpt7IELZ8MQWQhB4kA8effHT+847pPFm3sA0tjsEsCdnKa78OA==
+X-Received: by 2002:a17:902:bf06:b029:dc:1f:ac61 with SMTP id bi6-20020a170902bf06b02900dc001fac61mr8924128plb.16.1610650534057;
+        Thu, 14 Jan 2021 10:55:34 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id p17sm5782386pfn.52.2021.01.14.10.55.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 10:55:33 -0800 (PST)
+Date:   Thu, 14 Jan 2021 10:55:26 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Kan Liang <kan.liang@linux.intel.com>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 04/17] perf: x86/ds: Handle guest PEBS overflow PMI
+ and inject it to guest
+Message-ID: <YACTnkdi1rxfrRCg@google.com>
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <20210104131542.495413-5-like.xu@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104131542.495413-5-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For userspace checkpoint and restore (C/R) some way of getting process
-state containing RSEQ configuration is needed.
+On Mon, Jan 04, 2021, Like Xu wrote:
+> ---
+>  arch/x86/events/intel/ds.c | 62 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 62 insertions(+)
+> 
+> diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+> index b47cc4226934..c499bdb58373 100644
+> --- a/arch/x86/events/intel/ds.c
+> +++ b/arch/x86/events/intel/ds.c
+> @@ -1721,6 +1721,65 @@ intel_pmu_save_and_restart_reload(struct perf_event *event, int count)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * We may be running with guest PEBS events created by KVM, and the
+> + * PEBS records are logged into the guest's DS and invisible to host.
+> + *
+> + * In the case of guest PEBS overflow, we only trigger a fake event
+> + * to emulate the PEBS overflow PMI for guest PBES counters in KVM.
+> + * The guest will then vm-entry and check the guest DS area to read
+> + * the guest PEBS records.
+> + *
+> + * The guest PEBS overflow PMI may be dropped when both the guest and
+> + * the host use PEBS. Therefore, KVM will not enable guest PEBS once
+> + * the host PEBS is enabled since it may bring a confused unknown NMI.
+> + *
+> + * The contents and other behavior of the guest event do not matter.
+> + */
+> +static int intel_pmu_handle_guest_pebs(struct cpu_hw_events *cpuc,
+> +				       struct pt_regs *iregs,
+> +				       struct debug_store *ds)
+> +{
+> +	struct perf_sample_data data;
+> +	struct perf_event *event = NULL;
+> +	u64 guest_pebs_idxs = cpuc->pebs_enabled & ~cpuc->intel_ctrl_host_mask;
+> +	int bit;
+> +
+> +	/*
+> +	 * Ideally, we should check guest DS to understand if it's
+> +	 * a guest PEBS overflow PMI from guest PEBS counters.
+> +	 * However, it brings high overhead to retrieve guest DS in host.
+> +	 * So we check host DS instead for performance.
+> +	 *
+> +	 * If PEBS interrupt threshold on host is not exceeded in a NMI, there
+> +	 * must be a PEBS overflow PMI generated from the guest PEBS counters.
+> +	 * There is no ambiguity since the reported event in the PMI is guest
+> +	 * only. It gets handled correctly on a case by case base for each event.
+> +	 *
+> +	 * Note: KVM disables the co-existence of guest PEBS and host PEBS.
 
-There are two ways this information is going to be used:
- - to re-enable RSEQ for threads which had it enabled before C/R
- - to detect if a thread was in a critical section during C/R
+By "KVM", do you mean KVM's loading of the MSRs provided by intel_guest_get_msrs()?
+Because the PMU should really be the entity that controls guest vs. host.  KVM
+should just be a dumb pipe that handles the mechanics of how values are context
+switch.
 
-Since C/R preserves TLS memory and addresses RSEQ ABI will be restored
-using the address registered before C/R.
+For example, commit 7099e2e1f4d9 ("KVM: VMX: disable PEBS before a guest entry"),
+where KVM does an explicit WRMSR(PEBS_ENABLE) to (attempt to) force PEBS
+quiescence, is flawed in that the PMU can re-enable PEBS after the WRMSR if a
+PMI arrives between the WRMSR and VM-Enter (because VMX can't block NMIs).  The
+PMU really needs to be involved in the WRMSR workaround.
 
-Detection whether the thread is in a critical section during C/R is
-needed to enforce behavior of RSEQ abort during C/R. Attaching with
-ptrace() before registers are dumped itself doesn't cause RSEQ abort.
-Restoring the instruction pointer within the critical section is
-problematic because rseq_cs may get cleared before the control is
-passed to the migrated application code leading to RSEQ invariants not
-being preserved.
+> +	 */
+> +	if (!guest_pebs_idxs || !in_nmi() ||
 
-Signed-off-by: Piotr Figiel <figiel@google.com>
+Are PEBS updates guaranteed to be isolated in both directions on relevant
+hardware?  By that I mean, will host updates be fully processed before VM-Enter
+compeletes, and guest updates before VM-Exit completes?  If that's the case,
+then this path could be optimized to change the KVM invocation of the NMI
+handler so that the "is this a guest PEBS PMI" check is done if and only if the
+PMI originated from with the guest.
 
----
-
-v2:
- - fixed string formatting for 32-bit architectures
-
-v1:
- - https://lkml.kernel.org/r/20210113174127.2500051-1-figiel@google.com
-
----
- fs/proc/base.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index b3422cda2a91..7cc36a224b8b 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -662,6 +662,21 @@ static int proc_pid_syscall(struct seq_file *m, struct pid_namespace *ns,
- 
- 	return 0;
- }
-+
-+#ifdef CONFIG_RSEQ
-+static int proc_pid_rseq(struct seq_file *m, struct pid_namespace *ns,
-+				struct pid *pid, struct task_struct *task)
-+{
-+	int res = lock_trace(task);
-+
-+	if (res)
-+		return res;
-+	seq_printf(m, "%tx %08x\n", (ptrdiff_t)((uintptr_t)task->rseq),
-+		   task->rseq_sig);
-+	unlock_trace(task);
-+	return 0;
-+}
-+#endif /* CONFIG_RSEQ */
- #endif /* CONFIG_HAVE_ARCH_TRACEHOOK */
- 
- /************************************************************************/
-@@ -3182,6 +3197,9 @@ static const struct pid_entry tgid_base_stuff[] = {
- 	REG("comm",      S_IRUGO|S_IWUSR, proc_pid_set_comm_operations),
- #ifdef CONFIG_HAVE_ARCH_TRACEHOOK
- 	ONE("syscall",    S_IRUSR, proc_pid_syscall),
-+#ifdef CONFIG_RSEQ
-+	ONE("rseq",       S_IRUSR, proc_pid_rseq),
-+#endif
- #endif
- 	REG("cmdline",    S_IRUGO, proc_pid_cmdline_ops),
- 	ONE("stat",       S_IRUGO, proc_tgid_stat),
-@@ -3522,6 +3540,9 @@ static const struct pid_entry tid_base_stuff[] = {
- 			 &proc_pid_set_comm_operations, {}),
- #ifdef CONFIG_HAVE_ARCH_TRACEHOOK
- 	ONE("syscall",   S_IRUSR, proc_pid_syscall),
-+#ifdef CONFIG_RSEQ
-+	ONE("rseq",      S_IRUSR, proc_pid_rseq),
-+#endif
- #endif
- 	REG("cmdline",   S_IRUGO, proc_pid_cmdline_ops),
- 	ONE("stat",      S_IRUGO, proc_tid_stat),
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
-
+> +		ds->pebs_index >= ds->pebs_interrupt_threshold)
+> +		return 0;
+> +
+> +	for_each_set_bit(bit, (unsigned long *)&guest_pebs_idxs,
+> +			INTEL_PMC_IDX_FIXED + x86_pmu.num_counters_fixed) {
+> +
+> +		event = cpuc->events[bit];
+> +		if (!event->attr.precise_ip)
+> +			continue;
+> +
+> +		perf_sample_data_init(&data, 0, event->hw.last_period);
+> +		if (perf_event_overflow(event, &data, iregs))
+> +			x86_pmu_stop(event, 0);
+> +
+> +		/* Inject one fake event is enough. */
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
