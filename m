@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E3E2F6A95
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2EA02F6A9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729968AbhANTKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:10:23 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:46879 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbhANTKV (ORCPT
+        id S1729804AbhANTLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:11:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbhANTLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:10:21 -0500
-Received: by mail-ot1-f46.google.com with SMTP id w3so6169826otp.13;
-        Thu, 14 Jan 2021 11:10:05 -0800 (PST)
+        Thu, 14 Jan 2021 14:11:47 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56061C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:11:07 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id md11so3641180pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:11:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+ReVIElF0ug2hspVF8MhGrtt8tX4cPTcM7laaE3Mkn4=;
+        b=HyQPHZUme1aLutRzh4m+G49+4PStkg/ebEra578C6AXdOamIQY6q2Gz33JYYuZ5l49
+         0Ypd2OvzoUa7irmLZUn0hQGzjLtuWAft+Masj0n9nyLrIbqYQmpCW7ju11baWMs5KgDQ
+         hxXi7gnlNYT5gMuKStvhg2X3kxM8/M/IcImhtwix4r+C/g7dOgpOvlvtjHJNIaCncdQ3
+         qy//GtTrOYJyhWEOCqz1J2BGpjNh7u+wvfcbn5DGh9mbSBiT2U1i4VDayzGCW6YiR+Uc
+         0BQktkXhJCPl5UKR8QFs5VPLZKz3JElz4wvfXaHsGAFiGgtHLi75ZThoaEb1G9siTapK
+         HBlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=LHnv4YBdvdSukhMOpEajJnzBDnb/tm9j26BMAF7scIo=;
-        b=dBX2MYyIZExqSIT9xxjM8Vzhm6psyvcGcA9J8ixUlA6dzmwJjfsMzrd5E3/50z/COe
-         YFwyyL3QTLU06Migp+Bne41GkI8GdscVIU8LJo08hJ7TyPDLLN5E+sotIzuCsNUJJi57
-         yUvjSW0e4SWw1XTdWsbUfJ+qnBDqU+Mo91j12tln5YiV9yqudAjhfNzSlvWFEz8Mu+fM
-         vF5oU8qOIK96GB8m7xPca3cj245OVUzcGYdLzOX3jqDgnuSRU01XGrRYSDD0A4zOLg/J
-         n8p4rojsLb9sAijAKjilum13Lg9JuJBQWulZowQGv11eVdQC00U8wQDBkEGIvSjuKki8
-         aRfQ==
-X-Gm-Message-State: AOAM531Z503HBcZtLICy5DovpOQ6XR976el+TTXvtszbpjDAbsw5NtQu
-        Rv2krOn21xfLpN10Z7sLhA==
-X-Google-Smtp-Source: ABdhPJyXY9ue6QPUzsbYXuR+YT+3/Y46kF6q/lHe43oOwfEA57P9/0c2PVBhldi1Kjbmb/mgV1Fn3A==
-X-Received: by 2002:a9d:8ea:: with SMTP id 97mr5456555otf.223.1610651380243;
-        Thu, 14 Jan 2021 11:09:40 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v4sm1225950otk.50.2021.01.14.11.09.38
+        bh=+ReVIElF0ug2hspVF8MhGrtt8tX4cPTcM7laaE3Mkn4=;
+        b=HhjiJK6974TAq4yM1qUZHujwD3jjof1aTpYUXEDWVq+YblKCGySs0KsqPCOo+Hw2y9
+         klYX41zxJ7tyNIbKsoNuqheNX5V/lrCOPHi1I51tPa8dKzRv9j98nhgP5CiHybIoGhc7
+         Jlia3YeXr92fYNO67ifEfXqAVsCKvimEugY1BC9SjEiiGhbXNzYWHW3fijFklk6fm+2k
+         53vBFnxUyyky9aplWMA4w8l1N7QVg9Jc/YOV1IDukJz1/+soy/wMJVq/l9Y6S5whqJ8r
+         WcG4vGgckSChrdvwSn6ssfdm5KGXl96dPtTcZHonIwaF4jIxzNdZYsA6S0p0noaEGW9f
+         BQBw==
+X-Gm-Message-State: AOAM533HY5K5/sARepKvfDeFw1vchqe6XqFNe6Ihh2hw/hn1OdXSlZKy
+        WJC2TdBANR7dBaGG4VQoiBultg==
+X-Google-Smtp-Source: ABdhPJwuHmV2q+NvRIuZSsYI6CNiyUcx1ahBqTEkR7YR+cDX9VpwdeFEKU143CZ778FJ0S+i2Lsu+A==
+X-Received: by 2002:a17:90a:31c3:: with SMTP id j3mr6259951pjf.25.1610651466709;
+        Thu, 14 Jan 2021 11:11:06 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id c18sm5867353pfj.200.2021.01.14.11.11.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 11:09:39 -0800 (PST)
-Received: (nullmailer pid 3390716 invoked by uid 1000);
-        Thu, 14 Jan 2021 19:09:38 -0000
-Date:   Thu, 14 Jan 2021 13:09:38 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Chen-Yu Tsai <wens@kernel.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/3] dt-bindings: arm: rockchip: Add Radxa ROCK Pi E
-Message-ID: <20210114190938.GA3390660@robh.at.kernel.org>
-References: <20210110035846.9155-1-wens@kernel.org>
- <20210110035846.9155-3-wens@kernel.org>
+        Thu, 14 Jan 2021 11:11:06 -0800 (PST)
+Date:   Thu, 14 Jan 2021 11:10:59 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Kan Liang <kan.liang@linux.intel.com>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/17] KVM: x86/pmu: Add support to enable Guest PEBS
+ via DS
+Message-ID: <YACXQwBPI8OFV1T+@google.com>
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210110035846.9155-3-wens@kernel.org>
+In-Reply-To: <20210104131542.495413-1-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Jan 2021 11:58:45 +0800, Chen-Yu Tsai wrote:
-> From: Chen-Yu Tsai <wens@csie.org>
+On Mon, Jan 04, 2021, Like Xu wrote:
+> 2) Slow path (part 3, patch 0012-0017)
 > 
-> Radxa ROCK Pi E is a router oriented SBC based on Rockchip's RK3328 SoC.
-> As the official wiki page puts it, "E for Ethernets".
+> This is when the host assigned physical PMC has a different index
+> from the virtual PMC (e.g. using physical PMC1 to emulate virtual PMC0)
+> In this case, KVM needs to rewrite the PEBS records to change the
+> applicable counter indexes to the virtual PMC indexes, which would
+> otherwise contain the physical counter index written by PEBS facility,
+> and switch the counter reset values to the offset corresponding to
+> the physical counter indexes in the DS data structure. 
 > 
-> It features the RK3328 SoC, gigabit and fast Ethernet RJ45 ports, both
-> directly served by Ethernet controllers in the SoC, a USB 3.0 host port,
-> a power-only USB type-C port, a 3.5mm headphone jack for audio output,
-> two LEDs, a 40-pin Raspberry Pi style GPIO header, and optional WiFi+BT
-> and PoE header.
-> 
-> The board comes in multiple configurations, differing in the amount of
-> onboard RAM, the level of WiFi+BT (none, 802.11n 2.4GHz, or 802.11ac
-> 2.4 GHz & 5 GHz), and whether PoE is supported or not. These variants
-> can all share the same device tree.
-> 
-> The USB 2.0 OTG controller is available on the 40-pin header. This is
-> not enabled in the device tree, since it is possible to use it in a
-> host-only configuration, or in OTG mode with an extra pin from the
-> header as the ID pin.
-> 
-> The device tree is based on the one of the Rock64, with various parts
-> modified to match the ROCK Pi E, and some parts updated to newer styles,
-> such as the gmac2io node's mdio sub-node.
-> 
-> Add a compatible string for the new board.
-> 
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-> ---
->  Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
+> Large PEBS needs to be disabled by KVM rewriting the
+> pebs_interrupt_threshold filed in DS to only one record in
+> the slow path.  This is because a guest may implicitly drain PEBS buffer,
+> e.g., context switch. KVM doesn't get a chance to update the PEBS buffer.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Are the PEBS record write, PEBS index update, and subsequent PMI atomic with
+respect to instruction execution?  If not, doesn't this approach still leave a
+window where the guest could see the wrong counter?
+
+The virtualization hole is also visible if the guest is reading the PEBS records
+from a different vCPU, though I assume no sane kernel does that?
+
+> The physical PMC index will confuse the guest. The difficulty comes
+> when multiple events get rescheduled inside the guest. Hence disabling
+> large PEBS in this case might be an easy and safe way to keep it corrects
+> as an initial step here. 
