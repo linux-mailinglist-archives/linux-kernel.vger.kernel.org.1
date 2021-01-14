@@ -2,54 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3CF2F6E58
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B106B2F6E5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730689AbhANWj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 17:39:29 -0500
-Received: from mga06.intel.com ([134.134.136.31]:5036 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729586AbhANWj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 17:39:27 -0500
-IronPort-SDR: X1Wztsp1PhDru+2sTm58Y0sMeRKa+8V2k0eKZ7eFKe1KcoRD3dJHRgajLkbJ+JrN86dVKJn6hR
- +V8U6burbQfw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="240000774"
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="240000774"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 14:37:41 -0800
-IronPort-SDR: KHgXeEdpxIlPNe0MxMGFDkb299iXzzebbc5xM6orunBROyeg2fM1cURMj3CDtIdA4x+V3ckWRM
- KcgDJ5DjdAgA==
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="382431963"
-Received: from dvarelam-mobl1.amr.corp.intel.com (HELO [10.212.182.202]) ([10.212.182.202])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 14:37:39 -0800
-Subject: Re: [Sound-open-firmware] [PATCH 1/2] [v2] ALSA: hda: fix
- SND_INTEL_DSP_CONFIG dependency
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        sound-open-firmware@alsa-project.org
-References: <20210112203250.2576775-1-arnd@kernel.org>
- <CAK8P3a0+YmZTzYYk0D5HpBEB7Kp=ryx1U4KRKCyz4XYM3v9rAQ@mail.gmail.com>
- <4ad60e25-b1d5-9be1-a2bc-8bec9e4e85c1@linux.intel.com>
- <CAK8P3a0o3LVuVgLWYFHgdzWfi0MSa8MgggsP5RxApZgvxiJbwQ@mail.gmail.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <b9b5b3c7-43ac-b856-6783-2c430fa098af@linux.intel.com>
-Date:   Thu, 14 Jan 2021 16:37:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730776AbhANWlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 17:41:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729586AbhANWk7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 17:40:59 -0500
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57F0C061575;
+        Thu, 14 Jan 2021 14:40:03 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 1BB0C3F116;
+        Thu, 14 Jan 2021 23:40:02 +0100 (CET)
+Subject: Re: [PATCH 1/9] clk: qcom: gcc-msm8998: Wire up gcc_mmss_gpll0 clock
+To:     Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        phone-devel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
+        DTML <devicetree@vger.kernel.org>
+References: <20210109134617.146275-1-angelogioacchino.delregno@somainline.org>
+ <20210109134617.146275-2-angelogioacchino.delregno@somainline.org>
+ <CAOCk7NqUpa0DqW=han49MtwUqNkNsQC3OPpO7B-872bvNukDJw@mail.gmail.com>
+ <9942f98c-c186-5cd0-d6ac-a18a4e20583e@somainline.org>
+ <CAOCk7Nod9a+5EUUWGpso+EBb2dJVLMvjrOoMpqeTcm+L6mxvtQ@mail.gmail.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <b5f6095d-ed74-26a9-a485-df0dc1203f8e@somainline.org>
+Date:   Thu, 14 Jan 2021 23:40:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0o3LVuVgLWYFHgdzWfi0MSa8MgggsP5RxApZgvxiJbwQ@mail.gmail.com>
+In-Reply-To: <CAOCk7Nod9a+5EUUWGpso+EBb2dJVLMvjrOoMpqeTcm+L6mxvtQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -57,44 +52,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/14/21 3:19 PM, Arnd Bergmann wrote:
-> On Thu, Jan 14, 2021 at 7:07 PM Pierre-Louis Bossart
-> <pierre-louis.bossart@linux.intel.com> wrote:
->> On 1/14/21 9:09 AM, Arnd Bergmann wrote:
->>> On Tue, Jan 12, 2021 at 9:32 PM Arnd Bergmann <arnd@kernel.org> wrote:
->>>> ---
->>>> v2: fix various build issues in the first version, now passes
->>>>       all randconfig builds I tried
->>>
->>> Please disregard this version, while I have a tree that passes
->>> the randconfig builds now, this was not the patch from it that
->>> I wanted to send...
+Il 14/01/21 23:33, Jeffrey Hugo ha scritto:
+> On Thu, Jan 14, 2021 at 3:13 PM AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@somainline.org> wrote:
 >>
->> No worries, I reworked the PCI case completely. Still running tests to
->> make sure there's no regression
->> https://github.com/thesofproject/linux/pull/2683
+>> Il 14/01/21 23:12, Jeffrey Hugo ha scritto:
+>>> On Sat, Jan 9, 2021 at 6:47 AM AngeloGioacchino Del Regno
+>>> <angelogioacchino.delregno@somainline.org> wrote:
+>>>>
+>>>> This clock enables the GPLL0 output to the multimedia subsystem
+>>>> clock controller.
+>>>>
+>>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>>>
+>>> Any reason why you are not also adding the div_clk?
+>>>
+>>
+>> Yes, just one: I haven't tested it... and my devices worked without.
+>> Perhaps we can add it whenever we find out if something really needs it?
 > 
-> Ok, I see. I had not realized that you already did the PCI bits as well,
-> and applied my original patch to your tree, as I had meant to
-> resend my "ASoC: SOF: ACPI: avoid reverse module dependency"
-> patch after fixing some additional build failures in it. I have
-> now applied the relevant commits from your branch to my
-> randconfig tree, and will let you know if that finds anything more.
+> I'm mildly surprised you need to turn on the gate to the PLL0 out, but
+> not the div_out.  The div_out/div_clk is also fed into every RCG that
+> exists in the MMCC.
 > 
->  From what I can tell so far, you already included the fixups that I had
-> locally, and more.
+> Per the frequency plan the following RCGs require it -
+> 
+> cci
+> cpp
+> fd_core
+> camss_gp[0-1]
+> jpeg0
+> mclk[0-3]
+> csi[0-2]phytimer
+> dp_gtc
+> maxi
+> axi
+> ahb
+> 
+> Also, I'm very interested in all things 8998, and would generally
+> appreciate being added to the to: list.
+> 
 
-Thanks Arnd.
+To be honest, I was surprised as well because.. yes, I know that these 
+RCGs seem to need it, but then their clock tables don't contain any 
+reference to the gpll0 divider, hence it's never getting used - and that 
+works great, for now.
 
-Yes we added a couple of things. I missed the fact that we hard-coded 
-'sof-acpi' to determine if we use the legacy or SOF driver, and other 
-problems with driver names that I screwed-up.
+I am aware of the fact that the clocks that you've mentioned are using 
+the divider to reduce jitter, but I haven't done any camera test on my 
+devices yet: that's definitely in my plans and I really can't wait to do 
+that (as I successfully did for SDM630/660), but... we have more than 
+100 patches in our trees.
+We need to get upstream in the same working order as what we have here, 
+so that we don't diverge that much and our work is kept in a 
+maintainable state (avoiding to lose pieces around).
 
-The dependencies part should be finished now, I am just testing on my 
-side that nothing broke on the test devices (which is slower than I 
-wanted due to other ACPI scan things I had to revert locally). I will 
-add a couple of suggestions from Guennadi but this should be done tomorrow.
+I'm sure that I'll send a commit adding the gpll0 divider branch as soon 
+as I will start the camera work: I feel it, it's going to give me issues 
+without, in that field.
 
+By the way, noted. I'll make sure to add you in the to/cc for all of the 
+next series regarding 8998 that I'll send.
 
+Meanwhile, you may want to check out all the recent patches that I've 
+sent, as like 90% are MSM8998-centric... :))
+
+-- Angelo
