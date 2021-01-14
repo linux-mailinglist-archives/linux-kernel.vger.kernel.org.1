@@ -2,85 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FDB2F6B8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0953F2F6B8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730395AbhANTwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:52:39 -0500
-Received: from smtprelay0154.hostedemail.com ([216.40.44.154]:34152 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728474AbhANTwj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:52:39 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 222B01E02;
-        Thu, 14 Jan 2021 19:51:58 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:6119:6120:6742:7652:7901:7903:10004:10400:10848:11232:11658:11914:12297:12660:12740:12760:12895:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21627:21939:30054:30060:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: rain54_480ec0327529
-X-Filterd-Recvd-Size: 2836
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf01.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 14 Jan 2021 19:51:55 +0000 (UTC)
-Message-ID: <fd3f26b7a70d3b90f1368c55532e463ef2fb9fa4.camel@perches.com>
-Subject: Re: [PATCH] compiler.h: Raise minimum version of GCC to 5.1 for
- arm64
-From:   Joe Perches <joe@perches.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Florian Weimer <fweimer@redhat.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 14 Jan 2021 11:51:53 -0800
-In-Reply-To: <CAHk-=wjHTpG+gMx9vqrZgo8Uw0NqA2kNjS87o63Zv3=WG2K3zA@mail.gmail.com>
-References: <20210112224832.10980-1-will@kernel.org>
-         <161055398865.21762.12236232732054213928.b4-ty@arm.com>
-         <CAK7LNASs6dvU6D3jL2GG3jW58fXfaj6VNOe55NJnTB8UPuk2pA@mail.gmail.com>
-         <CAHk-=wiQ_tp8NmKV8PJ-6WMo3dTEZwDo3a0hYjcUFqMdviNTYw@mail.gmail.com>
-         <20210113214436.GL1551@shell.armlinux.org.uk>
-         <CAHk-=wjqGRXUp6KOdx-eHYEotGvY=a5tSY1mF-BkAcX2YAuBYw@mail.gmail.com>
-         <CAMj1kXFaDNRbDvr43VLEHFRHHS0sGGcF=iTfES4sxPg-rZ34NA@mail.gmail.com>
-         <CAHk-=wjHTpG+gMx9vqrZgo8Uw0NqA2kNjS87o63Zv3=WG2K3zA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1730113AbhANTyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:54:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728474AbhANTyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 14:54:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD9F323434;
+        Thu, 14 Jan 2021 19:53:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610654013;
+        bh=QAcJoaNexFGtpsK+E5UfZdcoKGp5+72FmTd9CfwI/PI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZDAZuJIfZtt6e8YKMNSUbiBid1AjVH95afv4rZYvBXRBUbb50M/zi+L5cQEceMxdx
+         e8cwoDb5RNj+tJhv/oq1FjrfyJZ0oilGXXIxLnVp7XJB36qChbMmtf1sXphpYxSMkS
+         pho+XJn5CMAU35xWdq3ASOdP/R+D9zbPHSoDu1eCvuFKaE8PaTUnYiOdTgq1Gezpvt
+         utOQHPolukFpu0QFarnw1KowOHXe9ybbrHwOisuPylTocqlwo2FeLoPSVvWcZEmaqW
+         0EQFkOJcP4RgTOWKdNFOrxB0rhgKdQ3DuA200j+Nrrc648BNo0u7b+lLVRfhA0pVXu
+         ev6geUPTPepiQ==
+Date:   Thu, 14 Jan 2021 20:53:30 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Evan Green <evgreen@chromium.org>, Peter Rosin <peda@axentia.se>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Korsgaard <peter.korsgaard@barco.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RESEND PATCH v3 2/2] i2c: i2c-mux-gpio: Enable this driver in
+ ACPI land
+Message-ID: <20210114195330.GA16693@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Evan Green <evgreen@chromium.org>, Peter Rosin <peda@axentia.se>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Korsgaard <peter.korsgaard@barco.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201118234025.376412-1-evgreen@chromium.org>
+ <20201118153951.RESEND.v3.2.Idef164c23d326f5e5edecfc5d3eb2a68fcf18be1@changeid>
+ <CAHp75VdtwyCj7emc7Bk87q7kMQA0sSX81-aK-fMq4qTfTF-c_g@mail.gmail.com>
+ <CAE=gft4OW7_pWfco4+kY65tbUGUDzXXDfsVMCP8MN93inVem4A@mail.gmail.com>
+ <20210105102505.GG2000@ninjato>
+ <CAE=gft42nQECU9Sn9yC-o8+VE9EDoRgLmqVR0Uwma+vBTiEh-Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
+Content-Disposition: inline
+In-Reply-To: <CAE=gft42nQECU9Sn9yC-o8+VE9EDoRgLmqVR0Uwma+vBTiEh-Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-01-14 at 10:43 -0800, Linus Torvalds wrote:
-> On Thu, Jan 14, 2021 at 12:18 AM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > 
-> > So if the arguments are piling up, what is holding us back, other than
-> > inertia?
-> 
-> I think we can most certainly just try increasing the minimum version
-> to 5.1 in the next merge window and see.
-> 
-> > Note that banning 4.9 for arm64 and banning it in general should be
-> > two different changes in any case, as the former will need to be
-> > backported to -stable kernels as well.
-> 
-> Yes. The arm64 issue is a clear and known bug, plus I suspect gcc-4.9
-> is ridiculously old in the arm64 ecosystem anyway.
-> 
-> So the arm64 issue is a bug-fix, the follow-up of just upgrading gcc
-> requirements in general would be a "keep up with the times, and allow
-> those variable declarations in loops".
 
-Given the upgrade requirement, and how clang version requirements
-constantly change, how much more difficult would it be for others
-to use gcc 7.1 or higher now instead of later?
+--k+w/mQv8wyuph6w0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+> Can this be accepted as-is, or should I resend?
+
+Peter, can you have a look here as well?
 
 
+--k+w/mQv8wyuph6w0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAAoTUACgkQFA3kzBSg
+Kbblng//anh30fEErHflSTsYgu7x0KVirh/l8S6kCSGmgQ8NK/6pGl5ObEUOnyRV
+7hh7DZxkrYagROyxb0UzKr8dc7+rT3Z00vZORrxHFAT3DfLSaKwXhgejSNBr3DGW
+prFyynxQZZXEdOvEWyaRYODDpdR8B0eGW4sVvy2lJTUdeEl2BZkiTaV1cRMIG+qK
+TpkaQywaXpOD6qLv86Tmt/jAKYyhulSjGINyBfu20Ivf6rZmBXblqSrvK+RClASx
+rDiiluow2psKlU9DGCHYG0xoQ6QScG9OK0bHGcGB4UpQnHsmX9g3h9cVW/EpNurK
+HIxN28oKoZLMYSItTlpZZ07s4nR6JutQOKRPx2n9Vh6SXnOaH+XulDFMVCa9c6Nt
+dh6KWzmdCcdtjVFgVI3Hbw13BA/4MZJeYtDzTQYSzPFX66xydpLVW3YbgxyUUaMU
+aUzSH8IgS5B23DpUaC7FSj0MOEKzWIYm3eF6YDKN+x7kq5QrSCkijOon2uFE1FzF
+nzfE+X5SToDfZm9AN6vcJE2ytOuWf8USLxFaOyAGLwxjB/oe2CKtky00Tb5xM+TP
+G9t+vz/IEqVzz2TUnphSS8ZytWLmUJtYxipKtez83OwBlj1cj8tqf2XYaep0alBA
+8lyxSphEd/ke3LWYCK33I45BL+0NezaiJYIXZSB4Z7dx+rS8XYA=
+=mq6m
+-----END PGP SIGNATURE-----
+
+--k+w/mQv8wyuph6w0--
