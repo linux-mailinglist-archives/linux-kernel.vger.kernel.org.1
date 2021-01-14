@@ -2,93 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD812F68D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2442F690F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729764AbhANSDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:03:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729745AbhANSDi (ORCPT
+        id S1729563AbhANSIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:08:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47392 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729538AbhANSIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:03:38 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AC0C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:02:57 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id d7so5406661qkb.23
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:02:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=a5DqBEIg9ZUUqFisuGcFzEBE1gkPQ03QOU2mivyMBu0=;
-        b=TWuUGXbiGPyD5CBA77F/WwdIAp+ZzlrA2W6ning74zQn7ymPiHFOEEEp9P4B/1LOyP
-         Ltslja0N1kg8oZxwBUqsTUYi1Ub8DUyeAW0nFPhW85P3QL5WHVahtNd2rMZs72EuU9Z8
-         nVbLpZrS3E9kP/QeXf4t9QJla5P4l8WJG3mdWv1tIo+fMnSk57jSEzky2uiZy9o0Cgts
-         QbfR2l8Il5zxFFBywU5POAirAVWXgxLkc51ZVxZ2Vb3eU8Ud5/JqnUyRdWhQHeC+bekJ
-         ezlqTjbOtRjkD3XnXXg1oSFwLLVSPTnLN/uYFsbkX9n1Wie/3JPdEPxOQj1gGwJh74cB
-         ovWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=a5DqBEIg9ZUUqFisuGcFzEBE1gkPQ03QOU2mivyMBu0=;
-        b=kljZXRjtgtgXuZXS8blAJskR7siOF0qeKzMbHUuDcT3hzinLOFk5yA8NN78zeU0W3y
-         x+7x7Utxz0WkP74RJZ4JqgAc+FSy+H78Dcz2qWsmez0mbHGPk0nRIUJ/4D3HsgknftdC
-         emWq6mEW8kbsSctn7QmlmlloYl8vx+t2W0MP4yLHWc9ZLqp20lppyTjTh3P++1CEAJbg
-         5sg7dcvdsSEhLzVaPKl25jvsfN1yvH76UmCbh3SshDrqSkuUX8bt6mkbyXsZWw7tj7lR
-         9DRTAe0LhDbnBe3HAQbUUbLqve3rATFzOeBfsDr2Vq6TLS5/VVXAdQJv3POaMxEYE2aY
-         szfQ==
-X-Gm-Message-State: AOAM531yGIly1QjsVbEaT7AY9nMlvqSFCmJQbl4fQ1XSZ8k2tpgAWa5T
-        hxJLwd2cqn96OwQ/fXCWGcRXbXxWtk6n
-X-Google-Smtp-Source: ABdhPJzmewDq3o9BCswJvlLnKBaCJWc+Q99sQNPUY+dpxhsF96dT/3XEvSTufZnpJuxaVuzIRCWV9LLe5h0j
-Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a0c:fa4c:: with SMTP id
- k12mr8252877qvo.16.1610647377087; Thu, 14 Jan 2021 10:02:57 -0800 (PST)
-Date:   Thu, 14 Jan 2021 10:02:50 -0800
-In-Reply-To: <20210114180250.3853825-1-irogers@google.com>
-Message-Id: <20210114180250.3853825-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20210114180250.3853825-1-irogers@google.com>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH 2/2] libperf tests: Fail when failing to get a tracepoint id
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 14 Jan 2021 13:08:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610647634;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=imQ3Xlk4Kxbo6cCYMe4o6hwrst0v3l/Kt89bHPDKL1Y=;
+        b=NamXGx5NesYMBgVl7CWMow0n8XHZmk11KmTmGUDvjRVdXYJm+CuX3Tz9mPxLO/JsTpbcyD
+        /ijFMuTMeoiQkoaE7tVgsswv/fXRFRDRu9Px8UwhzCOv5dDrYZNY7yzBKwDmqHFpd+m9n+
+        0skfJXgCR/mAfLt1muzW5LR50xeQaD0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-12-5GRhUMqaNa66JuKAne56_A-1; Thu, 14 Jan 2021 13:04:41 -0500
+X-MC-Unique: 5GRhUMqaNa66JuKAne56_A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 663B8108442C;
+        Thu, 14 Jan 2021 18:04:40 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F05F650F7D;
+        Thu, 14 Jan 2021 18:04:05 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 13:04:05 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v3 5/6] dm: Verify inline encryption capabilities of new
+ table when it is loaded
+Message-ID: <20210114180405.GB26410@redhat.com>
+References: <20201229085524.2795331-1-satyat@google.com>
+ <20201229085524.2795331-6-satyat@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201229085524.2795331-6-satyat@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Permissions are necessary to get a tracepoint id. Fail the test when the
-read fails.
+On Tue, Dec 29 2020 at  3:55am -0500,
+Satya Tangirala <satyat@google.com> wrote:
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/lib/perf/tests/test-evlist.c | 1 +
- 1 file changed, 1 insertion(+)
+> DM only allows the table to be swapped if the new table's inline encryption
+> capabilities are a superset of the old table's. We only check that this
+> constraint is true when the table is actually swapped in (in
+> dm_swap_table()). But this allows a user to load an unacceptable table
+> without any complaint from DM, only for DM to throw an error when the
+> device is resumed, and the table is swapped in.
+> 
+> This patch makes DM verify the inline encryption capabilities of the new
+> table when the table is loaded. DM continues to verify and use the
+> capabilities at the time of table swap, since the capabilities of
+> underlying child devices can expand during the time between the table load
+> and table swap (which in turn can cause the capabilities of this parent
+> device to expand as well).
+> 
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> ---
+>  drivers/md/dm-ioctl.c |  8 ++++++++
+>  drivers/md/dm.c       | 25 +++++++++++++++++++++++++
+>  drivers/md/dm.h       | 19 +++++++++++++++++++
+>  3 files changed, 52 insertions(+)
+> 
+> diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
+> index 5e306bba4375..055a3c745243 100644
+> --- a/drivers/md/dm-ioctl.c
+> +++ b/drivers/md/dm-ioctl.c
+> @@ -1358,6 +1358,10 @@ static int table_load(struct file *filp, struct dm_ioctl *param, size_t param_si
+>  		goto err_unlock_md_type;
+>  	}
+>  
+> +	r = dm_verify_inline_encryption(md, t);
+> +	if (r)
+> +		goto err_unlock_md_type;
+> +
+>  	if (dm_get_md_type(md) == DM_TYPE_NONE) {
+>  		/* Initial table load: acquire type of table. */
+>  		dm_set_md_type(md, dm_table_get_type(t));
+> @@ -2115,6 +2119,10 @@ int __init dm_early_create(struct dm_ioctl *dmi,
+>  	if (r)
+>  		goto err_destroy_table;
+>  
+> +	r = dm_verify_inline_encryption(md, t);
+> +	if (r)
+> +		goto err_destroy_table;
+> +
+>  	md->type = dm_table_get_type(t);
+>  	/* setup md->queue to reflect md's type (may block) */
+>  	r = dm_setup_md_queue(md, t);
+>
+> diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+> index b8844171d8e4..04322de34d29 100644
+> --- a/drivers/md/dm.c
+> +++ b/drivers/md/dm.c
+> @@ -2094,6 +2094,31 @@ dm_construct_keyslot_manager(struct mapped_device *md, struct dm_table *t)
+>  	return ksm;
+>  }
+>  
+> +/**
+> + * dm_verify_inline_encryption() - Verifies that the current keyslot manager of
+> + *				   the mapped_device can be replaced by the
+> + *				   keyslot manager of a given dm_table.
+> + * @md: The mapped_device
+> + * @t: The dm_table
+> + *
+> + * In particular, this function checks that the keyslot manager that will be
+> + * constructed for the dm_table will support a superset of the capabilities that
+> + * the current keyslot manager of the mapped_device supports.
+> + *
+> + * Return: 0 if the table's keyslot_manager can replace the current keyslot
+> + *	   manager of the mapped_device. Negative value otherwise.
+> + */
+> +int dm_verify_inline_encryption(struct mapped_device *md, struct dm_table *t)
+> +{
+> +	struct blk_keyslot_manager *ksm = dm_construct_keyslot_manager(md, t);
+> +
+> +	if (IS_ERR(ksm))
+> +		return PTR_ERR(ksm);
+> +	dm_destroy_keyslot_manager(ksm);
+> +
+> +	return 0;
+> +}
+> +
+>  static void dm_update_keyslot_manager(struct request_queue *q,
+>  				      struct blk_keyslot_manager *ksm)
+>  {
 
-diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
-index d913241d4135..bd19cabddaf6 100644
---- a/tools/lib/perf/tests/test-evlist.c
-+++ b/tools/lib/perf/tests/test-evlist.c
-@@ -215,6 +215,7 @@ static int test_mmap_thread(void)
- 		 sysfs__mountpoint());
- 
- 	if (filename__read_int(path, &id)) {
-+		tests_failed++;
- 		fprintf(stderr, "error: failed to get tracepoint id: %s\n", path);
- 		return -1;
- 	}
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
+
+There shouldn't be any need to bolt on ksm verification in terms of a
+temporary ksm.  If you run with my suggestions I just provided in review
+of patch 3: dm_table_complete()'s setup of the ksm should also
+implicitly validate it.
+
+So this patch, and extra dm_verify_inline_encryption() interface,
+shouldn't be needed.
+
+Mike
 
