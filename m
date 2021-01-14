@@ -2,232 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076982F6607
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7432B2F65FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbhANQdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:33:42 -0500
-Received: from mga03.intel.com ([134.134.136.65]:49402 "EHLO mga03.intel.com"
+        id S1726674AbhANQcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:32:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725918AbhANQdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:33:41 -0500
-IronPort-SDR: IkwCFRfwR6N+FbypxKHUjRSCai+G9CcP8N4JNozIBljlp40EG6/C6LkJvlwSLVrtIzMbCaMcUG
- xxwqe6xQMZtQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="178487074"
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="178487074"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 08:31:37 -0800
-IronPort-SDR: PhuSSOl3/L9Bq54Qe1iplCPK7ViqzicEJw3Gq44LLukvBow7XrPZ65TRX0CXd71PWkXBCGQ3qz
- tp3x7Qw/JHOA==
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="353960982"
-Received: from aantonov-mobl.ccr.corp.intel.com (HELO [10.249.226.96]) ([10.249.226.96])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 08:31:28 -0800
-Subject: Re: [PATCH v2 3/6] perf stat: Basic support for iiostat in perf
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20201223130320.3930-1-alexander.antonov@linux.intel.com>
- <20201223130320.3930-4-alexander.antonov@linux.intel.com>
- <CAM9d7ciA3MzvzobN=_NEChKwet+RzHUu3gf+KTzdXcvTmiChLw@mail.gmail.com>
- <64c262e4-fc97-c200-6983-81d966e922e0@linux.intel.com>
- <CAM9d7ci5qSnm1V4VCpdZn+b5uPajs27uAV+J-+W2QHPCbCohTQ@mail.gmail.com>
-From:   Alexander Antonov <alexander.antonov@linux.intel.com>
-Message-ID: <c8b59d48-7307-8298-8f8b-367a48d72c69@linux.intel.com>
-Date:   Thu, 14 Jan 2021 19:30:44 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1726419AbhANQcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 11:32:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21B2C23B46
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:31:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610641903;
+        bh=wb1kG1KOAEcolwpdR+/yk6//aiweBGIjXCPqYQo31CI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=L1hQdNive443MYwW0uH9ce6vVzRF6OcQFXFGgQJZyN785v0EYJfgUqfJCLGT5FgcJ
+         r2ccGbv8njQ6XjKSKynPJOsUkYSKjLIS1pns303WPc5AMfP3OV9Sg5Q1BHYJ84Chgz
+         G9EhsI7y4R23G0Bk+DEkn4eVGRtA9lKuggAMduWRCvC51gH7Bay4GHJ63xRhk5M0I7
+         sWGL5Hs1s0TuvEkJORPBmNr5IytdAgZFkiLQElg1ub3dOkev/pqAJNYbRPipuiDj+o
+         zgvjGVRyzDesWaJ7E5GBbcVpO9yd0OHEdkhzCPYAawYL0RKgObq25ouEscQwYjIxhg
+         BqeayE1Puo3qw==
+Received: by mail-ed1-f46.google.com with SMTP id dj23so3760020edb.13
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:31:43 -0800 (PST)
+X-Gm-Message-State: AOAM532bGSXZtyNSW3afGgl56FUmpsSDgZGJFN6Ny/z+tDbDUKYvCiwZ
+        CrXI+uXNFnY+GyKGITKtTJbtTtoDn6DDstGsMVNeNA==
+X-Google-Smtp-Source: ABdhPJyx/R15Nrp9ik8k+VF0kZbQIYD07LEtRzB/beQh3xE1BViQZKJp/EwJywNd4A/+zd6SqmGh5VY8CCo+iPX+tOs=
+X-Received: by 2002:aa7:ca55:: with SMTP id j21mr6223884edt.172.1610641901633;
+ Thu, 14 Jan 2021 08:31:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7ci5qSnm1V4VCpdZn+b5uPajs27uAV+J-+W2QHPCbCohTQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20201228160631.32732-1-krzysiek@podlesie.net> <20210112000923.GK25645@zn.tnic>
+ <20210114092218.GA26786@shrek.podlesie.net> <20210114094425.GA12284@zn.tnic>
+ <20210114123657.GA6358@shrek.podlesie.net> <20210114140737.GD12284@zn.tnic> <20210114145105.GA17363@shrek.podlesie.net>
+In-Reply-To: <20210114145105.GA17363@shrek.podlesie.net>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 14 Jan 2021 08:31:30 -0800
+X-Gmail-Original-Message-ID: <CALCETrU0Y_Cg--Vs-88Hu9vTR-QynC0AQOpYehE86MYow5u3RQ@mail.gmail.com>
+Message-ID: <CALCETrU0Y_Cg--Vs-88Hu9vTR-QynC0AQOpYehE86MYow5u3RQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/lib: don't use MMX before FPU initialization
+To:     Krzysztof Mazur <krzysiek@podlesie.net>,
+        "Jason A. Donenfeld" <zx2c4@kernel.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 14, 2021 at 6:51 AM Krzysztof Mazur <krzysiek@podlesie.net> wrote:
+>
+> On Thu, Jan 14, 2021 at 03:07:37PM +0100, Borislav Petkov wrote:
+> > On Thu, Jan 14, 2021 at 01:36:57PM +0100, Krzysztof Mazur wrote:
+> > > The OSFXSR must be set only on CPUs with SSE. There
+> > > are some CPUs with 3DNow!, but without SSE and FXSR (like AMD
+> > > Geode LX, which is still used in many embedded systems).
+> > > So, I've changed that to:
+> > >
+> > > if (unlikely(in_interrupt()) || (boot_cpu_has(X86_FEATURE_XMM) &&
+> > >             unlikely(!(cr4_read_shadow() & X86_CR4_OSFXSR))))
+> >
+> > Why?
+> >
+> > X86_CR4_OSFXSR won't ever be set on those CPUs but the test will be
+> > performed anyway. So there's no need for boot_cpu_has().
+>
+> Because the MMX version should be always used on those CPUs, even without
+> OSFXSR set. If the CPU does not support SSE, it is safe to
+> call kernel_fpu_begin() without OSFXSR set.
+> "!(cr4_read_shadow() & X86_CR4_OSFXSR)" will be always true on
+> those CPUs, and without boot_cpu_has() MMX version will be never used.
+>
+> There are two cases:
+>
+> 3DNow! without SSE              always use MMX version
+> 3DNow! + SSE (K7)               use MMX version only if FXSR is enabled
+>
+> Thanks.
+>
+> Best regards,
+> Krzysiek
+> -- >8 --
+> Subject: [PATCH] x86/lib: don't use mmx_memcpy() too early
+>
+> The MMX 3DNow! optimized memcpy() is used very early,
+> even before FPU is initialized in the kernel. It worked fine, but commit
+> 7ad816762f9bf89e940e618ea40c43138b479e10 ("x86/fpu: Reset MXCSR
+> to default in kernel_fpu_begin()") broke that. After that
+> commit the kernel_fpu_begin() assumes that FXSR is enabled in
+> the CR4 register on all processors with SSE. Because memcpy() is used
+> before FXSR is enabled, the kernel crashes just after "Booting the kernel."
+> message. It affects all kernels with CONFIG_X86_USE_3DNOW (enabled when
+> some AMD/Cyrix processors are selected) on processors with SSE
+> (like AMD K7, which supports both MMX 3DNow! and SSE).
+>
+> Fixes: 7ad816762f9b ("x86/fpu: Reset MXCSR to default in kernel_fpu_begin()")
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: <stable@vger.kernel.org> # 5.8+
+> Signed-off-by: Krzysztof Mazur <krzysiek@podlesie.net>
+> ---
+>  arch/x86/lib/mmx_32.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/lib/mmx_32.c b/arch/x86/lib/mmx_32.c
+> index 4321fa02e18d..70aa769570e6 100644
+> --- a/arch/x86/lib/mmx_32.c
+> +++ b/arch/x86/lib/mmx_32.c
+> @@ -25,13 +25,20 @@
+>
+>  #include <asm/fpu/api.h>
+>  #include <asm/asm.h>
+> +#include <asm/tlbflush.h>
+>
+>  void *_mmx_memcpy(void *to, const void *from, size_t len)
+>  {
+>         void *p;
+>         int i;
+>
+> -       if (unlikely(in_interrupt()))
+> +       /*
+> +        * kernel_fpu_begin() assumes that FXSR is enabled on all processors
+> +        * with SSE. Thus, MMX-optimized version can't be used
+> +        * before the kernel enables FXSR (OSFXSR bit in the CR4 register).
+> +        */
+> +       if (unlikely(in_interrupt()) || (boot_cpu_has(X86_FEATURE_XMM) &&
+> +                       unlikely(!(cr4_read_shadow() & X86_CR4_OSFXSR))))
 
-On 1/14/2021 6:34 AM, Namhyung Kim wrote:
-> Hello,
->
-> On Wed, Jan 13, 2021 at 8:34 PM Alexander Antonov
-> <alexander.antonov@linux.intel.com> wrote:
->>
->> On 1/6/2021 11:56 AM, Namhyung Kim wrote:
->>> On Wed, Dec 23, 2020 at 10:03 PM Alexander Antonov
->>> <alexander.antonov@linux.intel.com> wrote:
->>>> Add basic flow for a new iiostat mode in perf. Mode is intended to
->>>> provide four I/O performance metrics per each IIO stack: Inbound Read,
->>>> Inbound Write, Outbound Read, Outbound Write.
->>> It seems like a generic analysis and other archs can extend it later..
->>> Then we can make it a bit more general.. at least, names? :)
->> I'm not sure that I fully understand you. Do you mean to rename metrics?
->> The mode is intended to provide PCIe metrics which are appliable for
->> other archs
->> as well.
->> Actually, I suppose we can rename 'iiostat' to 'pciestat' or something
->> like this
->> to make it a bit more general because the name 'IIO' (Integrated I/O
->> stack) is
->> Intel specific and it can be named in different way on other platforms.
->> In this
->> case the code has to be updated in the same way as well.
-> Maybe just 'iostat' ?
-Yeah, it looks better :)
+This is gross.  I realize this is only used for old CPUs that we don't
+care about perf-wise, but this code is nonsense -- it makes absolutely
+to sense to put this absurd condition here to work around
+kernel_fpu_begin() bugs.  If we want to use MMX, we should check MMX.
+And we should also check the correct condition re: irqs.  So this code
+should be:
 
->
->>>> The actual code to compute the metrics and attribute it to
->>>> evsel::perf_device is in follow-on patches.
->>>>
->>>> Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
->>>> ---
->>>>    tools/perf/builtin-stat.c      | 33 ++++++++++++++++++++++++++++-
->>>>    tools/perf/util/iiostat.h      | 33 +++++++++++++++++++++++++++++
->>>>    tools/perf/util/stat-display.c | 38 +++++++++++++++++++++++++++++++++-
->>>>    tools/perf/util/stat-shadow.c  | 11 +++++++++-
->>>>    tools/perf/util/stat.h         |  1 +
->>>>    5 files changed, 113 insertions(+), 3 deletions(-)
->>>>    create mode 100644 tools/perf/util/iiostat.h
->>>>
->>>> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
->>>> index 72f9d0aa3f96..14c3da136927 100644
->>>> --- a/tools/perf/builtin-stat.c
->>>> +++ b/tools/perf/builtin-stat.c
->>>> @@ -67,6 +67,7 @@
->>>>    #include "util/top.h"
->>>>    #include "util/affinity.h"
->>>>    #include "util/pfm.h"
->>>> +#include "util/iiostat.h"
->>>>    #include "asm/bug.h"
->>>>
->>>>    #include <linux/time64.h>
->>>> @@ -198,7 +199,8 @@ static struct perf_stat_config stat_config = {
->>>>           .walltime_nsecs_stats   = &walltime_nsecs_stats,
->>>>           .big_num                = true,
->>>>           .ctl_fd                 = -1,
->>>> -       .ctl_fd_ack             = -1
->>>> +       .ctl_fd_ack             = -1,
->>>> +       .iiostat_run            = false,
->>>>    };
->>>>
->>>>    static bool cpus_map_matched(struct evsel *a, struct evsel *b)
->>>> @@ -1073,6 +1075,14 @@ static int parse_stat_cgroups(const struct option *opt,
->>>>           return parse_cgroups(opt, str, unset);
->>>>    }
->>>>
->>>> +__weak int iiostat_parse(const struct option *opt __maybe_unused,
->>>> +                        const char *str __maybe_unused,
->>>> +                        int unset __maybe_unused)
->>>> +{
->>>> +       pr_err("iiostat mode is not supported\n");
->>>> +       return -1;
->>>> +}
->>>> +
->>>>    static struct option stat_options[] = {
->>>>           OPT_BOOLEAN('T', "transaction", &transaction_run,
->>>>                       "hardware transaction statistics"),
->>>> @@ -1185,6 +1195,8 @@ static struct option stat_options[] = {
->>>>                        "\t\t\t  Optionally send control command completion ('ack\\n') to ack-fd descriptor.\n"
->>>>                        "\t\t\t  Alternatively, ctl-fifo / ack-fifo will be opened and used as ctl-fd / ack-fd.",
->>>>                         parse_control_option),
->>>> +       OPT_CALLBACK_OPTARG(0, "iiostat", &evsel_list, &stat_config, "root port",
->>>> +                           "measure PCIe metrics per IIO stack", iiostat_parse),
->>>>           OPT_END()
->>>>    };
->>>>
->>>> @@ -1509,6 +1521,12 @@ static int perf_stat_init_aggr_mode_file(struct perf_stat *st)
->>>>           return 0;
->>>>    }
->>>>
->>>> +__weak int iiostat_show_root_ports(struct evlist *evlist __maybe_unused,
->>>> +                                  struct perf_stat_config *config __maybe_unused)
->>>> +{
->>>> +       return 0;
->>>> +}
->>> I think it's too specific, maybe iiostat_prepare() ?
->> What do you think about iiostat_show_root_ports() -> iiostat_show()?
-> I'm ok with it, I thought it needs some initialization work there.
->
->>>> +
->>>>    /*
->>>>     * Add default attributes, if there were no attributes specified or
->>>>     * if -d/--detailed, -d -d or -d -d -d is used:
->>>> @@ -2054,6 +2072,10 @@ static void setup_system_wide(int forks)
->>>>           }
->>>>    }
->>>>
->>>> +__weak void iiostat_delete_root_ports(struct evlist *evlist __maybe_unused)
->>>> +{
->>>> +}
->>> Same here..
->> I suggest to rename iiostat_delete_root_ports() -> iiostat_release().
->> What do you think?
-> Looks good.
->
->>>> +
->>>>    int cmd_stat(int argc, const char **argv)
->>>>    {
->>>>           const char * const stat_usage[] = {
->>>> @@ -2230,6 +2252,12 @@ int cmd_stat(int argc, const char **argv)
->>>>                   goto out;
->>>>           }
->>>>
->>>> +       if (stat_config.iiostat_run) {
->>>> +               status = iiostat_show_root_ports(evsel_list, &stat_config);
->>>> +               if (status || !stat_config.iiostat_run)
->>>> +                       goto out;
->>>> +       }
->>>> +
->>>>           if (add_default_attributes())
->>>>                   goto out;
->>>>
-> [SNIP]
->>>> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
->>>> index 3bfcdb80443a..9eb8484e8b90 100644
->>>> --- a/tools/perf/util/stat-display.c
->>>> +++ b/tools/perf/util/stat-display.c
->>>> @@ -17,6 +17,7 @@
->>>>    #include "cgroup.h"
->>>>    #include <api/fs/fs.h>
->>>>    #include "util.h"
->>>> +#include "iiostat.h"
->>>>
->>>>    #define CNTR_NOT_SUPPORTED     "<not supported>"
->>>>    #define CNTR_NOT_COUNTED       "<not counted>"
->>>> @@ -310,6 +311,12 @@ static void print_metric_header(struct perf_stat_config *config,
->>>>           struct outstate *os = ctx;
->>>>           char tbuf[1024];
->>>>
->>>> +       /* In case of iiostat, print metric header for first perf_device only */
->>>> +       if (os->evsel->perf_device && os->evsel->evlist->selected->perf_device &&
->>>> +           config->iiostat_run &&
->>> When is the perf_device set?  Is it possible to be NULL in the iiostat mode?
->>>
->> The perf_device field is initialized inside iiostat.c::iiostat_event_group()
->> and it cannot be NULL.
->> The idea is to attribute events to PCIe ports through perf_device field.
->>
-> If it's guaranteed non-NULL, we can check config->iiostat_run only and make
-> the condition simpler.
->
-> Thanks,
-> Namhyung
->
-I will update it in the next version of patchset.
+if (boot_cpu_has(X86_FEATURE_XMM) && irq_fpu_usable()) {
+  kernel_fpu_begin_mask(FPU_MASK_XMM);
+  ...
 
-Thanks,
-Alexander
->
->>>> +           os->evsel->perf_device != os->evsel->evlist->selected->perf_device)
->>>> +               return;
->>>> +
->>>>           if (!valid_only_metric(unit))
->>>>                   return;
->>>>           unit = fixunit(tbuf, os->evsel, unit);
+or we could improve code gen by adding a try_kernel_fpu_begin_mask()
+so we can do a single call instead of two.
+
+This also mostly fixes our little performance regression -- we'd make
+kernel_fpu_begin() be an inline wrapper around
+kernel_fpu_begin_mask(FPU_MASK_DEFAULTFP), and *that* would be
+FPU_MASK_XYZMM on 64-bit and FPU_MASK_387 on 32-bit.  (Okay, XYZMM
+isn't a great name, but whatever.)  And the EFI code can become
+completely explicit: kernel_fpu_begin(FPU_MASK_ALL).
+
+What do you all think?  If you're generally in favor, I can write the
+code and do a quick audit for other weird cases in the kernel.
+
+Or we could flip the OSFSXR bit very early, I suppose.
+
+--Andy
