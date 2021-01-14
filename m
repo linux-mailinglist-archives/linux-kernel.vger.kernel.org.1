@@ -2,89 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6C42F62FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DC92F6315
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727390AbhANOXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:23:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbhANOXb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:23:31 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B8AC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 06:22:51 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id i5so3900508pgo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 06:22:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=XCkrYWoe/EDhhrXT2w0od5wYE+gjn97ezYkPBm+ukcM=;
-        b=ebIHMxRoG6Lw6Qnnz194cWulVJ7CtdgwPORoBI0MUI/Bjh+CaA1EvTwcTrUKR7l/Or
-         P7c62cN+XXpUhrhIXm4LEPH3P/XDJBZ6e81d8hu2wO4OZwZ4vVYX7oEzolC/JDbLAonB
-         hOPPTb0LlRcxoBcHH8BvvasxXRbE5lpaINX76S1OXvU1xaYlB7jRg5a2CXx4lVNKj+in
-         ugWjcWODpZq+a5zEwnq7aBDTJPFb5iIWYLdf7881E3DJ0JWU/MkGXdBLW7j/Y/S/Qi20
-         QTJmFajIUJPeL0UY7Wx1xO6L6kQAeh/mam9h/SgyENbFVHzP2bzWylU6/8UTYFgQiOLO
-         1TJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=XCkrYWoe/EDhhrXT2w0od5wYE+gjn97ezYkPBm+ukcM=;
-        b=onL0aYwuqibZcruxVtnp9uPKM6/Xt4tl6ZZYCcgmiQitbRXGTn6vVEDPHwL4OkxtEq
-         h6p8JQw+oLewA6qawNVcP6POJo/VWM00hQPdmy6buURLpfAB5C1FnhULDswcKGoAL/JW
-         2mEKotmgmbyFrLBwBIBPX/zjFiLWlwP4/kSKrdE5SAXIePhUPxqRkt+iTs5rYGr75UHx
-         c1Vr/SeYPKw0/O6nVWS8/Fju6ncujLkxA5nH/Im5u52+aXJ4/bMp0YvS1QAdWWp7IFRP
-         Y9sMV06D2xmFSbMBv+4LLpSW9Lksho2KX+O2z9mWkRvOs4LXHLVwSu/kPFILdJBFPWGs
-         gGZg==
-X-Gm-Message-State: AOAM533TbbrhV/3ModNTfMCh93+62WlTOyR56XT1mkYDZVhS+oF/yFia
-        BxL/JdyoRSp6Kg4zSZqCZb4=
-X-Google-Smtp-Source: ABdhPJw4LchfsuTQIaiDfd10NoFHz9inHbHookIrfvLa/tt7v2jFq5AdBQtjlzwjbZPnKwz2ldkKCQ==
-X-Received: by 2002:a63:d601:: with SMTP id q1mr7650939pgg.417.1610634171161;
-        Thu, 14 Jan 2021 06:22:51 -0800 (PST)
-Received: from adolin ([49.207.193.3])
-        by smtp.gmail.com with ESMTPSA id c11sm5924498pjv.3.2021.01.14.06.22.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 06:22:50 -0800 (PST)
-Date:   Thu, 14 Jan 2021 19:52:45 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     daniel@ffwll.ch
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/vblank: Fix typo in docs
-Message-ID: <20210114142245.udr7v2aa43ho56xs@adolin>
+        id S1729198AbhANO0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:26:07 -0500
+Received: from mga02.intel.com ([134.134.136.20]:58501 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726805AbhANO0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:26:05 -0500
+IronPort-SDR: TDMe6LdtLjRGuZ8lKfkYMxJMTrtDJJSVQTW0w9Bw3CKAG8vWc/MU9SKNG+eKxNNbPyDhmvb+V3
+ +c5XOCP1MMsg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="165460677"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="165460677"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 06:24:19 -0800
+IronPort-SDR: wjo3JEq5Z7etD61x5dHXSeFHh6gJJdzfdd8jSXbekk17AFuZU32aQSpp8aQeDKH6fHgIo3tbYl
+ s4MX/Mzh9VFA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="465266602"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 14 Jan 2021 06:24:16 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 14 Jan 2021 16:24:15 +0200
+Date:   Thu, 14 Jan 2021 16:24:15 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] software node: Introduce
+ device_add_software_node()
+Message-ID: <20210114142415.GC2864731@kuha.fi.intel.com>
+References: <20210111141045.14027-1-heikki.krogerus@linux.intel.com>
+ <20210111141045.14027-2-heikki.krogerus@linux.intel.com>
+ <2f552de5-4839-a1e5-3012-c56f9fa3bdd5@gmail.com>
+ <20210113113918.GA2584629@kuha.fi.intel.com>
+ <20210113153003.GR4077@smile.fi.intel.com>
+ <20210114131948.GA2864731@kuha.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210114131948.GA2864731@kuha.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typo in intro chapter in drm_vblank.c.
-Change 'sacn' to 'scan'.
+On Thu, Jan 14, 2021 at 03:19:52PM +0200, Heikki Krogerus wrote:
+> On Wed, Jan 13, 2021 at 05:30:03PM +0200, Andy Shevchenko wrote:
+> > On Wed, Jan 13, 2021 at 01:39:18PM +0200, Heikki Krogerus wrote:
+> > > On Wed, Jan 13, 2021 at 12:40:03AM +0000, Daniel Scally wrote:
+> > > > On 11/01/2021 14:10, Heikki Krogerus wrote:
+> > 
+> > ...
+> > 
+> > > > > +/**
+> > > > > + * device_remove_software_node - Remove device's software node
+> > > > > + * @dev: The device with the software node.
+> > > > > + *
+> > > > > + * This function will unregister the software node of @dev.
+> > > > > + */
+> > > > > +void device_remove_software_node(struct device *dev)
+> > > > > +{
+> > > > > +	struct swnode *swnode;
+> > > > > +
+> > > > > +	swnode = dev_to_swnode(dev);
+> > > > > +	if (!swnode)
+> > > > > +		return;
+> > > > > +
+> > > > > +	kobject_put(&swnode->kobj);
+> > > > > +}
+> > > > > +EXPORT_SYMBOL_GPL(device_remove_software_node);
+> > > > 
+> > > > I wonder if this also ought to set dev_fwnode(dev)->secondary back to
+> > > > ERR_PTR(-ENODEV)?
+> > 
+> > Actually it's a good question.
+> > 
+> > > We can't do that here unfortunately. Other places still have a
+> > > reference to the swnode at this point and they may still need to
+> > > access it using the dev_fwnode(dev)->secondary pointer.
+> > 
+> > Yeah, but in this case we potentially leave a dangling pointer when last of the
+> > user gone and kobject_put() will call for release.
+> 
+> The caller has to be responsible of setting the secondary back to
+> ERR_PTR(-ENODEV). We can not do anything here like I explained. We can
+> not even do that in software_node_notify() when the association to the
+> struct device is removed, because the fwnode->secondary is still
+> accessed after that. The caller needs to remove both the node and the
+> device, and only after that it is safe to set the secondary back to
+> ERR_PTR(-ENODEV).
 
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
----
- drivers/gpu/drm/drm_vblank.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I studied the code again, and it actually looks like this is only a
+problem when device_add_properties() is used and there is an
+expectation that the node/properties are removed automatically in
+device_del().
 
-diff --git a/drivers/gpu/drm/drm_vblank.c b/drivers/gpu/drm/drm_vblank.c
-index d30e2f2b8f3c..30912d8f82a5 100644
---- a/drivers/gpu/drm/drm_vblank.c
-+++ b/drivers/gpu/drm/drm_vblank.c
-@@ -74,7 +74,7 @@
-  *                |↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓|   updates the
-  *                |                                        |   frame as it
-  *                |                                        |   travels down
-- *                |                                        |   ("sacn out")
-+ *                |                                        |   ("scan out")
-  *                |               Old frame                |
-  *                |                                        |
-  *                |                                        |
+When this new API is used, the only place that needs to access the
+swnode using the secondary pointer is software_node_notify(), so if we
+simply handle that separately here, we should be able to clear the
+secondary pointer after all. It would look something like this:
+
+        void device_remove_software_node(struct device *dev)
+        {
+        	struct swnode *swnode;
+        
+        	swnode = dev_to_swnode(dev);
+        	if (!swnode)
+        		return;
+        
+                software_node_notify(dev, KOBJ_REMOVE);
+                set_secondary_fwnode(dev, NULL);
+        	kobject_put(&swnode->kobj);
+        }
+
+I'll test that, and if it works, and you guys don't see any problems
+with it, I'll use it in v3.
+
+
+Br,
+
 -- 
-2.25.1
-
+heikki
