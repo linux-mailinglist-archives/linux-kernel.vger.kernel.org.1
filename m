@@ -2,167 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 167722F6B94
+	by mail.lfdr.de (Postfix) with ESMTP id ED8362F6B96
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:57:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730249AbhANTzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:55:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
+        id S1730264AbhANTzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:55:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730172AbhANTzH (ORCPT
+        with ESMTP id S1725869AbhANTze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:55:07 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69705C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:54:27 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id w5so7035858wrm.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:54:27 -0800 (PST)
+        Thu, 14 Jan 2021 14:55:34 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6717AC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:54:54 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id b24so6368054otj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:54:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Jco6OKkBzH2W5YMgKN8CdIkvv1c2tCGRqtwwKgOzoTU=;
-        b=j/heu2munUhWuITG04w2E1rUlnHuKEPX2QcskO7PII2HtxbjLoBk0vUIcYEDq+Wzro
-         YLJmhogwgK7dlTRE23UGZqyCSoOgK1BzwC0fWeASrYRSGQazGVMHHmXW9K9wa+vH4eTp
-         7hJXY4pc3DRmorYpfjoKJWoFz8Uvtjw+DBeVr5OjnyRmzsb+lM9WLIg/+YMqhXwLk5qd
-         RNXYmJFSZxYTOJYA90oJcZWqt6vrrA3MHDsaWY5r8+hnBBr2/7nsrV2TFzYqtCwHCchP
-         4WXaxG6eUxVUnT80m6hPSIQ9Qd9QUYa1vNxPvRIelB9mmyGw38k8IiFKHNclOgN9xw/C
-         ayag==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/SuJMUWVOi8e1e2W8L0m+9Q9z4tau/lW1SPqWZ+fTKM=;
+        b=Ql0fQZzKudSAhdA0CI4dbCMC8Z8UbIE4TgV+t2l0ROTQBEqe4wojrRKiDeAzriahuG
+         JA7Z76tsVytkVeUpcDx/Dv/qX3yXS7cYW3fL9zTsCiYgfo/rnoKExJ1qUVUGZWw+NtRP
+         fkWRprDWcN/+Mic6bX+o65swo+vIarp0GgTMjMLFXvJ/J9A7StJ3umjsLZIIqlSyUTY/
+         qulUfMeyjQBnCfUp+20Fzbvw/+XcfZ6PEvpJeGzbGW/ujIBRXUA6zW0bgdmGBwOBuFSO
+         CCFHvjerD7xrQA6AwMj/8rcpvkwaWmF+H5s+Qc5ZpFMJV2gUVCuoJQLRpgKjwm65YM1b
+         2TCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Jco6OKkBzH2W5YMgKN8CdIkvv1c2tCGRqtwwKgOzoTU=;
-        b=dt+9DodN1UALcLWEiYscOi/IVvBXzweO8Uj0C2Id8GKiK+Xd1Gv5+rKB3LD7cfee+M
-         NcuTEIpeS8uDZ4oqZ6OKocdsxa6sPqPIMCaxe97KB4pJ+w4CslWJI395kv/hQZ6LmG6a
-         1tl0Edsj+dcujY2sH+MLgWArLDYSMfHyjPfwY/OD5fdAZzO2Ehjs3xTt2A8uRHcI1XPp
-         xjNJm9nHcIBTVWt+EA2f5jbvew6ACjom3CPW+D4wG3WaH+ozsCFmIGe+ouuRSGqf7ptL
-         DIgU8JWPnMnsffA8+2uAqZaikL59kgt4jlISbeRXIUhGDE4DTdGHLg6O85OD/IW9XzE1
-         5i0g==
-X-Gm-Message-State: AOAM533eB6X0nO2Tu7tBrxzEncuGpjS/GUhqaQOXUPhhpOdMz6cWD75N
-        UWbtpCfQQCZ00n45pUwRBWrb4/8ROMpMNigG
-X-Google-Smtp-Source: ABdhPJwTAnSC8i9erqyaC2T3bmWeIfWfGjCjtI2qx+TyOz9rMatI0AIgHFfUQq4dPzhL98mW7iEdYA==
-X-Received: by 2002:adf:9d42:: with SMTP id o2mr9465225wre.135.1610654066061;
-        Thu, 14 Jan 2021 11:54:26 -0800 (PST)
-Received: from dell ([91.110.221.178])
-        by smtp.gmail.com with ESMTPSA id b3sm5050877wme.32.2021.01.14.11.54.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 11:54:25 -0800 (PST)
-Date:   Thu, 14 Jan 2021 19:54:22 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Dany Madden <drt@linux.ibm.com>,
-        Daris A Nevil <dnevil@snmc.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Erik Stahlman <erik@vt.edu>,
-        Geoff Levand <geoff@infradead.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ishizaki Kou <kou.ishizaki@toshiba.co.jp>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Jens Osterkamp <Jens.Osterkamp@de.ibm.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Allen <jallen@linux.vnet.ibm.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Lijun Pan <ljp@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>, netdev@vger.kernel.org,
-        Nicolas Pitre <nico@fluxnic.net>, Paul Durrant <paul@xen.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Cammaert <pc@denkart.be>,
-        Russell King <rmk@arm.linux.org.uk>,
-        Rusty Russell <rusty@rustcorp.com.au>,
-        Santiago Leon <santi_leon@yahoo.com>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
-        Utz Bacher <utz.bacher@de.ibm.com>,
-        Wei Liu <wei.liu@kernel.org>, xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v2 0/7] Rid W=1 warnings in Ethernet
-Message-ID: <20210114195422.GB3975472@dell>
-References: <20210113164123.1334116-1-lee.jones@linaro.org>
- <20210113183551.6551a6a2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210114083349.GI3975472@dell>
- <20210114091453.30177d20@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/SuJMUWVOi8e1e2W8L0m+9Q9z4tau/lW1SPqWZ+fTKM=;
+        b=MdBpdLW3hfQTlaFYbXIhyf8Oh8KYJn1WAxNCN0W4Fsnb4y38cH8cqyNTL+ey8ggUyf
+         /Ld3f5NrSKT8bIDN+LlS577xMKhE9MK1nAvOKSygFdTjEzJxVgzyyPDC/WrH9qKiNyk+
+         WnR85DJXrLfcevnGQBavr85XbXCJxNJJcVu4/xz6IUpu9H3aL1e8vYXMhcLHiMqotzre
+         gzMa39hrOuPm8AOtBYA5+OeDtATPJuLlQs7k8l0VROApRFDYoMPCRMGfEDJk9itiQIQy
+         TTgy5SGVyrQWzW3On/PONknYdPnhhQBWKu+jUmjVmNzT11Fb958v+jvBH+j/KEeNj6vj
+         1DSA==
+X-Gm-Message-State: AOAM533609naaKDsOO6zcsf1yfJ1FGVgv3cC1LYknHTTlgoxWDONWEVR
+        oGxZNiRSKzdNtMiP2tfd7ZHq/NzEraMHNHNDICUyig==
+X-Google-Smtp-Source: ABdhPJyGMoiavQ4kURubCDjavlDtKAm6koB678nF+gelqrQ7MvvW4FCmaIJ8ym0zJHbl5hc+phrhTSZPIzsWeZr99p8=
+X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr5923004ots.251.1610654093639;
+ Thu, 14 Jan 2021 11:54:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210114091453.30177d20@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <0000000000004a33a005b8b8eaab@google.com> <20210112194058.GA200254@ubuntu-m3-large-x86>
+ <CACT4Y+YFZf=BnCQJQUYwG-UpaYKG97VD-XWpEdXoR3ZnOxH5NQ@mail.gmail.com>
+ <CACT4Y+Z-f+r_Bm5RD+ZFrspHdVrDrzPgEB_9_uACa_8o4vz7aw@mail.gmail.com> <CAKwvOdmBGNK0iVCAGc=7oKx9k1fE1C6y7G9S+hCYLmdu5kaKLQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdmBGNK0iVCAGc=7oKx9k1fE1C6y7G9S+hCYLmdu5kaKLQ@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 14 Jan 2021 20:54:42 +0100
+Message-ID: <CANpmjNMmObBWzHqcQ2VHru2Tdu8k0KOkVUE2upPitsOh3OoF3Q@mail.gmail.com>
+Subject: Re: upstream build error (12)
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        syzbot <syzbot+76880518931d755473cf@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021, Jakub Kicinski wrote:
+On Thu, 14 Jan 2021 at 19:07, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> On Thu, Jan 14, 2021 at 4:38 AM 'Dmitry Vyukov' via Clang Built Linux
+> <clang-built-linux@googlegroups.com> wrote:
+> >
+> > On Thu, Jan 14, 2021 at 12:32 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > >
+> > > On Tue, Jan 12, 2021 at 8:41 PM Nathan Chancellor
+> > > <natechancellor@gmail.com> wrote:
+> > > >
+> > > > Would it be possible for clang-built-linux@googlegroups.com to be CC'd
+> > > > when there is a build error and the compiler is clang? Especially if
+> > > > clang is hitting an assertion.
+> > >
+> > > Hi Nathan,
+> > >
+> > > I am adding functionality to CC specific emails on build errors on
+> > > specific instances:
+> > > https://github.com/google/syzkaller/pull/2388
+> >
+> > I've updated configs to CC clang-built-linux@googlegroups.com. This
+> > should take effect on the next build failure (hopefully).
+>
+> Thanks Dmitry, (and thanks Marco for updating syzbot's clang).
+>
+> Marco, can you update:
+> https://github.com/google/syzkaller/blob/master/docs/syzbot.md#crash-does-not-reproduce
 
-> On Thu, 14 Jan 2021 08:33:49 +0000 Lee Jones wrote:
-> > On Wed, 13 Jan 2021, Jakub Kicinski wrote:
-> > 
-> > > On Wed, 13 Jan 2021 16:41:16 +0000 Lee Jones wrote:  
-> > > > Resending the stragglers again.                                                                                  
-> > > > 
-> > > > This set is part of a larger effort attempting to clean-up W=1                                                   
-> > > > kernel builds, which are currently overwhelmingly riddled with                                                   
-> > > > niggly little warnings.                                                                                          
-> > > >                                                                                                                  
-> > > > v2:                                                                                                              
-> > > >  - Squashed IBM patches                                                                                      
-> > > >  - Fixed real issue in SMSC
-> > > >  - Added Andrew's Reviewed-by tags on remainder  
-> > > 
-> > > Does not apply, please rebase on net-next/master.  
-> > 
-> > These are based on Tuesday's next/master.
-> 
-> What's next/master?
+We have:
 
-I'm not sure if this is a joke, or not? :)
+> compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
 
-next/master == Linux Next.  The daily merged repo where all of the
-*-next branches end up to ensure interoperability.  It's also the
-branch that is most heavily tested by the auto-builders to ensure the
-vast majority of issues are ironed out before hitting Mainline.
+Which is in the list of compilers:
+https://storage.googleapis.com/syzkaller/clang-11-prerelease-ca2dcbd030e.tar.xz
 
-> This is net-next:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/
+> I wasn't able to reproduce the reported compiler crash with ToT llvm
+> and the reported config, so I assume it was a mid-release of llvm-11
+> bug that has since been fixed.  Do we need to report to syzbot to
+> close the issue? I did a quick skim of
+> https://github.com/google/syzkaller/blob/master/docs/syzbot.md, but it
+> looks like communication with syzbot is based on commit messages?
 
-Looks like net-next gets merged into next/master:
+Given we this is likely due to a prerelease compiler, we can just use:
 
-commit 452958f1f3d1c8980a8414f9c37c8c6de24c7d32
-Merge: 1eabba209a17a f50e2f9f79164
-Author: Stephen Rothwell <sfr@canb.auug.org.au>
-Date:   Thu Jan 14 10:35:40 2021 +1100
+#syz invalid
 
-    Merge remote-tracking branch 'net-next/master'
+^^ it should pick this up.
 
-So I'm not sure what it's conflicting with.
-
-Do you have patches in net-next that didn't make it into next/master
-for some reason?
-
-I'll try to rebase again tomorrow.
-
-Hopefully I am able to reproduce your issue by then.
-
-> > I just rebased them now with no issue.
-> > 
-> > What conflict are you seeing?
-> 
-> Applying: net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
-> error: patch failed: drivers/net/ethernet/smsc/smc91x.c:2192
-> error: drivers/net/ethernet/smsc/smc91x.c: patch does not apply
-> Patch failed at 0001 net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
-> hint: Use 'git am --show-current-patch=diff' to see the failed patch
-> When you have resolved this problem, run "git am --continue".
-> If you prefer to skip this patch, run "git am --skip" instead.
-> To restore the original branch and stop patching, run "git am --abort".
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+-- Marco
