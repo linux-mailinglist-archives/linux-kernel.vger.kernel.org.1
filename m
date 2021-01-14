@@ -2,188 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196B62F60A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1792F6099
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:57:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728798AbhANL6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 06:58:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728761AbhANL62 (ORCPT
+        id S1728600AbhANL5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 06:57:08 -0500
+Received: from esgaroth.petrovitsch.at ([78.47.184.11]:4031 "EHLO
+        esgaroth.tuxoid.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726376AbhANL5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 06:58:28 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8010DC061757;
-        Thu, 14 Jan 2021 03:57:47 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id p18so3612253pgm.11;
-        Thu, 14 Jan 2021 03:57:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tcZE8BRAv/NJVfB5M18fw0NCIqwov/ZYMzn1kuA4UBY=;
-        b=VNTOAti0MWyEZzCYS4lan3mExDIRYFRkmh5EWl3SLsnfp06oVI7rScejhpigUxS4rI
-         rEKsDsOuFriN066twd2Nrs9Wv0MYT+EKh3ybqUEf0V4BeGXFQEs3pw73HsvofJ1NlE9d
-         PliYu9UA0vrPX38xaUJSR4NaLw7LpyaAuQDti1y32RdjsYRs3OMj5332r4KR5AHlQQjK
-         1ZMwJeYZh+ljp2Bj8IEfPo65J2lgig9iUBu3t2/gk8csxRKL874VJ72cTkr8xsGYeJ55
-         NC20GMW6aKqZIfSphAn+yA1f7FRS18ONaowNIwaojOdJsIC1vDhFavWNAI2XOxqQXso7
-         dcwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tcZE8BRAv/NJVfB5M18fw0NCIqwov/ZYMzn1kuA4UBY=;
-        b=Cgac7ppbtb4KQjNJd3p2uBFjOHCPu3Klnu9ZWRyc6KLuQ6V7B9jVpDwra6MjYFuw88
-         BHEywc2fhzFr/t5BQVqgt2+b7lMTn+IOEYRZ8uExo0hjY+otDHyQOLLx2tPzvwN2fij0
-         JrXRzWUpoeSiPkTOObssdhWH74+WbHj1TasDLYriGzCnrINzsZEDyH4Y63gzqG1z8mzi
-         SX94wOPhpfxvBBLGlWwYiZoG7CUJCqmfmM11iOdGB3kqC6Taul/hTXVL2mYzqgKStV5t
-         Ea1N9oFmJekdZAT5rhK7Drudodk9blmpYV1JRXWWF1lapdzuMxCiTPlnS4Soz/544KiX
-         OYFA==
-X-Gm-Message-State: AOAM5306iL9bgQS5XXwwr2yRvGwmLfUfiE3iBR5VnCzkBiAGSNv2l8Yz
-        dNvOeWoabl3WqSELCKO5+aI=
-X-Google-Smtp-Source: ABdhPJzJ4Q6s3S1My5Bqh+pXNgNLR75+S7Aw69Tio7wJkf74lSkcGqaHNCSVvWzYz16ZoggW9EsBZA==
-X-Received: by 2002:a65:689a:: with SMTP id e26mr7191253pgt.413.1610625467131;
-        Thu, 14 Jan 2021 03:57:47 -0800 (PST)
-Received: from varodek.localdomain ([223.190.37.127])
-        by smtp.gmail.com with ESMTPSA id t4sm5107914pfe.212.2021.01.14.03.57.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 03:57:46 -0800 (PST)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Joshua Morris <josh.h.morris@us.ibm.com>,
-        Philip Kelleher <pjk1939@linux.ibm.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>
-Subject: [PATCH v4 3/3] skd: use generic power management
-Date:   Thu, 14 Jan 2021 17:24:23 +0530
-Message-Id: <20210114115423.52414-4-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210114115423.52414-1-vaibhavgupta40@gmail.com>
-References: <20200722083335.50068-1-vaibhavgupta40@gmail.com>
- <20210114115423.52414-1-vaibhavgupta40@gmail.com>
+        Thu, 14 Jan 2021 06:57:04 -0500
+Received: from thorin.petrovitsch.priv.at (80-110-120-15.cgn.dynamic.surfer.at [80.110.120.15])
+        (authenticated bits=0)
+        by esgaroth.tuxoid.at (8.15.2/8.15.2) with ESMTPSA id 10EBtQms024298
+        (version=TLSv1 cipher=AES256-SHA bits=256 verify=NO);
+        Thu, 14 Jan 2021 12:55:27 +0100
+Message-ID: <53fccf6d59938e94f71a823d704e26903b98fb7d.camel@petrovitsch.priv.at>
+Subject: Re: Toolchain-dependent config options
+From:   Bernd Petrovitsch <bernd@petrovitsch.priv.at>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Thu, 14 Jan 2021 12:55:26 +0100
+In-Reply-To: <CAK7LNASbYiZ+UVTmUwRDGMMHQXO-oE-3a4RxbEqX+=dCG2U6dw@mail.gmail.com>
+References: <20210113222112.ej4rrd5xw2pwegvw@treble>
+         <CAK7LNASbYiZ+UVTmUwRDGMMHQXO-oE-3a4RxbEqX+=dCG2U6dw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-DCC--Metrics: esgaroth.tuxoid.at 1481; Body=4 Fuz1=4 Fuz2=4
+X-Virus-Scanned: clamav-milter 0.97 at esgaroth.tuxoid.at
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-0.7 required=5.0 tests=AWL,BAYES_05,
+        UNPARSEABLE_RELAY autolearn=unavailable version=3.3.1
+X-Spam-Report: * -0.5 BAYES_05 BODY: Bayes spam probability is 1 to 5%
+        *      [score: 0.0319]
+        *  0.0 UNPARSEABLE_RELAY Informational: message has unparseable relay lines
+        * -0.2 AWL AWL: Adjusted score from AWL reputation of From: address
+X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on esgaroth.tuxoid.at
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers using legacy power management .suspen()/.resume() callbacks
-have to manage PCI states and device's PM states themselves. They also
-need to take care of standard configuration registers.
+Hi all!
 
-Switch to generic power management framework using a single
-"struct dev_pm_ops" variable to take the unnecessary load from the driver.
-This also avoids the need for the driver to directly call most of the PCI
-helper functions and device power state control functions, as through
-the generic framework PCI Core takes care of the necessary operations,
-and drivers are required to do only device-specific jobs.
+On Thu, 2021-01-14 at 13:56 +0900, Masahiro Yamada wrote:
+> On Thu, Jan 14, 2021 at 7:21 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+[...]
+> > If I copy a config with CONFIG_GCC_PLUGINS to another system which
+> > doesn't have the gcc-plugin-devel package, it gets silently disabled by
+> > "make olddefconfig".
+> > 
+> > I've seen multiple cases lately where this is causing confusion.  I
+> > suspect the problem is getting worse with recent added support for a
+> > variety of toolchains and toolchain-dependent features.
+> > 
+> > Would it be possible to have an error (or at least a warning) in this
+> > case?
+> > 
+> > For example, a "depends-error" which triggers an error if its failure
+> > would disable a feature?
+[...]
+> We disable any feature that is unsupported by the compiler in use.
+> 
+> Conventionally, we did that in the top Makefile
+> by using $(call cc-option, ) macro or by running some scripts.
+> 
+> Recently, we are moving such compiler tests to the Kconfig stage.
+> 
+> Anyway, we disable unsupported features so any combination
+> of CONFIG options builds successfully.
+> This will ease randconfg and allmodconfig tests.
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Tested-by: Damien Le Moal <damien.lemoal@wdc.com>
----
- drivers/block/skd_main.c | 30 ++++++++----------------------
- 1 file changed, 8 insertions(+), 22 deletions(-)
+For options of $CC, that makes sense since there are different
+compilers and lots of versions of them out there.
 
-diff --git a/drivers/block/skd_main.c b/drivers/block/skd_main.c
-index a962b4551bed..8194b58525e2 100644
---- a/drivers/block/skd_main.c
-+++ b/drivers/block/skd_main.c
-@@ -3317,10 +3317,11 @@ static void skd_pci_remove(struct pci_dev *pdev)
- 	return;
- }
- 
--static int skd_pci_suspend(struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused skd_pci_suspend(struct device *dev)
- {
- 	int i;
- 	struct skd_device *skdev;
-+	struct pci_dev *pdev = to_pci_dev(dev);
- 
- 	skdev = pci_get_drvdata(pdev);
- 	if (!skdev) {
-@@ -3339,18 +3340,15 @@ static int skd_pci_suspend(struct pci_dev *pdev, pm_message_t state)
- 	if (skdev->pcie_error_reporting_is_enabled)
- 		pci_disable_pcie_error_reporting(pdev);
- 
--	pci_release_regions(pdev);
--	pci_save_state(pdev);
--	pci_disable_device(pdev);
--	pci_set_power_state(pdev, pci_choose_state(pdev, state));
- 	return 0;
- }
- 
--static int skd_pci_resume(struct pci_dev *pdev)
-+static int __maybe_unused skd_pci_resume(struct device *dev)
- {
- 	int i;
- 	int rc = 0;
- 	struct skd_device *skdev;
-+	struct pci_dev *pdev = to_pci_dev(dev);
- 
- 	skdev = pci_get_drvdata(pdev);
- 	if (!skdev) {
-@@ -3358,16 +3356,8 @@ static int skd_pci_resume(struct pci_dev *pdev)
- 		return -1;
- 	}
- 
--	pci_set_power_state(pdev, PCI_D0);
--	pci_enable_wake(pdev, PCI_D0, 0);
--	pci_restore_state(pdev);
-+	device_wakeup_disable(dev);
- 
--	rc = pci_enable_device(pdev);
--	if (rc)
--		return rc;
--	rc = pci_request_regions(pdev, DRV_NAME);
--	if (rc)
--		goto err_out;
- 	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
- 	if (rc)
- 		rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
-@@ -3376,7 +3366,6 @@ static int skd_pci_resume(struct pci_dev *pdev)
- 		goto err_out_regions;
- 	}
- 
--	pci_set_master(pdev);
- 	rc = pci_enable_pcie_error_reporting(pdev);
- 	if (rc) {
- 		dev_err(&pdev->dev,
-@@ -3429,10 +3418,6 @@ static int skd_pci_resume(struct pci_dev *pdev)
- 		pci_disable_pcie_error_reporting(pdev);
- 
- err_out_regions:
--	pci_release_regions(pdev);
--
--err_out:
--	pci_disable_device(pdev);
- 	return rc;
- }
- 
-@@ -3452,13 +3437,14 @@ static void skd_pci_shutdown(struct pci_dev *pdev)
- 	skd_stop_device(skdev);
- }
- 
-+static SIMPLE_DEV_PM_OPS(skd_pci_pm_ops, skd_pci_suspend, skd_pci_resume);
-+
- static struct pci_driver skd_driver = {
- 	.name		= DRV_NAME,
- 	.id_table	= skd_pci_tbl,
- 	.probe		= skd_pci_probe,
- 	.remove		= skd_pci_remove,
--	.suspend	= skd_pci_suspend,
--	.resume		= skd_pci_resume,
-+	.driver.pm	= &skd_pci_pm_ops,
- 	.shutdown	= skd_pci_shutdown,
- };
- 
+> A lot of people and CI systems are running allmodconfig tests
+> for various architectures and toolchains.
+
+Isn't some kind of defying (or more killing) the usefulness
+of regression compile runs if one does `make allmodconfig`
+and some (lots?) of stuff gets automatically configured
+out just because some
+-dev(|el) package is missing?
+
+Aren't there some kernel-build meta packages for various
+distributions out there that pull all necessary in?
+
+> Introducing the build breakage is annoying.
+
+Yes, update/install the necessary package to fix it.
+
+MfG,
+	Bernd
 -- 
-2.30.0
+Bernd Petrovitsch                  Email : bernd@petrovitsch.priv.at
+There is no cloud, just other people computers. - FSFE
+                     LUGA : http://www.luga.at
+
 
