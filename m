@@ -2,323 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED3B2F6714
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:15:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E8D2F6710
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbhANRMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:12:03 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2346 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbhANRMC (ORCPT
+        id S1728203AbhANRL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:11:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726882AbhANRLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:12:02 -0500
-Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DGrLR3Rpsz67NWn;
-        Fri, 15 Jan 2021 01:06:07 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 14 Jan 2021 18:11:19 +0100
-Received: from localhost (10.47.30.252) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 14 Jan
- 2021 17:11:18 +0000
-Date:   Thu, 14 Jan 2021 17:10:38 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org, Ira Weiny" <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Vishal Verma" <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        "Bjorn Helgaas" <helgaas@kernel.org>,
-        Jon Masters <jcm@jonmasters.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        <daniel.lll@alibaba-inc.com>
-Subject: Re: [RFC PATCH v3 10/16] cxl/mem: Add send command
-Message-ID: <20210114171038.00003636@Huawei.com>
-In-Reply-To: <20210111225121.820014-11-ben.widawsky@intel.com>
-References: <20210111225121.820014-1-ben.widawsky@intel.com>
-        <20210111225121.820014-11-ben.widawsky@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Thu, 14 Jan 2021 12:11:24 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF9BC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:10:44 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id l23so3560427pjg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:10:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DU6EfVHpfE16ScnT80T7nC0eZHdvi7Kl4iLqwSk34mc=;
+        b=QROHkNd5qoqWTod5o8Dq5RVffd3El5j2vEYnFQLWQ1lsnVzIFk1/61BjwscU07dG8W
+         mCyAMAqf+tXIKiPJDbdCHZL51Sqcu9lMNWG4AAZzeNk8nqgUPWC57LNIPSH4K/xrzLoY
+         /LQ0wLryIOcoZBIua5sy8VagssEhEXULhIWCiaXc7u2YgeiIFaXXt6d3QEIL7RqZ8/Ft
+         dOYKVHCCLDKa7HDz62lbbCAcWq7dj1CYnWDE+NgzpgiV5MWN7lZ7KoO1it4KfxEW7HVd
+         Q/mgKngvFeoxfylcwDVDQk6805gNaM634FUdH0uRYZbMJL9Ui5cuWylngRQESYytyVgB
+         NWvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DU6EfVHpfE16ScnT80T7nC0eZHdvi7Kl4iLqwSk34mc=;
+        b=NAcolaklu3+SxQqzbt3mWtAdwJ9HKHv7pXqwwGYshdBGrfeQweEQ+s5wf3LdFZGu8I
+         jSEYYQhox/YbyVn59DKvp1mD8GyEWnw7R4bzVmVOFQxCngXdWDChPfL747RSRU60cif9
+         0OVU52ZB2J2tqvbvP6/h+UgvLKQ9vmK7r/wuOtr3ePPVkeR7FrCEeLxL+YxnCXpzZica
+         XW6VqkK3pGEVkwKo65cHzJ6DlDwYwB2m8cYsEz9sbsg1twAZdJjCNgQumLYDe4BTixhy
+         +KEgSqmwSNF061g22evHRRL9jFPkPeb0ECi+G/qlGQMrZXCd8DswQKDkdlM7kekdGuII
+         Torw==
+X-Gm-Message-State: AOAM533KqdSCsD4RvSmX4sRFggop9KoWxHnZsvc6eZjj9YFpB5ETG1NU
+        qGDcvg/CsoM5zx0AQYSfHEjoXg==
+X-Google-Smtp-Source: ABdhPJzQk+OO/oGn8KF5m19vYRacPibuH5SDOwRIOaTJa6p52eAHnAJV1YPClpqXpZ5WweQZG7jXEQ==
+X-Received: by 2002:a17:90b:338d:: with SMTP id ke13mr5883311pjb.48.1610644243923;
+        Thu, 14 Jan 2021 09:10:43 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id d4sm5718515pfo.127.2021.01.14.09.10.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 09:10:42 -0800 (PST)
+Date:   Thu, 14 Jan 2021 10:10:40 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "paul@crapouillou.net" <paul@crapouillou.net>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "patrice.chotard@st.com" <patrice.chotard@st.com>
+Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping vdev regions
+Message-ID: <20210114171040.GA255481@xps15>
+References: <20201229033019.25899-1-peng.fan@nxp.com>
+ <20201229033019.25899-8-peng.fan@nxp.com>
+ <20210111215023.GJ144935@xps15>
+ <DB6PR0402MB2760F6F982C32B6557467C9188AA0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+ <20210112184629.GA186830@xps15>
+ <DB6PR0402MB27602E812FD657F7EC81854F88A90@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+ <20210113161727.GA213180@xps15>
+ <DB6PR0402MB276015A108C846FA77A6E05388A80@DB6PR0402MB2760.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.30.252]
-X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DB6PR0402MB276015A108C846FA77A6E05388A80@DB6PR0402MB2760.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021 14:51:14 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
-
-> The send command allows userspace to issue mailbox commands directly to
-> the hardware. The driver will verify basic properties of the command and
-> possible inspect the input (or output) payload to determine whether or
-> not the command is allowed (or might taint the kernel).
+On Thu, Jan 14, 2021 at 09:52:13AM +0000, Peng Fan wrote:
+> > Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping vdev
+> > regions
+> > 
+> > On Wed, Jan 13, 2021 at 02:19:32AM +0000, Peng Fan wrote:
+> > > > Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping
+> > > > vdev regions
+> > > >
+> > > > On Tue, Jan 12, 2021 at 09:41:12AM +0000, Peng Fan wrote:
+> > > > > > Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore
+> > > > > > mapping vdev regions
+> > > > > >
+> > > > > > On Tue, Dec 29, 2020 at 11:30:18AM +0800, peng.fan@nxp.com
+> > wrote:
+> > > > > > > From: Peng Fan <peng.fan@nxp.com>
+> > > > > > >
+> > > > > > > vdev regions are vdev0vring0, vdev0vring1, vdevbuffer and similar.
+> > > > > > > They are handled by remoteproc common code, no need to map in
+> > > > > > > imx rproc driver.
+> > > > > > >
+> > > > > > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > > > > > ---
+> > > > > > >  drivers/remoteproc/imx_rproc.c | 3 +++
+> > > > > > >  1 file changed, 3 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/drivers/remoteproc/imx_rproc.c
+> > > > > > > b/drivers/remoteproc/imx_rproc.c index
+> > > > > > > f80428afb8a7..e62a53ee128e
+> > > > > > > 100644
+> > > > > > > --- a/drivers/remoteproc/imx_rproc.c
+> > > > > > > +++ b/drivers/remoteproc/imx_rproc.c
+> > > > > > > @@ -417,6 +417,9 @@ static int imx_rproc_addr_init(struct
+> > > > > > > imx_rproc
+> > > > > > *priv,
+> > > > > > >  		struct resource res;
+> > > > > > >
+> > > > > > >  		node = of_parse_phandle(np, "memory-region", a);
+> > > > > > > +		/* Not map vdev region */
+> > > > > > > +		if (!strcmp(node->name, "vdev"))
+> > > > > > > +			continue;
+> > > > > >
+> > > > > > I am very confused and because I don't see an example for the DT
+> > > > > > in the bindings document I have to guess what is going on.
+> > > > >
+> > > > > V6 will include the DT yaml.
+> > > > >
+> > > > > >
+> > > > > > So I am guessing that you have laid out the memory regions for
+> > > > > > the vrings and the vdev0buffer in the DT "memory-region".
+> > > > >
+> > > > > The dts part will be similar as following:
+> > > > >
+> > > > > +    #include <dt-bindings/clock/imx8mm-clock.h>
+> > > > > +    rsc_table: rsc_table@550ff000 {
+> > > > > +      no-map;
+> > > > > +      reg = <0x550ff000 0x1000>;
+> > > > > +    };
+> > > > > +
+> > > > > +    vdev0vring0: vdev0vring0@55000000 {
+> > > > > +      no-map;
+> > > > > +      reg = <0x55000000 0x8000>;
+> > > > > +    };
+> > > > > +
+> > > > > +    vdev0vring1: vdev0vring1@55008000 {
+> > > > > +      reg = <0x55008000 0x8000>;
+> > > > > +      no-map;
+> > > > > +    };
+> > > > > +
+> > > > > +    vdevbuffer: vdevbuffer@55400000 {
+> > > > > +      compatible = "shared-dma-pool";
+> > > > > +      reg = <0x55400000 0x100000>;
+> > > > > +      no-map;
+> > > > > +    };
+> > > > > +
+> > > > > +    imx8mm-cm4 {
+> > > > > +      compatible = "fsl,imx8mm-cm4";
+> > > > > +      clocks = <&clk IMX8MM_CLK_M4_DIV>;
+> > > > > +      mbox-names = "tx", "rx", "rxdb";
+> > > > > +      mboxes = <&mu 0 1
+> > > > > +                &mu 1 1
+> > > > > +                &mu 3 1>;
+> > > > > +      memory-region = <&vdevbuffer>, <&vdev0vring0>,
+> > > > > + <&vdev0vring1>,
+> > > > <&rsc_table>;
+> > > > > +      syscon = <&src>;
+> > > > > +    };
+> > > > >
+> > > > > >
+> > > > > > For the vrings I don't see the allocation of a carveout, which
+> > > > > > means that you will take the memory out of the DMA pool and the
+> > > > > > reserve memory will be wasted.
+> > > > >
+> > > > > imx_rproc_parse_memory_regions will alloc carveout.
+> > > >
+> > > > They _will_ but for now they don't and as such there a discrepancy
+> > > > between the bindings and the code that was published in V6.  At this
+> > > > point you can either drop the vrings in the DT or send another
+> > > > revision with the carveouts allocated.  I would definitely prefer
+> > > > the latter because it wouldn't involve yet another modification of the
+> > bindings.
+> > >
+> > > You mean I drop patch v5 7/8 and send v7, right?
+> > >
+> > 
+> > If you do that than the implementation won't reflect the bindings.
+> > 
+> > > Or are there other changes that I need to do?
+> > 
+> > If you want to keep the bindings the same way you have them in V6,
+> > carveouts are required in the implementation.
 > 
-> The list of allowed commands and their properties can be determined by
-> using the QUERY IOCTL for CXL memory devices.
+> ok. Could you share more info about carveouts are required?
+> imx_rproc_parse_memory_regions in my pachset already have
+> rproc_add_carveout. I am not clear what else needs to be done.
+
+Ah yes, I see now.  In your answer above you wrote
+"imx_rproc_parse_memory_regions will alloc carveout", which I interpreted as
+"will do so in a future patchset".
+
+I will review V6 - no need to change anything at this time.
+
 > 
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> ---
->  drivers/cxl/mem.c            | 204 ++++++++++++++++++++++++++++++++++-
->  include/uapi/linux/cxl_mem.h |  39 +++++++
->  2 files changed, 239 insertions(+), 4 deletions(-)
+> Thanks,
+> Peng.
 > 
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> index d4eb3f5b9469..f979788b4d9f 100644
-> --- a/drivers/cxl/mem.c
-> +++ b/drivers/cxl/mem.c
-> @@ -84,6 +84,13 @@ static DEFINE_IDR(cxl_mem_idr);
->  /* protect cxl_mem_idr allocations */
->  static DEFINE_MUTEX(cxl_memdev_lock);
->  
-> +#undef C
-> +#define C(a, b) { b }
-
-I'm not following why this is here?
-
-> +static struct {
-> +	const char *name;
-> +} command_names[] = { CMDS };
-> +#undef C
-> +
->  #define CXL_CMD(_id, _flags, sin, sout, f)                                     \
->  	[CXL_MEM_COMMAND_ID_##_id] = {                                         \
->  		{                                                              \
-...
-
-> +
-> +/**
-> + * handle_mailbox_cmd_from_user() - Dispatch a mailbox command.
-> + * @cxlmd: The CXL memory device to communicate with.
-> + * @cmd: The validated command.
-> + * @in_payload: Pointer to userspace's input payload.
-> + * @out_payload: Pointer to userspace's output payload.
-> + * @u: The command submitted by userspace. Has output fields.
-> + *
-> + * Return:
-> + *  * %0	- Mailbox transaction succeeded.
-> + *  * %-EFAULT	- Something happened with copy_to/from_user.
-> + *  * %-EINTR	- Mailbox acquisition interrupted.
-> + *  * %-E2BIG   - Output payload would overrun buffer.
-> + *
-> + * Creates the appropriate mailbox command on behalf of a userspace request.
-> + * Return value, size, and output payload are all copied out to @u. The
-> + * parameters for the command must be validated before calling this function.
-> + *
-> + * A 0 return code indicates the command executed successfully, not that it was
-> + * itself successful. IOW, the retval should always be checked if wanting to
-
-cmd->retval perhaps to be more explicit?
-
-> + * determine the actual result.
-> + */
-> +static int handle_mailbox_cmd_from_user(struct cxl_memdev *cxlmd,
-> +					const struct cxl_mem_command *cmd,
-> +					u64 in_payload,
-> +					u64 out_payload,
-> +					struct cxl_send_command __user *u)
-> +{
-> +	struct mbox_cmd mbox_cmd = {
-> +		.opcode = cmd->opcode,
-> +		.size_in = cmd->info.size_in,
-> +		.payload = NULL, /* Copied by copy_to|from_user() */
-> +	};
-> +	int rc;
-> +
-> +	if (cmd->info.size_in) {
-> +		/*
-> +		 * Directly copy the userspace payload into the hardware. UAPI
-> +		 * states that the buffer must already be little endian.
-> +		 */
-> +		if (copy_from_user((__force void *)cxl_payload_regs(cxlmd->cxlm),
-> +				   u64_to_user_ptr(in_payload),
-> +				   cmd->info.size_in)) {
-> +			cxl_mem_mbox_put(cxlmd->cxlm);
-
-mbox_get is after this point though it shouldn't be given we just
-wrote into the mbox registers.
-
-This seems unlikely to be a high performance path, so perhaps just
-use a local buffer and let cxl_mem_mbox_send_cmd copy it into the registers.
-
-> +			return -EFAULT;
-> +		}
-> +	}
-> +
-> +	rc = cxl_mem_mbox_get(cxlmd->cxlm, true);
-> +	if (rc)
-> +		return rc;
-> +
-> +	dev_dbg(&cxlmd->dev,
-> +		"Submitting %s command for user\n"
-> +		"\topcode: %x\n"
-> +		"\tsize: %ub\n",
-> +		command_names[cmd->info.id].name, mbox_cmd.opcode,
-> +		cmd->info.size_in);
-> +
-> +	rc = cxl_mem_mbox_send_cmd(cxlmd->cxlm, &mbox_cmd);
-> +	cxl_mem_mbox_put(cxlmd->cxlm);
-> +	if (rc)
-> +		return rc;
-> +
-> +	if (mbox_cmd.size_out > cmd->info.size_out)
-> +		return -E2BIG;
-> +
-> +	rc = put_user(mbox_cmd.return_code, &u->retval);
-> +	if (rc)
-> +		return rc;
-> +
-> +	rc = put_user(mbox_cmd.size_out, &u->size_out);
-> +	if (rc)
-> +		return rc;
-> +
-> +	if (mbox_cmd.size_out)
-> +		if (copy_to_user(u64_to_user_ptr(out_payload),
-> +				 (__force void *)cxl_payload_regs(cxlmd->cxlm),
-> +				 mbox_cmd.size_out))
-> +			return -EFAULT;
-> +
-> +	return 0;
-> +}
-> +
-
-...
-
->  
->  static long cxl_mem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-> @@ -479,6 +644,37 @@ static long cxl_mem_ioctl(struct file *file, unsigned int cmd, unsigned long arg
->  			if (j == n_commands)
->  				break;
->  		}
-> +
-> +		return 0;
-
-Ah.  That should have been in the earlier patch.  Explains why the code works :)
-
-
-> +	} else if (cmd == CXL_MEM_SEND_COMMAND) {
-> +		struct cxl_send_command send, __user *u = (void __user *)arg;
-> +		struct cxl_mem_command c;
-> +		int rc;
-> +
-> +		dev_dbg(dev, "Send IOCTL\n");
-> +
-> +		if (copy_from_user(&send, u, sizeof(send)))
-> +			return -EFAULT;
-> +
-> +		rc = device_lock_interruptible(dev);
-> +		if (rc)
-> +			return rc;
-> +
-> +		if (!get_live_device(dev)) {
-> +			device_unlock(dev);
-> +			return -ENXIO;
-> +		}
-> +
-> +		rc = cxl_validate_cmd_from_user(cxlmd->cxlm, &send, &c);
-> +		if (!rc)
-> +			rc = handle_mailbox_cmd_from_user(cxlmd, &c,
-> +							  send.in_payload,
-> +							  send.out_payload, u);
-> +
-> +		put_device(dev);
-> +		device_unlock(dev);
-> +
-> +		return rc;
->  	}
->  
->  	return -ENOTTY;
-> @@ -837,7 +1033,7 @@ static int cxl_mem_identify(struct cxl_mem *cxlm)
->  	int rc;
->  
->  	/* Retrieve initial device memory map */
-> -	rc = cxl_mem_mbox_get(cxlm);
-> +	rc = cxl_mem_mbox_get(cxlm, false);
->  	if (rc)
->  		return rc;
->  
-> diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
-> index 847f825bbe18..cb4e2bee5228 100644
-> --- a/include/uapi/linux/cxl_mem.h
-> +++ b/include/uapi/linux/cxl_mem.h
-> @@ -26,6 +26,7 @@ extern "C" {
->   */
->  
->  #define CXL_MEM_QUERY_COMMANDS _IOR(0xCE, 1, struct cxl_mem_query_commands)
-> +#define CXL_MEM_SEND_COMMAND _IOWR(0xCE, 2, struct cxl_send_command)
->  
->  #undef CMDS
->  #define CMDS                                                                   \
-> @@ -69,6 +70,7 @@ struct cxl_command_info {
->  #define CXL_MEM_COMMAND_FLAG_NONE 0
->  #define CXL_MEM_COMMAND_FLAG_KERNEL BIT(0)
->  #define CXL_MEM_COMMAND_FLAG_MUTEX BIT(1)
-> +#define CXL_MEM_COMMAND_FLAG_MASK GENMASK(31, 2)
-
-Instinctively I'd expect FLAG_MASK to be GENMASK(1, 0)
-and to be used as ~FLAG_MASK.  As it's mask of flags, not
-the mask to leave only valid flags. 
-
->  
->  	__s32 size_in;
->  	__s32 size_out;
-> @@ -110,6 +112,43 @@ struct cxl_mem_query_commands {
->  	struct cxl_command_info __user commands[]; /* out: supported commands */
->  };
->  
-> +/**
-> + * struct cxl_send_command - Send a command to a memory device.
-> + * @id: The command to send to the memory device. This must be one of the
-> + *	commands returned by the query command.
-> + * @flags: Flags for the command (input).
-> + * @rsvd: Must be zero.
-> + * @retval: Return value from the memory device (output).
-> + * @size_in: Size of the payload to provide to the device (input).
-> + * @size_out: Size of the payload received from the device (input/output). This
-> + *	      field is filled in by userspace to let the driver know how much
-> + *	      space was allocated for output. It is populated by the driver to
-> + *	      let userspace know how large the output payload actually was.
-> + * @in_payload: Pointer to memory for payload input (little endian order).
-> + * @out_payload: Pointer to memory for payload output (little endian order).
-> + *
-> + * Mechanism for userspace to send a command to the hardware for processing. The
-> + * driver will do basic validation on the command sizes, but the payload input
-> + * and output are not introspected. Userspace is required to allocate large
-> + * enough buffers for max(size_in, size_out).
-
-That sounds like both buffers must be the maximum between size_in and size_out.
-Is intent that this is the maximum size_in for in_payload and max(size_out) for out_payload?
-
-> + */
-> +struct cxl_send_command {
-> +	__u32 id;
-> +	__u32 flags;
-> +	__u32 rsvd;
-> +	__u32 retval;
-> +
-> +	struct {
-> +		__s32 size_in;
-> +		__u64 in_payload;
-> +	};
-> +
-> +	struct {
-> +		__s32 size_out;
-> +		__u64 out_payload;
-> +	};
-> +};
-> +
->  #if defined(__cplusplus)
->  }
->  #endif
-
+> > 
+> > >
+> > > Thanks,
+> > > Peng.
+> > >
+> > > >
+> > > > >
+> > > > > >
+> > > > > > For the vdev0buffer, what you have will work *only* if that
+> > > > > > entry is the first one in the list of memory regions, as we agreed here
+> > [2].
+> > > > >
+> > > > > Yes. I agree and follow this rule from then.
+> > > > >
+> > > > > Thanks,
+> > > > > Peng.
+> > > > >
+> > > > > >
+> > > > > > [1].
+> > > > > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%
+> > > > > > 2Fel
+> > > > > > ixir.b
+> > > > > >
+> > > >
+> > ootlin.com%2Flinux%2Fv5.11-rc3%2Fsource%2Fdrivers%2Fremoteproc%2Fre
+> > > > > >
+> > > >
+> > moteproc_core.c%23L321&amp;data=04%7C01%7Cpeng.fan%40nxp.com%7
+> > > > > >
+> > > >
+> > C581784529b1646b9d34b08d8b67ae8c7%7C686ea1d3bc2b4c6fa92cd99c5c
+> > > > > >
+> > > >
+> > 301635%7C0%7C0%7C637459986311799770%7CUnknown%7CTWFpbGZsb3
+> > > > > >
+> > > >
+> > d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0
+> > > > > > %3D%7C1000&amp;sdata=Qur6YiTWlak0ZRnrUZRzawfoO38EBrAItqZ
+> > m66
+> > > > b4
+> > > > > > m20%3D&amp;reserved=0
+> > > > > > [2].
+> > > > > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%
+> > > > > > 2Fpa
+> > > > > > tch
+> > > > > >
+> > > >
+> > work.kernel.org%2Fproject%2Flinux-remoteproc%2Fpatch%2F202007221315
+> > > > > >
+> > > >
+> > 43.7024-1-peng.fan%40nxp.com%2F&amp;data=04%7C01%7Cpeng.fan%40n
+> > > > > >
+> > > >
+> > xp.com%7C581784529b1646b9d34b08d8b67ae8c7%7C686ea1d3bc2b4c6fa9
+> > > > > >
+> > > >
+> > 2cd99c5c301635%7C0%7C0%7C637459986311799770%7CUnknown%7CTW
+> > > > > >
+> > > >
+> > FpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJX
+> > > > > >
+> > > >
+> > VCI6Mn0%3D%7C1000&amp;sdata=b%2F8muWtb3yxKIsnXmKmRGYYV33%2
+> > > > > > FHjwA6a8x58geY7eE%3D&amp;reserved=0
+> > > > > >
+> > > > > > >  		err = of_address_to_resource(node, 0, &res);
+> > > > > > >  		if (err) {
+> > > > > > >  			dev_err(dev, "unable to resolve memory region\n");
+> > > > > > > --
+> > > > > > > 2.28.0
+> > > > > > >
