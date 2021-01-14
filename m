@@ -2,109 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656FA2F69E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:50:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B7D2F69ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729490AbhANSrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:47:12 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:43135 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728053AbhANSrK (ORCPT
+        id S1729547AbhANSss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:48:48 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:58580 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726778AbhANSsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:47:10 -0500
-Received: by mail-io1-f71.google.com with SMTP id c7so10008933iob.10
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:46:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=5LW46VUliO/r3HfpxffLXkCT+mF2xOutj2eIxhklFeo=;
-        b=uLdEYNUomvmHKj54yPYOBxqTd9iVTbmS/mV7C0BDLrjl346P0QUVt/+epZuLXH98Jf
-         /p1EC24AXik5QURSSG92jzfAkMFT6Oy+cPqKwx7Wxrl451+SChfF7c+rZfy2LRWrwKWx
-         84/ezdlO7tRM24Nlpx1UNA5uVGliq7/TD6TfEq0wJYfBgRz9fB+0UNUUOXick7TYlLzd
-         nAcHRYVBFZuucO1Nm4NB8fE77kA7BWr60yyO48BjlMz6gb63kRln+uWQM1CgufQyYQkz
-         V6bEIsKecpsyxM4lgSgNwZJTg5Oeq2S6qocAeDW5JuX5IgtPJS7+LYgJaQPvCIWOqFQr
-         XxSw==
-X-Gm-Message-State: AOAM532BmD5xap0MnCea6id7WwKdpJRGXtACSF6q+npCLS4kE4r2qzxP
-        s5YRQnleBJu2n+SMI+R7Xm2yH+3XXVA/ddkj9lkifcpi2LQF
-X-Google-Smtp-Source: ABdhPJw4g3Dyd5qV9MIuqFOmwCu5zkyGPc1pC5m9CmDuzqk/ZCOh+YnaQcyDcN4HVSeZsftUfORvmOZj73IfNQ2/Gk3VctIrISa8
+        Thu, 14 Jan 2021 13:48:47 -0500
+Received: from 89-64-81-33.dynamic.chello.pl (89.64.81.33) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
+ id 4b0a89bcdcba0787; Thu, 14 Jan 2021 19:48:04 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Hans De Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/2] ACPI: scan: Rearrange memory allocation in acpi_device_add()
+Date:   Thu, 14 Jan 2021 19:46:47 +0100
+Message-ID: <2999734.9HhbEeWEHR@kreacher>
+In-Reply-To: <3494203.VBaj39JGmp@kreacher>
+References: <3494203.VBaj39JGmp@kreacher>
 MIME-Version: 1.0
-X-Received: by 2002:a92:d40d:: with SMTP id q13mr7828080ilm.253.1610649989249;
- Thu, 14 Jan 2021 10:46:29 -0800 (PST)
-Date:   Thu, 14 Jan 2021 10:46:29 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000077819e05b8e0acc8@google.com>
-Subject: WARNING in smk_write_relabel_self
-From:   syzbot <syzbot+670d1a1e6b6face0440a@syzkaller.appspotmail.com>
-To:     casey@schaufler-ca.com, jmorris@namei.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, serge@hallyn.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-syzbot found the following issue on:
+The upfront allocation of new_bus_id is done to avoid allocating
+memory under acpi_device_lock, but it doesn't really help,
+because (1) it leads to many unnecessary memory allocations for
+_ADR devices, (2) kstrdup_const() is run under that lock anyway and
+(3) it complicates the code.
 
-HEAD commit:    65f0d241 Merge tag 'sound-5.11-rc4' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1292d4f7500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ee2266946ed36986
-dashboard link: https://syzkaller.appspot.com/bug?extid=670d1a1e6b6face0440a
-compiler:       clang version 11.0.1
+Rearrange acpi_device_add() to allocate memory for a new struct
+acpi_device_bus_id instance only when necessary, eliminate a redundant
+local variable from it and reduce the number of labels in there.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+No intentional functional impact.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+670d1a1e6b6face0440a@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 4703 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5020
-Modules linked in:
-CPU: 0 PID: 4703 Comm: syz-executor.0 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5020
-Code: aa 09 00 e9 dd fd ff ff 44 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c eb fd ff ff 4c 89 ef e8 54 aa 09 00 8b 74 24 18 e9 da fd ff ff <0f> 0b e9 f3 fd ff ff a9 00 00 08 00 75 16 8b 4c 24 1c 89 cb 81 e3
-RSP: 0018:ffffc90016d879a0 EFLAGS: 00010246
-RAX: ffffc90016d87a20 RBX: ffffc90016d87a20 RCX: 0000000000000000
-RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc90016d87a48
-RBP: ffffc90016d87ae0 R08: dffffc0000000000 R09: ffffc90016d87a20
-R10: fffff52002db0f49 R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000012 R14: 1ffff92002db0f40 R15: 0000000000040cc0
-FS:  00007f2d4e56d700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000074c698 CR3: 000000001dcc3000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- alloc_pages include/linux/gfp.h:547 [inline]
- kmalloc_order+0x40/0x130 mm/slab_common.c:837
- kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
- kmalloc_large include/linux/slab.h:481 [inline]
- __kmalloc_track_caller+0x246/0x330 mm/slub.c:4457
- memdup_user_nul+0x26/0xf0 mm/util.c:260
- smk_write_relabel_self+0x17a/0x510 security/smack/smackfs.c:2748
- vfs_write+0x289/0xc90 fs/read_write.c:603
- ksys_write+0x171/0x2a0 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e219
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f2d4e56cc68 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e219
-RDX: 00000000200000d7 RSI: 00000000200000c0 RDI: 0000000000000003
-RBP: 000000000119bfc0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
-R13: 00007ffd3d0ba57f R14: 00007f2d4e56d9c0 R15: 000000000119bf8c
-
-
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/acpi/scan.c |   57 +++++++++++++++++++++++-----------------------------
+ 1 file changed, 26 insertions(+), 31 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -621,12 +621,23 @@ void acpi_bus_put_acpi_device(struct acp
+ 	put_device(&adev->dev);
+ }
+ 
++static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
++{
++	struct acpi_device_bus_id *acpi_device_bus_id;
++
++	/* Find suitable bus_id and instance number in acpi_bus_id_list. */
++	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node) {
++		if (!strcmp(acpi_device_bus_id->bus_id, dev_id))
++			return acpi_device_bus_id;
++	}
++	return NULL;
++}
++
+ int acpi_device_add(struct acpi_device *device,
+ 		    void (*release)(struct device *))
+ {
++	struct acpi_device_bus_id *acpi_device_bus_id;
+ 	int result;
+-	struct acpi_device_bus_id *acpi_device_bus_id, *new_bus_id;
+-	int found = 0;
+ 
+ 	if (device->handle) {
+ 		acpi_status status;
+@@ -652,38 +663,26 @@ int acpi_device_add(struct acpi_device *
+ 	INIT_LIST_HEAD(&device->del_list);
+ 	mutex_init(&device->physical_node_lock);
+ 
+-	new_bus_id = kzalloc(sizeof(struct acpi_device_bus_id), GFP_KERNEL);
+-	if (!new_bus_id) {
+-		pr_err(PREFIX "Memory allocation error\n");
+-		result = -ENOMEM;
+-		goto err_detach;
+-	}
+-
+ 	mutex_lock(&acpi_device_lock);
+-	/*
+-	 * Find suitable bus_id and instance number in acpi_bus_id_list
+-	 * If failed, create one and link it into acpi_bus_id_list
+-	 */
+-	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node) {
+-		if (!strcmp(acpi_device_bus_id->bus_id,
+-			    acpi_device_hid(device))) {
+-			acpi_device_bus_id->instance_no++;
+-			found = 1;
+-			kfree(new_bus_id);
+-			break;
++
++	acpi_device_bus_id = acpi_device_bus_id_match(acpi_device_hid(device));
++	if (acpi_device_bus_id) {
++		acpi_device_bus_id->instance_no++;
++	} else {
++		acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
++					     GFP_KERNEL);
++		if (!acpi_device_bus_id) {
++			result = -ENOMEM;
++			goto err_unlock;
+ 		}
+-	}
+-	if (!found) {
+-		acpi_device_bus_id = new_bus_id;
+ 		acpi_device_bus_id->bus_id =
+ 			kstrdup_const(acpi_device_hid(device), GFP_KERNEL);
+ 		if (!acpi_device_bus_id->bus_id) {
+-			pr_err(PREFIX "Memory allocation error for bus id\n");
++			kfree(acpi_device_bus_id);
+ 			result = -ENOMEM;
+-			goto err_free_new_bus_id;
++			goto err_unlock;
+ 		}
+ 
+-		acpi_device_bus_id->instance_no = 0;
+ 		list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
+ 	}
+ 	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, acpi_device_bus_id->instance_no);
+@@ -718,13 +717,9 @@ int acpi_device_add(struct acpi_device *
+ 		list_del(&device->node);
+ 	list_del(&device->wakeup_list);
+ 
+- err_free_new_bus_id:
+-	if (!found)
+-		kfree(new_bus_id);
+-
++ err_unlock:
+ 	mutex_unlock(&acpi_device_lock);
+ 
+- err_detach:
+ 	acpi_detach_data(device->handle, acpi_scan_drop_device);
+ 	return result;
+ }
+
+
+
