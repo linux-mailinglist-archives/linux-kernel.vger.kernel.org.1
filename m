@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B49B2F5C52
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBD32F5C55
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727775AbhANIV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 03:21:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726204AbhANIVY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 03:21:24 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3428FC061575;
-        Thu, 14 Jan 2021 00:20:44 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id x20so6784391lfe.12;
-        Thu, 14 Jan 2021 00:20:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3nBcH17u4wRamAJ7uMUZUGqlgSjiRmAWW0nH78rAfnc=;
-        b=ovEie4gzrZBF/T8jC/PT19rGl0IpqmmOcZPDHabyd+MGIwXid951DJQjUd/QCFH3GF
-         BSIXJ4d0nJRBNJVo6emoEzcnFSzZuKfjrcDN2ykv5W9RLcvjFNfbbJi8wDQzGPfCz4Bz
-         7as6y+Aji4rJPitUlIoNIHSmWHtqu64YrJUj4X7DdYZoGsXDkOMLJ6b3QTf2J6RQQ09k
-         uKwAQ16DmSXdfhnWraBTu2hC3ZYqVnyRzTAXmxltwJd8YJzYKOKwURfWDNevGYwgfSaL
-         ss26zihDVk3PE121xHDPmvasPUdFe0fTEDezehFOPIfiPpQvRx+51WWa8/FOtS5wuxcb
-         krYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=3nBcH17u4wRamAJ7uMUZUGqlgSjiRmAWW0nH78rAfnc=;
-        b=Nuu4RLugHtyP2G17GqFs/kS27LgvBN44HQuuQxHTeOeFr162q7W6G0Ie7I+uDMQe/w
-         JfYNc/P64oasJuaG1AzmG8EFSlQ9Tw3LmpuEqQj8vgzeLunLyveHU/wFzjXzxCc0KotH
-         GlsbmG9dD6AowOUyDm4oKiOpx1QXyoAhJWep+vm/gZ+vEwvhqPlgZoUB1B0lW/KCwpWf
-         +89TAhPf3fakpnSJvABa8VVZTieEpx7848ft8y4/bnAjKQiwBb1hFMKxZzr/3izIv3ta
-         o/oed6U/TPM/E/w4ile9bTe7+/iJBZjrk5Av8QXFyamkFeLAVyExmC2YYNsfPezgSPGu
-         cBUg==
-X-Gm-Message-State: AOAM5300MIvPMeX1k9zoDw8MpB9ZpaQnQwOHIBaQDslk1lfewTb+Go9B
-        m4XfvwIjXJUmp3ijtjE7szE=
-X-Google-Smtp-Source: ABdhPJwKSJEcRknnP+y9jsGT0h2EP3cC4Glv4jOtT3xYilx0cp1Sf+sbgEmv53OZYAPoglkcFOqrJw==
-X-Received: by 2002:a19:747:: with SMTP id 68mr2645596lfh.408.1610612442737;
-        Thu, 14 Jan 2021 00:20:42 -0800 (PST)
-Received: from [192.168.1.100] ([178.176.79.115])
-        by smtp.gmail.com with ESMTPSA id k25sm472627lfm.236.2021.01.14.00.20.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jan 2021 00:20:42 -0800 (PST)
-Subject: Re: [PATCH v7 4/7] dt-bindings: media: max9286: Document
- 'maxim,reverse-channel-microvolt'
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
-Cc:     linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <20210113185506.119808-1-jacopo+renesas@jmondi.org>
- <20210113185506.119808-5-jacopo+renesas@jmondi.org>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <46b966bb-e276-29c4-bcd8-091cb65a81bf@gmail.com>
-Date:   Thu, 14 Jan 2021 11:20:28 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1727837AbhANIVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 03:21:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726204AbhANIVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 03:21:36 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15CF22343F;
+        Thu, 14 Jan 2021 08:20:55 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kzxsC-007S2r-Pq; Thu, 14 Jan 2021 08:20:53 +0000
 MIME-Version: 1.0
-In-Reply-To: <20210113185506.119808-5-jacopo+renesas@jmondi.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Thu, 14 Jan 2021 08:20:52 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Srinivas Ramana <sramana@codeaurora.org>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pajay@qti.qualcomm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 0/3] arm64: cpufeature: Add filter function to control
+In-Reply-To: <c028d65d-27c3-826a-b16c-407e9cf48aac@codeaurora.org>
+References: <1610152163-16554-1-git-send-email-sramana@codeaurora.org>
+ <6dfdf691b5ed57df81c4c61422949af5@misterjones.org>
+ <c028d65d-27c3-826a-b16c-407e9cf48aac@codeaurora.org>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <7b53c01dd5afcb29679c3a9cf72407a9@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: sramana@codeaurora.org, catalin.marinas@arm.com, will@kernel.org, pajay@qti.qualcomm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-arm-msm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 13.01.2021 21:55, Jacopo Mondi wrote:
-
-> Document the 'reverse-channel-microvolt' vendor property in the
-
-    Where is "maxim,"?
-
-> bindings document of the max9286 driver.
+On 2021-01-14 07:15, Srinivas Ramana wrote:
+> Hi Marc,
 > 
-> The newly introduced property allows to specifying the initial
-
-    Specify?
-
-> configuration of the GMSL reverse control channel to accommodate
-> remote serializers pre-programmed with the high threshold power
-> supply noise immunity enabled.
+> On 1/11/2021 5:40 AM, Marc Zyngier wrote:
+>> Hi Srinivas,
+>> 
+>> On 2021-01-09 00:29, Srinivas Ramana wrote:
+>>> This patchset adds a control function for cpufeature framework
+>>> so that the feature can be controlled at runtime.
+>>> 
+>>> Defer PAC on boot core and use the filter function added to disable
+>>> PAC from command line. This will help toggling the feature on systems
+>>> that do not support PAC or where PAC needs to be disabled at runtime,
+>>> without modifying the core kernel.
+>>> 
+>>> The idea of adding the filter function for cpufeature is taken from
+>>> https://lore.kernel.org/linux-arm-kernel/20200515171612.1020-25-catalin.marinas@arm.com/ 
+>>> https://lore.kernel.org/linux-arm-kernel/20200515171612.1020-24-catalin.marinas@arm.com/ 
+>>> Srinivas Ramana (3):
+>>>   arm64: Defer enabling pointer authentication on boot core
+>>>   arm64: cpufeature: Add a filter function to cpufeature
+>>>   arm64: Enable control of pointer authentication using early param
+>>> 
+>>>  Documentation/admin-guide/kernel-parameters.txt |  6 +++
+>>>  arch/arm64/include/asm/cpufeature.h             |  8 +++-
+>>>  arch/arm64/include/asm/pointer_auth.h           | 10 +++++
+>>>  arch/arm64/include/asm/stackprotector.h         |  1 +
+>>>  arch/arm64/kernel/cpufeature.c                  | 53 
+>>> +++++++++++++++++++------
+>>>  arch/arm64/kernel/head.S                        |  4 --
+>>>  6 files changed, 64 insertions(+), 18 deletions(-)
+>> 
+>> I've been working for some time on a similar series to allow a feature
+>> set to be disabled during the early boot phase, initially to prevent
+>> booting a kernel with VHE, but the mechanism is generic enough to
+>> deal with most architectural features.
+>> 
+>> I took the liberty to lift your first patch and to add it to my 
+>> series[1],
+>> further allowing PAuth to be disabled at boot time on top of BTI and 
+>> VHE.
+>> 
+>> I'd appreciate your comments on this.
+> Thanks for sending this series. It seems to be more flexible compared
+> you what we did.
+> Following your discussion on allowing EXACT ftr_reg values.
 > 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-[...]
+> 
+> Btw, do you have plan to add MTE in similar lines to control the 
+> feature?
+> We may be needing this on some systems.
 
-MBR, Sergei
+I don't have any need for this at the moment, as my initial goal was
+to enable a different boot flow for VHE. The BTI "support" was added
+as a way to demonstrate the use of __read_sysreg_by_encoding(), and
+your patches were a good opportunity to converge on a single solution.
+
+But if you write the patches that do that, I can add them to the series,
+and Catalin/Will can decide whether they want to take them.
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
