@@ -2,139 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EA42F6D90
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 056FD2F6D91
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:57:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730496AbhANVzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 16:55:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726755AbhANVzB (ORCPT
+        id S1730518AbhANVzV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Jan 2021 16:55:21 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:45832 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726755AbhANVzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 16:55:01 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B85C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:54:20 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id e74so3212348ybh.19
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:54:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=tgOM7SvsAS/8SvjP8wI77AkB8qnFEk/NyLJDnsaz2Ek=;
-        b=Nw9ejyj/jm8iXEDGJc7y1QJW0WDCrpoip0qLvOo5Z0mWJnQ8Zd7DabKvObaBaf0zHl
-         iwzri++M0/R6H9af7MLTrA7MO2XfhrRpwo8fQhK1Wor2JZZuPHO4z8Ij7iq3rwghTiOa
-         TSk4mAJWS9NBCckF3ceaEI2wUOuzQlNdUwHGB8nSx6AjRNePeTNIcjUlrMkizRlc5JRq
-         Ik62om6Asn5t2lj4zHr492s4VzvmjR+LFRqcUoCsxQCDzBq5InMZxNm7S0ANeSvhnZyG
-         hiiahpPTk27cSe6j6yjsxylzJXdwVPpJyNVnzhjNTGreWSla7sbSp6zPNTan7vx25Rcz
-         3X9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=tgOM7SvsAS/8SvjP8wI77AkB8qnFEk/NyLJDnsaz2Ek=;
-        b=A1xC+HNdPFhjYSDIAJqiVownX0zpCpwCIdITIVRVky9nnFrxf47h4/+K6kFdtwYlwG
-         Y/IaVLWd5rPSE3G0r4A1Ey7UT/iW6NbyX2TtRNjuU06crUH1QOoGBYdTwLCU4CksMGnz
-         eQ/51I9bAOMuzQhQBRoV9IiZ1OLwEhVSrLtIZFrbmzRNUgdK2Yt97Rn4pl+v3DP8281h
-         hlx4U9WFXKtq7FWCDssDjkKKSFKlaySqlukWS8POLo0cIfMBl3yIEQ3PUJyxg/7mvM9R
-         SLZPtkVRSTAZHikqksNjgR8rXlTlKmGWd3M1KdRWbC8PtEOz0WkOZ0LziSc5jI1TF9MZ
-         cpUQ==
-X-Gm-Message-State: AOAM533YZfSZS5ovEm8KKUMepbL1ZTiXwIO7FTNwOXu+W/45ZpbT6OqR
-        tP/wLrPJhWDWXOfkPUKn8d/xLSSbF08/NovHe7uSQEr3q5KuxMDiB1HiAMIfcQVh/jHGYBPysGb
-        DXcsEBO8yYDwh6AoN3O64b1GvH2qW2MlBAsICtiwjJYRdrOVJCLIcodxyLVCWC78JN9Lr52EH
-X-Google-Smtp-Source: ABdhPJw6n2rkQxdu0Ke0FvMxL6+8gxdyLR7DcLUFyfZ/GrHVaRnoHvROkF6v04Oj9JIr4kTe0L4II0A/AZqu
-Sender: "maskray via sendgmr" <maskray@maskray1.svl.corp.google.com>
-X-Received: from maskray1.svl.corp.google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
- (user=maskray job=sendgmr) by 2002:a25:500b:: with SMTP id
- e11mr13498852ybb.138.1610661259864; Thu, 14 Jan 2021 13:54:19 -0800 (PST)
-Date:   Thu, 14 Jan 2021 13:54:16 -0800
-In-Reply-To: <20210114211840.GA5617@linux-8ccs>
-Message-Id: <20210114215416.993167-1-maskray@google.com>
-Mime-Version: 1.0
-References: <20210114211840.GA5617@linux-8ccs>
-X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
-Subject: [PATCH v2] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
- undefined symbols
-From:   Fangrui Song <maskray@google.com>
-To:     linux-kernel@vger.kernel.org, Jessica Yu <jeyu@kernel.org>
-Cc:     clang-built-linux@googlegroups.com,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Fangrui Song <maskray@google.com>,
-        Marco Elver <elver@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 14 Jan 2021 16:55:20 -0500
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1l0AZd-0006kn-NZ; Thu, 14 Jan 2021 21:54:34 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id E2D505FEE8; Thu, 14 Jan 2021 13:54:31 -0800 (PST)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id DC5BFA0411;
+        Thu, 14 Jan 2021 13:54:31 -0800 (PST)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Jarod Wilson <jarod@redhat.com>
+cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v2] bonding: add a vlan+mac tx hashing option
+In-reply-to: <20210114211141.GH1171031@redhat.com>
+References: <20201218193033.6138-1-jarod@redhat.com> <20210113223548.1171655-1-jarod@redhat.com> <20210113175818.7dce3076@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <20210114211141.GH1171031@redhat.com>
+Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
+   message dated "Thu, 14 Jan 2021 16:11:41 -0500."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <8506.1610661271.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Thu, 14 Jan 2021 13:54:31 -0800
+Message-ID: <8507.1610661271@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clang-12 -fno-pic (since
-https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6)
-can emit `call __stack_chk_fail@PLT` instead of `call __stack_chk_fail`
-on x86.  The two forms should have identical behaviors on x86-64 but the
-former causes GNU as<2.37 to produce an unreferenced undefined symbol
-_GLOBAL_OFFSET_TABLE_.
+Jarod Wilson <jarod@redhat.com> wrote:
 
-(On x86-32, there is an R_386_PC32 vs R_386_PLT32 difference but the
-linker behavior is identical as far as Linux kernel is concerned.)
+>On Wed, Jan 13, 2021 at 05:58:18PM -0800, Jakub Kicinski wrote:
+>> On Wed, 13 Jan 2021 17:35:48 -0500 Jarod Wilson wrote:
+>> > This comes from an end-user request, where they're running multiple VMs on
+>> > hosts with bonded interfaces connected to some interest switch topologies,
+>> > where 802.3ad isn't an option. They're currently running a proprietary
+>> > solution that effectively achieves load-balancing of VMs and bandwidth
+>> > utilization improvements with a similar form of transmission algorithm.
+>> > 
+>> > Basically, each VM has it's own vlan, so it always sends its traffic out
+>> > the same interface, unless that interface fails. Traffic gets split
+>> > between the interfaces, maintaining a consistent path, with failover still
+>> > available if an interface goes down.
+>> > 
+>> > This has been rudimetarily tested to provide similar results, suitable for
+>> > them to use to move off their current proprietary solution. A patch for
+>> > iproute2 is forthcoming as well, to properly support the new mode there as
+>> > well.
+>> 
+>> > Signed-off-by: Jarod Wilson <jarod@redhat.com>
+>> > ---
+>> > v2: verified netlink interfaces working, added Documentation, changed
+>> > tx hash mode name to vlan+mac for consistency and clarity.
+>> > 
+>> >  Documentation/networking/bonding.rst | 13 +++++++++++++
+>> >  drivers/net/bonding/bond_main.c      | 27 +++++++++++++++++++++++++--
+>> >  drivers/net/bonding/bond_options.c   |  1 +
+>> >  include/linux/netdevice.h            |  1 +
+>> >  include/uapi/linux/if_bonding.h      |  1 +
+>> >  5 files changed, 41 insertions(+), 2 deletions(-)
+>> > 
+>> > diff --git a/Documentation/networking/bonding.rst b/Documentation/networking/bonding.rst
+>> > index adc314639085..c78ceb7630a0 100644
+>> > --- a/Documentation/networking/bonding.rst
+>> > +++ b/Documentation/networking/bonding.rst
+>> > @@ -951,6 +951,19 @@ xmit_hash_policy
+>> >  		packets will be distributed according to the encapsulated
+>> >  		flows.
+>> >  
+>> > +	vlan+mac
 
-Simply ignore _GLOBAL_OFFSET_TABLE_ for now, like what
-scripts/mod/modpost.c:ignore_undef_symbol does. This also fixes the
-problem for gcc/clang -fpie and -fpic, which may emit `call foo@PLT` for
-external function calls on x86.
+	I notice that the code calls it "VLAN_SRCMAC" but the
+user-facing nomenclature is "vlan+mac"; I tend to lean towards having
+the user visible name also be "vlan+srcmac".  Both for consistency, and
+just in case someone someday wants "vlan+dstmac".  And you did ask for
+preference on this in a separate email.
 
-Note: ld -z defs and dynamic loaders do not error for unreferenced
-undefined symbols so the module loader is reading too much.  If we ever
-need to ignore more symbols, the code should be refactored to ignore
-unreferenced symbols.
+>> > +		This policy uses a very rudimentary vland ID and source mac
+>> > +		ID hash to load-balance traffic per-vlan, with failover
+>> > +		should one leg fail. The intended use case is for a bond
+>> > +		shared by multiple virtual machines, all configured to
+>> > +		use their own vlan, to give lacp-like functionality
+>> > +		without requiring lacp-capable switching hardware.
+>> > +
+>> > +		The formula for the hash is simply
+>> > +
+>> > +		hash = (vlan ID) XOR (source MAC)
+>> 
+>> But in the code it's only using one byte of the MAC, currently.
+>> 
+>> I think that's fine for the particular use case but should we call out
+>> explicitly in the commit message why it's considered sufficient?
+>> 
+>> Someone can change it later, if needed, but best if we spell out the
+>> current motivation.
+>
+>In truth, this code started out as a copy of bond_eth_hash(), which also
+>only uses the last byte, though of both source and destination macs. In
+>the typical use case for the requesting user, the bond is formed from two
+>onboard NICs, which typically have adjacent mac addresses, i.e.,
+>AA:BB:CC:DD:EE:01 and AA:BB:CC:DD:EE:02, so only the last byte is really
+>relevant to hash differently, but in thinking about it, a replacement NIC
+>because an onboard one died could have the same last byte, and maybe we
+>ought to just go full source mac right off the go here.
 
-Reported-by: Marco Elver <elver@google.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1250
-Signed-off-by: Fangrui Song <maskray@google.com>
+	Yah, the existing L2 hash is pretty weak.  It might be possible
+to squeeze this into the existing bond_xmit_hash a bit better, if the
+hash is two u32s.  The first being the first 32 bits of the MAC, and the
+second being the last 16 bits of the MAC combined with the 16 bit VLAN
+tag.
+
+	There's already logic at the end of bond_xmit_hash to reduce a
+u32 into the final hash that perhaps could be leveraged.  
+
+	Thinking about it, though, all the ways to combine that data
+together end up being pretty vile ("*(u32 *)&ethhdr->h_source[0]" sorts
+of things).
+
+>Something like this instead maybe:
+>
+>static u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
+>{
+>        struct ethhdr *mac_hdr = (struct ethhdr *)skb_mac_header(skb);
+>        u32 srcmac = 0;
+>        u16 vlan;
+>        int i;
+>
+>        for (i = 0; i < ETH_ALEN; i++)
+>                srcmac = (srcmac << 8) | mac_hdr->h_source[i];
+
+	I think this will shift h_source[0] and [1] into oblivion.
+
+>        if (!skb_vlan_tag_present(skb))
+>                return srcmac;
+>
+>        vlan = skb_vlan_tag_get(skb);
+>
+>        return vlan ^ srcmac;
+>}
+>
+>Then the documentation is spot-on, and we're future-proof, though
+>marginally less performant in calculating the hash, which may have been a
+>consideration when the original function was written, but is probably
+>basically irrelevant w/modern systems...
+>
+>> >  	The default value is layer2.  This option was added in bonding
+>> >  	version 2.6.3.  In earlier versions of bonding, this parameter
+>> >  	does not exist, and the layer2 policy is the only policy.  The
+>> 
+>> > +static inline u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
+>> 
+>> Can we drop the inline? It's a static function called once.
+>
+>Works for me. That was also inherited by copying bond_eth_hash(). :)
+>
+>> > +{
+>> > +	struct ethhdr *mac_hdr = (struct ethhdr *)skb_mac_header(skb);
+>> 
+>> I don't see anything in the patch making sure the interface actually
+>> has a L2 header. Should we validate somehow the ifc is Ethernet?
+>
+>I don't think it's necessary. There doesn't appear to be any explicit
+>check for BOND_XMIT_POLICY_LAYER2 either. I believe we're guaranteed to
+>not have anything but an ethernet header here, as the only other type I'm
+>aware of being supported is Infiniband, but we limit that to active-backup
+>only, and xmit_hash_policy isn't valid for active-backup.
+
+	This is correct, interfaces in a bond other than active-backup
+will all be ARPHRD_ETHER.  I'm unaware of a way to get a packet in there
+without at least an Ethernet header.
+
+	-J
+
 ---
- kernel/module.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
----
-Changes in v2:
-* Fix Marco's email address
-* Add a function ignore_undef_symbol similar to scripts/mod/modpost.c:ignore_undef_symbol
-
-diff --git a/kernel/module.c b/kernel/module.c
-index 4bf30e4b3eaa..278f5129bde2 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2348,6 +2348,20 @@ static int verify_exported_symbols(struct module *mod)
- 	return 0;
- }
- 
-+static int ignore_undef_symbol(Elf_Half emachine, const char *name)
-+{
-+	/* On x86, PIC code and Clang non-PIC code may have call foo@PLT. GNU as
-+	 * before 2.37 produces an unreferenced _GLOBAL_OFFSET_TABLE_ on x86-64.
-+	 * i386 has a similar problem but may not deserve a fix.
-+	 *
-+	 * If we ever have to ignore many symbols, consider refactoring the code to
-+	 * only warn if referenced by a relocation.
-+	 */
-+	if (emachine == EM_386 || emachine == EM_X86_64)
-+		return !strcmp(name, "_GLOBAL_OFFSET_TABLE_");
-+	return 0;
-+}
-+
- /* Change all symbols so that st_value encodes the pointer directly. */
- static int simplify_symbols(struct module *mod, const struct load_info *info)
- {
-@@ -2395,8 +2409,10 @@ static int simplify_symbols(struct module *mod, const struct load_info *info)
- 				break;
- 			}
- 
--			/* Ok if weak.  */
--			if (!ksym && ELF_ST_BIND(sym[i].st_info) == STB_WEAK)
-+			/* Ok if weak or ignored.  */
-+			if (!ksym &&
-+			    (ELF_ST_BIND(sym[i].st_info) == STB_WEAK ||
-+			     ignore_undef_symbol(info->hdr->e_machine, name)))
- 				break;
- 
- 			ret = PTR_ERR(ksym) ?: -ENOENT;
--- 
-2.30.0.296.g2bfb1c46d8-goog
-
+	-Jay Vosburgh, jay.vosburgh@canonical.com
