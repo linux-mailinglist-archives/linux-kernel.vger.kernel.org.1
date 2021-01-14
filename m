@@ -2,155 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99EB32F69AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E2E2F69B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729412AbhANSfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:35:48 -0500
-Received: from mga03.intel.com ([134.134.136.65]:60664 "EHLO mga03.intel.com"
+        id S1727965AbhANSiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:38:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727754AbhANSfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:35:47 -0500
-IronPort-SDR: W9D4okNR1QGKl8Ggzzls2eNiSoGqZiyTQNDVgk/E1Kqjxf5krW/J+ncX59/Gp08KnUuYUWvq9Q
- 4JpbY/x2vQ1A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="178510718"
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="178510718"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 10:35:05 -0800
-IronPort-SDR: mqVhmo9it36IFx5chO8LGwy5lH2/4xEmYyMoivOxxsVJYj2aAY1WU26TTqSo6h6I/kCiDQSJO6
- sA0mcMaoLAFA==
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="405244828"
-Received: from jkrucker-mobl.amr.corp.intel.com (HELO [10.209.41.100]) ([10.209.41.100])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 10:35:03 -0800
-Subject: Re: [PATCH RFC] x86/sgx: Add trivial NUMA allocation
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Kosina <trivial@kernel.org>
-References: <20201216135031.21518-1-jarkko@kernel.org>
- <34b1acd1-e769-0dc2-a225-8ce3d2b6a085@intel.com>
- <YACFasdDi0siM2ML@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <16b26a00-eb6b-7c19-6c33-144efe516b6b@intel.com>
-Date:   Thu, 14 Jan 2021 10:35:03 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726131AbhANSiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 13:38:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A80423B1A;
+        Thu, 14 Jan 2021 18:37:39 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 18:37:37 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Srinivas Ramana <sramana@codeaurora.org>, will@kernel.org,
+        pajay@qti.qualcomm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 0/3] arm64: cpufeature: Add filter function to control
+Message-ID: <20210114183737.GG16561@gaia>
+References: <1610152163-16554-1-git-send-email-sramana@codeaurora.org>
+ <6dfdf691b5ed57df81c4c61422949af5@misterjones.org>
+ <c028d65d-27c3-826a-b16c-407e9cf48aac@codeaurora.org>
+ <7b53c01dd5afcb29679c3a9cf72407a9@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YACFasdDi0siM2ML@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7b53c01dd5afcb29679c3a9cf72407a9@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/14/21 9:54 AM, Jarkko Sakkinen wrote:
-> On Tue, Jan 12, 2021 at 04:24:01PM -0800, Dave Hansen wrote:
->> We need a bit more information here as well.  What's the relationship
->> between NUMA nodes and sections?  How does the BIOS tell us which NUMA
->> nodes a section is in?  Is it the same or different from normal RAM and
->> PMEM?
+On Thu, Jan 14, 2021 at 08:20:52AM +0000, Marc Zyngier wrote:
+> On 2021-01-14 07:15, Srinivas Ramana wrote:
+> > On 1/11/2021 5:40 AM, Marc Zyngier wrote:
+> > > On 2021-01-09 00:29, Srinivas Ramana wrote:
+> > > > This patchset adds a control function for cpufeature framework
+> > > > so that the feature can be controlled at runtime.
+> > > > 
+> > > > Defer PAC on boot core and use the filter function added to disable
+> > > > PAC from command line. This will help toggling the feature on systems
+> > > > that do not support PAC or where PAC needs to be disabled at runtime,
+> > > > without modifying the core kernel.
+[...]
+> > > I've been working for some time on a similar series to allow a feature
+> > > set to be disabled during the early boot phase, initially to prevent
+> > > booting a kernel with VHE, but the mechanism is generic enough to
+> > > deal with most architectural features.
+> > > 
+> > > I took the liberty to lift your first patch and to add it to my
+> > > series[1],
+> > > further allowing PAuth to be disabled at boot time on top of BTI and
+> > > VHE.
+> > > 
+> > > I'd appreciate your comments on this.
+> > 
+> > Thanks for sending this series. It seems to be more flexible compared
+> > you what we did.
+> > Following your discussion on allowing EXACT ftr_reg values.
+> > 
+> > Btw, do you have plan to add MTE in similar lines to control the
+> > feature?
+> > We may be needing this on some systems.
 > 
-> How does it go with pmem?
-
-I just wanted to point out PMEM as being referred to by the SRAT, but as
-something which is *not* "System RAM".  There might be some overlap in
-NUMA for PMEM and NUMA for SGX memory since neither is enumerated as
-"System RAM".
-
-...
->> I'm not positive this works.  I *thought* these ->node_start_pfn and
->> ->node_spanned_pages are really only guaranteed to cover memory which is
->> managed by the kernel and has 'struct page' for it.
->>
->> EPC doesn't have a 'struct page', so won't necessarily be covered by the
->> pgdat-> and zone-> ranges.  I *think* you may have to go all the way
->> back to the ACPI SRAT for this.
->>
->> It would also be *possible* to have an SRAT constructed like this:
->>
->> 0->1GB System RAM - Node 0
->> 1->2GB Reserved   - Node 1
->> 2->3GB System RAM - Node 0
->>
->> Where the 1->2GB is EPC.  The Node 0 pg_data_t would be:
->>
->> 	pgdat->node_start_pfn = 0
->> 	pgdat->node_spanned_pages = 3GB
+> I don't have any need for this at the moment, as my initial goal was
+> to enable a different boot flow for VHE. The BTI "support" was added
+> as a way to demonstrate the use of __read_sysreg_by_encoding(), and
+> your patches were a good opportunity to converge on a single solution.
 > 
-> If I've understood the current Linux memory architecture correctly.
-> 
-> - Memory is made available through mm/memory_hotplug.c, which is populated
->   by drivers/acpi/acpi_memhotplug.c.
-> - drivers/acpi/numa/srat.c provides the conversion API from proximity node to
->   logical node but I'm not *yet* sure how the interaction goes with memory
->   hot plugging
-> 
-> I'm not sure of I'm following the idea of alternative SRAT construciton.
-> So are you saying that srat.c would somehow group pxm's with EPC to
-> specific node numbers?
+> But if you write the patches that do that, I can add them to the series,
+> and Catalin/Will can decide whether they want to take them.
 
-Basically, go look at the "SRAT:" messages in boot.  Are there SRAT
-entries that cover all the EPC?  For instance, take this SRAT:
+For MTE it's trickier (probably similar to VHE) as we do the setup early
+in proc.S before we hit the cpufeature infrastructure.
 
-[    0.000000] ACPI: SRAT: Node 1 PXM 2 [mem 0x00000000-0xcfffffff]
-[    0.000000] ACPI: SRAT: Node 1 PXM 2 [mem 0x100000000-0x82fffffff]
-[    0.000000] ACPI: SRAT: Node 0 PXM 1 [mem 0x830000000-0xe2fffffff]
+So far we haven't agreed on disabling MTE means - is it disabled
+completely (no Normal Tagged memory type) or we just need to disable tag
+checking? The former is required if we expect buggy hardware (SoC-level,
+not necessarily CPU). The latter, at least for the kernel, is already
+handled via the kasan.mode cmdline. For user, we can disable the tagged
+address ABI via sysctl (or kernel cmdline) and it indirectly disabled
+MTE since the C library detects this.
 
-If EPC were at 0x100000000, we would be in good shape.  It is covered by
-an SRAT entry that Linux parses as RAM.  But, if it were at 0xd0000000,
-it would be in an SRAT "hole", uncovered by an SRAT entry.  In this
-case, since 'Node 1" spans that hole the "Node 1" pgdat would span this
-hole.  But, if some memory was removed from the system, "Node 1" might
-no longer span that hole and EPC in this hole would not be assignable to
-Node 1.
-
-Please just make sure that there *ARE* SRAT entries that cover EPC
-memory ranges.
+-- 
+Catalin
