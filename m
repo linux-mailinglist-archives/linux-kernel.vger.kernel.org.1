@@ -2,612 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1BE2F6965
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:22:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E282F6968
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729040AbhANSUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:20:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
+        id S1728623AbhANSVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:21:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728504AbhANSUd (ORCPT
+        with ESMTP id S1726208AbhANSU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:20:33 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0409BC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:19:53 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id q7so4331484pgm.5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:19:52 -0800 (PST)
+        Thu, 14 Jan 2021 13:20:59 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D8FC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:20:19 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id u21so7576962lja.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:20:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q3PGhrh5A2Rr01NHG2bKOCGtODN+DK8+x1R1DeNE5Wg=;
-        b=nuM7kk6mk/9PfbvzI1YGJqSDxUt62lTkaDXh0iFjtIqmDnhart9fTD3qDmKTMcPQM2
-         azmOLxyC9vI99VWiddBgpQWR3aflU4hK0bia5IeiAmARPKBr6NMEOcJ6x2UaV9PfibVG
-         6+C1y2E/XhFpnspnAVjYX4PbgBDlK+h9gfeXmtQhlL2jccnmejoltQXgEIX0wXrNM/Mo
-         mhSAR7jpl9F5qzFv8QHBwbzn/mWlSMEt4IMEhWCQGK1qUHSmdX9tOwy0VjQLV5Q8walh
-         XAIz6+AtDAs6szcYDgDWbULSptp4otARq9ZPKcgEJyz3FbF7NCO7eM6UTEmNMm3smHSB
-         BMfg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Nl2K+65qiPQ7NBwOhTKfEFzNBgY0OpkYBTvFpg1lWiY=;
+        b=blaKuIv3gucKGErQJUliFiOniZXiS3vTP2e0PHzABNC+MfByF23bfo/K9HJ3uOY8zn
+         r9/cfMnzlhNNNT54v9BxDkjhnVv4HLFDgJn745gu99MHiBq50hXFp8UU0Hw4fSFYBobA
+         8BYD9BfgfX/LJ47mL0cuFeDxjDMJRbpfUx8gH6UoiHy+f/o32N6jZjEBow0azWtjUkt8
+         714X1TKQxav85vWnZRStY69UJXn5OG8bbuRDuBF+iRuhfRWInwyiihMG2t6Xb1sfeAdf
+         JaXwBGC06nnM8SQ9vVZaYqymNz8GbKluseAqA9ucSzpi7RyPg/4EuMXqjZvnX1J9so3d
+         G6nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q3PGhrh5A2Rr01NHG2bKOCGtODN+DK8+x1R1DeNE5Wg=;
-        b=CNMZ4hwDSwLTk5XdBhw3ELWkS56rkSY0Im/+jADbTQWS848sBADEl7vINo9tYDHuWU
-         /AKVCAEdfsM5nOoJoEdIg8N9ndsFJFMWdVxsuoaXrCdlD5clFxZiICoQtEBGtzJV2+0e
-         u8wGLaRmbEQlDBDwCPyDEkpe0REo3aPVRsSqrULz+Wkb1SWPsJGXVxv8EjaYpirJ5Tq1
-         AeTtWL8cFbgLXswGHev8fe+vqcomi1IE8bD4xi/RvK5TTSBxMofCCHegPsU37OctkXfK
-         SHUc8J1lzPFHYLtpc2DHKFYjrI4EQl95lAKGri1GJgIlga5hPOEIEdXM+wg2hIBihKQg
-         Ot+w==
-X-Gm-Message-State: AOAM530HhUttYiEltPQkenloFd5hHEfBca6Rx7+9rHtGcEjHnvLI1BAK
-        GsfyOTp6EsQO5FRSwWCnV/dc8w==
-X-Google-Smtp-Source: ABdhPJwABc6YJXjRgpurYM9Po/iOtzcY3fB+V+T61bcFsWRb+obttztD709aY+RyuCeWWaMSsMHmrw==
-X-Received: by 2002:a63:6686:: with SMTP id a128mr8642482pgc.96.1610648391789;
-        Thu, 14 Jan 2021 10:19:51 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:f693:9fff:fef4:fc72])
-        by smtp.gmail.com with ESMTPSA id l3sm2115644pjz.27.2021.01.14.10.19.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 10:19:50 -0800 (PST)
-Date:   Thu, 14 Jan 2021 10:19:44 -0800
-From:   Benson Leung <bleung@google.com>
-To:     Daisuke Nojiri <dnojiri@chromium.org>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     vpalatin@chromium.org, Lee Jones <lee.jones@linaro.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Prashant Malani <pmalani@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Alex Levin <levinale@google.com>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Vijay Hiremath <vijay.p.hiremath@intel.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] power: supply: PCHG: Peripheral device charger
-Message-ID: <YACLQBf4KA4uJ6rW@google.com>
-References: <20201216163416.2969209-1-dnojiri@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nl2K+65qiPQ7NBwOhTKfEFzNBgY0OpkYBTvFpg1lWiY=;
+        b=E8J8Zc9l/5lUmy1EgVKgxtQOcPOpEmnqO3qD0LQayyqYzJmYCeKuCwAzDL2uLA/lWL
+         xF5zdFi0I+NJJqcGcfYyuBVLVe6RHqTKzTkcrSyJgFD/msjGIYjgWffXtkEfnugLPj/8
+         WBWGUsZ58jw4/wticighxuQGqaV9nTcnQ4l/TvfRNQ8Tx78s7xzfCONYS/CjdHf9xiIm
+         5MijqFzmy0uJ3f5rrX08ZiiqnttprYmOAuhpVfTSLBxjZR2zYX8NJTP/+vamg3H7vUoR
+         ioZNLidSnCIJCH7goeNGTIdVZyBWRdMAT9Qbre9uAphKwjUBvaEkR0TcHkjC8M8TYKg0
+         v9dg==
+X-Gm-Message-State: AOAM5310vQSXy7/pEh/Lx8S/rpve17/ntxUs4v9hEMS8nU1D+Op6vKcr
+        Ptq0G/EyaTvEoUlq7VfcxFCsQQNJQi9NQn7aeAAZ4w==
+X-Google-Smtp-Source: ABdhPJzKIXZoF2HDVwMDZibuypAIAVddYULZwYwzG7Ah56qKoJP+ZntQ96EcY2Nldch4fUL9QLNlADt5Gshd7kOsyVw=
+X-Received: by 2002:a2e:b0d5:: with SMTP id g21mr3615458ljl.372.1610648417764;
+ Thu, 14 Jan 2021 10:20:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="D660Sa2aIkTuYR87"
-Content-Disposition: inline
-In-Reply-To: <20201216163416.2969209-1-dnojiri@chromium.org>
+References: <20210108003035.1930475-1-willmcvicker@google.com> <20210112155456.GB26122@linux-8ccs>
+In-Reply-To: <20210112155456.GB26122@linux-8ccs>
+From:   Will McVicker <willmcvicker@google.com>
+Date:   Thu, 14 Jan 2021 10:20:01 -0800
+Message-ID: <CABYd82bda4yxpNJ4dXt_xXEy+ngMEYO6XD==nfstgpe1krBkUw@mail.gmail.com>
+Subject: Re: [PATCH v5] modules: introduce the MODULE_SCMVERSION config
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Saravana Kannan <saravanak@google.com>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks Jessica for the reviews!
 
---D660Sa2aIkTuYR87
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--Will
 
-Hi Sebastian,
-
-On Wed, Dec 16, 2020 at 08:34:15AM -0800, Daisuke Nojiri wrote:
-> This patch adds a driver for PCHG (Peripheral CHarGer). PCHG is a
-> framework managing power supplies for peripheral devices.
->=20
-> This driver creates a sysfs node for each peripheral charge port:
->=20
-> 	/sys/class/power_supply/PCHGn
->=20
-> where <n> is the index of a charge port.
->=20
-> For example, when a stylus is connected to a NFC/WLC port, the node
-> prints:
->=20
-> 	/sys/class/power_supply/PCHG0/
-> 		capacity=3D50
-> 		status=3DCharging
-> 		type=3DWireless
->=20
-> Signed-off-by: Daisuke Nojiri <dnojiri@chromium.org>
-
-This change seems reasonable to me. I've reviewed the cros_ec_commands head=
-er,
-and it looks good.
-
-Sebastian, do you have any comments on this? I can merge this through the
-chrome/platform tree if we have your Acked-By.
-
-Thanks,
-Benson
-
-
-> ---
-> v1 -> v2
-> * Separate mfd/cros_ec_dev.c
-> * Make CONFIG_CHARGER_CROS_PCHG default to CONFIG_MFD_CROS_EC_DEV
-> ---
->=20
->  drivers/power/supply/Kconfig                  |  10 +
->  drivers/power/supply/Makefile                 |   1 +
->  .../power/supply/cros_peripheral_charger.c    | 346 ++++++++++++++++++
->  .../linux/platform_data/cros_ec_commands.h    |  48 +++
->  4 files changed, 405 insertions(+)
->  create mode 100644 drivers/power/supply/cros_peripheral_charger.c
->=20
-> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-> index eec646c568b7be..407f9fbbc2bb50 100644
-> --- a/drivers/power/supply/Kconfig
-> +++ b/drivers/power/supply/Kconfig
-> @@ -714,6 +714,16 @@ config CHARGER_CROS_USBPD
->  	  what is connected to USB PD ports from the EC and converts
->  	  that into power_supply properties.
-> =20
-> +config CHARGER_CROS_PCHG
-> +	tristate "ChromeOS EC based peripheral charger"
-> +	depends on MFD_CROS_EC_DEV
-> +	default MFD_CROS_EC_DEV
-> +	help
-> +	  Say Y here to enable ChromeOS EC based peripheral charge driver.
-> +	  This driver gets various information about the devices connected to
-> +	  the peripheral charge ports from the EC and converts that into
-> +	  power_supply properties.
-> +
->  config CHARGER_SC2731
->  	tristate "Spreadtrum SC2731 charger driver"
->  	depends on MFD_SC27XX_PMIC || COMPILE_TEST
-> diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
-> index dd4b86318cd9bd..5263472a64809b 100644
-> --- a/drivers/power/supply/Makefile
-> +++ b/drivers/power/supply/Makefile
-> @@ -91,6 +91,7 @@ obj-$(CONFIG_CHARGER_TPS65217)	+=3D tps65217_charger.o
->  obj-$(CONFIG_AXP288_FUEL_GAUGE) +=3D axp288_fuel_gauge.o
->  obj-$(CONFIG_AXP288_CHARGER)	+=3D axp288_charger.o
->  obj-$(CONFIG_CHARGER_CROS_USBPD)	+=3D cros_usbpd-charger.o
-> +obj-$(CONFIG_CHARGER_CROS_PCHG)	+=3D cros_peripheral_charger.o
->  obj-$(CONFIG_CHARGER_SC2731)	+=3D sc2731_charger.o
->  obj-$(CONFIG_FUEL_GAUGE_SC27XX)	+=3D sc27xx_fuel_gauge.o
->  obj-$(CONFIG_CHARGER_UCS1002)	+=3D ucs1002_power.o
-> diff --git a/drivers/power/supply/cros_peripheral_charger.c b/drivers/pow=
-er/supply/cros_peripheral_charger.c
-> new file mode 100644
-> index 00000000000000..db68d3b7c80f32
-> --- /dev/null
-> +++ b/drivers/power/supply/cros_peripheral_charger.c
-> @@ -0,0 +1,346 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Power supply driver for ChromeOS EC based Peripheral Device Charger.
-> + *
-> + * Copyright 2020 Google LLC.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/notifier.h>
-> +#include <linux/platform_data/cros_ec_commands.h>
-> +#include <linux/platform_data/cros_ec_proto.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/power_supply.h>
-> +#include <linux/slab.h>
-> +#include <linux/stringify.h>
-> +#include <linux/types.h>
-> +
-> +#define DRV_NAME		"cros-ec-pchg"
-> +#define PCHG_DIR_NAME		"PCHG%d"
-> +#define PCHG_DIR_NAME_LENGTH	sizeof("PCHG" __stringify(EC_PCHG_MAX_PORTS=
-))
-> +#define PCHG_CACHE_UPDATE_DELAY	msecs_to_jiffies(500)
-> +
-> +struct port_data {
-> +	int port_number;
-> +	char name[PCHG_DIR_NAME_LENGTH];
-> +	struct power_supply *psy;
-> +	struct power_supply_desc psy_desc;
-> +	int psy_status;
-> +	int battery_percentage;
-> +	struct charger_data *charger;
-> +	unsigned long last_update;
-> +};
-> +
-> +struct charger_data {
-> +	struct device *dev;
-> +	struct cros_ec_dev *ec_dev;
-> +	struct cros_ec_device *ec_device;
-> +	int num_registered_psy;
-> +	struct port_data *ports[EC_PCHG_MAX_PORTS];
-> +	struct notifier_block notifier;
-> +};
-> +
-> +static enum power_supply_property cros_pchg_props[] =3D {
-> +	POWER_SUPPLY_PROP_STATUS,
-> +	POWER_SUPPLY_PROP_CAPACITY,
-> +	/*
-> +	 * todo: Add the following.
-> +	 *
-> +	 * POWER_SUPPLY_PROP_TECHNOLOGY,
-> +	 * POWER_SUPPLY_PROP_ERROR,
-> +	 * POWER_SUPPLY_PROP_SERIAL_NUMBER,
-> +	 *
-> +	 * POWER_SUPPLY_PROP_ONLINE can't be used because it indicates the
-> +	 * system is powered by AC.
-> +	 */
-> +};
-> +
-> +static int cros_pchg_ec_command(const struct charger_data *charger,
-> +				unsigned int version,
-> +				unsigned int command,
-> +				const void *outdata,
-> +				unsigned int outsize,
-> +				void *indata,
-> +				unsigned int insize)
-> +{
-> +	struct cros_ec_dev *ec_dev =3D charger->ec_dev;
-> +	struct cros_ec_command *msg;
-> +	int ret;
-> +
-> +	msg =3D kzalloc(sizeof(*msg) + max(outsize, insize), GFP_KERNEL);
-> +	if (!msg)
-> +		return -ENOMEM;
-> +
-> +	msg->version =3D version;
-> +	msg->command =3D ec_dev->cmd_offset + command;
-> +	msg->outsize =3D outsize;
-> +	msg->insize =3D insize;
-> +
-> +	if (outsize)
-> +		memcpy(msg->data, outdata, outsize);
-> +
-> +	ret =3D cros_ec_cmd_xfer_status(charger->ec_device, msg);
-> +	if (ret >=3D 0 && insize)
-> +		memcpy(indata, msg->data, insize);
-> +
-> +	kfree(msg);
-> +	return ret;
-> +}
-> +
-> +static int cros_pchg_port_count(const struct charger_data *charger)
-> +{
-> +	struct ec_response_pchg_count rsp;
-> +	int ret;
-> +
-> +	ret =3D cros_pchg_ec_command(charger, 0, EC_CMD_PCHG_COUNT,
-> +				   NULL, 0, &rsp, sizeof(rsp));
-> +	if (ret < 0) {
-> +		dev_warn(charger->dev,
-> +			 "Unable to get number or ports (err:%d)\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	return rsp.port_count;
-> +}
-> +
-> +static int cros_pchg_get_status(struct port_data *port)
-> +{
-> +	struct charger_data *charger =3D port->charger;
-> +	struct ec_params_pchg req;
-> +	struct ec_response_pchg rsp;
-> +	struct device *dev =3D charger->dev;
-> +	int ret;
-> +
-> +	req.port =3D port->port_number;
-> +	ret =3D cros_pchg_ec_command(charger, 0, EC_CMD_PCHG,
-> +				   &req, sizeof(req), &rsp, sizeof(rsp));
-> +	if (ret < 0) {
-> +		dev_err(dev, "Unable to get port.%d status (err:%d)\n",
-> +			port->port_number, ret);
-> +		return ret;
-> +	}
-> +
-> +	switch (rsp.state) {
-> +	case PCHG_STATE_RESET:
-> +	case PCHG_STATE_INITIALIZED:
-> +	case PCHG_STATE_ENABLED:
-> +	default:
-> +		port->psy_status =3D POWER_SUPPLY_STATUS_UNKNOWN;
-> +		port->battery_percentage =3D 0;
-> +		break;
-> +	case PCHG_STATE_DETECTED:
-> +		port->psy_status =3D POWER_SUPPLY_STATUS_NOT_CHARGING;
-> +		port->battery_percentage =3D rsp.battery_percentage;
-> +		break;
-> +	case PCHG_STATE_CHARGING:
-> +		port->psy_status =3D POWER_SUPPLY_STATUS_CHARGING;
-> +		port->battery_percentage =3D rsp.battery_percentage;
-> +		break;
-> +	}
-> +
-> +	dev_dbg(dev,
-> +		"Port %d: state=3D%d battery=3D%d%%\n",
-> +		port->port_number, rsp.state, rsp.battery_percentage);
-> +
-> +	return 0;
-> +}
-> +
-> +static int cros_pchg_get_port_status(struct port_data *port, bool rateli=
-mit)
-> +{
-> +	int ret;
-> +
-> +	if (ratelimit &&
-> +	    time_is_after_jiffies(port->last_update + PCHG_CACHE_UPDATE_DELAY))
-> +		return 0;
-> +
-> +	ret =3D cros_pchg_get_status(port);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	port->last_update =3D jiffies;
-> +
-> +	return ret;
-> +}
-> +
-> +static int cros_pchg_get_prop(struct power_supply *psy,
-> +			      enum power_supply_property psp,
-> +			      union power_supply_propval *val)
-> +{
-> +	struct port_data *port =3D power_supply_get_drvdata(psy);
-> +
-> +	switch (psp) {
-> +	case POWER_SUPPLY_PROP_STATUS:
-> +	case POWER_SUPPLY_PROP_CAPACITY:
-> +		cros_pchg_get_port_status(port, true);
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	switch (psp) {
-> +	case POWER_SUPPLY_PROP_STATUS:
-> +		val->intval =3D port->psy_status;
-> +		break;
-> +	case POWER_SUPPLY_PROP_CAPACITY:
-> +		val->intval =3D port->battery_percentage;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int cros_pchg_event(const struct charger_data *charger,
-> +			   unsigned long host_event)
-> +{
-> +	int i;
-> +
-> +	for (i =3D 0; i < charger->num_registered_psy; i++)
-> +		cros_pchg_get_port_status(charger->ports[i], false);
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
-> +static u32 cros_get_device_event(const struct charger_data *charger)
-> +{
-> +	struct ec_params_device_event req;
-> +	struct ec_response_device_event rsp;
-> +	struct device *dev =3D charger->dev;
-> +	int ret;
-> +
-> +	req.param =3D EC_DEVICE_EVENT_PARAM_GET_CURRENT_EVENTS;
-> +	ret =3D cros_pchg_ec_command(charger, 0, EC_CMD_DEVICE_EVENT,
-> +				   &req, sizeof(req), &rsp, sizeof(rsp));
-> +	if (ret < 0) {
-> +		dev_warn(dev, "Unable to get device events (err:%d)\n", ret);
-> +		return 0;
-> +	}
-> +
-> +	return rsp.event_mask;
-> +}
-> +
-> +static int cros_ec_notify(struct notifier_block *nb,
-> +			  unsigned long queued_during_suspend,
-> +			  void *data)
-> +{
-> +	struct cros_ec_device *ec_dev =3D (struct cros_ec_device *)data;
-> +	u32 host_event =3D cros_ec_get_host_event(ec_dev);
-> +	struct charger_data *charger =3D
-> +			container_of(nb, struct charger_data, notifier);
-> +	u32 device_event_mask;
-> +
-> +	if (!host_event)
-> +		return NOTIFY_BAD;
-> +
-> +	if (!(host_event & EC_HOST_EVENT_MASK(EC_HOST_EVENT_DEVICE)))
-> +		return NOTIFY_DONE;
-> +
-> +	/*
-> +	 * todo: Retrieve device event mask in common place
-> +	 * (e.g. cros_ec_proto.c).
-> +	 */
-> +	device_event_mask =3D cros_get_device_event(charger);
-> +	if (!(device_event_mask & EC_DEVICE_EVENT_MASK(EC_DEVICE_EVENT_WLC)))
-> +		return NOTIFY_DONE;
-> +
-> +	return cros_pchg_event(charger, host_event);
-> +}
-> +
-> +static int cros_pchg_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev =3D &pdev->dev;
-> +	struct cros_ec_dev *ec_dev =3D dev_get_drvdata(dev->parent);
-> +	struct cros_ec_device *ec_device =3D ec_dev->ec_dev;
-> +	struct power_supply_desc *psy_desc;
-> +	struct charger_data *charger;
-> +	struct power_supply *psy;
-> +	struct port_data *port;
-> +	struct notifier_block *nb;
-> +	int num_ports;
-> +	int ret;
-> +	int i;
-> +
-> +	charger =3D devm_kzalloc(dev, sizeof(*charger), GFP_KERNEL);
-> +	if (!charger)
-> +		return -ENOMEM;
-> +
-> +	charger->dev =3D dev;
-> +	charger->ec_dev =3D ec_dev;
-> +	charger->ec_device =3D ec_device;
-> +
-> +	ret =3D cros_pchg_port_count(charger);
-> +	if (ret <=3D 0) {
-> +		/*
-> +		 * This feature is enabled by the EC and the kernel driver is
-> +		 * included by default for CrOS devices. Don't need to be loud
-> +		 * since this error can be normal.
-> +		 */
-> +		dev_info(dev, "No peripheral charge ports (err:%d)\n", ret);
-> +		return -ENODEV;
-> +	}
-> +
-> +	num_ports =3D ret;
-> +	if (num_ports > EC_PCHG_MAX_PORTS) {
-> +		dev_err(dev, "Too many peripheral charge ports (%d)\n",
-> +			num_ports);
-> +		return -ENOBUFS;
-> +	}
-> +
-> +	dev_info(dev, "%d peripheral charge ports found\n", num_ports);
-> +
-> +	for (i =3D 0; i < num_ports; i++) {
-> +		struct power_supply_config psy_cfg =3D {};
-> +
-> +		port =3D devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
-> +		if (!port)
-> +			return -ENOMEM;
-> +
-> +		port->charger =3D charger;
-> +		port->port_number =3D i;
-> +		snprintf(port->name, sizeof(port->name), PCHG_DIR_NAME, i);
-> +
-> +		psy_desc =3D &port->psy_desc;
-> +		psy_desc->name =3D port->name;
-> +		psy_desc->type =3D POWER_SUPPLY_TYPE_WIRELESS;
-> +		psy_desc->get_property =3D cros_pchg_get_prop;
-> +		psy_desc->external_power_changed =3D NULL;
-> +		psy_desc->properties =3D cros_pchg_props;
-> +		psy_desc->num_properties =3D ARRAY_SIZE(cros_pchg_props);
-> +		psy_cfg.drv_data =3D port;
-> +
-> +		psy =3D devm_power_supply_register_no_ws(dev, psy_desc, &psy_cfg);
-> +		if (IS_ERR(psy)) {
-> +			dev_err(dev, "Failed to register power supply\n");
-> +			continue;
-> +		}
-> +		port->psy =3D psy;
-> +
-> +		charger->ports[charger->num_registered_psy++] =3D port;
-> +	}
-> +
-> +	if (!charger->num_registered_psy)
-> +		return -ENODEV;
-> +
-> +	nb =3D &charger->notifier;
-> +	nb->notifier_call =3D cros_ec_notify;
-> +	ret =3D blocking_notifier_chain_register(&ec_dev->ec_dev->event_notifie=
-r,
-> +					       nb);
-> +	if (ret < 0)
-> +		dev_err(dev, "Failed to register notifier (err:%d)\n", ret);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver cros_pchg_driver =3D {
-> +	.driver =3D {
-> +		.name =3D DRV_NAME,
-> +	},
-> +	.probe =3D cros_pchg_probe
-> +};
-> +
-> +module_platform_driver(cros_pchg_driver);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_DESCRIPTION("ChromeOS EC peripheral device charger");
-> +MODULE_ALIAS("platform:" DRV_NAME);
-> diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/lin=
-ux/platform_data/cros_ec_commands.h
-> index 58495127dfa656..c0f0a032c8beb6 100644
-> --- a/include/linux/platform_data/cros_ec_commands.h
-> +++ b/include/linux/platform_data/cros_ec_commands.h
-> @@ -4225,6 +4225,7 @@ enum ec_device_event {
->  	EC_DEVICE_EVENT_TRACKPAD,
->  	EC_DEVICE_EVENT_DSP,
->  	EC_DEVICE_EVENT_WIFI,
-> +	EC_DEVICE_EVENT_WLC,
->  };
-> =20
->  enum ec_device_event_param {
-> @@ -5456,6 +5457,53 @@ struct ec_response_rollback_info {
->  /* Issue AP reset */
->  #define EC_CMD_AP_RESET 0x0125
-> =20
-> +/**
-> + * Get the number of peripheral charge ports
-> + */
-> +#define EC_CMD_PCHG_COUNT 0x0134
-> +
-> +#define EC_PCHG_MAX_PORTS 8
-> +
-> +struct ec_response_pchg_count {
-> +	uint8_t port_count;
-> +} __ec_align1;
-> +
-> +/**
-> + * Get the status of a peripheral charge port
-> + */
-> +#define EC_CMD_PCHG 0x0135
-> +
-> +struct ec_params_pchg {
-> +	uint8_t port;
-> +} __ec_align1;
-> +
-> +struct ec_response_pchg {
-> +	uint32_t error; /* enum pchg_error */
-> +	uint8_t state; /* enum pchg_state state */
-> +	uint8_t battery_percentage;
-> +} __ec_align2;
-> +
-> +enum pchg_state {
-> +	/* Charger is reset and not initialized. */
-> +	PCHG_STATE_RESET =3D 0,
-> +	/* Charger is initialized or disabled. */
-> +	PCHG_STATE_INITIALIZED,
-> +	/* Charger is enabled and ready to detect a device. */
-> +	PCHG_STATE_ENABLED,
-> +	/* Device is detected in proximity. */
-> +	PCHG_STATE_DETECTED,
-> +	/* Device is being charged. */
-> +	PCHG_STATE_CHARGING,
-> +};
-> +
-> +#define EC_PCHG_STATE_TEXT { \
-> +	[PCHG_STATE_RESET] =3D "RESET", \
-> +	[PCHG_STATE_INITIALIZED] =3D "INITIALIZED", \
-> +	[PCHG_STATE_ENABLED] =3D "ENABLED", \
-> +	[PCHG_STATE_DETECTED] =3D "DETECTED", \
-> +	[PCHG_STATE_CHARGING] =3D "CHARGING", \
-> +	}
-> +
->  /***********************************************************************=
-******/
->  /* Locate peripheral chips
->   *
-> --=20
-> 2.29.2.684.gfbc64c5ab5-goog
->=20
-
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
-
---D660Sa2aIkTuYR87
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYACLQAAKCRBzbaomhzOw
-wh3gAQCTgX54LEe9QPexq9GNnvikwVi0JLeTwqNfhzPj8SQNdQD5AQjmyx+rCnLz
-UOyRnxFe3Yf7xQEij3JcJbEJ7aKedQ8=
-=Jpp/
------END PGP SIGNATURE-----
-
---D660Sa2aIkTuYR87--
+On Tue, Jan 12, 2021 at 7:55 AM Jessica Yu <jeyu@kernel.org> wrote:
+>
+> +++ Will McVicker [08/01/21 00:30 +0000]:
+> >Config MODULE_SCMVERSION introduces a new module attribute --
+> >`scmversion` -- which can be used to identify a given module's SCM
+> >version.  This is very useful for developers that update their kernel
+> >independently from their kernel modules or vice-versa since the SCM
+> >version provided by UTS_RELEASE (`uname -r`) will now differ from the
+> >module's vermagic attribute.
+> >
+> >For example, we have a CI setup that tests new kernel changes on the
+> >hikey960 and db845c devices without updating their kernel modules. When
+> >these tests fail, we need to be able to identify the exact device
+> >configuration the test was using. By including MODULE_SCMVERSION, we can
+> >identify the exact kernel and modules' SCM versions for debugging the
+> >failures.
+> >
+> >Additionally, by exposing the SCM version via the sysfs node
+> >/sys/module/MODULENAME/scmversion, one can also verify the SCM versions
+> >of the modules loaded from the initramfs. Currently, modinfo can only
+> >retrieve module attributes from the module's ko on disk and not from the
+> >actual module that is loaded in RAM.
+> >
+> >You can retrieve the SCM version in two ways,
+> >
+> >1) By using modinfo:
+> >    > modinfo -F scmversion MODULENAME
+> >2) By module sysfs node:
+> >    > cat /sys/module/MODULENAME/scmversion
+> >
+> >Signed-off-by: Will McVicker <willmcvicker@google.com>
+>
+> Hi Will,
+>
+> Thanks for v5, I'm fine with this patch now that we've made it a
+> configurable developer/debug option to supply an scmversion field for
+> in-tree modules (although, this currently works for out-of-tree
+> modules too since we based module_srcpath on KBUILD_EXTMOD in the
+> external module case). I basically see this option as an alternative
+> to CONFIG_MODULE_SRCVERSION_ALL to aid distro developers debug issues
+> when the kernel and in-tree modules are updated separately.
+>
+> In any case, since there was pushback in our earlier discussions, I'd
+> like to ask if there are any remaining objections to this patch.
+>
+> Masahiro, are you fine with the Makefile and modpost changes?
+>
+> Thanks,
+>
+> Jessica
+>
+> >---
+> > Documentation/ABI/stable/sysfs-module | 18 ++++++++++++++++++
+> > include/linux/module.h                |  1 +
+> > init/Kconfig                          | 14 ++++++++++++++
+> > kernel/module.c                       |  2 ++
+> > scripts/Makefile.modpost              | 22 ++++++++++++++++++++++
+> > scripts/mod/modpost.c                 | 24 +++++++++++++++++++++++-
+> > 6 files changed, 80 insertions(+), 1 deletion(-)
+> >
+> >diff --git a/Documentation/ABI/stable/sysfs-module b/Documentation/ABI/stable/sysfs-module
+> >index 6272ae5fb366..a75d137e79f4 100644
+> >--- a/Documentation/ABI/stable/sysfs-module
+> >+++ b/Documentation/ABI/stable/sysfs-module
+> >@@ -32,3 +32,21 @@ Description:
+> >               Note: If the module is built into the kernel, or if the
+> >               CONFIG_MODULE_UNLOAD kernel configuration value is not enabled,
+> >               this file will not be present.
+> >+
+> >+What:         /sys/module/MODULENAME/scmversion
+> >+Date:         November 2020
+> >+KernelVersion:        5.12
+> >+Contact:      Will McVicker <willmcvicker@google.com>
+> >+Description:  This read-only file will appear if modpost was supplied with an
+> >+              SCM version for the module. It can be enabled with the config
+> >+              MODULE_SCMVERSION. The SCM version is retrieved by
+> >+              scripts/setlocalversion, which means that the presence of this
+> >+              file depends on CONFIG_LOCALVERSION_AUTO=y. When read, the SCM
+> >+              version that the module was compiled with is returned. The SCM
+> >+              version is returned in the following format::
+> >+
+> >+              ===
+> >+              Git:            g[a-f0-9]\+(-dirty)\?
+> >+              Mercurial:      hg[a-f0-9]\+(-dirty)\?
+> >+              Subversion:     svn[0-9]\+
+> >+              ===
+> >diff --git a/include/linux/module.h b/include/linux/module.h
+> >index 7a0bcb5b1ffc..3b1612193cf9 100644
+> >--- a/include/linux/module.h
+> >+++ b/include/linux/module.h
+> >@@ -372,6 +372,7 @@ struct module {
+> >       struct module_attribute *modinfo_attrs;
+> >       const char *version;
+> >       const char *srcversion;
+> >+      const char *scmversion;
+> >       struct kobject *holders_dir;
+> >
+> >       /* Exported symbols */
+> >diff --git a/init/Kconfig b/init/Kconfig
+> >index b77c60f8b963..3d9dac3c4e8f 100644
+> >--- a/init/Kconfig
+> >+++ b/init/Kconfig
+> >@@ -2131,6 +2131,20 @@ config MODULE_SRCVERSION_ALL
+> >         the version).  With this option, such a "srcversion" field
+> >         will be created for all modules.  If unsure, say N.
+> >
+> >+config MODULE_SCMVERSION
+> >+      bool "SCM version for modules"
+> >+      depends on LOCALVERSION_AUTO
+> >+      help
+> >+        This enables the module attribute "scmversion" which can be used
+> >+        by developers to identify the SCM version of a given module, e.g.
+> >+        git sha1 or hg sha1. The SCM version can be queried by modinfo or
+> >+        via the sysfs node: /sys/modules/MODULENAME/scmversion. This is
+> >+        useful when the kernel or kernel modules are updated separately
+> >+        since that causes the vermagic of the kernel and the module to
+> >+        differ.
+> >+
+> >+        If unsure, say N.
+> >+
+> > config MODULE_SIG
+> >       bool "Module signature verification"
+> >       select MODULE_SIG_FORMAT
+> >diff --git a/kernel/module.c b/kernel/module.c
+> >index 4bf30e4b3eaa..d0b359c7e9c9 100644
+> >--- a/kernel/module.c
+> >+++ b/kernel/module.c
+> >@@ -837,6 +837,7 @@ static struct module_attribute modinfo_##field = {                    \
+> >
+> > MODINFO_ATTR(version);
+> > MODINFO_ATTR(srcversion);
+> >+MODINFO_ATTR(scmversion);
+> >
+> > static char last_unloaded_module[MODULE_NAME_LEN+1];
+> >
+> >@@ -1298,6 +1299,7 @@ static struct module_attribute *modinfo_attrs[] = {
+> >       &module_uevent,
+> >       &modinfo_version,
+> >       &modinfo_srcversion,
+> >+      &modinfo_scmversion,
+> >       &modinfo_initstate,
+> >       &modinfo_coresize,
+> >       &modinfo_initsize,
+> >diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
+> >index f54b6ac37ac2..f1126b60adb7 100644
+> >--- a/scripts/Makefile.modpost
+> >+++ b/scripts/Makefile.modpost
+> >@@ -66,6 +66,7 @@ ifeq ($(KBUILD_EXTMOD),)
+> >
+> > input-symdump := vmlinux.symvers
+> > output-symdump := Module.symvers
+> >+module_srcpath := $(srctree)
+> >
+> > else
+> >
+> >@@ -77,6 +78,17 @@ src := $(obj)
+> > include $(if $(wildcard $(KBUILD_EXTMOD)/Kbuild), \
+> >              $(KBUILD_EXTMOD)/Kbuild, $(KBUILD_EXTMOD)/Makefile)
+> >
+> >+# Get the external module's source path. KBUILD_EXTMOD could either be an
+> >+# absolute path or relative path from $(srctree). This makes sure that we
+> >+# aren't using a relative path from a separate working directory (O= or
+> >+# KBUILD_OUTPUT) since that may not be the actual module's SCM project path.
+> >+# So check the path relative to $(srctree) first.
+> >+ifneq ($(realpath $(srctree)/$(KBUILD_EXTMOD) 2>/dev/null),)
+> >+      module_srcpath := $(srctree)/$(KBUILD_EXTMOD)
+> >+else
+> >+      module_srcpath := $(KBUILD_EXTMOD)
+> >+endif
+> >+
+> > # modpost option for external modules
+> > MODPOST += -e
+> >
+> >@@ -85,6 +97,16 @@ output-symdump := $(KBUILD_EXTMOD)/Module.symvers
+> >
+> > endif
+> >
+> >+ifeq ($(CONFIG_MODULE_SCMVERSION),y)
+> >+# Get the SCM version of the module. Sed verifies setlocalversion returns
+> >+# a proper revision based on the SCM type, e.g. git, mercurial, or svn.
+> >+module_scmversion := $(shell $(srctree)/scripts/setlocalversion $(module_srcpath) | \
+> >+      sed -n 's/.*-\(\(g\|hg\)[a-fA-F0-9]\+\(-dirty\)\?\|svn[0-9]\+\).*/\1/p')
+> >+ifneq ($(module_scmversion),)
+> >+MODPOST += -v$(module_scmversion)
+> >+endif
+> >+endif
+> >+
+> > # modpost options for modules (both in-kernel and external)
+> > MODPOST += \
+> >       $(addprefix -i ,$(wildcard $(input-symdump))) \
+> >diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> >index d6c81657d695..489b65bc37de 100644
+> >--- a/scripts/mod/modpost.c
+> >+++ b/scripts/mod/modpost.c
+> >@@ -30,6 +30,8 @@ static int have_vmlinux = 0;
+> > static int all_versions = 0;
+> > /* If we are modposting external module set to 1 */
+> > static int external_module = 0;
+> >+#define MODULE_SCMVERSION_SIZE 64
+> >+static char module_scmversion[MODULE_SCMVERSION_SIZE];
+> > /* Only warn about unresolved symbols */
+> > static int warn_unresolved = 0;
+> > /* How a symbol is exported */
+> >@@ -2264,6 +2266,20 @@ static void add_intree_flag(struct buffer *b, int is_intree)
+> >               buf_printf(b, "\nMODULE_INFO(intree, \"Y\");\n");
+> > }
+> >
+> >+/**
+> >+ * add_scmversion() - Adds the MODULE_INFO macro for the scmversion.
+> >+ * @b: Buffer to append to.
+> >+ *
+> >+ * This function fills in the module attribute `scmversion` for the kernel
+> >+ * module. This is useful for determining a given module's SCM version on
+> >+ * device via /sys/modules/<module>/scmversion and/or using the modinfo tool.
+> >+ */
+> >+static void add_scmversion(struct buffer *b)
+> >+{
+> >+      if (module_scmversion[0] != '\0')
+> >+              buf_printf(b, "\nMODULE_INFO(scmversion, \"%s\");\n", module_scmversion);
+> >+}
+> >+
+> > /* Cannot check for assembler */
+> > static void add_retpoline(struct buffer *b)
+> > {
+> >@@ -2546,7 +2562,7 @@ int main(int argc, char **argv)
+> >       struct dump_list *dump_read_start = NULL;
+> >       struct dump_list **dump_read_iter = &dump_read_start;
+> >
+> >-      while ((opt = getopt(argc, argv, "ei:mnT:o:awENd:")) != -1) {
+> >+      while ((opt = getopt(argc, argv, "ei:mnT:o:awENd:v:")) != -1) {
+> >               switch (opt) {
+> >               case 'e':
+> >                       external_module = 1;
+> >@@ -2584,6 +2600,11 @@ int main(int argc, char **argv)
+> >               case 'd':
+> >                       missing_namespace_deps = optarg;
+> >                       break;
+> >+              case 'v':
+> >+                      if (!optarg)
+> >+                              fatal("'-v' requires an argument defining the SCM version.");
+> >+                      strncpy(module_scmversion, optarg, sizeof(module_scmversion) - 1);
+> >+                      break;
+> >               default:
+> >                       exit(1);
+> >               }
+> >@@ -2630,6 +2651,7 @@ int main(int argc, char **argv)
+> >               add_depends(&buf, mod);
+> >               add_moddevtable(&buf, mod);
+> >               add_srcversion(&buf, mod);
+> >+              add_scmversion(&buf);
+> >
+> >               sprintf(fname, "%s.mod.c", mod->name);
+> >               write_if_changed(&buf, fname);
+> >--
+> >2.30.0.284.gd98b1dd5eaa7-goog
+> >
