@@ -2,173 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E42C2F564D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 902D72F5649
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbhANBp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:45:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
+        id S1728045AbhANBpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:45:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726238AbhANBE7 (ORCPT
+        with ESMTP id S1726702AbhANBFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 20:04:59 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A9AC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 17:04:05 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id c79so2371651pfc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 17:04:05 -0800 (PST)
+        Wed, 13 Jan 2021 20:05:11 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C81EC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 17:04:30 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 30so2635484pgr.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 17:04:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=CaoaKKd5M9AXqaOBBlf+JFTatRvOkgnOQ24cjHUKjB8=;
-        b=jz4sQ8hpEprSWo2TN4Z5Ieylr2L45aakaLVclCQUScM0nDwcb7WNzM+zIJwkKMHY0j
-         m9KhwUR8/DRP18dVVVvbKasbuiLKUgMsk58z0RBQ9lhNdYN3vFy65GFPBAj3TbOxyafS
-         q9owIQD9U5aJGbrwK3mweJCvxQaaJHctcWdjmqfq3QDlSLj/0f6+ivkZYD+BQSAIGZKm
-         IfuhVSoG3Kp41YTOX7xr5tqGtViWx22Pb9EqP4nqE692xW/47am9+8XHWD24bmestQs0
-         TEDOdNVWcmv9JTx5R9XEo6BN8j9ORWA2wqALWUKRZw1nTY/IL0MwjfAGmQJoqwZCGq1W
-         QQIg==
+        bh=qHqPRD8NyIOcIJgnLC82ewg0F2hDHmrpQ6SU6gEvVWw=;
+        b=l4Y4+J5OhGdmGZxgAK04XbHpPRndLRxE3vBthhUnQYwoCedJPPUoESpNtAZtBX5F2E
+         DA/fl2hVPSSFSZeAXamVPXGPUGAytibr4xL2qhWfvLRsqnSLkEWR1ukQdhdJrFnZ2bh9
+         wnkEcTA9pbzcn+gEY1McHdjzJNPrEU63tJj5jo/cDVQONtf4oNCNWZFpZvsJEQFXzh2V
+         IFXc2iuCl7ENuY4j+F0e1EeTr0c4r7kTCDb1x46soax8hul0PfEfFX6CP34IpbG9HAtw
+         I7mR/SJnRpJYYgMw7e0JG80I4WGfmtSbnORJsgxBOvpDEJaL/poIsQa9/TPXuovazFvp
+         PJ6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=CaoaKKd5M9AXqaOBBlf+JFTatRvOkgnOQ24cjHUKjB8=;
-        b=F0xtRizF/NubdbdI3T7QERYZCIoA4xwRYQMKR7iaRK637mdb7Ptp9VmmAq715YGyMj
-         GujIyaIm8Y6GJO2vnw8UF6lj3E/s5AxIKVQGmmf8a6BTAHA2UvGINzthP9eO1XwAJbO5
-         g9jAINuWsKVdw/pNYwaKFoAXyy5jpcndrUXQIyOsfwo9mcKRjRgNDJqZU1oAte9CNjjp
-         IftySZqgSUN/nNcj6x5ofC2GFpneDN//34Ybk/FOjYM5p/9l1KSTcpCRU7+QnEi3ohCh
-         qt+KhX3Y6LGJW4Zk9GRChjqQxjPXhcNxLAvvMvkwX3WHQYxGolLokRHTTg0v0+OKBmWn
-         qEdw==
-X-Gm-Message-State: AOAM533vQI7HNbMpZwpQL+Tn+FkAjzy94Ir0aZnQvBEqQlsqbIC2y3fV
-        ZPkWLs+ro5gLK9XWpHMrSvg=
-X-Google-Smtp-Source: ABdhPJyhLiXEnInLU2k36Cn4Jj5Vtg5SwSdQtUwQHJvthUG2qHcxeTQbpCP72bxUokiOnuW4/6NT3Q==
-X-Received: by 2002:a63:700c:: with SMTP id l12mr4772537pgc.137.1610586244799;
-        Wed, 13 Jan 2021 17:04:04 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id a26sm3573857pgd.64.2021.01.13.17.04.02
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qHqPRD8NyIOcIJgnLC82ewg0F2hDHmrpQ6SU6gEvVWw=;
+        b=MMcWXQgl3LaYhfV69o5q+z48Qu7PzivKuWGlYjaE5DAQkCLwWeXB+Vn3/UQD0BwCsv
+         QPXOI/uUH6WNONDKUTckmGrwVn1rQx9J8gupQkmcQhkV0zCPgSvxONJp8v/o1N7nVIqA
+         1ArR/jKThNBs+AP+wlHPemnmy/SwVFJpChloet/iNyggtuV0wQmK4aWjY2A8NLtb3fVT
+         HtWmhdMVMRTT9fvq5JzxbxsHXv4ZXsPBI/F/SUqFh/K6G3wbSto95ozmWJNwMjsU7qgh
+         ISObixdBEHNBDaVIzT1xPz/2TX2RZ3hEq7XM8Mil6xjXbJUV2ntl0mbcr0hYHgnThIEv
+         JhuQ==
+X-Gm-Message-State: AOAM531ZQQNo0447DVaaNtwiKGLhykfonrJ1VVgMLt75WZQFSa9/U1ed
+        QB54YpWuorB+2fzeI+qIhNY=
+X-Google-Smtp-Source: ABdhPJwu25mq6GMQcSBYlDZUxhUnc4F4DM6JPhdbzpzbNLd1u2D7Oc9in8grni1VzDTkimYyLTVdsQ==
+X-Received: by 2002:aa7:9625:0:b029:1a4:3b48:a19c with SMTP id r5-20020aa796250000b02901a43b48a19cmr5058264pfg.13.1610586270067;
+        Wed, 13 Jan 2021 17:04:30 -0800 (PST)
+Received: from localhost (g238.115-65-210.ppp.wakwak.ne.jp. [115.65.210.238])
+        by smtp.gmail.com with ESMTPSA id l8sm3839646pjt.32.2021.01.13.17.04.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 17:04:03 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 13 Jan 2021 17:04:01 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, hyesoo.yu@samsung.com,
-        david@redhat.com, mhocko@suse.com, surenb@google.com,
-        pullip.cho@samsung.com, joaodias@google.com, hridya@google.com
-Subject: Re: [PATCH v3 4/4] dma-buf: heaps: add chunk heap to dmabuf heaps
-Message-ID: <X/+YgTWY2k4AjxlK@google.com>
-References: <20210113012143.1201105-5-minchan@kernel.org>
- <202101131134.ACIz6uj2-lkp@intel.com>
+        Wed, 13 Jan 2021 17:04:26 -0800 (PST)
+Date:   Thu, 14 Jan 2021 10:04:19 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Gabriel Somlo <gsomlo@gmail.com>
+Cc:     mholenko@antmicro.com, kgugala@antmicro.com,
+        linux-kernel@vger.kernel.org, pczarnecki@internships.antmicro.com,
+        f.kermarrec@gmail.com, gregkh@linuxfoundation.org
+Subject: Re: [PATCH v6 0/5] drivers/soc/litex: support 32-bit subregisters,
+ 64-bit CPUs
+Message-ID: <20210114010419.GD2002709@lianli.shorne-pla.net>
+References: <20210112173144.4002594-1-gsomlo@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202101131134.ACIz6uj2-lkp@intel.com>
+In-Reply-To: <20210112173144.4002594-1-gsomlo@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 11:11:56AM +0800, kernel test robot wrote:
-> Hi Minchan,
-> 
-> Thank you for the patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on next-20210112]
-> [cannot apply to s390/features robh/for-next linux/master linus/master hnaz-linux-mm/master v5.11-rc3 v5.11-rc2 v5.11-rc1 v5.11-rc3]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Minchan-Kim/Chunk-Heap-Support-on-DMA-HEAP/20210113-092747
-> base:    df869cab4b3519d603806234861aa0a39df479c0
-> config: mips-allyesconfig (attached as .config)
-> compiler: mips-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/531ebc21d3c2584784d44714e3b4f1df46b80eee
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Minchan-Kim/Chunk-Heap-Support-on-DMA-HEAP/20210113-092747
->         git checkout 531ebc21d3c2584784d44714e3b4f1df46b80eee
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    drivers/dma-buf/heaps/chunk_heap.c: In function 'chunk_heap_do_vmap':
->    drivers/dma-buf/heaps/chunk_heap.c:215:24: error: implicit declaration of function 'vmalloc'; did you mean 'kvmalloc'? [-Werror=implicit-function-declaration]
->      215 |  struct page **pages = vmalloc(sizeof(struct page *) * npages);
->          |                        ^~~~~~~
->          |                        kvmalloc
+I have queued this for 5.12.
 
-Looks like we need vmalloc.h.
-
-
-> >> drivers/dma-buf/heaps/chunk_heap.c:215:24: warning: initialization of 'struct page **' from 'int' makes pointer from integer without a cast [-Wint-conversion]
->    drivers/dma-buf/heaps/chunk_heap.c:228:10: error: implicit declaration of function 'vmap'; did you mean 'kmap'? [-Werror=implicit-function-declaration]
->      228 |  vaddr = vmap(pages, npages, VM_MAP, PAGE_KERNEL);
->          |          ^~~~
->          |          kmap
-
-We need vmap, not kmap.
-
->    drivers/dma-buf/heaps/chunk_heap.c:228:30: error: 'VM_MAP' undeclared (first use in this function); did you mean 'VM_MTE'?
->      228 |  vaddr = vmap(pages, npages, VM_MAP, PAGE_KERNEL);
->          |                              ^~~~~~
->          |                              VM_MTE
-
-Looks like bot was confused since we have missed the vmalloc.h
-In next spin, let's fix it.
-
->    drivers/dma-buf/heaps/chunk_heap.c:228:30: note: each undeclared identifier is reported only once for each function it appears in
->    drivers/dma-buf/heaps/chunk_heap.c:229:2: error: implicit declaration of function 'vfree'; did you mean 'kvfree'? [-Werror=implicit-function-declaration]
->      229 |  vfree(pages);
->          |  ^~~~~
->          |  kvfree
->    drivers/dma-buf/heaps/chunk_heap.c: In function 'chunk_heap_vunmap':
->    drivers/dma-buf/heaps/chunk_heap.c:268:3: error: implicit declaration of function 'vunmap'; did you mean 'kunmap'? [-Werror=implicit-function-declaration]
->      268 |   vunmap(buffer->vaddr);
->          |   ^~~~~~
->          |   kunmap
->    cc1: some warnings being treated as errors
+On Tue, Jan 12, 2021 at 12:31:39PM -0500, Gabriel Somlo wrote:
+> This series expands on commit 22447a99c97e ("drivers/soc/litex: add LiteX
+> SoC Controller driver"), adding support for handling both 8- and 32-bit
+> LiteX CSR (MMIO) subregisters, on both 32- and 64-bit CPUs.
 > 
+> Notes v6:
+> 	- split out s/LITEX_REG_SIZE/LITEX_SUBREG_ALIGN/g change
+> 	  into its own dedicated (cosmetic-only) patch (3/5).
+> 	- fixed typos in "main patch" (now 4/5) changelog.
+> 	- fixed typos in comments added via patch 5/5.
 > 
-> vim +215 drivers/dma-buf/heaps/chunk_heap.c
+> Notes v5:
+> 	- added patch (4/4) taking 'litex_[set|get]_reg()' private
+> 	- additional optimization of [_]litex_set_reg() in 3/4
 > 
->    210	
->    211	static void *chunk_heap_do_vmap(struct chunk_heap_buffer *buffer)
->    212	{
->    213		struct sg_table *table = &buffer->sg_table;
->    214		int npages = PAGE_ALIGN(buffer->len) / PAGE_SIZE;
->  > 215		struct page **pages = vmalloc(sizeof(struct page *) * npages);
->    216		struct page **tmp = pages;
->    217		struct sg_page_iter piter;
->    218		void *vaddr;
->    219	
->    220		if (!pages)
->    221			return ERR_PTR(-ENOMEM);
->    222	
->    223		for_each_sgtable_page(table, &piter, 0) {
->    224			WARN_ON(tmp - pages >= npages);
->    225			*tmp++ = sg_page_iter_page(&piter);
->    226		}
->    227	
->    228		vaddr = vmap(pages, npages, VM_MAP, PAGE_KERNEL);
->    229		vfree(pages);
->    230	
->    231		if (!vaddr)
->    232			return ERR_PTR(-ENOMEM);
->    233	
->    234		return vaddr;
->    235	}
->    236	
+> Notes v4:
+> 	- improved "eloquence" of some 3/3 commit blurb paragraphs
+> 	- fixed instance of "disgusting" comment style :)
+> 	- litex_[get|set]_reg() now using size_t for 'reg_size' argument
+> 	- slightly tighter shift calculation in litex_set_reg()
 > 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-
+> Notes v3:
+> 	- split into smaller, more self-explanatory patches
+> 	- more detailed commit blurb for "main payload" (3/3) patch
+> 	- eliminate compiler warning on 32-bit architectures
+> 
+> Notes v2:
+> 	- fix typo (s/u32/u64/) in litex_read64().
+> 
+> Notes v1:
+> 	- LITEX_SUBREG_SIZE now provided by Kconfig.
+> 	- it's not LITEX_REG_SIZE, but rather LITEX_SUBREG_ALIGN!
+> 	- move litex_[get|set]_reg() to include/linux/litex.h and mark
+> 	  them as "static inline";
+> 	- redo litex_[read|write][8|16|32|64]() using litex_[get|set]_reg()
+> 	  (compiler should produce code as efficient as hardcoded shifts,
+> 	  but also automatically matching LITEX_SUBREG_SIZE).
+> 
+> Gabriel Somlo (5):
+>   drivers/soc/litex: move generic accessors to litex.h
+>   drivers/soc/litex: separate MMIO from subregister offset calculation
+>   drivers/soc/litex: rename LITEX_REG_SIZE to LITEX_SUBREG_ALIGN
+>   drivers/soc/litex: support 32-bit subregisters, 64-bit CPUs
+>   drivers/soc/litex: make 'litex_[set|get]_reg()' methods private
+> 
+>  drivers/soc/litex/Kconfig          |  14 ++-
+>  drivers/soc/litex/litex_soc_ctrl.c |  76 +-------------
+>  include/linux/litex.h              | 154 +++++++++++++++++++----------
+>  3 files changed, 119 insertions(+), 125 deletions(-)
+> 
+> -- 
+> 2.26.2
+> 
