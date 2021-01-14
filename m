@@ -2,156 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE4F2F618A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:09:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A942F6195
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728963AbhANNH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:07:27 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:11385 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbhANNH0 (ORCPT
+        id S1727900AbhANNJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 08:09:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726066AbhANNJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:07:26 -0500
-Date:   Thu, 14 Jan 2021 13:06:30 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610629598; bh=7AdvX5kGbWrQn/5ozYyBEsZ2bK/E+Czp98mj5nYiQBw=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=jAx7Or27E1NLXwQiwr0kUXI+vh3zGPsz835szUUoZ4ZkQZKJtEh8PeZj/d3sQC2GJ
-         mHgle+HVufNWfn1D7WUd5jxQLOVvJAYal7rCsQZqdnCbwzp1BqECZagkoce6RHNQ08
-         +0wogp1vXtWIIvsP/l4yukM2pXTcjS4/4wmVuSTmlcFpU66qa8W+aRcVN1oyWpkMnI
-         wyvG0s0IXbKQv2Tb4MdFWp5m8aOaC3SwxX66ktQWjH6J4D1g38yBDD/FgRYNKpQAlh
-         GFoeA/k2M8Htjr3yQPnGOhRewp1eVr2EOl/Xu68Qp/FWQbpWoPAdlYiXac+jZFgQXs
-         SFiWyZiMn9M7A==
-To:     Dmitry Vyukov <dvyukov@google.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v2 net-next 2/3] skbuff: (re)use NAPI skb cache on allocation path
-Message-ID: <20210114130615.9885-1-alobakin@pm.me>
-In-Reply-To: <CACT4Y+Z2Nr_iRDeQArtdihtKOLE3Z4Cyz6h5rEbuQCZ6vihe3w@mail.gmail.com>
-References: <20210113133523.39205-1-alobakin@pm.me> <20210113133635.39402-1-alobakin@pm.me> <20210113133635.39402-2-alobakin@pm.me> <CANn89i+azKGzpt4LrVVVCQdf82TLOC=dwUjA4NK3ziQHSKvtFw@mail.gmail.com> <20210114114046.7272-1-alobakin@pm.me> <CACT4Y+adbmvvbzFnzRZzmpdTipg7ye53uR6OrnU9_K030sfzzA@mail.gmail.com> <20210114124406.9049-1-alobakin@pm.me> <CACT4Y+bcj_jBkUJhRMvo8kjB78WyoBtCH8+-L0tGkxuRpaO66Q@mail.gmail.com> <CACT4Y+Z2Nr_iRDeQArtdihtKOLE3Z4Cyz6h5rEbuQCZ6vihe3w@mail.gmail.com>
+        Thu, 14 Jan 2021 08:09:22 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CB1C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:08:36 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id r4so4616825wmh.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:08:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=0UQRlGRhhSQJUPHlxgxTpsKu4P5pHgiDZAobJpjj98k=;
+        b=w3IpJEMVrZPsx6nj67HQr8PDvGDpWvmLaCLJtTVWQx8dBxE+RVjmAP1eKF9lJDxmBV
+         9C1libXZoFPdGkhU5kEeIg5i5L9PzVdGt5EmLJrWK3tG7QsTP41fZ+KGOelHHTbPXlXd
+         066I7/aZNXaQ5XtuG2jRTCjFgcAHM+azwE58l/dhe5JSPGb/5fCC398XTqO0MVKRVsMg
+         798pXN84iFu9EoX63N4XRMXihkUQ9VOp8hFmlrEjc9qDdeAQtJ9aiv00XfltdkA+IfL7
+         TOae3FoqJNHEISCb+PZzISwuARpU8i59etrbPNOsB46WCt9VUM3/ec6fNVodHwFN9MgB
+         gaKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0UQRlGRhhSQJUPHlxgxTpsKu4P5pHgiDZAobJpjj98k=;
+        b=JM85ih5hmsxObJ0Lt8Q4VmjEvoZX511ngLPWgcDX9wlQGhrKPbHbFuw4NenQlXEBuc
+         ZQFVsmBbsunwXXDWU0feHjjeTJn6XaB6Z9PhjCFDjq0r61PB33hUzDdBXfl+fKZla5Ms
+         K0DwYo7Tk+pniKXirrljPiKC7rptK2nVbI1wAIvKhj5gLHWxfeDW7mEBLeAkxP+9YdJX
+         bdywcend6dg7gnBkTUqaIy6GQ5LXv7rYf8D5yH8OQZnfj+ZT9MtinIvpD/Icsufvz0l8
+         zeqwjnvkKQi5X43NZNTbCKjOwIV6ggD9dxCeRp/6zUZppPwJvFJeD5/hYCi0NIlGD8mm
+         /BLA==
+X-Gm-Message-State: AOAM532ygSwE3DRzyHyFL3tsUb3/T7u5TdtXXYyYEVLT6JvCRyyZ0eb5
+        XkbffV/Nrf1nBRRYVyi/sYZuKw==
+X-Google-Smtp-Source: ABdhPJxTqpOe445AStxMq1sXCYuysKWIFDo2jXYOHdrcsgHHpNXw6/X8isquvbn1QYgauumWGeUnDQ==
+X-Received: by 2002:a05:600c:3510:: with SMTP id h16mr3848418wmq.156.1610629714637;
+        Thu, 14 Jan 2021 05:08:34 -0800 (PST)
+Received: from dell ([91.110.221.178])
+        by smtp.gmail.com with ESMTPSA id z130sm8490671wmb.33.2021.01.14.05.08.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 05:08:33 -0800 (PST)
+Date:   Thu, 14 Jan 2021 13:08:31 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     marek.vasut+renesas@gmail.com, matti.vaittinen@fi.rohmeurope.com,
+        lgirdwood@gmail.com, broonie@kernel.org, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, khiem.nguyen.xt@renesas.com,
+        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Immutable branch between MFD, GPIO and Regulator due for
+ the v5.12 merge window
+Message-ID: <20210114130831.GU3975472@dell>
+References: <1610442067-7446-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1610442067-7446-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Thu, 14 Jan 2021 13:51:44 +0100
+Enjoy!
 
-> On Thu, Jan 14, 2021 at 1:50 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->>
->> On Thu, Jan 14, 2021 at 1:44 PM Alexander Lobakin <alobakin@pm.me> wrote=
-:
->>>
->>> From: Dmitry Vyukov <dvyukov@google.com>
->>> Date: Thu, 14 Jan 2021 12:47:31 +0100
->>>
->>>> On Thu, Jan 14, 2021 at 12:41 PM Alexander Lobakin <alobakin@pm.me> wr=
-ote:
->>>>>
->>>>> From: Eric Dumazet <edumazet@google.com>
->>>>> Date: Wed, 13 Jan 2021 15:36:05 +0100
->>>>>
->>>>>> On Wed, Jan 13, 2021 at 2:37 PM Alexander Lobakin <alobakin@pm.me> w=
-rote:
->>>>>>>
->>>>>>> Instead of calling kmem_cache_alloc() every time when building a NA=
-PI
->>>>>>> skb, (re)use skbuff_heads from napi_alloc_cache.skb_cache. Previous=
-ly
->>>>>>> this cache was only used for bulk-freeing skbuff_heads consumed via
->>>>>>> napi_consume_skb() or __kfree_skb_defer().
->>>>>>>
->>>>>>> Typical path is:
->>>>>>>  - skb is queued for freeing from driver or stack, its skbuff_head
->>>>>>>    goes into the cache instead of immediate freeing;
->>>>>>>  - driver or stack requests NAPI skb allocation, an skbuff_head is
->>>>>>>    taken from the cache instead of allocation.
->>>>>>>
->>>>>>> Corner cases:
->>>>>>>  - if it's empty on skb allocation, bulk-allocate the first half;
->>>>>>>  - if it's full on skb consuming, bulk-wipe the second half.
->>>>>>>
->>>>>>> Also try to balance its size after completing network softirqs
->>>>>>> (__kfree_skb_flush()).
->>>>>>
->>>>>> I do not see the point of doing this rebalance (especially if we do =
-not change
->>>>>> its name describing its purpose more accurately).
->>>>>>
->>>>>> For moderate load, we will have a reduced bulk size (typically one o=
-r two).
->>>>>> Number of skbs in the cache is in [0, 64[ , there is really no risk =
-of
->>>>>> letting skbs there for a long period of time.
->>>>>> (32 * sizeof(sk_buff) =3D 8192)
->>>>>> I would personally get rid of this function completely.
->>>>>
->>>>> When I had a cache of 128 entries, I had worse results without this
->>>>> function. But seems like I forgot to retest when I switched to the
->>>>> original size of 64.
->>>>> I also thought about removing this function entirely, will test.
->>>>>
->>>>>> Also it seems you missed my KASAN support request ?
->>>>>  I guess this is a matter of using kasan_unpoison_range(), we can ask=
- for help.
->>>>>
->>>>> I saw your request, but don't see a reason for doing this.
->>>>> We are not caching already freed skbuff_heads. They don't get
->>>>> kmem_cache_freed before getting into local cache. KASAN poisons
->>>>> them no earlier than at kmem_cache_free() (or did I miss someting?).
->>>>> heads being cached just get rid of all references and at the moment
->>>>> of dropping to the cache they are pretty the same as if they were
->>>>> allocated.
->>>>
->>>> KASAN should not report false positives in this case.
->>>> But I think Eric meant preventing false negatives. If we kmalloc 17
->>>> bytes, KASAN will detect out-of-bounds accesses beyond these 17 bytes.
->>>> But we put that data into 128-byte blocks, KASAN will miss
->>>> out-of-bounds accesses beyond 17 bytes up to 128 bytes.
->>>> The same holds for "logical" use-after-frees when object is free, but
->>>> not freed into slab.
->>>>
->>>> An important custom cache should use annotations like
->>>> kasan_poison_object_data/kasan_unpoison_range.
->>>
->>> As I understand, I should
->>> kasan_poison_object_data(skbuff_head_cache, skb) and then
->>> kasan_unpoison_range(skb, sizeof(*skb)) when putting it into the
->>> cache?
->>
->> I think it's the other way around. It should be _un_poisoned when used.
->> If it's fixed size, then unpoison_object_data should be a better fit:
->> https://elixir.bootlin.com/linux/v5.11-rc3/source/mm/kasan/common.c#L253
->
-> Variable-size poisoning/unpoisoning would be needed for the skb data itse=
-lf:
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D199055
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
-This cache is for skbuff_heads only, not for the entire skbs. All
-linear data and frags gets freed before head hits the cache.
-The cache will store skbuff_heads as if they were freshly allocated
-by kmem_cache_alloc().
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
 
-Al
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-gpio-regulator-v5.12
+
+for you to fetch changes up to b2548da647bb04737196ffd945505d47a166239b:
+
+  mfd: bd9571mwv: Add support for BD9574MWF (2021-01-14 13:05:55 +0000)
+
+----------------------------------------------------------------
+Immutable branch between MFD, GPIO and Regulator due for the v5.12 merge window
+
+----------------------------------------------------------------
+Khiem Nguyen (2):
+      mfd: bd9571mwv: Make the driver more generic
+      mfd: bd9571mwv: Add support for BD9574MWF
+
+Yoshihiro Shimoda (10):
+      mfd: bd9571mwv: Use devm_mfd_add_devices()
+      dt-bindings: mfd: bd9571mwv: Document BD9574MWF
+      mfd: rohm-generic: Add BD9571 and BD9574
+      regulator: bd9571mwv: rid of using struct bd9571mwv
+      regulator: bd9571mwv: Add BD9574MWF support
+      gpio: bd9571mwv: Use the SPDX license identifier
+      gpio: bd9571mwv: rid of using struct bd9571mwv
+      gpio: bd9571mwv: Add BD9574MWF support
+      mfd: bd9571mwv: Use the SPDX license identifier
+      mfd: bd9571mwv: Use devm_regmap_add_irq_chip()
+
+ .../devicetree/bindings/mfd/bd9571mwv.txt          |   4 +-
+ drivers/gpio/gpio-bd9571mwv.c                      |  35 ++--
+ drivers/mfd/bd9571mwv.c                            | 178 ++++++++++++++-------
+ drivers/regulator/bd9571mwv-regulator.c            |  59 ++++---
+ include/linux/mfd/bd9571mwv.h                      |  45 ++----
+ include/linux/mfd/rohm-generic.h                   |   2 +
+ 6 files changed, 186 insertions(+), 137 deletions(-)
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
