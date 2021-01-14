@@ -2,193 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518FD2F5E33
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 110F42F5E3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbhANJ7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:59:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34954 "EHLO
+        id S1728401AbhANKAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 05:00:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727906AbhANJ7m (ORCPT
+        with ESMTP id S1726858AbhANKAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:59:42 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6700CC061573;
-        Thu, 14 Jan 2021 01:59:03 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id j13so2917067pjz.3;
-        Thu, 14 Jan 2021 01:59:03 -0800 (PST)
+        Thu, 14 Jan 2021 05:00:46 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAEFC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:00:04 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id c124so3969224wma.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:00:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=rLBzwlf8KBkW1DZlLF9GkNc0sIjNTFqLeUdb09RmAqE=;
-        b=SI+5KCpdIIA+vpcGjqLojJqks95heRRt8JglLCenKIRLbWBRwNrd3f4IL4va8gITod
-         Rqvm5pwP7AJXLoVmw7qv4s/47JX/F5GldSQ89HgxRlFHmRv2rD2XEuonUT22DMsQFsGX
-         apvS6J+Vni+I2+drdEbzPoOxvJEUOp3RdsAAREpoKfnI2q5aG/G6zJKZwx/Iw7+XOrxO
-         ImsQe8iVJSPVdrzwIOZmeZ6815hooqP0RvYJeYdj/r1Bx/ABb8WEfOM1tTgUEQjUMZHW
-         94VoAtbU2NPU/O8f3zsTWtA3PWkXG/7JWAWpEsSqZgadYnA04LwG34LiekW6ttI93vSI
-         L3dQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=tBwa88PnnPvfhT0zH6tlnPzclZk+pRp4GKUcHZy06XI=;
+        b=e9JuoVN+Nnag+M9i1dhhZZaRlfAIEXr26DCtH0AmzSg0X3ojyQGj8gegdZCJ193L/J
+         NFo/NBnzJFJmZfyN4enk1A8cGu+5TsiAKJ0Zh5QlhSJaXPkNWtKGDUD/eRAEUerhXzec
+         +0hJT5sVyCb/uVhCw6LeAfJwfS0gGdupMFtlU5xIDxUYtWbAtmG/QXpZwqp9twojxU7G
+         vZZNoNFbohh6MKyYItrO0Fd6J7cnmyh4w+GT7zGieXJ1DbzJWQvX71mZpQOgGKfuzSUs
+         c2NHWBEHGUJAUTjRyCVzL5xiz4QhnJ4LmsIqbhS3kb5MSur3YfSJUFyTr61WvFeRqxIS
+         NuOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=rLBzwlf8KBkW1DZlLF9GkNc0sIjNTFqLeUdb09RmAqE=;
-        b=fnnYHYyjNjGdFZziz9uDeWwL2And0OyjkdJKDjFiiZ2D8CreCHLVO1jOoGvELk1zif
-         Vfyq26/g1tkFVHPZxvXxxrLu2SLvzVyfDqwWT1pNhRpHCK5fNN8x3EdJi24RcQwDNZiY
-         WJdt+EI24u885ZzDS83onuDDUBkucGDTWMnAUrLiZh3la6EHsxqQQLKSmox9/qu+6WAW
-         AoyZfEGE9OppkPLQ3DN3qlWH5Lhwydu6jCAlF+P9UY+LyMHUBKWSWag7VzGHsu9h3bW1
-         XYgYuxlnhPPDGw2QkriCVSys+bHey4o6x3ViRnhzv1ACcZNX/J3N7Z9tSJv/cvrrO1qd
-         s/Lw==
-X-Gm-Message-State: AOAM532m3S9axKUZ6qwRc9LYLPwgOAIexgeWK33uGSigA8n8Bqm7SwgL
-        +Hf50mmLAfsT/XcUMZD3fHPETp9Dk1A=
-X-Google-Smtp-Source: ABdhPJz0SGBjrjifzRJmyB+WZRJUpQk5USuqf81S9cZEdd18n+6UVo0RA/aluPP9Oj8WFiaYOZvKXQ==
-X-Received: by 2002:a17:90b:490c:: with SMTP id kr12mr4191801pjb.227.1610618342943;
-        Thu, 14 Jan 2021 01:59:02 -0800 (PST)
-Received: from cosmos ([103.113.142.250])
-        by smtp.gmail.com with ESMTPSA id w200sm4896023pfc.14.2021.01.14.01.58.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 14 Jan 2021 01:59:02 -0800 (PST)
-Date:   Thu, 14 Jan 2021 15:28:57 +0530
-From:   Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Bluetooth: btusb: fix memory leak on suspend and resume
-Message-ID: <20210114095853.GA1650@cosmos>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=tBwa88PnnPvfhT0zH6tlnPzclZk+pRp4GKUcHZy06XI=;
+        b=LmjMMGQteEaX39pmd1qHv6CFoSDZNAZBrcG0Eele1HLuq+nsHcbkYWb3UIonLYtM22
+         LelOo2gvl/SCsRaDL22mq+Q3qc6tKRKwLsoZ3Nh9bnjQIwmsso3YN6j+9Lk/KuM75/j5
+         BVSHmAIB0zzNfo25y/Q6Kgg0dY+MlFgeQTQK6nbkDO5DgPF8jZNFlUaU1ZWYKLwH3jLO
+         e7/pHc+OD/o1n693UAM/49KNImbrDfUE2Y+HmIMMPH6gZaV7FydoqDmglsts3ksKbnF1
+         U+CyF6ky/t92viutCk3qs63cY0CzeNKVS+RFFzeR8g6nQOQLIP4d2M+TwbuKqB1zlCRO
+         bkpQ==
+X-Gm-Message-State: AOAM530y4S1V463TntNH3Jkoxu9Ey7d9lyJ7hbpAIA+6T7tF03o31mTH
+        ZkqiOrq66MvpCb7ws1317Tjsa67a94TZ+eIw
+X-Google-Smtp-Source: ABdhPJyk2adzO4fbhrQWuLvpfNMZB423i0gszJ6UsC/u6WDRGhxg6/UyNDYvRObCwC4ii13oPYhy+A==
+X-Received: by 2002:a7b:c259:: with SMTP id b25mr3237151wmj.40.1610618403029;
+        Thu, 14 Jan 2021 02:00:03 -0800 (PST)
+Received: from dell ([91.110.221.178])
+        by smtp.gmail.com with ESMTPSA id i18sm9012903wrp.74.2021.01.14.02.00.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 02:00:02 -0800 (PST)
+Date:   Thu, 14 Jan 2021 10:00:00 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     "linux@roeck-us.net" <linux@roeck-us.net>,
+        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: Re: [PATCH RESEND v6 2/4] mfd: Support ROHM BD9576MUF and BD9573MUF
+Message-ID: <20210114100000.GK3975472@dell>
+References: <cover.1605882179.git.matti.vaittinen@fi.rohmeurope.com>
+ <cc46e329efa30c66f000ab7c97f9bbf0bc31f0f7.1605882179.git.matti.vaittinen@fi.rohmeurope.com>
+ <20201127083242.GK2455276@dell>
+ <6bd4abcb340bdf764fd23b685684d3f984319ed7.camel@fi.rohmeurope.com>
+ <20201202125723.GK4801@dell>
+ <3bab8bd8c69a878f849a07dd9ea35bfac2006da2.camel@fi.rohmeurope.com>
+ <c2949e981014c049571df355501f2af65b3954de.camel@fi.rohmeurope.com>
+ <8a6373aa33aa19d850d3802d6579e66b97c8d325.camel@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8a6373aa33aa19d850d3802d6579e66b97c8d325.camel@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmemleak report:
-unreferenced object 0xffff9b1127f00500 (size 208):
-  comm "kworker/u17:2", pid 500, jiffies 4294937470 (age 580.136s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 60 ed 05 11 9b ff ff 00 00 00 00 00 00 00 00  .`..............
-  backtrace:
-    [<000000006ab3fd59>] kmem_cache_alloc_node+0x17a/0x480
-    [<0000000051a5f6f9>] __alloc_skb+0x5b/0x1d0
-    [<0000000037e2d252>] hci_prepare_cmd+0x32/0xc0 [bluetooth]
-    [<0000000010b586d5>] hci_req_add_ev+0x84/0xe0 [bluetooth]
-    [<00000000d2deb520>] hci_req_clear_event_filter+0x42/0x70 [bluetooth]
-    [<00000000f864bd8c>] hci_req_prepare_suspend+0x84/0x470 [bluetooth]
-    [<000000001deb2cc4>] hci_prepare_suspend+0x31/0x40 [bluetooth]
-    [<000000002677dd79>] process_one_work+0x209/0x3b0
-    [<00000000aaa62b07>] worker_thread+0x34/0x400
-    [<00000000826d176c>] kthread+0x126/0x140
-    [<000000002305e558>] ret_from_fork+0x22/0x30
-unreferenced object 0xffff9b1125c6ee00 (size 512):
-  comm "kworker/u17:2", pid 500, jiffies 4294937470 (age 580.136s)
-  hex dump (first 32 bytes):
-    04 00 00 00 0d 00 00 00 05 0c 01 00 11 9b ff ff  ................
-    00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000009f07c0cc>] slab_post_alloc_hook+0x59/0x270
-    [<0000000049431dc2>] __kmalloc_node_track_caller+0x15f/0x330
-    [<00000000027a42f6>] __kmalloc_reserve.isra.70+0x31/0x90
-    [<00000000e8e3e76a>] __alloc_skb+0x87/0x1d0
-    [<0000000037e2d252>] hci_prepare_cmd+0x32/0xc0 [bluetooth]
-    [<0000000010b586d5>] hci_req_add_ev+0x84/0xe0 [bluetooth]
-    [<00000000d2deb520>] hci_req_clear_event_filter+0x42/0x70 [bluetooth]
-    [<00000000f864bd8c>] hci_req_prepare_suspend+0x84/0x470 [bluetooth]
-    [<000000001deb2cc4>] hci_prepare_suspend+0x31/0x40 [bluetooth]
-    [<000000002677dd79>] process_one_work+0x209/0x3b0
-    [<00000000aaa62b07>] worker_thread+0x34/0x400
-    [<00000000826d176c>] kthread+0x126/0x140
-    [<000000002305e558>] ret_from_fork+0x22/0x30
-unreferenced object 0xffff9b112b395788 (size 8):
-  comm "kworker/u17:2", pid 500, jiffies 4294937470 (age 580.136s)
-  hex dump (first 8 bytes):
-    20 00 00 00 00 00 04 00                           .......
-  backtrace:
-    [<0000000052dc28d2>] kmem_cache_alloc_trace+0x15e/0x460
-    [<0000000046147591>] alloc_ctrl_urb+0x52/0xe0 [btusb]
-    [<00000000a2ed3e9e>] btusb_send_frame+0x91/0x100 [btusb]
-    [<000000001e66030e>] hci_send_frame+0x7e/0xf0 [bluetooth]
-    [<00000000bf6b7269>] hci_cmd_work+0xc5/0x130 [bluetooth]
-    [<000000002677dd79>] process_one_work+0x209/0x3b0
-    [<00000000aaa62b07>] worker_thread+0x34/0x400
-    [<00000000826d176c>] kthread+0x126/0x140
-    [<000000002305e558>] ret_from_fork+0x22/0x30
+On Tue, 29 Dec 2020, Vaittinen, Matti wrote:
 
-In pm sleep-resume context, while the btusb device rebinds, it enters
-hci_unregister_dev(), whilst there is a possibility of hdev receiving
-PM_POST_SUSPEND suspend_notifier event, leading to generation of msg
-frames. When hci_unregister_dev() completes, i.e. hdev context is
-destroyed/freed, those intermittently sent msg frames cause memory
-leak.
+> Hello Again peeps,
+> 
+> On Thu, 2020-12-17 at 12:04 +0200, Matti Vaittinen wrote:
+> > On Wed, 2020-12-02 at 15:32 +0200, Matti Vaittinen wrote:
+> > > Hello Lee,
+> > > 
+> > > On Wed, 2020-12-02 at 12:57 +0000, Lee Jones wrote:
+> > > > On Fri, 27 Nov 2020, Vaittinen, Matti wrote:
+> > > > 
+> > > > > Hello Lee,
+> > > > > 
+> > > > > On Fri, 2020-11-27 at 08:32 +0000, Lee Jones wrote:
+> > > > > > On Mon, 23 Nov 2020, Matti Vaittinen wrote:
+> > > > > > 
+> > > > > > > Add core support for ROHM BD9576MUF and BD9573MUF PMICs
+> > > > > > > which
+> > > > > > > are
+> > > > > > > mainly used to power the R-Car series processors.
+> > > > > > > 
+> > > > > > > Signed-off-by: Matti Vaittinen <
+> > > > > > > matti.vaittinen@fi.rohmeurope.com>
+> > > > > > > ---
+> > > > > > >  drivers/mfd/Kconfig              |  11 ++++
+> > > > > > >  drivers/mfd/Makefile             |   1 +
+> > > > > > >  drivers/mfd/rohm-bd9576.c        | 108
+> > > > > > > +++++++++++++++++++++++++++++++
+> > > > > > >  include/linux/mfd/rohm-bd957x.h  |  59 +++++++++++++++++
+> > > > > > >  include/linux/mfd/rohm-generic.h |   2 +
+> > > > > > >  5 files changed, 181 insertions(+)
+> > > > > > >  create mode 100644 drivers/mfd/rohm-bd9576.c
+> > > > > > >  create mode 100644 include/linux/mfd/rohm-bd957x.h
+> > > > > > 
+> > > > > > Looks like a possible candidate for "simple-mfd-i2c".
+> > > > > > 
+> > > > > > Could you look into that please?
+> > > > > > 
+> > > > > I must admit I didn't know about "simple-mfd-i2c". Good thing
+> > > > > to
+> > > > > know
+> > > > > when working with simple devices :) Is this a new thing?
+> > > > 
+> > > > Yes, it's new.
+> > > > 
+> > > > > I am unsure I understand the idea fully. Should users put all
+> > > > > the
+> > > > > different regamp configs in this file and just add the device
+> > > > > IDs
+> > > > > with
+> > > > > pointer to correct config? (BD9576 and BD9573 need volatile
+> > > > > ranges).
+> > > > > Also, does this mean each sub-device should have own node and
+> > > > > own
+> > > > > compatible in DT to get correctly load and probed? I guess this
+> > > > > would
+> > > > > need a buy-in from Rob too then.
+> > > > 
+> > > > You should describe the H/W in DT.
+> > > 
+> > > Yes. And it is described. But I've occasionally received request
+> > > from
+> > > DT guys to add some properties directly to MFD node and not to add
+> > > own
+> > > sub-node. This is what is done for example with the BD71837/47
+> > > clocks
+> > > -
+> > > there is no own node for clk - the clk properties are placed
+> > > directly
+> > > in MFD node (as was requested by Stephen and Rob back then - I
+> > > originally had own node for clk). I really have no clear view on
+> > > when
+> > > things warrant for own subnode and when they don't - but as far as
+> > > I
+> > > can see using simple-mfd-i2c forces one to always have a sub-node /
+> > > device. Even just a empty node with nothing but the compatible even
+> > > if
+> > > device does not need stuff from DT? Anyways, I think this is nice
+> > > addition for simple drivers.
+> > > 
+> > > > > By the way - for uneducated eyes like mine this does not look
+> > > > > like
+> > > > > it
+> > > > > has much to do with MFD as a device - here MFD reminds me of a
+> > > > > simple-
+> > > > > bus on top of I2C.
+> > > > 
+> > > > This is for MFD devices where the parent does little more than
+> > > > create
+> > > > a shared address space for child devices to operate on - like
+> > > > yours.
+> > > > 
+> > > > > Anyways, the BD9576 and BD9573 both have a few interrupts for
+> > > > > OVD/UVD
+> > > > > conditions and I am expecting that I will be asked to provide
+> > > > > the
+> > > > > regulator notifiers for those. Reason why I omitted the IRQs
+> > > > > for
+> > > > > now is
+> > > > > that the HW is designed to keep the IRQ asserted for whole
+> > > > > error
+> > > > > duration so some delayed ack mechanism would be needed. I would
+> > > > > like to
+> > > > > keep the door open for adding IRQs to MFD core.
+> > > > 
+> > > > You mean to add an IRQ Domain?
+> > > 
+> > > Yes. I planned to use regmap-irq and create irq chip in MFD when
+> > > the
+> > > over / under voltage / temperature - notifications or watchdog IRQs
+> > > are
+> > > needed. 
+> > 
+> > I am sorry if I have missed your reply. The ROHM email had redirected
+> > almost all patch emails to spam + I am not sure if some mails are
+> > dropping :(
+> > 
+> > (I am considering moving to gmail - but I'd rather keep all mails in
+> > one system and I can't transfer work mail traffic to gmail... I
+> > wonder
+> > how others are managing the mails - which mail system you are using?)
+> > 
+> > I think this series is now pending the decision how to proceed with
+> > MFD
+> > part. If you still want me to start with "simple-mfd-i2c", then I
+> > would
+> > appreciate if you pointed me how you would like to see the regmap
+> > configs added. Although I am quite positive this (eventually) ends up
+> > being more than what simple-mfd-i2c is intended for (because at some
+> > point people want to add the use of the interrupts).
+> 
+> Looking at this topic again. I kind of understand the idea of combining
+> bunch of MFD drivers into one file. Many of the ROHM PMIC MFD drivers
+> do provide same functionality. Regmap configs, regmap IRQ and MFD
+> cells. Some do also probe the device. So having own file for each IC is
+> likely to not scale well when more devices are supported (and I do hope
+> this will be the case also with the ROHM ICs).
+> 
+> What bugs me with the simple-mfd-i2c here is:
+> 1. Requiring to have own compatibles for sub-devices (regulator and
+> WDG) to get them properly probed. (3 compatibles for 1 IC).
+> 2. Requiring to have own DT node for WDG.
+> 3. Supporting differences between BD9576 and BD9573 by having 6
+> compatibles for 2 ICs.
+> 4. Adding interrupt support.
 
-BUG details:
-Below is stack trace of thread that enters hci_unregister_dev(), marks
-the hdev flag HCI_UNREGISTER to 1, and then goes onto to wait on notifier
-lock - refer unregister_pm_notifier().
+Linux sees each of these functions as separate devices which are
+handled in different ways by isolated subsystems.  So yes, they each
+require their own compatible string regardless of whether they share
+the same physical piece of silicon or not.
 
-  hci_unregister_dev+0xa5/0x320 [bluetoot]
-  btusb_disconnect+0x68/0x150 [btusb]
-  usb_unbind_interface+0x77/0x250
-  ? kernfs_remove_by_name_ns+0x75/0xa0
-  device_release_driver_internal+0xfe/0x1
-  device_release_driver+0x12/0x20
-  bus_remove_device+0xe1/0x150
-  device_del+0x192/0x3e0
-  ? usb_remove_ep_devs+0x1f/0x30
-  usb_disable_device+0x92/0x1b0
-  usb_disconnect+0xc2/0x270
-  hub_event+0x9f6/0x15d0
-  ? rpm_idle+0x23/0x360
-  ? rpm_idle+0x26b/0x360
-  process_one_work+0x209/0x3b0
-  worker_thread+0x34/0x400
-  ? process_one_work+0x3b0/0x3b0
-  kthread+0x126/0x140
-  ? kthread_park+0x90/0x90
-  ret_from_fork+0x22/0x30
+> So ... How do you see adding BD9576/BD9573 MFD stuff in BD9571/(BD9574)
+> MFD driver? The data structures (regmap configs, MFD cells, regmap IRQ
+> portion when added) will be different but the functions and maybe
+> engineers looking at these may be common.
+> 
+> Is it just plain confusing to add core structures for technically
+> different ICs in same file - or is it way to avoid duplicating same
+> code in many files? I can try adding the BD9576/BD9573 to the BD9571
+> core - or I can do resend this as is (rebased on 5.11). I can also hack
+> this to be kicked by simple-mfd-i2c (although I have these strong
+> objections) - but I bet it will in the long run just lead to a sub-
+> optimal solution. When the BD9576/BD9573 logic blocks are re-used in
+> some "non simple" designs and re-using the sub-drivers is needed and/or
+> when IRQs are needed.
+> 
+> (BTW - I am currently working with BD71815/BD71817 - and after this
+> discussion I will add these in BD71828/BD71878 MFD core. I had created
+> new MFD file for them but this discussion has been a nice kick to the
+> better direction for me)
 
-Below is stack trace of thread executing hci_suspend_notifier() which
-processes the PM_POST_SUSPEND event, while the unbinding thread is
-waiting on lock.
+Everything will be a trade-off.
 
-  hci_suspend_notifier.cold.39+0x5/0x2b [bluetooth]
-  blocking_notifier_call_chain+0x69/0x90
-  pm_notifier_call_chain+0x1a/0x20
-  pm_suspend.cold.9+0x334/0x352
-  state_store+0x84/0xf0
-  kobj_attr_store+0x12/0x20
-  sysfs_kf_write+0x3b/0x40
-  kernfs_fop_write+0xda/0x1c0
-  vfs_write+0xbb/0x250
-  ksys_write+0x61/0xe0
-  __x64_sys_write+0x1a/0x20
-  do_syscall_64+0x37/0x80
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+There will either be superflouous files or inflexible code.
 
-Fix hci_suspend_notifer(), not to act on events when flag HCI_UNREGISTER
-is set.
+You have to make the right decision for the driver and the subsystem.
 
-Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
----
- net/bluetooth/hci_core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 9d2c9a1c552f..29c88dbbc3fe 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -3566,7 +3566,8 @@ static int hci_suspend_notifier(struct notifier_block *nb, unsigned long action,
- 	}
- 
- 	/* Suspend notifier should only act on events when powered. */
--	if (!hdev_is_powered(hdev))
-+	if (!hdev_is_powered(hdev) ||
-+	    !hci_dev_test_flag(hdev, HCI_UNREGISTER))
- 		goto done;
- 
- 	if (action == PM_SUSPEND_PREPARE) {
 -- 
-2.17.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
