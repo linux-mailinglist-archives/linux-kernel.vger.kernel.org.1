@@ -2,104 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35F72F6C50
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B162F6C53
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbhANUik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 15:38:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
+        id S1728311AbhANUjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 15:39:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726707AbhANUij (ORCPT
+        with ESMTP id S1726573AbhANUjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 15:38:39 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCE2C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 12:37:58 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id w1so10134518ejf.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 12:37:58 -0800 (PST)
+        Thu, 14 Jan 2021 15:39:23 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2ABCC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 12:38:42 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id c7so7178500edv.6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 12:38:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dnkY8VhBKX7fyLymuaOgh7Kzhqo6/ffCUUZ+3TB9sfk=;
-        b=S1qEdtllkI9bbC4WyizIHS/NrI01+t4naYpVzKo6U7uIUZGgZvp4ipWMMorZBf2JI8
-         xh0YtKXQ2E0LYHNKr7uLeqY96YGydw3iS2kK1XqzqieZedhOVpAHmjk1Tc5+JAQm7Uje
-         Rt5/6I4aMe40Yahclk0iBTPNB+efQ7/HzM/Im7N1SNU53kBndrBGrf2Wj/w4/QkQjBto
-         NNRNWNEOqOsFJV7Nt37Dz5+QR6vVpkpiqqcNCdFeffIPgpHHGYc4PlfMJIQnZYxNITcr
-         Ipfjh8gfcpTz8xWWZhanhRNzDxR8Zu3Oo9J+pq7/oZ6CcU8MEBWVUHpqv41ydH+3ErYy
-         erSw==
+        bh=HW2Gy+bmbScdrUiihPvmqmOfoBoJ371Y9lVdMFUmq+Y=;
+        b=yGOdyQNILINypQm/2jqXO6AfJMafn21XGw8EuGb3Op3CFg1tTZMSAR0rEasGJ1fNOS
+         yLllo/9Y8iS/xZYU6AxccWxMPTpSMM8D6QvzzM4jMSGwEs9hnHIlBnLno7KTxzdYF3Kp
+         KwtNyxup1uOWxXyQrcBBAo2o9U51ITkYAiriKkt2QNr2JX6HrELaFQgxFhhCA8zYidBs
+         k7aOmIV3u5QzjG0umzVAbcSHGi2o9GzSnc7gS6T59a8K4b8xbNr8QhTa7Jy5EYUITqET
+         o40thjAjGnsgi1R5vPAh+U9Vvz+toY/DwyAl8fonbO5ueCyy/1GYAeVF73/Ndh+roNVD
+         9VQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dnkY8VhBKX7fyLymuaOgh7Kzhqo6/ffCUUZ+3TB9sfk=;
-        b=l+PMmk6UAggOte7jiXsDXIzZaAyHBfb6vmlxwFe4NHr2CMYSH0Hr7/+P24LXrF3NLx
-         1CgfvcF5amVEzvZzs8BOTLJU+2odReo3LwYcu1YzRYTsXv/MeOb/2oJMi0vr8Is6c4Rq
-         mmzovefkxEe/mWSRjgcq/khGwPZ3WhfOCz0D7l2CW49edzGvM8kpiojlM/ssbHrsP1HK
-         Ack2u5c379i3lwlTZC1rJ2umslG8PfzsI79SzGX36Ar31ccP/Abv636h7x8hIxmJGB4i
-         hFjr0fgnCks/q6PTGlHa+MKbTRAgwEItiCwKXRc2NkydAa5ryJplw911RPJEFYONDqbu
-         oKyw==
-X-Gm-Message-State: AOAM530JXLzqR1ZjmvclkFkXgh0ZuQ18KrXjhyoatwFh0EJMvhs6U2xW
-        c+C7r3iQkte1UEJ9yW4uQ3LS2qvXJfJ26TibPWM=
-X-Google-Smtp-Source: ABdhPJwLcgK8nT3QnZuXEL5YzyE4ftItoCDBCpkwUddDRrwlLOcFty5eY+Uv/uYvGGwiA/tT70apTQ8ot7KpJF9Cxig=
-X-Received: by 2002:a17:906:690:: with SMTP id u16mr6536886ejb.186.1610656677483;
- Thu, 14 Jan 2021 12:37:57 -0800 (PST)
+        bh=HW2Gy+bmbScdrUiihPvmqmOfoBoJ371Y9lVdMFUmq+Y=;
+        b=pK0Lzsj1pqryo18T5sRoaueEvXguL0iOZnyp1Oy5WHZrq0ac5zZ53KXJUxBnNWWiPG
+         8IlhI7LeQ4Dv9yFa/CeJOaEijzNluxC/sLu1nylN1GOHlKfzNBQ7TH3zO7aHju7sAlDu
+         2ZaeLN0NA36Cw0KdVadnX0cvGnmSMqsT+FhknZ9XCCZRiVq9nO0QKex6ZTjA3m5huOBa
+         q/p3WRaxbNueBbA2JF2dEppuTKqB/vQbDVEp2c7c924XgdoloUZd550cILixVYKXXht3
+         aCOTVssuvfkEWJfPcv1VM1MB8cH68moud18CR7SHMnx897U0AcSFw0PbTldq7zXMlCUn
+         opQw==
+X-Gm-Message-State: AOAM532Fp8IlfWbUsxup0bjh2ycqQW/y7QC3+xLRx1BeKOtE9NrF9kdY
+        J6MK4lEAkgTg+V3888J8iJGJk6ppnMrDbxtt6DVOMQ==
+X-Google-Smtp-Source: ABdhPJw/UE18mcptuTTaq48ZA3l/slnXhk/5uHJysnrWQLOxkXl0WkGF7VK5q6iTBMceXPuJ8xY9V/7LnANIuvkLoIM=
+X-Received: by 2002:a50:b282:: with SMTP id p2mr7358432edd.210.1610656721518;
+ Thu, 14 Jan 2021 12:38:41 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1610622251.git.viresh.kumar@linaro.org> <193f2f177d23eef62b54b48f80e62fb0169c1db9.1610622251.git.viresh.kumar@linaro.org>
-In-Reply-To: <193f2f177d23eef62b54b48f80e62fb0169c1db9.1610622251.git.viresh.kumar@linaro.org>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Thu, 14 Jan 2021 12:37:45 -0800
-Message-ID: <CAMo8BfLoMhH67ref+uVV4yb22B+c61ewvJaaCsgJgOPc+JWUyA@mail.gmail.com>
-Subject: Re: [PATCH 16/18] arch: xtensa: Remove CONFIG_OPROFILE support
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Robert Richter <rric@kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Arnd Bergmann <arnd@kernel.org>, oprofile-list@lists.sf.net,
-        William Cohen <wcohen@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        anmar.oueja@linaro.org, Christoph Hellwig <hch@infradead.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com> <20201230165601.845024-5-ruansy.fnst@cn.fujitsu.com>
+In-Reply-To: <20201230165601.845024-5-ruansy.fnst@cn.fujitsu.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 14 Jan 2021 12:38:30 -0800
+Message-ID: <CAPcyv4hD1aeVGQ33j54o8jKi41qtAVkAhTgrx64C=WPZ0SvNQg@mail.gmail.com>
+Subject: Re: [PATCH 04/10] mm, fsdax: Refactor memory-failure handler for dax mapping
+To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-raid <linux-raid@vger.kernel.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        david <david@fromorbit.com>, Christoph Hellwig <hch@lst.de>,
+        song@kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        qi.fuli@fujitsu.com, y-goto@fujitsu.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 3:36 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+On Wed, Dec 30, 2020 at 8:59 AM Shiyang Ruan <ruansy.fnst@cn.fujitsu.com> wrote:
 >
-> The "oprofile" user-space tools don't use the kernel OPROFILE support
-> any more, and haven't in a long time. User-space has been converted to
-> the perf interfaces.
+> The current memory_failure_dev_pagemap() can only handle single-mapped
+> dax page for fsdax mode.  The dax page could be mapped by multiple files
+> and offsets if we let reflink feature & fsdax mode work together.  So,
+> we refactor current implementation to support handle memory failure on
+> each file and offset.
 >
-> Remove the old oprofile's architecture specific support.
->
-> Suggested-by: Christoph Hellwig <hch@infradead.org>
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
 > ---
->  arch/xtensa/Kconfig                         |  1 -
->  arch/xtensa/Makefile                        |  1 -
->  arch/xtensa/configs/audio_kc705_defconfig   |  1 -
->  arch/xtensa/configs/generic_kc705_defconfig |  1 -
->  arch/xtensa/configs/smp_lx200_defconfig     |  1 -
->  arch/xtensa/configs/xip_kc705_defconfig     |  1 -
->  arch/xtensa/kernel/stacktrace.c             |  2 +-
->  arch/xtensa/oprofile/Makefile               | 10 --------
->  arch/xtensa/oprofile/backtrace.c            | 27 ---------------------
->  arch/xtensa/oprofile/init.c                 | 26 --------------------
->  10 files changed, 1 insertion(+), 70 deletions(-)
->  delete mode 100644 arch/xtensa/oprofile/Makefile
->  delete mode 100644 arch/xtensa/oprofile/backtrace.c
->  delete mode 100644 arch/xtensa/oprofile/init.c
+>  fs/dax.c            | 21 +++++++++++
+>  include/linux/dax.h |  1 +
+>  include/linux/mm.h  |  9 +++++
+>  mm/memory-failure.c | 91 ++++++++++++++++++++++++++++++++++-----------
+>  4 files changed, 100 insertions(+), 22 deletions(-)
+>
+> diff --git a/fs/dax.c b/fs/dax.c
+> index 5b47834f2e1b..799210cfa687 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -378,6 +378,27 @@ static struct page *dax_busy_page(void *entry)
+>         return NULL;
+>  }
+>
+> +/*
+> + * dax_load_pfn - Load pfn of the DAX entry corresponding to a page
+> + * @mapping: The file whose entry we want to load
+> + * @index:   The offset where the DAX entry located in
+> + *
+> + * Return:   pfn of the DAX entry
+> + */
+> +unsigned long dax_load_pfn(struct address_space *mapping, unsigned long index)
+> +{
+> +       XA_STATE(xas, &mapping->i_pages, index);
+> +       void *entry;
+> +       unsigned long pfn;
+> +
+> +       xas_lock_irq(&xas);
+> +       entry = xas_load(&xas);
+> +       pfn = dax_to_pfn(entry);
+> +       xas_unlock_irq(&xas);
+> +
+> +       return pfn;
+> +}
+> +
+>  /*
+>   * dax_lock_mapping_entry - Lock the DAX entry corresponding to a page
+>   * @page: The page whose entry we want to lock
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index b52f084aa643..89e56ceeffc7 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -150,6 +150,7 @@ int dax_writeback_mapping_range(struct address_space *mapping,
+>
+>  struct page *dax_layout_busy_page(struct address_space *mapping);
+>  struct page *dax_layout_busy_page_range(struct address_space *mapping, loff_t start, loff_t end);
+> +unsigned long dax_load_pfn(struct address_space *mapping, unsigned long index);
+>  dax_entry_t dax_lock_page(struct page *page);
+>  void dax_unlock_page(struct page *page, dax_entry_t cookie);
+>  #else
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index db6ae4d3fb4e..db3059a1853e 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1141,6 +1141,14 @@ static inline bool is_device_private_page(const struct page *page)
+>                 page->pgmap->type == MEMORY_DEVICE_PRIVATE;
+>  }
+>
+> +static inline bool is_device_fsdax_page(const struct page *page)
+> +{
+> +       return IS_ENABLED(CONFIG_DEV_PAGEMAP_OPS) &&
+> +               IS_ENABLED(CONFIG_DEVICE_PRIVATE) &&
+> +               is_zone_device_page(page) &&
+> +               page->pgmap->type == MEMORY_DEVICE_FS_DAX;
+> +}
+> +
 
-Although I still keep userspace oprofile tools that use this interface,
-I haven't run them for ages.
+Have a look at the recent fixes to pfn_to_online_page() vs DAX pages [1].
 
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+This above page type check is racy given that the pfn could stop being
+pfn_valid() while this check is running. I think hwpoison_filter()
+needs an explicit check for whether the page is already referenced or
+not. For example the current call to hwpoison_filter() from
+memory_failure_dev_pagemap() is safe because the page has already been
+validated as ZONE_DEVICE and is safe to de-reference page->pgmap.
 
--- 
-Thanks.
--- Max
+[1]: http://lore.kernel.org/r/161058499000.1840162.702316708443239771.stgit@dwillia2-desk3.amr.corp.intel.com
