@@ -2,119 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B106B2F6E5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DF72F6E5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730776AbhANWlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 17:41:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729586AbhANWk7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 17:40:59 -0500
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57F0C061575;
-        Thu, 14 Jan 2021 14:40:03 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 1BB0C3F116;
-        Thu, 14 Jan 2021 23:40:02 +0100 (CET)
-Subject: Re: [PATCH 1/9] clk: qcom: gcc-msm8998: Wire up gcc_mmss_gpll0 clock
-To:     Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        phone-devel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        DTML <devicetree@vger.kernel.org>
-References: <20210109134617.146275-1-angelogioacchino.delregno@somainline.org>
- <20210109134617.146275-2-angelogioacchino.delregno@somainline.org>
- <CAOCk7NqUpa0DqW=han49MtwUqNkNsQC3OPpO7B-872bvNukDJw@mail.gmail.com>
- <9942f98c-c186-5cd0-d6ac-a18a4e20583e@somainline.org>
- <CAOCk7Nod9a+5EUUWGpso+EBb2dJVLMvjrOoMpqeTcm+L6mxvtQ@mail.gmail.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <b5f6095d-ed74-26a9-a485-df0dc1203f8e@somainline.org>
-Date:   Thu, 14 Jan 2021 23:40:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1730799AbhANWlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 17:41:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728452AbhANWlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 17:41:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3DDF323977;
+        Thu, 14 Jan 2021 22:40:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610664039;
+        bh=f7FdxZlvX3iXHrhJjazOt7jDXpblTW06ltYkPFES+Ho=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=t9LXk8jOXoNXcW7Fwr8Lb6CUdB0aaCRecE055xySyXP9DVF3I2elxdb+MMWsM4s2t
+         OXm8VcOwFs6CWvV4TRiugakSWeGXac4693Bul3tVLny7+srBaCJANYqhFrrYEU0t5n
+         JzuDiMWFNVgUSdEDKUwIxXtVilUZafhCUpxCuKwqFfDRChygwGaKwxGt36JQaGazeX
+         74XYKlpXGb4ByjgkcE08rTDZF1xugLDtwWs3/Ja4w4F8onpoXg1S0kKzYo+thIxm2D
+         bUp4R33GhqzcHBe5lKKGEFtpD5OjAtrPE+DHPKCviXPAkM3jijUNGQEbK4Z4cgOuHU
+         np8cpkkUM+bqg==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 359156018E;
+        Thu, 14 Jan 2021 22:40:39 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAOCk7Nod9a+5EUUWGpso+EBb2dJVLMvjrOoMpqeTcm+L6mxvtQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [GIT PULL] Networking for 5.11-rc4
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161066403921.16239.10890664021293856691.git-patchwork-notify@kernel.org>
+Date:   Thu, 14 Jan 2021 22:40:39 +0000
+References: <20210114200551.208209-1-kuba@kernel.org>
+In-Reply-To: <20210114200551.208209-1-kuba@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 14/01/21 23:33, Jeffrey Hugo ha scritto:
-> On Thu, Jan 14, 2021 at 3:13 PM AngeloGioacchino Del Regno
-> <angelogioacchino.delregno@somainline.org> wrote:
->>
->> Il 14/01/21 23:12, Jeffrey Hugo ha scritto:
->>> On Sat, Jan 9, 2021 at 6:47 AM AngeloGioacchino Del Regno
->>> <angelogioacchino.delregno@somainline.org> wrote:
->>>>
->>>> This clock enables the GPLL0 output to the multimedia subsystem
->>>> clock controller.
->>>>
->>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
->>>
->>> Any reason why you are not also adding the div_clk?
->>>
->>
->> Yes, just one: I haven't tested it... and my devices worked without.
->> Perhaps we can add it whenever we find out if something really needs it?
+Hello:
+
+This pull request was applied to netdev/net.git (refs/heads/master):
+
+On Thu, 14 Jan 2021 12:05:51 -0800 you wrote:
+> Hi!
 > 
-> I'm mildly surprised you need to turn on the gate to the PLL0 out, but
-> not the div_out.  The div_out/div_clk is also fed into every RCG that
-> exists in the MMCC.
+> We have a few fixes for long standing issues, in particular
+> Eric's fix to not underestimate the skb sizes, and my fix for
+> brokenness of register_netdevice() error path. They may uncover
+> other bugs so we will keep an eye on them. Also included are
+> Willem's fixes for kmap(_atomic).
 > 
-> Per the frequency plan the following RCGs require it -
-> 
-> cci
-> cpp
-> fd_core
-> camss_gp[0-1]
-> jpeg0
-> mclk[0-3]
-> csi[0-2]phytimer
-> dp_gtc
-> maxi
-> axi
-> ahb
-> 
-> Also, I'm very interested in all things 8998, and would generally
-> appreciate being added to the to: list.
-> 
+> [...]
 
-To be honest, I was surprised as well because.. yes, I know that these 
-RCGs seem to need it, but then their clock tables don't contain any 
-reference to the gpll0 divider, hence it's never getting used - and that 
-works great, for now.
+Here is the summary with links:
+  - [GIT,PULL] Networking for 5.11-rc4
+    https://git.kernel.org/netdev/net/c/e8c13a6bc8eb
 
-I am aware of the fact that the clocks that you've mentioned are using 
-the divider to reduce jitter, but I haven't done any camera test on my 
-devices yet: that's definitely in my plans and I really can't wait to do 
-that (as I successfully did for SDM630/660), but... we have more than 
-100 patches in our trees.
-We need to get upstream in the same working order as what we have here, 
-so that we don't diverge that much and our work is kept in a 
-maintainable state (avoiding to lose pieces around).
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I'm sure that I'll send a commit adding the gpll0 divider branch as soon 
-as I will start the camera work: I feel it, it's going to give me issues 
-without, in that field.
 
-By the way, noted. I'll make sure to add you in the to/cc for all of the 
-next series regarding 8998 that I'll send.
-
-Meanwhile, you may want to check out all the recent patches that I've 
-sent, as like 90% are MSM8998-centric... :))
-
--- Angelo
