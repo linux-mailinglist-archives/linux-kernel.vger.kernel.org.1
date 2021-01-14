@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339382F5F18
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8CE2F5F17
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728768AbhANKm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 05:42:56 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:16003 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725982AbhANKmy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 05:42:54 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610620950; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=Ewr4qiPEPbjem+/JZM1UEucGnjWoLnUoMQkWOHKR93M=; b=mWQCFrQ/33RYN7UtJG383sHF60g61JK/SxxOgweDi63CgHBChfutEqMioJUb391pGgSpLZQm
- /kL7PI2XK4ZND5ZMZySBh03NKGEVo1sXF+ESLUSdt7VgKUyI4fD0HFlmqtK1oMzN48a6GydK
- cQcdACkrzyYRKRjH25YEnBEDQj0=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60001ff5415a6293c53ee0ef (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 10:41:57
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EFFC4C433C6; Thu, 14 Jan 2021 10:41:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 55118C433CA;
-        Thu, 14 Jan 2021 10:41:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 55118C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Felix Fietkau <nbd@nbd.name>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] mt76: Fix queue ID variable types after mcu queue split
-References: <20201229211548.1348077-1-natechancellor@gmail.com>
-        <20201231100918.GA1819773@computer-5.station>
-        <87k0sjlwyb.fsf@codeaurora.org>
-        <9af48c35-c987-7eb4-e3a1-5e54555f988b@nbd.name>
-Date:   Thu, 14 Jan 2021 12:41:51 +0200
-In-Reply-To: <9af48c35-c987-7eb4-e3a1-5e54555f988b@nbd.name> (Felix Fietkau's
-        message of "Thu, 14 Jan 2021 10:24:30 +0100")
-Message-ID: <87v9bzhkb4.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1728410AbhANKmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 05:42:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35028 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726236AbhANKmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 05:42:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1E6CEAB7A;
+        Thu, 14 Jan 2021 10:42:01 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 9AC931E086B; Thu, 14 Jan 2021 11:41:57 +0100 (CET)
+Date:   Thu, 14 Jan 2021 11:41:57 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     lianzhi chang <changlianzhi@uniontech.com>
+Cc:     magnani@ieee.org, jack@suse.com, linux-kernel@vger.kernel.org,
+        282827961@qq.com
+Subject: Re: [PATCH] udf: fix the problem that the disc content is not
+ displayed
+Message-ID: <20210114104157.GB25790@quack2.suse.cz>
+References: <20210114075741.30448-1-changlianzhi@uniontech.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210114075741.30448-1-changlianzhi@uniontech.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Felix Fietkau <nbd@nbd.name> writes:
+On Thu 14-01-21 15:57:41, lianzhi chang wrote:
+> When the capacity of the disc is too large (assuming the 4.7G
+> specification), the disc (UDF file system) will be burned
+> multiple times in the windows (Multisession Usage). When the
+> remaining capacity of the CD is less than 300M (estimated
+> value, for reference only), open the CD in the Linux system,
+> the content of the CD is displayed as blank (the kernel will
+> say "No VRS found"). Windows can display the contents of the
+> CD normally.
+> Through analysis, in the "fs/udf/super.c": udf_check_vsd
+> function, the actual value of VSD_MAX_SECTOR_OFFSET may
+> be much larger than 0x800000. According to the current code
+> logic, it is found that the type of sbi->s_session is "__s32",
+>  when the remaining capacity of the disc is less than 300M
+> (take a set of test values: sector=3154903040,
+> sbi->s_session=1540464, sb->s_blocksize_bits=11 ), the
+> calculation result of "sbi->s_session << sb->s_blocksize_bits"
+>  will overflow. Therefore, it is necessary to convert the
+> type of s_session to "loff_t" (when udf_check_vsd starts,
+> assign a value to _sector, which is also converted in this
+> way), so that the result will not overflow, and then the
+> content of the disc can be displayed normally.
+> 
+> Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+> ---
+>  fs/udf/super.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/udf/super.c b/fs/udf/super.c
+> index 5bef3a68395d..f2ff98f393fb 100644
+> --- a/fs/udf/super.c
+> +++ b/fs/udf/super.c
+> @@ -705,6 +705,7 @@ static int udf_check_vsd(struct super_block *sb)
+>  	struct buffer_head *bh = NULL;
+>  	int nsr = 0;
+>  	struct udf_sb_info *sbi;
+> +	loff_t sector_offset;
+>  
+>  	sbi = UDF_SB(sb);
+>  	if (sb->s_blocksize < sizeof(struct volStructDesc))
+> @@ -712,7 +713,8 @@ static int udf_check_vsd(struct super_block *sb)
+>  	else
+>  		sectorsize = sb->s_blocksize;
+>  
+> -	sector += (((loff_t)sbi->s_session) << sb->s_blocksize_bits);
+> +	sector_offset = (loff_t)sbi->s_session << sb->s_blocksize_bits);
 
-> On 2021-01-11 09:06, Kalle Valo wrote:
->> Lorenzo Bianconi <lorenzo@kernel.org> writes:
->> 
->>>> Clang warns in both mt7615 and mt7915:
->>>> 
->>>> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:271:9: warning: implicit
->>>> conversion from enumeration type 'enum mt76_mcuq_id' to different
->>>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->>>>                 txq = MT_MCUQ_FWDL;
->>>>                     ~ ^~~~~~~~~~~~
->>>> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:278:9: warning: implicit
->>>> conversion from enumeration type 'enum mt76_mcuq_id' to different
->>>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->>>>                 txq = MT_MCUQ_WA;
->>>>                     ~ ^~~~~~~~~~
->>>> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:282:9: warning: implicit
->>>> conversion from enumeration type 'enum mt76_mcuq_id' to different
->>>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->>>>                 txq = MT_MCUQ_WM;
->>>>                     ~ ^~~~~~~~~~
->>>> 3 warnings generated.
->>>> 
->>>> drivers/net/wireless/mediatek/mt76/mt7615/mcu.c:238:9: warning: implicit
->>>> conversion from enumeration type 'enum mt76_mcuq_id' to different
->>>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->>>>                 qid = MT_MCUQ_WM;
->>>>                     ~ ^~~~~~~~~~
->>>> drivers/net/wireless/mediatek/mt76/mt7615/mcu.c:240:9: warning: implicit
->>>> conversion from enumeration type 'enum mt76_mcuq_id' to different
->>>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->>>>                 qid = MT_MCUQ_FWDL;
->>>>                     ~ ^~~~~~~~~~~~
->>>> 2 warnings generated.
->>>> 
->>>> Use the proper type for the queue ID variables to fix these warnings.
->>>> Additionally, rename the txq variable in mt7915_mcu_send_message to be
->>>> more neutral like mt7615_mcu_send_message.
->>>> 
->>>> Fixes: e637763b606b ("mt76: move mcu queues to mt76_dev q_mcu array")
->>>> Link: https://github.com/ClangBuiltLinux/linux/issues/1229
->>>> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
->>>
->>> Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
->> 
->> I see that Felix already applied this, but as this is a regression
->> starting from v5.11-rc1 I think it should be applied to
->> wireless-drivers. Felix, can you drop this from your tree so that I
->> could apply it to wireless-drivers?
->
-> Sure, will do.
+There's imbalanced parentheses here, I'll fix it up on commit. Otherwise
+the fix looks good to me. Thanks!
 
-Thanks. I now assigned to me in patchwork and will apply to
-wireless-drivers soon.
+								Honza
 
+> +	sector += sector_offset;
+>  
+>  	udf_debug("Starting at sector %u (%lu byte sectors)\n",
+>  		  (unsigned int)(sector >> sb->s_blocksize_bits),
+> @@ -757,8 +759,7 @@ static int udf_check_vsd(struct super_block *sb)
+>  
+>  	if (nsr > 0)
+>  		return 1;
+> -	else if (!bh && sector - (sbi->s_session << sb->s_blocksize_bits) ==
+> -			VSD_FIRST_SECTOR_OFFSET)
+> +	else if (!bh && sector - sector_offset == VSD_FIRST_SECTOR_OFFSET)
+>  		return -1;
+>  	else
+>  		return 0;
+> -- 
+> 2.20.1
+> 
+> 
+> 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
