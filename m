@@ -2,96 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23DE2F66C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5089F2F66AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728231AbhANRFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:05:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726661AbhANRFf (ORCPT
+        id S1727471AbhANRFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:05:10 -0500
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:59511 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbhANRFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:05:35 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21018C061575;
-        Thu, 14 Jan 2021 09:04:55 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id q2so10915687iow.13;
-        Thu, 14 Jan 2021 09:04:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=sXZiXOCl6CKgerL5xqt9GNC9Sn9g/emLDMftrkWyd5U=;
-        b=OFRq8xTkOQv52U57v/MDL/VeHvQk83cgPLdF939opIzmlqW8lsfb80wk27bXDlyRmj
-         HXujMNu83AoM15AV5bEfNGVxcee1uAcLMjfwi8NzkuA/mNe+3Lfd3I+LU/2WdOBqLTDu
-         eHdCiVcn0Q0IRepwlUcB5mkl7pKNHEWkgB/yyk67BilwON/muoV8Wk4Un+nOgnP0wwfS
-         F/w2Igu8fhmshq9q2z3MFOia3hBbfjxtlaZ/8k2glpfwEiyX2lYCKfXzqTBoii1yP2lu
-         +4GoIqaIJAe1sltv5jIQjW84EoRd1oZgPBDg0wxfAE3Q3/J7jluSfwHQLpQGcNTSAhqY
-         vfEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=sXZiXOCl6CKgerL5xqt9GNC9Sn9g/emLDMftrkWyd5U=;
-        b=b9LpK6TqyVHr0IDIR5QIxJlfd7Z3YEQb2fLmaqNmy7276ExaeuS/iggyMZ0guAKYQO
-         VflNkMZo23FIrz8VGr4YmK5pyC8KLkywMYwbiF5afxjNtMS0lRuoV+nc68bN2O+su3XX
-         pz6WDwIA0On1UFxhTzALVt8e0JRKF2RCut0LFdQB4u/0ruIsF9+if/53eDVIvj4EEu4t
-         0xPVDaJzhkjJRmbqoysHcplV25EPWwCvip2wWWA0LYod6pgYQ0s+2YPZYKOxU2DSTKl8
-         QjtteBWGuIn4QePQ6ZyIIJqCqPav32oIQeEe5TtjuC3B59t31PhjMcunVKQdIMQ6pDis
-         ry3Q==
-X-Gm-Message-State: AOAM532eI8AnAU9aqgZliYiJroZe0H7eThogTGnv6wfpaHWPtZFAzfSy
-        7dyuqymlb8eKeGW1PKO9c8yD8VpknWptM0PxTOvqRjNfwlsckQ==
-X-Google-Smtp-Source: ABdhPJxKIaZi0ZWiRydCLGKnKadDfbWT4NQhM5PhS9dDXnkup7CiWsJ1aCQrycZEXsTqYwdKu39uyfeGsVoUCfCHfSk=
-X-Received: by 2002:a05:6638:19c:: with SMTP id a28mr7065944jaq.76.1610643894359;
- Thu, 14 Jan 2021 09:04:54 -0800 (PST)
+        Thu, 14 Jan 2021 12:05:10 -0500
+X-Originating-IP: 93.34.118.233
+Received: from uno.lan (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 6C86D4000D;
+        Thu, 14 Jan 2021 17:04:26 +0000 (UTC)
+From:   Jacopo Mondi <jacopo+renesas@jmondi.org>
+To:     kieran.bingham+renesas@ideasonboard.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        sergei.shtylyov@gmail.com
+Subject: [PATCH v8 0/5] media: i2c: Add RDACM21 camera module
+Date:   Thu, 14 Jan 2021 18:04:24 +0100
+Message-Id: <20210114170429.139762-1-jacopo+renesas@jmondi.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-From:   Waldemar Rymarkiewicz <waldemar.rymarkiewicz@gmail.com>
-Date:   Thu, 14 Jan 2021 18:04:18 +0100
-Message-ID: <CAHKzcEPuwZFei+6RehMn1yzRD45k_xfMgGC2Ma4eeR9y5rnFow@mail.gmail.com>
-Subject: Hook up a PCIe device into the thermal framework
-To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+One more iteration to squash in all the fixups sent in v7 and address
+a comment from Sergei in [2/5] commit message.
 
-I've been looking for a nice way to hook up a PCIe device into the
-thermal framework recently and I want to confront my findings with the
-right people here.
+All patches now reviewed and hopefully ready to be collected!
 
-I have a PCIe wireless adapter connected to PCI-to-PCI bridge which in
-turns is connected to a PCI root complex (RC). I want to define a
-thermal zone over the wireless adapter in my system and control it
-over DT (thermal-zones{...})  instead of keeping thermal zone
-definition statically in the PCI device driver (as it's done in the
-iwlwifi wireless driver or the mlxsw ethernet driver for example)
+Thanks
+  j
 
-The issue I have faced is that a PCI device has no DT node
-(pci_dev.dev.of_node) which is reasonable as this is by design
-discoverable device. This, however, prevents me to register the PCI
-device as a thermal sensor (dev.of_node is required by thermal).
+Jacopo Mondi (5):
+  media: i2c: Add driver for RDACM21 camera module
+  dt-bindings: media: max9286: Document
+    'maxim,reverse-channel-microvolt'
+  media: i2c: max9286: Break-out reverse channel setup
+  media: i2c: max9286: Make channel amplitude programmable
+  media: i2c: max9286: Configure reverse channel amplitude
 
-As far as we consider a fixed PCI topology eg. a SoC internal design I
-could put something like this in DT (used by ath11k/ath10k btw).
+ .../bindings/media/i2c/maxim,max9286.yaml     |  22 +
+ MAINTAINERS                                   |  12 +
+ drivers/media/i2c/Kconfig                     |  13 +
+ drivers/media/i2c/Makefile                    |   2 +
+ drivers/media/i2c/max9286.c                   |  60 +-
+ drivers/media/i2c/rdacm21.c                   | 623 ++++++++++++++++++
+ 6 files changed, 719 insertions(+), 13 deletions(-)
+ create mode 100644 drivers/media/i2c/rdacm21.c
 
-pci@... {
-   ...
-   pci-bridge@... {
-   ...
-        wifi:wifi@0 {
-              reg = <0x0 0 0 0 0>;
-              #thermal-sensor-cells = <0>;
-         };
-   };
-};
+--
+2.29.2
 
-but in case we consider an arbitrary location of the device in PCI
-topology that DT modification will not work and still I have no device
-node.
-
-Is there any preferred solution in the Linux kernel for this kind of use-case?
-
-All the ideas appreciated.
-
-Thanks,
-/Waldek
