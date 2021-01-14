@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3052F64AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:33:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4044C2F64AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:35:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728593AbhANPcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 10:32:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50346 "EHLO
+        id S1729165AbhANPdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 10:33:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbhANPco (ORCPT
+        with ESMTP id S1726957AbhANPdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 10:32:44 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328CFC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:32:04 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id g15so3995231pgu.9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:32:04 -0800 (PST)
+        Thu, 14 Jan 2021 10:33:24 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61EEFC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:32:44 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id b3so3564209pft.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:32:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=b1a4WcSAwlYzo0UVF2lRgmzbjdobg4wJJNHBjscc+aU=;
-        b=Tkj04O8NIGP7QDG5QTP6bp8Db1EvdW4IPCh4lJItQRb5f79KL8pGxUw0gaJnz4QYr9
-         A/mUAUJhro+oeSHfysLYmNo/wUWCKeg/NRlS7SYxV+C97fjHSwr0/IR/xBJ0DzYVV3k8
-         mwdnEe6hoxje/KVyNShsUXEtt/C//jkQFvZSG+0Z7rz/aT/s106uCI+G6qp4yuXBEJfn
-         e+Bbhc5pQLWmt0dJauY7eJWtsDVC5y1fRCPPw3FQ5gXsKSLUZz0efQ9Q8sfGta7UeR0z
-         L+cLxO9D5jsYwYZDw8oprrz5C3K4xhNVy7K55IwDwnewfIbAz0LSD3V/uXz4tucEBClg
-         VR7Q==
+        bh=hhCmnieS6x/7jX7jC0A67czRT8RpEOexXMJwHSjcG8w=;
+        b=F+h+U5OX5I2zlGXN1bvc3pRP91uslplbDiy80/f/k3e71YErhqPRypEZ0JJj/UhdKt
+         2AigAsEV5L/t7EwODcHMEj4p+2QgpvIc1RD6t1zDtK1H2XRQne5e5GCtxSM/hy6QryIJ
+         7mQjkTB+WjHmD56SIaVjqmPDXdLix3UGuFKyOHuFwxRUJE9GvjooZqnbfoB+ElDcVMCg
+         2W12T+MnjHX38ZLQo86AJN5z6vq3SgfSw0K0jFXy0tHmw6sHgAyTFP9XjJ+UXpnrj9TT
+         BWNZwlOSbLBi1IpqhBalOOmwGvs3KEiemTY1vzigmGeMamDLfWBNfYBf+ca3tADpgzJn
+         SVGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=b1a4WcSAwlYzo0UVF2lRgmzbjdobg4wJJNHBjscc+aU=;
-        b=eSW3VqWVFcezJYXRsl99p+OYjTz5gsqi+cjlZwPWhNbiSbo9/Ao1y3kGRrNOBrod3Y
-         NvKJ4Hy0fi71/jXexdJcB335bQFfaWH8uqfeIdeymXjkdEFFxSdQIgaUkfrPu44wDeQh
-         zAG4dYyAViudzuVOLPaQlp039FicezGtYkCi+y07zncXZ1ggS+V8+evi8XTlHb9TR2AY
-         SqNoUziq5kFH8GSD/2pfbV/TdK+TUxBDl8sWOrPXj+gPqZP0wez2Ri3d/Mk1WFYCQatr
-         fWA7VUIFracQPZ1OOEJQ2fSJ+el2nsRqjweTQ0cTrAwPJQmen3tUz7eKOfi3GdKNuD66
-         enAw==
-X-Gm-Message-State: AOAM533fIeAqzDcL41y/LuiVu8vFR0bvAGMnQWqomeULSJ2F2JWJQfn7
-        pTcNb3FTRIMMooNpQM7ITDk/UOyPL8XGjNLlC4xMCg==
-X-Google-Smtp-Source: ABdhPJy6G0GBGFULP7NhjdO3HD2T54WVV8L/v5iwDgvCd8Ty8DE+K8f7iPevGNXlqln2anKMgDYFsA8Za2uu3zNB0L8=
-X-Received: by 2002:a63:4644:: with SMTP id v4mr8086639pgk.440.1610638323387;
- Thu, 14 Jan 2021 07:32:03 -0800 (PST)
+        bh=hhCmnieS6x/7jX7jC0A67czRT8RpEOexXMJwHSjcG8w=;
+        b=Xv2CztwIFKwNDBOauxe2tmsqubHu/CxJWZgzaUVB73MiyO1pcaoGfVyTKFRA4k285u
+         ShaULEXLVBHNUlJKBKuA19jnIT/vuTQP5VKoirrhUVMPu9IwYjJ9AYuPskPJJiez8cFY
+         sUUQqUcEfVMFCzO0DORnl4sblB8mIMQT6l4jN9tKFnfzAaF7mk+XOgIslCd0rW6RT/p+
+         mqMAKz7fOW/mXxk5Ge/O4TvGcRp/ZeQPjRL1hM5eyHKuyfklSUu0IAszmItW71amyFL+
+         vwYNfm9qGWVaORfm3s+I34sk0zUKshbDC7fr8yxEkrKHUbUBBzrqMhdvuwI+9NW3K5RC
+         VR4g==
+X-Gm-Message-State: AOAM531H70bRmoHftp8tlVciRYpsu8IxMoeo03ZR3hXzs4Irxa56xuMu
+        uGdV40dS1R+AZKKoYeDudX58Obrz2TOUXiagx8GL6Q==
+X-Google-Smtp-Source: ABdhPJwxwjEmYCc7k3Kie++FnZeFTarrf4Gsa6+W+ZVUNd+3l6SG5jx3zUwQsiq6GdK62p4Znm8ZMaWwvuG6Lksc80s=
+X-Received: by 2002:a65:430b:: with SMTP id j11mr7862747pgq.130.1610638363793;
+ Thu, 14 Jan 2021 07:32:43 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1610553773.git.andreyknvl@google.com> <7fbac00e4d155cf529517a165a48351dcf3c3156.1610553774.git.andreyknvl@google.com>
- <25aa25d6-080c-ccfa-9367-fc60f46ff10f@suse.cz>
-In-Reply-To: <25aa25d6-080c-ccfa-9367-fc60f46ff10f@suse.cz>
+References: <cover.1610554432.git.andreyknvl@google.com> <654bdeedde54e9e8d5d6250469966b0bdf288010.1610554432.git.andreyknvl@google.com>
+ <CANpmjNPOtohFy800icx1LU_hzuQZNMQqqTBUSDXZ_9wWO_vHWw@mail.gmail.com>
+In-Reply-To: <CANpmjNPOtohFy800icx1LU_hzuQZNMQqqTBUSDXZ_9wWO_vHWw@mail.gmail.com>
 From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 14 Jan 2021 16:31:52 +0100
-Message-ID: <CAAeHK+xgdS+vSTN81uLzahB9BYf=+iJdckwS=v7AwRACAf0wfw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kasan, mm: fix conflicts with init_on_alloc/free
-To:     Vlastimil Babka <vbabka@suse.cz>
+Date:   Thu, 14 Jan 2021 16:32:32 +0100
+Message-ID: <CAAeHK+yXQN2QWUEATrdpAuEC=s1+VSZ1JzxxJbEuhpXv3nCtAQ@mail.gmail.com>
+Subject: Re: [PATCH v2 14/14] kasan: don't run tests when KASAN is not enabled
+To:     Marco Elver <elver@google.com>
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Dmitry Vyukov <dvyukov@google.com>,
         Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Will Deacon <will.deacon@arm.com>,
         Andrey Ryabinin <aryabinin@virtuozzo.com>,
@@ -74,51 +73,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 6:25 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+On Wed, Jan 13, 2021 at 5:39 PM Marco Elver <elver@google.com> wrote:
 >
-> On 1/13/21 5:03 PM, Andrey Konovalov wrote:
-> > A few places where SLUB accesses object's data or metadata were missed in
-> > a previous patch. This leads to false positives with hardware tag-based
-> > KASAN when bulk allocations are used with init_on_alloc/free.
+> On Wed, 13 Jan 2021 at 17:22, Andrey Konovalov <andreyknvl@google.com> wrote:
 > >
-> > Fix the false-positives by resetting pointer tags during these accesses.
+> > Don't run KASAN tests when it's disabled with kasan.mode=off to avoid
+> > corrupting kernel memory.
 > >
-> > Link: https://linux-review.googlesource.com/id/I50dd32838a666e173fe06c3c5c766f2c36aae901
-> > Fixes: aa1ef4d7b3f67 ("kasan, mm: reset tags when accessing metadata")
-> > Reported-by: Dmitry Vyukov <dvyukov@google.com>
+> > Link: https://linux-review.googlesource.com/id/I6447af436a69a94bfc35477f6bf4e2122948355e
 > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
->
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
->
 > > ---
-> >  mm/slub.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
+> >  lib/test_kasan.c | 3 +++
+> >  1 file changed, 3 insertions(+)
 > >
-> > diff --git a/mm/slub.c b/mm/slub.c
-> > index dc5b42e700b8..75fb097d990d 100644
-> > --- a/mm/slub.c
-> > +++ b/mm/slub.c
-> > @@ -2791,7 +2791,8 @@ static __always_inline void maybe_wipe_obj_freeptr(struct kmem_cache *s,
-> >                                                  void *obj)
+> > diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+> > index d9f9a93922d5..0c8279d9907e 100644
+> > --- a/lib/test_kasan.c
+> > +++ b/lib/test_kasan.c
+> > @@ -47,6 +47,9 @@ static bool multishot;
+> >   */
+> >  static int kasan_test_init(struct kunit *test)
 > >  {
-> >       if (unlikely(slab_want_init_on_free(s)) && obj)
-> > -             memset((void *)((char *)obj + s->offset), 0, sizeof(void *));
-> > +             memset((void *)((char *)kasan_reset_tag(obj) + s->offset),
-> > +                     0, sizeof(void *));
-> >  }
-> >
-> >  /*
-> > @@ -2883,7 +2884,7 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
-> >               stat(s, ALLOC_FASTPATH);
-> >       }
-> >
-> > -     maybe_wipe_obj_freeptr(s, kasan_reset_tag(object));
-> > +     maybe_wipe_obj_freeptr(s, object);
+> > +       if (!kasan_enabled())
+> > +               return -1;
 >
-> And in that case the reset was unnecessary, right. (commit log only mentions
-> adding missing resets).
+> This should WARN_ON() or pr_err(). Otherwise it's impossible to say
+> why the test couldn't initialize.
 
-The reset has been moved into maybe_wipe_obj_freeptr(). I'll mention
-it in the changelog in v2.
-
-Thanks!
+Will do in v3, thanks!
