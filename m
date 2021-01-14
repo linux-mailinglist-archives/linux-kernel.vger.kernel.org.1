@@ -2,76 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DAC12F5DFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A6E2F5DEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbhANJnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:43:13 -0500
-Received: from mga09.intel.com ([134.134.136.24]:33533 "EHLO mga09.intel.com"
+        id S1728558AbhANJkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:40:17 -0500
+Received: from foss.arm.com ([217.140.110.172]:46660 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727382AbhANJnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:43:11 -0500
-IronPort-SDR: AmNIUtv2VdQxSXwJzLV6iT2InCydonBfutcamYQzsC0eBMz9EjtJFY5L18X8CyGoQX8fGN3XBk
- iuWX5X/yWuCw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="178489307"
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="178489307"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 01:42:39 -0800
-IronPort-SDR: 7RuN2PziES+xPYKfQmNQ7mBycANnqj+LxNRtE5BfOTGKefHp2Goz48KfttoDydmWpEHp6d3Pt9
- shhhUKwfYSgg==
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="382210357"
-Received: from dforourk-mobl1.ger.corp.intel.com (HELO localhost) ([10.213.254.146])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 01:42:35 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Yang Li <abaci-bugfix@linux.alibaba.com>, airlied@linux.ie
-Cc:     sunpeng.li@amd.com, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Yang Li <abaci-bugfix@linux.alibaba.com>,
-        dri-devel@lists.freedesktop.org, alexander.deucher@amd.com,
-        christian.koenig@amd.com
-Subject: Re: [PATCH] drm/amd/display: Simplify bool comparison
-In-Reply-To: <1610530365-46152-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <1610530365-46152-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Date:   Thu, 14 Jan 2021 11:42:32 +0200
-Message-ID: <871renrh13.fsf@intel.com>
+        id S1728538AbhANJkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 04:40:13 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE12A1FB;
+        Thu, 14 Jan 2021 01:39:35 -0800 (PST)
+Received: from [10.0.0.31] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1EC303F70D;
+        Thu, 14 Jan 2021 01:39:32 -0800 (PST)
+Subject: Re: [PATCH v2 2/4] arm64: mte: Add asynchronous mode support
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+References: <20210107172908.42686-1-vincenzo.frascino@arm.com>
+ <20210107172908.42686-3-vincenzo.frascino@arm.com>
+ <20210113172228.GE27045@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <16a57293-37fa-4526-e6cd-61f80b93e12a@arm.com>
+Date:   Thu, 14 Jan 2021 09:43:19 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210113172228.GE27045@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021, Yang Li <abaci-bugfix@linux.alibaba.com> wrote:
-> Fix the following coccicheck warning:
-> ./drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_cm.c:580:23-31:
-> WARNING: Comparison to bool
+
+
+On 1/13/21 5:22 PM, Catalin Marinas wrote:
+> On Thu, Jan 07, 2021 at 05:29:06PM +0000, Vincenzo Frascino wrote:
+>> MTE provides an asynchronous mode for detecting tag exceptions. In
+>> particular instead of triggering a fault the arm64 core updates a
+>> register which is checked by the kernel at the first entry after the tag
+>> exception has occurred.
+> 
+> Just rephrase the "tag exception" here as there's no exception taken.
+> Also we don't check this only when the kernel is first entered after a
+> tag check fault, as per patch 3.
 >
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
-> ---
->  drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_cm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_cm.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_cm.c
-> index 4d3f7d5..904c2d2 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_cm.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_cm.c
-> @@ -577,7 +577,7 @@ void dpp1_power_on_degamma_lut(
->  	struct dcn10_dpp *dpp = TO_DCN10_DPP(dpp_base);
->  
->  	REG_SET(CM_MEM_PWR_CTRL, 0,
-> -			SHARED_MEM_PWR_DIS, power_on == true ? 0:1);
-> +			SHARED_MEM_PWR_DIS, power_on ? 0:1);
 
-Not my driver, but this is as simple as it gets:
+Ok, I will clarify it in v3.
 
-+			SHARED_MEM_PWR_DIS, !power_on);
+>> --- a/arch/arm64/kernel/mte.c
+>> +++ b/arch/arm64/kernel/mte.c
+>> @@ -153,8 +153,35 @@ void mte_init_tags(u64 max_tag)
+>>  
+>>  void mte_enable_kernel(enum kasan_arg_mode mode)
+>>  {
+>> -	/* Enable MTE Sync Mode for EL1. */
+>> -	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
+>> +	const char *m;
+>> +
+>> +	/* Preset parameter values based on the mode. */
+>> +	switch (mode) {
+>> +	case KASAN_ARG_MODE_OFF:
+>> +		return;
+>> +	case KASAN_ARG_MODE_LIGHT:
+>> +		/* Enable MTE Async Mode for EL1. */
+>> +		sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_ASYNC);
+>> +		m = "asynchronous";
+>> +		break;
+>> +	case KASAN_ARG_MODE_DEFAULT:
+>> +	case KASAN_ARG_MODE_PROD:
+>> +	case KASAN_ARG_MODE_FULL:
+>> +		/* Enable MTE Sync Mode for EL1. */
+>> +		sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
+>> +		m = "synchronous";
+>> +		break;
+>> +	default:
+>> +		/*
+>> +		 * kasan mode should be always set hence we should
+>> +		 * not reach this condition.
+>> +		 */
+>> +		WARN_ON_ONCE(1);
+>> +		return;
+>> +	}
+> 
+> I guess the switch statement here will be re-written as we want kasan to
+> drive the actual sync/async modes as it sees fit rather than MTE
+> guessing what PROD/FULL/LIGHT means.
+> 
 
-
->  
->  }
+Yes, this is correct, it will present only sync/async mode.
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+Regards,
+Vincenzo
