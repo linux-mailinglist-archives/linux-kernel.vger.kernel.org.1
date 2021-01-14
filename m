@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B7D2F655D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A99202F6562
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:06:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729272AbhANQBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:01:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
+        id S1727121AbhANQFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:05:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726881AbhANQBb (ORCPT
+        with ESMTP id S1725950AbhANQFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:01:31 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C76C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:01:04 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610640060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=73B8Qve9y0JoijTWYi5Jyf92JaqGXWY23hQFwIxZv8Y=;
-        b=1MTb4dnT8kfdDDpxQ/8tMoJEy/2MYa6bI9AkRN31Lx650zE+/9G1ZHc/V7d0gKdZBOoXxh
-        twrJbIRYMVwevc89y6NhL2FG3NTjgo0QeDaP71r9+J0E1rcocXrKrYWWpwIGUjhHkBBqEf
-        Ij9TSpD4yZbhmSIWQNC/VVGS0bhBXNCk6RCFwdzgJcOZgEANB4gG7kVqvHD1xiIAbs8fT4
-        RIqA/Jz3XtmetH6jVcVe0klIxqI/5FFtz4JOKjPWfA75Zz/9CIji6rQ3ymH1X+7iTsHvcK
-        o3lvgu9Ccip90BowtIsMrmYrZYYZt9q/RExZg4wv6rlq2EB3th3a26wALrTr5g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610640060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=73B8Qve9y0JoijTWYi5Jyf92JaqGXWY23hQFwIxZv8Y=;
-        b=0mbIr5uhSdPzfZ0v/K+IdCcM3QRupqGqD+k3PY4MVToS2VhdPvQ5v8eqM0OqGZMStmGWN9
-        eSpE0MCGCgT0acDQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: RFC: printk: kmsg_dump_get_line_nolock() buffer overflow
-In-Reply-To: <YABhMFlIpQ/5uQ7s@alley>
-References: <87im8038v7.fsf@jogness.linutronix.de> <YABhMFlIpQ/5uQ7s@alley>
-Date:   Thu, 14 Jan 2021 17:06:59 +0106
-Message-ID: <87im7zecec.fsf@jogness.linutronix.de>
+        Thu, 14 Jan 2021 11:05:12 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09096C061574;
+        Thu, 14 Jan 2021 08:04:45 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id c1so3843958qtc.1;
+        Thu, 14 Jan 2021 08:04:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wj4RY/1mLJ+M8kkBzK7aF9kbRs3YK/jGXD5u+dQ8ZGg=;
+        b=mkN77poB4ZHPZ78ff/OSW1T3/WeSf4lT4Z+NUv7KjHrSvjWWtOeOxSybPEKuTYScRi
+         SiM3XZc2qkY/DhcpvwyrqbsbRD/q7+gsGJ7Z7UMV+NhT+Pu3cLAXOsNI10IofSutA+TM
+         IvcyN/3ahrTf02m+KGPHXe6TAiz5zYaZXDGC42BFbr9cRZbPx27RfAfcnHtJaWU64GkF
+         o3KDk1dkgF763+uXSSfT9T31U5ZEkwqkYM/SXb3dyH6sW24WjkXJCzVQZtffCcHNMykv
+         VXHKiXqDg99Cg42by7pRA5OGtiX1XAv44eVvA991owy77nxPtN4hkpAW87DtfWNcg4E6
+         kaJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wj4RY/1mLJ+M8kkBzK7aF9kbRs3YK/jGXD5u+dQ8ZGg=;
+        b=UCv1PfLOfwspwBT9d1Hj66z0xd2kA9kv2uQJPXAAMyFI5jP2NOqE9vjfCsE5jPlWP2
+         t0/7Xu4pCUUiiGAX0M8A6YhI3USDjdm1BVnWQQdpXs84bILCunVqWmiYrB/FWP2Oa/wZ
+         WVgl/lxzHNB66PWxIBztrvgQEwFsNidFriHLd8TlR/KYl/mx5e+6GlNdfkKHVw/rl2bS
+         51uWa56ijbqib5nkxCYv0gNS/px0ypew9/pggRXFeUjhxoL+e6NEkDV4ggZHx2nWzWDT
+         xFplP1bBbKEXk/TE45uGYbUyeyoxT8rFt1MpX8hAlf0ftnx2FB/SUL3pEDIaw7GBc6aX
+         g8LQ==
+X-Gm-Message-State: AOAM531GCI4T6iMU2H21W1oh7FCbbNwE8nfn/XyZqpNWGz1YDM9uglRy
+        EfmLgi1ojU8jEgnzXeHiZg3Sn5SluNlYNX9A3y1sO4NLCII=
+X-Google-Smtp-Source: ABdhPJwr//q6MoLwZatAFUEuXngz5CLGluUXGrRCjMyqGBHJPPSBrqN0YtGFe/TKcoseXHds8s4hvYLQNyPhNNmQoZk=
+X-Received: by 2002:ac8:44a4:: with SMTP id a4mr7488902qto.219.1610640283988;
+ Thu, 14 Jan 2021 08:04:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210114152323.2382283-1-lee.jones@linaro.org> <20210114152323.2382283-5-lee.jones@linaro.org>
+In-Reply-To: <20210114152323.2382283-5-lee.jones@linaro.org>
+From:   Benjamin Tissoires <benjamin.tissoires@gmail.com>
+Date:   Thu, 14 Jan 2021 17:04:32 +0100
+Message-ID: <CAN+gG=HEVi+Hnpj2gywBPR3WCvLwed6CLV7cTFWTn+CZsqRP=A@mail.gmail.com>
+Subject: Re: [PATCH 4/5] input: touchscreen: surface3_spi: Remove set but
+ unused variable 'timestamp'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input <linux-input@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-14, Petr Mladek <pmladek@suse.com> wrote:
-> It is pitty that I have missed this. I remember that I discussed
-> exactly this problem before, see
-> https://lore.kernel.org/lkml/20190710080402.ab3f4qfnvez6dhtc@axis.com/
+On Thu, Jan 14, 2021 at 4:23 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> And I did exactly the same mistake. I have missed the two users in
-> "arch/powerpc" and "arch/um".
+> Fixes the following W=3D1 kernel build warning(s):
 >
-> It is clear that this problem happens repeatedly.
+>  drivers/input/touchscreen/surface3_spi.c: In function =E2=80=98surface3_=
+spi_process_touch=E2=80=99:
+>  drivers/input/touchscreen/surface3_spi.c:97:6: warning: variable =E2=80=
+=98timestamp=E2=80=99 set but not used [-Wunused-but-set-variable]
+>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Henrik Rydberg <rydberg@bitmath.org>
+> Cc: Benjamin Tissoires <benjamin.tissoires@gmail.com>
+> Cc: linux-input@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Yes, because the semantics are poor and undocumented.
+Reviewed-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 
-> Now, the change in record_printk_text() behavior affects also other
-> callers. For example, syslog_print() fills the buffer completely
-> as well now. I could imagine a userspace code that does the same
-> mistake and it works just by chance.
+Thanks for the cleanup :)
 
-No, syslog_print() works fine. There are only 2 users that think they
-can blindly add a byte at buffer[len]. Their code looks scary just
-seeing it.
+Cheers,
+Benjamin
 
-> We should restore the original record_printk_text() behavior
-> and add the comment explaining why it is done this way.
-
-OK.
-
-> And I would even explicitly add the trailing '\0' as suggested at
-> https://lore.kernel.org/lkml/20190710121049.rwhk7fknfzn3cfkz@pathway.suse.cz/#t
-
-OK. But then this becomes official semantics so powerpc/um no longer
-need to append a terminator.
-
-John Ogness
+> ---
+>  drivers/input/touchscreen/surface3_spi.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/input/touchscreen/surface3_spi.c b/drivers/input/tou=
+chscreen/surface3_spi.c
+> index 731454599fcee..1da23e5585a0d 100644
+> --- a/drivers/input/touchscreen/surface3_spi.c
+> +++ b/drivers/input/touchscreen/surface3_spi.c
+> @@ -94,9 +94,7 @@ static void surface3_spi_report_touch(struct surface3_t=
+s_data *ts_data,
+>
+>  static void surface3_spi_process_touch(struct surface3_ts_data *ts_data,=
+ u8 *data)
+>  {
+> -       u16 timestamp;
+>         unsigned int i;
+> -       timestamp =3D get_unaligned_le16(&data[15]);
+>
+>         for (i =3D 0; i < 13; i++) {
+>                 struct surface3_ts_data_finger *finger;
+> --
+> 2.25.1
+>
