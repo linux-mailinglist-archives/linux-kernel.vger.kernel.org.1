@@ -2,73 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A32F2F6245
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A3B2F6248
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727432AbhANNnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:43:13 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:23382 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726236AbhANNnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:43:12 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DGlqM5wN3z9v19N;
-        Thu, 14 Jan 2021 14:42:23 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id u1zD7buZkaAG; Thu, 14 Jan 2021 14:42:23 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DGlqM4cB3z9v19G;
-        Thu, 14 Jan 2021 14:42:23 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 27DBD8B802;
-        Thu, 14 Jan 2021 14:42:25 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 5HIyx97OUY-n; Thu, 14 Jan 2021 14:42:25 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B45028B800;
-        Thu, 14 Jan 2021 14:42:24 +0100 (CET)
-Subject: Re: SPI not working on 5.10 and 5.11, bisected to 766c6b63aa04 ("spi:
- fix client driver breakages when using GPIO descriptors")
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>
-References: <dc5d8d35-31aa-b36d-72b0-17c8a7c13061@csgroup.eu>
- <20210113123345.GD4641@sirena.org.uk>
- <9400d900-f315-815f-a358-16ed4963da6c@csgroup.eu>
- <20210114115958.GB4854@sirena.org.uk>
- <006d1594-8eec-3aad-1651-919071e89f3b@csgroup.eu>
- <20210114132258.GD4854@sirena.org.uk>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <adbf508d-ed5a-e06a-4a59-98df0229d7b4@csgroup.eu>
-Date:   Thu, 14 Jan 2021 14:42:26 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1728424AbhANNpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 08:45:40 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:57667 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727333AbhANNpj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 08:45:39 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1l02vn-0003FL-4a; Thu, 14 Jan 2021 13:44:55 +0000
+Date:   Thu, 14 Jan 2021 14:44:53 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Viktor Mihajlovski <mihajlov@linux.ibm.com>
+Subject: Re: [RFC 1/1] s390/pci: expose UID checking state in sysfs
+Message-ID: <20210114134453.bkfik4zjt5ehz6d5@wittgenstein>
+References: <20210113185500.GA1918216@bjorn-Precision-5520>
+ <675aa466-59ea-cf8a-6eec-caa6478ba4cd@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210114132258.GD4854@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <675aa466-59ea-cf8a-6eec-caa6478ba4cd@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 14/01/2021 à 14:22, Mark Brown a écrit :
+On Thu, Jan 14, 2021 at 02:20:10PM +0100, Niklas Schnelle wrote:
 > 
-> For GPIO chipselects you should really fix the driver to just hand the
-> GPIO off to the core rather than trying to implement this itself, that
-> will avoid driver specific differences like this.
 > 
+> On 1/13/21 7:55 PM, Bjorn Helgaas wrote:
+> > On Wed, Jan 13, 2021 at 08:47:58AM +0100, Niklas Schnelle wrote:
+> >> On 1/12/21 10:50 PM, Bjorn Helgaas wrote:
+> >>> On Mon, Jan 11, 2021 at 10:38:57AM +0100, Niklas Schnelle wrote:
+> >>>> We use the UID of a zPCI adapter, or the UID of the function zero if
+> >>>> there are multiple functions in an adapter, as PCI domain if and only if
+> >>>> UID Checking is turned on.
+> >>>> Otherwise we automatically generate domains as devices appear.
+> >>>>
+> >>>> The state of UID Checking is thus essential to know if the PCI domain
+> >>>> will be stable, yet currently there is no way to access this information
+> >>>> from userspace.
+> >>>> So let's solve this by showing the state of UID checking as a sysfs
+> >>>> attribute in /sys/bus/pci/uid_checking
+> > 
+> >>>> +/* Global zPCI attributes */
+> >>>> +static ssize_t uid_checking_show(struct kobject *kobj,
+> >>>> +				 struct kobj_attribute *attr, char *buf)
+> >>>> +{
+> >>>> +	return sprintf(buf, "%i\n", zpci_unique_uid);
+> >>>> +}
+> >>>> +
+> >>>> +static struct kobj_attribute sys_zpci_uid_checking_attr =
+> >>>> +	__ATTR(uid_checking, 0444, uid_checking_show, NULL);
+> >>>
+> >>> Use DEVICE_ATTR_RO instead of __ATTR.
+> >>
+> >> It's my understanding that DEVICE_ATTR_* is only for
+> >> per device attributes. This one is global for the entire
+> >> Z PCI. I just tried with BUS_ATTR_RO instead
+> >> and that works but only if I put the attribute at
+> >> /sys/bus/pci/uid_checking instead of with a zpci
+> >> subfolder. This path would work for us too, we
+> >> currently don't have any other global attributes
+> >> that we are planning to expose but those could of
+> >> course come up in the future.
+> > 
+> > Ah, I missed the fact that this is a kobj_attribute, not a
+> > device_attribute.  Maybe KERNEL_ATTR_RO()?  Very few uses so far, but
+> > seems like it might fit?
+> > 
+> > Bjorn
+> > 
+> 
+> KERNEL_ATTR_* is currently not exported in any header. After
+> adding it to include/linuc/sysfs.h it indeed works perfectly.
+> Adding Christian Brauner as suggested by get_maintainers for
+> their opinion. I'm of course willing to provide a patch
 
-IIUC, it is not trivial as it requires implementing transfer_one() instead of the existing 
-transfer_one_message() in the driver. Am I right ?
+Hey Niklas et al. :)
 
-What's the difference/benefit of transfer_one() compared to the existing transfer_one_message() ?
+I think this will need input from Greg. He should be best versed in
+sysfs attributes. The problem with KERNEL_ATTR_* to me seems that it's
+supposed to be kernel internal. Now, that might just be a matter of
+renaming the macro but let's see whether Greg has any better idea or
+more questions. :)
+
+Christian
