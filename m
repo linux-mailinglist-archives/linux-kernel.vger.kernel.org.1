@@ -2,130 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7EA2F6297
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 894382F62A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:03:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729023AbhANOAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:00:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728629AbhANOAV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:00:21 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B9DC061574;
-        Thu, 14 Jan 2021 05:59:40 -0800 (PST)
-Date:   Thu, 14 Jan 2021 13:59:38 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610632779;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ogUHp5aiq/8iZeUtNqms1TJD2XrHTDH5G7wD1ffdJjc=;
-        b=HKf+URE829XVMa9gd06K9BOTKBNKGoWhhmtJ5G8gu4WYDAao9pqHTs7CygEpsBo8q5e34X
-        5BPRb8HGIllKDV0xhIITRqQaISsOhA5hfvUgFIAawVrNye+SKkrUXR4dORP7Lv7O8Az1ZY
-        dLjh0h8D87IIR4LhiayyWY83DuG/6CEIPqrANwBR8pZVMZS/Sq6X/OubEdEhgAtz/BtLDh
-        jGoR2jxwHFxlGFAgekYjj+waRAEWGIqW7PtQAON4VjSnj++F2JvorSf4KFTQE0ZmwrrHuA
-        wbOagLxSpEuj4szjWxenO6A+2gwRdhwGVW8HIlbu7tSp7x0zzUvoJcrfeDvdHQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610632779;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ogUHp5aiq/8iZeUtNqms1TJD2XrHTDH5G7wD1ffdJjc=;
-        b=d7dMMz91CbpGO8cdu2e9zrzwlioyDCWQm7dpEDsmqwhrKgcchXuaXH/FGLgLtvlpAgZCct
-        feBEXn7IA6i6R5Aw==
-From:   "tip-bot2 for Sami Tolvanen" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] x86/sgx: Fix the return type of sgx_init()
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Borislav Petkov <bp@suse.de>,
-        Darren Kenny <darren.kenny@oracle.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210113232311.277302-1-samitolvanen@google.com>
-References: <20210113232311.277302-1-samitolvanen@google.com>
+        id S1729083AbhANOCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:02:31 -0500
+Received: from mga14.intel.com ([192.55.52.115]:64257 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726236AbhANOCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:02:30 -0500
+IronPort-SDR: yxBeRgV46G0OXxt2EuNS1dTJReuZT8BLLDfNU1FQUQ/GgWMn6BxM2/7+chHw1FE/w+CeWZXVw3
+ MFxACtLtk8Pg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="177587528"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="177587528"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 06:00:44 -0800
+IronPort-SDR: YQM+ZwmYxir5mt/GQNL8nFQW8fJzbU/DuBxHPNjaVxDkdqEiwiPFJU8LBRidzr36y7wXpAl3Xn
+ YkE//FKZrrEA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="465258899"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 14 Jan 2021 06:00:41 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 14 Jan 2021 16:00:40 +0200
+Date:   Thu, 14 Jan 2021 16:00:40 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] software node: Introduce
+ device_add_software_node()
+Message-ID: <20210114140040.GB2864731@kuha.fi.intel.com>
+References: <20210111141045.14027-1-heikki.krogerus@linux.intel.com>
+ <20210111141045.14027-2-heikki.krogerus@linux.intel.com>
+ <2f552de5-4839-a1e5-3012-c56f9fa3bdd5@gmail.com>
+ <20210113155504.GS4077@smile.fi.intel.com>
+ <20210113155812.GT4077@smile.fi.intel.com>
 MIME-Version: 1.0
-Message-ID: <161063277811.414.15752543711619531745.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113155812.GT4077@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sgx branch of tip:
+On Wed, Jan 13, 2021 at 05:58:12PM +0200, Andy Shevchenko wrote:
+> On Wed, Jan 13, 2021 at 05:55:04PM +0200, Andy Shevchenko wrote:
+> > On Wed, Jan 13, 2021 at 12:40:03AM +0000, Daniel Scally wrote:
+> > > On 11/01/2021 14:10, Heikki Krogerus wrote:
+> > 
+> > ...
+> > 
+> > > > +/**
+> > > > + * device_remove_software_node - Remove device's software node
+> > > > + * @dev: The device with the software node.
+> > > > + *
+> > > > + * This function will unregister the software node of @dev.
+> > > > + */
+> > > > +void device_remove_software_node(struct device *dev)
+> > > > +{
+> > > > +	struct swnode *swnode;
+> > > > +
+> > > > +	swnode = dev_to_swnode(dev);
+> > > > +	if (!swnode)
+> > > > +		return;
+> > > > +
+> > > > +	kobject_put(&swnode->kobj);
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(device_remove_software_node);
+> > > 
+> > > I wonder if this also ought to set dev_fwnode(dev)->secondary back to
+> > > ERR_PTR(-ENODEV)?
+> > 
+> > Looking more into this code I think we need to call
+> > 
+> > 	set_secondary_fwnode(dev, NULL);
+> > 
+> > among these lines.
+> > 
+> > The real problem is that set_primary_fwnode() and set_secondary_fwnode() have
+> > no reference counting. If we have a chain ->primary->secondary->-ENODEV is
+> > being used somewhere we can't tell from here.
+> > 
+> > So, in practice it means that we lack of some kind of primary node to increment
+> > reference count of the secondary node when the latter is chained to the given
+> > primary. But it makes things too complicated. Any other options for shared
+> > primary-secondary chain? Standalone primary along with standalone (exclusive)
+> > secondary doesn't need this AFAICS. Perhaps a flag to primary like shared /
+> > exclusive that will prevent breaking the chain in set_secondary_fwnode()?
+> 
+> Or maybe I imagined only theoretical cases and we have no such issue?
 
-Commit-ID:     745b56b065618aaee7c2ab4ca3c85e2cdbebc1d6
-Gitweb:        https://git.kernel.org/tip/745b56b065618aaee7c2ab4ca3c85e2cdbebc1d6
-Author:        Sami Tolvanen <samitolvanen@google.com>
-AuthorDate:    Wed, 13 Jan 2021 15:23:11 -08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 14 Jan 2021 14:50:54 +01:00
+I think we should really start looking into the possibility of
+removing the whole secondary coupling, because that is the thing that
+is crippling us.
 
-x86/sgx: Fix the return type of sgx_init()
+Br,
 
-device_initcall() expects a function of type initcall_t, which returns
-an integer. Change the signature of sgx_init() to match.
-
-Fixes: e7e0545299d8c ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
-Link: https://lkml.kernel.org/r/20210113232311.277302-1-samitolvanen@google.com
----
- arch/x86/kernel/cpu/sgx/main.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index c519fc5..8df81a3 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -700,25 +700,27 @@ static bool __init sgx_page_cache_init(void)
- 	return true;
- }
- 
--static void __init sgx_init(void)
-+static int __init sgx_init(void)
- {
- 	int ret;
- 	int i;
- 
- 	if (!cpu_feature_enabled(X86_FEATURE_SGX))
--		return;
-+		return -ENODEV;
- 
- 	if (!sgx_page_cache_init())
--		return;
-+		return -ENOMEM;
- 
--	if (!sgx_page_reclaimer_init())
-+	if (!sgx_page_reclaimer_init()) {
-+		ret = -ENOMEM;
- 		goto err_page_cache;
-+	}
- 
- 	ret = sgx_drv_init();
- 	if (ret)
- 		goto err_kthread;
- 
--	return;
-+	return 0;
- 
- err_kthread:
- 	kthread_stop(ksgxd_tsk);
-@@ -728,6 +730,8 @@ err_page_cache:
- 		vfree(sgx_epc_sections[i].pages);
- 		memunmap(sgx_epc_sections[i].virt_addr);
- 	}
-+
-+	return ret;
- }
- 
- device_initcall(sgx_init);
+-- 
+heikki
