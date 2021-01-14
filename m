@@ -2,89 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2B22F6937
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:16:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF612F693F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:22:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729146AbhANSPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:15:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57470 "EHLO
+        id S1727960AbhANSRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:17:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbhANSPt (ORCPT
+        with ESMTP id S1726035AbhANSRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:15:49 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B16C061575;
-        Thu, 14 Jan 2021 10:15:08 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id 18so2665558ybx.2;
-        Thu, 14 Jan 2021 10:15:08 -0800 (PST)
+        Thu, 14 Jan 2021 13:17:14 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A84C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:16:34 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id u21so7565093lja.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:16:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Yb+qq3jE3dz702Bx7BFxZGv/G0yc9+3LN1cCdlwEu2c=;
-        b=tf6V0LKwNOcgW88htXLBNwAp036KtO9+g4Enk+cOmblULhG9QNTt+SJFNode6W9R7W
-         aEr0TSj0pNIbvuStefllwW88kh/Z/3DPS87zuAUxsqVbfJtK4Fx6LrXfrxula9bCf8Ye
-         EVm6Dfl1fLBL9/jx4Wh+J+hiVC/JPsV/cYEit4IjRy4tNHvh6ocLGwVTjs5WlK1phE6a
-         A69dpGXIntEoJwA3KYvW4W6N2T6hrMNUEzoohV3UOobp48Q9yBJ3RpLbLwScq8mC4jJa
-         OJjsCPp7p92dxF/Q4C6CXkyOzystuGDksqTGkyI1y+xJENPQnR0rwQ6iwMGrV9tdL/dc
-         WlMw==
+        bh=Aft+47NxygdBFcq9TFp+5i9C19WqLdlSHw/uTUCv2iM=;
+        b=AgMjhyXp6oKx6fm9HEWMrWNr/lXEqclKxgHaCoAvlOMJ1D6LcOW6GfjutxrkU2cEp+
+         IPlvcixV4GV7nx92ho32piLUh2Aj8crb+Re1rjCltubtNGngNzNvYVbYznojeuRtOP2H
+         ZQVXkZPhiFkRx0MTXTiZ+uBwhHuwY03R+cENU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Yb+qq3jE3dz702Bx7BFxZGv/G0yc9+3LN1cCdlwEu2c=;
-        b=X6Qs0Vi1jwtmCMdFOs3k5kQ7oJ4Ku2EMKtt5V1l5mpSVLLnjSiWA/F8bLJJOeFzYYN
-         ZM9l+aBgwfZ/mvhxpRo4Zr4Mnp6DS/XD4FZRmk8iN/PqOqZnilkRveV6WEwJS8o623D6
-         DFllKGyyj1Zq9D0jpTn0LDl4q81BQbD+o6Wl5qhmwhbZ7NjjWQlgh0rH8/WXl4c2TARL
-         4Bywrfx1mBkjQ9//ssKFg1PJPZ2sPEKgU51QMsRL7ga7rUopfx9gr+U+zOZuIOXYmd9S
-         177c64eegElfACs6EG+shvZpha/qw5KkPg9zHSrdsBW+Zuv060yICrPPtfyfG7Lt7Bgl
-         FyEA==
-X-Gm-Message-State: AOAM532IH5mCfxr7L/9x/0PCifwdTVjX18E1hT9dudjz8tIJkcmmvQxx
-        o1Gd34sy/4CfZF81Ib6HsttLmMOI9LDXutM7y8w=
-X-Google-Smtp-Source: ABdhPJwSnU1m7hBTs6vE0HFvgG2Je2nQPrBksssYRHWESn3i8D3RIQGU+OO5Wy4e8d/nRxDIq5PLL866JaCuppU6/kM=
-X-Received: by 2002:a25:ac03:: with SMTP id w3mr11967015ybi.135.1610648108210;
- Thu, 14 Jan 2021 10:15:08 -0800 (PST)
+        bh=Aft+47NxygdBFcq9TFp+5i9C19WqLdlSHw/uTUCv2iM=;
+        b=oV3LCIWjty50wVpyXeCrnePOnfJ5GPUGbWDoH6/2Qa7lt6zYOO7fzmQ5JWyx5TXnev
+         o1TnhMQpDBjl0zkj0GXaAT5ir1mMnFlLJIC1UzJpq+cVCifP4WFHLtiZhzMEXwdjtINf
+         hPcT7QK2xhHqrGKGS/mNqjVrpzOf/X1/XjlfkHqUpk+GeZJxfldCw8Mp7mj+VV9i6CjJ
+         ueWqy51A47byMp1GawvJc3UeJa4DfxUFYaj6Pv4jtWQmHL7qdKT88DqAvhAJO9yjbxvt
+         jof/sG1uGdh0v71CPeydIZm9pcu1M3l/nhZDFcmUdV9KbHKJSeJhIRdRcU2zW+CGuxhE
+         D8Lw==
+X-Gm-Message-State: AOAM532dzxGw7P83XdYHnhOaKuzyiRawHlFqYg8Rk7JhJGXNtv+UcIyJ
+        o05ATmrH89gFMALlfI34/ZscJAiHZWzR5Q==
+X-Google-Smtp-Source: ABdhPJwmGh7QSEiq1RKEIOyS4kd5oC9INSZgNnuAl20T77/3g4QoB/dfmnjQ5vnKVcS7HwvG5WlOYA==
+X-Received: by 2002:a2e:9dc7:: with SMTP id x7mr3648820ljj.46.1610648192082;
+        Thu, 14 Jan 2021 10:16:32 -0800 (PST)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id a18sm535983ljp.5.2021.01.14.10.16.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Jan 2021 10:16:30 -0800 (PST)
+Received: by mail-lf1-f48.google.com with SMTP id h205so9351318lfd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:16:29 -0800 (PST)
+X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr3612591lfu.40.1610648189395;
+ Thu, 14 Jan 2021 10:16:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20210114042420.229524-1-masahiroy@kernel.org>
-In-Reply-To: <20210114042420.229524-1-masahiroy@kernel.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 14 Jan 2021 19:14:56 +0100
-Message-ID: <CANiq72krA1VrVC2ecUCQFAgJC07od8POjpVUoGFYJOHjZ23ckQ@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: check the minimum compiler version in Kconfig
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Will Deacon <will@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210114175934.13070-1-will@kernel.org> <20210114175934.13070-5-will@kernel.org>
+In-Reply-To: <20210114175934.13070-5-will@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 14 Jan 2021 10:16:13 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wixsPuT5ingsEqj2a1PKuc+rTS_oeD_VL0p8G_3oRiJhA@mail.gmail.com>
+Message-ID: <CAHk-=wixsPuT5ingsEqj2a1PKuc+rTS_oeD_VL0p8G_3oRiJhA@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/8] mm: Separate fault info out of 'struct vm_fault'
+To:     Will Deacon <will@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Hugh Dickins <hughd@google.com>,
+        Android Kernel Team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 5:25 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Thu, Jan 14, 2021 at 10:01 AM Will Deacon <will@kernel.org> wrote:
 >
-> The cc-version.sh also shows the error if the compiler is old:
->
->   $ make defconfig CC=clang-9
->   *** Default configuration is based on 'x86_64_defconfig'
->   ***
->   *** Compiler is too old.
->   ***   Your Clang version:    9.0.1
->   ***   Minimum Clang version: 10.0.1
->   ***
->   scripts/Kconfig.include:46: Sorry, this compiler is unsupported.
+> Try to clean this up by splitting the immutable fault information out
+> into a new 'struct vm_fault_info' which is embedded in 'struct vm_fault'
+> and will later be made 'const'. The vast majority of this change was
+> performed with a coccinelle patch:
 
-That looks nice. Hopefully we can do the same approach for other tools too!
+You may have a reason for doing it this way, but my reaction to this
+was: "just make the new embedded struct unnamed".
 
-> I put the stub for ICC because I see <linux/compiler-intel.h> although
-> I am not sure if building the kernel with ICC is well-supported.
+Then you wouldn't need to do all the automated coccinelle changes.
 
-I doubt it, and there seems to be no maintainer listed either. I think
-it could be considered for removal in an RFC.
+Is there some reason you didn't do that, or just a "oh, I didn't think of it".
 
-Cheers,
-Miguel
+                Linus
