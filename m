@@ -2,78 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B81B2F5E00
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029452F5E05
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbhANJpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:45:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727374AbhANJpE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:45:04 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BB5C061786;
-        Thu, 14 Jan 2021 01:44:32 -0800 (PST)
-Received: from zn.tnic (p200300ec2f1aa900dc6a18505a7e3253.dip0.t-ipconnect.de [IPv6:2003:ec:2f1a:a900:dc6a:1850:5a7e:3253])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7A7F21EC04DF;
-        Thu, 14 Jan 2021 10:44:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610617470;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=IhJhyfTFkRRRrVajxJ0ZNRUtaSQG9x8tTIZfVOZztUo=;
-        b=br7TELCX+sXIAs1Jycl3nIAzl91fQdlpyN9jlfBixlJZU4vs7lALUUoG/tH7DXmS1zMGLp
-        vO+NWgXDjnOHUlER23dm9wD9/4UVvrP7x3CRD2Vg/oCb/72r3vONZaM+gpefYJeyrc9Ej0
-        HYSlMJC+/t6cgATWMarOQBvABgCHRY8=
-Date:   Thu, 14 Jan 2021 10:44:25 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Krzysztof Mazur <krzysiek@podlesie.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/lib: don't use MMX before FPU initialization
-Message-ID: <20210114094425.GA12284@zn.tnic>
-References: <20201228160631.32732-1-krzysiek@podlesie.net>
- <20210112000923.GK25645@zn.tnic>
- <20210114092218.GA26786@shrek.podlesie.net>
+        id S1727319AbhANJrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:47:16 -0500
+Received: from mga04.intel.com ([192.55.52.120]:2755 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725989AbhANJrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 04:47:14 -0500
+IronPort-SDR: rsC1YrVEMcq/wG7s43ymrC1TazlcwaigvYTizxVGfe88sIBTB9tiZ3TPLYTLvsyjWnQXKZdJAY
+ G4vvdo6BDxYw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="175757143"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="175757143"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 01:46:42 -0800
+IronPort-SDR: sDmzKPaAVGa0n0zU1Ppdet5foPYkhwmBhiAGtHbRPO28n8aEdK8EpVhtMohL4fi8Nx2hYo5uCu
+ Dj1yZ2b1Qf1Q==
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="382211169"
+Received: from dforourk-mobl1.ger.corp.intel.com (HELO localhost) ([10.213.254.146])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 01:46:36 -0800
+From:   Jani Nikula <jani.nikula@intel.com>
+To:     Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Cc:     thaytan@noraisin.net, Vasily Khoruzhick <anarsoul@gmail.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Ramalingam C <ramalingam.c@intel.com>,
+        Anshuman Gupta <anshuman.gupta@intel.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/4] drm/i915: Keep track of pwm-related backlight hooks separately
+In-Reply-To: <871reornzr.fsf@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210113235426.2190684-1-lyude@redhat.com> <20210113235426.2190684-2-lyude@redhat.com> <871reornzr.fsf@intel.com>
+Date:   Thu, 14 Jan 2021 11:46:33 +0200
+Message-ID: <87y2gvq29y.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210114092218.GA26786@shrek.podlesie.net>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 10:22:18AM +0100, Krzysztof Mazur wrote:
-> So, I'm guessing that the K7 does not like ldmxcsr(), when FXSR
-> or/and XMM are not enabled in CR4 (in fpu__init_cpu_generic()).
-> I verified that by adding kernel_fpu_begin()+kernel_fpu_end()
-> pair, before and after cr4_set_bits() in fpu__init_cpu_generic()
-> (on a kernel with disabled early MMX-optimized memcpy).
+On Thu, 14 Jan 2021, Jani Nikula <jani.nikula@intel.com> wrote:
+> On Wed, 13 Jan 2021, Lyude Paul <lyude@redhat.com> wrote:
+>> Currently, every different type of backlight hook that i915 supports is
+>> pretty straight forward - you have a backlight, probably through PWM
+>> (but maybe DPCD), with a single set of platform-specific hooks that are
+>> used for controlling it.
+>>
+>> HDR backlights, in particular VESA and Intel's HDR backlight
+>> implementations, can end up being more complicated. With Intel's
+>> proprietary interface, HDR backlight controls always run through the
+>> DPCD. When the backlight is in SDR backlight mode however, the driver
+>> may need to bypass the TCON and control the backlight directly through
+>> PWM.
+>>
+>> So, in order to support this we'll need to split our backlight callbacks
+>> into two groups: a set of high-level backlight control callbacks in
+>> intel_panel, and an additional set of pwm-specific backlight control
+>> callbacks. This also implies a functional changes for how these
+>> callbacks are used:
+>>
+>> * We now keep track of two separate backlight level ranges, one for the
+>>   high-level backlight, and one for the pwm backlight range
+>> * We also keep track of backlight enablement and PWM backlight
+>>   enablement separately
+>> * Since the currently set backlight level might not be the same as the
+>>   currently programmed PWM backlight level, we stop setting
+>>   panel->backlight.level with the currently programmed PWM backlight
+>>   level in panel->backlight.pwm_funcs->setup(). Instead, we rely
+>>   on the higher level backlight control functions to retrieve the
+>>   current PWM backlight level (in this case, intel_pwm_get_backlight()).
+>>   Note that there are still a few PWM backlight setup callbacks that
+>>   do actually need to retrieve the current PWM backlight level, although
+>>   we no longer save this value in panel->backlight.level like before.
+>>
+>> Additionally, we drop the call to lpt_get_backlight() in
+>> lpt_setup_backlight(), and avoid unconditionally writing the PWM value that
+>> we get from it and only write it back if we're in CPU mode, and switching
+>> to PCH mode. The reason for this is because in the original codepath for
+>> this, it was expected that the intel_panel_bl_funcs->setup() hook would be
+>> responsible for fetching the initial backlight level. On lpt systems, the
+>> only time we could ever be in PCH backlight mode is during the initial
+>> driver load - meaning that outside of the setup() hook, lpt_get_backlight()
+>> will always be the callback used for retrieving the current backlight
+>> level. After this patch we still need to fetch and write-back the PCH
+>> backlight value if we're switching from CPU mode to PCH, but because
+>> intel_pwm_setup_backlight() will retrieve the backlight level after setup()
+>> using the get() hook, which always ends up being lpt_get_backlight(). Thus
+>> - an additional call to lpt_get_backlight() in lpt_setup_backlight() is
+>> made redundant.
+>>
+>> v7:
+>> * Use panel->backlight.pwm_funcs->get() to get the backlight level in
+>>   intel_pwm_setup_backlight(), lest we upset lockdep
+>
+> I think this change is wrong, as it now bypasses
+> intel_panel_invert_pwm_level(). Please explain. I don't see anything in
+> there that could trigger a lockdep warning.
+>
+> Perhaps it's the below you're referring to, but I think the root cause
+> is different?
+>
+>> @@ -1788,22 +1780,17 @@ static int vlv_setup_backlight(struct intel_connector *connector, enum pipe pipe
+>>  	panel->backlight.active_low_pwm = ctl2 & BLM_POLARITY_I965;
+>>  
+>>  	ctl = intel_de_read(dev_priv, VLV_BLC_PWM_CTL(pipe));
+>> -	panel->backlight.max = ctl >> 16;
+>> +	panel->backlight.pwm_level_max = ctl >> 16;
+>>  
+>> -	if (!panel->backlight.max)
+>> -		panel->backlight.max = get_backlight_max_vbt(connector);
+>> +	if (!panel->backlight.pwm_level_max)
+>> +		panel->backlight.pwm_level_max = get_backlight_max_vbt(connector);
+>>  
+>> -	if (!panel->backlight.max)
+>> +	if (!panel->backlight.pwm_level_max)
+>>  		return -ENODEV;
+>>  
+>> -	panel->backlight.min = get_backlight_min_vbt(connector);
+>> +	panel->backlight.pwm_level_min = get_backlight_min_vbt(connector);
+>>  
+>> -	val = _vlv_get_backlight(dev_priv, pipe);
+>
+> Turns out this is a meaningful change, as the higher level
+> vlv_get_backlight() function that will be called instead hits:
+>
+> <4>[   12.870202] i915 0000:00:02.0: drm_WARN_ON(!drm_modeset_is_locked(&dev->mode_config.connection_mutex))
+>
+> in intel_connector_get_pipe(connector).
+>
+> It's a real problem. See this, it's obvious (in retrospect):
+>
+> https://intel-gfx-ci.01.org/tree/drm-tip/Patchwork_19348/fi-bsw-kefka/igt@runner@aborted.html
+> https://intel-gfx-ci.01.org/tree/drm-tip/Patchwork_19348/fi-bsw-kefka/boot0.txt
+>
+> I don't have a quick answer how this could be handled neatly. Perhaps
+> the ->get call (or rather, intel_pwm_get_backlight) to set
+> panel->backlight.level needs to be spread out to the end of each
+> pwm_funcs->setup function after all? Though it's at the wrong
+> abstraction level wrt level being a higher level, uh, level.
+>
+> I don't think it's enough to just grab connection_mutex around setup
+> (and even checking if we can do that is a bunch of digging) - I think
+> it's likely intel_connector_get_pipe() returns INVALID_PIPE at that
+> point.
+>
+> Okay, here's a clumsy suggestion that I think works around this and
+> unblocks the series until we figure out a better way:
+>
+> 1. At the end of vlv_setup_backlight():
+>
+> 	/* add fixme comment about how wrong this is */
+> 	panel->backlight.level = intel_panel_invert_pwm_level(connector, _vlv_get_backlight());
+> 	
+>
+> 2. In intel_pwm_setup_backlight() only set level if ->setup didn't:
+>
+> 	if (!panel->backlight.level)
+>         	panel->backlight.level = intel_pwm_get_backlight(connector);
 
-Ah, ok, that makes sense. If X86_CR4_OSFXSR is not set, we cannot use
-legacy SSE1 insns and LDMXCSR is one of them.
+Of course, if ->setup ends up setting the level to 0, it hits the same
+issue. :(
 
-I believe the correct fix should be
-
-	if (unlikely(in_interrupt()) || !(cr4_read_shadow() & X86_CR4_OSFXSR))
-		return __memcpy(to, from, len);
-
-in _mmx_memcpy() as you had it in your first patch.
-
-Wanna try it and if it works, send a proper patch?
-
-Also pls put a comment above it that that CR4 bit needs to be tested
-before using SSE insns.
-
-Thx.
+>
+> What do you think?
+>
+> BR,
+> Jani.
+>
+>> -	val = intel_panel_compute_brightness(connector, val);
+>> -	panel->backlight.level = clamp(val, panel->backlight.min,
+>> -				       panel->backlight.max);
+>> -
+>> -	panel->backlight.enabled = ctl2 & BLM_PWM_ENABLE;
+>> +	panel->backlight.pwm_enabled = ctl2 & BLM_PWM_ENABLE;
+>>  
+>>  	return 0;
+>>  }
+>> @@ -1828,24 +1815,18 @@ bxt_setup_backlight(struct intel_connector *connector, enum pipe unused)
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Jani Nikula, Intel Open Source Graphics Center
