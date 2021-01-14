@@ -2,640 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5E52F6923
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F362F6925
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729822AbhANSJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:09:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56074 "EHLO
+        id S1729821AbhANSJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:09:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729803AbhANSJR (ORCPT
+        with ESMTP id S1729811AbhANSJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:09:17 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E87C061574;
-        Thu, 14 Jan 2021 10:08:36 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id 133881F45D13
-From:   Helen Koike <helen.koike@collabora.com>
-To:     linux-media@vger.kernel.org
-Cc:     hverkuil@xs4all.nl, mchehab@kernel.org, hans.verkuil@cisco.com,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@iki.fi,
-        boris.brezillon@collabora.com, hiroh@chromium.org,
-        nicolas@ndufresne.ca, Brian.Starkey@arm.com, kernel@collabora.com,
-        narmstrong@baylibre.com, linux-kernel@vger.kernel.org,
-        frkoenig@chromium.org, stanimir.varbanov@linaro.org,
-        tfiga@chromium.org
-Subject: [RFC PATCH v6 11/11] media: docs: add documentation for the Extended API
-Date:   Thu, 14 Jan 2021 15:07:38 -0300
-Message-Id: <20210114180738.1758707-12-helen.koike@collabora.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210114180738.1758707-1-helen.koike@collabora.com>
-References: <20210114180738.1758707-1-helen.koike@collabora.com>
+        Thu, 14 Jan 2021 13:09:18 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 533DDC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:08:38 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id z1so2631346ybr.4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:08:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=C3hrT05Ul8fFZR4pfF1BRuAXcWLu1jyPFeOD/jqNgsY=;
+        b=W//c8CxUQhepAZnCagAxNOMraaY4URnyIPxbuv6tKgCDCT2bTkCUSUcZ6arpPk9Y2/
+         iuBX6GysBL1MOTHSJvnrLyPqyi19qzqNgWUX8RVeEj1/h6HginlvTTbRqWiGJXBI8vPJ
+         E4tkpVHaJ77zNCoEsCYttww3/Fyl5gwe0GxbwUUyGA/2CC+jy7/Y6hY1QZE+M0BPkI8e
+         /OdLjGb3KTAMndjjw3qmDjysk4fW6oAacH4POl+FafpafDJW3IVoYsSNi7sYGq4DL9uU
+         +y1rdQBHWy2ydtiPolGVGD9fPfzGDNfdHON8imhCR9m9NJKaGBR5d3+Tt7OIb9bxX4ZC
+         Hn0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=C3hrT05Ul8fFZR4pfF1BRuAXcWLu1jyPFeOD/jqNgsY=;
+        b=ZnqcO7UuXUO/VGOB0oTTR2mcwkZEYvA7m9vikWtvg49D4jdVh71U6uLOIDPmBO3+sn
+         NIWXmGqPdf7VHF8/KH7xgApRyo1f/C7FbbQcj4WoVGRqireDtB7nIWPL4j/1pLnF5N6u
+         IYNW5YWXz1jJk6p2YLahGri2jlbsiP/oZEk0qOqKDkpwqeIJaM79J61Un3A3u90SHD+y
+         LYBKjzUC9Fw3noH0b+22qNM9YNdTyl45PhZERVoyB7olzqkCqNiomgriMvIFw49u8Y93
+         GOl9jO2EFdIM7Ex1nsOlm7ej1MMQEN3mQ3l71pPJ8EbvLlsmSmRG/GXyfUbC9WsiYQxS
+         1BaA==
+X-Gm-Message-State: AOAM5322zAhMULrPJNlCtwjq5ZiuoDo5vL7NRoHYK3FS5Aj8JsGcoVkp
+        k/T4JU2wyf4Ks58YieBzkVPJamrdU3bjuQZ8vlihDA==
+X-Google-Smtp-Source: ABdhPJwt90mev9yBW1IC9HaxfQq8riZdp6xXEz9z0DDRQd5d6UvCrgDF2E2HpViuNUdZm0IOtHNK2EOM9Zmm9oJuDK8=
+X-Received: by 2002:a25:8b8b:: with SMTP id j11mr9140317ybl.310.1610647717290;
+ Thu, 14 Jan 2021 10:08:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201218031703.3053753-1-saravanak@google.com>
+ <20201218031703.3053753-6-saravanak@google.com> <CGME20210111141814eucas1p1f388df07b789693a999042b27f0d8c2a@eucas1p1.samsung.com>
+ <5484316b-0f27-6c36-9259-5c765bb6b96c@samsung.com> <2556a69b-5da5-bf80-e051-df2d02fbc40f@samsung.com>
+ <CAGETcx8-1YzF2Br0sszJROLAWo3DSm27K071Md9wY5SOwUeLdw@mail.gmail.com>
+ <fde65185-fd00-1f79-0f80-245eaa6c95cb@samsung.com> <CAGETcx_QY3h83q1fSr=h_vMQdH-TMhVYPozPuSr=q4uv2Lr48w@mail.gmail.com>
+ <ed32b9c7-b6d6-bf86-5e43-fd0c4aa75dd6@samsung.com> <CAGETcx-aEitKpU0r-iYG-AaKMd4bZmNFWKfKeUNeq3m+TKjtjA@mail.gmail.com>
+ <3db354fb-28e8-78c7-cf73-a9042228d50b@samsung.com>
+In-Reply-To: <3db354fb-28e8-78c7-cf73-a9042228d50b@samsung.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 14 Jan 2021 10:08:01 -0800
+Message-ID: <CAGETcx-w5+uMB9vWzVgGdcYqTBFfXDzwFWuoL4x0M8S3DZY32g@mail.gmail.com>
+Subject: Re: [PATCH v1 5/5] driver core: Set fw_devlink=on by default
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation and update references in current documentation for the
-Extended API.
+On Wed, Jan 13, 2021 at 11:36 PM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+>
+> Hi Saravana,
+>
+> On 13.01.2021 20:23, Saravana Kannan wrote:
+> > On Tue, Jan 12, 2021 at 11:04 PM Marek Szyprowski
+> > <m.szyprowski@samsung.com> wrote:
+> >> On 12.01.2021 21:51, Saravana Kannan wrote:
+> >>> On Mon, Jan 11, 2021 at 11:11 PM Marek Szyprowski
+> >>> <m.szyprowski@samsung.com> wrote:
+> >>>> On 11.01.2021 22:47, Saravana Kannan wrote:
+> >>>>> On Mon, Jan 11, 2021 at 6:18 AM Marek Szyprowski
+> >>>>> <m.szyprowski@samsung.com> wrote:
+> >>>>>> On 11.01.2021 12:12, Marek Szyprowski wrote:
+> >>>>>>> On 18.12.2020 04:17, Saravana Kannan wrote:
+> >>>>>>>> Cyclic dependencies in some firmware was one of the last remaini=
+ng
+> >>>>>>>> reasons fw_devlink=3Don couldn't be set by default. Now that cyc=
+lic
+> >>>>>>>> dependencies don't block probing, set fw_devlink=3Don by default=
+.
+> >>>>>>>>
+> >>>>>>>> Setting fw_devlink=3Don by default brings a bunch of benefits (c=
+urrently,
+> >>>>>>>> only for systems with device tree firmware):
+> >>>>>>>> * Significantly cuts down deferred probes.
+> >>>>>>>> * Device probe is effectively attempted in graph order.
+> >>>>>>>> * Makes it much easier to load drivers as modules without having=
+ to
+> >>>>>>>>       worry about functional dependencies between modules (depmo=
+d is still
+> >>>>>>>>       needed for symbol dependencies).
+> >>>>>>>>
+> >>>>>>>> If this patch prevents some devices from probing, it's very like=
+ly due
+> >>>>>>>> to the system having one or more device drivers that "probe"/set=
+ up a
+> >>>>>>>> device (DT node with compatible property) without creating a str=
+uct
+> >>>>>>>> device for it.  If we hit such cases, the device drivers need to=
+ be
+> >>>>>>>> fixed so that they populate struct devices and probe them like n=
+ormal
+> >>>>>>>> device drivers so that the driver core is aware of the devices a=
+nd their
+> >>>>>>>> status. See [1] for an example of such a case.
+> >>>>>>>>
+> >>>>>>>> [1] -
+> >>>>>>>> https://protect2.fireeye.com/v1/url?k=3D68f5d8ba-376ee1f5-68f453=
+f5-0cc47a30d446-324e64700545ab93&q=3D1&e=3Dfb455b9e-c8c7-40d0-8e3c-d9d3713d=
+519b&u=3Dhttps%3A%2F%2Flore.kernel.org%2Flkml%2FCAGETcx9PiX%3D%3DmLxB9PO8My=
+yk6u2vhPVwTMsA5NkD-ywH5xhusw%40mail.gmail.com%2F
+> >>>>>>>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >>>>>>> This patch landed recently in linux next-20210111 as commit
+> >>>>>>> e590474768f1 ("driver core: Set fw_devlink=3Don by default"). Sad=
+ly it
+> >>>>>>> breaks Exynos IOMMU operation, what causes lots of devices being
+> >>>>>>> deferred and not probed at all. I've briefly checked and noticed =
+that
+> >>>>>>> exynos_sysmmu_probe() is never called after this patch. This is r=
+eally
+> >>>>>>> strange for me, as the SYSMMU controllers on Exynos platform are
+> >>>>>>> regular platform devices registered by the OF code. The driver co=
+de is
+> >>>>>>> here: drivers/iommu/exynos-iommu.c, example dts:
+> >>>>>>> arch/arm/boot/dts/exynos3250.dtsi (compatible =3D "samsung,exynos=
+-sysmmu").
+> >>>>>> Okay, I found the source of this problem. It is caused by Exynos p=
+ower
+> >>>>>> domain driver, which is not platform driver yet. I will post a pat=
+ch,
+> >>>>>> which converts it to the platform driver.
+> >>>>> Thanks Marek! Hopefully the debug logs I added were sufficient to
+> >>>>> figure out the reason.
+> >>>> Frankly, it took me a while to figure out that device core waits for=
+ the
+> >>>> power domain devices. Maybe it would be possible to add some more de=
+bug
+> >>>> messages or hints? Like the reason of the deferred probe in
+> >>>> /sys/kernel/debug/devices_deferred ?
+> >>> There's already a /sys/devices/.../<device>/waiting_for_supplier file
+> >>> that tells you if the device is waiting for a supplier device to be
+> >>> added. That file goes away once the device probes. If the file has 1,
+> >>> then it's waiting for the supplier device to be added (like your
+> >>> case). If it's 0, then the device is just waiting on one of the
+> >>> existing suppliers to probe. You can find the existing suppliers
+> >>> through /sys/devices/.../<device>/supplier:*/supplier. Also, flip
+> >>> these dev_dbg() to dev_info() if you need more details about deferred
+> >>> probing.
+> >> Frankly speaking I doubt that anyone will find those. Even experienced
+> >> developer might need some time to figure it out.
+> >>
+> >> I expect that such information will be at least in the mentioned
+> >> /sys/kernel/debug/devices_deferred file. We already have infrastructur=
+e
+> >> for putting the deferred probe reason there, see dev_err_probe()
+> >> function. Even such a simple change makes the debugging this issue muc=
+h
+> >> easier:
+> >>
+> >> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> >> index cd8e518fadd6..ceb5aed5a84c 100644
+> >> --- a/drivers/base/core.c
+> >> +++ b/drivers/base/core.c
+> >> @@ -937,12 +937,13 @@ int device_links_check_suppliers(struct device *=
+dev)
+> >>           mutex_lock(&fwnode_link_lock);
+> >>           if (dev->fwnode && !list_empty(&dev->fwnode->suppliers) &&
+> >>               !fw_devlink_is_permissive()) {
+> >> -               dev_dbg(dev, "probe deferral - wait for supplier %pfwP=
+\n",
+> >> +               ret =3D dev_err_probe(dev, -EPROBE_DEFER,
+> >> +                       "probe deferral - wait for supplier %pfwP\n",
+> >> list_first_entry(&dev->fwnode->suppliers,
+> >>                           struct fwnode_link,
+> >>                           c_hook)->supplier);
+> >>                   mutex_unlock(&fwnode_link_lock);
+> >> -               return -EPROBE_DEFER;
+> >> +               return ret;
+> >>           }
+> >>           mutex_unlock(&fwnode_link_lock);
+> >>
+> >> @@ -955,9 +956,9 @@ int device_links_check_suppliers(struct device *de=
+v)
+> >>                   if (link->status !=3D DL_STATE_AVAILABLE &&
+> >>                       !(link->flags & DL_FLAG_SYNC_STATE_ONLY)) {
+> >>                           device_links_missing_supplier(dev);
+> >> -                       dev_dbg(dev, "probe deferral - supplier %s not
+> >> ready\n",
+> >> +                       ret =3D dev_err_probe(dev, -EPROBE_DEFER,
+> >> +                               "probe deferral - supplier %s not read=
+y\n",
+> >>                                   dev_name(link->supplier));
+> >> -                       ret =3D -EPROBE_DEFER;
+> >>                           break;
+> >>                   }
+> >>                   WRITE_ONCE(link->status, DL_STATE_CONSUMER_PROBE);
+> >>
+> >>
+> >> After such change:
+> >>
+> >> # cat /sys/kernet/debug/devices_deferred
+> > Sweet! I wasn't aware of this file at all.
+> >
+> > However, on a side note, one of my TODO items is to not add devices to
+> > the deferred probe list if they'll never probe yet (due to suppliers
+> > not having probed). On a board I tested on, it cut down really_probe()
+> > calls by 75%! So the probe attempt itself effectively happens in graph
+> > order (which I think is pretty cool). So that's going to conflict with
+> > this file. I'll have to see what to do about that.
+> >
+> > Thanks for this pointer. Let me sit on this for 2 weeks and see how I
+> > can incorporate your suggestion while allowing for the above. And then
+> > I'll send out a patch. Does that work?
+>
+> Fine for me.
+>
+> Even if you want to change the core not to probe devices that miss their
+> suppliers (what's good imho), the 'devices_deferred' file might still
+> contain all of them. For user it is just a list of devices that are not
+> yet available in the system with the optional reasons for that.
 
-Signed-off-by: Helen Koike <helen.koike@collabora.com>
----
-Changes in v6:
-- Update note saying ext_api should be used for new applications on
-  newer kernels (Tomasz and Hans)
-- Fix typos pointed in v5 (Hand and Tomasz)
-- Change order, mention Ext first in format.rst (Tomasz)
-- Mention planes[i].offset should be set to zero for userptr
-- Remove ext_create_buf and ext_prep_buf from the docs
-- s/displayed/consumed for output (Tomasz)
-- Remove references for plane length
-- Drop EIO sentence mentioning signal loss (Hans)
-- Removed first half of the note in EIO (Tomas and Hans)
-- Update text to mention EXT_TRY_FMT is mandatory (Hans and Tomasz)
-- Remove requirement to fill `memory` field for dqbuf (Tomasz)
-- EXT_DQBUF sets `m` field to zero (Tomasz for DMA-fd)
+Right, I understood that :) My point was that I'm assuming the debugfs
+file loops through the deferred devices list. But with my
+optimization, it won't find all the devices. So, we might need YET
+another list. :-(
 
-Changes in v5:
-- new patch
----
- .../userspace-api/media/v4l/buffer.rst        |   5 +
- .../userspace-api/media/v4l/common.rst        |   1 +
- .../userspace-api/media/v4l/dev-capture.rst   |   6 +
- .../userspace-api/media/v4l/dev-output.rst    |   6 +
- .../userspace-api/media/v4l/ext-api.rst       |  89 +++++++++
- .../userspace-api/media/v4l/format.rst        |  18 +-
- .../userspace-api/media/v4l/user-func.rst     |   5 +
- .../media/v4l/vidioc-ext-qbuf.rst             | 188 ++++++++++++++++++
- .../media/v4l/vidioc-g-ext-pix-fmt.rst        | 116 +++++++++++
- .../userspace-api/media/v4l/vidioc-qbuf.rst   |   2 +-
- 10 files changed, 431 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/userspace-api/media/v4l/ext-api.rst
- create mode 100644 Documentation/userspace-api/media/v4l/vidioc-ext-qbuf.rst
- create mode 100644 Documentation/userspace-api/media/v4l/vidioc-g-ext-pix-fmt.rst
-
-diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documentation/userspace-api/media/v4l/buffer.rst
-index 1b0fdc160533..89652fa7a098 100644
---- a/Documentation/userspace-api/media/v4l/buffer.rst
-+++ b/Documentation/userspace-api/media/v4l/buffer.rst
-@@ -21,6 +21,11 @@ such as pointers and sizes for each plane, are stored in
- struct :c:type:`v4l2_plane` instead. In that case,
- struct :c:type:`v4l2_buffer` contains an array of plane structures.
- 
-+.. note::
-+
-+    For modern applications on newer kernels, these operations are replaced
-+    by their :ref:`ext_api` counterparts, which should be used instead.
-+
- Dequeued video buffers come with timestamps. The driver decides at which
- part of the frame and with which clock the timestamp is taken. Please
- see flags in the masks ``V4L2_BUF_FLAG_TIMESTAMP_MASK`` and
-diff --git a/Documentation/userspace-api/media/v4l/common.rst b/Documentation/userspace-api/media/v4l/common.rst
-index 8c263c5a85d8..61a64065f9f3 100644
---- a/Documentation/userspace-api/media/v4l/common.rst
-+++ b/Documentation/userspace-api/media/v4l/common.rst
-@@ -53,6 +53,7 @@ applicable to all devices.
-     ext-ctrls-detect
-     fourcc
-     format
-+    ext-api
-     planar-apis
-     selection-api
-     crop
-diff --git a/Documentation/userspace-api/media/v4l/dev-capture.rst b/Documentation/userspace-api/media/v4l/dev-capture.rst
-index fe58fd450e2f..73580e16057c 100644
---- a/Documentation/userspace-api/media/v4l/dev-capture.rst
-+++ b/Documentation/userspace-api/media/v4l/dev-capture.rst
-@@ -93,6 +93,12 @@ and :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>` ioctl, even if :ref:`VIDIOC_S_FMT <VIDIOC
- requests and always returns default parameters as :ref:`VIDIOC_G_FMT <VIDIOC_G_FMT>` does.
- :ref:`VIDIOC_TRY_FMT <VIDIOC_G_FMT>` is optional.
- 
-+.. note::
-+
-+    For modern applications on newer kernels, these operations are replaced
-+    by their :ref:`ext_api` counterparts, which should be used instead.
-+
-+
- Reading Images
- ==============
- 
-diff --git a/Documentation/userspace-api/media/v4l/dev-output.rst b/Documentation/userspace-api/media/v4l/dev-output.rst
-index eadcb4aa813b..676578c099b6 100644
---- a/Documentation/userspace-api/media/v4l/dev-output.rst
-+++ b/Documentation/userspace-api/media/v4l/dev-output.rst
-@@ -90,6 +90,12 @@ and :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>` ioctl, even if :ref:`VIDIOC_S_FMT <VIDIOC
- requests and always returns default parameters as :ref:`VIDIOC_G_FMT <VIDIOC_G_FMT>` does.
- :ref:`VIDIOC_TRY_FMT <VIDIOC_G_FMT>` is optional.
- 
-+.. note::
-+
-+    For modern applications on newer kernels, these operations are replaced
-+    by their :ref:`ext_api` counterparts, which should be used instead.
-+
-+
- Writing Images
- ==============
- 
-diff --git a/Documentation/userspace-api/media/v4l/ext-api.rst b/Documentation/userspace-api/media/v4l/ext-api.rst
-new file mode 100644
-index 000000000000..e73d5b77a550
---- /dev/null
-+++ b/Documentation/userspace-api/media/v4l/ext-api.rst
-@@ -0,0 +1,89 @@
-+.. Permission is granted to copy, distribute and/or modify this
-+.. document under the terms of the GNU Free Documentation License,
-+.. Version 1.1 or any later version published by the Free Software
-+.. Foundation, with no Invariant Sections, no Front-Cover Texts
-+.. and no Back-Cover Texts. A copy of the license is included at
-+.. Documentation/userspace-api/media/fdl-appendix.rst.
-+..
-+.. TODO: replace it to GFDL-1.1-or-later WITH no-invariant-sections
-+
-+.. _ext_api:
-+
-+*************
-+Extended API
-+*************
-+
-+Introduction
-+============
-+
-+The Extended Format API was conceived to extend V4L2 capabilities and
-+to simplify certain mechanisms.
-+It unifies single- vs multi- planar handling,
-+brings the concept of pixelformat + modifiers, allows planes to be placed
-+in any offset inside a buffer and let userspace to change colorspace
-+attributes if supported by the driver.
-+
-+Data format negotiation and buffer handling works very similar to the classical
-+version, thus in this document we mention only the main differences.
-+
-+Data Format Negotiation
-+=======================
-+
-+The API replaces the classical ioctls:
-+
-+:ref:`VIDIOC_G_FMT <VIDIOC_G_FMT>`, :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>`,
-+:ref:`VIDIOC_TRY_FMT <VIDIOC_G_FMT>`
-+(with :c:type:`v4l2_format` as the main parameter).
-+
-+By the extended versions:
-+
-+:ref:`VIDIOC_G_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>`,
-+:ref:`VIDIOC_S_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>`,
-+:ref:`VIDIOC_TRY_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>`
-+(with :c:type:`v4l2_ext_pix_format` as the main parameter).
-+
-+For CAPTURE and OUTPUT queues only.
-+
-+The ``type`` field of struct :c:type:`v4l2_ext_pix_format` only accepts 
-+``V4L2_BUF_TYPE_VIDEO_CAPTURE`` or ``V4L2_BUF_TYPE_VIDEO_OUTPUT``.
-+
-+The ``plane_fmt`` field is an array which holds information by plane using
-+the :c:type:`v4l2_plane_pix_format`. When this struct is filled, its
-+``sizeimage`` field should be non-zero for all valid planes for a given
-+``pixelformat`` + ``modifier`` combination, and zeroed for the invalid ones.
-+
-+Colorspace attributes are not read-only as in the classical version, i.e, they
-+can be set by application and drivers will adjust accordingly depending on what
-+is supported by the underlying hardware.
-+
-+Buffers
-+=======
-+
-+The API replaces the classical ioctls:
-+
-+:ref:`VIDIOC_QBUF <VIDIOC_QBUF>`,
-+:ref:`VIDIOC_DQBUF <VIDIOC_QBUF>`,
-+(with :c:type:`v4l2_buffer` as the main parameter)
-+
-+By the extended versions:
-+
-+:ref:`VIDIOC_EXT_QBUF <VIDIOC_EXT_QBUF>`,
-+:ref:`VIDIOC_EXT_DQBUF <VIDIOC_EXT_QBUF>`,
-+(with :c:type:`v4l2_ext_buffer` as the main parameter)
-+
-+Comparing :c:type:`v4l2_ext_buffer` with :c:type:`v4l2_buffer`, in the
-+extended version there is a unification of the single-/multi- planar handling
-+through the ``planes`` field of type :c:type:`v4l2_ext_plane`.
-+
-+The :c:type:`v4l2_ext_plane` also allows planes to be placed in a given offset
-+inside a buffer.
-+Planes can be placed in different locations inside the same buffer, or in
-+different buffers.
-+
-+
-+.. kernel-doc:: include/uapi/linux/videodev2.h
-+   :functions: v4l2_ext_plane
-+
-+
-+.. kernel-doc:: include/uapi/linux/videodev2.h
-+   :functions: v4l2_ext_buffer
-diff --git a/Documentation/userspace-api/media/v4l/format.rst b/Documentation/userspace-api/media/v4l/format.rst
-index 35bbb2fea46e..713e1a9f699a 100644
---- a/Documentation/userspace-api/media/v4l/format.rst
-+++ b/Documentation/userspace-api/media/v4l/format.rst
-@@ -21,13 +21,19 @@ format and the driver selects and reports the best the hardware can do
- to satisfy the request. Of course applications can also just query the
- current selection.
- 
--A single mechanism exists to negotiate all data formats using the
--aggregate struct :c:type:`v4l2_format` and the
-+There are two mechanism to negotiate data formats:
-+
-+The first one is through the :ref:`ext_api`, please refer to its documentation
-+for more information.
-+
-+The second one is using the aggregate struct :c:type:`v4l2_format` and the
- :ref:`VIDIOC_G_FMT <VIDIOC_G_FMT>` and
- :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>` ioctls. Additionally the
- :ref:`VIDIOC_TRY_FMT <VIDIOC_G_FMT>` ioctl can be used to examine
- what the hardware *could* do, without actually selecting a new data
--format. The data formats supported by the V4L2 API are covered in the
-+format.
-+
-+The data formats supported by the V4L2 API are covered in the
- respective device section in :ref:`devices`. For a closer look at
- image formats see :ref:`pixfmt`.
- 
-@@ -64,8 +70,12 @@ earlier versions of V4L2. Switching the logical stream or returning into
- *may* support a switch using :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>`.
- 
- All drivers exchanging data with applications must support the
--:ref:`VIDIOC_G_FMT <VIDIOC_G_FMT>` and :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>` ioctl. Implementation of the
-+:ref:`VIDIOC_G_FMT <VIDIOC_G_FMT>` and :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>` ioctl
-+or the ref:`Extended <VIDIOC_G_EXT_PIX_FMT>` respective versions.
-+Implementation of the
- :ref:`VIDIOC_TRY_FMT <VIDIOC_G_FMT>` is highly recommended but optional.
-+For the Extended API, ref:`VIDIOC_TRY_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` is
-+mandatory.
- 
- Image Format Enumeration
- ========================
-diff --git a/Documentation/userspace-api/media/v4l/user-func.rst b/Documentation/userspace-api/media/v4l/user-func.rst
-index 53e604bd7d60..3e21a780033d 100644
---- a/Documentation/userspace-api/media/v4l/user-func.rst
-+++ b/Documentation/userspace-api/media/v4l/user-func.rst
-@@ -13,6 +13,7 @@ Function Reference
-     func-close
-     func-ioctl
-     vidioc-create-bufs
-+    vidioc-ext-create-bufs
-     vidioc-cropcap
-     vidioc-dbg-g-chip-info
-     vidioc-dbg-g-register
-@@ -41,6 +42,7 @@ Function Reference
-     vidioc-g-ext-ctrls
-     vidioc-g-fbuf
-     vidioc-g-fmt
-+    vidioc-g-ext-pix-fmt
-     vidioc-g-frequency
-     vidioc-g-input
-     vidioc-g-jpegcomp
-@@ -55,8 +57,11 @@ Function Reference
-     vidioc-log-status
-     vidioc-overlay
-     vidioc-prepare-buf
-+    vidioc-ext-prepare-buf
-     vidioc-qbuf
-+    vidioc-ext-qbuf
-     vidioc-querybuf
-+    vidioc-ext-querybuf
-     vidioc-querycap
-     vidioc-queryctrl
-     vidioc-query-dv-timings
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-ext-qbuf.rst b/Documentation/userspace-api/media/v4l/vidioc-ext-qbuf.rst
-new file mode 100644
-index 000000000000..d137eddc331e
---- /dev/null
-+++ b/Documentation/userspace-api/media/v4l/vidioc-ext-qbuf.rst
-@@ -0,0 +1,188 @@
-+.. Permission is granted to copy, distribute and/or modify this
-+.. document under the terms of the GNU Free Documentation License,
-+.. Version 1.1 or any later version published by the Free Software
-+.. Foundation, with no Invariant Sections, no Front-Cover Texts
-+.. and no Back-Cover Texts. A copy of the license is included at
-+.. Documentation/userspace-api/media/fdl-appendix.rst.
-+..
-+.. TODO: replace it to GFDL-1.1-or-later WITH no-invariant-sections
-+
-+.. _VIDIOC_EXT_QBUF:
-+
-+***************************************
-+ioctl VIDIOC_EXT_QBUF, VIDIOC_EXT_DQBUF
-+***************************************
-+
-+Name
-+====
-+
-+VIDIOC_EXT_QBUF - VIDIOC_EXT_DQBUF - Exchange a buffer with the driver
-+
-+
-+Synopsis
-+========
-+
-+.. c:function:: int ioctl( int fd, VIDIOC_EXT_QBUF, struct v4l2_ext_buffer *argp )
-+    :name: VIDIOC_EXT_QBUF
-+
-+.. c:function:: int ioctl( int fd, VIDIOC_EXT_DQBUF, struct v4l2_ext_buffer *argp )
-+    :name: VIDIOC_EXT_DQBUF
-+
-+
-+Arguments
-+=========
-+
-+``fd``
-+    File descriptor returned by :ref:`open() <func-open>`.
-+
-+``argp``
-+    Pointer to struct :c:type:`v4l2_ext_buffer`.
-+
-+
-+Description
-+===========
-+
-+Applications call the ``VIDIOC_EXT_QBUF`` ioctl to enqueue an empty
-+(capturing) or filled (output) buffer in the driver's incoming queue.
-+The semantics depend on the selected I/O method.
-+
-+To enqueue a buffer applications set the ``type`` field of a struct
-+:c:type:`v4l2_ext_buffer` to the same buffer type as was
-+previously used with struct :c:type:`v4l2_ext_pix_format` ``type``.
-+Applications must also set the ``index`` field. Valid index numbers
-+range from zero to the number of buffers allocated with
-+:ref:`VIDIOC_REQBUFS` (struct
-+:c:type:`v4l2_requestbuffers` ``count``) minus
-+one.
-+When the buffer is intended for output (``type`` is
-+``V4L2_BUF_TYPE_VIDEO_OUTPUT``) applications must also initialize the
-+``timestamp`` fields.
-+see :ref:`buffer` for details. Applications must also set ``flags`` to 0. The
-+``reserved`` field must be set to 0.
-+
-+To enqueue a :ref:`memory mapped <mmap>` buffer applications set the
-+``memory`` field to ``V4L2_MEMORY_MMAP``.
-+When ``VIDIOC_EXT_QBUF`` is called with a pointer to this structure
-+the driver sets the ``V4L2_BUF_FLAG_MAPPED`` and ``V4L2_BUF_FLAG_QUEUED``
-+flags and clears the ``V4L2_BUF_FLAG_DONE`` flag in the ``flags`` field, or
-+it returns an ``EINVAL`` error code.
-+
-+To enqueue a :ref:`user pointer <userp>` buffer applications set the
-+``memory`` field to ``V4L2_MEMORY_USERPTR``, the ``planes[i].m.userptr``
-+field to the address of the buffer and ``planes[i].offset`` should be zero.
-+When ``VIDIOC_EXT_QBUF`` is called with a pointer to this structure
-+the driver sets the ``V4L2_BUF_FLAG_QUEUED`` flag and clears the
-+``V4L2_BUF_FLAG_MAPPED`` and ``V4L2_BUF_FLAG_DONE`` flags in the
-+``flags`` field, or it returns an error code. This ioctl locks the
-+memory pages of the buffer in physical memory, they cannot be swapped
-+out to disk.
-+Buffers remain locked until dequeued, until the
-+:ref:`VIDIOC_STREAMOFF <VIDIOC_STREAMON>` or
-+:ref:`VIDIOC_REQBUFS` ioctl is called, or until the
-+device is closed.
-+
-+To enqueue a :ref:`DMABUF <dmabuf>` buffer applications set the
-+``memory`` field to ``V4L2_MEMORY_DMABUF``, the ``planes[i].m.fd`` field to a
-+file descriptor associated with a DMABUF buffer
-+and ``planes[i].offset`` of the plane in the memory buffer.
-+When ``VIDIOC_EXT_QBUF`` is called with a pointer to this structure the driver
-+sets the ``V4L2_BUF_FLAG_QUEUED`` flag and clears the
-+``V4L2_BUF_FLAG_MAPPED`` and ``V4L2_BUF_FLAG_DONE`` flags in the
-+``flags`` field, or it returns an error code. This ioctl locks the
-+buffer. Locking a buffer means passing it to a driver for a hardware
-+access (usually DMA). If an application accesses (reads/writes) a locked
-+buffer then the result is undefined.
-+Buffers remain locked until dequeued, until the
-+:ref:`VIDIOC_STREAMOFF <VIDIOC_STREAMON>` or
-+:ref:`VIDIOC_REQBUFS` ioctl is called, or until the
-+device is closed.
-+
-+The ``request_fd`` field can be used with the ``VIDIOC_EXT_QBUF`` ioctl to specify
-+the file descriptor of a :ref:`request <media-request-api>`, if requests are
-+in use. Setting it means that the buffer will not be passed to the driver
-+until the request itself is queued. Also, the driver will apply any
-+settings associated with the request for this buffer. This field will
-+be ignored unless the ``V4L2_BUF_FLAG_REQUEST_FD`` flag is set.
-+If the device does not support requests, then ``EBADR`` will be returned.
-+If requests are supported but an invalid request file descriptor is given,
-+then ``EINVAL`` will be returned.
-+
-+.. caution::
-+   It is not allowed to mix queuing requests with queuing buffers directly.
-+   ``EBUSY`` will be returned if the first buffer was queued directly and
-+   then the application tries to queue a request, or vice versa. After
-+   closing the file descriptor, calling
-+   :ref:`VIDIOC_STREAMOFF <VIDIOC_STREAMON>` or calling :ref:`VIDIOC_REQBUFS`
-+   the check for this will be reset.
-+
-+   For :ref:`memory-to-memory devices <mem2mem>` you can specify the
-+   ``request_fd`` only for output buffers, not for capture buffers. Attempting
-+   to specify this for a capture buffer will result in an ``EBADR`` error.
-+
-+Applications call the ``VIDIOC_EXT_DQBUF`` ioctl to dequeue a filled
-+(capturing) or displayed (output) buffer from the driver's outgoing
-+queue. They just set the ``type`` and ``reserved`` fields of
-+a struct :c:type:`v4l2_ext_buffer` as above, when
-+``VIDIOC_EXT_DQBUF`` is called with a pointer to this structure the driver
-+fills the remaining fields or returns an error code. The driver may also
-+set ``V4L2_BUF_FLAG_ERROR`` in the ``flags`` field. It indicates a
-+non-critical (recoverable) streaming error. In such case the application
-+may continue as normal, but should be aware that data in the dequeued
-+buffer might be corrupted.
-+
-+Pointers in ``m`` field is set to zero. Applications must track the buffers
-+in queuing time.
-+
-+By default ``VIDIOC_EXT_DQBUF`` blocks when no buffer is in the outgoing
-+queue. When the ``O_NONBLOCK`` flag was given to the
-+:ref:`open() <func-open>` function, ``VIDIOC_EXT_DQBUF`` returns
-+immediately with an ``EAGAIN`` error code when no buffer is available.
-+
-+
-+.. kernel-doc:: include/uapi/linux/videodev2.h
-+   :functions: v4l2_ext_buffers
-+
-+
-+Return Value
-+============
-+
-+On success 0 is returned, on error -1 and the ``errno`` variable is set
-+appropriately. The generic error codes are described at the
-+:ref:`Generic Error Codes <gen-errors>` chapter.
-+
-+EAGAIN
-+    Non-blocking I/O has been selected using ``O_NONBLOCK`` and no
-+    buffer was in the outgoing queue.
-+
-+EINVAL
-+    The buffer ``type`` is not supported, or the ``index`` is out of
-+    bounds, or no buffers have been allocated yet, or the ``userptr``
-+    are invalid, or the ``V4L2_BUF_FLAG_REQUEST_FD`` flag was
-+    set but the the given ``request_fd`` was invalid, or ``m.fd`` was
-+    an invalid DMABUF file descriptor.
-+
-+EIO
-+    ``VIDIOC_EXT_DQBUF`` failed due to an internal error.
-+
-+    .. note::
-+
-+       It is recommended that drivers indicate recoverable errors by setting
-+       the ``V4L2_BUF_FLAG_ERROR`` and returning 0 instead. In that case the
-+       application should be able to safely reuse the buffer and continue
-+       streaming.
-+
-+EPIPE
-+    ``VIDIOC_EXT_DQBUF`` returns this on an empty capture queue for mem2mem
-+    codecs if a buffer with the ``V4L2_BUF_FLAG_LAST`` was already
-+    dequeued and no new buffers are expected to become available.
-+
-+EBADR
-+    The ``V4L2_BUF_FLAG_REQUEST_FD`` flag was set but the device does not
-+    support requests for the given buffer type, or
-+    the ``V4L2_BUF_FLAG_REQUEST_FD`` flag was not set but the device requires
-+    that the buffer is part of a request.
-+
-+EBUSY
-+    The first buffer was queued via a request, but the application now tries
-+    to queue it directly, or vice versa (it is not permitted to mix the two
-+    APIs).
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-pix-fmt.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-pix-fmt.rst
-new file mode 100644
-index 000000000000..6cb14390dc51
---- /dev/null
-+++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-pix-fmt.rst
-@@ -0,0 +1,116 @@
-+.. Permission is granted to copy, distribute and/or modify this
-+.. document under the terms of the GNU Free Documentation License,
-+.. Version 1.1 or any later version published by the Free Software
-+.. Foundation, with no Invariant Sections, no Front-Cover Texts
-+.. and no Back-Cover Texts. A copy of the license is included at
-+.. Documentation/userspace-api/media/fdl-appendix.rst.
-+..
-+.. TODO: replace it to GFDL-1.1-or-later WITH no-invariant-sections
-+
-+.. _VIDIOC_G_EXT_PIX_FMT:
-+
-+************************************************************************
-+ioctl VIDIOC_G_EXT_PIX_FMT, VIDIOC_S_EXT_PIX_FMT, VIDIOC_TRY_EXT_PIX_FMT
-+************************************************************************
-+
-+Name
-+====
-+
-+VIDIOC_G_EXT_PIX_FMT - VIDIOC_S_EXT_PIX_FMT - VIDIOC_TRY_EXT_PIX_FMT - Get or set the data format, try a format
-+
-+
-+Synopsis
-+========
-+
-+.. c:function:: int ioctl( int fd, VIDIOC_G_EXT_PIX_FMT, struct v4l2_ext_pix_format *argp )
-+    :name: VIDIOC_G_EXT_PIX_FMT
-+
-+.. c:function:: int ioctl( int fd, VIDIOC_S_EXT_PIX_FMT, struct v4l2_ext_pix_format *argp )
-+    :name: VIDIOC_S_EXT_PIX_FMT
-+
-+.. c:function:: int ioctl( int fd, VIDIOC_TRY_EXT_PIX_FMT, struct v4l2_ext_pix_format *argp )
-+    :name: VIDIOC_TRY_EXT_PIX_FMT
-+
-+Arguments
-+=========
-+
-+``fd``
-+    File descriptor returned by :ref:`open() <func-open>`.
-+
-+``argp``
-+    Pointer to struct :c:type:`v4l2_ext_pix_format`.
-+
-+
-+Description
-+===========
-+
-+These ioctls are used to negotiate the format of data (typically image
-+format) exchanged between driver and application.
-+
-+To query the current parameters applications set the ``type`` field of a
-+struct :c:type:`v4l2_ext_pix_format` to  ``V4L2_BUF_TYPE_VIDEO_CAPTURE`` or
-+``V4L2_BUF_TYPE_VIDEO_OUTPUT``, all the other types are invalid in this API,
-+and multiplanar is supported through modifiers.
-+
-+When the application calls the
-+:ref:`VIDIOC_G_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` ioctl with a pointer to this
-+structure the driver fills the other members.
-+When the requested buffer type is not supported drivers return
-+an ``EINVAL`` error code.
-+
-+To change the current format parameters applications initialize all
-+the fields in the struct.
-+For details see the documentation of the various devices types in
-+:ref:`devices`. Good practice is to query the current parameters
-+first, and to modify only those parameters not suitable for the
-+application. When the application calls the :ref:`VIDIOC_S_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` ioctl with
-+a pointer to a struct :c:type:`v4l2_ext_pix_format` structure the driver
-+checks and adjusts the parameters against hardware abilities. Drivers
-+should not return an error code unless the ``type`` field is invalid,
-+this is a mechanism to fathom device capabilities and to approach
-+parameters acceptable for both the application and driver. On success
-+the driver may program the hardware, allocate resources and generally
-+prepare for data exchange. Finally the :ref:`VIDIOC_S_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` ioctl returns
-+the current format parameters as :ref:`VIDIOC_G_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` does. Very simple,
-+inflexible devices may even ignore all input and always return the
-+default parameters. However all V4L2 devices exchanging data with the
-+application must implement the :ref:`VIDIOC_G_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` and :ref:`VIDIOC_S_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>`
-+ioctl. When the requested buffer type is not supported drivers return an
-+EINVAL error code on a :ref:`VIDIOC_S_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` attempt. When I/O is already in
-+progress or the resource is not available for other reasons drivers
-+return the ``EBUSY`` error code.
-+
-+The :ref:`VIDIOC_TRY_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` ioctl is equivalent to :ref:`VIDIOC_S_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` with one
-+exception: it does not change driver state. It can also be called at any
-+time, never returning ``EBUSY``. This function is provided to negotiate
-+parameters, to learn about hardware limitations, without disabling I/O
-+or possibly time consuming hardware preparations.
-+
-+The format as returned by :ref:`VIDIOC_TRY_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` must be identical to what
-+:ref:`VIDIOC_S_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` returns for the same input or output.
-+
-+
-+.. kernel-doc:: include/uapi/linux/videodev2.h
-+   :functions: v4l2_plane_pix_format
-+
-+
-+.. kernel-doc:: include/uapi/linux/videodev2.h
-+   :functions: v4l2_ext_pix_format
-+
-+
-+Return Value
-+============
-+
-+On success 0 is returned, on error -1 and the ``errno`` variable is set
-+appropriately. The generic error codes are described at the
-+:ref:`Generic Error Codes <gen-errors>` chapter.
-+
-+EINVAL
-+    The struct :c:type:`v4l2_ext_pix_format` ``type`` field is
-+    invalid or the requested buffer type not supported.
-+
-+EBUSY
-+    The device is busy and cannot change the format. This could be
-+    because or the device is streaming or buffers are allocated or
-+    queued to the driver. Relevant for :ref:`VIDIOC_S_EXT_PIX_FMT
-+    <VIDIOC_G_EXT_PIX_FMT>` only.
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-qbuf.rst b/Documentation/userspace-api/media/v4l/vidioc-qbuf.rst
-index 77e0747a6d28..7f2aae992348 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-qbuf.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-qbuf.rst
-@@ -121,7 +121,7 @@ then ``EINVAL`` will be returned.
-    to specify this for a capture buffer will result in an ``EBADR`` error.
- 
- Applications call the ``VIDIOC_DQBUF`` ioctl to dequeue a filled
--(capturing) or displayed (output) buffer from the driver's outgoing
-+(capturing) or consumed (output) buffer from the driver's outgoing
- queue. They just set the ``type``, ``memory`` and ``reserved`` fields of
- a struct :c:type:`v4l2_buffer` as above, when
- ``VIDIOC_DQBUF`` is called with a pointer to this structure the driver
--- 
-2.29.2
-
+-Saravana
