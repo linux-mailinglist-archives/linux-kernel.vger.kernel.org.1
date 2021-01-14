@@ -2,349 +2,792 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6A52F6A2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED292F6A22
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbhANSzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:55:51 -0500
-Received: from conuserg-11.nifty.com ([210.131.2.78]:36968 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbhANSzv (ORCPT
+        id S1728071AbhANSyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:54:55 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:39339 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725854AbhANSyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:55:51 -0500
-Received: from grover.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 10EIrv5r012044;
-        Fri, 15 Jan 2021 03:53:58 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 10EIrv5r012044
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1610650438;
-        bh=AfAfqRIO/BYPTIBAvdnE/HqW9r3a4Nrphjj4KtDgsDs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uK3gnF1o4Z8/rH6VSd6M6ZNlNo2MsKF+DfbdUeTLlenT8HjZkorAz178DGzHNvope
-         qrxYsIceggVlHTKwYWutzSvEdr49jJGflAIsmggMDXA4D84x4NzAp1diAOjlv2xR0U
-         M93vXC1O4bieW23EHRaNm27W9sAkjM6I3QFUqCzGANr+QrAyo7ortCkZb+ymGJNsNE
-         kz1P4pKWk+GRqagvQQCbJey4gPZsojnTLZeSM7m544MHaVIdkTHeOZOwZr6WDw1B+z
-         uXuDoY6B+mQ85s30ewSPsYGeJ6tTu0pGKIJByaPXMhSmF0/h/BYaRTFROk16nSqBhM
-         oS5Isn+7Epoxg==
-X-Nifty-SrcIP: [126.26.94.251]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Will Deacon <will@kernel.org>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v4] kbuild: check the minimum compiler version in Kconfig
-Date:   Fri, 15 Jan 2021 03:53:54 +0900
-Message-Id: <20210114185354.308083-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Thu, 14 Jan 2021 13:54:55 -0500
+Date:   Thu, 14 Jan 2021 18:54:05 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
+        s=protonmail; t=1610650447;
+        bh=hjqAAEZOw1ci6jFQB+qJAaGGBpAoymTcBiJVZ/cWwlA=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=GNOP9DL2zpoJVi6G1lB1DjEpo+22tpCGvuUGwlWABPqCCWqrwWqmHDwsjO0OjkxYq
+         AUC0ezkWAQPus6T0yk9oyv5ZvNpCO4uMdQs4ddMiFfCXGGDnCgRYvDj8sRp8riRh2p
+         ppBLsdODIqYCmSTSYpLoTon04cWwCLqzQq6xbxNE=
+To:     caleb@connolly.tech, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+From:   Caleb Connolly <caleb@connolly.tech>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Caleb Connolly <caleb@connolly.tech>
+Subject: [PATCH v3 1/2] arm64: dts: sdm845: add oneplus6/6t devices
+Message-ID: <20210114185227.25265-2-caleb@connolly.tech>
+In-Reply-To: <20210114185227.25265-1-caleb@connolly.tech>
+References: <20210114185227.25265-1-caleb@connolly.tech>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paul Gortmaker reported a regression in the GCC version check [1].
-If you use GCC 4.8, the build breaks before showing the error message
-"error Sorry, your version of GCC is too old - please use 4.9 or newer."
+Add initial support for the OnePlus 6 (enchilada) and 6T (fajita) based
+on the sdm845-mtp DT with the following functionality:
 
-I do not want to apply his fix-up since it implies we would not be able
-to remove any cc-option test. Anyway, I admit checking the GCC version
-in <linux/compiler-gcc.h> is too late.
+ * Touch
+ * Display
+ * GPU
+ * Wlan and Bluetooth
+ * USB peripheral mode
+ * Remoteproc
 
-Almost at the same time, Linus also suggested to move the compiler
-version error to Kconfig time. [2]
-
-I unified the similar two scripts, gcc-version.sh and clang-version.sh
-into the new cc-version.sh. The old scripts invoked the compiler multiple
-times (3 times for gcc-version.sh, 4 times for clang-version.sh). I
-refactored the code so the new one invokes the compiler just once, and
-also tried my best to use shell-builtin commands where possible.
-
-The new script runs faster.
-
-  $ time ./scripts/clang-version.sh clang
-  120000
-
-  real    0m0.029s
-  user    0m0.012s
-  sys     0m0.021s
-
-  $ time ./scripts/cc-version.sh clang
-  Clang 120000
-
-  real    0m0.009s
-  user    0m0.006s
-  sys     0m0.004s
-
-The cc-version.sh also shows the error if the compiler is old:
-
-  $ make defconfig CC=clang-9
-  *** Default configuration is based on 'x86_64_defconfig'
-  ***
-  *** Compiler is too old.
-  ***   Your Clang version:    9.0.1
-  ***   Minimum Clang version: 10.0.1
-  ***
-  scripts/Kconfig.include:46: Sorry, this compiler is not supported.
-  make[1]: *** [scripts/kconfig/Makefile:81: defconfig] Error 1
-  make: *** [Makefile:602: defconfig] Error 2
-
-I removed the clang version check from <linux/compiler-clang.h>
-
-For now, I did not touch <linux/compiler-gcc.h> in order to avoid
-merge conflict with [3], which has been queued up in the arm64 tree.
-We can clean it up later.
-
-The new script takes care of ICC because we have <linux/compiler-intel.h>
-although I am not sure if building the kernel with ICC is well-supported.
-
-[1]: https://lore.kernel.org/r/20210110190807.134996-1-paul.gortmaker@windriver.com
-[2]: https://lore.kernel.org/r/CAHk-=wh-+TMHPTFo1qs-MYyK7tZh-OQovA=pP3=e06aCVp6_kA@mail.gmail.com
-[3]: https://lore.kernel.org/r/20210112224832.10980-1-will@kernel.org
-
-Fixes: 87de84c9140e ("kbuild: remove cc-option test of -Werror=date-time")
-Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
-Tested-by: Miguel Ojeda <ojeda@kernel.org>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Caleb Connolly <caleb@connolly.tech>
 ---
+Changes since v1
+ * Remove unused pinctrl nodes
+ * Properly model touchscreen vio supply GPIO
+ * Improve comments
+ * Remove bq27541 battery as it doesn't work
 
-Changes in v4:
-  - use lore version of the links
+Changes since v2
+ * Specify clock frequency of touchscreen i2c
+ * Remove tri-state-key nodes until a better solution can be found
+ * Cleaned up pinctrl nodes
+ * Remove unused regulators
+ * Improve formatting
+ * Address Bjorn's comments
+ * Remove unused regulators
+---
+ arch/arm64/boot/dts/qcom/Makefile             |   2 +
+ .../boot/dts/qcom/sdm845-oneplus-common.dtsi  | 621 ++++++++++++++++++
+ .../dts/qcom/sdm845-oneplus-enchilada.dts     |  19 +
+ .../boot/dts/qcom/sdm845-oneplus-fajita.dts   |  23 +
+ 4 files changed, 665 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+ create mode 100644 arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dts
 
-Changes in v3:
-  - add $(srctree)/ to fix out-of-tree build
-  - support ICC version
-
-Changes in v2:
-  - fix the function name
-
- include/linux/compiler-clang.h | 10 -----
- init/Kconfig                   |  9 ++--
- scripts/Kconfig.include        |  6 +++
- scripts/cc-version.sh          | 76 ++++++++++++++++++++++++++++++++++
- scripts/clang-version.sh       | 19 ---------
- scripts/gcc-version.sh         | 20 ---------
- 6 files changed, 87 insertions(+), 53 deletions(-)
- create mode 100755 scripts/cc-version.sh
- delete mode 100755 scripts/clang-version.sh
- delete mode 100755 scripts/gcc-version.sh
-
-diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-index 98cff1b4b088..04c0a5a717f7 100644
---- a/include/linux/compiler-clang.h
-+++ b/include/linux/compiler-clang.h
-@@ -3,16 +3,6 @@
- #error "Please don't include <linux/compiler-clang.h> directly, include <linux/compiler.h> instead."
- #endif
- 
--#define CLANG_VERSION (__clang_major__ * 10000	\
--		     + __clang_minor__ * 100	\
--		     + __clang_patchlevel__)
--
--#if CLANG_VERSION < 100001
--#ifndef __BPF_TRACING__
--# error Sorry, your version of Clang is too old - please use 10.0.1 or newer.
--#endif
--#endif
--
- /* Compiler specific definitions for Clang compiler */
- 
- /* same as gcc, this was present in clang-2.6 so we can assume it works
-diff --git a/init/Kconfig b/init/Kconfig
-index b77c60f8b963..01108dd1318b 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -26,11 +26,11 @@ config CC_VERSION_TEXT
- 	    and then every file will be rebuilt.
- 
- config CC_IS_GCC
--	def_bool $(success,echo "$(CC_VERSION_TEXT)" | grep -q gcc)
-+	def_bool $(success,test $(cc-name) = GCC)
- 
- config GCC_VERSION
- 	int
--	default $(shell,$(srctree)/scripts/gcc-version.sh $(CC)) if CC_IS_GCC
-+	default $(cc-version) if CC_IS_GCC
- 	default 0
- 
- config LD_VERSION
-@@ -38,14 +38,15 @@ config LD_VERSION
- 	default $(shell,$(LD) --version | $(srctree)/scripts/ld-version.sh)
- 
- config CC_IS_CLANG
--	def_bool $(success,echo "$(CC_VERSION_TEXT)" | grep -q clang)
-+	def_bool $(success,test $(cc-name) = Clang)
- 
- config LD_IS_LLD
- 	def_bool $(success,$(LD) -v | head -n 1 | grep -q LLD)
- 
- config CLANG_VERSION
- 	int
--	default $(shell,$(srctree)/scripts/clang-version.sh $(CC))
-+	default $(cc-version) if CC_IS_CLANG
-+	default 0
- 
- config LLD_VERSION
- 	int
-diff --git a/scripts/Kconfig.include b/scripts/Kconfig.include
-index a5fe72c504ff..0228cb9c74aa 100644
---- a/scripts/Kconfig.include
-+++ b/scripts/Kconfig.include
-@@ -39,6 +39,12 @@ as-instr = $(success,printf "%b\n" "$(1)" | $(CC) $(CLANG_FLAGS) -c -x assembler
- $(error-if,$(failure,command -v $(CC)),compiler '$(CC)' not found)
- $(error-if,$(failure,command -v $(LD)),linker '$(LD)' not found)
- 
-+# Get the compiler name, version, and error out if it is not supported.
-+cc-info := $(shell,$(srctree)/scripts/cc-version.sh $(CC))
-+$(error-if,$(success,test -z "$(cc-info)"),Sorry$(comma) this compiler is not supported.)
-+cc-name := $(shell,set -- $(cc-info) && echo $1)
-+cc-version := $(shell,set -- $(cc-info) && echo $2)
-+
- # Fail if the linker is gold as it's not capable of linking the kernel proper
- $(error-if,$(success, $(LD) -v | grep -q gold), gold linker '$(LD)' not supported)
- 
-diff --git a/scripts/cc-version.sh b/scripts/cc-version.sh
-new file mode 100755
-index 000000000000..818d233bb0ad
+diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/M=
+akefile
+index 5113fac80b7a..19f18af3ecff 100644
+--- a/arch/arm64/boot/dts/qcom/Makefile
++++ b/arch/arm64/boot/dts/qcom/Makefile
+@@ -44,6 +44,8 @@ dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-cheza-r3.dtb
+ dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-db845c.dtb
+ dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-mtp.dtb
+ dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-xiaomi-beryllium.dtb
++dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-oneplus-enchilada.dtb
++dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-oneplus-fajita.dtb
+ dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm850-lenovo-yoga-c630.dtb
+ dtb-$(CONFIG_ARCH_QCOM)=09+=3D sm8150-hdk.dtb
+ dtb-$(CONFIG_ARCH_QCOM)=09+=3D sm8150-mtp.dtb
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi b/arch/arm=
+64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+new file mode 100644
+index 000000000000..9efa38c9f1c2
 --- /dev/null
-+++ b/scripts/cc-version.sh
-@@ -0,0 +1,76 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Print the compiler name and its version in a 5 or 6-digit form.
-+# Also, perform the minimum version check.
++++ b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+@@ -0,0 +1,621 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * SDM845 OnePlus 6(T) (enchilada / fajita) common device tree source
++ *
++ * Copyright (c) 2020, The Linux Foundation. All rights reserved.
++ */
 +
-+set -e
++/dts-v1/;
 +
-+# When you raise the compiler version, please update
-+# Documentation/process/changes.rst as well.
-+gcc_min_version=4.9.0
-+clang_min_version=10.0.1
-+icc_min_version=16.0.3 # temporary
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/linux-event-codes.h>
++#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
 +
-+# print the compiler name and versions
-+get_compiler_info()
-+{
-+	cat <<- EOF | "$@" -E -P -x c - 2>/dev/null
-+	#if defined(__clang__)
-+	Clang	__clang_major__  __clang_minor__  __clang_patchlevel__
-+	#elif defined(__INTEL_COMPILER)
-+	ICC	__INTEL_COMPILER  __INTEL_COMPILER_UPDATE
-+	#elif defined(__GNUC__)
-+	GCC	__GNUC__  __GNUC_MINOR__  __GNUC_PATCHLEVEL__
-+	#else
-+	unknown
-+	#endif
-+	EOF
-+}
++#include "sdm845.dtsi"
++#include "pm8998.dtsi"
++#include "pmi8998.dtsi"
 +
-+# convert the version string x.y.z to a canonical 5 or 6-digit form
-+get_canonical_version()
-+{
-+	IFS=.
-+	set -- $1
-+	echo $((10000 * $1 + 100 * $2 + $3))
-+}
++/delete-node/ &rmtfs_mem;
 +
-+# $@ instead of $1 because multiple words might be given e.g. CC="ccache gcc"
-+orig_args="$@"
-+set -- $(get_compiler_info "$@")
++/ {
 +
-+name=$1
++=09aliases {
++=09=09hsuart0 =3D &uart6;
++=09};
 +
-+case "$name" in
-+GCC)
-+	version=$2.$3.$4
-+	min_version=$gcc_min_version
-+	;;
-+Clang)
-+	version=$2.$3.$4
-+	min_version=$clang_min_version
-+	;;
-+ICC)
-+	version=$(($2 / 100)).$(($2 % 100)).$3
-+	min_version=$icc_min_version
-+	;;
-+*)
-+	echo "$orig_args: unknown compiler" >&2
-+	exit 1
-+	;;
-+esac
++=09reserved-memory {
++=09=09/*
++=09=09 * The rmtfs memory region in downstream is 'dynamically allocated'
++=09=09 * but given the same address every time. Hard code it as this addre=
+ss is
++=09=09 * where the modem firmware expects it to be.
++=09=09 */
++=09=09rmtfs_mem: memory@f5b01000 {
++=09=09=09compatible =3D "qcom,rmtfs-mem";
++=09=09=09reg =3D <0 0xf5b01000 0 0x200000>;
++=09=09=09no-map;
 +
-+cversion=$(get_canonical_version $version)
-+min_cversion=$(get_canonical_version $min_version)
++=09=09=09qcom,client-id =3D <1>;
++=09=09=09qcom,vmid =3D <15>;
++=09=09};
 +
-+if [ "$cversion" -lt "$min_cversion" ]; then
-+	echo >&2 "***"
-+	echo >&2 "*** Compiler is too old."
-+	echo >&2 "***   Your $name version:    $version"
-+	echo >&2 "***   Minimum $name version: $min_version"
-+	echo >&2 "***"
-+	exit 1
-+fi
++=09=09/*
++=09=09 * It seems like reserving the old rmtfs_mem region is also needed t=
+o prevent
++=09=09 * random crashes which are most likely modem related, more testing =
+needed.
++=09=09 */
++=09=09removed_region: memory@88f00000 {
++=09=09=09no-map;
++=09=09=09reg =3D <0 0x88f00000 0 0x200000>;
++=09=09};
 +
-+echo $name $cversion
-diff --git a/scripts/clang-version.sh b/scripts/clang-version.sh
-deleted file mode 100755
-index 6fabf0695761..000000000000
---- a/scripts/clang-version.sh
-+++ /dev/null
-@@ -1,19 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--#
--# clang-version clang-command
--#
--# Print the compiler version of `clang-command' in a 5 or 6-digit form
--# such as `50001' for clang-5.0.1 etc.
--
--compiler="$*"
--
--if ! ( $compiler --version | grep -q clang) ; then
--	echo 0
--	exit 1
--fi
--
--MAJOR=$(echo __clang_major__ | $compiler -E -x c - | tail -n 1)
--MINOR=$(echo __clang_minor__ | $compiler -E -x c - | tail -n 1)
--PATCHLEVEL=$(echo __clang_patchlevel__ | $compiler -E -x c - | tail -n 1)
--printf "%d%02d%02d\\n" $MAJOR $MINOR $PATCHLEVEL
-diff --git a/scripts/gcc-version.sh b/scripts/gcc-version.sh
-deleted file mode 100755
-index ae353432539b..000000000000
---- a/scripts/gcc-version.sh
-+++ /dev/null
-@@ -1,20 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--#
--# gcc-version gcc-command
--#
--# Print the gcc version of `gcc-command' in a 5 or 6-digit form
--# such as `29503' for gcc-2.95.3, `30301' for gcc-3.3.1, etc.
--
--compiler="$*"
--
--if [ ${#compiler} -eq 0 ]; then
--	echo "Error: No compiler specified." >&2
--	printf "Usage:\n\t$0 <gcc-command>\n" >&2
--	exit 1
--fi
--
--MAJOR=$(echo __GNUC__ | $compiler -E -x c - | tail -n 1)
--MINOR=$(echo __GNUC_MINOR__ | $compiler -E -x c - | tail -n 1)
--PATCHLEVEL=$(echo __GNUC_PATCHLEVEL__ | $compiler -E -x c - | tail -n 1)
--printf "%d%02d%02d\\n" $MAJOR $MINOR $PATCHLEVEL
--- 
-2.27.0
++=09=09ramoops: ramoops@ac300000 {
++=09=09=09compatible =3D "ramoops";
++=09=09=09reg =3D <0 0xac300000 0 0x400000>;
++=09=09=09record-size =3D <0x40000>;
++=09=09=09console-size =3D <0x40000>;
++=09=09=09ftrace-size =3D <0x40000>;
++=09=09=09pmsg-size =3D <0x200000>;
++=09=09=09devinfo-size =3D <0x1000>;
++=09=09=09ecc-size =3D <16>;
++=09=09};
++=09};
++
++=09vph_pwr: vph-pwr-regulator {
++=09=09compatible =3D "regulator-fixed";
++=09=09regulator-name =3D "vph_pwr";
++=09=09regulator-min-microvolt =3D <3700000>;
++=09=09regulator-max-microvolt =3D <3700000>;
++=09};
++
++=09/*
++=09 * Apparently RPMh does not provide support for PM8998 S4 because it
++=09 * is always-on; model it as a fixed regulator.
++=09 */
++=09vreg_s4a_1p8: pm8998-smps4 {
++=09=09compatible =3D "regulator-fixed";
++=09=09regulator-name =3D "vreg_s4a_1p8";
++
++=09=09regulator-min-microvolt =3D <1800000>;
++=09=09regulator-max-microvolt =3D <1800000>;
++
++=09=09regulator-always-on;
++=09=09regulator-boot-on;
++
++=09=09vin-supply =3D <&vph_pwr>;
++=09};
++
++=09/*
++=09 * The touchscreen regulator seems to be controlled somehow by a gpio.
++=09 * Model it as a fixed regulator and keep it on. Without schematics we
++=09 * don't know how this is actually wired up...
++=09 */
++=09ts_1p8_supply: ts-1p8-regulator {
++=09=09compatible =3D "regulator-fixed";
++=09=09regulator-name =3D "ts_1p8_supply";
++
++=09=09regulator-min-microvolt =3D <1800000>;
++=09=09regulator-max-microvolt =3D <1800000>;
++
++=09=09gpio =3D <&tlmm 88 0>;
++=09=09enable-active-high;
++=09=09regulator-boot-on;
++=09};
++
++=09gpio-keys {
++=09=09compatible =3D "gpio-keys";
++=09=09label =3D "Volume keys";
++=09=09autorepeat;
++
++=09=09pinctrl-names =3D "default";
++=09=09pinctrl-0 =3D <&volume_down_gpio &volume_up_gpio>;
++
++=09=09vol-down {
++=09=09=09label =3D "Volume down";
++=09=09=09linux,code =3D <KEY_VOLUMEDOWN>;
++=09=09=09gpios =3D <&pm8998_gpio 5 GPIO_ACTIVE_LOW>;
++=09=09=09debounce-interval =3D <15>;
++=09=09};
++
++=09=09vol-up {
++=09=09=09label =3D "Volume up";
++=09=09=09linux,code =3D <KEY_VOLUMEUP>;
++=09=09=09gpios =3D <&pm8998_gpio 6 GPIO_ACTIVE_LOW>;
++=09=09=09debounce-interval =3D <15>;
++=09=09};
++=09};
++};
++
++&apps_rsc {
++=09pm8998-rpmh-regulators {
++=09=09compatible =3D "qcom,pm8998-rpmh-regulators";
++=09=09qcom,pmic-id =3D "a";
++
++=09=09vdd-s1-supply =3D <&vph_pwr>;
++=09=09vdd-s2-supply =3D <&vph_pwr>;
++=09=09vdd-s3-supply =3D <&vph_pwr>;
++=09=09vdd-s4-supply =3D <&vph_pwr>;
++=09=09vdd-s5-supply =3D <&vph_pwr>;
++=09=09vdd-s6-supply =3D <&vph_pwr>;
++=09=09vdd-s7-supply =3D <&vph_pwr>;
++=09=09vdd-s8-supply =3D <&vph_pwr>;
++=09=09vdd-s9-supply =3D <&vph_pwr>;
++=09=09vdd-s10-supply =3D <&vph_pwr>;
++=09=09vdd-s11-supply =3D <&vph_pwr>;
++=09=09vdd-s12-supply =3D <&vph_pwr>;
++=09=09vdd-s13-supply =3D <&vph_pwr>;
++=09=09vdd-l1-l27-supply =3D <&vreg_s7a_1p025>;
++=09=09vdd-l2-l8-l17-supply =3D <&vreg_s3a_1p35>;
++=09=09vdd-l3-l11-supply =3D <&vreg_s7a_1p025>;
++=09=09vdd-l4-l5-supply =3D <&vreg_s7a_1p025>;
++=09=09vdd-l6-supply =3D <&vph_pwr>;
++=09=09vdd-l7-l12-l14-l15-supply =3D <&vreg_s5a_2p04>;
++=09=09vdd-l9-supply =3D <&vreg_bob>;
++=09=09vdd-l10-l23-l25-supply =3D <&vreg_bob>;
++=09=09vdd-l13-l19-l21-supply =3D <&vreg_bob>;
++=09=09vdd-l16-l28-supply =3D <&vreg_bob>;
++=09=09vdd-l18-l22-supply =3D <&vreg_bob>;
++=09=09vdd-l20-l24-supply =3D <&vreg_bob>;
++=09=09vdd-l26-supply =3D <&vreg_s3a_1p35>;
++=09=09vin-lvs-1-2-supply =3D <&vreg_s4a_1p8>;
++
++=09=09vreg_s3a_1p35: smps3 {
++=09=09=09regulator-min-microvolt =3D <1352000>;
++=09=09=09regulator-max-microvolt =3D <1352000>;
++=09=09};
++
++=09=09vreg_s5a_2p04: smps5 {
++=09=09=09regulator-min-microvolt =3D <1904000>;
++=09=09=09regulator-max-microvolt =3D <2040000>;
++=09=09};
++
++=09=09vreg_s7a_1p025: smps7 {
++=09=09=09regulator-min-microvolt =3D <900000>;
++=09=09=09regulator-max-microvolt =3D <1028000>;
++=09=09};
++
++=09=09vdda_mipi_dsi0_pll:
++=09=09vdda_qlink_lv:
++=09=09vdda_ufs1_core:
++=09=09vdda_usb1_ss_core:
++=09=09vreg_l1a_0p875: ldo1 {
++=09=09=09regulator-min-microvolt =3D <880000>;
++=09=09=09regulator-max-microvolt =3D <880000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vreg_l2a_1p2: ldo2 {
++=09=09=09regulator-min-microvolt =3D <1200000>;
++=09=09=09regulator-max-microvolt =3D <1200000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09=09regulator-always-on;
++=09=09};
++
++=09=09vreg_l5a_0p8: ldo5 {
++=09=09=09regulator-min-microvolt =3D <800000>;
++=09=09=09regulator-max-microvolt =3D <800000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vreg_l7a_1p8: ldo7 {
++=09=09=09regulator-min-microvolt =3D <1800000>;
++=09=09=09regulator-max-microvolt =3D <1800000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vdda_qusb_hs0_1p8:
++=09=09vreg_l12a_1p8: ldo12 {
++=09=09=09regulator-min-microvolt =3D <1800000>;
++=09=09=09regulator-max-microvolt =3D <1800000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vreg_l14a_1p88: ldo14 {
++=09=09=09regulator-min-microvolt =3D <1800000>;
++=09=09=09regulator-max-microvolt =3D <1800000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09=09regulator-always-on;
++=09=09};
++
++=09=09vreg_l17a_1p3: ldo17 {
++=09=09=09regulator-min-microvolt =3D <1304000>;
++=09=09=09regulator-max-microvolt =3D <1304000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vreg_l20a_2p95: ldo20 {
++=09=09=09regulator-min-microvolt =3D <2704000>;
++=09=09=09regulator-max-microvolt =3D <2960000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vdda_qusb_hs0_3p1:
++=09=09vreg_l24a_3p075: ldo24 {
++=09=09=09regulator-min-microvolt =3D <3088000>;
++=09=09=09regulator-max-microvolt =3D <3088000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vreg_l25a_3p3: ldo25 {
++=09=09=09regulator-min-microvolt =3D <3300000>;
++=09=09=09regulator-max-microvolt =3D <3312000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++=09=09vdda_mipi_dsi0_1p2:
++=09=09vdda_ufs1_1p2:
++=09=09vreg_l26a_1p2: ldo26 {
++=09=09=09regulator-min-microvolt =3D <1200000>;
++=09=09=09regulator-max-microvolt =3D <1200000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vreg_l28a_3p0: ldo28 {
++=09=09=09regulator-min-microvolt =3D <2856000>;
++=09=09=09regulator-max-microvolt =3D <3008000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++=09};
++
++=09pmi8998-rpmh-regulators {
++=09=09compatible =3D "qcom,pmi8998-rpmh-regulators";
++=09=09qcom,pmic-id =3D "b";
++
++=09=09vdd-bob-supply =3D <&vph_pwr>;
++
++=09=09vreg_bob: bob {
++=09=09=09regulator-min-microvolt =3D <3312000>;
++=09=09=09regulator-max-microvolt =3D <3600000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_AUTO>;
++=09=09=09regulator-allow-bypass;
++=09=09};
++=09};
++
++=09pm8005-rpmh-regulators {
++=09=09compatible =3D "qcom,pm8005-rpmh-regulators";
++=09=09qcom,pmic-id =3D "c";
++
++=09=09vdd-s1-supply =3D <&vph_pwr>;
++=09=09vdd-s2-supply =3D <&vph_pwr>;
++=09=09vdd-s3-supply =3D <&vph_pwr>;
++=09=09vdd-s4-supply =3D <&vph_pwr>;
++
++=09=09vreg_s3c_0p6: smps3 {
++=09=09=09regulator-min-microvolt =3D <600000>;
++=09=09=09regulator-max-microvolt =3D <600000>;
++=09=09};
++=09};
++};
++
++&adsp_pas {
++=09status =3D "okay";
++=09firmware-name =3D "qcom/sdm845/oneplus6/adsp.mbn";
++};
++
++&cdsp_pas {
++=09status =3D "okay";
++=09firmware-name =3D "qcom/sdm845/oneplus6/cdsp.mbn";
++};
++
++&dsi0 {
++=09status =3D "okay";
++=09vdda-supply =3D <&vdda_mipi_dsi0_1p2>;
++
++=09#address-cells =3D <1>;
++=09#size-cells =3D <0>;
++
++=09/*
++=09 * Both devices use different panels but all other properties
++=09 * are common. Compatible line is declared in device dts.
++=09 */
++=09display_panel: panel@0 {
++=09=09status =3D "disabled";
++
++=09=09#address-cells =3D <1>;
++=09=09#size-cells =3D <0>;
++=09=09reg =3D <0>;
++
++=09=09vddio-supply =3D <&vreg_l14a_1p88>;
++
++=09=09reset-gpios =3D <&tlmm 6 GPIO_ACTIVE_LOW>;
++
++=09=09pinctrl-names =3D "default";
++=09=09pinctrl-0 =3D <&panel_reset_pins &panel_te_pin &panel_esd_pin>;
++
++=09=09port {
++=09=09=09panel_in: endpoint {
++=09=09=09=09remote-endpoint =3D <&dsi0_out>;
++=09=09=09};
++=09=09};
++=09};
++};
++
++&dsi0_out {
++=09remote-endpoint =3D <&panel_in>;
++=09data-lanes =3D <0 1 2 3>;
++};
++
++&dsi0_phy {
++=09status =3D "okay";
++=09vdds-supply =3D <&vdda_mipi_dsi0_pll>;
++};
++
++&gcc {
++=09protected-clocks =3D <GCC_QSPI_CORE_CLK>,
++=09=09=09=09<GCC_QSPI_CORE_CLK_SRC>,
++=09=09=09=09<GCC_QSPI_CNOC_PERIPH_AHB_CLK>,
++=09=09=09=09<GCC_LPASS_Q6_AXI_CLK>,
++=09=09=09=09<GCC_LPASS_SWAY_CLK>;
++};
++
++&gpu {
++=09zap-shader {
++=09=09memory-region =3D <&gpu_mem>;
++=09=09firmware-name =3D "qcom/sdm845/oneplus6/a630_zap.mbn";
++=09};
++};
++
++&i2c12 {
++=09status =3D "okay";
++=09clock-frequency =3D <400000>;
++
++=09synaptics-rmi4-i2c@20 {
++=09=09compatible =3D "syna,rmi4-i2c";
++=09=09reg =3D <0x20>;
++=09=09#address-cells =3D <1>;
++=09=09#size-cells =3D <0>;
++=09=09interrupts-extended =3D <&tlmm 125 IRQ_TYPE_EDGE_FALLING>;
++
++=09=09pinctrl-names =3D "default";
++=09=09pinctrl-0 =3D <&ts_default_pins>;
++
++=09=09vdd-supply =3D <&vreg_l28a_3p0>;
++=09=09vio-supply =3D <&ts_1p8_supply>;
++
++=09=09syna,reset-delay-ms =3D <200>;
++=09=09syna,startup-delay-ms =3D <200>;
++
++=09=09rmi4-f01@1 {
++=09=09=09reg =3D <0x01>;
++=09=09=09syna,nosleep-mode =3D <1>;
++=09=09};
++
++=09=09rmi4-f12@12 {
++=09=09=09reg =3D <0x12>;
++=09=09=09touchscreen-x-mm =3D <68>;
++=09=09=09touchscreen-y-mm =3D <144>;
++=09=09=09syna,sensor-type =3D <1>;
++=09=09=09syna,rezero-wait-ms =3D <200>;
++=09=09};
++=09};
++};
++
++&mdss {
++=09status =3D "okay";
++};
++
++&mdss_mdp {
++=09status =3D "okay";
++};
++
++/* Modem/wifi*/
++&mss_pil {
++=09status =3D "okay";
++=09firmware-name =3D "qcom/sdm845/oneplus6/mba.mbn", "qcom/sdm845/oneplus6=
+/modem.mbn";
++};
++
++&pm8998_gpio {
++=09volume_down_gpio: pm8998_gpio5 {
++=09=09pinconf {
++=09=09=09pins =3D "gpio5";
++=09=09=09function =3D "normal";
++=09=09=09input-enable;
++=09=09=09bias-pull-up;
++=09=09=09qcom,drive-strength =3D <0>;
++=09=09};
++=09};
++
++=09volume_up_gpio: pm8998_gpio6 {
++=09=09pinconf {
++=09=09=09pins =3D "gpio6";
++=09=09=09function =3D "normal";
++=09=09=09input-enable;
++=09=09=09bias-pull-up;
++=09=09=09qcom,drive-strength =3D <0>;
++=09=09};
++=09};
++};
++
++&qupv3_id_1 {
++=09status =3D "okay";
++};
++
++&qupv3_id_0 {
++=09status =3D "okay";
++};
++
++&qup_i2c12_default {
++=09mux {
++=09=09pins =3D "gpio49", "gpio50";
++=09=09function =3D "qup12";
++=09=09drive-strength =3D <2>;
++=09=09bias-disable;
++=09};
++};
++
++&qup_i2c10_default {
++=09pinconf {
++=09=09pins =3D "gpio55", "gpio56";
++=09=09drive-strength =3D <2>;
++=09=09bias-disable;
++=09};
++};
++
++&qup_uart9_default {
++=09pinconf-tx {
++=09=09pins =3D "gpio4";
++=09=09drive-strength =3D <2>;
++=09=09bias-disable;
++=09};
++
++=09pinconf-rx {
++=09=09pins =3D "gpio5";
++=09=09drive-strength =3D <2>;
++=09=09bias-pull-up;
++=09};
++};
++
++// Prevent garbage data on bluetooth UART lines
++&qup_uart6_default {
++=09pinmux {
++=09=09pins =3D "gpio45", "gpio46", "gpio47", "gpio48";
++=09=09function =3D "qup6";
++=09};
++
++=09cts {
++=09=09pins =3D "gpio45";
++=09=09bias-pull-down;
++=09};
++
++=09rts-tx {
++=09=09pins =3D "gpio46", "gpio47";
++=09=09drive-strength =3D <2>;
++=09=09bias-disable;
++=09};
++
++=09rx {
++=09=09pins =3D "gpio48";
++=09=09bias-pull-up;
++=09};
++};
++
++&uart6 {
++=09status =3D "okay";
++
++=09bluetooth {
++=09=09compatible =3D "qcom,wcn3990-bt";
++
++=09=09/*
++=09=09 * This path is relative to the qca/
++=09=09 * subdir under lib/firmware.
++=09=09 */
++=09=09firmware-name =3D "oneplus6/crnv21.bin";
++
++=09=09vddio-supply =3D <&vreg_s4a_1p8>;
++=09=09vddxo-supply =3D <&vreg_l7a_1p8>;
++=09=09vddrf-supply =3D <&vreg_l17a_1p3>;
++=09=09vddch0-supply =3D <&vreg_l25a_3p3>;
++=09=09max-speed =3D <3200000>;
++=09};
++};
++
++&ufs_mem_hc {
++=09status =3D "okay";
++
++=09reset-gpios =3D <&tlmm 150 GPIO_ACTIVE_LOW>;
++
++=09vcc-supply =3D <&vreg_l20a_2p95>;
++=09vcc-max-microamp =3D <600000>;
++};
++
++&ufs_mem_phy {
++=09status =3D "okay";
++
++=09vdda-phy-supply =3D <&vdda_ufs1_core>;
++=09vdda-pll-supply =3D <&vdda_ufs1_1p2>;
++};
++
++&usb_1 {
++=09status =3D "okay";
++
++=09/*
++=09 * disable USB3 clock requirement as the device only supports
++=09 * USB2.
++=09 */
++=09qcom,select-utmi-as-pipe-clk;
++};
++
++&usb_1_dwc3 {
++=09/*
++=09 * We don't have the capability to switch modes yet.
++=09 */
++=09dr_mode =3D "peripheral";
++
++=09/* fastest mode for USB 2 */
++=09maximum-speed =3D "high-speed";
++
++=09/* Remove USB3 phy as it's unused on this device. */
++=09phys =3D <&usb_1_hsphy>;
++=09phy-names =3D "usb2-phy";
++};
++
++&usb_1_hsphy {
++=09status =3D "okay";
++
++=09vdd-supply =3D <&vdda_usb1_ss_core>;
++=09vdda-pll-supply =3D <&vdda_qusb_hs0_1p8>;
++=09vdda-phy-dpdm-supply =3D <&vdda_qusb_hs0_3p1>;
++
++=09qcom,imp-res-offset-value =3D <8>;
++=09qcom,hstx-trim-value =3D <QUSB2_V2_HSTX_TRIM_21_6_MA>;
++=09qcom,preemphasis-level =3D <QUSB2_V2_PREEMPHASIS_5_PERCENT>;
++=09qcom,preemphasis-width =3D <QUSB2_V2_PREEMPHASIS_WIDTH_HALF_BIT>;
++};
++
++&tlmm {
++=09gpio-reserved-ranges =3D <0 4>, <81 4>;
++
++=09tri_state_key_default: tri_state_key_default {
++=09=09mux {
++=09=09=09pins =3D "gpio40", "gpio42", "gpio26";
++=09=09=09function =3D "gpio";
++=09=09=09drive-strength =3D <2>;
++=09=09=09bias-disable;
++=09=09};
++=09};
++
++=09ts_default_pins: ts-int {
++=09=09mux {
++=09=09=09pins =3D "gpio99", "gpio125";
++=09=09=09function =3D "gpio";
++=09=09=09drive-strength =3D <16>;
++=09=09=09bias-pull-up;
++=09=09};
++=09};
++
++=09panel_reset_pins: panel-reset {
++=09=09mux {
++=09=09=09pins =3D "gpio6", "gpio25", "gpio26";
++=09=09=09function =3D "gpio";
++=09=09=09drive-strength =3D <8>;
++=09=09=09bias-disable =3D <0>;
++=09=09};
++=09};
++
++=09panel_te_pin: panel-te {
++=09=09mux {
++=09=09=09pins =3D "gpio10";
++=09=09=09function =3D "mdp_vsync";
++=09=09=09drive-strength =3D <2>;
++=09=09=09bias-disable;
++=09=09=09input-enable;
++=09=09};
++=09};
++
++=09panel_esd_pin: panel-esd {
++=09=09mux {
++=09=09=09pins =3D "gpio30";
++=09=09=09function =3D "gpio";
++=09=09=09drive-strength =3D <2>;
++=09=09=09bias-pull-down;
++=09=09=09input-enable;
++=09=09};
++=09};
++};
++
++&wifi {
++=09status =3D "okay";
++=09vdd-0.8-cx-mx-supply =3D <&vreg_l5a_0p8>;
++=09vdd-1.8-xo-supply =3D <&vreg_l7a_1p8>;
++=09vdd-1.3-rfa-supply =3D <&vreg_l17a_1p3>;
++=09vdd-3.3-ch0-supply =3D <&vreg_l25a_3p3>;
++
++=09qcom,snoc-host-cap-8bit-quirk;
++};
+\ No newline at end of file
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dts b/arch/a=
+rm64/boot/dts/qcom/sdm845-oneplus-enchilada.dts
+new file mode 100644
+index 000000000000..72842c887617
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dts
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * SDM845 OnePlus 6 (enchilada) device tree.
++ *
++ * Copyright (c) 2020, The Linux Foundation. All rights reserved.
++ */
++
++#include "sdm845-oneplus-common.dtsi"
++
++/ {
++=09model =3D "OnePlus 6";
++=09compatible =3D "oneplus,enchilada", "qcom,sdm845";
++};
++
++&display_panel {
++=09status =3D "okay";
++
++=09compatible =3D "samsung,sofef00";
++};
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dts b/arch/arm6=
+4/boot/dts/qcom/sdm845-oneplus-fajita.dts
+new file mode 100644
+index 000000000000..969b36dc9e2c
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dts
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * SDM845 OnePlus 6T (fajita) device tree.
++ *
++ * Copyright (c) 2020, The Linux Foundation. All rights reserved.
++ */
++
++#include "sdm845-oneplus-common.dtsi"
++
++/ {
++=09model =3D "OnePlus 6T";
++=09compatible =3D "oneplus,fajita", "qcom,sdm845";
++};
++
++&display_panel {
++=09status =3D "okay";
++
++=09compatible =3D "samsung,s6e3fc2x01";
++};
++
++&rmi4_f12 {
++=09touchscreen-y-mm =3D <148>;
++};
+--=20
+2.29.2
+
 
