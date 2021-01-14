@@ -2,141 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68DB22F6CB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1275E2F6CBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729742AbhANU5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 15:57:03 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:52895 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726049AbhANU5C (ORCPT
+        id S1730052AbhANU6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 15:58:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24453 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727380AbhANU57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 15:57:02 -0500
-Received: by mail-io1-f71.google.com with SMTP id x17so10611099iov.19
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 12:56:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=gocC/VzkSkkh7+cWU1l2LyVuZ/yknJ3LcOA3JogfWd0=;
-        b=mSsJd2DdvPonH0jPMVhNXw+5zaC4RniAiHT+HRCOb5E7wKRfR+u4qiz0ZXslQhW4Rg
-         +YuP1YFEh8E0kMX9lm3WCx2l49XHQv+EBA52F2K3oI3KTtqvgwUryWpFLscACPO39kAs
-         jFSIk97F50qIGCpVKkKe3MzyHcsv+2jgiGf8rJxWnbxX7ETepCAw+M3yaVlD7dBJuUvi
-         EhHgBrDTiSVHLL/sb2BnCP9XXNAZYL8UpnTxaMZeuAYgZ+vO80YuAJenzvsNx246ePku
-         mXu5kMdCsjteQLALw+XKsdpdCKSMakkoc64VmPn8ZOEYPWCQb8B+LIbsPZ/x9eLSoNLL
-         JvWA==
-X-Gm-Message-State: AOAM5322RdWIFcvHB7vP/IxQ4SJB4N/7ftJPkBm9/1+YUus4Ai+Wa6jG
-        5gnqDbvICmvuMup1sSCJDgSQWIuo7InOPRrTDJ9RIDe+oeuB
-X-Google-Smtp-Source: ABdhPJyra8WB5oJQbElhi/bVLRAsPt99cVwM+t/ngccgVyBHad5ZFZ93DpgRoAQAI6etEx2xqMVqN9XLAaQUQ0HG2iYsk76gFeOi
+        Thu, 14 Jan 2021 15:57:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610657793;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=G9+4Pk0QfMyGrL+EPSU/M84dgufmtwgcIjPfqAvJ8sg=;
+        b=IQE7vJZlhtmGmsvRDKO6+pEn0sZ2neH4VgVPzQtXUMblX1LaS/mtPazuLnepyTpWDHtv5d
+        r1cZOqV4lGQ+H59p/3GV8o4MlJI1PdcldGHjjAVmdb/Tyc5W8XU3TAF4V+P8sgNKEdGxNH
+        u9Tz89uyQcDCQ5Q/Zd4nve9hir9qwZI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-48-d1u3mahQOtyoXoN_KPF6aw-1; Thu, 14 Jan 2021 15:56:29 -0500
+X-MC-Unique: d1u3mahQOtyoXoN_KPF6aw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A454107ACF7;
+        Thu, 14 Jan 2021 20:56:27 +0000 (UTC)
+Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5952E12D7E;
+        Thu, 14 Jan 2021 20:56:26 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 14:56:24 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, Miroslav Benes <mbenes@suse.cz>
+Subject: [PATCH v1.1 12/21] objtool: Add CONFIG_CFI_CLANG support
+Message-ID: <20210114205624.dpodesrcljpnfsaj@treble>
+References: <cover.1610652862.git.jpoimboe@redhat.com>
+ <c1889131d5de558e58700ba559e7d8606fe9c680.1610652862.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:8d94:: with SMTP id b20mr6476396ioj.200.1610657781676;
- Thu, 14 Jan 2021 12:56:21 -0800 (PST)
-Date:   Thu, 14 Jan 2021 12:56:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ee881505b8e27cf2@google.com>
-Subject: general protection fault in xsk_recvmsg
-From:   syzbot <syzbot+b974d32294d1dffbea36@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bjorn.topel@intel.com,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, johannes.berg@intel.com,
-        johannes@sipsolutions.net, john.fastabend@gmail.com,
-        jonathan.lemon@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, magnus.karlsson@intel.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c1889131d5de558e58700ba559e7d8606fe9c680.1610652862.git.jpoimboe@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+The upcoming CONFIG_CFI_CLANG support uses -fsanitize=cfi, the
+non-canonical version of which hijacks function entry by changing
+function relocation references to point to an intermediary jump table.
 
-HEAD commit:    df542285 Merge branch 'xdp-preferred-busy-polling'
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=11426809500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6774dc081604c527
-dashboard link: https://syzkaller.appspot.com/bug?extid=b974d32294d1dffbea36
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1648b0e5500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=125af4ad500000
+For example:
 
-The issue was bisected to:
+  Relocation section '.rela.discard.func_stack_frame_non_standard' at offset 0x37e018 contains 6 entries:
+      Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+  0000000000000000  0002944700000002 R_X86_64_PC32          00000000000023f0 do_suspend_lowlevel + 0
+  0000000000000008  0003c11900000001 R_X86_64_64            0000000000000008 xen_cpuid$e69bc59f4fade3b6f2b579b3934137df.cfi_jt + 0
+  0000000000000010  0003980900000001 R_X86_64_64            0000000000000060 machine_real_restart.cfi_jt + 0
+  0000000000000018  0003962b00000001 R_X86_64_64            0000000000000e18 kretprobe_trampoline.cfi_jt + 0
+  0000000000000020  000028f300000001 R_X86_64_64            0000000000000000 .rodata + 12
+  0000000000000028  000349f400000001 R_X86_64_64            0000000000000018 __crash_kexec.cfi_jt + 0
 
-commit dcd479e10a0510522a5d88b29b8f79ea3467d501
-Author: Johannes Berg <johannes.berg@intel.com>
-Date:   Fri Oct 9 12:17:11 2020 +0000
+  0000000000000060 <machine_real_restart.cfi_jt>:
+    60: e9 00 00 00 00          jmpq   65 <machine_real_restart.cfi_jt+0x5>
+                        61: R_X86_64_PLT32      machine_real_restart-0x4
+    65: cc                      int3
+    66: cc                      int3
+    67: cc                      int3
 
-    mac80211: always wind down STA state
+This breaks objtool vmlinux validation in many ways, including static
+call site detection and the STACK_FRAME_NON_STANDARD() macro.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12356d1d500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11356d1d500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16356d1d500000
+Fix it by converting those relocations' symbol references back to their
+original non-jump-table versions.  Note this doesn't change the actual
+relocations in the object itself, it just changes objtool's view of
+them.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b974d32294d1dffbea36@syzkaller.appspotmail.com
-Fixes: dcd479e10a05 ("mac80211: always wind down STA state")
-
-general protection fault, probably for non-canonical address 0xdffffc0000000045: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000228-0x000000000000022f]
-CPU: 1 PID: 8481 Comm: syz-executor119 Not tainted 5.10.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:xsk_recvmsg+0x79/0x5e0 net/xdp/xsk.c:563
-Code: 03 80 3c 02 00 0f 85 00 05 00 00 48 8b 9d c8 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bb 28 02 00 00 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 9c 04 00 00 8b 9b 28 02 00 00
-RSP: 0018:ffffc9000165fae0 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000040000000
-RDX: 0000000000000045 RSI: ffffffff88a6a995 RDI: 0000000000000228
-RBP: ffff88801a140000 R08: 0000000040000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000040000000
-R13: 0000000040000000 R14: ffffc9000165fe98 R15: 0000000000000000
-FS:  00000000007fd880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020004880 CR3: 000000001f1bd000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- sock_recvmsg_nosec net/socket.c:885 [inline]
- sock_recvmsg net/socket.c:903 [inline]
- sock_recvmsg net/socket.c:899 [inline]
- ____sys_recvmsg+0x2c4/0x600 net/socket.c:2576
- ___sys_recvmsg+0x127/0x200 net/socket.c:2618
- __sys_recvmsg+0xe2/0x1a0 net/socket.c:2654
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440269
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffdbb92b6c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002f
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440269
-RDX: 0000000040000000 RSI: 0000000020004880 RDI: 0000000000000003
-RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401a70
-R13: 0000000000401b00 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 184efc29c05fd9c5 ]---
-RIP: 0010:xsk_recvmsg+0x79/0x5e0 net/xdp/xsk.c:563
-Code: 03 80 3c 02 00 0f 85 00 05 00 00 48 8b 9d c8 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bb 28 02 00 00 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 9c 04 00 00 8b 9b 28 02 00 00
-RSP: 0018:ffffc9000165fae0 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000040000000
-RDX: 0000000000000045 RSI: ffffffff88a6a995 RDI: 0000000000000228
-RBP: ffff88801a140000 R08: 0000000040000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000040000000
-R13: 0000000040000000 R14: ffffc9000165fe98 R15: 0000000000000000
-FS:  00000000007fd880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f66a803d058 CR3: 000000001f1bd000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ tools/objtool/elf.c | 28 ++++++++++++++++++++++++++++
+ tools/objtool/elf.h |  2 +-
+ 2 files changed, 29 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index 6d248a19e2c6..142b2ce49328 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -382,6 +382,11 @@ static int read_sections(struct elf *elf)
+ 		}
+ 		sec->len = sec->sh.sh_size;
+ 
++		/* Detect -fsanitize=cfi related sections */
++		if (!strcmp(sec->name, ".text.__cfi_check") ||
++		    !strncmp(sec->name, ".text..L.cfi.jumptable", 22))
++			sec->cfi_jt = true;
++
+ 		list_add_tail(&sec->list, &elf->sections);
+ 		elf_hash_add(elf->section_hash, &sec->hash, sec->idx);
+ 		elf_hash_add(elf->section_name_hash, &sec->name_hash, str_hash(sec->name));
+@@ -613,6 +618,29 @@ static int read_relocs(struct elf *elf)
+ 				return -1;
+ 			}
+ 
++			/*
++			 * Deal with -fsanitize=cfi (CONFIG_CFI_CLANG), which
++			 * hijacks function entry by arbitrarily changing a lot
++			 * of relocation symbol references to refer to an
++			 * intermediate jump table.  Undo that conversion so
++			 * objtool can make sense of things.
++			 */
++			if (reloc->sym->sec->cfi_jt) {
++				struct symbol *func, *sym;
++
++				if (reloc->sym->type == STT_SECTION)
++					sym = find_func_by_offset(reloc->sym->sec,
++								  reloc->addend);
++				else
++					sym = reloc->sym;
++
++				if (find_unsuffixed_func(elf, sym, ".cfi_jt", &func))
++					return -1;
++
++				if (func)
++					reloc->sym = func;
++			}
++
+ 			elf_add_reloc(elf, reloc);
+ 			nr_reloc++;
+ 		}
+diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
+index e6890cc70a25..bcc524d73f51 100644
+--- a/tools/objtool/elf.h
++++ b/tools/objtool/elf.h
+@@ -39,7 +39,7 @@ struct section {
+ 	char *name;
+ 	int idx;
+ 	unsigned int len;
+-	bool changed, text, rodata, noinstr;
++	bool changed, text, rodata, noinstr, cfi_jt;
+ };
+ 
+ struct symbol {
+-- 
+2.29.2
+
