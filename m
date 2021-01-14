@@ -2,102 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFDB2F62B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4719E2F62B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:09:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729058AbhANOIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:08:23 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:58908 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725884AbhANOIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:08:22 -0500
-Received: from zn.tnic (p200300ec2f1aa9000d5c8ff8171504e8.dip0.t-ipconnect.de [IPv6:2003:ec:2f1a:a900:d5c:8ff8:1715:4e8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7237F1EC04F9;
-        Thu, 14 Jan 2021 15:07:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610633261;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=w853tYYUeVGIoj6sCsCDNuPQ7rgNkQpk7zDo4VYDixc=;
-        b=l3+5ksPp7yPYG6tYsUIG/S3IE7yC9I8M7mqYbPAwOV9+HDR4cjz/mJbo0VQMziQzjmQ7Yy
-        zO9JIPmDRaBh3xGIycUin3BmOa93pyIjWuWDdWdin6cY0Y7Wy32+197GTJScMR+xJPyjhU
-        PbWApaZUIjb3Ig9oVauEYbhSsmmaZQ4=
-Date:   Thu, 14 Jan 2021 15:07:37 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Krzysztof Mazur <krzysiek@podlesie.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/lib: don't use MMX before FPU initialization
-Message-ID: <20210114140737.GD12284@zn.tnic>
-References: <20201228160631.32732-1-krzysiek@podlesie.net>
- <20210112000923.GK25645@zn.tnic>
- <20210114092218.GA26786@shrek.podlesie.net>
- <20210114094425.GA12284@zn.tnic>
- <20210114123657.GA6358@shrek.podlesie.net>
+        id S1729100AbhANOIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:08:38 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:40940 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728358AbhANOIh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:08:37 -0500
+Received: by mail-ot1-f43.google.com with SMTP id j12so5248129ota.7;
+        Thu, 14 Jan 2021 06:08:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G3qssVyonRjps8ihp/C/PMHKlXEjV5UX8OHRldAZeG8=;
+        b=Qak5fX3Kb0T/turhlcEnxF8P5eqhwmlv/z+b4QkMYDCAUVC+RtQehTFBKwvufBtC8e
+         9ilUg3O1QIiDIzH3T9l6CjKJsqkEsajy2KWNQggIc7F1bTHk1lDrBydBcDpE0HE2vth2
+         juNolQdg55wEPC8655+8IKZbvpvYSuM4Yv3zn+hLYrMSsK/pHx2n5fZbG+VU9p3083VJ
+         y6IUj9t2MjObWrmX1XKW7KMhMTbR0gQQApqkf9buaBY6MFgOEx4GSKpdLr4a18fb4C2Z
+         eoSgGSbvf1YUGW4X7O6eoilp9IF+um7Pg+YAgHTK7AV8xJMyxvv8ypybpAtrBU5IXsIE
+         8bbQ==
+X-Gm-Message-State: AOAM5323pJ4+pxv4xrYjo13PtOfbSZIGfzomTJ69YrpGC4DxsFisGH6Y
+        pkeQAVZzYCwEzM7TqnZJxw==
+X-Google-Smtp-Source: ABdhPJwVtCF6IxBm1ri0k7zeacKkkqtY0V0s84gaPnBb33BhOs+QNF5sum09OLklXfLJcLNhR4WmSA==
+X-Received: by 2002:a9d:a61:: with SMTP id 88mr4680079otg.18.1610633276788;
+        Thu, 14 Jan 2021 06:07:56 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id c14sm1064336otp.19.2021.01.14.06.07.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 06:07:55 -0800 (PST)
+Received: (nullmailer pid 2822961 invoked by uid 1000);
+        Thu, 14 Jan 2021 14:07:54 -0000
+Date:   Thu, 14 Jan 2021 08:07:54 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
+        mike.leach@linaro.org, Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH V2 11/11] dts: bindings: Document device tree bindings
+ for Arm TRBE
+Message-ID: <20210114140754.GA2816889@robh.at.kernel.org>
+References: <1610511498-4058-1-git-send-email-anshuman.khandual@arm.com>
+ <1610511498-4058-12-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210114123657.GA6358@shrek.podlesie.net>
+In-Reply-To: <1610511498-4058-12-git-send-email-anshuman.khandual@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 01:36:57PM +0100, Krzysztof Mazur wrote:
-> The OSFXSR must be set only on CPUs with SSE. There
-> are some CPUs with 3DNow!, but without SSE and FXSR (like AMD
-> Geode LX, which is still used in many embedded systems).
-> So, I've changed that to:
+On Wed, Jan 13, 2021 at 09:48:18AM +0530, Anshuman Khandual wrote:
+> From: Suzuki K Poulose <suzuki.poulose@arm.com>
 > 
-> if (unlikely(in_interrupt()) || (boot_cpu_has(X86_FEATURE_XMM) &&
-> 		unlikely(!(cr4_read_shadow() & X86_CR4_OSFXSR))))
-
-Why?
-
-X86_CR4_OSFXSR won't ever be set on those CPUs but the test will be
-performed anyway. So there's no need for boot_cpu_has().
-
-> However, except for some embedded systems, probably almost nobody uses
-> that code today, and the most imporant is avoiding future breakage.
-
-Yes, exactly. K7 is a don't-care performance-wise nowadays.
-
-> And I'm not sure which approach is better. Because that CR4 test tests
-> for a feature that is not used in mmx_memcpy(), but it's used in
-> kernel_fpu_begin(). And in future kernel_fpu_begin() may change and
-> require also other stuff. So I think that the best approach would be
-> delay any FPU optimized memcpy() after fpu__init_system() is executed.
-
-I'd prefer the simplest approach as this code is almost never used. So
-no need to complicate things unnecessarily.
-
-> Subject: [PATCH] x86/lib: don't use mmx_memcpy() to early
-
-s/to/too/
-
-> The MMX 3DNow! optimized memcpy() is used very early,
-> even before FPU is initialized in the kernel. It worked fine, but commit
-> 7ad816762f9bf89e940e618ea40c43138b479e10 ("x86/fpu: Reset MXCSR
-> to default in kernel_fpu_begin()") broke that. After that
-> commit the kernel_fpu_begin() assumes that FXSR is enabled in
-> the CR4 register on all processors with SSE. Because memcpy() is used
-> before FXSR is enabled, the kernel crashes just after "Booting the kernel."
-> message. It affects all kernels with CONFIG_X86_USE_3DNOW (enabled when
-> some AMD/Cyrix processors are selected) on processors with SSE
-> (like AMD K7, which supports both MMX 3DNow! and SSE).
+> Document the device tree bindings for Trace Buffer Extension (TRBE).
 > 
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  Documentation/devicetree/bindings/arm/trbe.yaml | 46 +++++++++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/arm/trbe.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/trbe.yaml b/Documentation/devicetree/bindings/arm/trbe.yaml
+> new file mode 100644
+> index 0000000..2258595
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/trbe.yaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
+> +# Copyright 2021, Arm Ltd
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/arm/trbe.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: ARM Trace Buffer Extensions
+> +
+> +maintainers:
+> +  - Anshuman Khandual <anshuman.khandual@arm.com>
+> +
+> +description: |
+> +  Description of TRBE hw
 
-Fixes: 7ad816762f9b ("x86/fpu: Reset MXCSR to default in kernel_fpu_begin()")
+Huh?
 
-...
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "trbe"
 
-Thx. 
+const: trbe
 
--- 
-Regards/Gruss,
-    Boris.
+> +  compatible:
+> +    items:
+> +      - const: arm,trace-buffer-extension
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Any versioning to this? Or is that discoverable?
+
+> +
+> +  interrupts:
+> +    description: |
+> +       Exactly 1 PPI must be listed. For heterogeneous systems where
+> +       TRBE is only supported on a subset of the CPUs, please consult
+> +       the arm,gic-v3 binding for details on describing a PPI partition.
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +
+
+Extra blank line.
+
+> +examples:
+> +
+> + - |
+> +   #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +   trbe {
+> +     compatible = "arm,trace-buffer-extension";
+> +     interrupts = <GIC_PPI 15 IRQ_TYPE_LEVEL_HIGH>;
+> +   };
+> +...
+> -- 
+> 2.7.4
+> 
