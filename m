@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9040B2F5D41
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3542F5D57
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728221AbhANJZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:25:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727174AbhANJZQ (ORCPT
+        id S1728134AbhANJ0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:26:33 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:56654 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726806AbhANJ0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:25:16 -0500
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB5DC061786;
-        Thu, 14 Jan 2021 01:24:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=2uqg5pSRojZBo6w/FGO6uS669NIaxCuaEwl+DtcVLgI=; b=MZMILskZu+w7kBlmRGoaNKncmM
-        y1maASYjvLIo6Bp3jZNfXsd7014BWXk649R8jFm5IYA99cb6JJ2OoVsOhPWvEQir5k2uB7MTZMEoj
-        v1DLlNQo2/Bmqe2+jmlHhsK92jcO6zJEukKJ0OrqGZdP4kc9kStxqAAUVfCLjpjV3jtQ=;
-Received: from p54ae91f2.dip0.t-ipconnect.de ([84.174.145.242] helo=nf.local)
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <nbd@nbd.name>)
-        id 1kzyrn-0004T9-UU; Thu, 14 Jan 2021 10:24:31 +0100
-Subject: Re: [PATCH] mt76: Fix queue ID variable types after mcu queue split
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20201229211548.1348077-1-natechancellor@gmail.com>
- <20201231100918.GA1819773@computer-5.station> <87k0sjlwyb.fsf@codeaurora.org>
-From:   Felix Fietkau <nbd@nbd.name>
-Message-ID: <9af48c35-c987-7eb4-e3a1-5e54555f988b@nbd.name>
-Date:   Thu, 14 Jan 2021 10:24:30 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        Thu, 14 Jan 2021 04:26:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1610616390; x=1642152390;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+jOIFDxc8pDKUwvO+6TF9Y49yr5MBHAQgzNkRlq5hBg=;
+  b=GrkuICvz01v3/fMX8TYOve4QjEMXP+VVCABvg1GYJkNzSnpawb+VDGJW
+   Z8G1CBpLOdQB8Jr0GNZ0Z0FUJzrdNnCsmXyn7hF0bpECuCHV6zWk9R4N2
+   oSibJw1pBqZivqrCq28ySM8yUmVnuEBGeqfs88xuAr9guNaT6Q0SCMaMb
+   Lc5PXpiD4hMnkKBj3WGIChcF50Hjt+o7Ub4WEqwX7rfuDjbQ8k7DR4YEu
+   C+7prM2VuobWKx+PxkJcBHCEghUabVn3JXkXvcf8jnMhyx7SF99rMREpN
+   RxLhFhVfdXha4QijQJ9fUVTLQ4jA5rr5qM+/xA6xco+Vx2l8KgJfytGbv
+   A==;
+IronPort-SDR: 1VwdpMn/peBweqpU+tToJbEKdQKfRV2OSw56d3QPQIkGH4XCpax5al/eX4CZboYH3Y3ACdb4ey
+ VcPh4yxWZUPDpG4nyRSkS9ufDqehkaQJlfL2AIUHpSfjN45JGRwGOmq5qGqIlvZ3pDmjs7kAum
+ Y4iB3UV37PPfYkcIBtr2hwvonnjxZ0blWXZsCcDfalRlu3itS2bF5GDkpxbYIZIFtMTobIP6nn
+ AOl2icccJEygM26/WPRF+rPRKuJy1Ec1dU5m9FYj10tXLgE07f3IcfK8nf/X0Z75OZ8b47UHlu
+ bwM=
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="100058149"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Jan 2021 02:25:14 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 14 Jan 2021 02:25:13 -0700
+Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 14 Jan 2021 02:25:11 -0700
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+CC:     Steen Hegelund <steen.hegelund@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v2 0/3]  Adding the Sparx5 Switch Reset Driver
+Date:   Thu, 14 Jan 2021 10:24:57 +0100
+Message-ID: <20210114092500.2822208-1-steen.hegelund@microchip.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <87k0sjlwyb.fsf@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-11 09:06, Kalle Valo wrote:
-> Lorenzo Bianconi <lorenzo@kernel.org> writes:
-> 
->>> Clang warns in both mt7615 and mt7915:
->>> 
->>> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:271:9: warning: implicit
->>> conversion from enumeration type 'enum mt76_mcuq_id' to different
->>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->>>                 txq = MT_MCUQ_FWDL;
->>>                     ~ ^~~~~~~~~~~~
->>> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:278:9: warning: implicit
->>> conversion from enumeration type 'enum mt76_mcuq_id' to different
->>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->>>                 txq = MT_MCUQ_WA;
->>>                     ~ ^~~~~~~~~~
->>> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:282:9: warning: implicit
->>> conversion from enumeration type 'enum mt76_mcuq_id' to different
->>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->>>                 txq = MT_MCUQ_WM;
->>>                     ~ ^~~~~~~~~~
->>> 3 warnings generated.
->>> 
->>> drivers/net/wireless/mediatek/mt76/mt7615/mcu.c:238:9: warning: implicit
->>> conversion from enumeration type 'enum mt76_mcuq_id' to different
->>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->>>                 qid = MT_MCUQ_WM;
->>>                     ~ ^~~~~~~~~~
->>> drivers/net/wireless/mediatek/mt76/mt7615/mcu.c:240:9: warning: implicit
->>> conversion from enumeration type 'enum mt76_mcuq_id' to different
->>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->>>                 qid = MT_MCUQ_FWDL;
->>>                     ~ ^~~~~~~~~~~~
->>> 2 warnings generated.
->>> 
->>> Use the proper type for the queue ID variables to fix these warnings.
->>> Additionally, rename the txq variable in mt7915_mcu_send_message to be
->>> more neutral like mt7615_mcu_send_message.
->>> 
->>> Fixes: e637763b606b ("mt76: move mcu queues to mt76_dev q_mcu array")
->>> Link: https://github.com/ClangBuiltLinux/linux/issues/1229
->>> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
->>
->> Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> 
-> I see that Felix already applied this, but as this is a regression
-> starting from v5.11-rc1 I think it should be applied to
-> wireless-drivers. Felix, can you drop this from your tree so that I
-> could apply it to wireless-drivers?
-Sure, will do.
+This series provides the Microchip Sparx5 Switch Reset Driver
 
-- Felix
+The Sparx5 Switch SoC has a number of components that can be reset
+individually, but at least the Switch Core needs to be in a well defined
+state at power on, when any of the Sparx5 drivers starts to access the
+Switch Core, this reset driver is available.
+
+The reset driver is loaded early via the postcore_initcall interface, and
+will then be available for the other Sparx5 drivers (SGPIO, SwitchDev etc)
+that are loaded next, and the first of them to be loaded can perform the
+one-time Switch Core reset that is needed.
+
+The driver has protection so that the system busses, DDR controller, PCI-E
+and ARM A53 CPU and a few other subsystems are not touched by the reset.
+
+The Sparx5 Chip Register Model can be browsed at this location:
+https://github.com/microchip-ung/sparx-5_reginfo
+
+History:
+
+v1 - v2: Removed debug prints
+         Changed the error handling to save the error code before jumping.
+
+Steen Hegelund (3):
+  dt-bindings: reset: microchip sparx5 reset driver bindings
+  reset: mchp: sparx5: add switch reset driver
+  arm64: dts: reset: add microchip sparx5 switch reset driver
+
+ .../bindings/reset/microchip,rst.yaml         |  52 +++++++
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |  13 +-
+ drivers/reset/Kconfig                         |   8 +
+ drivers/reset/Makefile                        |   1 +
+ drivers/reset/reset-microchip-sparx5.c        | 146 ++++++++++++++++++
+ 5 files changed, 217 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/reset/microchip,rst.yaml
+ create mode 100644 drivers/reset/reset-microchip-sparx5.c
+
+-- 
+2.29.2
 
