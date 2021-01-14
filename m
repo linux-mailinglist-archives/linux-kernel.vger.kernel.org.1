@@ -2,176 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1901F2F63C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:09:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C892F63CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729287AbhANPHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 10:07:03 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54852 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726459AbhANPHC (ORCPT
+        id S1729126AbhANPJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 10:09:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725961AbhANPJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 10:07:02 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10EF20Tj060055;
-        Thu, 14 Jan 2021 10:06:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ene++J1LisI3A/Z+3huPRUmgObdA8Ix6IuzQq7Im4Vk=;
- b=FrezLbWeOWBtmRhYhPXceMACHXyIRR8XsanFCJvKUW/p6qRbtV0eDhPEFv3nZw5kYbSn
- AfGxoyu6G3d+n/CwZHj2opOp2a7KwhN3aFtIAXSrm/lXFEuRSEjT8a9uCsshi8EJD5ZW
- oIGAEAq6oVx2XotVbXbzuoX23zozRrjLWNDHV36cnmMFMrINjXbWUwKbtlCTQ5QSW2qo
- 4aSWcHk++HtHeFB2nUcD6G4QoJ5wOS90zEto9AYfR3T77luL6c004en24M8bUIz2Ezio
- Y9PlysbnVNnAIZ4xBCIziQNW9M5aSbLCoVo1xZaFNSTIxK1DTshbqG6rDiowe2enCl9W Ig== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 362r5e0byq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 10:06:17 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10EF3CfJ018941;
-        Thu, 14 Jan 2021 15:06:14 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 35y448bcdd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 15:06:14 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10EF67Qg30212500
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Jan 2021 15:06:07 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 26B214C044;
-        Thu, 14 Jan 2021 15:06:12 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B1AB54C040;
-        Thu, 14 Jan 2021 15:06:11 +0000 (GMT)
-Received: from [9.145.25.124] (unknown [9.145.25.124])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Jan 2021 15:06:11 +0000 (GMT)
-Subject: Re: [RFC 1/1] s390/pci: expose UID checking state in sysfs
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Viktor Mihajlovski <mihajlov@linux.ibm.com>
-References: <20210113185500.GA1918216@bjorn-Precision-5520>
- <675aa466-59ea-cf8a-6eec-caa6478ba4cd@linux.ibm.com>
- <20210114134453.bkfik4zjt5ehz6d5@wittgenstein> <YABOHuejsuriwSPn@kroah.com>
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-Message-ID: <a567c3d2-1dd2-6b33-8b1a-0a607b601ef8@linux.ibm.com>
-Date:   Thu, 14 Jan 2021 16:06:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 14 Jan 2021 10:09:25 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771FFC061574;
+        Thu, 14 Jan 2021 07:08:44 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id o10so131529wmc.1;
+        Thu, 14 Jan 2021 07:08:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TMHpOkpp/Tlyt5zGDdDWC3Ym3fdf3CvDPYvzDLefiAI=;
+        b=WRR0pBlL0cOgw4KU8ANiLKeNTJt/3Kjg6yLJr3g2qWuDMQu+bjuW84W31EgVeajhyA
+         zjc9bBneUQAXDGhRyW6JN5x/GZwaEsxa2pASlY+9P9KXYOwa0jFSi9rOaVFI83Xjq3AM
+         NeeKqPok1SffXneiGrCo2eNrOutSEP08ogoScpYyRoqEqNwgrTDrsCcWqWjzCMbTFnm/
+         ZyfACEvwbHBQhgNvgCrdN3Q5OFYScgpGEdDS1c23PawTXlXCBBWwqb5Ht+CwTy6VPivO
+         3hKCDa5RRQm0h7kPlI+p4I+OPfMzEShVjfbuiz3BShkTZyW4HsuyNcyHjMzQyqSUttJq
+         IpIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TMHpOkpp/Tlyt5zGDdDWC3Ym3fdf3CvDPYvzDLefiAI=;
+        b=pXh4q9pPwiYT9RNCALDUPhm/5j0JdKynviSNUcdJ4Vu68GN8pB/TU6MNN1q8u0azHa
+         oXdPZFoG71AEJl3wbqFnb6S+U0eGu0N2NL43XtDahEN8jyjnN1eIGxHAomPXiyo8O2t7
+         9TS3ZxlKkqVAgXvJoJgGFbbl7FmlT3alJ6yCqIUibjTx7S8oYkn2vXmmUY2uHGGP50BV
+         Z86cn4teC7QA8ELTM/383TfYSmn0NaSfRi0tEdB1UJWtu9vRfJBtc1lAa8djnUWAVG0n
+         1sa/5WPTQ+naVP/I1jvzdaclttRSsSbkLQEaIT8y+HCL1+Tf7+Q1lb9j38ydwM3dyTiU
+         vZnw==
+X-Gm-Message-State: AOAM530Qq6uWpSiVGCMw4/malDy6Py7zn2o+271INOq/jkCdEk6oBaHe
+        r3JuB0YSk2HO8wfqdGHoIhjOLcz8dnB6Vg==
+X-Google-Smtp-Source: ABdhPJwW+Urj2LKjTq8gGTX8kpHTJlVQcqKpCcoC/wiyDyFknCT6TKWGXXKgNiYFxlthKhpBa1hCWw==
+X-Received: by 2002:a1c:b682:: with SMTP id g124mr4456735wmf.10.1610636922790;
+        Thu, 14 Jan 2021 07:08:42 -0800 (PST)
+Received: from xws.localdomain (pd9e5aa30.dip0.t-ipconnect.de. [217.229.170.48])
+        by smtp.gmail.com with ESMTPSA id i11sm8193986wmq.10.2021.01.14.07.08.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 07:08:42 -0800 (PST)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: [PATCH] platform/surface: aggregator: Fix kernel-doc references
+Date:   Thu, 14 Jan 2021 16:08:26 +0100
+Message-Id: <20210114150826.19109-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <YABOHuejsuriwSPn@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-14_05:2021-01-14,2021-01-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- spamscore=0 clxscore=1015 adultscore=0 phishscore=0 suspectscore=0
- lowpriorityscore=0 malwarescore=0 priorityscore=1501 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101140085
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Both, ssh_rtl_rx_start() and ssh_rtl_tx_start() functions, do not exist
+and have been consolidated into ssh_rtl_start(). Nevertheless,
+kernel-doc references the former functions. Replace those references
+with references to ssh_rtl_start().
 
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+---
 
-On 1/14/21 2:58 PM, Greg Kroah-Hartman wrote:
-> On Thu, Jan 14, 2021 at 02:44:53PM +0100, Christian Brauner wrote:
->> On Thu, Jan 14, 2021 at 02:20:10PM +0100, Niklas Schnelle wrote:
->>>
->>>
->>> On 1/13/21 7:55 PM, Bjorn Helgaas wrote:
->>>> On Wed, Jan 13, 2021 at 08:47:58AM +0100, Niklas Schnelle wrote:
->>>>> On 1/12/21 10:50 PM, Bjorn Helgaas wrote:
->>>>>> On Mon, Jan 11, 2021 at 10:38:57AM +0100, Niklas Schnelle wrote:
->>>>>>> We use the UID of a zPCI adapter, or the UID of the function zero if
->>>>>>> there are multiple functions in an adapter, as PCI domain if and only if
->>>>>>> UID Checking is turned on.
->>>>>>> Otherwise we automatically generate domains as devices appear.
->>>>>>>
->>>>>>> The state of UID Checking is thus essential to know if the PCI domain
->>>>>>> will be stable, yet currently there is no way to access this information
->>>>>>> from userspace.
->>>>>>> So let's solve this by showing the state of UID checking as a sysfs
->>>>>>> attribute in /sys/bus/pci/uid_checking
->>>>
->>>>>>> +/* Global zPCI attributes */
->>>>>>> +static ssize_t uid_checking_show(struct kobject *kobj,
->>>>>>> +				 struct kobj_attribute *attr, char *buf)
->>>>>>> +{
->>>>>>> +	return sprintf(buf, "%i\n", zpci_unique_uid);
->>>>>>> +}
->>>>>>> +
->>>>>>> +static struct kobj_attribute sys_zpci_uid_checking_attr =
->>>>>>> +	__ATTR(uid_checking, 0444, uid_checking_show, NULL);
->>>>>>
->>>>>> Use DEVICE_ATTR_RO instead of __ATTR.
->>>>>
->>>>> It's my understanding that DEVICE_ATTR_* is only for
->>>>> per device attributes. This one is global for the entire
->>>>> Z PCI. I just tried with BUS_ATTR_RO instead
->>>>> and that works but only if I put the attribute at
->>>>> /sys/bus/pci/uid_checking instead of with a zpci
->>>>> subfolder. This path would work for us too, we
->>>>> currently don't have any other global attributes
->>>>> that we are planning to expose but those could of
->>>>> course come up in the future.
->>>>
->>>> Ah, I missed the fact that this is a kobj_attribute, not a
->>>> device_attribute.  Maybe KERNEL_ATTR_RO()?  Very few uses so far, but
->>>> seems like it might fit?
->>>>
->>>> Bjorn
->>>>
->>>
->>> KERNEL_ATTR_* is currently not exported in any header. After
->>> adding it to include/linuc/sysfs.h it indeed works perfectly.
->>> Adding Christian Brauner as suggested by get_maintainers for
->>> their opinion. I'm of course willing to provide a patch
->>
->> Hey Niklas et al. :)
->>
->> I think this will need input from Greg. He should be best versed in
->> sysfs attributes. The problem with KERNEL_ATTR_* to me seems that it's
->> supposed to be kernel internal. Now, that might just be a matter of
->> renaming the macro but let's see whether Greg has any better idea or
->> more questions. :)
-> 
-> The big question is, why are you needing this?
-> 
-> No driver or driver subsystem should EVER be messing with a "raw"
-> kobject like this.  Just use the existing DEVICE_* macros instead
-> please.
-> 
-> If you are using a raw kobject, please ask me how to do this properly,
-> as that is something that should NEVER show up in the /sys/devices/*
-> tree.  Otherwise userspace tools will break.
-> 
-> thanks,
-> 
-> greg k-h
+Note: This patch does not change the kernel doc at the ssh_rtl_start()
+itself, as there is already another patch for it:
 
-Hi Greg,
+  "platform/surface: aggregator: fix a kernel-doc markup"
+  https://lore.kernel.org/patchwork/patch/1364953/
 
-this is for an architecture specific but global i.e. not device bound PCI
-attribute. That's why DEVICE_ATTR_* does not work. BUS_ATTR_* would work
-but only if we place the attribute directly under /sys/bus/pci/new_attr.
+---
+ drivers/platform/surface/aggregator/ssh_request_layer.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-I'm aware that this is quite unusual in fact I couldn't find anything
-similar. That's why this is an RFC, with a lengthy cover letter
-explaining our use case, that I sent to Bjorn to figure out where to
-even place the attribute.
+diff --git a/drivers/platform/surface/aggregator/ssh_request_layer.c b/drivers/platform/surface/aggregator/ssh_request_layer.c
+index bb1c862411a2..4fbe58265e31 100644
+--- a/drivers/platform/surface/aggregator/ssh_request_layer.c
++++ b/drivers/platform/surface/aggregator/ssh_request_layer.c
+@@ -1004,9 +1004,8 @@ int ssh_request_init(struct ssh_request *rqst, enum ssam_request_flags flags,
+  *
+  * Initializes the given request transport layer and associated packet
+  * transport layer. Transmitter and receiver threads must be started
+- * separately via ssh_rtl_tx_start() and ssh_rtl_rx_start(), after the
+- * request-layer has been initialized and the lower-level serial device layer
+- * has been set up.
++ * separately via ssh_rtl_start(), after the request-layer has been
++ * initialized and the lower-level serial device layer has been set up.
+  *
+  * Return: Returns zero on success and a nonzero error code on failure.
+  */
+-- 
+2.30.0
 
-So I guess this is indeed me asking you how to do this properly.
-That said it does not show up under /sys/devices/* only /sys/bus/pci/*.
-
-Best regards,
-Niklas
