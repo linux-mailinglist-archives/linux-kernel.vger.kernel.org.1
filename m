@@ -2,69 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB2B2F6342
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DAF62F634D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729029AbhANOg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:36:58 -0500
-Received: from ms.lwn.net ([45.79.88.28]:58170 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726175AbhANOg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:36:58 -0500
-Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729196AbhANOia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:38:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29346 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729143AbhANOi3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:38:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610635023;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4up8iL2UjGLCCTseIriUTgakG+YpC7Jv5oAbQ6UAgWE=;
+        b=F/+B4wigg6MDGbTT0PFOOQC5oVTdnCUp+RlzS+OQxF6gpT/bTO1VPdBc7GcjDDwDgDyW84
+        nOTTiw+mncNR5pbZDNKQodFrsVp+xdjdOi98fBuJZ7cw9GlKg9XM4DnyMa8heuJ49f5gCp
+        nJxBArSJMpN46cay6wPz4ZFvQVpfTeE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-211-BNY-NKKPMtmOnee4wvRguA-1; Thu, 14 Jan 2021 09:36:59 -0500
+X-MC-Unique: BNY-NKKPMtmOnee4wvRguA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 44FAC6139;
-        Thu, 14 Jan 2021 14:36:17 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 44FAC6139
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1610634977; bh=F2VJ1UToobXEetmaLg/4ARcDoIjgtCQM7tPnz9vsCDU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ltgp16RWcrip2SK0lkqlmCPKozGMg1UCjeH6yHfJKRdKBK6XFaubgmXpyr8Xixznr
-         TLNiCldjZl+/k0U6FXq7Nj51WUCsqg8MY9Nwq70GViyZZcqWX8BG76vOLxxLvTqVOQ
-         hOvUdqlVyrVTXktD0HTXNl8UZXNhqcSv54GCYeAO3fOGtK9wYxFITcg6STCjYzVVZ7
-         8gI7AVm7TwRYLNBTPyOUhtgcrcnMCXj1DlHBlG2BcG5SPmhGjm/Jg/oLCGjWO+y8Aq
-         PPciU0qH+n9LnaJLyMQBXL1kPUhUd1f/6luLB9xE+Llp5MbGaaiLKCeTHEu3ehKyDQ
-         I7HkGcyOWqp4w==
-Date:   Thu, 14 Jan 2021 07:36:15 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>
-Subject: Re: [PATCH] Documentation/llvm: Add a section about supported
- architectures
-Message-ID: <20210114073615.6b9add58@lwn.net>
-In-Reply-To: <CAKwvOdnJ0VUjTX-cyLgtHvy68DHG1VMj7s0huk_FKh1E9pH9Cg@mail.gmail.com>
-References: <20210114003447.7363-1-natechancellor@gmail.com>
-        <CAKwvOdnJ0VUjTX-cyLgtHvy68DHG1VMj7s0huk_FKh1E9pH9Cg@mail.gmail.com>
-Organization: LWN.net
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 413841DDE4;
+        Thu, 14 Jan 2021 14:36:57 +0000 (UTC)
+Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CE3EA5D9E2;
+        Thu, 14 Jan 2021 14:36:52 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 08:36:50 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH] Documentation: livepatch: document reliable stacktrace
+Message-ID: <20210114143650.nsqhejalpk4k5qfl@treble>
+References: <20210113165743.3385-1-broonie@kernel.org>
+ <20210113192735.rg2fxwlfrzueinci@treble>
+ <20210114115418.GB2739@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210114115418.GB2739@C02TD0UTHF1T.local>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021 17:19:59 -0800
-Nick Desaulniers <ndesaulniers@google.com> wrote:
-
-> Patch looks fine, but `make -j htmldocs` seems to be taking forever
-> for me so I can't render it. Is this a known issue?
+On Thu, Jan 14, 2021 at 11:54:18AM +0000, Mark Rutland wrote:
+> On Wed, Jan 13, 2021 at 01:33:13PM -0600, Josh Poimboeuf wrote:
+> > On Wed, Jan 13, 2021 at 04:57:43PM +0000, Mark Brown wrote:
+> > > From: Mark Rutland <mark.rutland@arm.com>
+> > > +There are several ways an architecture may identify kernel code which is deemed
+> > > +unreliable to unwind from, e.g.
+> > > +
+> > > +* Using metadata created by objtool, with such code annotated with
+> > > +  SYM_CODE_{START,END} or STACKFRAME_NON_STANDARD().
+> > 
+> > I'm not sure why SYM_CODE_{START,END} is mentioned here, but it doesn't
+> > necessarily mean the code is unreliable, and objtool doesn't treat it as
+> > such.  Its mention can probably be removed unless there was some other
+> > point I'm missing.
+> > 
+> > Also, s/STACKFRAME/STACK_FRAME/
 > 
-> $ make -j htmldocs
->   SPHINX  htmldocs --> file:///android0/linux-next/Documentation/output
-> make[2]: Nothing to be done for 'html'.
-> WARNING: The kernel documentation build process
->         support for Sphinx v3.0 and above is brand new. Be prepared for
->         possible issues in the generated output.
+> When I wrote this, I was under the impression that (for x86) code marked
+> as SYM_CODE_{START,END} wouldn't be considered as a function by objtool.
+> Specifically SYM_FUNC_END() marks the function with SYM_T_FUNC whereas
+> SYM_CODE_END() marks it with SYM_T_NONE, and IIRC I thought that objtool
+> only generated ORC for SYM_T_FUNC functions, and hence anything else
+> would be considered not unwindable due to the absence of ORC.
+> 
+> Just to check, is that understanding for x86 correct, or did I get that
+> wrong?
 
-Sphinx 3.x is *way* slower to build the docs, alas.  One of many
-"improvements" we got with that change.
+Doh, I suppose you read the documentation ;-)
 
-jon
+I realize your understanding is pretty much consistent with
+tools/objtool/Documentation/stack-validation.txt:
+
+2. Conversely, each section of code which is *not* callable should *not*
+   be annotated as an ELF function.  The ENDPROC macro shouldn't be used
+   in this case.
+
+   This rule is needed so that objtool can ignore non-callable code.
+   Such code doesn't have to follow any of the other rules.
+
+But this statement is no longer true:
+
+  **This rule is needed so that objtool can ignore non-callable code.**
+
+[ and it looks like the ENDPROC reference is also out of date ]
+
+Since that document was written, around the time ORC was written we
+realized objtool shouldn't ignore SYM_CODE after all.  That way we can
+get full coverage for ORC (including interrupts/exceptions), as well as
+some of the other validations like retpoline, uaccess, noinstr, etc.
+
+Though it's still true that SYM_CODE doesn't have to follow the
+function-specific rules, e.g. frame pointers.
+
+So now objtool requires that it be able to traverse and understand *all*
+code, otherwise it will spit out "unreachable instruction" warnings.
+But since SYM_CODE isn't a normal callable function, objtool doesn't
+know to interpret it directly.  Therefore all SYM_CODE must be reachable
+by objtool in some other way:
+
+- either indirectly, via a jump from a SYM_FUNC; or
+
+- via an UNWIND_HINT
+
+(And that's true for both ORC and frame pointers.)
+
+If you look closely at arch/x86/entry/entry_64.S you should be able to
+see that's the case.
+
+> If that's right, it might be worth splitting this into two points, e.g.
+> 
+> | * Using metadata created by objtool, with such code annotated with
+> |   STACKFRAME_NON_STANDARD().
+> |
+> |
+> | * Using ELF symbol attributes, with such code annotated with
+> |   SYM_CODE_{START,END}, and not having a function type.
+> 
+> If that's wrong, I suspect there are latent issues here?
+
+For ORC, UNWIND_HINT_EMPTY is used to annotate that some code is
+non-unwindable.  (Note I have plans to split that into UNWIND_HINT_ENTRY
+and UNWIND_HINT_UNDEFINED.)
+
+For frame pointers, the hints aren't used, other than by objtool to
+follow the code flow as described above.  But objtool doesn't produce
+any metadata for the FP unwinder.  Instead the FP unwinder makes such
+determinations about unwindability at runtime.
+
+-- 
+Josh
+
