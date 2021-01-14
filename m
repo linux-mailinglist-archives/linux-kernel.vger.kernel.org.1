@@ -2,104 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC912F61E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B85C2F61B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:18:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728613AbhANNXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:23:39 -0500
-Received: from bmailout3.hostsharing.net ([176.9.242.62]:56461 "EHLO
-        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725991AbhANNXi (ORCPT
+        id S1728979AbhANNQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 08:16:43 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:39222 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725955AbhANNQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:23:38 -0500
-X-Greylist: delayed 548 seconds by postgrey-1.27 at vger.kernel.org; Thu, 14 Jan 2021 08:23:37 EST
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 41E2910195B69;
-        Thu, 14 Jan 2021 14:13:48 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 1078331C7F; Thu, 14 Jan 2021 14:13:48 +0100 (CET)
-Date:   Thu, 14 Jan 2021 14:13:48 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        linux-toolchains@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-Message-ID: <20210114131348.GA1343@wunner.de>
-References: <20210107111841.GN1551@shell.armlinux.org.uk>
- <20210107124506.GO1551@shell.armlinux.org.uk>
- <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
- <20210107133747.GP1551@shell.armlinux.org.uk>
- <CAK8P3a2J8fLjPhyV0XUeuRBdSo6rz1gU4wrQRyfzKQvwhf22ag@mail.gmail.com>
- <X/gkMmObbkI4+ip/@hirez.programming.kicks-ass.net>
- <20210108092655.GA4031@willie-the-truck>
- <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com>
- <20210112132049.GA26096@wunner.de>
- <CAHk-=wiHaVWUKQ9wvHe5D=JrV3MDehfRi_FL7KXGbi6=S7=jUA@mail.gmail.com>
+        Thu, 14 Jan 2021 08:16:42 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10ED2bID016430;
+        Thu, 14 Jan 2021 14:15:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=dE1TUuVGYcUczJw86WcXEkSTgFgz2gMWVXOhCYrwAEI=;
+ b=RbbyH+XiQ4AzI0iJTjK5eW7p8vXySbcEHv/xolEjuXRU4qhWE9JYuCGC8qF8yEYOL9kn
+ BXn52AAL6GHwgTGCsADaLbXN1xa3DtkLxWRFZ4dXfoKwCWelyavR8Wrhv5BC0FeUz96T
+ 6iib/LCmHEz8pBQ3PqY+LA0zXr2Qs4Rz34QCh5ZO2hzaROnVvBFlNAnV5wWOErgjg8g5
+ oaT3C8ZPGcqByR1blrhiBIvdNBm+UXuv3NeY7faQpcFcpTr9qFFwajp1U1zU35w5UgRo
+ NJZ4ZsnHDxQb4ISR71+6KyBtZoLSVqfqac6EKW7NduJhb+C84MHl/eb4ePua2iQzjeDO ww== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 35y5kywwmv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Jan 2021 14:15:49 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A31A110002A;
+        Thu, 14 Jan 2021 14:15:48 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 92770246DB4;
+        Thu, 14 Jan 2021 14:15:48 +0100 (CET)
+Received: from localhost (10.75.127.45) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 14 Jan 2021 14:15:48
+ +0100
+From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
+To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>
+Subject: [PATCH v2 0/3] ARM: stm32: USBPHYC updates on stm32mp15
+Date:   Thu, 14 Jan 2021 14:15:21 +0100
+Message-ID: <20210114131524.3298-1-amelie.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiHaVWUKQ9wvHe5D=JrV3MDehfRi_FL7KXGbi6=S7=jUA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-14_04:2021-01-14,2021-01-14 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 09:28:32AM -0800, Linus Torvalds wrote:
-> On Tue, Jan 12, 2021 at 5:20 AM Lukas Wunner <lukas@wunner.de> wrote:
-> > > Variable declarations in for-loops is the only one I can think of. I
-> > > think that would clean up some code (and some macros), but might not
-> > > be compelling on its own.
-> >
-> > Anonymous structs/unions.  I used to have a use case for that in
-> > struct efi_dev_path in include/linux/efi.h, but Ard Biesheuvel
-> > refactored it in a gnu89-compatible way for v5.7 with db8952e7094f.
-> 
-> We use anonymous structs/unions extensively and all over the place already.
+This series updates usbphyc parent and child nodes to follow latest DT
+bindings.
 
-Yes, my apologies, I mixed things up.
+---
+Changes in v2:
+- squash all DT board patches in one patch
+- update also non-ST DT
 
-Back in 2016 when I authored 46cd4b75cd0e, what I wanted to do was
-include an unnamed "struct efi_generic_dev_path;" in struct efi_dev_path:
+Amelie Delaunay (3):
+  ARM: dts: stm32: add usbphyc vdda1v1 and vdda1v8 supplies on
+    stm32mp151
+  ARM: dts: stm32: remove usbphyc ports vdda1v1 & vdda1v8 on stm32mp15
+    boards
+  ARM: dts: stm32: add #clock-cells property to usbphyc node on
+    stm32mp151
 
-struct efi_dev_path {
-	struct efi_generic_dev_path;
-	union {
-		struct {
-			u32 hid;
-			u32 uid;
-		} acpi;
-		struct {
-			u8 fn;
-			u8 dev;
-		} pci;
-	};
-} __attribute ((packed));
+ arch/arm/boot/dts/stm32mp151.dtsi                  | 3 +++
+ arch/arm/boot/dts/stm32mp157a-stinger96.dtsi       | 4 ----
+ arch/arm/boot/dts/stm32mp157c-ed1.dts              | 4 ----
+ arch/arm/boot/dts/stm32mp15xx-dhcom-drc02.dtsi     | 2 --
+ arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi      | 4 ----
+ arch/arm/boot/dts/stm32mp15xx-dhcom-picoitx.dtsi   | 4 ----
+ arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi | 4 ----
+ arch/arm/boot/dts/stm32mp15xx-dkx.dtsi             | 4 ----
+ 8 files changed, 3 insertions(+), 26 deletions(-)
 
-The alternative is to copy-paste the elements of struct efi_dev_path
-or to give it a name such as "header" (which is what db8952e7094f
-subsequently did).  Both options seemed inelegant to me.
+-- 
+2.17.1
 
-However it turns out this feature requires -fms-extensions.
-It's not part of -std=gnu11.
-
-So coming back to topic, yes there doesn't seem to be too much to
-be gained from moving to -std=gnu11 aside from variable declarations
-in for-loops.
-
-(And it really has to be -std=gnu11 because -std=c11 fails to compile.)
-
-Thanks,
-
-Lukas
