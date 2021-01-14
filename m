@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6E52F678B
+	by mail.lfdr.de (Postfix) with ESMTP id A9FD12F678C
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728743AbhANRZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:25:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
+        id S1728800AbhANRZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:25:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725935AbhANRZg (ORCPT
+        with ESMTP id S1725935AbhANRZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:25:36 -0500
+        Thu, 14 Jan 2021 12:25:40 -0500
 Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795C5C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:24:55 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id o17so2899678wra.8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:24:55 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B9DC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:24:59 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id n11so2894578wro.7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:24:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=mBnNW8oub18hKhhe8yHqfoSEZU2iRCB395w7gjgwxWc=;
-        b=YyThgL189juUYY1QafUrt/nr4mL1Dlewr+4os9Exz6q+m6zwQXnoNIhxbHXPalrLo3
-         rT8BweykI8RXTWknugQU6KAjnTbwTL5UC5KFh1fQWQXdH41NrYXFexJt5/aptCnupsFC
-         0d1H6PKi/v1QEYbt0efPZVVZD5cgvjLF83q3cN7iaf2PLa7zmhtCGfTdNqioLq6dWhRd
-         DPThFVt8UzRBUnyK/afuRop1dx5ZpmVKxLe29q8bs4SAmFaQR5aNAdvHzAeCXBAWn1d4
-         pqMd0rSFv2FKBgy8quIF4elmlwiDGceTp7vVFHE3FNNBk8B0YjV19JXoNZ096PTB1a18
-         UH+w==
+        bh=XOmV9rOXqPPVqcegQZNJofTEyx38uhN2nVbmi9afywU=;
+        b=wW2e4FyZwiW4L+MD2pK71yjkUENfnlHKSdcjj5VQOEWjRQ/VMENAXofc/SBW/q3NqS
+         As+WKNmk0v1a694hte5GMuu6L+ztFtEvy75X7u0teBJIkZrfu6w32KTxJvFl1zSXiiSs
+         uh1waDR/zSMV8uINsy01PGok3/BSAn2BV/wG/RZPY9vbH5/bbWboCppBOonmCqz3a+IX
+         20gSuBJCAHT7XR8fGEnqlywuv05Z0b0k9Quho4eon4sbGa9nTUyGJhZzWp7FgN4E2wsz
+         oNpYilKZdIn+H7Zmr4oEKebRiDVH0ovn0+TMHilpMqs053xwXZ6NuWFhU+Z3UaPs5seU
+         KH6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=mBnNW8oub18hKhhe8yHqfoSEZU2iRCB395w7gjgwxWc=;
-        b=BoyiVuLaZHc6hSomMH9JfBN/vjgytbazyW5j8EFZsGj5uXBPmxYgps9YZ8ZqAe6/dd
-         hn3729QLD+kxxlTh7uFLxMCMf8qNeBTQZr6P6fWEIOgIg+3U3FkhSHDGYyVVEs1dFi6e
-         Um3M79nMuGaSKtz8WgZ1zpDlGvHbzQFBS4eQrAgwjlDX6YbHO0Awzp3zFmJyCSVZ/5ZS
-         ZrwPCue2N+azweOrpeNUENKOhNicxVWZKkkDJGE/tksfELbWb7Oz1nBsZKjcHz/knvpe
-         AMWGeMMucMEkTY8XHj3MUCeUQxZVc26TyxQWyH5HdtzS0lSSz9iPV9CRt5wVufaH0VTS
-         ctBA==
-X-Gm-Message-State: AOAM533DKIh3qyNOoovedzhANo5yshWsAinyecH02uakIrkJHRYeMgw9
-        yNcWxP/idYiS0lgUopZUUKN76/0he45G
-X-Google-Smtp-Source: ABdhPJwgNb+fXta79qoc3ofmUnstDxPUmBtXRsFXZPs561fwW9D9l7EWAZMF5Ae/x9bNaAM6+JkZbZCSBJbJ
+        bh=XOmV9rOXqPPVqcegQZNJofTEyx38uhN2nVbmi9afywU=;
+        b=uZu7XYayKBkSg0reSf2u7yZG1DTPXeSsBHa4v93p0waTp92wAm9d1XHsCm5rAzI+9c
+         bV1ABf7R7tuOs8yh+HWNd1CgNv57Ad8FDtOv51s0xJ3XgBgMcLPhxMT3JaE2q/rbdsfk
+         BBaSwDTTMUz/xvGbkYii3nUH9fCfMwCz3HimSifoLmCGIn0I2vOHZ1kpYaSFpmUQT9VW
+         Y5aev6JQhTk42xQMkoeIAN8eizWpo49lopKEl4J02ycLH4SyGJBAnVgE0KlpMG6rBoIO
+         r7D5bCY3wEJdWBbbgGg4dodEzg5EfIFuUXXTTE84AlIkjoyo1lUG6ddxgJVoV9a2Ms+U
+         Tlgw==
+X-Gm-Message-State: AOAM532G+KjiBT0xN0+QfDPNleRYSsfge47EQjYiybow8XrkbH/+RcY8
+        /Mf6xJNPsoFobc/DRk1Znfyq/IfKjCX2
+X-Google-Smtp-Source: ABdhPJxxZEBrrEl+PdqZxakS3Rf9SE4hlhTxKmLtFWnPFUshOyr5z5v7DthBWnq6r+pf53pcmG79PYu4vZOu
 Sender: "lenaptr via sendgmr" <lenaptr@beef.c.googlers.com>
 X-Received: from beef.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1091])
- (user=lenaptr job=sendgmr) by 2002:a1c:2c89:: with SMTP id
- s131mr533256wms.0.1610645093881; Thu, 14 Jan 2021 09:24:53 -0800 (PST)
-Date:   Thu, 14 Jan 2021 17:23:36 +0000
+ (user=lenaptr job=sendgmr) by 2002:a1c:c204:: with SMTP id
+ s4mr4820767wmf.73.1610645098345; Thu, 14 Jan 2021 09:24:58 -0800 (PST)
+Date:   Thu, 14 Jan 2021 17:23:37 +0000
 In-Reply-To: <20210114172338.2798389-1-lenaptr@google.com>
-Message-Id: <20210114172338.2798389-7-lenaptr@google.com>
+Message-Id: <20210114172338.2798389-8-lenaptr@google.com>
 Mime-Version: 1.0
 References: <20210114172338.2798389-1-lenaptr@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v2 6/9] KVM: arm64: __ubsan_handle_load_invalid_value EL2 implementation.
+Subject: [PATCH v2 7/9] KVM: arm64: Detect type mismatch undefined behaviour
+ from hyp/nVHE code
 From:   Elena Petrova <lenaptr@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     Elena Petrova <lenaptr@google.com>,
@@ -71,82 +72,133 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: George Popescu <georgepope@google.com>
 
-The handler for the load invalid value undefined behaviour is
-implemented at EL2. The EL2 handler's parameters are stored inside the buffer.
-They are used by the symetric handler from EL1.
+Type mismatch undefiend behaviour handler provides two handlers with two
+data structures type_mismatch_data and type_mismatch_data_v1. Both can be
+stored inside a common data structure: type_mismatch_data_common, which
+differs of type_mismatch_data only by keeping a pointer to a
+struct source_location.
+In this way, the buffer keeps the data encapsulated inside of a struct
+type_mismatch_data, because pointers from nVHE can not be passed to the
+kernel.
+
+Inside the kernel call the __ubsan_handle_type_mismatch_data with the
+data from the buffer.
 
 Signed-off-by: George Popescu <georgepope@google.com>
 Signed-off-by: Elena Petrova <lenaptr@google.com>
 ---
- arch/arm64/include/asm/kvm_ubsan.h |  5 ++++-
- arch/arm64/kvm/hyp/nvhe/ubsan.c    | 14 +++++++++++++-
- arch/arm64/kvm/kvm_ubsan_buffer.c  |  6 +++++-
- 3 files changed, 22 insertions(+), 3 deletions(-)
+ arch/arm64/include/asm/kvm_ubsan.h |  6 ++++-
+ arch/arm64/kvm/hyp/nvhe/ubsan.c    | 41 ++++++++++++++++++++++++++++--
+ arch/arm64/kvm/kvm_ubsan_buffer.c  |  5 +++-
+ 3 files changed, 48 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm64/include/asm/kvm_ubsan.h b/arch/arm64/include/asm/kvm_ubsan.h
-index 0eef0e11a93b..95ac6728ffd1 100644
+index 95ac6728ffd1..93c1b695097a 100644
 --- a/arch/arm64/include/asm/kvm_ubsan.h
 +++ b/arch/arm64/include/asm/kvm_ubsan.h
-@@ -20,12 +20,14 @@ struct kvm_ubsan_info {
- 	enum {
+@@ -21,13 +21,15 @@ struct kvm_ubsan_info {
  		UBSAN_OUT_OF_BOUNDS,
  		UBSAN_UNREACHABLE_DATA,
--		UBSAN_SHIFT_OUT_OF_BOUNDS
-+		UBSAN_SHIFT_OUT_OF_BOUNDS,
-+		UBSAN_INVALID_DATA
+ 		UBSAN_SHIFT_OUT_OF_BOUNDS,
+-		UBSAN_INVALID_DATA
++		UBSAN_INVALID_DATA,
++		UBSAN_TYPE_MISMATCH
  	} type;
  	union {
  		struct out_of_bounds_data out_of_bounds_data;
  		struct unreachable_data unreachable_data;
  		struct shift_out_of_bounds_data shift_out_of_bounds_data;
-+		struct invalid_value_data invalid_value_data;
+ 		struct invalid_value_data invalid_value_data;
++		struct type_mismatch_data type_mismatch_data;
  	};
  	union {
  		struct ubsan_values u_val;
-@@ -35,3 +37,4 @@ struct kvm_ubsan_info {
- void __ubsan_handle_out_of_bounds(void *_data, void *index);
+@@ -38,3 +40,5 @@ void __ubsan_handle_out_of_bounds(void *_data, void *index);
  void __ubsan_handle_builtin_unreachable(void *_data);
  void __ubsan_handle_shift_out_of_bounds(void *_data, void *lhs, void *rhs);
-+void __ubsan_handle_load_invalid_value(void *_data, void *val);
+ void __ubsan_handle_load_invalid_value(void *_data, void *val);
++void __ubsan_handle_type_mismatch(struct type_mismatch_data  *_data, void *ptr);
++
 diff --git a/arch/arm64/kvm/hyp/nvhe/ubsan.c b/arch/arm64/kvm/hyp/nvhe/ubsan.c
-index 1069ed5036d5..3143f7722be2 100644
+index 3143f7722be2..a9f72d4bcab7 100644
 --- a/arch/arm64/kvm/hyp/nvhe/ubsan.c
 +++ b/arch/arm64/kvm/hyp/nvhe/ubsan.c
-@@ -82,4 +82,16 @@ void __ubsan_handle_builtin_unreachable(void *_data)
- 	}
+@@ -29,6 +29,24 @@ static inline struct kvm_ubsan_info *kvm_ubsan_buffer_next_slot(void)
+ 	return res;
  }
  
--void __ubsan_handle_load_invalid_value(void *_data, void *val) {}
-+void __ubsan_handle_load_invalid_value(void *_data, void *val)
++static void write_type_mismatch_data(struct type_mismatch_data_common *data, void *lval)
 +{
 +	struct kvm_ubsan_info *slot;
-+	struct invalid_value_data *data = _data;
++	struct type_mismatch_data *aux_cont;
 +
 +	slot = kvm_ubsan_buffer_next_slot();
 +	if (slot) {
-+		slot->type = UBSAN_INVALID_DATA;
-+		slot->invalid_value_data = *data;
-+		slot->u_val.lval = val;
++		slot->type = UBSAN_TYPE_MISMATCH;
++		aux_cont = &slot->type_mismatch_data;
++		aux_cont->location.file_name = data->location->file_name;
++		aux_cont->location.reported = data->location->reported;
++		aux_cont->type = data->type;
++		aux_cont->alignment = data->alignment;
++		aux_cont->type_check_kind = data->type_check_kind;
++		slot->u_val.lval = lval;
 +	}
-+
 +}
++
+ void __ubsan_handle_add_overflow(void *_data, void *lhs, void *rhs) {}
+ 
+ void __ubsan_handle_sub_overflow(void *_data, void *lhs, void *rhs) {}
+@@ -39,9 +57,28 @@ void __ubsan_handle_negate_overflow(void *_data, void *old_val) {}
+ 
+ void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs) {}
+ 
+-void __ubsan_handle_type_mismatch(struct type_mismatch_data *data, void *ptr) {}
++void __ubsan_handle_type_mismatch(struct type_mismatch_data *data, void *ptr)
++{
++	struct type_mismatch_data_common common_data = {
++		.location = &data->location,
++		.type = data->type,
++		.alignment = data->alignment,
++		.type_check_kind = data->type_check_kind
++	};
++	write_type_mismatch_data(&common_data, ptr);
++}
+ 
+-void __ubsan_handle_type_mismatch_v1(void *_data, void *ptr) {}
++void __ubsan_handle_type_mismatch_v1(void *_data, void *ptr)
++{
++	struct type_mismatch_data_v1 *data = _data;
++	struct type_mismatch_data_common common_data = {
++		.location = &data->location,
++		.type = data->type,
++		.alignment = 1UL << data->log_alignment,
++		.type_check_kind = data->type_check_kind
++	};
++	write_type_mismatch_data(&common_data, ptr);
++}
+ 
+ void __ubsan_handle_out_of_bounds(void *_data, void *index)
+ {
 diff --git a/arch/arm64/kvm/kvm_ubsan_buffer.c b/arch/arm64/kvm/kvm_ubsan_buffer.c
-index b80045883047..5439f7a91636 100644
+index 5439f7a91636..b7823dedf8b1 100644
 --- a/arch/arm64/kvm/kvm_ubsan_buffer.c
 +++ b/arch/arm64/kvm/kvm_ubsan_buffer.c
-@@ -31,7 +31,11 @@ void __kvm_check_ubsan_data(struct kvm_ubsan_info *slot)
-         	__ubsan_handle_shift_out_of_bounds(&slot->shift_out_of_bounds_data,
- 				slot->u_val.lval, slot->u_val.rval);
+@@ -35,6 +35,10 @@ void __kvm_check_ubsan_data(struct kvm_ubsan_info *slot)
+ 		__ubsan_handle_load_invalid_value(&slot->invalid_value_data,
+ 				slot->u_val.lval);
  		break;
--	}
-+	case UBSAN_INVALID_DATA:
-+		__ubsan_handle_load_invalid_value(&slot->invalid_value_data,
++	case UBSAN_TYPE_MISMATCH:
++		__ubsan_handle_type_mismatch(&slot->type_mismatch_data,
 +				slot->u_val.lval);
 +		break;
-+    	}
+     	}
  }
  
- void iterate_kvm_ubsan_buffer(unsigned long left, unsigned long right)
+@@ -58,4 +62,3 @@ void __kvm_check_ubsan_buffer(void)
+ 	write_ind = (unsigned long *) this_cpu_ptr_nvhe_sym(kvm_ubsan_buff_wr_ind);
+ 	iterate_kvm_ubsan_buffer(0, *write_ind);
+ }
+-
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
