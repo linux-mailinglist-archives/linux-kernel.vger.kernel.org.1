@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 573F72F6CA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:56:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4738F2F6CAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728970AbhANUzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 15:55:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbhANUzS (ORCPT
+        id S1729099AbhANU42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 15:56:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56732 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727152AbhANU41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 15:55:18 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50CE3C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 12:54:38 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id cq1so3792492pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 12:54:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jD7vbDbD0h84CsDujjRSLvXMFR2wSvaymJTCUCRVyTg=;
-        b=i4ANxg8Q3GY1CKfPo+klvkSjAhcsfVbNRqK+K/aQ/iToZldEMxU8NHBcNKw6UiXjq0
-         JOaf8WHB+ZRym59WBEzqIO8fSNdU5TfCYCLb7V+NuC833UbYh+Qe4jnSCo5qbzILKgOe
-         ZCtM7mU+AKviHFbajnRGNd9uuqwb5C2h5qCDtW8MiFGKZclK1cVhdY18laToooYZVFNe
-         5gTSksJXBxPeXBQHIrvw8OvxYowfx5fNvMqwFL/B+6Xli9GAXFZNvxWFEVbJfqXw3Id+
-         5rKeRDeu0YnRxzQ0ei0wp8zeAofbx/+H5ZTcajDcb6MvU6sbkRDUBWcGV2yCe5kwnyx4
-         ShVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jD7vbDbD0h84CsDujjRSLvXMFR2wSvaymJTCUCRVyTg=;
-        b=C/cowNxABT1mtHTLLMs5OjpRbtSMTFLRrhphWqFqJehtbSJ2Hq4+G7wMQTfoWgPhnE
-         T6Gbxt24rGZrjv8z+DU8iICJ1uVXqA5yBSKCGrO/Ic/DmABQD6rZEhwS3TQ7ja0p6nTR
-         DXNSpELPJU0/lNFKz54C6P5kBMbCu8IfDaG92XMHJB0SKJ5OLdfqzI2HjQzrD9faZW8e
-         r6Lu0ohMcSTVTqX6ka+Vzh0wSBBo2w6O+enx/Xjo7NE9FfB4IACx7JOhXpBSwgLw0qGm
-         31f4dmFU5xSEJbmzDwe6cyQBnkune3ayhmbn22hrZzVD+eG7A5emdVQjb29s4XvKgakO
-         /+Mw==
-X-Gm-Message-State: AOAM532sTjjMFfJOtsRUY3a2vGeN2J9k/4f/8uq6jTBdSPExzlqkzB0p
-        zOf3AoGDiRueddq8wA/VESqy3Q==
-X-Google-Smtp-Source: ABdhPJwHSp4h2t6bqX0badjP/w9fNcURWQGRTeksXWdcWRqrH8U8NT/f7kVg2Tt51R5DDZxijhwg+Q==
-X-Received: by 2002:a17:90a:bf05:: with SMTP id c5mr6907923pjs.90.1610657677823;
-        Thu, 14 Jan 2021 12:54:37 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id fv22sm6486172pjb.14.2021.01.14.12.54.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 12:54:37 -0800 (PST)
-Date:   Thu, 14 Jan 2021 13:54:35 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     peng.fan@nxp.com
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        paul@crapouillou.net, matthias.bgg@gmail.com, agross@kernel.org,
-        patrice.chotard@st.com
-Subject: Re: [PATCH V6 09/10] remoteproc: imx_rproc: ignore mapping vdev
- regions
-Message-ID: <20210114205435.GC255481@xps15>
-References: <1610444359-1857-1-git-send-email-peng.fan@nxp.com>
- <1610444359-1857-10-git-send-email-peng.fan@nxp.com>
+        Thu, 14 Jan 2021 15:56:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610657701;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZyDfgALqUiawzmubBa6Wwvj+Dzw/MHsKyDI805lQ07Y=;
+        b=i9XIuKNFJmaDeAYJuM57Nc2BjJnWoQDScF+nkulMW6D7VolNVUtzG16K6zyEUSrzjitOjI
+        8YiFOZ67Bz0A0AJJTsrqO0FcGTrXFdIdyebv9h32Y8rauVA+bymEJiAEYvEVWcVul9wGKk
+        3viDio1QEugPtjGbZqt0QLbv1Qiy78w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-291-D0uFwfSuOIeZyvrNomKfkg-1; Thu, 14 Jan 2021 15:54:57 -0500
+X-MC-Unique: D0uFwfSuOIeZyvrNomKfkg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 83F358144E1;
+        Thu, 14 Jan 2021 20:54:55 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E1545C1C5;
+        Thu, 14 Jan 2021 20:54:50 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH v2 0/3] VMX: more nested fixes
+Date:   Thu, 14 Jan 2021 22:54:46 +0200
+Message-Id: <20210114205449.8715-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610444359-1857-10-git-send-email-peng.fan@nxp.com>
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 05:39:18PM +0800, peng.fan@nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> vdev regions are vdev0vring0, vdev0vring1, vdevbuffer and similar.
-> They are handled by remoteproc common code, no need to map in imx
-> rproc driver.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/remoteproc/imx_rproc.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index f80428afb8a7..e62a53ee128e 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -417,6 +417,9 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
->  		struct resource res;
->  
->  		node = of_parse_phandle(np, "memory-region", a);
-> +		/* Not map vdev region */
-> +		if (!strcmp(node->name, "vdev"))
-> +			continue;
+This is hopefully the last fix for VMX nested migration=0D
+that finally allows my stress test of migration with a nested guest to pass=
+.=0D
+=0D
+In a nutshell after an optimization that was done in commit 7952d769c29ca,=
+=0D
+some of vmcs02 fields which can be modified by the L2 freely while it runs=
+=0D
+(like GSBASE and such) were not copied back to vmcs12 unless:=0D
+=0D
+1. L1 tries to vmread them (update done on intercept)=0D
+2. vmclear or vmldptr on other vmcs are done.=0D
+3. nested state is read and nested guest is running.=0D
+=0D
+What wasn't done was to sync these 'rare' fields when L1 is running=0D
+but still has a loaded vmcs12 which might have some stale fields,=0D
+if that vmcs was used to enter a guest already due to that optimization.=0D
+=0D
+Plus I added two minor patches to improve VMX tracepoints=0D
+a bit. There is still a large room for improvement.=0D
+=0D
+Best regards,=0D
+	Maxim Levitsky=0D
+=0D
+Maxim Levitsky (3):=0D
+  KVM: nVMX: Always call sync_vmcs02_to_vmcs12_rare on migration=0D
+  KVM: nVMX: add kvm_nested_vmlaunch_resume tracepoint=0D
+  KVM: VMX: read idt_vectoring_info a bit earlier=0D
+=0D
+ arch/x86/kvm/trace.h      | 30 ++++++++++++++++++++++++++++++=0D
+ arch/x86/kvm/vmx/nested.c | 19 ++++++++++++++-----=0D
+ arch/x86/kvm/vmx/vmx.c    |  3 ++-=0D
+ arch/x86/kvm/x86.c        |  1 +=0D
+ 4 files changed, 47 insertions(+), 6 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
->  		err = of_address_to_resource(node, 0, &res);
->  		if (err) {
->  			dev_err(dev, "unable to resolve memory region\n");
-> -- 
-> 2.28.0
-> 
