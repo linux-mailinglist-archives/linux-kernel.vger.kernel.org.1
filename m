@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31182F69E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 656FA2F69E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727972AbhANSrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:47:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbhANSrH (ORCPT
+        id S1729490AbhANSrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:47:12 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:43135 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728053AbhANSrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:47:07 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB3AC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:46:27 -0800 (PST)
-Received: from zn.tnic (p200300ec2f1aa900e8e9bea65a049b95.dip0.t-ipconnect.de [IPv6:2003:ec:2f1a:a900:e8e9:bea6:5a04:9b95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EB39F1EC04C2;
-        Thu, 14 Jan 2021 19:46:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610649986;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=92+CoPH81tRwxks5KvKIwQwhzmFRgZJXUdlU+3LKIYo=;
-        b=NrNqLtcCv+CXkNf+1k/00bIXwTXmq6iAicsRIBmVhtHt+pEAZhK+6+cGd7wtudLp3sXV8v
-        AKuHzbcMLoLzkb/jE/JYtDusY0E/bLEivLOLL+WHUqbeZgOMCWyaYlwfConEuPzl5awgvl
-        db5B76ya9i7Hm/1LOsavHnfDBa1rObU=
-Date:   Thu, 14 Jan 2021 19:46:26 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     trix@redhat.com
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        ying-tsun.huang@amd.com, peterz@infradead.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/mm/mtrr: remove definition of DEBUG
-Message-ID: <20210114184626.GH12284@zn.tnic>
-References: <20210114162743.20737-1-trix@redhat.com>
+        Thu, 14 Jan 2021 13:47:10 -0500
+Received: by mail-io1-f71.google.com with SMTP id c7so10008933iob.10
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:46:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=5LW46VUliO/r3HfpxffLXkCT+mF2xOutj2eIxhklFeo=;
+        b=uLdEYNUomvmHKj54yPYOBxqTd9iVTbmS/mV7C0BDLrjl346P0QUVt/+epZuLXH98Jf
+         /p1EC24AXik5QURSSG92jzfAkMFT6Oy+cPqKwx7Wxrl451+SChfF7c+rZfy2LRWrwKWx
+         84/ezdlO7tRM24Nlpx1UNA5uVGliq7/TD6TfEq0wJYfBgRz9fB+0UNUUOXick7TYlLzd
+         nAcHRYVBFZuucO1Nm4NB8fE77kA7BWr60yyO48BjlMz6gb63kRln+uWQM1CgufQyYQkz
+         V6bEIsKecpsyxM4lgSgNwZJTg5Oeq2S6qocAeDW5JuX5IgtPJS7+LYgJaQPvCIWOqFQr
+         XxSw==
+X-Gm-Message-State: AOAM532BmD5xap0MnCea6id7WwKdpJRGXtACSF6q+npCLS4kE4r2qzxP
+        s5YRQnleBJu2n+SMI+R7Xm2yH+3XXVA/ddkj9lkifcpi2LQF
+X-Google-Smtp-Source: ABdhPJw4g3Dyd5qV9MIuqFOmwCu5zkyGPc1pC5m9CmDuzqk/ZCOh+YnaQcyDcN4HVSeZsftUfORvmOZj73IfNQ2/Gk3VctIrISa8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210114162743.20737-1-trix@redhat.com>
+X-Received: by 2002:a92:d40d:: with SMTP id q13mr7828080ilm.253.1610649989249;
+ Thu, 14 Jan 2021 10:46:29 -0800 (PST)
+Date:   Thu, 14 Jan 2021 10:46:29 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000077819e05b8e0acc8@google.com>
+Subject: WARNING in smk_write_relabel_self
+From:   syzbot <syzbot+670d1a1e6b6face0440a@syzkaller.appspotmail.com>
+To:     casey@schaufler-ca.com, jmorris@namei.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, serge@hallyn.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 08:27:43AM -0800, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> Defining DEBUG should only be done in development.
-> So remove DEBUG.
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  arch/x86/kernel/cpu/mtrr/generic.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/mtrr/generic.c b/arch/x86/kernel/cpu/mtrr/generic.c
-> index a29997e6cf9e..b90f3f437765 100644
-> --- a/arch/x86/kernel/cpu/mtrr/generic.c
-> +++ b/arch/x86/kernel/cpu/mtrr/generic.c
-> @@ -3,7 +3,6 @@
->   * This only handles 32bit MTRR on 32bit hosts. This is strictly wrong
->   * because MTRRs can span up to 40 bits (36bits on most modern x86)
->   */
-> -#define DEBUG
->  
->  #include <linux/export.h>
->  #include <linux/init.h>
+Hello,
 
-Wanna merge all 4 in arch/x86/
+syzbot found the following issue on:
 
-arch/x86/kernel/cpu/mtrr/generic.c:6:#define DEBUG
-arch/x86/kernel/cpu/mtrr/mtrr.c:34:#define DEBUG
-arch/x86/kernel/pci-iommu_table.c:8:#define DEBUG 1
-arch/x86/mm/mmio-mod.c:13:#define DEBUG 1
+HEAD commit:    65f0d241 Merge tag 'sound-5.11-rc4' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1292d4f7500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ee2266946ed36986
+dashboard link: https://syzkaller.appspot.com/bug?extid=670d1a1e6b6face0440a
+compiler:       clang version 11.0.1
 
-into a single patch?
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Thx.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+670d1a1e6b6face0440a@syzkaller.appspotmail.com
 
--- 
-Regards/Gruss,
-    Boris.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 4703 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5020
+Modules linked in:
+CPU: 0 PID: 4703 Comm: syz-executor.0 Not tainted 5.11.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5020
+Code: aa 09 00 e9 dd fd ff ff 44 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c eb fd ff ff 4c 89 ef e8 54 aa 09 00 8b 74 24 18 e9 da fd ff ff <0f> 0b e9 f3 fd ff ff a9 00 00 08 00 75 16 8b 4c 24 1c 89 cb 81 e3
+RSP: 0018:ffffc90016d879a0 EFLAGS: 00010246
+RAX: ffffc90016d87a20 RBX: ffffc90016d87a20 RCX: 0000000000000000
+RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc90016d87a48
+RBP: ffffc90016d87ae0 R08: dffffc0000000000 R09: ffffc90016d87a20
+R10: fffff52002db0f49 R11: 0000000000000000 R12: dffffc0000000000
+R13: 0000000000000012 R14: 1ffff92002db0f40 R15: 0000000000040cc0
+FS:  00007f2d4e56d700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000074c698 CR3: 000000001dcc3000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x40/0x130 mm/slab_common.c:837
+ kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
+ kmalloc_large include/linux/slab.h:481 [inline]
+ __kmalloc_track_caller+0x246/0x330 mm/slub.c:4457
+ memdup_user_nul+0x26/0xf0 mm/util.c:260
+ smk_write_relabel_self+0x17a/0x510 security/smack/smackfs.c:2748
+ vfs_write+0x289/0xc90 fs/read_write.c:603
+ ksys_write+0x171/0x2a0 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e219
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f2d4e56cc68 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e219
+RDX: 00000000200000d7 RSI: 00000000200000c0 RDI: 0000000000000003
+RBP: 000000000119bfc0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
+R13: 00007ffd3d0ba57f R14: 00007f2d4e56d9c0 R15: 000000000119bf8c
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
