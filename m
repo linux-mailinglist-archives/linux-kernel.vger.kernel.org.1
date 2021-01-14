@@ -2,81 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFDF2F6A55
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EAB02F6A63
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729693AbhANTBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:01:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726275AbhANTBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:01:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD48023A05;
-        Thu, 14 Jan 2021 19:00:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610650827;
-        bh=7t82loxEyJ2bTsA9EqHNDMaRiGP+/aM7PE+ab8wFi3Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KVJfEn3qBdkiv78bi7h7P6opC4Z40CkSidAeQv04OpgmsJGT1DefXtedEe/3ApXXq
-         frODFjMe7gyBnqWivoA1VoPLHuoMIHS2AdIA5NhVk396FO2Lahcjb0hjoj6R8w08x0
-         /0fRNwXorPLfMcYC1JLTgR2gJipADH+l5ni0t9F+vYKH1fLpWh6f6la0iUUwcJgTVV
-         LNlfiTw/CvD01hZAK5b3faqZv2P1oXRgX1l9dWE2SxDuDjH0zDnyv5ySGApykE+zzu
-         MEq6690HQGRwLECS3Am+M0zHKU2fniDxYyJvGTffliyXQSq1Ycslrz93Bj9HO4W9Xz
-         Gbgg16YmpSDXA==
-Date:   Thu, 14 Jan 2021 19:00:22 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Hugh Dickins <hughd@google.com>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [RFC PATCH 4/8] mm: Separate fault info out of 'struct vm_fault'
-Message-ID: <20210114190021.GB13135@willie-the-truck>
-References: <20210114175934.13070-1-will@kernel.org>
- <20210114175934.13070-5-will@kernel.org>
- <CAHk-=wixsPuT5ingsEqj2a1PKuc+rTS_oeD_VL0p8G_3oRiJhA@mail.gmail.com>
+        id S1729742AbhANTCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:02:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55685 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726734AbhANTCM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 14:02:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610650846;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zvigHIWWc2Gmn8PwEExISaYWts5OrhPsazqZGgBea+c=;
+        b=L9C08Twk+t3hOagI9fOCt2NmOakYGKYH6pfQq9n4NHUVR2D6oAaQ/4heecE71Y1Dt/e6gX
+        Xxr5gQ/xnL0FAAxGHTiysBacyLN/Q79MWcMWqsaRgmsvqhx0RUJOzwrsDKSl7WWXcOZ243
+        gGH2VXnFtpPYA97RndSzF7Y9VExwKuY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-396-LXsq5mefP4i8fPOCWS0bLw-1; Thu, 14 Jan 2021 14:00:41 -0500
+X-MC-Unique: LXsq5mefP4i8fPOCWS0bLw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A4DA94F0D;
+        Thu, 14 Jan 2021 19:00:39 +0000 (UTC)
+Received: from krava (unknown [10.40.195.188])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 0301B27C2C;
+        Thu, 14 Jan 2021 19:00:32 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 20:00:32 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com, ying.huang@intel.com
+Subject: Re: [PATCH v6] perf stat: Fix wrong skipping for per-die aggregation
+Message-ID: <20210114190032.GC1416940@krava>
+References: <20210114012755.1106-1-yao.jin@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wixsPuT5ingsEqj2a1PKuc+rTS_oeD_VL0p8G_3oRiJhA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210114012755.1106-1-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 10:16:13AM -0800, Linus Torvalds wrote:
-> On Thu, Jan 14, 2021 at 10:01 AM Will Deacon <will@kernel.org> wrote:
-> >
-> > Try to clean this up by splitting the immutable fault information out
-> > into a new 'struct vm_fault_info' which is embedded in 'struct vm_fault'
-> > and will later be made 'const'. The vast majority of this change was
-> > performed with a coccinelle patch:
+On Thu, Jan 14, 2021 at 09:27:55AM +0800, Jin Yao wrote:
+
+SNIP
+
+>      2.003776312 S1-D0           1             855616 Bytes llc_misses.mem_read
+>      2.003776312 S1-D1           1             949376 Bytes llc_misses.mem_read
+>      3.006512788 S0-D0           1            1338880 Bytes llc_misses.mem_read
+>      3.006512788 S0-D1           1             920064 Bytes llc_misses.mem_read
+>      3.006512788 S1-D0           1             877184 Bytes llc_misses.mem_read
+>      3.006512788 S1-D1           1            1020736 Bytes llc_misses.mem_read
+>      4.008895291 S0-D0           1             926592 Bytes llc_misses.mem_read
+>      4.008895291 S0-D1           1             906368 Bytes llc_misses.mem_read
+>      4.008895291 S1-D0           1             892224 Bytes llc_misses.mem_read
+>      4.008895291 S1-D1           1             987712 Bytes llc_misses.mem_read
+>      5.001590993 S0-D0           1             962624 Bytes llc_misses.mem_read
+>      5.001590993 S0-D1           1             912512 Bytes llc_misses.mem_read
+>      5.001590993 S1-D0           1             891200 Bytes llc_misses.mem_read
+>      5.001590993 S1-D1           1             978432 Bytes llc_misses.mem_read
 > 
-> You may have a reason for doing it this way, but my reaction to this
-> was: "just make the new embedded struct unnamed".
+> On no-die system, die_id is 0, actually it's hashmap(socket,0), original behavior
+> is not changed.
 > 
-> Then you wouldn't need to do all the automated coccinelle changes.
+> Reported-by: Huang Ying <ying.huang@intel.com>
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> ---
+> v6:
+>  Fix the perf test python failure by adding hashmap.c to python-ext-sources.
 > 
-> Is there some reason you didn't do that, or just a "oh, I didn't think of
-> it".
+>  root@kbl-ppc:~# ./perf test python
+>  19: 'import perf' in python                                         : Ok
 
-I tried that initially, e.g.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-struct vm_fault {
-	const struct {
-		unsigned long address;
-		...
-	};
-};
+thanks,
+jirka
 
-but I found that I had to make all of the members const to get it to work,
-at which point the anonymous struct wasn't really adding anything. Did I
-just botch the syntax?
-
-Will
