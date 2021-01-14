@@ -2,102 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D122F61E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 807AE2F61E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729045AbhANNYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:24:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35588 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725991AbhANNYB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:24:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610630555;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9RLfx2LEZjsSITiGQmMI4unqomIKtXYwKtgG0whp/WI=;
-        b=hcIhhwjw45EUhz+fAcqdszKg52yIZK8lZcHhkc8BkmsA6PAZiTb0Z/s60aGaQit/CPSwF/
-        DMGmS9qgR1AY4qiEk/e5GqKeO8TVkgcC4C0ymLlD3oSe7OnfRjy7VvsEfwl2lR8RyB1kP/
-        aNdOQKnMAeUexDe6t7heLnvZncoITZk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-iMeSBMkrMUqK0e30NGCIAw-1; Thu, 14 Jan 2021 08:22:31 -0500
-X-MC-Unique: iMeSBMkrMUqK0e30NGCIAw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4749A9CDA0;
-        Thu, 14 Jan 2021 13:22:29 +0000 (UTC)
-Received: from krava (unknown [10.40.195.188])
-        by smtp.corp.redhat.com (Postfix) with SMTP id ECC7F19727;
-        Thu, 14 Jan 2021 13:22:26 +0000 (UTC)
-Date:   Thu, 14 Jan 2021 14:22:26 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH v2 1/2] perf stat: Introduce struct runtime_stat_data
-Message-ID: <20210114132226.GA1409793@krava>
-References: <20210112061431.1122838-1-namhyung@kernel.org>
- <20210113111902.GD1331835@krava>
- <CAM9d7cig3+P3Q+gAQNRQJJqB+wcNT+KVjo+9AU92AZ+QvP6ZAg@mail.gmail.com>
+        id S1729064AbhANNYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 08:24:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726377AbhANNYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 08:24:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8F5923A05;
+        Thu, 14 Jan 2021 13:23:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610630612;
+        bh=N4MLOcaBrg+ObtW8saTWFTIwry4CM2IZkHEMOlfdUBE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H+NvHe0OMhIhxGZRoLH3VviN3uYMqqteXIlzhRhOHJnEZvYSuZ7Y6encH1ZUWYMAD
+         coxOX1wuKEmfzBiY/Z0aNGdPIr0exq130aoFm3FTBd81APc8Yrs1Y2am7rXFKZ7CNr
+         LfQtavxrV7gKDpAxYI+oOXmctLAaw6Vv2hPhXIGr1gH+Kv2RcdOOmgeRvXKkzL/u8V
+         iNjhcLSF8LObyOL8P62i0/HbGqhBH6Vt58eRxfU7lhh0hh5kFhVLAbWc23qwthKXks
+         2R4f3Kr14WAbHRMzV8hcGKrPO/IqcTHX7EbmYG1OjlplbYlsXNVzli5yMRItxsMgGd
+         3HlSoc7iXPkkw==
+Date:   Thu, 14 Jan 2021 13:22:58 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>
+Subject: Re: SPI not working on 5.10 and 5.11, bisected to 766c6b63aa04
+ ("spi: fix client driver breakages when using GPIO descriptors")
+Message-ID: <20210114132258.GD4854@sirena.org.uk>
+References: <dc5d8d35-31aa-b36d-72b0-17c8a7c13061@csgroup.eu>
+ <20210113123345.GD4641@sirena.org.uk>
+ <9400d900-f315-815f-a358-16ed4963da6c@csgroup.eu>
+ <20210114115958.GB4854@sirena.org.uk>
+ <006d1594-8eec-3aad-1651-919071e89f3b@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WChQLJJJfbwij+9x"
 Content-Disposition: inline
-In-Reply-To: <CAM9d7cig3+P3Q+gAQNRQJJqB+wcNT+KVjo+9AU92AZ+QvP6ZAg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <006d1594-8eec-3aad-1651-919071e89f3b@csgroup.eu>
+X-Cookie: You have taken yourself too seriously.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 12:25:39PM +0900, Namhyung Kim wrote:
-> Hi Jiri,
-> 
-> On Wed, Jan 13, 2021 at 8:19 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Tue, Jan 12, 2021 at 03:14:30PM +0900, Namhyung Kim wrote:
-> > > To pass more info to the saved_value in the runtime_stat, add a new
-> > > struct runtime_stat_data.  Currently it only has 'ctx' field but later
-> > > patch will add more.
-> > >
-> > > Suggested-by: Andi Kleen <ak@linux.intel.com>
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > ---
-> > >  tools/perf/util/stat-shadow.c | 346 +++++++++++++++++-----------------
-> > >  1 file changed, 173 insertions(+), 173 deletions(-)
-> > >
-> > > diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-> > > index 901265127e36..a1565b6e38f2 100644
-> > > --- a/tools/perf/util/stat-shadow.c
-> > > +++ b/tools/perf/util/stat-shadow.c
-> > > @@ -114,6 +114,10 @@ static struct saved_value *saved_value_lookup(struct evsel *evsel,
-> > >
-> > >       rblist = &st->value_list;
-> > >
-> > > +     /* don't use context info for clock events */
-> > > +     if (type == STAT_NSECS)
-> > > +             dm.ctx = 0;
-> > > +
-> >
-> > I think this should go to separate patch and be explained,
-> > the change is advertised as adding struct for arguments
-> 
-> Actually it was already there and I found it during this work.
-> Basically it passes ctx for lookup but it uses 0 for time.
-> Please see below..
 
-ah nice, did not see that.. could be mentioned in the changelog ;-)
+--WChQLJJJfbwij+9x
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
-jirka
+On Thu, Jan 14, 2021 at 01:33:50PM +0100, Christophe Leroy wrote:
+> Le 14/01/2021 =E0 12:59, Mark Brown a =E9crit=A0:
+> > On Thu, Jan 14, 2021 at 12:27:42PM +0100, Christophe Leroy wrote:
 
+> > > Today I have in the DTS the CS GPIOs declared as ACTIVE_LOW.
+
+> > > If I declare them as ACTIVE_HIGH instead, then I also have to set
+> > > spi-cs-high property, otherwise of_gpio_flags_quirks() is not happy a=
+nd
+> > > forces the GPIO ACTIVE LOW.
+
+> > > When I set spi-cs-high property, it sets the SPI_CS_HIGH bit in spi->=
+mode.
+
+> > OK, so it sounds like you want SPI_CS_HIGH and that is being set
+> > correctly?
+
+> > > In fsl_spi_chipselect(), we have
+> > >=20
+> > > 	bool pol =3D spi->mode & SPI_CS_HIGH
+> > >=20
+> > > Then
+> > > 	pdata->cs_control(spi, pol);
+
+> > > So changing the board config is compensated by the above, and at the =
+end it still doesn't work.
+
+> > This is a driver bug, the driver set_cs() operation should not be
+> > modifying the value it is told to set.
+
+> A driver bug ? Or maybe a change forgotten in commit  766c6b63aa04 ("spi:
+> fix client driver breakages when using GPIO descriptors") ?
+
+The expectation that the driver will be using the chip select exactly as
+passed in and not attempting to implement SPI_CS_HIGH itself when it has
+set_cs() has been there for a considerable time now, that's not new with
+the cleanup.  Drivers should only be paying attention to SPI_CS_HIGH in
+cases where the hardware controls the chip select autonomously and so
+set_cs() can't be provided.
+
+> I'm almost sure it was not a bug, it is in line which what is said in
+> the comment removed by the above mentionned commit.
+
+Please take a look at the list archive discussions around this - there's
+been a lot of confusion with GPIO descriptors in particular due to there
+being multiple places where you can set the inversion.  Note that the
+situation you describe above is that you end up with all the various
+places other than your driver agreeing that the chip select is active
+high as it (AFAICT from what you're saying) actually is. =20
+
+For GPIO chipselects you should really fix the driver to just hand the
+GPIO off to the core rather than trying to implement this itself, that
+will avoid driver specific differences like this.
+
+--WChQLJJJfbwij+9x
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAARbEACgkQJNaLcl1U
+h9APTgf/aLwStecUVq1BEe96Q18/NhiIwRQPg/47gbkg+FKp4HlYPvBaXHWBArpP
+1fUIEScYwM6Fw4n+mrL3+fxvQUaYacXxD37oQcBV6R+WlTPPSLofypBXy44k45vj
+oMB3QWLUcLIC+K7AFAAbo9RA6QnSRT719RYo9NHF4qzcgGfweVckj7AkbIkcAbqN
+Vte+RnwqZkY3iLTviZyfCMdIGtDy3+9pNHO9La9/LaLULemKMcMf2sdgHH2j7Ult
+SnihJ2d39fxoNHSw+BgurYZ9APuiiHLL7Hq8sYbCkAZvdpFHR2TD8uovZeMbXZrs
+42Uykbf8X9XIV9EtnwEkNN5ulcQnKw==
+=oOhx
+-----END PGP SIGNATURE-----
+
+--WChQLJJJfbwij+9x--
