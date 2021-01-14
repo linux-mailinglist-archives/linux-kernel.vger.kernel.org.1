@@ -2,93 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3454F2F6F26
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 00:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D969B2F6F33
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731094AbhANXzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 18:55:47 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:35906 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728545AbhANXzq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 18:55:46 -0500
-Date:   Thu, 14 Jan 2021 23:54:55 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610668503; bh=fkj15JFInAacwkcXWADIVGKRGYKKKaLvXr53v7A5jGA=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=AxpLtlAd9rxvfz1UeO9vM5UmufvzQ2aYxgRQVfTNt0hZaAwHMemLnVvS7bSZQDhaG
-         bQeSbycH5J9BL7Q8gB/CkH7fXTHdcme+sT/OScqfEKwqscsnaANhcLkz8LVD/mLFGr
-         GUsvJ5KCAx667B/64+HcbI1Mqh9FD0jKFPbobNeBV0ttXRZ6zdl7dSN7HlvwyVPpuF
-         esE9drroF13bRyzZdjpuiHpUFNGmT43nWD4c0cgEr5TuKvjWupcaS1o/l/n/ExAvH0
-         T7Dv5zgBx7bAO0wZAcs4HN+6kNyKGzI++b4ahBGwMphGWO/gcQXlT2iYzqWtxB4v0K
-         Hu8JBdt2YjXFw==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Florian Westphal <fw@strlen.de>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Dongseok Yi <dseok.yi@samsung.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Marco Elver <elver@google.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH net] skbuff: back tiny skbs with kmalloc() in __netdev_alloc_skb() too
-Message-ID: <20210114235423.232737-1-alobakin@pm.me>
+        id S1731149AbhANX7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 18:59:47 -0500
+Received: from mga11.intel.com ([192.55.52.93]:35389 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731069AbhANX7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 18:59:47 -0500
+IronPort-SDR: 7CE5V6nFMHdAiEzLlJ6xkGWDtXqqwEhA/qAL5HNUEzG2IzsNkYYMbBjtXVENOnL32XUqBCBo0q
+ H9erDq/z0IWA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="174958757"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="174958757"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 15:58:01 -0800
+IronPort-SDR: JgwNpI72iKplEgLvvRFozPpdeFZ7FrlSQzR4sXrAWlVyCIIfcrp4T/FvOv4QU4UmX2WutfAakz
+ 6Ngk+uiv0xsg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="465409009"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.28]) ([10.239.159.28])
+  by fmsmga001.fm.intel.com with ESMTP; 14 Jan 2021 15:57:53 -0800
+Cc:     baolu.lu@linux.intel.com, tglx@linutronix.de, ashok.raj@intel.com,
+        kevin.tian@intel.com, dave.jiang@intel.com, megha.dey@intel.com,
+        dwmw2@infradead.org, alex.williamson@redhat.com,
+        bhelgaas@google.com, dan.j.williams@intel.com, will@kernel.org,
+        joro@8bytes.org, dmaengine@vger.kernel.org, eric.auger@redhat.com,
+        jacob.jun.pan@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
+        kwankhede@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org,
+        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
+        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
+        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
+        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
+        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com
+Subject: Re: [RFC PATCH v3 1/2] iommu: Add capability IOMMU_CAP_VIOMMU
+To:     Leon Romanovsky <leon@kernel.org>
+References: <20210114013003.297050-1-baolu.lu@linux.intel.com>
+ <20210114013003.297050-2-baolu.lu@linux.intel.com>
+ <20210114132627.GA944463@unreal>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <b0c8b260-8e23-a5bd-d2da-ca1d67cdfa8a@linux.intel.com>
+Date:   Fri, 15 Jan 2021 07:49:47 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <20210114132627.GA944463@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 3226b158e67c ("net: avoid 32 x truesize under-estimation for
-tiny skbs") ensured that skbs with data size lower than 1025 bytes
-will be kmalloc'ed to avoid excessive page cache fragmentation and
-memory consumption.
-However, the same issue can still be achieved manually via
-__netdev_alloc_skb(), where the check for size hasn't been changed.
-Mirror the condition from __napi_alloc_skb() to prevent from that.
+Hi Leon,
 
-Fixes: 3226b158e67c ("net: avoid 32 x truesize under-estimation for tiny sk=
-bs")
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/core/skbuff.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+On 1/14/21 9:26 PM, Leon Romanovsky wrote:
+> On Thu, Jan 14, 2021 at 09:30:02AM +0800, Lu Baolu wrote:
+>> Some vendor IOMMU drivers are able to declare that it is running in a VM
+>> context. This is very valuable for the features that only want to be
+>> supported on bare metal. Add a capability bit so that it could be used.
+> 
+> And how is it used? Who and how will set it?
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index c1a6f262636a..785daff48030 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -437,7 +437,11 @@ struct sk_buff *__netdev_alloc_skb(struct net_device *=
-dev, unsigned int len,
-=20
- =09len +=3D NET_SKB_PAD;
-=20
--=09if ((len > SKB_WITH_OVERHEAD(PAGE_SIZE)) ||
-+=09/* If requested length is either too small or too big,
-+=09 * we use kmalloc() for skb->head allocation.
-+=09 */
-+=09if (len <=3D SKB_WITH_OVERHEAD(1024) ||
-+=09    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
- =09    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
- =09=09skb =3D __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);
- =09=09if (!skb)
---=20
-2.30.0
+Use the existing iommu_capable(). I should add more descriptions about
+who and how to use it.
 
+> 
+>>
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/iommu/intel/iommu.c  | 20 ++++++++++++++++++++
+>>   drivers/iommu/virtio-iommu.c |  9 +++++++++
+>>   include/linux/iommu.h        |  1 +
+>>   3 files changed, 30 insertions(+)
+>>
+>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+>> index cb205a04fe4c..8eb022d0e8aa 100644
+>> --- a/drivers/iommu/intel/iommu.c
+>> +++ b/drivers/iommu/intel/iommu.c
+>> @@ -5738,12 +5738,32 @@ static inline bool nested_mode_support(void)
+>>   	return ret;
+>>   }
+>>
+>> +static inline bool caching_mode_enabled(void)
+>> +{
+> 
+> Kernel coding style is not in favour of inline functions in *.c files.
 
+Yes, agreed.
+
+Best regards,
+baolu
+
+> 
+>> +	struct dmar_drhd_unit *drhd;
+>> +	struct intel_iommu *iommu;
+>> +	bool ret = false;
+>> +
+>> +	rcu_read_lock();
+>> +	for_each_active_iommu(iommu, drhd) {
+>> +		if (cap_caching_mode(iommu->cap)) {
+>> +			ret = true;
+>> +			break;
+>> +		}
+>> +	}
+>> +	rcu_read_unlock();
+>> +
+>> +	return ret;
+>> +}
+>> +
+>>   static bool intel_iommu_capable(enum iommu_cap cap)
+>>   {
+>>   	if (cap == IOMMU_CAP_CACHE_COHERENCY)
+>>   		return domain_update_iommu_snooping(NULL) == 1;
+>>   	if (cap == IOMMU_CAP_INTR_REMAP)
+>>   		return irq_remapping_enabled == 1;
+>> +	if (cap == IOMMU_CAP_VIOMMU)
+>> +		return caching_mode_enabled();
+>>
+>>   	return false;
+>>   }
+>> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+>> index 2bfdd5734844..719793e103db 100644
+>> --- a/drivers/iommu/virtio-iommu.c
+>> +++ b/drivers/iommu/virtio-iommu.c
+>> @@ -931,7 +931,16 @@ static int viommu_of_xlate(struct device *dev, struct of_phandle_args *args)
+>>   	return iommu_fwspec_add_ids(dev, args->args, 1);
+>>   }
+>>
+>> +static bool viommu_capable(enum iommu_cap cap)
+>> +{
+>> +	if (cap == IOMMU_CAP_VIOMMU)
+>> +		return true;
+>> +
+>> +	return false;
+>> +}
+>> +
+>>   static struct iommu_ops viommu_ops = {
+>> +	.capable		= viommu_capable,
+>>   	.domain_alloc		= viommu_domain_alloc,
+>>   	.domain_free		= viommu_domain_free,
+>>   	.attach_dev		= viommu_attach_dev,
+>> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+>> index b95a6f8db6ff..1d24be667a03 100644
+>> --- a/include/linux/iommu.h
+>> +++ b/include/linux/iommu.h
+>> @@ -94,6 +94,7 @@ enum iommu_cap {
+>>   					   transactions */
+>>   	IOMMU_CAP_INTR_REMAP,		/* IOMMU supports interrupt isolation */
+>>   	IOMMU_CAP_NOEXEC,		/* IOMMU_NOEXEC flag */
+>> +	IOMMU_CAP_VIOMMU,		/* IOMMU can declar running in a VM */
+>>   };
+>>
+>>   /*
+>> --
+>> 2.25.1
+>>
