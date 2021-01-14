@@ -2,103 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA892F647A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F182F6488
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729460AbhANPZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 10:25:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727793AbhANPYz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 10:24:55 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C902FC061798
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:23:43 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id i63so4871577wma.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:23:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=j/+bCy6NrhocYkhQjIFLsXRroyVux/dbH+svWNWdQyQ=;
-        b=ERomriJ5NywBp23UX4u658HW/Nqh6AIqaycBNvleJNsA1Ud7a5YalC0I1tzz0fC5Od
-         fwYjHvaaSrXnwaf11CdOVPvy3SjksfFQJ3jVKe2/I6WG1sAvkUbYXhP/GTCw+Jh2mFiT
-         wZRDhrP8rYmcOyhpozbE7EvpOLJvZUyTmmJAMSD801UGfV2EEawB7QH703cVvVhRuhOC
-         4UsILN0LirRxIgkt/4BUIfyeCvSt697EHySQjjr42tE+XPF/K05dCHFSxLWKONRWvPj3
-         PfnUsZOpohgo9ShFwvhpOkB1abEhWH/tcVzRfNQ/XIvuZrXh6sfMD9a8isblKDYKo0jl
-         BvkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=j/+bCy6NrhocYkhQjIFLsXRroyVux/dbH+svWNWdQyQ=;
-        b=h2wjIcxGX6Wz8i6frpjkKVOt2fk7dJgGJUu/RaTUM8YMIaOTGk/N+cCqpuydRPQr2B
-         liKDOWMHUY45qEgjkfxYgwyjgag4O5sQNqSSnuhvcTISC5ktHKAL1imi35sFExuz/Uwd
-         9jaTpHmHpJ5K6VFCFAWbit7Y7zeBMnt+15FqRQPJR6YfRppHXjpglYGOMaOiBRO8ZaES
-         Gu2O7buAjTFC+mLQgfM+Svg9AUtGkeNmqq7bG1OEZfyhpt4CJz2cJVbx4eR7ebsaX16v
-         xmpd7jkwT5WTy53Fgr6WLc98h5/xvjLpeUDSBeww/uiaKlA1exZCSsVzpf6rnpMRGeUV
-         o5AA==
-X-Gm-Message-State: AOAM531DgLg5JYzZSjffiY0B5BmfeQUVehC6yiBEohOjlfKLrRgg1g3a
-        s5zjnsjhbRaUrDoGmasLSGkcAg==
-X-Google-Smtp-Source: ABdhPJyB5UCo1HKIbdX59cHs1y1+H/YppQr8pHhUpqQnshgUA1zoSs1SW9jgNoHwXrjI1Ae5j6gnhw==
-X-Received: by 2002:a1c:acc9:: with SMTP id v192mr4340744wme.174.1610637822501;
-        Thu, 14 Jan 2021 07:23:42 -0800 (PST)
-Received: from dell.default ([91.110.221.178])
-        by smtp.gmail.com with ESMTPSA id e15sm10777713wrx.86.2021.01.14.07.23.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 07:23:41 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Luotao Fu <l.fu@pengutronix.de>, linux-input@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 5/5] input: touchscreen: stmpe-ts: Add description for 'prop' struct member
-Date:   Thu, 14 Jan 2021 15:23:23 +0000
-Message-Id: <20210114152323.2382283-6-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210114152323.2382283-1-lee.jones@linaro.org>
-References: <20210114152323.2382283-1-lee.jones@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728103AbhANP3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 10:29:08 -0500
+Received: from mga14.intel.com ([192.55.52.115]:7040 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726259AbhANP3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 10:29:08 -0500
+IronPort-SDR: a4FuUivT27wljN/tx5AaKxFe9DgCQDqo2ZdXkEA1Z9DqxhpRzaGoCJybqmVUECH27fHZiXkOHP
+ BahzXCWFVOKg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="177604640"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="177604640"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 07:28:27 -0800
+IronPort-SDR: TYZ7Q2aL7R7JrACOCFOgwW2AhaDagifQc2o36b02ZaTDDDKMdMsJQ2932U6hNxQcAM9xjssNPq
+ fSkYNq1rFYHQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="568193538"
+Received: from zulkifl3-ilbpg0.png.intel.com ([10.88.229.114])
+  by orsmga005.jf.intel.com with ESMTP; 14 Jan 2021 07:28:24 -0800
+From:   Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+To:     ulf.hansson@linaro.org, broonie@kernel.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        adrian.hunter@intel.com, michal.simek@xilinx.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     andriy.shevchenko@intel.com, Rashmi.A@intel.com,
+        mahesh.r.vaidya@intel.com, muhammad.husaini.zulkifli@intel.com
+Subject: [PATCH v1 0/9] mmc: sdhci-of-arasan: Add UHS-1 support for Keem Bay SOC
+Date:   Thu, 14 Jan 2021 23:26:51 +0800
+Message-Id: <20210114152700.21916-1-muhammad.husaini.zulkifli@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Hi,
 
- drivers/input/touchscreen/stmpe-ts.c:82: warning: Function parameter or member 'prop' not described in 'stmpe_touch'
+This patch series adds Ultra High Speed(UHS-1) Bus Speed Mode Support for Keem Bay SoC SD Card.
+Summary of each patches as per below:
 
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@st.com>
-Cc: Stefan Riedmueller <s.riedmueller@phytec.de>
-Cc: Luotao Fu <l.fu@pengutronix.de>
-Cc: linux-input@vger.kernel.org
-Cc: linux-stm32@st-md-mailman.stormreply.com
-Cc: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/input/touchscreen/stmpe-ts.c | 1 +
- 1 file changed, 1 insertion(+)
+Patch 1: Use of_device_get_match_data() helper to get the match-data.
+Patch 2: Convert to use np pointer instead of using pdev->dev.of_node.
+Patch 3: Add struct device *dev in probe func(), so that dev pointer can be widely use in probe to make code more readable.
+Patch 4: Change from dev_err to dev_err_probe() to avoid spamming logs when probe is deferred.
+Patch 5: Export function to be use by device driver to configure i/o voltage rail output which communicate with Trusted Firmware.
+Patch 6: Update phy and regulator supply for Keem Bay SoC.
+Patch 7: Add DT Binding for Keem Bay SoC SD Regulator.
+Patch 8: Add SD Regulator driver to support Keem Bay SoC. This is to model using standard regulator abstraction during voltage operation
+as for Keem Bay SoC, i/o voltage rail need to be configure by setting specific bit in the AON_CFG1 Register.
+AON_CFG1 Register is a secure register. Direct access to AON_CFG1 register will cause firewall violation in secure system.
+Patch 9: Add Ultra High Speed (UHS-1) Support for Keem Bay SOC. For Keem Bay hardware, two regulators are been used to change the I/O bus line voltage which are "vqmmc-supply" and "sdvrail-supply".
 
-diff --git a/drivers/input/touchscreen/stmpe-ts.c b/drivers/input/touchscreen/stmpe-ts.c
-index cd747725589b1..25c45c3a35615 100644
---- a/drivers/input/touchscreen/stmpe-ts.c
-+++ b/drivers/input/touchscreen/stmpe-ts.c
-@@ -52,6 +52,7 @@
-  * @idev: registered input device
-  * @work: a work item used to scan the device
-  * @dev: a pointer back to the MFD cell struct device*
-+ * @prop: Touchscreen properties
-  * @ave_ctrl: Sample average control
-  * (0 -> 1 sample, 1 -> 2 samples, 2 -> 4 samples, 3 -> 8 samples)
-  * @touch_det_delay: Touch detect interrupt delay
--- 
-2.25.1
+All of these patches was tested with Keem Bay evaluation module board.
+
+Kindly help to review this patch set.
+
+Muhammad Husaini Zulkifli (9):
+  mmc: sdhci-of-arasan: use of_device_get_match_data()
+  mmc: sdhci-of-arasan: Convert to use np instead of pdev->dev.of_node
+  mmc: sdhci-of-arasan: Add structure device pointer in probe function
+  mmc: sdhci-of-arasan: Use dev_err_probe() to avoid spamming logs
+  firmware: keembay: Add support for Trusted Firmware Service call
+  dt-bindings: mmc: Update phy and regulator supply for Keem Bay SOC
+  dt-bindings: regulator: keembay: Add DT binding documentation
+  regulator: keembay: Add regulator for Keem Bay SoC
+  mmc: sdhci-of-arasan: Add UHS-1 support for Keem Bay SOC
+
+ .../devicetree/bindings/mmc/arasan,sdhci.yaml |   7 +-
+ .../bindings/regulator/keembay-regulator.yaml |  36 ++
+ drivers/mmc/host/sdhci-of-arasan.c            | 313 ++++++++++++++++--
+ drivers/regulator/Kconfig                     |  10 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/keembay-sd-regulator.c      | 112 +++++++
+ include/linux/firmware/intel/keembay.h        |  82 +++++
+ 7 files changed, 532 insertions(+), 29 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/regulator/keembay-regulator.yaml
+ create mode 100644 drivers/regulator/keembay-sd-regulator.c
+ create mode 100644 include/linux/firmware/intel/keembay.h
+
+--
+2.17.1
 
