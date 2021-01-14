@@ -2,86 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D532F559B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 01:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 988CB2F55AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 01:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729897AbhANAc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 19:32:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52492 "EHLO
+        id S1726709AbhANAyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 19:54:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729814AbhANAX4 (ORCPT
+        with ESMTP id S1727608AbhANAkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 19:23:56 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1502C061795
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:22:51 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id m12so5474083lfo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:22:51 -0800 (PST)
+        Wed, 13 Jan 2021 19:40:09 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F63C0617BD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:37:55 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id t18so2951107qva.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:37:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NHx6cOmF9H+3oeO1NzvO+G1sr0qFE9WCAeIZ2WKr5OU=;
-        b=jqmVgsX8RTXFXONNRRKx1wmvRnXZD1l3Vtt86Gw+2x7IRb+4doLuwHA88sH/CCCncj
-         bQ/Mlgvi3V8K6FaQpkeyKaDBYFT5mWkhy5Ngvy64/RSftsDtzB5sbxAD7rQDBw2NiAC2
-         Jnv+cGp4ZX30zFXssT0dafcrayXtJFtTk/17B2JXedwSByA6n8+YFz5JlEUBPR5sb9jt
-         QJh3pWEiRxWXnywzSEILVOBZWg2dB5+lCPRQHbwlYKGutIFfTKzeA/jnFUKH126GHGmR
-         ngpQQf44Q478cxtCIgrJBPvujAGp92VUVdUbCdCKl1YvzYy0aVdeP1w41Sua8L+trVSN
-         5LNA==
+        d=google.com; s=20161025;
+        h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=Eex86gs96hXZoQkhC7w4R41A1RqEr+1bAqfy74t/uNE=;
+        b=sNbbozuRHglAPmDNM3t2ZBQKhdBPsyzcxyC0flAsMj+J3jsbYRvq3Wr3TvUCV/XREN
+         bMI3C+ufPzudYBYmTGBZ5/BZB6AHF9fms/jbQ7GEzHpXv61YjON5uHQ3VXpIY5OVaFZO
+         sApoLda/kV4sTXxEIupOGGDN/gQ+AFqPpkSMFiMKVPN8SDfnntmbt60bjFPINYWX3PJD
+         560Gs4wOoNZwKAsh7FEI25Ydsk9TZvWvbE25DwB7ISB4QiazsN3C6oDq2f0JUuE4MG8v
+         RkUIyuv5zH4M2OHZEDQqy9YS0VmvYcvW6zFvzoQUvQeFezEtltf9e8eOipjg2l3q+VEE
+         FOxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NHx6cOmF9H+3oeO1NzvO+G1sr0qFE9WCAeIZ2WKr5OU=;
-        b=R/rKUTJvSGKn07OvsGVoJbRoKhjeQFl7Tjay6eaF9K+DlPsXHjuEXSqsUzykZhVC8t
-         qD9H7uekGbwsJsUhqcEZrFY63uj7fgonh4na4I5A1j0yPe1UpsEYhj4x6BFoBg1osHxh
-         Ey8TRA6+epzlWAMCxGqFYXSmQJCvHTNfe30aiWgl0tBC3YSzZdyXz/I9XXTYvBgMWQHr
-         Z7cgAf3A+N7Q97OoOAq5hsAFh5Tj/ZZoPYomeT5HSlEbHGTkB3OL3q9D5Zz5YOyneNNj
-         DJGqEFT6t/vhOb4CbX1KZKru6yAdNHBQPPNjqw9Ct3+GgI37UQoUz2B6u9dyLJlJ9P7i
-         DETg==
-X-Gm-Message-State: AOAM532cA62cWIFJDmxKkwXiGgrEKXHqfn+oo39COvkUgoXFjK8I0OXp
-        uhEmOZmTRr6tMDtRTn6ZPJt4bxU3Hwqf2Rc590xM/jyPVgCUDg==
-X-Google-Smtp-Source: ABdhPJzKKKsjj7+sy2+hHoOsiI3jtp9uH+slbZWSLs368X4wm/8gU+UlmI/1PznIcmVxxOsLXWe54p30Xw400YlQE9k=
-X-Received: by 2002:a19:890b:: with SMTP id l11mr2024934lfd.66.1610583770239;
- Wed, 13 Jan 2021 16:22:50 -0800 (PST)
-MIME-Version: 1.0
-References: <CABXGCsPSYh-Nvfig4j4N8073vA6WDdhdg13meAcUgCr_pd5mYw@mail.gmail.com>
- <816e944c-72bc-d94d-449f-bfb915382290@amd.com> <6e55d84c-7b9a-167c-34cf-9e980f8e2354@amd.com>
- <CABXGCsM8yYNz7gQW26a4hHwBR+MunXoopHEiyDJdC-muNrRxkQ@mail.gmail.com> <77b696b9-3248-d329-4f7d-5e27a21eabff@amd.com>
-In-Reply-To: <77b696b9-3248-d329-4f7d-5e27a21eabff@amd.com>
-From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date:   Thu, 14 Jan 2021 05:22:37 +0500
-Message-ID: <CABXGCsOcBMT4rL-bb4K_TzK70YmQsgNX37sHEHiqp_1kK1_UEQ@mail.gmail.com>
-Subject: Re: [drm:dm_plane_helper_prepare_fb [amdgpu]] *ERROR* Failed to pin
- framebuffer with error -12
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        Harry Wentland <harry.wentland@amd.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>
+        h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=Eex86gs96hXZoQkhC7w4R41A1RqEr+1bAqfy74t/uNE=;
+        b=j1MxG4/2mlAAYyY1iP/RdYWzYX1KUkPeDDvBb8lfr+birXC2lFUJsNGSfONkYB08Hr
+         k1nESuDGoF5QKYeZVZYVWlJRMBQBI9VSClRAO7SuCtrwI+prbExDqoKA/wp62jNbkMLV
+         L9mS/97d/CP8RvJvv1idem3IaAk5A1WCQc1pZNJMIc9oMHsE77D62PbVuWh/1qHdLqgJ
+         pewgdSgJ0DIr3Cfulu46blkTKXQir8DNgafg98Qhut6UoBK526OyMvCTomsF+iG7rUCK
+         8dGzL1d3647DQtbBoCIN6mKkzEE0gAixgyUV+FPjomby3cR7aAxfbmqQ8FewYzylVltd
+         H0xg==
+X-Gm-Message-State: AOAM532be+A0MzaaMnfM6csvyF7WcgoLSz61hr1LrjSZiJeMdKZJbiKR
+        OTtPr33U92UhTTEPg6nC7aM9nQKX/rE=
+X-Google-Smtp-Source: ABdhPJwxLJFIcGZAW1SDEzJekpBS1zpkc/ptjpzUb3ZhOdP4HHSylaa/lyrgMl3PsCTZHSmE0euTzijUicw=
+Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+ (user=seanjc job=sendgmr) by 2002:a25:500c:: with SMTP id e12mr7458603ybb.129.1610584675025;
+ Wed, 13 Jan 2021 16:37:55 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed, 13 Jan 2021 16:37:02 -0800
+In-Reply-To: <20210114003708.3798992-1-seanjc@google.com>
+Message-Id: <20210114003708.3798992-9-seanjc@google.com>
+Mime-Version: 1.0
+References: <20210114003708.3798992-1-seanjc@google.com>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH v2 08/14] KVM: SVM: Condition sev_enabled and sev_es_enabled
+ on CONFIG_KVM_AMD_SEV=y
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Jan 2021 at 01:45, Christian K=C3=B6nig <christian.koenig@amd.co=
-m> wrote:
->
-> But what you have in your logs so far are only unrelated symptoms, the
-> root of the problem is that somebody is leaking memory.
->
-> What you could do as well is to try to enable kmemleak
+Define sev_enabled and sev_es_enabled as 'false' and explicitly #ifdef
+out all of sev_hardware_setup() if CONFIG_KVM_AMD_SEV=n.  This kills
+three birds at once:
 
-I captured some memleaks.
-Do they contain any useful information?
+  - Makes sev_enabled and sev_es_enabled off by default if
+    CONFIG_KVM_AMD_SEV=n.  Previously, they could be on by default if
+    CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT=y, regardless of KVM SEV
+    support.
 
-[1] https://pastebin.com/n0FE7Hsu
-[2] https://pastebin.com/MUX55L1k
-[3] https://pastebin.com/a3FT7DVG
-[4] https://pastebin.com/1ALvJKz7
+  - Hides the sev and sev_es module params when CONFIG_KVM_AMD_SEV=n.
 
---
-Best Regards,
-Mike Gavrilov.
+  - Resolves a false positive -Wnonnull in __sev_recycle_asids() that is
+    currently masked by the equivalent IS_ENABLED(CONFIG_KVM_AMD_SEV)
+    check in svm_sev_enabled(), which will be dropped in a future patch.
+
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/svm/sev.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index a024edabaca5..02a66008e9b9 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -28,12 +28,17 @@
+ #define __ex(x) __kvm_handle_fault_on_reboot(x)
+ 
+ /* enable/disable SEV support */
++#ifdef CONFIG_KVM_AMD_SEV
+ static bool sev_enabled = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
+ module_param_named(sev, sev_enabled, bool, 0444);
+ 
+ /* enable/disable SEV-ES support */
+ static bool sev_es_enabled = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
+ module_param_named(sev_es, sev_es_enabled, bool, 0444);
++#else
++#define sev_enabled false
++#define sev_es_enabled false
++#endif /* CONFIG_KVM_AMD_SEV */
+ 
+ static u8 sev_enc_bit;
+ static int sev_flush_asids(void);
+@@ -1253,11 +1258,12 @@ void sev_vm_destroy(struct kvm *kvm)
+ 
+ void __init sev_hardware_setup(void)
+ {
++#ifdef CONFIG_KVM_AMD_SEV
+ 	unsigned int eax, ebx, ecx, edx;
+ 	bool sev_es_supported = false;
+ 	bool sev_supported = false;
+ 
+-	if (!IS_ENABLED(CONFIG_KVM_AMD_SEV) || !sev_enabled)
++	if (!sev_enabled)
+ 		goto out;
+ 
+ 	/* Does the CPU support SEV? */
+@@ -1311,6 +1317,7 @@ void __init sev_hardware_setup(void)
+ out:
+ 	sev_enabled = sev_supported;
+ 	sev_es_enabled = sev_es_supported;
++#endif
+ }
+ 
+ void sev_hardware_teardown(void)
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
+
