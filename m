@@ -2,100 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A3B2F6248
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0BB2F624E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728424AbhANNpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:45:40 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:57667 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727333AbhANNpj (ORCPT
+        id S1728792AbhANNqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 08:46:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27190 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725930AbhANNqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:45:39 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1l02vn-0003FL-4a; Thu, 14 Jan 2021 13:44:55 +0000
-Date:   Thu, 14 Jan 2021 14:44:53 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Viktor Mihajlovski <mihajlov@linux.ibm.com>
-Subject: Re: [RFC 1/1] s390/pci: expose UID checking state in sysfs
-Message-ID: <20210114134453.bkfik4zjt5ehz6d5@wittgenstein>
-References: <20210113185500.GA1918216@bjorn-Precision-5520>
- <675aa466-59ea-cf8a-6eec-caa6478ba4cd@linux.ibm.com>
+        Thu, 14 Jan 2021 08:46:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610631915;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0z/jAVbB9JGEFaFGRPRMJQOT3/r+X2ii1tNfXu3+OrY=;
+        b=PIKT363W5WXc9iK7cfoILu5pyc9/rhczMI3pWJRI6RiHEJid+JXc7SaYwE3VIXSiwS0yo+
+        l5tg1ueW9ZdhIiRO721P2J3VaPe2sAXv1145zjd63y8jgJr7tVAvfeWei4DtmQ80wYZ/+T
+        TZc8BhzEXEmfqTXrfegT+a7CS1nCn6U=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-371-zUhz1uokOi-rUrcQMT38sw-1; Thu, 14 Jan 2021 08:45:13 -0500
+X-MC-Unique: zUhz1uokOi-rUrcQMT38sw-1
+Received: by mail-ej1-f72.google.com with SMTP id g24so2229007ejh.22
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:45:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=0z/jAVbB9JGEFaFGRPRMJQOT3/r+X2ii1tNfXu3+OrY=;
+        b=K5HYHxZydYRMq/JV4tMFHtOBNs/OavcbpZMQf340+UR1yGJJctZEHEyW0/4kO7kdFL
+         LU8+IGrnyyqRv8duzNsvRcrGvS+ITaTU178m63lks+sd7bqIMi93G6+oh3Tp3nbM6AQn
+         EOggLNJg7hm9Ty5ImDWrVK7DvJ+eafrvTwx1Tk3WSbpN81ItSvVpkv37kMJD76B8LVBQ
+         EXBlg9GvL1KcLtTUYXMgPwur3hdt4iKMRzFlNeLze9cciNUz4fjgxzroUEhNOmQvEsOO
+         YvAwUWLxl9ajkyneXtWofPOixdZs8gnwFlZRmyD/CAt7EHHa7EfphojNZ23O42gVdKkc
+         MWXw==
+X-Gm-Message-State: AOAM5336siSkEn3R1cXwUj4Baw7reZfJ2CKQZ/3rS2j7iqchSyfwIyfT
+        ocUbeacZtL6h2stIe8xMMOv4sOEc2RugoTVB7rU4xLzjz0t6cnUEOYYkC0OvMRiope9JYEQHeY0
+        886FhWPBQtCUCCWqxStb9o0df
+X-Received: by 2002:a17:907:9716:: with SMTP id jg22mr4473383ejc.126.1610631912073;
+        Thu, 14 Jan 2021 05:45:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwNhOIxjWwR6BBP3/fyEyPlCd1LO1r844S80POT9obwh8IR194vV6mHgFe0thE4KCaDVEkv0A==
+X-Received: by 2002:a17:907:9716:: with SMTP id jg22mr4473374ejc.126.1610631911850;
+        Thu, 14 Jan 2021 05:45:11 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id h16sm69379eds.21.2021.01.14.05.45.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 05:45:11 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: kvmclock: Fix vCPUs > 64 can't be online/hotpluged
+In-Reply-To: <1610623624-18697-1-git-send-email-wanpengli@tencent.com>
+References: <1610623624-18697-1-git-send-email-wanpengli@tencent.com>
+Date:   Thu, 14 Jan 2021 14:45:10 +0100
+Message-ID: <87pn277huh.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <675aa466-59ea-cf8a-6eec-caa6478ba4cd@linux.ibm.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 02:20:10PM +0100, Niklas Schnelle wrote:
-> 
-> 
-> On 1/13/21 7:55 PM, Bjorn Helgaas wrote:
-> > On Wed, Jan 13, 2021 at 08:47:58AM +0100, Niklas Schnelle wrote:
-> >> On 1/12/21 10:50 PM, Bjorn Helgaas wrote:
-> >>> On Mon, Jan 11, 2021 at 10:38:57AM +0100, Niklas Schnelle wrote:
-> >>>> We use the UID of a zPCI adapter, or the UID of the function zero if
-> >>>> there are multiple functions in an adapter, as PCI domain if and only if
-> >>>> UID Checking is turned on.
-> >>>> Otherwise we automatically generate domains as devices appear.
-> >>>>
-> >>>> The state of UID Checking is thus essential to know if the PCI domain
-> >>>> will be stable, yet currently there is no way to access this information
-> >>>> from userspace.
-> >>>> So let's solve this by showing the state of UID checking as a sysfs
-> >>>> attribute in /sys/bus/pci/uid_checking
-> > 
-> >>>> +/* Global zPCI attributes */
-> >>>> +static ssize_t uid_checking_show(struct kobject *kobj,
-> >>>> +				 struct kobj_attribute *attr, char *buf)
-> >>>> +{
-> >>>> +	return sprintf(buf, "%i\n", zpci_unique_uid);
-> >>>> +}
-> >>>> +
-> >>>> +static struct kobj_attribute sys_zpci_uid_checking_attr =
-> >>>> +	__ATTR(uid_checking, 0444, uid_checking_show, NULL);
-> >>>
-> >>> Use DEVICE_ATTR_RO instead of __ATTR.
-> >>
-> >> It's my understanding that DEVICE_ATTR_* is only for
-> >> per device attributes. This one is global for the entire
-> >> Z PCI. I just tried with BUS_ATTR_RO instead
-> >> and that works but only if I put the attribute at
-> >> /sys/bus/pci/uid_checking instead of with a zpci
-> >> subfolder. This path would work for us too, we
-> >> currently don't have any other global attributes
-> >> that we are planning to expose but those could of
-> >> course come up in the future.
-> > 
-> > Ah, I missed the fact that this is a kobj_attribute, not a
-> > device_attribute.  Maybe KERNEL_ATTR_RO()?  Very few uses so far, but
-> > seems like it might fit?
-> > 
-> > Bjorn
-> > 
-> 
-> KERNEL_ATTR_* is currently not exported in any header. After
-> adding it to include/linuc/sysfs.h it indeed works perfectly.
-> Adding Christian Brauner as suggested by get_maintainers for
-> their opinion. I'm of course willing to provide a patch
+Wanpeng Li <kernellwp@gmail.com> writes:
 
-Hey Niklas et al. :)
+> From: Wanpeng Li <wanpengli@tencent.com>
+>
+> The per-cpu vsyscall pvclock data pointer assigns either an element of the 
+> static array hv_clock_boot (#vCPU <= 64) or dynamically allocated memory 
+> hvclock_mem (vCPU > 64), the dynamically memory will not be allocated if 
+> kvmclock vsyscall is disabled, this can result in cpu hotpluged fails in 
+> kvmclock_setup_percpu() which returns -ENOMEM. This patch fixes it by not 
+> assigning vsyscall pvclock data pointer if kvmclock vdso_clock_mode is not 
+> VDSO_CLOCKMODE_PVCLOCK.
+>
+> Fixes: 6a1cac56f4 ("x86/kvm: Use __bss_decrypted attribute in shared variables")
+> Reported-by: Zelin Deng <zelin.deng@linux.alibaba.com>
+> Tested-by: Haiwei Li <lihaiwei@tencent.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: stable@vger.kernel.org#v4.19-rc5+
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
+>  arch/x86/kernel/kvmclock.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
+> index aa59374..0624290 100644
+> --- a/arch/x86/kernel/kvmclock.c
+> +++ b/arch/x86/kernel/kvmclock.c
+> @@ -296,7 +296,8 @@ static int kvmclock_setup_percpu(unsigned int cpu)
+>  	 * pointers. So carefully check. CPU0 has been set up in init
+>  	 * already.
+>  	 */
+> -	if (!cpu || (p && p != per_cpu(hv_clock_per_cpu, 0)))
+> +	if (!cpu || (p && p != per_cpu(hv_clock_per_cpu, 0)) ||
+> +	    (kvm_clock.vdso_clock_mode != VDSO_CLOCKMODE_PVCLOCK))
+>  		return 0;
 
-I think this will need input from Greg. He should be best versed in
-sysfs attributes. The problem with KERNEL_ATTR_* to me seems that it's
-supposed to be kernel internal. Now, that might just be a matter of
-renaming the macro but let's see whether Greg has any better idea or
-more questions. :)
+The comment above should probably be updated as it is not clear why we
+check kvm_clock.vdso_clock_mode here. Actually, I would even suggest we
+introduce a 'kvmclock_tsc_stable' global instead to avoid this indirect
+check.
 
-Christian
+>  
+>  	/* Use the static page for the first CPUs, allocate otherwise */
+
+Also, would it be better if we just avoid cpuhp_setup_state() call in
+this case? E.g. both these ideas combined (completely untested):
+
+diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
+index aa593743acf6..0827aef3ccb8 100644
+--- a/arch/x86/kernel/kvmclock.c
++++ b/arch/x86/kernel/kvmclock.c
+@@ -25,6 +25,7 @@
+ 
+ static int kvmclock __initdata = 1;
+ static int kvmclock_vsyscall __initdata = 1;
++static bool kvmclock_tsc_stable __ro_after_init = true;
+ static int msr_kvm_system_time __ro_after_init = MSR_KVM_SYSTEM_TIME;
+ static int msr_kvm_wall_clock __ro_after_init = MSR_KVM_WALL_CLOCK;
+ static u64 kvm_sched_clock_offset __ro_after_init;
+@@ -275,8 +276,10 @@ static int __init kvm_setup_vsyscall_timeinfo(void)
+                return 0;
+ 
+        flags = pvclock_read_flags(&hv_clock_boot[0].pvti);
+-       if (!(flags & PVCLOCK_TSC_STABLE_BIT))
++       if (!(flags & PVCLOCK_TSC_STABLE_BIT)) {
++               kvmclock_tsc_stable = false;
+                return 0;
++       }
+ 
+        kvm_clock.vdso_clock_mode = VDSO_CLOCKMODE_PVCLOCK;
+ #endif
+@@ -325,7 +328,8 @@ void __init kvmclock_init(void)
+                return;
+        }
+ 
+-       if (cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "kvmclock:setup_percpu",
++       if (kvmclock_tsc_stable &&
++           cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "kvmclock:setup_percpu",
+                              kvmclock_setup_percpu, NULL) < 0) {
+                return;
+        }
+
+-- 
+Vitaly
+
