@@ -2,127 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817892F5C27
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 366392F5C37
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbhANIHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 03:07:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39216 "EHLO
+        id S1727893AbhANIKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 03:10:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728115AbhANIHo (ORCPT
+        with ESMTP id S1727794AbhANIKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 03:07:44 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7652C061795
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 00:07:03 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kzxej-0000oA-1r; Thu, 14 Jan 2021 09:06:57 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kzxei-0004s9-FX; Thu, 14 Jan 2021 09:06:56 +0100
-Date:   Thu, 14 Jan 2021 09:06:56 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Philipp Rosenberger <p.rosenberger@kunbus.com>
-Cc:     dan.carpenter@oracle.com, biwen.li@nxp.com, lvb@xiphos.com,
-        bruno.thomsen@gmail.com, l.sanfilippo@kunbus.com,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] rtc: pcf2127: Run a OTP refresh if not done before
-Message-ID: <20210114080656.ee7fdqufu2biyy4y@pengutronix.de>
-References: <20210113112742.7354-1-p.rosenberger@kunbus.com>
- <20210113112742.7354-3-p.rosenberger@kunbus.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="a6dyhtavpy6kionk"
-Content-Disposition: inline
-In-Reply-To: <20210113112742.7354-3-p.rosenberger@kunbus.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Thu, 14 Jan 2021 03:10:16 -0500
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B244C061575;
+        Thu, 14 Jan 2021 00:09:36 -0800 (PST)
+Received: by mail-oo1-xc2a.google.com with SMTP id j21so1172236oou.11;
+        Thu, 14 Jan 2021 00:09:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=aflm5DlmshNk5nchTDEsVtg98kBiImMjb4vEn+XiP+I=;
+        b=J2uRbV9ScW/yeAQB/5037uG8RTqrLuzjhALs9mpRTRPXf+WelAq+TiZlgPMP7Ecm/H
+         mwNsbEUnFd3so7hzqY55Zu8FFg9OxMxshIey2sBN+v+51Z6rDkNwOeZFpENKY/QgMCUo
+         +A22NNO0EbplDtsX26HIN6nPtkpZui3kDr/HRDMTn63AJusqQ6uP7BtSK44ThAcmZArh
+         NGVlfH6h4566PdYgjAZ5bjqRL3hv9weKQ6hjkQzoikuwruxCeGowNRrjIonzk6bjC3w1
+         +uTlktjamovNXivAs8CPOoqiS9+/3hBqsE/lla5N1GgRGAXWkof20bjZEeHRGoS8pwTl
+         XEHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=aflm5DlmshNk5nchTDEsVtg98kBiImMjb4vEn+XiP+I=;
+        b=lyeWY2WdNKqOFgyWgK0kzo/SDUNqykzbJdAYVQBPK1Z08BPJVBF5rovX0mJoZdDxda
+         7jkt3fK2BcoNxSEgNHt16sM7Wpr0uPSAZmeoQQNjku3lD+bbTPyMmkUfNCPCXPBwkWsd
+         BtE7drIJBoA4PV7dZhquoBLrMQjgtg5UO0I0U/hrDWPPuVzuGwi53l+uixA2IDTOnHyQ
+         onjsBkFWfrrfuXKNVZK1FEpEZ3W30sQj/TfAS4RcCkySdRJHxZkrK2Rv5VqGzT5Wk9xD
+         r9Fy2t/v2S2cuGnw20hs+I5K7nWQDHnieyNWDJct4VO7khT9UJJAaT+jaIGvcoJ5XCvZ
+         YxKQ==
+X-Gm-Message-State: AOAM531Pne1WFn+IqrYSxrKFtAFYhIezdHr3ln86ZZAfDoocOA27HvmB
+        GcY7QpCZEa/Ge7JvL1PUI+w=
+X-Google-Smtp-Source: ABdhPJwoNeknftbdzuSmdphSD4dYiRbgD//HFMkTGqVzX7WNsIGGH/z930cevVDohwHufitHqIe/rA==
+X-Received: by 2002:a4a:e89e:: with SMTP id g30mr3924003ooe.17.1610611775597;
+        Thu, 14 Jan 2021 00:09:35 -0800 (PST)
+Received: from localhost ([172.243.146.206])
+        by smtp.gmail.com with ESMTPSA id t25sm945601oic.15.2021.01.14.00.09.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 00:09:34 -0800 (PST)
+Date:   Thu, 14 Jan 2021 00:09:26 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Yonghong Song <yhs@fb.com>,
+        Brendan Jackman <jackmanb@google.com>
+Message-ID: <5ffffc36c3ffa_1eeef2081e@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210112154235.2192781-1-jackmanb@google.com>
+References: <20210112154235.2192781-1-jackmanb@google.com>
+Subject: RE: [PATCH bpf-next v6 00/11] Atomics for eBPF
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Brendan Jackman wrote:
+> Happy new year everyone, and thanks once again for the reviews.
+> 
+> There's still one unresolved review comment from John[3] but I don't
+> think it needs to block the patchset as it stands, it can be a
+> separate patch. Hope that's OK.
 
---a6dyhtavpy6kionk
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jan 13, 2021 at 12:27:42PM +0100, Philipp Rosenberger wrote:
-> The datasheet of the PCF2127 states,it is recommended to process an OTP
-
-s/,/, /
-
-> refresh once the power is up and the oscillator is operating stable. The
-> OTP refresh takes less than 100 ms to complete.
->=20
-> Signed-off-by: Philipp Rosenberger <p.rosenberger@kunbus.com>
-> ---
->  drivers/rtc/rtc-pcf2127.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
->=20
-> diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
-> index 378b1ce812d6..ca56dba64e79 100644
-> --- a/drivers/rtc/rtc-pcf2127.c
-> +++ b/drivers/rtc/rtc-pcf2127.c
-> @@ -58,6 +58,9 @@
->  #define PCF2127_REG_ALARM_DM		0x0D
->  #define PCF2127_REG_ALARM_DW		0x0E
->  #define PCF2127_BIT_ALARM_AE			BIT(7)
-> +/* CLKOUT control register */
-> +#define PCF2127_REG_CLKOUT		0x0f
-> +#define PCF2127_BIT_CLKOUT_OTPR			BIT(5)
->  /* Watchdog registers */
->  #define PCF2127_REG_WD_CTL		0x10
->  #define PCF2127_BIT_WD_CTL_TF0			BIT(0)
-> @@ -630,6 +633,19 @@ static int pcf2127_probe(struct device *dev, struct =
-regmap *regmap,
->  		dev_warn(dev, "Watchdog and alarm functions might not work properly\n"=
-);
->  	}
-> =20
-> +	/*
-> +	 * Set the OTP refresh bit unconditionally. If an OTP refresh was
-> +	 * already done the bit is already set and will not rerun the refresh
-> +	 * operation.
-> +	 */
-> +	ret =3D regmap_set_bits(pcf2127->regmap, PCF2127_REG_CLKOUT,
-> +			      PCF2127_BIT_CLKOUT_OTPR);
-> +	if (ret < 0) {
-> +		dev_err(dev, "%s: OTP refresh (clkout_ctrl) failed.\n", __func__);
-> +		return ret;
-> +	}
-> +	msleep(100);
-
-This unconditional sleep isn't so nice. Maybe it makes sense to only do
-this when the chip reports a power loss?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---a6dyhtavpy6kionk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl//+5sACgkQwfwUeK3K
-7Al3KggAkpBdilZu6pQowNjH7PQK3KItn0Ec6JtSpdlA8Hz+6WgfMwIkweOEcYW0
-Fzef+0L3MGaFpsEtWKIZlEC+tOk2YhPF8XF3o0rYrFxMDpP2Ainq3SkVeDKMJi5d
-55XqmPNyG1bTtL5xwpYv5Q+YnKi1aHRZAnxlhoYFLoJFgANnAIwqOO89XYWuYnHY
-xMq9C3wBA0LzHTXfDVA1IuXM5j0/mv6CRLtqUBOjj5JcKunLyrQWd0dDoU5QCBkT
-Mfz08NpaYeGYEpVkVwzY6CMkW+HB7aiwclJXk8GqGUxX3VlpGdTKs2tTrAohVVbL
-m5mgLqBeNfydg+PfKv3kudB3Fi+Jpw==
-=uaim
------END PGP SIGNATURE-----
-
---a6dyhtavpy6kionk--
+Its ok on my side if it comes as a follow up. I think it limits the
+use cases without it, but no reason to hold up the series IMO.
