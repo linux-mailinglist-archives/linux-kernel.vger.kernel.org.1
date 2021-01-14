@@ -2,96 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB4B2F5E09
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 418BA2F5E0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbhANJsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:48:24 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:53395 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725989AbhANJsV (ORCPT
+        id S1728233AbhANJtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:49:17 -0500
+Received: from mail-qv1-f46.google.com ([209.85.219.46]:46618 "EHLO
+        mail-qv1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727349AbhANJtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:48:21 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 05FE85C0207;
-        Thu, 14 Jan 2021 04:47:24 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 14 Jan 2021 04:47:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Ve0K+4
-        mFsy8VhopXYROFi++Wpwnj6ByqFKDcnhRH7JI=; b=eU7fYhf8YFmshjN2b62qia
-        Kv+MWc5xWdxVT64bsCDd5lMOM9mtGMNz0LSyhLwRPTp1+eIebYn4ODXKHIBK4Hog
-        GEh1osXaD0aRJfh3JeXanasSen0Lv9UVO0OrWdNh8OBABlfXZ5PCg60SLpZTICJ1
-        fspk6fWWJFw+Rqo4MLGB2nTiqdEpHJ/MFQuIXBB2dmhPW8+2v6Ar9IFG40Yc0/y1
-        cGKm16oTf4mQxIZ8VIPBCshOHr0ViSBB7VFbtC2JXSTFJDKfb7G+PpdUdKeVFP7P
-        UsJfZf/ZAOUfph/DPkIK2j1yfCeJTgB+X7YQe7OI8xe6IRvSbfOAvyFlSJxUbsOA
-        ==
-X-ME-Sender: <xms:KxMAYICFiEOw5AGUauB5U5qMEVZjV7qIFJm_Vah-kUwl2_6be2O04w>
-    <xme:KxMAYKjzB8O3q4ywCq9jKEAGgEcytFT8S6-YFNMVMbXwLykAmshQZ1BVyZVmMCZ0q
-    fittZuTcgBpAbU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtdehgddthecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
-    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
-    hrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudehleet
-    necukfhppeekgedrvddvledrudehfedrgeegnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:KxMAYLkGjHXhFDnKfKYnbxEz2zSCzE2GrwzNJ8Q5Z6RH8CQbOxiCsQ>
-    <xmx:KxMAYOx-GMCzeo4I6qUgqCrVKCheu721yLrbkPTC8-cjSnMY7PSQug>
-    <xmx:KxMAYNTWSbLdDH65Pq8E97Hebsbx5lkvQZH52yt_F9Cm0lrVvyNvpw>
-    <xmx:LBMAYLMIvg11riV1WWzBllwU9ZuRXmp86cZLLbwlX6JRiqIHAq0fLw>
-Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 198181080068;
-        Thu, 14 Jan 2021 04:47:21 -0500 (EST)
-Date:   Thu, 14 Jan 2021 11:47:07 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     jiri@nvidia.com, idosch@nvidia.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mlxsw: pci: switch from 'pci_' to 'dma_' API
-Message-ID: <20210114094707.GA1979201@shredder.lan>
-References: <20210114084757.490540-1-christophe.jaillet@wanadoo.fr>
+        Thu, 14 Jan 2021 04:49:16 -0500
+Received: by mail-qv1-f46.google.com with SMTP id a1so2001542qvd.13;
+        Thu, 14 Jan 2021 01:49:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1VU5mGfTfPsWxUw/MpLYqBYZfZeVJd63Xh/MRrsioFM=;
+        b=aoji+nBWd3cTduCwBF1N/fpXlpzM3qYDiBPQTvd8S7SApdPsoXyoSNALJcRnIAVnhx
+         FurTtusSFxhFMZzltFp4LmI8VRG2Q8QgPVclHmDvzIHjoF9iVqH5xbpqFN/lcsqu4igK
+         WX73iryHPt914fiTFmBK4XVTMMvcuP+y01ku/iNgEgXvjJjpjx8xBw8DA8TCe687nDrr
+         8tTckYdMoD9l4Or1UbDAQzzBFm8JirBt9VPg+zzZap5RMjRJsDlGy/m+7nH/lBD8mjxL
+         EHNLJm6Eo3/2vkQ8318/uPOXacJjQ1no/U4VhkccgUBAa0YXW25LIIluo+odqLzbX4Nb
+         sG0g==
+X-Gm-Message-State: AOAM533610XrtH1i/4FxTxVCbe9gxZULqtYGJcOKyqqwf6Q/kP0e5kun
+        dAqbGWmDndQUXfp1TwnYWqbfI6r9U4M9uNWF/Bo=
+X-Google-Smtp-Source: ABdhPJwuB3BXN73SO8WK7VpK1UyVV3mPcPHBnWxGGbuScgDBka2cRdqqaT5NtFacV2XI7HsI+L5Z7JPzy5ZKfdWuQog=
+X-Received: by 2002:a0c:da07:: with SMTP id x7mr6313360qvj.39.1610617718111;
+ Thu, 14 Jan 2021 01:48:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210114084757.490540-1-christophe.jaillet@wanadoo.fr>
+References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+ <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net> <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
+ <CACRpkda4E2NwNw29J7x5gehtqn_m3M_Z2dHpc7xRgvb0b-p22A@mail.gmail.com> <1be37673-db0e-f09d-68c8-f929be4019ab@physik.fu-berlin.de>
+In-Reply-To: <1be37673-db0e-f09d-68c8-f929be4019ab@physik.fu-berlin.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 14 Jan 2021 10:48:26 +0100
+Message-ID: <CAMuHMdVmZyEz_NVjqtJUrrsjq=mCsa6on+O6hK3ztisNvxQkjw@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Gerhard Pircher <gerhard_pircher@gmx.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 09:47:57AM +0100, Christophe JAILLET wrote:
-> The wrappers in include/linux/pci-dma-compat.h should go away.
-> 
-> The patch has been generated with the coccinelle script below and has been
-> hand modified to replace GFP_ with a correct flag.
-> It has been compile tested.
-> 
-> When memory is allocated in 'mlxsw_pci_queue_init()' and
-> 'mlxsw_pci_fw_area_init()' GFP_KERNEL can be used because both functions
-> are already using this flag and no lock is acquired.
-> 
-> When memory is allocated in 'mlxsw_pci_mbox_alloc()' GFP_KERNEL can be used
-> because it is only called from the probe function and no lock is acquired
-> in the between.
-> The call chain is:
->   --> mlxsw_pci_probe()
->     --> mlxsw_pci_cmd_init()
->       --> mlxsw_pci_mbox_alloc()
-> 
-> While at it, also replace the 'dma_set_mask/dma_set_coherent_mask' sequence
-> by a less verbose 'dma_set_mask_and_coherent() call.
+Hi Adrian,
 
-[...]
+On Thu, Jan 14, 2021 at 10:42 AM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> Oh, and if anyone else is interested in helping with the SH port, I'm happy to send
+> them a free LANDISK or NextVoD SuperH device - the latter has a 450 MHz ST-40
+> CPU and 256 MB RAM.
 
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Wasn't ST-40 support removed in 2007[1]?
+However, that didn't stop people from submitting ST-40 fixes to the core
+SH code three years later[2] ;-)
 
-For net-next:
+[1] f96691872439ab20 ("sh: Kill off the remaining ST40 cruft.")
+[2] a086536858ad0eb5 ("sh: Ensure ST40-300 BogoMIPS value is consistent")
 
-Tested-by: Ido Schimmel <idosch@nvidia.com>
+Gr{oetje,eeting}s,
 
-Thanks
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
