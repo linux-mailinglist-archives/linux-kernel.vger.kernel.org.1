@@ -2,146 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738E92F5B48
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 064732F5B55
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727214AbhANH16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 02:27:58 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:55826 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726806AbhANH15 (ORCPT
+        id S1727285AbhANHax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 02:30:53 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:11382 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727237AbhANHau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 02:27:57 -0500
-Received: by mail-io1-f69.google.com with SMTP id j25so6931479iog.22
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 23:27:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=YzeP38Whzabl2SILmCDC2he+feFF6GbC3cI7SHBtcxc=;
-        b=nEknkAx4LFVn8uoelF9jv/dMQIBTaR55UM2vTZmRbEb8/nH8wL7EMLttMAjD44CgIm
-         Jpq0cznFsXr+JywrUG7kcUyM0i+DkkhKGoa1+ODJ+qm2v0ZfaQk+ZxCMoJdABxmy34kt
-         n3nhvEewfGcaqUSf+kcBi6j50CDMXmUCEkjZB9tx5ZvURJbsdwLPIOMgHi9jxiIfNylF
-         qYox+YcZAsVUey36kwrZqNIZkuydDPKEhO/WvkK/kkBGcdsljvjL0ObwsN2YggrUizVV
-         U5eqKHGfpA29vokT1ogMgSATt9Wf97MP/dF6bsrYVxx71EsuUKZGUCnf9JfEaL3+uFN9
-         YLkQ==
-X-Gm-Message-State: AOAM5326ZyE+QEvalmLQq0DfSb6xcMVic2Q/X9joSQAxVQsdokHBgvY+
-        LBRxZIcFWSy8VuxFyArAc6kNqvwKpX2Tfx2kwpoxrcmLBG5N
-X-Google-Smtp-Source: ABdhPJzTRwoQlONJjqJAj6alLo1oAepHaGIrbhEWMdEM+dzxy6wUGkTTZZ7uhH7HRbHegYY8oWGClnCnL/+huEnxGdfSOE055dM4
+        Thu, 14 Jan 2021 02:30:50 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DGbXf5ZtBz7VFW;
+        Thu, 14 Jan 2021 15:29:06 +0800 (CST)
+Received: from [10.174.178.140] (10.174.178.140) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 14 Jan 2021 15:30:00 +0800
+Subject: Re: [PATCH 1/2] perf tools: add 'perf irq' to measure the hardware
+ interrupts
+To:     Alexei Budankov <abudankov@huawei.com>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <john.wanghui@huawei.com>
+References: <20210112125558.72989-1-cuibixuan@huawei.com>
+ <20210112125558.72989-2-cuibixuan@huawei.com>
+ <03316fe6-f59b-9911-67e0-2841bb79cac7@huawei.com>
+From:   Bixuan Cui <cuibixuan@huawei.com>
+Message-ID: <79790803-8f2e-7fca-d9d9-9c45363ab96c@huawei.com>
+Date:   Thu, 14 Jan 2021 15:29:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-X-Received: by 2002:a02:cf9a:: with SMTP id w26mr5401177jar.25.1610609236357;
- Wed, 13 Jan 2021 23:27:16 -0800 (PST)
-Date:   Wed, 13 Jan 2021 23:27:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000067b86b05b8d72ff6@google.com>
-Subject: general protection fault in io_uring_setup
-From:   syzbot <syzbot+06b7d55a62acca161485@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <03316fe6-f59b-9911-67e0-2841bb79cac7@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.140]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    65f0d241 Merge tag 'sound-5.11-rc4' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16bbcd98d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ee2266946ed36986
-dashboard link: https://syzkaller.appspot.com/bug?extid=06b7d55a62acca161485
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ef17fb500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1045ef67500000
-
-The issue was bisected to:
-
-commit d9d05217cb6990b9a56e13b56e7a1b71e2551f6c
-Author: Pavel Begunkov <asml.silence@gmail.com>
-Date:   Fri Jan 8 20:57:25 2021 +0000
-
-    io_uring: stop SQPOLL submit on creator's death
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=148ba0cf500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=168ba0cf500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=128ba0cf500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+06b7d55a62acca161485@syzkaller.appspotmail.com
-Fixes: d9d05217cb69 ("io_uring: stop SQPOLL submit on creator's death")
-
-Code: e8 cc ac 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 3b 0a fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffc6a96c958 EFLAGS: 00000206 ORIG_RAX: 00000000000001a9
-RAX: ffffffffffffffda RBX: 0000000020000200 RCX: 0000000000441889
-RDX: 0000000020ffd000 RSI: 0000000020000200 RDI: 0000000000003040
-RBP: 000000000000d8dd R08: 0000000000000001 R09: 0000000020ffd000
-R10: 0000000000000000 R11: 0000000000000206 R12: 0000000020ffd000
-R13: 0000000020ffb000 R14: 0000000000000000 R15: 0000000000000000
-general protection fault, probably for non-canonical address 0xdffffc0000000022: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000110-0x0000000000000117]
-CPU: 0 PID: 8444 Comm: syz-executor770 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_ring_set_wakeup_flag fs/io_uring.c:6929 [inline]
-RIP: 0010:io_disable_sqo_submit fs/io_uring.c:8891 [inline]
-RIP: 0010:io_uring_create fs/io_uring.c:9711 [inline]
-RIP: 0010:io_uring_setup fs/io_uring.c:9739 [inline]
-RIP: 0010:__do_sys_io_uring_setup fs/io_uring.c:9745 [inline]
-RIP: 0010:__se_sys_io_uring_setup+0x2abb/0x37b0 fs/io_uring.c:9742
-Code: c0 00 00 00 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 c5 31 de ff 41 be 14 01 00 00 4c 03 33 4c 89 f0 48 c1 e8 03 <42> 8a 04 28 84 c0 0f 85 46 06 00 00 41 80 0e 01 48 8b 7c 24 30 e8
-RSP: 0018:ffffc90000edfca0 EFLAGS: 00010007
-RAX: 0000000000000022 RBX: ffff888021fe50c0 RCX: 0000000000000001
-RDX: dffffc0000000000 RSI: 0000000000000004 RDI: ffffc90000edfb80
-RBP: ffffc90000edff38 R08: dffffc0000000000 R09: 0000000000000003
-R10: fffff520001dbf71 R11: 0000000000000004 R12: 0000000000000001
-R13: dffffc0000000000 R14: 0000000000000114 R15: 00000000fffffff4
-FS:  0000000000975940(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000204 CR3: 00000000222d6000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x441889
-Code: e8 cc ac 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 3b 0a fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffc6a96c958 EFLAGS: 00000206 ORIG_RAX: 00000000000001a9
-RAX: ffffffffffffffda RBX: 0000000020000200 RCX: 0000000000441889
-RDX: 0000000020ffd000 RSI: 0000000020000200 RDI: 0000000000003040
-RBP: 000000000000d8dd R08: 0000000000000001 R09: 0000000020ffd000
-R10: 0000000000000000 R11: 0000000000000206 R12: 0000000020ffd000
-R13: 0000000020ffb000 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace d873293344bf9303 ]---
-RIP: 0010:io_ring_set_wakeup_flag fs/io_uring.c:6929 [inline]
-RIP: 0010:io_disable_sqo_submit fs/io_uring.c:8891 [inline]
-RIP: 0010:io_uring_create fs/io_uring.c:9711 [inline]
-RIP: 0010:io_uring_setup fs/io_uring.c:9739 [inline]
-RIP: 0010:__do_sys_io_uring_setup fs/io_uring.c:9745 [inline]
-RIP: 0010:__se_sys_io_uring_setup+0x2abb/0x37b0 fs/io_uring.c:9742
-Code: c0 00 00 00 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 c5 31 de ff 41 be 14 01 00 00 4c 03 33 4c 89 f0 48 c1 e8 03 <42> 8a 04 28 84 c0 0f 85 46 06 00 00 41 80 0e 01 48 8b 7c 24 30 e8
-RSP: 0018:ffffc90000edfca0 EFLAGS: 00010007
-RAX: 0000000000000022 RBX: ffff888021fe50c0 RCX: 0000000000000001
-RDX: dffffc0000000000 RSI: 0000000000000004 RDI: ffffc90000edfb80
-RBP: ffffc90000edff38 R08: dffffc0000000000 R09: 0000000000000003
-R10: fffff520001dbf71 R11: 0000000000000004 R12: 0000000000000001
-R13: dffffc0000000000 R14: 0000000000000114 R15: 00000000fffffff4
-FS:  0000000000975940(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000204 CR3: 00000000222d6000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 2021/1/13 3:50, Alexei Budankov wrote:
+> Hi Bixuan,
+> 
+> On 12.01.2021 15:55, Bixuan Cui wrote:
+>> Add 'perf irq' to trace/measure the hardware interrupts.
+>>
+>> Now three functions are provided:
+>>   1. 'perf irq record <command>' to record the irq handler events.
+>>   2. 'perf irq script' to see a detailed trace of the workload that
+>>    was recorded.
+>>   3. 'perf irq timeconsume' to calculate the time consumed by each
+>>    hardware interrupt processing function.
+>>
+>> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+> Thanks for the patches. There is still something that could be improved.
+> 
+>> ---
+>>  tools/perf/Build         |   1 +
+>>  tools/perf/builtin-irq.c | 288 +++++++++++++++++++++++++++++++++++++++
+>>  tools/perf/builtin.h     |   1 +
+>>  tools/perf/perf.c        |   1 +
+>>  4 files changed, 291 insertions(+)
+>>  create mode 100644 tools/perf/builtin-irq.c
+>>
+> <SNIP>
+> 
+>> +
+>> +static int __cmd_record(int argc, const char **argv)
+>> +{
+>> +	unsigned int rec_argc, i, j;
+>> +	const char **rec_argv;
+>> +	const char * const record_args[] = {
+>> +		"record",
+>> +		"-a",
+> I see it works also like this:
+> 
+> sudo perf record -p PID -c 1 -e irq:irq_handler_entry,irq:irq_handler_exit
+> sudo perf record -R -c 1 -e irq:irq_handler_entry,irq:irq_handler_exit -- find /
+> 
+> This -a option jointly with -p option could be made configurable from
+> the command line for perf irq mode.
+That's true. We can add a series of commands for 'perf irq',such as record, script and report.
+So I kept the 'perf irq record'.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> 
+>> +		"-R",
+>> +		"-m", "1024",
+> Do you see data losses with default buffer size of 512KB
+> when capturing trace in your specific use case?
+> 
+> If not then this -m could be avoided or made configurable
+> if you still need it.
+Thank you for your advice, I will delete it.
