@@ -2,84 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB90B2F5D35
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAAF12F5D3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728086AbhANJXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:23:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727784AbhANJXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:23:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EDE723A05;
-        Thu, 14 Jan 2021 09:22:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610616153;
-        bh=rl/OZbF6JUQS9sIGmcSDh6QItwMe/RtTMl+EH3aVz6M=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=MZ3JFxZdid5QjCO73uxBdmV0E3WZ9pomx5Xd3Fop7TGiuyNvNi7y4ppH0EKygAy/n
-         VkoHP9SWwF2DVnR3vTB0h9ouVbYPpFUHkE5umMcPk9PEKG3zHFoQPP06uAMhI6xCR9
-         Jn5x9kLJiI/Tnx5cETNHjLIKk/nl6ESfb/8L2V0Mm7fVbCoZxzMmrcVTgujZ+nrg4A
-         8VnAZS72WR1FsllNHR/uTJDFMu0kmCKsdAcdL0DXIJTM/Yo5eIX4c6ackED8O1kM8L
-         Fwi65Nq1c4m7YHDuh4UACHrf6hJcUaXCI3HU3yaSuhPKXgaE+sTPuQsLXQVPGu7erE
-         E9Hqt9wXzNjQQ==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Cc:     gregkh@linuxfoundation.org, michal.simek@xilinx.com, b-liu@ti.com,
-        hminas@synopsys.com, jbi.octave@gmail.com,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Subject: Re: [PATCH] drivers/usb/gadget/udc: Assign boolean values to a bool
- variable
-In-Reply-To: <1610615002-66235-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-References: <1610615002-66235-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Date:   Thu, 14 Jan 2021 11:22:25 +0200
-Message-ID: <878s8v3mb2.fsf@kernel.org>
+        id S1728162AbhANJYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:24:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43267 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726374AbhANJYn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 04:24:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610616196;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OEsWq5QL48O8qaE7/imzssejhlq+Va2mSt6WB4e+5Ck=;
+        b=eU5RKKdkHgAYSRdh72v7AweJ+NAeSddzRY05ZPBrrY9Mtatmc3Oe2lC/c/PLg0iSIxvyN3
+        d0ppwZT+W8GvA3R30k1FZqoMuPxWfHI94OJmSBa2yjkiVNEHXb/Es1FylBxx86ZwX36q/J
+        rTnWXkulSvL6UHHZjJOh3UnFUp/NfZU=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-7-NCLJ8uXDP8urhxccP-hw4w-1; Thu, 14 Jan 2021 04:23:14 -0500
+X-MC-Unique: NCLJ8uXDP8urhxccP-hw4w-1
+Received: by mail-pg1-f199.google.com with SMTP id l2so3372855pgi.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 01:23:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OEsWq5QL48O8qaE7/imzssejhlq+Va2mSt6WB4e+5Ck=;
+        b=UuiKN9SSTbyNF6hZJ0hHXq9R+FhXl0ykyMID+JtYftnGdsRlJED0ptn0v0t1B7PITI
+         vuqVVd2Xk8tHV32KPjEMeisZAsTcCviv8PQyzpU/ukPCUyXRebfxaYNs0IkAFgIy5Mr0
+         Bb2wXsAvO6lj0P9sJQRvC3ew6fNjzLTdxiFpnt6fO2/V7+7G3HFrsuJn91SP13n1UpqW
+         wDxOJMQZRp2g/FhcSmHihJYooT6YN7ZbSbfPrplg8cGdQ6YAfKCHtzmhaRaUcCTKFA4W
+         hVBYuJrIGNkqoA0AR/FK3cG/qNpvFF0dmATTKxHa54uP91RYtlGXNkIr0JSxvHYqwUzl
+         lqIQ==
+X-Gm-Message-State: AOAM531JN0Fuc/nSc873ff+A3Ib1M+f3W2Npp77adGTnZLAR2B/F/hsM
+        +S288ps+ATaZztThsXudldH9ythlyp06v/FsQfdXdklfcXVDCRNqA/GkzAsS3/EVYYkVtEN2c5P
+        UL0BJqhSP8v7gqn8Zf2BwcuV963LatFUYW44/kqKD
+X-Received: by 2002:a17:902:8487:b029:dc:20bc:2812 with SMTP id c7-20020a1709028487b02900dc20bc2812mr6792184plo.66.1610616193581;
+        Thu, 14 Jan 2021 01:23:13 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy/LLjQIR4gNqTyKg6e2SkY5X3uI+i4g6i29bINK92pruthJqJ6A7y9+necGTTIiZ38o68Qo6k76m/eEALRacs=
+X-Received: by 2002:a17:902:8487:b029:dc:20bc:2812 with SMTP id
+ c7-20020a1709028487b02900dc20bc2812mr6792170plo.66.1610616193324; Thu, 14 Jan
+ 2021 01:23:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+References: <X//jjawwbm8FxbQU@google.com>
+In-Reply-To: <X//jjawwbm8FxbQU@google.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Thu, 14 Jan 2021 10:23:02 +0100
+Message-ID: <CAO-hwJK5QxxX26hFiVfQr2EfnwdZSEB2paCsZBbX58iPxJvfww@mail.gmail.com>
+Subject: Re: [PATCH] HID: hid-input: avoid splitting keyboard, system and
+ consumer controls
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        "Sean O'Brien" <seobrien@chromium.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi Dmitry,
 
-Jiapeng Zhong <abaci-bugfix@linux.alibaba.com> writes:
-
-> Fix the following coccicheck warnings:
+On Thu, Jan 14, 2021 at 7:24 AM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
 >
-> ./drivers/usb/gadget/udc/udc-xilinx.c:1957:2-18: WARNING:
-> Assignment of 0/1 to bool variable.
+> A typical USB keyboard usually splits its keys into several reports:
 >
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+> - one for the basic alphanumeric keys, modifier keys, F<n> keys, six pack
+>   keys and keypad. This report's application is normally listed as
+>   GenericDesktop.Keyboard
+> - a GenericDesktop.SystemControl report for the system control keys, such
+>   as power and sleep
+> - Consumer.ConsumerControl report for multimedia (forward, rewind,
+>   play/pause, mute, etc) and other extended keys.
+> - additional output, vendor specific, and feature reports
+>
+> Splitting each report into a separate input device is wasteful and even
+> hurts userspace as it makes it harder to determine the true capabilities
+> (set of available keys) of a keyboard, so let's adjust application
+> matching to merge system control and consumer control reports with
+> keyboard report, if one has already been processed.
+>
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
+>  drivers/hid/hid-input.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+> index f797659cb9d9..df45d8d07dc2 100644
+> --- a/drivers/hid/hid-input.c
+> +++ b/drivers/hid/hid-input.c
+> @@ -1851,6 +1851,16 @@ static struct hid_input *hidinput_match_application(struct hid_report *report)
+>         list_for_each_entry(hidinput, &hid->inputs, list) {
+>                 if (hidinput->application == report->application)
+>                         return hidinput;
+> +
+> +               /*
+> +                * Keep SystemControl and ConsumerControl applications together
+> +                * with the main keyboard, if present.
+> +                */
+> +               if ((report->application == HID_GD_SYSTEM_CONTROL ||
+> +                    report->application == HID_CP_CONSUMER_CONTROL) &&
+> +                   hidinput->application == HID_GD_KEYBOARD) {
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
+I am not fundamentally against the patch, but I think that if the
+device exposes first a HID_CP_CONSUMER_CONTROL and then a
+HID_GD_KEYBOARD we will end up with 2 different input nodes. We likely
+need to "convert" HID_GD_SYSTEM_CONTROL and HID_CP_CONSUMER_CONTROL to
+HID_GD_KEYBOARD when creating the hidinput.
 
-=2D-=20
-balbi
+Cheers,
+Benjamin
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+> +                       return hidinput;
+> +               }
+>         }
+>
+>         return NULL;
+> --
+> 2.30.0.284.gd98b1dd5eaa7-goog
+>
+>
+> --
+> Dmitry
+>
 
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmAADVERHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQazOw/+KYL6BI1GvbgwRPbFX2l90ThFvh1AGucw
-TKbWohDlwgO5GnxjJU7ztN4VU4DlG29MpAkEBehredbmg6nfnCTcsSNG4rT1aQ9S
-rAL2BXirGjDzVvd75kDVd614pLYm84V2Xqt4Q/SgMfKMGVz+b5XYmkCjoro7toDe
-RGESq8JlHlAHXPC963vmd7YIpuvHf+K6CVweqPv8xm25C/iCTgE8wb0opTKc6/6W
-ko1Lu6ghooCXTIs6HFsdoCg785IRF39noYlx+CS/C4BDvseZvinJMcSTkuzctNTC
-SOZo9rOBDvcMvVJ3qQbu1t8mlzwFvfmog0D6BuQunEWJ2AYiic9sv/KwTbVmmuRJ
-d2wLSXVQPclkmYh3ZCrsZxdZesNUS4LnOhwnr5llqUkERhe33YRRkbVMOQywzJ6+
-DQP7R9tczw2TG++05Q9oYBVStI2rY3IjpElVM5AdIpfSQaxhLvl7N2xGT9tAfKGG
-lqj1vrZvXdnfV16ChJ6s4ThkNt1cxqFXEcK4Hm5cbwcKq/EEiRHdkN9FEL7Ls0Jo
-7tO3RFeBS/gYOiDZqtJ32KPn9EMrsOlLWe4gh/LKWb303iMPGt3q8cNUfnIRUJcC
-wRcJ87ufSyEk9QuVoGKbO/nMwKgk04+utlOueG/5lv50gtMltScLKo9tTQFjt6QP
-3pgCqJ0oV/Q=
-=seLA
------END PGP SIGNATURE-----
---=-=-=--
