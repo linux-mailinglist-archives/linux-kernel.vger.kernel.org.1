@@ -2,101 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A602F5FED
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E312F5FF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:31:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbhANL2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 06:28:35 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:19469 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725955AbhANL2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 06:28:35 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DGhr15N7dz9v19B;
-        Thu, 14 Jan 2021 12:27:45 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id I8b1oyYPNNXT; Thu, 14 Jan 2021 12:27:45 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DGhr142PFz9v18k;
-        Thu, 14 Jan 2021 12:27:45 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DE07F8B801;
-        Thu, 14 Jan 2021 12:27:46 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id eJEDNHFrKG5m; Thu, 14 Jan 2021 12:27:46 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7C4D68B800;
-        Thu, 14 Jan 2021 12:27:46 +0100 (CET)
-Subject: Re: SPI not working on 5.10 and 5.11, bisected to 766c6b63aa04 ("spi:
- fix client driver breakages when using GPIO descriptors")
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>
-References: <dc5d8d35-31aa-b36d-72b0-17c8a7c13061@csgroup.eu>
- <20210113123345.GD4641@sirena.org.uk>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <9400d900-f315-815f-a358-16ed4963da6c@csgroup.eu>
-Date:   Thu, 14 Jan 2021 12:27:42 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1728411AbhANL3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 06:29:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728046AbhANL3n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 06:29:43 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079E5C061757;
+        Thu, 14 Jan 2021 03:29:03 -0800 (PST)
+Date:   Thu, 14 Jan 2021 11:28:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610623739;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=J42GWu77OoELUcKUDm+C0nApYT5d3OxDVxhszQ9cGEw=;
+        b=CCCwyjd1yhewnaDtd4mOrWpONgHJ0OgzjsMFCKvYDbj8v03x+o736JXwm7VLNvChcgtRvq
+        Sk4Fq3hpU3iCIsf659eZCpJQ5kFbHT5M7xLtYPMU2fM7f6/N5u+N3EqR08QrTRUXhp+jMx
+        2hABle73JBYKzue7F/LuKpY8OrzFhsMFB0uHSpIuBEXWqDu9ExwZ/zFsaN44CTAqilMK3T
+        Zbwth8f8GnuRG55nWeu6V46yZnX88LGn2E7mJuJIdTy1oyLlB8LO2BT8frWf9KntfQyNfy
+        WcAFee9Fx3Yyxt/DqZerme059OEA1S7FjS/eAzcpL6P2VFE82udq1JeIwTQ66Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610623739;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=J42GWu77OoELUcKUDm+C0nApYT5d3OxDVxhszQ9cGEw=;
+        b=NblovBaXlgvADGDwzqGduFdxIH9geUZxpUxWnXshiQQOwV4I2NVhc+R613aViROCTYmae3
+        eHrvFvixpJlThNAg==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] locking/selftests: Add local_lock inversion tests
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-In-Reply-To: <20210113123345.GD4641@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Message-ID: <161062373868.414.17492998364217228677.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the locking/core branch of tip:
 
+Commit-ID:     7e923e6a3ceb877497dd9ee70d71fa33b94f332b
+Gitweb:        https://git.kernel.org/tip/7e923e6a3ceb877497dd9ee70d71fa33b94f332b
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Wed, 09 Dec 2020 16:06:06 +01:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Thu, 14 Jan 2021 11:20:18 +01:00
 
-Le 13/01/2021 à 13:33, Mark Brown a écrit :
-> On Wed, Jan 13, 2021 at 09:49:12AM +0100, Christophe Leroy wrote:
-> 
->> With commit 766c6b63aa04 ("spi: fix client driver breakages when using GPIO
->> descriptors") reverted, it is back to work:
-> 
-> ...
-> 
->> What shall I do ?
-> 
-> I would guess that there's an error with the chip select polarity
-> configuration on your system that just happened to work previously, I'd
-> suggest fixing this in the board configuration to bring it in line with
-> everything else.
-> 
+locking/selftests: Add local_lock inversion tests
 
-Not that easy.
+Test the local_lock_t inversion scenarios.
 
-Today I have in the DTS the CS GPIOs declared as ACTIVE_LOW.
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ lib/locking-selftest.c | 97 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 97 insertions(+)
 
-If I declare them as ACTIVE_HIGH instead, then I also have to set spi-cs-high property, otherwise 
-of_gpio_flags_quirks() is not happy and forces the GPIO ACTIVE LOW.
-
-When I set spi-cs-high property, it sets the SPI_CS_HIGH bit in spi->mode.
-
-In fsl_spi_chipselect(), we have
-
-	bool pol = spi->mode & SPI_CS_HIGH
-
-Then
-	pdata->cs_control(spi, pol);
-
-So changing the board config is compensated by the above, and at the end it still doesn't work.
-
-
-Whereas reverting the above mentionned commit sets back SPI_CS_HIGH into spi->mode without changing 
-the ACTIVE level of the GPIO, resulting in the correct polarity.
-
-
-So, I'm a bit lost, where is the problem exactly ?
-
-Thanks
-Christophe
+diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+index 3306f43..2d85aba 100644
+--- a/lib/locking-selftest.c
++++ b/lib/locking-selftest.c
+@@ -24,6 +24,7 @@
+ #include <linux/debug_locks.h>
+ #include <linux/irqflags.h>
+ #include <linux/rtmutex.h>
++#include <linux/local_lock.h>
+ 
+ /*
+  * Change this to 1 if you want to see the failure printouts:
+@@ -51,6 +52,7 @@ __setup("debug_locks_verbose=", setup_debug_locks_verbose);
+ #define LOCKTYPE_RWSEM	0x8
+ #define LOCKTYPE_WW	0x10
+ #define LOCKTYPE_RTMUTEX 0x20
++#define LOCKTYPE_LL	0x40
+ 
+ static struct ww_acquire_ctx t, t2;
+ static struct ww_mutex o, o2, o3;
+@@ -136,6 +138,8 @@ static DEFINE_RT_MUTEX(rtmutex_Z2);
+ 
+ #endif
+ 
++static local_lock_t local_A = INIT_LOCAL_LOCK(local_A);
++
+ /*
+  * non-inlined runtime initializers, to let separate locks share
+  * the same lock-class:
+@@ -1314,6 +1318,7 @@ GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_soft_wlock)
+ # define I_MUTEX(x)	lockdep_reset_lock(&mutex_##x.dep_map)
+ # define I_RWSEM(x)	lockdep_reset_lock(&rwsem_##x.dep_map)
+ # define I_WW(x)	lockdep_reset_lock(&x.dep_map)
++# define I_LOCAL_LOCK(x) lockdep_reset_lock(&local_##x.dep_map)
+ #ifdef CONFIG_RT_MUTEXES
+ # define I_RTMUTEX(x)	lockdep_reset_lock(&rtmutex_##x.dep_map)
+ #endif
+@@ -1324,6 +1329,7 @@ GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_soft_wlock)
+ # define I_MUTEX(x)
+ # define I_RWSEM(x)
+ # define I_WW(x)
++# define I_LOCAL_LOCK(x)
+ #endif
+ 
+ #ifndef I_RTMUTEX
+@@ -1364,11 +1370,15 @@ static void reset_locks(void)
+ 	I1(X1); I1(X2); I1(Y1); I1(Y2); I1(Z1); I1(Z2);
+ 	I_WW(t); I_WW(t2); I_WW(o.base); I_WW(o2.base); I_WW(o3.base);
+ 	I_RAW_SPINLOCK(A); I_RAW_SPINLOCK(B);
++	I_LOCAL_LOCK(A);
++
+ 	lockdep_reset();
++
+ 	I2(A); I2(B); I2(C); I2(D);
+ 	init_shared_classes();
+ 	raw_spin_lock_init(&raw_lock_A);
+ 	raw_spin_lock_init(&raw_lock_B);
++	local_lock_init(&local_A);
+ 
+ 	ww_mutex_init(&o, &ww_lockdep); ww_mutex_init(&o2, &ww_lockdep); ww_mutex_init(&o3, &ww_lockdep);
+ 	memset(&t, 0, sizeof(t)); memset(&t2, 0, sizeof(t2));
+@@ -2649,6 +2659,91 @@ static void wait_context_tests(void)
+ 	pr_cont("\n");
+ }
+ 
++static void local_lock_2(void)
++{
++	local_lock_acquire(&local_A);	/* IRQ-ON */
++	local_lock_release(&local_A);
++
++	HARDIRQ_ENTER();
++	spin_lock(&lock_A);		/* IN-IRQ */
++	spin_unlock(&lock_A);
++	HARDIRQ_EXIT()
++
++	HARDIRQ_DISABLE();
++	spin_lock(&lock_A);
++	local_lock_acquire(&local_A);	/* IN-IRQ <-> IRQ-ON cycle, false */
++	local_lock_release(&local_A);
++	spin_unlock(&lock_A);
++	HARDIRQ_ENABLE();
++}
++
++static void local_lock_3A(void)
++{
++	local_lock_acquire(&local_A);	/* IRQ-ON */
++	spin_lock(&lock_B);		/* IRQ-ON */
++	spin_unlock(&lock_B);
++	local_lock_release(&local_A);
++
++	HARDIRQ_ENTER();
++	spin_lock(&lock_A);		/* IN-IRQ */
++	spin_unlock(&lock_A);
++	HARDIRQ_EXIT()
++
++	HARDIRQ_DISABLE();
++	spin_lock(&lock_A);
++	local_lock_acquire(&local_A);	/* IN-IRQ <-> IRQ-ON cycle only if we count local_lock(), false */
++	local_lock_release(&local_A);
++	spin_unlock(&lock_A);
++	HARDIRQ_ENABLE();
++}
++
++static void local_lock_3B(void)
++{
++	local_lock_acquire(&local_A);	/* IRQ-ON */
++	spin_lock(&lock_B);		/* IRQ-ON */
++	spin_unlock(&lock_B);
++	local_lock_release(&local_A);
++
++	HARDIRQ_ENTER();
++	spin_lock(&lock_A);		/* IN-IRQ */
++	spin_unlock(&lock_A);
++	HARDIRQ_EXIT()
++
++	HARDIRQ_DISABLE();
++	spin_lock(&lock_A);
++	local_lock_acquire(&local_A);	/* IN-IRQ <-> IRQ-ON cycle only if we count local_lock(), false */
++	local_lock_release(&local_A);
++	spin_unlock(&lock_A);
++	HARDIRQ_ENABLE();
++
++	HARDIRQ_DISABLE();
++	spin_lock(&lock_A);
++	spin_lock(&lock_B);		/* IN-IRQ <-> IRQ-ON cycle, true */
++	spin_unlock(&lock_B);
++	spin_unlock(&lock_A);
++	HARDIRQ_DISABLE();
++
++}
++
++static void local_lock_tests(void)
++{
++	printk("  --------------------------------------------------------------------------\n");
++	printk("  | local_lock tests |\n");
++	printk("  ---------------------\n");
++
++	print_testname("local_lock inversion  2");
++	dotest(local_lock_2, SUCCESS, LOCKTYPE_LL);
++	pr_cont("\n");
++
++	print_testname("local_lock inversion 3A");
++	dotest(local_lock_3A, SUCCESS, LOCKTYPE_LL);
++	pr_cont("\n");
++
++	print_testname("local_lock inversion 3B");
++	dotest(local_lock_3B, FAILURE, LOCKTYPE_LL);
++	pr_cont("\n");
++}
++
+ void locking_selftest(void)
+ {
+ 	/*
+@@ -2775,6 +2870,8 @@ void locking_selftest(void)
+ 	if (IS_ENABLED(CONFIG_PROVE_RAW_LOCK_NESTING))
+ 		wait_context_tests();
+ 
++	local_lock_tests();
++
+ 	if (unexpected_testcase_failures) {
+ 		printk("-----------------------------------------------------------------\n");
+ 		debug_locks = 0;
