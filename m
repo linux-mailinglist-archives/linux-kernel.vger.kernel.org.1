@@ -2,134 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE95E2F607F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 916D62F6083
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727249AbhANLsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 06:48:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726150AbhANLsY (ORCPT
+        id S1728360AbhANLtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 06:49:21 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:52095 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725982AbhANLtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 06:48:24 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53161C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 03:47:44 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id 2so3226732qtt.10
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 03:47:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P7zlk5pCQoka+PfAC4PASpL+4y3UpC4S531KyERmJBw=;
-        b=ZE8P/VZ6aVPsnkQTxgeSqK8AyML44NMzDst0EI1a5EwxVjEG3WX6b3T9rqmCYMQYWS
-         xYw/cL8ivjt7sGzbDt2MACulsAVKMMxkgZlYmgW6A8xYBjEoTUy+h87qnd/Shm0y60VW
-         WsyQr3WfvGYI8svK+Mg0TNHtOLNELvq1s1B4ZzbbGOz4as+8ZtNM9pwYYKNb/tVPrTWZ
-         PkmrendVFVTg5TVPBPgecFxchLJcdglXxECYFHSeIl0ZV/DrGiSLeeDHuuTMtDNYdemJ
-         E0+lRkPrhwGw1yph75b5pbbMV7Jw91GPqn1x8osuxymPHYrz+jED0UzLyT8xjUKd9blf
-         4/FA==
+        Thu, 14 Jan 2021 06:49:20 -0500
+Received: from mail-wm1-f72.google.com ([209.85.128.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <andrea.righi@canonical.com>)
+        id 1l017G-0002L9-Ig
+        for linux-kernel@vger.kernel.org; Thu, 14 Jan 2021 11:48:38 +0000
+Received: by mail-wm1-f72.google.com with SMTP id f187so1818772wme.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 03:48:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P7zlk5pCQoka+PfAC4PASpL+4y3UpC4S531KyERmJBw=;
-        b=fq+YrFMyh4XIaxFC6oK7zk+qTgFSC2DsoeiDRE1hCtGufNQbOJCfFS3G7D4d6KpS7I
-         YzEDx4ge2V3jdk4eKjlrORLbbZeLYWAuolCBxKOiqUY+nWEG4/PHlN+M0gDzhwBiSZnt
-         Ju1vRNVEkCzP90cwKTAcHWORcHorCuXYM9EWxvytwhYEiAAPcvibDOlQwDCTjs2REvL2
-         EM38AxhBLiW92kO6qYKot1qGvtWq9YD+gZcxRqsX4qrFS1hbPP714r6pmbodjhG1dka9
-         p82SvoULqsBfyQ0YtzuxiPi9H3+FXk7rpWWzUpYAms8BxV7REgIFx/TQr/jQ+4AHSrmS
-         koYg==
-X-Gm-Message-State: AOAM533EOf/nTTUfJuBBvAL+Cn67yn0xrs1WaxWk1peS5qiPSJF5AhC6
-        rAxwdFwtw0mztZWjBgFlUNtsVy3WRr19ZbV/jsu7HQ==
-X-Google-Smtp-Source: ABdhPJyUZR/R9jo3eRmNWwSSH6XpKIaGwPinnUBCthLw532XWAQMNHChL/xAHmSwe61+e6/qnUOCuijSjqeuyDIOh50=
-X-Received: by 2002:ac8:4e1c:: with SMTP id c28mr6662207qtw.67.1610624863289;
- Thu, 14 Jan 2021 03:47:43 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=FLLYZm9rUD9tfKVOhVNJx/ygk7Jnkfk1bz9+k9DmnUA=;
+        b=Gg8mrUXRCeQ9Jol/2rPF+ihaV0TnBmgW7QuR/rnSze4c4POGU18I+V0x2bfpRT3U/g
+         AThuc2XWMHtaSHDG9rgTyT+iIt2OFomgPE3SLtfFyOzzCOZ5ptA/xbv/V7gNyhq1ZnBa
+         z6AaKzU6hoypujsuJTrbP0dvp208L8TYDEvkCIXE8ZKBdggZrS1gkxgj/T0ak9rgsWTf
+         0C98MqFmc3BfMLSVCe0xXp2UFNgci+qJnce0B2WRkadQ6ckkRjk1PX6PLbcnwAoe8kFY
+         54DNCUJl+TXR428vpYmpR46p6Jf0YsF5v/IryPWb1CefVK03UMJqImUyN9jLjt8k/4Z/
+         8SxQ==
+X-Gm-Message-State: AOAM5311G/aVIgXM0BPSDdjUilK/RAEDODC+qw+LKTKqS6bHFXYDhXdk
+        TzzCO1VAa/XP1S4a4Dwr80EeCSgOPF3fLFawRJbMvN1A4g1Q3qPo/wbMme5miaVWRn6yzDwlJLm
+        Z7zNqUK5mfNrbjaQlu5MSaNx59Q6cs/t1bPlzPeMigA==
+X-Received: by 2002:adf:9525:: with SMTP id 34mr7685307wrs.389.1610624917165;
+        Thu, 14 Jan 2021 03:48:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyzp2JOX8Z2GwBB8GZbRAaBN/k8RAxAFC3QRW1azqx4Nio8+CVTzC/Ktlf+ZHqsSh9LW15MBw==
+X-Received: by 2002:adf:9525:: with SMTP id 34mr7685277wrs.389.1610624916833;
+        Thu, 14 Jan 2021 03:48:36 -0800 (PST)
+Received: from localhost (host-95-235-157-85.retail.telecomitalia.it. [95.235.157.85])
+        by smtp.gmail.com with ESMTPSA id r82sm8348002wma.18.2021.01.14.03.48.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 03:48:36 -0800 (PST)
+Date:   Thu, 14 Jan 2021 12:48:35 +0100
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/entry: build thunk_$(BITS) only if CONFIG_PREEMPTION=y
+Message-ID: <YAAvk0UQelq0Ae7+@xps-13-7390>
 MIME-Version: 1.0
-References: <20210113133523.39205-1-alobakin@pm.me> <20210113133635.39402-1-alobakin@pm.me>
- <20210113133635.39402-2-alobakin@pm.me> <CANn89i+azKGzpt4LrVVVCQdf82TLOC=dwUjA4NK3ziQHSKvtFw@mail.gmail.com>
- <20210114114046.7272-1-alobakin@pm.me>
-In-Reply-To: <20210114114046.7272-1-alobakin@pm.me>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 14 Jan 2021 12:47:31 +0100
-Message-ID: <CACT4Y+adbmvvbzFnzRZzmpdTipg7ye53uR6OrnU9_K030sfzzA@mail.gmail.com>
-Subject: Re: [PATCH v2 net-next 2/3] skbuff: (re)use NAPI skb cache on
- allocation path
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 12:41 PM Alexander Lobakin <alobakin@pm.me> wrote:
->
-> From: Eric Dumazet <edumazet@google.com>
-> Date: Wed, 13 Jan 2021 15:36:05 +0100
->
-> > On Wed, Jan 13, 2021 at 2:37 PM Alexander Lobakin <alobakin@pm.me> wrote:
-> >>
-> >> Instead of calling kmem_cache_alloc() every time when building a NAPI
-> >> skb, (re)use skbuff_heads from napi_alloc_cache.skb_cache. Previously
-> >> this cache was only used for bulk-freeing skbuff_heads consumed via
-> >> napi_consume_skb() or __kfree_skb_defer().
-> >>
-> >> Typical path is:
-> >>  - skb is queued for freeing from driver or stack, its skbuff_head
-> >>    goes into the cache instead of immediate freeing;
-> >>  - driver or stack requests NAPI skb allocation, an skbuff_head is
-> >>    taken from the cache instead of allocation.
-> >>
-> >> Corner cases:
-> >>  - if it's empty on skb allocation, bulk-allocate the first half;
-> >>  - if it's full on skb consuming, bulk-wipe the second half.
-> >>
-> >> Also try to balance its size after completing network softirqs
-> >> (__kfree_skb_flush()).
-> >
-> > I do not see the point of doing this rebalance (especially if we do not change
-> > its name describing its purpose more accurately).
-> >
-> > For moderate load, we will have a reduced bulk size (typically one or two).
-> > Number of skbs in the cache is in [0, 64[ , there is really no risk of
-> > letting skbs there for a long period of time.
-> > (32 * sizeof(sk_buff) = 8192)
-> > I would personally get rid of this function completely.
->
-> When I had a cache of 128 entries, I had worse results without this
-> function. But seems like I forgot to retest when I switched to the
-> original size of 64.
-> I also thought about removing this function entirely, will test.
->
-> > Also it seems you missed my KASAN support request ?
-> > I guess this is a matter of using kasan_unpoison_range(), we can ask for help.
->
-> I saw your request, but don't see a reason for doing this.
-> We are not caching already freed skbuff_heads. They don't get
-> kmem_cache_freed before getting into local cache. KASAN poisons
-> them no earlier than at kmem_cache_free() (or did I miss someting?).
-> heads being cached just get rid of all references and at the moment
-> of dropping to the cache they are pretty the same as if they were
-> allocated.
+With CONFIG_PREEMPTION disabled, arch/x86/entry/thunk_64.o is just an
+empty object file.
 
-KASAN should not report false positives in this case.
-But I think Eric meant preventing false negatives. If we kmalloc 17
-bytes, KASAN will detect out-of-bounds accesses beyond these 17 bytes.
-But we put that data into 128-byte blocks, KASAN will miss
-out-of-bounds accesses beyond 17 bytes up to 128 bytes.
-The same holds for "logical" use-after-frees when object is free, but
-not freed into slab.
+With the newer binutils (tested with 2.35.90.20210113-1ubuntu1) the GNU
+assembler doesn't generate a symbol table for empty object files and
+objtool fails with the following error when a valid symbol table cannot
+be found:
 
-An important custom cache should use annotations like
-kasan_poison_object_data/kasan_unpoison_range.
+  arch/x86/entry/thunk_64.o: warning: objtool: missing symbol table
+
+To prevent this from happening, build thunk_$(BITS).o only if
+CONFIG_PREEMPTION is enabled.
+
+BugLink: https://bugs.launchpad.net/bugs/1911359
+Fixes: 320100a5ffe5 ("x86/entry: Remove the TRACE_IRQS cruft")
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+---
+ arch/x86/entry/Makefile   | 3 ++-
+ arch/x86/entry/thunk_32.S | 2 --
+ arch/x86/entry/thunk_64.S | 4 ----
+ 3 files changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/arch/x86/entry/Makefile b/arch/x86/entry/Makefile
+index 08bf95dbc911..83c98dae74a6 100644
+--- a/arch/x86/entry/Makefile
++++ b/arch/x86/entry/Makefile
+@@ -21,12 +21,13 @@ CFLAGS_syscall_64.o		+= $(call cc-option,-Wno-override-init,)
+ CFLAGS_syscall_32.o		+= $(call cc-option,-Wno-override-init,)
+ CFLAGS_syscall_x32.o		+= $(call cc-option,-Wno-override-init,)
+ 
+-obj-y				:= entry_$(BITS).o thunk_$(BITS).o syscall_$(BITS).o
++obj-y				:= entry_$(BITS).o syscall_$(BITS).o
+ obj-y				+= common.o
+ 
+ obj-y				+= vdso/
+ obj-y				+= vsyscall/
+ 
++obj-$(CONFIG_PREEMPTION)	+= thunk_$(BITS).o
+ obj-$(CONFIG_IA32_EMULATION)	+= entry_64_compat.o syscall_32.o
+ obj-$(CONFIG_X86_X32_ABI)	+= syscall_x32.o
+ 
+diff --git a/arch/x86/entry/thunk_32.S b/arch/x86/entry/thunk_32.S
+index f1f96d4d8cd6..5997ec0b4b17 100644
+--- a/arch/x86/entry/thunk_32.S
++++ b/arch/x86/entry/thunk_32.S
+@@ -29,10 +29,8 @@ SYM_CODE_START_NOALIGN(\name)
+ SYM_CODE_END(\name)
+ 	.endm
+ 
+-#ifdef CONFIG_PREEMPTION
+ 	THUNK preempt_schedule_thunk, preempt_schedule
+ 	THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
+ 	EXPORT_SYMBOL(preempt_schedule_thunk)
+ 	EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
+-#endif
+ 
+diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
+index ccd32877a3c4..c7cf79be7231 100644
+--- a/arch/x86/entry/thunk_64.S
++++ b/arch/x86/entry/thunk_64.S
+@@ -36,14 +36,11 @@ SYM_FUNC_END(\name)
+ 	_ASM_NOKPROBE(\name)
+ 	.endm
+ 
+-#ifdef CONFIG_PREEMPTION
+ 	THUNK preempt_schedule_thunk, preempt_schedule
+ 	THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
+ 	EXPORT_SYMBOL(preempt_schedule_thunk)
+ 	EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
+-#endif
+ 
+-#ifdef CONFIG_PREEMPTION
+ SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
+ 	popq %r11
+ 	popq %r10
+@@ -58,4 +55,3 @@ SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
+ 	ret
+ 	_ASM_NOKPROBE(.L_restore)
+ SYM_CODE_END(.L_restore)
+-#endif
+-- 
+2.29.2
+
