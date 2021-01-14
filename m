@@ -2,95 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A35E82F5E7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFC52F5E8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728403AbhANKQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 05:16:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726789AbhANKQl (ORCPT
+        id S1728549AbhANKSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 05:18:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45842 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726283AbhANKSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 05:16:41 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F72C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:16:01 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 38ECF1F4598A
-Subject: Re: [PATCH v6 2/2] ASoC: cros_ec_codec: Reset I2S RX when probing
-To:     Yu-Hsuan Hsu <yuhsuan@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        alsa-devel@alsa-project.org
-References: <20210114065401.3498725-1-yuhsuan@chromium.org>
- <20210114065401.3498725-2-yuhsuan@chromium.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <f440cf94-066d-ed90-213c-08ca17025cf5@collabora.com>
-Date:   Thu, 14 Jan 2021 11:15:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 14 Jan 2021 05:18:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610619397;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IaIUvaMv2k9j6w56+5o78W95fqxpiStrTQ2Nmkvuj38=;
+        b=FMtLrxd3/18QRvfQO4SCsw46Eozxo51kzL3KmCDCzx9/v9emhPOBQhFBcS1zVZSZc+mssD
+        T/uMjgTlqAm0bV7I0TeY8RiRlpGvLQ6W8c7hojjmNkPlDSpaHzx6IDaaZ2zy6qukYMvH/t
+        VfnrzLdjg1H/oOwkxMXUC9vJ1tc2cMA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-156-5iw1vXHqMKWXyi8cUWxbLg-1; Thu, 14 Jan 2021 05:16:33 -0500
+X-MC-Unique: 5iw1vXHqMKWXyi8cUWxbLg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB979107ACFB;
+        Thu, 14 Jan 2021 10:16:31 +0000 (UTC)
+Received: from [10.36.114.165] (ovpn-114-165.ams2.redhat.com [10.36.114.165])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 05D4019C47;
+        Thu, 14 Jan 2021 10:16:28 +0000 (UTC)
+Subject: Re: [PATCH 8/9] KVM: arm64: vgic-v3: Expose GICR_TYPER.Last for
+ userspace
+To:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, maz@kernel.org,
+        drjones@redhat.com
+Cc:     james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
+References: <20201212185010.26579-1-eric.auger@redhat.com>
+ <20201212185010.26579-9-eric.auger@redhat.com>
+ <45a364ec-eac6-a04b-9654-e97970186839@arm.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <7078b0a5-fb18-5e65-953a-8a55009aa2be@redhat.com>
+Date:   Thu, 14 Jan 2021 11:16:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210114065401.3498725-2-yuhsuan@chromium.org>
+In-Reply-To: <45a364ec-eac6-a04b-9654-e97970186839@arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yu-Hsuan,
+Hi Alexandru,
 
-On 14/1/21 7:54, Yu-Hsuan Hsu wrote:
-> It is not guaranteed that I2S RX is disabled when the kernel booting.
-> For example, if the kernel crashes while it is enabled, it will keep
-> enabled until the next time EC reboots. Reset I2S RX when probing to
-> fix this issue.
+On 1/12/21 6:02 PM, Alexandru Elisei wrote:
+> Hi Eric,
 > 
-> Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-> ---
-> Returns the error code when it fails to reset.
+> On 12/12/20 6:50 PM, Eric Auger wrote:
+>> Commit 23bde34771f1 ("KVM: arm64: vgic-v3: Drop the
+>> reporting of GICR_TYPER.Last for userspace") temporarily fixed
+>> a bug identified when attempting to access the GICR_TYPER
+>> register before the redistributor region setting but dropped
+>> the support of the LAST bit. This patch restores its
+>> support (if the redistributor region was set) while keeping the
+>> code safe.
 > 
->  sound/soc/codecs/cros_ec_codec.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+> I suppose the reason for emulating GICR_TYPER.Last is for architecture compliance,
+> right? I think that should be in the commit message.
+OK added this in the commit msg.
 > 
-> diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-> index f33a2a9654e7..40e437aa1d55 100644
-> --- a/sound/soc/codecs/cros_ec_codec.c
-> +++ b/sound/soc/codecs/cros_ec_codec.c
-> @@ -1011,6 +1011,18 @@ static int cros_ec_codec_platform_probe(struct platform_device *pdev)
->  	}
->  	priv->ec_capabilities = r.capabilities;
->  
-> +	/* Reset EC codec i2s rx. */
-> +	p.cmd = EC_CODEC_I2S_RX_RESET;
-> +	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
-> +				   (uint8_t *)&p, sizeof(p), NULL, 0);
-> +	if (ret == -ENOPROTOOPT) {
-> +		dev_info(dev,
-> +			 "Command not found. Please update the EC firmware.\n");
-
-Nitpicking a bit. I'd add which command is not found to give more information to
-the user that gets into that path. Command not found is too generic for me.
-
-But,
-
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-
-> +	} else if (ret) {
-> +		dev_err(dev, "failed to EC_CODEC_I2S_RESET: %d\n", ret);
-> +		return ret;
-> +	}
-> +
->  	platform_set_drvdata(pdev, priv);
->  
->  	ret = devm_snd_soc_register_component(dev, &i2s_rx_component_driver,
+>>
+>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+>> ---
+>>  arch/arm64/kvm/vgic/vgic-mmio-v3.c | 7 ++++++-
+>>  include/kvm/arm_vgic.h             | 1 +
+>>  2 files changed, 7 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+>> index 581f0f490000..2f9ef6058f6e 100644
+>> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+>> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+>> @@ -277,6 +277,8 @@ static unsigned long vgic_uaccess_read_v3r_typer(struct kvm_vcpu *vcpu,
+>>  						 gpa_t addr, unsigned int len)
+>>  {
+>>  	unsigned long mpidr = kvm_vcpu_get_mpidr_aff(vcpu);
+>> +	struct vgic_cpu *vgic_cpu = &vcpu->arch.vgic_cpu;
+>> +	struct vgic_redist_region *rdreg = vgic_cpu->rdreg;
+>>  	int target_vcpu_id = vcpu->vcpu_id;
+>>  	u64 value;
+>>  
+>> @@ -286,7 +288,9 @@ static unsigned long vgic_uaccess_read_v3r_typer(struct kvm_vcpu *vcpu,
+>>  	if (vgic_has_its(vcpu->kvm))
+>>  		value |= GICR_TYPER_PLPIS;
+>>  
+>> -	/* reporting of the Last bit is not supported for userspace */
+>> +	if (rdreg && (vgic_cpu->rdreg_index == (rdreg->free_index - 1)))
+>> +		value |= GICR_TYPER_LAST;
+>> +
+>>  	return extract_bytes(value, addr & 7, len);
+>>  }
+>>  
+>> @@ -714,6 +718,7 @@ int vgic_register_redist_iodev(struct kvm_vcpu *vcpu)
+>>  		return -EINVAL;
+>>  
+>>  	vgic_cpu->rdreg = rdreg;
+>> +	vgic_cpu->rdreg_index = rdreg->free_index;
 > 
+> What happens if the next redistributor region we register has the base address
+> adjacent to this one?
+> 
+> I'm really not familiar with the code, but is it not possible to create two
+> Redistributor regions (via
+> KVM_DEV_ARM_VGIC_GRP_ADDR(KVM_VGIC_V3_ADDR_TYPE_REDIST)) where the second
+> Redistributor region start address is immediately after the last Redistributor in
+> the preceding region?
+KVM_VGIC_V3_ADDR_TYPE_REDIST only allows to create a single rdist
+region. Only KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION allows to register
+several of them.
+
+with KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, it is possible to register
+adjacent rdist regions. vgic_v3_rdist_free_slot() previously returned
+the 1st rdist region where enough space remains for inserting the new
+reg. We put the rdist at the free index there.
+
+But maybe I misunderstood your question?
+
+Thanks
+
+Eric
+> 
+> Thanks,
+> Alex
+>>  
+>>  	rd_base = rdreg->base + rdreg->free_index * KVM_VGIC_V3_REDIST_SIZE;
+>>  
+>> diff --git a/include/kvm/arm_vgic.h b/include/kvm/arm_vgic.h
+>> index a8d8fdcd3723..596c069263a7 100644
+>> --- a/include/kvm/arm_vgic.h
+>> +++ b/include/kvm/arm_vgic.h
+>> @@ -322,6 +322,7 @@ struct vgic_cpu {
+>>  	 */
+>>  	struct vgic_io_device	rd_iodev;
+>>  	struct vgic_redist_region *rdreg;
+>> +	u32 rdreg_index;
+>>  
+>>  	/* Contains the attributes and gpa of the LPI pending tables. */
+>>  	u64 pendbaser;
+> 
+
