@@ -2,111 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634CD2F5C62
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0465D2F5C8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727641AbhANI21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 03:28:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726897AbhANI20 (ORCPT
+        id S1727825AbhANIiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 03:38:24 -0500
+Received: from mail-m965.mail.126.com ([123.126.96.5]:43298 "EHLO
+        mail-m965.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727326AbhANIiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 03:28:26 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F58C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 00:27:40 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id v3so2527073plz.13
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 00:27:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qlp0Ya7zu9BzVSD7Qg7ivfoy7HFP536rfCtMI+DYOvY=;
-        b=ohx/RaUXQ2dLL0l8qHkeqrFLndxV4612E0nM1uVgQK4CIvl1DR4jMu82wUJDogG44z
-         kKHkmw1oHJYkpXU83dHC4T+af09UOSB4n7G+Nib+TRzNRRLKsjp2OvwNrxCHanubyh+U
-         0QK/P59+DVU1yJVY1duwo3hmq1YoygDec7QmfcAUkFAKNMMNGJ3Xw/85J0568tMxXfiE
-         rZLZNiQK7Z25wFU/j8kFkV41Ft508PfeBCtTw+VXTgjYX90WOtDjP1kYJNh3MizI37BV
-         vATZDYOC6qqzQNNqI7Ym5kDQtaaKiYGZoa6eHnaO98f8qXMhpIBBTHO7BAGPP2auzs2N
-         1k4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qlp0Ya7zu9BzVSD7Qg7ivfoy7HFP536rfCtMI+DYOvY=;
-        b=gB/IVn2msRU/9KRMPQmzb2frJHyt/0PsRHr5sf8cYfnXkNwlxDeAZym1pLVUJzhINp
-         jH9J7YLPJRZodUqSk0brPt4WC+AQP1Ugi1AkIWKd4UscVAH3zq7wb0pPMlefNZGEfp8m
-         KCdo4v4VwlF3o72qYlwlsC68EmZJo6ZGinTyzGsUymp6lYGO/UCfbVwZpy+EiJbBSJSu
-         KX/GDAXKfBrQWt8LXlQkSsE/SmqWaXKhy5qNn4T3CYL2hiJXhEthsEVx9bU+1wS5Ca0V
-         Th1p8QZPUn2DrjLuSiVqkU9+gSnZPOggVa81gTAOO+bT7yqfIt2zdBLQx5QBrxZ0TZg+
-         vLcA==
-X-Gm-Message-State: AOAM531ZXXoTyBVUUbMMbQDqDyMfbqXSWasL8Qzt8fRS3Nz7mHDsKLzz
-        xT0pFrVdX+LEvB+OzivrW7lpLQ==
-X-Google-Smtp-Source: ABdhPJzAlRrFZ6HBqyY7D5bN2DQri3LbmVWP1G6yVxzSCc53B+OeI1jYBH7Aaubf+PudSy+VDfaTkg==
-X-Received: by 2002:a17:902:7793:b029:da:d44d:1968 with SMTP id o19-20020a1709027793b02900dad44d1968mr6696098pll.47.1610612860074;
-        Thu, 14 Jan 2021 00:27:40 -0800 (PST)
-Received: from localhost.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
-        by smtp.googlemail.com with ESMTPSA id x23sm4591418pgk.14.2021.01.14.00.27.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 00:27:39 -0800 (PST)
-From:   Chris Chiu <chiu@endlessos.org>
-To:     perex@perex.cz, tiwai@suse.com, kailang@realtek.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>
-Subject: [PATCH] ALSA: hda/realtek - Limit int mic boost on Acer Aspire E5-575T
-Date:   Thu, 14 Jan 2021 16:27:28 +0800
-Message-Id: <20210114082728.74729-1-chiu@endlessos.org>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 14 Jan 2021 03:38:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=NgBPPWMMzqmbqXH2qx
+        haBHh/fidZtGOdFI9NeFL9S0Q=; b=LQKYFKncfElZm4gJCWeXZsg2qdQxTp4kDO
+        xliYuIqImj7k3c5nnjgNekIrWC8HwVG++p5nVihz/BSzwY9qE5rMqSJP2hIbYcDS
+        MCY5aOG+tTJ5ekS7DDu+2aE7NMRFNKJiEhV8o7MLhwarh8kLFqzsoUWApvv5oaKL
+        JoYB+ErHo=
+Received: from localhost.localdomain (unknown [119.39.248.55])
+        by smtp10 (Coremail) with SMTP id NuRpCgAXHSES1_9fOGwyjQ--.4590S2;
+        Thu, 14 Jan 2021 13:30:59 +0800 (CST)
+From:   wangyingjie55@126.com
+To:     davem@davemloft.net, kuba@kernel.org, vraman@marvell.com,
+        skardach@marvell.com
+Cc:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
+        jerinj@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yingjie Wang <wangyingjie55@126.com>
+Subject: [PATCH v3] octeontx2-af: Fix missing check bugs in rvu_cgx.c
+Date:   Wed, 13 Jan 2021 21:30:40 -0800
+Message-Id: <1610602240-23404-1-git-send-email-wangyingjie55@126.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: NuRpCgAXHSES1_9fOGwyjQ--.4590S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Aw13Cr4xJryDtFW7XF4xWFg_yoW8XF17p3
+        y0yryfZrs2ka1xCw4DJa18J3yjya1Dtaykt34Uu3s5uFn5uF13XF4DKa15K3WUCrWrC3y7
+        tF1jkws3uF1DJFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jcuciUUUUU=
+X-Originating-IP: [119.39.248.55]
+X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbi7hMap1tC5mKhSwAAs3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Acer Apire E5-575T laptop with codec ALC255 has a terrible
-background noise comes from internal mic capture. And the jack
-sensing dose not work for headset like some other Acer laptops.
+From: Yingjie Wang <wangyingjie55@126.com>
 
-This patch limits the internal mic boost on top of the existing
-ALC255_FIXUP_ACER_MIC_NO_PRESENCE quirk for Acer Aspire E5-575T.
+In rvu_mbox_handler_cgx_mac_addr_get()
+and rvu_mbox_handler_cgx_mac_addr_set(),
+the msg is expected only from PFs that are mapped to CGX LMACs.
+It should be checked before mapping,
+so we add the is_cgx_config_permitted() in the functions.
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
+Fixes: 96be2e0da85e ("octeontx2-af: Support for MAC address filters in CGX")
+Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
 ---
- sound/pci/hda/patch_realtek.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3c1d2a3fb1a4..60eb8383a704 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6371,6 +6371,7 @@ enum {
- 	ALC256_FIXUP_HP_HEADSET_MIC,
- 	ALC236_FIXUP_DELL_AIO_HEADSET_MIC,
- 	ALC282_FIXUP_ACER_DISABLE_LINEOUT,
-+	ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST,
- };
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+index d298b9357177..6c6b411e78fd 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+@@ -469,6 +469,9 @@ int rvu_mbox_handler_cgx_mac_addr_set(struct rvu *rvu,
+ 	int pf = rvu_get_pf(req->hdr.pcifunc);
+ 	u8 cgx_id, lmac_id;
  
- static const struct hda_fixup alc269_fixups[] = {
-@@ -7808,6 +7809,12 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MODE
- 	},
-+	[ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc269_fixup_limit_int_mic_boost,
-+		.chained = true,
-+		.chain_id = ALC255_FIXUP_ACER_MIC_NO_PRESENCE,
-+	},
- };
++	if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
++		return -EPERM;
++
+ 	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
  
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -7826,6 +7833,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x102b, "Acer Aspire C24-860", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x1065, "Acer Aspire C20-820", ALC269VC_FIXUP_ACER_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x106d, "Acer Cloudbook 14", ALC283_FIXUP_CHROME_BOOK),
-+	SND_PCI_QUIRK(0x1025, 0x1094, "Acer Aspire E5-575T", ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x1025, 0x1099, "Acer Aspire E5-523G", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x110e, "Acer Aspire ES1-432", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x1166, "Acer Veriton N4640G", ALC269_FIXUP_LIFEBOOK),
+ 	cgx_lmac_addr_set(cgx_id, lmac_id, req->mac_addr);
+@@ -485,6 +488,9 @@ int rvu_mbox_handler_cgx_mac_addr_get(struct rvu *rvu,
+ 	int rc = 0, i;
+ 	u64 cfg;
+ 
++	if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
++		return -EPERM;
++
+ 	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
+ 
+ 	rsp->hdr.rc = rc;
 -- 
-2.20.1
+2.7.4
 
