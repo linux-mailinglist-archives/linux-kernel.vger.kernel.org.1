@@ -2,128 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F232F565E
+	by mail.lfdr.de (Postfix) with ESMTP id BF19D2F565F
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728216AbhANBqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:46:38 -0500
-Received: from foss.arm.com ([217.140.110.172]:42570 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727012AbhANA55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 19:57:57 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1DB191FB;
-        Wed, 13 Jan 2021 16:45:58 -0800 (PST)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A3073F719;
-        Wed, 13 Jan 2021 16:45:55 -0800 (PST)
-Date:   Thu, 14 Jan 2021 00:45:12 +0000
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.xyz>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v2 02/21] dt-bindings: pinctrl: Add Allwinner H616
- compatible strings
-Message-ID: <20210114004512.6cc7bd10@slackpad.fritz.box>
-In-Reply-To: <20201214093728.ehd2362jzclbxwp5@gilmour>
-References: <20201211011934.6171-1-andre.przywara@arm.com>
-        <20201211011934.6171-3-andre.przywara@arm.com>
-        <20201214093728.ehd2362jzclbxwp5@gilmour>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S1728213AbhANBqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:46:53 -0500
+Received: from mail-pf1-f200.google.com ([209.85.210.200]:47397 "EHLO
+        mail-pf1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726801AbhANA4d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 19:56:33 -0500
+Received: by mail-pf1-f200.google.com with SMTP id x21so2304164pff.14
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:56:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=jlFSyFsy03pYVrVR3CcVIDgLJx11fHk/YYGYXYtjZt0=;
+        b=HzIut8zBtPMmewYpB1K2CxerFM6pcdlcmIqCSlpP5iZqQdBpNwDT77NlIJQGYqXrpu
+         cflH5JS2cja+leLL+AKN9tiFADJm9atqLiiU9BFrEbqhT1XawaThN75j4ivfKTsiD76a
+         aLCKPQsbNKP9HN/qt1BkwDVBBevxv17QjS9XorOMB1qIXb/jKrKocnPf6t7FImNmZ/Po
+         IbjsayfBPJWSyX/MA89U8MIH22n54RZq1aWb8H+VFFzOdngThefEJFMTpxKAdGTk6ymO
+         hoPqnuVUqqJleHahuj4bjaORVGxuji2+D9lAj2zHTO1OkSTCsynDQXEGaB91KYcfGR2T
+         ZbLw==
+X-Gm-Message-State: AOAM532LRNeorFm5nj/CgwQu9qq38lQa8foXEnnwJCvOphNadlLmqAmj
+        xsy5Ab8jwG5urucWRaQ0Wrppc1SXDi5ts93uCll0uDMdlK/v
+X-Google-Smtp-Source: ABdhPJy1vepLrK0QdOGj3+JxVkfzwde1SE5dgoHnfXS4WCuUzSYJSlWakQM+9vHXU3TywlsRkPAATkcWJ2PnQeeUhpeBjEvjEIeS
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a6b:784d:: with SMTP id h13mr3621423iop.26.1610585226627;
+ Wed, 13 Jan 2021 16:47:06 -0800 (PST)
+Date:   Wed, 13 Jan 2021 16:47:06 -0800
+In-Reply-To: <20210113114136.4b23f753@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000504e4005b8d198c1@google.com>
+Subject: Re: kernel BUG at net/core/dev.c:NUM!
+From:   syzbot <syzbot+2393580080a2da190f04@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        edumazet@google.com, f.fainelli@gmail.com, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, roopa@cumulusnetworks.com,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 10:37:28 +0100
-Maxime Ripard <maxime@cerno.tech> wrote:
+Hello,
 
-> On Fri, Dec 11, 2020 at 01:19:15AM +0000, Andre Przywara wrote:
-> > A new SoC, a new compatible string.
-> > Also we were too miserly with just allowing seven interrupt banks.
-> > 
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > ---
-> >  .../pinctrl/allwinner,sun4i-a10-pinctrl.yaml   | 18
-> > ++++++++++++++++-- 1 file changed, 16 insertions(+), 2 deletions(-)
-> > 
-> > diff --git
-> > a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
-> > b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
-> > index 5240487dfe50..292b05d9ed08 100644 ---
-> > a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
-> > +++
-> > b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
-> > @@ -53,6 +53,8 @@ properties:
-> >        - allwinner,sun50i-h5-pinctrl
-> >        - allwinner,sun50i-h6-pinctrl
-> >        - allwinner,sun50i-h6-r-pinctrl
-> > +      - allwinner,sun50i-h616-pinctrl
-> > +      - allwinner,sun50i-h616-r-pinctrl
-> >        - allwinner,suniv-f1c100s-pinctrl
-> >        - nextthing,gr8-pinctrl
-> >  
-> > @@ -61,7 +63,7 @@ properties:
-> >  
-> >    interrupts:
-> >      minItems: 1
-> > -    maxItems: 7
-> > +    maxItems: 8
-> >      description:
-> >        One interrupt per external interrupt bank supported on the
-> >        controller, sorted by bank number ascending order.
-> > @@ -91,7 +93,7 @@ properties:
-> >        bank found in the controller
-> >      $ref: /schemas/types.yaml#/definitions/uint32-array
-> >      minItems: 1
-> > -    maxItems: 5
-> > +    maxItems: 8
-> >  
-> >  patternProperties:
-> >    # It's pretty scary, but the basic idea is that:
-> > @@ -145,6 +147,18 @@ allOf:
-> >    # boards are defining it at the moment so it would generate a
-> > lot of # warnings.
-> >  
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          enum:
-> > +            - allwinner,sun50i-h616-pinctrl
-> > +
-> > +    then:
-> > +      properties:
-> > +        interrupts:
-> > +          minItems: 8
-> > +          maxItems: 8
-> > +  
-> 
-> You don't need to have both if they are equals, and in this particular
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Mmh, but all the other compatibles have both equal, so what would be
-the recommended way to describe this? Just minItems? I don't find a
-good explanation at the moment how to handle an explicit number, other
-than by enumerating the items explicitly.
+Reported-and-tested-by: syzbot+2393580080a2da190f04@syzkaller.appspotmail.com
 
-> case we already check that the maximum is 8 so there's no need to
-> repeat that check here.
+Tested on:
 
-Are you referring to the overall "maxItems: 8" above, in the 2nd hunk?
-While this will become redundant, this is apparently prone to changes
-(as only "7" would be redundant at the moment), so I would rather not
-rely on a global limit.
+commit:         3a30363e net: sit: unregister_netdevice on newlink's error..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/kuba/linux.git sit-fix
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bacfc914704718d3
+dashboard link: https://syzkaller.appspot.com/bug?extid=2393580080a2da190f04
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Cheers,
-Andre.
+Note: testing is done by a robot and is best-effort only.
