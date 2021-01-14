@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB79A2F6B6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F1E2F6B6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730390AbhANTnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:43:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43643 "EHLO
+        id S1730400AbhANTnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:43:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28912 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730028AbhANTnN (ORCPT
+        by vger.kernel.org with ESMTP id S1730028AbhANTnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:43:13 -0500
+        Thu, 14 Jan 2021 14:43:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610653307;
+        s=mimecast20190719; t=1610653312;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=s6vqkn0ZUJ9Zbk8UI1tuyg4i1alvjbstrHik+n/M+0g=;
-        b=c3LoyxAIHU08szECpK+a3VQAVR3oHCzoiksJwQE8qz9GpW+59cd2vRvoS+2zB6Nv7Vw2R0
-        +Nwo8X1Ot1GgBNKyrdQMIKfVRdUkp7DyW74ZgLn0CKw74jxbpPHpem2nLkK+sbu7lxD/Ge
-        ftYLiy24I8xnZ1z45Lshml6jAghtksI=
+        bh=XuaSh1jiZTg/VIGM2iLx4bVb5sX8DSpIZVRiX7a3MCE=;
+        b=GMxxUE0NbKs61gWT7oQQTRCh9vsYzE2YrKR10vKceOU8wBYuHYtVYpr7abQh98VH10X3mj
+        O4XMRk1om90JIEUAk7sWHfgdt2PSpBEpBu24Plaf5E/IRXKYS3FtbSRu9MY4OLTdsjkNQ3
+        KelP8Rhxk8dAZWjlSVAfmuNg1I/PtxI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-347-AePGvTXrNM-NdhZLQk4Tyw-1; Thu, 14 Jan 2021 14:41:45 -0500
-X-MC-Unique: AePGvTXrNM-NdhZLQk4Tyw-1
+ us-mta-591-9yU8OmYrMLGLW2FQ2KQlBQ-1; Thu, 14 Jan 2021 14:41:48 -0500
+X-MC-Unique: 9yU8OmYrMLGLW2FQ2KQlBQ-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04CA6800050;
-        Thu, 14 Jan 2021 19:41:43 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9191D190B2A0;
+        Thu, 14 Jan 2021 19:41:46 +0000 (UTC)
 Received: from treble.redhat.com (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7BC37100AE40;
-        Thu, 14 Jan 2021 19:41:37 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3097010023B4;
+        Thu, 14 Jan 2021 19:41:44 +0000 (UTC)
 From:   Josh Poimboeuf <jpoimboe@redhat.com>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -45,10 +45,10 @@ Cc:     linux-kernel@vger.kernel.org,
         clang-built-linux@googlegroups.com,
         Miroslav Benes <mbenes@suse.cz>,
         "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-Subject: [PATCH 18/21] x86/acpi: Support objtool validation in wakeup_64.S
-Date:   Thu, 14 Jan 2021 13:40:14 -0600
-Message-Id: <afe0721950599de1214c7d4cc52f0c897f969e9c.1610652862.git.jpoimboe@redhat.com>
+        Pavel Machek <pavel@ucw.cz>
+Subject: [PATCH 19/21] x86/power: Convert indirect jumps to retpolines
+Date:   Thu, 14 Jan 2021 13:40:15 -0600
+Message-Id: <354da72ff95aed0cea40b410f6db882bfb0877d5.1610652862.git.jpoimboe@redhat.com>
 In-Reply-To: <cover.1610652862.git.jpoimboe@redhat.com>
 References: <cover.1610652862.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
@@ -58,51 +58,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The OBJECT_FILES_NON_STANDARD annotation is used to tell objtool to
-ignore a file.  File-level ignores won't work when validating vmlinux.o.
-
-Instead, tell objtool to ignore do_suspend_lowlevel() directly with the
-STACK_FRAME_NON_STANDARD annotation.
+It's kernel policy to not have (unannotated) indirect jumps because of
+Spectre v2.  These are probably harmless, but better safe than sorry.
+Convert them to retpolines.
 
 Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Len Brown <len.brown@intel.com>
 Cc: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
- arch/x86/kernel/acpi/Makefile    | 1 -
- arch/x86/kernel/acpi/wakeup_64.S | 2 ++
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/power/hibernate_asm_64.S | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/acpi/Makefile b/arch/x86/kernel/acpi/Makefile
-index f1bb57b0e41e..cf340d85946a 100644
---- a/arch/x86/kernel/acpi/Makefile
-+++ b/arch/x86/kernel/acpi/Makefile
-@@ -1,5 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
--OBJECT_FILES_NON_STANDARD_wakeup_$(BITS).o := y
+diff --git a/arch/x86/power/hibernate_asm_64.S b/arch/x86/power/hibernate_asm_64.S
+index 7918b8415f13..24d971911c9d 100644
+--- a/arch/x86/power/hibernate_asm_64.S
++++ b/arch/x86/power/hibernate_asm_64.S
+@@ -21,6 +21,7 @@
+ #include <asm/asm-offsets.h>
+ #include <asm/processor-flags.h>
+ #include <asm/frame.h>
++#include <asm/nospec-branch.h>
  
- obj-$(CONFIG_ACPI)		+= boot.o
- obj-$(CONFIG_ACPI_SLEEP)	+= sleep.o wakeup_$(BITS).o
-diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
-index 0b371580e620..cc6846b35cab 100644
---- a/arch/x86/kernel/acpi/wakeup_64.S
-+++ b/arch/x86/kernel/acpi/wakeup_64.S
-@@ -1,6 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
- .text
- #include <linux/linkage.h>
-+#include <linux/objtool.h>
- #include <asm/segment.h>
- #include <asm/pgtable_types.h>
- #include <asm/page_types.h>
-@@ -127,6 +128,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
- 	FRAME_END
- 	jmp	restore_processor_state
- SYM_FUNC_END(do_suspend_lowlevel)
-+STACK_FRAME_NON_STANDARD do_suspend_lowlevel
+ SYM_FUNC_START(swsusp_arch_suspend)
+ 	movq	$saved_context, %rax
+@@ -66,7 +67,7 @@ SYM_CODE_START(restore_image)
  
- .data
- saved_rbp:		.quad	0
+ 	/* jump to relocated restore code */
+ 	movq	relocated_restore_code(%rip), %rcx
+-	jmpq	*%rcx
++	JMP_NOSPEC rcx
+ SYM_CODE_END(restore_image)
+ 
+ 	/* code below has been relocated to a safe page */
+@@ -97,7 +98,7 @@ SYM_CODE_START(core_restore_code)
+ 
+ .Ldone:
+ 	/* jump to the restore_registers address from the image header */
+-	jmpq	*%r8
++	JMP_NOSPEC r8
+ SYM_CODE_END(core_restore_code)
+ 
+ 	 /* code below belongs to the image kernel */
 -- 
 2.29.2
 
