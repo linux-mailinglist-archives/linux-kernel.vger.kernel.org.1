@@ -2,211 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 135F22F6B13
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CC32F6B28
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730033AbhANTgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:36:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46658 "EHLO
+        id S1730058AbhANThQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:37:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbhANTgY (ORCPT
+        with ESMTP id S1727063AbhANThP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:36:24 -0500
-Received: from mx-rz-3.rrze.uni-erlangen.de (mx-rz-3.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB9FC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:35:44 -0800 (PST)
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx-rz-3.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4DGvg13yKMz1ytN;
-        Thu, 14 Jan 2021 20:35:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2013;
-        t=1610652941; bh=de+pBzXAzJwepONbQjP7iqSuI2JkLmJmg7UuVBCtgEI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From:To:CC:
-         Subject;
-        b=CZGo7964rVXfUvV8hBXZdZVMG7OmG9MvjtECoilmjCG1fi874FlOm21MHNFFeAt7Q
-         jdU+qVNxQ7jFMVULiqMvZPtVwRC5cQuUroYdtj7jdOLIpNiqOjS7pqucVPFbkGj35R
-         +q09Y/+r57Fcvw+UolAeOljLhDq8/gd+R9QHZqR65v4JfalaGSXA5j7lRWYq4NavBN
-         1+bMHDxbv1yDRP2zI23rgpIb4dT/GK387GfVtX8QvuEVllgb9sI7+pB0tm5k1IbzFY
-         G1yNhZtI0yuNV1a+5iZ9VjuN+CXwQOBGbTVYQfRBzXquLa53mLKmyMKW+ccmRnA2Jr
-         gzDQkQTB6nkPQ==
-X-Virus-Scanned: amavisd-new at boeck5.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 131.188.11.37
-Received: from faumail.fau.de (smtp-auth.uni-erlangen.de [131.188.11.37])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: U2FsdGVkX195D09qed3669YEWw4lZvkQBCaebwwsxvI=)
-        by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4DGvfz047Kz1yKf;
-        Thu, 14 Jan 2021 20:35:38 +0100 (CET)
-Received: from
- 4XWkPblvWqRm7TCp/1hlK7xrRM4vHXx22i8FjIPxy6I47i8YKhF4HLmQ9lSNsJScVvQ+MNw2lDH4LwJPNIBlrw==
- by faumail.uni-erlangen.de
- with HTTP (HTTP/1.1 POST); Thu, 14 Jan 2021 20:35:38 +0100
-MIME-Version: 1.0
-Date:   Thu, 14 Jan 2021 20:35:38 +0100
-From:   "Hack, Vanessa" <vanessa.hack@fau.de>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: objtool/ORC generation for noreturn functions
-In-Reply-To: <20210113184131.yh4zh4olfkdpydv7@treble>
-References: <daf04159-a458-4f0d-9f29-d8ef5a63fae6@email.android.com>
- <20210113184131.yh4zh4olfkdpydv7@treble>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <126f2c2ccadebcba37864453135d95d7@fau.de>
-X-Sender: vanessa.hack@fau.de
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
+        Thu, 14 Jan 2021 14:37:15 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79515C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:36:35 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id g5so5642654qke.22
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:36:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=R63zbbCAwIca54YwZmiIwYnYLBR+THCEQGhD+FuGdpk=;
+        b=swxZvrs/FyBUYyfMULYTNVyP+KnTw21pr9Aiiqx7Q46Yx/Ut5r2yaF5AVCRuhq/+qf
+         U+GtJUGu288gKpEedjG8+E9MOJsAOKPjfLUhdmkBfAN/AYExLqyFthP1Q6aAzb32CSkc
+         KaMVXz4yb51GNIVqOYZ8ks1UkuhO1eVAc2q8PxT16Gfsk0Cj2SVUVvIUco1fk1j0HbPz
+         caWuq2bW15nwFh/knGbnoPd41H6ZddRXPBpThpo703woe6zwphpuUGiZsNkOlfFwkATT
+         NWh9eYF1LC4Ln5qhMwFeGKmdF5E8Vf2akSKQVJkvUjL4lepD/g3Z05a8XdUM2vZ7qR6M
+         QAqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=R63zbbCAwIca54YwZmiIwYnYLBR+THCEQGhD+FuGdpk=;
+        b=mq1g8RzB2bqDdZQy2NC4zMAlhefTKZpGqBgs96ZIVnK3TS7Yjhdc4v+ucpEvx7xNco
+         sG3yxdNPy/Py45ReHRhHwSHu+tOGDG2aZwv+wnTxCluHbzGGpoSMpd0Ff1HpvoLzkEEE
+         4AdgeIMz8yvPC8/s9xVJrCqs4HawOBtGq2kx71sTt3H6L2YPTcNJgLw9pu4EkXbvl6iC
+         f5NKa+D+69U77TDy/lk+w/gpzySCQb51w6LZd9PjhMBfH3Jr17pIyKimtiaaP76w0guh
+         XtReCeIibBL/K4BUNtLje34GXbzNvI9TxE/r6JiTumLUJpbGUbYfHoUNcNET+OT+oZHK
+         gmhw==
+X-Gm-Message-State: AOAM531R9uwikZaXKkD19rPw44bh90KNIvWzQWMFJhTbX4f3Zuh0olFk
+        EqrPoXcqZ3yt1hOTbPQG+DXlqBlOVfP0nw0Q
+X-Google-Smtp-Source: ABdhPJzTwS7gDhbMJeWMCLyUR7WhVrcIzT1QADDy3zJiUE3fwfmlECttiTh3d1GYrDqZu6WWlM6UTcfC/EjW5ohN
+Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
+ (user=andreyknvl job=sendgmr) by 2002:ad4:4643:: with SMTP id
+ y3mr8625481qvv.3.1610652994549; Thu, 14 Jan 2021 11:36:34 -0800 (PST)
+Date:   Thu, 14 Jan 2021 20:36:16 +0100
+Message-Id: <cover.1610652890.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH v3 00/15] kasan: HW_TAGS tests support and fixes
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>
+Cc:     Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-01-13 19:41, schrieb Josh Poimboeuf:
-> On Wed, Jan 13, 2021 at 11:44:22AM +0100, vanessa.hack@fau.de wrote:
->>    Hi,
->>    I am currently writing my final thesis at university on the topic 
->> of stack
->>    unwinding. My goal is to implement and evaluate stack unwinders for
->>    research operating system ports to x86 32 and 64 bit architectures 
->> and
->>    SPARC V8. 
->>    For the x86 ports I chose ORC as unwinding format due to its 
->> simplicity
->>    and reliability. So far, it works quite well (although I've ran 
->> into some
->>    minor issues with objtool as the research OS is written in C++). 
->>    But now I have some problems with functions that are explicitly 
->> marked as
->>    noreturn with the [[noreturn]] attribute, all following unwinding 
->> steps
->>    are unreliable. I have read in the objtool documentation that such
->>    functions have to be added to the objtool global_noreturn array.
->>    Unfortunately, I do not understand the purpose of that array and 
->> the
->>    intended ORC behaviour for noreturn functions. Are the unwinding 
->> steps
->>    that follow a noreturn intended to be unreliable? 
-> 
-> Hi Vanessa,
-> 
-> Nice thesis!  I'm impressed (and a little surprised) that objtool/ORC 
-> is
-> working in a non-Linux environment.  They were designed to be general
-> purpose, but we've added some Linux-isms to them over the years.
-> Congrats on getting that working.
+This patchset adds support for running KASAN-KUnit tests with the
+hardware tag-based mode and also contains a few fixes.
 
-Hi Josh,
+Changes v2->v3:
+- Don't call kmalloc(0) when generating random size.
+- Use ARRAY_SIZE() in kmem_cache_bulk_alloc() test.
+- Print error message when tests are being ran with kasan.mode=off.
+- Move _RET_IP_ to inline wrappers for kasan annotations.
 
-thank you for your fast and very helpful answer! It actually worked 
-quite well, the biggest problems occured due to C++ name mangling and 
-relative switch jump tables. It is a lot clearer to me now.
+Andrey Konovalov (15):
+  kasan: prefix global functions with kasan_
+  kasan: clarify HW_TAGS impact on TBI
+  kasan: clean up comments in tests
+  kasan: add macros to simplify checking test constraints
+  kasan: add match-all tag tests
+  kasan, arm64: allow using KUnit tests with HW_TAGS mode
+  kasan: rename CONFIG_TEST_KASAN_MODULE
+  kasan: add compiler barriers to KUNIT_EXPECT_KASAN_FAIL
+  kasan: adapt kmalloc_uaf2 test to HW_TAGS mode
+  kasan: fix memory corruption in kasan_bitops_tags test
+  kasan: move _RET_IP_ to inline wrappers
+  kasan: fix bug detection via ksize for HW_TAGS mode
+  kasan: add proper page allocator tests
+  kasan: add a test for kmem_cache_alloc/free_bulk
+  kasan: don't run tests when KASAN is not enabled
 
-> 
-> What compiler is the OS built with?
+ Documentation/dev-tools/kasan.rst  |  24 +-
+ arch/arm64/include/asm/memory.h    |   1 +
+ arch/arm64/include/asm/mte-kasan.h |  12 +
+ arch/arm64/kernel/mte.c            |  12 +
+ arch/arm64/mm/fault.c              |  16 +-
+ include/linux/kasan-checks.h       |   6 +
+ include/linux/kasan.h              |  37 ++-
+ lib/Kconfig.kasan                  |   6 +-
+ lib/Makefile                       |   2 +-
+ lib/test_kasan.c                   | 424 +++++++++++++++++++++--------
+ lib/test_kasan_module.c            |   5 +-
+ mm/kasan/common.c                  |  56 ++--
+ mm/kasan/generic.c                 |  38 +--
+ mm/kasan/kasan.h                   |  69 +++--
+ mm/kasan/quarantine.c              |  22 +-
+ mm/kasan/report.c                  |  15 +-
+ mm/kasan/report_generic.c          |   8 +-
+ mm/kasan/report_hw_tags.c          |   8 +-
+ mm/kasan/report_sw_tags.c          |   8 +-
+ mm/kasan/shadow.c                  |  26 +-
+ mm/kasan/sw_tags.c                 |  20 +-
+ mm/mempool.c                       |   2 +-
+ mm/slab.c                          |   2 +-
+ mm/slab_common.c                   |  16 +-
+ mm/slub.c                          |   4 +-
+ tools/objtool/check.c              |   2 +-
+ 26 files changed, 559 insertions(+), 282 deletions(-)
 
-It has to be built with gcc, but no specific version is required. In my 
-case, I used gcc 8.3.0.
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
-> 
-> As you've found, noreturn functions can be problematic.  But they can 
-> be
-> unwinded through correctly, if handled carefully.
-> 
-> 
-> 1) Objtool impact
-> 
-> Consider the following code pattern, generated by a C compiler:
-> 
-> func_A:
-> 	...
-> 	...
-> 	call some_noreturn_func
-> 
-> func_B:
-> 
-> If some_noreturn_func() were to return, func_A() would fall through to
-> func_B(), resulting in possibly disastrous undefined behavior.  But
-> since some_noreturn_func() doesn't return, that can't happen.  The
-> compiler knows it can't happen because of the noreturn attribute.
-> 
-> But if objtool doesn't know about the noreturn attribute, it assumes 
-> the
-> call can return, and execution can continue after it, resulting in the
-> fallthrough:
-> 
->   warning: objtool: func_A() falls through to next function func_B()
-> 
-> So that's the reason for the global_noreturn array.  It lets objtool
-> know that execution doesn't continue after the call, so objtool can
-> follow the code flow intended by the compiler.
-> 
-> Note that in addition, objtool tries to detect calls to noreturn
-> functions in the same .o file, even if they don't have the noreturn
-> attribute.  This matches GCC behavior, which automatically marks them 
-> as
-> noreturn even if they're missing the annotation.
-> 
-> 
-> 2) ORC impact
-> 
-> Usually, an address on the stack is placed there by a call instruction,
-> which pushes the return address on the stack before jumping to the
-> called function.  The return address is the instruction *after* the 
-> call
-> instruction.  If you use that address to lookup the ORC entry, it will
-> be right most of the time, because the call instruction doesn't change
-> the stack layout, so the next instruction usually has the same stack
-> layout as the call instruction.
-> 
-> However, if the call is to a noreturn function, then the next
-> instruction might not have the same stack layout.  For example, in the
-> above scenario with the call to some_noreturn_func().  After the call,
-> the address placed on the stack will be that of func_B(), because that
-> happens to be the instruction after the call.  But func_B() probably 
-> has
-> a different layout, so passing the address of func_B() to the ORC 
-> lookup
-> will corrupt the unwind.
-> 
-> What you really want to use for the lookup is the address of the call
-> instruction itself.  In the case of ORC you can just subtract one from
-> the address on the stack.
-> 
-> This is described in orc_unwind.c:
-> 
-> 	 * For a call frame (as opposed to a signal frame), state->ip points 
-> to
-> 	 * the instruction after the call.  That instruction's stack layout
-> 	 * could be different from the call instruction's layout, for example
-> 	 * if the call was to a noreturn function.  So get the ORC data for 
-> the
-> 	 * call instruction itself.
-> 	 */
-> 	orc = orc_find(state->signal ? state->ip : state->ip - 1);
-> 
-> Notice there's one edge case where you *don't* subtract one from the
-> address.  That's when the address is placed on the stack for a reason
-> *other* than a call.
-> 
-> That can happen in a "signal" frame, where an interrupt/signal handler
-> places the preempted task's registers on the stack.  In that case the
-> ORC type is UNWIND_HINT_TYPE_REGS and the address is retrieved from
-> regs->sp, which is used as-is (without subtracting one), because there
-> was no call.
-> 
-> 
-> I hope that makes sense.  Let me know if you have any more questions.
-
-Substracting 1 from the instruction pointer made it work :-) Thank you 
-again! The unwinder now seems to figure out reliable and unreliable 
-stack addresses for 'standard' call chains that only consist of regular 
-calls.
-
-> 
-> Also, please let me know when the paper is available to read :-)
-
-Of course, I will send you a link when the thesis is finished.
-
-Regards,
-Vanessa
