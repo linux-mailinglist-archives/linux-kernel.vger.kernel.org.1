@@ -2,194 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB7F2F5640
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 768D82F563E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbhANBox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:44:53 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:10963 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726868AbhANBIo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 20:08:44 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DGR2s1t6pzj6F3;
-        Thu, 14 Jan 2021 09:06:13 +0800 (CST)
-Received: from [10.174.178.52] (10.174.178.52) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 14 Jan 2021 09:06:37 +0800
-Subject: Re: [PATCH] kretprobe: avoid re-registration of the same kretprobe
- earlier
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-CC:     <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
-        <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
-        <huawei.libin@huawei.com>, <cj.chengjian@huawei.com>
-References: <20201124115719.11799-1-bobo.shaobowang@huawei.com>
- <20201130161850.34bcfc8a@gandalf.local.home>
- <20201202083253.9dbc76704149261e131345bf@kernel.org>
- <9dff21f8-4ab9-f9b2-64fd-cc8c5f731932@huawei.com>
- <20201215123119.35258dd5006942be247600db@kernel.org>
- <c584f7e2-1d95-4f6a-7e36-4ff2d610bc78@huawei.com>
- <20201222200356.6910b42c165b8756878cc9b0@kernel.org>
- <20210113174845.7b1da377@gandalf.local.home>
- <20210114092525.5a2e78b404602fa82d6d6353@kernel.org>
-From:   "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
-Message-ID: <d2dd6daf-39d4-0330-bf11-8f41672eac2e@huawei.com>
-Date:   Thu, 14 Jan 2021 09:06:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        id S1727171AbhANBoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:44:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727180AbhANBLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 20:11:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7276323436;
+        Thu, 14 Jan 2021 01:10:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610586654;
+        bh=UmdDGjhuO3WSPUKkGpPebqTr54sAnPseGUTkQpK7tfY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=V46Fwy0Q3g4zQPpDbmb+5EsbOAop1lfCRvhzNL2TAP1jLQYQENBoI6fJn5/8redMx
+         O+T8GJgwC6mKlmWNxHD7tuGMRTPjdZSfEOAQEwsKeupk67Z0xNHYAhoQfEmcKHV8Ha
+         hzik5RJVhjiBeg8GKb9i10DwdbS7mNIyrHkur68KPs/phgQN+b0xOpNgIEuvUHl/o5
+         ZcgjbWl2gZevuRd1bDU5qbYwWMn0MQgeBS89fmd41NAmWl/BU05glASCkUaLaSL+Ml
+         RmCb0X1QXDFlIqtprfgSVA+knbjKzLpwK2Ekn5nh920aiZ0PPoVb9WgEU5PglFyvgv
+         o9Y59pplHpkQw==
+Received: by mail-ed1-f50.google.com with SMTP id g24so3970422edw.9;
+        Wed, 13 Jan 2021 17:10:54 -0800 (PST)
+X-Gm-Message-State: AOAM530Dee/xakfMF93+BQAL88tTYHXay4E8pDdkAoAACWZqmq4WNx2u
+        bULgmT3jFtosfewep+yOhpEVlr7b4tux1cJd+w==
+X-Google-Smtp-Source: ABdhPJy61qEn7d8wXX2zq28pD76sJxB/TuBfKUuZufmasFatDoK02ubAgDBK8O4XP/Iyfo7DfgTG2FviLKULPwayyWc=
+X-Received: by 2002:a05:6402:5246:: with SMTP id t6mr3891482edd.62.1610586652810;
+ Wed, 13 Jan 2021 17:10:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210114092525.5a2e78b404602fa82d6d6353@kernel.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.52]
-X-CFilter-Loop: Reflected
+References: <87pn29pc5w.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87pn29pc5w.wl-kuninori.morimoto.gx@renesas.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 13 Jan 2021 19:10:41 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLEDd57L9edqtHQGf92oJZ02w-C8kZ064ijdcWbohwOhA@mail.gmail.com>
+Message-ID: <CAL_JsqLEDd57L9edqtHQGf92oJZ02w-C8kZ064ijdcWbohwOhA@mail.gmail.com>
+Subject: Re: [PATCH] of: property: add port base loop
+To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have found other problems when following Masami's proposals,
-
-I have been dealing with other things this two days and i will send 
-patch as soon.
-
-
-Thank you,
-
-ÔÚ 2021/1/14 8:25, Masami Hiramatsu Ð´µÀ:
-> On Wed, 13 Jan 2021 17:48:45 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, Jan 13, 2021 at 12:53 AM Kuninori Morimoto
+<kuninori.morimoto.gx@renesas.com> wrote:
 >
->> Anything more on this?
-> I need Wangshaobo's confirmation, because this is essentially a kind of programming bug,
-> not a runtime bug. kprobes user must check the kprobe(kretprobe) must be unregistered
-> and cleaned up before reusing it. (I recommend to re-alloc new data structure each time)
 >
-> For example, if you re-register your driver/filesystem without releasing, it will
-> break the kernel.
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >
-> Thank you,
+> We have endpoint base functions
+>         - of_graph_get_next_endpoint()
+>         - of_graph_get_endpoint_count()
+>         - for_each_endpoint_of_node()
+
+I actually think these functions don't make sense. Iterating over
+endpoints for a port make sense, but not all endpoints.
+
+> Here, for_each_endpoint_of_node() loop finds endpoint
 >
->> -- Steve
->>
->>
->> On Tue, 22 Dec 2020 20:03:56 +0900
->> Masami Hiramatsu <mhiramat@kernel.org> wrote:
->>
->>> On Mon, 21 Dec 2020 21:31:42 +0800
->>> "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com> wrote:
->>>
->>>> Hi steven, Masami,
->>>> We have encountered a problem, when we attempted to use steven's suggestion as following,
->>>>    
->>>>>>> If you call this here, you must make sure kprobe_addr() is called on rp->kp.
->>>>>>> But if kretprobe_blacklist_size == 0, kprobe_addr() is not called before
->>>>>>> this check. So it should be in between kprobe_on_func_entry() and
->>>>>>> kretprobe_blacklist_size check, like this
->>>>>>>
->>>>>>> 	if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
->>>>>>> 		return -EINVAL;
->>>>>>>
->>>>>>> 	addr = kprobe_addr(&rp->kp);
->>>>>>> 	if (IS_ERR(addr))
->>>>>>> 		return PTR_ERR(addr);
->>>>>>> 	rp->kp.addr = addr;
->>>> //there exists no-atomic operation risk, we should not modify any rp->kp's information, not all arch ensure atomic operation here.
->>>>    
->>>>>>> 	ret = check_kprobe_rereg(&rp->kp);
->>>>>>> 	if (WARN_ON(ret))
->>>>>>> 		return ret;
->>>>>>>
->>>>>>>            if (kretprobe_blacklist_size) {
->>>>>>> 		for (i = 0; > > +	ret = check_kprobe_rereg(&rp->kp);
->>>> it returns failure from register_kprobe() end called by register_kretprobe() when
->>>> we registered a kretprobe through .symbol_name at first time(through .addr is OK),
->>>> kprobe_addr() called at the begaining of register_kprobe() will recheck and
->>>> failed at following place because at this time we symbol_name is not NULL and addr is also.
->>> Good catch! Yes, it will reject if both kp->addr and kp->symbol are set.
->>>
->>>>     static kprobe_opcode_t *_kprobe_addr(const char *symbol_name,
->>>>                            unsigned int offset)
->>>>      {
->>>>            if ((symbol_name && addr) || (!symbol_name && !addr))  //we failed here
->>>>
->>>>
->>>> So we attempted to move this sentence rp->kp.addr = addr to __get_valid_kprobe() like this to
->>>> avoid explict usage of rp->kp.addr = addr in register_kretprobe().
->>>>
->>>> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
->>>> index dd5821f753e6..ea014779edfe 100644
->>>> --- a/kernel/kprobes.c
->>>> +++ b/kernel/kprobes.c
->>>> @@ -1502,10 +1502,15 @@ static kprobe_opcode_t *kprobe_addr(struct kprobe *p)
->>>>    static struct kprobe *__get_valid_kprobe(struct kprobe *p)
->>>>    {
->>>>           struct kprobe *ap, *list_p;
->>>> +       void *addr;
->>>>
->>>>           lockdep_assert_held(&kprobe_mutex);
->>>>
->>>> -       ap = get_kprobe(p->addr);
->>>> +       addr = kprobe_addr(p);
->>>> +       if (IS_ERR(addr))
->>>> +               return NULL;
->>>> +
->>>> +       ap = get_kprobe(addr);
->>>>           if (unlikely(!ap))
->>>>                   return NULL;
->>>>
->>>> But it also failed when we second time attempted to register a same kretprobe, it is also
->>>> becasue symbol_name and addr is not NULL when we used __get_valid_kprobe().
->>> What the "second time" means? If you reuse the kretprobe (and kprobe) you must
->>> reset (cleanup) the kp->addr or kp->symbol_name. That is the initial state.
->>> I think the API should not allow users to enter inconsistent information.
->>>
->>>> So it seems has no idea expect for modifying _kprobe_addr() like following this, the reason is that
->>>> the patch 0bd476e6c671 ("kallsyms: unexport kallsyms_lookup_name() and kallsyms_on_each_symbol()")
->>>> has telled us we'd better use symbol name to register but not address anymore.
->>>>
->>>> -static kprobe_opcode_t *_kprobe_addr(kprobe_opcode_t *addr,
->>>> -                       const char *symbol_name, unsigned int offset)
->>>> +static kprobe_opcode_t *_kprobe_addr(const char *symbol_name,
->>>> +                       unsigned int offset)
->>>>    {
->>>> -       if ((symbol_name && addr) || (!symbol_name && !addr))
->>>> +       kprobe_opcode_t *addr;
->>>> +       if (!symbol_name)
->>>>                   goto invalid;
->>> No, there are cases that the user will set only kp->addr, but no kp->symbol_name.
->>>
->>>> For us, this modification has not caused a big impact on other modules, only expects a little
->>>> influence on bpf from calling trace_kprobe_on_func_entry(), it can not use addr to fill in
->>>> rp.kp in struct trace_event_call anymore.
->>>>
->>>> So i want to know your views, and i will resend this patch soon.
->>> OK, I think it is simpler to check the rp->kp.addr && rp->kp.symbol_name
->>> because it is not allowed (it can lead inconsistent setting).
->>>
->>> How about this code? Is this work for you?
->>>
->>> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
->>> index 41fdbb7953c6..73500be564be 100644
->>> --- a/kernel/kprobes.c
->>> +++ b/kernel/kprobes.c
->>> @@ -2103,6 +2103,14 @@ int register_kretprobe(struct kretprobe *rp)
->>>          int i;
->>>          void *addr;
->>>   
->>> +       /* It is not allowed to specify addr and symbol_name at the same time */
->>> +       if (rp->kp.addr && rp->kp.symbol_name)
->>> +               return -EINVAL;
->>> +
->>> +       /* If only rp->kp.addr is specified, check reregistering kprobes */
->>> +       if (rp->kp.addr && check_kprobe_rereg(&rp->kp))
->>> +               return -EINVAL;
->>> +
->>>          if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
->>>                  return -EINVAL;
->>>   
->>>
->>> Thank you,
->>>
+>         ports {
+>                 port@0 {
+> (1)                     endpoint {...};
+>                 };
+>                 port@1 {
+> (2)                     endpoint {...};
+>                 };
+>                 ...
+>         };
+>
+> In above case, for_each_endpoint_of_node() loop
+> finds endpoint as (1) -> (2) -> ...
+> We can check endpoint parent to get its port
+> if user want to do something to it.
+>
+> But port can have multi endpoints.
+> In such case, it is difficult to find
+> port@0 -> port@1 -> ...
+>
+>         ports {
+>                 port@0 {
+> (1)                     endpoint@0 {...};
+> (2)                     endpoint@1 {...};
+>                 };
+>                 port@1 {
+> (3)                     endpoint {...};
+>                 };
+>                 ...
+>         };
+>
+> In such case, people want to have port base loop
+> instead of endpoints base loop.
+> This patch adds such functions/macros.
+
+I'm a bit hesitant on these too. A driver should generally know what
+each port # is (since the binding has to define them), and it should
+just request the port (or its connection) it wants. At least that was
+the premise behind of_graph_get_remote_node() and the cleanups (mostly
+DRM drivers) I did to use it. I'd rather see things move in that
+direction.
+
+In any case, this needs a user before merging.
+
+>
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  drivers/of/property.c    | 69 ++++++++++++++++++++++++++++++++++------
+>  include/linux/of_graph.h | 14 ++++++++
+>  2 files changed, 73 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> index 5f9eed79a8aa..9b511cfe97b3 100644
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -631,15 +631,7 @@ struct device_node *of_graph_get_next_endpoint(const struct device_node *parent,
+>          * parent port node.
+>          */
+>         if (!prev) {
+> -               struct device_node *node;
+> -
+> -               node = of_get_child_by_name(parent, "ports");
+> -               if (node)
+> -                       parent = node;
+> -
+> -               port = of_get_child_by_name(parent, "port");
+> -               of_node_put(node);
+> -
+> +               port = of_graph_get_next_port(parent, NULL);
+>                 if (!port) {
+>                         pr_err("graph: no port node found in %pOF\n", parent);
+>                         return NULL;
+> @@ -666,14 +658,59 @@ struct device_node *of_graph_get_next_endpoint(const struct device_node *parent,
+>                 /* No more endpoints under this port, try the next one. */
+>                 prev = NULL;
+>
+> +               port = of_graph_get_next_port(parent, port);
+> +               if (!port)
+> +                       return NULL;
+> +       }
+> +}
+> +EXPORT_SYMBOL(of_graph_get_next_endpoint);
+> +
+> +/**
+> + * of_graph_get_next_port() - get next port node
+> + * @parent: pointer to the parent device node
+> + * @prev: previous port node, or NULL to get first
+> + *
+> + * Return: An 'port' node pointer with refcount incremented. Refcount
+> + * of the passed @prev node is decremented.
+> + */
+> +struct device_node *of_graph_get_next_port(const struct device_node *parent,
+> +                                          struct device_node *prev)
+> +{
+> +       struct device_node *port = prev;
+> +
+> +       if (!parent)
+> +               return NULL;
+> +
+> +       /*
+> +        * Start by locating the port node. If no previous endpoint is specified
+> +        * search for the first port node, otherwise get the previous endpoint
+> +        * parent port node.
+> +        */
+> +       if (!port) {
+> +               struct device_node *node;
+> +
+> +               node = of_get_child_by_name(parent, "ports");
+> +               if (node)
+> +                       parent = node;
+> +
+> +               port = of_get_child_by_name(parent, "port");
+> +               of_node_put(node);
+> +
+> +               if (!port) {
+> +                       pr_err("graph: no port node found in %pOF\n", parent);
+> +                       return NULL;
+> +               }
+> +       } else {
+>                 do {
+>                         port = of_get_next_child(parent, port);
+>                         if (!port)
+>                                 return NULL;
+>                 } while (!of_node_name_eq(port, "port"));
+>         }
+> +
+> +       return port;
+>  }
+> -EXPORT_SYMBOL(of_graph_get_next_endpoint);
+> +EXPORT_SYMBOL(of_graph_get_next_port);
+>
+>  /**
+>   * of_graph_get_endpoint_by_regs() - get endpoint node of specific identifiers
+> @@ -800,6 +837,18 @@ int of_graph_get_endpoint_count(const struct device_node *np)
+>  }
+>  EXPORT_SYMBOL(of_graph_get_endpoint_count);
+>
+> +int of_graph_get_port_count(const struct device_node *np)
+> +{
+> +       struct device_node *port;
+> +       int num = 0;
+> +
+> +       for_each_port_of_node(np, port)
+> +               num++;
+> +
+> +       return num;
+> +}
+> +EXPORT_SYMBOL(of_graph_get_port_count);
+> +
+>  /**
+>   * of_graph_get_remote_node() - get remote parent device_node for given port/endpoint
+>   * @node: pointer to parent device_node containing graph port/endpoint
+> diff --git a/include/linux/of_graph.h b/include/linux/of_graph.h
+> index 4d7756087b6b..8cd3bd674ebd 100644
+> --- a/include/linux/of_graph.h
+> +++ b/include/linux/of_graph.h
+> @@ -26,6 +26,17 @@ struct of_endpoint {
+>         const struct device_node *local_node;
+>  };
+>
+> +/**
+> + * for_each_port_of_node - iterate over every port in a device node
+> + * @parent: parent device node containing ports and port
+> + * @child: loop variable pointing to the current port node
+> + *
+> + * When breaking out of the loop, of_node_put(child) has to be called manually.
+> + */
+> +#define for_each_port_of_node(parent, child)                   \
+> +       for (child = of_graph_get_next_port(parent, NULL); child != NULL; \
+> +            child = of_graph_get_next_port(parent, child))
+> +
+>  /**
+>   * for_each_endpoint_of_node - iterate over every endpoint in a device node
+>   * @parent: parent device node containing ports and endpoints
+> @@ -41,8 +52,11 @@ struct of_endpoint {
+>  bool of_graph_is_present(const struct device_node *node);
+>  int of_graph_parse_endpoint(const struct device_node *node,
+>                                 struct of_endpoint *endpoint);
+> +int of_graph_get_port_count(const struct device_node *np);
+>  int of_graph_get_endpoint_count(const struct device_node *np);
+>  struct device_node *of_graph_get_port_by_id(struct device_node *node, u32 id);
+> +struct device_node *of_graph_get_next_port(const struct device_node *parent,
+> +                                          struct device_node *previous);
+>  struct device_node *of_graph_get_next_endpoint(const struct device_node *parent,
+>                                         struct device_node *previous);
+>  struct device_node *of_graph_get_endpoint_by_regs(
+> --
+> 2.25.1
 >
