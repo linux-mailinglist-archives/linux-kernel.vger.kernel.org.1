@@ -2,122 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A96D2F562A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FCA62F5612
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728007AbhANBnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727557AbhANB35 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 20:29:57 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60A5C0617A3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 17:29:16 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id 22so5083016qkf.9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 17:29:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9CU5hC/wv1WyG3qcAaf75yGzuAfWHeashTxgX7KjjpI=;
-        b=K6Hq+G0LhXjQqO4H96lSva7ZtrmqncVNCsrUw1x3GpPYKTOu96SYHCMIGHB+UXhLT7
-         bnDVV7Da8nb5UKCBo98+d2ekTCz0M3i2QaCCdzfXsq43wqghTawUFI6qEMSurf+eEHDJ
-         OTchATUo7k+/FaLZUw+1el0dBgnmhcosnM4NU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9CU5hC/wv1WyG3qcAaf75yGzuAfWHeashTxgX7KjjpI=;
-        b=RLvxBYkzUGznmwi4u/GfyuhTY9CA0c9QjHngoIK80QK1bSkm0WqktvDknQm36YGVgN
-         j81HuAkczjq/ijJHN71Bkfb1GpBzxbzaGwXoU7z5tLe5oLUnCRxZqScVkywlO4U92A4r
-         T5S39f9+2h6Z0O9OG0Te08+l2c4t4QLfRgXpnPF0paM+v4YH9kFRlwur8H/r8Fleqq8/
-         RSRF0ZVHZCXaISmOtglsSmh5vg2jDlRugJnhyYeJQyC4ploOA9fQmUnQ8q64WkawssnV
-         BseaN6aXHS2v5KCyEiIbixmDBE5/847mDwluLoDU5/djyCD9BGNfTUuvOkvH4onFZihZ
-         6ITA==
-X-Gm-Message-State: AOAM530pFKPc1Je7PNjj+4xcr3Aht+Jr9ki9h7rR2iC522ohO65qW7/0
-        TpbhvEd+QlInvXazf6v6vZ9HWPiewykVTQ2g1frlHA==
-X-Google-Smtp-Source: ABdhPJxWNm4eqecBXA5G0Ky7souL+BlfLXiDVYwNNhK8YLResag3hUy0NhhbANooMsLe/qYCoji4ZUpqlDe71lm1eT0=
-X-Received: by 2002:a25:adc2:: with SMTP id d2mr6962640ybe.75.1610587756217;
- Wed, 13 Jan 2021 17:29:16 -0800 (PST)
+        id S1727808AbhANBln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:41:43 -0500
+Received: from mga05.intel.com ([192.55.52.43]:51491 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727184AbhANBlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 20:41:42 -0500
+IronPort-SDR: mH9n4n3hcY8emYU04IYSsu3z9oSu6hiCVzgmjJKqZT+cQUnS4eIITShvvN7cbsvhfm0W8NRKLO
+ Vwvo/pr3A3bg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="263084524"
+X-IronPort-AV: E=Sophos;i="5.79,345,1602572400"; 
+   d="scan'208";a="263084524"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 17:38:18 -0800
+IronPort-SDR: 70ByEuj6ZUTxoobpwmM7DnqLWj+gPglSHAzdk1Zcl51BXOPdoBO9ptYytiJ7aJ9FshTQjUNI11
+ 332Cn7+I7AeA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,345,1602572400"; 
+   d="scan'208";a="569582482"
+Received: from allen-box.sh.intel.com ([10.239.159.28])
+  by fmsmga006.fm.intel.com with ESMTP; 13 Jan 2021 17:38:11 -0800
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     tglx@linutronix.de, ashok.raj@intel.com, kevin.tian@intel.com,
+        dave.jiang@intel.com, megha.dey@intel.com, dwmw2@infradead.org
+Cc:     alex.williamson@redhat.com, bhelgaas@google.com,
+        dan.j.williams@intel.com, will@kernel.org, joro@8bytes.org,
+        dmaengine@vger.kernel.org, eric.auger@redhat.com,
+        jacob.jun.pan@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
+        kwankhede@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org,
+        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
+        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
+        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
+        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
+        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com, leon@kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [RFC PATCH v3 0/2] Add platform check for subdevice irq domain
+Date:   Thu, 14 Jan 2021 09:30:01 +0800
+Message-Id: <20210114013003.297050-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210107154200.v4.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
- <20210107154200.v4.2.Ibe7d7d53c5b4fe72c60de90111ff763b53f38dbb@changeid>
- <161041827643.3661239.17919996906733477213@swboyd.mtv.corp.google.com>
- <CA+cxXhm45emyg-9j99U=UWY8QuhzWifh+VvsFBaTOTWs81tvUQ@mail.gmail.com>
- <161052058590.3661239.5654596152411573148@swboyd.mtv.corp.google.com>
- <CA+cxXhmZd0eeLjUwcTevZRNovbZWXNKQH5qOX_YFCKowxHNVfQ@mail.gmail.com> <161057967168.3661239.10329365279391431594@swboyd.mtv.corp.google.com>
-In-Reply-To: <161057967168.3661239.10329365279391431594@swboyd.mtv.corp.google.com>
-From:   Philip Chen <philipchen@chromium.org>
-Date:   Wed, 13 Jan 2021 17:29:05 -0800
-Message-ID: <CA+cxXhmV_RxLupD18aOxLwaGGKSxihTY8ZZvQKzdd-dsYYf5dQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] Input: cros-ec-keyb - Expose function row physical
- map to userspace
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 3:14 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Philip Chen (2021-01-13 14:47:18)
-> > On Tue, Jan 12, 2021 at 10:49 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > >
-> > > Quoting Philip Chen (2021-01-12 15:55:28)
-> > > > On Mon, Jan 11, 2021 at 6:24 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > > > >
-> > > > > Quoting Philip Chen (2021-01-07 15:42:09)
-> > > > > > The top-row keys in a keyboard usually have dual functionalities.
-> > > > > > E.g. A function key "F1" is also an action key "Browser back".
-> > > > > >
-> > > > > > Therefore, when an application receives an action key code from
-> > > > > > a top-row key press, the application needs to know how to correlate
-> > > > > > the action key code with the function key code and do the conversion
-> > > > > > whenever necessary.
-> > > > > >
-> > > > > > Since the userpace already knows the key scanlines (row/column)
-> > > > > > associated with a received key code. Essentially, the userspace only
-> > > > > > needs a mapping between the key row/column and the matching physical
-> > > > > > location in the top row.
-> > > > > >
-> > > > > > This patch enhances the cros-ec-keyb driver to create such a mapping
-> > > > > > and expose it to userspace in the form of a function-row-physmap
-> > > > > > attribute. The attribute would be a space separated ordered list of
-> > > > > > row/column codes, for the keys in the function row, in a left-to-right
-> > > > > > order.
-> > > > > >
-> > > > > > The attribute will only be present when the device has a custom design
-> > > > > > for the top-row keys.
-> > > > >
-> > > > > Is it documented in Documentation/ABI/?
-> > > > Not yet.
-> > > > Is it proper to add the documentation to `testing/sysfs-driver-input-keyboard`?
-> > >
-> > > Somewhere in testing is fine. I'm not sure if it is a generic proprty
-> > > for all keyboards though? What's the path in sysfs?
-> > I wouldn't say it's generic.
-> > It is available in the keyboard device node only when the board has a
-> > custom top-row keyboard design.
-> > The path in sysfs is something like:
-> > /sys/class/input/input0/device/function_row_physmap, where input0 is
-> > cros_ec.
->
-> I see that atkbd already has this so at least it would be common to some
-> sort of keyboard device. I'm not sure where to document it though. I see
-> that atkbd has a handful of undocumented sysfs attributes so adding all
-> of those may lead to a common path. At the least it sounds OK to have a
-> sysfs-driver-input-keyboard file if input folks are OK with it.
-Since there are other undocumented sysfs attributes for input/keyboard
-anyway, we should probably leave the documentation to another patch?
-For now, let's move to patch v5, where I've addressed all of the
-comments so far.
-Thanks.
+Hi,
+
+Learnt from the discussions in this thread:
+
+https://lore.kernel.org/linux-pci/160408357912.912050.17005584526266191420.stgit@djiang5-desk3.ch.intel.com/
+
+The device IMS (Interrupt Message Storage) should not be enabled in any
+virtualization environments unless there is a HYPERCALL domain which
+makes the changes in the message store monitored by the hypervisor.
+
+As the initial step, we allow the IMS to be enabled only if we are
+running on the bare metal. It's easy to enable IMS in the virtualization
+environments if above preconditions are met in the future.
+
+This series is only for comments purpose. We will include it in the Intel
+IMS implementation later once we reach a consensus.
+
+Change log:
+v2->v3:
+ - v2:
+   https://lore.kernel.org/linux-pci/20210106022749.2769057-1-baolu.lu@linux.intel.com/
+ - Add all identified heuristics so far.
+
+v1->v2:
+ - v1:
+   https://lore.kernel.org/linux-pci/20201210004624.345282-1-baolu.lu@linux.intel.com/
+ - Rename probably_on_bare_metal() with on_bare_metal();
+ - Some vendors might use the same name for both bare metal and virtual
+   environment. Before we add vendor specific code to distinguish
+   between them, let's return false in on_bare_metal(). This won't
+   introduce any regression. The only impact is that the coming new
+   platform msi feature won't be supported until the vendor specific code
+   is provided.
+
+Best regards,
+baolu
+
+Lu Baolu (2):
+  iommu: Add capability IOMMU_CAP_VIOMMU
+  platform-msi: Add platform check for subdevice irq domain
+
+ arch/x86/pci/common.c        | 71 ++++++++++++++++++++++++++++++++++++
+ drivers/base/platform-msi.c  |  8 ++++
+ drivers/iommu/intel/iommu.c  | 20 ++++++++++
+ drivers/iommu/virtio-iommu.c |  9 +++++
+ include/linux/iommu.h        |  1 +
+ include/linux/msi.h          |  1 +
+ 6 files changed, 110 insertions(+)
+
+-- 
+2.25.1
+
