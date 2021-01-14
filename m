@@ -2,111 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA972F5AFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 07:55:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E171C2F5B05
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbhANGzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 01:55:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
+        id S1726291AbhANHCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 02:02:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725888AbhANGzF (ORCPT
+        with ESMTP id S1726055AbhANHCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 01:55:05 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8AA8C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 22:54:24 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id be12so2437035plb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 22:54:24 -0800 (PST)
+        Thu, 14 Jan 2021 02:02:37 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8C7C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 23:01:56 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id l23so2688173pjg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 23:01:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CK5a6fUoK9laud59EzgY0vTTWUjabBhgf/iGUHSlr84=;
-        b=ELrACYWWcAWsFy2a70XpkDWOptj8AcVg7qorcWvajv2AMwMhu3dLgvWlNWA9yAtUwO
-         qlx/baQm1U69k//c82xgSZFc52lIJwL4VlkEYyTtng8kq2+dumA3ewtFUmIeLMKnCeTE
-         0W46BiH6SQR8uOEeCX9cvgShgGmpS4fX6LwoU=
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=JYt8EI7ieKorpASVOTgek/+xr+Y9gbz77CFyRzCwwWc=;
+        b=LFFNI2M+BRcL71xQeiE/HQKmU6e8hRTnsGw7tApsujH74JkBAe7fqku6FUdkM5IR+Q
+         SJhfYYVAxqyypI4g788jHX+tNEe5BpDe+vRDiFNdrtMlJ94LTtXniKeisrj4iSf/B8Sf
+         voXJ0UtPw/36wMa3gDL2uiOjH3OxNXB9WkmaI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CK5a6fUoK9laud59EzgY0vTTWUjabBhgf/iGUHSlr84=;
-        b=JsEiA3v+s3TZ7bYE4u4bZv8F6GfLiVylBdK0aOY4mHN08zBkQJlQC4bN1///0izJuM
-         hwKBBejONjLJ64VRMZWs3ZslfJu+jMVXG6wajiZXuQb5sB+i2L2XL/3v+KsYc46HSAo9
-         eF5q/mIOcck8ci0ojohfs65ko8tCXBPVvJbkVRCVeDIOnd2yylqTIV4cv/uih5thUUqC
-         ZFF9dengQzC8bweNrwGp4TR8HFFAXBG4/EJHFRbMVWMEKaIE3OsFuARPCQmCiTdYwBNR
-         iYllV/0mpk3oNtsYqcM8PvgV0d7LrDc/5dchbzpRRRxBpc+3u6ZLCVniamoaBoiFW2g1
-         9k7g==
-X-Gm-Message-State: AOAM530QdDcwTchexozaD/1FPzv5QP7Np4OaA6ruBBYwKV7hX62JSzx2
-        IAxLIsY2+YdDkGDrcoFdBU6i1v5kkLFSVs6b
-X-Google-Smtp-Source: ABdhPJwGek4x/wN2BRK4FinpqyikVPDyQ39T9E6PbUP4yc13Tx1iATTT1z6JizyDQy/mmyJuFruMbw==
-X-Received: by 2002:a17:903:22c2:b029:de:45c0:69f2 with SMTP id y2-20020a17090322c2b02900de45c069f2mr3473606plg.26.1610607264230;
-        Wed, 13 Jan 2021 22:54:24 -0800 (PST)
-Received: from localhost ([2401:fa00:1:10:725a:fff:fe46:44eb])
-        by smtp.gmail.com with ESMTPSA id w9sm4182032pfj.128.2021.01.13.22.54.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 22:54:23 -0800 (PST)
-From:   Yu-Hsuan Hsu <yuhsuan@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        alsa-devel@alsa-project.org
-Subject: [PATCH v6 2/2] ASoC: cros_ec_codec: Reset I2S RX when probing
-Date:   Thu, 14 Jan 2021 14:54:01 +0800
-Message-Id: <20210114065401.3498725-2-yuhsuan@chromium.org>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-In-Reply-To: <20210114065401.3498725-1-yuhsuan@chromium.org>
-References: <20210114065401.3498725-1-yuhsuan@chromium.org>
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=JYt8EI7ieKorpASVOTgek/+xr+Y9gbz77CFyRzCwwWc=;
+        b=H0RunK+BYTP9HlItg/nPpT3XfQS8dyZ4O0EsXf4LsMIqyCG+eeIy2mrnInYTpjCHel
+         c4s+Pau3oemf4bhDRSD2GGY0NhLo0szx8PqJDSrhNzK9oX5pc1ef4iAyVqMCvQtxgSDn
+         0f9iqIgWWv+qeEziTcDoRTmigWR1X9Qslua+L9aBcSz2GyNU4yib4rHcQV1RjnHHeqsn
+         WHeqzwkjrQoK4h8GHqIrlqo09/D3vADC71RcGjljSbfx0EvFfyldKHi+XXratKj/nj62
+         TtqjdS50p/Cl76UisZQdeuVm9bXQFl/uo2rkCiR2szZ/O6bE1eOyZmfOEKaSGApTD3th
+         nJfw==
+X-Gm-Message-State: AOAM530FmBB4zpBq1/+eBQcfCwdPJFv/ngPCGDCjR5dKGdRJKJqC5A2a
+        ku99AvVZ9Cc0jwDPMU9X9asCGA==
+X-Google-Smtp-Source: ABdhPJwJ+hg053U92FUixpn8y1FNmzaBdqnBVUnK/a8LK5a+UIXuUEwJAkdG0MN7awaogQxUdzC5Lw==
+X-Received: by 2002:a17:90a:c791:: with SMTP id gn17mr3543162pjb.28.1610607716259;
+        Wed, 13 Jan 2021 23:01:56 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id b12sm4286109pft.114.2021.01.13.23.01.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 23:01:55 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210108093339.v5.2.I3635de080604e1feda770591c5563bd6e63dd39d@changeid>
+References: <20210108093339.v5.1.I3ad184e3423d8e479bc3e86f5b393abb1704a1d1@changeid> <20210108093339.v5.2.I3635de080604e1feda770591c5563bd6e63dd39d@changeid>
+Subject: Re: [PATCH v5 2/4] pinctrl: qcom: No need to read-modify-write the interrupt status
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        linux-gpio@vger.kernel.org,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+To:     Douglas Anderson <dianders@chromium.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Date:   Wed, 13 Jan 2021 23:01:54 -0800
+Message-ID: <161060771402.3661239.1174238618385699475@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not guaranteed that I2S RX is disabled when the kernel booting.
-For example, if the kernel crashes while it is enabled, it will keep
-enabled until the next time EC reboots. Reset I2S RX when probing to
-fix this issue.
+Quoting Douglas Anderson (2021-01-08 09:35:14)
+> When the Qualcomm pinctrl driver wants to Ack an interrupt, it does a
+> read-modify-write on the interrupt status register.  On some SoCs it
+> makes sure that the status bit is 1 to "Ack" and on others it makes
+> sure that the bit is 0 to "Ack".  Presumably the first type of
+> interrupt controller is a "write 1 to clear" type register and the
+> second just let you directly set the interrupt status register.
+>=20
+> As far as I can tell from scanning structure definitions, the
+> interrupt status bit is always in a register by itself.  Thus with
+> both types of interrupt controllers it is safe to "Ack" interrupts
+> without doing a read-modify-write.  We can do a simple write.
+>=20
+> It should be noted that if the interrupt status bit _was_ ever in a
+> register with other things (like maybe status bits for other GPIOs):
+> a) For "write 1 clear" type controllers then read-modify-write would
+>    be totally wrong because we'd accidentally end up clearing
+>    interrupts we weren't looking at.
+> b) For "direct set" type controllers then read-modify-write would also
+>    be wrong because someone setting one of the other bits in the
+>    register might accidentally clear (or set) our interrupt.
+> I say this simply to show that the current read-modify-write doesn't
+> provide any sort of "future proofing" of the code.  In fact (for
+> "write 1 clear" controllers) the new code is slightly more "future
+> proof" since it would allow more than one interrupt status bits to
+> share a register.
+>=20
+> NOTE: this code fixes no bugs--it simply avoids an extra register
+> read.
+>=20
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
 
-Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
----
-Returns the error code when it fails to reset.
-
- sound/soc/codecs/cros_ec_codec.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-index f33a2a9654e7..40e437aa1d55 100644
---- a/sound/soc/codecs/cros_ec_codec.c
-+++ b/sound/soc/codecs/cros_ec_codec.c
-@@ -1011,6 +1011,18 @@ static int cros_ec_codec_platform_probe(struct platform_device *pdev)
- 	}
- 	priv->ec_capabilities = r.capabilities;
- 
-+	/* Reset EC codec i2s rx. */
-+	p.cmd = EC_CODEC_I2S_RX_RESET;
-+	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
-+				   (uint8_t *)&p, sizeof(p), NULL, 0);
-+	if (ret == -ENOPROTOOPT) {
-+		dev_info(dev,
-+			 "Command not found. Please update the EC firmware.\n");
-+	} else if (ret) {
-+		dev_err(dev, "failed to EC_CODEC_I2S_RESET: %d\n", ret);
-+		return ret;
-+	}
-+
- 	platform_set_drvdata(pdev, priv);
- 
- 	ret = devm_snd_soc_register_component(dev, &i2s_rx_component_driver,
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
