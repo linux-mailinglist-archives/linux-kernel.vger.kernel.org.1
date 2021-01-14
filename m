@@ -2,101 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066EE2F60EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:15:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB732F60F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:15:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729074AbhANMOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 07:14:52 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11384 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727416AbhANMOv (ORCPT
+        id S1729117AbhANMPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 07:15:09 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:45417 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728394AbhANMPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 07:14:51 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DGjrD61f6z7VLk;
-        Thu, 14 Jan 2021 20:13:00 +0800 (CST)
-Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 14 Jan 2021 20:13:55 +0800
-From:   Yanan Wang <wangyanan55@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
-        Yanan Wang <wangyanan55@huawei.com>
-Subject: [PATCH v3 3/3] KVM: arm64: Mark the page dirty only if the fault is handled successfully
-Date:   Thu, 14 Jan 2021 20:13:50 +0800
-Message-ID: <20210114121350.123684-4-wangyanan55@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20210114121350.123684-1-wangyanan55@huawei.com>
-References: <20210114121350.123684-1-wangyanan55@huawei.com>
+        Thu, 14 Jan 2021 07:15:07 -0500
+Received: by mail-oi1-f169.google.com with SMTP id f132so5624627oib.12;
+        Thu, 14 Jan 2021 04:14:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N9a/fEJBQ8EKU9Sx9nqvztNjfJU08nsUnc68QxM+gI0=;
+        b=txBiCk3+e96gRhDgM9ZIJ5hGOycHyPpUGFU31b7UElOS4i7FFYw1bbQUKR/f1XtPqh
+         5rzk4Fz9TMmXWwX1IxzVlflq6LynF996VMlXDScQw/6QEN39W32eOJ0t2gFhPtL0LXsX
+         3Im2HO4X8ynoB0NNR5VImJNaPZqgJlq6QCmHor4unc2GXKV6shSKKnZwLypJIibnAC9x
+         wyF2SHKGYlKj4PcFHXNuYXwkydQvyUcUpO9u68kRlIsHvlMLj5g6Yxcdh2tDwVUze2H9
+         rbAAD6j4ZyBov0e/zZJx9rEC8/bPmUF2FYXnENkQNv4lvaLgWzWjychbqi+PeAp4qGKL
+         j2SQ==
+X-Gm-Message-State: AOAM533k2XV0noqsXtrUDckLMdGS6T9fc7XLu7HsULPSG97OSgl7hYXM
+        CiBU9lSJKKUwfTNr69Adgvwy35tJULc3DAWi4gw=
+X-Google-Smtp-Source: ABdhPJwnOu4NivPEtE8UVzJUtYv6p12q9l3jiDfhNWRCmVri46I6u9UoJeA+CkIB1VbyIjBuoZaslNZOspFi5TDKBrY=
+X-Received: by 2002:aca:4892:: with SMTP id v140mr2383078oia.71.1610626466163;
+ Thu, 14 Jan 2021 04:14:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.187.128]
-X-CFilter-Loop: Reflected
+References: <20210114071923.14920-1-qiuxu.zhuo@intel.com>
+In-Reply-To: <20210114071923.14920-1-qiuxu.zhuo@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 14 Jan 2021 13:14:13 +0100
+Message-ID: <CAJZ5v0j0JABf3mx2wv5Z7tQY8f0pjWVMwH2mCYWVN_siJ-ziFg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] Documentation: ACPI: EINJ: Fix error type value for
+ PCIe error
+To:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Huang Ying <ying.huang@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We now set the pfn dirty and mark the page dirty before calling fault
-handlers in user_mem_abort(), so we might end up having spurious dirty
-pages if update of permissions or mapping has failed. Let's move these
-two operations after the fault handlers, and they will be done only if
-the fault has been handled successfully.
+On Thu, Jan 14, 2021 at 8:20 AM Qiuxu Zhuo <qiuxu.zhuo@intel.com> wrote:
+>
+> Fix the error type value for PCI Express uncorrectable non-fatal
+> error to 0x00000080 and fix the error type value for PCI Express
+> uncorrectable fatal error to 0x00000100.
+>
+> See Advanced Configuration and Power Interface Specification,
+> version 6.2, table "18-409 Error Type Definition".
+>
+> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> Reported-by: Lijian Zhao <lijian.zhao@intel.com>
+> ---
+> The error type values used in file drivers/acpi/apei/einj.c
+> function available_error_type_show() are correct.
+>
+>
+>  Documentation/firmware-guide/acpi/apei/einj.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/firmware-guide/acpi/apei/einj.rst b/Documentation/firmware-guide/acpi/apei/einj.rst
+> index e588bccf5158..c042176e1707 100644
+> --- a/Documentation/firmware-guide/acpi/apei/einj.rst
+> +++ b/Documentation/firmware-guide/acpi/apei/einj.rst
+> @@ -50,8 +50,8 @@ The following files belong to it:
+>    0x00000010        Memory Uncorrectable non-fatal
+>    0x00000020        Memory Uncorrectable fatal
+>    0x00000040        PCI Express Correctable
+> -  0x00000080        PCI Express Uncorrectable fatal
+> -  0x00000100        PCI Express Uncorrectable non-fatal
+> +  0x00000080        PCI Express Uncorrectable non-fatal
+> +  0x00000100        PCI Express Uncorrectable fatal
+>    0x00000200        Platform Correctable
+>    0x00000400        Platform Uncorrectable non-fatal
+>    0x00000800        Platform Uncorrectable fatal
+> --
 
-When an -EAGAIN errno is returned from the map handler, we hope to the
-vcpu to enter guest directly instead of exiting back to userspace, so
-adjust the return value at the end of function.
-
-Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
----
- arch/arm64/kvm/mmu.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 7d2257cc5438..77cb2d28f2a4 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -879,11 +879,8 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	if (vma_pagesize == PAGE_SIZE && !force_pte)
- 		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
- 							   &pfn, &fault_ipa);
--	if (writable) {
-+	if (writable)
- 		prot |= KVM_PGTABLE_PROT_W;
--		kvm_set_pfn_dirty(pfn);
--		mark_page_dirty(kvm, gfn);
--	}
- 
- 	if (fault_status != FSC_PERM && !device)
- 		clean_dcache_guest_page(pfn, vma_pagesize);
-@@ -911,11 +908,17 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 					     memcache);
- 	}
- 
-+	/* Mark the page dirty only if the fault is handled successfully */
-+	if (writable && !ret) {
-+		kvm_set_pfn_dirty(pfn);
-+		mark_page_dirty(kvm, gfn);
-+	}
-+
- out_unlock:
- 	spin_unlock(&kvm->mmu_lock);
- 	kvm_set_pfn_accessed(pfn);
- 	kvm_release_pfn_clean(pfn);
--	return ret;
-+	return ret != -EAGAIN ? ret : 0;
- }
- 
- /* Resolve the access fault by making the page young again. */
--- 
-2.19.1
-
+Applied as 5.11-rc material with a couple of minor edits in the subject, thanks!
