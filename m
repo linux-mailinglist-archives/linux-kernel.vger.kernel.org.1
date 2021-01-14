@@ -2,128 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B51D2F5B25
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C86232F5B2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727171AbhANHQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 02:16:41 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:41931 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725888AbhANHQk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 02:16:40 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610608577; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=FN3E/oAA1UAVugKo11WqqqWS0f5OjU9KG4IozIMrmA8=; b=lKD8HGwemigh9DviuS0a1/hizm4i4UWzJcq6bgcZbQyAHVW2FC03zTOArYB5e7u1PUE9r2vn
- 9Jm0zmYD4Cj5aRAleReYHeDi1py2uoGF6wghEUz+SA80CNPRVz7ncERc0m9WE73JzD62LxLx
- uKPvngJrC5IgRaUAUndqy2wGSks=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5fffefa5d84bad3547c4b636 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 07:15:49
- GMT
-Sender: sramana=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F3C48C43464; Thu, 14 Jan 2021 07:15:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.11] (cpe-70-95-74-122.san.res.rr.com [70.95.74.122])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sramana)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BDD78C433C6;
-        Thu, 14 Jan 2021 07:15:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BDD78C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sramana@codeaurora.org
-Subject: Re: [PATCH 0/3] arm64: cpufeature: Add filter function to control
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pajay@qti.qualcomm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <1610152163-16554-1-git-send-email-sramana@codeaurora.org>
- <6dfdf691b5ed57df81c4c61422949af5@misterjones.org>
-From:   Srinivas Ramana <sramana@codeaurora.org>
-Message-ID: <c028d65d-27c3-826a-b16c-407e9cf48aac@codeaurora.org>
-Date:   Wed, 13 Jan 2021 23:15:47 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <6dfdf691b5ed57df81c4c61422949af5@misterjones.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S1727109AbhANHUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 02:20:22 -0500
+Received: from mga11.intel.com ([192.55.52.93]:59166 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726808AbhANHUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 02:20:21 -0500
+IronPort-SDR: EYAHR2M3RGDGSDELNCEN5t5Bu/mqtoZVZ86a5ee/nAEGGhHqB4xOu2JcaiBAAUMSlbsxnR14bA
+ q5rhlL04crsA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="174813107"
+X-IronPort-AV: E=Sophos;i="5.79,346,1602572400"; 
+   d="scan'208";a="174813107"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 23:19:41 -0800
+IronPort-SDR: mIzgSRZ6QZJcAS6CKpmgiAFberHjnnaQ8VHER7sLZX7qQrhYf06TSQp7jP9I3jwYvtR5JWGNLW
+ egoZp43p4dQg==
+X-IronPort-AV: E=Sophos;i="5.79,346,1602572400"; 
+   d="scan'208";a="382169975"
+Received: from qiuxu-lab.sh.intel.com ([10.239.53.106])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 23:19:39 -0800
+From:   Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+To:     rjw@rjwysocki.net
+Cc:     lenb@kernel.org, ying.huang@intel.com, tony.luck@intel.com,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Subject: [PATCH 1/1] Documentation: ACPI: EINJ: Fix error type value for PCIe error
+Date:   Thu, 14 Jan 2021 15:19:23 +0800
+Message-Id: <20210114071923.14920-1-qiuxu.zhuo@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+Fix the error type value for PCI Express uncorrectable non-fatal
+error to 0x00000080 and fix the error type value for PCI Express
+uncorrectable fatal error to 0x00000100.
 
-On 1/11/2021 5:40 AM, Marc Zyngier wrote:
-> Hi Srinivas,
->
-> On 2021-01-09 00:29, Srinivas Ramana wrote:
->> This patchset adds a control function for cpufeature framework
->> so that the feature can be controlled at runtime.
->>
->> Defer PAC on boot core and use the filter function added to disable
->> PAC from command line. This will help toggling the feature on systems
->> that do not support PAC or where PAC needs to be disabled at runtime,
->> without modifying the core kernel.
->>
->> The idea of adding the filter function for cpufeature is taken from
->> https://lore.kernel.org/linux-arm-kernel/20200515171612.1020-25-catalin.marinas@arm.com/ 
->>
->> https://lore.kernel.org/linux-arm-kernel/20200515171612.1020-24-catalin.marinas@arm.com/ 
->>
->>
->> Srinivas Ramana (3):
->>   arm64: Defer enabling pointer authentication on boot core
->>   arm64: cpufeature: Add a filter function to cpufeature
->>   arm64: Enable control of pointer authentication using early param
->>
->>  Documentation/admin-guide/kernel-parameters.txt |  6 +++
->>  arch/arm64/include/asm/cpufeature.h             |  8 +++-
->>  arch/arm64/include/asm/pointer_auth.h           | 10 +++++
->>  arch/arm64/include/asm/stackprotector.h         |  1 +
->>  arch/arm64/kernel/cpufeature.c                  | 53 
->> +++++++++++++++++++------
->>  arch/arm64/kernel/head.S                        |  4 --
->>  6 files changed, 64 insertions(+), 18 deletions(-)
->
-> I've been working for some time on a similar series to allow a feature
-> set to be disabled during the early boot phase, initially to prevent
-> booting a kernel with VHE, but the mechanism is generic enough to
-> deal with most architectural features.
->
-> I took the liberty to lift your first patch and to add it to my 
-> series[1],
-> further allowing PAuth to be disabled at boot time on top of BTI and VHE.
->
-> I'd appreciate your comments on this.
-Thanks for sending this series. It seems to be more flexible compared 
-you what we did.
-Following your discussion on allowing EXACT ftr_reg values.
+See Advanced Configuration and Power Interface Specification,
+version 6.2, table "18-409 Error Type Definition".
+
+Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Reported-by: Lijian Zhao <lijian.zhao@intel.com>
+---
+The error type values used in file drivers/acpi/apei/einj.c
+function available_error_type_show() are correct.
 
 
-Btw, do you have plan to add MTE in similar lines to control the feature?
-We may be needing this on some systems.
->
-> Thanks,
->
->         M.
->
-> [1] https://lore.kernel.org/r/20210111132811.2455113-1-maz@kernel.org
+ Documentation/firmware-guide/acpi/apei/einj.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-Thanks,
-
--- Srinivas R
+diff --git a/Documentation/firmware-guide/acpi/apei/einj.rst b/Documentation/firmware-guide/acpi/apei/einj.rst
+index e588bccf5158..c042176e1707 100644
+--- a/Documentation/firmware-guide/acpi/apei/einj.rst
++++ b/Documentation/firmware-guide/acpi/apei/einj.rst
+@@ -50,8 +50,8 @@ The following files belong to it:
+   0x00000010        Memory Uncorrectable non-fatal
+   0x00000020        Memory Uncorrectable fatal
+   0x00000040        PCI Express Correctable
+-  0x00000080        PCI Express Uncorrectable fatal
+-  0x00000100        PCI Express Uncorrectable non-fatal
++  0x00000080        PCI Express Uncorrectable non-fatal
++  0x00000100        PCI Express Uncorrectable fatal
+   0x00000200        Platform Correctable
+   0x00000400        Platform Uncorrectable non-fatal
+   0x00000800        Platform Uncorrectable fatal
+-- 
+2.17.1
 
