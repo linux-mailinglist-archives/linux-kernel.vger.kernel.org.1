@@ -2,258 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4DFF2F5DEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 022C12F5DE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728582AbhANJkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:40:31 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:58723 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726551AbhANJkZ (ORCPT
+        id S1728364AbhANJkD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Jan 2021 04:40:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728022AbhANJj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:40:25 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=zhongjiang-ali@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0ULi6zbO_1610617113;
-Received: from L-X1DSLVDL-1420.local(mailfrom:zhongjiang-ali@linux.alibaba.com fp:SMTPD_---0ULi6zbO_1610617113)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 14 Jan 2021 17:38:34 +0800
-Subject: Re: [PATCH 04/10] mm, fsdax: Refactor memory-failure handler for dax
- mapping
-To:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>, Jan Kara <jack@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        david@fromorbit.com, hch@lst.de, song@kernel.org, rgoldwyn@suse.de,
-        qi.fuli@fujitsu.com, y-goto@fujitsu.com
-References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
- <20201230165601.845024-5-ruansy.fnst@cn.fujitsu.com>
- <20210106154132.GC29271@quack2.suse.cz>
- <75164044-bfdf-b2d6-dff0-d6a8d56d1f62@cn.fujitsu.com>
- <781f276b-afdd-091c-3dba-048e415431ab@linux.alibaba.com>
- <ef29ba5c-96d7-d0bb-e405-c7472a518b32@cn.fujitsu.com>
- <e2f7ad16-8162-4933-9091-72e690e9877e@linux.alibaba.com>
- <4f184987-3cc2-c72d-0774-5d20ea2e1d49@cn.fujitsu.com>
-From:   zhong jiang <zhongjiang-ali@linux.alibaba.com>
-Message-ID: <53ecb7e2-8f59-d1a5-df75-4780620ce91f@linux.alibaba.com>
-Date:   Thu, 14 Jan 2021 17:38:33 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:85.0)
- Gecko/20100101 Thunderbird/85.0
+        Thu, 14 Jan 2021 04:39:58 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA3DDC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 01:39:25 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kzz66-00042x-Pv; Thu, 14 Jan 2021 10:39:18 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kzz66-0003kZ-6g; Thu, 14 Jan 2021 10:39:18 +0100
+Message-ID: <3d02a239e485287884e23105376dcab2b5dc800e.camel@pengutronix.de>
+Subject: Re: [PATCH 2/3] reset: mchp: sparx5: add switch reset driver
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Date:   Thu, 14 Jan 2021 10:39:18 +0100
+In-Reply-To: <20210113201915.2734205-3-steen.hegelund@microchip.com>
+References: <20210113201915.2734205-1-steen.hegelund@microchip.com>
+         <20210113201915.2734205-3-steen.hegelund@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-In-Reply-To: <4f184987-3cc2-c72d-0774-5d20ea2e1d49@cn.fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Steen,
 
-On 2021/1/14 11:52 上午, Ruan Shiyang wrote:
->
->
-> On 2021/1/14 上午11:26, zhong jiang wrote:
->>
->> On 2021/1/14 9:44 上午, Ruan Shiyang wrote:
->>>
->>>
->>> On 2021/1/13 下午6:04, zhong jiang wrote:
->>>>
->>>> On 2021/1/12 10:55 上午, Ruan Shiyang wrote:
->>>>>
->>>>>
->>>>> On 2021/1/6 下午11:41, Jan Kara wrote:
->>>>>> On Thu 31-12-20 00:55:55, Shiyang Ruan wrote:
->>>>>>> The current memory_failure_dev_pagemap() can only handle 
->>>>>>> single-mapped
->>>>>>> dax page for fsdax mode.  The dax page could be mapped by 
->>>>>>> multiple files
->>>>>>> and offsets if we let reflink feature & fsdax mode work 
->>>>>>> together. So,
->>>>>>> we refactor current implementation to support handle memory 
->>>>>>> failure on
->>>>>>> each file and offset.
->>>>>>>
->>>>>>> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
->>>>>>
->>>>>> Overall this looks OK to me, a few comments below.
->>>>>>
->>>>>>> ---
->>>>>>>   fs/dax.c            | 21 +++++++++++
->>>>>>>   include/linux/dax.h |  1 +
->>>>>>>   include/linux/mm.h  |  9 +++++
->>>>>>>   mm/memory-failure.c | 91 
->>>>>>> ++++++++++++++++++++++++++++++++++-----------
->>>>>>>   4 files changed, 100 insertions(+), 22 deletions(-)
->>>>>
->>>>> ...
->>>>>
->>>>>>>   @@ -345,9 +348,12 @@ static void add_to_kill(struct 
->>>>>>> task_struct *tsk, struct page *p,
->>>>>>>       }
->>>>>>>         tk->addr = page_address_in_vma(p, vma);
->>>>>>> -    if (is_zone_device_page(p))
->>>>>>> -        tk->size_shift = dev_pagemap_mapping_shift(p, vma);
->>>>>>> -    else
->>>>>>> +    if (is_zone_device_page(p)) {
->>>>>>> +        if (is_device_fsdax_page(p))
->>>>>>> +            tk->addr = vma->vm_start +
->>>>>>> +                    ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
->>>>>>
->>>>>> It seems strange to use 'pgoff' for dax pages and not for any 
->>>>>> other page.
->>>>>> Why? I'd rather pass correct pgoff from all callers of 
->>>>>> add_to_kill() and
->>>>>> avoid this special casing...
->>>>>
->>>>> Because one fsdax page can be shared by multiple pgoffs. I have to 
->>>>> pass each pgoff in each iteration to calculate the address in vma 
->>>>> (for tk->addr).  Other kinds of pages don't need this. They can 
->>>>> get their unique address by calling "page_address_in_vma()".
->>>>>
->>>> IMO,   an fsdax page can be shared by multiple files rather than 
->>>> multiple pgoffs if fs query support reflink.   Because an page only 
->>>> located in an mapping(page->mapping is exclusive), hence it  only 
->>>> has an pgoff or index pointing at the node.
->>>>
->>>>   or  I miss something for the feature ?  thanks,
->>>
->>> Yes, a fsdax page is shared by multiple files because of reflink. I 
->>> think my description of 'pgoff' here is not correct.  This 'pgoff' 
->>> means the offset within the a file. (We use rmap to find out all the 
->>> sharing files and their offsets.)  So, I said that "can be shared by 
->>> multiple pgoffs".  It's my bad.
->>>
->>> I think I should name it another word to avoid misunderstandings.
->>>
->> IMO,  All the sharing files should be the same offset to share the 
->> fsdax page.  why not that ? 
->
-> The dedupe operation can let different files share their same data 
-> extent, though offsets are not same.  So, files can share one fsdax 
-> page at different offset.
-Ok,  Get it.
->
->> As you has said,  a shared fadax page should be inserted to different 
->> mapping files.  but page->index and page->mapping is exclusive.  
->> hence an page only should be placed in an mapping tree.
->
-> We can't use page->mapping and page->index here for reflink & fsdax. 
-> And that's this patchset aims to solve.  I introduced a series of 
-> ->corrupted_range(), from mm to pmem driver to block device and 
-> finally to filesystem, to use rmap feature of filesystem to find out 
-> all files sharing same data extent (fsdax page).
+thank you for the patch. In addition to Andrew's comments, I have a few
+more below:
 
- From this patch,  each file has mapping tree,  the shared page will be 
-inserted into multiple file mapping tree.  then filesystem use file and 
-offset to get the killed process.   Is it correct?
+On Wed, 2021-01-13 at 21:19 +0100, Steen Hegelund wrote:
+> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> ---
+>  drivers/reset/Kconfig                  |   8 ++
+>  drivers/reset/Makefile                 |   1 +
+>  drivers/reset/reset-microchip-sparx5.c | 145 +++++++++++++++++++++++++
+>  3 files changed, 154 insertions(+)
+>  create mode 100644 drivers/reset/reset-microchip-sparx5.c
+> 
+> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+> index 71ab75a46491..05c240c47a8a 100644
+> --- a/drivers/reset/Kconfig
+> +++ b/drivers/reset/Kconfig
+> @@ -101,6 +101,14 @@ config RESET_LPC18XX
+>  	help
+>  	  This enables the reset controller driver for NXP LPC18xx/43xx SoCs.
+>  
+> +config RESET_MCHP_SPARX5
+> +	bool "Microchip Sparx5 reset driver"
+> +	depends on HAS_IOMEM || COMPILE_TEST
+> +	default y if SPARX5_SWITCH
+> +	select MFD_SYSCON
+> +	help
+> +	  This driver supports switch core reset for the Microchip Sparx5 SoC.
+> +
+>  config RESET_MESON
+>  	tristate "Meson Reset Driver"
+>  	depends on ARCH_MESON || COMPILE_TEST
+> diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
+> index 1054123fd187..341fd9ab4bf6 100644
+> --- a/drivers/reset/Makefile
+> +++ b/drivers/reset/Makefile
+> @@ -15,6 +15,7 @@ obj-$(CONFIG_RESET_IMX7) += reset-imx7.o
+>  obj-$(CONFIG_RESET_INTEL_GW) += reset-intel-gw.o
+>  obj-$(CONFIG_RESET_LANTIQ) += reset-lantiq.o
+>  obj-$(CONFIG_RESET_LPC18XX) += reset-lpc18xx.o
+> +obj-$(CONFIG_RESET_MCHP_SPARX5) += reset-microchip-sparx5.o
+>  obj-$(CONFIG_RESET_MESON) += reset-meson.o
+>  obj-$(CONFIG_RESET_MESON_AUDIO_ARB) += reset-meson-audio-arb.o
+>  obj-$(CONFIG_RESET_NPCM) += reset-npcm.o
+> diff --git a/drivers/reset/reset-microchip-sparx5.c b/drivers/reset/reset-microchip-sparx5.c
+> new file mode 100644
+> index 000000000000..bb636ebd22d2
+> --- /dev/null
+> +++ b/drivers/reset/reset-microchip-sparx5.c
+> @@ -0,0 +1,145 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/* Microchip Sparx5 Switch Reset driver
+> + *
+> + * Copyright (c) 2020 Microchip Technology Inc. and its subsidiaries.
+> + *
+> + * The Sparx5 Chip Register Model can be browsed at this location:
+> + * https://github.com/microchip-ung/sparx-5_reginfo
+> + */
+> +#include <linux/delay.h>
+> +#include <linux/io.h>
+> +#include <linux/notifier.h>
 
-Thanks,
+Please drop all unused headers.
 
->
->
-> -- 
-> Thanks,
-> Ruan Shiyang.
->
->>
->> And In the current patch,  we failed to found out that all process 
->> use the fsdax page shared by multiple files and kill them.
->>
->>
->> Thanks,
->>
->>> -- 
->>> Thanks,
->>> Ruan Shiyang.
->>>
->>>>
->>>>> So, I added this fsdax case here. This patchset only implemented 
->>>>> the fsdax case, other cases also need to be added here if to be 
->>>>> implemented.
->>>>>
->>>>>
->>>>> -- 
->>>>> Thanks,
->>>>> Ruan Shiyang.
->>>>>
->>>>>>
->>>>>>> +        tk->size_shift = dev_pagemap_mapping_shift(p, vma, 
->>>>>>> tk->addr);
->>>>>>> +    } else
->>>>>>>           tk->size_shift = page_shift(compound_head(p));
->>>>>>>         /*
->>>>>>> @@ -495,7 +501,7 @@ static void collect_procs_anon(struct page 
->>>>>>> *page, struct list_head *to_kill,
->>>>>>>               if (!page_mapped_in_vma(page, vma))
->>>>>>>                   continue;
->>>>>>>               if (vma->vm_mm == t->mm)
->>>>>>> -                add_to_kill(t, page, vma, to_kill);
->>>>>>> +                add_to_kill(t, page, NULL, 0, vma, to_kill);
->>>>>>>           }
->>>>>>>       }
->>>>>>>       read_unlock(&tasklist_lock);
->>>>>>> @@ -505,24 +511,19 @@ static void collect_procs_anon(struct page 
->>>>>>> *page, struct list_head *to_kill,
->>>>>>>   /*
->>>>>>>    * Collect processes when the error hit a file mapped page.
->>>>>>>    */
->>>>>>> -static void collect_procs_file(struct page *page, struct 
->>>>>>> list_head *to_kill,
->>>>>>> -                int force_early)
->>>>>>> +static void collect_procs_file(struct page *page, struct 
->>>>>>> address_space *mapping,
->>>>>>> +        pgoff_t pgoff, struct list_head *to_kill, int force_early)
->>>>>>>   {
->>>>>>>       struct vm_area_struct *vma;
->>>>>>>       struct task_struct *tsk;
->>>>>>> -    struct address_space *mapping = page->mapping;
->>>>>>> -    pgoff_t pgoff;
->>>>>>>         i_mmap_lock_read(mapping);
->>>>>>>       read_lock(&tasklist_lock);
->>>>>>> -    pgoff = page_to_pgoff(page);
->>>>>>>       for_each_process(tsk) {
->>>>>>>           struct task_struct *t = task_early_kill(tsk, 
->>>>>>> force_early);
->>>>>>> -
->>>>>>>           if (!t)
->>>>>>>               continue;
->>>>>>> -        vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff,
->>>>>>> -                      pgoff) {
->>>>>>> +        vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, 
->>>>>>> pgoff) {
->>>>>>>               /*
->>>>>>>                * Send early kill signal to tasks where a vma covers
->>>>>>>                * the page but the corrupted page is not necessarily
->>>>>>> @@ -531,7 +532,7 @@ static void collect_procs_file(struct page 
->>>>>>> *page, struct list_head *to_kill,
->>>>>>>                * to be informed of all such data corruptions.
->>>>>>>                */
->>>>>>>               if (vma->vm_mm == t->mm)
->>>>>>> -                add_to_kill(t, page, vma, to_kill);
->>>>>>> +                add_to_kill(t, page, mapping, pgoff, vma, 
->>>>>>> to_kill);
->>>>>>>           }
->>>>>>>       }
->>>>>>>       read_unlock(&tasklist_lock);
->>>>>>> @@ -550,7 +551,8 @@ static void collect_procs(struct page *page, 
->>>>>>> struct list_head *tokill,
->>>>>>>       if (PageAnon(page))
->>>>>>>           collect_procs_anon(page, tokill, force_early);
->>>>>>>       else
->>>>>>> -        collect_procs_file(page, tokill, force_early);
->>>>>>> +        collect_procs_file(page, page->mapping, 
->>>>>>> page_to_pgoff(page),
->>>>>>
->>>>>> Why not use page_mapping() helper here? It would be safer for 
->>>>>> THPs if they
->>>>>> ever get here...
->>>>>>
->>>>>>                                 Honza
->>>>>>
->>>>>
->>>>
->>>>
->>>
->>
->>
->
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/reset-controller.h>
+> +
+> +#define PROTECT_REG    0x84
+> +#define PROTECT_BIT    BIT(10)
+> +#define SOFT_RESET_REG 0x08
+> +#define SOFT_RESET_BIT BIT(1)
+> +
+> +struct mchp_reset_context {
+> +	struct device *dev;
+> +	struct regmap *cpu_ctrl;
+> +	struct regmap *gcb_ctrl;
+> +	struct reset_controller_dev reset_ctrl;
+
+For consistency, I'd like this to be called rcdev, or something else
+that doesn't sound like this should be a struct reset_control.
+
+> +};
+> +
+> +static u32 sparx5_read_soft_rst(struct mchp_reset_context *ctx)
+> +{
+> +	u32 val;
+> +
+> +	regmap_read(ctx->gcb_ctrl, SOFT_RESET_REG, &val);
+> +	return val;
+> +}
+
+This can be dropped if you use regmap_read_poll_timeout() below.
+
+> +static int sparx5_switch_reset(struct reset_controller_dev *rcdev,
+> +				      unsigned long id)
+> +{
+> +	struct mchp_reset_context *ctx =
+> +		container_of(rcdev, struct mchp_reset_context, reset_ctrl);
+> +	u32 val;
+> +
+> +	/* Make sure the core is PROTECTED from reset */
+> +	regmap_update_bits(ctx->cpu_ctrl, PROTECT_REG, PROTECT_BIT, PROTECT_BIT);
+> +
+> +	dev_info(ctx->dev, "soft reset of switchcore\n");
+> +
+> +	/* Start soft reset */
+> +	regmap_write(ctx->gcb_ctrl, SOFT_RESET_REG, SOFT_RESET_BIT);
+> +
+> +	/* Wait for soft reset done */
+> +	return read_poll_timeout(sparx5_read_soft_rst, val,
+> +				 (val & SOFT_RESET_BIT) == 0,
+> +				 1, 100, false,
+> +				 ctx);
+
+This looks like you could use regmap_read_poll_timeout() here.
+
+> +}
+> +
+> +static const struct reset_control_ops sparx5_reset_ops = {
+> +	.reset = sparx5_switch_reset,
+> +};
+> +
+> +static int mchp_sparx5_reset_config(struct platform_device *pdev,
+> +				    struct mchp_reset_context *ctx)
+> +{
+> +	struct device_node *dn = pdev->dev.of_node;
+> +	struct regmap *cpu_ctrl, *gcb_ctrl;
+> +	struct device_node *syscon_np;
+> +	int err;
+> +
+> +	syscon_np = of_parse_phandle(dn, "syscons", 0);
+> +	if (!syscon_np)
+> +		return -ENODEV;
+> +	cpu_ctrl = syscon_node_to_regmap(syscon_np);
+> +	if (IS_ERR(cpu_ctrl))
+> +		goto err_cpu;
+> +	of_node_put(syscon_np);
+
+If you move the of_node_put() up before the IS_ERR() check, you don't
+have to repeat it at the err_cpu: label. In fact, if you also move the
+error message up here, you can return here and drop the label.
+
+> +
+> +	syscon_np = of_parse_phandle(dn, "syscons", 1);
+> +	if (!syscon_np)
+> +		return -ENODEV;
+> +	gcb_ctrl = syscon_node_to_regmap(syscon_np);
+> +	if (IS_ERR(gcb_ctrl))
+> +		goto err_gcb;
+> +	of_node_put(syscon_np);
+
+Same as above.
+
+> +
+> +	ctx->cpu_ctrl = cpu_ctrl;
+> +	ctx->gcb_ctrl = gcb_ctrl;
+> +
+> +	ctx->reset_ctrl.owner = THIS_MODULE;
+> +	ctx->reset_ctrl.nr_resets = 1;
+> +	ctx->reset_ctrl.ops = &sparx5_reset_ops;
+> +	ctx->reset_ctrl.of_node = dn;
+> +
+> +	err = devm_reset_controller_register(&pdev->dev, &ctx->reset_ctrl);
+> +	if (err)
+> +		dev_err(&pdev->dev, "could not register reset controller\n");
+> +	pr_info("%s:%d\n", __func__, __LINE__);
+> +	return err;
+
+The only reason devm_reset_controller_register() can fail
+unexpectedly is -ENOMEM. I think it would be fine to just
+return devm_reset_controller_regster() here.
+
+> +err_cpu:
+> +	of_node_put(syscon_np);
+> +	dev_err(&pdev->dev, "No cpu syscon map\n");
+> +	return PTR_ERR(cpu_ctrl);
+> +err_gcb:
+> +	of_node_put(syscon_np);
+> +	dev_err(&pdev->dev, "No gcb syscon map\n");
+> +	return PTR_ERR(gcb_ctrl);
+> +}
+> +
+> +static int mchp_sparx5_reset_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct mchp_reset_context *ctx;
+> +
+> +	pr_info("%s:%d\n", __func__, __LINE__);
+> +	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
+> +	if (!ctx)
+> +		return -ENOMEM;
+> +	ctx->dev = dev;
+> +	return mchp_sparx5_reset_config(pdev, ctx);
+> +}
+
+You could fold the contents of mchp_sparx5_reset_config() into
+mchp_sparx5_reset_probe() and replace all &pdev->dev with dev.
+
+regards
+Philipp
