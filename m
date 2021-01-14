@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8F52F6F1E
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD6B2F6F1F
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 00:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731080AbhANXtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 18:49:11 -0500
-Received: from mga01.intel.com ([192.55.52.88]:34774 "EHLO mga01.intel.com"
+        id S1731101AbhANXtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 18:49:16 -0500
+Received: from mga09.intel.com ([134.134.136.24]:18287 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731021AbhANXtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 18:49:10 -0500
-IronPort-SDR: wNHsn9QiFCwsN3sW4IeqsiOzNqCnPep4vfM04h2jRGKZckO+9/XHQbLcbVX5bmm1OolebnYjqV
- ZwoRnhNH8HXQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="197124043"
+        id S1731066AbhANXtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 18:49:11 -0500
+IronPort-SDR: wpDretEZVubvyrCBznOo5RYu+gYKrGvjJfd47EnFxxyWPt2HelJRojTl8aCHtYv/MhePZXzLOZ
+ 7AUlG3OnrBvA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="178614797"
 X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="197124043"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 15:48:30 -0800
-IronPort-SDR: I596id391bhz15WlPqQ24RYE40H7zCX2zzRH1RfaZPl1g3BqHZ2GV8vVC9fudC/s5ykxe3vfr2
- xRzS61MXF6uw==
+   d="scan'208";a="178614797"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 15:48:30 -0800
+IronPort-SDR: hn8Es19QOiOtMmc3rG33zyFcR/gXzfMH5MjkmDkdJs8tGuB6PKr2ZQJStnUPjo32u1zQh0B1yl
+ 7eh5f6Ehu+SQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="425106888"
+   d="scan'208";a="352646326"
 Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 14 Jan 2021 15:48:28 -0800
+  by orsmga006.jf.intel.com with ESMTP; 14 Jan 2021 15:48:28 -0800
 Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1l0CLs-00000l-32; Thu, 14 Jan 2021 23:48:28 +0000
-Date:   Fri, 15 Jan 2021 07:48:03 +0800
+        id 1l0CLs-00000t-5N; Thu, 14 Jan 2021 23:48:28 +0000
+Date:   Fri, 15 Jan 2021 07:48:24 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 1eb8f690bcb565a6600f8b6dcc78f7b239ceba17
-Message-ID: <6000d833.J+Ni4btj1lhW5zp7%lkp@intel.com>
+Subject: [tip:locking/core] BUILD SUCCESS
+ 7e923e6a3ceb877497dd9ee70d71fa33b94f332b
+Message-ID: <6000d848.FO685ZH0umJ9dFik%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,64 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
-branch HEAD: 1eb8f690bcb565a6600f8b6dcc78f7b239ceba17  x86/topology: Make __max_die_per_package available unconditionally
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/core
+branch HEAD: 7e923e6a3ceb877497dd9ee70d71fa33b94f332b  locking/selftests: Add local_lock inversion tests
 
-elapsed time: 725m
+elapsed time: 772m
 
-configs tested: 115
-configs skipped: 74
+configs tested: 110
+configs skipped: 2
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
 gcc tested configs:
-arm                          moxart_defconfig
-x86_64                           allyesconfig
-m68k                          amiga_defconfig
-sparc                       sparc32_defconfig
-powerpc                        icon_defconfig
-arm                       imx_v4_v5_defconfig
-arc                      axs103_smp_defconfig
-sh                          r7785rp_defconfig
-m68k                        m5272c3_defconfig
-arm                        oxnas_v6_defconfig
-mips                           gcw0_defconfig
-openrisc                         alldefconfig
-arm                        multi_v5_defconfig
-powerpc                      ppc44x_defconfig
-arc                        nsimosci_defconfig
-sh                      rts7751r2d1_defconfig
-sh                           se7751_defconfig
-parisc                generic-32bit_defconfig
-arc                     nsimosci_hs_defconfig
-riscv                          rv32_defconfig
-mips                         cobalt_defconfig
-m68k                             alldefconfig
-arm                         at91_dt_defconfig
-m68k                        m5407c3_defconfig
-mips                      bmips_stb_defconfig
-powerpc                      ppc6xx_defconfig
-sh                            migor_defconfig
-powerpc                     mpc5200_defconfig
-mips                        workpad_defconfig
-arm                             ezx_defconfig
-mips                  decstation_64_defconfig
-arm                          pxa168_defconfig
-sh                          sdk7786_defconfig
-sh                   sh7770_generic_defconfig
-arm                            hisi_defconfig
-mips                      maltaaprp_defconfig
-mips                         bigsur_defconfig
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 mpc836x_rdk_defconfig
+powerpc                 mpc8313_rdb_defconfig
+arm                        mvebu_v7_defconfig
+mips                        bcm47xx_defconfig
+sh                          rsk7201_defconfig
+powerpc                      tqm8xx_defconfig
+powerpc                      katmai_defconfig
+powerpc                       eiger_defconfig
 arc                              alldefconfig
+m68k                        mvme147_defconfig
 um                            kunit_defconfig
-powerpc                     kilauea_defconfig
-m68k                        stmark2_defconfig
-sh                           se7705_defconfig
-c6x                        evmc6457_defconfig
-sh                           se7724_defconfig
-arm                            mmp2_defconfig
-arm                        vexpress_defconfig
+arm                            zeus_defconfig
+mips                        workpad_defconfig
+arm                     eseries_pxa_defconfig
+mips                     cu1000-neo_defconfig
+mips                         mpc30x_defconfig
+mips                      maltasmvp_defconfig
+arm                           corgi_defconfig
+arm                       aspeed_g5_defconfig
+arm                        mvebu_v5_defconfig
+arm                         assabet_defconfig
+arm                        multi_v7_defconfig
+arm64                            alldefconfig
+powerpc                     pseries_defconfig
+mips                        nlm_xlp_defconfig
+arm                         cm_x300_defconfig
+sh                           se7750_defconfig
+sh                           se7206_defconfig
+powerpc                     tqm8555_defconfig
+arm                         lpc32xx_defconfig
+sh                           se7722_defconfig
+mips                        maltaup_defconfig
+csky                             alldefconfig
+arm                          iop32x_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -157,8 +150,10 @@ riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
 riscv                             allnoconfig
 riscv                               defconfig
+riscv                          rv32_defconfig
 riscv                            allmodconfig
 x86_64                                   rhel
+x86_64                           allyesconfig
 x86_64                    rhel-7.6-kselftests
 x86_64                              defconfig
 x86_64                               rhel-8.3
