@@ -2,118 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8AD32F69A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:36:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F4E2F69A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbhANSdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:33:41 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2352 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbhANSdl (ORCPT
+        id S1727936AbhANSdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:33:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725935AbhANSdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:33:41 -0500
-Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DGtB600Ldz67bhq;
-        Fri, 15 Jan 2021 02:29:01 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Thu, 14 Jan 2021 19:32:57 +0100
-Received: from localhost (10.47.30.252) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 14 Jan
- 2021 18:32:57 +0000
-Date:   Thu, 14 Jan 2021 18:32:17 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Vishal Verma" <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        "Bjorn Helgaas" <helgaas@kernel.org>,
-        Jon Masters <jcm@jonmasters.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        <daniel.lll@alibaba-inc.com>
-Subject: Re: [RFC PATCH v3 14/16] cxl/mem: Use CEL for enabling commands
-Message-ID: <20210114183217.0000154c@Huawei.com>
-In-Reply-To: <20210114181340.fgybdchzfxiiqwhr@intel.com>
-References: <20210111225121.820014-1-ben.widawsky@intel.com>
-        <20210111225121.820014-16-ben.widawsky@intel.com>
-        <20210114180211.00007852@Huawei.com>
-        <20210114181340.fgybdchzfxiiqwhr@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Thu, 14 Jan 2021 13:33:53 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2173BC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:33:13 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id o6so13103106iob.10
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:33:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EpxBdx9jZ4gaoHzEH4M+jBIaxXM+BhIPyc9ky3KCS6o=;
+        b=V4wj5Oc56UgnE2BbRdn3FvtNA61kZC/Q/b0oIttX6nQPNjZVFPUneu+7au70rNmPRH
+         RPlY+uYxJxWrO3hT/w9H6mhLaTdPhmGL9cWT97mV+HVefJpBrGQrAR07Fg5Xd4AjsC5g
+         QqIeKdsT5dcYLCehHuvRDPfNV9gRQwtc/fBxI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EpxBdx9jZ4gaoHzEH4M+jBIaxXM+BhIPyc9ky3KCS6o=;
+        b=K7YTCLCxkod+oZEk0KjQ4PnLfRzoYlrrtGMXYV9JvmuZxlQ3aR5CU1LOCIK5+quQmG
+         wYcSzBdOgOhIp2qgLTNHG1OvejcnsNM4rhfNnvAk5kryOV2tTRsO6oOn2Y4FHZ5F0n8R
+         6iqNqbSpjH1HdnzwoGj4JY2UZwMuq/9sLW7Go91oCMIsZPLWzmWL7WNYCtZc9J2yPAol
+         ac+vCXxqOZQ850ek7qZoQkICtEPEKVlPE4NdB9RpIIGxyrXTRmSQFszcE/N8rzD8FjJm
+         3+6wUOOg4N3truhl+AwP7j2eIySiXYI97cLggLQcLYPEA6B/gepU7/b+68G0NNfUYvFz
+         iwmQ==
+X-Gm-Message-State: AOAM532K5CQs3tDQ2U78051la+xV+dDhEjpt4b6xGxSZYdzlfAGL28Jl
+        xglXhPeEpRUkyV3/G5LQTqSgPr15kxvI2onwvMID
+X-Google-Smtp-Source: ABdhPJzZpwCw+Xdqndp0caPskWocj1SFY7nvD8xb8MXxAlTFcWEDEuswl4lapPjjbYsU4P4plg7idsNMUMY4nFl3wt4=
+X-Received: by 2002:a02:b011:: with SMTP id p17mr7502137jah.114.1610649192495;
+ Thu, 14 Jan 2021 10:33:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.30.252]
-X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20210107092652.3438696-4-atish.patra@wdc.com> <mhng-1400a3dd-651b-4a78-bb2d-1f10580add75@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-1400a3dd-651b-4a78-bb2d-1f10580add75@palmerdabbelt-glaptop>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Thu, 14 Jan 2021 10:33:01 -0800
+Message-ID: <CAOnJCU+mCPwbeOQpmHmu3ar_17otmgftiKHLL+Z4_nExpj0=cA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] RISC-V: Fix L1_CACHE_BYTES for RV32
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Atish Patra <Atish.Patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 10:13:40 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
+On Wed, Jan 13, 2021 at 9:10 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Thu, 07 Jan 2021 01:26:51 PST (-0800), Atish Patra wrote:
+> > SMP_CACHE_BYTES/L1_CACHE_BYTES should be defined as 32 instead of
+> > 64 for RV32. Otherwise, there will be hole of 32 bytes with each memblock
+> > allocation if it is requested to be aligned with SMP_CACHE_BYTES.
+> >
+> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> > ---
+> >  arch/riscv/include/asm/cache.h | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
+> > index 9b58b104559e..c9c669ea2fe6 100644
+> > --- a/arch/riscv/include/asm/cache.h
+> > +++ b/arch/riscv/include/asm/cache.h
+> > @@ -7,7 +7,11 @@
+> >  #ifndef _ASM_RISCV_CACHE_H
+> >  #define _ASM_RISCV_CACHE_H
+> >
+> > +#ifdef CONFIG_64BIT
+> >  #define L1_CACHE_SHIFT               6
+> > +#else
+> > +#define L1_CACHE_SHIFT               5
+> > +#endif
+> >
+> >  #define L1_CACHE_BYTES               (1 << L1_CACHE_SHIFT)
+>
+> Should we not instead just
+>
+> #define SMP_CACHE_BYTES L1_CACHE_BYTES
+>
+> like a handful of architectures do?
+>
 
-> On 21-01-14 18:02:11, Jonathan Cameron wrote:
-> > On Mon, 11 Jan 2021 14:51:19 -0800
-> > Ben Widawsky <ben.widawsky@intel.com> wrote:
-> >   
-> > > The Command Effects Log (CEL) is specified in the CXL 2.0 specification.
-> > > The CEL is one of two types of logs, the other being vendor specific.
-> > > They are distinguished in hardware/spec via UUID. The CEL is immediately
-> > > useful for 2 things:
-> > > 1. Determine which optional commands are supported by the CXL device.
-> > > 2. Enumerate any vendor specific commands
-> > > 
-> > > The CEL can be used by the driver to determine which commands are
-> > > available in the hardware (though it isn't, yet). That set of commands
-> > > might itself be a subset of commands which are available to be used via
-> > > CXL_MEM_SEND_COMMAND IOCTL.
-> > > 
-> > > Prior to this, all commands that the driver exposed were explicitly
-> > > enabled. After this, only those commands that are found in the CEL are
-> > > enabled.
-> > > 
-> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>  
-> > 
-> > This patch made me wonder if the model for the command in quite right.
-> > I think it would end up simpler with a pair of payload pointers for send
-> > and receive (that can be equal when it makes sense).
-> > 
-> > A few other things inline.
-> > 
-> > Jonathan  
-> 
-> I'll address the others separately, but could you elaborate on this? I'm not
-> sure I follow your meaning.
+The generic code already defines it that way in include/linux/cache.h
 
-Further down in the review..
-"
-The fact that you end up bypassing the payload transfer stuff in mbox_cmd
-rather suggests it's not a particularly good model.  + it keeps confusing
-me.
+> The cache size is sort of fake here, as we don't have any non-coherent
+> mechanisms, but IIRC we wrote somewhere that it's recommended to have 64-byte
+> cache lines in RISC-V implementations as software may assume that for
+> performance reasons.  Not really a strong reason, but I'd prefer to just make
+> these match.
+>
 
-While the hardware uses a single region for the payload, there is nothing
-saying the code has to work that way.   Why not have separate payload_in and
-payload_out pointers?  Occasionally you might set them to the same buffer, but
-elsewhere you could avoid the direct memcpy()s you are doing around the
-send_cmd(). 
+If it is documented somewhere in the kernel, we should update that. I
+think SMP_CACHE_BYTES being 64
+actually degrades the performance as there will be a fragmented memory
+blocks with 32 bit bytes gap wherever
+SMP_CACHE_BYTES is used as an alignment requirement.
 
-"
-
-Jonathan
+In addition to that, Geert Uytterhoeven mentioned some panic on vex32
+without this patch.
+I didn't see anything in Qemu though.
 
 
-> 
-> [snip]
-> 
-> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
+
+
+-- 
+Regards,
+Atish
