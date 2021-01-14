@@ -2,488 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A89342F609B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F25EA2F60A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728661AbhANL51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 06:57:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33278 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726376AbhANL50 (ORCPT
+        id S1728843AbhANL6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 06:58:36 -0500
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:58693 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728761AbhANL6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 06:57:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610625358;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5HuSkgGk92m7vvq3yaj6Z7qRk9idenQoli+8X8G00Pw=;
-        b=NZCkrl8c05ZVZGoRcu3qvAG2pHUl+QBU8+Xgh347TSmqRTiNBPHmdiF8YMpbvZMZTIP/dt
-        JJEjIeox/IaqiCozsbqoqEOOALVkEZQrZHnKvFPpa50ZlHJEFR3yhioXiTPbMzChixXkwm
-        U0S3v1m5p/eBWPevzHMCTuAkj7cA4Zc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-203-kve9aYs-PsmuOhfhRO8m3Q-1; Thu, 14 Jan 2021 06:55:56 -0500
-X-MC-Unique: kve9aYs-PsmuOhfhRO8m3Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 302D815720;
-        Thu, 14 Jan 2021 11:55:54 +0000 (UTC)
-Received: from starship (unknown [10.35.206.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1839560657;
-        Thu, 14 Jan 2021 11:55:46 +0000 (UTC)
-Message-ID: <8ada613c5c9c5e407e3a2cb3f9e9ab09e8c1de95.camel@redhat.com>
-Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered
- by VM instructions
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com, seanjc@google.com, joro@8bytes.org,
-        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
-        dgilbert@redhat.com
-Date:   Thu, 14 Jan 2021 13:55:45 +0200
-In-Reply-To: <20210112063703.539893-1-wei.huang2@amd.com>
-References: <20210112063703.539893-1-wei.huang2@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Thu, 14 Jan 2021 06:58:35 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 082675805E8;
+        Thu, 14 Jan 2021 06:57:49 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 14 Jan 2021 06:57:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=pIhvASRgvoG2sgYrbHtOgU5UtLU
+        uQKvIS/YboGlCm8E=; b=WpG29/sMUYehR6h3Q8PCye+zfhICMLVSDCU+0B6Aw7P
+        wctjuuCpH7kwHQJ5psIdNpJoj0211klif24tIAHYgag2Ou20xD7qW71JCldRSDsQ
+        kFrBzzRQnREpoBVatypDKydicwRqO+/KMjQoYLvbOE1c9i51zDHfFnLwANadGw9U
+        yaoijP99PeC31tBDwjNzeyBla9eaYQEk6RdNAmBPq9e9384DQTtPu+dUoVpfspt+
+        k6U4nKFNv3AgBHs0N+FCijgQKpFvnUx+Kv2kLyQkl5LmVtDTb2NO+bcCWjhe2J6j
+        GCAF6XSshT4D8ebL2OG5KYWi50XbI9g4vX+/jE9lCSw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=pIhvAS
+        RgvoG2sgYrbHtOgU5UtLUuQKvIS/YboGlCm8E=; b=ZY7bDwADVqWQf5WhAlb1yb
+        +Ocm2EtWzWfp7X291fCRbVaqtt5o+9qNQpzTy9y1C0d4HrbgAWpTptpu+aOAUjnc
+        RthgCUjb49pMfSGdx8A1rdo0dI697edZ8VSjNn8ssG5W4uxPsoptK67K0/k91ap3
+        jK14dzObuMe9Qg3AWzwCy80f0dL9WocfMc+AQAkxxatDGU2u8oTKZkQAUOowG4t5
+        rh50dZmDkZoIQ4QNBxrDVWh/GiOBA3CBFDr/J10tNjBFl8CBmxMkPVhpvbV8bfDz
+        Laz9hTqeFG7XLpdDwIHjqA06jgbM6aTJn0qMALeNd60zj9o50cc0s39240Ky3PWQ
+        ==
+X-ME-Sender: <xms:uzEAYIFRSCo-WfycmpCmqVlP6gJFCIjEz0DlquEr8-cLLyX7yup07Q>
+    <xme:uzEAYBW25kIDcsMjWFGgi_hkmSOHYr08n_Tql1PBybYKeo8nY-2DQv1Mw8Oe3ZALg
+    qo7BlmZu0PVtne8oyw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtddtgddtkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeevgeduteektefhtefggfdtkeekgfehhffffeegudelheegheeiueevfeegvdei
+    geenucffohhmrghinhepghhithhhuhgsrdgtohhmnecukfhppeeltddrkeelrdeikedrje
+    einecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgr
+    gihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:uzEAYCK9jsyc4gd4k1Nd5WaLLBeeo0ulDFP_NvPe-u_r9IxTGjcOKA>
+    <xmx:uzEAYKF_7nKrUdhgBiaRfi1GpCsYxdNOprruIkpAat442yNfUjeFZQ>
+    <xmx:uzEAYOXB5rhbQA6cXMZQHUch3HnK-xewKb7G9HU1yKaMS0m6NFxwsg>
+    <xmx:vDEAYFPWNExPiGzUd5DTTLga4gJJ702PTMJsg3Rx3ynNRVjbvA0u5g>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id CE48B108005B;
+        Thu, 14 Jan 2021 06:57:46 -0500 (EST)
+Date:   Thu, 14 Jan 2021 12:57:45 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Icenowy Zheng <icenowy@aosc.xyz>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v2 02/21] dt-bindings: pinctrl: Add Allwinner H616
+ compatible strings
+Message-ID: <20210114115745.x5cuxmxqllu7b6zl@gilmour>
+References: <20201211011934.6171-1-andre.przywara@arm.com>
+ <20201211011934.6171-3-andre.przywara@arm.com>
+ <20201214093728.ehd2362jzclbxwp5@gilmour>
+ <20210114004512.6cc7bd10@slackpad.fritz.box>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="mbsziskqq433z3de"
+Content-Disposition: inline
+In-Reply-To: <20210114004512.6cc7bd10@slackpad.fritz.box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-01-12 at 00:37 -0600, Wei Huang wrote:
-> From: Bandan Das <bsd@redhat.com>
-> 
-> While running VM related instructions (VMRUN/VMSAVE/VMLOAD), some AMD
-> CPUs check EAX against reserved memory regions (e.g. SMM memory on host)
-> before checking VMCB's instruction intercept. If EAX falls into such
-> memory areas, #GP is triggered before VMEXIT. This causes problem under
-> nested virtualization. To solve this problem, KVM needs to trap #GP and
-> check the instructions triggering #GP. For VM execution instructions,
-> KVM emulates these instructions; otherwise it re-injects #GP back to
-> guest VMs.
-> 
-> Signed-off-by: Bandan Das <bsd@redhat.com>
-> Co-developed-by: Wei Huang <wei.huang2@amd.com>
-> Signed-off-by: Wei Huang <wei.huang2@amd.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |   8 +-
->  arch/x86/kvm/mmu.h              |   1 +
->  arch/x86/kvm/mmu/mmu.c          |   7 ++
->  arch/x86/kvm/svm/svm.c          | 157 +++++++++++++++++++-------------
->  arch/x86/kvm/svm/svm.h          |   8 ++
->  arch/x86/kvm/vmx/vmx.c          |   2 +-
->  arch/x86/kvm/x86.c              |  37 +++++++-
->  7 files changed, 146 insertions(+), 74 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 3d6616f6f6ef..0ddc309f5a14 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1450,10 +1450,12 @@ extern u64 kvm_mce_cap_supported;
->   *			     due to an intercepted #UD (see EMULTYPE_TRAP_UD).
->   *			     Used to test the full emulator from userspace.
->   *
-> - * EMULTYPE_VMWARE_GP - Set when emulating an intercepted #GP for VMware
-> + * EMULTYPE_PARAVIRT_GP - Set when emulating an intercepted #GP for VMware
-I would prefer to see this change in a separate patch.
 
+--mbsziskqq433z3de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->   *			backdoor emulation, which is opt in via module param.
->   *			VMware backoor emulation handles select instructions
-> - *			and reinjects the #GP for all other cases.
-> + *			and reinjects #GP for all other cases. This also
-> + *			handles other cases where #GP condition needs to be
-> + *			handled and emulated appropriately
->   *
->   * EMULTYPE_PF - Set when emulating MMIO by way of an intercepted #PF, in which
->   *		 case the CR2/GPA value pass on the stack is valid.
-> @@ -1463,7 +1465,7 @@ extern u64 kvm_mce_cap_supported;
->  #define EMULTYPE_SKIP		    (1 << 2)
->  #define EMULTYPE_ALLOW_RETRY_PF	    (1 << 3)
->  #define EMULTYPE_TRAP_UD_FORCED	    (1 << 4)
-> -#define EMULTYPE_VMWARE_GP	    (1 << 5)
-> +#define EMULTYPE_PARAVIRT_GP	    (1 << 5)
->  #define EMULTYPE_PF		    (1 << 6)
->  
->  int kvm_emulate_instruction(struct kvm_vcpu *vcpu, int emulation_type);
-> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> index 581925e476d6..1a2fff4e7140 100644
-> --- a/arch/x86/kvm/mmu.h
-> +++ b/arch/x86/kvm/mmu.h
-> @@ -219,5 +219,6 @@ int kvm_arch_write_log_dirty(struct kvm_vcpu *vcpu);
->  
->  int kvm_mmu_post_init_vm(struct kvm *kvm);
->  void kvm_mmu_pre_destroy_vm(struct kvm *kvm);
-> +bool kvm_is_host_reserved_region(u64 gpa);
->  
->  #endif
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 6d16481aa29d..c5c4aaf01a1a 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -50,6 +50,7 @@
->  #include <asm/io.h>
->  #include <asm/vmx.h>
->  #include <asm/kvm_page_track.h>
-> +#include <asm/e820/api.h>
->  #include "trace.h"
->  
->  extern bool itlb_multihit_kvm_mitigation;
-> @@ -5675,6 +5676,12 @@ void kvm_mmu_slot_set_dirty(struct kvm *kvm,
->  }
->  EXPORT_SYMBOL_GPL(kvm_mmu_slot_set_dirty);
->  
-> +bool kvm_is_host_reserved_region(u64 gpa)
-> +{
-> +	return e820__mapped_raw_any(gpa-1, gpa+1, E820_TYPE_RESERVED);
-> +}
-> +EXPORT_SYMBOL_GPL(kvm_is_host_reserved_region);
-> +
->  void kvm_mmu_zap_all(struct kvm *kvm)
->  {
->  	struct kvm_mmu_page *sp, *node;
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 7ef171790d02..74620d32aa82 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -288,6 +288,7 @@ int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
->  		if (!(efer & EFER_SVME)) {
->  			svm_leave_nested(svm);
->  			svm_set_gif(svm, true);
-> +			clr_exception_intercept(svm, GP_VECTOR);
-Wouldn't that be wrong if we intercept #GP due to the vmware backdoor?
+On Thu, Jan 14, 2021 at 12:45:12AM +0000, Andre Przywara wrote:
+> On Mon, 14 Dec 2020 10:37:28 +0100
+> Maxime Ripard <maxime@cerno.tech> wrote:
+>=20
+> > On Fri, Dec 11, 2020 at 01:19:15AM +0000, Andre Przywara wrote:
+> > > A new SoC, a new compatible string.
+> > > Also we were too miserly with just allowing seven interrupt banks.
+> > >=20
+> > > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> > > ---
+> > >  .../pinctrl/allwinner,sun4i-a10-pinctrl.yaml   | 18
+> > > ++++++++++++++++-- 1 file changed, 16 insertions(+), 2 deletions(-)
+> > >=20
+> > > diff --git
+> > > a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinct=
+rl.yaml
+> > > b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinct=
+rl.yaml
+> > > index 5240487dfe50..292b05d9ed08 100644 ---
+> > > a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinct=
+rl.yaml
+> > > +++
+> > > b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinct=
+rl.yaml
+> > > @@ -53,6 +53,8 @@ properties:
+> > >        - allwinner,sun50i-h5-pinctrl
+> > >        - allwinner,sun50i-h6-pinctrl
+> > >        - allwinner,sun50i-h6-r-pinctrl
+> > > +      - allwinner,sun50i-h616-pinctrl
+> > > +      - allwinner,sun50i-h616-r-pinctrl
+> > >        - allwinner,suniv-f1c100s-pinctrl
+> > >        - nextthing,gr8-pinctrl
+> > > =20
+> > > @@ -61,7 +63,7 @@ properties:
+> > > =20
+> > >    interrupts:
+> > >      minItems: 1
+> > > -    maxItems: 7
+> > > +    maxItems: 8
+> > >      description:
+> > >        One interrupt per external interrupt bank supported on the
+> > >        controller, sorted by bank number ascending order.
+> > > @@ -91,7 +93,7 @@ properties:
+> > >        bank found in the controller
+> > >      $ref: /schemas/types.yaml#/definitions/uint32-array
+> > >      minItems: 1
+> > > -    maxItems: 5
+> > > +    maxItems: 8
+> > > =20
+> > >  patternProperties:
+> > >    # It's pretty scary, but the basic idea is that:
+> > > @@ -145,6 +147,18 @@ allOf:
+> > >    # boards are defining it at the moment so it would generate a
+> > > lot of # warnings.
+> > > =20
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          enum:
+> > > +            - allwinner,sun50i-h616-pinctrl
+> > > +
+> > > +    then:
+> > > +      properties:
+> > > +        interrupts:
+> > > +          minItems: 8
+> > > +          maxItems: 8
+> > > + =20
+> >=20
+> > You don't need to have both if they are equals, and in this particular
+>=20
+> Mmh, but all the other compatibles have both equal, so what would be
+> the recommended way to describe this? Just minItems? I don't find a
+> good explanation at the moment how to handle an explicit number, other
+> than by enumerating the items explicitly.
 
-I would add a flag that will be true when the workaround for the errata is enabled,
-and use it together with flag that enables vmware backdoor for decisions
-such as the above.
+This is where the magic happens:
+https://github.com/devicetree-org/dt-schema/blob/master/dtschema/lib.py#L258
 
-The flag can even be a module param to allow users to disable it if they
-really want to.
+So, if there's an items property, it will expand minItems and maxItems
+according to the length of the list. Else, it will see if there's either
+minItems and maxItems and set the other one if it's missing.
 
->  
->  			/*
->  			 * Free the nested guest state, unless we are in SMM.
-> @@ -309,6 +310,10 @@ int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
->  
->  	svm->vmcb->save.efer = efer | EFER_SVME;
->  	vmcb_mark_dirty(svm->vmcb, VMCB_CR);
-> +	/* Enable GP interception for SVM instructions if needed */
-> +	if (efer & EFER_SVME)
-> +		set_exception_intercept(svm, GP_VECTOR);
-> +
->  	return 0;
->  }
->  
-> @@ -1957,22 +1962,104 @@ static int ac_interception(struct vcpu_svm *svm)
->  	return 1;
->  }
->  
-> +static int vmload_interception(struct vcpu_svm *svm)
-> +{
-> +	struct vmcb *nested_vmcb;
-> +	struct kvm_host_map map;
-> +	int ret;
-> +
-> +	if (nested_svm_check_permissions(svm))
-> +		return 1;
-> +
-> +	ret = kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(svm->vmcb->save.rax), &map);
-> +	if (ret) {
-> +		if (ret == -EINVAL)
-> +			kvm_inject_gp(&svm->vcpu, 0);
-> +		return 1;
-> +	}
-> +
-> +	nested_vmcb = map.hva;
-> +
-> +	ret = kvm_skip_emulated_instruction(&svm->vcpu);
-> +
-> +	nested_svm_vmloadsave(nested_vmcb, svm->vmcb);
-> +	kvm_vcpu_unmap(&svm->vcpu, &map, true);
-> +
-> +	return ret;
-> +}
-> +
-> +static int vmsave_interception(struct vcpu_svm *svm)
-> +{
-> +	struct vmcb *nested_vmcb;
-> +	struct kvm_host_map map;
-> +	int ret;
-> +
-> +	if (nested_svm_check_permissions(svm))
-> +		return 1;
-> +
-> +	ret = kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(svm->vmcb->save.rax), &map);
-> +	if (ret) {
-> +		if (ret == -EINVAL)
-> +			kvm_inject_gp(&svm->vcpu, 0);
-> +		return 1;
-> +	}
-> +
-> +	nested_vmcb = map.hva;
-> +
-> +	ret = kvm_skip_emulated_instruction(&svm->vcpu);
-> +
-> +	nested_svm_vmloadsave(svm->vmcb, nested_vmcb);
-> +	kvm_vcpu_unmap(&svm->vcpu, &map, true);
-> +
-> +	return ret;
-> +}
-> +
-> +static int vmrun_interception(struct vcpu_svm *svm)
-> +{
-> +	if (nested_svm_check_permissions(svm))
-> +		return 1;
-> +
-> +	return nested_svm_vmrun(svm);
-> +}
+In this case, minItems and maxItems are equals, so you could just fill
+one of them
 
-I would prefer the move of these functions (I didn't check
-if you changed them as well) to be done in a separate patch.
+> > case we already check that the maximum is 8 so there's no need to
+> > repeat that check here.
+>=20
+> Are you referring to the overall "maxItems: 8" above, in the 2nd hunk?
+> While this will become redundant, this is apparently prone to changes
+> (as only "7" would be redundant at the moment), so I would rather not
+> rely on a global limit.
 
-> +
-> +/* Emulate SVM VM execution instructions */
-> +static int svm_emulate_vm_instr(struct kvm_vcpu *vcpu, u8 modrm)
-> +{
-> +	struct vcpu_svm *svm = to_svm(vcpu);
-> +
-> +	switch (modrm) {
-> +	case 0xd8: /* VMRUN */
-> +		return vmrun_interception(svm);
-> +	case 0xda: /* VMLOAD */
-> +		return vmload_interception(svm);
-> +	case 0xdb: /* VMSAVE */
-> +		return vmsave_interception(svm);
-> +	default:
-> +		/* inject a #GP for all other cases */
-> +		kvm_queue_exception_e(vcpu, GP_VECTOR, 0);
-> +		return 1;
-> +	}
-> +}
-> +
->  static int gp_interception(struct vcpu_svm *svm)
->  {
->  	struct kvm_vcpu *vcpu = &svm->vcpu;
->  	u32 error_code = svm->vmcb->control.exit_info_1;
-> -
-> -	WARN_ON_ONCE(!enable_vmware_backdoor);
-The warning could be kept with extended condition.
+Yeah, my point was that since the upper schema checks for the interrupts
+array length to be between 1 and 8, there's no need to specify a max of
+8, the upper schema has it covered.
 
-> +	int rc;
->  
->  	/*
-> -	 * VMware backdoor emulation on #GP interception only handles IN{S},
-> -	 * OUT{S}, and RDPMC, none of which generate a non-zero error code.
-> +	 * Only VMware backdoor and SVM VME errata are handled. Neither of
-> +	 * them has non-zero error codes.
-Could be great to mention (once published) the link to the errata
-here or somewhere so readers understand what it is all about.
+You're right that the max is increased regularly, however we can still
+rely on the above logic to fill maxItems to 8 anyway
 
->  	 */
->  	if (error_code) {
->  		kvm_queue_exception_e(vcpu, GP_VECTOR, error_code);
->  		return 1;
->  	}
-> -	return kvm_emulate_instruction(vcpu, EMULTYPE_VMWARE_GP);
-> +
-> +	rc = kvm_emulate_instruction(vcpu, EMULTYPE_PARAVIRT_GP);
-> +	if (rc > 1)
-> +		rc = svm_emulate_vm_instr(vcpu, rc);
-> +	return rc;
-As others mentioned in the review, I also would try to use something
-else that passing the mod/reg/rm byte in the return value.
-Otherwise it will backfire sooner or later.
+Maxime
 
+--mbsziskqq433z3de
+Content-Type: application/pgp-signature; name="signature.asc"
 
->  }
->  
->  static bool is_erratum_383(void)
-> @@ -2113,66 +2200,6 @@ static int vmmcall_interception(struct vcpu_svm *svm)
->  	return kvm_emulate_hypercall(&svm->vcpu);
->  }
->  
-> -static int vmload_interception(struct vcpu_svm *svm)
-> -{
-> -	struct vmcb *nested_vmcb;
-> -	struct kvm_host_map map;
-> -	int ret;
-> -
-> -	if (nested_svm_check_permissions(svm))
-> -		return 1;
-> -
-> -	ret = kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(svm->vmcb->save.rax), &map);
-> -	if (ret) {
-> -		if (ret == -EINVAL)
-> -			kvm_inject_gp(&svm->vcpu, 0);
-> -		return 1;
-> -	}
-> -
-> -	nested_vmcb = map.hva;
-> -
-> -	ret = kvm_skip_emulated_instruction(&svm->vcpu);
-> -
-> -	nested_svm_vmloadsave(nested_vmcb, svm->vmcb);
-> -	kvm_vcpu_unmap(&svm->vcpu, &map, true);
-> -
-> -	return ret;
-> -}
-> -
-> -static int vmsave_interception(struct vcpu_svm *svm)
-> -{
-> -	struct vmcb *nested_vmcb;
-> -	struct kvm_host_map map;
-> -	int ret;
-> -
-> -	if (nested_svm_check_permissions(svm))
-> -		return 1;
-> -
-> -	ret = kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(svm->vmcb->save.rax), &map);
-> -	if (ret) {
-> -		if (ret == -EINVAL)
-> -			kvm_inject_gp(&svm->vcpu, 0);
-> -		return 1;
-> -	}
-> -
-> -	nested_vmcb = map.hva;
-> -
-> -	ret = kvm_skip_emulated_instruction(&svm->vcpu);
-> -
-> -	nested_svm_vmloadsave(svm->vmcb, nested_vmcb);
-> -	kvm_vcpu_unmap(&svm->vcpu, &map, true);
-> -
-> -	return ret;
-> -}
-> -
-> -static int vmrun_interception(struct vcpu_svm *svm)
-> -{
-> -	if (nested_svm_check_permissions(svm))
-> -		return 1;
-> -
-> -	return nested_svm_vmrun(svm);
-> -}
-> -
->  void svm_set_gif(struct vcpu_svm *svm, bool value)
->  {
->  	if (value) {
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 0fe874ae5498..d5dffcf59afa 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -350,6 +350,14 @@ static inline void clr_exception_intercept(struct vcpu_svm *svm, u32 bit)
->  	recalc_intercepts(svm);
->  }
->  
-> +static inline bool is_exception_intercept(struct vcpu_svm *svm, u32 bit)
-> +{
-> +	struct vmcb *vmcb = get_host_vmcb(svm);
-> +
-> +	WARN_ON_ONCE(bit >= 32);
-> +	return vmcb_is_intercept(&vmcb->control, INTERCEPT_EXCEPTION_OFFSET + bit);
-> +}
-This function doesn't seem to be used anywhere.
+-----BEGIN PGP SIGNATURE-----
 
-> +
->  static inline void svm_set_intercept(struct vcpu_svm *svm, int bit)
->  {
->  	struct vmcb *vmcb = get_host_vmcb(svm);
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 2af05d3b0590..5fac2f7cba24 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -4774,7 +4774,7 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
->  			kvm_queue_exception_e(vcpu, GP_VECTOR, error_code);
->  			return 1;
->  		}
-> -		return kvm_emulate_instruction(vcpu, EMULTYPE_VMWARE_GP);
-> +		return kvm_emulate_instruction(vcpu, EMULTYPE_PARAVIRT_GP);
->  	}
->  
->  	/*
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 9a8969a6dd06..c3662fc3b1bc 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -7014,7 +7014,7 @@ static int handle_emulation_failure(struct kvm_vcpu *vcpu, int emulation_type)
->  	++vcpu->stat.insn_emulation_fail;
->  	trace_kvm_emulate_insn_failed(vcpu);
->  
-> -	if (emulation_type & EMULTYPE_VMWARE_GP) {
-> +	if (emulation_type & EMULTYPE_PARAVIRT_GP) {
->  		kvm_queue_exception_e(vcpu, GP_VECTOR, 0);
->  		return 1;
->  	}
-> @@ -7267,6 +7267,28 @@ static bool kvm_vcpu_check_breakpoint(struct kvm_vcpu *vcpu, int *r)
->  	return false;
->  }
->  
-> +static int is_vm_instr_opcode(struct x86_emulate_ctxt *ctxt)
-> +{
-> +	unsigned long rax;
-> +
-> +	if (ctxt->b != 0x1)
-> +		return 0;
-Don't you also want to check that 'ctxt->opcode_len == 2'?
-Prefixes? AMD's PRM doesn't mention if these are allowed/ignored/etc.
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYAAxuQAKCRDj7w1vZxhR
+xYH3AP4t/ykPC9xzwyQNNiNXKT3Ylna5bt6AAlTx88OYiEV8VAD9Hx/d1DVaUJpt
+G7j6/tDOrfuHVA0D/O5NN23sozmD9gY=
+=OD7z
+-----END PGP SIGNATURE-----
 
-I guess they are ignored but this should be double checked vs real hardware.
-
-> +
-> +	switch (ctxt->modrm) {
-> +	case 0xd8: /* VMRUN */
-> +	case 0xda: /* VMLOAD */
-> +	case 0xdb: /* VMSAVE */
-> +		rax = kvm_register_read(emul_to_vcpu(ctxt), VCPU_REGS_RAX);
-> +		if (!kvm_is_host_reserved_region(rax))
-> +			return 0;
-> +		break;
-> +	default:
-> +		return 0;
-> +	}
-> +
-> +	return ctxt->modrm;
-> +}
-> +
->  static bool is_vmware_backdoor_opcode(struct x86_emulate_ctxt *ctxt)
->  {
->  	switch (ctxt->opcode_len) {
-> @@ -7305,6 +7327,7 @@ int x86_emulate_instruction(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->  	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
->  	bool writeback = true;
->  	bool write_fault_to_spt;
-> +	int vminstr;
->  
->  	if (unlikely(!kvm_x86_ops.can_emulate_instruction(vcpu, insn, insn_len)))
->  		return 1;
-> @@ -7367,10 +7390,14 @@ int x86_emulate_instruction(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->  		}
->  	}
->  
-> -	if ((emulation_type & EMULTYPE_VMWARE_GP) &&
-> -	    !is_vmware_backdoor_opcode(ctxt)) {
-> -		kvm_queue_exception_e(vcpu, GP_VECTOR, 0);
-> -		return 1;
-> +	if (emulation_type & EMULTYPE_PARAVIRT_GP) {
-> +		vminstr = is_vm_instr_opcode(ctxt);
-
-As I said above, I would add some flag if workaround for the errata is used,
-and use it here.
-
-> +		if (!vminstr && !is_vmware_backdoor_opcode(ctxt)) {
-> +			kvm_queue_exception_e(vcpu, GP_VECTOR, 0);
-> +			return 1;
-> +		}
-> +		if (vminstr)
-> +			return vminstr;
->  	}
->  
->  	/*
-
-Best regards,
-	Maxim Levitsky
-
+--mbsziskqq433z3de--
