@@ -2,91 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9332F5648
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB7F2F5640
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbhANBpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:45:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726730AbhANBFP (ORCPT
+        id S1727944AbhANBox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:44:53 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:10963 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726868AbhANBIo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 20:05:15 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B154C061795;
-        Wed, 13 Jan 2021 17:04:33 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id s15so2056921plr.9;
-        Wed, 13 Jan 2021 17:04:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VpmEfhmuE4m3lCR0CbzUbqFZms+Fz8wndQrnmUOwqpU=;
-        b=TcU4dQzKhkz4u0aGbShBlkm5Lgq7vBIeKqPRvRSA67x2gzxKRk0RspQzEpBkEcuoIy
-         1c2YEI0lQBpuFJ2rrFEGVoWUQg7apSF/CkrdhKvTZrG/WUCjf0KBkpgYE4ZzazRYp9PT
-         HcHbBRZImxTueiR83MlHPjrLeK9YdmZLwXksGik3Kb2iw5fOMV/tlh+oaWPsyk6wt9KS
-         6YvyqRtrbHAVN0Wd2R4y+DaQytJYM2FSKtytA9b9TN+amnbNQILqW90/6PYQVxJBU5mc
-         zR08x9HrQ5CxzaT1W2mj/h10bGZb378QVuIHUepaNTKZvEaTE8nve9wNWSNZPv0i2dNi
-         0mNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=VpmEfhmuE4m3lCR0CbzUbqFZms+Fz8wndQrnmUOwqpU=;
-        b=f9w+aHBkqUfH4pP/mNH27Gg4T9L2m6EYb9D5Z/6EGCu41AxG7VG07bgdcHYw4bHEjy
-         mz2aLsH9H5BH3pHmOmXvO3p+3h1uLBuuxuP2kN9o2yW+NTBYBPrHws1FMyheb56wUhx8
-         gg3PqK8ymStGBfP421JKeuKRcybP1IPhT5A44Pz5TWZ0v0h2/0BMvPVxzhCZ7KdHp048
-         moT3RL7iJB6OW2Acjz5RLjXsvWfwPF069WgY29Bg634xUR0JhBHjxvKJK9Ne6fMfQYQ0
-         y1VAuyRCeuhHjbIfRSjMhS1tjMqbw/t5d+Ft/9lKufEiHkmxZiBX3g4cydbsoJY3pq3h
-         gp9Q==
-X-Gm-Message-State: AOAM532dS2Kj9iR6orgNN9wUp0z4Sbr47VKbnPQd1nMPqnIp1zKZ8IUB
-        olVdHyCrRAKXUXUcWXKlY7s=
-X-Google-Smtp-Source: ABdhPJwrJ8Isxj4nRytmMfOvMREHmP4joIOQKLfG5NRnAzquyOfiEt2ltmtABLIC4FEuwymZgPSspw==
-X-Received: by 2002:a17:90a:f2c6:: with SMTP id gt6mr2130111pjb.35.1610586272925;
-        Wed, 13 Jan 2021 17:04:32 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id h1sm3901522pgj.59.2021.01.13.17.04.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 17:04:31 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 13 Jan 2021 17:04:29 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, hyesoo.yu@samsung.com,
-        david@redhat.com, mhocko@suse.com, surenb@google.com,
-        pullip.cho@samsung.com, joaodias@google.com, hridya@google.com,
-        john.stultz@linaro.org, sumit.semwal@linaro.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        hch@infradead.org, robh+dt@kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v3 4/4] dma-buf: heaps: add chunk heap to dmabuf heaps
-Message-ID: <X/+Yne/3X3jvdCj0@google.com>
-References: <20210113012143.1201105-1-minchan@kernel.org>
- <20210113012143.1201105-5-minchan@kernel.org>
- <23b60450-b6ac-447b-4a61-fc4649c3a390@infradead.org>
+        Wed, 13 Jan 2021 20:08:44 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DGR2s1t6pzj6F3;
+        Thu, 14 Jan 2021 09:06:13 +0800 (CST)
+Received: from [10.174.178.52] (10.174.178.52) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 14 Jan 2021 09:06:37 +0800
+Subject: Re: [PATCH] kretprobe: avoid re-registration of the same kretprobe
+ earlier
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+CC:     <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
+        <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+        <huawei.libin@huawei.com>, <cj.chengjian@huawei.com>
+References: <20201124115719.11799-1-bobo.shaobowang@huawei.com>
+ <20201130161850.34bcfc8a@gandalf.local.home>
+ <20201202083253.9dbc76704149261e131345bf@kernel.org>
+ <9dff21f8-4ab9-f9b2-64fd-cc8c5f731932@huawei.com>
+ <20201215123119.35258dd5006942be247600db@kernel.org>
+ <c584f7e2-1d95-4f6a-7e36-4ff2d610bc78@huawei.com>
+ <20201222200356.6910b42c165b8756878cc9b0@kernel.org>
+ <20210113174845.7b1da377@gandalf.local.home>
+ <20210114092525.5a2e78b404602fa82d6d6353@kernel.org>
+From:   "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
+Message-ID: <d2dd6daf-39d4-0330-bf11-8f41672eac2e@huawei.com>
+Date:   Thu, 14 Jan 2021 09:06:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <23b60450-b6ac-447b-4a61-fc4649c3a390@infradead.org>
+In-Reply-To: <20210114092525.5a2e78b404602fa82d6d6353@kernel.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.52]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 07:38:40PM -0800, Randy Dunlap wrote:
-> On 1/12/21 5:21 PM, Minchan Kim wrote:
-> > +config DMABUF_HEAPS_CHUNK
-> > +	bool "DMA-BUF CHUNK Heap"
-> > +	depends on DMABUF_HEAPS && DMA_CMA
-> > +	help
-> > +	  Choose this option to enable dma-buf CHUNK heap. This heap is backed
-> > +	  by the Contiguous Memory Allocator (CMA) and allocates the buffers that
-> > +	  arranged into a list of fixed size chunks taken from CMA.
-> 
-> maybe:
-> 	  are arranged into
+I have found other problems when following Masami's proposals,
 
-Let me fix it.
+I have been dealing with other things this two days and i will send 
+patch as soon.
 
-Thanks, Randy. 
+
+Thank you,
+
+ÔÚ 2021/1/14 8:25, Masami Hiramatsu Ð´µÀ:
+> On Wed, 13 Jan 2021 17:48:45 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+>> Anything more on this?
+> I need Wangshaobo's confirmation, because this is essentially a kind of programming bug,
+> not a runtime bug. kprobes user must check the kprobe(kretprobe) must be unregistered
+> and cleaned up before reusing it. (I recommend to re-alloc new data structure each time)
+>
+> For example, if you re-register your driver/filesystem without releasing, it will
+> break the kernel.
+>
+> Thank you,
+>
+>> -- Steve
+>>
+>>
+>> On Tue, 22 Dec 2020 20:03:56 +0900
+>> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>>
+>>> On Mon, 21 Dec 2020 21:31:42 +0800
+>>> "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com> wrote:
+>>>
+>>>> Hi steven, Masami,
+>>>> We have encountered a problem, when we attempted to use steven's suggestion as following,
+>>>>    
+>>>>>>> If you call this here, you must make sure kprobe_addr() is called on rp->kp.
+>>>>>>> But if kretprobe_blacklist_size == 0, kprobe_addr() is not called before
+>>>>>>> this check. So it should be in between kprobe_on_func_entry() and
+>>>>>>> kretprobe_blacklist_size check, like this
+>>>>>>>
+>>>>>>> 	if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
+>>>>>>> 		return -EINVAL;
+>>>>>>>
+>>>>>>> 	addr = kprobe_addr(&rp->kp);
+>>>>>>> 	if (IS_ERR(addr))
+>>>>>>> 		return PTR_ERR(addr);
+>>>>>>> 	rp->kp.addr = addr;
+>>>> //there exists no-atomic operation risk, we should not modify any rp->kp's information, not all arch ensure atomic operation here.
+>>>>    
+>>>>>>> 	ret = check_kprobe_rereg(&rp->kp);
+>>>>>>> 	if (WARN_ON(ret))
+>>>>>>> 		return ret;
+>>>>>>>
+>>>>>>>            if (kretprobe_blacklist_size) {
+>>>>>>> 		for (i = 0; > > +	ret = check_kprobe_rereg(&rp->kp);
+>>>> it returns failure from register_kprobe() end called by register_kretprobe() when
+>>>> we registered a kretprobe through .symbol_name at first time(through .addr is OK),
+>>>> kprobe_addr() called at the begaining of register_kprobe() will recheck and
+>>>> failed at following place because at this time we symbol_name is not NULL and addr is also.
+>>> Good catch! Yes, it will reject if both kp->addr and kp->symbol are set.
+>>>
+>>>>     static kprobe_opcode_t *_kprobe_addr(const char *symbol_name,
+>>>>                            unsigned int offset)
+>>>>      {
+>>>>            if ((symbol_name && addr) || (!symbol_name && !addr))  //we failed here
+>>>>
+>>>>
+>>>> So we attempted to move this sentence rp->kp.addr = addr to __get_valid_kprobe() like this to
+>>>> avoid explict usage of rp->kp.addr = addr in register_kretprobe().
+>>>>
+>>>> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+>>>> index dd5821f753e6..ea014779edfe 100644
+>>>> --- a/kernel/kprobes.c
+>>>> +++ b/kernel/kprobes.c
+>>>> @@ -1502,10 +1502,15 @@ static kprobe_opcode_t *kprobe_addr(struct kprobe *p)
+>>>>    static struct kprobe *__get_valid_kprobe(struct kprobe *p)
+>>>>    {
+>>>>           struct kprobe *ap, *list_p;
+>>>> +       void *addr;
+>>>>
+>>>>           lockdep_assert_held(&kprobe_mutex);
+>>>>
+>>>> -       ap = get_kprobe(p->addr);
+>>>> +       addr = kprobe_addr(p);
+>>>> +       if (IS_ERR(addr))
+>>>> +               return NULL;
+>>>> +
+>>>> +       ap = get_kprobe(addr);
+>>>>           if (unlikely(!ap))
+>>>>                   return NULL;
+>>>>
+>>>> But it also failed when we second time attempted to register a same kretprobe, it is also
+>>>> becasue symbol_name and addr is not NULL when we used __get_valid_kprobe().
+>>> What the "second time" means? If you reuse the kretprobe (and kprobe) you must
+>>> reset (cleanup) the kp->addr or kp->symbol_name. That is the initial state.
+>>> I think the API should not allow users to enter inconsistent information.
+>>>
+>>>> So it seems has no idea expect for modifying _kprobe_addr() like following this, the reason is that
+>>>> the patch 0bd476e6c671 ("kallsyms: unexport kallsyms_lookup_name() and kallsyms_on_each_symbol()")
+>>>> has telled us we'd better use symbol name to register but not address anymore.
+>>>>
+>>>> -static kprobe_opcode_t *_kprobe_addr(kprobe_opcode_t *addr,
+>>>> -                       const char *symbol_name, unsigned int offset)
+>>>> +static kprobe_opcode_t *_kprobe_addr(const char *symbol_name,
+>>>> +                       unsigned int offset)
+>>>>    {
+>>>> -       if ((symbol_name && addr) || (!symbol_name && !addr))
+>>>> +       kprobe_opcode_t *addr;
+>>>> +       if (!symbol_name)
+>>>>                   goto invalid;
+>>> No, there are cases that the user will set only kp->addr, but no kp->symbol_name.
+>>>
+>>>> For us, this modification has not caused a big impact on other modules, only expects a little
+>>>> influence on bpf from calling trace_kprobe_on_func_entry(), it can not use addr to fill in
+>>>> rp.kp in struct trace_event_call anymore.
+>>>>
+>>>> So i want to know your views, and i will resend this patch soon.
+>>> OK, I think it is simpler to check the rp->kp.addr && rp->kp.symbol_name
+>>> because it is not allowed (it can lead inconsistent setting).
+>>>
+>>> How about this code? Is this work for you?
+>>>
+>>> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+>>> index 41fdbb7953c6..73500be564be 100644
+>>> --- a/kernel/kprobes.c
+>>> +++ b/kernel/kprobes.c
+>>> @@ -2103,6 +2103,14 @@ int register_kretprobe(struct kretprobe *rp)
+>>>          int i;
+>>>          void *addr;
+>>>   
+>>> +       /* It is not allowed to specify addr and symbol_name at the same time */
+>>> +       if (rp->kp.addr && rp->kp.symbol_name)
+>>> +               return -EINVAL;
+>>> +
+>>> +       /* If only rp->kp.addr is specified, check reregistering kprobes */
+>>> +       if (rp->kp.addr && check_kprobe_rereg(&rp->kp))
+>>> +               return -EINVAL;
+>>> +
+>>>          if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
+>>>                  return -EINVAL;
+>>>   
+>>>
+>>> Thank you,
+>>>
+>
