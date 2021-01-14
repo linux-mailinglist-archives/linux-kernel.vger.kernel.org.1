@@ -2,113 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6622F5AA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 07:26:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D00A72F5AA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 07:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbhANGY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 01:24:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45386 "EHLO
+        id S1726819AbhANGZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 01:25:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726117AbhANGY6 (ORCPT
+        with ESMTP id S1726025AbhANGZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 01:24:58 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58400C061575;
-        Wed, 13 Jan 2021 22:24:17 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id i7so3084000pgc.8;
-        Wed, 13 Jan 2021 22:24:17 -0800 (PST)
+        Thu, 14 Jan 2021 01:25:41 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3FDC061575;
+        Wed, 13 Jan 2021 22:25:01 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id az16so1870209qvb.5;
+        Wed, 13 Jan 2021 22:25:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=lcW4JpxXQprA1ci8TUjnK5K087ExJhs0k8B5yG40WMo=;
-        b=PmYzb+mdGfQYIcz+8g9hf0jq3y+JlyxzXFMemzpQieJ6uEQ5htQEG58sA/2lG2EkW1
-         9mvVqdok+AQWMU7qg0HCiWPsSBRtD92F3dRmDrfwXdSyDnxGum8Vl7sKV+1NgnPzYEGF
-         1KGWFEYx8V6QEFmyFN61noG8CpC0THhwibGwlGVR7SVDxSSnfGb6IktfcFJT5POJ/pYc
-         IF/ahMcK/YxLoNTVQEwWfLGPSy1dnKZQtVC+Z9nQL6t4CW9RUrBYqHzozHTbVf95rGCe
-         XO/HLNICEMOX7t/o0HngIJgqeWXB/jHixzwiFt28RIUZm7fL0OcVM6nvfub6B49yK6qz
-         zwBQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=pG7a1vssVKtoo0Y5zp9blZT3ZnWiGtiE9ZFvukEjuEk=;
+        b=CTxNf2Islvp81xcibLmQJa4T5ye0vJPYa0+S2qIlYB5PW+K1bFgYaWnQcQtE9XbtLv
+         nfhSW+ZGTZPHurVdg2T7kvl2etj93A9zLP1PWLrfuaNR99CWm8jPtE6sjzVKrN0Kk2Lk
+         0oxs7xkRuFablHavfs2he5mcBaJ6bm1KwOCjvuwqI3W0mwb8jhhBykll+LXP7UN58/Fh
+         aUyUwpMtmXs0VaRCXwr+1LVrFMgI56lkNngDXWi32HogGdznvzsNG1OMCYqqlMG+b3lz
+         5fF5NneXbsVI4WFL/Wi1e7sHQYeHh935QHA5NBliv+1rW8fryXqq0bdthitVbDHwZRMc
+         nQXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=lcW4JpxXQprA1ci8TUjnK5K087ExJhs0k8B5yG40WMo=;
-        b=q9EINQ7v6MeARWm7cqrGFIfraoYYNcxWNMm4INb34UftrFcsowB+fdXM0KyaXrzlR3
-         YECVOpMxmQRyVZ0WVmnPt0JpWc/PCysGUiZ7qpdkDVhaJumuEb6t7ToHm95g9eOHCnoY
-         xityEesPv43AFr+1aKzn/3A1ozx4/ytTtiJVYE+Mm8NdP3N2LWsqCOdMuIdxQDZby6vS
-         7HN5AJe4h7JH+/ym/A+ZC2xq5cSGChrDUhcbaMdu/IDoTOBScvpJgsDXwFIfAND24Abz
-         qzqXlLR6sl+DplPUh6FW/idbzwuSV7lRAVMRnV6r91jRapNbpa9zOjowSYqxDNTjkwb7
-         Oe0Q==
-X-Gm-Message-State: AOAM530bhE8636m+rwpCL/rST3sC+Grma4RXvNFFsYJ6Gg0Imn2OINeC
-        A4nRJ4cHY62Rnr+5tx+WfmA=
-X-Google-Smtp-Source: ABdhPJxQLbET4Ld900+XwfK2j4nkJF52RA4Q3du1NL9nN0EH1WB2KhXsyboQ2Vh6Z7ghuyxBd8zucg==
-X-Received: by 2002:a63:1261:: with SMTP id 33mr5835343pgs.213.1610605456870;
-        Wed, 13 Jan 2021 22:24:16 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id ck20sm4404098pjb.20.2021.01.13.22.24.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 22:24:15 -0800 (PST)
-Date:   Wed, 13 Jan 2021 22:24:13 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Peter Hutterer <peter.hutterer@who-t.net>, seobrien@chromium.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: hid-input: avoid splitting keyboard, system and
- consumer controls
-Message-ID: <X//jjawwbm8FxbQU@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pG7a1vssVKtoo0Y5zp9blZT3ZnWiGtiE9ZFvukEjuEk=;
+        b=X4/yYCpMeHFoZjs5+Yf0n6OGnpmyvSfOz3zgRU11KEjdZJS7Q49hH7rWGfdssh4My+
+         TUk3vx48DOCOln/5nQtrW/qH4p2zsnALP58ygNLojK6t57UkEo3xkvvy0LRShMsvqL7k
+         /gYIRIPrqQF8fAdvle4hOUMWH048KLS2he5KYxTh5HHb64NPiOPxrJEbb5X3p8EPGNUN
+         yiHRd4GSkhn9KMWi5Eaw7SZ4Ecslkol9cogZNPo2AS8q+WCws6CVDcrpUclSipeybaKR
+         qoQOyAhf2zRooRx11XXRTHG1fpoVYk0OFiVbFuRCDIJGIz+0Xefhap/sH6jBu6DBGa5o
+         rYLA==
+X-Gm-Message-State: AOAM533Xn5E9iKirxIuHC6C3DSnyAm86po8TZlkV4bABFL/x5YsLvw2d
+        S01syhU0zuf396w5yLs+C+s7yY2cfWpDTRBWpwo=
+X-Google-Smtp-Source: ABdhPJwSLRpLdlU0kHL+21jK00xHqYpoeNec4AAwuoMo/gMHrzwC3TvpqMX++QRhuh85OcVgmd0LIhkCXFB7+osup1g=
+X-Received: by 2002:a0c:8027:: with SMTP id 36mr5852530qva.57.1610605500522;
+ Wed, 13 Jan 2021 22:25:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210106092740.5808-1-reniuschengl@gmail.com> <CAPDyKFq1EVVfU4HU_=-7TmSRinkTCA41pKWtrMD4C+yCUPYECg@mail.gmail.com>
+In-Reply-To: <CAPDyKFq1EVVfU4HU_=-7TmSRinkTCA41pKWtrMD4C+yCUPYECg@mail.gmail.com>
+From:   =?UTF-8?B?6Zmz5bu65a6P?= <reniuschengl@gmail.com>
+Date:   Thu, 14 Jan 2021 14:24:49 +0800
+Message-ID: <CAJU4x8uKHQy_hbMhsErzWb2U5USjMRhAZv=+14a9zDn068vHmw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-pci-gli: Enlarge ASPM L1 entry delay of GL9763E
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        greg.tu@genesyslogic.com.tw
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A typical USB keyboard usually splits its keys into several reports:
+> Ulf Hansson <ulf.hansson@linaro.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=8813=
+=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=886:53=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> On Wed, 6 Jan 2021 at 10:27, Renius Chen <reniuschengl@gmail.com> wrote:
+> >
+> > The R/W performance of GL9763E is low with some platforms, which
+> > support ASPM mechanism, due to entering L1 state very frequently
+> > in R/W process. Enlarge its ASPM L1 entry delay to improve the
+> > R/W performance of GL9763E.
+>
+> What do you mean by frequently? In between a burst of request or
+> during a burst of request?
 
-- one for the basic alphanumeric keys, modifier keys, F<n> keys, six pack
-  keys and keypad. This report's application is normally listed as
-  GenericDesktop.Keyboard
-- a GenericDesktop.SystemControl report for the system control keys, such
-  as power and sleep
-- Consumer.ConsumerControl report for multimedia (forward, rewind,
-  play/pause, mute, etc) and other extended keys.
-- additional output, vendor specific, and feature reports
+GL9763E enters ASPM L1 state after a very short idle in default, even
+during a burst of request.
 
-Splitting each report into a separate input device is wasteful and even
-hurts userspace as it makes it harder to determine the true capabilities
-(set of available keys) of a keyboard, so let's adjust application
-matching to merge system control and consumer control reports with
-keyboard report, if one has already been processed.
+> I am thinking that this could have an effect on energy instead, but I
+> guess it's not always straightforward to decide what's most important.
+>
+> Anyway, what does it mean when you change to use 0x3FF? Are you
+> increasing the idle period? Then for how long?
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- drivers/hid/hid-input.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Yes, we considered that having high performance is more important than
+saving power during a burst of request.
+So we increased the idle period for 260us, by setting 0x3FF to the
+ASPM L1 entry delay bits of our vendor-specific register.
+Anyway, GL9763E can still enter ASPM L1 state by a longer idle.
 
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index f797659cb9d9..df45d8d07dc2 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -1851,6 +1851,16 @@ static struct hid_input *hidinput_match_application(struct hid_report *report)
- 	list_for_each_entry(hidinput, &hid->inputs, list) {
- 		if (hidinput->application == report->application)
- 			return hidinput;
-+
-+		/*
-+		 * Keep SystemControl and ConsumerControl applications together
-+		 * with the main keyboard, if present.
-+		 */
-+		if ((report->application == HID_GD_SYSTEM_CONTROL ||
-+		     report->application == HID_CP_CONSUMER_CONTROL) &&
-+		    hidinput->application == HID_GD_KEYBOARD) {
-+			return hidinput;
-+		}
- 	}
- 
- 	return NULL;
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
+Thanks for reviewing.
 
+Best regards,
+Renius
 
--- 
-Dmitry
+> Kind regards
+> Uffe
+>
+> >
+> > Signed-off-by: Renius Chen <reniuschengl@gmail.com>
+> > ---
+> >  drivers/mmc/host/sdhci-pci-gli.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-=
+pci-gli.c
+> > index c6a107d7c742..2d13bfcbcacf 100644
+> > --- a/drivers/mmc/host/sdhci-pci-gli.c
+> > +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> > @@ -88,6 +88,10 @@
+> >  #define PCIE_GLI_9763E_SCR      0x8E0
+> >  #define   GLI_9763E_SCR_AXI_REQ           BIT(9)
+> >
+> > +#define PCIE_GLI_9763E_CFG2      0x8A4
+> > +#define   GLI_9763E_CFG2_L1DLY    GENMASK(28, 19)
+> > +#define   GLI_9763E_CFG2_L1DLY_MAX 0x3FF
+> > +
+> >  #define PCIE_GLI_9763E_MMC_CTRL  0x960
+> >  #define   GLI_9763E_HS400_SLOW     BIT(3)
+> >
+> > @@ -792,6 +796,11 @@ static void gli_set_gl9763e(struct sdhci_pci_slot =
+*slot)
+> >         value &=3D ~GLI_9763E_HS400_SLOW;
+> >         pci_write_config_dword(pdev, PCIE_GLI_9763E_MMC_CTRL, value);
+> >
+> > +       pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG2, &value);
+> > +       value &=3D ~GLI_9763E_CFG2_L1DLY;
+> > +       value |=3D FIELD_PREP(GLI_9763E_CFG2_L1DLY, GLI_9763E_CFG2_L1DL=
+Y_MAX);
+> > +       pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG2, value);
+> > +
+> >         pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
+> >         value &=3D ~GLI_9763E_VHS_REV;
+> >         value |=3D FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
+> > --
+> > 2.27.0
+> >
