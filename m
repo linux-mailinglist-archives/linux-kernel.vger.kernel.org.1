@@ -2,106 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E8B2F6736
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 694F92F6738
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728848AbhANRPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:15:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726172AbhANRPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:15:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C723238EC;
-        Thu, 14 Jan 2021 17:14:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610644495;
-        bh=RDEJdDVwILr1jM/hUHMK43X/Aq2TqFRPO473xjQ/s4U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=k4n/STNmaNHIWsT916GZmz4QENJO11kKIpmhTvbk+3HBZbLsJS5+OOU5kdJp8GsqJ
-         jc7NomeF0hPCzT0GF0uPkxUbffiWCJr1vCgbcugvXeJHZonSh7o/oKtcZOT/9Ses5D
-         cZacciofUZDcTAyidREbaNUiW32XgyI3zoa+jFvu05di+mGUv2rGqJEO7IoesrXS5O
-         1eBMFEKEF79c6FsTgQU6A6tHuxBjMVP6GlaxD3sbs/SfjxsYWPCEXyJWCmt+i8czt3
-         9/X4W4WmRiMBPIHSF6tMMy3SVsQJc3YdRAosQp9cOyWYmerHidiQ+Rvdi/KmnmiQSo
-         2+qDHsOaHb3Ng==
-Date:   Thu, 14 Jan 2021 09:14:53 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Dany Madden <drt@linux.ibm.com>,
-        Daris A Nevil <dnevil@snmc.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Erik Stahlman <erik@vt.edu>,
-        Geoff Levand <geoff@infradead.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ishizaki Kou <kou.ishizaki@toshiba.co.jp>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Jens Osterkamp <Jens.Osterkamp@de.ibm.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Allen <jallen@linux.vnet.ibm.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Lijun Pan <ljp@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>, netdev@vger.kernel.org,
-        Nicolas Pitre <nico@fluxnic.net>, Paul Durrant <paul@xen.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Cammaert <pc@denkart.be>,
-        Russell King <rmk@arm.linux.org.uk>,
-        Rusty Russell <rusty@rustcorp.com.au>,
-        Santiago Leon <santi_leon@yahoo.com>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
-        Utz Bacher <utz.bacher@de.ibm.com>,
-        Wei Liu <wei.liu@kernel.org>, xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v2 0/7] Rid W=1 warnings in Ethernet
-Message-ID: <20210114091453.30177d20@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210114083349.GI3975472@dell>
-References: <20210113164123.1334116-1-lee.jones@linaro.org>
-        <20210113183551.6551a6a2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20210114083349.GI3975472@dell>
+        id S1728863AbhANRPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:15:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726172AbhANRPp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 12:15:45 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6142C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:15:04 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id q25so5832043otn.10
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:15:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=v+IWiGsFZpYty9uPEMCbFqjqaqqlfa3/+90RuBzx60o=;
+        b=ten/ALZCvZdzN086fa5oMkKYJcezQlWqXYa+356BpaFzTsBA82jf4vMt0ECAfFgpPu
+         vhqCzyxC9gnklgm/vuVULZWq5T/pEF6Lk5dkAyBWV0/lNWpkgSd5nf/DhiPWvIS2YR9m
+         GApsWRH2deCphZOz04NpVmiGvlCHQuunIQrYbarn4bAh93NUc4O9YD9bvrfP4Xw2yO52
+         p98NMIV1S6RPJRnmykyn95ma9O+PxTUQPipKu4qW2OxqCCbeTuXEsIW9elKEToepCamU
+         cU28kuMX7obX/k8ivRp1vNy/OYXGFitv1UwQFAz+uTA9k+5v+s63Ymw/ot4G5EFMltbG
+         CzeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=v+IWiGsFZpYty9uPEMCbFqjqaqqlfa3/+90RuBzx60o=;
+        b=NPhYyk8RydH34AOjtACEkHIcsrlBenDdKegtqBDd1eGIBJvfC/Yz0+9lrKW4r2kgeY
+         WtqYY37mW1vyCoN6tktNv5GV2Eg1QDWCCQIRYCmgJmQ22u7i2D72ijuBhWWWFjufRN8k
+         Mcx3r2ya31XWceYrH69iNDt7vEn//Eat+mhAJLSQmCFWLpXQLuSsq8z600mTs7kFgaar
+         YNbwPWLEhClBnEmbObzgHLyLZZbirQ4VJvkP1LJ7BP1mVFNQ32MNQep1eVhW8pRs9lvs
+         3hWccJBqMlEKluTzgMt+ELNUUUxrXmuox//E1VwmqjoxA39peBz8D1b/rt3zqJId9GiG
+         3UEA==
+X-Gm-Message-State: AOAM530nmYedENynTxS1pyMdPSoFLuBSt7ui4KKoF36nU6e1EYnyi3zL
+        C2CxqjRBhPPikWTJkz1zcdHIdDSSPJvUbIRP3i0=
+X-Google-Smtp-Source: ABdhPJyNJkE4H9tRyMCJgxPE3E10+sCah9UThloK7fktb03JAQOwNC6kFkzOOzCmgkcMv9EvXNFYrMoRUM+lxEXjgLo=
+X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr5473943ote.132.1610644504422;
+ Thu, 14 Jan 2021 09:15:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210113080752.1003793-1-lee.jones@linaro.org> <20210113080752.1003793-16-lee.jones@linaro.org>
+In-Reply-To: <20210113080752.1003793-16-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 14 Jan 2021 12:14:53 -0500
+Message-ID: <CADnq5_McjDiGUNYfLaZV4F1rH_NZ-U3GMuEBpjFhEHYoChg3WQ@mail.gmail.com>
+Subject: Re: [PATCH 15/30] drm/amd/display/dc/dce80/dce80_resource: Include
+ our own header containing prototypes
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Leo Li <sunpeng.li@amd.com>, Anthony Koo <Anthony.Koo@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 08:33:49 +0000 Lee Jones wrote:
-> On Wed, 13 Jan 2021, Jakub Kicinski wrote:
-> 
-> > On Wed, 13 Jan 2021 16:41:16 +0000 Lee Jones wrote:  
-> > > Resending the stragglers again.                                                                                  
-> > > 
-> > > This set is part of a larger effort attempting to clean-up W=1                                                   
-> > > kernel builds, which are currently overwhelmingly riddled with                                                   
-> > > niggly little warnings.                                                                                          
-> > >                                                                                                                  
-> > > v2:                                                                                                              
-> > >  - Squashed IBM patches                                                                                      
-> > >  - Fixed real issue in SMSC
-> > >  - Added Andrew's Reviewed-by tags on remainder  
-> > 
-> > Does not apply, please rebase on net-next/master.  
-> 
-> These are based on Tuesday's next/master.
+On Wed, Jan 13, 2021 at 3:08 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_resource.c:1126:23:=
+ warning: no previous prototype for =E2=80=98dce80_create_resource_pool=E2=
+=80=99 [-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_resource.c:1325:23:=
+ warning: no previous prototype for =E2=80=98dce81_create_resource_pool=E2=
+=80=99 [-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_resource.c:1520:23:=
+ warning: no previous prototype for =E2=80=98dce83_create_resource_pool=E2=
+=80=99 [-Wmissing-prototypes]
+>
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Anthony Koo <Anthony.Koo@amd.com>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-What's next/master?
+Applied.  Thanks!
 
-This is net-next:
+Alex
 
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/
-
-> I just rebased them now with no issue.
-> 
-> What conflict are you seeing?
-
-Applying: net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
-error: patch failed: drivers/net/ethernet/smsc/smc91x.c:2192
-error: drivers/net/ethernet/smsc/smc91x.c: patch does not apply
-Patch failed at 0001 net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
-hint: Use 'git am --show-current-patch=diff' to see the failed patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
+> ---
+>  drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c b/driv=
+ers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+> index fe5d716084363..725d92e40cd30 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+> @@ -60,6 +60,8 @@
+>  #include "dce/dce_i2c.h"
+>  /* TODO remove this include */
+>
+> +#include "dce80_resource.h"
+> +
+>  #ifndef mmMC_HUB_RDREQ_DMIF_LIMIT
+>  #include "gmc/gmc_7_1_d.h"
+>  #include "gmc/gmc_7_1_sh_mask.h"
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
