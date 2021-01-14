@@ -2,144 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BEF2F6764
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:23:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 193BB2F6765
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:23:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727406AbhANRTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:19:13 -0500
-Received: from outbound-smtp22.blacknight.com ([81.17.249.190]:33383 "EHLO
-        outbound-smtp22.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727291AbhANRTM (ORCPT
+        id S1727634AbhANRTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:19:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726951AbhANRTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:19:12 -0500
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp22.blacknight.com (Postfix) with ESMTPS id 09906BB11A
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 17:18:20 +0000 (GMT)
-Received: (qmail 25073 invoked from network); 14 Jan 2021 17:18:19 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 14 Jan 2021 17:18:19 -0000
-Date:   Thu, 14 Jan 2021 17:18:18 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Li Aubrey <aubrey.li@linux.intel.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/5] sched/fair: Merge select_idle_core/cpu()
-Message-ID: <20210114171818.GO3592@techsingularity.net>
-References: <20210111155047.10657-1-mgorman@techsingularity.net>
- <20210111155047.10657-6-mgorman@techsingularity.net>
- <CAKfTPtDPZA1CdE_t+co4DmvfEUys9OiUdgtessFdQe6dYjo4pg@mail.gmail.com>
- <20210114093543.GM3592@techsingularity.net>
- <CAKfTPtAbQLYgjRTqdpDPwA+1ff2cUtNqOVbd5cGz_cHpZO=9WA@mail.gmail.com>
- <20210114135328.GN3592@techsingularity.net>
- <CAKfTPtCCjsJG8G5EQfdyLgiaQUqZFiapRGtrP8wTP7k-6qvSxQ@mail.gmail.com>
+        Thu, 14 Jan 2021 12:19:37 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DC6C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:18:57 -0800 (PST)
+Date:   Thu, 14 Jan 2021 18:18:55 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610644735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jI5rqRnH3DCVyrdpP47Z8eWUhdxkk1qxR9tqMltfpqo=;
+        b=HrnGJ0ppZoIgnbL5tUjMaeKjd3R7QOpSesNLWzhETK5vNb4IbQwexAENRXrEGG9xQtjluD
+        KYZuguLbWwc3dew6EIVyUZPnWTCng+Bkmu4SZygmK6wzagLQBnYmzYsyspO0zyLoOpDaem
+        BeX0adNqYSPVWIO0vZAdOHCatFDHZZ8PRXBmvStHtzNiJMSmJMdbJ3wuA/PTg1rRahOYqO
+        QXfmZrcmJ/fsk1WRUo8ghsKTMHwptqS4nkrYzbNxd5iRTUUB3cnHccjWeJo1UeZ8ygZIFd
+        nKVTDurwWY8QJL9NYPpWDJSPJkzyLkOW+zS7PRP6uxu0TlPoxORaRPMsTHmTLA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610644735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jI5rqRnH3DCVyrdpP47Z8eWUhdxkk1qxR9tqMltfpqo=;
+        b=RzpQVmEx4C6cdB7OhXzZogS28Iox4XqOwFruHtuajjmy48uqB1yELmiYCKIoZD0nHNeVTC
+        m1fqA/dizTA3amDQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Vitaly Wool <vitaly.wool@konsulko.com>
+Cc:     "tiantao (H)" <tiantao6@huawei.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Mike Galbraith <efault@gmx.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, NitinGupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "tiantao (H)" <tiantao6@hisilicon.com>
+Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
+Message-ID: <20210114171855.lzzxwpucpkjyhrch@linutronix.de>
+References: <08cbef1e43634c4099709be8e99e5d27@hisilicon.com>
+ <CAM4kBBJjCYX0DQZ8de9LsFV6L+eF4tZe-NN=jiAz9WLWYrsCsQ@mail.gmail.com>
+ <1d0d4a3576e74d128d7849342a7e9faf@hisilicon.com>
+ <CAM4kBB+uRrnpta908Gf93VfH90NVpmqv4jNY2kxrrGSdWApz_w@mail.gmail.com>
+ <4e686c73-b453-e714-021a-1fcd0a565984@huawei.com>
+ <CAM4kBB+jtJd5mqBby7j+ou-AxvPgCU777pX4cnwneLi8P4U+7g@mail.gmail.com>
+ <20210114161850.zjcfhsgtmojjjqba@linutronix.de>
+ <CAM4kBBKcj+ZVEv8mkh+rWc0xbomKsyc60UNuuRem_iWPf9YxVA@mail.gmail.com>
+ <20210114165645.czqpsk3lacmiyiik@linutronix.de>
+ <CAM4kBBLqgh=ymq4pg6URB3OhjhRSH3O=4AEMRBuaC3Z0-hZ4Lg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtCCjsJG8G5EQfdyLgiaQUqZFiapRGtrP8wTP7k-6qvSxQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAM4kBBLqgh=ymq4pg6URB3OhjhRSH3O=4AEMRBuaC3Z0-hZ4Lg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 04:44:46PM +0100, Vincent Guittot wrote:
-> > domain. There is no need to make it specific to the core account and we
-> > are already doing the full scan. Throttling that would be a separate patch.
-> >
-> > > This patch 5 should focus on merging select_idle_core and
-> > > select_idle_cpu so we keep (almost) the same behavior but each CPU is
-> > > checked only once.
-> > >
-> >
-> > Which I think it's already doing. Main glitch really is that
-> > __select_idle_cpu() shouldn't be taking *idle_cpu as it does not consume
-> > the information.
+On 2021-01-14 18:15:08 [+0100], Vitaly Wool wrote:
 > 
->  don't really like the if (smt) else in the for_each_cpu_wrap(cpu,
-> cpus, target) loop  because it just looks like we fail to merge idle
-> core and idle cpu search loop at the end.
+> Basically, yes. Minchan was very clear that he didn't want to remove
+> that inter-function locking, so be it.
+> I wouldn't really advise to use zsmalloc with zswap because zsmalloc
+> has no support for reclaim, nevertheless I wouldn't like this
+> configuration to stop working for those who are already using it.
 > 
+> Would you or Mike be up for testing Tian Taos's patchset?
 
-While it's not the best, I did at one point have a series that fully
-unified this function and it wasn't pretty.
+I will try to reproduce Mike's original report and the fix early next
+week.
 
-> But there is probably not much we can do without changing what is
-> accounted idle core  search in the avg_scan_cost
-> 
+> Best regards,
+>    Vitaly
 
-Indeed. Maybe in the future it'll make more sense to consolidate it
-further but between the depth search and possibly using SIS_PROP core
-core searches, we've bigger fish to fry.
-
-Current delta between this series and what is being tested is simply
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 7bfa73de6a8d..ada8faac2e4d 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7446,7 +7446,6 @@ int sched_cpu_activate(unsigned int cpu)
- #ifdef CONFIG_SCHED_SMT
- 	do {
- 		int weight = cpumask_weight(cpu_smt_mask(cpu));
--		extern int sched_smt_weight;
- 
- 		if (weight > sched_smt_weight)
- 			sched_smt_weight = weight;
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 84f02abb29e3..6c0f841e9e75 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6006,7 +6006,7 @@ static inline int find_idlest_cpu(struct sched_domain *sd, struct task_struct *p
- 	return new_cpu;
- }
- 
--static inline int __select_idle_cpu(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
-+static inline int __select_idle_cpu(struct task_struct *p, int core, struct cpumask *cpus)
- {
- 	if (available_idle_cpu(core) || sched_idle_cpu(core))
- 		return core;
-@@ -6080,7 +6080,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
- 	int cpu;
- 
- 	if (!static_branch_likely(&sched_smt_present))
--		return __select_idle_cpu(p, core, cpus, idle_cpu);
-+		return __select_idle_cpu(p, core, cpus);
- 
- 	for_each_cpu(cpu, cpu_smt_mask(core)) {
- 		if (!available_idle_cpu(cpu)) {
-@@ -6120,7 +6120,7 @@ static inline bool test_idle_cores(int cpu, bool def)
- 
- static inline int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
- {
--	return __select_idle_cpu(p, core, cpus, idle_cpu);
-+	return __select_idle_cpu(p, core, cpus);
- }
- 
- #endif /* CONFIG_SCHED_SMT */
-@@ -6177,7 +6177,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 				return i;
- 
- 		} else {
--			i = __select_idle_cpu(p, cpu, cpus, &idle_cpu);
-+			i = __select_idle_cpu(p, cpu, cpus);
- 			if ((unsigned int)i < nr_cpumask_bits) {
- 				idle_cpu = i;
- 				break;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 12ada79d40f3..29aabe98dd1d 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1107,6 +1107,8 @@ static inline void update_idle_core(struct rq *rq)
- 		__update_idle_core(rq);
- }
- 
-+extern int sched_smt_weight;
-+
- #else
- static inline void update_idle_core(struct rq *rq) { }
- #endif
--- 
-Mel Gorman
-SUSE Labs
+Sebastian
