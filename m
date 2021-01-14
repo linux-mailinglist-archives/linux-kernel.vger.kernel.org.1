@@ -2,329 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A472F622D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D672F6232
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728772AbhANNkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:40:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727151AbhANNkO (ORCPT
+        id S1728819AbhANNlx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Jan 2021 08:41:53 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:39610 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726570AbhANNlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:40:14 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E780DC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:39:33 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id ga15so8218033ejb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:39:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=01ESMe7kFdZw5ofwoD6j7/8vYcwUWVP92w7p2MRiOZQ=;
-        b=ErbPvT5XgVTbw6d5KQeoJzhLwbty0fj1CnBiiZuM8/bmovUNOu+/IyWJ+nxNrb7MTB
-         SVSSF/uaSHYBSMmT1qsXf2ThPqhLWrtDfJVc+mg93sOjD/TdJefSYjlP6+fcDSkoo37m
-         cIWF+LEuchoHAUCSrbmXNpFGggiapc4Ezqu7s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=01ESMe7kFdZw5ofwoD6j7/8vYcwUWVP92w7p2MRiOZQ=;
-        b=gb2VhcRmqVQ8Le0dEjulS8xyIsMnV74L5lkjK3YNqRza4d6Z+NfJltbtMRZBHo/i77
-         6SlrCSaX5AVevaXlHfZMMxZ2Ui8jMH2kx9LRSFO/YuF5Fk2dAHtAr5ySeEuSS9LEP284
-         hXT/5hv2jFT+Dl7TgS4omjgBddNzoPlQ5C/RitxSbyff8aUl918/ukZBFh0Q1Hp9DIHk
-         GvRtTtdrhRtfcvfkTNWhL0MAIviFnwS7v2ILDHgT8ZNa02EBX3IowaUQQKCe1eB1gvO4
-         eiiY8kIbNb+wk5nAbKt8xtTWkK1KeZV3Q+yhutKsSvPfut29uWAnLIvssivr3g/ni6uV
-         6C5Q==
-X-Gm-Message-State: AOAM5325/0XPIHT3OP4loK8cPmFo8fKtSawC5ERK99L1Jqij9VXK8VVA
-        X9I9lEEYPrIjxMsdTYq15nvN7aKlLzmakZWWaSmrksBoNhdzwVyuasBFgzqLo43zoghsGTX/nI+
-        yGi2AFcSKrNTn0cjwb66qpObebjOxW6pih8mIuko5u0BizHKQclHXJZ2izxyFQ4zJILowia24Io
-        4iw+tuUDfvin1ATOzA
-X-Google-Smtp-Source: ABdhPJxCW1Cb3abc/O8Ny8BTsgKfOIBjX0FlhknCR4wUJ5p9W78T8Evxgrdy39X08+POOGMi79maWQ==
-X-Received: by 2002:a17:906:804c:: with SMTP id x12mr5171762ejw.42.1610631571971;
-        Thu, 14 Jan 2021 05:39:31 -0800 (PST)
-Received: from [192.168.178.17] (f140230.upc-f.chello.nl. [80.56.140.230])
-        by smtp.gmail.com with ESMTPSA id t16sm1971141eje.109.2021.01.14.05.39.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jan 2021 05:39:31 -0800 (PST)
-Subject: Re: [PATCH] brcmfmac: add support for CQM RSSI notifications
-To:     =?UTF-8?Q?Alvin_=c5=a0ipraga?= <ALSI@bang-olufsen.dk>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "brcm80211-dev-list.pdl@broadcom.com" 
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        "SHA-cyfmac-dev-list@infineon.com" <SHA-cyfmac-dev-list@infineon.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210112111253.4176340-1-alsi@bang-olufsen.dk>
-From:   Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <d97fcbc5-a0d1-40af-58d8-428f50282eed@broadcom.com>
-Date:   Thu, 14 Jan 2021 14:39:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 14 Jan 2021 08:41:52 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-39-W_X7DLlZO02ALhYNWE0TjA-1; Thu, 14 Jan 2021 08:40:53 -0500
+X-MC-Unique: W_X7DLlZO02ALhYNWE0TjA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 16819190A7A0;
+        Thu, 14 Jan 2021 13:40:51 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.195.188])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7428560C6A;
+        Thu, 14 Jan 2021 13:40:45 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: [PATCHv7 bpf-next 0/3] perf: Add mmap2 build id support
+Date:   Thu, 14 Jan 2021 14:40:41 +0100
+Message-Id: <20210114134044.1418404-1-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210112111253.4176340-1-alsi@bang-olufsen.dk>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000bc8b4f05b8dc62e9"
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000bc8b4f05b8dc62e9
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+hi,
+adding the support to have buildid stored in mmap2 event,
+so we can bypass the final perf record hunt on build ids.
 
-On 12-01-2021 12:13, 'Alvin =C5=A0ipraga' via BRCM80211-DEV-LIST,PDL wrote:
-> Add support for CQM RSSI measurement reporting and advertise the
-> NL80211_EXT_FEATURE_CQM_RSSI_LIST feature. This enables a userspace
-> supplicant such as iwd to be notified of changes in the RSSI for roaming
-> and signal monitoring purposes.
+This patchset allows perf to record build ID in mmap2 event,
+and adds perf tooling to store/download binaries to .debug
+cache based on these build IDs.
 
-Needs a bit of rework. See my comments below...
+Note that the build id retrieval code is stolen from bpf
+code, where it's been used (together with file offsets)
+to replace IPs in user space stack traces. It's now added
+under lib directory.
 
-> Signed-off-by: Alvin =C5=A0ipraga <alsi@bang-olufsen.dk>
-> ---
->   .../broadcom/brcm80211/brcmfmac/cfg80211.c    | 82 +++++++++++++++++++
->   .../broadcom/brcm80211/brcmfmac/cfg80211.h    |  6 ++
->   .../broadcom/brcm80211/brcmfmac/fwil_types.h  | 28 +++++++
->   3 files changed, 116 insertions(+)
->=20
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c =
-b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> index 0ee421f30aa2..21b53bd27f7f 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> @@ -5196,6 +5196,41 @@ brcmf_cfg80211_mgmt_tx(struct wiphy *wiphy, struct=
- wireless_dev *wdev,
->   	return err;
->   }
->  =20
-> +static int brcmf_cfg80211_set_cqm_rssi_range_config(struct wiphy *wiphy,
-> +						    struct net_device *ndev,
-> +						    s32 rssi_low, s32 rssi_high)
-> +{
-> +	struct brcmf_cfg80211_vif *vif;
-> +	struct brcmf_if *ifp;
-> +	int err =3D 0;
-> +
-> +	brcmf_dbg(TRACE, "low=3D%d high=3D%d", rssi_low, rssi_high);
-> +
-> +	ifp =3D netdev_priv(ndev);
-> +	vif =3D ifp->vif;
-> +
-> +	if (rssi_low !=3D vif->cqm_rssi_low || rssi_high !=3D vif->cqm_rssi_hig=
-h) {
-> +		struct brcmf_rssi_event_le config =3D {
-> +			.rate_limit_msec =3D cpu_to_le32(0),
-> +			.rssi_level_num =3D 2,
-> +			.rssi_levels =3D {
-> +				max_t(s32, rssi_low, S8_MIN),
-> +				min_t(s32, rssi_high, S8_MAX),
+v7 changes:
+  - included only missing kernel patches, cc-ed bpf@vger and
+    rebased on bpf-next/master [Alexei]
 
-The type should be s8 iso s32.
+v6 changes:
+  - last 4 patches rebased Arnaldo's perf/core
 
-> +			},
-> +		};
+v5 changes:
+  - rebased on latest perf/core
+  - several patches already pulled in
+  - fixed trace+probe_vfs_getname.sh output redirection
+  - fixed changelogs [Arnaldo]
+  - renamed BUILD_ID_SIZE to BUILD_ID_SIZE_MAX [Song]
 
-What is the expectation here? The firmware behavior for the above is=20
-that you will get an event when the rssi is lower or equal to the level=20
-and the previous rssi event was lower or equal to a different level.=20
-There is another event RSSI_LQM that would be a better fit although that=20
-is not available in every firmware image ("rssi_mon" firmware feature).
+v4 changes:
+  - fixed typo in changelog [Namhyung]
+  - removed force_download bool from struct dso_store_data,
+    because it's not used  [Namhyung]
 
-Another option would be to add a level, ie.:
+v3 changes:
+  - added acks
+  - removed forgotten debug code [Arnaldo]
+  - fixed readlink termination [Ian]
+  - fixed doc for --debuginfod=URLs [Ian]
+  - adopted kernel's memchr_inv function and used
+    it in build_id__is_defined function [Arnaldo]
 
-	.rssi_levels =3D {
-		max_t(s8, rssi_low, S8_MIN),
-		min_t(s8, rssi_high, S8_MAX - 1),
-		S8_MAX
-	}
+On recording server:
 
-> +		err =3D brcmf_fil_iovar_data_set(ifp, "rssi_event", &config,
-> +					       sizeof(config));
-> +		if (err) {
-> +			err =3D -EINVAL;
-> +		} else {
-> +			vif->cqm_rssi_low =3D rssi_low;
-> +			vif->cqm_rssi_high =3D rssi_high;
-> +		}
-> +	}
-> +
-> +	return err;
-> +}
->  =20
->   static int
->   brcmf_cfg80211_cancel_remain_on_channel(struct wiphy *wiphy,
-> @@ -5502,6 +5537,7 @@ static struct cfg80211_ops brcmf_cfg80211_ops =3D {
->   	.update_mgmt_frame_registrations =3D
->   		brcmf_cfg80211_update_mgmt_frame_registrations,
->   	.mgmt_tx =3D brcmf_cfg80211_mgmt_tx,
-> +	.set_cqm_rssi_range_config =3D brcmf_cfg80211_set_cqm_rssi_range_config=
-,
->   	.remain_on_channel =3D brcmf_p2p_remain_on_channel,
->   	.cancel_remain_on_channel =3D brcmf_cfg80211_cancel_remain_on_channel,
->   	.get_channel =3D brcmf_cfg80211_get_channel,
-> @@ -6137,6 +6173,49 @@ brcmf_notify_mic_status(struct brcmf_if *ifp,
->   	return 0;
->   }
->  =20
-> +static s32 brcmf_notify_rssi(struct brcmf_if *ifp,
-> +			     const struct brcmf_event_msg *e, void *data)
+  - on the recording server we can run record with --buildid-mmap
+    option to store build ids in mmap2 events:
 
-align to the opening brace in the line above.
+    # perf record --buildid-mmap
+    ^C[ perf record: Woken up 2 times to write data ]
+    [ perf record: Captured and wrote 0.836 MB perf.data ]
 
-> +{
-> +	struct brcmf_cfg80211_vif *vif =3D ifp->vif;
-> +	struct brcmf_rssi_be *info =3D data;
-> +	s32 rssi, snr, noise;
-> +	s32 low, high, last;
-> +
-> +	if (e->datalen < sizeof(*info)) {
-> +		brcmf_err("insufficient RSSI event data\n");
-> +		return 0;
-> +	}
-> +
-> +	rssi =3D be32_to_cpu(info->rssi);
-> +	snr =3D be32_to_cpu(info->snr);
-> +	noise =3D be32_to_cpu(info->noise);
+  - it stores nothing to ~/.debug cache:
 
-Bit surprised to see this is BE, but it appears to be correct.
+    # find ~/.debug
+    find: ‘/root/.debug’: No such file or directory
 
-> +	low =3D vif->cqm_rssi_low;
-> +	high =3D vif->cqm_rssi_high;
-> +	last =3D vif->cqm_rssi_last;
-> +
-> +	brcmf_dbg(TRACE, "rssi=3D%d snr=3D%d noise=3D%d low=3D%d high=3D%d last=
-=3D%d\n",
-> +		  rssi, snr, noise, low, high, last);
-> +
-> +	if (rssi !=3D last) {
+  - and still reports properly:
 
-Given the firmware behavior I don't think you need this check.
+    # perf report --stdio
+    ...
+    99.82%  swapper          [kernel.kallsyms]  [k] native_safe_halt
+     0.03%  swapper          [kernel.kallsyms]  [k] finish_task_switch
+     0.02%  swapper          [kernel.kallsyms]  [k] __softirqentry_text_start
+     0.01%  kcompactd0       [kernel.kallsyms]  [k] _raw_spin_unlock_irqrestore
+     0.01%  ksoftirqd/6      [kernel.kallsyms]  [k] slab_free_freelist_hook
+     0.01%  kworker/17:1H-x  [kernel.kallsyms]  [k] slab_free_freelist_hook
 
-> +		vif->cqm_rssi_last =3D rssi;
-> +
-> +		if (rssi <=3D low || rssi =3D=3D 0) {
-> +			brcmf_dbg(INFO, "LOW rssi=3D%d\n", rssi);
-> +			cfg80211_cqm_rssi_notify(ifp->ndev,
-> +						 NL80211_CQM_RSSI_THRESHOLD_EVENT_LOW,
-> +						 rssi, GFP_KERNEL);
-> +		} else if (rssi > high) {
-> +			brcmf_dbg(INFO, "HIGH rssi=3D%d\n", rssi);
-> +			cfg80211_cqm_rssi_notify(ifp->ndev,
-> +						 NL80211_CQM_RSSI_THRESHOLD_EVENT_HIGH,
-> +						 rssi, GFP_KERNEL);
-> +		}
-> +	}
-> +
-> +	return 0;
+  - display used/hit build ids:
 
---=20
-This electronic communication and the information and any files transmitted=
-=20
-with it, or attached to it, are confidential and are intended solely for=20
-the use of the individual or entity to whom it is addressed and may contain=
-=20
-information that is confidential, legally privileged, protected by privacy=
-=20
-laws, or otherwise restricted from disclosure to anyone else. If you are=20
-not the intended recipient or the person responsible for delivering the=20
-e-mail to the intended recipient, you are hereby notified that any use,=20
-copying, distributing, dissemination, forwarding, printing, or copying of=
-=20
-this e-mail is strictly prohibited. If you received this e-mail in error,=
-=20
-please return the e-mail to the sender, delete it from your computer, and=
-=20
-destroy any printed copy of it.
+    # perf buildid-list | head -5
+    5dcec522abf136fcfd3128f47e131f2365834dd7 /proc/kcore
+    589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+    40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
 
---000000000000bc8b4f05b8dc62e9
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+  - store build id binaries into build id cache:
 
-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
-pra5sIx/TR6gNtLG9MpND9zQt5j42hInkP81vqu9DG8lovoPMuR0JVpFRbPjHZ07cLqqbFMVS/8z
-53iSewIDAQABo4IB0zCCAc8wDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggr
-BgEFBQcwAoZBaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNp
-Z24yc2hhMmczb2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNv
-bS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYB
-BQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAw
-RAYDVR0fBD0wOzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2ln
-bjJzaGEyZzMuY3JsMCcGA1UdEQQgMB6BHGFyZW5kLnZhbnNwcmllbEBicm9hZGNvbS5jb20wEwYD
-VR0lBAwwCgYIKwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0O
-BBYEFHAaaA+cRo3vYiA6aKVu1bOs4YAYMA0GCSqGSIb3DQEBCwUAA4IBAQCYLdyC8SuyQV6oa5uH
-kGtqz9FCJC/9gSclQLM8dZLHF3FYX8LlcQg/3Ct5I29YLK3T/r35B2zGljtXqVOIeSEz7sDXfGNy
-3dnLIafB1y04e7aR+thVn5Rp1YTF01FUWYbZrixlVuKvjn8vtKC+HhAoDCxvqnqEuA/8Usn7B0/N
-uOA46oQTLe3kjdIgXWJ29JWVqFUavYdcK0+0zyfeMBCTO6heYABeMP3wzYHfcuFDhqldTCpumqhZ
-WwHVQUbAn+xLMIQpycIQFoJIGJX4MeaTSMfLNP2w7nP2uLNgIeleF284vS0XVkBXSCgIGylP4SN+
-HQYrv7fVCbtp+c7nFvP7MYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xv
-YmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNI
-QTI1NiAtIEczAgxR3m7Pj6LvQiWjJy0wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIE
-INdz7Ffimv7pfEe5x3tmd7ckxTIuAf0y15N1u1ddkOkyMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0B
-BwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDExNDEzMzkzMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgB
-ZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQow
-CwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAzsibs/lLAQDwPmFgf
-9CGrzm4Qez9HZK59BVR6OIC/yNWuWJiYwuL9YKYr6bJE+vJ2olAVshPjucZM7Exy9cYJoe6Iertk
-qtEAd1frmxoIDQg4dIKVaenjdd0E1sZAxN+LiD59LJhLFaJ2wbGQPiOSaEacQhSlZRNktl9Z8V28
-103OjFq9I7q8DAGRv4ByotgzSOVjvo3LAg7yDJLgC0o4YWNm35FAiU0PnMTG4aorVHugZq+iXO+h
-GFASaeWAs8k0qqPfIxzM5LW0jwq6fWTdZfFGdoSmURMwf+C6S0P4WYnb7MfbLe4ix93AvieT6gP7
-6u2tWeww+WnLIWlG6iNd
---000000000000bc8b4f05b8dc62e9--
+    # perf buildid-cache -a perf.data
+    OK   5dcec522abf136fcfd3128f47e131f2365834dd7 /proc/kcore
+    OK   589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    OK   94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    OK   559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+    OK   40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
+    OK   a674f7a47c78e35a088104647b9640710277b489 /usr/sbin/sshd
+    OK   e5cb4ca25f46485bdbc691c3a92e7e111dac3ef2 /usr/bin/bash
+    OK   9bc8589108223c944b452f0819298a0c3cba6215 /usr/bin/find
+
+    # find ~/.debug | head -5
+    /root/.debug
+    /root/.debug/proc
+    /root/.debug/proc/kcore
+    /root/.debug/proc/kcore/5dcec522abf136fcfd3128f47e131f2365834dd7
+    /root/.debug/proc/kcore/5dcec522abf136fcfd3128f47e131f2365834dd7/kallsyms
+
+  - run debuginfod daemon to provide binaries to another server (below)
+    (the initialization could take some time)
+
+    # debuginfod -F /
+
+
+On another server:
+
+  - copy perf.data from 'record' server and run:
+
+    $ find ~/.debug/
+    find: ‘/home/jolsa/.debug/’: No such file or directory
+
+    $ perf buildid-list | head -5
+    No kallsyms or vmlinux with build-id 5dcec522abf136fcfd3128f47e131f2365834dd7 was found
+    5dcec522abf136fcfd3128f47e131f2365834dd7 [kernel.kallsyms]
+    5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
+    589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+
+  - report does not show anything (kernel build id does not match):
+
+   $ perf report --stdio
+   ...
+    76.73%  swapper          [kernel.kallsyms]    [k] 0xffffffff81aa8ebe
+     1.89%  find             [kernel.kallsyms]    [k] 0xffffffff810f2167
+     0.93%  sshd             [kernel.kallsyms]    [k] 0xffffffff8153380c
+     0.83%  swapper          [kernel.kallsyms]    [k] 0xffffffff81104b0b
+     0.71%  kworker/u40:2-e  [kernel.kallsyms]    [k] 0xffffffff810f3850
+     0.70%  kworker/u40:0-e  [kernel.kallsyms]    [k] 0xffffffff810f3850
+     0.64%  find             [kernel.kallsyms]    [k] 0xffffffff81a9ba0a
+     0.63%  find             [kernel.kallsyms]    [k] 0xffffffff81aa93b0
+
+  - add build ids does not work, because existing binaries (on another server)
+    have different build ids:
+
+    $ perf buildid-cache -a perf.data 
+    No kallsyms or vmlinux with build-id 5dcec522abf136fcfd3128f47e131f2365834dd7 was found
+    FAIL 5dcec522abf136fcfd3128f47e131f2365834dd7 [kernel.kallsyms]
+    FAIL 5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
+    FAIL 589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    FAIL 94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    FAIL 559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+    FAIL 40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
+    FAIL a674f7a47c78e35a088104647b9640710277b489 /usr/sbin/sshd
+    FAIL e5cb4ca25f46485bdbc691c3a92e7e111dac3ef2 /usr/bin/bash
+    FAIL 9bc8589108223c944b452f0819298a0c3cba6215 /usr/bin/find
+
+  - add build ids with debuginfod setup pointing to record server:
+
+    $ perf buildid-cache -a perf.data --debuginfod http://192.168.122.174:8002
+    No kallsyms or vmlinux with build-id 5dcec522abf136fcfd3128f47e131f2365834dd7 was found
+    OK   5dcec522abf136fcfd3128f47e131f2365834dd7 [kernel.kallsyms]
+    OK   5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
+    OK   589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    OK   94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    OK   559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+    OK   40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
+    OK   a674f7a47c78e35a088104647b9640710277b489 /usr/sbin/sshd
+    OK   e5cb4ca25f46485bdbc691c3a92e7e111dac3ef2 /usr/bin/bash
+    OK   9bc8589108223c944b452f0819298a0c3cba6215 /usr/bin/find
+
+  - and report works:
+
+    $ perf report --stdio
+    ...
+    76.73%  swapper          [kernel.kallsyms]    [k] native_safe_halt
+     1.91%  find             [kernel.kallsyms]    [k] queue_work_on
+     0.93%  sshd             [kernel.kallsyms]    [k] iowrite16
+     0.83%  swapper          [kernel.kallsyms]    [k] finish_task_switch
+     0.72%  kworker/u40:2-e  [kernel.kallsyms]    [k] process_one_work
+     0.70%  kworker/u40:0-e  [kernel.kallsyms]    [k] process_one_work
+     0.64%  find             [kernel.kallsyms]    [k] syscall_enter_from_user_mode
+     0.63%  find             [kernel.kallsyms]    [k] _raw_spin_unlock_irqrestore
+
+  - because we have the data in build id cache:
+
+    $ find ~/.debug | head -10
+    .../.debug
+    .../.debug/home
+    .../.debug/home/jolsa
+    .../.debug/home/jolsa/.cache
+    .../.debug/home/jolsa/.cache/debuginfod_client
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable/5dcec522abf136fcfd3128f47e131f2365834dd7
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable/5dcec522abf136fcfd3128f47e131f2365834dd7/elf
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable/5dcec522abf136fcfd3128f47e131f2365834dd7/debug
+
+
+Available also in:
+  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  perf/build_id
+
+thanks,
+jirka
+
+
+---
+Jiri Olsa (3):
+      bpf: Move stack_map_get_build_id into lib
+      bpf: Add size arg to build_id_parse function
+      perf: Add build id data in mmap2 event
+
+ include/linux/buildid.h         |  12 ++++++++++
+ include/uapi/linux/perf_event.h |  42 ++++++++++++++++++++++++++++++----
+ kernel/bpf/stackmap.c           | 143 ++++--------------------------------------------------------------------------------------------------------------
+ kernel/events/core.c            |  32 ++++++++++++++++++++++----
+ lib/Makefile                    |   3 ++-
+ lib/buildid.c                   | 149 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 232 insertions(+), 149 deletions(-)
+ create mode 100644 include/linux/buildid.h
+ create mode 100644 lib/buildid.c
+
