@@ -2,102 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D752F5A0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 05:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 205E92F5A0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 05:55:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbhANEyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 23:54:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbhANEyf (ORCPT
+        id S1726951AbhANEzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 23:55:00 -0500
+Received: from mail-lf1-f53.google.com ([209.85.167.53]:40156 "EHLO
+        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726822AbhANEy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 23:54:35 -0500
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F25C061575;
-        Wed, 13 Jan 2021 20:53:56 -0800 (PST)
-Received: by mail-ot1-x332.google.com with SMTP id n42so4117321ota.12;
-        Wed, 13 Jan 2021 20:53:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F/k23s6lgOXZTqVuz1xHoCpi6MO42eB1Dy/aDLB/l68=;
-        b=Coc4H+UnaMckq5Z75k2Q3USrwW93aY7dO8h+Qix6g7Kv187G+0IqgvkZS0x7rws4ay
-         drZewiOBfXeJC3p0qcAUuOm+g03lWXrHZuU9g8/f6qh/rV/dgiVt5mo408EmGsmiJtuL
-         7l011CS9rYTisF+uCszEIRVnnKbatIxJeJwlgCCj816UPg2LOe+rK0K2tyJwzdWUNfPO
-         mP59NVkJM2/YSvGH6J4N7Y3BezoY56fFVNqRcDGcgcZ+Y4TY+OF55zOh0UX7w9coHzQx
-         k9v7wQ9JPI9/bKAu+GYebDmCgXRxsGYdMK8KzGJHweWSZqyaqygir6SjWEA2HdNUd46b
-         6IxQ==
+        Wed, 13 Jan 2021 23:54:58 -0500
+Received: by mail-lf1-f53.google.com with SMTP id m12so6226065lfo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 20:54:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=F/k23s6lgOXZTqVuz1xHoCpi6MO42eB1Dy/aDLB/l68=;
-        b=Zg+C7QtH8gC6dmDy6A3lxzsAyvFLS7x8tahtzEHdWcwvJCpt/7VwaeCDjQZifQ6BES
-         7A4Y1Su0EE2w4FqWPGXjE4o6E4VvtpgcrGySRkLyanV5z3QH/+rw1cn1f5T7UgA9YI0a
-         F71nimrZTO0mmmn66RzKhkoBO3BizzsbzoSKKNnYJo5Kd784mC1I6VK0/d8a+837do3O
-         KJmckUYx4Iwg1B1MhchfctV+sf11ObOmhBPIEjQ/+P2XTVZISUcdJfJ3gPwLaztJxVG2
-         rokbimznmwgnQDRfnivg1JAEwJIkjMB9aVddW4+6X7RZE+2HrT62b1/HUifq48hHm5eX
-         8iuw==
-X-Gm-Message-State: AOAM533TKA+m5ynPxQ7/WIG3rckrMvRnnvIDtTpR36HsBLhkP+QGAiOh
-        cBCDpINUVCsTSl5OQ0aswICjHKMbJ9y58MqSLh/Ah3pyWoQ=
-X-Google-Smtp-Source: ABdhPJx4Xf5P3YiozBLInHmduvDf5X+on8T7vqIGA34k3G4cvNXXgPHh1nwm+gkhePe43fKP8aLMW0JSMAB7VPcNV4M=
-X-Received: by 2002:a9d:2f67:: with SMTP id h94mr3481013otb.238.1610600035974;
- Wed, 13 Jan 2021 20:53:55 -0800 (PST)
+        bh=4QNuc5f5wtLLJ36D9lt2nfW/3BD8HkXS2QxBwmwSVa8=;
+        b=j5v2yu92MTOT8+OboLb/0Waa27BMHe3tLuP0S8yVLpkHWBY1bDRAbxK77sLpn6F4XS
+         AQiW5Vp5uwzz+gBeb6xzZrCvxxZsjdASLQfrgj6EsqrtDoTInEVk6qclpnl8yP6gAJAb
+         4d8mxPdbKnnm3/NNFH0zCaHR1wO2Lde2ZOpEq7TBNPaHv8CHQVeObM7kiI2g0jWzgd/t
+         ZmrF8KP00/Yr1Zo2kilfC4FVrPtVJhNfAvEAFyql8qLYbyd+u73RSoSZGr0+JO7VIJ+M
+         KGRzIoOef8IDA6t81eDcWN0nCXFuE445LJ9E3BJJmTvnENCeSp1SPv6h6eBVkAcXPMHT
+         eOcQ==
+X-Gm-Message-State: AOAM531fJjmZ9X1EwJoVkiC5TIv7t8ZdowxwLcokpK//dX09hUb3Occ7
+        sSTGnyR6iZDkyrJ2wISa8sifUaaAUzXa10szKqxLwvbYR7Y=
+X-Google-Smtp-Source: ABdhPJwIoCOczUufg2qa2oKWPRqPOtlucA6dn40C0SaO7Ked72QkH4MA5vrl1RMC89iee0EPMcniw8nO6/dbDVxpPjQ=
+X-Received: by 2002:a19:8584:: with SMTP id h126mr2512631lfd.152.1610600058061;
+ Wed, 13 Jan 2021 20:54:18 -0800 (PST)
 MIME-Version: 1.0
-References: <1610509395-107554-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-In-Reply-To: <1610509395-107554-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-From:   Baolin Wang <baolin.wang7@gmail.com>
-Date:   Thu, 14 Jan 2021 12:53:47 +0800
-Message-ID: <CADBw62qWmR9w+rXCjjO3_Yw9Hk_BoSFZhM7pbiRKp+bgnOfonA@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: sprd: Simplify bool comparison
-To:     Yang Li <abaci-bugfix@linux.alibaba.com>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-gpio@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <20210113080128.10286-1-jslaby@suse.cz> <20210113104618.GB1331835@krava>
+ <388a2e21-14ee-4609-84d0-c8824154c015@suse.cz>
+In-Reply-To: <388a2e21-14ee-4609-84d0-c8824154c015@suse.cz>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 14 Jan 2021 13:54:06 +0900
+Message-ID: <CAM9d7cgmUqLX+C1wDPe9qaxDh1tY4sVmLx2qZqey3CQSmZSo2Q@mail.gmail.com>
+Subject: Re: [PATCH] perf tools: Resolve symbols against debug file first
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linuxppc-dev@lists.ozlabs.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 11:43 AM Yang Li <abaci-bugfix@linux.alibaba.com> wrote:
->
-> Fix the following coccicheck warning:
-> ./drivers/pinctrl/sprd/pinctrl-sprd.c:690:8-23: WARNING: Comparison to
-> bool
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
+Hi both of Jiri,
 
-You should keep other guy's reviewed-by or acked-by tag for the
-following version if no other big changes. So again
-Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
-
-> ---
-> Changes in v2:
->     - make "pinctrl: sprd:" as subject prefix
+On Wed, Jan 13, 2021 at 8:43 PM Jiri Slaby <jslaby@suse.cz> wrote:
 >
->  drivers/pinctrl/sprd/pinctrl-sprd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On 13. 01. 21, 11:46, Jiri Olsa wrote:
+> > On Wed, Jan 13, 2021 at 09:01:28AM +0100, Jiri Slaby wrote:
+> >> With LTO, there are symbols like these:
+> >> /usr/lib/debug/usr/lib64/libantlr4-runtime.so.4.8-4.8-1.4.x86_64.debug
+> >>   10305: 0000000000955fa4     0 NOTYPE  LOCAL  DEFAULT   29 Predicate.cpp.2bc410e7
+> >>
+> >> This comes from a runtime/debug split done by the standard way:
+> >> objcopy --only-keep-debug $runtime $debug
+> >> objcopy --add-gnu-debuglink=$debugfn -R .comment -R .GCC.command.line --strip-all $runtime
+> >>
+> >> perf currently cannot resolve such symbols (relicts of LTO), as section
+> >> 29 exists only in the debug file (29 is .debug_info). And perf resolves
+> >> symbols only against runtime file. This results in all symbols from such
+> >> a library being unresolved:
+> >>       0.38%  main2    libantlr4-runtime.so.4.8  [.] 0x00000000000671e0
+> >>
+> >> So try resolving against the debug file first. And only if it fails (the
+> >> section has NOBITS set), try runtime file. We can do this, as "objcopy
+> >> --only-keep-debug" per documentation preserves all sections, but clears
+> >> data of some of them (the runtime ones) and marks them as NOBITS.
+> >>
+> >> The correct result is now:
+> >>       0.38%  main2    libantlr4-runtime.so.4.8  [.] antlr4::IntStream::~IntStream
+> >>
+> >> Note that these LTO symbols are properly skipped anyway as they belong
+> >> neither to *text* nor to *data* (is_label && !elf_sec__filter(&shdr,
+> >> secstrs) is true).
+> >>
+> >> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> >> Cc: Peter Zijlstra <peterz@infradead.org>
+> >> Cc: Ingo Molnar <mingo@redhat.com>
+> >> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> >> Cc: Mark Rutland <mark.rutland@arm.com>
+> >> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> >> Cc: Jiri Olsa <jolsa@redhat.com>
+> >> Cc: Namhyung Kim <namhyung@kernel.org>
+> >> ---
+> >>   tools/perf/util/symbol-elf.c | 10 +++++++++-
+> >>   1 file changed, 9 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+> >> index f3577f7d72fe..a31b716fa61c 100644
+> >> --- a/tools/perf/util/symbol-elf.c
+> >> +++ b/tools/perf/util/symbol-elf.c
+> >> @@ -1226,12 +1226,20 @@ int dso__load_sym(struct dso *dso, struct map *map, struct symsrc *syms_ss,
+> >>              if (sym.st_shndx == SHN_ABS)
+> >>                      continue;
+> >>
+> >> -            sec = elf_getscn(runtime_ss->elf, sym.st_shndx);
+> >> +            sec = elf_getscn(syms_ss->elf, sym.st_shndx);
+> >>              if (!sec)
+> >>                      goto out_elf_end;
+> >
+> > we iterate symbols from syms_ss, so the fix seems to be correct
+> > to call elf_getscn on syms_ss, not on runtime_ss as we do now
+> >
+> > I'd think this worked only when runtime_ss == syms_ss
 >
-> diff --git a/drivers/pinctrl/sprd/pinctrl-sprd.c b/drivers/pinctrl/sprd/pinctrl-sprd.c
-> index 08dc193..dca7a50 100644
-> --- a/drivers/pinctrl/sprd/pinctrl-sprd.c
-> +++ b/drivers/pinctrl/sprd/pinctrl-sprd.c
-> @@ -687,7 +687,7 @@ static int sprd_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin_id,
->                                 shift = INPUT_SCHMITT_SHIFT;
->                                 break;
->                         case PIN_CONFIG_BIAS_PULL_UP:
-> -                               if (is_sleep_config == true) {
-> +                               if (is_sleep_config) {
->                                         val |= SLEEP_PULL_UP;
->                                         mask = SLEEP_PULL_UP_MASK;
->                                         shift = SLEEP_PULL_UP_SHIFT;
-> --
-> 1.8.3.1
+> No, because the headers are copied 1:1 from runtime_ss to syms_ss. And
+> runtime_ss is then stripped, so only .debug* sections are removed there.
+> (And syms_ss's are set as NOBITS.)
 >
+> We iterated .debug* sections in syms_ss and used runtime_ss section
+> _headers_ only to adjust symbols (sometimes). That worked.
 
+It seems PPC has an opd section only in the runtime_ss and that's why
+we use it for section headers.
 
--- 
-Baolin Wang
+>
+> >>              gelf_getshdr(sec, &shdr);
+> >>
+> >> +            if (shdr.sh_type == SHT_NOBITS) {
+> >> +                    sec = elf_getscn(runtime_ss->elf, sym.st_shndx);
+> >> +                    if (!sec)
+> >> +                            goto out_elf_end;
+> >> +
+> >> +                    gelf_getshdr(sec, &shdr);
+> >> +            }
+> >
+> > is that fallback necessary? the symbol is from syms_ss
+>
+> Provided the above, we don't need the section data here, only headers,
+> so the NOBITS test is superfluous and the fallback shouldn't be needed.
+> Let me test it.
+
+We need to talk to PPC folks like I said.  Or maybe we can change the
+default ss depending on the arch.
+
+Thanks,
+Namhyung
