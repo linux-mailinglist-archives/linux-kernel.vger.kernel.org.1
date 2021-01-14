@@ -2,263 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110F42F5E3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CDE2F5E4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728401AbhANKAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 05:00:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726858AbhANKAq (ORCPT
+        id S1728547AbhANKEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 05:04:52 -0500
+Received: from mout.kundenserver.de ([212.227.17.10]:52347 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727967AbhANKEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 05:00:46 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAEFC061573
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:00:04 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id c124so3969224wma.5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:00:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=tBwa88PnnPvfhT0zH6tlnPzclZk+pRp4GKUcHZy06XI=;
-        b=e9JuoVN+Nnag+M9i1dhhZZaRlfAIEXr26DCtH0AmzSg0X3ojyQGj8gegdZCJ193L/J
-         NFo/NBnzJFJmZfyN4enk1A8cGu+5TsiAKJ0Zh5QlhSJaXPkNWtKGDUD/eRAEUerhXzec
-         +0hJT5sVyCb/uVhCw6LeAfJwfS0gGdupMFtlU5xIDxUYtWbAtmG/QXpZwqp9twojxU7G
-         vZZNoNFbohh6MKyYItrO0Fd6J7cnmyh4w+GT7zGieXJ1DbzJWQvX71mZpQOgGKfuzSUs
-         c2NHWBEHGUJAUTjRyCVzL5xiz4QhnJ4LmsIqbhS3kb5MSur3YfSJUFyTr61WvFeRqxIS
-         NuOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=tBwa88PnnPvfhT0zH6tlnPzclZk+pRp4GKUcHZy06XI=;
-        b=LmjMMGQteEaX39pmd1qHv6CFoSDZNAZBrcG0Eele1HLuq+nsHcbkYWb3UIonLYtM22
-         LelOo2gvl/SCsRaDL22mq+Q3qc6tKRKwLsoZ3Nh9bnjQIwmsso3YN6j+9Lk/KuM75/j5
-         BVSHmAIB0zzNfo25y/Q6Kgg0dY+MlFgeQTQK6nbkDO5DgPF8jZNFlUaU1ZWYKLwH3jLO
-         e7/pHc+OD/o1n693UAM/49KNImbrDfUE2Y+HmIMMPH6gZaV7FydoqDmglsts3ksKbnF1
-         U+CyF6ky/t92viutCk3qs63cY0CzeNKVS+RFFzeR8g6nQOQLIP4d2M+TwbuKqB1zlCRO
-         bkpQ==
-X-Gm-Message-State: AOAM530y4S1V463TntNH3Jkoxu9Ey7d9lyJ7hbpAIA+6T7tF03o31mTH
-        ZkqiOrq66MvpCb7ws1317Tjsa67a94TZ+eIw
-X-Google-Smtp-Source: ABdhPJyk2adzO4fbhrQWuLvpfNMZB423i0gszJ6UsC/u6WDRGhxg6/UyNDYvRObCwC4ii13oPYhy+A==
-X-Received: by 2002:a7b:c259:: with SMTP id b25mr3237151wmj.40.1610618403029;
-        Thu, 14 Jan 2021 02:00:03 -0800 (PST)
-Received: from dell ([91.110.221.178])
-        by smtp.gmail.com with ESMTPSA id i18sm9012903wrp.74.2021.01.14.02.00.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 02:00:02 -0800 (PST)
-Date:   Thu, 14 Jan 2021 10:00:00 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     "linux@roeck-us.net" <linux@roeck-us.net>,
-        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [PATCH RESEND v6 2/4] mfd: Support ROHM BD9576MUF and BD9573MUF
-Message-ID: <20210114100000.GK3975472@dell>
-References: <cover.1605882179.git.matti.vaittinen@fi.rohmeurope.com>
- <cc46e329efa30c66f000ab7c97f9bbf0bc31f0f7.1605882179.git.matti.vaittinen@fi.rohmeurope.com>
- <20201127083242.GK2455276@dell>
- <6bd4abcb340bdf764fd23b685684d3f984319ed7.camel@fi.rohmeurope.com>
- <20201202125723.GK4801@dell>
- <3bab8bd8c69a878f849a07dd9ea35bfac2006da2.camel@fi.rohmeurope.com>
- <c2949e981014c049571df355501f2af65b3954de.camel@fi.rohmeurope.com>
- <8a6373aa33aa19d850d3802d6579e66b97c8d325.camel@fi.rohmeurope.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8a6373aa33aa19d850d3802d6579e66b97c8d325.camel@fi.rohmeurope.com>
+        Thu, 14 Jan 2021 05:04:51 -0500
+Received: from orion.localdomain ([77.7.60.217]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1M890H-1l5CG21qU7-005J2c; Thu, 14 Jan 2021 11:02:17 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     masahiroy@kernel.org, linux-kbuild@vger.kernel.org
+Subject: [PATCH] scripts: kconfig: fix HOSTCC call
+Date:   Thu, 14 Jan 2021 11:02:16 +0100
+Message-Id: <20210114100216.11787-1-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+X-Provags-ID: V03:K1:zyRntTR6dFuP5Dlqeu+Eum7UbFZqUcolGG82TrgQ1Lf5Qin1+KT
+ HuKJIwrCox9uQTJboBuyzeS++E/8tXsd5zj8Ijq6rT41mT/cAKM9rniD5qfUYTF2y0OQWrA
+ vMagJdGi53z8fKCiecLddGnfYo3kEjYJEf7ifpRmmzARGA6BxvQS2YBLbJRInD3Tqqo/WkC
+ HF/ZfSzeh6uaJDVbHZKpw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wvOOqGw/OEM=:hZLqjEeVuURVsGUe2fUwgO
+ GfEOoTGEJp/ZtMApCVk6klnff67KT0fkv3n3U9yeITLch9aqMkXsxNW9xipL/ynMNyjv98QOL
+ YKi8QxKiOOA1v05MzmxeUNUjyKRZnVyuHjIU9JXDxbk5q/0L32nEdORUsLfIQGc7Xw75DFb9y
+ IrOUu/kzWwnmG5RxIAMRqY3lctOzF/lRm6O/d1X2nCKTSZFPQnFHYz9b/aXFyGMt3rrM44BZg
+ inAvi/QTJs3JuaY9RL8ICVtUKwgteE2sPv02h56K8UYdjDmzPHfe1sUCRM8vyFf8LCiEEpa5j
+ luFPi4vWQ/j3rqX7wQ9foDhvAQvz736+ypduhQt2D28quuxrTClypMcdOXx8NCAw5Ypb/7iQt
+ 9NHS+VLQBA8Afx60XolZGY1s/8Y1i1vDhB/c7hQ0JU9tnn67T/76Qt3VOcDZs
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Dec 2020, Vaittinen, Matti wrote:
+The change c0f975af1745391749e4306aa8081b9a4d2cced8 introduces a bug when
+HOSTCC contains parameters: the whole command line is treated as the program
+name (with spaces in it). Therefore, we have to remove the quotes.
 
-> Hello Again peeps,
-> 
-> On Thu, 2020-12-17 at 12:04 +0200, Matti Vaittinen wrote:
-> > On Wed, 2020-12-02 at 15:32 +0200, Matti Vaittinen wrote:
-> > > Hello Lee,
-> > > 
-> > > On Wed, 2020-12-02 at 12:57 +0000, Lee Jones wrote:
-> > > > On Fri, 27 Nov 2020, Vaittinen, Matti wrote:
-> > > > 
-> > > > > Hello Lee,
-> > > > > 
-> > > > > On Fri, 2020-11-27 at 08:32 +0000, Lee Jones wrote:
-> > > > > > On Mon, 23 Nov 2020, Matti Vaittinen wrote:
-> > > > > > 
-> > > > > > > Add core support for ROHM BD9576MUF and BD9573MUF PMICs
-> > > > > > > which
-> > > > > > > are
-> > > > > > > mainly used to power the R-Car series processors.
-> > > > > > > 
-> > > > > > > Signed-off-by: Matti Vaittinen <
-> > > > > > > matti.vaittinen@fi.rohmeurope.com>
-> > > > > > > ---
-> > > > > > >  drivers/mfd/Kconfig              |  11 ++++
-> > > > > > >  drivers/mfd/Makefile             |   1 +
-> > > > > > >  drivers/mfd/rohm-bd9576.c        | 108
-> > > > > > > +++++++++++++++++++++++++++++++
-> > > > > > >  include/linux/mfd/rohm-bd957x.h  |  59 +++++++++++++++++
-> > > > > > >  include/linux/mfd/rohm-generic.h |   2 +
-> > > > > > >  5 files changed, 181 insertions(+)
-> > > > > > >  create mode 100644 drivers/mfd/rohm-bd9576.c
-> > > > > > >  create mode 100644 include/linux/mfd/rohm-bd957x.h
-> > > > > > 
-> > > > > > Looks like a possible candidate for "simple-mfd-i2c".
-> > > > > > 
-> > > > > > Could you look into that please?
-> > > > > > 
-> > > > > I must admit I didn't know about "simple-mfd-i2c". Good thing
-> > > > > to
-> > > > > know
-> > > > > when working with simple devices :) Is this a new thing?
-> > > > 
-> > > > Yes, it's new.
-> > > > 
-> > > > > I am unsure I understand the idea fully. Should users put all
-> > > > > the
-> > > > > different regamp configs in this file and just add the device
-> > > > > IDs
-> > > > > with
-> > > > > pointer to correct config? (BD9576 and BD9573 need volatile
-> > > > > ranges).
-> > > > > Also, does this mean each sub-device should have own node and
-> > > > > own
-> > > > > compatible in DT to get correctly load and probed? I guess this
-> > > > > would
-> > > > > need a buy-in from Rob too then.
-> > > > 
-> > > > You should describe the H/W in DT.
-> > > 
-> > > Yes. And it is described. But I've occasionally received request
-> > > from
-> > > DT guys to add some properties directly to MFD node and not to add
-> > > own
-> > > sub-node. This is what is done for example with the BD71837/47
-> > > clocks
-> > > -
-> > > there is no own node for clk - the clk properties are placed
-> > > directly
-> > > in MFD node (as was requested by Stephen and Rob back then - I
-> > > originally had own node for clk). I really have no clear view on
-> > > when
-> > > things warrant for own subnode and when they don't - but as far as
-> > > I
-> > > can see using simple-mfd-i2c forces one to always have a sub-node /
-> > > device. Even just a empty node with nothing but the compatible even
-> > > if
-> > > device does not need stuff from DT? Anyways, I think this is nice
-> > > addition for simple drivers.
-> > > 
-> > > > > By the way - for uneducated eyes like mine this does not look
-> > > > > like
-> > > > > it
-> > > > > has much to do with MFD as a device - here MFD reminds me of a
-> > > > > simple-
-> > > > > bus on top of I2C.
-> > > > 
-> > > > This is for MFD devices where the parent does little more than
-> > > > create
-> > > > a shared address space for child devices to operate on - like
-> > > > yours.
-> > > > 
-> > > > > Anyways, the BD9576 and BD9573 both have a few interrupts for
-> > > > > OVD/UVD
-> > > > > conditions and I am expecting that I will be asked to provide
-> > > > > the
-> > > > > regulator notifiers for those. Reason why I omitted the IRQs
-> > > > > for
-> > > > > now is
-> > > > > that the HW is designed to keep the IRQ asserted for whole
-> > > > > error
-> > > > > duration so some delayed ack mechanism would be needed. I would
-> > > > > like to
-> > > > > keep the door open for adding IRQs to MFD core.
-> > > > 
-> > > > You mean to add an IRQ Domain?
-> > > 
-> > > Yes. I planned to use regmap-irq and create irq chip in MFD when
-> > > the
-> > > over / under voltage / temperature - notifications or watchdog IRQs
-> > > are
-> > > needed. 
-> > 
-> > I am sorry if I have missed your reply. The ROHM email had redirected
-> > almost all patch emails to spam + I am not sure if some mails are
-> > dropping :(
-> > 
-> > (I am considering moving to gmail - but I'd rather keep all mails in
-> > one system and I can't transfer work mail traffic to gmail... I
-> > wonder
-> > how others are managing the mails - which mail system you are using?)
-> > 
-> > I think this series is now pending the decision how to proceed with
-> > MFD
-> > part. If you still want me to start with "simple-mfd-i2c", then I
-> > would
-> > appreciate if you pointed me how you would like to see the regmap
-> > configs added. Although I am quite positive this (eventually) ends up
-> > being more than what simple-mfd-i2c is intended for (because at some
-> > point people want to add the use of the interrupts).
-> 
-> Looking at this topic again. I kind of understand the idea of combining
-> bunch of MFD drivers into one file. Many of the ROHM PMIC MFD drivers
-> do provide same functionality. Regmap configs, regmap IRQ and MFD
-> cells. Some do also probe the device. So having own file for each IC is
-> likely to not scale well when more devices are supported (and I do hope
-> this will be the case also with the ROHM ICs).
-> 
-> What bugs me with the simple-mfd-i2c here is:
-> 1. Requiring to have own compatibles for sub-devices (regulator and
-> WDG) to get them properly probed. (3 compatibles for 1 IC).
-> 2. Requiring to have own DT node for WDG.
-> 3. Supporting differences between BD9576 and BD9573 by having 6
-> compatibles for 2 ICs.
-> 4. Adding interrupt support.
+Fixes: c0f975af1745391749e4306aa8081b9a4d2cced8
+Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+---
+ scripts/kconfig/mconf-cfg.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Linux sees each of these functions as separate devices which are
-handled in different ways by isolated subsystems.  So yes, they each
-require their own compatible string regardless of whether they share
-the same physical piece of silicon or not.
-
-> So ... How do you see adding BD9576/BD9573 MFD stuff in BD9571/(BD9574)
-> MFD driver? The data structures (regmap configs, MFD cells, regmap IRQ
-> portion when added) will be different but the functions and maybe
-> engineers looking at these may be common.
-> 
-> Is it just plain confusing to add core structures for technically
-> different ICs in same file - or is it way to avoid duplicating same
-> code in many files? I can try adding the BD9576/BD9573 to the BD9571
-> core - or I can do resend this as is (rebased on 5.11). I can also hack
-> this to be kicked by simple-mfd-i2c (although I have these strong
-> objections) - but I bet it will in the long run just lead to a sub-
-> optimal solution. When the BD9576/BD9573 logic blocks are re-used in
-> some "non simple" designs and re-using the sub-drivers is needed and/or
-> when IRQs are needed.
-> 
-> (BTW - I am currently working with BD71815/BD71817 - and after this
-> discussion I will add these in BD71828/BD71878 MFD core. I had created
-> new MFD file for them but this discussion has been a nice kick to the
-> better direction for me)
-
-Everything will be a trade-off.
-
-There will either be superflouous files or inflexible code.
-
-You have to make the right decision for the driver and the subsystem.
-
+diff --git a/scripts/kconfig/mconf-cfg.sh b/scripts/kconfig/mconf-cfg.sh
+index fcd4acd4e9cb..40fa449ed049 100755
+--- a/scripts/kconfig/mconf-cfg.sh
++++ b/scripts/kconfig/mconf-cfg.sh
+@@ -35,7 +35,7 @@ fi
+ 
+ # As a final fallback before giving up, check if $HOSTCC knows of a default
+ # ncurses installation (e.g. from a vendor-specific sysroot).
+-if echo '#include <ncurses.h>' | "${HOSTCC}" -E - >/dev/null 2>&1; then
++if echo '#include <ncurses.h>' | ${HOSTCC} -E - >/dev/null ; then
+ 	echo cflags=\"-D_GNU_SOURCE\"
+ 	echo libs=\"-lncurses\"
+ 	exit 0
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.11.0
+
