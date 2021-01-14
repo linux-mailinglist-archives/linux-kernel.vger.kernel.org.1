@@ -2,253 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A0B2F6887
+	by mail.lfdr.de (Postfix) with ESMTP id CCCB52F6888
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728389AbhANR5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:57:00 -0500
-Received: from foss.arm.com ([217.140.110.172]:53928 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726428AbhANR47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:56:59 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9605D6E;
-        Thu, 14 Jan 2021 09:56:13 -0800 (PST)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D7C63F70D;
-        Thu, 14 Jan 2021 09:56:13 -0800 (PST)
-Subject: Re: [PATCH v2] arm64: PCI: Enable SMC conduit
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
-        lorenzo.pieralisi@arm.com, sudeep.holla@arm.com,
-        bhelgaas@google.com, robh@kernel.org, vidyas@nvidia.com,
+        id S1728486AbhANR51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:57:27 -0500
+Received: from smtprelay0237.hostedemail.com ([216.40.44.237]:60208 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725854AbhANR50 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 12:57:26 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 4A746837F24D;
+        Thu, 14 Jan 2021 17:56:45 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:4321:5007:7652:7807:9040:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12740:12895:13069:13255:13311:13357:13439:13894:14659:14721:21080:21627:21990,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: vein42_380c97427528
+X-Filterd-Recvd-Size: 2342
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 14 Jan 2021 17:56:43 +0000 (UTC)
+Message-ID: <d9ebc10ac5c4ba5231ed50ef0d2a15f424547736.camel@perches.com>
+Subject: Re: [PATCH v2 3/4] staging: hikey9xx: phy-hi3670-usb3.c:
+ hi3670_is_abbclk_seleted() returns bool
+From:   Joe Perches <joe@perches.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yu Chen <chenyu56@huawei.com>, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-References: <20210113224054.1769514-1-jeremy.linton@arm.com>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <84072c8c-ec38-5d78-62d0-ba8524cffc8f@arm.com>
-Date:   Thu, 14 Jan 2021 11:56:08 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Date:   Thu, 14 Jan 2021 09:56:41 -0800
+In-Reply-To: <d1e0d94381e214157545d6808835fdfe99448f76.1610645385.git.mchehab+huawei@kernel.org>
+References: <cover.1610645385.git.mchehab+huawei@kernel.org>
+         <d1e0d94381e214157545d6808835fdfe99448f76.1610645385.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20210113224054.1769514-1-jeremy.linton@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Since I don't have a cover letter I forgot the changes list.
-
-V1->V2:
-
-Add SMC_PCI_FEATURES calls to verify _READ, _WRITE and _SEG_INFO 
-functions exist.
-Add a _SEG_INFO bus start, end validation against the ACPI table.
-Adjust some function naming, and log messages.
-
-
-On 1/13/21 4:40 PM, Jeremy Linton wrote:
-> Given that most arm64 platforms' PCI implementations need quirks
-> to deal with problematic config accesses, this is a good place
-> to apply a firmware abstraction. The ARM PCI Configuration Space
-> Access Firmware Interface specification details a standard SMC
-> conduit designed to provide a simple PCI config accessor. This
-> specification enhances the existing ACPI/PCI abstraction and
-> expects power, config, etc., is handled by the platform. It also
-> is very explicit that the resulting config space registers must
-> behave as is specified by the PCI specification.
+On Thu, 2021-01-14 at 18:35 +0100, Mauro Carvalho Chehab wrote:
+> Instead of using 1/0 for true/false, change the type to boolean
+> and change the returned value.
+[]
+> diff --git a/drivers/staging/hikey9xx/phy-hi3670-usb3.c b/drivers/staging/hikey9xx/phy-hi3670-usb3.c
+[]
+> @@ -326,24 +326,24 @@ static int hi3670_phy_set_params(struct hi3670_priv *priv)
+>  	return ret;
+>  }
 > 
-> Hook the ACPI/PCI config path, and when missing MCFG data is
-> detected, attempt to probe the SMC conduit. If the conduit
-> exists and responds to the requested segment,  provided by the
-> ACPI namespace, attach a custom pci_ecam_ops which redirects
-> all config read/write requests to the firmware.
+> -static int hi3670_is_abbclk_seleted(struct hi3670_priv *priv)
+> +static bool hi3670_is_abbclk_seleted(struct hi3670_priv *priv)
+
+Presumably this should be "selected" not "seleted"
+
+>  {
+>  	u32 reg;
 > 
-> The Arm PCI Configuration Space Access Firmware Interface:
-> https://developer.arm.com/documentation/den0115/latest
+>  	if (!priv->sctrl) {
+>  		dev_err(priv->dev, "priv->sctrl is null!\n");
+> -		return 1;
+> +		return true;
+>  	}
 > 
-> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
-> ---
->   arch/arm64/kernel/pci.c   | 109 ++++++++++++++++++++++++++++++++++++++
->   include/linux/arm-smccc.h |  29 ++++++++++
->   2 files changed, 138 insertions(+)
+>  	if (regmap_read(priv->sctrl, SCTRL_SCDEEPSLEEPED, &reg)) {
+>  		dev_err(priv->dev, "SCTRL_SCDEEPSLEEPED read failed!\n");
+> -		return 1;
+> +		return true;
+>  	}
 > 
-> diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
-> index 1006ed2d7c60..bcbca70ef219 100644
-> --- a/arch/arm64/kernel/pci.c
-> +++ b/arch/arm64/kernel/pci.c
-> @@ -7,6 +7,7 @@
->    */
->   
->   #include <linux/acpi.h>
-> +#include <linux/arm-smccc.h>
->   #include <linux/init.h>
->   #include <linux/io.h>
->   #include <linux/kernel.h>
-> @@ -107,6 +108,112 @@ static int pci_acpi_root_prepare_resources(struct acpi_pci_root_info *ci)
->   	return status;
->   }
->   
-> +static int smccc_pcie_has_conduit(void)
-> +{
-> +	struct arm_smccc_res res;
-> +
-> +	if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE)
-> +		return -EOPNOTSUPP;
-> +
-> +	arm_smccc_smc(SMCCC_PCI_VERSION, 0, 0, 0, 0, 0, 0, 0, &res);
-> +	if ((int)res.a0 < 0)
-> +		return -EOPNOTSUPP;
-> +
-> +	arm_smccc_smc(SMCCC_PCI_FEATURES,
-> +		      SMCCC_PCI_WRITE, 0, 0, 0, 0, 0, 0, &res);
-> +	if ((int)res.a0 < 0)
-> +		return -EOPNOTSUPP;
-> +
-> +	arm_smccc_smc(SMCCC_PCI_FEATURES,
-> +		      SMCCC_PCI_READ, 0, 0, 0, 0, 0, 0, &res);
-> +	if ((int)res.a0 < 0)
-> +		return -EOPNOTSUPP;
-> +
-> +	arm_smccc_smc(SMCCC_PCI_FEATURES,
-> +		      SMCCC_PCI_SEG_INFO, 0, 0, 0, 0, 0, 0, &res);
-> +	if ((int)res.a0 < 0)
-> +		return -EOPNOTSUPP;
-> +
-> +	return 0;
-> +}
-> +
-> +static int smccc_pcie_config_read(struct pci_bus *bus, unsigned int devfn,
-> +				  int where, int size, u32 *val)
-> +{
-> +	struct arm_smccc_res res;
-> +
-> +	devfn |= bus->number << 8;
-> +	devfn |= bus->domain_nr << 16;
-> +
-> +	arm_smccc_smc(SMCCC_PCI_READ, devfn, where, size, 0, 0, 0, 0, &res);
-> +	if (res.a0) {
-> +		*val = ~0;
-> +		return -PCIBIOS_BAD_REGISTER_NUMBER;
-> +	}
-> +
-> +	*val = res.a1;
-> +	return PCIBIOS_SUCCESSFUL;
-> +}
-> +
-> +static int smccc_pcie_config_write(struct pci_bus *bus, unsigned int devfn,
-> +				   int where, int size, u32 val)
-> +{
-> +	struct arm_smccc_res res;
-> +
-> +	devfn |= bus->number << 8;
-> +	devfn |= bus->domain_nr << 16;
-> +
-> +	arm_smccc_smc(SMCCC_PCI_WRITE, devfn, where, size, val, 0, 0, 0, &res);
-> +	if (res.a0)
-> +		return -PCIBIOS_BAD_REGISTER_NUMBER;
-> +
-> +	return PCIBIOS_SUCCESSFUL;
-> +}
-> +
-> +static const struct pci_ecam_ops smccc_pcie_ops = {
-> +	.pci_ops	= {
-> +		.read		= smccc_pcie_config_read,
-> +		.write		= smccc_pcie_config_write,
-> +	}
-> +};
-> +
-> +static struct pci_config_window *
-> +pci_acpi_setup_smccc_mapping(struct acpi_pci_root *root)
-> +{
-> +	struct device *dev = &root->device->dev;
-> +	struct arm_smccc_res res;
-> +	struct resource *bus_res = &root->secondary;
-> +	struct pci_config_window *cfg;
-> +	u16 seg = root->segment;
-> +
-> +	arm_smccc_smc(SMCCC_PCI_SEG_INFO, seg, 0, 0, 0, 0, 0, 0, &res);
-> +	if ((int)res.a0 < 0) {
-> +		pr_warn("PCI: SMC segment %d doesn't exist\n", seg);
-> +		return NULL;
-> +	}
-> +
-> +	if (FIELD_GET(SMCCC_PCI_SEG_INFO_START_BUS, res.a1) != bus_res->start ||
-> +	    FIELD_GET(SMCCC_PCI_SEG_INFO_END_BUS, res.a1) != bus_res->end) {
-> +		pr_warn("PCI: SMC segment %d doesn't match ACPI description\n", seg);
-> +		return NULL;
-> +	}
-> +
-> +	cfg = kzalloc(sizeof(*cfg), GFP_KERNEL);
-> +	if (!cfg)
-> +		return NULL;
-> +
-> +	cfg->parent = dev;
-> +	cfg->ops = &smccc_pcie_ops;
-> +	cfg->busr.start = bus_res->start;
-> +	cfg->busr.end = bus_res->end;
-> +	cfg->busr.flags = IORESOURCE_BUS;
-> +	cfg->res.name = "PCI SMCCC";
-> +
-> +	pr_info("PCI: SMC conduit attached to segment %d\n", seg);
-> +
-> +	return cfg;
-> +}
-> +
->   /*
->    * Lookup the bus range for the domain in MCFG, and set up config space
->    * mapping.
-> @@ -125,6 +232,8 @@ pci_acpi_setup_ecam_mapping(struct acpi_pci_root *root)
->   
->   	ret = pci_mcfg_lookup(root, &cfgres, &ecam_ops);
->   	if (ret) {
-> +		if (!smccc_pcie_has_conduit())
-> +			return pci_acpi_setup_smccc_mapping(root);
->   		dev_err(dev, "%04x:%pR ECAM region not found\n", seg, bus_res);
->   		return NULL;
->   	}
-> diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
-> index f860645f6512..a1a8fe0ea5aa 100644
-> --- a/include/linux/arm-smccc.h
-> +++ b/include/linux/arm-smccc.h
-> @@ -89,6 +89,35 @@
->   
->   #define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED	1
->   
-> +/* PCI ECAM conduit (defined by ARM DEN0115A) */
-> +#define SMCCC_PCI_VERSION						\
-> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
-> +			   ARM_SMCCC_SMC_32,				\
-> +			   ARM_SMCCC_OWNER_STANDARD, 0x0130)
-> +
-> +#define SMCCC_PCI_FEATURES						\
-> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
-> +			   ARM_SMCCC_SMC_32,				\
-> +			   ARM_SMCCC_OWNER_STANDARD, 0x0131)
-> +
-> +#define SMCCC_PCI_READ							\
-> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
-> +			   ARM_SMCCC_SMC_32,				\
-> +			   ARM_SMCCC_OWNER_STANDARD, 0x0132)
-> +
-> +#define SMCCC_PCI_WRITE							\
-> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
-> +			   ARM_SMCCC_SMC_32,				\
-> +			   ARM_SMCCC_OWNER_STANDARD, 0x0133)
-> +
-> +#define SMCCC_PCI_SEG_INFO						\
-> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
-> +			   ARM_SMCCC_SMC_32,				\
-> +			   ARM_SMCCC_OWNER_STANDARD, 0x0134)
-> +
-> +#define SMCCC_PCI_SEG_INFO_START_BUS  GENMASK(7, 0)
-> +#define SMCCC_PCI_SEG_INFO_END_BUS    GENMASK(15, 8)
-> +
->   /* Paravirtualised time calls (defined by ARM DEN0057A) */
->   #define ARM_SMCCC_HV_PV_TIME_FEATURES				\
->   	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
+>  	if ((reg & USB_CLK_SELECTED) == 0)
+> -		return 1;
+> +		return true;
 > 
+> -	return 0;
+> +	return false;
+>  }
+
+	if (foo)
+		return true;
+	return false;
+
+should generally be consolidated into a single test.
+
+So this is perhaps better as:
+
+	return (!(reg & USB_CLK_SELECTED));
+
+But the return value seems backwards.
+
 
