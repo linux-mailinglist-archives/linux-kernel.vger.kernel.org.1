@@ -2,122 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BBB2F5E19
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4ED72F5E16
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728332AbhANJx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:53:29 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2342 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728182AbhANJx2 (ORCPT
+        id S1728112AbhANJwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:52:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727174AbhANJww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:53:28 -0500
-Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DGffy30TCz67ZsW;
-        Thu, 14 Jan 2021 17:49:46 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 14 Jan 2021 10:52:46 +0100
-Received: from [10.210.171.141] (10.210.171.141) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 14 Jan 2021 09:52:45 +0000
-Subject: Re: [PATCH v2 00/19] scsi: libsas: Remove in_interrupt() check
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
-CC:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        <linux-scsi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>
-References: <20210112110647.627783-1-a.darwish@linutronix.de>
- <8683f401-29b6-4067-af51-7b518ad3a10f@huawei.com> <X/2h0yNqtmgoLIb+@lx-t490>
- <e9bc0c89-a4d6-1e5b-793d-3c246882210e@huawei.com> <X/3dUkPCC1SrLT4m@lx-t490>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <20e1034c-98af-a000-65ed-ae5f0e7a758f@huawei.com>
-Date:   Thu, 14 Jan 2021 09:51:35 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Thu, 14 Jan 2021 04:52:52 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73716C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 01:52:09 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id w5so5062057wrm.11
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 01:52:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=YX6PamiwCgUncE7TriVUPjq1AHS9z14mVYnK1/4JUfM=;
+        b=rjffKJ3amb7udCniXgN9WTpQEKEZeccVTvkPDvr50z2Mcgb91E5lwAkppSRW4DMmYI
+         zL0MBvOt2geQ+vaA1kGHvLI7BM3KJDysBh81ibCc0z9h1hEkrv1uVyWlESeKylZVNfuQ
+         9E1UiUBbxrZHKEx1gx/7vShHGTPvwByfiasMz8TFQUvqxakpeJrs8RkRH8BL4id/j/+6
+         UgAvKaq+Mk967nEA7v8nGHUA+bKhr47SZq5sUFwpGJDIxqjJmQN50iFGPEw/sRmiie4G
+         iWB6ShXWWoc49EiVRXMg/RPYY1Mwqtv/Cnm7eh0CRpdPAIEXfbOZFiELLS9/eL0Jb095
+         bCeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=YX6PamiwCgUncE7TriVUPjq1AHS9z14mVYnK1/4JUfM=;
+        b=fJNon6g/rsHTFU0wOHLmCDtHwJTaS5ll65L+KIid+y1Pl0UWfRn0NroQpXUEf6JbZO
+         +l3ezQdFtdsawsOrEIGMEErWOuNnhkWHBkGvAkZxvpv3FYuvoUaW+h3puxsPHOTzbgs0
+         TCRN4qFi2IYJ4v/LAl0iSRLPDty75naB+IHR9FLOnjK9dVTx4BP2IoZyqkcBehW1pTaZ
+         tC2yrUFuA4UsC6ycpAgxkAa4DsaqrgWF/Jkoi58LmRG9LDsSoaJa9Dz32ixvl3Avd4GQ
+         mhx5uUoAHsVALIeQ4gks190PHZs87D2oqUe0G1HfgSuv29ONopFPin8cs5XgV47iUc60
+         AT2g==
+X-Gm-Message-State: AOAM532PSTlJ6OEsyyUw3jf/jlkxnPBDHl6+LMyWMNtyEpEuOPD2ow4M
+        LDUb1M1KA7Nq92r0XdyIn+dhmA==
+X-Google-Smtp-Source: ABdhPJze4t0cIH0OuonP0XqjVI/aiELv74oKCuYwkluZ8PHvgQiNRaqfPFriRvpKwBLQKuy0XeqsGw==
+X-Received: by 2002:a5d:42d0:: with SMTP id t16mr6990914wrr.230.1610617928247;
+        Thu, 14 Jan 2021 01:52:08 -0800 (PST)
+Received: from dell ([91.110.221.178])
+        by smtp.gmail.com with ESMTPSA id t1sm8820010wro.27.2021.01.14.01.52.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 01:52:07 -0800 (PST)
+Date:   Thu, 14 Jan 2021 09:52:05 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] mfd: gateworks-gsc: fix interrupt type
+Message-ID: <20210114095205.GJ3975472@dell>
+References: <1609189804-10039-1-git-send-email-tharvey@gateworks.com>
 MIME-Version: 1.0
-In-Reply-To: <X/3dUkPCC1SrLT4m@lx-t490>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.171.141]
-X-ClientProxiedBy: lhreml714-chm.china.huawei.com (10.201.108.65) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1609189804-10039-1-git-send-email-tharvey@gateworks.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/01/2021 17:33, Ahmed S. Darwish wrote:
-> On Tue, Jan 12, 2021 at 04:00:57PM +0000, John Garry wrote:
-> ...
->> I boot-tested on my machines which have hisi_sas v2 and v3 hw, and it's ok.
->> I will ask some guys to test a bit more.
->>
-> Thanks a lot!
+On Mon, 28 Dec 2020, Tim Harvey wrote:
+
+> The Gateworks System Controller has an active-low interrupt.
+> Fix the interrupt request type.
 > 
->> And generally the changes look ok. But I just have a slight concern that we
->> don't pass the gfp_flags all the way from the origin caller.
->>
->> So we have some really long callchains, for example:
->>
->> host.c: sci_controller_error_handler(): atomic, irq handler     (*)
->> OR host.c: sci_controller_completion_handler(), atomic, tasklet (*)
->>    -> sci_controller_process_completions()
->>      -> sci_controller_unsolicited_frame()
->>        -> phy.c: sci_phy_frame_handler()
->>          -> sci_change_state(SCI_PHY_SUB_AWAIT_SAS_POWER)
->>            -> sci_phy_starting_await_sas_power_substate_enter()
->>              -> host.c: sci_controller_power_control_queue_insert()
->>                -> phy.c: sci_phy_consume_power_handler()
->>                  -> sci_change_state(SCI_PHY_SUB_FINAL)
->>          -> sci_change_state(SCI_PHY_SUB_FINAL)
->>      -> sci_controller_event_completion()
->>        -> phy.c: sci_phy_event_handler()
->>          -> sci_phy_start_sata_link_training()
->>            -> sci_change_state(SCI_PHY_SUB_AWAIT_SATA_POWER)
->>              -> sci_phy_starting_await_sata_power_substate_enter
->>                -> host.c: sci_controller_power_control_queue_insert()
->>                  -> phy.c: sci_phy_consume_power_handler()
->>                    -> sci_change_state(SCI_PHY_SUB_FINAL)
->>
->> So if someone rearranges the code later, adds new callchains, etc., it could
->> be missed that the context may have changed than what we assume at the
->> bottom. But then passing the flags everywhere is cumbersome, and all the
->> libsas users see little or no significant changes anyway, apart from a
->> couple.
->>
-> The deep call chains like the one you've quoted are all within the isci
-> Intel driver (patches #5 => #7), due to the*massive*  state transitions
-> that driver has. But as the commit logs of these three patches show,
-> almost all of such transitions happened under atomic context anyway and
-> GFP_ATOMIC was thus used.
+> Fixes: d85234994b2f ("mfd: Add Gateworks System Controller core driver")
 > 
-> The GFP_KERNEL call-chains were all very simple: a workqueue, functions
-> already calling msleep() or wait_event_timeout() two or three lines
-> nearby, and so on.
-> 
-> All the other libsas clients (that is, except isci) also had normal call
-> chains that were IMHO easy to follow.
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+> ---
+>  drivers/mfd/gateworks-gsc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-To me, the series looks fine. Well, the end result - I didn't go through 
-patch by patch. So:
+Applied, thanks.
 
-Reviewed-by: John Garry <john.garry@huawei.com>
-
-I'm still hoping some guys are testing a bit for me, but I'll let you 
-know if any problem.
-
-As an aside, your analysis showed some quite poor usage of spinlocks in 
-some drivers, specifically grabbing a lock and then calling into a depth 
-of 3 or 4 functions.
-
-Thanks,
-John
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
