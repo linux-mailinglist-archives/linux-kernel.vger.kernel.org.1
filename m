@@ -2,88 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC092F6E2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA852F6E28
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730684AbhANW0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 17:26:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52855 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728563AbhANW0n (ORCPT
+        id S1730732AbhANWZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 17:25:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730720AbhANWZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 17:26:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610663117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=LGpFlJGSVR1hP37dBeomfMm+jKU/Sspz4e2JR6Dw5mQ=;
-        b=HndssyqSg759SdAdmeN2Tals1cM2F4uPW0FNL/2rJF/6+52ZLVHkaCLfXfeI24kXfn/KSz
-        dwJoHej7kvhdQb6df9F0rnXa71/eoKaVcB2+pF/xQHuTnNEkst3DZRSlw34q7s0wqwxSKk
-        XdL6wDGj47CBMmpg9ZKGBGgZgBeCorc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-280-RcD-CRHJMpmAv-h7btU2NQ-1; Thu, 14 Jan 2021 17:25:13 -0500
-X-MC-Unique: RcD-CRHJMpmAv-h7btU2NQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E3737801FCC;
-        Thu, 14 Jan 2021 22:25:11 +0000 (UTC)
-Received: from treble.redhat.com (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 08F1619C45;
-        Thu, 14 Jan 2021 22:25:09 +0000 (UTC)
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH] objtool: Don't fail on missing symbol table
-Date:   Thu, 14 Jan 2021 16:24:15 -0600
-Message-Id: <a96c3f76173c7021a2298bd73362313736e674b6.1610663051.git.jpoimboe@redhat.com>
+        Thu, 14 Jan 2021 17:25:12 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EBDC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 14:24:32 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id a188so4210063pfa.11
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 14:24:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gRC5Pleb9dUxv3nJaqlApsE2Yyj1i5/5CS0p59ghBkc=;
+        b=NuA3EJ3p4xB56QjPMOsEQQMUhXG3PQ0y8iWnVaCIXTapcQ7PX3/QSUg5osssQ6nGaj
+         nXJUe4amtRfx6WBlML3wsytOVgXf5u3kqra+2KdixvTHv9z4lABT8g0mk1lW/SojZ+EK
+         PkMKhJ1T1u6iB1YcKAH8AE+8Gu9QaZ+l2SS3rakd67ORcNMQNvVx9KN2dJBgTVTgrAK8
+         JV11HngiDjErzuUzkePUoq+HBWMAR52Q6rYRdwVXEq/tpnvwFg8N9r0Ne1j8nKhdHvax
+         m9qmj+a0tvXZHGHElR23N6c2euo8y2gB7BYZCAGbPbnESrxtBxA/D52GWNDgkwbgA+Jp
+         u/FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gRC5Pleb9dUxv3nJaqlApsE2Yyj1i5/5CS0p59ghBkc=;
+        b=muXJO8OWWKbvLIL1xoxoEFqca0IEVf8O8kOgwxwSoYSbCXhzor4QUuf2zbm8XlTmAM
+         RjMT5I2dSqGUj+G8coto8ihf3UswqE0k6lPQ6zYMk5DDX3NbrzG6u3qwas1nYe8K+imD
+         urV+7CeBekH47SIyPLJEy27J2y1qY92bU9+DAwsVGm/somLYTo8LBOwzDOPv2MypHYd+
+         DXAv5ImrTcR1kbvV4f8+08PqDSd+ZtrTF76LyeK1jOH2JEaiwiznD5X+4g3n48Ngp9AH
+         hZd0Cr/Ce1orCKrJgEC8SXj0UaR5le3+9AzfZtoro/N9bQp8NbOu+Vnz5wgV83kIsi8H
+         NBqg==
+X-Gm-Message-State: AOAM533+VKBqrPyp8/p1zmowZZtloH1zUv9y3xXLXzCOSuSryqDQaEbM
+        ttLCuia0tGScIL8ay1d2kzlqA9ErJeNWC3baWtgmSQ==
+X-Google-Smtp-Source: ABdhPJxY9okKFIOu7O3uhTD28hz1VT6/8eJsX891SLMhHJQ2T++lZwV0wgQ+6dCV2/GwDFou+QUuaN6E2MdsZSWNbcY=
+X-Received: by 2002:a63:c84a:: with SMTP id l10mr9703913pgi.159.1610663071797;
+ Thu, 14 Jan 2021 14:24:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20201202190824.1309398-1-dlatypov@google.com>
+In-Reply-To: <20201202190824.1309398-1-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Thu, 14 Jan 2021 14:24:20 -0800
+Message-ID: <CAFd5g44+y-n3v_As8J2piVu+fyLCXCgHx1zmuo0mfb+VKkSUBQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] kunit: tool: fix unit test cleanup handling
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     David Gow <davidgow@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks to a recent binutils change which doesn't generate unused
-symbols, it's now possible for thunk_64.o be completely empty with
-CONFIG_PREEMPTION: no text, no data, no symbols.
+On Wed, Dec 2, 2020 at 11:09 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> * Stop leaking file objects.
+> * Use self.addCleanup() to ensure we call cleanup functions even if
+> setUp() fails.
+> * use mock.patch.stopall instead of more error-prone manual approach
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 
-We could edit the Makefile to only build that file when
-CONFIG_PREEMPTION is enabled, but that will likely create confusion
-if/when the thunks end up getting used by some other code again.
-
-Just ignore it and move on.
-
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- tools/objtool/elf.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index be89c741ba9a..2b0f4f52f7b5 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -380,8 +380,11 @@ static int read_symbols(struct elf *elf)
- 
- 	symtab = find_section_by_name(elf, ".symtab");
- 	if (!symtab) {
--		WARN("missing symbol table");
--		return -1;
-+		/*
-+		 * A missing symbol table is actually possible if it's an empty
-+		 * .o file.  This can happen for thunk_64.o.
-+		 */
-+		return 0;
- 	}
- 
- 	symtab_shndx = find_section_by_name(elf, ".symtab_shndx");
--- 
-2.29.2
-
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
+Acked-by: Brendan Higgins <brendanhiggins@google.com>
