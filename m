@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A1A2F5BB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D502F5BBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727813AbhANHys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 02:54:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56654 "EHLO mail.kernel.org"
+        id S1728003AbhANHza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 02:55:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726510AbhANHyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 02:54:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD0A423A02;
+        id S1727839AbhANHzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 02:55:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA624233FD;
         Thu, 14 Jan 2021 07:53:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1610610830;
-        bh=j46GC8EQ+wDuLjInlFgJe8KE3E7zAC95eawxVM4OyVI=;
+        bh=TrTQY3hajtzLk4b1OtE5yfKC0rZRhinwUQjn/1F4J0M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TBEIyN6xrBAwrDGRr7PolKZCEZ2IuCrm4dsYZ4EZOafK3gMz6ZlfuU5qKJrNT81sb
-         hFDqMkpUiMntg1wqigxZ8xYoDzrq4bIxDMB/PunIWYL/YdBq8vDSdJs1lgs0rrxGVx
-         r9ictQapiWVqYbP04m1qWmjPahn/drp34WBQKVkZTnefzPmsWxsdvHkbd+ipNPLpO/
-         Hia9VtOAtCehRhE9+dlbERyRVK/n8tL12UyP4pOKa/v92q5igI7Yz4dS7ns5BJo4f1
-         H788VGyg0HYe/qtjWCyrcQtT1s+wGp5mDYJNyWb+vCU7iPpSzrHwydg8YvdCJ9H2ct
-         C2m1YUoISr3xw==
+        b=szafSbjx4BpAyqfIGLJSc9RiCobHoiCKUGdi8h9VPYgM03qq9ITPDEoQjFXd+4e2F
+         wprL2LmT1ccAyVW/Yj8p8dQ6q8Tj0SjHxWbdEE03c0gP0Xyb1Sdl82fkv9OHl7jm74
+         58mQZA79eTj0sZynB1HGp5/J82ffaZRg+uqyg7HWfDQU9z655sZdNLPNvwslr/iFeS
+         jwNs0A3Bz/VGnIMxWLmBAW4wP1WdZo65cEyGaxFmee/AQg8S0v+SNFoKA10Ng03+D9
+         UXLUdbfeMW88C0kIBeVu+MsBpI8KHQTQBLWWR/q3Lox41iTBIgAmX37JzKLYctyWfN
+         pS4tAoDNd0oag==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kzxRz-00EPu5-53; Thu, 14 Jan 2021 08:53:47 +0100
+        id 1kzxRz-00EPu7-63; Thu, 14 Jan 2021 08:53:47 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Chao Yu <chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
         "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 02/10] ABI: sysfs-fs-f2fs: fix a table identation
-Date:   Thu, 14 Jan 2021 08:53:37 +0100
-Message-Id: <52a3058459673bc190ca6044779ccea9146c7208.1610610444.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 03/10] KVM: x86: hyper-v: add a blank line to remove building warnings
+Date:   Thu, 14 Jan 2021 08:53:38 +0100
+Message-Id: <a5a20cd7ff9870b5316825fa1abad0b867832700.1610610444.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1610610444.git.mchehab+huawei@kernel.org>
 References: <cover.1610610444.git.mchehab+huawei@kernel.org>
@@ -46,50 +46,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Solves this doc build error:
+.../Documentation/virt/kvm/api.rst:4536: WARNING: Unexpected indentation.
+.../Documentation/virt/kvm/api.rst:4538: WARNING: Block quote ends without a blank line; unexpected unindent.
 
-.../Documentation/ABI/testing/sysfs-fs-f2fs:382: WARNING: Malformed table.
-Text in column margin in table line 15.
-
-=====  ===================== =================================
-value  sb status macro       description
-0x1    SBI_IS_DIRTY          dirty flag for checkpoint
-0x2    SBI_IS_CLOSE          specify unmounting
-0x4    SBI_NEED_FSCK         need fsck.f2fs to fix
-0x8    SBI_POR_DOING         recovery is doing or not
-0x10   SBI_NEED_SB_WRITE     need to recover superblock
-0x20   SBI_NEED_CP           need to checkpoint
-0x40   SBI_IS_SHUTDOWN       shutdown by ioctl
-0x80   SBI_IS_RECOVERED      recovered orphan/data
-0x100  SBI_CP_DISABLED       CP was disabled last mount
-0x200  SBI_CP_DISABLED_QUICK CP was disabled quickly
-0x400  SBI_QUOTA_NEED_FLUSH  need to flush quota info in CP
-0x800  SBI_QUOTA_SKIP_FLUSH  skip flushing quota in current CP
-0x1000 SBI_QUOTA_NEED_REPAIR quota file may be corrupted
-0x2000 SBI_IS_RESIZEFS       resizefs is in process
-====== ===================== =================================
-
-Fixes: 969945899a35 ("f2fs: introduce sb_status sysfs node")
+Fixes: c21d54f0307f ("KVM: x86: hyper-v: allow KVM_GET_SUPPORTED_HV_CPUID as a system ioctl")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/ABI/testing/sysfs-fs-f2fs | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ Documentation/virt/kvm/api.rst | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index e5918c93f3bf..1ba8d533437a 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -383,8 +383,9 @@ Date:		December 2020
- Contact:	"Chao Yu" <yuchao0@huawei.com>
- Description:	Show status of f2fs superblock in real time.
- 
--		=====  ===================== =================================
-+		====== ===================== =================================
- 		value  sb status macro       description
-+		====== ===================== =================================
- 		0x1    SBI_IS_DIRTY          dirty flag for checkpoint
- 		0x2    SBI_IS_CLOSE          specify unmounting
- 		0x4    SBI_NEED_FSCK         need fsck.f2fs to fix
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index c136e254b496..c95572a66a7b 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -4532,6 +4532,7 @@ userspace should not expect to get any particular value there.
+ Note, vcpu version of KVM_GET_SUPPORTED_HV_CPUID is currently deprecated. Unlike
+ system ioctl which exposes all supported feature bits unconditionally, vcpu
+ version has the following quirks:
++
+ - HYPERV_CPUID_NESTED_FEATURES leaf and HV_X64_ENLIGHTENED_VMCS_RECOMMENDED
+   feature bit are only exposed when Enlightened VMCS was previously enabled
+   on the corresponding vCPU (KVM_CAP_HYPERV_ENLIGHTENED_VMCS).
 -- 
 2.29.2
 
