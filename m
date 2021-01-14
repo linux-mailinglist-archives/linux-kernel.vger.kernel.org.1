@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E8A2F5FEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:31:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A602F5FED
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727753AbhANL2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 06:28:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725982AbhANL2B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 06:28:01 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70348C061574;
-        Thu, 14 Jan 2021 03:27:15 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id b8so2769059plx.0;
-        Thu, 14 Jan 2021 03:27:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=+ahAs1amo347RNXkYJWCZ9woGbW2UnM8CDWcOU1vF2o=;
-        b=D/jG69CXI0DgiRLmOMiDexv151tVKOYLHzy7fqOI/Ojwr89bsBjpxk1jyjQbg6IyON
-         HXKaOUzJOkB+WrW7inSnTeyzK4I4zZlI7MSXAXjCHer2yprVG4fAJ2n8KX6aB6JgNMD8
-         FvMepAHoM44bmfY42U9MsZd6u1Huavhd5T/bjetdnBBJ/qYp5A+qR3jTwq7FCPhRNMvG
-         mQs//5KPzdbOU0WOKlrfXT+cRvS8dqix5NM/E1cIiLyFX6TQYqQuui7aoIsr12iDExJD
-         VpFRwNfoO1AfZ/QuG06nag5QEAI3ttJm6jYRGj3GVapfbgVVUUb7SOqq+/uA1qqnZs+M
-         q7+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=+ahAs1amo347RNXkYJWCZ9woGbW2UnM8CDWcOU1vF2o=;
-        b=GqPp7FU2XN50oEXw6BeyvD9+bUxhBtJDzfAnoXH+GtYOdDLUGIaujCTQTSZ1ZW87cc
-         MbAmtgtJEDgoOMLIL//9idGUevXz1wCXGYmcABClbDPS/t3o+SwLHGFfVOOl9q70GAza
-         er2c7nHA2mUti8G9aPCoE4U6B5ZE1hk/D9B+Gm5idpx0jalcQPRta1wwOYJyIpSHNEfX
-         aOIg8vnheGDllLPVAOBbkr0h8oHjDGicvytIlLhLPoThUu07ctzG02PpFUauS8LtnFxd
-         Qs/xwbRdjHF2ztd3Mi1DkmELHhAeTn1/MxuzO/MHxEReoalDxGwKo+mLmGhD/kXaqaxd
-         Znsg==
-X-Gm-Message-State: AOAM532ubTHHKoyzxc+33G00zV2N478/C4n4PGqGSB7RuopZLlLqsKjv
-        re/fyatuWgPMs8IrA/9RGvc+61R9bsI=
-X-Google-Smtp-Source: ABdhPJy7Da3wPrakUrDmoeu8jQQd+au8pjcn3oxJWf4szYLgljbRKTt+QfxsIyf++DNDfvEhYM0h2w==
-X-Received: by 2002:a17:90a:d3cc:: with SMTP id d12mr4426882pjw.202.1610623634764;
-        Thu, 14 Jan 2021 03:27:14 -0800 (PST)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id c24sm563629pjs.3.2021.01.14.03.27.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Jan 2021 03:27:14 -0800 (PST)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: [PATCH] KVM: kvmclock: Fix vCPUs > 64 can't be online/hotpluged
-Date:   Thu, 14 Jan 2021 19:27:03 +0800
-Message-Id: <1610623624-18697-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+        id S1727828AbhANL2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 06:28:35 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:19469 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725955AbhANL2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 06:28:35 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DGhr15N7dz9v19B;
+        Thu, 14 Jan 2021 12:27:45 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id I8b1oyYPNNXT; Thu, 14 Jan 2021 12:27:45 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DGhr142PFz9v18k;
+        Thu, 14 Jan 2021 12:27:45 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DE07F8B801;
+        Thu, 14 Jan 2021 12:27:46 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id eJEDNHFrKG5m; Thu, 14 Jan 2021 12:27:46 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7C4D68B800;
+        Thu, 14 Jan 2021 12:27:46 +0100 (CET)
+Subject: Re: SPI not working on 5.10 and 5.11, bisected to 766c6b63aa04 ("spi:
+ fix client driver breakages when using GPIO descriptors")
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>
+References: <dc5d8d35-31aa-b36d-72b0-17c8a7c13061@csgroup.eu>
+ <20210113123345.GD4641@sirena.org.uk>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <9400d900-f315-815f-a358-16ed4963da6c@csgroup.eu>
+Date:   Thu, 14 Jan 2021 12:27:42 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <20210113123345.GD4641@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
 
-The per-cpu vsyscall pvclock data pointer assigns either an element of the 
-static array hv_clock_boot (#vCPU <= 64) or dynamically allocated memory 
-hvclock_mem (vCPU > 64), the dynamically memory will not be allocated if 
-kvmclock vsyscall is disabled, this can result in cpu hotpluged fails in 
-kvmclock_setup_percpu() which returns -ENOMEM. This patch fixes it by not 
-assigning vsyscall pvclock data pointer if kvmclock vdso_clock_mode is not 
-VDSO_CLOCKMODE_PVCLOCK.
 
-Fixes: 6a1cac56f4 ("x86/kvm: Use __bss_decrypted attribute in shared variables")
-Reported-by: Zelin Deng <zelin.deng@linux.alibaba.com>
-Tested-by: Haiwei Li <lihaiwei@tencent.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: stable@vger.kernel.org#v4.19-rc5+
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/kernel/kvmclock.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Le 13/01/2021 à 13:33, Mark Brown a écrit :
+> On Wed, Jan 13, 2021 at 09:49:12AM +0100, Christophe Leroy wrote:
+> 
+>> With commit 766c6b63aa04 ("spi: fix client driver breakages when using GPIO
+>> descriptors") reverted, it is back to work:
+> 
+> ...
+> 
+>> What shall I do ?
+> 
+> I would guess that there's an error with the chip select polarity
+> configuration on your system that just happened to work previously, I'd
+> suggest fixing this in the board configuration to bring it in line with
+> everything else.
+> 
 
-diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-index aa59374..0624290 100644
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -296,7 +296,8 @@ static int kvmclock_setup_percpu(unsigned int cpu)
- 	 * pointers. So carefully check. CPU0 has been set up in init
- 	 * already.
- 	 */
--	if (!cpu || (p && p != per_cpu(hv_clock_per_cpu, 0)))
-+	if (!cpu || (p && p != per_cpu(hv_clock_per_cpu, 0)) ||
-+	    (kvm_clock.vdso_clock_mode != VDSO_CLOCKMODE_PVCLOCK))
- 		return 0;
- 
- 	/* Use the static page for the first CPUs, allocate otherwise */
--- 
-2.7.4
+Not that easy.
 
+Today I have in the DTS the CS GPIOs declared as ACTIVE_LOW.
+
+If I declare them as ACTIVE_HIGH instead, then I also have to set spi-cs-high property, otherwise 
+of_gpio_flags_quirks() is not happy and forces the GPIO ACTIVE LOW.
+
+When I set spi-cs-high property, it sets the SPI_CS_HIGH bit in spi->mode.
+
+In fsl_spi_chipselect(), we have
+
+	bool pol = spi->mode & SPI_CS_HIGH
+
+Then
+	pdata->cs_control(spi, pol);
+
+So changing the board config is compensated by the above, and at the end it still doesn't work.
+
+
+Whereas reverting the above mentionned commit sets back SPI_CS_HIGH into spi->mode without changing 
+the ACTIVE level of the GPIO, resulting in the correct polarity.
+
+
+So, I'm a bit lost, where is the problem exactly ?
+
+Thanks
+Christophe
