@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69CE2F62AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:06:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 162352F62B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727478AbhANOEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:04:48 -0500
-Received: from www.zeus03.de ([194.117.254.33]:54222 "EHLO mail.zeus03.de"
+        id S1728907AbhANOHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:07:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725930AbhANOEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:04:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=XYkIYw8kXYr0WVS9+2HEs7b4ExRD
-        AHL7hAMoLwRnuhs=; b=jEynJZOCa0wXW6Sxo/cdadXQbmnkFb0zCbxSlq2NLVRp
-        FzkLrNbJwFB7vC59c7YZuCwh+o3/amsZmNp05TKfzLoQecioj4Gk2I1AKYcZP3MH
-        m4JSAw6v+6MIYVmCwKAwjQ9fzSbCpPsEHXqLlvk016S5fIltsCfEkZZK0vQGbu8=
-Received: (qmail 3538568 invoked from network); 14 Jan 2021 15:04:04 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 14 Jan 2021 15:04:04 +0100
-X-UD-Smtp-Session: l3s3148p1@3JJSuty4NNMgAwDPXwjsANskl+1DI0tg
-Date:   Thu, 14 Jan 2021 15:04:01 +0100
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Corey Minyard <minyard@acm.org>
-Cc:     linux-i2c@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org,
-        Colin Ian King <colin.king@canonical.com>,
-        Vijay Khemka <vijaykhemka@fb.com>,
-        Asmaa Mnebhi <Asmaa@mellanox.com>
-Subject: Re: [PATCH RFC 3/3] ipmi: remove open coded version of SMBus block
- write
-Message-ID: <20210114140401.GA973@kunai>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Corey Minyard <minyard@acm.org>, linux-i2c@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org,
-        Colin Ian King <colin.king@canonical.com>,
-        Vijay Khemka <vijaykhemka@fb.com>,
-        Asmaa Mnebhi <Asmaa@mellanox.com>
-References: <20210112164130.47895-1-wsa+renesas@sang-engineering.com>
- <20210112164130.47895-4-wsa+renesas@sang-engineering.com>
- <20210114004822.GY3348@minyard.net>
+        id S1727313AbhANOHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:07:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B5BF23A69;
+        Thu, 14 Jan 2021 14:06:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610633187;
+        bh=bAYELvIG7I8zVi2HFRgsyj9ehliYdNEQMQDaCGmkLiY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ravwqlsbBGOkiPgs97Qs4AfJ4uCrsNBH4b2Mv3aCSnztRkVS/ENISW05KXGjoUzDj
+         WiUCG2ZTvo0yXCpXQTTgLtYwEHOzILCplypXnyScCaL63+4Azg/Xlkz6j9lAMin06J
+         rGkSN9WZrXQOs6VsegSOs9hzizi8W11UHHBV7YXeHn/WjY095xNdeWCtqMfIsC9P0g
+         JUhurmf04WmomnSgiZ8oZtbq2ZiCbKQRGi1MxNtOqahoyxpNc6bf4VGJMEk4yK4Zig
+         T/Ob8BBhdFPkTICmVnigIYe6LBslBLADZcjBQbCHqWa6OIPcZuJ9W2WtFQ8bLQPS14
+         u36KNqjfi6nRA==
+Date:   Thu, 14 Jan 2021 15:06:22 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Fangrui Song <maskray@google.com>
+Cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Marco Elver <melver@google.com>
+Subject: Re: [PATCH] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
+ undefined symbols
+Message-ID: <20210114140621.GA15904@linux-8ccs>
+References: <20210114054831.343327-1-maskray@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210114004822.GY3348@minyard.net>
+In-Reply-To: <20210114054831.343327-1-maskray@google.com>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.28-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++++ Fangrui Song [13/01/21 21:48 -0800]:
+>clang-12 -fno-pic (since
+>https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6)
+>can emit `call __stack_chk_fail@PLT` instead of `call __stack_chk_fail`
+>on x86.  The two forms should have identical behaviors on x86-64 but the
+>former causes GNU as<2.37 to produce an unreferenced undefined symbol
+>_GLOBAL_OFFSET_TABLE_.
+>
+>(On x86-32, there is an R_386_PC32 vs R_386_PLT32 difference but the
+>linker behavior is identical as far as Linux kernel is concerned.)
+>
+>Simply ignore _GLOBAL_OFFSET_TABLE_ for now, like what
+>scripts/mod/modpost.c:ignore_undef_symbol does. This also fixes the
+>problem for gcc/clang -fpie and -fpic, which may emit `call foo@PLT` for
+>external function calls on x86.
+>
+>Note: ld -z defs and dynamic loaders do not error for unreferenced
+>undefined symbols so the module loader is reading too much.  If we ever
+>need to ignore more symbols, the code should be refactored to ignore
+>unreferenced symbols.
+>
+>Reported-by: Marco Elver <melver@google.com>
+>Link: https://github.com/ClangBuiltLinux/linux/issues/1250
+>Signed-off-by: Fangrui Song <maskray@google.com>
+>---
+> kernel/module.c | 10 ++++++++--
+> 1 file changed, 8 insertions(+), 2 deletions(-)
+>
+>diff --git a/kernel/module.c b/kernel/module.c
+>index 4bf30e4b3eaa..2e2deea99289 100644
+>--- a/kernel/module.c
+>+++ b/kernel/module.c
+>@@ -2395,8 +2395,14 @@ static int simplify_symbols(struct module *mod, const struct load_info *info)
+> 				break;
+> 			}
+>
+>-			/* Ok if weak.  */
+>-			if (!ksym && ELF_ST_BIND(sym[i].st_info) == STB_WEAK)
+>+			/* Ok if weak. Also allow _GLOBAL_OFFSET_TABLE_:
+>+			 * GNU as before 2.37 produces an unreferenced _GLOBAL_OFFSET_TABLE_
+>+			 * for call foo@PLT on x86-64.  If the code ever needs to ignore
+>+			 * more symbols, refactor the code to only warn if referenced by
+>+			 * a relocation.
+>+			 */
+>+			if (!ksym && (ELF_ST_BIND(sym[i].st_info) == STB_WEAK ||
+>+				      !strcmp(name, "_GLOBAL_OFFSET_TABLE_")))
+> 				break;
 
---tThc/1wpZn/ma/RB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Fangrui,
 
+Thanks for the patch. I am puzzled why we don't already mirror modpost
+here, that particular line of code in modpost to ignore _GLOBAL_OFFSET_TABLE_
+has been there long before my time. Let's properly mirror modpost
+then, and create a similar helper function ignore_undef_symbol() (and
+stick the _GLOBAL_OFFSET_TABLE_ check in there) to account for future
+cases like this.
 
-> I asked the original authors of this about the change, and apparently is
-> results in a stack size warning.  Arnd Bergmann ask for it to be changed
-> from what you are suggesting to what it currently is.  See:
->=20
-> https://www.lkml.org/lkml/2019/6/19/440
->=20
-> So apparently this change will cause compile warnings due to the size of
-> struct i2c_client.
+Thanks,
 
-Wow, didn't know that my patch was actually a revert. I replaced now the
-stack usage with kmemdup and will have a second thought about this
-patch. Thanks for the heads up!
-
-
---tThc/1wpZn/ma/RB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAAT0kACgkQFA3kzBSg
-KbYBKA/+KGwiJWaUiU0+N17bTU/45Nmz2omMARKtrKFuDnxqUBSvbp0QVpMvtXvV
-IP9YN0TVopn2OQ4TbUssjPKeF/bsRK9La45lvdDHOpeFKYdXQcTD2O+EWVKGneXR
-Qp8dGNO0aMHcSi1Gmexd0OycizF9NbQ8vGSxXzvMgoLqjTe1RCFCNEEXgYQ+8sgW
-3QMDPYVrDo53A5+d0au3PEvFdJtTI7yZuiG1M9+pn9j/awM26yIDU4+VCsQxoxic
-6oh5DJVQUSzUL2VpEIlwbp32Jl7eDKTz7lrgSIObAY/IFz/siWlwFvaTxbQb9t6V
-4hgZQ0ts4xX/OL64PlA706d6wHajmQ1rxDl0tSrhPMEyxVI20gIn/NxMkWeYVwv3
-pI7FmNqqfHamZM6QTpODv4edzcNgYQvlXjVlFFe67mjmKVzTTsj8hRwVSM77WIct
-FhozjJTQ1nL28UJwqYcbxd4NCUK7xmv/XbG/0LHdgEOE8J0QOwmj9S5CJoyRjz+A
-hVv2elcCtEXFb5UxhZcwdD2lTExbzfJ2LmP54eTHR5iwLcS/HHLmEmMEDiQFbMBt
-1iD5KZNjif+Ep2A3L2+o3AE/QzIMOfutwcZh0WcYw//WnHMbLzIc3pjjBt5l9+dl
-u7Oqn7CsmdtU70IKAUjRFM/jwYMk3jaZwVKMU11ki6NyXZqQ59A=
-=hJuM
------END PGP SIGNATURE-----
-
---tThc/1wpZn/ma/RB--
+Jessica
