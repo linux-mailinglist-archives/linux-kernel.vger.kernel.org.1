@@ -2,76 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2612F5D27
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F7A2F5D2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:23:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbhANJUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:20:16 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2339 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727382AbhANJUP (ORCPT
+        id S1727331AbhANJWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:22:07 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:17189 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726478AbhANJWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:20:15 -0500
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DGdvY0cV0z67bNq;
-        Thu, 14 Jan 2021 17:15:37 +0800 (CST)
-Received: from lhreml741-chm.china.huawei.com (10.201.108.191) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 14 Jan 2021 10:19:32 +0100
-Received: from [10.199.170.166] (10.199.170.166) by
- lhreml741-chm.china.huawei.com (10.201.108.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 14 Jan 2021 09:19:26 +0000
-Subject: Re: [PATCH v2 2/2] perf tools: Add documentation for 'perf irq'
- command
-To:     Bixuan Cui <cuibixuan@huawei.com>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <namhyung@kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <john.wanghui@huawei.com>
-References: <20210114074852.13231-1-cuibixuan@huawei.com>
- <20210114074852.13231-3-cuibixuan@huawei.com>
-From:   Alexei Budankov <abudankov@huawei.com>
-Message-ID: <fb92ed49-96b9-9873-2e3f-932bbe25dba3@huawei.com>
-Date:   Thu, 14 Jan 2021 12:19:20 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 14 Jan 2021 04:22:04 -0500
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 10E9KqSV019480;
+        Thu, 14 Jan 2021 18:20:53 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 10E9KqSV019480
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1610616053;
+        bh=GIb0FR4aAJ1kV0/4W9xH+1ZDMIfRJ13sU7o4iHJooWs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZwBVEYtVaQI3Ad1/Y/kI2tJl7/mbCio5Ka5MzlaPdjnmiA61H/XgvFsPkKj1OGsOi
+         cIjU2CVxv936oipOnX4YLFlEyN/1fKLytRQzveLHseJ38HBEJvN0R74oM/KVLybo8d
+         zjWDZLesZFm0bOOMV3EAY4FwNHLB+xCl1m8YXbI+kgjY/PPowo1DG3HfKLS3gWirUv
+         jh0ybJjMt9kA0ROlRTDdpxS3WzR9f0aa+mtFlz57FM4Ah82MH5essNRUxJcc1HfYW3
+         BR+tuCNkpsiARAYa8IFpFHTwcDw8I2OxAiyY4J520OimsdRiJE2NbZP13/K4qurdcb
+         iIlmzmIFeOpQQ==
+X-Nifty-SrcIP: [209.85.215.175]
+Received: by mail-pg1-f175.google.com with SMTP id p18so3348217pgm.11;
+        Thu, 14 Jan 2021 01:20:53 -0800 (PST)
+X-Gm-Message-State: AOAM533x0SA382nMT86WYi1L4GAQxN39LzwJs3q+uIWos12bO0ECNe6h
+        ffxKnK7mAyvBX25YEwV1iTlFHuoWDHuNe6lQhZI=
+X-Google-Smtp-Source: ABdhPJwepfFWui1ua8cr613ixTmhywiJ7Pk5vUuQbiDz5BC1VAyF5UuBK7/VMmxanUim1HTEdNYGRPUN8y+65c9E/Qk=
+X-Received: by 2002:a62:820d:0:b029:1ad:d810:6805 with SMTP id
+ w13-20020a62820d0000b02901add8106805mr6554390pfd.63.1610616052534; Thu, 14
+ Jan 2021 01:20:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210114074852.13231-3-cuibixuan@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.199.170.166]
-X-ClientProxiedBy: braeml706-chm.china.huawei.com (10.226.71.62) To
- lhreml741-chm.china.huawei.com (10.201.108.191)
-X-CFilter-Loop: Reflected
+References: <20210114042420.229524-1-masahiroy@kernel.org> <CAHFW8PRr6kjEE=7BSzWo7itSZgAhy_dhmnSe1yq5wMfDwEyJ9g@mail.gmail.com>
+In-Reply-To: <CAHFW8PRr6kjEE=7BSzWo7itSZgAhy_dhmnSe1yq5wMfDwEyJ9g@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 14 Jan 2021 18:20:15 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQHA7FpYfdDaOuf+t+nMCtLH=Z7cdoK+3z3ScZ3Fn9Xww@mail.gmail.com>
+Message-ID: <CAK7LNAQHA7FpYfdDaOuf+t+nMCtLH=Z7cdoK+3z3ScZ3Fn9Xww@mail.gmail.com>
+Subject: Re: [PATCH v2] kbuild: check the minimum compiler version in Kconfig
+To:     Ilie Halip <ilie.halip@gmail.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 14, 2021 at 4:55 PM Ilie Halip <ilie.halip@gmail.com> wrote:
+>
+> Hi Masahiro,
+>
+> > +       #elif defined(__INTEL_COMPILER)
+> > +       /* How to get the version of intel compiler? */
+> > +       ICC     0               0               0
+>
+> According to Intel documentation[1], this should do the trick:
+>
+>     ICC     __INTEL_COMPILER  __INTEL_COMPILER_UPDATE
+> __INTEL_COMPILER_BUILD_DATE
+>
+> I don't have the compiler installed, but I tested this on godbolt[2] and
+> looks fine to me. What do you think?
+>
+> [1] https://software.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference/top/compiler-reference/macros/additional-predefined-macros.html
+> [2] https://godbolt.org/z/E5PE6f
+>
+> I.H.
 
-On 14.01.2021 10:48, Bixuan Cui wrote:
-> Add documentation for 'perf irq' command.
-> 
-> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-> ---
->  tools/perf/Documentation/perf-irq.txt | 58 +++++++++++++++++++++++++++
->  tools/perf/command-list.txt           |  1 +
->  2 files changed, 59 insertions(+)
->  create mode 100644 tools/perf/Documentation/perf-irq.txt
+Thanks.
 
-<SNIP>
+The following is the result from godbolt
+(except the beta releases of 21.1.*)
 
-> +
-> +OPTIONS for 'perf irq report'
-> +----------------------------
-> +
-> +--cpus::
-> +	Show just entries with activities for the given CPUs.
 
-perf report mode already has -C,--cpu <num> option so 
-it makes sense to reuse the option for perf irq report.
+version    __INTEL_COMPILER  __INTEL_COMPILER_UPDATE
+13.0.1     1300               (unsupported)
+16.0.3     1600               3
+17.0.0     1700               0
+18.0.0     1800               0
+19.0.0     1900               0
+19.0.1     1900               0
 
-Regards,
-Alexei
+
+
+Presumably, the version string xx.yy.zz corresponds to
+__INTEL_COMPILER=xxyy
+__INTEL_COMPILER_UPDATE=zz
+
+The output from 19.0.1 does not make sense, though.
+
+
+
+BTW, when I tried ICC a few years ago,
+I could not build the kernel with it.
+
+
+-- 
+Best Regards
+Masahiro Yamada
