@@ -2,131 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162492F5D5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA7C2F5D63
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728287AbhANJ0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:26:43 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:54831 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728230AbhANJ0j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:26:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1610616330;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zCPfuXy5Bii+wf/SqTz1JCjyXiojJoo0V1h2IG7/dvA=;
-        b=ZPXXridQqCZ/Ku68lx+yIMagY3Z4yW5nBS/couOSbDxnkXvmbF5HKKHDD2sdG8XbVOLzoq
-        VATWb72f6Q2fiHRB87OfcGBjNi8ay8nTC3s9wDEz8A1Fn+De/9DKApKV1E/RZruRoGLLyc
-        uOaTPfxEpPTVNh8pTnPt1muI6hGWz0g=
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur04lp2050.outbound.protection.outlook.com [104.47.13.50]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-22-VyfuKy2YOJKnN-xHhcLqIw-1; Thu, 14 Jan 2021 10:25:28 +0100
-X-MC-Unique: VyfuKy2YOJKnN-xHhcLqIw-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EjFpuvw3odOeGI7WB2u9+QSqPIIcX0bxAymRbRT8qhb4O3znC65dZcKIeQ+Tp1vaXESz9fIR92NAtnFvWFVn2KPFyXw719dmq++kTLCKCYlZmkoEGPips3wquxRfBcJGnFtr229idujfFAMz0tENLqEIMjhSJ/XrPEROVr+H9HQM/Ft2Fk/pyICO8MZznX7zeoltLA8j3febzHxAdH0tFcGPk/rOALh2itheQmWc9lwBwC1UY2HcJDL9tktj9YbAlgQLl6ksy0/zOtV7OkQrGe/mb3oPa4Uctheq6tBHNxc8In7uTeHBfMNT9qvyZuUMt8NyaMFp07ZgtyEM+yPPdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zCPfuXy5Bii+wf/SqTz1JCjyXiojJoo0V1h2IG7/dvA=;
- b=aERdl4fjPjjX1IojS9pbNYqjjbuYB3S4RrbJUa/jDoSPuEBhZl2FrN6xv+sb4fj5ucXpGxFctWGrvcHtnQB/QBt4p9Oa4RdyHkp6oGa5rSvMrInehqP/tCEnhKqxnhDqZBsVqsu9PHh6sKrb2Vi2449FSvMjxyYM6tgf5UhS2orWHOlBUHcE7KUpNLKKXNg8P1HezS4jHI3f14CHXcoqz2I7TpLGucg4c1jfXt5BP2la1jk46s0pcfz5U1S/k3CN3FgVNb/s+hFqMKdRwjRkZM0uiOkxbnBgAuet15LmSw2Sw38ZauLtYm8JnFGtqxcuVJrGM0MH76GyKXHir5PP8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
- header.d=none;linux.alibaba.com; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR0402MB3359.eurprd04.prod.outlook.com (2603:10a6:803:3::28)
- by VI1PR04MB5055.eurprd04.prod.outlook.com (2603:10a6:803:53::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Thu, 14 Jan
- 2021 09:25:26 +0000
-Received: from VI1PR0402MB3359.eurprd04.prod.outlook.com
- ([fe80::9c1d:89de:a08e:ccc9]) by VI1PR0402MB3359.eurprd04.prod.outlook.com
- ([fe80::9c1d:89de:a08e:ccc9%3]) with mapi id 15.20.3742.012; Thu, 14 Jan 2021
- 09:25:26 +0000
-From:   =?utf-8?Q?Aur=C3=A9lien?= Aptel <aaptel@suse.com>
-To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>, sfrench@samba.org
-Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Subject: Re: [PATCH] fs/cifs: Replace one-element array with flexible-array
- member.
-In-Reply-To: <1610615171-68296-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-References: <1610615171-68296-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Date:   Thu, 14 Jan 2021 10:25:21 +0100
-Message-ID: <87czy7lvjy.fsf@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [2003:fa:705:9f69:1ef8:3a2c:dccb:e3f5]
-X-ClientProxiedBy: ZRAP278CA0015.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:10::25) To VI1PR0402MB3359.eurprd04.prod.outlook.com
- (2603:10a6:803:3::28)
+        id S1728111AbhANJ1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:27:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58488 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727382AbhANJ1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 04:27:10 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 39E03AB7A;
+        Thu, 14 Jan 2021 09:26:28 +0000 (UTC)
+Message-ID: <9a8d9a57a1837fb7e0b17f19f089c55f955c98fc.camel@suse.de>
+Subject: Re: [PATCH 0/3] usb: dwc2: Fixes and improvements
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Doug Anderson <dianders@chromium.org>
+Cc:     Paul Zimmerman <Paul.Zimmerman@synopsys.com>,
+        Felipe Balbi <balbi@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Hudson <skrll@netbsd.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Minas Harutyunyan <hminas@synopsys.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Thu, 14 Jan 2021 10:26:25 +0100
+In-Reply-To: <20210114030715.GA102157@roeck-us.net>
+References: <20210113112052.17063-1-nsaenzjulienne@suse.de>
+         <CAD=FV=VnsVgTGTkr9VYQHCkBSVVksT1UGfsmk+dqTyQ1sqF=Qw@mail.gmail.com>
+         <20210114030715.GA102157@roeck-us.net>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-E4/aw+LDBvAEHrn4g2Fu"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (2003:fa:705:9f69:1ef8:3a2c:dccb:e3f5) by ZRAP278CA0015.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:10::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10 via Frontend Transport; Thu, 14 Jan 2021 09:25:25 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c8acf310-2237-4ade-40d4-08d8b86e53d1
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5055:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5055EDE8D8D49DE4BF5BC1FFA8A80@VI1PR04MB5055.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fe0RpK9fp3t9nspM2vLOKN/e5SlRrcq5+IVf1o9WFJgR9SEtP/gWXqLgIoF1GpHKLKk4KCWotQ83fHSjVNfCCIIMzs2lrIIdpGGzV08nSpS0jaRnqRlw6To4q7tSVI9XUUG9fp1DM1oqj1bT6Ncc9wj1O7pLIthtBHG2SYT8tiJQLasWRCqwQ6i+JW3LJBTM/Yl6CsMY8mSus1ZXA9CmqfKELZV5EO4QfKk+vJ1/RQ4e6cQBtZncDNDt4w39NQpvUD55go/P9e0hvkFeUKmhfUYJkmBnxpbMWR/5sJ6rJBWUV8APIT+GAh6//1LQJ7agoOZCMTAts+qh+pOqqlBOal5F3oAheHJb7KFGTdZGbS6a8RVwR+hWUyChVnnxjzP5HUk4HQ6Tf9yv7TURJkf0bw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(136003)(346002)(396003)(376002)(4326008)(66476007)(66556008)(66946007)(4744005)(6496006)(8936002)(36756003)(2906002)(6666004)(5660300002)(52116002)(6486002)(8676002)(86362001)(186003)(16526019)(316002)(2616005)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?a0dVOEF5L2ZZVTdCRHdrZVAwZzBOMXF0bEpRMGZ0NlA1eUFYcmxUM25zN1Jr?=
- =?utf-8?B?OEE1eW1RSDZaZlZiQ1RyQWN0alplb3cyNkJvY0NYTWw4QndqK0hoSm1hdGNM?=
- =?utf-8?B?di9qQklvNW1DOXNSUERhV3RnMnlGRVBNU3Z6K0V5VFNFT0lhQ0V4bGVzazlE?=
- =?utf-8?B?anRmTmZIWnpaS3NSWkZGZ3VrQzJLbWRJZXZXWSt5M3l6Sng4S080RFpuanB1?=
- =?utf-8?B?Q1ZLVDFmeXorUFJBV2psM0pOZ3RLWkxYNjFSY2JxV1lqZ0JkY3pPRlNTT1J0?=
- =?utf-8?B?RUtSekYzTG51WTR6dTc0dWhyS3ZRVE1FaFBFVkYyUUpPVXd4U2ZmaDNDa3F0?=
- =?utf-8?B?ekIzS01QODVyRU1kSk9BNmVkcmZKWU5TQmZDSnlvUStDSHU0TmVYMy90eThw?=
- =?utf-8?B?bk4vZk5IRzJtVlFaY0FmdWpQdFcvT3ZUOUh6R1JiVWxFalM1TVIxTTg0WWt5?=
- =?utf-8?B?bmhmb3ZDK1JzcVExcEtJVEp0WWRyTWJVU2RvclorZzBkN3FmUERIR2N4YzZ2?=
- =?utf-8?B?MjhBS21zR0xCRWdJcEVQaWNYQW9nNW9xblMyLzFOMVZCb09NT0hBZkIwWjRs?=
- =?utf-8?B?Y0svU25zRy9nMlJOOWllaTBkUWg4SjlHNzYzOU1tc2o5WlV6cC9WVnBaOVQx?=
- =?utf-8?B?Nm0rdkxRd2xQYkd4QTRSRjl2L0M5cEZ0UUVEamZpTjJhL25ZUnR6eHF4ZXVj?=
- =?utf-8?B?VTYyQ3oxOVN2Tkk3U2ZheUpacFJ5Qzg0a3VtTU9UWkpJRFdqNDVQSitMcHdo?=
- =?utf-8?B?ZUE5NmNmbWZQOEcyVEVpN0JqT2Uyc3RpYlFGQ2J5Vi9kQ3hEaHlUdTh1Q04r?=
- =?utf-8?B?VlBRQ2ZFa05lYXRwRTJWRnV0NkxnQUJ4dy8zakNGdXJmaXc1ZEF4YWp2NGtj?=
- =?utf-8?B?WjVmVitxTklFcSsyRllVUkgzYzFmQXpUZ1VMblZ4S1BWUFI4SkQ0Q01yQnVs?=
- =?utf-8?B?WGRwSHNxOGROcTlEb0w3QlhXcExvb1YzZFZBazFDV3RVd2M2WjkyQ09HK0dJ?=
- =?utf-8?B?M3BMenhDVDlJYnEzUDVIUVh1ejEvczZ6UUwrOXZpcHNocmd5emFETHpva1ds?=
- =?utf-8?B?ckVkMFAyZm9SVGprMURBMVIxei9CRHZrVFVpeUVHeHNoQkFuVUhPWXpGbGtE?=
- =?utf-8?B?UG50L29yaVMxRklDSlRrc0xmVlZUeWF0cXlUTmdMOGZmV2dTaEFQa1hrdzl0?=
- =?utf-8?B?RXFTWXNISTB1ZFFYSHJFYUZKaXoyaDFMclFVUDcwM3RTdjJhWXpKMG1rY2Zi?=
- =?utf-8?B?S3ZXekFJUkJBaGlBS0xlRS9jUzBuUG1rdkJ1S0o2K21PYVFVRE1MUEFQVk9m?=
- =?utf-8?B?QnpmcmNoR2FOWlIwWFNIbk1NeHVDcWpvaU05Y2hDQnMxNk9ZaEVxZk5GN2to?=
- =?utf-8?Q?SXBOdVN95e1xvPJ1zh2YRq2ADULHYyFQ=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3359.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jan 2021 09:25:26.4401
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8acf310-2237-4ade-40d4-08d8b86e53d1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8UFvgW5TQlzZxp8btpFgLsbnSGika6jjQGtpFNXhZrIF3ofdAed9Q2o4upYmuFMY
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiapeng,
 
-This will change the size returned by sizeof(). Have you checked that
-this doesn't introduce off-by-one errors in all the sizeof() usage?
+--=-E4/aw+LDBvAEHrn4g2Fu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Cheers,
---=20
-Aur=C3=A9lien Aptel / SUSE Labs Samba Team
-GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg, D=
-E
-GF: Felix Imend=C3=B6rffer, Mary Higgins, Sri Rasiah HRB 247165 (AG M=C3=BC=
-nchen)
+Hi Guenter, Doug, thanks for having a look at this.
+
+On Wed, 2021-01-13 at 19:07 -0800, Guenter Roeck wrote:
+> On Wed, Jan 13, 2021 at 03:20:55PM -0800, Doug Anderson wrote:
+> > Hi,
+> >=20
+> [ ... ]
+> >=20
+> > It's been long enough ago that I've forgotten where this was left off,
+> > but IIRC the 3 patches that you have here are all fine to land (and
+> > have my Reviewed-by tag).  However, I think Guenter was still tracking
+> > down additional problems.  Guenter: does that match your recollection?
+> >=20
+> > It looks like there are still bugs open for this on our public bug trac=
+ker:
+> >=20
+> > https://issuetracker.google.com/issues/172208170
+> > https://issuetracker.google.com/issues/172216241
+> >=20
+> > ...but, as Guenter said, I don't think there's anyone actively working =
+on them.
+> >=20
+> > I'm not really doing too much with dwc2 these days either and don't
+> > currently have good HW setup for testing, so for the most part I'll
+> > leave it to you.  I wanted to at least summarize what I remembered,
+> > though!  :-)
+> >=20
+>=20
+> The patches in this series still match what I had in my latest test code,
+> so it makes sense to move forward with them. I don't think I ever found
+> an acceptable version of the DMA alignment code.
+
+As for the alignment code rework, can you recall the underlying issue that
+warranted it?
+
+Regards,
+Nicolas
+
+
+--=-E4/aw+LDBvAEHrn4g2Fu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmAADkIACgkQlfZmHno8
+x/6lhgf/aLYEr1NNy/j/1kCMGm3ZQ0fUj2UouvGMACD6xO1/6Tmj62vq4aUO62f0
++RiSLkwYCe1gxXaZB9KQ2bYko/9s+D5i8O12Ha/oUfypARXx/ebXR4m3TGa8H1Eg
+36U7pdEVvWKCLZ8pDqFVvFdiq5ApnoIuI24xF0mUPJIZLEhdMqafT5sSzrmuTXkF
+y1JMjVYC/3lMPlGcnm6vfWU7iLfyh2aDBq7K9okOjEG+JB0ZYKH7qCD2mL3vZzFU
+m0bngWMsFfKJWPxtwo0mpQnDY1gaTar5nanXiLXNFD34yNwtYgEeQdIjT2edg9oT
+1w+CaKBIM8VAkDipHlttQP3TWcRokg==
+=tmhn
+-----END PGP SIGNATURE-----
+
+--=-E4/aw+LDBvAEHrn4g2Fu--
 
