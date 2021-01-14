@@ -2,111 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A862F6386
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E582F638B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:56:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729226AbhANOxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:53:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41904 "EHLO
+        id S1729249AbhANOym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:54:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbhANOxv (ORCPT
+        with ESMTP id S1725878AbhANOyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:53:51 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BACF5C061574;
-        Thu, 14 Jan 2021 06:53:10 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id v184so722948wma.1;
-        Thu, 14 Jan 2021 06:53:10 -0800 (PST)
+        Thu, 14 Jan 2021 09:54:41 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69ED3C061574;
+        Thu, 14 Jan 2021 06:54:00 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id o10so8357172lfl.13;
+        Thu, 14 Jan 2021 06:54:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vXE0mmnItBS+KOK1GpktK7ApVoMKmWB/4ok6x8HwdfM=;
-        b=jHKAOq//l2Pley5Km6YuU8Jma6GOwF+kNpi7TkY/zxiAoL8GRi2qrXlYbw3UlUZB/7
-         HAUsgaiHFnnp0CyG/6a2ZBGVqhM7kC0jEqafupGq00ScQq4jSlYaHMVY/sgdZSaAIdtD
-         pp6KHJ13IBJTw73SHxBdwmt+WtvxNS0v1CUSWJ4TlepWuszH8pXzQoHKDPI06wQ0JjZL
-         s5AeRvVpnH2sFCUXSLJ8CZxMbPrrD6fdvbbxSzoPCR3Ha9iMqX3hgvsi1Q8agZOEGl+N
-         M/bv/G5rx7kmr41TWvz4dLobEuNWq3UppgNrSjUSM9ZigeLxP8f3UUnEhJzj6oW09wxT
-         MSPg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H43AsPC1Ol3zcrpDjCexwQNmz+Osl0+OhlXoSr96dXA=;
+        b=ryn9lPb9TmLcWhM8xLI6KEhUnVTuyMNs1BPg+7zNtMckZh3te89f7IIxpRDAtkARSi
+         vtmBTryduHnZyG8gxO00pwyKUMLQGNbdDv8cN2dpm1nqGWSXmZPsUKpibpF/5gXFaZCQ
+         8LDk7bGkdBbNWNM5WkK8ZKTsBgFDtsNgzq2NtPWbx4bqosdBxM9KxZ4O7L4PewFKzKVz
+         GV2kpmQiI8dJWtwJJ1qQp/rTVvGWGKnzNVz+WAroQCvWR9VJLcEC9uisTD4nRYSMx2PZ
+         atbHuoHBVqN4vNF+VQzHc7Qqn/EZHu/qBGCzayKLvsc4FT5rQtjZZP6nlmFyIQu46fsq
+         Xyhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vXE0mmnItBS+KOK1GpktK7ApVoMKmWB/4ok6x8HwdfM=;
-        b=S95kGPNzlH45ITIO6ijE5XzprRNfwtMnRKXq5L6AH/iU6BH+eFJoRx2QtaZF4/ctY4
-         d+mJbEB7qpAB750wdmRKKHhnU0iUBjgOXfisDT+1tECySjBlA8EFPhDmwfK3gvJWD0/3
-         MPMFl0PDsVoxlIF0nJ+6qD/CbT7ajeIwDeHNjjgDsQXqxkcxbnQN0h3qm1Mjjv63WkJ7
-         zb0+A2VpBrpgBgcgCpvH3CnfrNVSuRAGZRwHRvMrPEyvPFJawXhl0xiG7GRQ/3UzMQIl
-         BqFdx6UgVU3tq6OjfOElJ7DiC+AJHtAYgL/rkmhcdwBbF77iGOBoUGrt+kK6DQQAouXi
-         rR0w==
-X-Gm-Message-State: AOAM532twithCGWBe6LNGPUI/UvlZLNoXB4iqQ51JrtoYSTTDA0+UqlF
-        gKlyEvns+RSz9e6Rys7szDe2dVgxWYN2Gg==
-X-Google-Smtp-Source: ABdhPJxOolToRV7rsm7AM/M2dtx01MzWVdtFIzvgwYSxVJrhI5i4OC9R/mBmRffoi18w3syOBSwIkw==
-X-Received: by 2002:a1c:6283:: with SMTP id w125mr4271505wmb.155.1610635989142;
-        Thu, 14 Jan 2021 06:53:09 -0800 (PST)
-Received: from [192.168.2.202] (pd9e5aa30.dip0.t-ipconnect.de. [217.229.170.48])
-        by smtp.gmail.com with ESMTPSA id q15sm10441410wrw.75.2021.01.14.06.53.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jan 2021 06:53:08 -0800 (PST)
-Subject: Re: [PATCH v6 16/16] platform/surface: aggregator: fix a kernel-doc
- markup
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-References: <cover.1610610937.git.mchehab+huawei@kernel.org>
- <4a6bf33cfbd06654d78294127f2b6d354d073089.1610610937.git.mchehab+huawei@kernel.org>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <a0cb2b1a-4546-7864-faaf-3a1db8223189@gmail.com>
-Date:   Thu, 14 Jan 2021 15:53:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H43AsPC1Ol3zcrpDjCexwQNmz+Osl0+OhlXoSr96dXA=;
+        b=DJA9oXUZbA9d1rg5o8L/Ozjkv3/7B2nRqrZuSX4bBAE60ZRVQeAyead+DHC7x5rhHZ
+         cdtwznQB2rrPy3fhQ+LQ07vIAqfVWOj2otzDWdjawM8uzL5SGs+AsQvup/7HmxNHKbtS
+         bQkf0WuOHFzw9p0m5kVLMMwwQ/RmBQ5JAnqsT1LVXENRNQhBvZAdiftcUXWR611Sv4uY
+         ollk5o2lmesYJbrOfcGFbI24PgkcWgJpb3i/IGkVsJU5LRUUYkUpmIzAcefnZ57A36+M
+         Ggkd1I5eLErw6riVQIwHSSEqt1o7BaWAKUDnMK3MtomsFBugsqvsomYQYCUYMb8T5B2A
+         WTQw==
+X-Gm-Message-State: AOAM5339S2fHIWNNbCHOEGudJBcTF/rPDdKMhPUWqcLlnRMO47iPrb6i
+        1vVXHBm+ow8sOE8VLIu7nfrYuggz5BUfU9AYYbFKPvsGNQQ=
+X-Google-Smtp-Source: ABdhPJyJTBDUpTXVX/OpGZmgZzRX+iCpQZAOGyNR00VXpqIZmMuCulUlQV4/lclmUTTaf2Id4xYhcULwVj54ElE/xPc=
+X-Received: by 2002:ac2:4146:: with SMTP id c6mr3740962lfi.477.1610636037447;
+ Thu, 14 Jan 2021 06:53:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4a6bf33cfbd06654d78294127f2b6d354d073089.1610610937.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210112023619.5713-1-dong.menglong@zte.com.cn>
+ <33bb1cd2-c202-0fd5-733d-b44e7e8fa92c@gmail.com> <CADxym3bzFPeCXzkO1iFy+Sx7GhwRGo=VkOUzrDE4KMCjMx0v-w@mail.gmail.com>
+ <2b6dcfbf-d534-4a2a-53e0-c942a9120a0f@gmail.com>
+In-Reply-To: <2b6dcfbf-d534-4a2a-53e0-c942a9120a0f@gmail.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Thu, 14 Jan 2021 22:53:46 +0800
+Message-ID: <CADxym3Z088OCMpFvUMG8Ggx3yQXVL0N9=yJ4+CUgxgnTwkEysw@mail.gmail.com>
+Subject: Re: [PATCH] ata: remove redundant error print in rb532_pata_driver_probe
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     axboe@kernel.dk, linux-ide@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/14/21 9:04 AM, Mauro Carvalho Chehab wrote:
-> A function has a different name between their prototype
-> and its kernel-doc markup:
-> 
-> 	../drivers/platform/surface/aggregator/ssh_request_layer.c:1065: warning: expecting prototype for ssh_rtl_tx_start(). Prototype was for ssh_rtl_start() instead
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->   drivers/platform/surface/aggregator/ssh_request_layer.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/surface/aggregator/ssh_request_layer.c b/drivers/platform/surface/aggregator/ssh_request_layer.c
-> index bb1c862411a2..25db4d638cfa 100644
-> --- a/drivers/platform/surface/aggregator/ssh_request_layer.c
-> +++ b/drivers/platform/surface/aggregator/ssh_request_layer.c
-> @@ -1056,7 +1056,7 @@ void ssh_rtl_destroy(struct ssh_rtl *rtl)
->   }
->   
->   /**
-> - * ssh_rtl_tx_start() - Start request transmitter and receiver.
-> + * ssh_rtl_start() - Start request transmitter and receiver.
->    * @rtl: The request transport layer.
->    *
->    * Return: Returns zero on success, a negative error code on failure.
-> 
+On Thu, Jan 14, 2021 at 4:30 PM Sergei Shtylyov
+<sergei.shtylyov@gmail.com> wrote:
+[...]
+> >
+> > What does this 'MBR' mean? I am a novice~~~
+>
+>     Generally speaking, Master Boot Record. But I also use it to send you My
+> Best Regards. :-)
 
-Thanks! Looks good to me.
+Haha~,
 
-Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
+> > So, is it better to replace 'platform_get_irq' with
+> > 'platform_get_irq_optional' here?
+>
+>     No. You should stop overriding the result to -ENOENT and pass the result
+> up the call chain instead. In order to do it, you should only check for (irq < 0).
 
-There seems to be another issue similar to this, specifically the
-non-existing ssh_rtl_tx_start() and ssh_rtl_tx_start() are referenced.
-Both should point to to ssh_rtl_start() instead. I'll start working on a
-patch to fix that right away.
+Well, I didn't even notice this. It does seem to be another problem...
 
-Regards,
-Max
+---
+ Best Regards
+ Menglong Dong
