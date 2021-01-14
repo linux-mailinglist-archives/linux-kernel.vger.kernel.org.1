@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902602F611C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C272F6120
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbhANMis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 07:38:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726175AbhANMis (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 07:38:48 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93880C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 04:38:07 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id f26so7423136qka.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 04:38:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bajNdX3QJ8WPiUZ2vxCgMPDafFzrvEmZW/ftJU+bUt4=;
-        b=Xb/J5GM7D20Cg6oK8N4NEVjrvLdhRL7untYdRK3bSHnKlZpuoFDoMx0lVSC07osGOF
-         8wY0JKNjtkpKXwivOVVukF0JQCANiN/MyQhT8DOYhWeH++bRfcbxrdIKTKqKYW8W2kXB
-         BXoLWOP37NqFrtoR/5kEuKaw5Sj4duJnxqfETGrxtl6IpMke1Uo4b71wKz7wP11oxRSz
-         VIhCJn4Yq91dwVL+8a7OcewS06iT+hNElNZuo479pERklIEwhUlgOSqC2IqOTlrt+zPm
-         L7dAf+Jgb1D/3+zZQdDJ7FA3xr8ugB4GMhla3M9UZxsy/no0S061UsOWLGyoxxIu1lzP
-         TuJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bajNdX3QJ8WPiUZ2vxCgMPDafFzrvEmZW/ftJU+bUt4=;
-        b=kR5OrFivVKBX+F4b6FrL2nPuLthIc5pvzkp0h2IWpI5uT7MPsvtFnSvuP7eC9tW7HY
-         x6iEsPzWoLiPrtlKXSquUwovWiDrJK+QorhLZCepc9YTGM9vVveo9bjJzXIqhvZ39CVu
-         SfB9Kw0l9GsiyCobN36tUmWEqOI0bAK0HJ1yOZzNacoTQupFZ6NOHLFvCQiKMNcbRVOY
-         VBQDfToKZtaTbkhT+zTseUQalJ+bQ9hmstfrHO3AAkm5PY7PTchPJu6tnlmKFjKWeHg7
-         QOps4oq9FdjSONXOGXWesOQcTU9prg+z3DcfkY99FOBN6OTl8uro6uckIYa7bjbo8J4+
-         i2dg==
-X-Gm-Message-State: AOAM533NaKgN0tgzqJ8xr4mhWREtpQaF00CqelT7JzOAwUopc4c7pr6w
-        t9CT8YtVswAFXij+eyBL83GwLKCRnMntgadk5LQtse+12ijoDw==
-X-Google-Smtp-Source: ABdhPJyXijNZ1Yxf1vbfyh8rAkS2NEogh/+jimGWMC5nb359YkEegG1beCZuJowQbl8fpMln8o0bS3kdu875VwSWujY=
-X-Received: by 2002:a37:4285:: with SMTP id p127mr6561914qka.501.1610627886555;
- Thu, 14 Jan 2021 04:38:06 -0800 (PST)
+        id S1728085AbhANMld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 07:41:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726740AbhANMld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 07:41:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C8F623A53;
+        Thu, 14 Jan 2021 12:40:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610628052;
+        bh=OxL9TuHjbQbPuPcAueI8mkcZ4/hHYeRATV5+Snzg2sg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=orgFjgQL/Kn0lbejYzUJ0LUwxm1/SMaYz2krykGO0uxLsaSmgJPJgwWiezS7Mpz+V
+         gTD97L8ou/pJL+BcGSYjUiWNUpcp51hfx3/icX5GaP3MHEobVyM1/duQeYPIJ1aj0f
+         NzBZvUwh13mqZrz/CzyVdUYJH2McU8lzNNed9LEnk7v4bdw9VlsAy0hggA73/FV4UC
+         kmyHd3/UQ5d7DSUU2fYvobCg9rUU+qeF1knJMVEE5/v67q7s44wOtZsOSRxsCG9HSb
+         6Ll1DKQYiGKr0hl7vRpd090BPAAkviVUKz7sw4KRSrsQhdn+q4/gQ/borKL6/FL5WN
+         3yIHNDxiC5jzw==
+Received: by pali.im (Postfix)
+        id 9D0CF621; Thu, 14 Jan 2021 13:40:49 +0100 (CET)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        "Miquel Raynal" <miquel.raynal@bootlin.com>,
+        "Tomasz Maciej Nowak" <tmn505@gmail.com>,
+        "Luka Perkov" <luka.perkov@sartura.hr>,
+        "Andre Heider" <a.heider@gmail.com>,
+        "Vladimir Vid" <vladimir.vid@sartura.hr>,
+        "Russell King" <rmk+kernel@armlinux.org.uk>,
+        =?UTF-8?q?G=C3=A9rald=20Kerma?= <gerald@gk2.net>,
+        "Konstantin Porotchkin" <kostap@marvell.com>
+Subject: [PATCH mvebu v2 00/10] Armada 37xx: Fix cpufreq changing base CPU speed to 800 MHz from 1000 MHz
+Date:   Thu, 14 Jan 2021 13:40:22 +0100
+Message-Id: <20210114124032.12765-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <0000000000004a33a005b8b8eaab@google.com> <20210112194058.GA200254@ubuntu-m3-large-x86>
- <CACT4Y+YFZf=BnCQJQUYwG-UpaYKG97VD-XWpEdXoR3ZnOxH5NQ@mail.gmail.com>
-In-Reply-To: <CACT4Y+YFZf=BnCQJQUYwG-UpaYKG97VD-XWpEdXoR3ZnOxH5NQ@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 14 Jan 2021 13:37:54 +0100
-Message-ID: <CACT4Y+Z-f+r_Bm5RD+ZFrspHdVrDrzPgEB_9_uACa_8o4vz7aw@mail.gmail.com>
-Subject: Re: upstream build error (12)
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     syzbot <syzbot+76880518931d755473cf@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 12:32 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Tue, Jan 12, 2021 at 8:41 PM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> >
-> > On Tue, Jan 12, 2021 at 11:20:27AM -0800, syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    e609571b Merge tag 'nfs-for-5.11-2' of git://git.linux-nfs..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=15965a00d00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=6157970d0a91b812
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=76880518931d755473cf
-> > > compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+76880518931d755473cf@syzkaller.appspotmail.com
-> > >
-> > > clang-11: error: unable to execute command: Aborted (core dumped)
-> > > clang-11: error: clang frontend command failed due to signal (use -v to see invocation)
-> > >
-> > > ---
-> > > This report is generated by a bot. It may contain errors.
-> > > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> > >
-> > > syzbot will keep track of this issue. See:
-> > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
-> > Would it be possible for clang-built-linux@googlegroups.com to be CC'd
-> > when there is a build error and the compiler is clang? Especially if
-> > clang is hitting an assertion.
->
-> Hi Nathan,
->
-> I am adding functionality to CC specific emails on build errors on
-> specific instances:
-> https://github.com/google/syzkaller/pull/2388
+Hello!
 
-I've updated configs to CC clang-built-linux@googlegroups.com. This
-should take effect on the next build failure (hopefully).
+The armada-37xx-cpufreq driver changes base CPU speed from 1000 MHz to
+800 MHz on EspressoBIN and Turris MOX. The commit message in patch 2/10
+explains why and how can this be discovered.
+
+That patch 2/10 led us to discover another bug, in the SOC itself,
+that causes the CPU to behave weirdly when frequency changes to 1 GHz.
+A similar erratum is documented by Marvell but only for systems where
+base frequency is 1.2 GHz.
+
+We've discovered that to make cpufreq scaling stable on Armada 3720
+systems with base frequency 1 GHz, we also have to set voltage levels
+for L0 and L1 loads to at least 1108 mV. We were led to this by patch we
+found in Marvell kernel fork. Fix is in the patch 4/10.
+
+https://github.com/MarvellEmbeddedProcessors/linux-marvell/commit/dc33b62c90696afb6adc7dbcc4ebbd48bedec269
+
+During fixing this voltage issue for 1 GHz we discovered another bug in
+armada-37xx-cpufreq driver that causes CPU instability. Erratum for VDD
+stabilization was improperly implemented, details are in patch 6/10.
+
+This patch series is also available in my git tree in branch a3720-cpufreq-issues:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/pali/linux.git/log/?h=a3720-cpufreq-issues
+
+We have tested this patch series on Espressobin v5 and Turris MOX
+boards. If you have other Armada 3720 boards (Espressobin v5/v7, uDPU,
+Devel Board, ...) then it will be nice to do an additional tests and
+check if instability issues are finally fixed.
+
+There is a discussion on armbian forum that Espressobin v7 is unstable
+when running at 1 GHz and in this thread was also mentioned above
+voltage patch from Marvell kernel fork:
+
+https://forum.armbian.com/topic/10429-how-to-make-espressobin-v7-stable/
+
+Marek & Pali
+
+
+Marek Behún (3):
+  arm64: dts: marvell: armada-37xx: add syscon compatible to NB clk node
+  cpufreq: armada-37xx: Fix setting TBG parent for load levels
+  clk: mvebu: armada-37xx-periph: remove .set_parent method for CPU PM
+    clock
+
+Pali Rohár (7):
+  cpufreq: armada-37xx: Fix the AVS value for loads L0 and L1
+  clk: mvebu: armada-37xx-periph: Fix switching CPU freq from 250 Mhz to
+    1 GHz
+  clk: mvebu: armada-37xx-periph: Fix workaround for switching from L1
+    to L0
+  cpufreq: armada-37xx: Fix driver cleanup when registration failed
+  cpufreq: armada-37xx: Fix determining base CPU frequency
+  cpufreq: armada-37xx: Remove cur_frequency variable
+  cpufreq: armada-37xx: Fix module unloading
+
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi |   3 +-
+ drivers/clk/mvebu/armada-37xx-periph.c       |  83 ++++++++-------
+ drivers/cpufreq/armada-37xx-cpufreq.c        | 100 ++++++++++++++-----
+ 3 files changed, 124 insertions(+), 62 deletions(-)
+
+-- 
+2.20.1
+
