@@ -2,227 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010372F5AA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 07:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C742F5AA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 07:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbhANGYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 01:24:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45182 "EHLO
+        id S1726405AbhANGX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 01:23:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbhANGYB (ORCPT
+        with ESMTP id S1725989AbhANGX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 01:24:01 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C56C06179F
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 22:23:21 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CD508279;
-        Thu, 14 Jan 2021 07:23:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1610605400;
-        bh=NNw6IprhBR8lJU1NHzisSE1TAP0lRhxlmKFXyv2aDEw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=urFGPrCVhEIh4E8Yi+A+wPrOpkapYQomKS9DgRHvb3N14FNxGM5Rh7RqQq14DQlPb
-         isnPlanUBOd0QUb/3tbuzhCGfK1gJfDbTGN9+9L2DtyVKMq/4CCAsmAnFuxgUBJfxV
-         XtL1LCdwlQwpY9Ex+CDyxjlm8coXwrPnUQUvFQwA=
-Date:   Thu, 14 Jan 2021 08:23:02 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Vinay Simha BN <simhavcs@gmail.com>
-Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        David Airlie <airlied@linux.ie>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>
-Subject: Re: [PATCH RESEND v2] drm/bridge/tc358775: Fixes bus formats read
-Message-ID: <X//jRt7YP0WgQoDd@pendragon.ideasonboard.com>
-References: <1603349147-3495-1-git-send-email-simhavcs@gmail.com>
+        Thu, 14 Jan 2021 01:23:58 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A62C061795
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 22:23:19 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id m6so2754686pfm.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 22:23:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Y7pAoih+EszjbXCqOpKK8A31FjJDrn7uQtTq3jZ7YdU=;
+        b=JljrT+W9M9iCLsH8Zlw73+3RE8x9Ts0XoHw1KdTAhn9I12JconaHiVcnSRkf+uv5Ef
+         BAEIOYuubRjNEc+82orb8pBIUhMrlfpV9bFS7Z3uD9fts6aoLpUC5Rmim2c7cgzl8bSW
+         jVn9MOQS1DFcbfeqgTu7O02vvIiM92q8RIdF1ehAlyWjkDYg/3GF9j0CuRBnBsxFLauH
+         DbjtC58GL12GJtrwDMEj9zyQEym3YAREDmEmYCXXKyO8YwoQCsd+eViG9Uh3hnrkgy9J
+         m9it1GcKqzjzH6fnAr0Q4SME06s/Nj1zlVSSt3hoIFGRGV8DbEYftAqFIhqgU1+4qAWa
+         gT+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Y7pAoih+EszjbXCqOpKK8A31FjJDrn7uQtTq3jZ7YdU=;
+        b=ocgyWJFBTPWVVLmqSOghqhDnzusLe+HBLTB691GTLGs5NJw20GN8/+G6KYUfOFd62R
+         WEEi9GhXFKWUWP6Sf5gVW4s9hBNprkkvYTtEtZ10Te5MiKJQnxULlFRUUNQ4203RM/3o
+         hTjYapKokw2t/A2q38B36MPru1B8U94MPnW0zpIf/5eIT6gaiy0MommeqgLlPXC+Bfuv
+         FPfaDZ+yzEJbgul2P9S9vJTWkxPauaBhCl6s9K6ZjCE7dXEng0OeOQ2aXH8+o04rgoSc
+         GlbQO00u3ueUmNls2DC4mR7JrLOsxpV+a7tbZiUJJ9+p7IiNOw1RfQ3je4Jy55eJSxri
+         Voag==
+X-Gm-Message-State: AOAM533U8FOlsrOoYi0cOt8xqZRhoqsU2ou59UidZrhG67HWBltHBJUL
+        YiUqTMZwrzbSkOcDpxdklCSpiSWCfJ0=
+X-Google-Smtp-Source: ABdhPJy1uwBX6p87JlH5XPD/onqnpVf2uU4hU2BFH9foYFpOaL+XoL6KAjxVbQxlN+9wT3D+RfrpUQ==
+X-Received: by 2002:a63:605:: with SMTP id 5mr5812179pgg.144.1610605398374;
+        Wed, 13 Jan 2021 22:23:18 -0800 (PST)
+Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:a6ae:11ff:fe18:6ce2])
+        by smtp.gmail.com with ESMTPSA id g26sm4189131pfo.35.2021.01.13.22.23.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 22:23:17 -0800 (PST)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH v2 2/2] f2fs: add ckpt_thread_ioprio sysfs node
+Date:   Thu, 14 Jan 2021 15:23:02 +0900
+Message-Id: <20210114062302.3809664-2-daeho43@gmail.com>
+X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
+In-Reply-To: <20210114062302.3809664-1-daeho43@gmail.com>
+References: <20210114062302.3809664-1-daeho43@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1603349147-3495-1-git-send-email-simhavcs@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinay,
+From: Daeho Jeong <daehojeong@google.com>
 
-Thank you for the patch.
+Added "ckpt_thread_ioprio" sysfs node to give a way to change checkpoint
+merge daemon's io priority. Its default value is "be,3", which means
+"BE" I/O class and I/O priority "3". We can select the class between "rt"
+and "be", and set the I/O priority within valid range of it.
+"," delimiter is necessary in between I/O class and priority number.
 
-I'm afraid I've had close to no time for DRM bridge maintenance over the
-past few months, and I don't expect the situation to improve soon.  I
-know how painful it can be to keep pinging without receiving any reply.
-I'm sorry about that, we have a shortage of maintainers for this part of
-the subsystem and it seems difficult to recruit.
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+v2:
+- adapt to inlining ckpt_req_control of f2fs_sb_info
+---
+ Documentation/ABI/testing/sysfs-fs-f2fs |  8 ++++
+ fs/f2fs/checkpoint.c                    |  2 +-
+ fs/f2fs/f2fs.h                          |  1 +
+ fs/f2fs/sysfs.c                         | 51 +++++++++++++++++++++++++
+ 4 files changed, 61 insertions(+), 1 deletion(-)
 
-On Thu, Oct 22, 2020 at 12:15:47PM +0530, Vinay Simha BN wrote:
-> - atomic_check removed
-> - video data input and output formats added
-> - bus formats read from drm_bridge_state.output_bus_cfg.format
->   and .atomic_get_input_bus_fmts() instead of connector
-> 
-> Signed-off-by: Vinay Simha BN <simhavcs@gmail.com>
-> 
-> ---
-> v1:
->  * Laurent Pinchart review comments incorporated
->    drm_bridge_state.output_bus_cfg.format
->    instead of connector
-> v2:
->  * Laurent Pinchart review comments incorporated
->    atomic_check removed
->    video data input and output formats added
-> ---
->  drivers/gpu/drm/bridge/tc358775.c | 75 ++++++++++++++++++++++++++++++---------
->  1 file changed, 58 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/tc358775.c b/drivers/gpu/drm/bridge/tc358775.c
-> index 2272adc..cc27570 100644
-> --- a/drivers/gpu/drm/bridge/tc358775.c
-> +++ b/drivers/gpu/drm/bridge/tc358775.c
-> @@ -271,6 +271,20 @@ struct tc_data {
->  	struct gpio_desc	*stby_gpio;
->  	u8			lvds_link; /* single-link or dual-link */
->  	u8			bpc;
-> +	u32			output_bus_fmt;
-> +};
-> +
-> +static const u32 tc_lvds_in_bus_fmts[] = {
-> +	MEDIA_BUS_FMT_RGB565_1X16,
-> +	MEDIA_BUS_FMT_RGB666_1X18,
-> +	MEDIA_BUS_FMT_RGB666_1X24_CPADHI,
-> +	MEDIA_BUS_FMT_RBG888_1X24,
-> +};
-> +
-> +static const u32 tc_lvds_out_bus_fmts[] = {
-> +	MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA,
-> +	MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
-> +	MEDIA_BUS_FMT_RGB666_1X7X3_SPWG,
->  };
->  
->  static inline struct tc_data *bridge_to_tc(struct drm_bridge *b)
-> @@ -359,19 +373,6 @@ static void d2l_write(struct i2c_client *i2c, u16 addr, u32 val)
->  			ret, addr);
->  }
->  
-> -/* helper function to access bus_formats */
-> -static struct drm_connector *get_connector(struct drm_encoder *encoder)
-> -{
-> -	struct drm_device *dev = encoder->dev;
-> -	struct drm_connector *connector;
-> -
-> -	list_for_each_entry(connector, &dev->mode_config.connector_list, head)
-> -		if (connector->encoder == encoder)
-> -			return connector;
-> -
-> -	return NULL;
-> -}
-> -
->  static void tc_bridge_enable(struct drm_bridge *bridge)
->  {
->  	struct tc_data *tc = bridge_to_tc(bridge);
-> @@ -380,7 +381,10 @@ static void tc_bridge_enable(struct drm_bridge *bridge)
->  	u32 val = 0;
->  	u16 dsiclk, clkdiv, byteclk, t1, t2, t3, vsdelay;
->  	struct drm_display_mode *mode;
-> -	struct drm_connector *connector = get_connector(bridge->encoder);
-> +	struct drm_bridge_state *state =
-> +			drm_priv_to_bridge_state(bridge->base.state);
-> +
-> +	tc->output_bus_fmt = state->output_bus_cfg.format;
->  
->  	mode = &bridge->encoder->crtc->state->adjusted_mode;
->  
-> @@ -451,14 +455,13 @@ static void tc_bridge_enable(struct drm_bridge *bridge)
->  	d2l_write(tc->i2c, LVPHY0, LV_PHY0_PRBS_ON(4) | LV_PHY0_ND(6));
->  
->  	dev_dbg(tc->dev, "bus_formats %04x bpc %d\n",
-> -		connector->display_info.bus_formats[0],
-> +		tc->output_bus_fmt,
->  		tc->bpc);
->  	/*
->  	 * Default hardware register settings of tc358775 configured
->  	 * with MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA jeida-24 format
->  	 */
-> -	if (connector->display_info.bus_formats[0] ==
-> -		MEDIA_BUS_FMT_RGB888_1X7X4_SPWG) {
-> +	if (tc->output_bus_fmt == MEDIA_BUS_FMT_RGB888_1X7X4_SPWG) {
-
-As output_bus_fmt is only used in this function, I would make this a
-local variable and drop the output_bus_fmt field from tc_data. You could
-even use state->output_bus_cfg.format directly in the two locations
-where the value is needed without a local variable, up to you.
-
->  		/* VESA-24 */
->  		d2l_write(tc->i2c, LV_MX0003, LV_MX(LVI_R0, LVI_R1, LVI_R2, LVI_R3));
->  		d2l_write(tc->i2c, LV_MX0407, LV_MX(LVI_R4, LVI_R7, LVI_R5, LVI_G0));
-> @@ -590,6 +593,40 @@ static int tc358775_parse_dt(struct device_node *np, struct tc_data *tc)
->  	return 0;
->  }
->  
-> +static u32 *
-> +tc_bridge_get_input_bus_fmts(struct drm_bridge *bridge,
-> +			     struct drm_bridge_state *bridge_state,
-> +			     struct drm_crtc_state *crtc_state,
-> +			     struct drm_connector_state *conn_state,
-> +			     u32 output_fmt,
-> +			     unsigned int *num_input_fmts)
-> +{
-> +	u32 *input_fmts = NULL;
-> +	u8 i;
-
-You can make this an unsigned int, a u8 won't save space of CPU time.
-
-> +
-> +	*num_input_fmts = 0;
-> +
-> +	for (i = 0 ; i < ARRAY_SIZE(tc_lvds_out_bus_fmts) ; ++i) {
-> +		if (output_fmt == tc_lvds_out_bus_fmts[i])
-> +			break;
-> +	}
-> +
-> +	if (i == ARRAY_SIZE(tc_lvds_out_bus_fmts))
-> +		return NULL;
-> +
-> +	*num_input_fmts = ARRAY_SIZE(tc_lvds_in_bus_fmts);
-> +
-> +	input_fmts = kcalloc(*num_input_fmts, ARRAY_SIZE(tc_lvds_in_bus_fmts),
-> +			     GFP_KERNEL);
-> +	if (!input_fmts)
-> +		return NULL;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(tc_lvds_in_bus_fmts); ++i)
-> +		input_fmts[i] = tc_lvds_in_bus_fmts[i];
-
-This could be written
-
-	memcpy(input_fmts, tc_lvds_in_bus_fmts, sizeof(input_fmts));
-
-With those small changes,
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +
-> +	return input_fmts;
-> +}
-> +
->  static int tc_bridge_attach(struct drm_bridge *bridge,
->  			    enum drm_bridge_attach_flags flags)
->  {
-> @@ -639,6 +676,10 @@ static int tc_bridge_attach(struct drm_bridge *bridge,
->  }
->  
->  static const struct drm_bridge_funcs tc_bridge_funcs = {
-> +	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
-> +	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
-> +	.atomic_reset = drm_atomic_helper_bridge_reset,
-> +	.atomic_get_input_bus_fmts = tc_bridge_get_input_bus_fmts,
->  	.attach = tc_bridge_attach,
->  	.pre_enable = tc_bridge_pre_enable,
->  	.enable = tc_bridge_enable,
-
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 3dfee94e0618..0c48b2e7dfd4 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -377,3 +377,11 @@ Description:	This gives a control to limit the bio size in f2fs.
+ 		Default is zero, which will follow underlying block layer limit,
+ 		whereas, if it has a certain bytes value, f2fs won't submit a
+ 		bio larger than that size.
++What:		/sys/fs/f2fs/<disk>/ckpt_thread_ioprio
++Date:		January 2021
++Contact:	"Daeho Jeong" <daehojeong@google.com>
++Description:	Give a way to change checkpoint merge daemon's io priority.
++		Its default value is "be,3", which means "BE" I/O class and
++		I/O priority "3". We can select the class between "rt" and "be",
++		and set the I/O priority within valid range of it. "," delimiter
++		is necessary in between I/O class and priority number.
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index e0668cec3b80..62bd6f449bb7 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -1840,7 +1840,7 @@ int f2fs_start_ckpt_thread(struct f2fs_sb_info *sbi)
+ 	if (IS_ERR(cprc->f2fs_issue_ckpt))
+ 		return PTR_ERR(cprc->f2fs_issue_ckpt);
+ 
+-	set_task_ioprio(cprc->f2fs_issue_ckpt, DEFAULT_CHECKPOINT_IOPRIO);
++	set_task_ioprio(cprc->f2fs_issue_ckpt, cprc->ckpt_thread_ioprio);
+ 
+ 	return 0;
+ }
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index f2ae075aa723..517eb0eda638 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -276,6 +276,7 @@ struct ckpt_req {
+ 
+ struct ckpt_req_control {
+ 	struct task_struct *f2fs_issue_ckpt;	/* checkpoint task */
++	int ckpt_thread_ioprio;			/* checkpoint merge thread ioprio */
+ 	wait_queue_head_t ckpt_wait_queue;	/* waiting queue for wake-up */
+ 	atomic_t issued_ckpt;		/* # of actually issued ckpts */
+ 	atomic_t total_ckpt;		/* # of total ckpts */
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 30bae57428d1..ddd70395148d 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -11,6 +11,7 @@
+ #include <linux/f2fs_fs.h>
+ #include <linux/seq_file.h>
+ #include <linux/unicode.h>
++#include <linux/ioprio.h>
+ 
+ #include "f2fs.h"
+ #include "segment.h"
+@@ -34,6 +35,7 @@ enum {
+ 	FAULT_INFO_TYPE,	/* struct f2fs_fault_info */
+ #endif
+ 	RESERVED_BLOCKS,	/* struct f2fs_sb_info */
++	CPRC_INFO,	/* struct ckpt_req_control */
+ };
+ 
+ struct f2fs_attr {
+@@ -70,6 +72,8 @@ static unsigned char *__struct_ptr(struct f2fs_sb_info *sbi, int struct_type)
+ 	else if (struct_type == STAT_INFO)
+ 		return (unsigned char *)F2FS_STAT(sbi);
+ #endif
++	else if (struct_type == CPRC_INFO)
++		return (unsigned char *)&sbi->cprc_info;
+ 	return NULL;
+ }
+ 
+@@ -255,6 +259,23 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
+ 		return len;
+ 	}
+ 
++	if (!strcmp(a->attr.name, "ckpt_thread_ioprio")) {
++		struct ckpt_req_control *cprc = &sbi->cprc_info;
++		int len = 0;
++		int class = IOPRIO_PRIO_CLASS(cprc->ckpt_thread_ioprio);
++		int data = IOPRIO_PRIO_DATA(cprc->ckpt_thread_ioprio);
++
++		if (class == IOPRIO_CLASS_RT)
++			len += scnprintf(buf + len, PAGE_SIZE - len, "rt,");
++		else if (class == IOPRIO_CLASS_BE)
++			len += scnprintf(buf + len, PAGE_SIZE - len, "be,");
++		else
++			return -EINVAL;
++
++		len += scnprintf(buf + len, PAGE_SIZE - len, "%d\n", data);
++		return len;
++	}
++
+ 	ui = (unsigned int *)(ptr + a->offset);
+ 
+ 	return sprintf(buf, "%u\n", *ui);
+@@ -308,6 +329,34 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+ 		return ret ? ret : count;
+ 	}
+ 
++	if (!strcmp(a->attr.name, "ckpt_thread_ioprio")) {
++		const char *name = strim((char *)buf);
++		struct ckpt_req_control *cprc = &sbi->cprc_info;
++		int class;
++		long data;
++		int ret;
++
++		if (!strncmp(name, "rt,", 3))
++			class = IOPRIO_CLASS_RT;
++		else if (!strncmp(name, "be,", 3))
++			class = IOPRIO_CLASS_BE;
++		else
++			return -EINVAL;
++
++		name += 3;
++		ret = kstrtol(name, 10, &data);
++		if (ret)
++			return ret;
++		if (data >= IOPRIO_BE_NR || data < 0)
++			return -EINVAL;
++
++		cprc->ckpt_thread_ioprio = IOPRIO_PRIO_VALUE(class, data);
++		ret = set_task_ioprio(cprc->f2fs_issue_ckpt,
++				cprc->ckpt_thread_ioprio);
++
++		return count;
++	}
++
+ 	ui = (unsigned int *)(ptr + a->offset);
+ 
+ 	ret = kstrtoul(skip_spaces(buf), 0, &t);
+@@ -567,6 +616,7 @@ F2FS_RW_ATTR(FAULT_INFO_TYPE, f2fs_fault_info, inject_type, inject_type);
+ #endif
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, data_io_flag, data_io_flag);
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, node_io_flag, node_io_flag);
++F2FS_RW_ATTR(CPRC_INFO, ckpt_req_control, ckpt_thread_ioprio, ckpt_thread_ioprio);
+ F2FS_GENERAL_RO_ATTR(dirty_segments);
+ F2FS_GENERAL_RO_ATTR(free_segments);
+ F2FS_GENERAL_RO_ATTR(lifetime_write_kbytes);
+@@ -652,6 +702,7 @@ static struct attribute *f2fs_attrs[] = {
+ #endif
+ 	ATTR_LIST(data_io_flag),
+ 	ATTR_LIST(node_io_flag),
++	ATTR_LIST(ckpt_thread_ioprio),
+ 	ATTR_LIST(dirty_segments),
+ 	ATTR_LIST(free_segments),
+ 	ATTR_LIST(unusable),
 -- 
-Regards,
+2.30.0.296.g2bfb1c46d8-goog
 
-Laurent Pinchart
