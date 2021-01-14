@@ -2,123 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F27C2F6E2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 061A32F6E38
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730759AbhANWZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 17:25:29 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:61471 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730671AbhANWZ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 17:25:28 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610663104; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=WAPn2S7lwyyKdDbqBsaQKLrf+AH0DF+Qb5HT251B5/I=; b=ZE3vEc3HuS6+6BmyF2G4jso1oemgh2PAlikluhDFRRHgGwFwBFivjBlRGTOVHI+leRo00Gsd
- /WdvL986RTmlrzX5R6x0DZL3GqJm1FBjeBam8b4/gMoOUcQtPaw04GltgD8pueRNjvUXNLMo
- pHC6e2H6yeqrS6fsAuTrGHuquls=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 6000c4bbc88af06107591423 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 22:24:59
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 64672C43469; Thu, 14 Jan 2021 22:24:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9D017C43461;
-        Thu, 14 Jan 2021 22:24:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9D017C43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Thu, 14 Jan 2021 15:24:52 -0700
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org
-Subject: Re: [PATCH v3 7/7] drm/msm/a5xx: Disable UCHE global filter
-Message-ID: <20210114222452.GF29638@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
-        robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org
-References: <20210113183339.446239-1-angelogioacchino.delregno@somainline.org>
- <20210113183339.446239-8-angelogioacchino.delregno@somainline.org>
+        id S1730689AbhANWaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 17:30:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727928AbhANWaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 17:30:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EA8723A5E;
+        Thu, 14 Jan 2021 22:29:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610663378;
+        bh=hfhWqcDtTP7IYqbullRyMrTJ4FwI6nFHntuaG+R5yWM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FHpNKtw/tUvzI7bPgkJsDyeuR3eL0aD6jZN+X7Gjn7lvnN22N6TP35oKv9rZYX6iX
+         4lx2e8hXwnhSEtgOmi+LRj0omTE8Te5twsNjEMvTS+WTPqxxbM/GMl+1A1c4JhUxJK
+         xnb4ZYVndERrSFaAPmTatWz2MYKRnafcelc72dCox0YCvqMb45Df2AUfK09lJbOAzz
+         yv04Fx9LAabwNWij47SZ2t6vQHlLEBhaNLc15m8sJFjl87hJ36vetsj6QA0SUYpFCw
+         WopBKEAasQ2L15xLlVGrlQIegFFQBNNvG2fu9cZdrY1zgYL9fackb8bOmob4AmPfcd
+         g0EAXAnuPIBUg==
+Received: by mail-ej1-f49.google.com with SMTP id hs11so8227406ejc.1;
+        Thu, 14 Jan 2021 14:29:38 -0800 (PST)
+X-Gm-Message-State: AOAM531rAkAxnY/1FG7x+oYb8/MUTOe5b7Qo8dT6Qr5S9nFDaaCb2Q13
+        xoQovAd0QyHSqv4SXSZu6MdNJIcFo2WtPigPZA==
+X-Google-Smtp-Source: ABdhPJxHUpNkN+T/hx5/nLUs2NhEXsLPGFPYkhav/uwL0W2GV8AyJyfJEsMZKL7rtqY1deaxIhopqVVyoecIA3WaRgE=
+X-Received: by 2002:a17:906:3753:: with SMTP id e19mr6800550ejc.267.1610663377179;
+ Thu, 14 Jan 2021 14:29:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113183339.446239-8-angelogioacchino.delregno@somainline.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <1610351031-21133-1-git-send-email-yongqiang.niu@mediatek.com>
+ <1610351031-21133-2-git-send-email-yongqiang.niu@mediatek.com> <20210114191122.GA3394181@robh.at.kernel.org>
+In-Reply-To: <20210114191122.GA3394181@robh.at.kernel.org>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Fri, 15 Jan 2021 06:29:26 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_96hj0SGzSJCzGU7Z0DOFoituLpVOP_UW05E21Pt9QjfA@mail.gmail.com>
+Message-ID: <CAAOTY_96hj0SGzSJCzGU7Z0DOFoituLpVOP_UW05E21Pt9QjfA@mail.gmail.com>
+Subject: Re: [PATCH v3, 01/15] dt-bindings: mediatek: add description for postmask
+To:     Rob Herring <robh@kernel.org>
+Cc:     Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        DTML <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 07:33:39PM +0100, AngeloGioacchino Del Regno wrote:
-> From: Konrad Dybcio <konrad.dybcio@somainline.org>
-> 
-> Port over the command from downstream to prevent undefined
-> behaviour.
+Rob Herring <robh@kernel.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=8815=E6=97=A5 =
+=E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=883:11=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Mon, 11 Jan 2021 15:43:37 +0800, Yongqiang Niu wrote:
+> > add description for postmask
+> > postmask is used control round corner for display frame
+> >
+> > Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> > ---
+> >  Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt |=
+ 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+>
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+Applied to mediatek-drm-next [1], thanks.
 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> ---
->  drivers/gpu/drm/msm/adreno/a5xx.xml.h | 2 ++
->  drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 3 +++
->  2 files changed, 5 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx.xml.h b/drivers/gpu/drm/msm/adreno/a5xx.xml.h
-> index 346cc6ff3a36..7b9fcfe95c04 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx.xml.h
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx.xml.h
-> @@ -2367,6 +2367,8 @@ static inline uint32_t A5XX_VSC_RESOLVE_CNTL_Y(uint32_t val)
->  
->  #define REG_A5XX_UCHE_ADDR_MODE_CNTL				0x00000e80
->  
-> +#define REG_A5XX_UCHE_MODE_CNTL					0x00000e81
-> +
->  #define REG_A5XX_UCHE_SVM_CNTL					0x00000e82
->  
->  #define REG_A5XX_UCHE_WRITE_THRU_BASE_LO			0x00000e87
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> index 23fc851756de..7e553d3efeb2 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> @@ -754,6 +754,9 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
->  	    adreno_is_a512(adreno_gpu))
->  		gpu_rmw(gpu, REG_A5XX_RB_DBG_ECO_CNTL, 0, (1 << 9));
->  
-> +	/* Disable UCHE global filter as SP can invalidate/flush independently */
-> +	gpu_write(gpu, REG_A5XX_UCHE_MODE_CNTL, BIT(29));
-> +
->  	/* Enable USE_RETENTION_FLOPS */
->  	gpu_write(gpu, REG_A5XX_CP_CHICKEN_DBG, 0x02000000);
->  
-> -- 
-> 2.29.2
-> 
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-next
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Regards,
+Chun-Kuang.
+
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
