@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824652F6D43
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:34:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3EF2F6D47
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729241AbhANVc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 16:32:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727960AbhANVcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 16:32:54 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729656AbhANVdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 16:33:40 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:60731 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727659AbhANVdh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 16:33:37 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610659992; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=JAYLJreecXhADrsU6iYLFJYCQDVwne9fI5khLusCP58=;
+ b=EEH69v+zv/0BPMm8sdLC/i2NxtZ1i4bGq9LpRJ7b3o214K6Sw1oumX8DxAVTXAbug3oLspw+
+ V8xpfKSkMb8IFLYTWRvVRYesrXqjfGpPeP1Mu9x8doqs4KG/k2GUS1KxsEZd2tipAkoFw+eE
+ idvuwvDIIVU9B0exHb6dCWS0CMc=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6000b87eaf68fb3b0613ecf4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 21:32:46
+ GMT
+Sender: jjohnson=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 839D2C43468; Thu, 14 Jan 2021 21:32:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73C8D239D4;
-        Thu, 14 Jan 2021 21:32:08 +0000 (UTC)
-Date:   Thu, 14 Jan 2021 16:32:06 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [BUG] on reboot: bisected to: drm/i915: Shut down displays
- gracefully on reboot
-Message-ID: <20210114163206.4a562d82@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        (Authenticated sender: jjohnson)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 258F8C43465;
+        Thu, 14 Jan 2021 21:32:45 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 14 Jan 2021 13:32:45 -0800
+From:   jjohnson@codeaurora.org
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     eberman@quicinc.com, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, masahiroy@kernel.org,
+        michal.lkml@markovi.net, mkalikot@codeaurora.org,
+        psodagud@quicinc.com,
+        ndesaulniers via sendgmr 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+Subject: Re: [PATCH 2/2] kbuild: handle excessively long argument lists
+In-Reply-To: <20210114210733.3490303-1-ndesaulniers@google.com>
+References: <1610500731-30960-2-git-send-email-jjohnson@codeaurora.org>
+ <20210114210733.3490303-1-ndesaulniers@google.com>
+Message-ID: <eb308cc4f26288ad02290d9656179771@codeaurora.org>
+X-Sender: jjohnson@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On reboot, one of my test boxes now triggers the following warning:
+On 2021-01-14 13:07, Nick Desaulniers wrote:
+>> From: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
+>> 
+>> Modules with a large number of compilation units may be
+>> exceeding AR and LD command argument list. Handle this gracefully by
+>> writing the long argument list in a file. The command line options
+>> read from file are inserted in place of the original @file option.
+>> 
+>> The usage is well documented at
+>> https://www.gnu.org/software/make/manual/html_node/File-Function.html
+>> 
+>> Signed-off-by: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
+>> Signed-off-by: Jeff Johnson <jjohnson@codeaurora.org>
+>> ---
+>>  scripts/Makefile.build | 6 +++++-
+>>  1 file changed, 5 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+>> index 252b7d2..d5ef345 100644
+>> --- a/scripts/Makefile.build
+>> +++ b/scripts/Makefile.build
+>> @@ -425,7 +425,11 @@ $(obj)/lib.a: $(lib-y) FORCE
+>>  # module is turned into a multi object module, $^ will contain header 
+>> file
+>>  # dependencies recorded in the .*.cmd file.
+>>  quiet_cmd_link_multi-m = LD [M]  $@
+>> -      cmd_link_multi-m = $(LD) $(ld_flags) -r -o $@ $(filter %.o,$^)
+>> +      cmd_link_multi-m =					\
+>> +	$(file >$@.in,$(filter %.o,$^))				\
+>> +	$(LD) $(ld_flags) -r -o $@ @$@.in;			\
+>> +	rm -f $@.in
+>> +endif
+> 
+> Was this build tested?
+> 
+> $ make LLVM=1 LLVM_IAS=1 -j72 defconfig
+> scripts/Makefile.build:432: *** extraneous 'endif'.  Stop.
+> make: *** [Makefile:535: scripts_basic] Error 2
+> 
+> (Please cc me on v2)
 
- ------------[ cut here ]------------
- RPM raw-wakeref not held
- WARNING: CPU: 4 PID: 1 at drivers/gpu/drm/i915/intel_runtime_pm.h:106 gen6_write32+0x1bc/0x2a0 [i915]
- Modules linked in: ebtable_filter ebtables bridge stp llc ip6t_REJECT nf_reject_ipv6 vsock vmw_vmci xt_state xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip6table_filter ip6_tables snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_generic le
-15 snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hwdep i2c_algo_bit snd_hda_core snd_seq intel_rapl_msr snd_seq_device intel_rapl_common snd_pcm x86_pkg_temp_thermal intel_powerclamp snd_timer snd coretemp kvm_intel soundcore kvm mei_wdt irqbypass joydev 
-_pmc_bxt hp_wmi wmi_bmof sparse_keymap rfkill iTCO_vendor_support crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel drm_kms_helper i2c_i801 cec drm rapl intel_cstate intel_uncore mei_me i2c_smbus e1000e tpm_infineon wmi serio_raw mei video lpc_i
+blush
 
- CPU: 4 PID: 1 Comm: systemd-shutdow Not tainted 5.9.0-rc4-test+ #861
- Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
- RIP: 0010:gen6_write32+0x1bc/0x2a0 [i915]
- Code: 5d 82 e0 0f 0b e9 b5 fe ff ff 80 3d 95 6b 22 00 00 0f 85 b2 fe ff ff 48 c7 c7 04 d2 a4 c0 c6 05 81 6b 22 00 01 e8 f6 5c 82 e0 <0f> 0b e9 98 fe ff ff 80 3d 6d 6b 22 00 00 0f 85 95 fe ff ff 48 c7
- RSP: 0018:ffffb9c1c002fd08 EFLAGS: 00010296
- RAX: 0000000000000018 RBX: ffff99aec8881010 RCX: ffff99aeda400000
- RDX: 0000000000000000 RSI: ffffffffa115d9ef RDI: ffffffffa115d9ef
- RBP: 0000000000044004 R08: 0000000000000001 R09: 0000000000000000
- R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
- R13: 0000000000000001 R14: 00000000ffffffff R15: 0000000000000000
- FS:  00007f91257a9940(0000) GS:ffff99aeda400000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 00007f9126829400 CR3: 00000001088f0006 CR4: 00000000001706e0
- Call Trace:
-  gen3_irq_reset+0x2e/0xd0 [i915]
-  intel_irq_reset+0x59/0x6a0 [i915]
-  intel_runtime_pm_disable_interrupts+0xe/0x30 [i915]
-  i915_driver_shutdown+0x2e/0x40 [i915]
-  pci_device_shutdown+0x34/0x60
-  device_shutdown+0x15d/0x1b3
-  kernel_restart+0xe/0x30
-  __do_sys_reboot+0x1d7/0x210
-  ? vfs_writev+0x9d/0xe0
-  ? syscall_enter_from_user_mode+0x1d/0x70
-  ? trace_hardirqs_on+0x2c/0xe0
-  do_syscall_64+0x33/0x40
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
- RIP: 0033:0x7f912675f2d7
- Code: 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 89 fa be 69 19 12 28 bf ad de e1 fe b8 a9 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 81 8b 0c 00 f7 d8 64 89 02 b8
- RSP: 002b:00007ffeca28e148 EFLAGS: 00000206 ORIG_RAX: 00000000000000a9
- RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f912675f2d7
- RDX: 0000000001234567 RSI: 0000000028121969 RDI: 00000000fee1dead
- RBP: 00007ffeca28e3d0 R08: 000000000000000a R09: 0000000000000000
- R10: 0000000000000232 R11: 0000000000000206 R12: 0000000000000001
- R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffeca28e4b8
- ---[ end trace 2ed17eabd3ab6938 ]---
- ------------[ cut here ]------------
+It was tested on a workspace that also contains the Clang LTO series
+https://patchwork.kernel.org/project/linux-kbuild/patch/20201211184633.3213045-3-samitolvanen@google.com/
 
-The bisect came to this commit:
-
-  fe0f1e3bfdfeb53e18f1206aea4f40b9bd1f291c
-  ("drm/i915: Shut down displays gracefully on reboot")
-
-Which makes sense, as it happens on shutdown.
-
--- Steve
+I messed up when trimming, will update in v2
