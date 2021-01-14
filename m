@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FFF2F5A13
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 05:58:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5A82F5A18
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 06:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727019AbhANE5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 23:57:40 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:58229 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbhANE5k (ORCPT
+        id S1726880AbhANE6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 23:58:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725875AbhANE63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 23:57:40 -0500
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 10E4ud6w028101;
-        Thu, 14 Jan 2021 13:56:40 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 10E4ud6w028101
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1610600200;
-        bh=alkNx32/Pn7CxrAXneGdwrvfeo41NsjmUKl3/mlVhtA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=xZrVHEISRFJOXJWZUinTFdypaR4EPZDqDz5eEpiMO1q8w7fvbfqBcGmj6CEFdxaA9
-         VsOraMV6Yud6CN7I8seSoPW3KPX94A3ukOiX7tIfs9UXG2sXAkhjvp0Z6VG+wUoDsT
-         qk/pPmuO/ob8P8SDf6cBZaYev8QLe1VE3HyjE/Nd0RQAEmPx1CxZf0i/xcoqN0LPcQ
-         UH8yOt/BX7J4d/KN7X8xn8M0MOCiMbdqC3x07uG4KcEB4u9DwxCJ3yaQ08lGmhQvcg
-         0SzMjzzsPmYDW7q5+pJeryCUXGce85cSrfGIHzOfU/jQ29F2petNGGIWmSStTw8BcU
-         HcHhKbm3mB13w==
-X-Nifty-SrcIP: [209.85.214.171]
-Received: by mail-pl1-f171.google.com with SMTP id j1so2315668pld.3;
-        Wed, 13 Jan 2021 20:56:40 -0800 (PST)
-X-Gm-Message-State: AOAM533qLW3eguMid384PmOond3wzqXBFclIgkSzce+KqCnHsf0SrnPy
-        Z5WI05o+eQPmYAi7EXI8Z2Adndif9yPob8E6+Ew=
-X-Google-Smtp-Source: ABdhPJww2g1FPG/R4noxYkdOnscyvrZVO/nTWkIyd4fCkHjkKTccnvG38ivGmr2nscth1WKHxusvSFDO7TRWBli7LnU=
-X-Received: by 2002:a17:90a:fa0c:: with SMTP id cm12mr3098600pjb.87.1610600199281;
- Wed, 13 Jan 2021 20:56:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20210113222112.ej4rrd5xw2pwegvw@treble>
-In-Reply-To: <20210113222112.ej4rrd5xw2pwegvw@treble>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 14 Jan 2021 13:56:02 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASbYiZ+UVTmUwRDGMMHQXO-oE-3a4RxbEqX+=dCG2U6dw@mail.gmail.com>
-Message-ID: <CAK7LNASbYiZ+UVTmUwRDGMMHQXO-oE-3a4RxbEqX+=dCG2U6dw@mail.gmail.com>
-Subject: Re: Toolchain-dependent config options
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 13 Jan 2021 23:58:29 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4861FC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 20:57:51 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id g15so2951664pgu.9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 20:57:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZmdvymZ2qR4M/qVQyd7uYkLb/p5vBHQAHMPmoaJ6QXk=;
+        b=rkJ6uQ+C605Q6EPuu9YPwJJbBYW0XB14gDEmJLZz2PUOcvKxzjE0qwMHHpIWYaCZBJ
+         Wha8QlgLwnkBgsVTSNoe5Xbo5t3a54xVmtuq+9og4XRPpTDgqgdsMo47uyOp1xJWURsi
+         S69zWlGNMYZbLbdRCOvAq79H3RBMoLMK4A4udGIDJW3gugzdBlsNIVncy+/D/y3g4Xpe
+         RYNlWEz4oSs45/ZfROjOYdj0eLzsm4OpK//cgFNqhjDk/Uel8ElpeMjsGcm9rAOQHXns
+         o9uUEkOb2lCDrDPrdDSNYZdf4gGC4296AcejCEsRCd6NHEemI4KxKrYXbC/WNXpwQdlt
+         /zNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ZmdvymZ2qR4M/qVQyd7uYkLb/p5vBHQAHMPmoaJ6QXk=;
+        b=IyQVyFqeYNrunS4HmA27wyafkT6A7F/Op7EpGc2lujHcQQFguNj1gn0FeZveL0I2kV
+         Rh00k6cMhboCjazj8pvmJPSFme1+HlZmAqKrLuAqf67l1us7ehD3NHrg391o+uZqANWf
+         8PL2qstmZbw93bmDJNSC6XP2z7i8X6ewYxMG+jgaPhYkKLDw7o5yxoGN7eL6HtWPj/mB
+         E47kf01/7RnAy+MIZqLJkYQXjs3DPQKvXxFqrUii1StVuRuSjPydr7Cb4axSuFDic3PJ
+         Rm9QNFtYmoDiu+zNVMdwM2RHu6H3/HpF1knc395aUzRwSh00QTqPUOjXkXxyNpHYx84a
+         dbEQ==
+X-Gm-Message-State: AOAM530DEvXH0KMZa9XxAV0WWF1wwBLtGGiCeqm5OCmJ6IselUF3GB6J
+        EGdEy1vKN2wvBU4QYuL/9sUDER7swuyeKQ==
+X-Google-Smtp-Source: ABdhPJwqxSUQbNmucEQI6rjh19q1MtCjegKcrUNeFbM4I++9kN2AKCbutTS+6rDJuYjrUJLMS5KsYw==
+X-Received: by 2002:a63:e40e:: with SMTP id a14mr5586177pgi.345.1610600270765;
+        Wed, 13 Jan 2021 20:57:50 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id az6sm3857596pjb.24.2021.01.13.20.57.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 20:57:49 -0800 (PST)
+Date:   Wed, 13 Jan 2021 20:57:49 -0800 (PST)
+X-Google-Original-Date: Wed, 13 Jan 2021 20:56:52 PST (-0800)
+Subject:     Re: [PATCH 1/1] riscv: Fix KASAN memory mapping.
+In-Reply-To: <20210113022410.9057-1-nylon7@andestech.com>
+CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, aou@eecs.berkeley.edu,
+        Paul Walmsley <paul.walmsley@sifive.com>, dvyukov@google.com,
+        glider@google.com, aryabinin@virtuozzo.com, alankao@andestech.com,
+        nickhu@andestech.com, nylon7@andestech.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     nylon7@andestech.com
+Message-ID: <mhng-40ebb582-4df3-4189-9521-5446cbe1a9e6@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 7:21 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+On Tue, 12 Jan 2021 18:24:10 PST (-0800), nylon7@andestech.com wrote:
+> From: Nick Hu <nickhu@andestech.com>
 >
-> Hi Masahiro,
+> Use virtual address instead of physical address when translating
+> the address to shadow memory by kasan_mem_to_shadow().
 >
-> If I copy a config with CONFIG_GCC_PLUGINS to another system which
-> doesn't have the gcc-plugin-devel package, it gets silently disabled by
-> "make olddefconfig".
+> Signed-off-by: Nick Hu <nickhu@andestech.com>
+> Signed-off-by: Nylon Chen <nylon7@andestech.com>
+> ---
+>  arch/riscv/mm/kasan_init.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> I've seen multiple cases lately where this is causing confusion.  I
-> suspect the problem is getting worse with recent added support for a
-> variety of toolchains and toolchain-dependent features.
+> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+> index 12ddd1f6bf70..a8a2ffd9114a 100644
+> --- a/arch/riscv/mm/kasan_init.c
+> +++ b/arch/riscv/mm/kasan_init.c
+> @@ -93,8 +93,8 @@ void __init kasan_init(void)
+>  								VMALLOC_END));
 >
-> Would it be possible to have an error (or at least a warning) in this
-> case?
+>  	for_each_mem_range(i, &_start, &_end) {
+> -		void *start = (void *)_start;
+> -		void *end = (void *)_end;
+> +		void *start = (void *)__va(_start);
+> +		void *end = (void *)__va(_end);
 >
-> For example, a "depends-error" which triggers an error if its failure
-> would disable a feature?
->
-> --
-> Josh
->
+>  		if (start >= end)
+>  			break;
 
-
-We disable any feature that is unsupported by the compiler in use.
-
-Conventionally, we did that in the top Makefile
-by using $(call cc-option, ) macro or by running some scripts.
-
-Recently, we are moving such compiler tests to the Kconfig stage.
-
-Anyway, we disable unsupported features so any combination
-of CONFIG options builds successfully.
-This will ease randconfg and allmodconfig tests.
-
-A lot of people and CI systems are running allmodconfig tests
-for various architectures and toolchains.
-
-Introducing the build breakage is annoying.
-
-
--- 
-Best Regards
-Masahiro Yamada
+Thanks, this is on fixes.
