@@ -2,163 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E032F6992
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6312F6993
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729099AbhANSbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:31:08 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:40418 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727754AbhANSbI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:31:08 -0500
-Date:   Thu, 14 Jan 2021 18:30:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610649022; bh=rQYRb+PWaSyETWUEHy6RM0F+c/zvcfpDUyogIYo7a8M=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=hJbnqmoCJRIqQzQ5xpmlzejhUmiZ+oFYrI6KrVldin0S9KFLW/HvXytsydjhuAcQx
-         JZlrPgKB5hy0XWdIugah/qwKkLiSW7+wSgjGXj89mi2aDLkbrhpLKb6Yrhxan22wZ3
-         joI0B4bl01BVMsCCmMM5pJPzC1OHBXsvAqHWuzf+eJlIjWllEyqLK7agmDeDybhUch
-         2uaKtiLt2wMiOY0ZzwrYcqut63Fo4INYkb0SIpZXs6SUtclbKPBQdACvqu5I+CTMVe
-         5N2lKoNdIrytfZwjDh2uJgziqlcKJGYM94wdxzHekVLN38S32O4bUzH5dXL0+i35wM
-         XNPiD7WMHXMVg==
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bibo Mao <maobibo@loongson.cn>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Guoyun Sun <sunguoyun@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH mips-next 1/2] MIPS: bitops: fix -Wshadow in asm/bitops.h
-Message-ID: <20210114183001.110729-1-alobakin@pm.me>
-In-Reply-To: <20210114182905.110574-1-alobakin@pm.me>
-References: <20210114182905.110574-1-alobakin@pm.me>
+        id S1729241AbhANSbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:31:12 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:44678 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727754AbhANSbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 13:31:11 -0500
+Received: from zn.tnic (p200300ec2f1aa900e8e9bea65a049b95.dip0.t-ipconnect.de [IPv6:2003:ec:2f1a:a900:e8e9:bea6:5a04:9b95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5BEDA1EC03CA;
+        Thu, 14 Jan 2021 19:30:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610649030;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=evMHSJs6OGwjgkwoX2qZJxB5+p4EsGCVCBCvs1NxTpo=;
+        b=jNOZmutTqW+cfYEjryLRyzbm9kOBDQmgyb6h/iz8w29CoZH4xPBW+gUnTW51jZz/5yGtl6
+        J4YSg7ufLzTupVUiP2CEfrcd7uJycHcUd1fC9rsuDksbfRgleMAN4Ov2XwpO/ALiMDCN2t
+        D9TJSPp6xXwtf/ToITomTjAr8cVZZh8=
+Date:   Thu, 14 Jan 2021 19:30:24 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        kbuild-all@lists.01.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v3 08/15] x86: add new features for paravirt patching
+Message-ID: <20210114183024.GF12284@zn.tnic>
+References: <20201217093133.1507-9-jgross@suse.com>
+ <202012172021.VSDLPK5D-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Disposition: inline
+In-Reply-To: <202012172021.VSDLPK5D-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Solves the following repetitive warning when building with -Wshadow:
+On Thu, Dec 17, 2020 at 09:12:57PM +0800, kernel test robot wrote:
+>    ld: arch/x86/kernel/alternative.o: in function `paravirt_set_cap':
+> >> arch/x86/kernel/alternative.c:605: undefined reference to `pv_is_native_spin_unlock'
+> >> ld: arch/x86/kernel/alternative.c:608: undefined reference to `pv_is_native_vcpu_is_preempted'
 
-In file included from ./include/linux/bitops.h:32,
-                 from ./include/linux/kernel.h:11,
-                 from ./include/linux/skbuff.h:13,
-                 from ./include/linux/if_ether.h:19,
-                 from ./include/linux/etherdevice.h:20:
-./arch/mips/include/asm/bitops.h: In function =E2=80=98test_and_set_bit_loc=
-k=E2=80=99:
-./arch/mips/include/asm/bitops.h:46:16: warning: declaration of =E2=80=
-=98orig=E2=80=99 shadows a previous local [-Wshadow]
-   46 |  unsigned long orig, temp;    \
-      |                ^~~~
-./arch/mips/include/asm/bitops.h:190:10: note: in expansion of macro =
-=E2=80=98__test_bit_op=E2=80=99
-  190 |   orig =3D __test_bit_op(*m, "%0",
-      |          ^~~~~~~~~~~~~
-./arch/mips/include/asm/bitops.h:185:21: note: shadowed declaration is here
-  185 |  unsigned long res, orig;
-      |                     ^~~~
-./arch/mips/include/asm/bitops.h: In function =E2=80=98test_and_clear_bit=
-=E2=80=99:
-./arch/mips/include/asm/bitops.h:46:16: warning: declaration of =E2=80=
-=98orig=E2=80=99 shadows a previous local [-Wshadow]
-   46 |  unsigned long orig, temp;    \
-      |                ^~~~
-./arch/mips/include/asm/bitops.h:236:9: note: in expansion of macro =
-=E2=80=98__test_bit_op=E2=80=99
-  236 |   res =3D __test_bit_op(*m, "%1",
-      |         ^~~~~~~~~~~~~
-./arch/mips/include/asm/bitops.h:229:21: note: shadowed declaration is here
-  229 |  unsigned long res, orig;
-      |                     ^~~~
-./arch/mips/include/asm/bitops.h:46:16: warning: declaration of =E2=80=
-=98orig=E2=80=99 shadows a previous local [-Wshadow]
-   46 |  unsigned long orig, temp;    \
-      |                ^~~~
-./arch/mips/include/asm/bitops.h:241:10: note: in expansion of macro =
-=E2=80=98__test_bit_op=E2=80=99
-  241 |   orig =3D __test_bit_op(*m, "%0",
-      |          ^~~~~~~~~~~~~
-./arch/mips/include/asm/bitops.h:229:21: note: shadowed declaration is here
-  229 |  unsigned long res, orig;
-      |                     ^~~~
-./arch/mips/include/asm/bitops.h: In function =E2=80=98test_and_change_bit=
-=E2=80=99:
-./arch/mips/include/asm/bitops.h:46:16: warning: declaration of =E2=80=
-=98orig=E2=80=99 shadows a previous local [-Wshadow]
-   46 |  unsigned long orig, temp;    \
-      |                ^~~~
-./arch/mips/include/asm/bitops.h:273:10: note: in expansion of macro =
-=E2=80=98__test_bit_op=E2=80=99
-  273 |   orig =3D __test_bit_op(*m, "%0",
-      |          ^~~~~~~~~~~~~
-./arch/mips/include/asm/bitops.h:266:21: note: shadowed declaration is here
-  266 |  unsigned long res, orig;
-      |                     ^~~~
+Looks like alternative.c needs #include <asm/paravirt.h>.
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- arch/mips/include/asm/bitops.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+-- 
+Regards/Gruss,
+    Boris.
 
-diff --git a/arch/mips/include/asm/bitops.h b/arch/mips/include/asm/bitops.=
-h
-index 1b08f9f38593..dc2a6234dd3c 100644
---- a/arch/mips/include/asm/bitops.h
-+++ b/arch/mips/include/asm/bitops.h
-@@ -26,7 +26,7 @@
- #include <asm/war.h>
-=20
- #define __bit_op(mem, insn, inputs...) do {=09=09=09\
--=09unsigned long temp;=09=09=09=09=09\
-+=09unsigned long __temp;=09=09=09=09=09\
- =09=09=09=09=09=09=09=09\
- =09asm volatile(=09=09=09=09=09=09\
- =09"=09.set=09=09push=09=09=09\n"=09\
-@@ -37,13 +37,13 @@
- =09"=09" __SC=09=09"%0, %1=09=09=09\n"=09\
- =09"=09" __SC_BEQZ=09"%0, 1b=09=09=09\n"=09\
- =09"=09.set=09=09pop=09=09=09\n"=09\
--=09: "=3D&r"(temp), "+" GCC_OFF_SMALL_ASM()(mem)=09=09\
-+=09: "=3D&r"(__temp), "+" GCC_OFF_SMALL_ASM()(mem)=09=09\
- =09: inputs=09=09=09=09=09=09\
- =09: __LLSC_CLOBBER);=09=09=09=09=09\
- } while (0)
-=20
- #define __test_bit_op(mem, ll_dst, insn, inputs...) ({=09=09\
--=09unsigned long orig, temp;=09=09=09=09\
-+=09unsigned long __orig, __temp;=09=09=09=09\
- =09=09=09=09=09=09=09=09\
- =09asm volatile(=09=09=09=09=09=09\
- =09"=09.set=09=09push=09=09=09\n"=09\
-@@ -54,12 +54,12 @@
- =09"=09" __SC=09=09"%1, %2=09=09=09\n"=09\
- =09"=09" __SC_BEQZ=09"%1, 1b=09=09=09\n"=09\
- =09"=09.set=09=09pop=09=09=09\n"=09\
--=09: "=3D&r"(orig), "=3D&r"(temp),=09=09=09=09\
-+=09: "=3D&r"(__orig), "=3D&r"(__temp),=09=09=09=09\
- =09  "+" GCC_OFF_SMALL_ASM()(mem)=09=09=09=09\
- =09: inputs=09=09=09=09=09=09\
- =09: __LLSC_CLOBBER);=09=09=09=09=09\
- =09=09=09=09=09=09=09=09\
--=09orig;=09=09=09=09=09=09=09\
-+=09__orig;=09=09=09=09=09=09=09\
- })
-=20
- /*
---=20
-2.30.0
-
-
+https://people.kernel.org/tglx/notes-about-netiquette
