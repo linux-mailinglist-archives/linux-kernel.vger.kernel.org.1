@@ -2,103 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683F72F6B36
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFC62F6B3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:40:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730222AbhANTiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:38:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730184AbhANTiF (ORCPT
+        id S1730246AbhANTja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:39:30 -0500
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:45048 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728380AbhANTj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:38:05 -0500
-Received: from mail-ed1-x54a.google.com (mail-ed1-x54a.google.com [IPv6:2a00:1450:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C85BEC06179B
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:37:10 -0800 (PST)
-Received: by mail-ed1-x54a.google.com with SMTP id n8so840179edo.19
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:37:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=zyyZOaAWvcuFygSPGgq4+eSGOnhBneBdiwht0viZDwY=;
-        b=SxaVUGgJljdEYW2KnDIY5Z36fvF1kQ+Jd9n/RLgZ6Va4SRdJaBUgCybkyqNvuMHz0n
-         a0eTmwREx91flHtnmJPxNH7YOcYtiPyvYyp7wcbqHyBJ8cmnTVt86JUzISdWmrtY/czM
-         lXf9klmNGXOF/XpQd/y7icwO08Whw399GWpnc4xm0ya9eM+OorqEMiDM0SSXknJmf+F/
-         KuG/yXiY3PNIVQ/R80qCoAfZRIbq5xXqCRbvW46XdFxhhgj2y0aBHKfWSV07fz5DjwQG
-         qtaY33hkeoDI2s4HZ+2rB4I4CYy3AArPXBB7uUfvsDyMjiob2X7TE6BRib6DZvFhQeRH
-         cgMQ==
+        Thu, 14 Jan 2021 14:39:29 -0500
+Received: by mail-ot1-f52.google.com with SMTP id r9so6266742otk.11;
+        Thu, 14 Jan 2021 11:39:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=zyyZOaAWvcuFygSPGgq4+eSGOnhBneBdiwht0viZDwY=;
-        b=sAEU2Mq10t0+zdw3gjr9kWqMP003PWqgtGiKma5Kh5yBgKu7aK+Ab+wlilRZSPD9tk
-         eqzZ/Fm3wKReFSYEouEg5DbnuK9MouwiYZKyiF8ANgPzuyeluA55SsEZULYbiF5mNmFx
-         VWENZLWQjbOm8x2Iw1hITAZFIgDYV6ELJjdVc8lZgo93g4qFbPnk6jV6SKKkBkkiVQHd
-         t0f7+H5ia9G395IiNlb6Xu0P6Rtzl9OeVqLL5Q9JZ4lvlUz6k0nsit0mcVHupHBuiAKP
-         /7jz2UbTSQaCrBDfq0fM8cWPcnGeuqnWM79s1MH0XOES1XXX7qL+6NGWRLe1DSKgRq27
-         dgBA==
-X-Gm-Message-State: AOAM530GMDbfkE2T0m0vGxlKxP/AIFYkj1PmAyW5urZN9+oY9SAdcUnD
-        k0givBhpNe06+msmURKGe2Yv1RI702cKg6zh
-X-Google-Smtp-Source: ABdhPJxy0qo3tzsnOX2RQoUCqx3Ms5p03cdSH3Wd2WdiGlkWhtJGIwz4DTMckIiPWn2La2MX6XpdaVtQSHzjEUTS
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a05:6402:379:: with SMTP id
- s25mr7276006edw.367.1610653029351; Thu, 14 Jan 2021 11:37:09 -0800 (PST)
-Date:   Thu, 14 Jan 2021 20:36:31 +0100
-In-Reply-To: <cover.1610652890.git.andreyknvl@google.com>
-Message-Id: <da60f1848b42dd04a4977e156715c8d0382a1ecd.1610652890.git.andreyknvl@google.com>
-Mime-Version: 1.0
-References: <cover.1610652890.git.andreyknvl@google.com>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v3 15/15] kasan: don't run tests when KASAN is not enabled
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yjAqxhBQ9KVJPQ7Xln3UosRFIz/jPg+p3aP0w5NuCFo=;
+        b=QESmLSD4Bl8l4488Xq7QtSflwNp3n6+vpoe1MaxdGJJg7iJbHXhNXDWtXqrp1juOeO
+         kB6jrCihdOAI5lkVCt4tEiElsvjTnX2PR5Ns93Vg2uN7FpIas5Hz/KXnLiLajcoxuGEF
+         2lDn5OJJIm18Z5sT837BB8kzN3z07/bBviiqL3t3y0mPQ+t1M9fxYSmmBMXZ0uqD3Fh7
+         EjxGbjnyuK2QoRHCetatatTFkbV6Gizq+JjuKHhRbfBaMBcnzDl/njo07s8YMSDhHdHq
+         iimuOEnKY9pLIBQxSkMeiZWskGgv0ZdPRtSBSeJOmvwxWmFZuMHJK5Y/QW2ZSI7r8K8P
+         DoGQ==
+X-Gm-Message-State: AOAM532HQy8x4+2TSd33YPebptc+KcFVgWkBlppOM2Uz7YlGw7HGeByO
+        iTt3iXuU1rasR0zN9lUB0TarM2ukUmmZkwswApSMzAay
+X-Google-Smtp-Source: ABdhPJyWF+y3MoeHHSQg5WKaihfkQNskryp/9p6FwVe/9MYcgH8jA8FfspmJ79BqC858dptaM8zFYaOvZF8GTZqgMkA=
+X-Received: by 2002:a9d:745a:: with SMTP id p26mr5817920otk.206.1610653128501;
+ Thu, 14 Jan 2021 11:38:48 -0800 (PST)
+MIME-Version: 1.0
+References: <2073294.4OfjquceTg@kreacher> <CAGETcx980TXe_Jur3LqpWoMwt0wG9BBvVdXfhAo3jU8-tgv=kw@mail.gmail.com>
+In-Reply-To: <CAGETcx980TXe_Jur3LqpWoMwt0wG9BBvVdXfhAo3jU8-tgv=kw@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 14 Jan 2021 20:38:37 +0100
+Message-ID: <CAJZ5v0jREeXtYa8LAiLoRBG1ok66BR86MCQxrQ1WPR5qbhTKbw@mail.gmail.com>
+Subject: Re: [PATCH] driver core: Extend device_is_dependent()
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Stephan Gerhold <stephan@gerhold.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't run KASAN tests when it's disabled with kasan.mode=off to avoid
-corrupting kernel memory.
+On Thu, Jan 14, 2021 at 8:32 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Thu, Jan 14, 2021 at 10:41 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> >
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > When adding a new device link, device_is_dependent() is used to
+> > check whether or not the prospective supplier device does not
+> > depend on the prospective consumer one to avoid adding loops
+> > to the graph of device dependencies.
+> >
+> > However, device_is_dependent() does not take the ancestors of
+> > the target device into account, so it may not detect an existing
+> > reverse dependency if, for example, the parent of the target
+> > device depends on the device passed as its first argument.
+> >
+> > For this reason, extend device_is_dependent() to also check if
+> > the device passed as its first argument is an ancestor of the
+> > target one and return 1 if that is the case.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Reported-by: Stephan Gerhold <stephan@gerhold.net>
+> > ---
+> >  drivers/base/core.c |   12 +++++++++++-
+> >  1 file changed, 11 insertions(+), 1 deletion(-)
+> >
+> > Index: linux-pm/drivers/base/core.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/base/core.c
+> > +++ linux-pm/drivers/base/core.c
+> > @@ -208,6 +208,16 @@ int device_links_read_lock_held(void)
+> >  #endif
+> >  #endif /* !CONFIG_SRCU */
+> >
+> > +static bool device_is_ancestor(struct device *dev, struct device *target)
+> > +{
+> > +       while (target->parent) {
+> > +               target = target->parent;
+> > +               if (dev == target)
+> > +                       return true;
+> > +       }
+> > +       return false;
+> > +}
+> > +
+> >  /**
+> >   * device_is_dependent - Check if one device depends on another one
+> >   * @dev: Device to check dependencies for.
+> > @@ -221,7 +231,7 @@ int device_is_dependent(struct device *d
+> >         struct device_link *link;
+> >         int ret;
+> >
+> > -       if (dev == target)
+> > +       if (dev == target || device_is_ancestor(dev, target))
+> >                 return 1;
+> >
+> >         ret = device_for_each_child(dev, target, device_is_dependent);
+> >
+>
+> The code works, but it's not at all obvious what it's doing. Because,
+> at first glance, it's easy to mistakenly think that it's trying to
+> catch this case:
+> dev <- child1 <- child2 <- target
+>
+> Maybe it's clearer if we do this check inside the loop?
 
-Link: https://linux-review.googlesource.com/id/I6447af436a69a94bfc35477f6bf4e2122948355e
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- lib/test_kasan.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Which of the loops do you mean?  There are two of them and both need
+to do the check in each step AFAICS.
 
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index a96376aa7293..6238b56127f8 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -47,6 +47,11 @@ static bool multishot;
-  */
- static int kasan_test_init(struct kunit *test)
- {
-+	if (!kasan_enabled()) {
-+		kunit_err(test, "can't run KASAN tests with KASAN disabled");
-+		return -1;
-+	}
-+
- 	multishot = kasan_save_enable_multi_shot();
- 	hw_set_tagging_report_once(false);
- 	return 0;
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
+> Something like:
+>
+>                 if (link->consumer == target ||
+> device_is_ancestor(link->consumer, target))
+>                         return 1;
 
+So would this be sufficient?
