@@ -2,125 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E4A2F6377
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:53:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E67FB2F637F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729129AbhANOvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:51:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727460AbhANOvq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:51:46 -0500
-Received: from shrek.podlesie.net (shrek-3s.podlesie.net [IPv6:2a00:13a0:3010::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 09658C0613C1;
-        Thu, 14 Jan 2021 06:51:06 -0800 (PST)
-Received: by shrek.podlesie.net (Postfix, from userid 603)
-        id 52B9D49B; Thu, 14 Jan 2021 15:51:05 +0100 (CET)
-Date:   Thu, 14 Jan 2021 15:51:05 +0100
-From:   Krzysztof Mazur <krzysiek@podlesie.net>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/lib: don't use MMX before FPU initialization
-Message-ID: <20210114145105.GA17363@shrek.podlesie.net>
-References: <20201228160631.32732-1-krzysiek@podlesie.net>
- <20210112000923.GK25645@zn.tnic>
- <20210114092218.GA26786@shrek.podlesie.net>
- <20210114094425.GA12284@zn.tnic>
- <20210114123657.GA6358@shrek.podlesie.net>
- <20210114140737.GD12284@zn.tnic>
+        id S1729224AbhANOxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:53:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727121AbhANOxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:53:15 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2315A23A5E;
+        Thu, 14 Jan 2021 14:52:34 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 09:52:32 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH 1/4] tracing: add error_report trace points
+Message-ID: <20210114095232.7ba3f9a8@gandalf.local.home>
+In-Reply-To: <CAG_fn=XSkOChCwBp=Vg6jWhZ8K44seCo=0Zu38iUpAj6eCUxjQ@mail.gmail.com>
+References: <20210113091657.1456216-1-glider@google.com>
+        <20210113091657.1456216-2-glider@google.com>
+        <20210113161044.43bc1c1a@gandalf.local.home>
+        <CAG_fn=XSkOChCwBp=Vg6jWhZ8K44seCo=0Zu38iUpAj6eCUxjQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210114140737.GD12284@zn.tnic>
-User-Agent: Mutt/1.6.2 (2016-07-01)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 03:07:37PM +0100, Borislav Petkov wrote:
-> On Thu, Jan 14, 2021 at 01:36:57PM +0100, Krzysztof Mazur wrote:
-> > The OSFXSR must be set only on CPUs with SSE. There
-> > are some CPUs with 3DNow!, but without SSE and FXSR (like AMD
-> > Geode LX, which is still used in many embedded systems).
-> > So, I've changed that to:
-> > 
-> > if (unlikely(in_interrupt()) || (boot_cpu_has(X86_FEATURE_XMM) &&
-> > 		unlikely(!(cr4_read_shadow() & X86_CR4_OSFXSR))))
+On Thu, 14 Jan 2021 08:49:57 +0100
+Alexander Potapenko <glider@google.com> wrote:
+
+> We'll need to explicitly list the enum values once again in
+> __print_symbolic(), right? E.g.:
 > 
-> Why?
+> enum debugging_tool {
+>          TOOL_KFENCE,
+>          TOOL_KASAN,
+>          ...
+> }
 > 
-> X86_CR4_OSFXSR won't ever be set on those CPUs but the test will be
-> performed anyway. So there's no need for boot_cpu_has().
+> TP_printk(__print_symbolic(__entry->error_detector, TOOL_KFENCE,
+> TOOL_KASAN, ...),
 
-Because the MMX version should be always used on those CPUs, even without
-OSFXSR set. If the CPU does not support SSE, it is safe to
-call kernel_fpu_begin() without OSFXSR set.
-"!(cr4_read_shadow() & X86_CR4_OSFXSR)" will be always true on
-those CPUs, and without boot_cpu_has() MMX version will be never used.
+Usually what is done is to make this into a macro:
 
-There are two cases:
+#define REPORT_TOOL_LIST \
+  EM(KFENCE, kfence) \
+  EMe(KASAN, kasan)
 
-3DNow! without SSE		always use MMX version
-3DNow! + SSE (K7)		use MMX version only if FXSR is enabled
+#undef EM
+#undef EMe
 
-Thanks.
+#define EM(a,b) TRACE_DEFINE_ENUM(a)
+#define EMe(a,b) TRACE_DEFINE_ENUM(a)
 
-Best regards,
-Krzysiek
--- >8 --
-Subject: [PATCH] x86/lib: don't use mmx_memcpy() too early
+REPORT_TOOL_LIST
 
-The MMX 3DNow! optimized memcpy() is used very early,
-even before FPU is initialized in the kernel. It worked fine, but commit
-7ad816762f9bf89e940e618ea40c43138b479e10 ("x86/fpu: Reset MXCSR
-to default in kernel_fpu_begin()") broke that. After that
-commit the kernel_fpu_begin() assumes that FXSR is enabled in
-the CR4 register on all processors with SSE. Because memcpy() is used
-before FXSR is enabled, the kernel crashes just after "Booting the kernel."
-message. It affects all kernels with CONFIG_X86_USE_3DNOW (enabled when
-some AMD/Cyrix processors are selected) on processors with SSE
-(like AMD K7, which supports both MMX 3DNow! and SSE).
+#undef EM
+#undef EMe
 
-Fixes: 7ad816762f9b ("x86/fpu: Reset MXCSR to default in kernel_fpu_begin()")
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: <stable@vger.kernel.org> # 5.8+
-Signed-off-by: Krzysztof Mazur <krzysiek@podlesie.net>
----
- arch/x86/lib/mmx_32.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+#define EM(a, b) { a, b },
+#define EMe(a, b) { a, b }
 
-diff --git a/arch/x86/lib/mmx_32.c b/arch/x86/lib/mmx_32.c
-index 4321fa02e18d..70aa769570e6 100644
---- a/arch/x86/lib/mmx_32.c
-+++ b/arch/x86/lib/mmx_32.c
-@@ -25,13 +25,20 @@
- 
- #include <asm/fpu/api.h>
- #include <asm/asm.h>
-+#include <asm/tlbflush.h>
- 
- void *_mmx_memcpy(void *to, const void *from, size_t len)
- {
- 	void *p;
- 	int i;
- 
--	if (unlikely(in_interrupt()))
-+	/*
-+	 * kernel_fpu_begin() assumes that FXSR is enabled on all processors
-+	 * with SSE. Thus, MMX-optimized version can't be used
-+	 * before the kernel enables FXSR (OSFXSR bit in the CR4 register).
-+	 */
-+	if (unlikely(in_interrupt()) || (boot_cpu_has(X86_FEATURE_XMM) &&
-+			unlikely(!(cr4_read_shadow() & X86_CR4_OSFXSR))))
- 		return __memcpy(to, from, len);
- 
- 	p = to;
--- 
-2.27.0.rc1.207.gb85828341f
+#define show_report_tool_list(val) \
+	__print_symbolic(val, REPORT_TOOL_LIST)
 
+
+[..]
+
+ TP_printk("[%s] %lx", show_report_tool_list(__entry->error_detector),
+    __entry->id)
+
+
+This is done in several other trace event files.  For example, see
+  include/trace/events/sock.h
+
+
+-- Steve
