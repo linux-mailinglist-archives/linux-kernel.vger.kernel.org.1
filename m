@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0DD2F5679
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8DC2F5677
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbhANBsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:48:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
+        id S1728410AbhANBsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:48:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727280AbhANAjv (ORCPT
+        with ESMTP id S1727392AbhANAjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Jan 2021 19:39:51 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E405BC0617A9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:37:47 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id u9so3036410qkk.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:37:47 -0800 (PST)
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2DC1C0617B1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:37:50 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id l3so2944098qvr.10
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:37:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=6IjwYJ9nQQQ0VcUn254Dijwa+O3I16q70UCT60xMF6g=;
-        b=CO4UFIoLHaCRpVB2MjOZf8UkbKvNnAkg+a0HFbJqY/bV7n5GCIPVyL3/wiX4o6EsFB
-         UqlIyhryQEk16FL3egk36ZjVrvK02kg5Cg3+7NhDC6WdUUVNY2NtXQ7ZvK0hkrcwmImh
-         pb7tGFWUarWoyf6QgqhP/vpYkLm+a+/dkiJz6B1eDLdUPrFIkQEJw/+XtZboQcA3Me3v
-         ufXrBMtYm5C80Yk5OEaOSiVwx9UBzW6d+4MaQXQemOSVUWrbzPR31G3gFw8AIG96PPQ7
-         WfqUar0PVfuJUjUZ8bjP2BJvema0KPNvYaFWLi4EGlhy6Gdvl1vgYtkvFbQuBPbcWRGP
-         oLjw==
+        bh=DDUHIUBA8SLHvStbYmjdJVTHYjMXIrwXrhEB8ai7MVY=;
+        b=qkzN5/B31jy88ZpNpPR+BBPPcUB8nL0++4Spb8fCnQwaLGL/YbByi7M3SGS4Z/n0+s
+         C1xB4mFr1fLgRi3PzFzYfk7OKY8HYlsFDgN9x/UfTJAOxU7O7mj8rnd1+B8tsBm5tpk1
+         qAH+JQRCZ7bpI06i1Cr5Se4FUewwXp3t+JkMnGESZFaV58c66zw2AXq5onH850wcGBBL
+         nVYEQ06OYzdxeR6eWL7YgpStup3OB5WFL5coXbCvYhGP9u/Rfk+8ddoOsL2yL/gh5hW1
+         qXTYRfVA7vJuSxCKmAcq7AsJw1FEsZnU10U1JoTcyGS/ugOgRT5iwn73LcJK7BIV5PCE
+         tm+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=6IjwYJ9nQQQ0VcUn254Dijwa+O3I16q70UCT60xMF6g=;
-        b=LHKD+MVzdNturl1nAft3LWnrs2seRz0KA6ZKHgeNvECw9FWHPCRMcUBJkf5A13/ghU
-         kzqdyJB2Pdplf2PO/qNJzDHBt/nWgwl5B1Bpw59/70hIrhz3SkIA8Utj5c9lZWFD71Ds
-         wfqM1PuADffd/TodvNWBgPqDSLRSXwel8RYTF2kyGXNUeZuR3jeRY+bdDuRf+5iTg+B1
-         0InuP4qdTHmzWpnB9MQqycI2i5mVK9ibh+2kbTXLp14nbZSB+YHPcF0n00U14uKRHnpv
-         WaHD+hpsf84dSYK90oTlzprvJ87eCsHHc+BpvLUoNThPkIHJqYbrOkG+pPMIuKDXFeof
-         WPtg==
-X-Gm-Message-State: AOAM533P7EcQrpCEwbQJxHt4Zy81Q5rqsPU4MrH2B58Rk8gwcts4vyi8
-        TqJdnmsZotvQpx2DSln4PQIZCrPNXmU=
-X-Google-Smtp-Source: ABdhPJzmJiGQ2Jk2secJV5cIicU0Y2tSxcoH20LMR4/CzPqNn4te3nKLeCzKG255Qo5g47HTjNbiMwC2yDU=
+        bh=DDUHIUBA8SLHvStbYmjdJVTHYjMXIrwXrhEB8ai7MVY=;
+        b=koSHkVYsxxyl5UnyFOPl9tFsOLxljsP9WquZZ3LqCbPoJ2nZ0QIVFe/HqjZEDR03Qa
+         HnV8KBsw+9ItBwAM8/MLEY9RO4o1emQ0+HD7039l1lgW1k6wIuADLsMBGqAi7Ngviv38
+         7TfBrLI+4BMfEqVrcs4eJRFKAzbqYACXe3ZKZzsU5uJlCNFzNorkjnIeawR7n38lPWHS
+         wOwZLeNbclgz1B2vtZrviOxRSKwu7xkpj4IWg8HnJVxAz1wQon8KBDwFYCQYdfUzbJ4l
+         nlTCFaoX9HzZwVAA5CSV4egS1EF1LNxJZeD/M5nEQZGF1PTsy1iHbYxccfxw+CK9l1/H
+         ONeQ==
+X-Gm-Message-State: AOAM532B8ewzeTwo5LavMDF5FoE0eQMgqexSVtfbfdHfXu+v1zQe4pfv
+        3u5sIYhYeuLNQz0aDUqA2nsZ5q1amhc=
+X-Google-Smtp-Source: ABdhPJxyDhm3M2JAmEWge+qYJWZw2joo4TnBbgEXhE0VgsY14p15rC2IBck+hLLI1HjzlM8vifZUP1PsJbU=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
- (user=seanjc job=sendgmr) by 2002:a0c:bd9f:: with SMTP id n31mr4853531qvg.42.1610584667050;
- Wed, 13 Jan 2021 16:37:47 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a5b:482:: with SMTP id n2mr6421468ybp.25.1610584669838;
+ Wed, 13 Jan 2021 16:37:49 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 13 Jan 2021 16:36:59 -0800
+Date:   Wed, 13 Jan 2021 16:37:00 -0800
 In-Reply-To: <20210114003708.3798992-1-seanjc@google.com>
-Message-Id: <20210114003708.3798992-6-seanjc@google.com>
+Message-Id: <20210114003708.3798992-7-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210114003708.3798992-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v2 05/14] KVM: x86: Override reported SME/SEV feature flags
- with host mask
+Subject: [PATCH v2 06/14] x86/sev: Drop redundant and potentially misleading 'sev_enabled'
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
@@ -73,45 +72,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a reverse-CPUID entry for the memory encryption word, 0x8000001F.EAX,
-and use it to override the supported CPUID flags reported to userspace.
-Masking the reported CPUID flags avoids over-reporting KVM support, e.g.
-without the mask a SEV-SNP capable CPU may incorrectly advertise SNP
-support to userspace.
+Drop the sev_enabled flag and switch its one user over to sev_active().
+sev_enabled was made redundant with the introduction of sev_status in
+commit b57de6cd1639 ("x86/sev-es: Add SEV-ES Feature Detection").
+sev_enabled and sev_active() are guaranteed to be equivalent, as each is
+true iff 'sev_status & MSR_AMD64_SEV_ENABLED' is true, and are only ever
+written in tandem (ignoring compressed boot's version of sev_status).
 
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Removing sev_enabled avoids confusion over whether it refers to the guest
+or the host, and will also allow KVM to usurp "sev_enabled" for its own
+purposes.
+
+No functional change intended.
+
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/cpuid.c | 2 ++
- arch/x86/kvm/cpuid.h | 1 +
- 2 files changed, 3 insertions(+)
+ arch/x86/include/asm/mem_encrypt.h |  1 -
+ arch/x86/mm/mem_encrypt.c          | 12 +++++-------
+ arch/x86/mm/mem_encrypt_identity.c |  1 -
+ 3 files changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 13036cf0b912..b7618cdd06b5 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -855,6 +855,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
- 	case 0x8000001F:
- 		if (!boot_cpu_has(X86_FEATURE_SEV))
- 			entry->eax = entry->ebx = entry->ecx = entry->edx = 0;
-+		else
-+			cpuid_entry_override(entry, CPUID_8000_001F_EAX);
- 		break;
- 	/*Add support for Centaur's CPUID instruction*/
- 	case 0xC0000000:
-diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-index dc921d76e42e..8b6fc9bde248 100644
---- a/arch/x86/kvm/cpuid.h
-+++ b/arch/x86/kvm/cpuid.h
-@@ -63,6 +63,7 @@ static const struct cpuid_reg reverse_cpuid[] = {
- 	[CPUID_8000_0007_EBX] = {0x80000007, 0, CPUID_EBX},
- 	[CPUID_7_EDX]         = {         7, 0, CPUID_EDX},
- 	[CPUID_7_1_EAX]       = {         7, 1, CPUID_EAX},
-+	[CPUID_8000_001F_EAX] = {0x8000001f, 1, CPUID_EAX},
- };
+diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
+index 2f62bbdd9d12..88d624499411 100644
+--- a/arch/x86/include/asm/mem_encrypt.h
++++ b/arch/x86/include/asm/mem_encrypt.h
+@@ -20,7 +20,6 @@
  
- /*
+ extern u64 sme_me_mask;
+ extern u64 sev_status;
+-extern bool sev_enabled;
+ 
+ void sme_encrypt_execute(unsigned long encrypted_kernel_vaddr,
+ 			 unsigned long decrypted_kernel_vaddr,
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index bc0833713be9..b89bc03c63a2 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -44,8 +44,6 @@ EXPORT_SYMBOL(sme_me_mask);
+ DEFINE_STATIC_KEY_FALSE(sev_enable_key);
+ EXPORT_SYMBOL_GPL(sev_enable_key);
+ 
+-bool sev_enabled __section(".data");
+-
+ /* Buffer used for early in-place encryption by BSP, no locking needed */
+ static char sme_early_buffer[PAGE_SIZE] __initdata __aligned(PAGE_SIZE);
+ 
+@@ -342,16 +340,16 @@ int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long size)
+  * up under SME the trampoline area cannot be encrypted, whereas under SEV
+  * the trampoline area must be encrypted.
+  */
+-bool sme_active(void)
+-{
+-	return sme_me_mask && !sev_enabled;
+-}
+-
+ bool sev_active(void)
+ {
+ 	return sev_status & MSR_AMD64_SEV_ENABLED;
+ }
+ 
++bool sme_active(void)
++{
++	return sme_me_mask && !sev_active();
++}
++
+ /* Needs to be called from non-instrumentable code */
+ bool noinstr sev_es_active(void)
+ {
+diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
+index 6c5eb6f3f14f..0c2759b7f03a 100644
+--- a/arch/x86/mm/mem_encrypt_identity.c
++++ b/arch/x86/mm/mem_encrypt_identity.c
+@@ -545,7 +545,6 @@ void __init sme_enable(struct boot_params *bp)
+ 
+ 		/* SEV state cannot be controlled by a command line option */
+ 		sme_me_mask = me_mask;
+-		sev_enabled = true;
+ 		physical_mask &= ~sme_me_mask;
+ 		return;
+ 	}
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
