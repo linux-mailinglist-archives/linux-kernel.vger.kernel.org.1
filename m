@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B672F6758
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 240702F6740
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729054AbhANRQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:16:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728588AbhANRQB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:16:01 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5A4C0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:15:21 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id o19so9107351lfo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:15:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jRpbugOzzcD4vWdxqQSiB7WPu9j6z6Mr66iAcSSwJZc=;
-        b=YFsUaEXzE7PwG8/PiSPYv+xFcwhW6um3lZ+PQtUVk7nx4B1GE1smOkJPyTLcP8iUKL
-         24F+TGLfPFfcEFUEZruZ28RvSZp3DbPwD2BG5twLXzcZp2xHP/pDyV9ItDSp5eY4gSP0
-         0G4TsA7FGmmSnnoUN80m74Agih4U2RgekH4+g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jRpbugOzzcD4vWdxqQSiB7WPu9j6z6Mr66iAcSSwJZc=;
-        b=IvNCHvleFzfsXN+mABNTiRc89nCMZ/4kop0KSXceK+vR8Z2c3mpsyXW9XaBXMCEhDq
-         bGWctfllftW0lg6njt1e2B2+a2Ru70E4Z60VMT38Kr6j75/W3p/wNcLy7LDC5L/RQPAK
-         0ZAmmIppLyhjo8DtmpnF2YTALPhVfSXeQv7MDtfzMkp8OV3GKPVW4SpceRD7tovYF2Sq
-         ijJyi14ePepQQ5p4TrwT1E01yuOI+zCCTY8XVysc5xx+w/zSZbeH5PQJbEneRVaOKcTF
-         PKjnRswMII+Z9HaVwyZPX3z7I1JbLBvb9wY3E0SH+tWZa6cvk9zvQ7aFNwRf249dr6zk
-         QYBQ==
-X-Gm-Message-State: AOAM531kA9DaK1VfZPF06RCSwye5LEiN8S6NuMPTW+bCB+OgR/6IcIiN
-        hnUzAoK2aGEGMKgHEdRihMjK2apx/B8J14NG1NxQBw==
-X-Google-Smtp-Source: ABdhPJw98wVFP/xXJJyWVqxebD2K8/3IKxc6BaafZzZCj+GPq53hclI4p29ibHEaPZZ65JbG9eLIXGPKMIczkIj5qA0=
-X-Received: by 2002:a05:6512:2009:: with SMTP id a9mr3491536lfb.575.1610644519634;
- Thu, 14 Jan 2021 09:15:19 -0800 (PST)
+        id S1728364AbhANRQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:16:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34832 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727194AbhANRQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 12:16:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 78C12AFFA;
+        Thu, 14 Jan 2021 17:15:19 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id C31601E053E; Thu, 14 Jan 2021 18:15:17 +0100 (CET)
+Date:   Thu, 14 Jan 2021 18:15:17 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     lianzhi chang <changlianzhi@uniontech.com>
+Cc:     jack@suse.cz, magnani@ieee.org, linux-kernel@vger.kernel.org,
+        282827961@qq.com
+Subject: Re: [PATCH] udf: fix the problem that the disc content is not
+ displayed
+Message-ID: <20210114171517.GC27380@quack2.suse.cz>
+References: <20210114132615.16522-1-changlianzhi@uniontech.com>
 MIME-Version: 1.0
-References: <4490cb6a7e2243fba374e40652979e46@hisilicon.com>
- <CAM4kBBK=5eBdCjWc5VJXcdr=Z4PV1=ZQ2n8fZmJ6ahJbpUyv2A@mail.gmail.com>
- <08cbef1e43634c4099709be8e99e5d27@hisilicon.com> <CAM4kBBJjCYX0DQZ8de9LsFV6L+eF4tZe-NN=jiAz9WLWYrsCsQ@mail.gmail.com>
- <1d0d4a3576e74d128d7849342a7e9faf@hisilicon.com> <CAM4kBB+uRrnpta908Gf93VfH90NVpmqv4jNY2kxrrGSdWApz_w@mail.gmail.com>
- <4e686c73-b453-e714-021a-1fcd0a565984@huawei.com> <CAM4kBB+jtJd5mqBby7j+ou-AxvPgCU777pX4cnwneLi8P4U+7g@mail.gmail.com>
- <20210114161850.zjcfhsgtmojjjqba@linutronix.de> <CAM4kBBKcj+ZVEv8mkh+rWc0xbomKsyc60UNuuRem_iWPf9YxVA@mail.gmail.com>
- <20210114165645.czqpsk3lacmiyiik@linutronix.de>
-In-Reply-To: <20210114165645.czqpsk3lacmiyiik@linutronix.de>
-From:   Vitaly Wool <vitaly.wool@konsulko.com>
-Date:   Thu, 14 Jan 2021 18:15:08 +0100
-Message-ID: <CAM4kBBLqgh=ymq4pg6URB3OhjhRSH3O=4AEMRBuaC3Z0-hZ4Lg@mail.gmail.com>
-Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     "tiantao (H)" <tiantao6@huawei.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Mike Galbraith <efault@gmx.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, NitinGupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "tiantao (H)" <tiantao6@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210114132615.16522-1-changlianzhi@uniontech.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 5:56 PM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> On 2021-01-14 17:29:37 [+0100], Vitaly Wool wrote:
-> > On Thu, 14 Jan 2021, 17:18 Sebastian Andrzej Siewior,
-> > <bigeasy@linutronix.de> wrote:
-> > >
-> > > On 2020-12-23 19:25:02 [+0100], Vitaly Wool wrote:
-> > > > > write the following patch according to your idea, what do you think ?
-> > > >
-> > > > Yep, that is basically what I was thinking of. Some nitpicks below:
-> > >
-> > > Did this go somewhere? The thread just ends here on my end.
-> > > Mike, is this patch fixing / helping your case in anyway?
-> >
-> > Please see
-> > * https://marc.info/?l=linux-mm&m=160889419514019&w=2
-> > * https://marc.info/?l=linux-mm&m=160889418114011&w=2
-> > * https://marc.info/?l=linux-mm&m=160889448814057&w=2
->
-> Thank you, that would be
->    1608894171-54174-1-git-send-email-tiantao6@hisilicon.com
->
-> for b4 compatibility :)
->
-> > Haven't had time to test these yet but seem to be alright.
->
-> So zs_map_object() still disables preemption but the mutex part is
-> avoided by the patch?
+On Thu 14-01-21 21:26:15, lianzhi chang wrote:
+> When the capacity of the disc is too large (assuming the 4.7G
+> specification), the disc (UDF file system) will be burned
+> multiple times in the windows (Multisession Usage). When the
+> remaining capacity of the CD is less than 300M (estimated
+> value, for reference only), open the CD in the Linux system,
+> the content of the CD is displayed as blank (the kernel will
+> say "No VRS found"). Windows can display the contents of the
+> CD normally.
+> Through analysis, in the "fs/udf/super.c": udf_check_vsd
+> function, the actual value of VSD_MAX_SECTOR_OFFSET may
+> be much larger than 0x800000. According to the current code
+> logic, it is found that the type of sbi->s_session is "__s32",
+>  when the remaining capacity of the disc is less than 300M
+> (take a set of test values: sector=3154903040,
+> sbi->s_session=1540464, sb->s_blocksize_bits=11 ), the
+> calculation result of "sbi->s_session << sb->s_blocksize_bits"
+>  will overflow. Therefore, it is necessary to convert the
+> type of s_session to "loff_t" (when udf_check_vsd starts,
+> assign a value to _sector, which is also converted in this
+> way), so that the result will not overflow, and then the
+> content of the disc can be displayed normally.
+> 
+> Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
 
-Basically, yes. Minchan was very clear that he didn't want to remove
-that inter-function locking, so be it.
-I wouldn't really advise to use zsmalloc with zswap because zsmalloc
-has no support for reclaim, nevertheless I wouldn't like this
-configuration to stop working for those who are already using it.
+There was no need to resend the patch (I've fixed up the problem locally -
+it was easy enough) but thanks anyway :).
 
-Would you or Mike be up for testing Tian Taos's patchset?
+								Honza
 
-Best regards,
-   Vitaly
+> ---
+>  fs/udf/super.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/udf/super.c b/fs/udf/super.c
+> index 5bef3a68395d..f2ff98f393fb 100644
+> --- a/fs/udf/super.c
+> +++ b/fs/udf/super.c
+> @@ -705,6 +705,7 @@ static int udf_check_vsd(struct super_block *sb)
+>  	struct buffer_head *bh = NULL;
+>  	int nsr = 0;
+>  	struct udf_sb_info *sbi;
+> +	loff_t sector_offset;
+>  
+>  	sbi = UDF_SB(sb);
+>  	if (sb->s_blocksize < sizeof(struct volStructDesc))
+> @@ -712,7 +713,8 @@ static int udf_check_vsd(struct super_block *sb)
+>  	else
+>  		sectorsize = sb->s_blocksize;
+>  
+> -	sector += (((loff_t)sbi->s_session) << sb->s_blocksize_bits);
+> +	sector_offset = (loff_t)sbi->s_session << sb->s_blocksize_bits;
+> +	sector += sector_offset;
+>  
+>  	udf_debug("Starting at sector %u (%lu byte sectors)\n",
+>  		  (unsigned int)(sector >> sb->s_blocksize_bits),
+> @@ -757,8 +759,7 @@ static int udf_check_vsd(struct super_block *sb)
+>  
+>  	if (nsr > 0)
+>  		return 1;
+> -	else if (!bh && sector - (sbi->s_session << sb->s_blocksize_bits) ==
+> -			VSD_FIRST_SECTOR_OFFSET)
+> +	else if (!bh && sector - sector_offset == VSD_FIRST_SECTOR_OFFSET)
+>  		return -1;
+>  	else
+>  		return 0;
+> -- 
+> 2.20.1
+> 
+> 
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
