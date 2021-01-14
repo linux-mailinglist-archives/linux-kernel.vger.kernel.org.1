@@ -2,111 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720D82F672B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:15:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 275122F6731
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728512AbhANROQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:14:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728373AbhANROO (ORCPT
+        id S1728655AbhANRO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:14:29 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:41204 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728541AbhANROS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:14:14 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2FFC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:13:33 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id c132so4211273pga.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:13:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OKPnLLplhRNmeoV6NY+JrG/2XUXd3Jl9oyOtg+gZeHA=;
-        b=jpipB+9kIff5Tv0vnTnurZDN7yGTOeueru9cS/LH34OKylQIyB8U8q3N03m6SRSeJn
-         vM3LPmrRoBl94FX7ZPC/TMselOSAz+Bnb60lS1YG9B5BuBuhvTpWtJDeRd41BU132lXV
-         JiPJsPZY1mdZ89zZQXDPCUZR1rDzd+uy4R4qFidRwDsx9lK7QxCZA2938Lc1Ta2SYTdJ
-         3nXilJeBCQqHByOHmI4GUNIy4h/S4LgwitTotXTMf2jHrgLtVoefeT26J5pHbbbm4SF0
-         MPxvRgllVc7ORWs3SxWuGlO0CI8p/no5Qas3zLe//zNO0Y5FIihbU34bG07ufdXFnLJp
-         vlMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OKPnLLplhRNmeoV6NY+JrG/2XUXd3Jl9oyOtg+gZeHA=;
-        b=K5PUELtcnNk4Q7ps/WvEyZnpd7mJiL4P3ifO/xbofsKZNSRUkWIIBYduPAEW8G2gkW
-         zSAvb59FXrV3igwLHoavgARyjzPhuiaqbsIY55yaci7t3sEu96xl2zc8H+8tH0eVZuMO
-         Mez2+ZuXA4XaF5FyARxbbuCfYPtJ6IxfS+YOZvkDn/+P3eIYXNQprlYvXa4OM6JlqlAF
-         xbQStbHmSpt7MKieZj+ICivGLhXS2upfncfPNnHyergzozXDzHMdTxdRHH5W7NgWO81D
-         +EjsnlPFlY9c44BTMdjw/UMInVuDNs1vZeyAOAmLy26QDIIm+nt/U5hX6gAgUAe8ZcMD
-         8AIw==
-X-Gm-Message-State: AOAM5317wSlQQbvEW6LOqJ44/fFLsJpNamrQz1JBKZk4LRAQnw1lEitG
-        EEVpLRs34toSK8xpySJAxbGoyA==
-X-Google-Smtp-Source: ABdhPJwUbPwHAM0ys8f0iS52iICwmmGFVz58imXchuP4PQsYRnq24zsPYrz4sUFvEEtZT8tTHG4geg==
-X-Received: by 2002:a63:eb0c:: with SMTP id t12mr8488528pgh.7.1610644413234;
-        Thu, 14 Jan 2021 09:13:33 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id 19sm5707564pfn.133.2021.01.14.09.13.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 09:13:32 -0800 (PST)
-Date:   Thu, 14 Jan 2021 09:13:25 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v2 01/14] KVM: SVM: Zero out the VMCB array used to track
- SEV ASID association
-Message-ID: <YAB7tckzbZUrRbf5@google.com>
-References: <20210114003708.3798992-1-seanjc@google.com>
- <20210114003708.3798992-2-seanjc@google.com>
- <3d41137e-e8e0-8139-3050-eac58ad82a4f@amd.com>
+        Thu, 14 Jan 2021 12:14:18 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610644440; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=qnsx3daK0QJOaPx77SAmwXpHyqM3YCWxidh/gbfT0KI=;
+ b=AIXaT+2hD1BsKKjODIhGCenOcX3jg19v1uFe3OYykhCrJ8zGHlFiHDsYP9mMpeH+ny7xxCzi
+ xw2vtcr0MJoau8/+NGNgTgcEH/MmCc5/9eBBOarzLESTBuDGUr/M/WaxmzxnWaJvwWGNxsWL
+ sBXCZHQ38MWSzV+ZnEswIOZY+8s=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60007bba8fb3cda82f98191b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 17:13:30
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BC9C8C433C6; Thu, 14 Jan 2021 17:13:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 50867C433CA;
+        Thu, 14 Jan 2021 17:13:28 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3d41137e-e8e0-8139-3050-eac58ad82a4f@amd.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 14 Jan 2021 09:13:28 -0800
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] drm/msm/dp: postpone irq_hpd event during connection
+ pending state
+In-Reply-To: <161058243505.3661239.4173340912311093207@swboyd.mtv.corp.google.com>
+References: <y> <1610051425-20632-1-git-send-email-khsieh@codeaurora.org>
+ <1610051425-20632-2-git-send-email-khsieh@codeaurora.org>
+ <161039491877.3661239.1387205899512360969@swboyd.mtv.corp.google.com>
+ <17a116011ae60194834210a4a0c877b3@codeaurora.org>
+ <161056933099.3661239.9450322359293035316@swboyd.mtv.corp.google.com>
+ <b4a6e7695d12c3191bff75668f386da9@codeaurora.org>
+ <161058243505.3661239.4173340912311093207@swboyd.mtv.corp.google.com>
+Message-ID: <7093b80b9304d161259f5f3f4b12d3c1@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021, Tom Lendacky wrote:
-> On 1/13/21 6:36 PM, Sean Christopherson wrote:
-> > Zero out the array of VMCB pointers so that pre_sev_run() won't see
-> > garbage when querying the array to detect when an SEV ASID is being
-> > associated with a new VMCB.  In practice, reading random values is all
-> > but guaranteed to be benign as a false negative (which is extremely
-> > unlikely on its own) can only happen on CPU0 on the first VMRUN and would
-> > only cause KVM to skip the ASID flush.  For anything bad to happen, a
-> > previous instance of KVM would have to exit without flushing the ASID,
-> > _and_ KVM would have to not flush the ASID at any time while building the
-> > new SEV guest.
-> > 
-> > Cc: Borislav Petkov <bp@suse.de>
-> > Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> > Cc: Brijesh Singh <brijesh.singh@amd.com>
-> > Fixes: 70cd94e60c73 ("KVM: SVM: VMRUN should use associated ASID when SEV is enabled")
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >   arch/x86/kvm/svm/svm.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> > index 7ef171790d02..ccf52c5531fb 100644
-> > --- a/arch/x86/kvm/svm/svm.c
-> > +++ b/arch/x86/kvm/svm/svm.c
-> > @@ -573,7 +573,7 @@ static int svm_cpu_init(int cpu)
-> >   	if (svm_sev_enabled()) {
-> >   		sd->sev_vmcbs = kmalloc_array(max_sev_asid + 1,
-> >   					      sizeof(void *),
-> > -					      GFP_KERNEL);
-> > +					      GFP_KERNEL | __GFP_ZERO);
+On 2021-01-13 16:00, Stephen Boyd wrote:
+> Quoting khsieh@codeaurora.org (2021-01-13 15:44:32)
+>> On 2021-01-13 12:22, Stephen Boyd wrote:
+>> > Quoting khsieh@codeaurora.org (2021-01-13 09:44:24)
+>> >> On 2021-01-11 11:55, Stephen Boyd wrote:
+>> >> > Quoting Kuogee Hsieh (2021-01-07 12:30:24)
+>> >> >> irq_hpd event can only be executed at connected state. Therefore
+>> >> >> irq_hpd event should be postponed if it happened at connection
+>> >> >> pending state. This patch also make sure both link rate and lane
+>> >> >
+>> >> > Why does it happen at connection pending state?
+>> >> plug in need two state to complete it.
+>> >> advance to connection pending state once link training completed and
+>> >> sent uevent notification to frame work.
+>> >> transition to connected state after frame work provided resolution
+>> >> timing and start transmit video panel.
+>> >> Therefore irq_hpd should not be handled if it occurred before
+>> >> connected
+>> >> state.
+>> >
+>> > Sure that's what's going on in the patch but you didn't answer my
+>> > question. Why does irq_hpd happen before connected state?
+>> 
+>> I have no idea why it happen this way.
+>> during debug
+>> https://partnerissuetracker.corp.google.com/issues/170598152
+>> I saw two different scenario
+>> 1) irq_hpd followed by unplug with less than 20 ms in between. this 
+>> one
+>> fixed by this patch set.
+>> 2) plug followed by irq_hpd around 300ms in between. it does not cause
+>> problem. but it should be handled in order (after connected state).
 > 
-> Alternatively, this call could just be changed to kcalloc().
+> Ok. So nobody understands why the hardware is acting this way and we're
+> papering over the problem by forcing the HPD state to be what we think
+> it should be? That's not great.
 
-Agreed, kcalloc() is a better option.  I'll do that in v3.
+irq_hpd is issued from dongle.
+it then go through EC ps8805 driver and reach DP driver finally.
+Again, to duplicate problem #1 this at my set up, i have to 
+intentionally wiggling type-c connector of dongle.
+But I can not duplicate problem #2 and only saw it one time from Quantan 
+provide logs.
+
+
+
+
+
+
