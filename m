@@ -2,169 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500602F5A2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 06:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43F22F5A31
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 06:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbhANFIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 00:08:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57288 "EHLO
+        id S1726460AbhANFKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 00:10:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbhANFIf (ORCPT
+        with ESMTP id S1726204AbhANFKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 00:08:35 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D6DC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:07:56 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id q4so2317832plr.7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:07:56 -0800 (PST)
+        Thu, 14 Jan 2021 00:10:15 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E21C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:09:35 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id c132so2996293pga.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:09:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ONs0rOwaXcE9DAa1rvPDB5tWp0t7wRodEsEfYtaFX4U=;
-        b=rrbmMj05jKUSTp5pzhvdzZS9v9r7j/VNRbHFWCmkQzMRLD+1D6PnJqXzpwcQryCQ22
-         5Ny97DeLbh83qPxO+6b5cM85pXBaplEYALjV8jDelrBFdPU+Ixr1u8HfkHd3N4/QVFVx
-         NFJrFs8H4kCbmZVLmIfr5jkM42YshAKrJpVgi5lecYaMeVwoI2FZMUzYwC2QG7tDCx7c
-         6WKXQLAGkD6eILucG7glvzDUUUkK9+ny/mg3nwDZGiTFpzHZmhIni4C6JObflybkQEcO
-         3li4pdPMY/85tUZOey0S+V9tvmTJbpe5tGPJtJNfHYiPrGkv2/+fTucgHTg8TVwvJgFg
-         0nkw==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l0SVd2Z6z2wiunvJxS4KRqjbI/ytm6ARhNhbn0IZGIA=;
+        b=q8RNlcBRjFP2BNecOlGAIXcVb2tcLxP0m95wws3L5nfz3R/bj6jLK6ZSlQyqecVGBH
+         baWhTyopNPQiosVcCHCn5G2V+Cz0RbU9VjcuMuUGuwJRSsmFix4TpJVcBMM6Gl9DJceK
+         QZxFMOVhh2CGrfq/kKFRKbyl91TauSsfMJVrrl7NB9lRvt32B9Ev3N3IxOhGKeznjVdH
+         ouOAtgS9qv+pwl2EoqItCQgCZn7OBqxrxPImdq8oqFLcPE9qhbgY/IAWQpD4QjbSZ1hP
+         cqeple8OV0xEa6wqT5Fd4Oi6OEoElfJuVi5MxdB7XX1rwn6hwD5G9sPAd2XUkLBDQ/Pe
+         hrsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ONs0rOwaXcE9DAa1rvPDB5tWp0t7wRodEsEfYtaFX4U=;
-        b=HINy5e4kgiqcXNOq2y/ZrNKpJ18Bve+OLk7NaLk3vktrytMC0NVdDS1ak7B9N+HY9y
-         JYeJZaRX7etmpfdtmfReFmMEGyqUHwHC1JTMNBW/SgF3m7ii4qiBoAa7u4mG0qdEXdf+
-         yvGDGVS6lDZSVhj2HEA7ZSrmHfA7J14N78doN3kWH1+In8W02tqKB/YqmeeHGoN1T7ZJ
-         o/xyruXFjMd0ge4Cvi+Yn454KBUfIYm132yo3G5EqWb5ufcjgB2HTPYPD1PaDozUwTDa
-         aMyhO3REUE3bJYD++PDEqgWzzmOTfizkm+uAJlMRaR/bbCbk1VhhIdDYupnAfj47jofT
-         cLgQ==
-X-Gm-Message-State: AOAM530WIlVP7Wx10X+q2RsUcS+/p4iX0duKZNeaCdZjE2V/8RuZxm7S
-        GSv9ZzvUOQ8n6TTc5qlqV97ERg==
-X-Google-Smtp-Source: ABdhPJzLCnG5kngXPNwign+9JLvSGPd6/XohzI50727mX+yBsG5y0q/E9Xn2Zf9/CSHXHUq6pv7WwA==
-X-Received: by 2002:a17:903:2292:b029:de:45c0:7005 with SMTP id b18-20020a1709032292b02900de45c07005mr3164216plh.75.1610600875667;
-        Wed, 13 Jan 2021 21:07:55 -0800 (PST)
-Received: from localhost ([122.172.85.111])
-        by smtp.gmail.com with ESMTPSA id t4sm4008627pfe.212.2021.01.13.21.07.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Jan 2021 21:07:54 -0800 (PST)
-Date:   Thu, 14 Jan 2021 10:37:53 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, sudeep.holla@arm.com, rjw@rjwysocki.net,
-        vireshk@kernel.org, cristian.marussi@arm.com,
-        morten.rasmussen@arm.com, chris.redpath@arm.com
-Subject: Re: [PATCH v6 2/4] scmi-cpufreq: Move CPU initialisation to probe
-Message-ID: <20210114050753.u3b5z6kgbup7xbuh@vireshk-i7>
-References: <20210111154524.20196-1-nicola.mazzucato@arm.com>
- <20210111154524.20196-3-nicola.mazzucato@arm.com>
- <20210112111717.5ds446w2kroxzvhr@vireshk-i7>
- <d167e564-0f6a-4176-283b-8f92d224f537@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d167e564-0f6a-4176-283b-8f92d224f537@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=l0SVd2Z6z2wiunvJxS4KRqjbI/ytm6ARhNhbn0IZGIA=;
+        b=eeO7x+oBzOWV9vCmm6lMGU/VbgJqF4CnrJVaL5QPzF/CVAMbEwtmVsy/+/f5ObVUwN
+         WJhU5bZ5R0G5PE8fwPjnSLa60XjwTEpTZNMuenmeKtjZ86MMDvZWqmFof2sbiYwI822R
+         d/JupT7RVXl3O6rVjMP1OxBrg4iSZbEUkqQod2FtSVhsZ2uiQYeJPrFuXBE6yQcEdY+7
+         9c561WqmdFpiqQNAyzs2Dp7OdJuQunU12UHBPMScbh3wWHgSSppJsKpQikW9EOqLyZ2u
+         49LqIUMgI05ta2EczM0r0PMRzXeyzMkMzMPzhBcn378pMxe0NVkjq01CAOuGtPTTGD/Q
+         om5Q==
+X-Gm-Message-State: AOAM5328AChzIW3HfJfXytkMI7XdftKsyDkirCJIABwkwvIWJH5femiH
+        E8MFvUXkh1hNXBqTozLrJ/i+di5YXJQgbg==
+X-Google-Smtp-Source: ABdhPJxYDip1RIxxaby45IP3aK2dYVPkxBLmeZ5dufXHqw2Cb/0PSEBpQNl4WBi+G21aOj0gWHPjVA==
+X-Received: by 2002:a65:6659:: with SMTP id z25mr5697984pgv.427.1610600975227;
+        Wed, 13 Jan 2021 21:09:35 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id p8sm4103108pjo.21.2021.01.13.21.09.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 21:09:34 -0800 (PST)
+Date:   Wed, 13 Jan 2021 21:09:34 -0800 (PST)
+X-Google-Original-Date: Wed, 13 Jan 2021 21:08:16 PST (-0800)
+Subject:     Re: [PATCH 3/4] RISC-V: Fix L1_CACHE_BYTES for RV32
+In-Reply-To: <20210107092652.3438696-4-atish.patra@wdc.com>
+CC:     linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
+        aou@eecs.berkeley.edu, akpm@linux-foundation.org,
+        Anup Patel <Anup.Patel@wdc.com>, ardb@kernel.org,
+        linux-riscv@lists.infradead.org, rppt@kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>, mick@ics.forth.gr
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Atish Patra <Atish.Patra@wdc.com>
+Message-ID: <mhng-1400a3dd-651b-4a78-bb2d-1f10580add75@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13-01-21, 11:55, Nicola Mazzucato wrote:
-> On 1/12/21 11:17 AM, Viresh Kumar wrote:
-> > This could have been done with a per-cpu variable instead.
-> 
-> sure, I can do a DEFINE_PER_CPU() for it if it makes it better.
+On Thu, 07 Jan 2021 01:26:51 PST (-0800), Atish Patra wrote:
+> SMP_CACHE_BYTES/L1_CACHE_BYTES should be defined as 32 instead of
+> 64 for RV32. Otherwise, there will be hole of 32 bytes with each memblock
+> allocation if it is requested to be aligned with SMP_CACHE_BYTES.
+>
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> ---
+>  arch/riscv/include/asm/cache.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
+> index 9b58b104559e..c9c669ea2fe6 100644
+> --- a/arch/riscv/include/asm/cache.h
+> +++ b/arch/riscv/include/asm/cache.h
+> @@ -7,7 +7,11 @@
+>  #ifndef _ASM_RISCV_CACHE_H
+>  #define _ASM_RISCV_CACHE_H
+>
+> +#ifdef CONFIG_64BIT
+>  #define L1_CACHE_SHIFT		6
+> +#else
+> +#define L1_CACHE_SHIFT		5
+> +#endif
+>
+>  #define L1_CACHE_BYTES		(1 << L1_CACHE_SHIFT)
 
-If we don't go with the linked list approach, then yes.
- 
-> >> +	for_each_possible_cpu(cpu) {
-> >> +		if (!zalloc_cpumask_var(&cpudata_table[cpu].scmi_shared_cpus,
-> >> +					GFP_KERNEL))
-> >> +			goto out;
-> >> +	}
-> > 
-> > You are making a copy of the struct for each CPU and so for a 16 CPUs
-> > sharing their clock lines, you will have 16 copies of the exact same
-> > stuff.
-> > 
-> > An optimal approach would be to have a linked-list of this structure
-> > and that will only have 1 node per cpufreq policy.
-> 
-> It is allocating space for the cpumask for each of the cpu. No data is copied yet.
+Should we not instead just
 
-Yes, I was talking about the whole design here.
+#define SMP_CACHE_BYTES L1_CACHE_BYTES
 
-> I understand the optimisation, but I don't see a linkage to cpufreq policy to be
-> a good idea. This cpudata is for internal storage of scmi and opp-shared info
-> and it is not tied to cpufreq policy.
+like a handful of architectures do?
 
-Well, it is going to be the same information for all CPUs of a policy, isn't it
-?
-
-> We have moved all the cpu bits to probe
-> and at this stage we have no knowledge of cpufreq polices.
-
-Yes, but you are reading that information from scmi or DT (empty opp tables) and
-so you know what the cpumasks are going to be set to. The linked list is the
-right solution in my opinion, it is much more optimal.
-
-> >> +static int scmi_init_device(const struct scmi_handle *handle, int cpu)
-> >> +{
-> >> +	struct device *cpu_dev;
-> >> +	int ret, nr_opp;
-> >> +	struct em_data_callback em_cb = EM_DATA_CB(scmi_get_cpu_power);
-> >> +	bool power_scale_mw;
-> >> +	cpumask_var_t scmi_cpus;
-> >> +
-> >> +	if (!zalloc_cpumask_var(&scmi_cpus, GFP_KERNEL))
-> >> +		return -ENOMEM;
-> >> +
-> >> +	cpumask_set_cpu(cpu, scmi_cpus);
-> >> +
-> >> +	cpu_dev = get_cpu_device(cpu);
-> >> +
-> >> +	ret = scmi_get_sharing_cpus(cpu_dev, scmi_cpus);
-> > 
-> > Where do you expect the sharing information to come from in this case
-> > ? DT ?
-> 
-> Coming from SCMI perf. The source of info has not changed.
-> 
-> > 
-> >> +	if (ret) {
-> >> +		dev_warn(cpu_dev, "failed to get sharing cpumask\n");
-> >> +		goto free_cpumask;
-> >> +	}
-> >> +
-> >> +	/*
-> >> +	 * We get here for each CPU. Add OPPs only on those CPUs for which we
-> >> +	 * haven't already done so, or set their OPPs as shared.
-> >> +	 */
-> >> +	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
-> >> +	if (nr_opp <= 0) {
-> >> +		ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
-> >> +		if (ret) {
-> >> +			dev_warn(cpu_dev, "failed to add opps to the device\n");
-> >> +			goto free_cpumask;
-> >> +		}
-> >> +
-> >> +		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, scmi_cpus);
-> >> +		if (ret) {
-> >> +			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
-> >> +				__func__, ret);
-> >> +			goto free_cpumask;
-> >> +		}
-> >> +
-> >> +		nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
-> > 
-> > Shouldn't you do this just after adding the OPPs ?
-> 
-> This was suggested earlier. It was moved closer to em_registration to where the
-> nr_opp is used. One way or the other as I don't have a strong preference for its
-> place.
-
-It is better to move it above as this will shorten the error path.
-
--- 
-viresh
+The cache size is sort of fake here, as we don't have any non-coherent
+mechanisms, but IIRC we wrote somewhere that it's recommended to have 64-byte
+cache lines in RISC-V implementations as software may assume that for
+performance reasons.  Not really a strong reason, but I'd prefer to just make
+these match.
