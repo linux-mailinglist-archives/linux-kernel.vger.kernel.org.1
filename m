@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E39DE2F5AFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 07:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 128CB2F5AFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 07:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727146AbhANGvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 01:51:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48856 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726644AbhANGvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 01:51:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05EA523977;
-        Thu, 14 Jan 2021 06:50:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610607038;
-        bh=gcgzaGpS/o/lzYiyBhYilYrNeDtX8uHvz/qFx6Euftw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EIe/oN01T1nF1O8rswELkC9Zc+BZT1R/SkEwGyQ6rhFUBxAfG5FHLfC4P7t/MsWhN
-         qirHG/80gIVAxqTV6xP6wfqr/ff7V/IJy9HFDe6+afHqEtmkwBeZUig3Ve5lAtkakb
-         WOkoRhJbPXxEK0tDKZt5viyx5KmHF5LS6IqCjhVeMMu1dvaShW/lqL+B84MmQ2utMG
-         2eHdFtarV2QghQta6imBj5bsLY4lC0NBycZeVXfmdZnrO94w/lPRvlHXEdxlIssSse
-         2M/5RfuFapqK3lpPTkqm4ISwT0g+lewWdasrrHb0atrgSrwqGSCTeGq0v824fayxcW
-         GD6GGHvSY0W7Q==
-Date:   Thu, 14 Jan 2021 15:50:34 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tools/bootconfig: Add tracing_on support to helper
- scripts
-Message-Id: <20210114155034.1132dc7d1c80a3da6a26d554@kernel.org>
-In-Reply-To: <20210113181158.1b9df04c@gandalf.local.home>
-References: <160749166410.3497930.14204335886811029800.stgit@devnote2>
-        <20210113181158.1b9df04c@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726438AbhANGy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 01:54:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725888AbhANGy5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 01:54:57 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8383C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 22:54:17 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id my11so3483552pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 22:54:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HYdrT8a6f0LVSrxXK4xev5Rwn6hJkcTFQFSmJHarTgc=;
+        b=GPQmUe3tJSZOpSWj3nAIihyHt7k4kvtbsPU2joLTvlD2ckj0+FMJwIQQXmYl4Y0ApL
+         nK5A/6/goVzYZk72RJ2l9KC1h1YLZ3G9op1AI/mHwsCm2VzGKXwkUxoSggXPNNmRP8aF
+         diDUPjvT0etWQeNOwTAsQpnPeWgj6Xvt8PT+k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HYdrT8a6f0LVSrxXK4xev5Rwn6hJkcTFQFSmJHarTgc=;
+        b=Ip34yjEdzDqvzckmARPwv14C/V6cWH15uzcr1nKpKUdUusKz0hbfDWT64dx5S9fUtA
+         o/Zqo7li/sGD6FasbGltKrStxXj96uoOIHGybilE4FZ7hGalW6Paiyu1eAYmOqyGsA8J
+         p/uHFhZjsl1C+w6F5tY9nqAcB+SLRPaU+VmUEUj+j+zbS7tz2A9GM8lghd83RuLhem8Z
+         DEHCnpFz9+ksH483jOC0Q1TZFlT2zOjMzUrZVMofz1JGaT+5Qm9tc7LL0F5P7dzhYJnp
+         0WfJaEqhTcXl0hND+iWRVF+T9PFdlZE26ApeXnvzhQyhUkVpCipYu+L6yp3ZwMhvw7kt
+         DIEA==
+X-Gm-Message-State: AOAM5336FeJ0QUTB4ileLziXxfE6BumeuiyZtbl7Fve/LUzozEBG62d1
+        fWMifYxkD6rXF27DbaIw4Yh4m4dPa7oimmDN
+X-Google-Smtp-Source: ABdhPJz5JZJR4nRH4Nfg1e1npHnVc4s7TRpx/+nEC/kJ4978coxtMnAOmGwm2zmQ1iW3USJMp89o5A==
+X-Received: by 2002:a17:90b:31cc:: with SMTP id jv12mr617846pjb.213.1610607256940;
+        Wed, 13 Jan 2021 22:54:16 -0800 (PST)
+Received: from localhost ([2401:fa00:1:10:725a:fff:fe46:44eb])
+        by smtp.gmail.com with ESMTPSA id a4sm4483186pgn.40.2021.01.13.22.54.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jan 2021 22:54:16 -0800 (PST)
+From:   Yu-Hsuan Hsu <yuhsuan@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH v6 1/2] cros_ec_commands: Add EC_CODEC_I2S_RX_RESET
+Date:   Thu, 14 Jan 2021 14:54:00 +0800
+Message-Id: <20210114065401.3498725-1-yuhsuan@chromium.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021 18:11:58 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Add the new command EC_CODEC_I2S_RX_RESET in ec_codec_i2s_rx_subcmd,
+which is used for resetting the EC codec.
 
-> 
-> Just noticed this patch. I'm adding it into my queue for the next merge
-> window, as it doesn't look too urgent.
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+---
+ include/linux/platform_data/cros_ec_commands.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Yes, it is not urgent, but it might be better to backport to 5.10.
-
-Thank you,
-
-
-> 
-> -- Steve
-> 
-> 
-> On Wed,  9 Dec 2020 14:27:44 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > Add ftrace.instance.INSTANCE.tracing_on support to ftrace2bconf.sh
-> > and bconf2ftrace.sh.
-> > 
-> > commit 8490db06f914 ("tracing/boot: Add per-instance tracing_on
-> > option support") added the per-instance tracing_on option,
-> > but forgot to update the helper scripts.
-> > 
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > ---
-> >  tools/bootconfig/scripts/bconf2ftrace.sh |    1 +
-> >  tools/bootconfig/scripts/ftrace2bconf.sh |    4 ++++
-> >  2 files changed, 5 insertions(+)
-> > 
-> > diff --git a/tools/bootconfig/scripts/bconf2ftrace.sh b/tools/bootconfig/scripts/bconf2ftrace.sh
-> > index 595e164dc352..feb30c2c7881 100755
-> > --- a/tools/bootconfig/scripts/bconf2ftrace.sh
-> > +++ b/tools/bootconfig/scripts/bconf2ftrace.sh
-> > @@ -152,6 +152,7 @@ setup_instance() { # [instance]
-> >  	set_array_of ${instance}.options ${instancedir}/trace_options
-> >  	set_value_of ${instance}.trace_clock ${instancedir}/trace_clock
-> >  	set_value_of ${instance}.cpumask ${instancedir}/tracing_cpumask
-> > +	set_value_of ${instance}.tracing_on ${instancedir}/tracing_on
-> >  	set_value_of ${instance}.tracer ${instancedir}/current_tracer
-> >  	set_array_of ${instance}.ftrace.filters \
-> >  		${instancedir}/set_ftrace_filter
-> > diff --git a/tools/bootconfig/scripts/ftrace2bconf.sh b/tools/bootconfig/scripts/ftrace2bconf.sh
-> > index 6c0d4b61e0c2..a0c3bcc6da4f 100755
-> > --- a/tools/bootconfig/scripts/ftrace2bconf.sh
-> > +++ b/tools/bootconfig/scripts/ftrace2bconf.sh
-> > @@ -221,6 +221,10 @@ instance_options() { # [instance-name]
-> >  	if [ `echo $val | sed -e s/f//g`x != x ]; then
-> >  		emit_kv $PREFIX.cpumask = $val
-> >  	fi
-> > +	val=`cat $INSTANCE/tracing_on`
-> > +	if [ `echo $val | sed -e s/f//g`x != x ]; then
-> > +		emit_kv $PREFIX.tracing_on = $val
-> > +	fi
-> >  
-> >  	val=
-> >  	for i in `cat $INSTANCE/set_event`; do
-> 
-
-
+diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+index 86376779ab31..95889ada83a3 100644
+--- a/include/linux/platform_data/cros_ec_commands.h
++++ b/include/linux/platform_data/cros_ec_commands.h
+@@ -4600,6 +4600,7 @@ enum ec_codec_i2s_rx_subcmd {
+ 	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
+ 	EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
+ 	EC_CODEC_I2S_RX_SET_BCLK = 0x4,
++	EC_CODEC_I2S_RX_RESET = 0x5,
+ 	EC_CODEC_I2S_RX_SUBCMD_COUNT,
+ };
+ 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.30.0.284.gd98b1dd5eaa7-goog
+
