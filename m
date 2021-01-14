@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983A82F6005
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE2E2F6007
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728847AbhANLa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 06:30:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54468 "EHLO
+        id S1728870AbhANLa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 06:30:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726259AbhANLaW (ORCPT
+        with ESMTP id S1726948AbhANLaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Jan 2021 06:30:22 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C051CC0613CF;
-        Thu, 14 Jan 2021 03:29:05 -0800 (PST)
-Date:   Thu, 14 Jan 2021 11:29:03 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DC6C0613D6;
+        Thu, 14 Jan 2021 03:29:07 -0800 (PST)
+Date:   Thu, 14 Jan 2021 11:29:05 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610623744;
+        s=2020; t=1610623746;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0d4H4xAV7z5JKBMuJ4lim7+30dNtAiDgyBQo/zPEODg=;
-        b=bhNjLQGplnI1zG6C7q0c7+N4GS3/4uSbq2foMlRqw/EY/uRe4ADomunadff+Fj0FBfdaYb
-        C2z8BvjLu5eMER+bNDPrvqpxAiVnLK7rotgsP4arXTayNp2xuGkJrf4gSyIx0/lkJV53CO
-        rtW8QUMfz5Fsesp5mwzs70SMzZesEM17A2Yeg6Nvrvfc9Abipys4Di5hZqRSdJC9BbvKcm
-        Aqt+hNJSg2cByM2Qrjvz5oGpg0J5lrw+b7wkSkRH7ZnPkaYR//z5LgmKBe+WngJtS/c05o
-        gct1Z/hAjWNAjs+lKdjtm0Se5tPFDIG1ZY3Zk+rI77Tr8M4JNfY+Dn5LMccPOA==
+        bh=/UusE7S7X/Bu4d8l/hL8T9ugF+/T68MT1V1isQyK0UQ=;
+        b=Yz/1srcsCEvHHQnke19KCI7znxgRWzb050x+LicErlxup7tGnTPbwgEYfUr6FCFbv224em
+        1Co+tFrXlDo27G38KCjiZ/H3aM1c5yFjpQdmXvKmLDqdKygzE3Af/epdXqrsuEgagEqT0H
+        CPeGB/d39pxNS3yQvj9r9LYTHldZ6MQLzZfPuLSse61uAi//Th3aWWT4n6tONvij1oS+YY
+        9/7A+p5mbRl3DzNobQEv2N/CtmkmD4tnUdt9qrQDZokVkVPcDqJEyQsupHCwOmrtG/EJTK
+        pHl6abORVIq5tBwYo+We9PIraQtoYMo074AQLN6IR8bj5oo/LLy/g2p2MPi/0w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610623744;
+        s=2020e; t=1610623746;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0d4H4xAV7z5JKBMuJ4lim7+30dNtAiDgyBQo/zPEODg=;
-        b=OSEALg1ZnvaSSgmtUx5qNsra/gjZ/gZXAHcrCmF+SGWzvnmTwqmW/TDe7Kdsu4Bi/yu6bh
-        B1T2TIfVftcKoXBg==
-From:   "tip-bot2 for Steve Wahl" <tip-bot2@linutronix.de>
+        bh=/UusE7S7X/Bu4d8l/hL8T9ugF+/T68MT1V1isQyK0UQ=;
+        b=61V8Zv5daCHVdWC1sJrQM+eGKFA51NwGEoQ85MKK+bOerACU2BIAIVsRhredi+fdfuFcDI
+        uYMk7J+7Wwy5wDAQ==
+From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/intel/uncore: Store the logical die id
- instead of the physical die id.
-Cc:     Steve Wahl <steve.wahl@hpe.com>,
+Subject: [tip: sched/core] sched/fair: Reduce cases for active balance
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210108153549.108989-2-steve.wahl@hpe.com>
-References: <20210108153549.108989-2-steve.wahl@hpe.com>
+In-Reply-To: <20210107103325.30851-4-vincent.guittot@linaro.org>
+References: <20210107103325.30851-4-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-Message-ID: <161062374374.414.13192548580822730268.tip-bot2@tip-bot2>
+Message-ID: <161062374566.414.13015378085673509435.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,339 +61,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     ba9506be4e402ee597b8f41204008b97989b5eef
-Gitweb:        https://git.kernel.org/tip/ba9506be4e402ee597b8f41204008b97989b5eef
-Author:        Steve Wahl <steve.wahl@hpe.com>
-AuthorDate:    Fri, 08 Jan 2021 09:35:48 -06:00
+Commit-ID:     e9b9734b74656abb585a7f6fabf1d30ce00e51ea
+Gitweb:        https://git.kernel.org/tip/e9b9734b74656abb585a7f6fabf1d30ce00e51ea
+Author:        Vincent Guittot <vincent.guittot@linaro.org>
+AuthorDate:    Thu, 07 Jan 2021 11:33:25 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 14 Jan 2021 11:20:13 +01:00
+CommitterDate: Thu, 14 Jan 2021 11:20:11 +01:00
 
-perf/x86/intel/uncore: Store the logical die id instead of the physical die id.
+sched/fair: Reduce cases for active balance
 
-The phys_id isn't really used other than to map to a logical die id.
-Calculate the logical die id earlier, and store that instead of the
-phys_id.
+Active balance is triggered for a number of voluntary cases like misfit
+or pinned tasks cases but also after that a number of load balance
+attempts failed to migrate a task. There is no need to use active load
+balance when the group is overloaded because an overloaded state means
+that there is at least one waiting task. Nevertheless, the waiting task
+is not selected and detached until the threshold becomes higher than its
+load. This threshold increases with the number of failed lb (see the
+condition if ((load >> env->sd->nr_balance_failed) > env->imbalance) in
+detach_tasks()) and the waiting task will end up to be selected after a
+number of attempts.
 
-Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-Link: https://lkml.kernel.org/r/20210108153549.108989-2-steve.wahl@hpe.com
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Acked-by: Mel Gorman <mgorman@suse.de>
+Link: https://lkml.kernel.org/r/20210107103325.30851-4-vincent.guittot@linaro.org
 ---
- arch/x86/events/intel/uncore.c       | 58 +++++++++------------------
- arch/x86/events/intel/uncore.h       |  5 +--
- arch/x86/events/intel/uncore_snb.c   |  2 +-
- arch/x86/events/intel/uncore_snbep.c | 31 ++++++--------
- 4 files changed, 39 insertions(+), 57 deletions(-)
+ kernel/sched/fair.c | 45 ++++++++++++++++++++++----------------------
+ 1 file changed, 23 insertions(+), 22 deletions(-)
 
-diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
-index 357258f..33c8180 100644
---- a/arch/x86/events/intel/uncore.c
-+++ b/arch/x86/events/intel/uncore.c
-@@ -31,21 +31,21 @@ struct event_constraint uncore_constraint_empty =
- 
- MODULE_LICENSE("GPL");
- 
--int uncore_pcibus_to_physid(struct pci_bus *bus)
-+int uncore_pcibus_to_dieid(struct pci_bus *bus)
- {
- 	struct pci2phy_map *map;
--	int phys_id = -1;
-+	int die_id = -1;
- 
- 	raw_spin_lock(&pci2phy_map_lock);
- 	list_for_each_entry(map, &pci2phy_map_head, list) {
- 		if (map->segment == pci_domain_nr(bus)) {
--			phys_id = map->pbus_to_physid[bus->number];
-+			die_id = map->pbus_to_dieid[bus->number];
- 			break;
- 		}
- 	}
- 	raw_spin_unlock(&pci2phy_map_lock);
- 
--	return phys_id;
-+	return die_id;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 48f99c8..53802b7 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9512,13 +9512,32 @@ asym_active_balance(struct lb_env *env)
  }
  
- static void uncore_free_pcibus_map(void)
-@@ -86,7 +86,7 @@ lookup:
- 	alloc = NULL;
- 	map->segment = segment;
- 	for (i = 0; i < 256; i++)
--		map->pbus_to_physid[i] = -1;
-+		map->pbus_to_dieid[i] = -1;
- 	list_add_tail(&map->list, &pci2phy_map_head);
- 
- end:
-@@ -332,7 +332,6 @@ static struct intel_uncore_box *uncore_alloc_box(struct intel_uncore_type *type,
- 
- 	uncore_pmu_init_hrtimer(box);
- 	box->cpu = -1;
--	box->pci_phys_id = -1;
- 	box->dieid = -1;
- 
- 	/* set default hrtimer timeout */
-@@ -993,18 +992,11 @@ uncore_types_init(struct intel_uncore_type **types, bool setid)
- /*
-  * Get the die information of a PCI device.
-  * @pdev: The PCI device.
-- * @phys_id: The physical socket id which the device maps to.
-  * @die: The die id which the device maps to.
-  */
--static int uncore_pci_get_dev_die_info(struct pci_dev *pdev,
--				       int *phys_id, int *die)
-+static int uncore_pci_get_dev_die_info(struct pci_dev *pdev, int *die)
+ static inline bool
+-voluntary_active_balance(struct lb_env *env)
++imbalanced_active_balance(struct lb_env *env)
++{
++	struct sched_domain *sd = env->sd;
++
++	/*
++	 * The imbalanced case includes the case of pinned tasks preventing a fair
++	 * distribution of the load on the system but also the even distribution of the
++	 * threads on a system with spare capacity
++	 */
++	if ((env->migration_type == migrate_task) &&
++	    (sd->nr_balance_failed > sd->cache_nice_tries+2))
++		return 1;
++
++	return 0;
++}
++
++static int need_active_balance(struct lb_env *env)
  {
--	*phys_id = uncore_pcibus_to_physid(pdev->bus);
--	if (*phys_id < 0)
--		return -ENODEV;
+ 	struct sched_domain *sd = env->sd;
+ 
+ 	if (asym_active_balance(env))
+ 		return 1;
+ 
++	if (imbalanced_active_balance(env))
++		return 1;
++
+ 	/*
+ 	 * The dst_cpu is idle and the src_cpu CPU has only 1 CFS task.
+ 	 * It's worth migrating the task if the src_cpu's capacity is reduced
+@@ -9538,16 +9557,6 @@ voluntary_active_balance(struct lb_env *env)
+ 	return 0;
+ }
+ 
+-static int need_active_balance(struct lb_env *env)
+-{
+-	struct sched_domain *sd = env->sd;
 -
--	*die = (topology_max_die_per_package() > 1) ? *phys_id :
--				topology_phys_to_logical_pkg(*phys_id);
-+	*die = uncore_pcibus_to_dieid(pdev->bus);
- 	if (*die < 0)
- 		return -EINVAL;
- 
-@@ -1046,13 +1038,12 @@ uncore_pci_find_dev_pmu(struct pci_dev *pdev, const struct pci_device_id *ids)
-  * @pdev: The PCI device.
-  * @type: The corresponding PMU type of the device.
-  * @pmu: The corresponding PMU of the device.
-- * @phys_id: The physical socket id which the device maps to.
-  * @die: The die id which the device maps to.
-  */
- static int uncore_pci_pmu_register(struct pci_dev *pdev,
- 				   struct intel_uncore_type *type,
- 				   struct intel_uncore_pmu *pmu,
--				   int phys_id, int die)
-+				   int die)
- {
- 	struct intel_uncore_box *box;
- 	int ret;
-@@ -1070,7 +1061,6 @@ static int uncore_pci_pmu_register(struct pci_dev *pdev,
- 		WARN_ON_ONCE(pmu->func_id != pdev->devfn);
- 
- 	atomic_inc(&box->refcnt);
--	box->pci_phys_id = phys_id;
- 	box->dieid = die;
- 	box->pci_dev = pdev;
- 	box->pmu = pmu;
-@@ -1097,9 +1087,9 @@ static int uncore_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id
- {
- 	struct intel_uncore_type *type;
- 	struct intel_uncore_pmu *pmu = NULL;
--	int phys_id, die, ret;
-+	int die, ret;
- 
--	ret = uncore_pci_get_dev_die_info(pdev, &phys_id, &die);
-+	ret = uncore_pci_get_dev_die_info(pdev, &die);
- 	if (ret)
- 		return ret;
- 
-@@ -1132,7 +1122,7 @@ static int uncore_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id
- 		pmu = &type->pmus[UNCORE_PCI_DEV_IDX(id->driver_data)];
- 	}
- 
--	ret = uncore_pci_pmu_register(pdev, type, pmu, phys_id, die);
-+	ret = uncore_pci_pmu_register(pdev, type, pmu, die);
- 
- 	pci_set_drvdata(pdev, pmu->boxes[die]);
- 
-@@ -1142,17 +1132,12 @@ static int uncore_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id
- /*
-  * Unregister the PMU of a PCI device
-  * @pmu: The corresponding PMU is unregistered.
-- * @phys_id: The physical socket id which the device maps to.
-  * @die: The die id which the device maps to.
-  */
--static void uncore_pci_pmu_unregister(struct intel_uncore_pmu *pmu,
--				      int phys_id, int die)
-+static void uncore_pci_pmu_unregister(struct intel_uncore_pmu *pmu, int die)
- {
- 	struct intel_uncore_box *box = pmu->boxes[die];
- 
--	if (WARN_ON_ONCE(phys_id != box->pci_phys_id))
--		return;
+-	if (voluntary_active_balance(env))
+-		return 1;
 -
- 	pmu->boxes[die] = NULL;
- 	if (atomic_dec_return(&pmu->activeboxes) == 0)
- 		uncore_pmu_unregister(pmu);
-@@ -1164,9 +1149,9 @@ static void uncore_pci_remove(struct pci_dev *pdev)
- {
- 	struct intel_uncore_box *box;
- 	struct intel_uncore_pmu *pmu;
--	int i, phys_id, die;
-+	int i, die;
+-	return unlikely(sd->nr_balance_failed > sd->cache_nice_tries+2);
+-}
+-
+ static int active_load_balance_cpu_stop(void *data);
  
--	if (uncore_pci_get_dev_die_info(pdev, &phys_id, &die))
-+	if (uncore_pci_get_dev_die_info(pdev, &die))
- 		return;
- 
- 	box = pci_get_drvdata(pdev);
-@@ -1185,7 +1170,7 @@ static void uncore_pci_remove(struct pci_dev *pdev)
- 
- 	pci_set_drvdata(pdev, NULL);
- 
--	uncore_pci_pmu_unregister(pmu, phys_id, die);
-+	uncore_pci_pmu_unregister(pmu, die);
- }
- 
- static int uncore_bus_notify(struct notifier_block *nb,
-@@ -1194,7 +1179,7 @@ static int uncore_bus_notify(struct notifier_block *nb,
- 	struct device *dev = data;
- 	struct pci_dev *pdev = to_pci_dev(dev);
- 	struct intel_uncore_pmu *pmu;
--	int phys_id, die;
-+	int die;
- 
- 	/* Unregister the PMU when the device is going to be deleted. */
- 	if (action != BUS_NOTIFY_DEL_DEVICE)
-@@ -1204,10 +1189,10 @@ static int uncore_bus_notify(struct notifier_block *nb,
- 	if (!pmu)
- 		return NOTIFY_DONE;
- 
--	if (uncore_pci_get_dev_die_info(pdev, &phys_id, &die))
-+	if (uncore_pci_get_dev_die_info(pdev, &die))
- 		return NOTIFY_DONE;
- 
--	uncore_pci_pmu_unregister(pmu, phys_id, die);
-+	uncore_pci_pmu_unregister(pmu, die);
- 
- 	return NOTIFY_OK;
- }
-@@ -1224,7 +1209,7 @@ static void uncore_pci_sub_driver_init(void)
- 	struct pci_dev *pci_sub_dev;
- 	bool notify = false;
- 	unsigned int devfn;
--	int phys_id, die;
-+	int die;
- 
- 	while (ids && ids->vendor) {
- 		pci_sub_dev = NULL;
-@@ -1244,12 +1229,11 @@ static void uncore_pci_sub_driver_init(void)
- 			if (!pmu)
- 				continue;
- 
--			if (uncore_pci_get_dev_die_info(pci_sub_dev,
--							&phys_id, &die))
-+			if (uncore_pci_get_dev_die_info(pci_sub_dev, &die))
- 				continue;
- 
- 			if (!uncore_pci_pmu_register(pci_sub_dev, type, pmu,
--						     phys_id, die))
-+						     die))
- 				notify = true;
+ static int should_we_balance(struct lb_env *env)
+@@ -9800,21 +9809,13 @@ more_balance:
+ 			/* We've kicked active balancing, force task migration. */
+ 			sd->nr_balance_failed = sd->cache_nice_tries+1;
  		}
- 		ids++;
-diff --git a/arch/x86/events/intel/uncore.h b/arch/x86/events/intel/uncore.h
-index 9efea15..a3c6e16 100644
---- a/arch/x86/events/intel/uncore.h
-+++ b/arch/x86/events/intel/uncore.h
-@@ -124,7 +124,6 @@ struct intel_uncore_extra_reg {
- };
+-	} else
++	} else {
+ 		sd->nr_balance_failed = 0;
++	}
  
- struct intel_uncore_box {
--	int pci_phys_id;
- 	int dieid;	/* Logical die ID */
- 	int n_active;	/* number of active events */
- 	int n_events;
-@@ -173,11 +172,11 @@ struct freerunning_counters {
- struct pci2phy_map {
- 	struct list_head list;
- 	int segment;
--	int pbus_to_physid[256];
-+	int pbus_to_dieid[256];
- };
- 
- struct pci2phy_map *__find_pci2phy_map(int segment);
--int uncore_pcibus_to_physid(struct pci_bus *bus);
-+int uncore_pcibus_to_dieid(struct pci_bus *bus);
- 
- ssize_t uncore_event_show(struct device *dev,
- 			  struct device_attribute *attr, char *buf);
-diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
-index 098f893..5127128 100644
---- a/arch/x86/events/intel/uncore_snb.c
-+++ b/arch/x86/events/intel/uncore_snb.c
-@@ -657,7 +657,7 @@ int snb_pci2phy_map_init(int devid)
- 		pci_dev_put(dev);
- 		return -ENOMEM;
+-	if (likely(!active_balance) || voluntary_active_balance(&env)) {
++	if (likely(!active_balance) || need_active_balance(&env)) {
+ 		/* We were unbalanced, so reset the balancing interval */
+ 		sd->balance_interval = sd->min_interval;
+-	} else {
+-		/*
+-		 * If we've begun active balancing, start to back off. This
+-		 * case may not be covered by the all_pinned logic if there
+-		 * is only 1 task on the busy runqueue (because we don't call
+-		 * detach_tasks).
+-		 */
+-		if (sd->balance_interval < sd->max_interval)
+-			sd->balance_interval *= 2;
  	}
--	map->pbus_to_physid[bus] = 0;
-+	map->pbus_to_dieid[bus] = 0;
- 	raw_spin_unlock(&pci2phy_map_lock);
  
- 	pci_dev_put(dev);
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 7bdb182..2d7014d 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -1359,7 +1359,7 @@ static struct pci_driver snbep_uncore_pci_driver = {
- static int snbep_pci2phy_map_init(int devid, int nodeid_loc, int idmap_loc, bool reverse)
- {
- 	struct pci_dev *ubox_dev = NULL;
--	int i, bus, nodeid, segment;
-+	int i, bus, nodeid, segment, die_id;
- 	struct pci2phy_map *map;
- 	int err = 0;
- 	u32 config = 0;
-@@ -1395,7 +1395,11 @@ static int snbep_pci2phy_map_init(int devid, int nodeid_loc, int idmap_loc, bool
- 		 */
- 		for (i = 0; i < 8; i++) {
- 			if (nodeid == ((config >> (3 * i)) & 0x7)) {
--				map->pbus_to_physid[bus] = i;
-+				if (topology_max_die_per_package() > 1)
-+					die_id = i;
-+				else
-+					die_id = topology_phys_to_logical_pkg(i);
-+				map->pbus_to_dieid[bus] = die_id;
- 				break;
- 			}
- 		}
-@@ -1412,17 +1416,17 @@ static int snbep_pci2phy_map_init(int devid, int nodeid_loc, int idmap_loc, bool
- 			i = -1;
- 			if (reverse) {
- 				for (bus = 255; bus >= 0; bus--) {
--					if (map->pbus_to_physid[bus] >= 0)
--						i = map->pbus_to_physid[bus];
-+					if (map->pbus_to_dieid[bus] >= 0)
-+						i = map->pbus_to_dieid[bus];
- 					else
--						map->pbus_to_physid[bus] = i;
-+						map->pbus_to_dieid[bus] = i;
- 				}
- 			} else {
- 				for (bus = 0; bus <= 255; bus++) {
--					if (map->pbus_to_physid[bus] >= 0)
--						i = map->pbus_to_physid[bus];
-+					if (map->pbus_to_dieid[bus] >= 0)
-+						i = map->pbus_to_dieid[bus];
- 					else
--						map->pbus_to_physid[bus] = i;
-+						map->pbus_to_dieid[bus] = i;
- 				}
- 			}
- 		}
-@@ -4646,19 +4650,14 @@ int snr_uncore_pci_init(void)
- static struct pci_dev *snr_uncore_get_mc_dev(int id)
- {
- 	struct pci_dev *mc_dev = NULL;
--	int phys_id, pkg;
-+	int pkg;
- 
- 	while (1) {
- 		mc_dev = pci_get_device(PCI_VENDOR_ID_INTEL, 0x3451, mc_dev);
- 		if (!mc_dev)
- 			break;
--		phys_id = uncore_pcibus_to_physid(mc_dev->bus);
--		if (phys_id < 0)
--			continue;
--		pkg = topology_phys_to_logical_pkg(phys_id);
--		if (pkg < 0)
--			continue;
--		else if (pkg == id)
-+		pkg = uncore_pcibus_to_dieid(mc_dev->bus);
-+		if (pkg == id)
- 			break;
- 	}
- 	return mc_dev;
+ 	goto out;
