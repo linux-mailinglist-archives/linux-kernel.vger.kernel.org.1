@@ -2,112 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270742F6E1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF432F6E26
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730665AbhANWXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 17:23:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730584AbhANWXx (ORCPT
+        id S1730682AbhANWYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 17:24:54 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:52044 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729891AbhANWYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 17:23:53 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F0CC0613C1;
-        Thu, 14 Jan 2021 14:23:12 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 14 Jan 2021 17:24:54 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610663069; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=FZgFCzgmq7rdQxKcmeYNYnl48o3AMxZVO3hSa/M7cEw=; b=s4JuymUU/ubIO3l2pxnbIk+ot23v0c7JMP3i2vctGKvaiXCy1LEPcAxz4XO4iH4OXDsGucYv
+ tW/Hktk9wT9KLXLvkSDyJdsNk2p6COjGf5MjsjVnl2AZtyk1wzzhBLv/z0tjmYGFlqXg7LRY
+ /yP8s3bewXfZJ9ZIPn/mhrtLLO8=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6000c47646a6c7cde7de4227 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 22:23:50
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0FBA8C43464; Thu, 14 Jan 2021 22:23:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DGzND3V0bz9sVX;
-        Fri, 15 Jan 2021 09:23:08 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1610662989;
-        bh=FYJ/k0W9Ty7RWBAAi6vztPgKWINJpYMQQ8/JzNdEgpY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=aUhxoJfI7yZOIbh3nZYoj2JQWjXBQz3F8Ia2HaLeALEnBwATyaiU4wDkuHPlzA5ri
-         kWT0GoEhreytc0lJLUgteS/RxgPW+JAYW2w4d3fDqZ1tm0xzLV2BQ6IJompeLjJ0gb
-         K6AFrFAgI+DOhpLxI1AvBbRUZYskrK31Xyr7fblHmOs8TI1w7L/8lIESHRjxJrZg9Z
-         DgeA0vlkF7JPzAFfucYqsAzQSBh3/vwzc6oHMDVL4IhttlhrkB6S08utqxKJ8ewInl
-         zUMSvHd6fUFOrepyz4xCUXBZ/vaL/YMmQHCg35InbOcRVWsYpcRXigxcfKwef3IuzA
-         L9rjydPG2w2YQ==
-Date:   Fri, 15 Jan 2021 09:23:01 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tags need some work in the battery tree
-Message-ID: <20210115092301.4c1f4893@canb.auug.org.au>
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F2864C433C6;
+        Thu, 14 Jan 2021 22:23:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F2864C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Thu, 14 Jan 2021 15:23:43 -0700
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org
+Subject: Re: [PATCH v3 5/7] drm/msm/a5xx: Fix VPC protect value in gpu_write()
+Message-ID: <20210114222343.GD29638@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+        robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org
+References: <20210113183339.446239-1-angelogioacchino.delregno@somainline.org>
+ <20210113183339.446239-6-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/NxvgCWvkJb1GkFF=pgSiY=_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113183339.446239-6-angelogioacchino.delregno@somainline.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/NxvgCWvkJb1GkFF=pgSiY=_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jan 13, 2021 at 07:33:37PM +0100, AngeloGioacchino Del Regno wrote:
+> From: Konrad Dybcio <konrad.dybcio@somainline.org>
+> 
+> The upstream API for some reason uses logbase2 instead of
+> just passing the argument as-is, whereas downstream CAF
+> kernel does the latter.
+> 
+> Hence, a mistake has been made when porting:
+> 4 is the value that's supposed to be passed, but
+> log2(4) = 2. Changing the value to 16 (= 2^4) fixes
+> the issue.
 
-Hi all,
+I like keeping it in human readable values because its easier to visually
+identify how many registers are saved without doing math.
 
-In commit
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
 
-  c339b3aec780 ("power: supply: cpcap-battery: Fix missing power_supply_put=
-()")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>  drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> index 66980f4cd93e..24ab51bb5a01 100644
+> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> @@ -821,7 +821,7 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
+>  
+>  	/* VPC */
+>  	gpu_write(gpu, REG_A5XX_CP_PROTECT(14), ADRENO_PROTECT_RW(0xE68, 8));
+> -	gpu_write(gpu, REG_A5XX_CP_PROTECT(15), ADRENO_PROTECT_RW(0xE70, 4));
+> +	gpu_write(gpu, REG_A5XX_CP_PROTECT(15), ADRENO_PROTECT_RW(0xE70, 16));
+>  
+>  	/* UCHE */
+>  	gpu_write(gpu, REG_A5XX_CP_PROTECT(16), ADRENO_PROTECT_RW(0xE80, 16));
+> -- 
+> 2.29.2
+> 
 
-Fixes tag
-
-  Fixes: b0134cc14b9 ("power: supply: cpcap-battery: Fix handling of lowere=
-d charger voltage")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 8b0134cc14b9 ("power: supply: cpcap-battery: Fix handling of lowered=
- charger voltage")
-
-In commit
-
-  efa32492629a ("power: supply: cpcap-charger: Fix missing power_supply_put=
-()")
-
-Fixes tag
-
-  Fixes: 688ea049233 ("power: supply: cpcap-charger: Allow changing constan=
-t charge voltage")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 5688ea049233 ("power: supply: cpcap-charger: Allow changing constant=
- charge voltage")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/NxvgCWvkJb1GkFF=pgSiY=_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAAxEUACgkQAVBC80lX
-0GzQtAf7BcZ3rT3zMvzMPVfozgewG6DsfLL/7l5Fb0zIXOwDKfL0+AXd+hZsnXJB
-0tr28mNEEY2ZtgaOLeMMyPAO+kiDjvV8TVvhsDAlgO1c2b9vSwJ1Di8K7R4ubF2a
-sRTbOkV4Rk1D3AXmu8XJyR97MF98HTZTdk7JGP/rS3EoM1DyZ8Lq/Dt+LCWP4X7l
-eOLvm4nSZZPY7dZgEugmZatlR0wcrL/xyZ4NcvJBAGSdQWXUXIfEQkQh2AAMZpqM
-iBdYq7PNqCwRPrxPEqOhBn+7sq5ZVwT8fF2TuAlFd9NcKKkMtOaWaiZdACyQj+G2
-opBGxDGSdFJa/qBHUHcLoD7/xPaq4Q==
-=xreV
------END PGP SIGNATURE-----
-
---Sig_/NxvgCWvkJb1GkFF=pgSiY=_--
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
