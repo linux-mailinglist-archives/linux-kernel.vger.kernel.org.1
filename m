@@ -2,194 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F18B2F669E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67AB42F66AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbhANREA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:04:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbhANRD7 (ORCPT
+        id S1726929AbhANRE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:04:56 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:60670 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbhANRE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:03:59 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B23C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:03:19 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id s75so6621332oih.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:03:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+/j75diR2guucFzV679rMmTuRdnH7rcJNIuUAmVd6H0=;
-        b=MZGOCDgqzL9LvaTVCiymRsVtNTV9oFe56mjzIyeKmdJgMHJiKkKLeuwnsldFTF9a3j
-         wmJWS1a6Z1ghmj4N+3N3X8sv5BldyZOtsRVXDLXC6F3fliWwnFHG86YnsWQhvzYCJW2F
-         gO9rPqrWzWwdRpf8tA9kV9Doa78xA0FT98R0S7m8CdteDZON05b15YlE1lnbUSKIoNtA
-         ixVR99H1Px13JdSPSxBHl+HZ8WwDghzpGywQL5xp/QXpLV+qo0SWS2UpPQqNgO2wOlcP
-         SUVKs/6kGqvwj7jQ6qUnsaAJshTPaYTplncFyGNafGhXw+MZQggMANPeLmyLNOCYjbxt
-         lOOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+/j75diR2guucFzV679rMmTuRdnH7rcJNIuUAmVd6H0=;
-        b=JBg4m+TBFCKKc1ML+0b1smEyjBPb0GI72/qyqUyS8LByJzEp+Q7z+YrnG7VudLkcup
-         n/NJHlSRLjJfZO/596xur9sQsjvLSGIEhnmwAs6A8s0uD7KfPY26Ql9szRqgsaQZfFnF
-         58i5Wr/+6HN4951s6av1gB4GEFqzCS8+dP/atumuIVAkAAD9EqkfecnROH69TwuSzWet
-         D3cdIOno2HunZzgIWkDFvrDQ2T5Erb8Jh6vEAUd4/uh9Fv1cQdgTM5gsJaC12/uKkYLv
-         Fk8XnQsjUwizzMU4GvLtmdnNcugfLgu/1HHSwWSgat4hhoWvk70Gg//6DIL+vrxZWlF/
-         EcxQ==
-X-Gm-Message-State: AOAM530WaEP/wJbLORiKQfrqtpunRgZuuyXvsJAwOk2WlhatrGdeOHyB
-        NcvTElOe0Pp2CoNxWHUWd9lSfbq+XzDxRQ1G9Es=
-X-Google-Smtp-Source: ABdhPJxpJ72MBLuQ53Q0axY/aqRfj9CUGz65ZAWYoFEPZMgXlRoKQbSsKAMqLL4jpPT5aW4fRk7oCCmGEuTPj7IPJbc=
-X-Received: by 2002:aca:6202:: with SMTP id w2mr2972991oib.5.1610643799058;
- Thu, 14 Jan 2021 09:03:19 -0800 (PST)
+        Thu, 14 Jan 2021 12:04:56 -0500
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610643853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=U1fiNiwuw8Nonab0CYVxFTF4cWMDykMKkFX15QDXWLY=;
+        b=giZ9pQH/QGhQCJd5tlwXJFoz1y9z/k7r8BABZINeHeHlFfWAeBBbvLMrTllaOSilUp1/Be
+        UFJXJPrmZgAIRB3XRbgIIdoIbCfR/X+Rt5QAN/cFZywtT/erjwC8szPTJboCdwzS6AaFZ8
+        dxZnvjvkOH2I06pYM7nfa7bgwzXRUwa/phh5R8YNey1YI3VLXBhMGkMuDOOrWokr1MjcDl
+        aeMH5cPWjwtNmdLllYOIbwEH+aeg2YgVkYwMrJULHutRLd0GGG3oDynCDa6Rf2bl/PFlgW
+        Y+f7VkyivyrYw+ttEL1/ttVDgA293SVi/J26Z4GHS836PwkSf4xK5IOCMN3x0Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610643853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=U1fiNiwuw8Nonab0CYVxFTF4cWMDykMKkFX15QDXWLY=;
+        b=D9EcZKQhAvkk7eUew0M/11R7Y/U2mJRwW86na5cEt/aUWIRSrmbzdawwaI1pU7Uox2D5um
+        Ch10GFhb7K7bV3BQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] printk: fix buffer overflow potential for print_text()
+Date:   Thu, 14 Jan 2021 18:10:12 +0106
+Message-Id: <20210114170412.4819-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-References: <20210113080752.1003793-1-lee.jones@linaro.org> <20210113080752.1003793-3-lee.jones@linaro.org>
-In-Reply-To: <20210113080752.1003793-3-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 14 Jan 2021 12:03:07 -0500
-Message-ID: <CADnq5_M-FtSgp3NQhiDQTOrOMxhAo-L0WJFg779uC96cKGhuNw@mail.gmail.com>
-Subject: Re: [PATCH 02/30] drm/amd/include/renoir_ip_offset: Mark top-level
- IP_BASE as __maybe_unused
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 3:08 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:226:29: warning=
-: =E2=80=98UVD0_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:219:29: warning=
-: =E2=80=98USB0_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:212:29: warning=
-: =E2=80=98UMC_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:205:29: warning=
-: =E2=80=98THM_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:198:29: warning=
-: =E2=80=98SMUIO_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
-e=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:191:29: warning=
-: =E2=80=98SDMA0_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
-e=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:184:29: warning=
-: =E2=80=98PCIE0_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
-e=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:177:29: warning=
-: =E2=80=98OSSSYS_BASE=E2=80=99 defined but not used [-Wunused-const-variab=
-le=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:172:29: warning=
-: =E2=80=98DCN_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:165:29: warning=
-: =E2=80=98NBIF0_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
-e=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:158:29: warning=
-: =E2=80=98MP1_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:151:29: warning=
-: =E2=80=98MP0_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:144:29: warning=
-: =E2=80=98MMHUB_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
-e=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:137:29: warning=
-: =E2=80=98L2IMU0_BASE=E2=80=99 defined but not used [-Wunused-const-variab=
-le=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:130:29: warning=
-: =E2=80=98ISP_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:123:29: warning=
-: =E2=80=98IOHC0_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
-e=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:116:29: warning=
-: =E2=80=98HDP_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:109:29: warning=
-: =E2=80=98HDA_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:102:29: warning=
-: =E2=80=98GC_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:95:29: warning:=
- =E2=80=98FUSE_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:88:29: warning:=
- =E2=80=98DPCS_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:81:29: warning:=
- =E2=80=98DMU_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:74:29: warning:=
- =E2=80=98DIO_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:67:29: warning:=
- =E2=80=98DF_BASE=E2=80=99 defined but not used [-Wunused-const-variable=3D=
-]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:60:29: warning:=
- =E2=80=98DBGU_IO0_BASE=E2=80=99 defined but not used [-Wunused-const-varia=
-ble=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:53:29: warning:=
- =E2=80=98CLK_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:46:29: warning:=
- =E2=80=98ATHUB_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:39:29: warning:=
- =E2=80=98ACP_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Before commit b6cf8b3f3312 ("printk: add lockless ringbuffer"),
+msg_print_text() would only write up to size-1 bytes into the
+provided buffer. Some callers expect this behavior and append
+a terminator to returned string. In particular:
 
-Applied.  Thanks!
+arch/powerpc/xmon/xmon.c:dump_log_buf()
+arch/um/kernel/kmsg_dump.c:kmsg_dumper_stdout()
 
-Alex
+msg_print_text() has been replaced by record_print_text(), which
+currently fills the full size of the buffer. This causes a
+buffer overflow for the above callers.
 
-> ---
->  drivers/gpu/drm/amd/include/renoir_ip_offset.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/include/renoir_ip_offset.h b/drivers/gpu=
-/drm/amd/include/renoir_ip_offset.h
-> index 07633e22e99a1..7dff85c81e5a7 100644
-> --- a/drivers/gpu/drm/amd/include/renoir_ip_offset.h
-> +++ b/drivers/gpu/drm/amd/include/renoir_ip_offset.h
-> @@ -33,7 +33,7 @@ struct IP_BASE_INSTANCE
->  struct IP_BASE
->  {
->      struct IP_BASE_INSTANCE instance[MAX_INSTANCE];
-> -};
-> +} __maybe_unused;
->
->
->  static const struct IP_BASE ACP_BASE =3D{ { { { 0x02403800, 0x00480000, =
-0, 0, 0 } },
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Change record_print_text() so that it will only use size-1 bytes
+for text data. Also, for paranoia sakes, add a terminator after
+the text data.
+
+And finally, document this behavior so that it is clear that only
+size-1 bytes are used and a terminator is added.
+
+Fixes: b6cf8b3f3312 ("printk: add lockless ringbuffer")
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+ kernel/printk/printk.c | 35 +++++++++++++++++++++++++++--------
+ 1 file changed, 27 insertions(+), 8 deletions(-)
+
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index ffdd0dc7ec6d..73f9eae19f05 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -1293,9 +1293,15 @@ static size_t info_print_prefix(const struct printk_info  *info, bool syslog,
+  *   - Add prefix for each line.
+  *   - Add the trailing newline that has been removed in vprintk_store().
+  *   - Drop truncated lines that do not longer fit into the buffer.
++ *   - Add a trailing newline.
++ *   - Add a string terminator.
++ *
++ * Since the produced string is always terminated, the maximum possible
++ * return value is @r->text_buf_size - 1;
+  *
+  * Return: The length of the updated/prepared text, including the added
+- * prefixes and the newline. The dropped line(s) are not counted.
++ * prefixes and the newline. The terminator is not counted. The dropped
++ * line(s) are not counted.
+  */
+ static size_t record_print_text(struct printk_record *r, bool syslog,
+ 				bool time)
+@@ -1338,26 +1344,31 @@ static size_t record_print_text(struct printk_record *r, bool syslog,
+ 
+ 		/*
+ 		 * Truncate the text if there is not enough space to add the
+-		 * prefix and a trailing newline.
++		 * prefix and a trailing newline and a terminator.
+ 		 */
+-		if (len + prefix_len + text_len + 1 > buf_size) {
++		if (len + prefix_len + text_len + 1 + 1 > buf_size) {
+ 			/* Drop even the current line if no space. */
+-			if (len + prefix_len + line_len + 1 > buf_size)
++			if (len + prefix_len + line_len + 1 + 1 > buf_size)
+ 				break;
+ 
+-			text_len = buf_size - len - prefix_len - 1;
++			text_len = buf_size - len - prefix_len - 1 - 1;
+ 			truncated = true;
+ 		}
+ 
+ 		memmove(text + prefix_len, text, text_len);
+ 		memcpy(text, prefix, prefix_len);
+ 
++		/*
++		 * Increment the prepared length to include the text and
++		 * prefix that were just moved+copied. Also increment for the
++		 * newline at the end of this line. If this is the last line,
++		 * there is no newline, but it will be added immediately below.
++		 */
+ 		len += prefix_len + line_len + 1;
+-
+ 		if (text_len == line_len) {
+ 			/*
+-			 * Add the trailing newline removed in
+-			 * vprintk_store().
++			 * This is the last line. Add the trailing newline
++			 * removed in vprintk_store().
+ 			 */
+ 			text[prefix_len + line_len] = '\n';
+ 			break;
+@@ -1382,6 +1393,14 @@ static size_t record_print_text(struct printk_record *r, bool syslog,
+ 		text_len -= line_len + 1;
+ 	}
+ 
++	/*
++	 * If a buffer was provided, it will be terminated. Space for the
++	 * string terminator is guaranteed to be available. The terminator is
++	 * not counted in the return value.
++	 */
++	if (buf_size > 0)
++		text[len] = 0;
++
+ 	return len;
+ }
+ 
+-- 
+2.20.1
+
