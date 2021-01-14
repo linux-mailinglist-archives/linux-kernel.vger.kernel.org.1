@@ -2,162 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118FA2F5CBA
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD572F5CBB
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:01:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727720AbhANJAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727791AbhANJAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:00:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727634AbhANJAG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Jan 2021 04:00:06 -0500
-Received: from mga18.intel.com ([134.134.136.126]:38938 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727632AbhANJAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:00:06 -0500
-IronPort-SDR: dlt3cmZG2vK+hvpBPRVYzTxFHXZZXn+W6smsi8JBxmFfwNF97ztQZbEEEEOITZ10Q3BrVejtyf
- y54ubo+dp87g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="166005758"
-X-IronPort-AV: E=Sophos;i="5.79,346,1602572400"; 
-   d="scan'208";a="166005758"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 00:58:37 -0800
-IronPort-SDR: VDfZHKwFzx84YTFDConwZBa/HwsLp8PJtgdveSAV4AesjLfkptxoPYNUZFO3GswIxqBMPAr2br
- qlmpn5FxE5ng==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,346,1602572400"; 
-   d="scan'208";a="465189266"
-Received: from allen-box.sh.intel.com ([10.239.159.28])
-  by fmsmga001.fm.intel.com with ESMTP; 14 Jan 2021 00:58:34 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 1/1] iommu/vt-d: Consolidate duplicate cache invaliation code
-Date:   Thu, 14 Jan 2021 16:50:21 +0800
-Message-Id: <20210114085021.717041-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB99C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 00:59:25 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id i6so4575974otr.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 00:59:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qb9hNQO6OcJCASI04u8t2R6xrNDq5cvZ9kC7Nrcqfts=;
+        b=piQg1o8r4FhEXT0RSbsmO2soNb90nnFIJjC5h++xC3FiKSH2yq5CR+PeWqQq0NFeP0
+         Fsdmj3vuaswo6Rerq/fqsAm6P3qLfDq8Q7OUL7piPW+RIVpFm4px9WPQXyoznVzP0xfw
+         JiCbvGMylmXTi+qH58eFtxD4e5sh+iel9wJSnoxJaw/KuMFIPlUPmXrT3R4/wLLd8n1X
+         eqQBjzTBIkXsoOtB6wTaY+lsrZblj9jk+k6jrGwvgyE4wGRYQXcJYigq0MyHSsdwJwp4
+         oxbuxvDE+trK//Kcd9pyS4g0QZsFGtXUj2XZCE947slfKuhIf+HHNrLrU9c6ZdZxRKjg
+         hLog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qb9hNQO6OcJCASI04u8t2R6xrNDq5cvZ9kC7Nrcqfts=;
+        b=eA7H7KC6npHoVobt8OFuqwd5snyalz40pV8Nfh78L2m1g7ltIOp8GJTaypBzLqn1eR
+         dAGmmK8aXDHivj62lFcXw9aNL/GS3IY4vRjX7aQWm+TvZBsvoY4xdgqkdJcRLpQTzYla
+         5JkRpoUKwc2rk44aq1VJ+9Yh8IoPTO7Lp6JLgzH+tL1b4Hl275fGaSHRljYwM1tb9Lm7
+         fgcJjvnCCpQuYaerlwTe94wY0CTLJ9fe1dmNmfy7l/wkby3RpGwRVjEnQ+qp08fiAvPI
+         AJ9GT7UAB0kjrRKEnK+IZh4cGqn3605EzKpYFuyFBtd9GBmu+JSwlSDdB37wIq6KdGhA
+         ocog==
+X-Gm-Message-State: AOAM532CgMlMM7kgKvMXX3ah2e1DNedzHPkJUb9MYndCYUA48yMPf6W5
+        XttxQSw3ciBe34ClKiGY/WV6y0Xj3P1DVFsKP75uTw==
+X-Google-Smtp-Source: ABdhPJzoe+c4TcZ0g79ZoNvHvj6bRfYCiY0rcTjlf8D0qLJEA1KuBVL5FJT2zoe5JW0+TDRn1YMTklchb0Tc3Plx1Ic=
+X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr4126160ots.251.1610614764525;
+ Thu, 14 Jan 2021 00:59:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210113091657.1456216-1-glider@google.com> <20210113091657.1456216-2-glider@google.com>
+ <20210113161044.43bc1c1a@gandalf.local.home> <CAG_fn=XSkOChCwBp=Vg6jWhZ8K44seCo=0Zu38iUpAj6eCUxjQ@mail.gmail.com>
+In-Reply-To: <CAG_fn=XSkOChCwBp=Vg6jWhZ8K44seCo=0Zu38iUpAj6eCUxjQ@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 14 Jan 2021 09:59:13 +0100
+Message-ID: <CANpmjNP+MC4DYAE6K07sa_mcQ3c59zZ-g5yFotMVFdY+jPUyGw@mail.gmail.com>
+Subject: Re: [PATCH 1/4] tracing: add error_report trace points
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pasid based IOTLB and devTLB invalidation code is duplicate in
-several places. Consolidate them by using the common helpers.
+On Thu, 14 Jan 2021 at 08:50, Alexander Potapenko <glider@google.com> wrote:
+>
+> On Wed, Jan 13, 2021 at 10:10 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Wed, 13 Jan 2021 10:16:54 +0100
+> > Alexander Potapenko <glider@google.com> wrote:
+> >
+> > > +DECLARE_EVENT_CLASS(error_report_template,
+> > > +                 TP_PROTO(const char *error_detector, unsigned long id),
+> >
+> > Instead of having a random string, as this should be used by a small finite
+> > set of subsystems, why not make the above into an enum?
+>
+> You're probably right.
+> I just thought it might be a good idea to minimize the effort needed
+> from tools' authors to add these tracepoints to the tools (see the
+> following two patches), and leave room for some extensibility (e.g.
+> passing bug type together with the tool name etc.)
+>
+> > > +                 TP_ARGS(error_detector, id),
+> > > +                 TP_STRUCT__entry(__field(const char *, error_detector)
+> > > +                                          __field(unsigned long, id)),
+> > > +                 TP_fast_assign(__entry->error_detector = error_detector;
+> > > +                                __entry->id = id;),
+> > > +                 TP_printk("[%s] %lx", __entry->error_detector,
+> >
+> > Then the [%s] portion of this could also be just a __print_symbolic().
+>
+> We'll need to explicitly list the enum values once again in
+> __print_symbolic(), right? E.g.:
+>
+> enum debugging_tool {
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/pasid.c | 18 ++----------
- drivers/iommu/intel/svm.c   | 55 ++++++-------------------------------
- 2 files changed, 11 insertions(+), 62 deletions(-)
+We need to use TRACE_DEFINE_ENUM().
 
-diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index b92af83b79bd..f26cb6195b2c 100644
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@ -456,20 +456,6 @@ pasid_cache_invalidation_with_pasid(struct intel_iommu *iommu,
- 	qi_submit_sync(iommu, &desc, 1, 0);
- }
- 
--static void
--iotlb_invalidation_with_pasid(struct intel_iommu *iommu, u16 did, u32 pasid)
--{
--	struct qi_desc desc;
--
--	desc.qw0 = QI_EIOTLB_PASID(pasid) | QI_EIOTLB_DID(did) |
--			QI_EIOTLB_GRAN(QI_GRAN_NONG_PASID) | QI_EIOTLB_TYPE;
--	desc.qw1 = 0;
--	desc.qw2 = 0;
--	desc.qw3 = 0;
--
--	qi_submit_sync(iommu, &desc, 1, 0);
--}
--
- static void
- devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
- 			       struct device *dev, u32 pasid)
-@@ -514,7 +500,7 @@ void intel_pasid_tear_down_entry(struct intel_iommu *iommu, struct device *dev,
- 		clflush_cache_range(pte, sizeof(*pte));
- 
- 	pasid_cache_invalidation_with_pasid(iommu, did, pasid);
--	iotlb_invalidation_with_pasid(iommu, did, pasid);
-+	qi_flush_piotlb(iommu, did, pasid, 0, -1, 0);
- 
- 	/* Device IOTLB doesn't need to be flushed in caching mode. */
- 	if (!cap_caching_mode(iommu->cap))
-@@ -530,7 +516,7 @@ static void pasid_flush_caches(struct intel_iommu *iommu,
- 
- 	if (cap_caching_mode(iommu->cap)) {
- 		pasid_cache_invalidation_with_pasid(iommu, did, pasid);
--		iotlb_invalidation_with_pasid(iommu, did, pasid);
-+		qi_flush_piotlb(iommu, did, pasid, 0, -1, 0);
- 	} else {
- 		iommu_flush_write_buffer(iommu);
- 	}
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 18a9f05df407..033b25886e57 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -123,53 +123,16 @@ static void __flush_svm_range_dev(struct intel_svm *svm,
- 				  unsigned long address,
- 				  unsigned long pages, int ih)
- {
--	struct qi_desc desc;
-+	struct device_domain_info *info = get_domain_info(sdev->dev);
- 
--	if (pages == -1) {
--		desc.qw0 = QI_EIOTLB_PASID(svm->pasid) |
--			QI_EIOTLB_DID(sdev->did) |
--			QI_EIOTLB_GRAN(QI_GRAN_NONG_PASID) |
--			QI_EIOTLB_TYPE;
--		desc.qw1 = 0;
--	} else {
--		int mask = ilog2(__roundup_pow_of_two(pages));
--
--		desc.qw0 = QI_EIOTLB_PASID(svm->pasid) |
--				QI_EIOTLB_DID(sdev->did) |
--				QI_EIOTLB_GRAN(QI_GRAN_PSI_PASID) |
--				QI_EIOTLB_TYPE;
--		desc.qw1 = QI_EIOTLB_ADDR(address) |
--				QI_EIOTLB_IH(ih) |
--				QI_EIOTLB_AM(mask);
--	}
--	desc.qw2 = 0;
--	desc.qw3 = 0;
--	qi_submit_sync(sdev->iommu, &desc, 1, 0);
--
--	if (sdev->dev_iotlb) {
--		desc.qw0 = QI_DEV_EIOTLB_PASID(svm->pasid) |
--				QI_DEV_EIOTLB_SID(sdev->sid) |
--				QI_DEV_EIOTLB_QDEP(sdev->qdep) |
--				QI_DEIOTLB_TYPE;
--		if (pages == -1) {
--			desc.qw1 = QI_DEV_EIOTLB_ADDR(-1ULL >> 1) |
--					QI_DEV_EIOTLB_SIZE;
--		} else if (pages > 1) {
--			/* The least significant zero bit indicates the size. So,
--			 * for example, an "address" value of 0x12345f000 will
--			 * flush from 0x123440000 to 0x12347ffff (256KiB). */
--			unsigned long last = address + ((unsigned long)(pages - 1) << VTD_PAGE_SHIFT);
--			unsigned long mask = __rounddown_pow_of_two(address ^ last);
--
--			desc.qw1 = QI_DEV_EIOTLB_ADDR((address & ~mask) |
--					(mask - 1)) | QI_DEV_EIOTLB_SIZE;
--		} else {
--			desc.qw1 = QI_DEV_EIOTLB_ADDR(address);
--		}
--		desc.qw2 = 0;
--		desc.qw3 = 0;
--		qi_submit_sync(sdev->iommu, &desc, 1, 0);
--	}
-+	if (WARN_ON(!pages))
-+		return;
-+
-+	qi_flush_piotlb(sdev->iommu, sdev->did, svm->pasid, address, pages, ih);
-+	if (info->ats_enabled)
-+		qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid, info->pfsid,
-+					 svm->pasid, sdev->qdep, address,
-+					 order_base_2(pages));
- }
- 
- static void intel_flush_svm_range_dev(struct intel_svm *svm,
--- 
-2.25.1
+>          TOOL_KFENCE,
 
+For consistency I would call the enum simply "ERROR_DETECTOR" as well.
+(Hypothetically, there could also be an "error detector" that is not a
+"debugging tool".)
+
+>          TOOL_KASAN,
+>          ...
+> }
+>
+> TP_printk(__print_symbolic(__entry->error_detector, TOOL_KFENCE,
+> TOOL_KASAN, ...),
+
+It takes a list of val -> str. E.g.
+__print_symbolic(__entry->error_detector, { TOOL_KFENCE, "KFENCE" }, {
+TOOL_KASAN, "KASAN" }).
+
+Looking around the kernel, sometimes this is simplified with macros,
+but not sure if it's worth it. Typing the same thing 3 times is fine,
+given this list won't grow really fast.
+
+Thanks,
+-- Marco
