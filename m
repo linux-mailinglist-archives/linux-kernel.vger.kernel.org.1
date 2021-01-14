@@ -2,183 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7302F5E9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EFF2F5E94
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728660AbhANKVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 05:21:13 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:27696 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728535AbhANKUz (ORCPT
+        id S1728475AbhANKUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 05:20:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726581AbhANKUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 05:20:55 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10EAGtIE027251;
-        Thu, 14 Jan 2021 11:20:02 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=DDk9Rejbn/sUw5+U6OTrWK27xmNxoSdD8bZ1t4GVGKo=;
- b=1AxBlQbqbqQhSgppZxaDfF/TCBm2YvG7bjmcKJW6GfBORr90VdaXg6tm8FfMAXS3VTK6
- qEzdXRYPeatGtwgQUPRhyoGLJBCk9WoolSCISRa5yHgl/SWQLpMVbAG+GabgiVHEhO5H
- 1/kttBPrued2kvqHfDElJEx0e7wvsUjPOnsLn0Xs/VhTVEEk2Ndn5+cXAuEX8DbbwhrZ
- zOLs/NnG2YTVLFS3/tbamcA0+dazmkN8TLmBYzSbRCADIy0QAwt5hndAI98mT58L49Ug
- NbStre5cUZJGJn7we2gBDHbFC50TFo01MWtX1XQScZq73U68oHT3qKSutOSxlJG737ub lg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 35yp3y1p96-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 11:20:02 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BA71A10002A;
-        Thu, 14 Jan 2021 11:20:01 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A976222E763;
-        Thu, 14 Jan 2021 11:20:01 +0100 (CET)
-Received: from localhost (10.75.127.45) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 14 Jan 2021 11:20:01
- +0100
-From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>
-Subject: [PATCH 2/2] phy: stm32: register usbphyc as clock provider of ck_usbo_48m clock
-Date:   Thu, 14 Jan 2021 11:19:49 +0100
-Message-ID: <20210114101949.23859-3-amelie.delaunay@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210114101949.23859-1-amelie.delaunay@foss.st.com>
-References: <20210114101949.23859-1-amelie.delaunay@foss.st.com>
+        Thu, 14 Jan 2021 05:20:39 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D5DC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:20:00 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 14D231F459A1
+Subject: Re: [PATCH v6 1/2] cros_ec_commands: Add EC_CODEC_I2S_RX_RESET
+To:     Yu-Hsuan Hsu <yuhsuan@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        alsa-devel@alsa-project.org
+References: <20210114065401.3498725-1-yuhsuan@chromium.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <d91f6d8d-e108-eff9-4fc0-992c82cf8aac@collabora.com>
+Date:   Thu, 14 Jan 2021 11:19:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-14_03:2021-01-13,2021-01-14 signatures=0
+In-Reply-To: <20210114065401.3498725-1-yuhsuan@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ck_usbo_48m is generated by usbphyc PLL and used by OTG controller
-for Full-Speed use cases with dedicated Full-Speed transceiver.
+Hi,
 
-ck_usbo_48m is available as soon as the PLL is enabled.
+On 14/1/21 7:54, Yu-Hsuan Hsu wrote:
+> Add the new command EC_CODEC_I2S_RX_RESET in ec_codec_i2s_rx_subcmd,
+> which is used for resetting the EC codec.
+> 
+> Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
----
- drivers/phy/st/phy-stm32-usbphyc.c | 66 ++++++++++++++++++++++++++++++
- 1 file changed, 66 insertions(+)
+For if Mark wants to take this patch through his tree.
 
-diff --git a/drivers/phy/st/phy-stm32-usbphyc.c b/drivers/phy/st/phy-stm32-usbphyc.c
-index d08fbb180e43..349976259112 100644
---- a/drivers/phy/st/phy-stm32-usbphyc.c
-+++ b/drivers/phy/st/phy-stm32-usbphyc.c
-@@ -7,6 +7,7 @@
-  */
- #include <linux/bitfield.h>
- #include <linux/clk.h>
-+#include <linux/clk-provider.h>
- #include <linux/delay.h>
- #include <linux/iopoll.h>
- #include <linux/kernel.h>
-@@ -70,6 +71,7 @@ struct stm32_usbphyc {
- 	struct regulator *vdda1v1;
- 	struct regulator *vdda1v8;
- 	atomic_t n_pll_cons;
-+	struct clk_hw clk48_hw;
- 	int switch_setup;
- };
- 
-@@ -295,6 +297,61 @@ static const struct phy_ops stm32_usbphyc_phy_ops = {
- 	.owner = THIS_MODULE,
- };
- 
-+static int stm32_usbphyc_clk48_prepare(struct clk_hw *hw)
-+{
-+	struct stm32_usbphyc *usbphyc = container_of(hw, struct stm32_usbphyc, clk48_hw);
-+
-+	return stm32_usbphyc_pll_enable(usbphyc);
-+}
-+
-+static void stm32_usbphyc_clk48_unprepare(struct clk_hw *hw)
-+{
-+	struct stm32_usbphyc *usbphyc = container_of(hw, struct stm32_usbphyc, clk48_hw);
-+
-+	stm32_usbphyc_pll_disable(usbphyc);
-+}
-+
-+static unsigned long stm32_usbphyc_clk48_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
-+{
-+	return 48000000;
-+}
-+
-+static const struct clk_ops usbphyc_clk48_ops = {
-+	.prepare = stm32_usbphyc_clk48_prepare,
-+	.unprepare = stm32_usbphyc_clk48_unprepare,
-+	.recalc_rate = stm32_usbphyc_clk48_recalc_rate,
-+};
-+
-+static void stm32_usbphyc_clk48_unregister(void *data)
-+{
-+	struct stm32_usbphyc *usbphyc = data;
-+
-+	of_clk_del_provider(usbphyc->dev->of_node);
-+	clk_hw_unregister(&usbphyc->clk48_hw);
-+}
-+
-+static int stm32_usbphyc_clk48_register(struct stm32_usbphyc *usbphyc)
-+{
-+	struct device_node *node = usbphyc->dev->of_node;
-+	struct clk_init_data init = { };
-+	int ret = 0;
-+
-+	init.name = "ck_usbo_48m";
-+	init.ops = &usbphyc_clk48_ops;
-+
-+	usbphyc->clk48_hw.init = &init;
-+
-+	ret = clk_hw_register(usbphyc->dev, &usbphyc->clk48_hw);
-+	if (ret)
-+		return ret;
-+
-+	ret = of_clk_add_hw_provider(node, of_clk_hw_simple_get, &usbphyc->clk48_hw);
-+	if (ret)
-+		clk_hw_unregister(&usbphyc->clk48_hw);
-+
-+	return ret;
-+}
-+
- static void stm32_usbphyc_switch_setup(struct stm32_usbphyc *usbphyc,
- 				       u32 utmi_switch)
- {
-@@ -473,6 +530,13 @@ static int stm32_usbphyc_probe(struct platform_device *pdev)
- 		goto clk_disable;
- 	}
- 
-+	ret = stm32_usbphyc_clk48_register(usbphyc);
-+	if (ret) {
-+		dev_err(dev,
-+			"failed to register ck_usbo_48m clock: %d\n", ret);
-+		goto clk_disable;
-+	}
-+
- 	version = readl_relaxed(usbphyc->base + STM32_USBPHYC_VERSION);
- 	dev_info(dev, "registered rev:%lu.%lu\n",
- 		 FIELD_GET(MAJREV, version), FIELD_GET(MINREV, version));
-@@ -497,6 +561,8 @@ static int stm32_usbphyc_remove(struct platform_device *pdev)
- 		if (usbphyc->phys[port]->active)
- 			stm32_usbphyc_phy_exit(usbphyc->phys[port]->phy);
- 
-+	stm32_usbphyc_clk48_unregister(usbphyc);
-+
- 	clk_disable_unprepare(usbphyc->clk);
- 
- 	return 0;
--- 
-2.17.1
+Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
+> ---
+>  include/linux/platform_data/cros_ec_commands.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+> index 86376779ab31..95889ada83a3 100644
+> --- a/include/linux/platform_data/cros_ec_commands.h
+> +++ b/include/linux/platform_data/cros_ec_commands.h
+> @@ -4600,6 +4600,7 @@ enum ec_codec_i2s_rx_subcmd {
+>  	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
+>  	EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
+>  	EC_CODEC_I2S_RX_SET_BCLK = 0x4,
+> +	EC_CODEC_I2S_RX_RESET = 0x5,
+>  	EC_CODEC_I2S_RX_SUBCMD_COUNT,
+>  };
+>  
+> 
