@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FF62F5BB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 429C62F5BA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:55:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727904AbhANHzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 02:55:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56960 "EHLO mail.kernel.org"
+        id S1727479AbhANHyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 02:54:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727450AbhANHzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 02:55:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF22123A04;
+        id S1727012AbhANHya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 02:54:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7470239FF;
         Thu, 14 Jan 2021 07:53:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1610610830;
-        bh=isoBxnGBMg6yz5uKMo7IvAKU8TSee/5z770+NgdHm70=;
+        bh=AIc2wW620mOmuszeWZXDxQT5qZVzYGxu91AL11TYNE8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pY+1jrde9X3m+ROhnvcbBYSzsRtm3lqFTylHhi99r/ZhP016donDrKiiXpfHC3a5A
-         LLu0bN5fyOWSgtoOCxahwXcqxMCb/1hKR4+TwSSLkZ8an58E3GWLfAytlekTyueTUR
-         W7T2DtYPKnJI/HgF2eadb/iEIz/6Xggrs3LlSvC0knxbv0OkfXKEdnSidwGLNy548p
-         8HpFhr0Ej3EMcfWFS2DLBZz0EeH8vnF0WMaH4SJJx2Yva34EgfsSJP2B5sQDYNAGhP
-         ANzsXccvph17dW2j8COL/sWB8aYsOqC1M/FVdaDpqxKqLUevfmRKNxa7Hh83LxZuHH
-         3QYRy/4k9nx5Q==
+        b=fo0BHM4dtTH6oMYdIRblWAn8G+JBudfr5/3qR5qz3qF/4FeyE2O9EbKvp0Y0gJfP5
+         wwSPRApjShInvuDLfFbSvBl2bfp0DI6WDY9KBrRh3aTPLZIEwdrkFTU77Na0HBgziF
+         Ct8Rw3GcGFHxr53YNC8qcifzeXpoFvKGd2nwMvsXRSKqOCTReyKHDqq5f6TeqfULj9
+         mGqNIpg5UklWKBa5/veG8QlmUvBkoM5/L6IULwt3J5fnFjmJjMZu1+4vyOkneeG2TT
+         Zs8Phb4BlLPZYfl3NB10ODfQgVRxaZEPnZgzx5IGCnKgFxn8k1Z0RNRpT3vEgMpoD3
+         0AVBT7tb43cQQ==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kzxRz-00EPuJ-CF; Thu, 14 Jan 2021 08:53:47 +0100
+        id 1kzxRz-00EPuL-DL; Thu, 14 Jan 2021 08:53:47 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
         "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH 09/10] media: v4l2-subdev.rst: fix a missing whitespace
-Date:   Thu, 14 Jan 2021 08:53:44 +0100
-Message-Id: <ab7c2cc2535e93b650ccd8375e15ed0fe8f41e2c.1610610444.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 10/10] seqlock: kernel-doc: fix a prototype
+Date:   Thu, 14 Jan 2021 08:53:45 +0100
+Message-Id: <84693a4901efb553dd95fe4909b50d6d8faf8107.1610610444.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1610610444.git.mchehab+huawei@kernel.org>
 References: <cover.1610610444.git.mchehab+huawei@kernel.org>
@@ -45,28 +47,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Solves this warning:
+Right now, kernel-doc produces a warning:
 
-    .../Documentation/driver-api/media/v4l2-subdev.rst:125: WARNING: Inline interpreted text or phrase reference start-string without end-string.
+	./include/linux/seqlock.h:829: warning: wrong kernel-doc identifier on line:
+	 * DEFINE_SEQLOCK(sl) - Define a statically allocated seqlock_t
+
+The issue is that Kernel-doc valid syntaxes for function/define
+declarations are either:
+
+	function_foo - description
+
+or:
+
+	function_foo() - description
+
+The function parameters should be declared only afterwards.
+
+So, replace it to:
+	DEFINE_SEQLOCK(sl) - Define a statically allocated seqlock_t
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/media/v4l2-subdev.rst | 2 +-
+ include/linux/seqlock.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/driver-api/media/v4l2-subdev.rst b/Documentation/driver-api/media/v4l2-subdev.rst
-index 6d5c799c49fe..0e82c77cf3e2 100644
---- a/Documentation/driver-api/media/v4l2-subdev.rst
-+++ b/Documentation/driver-api/media/v4l2-subdev.rst
-@@ -123,7 +123,7 @@ Don't forget to cleanup the media entity before the sub-device is destroyed:
- 	media_entity_cleanup(&sd->entity);
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index 2f7bb92b4c9e..209454cedf61 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -826,7 +826,7 @@ typedef struct {
+ 	} while (0)
  
- If a sub-device driver implements sink pads, the subdev driver may set the
--link_validate field in :c:type:`v4l2_subdev_pad_ops`to provide its own link
-+link_validate field in :c:type:`v4l2_subdev_pad_ops` to provide its own link
- validation function. For every link in the pipeline, the link_validate pad
- operation of the sink end of the link is called. In both cases the driver is
- still responsible for validating the correctness of the format configuration
+ /**
+- * DEFINE_SEQLOCK(sl) - Define a statically allocated seqlock_t
++ * DEFINE_SEQLOCK() - Define a statically allocated seqlock_t
+  * @sl: Name of the seqlock_t instance
+  */
+ #define DEFINE_SEQLOCK(sl) \
 -- 
 2.29.2
 
