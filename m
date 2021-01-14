@@ -2,131 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6252F6BBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1842F6BBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730419AbhANUCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 15:02:08 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:60802 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729249AbhANUCI (ORCPT
+        id S1730192AbhANUDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 15:03:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727318AbhANUDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 15:02:08 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5DECF20B6C40;
-        Thu, 14 Jan 2021 12:01:27 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5DECF20B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1610654487;
-        bh=Kv9kA9hyCrmK+ukDmZ0hqeRpgOqREfsVmhG/uF3QqmQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=qfD6W4Blr3Xs9NTKINaaLofPVakW4k7UKe2ummHWz0zZjqFhiOFZyEOvB3gsO7F5x
-         qG2qJoiG8nDARMycZDhUHBe2HYAr4diUOU5hJQVQoswqR1a2+aJdq+BLEmL7JkVfe2
-         +nfpkes7s5Wbm5q3m290ttDgem/iPkbAZBrz2mec=
-Subject: Re: [PATCH] selinux: include a consumer of the new IMA critical data
- hook
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     zohar@linux.ibm.com,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        tusharsu@linux.microsoft.com, casey@schaufler-ca.com,
-        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
-        sashal@kernel.org, James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210114191522.4001-1-nramas@linux.microsoft.com>
- <CAHC9VhQ5PEvZggtijta3EbWY5HEmfs6phmBWdQXk451yBRXQpA@mail.gmail.com>
- <20210114195813.GA81268@sequoia>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <276c70ac-0d12-88f8-2d75-c88e68ef8490@linux.microsoft.com>
-Date:   Thu, 14 Jan 2021 12:01:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 14 Jan 2021 15:03:52 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FD6C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 12:03:12 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 190so5562661wmz.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 12:03:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=surgut.co.uk; s=google;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nN6PRtS5pLhLaXXAjEjLtwK6vbI+9DCsM0hEkAJhqwM=;
+        b=IxaeE8gbqJuU3nw9Yn0ATXzzpVmjJVhFCNqQr5/cuwJkZQnwmgebeRmEgG6xZphS6H
+         5VdRpgoRzb1xbOyaoz0a6xOzKjaUyz59Y1PHe0fNGaY0Wmqv7CdBW1K2UWvqdCC2jyOB
+         hDOR0nhuo+VnlVkOmg60ltT5UUJvbBTSJ41pE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=nN6PRtS5pLhLaXXAjEjLtwK6vbI+9DCsM0hEkAJhqwM=;
+        b=BSrT12V1WHFvtxnjZ7zppOLLZ7dYaIevXSyV2VEwWHW++WsOt9KIa8i2ZNC3XzyDOc
+         9dolA8rqiCtk0J44EX61YAcnCy1h5Bb66FPN29g9N1X3ErwCmbscAZWXwf/ssGffoQUF
+         HEioF9XqRKdBMRgfHneQaWrRhuU15YK6jyM965DUFUfUEGPNgZm2P27i48o4Um1WFzMk
+         HPPYov2ozJuLESViYlJ6LBGbJT6YR1/9loWQvFhDchTo/knEhkDknwbEUWu39x0WvqP7
+         w5TnPrYm0M0KCnbBm1I9XJeKlySt7auM+fkpzqu0eClkFInGLttmD6oxd45hL0D+3BC9
+         nCEw==
+X-Gm-Message-State: AOAM5320BF1ODDDtPZNubXRik9jiK+sRvc+4X0LuXrJTmOFYoUwNfb4x
+        DUL8HMpPjAq9LzNI/D9xNYqbrJKIFODbkg==
+X-Google-Smtp-Source: ABdhPJzkWrAUtRQl5/J4I3xMSoKLfgi54KQ2WXg0n9ry8mr28pzW1Aa0NNfw/tJBN/UVr1RjltlYww==
+X-Received: by 2002:a1c:2155:: with SMTP id h82mr5395432wmh.132.1610654590348;
+        Thu, 14 Jan 2021 12:03:10 -0800 (PST)
+Received: from localhost ([2a01:4b00:85fd:d700:ae8f:3959:416e:cfc4])
+        by smtp.gmail.com with ESMTPSA id h9sm10684700wre.24.2021.01.14.12.03.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 12:03:09 -0800 (PST)
+Sender: Dimitri John Ledkov <dimitri.ledkov@surgut.co.uk>
+From:   Dimitri John Ledkov <xnox@ubuntu.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dimitri John Ledkov <xnox@ubuntu.com>
+Subject: [PATCH] lib/decompress_unlz4.c: correctly handle zero-padding around initrds.
+Date:   Thu, 14 Jan 2021 20:02:56 +0000
+Message-Id: <20210114200256.196589-1-xnox@ubuntu.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210114195813.GA81268@sequoia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/14/21 11:58 AM, Tyler Hicks wrote:
-> On 2021-01-14 14:29:09, Paul Moore wrote:
->> On Thu, Jan 14, 2021 at 2:15 PM Lakshmi Ramasubramanian
->> <nramas@linux.microsoft.com> wrote:
->>>
->>> SELinux stores the active policy in memory, so the changes to this data
->>> at runtime would have an impact on the security guarantees provided
->>> by SELinux.  Measuring in-memory SELinux policy through IMA subsystem
->>> provides a secure way for the attestation service to remotely validate
->>> the policy contents at runtime.
->>>
->>> Measure the hash of the loaded policy by calling the IMA hook
->>> ima_measure_critical_data().  Since the size of the loaded policy
->>> can be large (several MB), measure the hash of the policy instead of
->>> the entire policy to avoid bloating the IMA log entry.
->>>
->>> To enable SELinux data measurement, the following steps are required:
->>>
->>> 1, Add "ima_policy=critical_data" to the kernel command line arguments
->>>     to enable measuring SELinux data at boot time.
->>> For example,
->>>    BOOT_IMAGE=/boot/vmlinuz-5.10.0-rc1+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
->>>
->>> 2, Add the following rule to /etc/ima/ima-policy
->>>     measure func=CRITICAL_DATA label=selinux
->>>
->>> Sample measurement of the hash of SELinux policy:
->>>
->>> To verify the measured data with the current SELinux policy run
->>> the following commands and verify the output hash values match.
->>>
->>>    sha256sum /sys/fs/selinux/policy | cut -d' ' -f 1
->>>
->>>    grep "selinux-policy-hash" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6
->>>
->>> Note that the actual verification of SELinux policy would require loading
->>> the expected policy into an identical kernel on a pristine/known-safe
->>> system and run the sha256sum /sys/kernel/selinux/policy there to get
->>> the expected hash.
->>>
->>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->>> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
->>> Acked-by: Paul Moore <paul@paul-moore.com>
->>> Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
->>> ---
->>>   Documentation/ABI/testing/ima_policy |  3 +-
->>>   security/selinux/Makefile            |  2 +
->>>   security/selinux/ima.c               | 44 +++++++++++++++++++
->>>   security/selinux/include/ima.h       | 24 +++++++++++
->>>   security/selinux/include/security.h  |  3 +-
->>>   security/selinux/ss/services.c       | 64 ++++++++++++++++++++++++----
->>>   6 files changed, 129 insertions(+), 11 deletions(-)
->>>   create mode 100644 security/selinux/ima.c
->>>   create mode 100644 security/selinux/include/ima.h
->>
->> I think this has changed enough that keeping the "Acked-by" and
->> "Reviewed-by" tags is probably not a good choice.  I took a quick look
->> and this still looks okay from a SELinux perspective, I'll leave Mimi
->> to comment on it from a IMA perspective.
+lz4 compatible decompressor is simple. The format is underspecified and
+relies on EOF notification to determine when to stop. Initramfs buffer
+format[1] explicitly states that it can have arbitrary number of zero
+padding. Thus when operating without a fill function, be extra careful to
+ensure that sizes less than 4, or apperantly empty chunksizes are treated
+as EOF.
 
-Thanks for reviewing the change Paul.
+To test this I have created two cpio initrds, first a normal one,
+main.cpio. And second one with just a single /test-file with content
+"second" second.cpio. Then i compressed both of them with gzip, and with
+lz4 -l. Then I created a padding of 4 bytes (dd if=/dev/zero of=pad4 bs=1
+count=4). To create four testcase initrds:
 
->>
->> Unless Tyler has reviewed this version prior to your posting, it might
->> be a good idea to remove his "Reviewed-by" unless he has a chance to
->> look this over again before it is merged.
-> 
-> Thanks for calling this out. I hadn't reviewed it prior to the posting
-> but I was keeping an eye on the thread.
-> 
-> This new revision still looks good to me and I like the idea of
-> controlling re-measurements via policy. So,
-> 
->   Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+ 1) main.cpio.gzip + extra.cpio.gzip = pad0.gzip
+ 2) main.cpio.lz4  + extra.cpio.lz4 = pad0.lz4
+ 3) main.cpio.gzip + pad4 + extra.cpio.gzip = pad4.gzip
+ 4) main.cpio.lz4  + pad4 + extra.cpio.lz4 = pad4.lz4
 
-Thanks for the quick response Tyler.
+The pad4 test-cases replicate the initrd load by grub, as it pads and
+aligns every initrd it loads.
 
-  -lakshmi
+All of the above boot, however /test-file was not accessible in the initrd
+for the testcase #4, as decoding in lz4 decompressor failed. Also an error
+message printed which usually is harmless.
+
+Whith a patched kernel, all of the above testcases now pass, and /test-file
+is accessible.
+
+This fixes lz4 initrd decompress warning on every boot with grub. And more
+importantly this fixes inability to load multiple lz4 compressed initrds
+with grub.
+
+I guess I should convert above decompressor streams with/without padding
+into kunit tests, across all decompressor algorithms.
+
+[1] ./Documentation/driver-api/early-userspace/buffer-format.rst
+
+BugLink: https://bugs.launchpad.net/bugs/1835660
+Signed-off-by: Dimitri John Ledkov <xnox@ubuntu.com>
+---
+ lib/decompress_unlz4.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/lib/decompress_unlz4.c b/lib/decompress_unlz4.c
+index c0cfcfd486be..e6327391b6b6 100644
+--- a/lib/decompress_unlz4.c
++++ b/lib/decompress_unlz4.c
+@@ -112,6 +112,9 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
+ 				error("data corrupted");
+ 				goto exit_2;
+ 			}
++		} else if (size < 4) {
++			/* empty or end-of-file */
++			goto exit_3;
+ 		}
+ 
+ 		chunksize = get_unaligned_le32(inp);
+@@ -125,6 +128,10 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
+ 			continue;
+ 		}
+ 
++		if (!fill && chunksize == 0) {
++			/* empty or end-of-file */
++			goto exit_3;
++		}
+ 
+ 		if (posp)
+ 			*posp += 4;
+@@ -184,6 +191,7 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
+ 		}
+ 	}
+ 
++exit_3:
+ 	ret = 0;
+ exit_2:
+ 	if (!input)
+-- 
+2.27.0
 
