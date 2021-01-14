@@ -2,149 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71902F669D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F18B2F669E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727355AbhANRCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:02:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42982 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725950AbhANRCz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:02:55 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 52B50ABD6;
-        Thu, 14 Jan 2021 17:02:13 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id D79EA1E053E; Thu, 14 Jan 2021 18:02:12 +0100 (CET)
-Date:   Thu, 14 Jan 2021 18:02:12 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Steve Magnani <magnani@ieee.org>
-Cc:     Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] udf: fix hole append when File Tail exists
-Message-ID: <20210114170212.GB27380@quack2.suse.cz>
-References: <20210109224054.5694-1-magnani@ieee.org>
- <20210109224054.5694-2-magnani@ieee.org>
+        id S1726438AbhANREA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:04:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbhANRD7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 12:03:59 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B23C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:03:19 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id s75so6621332oih.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:03:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+/j75diR2guucFzV679rMmTuRdnH7rcJNIuUAmVd6H0=;
+        b=MZGOCDgqzL9LvaTVCiymRsVtNTV9oFe56mjzIyeKmdJgMHJiKkKLeuwnsldFTF9a3j
+         wmJWS1a6Z1ghmj4N+3N3X8sv5BldyZOtsRVXDLXC6F3fliWwnFHG86YnsWQhvzYCJW2F
+         gO9rPqrWzWwdRpf8tA9kV9Doa78xA0FT98R0S7m8CdteDZON05b15YlE1lnbUSKIoNtA
+         ixVR99H1Px13JdSPSxBHl+HZ8WwDghzpGywQL5xp/QXpLV+qo0SWS2UpPQqNgO2wOlcP
+         SUVKs/6kGqvwj7jQ6qUnsaAJshTPaYTplncFyGNafGhXw+MZQggMANPeLmyLNOCYjbxt
+         lOOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+/j75diR2guucFzV679rMmTuRdnH7rcJNIuUAmVd6H0=;
+        b=JBg4m+TBFCKKc1ML+0b1smEyjBPb0GI72/qyqUyS8LByJzEp+Q7z+YrnG7VudLkcup
+         n/NJHlSRLjJfZO/596xur9sQsjvLSGIEhnmwAs6A8s0uD7KfPY26Ql9szRqgsaQZfFnF
+         58i5Wr/+6HN4951s6av1gB4GEFqzCS8+dP/atumuIVAkAAD9EqkfecnROH69TwuSzWet
+         D3cdIOno2HunZzgIWkDFvrDQ2T5Erb8Jh6vEAUd4/uh9Fv1cQdgTM5gsJaC12/uKkYLv
+         Fk8XnQsjUwizzMU4GvLtmdnNcugfLgu/1HHSwWSgat4hhoWvk70Gg//6DIL+vrxZWlF/
+         EcxQ==
+X-Gm-Message-State: AOAM530WaEP/wJbLORiKQfrqtpunRgZuuyXvsJAwOk2WlhatrGdeOHyB
+        NcvTElOe0Pp2CoNxWHUWd9lSfbq+XzDxRQ1G9Es=
+X-Google-Smtp-Source: ABdhPJxpJ72MBLuQ53Q0axY/aqRfj9CUGz65ZAWYoFEPZMgXlRoKQbSsKAMqLL4jpPT5aW4fRk7oCCmGEuTPj7IPJbc=
+X-Received: by 2002:aca:6202:: with SMTP id w2mr2972991oib.5.1610643799058;
+ Thu, 14 Jan 2021 09:03:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210109224054.5694-2-magnani@ieee.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210113080752.1003793-1-lee.jones@linaro.org> <20210113080752.1003793-3-lee.jones@linaro.org>
+In-Reply-To: <20210113080752.1003793-3-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 14 Jan 2021 12:03:07 -0500
+Message-ID: <CADnq5_M-FtSgp3NQhiDQTOrOMxhAo-L0WJFg779uC96cKGhuNw@mail.gmail.com>
+Subject: Re: [PATCH 02/30] drm/amd/include/renoir_ip_offset: Mark top-level
+ IP_BASE as __maybe_unused
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 09-01-21 16:40:53, Steve Magnani wrote:
-> From: Steven J. Magnani <magnani@ieee.org>
-> 
-> When an ALLOCATED_NOT_RECORDED extent ("File Tail") follows the
-> extents describing a file body, don't (improperly) try to make use of it
-> as part of appending a hole to the file.
-> 
-> Fixes: fa33cdbf3ece ("udf: Fix incorrect final NOT_ALLOCATED (hole) extent length")
-> Signed-off-by: Steven J. Magnani <magnani@ieee.org>
+On Wed, Jan 13, 2021 at 3:08 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:226:29: warning=
+: =E2=80=98UVD0_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:219:29: warning=
+: =E2=80=98USB0_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:212:29: warning=
+: =E2=80=98UMC_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:205:29: warning=
+: =E2=80=98THM_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:198:29: warning=
+: =E2=80=98SMUIO_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
+e=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:191:29: warning=
+: =E2=80=98SDMA0_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
+e=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:184:29: warning=
+: =E2=80=98PCIE0_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
+e=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:177:29: warning=
+: =E2=80=98OSSSYS_BASE=E2=80=99 defined but not used [-Wunused-const-variab=
+le=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:172:29: warning=
+: =E2=80=98DCN_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:165:29: warning=
+: =E2=80=98NBIF0_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
+e=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:158:29: warning=
+: =E2=80=98MP1_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:151:29: warning=
+: =E2=80=98MP0_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:144:29: warning=
+: =E2=80=98MMHUB_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
+e=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:137:29: warning=
+: =E2=80=98L2IMU0_BASE=E2=80=99 defined but not used [-Wunused-const-variab=
+le=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:130:29: warning=
+: =E2=80=98ISP_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:123:29: warning=
+: =E2=80=98IOHC0_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
+e=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:116:29: warning=
+: =E2=80=98HDP_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:109:29: warning=
+: =E2=80=98HDA_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:102:29: warning=
+: =E2=80=98GC_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:95:29: warning:=
+ =E2=80=98FUSE_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:88:29: warning:=
+ =E2=80=98DPCS_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:81:29: warning:=
+ =E2=80=98DMU_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:74:29: warning:=
+ =E2=80=98DIO_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:67:29: warning:=
+ =E2=80=98DF_BASE=E2=80=99 defined but not used [-Wunused-const-variable=3D=
+]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:60:29: warning:=
+ =E2=80=98DBGU_IO0_BASE=E2=80=99 defined but not used [-Wunused-const-varia=
+ble=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:53:29: warning:=
+ =E2=80=98CLK_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:46:29: warning:=
+ =E2=80=98ATHUB_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/renoir_ip_offset.h:39:29: warning:=
+ =E2=80=98ACP_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Thanks for the fix! One comment below.
+Applied.  Thanks!
 
-> --- a/fs/udf/inode.c	2020-12-28 20:51:29.000000000 -0600
-> +++ b/fs/udf/inode.c	2021-01-02 17:00:39.794157840 -0600
-> @@ -520,8 +520,7 @@ static int udf_do_extend_file(struct ino
->  		prealloc_loc = last_ext->extLocation;
->  		prealloc_len = last_ext->extLength;
->  		/* Mark the extent as a hole */
-> -		last_ext->extLength = EXT_NOT_RECORDED_NOT_ALLOCATED |
-> -			(last_ext->extLength & UDF_EXTENT_LENGTH_MASK);
-> +		last_ext->extLength = EXT_NOT_RECORDED_NOT_ALLOCATED;
->  		last_ext->extLocation.logicalBlockNum = 0;
->  		last_ext->extLocation.partitionReferenceNum = 0;
->  	}
-> @@ -626,7 +625,6 @@ static void udf_do_extend_final_block(st
->  
->  static int udf_extend_file(struct inode *inode, loff_t newsize)
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/include/renoir_ip_offset.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/include/renoir_ip_offset.h b/drivers/gpu=
+/drm/amd/include/renoir_ip_offset.h
+> index 07633e22e99a1..7dff85c81e5a7 100644
+> --- a/drivers/gpu/drm/amd/include/renoir_ip_offset.h
+> +++ b/drivers/gpu/drm/amd/include/renoir_ip_offset.h
+> @@ -33,7 +33,7 @@ struct IP_BASE_INSTANCE
+>  struct IP_BASE
 >  {
-> -
->  	struct extent_position epos;
->  	struct kernel_lb_addr eloc;
->  	uint32_t elen;
-> @@ -639,6 +637,7 @@ static int udf_extend_file(struct inode
->  	struct kernel_long_ad extent;
->  	int err = 0;
->  	int within_final_block;
-> +	loff_t hole_size = 0;
->  
->  	if (iinfo->i_alloc_type == ICBTAG_FLAG_AD_SHORT)
->  		adsize = sizeof(struct short_ad);
-> @@ -648,7 +647,8 @@ static int udf_extend_file(struct inode
->  		BUG();
->  
->  	etype = inode_bmap(inode, first_block, &epos, &eloc, &elen, &offset);
-> -	within_final_block = (etype != -1);
-> +	within_final_block = (etype == (EXT_RECORDED_ALLOCATED >> 30)) ||
-> +			     (etype == (EXT_NOT_RECORDED_NOT_ALLOCATED >> 30));
->  
->  	if ((!epos.bh && epos.offset == udf_file_entry_alloc_offset(inode)) ||
->  	    (epos.bh && epos.offset == sizeof(struct allocExtDesc))) {
-> @@ -658,9 +658,15 @@ static int udf_extend_file(struct inode
->  		extent.extLocation.partitionReferenceNum = 0;
->  		extent.extLength = EXT_NOT_RECORDED_NOT_ALLOCATED;
->  	} else {
-> +		int8_t bmap_etype = etype;
->  		epos.offset -= adsize;
->  		etype = udf_next_aext(inode, &epos, &extent.extLocation,
->  				      &extent.extLength, 0);
-> +		if ((bmap_etype == -1) &&
-> +		    (etype == (EXT_NOT_RECORDED_ALLOCATED >> 30))) {
-> +			/* offset is relative to prealloc extent end */
-> +			hole_size = extent.extLength;
-
-Rather than introducing 'hole_size', I think we can just update 'offset'
-here?
-
-> +		}
->  		extent.extLength |= etype << 30;
->  	}
->  
-...
-
-> @@ -729,14 +735,22 @@ static sector_t inode_getblk(struct inod
->  			cur_epos.bh = next_epos.bh;
->  		}
->  
-> -		lbcount += elen;
-> -
->  		prev_epos.block = cur_epos.block;
->  		cur_epos.block = next_epos.block;
->  
->  		prev_epos.offset = cur_epos.offset;
->  		cur_epos.offset = next_epos.offset;
->  
-> +		/* Corner case: preallocated extent that stops short of
-> +		 * desired block
-> +		 */
-> +		if ((etype == (EXT_NOT_RECORDED_ALLOCATED >> 30)) &&
-> +		    ((lbcount + elen) <= b_off)) {
-> +			etype = -1;
-> +			break;
-> +		}
-> +
-> +		lbcount += elen;
-
-Honestly, I don't like this special case and it seems rather arbitrary.
-Also any EXT_NOT_RECORDED_ALLOCATED inside the file would now break the
-block lookup while previously it was gracefully handled. Also I'm not sure
-why it's event needed - even if inode_getblk() returns returns -1 and the
-'extent' loaded by udf_next_aext() ends up being EXT_NOT_RECORDED_ALLOCATED,
-we will end up passing it to udf_do_extend_file() which recognizes it as
-preallocation extent and will insert a hole extent before it? Am I missing
-something?
-
-								Honza
-
-
->  		etype = udf_next_aext(inode, &next_epos, &eloc, &elen, 1);
->  		if (etype == -1)
->  			break;
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>      struct IP_BASE_INSTANCE instance[MAX_INSTANCE];
+> -};
+> +} __maybe_unused;
+>
+>
+>  static const struct IP_BASE ACP_BASE =3D{ { { { 0x02403800, 0x00480000, =
+0, 0, 0 } },
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
