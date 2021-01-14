@@ -2,108 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5582F6D21
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:26:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB252F6D23
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbhANVXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 16:23:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726123AbhANVXy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 16:23:54 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46FEDC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:23:09 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id t17so5643670qvv.17
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:23:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=jzfFa6HK8DUXvWk641uxKNtwo7CfZc7SmxmcOl3szj8=;
-        b=uPkijkzJUZRg1Tsm4KPprFQRfZBjaCGENNUVb0j7+yaO2bqAjGnAjuIRTU2BxDDX3x
-         RU9gbc7ksXF7WbysxlB3zjK72tiJR7hgYYMBAmEc+g/bau1Gxci4CNUh7QzM3Mlm53uE
-         QDSTkUXP98mgKk/WptnI9kroA1q9xVbDkU1F6B7tM4dyqIPu3MNeTTsN1zNc83B0ue61
-         h7+lxXQ2Nqg6jrd39e7jHIftl1cXUpXmGk06ZeJmUd5kAUvyIH3Asvol4uqNIFKJ1JQ0
-         xxrlDtlvM3k2VvUI+Xir729sa7khOtT4Y+hTHQfWj9CgUOINIjcdYGCKxpaAu/ggeiJV
-         QbiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=jzfFa6HK8DUXvWk641uxKNtwo7CfZc7SmxmcOl3szj8=;
-        b=LM4IiJFwuK4lsC5aNe7q77Am2ybwCclaOisaCAEVCwvy2BHNWGfdWeIsKnBEHw3i+C
-         6c78qKT4Ip598e7i01SpKbELCPfscYSTR2v5hmW0HxXMfbqZPJdp6taAsnUV7pTv55Jy
-         eC5vaLYVi24XNONBNhl/6Awt8Bsyz2OV0Npo+9ckj1J8fSlvzsxTE31rQ9MXMJ3mXEar
-         wT1u+MqbzD5imDkkns7hEuUkiEDDs9sIbUBeHGHwZDITleApxZouJ0SkoHTQx23c7aRS
-         p9cHcUdyigiTkvefh8H6whNxVDYyUNBoq1l5RVaV2Dwq1BT6ea8fwBJnBPpXRysVileq
-         yNpQ==
-X-Gm-Message-State: AOAM531677im+bHw012wQcCttj0RhSsS74r8bxvfIdeScTU4L8GWjo9U
-        FkBWxKfVhsTYtK5/fQ/5xSyTDkrRll5/
-X-Google-Smtp-Source: ABdhPJwFlpCJ5GBjzu3MDP3bCHVVTrSaIa+h5JD9NQCSdghwConJwX6t/kI+vXT347djyRjqxPv0XwxM28Lc
-Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a0c:fd8f:: with SMTP id
- p15mr9165518qvr.48.1610659388226; Thu, 14 Jan 2021 13:23:08 -0800 (PST)
-Date:   Thu, 14 Jan 2021 13:23:04 -0800
-Message-Id: <20210114212304.4018119-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
-Subject: [PATCH] libperf tests: Avoid uninitialized variable warning.
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729214AbhANVX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 16:23:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47938 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726123AbhANVX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 16:23:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D450622DFA;
+        Thu, 14 Jan 2021 21:23:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610659396;
+        bh=J/aHoyoF4gk742GnjC+IHIsC05inBGzfoIzUewtb5eM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nyZv4R5EA0wzueGWWrToa/OKwIFT0kIhhX69EK0mBfnOnL1A/HOUKsfbZnWjQOr2I
+         LEW89Re0OXmI/y7MPpVXLD16+fQaqvQ2dGi0wDws2ude3EIjJv8W+tbCFWllgtfNdR
+         K/yDWga3yJpCa0s9bmB9OYd6lItvy48ONosMHuEMyy6r5Y1dTnztrcM5Kf23VQI0kN
+         D+Svii8ujuZfLioTaVKYafCtvn/f1/GAOBoIxkIwUSjposhlaZrMh/R0lK8s9SqIGF
+         LG0DyLhmss6MIoWEYWcyQyjNh1WbdZJvpEGLjwzdgPlGiXDYAMxdaT5TGlmqD/QjQw
+         YM0Hrcm0FfYlw==
+Date:   Thu, 14 Jan 2021 13:23:14 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jarod Wilson <jarod@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v2] bonding: add a vlan+mac tx hashing option
+Message-ID: <20210114132314.2c484e9f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210114211141.GH1171031@redhat.com>
+References: <20201218193033.6138-1-jarod@redhat.com>
+        <20210113223548.1171655-1-jarod@redhat.com>
+        <20210113175818.7dce3076@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210114211141.GH1171031@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable bf is read (for a write call) without being initialized
-triggering a memory sanitizer warning. Use bf in the read and switch the
-write to reading from a string.
+On Thu, 14 Jan 2021 16:11:41 -0500 Jarod Wilson wrote:
+> In truth, this code started out as a copy of bond_eth_hash(), which also
+> only uses the last byte, though of both source and destination macs. In
+> the typical use case for the requesting user, the bond is formed from two
+> onboard NICs, which typically have adjacent mac addresses, i.e.,
+> AA:BB:CC:DD:EE:01 and AA:BB:CC:DD:EE:02, so only the last byte is really
+> relevant to hash differently, but in thinking about it, a replacement NIC
+> because an onboard one died could have the same last byte, and maybe we
+> ought to just go full source mac right off the go here.
+> 
+> Something like this instead maybe:
+> 
+> static u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
+> {
+>         struct ethhdr *mac_hdr = (struct ethhdr *)skb_mac_header(skb);
+>         u32 srcmac = 0;
+>         u16 vlan;
+>         int i;
+> 
+>         for (i = 0; i < ETH_ALEN; i++)
+>                 srcmac = (srcmac << 8) | mac_hdr->h_source[i];
+> 
+>         if (!skb_vlan_tag_present(skb))
+>                 return srcmac;
+> 
+>         vlan = skb_vlan_tag_get(skb);
+> 
+>         return vlan ^ srcmac;
+> }
+> 
+> Then the documentation is spot-on, and we're future-proof, though
+> marginally less performant in calculating the hash, which may have been a
+> consideration when the original function was written, but is probably
+> basically irrelevant w/modern systems...
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/lib/perf/tests/test-evlist.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
-index 6d8ebe0c2504..1b225fe34a72 100644
---- a/tools/lib/perf/tests/test-evlist.c
-+++ b/tools/lib/perf/tests/test-evlist.c
-@@ -208,7 +208,6 @@ static int test_mmap_thread(void)
- 	char path[PATH_MAX];
- 	int id, err, pid, go_pipe[2];
- 	union perf_event *event;
--	char bf;
- 	int count = 0;
- 
- 	snprintf(path, PATH_MAX, "%s/kernel/debug/tracing/events/syscalls/sys_enter_prctl/id",
-@@ -229,6 +228,7 @@ static int test_mmap_thread(void)
- 	pid = fork();
- 	if (!pid) {
- 		int i;
-+		char bf;
- 
- 		read(go_pipe[0], &bf, 1);
- 
-@@ -266,7 +266,7 @@ static int test_mmap_thread(void)
- 	perf_evlist__enable(evlist);
- 
- 	/* kick the child and wait for it to finish */
--	write(go_pipe[1], &bf, 1);
-+	write(go_pipe[1], "A", 1);
- 	waitpid(pid, NULL, 0);
- 
- 	/*
--- 
-2.30.0.296.g2bfb1c46d8-goog
-
+No preference, especially if bond_eth_hash() already uses the last byte.
+Just make sure the choice is explained in the commit message.
