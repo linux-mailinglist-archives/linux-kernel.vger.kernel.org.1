@@ -2,89 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086182F6A2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317072F6A28
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728916AbhANSz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:55:58 -0500
-Received: from mail-03.mail-europe.com ([91.134.188.129]:52426 "EHLO
-        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbhANSz5 (ORCPT
+        id S1726510AbhANSzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:55:37 -0500
+Received: from smtp-bc0c.mail.infomaniak.ch ([45.157.188.12]:53645 "EHLO
+        smtp-bc0c.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727629AbhANSzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:55:57 -0500
-Date:   Thu, 14 Jan 2021 18:54:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1610650474;
-        bh=ZjEeyA413RNzpU9DT+FNrhe0K3Gvid9ETDUGt0k6xos=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=Fw0VtOj0lJAypnm4vm4cN5fCrZqUt2eGzGecGMmiI/h0FxOmZhZq1Tgf+qfuOTYxD
-         YExL0Q2yft5OXPDYN6Y/vnVvJrUvzfK+wwa6NU2Uv33Hugz/8btUGhA/kPf5XWaO2q
-         dYdfDaQ97DCFve6jUASRW9EBmhE2zfz4/DftD/sE=
-To:     caleb@connolly.tech, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@codeaurora.org>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: [PATCH v3 2/2] dt-bindings: Document bindings for new SDM845 devices
-Message-ID: <20210114185227.25265-3-caleb@connolly.tech>
-In-Reply-To: <20210114185227.25265-1-caleb@connolly.tech>
-References: <20210114185227.25265-1-caleb@connolly.tech>
+        Thu, 14 Jan 2021 13:55:36 -0500
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DGtls2KsZzMq8XJ;
+        Thu, 14 Jan 2021 19:54:49 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DGtlp18bWzlh8T2;
+        Thu, 14 Jan 2021 19:54:46 +0100 (CET)
+Subject: Re: [PATCH v26 07/12] landlock: Support filesystem access-control
+To:     Jann Horn <jannh@google.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20201209192839.1396820-1-mic@digikod.net>
+ <20201209192839.1396820-8-mic@digikod.net>
+ <CAG48ez1wbAQwU-eoC9DngHyUM_5F01MJQpRnLaJFvfRUrnXBdA@mail.gmail.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <aeb3e152-8108-89d2-0577-4b130368f14f@digikod.net>
+Date:   Thu, 14 Jan 2021 19:54:36 +0100
+User-Agent: 
 MIME-Version: 1.0
+In-Reply-To: <CAG48ez1wbAQwU-eoC9DngHyUM_5F01MJQpRnLaJFvfRUrnXBdA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document compatible bindings for the new OnePlus 6/6T devices.
 
-Signed-off-by: Caleb Connolly <caleb@connolly.tech>
----
- Documentation/devicetree/bindings/arm/qcom.yaml        | 5 +++++
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 2 files changed, 7 insertions(+)
+On 14/01/2021 04:22, Jann Horn wrote:
+> On Wed, Dec 9, 2020 at 8:28 PM Mickaël Salaün <mic@digikod.net> wrote:
+>> Thanks to the Landlock objects and ruleset, it is possible to identify
+>> inodes according to a process's domain.  To enable an unprivileged
+>> process to express a file hierarchy, it first needs to open a directory
+>> (or a file) and pass this file descriptor to the kernel through
+>> landlock_add_rule(2).  When checking if a file access request is
+>> allowed, we walk from the requested dentry to the real root, following
+>> the different mount layers.  The access to each "tagged" inodes are
+>> collected according to their rule layer level, and ANDed to create
+>> access to the requested file hierarchy.  This makes possible to identify
+>> a lot of files without tagging every inodes nor modifying the
+>> filesystem, while still following the view and understanding the user
+>> has from the filesystem.
+>>
+>> Add a new ARCH_EPHEMERAL_INODES for UML because it currently does not
+>> keep the same struct inodes for the same inodes whereas these inodes are
+>> in use.
+>>
+>> This commit adds a minimal set of supported filesystem access-control
+>> which doesn't enable to restrict all file-related actions.  This is the
+>> result of multiple discussions to minimize the code of Landlock to ease
+>> review.  Thanks to the Landlock design, extending this access-control
+>> without breaking user space will not be a problem.  Moreover, seccomp
+>> filters can be used to restrict the use of syscall families which may
+>> not be currently handled by Landlock.
+> [...]
+>> +static bool check_access_path_continue(
+>> +               const struct landlock_ruleset *const domain,
+>> +               const struct path *const path, const u32 access_request,
+>> +               u64 *const layer_mask)
+>> +{
+> [...]
+>> +       /*
+>> +        * An access is granted if, for each policy layer, at least one rule
+>> +        * encountered on the pathwalk grants the access, regardless of their
+>> +        * position in the layer stack.  We must then check not-yet-seen layers
+>> +        * for each inode, from the last one added to the first one.
+>> +        */
+>> +       for (i = 0; i < rule->num_layers; i++) {
+>> +               const struct landlock_layer *const layer = &rule->layers[i];
+>> +               const u64 layer_level = BIT_ULL(layer->level - 1);
+>> +
+>> +               if (!(layer_level & *layer_mask))
+>> +                       continue;
+>> +               if ((layer->access & access_request) != access_request)
+>> +                       return false;
+>> +               *layer_mask &= ~layer_level;
+> 
+> Hmm... shouldn't the last 5 lines be replaced by the following?
+> 
+> if ((layer->access & access_request) == access_request)
+>     *layer_mask &= ~layer_level;
+> 
+> And then, since this function would always return true, you could
+> change its return type to "void".
+> 
+> 
+> As far as I can tell, the current version will still, if a ruleset
+> looks like this:
+> 
+> /usr read+write
+> /usr/lib/ read
+> 
+> reject write access to /usr/lib, right?
 
-diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentatio=
-n/devicetree/bindings/arm/qcom.yaml
-index c97d4a580f47..f3ad845754d3 100644
---- a/Documentation/devicetree/bindings/arm/qcom.yaml
-+++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-@@ -171,6 +171,11 @@ properties:
-           - enum:
-               - qcom,ipq6018-cp01-c1
-           - const: qcom,ipq6018
-+      - items:
-+          - enum:
-+              - oneplus,enchilada
-+              - oneplus,fajita
-+          - const: qcom,sdm845
-=20
-       - items:
-           - enum:
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Docum=
-entation/devicetree/bindings/vendor-prefixes.yaml
-index 041ae90b0d8f..aff440b18293 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -800,6 +800,8 @@ patternProperties:
-     description: OLIMEX Ltd.
-   "^olpc,.*":
-     description: One Laptop Per Child
-+  "^oneplus,.*":
-+    description: One Plus Technology (Shenzhen) Co., Ltd.
-   "^onion,.*":
-     description: Onion Corporation
-   "^onnn,.*":
---=20
-2.29.2
+If these two rules are from different layers, then yes it would work as
+intended. However, if these rules are from the same layer the path walk
+will not stop at /usr/lib but go down to /usr, which grants write
+access. This is the reason I wrote it like this and the
+layout1.inherit_subset test checks that. I'm updating the documentation
+to better explain how an access is checked with one or multiple layers.
+
+Doing this way also enables to stop the path walk earlier, which is the
+original purpose of this function.
 
 
+> 
+> 
+>> +       }
+>> +       return true;
+>> +}
