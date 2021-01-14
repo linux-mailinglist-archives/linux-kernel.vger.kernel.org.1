@@ -2,88 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282222F640D
+	by mail.lfdr.de (Postfix) with ESMTP id 955252F640E
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729436AbhANPOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 10:14:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46424 "EHLO
+        id S1729478AbhANPPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 10:15:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728967AbhANPOo (ORCPT
+        with ESMTP id S1727824AbhANPPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 10:14:44 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB94C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:14:03 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id y17so6121277wrr.10
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:14:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8w6v2zJu2NouosfOkB7KDJ7+6VCJGcJrCDw3sLK/y/k=;
-        b=T79sQaNftJS7ALh4FTSxEpet2d91HaXlsY1PwOpKPfZkNayWfUEY7O0hKzrf5cTTND
-         JUbkfxPSePvKwgZczneEVlERUaewOM4g78bJMNcsuPcepFjzGJ6ZsVsEqkhpX93GvEtj
-         6o3EMsSnekiRGCVi7qKyvGHHhmRE3VuvngeunQH+Ixp2jBeptWIpRpmisnX/kQOO9trP
-         RuTd4DIORfTAa4ztjgxI73A848lYypNBKYKMzFBCeMEWaTTOc0qAIPYKM27u04ERvg2t
-         wt4q6regC52jN0iYG+1Dm4UsGiXgmVTJ/sJjnDBbBEh/vSeCNLYrCb2AZktxYiIrVeUG
-         2JcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8w6v2zJu2NouosfOkB7KDJ7+6VCJGcJrCDw3sLK/y/k=;
-        b=nmUk1Ur30Nh6+CWse4BCp1/UXGmiqmNcqgSeRYow0BiYe1v0mOmsu0g+nEJQERrY9t
-         GoQwagg7qwc+oDnPpl2gNToXLH48IQppf1hFMsm3O7ClP71ctZaN7I7bxoUiYvt+c7cE
-         iSQBn95s3T2LLmHp7e1vpXpGM4PbLXxUCR41/q6UAs9NTVJD28Mvg3ijJ7VyuzXLqDxx
-         LfPX11LC6RR78WbVvRgQNjAuH+BgH5WwyyzEJjD4apXvFViw1C7WLOOHojiKTvRYdxae
-         vuH1znBSRRXdkGlRtNOGtepFTFQGjm/AsJF1N3kYzxB3T8b7wdJfkekXaTXAXmU7xJr2
-         UVqw==
-X-Gm-Message-State: AOAM530TxFMjX19JASnlRv+Lhx/4nNNFG290vNwG0T2YwsoAr2o0hEkz
-        FzgoANX+SVk7UA5m4W8oyQNUAuNKKKgtJP6MoABRyA==
-X-Google-Smtp-Source: ABdhPJwjV5PI8yQpRk4BZuoz72XANsVvORO3WGPymL6Zm5a8eHs7zDueHsZffSfhh0dCC5EvwBD8vISh3zSvVPTUXxo=
-X-Received: by 2002:a5d:43cc:: with SMTP id v12mr8211673wrr.319.1610637242660;
- Thu, 14 Jan 2021 07:14:02 -0800 (PST)
+        Thu, 14 Jan 2021 10:15:04 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472DDC0613ED;
+        Thu, 14 Jan 2021 07:14:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=xt6GBaiEr5blQqPG7EyFh4PFTGIl0+YLEE9qu/Wvz3Y=; b=kaSEuxBsQoCHYBZXy7z+YLZJm
+        tnlqiqq30OZBUJWUFDV3dx9heK93tmFDkROpoHU0uyge/T4D5oqPf7E4zngKvJoeLCws3/gXI5rcS
+        0rXAHNClzft3tlnhj5p+XruJOqmmrMaqV/oCRui+jome6jnA2DCfIZq7D14UDstYD4SfM8wiN5W6S
+        H9CRYdImu+FuHSjMlVNj/WwGQad+ncR85ciR2S8OEVb2y0JMoJPzIx3luzL0Bn8y7Gfa9+i7G0fZI
+        +OB3XbcO2WI9ieo7qkXykkislA3LygE2HIytxBOcGVwQMhTPBwMg8AaMvUGVdsiMDpvxpVcpUlURq
+        hrnsKs1WA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47920)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l04K6-0002bC-5f; Thu, 14 Jan 2021 15:14:06 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l04K5-0008Ro-Vc; Thu, 14 Jan 2021 15:14:05 +0000
+Date:   Thu, 14 Jan 2021 15:14:05 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Bjarni Jonasson <bjarni.jonasson@microchip.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net-next v2 2/2] sfp: add support for 100 base-x SFPs
+Message-ID: <20210114151405.GU1551@shell.armlinux.org.uk>
+References: <20210113115626.17381-1-bjarni.jonasson@microchip.com>
+ <20210113115626.17381-3-bjarni.jonasson@microchip.com>
 MIME-Version: 1.0
-References: <20210107025731.226017-1-warthog618@gmail.com> <20210107025731.226017-8-warthog618@gmail.com>
-In-Reply-To: <20210107025731.226017-8-warthog618@gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 14 Jan 2021 16:13:52 +0100
-Message-ID: <CAMpxmJWRbUc4Wdrhaxs1F+W50n0SOgvcgQrurnjvUBJaeHX6tA@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] selftests: gpio: add CONFIG_GPIO_CDEV to config
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Bamvor Jian Zhang <bamv2005@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113115626.17381-3-bjarni.jonasson@microchip.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 3:59 AM Kent Gibson <warthog618@gmail.com> wrote:
->
-> GPIO CDEV is now optional and required for the selftests so add it to
-> the config.
->
-> Signed-off-by: Kent Gibson <warthog618@gmail.com>
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  tools/testing/selftests/gpio/config | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/tools/testing/selftests/gpio/config b/tools/testing/selftests/gpio/config
-> index abaa6902b7b6..ce100342c20b 100644
-> --- a/tools/testing/selftests/gpio/config
-> +++ b/tools/testing/selftests/gpio/config
-> @@ -1,2 +1,3 @@
->  CONFIG_GPIOLIB=y
-> +CONFIG_GPIO_CDEV=y
->  CONFIG_GPIO_MOCKUP=m
-> --
-> 2.30.0
->
+On Wed, Jan 13, 2021 at 12:56:26PM +0100, Bjarni Jonasson wrote:
+> Add support for 100Base-FX, 100Base-LX, 100Base-PX and 100Base-BX10 modules
+> This is needed for Sparx-5 switch.
+> 
+> Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
 
-Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
+
+Thanks!
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
