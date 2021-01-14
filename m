@@ -2,101 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198B92F69CF
+	by mail.lfdr.de (Postfix) with ESMTP id F074A2F69D1
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728404AbhANSoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:44:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbhANSoI (ORCPT
+        id S1729420AbhANSoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:44:15 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:51912 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726131AbhANSoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:44:08 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 062B4C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:43:28 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id u21so7653408lja.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:43:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zSikxUCCmMuKlcIVNKMSQLXHoh+mKFmmNfXZP34ywo0=;
-        b=P9qp87pav/O9NmAX8hvOtK6ylaKismTYgOWaQMdNoCTKbWdOpzqtQ5sUhYdXNSwHdI
-         k+genNv1iPZxLYBL19FxOCzz9z5Kv0lkZh5yI4p1DIU70/NnoC5nstKgXQ2+Lqi43IdL
-         qGQKNMfNYkFJ9OC3FsVPcemTj4NjdInXnw4hk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zSikxUCCmMuKlcIVNKMSQLXHoh+mKFmmNfXZP34ywo0=;
-        b=AcY70t7z131MkPNRDPs/XYHyyYY7pFz/+UCZk3QFr3ZzxZI9i8V6Qu4MEU6xJCZkHj
-         /f3nun8vhh5RJ03KdKt0uiOHivYITgKWOXlWVgCzSGjnuT+cHNm5j9nd+OoTu1dG5jpl
-         Cgw7jbbWXH9AjHjDewE83qvcpmPOA74BYcem11jEU6wSqgYSc0C+jYgcos7cZt3hA2NY
-         KZneDgRchqrH6dFYCRqirHAOoS0vdbJ8cLWZkOuC+QEdphM8J5v2cFG7jdZQRTViACrE
-         H2X6U/Pre+DzoXHnATTUjHdR3mg75moaROIahqiiU4BdhJ4Fqxa4SXHKORiBaR/Y4scc
-         sizQ==
-X-Gm-Message-State: AOAM5328uD24B252plHBYXTOSKsf3OVLpZbD9rY867MoBo9oV1m41jHT
-        Yv8WV+EEv3UGpElyQXThtWv/7KHjlMrQwg==
-X-Google-Smtp-Source: ABdhPJzmnDJaqZ/JTcOPYkpdoIRqSl5GxwdCEGisl98Xs5vxj5uIkSRk9nr32hFYToVMh21ITU7YcA==
-X-Received: by 2002:a2e:8714:: with SMTP id m20mr3519792lji.320.1610649805888;
-        Thu, 14 Jan 2021 10:43:25 -0800 (PST)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id j5sm621560lfu.139.2021.01.14.10.43.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jan 2021 10:43:24 -0800 (PST)
-Received: by mail-lj1-f169.google.com with SMTP id n11so7637063lji.5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:43:24 -0800 (PST)
-X-Received: by 2002:a2e:9b13:: with SMTP id u19mr3568946lji.48.1610649803879;
- Thu, 14 Jan 2021 10:43:23 -0800 (PST)
+        Thu, 14 Jan 2021 13:44:14 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 10D0E1F45D90
+Received: by earth.universe (Postfix, from userid 1000)
+        id 4ECAF3C0C94; Thu, 14 Jan 2021 19:43:30 +0100 (CET)
+Date:   Thu, 14 Jan 2021 19:43:30 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com
+Subject: Re: [PATCH] power: supply: bq256xx: Fix BQ256XX_NUM_WD_VAL and
+ bq256xx_watchdog_time[] overrun
+Message-ID: <20210114184330.ka6o5cxhe5ikyeoa@earth.universe>
+References: <20210113225352.13099-1-r-rivera-matos@ti.com>
 MIME-Version: 1.0
-References: <20210112224832.10980-1-will@kernel.org> <161055398865.21762.12236232732054213928.b4-ty@arm.com>
- <CAK7LNASs6dvU6D3jL2GG3jW58fXfaj6VNOe55NJnTB8UPuk2pA@mail.gmail.com>
- <CAHk-=wiQ_tp8NmKV8PJ-6WMo3dTEZwDo3a0hYjcUFqMdviNTYw@mail.gmail.com>
- <20210113214436.GL1551@shell.armlinux.org.uk> <CAHk-=wjqGRXUp6KOdx-eHYEotGvY=a5tSY1mF-BkAcX2YAuBYw@mail.gmail.com>
- <CAMj1kXFaDNRbDvr43VLEHFRHHS0sGGcF=iTfES4sxPg-rZ34NA@mail.gmail.com>
-In-Reply-To: <CAMj1kXFaDNRbDvr43VLEHFRHHS0sGGcF=iTfES4sxPg-rZ34NA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 14 Jan 2021 10:43:07 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjHTpG+gMx9vqrZgo8Uw0NqA2kNjS87o63Zv3=WG2K3zA@mail.gmail.com>
-Message-ID: <CAHk-=wjHTpG+gMx9vqrZgo8Uw0NqA2kNjS87o63Zv3=WG2K3zA@mail.gmail.com>
-Subject: Re: [PATCH] compiler.h: Raise minimum version of GCC to 5.1 for arm64
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Florian Weimer <fweimer@redhat.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fm75k6rgj6vu3jnf"
+Content-Disposition: inline
+In-Reply-To: <20210113225352.13099-1-r-rivera-matos@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 12:18 AM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> So if the arguments are piling up, what is holding us back, other than
-> inertia?
 
-I think we can most certainly just try increasing the minimum version
-to 5.1 in the next merge window and see.
+--fm75k6rgj6vu3jnf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Note that banning 4.9 for arm64 and banning it in general should be
-> two different changes in any case, as the former will need to be
-> backported to -stable kernels as well.
+Hi,
 
-Yes. The arm64 issue is a clear and known bug, plus I suspect gcc-4.9
-is ridiculously old in the arm64 ecosystem anyway.
+On Wed, Jan 13, 2021 at 04:53:52PM -0600, Ricardo Rivera-Matos wrote:
+> Corrects BQ256XX_NUM_WD_VAL from value of "8" to "4" and fixes the issue =
+when 'i'
+> is equal to array size then array index over runs the array
+>=20
+> Fixes: 32e4978bb92 ("power: supply: bq256xx: Introduce the BQ256XX charge=
+r driver")
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+> ---
 
-So the arm64 issue is a bug-fix, the follow-up of just upgrading gcc
-requirements in general would be a "keep up with the times, and allow
-those variable declarations in loops".
+Thanks, queued.
 
-            Linus
+-- Sebastian
+
+>  drivers/power/supply/bq256xx_charger.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/power/supply/bq256xx_charger.c b/drivers/power/suppl=
+y/bq256xx_charger.c
+> index dc74c44618af..8414472083a6 100644
+> --- a/drivers/power/supply/bq256xx_charger.c
+> +++ b/drivers/power/supply/bq256xx_charger.c
+> @@ -135,7 +135,7 @@
+>  #define BQ256XX_NTC_FAULT_COLD		(BIT(2) | BIT(0))
+>  #define BQ256XX_NTC_FAULT_HOT		(BIT(2) | BIT(1))
+> =20
+> -#define BQ256XX_NUM_WD_VAL	8
+> +#define BQ256XX_NUM_WD_VAL	4
+>  #define BQ256XX_WATCHDOG_MASK	GENMASK(5, 4)
+>  #define BQ256XX_WATCHDOG_MAX	1600000
+>  #define BQ256XX_WATCHDOG_DIS	0
+> @@ -1508,6 +1508,10 @@ static int bq256xx_hw_init(struct bq256xx_device *=
+bq)
+>  	int i;
+> =20
+>  	for (i =3D 0; i < BQ256XX_NUM_WD_VAL; i++) {
+> +		if (bq->watchdog_timer =3D=3D bq256xx_watchdog_time[i]) {
+> +			wd_reg_val =3D i;
+> +			break;
+> +		}
+>  		if (bq->watchdog_timer > bq256xx_watchdog_time[i] &&
+>  		    bq->watchdog_timer < bq256xx_watchdog_time[i + 1])
+>  			wd_reg_val =3D i;
+> --=20
+> 2.30.0
+>=20
+
+--fm75k6rgj6vu3jnf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAAkMwACgkQ2O7X88g7
++po/GA//TtjqsAJY+5xGVUP/g6dReZlNr4b+JCHexErQ6Adl/0hAkZFqSoio8CM7
+3O0gEtiphJ6skaRjoGMd/UTKkfZmKB4/QXUZu22SrOIUtiHtIVv/stUeTGzLYf4B
+SkZrnoRdrsodQA2+fntLKyiC632xNAA1C2wyYlruvxOS3eyzBfUiwMwmFQk6j06E
+i3aaMOkP9LXJjixY+MwJjtMEd/Vl+WgWtiA/SR13KQ7HQ5Ruf5Cv7+UsmgIrepw0
+18L4r6HP+4Dn3wMrws4oxFxjZTn/qL4SP1kcfwLfwVGBmR/RpQzx8VMg5lmLWsqN
+v9BVE7XZNljBoadr91Px+e3OvgFXWbWlpUHd17pH4KzxHDFuO7xJXa/3+5D11+3W
+pg8/DLEUzBcu2DAh6bGByYBv27OjJG8N/1XBorlxpYQLJDYTFVxVyCrQZiBqOe7/
+/S7qYMyYsWvPshkSz8eQGNTFIRlpVd5/szf81U353+iX8LaMXItQxutc/innYk94
+uZaIHCRigEH6IgwkPagMRF3DKDQoNGD+LIYKcM0a0qmhNFYZnsSCr2oS7sT7NGuU
+j8RmqJKHtRCXj4cuGN+baYQm4FLj7rqupR/RLM5IPfYRETDeoUveXxvy3y83m9zp
+Rq3gyWZLMuFH2wHUZWxz5oGL3+v43vCHALqahsdR7vBvhH7qfDg=
+=ediH
+-----END PGP SIGNATURE-----
+
+--fm75k6rgj6vu3jnf--
