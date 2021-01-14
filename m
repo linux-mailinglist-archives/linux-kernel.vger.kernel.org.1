@@ -2,217 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567142F6789
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0682F6796
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbhANRZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:25:31 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42608 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728580AbhANRZ2 (ORCPT
+        id S1729125AbhANR04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:26:56 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2347 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727305AbhANR0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:25:28 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10EH9hvR184364;
-        Thu, 14 Jan 2021 12:24:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=O2dcG2TjnlorTozOyHjBrG5WVWzj7GSsdgjwEfc4Oqo=;
- b=EFG4XU3+FpG7A1Sit/iwVmQQCiBn1ZtsIg7uMmyzRlPNX/dCjo+9WFpLmymr/XtmIE/8
- 1uFBwLRUrXnf3n1dL/sJcFpFi7FkODZLcnYkauJPO2pICACeUtzxfHqK3+swK9Z+M0Mj
- f6uMnLLDcskBjdVlmNcYRsf34z1JbpVDAHf2Y/E0RSQH7nX8bBr6xK6xJHXDYDzn15U+
- 7TMnbRYUwKQb7fTCygdyBRxfwATXUNgy4pdloUcEibsFpNCg92BZvvfJft3ZzXdWFrOT
- g4Imw/7cOTjb6KBV7nV+YJ/6rHyFXdSQvkaEJ9dYp3AHUj0czVRjwuf+tHoSpwXFyoB/ Uw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 362s9b25wr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 12:24:39 -0500
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10EHAR1t186175;
-        Thu, 14 Jan 2021 12:24:39 -0500
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 362s9b25wb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 12:24:38 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10EHNPFd011309;
-        Thu, 14 Jan 2021 17:24:38 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma04wdc.us.ibm.com with ESMTP id 35y449es8v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 17:24:38 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10EHOaKM24445320
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Jan 2021 17:24:36 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B9EB3C6059;
-        Thu, 14 Jan 2021 17:24:36 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2E9ABC6055;
-        Thu, 14 Jan 2021 17:24:36 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.163.16.139])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Jan 2021 17:24:36 +0000 (GMT)
-Subject: Re: [PATCH v4 01/21] ibmvfc: add vhost fields and defaults for MQ
- enablement
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, brking@linux.ibm.com,
-        james.smart@broadcom.com
-References: <20210111231225.105347-1-tyreld@linux.ibm.com>
- <20210111231225.105347-2-tyreld@linux.ibm.com>
- <0525bee7-433f-dcc7-9e35-e8706d6edee5@linux.vnet.ibm.com>
- <a8623705-6d49-2056-09bb-80190e0b6f52@linux.ibm.com>
- <51bfc34b-c2c4-bf14-c903-d37015f65361@linux.vnet.ibm.com>
- <20210114012738.GA237540@T590>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <9c5f7786-cd13-6a49-2d71-d0c438318bcb@linux.vnet.ibm.com>
-Date:   Thu, 14 Jan 2021 11:24:35 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 14 Jan 2021 12:26:55 -0500
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DGrgc4G0Jz67Z3P;
+        Fri, 15 Jan 2021 01:21:00 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 14 Jan 2021 18:26:12 +0100
+Received: from localhost (10.47.30.252) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 14 Jan
+ 2021 17:26:11 +0000
+Date:   Thu, 14 Jan 2021 17:25:31 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org, Ira Weiny" <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Vishal Verma" <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        "Bjorn Helgaas" <helgaas@kernel.org>,
+        Jon Masters <jcm@jonmasters.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        <daniel.lll@alibaba-inc.com>
+Subject: Re: [RFC PATCH v3 13/16] cxl/mem: Create concept of enabled
+ commands
+Message-ID: <20210114172531.0000347a@Huawei.com>
+In-Reply-To: <20210111225121.820014-15-ben.widawsky@intel.com>
+References: <20210111225121.820014-1-ben.widawsky@intel.com>
+        <20210111225121.820014-15-ben.widawsky@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20210114012738.GA237540@T590>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-14_06:2021-01-14,2021-01-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 mlxlogscore=999 clxscore=1015
- lowpriorityscore=0 suspectscore=0 spamscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101140094
+X-Originating-IP: [10.47.30.252]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/13/21 7:27 PM, Ming Lei wrote:
-> On Wed, Jan 13, 2021 at 11:13:07AM -0600, Brian King wrote:
->> On 1/12/21 6:33 PM, Tyrel Datwyler wrote:
->>> On 1/12/21 2:54 PM, Brian King wrote:
->>>> On 1/11/21 5:12 PM, Tyrel Datwyler wrote:
->>>>> Introduce several new vhost fields for managing MQ state of the adapter
->>>>> as well as initial defaults for MQ enablement.
->>>>>
->>>>> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->>>>> ---
->>>>>  drivers/scsi/ibmvscsi/ibmvfc.c | 8 ++++++++
->>>>>  drivers/scsi/ibmvscsi/ibmvfc.h | 9 +++++++++
->>>>>  2 files changed, 17 insertions(+)
->>>>>
->>>>> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
->>>>> index ba95438a8912..9200fe49c57e 100644
->>>>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
->>>>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
->>>>> @@ -3302,6 +3302,7 @@ static struct scsi_host_template driver_template = {
->>>>>  	.max_sectors = IBMVFC_MAX_SECTORS,
->>>>>  	.shost_attrs = ibmvfc_attrs,
->>>>>  	.track_queue_depth = 1,
->>>>> +	.host_tagset = 1,
->>>>
->>>> This doesn't seem right. You are setting host_tagset, which means you want a
->>>> shared, host wide, tag set for commands. It also means that the total
->>>> queue depth for the host is can_queue. However, it looks like you are allocating
->>>> max_requests events for each sub crq, which means you are over allocating memory.
->>>
->>> With the shared tagset yes the queue depth for the host is can_queue, but this
->>> also implies that the max queue depth for each hw queue is also can_queue. So,
->>> in the worst case that all commands are queued down the same hw queue we need an
->>> event pool with can_queue commands.
->>>
->>>>
->>>> Looking at this closer, we might have bigger problems. There is a host wide
->>>> max number of commands that the VFC host supports, which gets returned on
->>>> NPIV Login. This value can change across a live migration event.
->>>
->>> From what I understand the max commands can only become less.
->>>
->>>>
->>>> The ibmvfc driver, which does the same thing the lpfc driver does, modifies
->>>> can_queue on the scsi_host *after* the tag set has been allocated. This looks
->>>> to be a concern with ibmvfc, not sure about lpfc, as it doesn't look like
->>>> we look at can_queue once the tag set is setup, and I'm not seeing a good way
->>>> to dynamically change the host queue depth once the tag set is setup. 
->>>>
->>>> Unless I'm missing something, our best options appear to either be to implement
->>>> our own host wide busy reference counting, which doesn't sound very good, or
->>>> we need to add some API to block / scsi that allows us to dynamically change
->>>> can_queue.
->>>
->>> Changing can_queue won't do use any good with the shared tagset becasue each
->>> queue still needs to be able to queue can_queue number of commands in the worst
->>> case.
->>
->> The issue I'm trying to highlight here is the following scenario:
->>
->> 1. We set shost->can_queue, then call scsi_add_host, which allocates the tag set.
->>
->> 2. On our NPIV login response from the VIOS, we might get a lower value than we
->> initially set in shost->can_queue, so we update it, but nobody ever looks at it
->> again, and we don't have any protection against sending too many commands to the host.
->>
->>
->> Basically, we no longer have any code that ensures we don't send more
->> commands to the VIOS than we are told it supports. According to the architecture,
->> if we actually do this, the VIOS will do an h_free_crq, which would be a bit
->> of a bug on our part.
->>
->> I don't think it was ever clearly defined in the API that a driver can
->> change shost->can_queue after calling scsi_add_host, but up until
->> commit 6eb045e092efefafc6687409a6fa6d1dabf0fb69, this worked and now
->> it doesn't. 
-> 
-> Actually it isn't related with commit 6eb045e092ef, because blk_mq_alloc_tag_set()
-> uses .can_queue to create driver tag sbitmap and request pool.
-> 
-> So even thought without 6eb045e092ef, the updated .can_queue can't work
-> as expected because the max driver tag depth has been fixed by blk-mq already.
+On Mon, 11 Jan 2021 14:51:18 -0800
+Ben Widawsky <ben.widawsky@intel.com> wrote:
 
-There are two scenarios here. In the scenario of someone increasing can_queue
-after the tag set is allocated, I agree, blk-mq will never take advantage
-of this. However, in the scenario of someone *decreasing* can_queue after the
-tag set is allocated, prior to 6eb045e092ef, the shost->host_busy code provided
-this protection.
+> CXL devices must implement the Device Command Interface (described in
+> 8.2.9 of the CXL 2.0 spec). While the driver already maintains a list of
+> commands it supports, there is still a need to be able to distinguish
+> between commands that the driver knows about from commands that may not
+> be supported by the hardware. No such commands currently are defined in
+> the driver.
+> 
+> The implementation leaves the statically defined table of commands and
+> supplements it with a bitmap to determine commands that are enabled.
+> 
+> ---
+> 
+> There are multiple approaches that can be taken, but this is nice for a
+> few reasons.
+> 
+> Here are some of the other solutions:
+> 
+> Create a per instance table with only the supported commands.
+> 1. Having a fixed command id -> command mapping is much easier to manage
+>    for development and debugging.
+> 2. Dealing with dynamic memory allocation for the table adds unnecessary
+>    complexity.
+> 3. Most tables for device types are likely to be quite similar.
+> 4. Makes it difficult to implement helper macros like cxl_for_each_cmd()
+> 
+> If the per instance table did preserve ids, #1 above can be addressed.
+> However, as "enable" is currently the only mutable state for the
+> commands, it would yield a lot of overhead for not much gain.
+> Additionally, the other issues remain.
+> 
+> If "enable" remains the only mutable state, I believe this to be the
+> best solution. Once the number of mutable elements in a command grows,
+> it probably makes sense to move to per device instance state with a
+> fixed command ID mapping.
+Agreed with the logic.   
+
+However, patch wise, should either drop the --- above or move this below the
+--- after your sign off.  Otherwise you run the risk of git dropping your
+sign off and resulting complaints from anyone run validation scripts
+of the kernel tree that check for that.
 
 > 
-> What 6eb045e092ef does is just to remove the double check on max
-> host-wide allowed commands because that has been respected by blk-mq
-> driver tag allocation already.
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> ---
+>  drivers/cxl/cxl.h |  4 ++++
+>  drivers/cxl/mem.c | 38 +++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 41 insertions(+), 1 deletion(-)
 > 
->>
->> I started looking through drivers that do this, and so far, it looks like the
->> following drivers do: ibmvfc, lpfc, aix94xx, libfc, BusLogic, and likely others...
->>
->> We probably need an API that lets us change shost->can_queue dynamically.
-> 
-> I'd suggest to confirm changing .can_queue is one real usecase.
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index 537ac4d8e6bd..963ba30cb200 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+> @@ -17,6 +17,9 @@
+>  
+>  #define CXL_GET_FIELD(word, field) FIELD_GET(field##_MASK, word)
+>  
+> +/* XXX: Arbitrary max */
+> +#define CXL_MAX_COMMANDS 32
 
-For ibmvfc, the total number of commands that the scsi host supports is very
-much a dynamic value. It can increase and it can decrease. Live migrating
-a logical partition from one system to another is the usual cause of
-such a capability change. For ibmvfc, at least, this only ever happens
-when we've self blocked the host and have sent back all outstanding I/O.
+If going this way, probably want a build time check that you don't
+go beyond this value for a given command set.  I haven't actually
+thought about how to construct that but should be easy enough.
 
-However, looking at other drivers that modify can_queue dynamically, this
-doesn't always hold true. Looking at libfc, it looks to dynamically ramp
-up and ramp down can_queue based on its ability to handle requests.
-
-There are certainly a number of other drivers that change can_queue
-after the tag set has been allocated. Some of these drivers could
-likely be changed to avoid doing this, but changing them all will likely
-be difficult.
-
-Thanks,
-
-Brian
-
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
+> +
+>  /* Device  (CXL 2.0 - 8.2.8.3) */
+>  #define CXLDEV_CAP_ARRAY_REG 0x0
+>  #define CXLDEV_CAP_ARRAY_CAP_ID 0
+> @@ -88,6 +91,7 @@ struct cxl_mem {
+>  	} ram;
+>  
+>  	char firmware_version[0x10];
+> +	DECLARE_BITMAP(enabled_cmds, CXL_MAX_COMMANDS);
+>  
+>  	/* Cap 0001h - CXL_CAP_CAP_ID_DEVICE_STATUS */
+>  	struct {
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index a824cfd4342a..20b26fa2c466 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -114,6 +114,8 @@ static struct {
+>   *    would typically be used for deprecated commands.
+>   *  * %CXL_CMD_FLAG_MANDATORY: Hardware must support this command. This flag is
+>   *    only used internally by the driver for sanity checking.
+> + *  * %CXL_CMD_INTERNAL_FLAG_PSEUDO: This is a pseudo command which doesn't have
+> + *    a direct mapping to hardware. They are implicitly always enabled.
+>   *
+>   * The cxl_mem_command is the driver's internal representation of commands that
+>   * are supported by the driver. Some of these commands may not be supported by
+> @@ -129,6 +131,7 @@ struct cxl_mem_command {
+>  #define CXL_CMD_INTERNAL_FLAG_NONE 0
+>  #define CXL_CMD_INTERNAL_FLAG_HIDDEN BIT(0)
+>  #define CXL_CMD_INTERNAL_FLAG_MANDATORY BIT(1)
+> +#define CXL_CMD_INTERNAL_FLAG_PSEUDO BIT(2)
+>  };
+>  
+>  /*
+> @@ -140,7 +143,7 @@ struct cxl_mem_command {
+>  static struct cxl_mem_command mem_commands[] = {
+>  	CXL_CMD(INVALID, KERNEL, 0, 0, HIDDEN),
+>  	CXL_CMD(IDENTIFY, NONE, 0, 0x43, MANDATORY),
+> -	CXL_CMD(RAW, NONE, ~0, ~0, MANDATORY),
+> +	CXL_CMD(RAW, NONE, ~0, ~0, PSEUDO),
+>  };
+>  
+>  #define cxl_for_each_cmd(cmd)                                                  \
+> @@ -618,6 +621,10 @@ static int cxl_validate_cmd_from_user(struct cxl_mem *cxlm,
+>  	c = &mem_commands[send_cmd->id];
+>  	info = &c->info;
+>  
+> +	/* Check that the command is enabled for hardware */
+> +	if (!test_bit(cxl_cmd_index(c), cxlm->enabled_cmds))
+> +		return -ENOTTY;
+> +
+>  	if (info->flags & CXL_MEM_COMMAND_FLAG_KERNEL)
+>  		return -EPERM;
+>  
+> @@ -1029,6 +1036,31 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
+>  	return rc;
+>  }
+>  
+> +/**
+> + * cxl_mem_enumerate_cmds() - Enumerate commands for a device.
+> + * @cxlm: The device.
+> + *
+> + * Returns 0 if enumerate completed successfully.
+> + *
+> + * CXL devices have optional support for certain commands. This function will
+> + * determine the set of supported commands for the hardware and update the
+> + * enabled_cmds bitmap in the @cxlm.
+> + */
+> +static int cxl_mem_enumerate_cmds(struct cxl_mem *cxlm)
+> +{
+> +	struct cxl_mem_command *c;
+> +
+> +	/* All commands are considered enabled for now (except INVALID). */
+> +	cxl_for_each_cmd(c) {
+> +		if (c->flags & CXL_CMD_INTERNAL_FLAG_HIDDEN)
+> +			continue;
+> +
+> +		set_bit(cxl_cmd_index(c), cxlm->enabled_cmds);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /**
+>   * cxl_mem_identify() - Send the IDENTIFY command to the device.
+>   * @cxlm: The device to identify.
+> @@ -1147,6 +1179,10 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	if (rc)
+>  		goto err;
+>  
+> +	rc = cxl_mem_enumerate_cmds(cxlm);
+> +	if (rc)
+> +		return rc;
+> +
+>  	rc = cxl_mem_identify(cxlm);
+>  	if (rc)
+>  		goto err;
 
