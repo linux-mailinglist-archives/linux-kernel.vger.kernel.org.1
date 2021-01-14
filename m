@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D2C2F6674
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:56:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 634972F6679
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbhANQxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:53:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbhANQxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:53:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C0A523B1C;
-        Thu, 14 Jan 2021 16:52:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610643180;
-        bh=uuZYyJaIsef/Z9OY1xIrjyxjS3YbtqISQ1GMLl+gci4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eHbmFJVPX4rvsbgmi6AW5c8sSHG/lArgLL8rhAjfuQuaxYkEveF4w3heuEsDLTcqH
-         IGGoz9tB/Xn+VEjP7725ryZZOKvrVrVeoAfC2T0Ps2kiivHKGj2eG+S0V/dBhpnVAn
-         9qIkVv5NNH05qtrXHF+DeDPoeOyCXYIkzxUyzUIAdHoNeOgRFIygWX8zdXgkZ7A2On
-         8tcUT4kRlqFTVSl57CvV+KnJhOYhbrmBmiW5wQdSlntVbOYqPXtyoL4Q+g3mo5OGQM
-         yFwkBi0E+EKwAwiWZpGROKDrtSP2NHgupvMocrCXvPEek5LKcIdqK1KiZ9VSi/2V5Y
-         XOFYf6GZFr0Pg==
-Date:   Thu, 14 Jan 2021 16:52:26 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-Cc:     ulf.hansson@linaro.org, lgirdwood@gmail.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, adrian.hunter@intel.com,
-        michal.simek@xilinx.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
-        Rashmi.A@intel.com, mahesh.r.vaidya@intel.com
-Subject: Re: [PATCH v1 7/9] dt-bindings: regulator: keembay: Add DT binding
- documentation
-Message-ID: <20210114165226.GH4854@sirena.org.uk>
-References: <20210114152700.21916-1-muhammad.husaini.zulkifli@intel.com>
- <20210114152700.21916-8-muhammad.husaini.zulkifli@intel.com>
+        id S1727843AbhANQzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:55:03 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:39680 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727340AbhANQzC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 11:55:02 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610643277; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=2dDSdRh9UZ/2znGwAyp9VyErRlya3vyr5Lu5YMhcqbE=;
+ b=xOVvzogzF/+siXnCscAA0GZKqCtgXM6XazAOJZ4dShgGuT/NNMx1hu0eRr6NxGzsLxdkbniF
+ vfNw+H5uUyMDpthvI4VSTyc1g9/9NmZkqFHqAq5Kl00o8B3qtaaPy+B2EX2N6aV7UNw9a1Hc
+ RofrKdAAIfind68PqR/ldNwIMtI=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6000772c415a6293c59074c6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 16:54:04
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D9318C43466; Thu, 14 Jan 2021 16:54:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8E295C43461;
+        Thu, 14 Jan 2021 16:54:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8E295C43461
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="KscVNZbUup0vZz0f"
-Content-Disposition: inline
-In-Reply-To: <20210114152700.21916-8-muhammad.husaini.zulkifli@intel.com>
-X-Cookie: You have taken yourself too seriously.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] mt76: mt7915: fix misplaced #ifdef
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210103135811.3749775-1-arnd@kernel.org>
+References: <20210103135811.3749775-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Yiwei Chung <yiwei.chung@mediatek.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210114165404.D9318C43466@smtp.codeaurora.org>
+Date:   Thu, 14 Jan 2021 16:54:04 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Arnd Bergmann <arnd@kernel.org> wrote:
 
---KscVNZbUup0vZz0f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The lone '|' at the end of a line causes a build failure:
+> 
+> drivers/net/wireless/mediatek/mt76/mt7915/init.c:47:2: error: expected expression before '}' token
+> 
+> Replace the #ifdef with an equivalent IS_ENABLED() check.
+> 
+> Fixes: af901eb4ab80 ("mt76: mt7915: get rid of dbdc debugfs knob")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-On Thu, Jan 14, 2021 at 11:26:58PM +0800, Muhammad Husaini Zulkifli wrote:
-> Add DT Binding Documentation for Keem Bay SD Regulator.
+This was already fixed by:
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+0bd157fa2aaa mt76: mt7915: fix MESH ifdef block
 
-> +properties:
-> +  compatible:
-> +    const: regulator-keembay-sd
+Recorded preimage for 'drivers/net/wireless/mediatek/mt76/mt7915/init.c'
+error: Failed to merge in the changes.
+Applying: mt76: mt7915: fix misplaced #ifdef
+Using index info to reconstruct a base tree...
+M	drivers/net/wireless/mediatek/mt76/mt7915/init.c
+Falling back to patching base and 3-way merge...
+Auto-merging drivers/net/wireless/mediatek/mt76/mt7915/init.c
+CONFLICT (content): Merge conflict in drivers/net/wireless/mediatek/mt76/mt7915/init.c
+Patch failed at 0001 mt76: mt7915: fix misplaced #ifdef
+The copy of the patch that failed is found in: .git/rebase-apply/patch
 
-Device tree compatible strings should be in the format vendor,device.
+Patch set to Superseded.
 
-> +required:
-> +  - compatible
-> +  - regulator-name
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210103135811.3749775-1-arnd@kernel.org/
 
-Why is regulator-name required here?  This is a standard regulator
-binding property which is covered by the generic regulator bindings and
-should be optional since it is for use by the system integrator to
-provide more user friendly diagnostic information about which supply
-this is in the system.  If you are attempting to use this for device
-identification then you should be using different compatible strings for
-the different regulators - even if you were using regulator-name you'd
-need to document the values.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
---KscVNZbUup0vZz0f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAAdskACgkQJNaLcl1U
-h9AMyQf/VgGgzfftUWU23N84Ve6bSZ9At7jEd5Vl/ndNDPbslLtifKeUapcq4Ole
-3T0jspGiWG/PXU8sxvLXitZZHZUoZuAgVXSzMjbD8icc4IaL2Gnmi2LJS7vwbSOU
-unTsZ7ax4Gwx1snI9kkqQL8wzEsGYw2qNtd1FhKOHSw6mLJpsChnvWDNi6PWRGBc
-v1eKy8PcwmnLArlvKFSxe2g2zWwO3CdqLHQL4YROFK4HZ4BxQPxaLRx09nRKPdNy
-bw99ZXytcPjKzZSuOq1yzMJA5z2UJl10rT82kw4BeHcwHLzOeHriHu00ldv7B/QQ
-btFSO7Prp04F7LkG634QHr9T/LFgxA==
-=Q+TQ
------END PGP SIGNATURE-----
-
---KscVNZbUup0vZz0f--
