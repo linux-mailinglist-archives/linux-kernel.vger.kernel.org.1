@@ -2,108 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D422F6E49
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A33D72F6E4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730767AbhANWeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 17:34:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730686AbhANWeV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 17:34:21 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A775BC061575;
-        Thu, 14 Jan 2021 14:33:40 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id b19so11979011ioa.9;
-        Thu, 14 Jan 2021 14:33:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J1fbKz9R0Dhjm/LDcyUiYTutXyHxddPdBABWEIvnbtM=;
-        b=IOm+puNzxjZtf+Ra2ciYM+7QJ5Z7JlHGm7jiXhjU6eb99TcmVjhF0/nSeheOsQLSd3
-         dnGN6veQDp87ScjlyeIerg2dSuEDWebolyR81J9qkTPpmclNFbx1Tr/CCIC6u+sBuHsH
-         QiMmJyO23gVzrfTqjiZZpB7S7QFOm9poBSuqEhVadsVJJsrWHeOIqUDDeD4J220jThkF
-         nHo3nPFqzquJeu6NpjS4RWRduIDhUBWAvqc6pPsBXlPoVMLY5VBlSl31sIPaixaMue2r
-         KmTYyqjv13mfp611GnhSYAm1vfPV9TV86RUvfC8hxqEZfZB+8W0w+8Ij4Zawl6I5N4jI
-         tr7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J1fbKz9R0Dhjm/LDcyUiYTutXyHxddPdBABWEIvnbtM=;
-        b=HHQiS0l126h5UMGY+l82o3XaSQo1CFw/LQkzq1GmZgeD25wjN9PFyjSxGXy8VOoN2b
-         sXysjocDCSH+b8q83DR0IsTdIbzAuUT1CWkdUbLzPnJny3AAsDhdvU0aCxdkVWMZaH5W
-         Y9AAV2MGHgpIaaT9qL4+ujFxmX1OG2KWLTlK8Vtsj2l4LdAd17cGSpZI79QaOASdNG8r
-         K+qiwTtaa/IPQda40Wro7tu66DngdXqRbBSDubKSR8lTbHLerf8HGWDkAchQHhOyTo4d
-         Sy2NF2RFwcQA+PbbSTfheSHkq2+TEX1khZjykWI/4p39iDQsyu5tL3OzqnFQ2tEp80Fb
-         tBog==
-X-Gm-Message-State: AOAM533Wo5vfsF8hELwOp3OXnXuzADZJl5bHI6DUOI2lv/A67PLZAYIO
-        PQTvfgNorFUqov8UTLAIboT/vXbw+hTmDaPFdRg=
-X-Google-Smtp-Source: ABdhPJzoWEtnQpIQE75WZZSLYvtSX6xTCvpZO1aFR2occIvmYxXUEr5QoS6zhIqCXDQ4SyeowFSochQO2ZB5UmUkioA=
-X-Received: by 2002:a02:a02:: with SMTP id 2mr6135811jaw.27.1610663620157;
- Thu, 14 Jan 2021 14:33:40 -0800 (PST)
+        id S1730784AbhANWee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 17:34:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730686AbhANWee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 17:34:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5B0523107;
+        Thu, 14 Jan 2021 22:33:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610663634;
+        bh=TDsxr8TTkWkSQFGv6iTVrjmtNAhZptF8/N/0Q6MMqIA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SPGMrDGNehe/WDAJz5u+dW3WSsT3EiTaze4Hrxnd4TPS9j/SH8RmOWrbT9W6VWDud
+         M5B9u6LicBJXnsTA90y3yb8ekDC8Mh0b5OEmeZ37VkRM97rWMW6Qwr30Q5EBbUkh+3
+         UdtQkwC2Lc7/vTKcGeYSad3KXP29a1/5ZXIKq9CA/LAtBba6quKNqDH2Dw4HvoNzVg
+         MFKuNn0BXZk2pkTXB82vZOTUeThXsc+/UE6e+AnFk5vOqZduEXGE9eEfT4ocyuAhZL
+         PZqX1c7qJvXlGH3aeMzE/K3vRTO1TcnbZf4LVRvGNO3ZRnwvLOmOMiXKX4jr9BewpZ
+         TlqDVhSBZtZlQ==
+Date:   Thu, 14 Jan 2021 14:33:52 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] Networking for 5.11-rc4
+Message-ID: <20210114143352.7bfe4b94@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAHk-=wjWP_7VU8Pi6A-88-1X7F_fs+2qoGf6qjkVOUnFQd3CDw@mail.gmail.com>
+References: <20210114200551.208209-1-kuba@kernel.org>
+        <CAHk-=wjWP_7VU8Pi6A-88-1X7F_fs+2qoGf6qjkVOUnFQd3CDw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210109134617.146275-1-angelogioacchino.delregno@somainline.org>
- <20210109134617.146275-2-angelogioacchino.delregno@somainline.org>
- <CAOCk7NqUpa0DqW=han49MtwUqNkNsQC3OPpO7B-872bvNukDJw@mail.gmail.com> <9942f98c-c186-5cd0-d6ac-a18a4e20583e@somainline.org>
-In-Reply-To: <9942f98c-c186-5cd0-d6ac-a18a4e20583e@somainline.org>
-From:   Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Date:   Thu, 14 Jan 2021 15:33:29 -0700
-Message-ID: <CAOCk7Nod9a+5EUUWGpso+EBb2dJVLMvjrOoMpqeTcm+L6mxvtQ@mail.gmail.com>
-Subject: Re: [PATCH 1/9] clk: qcom: gcc-msm8998: Wire up gcc_mmss_gpll0 clock
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        phone-devel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        DTML <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 3:13 PM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@somainline.org> wrote:
->
-> Il 14/01/21 23:12, Jeffrey Hugo ha scritto:
-> > On Sat, Jan 9, 2021 at 6:47 AM AngeloGioacchino Del Regno
-> > <angelogioacchino.delregno@somainline.org> wrote:
-> >>
-> >> This clock enables the GPLL0 output to the multimedia subsystem
-> >> clock controller.
-> >>
-> >> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+On Thu, 14 Jan 2021 13:37:17 -0800 Linus Torvalds wrote:
+> On Thu, Jan 14, 2021 at 12:05 PM Jakub Kicinski <kuba@kernel.org> wrote:
 > >
-> > Any reason why you are not also adding the div_clk?
-> >
->
-> Yes, just one: I haven't tested it... and my devices worked without.
-> Perhaps we can add it whenever we find out if something really needs it?
+> > Current release - regressions:
+> >  ...
+> > Current release - always broken:  
+> 
+> So I understand what you mean, but it does sound odd with that
+> "Current release - always broken" thing not being a regression. The
+> "always broken" makes it sound like it's some old broken code that has
+> never worked, which it clearly isn't.
+> 
+> Maybe rephrase it as "new code bugs" or something? You've done that
+> before ("bugs in new features").
+> 
+> I left it alone in the merge message, since we've had that pattern of
+> speech before, but for some reason I reacted to it this time.
 
-I'm mildly surprised you need to turn on the gate to the PLL0 out, but
-not the div_out.  The div_out/div_clk is also fed into every RCG that
-exists in the MMCC.
-
-Per the frequency plan the following RCGs require it -
-
-cci
-cpp
-fd_core
-camss_gp[0-1]
-jpeg0
-mclk[0-3]
-csi[0-2]phytimer
-dp_gtc
-maxi
-axi
-ahb
-
-Also, I'm very interested in all things 8998, and would generally
-appreciate being added to the to: list.
+Will do, I succumbed to the lure of matching "Previous releases -
+always broken".
