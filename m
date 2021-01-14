@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F3A2F6B2B
+	by mail.lfdr.de (Postfix) with ESMTP id E23002F6B2C
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730075AbhANThY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:37:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46870 "EHLO
+        id S1730088AbhANTh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:37:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730045AbhANThW (ORCPT
+        with ESMTP id S1730045AbhANThZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:37:22 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46AB0C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:36:42 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id l138so5670110qke.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:36:42 -0800 (PST)
+        Thu, 14 Jan 2021 14:37:25 -0500
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF72C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:36:44 -0800 (PST)
+Received: by mail-wm1-x349.google.com with SMTP id k67so2259258wmk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:36:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=fbHIgAlgSq4iB7quTf2qhHGKCCFRoCrwGuazo473FaY=;
-        b=a4R1pdGW5BCJ/+7/CV2IsnrwHNaBTcHE9d0F+6CHqY2H20grwFIyR2erFGmHE7BA3f
-         kZfVWEpnz3OnJhvJ/xDRbHbipNI+r+wEMroN10DSAuanz56pNeEDriqickTqp64yijLS
-         ZvFP/axVz9sxxLZvmwIbq5rHVdqVeRc5uI0XajGRUPFhdtbq+dgnopLIWBrAWBqqHOOj
-         pdWI3CforxP7tGacdL4S+a8ofDMoTzRcbY/Kfz8jaw8lCkTWsCvqNm/gZkmoI7XSRZF2
-         rOtVkckJaTudu92Vor2nLyrx/Xf8znJtBsc5iY2VYDsY7YauNrrBl60S3m+eqAY6H+A1
-         k88w==
+        bh=zMg6r0lhSdqTSYHUPwBG8lqIjESWbLf3bRfMeCJdmw0=;
+        b=Dx+ztVnv+FwNwPzFXu5KIt3022UCQpjcH8gV792uQrosCwBiD6s4lKdG6MDiSwIFty
+         zznmU+yiRfoJQcWIwikMbMqsCRkQxUgLXifvz8Oxd4YIBwAAFS36926Pfeu7bsSiIEwE
+         o3usg3RsQK4R+oSpZnrq5o46zjx+pugkAeDbGniEVaNPqnlP2N3zERnpZSjYfM2EaIcx
+         buXUb1FmK8aV44K8w4h8I1q4JXZVL0tARu5F4Bk3c/xs+5B7IbL3MBJfnqm38wapZjEt
+         y0ScDih7/CtVvBRKYgX3tAxh8Igw2y7LypOyXTtN/ko9k9Ke/uyVLw1tmc3VEKeshCcA
+         ky3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=fbHIgAlgSq4iB7quTf2qhHGKCCFRoCrwGuazo473FaY=;
-        b=bR3SZnN06oGn56ZHxwUaB5l4Q0vj8qy/lsAZTPMw8RDREq7ACvJnhkwaMUKX+r5IcV
-         BKWEcLMC7BjJBwPOsGo8279AvBhbimoUHmYyUBpq6HJRq2+SeZL4lJFVgW5PExz6jpw9
-         1mYeqsqcmCrNaRyKAb9Adx4HGPI23hLMWdVLoeFeHbbPq+bUidwfal+RCZfMA6jDFlvL
-         Iw/B6n358uZx4IUCh1GOlSElNIsifAa4PEDxH/5iqoIrgwxc3RXm8S8yQCiKSY93TvYP
-         89O0WlQl3AknuloTcKPmCA775DKzycHfeXktoRm4TZpG705tGFiFFhJO5N9iA0LbQg6u
-         N3lA==
-X-Gm-Message-State: AOAM5304hIitQncmhukw56luiUOF4kJIedNakpIaXWWn3saxqvOOo6yf
-        WxWvtD3LTIC7p5KrMvyPM4cwaIvfLs8ZOVpR
-X-Google-Smtp-Source: ABdhPJya/d6yn0EDnpT6RqwEgHj+ltwjXL6ylzd9QMErYv21t8cbLpDO8rzJrk1EjI3fAWp9SFLBVqSSmZ7oOn9/
+        bh=zMg6r0lhSdqTSYHUPwBG8lqIjESWbLf3bRfMeCJdmw0=;
+        b=mboYcc5CAVQ/XbY5Q/s/kk+mjj2VBf7oKEfB2EK9jrDLrIU85YaA4jDwyu6rSQWEEu
+         w09lYZMeH6K2V5rJTrT++A0zdP8l98kPhlsQY57DaaLBk+SHXSQ3m9BoePrSwvcrAkoP
+         QSeNDmk7m55KtdDeBTT2tS/97eCZsjBZofOXJ6ATtsLtAcbx0jVQdJLesoQgq/3oAUL9
+         62+JWjwn4xBVfVP0choluVrkmr9za1YB4k6OGCUAotMHO6g26iDpB3Qf9j1FmH0ajpUy
+         T24AIGG+qAW+9NeX/uBFyXGmLmI6WZYgqoIfn2NSmzeALFpA5yNxmx2m/yjIc+FAl9e5
+         toDA==
+X-Gm-Message-State: AOAM532DZS7tvfD9fWCN3ksUV+dRGmBLcBq+icIBnMkKBADrBQSsYEnZ
+        XsjKWzsLwzRCBEvTITWDxrEPnUKyZHv5NMgZ
+X-Google-Smtp-Source: ABdhPJyibMeibL9gpregYii7PXMjkIxcavXYjOpF3E3d81tvEjVnDAbs2GeCK4dNyz9x/wDqO4/Zs4uRZg3wZEZf
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:ad4:5a50:: with SMTP id
- ej16mr8471157qvb.25.1610653001425; Thu, 14 Jan 2021 11:36:41 -0800 (PST)
-Date:   Thu, 14 Jan 2021 20:36:19 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a7b:cf08:: with SMTP id
+ l8mr5430516wmg.189.1610653003717; Thu, 14 Jan 2021 11:36:43 -0800 (PST)
+Date:   Thu, 14 Jan 2021 20:36:20 +0100
 In-Reply-To: <cover.1610652890.git.andreyknvl@google.com>
-Message-Id: <e926efdba3a1d9cccccbabdfcc17cef0aa8a2860.1610652890.git.andreyknvl@google.com>
+Message-Id: <7723d28506e41b5b7da1b4540b80f3f13c92b33f.1610652890.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1610652890.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v3 03/15] kasan: clean up comments in tests
+Subject: [PATCH v3 04/15] kasan: add macros to simplify checking test constraints
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -74,186 +74,229 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clarify and update comments in KASAN tests.
+Some KASAN tests require specific kernel configs to be enabled.
+Instead of copy-pasting the checks for these configs add a few helper
+macros and use them.
 
-Link: https://linux-review.googlesource.com/id/I6c816c51fa1e0eb7aa3dead6bda1f339d2af46c8
+Link: https://linux-review.googlesource.com/id/I237484a7fddfedf4a4aae9cc61ecbcdbe85a0a63
+Suggested-by: Alexander Potapenko <glider@google.com>
 Reviewed-by: Marco Elver <elver@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- lib/test_kasan.c        | 59 +++++++++++++++++++++++++----------------
- lib/test_kasan_module.c |  5 ++--
- 2 files changed, 39 insertions(+), 25 deletions(-)
+ lib/test_kasan.c | 101 +++++++++++++++--------------------------------
+ 1 file changed, 31 insertions(+), 70 deletions(-)
 
 diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 2947274cc2d3..6f46e27c2af7 100644
+index 6f46e27c2af7..714ea27fcc3e 100644
 --- a/lib/test_kasan.c
 +++ b/lib/test_kasan.c
-@@ -28,10 +28,9 @@
- #define OOB_TAG_OFF (IS_ENABLED(CONFIG_KASAN_GENERIC) ? 0 : KASAN_GRANULE_SIZE)
- 
- /*
-- * We assign some test results to these globals to make sure the tests
-- * are not eliminated as dead code.
-+ * Some tests use these global variables to store return values from function
-+ * calls that could otherwise be eliminated by the compiler as dead code.
-  */
--
- void *kasan_ptr_result;
- int kasan_int_result;
- 
-@@ -39,14 +38,13 @@ static struct kunit_resource resource;
- static struct kunit_kasan_expectation fail_data;
- static bool multishot;
- 
-+/*
-+ * Temporarily enable multi-shot mode. Otherwise, KASAN would only report the
-+ * first detected bug and panic the kernel if panic_on_warn is enabled.
-+ */
- static int kasan_test_init(struct kunit *test)
- {
--	/*
--	 * Temporarily enable multi-shot mode and set panic_on_warn=0.
--	 * Otherwise, we'd only get a report for the first case.
--	 */
- 	multishot = kasan_save_enable_multi_shot();
--
- 	return 0;
- }
- 
-@@ -56,12 +54,12 @@ static void kasan_test_exit(struct kunit *test)
- }
- 
- /**
-- * KUNIT_EXPECT_KASAN_FAIL() - Causes a test failure when the expression does
-- * not cause a KASAN error. This uses a KUnit resource named "kasan_data." Do
-- * Do not use this name for a KUnit resource outside here.
-- *
-+ * KUNIT_EXPECT_KASAN_FAIL() - check that the executed expression produces a
-+ * KASAN report; causes a test failure otherwise. This relies on a KUnit
-+ * resource named "kasan_data". Do not use this name for KUnit resources
-+ * outside of KASAN tests.
-  */
--#define KUNIT_EXPECT_KASAN_FAIL(test, condition) do { \
-+#define KUNIT_EXPECT_KASAN_FAIL(test, expression) do { \
- 	fail_data.report_expected = true; \
- 	fail_data.report_found = false; \
- 	kunit_add_named_resource(test, \
-@@ -69,7 +67,7 @@ static void kasan_test_exit(struct kunit *test)
- 				NULL, \
- 				&resource, \
- 				"kasan_data", &fail_data); \
--	condition; \
-+	expression; \
- 	KUNIT_EXPECT_EQ(test, \
- 			fail_data.report_expected, \
+@@ -73,6 +73,20 @@ static void kasan_test_exit(struct kunit *test)
  			fail_data.report_found); \
-@@ -121,7 +119,8 @@ static void kmalloc_pagealloc_oob_right(struct kunit *test)
- 		return;
- 	}
+ } while (0)
  
--	/* Allocate a chunk that does not fit into a SLUB cache to trigger
-+	/*
-+	 * Allocate a chunk that does not fit into a SLUB cache to trigger
- 	 * the page allocator fallback.
- 	 */
- 	ptr = kmalloc(size, GFP_KERNEL);
-@@ -168,7 +167,9 @@ static void kmalloc_large_oob_right(struct kunit *test)
++#define KASAN_TEST_NEEDS_CONFIG_ON(test, config) do {			\
++	if (!IS_ENABLED(config)) {					\
++		kunit_info((test), "skipping, " #config " required");	\
++		return;							\
++	}								\
++} while (0)
++
++#define KASAN_TEST_NEEDS_CONFIG_OFF(test, config) do {			\
++	if (IS_ENABLED(config)) {					\
++		kunit_info((test), "skipping, " #config " enabled");	\
++		return;							\
++	}								\
++} while (0)
++
+ static void kmalloc_oob_right(struct kunit *test)
  {
  	char *ptr;
- 	size_t size = KMALLOC_MAX_CACHE_SIZE - 256;
--	/* Allocate a chunk that is large enough, but still fits into a slab
-+
-+	/*
-+	 * Allocate a chunk that is large enough, but still fits into a slab
- 	 * and does not trigger the page allocator fallback in SLUB.
- 	 */
- 	ptr = kmalloc(size, GFP_KERNEL);
-@@ -469,10 +470,13 @@ static void ksize_unpoisons_memory(struct kunit *test)
+@@ -114,10 +128,7 @@ static void kmalloc_pagealloc_oob_right(struct kunit *test)
+ 	char *ptr;
+ 	size_t size = KMALLOC_MAX_CACHE_SIZE + 10;
+ 
+-	if (!IS_ENABLED(CONFIG_SLUB)) {
+-		kunit_info(test, "CONFIG_SLUB is not enabled.");
+-		return;
+-	}
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_SLUB);
+ 
+ 	/*
+ 	 * Allocate a chunk that does not fit into a SLUB cache to trigger
+@@ -135,10 +146,7 @@ static void kmalloc_pagealloc_uaf(struct kunit *test)
+ 	char *ptr;
+ 	size_t size = KMALLOC_MAX_CACHE_SIZE + 10;
+ 
+-	if (!IS_ENABLED(CONFIG_SLUB)) {
+-		kunit_info(test, "CONFIG_SLUB is not enabled.");
+-		return;
+-	}
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_SLUB);
+ 
  	ptr = kmalloc(size, GFP_KERNEL);
  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 	real_size = ksize(ptr);
--	/* This access doesn't trigger an error. */
-+
-+	/* This access shouldn't trigger a KASAN report. */
- 	ptr[size] = 'x';
--	/* This one does. */
-+
-+	/* This one must. */
- 	KUNIT_EXPECT_KASAN_FAIL(test, ptr[real_size] = 'y');
-+
- 	kfree(ptr);
+@@ -152,10 +160,7 @@ static void kmalloc_pagealloc_invalid_free(struct kunit *test)
+ 	char *ptr;
+ 	size_t size = KMALLOC_MAX_CACHE_SIZE + 10;
+ 
+-	if (!IS_ENABLED(CONFIG_SLUB)) {
+-		kunit_info(test, "CONFIG_SLUB is not enabled.");
+-		return;
+-	}
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_SLUB);
+ 
+ 	ptr = kmalloc(size, GFP_KERNEL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+@@ -218,10 +223,7 @@ static void kmalloc_oob_16(struct kunit *test)
+ 	} *ptr1, *ptr2;
+ 
+ 	/* This test is specifically crafted for the generic mode. */
+-	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
+-		kunit_info(test, "CONFIG_KASAN_GENERIC required\n");
+-		return;
+-	}
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_GENERIC);
+ 
+ 	ptr1 = kmalloc(sizeof(*ptr1) - 3, GFP_KERNEL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr1);
+@@ -454,10 +456,7 @@ static void kasan_global_oob(struct kunit *test)
+ 	char *p = &global_array[ARRAY_SIZE(global_array) + i];
+ 
+ 	/* Only generic mode instruments globals. */
+-	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
+-		kunit_info(test, "CONFIG_KASAN_GENERIC required");
+-		return;
+-	}
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_GENERIC);
+ 
+ 	KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)p);
  }
+@@ -486,10 +485,7 @@ static void kasan_stack_oob(struct kunit *test)
+ 	volatile int i = OOB_TAG_OFF;
+ 	char *p = &stack_array[ARRAY_SIZE(stack_array) + i];
  
-@@ -568,7 +572,7 @@ static void kmem_cache_invalid_free(struct kunit *test)
- 		return;
- 	}
+-	if (!IS_ENABLED(CONFIG_KASAN_STACK)) {
+-		kunit_info(test, "CONFIG_KASAN_STACK is not enabled");
+-		return;
+-	}
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_STACK);
  
--	/* Trigger invalid free, the object doesn't get freed */
-+	/* Trigger invalid free, the object doesn't get freed. */
- 	KUNIT_EXPECT_KASAN_FAIL(test, kmem_cache_free(cache, p + 1));
+ 	KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)p);
+ }
+@@ -501,15 +497,8 @@ static void kasan_alloca_oob_left(struct kunit *test)
+ 	char *p = alloca_array - 1;
  
- 	/*
-@@ -585,7 +589,10 @@ static void kasan_memchr(struct kunit *test)
- 	char *ptr;
- 	size_t size = 24;
+ 	/* Only generic mode instruments dynamic allocas. */
+-	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
+-		kunit_info(test, "CONFIG_KASAN_GENERIC required");
+-		return;
+-	}
+-
+-	if (!IS_ENABLED(CONFIG_KASAN_STACK)) {
+-		kunit_info(test, "CONFIG_KASAN_STACK is not enabled");
+-		return;
+-	}
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_GENERIC);
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_STACK);
  
--	/* See https://bugzilla.kernel.org/show_bug.cgi?id=206337 */
-+	/*
-+	 * str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT.
-+	 * See https://bugzilla.kernel.org/show_bug.cgi?id=206337 for details.
-+	 */
- 	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
- 		kunit_info(test,
- 			"str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT");
-@@ -610,7 +617,10 @@ static void kasan_memcmp(struct kunit *test)
- 	size_t size = 24;
- 	int arr[9];
+ 	KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)p);
+ }
+@@ -521,15 +510,8 @@ static void kasan_alloca_oob_right(struct kunit *test)
+ 	char *p = alloca_array + i;
  
--	/* See https://bugzilla.kernel.org/show_bug.cgi?id=206337 */
-+	/*
-+	 * str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT.
-+	 * See https://bugzilla.kernel.org/show_bug.cgi?id=206337 for details.
-+	 */
- 	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
- 		kunit_info(test,
- 			"str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT");
-@@ -634,7 +644,10 @@ static void kasan_strings(struct kunit *test)
- 	char *ptr;
- 	size_t size = 24;
+ 	/* Only generic mode instruments dynamic allocas. */
+-	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
+-		kunit_info(test, "CONFIG_KASAN_GENERIC required");
+-		return;
+-	}
+-
+-	if (!IS_ENABLED(CONFIG_KASAN_STACK)) {
+-		kunit_info(test, "CONFIG_KASAN_STACK is not enabled");
+-		return;
+-	}
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_GENERIC);
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_STACK);
  
--	/* See https://bugzilla.kernel.org/show_bug.cgi?id=206337 */
-+	/*
-+	 * str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT.
-+	 * See https://bugzilla.kernel.org/show_bug.cgi?id=206337 for details.
-+	 */
- 	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
- 		kunit_info(test,
- 			"str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT");
-@@ -706,7 +719,7 @@ static void kasan_bitops_generic(struct kunit *test)
- 	}
- 
- 	/*
--	 * Allocate 1 more byte, which causes kzalloc to round up to 16-bytes;
-+	 * Allocate 1 more byte, which causes kzalloc to round up to 16 bytes;
- 	 * this way we do not actually corrupt other memory.
+ 	KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)p);
+ }
+@@ -593,11 +575,7 @@ static void kasan_memchr(struct kunit *test)
+ 	 * str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT.
+ 	 * See https://bugzilla.kernel.org/show_bug.cgi?id=206337 for details.
  	 */
- 	bits = kzalloc(sizeof(*bits) + 1, GFP_KERNEL);
-diff --git a/lib/test_kasan_module.c b/lib/test_kasan_module.c
-index 3b4cc77992d2..eee017ff8980 100644
---- a/lib/test_kasan_module.c
-+++ b/lib/test_kasan_module.c
-@@ -123,8 +123,9 @@ static noinline void __init kasan_workqueue_uaf(void)
- static int __init test_kasan_module_init(void)
+-	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
+-		kunit_info(test,
+-			"str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT");
+-		return;
+-	}
++	KASAN_TEST_NEEDS_CONFIG_OFF(test, CONFIG_AMD_MEM_ENCRYPT);
+ 
+ 	if (OOB_TAG_OFF)
+ 		size = round_up(size, OOB_TAG_OFF);
+@@ -621,11 +599,7 @@ static void kasan_memcmp(struct kunit *test)
+ 	 * str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT.
+ 	 * See https://bugzilla.kernel.org/show_bug.cgi?id=206337 for details.
+ 	 */
+-	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
+-		kunit_info(test,
+-			"str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT");
+-		return;
+-	}
++	KASAN_TEST_NEEDS_CONFIG_OFF(test, CONFIG_AMD_MEM_ENCRYPT);
+ 
+ 	if (OOB_TAG_OFF)
+ 		size = round_up(size, OOB_TAG_OFF);
+@@ -648,11 +622,7 @@ static void kasan_strings(struct kunit *test)
+ 	 * str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT.
+ 	 * See https://bugzilla.kernel.org/show_bug.cgi?id=206337 for details.
+ 	 */
+-	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
+-		kunit_info(test,
+-			"str* functions are not instrumented with CONFIG_AMD_MEM_ENCRYPT");
+-		return;
+-	}
++	KASAN_TEST_NEEDS_CONFIG_OFF(test, CONFIG_AMD_MEM_ENCRYPT);
+ 
+ 	ptr = kmalloc(size, GFP_KERNEL | __GFP_ZERO);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+@@ -713,10 +683,7 @@ static void kasan_bitops_generic(struct kunit *test)
+ 	long *bits;
+ 
+ 	/* This test is specifically crafted for the generic mode. */
+-	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
+-		kunit_info(test, "CONFIG_KASAN_GENERIC required\n");
+-		return;
+-	}
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_GENERIC);
+ 
+ 	/*
+ 	 * Allocate 1 more byte, which causes kzalloc to round up to 16 bytes;
+@@ -744,11 +711,8 @@ static void kasan_bitops_tags(struct kunit *test)
  {
- 	/*
--	 * Temporarily enable multi-shot mode. Otherwise, we'd only get a
--	 * report for the first case.
-+	 * Temporarily enable multi-shot mode. Otherwise, KASAN would only
-+	 * report the first detected bug and panic the kernel if panic_on_warn
-+	 * is enabled.
- 	 */
- 	bool multishot = kasan_save_enable_multi_shot();
+ 	long *bits;
  
+-	/* This test is specifically crafted for the tag-based mode. */
+-	if (IS_ENABLED(CONFIG_KASAN_GENERIC)) {
+-		kunit_info(test, "CONFIG_KASAN_SW_TAGS required\n");
+-		return;
+-	}
++	/* This test is specifically crafted for tag-based modes. */
++	KASAN_TEST_NEEDS_CONFIG_OFF(test, CONFIG_KASAN_GENERIC);
+ 
+ 	/* Allocation size will be rounded to up granule size, which is 16. */
+ 	bits = kzalloc(sizeof(*bits), GFP_KERNEL);
+@@ -777,10 +741,7 @@ static void vmalloc_oob(struct kunit *test)
+ {
+ 	void *area;
+ 
+-	if (!IS_ENABLED(CONFIG_KASAN_VMALLOC)) {
+-		kunit_info(test, "CONFIG_KASAN_VMALLOC is not enabled.");
+-		return;
+-	}
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_VMALLOC);
+ 
+ 	/*
+ 	 * We have to be careful not to hit the guard page.
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
