@@ -2,133 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C23DA2F6B03
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:33:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BFA2F6B05
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729862AbhANTbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:31:52 -0500
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:36317 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbhANTbv (ORCPT
+        id S1729988AbhANTcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:32:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726198AbhANTc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:31:51 -0500
-Received: by mail-oi1-f179.google.com with SMTP id 9so7126806oiq.3;
-        Thu, 14 Jan 2021 11:31:35 -0800 (PST)
+        Thu, 14 Jan 2021 14:32:29 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A63EC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:31:49 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id u18so596450ybu.12
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:31:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jlLwyIAZcmcU3J10djRNP6+bc1Fnx0blUx9zkQy002E=;
+        b=h+QwShStJ0xWLhL8nOmLsjwIPcJFLxQjvYyXFsBD26nvqbTmCIKy96u/AbEFkKKPDf
+         bSsnbuFGr7o9zxjKsnZJzBI0qtzhOiT9LGyM3n61bu5FJMG2dAe+iAmNCgp5oBywLgAj
+         Aw52qPQbu5rTDuW3y/3ycT+26lo6A64C9BjtXniGQqS2ovhJWgc92MGBVsR6Uk100sHm
+         iEneprcfnBF07s9/m2/AT0zKft4brSh4skum0wP2G3RIBe0rz4t64GnKpguONDhqKwuw
+         XZe+undmTjPQrmJDqwhl6qbZPPR1tjKOcq+UN6m3CJk7gsPvlh5pidGlIpMEwPKzhuSO
+         zbmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jCW/74dk4/r2pTUeRiZ/lnXm69baMKCS/KFRrpnvniY=;
-        b=q91N9MnWjUosYjc8G2O4ZDPBdOSWueuqySLX2MZQgmJpD/Nj4SzVVZiG5hL6XgsDBo
-         quxQBMTwS7i/P1YG4yhQ5NT39hpS3lxb2dOHJE2xnaEwXD3xQl1ct6ERCBdUNWerlpHE
-         JGyp3brubY23VQDNNuS9kSE4TfGsTcGDH6WVtxEx0vHkheTb/N5YqosG7mZoJsL7gWNu
-         fEyFJ67tTi5or4Yv/wp1l2v0Qlx1jlMNGlrSlvPFh0xcgNH2rbZUTw3wSG0yhVZWB1nb
-         /nGavetcWHhkisD80oNZFNnR20tcJvULEakZ6ylF8WTDjpt+GlGlGlrxk54ROdKE4Qzh
-         +46Q==
-X-Gm-Message-State: AOAM531T8hkMk64Dm02JZJq/PyzMe9qudf9mn6mWNxtVPxl2H8lx6Oc+
-        QSqXkIjIme0GhrPv4S5kvsJJ3ojmYA==
-X-Google-Smtp-Source: ABdhPJz81BTCFtHgx3zSCLgFeQQfXJoask7vf+brnMbnlpYkFgiiyvjdENxkrgkUXCeNWStSR65fkQ==
-X-Received: by 2002:aca:b20a:: with SMTP id b10mr3512096oif.75.1610652670139;
-        Thu, 14 Jan 2021 11:31:10 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 63sm1243184otx.2.2021.01.14.11.31.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 11:31:09 -0800 (PST)
-Received: (nullmailer pid 3432430 invoked by uid 1000);
-        Thu, 14 Jan 2021 19:31:08 -0000
-Date:   Thu, 14 Jan 2021 13:31:08 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, linux-doc@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: Re: [PATCH v4 1/3] dt-bindings: hwmon: Add TI TPS23861 bindings
-Message-ID: <20210114193108.GA3430334@robh.at.kernel.org>
-References: <20210111135708.3703175-1-robert.marko@sartura.hr>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jlLwyIAZcmcU3J10djRNP6+bc1Fnx0blUx9zkQy002E=;
+        b=NoYWSKf0Uk3XyS0IrZu5oLc/N9a0RT5zQ6HY4hN3agzHdOB59QPbjbK5q0a/z1o0Mi
+         a4p7g7LaWUyML79jvMQdGOk3yaKGJgJ7+BMiz2ffCfR1RWFRHuOequ0qkqCa1wJ+3Sn0
+         2VoP5lxfwgZChnt9TkQL782DcvbDi/wErtwcAcWALxhr9aJ+U/mZJibLM8V0R38a+sr1
+         9yO0cHNVHnwQ1HxVCwhX6R2eVbiVSuX+mMYOpQxTmXtFl78Ss3OQnjR50djUDMnVOW9o
+         WdUPqaluj/B95O06PeNRD9PurQxeNyg5BljIH5AHc0WIwHS3+O8DudIkA8yTkSiluDAD
+         9sFg==
+X-Gm-Message-State: AOAM532iWKYkhH4jNaSjrs0QbE8JuJYqmFJz9No9iohEDa7SLmc6C9Mp
+        zpIE3cMUmnpiYU5vZMiQlTzu2j+mfAP2xLiBlhYPUDMk1Ec8xQ==
+X-Google-Smtp-Source: ABdhPJz/Z3gWGQUlo3M96oztqJ00Rd3rTonSFSBx090xCEmk8k26cGcBZBquWd7qOTRhkz2kLqM6Y7XRWoc7/VjRqhw=
+X-Received: by 2002:a25:77d4:: with SMTP id s203mr6927491ybc.32.1610652708236;
+ Thu, 14 Jan 2021 11:31:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111135708.3703175-1-robert.marko@sartura.hr>
+References: <2073294.4OfjquceTg@kreacher>
+In-Reply-To: <2073294.4OfjquceTg@kreacher>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 14 Jan 2021 11:31:12 -0800
+Message-ID: <CAGETcx980TXe_Jur3LqpWoMwt0wG9BBvVdXfhAo3jU8-tgv=kw@mail.gmail.com>
+Subject: Re: [PATCH] driver core: Extend device_is_dependent()
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Stephan Gerhold <stephan@gerhold.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 02:57:06PM +0100, Robert Marko wrote:
-> Document bindings for the Texas Instruments TPS23861 driver.
-> 
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> Cc: Luka Perkov <luka.perkov@sartura.hr>
+On Thu, Jan 14, 2021 at 10:41 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+>
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> When adding a new device link, device_is_dependent() is used to
+> check whether or not the prospective supplier device does not
+> depend on the prospective consumer one to avoid adding loops
+> to the graph of device dependencies.
+>
+> However, device_is_dependent() does not take the ancestors of
+> the target device into account, so it may not detect an existing
+> reverse dependency if, for example, the parent of the target
+> device depends on the device passed as its first argument.
+>
+> For this reason, extend device_is_dependent() to also check if
+> the device passed as its first argument is an ancestor of the
+> target one and return 1 if that is the case.
+>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Reported-by: Stephan Gerhold <stephan@gerhold.net>
 > ---
-> Changes in v4:
-> * Correct shunt binding
-> 
->  .../bindings/hwmon/ti,tps23861.yaml           | 52 +++++++++++++++++++
->  1 file changed, 52 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/ti,tps23861.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/hwmon/ti,tps23861.yaml b/Documentation/devicetree/bindings/hwmon/ti,tps23861.yaml
-> new file mode 100644
-> index 000000000000..891eee9489aa
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/ti,tps23861.yaml
-> @@ -0,0 +1,52 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
+>  drivers/base/core.c |   12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> Index: linux-pm/drivers/base/core.c
+> ===================================================================
+> --- linux-pm.orig/drivers/base/core.c
+> +++ linux-pm/drivers/base/core.c
+> @@ -208,6 +208,16 @@ int device_links_read_lock_held(void)
+>  #endif
+>  #endif /* !CONFIG_SRCU */
+>
+> +static bool device_is_ancestor(struct device *dev, struct device *target)
+> +{
+> +       while (target->parent) {
+> +               target = target->parent;
+> +               if (dev == target)
+> +                       return true;
+> +       }
+> +       return false;
+> +}
 > +
-> +$id: http://devicetree.org/schemas/hwmon/ti,tps23861.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: TI TPS23861 PoE PSE
-> +
-> +maintainers:
-> +  - Robert Marko <robert.marko@sartura.hr>
-> +
-> +description: |
-> +  The TPS23861 is a IEEE 802.3at Quad Port Power-over-Ethernet PSE Controller.
-> +
-> +  Datasheets:
-> +  https://www.ti.com/lit/gpn/tps23861
-> +
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - ti,tps23861
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  shunt-resistor-micro-ohms:
-> +    description: The value of curent sense resistor in microohms.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
+>  /**
+>   * device_is_dependent - Check if one device depends on another one
+>   * @dev: Device to check dependencies for.
+> @@ -221,7 +231,7 @@ int device_is_dependent(struct device *d
+>         struct device_link *link;
+>         int ret;
+>
+> -       if (dev == target)
+> +       if (dev == target || device_is_ancestor(dev, target))
+>                 return 1;
+>
+>         ret = device_for_each_child(dev, target, device_is_dependent);
+>
 
-Don't need a type $ref as that's already defined for anything with 
-units.
+The code works, but it's not at all obvious what it's doing. Because,
+at first glance, it's easy to mistakenly think that it's trying to
+catch this case:
+dev <- child1 <- child2 <- target
 
-> +    default: 255000
-> +    minimum: 250000
-> +    maximum: 255000
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +          #address-cells = <1>;
-> +          #size-cells = <0>;
-> +
-> +          tps23861@30 {
-> +              compatible = "ti,tps23861";
-> +              reg = <0x30>;
-> +              shunt-resistor-micro-ohms = <255000>;
-> +          };
-> +    };
-> -- 
-> 2.29.2
-> 
+Maybe it's clearer if we do this check inside the loop? Something like:
+
+                if (link->consumer == target ||
+device_is_ancestor(link->consumer, target))
+                        return 1;
+
+-Saravana
