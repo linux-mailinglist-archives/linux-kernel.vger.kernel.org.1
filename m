@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD072F6B6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6744D2F6B59
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730436AbhANTo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:44:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22140 "EHLO
+        id S1729931AbhANTl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:41:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25680 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729205AbhANTo1 (ORCPT
+        by vger.kernel.org with ESMTP id S1726198AbhANTl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:44:27 -0500
+        Thu, 14 Jan 2021 14:41:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610653381;
+        s=mimecast20190719; t=1610653230;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=utbSIuyoQOkLB93xAGsbds2nLdvkpqUcRNTv/wbR8kg=;
-        b=IRlZiiYt187DVd+Cgg+pvxpmfmA//8bk/5umjHolXoLcuZyCH0S9yDdEl328kvAzZWG6Qt
-        tD6UeASYW+B3k5XXBArHYl+tKsbYjjs0rx3/Ldcra+fImdVySpFkEf5qAkQRY6cgCE0AqR
-        04O1fQGP9EUn1II6TPx59PBmxYNnliA=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2tcE2k2XGm5FCaTXfp9k/QKHT8dSba+C3K9SORkf8GI=;
+        b=P22SV607rPBua0RLqtGh49l8/+c6ntS2NXxN78yZLd+tKikCqc8/DjhYFfEcCpfrUlRAcV
+        gPOl1wu3aZt48HsrR+VUmaSONXuMiZ6c5AihOhhJbmkYc+H/ZH09gGkzsOrRgWPyfT2/Y5
+        Xcho4ZLX+3BCPel3LPlDQFFy86ryEzk=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-14-OJ937Q2pNXCbNls68d4EZw-1; Thu, 14 Jan 2021 14:40:24 -0500
-X-MC-Unique: OJ937Q2pNXCbNls68d4EZw-1
+ us-mta-547-FDhqXBKFPSu7IS9eNJNOEw-1; Thu, 14 Jan 2021 14:40:26 -0500
+X-MC-Unique: FDhqXBKFPSu7IS9eNJNOEw-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 98E39806663;
-        Thu, 14 Jan 2021 19:40:22 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5C45B15720;
+        Thu, 14 Jan 2021 19:40:24 +0000 (UTC)
 Received: from treble.redhat.com (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5DC09101E663;
-        Thu, 14 Jan 2021 19:40:21 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DFE821001E73;
+        Thu, 14 Jan 2021 19:40:22 +0000 (UTC)
 From:   Josh Poimboeuf <jpoimboe@redhat.com>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -42,9 +43,11 @@ Cc:     linux-kernel@vger.kernel.org,
         Kees Cook <keescook@chromium.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         clang-built-linux@googlegroups.com, Miroslav Benes <mbenes@suse.cz>
-Subject: [PATCH 00/21] objtool: vmlinux.o and CLANG LTO support
-Date:   Thu, 14 Jan 2021 13:39:56 -0600
-Message-Id: <cover.1610652862.git.jpoimboe@redhat.com>
+Subject: [PATCH 01/21] objtool: Fix seg fault in BT_FUNC() with fake jump
+Date:   Thu, 14 Jan 2021 13:39:57 -0600
+Message-Id: <c6bd154e55739c332c21ca4a91a66787cc3e104c.1610652862.git.jpoimboe@redhat.com>
+In-Reply-To: <cover.1610652862.git.jpoimboe@redhat.com>
+References: <cover.1610652862.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
@@ -52,67 +55,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for proper vmlinux.o validation, which will be needed for
-Sami's upcoming x86 LTO set.  (And vmlinux validation is the future for
-objtool anyway, for other reasons.)
+Objtool appends a temporary fake jump at the end of alternative
+replacement instructions.  If the replacement code is empty -- resulting
+in patched nops -- the fake jump doesn't have a section.  When running
+objtool with '--backtrace', the fake jump's missing section can cause
+BT_FUNC() to trigger a seg fault when the NULL insn->sec is passed to
+offstr().
 
-This isn't 100% done -- most notably, crypto still needs to be supported
--- but I think this gets us most of the way there.
+Fix it by ensuring fake jumps always have a section.
 
-This can also be found at
+Fixes: 7697eee3ddd7 ("objtool: Add --backtrace support")
+Reported-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ tools/objtool/check.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git objtool-vmlinux
-
-And for more testing it can be combined with Sami's x86 LTO patches:
-
-  https://github.com/samitolvanen/linux clang-lto
-
-
-
-Josh Poimboeuf (21):
-  objtool: Fix seg fault in BT_FUNC() with fake jump
-  objtool: Fix error handling for STD/CLD warnings
-  objtool: Fix retpoline detection in asm code
-  objtool: Fix ".cold" section suffix check for newer versions of GCC
-  objtool: Support retpoline jump detection for vmlinux.o
-  x86/ftrace: Add UNWIND_HINT_FUNC annotation for ftrace_stub
-  objtool: Assume only ELF functions do sibling calls
-  objtool: Add asm version of STACK_FRAME_NON_STANDARD
-  objtool: Combine UNWIND_HINT_RET_OFFSET and UNWIND_HINT_FUNC
-  objtool: Add xen_start_kernel() to noreturn list
-  objtool: Move unsuffixed symbol conversion to a helper function
-  objtool: Add CONFIG_CFI_CLANG support
-  x86/xen: Support objtool validation in xen-asm.S
-  x86/xen: Support objtool vmlinux.o validation in xen-head.S
-  x86/xen/pvh: Convert indirect jump to retpoline
-  x86/ftrace: Support objtool vmlinux.o validation in ftrace_64.S
-  x86/acpi: Convert indirect jump to retpoline
-  x86/acpi: Support objtool validation in wakeup_64.S
-  x86/power: Convert indirect jumps to retpolines
-  x86/power: Move restore_registers() to top of the file
-  x86/power: Support objtool validation in hibernate_asm_64.S
-
- arch/x86/include/asm/unwind_hints.h |  13 +---
- arch/x86/kernel/acpi/Makefile       |   1 -
- arch/x86/kernel/acpi/wakeup_64.S    |   5 +-
- arch/x86/kernel/ftrace_64.S         |   8 +--
- arch/x86/lib/retpoline.S            |   2 +-
- arch/x86/platform/pvh/head.S        |   3 +-
- arch/x86/power/Makefile             |   1 -
- arch/x86/power/hibernate_asm_64.S   | 105 ++++++++++++++--------------
- arch/x86/xen/Makefile               |   1 -
- arch/x86/xen/xen-asm.S              |  29 +++++---
- arch/x86/xen/xen-head.S             |   5 +-
- include/linux/objtool.h             |  13 +++-
- tools/include/linux/objtool.h       |  13 +++-
- tools/objtool/arch/x86/decode.c     |   4 +-
- tools/objtool/arch/x86/special.c    |   2 +-
- tools/objtool/check.c               |  91 +++++++++++++-----------
- tools/objtool/check.h               |  12 +++-
- tools/objtool/elf.c                 |  87 +++++++++++++++++------
- tools/objtool/elf.h                 |   2 +-
- 19 files changed, 241 insertions(+), 156 deletions(-)
-
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 5f8d3eed78a1..ed26c22c8244 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1017,7 +1017,7 @@ static int handle_group_alt(struct objtool_file *file,
+ 		INIT_LIST_HEAD(&fake_jump->stack_ops);
+ 		init_cfi_state(&fake_jump->cfi);
+ 
+-		fake_jump->sec = special_alt->new_sec;
++		fake_jump->sec = special_alt->new_sec ? : orig_insn->sec;
+ 		fake_jump->offset = FAKE_JUMP_OFFSET;
+ 		fake_jump->type = INSN_JUMP_UNCONDITIONAL;
+ 		fake_jump->jump_dest = list_next_entry(last_orig_insn, list);
 -- 
 2.29.2
 
