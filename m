@@ -2,85 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9439B2F67C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A4E2F67CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728511AbhANRdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:33:07 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:49290 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbhANRdG (ORCPT
+        id S1728610AbhANRdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:33:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725772AbhANRdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:33:06 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610645566; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=ZCKHVoEJspq/zV1a4bRl6/7Wbwi5CK1RSB8Zy5PWuMs=;
- b=hjc0XHYNCCcAPBpASyNqVRFjQF5dW3SThUJ+3gfPq1zroAeoSp0swU4dNHLawYA8owwhx3ts
- 9q7CPlv3F/CqH+k5n1/7D0oZyuinBkzZl32RAOacjBUmfiEjHNpdl4w++w3rEoUPDrdH4Y5T
- 9WVQIwkxkkg/kLZJi2JSVubkYfY=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 600080234104d9478d873de2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 17:32:19
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EAEB1C433C6; Thu, 14 Jan 2021 17:32:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 94B3CC433CA;
-        Thu, 14 Jan 2021 17:32:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 94B3CC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Thu, 14 Jan 2021 12:33:15 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5199C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:32:34 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id t16so9324035ejf.13
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:32:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oaLk6K/ziP0JrSWjUd9yUznepJpKpHz8SodeDVZyc4g=;
+        b=GWCGEwBUT89R8ID7PJjuDrp5S3/2qLBz8lkSEggHBoncpJhuQX05ohgD3pibnBXJdi
+         W/wjaMWx6cX60jzbnFHzbnh6eCuUIEFyAJ6ZNJbjNBuZcpAFm30vEyoFX0OX7sLCfQ4H
+         VBGdlONQQCthSTN9lUkdHxVXmxa5Wwba+So89oDc3hDiAC9lD0o2w3oCuPt9V9T1dNVE
+         uS3KkqkupscVrlg43emIU6KBxshTWcjcSyN7OszKlUL3h/iedyxOlz6rn4DfD9f2hWu2
+         37xuugp76VAJh3BP8R1ZQyS4EExUjFJSmBGIyEyPgIeSizJ4dmyBRr0xzwBjbW8Z19+S
+         31VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oaLk6K/ziP0JrSWjUd9yUznepJpKpHz8SodeDVZyc4g=;
+        b=RVbCyi78hdj9zVSNcYHBIp/ajb4m2dUYJQsaFrDcsxThrzWvWEffwWsjjCR1/fBrMM
+         x/e3AaSIrQbrhq2eZNppHS+QLTuzcwFxH4je4TnHl5wTFZb3qs2iYjNWpASbq7O9viou
+         urIfWTzzMOGMKe4n9uQFaVj+//BDWQAyC3o9IiI4Z5dZB2VVTQe3qQ7252KrV+AZ/kkM
+         NPlUCCoccBR5fBTbD92uB/o6BuSY4BvbGupCOF6trXe/0JTJzGxjRWie/Kg8Lep+gG6J
+         UYfBRzeFDr7oQS8Dd2Idp1Z0AdI15o8mQlAPtpXVOVfa147lV10UlSI6oZ3dL+mQ0Kco
+         yO3w==
+X-Gm-Message-State: AOAM530BIKpBSOyuWQ4AQS6oVuuPSgCO9RRCgLqrjPbw3SwQiQ4HeYyY
+        mJXve3N5KBeJv7qFvHxcyw76hA==
+X-Google-Smtp-Source: ABdhPJyWGuNgbGnfn6qKQQM5KwVrs3KxAw/sQ5/Phdx+0TwP4Nqgd8PsrwlAs/HuCHWwhAWmPewspQ==
+X-Received: by 2002:a17:906:17c3:: with SMTP id u3mr5870629eje.304.1610645553317;
+        Thu, 14 Jan 2021 09:32:33 -0800 (PST)
+Received: from larix.localdomain ([2001:1715:4e26:a7e0:ed35:e18a:5e36:8c84])
+        by smtp.gmail.com with ESMTPSA id n2sm2235623ejj.24.2021.01.14.09.32.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 09:32:32 -0800 (PST)
+Date:   Thu, 14 Jan 2021 18:33:17 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Auger Eric <eric.auger@redhat.com>
+Cc:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+        Xieyingtai <xieyingtai@huawei.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        wangxingang <wangxingang5@huawei.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        qubingbing <qubingbing@hisilicon.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>
+Subject: Re: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
+ unmanaged ASIDs
+Message-ID: <YACAXaG+opCwDFTL@larix.localdomain>
+References: <20201118112151.25412-8-eric.auger@redhat.com>
+ <1606829590-25924-1-git-send-email-wangxingang5@huawei.com>
+ <2e69adf5-8207-64f7-fa8e-9f2bd3a3c4e3@redhat.com>
+ <e10ad90dc5144c0d9df98a9a078091af@huawei.com>
+ <20201204095338.GA1912466@myrica>
+ <2de03a797517452cbfeab022e12612b7@huawei.com>
+ <0bf50dd6-ef3c-7aba-cbc1-1c2e17088470@redhat.com>
+ <d68b6269-ee99-9ed7-de30-867e4519d104@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH wireless v3 -next] brcmfmac: Delete useless kfree code
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201222135113.20680-1-zhengyongjun3@huawei.com>
-References: <20201222135113.20680-1-zhengyongjun3@huawei.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-wireless@vger.kernel.org>,
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        <SHA-cyfmac-dev-list@infineon.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <Markus.Elfring@web.de>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210114173218.EAEB1C433C6@smtp.codeaurora.org>
-Date:   Thu, 14 Jan 2021 17:32:18 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d68b6269-ee99-9ed7-de30-867e4519d104@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
+Hi Eric,
 
-> A null pointer will be passed to a kfree() call after a kzalloc() call failed.
-> This code is useless. Thus delete the extra function call.
-> 
-> A goto statement is also no longer needed. Thus adjust an if branch.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+On Thu, Jan 14, 2021 at 05:58:27PM +0100, Auger Eric wrote:
+> >>  The uacce-devel branches from
+> >>> https://github.com/Linaro/linux-kernel-uadk do provide this at the moment
+> >>> (they track the latest sva/zip-devel branch
+> >>> https://jpbrucker.net/git/linux/ which is roughly based on mainline.)
+> As I plan to respin shortly, please could you confirm the best branch to
+> rebase on still is that one (uacce-devel from the linux-kernel-uadk git
+> repo). Is it up to date? Commits seem to be quite old there.
 
-Patch applied to wireless-drivers-next.git, thanks.
+Right I meant the uacce-devel-X branches. The uacce-devel-5.11 branch
+currently has the latest patches
 
-73c655410181 brcmfmac: Delete useless kfree code
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201222135113.20680-1-zhengyongjun3@huawei.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Thanks,
+Jean
