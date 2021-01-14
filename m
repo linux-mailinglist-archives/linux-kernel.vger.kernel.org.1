@@ -2,159 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207C42F697E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:28:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 290652F697C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729446AbhANSZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:25:12 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:28145 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728001AbhANSZM (ORCPT
+        id S1728045AbhANSYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:24:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725854AbhANSYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:25:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1610648539;
-        s=strato-dkim-0002; d=hartkopp.net;
-        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:From:
-        Subject:Sender;
-        bh=aTVq1JWvHkaFebuORQskHWFVfvRdl/LKZDwfOKu1rao=;
-        b=Ls0xtx3NXbqGVY0Pcm7YYKdoWLThgHHwVARICfwFLTwm54Ozp7qlVnA0zZwt6cuHNf
-        NtEEts0lYiKbfDCABMfmRupm1m8xzm83esYSwt0l93FEM5toLv5Y3/szyyBzK5yo7vaG
-        NkjJGz86Dr3CGdy1pW45eZL7cc8A2G6DsmjVbDKvax49HDBvaU6WCV3W+GR7UmUHYA5c
-        zHYcXVCyTPANlwRKDPCTqraPNQlhyCBFhTWrzoqQx20UsIU6WYo6KsDwplKnrGzajpN6
-        9/HSkanIccd3bJ3n7T2P8GPPU97NdNXLx8kWs+Xo3Y7mYTGV4tzn6bFJDlnVSX5LqG5k
-        wEYA==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3PMaViOoLMJVMh7kiA="
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.50.177]
-        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
-        with ESMTPSA id k075acx0EIM9UxM
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Thu, 14 Jan 2021 19:22:09 +0100 (CET)
-Subject: Re: net/can/isotp.c:1240:13: sparse: sparse: incorrect type in
- initializer (different address spaces)
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-References: <202101141753.ropIZ9nh-lkp@intel.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <c179d70b-b09f-1f9f-04bc-007788c45722@hartkopp.net>
-Date:   Thu, 14 Jan 2021 19:22:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 14 Jan 2021 13:24:01 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E7B3C061757;
+        Thu, 14 Jan 2021 10:23:21 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id 186so9189307qkj.3;
+        Thu, 14 Jan 2021 10:23:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bwCHUuSRmaWekKnX014v+7s9HPNcRa88oAwARjFSB8U=;
+        b=qnq4z5CJmwVBFSSas9MB/9kAteV/uUk+ZxBqVX1X+VuXXRBS6KVoLg/hRNaWqPfxhJ
+         utchaQj7zrlooLcFajjAuukaEL+dN/Mp56VBwyWwNtSmQUU/5ypYmLMziG4P3e1BtzEx
+         si14yPJoWwR4U0Amk5YeNIVJ8eWWTQGj7+rbU+aucxt6UIPdipEGUASjN7ZQlbFAjwLZ
+         cDi1AuQKo4kd2jJ3fRV/S41e+0vY8b9fNYXVhHeillaqmzelR5T3D6eOfhCL7HzXjtYB
+         oeUfT7Y1TpQWlIm8DX19n+nerypWQXGsX6T2vbkuu37AQVZUHo37Oeh1v8qJqRxnU8i2
+         DC8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bwCHUuSRmaWekKnX014v+7s9HPNcRa88oAwARjFSB8U=;
+        b=miSwywtfzATePmLLPP/rH6Jycv7wbKPLIqmZdc+PzwULyTo7S7+x4FNTqq8aLb7TJf
+         LyrhLrMSl1yYX4rpyMIdafSEsfl7D/4V/FUgyuzbib/aLLK0XKy34Zcp/hUQbKVGjUoS
+         h0kI0SkzIs1dvVQUOPCj3ip8YOkeSc29Fj3n4Hs6OzEIVbx58/5QTNqO0PiCSt8ZOg9Z
+         9FMz1Q/CoSN2LZNI+0h+5SB2E8pupz/jikLcnz3yt0yWr4FHfOr8bExJEIHr2plkJ6D6
+         /l12iA20rBNGAW4c6JEkFg6GM/6DBELim+fiZV+OlXoyRPVScC1IODzYk5cjb8PLuKNQ
+         uEeQ==
+X-Gm-Message-State: AOAM530d40KgRAhjagrpbIHqe46BtBfZlHeRsf33eLLnzrTR5GdizFxX
+        cIeQuOn+zRATMRpGNY9IYY4=
+X-Google-Smtp-Source: ABdhPJyc13gsVaGjx6bsrqDjwepwjEeJ8dN1p9v/J+dgNQvTgc3w+gS+0q8pmanr/Y4WMsIQ48ygsA==
+X-Received: by 2002:a05:620a:a05:: with SMTP id i5mr8319670qka.148.1610648600686;
+        Thu, 14 Jan 2021 10:23:20 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id x49sm3445054qtx.6.2021.01.14.10.23.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 10:23:19 -0800 (PST)
+Date:   Thu, 14 Jan 2021 11:23:18 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] kbuild: check the minimum compiler version in Kconfig
+Message-ID: <20210114182318.GA967110@ubuntu-m3-large-x86>
+References: <20210114180709.303370-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <202101141753.ropIZ9nh-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210114180709.303370-1-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 14.01.21 10:47, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   65f0d2414b7079556fbbcc070b3d1c9f9587606d
-> commit: e057dd3fc20ffb3d7f150af46542a51b59b90127 can: add ISO 15765-2:2016 transport protocol
-> date:   3 months ago
-> config: sh-randconfig-s032-20210114 (attached as .config)
-> compiler: sh4-linux-gcc (GCC) 9.3.0
-> reproduce:
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # apt-get install sparse
->          # sparse version: v0.6.3-208-g46a52ca4-dirty
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e057dd3fc20ffb3d7f150af46542a51b59b90127
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout e057dd3fc20ffb3d7f150af46542a51b59b90127
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=sh
+On Fri, Jan 15, 2021 at 03:07:09AM +0900, Masahiro Yamada wrote:
+> Paul Gortmaker reported a regression in the GCC version check [1].
+> If you use GCC 4.8, the build breaks before showing the error message
+> "error Sorry, your version of GCC is too old - please use 4.9 or newer."
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> I do not want to apply his fix-up since it implies we would not be able
+> to remove any cc-option test. Anyway, I admit checking the GCC version
+> in <linux/compiler-gcc.h> is too late.
 > 
+> Almost at the same time, Linus also suggested to move the compiler
+> version error to Kconfig time. [2]
 > 
-> "sparse warnings: (new ones prefixed by >>)"
->>> net/can/isotp.c:1240:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
->     net/can/isotp.c:1240:13: sparse:     expected int const *__gu_addr
->     net/can/isotp.c:1240:13: sparse:     got int [noderef] __user *optlen
->>> net/can/isotp.c:1240:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
->     net/can/isotp.c:1240:13: sparse:     expected void const volatile [noderef] __user *ptr
->     net/can/isotp.c:1240:13: sparse:     got int const *__gu_addr
+> I unified the similar two scripts, gcc-version.sh and clang-version.sh
+> into the new cc-version.sh. The old scripts invoked the compiler multiple
+> times (3 times for gcc-version.sh, 4 times for clang-version.sh). I
+> refactored the code so the new one invokes the compiler just once, and
+> also tried my best to use shell-builtin commands where possible.
 > 
-
-This seems to be a problem with the sh4 arch and/or its cross 
-compilation tools.
-
-There are tons of similar code snippets in the kernel, e.g. in 
-net/can/raw.c or net/bluetooth/hci_sock.c ...
-
-And these code snippets do not trigger such sparse warnings?!?
-
-Any idea?
-
-Regards,
-Oliver
-
-> vim +1240 net/can/isotp.c
+> The new script runs faster.
 > 
->    1229	
->    1230	static int isotp_getsockopt(struct socket *sock, int level, int optname,
->    1231				    char __user *optval, int __user *optlen)
->    1232	{
->    1233		struct sock *sk = sock->sk;
->    1234		struct isotp_sock *so = isotp_sk(sk);
->    1235		int len;
->    1236		void *val;
->    1237	
->    1238		if (level != SOL_CAN_ISOTP)
->    1239			return -EINVAL;
->> 1240		if (get_user(len, optlen))
->    1241			return -EFAULT;
->    1242		if (len < 0)
->    1243			return -EINVAL;
->    1244	
->    1245		switch (optname) {
->    1246		case CAN_ISOTP_OPTS:
->    1247			len = min_t(int, len, sizeof(struct can_isotp_options));
->    1248			val = &so->opt;
->    1249			break;
->    1250	
->    1251		case CAN_ISOTP_RECV_FC:
->    1252			len = min_t(int, len, sizeof(struct can_isotp_fc_options));
->    1253			val = &so->rxfc;
->    1254			break;
->    1255	
->    1256		case CAN_ISOTP_TX_STMIN:
->    1257			len = min_t(int, len, sizeof(u32));
->    1258			val = &so->force_tx_stmin;
->    1259			break;
->    1260	
->    1261		case CAN_ISOTP_RX_STMIN:
->    1262			len = min_t(int, len, sizeof(u32));
->    1263			val = &so->force_rx_stmin;
->    1264			break;
->    1265	
->    1266		case CAN_ISOTP_LL_OPTS:
->    1267			len = min_t(int, len, sizeof(struct can_isotp_ll_options));
->    1268			val = &so->ll;
->    1269			break;
->    1270	
->    1271		default:
->    1272			return -ENOPROTOOPT;
->    1273		}
->    1274	
->    1275		if (put_user(len, optlen))
->    1276			return -EFAULT;
->    1277		if (copy_to_user(optval, val, len))
->    1278			return -EFAULT;
->    1279		return 0;
->    1280	}
->    1281	
+>   $ time ./scripts/clang-version.sh clang
+>   120000
 > 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>   real    0m0.029s
+>   user    0m0.012s
+>   sys     0m0.021s
 > 
+>   $ time ./scripts/cc-version.sh clang
+>   Clang 120000
+> 
+>   real    0m0.009s
+>   user    0m0.006s
+>   sys     0m0.004s
+> 
+> The cc-version.sh also shows the error if the compiler is old:
+> 
+>   $ make defconfig CC=clang-9
+>   *** Default configuration is based on 'x86_64_defconfig'
+>   ***
+>   *** Compiler is too old.
+>   ***   Your Clang version:    9.0.1
+>   ***   Minimum Clang version: 10.0.1
+>   ***
+>   scripts/Kconfig.include:46: Sorry, this compiler is not supported.
+>   make[1]: *** [scripts/kconfig/Makefile:81: defconfig] Error 1
+>   make: *** [Makefile:602: defconfig] Error 2
+> 
+> I removed the clang version check from <linux/compiler-clang.h>
+> 
+> For now, I did not touch <linux/compiler-gcc.h> in order to avoid
+> merge conflict with [3], which has been queued up in the arm64 tree.
+> We will be able to clean it up later.
+> 
+> The new script takes care of ICC because we have <linux/compiler-intel.h>
+> although I am not sure if building the kernel with ICC is well-supported.
+> 
+> [1] https://lkml.org/lkml/2021/1/10/250
+> [2] https://lkml.org/lkml/2021/1/12/1708
+> [3] https://lkml.org/lkml/2021/1/12/1533
+> 
+> Fixes: 87de84c9140e ("kbuild: remove cc-option test of -Werror=date-time")
+> Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
