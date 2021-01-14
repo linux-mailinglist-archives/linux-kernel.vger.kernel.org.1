@@ -2,77 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F35CA2F6658
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4EEA2F6655
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:52:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727244AbhANQuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:50:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726881AbhANQuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:50:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10D7523B2F;
-        Thu, 14 Jan 2021 16:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610642959;
-        bh=65pHwfEnxIO+KB+8lFvkgezdzPtnmMUdO//94olI6vI=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=jHfHFDrkdgJpDwQVRHeWH7b30XpaXrfdc82v4IFN913LRBw0YvDm28IVCZClxBv0L
-         l7LUzN1ljXzazxofxAQZ5MJYb00sqpIAvYqGSdQbkHXVwUM25k+1TkkzhD66+oIAY+
-         95aMx6p1Opg1xcRBLduZ/ST/jTvH2066akpcZvnzYPm8FxfNSe0uH9gWrKL13G8vgI
-         d7nurpcITHiVvedCfSIF0ox6wSYRJxF8q+88fj5bLADaXXFgcjAz89kAGc5FB9TlQy
-         IAFlMGOvUHhEKGTzSywqhiqlF/UlcFaM9oQKdBDF+I2un/Iqrg4UelvIF9VHwtX8v2
-         QcnNQGduZPXSg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-spi@vger.kernel.org
-In-Reply-To: <6b51cc2bfbca70d3e9b9da7b7aa4c7a9d793ca0e.1610629002.git.christophe.leroy@csgroup.eu>
-References: <6b51cc2bfbca70d3e9b9da7b7aa4c7a9d793ca0e.1610629002.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH] spi: fsl: Fix driver breakage when SPI_CS_HIGH is not set in spi->mode
-Message-Id: <161064292109.43781.3127571598832303421.b4-ty@kernel.org>
-Date:   Thu, 14 Jan 2021 16:48:41 +0000
-MIME-Version: 1.0
+        id S1727192AbhANQtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:49:53 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:37552 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727054AbhANQtw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 11:49:52 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610642968; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=pTOhOFjKTSVZKN1D0SJ1Pg5lWOEdKXufF+sYmOfnZOw=;
+ b=uK7m3LlTMNeYZcTmuS+5lJm56cD5bsc6Pbkwn6rrSg6veFCosQGXkBP/4ZVHiNs0xxbE+YRC
+ MZTVw86QYph8A/pOGHXalFOOPKx1RZ0GCf/+9JPLyEV+JuUPtHhsVJMhaDqmH9rTDGQaO7xw
+ lUNBV9bsGDuHcBeZcx2UH4TTOgo=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 600075ebc88af06107ced53b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 16:48:43
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BE983C43461; Thu, 14 Jan 2021 16:48:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D370BC433C6;
+        Thu, 14 Jan 2021 16:48:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D370BC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] mt76: Fix queue ID variable types after mcu queue split
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201229211548.1348077-1-natechancellor@gmail.com>
+References: <20201229211548.1348077-1-natechancellor@gmail.com>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210114164842.BE983C43461@smtp.codeaurora.org>
+Date:   Thu, 14 Jan 2021 16:48:42 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 13:09:37 +0000 (UTC), Christophe Leroy wrote:
-> Commit 766c6b63aa04 ("spi: fix client driver breakages when using GPIO
-> descriptors") broke fsl spi driver.
+Nathan Chancellor <natechancellor@gmail.com> wrote:
+
+> Clang warns in both mt7615 and mt7915:
 > 
-> As now we fully rely on gpiolib for handling the polarity of
-> chip selects, the driver shall not alter the GPIO value anymore
-> when SPI_CS_HIGH is not set in spi->mode.
+> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:271:9: warning: implicit
+> conversion from enumeration type 'enum mt76_mcuq_id' to different
+> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
+>                 txq = MT_MCUQ_FWDL;
+>                     ~ ^~~~~~~~~~~~
+> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:278:9: warning: implicit
+> conversion from enumeration type 'enum mt76_mcuq_id' to different
+> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
+>                 txq = MT_MCUQ_WA;
+>                     ~ ^~~~~~~~~~
+> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:282:9: warning: implicit
+> conversion from enumeration type 'enum mt76_mcuq_id' to different
+> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
+>                 txq = MT_MCUQ_WM;
+>                     ~ ^~~~~~~~~~
+> 3 warnings generated.
+> 
+> drivers/net/wireless/mediatek/mt76/mt7615/mcu.c:238:9: warning: implicit
+> conversion from enumeration type 'enum mt76_mcuq_id' to different
+> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
+>                 qid = MT_MCUQ_WM;
+>                     ~ ^~~~~~~~~~
+> drivers/net/wireless/mediatek/mt76/mt7615/mcu.c:240:9: warning: implicit
+> conversion from enumeration type 'enum mt76_mcuq_id' to different
+> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
+>                 qid = MT_MCUQ_FWDL;
+>                     ~ ^~~~~~~~~~~~
+> 2 warnings generated.
+> 
+> Use the proper type for the queue ID variables to fix these warnings.
+> Additionally, rename the txq variable in mt7915_mcu_send_message to be
+> more neutral like mt7615_mcu_send_message.
+> 
+> Fixes: e637763b606b ("mt76: move mcu queues to mt76_dev q_mcu array")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1229
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
-Applied to
+Patch applied to wireless-drivers.git, thanks.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+b7c568752ef3 mt76: Fix queue ID variable types after mcu queue split
 
-Thanks!
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20201229211548.1348077-1-natechancellor@gmail.com/
 
-[1/1] spi: fsl: Fix driver breakage when SPI_CS_HIGH is not set in spi->mode
-      commit: 7a2da5d7960a64ee923fe3e31f01a1101052c66f
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
