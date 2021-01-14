@@ -2,154 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640162F6662
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B29802F6665
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727729AbhANQvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:51:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725935AbhANQvN (ORCPT
+        id S1727767AbhANQvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:51:32 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3170 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726224AbhANQvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:51:13 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3202FC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:50:33 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id d8so5766228otq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:50:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=L+TgfptYtNVwPcoqIzpc+5x5pT5jGcrCtNNE8GbycVQ=;
-        b=OU+ltv1/I1mq2l+2K0dxg49+eeRyGQPUoZIqH6PnpCygeJzSwYom/ikzMn/exSo+kG
-         XGryLRYg/tmP2bElPqcqydE71+8acjxa8ClBmwzdjoTlltEbALf6+nILf6YUYQfBiHOu
-         ewTMAhgmHUA9jAMuDXKdUWR2eh1u4g4vIa0+bnJlkhGfqEFQDba0JDXa8cnR4qumPQEU
-         kzhG9d0F2tDVUdlfwMkqFFy+l/+xKw46w9D5Yqwtxdi5Epq42DOuv4HUIvrVq3VrOwgN
-         k+RVxTcfgQrWqltPgBFuwsgm0B5dZtnRq+AB6iShCbYnYCUB9aNFaB/0FGLoXdNk3EOL
-         pV9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=L+TgfptYtNVwPcoqIzpc+5x5pT5jGcrCtNNE8GbycVQ=;
-        b=LaWSKB6sFi37H+nbXxh5vRujfJwsY//kRfezqArjFVg2Z61aef3+XFnEMHCeG8QN4t
-         2Wj/9TAc+qWYzQ0IgKf40EbS8NkRZmxkTRX8MkFj8gcBC8zakhs0dQlfI79Nl6JhRb/7
-         WDURNZh0jqWSHvXM7UeOnB7pn7kpZ4E9T3+GoJbxpxjXBjDpQb+SIPicfTeCONOgT8Sl
-         luxeVh2+CF0b1oKP/Bu3mJQ3P5zmWvT3IhSXcIGn7ZC431HhlYF0nP8KjexntH1V5HOX
-         ackilZxyDIzMLIJ3VdbywuWLvEdZax2OmQP5kLUPcAXuYd7Fn5JFn+GhDYTaQa48+Vdc
-         /5fA==
-X-Gm-Message-State: AOAM531UypoKISnftSXOiA5jrpEbzOCEqNabULMUGoGaBCTiSpksE7zl
-        jOccLPMyPf/dZ6OUdhBjS29OovWT+SIc01AyueI=
-X-Google-Smtp-Source: ABdhPJyDq5ns73KgHKa6b8H0X02mufxys2TirNlA/0Nqjtj6UrkIsOVk0kiLYwtG+xP1vqvJELUEAj5pmPN1zv3Moeg=
-X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr5391755ote.132.1610643032581;
- Thu, 14 Jan 2021 08:50:32 -0800 (PST)
-MIME-Version: 1.0
-References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-22-lee.jones@linaro.org>
-In-Reply-To: <20210108201457.3078600-22-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 14 Jan 2021 11:50:21 -0500
-Message-ID: <CADnq5_MK8VqPiRzLFAn4a7U_-Ptq12bR6KYHdq4D0yzNjWPpQg@mail.gmail.com>
-Subject: Re: [PATCH 21/40] drm/amd/display/dc/calcs/dce_calcs: Remove unused
- variables 'v_filter_init_mode' and 'sclk_lvl'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 14 Jan 2021 11:51:32 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10EGgtVY056001;
+        Thu, 14 Jan 2021 11:50:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=lPHzalP1xIyx5PPxmOxaK+N/SJ9f/dq5jXZ5Jr3aig4=;
+ b=nm51b0XrXSG8IezJ/mDS4n5VmfM6F4xXJrc8v/qYngKHezmSN+b5X09hFPPJ0OpART20
+ AExF31vYBDf3skgYFHMCN1A3wTO31zYTKsgXwNKnV+4TkJKKpDZ4GHUItk8GJyDXVyBL
+ DLNdS8OEoyY0K5KoYPgUsm2goi34t8JWbbsFPlnhM58taSNGxiP6XFbwmTw3oPzgoSaP
+ owvx2mcrNx9lM9xfW4XegXp4iwo9kw9BjuoIfhKsHyFcPjFuSCpSNkaHx9MqE//3j8tE
+ fUMju8SM7B8vaODUeJ18p/sS5uhUVcbgEHTVh7dByjwnUjYQ3UDiupcLXM6Xwvxyz5K9 CQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 362sqbr6sa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Jan 2021 11:50:46 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10EGhhl7061041;
+        Thu, 14 Jan 2021 11:50:44 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 362sqbr6r0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Jan 2021 11:50:44 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10EGlIH3009853;
+        Thu, 14 Jan 2021 16:50:41 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 35y447xn1u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Jan 2021 16:50:41 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10EGodWb46858724
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Jan 2021 16:50:39 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5A3354C058;
+        Thu, 14 Jan 2021 16:50:39 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D80814C04E;
+        Thu, 14 Jan 2021 16:50:35 +0000 (GMT)
+Received: from sig-9-65-209-51.ibm.com (unknown [9.65.209.51])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Jan 2021 16:50:35 +0000 (GMT)
+Message-ID: <f42d49d2e876379c0ef6e31a34027be95ffb1375.camel@linux.ibm.com>
+Subject: Re: [PATCH v10 8/8] selinux: include a consumer of the new IMA
+ critical data hook
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, tyhicks@linux.microsoft.com,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Thu, 14 Jan 2021 11:50:34 -0500
+In-Reply-To: <99be76345f375bb2f485f08a53dcb8ed806dc538.camel@linux.ibm.com>
+References: <20210108040708.8389-1-tusharsu@linux.microsoft.com>
+         <20210108040708.8389-9-tusharsu@linux.microsoft.com>
+         <CAHC9VhSJk0wG=WzO3bwsueiy19mMi9m6MamTrQfH8C=gXUtvGw@mail.gmail.com>
+         <97328fc71687a0e1c327f6821548be9ba35bb193.camel@linux.ibm.com>
+         <CAHC9VhTzaQ_q8gJ0oeok_yJ54XLETNvOuhhKnyRwgqsqvpBLCw@mail.gmail.com>
+         <71cddb6c8676ccd63c89364d805cfca76d32cb6e.camel@linux.ibm.com>
+         <CAHC9VhRhYWEcK7TepZ=LK1m=9Zn_gtOZyAYfamP-TFU3rRH+zw@mail.gmail.com>
+         <e29a618645b0e73ec06960a02b6da465614689ff.camel@linux.ibm.com>
+         <CAHC9VhTHqwKem=MyQBY4TNAq-DOVhwEZS8pjrSE=4OxdEVm-GA@mail.gmail.com>
+         <3746bc7673df25354411151442a7772b867be396.camel@linux.ibm.com>
+         <fc80b1a1-ff4d-3bf2-59bd-2cb56135bf0f@linux.microsoft.com>
+         <99be76345f375bb2f485f08a53dcb8ed806dc538.camel@linux.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-14_05:2021-01-14,2021-01-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 bulkscore=0
+ impostorscore=0 clxscore=1015 priorityscore=1501 adultscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101140091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Thu, 2021-01-14 at 11:44 -0500, Mimi Zohar wrote:
+> [Cc'ing Sasha]
+> 
+> Hi Lakshmi,
+> 
+> On Thu, 2021-01-14 at 08:22 -0800, Lakshmi Ramasubramanian wrote:
+> > On 1/13/21 6:49 PM, Mimi Zohar wrote:
+> 
+> > >>> Lakshmi is trying to address the situation where an event changes a
+> > >>> value, but then is restored to the original value.  The original and
+> > >>> subsequent events are measured, but restoring to the original value
+> > >>> isn't re-measured.  This isn't any different than when a file is
+> > >>> modified and then reverted.
+> > >>>
+> > >>> Instead of changing the name like this, which doesn't work for files,
+> > >>> allowing duplicate measurements should be generic, based on policy.
+> > >>
+> > >> Perhaps it is just the end of the day and I'm a bit tired, but I just
+> > >> read all of the above and I have no idea what your current thoughts
+> > >> are regarding this patch.
+> > > 
+> > > Other than appending the timestamp, which is a hack, the patch is fine.
+> > > Support for re-measuring an event can be upstreamed independently.
+> > > 
+> > 
+> > Thanks for clarifying the details related to duplicate measurement 
+> > detection and re-measuring.
+> > 
+> > I will keep the timestamp for the time being, even though its a hack, as 
+> > it helps with re-measuring state changes in SELinux. We will add support 
+> > for "policy driven" re-measurement as a subsequent patch series.
+> 
+> Once including the timestamp is upstreamed, removing it will be
+> difficult, especially if different userspace applications are dependent
+> on it.  Unless everyone is on board that removing the timestamp
+> wouldn't be considered a regression, it cannot be upstreamed.
 
-Alex
+Feel free to just re-post just this one patch.  Otherwise the patch set
+looks good.
 
-On Fri, Jan 8, 2021 at 3:15 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c: In function =
-=E2=80=98calculate_bandwidth=E2=80=99:
->  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:109:18: warni=
-ng: variable =E2=80=98v_filter_init_mode=E2=80=99 set but not used [-Wunuse=
-d-but-set-variable]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c: In function =
-=E2=80=98bw_calcs=E2=80=99:
->  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:3031:21: warn=
-ing: variable =E2=80=98sclk_lvl=E2=80=99 set but not used [-Wunused-but-set=
--variable]
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c b/drivers/g=
-pu/drm/amd/display/dc/calcs/dce_calcs.c
-> index ef41b287cbe23..158d927c03e55 100644
-> --- a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
-> +++ b/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
-> @@ -106,7 +106,6 @@ static void calculate_bandwidth(
->         bool lpt_enabled;
->         enum bw_defines sclk_message;
->         enum bw_defines yclk_message;
-> -       enum bw_defines v_filter_init_mode[maximum_number_of_surfaces];
->         enum bw_defines tiling_mode[maximum_number_of_surfaces];
->         enum bw_defines surface_type[maximum_number_of_surfaces];
->         enum bw_defines voltage;
-> @@ -792,12 +791,8 @@ static void calculate_bandwidth(
->                                 data->v_filter_init[i] =3D bw_add(data->v=
-_filter_init[i], bw_int_to_fixed(1));
->                         }
->                         if (data->stereo_mode[i] =3D=3D bw_def_top_bottom=
-) {
-> -                               v_filter_init_mode[i] =3D bw_def_manual;
->                                 data->v_filter_init[i] =3D bw_min2(data->=
-v_filter_init[i], bw_int_to_fixed(4));
->                         }
-> -                       else {
-> -                               v_filter_init_mode[i] =3D bw_def_auto;
-> -                       }
->                         if (data->stereo_mode[i] =3D=3D bw_def_top_bottom=
-) {
->                                 data->num_lines_at_frame_start =3D bw_int=
-_to_fixed(1);
->                         }
-> @@ -3028,7 +3023,7 @@ bool bw_calcs(struct dc_context *ctx,
->                 calcs_output->all_displays_in_sync =3D false;
->
->         if (data->number_of_displays !=3D 0) {
-> -               uint8_t yclk_lvl, sclk_lvl;
-> +               uint8_t yclk_lvl;
->                 struct bw_fixed high_sclk =3D vbios->high_sclk;
->                 struct bw_fixed mid1_sclk =3D vbios->mid1_sclk;
->                 struct bw_fixed mid2_sclk =3D vbios->mid2_sclk;
-> @@ -3049,7 +3044,6 @@ bool bw_calcs(struct dc_context *ctx,
->                 calculate_bandwidth(dceip, vbios, data);
->
->                 yclk_lvl =3D data->y_clk_level;
-> -               sclk_lvl =3D data->sclk_level;
->
->                 calcs_output->nbp_state_change_enable =3D
->                         data->nbp_state_change_enable;
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+thanks,
+
+Mimi
+
