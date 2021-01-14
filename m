@@ -2,60 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB7E2F66C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3012F66CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbhANRGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:06:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42426 "EHLO
+        id S1728311AbhANRHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:07:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726275AbhANRGt (ORCPT
+        with ESMTP id S1726288AbhANRHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:06:49 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3A2C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:06:08 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id r9so5793135otk.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:06:08 -0800 (PST)
+        Thu, 14 Jan 2021 12:07:39 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B7AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:06:59 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id i6so5836075otr.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:06:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=ssuwm5geZ6avPsQABGpir+jMcKxJQOkzJqc/fGTa4j0=;
-        b=vGjwCEmiDqj01desICX/fCkLT7uffyYwfgLvgAZKFbZiIVtqeS+vfY4HOoClGo/fDs
-         WCdeGo5kz15jut2PHHzt6riva9ddYbgprKSy98pCIf5V3cR1vdzM1jmcTCBzRuwRpFRn
-         Z4ONbFKb/suIUvG8BiXj+RpKWtFH/mfNSsa9pUoxCqm0obH21c9HyRqHxHdQ69EwNc6n
-         VC4vF2nKcX5OyoxaNhfTY0+rnBfIvj+fY6GbbxLOfuRh6QRLgwTI80gD/qjBHb0rLpFC
-         NTULDoSO2GJbFNSg3rAwVeDYe0tnwg5xk56rN/Xz5CoB8ibkJNsDRFbmbIfZaMlZBVZk
-         N9xw==
+        bh=Qh27w4Qu6OhsphukRi2VdyAK1mOAim2h716oUAliA58=;
+        b=HHEJA648X5qusc4i+aD87hdFQH45LsBeTjJRRQel8OpeXFcsPqj63FFLti3Wt/cfoS
+         SG9cViNZc9/XAFMRVqvOV9x2n9FikFlY3jugjFlgu0bkuy0KWWgatg7H3F64u3bI4Val
+         bYK0Cem7CmuJeOCH8OLaH1l/jNd1QxZwUIxNNKbcUgkiwhqZJ2BJVDX8Ml+AR0JsELE6
+         Ik1i4fIpKmFaD0ZI9bxeKJrkEI2TsLTpa78YUD8DyA2+jHbwsey8RS78jOFGL8Eq1gck
+         it7SoEQJX7tc3XLybD5gcudk88BmZIS7mtKBRCINcD1QypnNQ0NgP47AwEo2PXhzcKsx
+         kj2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ssuwm5geZ6avPsQABGpir+jMcKxJQOkzJqc/fGTa4j0=;
-        b=qMZgSmlGI0pifcqZ65ICCmS7+H+zAv8uJcscRkGo1lF87AI47bL2gOEUQyWOMn6kZZ
-         VHNM/CrRUdS0Zhl5zJklunV6o1YCDwDv3G+C9cjf917wUulq3/ErGXzAEEJLbdaHbTQy
-         AmzqnXnjPv18U6riu8ZSNiECflOeuZ6gjP5/66eGVlBoA0nge23K1XyDB8Vl/KpAFMrV
-         DwDnpmksnhr7esNwrrmbU+BtHiSjqj3cMTGTwMqRt55KOlQeCFg1+OjFfHfCS+O32TwA
-         T4xV4xfRDH7MJhKcIIGCslJ+vnsuJvAIxZYNN9miqyih6EYXera7C6O1yErJx0hyKAFN
-         XgaA==
-X-Gm-Message-State: AOAM531TuvoHjpST31TeRpQEqimv13R3y9kkL6ZRObp7Bc174WVhHMcn
-        ab9Ku4qNCFZpnmpS9wlgWo/ToLshWZqZ3em4VWI=
-X-Google-Smtp-Source: ABdhPJyb9XIR5l58CoU8oUzP0D7Jskp6KZ4We+iu6vQHk7LdiQd7dLVurjs2uHDUrD24xuURiOdG73ldLAMxUlxPnno=
-X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr5438999ote.132.1610643968152;
- Thu, 14 Jan 2021 09:06:08 -0800 (PST)
+        bh=Qh27w4Qu6OhsphukRi2VdyAK1mOAim2h716oUAliA58=;
+        b=E8f/p5leIjk16EgYmIbV1ssEI4n/p49VfQO+CsbMES1Pq5PX7DSRodo4x53SP3KdAu
+         dhAwjZVF47JMfA3I0qM/1JZCy52zR41INVWuHNBhuMipmqMXr/uZ6g1AlLIoROWsJ7Yx
+         IpwPl+93vQPHkb48U4GBxTmP9tTRUuWw+StEohsHYGYc+Roay1x7BgPLl0MbZNG63zLn
+         PrWYFeG3VYvjKqcKsCiu6DTU7AwIL1UQcU5puspyq8zgTeQfKpvecEuuysmkSv6pqCAu
+         eJ2CiyxAzYOFjhrdMekEHk0EI+bj5cXPbcWQqugrdCS50C3ozGuTOvTTC8jDSbDQ8Ewx
+         kFBA==
+X-Gm-Message-State: AOAM532wVGbSrywvQIwf0M8mapGqaO0ULghOJEQ8gdq6TsejpTi/G+3X
+        qMzwbwj0KDZAI42gjTzDFrFrNlpTjBi01dV+6Fs=
+X-Google-Smtp-Source: ABdhPJwfwGMzERsPUfhKr73XbkTkP6/KnfFYpoFUS487anDPL56vBHJfWjFCM/j4aRke1Jsr1NrW+DT7LLtEbXALi9w=
+X-Received: by 2002:a9d:75d4:: with SMTP id c20mr5260854otl.311.1610644019008;
+ Thu, 14 Jan 2021 09:06:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20210113080752.1003793-1-lee.jones@linaro.org> <20210113080752.1003793-5-lee.jones@linaro.org>
-In-Reply-To: <20210113080752.1003793-5-lee.jones@linaro.org>
+References: <20210113080752.1003793-1-lee.jones@linaro.org> <20210113080752.1003793-6-lee.jones@linaro.org>
+In-Reply-To: <20210113080752.1003793-6-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 14 Jan 2021 12:05:56 -0500
-Message-ID: <CADnq5_PzcLKd9rMZKaF83FKSEp0Y2tcHXHSJYV=qU+PsjXXbrA@mail.gmail.com>
-Subject: Re: [PATCH 04/30] drm/amd/display/modules/power/power_helpers:
- Staticify local functions
+Date:   Thu, 14 Jan 2021 12:06:47 -0500
+Message-ID: <CADnq5_NQ5dnb5B6_4TooYWrL6FU1ML_AiF6+h42=FM4atv=tZg@mail.gmail.com>
+Subject: Re: [PATCH 05/30] drm/amd/display/modules/info_packet/info_packet:
+ Correct kernel-doc formatting
 To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
+Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
         David Airlie <airlied@linux.ie>,
         Maling list - DRI developers 
@@ -72,15 +70,9 @@ On Wed, Jan 13, 2021 at 3:08 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../display/modules/power/power_helpers.c:281:=
-6: warning: no previous prototype for =E2=80=98fill_iram_v_2=E2=80=99 [-Wmi=
-ssing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/modules/power/power_helpers.c:455:=
-6: warning: no previous prototype for =E2=80=98fill_iram_v_2_2=E2=80=99 [-W=
-missing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/modules/power/power_helpers.c:601:=
-6: warning: no previous prototype for =E2=80=98fill_iram_v_2_3=E2=80=99 [-W=
-missing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/modules/info_packet/info_packet.c:=
+412: warning: Cannot understand  ******************************************=
+***********************************
 >
 > Cc: Harry Wentland <harry.wentland@amd.com>
 > Cc: Leo Li <sunpeng.li@amd.com>
@@ -88,7 +80,6 @@ missing-prototypes]
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
@@ -97,52 +88,43 @@ Applied.  Thanks!
 
 Alex
 
-
 > ---
->  drivers/gpu/drm/amd/display/modules/power/power_helpers.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  .../amd/display/modules/info_packet/info_packet.c   | 13 ++++---------
+>  1 file changed, 4 insertions(+), 9 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/display/modules/power/power_helpers.c b/=
-drivers/gpu/drm/amd/display/modules/power/power_helpers.c
-> index 4fd8bce95d843..3d4c66933f518 100644
-> --- a/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
-> +++ b/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
-> @@ -278,7 +278,7 @@ static void fill_backlight_transform_table_v_2_2(stru=
-ct dmcu_iram_parameters par
->         }
+> diff --git a/drivers/gpu/drm/amd/display/modules/info_packet/info_packet.=
+c b/drivers/gpu/drm/amd/display/modules/info_packet/info_packet.c
+> index 0fdf7a3e96dea..57f198de5e2cb 100644
+> --- a/drivers/gpu/drm/amd/display/modules/info_packet/info_packet.c
+> +++ b/drivers/gpu/drm/amd/display/modules/info_packet/info_packet.c
+> @@ -409,16 +409,11 @@ void mod_build_vsc_infopacket(const struct dc_strea=
+m_state *stream,
 >  }
 >
-> -void fill_iram_v_2(struct iram_table_v_2 *ram_table, struct dmcu_iram_pa=
-rameters params)
-> +static void fill_iram_v_2(struct iram_table_v_2 *ram_table, struct dmcu_=
-iram_parameters params)
->  {
->         unsigned int set =3D params.set;
->
-> @@ -452,7 +452,7 @@ void fill_iram_v_2(struct iram_table_v_2 *ram_table, =
-struct dmcu_iram_parameters
->                         params, ram_table);
->  }
->
-> -void fill_iram_v_2_2(struct iram_table_v_2_2 *ram_table, struct dmcu_ira=
-m_parameters params)
-> +static void fill_iram_v_2_2(struct iram_table_v_2_2 *ram_table, struct d=
-mcu_iram_parameters params)
->  {
->         unsigned int set =3D params.set;
->
-> @@ -598,7 +598,7 @@ void fill_iram_v_2_2(struct iram_table_v_2_2 *ram_tab=
-le, struct dmcu_iram_parame
->                         params, ram_table, true);
->  }
->
-> -void fill_iram_v_2_3(struct iram_table_v_2_2 *ram_table, struct dmcu_ira=
-m_parameters params, bool big_endian)
-> +static void fill_iram_v_2_3(struct iram_table_v_2_2 *ram_table, struct d=
-mcu_iram_parameters params, bool big_endian)
->  {
->         unsigned int i, j;
->         unsigned int set =3D params.set;
+>  /**
+> - ***********************************************************************=
+******
+> - *  Function: mod_build_hf_vsif_infopacket
+> + *  mod_build_hf_vsif_infopacket - Prepare HDMI Vendor Specific info fra=
+me.
+> + *                                 Follows HDMI Spec to build up Vendor =
+Specific info frame
+>   *
+> - *  @brief
+> - *     Prepare HDMI Vendor Specific info frame.
+> - *     Follows HDMI Spec to build up Vendor Specific info frame
+> - *
+> - *  @param [in] stream: contains data we may need to construct VSIF (i.e=
+. timing_3d_format, etc.)
+> - *  @param [out] info_packet:   output structure where to store VSIF
+> - ***********************************************************************=
+******
+> + *  @stream:      contains data we may need to construct VSIF (i.e. timi=
+ng_3d_format, etc.)
+> + *  @info_packet: output structure where to store VSIF
+>   */
+>  void mod_build_hf_vsif_infopacket(const struct dc_stream_state *stream,
+>                 struct dc_info_packet *info_packet)
 > --
 > 2.25.1
 >
