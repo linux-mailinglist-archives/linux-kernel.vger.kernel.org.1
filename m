@@ -2,192 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146CA2F5B1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:13:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 189C82F5B1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727024AbhANHM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 02:12:59 -0500
-Received: from mga07.intel.com ([134.134.136.100]:34576 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725888AbhANHM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 02:12:59 -0500
-IronPort-SDR: QdKj1qXAPN1A8+Rh1Px6eUx26iXu7wnUrMVIpxpfco2x7XrtsRVbIF4oA8vIY9DT+sxIqM82rS
- 5BzCjr0b6KHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="242394059"
-X-IronPort-AV: E=Sophos;i="5.79,346,1602572400"; 
-   d="scan'208";a="242394059"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 23:12:18 -0800
-IronPort-SDR: cJDv/L0tfPx9bJ4fkZ1bsmZhxw7AiOgksUX2g5eH3BzEnvhub4FHEwNlujc4FtO8Vd2BOnWG/l
- sxsVVmHUs+gg==
-X-IronPort-AV: E=Sophos;i="5.79,346,1602572400"; 
-   d="scan'208";a="364136636"
-Received: from dforourk-mobl1.ger.corp.intel.com (HELO localhost) ([10.213.254.146])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 23:12:11 -0800
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org
-Cc:     thaytan@noraisin.net, Vasily Khoruzhick <anarsoul@gmail.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Imre Deak <imre.deak@intel.com>,
-        Ramalingam C <ramalingam.c@intel.com>,
-        Anshuman Gupta <anshuman.gupta@intel.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 1/4] drm/i915: Keep track of pwm-related backlight hooks separately
-In-Reply-To: <20210113235426.2190684-2-lyude@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210113235426.2190684-1-lyude@redhat.com> <20210113235426.2190684-2-lyude@redhat.com>
-Date:   Thu, 14 Jan 2021 09:12:08 +0200
-Message-ID: <871reornzr.fsf@intel.com>
+        id S1727054AbhANHP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 02:15:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726131AbhANHP1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 02:15:27 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17357C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 23:14:47 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id c13so2804023pfi.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 23:14:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=OwRfqD0YnqmsUnmWg+j8CrMA8g6zFsMROmDWudFkMws=;
+        b=D40JTh/WlJbBPmXf9TRmQxsAF37NVHwxgW6GQmhs2RZcMJQE7JMCeP6QlcbZwhSKrn
+         lUBu8F/G0ajDoxVKkovPBbyYKAwdkW/s17EGwF3Li+iho+0WWlBwURfGrCBPnDOeSuWB
+         aPR7+sWByCv3HqqoAqbVlMAgNZGWW08RiQ9mo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=OwRfqD0YnqmsUnmWg+j8CrMA8g6zFsMROmDWudFkMws=;
+        b=qa9q/hpBV0kISShgfrv2gSKbm88O13hMhE8YnuUMv3pAghM4Sy0KL8uyzpeMHb8qUm
+         sdFBn28hutkASS5+cSzaTHvWIy/NuXzv1btKer1IeiYzEkNbgt3UmVM3BE2z0/Ppi0IX
+         ZA2dt4+qe9oXhGmwRHM1tVhLMyVTAtwHtJRKRCHH8p+HwkwPDI3WE6aef3OxiuI3djFu
+         ocLPHKetaj0cz+V3yhTNA47vCoU3UevMmylPA9FwS1m3gu5aSICSk5f0ftcfmeSh/EMA
+         XnRvYVIO4uMZmCp0GfSxrLpRCpTQd9OHkSJwm6U+l7JyN/Ael+LFfxeEzke5K+m5P/hc
+         ad7Q==
+X-Gm-Message-State: AOAM533gTPPdDy2Zh0u0DfZGVB0zb0OT9WG7JBpiX+0EyhUC6ZeuBUh9
+        PI6HJwTqrLc5ePgZhYQ+1sbFYA==
+X-Google-Smtp-Source: ABdhPJwUdidcdCjUhSkb43ssf1w2quZyKuKdGDjB6nCiqwidUNHmerShXUdelhOi7sgkHtMW/fXydg==
+X-Received: by 2002:aa7:979d:0:b029:1a4:3b76:a559 with SMTP id o29-20020aa7979d0000b02901a43b76a559mr6122076pfp.49.1610608486387;
+        Wed, 13 Jan 2021 23:14:46 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id n1sm4329919pfu.28.2021.01.13.23.14.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 23:14:45 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210108093339.v5.4.I7cf3019783720feb57b958c95c2b684940264cd1@changeid>
+References: <20210108093339.v5.1.I3ad184e3423d8e479bc3e86f5b393abb1704a1d1@changeid> <20210108093339.v5.4.I7cf3019783720feb57b958c95c2b684940264cd1@changeid>
+Subject: Re: [PATCH v5 4/4] pinctrl: qcom: Don't clear pending interrupts when enabling
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        linux-gpio@vger.kernel.org,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+To:     Douglas Anderson <dianders@chromium.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Date:   Wed, 13 Jan 2021 23:14:44 -0800
+Message-ID: <161060848425.3661239.17417977666663714149@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021, Lyude Paul <lyude@redhat.com> wrote:
-> Currently, every different type of backlight hook that i915 supports is
-> pretty straight forward - you have a backlight, probably through PWM
-> (but maybe DPCD), with a single set of platform-specific hooks that are
-> used for controlling it.
->
-> HDR backlights, in particular VESA and Intel's HDR backlight
-> implementations, can end up being more complicated. With Intel's
-> proprietary interface, HDR backlight controls always run through the
-> DPCD. When the backlight is in SDR backlight mode however, the driver
-> may need to bypass the TCON and control the backlight directly through
-> PWM.
->
-> So, in order to support this we'll need to split our backlight callbacks
-> into two groups: a set of high-level backlight control callbacks in
-> intel_panel, and an additional set of pwm-specific backlight control
-> callbacks. This also implies a functional changes for how these
-> callbacks are used:
->
-> * We now keep track of two separate backlight level ranges, one for the
->   high-level backlight, and one for the pwm backlight range
-> * We also keep track of backlight enablement and PWM backlight
->   enablement separately
-> * Since the currently set backlight level might not be the same as the
->   currently programmed PWM backlight level, we stop setting
->   panel->backlight.level with the currently programmed PWM backlight
->   level in panel->backlight.pwm_funcs->setup(). Instead, we rely
->   on the higher level backlight control functions to retrieve the
->   current PWM backlight level (in this case, intel_pwm_get_backlight()).
->   Note that there are still a few PWM backlight setup callbacks that
->   do actually need to retrieve the current PWM backlight level, although
->   we no longer save this value in panel->backlight.level like before.
->
-> Additionally, we drop the call to lpt_get_backlight() in
-> lpt_setup_backlight(), and avoid unconditionally writing the PWM value that
-> we get from it and only write it back if we're in CPU mode, and switching
-> to PCH mode. The reason for this is because in the original codepath for
-> this, it was expected that the intel_panel_bl_funcs->setup() hook would be
-> responsible for fetching the initial backlight level. On lpt systems, the
-> only time we could ever be in PCH backlight mode is during the initial
-> driver load - meaning that outside of the setup() hook, lpt_get_backlight()
-> will always be the callback used for retrieving the current backlight
-> level. After this patch we still need to fetch and write-back the PCH
-> backlight value if we're switching from CPU mode to PCH, but because
-> intel_pwm_setup_backlight() will retrieve the backlight level after setup()
-> using the get() hook, which always ends up being lpt_get_backlight(). Thus
-> - an additional call to lpt_get_backlight() in lpt_setup_backlight() is
-> made redundant.
->
-> v7:
-> * Use panel->backlight.pwm_funcs->get() to get the backlight level in
->   intel_pwm_setup_backlight(), lest we upset lockdep
+Quoting Douglas Anderson (2021-01-08 09:35:16)
+> Let's deal with the problem like this:
+> * When we mux away, we'll mask our interrupt.  This isn't necessary in
+>   the above case since the client already masked us, but it's a good
+>   idea in general.
+> * When we mux back will clear any interrupts and unmask.
 
-I think this change is wrong, as it now bypasses
-intel_panel_invert_pwm_level(). Please explain. I don't see anything in
-there that could trigger a lockdep warning.
+I'm on board!
 
-Perhaps it's the below you're referring to, but I think the root cause
-is different?
+>=20
+> Fixes: 4b7618fdc7e6 ("pinctrl: qcom: Add irq_enable callback for msm gpio=
+")
+> Fixes: 71266d9d3936 ("pinctrl: qcom: Move clearing pending IRQ to .irq_re=
+quest_resources callback")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pi=
+nctrl-msm.c
+> index a6b0c17e2f78..d5d1f3430c6c 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+> @@ -51,6 +51,7 @@
+>   * @dual_edge_irqs: Bitmap of irqs that need sw emulated dual edge
+>   *                  detection.
+>   * @skip_wake_irqs: Skip IRQs that are handled by wakeup interrupt contr=
+oller
+> + * @disabled_for_mux: These IRQs were disabled because we muxed away.
+>   * @soc:            Reference to soc_data of platform specific data.
+>   * @regs:           Base addresses for the TLMM tiles.
+>   * @phys_base:      Physical base address
+> @@ -72,6 +73,7 @@ struct msm_pinctrl {
+>         DECLARE_BITMAP(dual_edge_irqs, MAX_NR_GPIO);
+>         DECLARE_BITMAP(enabled_irqs, MAX_NR_GPIO);
+>         DECLARE_BITMAP(skip_wake_irqs, MAX_NR_GPIO);
+> +       DECLARE_BITMAP(disabled_for_mux, MAX_NR_GPIO);
+> =20
+>         const struct msm_pinctrl_soc_data *soc;
+>         void __iomem *regs[MAX_NR_TILES];
+> @@ -179,6 +181,10 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pc=
+tldev,
+>                               unsigned group)
+>  {
+>         struct msm_pinctrl *pctrl =3D pinctrl_dev_get_drvdata(pctldev);
+> +       struct gpio_chip *gc =3D &pctrl->chip;
+> +       unsigned int irq =3D irq_find_mapping(gc->irq.domain, group);
+> +       struct irq_data *d =3D irq_get_irq_data(irq);
+> +       unsigned int gpio_func =3D pctrl->soc->gpio_func;
+>         const struct msm_pingroup *g;
+>         unsigned long flags;
+>         u32 val, mask;
+> @@ -195,6 +201,20 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pc=
+tldev,
+>         if (WARN_ON(i =3D=3D g->nfuncs))
+>                 return -EINVAL;
+> =20
+> +       /*
+> +        * If an GPIO interrupt is setup on this pin then we need special
+> +        * handling.  Specifically interrupt detection logic will still s=
+ee
+> +        * the pin twiddle even when we're muxed away.
+> +        *
+> +        * When we see a pin with an interrupt setup on it then we'll dis=
+able
+> +        * (mask) interrupts on it when we mux away until we mux back.  N=
+ote
+> +        * that disable_irq() refcounts and interrupts are disabled as lo=
+ng as
+> +        * at least one disable_irq() has been called.
+> +        */
+> +       if (d && i !=3D gpio_func &&
+> +           !test_and_set_bit(d->hwirq, pctrl->disabled_for_mux))
+> +               disable_irq(irq);
 
-> @@ -1788,22 +1780,17 @@ static int vlv_setup_backlight(struct intel_connector *connector, enum pipe pipe
->  	panel->backlight.active_low_pwm = ctl2 & BLM_POLARITY_I965;
->  
->  	ctl = intel_de_read(dev_priv, VLV_BLC_PWM_CTL(pipe));
-> -	panel->backlight.max = ctl >> 16;
-> +	panel->backlight.pwm_level_max = ctl >> 16;
->  
-> -	if (!panel->backlight.max)
-> -		panel->backlight.max = get_backlight_max_vbt(connector);
-> +	if (!panel->backlight.pwm_level_max)
-> +		panel->backlight.pwm_level_max = get_backlight_max_vbt(connector);
->  
-> -	if (!panel->backlight.max)
-> +	if (!panel->backlight.pwm_level_max)
->  		return -ENODEV;
->  
-> -	panel->backlight.min = get_backlight_min_vbt(connector);
-> +	panel->backlight.pwm_level_min = get_backlight_min_vbt(connector);
->  
-> -	val = _vlv_get_backlight(dev_priv, pipe);
+Does it need to be forced non-lazy so that it is actually disabled at
+the GIC? I'm trying to understand how the lazy irq disabling plays into
+this. I think it's a don't care situation because if the line twiddles
+and triggers an irq then we'll actually disable it at the GIC in the
+genirq core and mark it pending for resend. I wonder if we wouldn't have
+to undo the pending state if we actually ignored it at the GIC
+forcefully. And I also worry that it may cause a random wakeup if the
+line twiddles, becomes pending at GIC and thus blocks the CPU from
+running a WFI but it isn't an irq that Linux cares about because it's
+muxed to UART, and then lazy handling runs and shuts it down. Is that
+possible?
 
-Turns out this is a meaningful change, as the higher level
-vlv_get_backlight() function that will be called instead hits:
+> +
+>         raw_spin_lock_irqsave(&pctrl->lock, flags);
+> =20
+>         val =3D msm_readl_ctl(pctrl, g);
+> @@ -204,6 +224,20 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pc=
+tldev,
+> =20
+>         raw_spin_unlock_irqrestore(&pctrl->lock, flags);
+> =20
+> +       if (d && i =3D=3D gpio_func &&
+> +           test_and_clear_bit(d->hwirq, pctrl->disabled_for_mux)) {
+> +               /*
+> +                * Clear interrupts detected while not GPIO since we only
+> +                * masked things.
+> +                */
+> +               if (d->parent_data && test_bit(d->hwirq, pctrl->skip_wake=
+_irqs))
+> +                       irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDIN=
+G, false);
 
-<4>[   12.870202] i915 0000:00:02.0: drm_WARN_ON(!drm_modeset_is_locked(&dev->mode_config.connection_mutex))
+So if not lazy this could go away? Although I think this is to clear out
+the pending state in the GIC and not the PDC which is the parent.
 
-in intel_connector_get_pipe(connector).
-
-It's a real problem. See this, it's obvious (in retrospect):
-
-https://intel-gfx-ci.01.org/tree/drm-tip/Patchwork_19348/fi-bsw-kefka/igt@runner@aborted.html
-https://intel-gfx-ci.01.org/tree/drm-tip/Patchwork_19348/fi-bsw-kefka/boot0.txt
-
-I don't have a quick answer how this could be handled neatly. Perhaps
-the ->get call (or rather, intel_pwm_get_backlight) to set
-panel->backlight.level needs to be spread out to the end of each
-pwm_funcs->setup function after all? Though it's at the wrong
-abstraction level wrt level being a higher level, uh, level.
-
-I don't think it's enough to just grab connection_mutex around setup
-(and even checking if we can do that is a bunch of digging) - I think
-it's likely intel_connector_get_pipe() returns INVALID_PIPE at that
-point.
-
-Okay, here's a clumsy suggestion that I think works around this and
-unblocks the series until we figure out a better way:
-
-1. At the end of vlv_setup_backlight():
-
-	/* add fixme comment about how wrong this is */
-	panel->backlight.level = intel_panel_invert_pwm_level(connector, _vlv_get_backlight());
-	
-
-2. In intel_pwm_setup_backlight() only set level if ->setup didn't:
-
-	if (!panel->backlight.level)
-        	panel->backlight.level = intel_pwm_get_backlight(connector);
-
-What do you think?
-
-BR,
-Jani.
-
-> -	val = intel_panel_compute_brightness(connector, val);
-> -	panel->backlight.level = clamp(val, panel->backlight.min,
-> -				       panel->backlight.max);
-> -
-> -	panel->backlight.enabled = ctl2 & BLM_PWM_ENABLE;
-> +	panel->backlight.pwm_enabled = ctl2 & BLM_PWM_ENABLE;
->  
->  	return 0;
->  }
-> @@ -1828,24 +1815,18 @@ bxt_setup_backlight(struct intel_connector *connector, enum pipe unused)
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+> +               else
+> +                       msm_ack_intr_status(pctrl, g);
+> +
+> +               enable_irq(irq);
+> +       }
+> +
