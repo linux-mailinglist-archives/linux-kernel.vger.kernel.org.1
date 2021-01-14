@@ -2,87 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66112F665A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 810B32F6660
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727444AbhANQuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:50:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
+        id S1727697AbhANQus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:50:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727355AbhANQuD (ORCPT
+        with ESMTP id S1727214AbhANQuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:50:03 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01584C061574;
-        Thu, 14 Jan 2021 08:49:23 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id w79so8851048qkb.5;
-        Thu, 14 Jan 2021 08:49:22 -0800 (PST)
+        Thu, 14 Jan 2021 11:50:46 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57007C061574;
+        Thu, 14 Jan 2021 08:50:06 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id hs11so6827322ejc.1;
+        Thu, 14 Jan 2021 08:50:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=23Gq+U8tqRW6jTOvnenkJZDTDWUxbLpLE/rkMRigKH8=;
-        b=GaUR9vgAYSjgkwC5BQA6RgqGZVtkAirpuTeWejfYS22oRO8Ucb4FW55h1/ihOqlmfe
-         Wyuvmr8MDrC10rJZC1IRIq4dXmkPa8g2i82GcSMDtX8W6RR9optsWdIhjSU2AFDss7rR
-         6iDGQkgkDGQTfGzaqkyJu8PZHFGt90ySq8InE1AlQI2Hxjm7vyYVya38Z6C13H/K94hy
-         YObB+ccpyNROGAxl2MmXAo9WWJ9GUn6RVp4j6+wG92dhPsrURu3/Ua5xjwMUXZZM94Et
-         i9LF575Z62Liz7TH50QS7UZjmDpPTQ7a0Fico+QModaYHV6lBH2UCELGRstV+tNi/g9/
-         bnvA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tlbKPE7uTZZR7ghtrcJbjkI4MtAdaHYk7YXhrBrERiw=;
+        b=LFAVkpoOP4ym75SjjeKlxMP30bXZQd/la1MU80s7ATLCMNl0imGhVeCf7r3Ez0HBDp
+         RHzpPCwZaYHxxvtA2Y1icrrWVut3k36nkOU6YQYAT+NR3ok2ZmwZQRwwT2H5iB++Qfqc
+         ceky3/JElTRWxv7RMlsUtfT5/PRZEJgE0x/gOsfzpbagjgfs2KjhvrMebcHHrL2T3TFe
+         GZwgvq8qokbl3DJrvZHJB4lfJhHQwylxtpkDCKZP/vzPwFCFAaNwTJewdztJs8EgP1Go
+         eyvLhVg89sfGJ+TWStdce2c4WMyiJ7VwIPM3um7WILmyZD9s2uPxcfs23cnjUYMn2QET
+         FDfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=23Gq+U8tqRW6jTOvnenkJZDTDWUxbLpLE/rkMRigKH8=;
-        b=frC7xXOVUdgfF3XeNeFbNxNx7+k8kPRC37KVrGogkq93VEPEkhXxDEozgo10GQNRDo
-         2uxagXlgSO5J7nZq5yyviqmCi8mAMNn81l0pVtCLt7zoMByq0Y8MIvzdwbYs28XQ8PXm
-         /QJwmxQkXMwkVfdNaPJqh22aksDzwuOZPE5lurflTOGHHMeL54K9LY6vR+9cQggHUYMA
-         PbkWajNoWuDfbIjjirXSfPXXdnfsx6cS5aV6dup8SiXS744Tlcssv2bf8J59uxct1hUF
-         VZQ+7i10SOiO/RMvW8sh9o+m35u9puLXpR/M4TXlu79wjS9VpjtKnSodUkfKXMnA5ZSo
-         UwVg==
-X-Gm-Message-State: AOAM531XGBf68zojq7/DbULnxxF2e6MmS6GWFNvNhh3km4Z3hX6wj/nJ
-        LoGJ+DleOHHWmsNC98ybt2oqdVZHuPphVg==
-X-Google-Smtp-Source: ABdhPJyflr9W90ItsxS/m3igzcBqIh4SLvb04HwWrDjLEpQiG7pwQEUrrBawAIBXR9lwG5OImNqBYA==
-X-Received: by 2002:a05:620a:1239:: with SMTP id v25mr7727606qkj.91.1610642962085;
-        Thu, 14 Jan 2021 08:49:22 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id q3sm3288275qkb.73.2021.01.14.08.49.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 08:49:21 -0800 (PST)
-Date:   Thu, 14 Jan 2021 09:49:20 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Ilie Halip <ilie.halip@gmail.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Will Deacon <will@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] kbuild: check the minimum compiler version in Kconfig
-Message-ID: <20210114164920.GA258518@ubuntu-m3-large-x86>
-References: <20210114042420.229524-1-masahiroy@kernel.org>
- <CAHFW8PRr6kjEE=7BSzWo7itSZgAhy_dhmnSe1yq5wMfDwEyJ9g@mail.gmail.com>
- <CAK7LNAQHA7FpYfdDaOuf+t+nMCtLH=Z7cdoK+3z3ScZ3Fn9Xww@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tlbKPE7uTZZR7ghtrcJbjkI4MtAdaHYk7YXhrBrERiw=;
+        b=MFinXC89tsjNv4shlLp7yiDi5zaUbdR3y6lfSu4tPYTcB5K0RIUlTEsErZcFzp5vSm
+         6pLoTS7vUAIBFJF0YEmfSPwPRfExvsJWFnDfb2FES0Mjjy8rN1hEyC11yiinNqkIInkP
+         TIZnjCjnIDn5mZ32i1K8IfB2I+rtgAGb727b+PYmX/4yoapt5leFDaLF8xBNXuq3gmsn
+         RW9e7fsOp+w38/UpgmGwPX4PASWK/NFJ4Jy+EyUqmqYVljNUYUhVmAwjYxisWK6iBPSp
+         4pI/0SVv4XlVYX70tWka1JazQtGm268Ri/zFxcDt7rrkoOTPYnpqV2KuK2bLVH5re6dX
+         jCqg==
+X-Gm-Message-State: AOAM531BPW2xqlJd/KcmOh/LWP49PryadcQgGH0NBkQm1wmk5ApDx3f2
+        8gixerYAfkOuPUy3oBH0wJc=
+X-Google-Smtp-Source: ABdhPJznUfoVSAxoHGale9B+KIbksfqRnSUgxQr4Tq75l4SnGXbgepoKsdJ4RyW5ZAWJ7H77RCFaKQ==
+X-Received: by 2002:a17:906:2695:: with SMTP id t21mr6155193ejc.287.1610643005032;
+        Thu, 14 Jan 2021 08:50:05 -0800 (PST)
+Received: from [192.168.178.40] (ipbcc05d1b.dynamic.kabel-deutschland.de. [188.192.93.27])
+        by smtp.gmail.com with ESMTPSA id bo20sm2435232edb.1.2021.01.14.08.50.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Jan 2021 08:50:04 -0800 (PST)
+Subject: Re: [PATCH] scsi: target: tcmu: Fix wrong uio handling causing big
+ memory leak
+To:     Mike Christie <michael.christie@oracle.com>,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20201218141534.9918-1-bostroesser@gmail.com>
+ <73dc2d01-6398-c1d1-df47-66034d184eec@oracle.com>
+ <aa95b4db-ca88-e38c-3871-fb935f1e2212@gmail.com>
+ <3caa89ba-47b8-d85c-e7a5-54d84d1471f0@oracle.com>
+From:   Bodo Stroesser <bostroesser@gmail.com>
+Message-ID: <f2bf0c02-0d44-4b75-7c36-5d5fb213d747@gmail.com>
+Date:   Thu, 14 Jan 2021 17:50:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAQHA7FpYfdDaOuf+t+nMCtLH=Z7cdoK+3z3ScZ3Fn9Xww@mail.gmail.com>
+In-Reply-To: <3caa89ba-47b8-d85c-e7a5-54d84d1471f0@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 06:20:15PM +0900, Masahiro Yamada wrote:
-> BTW, when I tried ICC a few years ago,
-> I could not build the kernel with it.
+On 13.01.21 22:04, Mike Christie wrote:
+> On 1/13/21 11:59 AM, Bodo Stroesser wrote:
+>> On 12.01.21 19:36, Mike Christie wrote:
+>>> On 12/18/20 8:15 AM, Bodo Stroesser wrote:
+>>>> tcmu calls uio_unregister_device from tcmu_destroy_device.
+>>>> After that uio will never call tcmu_release for this device.
+>>>> If userspace still had the uio device open and / or mmap'ed
+>>>> during uio_unregister_device, tcmu_release will not be called and
+>>>> udev->kref will never go down to 0.
+>>>>
+>>>
+>>> I didn't get why the release function is not called if you call
+>>> uio_unregister_device while a device is open. Does the device_destroy call in
+>>> uio_unregister_device completely free the device or does it set some bits so
+>>> uio_release is not called later?
+>>
+>> uio_unregister_device() resets the pointer (idev->info) to the struct uio_info which tcmu provided in uio_register_device().
+>> The uio device itself AFAICS is kept while it is open / mmap'ed.
+>> But no matter what userspace does, uio will not call tcmu's callbacks
+>> since info pointer now is NULL.
+>>
+>> When userspace finally closes the uio device, uio_release is called, but
+>> tcmu_release can not be called.
+>>
+>>>
+>>> Do other drivers hit this? Should uio have refcounting so uio_release is called
+>>> when the last ref (from userspace open/close/mmap calls and from the kernel by
+>>> drivers like target_core_user) is done?
+>>>
+>>
+>> To be honest I don't know exactly.
+>> tcmu seems to be a special case in that is has it's own mmap callback.
+>> That allows us to map pages allocated by tcmu.
+>> As long as userspace still holds the mapping, we should not unmap those
+>> pages, because userspace then could get killed by SIGSEGV.
+>> So we have to wait for userspace closing uio before we may unmap and
+>> free the pages.
+> 
+> 
+> If we removed the clearing of idev->info in uio_unregister_device, and
+> then moved the idev->info->release call from uio_release to
+> uio_device_release it would work like you need right? The release callback
+> would always be called and called when userspace has dropped it's refs.
+> You need to also fix up the module refcount and some other bits because
+> it looks like uio uses the uio->info check to determine if the device is
+> being removed.
 
-Looking at the history behind include/linux/compiler-intel.h, the last
-time I see a change that actually references building a kernel with icc
-was 503cf95c061a ("x86, build, icc: Remove uninitialized_var() from
-compiler-intel.h"), all the way back in 2013. Since then, there do not
-appear to be any meaningful changes; every change is basically doing
-something for clang or gcc and not wanting to leave icc behind. It might
-be worth considering tearing it out.
+I fear that would not work, because uio_release must be called always,
+no matter whether userspace closes the device before or after
+uio_unregister_device.
 
-Cheers,
-Nathan
+But we could add a new callback pointer 'late_release' to struct
+uio_info and struct uio_device. During uio_register_device we would
+copy the pointer from info to idev.
+
+If info == NULL, uio_release calls idev->late_release if != NULL.
+
+tcmu would of course set info->release and ->late_release both to
+tcmu_release.
+
+> 
+> I don't know if that is the correct approach. It looks like non
+> target_core_user drivers could hit a similar issue. It seems like drivers
+> like qedi/bnx2i could hit the issue if their port is removed from the
+> kernel before their uio daemon closes the device. However, they also
+> could do a driver specific fix and handle the issue by adding some extra
+> kernel/userspace bits to sync the port removal.
+> 
+
+I had a closer look into qedi. I assume there might be a leak also,
+because qedi_uio_close calls "qedi_ll2_free_skbs(qedi)".
+
+Unfortunately my above proposal would not work here without adding a
+new refcount to qedi_uio_dev, because currently in __qedi_free_uio
+the udev is freed shortly after uio_unregister_device. So later calls
+of qedi_uio_close(udev) would be harmful.
+
+But I guess the leak can be fixed by adding two lines after the
+uio_unregister_device() in __qedi_free_uio:
+
+	if (test_bit(UIO_DEV_OPENED, &udev->qedi->flags)
+		qedi_ll2_free_skbs(qedi);
