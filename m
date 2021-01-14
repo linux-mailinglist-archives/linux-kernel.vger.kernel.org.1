@@ -2,118 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E204E2F6201
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEAC2F6205
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:31:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729055AbhANN25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:28:57 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:52306 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729028AbhANN24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:28:56 -0500
-Received: from zn.tnic (p200300ec2f1aa9000d5c8ff8171504e8.dip0.t-ipconnect.de [IPv6:2003:ec:2f1a:a900:d5c:8ff8:1715:4e8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1DA2F1EC04F3;
-        Thu, 14 Jan 2021 14:28:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610630895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Gsx3hXRw+pWKKzqut1Ush7pyeSMmp2ZCnERRJ1prroQ=;
-        b=F4XklBpuOo2kav+B+Hj/WlCU2yiyhQVshdz0xeJoNAAPK8BiaQI8qNIfPsfOaEDNBUjh+3
-        HhoaRWIRvLPVwFlEHE03osTFDF7+sZTo7UJTYzNVtn54egCQzmAwwVMgaPM+SZolKuKnfB
-        1kwj9tzbs+roaO+KJee2+FO/goS9SAM=
-Date:   Thu, 14 Jan 2021 14:28:09 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: [PATCH] x86/entry: Remove put_ret_addr_in_rdi THUNK macro argument
-Message-ID: <20210114132809.GC12284@zn.tnic>
-References: <20210112115421.GB13086@zn.tnic>
- <20210112194625.4181814-1-ndesaulniers@google.com>
- <20210112210154.GI4646@sirena.org.uk>
- <20210113165923.acvycpcu5tzksbbi@treble>
- <CAKwvOdnAMsYF-v1LAqttBV3e3rHhSFZmPcRRV0+v=+9AyMFgNA@mail.gmail.com>
- <20210114103928.GB12284@zn.tnic>
- <YAAszZJ2GcIYZmB5@hirez.programming.kicks-ass.net>
+        id S1728752AbhANNaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 08:30:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727302AbhANNaf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 08:30:35 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F324DC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:29:48 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id c124so4533411wma.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:29:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=0bL5QZTB5DHl9yslUNyQ5zVL5BNzW8OLBdt1dFBWcOw=;
+        b=MtruYu4ndCuoNcrrnBRmGm87UgDBpI+9cBZv2EsKf9xPrZgSFyd8LTNTyCnNYmc2u3
+         vVAuGDRid8pHeMI89DqkqcpcLcdzeQRPGxDfpXE3lQto+GECGDZ/+XZ0GAB9MW+/0ZD7
+         Gnrf8g+dWvjH67Ltk8RlPeBZxAKJs/gpI1MxL5a/nAZ5xJ94IxRKD2o/chy4oVUHTV82
+         0tzupLnGjwEecusxa/4axTEPn25J00IaweRVW82LTeCaltrxehRUu5YOLhLXddOpB8hI
+         6KoqT8DE27P8hTarH1QFdxohYC9t0ASufqWF0T3NNd5bxQnRkLAA8YydDAa5oUacNYZS
+         Lh9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0bL5QZTB5DHl9yslUNyQ5zVL5BNzW8OLBdt1dFBWcOw=;
+        b=bnoyfOHm/hlZWrxyU2HC8nnK1X7j0Sc4Hs0DaNA9EVXt00WouH+TSqmKy/wQy4yBQ2
+         ILAecD+1j0cHgHhqeJ14VPDEofhyl0ooS679C4rksbIPOHP4AxF1+KImNYVjylAXJZ4y
+         /Vj+2tSsmYeA41rOWqZU0ZK+zyIwl74reEpUnShyKG4E1+VBQ6O5/Xhbj6vAO6s4XbE+
+         wC0I6WCXOhqEcFrmo+13oQjTDgJaAJou5YZIdW5ifRs6/hBCVaa1r4uNFbq/yD3QdZv9
+         pCdOyfD9W/CvRogGofQqiFMwD4eLA8uPwKjunNxz5/H+B9a0FZvyHYa5SzwAyk5Q0lu4
+         Gdig==
+X-Gm-Message-State: AOAM533vrqEeTnaaTD8rua44PIZMaMYyTh+NIK2eai5OktcwGkalBl47
+        FFbrVZuTOp6Cq8sDH1Ocvj4tihwMijFokJn1
+X-Google-Smtp-Source: ABdhPJxeBa81AORK3CZqm4fRo6L9eGK62uXqPIYwIyrk8PIOGYFft/iK7dW3WvILEMmrZshEyw2Acw==
+X-Received: by 2002:a1c:9ccd:: with SMTP id f196mr4045624wme.82.1610630987723;
+        Thu, 14 Jan 2021 05:29:47 -0800 (PST)
+Received: from dell ([91.110.221.178])
+        by smtp.gmail.com with ESMTPSA id b10sm8640359wmj.5.2021.01.14.05.29.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 05:29:47 -0800 (PST)
+Date:   Thu, 14 Jan 2021 13:29:45 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Meng.Li@windriver.com
+Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de,
+        Kexin.Hao@windriver.com
+Subject: Re: [PATCH] Revert "mfd: syscon: Don't free allocated name for
+ regmap_config"
+Message-ID: <20210114132945.GX3975472@dell>
+References: <20201228020624.4821-1-Meng.Li@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YAAszZJ2GcIYZmB5@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201228020624.4821-1-Meng.Li@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 12:36:45PM +0100, Peter Zijlstra wrote:
-> And while looking, I suppose we can delete the put_ret_addr_in_rdi crud,
-> but that's another patch.
+On Mon, 28 Dec 2020, Meng.Li@windriver.com wrote:
 
----
-From: Borislav Petkov <bp@suse.de>
-Date: Thu, 14 Jan 2021 14:25:35 +0100
-Subject: [PATCH] x86/entry: Remove put_ret_addr_in_rdi THUNK macro argument
+> From: Limeng <Meng.Li@windriver.com>
+> 
+> This reverts commit 529a1101212a785c5df92c314b0e718287150c3b.
 
-That logic is unused since
+But you haven't Cc:ed the author of that commit.
 
-  320100a5ffe5 ("x86/entry: Remove the TRACE_IRQS cruft")
+You need to do that, please re-send.
 
-Remove it.
-
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- arch/x86/entry/thunk_64.S | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
-
-diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
-index c9a9fbf1655f..496b11ec469d 100644
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -10,7 +10,7 @@
- #include <asm/export.h>
- 
- 	/* rdi:	arg1 ... normal C conventions. rax is saved/restored. */
--	.macro THUNK name, func, put_ret_addr_in_rdi=0
-+	.macro THUNK name, func
- SYM_FUNC_START_NOALIGN(\name)
- 	pushq %rbp
- 	movq %rsp, %rbp
-@@ -25,11 +25,6 @@ SYM_FUNC_START_NOALIGN(\name)
- 	pushq %r10
- 	pushq %r11
- 
--	.if \put_ret_addr_in_rdi
--	/* 8(%rbp) is return addr on stack */
--	movq 8(%rbp), %rdi
--	.endif
--
- 	call \func
- 	jmp  __thunk_restore
- SYM_FUNC_END(\name)
--- 
-2.29.2
+> The reverted patch moves the memory free to error path, but introduce
+> a memory leak. There is another commit 94cc89eb8fa5("regmap: debugfs:
+> Fix handling of name string for debugfs init delays") fixing this
+> debugfs init issue from root cause. With this fixing, the name field
+> in struct regmap_debugfs_node is removed. When initialize debugfs
+> for syscon driver, the name field of struct regmap_config is not
+> used anymore. So, revert this patch directly to avoid memory leak.
+> 
+> Fixes: 529a1101212a("mfd: syscon: Don't free allocated name for regmap_config")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Meng Li <Meng.Li@windriver.com>
+> ---
+>  drivers/mfd/syscon.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
+> index ca465794ea9c..df5cebb372a5 100644
+> --- a/drivers/mfd/syscon.c
+> +++ b/drivers/mfd/syscon.c
+> @@ -108,6 +108,7 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+>  	syscon_config.max_register = resource_size(&res) - reg_io_width;
+>  
+>  	regmap = regmap_init_mmio(NULL, base, &syscon_config);
+> +	kfree(syscon_config.name);
+>  	if (IS_ERR(regmap)) {
+>  		pr_err("regmap init failed\n");
+>  		ret = PTR_ERR(regmap);
+> @@ -144,7 +145,6 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+>  	regmap_exit(regmap);
+>  err_regmap:
+>  	iounmap(base);
+> -	kfree(syscon_config.name);
+>  err_map:
+>  	kfree(syscon);
+>  	return ERR_PTR(ret);
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
