@@ -2,106 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991E52F6929
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6EAE2F692E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729500AbhANSJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:09:52 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2350 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727533AbhANSJu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:09:50 -0500
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DGsfc4sVyz67bdg;
-        Fri, 15 Jan 2021 02:05:12 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 14 Jan 2021 19:09:08 +0100
-Received: from localhost (10.47.30.252) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 14 Jan
- 2021 18:09:07 +0000
-Date:   Thu, 14 Jan 2021 18:08:26 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org, Ira Weiny" <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Vishal Verma" <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        "Bjorn Helgaas" <helgaas@kernel.org>,
-        Jon Masters <jcm@jonmasters.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        <daniel.lll@alibaba-inc.com>
-Subject: Re: [RFC PATCH v3 15/16] cxl/mem: Add limited Get Log command
- (0401h)
-Message-ID: <20210114180826.000072f0@Huawei.com>
-In-Reply-To: <20210111225121.820014-17-ben.widawsky@intel.com>
-References: <20210111225121.820014-1-ben.widawsky@intel.com>
-        <20210111225121.820014-17-ben.widawsky@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1729140AbhANSLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:11:06 -0500
+Received: from foss.arm.com ([217.140.110.172]:54246 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726625AbhANSLE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 13:11:04 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34D6ED6E;
+        Thu, 14 Jan 2021 10:10:19 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.42.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD44B3F70D;
+        Thu, 14 Jan 2021 10:10:16 -0800 (PST)
+Date:   Thu, 14 Jan 2021 18:10:13 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH] Documentation: livepatch: document reliable stacktrace
+Message-ID: <20210114181013.GE2739@C02TD0UTHF1T.local>
+References: <20210113165743.3385-1-broonie@kernel.org>
+ <20210113192735.rg2fxwlfrzueinci@treble>
+ <20210113202315.GI4641@sirena.org.uk>
+ <20210113222541.ysvtievx4o5r42ym@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.30.252]
-X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113222541.ysvtievx4o5r42ym@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021 14:51:20 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
-
-> The Get Log command returns the actual log entries that are advertised
-> via the Get Supported Logs command (0400h). CXL device logs are selected
-> by UUID which is part of the CXL spec. Because the driver tries to
-> sanitize what is sent to hardware, there becomes a need to restrict the
-> types of logs which can be accessed by userspace. For example, the
-> vendor specific log might only be consumable by proprietary, or offline
-> applications, and therefore a good candidate for userspace.
+On Wed, Jan 13, 2021 at 04:25:41PM -0600, Josh Poimboeuf wrote:
+> On Wed, Jan 13, 2021 at 08:23:15PM +0000, Mark Brown wrote:
+> > On Wed, Jan 13, 2021 at 01:33:13PM -0600, Josh Poimboeuf wrote:
+> > 
+> > > I think it's worth mentioning a little more about objtool.  There are a
+> > > few passing mentions of objtool's generation of metadata (i.e. ORC), but
+> > > objtool has another relevant purpose: stack validation.  That's
+> > > particularly important when it comes to frame pointers.
+> > 
+> > > For some architectures like x86_64 and arm64 (but not powerpc/s390),
+> > > it's far too easy for a human to write asm and/or inline asm which
+> > > violates frame pointer protocol, silently causing the violater's callee
+> > > to get skipped in the unwind.  Such architectures need objtool
+> > > implemented for CONFIG_STACK_VALIDATION.
+> > 
+> > This basically boils down to just adding a statement saying "you may
+> > need to depend on objtool" I think?
 > 
-> The current driver infrastructure does allow basic validation for all
-> commands, but doesn't inspect any of the payload data. Along with Get
-> Log support comes new infrastructure to add a hook for payload
-> validation. This infrastructure is used to filter out the CEL UUID,
-> which the userspace driver doesn't have business knowing, and taints on
-> invalid UUIDs being sent to hardware.
-> 
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> Right, but maybe it would be a short paragraph or two.
 
-Just a minor question for this one.
+I reckon that's a top-level section between requirements and
+consideration along the lines of:
 
-Thanks, J
-...                                              \
-> @@ -515,6 +529,15 @@ static int handle_mailbox_cmd_from_user(struct cxl_memdev *cxlmd,
->  	int rc;
->  
->  	if (cmd->info.size_in) {
-> +		if (cmd->validate_payload) {
-> +			rc = cmd->validate_payload(u64_to_user_ptr(in_payload),
-> +						   cmd->info.size_in);
+3. Compile-time analysis
+========================
 
-Is it worth moving this out of the region in which we hold the mbox?
-(after fixing the bug that I think means we don't actually hold it at this point)
+To ensure that kernel code can be correctly unwound in all cases,
+architectures may need to verify that code has been compiled in a manner
+expected by the unwinder. For example, an unwinder may expect that
+functions manipulate the stack pointer in a limited way, or that all
+functions use specific prologue and epilogue sequences. Architectures
+with such requirements should verify the kernel compilation using
+objtool.
 
-Perhaps not, but it does feel odd to do validation under the lock.
+In some cases, an unwinder may require metadata to correctly unwind.
+Where necessary, this metadata should be generated at build time using
+objtool.
 
+... perhaps elaborating a little further on the latter?
 
-> +			if (rc) {
-> +				cxl_mem_mbox_put(cxlmd->cxlm);
-> +				return -EFAULT;
-> +			}
-> +		}
-> +
->  		/*
->  		 * Directly copy the userspace payload into the hardware. UAPI
->  		 * states that the buffer must already be little endian.
+Thanks,
+Mark.
