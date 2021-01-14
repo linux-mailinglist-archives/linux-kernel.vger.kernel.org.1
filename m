@@ -2,123 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33FB72F5C4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E842F5C4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727743AbhANIUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 03:20:19 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.82]:35989 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727482AbhANIUS (ORCPT
+        id S1728021AbhANISv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 03:18:51 -0500
+Received: from smtpcmd02101.aruba.it ([62.149.158.101]:38711 "EHLO
+        smtpcmd02101.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726677AbhANISv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 03:20:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1610612243;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Subject:Sender;
-        bh=fEEp0Noi7jJWrCuf7sZQZHb+rVCjvIPHa+3gQdjlcmY=;
-        b=GMf35K9dvlnfUsmw8xfeU6TEOgtXv/3Ewb/cqui18sywyEbfFDOtSCetP1XVuzOw/O
-        2YVQ/MQhMRsJVvCuIr5lh2BiTwyGrK/6O514rWSm/Jdtc3NVUs4BtxwEO3Btx+vtVqAh
-        7mZAuMBVJBoPzL0UeC6SeJqFflAc3rCfFaiy0qtOoX8/EeISrWuZoW6slyr8ki9nF2tt
-        R+/e8+pg1LpfJNoCb05zGKS2VX7Kwab95yzaZV8uMh26wlR5nxcPH3wn9N1B0sMOeLKU
-        FppVs8ihFc+XsyqkCVuFVWqbVFjI0sqcT2bBSqYIB+dtAa0uj/Sou98X5yjus9M8oMrc
-        F74A==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j5IczAa4o="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
-        with ESMTPSA id R0a218x0E8HGhGG
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Thu, 14 Jan 2021 09:17:16 +0100 (CET)
-Date:   Thu, 14 Jan 2021 09:17:08 +0100
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Peter Chen <hzpeterchen@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>, Thierry Reding <treding@nvidia.com>
-Subject: Re: Infinite recursion in device_reorder_to_tail() due to circular
- device links
-Message-ID: <X//+BBbv454RuYqm@gerhold.net>
-References: <X/ycQpu7NIGI969v@gerhold.net>
- <CAJZ5v0gAsZ45O8mv-gz0UvbyxnKA6fQBYvambBYEH6OSk3-m3g@mail.gmail.com>
- <CAJZ5v0h8bNp-=1zVfY5gZ1ezr8JRV4L8cEV45e+0f-aRSJnb1A@mail.gmail.com>
- <X/7XCzdDG7kbiNfM@gerhold.net>
- <20210114005454.GA14220@b29397-desktop>
+        Thu, 14 Jan 2021 03:18:51 -0500
+Received: from ubuntu.localdomain ([146.241.213.249])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id zxp6kTFwPytJRzxp7k7D6v; Thu, 14 Jan 2021 09:17:45 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1610612265; bh=q9tueK9HEveBIOB8QrMmLAUmWUHC2u5Y0+MdQPVjTIE=;
+        h=From:To:Subject:Date:MIME-Version:Content-Type;
+        b=ewDfyysXYQny7iV4C97hOUvVlJ2OLe14AtC5hSFEgcteYN6eozPt3z5x2Co5jbgyk
+         laP44spnPMwob+qJDmBdyj/RP0HPS8EvWHBnEzkbeheEdqaFAOLmIyD4xY8rFhlois
+         kFmJHKNClAHG+bHxVsNJVRZVgKm3jslI38tW4FGZ5dp5TxvvkBGqJfVQdtuTQK3pIS
+         afmsbAP9hAZ5qRWOeDnG3GImfCtzydZlUKxr/ZheN6jBErwOhNBHozchNf1ihFBFiy
+         kgHVg88AV2U8OtX//wODjT/eXX4VubKekWWQTLRWU0Es2Cq6MHr1vfFuZ1EpY5bru3
+         Ho8pU85ql+B2g==
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Marjan Pascolo <marjan.pascolo@trexom.it>, wens@csie.org,
+        daniel@ffwll.ch, airlied@linux.ie, treding@nvidia.com,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Giulio Benetti <giulio.benetti@micronovasrl.com>
+Subject: [PATCH v6] drm/sun4i: tcon: fix inverted DCLK polarity
+Date:   Thu, 14 Jan 2021 09:17:32 +0100
+Message-Id: <20210114081732.9386-1-giulio.benetti@benettiengineering.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <d244aa6b-00b7-d768-83cb-e5a228b7ee08@trexom.it>
+References: <d244aa6b-00b7-d768-83cb-e5a228b7ee08@trexom.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210114005454.GA14220@b29397-desktop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfAGxm1wXP7WDU9n8Y3GoHjUuJw0ErOooXMnbt1lHUamPDJFDY73JmY397X+QMkzt+JIddcsWmy0ToiK6rYPYMssLsfK3GB0ODoH2uUhSe/jo65oJeKEa
+ 09jlDX+51JqJFmb30T5Yp+N3cf7pNvBlEEeeMm/TYHF551iAt/Gz7o2n9euV6CVgW3vpIMxP4NcuWo27vI9BjZhYNSdGJDY5lvLjJr0kJ6yi2XroP9TuR+0D
+ McPqrX4AnQySdF04Hzxvd1fFnQFOi2JRVS9XY5TZdDIT2AAX6VvuzCratmHztgQ9yr+sQzqj5/02FV6mUSaNXMIaI+q3PMF0NNX4doArC1bmZo+CPh6WI3+p
+ tix0d8/mzt8MWlk+vy/R28ssBmnNXWVOW6avcNKxO3V5M0XhqA6EO7mHdGH8WGMKh3Eh4GcsHdpILwpWivaE50j7l5GTw9V+NUQaQ4qGGHkq2s63e1bvWUTm
+ D7EzNRjM/S0i3V5Nti+5tXAamTVWQejgrhNYbEpUQ4biIYIa8Nyzq/bL90WwYFyNIM5f3gvkIi2bAkvR0v14u7YkO443ispsdYLJ6w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+From: Giulio Benetti <giulio.benetti@micronovasrl.com>
 
-On Thu, Jan 14, 2021 at 08:54:54AM +0800, Peter Chen wrote:
-> On 21-01-13 12:18:35, Stephan Gerhold wrote:
-> > 
-> > Also, on a completely different note I looked again at the chipidea USB
-> > driver that produces this situation. To request the PHY (which ends up
-> > in the circular device link) it does:
-> > 
-> > 	/* Look for a generic PHY first */
-> > 	ci->phy = devm_phy_get(dev->parent, "usb-phy");
-> > 
-> > To me it doesn't really seem great to use the devm_* helpers on the
-> > parent device either, so I will check if I can refactor this somehow.
-> > Perhaps this situation can be prevented entirely.
-> > 
-> 
-> You could try to get the PHY at parent driver
-> (drivers/usb/chipidea/ci_hdrc_msm.c) to see the difference.
-> 
+During commit 88bc4178568b ("drm: Use new
+DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags") DRM_BUS_FLAG_*
+macros have been changed to avoid ambiguity but just because of this
+ambiguity previous DRM_BUS_FLAG_PIXDATA_(POS/NEG)EDGE were used meaning
+_SAMPLE_ not _DRIVE_. This leads to DLCK inversion and need to fix but
+instead of swapping phase values, let's adopt an easier approach Maxime
+suggested:
+It turned out that bit 26 of SUN4I_TCON0_IO_POL_REG is dedicated to
+invert DCLK polarity and this makes things really easier than before. So
+let's handle DCLK polarity by adding SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE
+as bit 26 and activating according to bus_flags the same way it is done
+for all the other signals polarity.
 
-Unfortunately, I don't think this works in my case because I have an
-ULPI PHY. It's not available until ret = ci_ulpi_init(ci); is called
-from the ci_hdrc.0 platform device.
+Fixes: 88bc4178568b ("drm: Use new DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags")
+Suggested-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
+---
+V2->V3:
+- squash 2 patches into 1
+V3->V4:
+- add SUN4I_TCON0_IO_POL_DCLK_POSITIVE to regmap_update_bits() as suggested by Maxime
+V4->V5:
+polarity is still wrong so:
+- let's use SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE macro
+  instead of _DCLK_POSITIVE(that would make sense only in realtion with DCLK)
+- invert condition using _NEGEDGE instead of _POSEDGE and then matching with
+  register bit SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE
+- correct commit log according to V4->V5 changes
+V5->V6:
+- fix typo in SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE as suggested by Marjan
+---
+ drivers/gpu/drm/sun4i/sun4i_tcon.c | 21 ++-------------------
+ drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
+ 2 files changed, 3 insertions(+), 19 deletions(-)
 
-I tried the following diff yesterday. It prevents the circular device
-link, therefore also the crash and even devm_* on the parent device:
-
-diff --git a/drivers/usb/chipidea/core.c b/drivers/usb/chipidea/core.c
-index aa40e510b806..79f556d0c93e 100644
---- a/drivers/usb/chipidea/core.c
-+++ b/drivers/usb/chipidea/core.c
-@@ -847,6 +847,8 @@ struct platform_device *ci_hdrc_add_device(struct device *dev,
- 	}
+diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+index eaaf5d70e352..6b9af4c08cd6 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
++++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+@@ -569,30 +569,13 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tcon *tcon,
+ 	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
+ 		val |= SUN4I_TCON0_IO_POL_DE_NEGATIVE;
  
- 	pdev->dev.parent = dev;
-+	device_set_of_node_from_dev(&pdev->dev, dev);
-+	pdev->driver_override = kstrdup("ci_hdrc", GFP_KERNEL);
+-	/*
+-	 * On A20 and similar SoCs, the only way to achieve Positive Edge
+-	 * (Rising Edge), is setting dclk clock phase to 2/3(240°).
+-	 * By default TCON works in Negative Edge(Falling Edge),
+-	 * this is why phase is set to 0 in that case.
+-	 * Unfortunately there's no way to logically invert dclk through
+-	 * IO_POL register.
+-	 * The only acceptable way to work, triple checked with scope,
+-	 * is using clock phase set to 0° for Negative Edge and set to 240°
+-	 * for Positive Edge.
+-	 * On A33 and similar SoCs there would be a 90° phase option,
+-	 * but it divides also dclk by 2.
+-	 * Following code is a way to avoid quirks all around TCON
+-	 * and DOTCLOCK drivers.
+-	 */
+-	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
+-		clk_set_phase(tcon->dclk, 240);
+-
+ 	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
+-		clk_set_phase(tcon->dclk, 0);
++		val |= SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE;
  
- 	ret = platform_device_add_resources(pdev, res, nres);
- 	if (ret)
-@@ -1027,7 +1029,7 @@ static int ci_hdrc_probe(struct platform_device *pdev)
- 		ci->usb_phy = ci->platdata->usb_phy;
- 	} else {
- 		/* Look for a generic PHY first */
--		ci->phy = devm_phy_get(dev->parent, "usb-phy");
-+		ci->phy = devm_phy_get(dev, "usb-phy");
+ 	regmap_update_bits(tcon->regs, SUN4I_TCON0_IO_POL_REG,
+ 			   SUN4I_TCON0_IO_POL_HSYNC_POSITIVE |
+ 			   SUN4I_TCON0_IO_POL_VSYNC_POSITIVE |
++			   SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE |
+ 			   SUN4I_TCON0_IO_POL_DE_NEGATIVE,
+ 			   val);
  
- 		if (PTR_ERR(ci->phy) == -EPROBE_DEFER) {
- 			ret = -EPROBE_DEFER;
+diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.h b/drivers/gpu/drm/sun4i/sun4i_tcon.h
+index cfbf4e6c1679..c5ac1b02482c 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_tcon.h
++++ b/drivers/gpu/drm/sun4i/sun4i_tcon.h
+@@ -113,6 +113,7 @@
+ #define SUN4I_TCON0_IO_POL_REG			0x88
+ #define SUN4I_TCON0_IO_POL_DCLK_PHASE(phase)		((phase & 3) << 28)
+ #define SUN4I_TCON0_IO_POL_DE_NEGATIVE			BIT(27)
++#define SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE		BIT(26)
+ #define SUN4I_TCON0_IO_POL_HSYNC_POSITIVE		BIT(25)
+ #define SUN4I_TCON0_IO_POL_VSYNC_POSITIVE		BIT(24)
+ 
+-- 
+2.25.1
 
-Basically my idea was to share the of_node with the ci_hdrc.0 platform
-device, so that it can request the PHY itself instead of going through
-the parent.
-
-It seems to work fine but I had to add pdev->driver_override to prevent
-the ci_hdrc.0 device from probing using ci_hdrc_msm (since it considers
-the "compatible" value on the of_node otherwise).
-
-This is a bit weird (I think driver_override is mainly intended to be
-written through sysfs, not from kernel code directly).
-That is why I did not post this as a proper patch yet...
-
-Thanks,
-Stephan
