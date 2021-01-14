@@ -2,94 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801C52F562E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C87A72F5641
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727775AbhANBoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:44:03 -0500
-Received: from mail-pj1-f45.google.com ([209.85.216.45]:52363 "EHLO
-        mail-pj1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727319AbhANBoC (ORCPT
+        id S1728039AbhANBoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:44:54 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:59185 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727047AbhANBox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 20:44:02 -0500
-Received: by mail-pj1-f45.google.com with SMTP id v1so2225755pjr.2;
-        Wed, 13 Jan 2021 17:43:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nhGGUKQp3iIGumGW0JSHdb3eHww+a9fUNcP2GsUbZME=;
-        b=O0F4Vlc+hvpRo7rOsq6MQye74RWhJvpOXSPSGMDciqccQ52DzAsGu7uZq5DJturXuX
-         yr8f+f1zZ685lhSp2LfsDg3MmtfrsXLqdBFUz6H/KDGvkmIJSg6iVxuFo3V0GjyJlOcJ
-         qQMlCvgC6KwouJq/mHsPMsdUSLe1guqlArkT/2kCsGamlI4x7c1uErK1Y40Ft6zMVqa2
-         nnC4ubsdMdhSjqL8PTJrt+1R2vMZ1VjEZB0j5x0kcC0X5ofJvbkxc40hgx/DiLumskJz
-         Hish82MjejkDLH3QmsgMqppdJa2pmb2zNRGRlfkiqLvZopRvvZ6YYtchUN14OL2EdE0w
-         e2Pg==
-X-Gm-Message-State: AOAM531QdgzdEFhibpfiJSwFBGt5AcmfqG/bKHqEzaGdIm5ezkIxzMAD
-        tFsAvF++OtEwY9RPG5QbGvM=
-X-Google-Smtp-Source: ABdhPJw18RCVSky7edGM+fQ8iYuOqozo18ui3MzTaUhjO+czTB7CDPz/Qgx9H9bXtHxykoiyD309AA==
-X-Received: by 2002:a17:90a:c084:: with SMTP id o4mr2289007pjs.165.1610588601514;
-        Wed, 13 Jan 2021 17:43:21 -0800 (PST)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id m22sm3810610pgj.46.2021.01.13.17.43.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 17:43:20 -0800 (PST)
-Subject: Re: [PATCH 4.19 06/77] scsi: scsi_transport_spi: Set RQF_PM for
- domain validation commands
-To:     Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Woody Suwalski <terraluna977@gmail.com>,
-        Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Stan Johnson <userm57@yahoo.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Hannes Reinecke <hare@suse.de>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-References: <20210111130036.414620026@linuxfoundation.org>
- <20210111130036.711898511@linuxfoundation.org>
- <20210113114745.GA2843@duo.ucw.cz>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <e1fd4693-95f5-58c2-20c6-fbd96653edfe@acm.org>
-Date:   Wed, 13 Jan 2021 17:43:18 -0800
+        Wed, 13 Jan 2021 20:44:53 -0500
+X-IronPort-AV: E=Sophos;i="5.79,345,1602518400"; 
+   d="scan'208";a="103460770"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 14 Jan 2021 09:44:21 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 6AB404CE1A08;
+        Thu, 14 Jan 2021 09:44:16 +0800 (CST)
+Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
+ (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 14 Jan
+ 2021 09:44:17 +0800
+Subject: Re: [PATCH 04/10] mm, fsdax: Refactor memory-failure handler for dax
+ mapping
+To:     zhong jiang <zhongjiang-ali@linux.alibaba.com>,
+        Jan Kara <jack@suse.cz>
+CC:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-raid@vger.kernel.org>,
+        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <david@fromorbit.com>, <hch@lst.de>, <song@kernel.org>,
+        <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
+References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
+ <20201230165601.845024-5-ruansy.fnst@cn.fujitsu.com>
+ <20210106154132.GC29271@quack2.suse.cz>
+ <75164044-bfdf-b2d6-dff0-d6a8d56d1f62@cn.fujitsu.com>
+ <781f276b-afdd-091c-3dba-048e415431ab@linux.alibaba.com>
+From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Message-ID: <ef29ba5c-96d7-d0bb-e405-c7472a518b32@cn.fujitsu.com>
+Date:   Thu, 14 Jan 2021 09:44:14 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210113114745.GA2843@duo.ucw.cz>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <781f276b-afdd-091c-3dba-048e415431ab@linux.alibaba.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.167.225.141]
+X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
+X-yoursite-MailScanner-ID: 6AB404CE1A08.AD0C5
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/13/21 3:47 AM, Pavel Machek wrote:
->> From: Bart Van Assche <bvanassche@acm.org>
->>
->> [ Upstream commit cfefd9f8240a7b9fdd96fcd54cb029870b6d8d88 ]
->>
->> Disable runtime power management during domain validation. Since a later
->> patch removes RQF_PREEMPT, set RQF_PM for domain validation commands such
->> that these are executed in the quiesced SCSI device state.
+
+
+On 2021/1/13 下午6:04, zhong jiang wrote:
 > 
-> This and "05/77] scsi: ide: Do not set the RQF_PREEMPT flag for" do
-> not fix anything AFAICT. They are in series with other patches in
-> 5.10, so they may make sense there, but I don't think we need them in
-> 4.19.
+> On 2021/1/12 10:55 上午, Ruan Shiyang wrote:
+>>
+>>
+>> On 2021/1/6 下午11:41, Jan Kara wrote:
+>>> On Thu 31-12-20 00:55:55, Shiyang Ruan wrote:
+>>>> The current memory_failure_dev_pagemap() can only handle single-mapped
+>>>> dax page for fsdax mode.  The dax page could be mapped by multiple 
+>>>> files
+>>>> and offsets if we let reflink feature & fsdax mode work together.  So,
+>>>> we refactor current implementation to support handle memory failure on
+>>>> each file and offset.
+>>>>
+>>>> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+>>>
+>>> Overall this looks OK to me, a few comments below.
+>>>
+>>>> ---
+>>>>   fs/dax.c            | 21 +++++++++++
+>>>>   include/linux/dax.h |  1 +
+>>>>   include/linux/mm.h  |  9 +++++
+>>>>   mm/memory-failure.c | 91 
+>>>> ++++++++++++++++++++++++++++++++++-----------
+>>>>   4 files changed, 100 insertions(+), 22 deletions(-)
+>>
+>> ...
+>>
+>>>>   @@ -345,9 +348,12 @@ static void add_to_kill(struct task_struct 
+>>>> *tsk, struct page *p,
+>>>>       }
+>>>>         tk->addr = page_address_in_vma(p, vma);
+>>>> -    if (is_zone_device_page(p))
+>>>> -        tk->size_shift = dev_pagemap_mapping_shift(p, vma);
+>>>> -    else
+>>>> +    if (is_zone_device_page(p)) {
+>>>> +        if (is_device_fsdax_page(p))
+>>>> +            tk->addr = vma->vm_start +
+>>>> +                    ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+>>>
+>>> It seems strange to use 'pgoff' for dax pages and not for any other 
+>>> page.
+>>> Why? I'd rather pass correct pgoff from all callers of add_to_kill() and
+>>> avoid this special casing...
+>>
+>> Because one fsdax page can be shared by multiple pgoffs.  I have to 
+>> pass each pgoff in each iteration to calculate the address in vma (for 
+>> tk->addr).  Other kinds of pages don't need this. They can get their 
+>> unique address by calling "page_address_in_vma()".
+>>
+> IMO,   an fsdax page can be shared by multiple files rather than 
+> multiple pgoffs if fs query support reflink.   Because an page only 
+> located in an mapping(page->mapping is exclusive),  hence it  only has 
+> an pgoff or index pointing at the node.
+> 
+>   or  I miss something for the feature ?  thanks,
 
-Agreed. Please either backport the entire series of 8 patches or do not
-backport any patch from that series. Selecting a subset of the patches
-of that series is dangerous. As an example, applying patch 8/8 without
-applying the prior patches from that series would break SCSI domain
-validation. See also
-https://lore.kernel.org/linux-scsi/20201209052951.16136-1-bvanassche@acm.org/
+Yes, a fsdax page is shared by multiple files because of reflink.  I 
+think my description of 'pgoff' here is not correct.  This 'pgoff' means 
+the offset within the a file.  (We use rmap to find out all the sharing 
+files and their offsets.)  So, I said that "can be shared by multiple 
+pgoffs".  It's my bad.
 
+I think I should name it another word to avoid misunderstandings.
+
+
+--
 Thanks,
+Ruan Shiyang.
 
-Bart.
+> 
+>> So, I added this fsdax case here.  This patchset only implemented the 
+>> fsdax case, other cases also need to be added here if to be implemented.
+>>
+>>
+>> -- 
+>> Thanks,
+>> Ruan Shiyang.
+>>
+>>>
+>>>> +        tk->size_shift = dev_pagemap_mapping_shift(p, vma, tk->addr);
+>>>> +    } else
+>>>>           tk->size_shift = page_shift(compound_head(p));
+>>>>         /*
+>>>> @@ -495,7 +501,7 @@ static void collect_procs_anon(struct page 
+>>>> *page, struct list_head *to_kill,
+>>>>               if (!page_mapped_in_vma(page, vma))
+>>>>                   continue;
+>>>>               if (vma->vm_mm == t->mm)
+>>>> -                add_to_kill(t, page, vma, to_kill);
+>>>> +                add_to_kill(t, page, NULL, 0, vma, to_kill);
+>>>>           }
+>>>>       }
+>>>>       read_unlock(&tasklist_lock);
+>>>> @@ -505,24 +511,19 @@ static void collect_procs_anon(struct page 
+>>>> *page, struct list_head *to_kill,
+>>>>   /*
+>>>>    * Collect processes when the error hit a file mapped page.
+>>>>    */
+>>>> -static void collect_procs_file(struct page *page, struct list_head 
+>>>> *to_kill,
+>>>> -                int force_early)
+>>>> +static void collect_procs_file(struct page *page, struct 
+>>>> address_space *mapping,
+>>>> +        pgoff_t pgoff, struct list_head *to_kill, int force_early)
+>>>>   {
+>>>>       struct vm_area_struct *vma;
+>>>>       struct task_struct *tsk;
+>>>> -    struct address_space *mapping = page->mapping;
+>>>> -    pgoff_t pgoff;
+>>>>         i_mmap_lock_read(mapping);
+>>>>       read_lock(&tasklist_lock);
+>>>> -    pgoff = page_to_pgoff(page);
+>>>>       for_each_process(tsk) {
+>>>>           struct task_struct *t = task_early_kill(tsk, force_early);
+>>>> -
+>>>>           if (!t)
+>>>>               continue;
+>>>> -        vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff,
+>>>> -                      pgoff) {
+>>>> +        vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, 
+>>>> pgoff) {
+>>>>               /*
+>>>>                * Send early kill signal to tasks where a vma covers
+>>>>                * the page but the corrupted page is not necessarily
+>>>> @@ -531,7 +532,7 @@ static void collect_procs_file(struct page 
+>>>> *page, struct list_head *to_kill,
+>>>>                * to be informed of all such data corruptions.
+>>>>                */
+>>>>               if (vma->vm_mm == t->mm)
+>>>> -                add_to_kill(t, page, vma, to_kill);
+>>>> +                add_to_kill(t, page, mapping, pgoff, vma, to_kill);
+>>>>           }
+>>>>       }
+>>>>       read_unlock(&tasklist_lock);
+>>>> @@ -550,7 +551,8 @@ static void collect_procs(struct page *page, 
+>>>> struct list_head *tokill,
+>>>>       if (PageAnon(page))
+>>>>           collect_procs_anon(page, tokill, force_early);
+>>>>       else
+>>>> -        collect_procs_file(page, tokill, force_early);
+>>>> +        collect_procs_file(page, page->mapping, page_to_pgoff(page),
+>>>
+>>> Why not use page_mapping() helper here? It would be safer for THPs if 
+>>> they
+>>> ever get here...
+>>>
+>>>                                 Honza
+>>>
+>>
+> 
+> 
+
+
