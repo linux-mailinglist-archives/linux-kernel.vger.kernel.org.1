@@ -2,124 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0872F6045
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0502F6067
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:43:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727897AbhANLhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 06:37:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729057AbhANLhZ (ORCPT
+        id S1728518AbhANLkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 06:40:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52528 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727220AbhANLkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 06:37:25 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B20C0613D3;
-        Thu, 14 Jan 2021 03:37:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UU0k9SPmZjW9mEpf/D9xPCViNO9X7LPn56+qCj377sI=; b=RPtXD4Mfl2So3qrv+fI7pONRpU
-        PeHSiy+AJ9GY0HmiHVWfmqFeMOQdQibiEmNFtFRTu01v/IYs494TP+o3Wd7/GuqHOKo7JaiCKTD8O
-        yDcOvlwtoeOC8RUc+z+FgeqJyLxBLCQNnlkhCZibtIpaVl9cGtk9AxM7F5tA7tGRhs+CVd0edBr+1
-        XRz1tmjtAO1SYVSFYkfKI4hljvmw3xCDvQbVD2SFGvKVlHuBm7SFw5MlgTcv28AtUbJ9MtoCljYC0
-        I6L+lx2RzmwlUTl3AIFIcKFz+k++aPcITbCJwcmMtDiYVyhCfrbN+R/SxT7JXtokSO+WkHGKOZU71
-        cQVzwDgw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l00vo-00007b-MY; Thu, 14 Jan 2021 11:36:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0E7CF3059DE;
-        Thu, 14 Jan 2021 12:36:46 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 027302BECE8A7; Thu, 14 Jan 2021 12:36:45 +0100 (CET)
-Date:   Thu, 14 Jan 2021 12:36:45 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH v4] x86/entry: emit a symbol for register restoring thunk
-Message-ID: <YAAszZJ2GcIYZmB5@hirez.programming.kicks-ass.net>
-References: <20210112115421.GB13086@zn.tnic>
- <20210112194625.4181814-1-ndesaulniers@google.com>
- <20210112210154.GI4646@sirena.org.uk>
- <20210113165923.acvycpcu5tzksbbi@treble>
- <CAKwvOdnAMsYF-v1LAqttBV3e3rHhSFZmPcRRV0+v=+9AyMFgNA@mail.gmail.com>
- <20210114103928.GB12284@zn.tnic>
+        Thu, 14 Jan 2021 06:40:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610624363;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FWSCsULV8D2VOcK8u1F6d/iVpJrDsWQFMD1WA7PL7GA=;
+        b=ZM8wrOpAm+Q8jL1sNn+Tpk+xsaLblhMDCem7IEnD0NCQhp+WsTnNTCaplETRaZJ0YPoCpy
+        +F6My17Oscc70L107M1+52L9ir8BYe8IqIokN/q9pEOMLTWjr1vaBnopRBqvc5lx0qEH4e
+        AMOBaJ3dGKnz4g2zk2EFMq9p3zIWD5Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-215-AlMHmV3NPcKz0DLidKap6Q-1; Thu, 14 Jan 2021 06:39:21 -0500
+X-MC-Unique: AlMHmV3NPcKz0DLidKap6Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F27BF1842143;
+        Thu, 14 Jan 2021 11:39:19 +0000 (UTC)
+Received: from starship (unknown [10.35.206.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EE22860C69;
+        Thu, 14 Jan 2021 11:39:12 +0000 (UTC)
+Message-ID: <932e6ab3da191bd342e354ad7e4d05c835f785e9.camel@redhat.com>
+Subject: Re: [PATCH 2/2] KVM: SVM: Add support for VMCB address check change
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Wei Huang <wei.huang2@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com, joro@8bytes.org,
+        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
+        dgilbert@redhat.com
+Date:   Thu, 14 Jan 2021 13:39:11 +0200
+In-Reply-To: <X/316tCByxsBQP5t@google.com>
+References: <20210112063703.539893-1-wei.huang2@amd.com>
+         <20210112063703.539893-2-wei.huang2@amd.com> <X/316tCByxsBQP5t@google.com>
+Content-Type: multipart/mixed; boundary="=-EVQygRQtbtdeLy3t4p4U"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210114103928.GB12284@zn.tnic>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 11:39:28AM +0100, Borislav Petkov wrote:
-> From: Nick Desaulniers <ndesaulniers@google.com>
-> Date: Tue, 12 Jan 2021 11:46:24 -0800
-> Subject: [PATCH] x86/entry: Emit a symbol for register restoring thunk
-> 
-> Arnd found a randconfig that produces the warning:
-> 
->   arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at
->   offset 0x3e
-> 
-> when building with LLVM_IAS=1 (Clang's integrated assembler). Josh
-> notes:
-> 
->   With the LLVM assembler not generating section symbols, objtool has no
->   way to reference this code when it generates ORC unwinder entries,
->   because this code is outside of any ELF function.
-> 
->   The limitation now being imposed by objtool is that all code must be
->   contained in an ELF symbol.  And .L symbols don't create such symbols.
-> 
->   So basically, you can use an .L symbol *inside* a function or a code
->   segment, you just can't use the .L symbol to contain the code using a
->   SYM_*_START/END annotation pair.
-> 
-> Fangrui notes that this optimization is helpful for reducing image size
-> when compiling with -ffunction-sections and -fdata-sections. I have
-> observed on the order of tens of thousands of symbols for the kernel
-> images built with those flags.
-> 
-> A patch has been authored against GNU binutils to match this behavior
-> of not generating unused section symbols ([1]), so this will
-> also become a problem for users of GNU binutils once they upgrade to 2.36.
-> 
-> Omit the .L prefix on a label so that the assembler will emit an entry
-> into the symbol table for the label, with STB_LOCAL binding. This
-> enables objtool to generate proper unwind info here with LLVM_IAS=1 or
-> GNU binutils 2.36+.
-> 
->  [ bp: Massage commit message. ]
-> 
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> Suggested-by: Borislav Petkov <bp@alien8.de>
-> Suggested-by: Mark Brown <broonie@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Borislav Petkov <bp@suse.de>
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+--=-EVQygRQtbtdeLy3t4p4U
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 
-And while looking, I suppose we can delete the put_ret_addr_in_rdi crud,
-but that's another patch.
+On Tue, 2021-01-12 at 11:18 -0800, Sean Christopherson wrote:
+> On Tue, Jan 12, 2021, Wei Huang wrote:
+> > New AMD CPUs have a change that checks VMEXIT intercept on special SVM
+> > instructions before checking their EAX against reserved memory region.
+> > This change is indicated by CPUID_0x8000000A_EDX[28]. If it is 1, KVM
+> > doesn't need to intercept and emulate #GP faults for such instructions
+> > because #GP isn't supposed to be triggered.
+> > 
+> > Co-developed-by: Bandan Das <bsd@redhat.com>
+> > Signed-off-by: Bandan Das <bsd@redhat.com>
+> > Signed-off-by: Wei Huang <wei.huang2@amd.com>
+> > ---
+> >  arch/x86/include/asm/cpufeatures.h | 1 +
+> >  arch/x86/kvm/svm/svm.c             | 2 +-
+> >  2 files changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> > index 84b887825f12..ea89d6fdd79a 100644
+> > --- a/arch/x86/include/asm/cpufeatures.h
+> > +++ b/arch/x86/include/asm/cpufeatures.h
+> > @@ -337,6 +337,7 @@
+> >  #define X86_FEATURE_AVIC		(15*32+13) /* Virtual Interrupt Controller */
+> >  #define X86_FEATURE_V_VMSAVE_VMLOAD	(15*32+15) /* Virtual VMSAVE VMLOAD */
+> >  #define X86_FEATURE_VGIF		(15*32+16) /* Virtual GIF */
+> > +#define X86_FEATURE_SVME_ADDR_CHK	(15*32+28) /* "" SVME addr check */
+> 
+> Heh, KVM should advertise this to userspace by setting the kvm_cpu_cap bit.  KVM
+> KVM forwards relevant VM-Exits to L1 without checking if rAX points at an
+> invalid L1 GPA.
+
+
+I agree that we should be able to fix/hide the errata from the L1,
+and expose this bit to L1 to avoid it trying to apply this workaround
+itself when it itself runs nested guests.
+
+Note that there is currently a bug in this patch series, that prevents
+this workaround to work for a guest that runs nested guests itself (e.g L3):
+
+(when we intercept the #GP, and we are running
+a nested guest, we should do a vmexit with SVM_EXIT_VMRUN/VMSAVE/etc exit
+reason instead of running the instruction), but this can be fixed,
+I did it locally and it works.
+
+(lightly tested) patch for that attached.
+
+Best regards,
+	Maxim Levitsky
+> 
+> >  /* Intel-defined CPU features, CPUID level 0x00000007:0 (ECX), word 16 */
+> >  #define X86_FEATURE_AVX512VBMI		(16*32+ 1) /* AVX512 Vector Bit Manipulation instructions*/
+> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > index 74620d32aa82..451b82df2eab 100644
+> > --- a/arch/x86/kvm/svm/svm.c
+> > +++ b/arch/x86/kvm/svm/svm.c
+> > @@ -311,7 +311,7 @@ int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
+> >  	svm->vmcb->save.efer = efer | EFER_SVME;
+> >  	vmcb_mark_dirty(svm->vmcb, VMCB_CR);
+> >  	/* Enable GP interception for SVM instructions if needed */
+> > -	if (efer & EFER_SVME)
+> > +	if ((efer & EFER_SVME) && !boot_cpu_has(X86_FEATURE_SVME_ADDR_CHK))
+> >  		set_exception_intercept(svm, GP_VECTOR);
+> >  
+> >  	return 0;
+> > -- 
+> > 2.27.0
+> > 
+
+
+
+
+
+
+--=-EVQygRQtbtdeLy3t4p4U
+Content-Disposition: attachment; filename="patch.diff"
+Content-Type: text/x-patch; name="patch.diff"; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+Y29tbWl0IDI4YWI4OWFhYTExMzgwMzA2YmFmYmY0OTI2NTIyMmYyYTJkYTcxZGEKQXV0aG9yOiBN
+YXhpbSBMZXZpdHNreSA8bWxldml0c2tAcmVkaGF0LmNvbT4KRGF0ZTogICBUaHUgSmFuIDE0IDEw
+OjUzOjI1IDIwMjEgKzAyMDAKCiAgICBrdm06IHg4NjogZml4IHRoYXQgZXJyYXRhIGZvciBuZXN0
+ZWQgZ3Vlc3RzCgpkaWZmIC0tZ2l0IGEvYXJjaC94ODYva3ZtL3N2bS9zdm0uYyBiL2FyY2gveDg2
+L2t2bS9zdm0vc3ZtLmMKaW5kZXggYzMxZTAwNTI1MmQ2OS4uOWNmYTU5NDZmYWM2OSAxMDA2NDQK
+LS0tIGEvYXJjaC94ODYva3ZtL3N2bS9zdm0uYworKysgYi9hcmNoL3g4Ni9rdm0vc3ZtL3N2bS5j
+CkBAIC0yMDI3LDYgKzIwMjcsMjYgQEAgc3RhdGljIGludCBzdm1fZW11bGF0ZV92bV9pbnN0cihz
+dHJ1Y3Qga3ZtX3ZjcHUgKnZjcHUsIHU4IG1vZHJtKQogewogCXN0cnVjdCB2Y3B1X3N2bSAqc3Zt
+ID0gdG9fc3ZtKHZjcHUpOwogCisJaWYgKGlzX2d1ZXN0X21vZGUodmNwdSkpIHsKKwkJc3dpdGNo
+IChtb2RybSkgeworCQljYXNlIDB4ZDg6IC8qIFZNUlVOICovCisJCQlzdm0tPnZtY2ItPmNvbnRy
+b2wuZXhpdF9jb2RlID0gU1ZNX0VYSVRfVk1SVU47CisJCQlicmVhazsKKwkJY2FzZSAweGRhOiAv
+KiBWTUxPQUQgKi8KKwkJCXN2bS0+dm1jYi0+Y29udHJvbC5leGl0X2NvZGUgPSBTVk1fRVhJVF9W
+TUxPQUQ7CisJCQlicmVhazsKKwkJY2FzZSAweGRiOiAvKiBWTVNBVkUgKi8KKwkJCXN2bS0+dm1j
+Yi0+Y29udHJvbC5leGl0X2NvZGUgPSBTVk1fRVhJVF9WTUxPQUQ7CisJCQlicmVhazsKKwkJZGVm
+YXVsdDoKKwkJCWdvdG8gaW5qZWN0X2V4Y2VwdGlvbjsKKwkJfQorCisJCXN2bS0+dm1jYi0+Y29u
+dHJvbC5leGl0X2luZm9fMSA9IDA7CisJCXN2bS0+dm1jYi0+Y29udHJvbC5leGl0X2luZm9fMiA9
+IDA7CisJCXJldHVybiBuZXN0ZWRfc3ZtX3ZtZXhpdChzdm0pOworCX0KKwogCXN3aXRjaCAobW9k
+cm0pIHsKIAljYXNlIDB4ZDg6IC8qIFZNUlVOICovCiAJCXJldHVybiB2bXJ1bl9pbnRlcmNlcHRp
+b24oc3ZtKTsKQEAgLTIwMzUsNiArMjA1NSw3IEBAIHN0YXRpYyBpbnQgc3ZtX2VtdWxhdGVfdm1f
+aW5zdHIoc3RydWN0IGt2bV92Y3B1ICp2Y3B1LCB1OCBtb2RybSkKIAljYXNlIDB4ZGI6IC8qIFZN
+U0FWRSAqLwogCQlyZXR1cm4gdm1zYXZlX2ludGVyY2VwdGlvbihzdm0pOwogCWRlZmF1bHQ6Citp
+bmplY3RfZXhjZXB0aW9uOgogCQkvKiBpbmplY3QgYSAjR1AgZm9yIGFsbCBvdGhlciBjYXNlcyAq
+LwogCQlrdm1fcXVldWVfZXhjZXB0aW9uX2UodmNwdSwgR1BfVkVDVE9SLCAwKTsKIAkJcmV0dXJu
+IDE7Cg==
+
+
+--=-EVQygRQtbtdeLy3t4p4U--
+
