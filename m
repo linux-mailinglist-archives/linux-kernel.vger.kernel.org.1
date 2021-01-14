@@ -2,78 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688062F587F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1642F5884
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbhANCfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:35:42 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10722 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727280AbhANCfl (ORCPT
+        id S1728614AbhANChS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:37:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39634 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726792AbhANChQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 21:35:41 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DGSzm4Pmdzl4qj;
-        Thu, 14 Jan 2021 10:33:40 +0800 (CST)
-Received: from [10.174.176.197] (10.174.176.197) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 14 Jan 2021 10:34:57 +0800
-Subject: Re: [PATCH] mm/swap_slots.c: Remove unnecessary NULL pointer check
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210109080943.34832-1-linmiaohe@huawei.com>
- <20210109174016.GA35215@casper.infradead.org>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <404e6c17-dd1f-84f9-86ca-8a39cbdbffd1@huawei.com>
-Date:   Thu, 14 Jan 2021 10:34:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 13 Jan 2021 21:37:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610591749;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2mud6EOiQWTPZLSAaAQAKID8YRfEwmVBCdj5DWD16lE=;
+        b=LLeX7Yj/6c+X+liywIL+uphzG/UdkNpIcCwEVSeZ/LApXCkIIYTQU0kr3ybDvcEekrFuqK
+        Dhwlc3v2XwFWH9MfGK/V0Ts7GjtCcJwXL2DgT1hj3Jzzz37bgSaMInkAtatVHYOY3InJJO
+        IQnfw9XkRTyn7NlrlvOyBTJ+xhjSNkM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-544-IOSZym_oN-CrdgfWwCkC-Q-1; Wed, 13 Jan 2021 21:35:45 -0500
+X-MC-Unique: IOSZym_oN-CrdgfWwCkC-Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C08FE758;
+        Thu, 14 Jan 2021 02:35:42 +0000 (UTC)
+Received: from redhat.com (ovpn-112-31.rdu2.redhat.com [10.10.112.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E5ADE1001B2C;
+        Thu, 14 Jan 2021 02:35:32 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 21:35:30 -0500
+From:   Jerome Glisse <jglisse@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Yu Zhao <yuzhao@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>
+Subject: Re: [PATCH 0/2] page_count can't be used to decide when wp_page_copy
+Message-ID: <20210114023530.GB535630@redhat.com>
+References: <20210107200402.31095-1-aarcange@redhat.com>
+ <20210107202525.GD504133@ziepe.ca>
+ <X/eA/f1r5GXvcRWH@redhat.com>
+ <20210108133649.GE504133@ziepe.ca>
+ <X/iPtCktcQHwuK5T@redhat.com>
+ <20210108181945.GF504133@ziepe.ca>
+ <X/jgLGPgPb+Xms1t@redhat.com>
+ <20210109004255.GG504133@ziepe.ca>
+ <20210113215638.GA528828@redhat.com>
+ <20210113233936.GE4605@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <20210109174016.GA35215@casper.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.197]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210113233936.GE4605@ziepe.ca>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/1/10 1:40, Matthew Wilcox wrote:
-> On Sat, Jan 09, 2021 at 03:09:43AM -0500, Miaohe Lin wrote:
->> The cache->slots and cache->slots_ret is already checked before we try to
->> drain it. And kvfree can handle the NULL pointer itself. So remove the
->> NULL pointer check here.
+On Wed, Jan 13, 2021 at 07:39:36PM -0400, Jason Gunthorpe wrote:
+> On Wed, Jan 13, 2021 at 04:56:38PM -0500, Jerome Glisse wrote:
 > 
->> @@ -178,7 +178,7 @@ static void drain_slots_cache_cpu(unsigned int cpu, unsigned int type,
->>  		swapcache_free_entries(cache->slots + cache->cur, cache->nr);
->>  		cache->cur = 0;
->>  		cache->nr = 0;
->> -		if (free_slots && cache->slots) {
->> +		if (free_slots) {
+> > is a broken model and the way GPU use GUP is less broken then RDMA. In
+> > GPU driver GUP contract with userspace is that the data the GPU can
+> > access is a snapshot of what the process memory was at the time you
+> > asked for the GUP. Process can start using different pages right after.
+> > There is no constant coherency contract (ie CPU and GPU can be working
+> > on different pages).
 > 
-> Prove that swapcache_free_entries() doesn't change cache->slots.
+> Look at the habana labs "totally not a GPU" driver, it doesn't work
+> that way, GPU compute operations do want coherency.
 > 
+> The mmu notifier hackery some of the other GPU drivers use to get
+> coherency requires putting the kernel between every single work
+> submission, and has all kinds of wonky issues and limitations - I
+> think it is net worse approach than GUP, honestly.
 
-Yeh... I see. I thought swap_slots_cache_mutex could totally guard against this.
+Yes what GPU driver do today with GUP is wrong but it is only
+use for texture upload/download. So that is a very limited
+scope (amdkfd being an exception here).
 
->> @@ -188,13 +188,12 @@ static void drain_slots_cache_cpu(unsigned int cpu, unsigned int type,
->>  		spin_lock_irq(&cache->free_lock);
->>  		swapcache_free_entries(cache->slots_ret, cache->n_ret);
->>  		cache->n_ret = 0;
->> -		if (free_slots && cache->slots_ret) {
->> +		if (free_slots) {
-> 
-> ... or ->slots_ret
-> 
->> -		if (slots)
->> -			kvfree(slots);
->> +		kvfree(slots);
-> 
-> This is fine.
-> .
-> 
+Yes also to the fact that waiting on GPU fence from mmu notifier
+callback is bad. We are thinking on how to solve this.
 
-Many thanks for your review and reply!
+But what do matter is that hardware is moving in right direction
+and we will no longer need GUP. So GUP is dying out in GPU
+driver.
+
+Cheers,
+Jérôme
+
