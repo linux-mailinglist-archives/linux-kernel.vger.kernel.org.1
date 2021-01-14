@@ -2,143 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB382F5C0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:07:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C202F5C28
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728243AbhANIGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 03:06:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726897AbhANIGZ (ORCPT
+        id S1728557AbhANIHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 03:07:50 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:43596 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728530AbhANIHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 03:06:25 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28195C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 00:05:45 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kzxdP-0000a9-GU; Thu, 14 Jan 2021 09:05:35 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kzxdN-0004qT-Ol; Thu, 14 Jan 2021 09:05:33 +0100
-Date:   Thu, 14 Jan 2021 09:05:33 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Philipp Rosenberger <p.rosenberger@kunbus.com>
-Cc:     dan.carpenter@oracle.com, biwen.li@nxp.com, lvb@xiphos.com,
-        bruno.thomsen@gmail.com, l.sanfilippo@kunbus.com,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] rtc: pcf2127: Disable Power-On Reset Override
-Message-ID: <20210114080533.tnipsnqfxeqotvlg@pengutronix.de>
-References: <20210113112742.7354-1-p.rosenberger@kunbus.com>
- <20210113112742.7354-2-p.rosenberger@kunbus.com>
+        Thu, 14 Jan 2021 03:07:45 -0500
+Date:   Thu, 14 Jan 2021 08:06:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail2; t=1610611621;
+        bh=oZoLOvB8GFNjTNukq9k4F1x8Zrh7VuJWPVVKWBKbx6E=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=QntvKbV1vbBi+N/094QDG70LEkXfRBGSma8e3IoD4jHW+TxXVRJbXS9E1IGSKVB4d
+         r1x0dNCfc3xC0p7aPRVYcrCXoU/zHBPHs6VcIudLRyY/D8YlQtBOAIlUwlLWFsLTy6
+         mmrHtEA0JagQIO6GtkHlDdNY/uA5IsOJr5urCGRkg+G8K4w/hmRuPgq8lufieWChJD
+         5TcCRFeHcuvG+KLwDvBouFhhnl7ADS8pN4F/SPg4uoyG/3rE7WKxn3YWUzTM7WuiUy
+         5RjlIBQoAGXy+1qVUL3Mhm74oiIaUtj7oCiQnrh+BFVUKoZzfMmZCwRP8ixSh6c4yY
+         2Kh9d84w2LHiw==
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH v6 15/16] drm: drm_crc: fix a kernel-doc markup
+Message-ID: <qe1toq6DLvoVNP7AaQXNqpa3qtfzGwKWuVz-uYiDIUcI0u0-xaQstZKPNqEbg9-lfHA0wN2yI_i-vQvoYJmoOS_v-XLO1pUfFE-9srEsxNY=@emersion.fr>
+In-Reply-To: <2439fb6713e9b2aa27a81f3269a4b0e8e7dfcd36.1610610937.git.mchehab+huawei@kernel.org>
+References: <cover.1610610937.git.mchehab+huawei@kernel.org> <2439fb6713e9b2aa27a81f3269a4b0e8e7dfcd36.1610610937.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7hlg47jdrphncaem"
-Content-Disposition: inline
-In-Reply-To: <20210113112742.7354-2-p.rosenberger@kunbus.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thursday, January 14th, 2021 at 9:04 AM, Mauro Carvalho Chehab <mchehab+=
+huawei@kernel.org> wrote:
 
---7hlg47jdrphncaem
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> A function has a different name between their prototype
+> and its kernel-doc markup:
+>
+> =09../include/drm/drm_crtc.h:1257: warning: expecting prototype for drm_c=
+rtc_alloc_with_planes(). Prototype was for drmm_crtc_alloc_with_planes() in=
+stead
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-On Wed, Jan 13, 2021 at 12:27:41PM +0100, Philipp Rosenberger wrote:
-> To resume normal operation after a total power loss (no or empty
-> battery) the "Power-On Reset Override (PORO)" facility needs to be
-> disabled.
->=20
-> As the oscillator may take a long time (200 ms to 2 s) to resume normal
-> operation. The default behaviour is to use the PORO facility.
-
-I'd write instead: The register reset value sets PORO enabled and the
-data sheet recommends setting it to disabled for normal operation.
-In my eyes having a reset default value that is unsuitable for
-production use is just another bad design choice of this chip. At least
-now this is known and can be somewhat fixed in software. :-\
-
-> But with the PORO active no interrupts are generated on the interrupt
-> pin (INT).
-
-This sentence about no interrupts is your observation, or does this base
-on some authoritative source (datasheet, FAE or similar)?
-
-> Signed-off-by: Philipp Rosenberger <p.rosenberger@kunbus.com>
-> ---
->  drivers/rtc/rtc-pcf2127.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
->=20
-> diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
-> index 39a7b5116aa4..378b1ce812d6 100644
-> --- a/drivers/rtc/rtc-pcf2127.c
-> +++ b/drivers/rtc/rtc-pcf2127.c
-> @@ -26,6 +26,7 @@
-> =20
->  /* Control register 1 */
->  #define PCF2127_REG_CTRL1		0x00
-> +#define PCF2127_BIT_CTRL1_POR_OVRD		BIT(3)
->  #define PCF2127_BIT_CTRL1_TSF1			BIT(4)
->  /* Control register 2 */
->  #define PCF2127_REG_CTRL2		0x01
-> @@ -612,6 +613,23 @@ static int pcf2127_probe(struct device *dev, struct =
-regmap *regmap,
->  		ret =3D devm_rtc_nvmem_register(pcf2127->rtc, &nvmem_cfg);
->  	}
-> =20
-> +	/*
-> +	 * The "Power-On Reset Override" facility prevents the RTC to do a reset
-> +	 * after power on. For normal operation the PORO must be disabled.
-> +	 */
-> +	regmap_clear_bits(pcf2127->regmap, PCF2127_REG_CTRL1,
-> +				PCF2127_BIT_CTRL1_POR_OVRD);
-> +	/*
-> +	 * If the PORO can't be disabled, just move on. The RTC should
-> +	 * work fine, but functions like watchdog and alarm interrupts might
-> +	 * not work. There will be no interrupt generated on the interrupt pin.
-> +	 */
-> +	ret =3D regmap_test_bits(pcf2127->regmap, PCF2127_REG_CTRL1, PCF2127_BI=
-T_CTRL1_POR_OVRD);
-> +	if (ret <=3D 0) {
-> +		dev_err(dev, "%s: can't disable PORO (ctrl1).\n", __func__);
-> +		dev_warn(dev, "Watchdog and alarm functions might not work properly\n"=
-);
-
-I would not emit two messages here. Also including __func__ isn't so
-nice IMHO. (Great for debugging, but not in production code IMHO.)
-
-We should consider a Cc: to stable.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---7hlg47jdrphncaem
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl//+0oACgkQwfwUeK3K
-7AnncwgAmgwavQFuGTcL160YS+dop1vuwxFgXqqpsvGaYddNW3rPLnOfo6GAl0ZR
-sbKuNYlkHcgrz5LzWT8iDF+WS6R/TVoFVg0arUJxtBMhnKkAVnUUi36Rte0Quttk
-v5i7scFgboKKxMHFcsqUVGOHhC6LcuNKOAuZg52Np8zgnnthgOIqrmKvQ1kYi1xa
-+VFoCjvoKfIrjNISraPacqHu/mHWB8P1KXxbvqADjrrUDRQQU5/TNhlFVAF3Nwa/
-ln0x/BR0a/OxGf0qK93kLbVZkifN1j/6dgWtP2kvgnDnD98z56Twwlikm9dKgsbm
-HHJqz7/IHTc9jZ2wXyEykVllrU2W8A==
-=GfZX
------END PGP SIGNATURE-----
-
---7hlg47jdrphncaem--
+Acked-by: Simon Ser <contact@emersion.fr>
