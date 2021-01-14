@@ -2,80 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71EB42F65A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:21:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B598F2F65A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727290AbhANQTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:19:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60464 "EHLO
+        id S1726952AbhANQUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:20:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbhANQTc (ORCPT
+        with ESMTP id S1726212AbhANQUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:19:32 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD39C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:18:52 -0800 (PST)
-Date:   Thu, 14 Jan 2021 17:18:50 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610641131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CU79fA3lQLU/0BgP+JVmOi9jW4RAszez+BU2b1uN+Ec=;
-        b=0VUiS79Kr7Is4ga1h97stZ/TktYHG9GYuiftNyrdufmYVgr836jkryW1o6O/wTWQLd4QHN
-        sa9AUDMaeA2JdwtgZSdHseHwoi8e6VZw6/nu7MsRKagT+McL7f5LfcEZwOz4bJQjF3YIpz
-        P1r7wD4a+CF3Ih1+CzrCkKfFDvpY6KWMMEkAc6SQp7RjS6jdgelUxY7vp+Pys+OkbKIdmq
-        gGDm0o6bNkZ73iTIOtez2jNo6nrRbqvXKXzH/5FETZNTh1A/qZQRlCUBH2vXTVsBNqWGEv
-        b832ICCjrqUJLtWXO3PRQ2adHt32uSYxO9X9tAEUYR+rATzhqXIQ7Oo7mZk1wA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610641131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CU79fA3lQLU/0BgP+JVmOi9jW4RAszez+BU2b1uN+Ec=;
-        b=6sOM9PYjpHws9X17B3qPBB41OsMNIhLDKK2GdRYI5E/7iZ0xJ/UuHDnfLf6W+lFOhm8AMg
-        ykTOJSe7TktJNsAw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Vitaly Wool <vitaly.wool@konsulko.com>
-Cc:     "tiantao (H)" <tiantao6@huawei.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Mike Galbraith <efault@gmx.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, NitinGupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "tiantao (H)" <tiantao6@hisilicon.com>
-Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
-Message-ID: <20210114161850.zjcfhsgtmojjjqba@linutronix.de>
-References: <f0ca46a830e54f4482fb4f46df9675f5@hisilicon.com>
- <CAM4kBBKD6MAOaBvwC_Wedf_zmzmt-gm=TrAF1Lh7pVbNtcsFZg@mail.gmail.com>
- <4490cb6a7e2243fba374e40652979e46@hisilicon.com>
- <CAM4kBBK=5eBdCjWc5VJXcdr=Z4PV1=ZQ2n8fZmJ6ahJbpUyv2A@mail.gmail.com>
- <08cbef1e43634c4099709be8e99e5d27@hisilicon.com>
- <CAM4kBBJjCYX0DQZ8de9LsFV6L+eF4tZe-NN=jiAz9WLWYrsCsQ@mail.gmail.com>
- <1d0d4a3576e74d128d7849342a7e9faf@hisilicon.com>
- <CAM4kBB+uRrnpta908Gf93VfH90NVpmqv4jNY2kxrrGSdWApz_w@mail.gmail.com>
- <4e686c73-b453-e714-021a-1fcd0a565984@huawei.com>
- <CAM4kBB+jtJd5mqBby7j+ou-AxvPgCU777pX4cnwneLi8P4U+7g@mail.gmail.com>
+        Thu, 14 Jan 2021 11:20:40 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F13C061575;
+        Thu, 14 Jan 2021 08:19:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=L957m6SCsm4YfRvwt1RQwkHpsqdoGDsxSLN6pjGCXjg=; b=SwgoX4biWiRfNIkgGKBzF1hThh
+        fgohm23xOlFZxJhSLZKiwJXvlpOT7mQ1aERIfxlbDnMSz8cAhA501/6QBLnf5vxFq+Kvg8w7lNzGu
+        lKsu5VUh30ZpNT1bDp4PgQQDOAF2zDky3QBOcd8dN/XGAqJ/p2C2tMdWALZA6gQ+xCzpv+dn065rk
+        2TTrQt7lGJCVnnHfj+gY6z8VUTG1gzIwprxJtAF5iFkyufA4tU7Q2Fuvhh6wXdjjz4/2sT9ZCH6eX
+        Aa9Hq52wo/tTnFG/QpwZVj0ONsXxVxsjndY/W8xQ7Zm0pIhz05bcYui4M6gozuphqFgWnJ9k7MeB2
+        tBm+E3uQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l05LN-007mRF-WF; Thu, 14 Jan 2021 16:19:41 +0000
+Date:   Thu, 14 Jan 2021 16:19:29 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        jlayton@redhat.com, dwysocha@redhat.com,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Christoph Hellwig <hch@lst.de>, dchinner@redhat.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        v9fs-developer@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Redesigning and modernising fscache
+Message-ID: <20210114161929.GQ35215@casper.infradead.org>
+References: <2758811.1610621106@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAM4kBB+jtJd5mqBby7j+ou-AxvPgCU777pX4cnwneLi8P4U+7g@mail.gmail.com>
+In-Reply-To: <2758811.1610621106@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-23 19:25:02 [+0100], Vitaly Wool wrote:
-> > write the following patch according to your idea, what do you think ?
+On Thu, Jan 14, 2021 at 10:45:06AM +0000, David Howells wrote:
+> However, there've been some objections to the approach I've taken to
+> implementing this.  The way I've done it is to disable the use of fscache by
+> the five network filesystems that use it, remove much of the old code, put in
+> the reimplementation, then cut the filesystems over.  I.e. rip-and-replace.
+> It leaves unported filesystems unable to use it - but three of the five are
+> done (afs, ceph, nfs), and I've supplied partially-done patches for the other
+> two (9p, cifs).
 > 
-> Yep, that is basically what I was thinking of. Some nitpicks below:
+> It's been suggested that it's too hard to review this way and that either I
+> should go for a gradual phasing in or build the new one in parallel.  The
+> first is difficult because I want to change how almost everything in there
+> works - but the parts are tied together; the second is difficult because there
+> are areas that would *have* to overlap (the UAPI device file, the cache
+> storage, the cache size limits and at least some state for managing these), so
+> there would have to be interaction between the two variants.  One refinement
+> of the latter would be to make the two implementations mutually exclusive: you
+> can build one or the other, but not both.
 
-Did this go somewhere? The thread just ends here on my end.
-Mike, is this patch fixing / helping your case in anyway?
+My reservation with "build fscache2" is that it's going to take some
+time to do, and I really want rid of ->readpages as soon as possible.
 
-> Best regards,
->    Vitaly
-
-Sebastian
+What I'd like to see is netfs_readahead() existing as soon as possible,
+built on top of the current core.  Then filesystems can implement
+netfs_read_request_ops one by one, and they become insulated from the
+transition.
