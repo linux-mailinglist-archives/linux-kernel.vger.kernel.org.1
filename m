@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C48F02F59CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 05:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2AE2F59D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 05:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbhANEMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 23:12:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725875AbhANEMg (ORCPT
+        id S1727091AbhANENE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 23:13:04 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:41688 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726013AbhANEND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 23:12:36 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2531C061575;
-        Wed, 13 Jan 2021 20:11:55 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DGW914975z9sVy;
-        Thu, 14 Jan 2021 15:11:49 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1610597512;
-        bh=4j1AH0dFv8SDYXAoijRZaC8MIveHOHCuDv4tkIHyddU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GhFWiPouAaSWSaFDmxhmOd2uMtZSSaN3gKmU1CbWbsUhquf+3SIqTj/1ezduz00bN
-         zwrN7VwG8TwcWOjxNsefZsFqJwc8HmAmnhL9wp+4J64yDL1kZIXj8/BDlX/JjRuxRq
-         eTGI2DmbCpEvRrZJcL71S0aSCs1+d2JGQe4dT2mZEuSTEDhXfd+72wLeE3yfsV06lk
-         vMvZn+2C4/Gv43l8pPfBb/ylXA0pdXXxG9fh7suuVGk+rztULfa5x9foC3p6RMnABI
-         4EfrsUVcXJ3JmAjZDg71e2lVG/MaiRgRZ98H1hl3XgmcQLzUds1Nfo67JZsOElJyt2
-         HFiKmQeRDFQYA==
-Date:   Thu, 14 Jan 2021 15:11:45 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Borislav Petkov <bp@suse.de>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the tip tree
-Message-ID: <20210114151145.328a142c@canb.auug.org.au>
+        Wed, 13 Jan 2021 23:13:03 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0ULg9c1f_1610597536;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0ULg9c1f_1610597536)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 14 Jan 2021 12:12:16 +0800
+Subject: Re: [PATCH] tpm/tpm_tis: Fix variable reset during IRQ probing
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+References: <20210113120021.59045-1-tianjia.zhang@linux.alibaba.com>
+ <X/+xr/L+m2k5fObZ@kernel.org>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <44c35c27-0cd4-e451-1b9c-d6fe48e58e51@linux.alibaba.com>
+Date:   Thu, 14 Jan 2021 12:12:16 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=qNf_k+kUuT2hcetXM2hTfi";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <X/+xr/L+m2k5fObZ@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=qNf_k+kUuT2hcetXM2hTfi
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-After merging the tip tree, today's linux-next build (x86_64 allnoconfig)
-failed like this:
+On 1/14/21 10:51 AM, Jarkko Sakkinen wrote:
+> On Wed, Jan 13, 2021 at 08:00:21PM +0800, Tianjia Zhang wrote:
+>> In tpm_tis_core_init(), tpm2_probe() will be called first, this
+>> function will eventually call tpm_tis_send(), and then
+>> tpm_tis_probe_irq_single() will detect whether the interrupt is
+>> normal, mainly the installation interrupted, set `priv->irq_tested`
+>> to false. The logic will eventually be executed to tpm_tis_send()
+>> to trigger an interrupt.
+>>
+>> There is currently such a scenario, which will cause the IRQ probe
+>> code to never be executed, so that the TPM device is in polling
+>> mode: after setting irq_tested to false, an interrupt occurs
+>> between entering the ttpm_tis_send() function, and the interrupt
+>> will be first set irq_tested to true will cause the IRQ probe code
+>> to never be executed.
+> 
+> Can you describe the scenario more detail?
+> 
 
-arch/x86/kernel/cpu/amd.c: In function 'bsp_init_amd':
-arch/x86/kernel/cpu/amd.c:545:3: error: '__max_die_per_package' undeclared =
-(first use in this function); did you mean 'topology_max_die_per_package'?
-  545 |   __max_die_per_package =3D nodes_per_socket =3D ((ecx >> 8) & 7) +=
- 1;
-      |   ^~~~~~~~~~~~~~~~~~~~~
-      |   topology_max_die_per_package
+The problematic scenario we encountered is like this. The following 
+figure shows the execution flow of tpm_tis_core_init(). An interrupt 
+occurred before the IRQ probe. This interrupt was caused by 
+tpm2_probe(), but it was triggered before the IRQ probe was executed, 
+and the interrupt handler would set irq_tested to true, so the IRQ probe 
+code can never execute, that is, the code marked 2 in the figure will 
+never happen.
 
-Caused by commit
+                                          IRQ
+   tpm_tis_core_init()
 
-  76e2fc63ca40 ("x86/cpu/amd: Set __max_die_per_package on AMD")
+     tpm2_probe()
 
-I have reverted that commit for today.
---=20
-Cheers,
-Stephen Rothwell
+       tpm_tis_send()           -----------+
+                                           |
+     tpm_tis_probe_irq_single()            |
+                                           |
+       devm_request_irq()                  | 1
+       priv->irq_tested = false            |
+       tpm_tis_gen_interrupt()             |
+                                           |
+         tpm_tis_send()                    |
+                         irq_tested = true |
+                        <------------------+
+           if (priv->irq_tested)
+             return tpm_tis_send_main()
 
---Sig_/=qNf_k+kUuT2hcetXM2hTfi
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+           /* probe IRQ */
+           tpm_tis_send_main()     --------+
+                                           | 2
+           chip->flags |= FLAG_IRQ <-------+
+           priv->irq_tested = true
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl//xIEACgkQAVBC80lX
-0Gyx8wf+PC+oMA0w6Hz5gWiATG3VXLXXzxjvbs4wvweksR170Sq1mD77+1+wEoc3
-ORWvi7oI2Hi+rY2WUaX7rqoily2zy06RwGJffSh72Bk/uNVSVDqks9vY2Iyjqwsz
-1or6cfyXJgML2Qt0Z9EvcKtyGOotHpKxisEcY+zM1V/Bh8r+TT6I+3vpPZLB9Tcl
-H5fwYPK46WXl/bmtfb5Zcu9SLMv82IWh5VgAbLfOKi+RUEtHHoSZcXW7oLbZCWTP
-TNgucJJbDqqVKD5ZKncT3/w9kzf6Mrva5GgAhCieyDRu561Ds2uehNXthcNHTE2J
-pAqA8haXdtXVMVsUhMrxqD+DiKzQEw==
-=MZp7
------END PGP SIGNATURE-----
-
---Sig_/=qNf_k+kUuT2hcetXM2hTfi--
+Best regards,
+Tianjia
