@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8F22F68ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E99E2F68FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729406AbhANSFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:05:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727901AbhANSF1 (ORCPT
+        id S1729528AbhANSGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:06:25 -0500
+Received: from relay03.th.seeweb.it ([5.144.164.164]:34513 "EHLO
+        relay03.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727812AbhANSGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:05:27 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81F4C0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:05:11 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l06ze-0005bf-3P; Thu, 14 Jan 2021 19:05:10 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l06zd-0003wT-HD; Thu, 14 Jan 2021 19:05:09 +0100
-Date:   Thu, 14 Jan 2021 19:05:09 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
-Message-ID: <20210114180509.j5wcbxuwx4rzfys7@pengutronix.de>
-References: <20201216125320.5277-1-clemens.gruber@pqgruber.com>
- <20201216125320.5277-2-clemens.gruber@pqgruber.com>
- <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
- <X9uYqGboZg5DuEtf@workstation.tuxnet>
- <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
- <YAB8ZmtOxRV1QN4l@workstation.tuxnet>
+        Thu, 14 Jan 2021 13:06:20 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 8A9441F531;
+        Thu, 14 Jan 2021 19:05:23 +0100 (CET)
+Subject: Re: [PATCH v2 3/3] dt-bindings: i2c: qcom,i2c-qup: Document noise
+ rejection properties
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, linux-kernel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, phone-devel@vger.kernel.org
+References: <20210114174909.399284-1-angelogioacchino.delregno@somainline.org>
+ <20210114174909.399284-4-angelogioacchino.delregno@somainline.org>
+ <YACGU7Di1RnD9nYL@builder.lan>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <80ecc187-9694-9be9-a910-e03366968e0a@somainline.org>
+Date:   Thu, 14 Jan 2021 19:05:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="j6p2aexwzcoijx25"
-Content-Disposition: inline
-In-Reply-To: <YAB8ZmtOxRV1QN4l@workstation.tuxnet>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <YACGU7Di1RnD9nYL@builder.lan>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Il 14/01/21 18:58, Bjorn Andersson ha scritto:
+> On Thu 14 Jan 11:49 CST 2021, AngeloGioacchino Del Regno wrote:
+> 
+>> Document the new noise rejection properties "qcom,noise-reject-sda"
+>> and "qcom,noise-reject-scl".
+>>
+> 
+> I presume these are unit-less levels?
+> 
+> 
+Yes, there is no unit.
 
---j6p2aexwzcoijx25
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sorry, I've sent v3 before seeing your R-b on this.
 
-Hello Clemens,
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> 
+> Regards,
+> Bjorn
+> 
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>> ---
+>>   .../devicetree/bindings/i2c/qcom,i2c-qup.yaml      | 14 ++++++++++++++
+>>   1 file changed, 14 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/i2c/qcom,i2c-qup.yaml b/Documentation/devicetree/bindings/i2c/qcom,i2c-qup.yaml
+>> index c5c7db3ac2a6..3f14dd65c6b9 100644
+>> --- a/Documentation/devicetree/bindings/i2c/qcom,i2c-qup.yaml
+>> +++ b/Documentation/devicetree/bindings/i2c/qcom,i2c-qup.yaml
+>> @@ -58,6 +58,20 @@ properties:
+>>     '#size-cells':
+>>       const: 0
+>>   
+>> +  qcom,noise-reject-sda:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    description: Noise rejection level for the SDA line.
+>> +    minimum: 0
+>> +    maximum: 3
+>> +    default: 0
+>> +
+>> +  qcom,noise-reject-scl:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    description: Noise rejection level for the SCL line.
+>> +    minimum: 0
+>> +    maximum: 3
+>> +    default: 0
+>> +
+>>   required:
+>>     - compatible
+>>     - clocks
+>> -- 
+>> 2.29.2
+>>
 
-On Thu, Jan 14, 2021 at 06:16:22PM +0100, Clemens Gruber wrote:
-> On Mon, Jan 11, 2021 at 09:35:32PM +0100, Uwe Kleine-K=F6nig wrote:
-> > My position here is: A consumer should disable a PWM before calling
-> > pwm_put. The driver should however not enforce this and so should not
-> > modify the hardware state in .free().
-> >=20
-> > Also .probe should not change the PWM configuration.
->=20
-> I see. This would also allow PWMs initialized in the bootloader (e.g.
-> backlights) to stay on between the bootloader and Linux and avoid
-> flickering.
->=20
-> If no one objects, I would then no longer reset period and duty cycles
-> in the driver (and for our projects, reset them in the bootloader code
-> to avoid leaving PWMs on after a kernel panic and watchdog reset, etc.)
->=20
-> And if there is no pre-known state of the registers, we actually need
-> the .get_state function fully implemented.
-
-This sounds right.
-
-Thanks
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---j6p2aexwzcoijx25
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAAh9IACgkQwfwUeK3K
-7AkiRAf9HsjBHUFdx6tf8RgomKLnOSg5mQTjTfN8l5r3rM3YvPFexDA8bEMrCbD9
-odIhii9oDJwwaK3MeDe2ox3wiP/fK/7NtOCO2ipDTtBt41VCdyAjJQBHrOQk3MyG
-tMUSpnc9Ly7ebOJg1wKDl3m9WwBRtyUixnKkh/DzxCw6cQYL/0yc67pYAuk94Yft
-s/kHzoqmiMoTLaVnOg84nt4j1k2vI7e3PAUA/IbmChOTHTkvU+wo2Wl61rb5Jhus
-1AC0uKvsXssHMVk2NSYCB0bdS2HRpTOR6L1uEyDRINqBG6zjiDGHoKQjjzDDjqd9
-eG5JusA5ChrNvkqwHsW+oMLZ4GfQDg==
-=7aIM
------END PGP SIGNATURE-----
-
---j6p2aexwzcoijx25--
