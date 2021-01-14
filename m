@@ -2,134 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B87BE2F646E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FB72F646F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbhANPXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 10:23:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48316 "EHLO
+        id S1729309AbhANPYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 10:24:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729153AbhANPXU (ORCPT
+        with ESMTP id S1729200AbhANPYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 10:23:20 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB06C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:22:40 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id h16so6092305edt.7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:22:40 -0800 (PST)
+        Thu, 14 Jan 2021 10:24:14 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD9EC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:23:33 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id v184so819836wma.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:23:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iDiw0Eb4xl1qF//Pb3TXsca/MjYdq3TONkBKPeZe8Cg=;
-        b=1Cb4ioaHuRGiieQdZlf/1QqgfoHXXG4h1gtjUVbkDKamIgHsIKzmvlT3LELHXSDDD+
-         jL4r06FBy80TLTjUF7gyyTlwIpfznuUnZbR0t9UyYCmP0NzomrI8mqcZ990FN1V3b1Sw
-         H018piSNecxU2ahmyFjf3Ye5CURe/83mLGf//1CTB9sBNvoWxLy2e4UfvStEbRt0Q8Bm
-         UBuspQOz5lN0USjlTmBWKyge3qw06IOs4ymzvoqwICRdXGGIcz6NSxHQkWSFAzKH91QD
-         8G9K0ly6sAY4PB2wjOe0ZK2jhsdKnCalTi28lHWuSb0CCGRfhxnlYqIMqDBtsO8/RU/K
-         MOPQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LUR3ZC5J+1hLkR7qz5X75neLOSs5yFqeDGs5AO9qOw4=;
+        b=LWGlRpsZ+c5J5N8fxZQxQAtRsePbal/MHQsI00818w2JQRVWkSwZfq4KGRZpl5qQkS
+         cmUin/BmDApKu0+yaK/yZKP+4GpIg+m1J3cUGHIGmhy7zBQf6lDT7cHaPzXUx3m5d7nh
+         hsfV+fAjLuZlK4DVOrbY53QYJFJBfyzJ4eJ89TVmoD5Gex4jCGr5mEIT3l4Wx2xS+ub6
+         crLMVAZao1Bt1oxaQ9kFAonzeBN+svgQ1kpFWLKQxM8WWiD2PWL8jXWhM0OhQZ3ypx37
+         H4rO9JO7eNksW+7X3SvoCCDcdb3xvdwD3ZuNvEkxQLqeTWXAzIgdMJpUlE4jJc6y2b0a
+         Flsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iDiw0Eb4xl1qF//Pb3TXsca/MjYdq3TONkBKPeZe8Cg=;
-        b=Dg+DpFWU6f7DU570m4ofbR026/gOTHPe3qMecBT2NociZGYU0LNF6ujodBysr9FIWd
-         EZ711hwoLUEpnZcROxEHiHYOF4yGbzjYFySUsmr6XjyqH6Gvr6r4ODPOl5YLv+yOwLO9
-         ooUdj2pHNXhDqyDqCD0GD/QnZnFoWuAAvSJUNJGE0BtP2dRzj8xVnPx7+L/+5Mp8DOPN
-         DA97WJ28FaSM5UYxoVc4d43/UMJL5xCNHqJtekK7p4Cx42htdBImNPsCE7Gq/L38F/AV
-         EIDLlI7BfrjNCLrfZ3saZhJVeElDcJMjbFgT+ABxj/S+kDwZdbYKy9gAJfFnkXxKFMh2
-         wyiA==
-X-Gm-Message-State: AOAM532E6l3kzEtKQv6apj87w8K+aB3buP3rFoPRrwVrWcagm4sdqBgM
-        fv8oJLLRL+LHWSxKAVkwwTCJZFOkZ3vNQfrd+UOXILlgIg==
-X-Google-Smtp-Source: ABdhPJyV59NKAh4E0zWqslpwmhaYLEMm7IumyRUG73CvA8pRa2E1iYwW6LGLMXN4mlGlo02BPrpz342U6rsnokOLYq8=
-X-Received: by 2002:a05:6402:ca1:: with SMTP id cn1mr6088321edb.128.1610637758780;
- Thu, 14 Jan 2021 07:22:38 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LUR3ZC5J+1hLkR7qz5X75neLOSs5yFqeDGs5AO9qOw4=;
+        b=LfGGtSqxcokf66NEQF5lFTFSCVArGjetcOalO0YwKqk7KN3MmPMbl4xAmbVJluEvyU
+         AKjORPGAwbqVy5nNlZMY9j/8MwycHmDm4k2pq+VIhEQOmXXH0aY1DbIsb6s0L3omDMEB
+         17YA6k3Sd+eP8Id17Xwbs99u8z6NEDRSrwkHJNvFXK4+sLeYTUU/pZZGp+mpDhW4DCAQ
+         lcliQJjoRz7UXyknmrS0aNLpOJ6PISEUrIoL+CnJ7w/E6hD1qPYKy9K38CyvWsu18lCT
+         HZ3WB0JMAje3N2O8ijqAaYPvESHlAzILa2rRKORy0I2xlvQc45yvPUovJ/FXO16I94le
+         aqOg==
+X-Gm-Message-State: AOAM533c5H89hGhawjwIR2J7MENtME5+r62YggzA7S2ggV5UZosfoUID
+        Qb0J0We13pQginHpBrYukABQHw==
+X-Google-Smtp-Source: ABdhPJyDPR5SpV4A1P0OFN9rFKTQ2+PGovbF0AbXTJxJljKfJFFIiV44I8Zw/NaDinFku3qBrxZwkQ==
+X-Received: by 2002:a05:600c:313:: with SMTP id q19mr4402221wmd.126.1610637812260;
+        Thu, 14 Jan 2021 07:23:32 -0800 (PST)
+Received: from dell.default ([91.110.221.178])
+        by smtp.gmail.com with ESMTPSA id e15sm10777713wrx.86.2021.01.14.07.23.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 07:23:31 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Benjamin Tissoires <benjamin.tissoires@gmail.com>,
+        Bruce Kalk <kall@compass.com>,
+        "C. Scott Ananian" <cananian@alumni.priceton.edu>,
+        Daniel Ritz <daniel.ritz@gmx.ch>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        James Hilliard <james.hilliard1@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Luotao Fu <l.fu@pengutronix.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Peter Osterlund <petero2@telia.com>,
+        Sangwon Jee <jeesw@melfas.com>,
+        Stefan Gmeiner <riddlebox@freesurf.ch>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>
+Subject: [PATCH v3 0/5] (Set 2/2) Rid W=1 issues from Input
+Date:   Thu, 14 Jan 2021 15:23:18 +0000
+Message-Id: <20210114152323.2382283-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <202101142125016321850@zte.com.cn>
-In-Reply-To: <202101142125016321850@zte.com.cn>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 14 Jan 2021 10:22:27 -0500
-Message-ID: <CAHC9VhS=FWMWeTmLHtpVOrjL=j-89cjH+rYktcUZd8rj_fSc=w@mail.gmail.com>
-Subject: Re: Fw:Re:[RFC,v1,1/1] audit: speed up syscall rule match while
- exiting syscall
-To:     yang.yang29@zte.com.cn
-Cc:     Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 8:25 AM <yang.yang29@zte.com.cn> wrote:
->
-> Performance measurements:
-> 1.Environment
-> CPU: Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
-> Linux kernel version: 5.11-rc3
-> Audit version: 2.8.4
->
-> 2.Result
-> 2.1 Syscall invocations
-> Test method:
->     Run command "top" with no-load.
->     Add rule likes "auditctl -a always,exit -F arch=b64 -S chmod -F auid=[number]" which doesn't hit audit.
->     User command "perf record -Rg -t [top's pid] sleep 900" to get audit_filter_syscall()'s execute time ratio.
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-Thanks for providing some performance numbers so quickly, a few
-comments and thoughts below ...
+This is the second (and last) of 2 sets.
 
-> audit_filter_syscall() ratio with 100 rules:
->     before this patch: 15.29%.
->     after this patch: 0.88%, reduce 14.41%.
-> audit_filter_syscall() ratio with CIS[1] rules:
->     before this patch: 2.25%.
->     after this patch: 1.93%%, reduce 0.32%.
-> audit_filter_syscall() ratio with 10 rules:
->     before this patch: 0.94%.
->     after this patch: 1.02%, increase 0.08%.
-> audit_filter_syscall() ratio with 1 rule:
->     before this patch: 0.20%.
->     after this patch: 0.88%, increase 0.68%.
+v3:
+ - Make use of 'ret' instead of removing it
+ - Use __always_unused instead of removing unused variables
+ - Fix recent/new warning regarding undocumented 'prop' param
+ 
+v2:
+ - Replace empty if() with commentary
+   - Suggested-by: Joe Perches
 
-If we assume the CIS rules to be a reasonable common case (I'm not
-sure if that is correct or not, but we'll skip that discussion for
-now), we see an performance improvement of 0.32% correct, yes?  We
-also see a performance regression with small number of syscall rules
-that equalizes above ten rules, yes?
 
-On your system can you provide some absolute numbers?  For example,
-what does 0.32% equate to in terms of wall clock time for a given
-syscall invocation?
+Lee Jones (5):
+  input: mouse: synaptics: Replace NOOP with suitable commentary
+  input: touchscreen: melfas_mip4: Mark a bunch of variables as
+    __always_unused
+  input: touchscreen: usbtouchscreen: Actually check return value of
+    usb_submit_urb()
+  input: touchscreen: surface3_spi: Remove set but unused variable
+    'timestamp'
+  input: touchscreen: stmpe-ts: Add description for 'prop' struct member
 
-> Analyse:
->     With 1 rule, after this patch performance is worse, because mutex_lock()/mutex_unlock(). But user just add one rule seems unusual.
->     With more rule, after this patch performance is improved.Typical likes CIS benchmark.
->
-> 2.2 Rule change
-> Test method:
->     Use ktime_get_real_ts64() before and after audit_add_rule()/audit_del_rule() to calculate time.
->      Add/delete rule by command "auditctl". Each test 10times and get average.
+ drivers/input/mouse/synaptics.c            | 7 +++++--
+ drivers/input/touchscreen/melfas_mip4.c    | 8 ++++----
+ drivers/input/touchscreen/stmpe-ts.c       | 1 +
+ drivers/input/touchscreen/surface3_spi.c   | 2 --
+ drivers/input/touchscreen/usbtouchscreen.c | 3 +++
+ 5 files changed, 13 insertions(+), 8 deletions(-)
 
-In this case I'm less concerned about micro benchmarks, and more
-interested in the wall clock time difference when running auditctl to
-add/remove rules.  The difference here in the micro benchmark is not
-trivial, but with a delta of 4~5us it is possible that it is a
-small(er) percentage when compared to the total time spent executing
-auditctl.
-
-> audit_add_rule() time:
->     before this patch: 3120ns.
->     after this patch: 7783ns, increase 149%.
-> audit_del_rule() time:
->     before this patch: 3510ns.
->     after this patch: 8519ns, increase 143%.
->
-> Analyse:
->     After this patch, rule change time obviously increase. But rule change may not happen very often.
->
-> [1] CIS is a Linux Benchmarks for security purpose.
-> https://www.cisecurity.org/benchmark/distribution_independent_linux/
-
+Cc: Alexandre Torgue <alexandre.torgue@st.com>
+Cc: Benjamin Tissoires <benjamin.tissoires@gmail.com>
+Cc: Bruce Kalk <kall@compass.com>
+Cc: "C. Scott Ananian" <cananian@alumni.priceton.edu>
+Cc: Daniel Ritz <daniel.ritz@gmx.ch>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Henrik Rydberg <rydberg@bitmath.org>
+Cc: James Hilliard <james.hilliard1@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-input@vger.kernel.org
+Cc: linux-stm32@st-md-mailman.stormreply.com
+Cc: Luotao Fu <l.fu@pengutronix.de>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Peter Osterlund <petero2@telia.com>
+Cc: Sangwon Jee <jeesw@melfas.com>
+Cc: Stefan Gmeiner <riddlebox@freesurf.ch>
+Cc: Stefan Riedmueller <s.riedmueller@phytec.de>
+Cc: this to <linux-input@vger.kernel.org>
 -- 
-paul moore
-www.paul-moore.com
+2.25.1
+
