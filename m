@@ -2,232 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C742F5AA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 07:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6622F5AA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 07:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbhANGX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 01:23:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45168 "EHLO
+        id S1726709AbhANGY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 01:24:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbhANGX6 (ORCPT
+        with ESMTP id S1726117AbhANGY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 01:23:58 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A62C061795
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 22:23:19 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id m6so2754686pfm.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 22:23:19 -0800 (PST)
+        Thu, 14 Jan 2021 01:24:58 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58400C061575;
+        Wed, 13 Jan 2021 22:24:17 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id i7so3084000pgc.8;
+        Wed, 13 Jan 2021 22:24:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Y7pAoih+EszjbXCqOpKK8A31FjJDrn7uQtTq3jZ7YdU=;
-        b=JljrT+W9M9iCLsH8Zlw73+3RE8x9Ts0XoHw1KdTAhn9I12JconaHiVcnSRkf+uv5Ef
-         BAEIOYuubRjNEc+82orb8pBIUhMrlfpV9bFS7Z3uD9fts6aoLpUC5Rmim2c7cgzl8bSW
-         jVn9MOQS1DFcbfeqgTu7O02vvIiM92q8RIdF1ehAlyWjkDYg/3GF9j0CuRBnBsxFLauH
-         DbjtC58GL12GJtrwDMEj9zyQEym3YAREDmEmYCXXKyO8YwoQCsd+eViG9Uh3hnrkgy9J
-         m9it1GcKqzjzH6fnAr0Q4SME06s/Nj1zlVSSt3hoIFGRGV8DbEYftAqFIhqgU1+4qAWa
-         gT+w==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=lcW4JpxXQprA1ci8TUjnK5K087ExJhs0k8B5yG40WMo=;
+        b=PmYzb+mdGfQYIcz+8g9hf0jq3y+JlyxzXFMemzpQieJ6uEQ5htQEG58sA/2lG2EkW1
+         9mvVqdok+AQWMU7qg0HCiWPsSBRtD92F3dRmDrfwXdSyDnxGum8Vl7sKV+1NgnPzYEGF
+         1KGWFEYx8V6QEFmyFN61noG8CpC0THhwibGwlGVR7SVDxSSnfGb6IktfcFJT5POJ/pYc
+         IF/ahMcK/YxLoNTVQEwWfLGPSy1dnKZQtVC+Z9nQL6t4CW9RUrBYqHzozHTbVf95rGCe
+         XO/HLNICEMOX7t/o0HngIJgqeWXB/jHixzwiFt28RIUZm7fL0OcVM6nvfub6B49yK6qz
+         zwBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Y7pAoih+EszjbXCqOpKK8A31FjJDrn7uQtTq3jZ7YdU=;
-        b=ocgyWJFBTPWVVLmqSOghqhDnzusLe+HBLTB691GTLGs5NJw20GN8/+G6KYUfOFd62R
-         WEEi9GhXFKWUWP6Sf5gVW4s9hBNprkkvYTtEtZ10Te5MiKJQnxULlFRUUNQ4203RM/3o
-         hTjYapKokw2t/A2q38B36MPru1B8U94MPnW0zpIf/5eIT6gaiy0MommeqgLlPXC+Bfuv
-         FPfaDZ+yzEJbgul2P9S9vJTWkxPauaBhCl6s9K6ZjCE7dXEng0OeOQ2aXH8+o04rgoSc
-         GlbQO00u3ueUmNls2DC4mR7JrLOsxpV+a7tbZiUJJ9+p7IiNOw1RfQ3je4Jy55eJSxri
-         Voag==
-X-Gm-Message-State: AOAM533U8FOlsrOoYi0cOt8xqZRhoqsU2ou59UidZrhG67HWBltHBJUL
-        YiUqTMZwrzbSkOcDpxdklCSpiSWCfJ0=
-X-Google-Smtp-Source: ABdhPJy1uwBX6p87JlH5XPD/onqnpVf2uU4hU2BFH9foYFpOaL+XoL6KAjxVbQxlN+9wT3D+RfrpUQ==
-X-Received: by 2002:a63:605:: with SMTP id 5mr5812179pgg.144.1610605398374;
-        Wed, 13 Jan 2021 22:23:18 -0800 (PST)
-Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:a6ae:11ff:fe18:6ce2])
-        by smtp.gmail.com with ESMTPSA id g26sm4189131pfo.35.2021.01.13.22.23.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=lcW4JpxXQprA1ci8TUjnK5K087ExJhs0k8B5yG40WMo=;
+        b=q9EINQ7v6MeARWm7cqrGFIfraoYYNcxWNMm4INb34UftrFcsowB+fdXM0KyaXrzlR3
+         YECVOpMxmQRyVZ0WVmnPt0JpWc/PCysGUiZ7qpdkDVhaJumuEb6t7ToHm95g9eOHCnoY
+         xityEesPv43AFr+1aKzn/3A1ozx4/ytTtiJVYE+Mm8NdP3N2LWsqCOdMuIdxQDZby6vS
+         7HN5AJe4h7JH+/ym/A+ZC2xq5cSGChrDUhcbaMdu/IDoTOBScvpJgsDXwFIfAND24Abz
+         qzqXlLR6sl+DplPUh6FW/idbzwuSV7lRAVMRnV6r91jRapNbpa9zOjowSYqxDNTjkwb7
+         Oe0Q==
+X-Gm-Message-State: AOAM530bhE8636m+rwpCL/rST3sC+Grma4RXvNFFsYJ6Gg0Imn2OINeC
+        A4nRJ4cHY62Rnr+5tx+WfmA=
+X-Google-Smtp-Source: ABdhPJxQLbET4Ld900+XwfK2j4nkJF52RA4Q3du1NL9nN0EH1WB2KhXsyboQ2Vh6Z7ghuyxBd8zucg==
+X-Received: by 2002:a63:1261:: with SMTP id 33mr5835343pgs.213.1610605456870;
+        Wed, 13 Jan 2021 22:24:16 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id ck20sm4404098pjb.20.2021.01.13.22.24.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 22:23:17 -0800 (PST)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH v2 2/2] f2fs: add ckpt_thread_ioprio sysfs node
-Date:   Thu, 14 Jan 2021 15:23:02 +0900
-Message-Id: <20210114062302.3809664-2-daeho43@gmail.com>
-X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
-In-Reply-To: <20210114062302.3809664-1-daeho43@gmail.com>
-References: <20210114062302.3809664-1-daeho43@gmail.com>
+        Wed, 13 Jan 2021 22:24:15 -0800 (PST)
+Date:   Wed, 13 Jan 2021 22:24:13 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Peter Hutterer <peter.hutterer@who-t.net>, seobrien@chromium.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: hid-input: avoid splitting keyboard, system and
+ consumer controls
+Message-ID: <X//jjawwbm8FxbQU@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+A typical USB keyboard usually splits its keys into several reports:
 
-Added "ckpt_thread_ioprio" sysfs node to give a way to change checkpoint
-merge daemon's io priority. Its default value is "be,3", which means
-"BE" I/O class and I/O priority "3". We can select the class between "rt"
-and "be", and set the I/O priority within valid range of it.
-"," delimiter is necessary in between I/O class and priority number.
+- one for the basic alphanumeric keys, modifier keys, F<n> keys, six pack
+  keys and keypad. This report's application is normally listed as
+  GenericDesktop.Keyboard
+- a GenericDesktop.SystemControl report for the system control keys, such
+  as power and sleep
+- Consumer.ConsumerControl report for multimedia (forward, rewind,
+  play/pause, mute, etc) and other extended keys.
+- additional output, vendor specific, and feature reports
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
+Splitting each report into a separate input device is wasteful and even
+hurts userspace as it makes it harder to determine the true capabilities
+(set of available keys) of a keyboard, so let's adjust application
+matching to merge system control and consumer control reports with
+keyboard report, if one has already been processed.
+
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
-v2:
-- adapt to inlining ckpt_req_control of f2fs_sb_info
----
- Documentation/ABI/testing/sysfs-fs-f2fs |  8 ++++
- fs/f2fs/checkpoint.c                    |  2 +-
- fs/f2fs/f2fs.h                          |  1 +
- fs/f2fs/sysfs.c                         | 51 +++++++++++++++++++++++++
- 4 files changed, 61 insertions(+), 1 deletion(-)
+ drivers/hid/hid-input.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 3dfee94e0618..0c48b2e7dfd4 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -377,3 +377,11 @@ Description:	This gives a control to limit the bio size in f2fs.
- 		Default is zero, which will follow underlying block layer limit,
- 		whereas, if it has a certain bytes value, f2fs won't submit a
- 		bio larger than that size.
-+What:		/sys/fs/f2fs/<disk>/ckpt_thread_ioprio
-+Date:		January 2021
-+Contact:	"Daeho Jeong" <daehojeong@google.com>
-+Description:	Give a way to change checkpoint merge daemon's io priority.
-+		Its default value is "be,3", which means "BE" I/O class and
-+		I/O priority "3". We can select the class between "rt" and "be",
-+		and set the I/O priority within valid range of it. "," delimiter
-+		is necessary in between I/O class and priority number.
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index e0668cec3b80..62bd6f449bb7 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -1840,7 +1840,7 @@ int f2fs_start_ckpt_thread(struct f2fs_sb_info *sbi)
- 	if (IS_ERR(cprc->f2fs_issue_ckpt))
- 		return PTR_ERR(cprc->f2fs_issue_ckpt);
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index f797659cb9d9..df45d8d07dc2 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -1851,6 +1851,16 @@ static struct hid_input *hidinput_match_application(struct hid_report *report)
+ 	list_for_each_entry(hidinput, &hid->inputs, list) {
+ 		if (hidinput->application == report->application)
+ 			return hidinput;
++
++		/*
++		 * Keep SystemControl and ConsumerControl applications together
++		 * with the main keyboard, if present.
++		 */
++		if ((report->application == HID_GD_SYSTEM_CONTROL ||
++		     report->application == HID_CP_CONSUMER_CONTROL) &&
++		    hidinput->application == HID_GD_KEYBOARD) {
++			return hidinput;
++		}
+ 	}
  
--	set_task_ioprio(cprc->f2fs_issue_ckpt, DEFAULT_CHECKPOINT_IOPRIO);
-+	set_task_ioprio(cprc->f2fs_issue_ckpt, cprc->ckpt_thread_ioprio);
- 
- 	return 0;
- }
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index f2ae075aa723..517eb0eda638 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -276,6 +276,7 @@ struct ckpt_req {
- 
- struct ckpt_req_control {
- 	struct task_struct *f2fs_issue_ckpt;	/* checkpoint task */
-+	int ckpt_thread_ioprio;			/* checkpoint merge thread ioprio */
- 	wait_queue_head_t ckpt_wait_queue;	/* waiting queue for wake-up */
- 	atomic_t issued_ckpt;		/* # of actually issued ckpts */
- 	atomic_t total_ckpt;		/* # of total ckpts */
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index 30bae57428d1..ddd70395148d 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -11,6 +11,7 @@
- #include <linux/f2fs_fs.h>
- #include <linux/seq_file.h>
- #include <linux/unicode.h>
-+#include <linux/ioprio.h>
- 
- #include "f2fs.h"
- #include "segment.h"
-@@ -34,6 +35,7 @@ enum {
- 	FAULT_INFO_TYPE,	/* struct f2fs_fault_info */
- #endif
- 	RESERVED_BLOCKS,	/* struct f2fs_sb_info */
-+	CPRC_INFO,	/* struct ckpt_req_control */
- };
- 
- struct f2fs_attr {
-@@ -70,6 +72,8 @@ static unsigned char *__struct_ptr(struct f2fs_sb_info *sbi, int struct_type)
- 	else if (struct_type == STAT_INFO)
- 		return (unsigned char *)F2FS_STAT(sbi);
- #endif
-+	else if (struct_type == CPRC_INFO)
-+		return (unsigned char *)&sbi->cprc_info;
  	return NULL;
- }
- 
-@@ -255,6 +259,23 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
- 		return len;
- 	}
- 
-+	if (!strcmp(a->attr.name, "ckpt_thread_ioprio")) {
-+		struct ckpt_req_control *cprc = &sbi->cprc_info;
-+		int len = 0;
-+		int class = IOPRIO_PRIO_CLASS(cprc->ckpt_thread_ioprio);
-+		int data = IOPRIO_PRIO_DATA(cprc->ckpt_thread_ioprio);
-+
-+		if (class == IOPRIO_CLASS_RT)
-+			len += scnprintf(buf + len, PAGE_SIZE - len, "rt,");
-+		else if (class == IOPRIO_CLASS_BE)
-+			len += scnprintf(buf + len, PAGE_SIZE - len, "be,");
-+		else
-+			return -EINVAL;
-+
-+		len += scnprintf(buf + len, PAGE_SIZE - len, "%d\n", data);
-+		return len;
-+	}
-+
- 	ui = (unsigned int *)(ptr + a->offset);
- 
- 	return sprintf(buf, "%u\n", *ui);
-@@ -308,6 +329,34 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
- 		return ret ? ret : count;
- 	}
- 
-+	if (!strcmp(a->attr.name, "ckpt_thread_ioprio")) {
-+		const char *name = strim((char *)buf);
-+		struct ckpt_req_control *cprc = &sbi->cprc_info;
-+		int class;
-+		long data;
-+		int ret;
-+
-+		if (!strncmp(name, "rt,", 3))
-+			class = IOPRIO_CLASS_RT;
-+		else if (!strncmp(name, "be,", 3))
-+			class = IOPRIO_CLASS_BE;
-+		else
-+			return -EINVAL;
-+
-+		name += 3;
-+		ret = kstrtol(name, 10, &data);
-+		if (ret)
-+			return ret;
-+		if (data >= IOPRIO_BE_NR || data < 0)
-+			return -EINVAL;
-+
-+		cprc->ckpt_thread_ioprio = IOPRIO_PRIO_VALUE(class, data);
-+		ret = set_task_ioprio(cprc->f2fs_issue_ckpt,
-+				cprc->ckpt_thread_ioprio);
-+
-+		return count;
-+	}
-+
- 	ui = (unsigned int *)(ptr + a->offset);
- 
- 	ret = kstrtoul(skip_spaces(buf), 0, &t);
-@@ -567,6 +616,7 @@ F2FS_RW_ATTR(FAULT_INFO_TYPE, f2fs_fault_info, inject_type, inject_type);
- #endif
- F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, data_io_flag, data_io_flag);
- F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, node_io_flag, node_io_flag);
-+F2FS_RW_ATTR(CPRC_INFO, ckpt_req_control, ckpt_thread_ioprio, ckpt_thread_ioprio);
- F2FS_GENERAL_RO_ATTR(dirty_segments);
- F2FS_GENERAL_RO_ATTR(free_segments);
- F2FS_GENERAL_RO_ATTR(lifetime_write_kbytes);
-@@ -652,6 +702,7 @@ static struct attribute *f2fs_attrs[] = {
- #endif
- 	ATTR_LIST(data_io_flag),
- 	ATTR_LIST(node_io_flag),
-+	ATTR_LIST(ckpt_thread_ioprio),
- 	ATTR_LIST(dirty_segments),
- 	ATTR_LIST(free_segments),
- 	ATTR_LIST(unusable),
 -- 
-2.30.0.296.g2bfb1c46d8-goog
+2.30.0.284.gd98b1dd5eaa7-goog
 
+
+-- 
+Dmitry
