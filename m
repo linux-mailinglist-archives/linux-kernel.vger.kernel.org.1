@@ -2,727 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE182F5E2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAEF12F5E30
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728429AbhANJ4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:56:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727883AbhANJ4d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:56:33 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F485C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 01:55:54 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 15so3431479pgx.7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 01:55:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N195n/tk+CWFmGqItzk3wFJxiyk09hskSe8gsSmwxl8=;
-        b=I+apjwgYye5w5fc6nyFlOsgZ15v7cLqfN7K4UCu1KPGJDWiLote8XRZ7MUOHGNuhWI
-         bgN6dkANVuq1zIU0M1CnK7yZHl+7ZHPxlO7ujV7SdrN5a5u0BJFRMZfQRa9EvLsf0hWF
-         e+EYiWBt0SLqbrA9t9Oi7JAVHPdw2BMtNoK+yCTsL9LDaUzHkhb5F6AZxu6BDtfno8kg
-         Mcmb+24d3gS15wiW3mJZeDq1w8aqWMWgNNzTrJep9wHP4bodOv/urNA5+cYo7K5Izi8i
-         Ww/zKOUoJcYUEqtLVRn2PmlRG1+07G4isdPttymyE1SxrNcjqrIEPyvtY2oOzw9RJF3c
-         lQug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N195n/tk+CWFmGqItzk3wFJxiyk09hskSe8gsSmwxl8=;
-        b=PeA6Hx2NEXKrxnGgXJztS47yOtooEkVesJpBwmMdpw3ilO++gGVcgHhXjOSwoZNDyn
-         9taWr7iCHVS1wXwu5LFDvz1lvuNl2DRHwkhbUNopJHzv/8lXnelxfHy9X4dk6pZDa7/1
-         +GdmEI8Q5P0PXpCJyW2cJqzrnLj/9GVL6MpcdIeEbzduOy76D8E9OAX5SEmnqhtyCJnq
-         L/lXBjbfb/rzcgsxA2oYnbECuQRWoLm+x4j+hFIX990TzYDO8JVpl8OcEqa3UFyT7wSs
-         m+R/VCOuBbxA/k1CnqeugHWzDVnSFNBMKYyrtJ/+HQ0cjQfx7JiDjydkOVku5gyj++4O
-         DWQg==
-X-Gm-Message-State: AOAM531895KpRgmwSM3FIvCM8BZoYJyN18ASd5I5eKAtM3tsCKxhutzJ
-        ssrNO/e+CU7vNnbw5vcpd8+pdopMtM1nJx6qjWkCtQ==
-X-Google-Smtp-Source: ABdhPJzUYiZh9L/UEGCNDxwdmuKuT1JAYW4fn0ATP5uC4VkBVexuiRMGDqS52KH6RHToIQatHUOwSLyDY30ECpaCVto=
-X-Received: by 2002:a63:e151:: with SMTP id h17mr6660614pgk.120.1610618153464;
- Thu, 14 Jan 2021 01:55:53 -0800 (PST)
+        id S1728465AbhANJ6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:58:15 -0500
+Received: from mga09.intel.com ([134.134.136.24]:34421 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728191AbhANJ6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 04:58:13 -0500
+IronPort-SDR: DA8CAndxJo6Pan9MVEtPCUM62IOjSCjULTMYknLFJMxQcYhffPiMtQSMNsaLDKwSKFbyaAjB8B
+ E8CdVZb3b+uQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="178491117"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="178491117"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 01:57:32 -0800
+IronPort-SDR: U5o3kiy/mu4PI8d+1HffNn9rEeOlrcJ+gX+zmEoYwjKOJPr6d/iPEkw/ojv/AFW7fiqMb4oebF
+ n5Fo65Jp6vYQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="424897648"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga001.jf.intel.com with ESMTP; 14 Jan 2021 01:57:31 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 14 Jan 2021 01:57:31 -0800
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 14 Jan 2021 01:57:29 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 14 Jan 2021 01:57:29 -0800
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.51) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Thu, 14 Jan 2021 01:57:29 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VhfMLo2QlrIs9sOaoY4SQ54num8TDpu8wVNWR2yOWRz8Feja0NKnVOpGDU1kvFDCaLNeZ8P552bsjo92u485i3WVwANNSaHHywtC2zbL66/w9ResosB3QDyIA5Cj1WtVRl+Gu5wlu9ncOz3x2eNi3HtYcc6OrY8ghfpi5byBZTJDv3csqVuGuF+B3kfhkg6Ndx6DQnBK8V4S4tMvSfdRolyWWWR/lidqgWBfkj6N1dFTooZRLlKZC0YeBxfns5xCYlyFWHflBc0dYUOppqd6Kxqv4lb1bAB3MnTuYaGvypWRnLWkcSGqZPuGWk4mgZtjLxTNO6BAEpKW71fYgpfpbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FRrb4L2DDR4q2wsL2TS5NGrCxbS0+rTcTlPb6R9L0eo=;
+ b=GXTuSoWlBfmHFgJ0YL1plWfCr0H1BqfizE3Lte12sK7j8lTs/DAsGA3Qc1AA/KDnxosBgXjJKzVytLT72mcimnPGGGGwbjp1OfL9hqciiqcg3+4lFBjGHvnPVvD91RsYrzJpxx3FHdPCvS8N1lIq4pChKONFGlm0Kc0NdLe/rby9rYoCyy/T4gX5rHk50jwr+Jph39KTXwPd4qPVoCBAcbExkcT75srH+PglHmenF3gqHpGdi+ujuxCpIwQ0dDhxgqXeIkhFME9czsLBgIHHUPUU5soybrUSdD1zvAmuOpD7EnwW0oKkZVSfkxh+oCN8rT59BdtGMV0/DXCqnrsVrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FRrb4L2DDR4q2wsL2TS5NGrCxbS0+rTcTlPb6R9L0eo=;
+ b=aRAP4ktf37ETXJvPqAsRh5+K6JYMBjCqMbo2Yu81WlDygpwPFT8w1cLPoDY9igt628xECtqX+lFnTQ9w7nW+wQltISTCERaWCeWNsA5XDKZ8yzlXgJ9SlaNDHcJHBlyZg6chpkvwx6yNyiT+tVU4UamMbdUETMHVOhTxV8ocOoU=
+Received: from CY4PR11MB1576.namprd11.prod.outlook.com (2603:10b6:910:d::15)
+ by CY4PR1101MB2088.namprd11.prod.outlook.com (2603:10b6:910:17::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Thu, 14 Jan
+ 2021 09:57:28 +0000
+Received: from CY4PR11MB1576.namprd11.prod.outlook.com
+ ([fe80::e832:8392:8dea:28d7]) by CY4PR11MB1576.namprd11.prod.outlook.com
+ ([fe80::e832:8392:8dea:28d7%7]) with mapi id 15.20.3763.010; Thu, 14 Jan 2021
+ 09:57:28 +0000
+From:   "Jankowski, Konrad0" <konrad0.jankowski@intel.com>
+To:     Wei Xu <xuwei5@hisilicon.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     "salil.mehta@huawei.com" <salil.mehta@huawei.com>,
+        "jinying@hisilicon.com" <jinying@hisilicon.com>,
+        "tangkunshan@huawei.com" <tangkunshan@huawei.com>,
+        "huangdaode@hisilicon.com" <huangdaode@hisilicon.com>,
+        "john.garry@huawei.com" <john.garry@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "zhangyi.ac@huawei.com" <zhangyi.ac@huawei.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "jonathan.cameron@huawei.com" <jonathan.cameron@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "liguozhu@hisilicon.com" <liguozhu@hisilicon.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "shiju.jose@huawei.com" <shiju.jose@huawei.com>
+Subject: RE: [Intel-wired-lan] [net-next] net: iavf: Use the ARRAY_SIZE macro
+ for aq_to_posix
+Thread-Topic: [Intel-wired-lan] [net-next] net: iavf: Use the ARRAY_SIZE macro
+ for aq_to_posix
+Thread-Index: AQHWhrJTlOhH9ZnF0Ui9Tr4Lsx8uZqonqdWA
+Date:   Thu, 14 Jan 2021 09:57:28 +0000
+Message-ID: <CY4PR11MB15769D5697074F230C8742CAABA80@CY4PR11MB1576.namprd11.prod.outlook.com>
+References: <1599641471-204919-1-git-send-email-xuwei5@hisilicon.com>
+In-Reply-To: <1599641471-204919-1-git-send-email-xuwei5@hisilicon.com>
+Accept-Language: pl-PL, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: hisilicon.com; dkim=none (message not signed)
+ header.d=none;hisilicon.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [188.147.103.87]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ab8be4de-97ed-4be6-9c38-08d8b872cd76
+x-ms-traffictypediagnostic: CY4PR1101MB2088:
+x-microsoft-antispam-prvs: <CY4PR1101MB208871F60BCE25105BCABDE6ABA80@CY4PR1101MB2088.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MZkMXQAY9LexzqwXCVjOfld/ryEbt67e7Jlt6rTNCCwZcySUeAUvnn+Na6HJLpL2XoKZ6WMBwMKiqFYBAaMa2ZTKTp/Zqf1fONvWqxZZvop7p6V5Kox1eK+rFL5NbdHMMg7op/HXYpmxvnnDdVE2EGbOxaSX/mwin2Eeb01ON938yK6X17VvuuT+jPWOfZrkoKHEE/PWSr66811OoUKtScRdeGhCsM3g6nqiK2iXaas2PECLoFvzEKdVMK0WBff7waYE/21xsjkTnssXxEbGJ0cyJLWj8JS79N+nLNBm8JqTUuNsFiuyAG3JEngxFmjKzfEqfESR3vgoEqU00mpNpvpWJstaUQv0jghApr3UoDpI4eX0IxMuHauqNgSflw25uz6UPwAOc7noIUxXJa/m/g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB1576.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(376002)(396003)(346002)(76116006)(52536014)(4326008)(7696005)(8936002)(186003)(9686003)(7416002)(110136005)(66556008)(66476007)(66446008)(64756008)(54906003)(66946007)(478600001)(316002)(8676002)(6506007)(86362001)(83380400001)(33656002)(2906002)(53546011)(26005)(66574015)(71200400001)(55016002)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?iso-8859-2?Q?ohT1bNiwqH97qfQ6B5fRVWDfRA3Uu5fHk1LcPn/sCWCZWx3Cdr5ZY5tLxu?=
+ =?iso-8859-2?Q?qC3OmjYVCKy9MxM3OiO6I2bKGW751VpIv3RvzCSYur0dFfa4lycmkhNCo8?=
+ =?iso-8859-2?Q?OPmTmc1fjvO8otZCmFrq5JURkDwihg3do2kEljh0OcoUYBgiS5TDt+lnyc?=
+ =?iso-8859-2?Q?tUbmDpazJu3VMaQLU7m0TcNv2ASshXLr95SiESF1CSZTDMizvg1FZ8BGyY?=
+ =?iso-8859-2?Q?/LO6RJKHnxdEZVDcdEFBji5n8YQAhweeQEToR/qH1DuYUppoqK8yxT1l6s?=
+ =?iso-8859-2?Q?qbIWHAYLXNJOSDgkZyg2n+Ow/wkBM18uDF6wIsV9eCszE29bfdRFevroPo?=
+ =?iso-8859-2?Q?O8rrfC9x96kxn4cGyI+l5AX7Sl+cB7VwHIFT6pEUcWk5rCuxq9nF6KK3A6?=
+ =?iso-8859-2?Q?54PI2u/NkEiLFEkKcRbLCNoGzKMpyY1569uOAqIixFP7owJU8LjE0if7zO?=
+ =?iso-8859-2?Q?hc6Y9+PsvQPfHaDqMh5do/ZpbICv/heexztQF1V1hBWMv7cH4PWd2+7hBy?=
+ =?iso-8859-2?Q?pzEfw8TDTk+/xbl4gBRSqM1nBCi6iYSPYM40rPJSmz5PnVz7yFpZFd7mCq?=
+ =?iso-8859-2?Q?F4N9jduEgXC//bFzvJfxoXK5wQGpJrv+s/A9RerrahW6tIi3jd4sUkvnfl?=
+ =?iso-8859-2?Q?Dyj00HXrHFEpK22tgXT6sS599pslbenozN84ZL65cdl4KlB95JqA7qn9+5?=
+ =?iso-8859-2?Q?Ot4APu230+Sbdog2F5DbwDqlX1/zY4pkTltnq/YlbMDPe7Z1jBy5WtI7Cy?=
+ =?iso-8859-2?Q?i+8Gbp3XmIZtBITM01j0RAIMq3vAZf0n1alC8/dm9JPx4+HOFJYE2NAswL?=
+ =?iso-8859-2?Q?3GUxXxRu2HNqcus0lHITWhJ9uf93hSEnK+L5YffcpwvedCj0FfjymqItQM?=
+ =?iso-8859-2?Q?buATWmjD5AgSKzo8IJmZ5C0+pmezpO/+9IYIZeGVlFxEJ5w7y0EQCqkrpz?=
+ =?iso-8859-2?Q?F4N9HgoUrvSYLmZTu7vUnZKvHQMqTlCPrJIa6uSLbvuX+vr6X1g1LF8QYP?=
+ =?iso-8859-2?Q?O7qiADW0P6+NOzX5E=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-2"
 MIME-Version: 1.0
-References: <20210108120429.895046-1-robert.foss@linaro.org>
- <20210108120429.895046-5-robert.foss@linaro.org> <97d0a789-a4c7-b66f-3c6c-8f89dcdfe8a6@linaro.org>
-In-Reply-To: <97d0a789-a4c7-b66f-3c6c-8f89dcdfe8a6@linaro.org>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Thu, 14 Jan 2021 10:55:41 +0100
-Message-ID: <CAG3jFytuiqRRyQXxKdtw3Kx-c8JJ1LnUvgP61vNVUuBHdEHjnQ@mail.gmail.com>
-Subject: Re: [PATCH v1 04/17] media: camss: Make ISPIF subdevice optional
-To:     Andrey Konovalov <andrey.konovalov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, catalin.marinas@arm.com,
-        will@kernel.org, shawnguo@kernel.org, leoyang.li@nxp.com,
-        geert+renesas@glider.be, arnd@arndb.de, Anson.Huang@nxp.com,
-        michael@walle.cc, agx@sigxcpu.org, max.oss.09@gmail.com,
-        linux-arm-msm@vger.kernel.org,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB1576.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab8be4de-97ed-4be6-9c38-08d8b872cd76
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jan 2021 09:57:28.4610
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: v+pn2lHDB5R51vKImnNVZiFZCiC7eUDR/uHbsaIOvkiKGGpjuO4J6Tb3UsP1Ikic8lG+mdBV3CFQHNfTcEgSrNOM9IyM3JMkFjmFJ47p+ZU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1101MB2088
+X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Andrey,
 
-Thanks for the review!
+> -----Original Message-----
+> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
+> Wei Xu
+> Sent: =B6roda, 9 wrze=B6nia 2020 10:51
+> To: netdev@vger.kernel.org
+> Cc: salil.mehta@huawei.com; jinying@hisilicon.com;
+> tangkunshan@huawei.com; huangdaode@hisilicon.com;
+> john.garry@huawei.com; linux-kernel@vger.kernel.org;
+> linuxarm@huawei.com; shameerali.kolothum.thodi@huawei.com;
+> zhangyi.ac@huawei.com; intel-wired-lan@lists.osuosl.org;
+> xuwei5@hisilicon.com; jonathan.cameron@huawei.com; Jakub Kicinski
+> <kuba@kernel.org>; liguozhu@hisilicon.com; davem@davemloft.net;
+> shiju.jose@huawei.com
+> Subject: [Intel-wired-lan] [net-next] net: iavf: Use the ARRAY_SIZE macro=
+ for
+> aq_to_posix
+> =
 
-On Wed, 13 Jan 2021 at 23:28, Andrey Konovalov
-<andrey.konovalov@linaro.org> wrote:
->
-> Hi Robert,
->
-> Thanks for the patch!
->
-> On 08.01.2021 15:04, Robert Foss wrote:
-> > This driver supports multiple architecture versions of the Qualcomm ISP.
-> > The CAMSS architecure which this driver is name after, and with the
-> > introduction of this series, the Titan architecture.
-> >
-> > The ISPIF is IP-block that is only present in the CAMSS architecture.
-> > In order to support the Titan architecture, make the ISPIF an optional
-> > subdevice.
-> >
-> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> > ---
-> >   .../media/platform/qcom/camss/camss-ispif.c   | 144 ++++++++++--------
-> >   .../media/platform/qcom/camss/camss-ispif.h   |   3 +-
-> >   drivers/media/platform/qcom/camss/camss.c     | 113 +++++++++-----
-> >   drivers/media/platform/qcom/camss/camss.h     |   2 +-
-> >   4 files changed, 160 insertions(+), 102 deletions(-)
-> >
-> > diff --git a/drivers/media/platform/qcom/camss/camss-ispif.c b/drivers/media/platform/qcom/camss/camss-ispif.c
-> > index adeb92808998..0c804584dd65 100644
-> > --- a/drivers/media/platform/qcom/camss/camss-ispif.c
-> > +++ b/drivers/media/platform/qcom/camss/camss-ispif.c
-> > @@ -161,6 +161,7 @@ static const u32 ispif_formats_8x96[] = {
-> >   static irqreturn_t ispif_isr_8x96(int irq, void *dev)
-> >   {
-> >       struct ispif_device *ispif = dev;
-> > +     struct camss *camss = ispif->camss;
-> >       u32 value0, value1, value2, value3, value4, value5;
-> >
-> >       value0 = readl_relaxed(ispif->base + ISPIF_VFE_m_IRQ_STATUS_0(0));
-> > @@ -186,34 +187,34 @@ static irqreturn_t ispif_isr_8x96(int irq, void *dev)
-> >               complete(&ispif->reset_complete[1]);
-> >
-> >       if (unlikely(value0 & ISPIF_VFE_m_IRQ_STATUS_0_PIX0_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE0 pix0 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE0 pix0 overflow\n");
-> >
-> >       if (unlikely(value0 & ISPIF_VFE_m_IRQ_STATUS_0_RDI0_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE0 rdi0 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE0 rdi0 overflow\n");
-> >
-> >       if (unlikely(value1 & ISPIF_VFE_m_IRQ_STATUS_1_PIX1_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE0 pix1 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE0 pix1 overflow\n");
-> >
-> >       if (unlikely(value1 & ISPIF_VFE_m_IRQ_STATUS_1_RDI1_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE0 rdi1 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE0 rdi1 overflow\n");
-> >
-> >       if (unlikely(value2 & ISPIF_VFE_m_IRQ_STATUS_2_RDI2_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE0 rdi2 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE0 rdi2 overflow\n");
-> >
-> >       if (unlikely(value3 & ISPIF_VFE_m_IRQ_STATUS_0_PIX0_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE1 pix0 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE1 pix0 overflow\n");
-> >
-> >       if (unlikely(value3 & ISPIF_VFE_m_IRQ_STATUS_0_RDI0_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE1 rdi0 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE1 rdi0 overflow\n");
-> >
-> >       if (unlikely(value4 & ISPIF_VFE_m_IRQ_STATUS_1_PIX1_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE1 pix1 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE1 pix1 overflow\n");
-> >
-> >       if (unlikely(value4 & ISPIF_VFE_m_IRQ_STATUS_1_RDI1_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE1 rdi1 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE1 rdi1 overflow\n");
-> >
-> >       if (unlikely(value5 & ISPIF_VFE_m_IRQ_STATUS_2_RDI2_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE1 rdi2 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE1 rdi2 overflow\n");
-> >
-> >       return IRQ_HANDLED;
-> >   }
-> > @@ -228,6 +229,7 @@ static irqreturn_t ispif_isr_8x96(int irq, void *dev)
-> >   static irqreturn_t ispif_isr_8x16(int irq, void *dev)
-> >   {
-> >       struct ispif_device *ispif = dev;
-> > +     struct camss *camss = ispif->camss;
-> >       u32 value0, value1, value2;
-> >
-> >       value0 = readl_relaxed(ispif->base + ISPIF_VFE_m_IRQ_STATUS_0(0));
-> > @@ -244,30 +246,32 @@ static irqreturn_t ispif_isr_8x16(int irq, void *dev)
-> >               complete(&ispif->reset_complete[0]);
-> >
-> >       if (unlikely(value0 & ISPIF_VFE_m_IRQ_STATUS_0_PIX0_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE0 pix0 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE0 pix0 overflow\n");
-> >
-> >       if (unlikely(value0 & ISPIF_VFE_m_IRQ_STATUS_0_RDI0_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE0 rdi0 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE0 rdi0 overflow\n");
-> >
-> >       if (unlikely(value1 & ISPIF_VFE_m_IRQ_STATUS_1_PIX1_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE0 pix1 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE0 pix1 overflow\n");
-> >
-> >       if (unlikely(value1 & ISPIF_VFE_m_IRQ_STATUS_1_RDI1_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE0 rdi1 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE0 rdi1 overflow\n");
-> >
-> >       if (unlikely(value2 & ISPIF_VFE_m_IRQ_STATUS_2_RDI2_OVERFLOW))
-> > -             dev_err_ratelimited(to_device(ispif), "VFE0 rdi2 overflow\n");
-> > +             dev_err_ratelimited(camss->dev, "VFE0 rdi2 overflow\n");
-> >
-> >       return IRQ_HANDLED;
-> >   }
-> >
-> >   static int ispif_vfe_reset(struct ispif_device *ispif, u8 vfe_id)
-> >   {
-> > +     struct camss *camss = ispif->camss;
-> > +
-> >       unsigned long time;
-> >       u32 val;
-> >
-> > -     if (vfe_id > (to_camss(ispif)->vfe_num - 1)) {
-> > -             dev_err(to_device(ispif),
-> > +     if (vfe_id > (camss->vfe_num - 1)) {
-> > +             dev_err(camss->dev,
-> >                       "Error: asked reset for invalid VFE%d\n", vfe_id);
-> >               return -ENOENT;
-> >       }
-> > @@ -300,7 +304,7 @@ static int ispif_vfe_reset(struct ispif_device *ispif, u8 vfe_id)
-> >       time = wait_for_completion_timeout(&ispif->reset_complete[vfe_id],
-> >               msecs_to_jiffies(ISPIF_RESET_TIMEOUT_MS));
-> >       if (!time) {
-> > -             dev_err(to_device(ispif),
-> > +             dev_err(camss->dev,
-> >                       "ISPIF for VFE%d reset timeout\n", vfe_id);
-> >               return -EIO;
-> >       }
-> > @@ -316,30 +320,31 @@ static int ispif_vfe_reset(struct ispif_device *ispif, u8 vfe_id)
-> >    */
-> >   static int ispif_reset(struct ispif_device *ispif, u8 vfe_id)
-> >   {
-> > +     struct camss *camss = ispif->camss;
-> >       int ret;
-> >
-> > -     ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE0);
-> > +     ret = camss_pm_domain_on(camss, PM_DOMAIN_VFE0);
-> >       if (ret < 0)
-> >               return ret;
-> >
-> > -     ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE1);
-> > +     ret = camss_pm_domain_on(camss, PM_DOMAIN_VFE1);
-> >       if (ret < 0)
-> >               return ret;
-> >
-> >       ret = camss_enable_clocks(ispif->nclocks_for_reset,
-> >                                 ispif->clock_for_reset,
-> > -                               to_device(ispif));
-> > +                               camss->dev);
-> >       if (ret < 0)
-> >               return ret;
-> >
-> >       ret = ispif_vfe_reset(ispif, vfe_id);
-> >       if (ret)
-> > -             dev_dbg(to_device(ispif), "ISPIF Reset failed\n");
-> > +             dev_dbg(camss->dev, "ISPIF Reset failed\n");
-> >
-> >       camss_disable_clocks(ispif->nclocks_for_reset, ispif->clock_for_reset);
-> >
-> > -     camss_pm_domain_off(to_camss(ispif), PM_DOMAIN_VFE0);
-> > -     camss_pm_domain_off(to_camss(ispif), PM_DOMAIN_VFE1);
-> > +     camss_pm_domain_off(camss, PM_DOMAIN_VFE0);
-> > +     camss_pm_domain_off(camss, PM_DOMAIN_VFE1);
-> >
-> >       return ret;
-> >   }
-> > @@ -355,7 +360,7 @@ static int ispif_set_power(struct v4l2_subdev *sd, int on)
-> >   {
-> >       struct ispif_line *line = v4l2_get_subdevdata(sd);
-> >       struct ispif_device *ispif = line->ispif;
-> > -     struct device *dev = to_device(ispif);
-> > +     struct device *dev = ispif->camss->dev;
-> >       int ret = 0;
-> >
-> >       mutex_lock(&ispif->power_lock);
-> > @@ -505,7 +510,7 @@ static int ispif_validate_intf_status(struct ispif_device *ispif,
-> >       }
-> >
-> >       if ((val & 0xf) != 0xf) {
-> > -             dev_err(to_device(ispif), "%s: ispif is busy: 0x%x\n",
-> > +             dev_err(ispif->camss->dev, "%s: ispif is busy: 0x%x\n",
-> >                       __func__, val);
-> >               ret = -EBUSY;
-> >       }
-> > @@ -552,7 +557,7 @@ static int ispif_wait_for_stop(struct ispif_device *ispif,
-> >                                ISPIF_TIMEOUT_SLEEP_US,
-> >                                ISPIF_TIMEOUT_ALL_US);
-> >       if (ret < 0)
-> > -             dev_err(to_device(ispif), "%s: ispif stop timeout\n",
-> > +             dev_err(ispif->camss->dev, "%s: ispif stop timeout\n",
-> >                       __func__);
-> >
-> >       return ret;
-> > @@ -800,6 +805,7 @@ static int ispif_set_stream(struct v4l2_subdev *sd, int enable)
-> >   {
-> >       struct ispif_line *line = v4l2_get_subdevdata(sd);
-> >       struct ispif_device *ispif = line->ispif;
-> > +     struct camss *camss = ispif->camss;
-> >       enum ispif_intf intf = line->interface;
-> >       u8 csid = line->csid_id;
-> >       u8 vfe = line->vfe_id;
-> > @@ -825,8 +831,8 @@ static int ispif_set_stream(struct v4l2_subdev *sd, int enable)
-> >               ispif_select_csid(ispif, intf, csid, vfe, 1);
-> >               ispif_select_cid(ispif, intf, cid, vfe, 1);
-> >               ispif_config_irq(ispif, intf, vfe, 1);
-> > -             if (to_camss(ispif)->version == CAMSS_8x96 ||
-> > -                 to_camss(ispif)->version == CAMSS_660)
-> > +             if (camss->version == CAMSS_8x96 ||
-> > +                 camss->version == CAMSS_660)
-> >                       ispif_config_pack(ispif,
-> >                                         line->fmt[MSM_ISPIF_PAD_SINK].code,
-> >                                         intf, cid, vfe, 1);
-> > @@ -843,8 +849,8 @@ static int ispif_set_stream(struct v4l2_subdev *sd, int enable)
-> >                       return ret;
-> >
-> >               mutex_lock(&ispif->config_lock);
-> > -             if (to_camss(ispif)->version == CAMSS_8x96 ||
-> > -                 to_camss(ispif)->version == CAMSS_660)
-> > +             if (camss->version == CAMSS_8x96 ||
-> > +                 camss->version == CAMSS_660)
-> >                       ispif_config_pack(ispif,
-> >                                         line->fmt[MSM_ISPIF_PAD_SINK].code,
-> >                                         intf, cid, vfe, 0);
-> > @@ -1088,26 +1094,31 @@ static int ispif_init_formats(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
-> >    *
-> >    * Return 0 on success or a negative error code otherwise
-> >    */
-> > -int msm_ispif_subdev_init(struct ispif_device *ispif,
-> > +int msm_ispif_subdev_init(struct camss *camss,
-> >                         const struct resources_ispif *res)
-> >   {
-> > -     struct device *dev = to_device(ispif);
-> > -     struct platform_device *pdev = to_platform_device(dev);
-> > +     struct ispif_device *ispif = camss->ispif;
-> > +     struct platform_device *pdev = to_platform_device(camss->dev);
-> >       struct resource *r;
-> >       int i;
-> >       int ret;
-> >
-> > +     if (res == NULL && ispif == NULL)
-> > +             return 0;
-> > +
-> > +     ispif->camss = camss;
-> > +
-> >       /* Number of ISPIF lines - same as number of CSID hardware modules */
-> > -     if (to_camss(ispif)->version == CAMSS_8x16)
-> > +     if (camss->version == CAMSS_8x16)
-> >               ispif->line_num = 2;
-> > -     else if (to_camss(ispif)->version == CAMSS_8x96 ||
-> > -              to_camss(ispif)->version == CAMSS_660)
-> > +     else if (camss->version == CAMSS_8x96 ||
-> > +              camss->version == CAMSS_660)
-> >               ispif->line_num = 4;
-> >       else
-> >               return -EINVAL;
-> >
-> > -     ispif->line = devm_kcalloc(dev, ispif->line_num, sizeof(*ispif->line),
-> > -                                GFP_KERNEL);
-> > +     ispif->line = devm_kcalloc(camss->dev, ispif->line_num,
-> > +                     sizeof(*ispif->line), GFP_KERNEL);
-> >       if (!ispif->line)
-> >               return -ENOMEM;
-> >
-> > @@ -1115,12 +1126,12 @@ int msm_ispif_subdev_init(struct ispif_device *ispif,
-> >               ispif->line[i].ispif = ispif;
-> >               ispif->line[i].id = i;
-> >
-> > -             if (to_camss(ispif)->version == CAMSS_8x16) {
-> > +             if (camss->version == CAMSS_8x16) {
-> >                       ispif->line[i].formats = ispif_formats_8x16;
-> >                       ispif->line[i].nformats =
-> >                                       ARRAY_SIZE(ispif_formats_8x16);
-> > -             } else if (to_camss(ispif)->version == CAMSS_8x96 ||
-> > -                        to_camss(ispif)->version == CAMSS_660) {
-> > +             } else if (camss->version == CAMSS_8x96 ||
-> > +                        camss->version == CAMSS_660) {
-> >                       ispif->line[i].formats = ispif_formats_8x96;
-> >                       ispif->line[i].nformats =
-> >                                       ARRAY_SIZE(ispif_formats_8x96);
-> > @@ -1132,16 +1143,16 @@ int msm_ispif_subdev_init(struct ispif_device *ispif,
-> >       /* Memory */
-> >
-> >       r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res->reg[0]);
-> > -     ispif->base = devm_ioremap_resource(dev, r);
-> > +     ispif->base = devm_ioremap_resource(camss->dev, r);
-> >       if (IS_ERR(ispif->base)) {
-> > -             dev_err(dev, "could not map memory\n");
-> > +             dev_err(camss->dev, "could not map memory\n");
-> >               return PTR_ERR(ispif->base);
-> >       }
-> >
-> >       r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res->reg[1]);
-> > -     ispif->base_clk_mux = devm_ioremap_resource(dev, r);
-> > +     ispif->base_clk_mux = devm_ioremap_resource(camss->dev, r);
-> >       if (IS_ERR(ispif->base_clk_mux)) {
-> > -             dev_err(dev, "could not map memory\n");
-> > +             dev_err(camss->dev, "could not map memory\n");
-> >               return PTR_ERR(ispif->base_clk_mux);
-> >       }
-> >
-> > @@ -1150,24 +1161,25 @@ int msm_ispif_subdev_init(struct ispif_device *ispif,
-> >       r = platform_get_resource_byname(pdev, IORESOURCE_IRQ, res->interrupt);
-> >
-> >       if (!r) {
-> > -             dev_err(dev, "missing IRQ\n");
-> > +             dev_err(camss->dev, "missing IRQ\n");
-> >               return -EINVAL;
-> >       }
-> >
-> >       ispif->irq = r->start;
-> >       snprintf(ispif->irq_name, sizeof(ispif->irq_name), "%s_%s",
-> > -              dev_name(dev), MSM_ISPIF_NAME);
-> > -     if (to_camss(ispif)->version == CAMSS_8x16)
-> > -             ret = devm_request_irq(dev, ispif->irq, ispif_isr_8x16,
-> > +              dev_name(camss->dev), MSM_ISPIF_NAME);
-> > +     if (camss->version == CAMSS_8x16)
-> > +             ret = devm_request_irq(camss->dev, ispif->irq, ispif_isr_8x16,
-> >                              IRQF_TRIGGER_RISING, ispif->irq_name, ispif);
-> > -     else if (to_camss(ispif)->version == CAMSS_8x96 ||
-> > -              to_camss(ispif)->version == CAMSS_660)
-> > -             ret = devm_request_irq(dev, ispif->irq, ispif_isr_8x96,
-> > +     else if (camss->version == CAMSS_8x96 ||
-> > +              camss->version == CAMSS_660)
-> > +             ret = devm_request_irq(camss->dev, ispif->irq, ispif_isr_8x96,
-> >                              IRQF_TRIGGER_RISING, ispif->irq_name, ispif);
-> >       else
-> >               ret = -EINVAL;
-> > +
-> >       if (ret < 0) {
-> > -             dev_err(dev, "request_irq failed: %d\n", ret);
-> > +             dev_err(camss->dev, "request_irq failed: %d\n", ret);
-> >               return ret;
-> >       }
-> >
-> > @@ -1177,7 +1189,7 @@ int msm_ispif_subdev_init(struct ispif_device *ispif,
-> >       while (res->clock[ispif->nclocks])
-> >               ispif->nclocks++;
-> >
-> > -     ispif->clock = devm_kcalloc(dev,
-> > +     ispif->clock = devm_kcalloc(camss->dev,
-> >                                   ispif->nclocks, sizeof(*ispif->clock),
-> >                                   GFP_KERNEL);
-> >       if (!ispif->clock)
-> > @@ -1186,7 +1198,7 @@ int msm_ispif_subdev_init(struct ispif_device *ispif,
-> >       for (i = 0; i < ispif->nclocks; i++) {
-> >               struct camss_clock *clock = &ispif->clock[i];
-> >
-> > -             clock->clk = devm_clk_get(dev, res->clock[i]);
-> > +             clock->clk = devm_clk_get(camss->dev, res->clock[i]);
-> >               if (IS_ERR(clock->clk))
-> >                       return PTR_ERR(clock->clk);
-> >
-> > @@ -1198,7 +1210,7 @@ int msm_ispif_subdev_init(struct ispif_device *ispif,
-> >       while (res->clock_for_reset[ispif->nclocks_for_reset])
-> >               ispif->nclocks_for_reset++;
-> >
-> > -     ispif->clock_for_reset = devm_kcalloc(dev,
-> > +     ispif->clock_for_reset = devm_kcalloc(camss->dev,
-> >                                             ispif->nclocks_for_reset,
-> >                                             sizeof(*ispif->clock_for_reset),
-> >                                             GFP_KERNEL);
-> > @@ -1208,7 +1220,7 @@ int msm_ispif_subdev_init(struct ispif_device *ispif,
-> >       for (i = 0; i < ispif->nclocks_for_reset; i++) {
-> >               struct camss_clock *clock = &ispif->clock_for_reset[i];
-> >
-> > -             clock->clk = devm_clk_get(dev, res->clock_for_reset[i]);
-> > +             clock->clk = devm_clk_get(camss->dev, res->clock_for_reset[i]);
-> >               if (IS_ERR(clock->clk))
-> >                       return PTR_ERR(clock->clk);
-> >
-> > @@ -1331,10 +1343,13 @@ static const struct media_entity_operations ispif_media_ops = {
-> >   int msm_ispif_register_entities(struct ispif_device *ispif,
-> >                               struct v4l2_device *v4l2_dev)
-> >   {
-> > -     struct device *dev = to_device(ispif);
-> > +     struct camss *camss =  ispif->camss;
-> >       int ret;
-> >       int i;
-> >
-> > +     if (!ispif)
-> > +             return 0;
-> > +
-> >       for (i = 0; i < ispif->line_num; i++) {
-> >               struct v4l2_subdev *sd = &ispif->line[i].subdev;
-> >               struct media_pad *pads = ispif->line[i].pads;
-> > @@ -1348,7 +1363,7 @@ int msm_ispif_register_entities(struct ispif_device *ispif,
-> >
-> >               ret = ispif_init_formats(sd, NULL);
-> >               if (ret < 0) {
-> > -                     dev_err(dev, "Failed to init format: %d\n", ret);
-> > +                     dev_err(camss->dev, "Failed to init format: %d\n", ret);
-> >                       goto error;
-> >               }
-> >
-> > @@ -1360,13 +1375,15 @@ int msm_ispif_register_entities(struct ispif_device *ispif,
-> >               ret = media_entity_pads_init(&sd->entity, MSM_ISPIF_PADS_NUM,
-> >                                            pads);
-> >               if (ret < 0) {
-> > -                     dev_err(dev, "Failed to init media entity: %d\n", ret);
-> > +                     dev_err(camss->dev, "Failed to init media entity: %d\n",
-> > +                             ret);
-> >                       goto error;
-> >               }
-> >
-> >               ret = v4l2_device_register_subdev(v4l2_dev, sd);
-> >               if (ret < 0) {
-> > -                     dev_err(dev, "Failed to register subdev: %d\n", ret);
-> > +                     dev_err(camss->dev, "Failed to register subdev: %d\n",
-> > +                             ret);
-> >                       media_entity_cleanup(&sd->entity);
-> >                       goto error;
-> >               }
-> > @@ -1393,6 +1410,9 @@ void msm_ispif_unregister_entities(struct ispif_device *ispif)
-> >   {
-> >       int i;
-> >
-> > +     if (!ispif)
-> > +             return;
-> > +
-> >       mutex_destroy(&ispif->power_lock);
-> >       mutex_destroy(&ispif->config_lock);
-> >
-> > diff --git a/drivers/media/platform/qcom/camss/camss-ispif.h b/drivers/media/platform/qcom/camss/camss-ispif.h
-> > index 4132174f7ea1..fdf28e68cc7d 100644
-> > --- a/drivers/media/platform/qcom/camss/camss-ispif.h
-> > +++ b/drivers/media/platform/qcom/camss/camss-ispif.h
-> > @@ -63,11 +63,12 @@ struct ispif_device {
-> >       struct mutex config_lock;
-> >       unsigned int line_num;
-> >       struct ispif_line *line;
-> > +     struct camss *camss;
-> >   };
-> >
-> >   struct resources_ispif;
-> >
-> > -int msm_ispif_subdev_init(struct ispif_device *ispif,
-> > +int msm_ispif_subdev_init(struct camss *camss,
-> >                         const struct resources_ispif *res);
-> >
-> >   int msm_ispif_register_entities(struct ispif_device *ispif,
-> > diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-> > index 8fefce57bc49..aeec59bc6194 100644
-> > --- a/drivers/media/platform/qcom/camss/camss.c
-> > +++ b/drivers/media/platform/qcom/camss/camss.c
-> > @@ -748,11 +748,13 @@ static int camss_init_subdevices(struct camss *camss)
-> >               }
-> >       }
-> >
-> > -     ret = msm_ispif_subdev_init(&camss->ispif, ispif_res);
-> > -     if (ret < 0) {
-> > -             dev_err(camss->dev, "Failed to init ispif sub-device: %d\n",
-> > +     if (camss->ispif) {
-> > +             ret = msm_ispif_subdev_init(camss, ispif_res);
-> > +             if (ret < 0) {
-> > +                     dev_err(camss->dev, "Failed to init ispif sub-device: %d\n",
-> >                       ret);
-> > -             return ret;
-> > +                     return ret;
-> > +             }
-> >       }
-> >
-> >       for (i = 0; i < camss->vfe_num; i++) {
-> > @@ -801,11 +803,14 @@ static int camss_register_entities(struct camss *camss)
-> >               }
-> >       }
-> >
-> > -     ret = msm_ispif_register_entities(&camss->ispif, &camss->v4l2_dev);
-> > -     if (ret < 0) {
-> > -             dev_err(camss->dev, "Failed to register ispif entities: %d\n",
-> > +     if (camss->ispif) {
-> > +             ret = msm_ispif_register_entities(camss->ispif,
-> > +                                               &camss->v4l2_dev);
-> > +             if (ret < 0) {
-> > +                     dev_err(camss->dev, "Failed to register ispif entities: %d\n",
-> >                       ret);
-> > -             goto err_reg_ispif;
-> > +                     goto err_reg_ispif;
-> > +             }
-> >       }
-> >
-> >       for (i = 0; i < camss->vfe_num; i++) {
-> > @@ -838,43 +843,64 @@ static int camss_register_entities(struct camss *camss)
-> >               }
-> >       }
-> >
-> > -     for (i = 0; i < camss->csid_num; i++) {
-> > -             for (j = 0; j < camss->ispif.line_num; j++) {
-> > -                     ret = media_create_pad_link(
-> > -                             &camss->csid[i].subdev.entity,
-> > -                             MSM_CSID_PAD_SRC,
-> > -                             &camss->ispif.line[j].subdev.entity,
-> > -                             MSM_ISPIF_PAD_SINK,
-> > -                             0);
-> > -                     if (ret < 0) {
-> > -                             dev_err(camss->dev,
-> > -                                     "Failed to link %s->%s entities: %d\n",
-> > -                                     camss->csid[i].subdev.entity.name,
-> > -                                     camss->ispif.line[j].subdev.entity.name,
-> > -                                     ret);
-> > -                             goto err_link;
-> > -                     }
-> > -             }
-> > -     }
-> > -
-> > -     for (i = 0; i < camss->ispif.line_num; i++)
-> > -             for (k = 0; k < camss->vfe_num; k++)
-> > -                     for (j = 0; j < ARRAY_SIZE(camss->vfe[k].line); j++) {
-> > +     if (camss->ispif) {
-> > +             for (i = 0; i < camss->csid_num; i++) {
-> > +                     for (j = 0; j < camss->ispif->line_num; j++) {
-> >                               ret = media_create_pad_link(
-> > -                                     &camss->ispif.line[i].subdev.entity,
-> > -                                     MSM_ISPIF_PAD_SRC,
-> > -                                     &camss->vfe[k].line[j].subdev.entity,
-> > -                                     MSM_VFE_PAD_SINK,
-> > +                                     &camss->csid[i].subdev.entity,
-> > +                                     MSM_CSID_PAD_SRC,
-> > +                                     &camss->ispif->line[j].subdev.entity,
-> > +                                     MSM_ISPIF_PAD_SINK,
-> >                                       0);
-> >                               if (ret < 0) {
-> >                                       dev_err(camss->dev,
-> >                                               "Failed to link %s->%s entities: %d\n",
-> > -                                             camss->ispif.line[i].subdev.entity.name,
-> > -                                             camss->vfe[k].line[j].subdev.entity.name,
-> > +                                             camss->csid[i].subdev.entity.name,
-> > +                                             camss->ispif->line[j].subdev.entity.name,
-> >                                               ret);
-> >                                       goto err_link;
-> >                               }
-> >                       }
-> > +             }
-> > +
-> > +             for (i = 0; i < camss->ispif->line_num; i++)
-> > +                     for (k = 0; k < camss->vfe_num; k++)
-> > +                             for (j = 0; j < ARRAY_SIZE(camss->vfe[k].line); j++) {
-> > +                                     ret = media_create_pad_link(
-> > +                                             &camss->ispif->line[i].subdev.entity,
-> > +                                             MSM_ISPIF_PAD_SRC,
-> > +                                             &camss->vfe[k].line[j].subdev.entity,
-> > +                                             MSM_VFE_PAD_SINK,
-> > +                                             0);
-> > +                                     if (ret < 0) {
-> > +                                             dev_err(camss->dev,
-> > +                                                     "Failed to link %s->%s entities: %d\n",
-> > +                                                     camss->ispif->line[i].subdev.entity.name,
-> > +                                                     camss->vfe[k].line[j].subdev.entity.name,
-> > +                                                     ret);
-> > +                                             goto err_link;
-> > +                                     }
-> > +                             }
-> > +     } else {
-> > +             for (i = 0; i < camss->csid_num; i++)
-> > +                     for (k = 0; k < camss->vfe_num; k++)
-> > +                             for (j = 0; j < ARRAY_SIZE(camss->vfe[k].line); j++) {
-> > +                                     ret = media_create_pad_link(
-> > +                                             &camss->csid[i].subdev.entity,
-> > +                                             MSM_CSID_PAD_SRC,
-> > +                                             &camss->vfe[k].line[j].subdev.entity,
-> > +                                             MSM_VFE_PAD_SINK,
-> > +                                             0);
-> > +                                     if (ret < 0) {
-> > +                                             dev_err(camss->dev,
-> > +                                                     "Failed to link %s->%s entities: %d\n",
-> > +                                                     camss->csid[i].subdev.entity.name,
-> > +                                                     camss->vfe[k].line[j].subdev.entity.name,
-> > +                                                     ret);
-> > +                                             goto err_link;
-> > +                                     }
-> > +                             }
-> > +     }
-> >
-> >       return 0;
-> >
-> > @@ -884,8 +910,9 @@ static int camss_register_entities(struct camss *camss)
-> >       for (i--; i >= 0; i--)
-> >               msm_vfe_unregister_entities(&camss->vfe[i]);
-> >
-> > -     msm_ispif_unregister_entities(&camss->ispif);
-> >   err_reg_ispif:
-> > +     if (camss->ispif)
-> > +             msm_ispif_unregister_entities(camss->ispif);
-> >
-> >       i = camss->csid_num;
-> >   err_reg_csid:
-> > @@ -916,7 +943,8 @@ static void camss_unregister_entities(struct camss *camss)
-> >       for (i = 0; i < camss->csid_num; i++)
-> >               msm_csid_unregister_entity(&camss->csid[i]);
-> >
-> > -     msm_ispif_unregister_entities(&camss->ispif);
-> > +     if (camss->ispif)
-> > +             msm_ispif_unregister_entities(camss->ispif);
-> >
-> >       for (i = 0; i < camss->vfe_num; i++)
-> >               msm_vfe_unregister_entities(&camss->vfe[i]);
-> > @@ -1047,6 +1075,15 @@ static int camss_probe(struct platform_device *pdev)
-> >               goto err_free;
-> >       }
-> >
-> > +     if (camss->version == CAMSS_8x16 ||
-> > +         camss->version == CAMSS_8x96) {
-> > +             camss->ispif = devm_kcalloc(dev, 1, sizeof(*camss->csid), GFP_KERNEL);
->
-> - shouldn't it be sizeof(*camss->ispif) instead?
+> Use the ARRAY_SIZE macro to calculate the size of an array.
+> This code was detected with the help of Coccinelle.
+> =
 
-Very much so, thanks for catching this.
+> Signed-off-by: Wei Xu <xuwei5@hisilicon.com>
+> ---
+>  drivers/net/ethernet/intel/iavf/iavf_adminq.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> =
 
->
-> Thanks,
-> Andrey
->
-> > +             if (!camss->ispif) {
-> > +                     ret = -ENOMEM;
-> > +                     goto err_free;
-> > +             }
-> > +     }
-> > +
-> >       camss->vfe = devm_kcalloc(dev, camss->vfe_num, sizeof(*camss->vfe),
-> >                                 GFP_KERNEL);
-> >       if (!camss->vfe) {
-> > diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
-> > index 46e986452824..b7ad8e9f68a8 100644
-> > --- a/drivers/media/platform/qcom/camss/camss.h
-> > +++ b/drivers/media/platform/qcom/camss/camss.h
-> > @@ -79,7 +79,7 @@ struct camss {
-> >       struct csiphy_device *csiphy;
-> >       int csid_num;
-> >       struct csid_device *csid;
-> > -     struct ispif_device ispif;
-> > +     struct ispif_device *ispif;
-> >       int vfe_num;
-> >       struct vfe_device *vfe;
-> >       atomic_t ref_count;
-> >
+> diff --git a/drivers/net/ethernet/intel/iavf/iavf_adminq.h
+> b/drivers/net/ethernet/intel/iavf/iavf_adminq.h
+> index baf2fe2..eead12c 100644
+> --- a/drivers/net/ethernet/intel/iavf/iavf_adminq.h
+> +++ b/drivers/net/ethernet/intel/iavf/iavf_adminq.h
+> @@ -120,7 +120,7 @@ static inline int iavf_aq_rc_to_posix(int aq_ret, int
+> aq_rc)
+>  	if (aq_ret =3D=3D IAVF_ERR_ADMIN_QUEUE_TIMEOUT)
+>  		return -EAGAIN;
+> =
+
+> -	if (!((u32)aq_rc < (sizeof(aq_to_posix) / sizeof((aq_to_posix)[0]))))
+> +	if (!((u32)aq_rc < ARRAY_SIZE(aq_to_posix)))
+>  		return -ERANGE;
+> =
+
+>  	return aq_to_posix[aq_rc];
+
+Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
+---------------------------------------------------------------------
+Intel Technology Poland sp. z o.o.
+ul. Sowackiego 173 | 80-298 Gdask | Sd Rejonowy Gdask Pnoc | VII Wydzia Gos=
+podarczy Krajowego Rejestru Sdowego - KRS 101882 | NIP 957-07-52-316 | Kapi=
+ta zakadowy 200.000 PLN.
+Ta wiadomo wraz z zacznikami jest przeznaczona dla okrelonego adresata i mo=
+e zawiera informacje poufne. W razie przypadkowego otrzymania tej wiadomoci=
+, prosimy o powiadomienie nadawcy oraz trwae jej usunicie; jakiekolwiek prz=
+egldanie lub rozpowszechnianie jest zabronione.
+This e-mail and any attachments may contain confidential material for the s=
+ole use of the intended recipient(s). If you are not the intended recipient=
+, please contact the sender and delete all copies; any review or distributi=
+on by others is strictly prohibited.
+=20
+
