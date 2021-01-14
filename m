@@ -2,61 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110432F6020
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBD92F6021
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbhANLdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 06:33:00 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11383 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726634AbhANLc7 (ORCPT
+        id S1728535AbhANLdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 06:33:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727416AbhANLdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 06:32:59 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DGhw328WDz7VHW;
-        Thu, 14 Jan 2021 19:31:15 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Thu, 14 Jan 2021
- 19:32:10 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] mm/hugetlb: avoid unnecessary hugetlb_acct_memory() call
-Date:   Thu, 14 Jan 2021 06:31:40 -0500
-Message-ID: <20210114113140.23069-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        Thu, 14 Jan 2021 06:33:09 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25A6C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 03:32:28 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id h19so3190252qtq.13
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 03:32:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FB06oW7tS9tyN7cLDTxYsdBt2THIvIQmyx5Kx4xPq1k=;
+        b=U0dgy3K3wiUqn1Qr9EojOjG2n8k4wlBtcOult05YNdNv7HwjPFlS76gt5kP3zNAExQ
+         qzEwIMY3o5rycZADuTXkgr1MLYKqfEo9FOEF2T41ko0dWcwOHz49msCm5S/Ga6gBqCCT
+         aZsHIe5n9ZrSggKxsAzjxqwT+Jrfi1WDtv4otBEiLP/Dam3CODK0NiNWWKKhm5X1Fy0Y
+         etaLNC09TcBtSYPITILLQYgYNywGwIfwN21Ce96bkvaNpG11auZnmNpJNNRLEzQVG5r7
+         c1BllGoF0QyT9BtPRkB/49apNYj4/EvR6FV8DbueodAXreP8jOd6u9/kLNccDbD0bx/v
+         WGCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FB06oW7tS9tyN7cLDTxYsdBt2THIvIQmyx5Kx4xPq1k=;
+        b=CfiQMwZa9LWZ0aalpavs+5wp83uGNjLowYaD+uYKwY6os+vu0p/6+W0O+uGUjLvOxG
+         wI3qCawwe50irv9+w/mxNg4Zm1Ad071GLAp9ahpfF7aSAN30fHqWw0JHyD8p6oTELbpq
+         +/uJgz6fHk52Z7pXpBl7Ga4liI4GkqIgaxknTv96IMp09ByItAwnt25dniHUiuZZuFW2
+         F6IPRTCt7ilEtPX1rzHKFwSvBedSOiSIgb5Vl/RYWHKgoEmUHUN3fUeF49RvTke0rCra
+         EH3oO81ZxN8JGqBYJrEF3XY+ruAP0NMdiMolf6gwD1OjUgjJJs/bRQW19JUKAIH9NB4t
+         FTcw==
+X-Gm-Message-State: AOAM531+CIdwRT6+u59WjEH6I6joLvaNLJiyv8P2q+r8epH4A7rA7Jvm
+        bAPB+MaI6R9fsllsS113AC9+d6zr2VO6iYtfunWI3Q==
+X-Google-Smtp-Source: ABdhPJxYJhC2f2YQvuPfYRs5M6akBW7ShbhkRoEUq8Ll0KiX2tRtK0U+Y4OmHoO18DyxtDuPvsppQciyNZauN1I/RJM=
+X-Received: by 2002:aed:2f06:: with SMTP id l6mr6521305qtd.66.1610623947935;
+ Thu, 14 Jan 2021 03:32:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+References: <0000000000004a33a005b8b8eaab@google.com> <20210112194058.GA200254@ubuntu-m3-large-x86>
+In-Reply-To: <20210112194058.GA200254@ubuntu-m3-large-x86>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 14 Jan 2021 12:32:16 +0100
+Message-ID: <CACT4Y+YFZf=BnCQJQUYwG-UpaYKG97VD-XWpEdXoR3ZnOxH5NQ@mail.gmail.com>
+Subject: Re: upstream build error (12)
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     syzbot <syzbot+76880518931d755473cf@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When gbl_reserve is 0, hugetlb_acct_memory() will do nothing except holding
-and releasing hugetlb_lock.
+On Tue, Jan 12, 2021 at 8:41 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Tue, Jan 12, 2021 at 11:20:27AM -0800, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    e609571b Merge tag 'nfs-for-5.11-2' of git://git.linux-nfs..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=15965a00d00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6157970d0a91b812
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=76880518931d755473cf
+> > compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+76880518931d755473cf@syzkaller.appspotmail.com
+> >
+> > clang-11: error: unable to execute command: Aborted (core dumped)
+> > clang-11: error: clang frontend command failed due to signal (use -v to see invocation)
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> Would it be possible for clang-built-linux@googlegroups.com to be CC'd
+> when there is a build error and the compiler is clang? Especially if
+> clang is hitting an assertion.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/hugetlb.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Hi Nathan,
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 737b2dce19e6..fe2da9ad6233 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -5241,7 +5241,8 @@ long hugetlb_unreserve_pages(struct inode *inode, long start, long end,
- 	 * reservations to be released may be adjusted.
- 	 */
- 	gbl_reserve = hugepage_subpool_put_pages(spool, (chg - freed));
--	hugetlb_acct_memory(h, -gbl_reserve);
-+	if (gbl_reserve)
-+		hugetlb_acct_memory(h, -gbl_reserve);
- 
- 	return 0;
- }
--- 
-2.19.1
-
+I am adding functionality to CC specific emails on build errors on
+specific instances:
+https://github.com/google/syzkaller/pull/2388
