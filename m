@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4212F650C
+	by mail.lfdr.de (Postfix) with ESMTP id D74BB2F650D
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbhANPre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 10:47:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53512 "EHLO
+        id S1727194AbhANPrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 10:47:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726175AbhANPrd (ORCPT
+        with ESMTP id S1725957AbhANPrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 10:47:33 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A232C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:46:53 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id md11so3299372pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:46:53 -0800 (PST)
+        Thu, 14 Jan 2021 10:47:36 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A614FC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:46:56 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id p18so4012968pgm.11
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:46:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7nRa2iQYEz2mBc42Jpcm0+7wU13wlYE4f1yc6Ww/3vA=;
-        b=NdAa+iIGyHzL6nF1JU+mNdUWy1xwsV22iMv1QGLOdyYu38Ri1zwDLj4UMAyzpM3cgU
-         CnUiX1Zm4Ae7NGjWgoEEEnMw3+yBcBg1DJ8gBAETO9+k6u1bWDv7zX3cT551SNkAa0/6
-         2CX5dk8wj0TYSGGtKJX8CvmZsIi0o+7PNEh4NV/dxRFnjc0wf33UUVpJOlJf129usrc9
-         G2feEJoXKAEVIPaX413jg+PRxLNzDjxscU0fp0KAVTiLeHbXgFyq6rRKOwaujTHu9nx8
-         rId5701y3caQRnxKnYpnSYpKunUf0PaQW3DqFUglT3aAAni/h/wEaNDLeDaD+ooPQDH7
-         2LJA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=JEIZptMsP3i/FDZXmToB0D7fOEQgkvKbzTSUeuV9O1Y=;
+        b=ntfHALH/O7DbpfC9sjG7d4X6xSC4YDEAQvvW3RwnV5Fca/a8AduK32DdcH2oTgIKCm
+         9uRahMjqsZW4Z1kqsaaJ3oeSwjmNiot6VOwD4kmykFI7QFjurNxF5hf2bMKWd1TNwiMG
+         yZTkbKjqyFDZs0rT4bWzje2ciWsAf54mtaSPhOdrh2w4Ysrh0QqZReAqIjM80264fHNg
+         4TOU24ANgdNdZZIwbrLjEOOz1wTBfx6rkPqvMH4yueNW2rJqXjQbKkpxaPcgABbMD1nA
+         MaScBge5g7ivueB4HhUULrgl7Jt4U+fGpI1T0290qCoqL9bGLnxXxYZ9O+jKPn8yvpYd
+         wpAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7nRa2iQYEz2mBc42Jpcm0+7wU13wlYE4f1yc6Ww/3vA=;
-        b=r6Xg+8NNEJ7R0CJr4WG4rnbUoGe7SNuGHcUIdA9BQ4qFKZBw7c0tYGBSQnVJ2jhAgQ
-         GK3aOrjsUNtD/BnSMboXJ8TtbeBUa3xmhKhd6f1xDM4fzzi3XBoDV3LJk2gZZqrwa0vr
-         LWVq1K5Fbfu5JmoppU6GFW+1iGj6b0PrJtZinQUJjGvNmIMuLGuD1GlioeX3eLTU50fL
-         oZwPqbPX1kx9Z5m59tp0/B/rHeoAVUDrYXIlSCg/4AGlVNI9Z0u1dsrFAVgVSwfyjYDB
-         Lq1VYWe26KzO0tcTZ0ErZx1F/+sQG6nMpz2OiyXIPHVQPz9sTK+1V/TkpoIPMM6Us9hY
-         ClUQ==
-X-Gm-Message-State: AOAM530jClZpWb1nvrgpJ2XHwjt0P/LnNDaeRKA8Kh5bSfsrfCVG8LWY
-        2Od3YzBLA4rWWq1W9OWj4SgRdg==
-X-Google-Smtp-Source: ABdhPJxFVw+6fRfxqEbz30e0DT5OHxKnuCaixKgNvXhDD1yUqUynaG/5FenPtn6QlBEcnfsZ4XUbeg==
-X-Received: by 2002:a17:902:7c0a:b029:da:62c8:90cb with SMTP id x10-20020a1709027c0ab02900da62c890cbmr8097793pll.59.1610639212807;
-        Thu, 14 Jan 2021 07:46:52 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=JEIZptMsP3i/FDZXmToB0D7fOEQgkvKbzTSUeuV9O1Y=;
+        b=r2KfgkQjTYx+DCwJWaqvXxpsasp+WZxwHSjtnoaSL/Kb5tMhlZgzqkRdtJiO3noCw2
+         s9641jGDZ/xvVI74gOjUQGD4iEyI8PbwWmqi8Woz74nws1DmVWGcDkwn4ao5GKVYhQa9
+         ShkPCt+YHhE3+b4I3KxV8knpn1N3Os1YPw7DFe3+0Gi0+qR1tWL/uHu7OUcmKhZ5U2qi
+         5FPzxMs1bNg7Uv3arKgoGiEPa40ou+mIC/clwRvCLmj/u8yIeu2meFDRdwYepYnPmkwr
+         y2b9fBH+gYANH/leJGKIIMGn/Va/xTqEJTpyFvK62qDCQadZ4Kh/qbxUfom69VFRyKwp
+         pOkA==
+X-Gm-Message-State: AOAM532cipbSWrHRIhttEOX/wRarNIMgQF4AQgUVnQECPLE6OkFujPRT
+        l8vLcole7jHtop4XCJU871G2Xg==
+X-Google-Smtp-Source: ABdhPJzWQ7eeH5wqvejog5qT6BbRQpLpPxU1h9TYVtH3rd4WIlicnIHiisiy3i49Hqjli5Q1AFXvtQ==
+X-Received: by 2002:a05:6a00:44:b029:19d:e250:1355 with SMTP id i4-20020a056a000044b029019de2501355mr8032026pfk.36.1610639216224;
+        Thu, 14 Jan 2021 07:46:56 -0800 (PST)
 Received: from localhost ([45.137.216.7])
-        by smtp.gmail.com with ESMTPSA id t23sm5739577pfc.0.2021.01.14.07.46.51
+        by smtp.gmail.com with ESMTPSA id a20sm5368020pfi.111.2021.01.14.07.46.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 07:46:52 -0800 (PST)
+        Thu, 14 Jan 2021 07:46:55 -0800 (PST)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>,
@@ -60,54 +60,88 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Don Zickus <dzickus@redhat.com>, Joe Perches <joe@perches.com>,
         linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v4 0/6] perf c2c: Code refactoring
-Date:   Thu, 14 Jan 2021 23:46:40 +0800
-Message-Id: <20210114154646.209024-1-leo.yan@linaro.org>
+Subject: [PATCH v4 1/6] perf c2c: Rename for shared cache line stats
+Date:   Thu, 14 Jan 2021 23:46:41 +0800
+Message-Id: <20210114154646.209024-2-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210114154646.209024-1-leo.yan@linaro.org>
+References: <20210114154646.209024-1-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series is for several minor code refactoring, which is
-extracted from the patch series "perf c2c: Sort cacheline with all
-loads" [1].
+For shared cache line statistics, it relies on HITM.  We can use more
+general naming rather than only binding to HITM, so replace "hitm_stats"
+with "shared_clines_stats" in structure perf_c2c, and rename function
+resort_hitm_cb() to resort_shared_cl_cb().
 
-There has a known issue for Arm SPE store operations and Arm SPE is
-the only consumer for soring with all loads, this is the reason in this
-series drops the changes for dimensions and sorting, and only extracts
-the patches related with code refactoring.  So this series doesn't
-introduce any functionality change.
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+---
+ tools/perf/builtin-c2c.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-The patches have been tested on x86_64 and compared the result before
-and after applying the patches, and confirmed no difference for the
-output result.
-
-Changes from v3:
-* Refined patch 03/06 to remove unnecessary parentheses and test and
-  return early in the function filter_display() (Joe Perches);
-* Added new patch 04/06 to make argument type as u32 for percent().
-
-Changes from v2:
-* Changed to use static functions to replace macros (Namhyung);
-* Added Jiri's Ack tags in the unchanged patches;
-* Minor improvement in the commit logs.
-
-[1] https://lore.kernel.org/patchwork/cover/1353064/
-
-
-Leo Yan (6):
-  perf c2c: Rename for shared cache line stats
-  perf c2c: Refactor hist entry validation
-  perf c2c: Refactor display filter
-  perf c2c: Fix argument type for percent()
-  perf c2c: Refactor node display
-  perf c2c: Add local variables for output metrics
-
- tools/perf/builtin-c2c.c | 168 +++++++++++++++++++++++----------------
- 1 file changed, 99 insertions(+), 69 deletions(-)
-
+diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
+index c5babeaa3b38..2d0c71300dbf 100644
+--- a/tools/perf/builtin-c2c.c
++++ b/tools/perf/builtin-c2c.c
+@@ -97,8 +97,8 @@ struct perf_c2c {
+ 	bool			 symbol_full;
+ 	bool			 stitch_lbr;
+ 
+-	/* HITM shared clines stats */
+-	struct c2c_stats	hitm_stats;
++	/* Shared cache line stats */
++	struct c2c_stats	shared_clines_stats;
+ 	int			shared_clines;
+ 
+ 	int			 display;
+@@ -1961,7 +1961,7 @@ static int resort_cl_cb(struct hist_entry *he, void *arg __maybe_unused)
+ {
+ 	struct c2c_hist_entry *c2c_he;
+ 	struct c2c_hists *c2c_hists;
+-	bool display = he__display(he, &c2c.hitm_stats);
++	bool display = he__display(he, &c2c.shared_clines_stats);
+ 
+ 	c2c_he = container_of(he, struct c2c_hist_entry, he);
+ 	c2c_hists = c2c_he->hists;
+@@ -2048,14 +2048,14 @@ static int setup_nodes(struct perf_session *session)
+ 
+ #define HAS_HITMS(__h) ((__h)->stats.lcl_hitm || (__h)->stats.rmt_hitm)
+ 
+-static int resort_hitm_cb(struct hist_entry *he, void *arg __maybe_unused)
++static int resort_shared_cl_cb(struct hist_entry *he, void *arg __maybe_unused)
+ {
+ 	struct c2c_hist_entry *c2c_he;
+ 	c2c_he = container_of(he, struct c2c_hist_entry, he);
+ 
+ 	if (HAS_HITMS(c2c_he)) {
+ 		c2c.shared_clines++;
+-		c2c_add_stats(&c2c.hitm_stats, &c2c_he->stats);
++		c2c_add_stats(&c2c.shared_clines_stats, &c2c_he->stats);
+ 	}
+ 
+ 	return 0;
+@@ -2126,7 +2126,7 @@ static void print_c2c__display_stats(FILE *out)
+ 
+ static void print_shared_cacheline_info(FILE *out)
+ {
+-	struct c2c_stats *stats = &c2c.hitm_stats;
++	struct c2c_stats *stats = &c2c.shared_clines_stats;
+ 	int hitm_cnt = stats->lcl_hitm + stats->rmt_hitm;
+ 
+ 	fprintf(out, "=================================================\n");
+@@ -2827,7 +2827,7 @@ static int perf_c2c__report(int argc, const char **argv)
+ 	ui_progress__init(&prog, c2c.hists.hists.nr_entries, "Sorting...");
+ 
+ 	hists__collapse_resort(&c2c.hists.hists, NULL);
+-	hists__output_resort_cb(&c2c.hists.hists, &prog, resort_hitm_cb);
++	hists__output_resort_cb(&c2c.hists.hists, &prog, resort_shared_cl_cb);
+ 	hists__iterate_cb(&c2c.hists.hists, resort_cl_cb);
+ 
+ 	ui_progress__finish();
 -- 
 2.25.1
 
