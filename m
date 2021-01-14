@@ -2,85 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193BB2F6765
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1B22F6768
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727634AbhANRTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:19:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45254 "EHLO
+        id S1728554AbhANRUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:20:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726951AbhANRTh (ORCPT
+        with ESMTP id S1726442AbhANRUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:19:37 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DC6C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:18:57 -0800 (PST)
-Date:   Thu, 14 Jan 2021 18:18:55 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610644735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jI5rqRnH3DCVyrdpP47Z8eWUhdxkk1qxR9tqMltfpqo=;
-        b=HrnGJ0ppZoIgnbL5tUjMaeKjd3R7QOpSesNLWzhETK5vNb4IbQwexAENRXrEGG9xQtjluD
-        KYZuguLbWwc3dew6EIVyUZPnWTCng+Bkmu4SZygmK6wzagLQBnYmzYsyspO0zyLoOpDaem
-        BeX0adNqYSPVWIO0vZAdOHCatFDHZZ8PRXBmvStHtzNiJMSmJMdbJ3wuA/PTg1rRahOYqO
-        QXfmZrcmJ/fsk1WRUo8ghsKTMHwptqS4nkrYzbNxd5iRTUUB3cnHccjWeJo1UeZ8ygZIFd
-        nKVTDurwWY8QJL9NYPpWDJSPJkzyLkOW+zS7PRP6uxu0TlPoxORaRPMsTHmTLA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610644735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jI5rqRnH3DCVyrdpP47Z8eWUhdxkk1qxR9tqMltfpqo=;
-        b=RzpQVmEx4C6cdB7OhXzZogS28Iox4XqOwFruHtuajjmy48uqB1yELmiYCKIoZD0nHNeVTC
-        m1fqA/dizTA3amDQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Vitaly Wool <vitaly.wool@konsulko.com>
-Cc:     "tiantao (H)" <tiantao6@huawei.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Mike Galbraith <efault@gmx.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, NitinGupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "tiantao (H)" <tiantao6@hisilicon.com>
-Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
-Message-ID: <20210114171855.lzzxwpucpkjyhrch@linutronix.de>
-References: <08cbef1e43634c4099709be8e99e5d27@hisilicon.com>
- <CAM4kBBJjCYX0DQZ8de9LsFV6L+eF4tZe-NN=jiAz9WLWYrsCsQ@mail.gmail.com>
- <1d0d4a3576e74d128d7849342a7e9faf@hisilicon.com>
- <CAM4kBB+uRrnpta908Gf93VfH90NVpmqv4jNY2kxrrGSdWApz_w@mail.gmail.com>
- <4e686c73-b453-e714-021a-1fcd0a565984@huawei.com>
- <CAM4kBB+jtJd5mqBby7j+ou-AxvPgCU777pX4cnwneLi8P4U+7g@mail.gmail.com>
- <20210114161850.zjcfhsgtmojjjqba@linutronix.de>
- <CAM4kBBKcj+ZVEv8mkh+rWc0xbomKsyc60UNuuRem_iWPf9YxVA@mail.gmail.com>
- <20210114165645.czqpsk3lacmiyiik@linutronix.de>
- <CAM4kBBLqgh=ymq4pg6URB3OhjhRSH3O=4AEMRBuaC3Z0-hZ4Lg@mail.gmail.com>
+        Thu, 14 Jan 2021 12:20:30 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D4EC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:19:49 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id h10so3733936pfo.9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:19:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1u0hHUSEEliOo8V4yriPq3cyKn6ullY8YW9KiIkobfk=;
+        b=ZLp3EJqLl7TKSrMFy/TKrGf2U1rKvMJs7XG0MKq6/Jv5xjQ0FqkHFtNPKAGDqSEUg6
+         FAxAKuhq+I5/NhJcaO9RflWofjeog+IfggZW7hrHLRI+3AU3KyzSELXgPqy7dOL+yQde
+         jkiWFBfTWTXHCMUcNRWG/kMxZHrELQoalbMyGYO9d13qzinFZm/H9Dx3eEEnmJXGpKmh
+         m+cw4LuXB47cfFpnAQ920Tx4rmWPmanVu3SLTovBylVQ8s9zBmPSFN4pD8QY7d+PrQ2F
+         rGrrTcjZVFW2bBNhHodDOF5izfhgO2crwZQpgaY/bek9Rb1uMO/qNO8Zd11+rebZoiCV
+         Mwqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1u0hHUSEEliOo8V4yriPq3cyKn6ullY8YW9KiIkobfk=;
+        b=ZnXcKPdlYZkped4YK2T4v8pDwZIMrXqAyo/TdWov+xnq/V9NZPXy32zY52FN6BZB39
+         xDb7uR7X4oiX1y1ChP872ypZJSibU2TN/4dlAbkCamwhiPzX3rGLcO2lBmu8MkXbHj3e
+         y2G2OA/cHS/jraT9cDFqU97O15PZ58IVUalrQ1OGwI1OXGarXRl4qdpg9TbUvyd74k/8
+         2bP9LPEm2KosScZnJCawZJTwC1RCvomnUU8lbHJBvXly9TWh0MlBrfTcgCNiFC/3YKk3
+         +ljpf/Fo9T/NBh1UfjC3ryGefhDNS/vYdZyN4vrCuyHn7d9mMgHnAtgaDQsPuyscC+Wj
+         BD4A==
+X-Gm-Message-State: AOAM5312gMAKKjSsyK7ODGXnbDpJP5+qceIbqi70H9O3Z2G4xeOvlWo+
+        ABh6RE8L/Cgpxow/BOmjT3LHLw==
+X-Google-Smtp-Source: ABdhPJweuJc1T4THuTPmRtUm+GC8wnx68SsRpiLogsaNQieDiFp+SxU8TeWgZA5DbFRruL9nXzfBTw==
+X-Received: by 2002:a63:4b16:: with SMTP id y22mr8432122pga.203.1610644788272;
+        Thu, 14 Jan 2021 09:19:48 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id u189sm5721402pfb.51.2021.01.14.09.19.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 09:19:47 -0800 (PST)
+Date:   Thu, 14 Jan 2021 09:19:40 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Bandan Das <bsd@redhat.com>, Wei Huang <wei.huang2@amd.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com, joro@8bytes.org,
+        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, dgilbert@redhat.com
+Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by
+ VM instructions
+Message-ID: <YAB9LIIVg8iEfXsb@google.com>
+References: <20210112063703.539893-1-wei.huang2@amd.com>
+ <X/37QBMHxH8otaMa@google.com>
+ <jpgsg76kjsm.fsf@linux.bootlegged.copy>
+ <db574a30f50a2f556dc983f18f78f28c933fdac7.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAM4kBBLqgh=ymq4pg6URB3OhjhRSH3O=4AEMRBuaC3Z0-hZ4Lg@mail.gmail.com>
+In-Reply-To: <db574a30f50a2f556dc983f18f78f28c933fdac7.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-14 18:15:08 [+0100], Vitaly Wool wrote:
+On Thu, Jan 14, 2021, Maxim Levitsky wrote:
+> On Tue, 2021-01-12 at 15:00 -0500, Bandan Das wrote:
+> > Sean Christopherson <seanjc@google.com> writes:
+> > ...
+> > > > -	if ((emulation_type & EMULTYPE_VMWARE_GP) &&
+> > > > -	    !is_vmware_backdoor_opcode(ctxt)) {
+> > > > -		kvm_queue_exception_e(vcpu, GP_VECTOR, 0);
+> > > > -		return 1;
+> > > > +	if (emulation_type & EMULTYPE_PARAVIRT_GP) {
+> > > > +		vminstr = is_vm_instr_opcode(ctxt);
+> > > > +		if (!vminstr && !is_vmware_backdoor_opcode(ctxt)) {
+> > > > +			kvm_queue_exception_e(vcpu, GP_VECTOR, 0);
+> > > > +			return 1;
+> > > > +		}
+> > > > +		if (vminstr)
+> > > > +			return vminstr;
+> > > 
+> > > I'm pretty sure this doesn't correctly handle a VM-instr in L2 that hits a bad
+> > > L0 GPA and that L1 wants to intercept.  The intercept bitmap isn't checked until
+> > > x86_emulate_insn(), and the vm*_interception() helpers expect nested VM-Exits to
+> > > be handled further up the stack.
 > 
-> Basically, yes. Minchan was very clear that he didn't want to remove
-> that inter-function locking, so be it.
-> I wouldn't really advise to use zsmalloc with zswap because zsmalloc
-> has no support for reclaim, nevertheless I wouldn't like this
-> configuration to stop working for those who are already using it.
+> Actually IMHO this exactly what we want. We want L0 to always intercept
+> these #GPs, and hide them from the guest.
 > 
-> Would you or Mike be up for testing Tian Taos's patchset?
+> What we do need to do (and I prepared and attached a patch for that, is that
+> if we run a guest, we want to inject corresponding vmexit (like
+> SVM_EXIT_VMRUN) instead of emulating the instruction.
 
-I will try to reproduce Mike's original report and the fix early next
-week.
-
-> Best regards,
->    Vitaly
-
-Sebastian
+Yes, lack of forwarding to L1 as a nested exit is what I meant by "doesn't
+correctly handle".
