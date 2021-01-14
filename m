@@ -2,93 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7A62F56A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E18922F5698
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728097AbhANBuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:50:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729853AbhANA0x (ORCPT
+        id S1728617AbhANBtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:49:41 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:41917 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729877AbhANAaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 19:26:53 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B16C061795;
-        Wed, 13 Jan 2021 16:26:12 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id p22so3883533edu.11;
-        Wed, 13 Jan 2021 16:26:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hDsS/z4mXF9eMrJqA0x1EbI049u2C8sU9wgOjVH2AZY=;
-        b=A4qsZrlXN1DpGsCM3hXGpFWTEUAnPUFXzO+9aBWZxqR0TDVcJfX47ZVbwalmvpIBO2
-         AFzjuctGyVDXluq+XJas/vF7qfAUHYl1D7SFqZhB5g6OMH3UVFdfygtm6afNiaaKDHf9
-         /y5/PD9IPi49Rdcl2DNPHkJVvn6avxlLfnfJ8s6E6scqMWzDprUHKf/K1TEyB+Ppbkpn
-         9FCll2h0BrBRMPzKUFaY9dUrkwxLJ1Rw9XwCEhlwFHq9ZyNqBF7h5SCwJdf0donS9FJp
-         070EY5EEHNG/MWOBovK4O5wrLT7EddhobpZjj2xi2bCreqtmKohPaZ+ocj8BQVnklFAh
-         PJGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hDsS/z4mXF9eMrJqA0x1EbI049u2C8sU9wgOjVH2AZY=;
-        b=YjHaPMGv6d1DyR6HnUPPwNOXs8PtxhqQhblNj5R2v2o9VmA79g/v2qz8Fap8FWigLk
-         Pdxg6AJvS/mgSQJsRTLkMl4XPOEOypb4Q6NL9G3aLGW+WsPH9Ja6/j1VYjAZKUR4sU7s
-         x5RUO8MgUllArjufnuU4ruMzJ9ZLVbl55l1crgdbUGE0jhZF39oj6S4LYkMkWZx9yxv0
-         1nfSESS+TfplNePmoVEfJTOqtolk/yB5pIFF2ODDdEiwc4RTo3cvGfHoGk3uoP2c1HVY
-         vZ8KscZkfq51u+Kmm+hSMZcwmkGNGicJcKR+2QbPtw8vvS64YqJWdwAI5dgb+Jo6+tb+
-         eSBA==
-X-Gm-Message-State: AOAM530j8WiMWcwm5SZRkf+TNr3S5lrBRJX+QsZkc75+d4DX3xS7hyzJ
-        ZOIpJ2afTt6wTfw9L3XDjIM=
-X-Google-Smtp-Source: ABdhPJyCmrSMxSMsVfAqfjhVJAweHKBZpQgFheKCR/6QVxyAKZyOq3hYBG8NgYa64mIVaKy7huM7EQ==
-X-Received: by 2002:aa7:c698:: with SMTP id n24mr3674666edq.277.1610583970764;
-        Wed, 13 Jan 2021 16:26:10 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id k3sm1533356eds.87.2021.01.13.16.26.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 16:26:10 -0800 (PST)
-Date:   Thu, 14 Jan 2021 02:26:08 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Gilles DOFFE <gilles.doffe@savoirfairelinux.com>
-Cc:     netdev@vger.kernel.org, Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 0/6] Fixes on Microchip KSZ8795 DSA switch driver
-Message-ID: <20210114002608.hldp4w3drwtdforq@skbuf>
-References: <cover.1610540603.git.gilles.doffe@savoirfairelinux.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1610540603.git.gilles.doffe@savoirfairelinux.com>
+        Wed, 13 Jan 2021 19:30:16 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 843DE5C00F7;
+        Wed, 13 Jan 2021 19:27:50 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Wed, 13 Jan 2021 19:27:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to
+        :subject:content-type; s=fm1; bh=ryfvk2k2wQcDt6+nGId872DiRJw7DhY
+        PHXP5E70CfEg=; b=A+n0WcIoUsUZSSwJUDKSbWQjSV7hDEsBdKGPqEMOSbD1aes
+        P3BMm4GcyKY5AK9gUv52XevM83JAHapiK1DMgw4zfFNfrqCLJHzZ/Xr8Q1cvGQnf
+        diKmIp7Cime5HAlcEETnADT1n5kOvctuR+N73ASsnq0Ha6Fzk7sUNLFQuCOsywFq
+        GgLXWUcGYTwqKydEekggjJ/fbyTMSqIUJ3ueNSMJthizOp2raeg2+qtAUnFRLVda
+        8bC6IMlp9nQ+ZfHSIrMxtZF2GpOUcloIKsh9QB2VC6KeqSZZI5Lk2kAHqRvhoKfW
+        W/x5vhCgWvyBHX6cm1mJdL4GUiIIVsxyo8bo4dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ryfvk2
+        k2wQcDt6+nGId872DiRJw7DhYPHXP5E70CfEg=; b=RiHIcnZNDLtKSJfO8saxuB
+        DpiQGP/R2rvSnHDSmOEp+fvNUObV143TtRu4+59Rq7uTz+iDmuj+6dcTrTx5s2Xw
+        JZijcKbhJPYqLBNXmp+YwHnRZVaOwY0LCBCHuWbyoVT+Z4qL3Pn5Pw3iRDQwoM7h
+        oujOIsCjnyfZS4B0m8GEB6BWO8oI9xj3M/lsGawrJ+fF+bcIzcpYKqDG0QwzN53r
+        o1W/X9njVgtZ01tr/qp0uhYIjEKqJRcxpzACWQDB4M03kIQPjwdyo8GW/s10UNgq
+        rEKiNdAavpYE/SxBhQ2qwfW1NfGcXJYYHnMzPuAPhTVR/qSOYbBOn2Ys6dZT+BHQ
+        ==
+X-ME-Sender: <xms:BZD_X7RtUYaQz6-LoWQbxRXbaTf2BAutei71F7-kjApGRU8V5gl3XQ>
+    <xme:BZD_X8yJIdv1xt-BwbmV87_iutieNA_I5Pc3AkQwzSlD0PVUfrPTI6JmUNp_rDzLj
+    2U9mBFIEyjHddnZTg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtdeggddvudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
+    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:BZD_Xw1MhVYhL264TpIwMA7sI5eqWEac-LoUJ9M0vCknH1-gAgkFvQ>
+    <xmx:BZD_X7B79D8DU7PMiwMBtOLQ7w1kv74ihVbtLYPp4DdaHf5Ab5BF0g>
+    <xmx:BZD_X0iOvMQ9qIsssRY-0CrJbl9ZauOsgr9AK0WbUzCK84kqnh8xAQ>
+    <xmx:BpD_X_WnhZ7DjubPmiT3g9ToPhwrDuZ-pPV-V55xjxZvP6Y7aL31MQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 943F9E00C9; Wed, 13 Jan 2021 19:27:49 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-45-g4839256-fm-20210104.001-g48392560
+Mime-Version: 1.0
+Message-Id: <775b31f0-c74c-4ebe-9588-bca3ee423383@www.fastmail.com>
+In-Reply-To: <20210113223808.31626-2-hongweiz@ami.com>
+References: <20210113223808.31626-1-hongweiz@ami.com>
+ <20210113223808.31626-2-hongweiz@ami.com>
+Date:   Thu, 14 Jan 2021 10:57:13 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Hongwei Zhang" <hongweiz@ami.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        "Joel Stanley" <joel@jms.id.au>, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org
+Subject: Re: [PATCH, v1 1/1] gpio: aspeed: Add gpio base address reading
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 01:45:16PM +0100, Gilles DOFFE wrote:
-> 
-> This patchset fixes various issues.
-> It mainly concerns VLANs support by fixing FID table management to
-> allow adding more than one VLAN.
-> It also fixes tag/untag behavior on ingress/egress packets.
+Hello,
 
-As far as I understand the series, it "fixes" something that was not
-broken (but which nonetheless could take some improvement), and does not
-fix something that was broken, because it was too broken.
+On Thu, 14 Jan 2021, at 09:08, Hongwei Zhang wrote:
+> Add gpio base address reading in the driver; in old code, it just
+> returns -1 to gpio->chip.base.
 
-Good thing you brought up the bugs now, because FYI a tsunami is coming
-soon and it will cause major conflicts once Jakub merges net back into
-net-next. Had you waited a little bit longer, and the bug fixes sent to
-"net" would have not been backported too far down the line due to the
-API rework.
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=b7a9e0da2d1c954b7c38217a29e002528b90d174
+Why do you want to do this? It feels hacky. The base address only affects the 
+legacy sysfs number-space, and even then if you're using the sysfs interface 
+you can discover the base address for a specific gpiochip via the associated 
+attribute. For example:
 
-You should try to find a reasonable balance between bugs due to an
-oversight, and "bugs" due to code which was put there as a joke more
-than anything else. Then you should send the fixes for the former to net
-and for the latter to net-next.
+# cat /sys/bus/platform/devices/1e780000.gpio/gpio/gpiochip*/base
+816
 
-Good luck.
+I feel that you should instead be changing your userspace not to assume a fixed 
+value.
+
+Finally, the base value is a linux-specific thing and doesn't belong in the 
+devicetree, and if it did, you would also need to update the devicetree binding 
+in Documentation/.
+
+Cheers,
+
+Andrew
