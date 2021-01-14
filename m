@@ -2,128 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BDA02F58EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EAD12F58EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbhANDEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 22:04:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725888AbhANDEf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 22:04:35 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6BAC061575;
-        Wed, 13 Jan 2021 19:03:54 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id v126so5372005qkd.11;
-        Wed, 13 Jan 2021 19:03:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cT7hvbTf8x59iE/9LS2QkLowj8NsuZmGiRCFrVA58Vg=;
-        b=hYyl93l8KAptLJoTTo8ouhTXC8BDbQK+bKBpnMzIDgxhdjPvqBhVDFvlUdSnBVtJeP
-         fEWO0YON8FDe2K1Vw4FlYb3zcGZziDOlWICiu/sMKqHIfbCOJOFHlvg1kbd/WXC63Nh9
-         vXfgdnoWglonCNEe7w0iu0NU3iZRQa38ide2I0nIuMSdsasWi+zqKCWqzLPBgQh6MSFY
-         5GOfDAgkEio1F1xHr4cMwcc9wPpvJhnS7iijq3LYuFRznIU06PZW3IX1DG7W7DxeWYMq
-         MYJoDZS/+CpVhuMUGg/EX86ZKZunH0bJyF1NCo/degRRHReG35+1evQg+E9vbH5FSYdR
-         PfLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cT7hvbTf8x59iE/9LS2QkLowj8NsuZmGiRCFrVA58Vg=;
-        b=PYjCbWJ/o9PMuxdR/FlZOIteCSKIIFghD1ijebaPR21X2WSipjS0wxtmTokAXx8VG+
-         33HZdchVeQrf9pSzJIPeclGaufwbOuOW1t7YtRnx1XlRLNTS3C8L8MoqkeX5AntZfl+Q
-         S8B1Qqmvg9fVoZgVuhweez7i/z/5+PE45ni2LvL73VQO48z3PiLO9w2GMzMjfB0rb56U
-         YV4AuXlACs4zelbqtx7JT1BTVjPb0aNoj8Mc0srqWnz+ED9zZ5M69/ohxxu0Xe7YgS/9
-         dh8rmCdmLV8sVxvGesD9K9zp7+PuawFHbuFAD+CXct3y24zzCf+byhzRZ8KUWN6cpq4L
-         xuRQ==
-X-Gm-Message-State: AOAM532zXiXY+zeXWCRq7mvFCtEuDV4NJtXRZwW1nI8fj+nYp42avN6b
-        wprD2FfprbsoZoqNiK8tV7JQztLHFaY6XiROVDo=
-X-Google-Smtp-Source: ABdhPJy+kIzcOri0G+2SyJxH+35358m8JK39bHYf/hoif0xNPkY0BDFSPzKZHO4B4kS+SUuifpUPynb6sZ4UcHvnpGw=
-X-Received: by 2002:a25:538a:: with SMTP id h132mr7593079ybb.247.1610593433796;
- Wed, 13 Jan 2021 19:03:53 -0800 (PST)
+        id S1727349AbhANDFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 22:05:33 -0500
+Received: from mga04.intel.com ([192.55.52.120]:1345 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727074AbhANDF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 22:05:26 -0500
+IronPort-SDR: MR7SQQ3rZhqV30jZ1U/1cJAmE1YQXzDTo72gw5zT9s4s3BDO9r1GFuwn1v0SrPKsJ51PWSrOcN
+ 1FjPcLevyWpQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="175721651"
+X-IronPort-AV: E=Sophos;i="5.79,346,1602572400"; 
+   d="scan'208";a="175721651"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 19:04:44 -0800
+IronPort-SDR: q38mOx/V7oAM31QAhnw8sofaSSSTjTJs5FCa/H5GQ2odqGBTy//SrjBn3tWjRKohhejtHyd7hr
+ wg437tMLZqyA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,346,1602572400"; 
+   d="scan'208";a="424801658"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga001.jf.intel.com with ESMTP; 13 Jan 2021 19:04:29 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 13 Jan 2021 19:04:29 -0800
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 13 Jan 2021 19:04:29 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 13 Jan 2021 19:04:29 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.48) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Wed, 13 Jan 2021 19:04:28 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gC5nqBzLFHTJzsSX/hHhVdbxxva0xdnt2q1767u/pdNI+WWUvBDfATr+HbwZ2LPLURzCaBOY5gb9L/R9ievl9/bR19U2NWxBaoYdOuMIX/48TWWiou4oO0g4DpL6BxwTR3tNjo8VabbbQTDWzoE+zAraBO4uGLTmH9P96acJoZcufRT4M0+O/LrJV6ZUAMfu+vDBnF6HVVnrpHlibb2g7Rfg1XSkjviSPZjsF7XzeGTiIcEi8NintlK8EmSJvtJWnCe/ijBjciFOr6A49eWYQgtbqsb+9g72ZyzhGEjsVnixCgA1QwvkzhnDRr2hHo2zUbzO+w9+42Lr3zwstSfnLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W/2mFpspHv3qAuBseo794ptS1HfQT0w1OU1YwTAnv0w=;
+ b=f40hDA8BEJdVwgYQpRdOw8quFb38+c+zAC8HgPjSZxvPu60DPVmxICEfPwdT6XKWaRBEm9DV5F8CDD/p6uLnBcwku+eczbFC9F06oUZPSMUoOE5u7Bps/VmZIyB0gQbPWEYg42bFt8TpQ99GmpBw9M3bMlFIEt7STVghWr+k4JqxhNUqgkYrhMKrN+WAjicqpcDl1jZRn0q8oP3QfPa7Fl1WLkSkC0emNorbvPvSjSRS81SC7dXU1fXziryl6w2rRxjQ9PrG0pglwXJZdmY6KnHkAnSbof4XTOMf/AStKAOW9FAtaj1j4qp+vTL/avDaZ+p4VhHjWppdeYLd/J4X/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W/2mFpspHv3qAuBseo794ptS1HfQT0w1OU1YwTAnv0w=;
+ b=nf1GL4srdJ0b2Lg+jdtjm71yk/WlhWR6xQNwKG9nOdECxh3iIJfQt/5P7IX8jDjtMAr5E34ign1k1Ge4RpQwjHVKIHfGsJ9vZ4hmcDmWRGo8l4tdzL/9l4CgH42aytAUOkMlEo5Cfs3CFNLls1GiDFm86J2N8UX0epkWUiLDyOk=
+Received: from BN6PR11MB1875.namprd11.prod.outlook.com (2603:10b6:404:104::11)
+ by BN7PR11MB2547.namprd11.prod.outlook.com (2603:10b6:406:af::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Thu, 14 Jan
+ 2021 03:03:52 +0000
+Received: from BN6PR11MB1875.namprd11.prod.outlook.com
+ ([fe80::a473:9954:c473:9e8d]) by BN6PR11MB1875.namprd11.prod.outlook.com
+ ([fe80::a473:9954:c473:9e8d%8]) with mapi id 15.20.3742.012; Thu, 14 Jan 2021
+ 03:03:52 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "jgg@mellanox.com" <jgg@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>
+Subject: RE: [RFC PATCH v3 2/2] platform-msi: Add platform check for subdevice
+ irq domain
+Thread-Topic: [RFC PATCH v3 2/2] platform-msi: Add platform check for
+ subdevice irq domain
+Thread-Index: AQHW6hYT4EqA4SOp5kyxojBYbDjQfaomaNqQ
+Date:   Thu, 14 Jan 2021 03:03:52 +0000
+Message-ID: <BN6PR11MB18758E47B2CC114E0AE3CD578CA80@BN6PR11MB1875.namprd11.prod.outlook.com>
+References: <20210114013003.297050-1-baolu.lu@linux.intel.com>
+ <20210114013003.297050-3-baolu.lu@linux.intel.com>
+In-Reply-To: <20210114013003.297050-3-baolu.lu@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [101.88.226.48]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3a0bc6c4-77f2-4c05-6638-08d8b83905e5
+x-ms-traffictypediagnostic: BN7PR11MB2547:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BN7PR11MB25478DBB2D722976B0851EFF8CA80@BN7PR11MB2547.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qwpDmM8TOyQkmbqKTvtThQlqMlpkazV8+DO/RFdxcfJTm9Q9nX36DNvLU2c51TCsYyWvkEL0TWzacICMQ/FhLfKfpyGKPNa3fGuk8rKDQ/TQ5dkxhtxRPyfrzobbdfEaBiu7aOYr3pyhyqLbbNOokAICtI4ZotSNfOfJ9VqGTqw418DA2Jz6w/Czc/tFhxzrtLkfcT7DGTq2i56ChLRgU8u6NBUkllnjzw1KzMsuevHSpgJdVK406WYDrQ4AK3SsPdSTLy9PBNecH0qsVhX1hrXD+rXByiEQdEmut57ZeBPrBbFmEpYMJAVW7fM/FDhJXwJVuXITD4Bn1qMzCc55m5SCQrm+weQvmsxf7TfhwynwsVQwlsdLWIijzGADP5IO99yihJGW9ErMfWY6aRurb2PJCK5SLSKGSRTm6DFzO1zT7TBzQCaOUqmSa3k1slHspprXMVEMF44wOMICVi+C/g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR11MB1875.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(396003)(376002)(346002)(52536014)(66556008)(83380400001)(66946007)(186003)(7416002)(316002)(26005)(86362001)(6506007)(5660300002)(33656002)(66476007)(76116006)(8676002)(66446008)(64756008)(71200400001)(2906002)(4326008)(9686003)(966005)(7696005)(55016002)(110136005)(8936002)(478600001)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?GYAf7NzA2Bvkoa/onRc9w0Xp89Pu0jlg83ydUQaVRiblHajJA9KwuutbPbY/?=
+ =?us-ascii?Q?dl6V7tFIXGeBM/QjEF7edEinEIyQbCdk4h/DZyejplKzEW9y+VXWAOgcQsjL?=
+ =?us-ascii?Q?ca6HGPurL2kkSYvXzFmyAXsMtdSdshYEpyICkPmkdC5zgNo62MMq2fbrIXbB?=
+ =?us-ascii?Q?xZWbmMKkhn5zzRo0Dzat3Bg2xuRUgbB9FD+3QZV2gV+5Ua7i7KVoKbpZ+/7g?=
+ =?us-ascii?Q?0H3E3MkQd5HmAHXTa38PBniJ8jyxMowzvV97oXs8iXXR2GNsN3PPTjI30Bqe?=
+ =?us-ascii?Q?8EsNk4k+FIQrZgAVV98kNR4j8JVCq2MGEVZE/kZ8Q1dLkMRlYXxUiHXyO54v?=
+ =?us-ascii?Q?XBEl0N5XvBJIDBu7tCtO5C61GoiMRXZydJpv4XUKQpr7q73gWJZouZUR+wek?=
+ =?us-ascii?Q?s/cyz+GRT2Cwm3gMl7jhF910sHOhSc22JnoWS/I42JWl1YbmS6HN4jrrAM+Y?=
+ =?us-ascii?Q?u6ABReDTm0YAGXHsdcxYmJW9r566pw4lCEXmUadAo6KbvSXtHT94dQNNYBMv?=
+ =?us-ascii?Q?29tPPVmx2rWa42LsVvjFX+HFtcuxIK41u/wULM/VqXX3v7eP4JBtJwatSgLv?=
+ =?us-ascii?Q?qWn6yP7TcWV+Nsf+wpH04p09GEWGy9o/EOWcA79qSa1sdc1V3AXPyys+2P7S?=
+ =?us-ascii?Q?6fGjhvdItIo5iwCusL+hn6sgaA1KFwJEuGrlSBI6wS/Mii95nfbXXc+ls//u?=
+ =?us-ascii?Q?f8kKvDTa7tM2nG1LuYTrePA2GgVM1RDCUnwgGvGXDoO5Rg0Dz+CZGtMwSYI8?=
+ =?us-ascii?Q?zZA5EPE2pZVrvLhqfRgl66fcDsN6nfhoQV2vUr9CV8CmBzxpfsi1olpVufXS?=
+ =?us-ascii?Q?xrD/Zdkd+dF8exKNkLH/dLhNTCBmpEnUsNwHkW6/h2F2eMjD77eCwgJQ606l?=
+ =?us-ascii?Q?XPnIIXeGNYo6v4k0uf3rS5CQfUqxRzRBIpwRtwVBjX8lnVlCUTdBfKYHBzRo?=
+ =?us-ascii?Q?9w2uuLSTXLlpUFLpreSB17CqasxBqSB1c9AZMZ2FtfE=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210113111122.1739478-1-mudongliangabcd@gmail.com> <20210113142745.GA8138@gofer.mess.org>
-In-Reply-To: <20210113142745.GA8138@gofer.mess.org>
-From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Date:   Thu, 14 Jan 2021 11:03:27 +0800
-Message-ID: <CAD-N9QUzK+chpT+p9M+b1TAYUagNVGenChCU-rqD0XxVbcAYrw@mail.gmail.com>
-Subject: Re: [PATCH] Fix shift-out-of-bound in mceusb_process_ir_data
-To:     Sean Young <sean@mess.org>
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN6PR11MB1875.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a0bc6c4-77f2-4c05-6638-08d8b83905e5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jan 2021 03:03:52.1473
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WZ0l26qytVXqtIMiF2oRmP3pV84CsjxZQzQUNhEBuLrFc6DlyI2ZIloUpWoIsksnxzqs6QbI3x07+oEmDNu3dg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR11MB2547
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 10:27 PM Sean Young <sean@mess.org> wrote:
->
-> On Wed, Jan 13, 2021 at 07:11:22PM +0800, Dongliang Mu wrote:
-> > The missing check of ir->buf_in[i+1] can lead to an shift-out-of-bound
-> > in mceusb_handle_command or mceusb_dev_printdata. This patch adds a
-> > check to limit its value lower than 16. The concrete report of UBSAN is
-> > as follows.
-> >
-> > UBSAN: shift-out-of-bounds in drivers/media/rc/mceusb.c:704:13
-> > shift exponent 230 is too large for 32-bit type 'unsigned int'
-> > CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.0-syzkaller #0
-> > Call Trace:
-> >  <IRQ>
-> >  __dump_stack lib/dump_stack.c:79 [inline]
-> >  dump_stack+0x107/0x163 lib/dump_stack.c:120
-> >  ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
-> >  __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
-> >  mceusb_dev_printdata.cold+0x19/0x1e drivers/media/rc/mceusb.c:704
-> >  mceusb_process_ir_data drivers/media/rc/mceusb.c:1275 [inline]
-> >  mceusb_dev_recv+0x3cb/0x1990 drivers/media/rc/mceusb.c:1376
-> >  __usb_hcd_giveback_urb+0x2b0/0x5c0 drivers/usb/core/hcd.c:1657
-> >  usb_hcd_giveback_urb+0x38c/0x430 drivers/usb/core/hcd.c:1728
-> >  dummy_timer+0x11f4/0x32a0 drivers/usb/gadget/udc/dummy_hcd.c:1971
-> >
-> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > ---
-> >  drivers/media/rc/mceusb.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/media/rc/mceusb.c b/drivers/media/rc/mceusb.c
-> > index f9616158bcf4..755808c6e747 100644
-> > --- a/drivers/media/rc/mceusb.c
-> > +++ b/drivers/media/rc/mceusb.c
-> > @@ -1272,6 +1272,8 @@ static void mceusb_process_ir_data(struct mceusb_dev *ir, int buf_len)
-> >               switch (ir->parser_state) {
-> >               case SUBCMD:
-> >                       ir->rem = mceusb_cmd_datasize(ir->cmd, ir->buf_in[i]);
-> > +                     if (ir->buf_in[i+1] >= 16)
-> > +                             continue;
->
-> I'm not sure this is correct. This checks the second byte for *any* response,
-> not just MCE_RSP_EQIRCFS response which is causing the "shift out of bounds"
-> issue.
->
+> From: Lu Baolu
+> Sent: Thursday, January 14, 2021 9:30 AM
+>=20
+> The pci_subdevice_msi_create_irq_domain() should fail if the underlying
+> platform is not able to support IMS (Interrupt Message Storage). Otherwis=
+e,
+> the isolation of interrupt is not guaranteed.
+>=20
+> For x86, IMS is only supported on bare metal for now. We could enable it
+> in the virtualization environments in the future if interrupt HYPERCALL
+> domain is supported or the hardware has the capability of interrupt
+> isolation for subdevices.
+>=20
+> Cc: David Woodhouse <dwmw@amazon.co.uk>
+> Cc: Leon Romanovsky <leon@kernel.org>
+> Cc: Kevin Tian <kevin.tian@intel.com>
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Link: https://lore.kernel.org/linux-
+> pci/87pn4nk7nn.fsf@nanos.tec.linutronix.de/
+> Link: https://lore.kernel.org/linux-
+> pci/877dqrnzr3.fsf@nanos.tec.linutronix.de/
+> Link: https://lore.kernel.org/linux-
+> pci/877dqqmc2h.fsf@nanos.tec.linutronix.de/
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  arch/x86/pci/common.c       | 71
+> +++++++++++++++++++++++++++++++++++++
+>  drivers/base/platform-msi.c |  8 +++++
+>  include/linux/msi.h         |  1 +
+>  3 files changed, 80 insertions(+)
+>=20
+> diff --git a/arch/x86/pci/common.c b/arch/x86/pci/common.c
+> index 3507f456fcd0..9deb826fb242 100644
+> --- a/arch/x86/pci/common.c
+> +++ b/arch/x86/pci/common.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/init.h>
+>  #include <linux/dmi.h>
+>  #include <linux/slab.h>
+> +#include <linux/iommu.h>
+>=20
+>  #include <asm/acpi.h>
+>  #include <asm/segment.h>
+> @@ -724,3 +725,73 @@ struct pci_dev *pci_real_dma_dev(struct pci_dev
+> *dev)
+>  	return dev;
+>  }
+>  #endif
+> +
+> +/*
+> + * We want to figure out which context we are running in. But the hardwa=
+re
+> + * does not introduce a reliable way (instruction, CPUID leaf, MSR, what=
+ever)
+> + * which can be manipulated by the VMM to let the OS figure out where it
+> runs.
+> + * So we go with the below probably on_bare_metal() function as a
+> replacement
+> + * for definitely on_bare_metal() to go forward only for the very simple
+> reason
+> + * that this is the only option we have.
+> + */
+> +static const char * const vmm_vendor_name[] =3D {
+> +	"QEMU", "Bochs", "KVM", "Xen", "VMware", "VMW", "VMware Inc.",
+> +	"innotek GmbH", "Oracle Corporation", "Parallels", "BHYVE"
+> +};
+> +
+> +static void read_type0_virtual_machine(const struct dmi_header *dm, void
+> *p)
+> +{
+> +	u8 *data =3D (u8 *)dm + 0x13;
+> +
+> +	/* BIOS Information (Type 0) */
+> +	if (dm->type !=3D 0 || dm->length < 0x14)
+> +		return;
+> +
+> +	/* Bit 4 of BIOS Characteristics Extension Byte 2*/
+> +	if (*data & BIT(4))
+> +		*((bool *)p) =3D true;
+> +}
+> +
+> +static bool smbios_virtual_machine(void)
+> +{
+> +	bool bit_present =3D false;
+> +
+> +	dmi_walk(read_type0_virtual_machine, &bit_present);
+> +
+> +	return bit_present;
+> +}
+> +
+> +static bool on_bare_metal(struct device *dev)
+> +{
+> +	int i;
+> +
+> +	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
+> +		return false;
+> +
+> +	if (smbios_virtual_machine())
+> +		return false;
+> +
+> +	if (iommu_capable(dev->bus, IOMMU_CAP_VIOMMU))
+> +		return false;
+> +
+> +	for (i =3D 0; i < ARRAY_SIZE(vmm_vendor_name); i++)
+> +		if (dmi_match(DMI_SYS_VENDOR, vmm_vendor_name[i]))
+> +			return false;
 
-I am not familiar with the logic of this driver and the semantics of
-ir->buf_in[i+1]. I just added one filter and if it breaks the
-condition, then skip the current loop.
+Thinking more I wonder whether this check is actually useful here. As Leon
+and David commented, the same vendor name can be used both for VM
+and bare metal instances. It implies that both bare metal and VM might be
+misinterpreted with this check. This might not be what we want originally -
+find heuristics to indicate a VM environment and tolerate misinterpreting=20
+VM as bare metal in corner cases (but not vice versa).
 
-> I think the check belongs within the MCE_RSP_EQIRCFS case.
->
-> Lastly it should have been break, not continue.
+Thomas?
 
-If this error data could affect the following parser_state and makes
-it stop in the logic, "break" is better.
+Thanks
+Kevin
 
->
-> Thanks
->
-> Sean
->
->
->
-> >                       mceusb_dev_printdata(ir, ir->buf_in, buf_len, i - 1,
-> >                                            ir->rem + 2, false);
-> >                       if (i + ir->rem < buf_len)
-> > --
-> > 2.25.1
