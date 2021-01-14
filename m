@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF432F6E26
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:26:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC092F6E2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:28:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730682AbhANWYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 17:24:54 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:52044 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729891AbhANWYy (ORCPT
+        id S1730684AbhANW0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 17:26:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52855 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728563AbhANW0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 17:24:54 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610663069; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=FZgFCzgmq7rdQxKcmeYNYnl48o3AMxZVO3hSa/M7cEw=; b=s4JuymUU/ubIO3l2pxnbIk+ot23v0c7JMP3i2vctGKvaiXCy1LEPcAxz4XO4iH4OXDsGucYv
- tW/Hktk9wT9KLXLvkSDyJdsNk2p6COjGf5MjsjVnl2AZtyk1wzzhBLv/z0tjmYGFlqXg7LRY
- /yP8s3bewXfZJ9ZIPn/mhrtLLO8=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 6000c47646a6c7cde7de4227 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 22:23:50
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0FBA8C43464; Thu, 14 Jan 2021 22:23:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Thu, 14 Jan 2021 17:26:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610663117;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=LGpFlJGSVR1hP37dBeomfMm+jKU/Sspz4e2JR6Dw5mQ=;
+        b=HndssyqSg759SdAdmeN2Tals1cM2F4uPW0FNL/2rJF/6+52ZLVHkaCLfXfeI24kXfn/KSz
+        dwJoHej7kvhdQb6df9F0rnXa71/eoKaVcB2+pF/xQHuTnNEkst3DZRSlw34q7s0wqwxSKk
+        XdL6wDGj47CBMmpg9ZKGBGgZgBeCorc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-280-RcD-CRHJMpmAv-h7btU2NQ-1; Thu, 14 Jan 2021 17:25:13 -0500
+X-MC-Unique: RcD-CRHJMpmAv-h7btU2NQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F2864C433C6;
-        Thu, 14 Jan 2021 22:23:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F2864C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Thu, 14 Jan 2021 15:23:43 -0700
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org
-Subject: Re: [PATCH v3 5/7] drm/msm/a5xx: Fix VPC protect value in gpu_write()
-Message-ID: <20210114222343.GD29638@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
-        robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org
-References: <20210113183339.446239-1-angelogioacchino.delregno@somainline.org>
- <20210113183339.446239-6-angelogioacchino.delregno@somainline.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E3737801FCC;
+        Thu, 14 Jan 2021 22:25:11 +0000 (UTC)
+Received: from treble.redhat.com (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 08F1619C45;
+        Thu, 14 Jan 2021 22:25:09 +0000 (UTC)
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] objtool: Don't fail on missing symbol table
+Date:   Thu, 14 Jan 2021 16:24:15 -0600
+Message-Id: <a96c3f76173c7021a2298bd73362313736e674b6.1610663051.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113183339.446239-6-angelogioacchino.delregno@somainline.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 07:33:37PM +0100, AngeloGioacchino Del Regno wrote:
-> From: Konrad Dybcio <konrad.dybcio@somainline.org>
-> 
-> The upstream API for some reason uses logbase2 instead of
-> just passing the argument as-is, whereas downstream CAF
-> kernel does the latter.
-> 
-> Hence, a mistake has been made when porting:
-> 4 is the value that's supposed to be passed, but
-> log2(4) = 2. Changing the value to 16 (= 2^4) fixes
-> the issue.
+Thanks to a recent binutils change which doesn't generate unused
+symbols, it's now possible for thunk_64.o be completely empty with
+CONFIG_PREEMPTION: no text, no data, no symbols.
 
-I like keeping it in human readable values because its easier to visually
-identify how many registers are saved without doing math.
+We could edit the Makefile to only build that file when
+CONFIG_PREEMPTION is enabled, but that will likely create confusion
+if/when the thunks end up getting used by some other code again.
 
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+Just ignore it and move on.
 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> ---
->  drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> index 66980f4cd93e..24ab51bb5a01 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> @@ -821,7 +821,7 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
->  
->  	/* VPC */
->  	gpu_write(gpu, REG_A5XX_CP_PROTECT(14), ADRENO_PROTECT_RW(0xE68, 8));
-> -	gpu_write(gpu, REG_A5XX_CP_PROTECT(15), ADRENO_PROTECT_RW(0xE70, 4));
-> +	gpu_write(gpu, REG_A5XX_CP_PROTECT(15), ADRENO_PROTECT_RW(0xE70, 16));
->  
->  	/* UCHE */
->  	gpu_write(gpu, REG_A5XX_CP_PROTECT(16), ADRENO_PROTECT_RW(0xE80, 16));
-> -- 
-> 2.29.2
-> 
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ tools/objtool/elf.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index be89c741ba9a..2b0f4f52f7b5 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -380,8 +380,11 @@ static int read_symbols(struct elf *elf)
+ 
+ 	symtab = find_section_by_name(elf, ".symtab");
+ 	if (!symtab) {
+-		WARN("missing symbol table");
+-		return -1;
++		/*
++		 * A missing symbol table is actually possible if it's an empty
++		 * .o file.  This can happen for thunk_64.o.
++		 */
++		return 0;
+ 	}
+ 
+ 	symtab_shndx = find_section_by_name(elf, ".symtab_shndx");
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.29.2
+
