@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678AB2F5E8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9DA2F5E93
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728227AbhANKTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 05:19:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
+        id S1728525AbhANKUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 05:20:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727258AbhANKTm (ORCPT
+        with ESMTP id S1727550AbhANKUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 05:19:42 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE481C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:19:01 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id w5so5148948wrm.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:19:01 -0800 (PST)
+        Thu, 14 Jan 2021 05:20:19 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A7AC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:19:39 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id 91so5166563wrj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:19:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=IX/Vl8tZidwpXK8aDv9kkwvwljH5l08IDwbkXx2VWNs=;
-        b=IhShY049DvvhzelRe+DNH9Q+LXxcisEDSoKy6BIJj4DM2KoWNVxhNPWwvbUiBDlBCu
-         877ALAOYcoaoOo9IQcYY8fFZpm1f30kTWKECmxyx2+iyMr+UwVgoFQeRuoMzH8zdfv5p
-         c3wwc/8kA/WIeEzRo3nXa2ZhdZ/d7lqe++77APtLjn+ZIAeNiLMR/FATXNNf9HE6NCAz
-         CoyyMow8mBVpH9NmKBJ//dQw8TNHjmf9XMhPXq2kcLrtW6klap2pA1y9mBpWyKk1XXVO
-         zhXHu2N/llAscBSKcxYUt/5HMo4q0hwGUgdok3z6Lojr7B9iFnkSZMd3ckrIrJU9IZMO
-         +P0Q==
+        bh=JTjMnC7epO2M+kmG9NGUY+viKlUnUBw4wC4DgbcuUPc=;
+        b=B64eh2TUFb0ao9IJhHCrtHND9Am2OtpFXjf+ENwOS8zdkduEZtgynn450ayi60bwFM
+         eLIFvLbxKCsUidPcqTD1KbOJx6MFRXAKmaqO8TYEtYkNVbYrVtmyiaPAhmiSF9bW10Wv
+         d/7RQvGBSn8cVqsFOwq4H5k9urtv3bNEqT7VxAidBJbbdXJVpxaW6Xu50Mcwle4exXTP
+         StS1jp5JPlt17nrOMElFZADfov3WSYin7+uu4TBwwk5Ukkcsc2qt8IS89TgkKqDTQOaw
+         hq5zKlTeASjnXhcl8u/4lvgDX2tFf4K+3SjCqxHbrnSOwTAtwLe3dxOoNLPOkmqvijud
+         j3qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=IX/Vl8tZidwpXK8aDv9kkwvwljH5l08IDwbkXx2VWNs=;
-        b=X38JL3qCfacTSW3LLiTM7DwGohoR3PKTq7bskEZIF7xGZ+Gw6F4T4A3oQW3+WISZ0g
-         8VatQIFneRvYDLW+IJzONh46g/QGG83jyTLvP4FyqGL8E5X5Oe/evmEXiRTz4MR7KOwe
-         sLYpcQVJNsmwsTH2XAqCzz7oWL65WMIIGhAZoCNbsp5+9tMNHX1Dea3beqER3EIyENxl
-         +KusJ5Rm1y55bFEkfF/okPTbTu4zTKsyRv5qnmq0I7AYRgyRX0hCIqXd9WUbhMLIbTor
-         OhJeBZfEvHSNfh1nyYYlc/JSoJHBNp98HggxVAPoyUOFzJ4lo63wjUnLs5WzGpFxtjcj
-         E9aw==
-X-Gm-Message-State: AOAM531j8eQODHJ3zV7XVoDgCZYjh0JANbuDdg8CfnZZ8wJoFLHvQfQj
-        ryv9GFC5jl8zPZuFEbYUAdnAPw==
-X-Google-Smtp-Source: ABdhPJxZKQNic7KvcwKccIQPRDzbqZMvt6BSO+Q4C+rmscm0KAkc5oQcBJcDhgVfkqTUHRB72lN4Jg==
-X-Received: by 2002:adf:f707:: with SMTP id r7mr7342801wrp.113.1610619540444;
-        Thu, 14 Jan 2021 02:19:00 -0800 (PST)
+        bh=JTjMnC7epO2M+kmG9NGUY+viKlUnUBw4wC4DgbcuUPc=;
+        b=DP4DqpWRqYqtozHVd6QcF+iKCVcOka2iV1fSvtBEiO9FKR/hxtsFN66nD20rth5dqa
+         OYIeJLuEvLGG+OKRVxw22W0uSkXnnQFWEPdEmOLuk5OnOKf6SkBDoSYtVbGy8MR+BK3b
+         u64DQPLMy5J6XUMLq+r3rICbfHeNhsZ22jj5AE8I95CqNe7JY/mZM8siTeqwX7LQXOGk
+         7K+0G5whPGRQaawQB4QBmhCwwZCQmAIWLM57rmqJekbRcRvjMVjYifUVPkyMKztG0BsN
+         FHQ3pqoXmZK3nuwF1lIP2z/gpqfurr14fjfaTBy2w86ai9qSuGgHcR5/RzjkcFM0fyXi
+         t2vw==
+X-Gm-Message-State: AOAM531RYBp0QR1RZWk+d5NWrQV3A4eb8Efn8hNV1pVr03rmB3uUSXM2
+        TSkP1qWK+lZqnqolyjmSe/Ui+wfYNDkotpCW
+X-Google-Smtp-Source: ABdhPJyN2r5XwrmXCLGqxIwGJ/46OqwCqmocYVLQ34Emd7TvUAR3j8/Y3r3l87T4dPmVW69oJJ75NA==
+X-Received: by 2002:adf:fe05:: with SMTP id n5mr7251281wrr.9.1610619578197;
+        Thu, 14 Jan 2021 02:19:38 -0800 (PST)
 Received: from dell ([91.110.221.178])
-        by smtp.gmail.com with ESMTPSA id l20sm9805238wrh.82.2021.01.14.02.18.59
+        by smtp.gmail.com with ESMTPSA id w13sm8575332wrt.52.2021.01.14.02.19.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 02:18:59 -0800 (PST)
-Date:   Thu, 14 Jan 2021 10:18:58 +0000
+        Thu, 14 Jan 2021 02:19:37 -0800 (PST)
+Date:   Thu, 14 Jan 2021 10:19:35 +0000
 From:   Lee Jones <lee.jones@linaro.org>
 To:     Jeff LaBundy <jeff@labundy.com>
 Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/6] mfd: iqs62x: Remove unused bit mask
-Message-ID: <20210114101858.GO3975472@dell>
+Subject: Re: [PATCH 3/6] mfd: iqs62x: Rename regmap_config struct
+Message-ID: <20210114101935.GP3975472@dell>
 References: <1609707369-11297-1-git-send-email-jeff@labundy.com>
- <1609707369-11297-3-git-send-email-jeff@labundy.com>
+ <1609707369-11297-4-git-send-email-jeff@labundy.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1609707369-11297-3-git-send-email-jeff@labundy.com>
+In-Reply-To: <1609707369-11297-4-git-send-email-jeff@labundy.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Sun, 03 Jan 2021, Jeff LaBundy wrote:
 
-> The register write that performed a mandatory soft reset during
-> probe was removed during development of the driver, however the
-> IQS62X_SYS_SETTINGS_SOFT_RESET bit mask was left behind. Remove
-> it to keep stray macros out of the driver.
+> The regmap member of the driver's private data is called 'regmap',
+> but the regmap_config struct is called 'iqs62x_map_config'. Rename
+> the latter to 'iqs62x_regmap_config' for consistency.
 > 
 > Signed-off-by: Jeff LaBundy <jeff@labundy.com>
 > ---
->  drivers/mfd/iqs62x.c | 1 -
->  1 file changed, 1 deletion(-)
+>  drivers/mfd/iqs62x.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
 For my own reference (apply this as-is to your sign-off block):
 
