@@ -2,134 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DF82F6E88
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 330962F6E8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730894AbhANWsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 17:48:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730563AbhANWsM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 17:48:12 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED65C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 14:47:31 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id g12so10599035ejf.8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 14:47:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2zyDFVEgfwCeZaxKwpzwQSp3ENtudOHEif4oCCEAR3E=;
-        b=TqNDT0u54KKuZPvEJdgLc1BhKdSRJPLW1LJHvOvGAaBvBs4kHyzeqQHQo0Zyrkqjx1
-         lzX6EDXpknEf0RoD3BqR1cWEvy7Z8uUBHF/xWiL+0I8VBjJFwRvAS/8aoouOpLGXmRa7
-         R45rYHgZYLxfjqP3oOGi6u//o07lC9Rgib+kTkm+RXWb6jTjtPe2cWfwVav1JlOPw3sz
-         2JCzNBccFYm//zfrDFPjG6s0COtZziTcerO1SBeMPQNem6Zxuga3Xqxf/r7TbTZqa5mp
-         Rf6D14gNJ1nRU3RODPPftA61SRAPdRRR/U1Jz4R25o4tL7ChogkPHvGilIwEnRVfJoFq
-         F1OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2zyDFVEgfwCeZaxKwpzwQSp3ENtudOHEif4oCCEAR3E=;
-        b=XGYC3B0Dhd8CWpGgIQyLQkjLpAY05eClhKEQNr7GsOdpKAwv62S4XZ+XWyP5EdR9OF
-         IBH39xbGzd16Kl+H/1gmJvxl1AOBOBeEkQqWhxGDInho7w18v0PINxhdLQN0/d4ONloa
-         NYW2woLfMZirsSZP2SEsWZU2f4bHYJ2M1Ql/soMJyldj8CuqUMKStibdAXf1Icm4PjAi
-         BirHCCH7fOKfq+lKL0xRmUQuaZ5ToDfpp1ZS6hZMRlA4SO99XFehy38SsFaGcg3LXxup
-         RdeyfUbyZtibnl5EBKarcwkd7bcnZW6xrpR/rt3AVlDEoVJe7KHHyEWYSt/Wv/btM+RE
-         nFtg==
-X-Gm-Message-State: AOAM530P7zTSXhleY6NAxhYRw9QK9U7e2/pXVVDzbBnhv73fcoRNys9R
-        jmUHg9tF13HxzOiLnu1qEZiiJa0VO3zpWuTZvMET
-X-Google-Smtp-Source: ABdhPJzsSKmcY/ZVWEMyE355NLC9n/PtlEUotQjvcYcEiSbDaJnFMkRXC21GqZwdsA/4/83NkBdNe4MaxBttarJjJvU=
-X-Received: by 2002:a17:906:2e82:: with SMTP id o2mr6947496eji.106.1610664450156;
- Thu, 14 Jan 2021 14:47:30 -0800 (PST)
+        id S1730903AbhANWsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 17:48:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729214AbhANWse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 17:48:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E587C23435;
+        Thu, 14 Jan 2021 22:47:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610664474;
+        bh=Zbt+b/4SRKiOKRnFI9Unxzdtq1Iw8LTV3SmgBxJPwss=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E/IYEnKEKSrPk4ZCAzJL1g08pSIZZseTZtBvkoHwFdye/EZcYRLlQojBphHR9GGuZ
+         SSZxo9J7MgV/x7DbRX8UjqNNH4um9pyFQU18w6AWxWxi3PSxjCLVuGoGxLx6JiPPe0
+         5NCIRUZjBWktbzvOheoxBj2o6GbMuD5LAlnTTVOEYuFzJ2VXyE/bepSg7JYlQjy39b
+         07syRxcOXBIIq0iNYaJUhxHoqwGWHwHK5tiKEMyLa8hx3psZx1k25CFSQZYN17n3UT
+         fLw2ex+8sgXsuXM8imqa6grJ9qRdVkybf0E+huYcI2gqlJ6wUIRQvis2GLUshc/JnQ
+         F8uoihU3Hx+Yg==
+Received: by earth.universe (Postfix, from userid 1000)
+        id 465783C0C94; Thu, 14 Jan 2021 23:47:52 +0100 (CET)
+Date:   Thu, 14 Jan 2021 23:47:52 +0100
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tags need some work in the battery tree
+Message-ID: <20210114224752.4ohn7zmrcyde474n@earth.universe>
+References: <20210115092301.4c1f4893@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210108222223.952458-1-lokeshgidra@google.com> <CAHC9VhSLFUyeo8he4t7rFoHgRHfpB=URoAioF+a3+xjZP8JdSQ@mail.gmail.com>
-In-Reply-To: <CAHC9VhSLFUyeo8he4t7rFoHgRHfpB=URoAioF+a3+xjZP8JdSQ@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 14 Jan 2021 17:47:19 -0500
-Message-ID: <CAHC9VhRGZCRV2T6y80MXtutsZRw4hR+wxgte3__vyG50yAn4qw@mail.gmail.com>
-Subject: Re: [PATCH v15 0/4] SELinux support for anonymous inodes and UFFD
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        KP Singh <kpsingh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Adrian Reber <areber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        kaleshsingh@google.com, calin@google.com, surenb@google.com,
-        jeffv@google.com, kernel-team@android.com, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>, hch@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="chlntbt3zn7zpxyp"
+Content-Disposition: inline
+In-Reply-To: <20210115092301.4c1f4893@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 12:15 PM Paul Moore <paul@paul-moore.com> wrote:
->
-> On Fri, Jan 8, 2021 at 5:22 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
-> >
-> > Userfaultfd in unprivileged contexts could be potentially very
-> > useful. We'd like to harden userfaultfd to make such unprivileged use
-> > less risky. This patch series allows SELinux to manage userfaultfd
-> > file descriptors and in the future, other kinds of
-> > anonymous-inode-based file descriptor.
->
-> ...
->
-> > Daniel Colascione (3):
-> >   fs: add LSM-supporting anon-inode interface
-> >   selinux: teach SELinux about anonymous inodes
-> >   userfaultfd: use secure anon inodes for userfaultfd
-> >
-> > Lokesh Gidra (1):
-> >   security: add inode_init_security_anon() LSM hook
-> >
-> >  fs/anon_inodes.c                    | 150 ++++++++++++++++++++--------
-> >  fs/libfs.c                          |   5 -
-> >  fs/userfaultfd.c                    |  19 ++--
-> >  include/linux/anon_inodes.h         |   5 +
-> >  include/linux/lsm_hook_defs.h       |   2 +
-> >  include/linux/lsm_hooks.h           |   9 ++
-> >  include/linux/security.h            |  10 ++
-> >  security/security.c                 |   8 ++
-> >  security/selinux/hooks.c            |  57 +++++++++++
-> >  security/selinux/include/classmap.h |   2 +
-> >  10 files changed, 213 insertions(+), 54 deletions(-)
->
-> With several rounds of reviews done and the corresponding SELinux test
-> suite looking close to being ready I think it makes sense to merge
-> this via the SELinux tree.  VFS folks, if you have any comments or
-> objections please let me know soon.  If I don't hear anything within
-> the next day or two I'll go ahead and merge this for linux-next.
 
-With no comments over the last two days I merged the patchset into
-selinux/next.  Thanks for all your work and patience on this Lokesh.
+--chlntbt3zn7zpxyp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also, it looks like you are very close to getting the associated
-SELinux test suite additions merged, please continue to work with
-Ondrej to get those merged soon.
+Hi Stephen,
 
--- 
-paul moore
-www.paul-moore.com
+On Fri, Jan 15, 2021 at 09:23:01AM +1100, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> In commit
+>=20
+>   c339b3aec780 ("power: supply: cpcap-battery: Fix missing power_supply_p=
+ut()")
+>=20
+> Fixes tag
+>=20
+>   Fixes: b0134cc14b9 ("power: supply: cpcap-battery: Fix handling of lowe=
+red charger voltage")
+>=20
+> has these problem(s):
+>=20
+>   - Target SHA1 does not exist
+>=20
+> Maybe you meant
+>=20
+> Fixes: 8b0134cc14b9 ("power: supply: cpcap-battery: Fix handling of lower=
+ed charger voltage")
+>=20
+> In commit
+>=20
+>   efa32492629a ("power: supply: cpcap-charger: Fix missing power_supply_p=
+ut()")
+>=20
+> Fixes tag
+>=20
+>   Fixes: 688ea049233 ("power: supply: cpcap-charger: Allow changing const=
+ant charge voltage")
+>=20
+> has these problem(s):
+>=20
+>   - Target SHA1 does not exist
+>=20
+> Maybe you meant
+>=20
+> Fixes: 5688ea049233 ("power: supply: cpcap-charger: Allow changing consta=
+nt charge voltage")
+
+Thanks for the report. I fixed up the Fixes tags using your
+recommendations. Obviously Tony had a problem with copying
+the first character of the shortened hash :)
+
+-- Sebastian
+
+--chlntbt3zn7zpxyp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAAyhgACgkQ2O7X88g7
++pqXExAAnRctWeXmH3VPf810wCzMLwUyHAymjHE+K31yusNyE3pLT4WrrRDCMHh3
+1rYrZsdwXtUnV4KO9G8qx4I7VsupLfdphM2D604YAR9PPCUm3UyRbAZ0lvA0O/dq
+7mlon3fEVIa/mt/Ciu37QRYAFxi2F5kppWMSci3lifXy7UM8bLEVB4bT3se9xDAU
+O2Ihop4uqN/ZOIQcyrn59P8hsbJ8iSLBSdkpVeifaJWyJKw7zIRCMm9qimNPFxQu
+2L65b8yB4g+1upioPgsy85hL3eILXQWZ1q8mz6mNi8+WoHdfFKfW9pRQDByOO4KM
+J7r2RYu0NjUDxCvjkJ9am4h4rlIsycZWeTRBjdEKWp6RUeFNwIx2iNqahzCc6dmt
+6INpP6TzX7E5QF8lHilkJSams0vIDlVcylA8Nf2elR1SaJXYi3EAHfg8+F8quW9V
+ls3nLbFZJ4z7JU96t5tEM8x0wtJiMQBoAiOR2D5NEZPl56Ikx4zuuxTVKutYtW/H
+pbH2d9fMV31DQiFc8or2D9atc9HR41UsRswqKcyHTm0H4ccDjbO6RDQE8/hsFGEc
+P3K0V443iSlozehXDxu5TRp7iWZF4WOYgPhdvE9FYetF22abzZKOdk6OIEPNw4Jq
+7x/3fRSKEZTEWHyrqFy7aJHFErqbmrDs1UCEbVRNK+Es0Q7blRk=
+=vLci
+-----END PGP SIGNATURE-----
+
+--chlntbt3zn7zpxyp--
