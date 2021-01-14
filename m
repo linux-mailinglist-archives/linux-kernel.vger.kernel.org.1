@@ -2,94 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2279E2F5A24
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 06:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E672F5A27
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 06:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726280AbhANFDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 00:03:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
+        id S1726644AbhANFE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 00:04:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbhANFDw (ORCPT
+        with ESMTP id S1726404AbhANFEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 00:03:52 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E528C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:03:12 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id v3so2301249plz.13
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:03:12 -0800 (PST)
+        Thu, 14 Jan 2021 00:04:55 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE3CC061786;
+        Wed, 13 Jan 2021 21:04:15 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id my11so3368618pjb.1;
+        Wed, 13 Jan 2021 21:04:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=V92Nts5/LO1MQK5AF4Md88e71CzExZyVy0PrsnyGWp0=;
-        b=ZIxkgSKOQxF2SnlRPa6ijaMDFwCzAMhvi1F3o319zniXgVzkIhhfQgrrHJ0pWESuh5
-         pu+fIo2h9He99+kKwwSaMt9yTh5j9j4MizNabPeRPUONTUAqxB/oUntpS402Q9BUSoRP
-         om6412OmHNrqDBcu7c28PCw8Dq/Z0u2ZNNcbHj+GbJkM9AcPg5oVB+BMHF8d7fsgSQnx
-         22NWxfglaksP+upjqXHyTtlvAnXn5mkPv1JvKQAkZkC65KSCf5NLtaG60ExjmvkRthpC
-         RwT6WkKEXfwIwrlK9xBgN18XTT5XjKtj/pSzbUb6k0YhGx0a2X6kMvEDckvFyt9Cb7fH
-         fVzQ==
+        bh=U6mWvLFGrJbf1ZAi2Z/+qx3it4kX5Grq7lBXDPCBTAQ=;
+        b=hyflFSU0yOLK6mWfIREyPuITZ+sfE+VdSTjY8CRaUma8mHq3bQXJVhmmGqK5eEspMy
+         lgh07yhWGiOfCoEVdAUbvmbdpt2oXgrEC8eIJUYQLE8VECc979Mglfw0OFIqQwAx6QK1
+         XxeRB302Vxo11YCCsDGVCUFQL8y53smR0gucjkNBJDAZFqdGyOO9kGEFfTkg9y40+VB+
+         gcrJW8qbABkkX8d7SNZRUYlAdKnE57Z/icbfZzPj9RNVB5QpUf9ZLpZHRXgugiueu7fx
+         Z7WXQx++o7K9xHDpotfufejXAxiU8eqcz308AJeezxPSXTphighRHkVDS3gpeOmXHDlX
+         hgrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=V92Nts5/LO1MQK5AF4Md88e71CzExZyVy0PrsnyGWp0=;
-        b=Nq5P4yrhKtf2Y/34zmLRYMi7/n5BR3ejImvx2KIPwNTZOkehPC1vs9ieg/14kJil46
-         COR7ZTCqWOe2HQ84r+Q4qIA91yb4dNfCS1Zx7q75zXJqPMPECSogJH8CFDZIgzm1rt+U
-         DuHw5bUG9cy57sdeX3kk4DkOu1yLuVlvcyfMKovaXL/zKRcLWsZ08bLs7U2KtUXhOS5h
-         5jchPFNgWhzo526SK7UmLFfCz5iJDe3ImYIDrDMsItF4A/3Md9U99uHHlcQDjgEaFvkw
-         DDK/wgOcxV/xM05MNKEHlEZys02VodXhvlnuWsShSiLtVt8k5zMyJdI7WpcPv/Fn+u+H
-         f6tA==
-X-Gm-Message-State: AOAM531vE7xMmAYlmPo3i2Ztw1tDRjlIB2TkRwQTsZuzYhoiLTHebuGJ
-        Bj8xCo4arlQADONa1w+GOP8GhA==
-X-Google-Smtp-Source: ABdhPJxX5ENfqzDWGtwN0g0Mu9zNq2fqM69el2/2b6RDTGqJ2Ab91yOr9QgqkUUcG4WPLZzQKWye4w==
-X-Received: by 2002:a17:902:b587:b029:de:23ed:88b1 with SMTP id a7-20020a170902b587b02900de23ed88b1mr5978581pls.61.1610600592151;
-        Wed, 13 Jan 2021 21:03:12 -0800 (PST)
-Received: from localhost ([122.172.85.111])
-        by smtp.gmail.com with ESMTPSA id x125sm4083867pgb.35.2021.01.13.21.03.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Jan 2021 21:03:11 -0800 (PST)
-Date:   Thu, 14 Jan 2021 10:33:09 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
-Message-ID: <20210114050309.wokrhw4o3cjxj5uo@vireshk-i7>
-References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
- <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
- <CAL_JsqLpbSOk-OST8Oi7uyFVjekX-15713F1FbDCQWfVWgikMw@mail.gmail.com>
+        bh=U6mWvLFGrJbf1ZAi2Z/+qx3it4kX5Grq7lBXDPCBTAQ=;
+        b=ruW0Q4aViRdvhiJG2o38WKiCpO+adn8W6k+wc2chxwSoBJjRLh3pamB3+0eYF2z1wb
+         ptFUK0HaXE7OUOkKLEMA2M/Dqq6JHZ8/gkJB8I1+w/UPVBmzL2e2oemoPce/FEJK7sfQ
+         zzGNm9uHj72FIxkrQPT7dkzpAbhn8TbJO78hFHAcX81XYb4lYSZVYSBgU71XW1vDETCH
+         CCumAR23aEDOdCpAs12nztGlfRmJQUwk/BZ568WgS7Ms4BNoC+qbDwGvxQkjQq7nau9A
+         dYODx+z7YPM/wJEgXGpe9UigrDhg0hE9Cb/8WHJ1MU2m49oavldBGtk2rv4xmsm/8ACS
+         ytgQ==
+X-Gm-Message-State: AOAM532uQFosRCdW2Gg5STfyworRd54nRtWzJLnJjISzVLu83V8U9Ovy
+        l/atHllLJMTaCoZ1eBHdcWo=
+X-Google-Smtp-Source: ABdhPJzWuRO/cEQgD9jc3DfhT5vwwcuYLHjNjq27ZyYgcftQcwMAFHBI6HvR2QzhMSsO5AsHXj6GDg==
+X-Received: by 2002:a17:902:6acb:b029:dc:2e9d:7ca with SMTP id i11-20020a1709026acbb02900dc2e9d07camr5881619plt.56.1610600655322;
+        Wed, 13 Jan 2021 21:04:15 -0800 (PST)
+Received: from b29397-desktop ([194.5.48.251])
+        by smtp.gmail.com with ESMTPSA id n1sm3974215pfu.28.2021.01.13.21.04.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 13 Jan 2021 21:04:14 -0800 (PST)
+Date:   Thu, 14 Jan 2021 13:04:02 +0800
+From:   Peter Chen <hzpeterchen@gmail.com>
+To:     Daewoong Kim <daewoong00.kim@lge.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        allen.lkml@gmail.com, gustavoars@kernel.org,
+        a.darwish@linutronix.de, romain.perier@gmail.com,
+        dvyukov@google.com, andreyknvl@google.com, mathias.nyman@intel.com,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH 1/1] usb: xhci: setup packets don't need DMA mapping
+Message-ID: <20210114050402.GA18650@b29397-desktop>
+References: <1610593147-12511-1-git-send-email-daewoong00.kim@lge.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqLpbSOk-OST8Oi7uyFVjekX-15713F1FbDCQWfVWgikMw@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <1610593147-12511-1-git-send-email-daewoong00.kim@lge.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-01-21, 09:46, Rob Herring wrote:
-> On Fri, Jan 8, 2021 at 2:41 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > Now that fdtoverlay is part of the kernel build, start using it to test
-> > the unitest overlays we have by applying them statically.
+On 21-01-14 11:59:07, Daewoong Kim wrote:
+> DMA mapping of urb->setup_packet is not necessary for xHCI host
+> controllers. The xHCI specification says that Setup Stage TRB includes
+> whole Setup Data; therefore, urb->setup_dma will not be used in the xhci
+> HCD code.
 > 
-> Nice idea.
-> 
-> > The file overlay_base.dtb have symbols of its own and we need to apply
-> > overlay.dtb to overlay_base.dtb alone first to make it work, which gives
-> > us intermediate-overlay.dtb file.
-> 
-> Okay? If restructuring things helps we should do that. Frank?
 
-Frank, do we want to do something about it ? Maybe make overlay_base.dts an dtsi
-and include it from testcases.dts like the other ones ?
+How about bypass map/unmap operation for xHCI control transfer directly?
+
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 91ab81c3fc79..0a0ab14b7638 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -1374,7 +1374,8 @@ static int xhci_map_urb_for_dma(struct usb_hcd *hcd, struct urb *urb,
+ 
+ 	xhci = hcd_to_xhci(hcd);
+ 
+-	if (xhci_urb_suitable_for_idt(urb))
++	if (xhci_urb_suitable_for_idt(urb) ||
++		(usb_endpoint_xfer_control(&urb->ep->desc)))
+ 		return 0;
+ 
+ 	if (xhci->quirks & XHCI_SG_TRB_CACHE_SIZE_QUIRK) {
+@@ -1389,6 +1390,9 @@ static void xhci_unmap_urb_for_dma(struct usb_hcd *hcd, struct urb *urb)
+ 	struct xhci_hcd *xhci;
+ 	bool unmap_temp_buf = false;
+ 
++	if (usb_endpoint_xfer_control(&urb->ep->desc))
++		return;
++
+ 	xhci = hcd_to_xhci(hcd);
+ 
+ 	if (urb->num_sgs && (urb->transfer_flags & URB_DMA_MAP_SINGLE))
+> Signed-off-by: Daewoong Kim <daewoong00.kim@lge.com>
+> ---
+>  drivers/usb/core/hcd.c  | 4 +++-
+>  drivers/usb/host/xhci.c | 1 +
+>  include/linux/usb.h     | 4 ++++
+>  3 files changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
+> index ad5a0f405a75..b1f9eac93f0d 100644
+> --- a/drivers/usb/core/hcd.c
+> +++ b/drivers/usb/core/hcd.c
+> @@ -1411,7 +1411,9 @@ int usb_hcd_map_urb_for_dma(struct usb_hcd *hcd, struct urb *urb,
+>  	if (usb_endpoint_xfer_control(&urb->ep->desc)) {
+>  		if (hcd->self.uses_pio_for_control)
+>  			return ret;
+> -		if (hcd->localmem_pool) {
+> +		if (hcd->self.uses_pio_for_setup_pkt) {
+> +			;	/* do nothing */
+> +		} else if (hcd->localmem_pool) {
+>  			ret = hcd_alloc_coherent(
+>  					urb->dev->bus, mem_flags,
+>  					&urb->setup_dma,
+> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> index e86940571b4c..c263aee82dc0 100644
+> --- a/drivers/usb/host/xhci.c
+> +++ b/drivers/usb/host/xhci.c
+> @@ -643,6 +643,7 @@ int xhci_run(struct usb_hcd *hcd)
+>  	 */
+>  
+>  	hcd->uses_new_polling = 1;
+> +	hcd->self.uses_pio_for_setup_pkt = 1;
+>  	if (!usb_hcd_is_primary_hcd(hcd))
+>  		return xhci_run_finished(xhci);
+>  
+> diff --git a/include/linux/usb.h b/include/linux/usb.h
+> index 7d72c4e0713c..76600e8de414 100644
+> --- a/include/linux/usb.h
+> +++ b/include/linux/usb.h
+> @@ -430,6 +430,10 @@ struct usb_bus {
+>  					 * Does the host controller use PIO
+>  					 * for control transfers?
+>  					 */
+> +	u8 uses_pio_for_setup_pkt;	/*
+> +					 * Does the host controller use PIO
+> +					 * for setup packets?
+> +					 */
+>  	u8 otg_port;			/* 0, or number of OTG/HNP port */
+>  	unsigned is_b_host:1;		/* true during some HNP roleswitches */
+>  	unsigned b_hnp_enable:1;	/* OTG: did A-Host enable HNP? */
+> -- 
+> 2.17.1
+> 
 
 -- 
-viresh
+
+Thanks,
+Peter Chen
+
