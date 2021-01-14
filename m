@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A962F5665
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BB22F5656
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728272AbhANBrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:47:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
+        id S1728152AbhANBqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:46:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726715AbhANAz4 (ORCPT
+        with ESMTP id S1727055AbhANA7K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 19:55:56 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6FFC0617A2;
-        Wed, 13 Jan 2021 16:55:03 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id c79so2358283pfc.2;
-        Wed, 13 Jan 2021 16:55:03 -0800 (PST)
+        Wed, 13 Jan 2021 19:59:10 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9426C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:58:29 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id 186so5005610qkj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:58:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8PvMhL6fxWNFHCVbbnqtdK4bZl7XKsjepw1o5suSyi8=;
-        b=TaTQmWAqV5uxDSklOLTXDoqh/CSQNEG2k/gb4SnywDb4Qi1K0fouvgrAfTPzQTRBBM
-         BNXwEHK63XMrDPkvUiNQ7Htk4EhhCpoztLYZYnqUbH0Q9SJiNdHptS7qW56HG+bc7Sx5
-         J4oLIRGJUrT8ywmjhttvHyjMjiu3mF9QCyBOVDckBiBUfiEZ20bEYateyzUuFKd5hl5n
-         UAdQ5MJzLgJ3yE0P0gQ+m5fZFEW0HQm+K4GM7v8arLEl64K7rG+oJ7I4fUHu1C9iE4V8
-         0ikiHBQ9fshpVEx1zaDfcgsJNLwwgPsQyMil4Rw8+WJn8fqeeX8CQxjAj4SbsvlClY9b
-         Ogkw==
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=OMeOHI/Hl6kSNreMTXeZ4BOpfSlftMeb3sy1sw+PF0Y=;
+        b=mht2VfhFYIWQFnuf8RZpLFw/43DcWuDtL19iZK/J9/83NLe3kF6zjnnY95w3XVOkN6
+         2aFXF7BV+2M3d1Zx2YVX5cMokqb/KoxsJQSE1bBn/A7V5Rb538jHJWLv3GNahYzRqVSv
+         AHEvNCKK0QuguhpnPZQ0bFgaG3zHJyI1lNzFIyykTL7dBdnEfFchl+MAWvEIN6d42F/l
+         GwIjIucacsuUX1Ke/DsT3Z8nWCTRROG7zMyxf21d4AZKBXGJn5K0+CVjC6G9MkXMU4tx
+         R9TshJAdQZ+SpMZurlYBhdfAgD+Mg/kfUxeXds4wFOSHAnbgGmNJNshsvNix3pLgperf
+         wDJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8PvMhL6fxWNFHCVbbnqtdK4bZl7XKsjepw1o5suSyi8=;
-        b=XhwtXqLqYWWaF4mmqjq1ZtdGSpyF8vHIu9XZNkGdCLEKwkNW+uvEZmWFYIRo6JKhhd
-         bNg52RmTlZ1xPOSEiK4DNRVVcLDu/exps3zP7ZdRw2ZBFKmNAU3QHvQZF1x0VhIubVbf
-         nsvIC1LVBm0hva2jY1mkHD1+cjR3lDQfiPojCajGC4bC7oQZR5FjJcm9+LENNzdSX1WT
-         Fhpox9m2mhJrZM7ujCWCJuAj7zwy7WW8vFkxbtkQ3XrdSnA1vKR2nvVQnbX6hsj4F6RC
-         LX98ukAInbR+WzrvuDK/hMmUuI+Q/cLFMSLXENGp298SI0ukON8OkqAW8Hm4rFLWvGEL
-         1zKQ==
-X-Gm-Message-State: AOAM5321Gk8mfXwpLKRUvGkHGTmwgxPmPUuL3SbyupyZL3W2HWJrSinj
-        YLK7ZE3wuYlTzYkHkEpNZUw=
-X-Google-Smtp-Source: ABdhPJwGUNDoxClo0cBJX397ofAV3IAu6fO+8ouOGUg4pvmoNqoUpOq8314GAmgztD8lidpYbnMtvg==
-X-Received: by 2002:a63:f404:: with SMTP id g4mr4694268pgi.114.1610585702870;
-        Wed, 13 Jan 2021 16:55:02 -0800 (PST)
-Received: from b29397-desktop ([84.17.34.154])
-        by smtp.gmail.com with ESMTPSA id f64sm3661663pfb.146.2021.01.13.16.54.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 Jan 2021 16:55:02 -0800 (PST)
-Date:   Thu, 14 Jan 2021 08:54:54 +0800
-From:   Peter Chen <hzpeterchen@gmail.com>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>, Thierry Reding <treding@nvidia.com>
-Subject: Re: Infinite recursion in device_reorder_to_tail() due to circular
- device links
-Message-ID: <20210114005454.GA14220@b29397-desktop>
-References: <X/ycQpu7NIGI969v@gerhold.net>
- <CAJZ5v0gAsZ45O8mv-gz0UvbyxnKA6fQBYvambBYEH6OSk3-m3g@mail.gmail.com>
- <CAJZ5v0h8bNp-=1zVfY5gZ1ezr8JRV4L8cEV45e+0f-aRSJnb1A@mail.gmail.com>
- <X/7XCzdDG7kbiNfM@gerhold.net>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=OMeOHI/Hl6kSNreMTXeZ4BOpfSlftMeb3sy1sw+PF0Y=;
+        b=J7VbIwDTtHTyNRq8yqaQ9eC/dezhXZuM9PR78w4aS5U4plGrhpmxHAamGeyk9L0B/8
+         P5JgSfvVWv+nBQKIVPkMjLN+iZNUQw9rqwvX3VJUKF/GOlkku4wq26pG3yOh44nvKmCX
+         yP3Jj345olAP2Cr+hKHauS5xYd7IxSzIOhRsEu1Z7jLsg3Bwhfcp9381Jj2YWZumtrt+
+         wUr9wun1W1+1mgsSAzOpWIriUoARbdJgM/4WEzTWSDU1w7k+87K4afKNz+xuVvewYpZ2
+         N8NhswgvepAebUIiGvctpvQMWuSxQueSNJpgSxJDKM1HEv7LAHVXZ7/vnz1E7af0I1Z/
+         bTNg==
+X-Gm-Message-State: AOAM530O/2E8OEVwJ23u3UnPeHOFwput6Mm6pKJ9eFoOd5lpgzGrm3mf
+        sLNXAbeinVywsO9HZHilcOdE2YU7zuroy3DuAKp0GYgCO0ckWAf2
+X-Google-Smtp-Source: ABdhPJyQ73tu/PdV9cqrYqLMQz/vcGeCdQvvqwxevqisBw7XPdTw5VTPpGpOuReRk58VKyUgd3ziLzgOj7VwMU5b1jM=
+X-Received: by 2002:a25:cf12:: with SMTP id f18mr7138177ybg.18.1610585908912;
+ Wed, 13 Jan 2021 16:58:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/7XCzdDG7kbiNfM@gerhold.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Thu, 14 Jan 2021 08:58:02 +0800
+Message-ID: <CAD-N9QUWaO0YFz1ORE4-vgGNnsJrgt50S0bPY2JcUPWaKA17Aw@mail.gmail.com>
+Subject: =?UTF-8?Q?=E2=80=9CKASAN=3A_slab=2Dout=2Dof=2Dbounds_Read_in_squashfs=5Fget=5Fid?=
+        =?UTF-8?Q?=E2=80=9D_should_have_the_same_root_cause_with_=22KASAN=3A_use=2Dafter=2Df?=
+        =?UTF-8?Q?ree_Read_in_squashfs=5Fget=5Fid=22?=
+To:     linux-kernel <linux-kernel@vger.kernel.org>,
+        phillip@squashfs.org.uk,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-13 12:18:35, Stephan Gerhold wrote:
-> 
-> Also, on a completely different note I looked again at the chipidea USB
-> driver that produces this situation. To request the PHY (which ends up
-> in the circular device link) it does:
-> 
-> 	/* Look for a generic PHY first */
-> 	ci->phy = devm_phy_get(dev->parent, "usb-phy");
-> 
-> To me it doesn't really seem great to use the devm_* helpers on the
-> parent device either, so I will check if I can refactor this somehow.
-> Perhaps this situation can be prevented entirely.
-> 
+Dear kernel developers,
 
-Hi Stephan,
+I found that on the syzbot dashboard, =E2=80=9CKASAN: slab-out-of-bounds Re=
+ad
+in squashfs_get_id=E2=80=9D
+(https://syzkaller.appspot.com/bug?id=3D16a7f16e9182bbfdbd2142306a82a41d4de=
+bb670)
+and
+"KASAN: use-after-free Read in squashfs_get_id"
+(https://syzkaller.appspot.com/bug?id=3Deea996d785a0f2379bcfabaf7501329235a=
+1f006)
+should share the same root cause.
 
-You could try to get the PHY at parent driver
-(drivers/usb/chipidea/ci_hdrc_msm.c) to see the difference.
+The reason for my above statement is that 1) their PoCs are exactly
+the same as each other; 2) the stack traces are also the same;
 
--- 
+If you can have any issues with this statement or our information is
+useful to you, please let us know. Thanks very much.
 
-Thanks,
-Peter Chen
+--
+My best regards to you.
 
+     No System Is Safe!
+     Dongliang Mu
