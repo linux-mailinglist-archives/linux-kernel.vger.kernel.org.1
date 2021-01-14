@@ -2,46 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 833CA2F688E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D02102F6894
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728585AbhANR6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:58:11 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:45194 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbhANR6K (ORCPT
+        id S1729173AbhANR63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:58:29 -0500
+Received: from relay02.th.seeweb.it ([5.144.164.163]:33887 "EHLO
+        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726147AbhANR62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:58:10 -0500
-Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D7E4720B6C40;
-        Thu, 14 Jan 2021 09:57:28 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D7E4720B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1610647049;
-        bh=A4xGRwtz6F/ItvEdkk7Mb8VZ62q+X4ffVSeGTPCYbj0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Ms+8Ksq1OiZWytgF1KBjTZpUlM/Mljo9UN9DsX4FbPYkGZEwDl5l+ublRojq3l+De
-         onLI2IsuQjAtzreV8nfOQy2Nu+zA1sGousMbny+4FLoyhNB6TfSDRuDcSX3k/nSKp0
-         9dODlIIkdzCGk3Y9ixlK26nnvqfpz21QyroeBZDk=
-Subject: Re: [PATCH v10 5/8] IMA: limit critical data measurement based on a
- label
-To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20210108040708.8389-1-tusharsu@linux.microsoft.com>
- <20210108040708.8389-6-tusharsu@linux.microsoft.com>
- <73a82dff7be151298f51c0db6f3c4996ccf44a19.camel@linux.ibm.com>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <3105b0b9-4e74-691c-56ab-6ca183cb2038@linux.microsoft.com>
-Date:   Thu, 14 Jan 2021 09:57:27 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 14 Jan 2021 12:58:28 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 1958C1F534;
+        Thu, 14 Jan 2021 18:57:45 +0100 (CET)
+Subject: Re: [PATCH 1/3] phy: qcom-qusb2: Allow specifying default clock
+ scheme
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, kishon@ti.com, vkoul@kernel.org,
+        robh+dt@kernel.org, mgautam@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, konrad.dybcio@somainline.org,
+        martin.botka@somainline.org, marijn.suijten@somainline.org,
+        phone-devel@vger.kernel.org
+References: <20210114174718.398638-1-angelogioacchino.delregno@somainline.org>
+ <YACE+uWidV6xzAwC@builder.lan>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <28bb9e1e-909a-1559-af62-bc99b6e960ec@somainline.org>
+Date:   Thu, 14 Jan 2021 18:57:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <73a82dff7be151298f51c0db6f3c4996ccf44a19.camel@linux.ibm.com>
+In-Reply-To: <YACE+uWidV6xzAwC@builder.lan>
 Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -49,34 +44,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021-01-13 6:09 p.m., Mimi Zohar wrote:
-> On Thu, 2021-01-07 at 20:07 -0800, Tushar Sugandhi wrote:
->> Integrity critical data may belong to a single subsystem or it may
->> arise from cross subsystem interaction.  Currently there is no mechanism
->> to group or limit the data based on certain label.  Limiting and
->> grouping critical data based on a label would make it flexible and
->> configurable to measure.
+Il 14/01/21 18:52, Bjorn Andersson ha scritto:
+> On Thu 14 Jan 11:47 CST 2021, AngeloGioacchino Del Regno wrote:
+> 
+>> The TCSR's PHY_CLK_SCHEME register is not available on all SoC
+>> models, but some may still use a differential reference clock.
 >>
->> Define "label:=", a new IMA policy condition, for the IMA func
->> CRITICAL_DATA to allow grouping and limiting measurement of integrity
->> critical data.
+>> In preparation for these SoCs, add a se_clk_scheme_default
+>> configuration entry and declare it to true for all currently
+>> supported SoCs (retaining the previous defaults.
 >>
->> Limit the measurement to the labels that are specified in the IMA
->> policy - CRITICAL_DATA+"label:=".  If "label:=" is not provided with
->> the func CRITICAL_DATA, measure all the input integrity critical data.
+>> This patch brings no functional changes.
 >>
->> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
->> Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 > 
-> This is looking a lot better.
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > 
-> thanks,
-> 
-> Mimi
-> 
-Thanks a lot for the feedback Mimi.
-Appreciate it. :)
 
-~Tushar
+Thanks!! :)
+
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>> ---
+>>   drivers/phy/qualcomm/phy-qcom-qusb2.c | 15 +++++++++++++--
+>>   1 file changed, 13 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/phy/qualcomm/phy-qcom-qusb2.c b/drivers/phy/qualcomm/phy-qcom-qusb2.c
+>> index 109792203baf..8fcfea2a8f1f 100644
+>> --- a/drivers/phy/qualcomm/phy-qcom-qusb2.c
+>> +++ b/drivers/phy/qualcomm/phy-qcom-qusb2.c
+>> @@ -245,6 +245,9 @@ struct qusb2_phy_cfg {
+>>   
+>>   	/* true if PHY has PLL_CORE_INPUT_OVERRIDE register to reset PLL */
+>>   	bool has_pll_override;
+>> +
+>> +	/* true if PHY default clk scheme is single-ended */
+>> +	bool se_clk_scheme_default;
+>>   };
+>>   
+>>   static const struct qusb2_phy_cfg msm8996_phy_cfg = {
+>> @@ -253,6 +256,7 @@ static const struct qusb2_phy_cfg msm8996_phy_cfg = {
+>>   	.regs		= msm8996_regs_layout,
+>>   
+>>   	.has_pll_test	= true,
+>> +	.se_clk_scheme_default = true,
+>>   	.disable_ctrl	= (CLAMP_N_EN | FREEZIO_N | POWER_DOWN),
+>>   	.mask_core_ready = PLL_LOCKED,
+>>   	.autoresume_en	 = BIT(3),
+>> @@ -266,6 +270,7 @@ static const struct qusb2_phy_cfg msm8998_phy_cfg = {
+>>   	.disable_ctrl   = POWER_DOWN,
+>>   	.mask_core_ready = CORE_READY_STATUS,
+>>   	.has_pll_override = true,
+>> +	.se_clk_scheme_default = true,
+>>   	.autoresume_en   = BIT(0),
+>>   	.update_tune1_with_efuse = true,
+>>   };
+>> @@ -279,6 +284,7 @@ static const struct qusb2_phy_cfg qusb2_v2_phy_cfg = {
+>>   			   POWER_DOWN),
+>>   	.mask_core_ready = CORE_READY_STATUS,
+>>   	.has_pll_override = true,
+>> +	.se_clk_scheme_default = true,
+>>   	.autoresume_en	  = BIT(0),
+>>   	.update_tune1_with_efuse = true,
+>>   };
+>> @@ -701,8 +707,13 @@ static int qusb2_phy_init(struct phy *phy)
+>>   	/* Required to get phy pll lock successfully */
+>>   	usleep_range(150, 160);
+>>   
+>> -	/* Default is single-ended clock on msm8996 */
+>> -	qphy->has_se_clk_scheme = true;
+>> +	/*
+>> +	 * Not all the SoCs have got a readable TCSR_PHY_CLK_SCHEME
+>> +	 * register in the TCSR so, if there's none, use the default
+>> +	 * value hardcoded in the configuration.
+>> +	 */
+>> +	qphy->has_se_clk_scheme = cfg->se_clk_scheme_default;
+>> +
+>>   	/*
+>>   	 * read TCSR_PHY_CLK_SCHEME register to check if single-ended
+>>   	 * clock scheme is selected. If yes, then disable differential
+>> -- 
+>> 2.29.2
+>>
+
