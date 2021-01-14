@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E2E2F69B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 298492F69BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727965AbhANSiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:38:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726131AbhANSiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:38:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A80423B1A;
-        Thu, 14 Jan 2021 18:37:39 +0000 (UTC)
-Date:   Thu, 14 Jan 2021 18:37:37 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Srinivas Ramana <sramana@codeaurora.org>, will@kernel.org,
-        pajay@qti.qualcomm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 0/3] arm64: cpufeature: Add filter function to control
-Message-ID: <20210114183737.GG16561@gaia>
-References: <1610152163-16554-1-git-send-email-sramana@codeaurora.org>
- <6dfdf691b5ed57df81c4c61422949af5@misterjones.org>
- <c028d65d-27c3-826a-b16c-407e9cf48aac@codeaurora.org>
- <7b53c01dd5afcb29679c3a9cf72407a9@kernel.org>
+        id S1728986AbhANSiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:38:46 -0500
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:41992 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726740AbhANSiq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 13:38:46 -0500
+Received: by mail-wr1-f51.google.com with SMTP id m4so6825520wrx.9;
+        Thu, 14 Jan 2021 10:38:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=ZbAc4L4hN/uwYWU3tebheSSlSH1cruwhIR4SfDahNBE=;
+        b=nlM4rCAsxF66U/jDIr0FhFXfeJ2Th4GbY8Nx/koPkP0GbRBEkdOB8P+bY1PL5fpV8j
+         UWv178dMCu3zledEii0M/mwoQR8g8JrCHGLvNOKVmjSWtey2wp8iuTnBSDfRR5AsLCGC
+         e4NFX65oskHsIQwNGmz1MCzfApbi6ngmIHLVrfDBvJtUm/sawMhD4FCV1ife2Cr9PdWf
+         tGw9ADG1R3g05yjWvgIv2VB8yJ8CWegrWVj03q0TS1dHY6vQ8/EXu77hjswOlFu9I67S
+         Hn6EyuAiIzmRzNqS5bhMk+Owc5brzvFYGMwyO2rwd6gtXcxMEabw/wMVONwYLwt7YB+i
+         Y6XA==
+X-Gm-Message-State: AOAM533x4r6+wpCCvU71FbOTh+wDszAA+/k/LmOva/uyTJVQRs198m0b
+        RXagWx1Kk8TxQf3E1ncFsmjWmrqh/lp/sA==
+X-Google-Smtp-Source: ABdhPJzn0eWyXlmOYTCYMEv8xYXrBV9LxKZ8O0Ms99GuUCyNr0kZEpDBQSrMClWhILq8Ne8/+uDY5A==
+X-Received: by 2002:a5d:6d0c:: with SMTP id e12mr3435614wrq.136.1610649483943;
+        Thu, 14 Jan 2021 10:38:03 -0800 (PST)
+Received: from ingrassia.epigenesys.com ([2.236.81.180])
+        by smtp.gmail.com with ESMTPSA id z184sm4633409wmg.7.2021.01.14.10.38.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 10:38:03 -0800 (PST)
+Date:   Thu, 14 Jan 2021 19:38:01 +0100
+From:   Emiliano Ingrassia <ingrassia@epigenesys.com>
+To:     "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: perf tools build broken for RISCV 32 bit
+Message-ID: <YACPie55ArIHu3mI@ingrassia.epigenesys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <7b53c01dd5afcb29679c3a9cf72407a9@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 08:20:52AM +0000, Marc Zyngier wrote:
-> On 2021-01-14 07:15, Srinivas Ramana wrote:
-> > On 1/11/2021 5:40 AM, Marc Zyngier wrote:
-> > > On 2021-01-09 00:29, Srinivas Ramana wrote:
-> > > > This patchset adds a control function for cpufeature framework
-> > > > so that the feature can be controlled at runtime.
-> > > > 
-> > > > Defer PAC on boot core and use the filter function added to disable
-> > > > PAC from command line. This will help toggling the feature on systems
-> > > > that do not support PAC or where PAC needs to be disabled at runtime,
-> > > > without modifying the core kernel.
-[...]
-> > > I've been working for some time on a similar series to allow a feature
-> > > set to be disabled during the early boot phase, initially to prevent
-> > > booting a kernel with VHE, but the mechanism is generic enough to
-> > > deal with most architectural features.
-> > > 
-> > > I took the liberty to lift your first patch and to add it to my
-> > > series[1],
-> > > further allowing PAuth to be disabled at boot time on top of BTI and
-> > > VHE.
-> > > 
-> > > I'd appreciate your comments on this.
-> > 
-> > Thanks for sending this series. It seems to be more flexible compared
-> > you what we did.
-> > Following your discussion on allowing EXACT ftr_reg values.
-> > 
-> > Btw, do you have plan to add MTE in similar lines to control the
-> > feature?
-> > We may be needing this on some systems.
-> 
-> I don't have any need for this at the moment, as my initial goal was
-> to enable a different boot flow for VHE. The BTI "support" was added
-> as a way to demonstrate the use of __read_sysreg_by_encoding(), and
-> your patches were a good opportunity to converge on a single solution.
-> 
-> But if you write the patches that do that, I can add them to the series,
-> and Catalin/Will can decide whether they want to take them.
+Hi,
 
-For MTE it's trickier (probably similar to VHE) as we do the setup early
-in proc.S before we hit the cpufeature infrastructure.
+When building perf for RISCV 32 bit (v5.10.7) I got the following
 
-So far we haven't agreed on disabling MTE means - is it disabled
-completely (no Normal Tagged memory type) or we just need to disable tag
-checking? The former is required if we expect buggy hardware (SoC-level,
-not necessarily CPU). The latter, at least for the kernel, is already
-handled via the kasan.mode cmdline. For user, we can disable the tagged
-address ABI via sysctl (or kernel cmdline) and it indirectly disabled
-MTE since the C library detects this.
+| In file included from bench/futex-hash.c:29:
+| bench/futex.h: In function ‘futex_wait’:
+| bench/futex.h:37:10: error: ‘SYS_futex’ undeclared (first use in this function); did you mean ‘SYS_tee’?
 
--- 
-Catalin
+This issue is similar to the one reported in https://lkml.org/lkml/2019/4/19/631
+
+I found that patching tools/arch/riscv/include/uapi/asm/unistd.h as following:
+
+ #ifdef __LP64__
+ #define __ARCH_WANT_NEW_STAT
+ #define __ARCH_WANT_SET_GET_RLIMIT
++#else
++#define __ARCH_WANT_TIME32_SYSCALLS
+ #endif /* __LP64__ */
+
+solved the problem.
+
+I also found that a similar patch for arch/riscv/include/uapi/asm/unistd.h
+was removed in commit d4c08b9776b3, so probably this is not the right way(?).
+
+Thank you, best regards.
