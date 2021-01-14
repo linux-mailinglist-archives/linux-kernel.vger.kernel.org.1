@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC092F57D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B792F57D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729866AbhANCIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:08:55 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:42760 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729420AbhANCGx (ORCPT
+        id S1729313AbhANCIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:08:43 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:40709 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729866AbhANCGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 21:06:53 -0500
-Received: by mail-ot1-f50.google.com with SMTP id x5so3876812otp.9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 18:06:38 -0800 (PST)
+        Wed, 13 Jan 2021 21:06:55 -0500
+Received: by mail-ot1-f54.google.com with SMTP id j12so3884362ota.7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 18:06:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DjdlDe1r8PWcI8CJTWfGrTFm/qYeuvm3S8MlLSmS6yU=;
-        b=ftwPuy6DZ4mgJ6javl+RaXRtZuKVwYwqaeCj9+9iW56Eedbrm6GCUYDlVrED5N4msg
-         0prCs/z4O/toNTi5pNyN5UBsq1JDbLy69L8hLNVSxeCLn8KvhpmZ7Rj0bkUaNxlKPikM
-         KSxPRSBswOuMhMjWJWvCj/4n1LviX02qPtncfivZqxiJw72YhAvnZbBqgRKLOi/waBqp
-         KrUi9Cbe3u1F++xicaS69WAHH/F1KFqhJc/I+MaUCP+PGehPrMiA+4VnMNMzcdBIA2Eq
-         cS6fD0geGZDJ7J2A6HuUEEXpLkyCbW+jZL+vLrtNsrc5Z5jcRyzExs9a7A9rR/afXVZg
-         cuCA==
-X-Gm-Message-State: AOAM5330FICmGSYq1E1Bgwanp6Mbda70IP7PQUYaIsBUlLLiFocn5zVU
-        Hj28gw1dxo2c5NMy/ibVvg==
-X-Google-Smtp-Source: ABdhPJwQpwEW4ekRbw2RIkUs4KFaLnTel80fWDSmHIbhxUS8lcWM4UYb0B7qo8yEkwz0iyCcFotU9Q==
-X-Received: by 2002:a9d:749a:: with SMTP id t26mr3119716otk.277.1610589972628;
-        Wed, 13 Jan 2021 18:06:12 -0800 (PST)
+        bh=19ZI5vNaZSMV5qOXQ4UaWWHPq4LdWixWHPxUm9A8S0w=;
+        b=OFHGmB/ctlj87g7ka00nob7on8IGJx6uSqSotQ0uuQkLW8qrm/v63Hvo4swzicWotJ
+         0GG35anka0erAHrkeBUM8tgeRXL6uzICKkuuTHaS2g+nxI02X8Chu/r3FEdm/3PX1iBi
+         oXEKSA8toIxIJEyYDzP8vI2th+XJQITODxmqfd9PYK/CVUWce5kcSIceVUB8tdQhjpKZ
+         z4r8fG96EUhqA1Oxmbbvo0eHEqy0NJCsj+9oEaBYrqA59AZofTJ++hUEmvvc+Mzf8NUG
+         m+fh0aVFYfGtME+BDBl9sMzBf+JalOQRy3W8RCOS5IFso97ywNqrE0guxdCNMIZZsCQu
+         I09A==
+X-Gm-Message-State: AOAM530F5t8CTBzoddFkijBEfU3xCVSr4L/882gYUe9BSJetNS+einlr
+        rco9a8nnwOo6ONhaPXNaUA==
+X-Google-Smtp-Source: ABdhPJymLqLDbJBmwJ33e5CHUghWSTOxu+smnIRjUXQSiVsLvBX4NlV+hH2yQayb8psjCIbBvmbRYQ==
+X-Received: by 2002:a05:6830:1e41:: with SMTP id e1mr3140165otj.143.1610589974132;
+        Wed, 13 Jan 2021 18:06:14 -0800 (PST)
 Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id x20sm814272oov.33.2021.01.13.18.06.11
+        by smtp.googlemail.com with ESMTPSA id x20sm814272oov.33.2021.01.13.18.06.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 18:06:11 -0800 (PST)
+        Wed, 13 Jan 2021 18:06:13 -0800 (PST)
 From:   Rob Herring <robh@kernel.org>
 To:     Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -49,9 +49,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Ian Rogers <irogers@google.com>, honnappa.nagarahalli@arm.com,
         Itaru Kitayama <itaru.kitayama@gmail.com>
-Subject: [PATCH v5 3/9] tools/include: Add an initial math64.h
-Date:   Wed, 13 Jan 2021 20:05:59 -0600
-Message-Id: <20210114020605.3943992-4-robh@kernel.org>
+Subject: [PATCH v5 4/9] libperf: Add evsel mmap support
+Date:   Wed, 13 Jan 2021 20:06:00 -0600
+Message-Id: <20210114020605.3943992-5-robh@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210114020605.3943992-1-robh@kernel.org>
 References: <20210114020605.3943992-1-robh@kernel.org>
@@ -61,105 +61,171 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an initial math64.h similar to linux/math64.h with functions
-mul_u64_u64_div64() and mul_u64_u32_shr(). This isn't a direct copy of
-include/linux/math64.h as that doesn't define mul_u64_u64_div64().
+In order to support usersapce access, an event must be mmapped. While
+there's already mmap support for evlist, the usecase is a bit different
+than the self monitoring with userspace access. So let's add a new
+perf_evsel__mmap() function to mmap an evsel. This allows implementing
+userspace access as a fastpath for perf_evsel__read().
 
-Implementation was written by Peter Zilkstra based on linux/math64.h
-and div64.h[1]. The original implementation was not optimal on arm64 as
-__int128 division is not optimal with a call out to __udivti3, so I
-dropped the __int128 variant of mul_u64_u64_div64().
+The mmapped address is returned by perf_evsel__mmap_base() which
+primarily for users/tests to check if userspace access is enabled.
 
-[1] https://lore.kernel.org/lkml/20200322101848.GF2452@worktop.programming.kicks-ass.net/
-
-Cc: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- tools/include/linux/math64.h | 75 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 75 insertions(+)
- create mode 100644 tools/include/linux/math64.h
+v5:
+ - Create an mmap for every underlying event opened. Due to this, we
+   need a different way to get the mmap ptr, so perf_evsel__mmap_base()
+   is introduced.
+v4:
+ - Change perf_evsel__mmap size to pages instead of bytes
+v3:
+ - New patch split out from user access patch
+---
+ tools/lib/perf/Documentation/libperf.txt |  2 +
+ tools/lib/perf/evsel.c                   | 47 +++++++++++++++++++++++-
+ tools/lib/perf/include/internal/evsel.h  |  2 +
+ tools/lib/perf/include/perf/evsel.h      |  2 +
+ tools/lib/perf/libperf.map               |  2 +
+ 5 files changed, 53 insertions(+), 2 deletions(-)
 
-diff --git a/tools/include/linux/math64.h b/tools/include/linux/math64.h
-new file mode 100644
-index 000000000000..4ad45d5943dc
---- /dev/null
-+++ b/tools/include/linux/math64.h
-@@ -0,0 +1,75 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_MATH64_H
-+#define _LINUX_MATH64_H
+diff --git a/tools/lib/perf/Documentation/libperf.txt b/tools/lib/perf/Documentation/libperf.txt
+index 0c74c30ed23a..a2c73df191ca 100644
+--- a/tools/lib/perf/Documentation/libperf.txt
++++ b/tools/lib/perf/Documentation/libperf.txt
+@@ -136,6 +136,8 @@ SYNOPSIS
+                        struct perf_thread_map *threads);
+   void perf_evsel__close(struct perf_evsel *evsel);
+   void perf_evsel__close_cpu(struct perf_evsel *evsel, int cpu);
++  int perf_evsel__mmap(struct perf_evsel *evsel, int pages);
++  void *perf_evsel__mmap_base(struct perf_evsel *evsel, int cpu, int thread);
+   int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
+                        struct perf_counts_values *count);
+   int perf_evsel__enable(struct perf_evsel *evsel);
+diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+index 4dc06289f4c7..0b5bdf4badae 100644
+--- a/tools/lib/perf/evsel.c
++++ b/tools/lib/perf/evsel.c
+@@ -11,10 +11,12 @@
+ #include <stdlib.h>
+ #include <internal/xyarray.h>
+ #include <internal/cpumap.h>
++#include <internal/mmap.h>
+ #include <internal/threadmap.h>
+ #include <internal/lib.h>
+ #include <linux/string.h>
+ #include <sys/ioctl.h>
++#include <sys/mman.h>
+ 
+ void perf_evsel__init(struct perf_evsel *evsel, struct perf_event_attr *attr)
+ {
+@@ -37,11 +39,17 @@ void perf_evsel__delete(struct perf_evsel *evsel)
+ 	free(evsel);
+ }
+ 
+-#define FD(e, x, y) (*(int *) xyarray__entry(e->fd, x, y))
++struct evsel_fd {
++	int fd;
++	struct perf_mmap mmap;
++};
 +
-+#include <linux/types.h>
-+
-+#ifdef __x86_64__
-+static inline u64 mul_u64_u64_div64(u64 a, u64 b, u64 c)
++#define FD(e, x, y) ((struct evsel_fd *) xyarray__entry(e->fd, x, y))->fd
++#define MMAP(e, x, y) (&(((struct evsel_fd *) xyarray__entry(e->fd, x, y))->mmap))
+ 
+ int perf_evsel__alloc_fd(struct perf_evsel *evsel, int ncpus, int nthreads)
+ {
+-	evsel->fd = xyarray__new(ncpus, nthreads, sizeof(int));
++	evsel->fd = xyarray__new(ncpus, nthreads, sizeof(struct evsel_fd));
+ 
+ 	if (evsel->fd) {
+ 		int cpu, thread;
+@@ -156,6 +164,41 @@ void perf_evsel__close_cpu(struct perf_evsel *evsel, int cpu)
+ 	perf_evsel__close_fd_cpu(evsel, cpu);
+ }
+ 
++int perf_evsel__mmap(struct perf_evsel *evsel, int pages)
 +{
-+	u64 q;
++	int ret, cpu, thread;
++	struct perf_mmap_param mp = {
++		.prot = PROT_READ | PROT_WRITE,
++		.mask = (pages * page_size) - 1,
++	};
 +
-+	asm ("mulq %2; divq %3" : "=a" (q)
-+				: "a" (a), "rm" (b), "rm" (c)
-+				: "rdx");
++	for (cpu = 0; cpu < xyarray__max_x(evsel->fd); cpu++) {
++		for (thread = 0; thread < xyarray__max_y(evsel->fd); thread++) {
++			int fd = FD(evsel, cpu, thread);
++			struct perf_mmap *map = MMAP(evsel, cpu, thread);
 +
-+	return q;
++			if (fd < 0)
++				continue;
++
++			perf_mmap__init(map, NULL, false, NULL);
++
++			ret = perf_mmap__mmap(map, &mp, fd, cpu);
++			if (ret)
++				return -1;
++		}
++	}
++
++	return 0;
 +}
-+#define mul_u64_u64_div64 mul_u64_u64_div64
-+#endif
 +
-+#ifdef __SIZEOF_INT128__
-+static inline u64 mul_u64_u32_shr(u64 a, u32 b, unsigned int shift)
++void *perf_evsel__mmap_base(struct perf_evsel *evsel, int cpu, int thread)
 +{
-+	return (u64)(((unsigned __int128)a * b) >> shift);
++	if (FD(evsel, cpu, thread) < 0)
++		return NULL;
++
++	return MMAP(evsel, cpu, thread)->base;
 +}
 +
-+#else
-+
-+#ifdef __i386__
-+static inline u64 mul_u32_u32(u32 a, u32 b)
-+{
-+	u32 high, low;
-+
-+	asm ("mull %[b]" : "=a" (low), "=d" (high)
-+			 : [a] "a" (a), [b] "rm" (b) );
-+
-+	return low | ((u64)high) << 32;
-+}
-+#else
-+static inline u64 mul_u32_u32(u32 a, u32 b)
-+{
-+	return (u64)a * b;
-+}
-+#endif
-+
-+static inline u64 mul_u64_u32_shr(u64 a, u32 b, unsigned int shift)
-+{
-+	u32 ah, al;
-+	u64 ret;
-+
-+	al = a;
-+	ah = a >> 32;
-+
-+	ret = mul_u32_u32(al, b) >> shift;
-+	if (ah)
-+		ret += mul_u32_u32(ah, b) << (32 - shift);
-+
-+	return ret;
-+}
-+
-+#endif	/* __SIZEOF_INT128__ */
-+
-+#ifndef mul_u64_u64_div64
-+static inline u64 mul_u64_u64_div64(u64 a, u64 b, u64 c)
-+{
-+	u64 quot, rem;
-+
-+	quot = a / c;
-+	rem = a % c;
-+
-+	return quot * b + (rem * b) / c;
-+}
-+#endif
-+
-+#endif /* _LINUX_MATH64_H */
+ int perf_evsel__read_size(struct perf_evsel *evsel)
+ {
+ 	u64 read_format = evsel->attr.read_format;
+diff --git a/tools/lib/perf/include/internal/evsel.h b/tools/lib/perf/include/internal/evsel.h
+index 1ffd083b235e..a7985dbb68ff 100644
+--- a/tools/lib/perf/include/internal/evsel.h
++++ b/tools/lib/perf/include/internal/evsel.h
+@@ -9,6 +9,7 @@
+ 
+ struct perf_cpu_map;
+ struct perf_thread_map;
++struct perf_mmap;
+ struct xyarray;
+ 
+ /*
+@@ -40,6 +41,7 @@ struct perf_evsel {
+ 	struct perf_cpu_map	*cpus;
+ 	struct perf_cpu_map	*own_cpus;
+ 	struct perf_thread_map	*threads;
++	struct perf_mmap	*mmap;
+ 	struct xyarray		*fd;
+ 	struct xyarray		*sample_id;
+ 	u64			*id;
+diff --git a/tools/lib/perf/include/perf/evsel.h b/tools/lib/perf/include/perf/evsel.h
+index c82ec39a4ad0..9f5265f2f39f 100644
+--- a/tools/lib/perf/include/perf/evsel.h
++++ b/tools/lib/perf/include/perf/evsel.h
+@@ -27,6 +27,8 @@ LIBPERF_API int perf_evsel__open(struct perf_evsel *evsel, struct perf_cpu_map *
+ 				 struct perf_thread_map *threads);
+ LIBPERF_API void perf_evsel__close(struct perf_evsel *evsel);
+ LIBPERF_API void perf_evsel__close_cpu(struct perf_evsel *evsel, int cpu);
++LIBPERF_API int perf_evsel__mmap(struct perf_evsel *evsel, int pages);
++LIBPERF_API void *perf_evsel__mmap_base(struct perf_evsel *evsel, int cpu, int thread);
+ LIBPERF_API int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
+ 				 struct perf_counts_values *count);
+ LIBPERF_API int perf_evsel__enable(struct perf_evsel *evsel);
+diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
+index 7be1af8a546c..0b993de15830 100644
+--- a/tools/lib/perf/libperf.map
++++ b/tools/lib/perf/libperf.map
+@@ -23,6 +23,8 @@ LIBPERF_0.0.1 {
+ 		perf_evsel__disable;
+ 		perf_evsel__open;
+ 		perf_evsel__close;
++		perf_evsel__mmap;
++		perf_evsel__mmap_base;
+ 		perf_evsel__read;
+ 		perf_evsel__cpus;
+ 		perf_evsel__threads;
 -- 
 2.27.0
 
