@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28282F5AB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 07:27:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 479642F5AAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 07:27:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727205AbhANG1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 01:27:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45384 "EHLO mail.kernel.org"
+        id S1727034AbhANG0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 01:26:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726883AbhANG0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726882AbhANG0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Jan 2021 01:26:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14E162395C;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11602238E7;
         Thu, 14 Jan 2021 06:26:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1610605567;
-        bh=FSBQ/ZcELPYdvjP8GKtIR/vCbIgRYzrs8KV4KniOBUU=;
+        bh=bK/dLNM7Vog121qYXM4GcqzdLhmfDEMXzDwUKOT9i8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gjKFIQxnPAaOoJCM+CDOi5qRBgVAHpKaA0rq06t0cPt2u6bIOcvivX7MrqZ8bS/3o
-         N4QYOYp9uTD49rtQ5lNH5LKAN5g5kgLANrSinLFp5csat6X664CSYPgykeoo7qZqhj
-         T0d6zNQw/TTgcPL+mHvMmAMlDV+v/IHZW9HJfUEUf3qNt+Rf6QSuUPxRu5H0JTbdi1
-         oFGbsXMNhGtSPDgNgcgf95MKGycJYTTwZYDZczbZfwVjVbtpHLn91/I3qQSR6JPWj4
-         Flq8mf/6SklyS23qqQUNGvb+KXJGsAIk7lnTkj3A137r16C2tA2FW3a5BsntvBE53X
-         Xabc6IJqbmwAw==
+        b=fu0n6AhEZS3CUyI4s4FezlFOCXRCeJjSndghs/fTZHZZSgaa1slZdnVerlYCrd8cx
+         I7Tj1PBwAkU0zTinpU4lWnkyNl1IA95WVtgx8twEcKVJJd6nR9maJpnvvR47GrzmhJ
+         kePJZAMn0u1/b+7nixf+Lcpee7/Z40Byp//fpXeHsailaBlJMJ6uS4vOLnPZrXitW/
+         ceStgLL99LqD/x+g5Hm5vkvducRcdnFp30Ip38esLsYkd4qlFVWYszisHTMb/rCeks
+         53BbozoUrWa2hPU3rLBWU+ujfNx97QcT/CfC3eDbir8cEdd+l6v+1hFac7coSUJrzC
+         oqe/575nTujmQ==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kzw56-00EJ7E-GZ; Thu, 14 Jan 2021 07:26:04 +0100
+        id 1kzw56-00EJ7G-Ht; Thu, 14 Jan 2021 07:26:04 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
         "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org
-Subject: [PATCH 1/3] dt-bindings: usb: update snps,dwc3.yaml references
-Date:   Thu, 14 Jan 2021 07:25:58 +0100
-Message-Id: <97704f110f0282fb47eb85dea430cc94cfd93a4b.1610605373.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 2/3] Documentation/devicetree/bindings/usb/dwc3-st.txt: update usb-drd.yaml reference
+Date:   Thu, 14 Jan 2021 07:25:59 +0100
+Message-Id: <43d5049a8ed688980bee12ecf18ef9937981de39.1610605373.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1610605373.git.mchehab+huawei@kernel.org>
 References: <cover.1610605373.git.mchehab+huawei@kernel.org>
@@ -49,58 +47,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 389d77658801 ("dt-bindings: usb: Convert DWC USB3 bindings to DT schema")
-renamed: Documentation/devicetree/bindings/usb/dwc3.txt
-to: Documentation/devicetree/bindings/usb/snps,dwc3.yaml.
+Changeset b0864e1a4d9d ("dt-bindings: usb: Convert generic USB properties to DT schemas")
+renamed: Documentation/devicetree/bindings/usb/generic.txt
+to: Documentation/devicetree/bindings/usb/usb-drd.yaml.
 
-Update its cross-references accordingly.
+Update its cross-reference accordingly.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/devicetree/bindings/usb/dwc3-st.txt    | 2 +-
- Documentation/devicetree/bindings/usb/exynos-usb.txt | 2 +-
- Documentation/devicetree/bindings/usb/omap-usb.txt   | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/usb/dwc3-st.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Documentation/devicetree/bindings/usb/dwc3-st.txt b/Documentation/devicetree/bindings/usb/dwc3-st.txt
-index df0e02e1ee43..ad526e76f2a8 100644
+index ad526e76f2a8..bf73de0d5b4a 100644
 --- a/Documentation/devicetree/bindings/usb/dwc3-st.txt
 +++ b/Documentation/devicetree/bindings/usb/dwc3-st.txt
-@@ -31,7 +31,7 @@ See: Documentation/devicetree/bindings/pinctrl/pinctrl-bindings.txt
- Sub-nodes:
- The dwc3 core should be added as subnode to ST DWC3 glue as shown in the
- example below. The DT binding details of dwc3 can be found in:
--Documentation/devicetree/bindings/usb/dwc3.txt
-+Documentation/devicetree/bindings/usb/snps,dwc3.yaml
- 
- NB: The dr_mode property described in [1] is NOT optional for this driver, as the default value
+@@ -37,7 +37,7 @@ NB: The dr_mode property described in [1] is NOT optional for this driver, as th
  is "otg", which isn't supported by this SoC. Valid dr_mode values for dwc3-st are either "host"
-diff --git a/Documentation/devicetree/bindings/usb/exynos-usb.txt b/Documentation/devicetree/bindings/usb/exynos-usb.txt
-index 6aae1544f240..f7ae79825d7d 100644
---- a/Documentation/devicetree/bindings/usb/exynos-usb.txt
-+++ b/Documentation/devicetree/bindings/usb/exynos-usb.txt
-@@ -93,7 +93,7 @@ Sub-nodes:
- The dwc3 core should be added as subnode to Exynos dwc3 glue.
- - dwc3 :
-    The binding details of dwc3 can be found in:
--   Documentation/devicetree/bindings/usb/dwc3.txt
-+   Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+ or "device".
+ 
+-[1] Documentation/devicetree/bindings/usb/generic.txt
++[1] Documentation/devicetree/bindings/usb/usb-drd.yaml
  
  Example:
- 	usb@12000000 {
-diff --git a/Documentation/devicetree/bindings/usb/omap-usb.txt b/Documentation/devicetree/bindings/usb/omap-usb.txt
-index 38d9bb8507cf..f0dbc5ae45ae 100644
---- a/Documentation/devicetree/bindings/usb/omap-usb.txt
-+++ b/Documentation/devicetree/bindings/usb/omap-usb.txt
-@@ -65,7 +65,7 @@ Sub-nodes:
- The dwc3 core should be added as subnode to omap dwc3 glue.
- - dwc3 :
-    The binding details of dwc3 can be found in:
--   Documentation/devicetree/bindings/usb/dwc3.txt
-+   Documentation/devicetree/bindings/usb/snps,dwc3.yaml
  
- omap_dwc3 {
- 	compatible = "ti,dwc3";
 -- 
 2.29.2
 
