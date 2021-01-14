@@ -2,351 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334CC2F667D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3462F667F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727883AbhANQzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:55:19 -0500
-Received: from foss.arm.com ([217.140.110.172]:52806 "EHLO foss.arm.com"
+        id S1727923AbhANQzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:55:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60340 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726473AbhANQzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:55:18 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D139A1FB;
-        Thu, 14 Jan 2021 08:54:31 -0800 (PST)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C7FB3F70D;
-        Thu, 14 Jan 2021 08:54:30 -0800 (PST)
-Date:   Thu, 14 Jan 2021 16:54:27 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, sudeep.holla@arm.com, rjw@rjwysocki.net,
-        vireshk@kernel.org, morten.rasmussen@arm.com, chris.redpath@arm.com
-Subject: Re: [PATCH v6 2/4] scmi-cpufreq: Move CPU initialisation to probe
-Message-ID: <20210114165427.GC46841@e120937-lin>
-References: <20210111154524.20196-1-nicola.mazzucato@arm.com>
- <20210111154524.20196-3-nicola.mazzucato@arm.com>
+        id S1726473AbhANQzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 11:55:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610643293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DRTWHPlrQiiVrNwf4oflLPIJjJTF+5vr64DIMf+QTzg=;
+        b=KHpcDRFA4ImJgm0jszlZ5QuF1YjRRcDklHFKYmKcTHOppIbR9JtOCoQZRCer8cQKBcuzIq
+        EM6SveYBqUYvVaun91OGPhpL0Ko4u+/DF0/O9mkaHXT/wC/M0ICIXU71iYnKojIT7f0dfx
+        VwFQ5pJzaVHr2iO7YWrMt7Y2IQ/M3EE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E7DA2AD18;
+        Thu, 14 Jan 2021 16:54:52 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 17:54:50 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     chenzhou <chenzhou10@huawei.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] cgroup-v1: add disabled controller check in
+ cgroup1_parse_param()
+Message-ID: <YAB3Wuu+hFpN698N@blackbook>
+References: <20201218061755.121205-1-chenzhou10@huawei.com>
+ <YABDWvI2PWQpnv59@blackbook>
+ <d4ba14b0-ee06-b793-a840-2c2ff369d890@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="G5CWgaLxblIFSK1F"
 Content-Disposition: inline
-In-Reply-To: <20210111154524.20196-3-nicola.mazzucato@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <d4ba14b0-ee06-b793-a840-2c2ff369d890@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicola,
 
-a few remarks down below.
+--G5CWgaLxblIFSK1F
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon, Jan 11, 2021 at 03:45:22PM +0000, Nicola Mazzucato wrote:
-> Some of the cpu related initialisation can be done at probe stage.
-> This patch moves those initialisations from the ->init callback to the
-> probe stage.
-> 
-> This is done in preparation for adding support to retrieve additional
-> information from DT (CPUs sharing v/f lines).
-> 
-> Signed-off-by: Nicola Mazzucato <nicola.mazzucato@arm.com>
-> ---
->  drivers/cpufreq/scmi-cpufreq.c | 180 ++++++++++++++++++++++++---------
->  1 file changed, 135 insertions(+), 45 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
-> index 15b213ed78fa..4aa97cdc5997 100644
-> --- a/drivers/cpufreq/scmi-cpufreq.c
-> +++ b/drivers/cpufreq/scmi-cpufreq.c
-> @@ -25,6 +25,14 @@ struct scmi_data {
->  	struct device *cpu_dev;
->  };
->  
-> +/* Per-CPU storage for runtime management */
-> +struct scmi_cpudata {
-> +	cpumask_var_t scmi_shared_cpus;
-> +	struct cpufreq_frequency_table *freq_table;
-> +};
-> +
-> +static struct scmi_cpudata *cpudata_table;
-> +
->  static const struct scmi_handle *handle;
->  
->  static unsigned int scmi_cpufreq_get_rate(unsigned int cpu)
-> @@ -120,13 +128,10 @@ scmi_get_cpu_power(unsigned long *power, unsigned long *KHz,
->  
->  static int scmi_cpufreq_init(struct cpufreq_policy *policy)
->  {
-> -	int ret, nr_opp;
-> +	int ret;
->  	unsigned int latency;
->  	struct device *cpu_dev;
->  	struct scmi_data *priv;
-> -	struct cpufreq_frequency_table *freq_table;
-> -	struct em_data_callback em_cb = EM_DATA_CB(scmi_get_cpu_power);
-> -	bool power_scale_mw;
->  
->  	cpu_dev = get_cpu_device(policy->cpu);
->  	if (!cpu_dev) {
-> @@ -134,42 +139,19 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
->  		return -ENODEV;
->  	}
->  
-> -	ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
-> -	if (ret) {
-> -		dev_warn(cpu_dev, "failed to add opps to the device\n");
-> -		return ret;
-> -	}
-> -
-> -	ret = scmi_get_sharing_cpus(cpu_dev, policy->cpus);
-> -	if (ret) {
-> -		dev_warn(cpu_dev, "failed to get sharing cpumask\n");
-> -		return ret;
-> -	}
-> -
-> -	ret = dev_pm_opp_set_sharing_cpus(cpu_dev, policy->cpus);
-> -	if (ret) {
-> -		dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
-> -			__func__, ret);
-> -		return ret;
-> -	}
-> -
->  	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
->  	if (!priv) {
->  		ret = -ENOMEM;
->  		goto out_free_opp;
->  	}
->  
-> -	ret = dev_pm_opp_init_cpufreq_table(cpu_dev, &freq_table);
-> -	if (ret) {
-> -		dev_err(cpu_dev, "failed to init cpufreq table: %d\n", ret);
-> -		goto out_free_priv;
-> -	}
-> +	cpumask_copy(policy->cpus, cpudata_table[policy->cpu].scmi_shared_cpus);
->  
->  	priv->cpu_dev = cpu_dev;
->  	priv->domain_id = handle->perf_ops->device_domain_id(cpu_dev);
->  
->  	policy->driver_data = priv;
-> -	policy->freq_table = freq_table;
-> +	policy->freq_table = cpudata_table[policy->cpu].freq_table;
->  
->  	/* SCMI allows DVFS request for any domain from any CPU */
->  	policy->dvfs_possible_from_any_cpu = true;
-> @@ -183,23 +165,8 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
->  	policy->fast_switch_possible =
->  		handle->perf_ops->fast_switch_possible(handle, cpu_dev);
->  
-> -	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
-> -	if (nr_opp <= 0) {
-> -		dev_err(cpu_dev, "%s: No OPPs for this device: %d\n",
-> -			__func__, ret);
-> -
-> -		ret = -ENODEV;
-> -		goto out_free_priv;
-> -	}
-> -
-> -	power_scale_mw = handle->perf_ops->power_scale_mw_get(handle);
-> -	em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, policy->cpus,
-> -				    power_scale_mw);
-> -
->  	return 0;
->  
-> -out_free_priv:
-> -	kfree(priv);
->  out_free_opp:
->  	dev_pm_opp_remove_all_dynamic(cpu_dev);
->  
+On Thu, Jan 14, 2021 at 10:08:19PM +0800, chenzhou <chenzhou10@huawei.com> wrote:
+> In this case, at the beginning of function check_cgroupfs_options(), the mask
+> ctx->subsys_mask will be 0. And if we mount without 'none' and 'name=' options,
+> then in check_cgroupfs_options(), the flag ctx->all_ss will be set, that is, select all the subsystems.
+But even then, the line
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/cgroup/cgroup-v1.c?h=v5.11-rc3#n1012
+would select only 'enabled' controllers, wouldn't it?
 
-My understanding (but I could be wrong given my limited familiarity with
-CPUFREQ ... so bear with me) is that dev_pm_opp_remove_all_dynamic() is
-meant to clean dynamic OPPs added by dev_pm_opp_add() which in turn in
-this driver is folded inside the handle->perf_ops->device_opps_add() call,
-so is not that this call should be added also on the error path inside
-the new scmi_init_device() ? (this was already faulty this way in the
-original code to be honest...if faulty at all :D)
+It's possible I missed something but if this means that cgroup_no_v1=
+doesn't hold to its expectations, I'd suggest adding proper Fixes: tag
+to the patch.
 
-I added a few such invocations down below as rough untested example of
-what I mean.
+Thanks,
+Michal
 
-> @@ -210,7 +177,6 @@ static int scmi_cpufreq_exit(struct cpufreq_policy *policy)
->  {
->  	struct scmi_data *priv = policy->driver_data;
->  
-> -	dev_pm_opp_free_cpufreq_table(priv->cpu_dev, &policy->freq_table);
->  	dev_pm_opp_remove_all_dynamic(priv->cpu_dev);
->  	kfree(priv);
->  
-> @@ -231,10 +197,102 @@ static struct cpufreq_driver scmi_cpufreq_driver = {
->  	.exit	= scmi_cpufreq_exit,
->  };
->  
-> +static int scmi_init_cpudata(void)
-> +{
-> +	int cpu;
-> +	unsigned int ncpus = num_possible_cpus();
-> +
-> +	cpudata_table = kzalloc(sizeof(*cpudata_table) * ncpus, GFP_KERNEL);
-Shouldn/t this be a kcalloc() given it's an array allocation, checkpatch
-complains too.
+--G5CWgaLxblIFSK1F
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> +	if (!cpudata_table)
-> +		return -ENOMEM;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		if (!zalloc_cpumask_var(&cpudata_table[cpu].scmi_shared_cpus,
-> +					GFP_KERNEL))
-> +			goto out;
-> +	}
-> +
-> +	return 0;
-> +
-> +out:
-> +	kfree(cpudata_table);
-> +	return -ENOMEM;
-> +}
-> +
-> +static int scmi_init_device(const struct scmi_handle *handle, int cpu)
-> +{
-> +	struct device *cpu_dev;
-> +	int ret, nr_opp;
-> +	struct em_data_callback em_cb = EM_DATA_CB(scmi_get_cpu_power);
-> +	bool power_scale_mw;
-> +	cpumask_var_t scmi_cpus;
-> +
-> +	if (!zalloc_cpumask_var(&scmi_cpus, GFP_KERNEL))
-> +		return -ENOMEM;
-> +
-> +	cpumask_set_cpu(cpu, scmi_cpus);
-> +
-> +	cpu_dev = get_cpu_device(cpu);
-> +
-> +	ret = scmi_get_sharing_cpus(cpu_dev, scmi_cpus);
-> +	if (ret) {
-> +		dev_warn(cpu_dev, "failed to get sharing cpumask\n");
-> +		goto free_cpumask;
-> +	}
-> +
-> +	/*
-> +	 * We get here for each CPU. Add OPPs only on those CPUs for which we
-> +	 * haven't already done so, or set their OPPs as shared.
-> +	 */
-> +	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
-> +	if (nr_opp <= 0) {
-> +		ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
-> +		if (ret) {
-> +			dev_warn(cpu_dev, "failed to add opps to the device\n");
-> +			goto free_cpumask;
-> +		}
-> +
-> +		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, scmi_cpus);
-> +		if (ret) {
-> +			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
-> +				__func__, ret);
-			goto free_dynamic_opps;
-> +		}
-> +
-> +		nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
-> +		if (nr_opp <= 0) {
-> +			dev_err(cpu_dev, "%s: No OPPs for this device: %d\n",
-> +				__func__, ret);
-> +
-> +			ret = -ENODEV;
-			goto free_dynamic_opps;
-> +		}
-> +
-> +		power_scale_mw = handle->perf_ops->power_scale_mw_get(handle);
-> +		em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, scmi_cpus,
-> +					    power_scale_mw);
-> +	}
-> +
-> +	ret = dev_pm_opp_init_cpufreq_table(cpu_dev,
-> +					    &cpudata_table[cpu].freq_table);
-> +	if (ret) {
-> +		dev_err(cpu_dev, "failed to init cpufreq table: %d\n", ret);
-		goto free_dynamic_opps;
-> +	}
-> +
-> +	cpumask_copy(cpudata_table[cpu].scmi_shared_cpus, scmi_cpus);
-> +
-   free_dynamic_opps:
-	   dev_pm_opp_remove_all_dynamic(cpu_dev);
-> +free_cpumask:
-> +	free_cpumask_var(scmi_cpus);
-> +	return ret;
-> +}
-> +
->  static int scmi_cpufreq_probe(struct scmi_device *sdev)
->  {
->  	int ret;
->  	struct device *dev = &sdev->dev;
-> +	int cpu;
-> +	struct device *cpu_dev;
->  
->  	handle = sdev->handle;
->  
-> @@ -247,6 +305,24 @@ static int scmi_cpufreq_probe(struct scmi_device *sdev)
->  		devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, NULL);
->  #endif
->  
-> +	ret = scmi_init_cpudata();
-> +	if (ret) {
-> +		pr_err("%s: init cpu data failed\n", __func__);
-> +		return ret;
-> +	}
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		cpu_dev = get_cpu_device(cpu);
-> +
-> +		ret = scmi_init_device(handle, cpu);
-> +		if (ret) {
-> +			dev_err(cpu_dev, "%s: init device failed\n",
-> +				__func__);
-> +
-			goto clean;
-> +		}
-> +	}
-> +
->  	ret = cpufreq_register_driver(&scmi_cpufreq_driver);
->  	if (ret) {
->  		dev_err(dev, "%s: registering cpufreq failed, err: %d\n",
+-----BEGIN PGP SIGNATURE-----
 
-	/* clean any dynamic OPPs already set */
-clean:
-	for_each_possible_cpu(cpu) {
-		cpu_dev = get_cpu_device(cpu);
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmAAd1QACgkQia1+riC5
+qSgWoQ/+IhQQDXjrTBF5Pw5vod0YE5rO2MUWtzh4d1tLQTjzBng8E1jnWV3jAsD8
+wFqLWz3JxqFUQa9A0DEKWjwmHfu0ud0A6t/eCV24Xm6JoX8vcR1dVimMzCUd2Hjk
+QINq+w81pOhqZX0vjGPRW8J1cf8jMjQgQ0nZmHxm11TaGuO5G3dvhVJuFAjXyvEy
+568of571ti78CKzoa7zt5KK1ID2m3u3rk5WDuGGj4zlTg2QoqFOxrBprRaF/1eCu
+0Fk+LKva7qmiGP87uXFt124432CQ8AAGG+fsAzcBqKuIFFxcpzyrnkP8jNRZS0xV
+Sb7nZ7ivB50YyMJxorpXiRT2lhh+BtFbvydWuAs1PGh7z8B6AexE4XtF52XBeybB
+MSpQJ/0E9LuesHjcEFXLzGwFe7Dw5N0u4pNrKo5QMh63PveCx7KxIcdBWXihuBJm
+pDE9d707NJ2g4M4/88Hvs9QIiBmzOU9h/x2zKVNKMM4io7o51hUEHkUEG/4nb0/d
+tUvH1jxlFPeQh4UoazlKnTMq3ljI1gi1mBq6ytoptxVxdu4rvhBNcrd+nuKcWKtu
+vWwdZ8lh9crRwEWbLtIVY0flm2GX4Nu5xq/VF1y67QA1e+34NjwMX8a2GrrS1dBK
+q/NvMQTk62NfRzjrh+uabF5pEcA/K7EvnKQLGasG1RYmvas3YoI=
+=9rm1
+-----END PGP SIGNATURE-----
 
-		dev_pm_opp_remove_all_dynamic(cpu_dev);
-	}
-
-	return ret;
-}
-
-
-Thanks
-
-Cristian
-
-> @@ -258,6 +334,20 @@ static int scmi_cpufreq_probe(struct scmi_device *sdev)
->  
->  static void scmi_cpufreq_remove(struct scmi_device *sdev)
->  {
-> +	int cpu;
-> +	struct device *cpu_dev;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		cpu_dev = get_cpu_device(cpu);
-> +
-> +		dev_pm_opp_free_cpufreq_table(cpu_dev,
-> +					      &cpudata_table[cpu].freq_table);
-> +
-> +		free_cpumask_var(cpudata_table[cpu].scmi_shared_cpus);
-> +	}
-> +
-> +	kfree(cpudata_table);
-> +
->  	cpufreq_unregister_driver(&scmi_cpufreq_driver);
->  }
->  
-> -- 
-> 2.27.0
-> 
+--G5CWgaLxblIFSK1F--
