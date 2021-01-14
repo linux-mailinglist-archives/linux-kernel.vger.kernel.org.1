@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7305E2F655A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B7D2F655D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729413AbhANQAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:00:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36529 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726298AbhANQAe (ORCPT
+        id S1729272AbhANQBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:01:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726881AbhANQBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:00:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610639960;
+        Thu, 14 Jan 2021 11:01:31 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C76C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:01:04 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610640060;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=N1jiFZ+BTbOnp7BDFCcT1kr+iDpCrn9geTo5A349Jxs=;
-        b=h6sc5S/e8WzriJZeodn/zeb8/IbMuL8U3MO26ic5tcYgJyPFe6aJyteTV9AShn2RE3xLZs
-        wOQKJKLqB2nYBRwt9vCxBGfS9gqIsBFdmNXmyWSJ8QEwEqkRfy73XvBFP9FyiLmrtPuFx7
-        WfGdAJ3iT588pAwK7KhJzWzjqGaz7Ik=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547-WJoENA_jPsCQCmvq4JJr6Q-1; Thu, 14 Jan 2021 10:59:15 -0500
-X-MC-Unique: WJoENA_jPsCQCmvq4JJr6Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF028107565A;
-        Thu, 14 Jan 2021 15:59:10 +0000 (UTC)
-Received: from [10.10.119.172] (ovpn-119-172.rdu2.redhat.com [10.10.119.172])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 933F718A50;
-        Thu, 14 Jan 2021 15:59:09 +0000 (UTC)
-Subject: Re: [PATCH v6 12/16] net: tip: fix a couple kernel-doc markups
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ying Xue <ying.xue@windriver.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net
-References: <cover.1610610937.git.mchehab+huawei@kernel.org>
- <9d205b0e080153af0fbddee06ad0eb23457e1b1b.1610610937.git.mchehab+huawei@kernel.org>
-From:   Jon Maloy <jmaloy@redhat.com>
-Message-ID: <da52ef69-753a-7aa8-a2b1-1b5ef48df94e@redhat.com>
-Date:   Thu, 14 Jan 2021 10:59:08 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        bh=73B8Qve9y0JoijTWYi5Jyf92JaqGXWY23hQFwIxZv8Y=;
+        b=1MTb4dnT8kfdDDpxQ/8tMoJEy/2MYa6bI9AkRN31Lx650zE+/9G1ZHc/V7d0gKdZBOoXxh
+        twrJbIRYMVwevc89y6NhL2FG3NTjgo0QeDaP71r9+J0E1rcocXrKrYWWpwIGUjhHkBBqEf
+        Ij9TSpD4yZbhmSIWQNC/VVGS0bhBXNCk6RCFwdzgJcOZgEANB4gG7kVqvHD1xiIAbs8fT4
+        RIqA/Jz3XtmetH6jVcVe0klIxqI/5FFtz4JOKjPWfA75Zz/9CIji6rQ3ymH1X+7iTsHvcK
+        o3lvgu9Ccip90BowtIsMrmYrZYYZt9q/RExZg4wv6rlq2EB3th3a26wALrTr5g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610640060;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=73B8Qve9y0JoijTWYi5Jyf92JaqGXWY23hQFwIxZv8Y=;
+        b=0mbIr5uhSdPzfZ0v/K+IdCcM3QRupqGqD+k3PY4MVToS2VhdPvQ5v8eqM0OqGZMStmGWN9
+        eSpE0MCGCgT0acDQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: RFC: printk: kmsg_dump_get_line_nolock() buffer overflow
+In-Reply-To: <YABhMFlIpQ/5uQ7s@alley>
+References: <87im8038v7.fsf@jogness.linutronix.de> <YABhMFlIpQ/5uQ7s@alley>
+Date:   Thu, 14 Jan 2021 17:06:59 +0106
+Message-ID: <87im7zecec.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <9d205b0e080153af0fbddee06ad0eb23457e1b1b.1610610937.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/14/21 3:04 AM, Mauro Carvalho Chehab wrote:
-> A function has a different name between their prototype
-> and its kernel-doc markup:
+On 2021-01-14, Petr Mladek <pmladek@suse.com> wrote:
+> It is pitty that I have missed this. I remember that I discussed
+> exactly this problem before, see
+> https://lore.kernel.org/lkml/20190710080402.ab3f4qfnvez6dhtc@axis.com/
 >
-> 	../net/tipc/link.c:2551: warning: expecting prototype for link_reset_stats(). Prototype was for tipc_link_reset_stats() instead
-> 	../net/tipc/node.c:1678: warning: expecting prototype for is the general link level function for message sending(). Prototype was for tipc_node_xmit() instead
+> And I did exactly the same mistake. I have missed the two users in
+> "arch/powerpc" and "arch/um".
 >
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->   net/tipc/link.c | 2 +-
->   net/tipc/node.c | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/net/tipc/link.c b/net/tipc/link.c
-> index a6a694b78927..115109259430 100644
-> --- a/net/tipc/link.c
-> +++ b/net/tipc/link.c
-> @@ -2544,7 +2544,7 @@ void tipc_link_set_queue_limits(struct tipc_link *l, u32 min_win, u32 max_win)
->   }
->   
->   /**
-> - * link_reset_stats - reset link statistics
-> + * tipc_link_reset_stats - reset link statistics
->    * @l: pointer to link
->    */
->   void tipc_link_reset_stats(struct tipc_link *l)
-> diff --git a/net/tipc/node.c b/net/tipc/node.c
-> index 83d9eb830592..008670d1f43e 100644
-> --- a/net/tipc/node.c
-> +++ b/net/tipc/node.c
-> @@ -1665,7 +1665,7 @@ static void tipc_lxc_xmit(struct net *peer_net, struct sk_buff_head *list)
->   }
->   
->   /**
-> - * tipc_node_xmit() is the general link level function for message sending
-> + * tipc_node_xmit() - general link level function for message sending
->    * @net: the applicable net namespace
->    * @list: chain of buffers containing message
->    * @dnode: address of destination node
-Acked-by: Jon Maloy <jmaloy@redhat.com>
+> It is clear that this problem happens repeatedly.
 
+Yes, because the semantics are poor and undocumented.
+
+> Now, the change in record_printk_text() behavior affects also other
+> callers. For example, syslog_print() fills the buffer completely
+> as well now. I could imagine a userspace code that does the same
+> mistake and it works just by chance.
+
+No, syslog_print() works fine. There are only 2 users that think they
+can blindly add a byte at buffer[len]. Their code looks scary just
+seeing it.
+
+> We should restore the original record_printk_text() behavior
+> and add the comment explaining why it is done this way.
+
+OK.
+
+> And I would even explicitly add the trailing '\0' as suggested at
+> https://lore.kernel.org/lkml/20190710121049.rwhk7fknfzn3cfkz@pathway.suse.cz/#t
+
+OK. But then this becomes official semantics so powerpc/um no longer
+need to append a terminator.
+
+John Ogness
