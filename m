@@ -2,64 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD122F60E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3368E2F60E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:15:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728972AbhANMO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 07:14:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728604AbhANMO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 07:14:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40AE423A52;
-        Thu, 14 Jan 2021 12:13:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610626425;
-        bh=PVXJRhvFe7BLmVr2i1SezFPmp12SAhr17IcwNtv9YIM=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=dXCOnahROWoZhORgJfOYuQOz6NZRv5aEJXuqNZbj/Om91u2AzGNF6DBGq/TrWxjgZ
-         gy1jhTriZHhYho4cusjdZxlmcnQWQIUrBWjmb7aLhuw5l92zudrCbigG18am8nDt90
-         VefIgpXY7h8g+9oQ+qDyBwNncFSjMeEMItZg1BOvtR2Wje1uGSDKUpUR2oI3G5peSh
-         GlFuzFR1zWlO9xHBE0e0Tsrci55TrDYcTziTQMeDnFVRt0RtThquXjbHTNSrweKC3k
-         AMYKJQ4pyjkryndzuX2ynqEopT3vxtbX2KsVlkAz3jbdC9bUV+VJ4d9XQIw8zghkK+
-         6cLMZFWsS9jSw==
-Date:   Thu, 14 Jan 2021 13:13:42 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Jian-Hong Pan <jhp@endlessos.org>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chris Chiu <chiu@endlessos.org>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux@endlessos.org
-Subject: Re: [PATCH v2] HID: Add Wireless Radio Control feature for Chicony
- devices
-In-Reply-To: <20201223055540.204685-1-jhp@endlessos.org>
-Message-ID: <nycvar.YFH.7.76.2101141313320.13752@cbobk.fhfr.pm>
-References: <CAB4CAwfFQrMDYuzjL2nuUnHgXO031ty-mA7GGxW+-nHFkZTGTg@mail.gmail.com> <20201223055540.204685-1-jhp@endlessos.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1729034AbhANMOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 07:14:48 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:11386 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727202AbhANMOq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 07:14:46 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DGjrD4zP5z7VFy;
+        Thu, 14 Jan 2021 20:13:00 +0800 (CST)
+Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 14 Jan 2021 20:13:52 +0800
+From:   Yanan Wang <wangyanan55@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
+        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
+        Yanan Wang <wangyanan55@huawei.com>
+Subject: [PATCH v3 0/3] Some optimization for stage-2 translation
+Date:   Thu, 14 Jan 2021 20:13:47 +0800
+Message-ID: <20210114121350.123684-1-wangyanan55@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
+X-Originating-IP: [10.174.187.128]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Dec 2020, Jian-Hong Pan wrote:
+Hi,
+This patch series(v3) make some optimization for stage-2 translation.
 
-> Some Chicony's keyboards support airplane mode hotkey (Fn+F2) with
-> "Wireless Radio Control" feature. For example, the wireless keyboard
-> [04f2:1236] shipped with ASUS all-in-one desktop.
-> 
-> After consulting Chicony for this hotkey, learned the device will send
-> with 0x11 as the report ID and 0x1 as the value when the key is pressed
-> down.
-> 
-> This patch maps the event as KEY_RFKILL.
-> 
-> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-> ---
-> v2: Remove the duplicated key pressed check.
+About patch-1:
+Procedures of hyp stage-1 map and guest stage-2 map are quite different,
+but they are now tied closely by function kvm_set_valid_leaf_pte().
+So adjust the relative code for ease of code maintenance in the future.
 
-Applied, thanks.
+About patch-2:
+There have been the separate map handler and perms handler used independently
+for mapping and relaxing permissions in the new page-table infrastructure for
+stage-2, yet there is still a specific case where we end up changing the access
+permissions in the map path, and something unsatisfactory could happen because
+of current handling for this case.
+
+To solve above problem, we can filter out this case from the map path and abort
+the PTE update. Instead, let the vCPU enter back the guest and it will exit next
+time to go through the relax_perms path if still needed.
+
+About patch-3:
+We now set the pfn dirty and mark the page dirty before calling fault
+handlers in user_mem_abort(), so we might end up having spurious dirty
+pages if update of permissions or mapping has failed. Let's move these
+two operations after the fault handlers, and they will be done only if
+the fault has been handled successfully.
+
+When an -EAGAIN errno is returned from the map handler, we hope to the
+vcpu to enter guest directly instead of exiting back to userspace, so
+adjust the return value at the end of function.
+
+---
+
+Changelogs
+
+v2->v3:
+- Rebased on top of v5.11-rc3
+- Refine the commit messages
+- Make some adjustment about return value in patch-2 and patch-3
+- v2: https://lore.kernel.org/lkml/20201216122844.25092-1-wangyanan55@huawei.com/
+
+v1->v2:
+- Make part of the diff a seperate patch (patch-1)
+- Add Will's Signed-off-by for patch-1
+- Return an errno when meeting changing permissions case in map path
+- Add a new patch (patch-3)
+- v1: https://lore.kernel.org/lkml/20201211080115.21460-1-wangyanan55@huawei.com/
+
+---
+
+Yanan Wang (3):
+  KVM: arm64: Adjust partial code of hyp stage-1 map and guest stage-2
+    map
+  KVM: arm64: Filter out the case of only changing permissions from
+    stage-2 map path
+  KVM: arm64: Mark the page dirty only if the fault is handled
+    successfully
+
+ arch/arm64/include/asm/kvm_pgtable.h |  5 ++
+ arch/arm64/kvm/hyp/pgtable.c         | 83 ++++++++++++++++------------
+ arch/arm64/kvm/mmu.c                 | 13 +++--
+ 3 files changed, 60 insertions(+), 41 deletions(-)
 
 -- 
-Jiri Kosina
-SUSE Labs
+2.19.1
 
