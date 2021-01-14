@@ -2,100 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC47C2F67D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:36:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6152F67E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728170AbhANRgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:36:10 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:57636 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727525AbhANRgI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:36:08 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10EHXhOV182459;
-        Thu, 14 Jan 2021 17:35:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=c+LBoDh/DLOh8njoOTcgBp+JfS0k3t69g3Yr58Vbk9M=;
- b=L8l12Bm39XlQmb0LlpmpPgOlqUr3qL2detwnM4HdHuRMlzWNMDVw2hfmrp2vNeCj/BfN
- dF8qxNGrV8mzTf3i8ge0MXKqmQ2xsPONp6Ksb+KZNDYNVEH2IudER86puQyRgSXgTqXo
- vvJ4SiFDYVbUJm0nCrb2I9K/1LKzPflEtLCxyck0vt+KKGLXA5/su1vWfj8T7nNJW+xz
- SAxDzoEvYDgihbyPi8lXYPn0dxijwsZVLgYGp5CHTwKQxsnL+mK2SE8qXOY/CXeZdEzJ
- b/9/oqBocu/fnc0YFUl2d7u+2mzpzBG1YqtJS4357RbU293HQJ/z5BTguURH2SijsxY9 TA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 360kg21dbb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Jan 2021 17:35:11 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10EHPjFx066011;
-        Thu, 14 Jan 2021 17:35:11 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 360kea6kcv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Jan 2021 17:35:11 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10EHZ71C028767;
-        Thu, 14 Jan 2021 17:35:07 GMT
-Received: from parnassus (/98.229.125.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 14 Jan 2021 09:35:06 -0800
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Hao Lee <haolee.swjtu@gmail.com>
-Cc:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup: Remove unnecessary call to strstrip()
-In-Reply-To: <YAA8qyBUAurgCeEz@blackbook>
-References: <20210103024846.GA15337@haolee.github.io>
- <YAA8qyBUAurgCeEz@blackbook>
-Date:   Thu, 14 Jan 2021 12:35:02 -0500
-Message-ID: <87pn27v2ux.fsf@oracle.com>
+        id S1728549AbhANRgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:36:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726013AbhANRg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 12:36:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0964D23B40;
+        Thu, 14 Jan 2021 17:35:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610645748;
+        bh=SJ+Kx1oHPeloSq393jp+F5VoiD47GhOjY7z0REOmWa4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=n5S3nxUwMeDXNo08BPrAnbBwUqwobPon4gfUoRurFSjFV2B6t0Nm0Jqb+8zOjnjSG
+         8K3kAVkLr+06MF5HCBcGvs18cPZx1WGzm7ZF0eECF28YRz2KA5Apez37nx0slSdksL
+         uEMJBi+mB12vx7WxxvE0gQm/hOKv7dmUC0mNvtraq4wMPpa00kTpGwaOH0LmCYtG0H
+         Lo/sfUIfoD+vT1KoL0FhQiqXppa/D783co3IMefVrL1hbzvY5fgGwXPP79T9yOdCpR
+         QxenEQX+at+AVrVjFVPqpEvK3Ff5YZMGjcxzMMz9zTz2XGNmHfKvAsH0gibd6D96Ld
+         XL4Q0+//hMVgw==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1l06XB-00FQtr-F7; Thu, 14 Jan 2021 18:35:45 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yu Chen <chenyu56@huawei.com>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] Promote Hikey 970 USB phy out of staging
+Date:   Thu, 14 Jan 2021 18:35:40 +0100
+Message-Id: <cover.1610645385.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101140101
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- clxscore=1011 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101140102
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Michal,
+Hi Vinod,
 
-Michal Koutn=C3=BD <mkoutny@suse.com> writes:
-> On Sun, Jan 03, 2021 at 02:50:01AM +0000, Hao Lee <haolee.swjtu@gmail.com=
-> wrote:
->> The string buf will be stripped in cgroup_procs_write_start() before it
->> is converted to int, so remove this unnecessary call to strstrip().
-> Good catch, Hao.
->
-> Perhaps the code be then simplified a bit
->
-> -- >8 --
-> From: =3D?UTF-8?q?Michal=3D20Koutn=3DC3=3DBD?=3D <mkoutny@suse.com>
-> Date: Thu, 14 Jan 2021 13:23:39 +0100
-> Subject: [PATCH] cgroup: cgroup.{procs,threads} factor out common parts
-> MIME-Version: 1.0
-> Content-Type: text/plain; charset=3DUTF-8
-> Content-Transfer-Encoding: 8bit
->
-> The functions cgroup_threads_start and cgroup_procs_start are almost
+This series contain just the PHY patch I sent in Nov, 30 from this series:      
 
-You meant cgroup_threads_write and cgroup_procs_write.
+        Move Hikey 970 USB support out of staging and add DT
 
->  kernel/cgroup/cgroup.c | 55 +++++++++++-------------------------------
->  1 file changed, 14 insertions(+), 41 deletions(-)
+The 3 initial patches address the issues you pointed during your
+review:
 
-Ok, sure, that's a good thing.
+patch 1 change the logic to use GENMASK and FIELD_GET/FIELD_PREP macros.
+It also places all hexadecimal values in lowercase;
 
-Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+patch 2 add a delay inside the retry logic;
+
+patch 3 changes a function to return a boolean.
+
+The 4th patch is actually identical to the patch I sent previously:
+it just moves the driver to drivers/phy:
+ rename {drivers/staging/hikey9xx => Documentation/devicetree/bindings/phy}/phy-hi3670-usb3.yaml (100%)
+ rename drivers/{staging/hikey9xx => phy/hisilicon}/phy-hi3670-usb3.c (100%)
+
+Yet, in order to make this series easier to review, I'm submitting it with
+--no-merges. This way, you can check the  driver as a hole while reviewing
+the last patch.
+
+Mauro Carvalho Chehab (4):
+  staging: hikey9xx: phy-hi3670-usb3.c: use bitfield macros
+  staging: hikey9xx: phy-hi3670-usb3.c: adjust retry logic
+  staging: hikey9xx: phy-hi3670-usb3.c: hi3670_is_abbclk_seleted()
+    returns bool
+  phy: phy-hi3670-usb3: move driver from staging into phy
+
+ .../bindings/phy/phy-hi3670-usb3.yaml         |  72 ++
+ MAINTAINERS                                   |   9 +-
+ drivers/phy/hisilicon/Kconfig                 |  10 +
+ drivers/phy/hisilicon/Makefile                |   1 +
+ drivers/phy/hisilicon/phy-hi3670-usb3.c       | 668 +++++++++++++++++
+ drivers/staging/hikey9xx/Kconfig              |  11 -
+ drivers/staging/hikey9xx/Makefile             |   2 -
+ drivers/staging/hikey9xx/phy-hi3670-usb3.c    | 671 ------------------
+ drivers/staging/hikey9xx/phy-hi3670-usb3.yaml |  72 --
+ 9 files changed, 759 insertions(+), 757 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/phy-hi3670-usb3.yaml
+ create mode 100644 drivers/phy/hisilicon/phy-hi3670-usb3.c
+ delete mode 100644 drivers/staging/hikey9xx/phy-hi3670-usb3.c
+ delete mode 100644 drivers/staging/hikey9xx/phy-hi3670-usb3.yaml
+
+-- 
+2.29.2
+
+
