@@ -2,84 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4452C2F6A74
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A832F6A79
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729642AbhANTE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:04:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728881AbhANTE0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:04:26 -0500
-Received: from smtp-8faa.mail.infomaniak.ch (smtp-8faa.mail.infomaniak.ch [IPv6:2001:1600:4:17::8faa])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA9AC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:03:41 -0800 (PST)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DGty40K9jzMq8Xg;
-        Thu, 14 Jan 2021 20:03:40 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DGty16Bhkzlh8T2;
-        Thu, 14 Jan 2021 20:03:37 +0100 (CET)
-Subject: Re: [PATCH v26 00/12] Landlock LSM
-To:     Jann Horn <jannh@google.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-References: <20201209192839.1396820-1-mic@digikod.net>
- <CAG48ez3DE8xgr_etVGV5eNjH2CXXo9MR7jTcu+_LCkJUchLXcQ@mail.gmail.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <92df89c9-3442-0761-224a-ab53bb917850@digikod.net>
-Date:   Thu, 14 Jan 2021 20:03:47 +0100
-User-Agent: 
+        id S1729871AbhANTFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:05:11 -0500
+Received: from mga17.intel.com ([192.55.52.151]:49586 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728813AbhANTFL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 14:05:11 -0500
+IronPort-SDR: kksxgN36eAdwWvLlFYCwNIUyxyr0epWQLZlM+M5PWJNkch3InjVq8qFJKBC+xMJxgMpc0zHuHp
+ DsX/YQrx588w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="158199869"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="158199869"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 11:04:28 -0800
+IronPort-SDR: RVMlgzAllMO97D6rxUMR104YFghec33pshXFLgKHCzfbi7LgAPPWxpq54DcbkDu9g8DmaCYp/K
+ OMhtqo8LV1cw==
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="382373646"
+Received: from jdquesad-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.128.180])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 11:04:27 -0800
+Date:   Thu, 14 Jan 2021 11:04:25 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Jon Masters <jcm@jonmasters.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        daniel.lll@alibaba-inc.com
+Subject: Re: [RFC PATCH v3 14/16] cxl/mem: Use CEL for enabling commands
+Message-ID: <20210114190425.rxupmrjm3jfjorj4@intel.com>
+References: <20210111225121.820014-1-ben.widawsky@intel.com>
+ <20210111225121.820014-16-ben.widawsky@intel.com>
+ <20210114180211.00007852@Huawei.com>
+ <20210114181340.fgybdchzfxiiqwhr@intel.com>
+ <20210114183217.0000154c@Huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CAG48ez3DE8xgr_etVGV5eNjH2CXXo9MR7jTcu+_LCkJUchLXcQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210114183217.0000154c@Huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21-01-14 18:32:17, Jonathan Cameron wrote:
+> On Thu, 14 Jan 2021 10:13:40 -0800
+> Ben Widawsky <ben.widawsky@intel.com> wrote:
+> 
+> > On 21-01-14 18:02:11, Jonathan Cameron wrote:
+> > > On Mon, 11 Jan 2021 14:51:19 -0800
+> > > Ben Widawsky <ben.widawsky@intel.com> wrote:
+> > >   
+> > > > The Command Effects Log (CEL) is specified in the CXL 2.0 specification.
+> > > > The CEL is one of two types of logs, the other being vendor specific.
+> > > > They are distinguished in hardware/spec via UUID. The CEL is immediately
+> > > > useful for 2 things:
+> > > > 1. Determine which optional commands are supported by the CXL device.
+> > > > 2. Enumerate any vendor specific commands
+> > > > 
+> > > > The CEL can be used by the driver to determine which commands are
+> > > > available in the hardware (though it isn't, yet). That set of commands
+> > > > might itself be a subset of commands which are available to be used via
+> > > > CXL_MEM_SEND_COMMAND IOCTL.
+> > > > 
+> > > > Prior to this, all commands that the driver exposed were explicitly
+> > > > enabled. After this, only those commands that are found in the CEL are
+> > > > enabled.
+> > > > 
+> > > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>  
+> > > 
+> > > This patch made me wonder if the model for the command in quite right.
+> > > I think it would end up simpler with a pair of payload pointers for send
+> > > and receive (that can be equal when it makes sense).
+> > > 
+> > > A few other things inline.
+> > > 
+> > > Jonathan  
+> > 
+> > I'll address the others separately, but could you elaborate on this? I'm not
+> > sure I follow your meaning.
+> 
+> Further down in the review..
+> "
+> The fact that you end up bypassing the payload transfer stuff in mbox_cmd
+> rather suggests it's not a particularly good model.  + it keeps confusing
+> me.
+> 
+> While the hardware uses a single region for the payload, there is nothing
+> saying the code has to work that way.   Why not have separate payload_in and
+> payload_out pointers?  Occasionally you might set them to the same buffer, but
+> elsewhere you could avoid the direct memcpy()s you are doing around the
+> send_cmd(). 
+> 
+> "
+> 
+> Jonathan
+> 
+> 
 
-On 14/01/2021 04:22, Jann Horn wrote:
-> On Wed, Dec 9, 2020 at 8:28 PM Mickaël Salaün <mic@digikod.net> wrote:
->> This patch series adds new built-time checks, a new test, renames some
->> variables and functions to improve readability, and shift syscall
->> numbers to align with -next.
-> 
-> Sorry, I've finally gotten around to looking at v26 - I hadn't
-> actually looked at v25 either yet. I think there's still one remaining
-> small issue in the filesystem access logic, but I think that's very
-> simple to fix, as long as we agree on what the expected semantics are.
-> Otherwise it basically looks good, apart from some typos.
-> 
-> I think v27 will be the final version of this series. :) (And I'll try
-> to actually look at that version much faster - I realize that waiting
-> for code reviews this long sucks.)
-> 
+Ah I was confused if that was a separate statement.
 
-I'm improving the tests, especially with bind mounts and overlayfs
-tests. The v27 will also contains a better documentation to clarify the
-semantic and explain how these mounts are handled. Thanks!
+Can you specify the function prototype you're hoping for (or modification to the
+structure)?
+
+I really like the lowest level function to simply model the hardware. I get to
+write the 8 steps out and clearly implement them.
+
+I personally don't think it's so awkward, but again, give me something more
+specific and I'll consider it.
