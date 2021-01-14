@@ -2,85 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 000F62F6178
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF5D2F6185
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:09:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728745AbhANNEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:04:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46518 "EHLO
+        id S1728928AbhANNGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 08:06:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbhANNEH (ORCPT
+        with ESMTP id S1727255AbhANNGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:04:07 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35B4C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:03:20 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id v184so405409wma.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:03:20 -0800 (PST)
+        Thu, 14 Jan 2021 08:06:31 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C504C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:05:45 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id n25so3762766pgb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:05:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lMjCyJ4LFX2yXOveR+4JmstAFOfGTUFf7mwxezUhrSE=;
-        b=VU9ytjDnsJhBQEKU8CcNfn5EcCVMbibvcmMIQSw6rqWNc6nN1Lf1oPsOOgFmwiKBTc
-         RrPVWF1HCcyoZ3tDzDgIdYHPj60ibMqmq7v41lcCdLex3eGAfcqZNX3auAiU+HgY4YI4
-         y8jR1nV/ehPXzbKO5mBB9omD5EgSVnqYK232Q=
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=otxZaMxXrqXQ+HB6nBjrd36W75JtcSkls6JE059kKq8=;
+        b=Y5wdk5Z+2zXharmJBzMfvHlw+DCQOtiGesEKv/ljgEMRr2bZnbpYpeN5Rc6nkzBSU7
+         6GZaLZNf2+smELPyQ7e1VoARGBuINS5W3oUPrtBX3hmlAxujkz6OCS92eRfWqs8YR7cy
+         SyIyelX801SjXYu3JKgZT72YIOJP8SANg6sSD8lt7xGj+VRtWODdLPAmAaofjvpLHQgi
+         k7Fw7ZRWx8UOFc+lFuD4W6OhkoVyRMiwgORb5OSsnkjwmHOCfQpmzYUHG2WdxIqVeZ1k
+         p5KFqGx34Rk9jsS+lk6PDzPCsRug5oPCXF5v/nfS/Bwd2xy8CiIrNOhyZcYR0HC6uE9e
+         /y6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lMjCyJ4LFX2yXOveR+4JmstAFOfGTUFf7mwxezUhrSE=;
-        b=RodoLbuhIBELUlSbWeMrqknb8p55+3l1aKm/t+EbxXvWQzvbRW0f9kRsKEU3LlA9pK
-         ZN4GT+UHtCVp3mqEHGWkR+QW6/O6IighVLBO+iQRdhTROTKEDce8usUBxqkhWYHhxrlz
-         v3BQxkaQyS8snK+5GCcZsxvi16/5cZv2pRfs9rcloDnrrfPVdhe4EFiBuSw86qiRb8S9
-         YR2cOkAnxAz/PrcEDShFmr0CAdRqpDGQzfynnCly1IceYewR/aMYSzb7pcRTjC3EcVLK
-         ByFrdxpuiIeHlgFP6i1veeoFkghzytMeS6LfXnjrPhj3oJd+a8joGjTjM2Ph2FkWnIF0
-         JXCA==
-X-Gm-Message-State: AOAM530m3tip57t4WPFBGoZ/j5Qi/+bthjRPIAN36OsbGKRYi7WF6gYH
-        sO6ttncMUOoue5FFh/zgzAhKDsR8tm0OiiqVNPI=
-X-Google-Smtp-Source: ABdhPJwFrQgrAKlNT+/f/q7vLOej10mKl2NqLzYVqByPSzm1wlk/JVQWuVJ4qCBH9M1ZbeaQlqukKg==
-X-Received: by 2002:a1c:cc19:: with SMTP id h25mr3952785wmb.124.1610629399701;
-        Thu, 14 Jan 2021 05:03:19 -0800 (PST)
-Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id x13sm9313627wrp.80.2021.01.14.05.03.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 05:03:19 -0800 (PST)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH] media: hantro: Fix reset_raw_fmt initialization
-Date:   Thu, 14 Jan 2021 14:03:16 +0100
-Message-Id: <20210114130316.803231-1-ribalda@chromium.org>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=otxZaMxXrqXQ+HB6nBjrd36W75JtcSkls6JE059kKq8=;
+        b=lSLJ6ZE4YN7wYh/WhgQpw4cjMTlYU+owdMEhZ1SfCqLd9h5dS5fr24oq6Y6yhWatWH
+         gDtHCuzpblNvS2QP3/y6ckAcUiW2ceeQb0F2D8Gg4cxYxT7juZ0EaiIC0wUG91EADlTc
+         3gMqQLXlNYtnafidmjqjbLbtBq8hIPzYHo4qNhW25WKLC/nQXnIgsCiW97fb/o6BS8I5
+         UJ0K08bp3yGF+UVjMngKRBiR/ZYv3vNgvlrHHsLHOyM51TpA0ahI4kSHdCPvfOz2dAmR
+         DpAfu6ixiF5wcEM7LW/Werfz/SG9XCfoQ9SQAgim4Xz/auOkIsEraQ2NNJ+ApII8B+0O
+         ZkXQ==
+X-Gm-Message-State: AOAM531m76yNZPc0bJrTSBgG5R/aVyPObExD1en2wu1ZxjteD09Q3vPl
+        PPDepreWtcvvqeKzl44xxq3p8r9c/GYNdg08CfOMig==
+X-Google-Smtp-Source: ABdhPJzXR6KWx5reUzFIFz1GMOxEjEoANCQaSp+5a9EX5pYZyQ4qs0zpJRJh7vxaZ4eM6E2Q8vb99n3CxNo6z+THTLU=
+X-Received: by 2002:a63:480f:: with SMTP id v15mr7419423pga.341.1610629545074;
+ Thu, 14 Jan 2021 05:05:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210106141931.73931-1-songmuchun@bytedance.com>
+ <20210106141931.73931-5-songmuchun@bytedance.com> <20210112080453.GA10895@linux>
+ <CAMZfGtUqN2BZH28i9VJhRJ3VH3OGKBQ7hDUuX1-F5LcwbKk+4A@mail.gmail.com>
+ <20210113092028.GB24816@linux> <a9baf18c-22c7-4946-9778-678f6bc808dc@oracle.com>
+ <CAMZfGtUhhMDCaZKeayS1+w0MvBijDZC2AiUV4z5rUFrfbXBefw@mail.gmail.com> <20210114115248.GA24592@localhost.localdomain>
+In-Reply-To: <20210114115248.GA24592@localhost.localdomain>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 14 Jan 2021 21:05:06 +0800
+Message-ID: <CAMZfGtXksc0Ugasqn4czpwHunsGR5nfxVO_iLsrLrnYMsgieYw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v12 04/13] mm/hugetlb: Free the vmemmap
+ pages associated with each HugeTLB page
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-raw_fmt->height in never initialized. But width in initialized twice.
+On Thu, Jan 14, 2021 at 7:52 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Thu, Jan 14, 2021 at 06:54:30PM +0800, Muchun Song wrote:
+> > I think this approach may be only suitable for generic huge page only.
+> > So we can implement it only for huge page.
+> >
+> > Hi Oscar,
+> >
+> > What's your opinion about this?
+>
+> I tried something like:
+>
+> static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
+>                               unsigned long end,
+>                               struct vmemmap_remap_walk *walk)
+> {
+>         pte_t *pte;
+>
+>         pte = pte_offset_kernel(pmd, addr);
+>
+>         if (!walk->reuse_page) {
+>                 BUG_ON(pte_none(*pte));
+>
+>                 walk->reuse_page = pte_page(*pte++);
+>                 addr = walk->remap_start;
+>         }
+>
+>         for (; addr != end; addr += PAGE_SIZE, pte++) {
+>                 BUG_ON(pte_none(*pte));
+>
+>                 walk->remap_pte(pte, addr, walk);
+>         }
+> }
+>
+> void vmemmap_remap_free(unsigned long start, unsigned long end,
+>                         unsigned long reuse)
+> {
+>         LIST_HEAD(vmemmap_pages);
+>         struct vmemmap_remap_walk walk = {
+>                 .remap_pte      = vmemmap_remap_pte,
+>                 .reuse_addr     = reuse,
+>                 .remap_start = start,
+>                 .vmemmap_pages  = &vmemmap_pages,
+>         };
+>
+>         BUG_ON(start != reuse + PAGE_SIZE);
+>
+>         vmemmap_remap_range(reuse, end, &walk);
+>         free_vmemmap_page_list(&vmemmap_pages);
+> }
+>
+> but it might overcomplicate things and I am not sure it is any better.
+> So I am fine with keeping it as is.
+> Should another user come in the future, we can always revisit.
+> Maybe just add a little comment in vmemmap_pte_range(), explaining while we
+> are "+= PAGE_SIZE" for address and I would like to see a comment in
+> vmemmap_remap_free why the BUG_ON and more important what it is checking.
 
-Fixes: 88d06362d1d05 ("media: hantro: Refactor for V4L2 API spec compliancy")
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- drivers/staging/media/hantro/hantro_v4l2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+OK, I will add some comments to explain why we do this in
+vmemmap_remap_free and vmemmap_remap_free. Thanks.
 
-diff --git a/drivers/staging/media/hantro/hantro_v4l2.c b/drivers/staging/media/hantro/hantro_v4l2.c
-index b668a82d40ad..f5fbdbc4ffdb 100644
---- a/drivers/staging/media/hantro/hantro_v4l2.c
-+++ b/drivers/staging/media/hantro/hantro_v4l2.c
-@@ -367,7 +367,7 @@ hantro_reset_raw_fmt(struct hantro_ctx *ctx)
- 
- 	hantro_reset_fmt(raw_fmt, raw_vpu_fmt);
- 	raw_fmt->width = encoded_fmt->width;
--	raw_fmt->width = encoded_fmt->width;
-+	raw_fmt->height = encoded_fmt->height;
- 	if (ctx->is_encoder)
- 		hantro_set_fmt_out(ctx, raw_fmt);
- 	else
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
-
+>
+> --
+> Oscar Salvador
+> SUSE L3
