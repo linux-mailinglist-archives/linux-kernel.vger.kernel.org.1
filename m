@@ -2,100 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7072F68FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 594A92F6919
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728700AbhANSHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:07:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbhANSHp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:07:45 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE94C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:07:05 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id b8so3323278plx.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:07:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aCkCkIm7M/V3aGjrSdpkfleCJSzQcdZs8yV7RPXbePM=;
-        b=K/M2Fo8B44jLooZGdYkru1sOnkiQtv6dp75doN8uGV6BKLnJA6w84N7yHV5f9TfM+H
-         bBdfYmg+sQuEG6GXOjB3fF/JiwIqnbVajxDEcL5M+63ZKOyFtJPT0eKkqrVgZJgGYeJK
-         sfMClc2nGr01vZJbDkqDw+5ZhwCIi2nRZMWPuiI6VxCsNzFC4hICz6+DpxxISFhkrono
-         G/iRRKQMdPOuz9AU5S5Voow4LwmR8fkmOyjL0kCSmFumT/0NF/Ft41TbboYyYgnwlsPf
-         jLUA2ELI76MIHProf3sgiVBjL3IqzTMuMdsS0rifJpGopbSnBDuFAiy6nBJanKl8qi0S
-         7+1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aCkCkIm7M/V3aGjrSdpkfleCJSzQcdZs8yV7RPXbePM=;
-        b=my80/9dwcZ+sDvVHjKX2FR9J1Vv4Y/mi8lRI1Cic5deNJWyYMuqp2cnKruRq2POIqv
-         9iBxYni4297TCGd65cAVEdd539Ct4B8bbdVkdzjp9IdHwHW4CRXtvp4/tIv0pxeyXgfL
-         H0V64pm60Vru0lrCNGlu2gf4OzdPveCOkPRMyI1HqCPN3kXZo34vPJxoUqFy9AwGULce
-         ayUbk2vLMWjrOj4g5D6+2rciSpKEhGUnpqxHcnBWxtqrCXsqwbEDy007Ds8eUpqyqUNL
-         bojAQYoqJV20PpbXYGJzjmAi/Ye+rL71/fBE0qKnFhi7QGYOXuqXoiqK4OpY9LMLm9Td
-         XE0w==
-X-Gm-Message-State: AOAM5315AqwAGMFg2voWANd4qDHt/BHs6QJZ6/ek38Gcy3maqIh0qkTU
-        bgVBBE7qd55ShM1ISysPeyIAzijEjAZQjozXtIRQnA==
-X-Google-Smtp-Source: ABdhPJx2foYAxYogJLKcrBZsfkDGuwgYD4tZTN9CIVtRZpbcsf42aQ7eKvh+41k5lutAisVHdKTTUw/bfGSPUEHd20c=
-X-Received: by 2002:a17:902:9b84:b029:dd:f952:db30 with SMTP id
- y4-20020a1709029b84b02900ddf952db30mr8634534plp.56.1610647624919; Thu, 14 Jan
- 2021 10:07:04 -0800 (PST)
+        id S1729720AbhANSI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:08:58 -0500
+Received: from mga17.intel.com ([192.55.52.151]:45051 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729629AbhANSI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 13:08:56 -0500
+IronPort-SDR: KV6UanaHD34YZw68CiVBR5cXLxz0H/tULKhEcVpHUKFnJLPHPKeRjU6U2J2Ofc7A5eBzEbGV2U
+ udOHxGzqvmOg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="158190143"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="158190143"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 10:07:07 -0800
+IronPort-SDR: Va8hRLnaZRfDY91UW1iUE9xz4iXJaGkp1Z0hlGNZ0SYVGwkzOGJIziPRg+SClfgnyrm/y/Urvf
+ 9OG67BbkJY2g==
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="382356824"
+Received: from dvarelam-mobl1.amr.corp.intel.com (HELO [10.212.182.202]) ([10.212.182.202])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 10:07:05 -0800
+Subject: Re: [Sound-open-firmware] [PATCH 1/2] [v2] ALSA: hda: fix
+ SND_INTEL_DSP_CONFIG dependency
+To:     Arnd Bergmann <arnd@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        sound-open-firmware@alsa-project.org
+References: <20210112203250.2576775-1-arnd@kernel.org>
+ <CAK8P3a0+YmZTzYYk0D5HpBEB7Kp=ryx1U4KRKCyz4XYM3v9rAQ@mail.gmail.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <4ad60e25-b1d5-9be1-a2bc-8bec9e4e85c1@linux.intel.com>
+Date:   Thu, 14 Jan 2021 12:07:04 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <0000000000004a33a005b8b8eaab@google.com> <20210112194058.GA200254@ubuntu-m3-large-x86>
- <CACT4Y+YFZf=BnCQJQUYwG-UpaYKG97VD-XWpEdXoR3ZnOxH5NQ@mail.gmail.com> <CACT4Y+Z-f+r_Bm5RD+ZFrspHdVrDrzPgEB_9_uACa_8o4vz7aw@mail.gmail.com>
-In-Reply-To: <CACT4Y+Z-f+r_Bm5RD+ZFrspHdVrDrzPgEB_9_uACa_8o4vz7aw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 14 Jan 2021 10:06:54 -0800
-Message-ID: <CAKwvOdmBGNK0iVCAGc=7oKx9k1fE1C6y7G9S+hCYLmdu5kaKLQ@mail.gmail.com>
-Subject: Re: upstream build error (12)
-To:     Dmitry Vyukov <dvyukov@google.com>, Marco Elver <elver@google.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        syzbot <syzbot+76880518931d755473cf@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAK8P3a0+YmZTzYYk0D5HpBEB7Kp=ryx1U4KRKCyz4XYM3v9rAQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 4:38 AM 'Dmitry Vyukov' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
->
-> On Thu, Jan 14, 2021 at 12:32 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > On Tue, Jan 12, 2021 at 8:41 PM Nathan Chancellor
-> > <natechancellor@gmail.com> wrote:
-> > >
-> > > Would it be possible for clang-built-linux@googlegroups.com to be CC'd
-> > > when there is a build error and the compiler is clang? Especially if
-> > > clang is hitting an assertion.
-> >
-> > Hi Nathan,
-> >
-> > I am adding functionality to CC specific emails on build errors on
-> > specific instances:
-> > https://github.com/google/syzkaller/pull/2388
->
-> I've updated configs to CC clang-built-linux@googlegroups.com. This
-> should take effect on the next build failure (hopefully).
 
-Thanks Dmitry, (and thanks Marco for updating syzbot's clang).
 
-Marco, can you update:
-https://github.com/google/syzkaller/blob/master/docs/syzbot.md#crash-does-not-reproduce
+On 1/14/21 9:09 AM, Arnd Bergmann wrote:
+> On Tue, Jan 12, 2021 at 9:32 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>>
+> 
+>> ---
+>> v2: fix various build issues in the first version, now passes
+>>      all randconfig builds I tried
+> 
+> Please disregard this version, while I have a tree that passes
+> the randconfig builds now, this was not the patch from it that
+> I wanted to send...
 
-I wasn't able to reproduce the reported compiler crash with ToT llvm
-and the reported config, so I assume it was a mid-release of llvm-11
-bug that has since been fixed.  Do we need to report to syzbot to
-close the issue? I did a quick skim of
-https://github.com/google/syzkaller/blob/master/docs/syzbot.md, but it
-looks like communication with syzbot is based on commit messages?
---
-Thanks,
-~Nick Desaulniers
+No worries, I reworked the PCI case completely. Still running tests to 
+make sure there's no regression
+https://github.com/thesofproject/linux/pull/2683
+
+
