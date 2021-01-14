@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737A12F6E3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D422F6E49
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730728AbhANWcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 17:32:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56430 "EHLO
+        id S1730767AbhANWeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 17:34:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730161AbhANWcr (ORCPT
+        with ESMTP id S1730686AbhANWeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 17:32:47 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305F6C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 14:32:07 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id 2so4755436qtt.10
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 14:32:07 -0800 (PST)
+        Thu, 14 Jan 2021 17:34:21 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A775BC061575;
+        Thu, 14 Jan 2021 14:33:40 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id b19so11979011ioa.9;
+        Thu, 14 Jan 2021 14:33:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QOaxopk0Vt0c18C4pnEsewzOIIMzXpSpyDsCoJ7fsp8=;
-        b=q8oWVjd1InoXRxycK2EAtoJD3bQPVAxcd3GoFRwpJn0sE/nyS67uW0rt9eyjm8vBAF
-         gZ7/JTJbdSWcSDBeCTxvFDSHrAff1sI/VytZOwveMZ+T4K05m/JlniBUbiO5ZYhNSO14
-         tyb9Fs2TBXrDqa5sNsU+n7S9+X4ysUN5hFn0k/FSoW29mAW2j5kRA9wfc/zvhjH7Gjx+
-         PbxiyJgwHczWiCFKM5MGgXxk8HZqqBn853vIAwBDXS0r4HrRtuPsvdoPDt+SoqvZ9soH
-         874OqqatQIErXiOG4PfOh0Gxl7k6ynPKcnDgJHncg2hgT6qmNuDEGVGunZr8R00IukxV
-         iilg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J1fbKz9R0Dhjm/LDcyUiYTutXyHxddPdBABWEIvnbtM=;
+        b=IOm+puNzxjZtf+Ra2ciYM+7QJ5Z7JlHGm7jiXhjU6eb99TcmVjhF0/nSeheOsQLSd3
+         dnGN6veQDp87ScjlyeIerg2dSuEDWebolyR81J9qkTPpmclNFbx1Tr/CCIC6u+sBuHsH
+         QiMmJyO23gVzrfTqjiZZpB7S7QFOm9poBSuqEhVadsVJJsrWHeOIqUDDeD4J220jThkF
+         nHo3nPFqzquJeu6NpjS4RWRduIDhUBWAvqc6pPsBXlPoVMLY5VBlSl31sIPaixaMue2r
+         KmTYyqjv13mfp611GnhSYAm1vfPV9TV86RUvfC8hxqEZfZB+8W0w+8Ij4Zawl6I5N4jI
+         tr7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QOaxopk0Vt0c18C4pnEsewzOIIMzXpSpyDsCoJ7fsp8=;
-        b=Ceg2Rm2o9HZghv84Gtv2IT0ycDLxUIbGoQ41WltzWjlkfTiI57Pcil+v9B+w2XDAeh
-         Hi36KyNDovE2qeVdd2dFp9YRWiFpXiltUd3JT63OHfN060PQwEaA1BJEOLAD8V+uLQNN
-         SikDpijL91zBFl2LHxcqRpMkeoagwaB5g8aADc/e6UAtr//PckoPpa2tiBNo1OyIv7Uf
-         PhibVEnhh9Ay9cXkd8R3BvSLC9OMaSXxY5p1hJlppBqbl6J2oZFSEjSqcc68Vxc6QZXH
-         9LvDW6cpYI0VgNA8ZSXu98mI0CzD7TNxLFh2xH0xN2vZen99Sr6l0rhreBoU8IZA34mk
-         yzMA==
-X-Gm-Message-State: AOAM532d16bH9XtTA3rTbbFR3az8g3eti4JW6hd4y3tDkyV8iCkk71DR
-        2o68AuT1EnHaWn1bVHy51G6L7Mm2ERg=
-X-Google-Smtp-Source: ABdhPJyY4iG6EexL1Lir6Z9FvhhSK8QIPxQ45WVsdWgyNPE2xfVn0UjntfzThCh0K9LNDF9AJIiP4w==
-X-Received: by 2002:ac8:b07:: with SMTP id e7mr9295700qti.311.1610663526257;
-        Thu, 14 Jan 2021 14:32:06 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id 195sm3875947qke.108.2021.01.14.14.32.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 14:32:05 -0800 (PST)
-Date:   Thu, 14 Jan 2021 15:32:04 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>
-Subject: Re: [PATCH] objtool: Don't fail on missing symbol table
-Message-ID: <20210114223204.GA1984019@ubuntu-m3-large-x86>
-References: <a96c3f76173c7021a2298bd73362313736e674b6.1610663051.git.jpoimboe@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J1fbKz9R0Dhjm/LDcyUiYTutXyHxddPdBABWEIvnbtM=;
+        b=HHQiS0l126h5UMGY+l82o3XaSQo1CFw/LQkzq1GmZgeD25wjN9PFyjSxGXy8VOoN2b
+         sXysjocDCSH+b8q83DR0IsTdIbzAuUT1CWkdUbLzPnJny3AAsDhdvU0aCxdkVWMZaH5W
+         Y9AAV2MGHgpIaaT9qL4+ujFxmX1OG2KWLTlK8Vtsj2l4LdAd17cGSpZI79QaOASdNG8r
+         K+qiwTtaa/IPQda40Wro7tu66DngdXqRbBSDubKSR8lTbHLerf8HGWDkAchQHhOyTo4d
+         Sy2NF2RFwcQA+PbbSTfheSHkq2+TEX1khZjykWI/4p39iDQsyu5tL3OzqnFQ2tEp80Fb
+         tBog==
+X-Gm-Message-State: AOAM533Wo5vfsF8hELwOp3OXnXuzADZJl5bHI6DUOI2lv/A67PLZAYIO
+        PQTvfgNorFUqov8UTLAIboT/vXbw+hTmDaPFdRg=
+X-Google-Smtp-Source: ABdhPJzoWEtnQpIQE75WZZSLYvtSX6xTCvpZO1aFR2occIvmYxXUEr5QoS6zhIqCXDQ4SyeowFSochQO2ZB5UmUkioA=
+X-Received: by 2002:a02:a02:: with SMTP id 2mr6135811jaw.27.1610663620157;
+ Thu, 14 Jan 2021 14:33:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a96c3f76173c7021a2298bd73362313736e674b6.1610663051.git.jpoimboe@redhat.com>
+References: <20210109134617.146275-1-angelogioacchino.delregno@somainline.org>
+ <20210109134617.146275-2-angelogioacchino.delregno@somainline.org>
+ <CAOCk7NqUpa0DqW=han49MtwUqNkNsQC3OPpO7B-872bvNukDJw@mail.gmail.com> <9942f98c-c186-5cd0-d6ac-a18a4e20583e@somainline.org>
+In-Reply-To: <9942f98c-c186-5cd0-d6ac-a18a4e20583e@somainline.org>
+From:   Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Date:   Thu, 14 Jan 2021 15:33:29 -0700
+Message-ID: <CAOCk7Nod9a+5EUUWGpso+EBb2dJVLMvjrOoMpqeTcm+L6mxvtQ@mail.gmail.com>
+Subject: Re: [PATCH 1/9] clk: qcom: gcc-msm8998: Wire up gcc_mmss_gpll0 clock
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        phone-devel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
+        DTML <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 04:24:15PM -0600, Josh Poimboeuf wrote:
-> Thanks to a recent binutils change which doesn't generate unused
-> symbols, it's now possible for thunk_64.o be completely empty with
-> CONFIG_PREEMPTION: no text, no data, no symbols.
-> 
-> We could edit the Makefile to only build that file when
-> CONFIG_PREEMPTION is enabled, but that will likely create confusion
-> if/when the thunks end up getting used by some other code again.
-> 
-> Just ignore it and move on.
-> 
-> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+On Thu, Jan 14, 2021 at 3:13 PM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@somainline.org> wrote:
+>
+> Il 14/01/21 23:12, Jeffrey Hugo ha scritto:
+> > On Sat, Jan 9, 2021 at 6:47 AM AngeloGioacchino Del Regno
+> > <angelogioacchino.delregno@somainline.org> wrote:
+> >>
+> >> This clock enables the GPLL0 output to the multimedia subsystem
+> >> clock controller.
+> >>
+> >> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> >
+> > Any reason why you are not also adding the div_clk?
+> >
+>
+> Yes, just one: I haven't tested it... and my devices worked without.
+> Perhaps we can add it whenever we find out if something really needs it?
 
-Thanks for the quick fix!
+I'm mildly surprised you need to turn on the gate to the PLL0 out, but
+not the div_out.  The div_out/div_clk is also fed into every RCG that
+exists in the MMCC.
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Per the frequency plan the following RCGs require it -
 
-Is it worth a cc to stable given that I hit this in 5.4? I suppose it is
-not super critical now but it seems like someone might eventually hit
-this as times goes on and binutils 2.37 becomes more common.
+cci
+cpp
+fd_core
+camss_gp[0-1]
+jpeg0
+mclk[0-3]
+csi[0-2]phytimer
+dp_gtc
+maxi
+axi
+ahb
 
-> ---
->  tools/objtool/elf.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-> index be89c741ba9a..2b0f4f52f7b5 100644
-> --- a/tools/objtool/elf.c
-> +++ b/tools/objtool/elf.c
-> @@ -380,8 +380,11 @@ static int read_symbols(struct elf *elf)
->  
->  	symtab = find_section_by_name(elf, ".symtab");
->  	if (!symtab) {
-> -		WARN("missing symbol table");
-> -		return -1;
-> +		/*
-> +		 * A missing symbol table is actually possible if it's an empty
-> +		 * .o file.  This can happen for thunk_64.o.
-> +		 */
-> +		return 0;
->  	}
->  
->  	symtab_shndx = find_section_by_name(elf, ".symtab_shndx");
-> -- 
-> 2.29.2
-> 
+Also, I'm very interested in all things 8998, and would generally
+appreciate being added to the to: list.
