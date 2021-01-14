@@ -2,74 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA2B2F69C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B861C2F69CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728842AbhANSlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:41:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726172AbhANSlE (ORCPT
+        id S1728099AbhANSmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:42:37 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:53368 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbhANSmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:41:04 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBABC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:40:24 -0800 (PST)
-Received: from zn.tnic (p200300ec2f1aa900e8e9bea65a049b95.dip0.t-ipconnect.de [IPv6:2003:ec:2f1a:a900:e8e9:bea6:5a04:9b95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B5AAB1EC026D;
-        Thu, 14 Jan 2021 19:40:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610649621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F2/CB4ABPbBP1pW0IHsNbg4sOTm1wt6DrSPmMYPRbnU=;
-        b=n0DECMJBD+hRD5D+iJkaXzpobjvEpELqD0R/Fz0hEUw8JJh9zA2jL0CgOSJX/ORDYzl91p
-        9AXA5RNhHacP4LLsbnYYjiwDc+fVe8HmSOJiaAztxeCiAfb3JsfcsV5PvAdpc0ztuyQb+C
-        IxHDnh6e6d/SVResNuJ0O4cx+Eo3tQg=
-Date:   Thu, 14 Jan 2021 19:40:21 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     kernel test robot <lkp@intel.com>, xen-devel@lists.xenproject.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        kbuild-all@lists.01.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v3 08/15] x86: add new features for paravirt patching
-Message-ID: <20210114184021.GG12284@zn.tnic>
-References: <20201217093133.1507-9-jgross@suse.com>
- <202012172021.VSDLPK5D-lkp@intel.com>
- <20210114183024.GF12284@zn.tnic>
+        Thu, 14 Jan 2021 13:42:36 -0500
+Received: from 89-64-81-33.dynamic.chello.pl (89.64.81.33) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
+ id 53ba55cc67cb7881; Thu, 14 Jan 2021 19:41:54 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Saravana Kannan <saravanak@google.com>
+Subject: [PATCH] driver core: Extend device_is_dependent()
+Date:   Thu, 14 Jan 2021 19:41:53 +0100
+Message-ID: <2073294.4OfjquceTg@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210114183024.GF12284@zn.tnic>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 07:30:24PM +0100, Borislav Petkov wrote:
-> On Thu, Dec 17, 2020 at 09:12:57PM +0800, kernel test robot wrote:
-> >    ld: arch/x86/kernel/alternative.o: in function `paravirt_set_cap':
-> > >> arch/x86/kernel/alternative.c:605: undefined reference to `pv_is_native_spin_unlock'
-> > >> ld: arch/x86/kernel/alternative.c:608: undefined reference to `pv_is_native_vcpu_is_preempted'
-> 
-> Looks like alternative.c needs #include <asm/paravirt.h>.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Nah, that needs paravirt_set_cap() to be inside
-CONFIG_PARAVIRT_SPINLOCKS-enabled ifdeffery.
+When adding a new device link, device_is_dependent() is used to
+check whether or not the prospective supplier device does not
+depend on the prospective consumer one to avoid adding loops
+to the graph of device dependencies.
 
-Jürgen, why don't you move it to arch/x86/kernel/paravirt.c? That
-should keep the ifdeffery low.
+However, device_is_dependent() does not take the ancestors of
+the target device into account, so it may not detect an existing
+reverse dependency if, for example, the parent of the target
+device depends on the device passed as its first argument.
 
-Thx.
+For this reason, extend device_is_dependent() to also check if
+the device passed as its first argument is an ancestor of the
+target one and return 1 if that is the case.
 
--- 
-Regards/Gruss,
-    Boris.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reported-by: Stephan Gerhold <stephan@gerhold.net> 
+---
+ drivers/base/core.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Index: linux-pm/drivers/base/core.c
+===================================================================
+--- linux-pm.orig/drivers/base/core.c
++++ linux-pm/drivers/base/core.c
+@@ -208,6 +208,16 @@ int device_links_read_lock_held(void)
+ #endif
+ #endif /* !CONFIG_SRCU */
+ 
++static bool device_is_ancestor(struct device *dev, struct device *target)
++{
++	while (target->parent) {
++		target = target->parent;
++		if (dev == target)
++			return true;
++	}
++	return false;
++}
++
+ /**
+  * device_is_dependent - Check if one device depends on another one
+  * @dev: Device to check dependencies for.
+@@ -221,7 +231,7 @@ int device_is_dependent(struct device *d
+ 	struct device_link *link;
+ 	int ret;
+ 
+-	if (dev == target)
++	if (dev == target || device_is_ancestor(dev, target))
+ 		return 1;
+ 
+ 	ret = device_for_each_child(dev, target, device_is_dependent);
+
+
+
