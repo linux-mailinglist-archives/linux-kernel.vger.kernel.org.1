@@ -2,64 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CC82F5D9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBFC2F5D9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbhANJcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:32:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726893AbhANJcb (ORCPT
+        id S1728172AbhANJdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:33:01 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2341 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727784AbhANJc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:32:31 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD955C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 01:31:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DhuwWPsY6+AhlZo5544Esn7caYX+tMpt0EnqzeWP13k=; b=mzi4xCHsXEgR0sJg8zpSDVXzS4
-        /9R8u6msxOYKolv37cxasOSsAnBj8wy6On56pWlJh3Yi7i8S35y8VEG+G4uvL2SmjsePOcW7ArTnh
-        zV1NpzVZXfWsMmKBmTdJPA6lxQS0oCqe1tjSgPsIpWDrIn6NwGfWCpvn2aho4svh8Hi64acolpaJ5
-        towb6aioDCAb+U2PDS40NZEHZy/BYQ2Y4Sm9EP/gyMkt8uDaSW3Z09j5GsBzJv1b5KKK3pJgB076w
-        BoqjW5S6VmpkzFEEJDCdfoK930qGJHZPm9CecplBLeyZ5/4VBEntuPLMfNpDdXtED1dSg8ncMM8u9
-        IsvNHzjA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kzyyd-00069O-Rg; Thu, 14 Jan 2021 09:31:36 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 94E9E30377D;
-        Thu, 14 Jan 2021 10:31:33 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7F98720CC02D4; Thu, 14 Jan 2021 10:31:33 +0100 (CET)
-Date:   Thu, 14 Jan 2021 10:31:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Hui Su <sh_def@163.com>, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched: use task_current() instead of 'rq->curr == p'
-Message-ID: <YAAPdUg6CSFh/IDp@hirez.programming.kicks-ass.net>
-References: <20201030173223.GA52339@rlk>
- <20210113173843.19227a86@gandalf.local.home>
+        Thu, 14 Jan 2021 04:32:59 -0500
+Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DGf8p2d9yz67bTC;
+        Thu, 14 Jan 2021 17:27:06 +0800 (CST)
+Received: from lhreml741-chm.china.huawei.com (10.201.108.191) by
+ fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 14 Jan 2021 10:32:17 +0100
+Received: from [10.199.170.166] (10.199.170.166) by
+ lhreml741-chm.china.huawei.com (10.201.108.191) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 14 Jan 2021 09:32:11 +0000
+Subject: Re: [PATCH v2 1/2] perf tools: add 'perf irq' to measure the hardware
+ interrupts
+To:     Bixuan Cui <cuibixuan@huawei.com>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <john.wanghui@huawei.com>
+References: <20210114074852.13231-1-cuibixuan@huawei.com>
+ <20210114074852.13231-2-cuibixuan@huawei.com>
+From:   Alexei Budankov <abudankov@huawei.com>
+Message-ID: <4ad7a048-8982-577b-b7c0-ca7e25f901d6@huawei.com>
+Date:   Thu, 14 Jan 2021 12:32:05 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113173843.19227a86@gandalf.local.home>
+In-Reply-To: <20210114074852.13231-2-cuibixuan@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.199.170.166]
+X-ClientProxiedBy: braeml707-chm.china.huawei.com (10.226.71.37) To
+ lhreml741-chm.china.huawei.com (10.201.108.191)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 05:38:43PM -0500, Steven Rostedt wrote:
-> 
-> Peter,
-> 
-> This is a simple clean up patch that makes sense to me. Want to take it?
-> 
-> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Might as well I suppose.. Thanks!
+On 14.01.2021 10:48, Bixuan Cui wrote:
+> Add 'perf irq' to trace/measure the hardware interrupts.
+> 
+> Now three functions are provided:
+>   1. 'perf irq record <command>' to record the irq handler events.
+>   2. 'perf irq script' to see a detailed trace of the workload that
+>    was recorded.
+>   3. 'perf irq report' to calculate the time consumed by each
+>    hardware interrupt processing function.
+> 
+> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+> ---
+>  tools/perf/Build         |   1 +
+>  tools/perf/builtin-irq.c | 287 +++++++++++++++++++++++++++++++++++++++
+>  tools/perf/builtin.h     |   1 +
+>  tools/perf/perf.c        |   1 +
+>  4 files changed, 290 insertions(+)
+>  create mode 100644 tools/perf/builtin-irq.c
+
+<SNIP>
+
+> +static int __cmd_record(int argc, const char **argv)
+> +{
+> +	unsigned int rec_argc, i, j;
+> +	const char **rec_argv;
+> +	const char * const record_args[] = {
+> +		"record",
+> +		"-a",
+
+Could you please make it configurable from the command line 
+jointly with -p option?
+
+> +		"-R",
+> +		"-c", "1",
+> +		"-e", "irq:irq_handler_entry",
+> +		"-e", "irq:irq_handler_exit",
+> +	};
+
+Thanks,
+Alexei
