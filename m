@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09EA42F68C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C4C2F68C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729635AbhANSCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:02:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42096 "EHLO mail.kernel.org"
+        id S1729620AbhANSCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:02:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727841AbhANSCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727497AbhANSCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Jan 2021 13:02:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00F0423B79;
-        Thu, 14 Jan 2021 18:00:55 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A48823B6C;
+        Thu, 14 Jan 2021 18:00:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610647258;
-        bh=CLWZyv41YTti7pvhWRzPDEtPLCfiI6EClMAI6/Ld1fg=;
+        s=k20201202; t=1610647260;
+        bh=r2dnf6YJ6jHN3sgi1lAaFR0PxcBHrSSoP2vcEunw2q8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SJMrbnzspRpeSRI7dZBjnZ0vGXNbgelPRQ1K5SowwdgLjb6Vuif4UOT3zVV3RR7ab
-         cgTKsAdOBlJEfCGucCtw5XWH44gUYwkELgXj/F7tnFepyUncIsA6tx3br7+arGAeLG
-         KSCv7OEbFWA3JdVu0ypf5NI8RT1iuZCjwaSVMXFDMo3LvRxTIiul+l/c1HH3uA2Bq5
-         bU4PNuJclHUe+1+gAbpMGDmqj4SppPRNKSb9HELTjtAyiu3n6rm6kmA3iZe43UyRYP
-         DZim5okUpwJtJwgkzmOVd4QwG7O8R2KUBg/BHl7H9HT7YPVzrbieEQ0NaW1/Bf6nkP
-         gz9u72h/vB4QQ==
+        b=VHpuBt+ZSEWydfP0zrlGDema7Yty0qclZojoA5QoOfsk9ntce62qkJg+1tS8oFSwP
+         9dN52fvrKOqhJvThDOwL93iqa6Ov4Vfto8bLJZlt9H58N0W9j9diJ0dO0CLbqqJ45I
+         0Dk2Jt4vR0VmN34vUqH8gi/qTV3dywa96e3kk9aSRh6wvthdYaN5zZxJgHqF5ruOuT
+         jrkOifK+3AQqBUuA00RyfLHtKa9tsKpnIt6BkPiiNhwwdocLPzmLUBJVh3ZK5l7oym
+         LWNQ+lkWxnXcOgN5V6wtVEAJV3+Qg1IHJ2hqzBBxGKXREFnjHuCj7fZdiduXFjWjnW
+         HOZeUu95TiVQg==
 From:   Will Deacon <will@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
@@ -34,9 +34,9 @@ Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Vinayak Menon <vinmenon@codeaurora.org>,
         Hugh Dickins <hughd@google.com>, kernel-team@android.com
-Subject: [RFC PATCH 5/8] mm: Pass 'address' to map to do_set_pte() and drop FAULT_FLAG_PREFAULT
-Date:   Thu, 14 Jan 2021 17:59:31 +0000
-Message-Id: <20210114175934.13070-6-will@kernel.org>
+Subject: [RFC PATCH 6/8] mm: Avoid modifying vmf.info.address in __collapse_huge_page_swapin()
+Date:   Thu, 14 Jan 2021 17:59:32 +0000
+Message-Id: <20210114175934.13070-7-will@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210114175934.13070-1-will@kernel.org>
 References: <20210114175934.13070-1-will@kernel.org>
@@ -46,170 +46,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rather than modifying the 'address' field of the 'struct vm_fault_info'
-passed to do_set_pte(), leave that to identify the real faulting address
-and pass in the virtual address to be mapped by the new pte as a
-separate argument.
-
-This makes FAULT_FLAG_PREFAULT redundant, as a prefault entry can be
-identified simply by comparing the new address parameter with the
-faulting address, so remove the redundant flag at the same time.
+In preparation for const-ifying the 'info' field of 'struct vm_fault',
+rework __collapse_huge_page_swapin() to avoid continously updating
+vmf.info.address and instead populate a new 'struct vm_fault' on the
+stack for each page being processed.
 
 Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Will Deacon <will@kernel.org>
 ---
- include/linux/mm.h |  7 ++-----
- mm/filemap.c       | 22 +++++++---------------
- mm/memory.c        | 10 +++++-----
- 3 files changed, 14 insertions(+), 25 deletions(-)
+ mm/khugepaged.c | 41 ++++++++++++++++++++---------------------
+ 1 file changed, 20 insertions(+), 21 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 15e8dd77b8ff..c24dd17b32c5 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -434,7 +434,6 @@ extern pgprot_t protection_map[16];
-  * @FAULT_FLAG_REMOTE: The fault is not for current task/mm.
-  * @FAULT_FLAG_INSTRUCTION: The fault was during an instruction fetch.
-  * @FAULT_FLAG_INTERRUPTIBLE: The fault can be interrupted by non-fatal signals.
-- * @FAULT_FLAG_PREFAULT: Fault was a prefault.
-  *
-  * About @FAULT_FLAG_ALLOW_RETRY and @FAULT_FLAG_TRIED: we can specify
-  * whether we would allow page faults to retry by specifying these two
-@@ -465,7 +464,6 @@ extern pgprot_t protection_map[16];
- #define FAULT_FLAG_REMOTE			0x80
- #define FAULT_FLAG_INSTRUCTION  		0x100
- #define FAULT_FLAG_INTERRUPTIBLE		0x200
--#define FAULT_FLAG_PREFAULT			0x400
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 4494c90075fb..86c51a5d92d2 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -991,40 +991,43 @@ static int hugepage_vma_revalidate(struct mm_struct *mm, unsigned long address,
  
- /*
-  * The default fault flags that should be used by most of the
-@@ -503,8 +501,7 @@ static inline bool fault_flag_allow_retry_first(unsigned int flags)
- 	{ FAULT_FLAG_USER,		"USER" }, \
- 	{ FAULT_FLAG_REMOTE,		"REMOTE" }, \
- 	{ FAULT_FLAG_INSTRUCTION,	"INSTRUCTION" }, \
--	{ FAULT_FLAG_INTERRUPTIBLE,	"INTERRUPTIBLE" }, \
--	{ FAULT_FLAG_PREFAULT,		"PREFAULT" }
-+	{ FAULT_FLAG_INTERRUPTIBLE,	"INTERRUPTIBLE" }
- 
- /*
-  * vm_fault is filled by the pagefault handler and passed to the vma's
-@@ -997,7 +994,7 @@ static inline pte_t maybe_mkwrite(pte_t pte, struct vm_area_struct *vma)
- }
- 
- vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page);
--void do_set_pte(struct vm_fault *vmf, struct page *page);
-+void do_set_pte(struct vm_fault *vmf, struct page *page, unsigned long addr);
- 
- vm_fault_t finish_fault(struct vm_fault *vmf);
- vm_fault_t finish_mkwrite_fault(struct vm_fault *vmf);
-diff --git a/mm/filemap.c b/mm/filemap.c
-index c192e103843f..46ca16bf1372 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -3018,8 +3018,7 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
- 	struct file *file = vma->vm_file;
- 	struct address_space *mapping = file->f_mapping;
- 	pgoff_t last_pgoff = start_pgoff;
--	unsigned long address = vmf->info.address;
--	unsigned long flags = vmf->flags;
-+	unsigned long addr;
- 	XA_STATE(xas, &mapping->i_pages, start_pgoff);
- 	struct page *head, *page;
- 	unsigned int mmap_miss = READ_ONCE(file->f_ra.mmap_miss);
-@@ -3035,9 +3034,8 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
- 		goto out;
- 	}
- 
--	vmf->info.address = vma->vm_start + ((start_pgoff - vma->vm_pgoff) << PAGE_SHIFT);
--	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd,
--				       vmf->info.address, &vmf->ptl);
-+	addr = vma->vm_start + ((start_pgoff - vma->vm_pgoff) << PAGE_SHIFT);
-+	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, addr, &vmf->ptl);
- 	do {
- 		page = find_subpage(head, xas.xa_index);
- 		if (PageHWPoison(page))
-@@ -3046,7 +3044,7 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
- 		if (mmap_miss > 0)
- 			mmap_miss--;
- 
--		vmf->info.address += (xas.xa_index - last_pgoff) << PAGE_SHIFT;
-+		addr += (xas.xa_index - last_pgoff) << PAGE_SHIFT;
- 		vmf->pte += xas.xa_index - last_pgoff;
- 		last_pgoff = xas.xa_index;
- 
-@@ -3054,16 +3052,12 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
- 			goto unlock;
- 
- 		/* We're about to handle the fault */
--		if (vmf->info.address == address) {
--			vmf->flags &= ~FAULT_FLAG_PREFAULT;
-+		if (vmf->info.address == addr)
- 			ret = VM_FAULT_NOPAGE;
--		} else {
--			vmf->flags |= FAULT_FLAG_PREFAULT;
--		}
- 
--		do_set_pte(vmf, page);
-+		do_set_pte(vmf, page, addr);
- 		/* no need to invalidate: a not-present page won't be cached */
--		update_mmu_cache(vma, vmf->info.address, vmf->pte);
-+		update_mmu_cache(vma, addr, vmf->pte);
- 		unlock_page(head);
- 		continue;
- unlock:
-@@ -3073,8 +3067,6 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
- 	pte_unmap_unlock(vmf->pte, vmf->ptl);
- out:
- 	rcu_read_unlock();
--	vmf->flags = flags;
--	vmf->info.address = address;
- 	WRITE_ONCE(file->f_ra.mmap_miss, mmap_miss);
- 	return ret;
- }
-diff --git a/mm/memory.c b/mm/memory.c
-index ffb7598046fc..f19184542974 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3741,11 +3741,11 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
- }
- #endif
- 
--void do_set_pte(struct vm_fault *vmf, struct page *page)
-+void do_set_pte(struct vm_fault *vmf, struct page *page, unsigned long addr)
+ static bool __collapse_huge_page_swapin(struct mm_struct *mm,
+ 					struct vm_area_struct *vma,
+-					unsigned long address, pmd_t *pmd,
++					unsigned long haddr, pmd_t *pmd,
+ 					int referenced)
  {
- 	struct vm_area_struct *vma = vmf->info.vma;
- 	bool write = vmf->flags & FAULT_FLAG_WRITE;
--	bool prefault = vmf->flags & FAULT_FLAG_PREFAULT;
-+	bool prefault = vmf->info.address != addr;
- 	pte_t entry;
+ 	int swapped_in = 0;
+ 	vm_fault_t ret = 0;
+-	struct vm_fault vmf = {
+-		.info = {
+-			.vma = vma,
+-			.address = address,
+-			.pgoff = linear_page_index(vma, address),
+-		},
+-		.flags = FAULT_FLAG_ALLOW_RETRY,
+-		.pmd = pmd,
+-	};
+-
+-	vmf.pte = pte_offset_map(pmd, address);
+-	for (; vmf.info.address < address + HPAGE_PMD_NR*PAGE_SIZE;
+-			vmf.pte++, vmf.info.address += PAGE_SIZE) {
++	unsigned long address, end = haddr + (HPAGE_PMD_NR * PAGE_SIZE);
++
++	for (address = haddr; address < end; address += PAGE_SIZE) {
++		struct vm_fault vmf = {
++			.info = {
++				.vma = vma,
++				.address = address,
++				.pgoff = linear_page_index(vma, haddr),
++			},
++			.flags = FAULT_FLAG_ALLOW_RETRY,
++			.pmd = pmd,
++		};
++
++		vmf.pte = pte_offset_map(pmd, address);
+ 		vmf.orig_pte = *vmf.pte;
+-		if (!is_swap_pte(vmf.orig_pte))
++		if (!is_swap_pte(vmf.orig_pte)) {
++			pte_unmap(vmf.pte);
+ 			continue;
++		}
+ 		swapped_in++;
+ 		ret = do_swap_page(&vmf);
  
- 	flush_icache_page(vma, page);
-@@ -3761,13 +3761,13 @@ void do_set_pte(struct vm_fault *vmf, struct page *page)
- 	/* copy-on-write page */
- 	if (write && !(vma->vm_flags & VM_SHARED)) {
- 		inc_mm_counter_fast(vma->vm_mm, MM_ANONPAGES);
--		page_add_new_anon_rmap(page, vma, vmf->info.address, false);
-+		page_add_new_anon_rmap(page, vma, addr, false);
- 		lru_cache_add_inactive_or_unevictable(page, vma);
- 	} else {
- 		inc_mm_counter_fast(vma->vm_mm, mm_counter_file(page));
- 		page_add_file_rmap(page, false);
+ 		/* do_swap_page returns VM_FAULT_RETRY with released mmap_lock */
+ 		if (ret & VM_FAULT_RETRY) {
+ 			mmap_read_lock(mm);
+-			if (hugepage_vma_revalidate(mm, address, &vmf.info.vma)) {
++			if (hugepage_vma_revalidate(mm, haddr, &vma)) {
+ 				/* vma is no longer available, don't continue to swapin */
+ 				trace_mm_collapse_huge_page_swapin(mm, swapped_in, referenced, 0);
+ 				return false;
+ 			}
+ 			/* check if the pmd is still valid */
+-			if (mm_find_pmd(mm, address) != pmd) {
++			if (mm_find_pmd(mm, haddr) != pmd) {
+ 				trace_mm_collapse_huge_page_swapin(mm, swapped_in, referenced, 0);
+ 				return false;
+ 			}
+@@ -1033,11 +1036,7 @@ static bool __collapse_huge_page_swapin(struct mm_struct *mm,
+ 			trace_mm_collapse_huge_page_swapin(mm, swapped_in, referenced, 0);
+ 			return false;
+ 		}
+-		/* pte is unmapped now, we need to map it */
+-		vmf.pte = pte_offset_map(pmd, vmf.info.address);
  	}
--	set_pte_at(vma->vm_mm, vmf->info.address, vmf->pte, entry);
-+	set_pte_at(vma->vm_mm, addr, vmf->pte, entry);
- }
+-	vmf.pte--;
+-	pte_unmap(vmf.pte);
  
- /**
-@@ -3827,7 +3827,7 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
- 	ret = 0;
- 	/* Re-check under ptl */
- 	if (likely(pte_none(*vmf->pte)))
--		do_set_pte(vmf, page);
-+		do_set_pte(vmf, page, vmf->info.address);
- 	else
- 		ret = VM_FAULT_NOPAGE;
- 
+ 	/* Drain LRU add pagevec to remove extra pin on the swapped in pages */
+ 	if (swapped_in)
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
