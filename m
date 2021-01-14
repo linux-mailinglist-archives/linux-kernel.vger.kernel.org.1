@@ -2,140 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5191E2F6A4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2935C2F6A51
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728861AbhANTAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:00:36 -0500
-Received: from smtp-bc0f.mail.infomaniak.ch ([45.157.188.15]:37225 "EHLO
-        smtp-bc0f.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728335AbhANTAg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:00:36 -0500
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DGtsd3prKzMqNmw;
-        Thu, 14 Jan 2021 19:59:49 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DGtsb4TJWzlh8T8;
-        Thu, 14 Jan 2021 19:59:47 +0100 (CET)
-Subject: Re: [PATCH v26 11/12] samples/landlock: Add a sandbox manager example
-To:     Jann Horn <jannh@google.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20201209192839.1396820-1-mic@digikod.net>
- <20201209192839.1396820-12-mic@digikod.net>
- <CAG48ez2yQNvcCrmCCBZKy_cxoZzNgremxWMia1YHsgaj4edqrA@mail.gmail.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <f3ca5fb2-64c6-b525-0f16-5353f1f7eddb@digikod.net>
-Date:   Thu, 14 Jan 2021 19:59:57 +0100
-User-Agent: 
+        id S1729651AbhANTAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:00:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54580 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729485AbhANTAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 14:00:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4353123B6C;
+        Thu, 14 Jan 2021 19:00:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610650811;
+        bh=hJGvoAH++TMBT1K8ortkNTeQkSCNIKaaVGZNe31IpBE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=j1YeTxLNVe44u02qg5grX0v84HRmPvO/LrifvYf1Ut/WW/vyCID9d6vYr32iauULg
+         j3P6pEe1O5Ys8xaQJlFKvvIF5wOpoxHqWPdid/tI4PY3bPUKWdOaG4dpNiq2OSqdNN
+         i1u7vPyswfBxadHDNKoS/W0ofnX7Sbz3f0WV7dlIOCiRPr2jFhUMkd9rY6wmPZRsTB
+         nz18ueslA/252UT7uKbHW9rC28dU3QyylmqyGCO2UpXWVryHMYt750ELdC2nOqd3wD
+         uTf4odUpQGtthXJwO6qguttJyTDXDHp7lmblporqgVU60zlaSApmwekI1YBRu46fpX
+         dRqIM5a79OEwQ==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 395866018E;
+        Thu, 14 Jan 2021 19:00:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAG48ez2yQNvcCrmCCBZKy_cxoZzNgremxWMia1YHsgaj4edqrA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] nt: usb: USB_RTL8153_ECM should not default to y
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161065081122.20848.13718242969885388287.git-patchwork-notify@kernel.org>
+Date:   Thu, 14 Jan 2021 19:00:11 +0000
+References: <20210113144309.1384615-1-geert+renesas@glider.be>
+In-Reply-To: <20210113144309.1384615-1-geert+renesas@glider.be>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     davem@davemloft.net, kuba@kernel.org, hayeswang@realtek.com,
+        m.szyprowski@samsung.com, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
-On 14/01/2021 04:21, Jann Horn wrote:
-> On Wed, Dec 9, 2020 at 8:29 PM Mickaël Salaün <mic@digikod.net> wrote:
->> Add a basic sandbox tool to launch a command which can only access a
->> whitelist of file hierarchies in a read-only or read-write way.
-> 
-> I have to admit that I didn't really look at this closely before
-> because it's just sample code... but I guess I should. You can add
-> 
-> Reviewed-by: Jann Horn <jannh@google.com>
-> 
-> if you fix the following nits:
+This patch was applied to netdev/net.git (refs/heads/master):
 
-OK, I will!
+On Wed, 13 Jan 2021 15:43:09 +0100 you wrote:
+> In general, device drivers should not be enabled by default.
+> 
+> Fixes: 657bc1d10bfc23ac ("r8153_ecm: avoid to be prior to r8152 driver")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/net/usb/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
 
-> 
-> [...]
->> diff --git a/samples/Kconfig b/samples/Kconfig
-> [...]
->> +config SAMPLE_LANDLOCK
->> +       bool "Build Landlock sample code"
->> +       depends on HEADERS_INSTALL
->> +       help
->> +         Build a simple Landlock sandbox manager able to launch a process
->> +         restricted by a user-defined filesystem access control.
-> 
-> nit: s/filesystem access control/filesystem access control policy/
-> 
-> [...]
->> diff --git a/samples/landlock/sandboxer.c b/samples/landlock/sandboxer.c
-> [...]
->> +/*
->> + * Simple Landlock sandbox manager able to launch a process restricted by a
->> + * user-defined filesystem access control.
-> 
-> nit: s/filesystem access control/filesystem access control policy/
-> 
-> [...]
->> +int main(const int argc, char *const argv[], char *const *const envp)
->> +{
-> [...]
->> +       if (argc < 2) {
-> [...]
->> +               fprintf(stderr, "* %s: list of paths allowed to be used in a read-only way.\n",
->> +                               ENV_FS_RO_NAME);
->> +               fprintf(stderr, "* %s: list of paths allowed to be used in a read-write way.\n",
->> +                               ENV_FS_RO_NAME);
-> 
-> s/ENV_FS_RO_NAME/ENV_FS_RW_NAME/
-> 
->> +               fprintf(stderr, "\nexample:\n"
->> +                               "%s=\"/bin:/lib:/usr:/proc:/etc:/dev/urandom\" "
->> +                               "%s=\"/dev/null:/dev/full:/dev/zero:/dev/pts:/tmp\" "
->> +                               "%s bash -i\n",
->> +                               ENV_FS_RO_NAME, ENV_FS_RW_NAME, argv[0]);
->> +               return 1;
->> +       }
->> +
->> +       ruleset_fd = landlock_create_ruleset(&ruleset_attr, sizeof(ruleset_attr), 0);
->> +       if (ruleset_fd < 0) {
->> +               perror("Failed to create a ruleset");
->> +               switch (errno) {
-> 
-> (Just as a note: In theory perror() can change the value of errno, as
-> far as I know - so AFAIK you'd theoretically have to do something
-> like:
-> 
-> int errno_ = errno;
-> perror("...");
-> switch (errno_) {
->  ...
-> }
+Here is the summary with links:
+  - nt: usb: USB_RTL8153_ECM should not default to y
+    https://git.kernel.org/netdev/net/c/7da17624e794
 
-Indeed :)
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-> 
-> I'll almost certainly work fine as-is in practice though.)
-> 
+
