@@ -2,139 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3717C2F5A21
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 06:02:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2279E2F5A24
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 06:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726117AbhANFBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 00:01:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55796 "EHLO
+        id S1726280AbhANFDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 00:03:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725841AbhANFBr (ORCPT
+        with ESMTP id S1725943AbhANFDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 00:01:47 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D12C06179F
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:01:01 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id b5so2548480pjk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:01:01 -0800 (PST)
+        Thu, 14 Jan 2021 00:03:52 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E528C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:03:12 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id v3so2301249plz.13
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:03:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gdO0WTSyKWA1CQWh1+Ms9mCRHiJwmYIbRxyUnFoqJbg=;
-        b=yqUJsNuQvhJwtek4cII9glL+VwLRVnrFOPIRqRs6YdXrtpfm/7JXl/j9KNtk422wZq
-         PESK/HebDRDwAy4R90sIqGYW3YkUbuh31Nf/ldw3M1wFXVV/lqkHwvaEIJz0DVWtlU1+
-         eEskoM+msdxRd4juvrvkjwBe9ml4NKM7nNwU5Yi7TW86MximiFYj1B07J3pinLzRcukJ
-         Xwgb7N7NXskG5iR8L5EBj3ARX835VoyDRVREWi5rMj+6dEnIeOWhGm8v8uMqa86rK/Lp
-         36VioJww4YzNLHAE6LAsX8eDloV1UAlxbwpJTkjEL6ClVy49Aa/GjHgdwzIoIas9VKka
-         SeTw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=V92Nts5/LO1MQK5AF4Md88e71CzExZyVy0PrsnyGWp0=;
+        b=ZIxkgSKOQxF2SnlRPa6ijaMDFwCzAMhvi1F3o319zniXgVzkIhhfQgrrHJ0pWESuh5
+         pu+fIo2h9He99+kKwwSaMt9yTh5j9j4MizNabPeRPUONTUAqxB/oUntpS402Q9BUSoRP
+         om6412OmHNrqDBcu7c28PCw8Dq/Z0u2ZNNcbHj+GbJkM9AcPg5oVB+BMHF8d7fsgSQnx
+         22NWxfglaksP+upjqXHyTtlvAnXn5mkPv1JvKQAkZkC65KSCf5NLtaG60ExjmvkRthpC
+         RwT6WkKEXfwIwrlK9xBgN18XTT5XjKtj/pSzbUb6k0YhGx0a2X6kMvEDckvFyt9Cb7fH
+         fVzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=gdO0WTSyKWA1CQWh1+Ms9mCRHiJwmYIbRxyUnFoqJbg=;
-        b=pi7Ycq5NhK1KZpgXBBLmRRUSk5ws1Y3ooJ9KbFueHAAPRVovuCk1eVjEfZfToucil8
-         tCwx6Q0I7JLy3VCx0ywWmfzM0IxjNcGc5liROHR9S1+Oop30Tzkvu6GLjcv6+1xvHhqS
-         zLs0uPP/Zkwi3oH8CC1JvvNoRqbbvj30qGiKygcJaTf/AyDvmlLnOdwhhP2Z0Rdy1On+
-         17q/IQsRxIKvJjXgEqPbzm7mNW6MVjeqHMKyWWoAzKwkIMZqW2Ep8W949OKxQn4BpUl8
-         SefLJzcwJ5TAHSV17tNF59SKo42JTy67r4WiD07yczvdYoti3R5k6yDoYAGaFok813aY
-         kvCQ==
-X-Gm-Message-State: AOAM533Owgi+xUAJ4LR1PLc4GrnDX8IpRfHfxKiDRXHKAvq8M1LL+o27
-        oN8DVAOYP9lqTLtErBkQeSanEDw7xoBorQ==
-X-Google-Smtp-Source: ABdhPJw/KjwzxMrzkLg64ELSAlY5MYh64l6TXiHKqd631a6TQBCTeucap9fzUW/vz4QqeYnG6FGkfw==
-X-Received: by 2002:a17:902:ee0b:b029:db:c808:ccef with SMTP id z11-20020a170902ee0bb02900dbc808ccefmr5909294plb.85.1610600461055;
-        Wed, 13 Jan 2021 21:01:01 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id ft9sm104201pjb.17.2021.01.13.21.01.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 21:01:00 -0800 (PST)
-Date:   Wed, 13 Jan 2021 21:01:00 -0800 (PST)
-X-Google-Original-Date: Wed, 13 Jan 2021 21:00:58 PST (-0800)
-Subject:     Re: [PATCH v2 0/3] fix macb phy probe failure if phy-reset is not handled
-In-Reply-To: <1605021732-268521-1-git-send-email-sagar.kadam@sifive.com>
-CC:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org, kernel@esmil.dk,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        anup@brainfault.org, yash.shah@sifive.com, aou@eecs.berkeley.edu,
-        Paul Walmsley <paul.walmsley@sifive.com>, robh+dt@kernel.org,
-        sagar.kadam@sifive.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     sagar.kadam@sifive.com
-Message-ID: <mhng-40b3307c-6849-46f4-83c3-ffa1ab92baef@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=V92Nts5/LO1MQK5AF4Md88e71CzExZyVy0PrsnyGWp0=;
+        b=Nq5P4yrhKtf2Y/34zmLRYMi7/n5BR3ejImvx2KIPwNTZOkehPC1vs9ieg/14kJil46
+         COR7ZTCqWOe2HQ84r+Q4qIA91yb4dNfCS1Zx7q75zXJqPMPECSogJH8CFDZIgzm1rt+U
+         DuHw5bUG9cy57sdeX3kk4DkOu1yLuVlvcyfMKovaXL/zKRcLWsZ08bLs7U2KtUXhOS5h
+         5jchPFNgWhzo526SK7UmLFfCz5iJDe3ImYIDrDMsItF4A/3Md9U99uHHlcQDjgEaFvkw
+         DDK/wgOcxV/xM05MNKEHlEZys02VodXhvlnuWsShSiLtVt8k5zMyJdI7WpcPv/Fn+u+H
+         f6tA==
+X-Gm-Message-State: AOAM531vE7xMmAYlmPo3i2Ztw1tDRjlIB2TkRwQTsZuzYhoiLTHebuGJ
+        Bj8xCo4arlQADONa1w+GOP8GhA==
+X-Google-Smtp-Source: ABdhPJxX5ENfqzDWGtwN0g0Mu9zNq2fqM69el2/2b6RDTGqJ2Ab91yOr9QgqkUUcG4WPLZzQKWye4w==
+X-Received: by 2002:a17:902:b587:b029:de:23ed:88b1 with SMTP id a7-20020a170902b587b02900de23ed88b1mr5978581pls.61.1610600592151;
+        Wed, 13 Jan 2021 21:03:12 -0800 (PST)
+Received: from localhost ([122.172.85.111])
+        by smtp.gmail.com with ESMTPSA id x125sm4083867pgb.35.2021.01.13.21.03.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 13 Jan 2021 21:03:11 -0800 (PST)
+Date:   Thu, 14 Jan 2021 10:33:09 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
+Message-ID: <20210114050309.wokrhw4o3cjxj5uo@vireshk-i7>
+References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
+ <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
+ <CAL_JsqLpbSOk-OST8Oi7uyFVjekX-15713F1FbDCQWfVWgikMw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqLpbSOk-OST8Oi7uyFVjekX-15713F1FbDCQWfVWgikMw@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 07:22:09 PST (-0800), sagar.kadam@sifive.com wrote:
-> HiFive Unleashed is having VSC8541-01 ethernet phy device and requires a
-> specific reset sequence of 0-1-0-1 in order to use it in unmanaged mode.
-> This series addresses a corner case where phy reset is not handled by boot
-> stages prior to linux.
-> Somewhat similar unreliable phy probe failure was reported and discussed
-> here [1].
-> The macb driver fails to detect the ethernet phy device if the bootloader
-> doesn't provide a proper reset sequence to the phy device or the phy itself
-> is in some invalid state. Currently, the FSBL or u-boot-spl is resetting
-> the phy device, and so there is no issue observed in the linux network
-> setup.
->
-> The series is based on linux-5.10-rc5.
-> Patch 1: Add the OUI to the phy dt node to fix issue of missing mdio device
-> Patch 2 and 3:
-> 	Resetting phy needs GPIO support so add to dt and defconfig.
->
-> [1] https://lkml.org/lkml/2018/11/29/154
->
-> To reproduce the issue:
-> Using FSBL:
-> 1. Comment out VSC8541 reset sequence in fsbl/main.c
->    from within the freedom-u540-c000-bootloader.
-> 2. Build and flash fsbl.bin to micro sdcard.
->
-> Using u-boot:
-> 1. Comment out VSC8541 reset sequence in board/sifive/fu540/spl.c
->    from mainline u-boot source code.
-> 2. Build and flash u-boot binaries to micro sdcard.
->
-> Boot the board and bootlog will show network setup failure messages as:
->
-> [  1.069474] libphy: MACB_mii_bus: probed
-> [  1.073092] mdio_bus 10090000.ethernet-ffffffff: MDIO device at address 0
-> 	       is missing
-> .....
-> [  1.979252] macb 10090000.ethernet eth0: Could not attach PHY (-19)
->
-> 3. Now apply the series build, and boot kernel.
-> 4. MACB and VSC8541 driver get successfully probed and the network is set
->    without any failure.
->
->
-> So irrespective of whether the prior stages handle the phy reset sequence,
-> the probing is successful in both the cases of cold boot and warm boot.
->
-> Change History:
-> ===============================
-> V2:
-> -Rebased v1 on linux kernel v5.10-rc3.
->
-> V1:
-> -Ignore 4th patch as suggested and so removed it from the series.
-> -Verified this series on 5.7-rc5.
->
-> V0: Base RFC patch. Verified on 5.7-rc2
->
-> Sagar Shrikant Kadam (3):
->   dts: phy: fix missing mdio device and probe failure of vsc8541-01
->     device
->   dts: phy: add GPIO number and active state used for phy reset
->   riscv: defconfig: enable gpio support for HiFive Unleashed
->
->  arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts | 2 ++
->  arch/riscv/configs/defconfig                        | 2 ++
->  2 files changed, 4 insertions(+)
+On 11-01-21, 09:46, Rob Herring wrote:
+> On Fri, Jan 8, 2021 at 2:41 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > Now that fdtoverlay is part of the kernel build, start using it to test
+> > the unitest overlays we have by applying them statically.
+> 
+> Nice idea.
+> 
+> > The file overlay_base.dtb have symbols of its own and we need to apply
+> > overlay.dtb to overlay_base.dtb alone first to make it work, which gives
+> > us intermediate-overlay.dtb file.
+> 
+> Okay? If restructuring things helps we should do that. Frank?
 
-David pointed out I missed these, they're on fixes.  Thanks!
+Frank, do we want to do something about it ? Maybe make overlay_base.dts an dtsi
+and include it from testcases.dts like the other ones ?
+
+-- 
+viresh
