@@ -2,40 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656B32F5BA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA062F5BB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727735AbhANHyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 02:54:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56664 "EHLO mail.kernel.org"
+        id S1727959AbhANHzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 02:55:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727134AbhANHya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 02:54:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB20E23A01;
-        Thu, 14 Jan 2021 07:53:49 +0000 (UTC)
+        id S1727840AbhANHzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 02:55:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F6D223A05;
+        Thu, 14 Jan 2021 07:53:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1610610830;
-        bh=CkEHr9Hpk/gHNJIktPKbWkXyAFa/FuixQD4gAQAQgbQ=;
+        bh=KwLtm2qE/P7KUgXcQLH4sQbqeaDZcG9TP2B7eAOt4uE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aEEv9rwtr/61NpgfcTa7XW/I4/h+woANavlWf49P70CyijU77Jca5nZx5XUJjztcL
-         IeCrtCrQ5RaI2/NiZ2YwPRarOS3g5xIuBhsWLUegHTjrn3SmWjRvV3WAgZ4y4BMYt8
-         gp+gunDa246bXQ5U1fBvXJP6MYI1l989694WJOf1BDxh7wJo7t4BPEJ1Q+OxS/+1JZ
-         irjiRcwRblqaCWn5jc0RekzE3JlKaeHwcJpMyzvK6OC3dFBIHN7HHgeNOC4q+x1IyW
-         +2bnQ28lIf1DdncyOyv7H7sQRdv7sHe6DaJ6MaHyccsxHseK0jcdjKhNVK6d8usT72
-         54rRCv8taz/5g==
+        b=Yx/Pk4w5/cjbtL1uW3DC5jTyrO725POQij7w7h+EGg2cQFF70Qtcb5iul4HHEGqSS
+         nrbBVZa+By00SEIYiqxYk9q8ngvnBhqyptchkIlkeC1soYOyyQ0oRIs8LvlzAE5GRt
+         6UWg8b16LckFBXGrhNiqtsrLUURdpzigEj3y31SlDG7Zhnaq1BRfzoMWQxsEAQL9rt
+         UIOlmzMU1HGQW7mgJ+q01czGdOEteH9IRV2rMyD6iND1RVkAklFdggrhSeLmZNMrr0
+         Ar1y/GbJLaVnRYb5QNOMV5sm4Pu39War4gDsEGKw4q7T24ij+pcj/82rRwnyqMHCHH
+         mcT08vaA+/p9Q==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kzxRz-00EPuF-A9; Thu, 14 Jan 2021 08:53:47 +0100
+        id 1kzxRz-00EPuH-B8; Thu, 14 Jan 2021 08:53:47 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Felipe Balbi <balbi@kernel.org>
+To:     Harry Wei <harryxiyou@gmail.com>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
         "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [PATCH 07/10] dwc3: document gadget_max_speed
-Date:   Thu, 14 Jan 2021 08:53:42 +0100
-Message-Id: <e9332e31bec9bcead2c7ced2b25462120488ca85.1610610444.git.mchehab+huawei@kernel.org>
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Rob Herring <robh@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 08/10] doc: zh_CN/mips: fix doc cross-references
+Date:   Thu, 14 Jan 2021 08:53:43 +0100
+Message-Id: <dab7d447742b36915115d0364edbfb337de4bf96.1610610444.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1610610444.git.mchehab+huawei@kernel.org>
 References: <cover.1610610444.git.mchehab+huawei@kernel.org>
@@ -46,28 +51,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This new field was added to struct dwc3_scratchpad_array, but
-a documentation for it was missed:
+There are several wrong references there:
 
-	../drivers/usb/dwc3/core.h:1259: warning: Function parameter or member 'gadget_max_speed' not described in 'dwc3'
+    .../Documentation/translations/zh_CN/mips/booting.rst:5: WARNING: undefined label: booting (if the link has no caption the label must precede a section header)
+    .../Documentation/translations/zh_CN/mips/features.rst:5: WARNING: undefined label: features (if the link has no caption the label must precede a section header)
+    .../Documentation/translations/zh_CN/mips/index.rst:5: WARNING: undefined label: index (if the link has no caption the label must precede a section header)
+    .../Documentation/translations/zh_CN/mips/ingenic-tcu.rst:5: WARNING: undefined label: ingenic-tcu (if the link has no caption the label must precede a section header)
+
+Replace them by :doc: markup, which won't require to add anything
+extra at the existing documents.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/usb/dwc3/core.h | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/translations/zh_CN/mips/booting.rst     | 2 +-
+ Documentation/translations/zh_CN/mips/features.rst    | 2 +-
+ Documentation/translations/zh_CN/mips/index.rst       | 2 +-
+ Documentation/translations/zh_CN/mips/ingenic-tcu.rst | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index ac290d896638..eec1cf4ba268 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -964,6 +964,7 @@ struct dwc3_scratchpad_array {
-  * @nr_scratch: number of scratch buffers
-  * @u1u2: only used on revisions <1.83a for workaround
-  * @maximum_speed: maximum speed requested (mainly for testing purposes)
-+ * @gadget_max_speed: maximum gadget speed requested
-  * @ip: controller's ID
-  * @revision: controller's version of an IP
-  * @version_type: VERSIONTYPE register contents, a sub release of a revision
+diff --git a/Documentation/translations/zh_CN/mips/booting.rst b/Documentation/translations/zh_CN/mips/booting.rst
+index 3099d0fff7a6..00bebf7681f9 100644
+--- a/Documentation/translations/zh_CN/mips/booting.rst
++++ b/Documentation/translations/zh_CN/mips/booting.rst
+@@ -2,7 +2,7 @@
+ 
+ .. include:: ../disclaimer-zh_CN.rst
+ 
+-:Original: :ref:`Documentation/mips/booting.rst <booting>`
++:Original: :doc:`/mips/booting`
+ :Translator: Yanteng Si <siyanteng@loongson.cn>
+ 
+ .. _cn_booting:
+diff --git a/Documentation/translations/zh_CN/mips/features.rst b/Documentation/translations/zh_CN/mips/features.rst
+index 7e67f81a0982..72adcd9b360f 100644
+--- a/Documentation/translations/zh_CN/mips/features.rst
++++ b/Documentation/translations/zh_CN/mips/features.rst
+@@ -2,7 +2,7 @@
+ 
+ .. include:: ../disclaimer-zh_CN.rst
+ 
+-:Original: :ref:`Documentation/mips/features.rst <features>`
++:Original: :doc:`/mips/features`
+ :Translator: Yanteng Si <siyanteng@loongson.cn>
+ 
+ .. _cn_features:
+diff --git a/Documentation/translations/zh_CN/mips/index.rst b/Documentation/translations/zh_CN/mips/index.rst
+index 2c7b836a3da5..c2ab89890979 100644
+--- a/Documentation/translations/zh_CN/mips/index.rst
++++ b/Documentation/translations/zh_CN/mips/index.rst
+@@ -2,7 +2,7 @@
+ 
+ .. include:: ../disclaimer-zh_CN.rst
+ 
+-:Original: :ref:`Documentation/mips/index.rst <index>`
++:Original: :doc:`/mips/index`
+ :Translator: Yanteng Si <siyanteng@loongson.cn>
+ 
+ .. _cn_index:
+diff --git a/Documentation/translations/zh_CN/mips/ingenic-tcu.rst b/Documentation/translations/zh_CN/mips/ingenic-tcu.rst
+index 919ae1d4734e..cb570d7eca24 100644
+--- a/Documentation/translations/zh_CN/mips/ingenic-tcu.rst
++++ b/Documentation/translations/zh_CN/mips/ingenic-tcu.rst
+@@ -2,7 +2,7 @@
+ 
+ .. include:: ../disclaimer-zh_CN.rst
+ 
+-:Original: :ref:`Documentation/mips/ingenic-tcu.rst <ingenic-tcu>`
++:Original: :doc:`/mips/ingenic-tcu`
+ :Translator: Yanteng Si <siyanteng@loongson.cn>
+ 
+ .. _cn_ingenic-tcu:
 -- 
 2.29.2
 
