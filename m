@@ -2,77 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076C42F6ECC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 00:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C16EA2F6ECF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 00:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730953AbhANXG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 18:06:28 -0500
-Received: from relay08.th.seeweb.it ([5.144.164.169]:39841 "EHLO
-        relay08.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725863AbhANXG2 (ORCPT
+        id S1730958AbhANXKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 18:10:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730840AbhANXKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 18:06:28 -0500
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 801033F0AF;
-        Fri, 15 Jan 2021 00:05:45 +0100 (CET)
-Subject: Re: [PATCH v2 05/11] clk: qcom: gcc-msm8998: Mark gpu_cfg_ahb_clk as
- critical
-To:     Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        phone-devel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        DTML <devicetree@vger.kernel.org>
-References: <20210114221059.483390-1-angelogioacchino.delregno@somainline.org>
- <20210114221059.483390-6-angelogioacchino.delregno@somainline.org>
- <CAOCk7NoVts21FjhhLtZp-0Xdw6-BnrKio_-tuZBRsgapsUdwfw@mail.gmail.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <25d40e7d-fbd6-697f-7d4d-a7233aeb652c@somainline.org>
-Date:   Fri, 15 Jan 2021 00:05:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 14 Jan 2021 18:10:18 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71F20C061757;
+        Thu, 14 Jan 2021 15:09:37 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id ga15so10708240ejb.4;
+        Thu, 14 Jan 2021 15:09:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VLCIXId9Ur9EEU+g0ZhcxPqlBXoFwGkEQByEAfvt7pM=;
+        b=vcqi2AFNMuHivlPqf62balXOKuMVUeY1LDDZ4fmw8Hnj3tSgqsyBXm7JbDJF9WlPPY
+         8bJIm6Ttru3yi691agA+flqNijZxjZb73DiVbR3W1rDlicn5SY0T/u1wnGLhVdhlhusq
+         iUDZ9zEiHaVMoNHxfKYLw2zfMNEvElIMBgtsFc0UubmiNgcefy6G100CRGjkC/Onmh7E
+         CjaXGFSpX5neYOuFEg9uZCFcuk5tlNK3ZFh7zBff8qbLnavJLnhaCot0fn+g7eT1+kDi
+         OBkCWhRl94dCP59/v7lWm1x+W8Jhv/AloiQ2A0eS0Kn6dxP02VJmvd7nNTv1Jp6G4AgO
+         AkuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VLCIXId9Ur9EEU+g0ZhcxPqlBXoFwGkEQByEAfvt7pM=;
+        b=QdZcfff9KM2PSbbHQjbzwU43s33sINhOIBmWsG57aRdfCz2V9Fhdpthr/jIGFHv5it
+         cxTOXbB19Tjgo4O+KmPxlIzuiKlnKp/gVj6HVt4q2eN0gIYTMAPSMf4GoEHbkuBVgmfe
+         KulGRqKZ/NwURryRdOWECyQmlrSHs/6CUW7d6/cCMTErwYtuUWkfIwUIPDhpkgpfXQuA
+         Ka8l0uAIX2NhhMKsqKHdTa3cgrAyQb5eL4DK4FROXQf0T4dVu9fSxJO6eyTBZPX9Nb9Z
+         hIH57yxQlt+mzg7t+DX8JH7cXGoLVnoy5igBdncW469DV5ZUZojlRwe2/EPJKg8PwHdb
+         1tPA==
+X-Gm-Message-State: AOAM53293loUf7/G4wPFzZtz3F9M6nQ5S70Es/p8i9jEBndIFPzV5zdy
+        RZqfEvCiW5W4VpkvM98Em9W+NE/lCwM0Osgked9k5l8IEFU=
+X-Google-Smtp-Source: ABdhPJylRuPBI5F/xw1RjkvPX3agtRPjZbW8XqRSubVW2OyOOiBrBkicF/VAeeSVmuQoI3+o0JJeE48HWUCWmjOj0hM=
+X-Received: by 2002:a17:906:22c7:: with SMTP id q7mr6812484eja.486.1610665776265;
+ Thu, 14 Jan 2021 15:09:36 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAOCk7NoVts21FjhhLtZp-0Xdw6-BnrKio_-tuZBRsgapsUdwfw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+ <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net> <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
+ <CACRpkda4E2NwNw29J7x5gehtqn_m3M_Z2dHpc7xRgvb0b-p22A@mail.gmail.com>
+ <1be37673-db0e-f09d-68c8-f929be4019ab@physik.fu-berlin.de> <CAK8P3a1+SdAW8VKnvMdXNVcpR-ykNdPoqLqb59uxzB+jNFJRtg@mail.gmail.com>
+In-Reply-To: <CAK8P3a1+SdAW8VKnvMdXNVcpR-ykNdPoqLqb59uxzB+jNFJRtg@mail.gmail.com>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Thu, 14 Jan 2021 15:09:24 -0800
+Message-ID: <CAMo8Bf+geJqaaTkwaRyMUZPJgGC1ELXTdnYGq92UNnaaz2CFVg@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Gerhard Pircher <gerhard_pircher@gmx.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 14/01/21 23:37, Jeffrey Hugo ha scritto:
-> On Thu, Jan 14, 2021 at 3:13 PM AngeloGioacchino Del Regno
-> <angelogioacchino.delregno@somainline.org> wrote:
->>
->> The GPU IOMMU depends on this clock and the hypervisor will crash
->> the SoC if this clock gets disabled because the secure contexts
->> that have been set on this IOMMU by the bootloader will become
->> unaccessible (or they get reset).
->> Mark this clock as critical to avoid this issue when the Adreno
->> GPU is enabled.
->>
-> 
-> You should go review the last attempt to do this -
-> https://lkml.org/lkml/2019/12/17/881
-> 
+Hi Arnd,
 
-Thanks for the tip, but unfortunately this isn't possible on the 
-gpu_cfg_ahb_clk, as it is also needed for the Adreno IOMMU, which has 
-secure contexts that are set up from one of the bootloader stages and if 
-you reset/"mess up" one of them (by - in this case - un-clocking the 
-MMU), then the hypervisor will kick in and generate a fault, rebooting 
-the SoC.
+On Thu, Jan 14, 2021 at 1:25 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> | arch/mips/Kconfig:config HIGHMEM
+> | arch/xtensa/Kconfig:config HIGHMEM
+>
+> AFAICT On MIPS (prior to MIPS32r3) and xtensa, you have at
+> most 512MB in the linear map, so the VMSPLIT_2G or VMSPLIT_4G_4G
+> tricks won't work.
 
-Of course, this scenario is for the case in which you want to boot the 
-device without any gpucc nor any runtime pm user of that.. and the 
-aforementioned issue makes that solution not really usable.
+Regarding xtensa this was done to minimize difference between
+MMUv2 and MMUv3 virtual memory layouts. MMUv2 has been
+obsoleted more than 10 years ago, and MMUv3 is much more
+flexible and can do e.g. 4GB linear map. The only piece of xtensa
+MMUv2 hardware that I have has 96MB of DRAM which fits into
+its linear mapping. So maybe it's time to do a cleanup and
+rearrange virtual memory layout to eliminate the need of highmem.
 
-Again, unfortunately.
+> I have no idea who uses xtensa systems with lots of memory on
+> modern kernels.
+
+We definitely use it for development internally at Cadence/Tensilica,
+mainly on simulators, but also on FPGA boards (e.g. on KC705 we
+can use all of the 1GB onboard DRAM).
+In the last few years we've had a few support requests for linux on
+xtensa cores with MMU, but AFAICT none of them had to deal with
+more than 512MB of onboard memory.
+
+-- 
+Thanks.
+-- Max
