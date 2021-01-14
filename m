@@ -2,141 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC162F5DD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C69DE2F5D95
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728695AbhANJfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:35:54 -0500
-Received: from mail-db8eur05on2047.outbound.protection.outlook.com ([40.107.20.47]:61985
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728682AbhANJfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:35:47 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GwvLy91fvOIc1A2S1z+XTvKS55Jw7otC12w+V/XuGhCHuRqI0cAZAyzq7JLXVcAu7Y5kZQuLtJma54cw29UQzxKiFMPDSAaHB6xbyff46H6sU3M7AL1pn2Vo8ai/rSUBPRGFEbVqunXQn7ut6vXl7gKDk7DFMpQ57PPxkibqxQGEaAbvh6qEzfiEP87+dL+wCVVwkHyoUPb2xuMVqTbYRshPWf1TEY21Xz/JCrFDpaM9OabJjGAOrSM4egHjt/vcBoSrKVkyGjtbYlg90/heHWFagZIeed+yN6OmYZsPQwIMPqh4E3ANesrVlEa7Ps3sV1zfM67CY0g3MzKoY1aKGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RPGwZZSneUfhDGZOeYNPLrTJdq7r/2K0LdPZzQLAvg8=;
- b=PeI7A6/RTmdEmBNN0uF7Gl/tPSgtWzOpe2aZBP/dP8i0lCFJenxRaI5C1CO5j8SMq6mYoFoyZh1Oe5PW2TS48QfHh+QMhnJclfVmzsHIUBHQ6vr8vWx3sft/3Cr9tyL7H2RnoMvYOWHCwDgm1gKKwK4sOAQX0xSqDXarTbrhVQlqH4E/0ezTLjeEu0TzHdlLcRLWft83cTADK3lD/x8IkkcYsJPvoY/kYEysc/5xYGQSoUx/3tzGdDlH80rcZkCW1LRr5hfDwRVS+y9RC2/Ph/yO9a2xAEoTsqA/Yr8kYHacPvPX5h+JYCwqMHil4pH6LyOFuQiLIM9sl8AurVcjGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RPGwZZSneUfhDGZOeYNPLrTJdq7r/2K0LdPZzQLAvg8=;
- b=iGYpiu5lGOiW/vNf/51pUGv5Ilz+wb5zfgElFRKf4Cy2KPHTv25x9EHHJtUKHGnOKGhcEECcuixv+slApT+jbHyUUy4ejukZpq9UpaKucbr1IsSMH2zzqSiWUNP6pKJW4ZV87bcm9cWoMNjCnAE+JmbfRwQ/xkGlnesk1XJ4eCs=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB5710.eurprd04.prod.outlook.com (2603:10a6:803:df::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9; Thu, 14 Jan
- 2021 09:33:57 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3763.010; Thu, 14 Jan 2021
- 09:33:57 +0000
-From:   Liu Ying <victor.liu@nxp.com>
-To:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
-        a.hajda@samsung.com, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org
-Subject: [PATCH v2 14/14] MAINTAINERS: add maintainer for DRM bridge drivers for i.MX SoCs
-Date:   Thu, 14 Jan 2021 17:22:12 +0800
-Message-Id: <1610616132-8220-15-git-send-email-victor.liu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1610616132-8220-1-git-send-email-victor.liu@nxp.com>
-References: <1610616132-8220-1-git-send-email-victor.liu@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR04CA0175.apcprd04.prod.outlook.com
- (2603:1096:4:14::13) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
+        id S1728245AbhANJ33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:29:29 -0500
+Received: from outbound-smtp14.blacknight.com ([46.22.139.231]:60521 "EHLO
+        outbound-smtp14.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725989AbhANJ31 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 04:29:27 -0500
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp14.blacknight.com (Postfix) with ESMTPS id 5A0701C45A4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:28:35 +0000 (GMT)
+Received: (qmail 15601 invoked from network); 14 Jan 2021 09:28:35 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 14 Jan 2021 09:28:35 -0000
+Date:   Thu, 14 Jan 2021 09:28:33 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Li Aubrey <aubrey.li@linux.intel.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/5] sched/fair: Make select_idle_cpu() proportional to
+ cores
+Message-ID: <20210114092833.GL3592@techsingularity.net>
+References: <20210111155047.10657-1-mgorman@techsingularity.net>
+ <20210111155047.10657-4-mgorman@techsingularity.net>
+ <CAKfTPtDjTa24UzNm-_As_OR0dF5V4Tw-7j=doF3kHy3i=q7VCg@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR04CA0175.apcprd04.prod.outlook.com (2603:1096:4:14::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3763.10 via Frontend Transport; Thu, 14 Jan 2021 09:33:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 911eb7ed-3499-43ad-e742-08d8b86f8451
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5710:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB571003EDE0BF363CED1D9C6398A80@VI1PR04MB5710.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: e5KT5FHDF0hUvFRJkZORUegpjQqsEcMEGq8cGIJuTnwMas1v3v+WPJt+0841VjFx8gGCGVMpsXby9EEfUzDl194Y+NiCpDixm7LYoTG/ClUL6Lf5qRgnT8/uYqf7Ja6Xw4hP1thy11ST/q1WYSj20texafwQNMBJJMcE6PUNlaxeDuEhkziOZXzSY/zV5Aj8bFoQRY0sS6QNSrpCvIkVvaU/TDj4yFiD70j3Am0McJQ4aXDnKCjbtUn55Won05wDiX/6Y6D0e4MsrsqDWpZ1xfZZsOQ6su45JVcQmy5aA1wjtREppacujREI6EE8azwBLQXSQHp/hQDpPtHVxNmnqSAXYChqS/TdmYVvW1DE7uWMpIydmCSKh8gkPdtGCZIVSUkb4/xwX4Z8Zt1K10X5tK1ewibFInGhgZW3xmRSG9s4galLZaiJyq8qjmFVwjfJBTLvND9RjLPkz9MVCCBsEg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(4636009)(136003)(396003)(366004)(39860400002)(346002)(376002)(36756003)(6486002)(956004)(8676002)(26005)(6666004)(66556008)(6512007)(66476007)(478600001)(6506007)(8936002)(2616005)(7416002)(86362001)(4326008)(316002)(5660300002)(186003)(52116002)(2906002)(66946007)(69590400011)(16526019);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?NagFmmdJOOZFJSJyFruvSRZOC2ojITp7tCNbLJ+G2IpMsd0d3IAHh0mXUdNx?=
- =?us-ascii?Q?KZyqN368Y9aLeGdiOHaj2NsoXSYa4BgYzy+wrtVxbWw33Uo4f6+tp4IXvt2w?=
- =?us-ascii?Q?i4HquL9LSfGaMZ4gV+ahMmlEZdswdhFhcOCiofF9xPCuiRzVpbeTv3hhrISE?=
- =?us-ascii?Q?QMPofjRJeRpIdfX8CLox7IOK3OfgUTUOFn+3+9vKToilTmARqgXQ6lRoXoXP?=
- =?us-ascii?Q?I44aDZ3rpZW+YDtWqjv2CzGmI/O4c4a1GtzMXw27Es1y3ryDyAjyG+Q3XUUH?=
- =?us-ascii?Q?/1n8ya6mGjsqVrA2ohu6qZ9iBhg5jhRWOkO8cxaIeDxNp1KGkytj8U2BXgzQ?=
- =?us-ascii?Q?3kfRPPjdh3QQ5mq3B3zOXIMqr7u7gCzADXFKgInk39fIMxgY74DhSYjs3V6y?=
- =?us-ascii?Q?3I1xWPs2Or7sIlCiN3dkDG1Osx4mnvpx2heZadFtN/MCJsQlBk7nBT69NM29?=
- =?us-ascii?Q?X7INbnytSKKewNVG6LE5jYkrP6oMQpTGy1PJBGB/mBI5DxvfdCMSnNMhvoRW?=
- =?us-ascii?Q?3FcNZf10/v9qEojHgV/ReTOi8w2ZhwVr9i6vN3EfSjrvJodYyFl5tc2tifk4?=
- =?us-ascii?Q?ccKfPsO3QsF+nkCWQldQqrNuV7MNxp/GZweA5q/O08KYDMqIlMxy+l5ZFZUO?=
- =?us-ascii?Q?zYB3L/aTurPcNNlhqaCSZ3Q2Us6vX4uUSsEzShKuSzsZBZWR7J+ftaoKnT3d?=
- =?us-ascii?Q?OJIuShuwl7l9hcwjVDJtoVMnx2bvXTlqxjoRmPkjwck3Tqb6XcWzLBmM974n?=
- =?us-ascii?Q?23bz1YHhVJFpWK5+DLt12rJR0BdqOevUN1a3XO7oIDSZvuVc2tamCNDCIRbc?=
- =?us-ascii?Q?a9F1sc2wW8TTMp8DEl/MZdgnFEbZkN9SwbIObIZxLrn6Z9lQB4fzNMiINt4s?=
- =?us-ascii?Q?XuHPV1dHgJJuALMZ6T6/S+gduaRlwATeJtGLseRQ6dRZBwxpUXLJu7Mv0J01?=
- =?us-ascii?Q?trLK1MzukdEHe/gng3chpQAZrv0jhWlE1P7CBkU1FKE236N38XIeDi1tOWOm?=
- =?us-ascii?Q?3VyL?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jan 2021 09:33:57.2226
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: 911eb7ed-3499-43ad-e742-08d8b86f8451
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rEQUQtNkPMlVu4MavPZcrboeOsFjbnInlBsdMZNoY7RBbj2jcnvR7tCxjfKWN4pp+reztbvl9PjnCkypvnWgmw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5710
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtDjTa24UzNm-_As_OR0dF5V4Tw-7j=doF3kHy3i=q7VCg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as the maintainer of DRM bridge drivers for i.MX SoCs.
+On Wed, Jan 13, 2021 at 05:49:58PM +0100, Vincent Guittot wrote:
+> > @@ -7444,11 +7444,20 @@ int sched_cpu_activate(unsigned int cpu)
+> >         balance_push_set(cpu, false);
+> >
+> >  #ifdef CONFIG_SCHED_SMT
+> > -       /*
+> > -        * When going up, increment the number of cores with SMT present.
+> > -        */
+> > -       if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
+> > -               static_branch_inc_cpuslocked(&sched_smt_present);
+> > +       do {
+> > +               int weight = cpumask_weight(cpu_smt_mask(cpu));
+> > +               extern int sched_smt_weight;
+> 
+> coding style problem
+> 
 
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
----
-v1->v2:
-* No change.
+Presumably you are referring to an extern defined in a C file. That can
+move to kernel/sched/sched.h in this patch.
 
- MAINTAINERS | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+> > <SNIP>
+> >  /*
+> >   * Scan the LLC domain for idle CPUs; this is dynamically regulated by
+> >   * comparing the average scan cost (tracked in sd->avg_scan_cost) against the
+> > @@ -6166,10 +6172,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+> >                 avg_cost = this_sd->avg_scan_cost + 1;
+> >
+> >                 span_avg = sd->span_weight * avg_idle;
+> > -               if (span_avg > 4*avg_cost)
+> > +               if (span_avg > sis_min_cores*avg_cost)
+> >                         nr = div_u64(span_avg, avg_cost);
+> >                 else
+> > -                       nr = 4;
+> > +                       nr = sis_min_cores;
+> > +
+> > +               nr *= sched_smt_weight;
+> 
+> Also,  patch 5 will look at all CPUs of a core in select_idle_core so
+> nr will decrement by 1 per core so i don't see the need to multiply by
+> sched_smt_weight one patch 5 is applied
+> 
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 389abcf..539dc58 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5891,6 +5891,16 @@ F:	Documentation/devicetree/bindings/display/imx/
- F:	drivers/gpu/drm/imx/
- F:	drivers/gpu/ipu-v3/
- 
-+DRM DRIVERS FOR FREESCALE IMX BRIDGE
-+M:	Liu Ying <victor.liu@nxp.com>
-+L:	dri-devel@lists.freedesktop.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.yaml
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-link.yaml
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pxl2dpi.yaml
-+F:	drivers/gpu/drm/bridge/imx/
-+
- DRM DRIVERS FOR GMA500 (Poulsbo, Moorestown and derivative chipsets)
- M:	Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
- L:	dri-devel@lists.freedesktop.org
+It makes sense in the context of this patch but can be removed again in
+the last patch and then I think sched_smt_weight only exists in core.c
+
 -- 
-2.7.4
-
+Mel Gorman
+SUSE Labs
