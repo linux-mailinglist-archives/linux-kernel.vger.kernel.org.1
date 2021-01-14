@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416062F6794
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 160C02F67A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729103AbhANR0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:26:37 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:30618 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728974AbhANR0f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:26:35 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610645175; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=XM1YMfBnE8uyWCbYGW+mzahVhM+v5GtXtGEBuN14Zpo=;
- b=mjFBaAgjDVnT8cW2GvK2MF7m5u4RRYFwpPG+RKT68IgbAU7E71SQu3gdNerobho/4EG7uyUQ
- YdiKvoYrZ6EIXeUkZtnFbD1IuEQ+0OFJ3ietdQNHXL5Hc9yPeHofTtEMq8Zovnd3uvEW2XaE
- gZpwizfmzthT9t6IQeibtzqhqn8=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60007e91d84bad3547b046b8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 17:25:37
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 84AF2C433ED; Thu, 14 Jan 2021 17:25:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9FB97C433CA;
-        Thu, 14 Jan 2021 17:25:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9FB97C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1727922AbhANR2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:28:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725922AbhANR2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 12:28:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4826723A5E;
+        Thu, 14 Jan 2021 17:27:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610645263;
+        bh=ITs7F4lqta8MNkgno+KVjF2E/zblSqUUxsnFH+SrTmY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B6DKp6AX06cKi/42m46sSHa6WUMWFLBsrcK8AopCQsEP3ZoA2ZdBujb04UqwL+y+v
+         i9r1gW16WMCtWzpwpYXWtwfiky8cGFMYhSdFMxU7i0y1PtFe6AuIAMvhxYhE6OwGiu
+         yspb+meObp+PVa0do2++76a4yZfDG/Ah/gdL32MJdYA33ka4gAJI0YsXdXlMql35Y/
+         tArgl+0HSNjXxqHhoAOtpKa8qmJ17nWAY1KbSYKzaI74wacgdGdjdJfyhmmhmEC6Ib
+         i05lzhHRfW2WAx2aJ/of4b59PaXo4tsFXAKI48k9CBe3lvPiH0c8sQDSwpy+dVZ7zJ
+         UBdPM4cp5IPuQ==
+Date:   Thu, 14 Jan 2021 17:27:10 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     jagan@amarulasolutions.com, lgirdwood@gmail.com,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 3/6] regulator: dt-bindings: pf8x00: mark nxp,ilim-ma
+ property as deprecated
+Message-ID: <20210114172710.GJ4854@sirena.org.uk>
+References: <20210113222016.1915993-1-adrien.grassein@gmail.com>
+ <20210113222016.1915993-4-adrien.grassein@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH wireless -next] rtw88: Delete useless kfree code
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201216130442.13869-1-zhengyongjun3@huawei.com>
-References: <20201216130442.13869-1-zhengyongjun3@huawei.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     <tony0620emma@gmail.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210114172537.84AF2C433ED@smtp.codeaurora.org>
-Date:   Thu, 14 Jan 2021 17:25:37 +0000 (UTC)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="P6YfpwaDcfcOCJkJ"
+Content-Disposition: inline
+In-Reply-To: <20210113222016.1915993-4-adrien.grassein@gmail.com>
+X-Cookie: You have taken yourself too seriously.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
 
-> The parameter of kfree function is NULL, so kfree code is useless, delete it.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+--P6YfpwaDcfcOCJkJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Patch applied to wireless-drivers-next.git, thanks.
+On Wed, Jan 13, 2021 at 11:20:13PM +0100, Adrien Grassein wrote:
+> +++ b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+> @@ -64,6 +64,8 @@ properties:
+>              maximum: 4500
+>              description:
+>                BUCK regulators current limit in mA.
+> +              This property is deprecated, please use
+> +              "regulator-max-microamp" instead.
 
-8873e8f56f74 rtw88: Delete useless kfree code
+I since found that you can flag things as deprecatedby setting the
+property to "deprecated: true" - I think it's useful to keep the text
+here since it provides a pointer to what should be used instead though,
+please send an incremental patch for deprecated: true.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201216130442.13869-1-zhengyongjun3@huawei.com/
+--P6YfpwaDcfcOCJkJ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAAfu0ACgkQJNaLcl1U
+h9AKpwf/dECLRa38dd2us5TPfR3PJJGYVpmNW9uFILRAvVwFJVmBo4DoT/xVzGTL
+WeIC6EjrHggrJY+XECsARz0ZhtdV9swSYSYhw/JoL6+EtY+j8k4aYt9jUmmTJaa3
+Qr48CkEfQh/JQs/cbq0XQSMWjyPTYO2qXX+UeNqSioewblF5t8P/8uOsRwirNPAl
+t6N+TV7oEARe4qbKqeaqFcMNp7Q0g+mT/Q0J9xNf3IteMnBRlgFjEg0609uW9Zjb
+M91A6rMddT8qBytdhalqnJGypz7Z16kZRW9wVyvsJbVhQ8w9oabjJNHkaKrhumeI
+A3O8hrwzEuu1ZFHpLRU/HSk0qUOAUQ==
+=Efv+
+-----END PGP SIGNATURE-----
+
+--P6YfpwaDcfcOCJkJ--
