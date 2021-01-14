@@ -2,140 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24F52F60D8
+	by mail.lfdr.de (Postfix) with ESMTP id 22BE02F60D7
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728657AbhANMNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 07:13:18 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:52680 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbhANMNR (ORCPT
+        id S1728362AbhANMNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 07:13:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726643AbhANMNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 07:13:17 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10ECAAQp153199;
-        Thu, 14 Jan 2021 12:12:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : mime-version :
- content-type; s=corp-2020-01-29;
- bh=w9+dNPCu+MdawUc3ua+vPpypVjNaP2LE91fqALsojHU=;
- b=v8l5N5tsQ8hxgO+7sQn0E+GP24QKWejwxI8DBKu4LnM+vDnsasBL8UOa+yGUUH8TRrzr
- l9rL6hhklVo+X+UN4zuoAoOblPbH3C7U5mB8Ldserk4gdTPBbtpbfdhVvn47TSc5sO+L
- 1PUwN/F57ZZfTRZEezJpHa4rgy0F9dhnlHgNGwVx7krJcvHJ8zSSnZTj9Z59nlSQmBBa
- PAMRHI3vzrVPyTdl8Re1k20caNIxP0P6Qojdc0z436eVpjNE+uhkN/yoPQlVJWdmoYVE
- dXjDYUds6zb1aB9gCXxjX8ZTXift0E9Je5/oKDtKde6CC6Ir2OMG3y3kl0Yy+AXkeohQ ng== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 360kg1yyv8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Jan 2021 12:12:18 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10EC6DQX078979;
-        Thu, 14 Jan 2021 12:12:17 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 360kf24maa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Jan 2021 12:12:17 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10ECCEuM013458;
-        Thu, 14 Jan 2021 12:12:15 GMT
-Received: from starbug-mbp.localdomain (/79.97.215.145)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 14 Jan 2021 04:12:14 -0800
-Received: by starbug-mbp.localdomain (Postfix, from userid 501)
-        id A3F982DC3650; Thu, 14 Jan 2021 12:12:12 +0000 (GMT)
-From:   Darren Kenny <darren.kenny@oracle.com>
-To:     Sami Tolvanen <samitolvanen@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: Re: [PATCH] x86/sgx: fix the return type of sgx_init
-In-Reply-To: <20210113232311.277302-1-samitolvanen@google.com>
-References: <20210113232311.277302-1-samitolvanen@google.com>
-Date:   Thu, 14 Jan 2021 12:12:12 +0000
-Message-ID: <m2zh1bvhsz.fsf@oracle.com>
+        Thu, 14 Jan 2021 07:13:01 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03276C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 04:12:20 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id r5so5419909eda.12
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 04:12:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=P2H8xNGc4qJjyWrW7BK3wR5WxGbN+9v4i3sVmePnfdE=;
+        b=qMLy+ue3L/NM69Ol9TI3ZSSVmVKPOMO6YNgiEAQtzybxn52dP1iSLfrwnF0VVjSmeV
+         uIpoY04/TZfYrH1zfFtU1KNSLajFK4GqtcClTQ8RBvxE/qRLUuPoy1ib75cWJh2imf0A
+         B1Ted8JpNVGFaAwjqNdJOSnsTeFQKAM8AtB9Gx/ohrN4NllXpXfNUToQQ4myy7fG9MAp
+         +6IKatovaFOxcKoLgrKDTUj2hXQmE5bfg3baGss1KsIPdk5FNqTEQZj9wuF5LmLgyDLS
+         tXEJI9E9dy+29PSqNwSYuaUELcfwI+YSgT0yI+aV5M0LAkWscooDcShjl2u+moQITwIr
+         GxkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=P2H8xNGc4qJjyWrW7BK3wR5WxGbN+9v4i3sVmePnfdE=;
+        b=RbAHIOzIs5eMs64NJGoYiMrZWayM35JgR8grrt5GPzLp5741xzVmrgTkXgYpDlL1rm
+         EBqPleGUEM9eam6t3iPiEqVtO6ZpW/PkW2K1WbQZ3xqvaeWZD1mZHYIQNZ+ysfLOBMvK
+         KJjjmEgvYieY7vkE+ro2by7xMFORTKxrdvstTPRA/brTF00dU6QZ20TBHAaFomrvoYRw
+         fYUGMiQb1z2qPiOUcnkr50saynVu1YVd9dqmVSHXRNQO9txLeUGGC3gQnkEpJXmM2Kvb
+         i8b8szYlVck30BlKoUIqydwrPn+wspQ8JXUeBJTQggVe7TcznSQUJn34nug+YcpNEDi8
+         7wKA==
+X-Gm-Message-State: AOAM530tqkgB8vtHHNO8Vf9SJtre4GYWUwj+oiJ+q3hIHusSbXr08FNT
+        hpp5VUQR6G18E6xEeGSk/3jgFj3SrP9Mijuq
+X-Google-Smtp-Source: ABdhPJwq7W1Mc96HpphlbK5qRA13EecL/9ShigsyCyGuL2nFxYbOb6v/X8VQd0eeDiaHPLr6cVOGtQ==
+X-Received: by 2002:a05:6402:1646:: with SMTP id s6mr5474103edx.319.1610626339388;
+        Thu, 14 Jan 2021 04:12:19 -0800 (PST)
+Received: from [192.168.0.105] (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id t15sm2138323eds.38.2021.01.14.04.12.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Jan 2021 04:12:18 -0800 (PST)
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Robert Richter <rric@kernel.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Arnd Bergmann <arnd@kernel.org>, oprofile-list@lists.sf.net,
+        William Cohen <wcohen@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        anmar.oueja@linaro.org, Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org
+References: <cover.1610622251.git.viresh.kumar@linaro.org>
+ <592887f3a5baf0d2b2919617757f1f629aa4030b.1610622251.git.viresh.kumar@linaro.org>
+From:   Michal Simek <monstr@monstr.eu>
+Subject: Re: [PATCH 07/18] arch: microblaze: Remove CONFIG_OPROFILE support
+Message-ID: <4afa1d09-cdd4-44a1-2fa2-1f6ca5657ef6@monstr.eu>
+Date:   Thu, 14 Jan 2021 13:12:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9863 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101140072
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9863 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- clxscore=1011 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101140072
+In-Reply-To: <592887f3a5baf0d2b2919617757f1f629aa4030b.1610622251.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, 2021-01-13 at 15:23:11 -08, Sami Tolvanen wrote:
-> device_initcall() expects a function of type initcall_t, which returns
-> an integer. Change the signature of sgx_init() to match.
->
-> Fixes: e7e0545299d8c ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-Makes sense.
 
-Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
-
+On 14. 01. 21 12:35, Viresh Kumar wrote:
+> The "oprofile" user-space tools don't use the kernel OPROFILE support
+> any more, and haven't in a long time. User-space has been converted to
+> the perf interfaces.
+> 
+> Remove the old oprofile's architecture specific support.
+> 
+> Suggested-by: Christoph Hellwig <hch@infradead.org>
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->  arch/x86/kernel/cpu/sgx/main.c | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> index c519fc5f6948..8df81a3ed945 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -700,25 +700,27 @@ static bool __init sgx_page_cache_init(void)
->  	return true;
->  }
+>  arch/microblaze/Kconfig                       |  1 -
+>  arch/microblaze/Makefile                      |  2 --
+>  arch/microblaze/oprofile/Makefile             | 14 ------------
+>  .../microblaze/oprofile/microblaze_oprofile.c | 22 -------------------
+>  4 files changed, 39 deletions(-)
+>  delete mode 100644 arch/microblaze/oprofile/Makefile
+>  delete mode 100644 arch/microblaze/oprofile/microblaze_oprofile.c
+> 
+> diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
+> index f82795592ce5..25a5a3fb14aa 100644
+> --- a/arch/microblaze/Kconfig
+> +++ b/arch/microblaze/Kconfig
+> @@ -30,7 +30,6 @@ config MICROBLAZE
+>  	select HAVE_FTRACE_MCOUNT_RECORD
+>  	select HAVE_FUNCTION_GRAPH_TRACER
+>  	select HAVE_FUNCTION_TRACER
+> -	select HAVE_OPROFILE
+>  	select HAVE_PCI
+>  	select IRQ_DOMAIN
+>  	select XILINX_INTC
+> diff --git a/arch/microblaze/Makefile b/arch/microblaze/Makefile
+> index bb980891816d..b41f323e1fde 100644
+> --- a/arch/microblaze/Makefile
+> +++ b/arch/microblaze/Makefile
+> @@ -54,8 +54,6 @@ core-y += arch/microblaze/kernel/
+>  core-y += arch/microblaze/mm/
+>  core-$(CONFIG_PCI) += arch/microblaze/pci/
 >  
-> -static void __init sgx_init(void)
-> +static int __init sgx_init(void)
->  {
->  	int ret;
->  	int i;
+> -drivers-$(CONFIG_OPROFILE) += arch/microblaze/oprofile/
+> -
+>  boot := arch/microblaze/boot
 >  
->  	if (!cpu_feature_enabled(X86_FEATURE_SGX))
-> -		return;
-> +		return -ENODEV;
->  
->  	if (!sgx_page_cache_init())
-> -		return;
-> +		return -ENOMEM;
->  
-> -	if (!sgx_page_reclaimer_init())
-> +	if (!sgx_page_reclaimer_init()) {
-> +		ret = -ENOMEM;
->  		goto err_page_cache;
-> +	}
->  
->  	ret = sgx_drv_init();
->  	if (ret)
->  		goto err_kthread;
->  
-> -	return;
-> +	return 0;
->  
->  err_kthread:
->  	kthread_stop(ksgxd_tsk);
-> @@ -728,6 +730,8 @@ static void __init sgx_init(void)
->  		vfree(sgx_epc_sections[i].pages);
->  		memunmap(sgx_epc_sections[i].virt_addr);
->  	}
-> +
-> +	return ret;
->  }
->  
->  device_initcall(sgx_init);
->
-> base-commit: 65f0d2414b7079556fbbcc070b3d1c9f9587606d
-> -- 
-> 2.30.0.284.gd98b1dd5eaa7-goog
+>  # Are we making a simpleImage.<boardname> target? If so, crack out the boardname
+> diff --git a/arch/microblaze/oprofile/Makefile b/arch/microblaze/oprofile/Makefile
+> deleted file mode 100644
+> index 107f2f55d995..000000000000
+> --- a/arch/microblaze/oprofile/Makefile
+> +++ /dev/null
+> @@ -1,14 +0,0 @@
+> -# SPDX-License-Identifier: GPL-2.0
+> -#
+> -# arch/microblaze/oprofile/Makefile
+> -#
+> -
+> -obj-$(CONFIG_OPROFILE) += oprofile.o
+> -
+> -DRIVER_OBJS := $(addprefix ../../../drivers/oprofile/, \
+> -		oprof.o cpu_buffer.o buffer_sync.o \
+> -		event_buffer.o oprofile_files.o \
+> -		oprofilefs.o oprofile_stats.o \
+> -		timer_int.o )
+> -
+> -oprofile-y := $(DRIVER_OBJS) microblaze_oprofile.o
+> diff --git a/arch/microblaze/oprofile/microblaze_oprofile.c b/arch/microblaze/oprofile/microblaze_oprofile.c
+> deleted file mode 100644
+> index def17e59888e..000000000000
+> --- a/arch/microblaze/oprofile/microblaze_oprofile.c
+> +++ /dev/null
+> @@ -1,22 +0,0 @@
+> -/*
+> - * Microblaze oprofile code
+> - *
+> - * Copyright (C) 2009 Michal Simek <monstr@monstr.eu>
+> - * Copyright (C) 2009 PetaLogix
+> - *
+> - * This file is subject to the terms and conditions of the GNU General Public
+> - * License. See the file "COPYING" in the main directory of this archive
+> - * for more details.
+> - */
+> -
+> -#include <linux/oprofile.h>
+> -#include <linux/init.h>
+> -
+> -int __init oprofile_arch_init(struct oprofile_operations *ops)
+> -{
+> -	return -1;
+> -}
+> -
+> -void oprofile_arch_exit(void)
+> -{
+> -}
+> 
+
+Acked-by: Michal Simek <michal.simek@xilinx.com>
+
+Thanks,
+Michal
+
+-- 
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+
+
+
