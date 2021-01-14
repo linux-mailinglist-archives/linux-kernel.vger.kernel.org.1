@@ -2,115 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F882F5917
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E84F2F591A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:32:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727759AbhANDPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 22:15:53 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:34409 "EHLO
+        id S1727882AbhANDP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 22:15:58 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:58705 "EHLO
         out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725871AbhANDPw (ORCPT
+        by vger.kernel.org with ESMTP id S1727768AbhANDPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 22:15:52 -0500
+        Wed, 13 Jan 2021 22:15:54 -0500
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id A9F205C01EE;
-        Wed, 13 Jan 2021 22:14:45 -0500 (EST)
+        by mailout.nyi.internal (Postfix) with ESMTP id 8FF3E5C01E5;
+        Wed, 13 Jan 2021 22:14:48 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 13 Jan 2021 22:14:45 -0500
+  by compute3.internal (MEProxy); Wed, 13 Jan 2021 22:14:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
-        :to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=XoOzQyq8r+J+/QRDndikLwkl6s
-        ZOoTHhqppNgPXoevU=; b=UBHJKtHUDXgkUai/PtA8gu7oTanN3OWM5YAC+RVCOr
-        7NFzNPTnp9LmG8oDdBD3mX32TRwHfMZ6I5XrPCJAa9/A/9CsNEh+5p0rJ8BcnGdn
-        LlRmpfCaUpkC7RMhFZPxsQHPsylcSPYnldxuxkSvrrRpOuO65icFsrXcVSYNY533
-        5AO/Ze6JF8XNFMHdBdsg47HUWelrePeurn31KrP7KEELcz7w7TsHCHm0W8GvZIYI
-        l0xO0pOSIPqbpvC6rVSKkjcmJR2B7AE5lLHZ8+i4mB8uZkW8DR/ei1P4qD0xLHNU
-        pvnMM/E/+4E3lptiRh0fHIZZf/fzYR2rZcZ+hzJRkFrw==
+        :to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm1; bh=KSRPuSjoX18Mr
+        PCxVgf/9kBU5TXFu4khlyApjlCo9JI=; b=cNZBRnuOBN7WbiuP7Wt5mvNJbZ5nt
+        2vXJlNzZ91e2+gLpQtYxXE3ekUauzhgW4ZQEERfhz0Ez21uX2lc2UpTbfQD3j+HY
+        jjp4YCBcNQGftApHTwYvmAvVoSks9lTLjcltkF+xl93qky1nJKjnA4luQy8rNaIS
+        6lA+1LGtlwo7w3JvytSX296SIw8MxRl5LoImQY/3isIG8fQZgClVh6B8jXZaMsDv
+        3lDK28WXOc0JriNba4LgQC6zBPNOrE6/6cwvwtaIqTott43hEbPPO4FO3WlMQiDl
+        x5TCEv1BTJkpuErKfwIDjJqPc8XTMbItxGznKdkZZMW+JAJu+Gwdin7gQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=XoOzQyq8r+J+/QRDn
-        dikLwkl6sZOoTHhqppNgPXoevU=; b=Ok63H03HL9rGeiuzlM2TsCaXexYGhoWOD
-        q+/3FWObErqnoE2msODrP+4gYr5EzTxZM+yViMGl4BBkac+3i+5/p9I3DW6REmVB
-        z3tAD+2HSObrtdj2YL/0r91EKSWUX28pr9x3f+Y2Yyxjk/4qwsAP6gN1gBPGY8EO
-        rfpSJfAguTLWgiGFKsHxsfqLGDoKZaWA7/vP61wZCaaQOjhnTv75utUn0Nv3a/DF
-        zsVhCKd4SyBsvvTcb6hibKG0R9at7auaUDj1j1RRoa58j28CgxIKOJaBzKFY+R26
-        Mw28NpnSOExM/jWFHzPJk0p0g/dF4YpYGN08yRC/hXvEbGjswtEVg==
-X-ME-Sender: <xms:JLf_X1pmuVXqfxZN_FYlJQ1Umr9ldt4U9ND4zSwsX7YelvKmWejIyg>
-    <xme:JLf_X3qM08AFZV2xT1x5_GCPRg4kdAvZZ3SS3fzs6yeoWKRwFFHPrbdaKuy9afH8D
-    _Nt4QsSHdiOSLJWsQ>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=KSRPuSjoX18MrPCxVgf/9kBU5TXFu4khlyApjlCo9JI=; b=fwa7iDCg
+        /sWoYPo1k4pEg+ZxyU9/WzYT9XwOB2linVob98VQhJ/IwCDjgDWgaMHtc6X0M0Ih
+        jVZ21w97Ex4njZhaUbZ1Aj3NLn8P+Ugc2c4hO5r2QZyQdvi5tZiGQEUdqtz9lNyY
+        RMG9ohLN8vAd3g8nX9DW69cZbBD5JSljd3YATMrcqKQ6XWawEDI8bX+QjO0GVDWB
+        ghE7MyuBx2hj0sW+TvfZ6oFeimfIMXzTaBySC7ZOuoIW6rsze2Ae815lTBhmWjVi
+        24J81hhsNzYO7CCiUkevfpc3T8VUSNVRu7ZK847+jyIR/Rn6CbX++dIqQJmy6Ll/
+        YiU4LW0prvy6+A==
+X-ME-Sender: <xms:KLf_X0qrKcUc4R8hK5VCCdbf2wsQYx5qCGCkgOo6kNniQN7BgmsnGA>
+    <xme:KLf_X6qG0L7tAuiV_kowpNHA__Nzx3xzVxHjhk1iUP8tj-ysjLPRfL970zhZN6Wk2
+    lK6Z1ZtsTzLpnKWrg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtdeggdehjecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpeetnhgurhgvficulfgvfhhfvghrhicuoegrnhgurhgvfiesrghjrdhi
-    ugdrrghuqeenucggtffrrghtthgvrhhnpeeiteehudevlefhvddvjeeluefhleetveehff
-    fgiedtfeegkeejfeeivefgheehgfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecu
-    kfhppeduudekrddvuddtrddujeefrdegkeenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:JLf_XyPEIG6VSysiwhelSYTu6ZUVY1WWPTs9HJnp9lHAUxYnrWPCVA>
-    <xmx:JLf_Xw5hUsMIISEPHoaE83mvOdMQZuHAYP3h9mj7RzLAZXceJsKNzQ>
-    <xmx:JLf_X06rcQateijtP5RaP5P2M5O8C8Iddu_4_dhULx8zNx7K5wE00w>
-    <xmx:Jbf_XzYpgfZVndtwnFaO0szdX7IVvJu1uRYAau8Vj1jGHKpdWzWVrA>
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
+    ertddtnecuhfhrohhmpeetnhgurhgvficulfgvfhhfvghrhicuoegrnhgurhgvfiesrghj
+    rdhiugdrrghuqeenucggtffrrghtthgvrhhnpeejgfdvveehteekveeggeellefgleette
+    ejffelffdvudduveeiffegteelvefhteenucfkphepuddukedrvddutddrudejfedrgeek
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghnug
+    hrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:KLf_X5Nq3h8tpreqeKEXqLpnius4wcj_lWsewtN1DLhScpUxb_aHIw>
+    <xmx:KLf_X77e2mPRqm-G_8YJ3vXQpHQmRs6amMxl_Nur_lYOnsNy6LBa7w>
+    <xmx:KLf_Xz5Pu3_L1mB-zuGJX-Cz_YtXoenOwMIjJ2cEQOJGyUd0rpj5pA>
+    <xmx:KLf_X2YPccu3L1ZcxpsoCrbKNbEerS7CdGkY9hJ0dYkWrm2YvPZm9g>
 Received: from localhost.localdomain (ppp118-210-173-48.adl-adc-lon-bras34.tpg.internode.on.net [118.210.173.48])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B254124005C;
-        Wed, 13 Jan 2021 22:14:41 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 63634240057;
+        Wed, 13 Jan 2021 22:14:45 -0500 (EST)
 From:   Andrew Jeffery <andrew@aj.id.au>
 To:     linux-mmc@vger.kernel.org
 Cc:     ulf.hansson@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
         adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-aspeed@lists.ozlabs.org, ryan_chen@aspeedtech.com
-Subject: [PATCH v7 0/6] mmc: sdhci-of-aspeed: Expose phase delay tuning
-Date:   Thu, 14 Jan 2021 13:44:27 +1030
-Message-Id: <20210114031433.2388532-1-andrew@aj.id.au>
+Subject: [PATCH v7 1/6] mmc: core: Add helper for parsing clock phase properties
+Date:   Thu, 14 Jan 2021 13:44:28 +1030
+Message-Id: <20210114031433.2388532-2-andrew@aj.id.au>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210114031433.2388532-1-andrew@aj.id.au>
+References: <20210114031433.2388532-1-andrew@aj.id.au>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Drivers for MMC hosts that accept phase corrections can take advantage
+of the helper by embedding an instance of struct mmc_clk_phase_map in
+their private data and invoking mmc_of_parse_clk_phase() to extract
+phase parameters. It is the responsibility of the host driver to
+translate and apply the extracted values to hardware as required.
 
-This series implements support for the MMC core clk-phase-* devicetree bindings
-in the Aspeed SD/eMMC driver. The relevant register was exposed on the AST2600
-and is present for both the SD/MMC controller and the dedicated eMMC
-controller.
+Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+---
+ drivers/mmc/core/host.c  | 44 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mmc/host.h | 13 ++++++++++++
+ 2 files changed, 57 insertions(+)
 
-v7 is just a small change to the the kunit testing in response to Adrian's
-feedback.
-
-I've just done a quick build test of v7 given the small change and more
-extensive testing done with v5. 
-
-v6 can be found here:
-
-https://lore.kernel.org/linux-mmc/20201218035338.1130849-1-andrew@aj.id.au/
-
-Please review!
-
-Cheers,
-
-Andrew
-
-Andrew Jeffery (6):
-  mmc: core: Add helper for parsing clock phase properties
-  mmc: sdhci-of-aspeed: Expose clock phase controls
-  mmc: sdhci-of-aspeed: Add AST2600 bus clock support
-  mmc: sdhci-of-aspeed: Add KUnit tests for phase calculations
-  MAINTAINERS: Add entry for the ASPEED SD/MMC driver
-  ARM: dts: rainier: Add eMMC clock phase compensation
-
- MAINTAINERS                                  |   9 +
- arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts |   1 +
- drivers/mmc/core/host.c                      |  44 ++++
- drivers/mmc/host/Kconfig                     |  14 +
- drivers/mmc/host/sdhci-of-aspeed-test.c      |  98 +++++++
- drivers/mmc/host/sdhci-of-aspeed.c           | 255 ++++++++++++++++++-
- include/linux/mmc/host.h                     |  13 +
- 7 files changed, 423 insertions(+), 11 deletions(-)
- create mode 100644 drivers/mmc/host/sdhci-of-aspeed-test.c
-
+diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
+index 96b2ca1f1b06..74e853bb6948 100644
+--- a/drivers/mmc/core/host.c
++++ b/drivers/mmc/core/host.c
+@@ -163,6 +163,50 @@ static void mmc_retune_timer(struct timer_list *t)
+ 	mmc_retune_needed(host);
+ }
+ 
++static void mmc_of_parse_timing_phase(struct device *dev, const char *prop,
++				      struct mmc_clk_phase *phase)
++{
++	int degrees[2] = {0};
++	int rc;
++
++	rc = device_property_read_u32_array(dev, prop, degrees, 2);
++	phase->valid = !rc;
++	if (phase->valid) {
++		phase->in_deg = degrees[0];
++		phase->out_deg = degrees[1];
++	}
++}
++
++void
++mmc_of_parse_clk_phase(struct mmc_host *host, struct mmc_clk_phase_map *map)
++{
++	struct device *dev = host->parent;
++
++	mmc_of_parse_timing_phase(dev, "clk-phase-legacy",
++				  &map->phase[MMC_TIMING_LEGACY]);
++	mmc_of_parse_timing_phase(dev, "clk-phase-mmc-hs",
++				  &map->phase[MMC_TIMING_MMC_HS]);
++	mmc_of_parse_timing_phase(dev, "clk-phase-sd-hs",
++				  &map->phase[MMC_TIMING_SD_HS]);
++	mmc_of_parse_timing_phase(dev, "clk-phase-uhs-sdr12",
++				  &map->phase[MMC_TIMING_UHS_SDR12]);
++	mmc_of_parse_timing_phase(dev, "clk-phase-uhs-sdr25",
++				  &map->phase[MMC_TIMING_UHS_SDR25]);
++	mmc_of_parse_timing_phase(dev, "clk-phase-uhs-sdr50",
++				  &map->phase[MMC_TIMING_UHS_SDR50]);
++	mmc_of_parse_timing_phase(dev, "clk-phase-uhs-sdr104",
++				  &map->phase[MMC_TIMING_UHS_SDR104]);
++	mmc_of_parse_timing_phase(dev, "clk-phase-uhs-ddr50",
++				  &map->phase[MMC_TIMING_UHS_DDR50]);
++	mmc_of_parse_timing_phase(dev, "clk-phase-mmc-ddr52",
++				  &map->phase[MMC_TIMING_MMC_DDR52]);
++	mmc_of_parse_timing_phase(dev, "clk-phase-mmc-hs200",
++				  &map->phase[MMC_TIMING_MMC_HS200]);
++	mmc_of_parse_timing_phase(dev, "clk-phase-mmc-hs400",
++				  &map->phase[MMC_TIMING_MMC_HS400]);
++}
++EXPORT_SYMBOL(mmc_of_parse_clk_phase);
++
+ /**
+  *	mmc_of_parse() - parse host's device-tree node
+  *	@host: host whose node should be parsed.
+diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+index 01bba36545c5..8cf686d98a68 100644
+--- a/include/linux/mmc/host.h
++++ b/include/linux/mmc/host.h
+@@ -79,6 +79,17 @@ struct mmc_ios {
+ 	bool enhanced_strobe;			/* hs400es selection */
+ };
+ 
++struct mmc_clk_phase {
++	bool valid;
++	u16 in_deg;
++	u16 out_deg;
++};
++
++#define MMC_NUM_CLK_PHASES (MMC_TIMING_MMC_HS400 + 1)
++struct mmc_clk_phase_map {
++	struct mmc_clk_phase phase[MMC_NUM_CLK_PHASES];
++};
++
+ struct mmc_host;
+ 
+ struct mmc_host_ops {
+@@ -490,6 +501,8 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *);
+ int mmc_add_host(struct mmc_host *);
+ void mmc_remove_host(struct mmc_host *);
+ void mmc_free_host(struct mmc_host *);
++void mmc_of_parse_clk_phase(struct mmc_host *host,
++			    struct mmc_clk_phase_map *map);
+ int mmc_of_parse(struct mmc_host *host);
+ int mmc_of_parse_voltage(struct device_node *np, u32 *mask);
+ 
 -- 
 2.27.0
 
