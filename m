@@ -2,173 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38AC62F60FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 841312F6111
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728712AbhANMSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 07:18:53 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10657 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727255AbhANMSx (ORCPT
+        id S1726687AbhANMdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 07:33:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58679 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726175AbhANMdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 07:18:53 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DGjx012GHz15t0F;
-        Thu, 14 Jan 2021 20:17:08 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Thu, 14 Jan 2021
- 20:18:03 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH] bfq: don't check active group if bfq.weight is not changed
-Date:   Thu, 14 Jan 2021 20:24:26 +0800
-Message-ID: <20210114122426.603813-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <b4163392-0462-ff6f-b958-1f96f33d69e6@huawei.com>
-References: <b4163392-0462-ff6f-b958-1f96f33d69e6@huawei.com>
+        Thu, 14 Jan 2021 07:33:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610627531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kqjCszUFLRFHXNLR1FXDgMu2Y+ZUpN6PZwYGZFX1IhM=;
+        b=DZefossTQAsIf7xalPhclQdB91+Ne732Ey5Y4VQ7PGtP5A0dc28Y8Zzz7LicEZcz6Tazkv
+        yxwmG/sBuq5EhDUomISzhmHIEn69GUNpSIt+M4A0bPgM7N5KQh3b7Wt2IZB5mbQ3qXnG53
+        spmQfFhg74/ofhKIEXal8668sJfmmns=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-181-r1hy61doMz-IppyJS0ejYQ-1; Thu, 14 Jan 2021 07:32:07 -0500
+X-MC-Unique: r1hy61doMz-IppyJS0ejYQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF005107ACF7;
+        Thu, 14 Jan 2021 12:32:05 +0000 (UTC)
+Received: from [10.36.115.75] (ovpn-115-75.ams2.redhat.com [10.36.115.75])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6C8B060C64;
+        Thu, 14 Jan 2021 12:32:04 +0000 (UTC)
+Subject: Re: [PATCH] mm/hugetlb: avoid unnecessary hugetlb_acct_memory() call
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org,
+        mike.kravetz@oracle.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210114113140.23069-1-linmiaohe@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <853d6aa4-b84c-7ac2-00d4-402893fcf6b3@redhat.com>
+Date:   Thu, 14 Jan 2021 13:32:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210114113140.23069-1-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now the group scheduling in BFQ depends on the check of active group,
-but in most cases group scheduling is not used and the checking
-of active group will cause bfq_asymmetric_scenario() and its caller
-bfq_better_to_idle() to always return true, so the throughput
-will be impacted if the workload doesn't need idle (e.g. random rw)
+On 14.01.21 12:31, Miaohe Lin wrote:
+> When gbl_reserve is 0, hugetlb_acct_memory() will do nothing except holding
+> and releasing hugetlb_lock.
 
-To fix that, adding check in bfq_io_set_weight_legacy() and
-bfq_pd_init() to check whether or not group scheduling is used
-(a non-default weight is used). If not, there is no need
-to check active group.
+So, what's the deal then? Adding more code?
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/bfq-cgroup.c  | 14 ++++++++++++--
- block/bfq-iosched.c |  8 +++-----
- block/bfq-iosched.h | 19 +++++++++++++++++++
- 3 files changed, 34 insertions(+), 7 deletions(-)
+If this is a performance improvement, we should spell it out. Otherwise
+I don't see a real benefit of this patch.
 
-diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index b791e2041e49..b4ac42c4bd9f 100644
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -505,12 +505,18 @@ static struct blkcg_policy_data *bfq_cpd_alloc(gfp_t gfp)
- 	return &bgd->pd;
- }
- 
-+static inline int bfq_dft_weight(void)
-+{
-+	return cgroup_subsys_on_dfl(io_cgrp_subsys) ?
-+	       CGROUP_WEIGHT_DFL : BFQ_WEIGHT_LEGACY_DFL;
-+
-+}
-+
- static void bfq_cpd_init(struct blkcg_policy_data *cpd)
- {
- 	struct bfq_group_data *d = cpd_to_bfqgd(cpd);
- 
--	d->weight = cgroup_subsys_on_dfl(io_cgrp_subsys) ?
--		CGROUP_WEIGHT_DFL : BFQ_WEIGHT_LEGACY_DFL;
-+	d->weight = bfq_dft_weight();
- }
- 
- static void bfq_cpd_free(struct blkcg_policy_data *cpd)
-@@ -554,6 +560,9 @@ static void bfq_pd_init(struct blkg_policy_data *pd)
- 	bfqg->bfqd = bfqd;
- 	bfqg->active_entities = 0;
- 	bfqg->rq_pos_tree = RB_ROOT;
-+
-+	if (entity->new_weight != bfq_dft_weight())
-+		bfqd_enable_active_group_check(bfqd);
- }
- 
- static void bfq_pd_free(struct blkg_policy_data *pd)
-@@ -1013,6 +1022,7 @@ static void bfq_group_set_weight(struct bfq_group *bfqg, u64 weight, u64 dev_wei
- 		 */
- 		smp_wmb();
- 		bfqg->entity.prio_changed = 1;
-+		bfqd_enable_active_group_check(bfqg->bfqd);
- 	}
- }
- 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 9e4eb0fc1c16..1b695de1df95 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -699,11 +699,8 @@ static bool bfq_asymmetric_scenario(struct bfq_data *bfqd,
- 		(bfqd->busy_queues[0] && bfqd->busy_queues[2]) ||
- 		(bfqd->busy_queues[1] && bfqd->busy_queues[2]);
- 
--	return varied_queue_weights || multiple_classes_busy
--#ifdef CONFIG_BFQ_GROUP_IOSCHED
--	       || bfqd->num_groups_with_pending_reqs > 0
--#endif
--		;
-+	return varied_queue_weights || multiple_classes_busy ||
-+	       bfqd_has_active_group(bfqd);
- }
- 
- /*
-@@ -6472,6 +6469,7 @@ static int bfq_init_queue(struct request_queue *q, struct elevator_type *e)
- 
- 	bfqd->queue_weights_tree = RB_ROOT_CACHED;
- 	bfqd->num_groups_with_pending_reqs = 0;
-+	bfqd->check_active_group = false;
- 
- 	INIT_LIST_HEAD(&bfqd->active_list);
- 	INIT_LIST_HEAD(&bfqd->idle_list);
-diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-index 703895224562..216509013012 100644
---- a/block/bfq-iosched.h
-+++ b/block/bfq-iosched.h
-@@ -524,6 +524,8 @@ struct bfq_data {
- 
- 	/* true if the device is non rotational and performs queueing */
- 	bool nonrot_with_queueing;
-+	/* true if need to check num_groups_with_pending_reqs */
-+	bool check_active_group;
- 
- 	/*
- 	 * Maximum number of requests in driver in the last
-@@ -1066,6 +1068,17 @@ static inline void bfq_pid_to_str(int pid, char *str, int len)
- }
- 
- #ifdef CONFIG_BFQ_GROUP_IOSCHED
-+static inline void bfqd_enable_active_group_check(struct bfq_data *bfqd)
-+{
-+	cmpxchg_relaxed(&bfqd->check_active_group, false, true);
-+}
-+
-+static inline bool bfqd_has_active_group(struct bfq_data *bfqd)
-+{
-+	return bfqd->check_active_group &&
-+	       bfqd->num_groups_with_pending_reqs > 0;
-+}
-+
- struct bfq_group *bfqq_group(struct bfq_queue *bfqq);
- 
- #define bfq_log_bfqq(bfqd, bfqq, fmt, args...)	do {			\
-@@ -1085,6 +1098,12 @@ struct bfq_group *bfqq_group(struct bfq_queue *bfqq);
- } while (0)
- 
- #else /* CONFIG_BFQ_GROUP_IOSCHED */
-+static inline void bfqd_enable_active_group_check(struct bfq_data *bfqd) {}
-+
-+static inline bool bfqd_has_active_group(struct bfq_data *bfqd)
-+{
-+	return false;
-+}
- 
- #define bfq_log_bfqq(bfqd, bfqq, fmt, args...) do {	\
- 	char pid_str[MAX_PID_STR_LENGTH];	\
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  mm/hugetlb.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 737b2dce19e6..fe2da9ad6233 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -5241,7 +5241,8 @@ long hugetlb_unreserve_pages(struct inode *inode, long start, long end,
+>  	 * reservations to be released may be adjusted.
+>  	 */
+>  	gbl_reserve = hugepage_subpool_put_pages(spool, (chg - freed));
+> -	hugetlb_acct_memory(h, -gbl_reserve);
+> +	if (gbl_reserve)
+> +		hugetlb_acct_memory(h, -gbl_reserve);
+>  
+>  	return 0;
+>  }
+> 
+
+
 -- 
-2.25.4
+Thanks,
+
+David / dhildenb
 
