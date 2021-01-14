@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F182F6488
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07DFF2F648C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbhANP3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 10:29:08 -0500
-Received: from mga14.intel.com ([192.55.52.115]:7040 "EHLO mga14.intel.com"
+        id S1729187AbhANP3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 10:29:12 -0500
+Received: from mga14.intel.com ([192.55.52.115]:7042 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726259AbhANP3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 10:29:08 -0500
-IronPort-SDR: a4FuUivT27wljN/tx5AaKxFe9DgCQDqo2ZdXkEA1Z9DqxhpRzaGoCJybqmVUECH27fHZiXkOHP
- BahzXCWFVOKg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="177604640"
+        id S1726259AbhANP3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 10:29:11 -0500
+IronPort-SDR: TN7ABXlD9rHFxNCiTwF8LV4rYhsUpCGoc9GS0bFe5BeCE4P0T6YACcwk2/e1BT8nwGgI9PfByg
+ cqSBkLHJncgQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="177604646"
 X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="177604640"
+   d="scan'208";a="177604646"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 07:28:27 -0800
-IronPort-SDR: TYZ7Q2aL7R7JrACOCFOgwW2AhaDagifQc2o36b02ZaTDDDKMdMsJQ2932U6hNxQcAM9xjssNPq
- fSkYNq1rFYHQ==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 07:28:30 -0800
+IronPort-SDR: NoxZ3DHvz2CuXS0x4PLU/X4En+RToa7BGMCe4CfyQkjDrSYR5QyUo3kDJNk6vMScPTt5biLQeh
+ GjTIxLb5O//g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="568193538"
+   d="scan'208";a="568193554"
 Received: from zulkifl3-ilbpg0.png.intel.com ([10.88.229.114])
-  by orsmga005.jf.intel.com with ESMTP; 14 Jan 2021 07:28:24 -0800
+  by orsmga005.jf.intel.com with ESMTP; 14 Jan 2021 07:28:27 -0800
 From:   Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
 To:     ulf.hansson@linaro.org, broonie@kernel.org, lgirdwood@gmail.com,
         robh+dt@kernel.org, devicetree@vger.kernel.org,
@@ -32,58 +32,48 @@ To:     ulf.hansson@linaro.org, broonie@kernel.org, lgirdwood@gmail.com,
         linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     andriy.shevchenko@intel.com, Rashmi.A@intel.com,
         mahesh.r.vaidya@intel.com, muhammad.husaini.zulkifli@intel.com
-Subject: [PATCH v1 0/9] mmc: sdhci-of-arasan: Add UHS-1 support for Keem Bay SOC
-Date:   Thu, 14 Jan 2021 23:26:51 +0800
-Message-Id: <20210114152700.21916-1-muhammad.husaini.zulkifli@intel.com>
+Subject: [PATCH v1 1/9] mmc: sdhci-of-arasan: use of_device_get_match_data()
+Date:   Thu, 14 Jan 2021 23:26:52 +0800
+Message-Id: <20210114152700.21916-2-muhammad.husaini.zulkifli@intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210114152700.21916-1-muhammad.husaini.zulkifli@intel.com>
+References: <20210114152700.21916-1-muhammad.husaini.zulkifli@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Use of_device_get_match_data() helper to get the match-data.
 
-This patch series adds Ultra High Speed(UHS-1) Bus Speed Mode Support for Keem Bay SoC SD Card.
-Summary of each patches as per below:
+Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+Suggested-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Acked-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+---
+ drivers/mmc/host/sdhci-of-arasan.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Patch 1: Use of_device_get_match_data() helper to get the match-data.
-Patch 2: Convert to use np pointer instead of using pdev->dev.of_node.
-Patch 3: Add struct device *dev in probe func(), so that dev pointer can be widely use in probe to make code more readable.
-Patch 4: Change from dev_err to dev_err_probe() to avoid spamming logs when probe is deferred.
-Patch 5: Export function to be use by device driver to configure i/o voltage rail output which communicate with Trusted Firmware.
-Patch 6: Update phy and regulator supply for Keem Bay SoC.
-Patch 7: Add DT Binding for Keem Bay SoC SD Regulator.
-Patch 8: Add SD Regulator driver to support Keem Bay SoC. This is to model using standard regulator abstraction during voltage operation
-as for Keem Bay SoC, i/o voltage rail need to be configure by setting specific bit in the AON_CFG1 Register.
-AON_CFG1 Register is a secure register. Direct access to AON_CFG1 register will cause firewall violation in secure system.
-Patch 9: Add Ultra High Speed (UHS-1) Support for Keem Bay SOC. For Keem Bay hardware, two regulators are been used to change the I/O bus line voltage which are "vqmmc-supply" and "sdvrail-supply".
-
-All of these patches was tested with Keem Bay evaluation module board.
-
-Kindly help to review this patch set.
-
-Muhammad Husaini Zulkifli (9):
-  mmc: sdhci-of-arasan: use of_device_get_match_data()
-  mmc: sdhci-of-arasan: Convert to use np instead of pdev->dev.of_node
-  mmc: sdhci-of-arasan: Add structure device pointer in probe function
-  mmc: sdhci-of-arasan: Use dev_err_probe() to avoid spamming logs
-  firmware: keembay: Add support for Trusted Firmware Service call
-  dt-bindings: mmc: Update phy and regulator supply for Keem Bay SOC
-  dt-bindings: regulator: keembay: Add DT binding documentation
-  regulator: keembay: Add regulator for Keem Bay SoC
-  mmc: sdhci-of-arasan: Add UHS-1 support for Keem Bay SOC
-
- .../devicetree/bindings/mmc/arasan,sdhci.yaml |   7 +-
- .../bindings/regulator/keembay-regulator.yaml |  36 ++
- drivers/mmc/host/sdhci-of-arasan.c            | 313 ++++++++++++++++--
- drivers/regulator/Kconfig                     |  10 +
- drivers/regulator/Makefile                    |   1 +
- drivers/regulator/keembay-sd-regulator.c      | 112 +++++++
- include/linux/firmware/intel/keembay.h        |  82 +++++
- 7 files changed, 532 insertions(+), 29 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/regulator/keembay-regulator.yaml
- create mode 100644 drivers/regulator/keembay-sd-regulator.c
- create mode 100644 include/linux/firmware/intel/keembay.h
-
---
+diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+index 4f3774bcda94..07479019caf9 100644
+--- a/drivers/mmc/host/sdhci-of-arasan.c
++++ b/drivers/mmc/host/sdhci-of-arasan.c
+@@ -1508,7 +1508,6 @@ static int sdhci_arasan_add_host(struct sdhci_arasan_data *sdhci_arasan)
+ static int sdhci_arasan_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+-	const struct of_device_id *match;
+ 	struct device_node *node;
+ 	struct clk *clk_xin;
+ 	struct sdhci_host *host;
+@@ -1517,8 +1516,7 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
+ 	struct device_node *np = pdev->dev.of_node;
+ 	const struct sdhci_arasan_of_data *data;
+ 
+-	match = of_match_node(sdhci_arasan_of_match, pdev->dev.of_node);
+-	data = match->data;
++	data = of_device_get_match_data(&pdev->dev);
+ 	host = sdhci_pltfm_init(pdev, data->pdata, sizeof(*sdhci_arasan));
+ 
+ 	if (IS_ERR(host))
+-- 
 2.17.1
 
