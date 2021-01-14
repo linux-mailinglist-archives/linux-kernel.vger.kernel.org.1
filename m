@@ -2,101 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5192F5FAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EC02F5FAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727318AbhANLSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 06:18:12 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41297 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726754AbhANLSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 06:18:11 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1727522AbhANLS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 06:18:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726150AbhANLS5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 06:18:57 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BAFC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 03:18:17 -0800 (PST)
+Received: from zn.tnic (p200300ec2f1aa900c3e77ed14333c97a.dip0.t-ipconnect.de [IPv6:2003:ec:2f1a:a900:c3e7:7ed1:4333:c97a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DGhc76r2cz9s2g;
-        Thu, 14 Jan 2021 22:17:27 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1610623049;
-        bh=g5Oz3V3jZktqK95uiv3rPpxchACuTU1uFgEbh5ltcbo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Sr3GWt03xjCOvNaqNtx/K59FP1sLhhrrm36EaKf/c6vJVOoK6u9zmCIpFJ5B+Yl0o
-         KxzuSY9Lp9mjZhRxvOQTUsmNOf4sim3b4WhKm+KY4B7XNMr3PRDhF+MbSnTv92UgrN
-         ypyqqe5Ulp0UGHaomWUGaNiAFjBaU9hTeGp+cYPUWXuDDnyGyq7dFAj/uL+xmJ1iO9
-         EASuN7BW89pdtCTuiX0wJzBeuI6XG14AVlv+flKr7VO/7GEwoP9sHEBCHrBQGo9Q6P
-         /Y3/WsUpb2JuEtg2TfIhks9hxH/HmjyfmH/38cy2s+x3KuKYtWmPGSnU2S8C47LmYW
-         /BC8Rc0mIO6Jw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Namhyung Kim <namhyung@kernel.org>, Jiri Slaby <jslaby@suse.cz>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] perf tools: Resolve symbols against debug file first
-In-Reply-To: <CAM9d7cgmUqLX+C1wDPe9qaxDh1tY4sVmLx2qZqey3CQSmZSo2Q@mail.gmail.com>
-References: <20210113080128.10286-1-jslaby@suse.cz> <20210113104618.GB1331835@krava> <388a2e21-14ee-4609-84d0-c8824154c015@suse.cz> <CAM9d7cgmUqLX+C1wDPe9qaxDh1tY4sVmLx2qZqey3CQSmZSo2Q@mail.gmail.com>
-Date:   Thu, 14 Jan 2021 22:17:25 +1100
-Message-ID: <87sg73kbsq.fsf@mpe.ellerman.id.au>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AA8261EC04DF;
+        Thu, 14 Jan 2021 12:18:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610623095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=AUnm8/C5Wu8bRF8KIcyg7mxOGIQM/6pSluKScrzmO9g=;
+        b=k+9o3Dy1dbH5KAXe9bAvNRqgdgCaLmuxM0e1mPnLHTdbl2bLwULl+uXMRNWSonQ175z28S
+        I0ntb9J1Te6Q+kkHu3dgN0RWWU0JGNUEMFvf5iiFbXt9uTnuSn2IIMwgIYtvrQUrzE0I6K
+        YZLfUGihMF2Bz3+u+96ihE4JXDNUnwA=
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] x86/topology: Make __max_die_per_package available unconditionally
+Date:   Thu, 14 Jan 2021 12:18:14 +0100
+Message-Id: <20210114111814.5346-1-bp@alien8.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Namhyung Kim <namhyung@kernel.org> writes:
-> On Wed, Jan 13, 2021 at 8:43 PM Jiri Slaby <jslaby@suse.cz> wrote:
->>
->> On 13. 01. 21, 11:46, Jiri Olsa wrote:
->> > On Wed, Jan 13, 2021 at 09:01:28AM +0100, Jiri Slaby wrote:
->> >> With LTO, there are symbols like these:
->> >> /usr/lib/debug/usr/lib64/libantlr4-runtime.so.4.8-4.8-1.4.x86_64.debug
->> >>   10305: 0000000000955fa4     0 NOTYPE  LOCAL  DEFAULT   29 Predicate.cpp.2bc410e7
->> >>
->> >> This comes from a runtime/debug split done by the standard way:
->> >> objcopy --only-keep-debug $runtime $debug
->> >> objcopy --add-gnu-debuglink=$debugfn -R .comment -R .GCC.command.line --strip-all $runtime
->> >>
-...
->> >> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
->> >> index f3577f7d72fe..a31b716fa61c 100644
->> >> --- a/tools/perf/util/symbol-elf.c
->> >> +++ b/tools/perf/util/symbol-elf.c
->> >> @@ -1226,12 +1226,20 @@ int dso__load_sym(struct dso *dso, struct map *map, struct symsrc *syms_ss,
->> >>              if (sym.st_shndx == SHN_ABS)
->> >>                      continue;
->> >>
->> >> -            sec = elf_getscn(runtime_ss->elf, sym.st_shndx);
->> >> +            sec = elf_getscn(syms_ss->elf, sym.st_shndx);
->> >>              if (!sec)
->> >>                      goto out_elf_end;
->> >
->> > we iterate symbols from syms_ss, so the fix seems to be correct
->> > to call elf_getscn on syms_ss, not on runtime_ss as we do now
->> >
->> > I'd think this worked only when runtime_ss == syms_ss
->>
->> No, because the headers are copied 1:1 from runtime_ss to syms_ss. And
->> runtime_ss is then stripped, so only .debug* sections are removed there.
->> (And syms_ss's are set as NOBITS.)
->>
->> We iterated .debug* sections in syms_ss and used runtime_ss section
->> _headers_ only to adjust symbols (sometimes). That worked.
->
-> It seems PPC has an opd section only in the runtime_ss and that's why
-> we use it for section headers.
+From: Borislav Petkov <bp@suse.de>
 
-At least on my system (Ubuntu 20.04.1) I see .opd in the debug file with
-NOBITS set:
+Move it outside of CONFIG_SMP in order to avoid ifdeffery at the usage
+sites.
 
-$ readelf -e vmlinux.debug | grep opd
-  [37] .opd              NOBITS           c000000001c1f548  01202e14
+Fixes: 76e2fc63ca40 ("x86/cpu/amd: Set __max_die_per_package on AMD")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ arch/x86/include/asm/topology.h | 4 ++--
+ arch/x86/kernel/cpu/topology.c  | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/arch/x86/include/asm/topology.h b/arch/x86/include/asm/topology.h
+index 488a8e848754..9239399e5491 100644
+--- a/arch/x86/include/asm/topology.h
++++ b/arch/x86/include/asm/topology.h
+@@ -110,6 +110,8 @@ extern const struct cpumask *cpu_coregroup_mask(int cpu);
+ #define topology_die_id(cpu)			(cpu_data(cpu).cpu_die_id)
+ #define topology_core_id(cpu)			(cpu_data(cpu).cpu_core_id)
+ 
++extern unsigned int __max_die_per_package;
++
+ #ifdef CONFIG_SMP
+ #define topology_die_cpumask(cpu)		(per_cpu(cpu_die_map, cpu))
+ #define topology_core_cpumask(cpu)		(per_cpu(cpu_core_map, cpu))
+@@ -118,8 +120,6 @@ extern const struct cpumask *cpu_coregroup_mask(int cpu);
+ extern unsigned int __max_logical_packages;
+ #define topology_max_packages()			(__max_logical_packages)
+ 
+-extern unsigned int __max_die_per_package;
+-
+ static inline int topology_max_die_per_package(void)
+ {
+ 	return __max_die_per_package;
+diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
+index 1068002c8532..8678864ce712 100644
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -25,10 +25,10 @@
+ #define BITS_SHIFT_NEXT_LEVEL(eax)	((eax) & 0x1f)
+ #define LEVEL_MAX_SIBLINGS(ebx)		((ebx) & 0xffff)
+ 
+-#ifdef CONFIG_SMP
+ unsigned int __max_die_per_package __read_mostly = 1;
+ EXPORT_SYMBOL(__max_die_per_package);
+ 
++#ifdef CONFIG_SMP
+ /*
+  * Check if given CPUID extended toplogy "leaf" is implemented
+  */
+-- 
+2.29.2
 
-But possibly that's not the case with older toolchains?
-
-cheers
