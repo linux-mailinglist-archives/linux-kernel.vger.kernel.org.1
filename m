@@ -2,101 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D712F55BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2442F55C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:18:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727139AbhANBKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:10:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726429AbhANBCM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 20:02:12 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6330C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 17:01:02 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id c12so2345366pfo.10
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 17:01:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rkU8cpUyETgfO5WMc4v+Gsp/I2v/7OeHSZUBCHGZTM4=;
-        b=pYYLVmtrRKrw0Sz7zJwkFgpLuueGkdjJdPR49gFLawu1W/LuiS1re03rIKdAt3gayl
-         W3z4dFiuWO5X+N7IbvaH06K7QQL5myAWXO32/Br9JnJUvHm2ULUxwOoykOfqUE6bDwaL
-         TYuIzJaiaofHvYrQCZDBDEolMqhVmECoMfnepJbXCY8Y8i6GTyXT4FpL2v8Lh4W/QfDv
-         27AHqPbaWhf1ucgrY6/9nkFXReBrW7HOeuty7SeByk7OU7+G0/eQJ3i7xY18v+pVWqHO
-         MpmCF4y7W+waEQ+KliMRAvAbGPqf48VOXTvvOdVrH2+i9RAtWcXimnA38ZESXUZUQQFI
-         3Pww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rkU8cpUyETgfO5WMc4v+Gsp/I2v/7OeHSZUBCHGZTM4=;
-        b=igBuaNaRDy8Vin5QTfxndc/6JrcaNd/cGYrBkTzPUBaR1OO8GNQ2JydGUULbUYofl1
-         Tyeg1kKKvMowvoOIhxfT8pNfuBsK4JH09b8XS6D6XOHDhoDXxKz2QHOCme5+rnUOd3DB
-         7CRT3lWPHEhJgPtezS0ZmCQvi7li2YI5UxUWMfwmVlQwzhS7UzrElCJ/pl8KoCWfQVsO
-         wItSwqBBkT/Hlqbqw0PIDNmMuJpTOECpv1FwaMOUuDZ1fKuxEOEDpLQZi6i0OwvQnlIi
-         5qx995Yd2JLg8vIE866RkRfCZ6ljKo1vPXrgO9h7W90CdXgl+gwEhK0+m36qg6+ms3gu
-         53Mw==
-X-Gm-Message-State: AOAM532cfe+pl+j1xqbDa4Rls/C3Eim/zAiLqXnSr9TFpPGZ1u/eGn+X
-        D2rqLGfYFVKANnVcvAfu/97BfCRuraMRs/qqMhvaO1vZzYk=
-X-Google-Smtp-Source: ABdhPJwdJ/r0Qv64J2ze8GYRu72lvzIpVi0UlL7kvL27k4LYfT/evnLPC8ifiN57FYuWnq1MBXyLShKKt1Yh7jnqccI=
-X-Received: by 2002:a63:1142:: with SMTP id 2mr4735755pgr.263.1610586062110;
- Wed, 13 Jan 2021 17:01:02 -0800 (PST)
+        id S1727398AbhANBRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:17:30 -0500
+Received: from mga14.intel.com ([192.55.52.115]:46122 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727205AbhANBMl (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 20:12:41 -0500
+IronPort-SDR: CCaCAMilGAJjpT6ykpjVSmAHdnuVXzAMsHebV1Pe0+ME+ZPaMTDWaa9wTeH0Z3iHuQ2cYUz2qp
+ NQHkSQa/x+Ww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="177514156"
+X-IronPort-AV: E=Sophos;i="5.79,345,1602572400"; 
+   d="scan'208";a="177514156"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 17:10:15 -0800
+IronPort-SDR: WfZ3odycsTkAzXZR4ynzyqlZz7JMrRDHcFd4QJq2QkRT0Vf3cMLZwp3bxAPRqjVJNFwNKWA6YJ
+ 6rCz+uiWUARQ==
+X-IronPort-AV: E=Sophos;i="5.79,345,1602572400"; 
+   d="scan'208";a="424774223"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 17:10:12 -0800
+Subject: Re: [PATCH v5] perf stat: Fix wrong skipping for per-die aggregation
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210113015631.8748-1-yao.jin@linux.intel.com>
+ <20210113110701.GC1331835@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <2c8ea7a0-6d02-bea2-3a73-bafa481d99e9@linux.intel.com>
+Date:   Thu, 14 Jan 2021 09:10:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210114004059.2129921-1-natechancellor@gmail.com>
-In-Reply-To: <20210114004059.2129921-1-natechancellor@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 13 Jan 2021 17:00:50 -0800
-Message-ID: <CAKwvOdnda=eMds-krhHAwtvvOXhdezVWcfp_MQrtbfmO=UPzzg@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Add a couple more files to the Clang/LLVM section
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210113110701.GC1331835@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 4:41 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> The K: entry should ensure that Nick and I always get CC'd on patches
-> that touch these files but it is better to be explicit rather than
-> implicit.
->
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-
-Thanks for the patch!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> ---
->  MAINTAINERS | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index cc1e6a5ee6e6..9127456b7eb1 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4313,7 +4313,9 @@ W:        https://clangbuiltlinux.github.io/
->  B:     https://github.com/ClangBuiltLinux/linux/issues
->  C:     irc://chat.freenode.net/clangbuiltlinux
->  F:     Documentation/kbuild/llvm.rst
-> +F:     include/linux/compiler-clang.h
->  F:     scripts/clang-tools/
-> +F:     scripts/clang-version.sh
->  F:     scripts/lld-version.sh
->  K:     \b(?i:clang|llvm)\b
->
->
-> base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
-> --
-> 2.30.0
->
 
 
--- 
-Thanks,
-~Nick Desaulniers
+On 1/13/2021 7:07 PM, Jiri Olsa wrote:
+> On Wed, Jan 13, 2021 at 09:56:31AM +0800, Jin Yao wrote:
+> 
+> SNIP
+> 
+>>
+>> root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
+>>       1.001586691 S0-D0           1            1229440 Bytes llc_misses.mem_read
+>>       1.001586691 S0-D1           1             976832 Bytes llc_misses.mem_read
+>>       1.001586691 S1-D0           1             938304 Bytes llc_misses.mem_read
+>>       1.001586691 S1-D1           1            1227328 Bytes llc_misses.mem_read
+>>       2.003776312 S0-D0           1            1586752 Bytes llc_misses.mem_read
+>>       2.003776312 S0-D1           1             875392 Bytes llc_misses.mem_read
+>>       2.003776312 S1-D0           1             855616 Bytes llc_misses.mem_read
+>>       2.003776312 S1-D1           1             949376 Bytes llc_misses.mem_read
+>>       3.006512788 S0-D0           1            1338880 Bytes llc_misses.mem_read
+>>       3.006512788 S0-D1           1             920064 Bytes llc_misses.mem_read
+>>       3.006512788 S1-D0           1             877184 Bytes llc_misses.mem_read
+>>       3.006512788 S1-D1           1            1020736 Bytes llc_misses.mem_read
+>>       4.008895291 S0-D0           1             926592 Bytes llc_misses.mem_read
+>>       4.008895291 S0-D1           1             906368 Bytes llc_misses.mem_read
+>>       4.008895291 S1-D0           1             892224 Bytes llc_misses.mem_read
+>>       4.008895291 S1-D1           1             987712 Bytes llc_misses.mem_read
+>>       5.001590993 S0-D0           1             962624 Bytes llc_misses.mem_read
+>>       5.001590993 S0-D1           1             912512 Bytes llc_misses.mem_read
+>>       5.001590993 S1-D0           1             891200 Bytes llc_misses.mem_read
+>>       5.001590993 S1-D1           1             978432 Bytes llc_misses.mem_read
+>>
+>> On no-die system, die_id is 0, actually it's hashmap(socket,0), original behavior
+>> is not changed.
+>>
+>> Reported-by: Huang Ying <ying.huang@intel.com>
+>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>> ---
+>> v5:
+>>   Hash key is changed to die_id << 32 | socket.
+>>   In pkg_id_hash, return (int64_t)key & 0xffffffff; actually it's socket.
+> 
+> seems ok, but I'm getting python test fail:
+> 
+> 	$ sudo ./perf test python -v
+> 	19: 'import perf' in python                                         :
+> 	--- start ---
+> 	test child forked, pid 1352066
+> 	python usage test: "echo "import sys ; sys.path.append('python'); import perf" | '/usr/bin/python2' "
+> 	Traceback (most recent call last):
+> 	  File "<stdin>", line 1, in <module>
+> 	ImportError: python/perf.so: undefined symbol: hashmap__free
+> 	test child finished with -1
+> 	---- end ----
+> 	'import perf' in python: FAILED!
+> 
+> jirka
+> 
+
+Seems I need to add hashmap.c to python-ext-sources. It surprised me that it was not in it yet. :(
+
+diff --git a/tools/perf/util/python-ext-sources b/tools/perf/util/python-ext-sources
+index a9d9c142eb7c..266874913dbb 100644
+--- a/tools/perf/util/python-ext-sources
++++ b/tools/perf/util/python-ext-sources
+@@ -35,3 +35,4 @@ util/symbol_fprintf.c
+  util/units.c
+  util/affinity.c
+  util/rwsem.c
++util/hashmap.c
+
+root@kbl-ppc:~# ./perf test 19
+19: 'import perf' in python                                         : Ok
+
+Thanks
+Jin Yao
