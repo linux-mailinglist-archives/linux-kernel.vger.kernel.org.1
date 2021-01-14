@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F75C2F6E54
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3CF2F6E58
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:41:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730684AbhANWiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 17:38:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730575AbhANWiL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 17:38:11 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678B0C061575;
-        Thu, 14 Jan 2021 14:37:31 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id r9so14486238ioo.7;
-        Thu, 14 Jan 2021 14:37:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4qLi4Dg+g0R8VVN/tPzeo2VYp9du8E2CQ9jumM2kylY=;
-        b=NtqJtobesGpygwwHl27SLj7KgMDYD0qtl1D5q8Nmm2wV3x8Ucca6+xgsshGaup/SNQ
-         aG7ZxHs8AK37B2SX+ZKtWjTaZ2ux9jKIqo9UglY86v5u+ormp/fjckWHn5fOcKUjCrkG
-         oWPEGNe4ggbEXV/MkouOsZh1nd/WLTAF++ifhve+NaZ2GJOs3pK46HhbxhRVkI8UuDzc
-         gF4PrmfODCHNmGOeFfz0+vyAefyKXE8wCk6gbspznmeD3IQYi+0TuooHr+Oj82jacfLP
-         OkmYREy+giTCsaJWXiZJtexkPbmi4+vmy0Jro9BFH9Xoe5i2nlpqMUcotF0namByg8wN
-         UQJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4qLi4Dg+g0R8VVN/tPzeo2VYp9du8E2CQ9jumM2kylY=;
-        b=FrL2uWqOPCPXfunY2RgJR/HfTqByuW/HZjPbX0UtAGJYuQsR47hU9ORXyNugW0u8tK
-         k/pwgS/s/KOulnwSUy3VQOz8wtyN5OzztbjIEriYQJSFNfNm0wWwkV90G7XxFixCekEt
-         ZS3eDCZCCK2Si8vU9aDNjhdBzY80ezQHIzXuNRDqntNWq9BMLMt3WKEplVsDEJ/wEQJN
-         xwK8wBdbCuRG3B8TUuONwtYbKHxoZJcdeQllreaI+TQh5ofJ/2n/4nrh9reUWD1WQnFz
-         xpchhM0vLJ5wns7lSZpt8Ygaa9LwL9ht22SUmLErc8nFwV6Q/IshS+g67Ib38Tvfh1Xe
-         5uCw==
-X-Gm-Message-State: AOAM531ddyKlytlKFexXygPcqDlXwE+bHlAmTK0PahSLAHWG293xCGVy
-        5jhDVxByAkms27xvE09nvANhjxoHiSBVvmkHgzT6bt/VZrw=
-X-Google-Smtp-Source: ABdhPJxAE3niWU3lMdhyD6iZZ//AvuDx07evfAw+VuR6wmjklOvnVeCLdNX4LfeC8wYdvKKrdETMSGGhrNGKnwhmnFU=
-X-Received: by 2002:a05:6e02:1b8b:: with SMTP id h11mr8628774ili.32.1610663850911;
- Thu, 14 Jan 2021 14:37:30 -0800 (PST)
+        id S1730689AbhANWj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 17:39:29 -0500
+Received: from mga06.intel.com ([134.134.136.31]:5036 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729586AbhANWj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 17:39:27 -0500
+IronPort-SDR: X1Wztsp1PhDru+2sTm58Y0sMeRKa+8V2k0eKZ7eFKe1KcoRD3dJHRgajLkbJ+JrN86dVKJn6hR
+ +V8U6burbQfw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="240000774"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="240000774"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 14:37:41 -0800
+IronPort-SDR: KHgXeEdpxIlPNe0MxMGFDkb299iXzzebbc5xM6orunBROyeg2fM1cURMj3CDtIdA4x+V3ckWRM
+ KcgDJ5DjdAgA==
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="382431963"
+Received: from dvarelam-mobl1.amr.corp.intel.com (HELO [10.212.182.202]) ([10.212.182.202])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 14:37:39 -0800
+Subject: Re: [Sound-open-firmware] [PATCH 1/2] [v2] ALSA: hda: fix
+ SND_INTEL_DSP_CONFIG dependency
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        sound-open-firmware@alsa-project.org
+References: <20210112203250.2576775-1-arnd@kernel.org>
+ <CAK8P3a0+YmZTzYYk0D5HpBEB7Kp=ryx1U4KRKCyz4XYM3v9rAQ@mail.gmail.com>
+ <4ad60e25-b1d5-9be1-a2bc-8bec9e4e85c1@linux.intel.com>
+ <CAK8P3a0o3LVuVgLWYFHgdzWfi0MSa8MgggsP5RxApZgvxiJbwQ@mail.gmail.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <b9b5b3c7-43ac-b856-6783-2c430fa098af@linux.intel.com>
+Date:   Thu, 14 Jan 2021 16:37:38 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210114221059.483390-1-angelogioacchino.delregno@somainline.org> <20210114221059.483390-6-angelogioacchino.delregno@somainline.org>
-In-Reply-To: <20210114221059.483390-6-angelogioacchino.delregno@somainline.org>
-From:   Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Date:   Thu, 14 Jan 2021 15:37:20 -0700
-Message-ID: <CAOCk7NoVts21FjhhLtZp-0Xdw6-BnrKio_-tuZBRsgapsUdwfw@mail.gmail.com>
-Subject: Re: [PATCH v2 05/11] clk: qcom: gcc-msm8998: Mark gpu_cfg_ahb_clk as critical
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        phone-devel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        DTML <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAK8P3a0o3LVuVgLWYFHgdzWfi0MSa8MgggsP5RxApZgvxiJbwQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 3:13 PM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@somainline.org> wrote:
->
-> The GPU IOMMU depends on this clock and the hypervisor will crash
-> the SoC if this clock gets disabled because the secure contexts
-> that have been set on this IOMMU by the bootloader will become
-> unaccessible (or they get reset).
-> Mark this clock as critical to avoid this issue when the Adreno
-> GPU is enabled.
->
 
-You should go review the last attempt to do this -
-https://lkml.org/lkml/2019/12/17/881
+
+On 1/14/21 3:19 PM, Arnd Bergmann wrote:
+> On Thu, Jan 14, 2021 at 7:07 PM Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com> wrote:
+>> On 1/14/21 9:09 AM, Arnd Bergmann wrote:
+>>> On Tue, Jan 12, 2021 at 9:32 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>>>> ---
+>>>> v2: fix various build issues in the first version, now passes
+>>>>       all randconfig builds I tried
+>>>
+>>> Please disregard this version, while I have a tree that passes
+>>> the randconfig builds now, this was not the patch from it that
+>>> I wanted to send...
+>>
+>> No worries, I reworked the PCI case completely. Still running tests to
+>> make sure there's no regression
+>> https://github.com/thesofproject/linux/pull/2683
+> 
+> Ok, I see. I had not realized that you already did the PCI bits as well,
+> and applied my original patch to your tree, as I had meant to
+> resend my "ASoC: SOF: ACPI: avoid reverse module dependency"
+> patch after fixing some additional build failures in it. I have
+> now applied the relevant commits from your branch to my
+> randconfig tree, and will let you know if that finds anything more.
+> 
+>  From what I can tell so far, you already included the fixups that I had
+> locally, and more.
+
+Thanks Arnd.
+
+Yes we added a couple of things. I missed the fact that we hard-coded 
+'sof-acpi' to determine if we use the legacy or SOF driver, and other 
+problems with driver names that I screwed-up.
+
+The dependencies part should be finished now, I am just testing on my 
+side that nothing broke on the test devices (which is slower than I 
+wanted due to other ACPI scan things I had to revert locally). I will 
+add a couple of suggestions from Guennadi but this should be done tomorrow.
+
+
