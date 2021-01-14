@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9462F59D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 05:17:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2182F59D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 05:17:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727134AbhANEPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 23:15:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbhANEPx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 23:15:53 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9CAC061575;
-        Wed, 13 Jan 2021 20:15:07 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id cq1so2394174pjb.4;
-        Wed, 13 Jan 2021 20:15:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=i/xZY8DpdABEtyxGJwRPJ3Gox+RIWU/dLajPoWgwjqs=;
-        b=Fv5i6Gtp40PbeMJwpKIdACaEM36r4nswQT66xInERfTRx/Dps1FhpiZpPvE3V6CIMH
-         lFRIuuFABGaFGdPLEe6hBwyvqU8hDz2GeAS/mOy7IEd7qoWbBVgNaeQ15tFBeBg87FD+
-         Zjx/wdrmdj/0C83Sq0hY1wTp4mkUEdYw0YP2zlH8uam/k1bZOY0R1baDt5wS8/DLtMQO
-         cJDJ4iX7TJS0Ly4rLYt6xqovTsBnVfd/3BtmRDT6KqQpR26BjMYrm89l0tzYm6kSadu8
-         yuTKQLwQF4cOIWKPozw2hdlr7SnmkMVgdTLfe/m59IWDRJuCyTT62QidyeIbvzH4fMYY
-         aWeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=i/xZY8DpdABEtyxGJwRPJ3Gox+RIWU/dLajPoWgwjqs=;
-        b=uHcVjdCDZyBUqNjWNqzM6w9MJbOEJxo2c1+ue3ndaPnUf3a2wPbLTYxLRv8qyZpop4
-         hyJVexbgb1TyDyMs4IPjnnDlXSiSYShrDXdlbm/Tg+Aw1mRLSiF07oZ4u5wYLDa3mVnv
-         4V7+GjU2ndTT8EUl10AcwLJQsEAedubNDhmw3bgnjoKauy6hbfQzszP7ZHKrzSrhkTwu
-         hv9REQw9A4GZvYDQIEjEfIDmd2WS6QA5uPITHOTcLHYpW3brcUb1iTQWuIS2e5ynQzbn
-         oON6yhBsrcqyFnFBlR8da/kFTZTGgIjmbi6jbx0JHZVUuMbk0/y1dlzTCRnfpFSs73X2
-         kZ0w==
-X-Gm-Message-State: AOAM531U7MlwfwL/F0XLOirHMDecobikzSl2j5leCApuh6G16XZMeuKe
-        UHGGeL+P4axcTYgNvyw7ztA=
-X-Google-Smtp-Source: ABdhPJyz6UUg9D+AVhweeioOxbEoLYSIkELCtNpqwduCHFHytLFcBJU8kPEDp8DtaUKli5OvnnQ+Xw==
-X-Received: by 2002:a17:90a:2f22:: with SMTP id s31mr2948608pjd.192.1610597706920;
-        Wed, 13 Jan 2021 20:15:06 -0800 (PST)
-Received: from localhost.localdomain ([122.10.161.207])
-        by smtp.gmail.com with ESMTPSA id l7sm4033523pjy.29.2021.01.13.20.15.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Jan 2021 20:15:06 -0800 (PST)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     edumazet@google.com, davem@davemloft.net, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yejune.deng@gmail.com
-Subject: [PATCH] tcp_cubic: use memset and offsetof init
-Date:   Thu, 14 Jan 2021 12:14:56 +0800
-Message-Id: <1610597696-128610-1-git-send-email-yejune.deng@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        id S1727205AbhANEQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 23:16:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725997AbhANEQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 23:16:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9062221EA;
+        Thu, 14 Jan 2021 04:15:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610597730;
+        bh=5bNu9OxM9PUIxaOuedQwfOFYLhmDVNIPEZSAT3dGhb4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lrSQCF9v7s7KHxfHt1nkxgsmvAit5IxBibLwjFe2veJ3/4mOHUNU1Z4GkBW3HKTfX
+         V5Vcy5OHNrVjf3NxqbB/STou7PmQ+6bK0zTLYvQieLffpEzIXdlAa3eMGytH4gxVoh
+         f/3+LsE4zIaW9espS0TlkNyF4vihVTAUORBcgS40TZDk2U/Pt3+4GV36s4mJ90qp6x
+         BmUWhC9474MZLGcxHWUG6uwhLPx/ECjuQ92VnC7nPZNhD+kXzamEL5TQbmzgUbDN2d
+         L0gmAdcGs8DocVDSD68w0WVDWbF+KNM4Gf1+s2XbynEQo9SR3QnfURob5hY+q2kRm8
+         H2ENi2WpF+SZg==
+Date:   Thu, 14 Jan 2021 06:15:24 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v2 0/5] Enable root to update the blacklist keyring
+Message-ID: <X//FXJjQNV/ElHQg@kernel.org>
+References: <20201211190330.2586116-1-mic@digikod.net>
+ <67945fa6-2796-bfcd-5541-d54662e9802a@digikod.net>
+ <X/qJJsVe7+nP+gR6@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <X/qJJsVe7+nP+gR6@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In bictcp_reset(), use memset and offsetof instead of = 0.
+On Sun, Jan 10, 2021 at 06:57:10AM +0200, Jarkko Sakkinen wrote:
+> On Tue, Jan 05, 2021 at 11:12:57AM +0100, Mickaël Salaün wrote:
+> > Jarkko, David, what is the status of this patch series? Do you need help
+> > to test it?
+> 
+> Hi, a leave/vacation and the holiday period badly mixed my schedules.
+> 
+> I'm testing this upcoming week.
+> 
+> /Jarkko
 
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
----
- net/ipv4/tcp_cubic.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+❯ git-pw series apply 400795
+Applying: certs: Make blacklist_vet_description() more strict
+error: sha1 information is lacking or useless (certs/blacklist.c).
+error: could not build fake ancestor
+hint: Use 'git am --show-current-patch=diff' to see the failed patch
+Patch failed at 0001 certs: Make blacklist_vet_description() more strict
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
 
-diff --git a/net/ipv4/tcp_cubic.c b/net/ipv4/tcp_cubic.c
-index c7bf5b2..ffcbe46 100644
---- a/net/ipv4/tcp_cubic.c
-+++ b/net/ipv4/tcp_cubic.c
-@@ -104,16 +104,7 @@ struct bictcp {
- 
- static inline void bictcp_reset(struct bictcp *ca)
- {
--	ca->cnt = 0;
--	ca->last_max_cwnd = 0;
--	ca->last_cwnd = 0;
--	ca->last_time = 0;
--	ca->bic_origin_point = 0;
--	ca->bic_K = 0;
--	ca->delay_min = 0;
--	ca->epoch_start = 0;
--	ca->ack_cnt = 0;
--	ca->tcp_cwnd = 0;
-+	memset(ca, 0, offsetof(struct bictcp, unused));
- 	ca->found = 0;
- }
- 
--- 
-1.9.1
+Can you rebase to rc3 and resend? 
 
+Also, please add this to the patches 1-3:
+
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+
+Also, 4-5 look good but I hold for testing before acking further.
+
+Thanks, and apologies for such a long wait.
+
+/Jarkko
