@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8B72F6ABD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A69B42F6AC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729908AbhANTSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:18:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42752 "EHLO
+        id S1729928AbhANTS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:18:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727530AbhANTSQ (ORCPT
+        with ESMTP id S1728377AbhANTS6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:18:16 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA419C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:17:35 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id g15so4418005pgu.9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:17:35 -0800 (PST)
+        Thu, 14 Jan 2021 14:18:58 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D78C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:18:18 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id 186so9377686qkj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:18:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BrtldUOeu+hnXE15tO0kF01exYGRde7kUMNnM3ud9F4=;
-        b=cd9onR3Brmte3kL09DzE0Cgh6BPn45EsyBihDJu6gX6usEh8TmbwtpKcBJSSUqFGNh
-         1voOWLtw2pBBaw9sHzfW21IQbhzAdAEiQW7heBui7ygrZaiTcMfMHx4UstNbpGh/l15f
-         l91UIVsYdHy9V2TOUwosP6u4nN6QhkYfNAztwb47PmA8LCzFTMCl7PXSLj+IYHeUY6Ws
-         MFMVUr684KSA7FxFYNSFqYcq/OnPkslp735XBmzvF+LSp8ZN2/sIKWpPseHTiSXg3QEA
-         osJ+5khHsGD8KPCz4IX6axFFId+vl/BqIVb59pKrekADB4YoUCibt6jidJ1DEd7nq29l
-         EAYw==
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C4cTRyNK/dC7x750o61uCU/kZvdErxEIbD//IbSoOqo=;
+        b=IVs5API2ULJAzAHUSiRisWWxGFJGCovscCYfVU18XbamY7/WEof8Gym2BlSktJDXBo
+         AoCoxz2E3yLrkkdsNWUFxDbxQqY4B+CwmC4cfYwn409aRYG7qB1b5Y6WhgV7StJCej62
+         vfcM/W63g0sDQPGmSKZJ8JsXuiaegR5ZWDedA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BrtldUOeu+hnXE15tO0kF01exYGRde7kUMNnM3ud9F4=;
-        b=K/S8rnlWZLB6GjA6iBLr4NaJn3tBA3yVf8sG7DIpVcPf0lF7jEY2XA+wsiHWJwtElB
-         Vz5Ef0LzrRvCSzQSxr8AF3i0KvH5OQZu4BKgyhjHnJr07EazbRWEQwauGdzLp4MiwPB3
-         OfTvo9etQy8DANtSz+m2OXvA5biLdosCUb9l5FQx/YG+8dbmmTrFE77Z0Fvgz9eMX+7j
-         wfHnKlNkmC8L/+2inz17/nVwqyjHmBmgo+MpHPbVwFuowwPW/Jp8SU2rSe5pWhHmGaVw
-         FmXDnGDK4kbj8+0vKiMkL+uVspHv2rADddOpD2f1MhkY+tgiZ/Nd259OqHrzgj5O3cdm
-         f6Ow==
-X-Gm-Message-State: AOAM530vcI+ixRemD43L2AwhBy/PJuZvx7qpo5DGUjIVA1663ggFV+7g
-        nBC3Ux2NwmCRQTnxrouOY8JC2Q==
-X-Google-Smtp-Source: ABdhPJzbwD0JrHREGhIIZoS98kiThcriePWQtFFWefgrpZhr93P+JXhUBVD+nQwpFcRyYddS+wBxNQ==
-X-Received: by 2002:aa7:979d:0:b029:1a4:3b76:a559 with SMTP id o29-20020aa7979d0000b02901a43b76a559mr8716680pfp.49.1610651855097;
-        Thu, 14 Jan 2021 11:17:35 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id t23sm6015241pfc.0.2021.01.14.11.17.33
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=C4cTRyNK/dC7x750o61uCU/kZvdErxEIbD//IbSoOqo=;
+        b=UncMkJ/i2kZl6e/xYQjV2B5YN3gqMkCNwZ04LrTHL9EUZ4S1xZd/xcU6fyWRYR3IwO
+         AgaUJNUYxu/GO3x9GmIjX61JrHEgbRZp2Erp/votkxtJ0cOf/udyQbtez6C/ZDTx+3Zi
+         FkG06WbryMi0hFZWC2UFXDCQd+97o+fZTPqDLbW2kCAzQ0IHxirWUYBqOayqTqs48Fva
+         RnRolTkN3Le/raxHO6c+m4gCZIi4QXKF3JeV27WX2CH/OoeAQ6wfzws1nkfzbntNZUi7
+         F9va9J67PChjgQSIIILqIMkw4q7U9hg2XFjJvuGVAYcToXICpTRoP2JrsehnSlRre0SH
+         U6HA==
+X-Gm-Message-State: AOAM530nVNdu2sIc//1dsghFg4AgCxW5B0H2p1scOYJLG9OsOFNc0P6h
+        wecgPpkE1w6gGY8t1Q+X1dQrzvl6jVe2h8IM
+X-Google-Smtp-Source: ABdhPJzmWOLSsFawh/iOlWprvRJZzLbN1iFPlFN/u1i8PPWL6QuikgUEMHCOEwWCGA62v07RPcSLwA==
+X-Received: by 2002:a37:e504:: with SMTP id e4mr8561054qkg.191.1610651897173;
+        Thu, 14 Jan 2021 11:18:17 -0800 (PST)
+Received: from chatter.i7.local ([89.36.78.230])
+        by smtp.gmail.com with ESMTPSA id m190sm3530840qkb.42.2021.01.14.11.18.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 11:17:34 -0800 (PST)
-Date:   Thu, 14 Jan 2021 11:17:27 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v2 02/14] KVM: SVM: Free sev_asid_bitmap during init if
- SEV setup fails
-Message-ID: <YACYx68nBGOe2ROg@google.com>
-References: <20210114003708.3798992-1-seanjc@google.com>
- <20210114003708.3798992-3-seanjc@google.com>
- <b1a6403b-249d-9e98-3a2d-7117ed03f392@amd.com>
- <YAB7ceKeOdfkDnoA@google.com>
- <12cfd19a-7f6f-c422-5d6a-5317c1df72ae@amd.com>
+        Thu, 14 Jan 2021 11:18:16 -0800 (PST)
+Date:   Thu, 14 Jan 2021 14:18:14 -0500
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Thorsten Leemhuis <linux@leemhuis.info>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 (RFC)] docs: discourage users from using
+ bugzilla.kernel.org
+Message-ID: <20210114191814.g3se2svqxtod25xi@chatter.i7.local>
+Mail-Followup-To: Jani Nikula <jani.nikula@linux.intel.com>,
+        Thorsten Leemhuis <linux@leemhuis.info>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210110121033.130504-1-linux@leemhuis.info>
+ <20210111194822.4kvl2tx24anyu23k@chatter.i7.local>
+ <fba45829-cac3-9f53-c753-0b08d813aa83@leemhuis.info>
+ <877doht7bd.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <12cfd19a-7f6f-c422-5d6a-5317c1df72ae@amd.com>
+In-Reply-To: <877doht7bd.fsf@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021, Tom Lendacky wrote:
-> On 1/14/21 11:12 AM, Sean Christopherson wrote:
-> > On Thu, Jan 14, 2021, Tom Lendacky wrote:
-> > > On 1/13/21 6:36 PM, Sean Christopherson wrote:
-> > > > Free sev_asid_bitmap if the reclaim bitmap allocation fails, othwerise
-> > > > KVM will unnecessarily keep the bitmap when SEV is not fully enabled.
-> > > > 
-> > > > Freeing the page is also necessary to avoid introducing a bug when a
-> > > > future patch eliminates svm_sev_enabled() in favor of using the global
-> > > > 'sev' flag directly.  While sev_hardware_enabled() checks max_sev_asid,
-> > > > which is true even if KVM setup fails, 'sev' will be true if and only
-> > > > if KVM setup fully succeeds.
-> > > > 
-> > > > Fixes: 33af3a7ef9e6 ("KVM: SVM: Reduce WBINVD/DF_FLUSH invocations")
+On Wed, Jan 13, 2021 at 01:17:10PM +0200, Jani Nikula wrote:
+> >> Well, that said, a lot of stuff sent to the _proper_ mailing lists also never
+> >> receives a response
+> >
+> > Good point.
 > 
-> Oops, missed this last time... I don't think the Fixes: tag is needed
-> anymore unless you don't want the memory consumption of the first bitmap,
+> There's a school of thought that this is actually a feature. If there's
+> no attention, the reports on the list will just fade away and be
+> forgotten. Whereas in bugzilla, someone needs to actively resolve even
+> the ignored and forgotten bugs. (Or it needs to be automated.)
 
-If Fixes is viewed as purely a "this needs to be backported", then yes, it
-should be dropped.  But, since KVM policy is to backport only patches that are
-explicitly tagged with stable@, I like to use to Fixes to create a paper trail
-for bug fixes even if the bug is essentially benign.
+FWIW, it's easy for me to script this, if there is consensus that a bug that
+hasn't seen any activity for longer than N months should be auto-closed with
+some apologetic comment like:
 
-That being said, I have no objection to dropping it if anyone feels strongly
-about not playing fast and loose with Fixes.
+    This bug has aged out and will be auto-closed. Sorry that it didn't work out.
 
-> should the allocation of the second bitmap fail, until kvm_amd is rmmod'ed.
-> Up to you.
+    If this issue is still present in recent kernel releases, you may need to
+    reach out directly to subsystem maintainers in order to get their attention
+    regarding this problem.
+
+    Please do not re-open this bug without the above step, as it will simply
+    get auto-closed again in the future.
+
+> Attending to a bug database of thousands of open bugs takes a huge
+> amount of effort, and if the bugs aren't being fixed, a lot of that
+> effort is just wasted. If a bug doesn't get fixed now (or soon-ish),
+> what are the chances it'll get fixed months or years down the line?
+
+Well, it's *possible* that someone comes across that bug during their research
+and adds enough additional information to get it fixed. However, this is
+extremely unlikely and it's better to just open a new bug anyway.
+
+> Just musing, has anyone else seen a shift in bug reports from "I'm part
+> of the community, and I want to help improve this stuff" towards "I'm a
+> customer and I demand support"? I don't think the kernel community can
+> really cater to the latter very well, and would be better directed at
+> distro bug trackers.
+
+I haven't seen any specific change like that. One good thing about bugzilla is
+that people who do file bugs have already overcome significant barriers to
+sign up and navigate the quaint, decades-old bugzilla interface -- so their
+bug reports tend to be generally well-written.
+
+-K
