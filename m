@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406FF2F6B2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2635A2F6B31
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730125AbhANTh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:37:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
+        id S1730151AbhANTh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:37:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729993AbhANThz (ORCPT
+        with ESMTP id S1727102AbhANTh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:37:55 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AAFC061793
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:36:53 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id k12so5305634qth.23
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:36:53 -0800 (PST)
+        Thu, 14 Jan 2021 14:37:59 -0500
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA5DC061794
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:36:56 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id v7so3032774wra.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:36:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=IeCg6Q6ax6zf9VJ+vRzVtCBhXruC0quH/SAPFfzsvs4=;
-        b=eTZNHRFwfoCF3Fl7H/HMfcHuwyTyfhV52ed+NJ58jBt3yxDyJcqD2BMacpWkq7y2RZ
-         JeMFiKc4vkrxluqmQgLoLhGnVgH3jbfS/EhKMYIHxbRS8cwqVyRwoB4MlN56VxGqSjkn
-         N5XaSiResQQqO6HC6l1fUhmVps7XNA6phTQeeMo2VWh3I9Kjb5T3oNEaK2hAV6UsBwoB
-         rre26sZU5XJxzHLWKInioZ9+zByEt+QVei87qGtDX7XfdwMBxay5paiLav7OJnHNR/Qx
-         YLPTjaN23CuZ90WIjmOX+wro+H5XZuSkLOpwxxmJaTcrJlOXiXWf25ozjg7ke+q0RhHP
-         AhUw==
+        bh=BYOOBCCudRU7Lchp5NpxZrw19s2hqbj4Q5eYKa3nns4=;
+        b=rTUv5m0zNhD34FCcwlpq09FOQVY979bNJORsUf6OmzgaoTAOFMWsj6uKVvVPryAncc
+         Y6OhafJM04uWVc9pjJQKH5NCt3DkQiMm85OpEihWPA8JcD25gC3aeR9kvA9Y7WWCW9ie
+         EmLUYPTYMJpoVS5omyVpvjA8KTO6StvqomYrsX+za0mQvc8oQwUxEjeGb11XkDrHA5Ee
+         Szowzviwu7DMZ/YWR074GrBN8wKOLaOqezsuVaixBa1pbB8unyc+XyrVbX7S7Hr4U0Jt
+         MYp20quJAyjR5U7eAr6/jrLyH1zjC5WXJT5NxhYC5GL61NwjGH+LqPS61lk6rSQ+HQeG
+         bkqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=IeCg6Q6ax6zf9VJ+vRzVtCBhXruC0quH/SAPFfzsvs4=;
-        b=iwwe7myZHlszvus5EeR6ipiW74uuqPz9d77ShoV9S3xjeP8vp4Sey1UZgyKHKrJSgR
-         zKadMJ9UaZWFvLnYn6EzPf9ZQnAzQQPExEQ1lQgzDuIsLQ+mbhe5T2WoH4mBjcafk5cE
-         yOpunDfZBx1K5ovfOjkK7lhykDEhA3XFGeiVodVqmAxsrIvhChqaeNmImeNEqD2hTGH7
-         G1G+gGPn+hlJK7VBsJlqKTSImk7OsMU8cAwYY3nOBVVEMELZ6uEy77lk9B/JOSMXBv56
-         XaXZkd6N/B7X+lj7OtR0L8REHiiIHtwen0cMt535AqZDh4ALxcn/U2jeGO+Wy7TtjO+/
-         aS2g==
-X-Gm-Message-State: AOAM5305EjVm9ONJQAoIRyoCS3HFvmRaXvqKGjdxLSyl9lZUO1A1dQ+h
-        m//8hM591+WPfLCyBRHt1Ng9Ss4wNjVFeTOW
-X-Google-Smtp-Source: ABdhPJxfE6NK6yqr9G1+T+44ye3s9ZpD3mdA+ec+MYX3OXmVMzoUVOm3cRqC6z06PsWVassdHCODx3/XP0e2Q/xE
+        bh=BYOOBCCudRU7Lchp5NpxZrw19s2hqbj4Q5eYKa3nns4=;
+        b=XDUE0VsxZ8WQ1SH81jePBhMEGQ2ColeB53fy1kCq/8wq3dV7G93SuAGE/mqQr9oa/i
+         j9FCI5pwvzFofsmV0jrCbzEg8foU07dzsUz5T7yzdIOYmmWs2h/xubwb5ObvP9OSRU5g
+         V9hBykg6pix5+11TFsx93Q1ZielYSh3W2Jtm4+aX7EqHH5zUEM5noJcZk5C3qPqxmesB
+         WWafMA0a7DDKsInTfM2W31YVgY0xBWJ8mEOa83Vcc0GVLblN51Q9VjhGYQHv3mFDyt21
+         rDzkErjTl4YqwKYAbiBuoirK5JO7zhfAwqGT2wRfBBmUlteJS7xonnpIU0DZ2o4ofaVb
+         TPKQ==
+X-Gm-Message-State: AOAM530e+NC3UhyX7MMIx9mOu1ooSwS4VomJQvwW5luemdhU7n3DxCtc
+        C72DLaVEurhbIWLBGjpd3d02NFaMEQ9CAFZp
+X-Google-Smtp-Source: ABdhPJyYO2MlxfR/Y4/edLSR5eTxNluzpB8ZY4biV8IiJKVDxm5JrKLOUsXrzNZQUnUIvM0PtVPM014fSmcVbUqw
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a0c:f08b:: with SMTP id
- g11mr8742547qvk.7.1610653012977; Thu, 14 Jan 2021 11:36:52 -0800 (PST)
-Date:   Thu, 14 Jan 2021 20:36:24 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a05:600c:2905:: with SMTP id
+ i5mr5291713wmd.28.1610653015397; Thu, 14 Jan 2021 11:36:55 -0800 (PST)
+Date:   Thu, 14 Jan 2021 20:36:25 +0100
 In-Reply-To: <cover.1610652890.git.andreyknvl@google.com>
-Message-Id: <73283ddcceed173966041f9ce1734f50ea3e9a41.1610652890.git.andreyknvl@google.com>
+Message-Id: <62a4d6dba701ad4747d836fb08c20fdfffc701f8.1610652890.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1610652890.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v3 08/15] kasan: add compiler barriers to KUNIT_EXPECT_KASAN_FAIL
+Subject: [PATCH v3 09/15] kasan: adapt kmalloc_uaf2 test to HW_TAGS mode
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -74,75 +74,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It might not be obvious to the compiler that the expression must be
-executed between writing and reading to fail_data. In this case, the
-compiler might reorder or optimize away some of the accesses, and
-the tests will fail.
+In the kmalloc_uaf2() test, the pointers to the two allocated memory
+blocks might happen to be the same, and the test will fail. With the
+software tag-based mode, the probability of the that is 1/254, so it's
+hard to observe the failure. For the hardware tag-based mode though,
+the probablity is 1/14, which is quite noticable.
 
-Add compiler barriers around the expression in KUNIT_EXPECT_KASAN_FAIL
-and use READ/WRITE_ONCE() for accessing fail_data fields.
+Allow up to 16 attempts at generating different tags for the tag-based
+modes.
 
-Link: https://linux-review.googlesource.com/id/I046079f48641a1d36fe627fc8827a9249102fd50
+Link: https://linux-review.googlesource.com/id/Ibfa458ef2804ff465d8eb07434a300bf36388d55
 Reviewed-by: Marco Elver <elver@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- lib/test_kasan.c  | 17 ++++++++++++-----
- mm/kasan/report.c |  2 +-
- 2 files changed, 13 insertions(+), 6 deletions(-)
+ lib/test_kasan.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index ef663bcf83e5..2419e36e117b 100644
+index 2419e36e117b..0cda4a1ff394 100644
 --- a/lib/test_kasan.c
 +++ b/lib/test_kasan.c
-@@ -68,23 +68,30 @@ static void kasan_test_exit(struct kunit *test)
-  * normally auto-disabled. When this happens, this test handler reenables
-  * tag checking. As tag checking can be only disabled or enabled per CPU, this
-  * handler disables migration (preemption).
-+ *
-+ * Since the compiler doesn't see that the expression can change the fail_data
-+ * fields, it can reorder or optimize away the accesses to those fields.
-+ * Use READ/WRITE_ONCE() for the accesses and compiler barriers around the
-+ * expression to prevent that.
-  */
- #define KUNIT_EXPECT_KASAN_FAIL(test, expression) do {		\
- 	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS))			\
- 		migrate_disable();				\
--	fail_data.report_expected = true;			\
--	fail_data.report_found = false;				\
-+	WRITE_ONCE(fail_data.report_expected, true);		\
-+	WRITE_ONCE(fail_data.report_found, false);		\
- 	kunit_add_named_resource(test,				\
- 				NULL,				\
- 				NULL,				\
- 				&resource,			\
- 				"kasan_data", &fail_data);	\
-+	barrier();						\
- 	expression;						\
-+	barrier();						\
- 	KUNIT_EXPECT_EQ(test,					\
--			fail_data.report_expected,		\
--			fail_data.report_found);		\
-+			READ_ONCE(fail_data.report_expected),	\
-+			READ_ONCE(fail_data.report_found));	\
- 	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {			\
--		if (fail_data.report_found)			\
-+		if (READ_ONCE(fail_data.report_found))		\
- 			hw_enable_tagging();			\
- 		migrate_enable();				\
- 	}							\
-diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-index e93d7973792e..234f35a84f19 100644
---- a/mm/kasan/report.c
-+++ b/mm/kasan/report.c
-@@ -331,7 +331,7 @@ static void kasan_update_kunit_status(struct kunit *cur_test)
- 	}
+@@ -382,7 +382,9 @@ static void kmalloc_uaf2(struct kunit *test)
+ {
+ 	char *ptr1, *ptr2;
+ 	size_t size = 43;
++	int counter = 0;
  
- 	kasan_data = (struct kunit_kasan_expectation *)resource->data;
--	kasan_data->report_found = true;
-+	WRITE_ONCE(kasan_data->report_found, true);
- 	kunit_put_resource(resource);
- }
- #endif /* IS_ENABLED(CONFIG_KUNIT) */
++again:
+ 	ptr1 = kmalloc(size, GFP_KERNEL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr1);
+ 
+@@ -391,6 +393,15 @@ static void kmalloc_uaf2(struct kunit *test)
+ 	ptr2 = kmalloc(size, GFP_KERNEL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr2);
+ 
++	/*
++	 * For tag-based KASAN ptr1 and ptr2 tags might happen to be the same.
++	 * Allow up to 16 attempts at generating different tags.
++	 */
++	if (!IS_ENABLED(CONFIG_KASAN_GENERIC) && ptr1 == ptr2 && counter++ < 16) {
++		kfree(ptr2);
++		goto again;
++	}
++
+ 	KUNIT_EXPECT_KASAN_FAIL(test, ptr1[40] = 'x');
+ 	KUNIT_EXPECT_PTR_NE(test, ptr1, ptr2);
+ 
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
