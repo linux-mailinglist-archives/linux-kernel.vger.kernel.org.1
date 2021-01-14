@@ -2,48 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753332F5FF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E95372F6008
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728231AbhANL3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 06:29:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54318 "EHLO
+        id S1728896AbhANLaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 06:30:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727740AbhANL3l (ORCPT
+        with ESMTP id S1727052AbhANLaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 06:29:41 -0500
+        Thu, 14 Jan 2021 06:30:22 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E35C061574;
-        Thu, 14 Jan 2021 03:29:01 -0800 (PST)
-Date:   Thu, 14 Jan 2021 11:28:59 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1AEDC0613D3;
+        Thu, 14 Jan 2021 03:29:05 -0800 (PST)
+Date:   Thu, 14 Jan 2021 11:29:03 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610623739;
+        s=2020; t=1610623744;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=PZsdJ/a0zYTQabjCkSspQGCF7aTGYepY66YQNJdeG04=;
-        b=4oTtPbX4gVSTXy4U33nMxSb9BEwWEtxQ1uCOLNBD22p682QI/cqXgLxWiXAX0l0AJ+B3mB
-        TL9NAQthaSEsBgYSeQPaWkLqdoK7tvdsAxlDiyP39UfdB9li8hx1pvXDqOtJ3bHWOKLMjq
-        Yqg/NVeMF7acb8ZBzkRWcPbanLDKNGetVNhb9mK40ARxhn+Mg8CJTZlWx6TbLyWhOUi7d9
-        mhh9FlWJN8OE2O8KzFsbo1WknwVsVqVJvmsMGFDkeZqU4Aio+6KShx46NIvl8BkPXUvbsR
-        dmd+SqWeWUiQFPpuKbfO7KE2WV3lItGHZ5D1JzO0Xium2iqbK9i+fSqTgZ5tUQ==
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JPB/l6LYFmvtproCxCZaLMkpJc1Hwdo0Nf5pwaE+DjY=;
+        b=pO5ZLpFS9fv4yvWl7Inqp36+qgIAeuGVFkvrsBvyy3ygqxrnsY59GKqTh+2ACBCRaJToXJ
+        GYrEfb+dtLrIsPGBK2FP/uWqe3co1bXyu87/VcXujTT5t1vsFQ2fHZ28aEwNRPds3eYnUO
+        lap5Kb5jgQfoniEwlJu0/6xVlAgMz04mMbMTCs80YvQXSCW+KK5EQwsQTxJw/8S7HtA4Js
+        u+RMlzqsFNuWnhYGz9iHrYCQz4F2XZo5Mb/3N5Td2QBaiJbE5VLv2ULORmdfMUUD22eO35
+        c53uVt1WLluC16UEkr6joaOeUCMKS4weonxUZr8d7pfpCV1Az0ueOA6tCzPoWQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610623739;
+        s=2020e; t=1610623744;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=PZsdJ/a0zYTQabjCkSspQGCF7aTGYepY66YQNJdeG04=;
-        b=HMJ29xdzkt/IGguWU/Pfqgb+uk2V9VlxzmziLJMu0pfvWmBLdJkuHru/7ECehNziRDhlkE
-        WtuVGfOLg2qBC8DQ==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JPB/l6LYFmvtproCxCZaLMkpJc1Hwdo0Nf5pwaE+DjY=;
+        b=5zB/hCzmG72d6ynFW7A0sgUlk5TPNwO26Mb08bcUwvBuD2Jga7vJGfXb32nzg95Kow2KFb
+        yzve4cknGv2JNMAQ==
+From:   "tip-bot2 for Steve Wahl" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/lockdep: Clean up check_redundant() a bit
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: perf/core] perf/x86/intel/uncore: With > 8 nodes, get pci bus
+ die id from NUMA info
+Cc:     Steve Wahl <steve.wahl@hpe.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
+In-Reply-To: <20210108153549.108989-3-steve.wahl@hpe.com>
+References: <20210108153549.108989-3-steve.wahl@hpe.com>
 MIME-Version: 1.0
-Message-ID: <161062373915.414.16842040757243490898.tip-bot2@tip-bot2>
+Message-ID: <161062374347.414.10709302386439251120.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -52,147 +61,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     175b1a60e8805617d74aefe17ce0d3a32eceb55c
-Gitweb:        https://git.kernel.org/tip/175b1a60e8805617d74aefe17ce0d3a32eceb55c
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 10 Dec 2020 11:16:34 +01:00
+Commit-ID:     9a7832ce3d920426a36cdd78eda4b3568d4d09e3
+Gitweb:        https://git.kernel.org/tip/9a7832ce3d920426a36cdd78eda4b3568d4d09e3
+Author:        Steve Wahl <steve.wahl@hpe.com>
+AuthorDate:    Fri, 08 Jan 2021 09:35:49 -06:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 14 Jan 2021 11:20:17 +01:00
+CommitterDate: Thu, 14 Jan 2021 11:20:14 +01:00
 
-locking/lockdep: Clean up check_redundant() a bit
+perf/x86/intel/uncore: With > 8 nodes, get pci bus die id from NUMA info
 
-In preparation for adding an TRACE_IRQFLAGS dependent skip function to
-check_redundant(), move it below the TRACE_IRQFLAGS #ifdef.
+The registers used to determine which die a pci bus belongs to don't
+contain enough information to uniquely specify more than 8 dies, so
+when more than 8 dies are present, use NUMA information instead.
 
-While there, provide a stub function to reduce #ifdef usage.
+Continue to use the previous method for 8 or fewer because it
+works there, and covers cases of NUMA being disabled.
 
+Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Link: https://lkml.kernel.org/r/20210108153549.108989-3-steve.wahl@hpe.com
 ---
- kernel/locking/lockdep.c | 91 +++++++++++++++++++++------------------
- 1 file changed, 49 insertions(+), 42 deletions(-)
+ arch/x86/events/intel/uncore_snbep.c | 93 ++++++++++++++++++---------
+ 1 file changed, 65 insertions(+), 28 deletions(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index f50f026..f2ae8a6 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -2130,46 +2130,6 @@ check_noncircular(struct held_lock *src, struct held_lock *target,
- 	return ret;
- }
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index 2d7014d..b79951d 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -1370,40 +1370,77 @@ static int snbep_pci2phy_map_init(int devid, int nodeid_loc, int idmap_loc, bool
+ 		if (!ubox_dev)
+ 			break;
+ 		bus = ubox_dev->bus->number;
+-		/* get the Node ID of the local register */
+-		err = pci_read_config_dword(ubox_dev, nodeid_loc, &config);
+-		if (err)
+-			break;
+-		nodeid = config & NODE_ID_MASK;
+-		/* get the Node ID mapping */
+-		err = pci_read_config_dword(ubox_dev, idmap_loc, &config);
+-		if (err)
+-			break;
++		/*
++		 * The nodeid and idmap registers only contain enough
++		 * information to handle 8 nodes.  On systems with more
++		 * than 8 nodes, we need to rely on NUMA information,
++		 * filled in from BIOS supplied information, to determine
++		 * the topology.
++		 */
++		if (nr_node_ids <= 8) {
++			/* get the Node ID of the local register */
++			err = pci_read_config_dword(ubox_dev, nodeid_loc, &config);
++			if (err)
++				break;
++			nodeid = config & NODE_ID_MASK;
++			/* get the Node ID mapping */
++			err = pci_read_config_dword(ubox_dev, idmap_loc, &config);
++			if (err)
++				break;
  
--#ifdef CONFIG_LOCKDEP_SMALL
--/*
-- * Check that the dependency graph starting at <src> can lead to
-- * <target> or not. If it can, <src> -> <target> dependency is already
-- * in the graph.
-- *
-- * Return BFS_RMATCH if it does, or BFS_RMATCH if it does not, return BFS_E* if
-- * any error appears in the bfs search.
-- */
--static noinline enum bfs_result
--check_redundant(struct held_lock *src, struct held_lock *target)
--{
--	enum bfs_result ret;
--	struct lock_list *target_entry;
--	struct lock_list src_entry;
--
--	bfs_init_root(&src_entry, src);
--	/*
--	 * Special setup for check_redundant().
--	 *
--	 * To report redundant, we need to find a strong dependency path that
--	 * is equal to or stronger than <src> -> <target>. So if <src> is E,
--	 * we need to let __bfs() only search for a path starting at a -(E*)->,
--	 * we achieve this by setting the initial node's ->only_xr to true in
--	 * that case. And if <prev> is S, we set initial ->only_xr to false
--	 * because both -(S*)-> (equal) and -(E*)-> (stronger) are redundant.
--	 */
--	src_entry.only_xr = src->read == 0;
--
--	debug_atomic_inc(nr_redundant_checks);
--
--	ret = check_path(target, &src_entry, hlock_equal, NULL, &target_entry);
--
--	if (ret == BFS_RMATCH)
--		debug_atomic_inc(nr_redundant);
--
--	return ret;
--}
--#endif
--
- #ifdef CONFIG_TRACE_IRQFLAGS
+-		segment = pci_domain_nr(ubox_dev->bus);
+-		raw_spin_lock(&pci2phy_map_lock);
+-		map = __find_pci2phy_map(segment);
+-		if (!map) {
++			segment = pci_domain_nr(ubox_dev->bus);
++			raw_spin_lock(&pci2phy_map_lock);
++			map = __find_pci2phy_map(segment);
++			if (!map) {
++				raw_spin_unlock(&pci2phy_map_lock);
++				err = -ENOMEM;
++				break;
++			}
++
++			/*
++			 * every three bits in the Node ID mapping register maps
++			 * to a particular node.
++			 */
++			for (i = 0; i < 8; i++) {
++				if (nodeid == ((config >> (3 * i)) & 0x7)) {
++					if (topology_max_die_per_package() > 1)
++						die_id = i;
++					else
++						die_id = topology_phys_to_logical_pkg(i);
++					map->pbus_to_dieid[bus] = die_id;
++					break;
++				}
++			}
+ 			raw_spin_unlock(&pci2phy_map_lock);
+-			err = -ENOMEM;
+-			break;
+-		}
++		} else {
++			int node = pcibus_to_node(ubox_dev->bus);
++			int cpu;
++
++			segment = pci_domain_nr(ubox_dev->bus);
++			raw_spin_lock(&pci2phy_map_lock);
++			map = __find_pci2phy_map(segment);
++			if (!map) {
++				raw_spin_unlock(&pci2phy_map_lock);
++				err = -ENOMEM;
++				break;
++			}
  
- /*
-@@ -2706,6 +2666,55 @@ static inline int check_irq_usage(struct task_struct *curr,
- }
- #endif /* CONFIG_TRACE_IRQFLAGS */
- 
-+#ifdef CONFIG_LOCKDEP_SMALL
-+/*
-+ * Check that the dependency graph starting at <src> can lead to
-+ * <target> or not. If it can, <src> -> <target> dependency is already
-+ * in the graph.
-+ *
-+ * Return BFS_RMATCH if it does, or BFS_RMATCH if it does not, return BFS_E* if
-+ * any error appears in the bfs search.
-+ */
-+static noinline enum bfs_result
-+check_redundant(struct held_lock *src, struct held_lock *target)
-+{
-+	enum bfs_result ret;
-+	struct lock_list *target_entry;
-+	struct lock_list src_entry;
+-		/*
+-		 * every three bits in the Node ID mapping register maps
+-		 * to a particular node.
+-		 */
+-		for (i = 0; i < 8; i++) {
+-			if (nodeid == ((config >> (3 * i)) & 0x7)) {
+-				if (topology_max_die_per_package() > 1)
+-					die_id = i;
+-				else
+-					die_id = topology_phys_to_logical_pkg(i);
+-				map->pbus_to_dieid[bus] = die_id;
++			die_id = -1;
++			for_each_cpu(cpu, cpumask_of_pcibus(ubox_dev->bus)) {
++				struct cpuinfo_x86 *c = &cpu_data(cpu);
 +
-+	bfs_init_root(&src_entry, src);
-+	/*
-+	 * Special setup for check_redundant().
-+	 *
-+	 * To report redundant, we need to find a strong dependency path that
-+	 * is equal to or stronger than <src> -> <target>. So if <src> is E,
-+	 * we need to let __bfs() only search for a path starting at a -(E*)->,
-+	 * we achieve this by setting the initial node's ->only_xr to true in
-+	 * that case. And if <prev> is S, we set initial ->only_xr to false
-+	 * because both -(S*)-> (equal) and -(E*)-> (stronger) are redundant.
-+	 */
-+	src_entry.only_xr = src->read == 0;
++				if (c->initialized && cpu_to_node(cpu) == node) {
++					map->pbus_to_dieid[bus] = die_id = c->logical_die_id;
++					break;
++				}
++			}
++			raw_spin_unlock(&pci2phy_map_lock);
 +
-+	debug_atomic_inc(nr_redundant_checks);
-+
-+	ret = check_path(target, &src_entry, hlock_equal, NULL, &target_entry);
-+
-+	if (ret == BFS_RMATCH)
-+		debug_atomic_inc(nr_redundant);
-+
-+	return ret;
-+}
-+
-+#else
-+
-+static inline enum bfs_result
-+check_redundant(struct held_lock *src, struct held_lock *target)
-+{
-+	return BFS_RNOMATCH;
-+}
-+
-+#endif
-+
- static void inc_chains(int irq_context)
- {
- 	if (irq_context & LOCK_CHAIN_HARDIRQ_CONTEXT)
-@@ -2926,7 +2935,6 @@ check_prev_add(struct task_struct *curr, struct held_lock *prev,
++			if (WARN_ON_ONCE(die_id == -1)) {
++				err = -EINVAL;
+ 				break;
+ 			}
  		}
+-		raw_spin_unlock(&pci2phy_map_lock);
  	}
  
--#ifdef CONFIG_LOCKDEP_SMALL
- 	/*
- 	 * Is the <prev> -> <next> link redundant?
- 	 */
-@@ -2935,7 +2943,6 @@ check_prev_add(struct task_struct *curr, struct held_lock *prev,
- 		return 0;
- 	else if (ret == BFS_RMATCH)
- 		return 2;
--#endif
- 
- 	if (!*trace) {
- 		*trace = save_trace();
+ 	if (!err) {
