@@ -2,199 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416E92F672F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2C62F6728
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728631AbhANROV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:14:21 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:41995 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728373AbhANROS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:14:18 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10EHC1CD011542;
-        Thu, 14 Jan 2021 18:13:27 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=3Fnau9VjgNR74S0Cjwr64Hdn4b2pMFnAyPJqBCtPQs8=;
- b=zA/7vAaW7tl1oEmqInd+2Uka/SBvPTU3BmQJk5EE/f0OctvEMwIEIMso2iZP6A203Ib5
- K0baDuOJYeEx3Cf7mIXc3+CobCBAwD47hUfd3qSNRKc389bcNXt6swEwcO6cDC5Wz1qQ
- x1fy5yDsn7uzeuWGOdzh8Pk/M75VvVkS9UaRIOTRF+Y0e8qwppsoGYrK90cQanmJ2UYd
- /p377JXankjvwLdrn91qskenj70VSLCkfXWGwxGb6E7YSn8pW2LEvQe59CA71iY/vKww
- RPHNyel+gPnFWi7puVO/tXU4L/hrEK9UV04XMabr/Zrb08JPpiYdsh/0Bn6QiU9NQWDX /Q== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 35y5gxea5s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 18:13:27 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F3FD610002A;
-        Thu, 14 Jan 2021 18:13:26 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E5BC625D03A;
-        Thu, 14 Jan 2021 18:13:26 +0100 (CET)
-Received: from localhost (10.75.127.45) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 14 Jan 2021 18:13:25
- +0100
-From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>
-Subject: [PATCH v2 2/2] phy: stm32: register usbphyc as clock provider of ck_usbo_48m clock
-Date:   Thu, 14 Jan 2021 18:13:14 +0100
-Message-ID: <20210114171314.18946-3-amelie.delaunay@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210114171314.18946-1-amelie.delaunay@foss.st.com>
-References: <20210114171314.18946-1-amelie.delaunay@foss.st.com>
+        id S1728041AbhANRN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:13:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56430 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726288AbhANRN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 12:13:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0B6123B1C;
+        Thu, 14 Jan 2021 17:13:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610644397;
+        bh=YkfYKFhD60r7aJ08iIlPNxpml5MZm6jxC/Z8z/gNDMc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZTq1MyWGIe6Fyk9JF8cyW43rupJUbRnm4wpLMSafbWdULnsbKNpqGspUCk9rhbWYq
+         WddGCBZa0cwQS1BLgxpJX2uLVjzmA4PcKCpqrqRf9f0u351Y1iKP0D77Zn4a2k5lvs
+         jnHXxJM5dV4gFXwMxFvGtnjgYzAiSSo3GQQrYpZo3Zyz6IBCXv33LVK/bRAKqz16VZ
+         Tk7hd222VY+AwtHYU8tU9l+5Wgd3XEJoDjemUjdjpa+JrZwkGqHJo/jxX0BsWqWzYH
+         hymp+cI0vEmDIMXSpwvXIFAssMsfUw5aNKTdI0uBvm+7lPdrhh0CxUNnzSrLClMFlD
+         /se2L2QZZ5YWQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 72B7935225DC; Thu, 14 Jan 2021 09:13:17 -0800 (PST)
+Date:   Thu, 14 Jan 2021 09:13:17 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@kernel.org, tglx@linutronix.de, jiangshanlai@gmail.com,
+        cai@redhat.com, vincent.donnefort@arm.com, decui@microsoft.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org, tj@kernel.org
+Subject: Re: [PATCH] sched/core: Print out straggler tasks in
+ sched_cpu_dying()
+Message-ID: <20210114171317.GJ2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210113183141.11974-1-valentin.schneider@arm.com>
+ <20210113220244.GC2743@paulmck-ThinkPad-P72>
+ <jhjft34z84j.mognet@arm.com>
+ <20210114003613.GD2743@paulmck-ThinkPad-P72>
+ <jhjczy7ztw0.mognet@arm.com>
+ <20210114152207.GI2743@paulmck-ThinkPad-P72>
+ <jhj35z3o6qv.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-14_06:2021-01-14,2021-01-14 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jhj35z3o6qv.mognet@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ck_usbo_48m is generated by usbphyc PLL and used by OTG controller
-for Full-Speed use cases with dedicated Full-Speed transceiver.
+On Thu, Jan 14, 2021 at 03:52:56PM +0000, Valentin Schneider wrote:
+> On 14/01/21 07:22, Paul E. McKenney wrote:
+> > If someone can identify Lai's series to me, I would be happy to give it
+> > a try as well.  All I see are workqueue-specific patches and patches
+> > contributing to the discussion of possible fixes to the splats from
+> > Peter's series.  (I figured that I would wait for the discussion to
+> > converge a bit.)
+> >
+> 
+> I was referring to
+> 
+> http://lore.kernel.org/r/20210111152638.2417-1-jiangshanlai@gmail.com
+> 
+> which I believe you already tested earlier version of.
 
-ck_usbo_48m is available as soon as the PLL is enabled.
+Indeed I did, thank you for the clarification.
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
----
-Changes in v2:
-- fix COMMON_CLK dependency issue reported by kernel test robot
----
- drivers/phy/st/Kconfig             |  1 +
- drivers/phy/st/phy-stm32-usbphyc.c | 66 ++++++++++++++++++++++++++++++
- 2 files changed, 67 insertions(+)
-
-diff --git a/drivers/phy/st/Kconfig b/drivers/phy/st/Kconfig
-index b32f44ff9033..3fc3d0781fb8 100644
---- a/drivers/phy/st/Kconfig
-+++ b/drivers/phy/st/Kconfig
-@@ -36,6 +36,7 @@ config PHY_STIH407_USB
- config PHY_STM32_USBPHYC
- 	tristate "STMicroelectronics STM32 USB HS PHY Controller driver"
- 	depends on ARCH_STM32 || COMPILE_TEST
-+	depends on COMMON_CLK
- 	select GENERIC_PHY
- 	help
- 	  Enable this to support the High-Speed USB transceivers that are part
-diff --git a/drivers/phy/st/phy-stm32-usbphyc.c b/drivers/phy/st/phy-stm32-usbphyc.c
-index d08fbb180e43..349976259112 100644
---- a/drivers/phy/st/phy-stm32-usbphyc.c
-+++ b/drivers/phy/st/phy-stm32-usbphyc.c
-@@ -7,6 +7,7 @@
-  */
- #include <linux/bitfield.h>
- #include <linux/clk.h>
-+#include <linux/clk-provider.h>
- #include <linux/delay.h>
- #include <linux/iopoll.h>
- #include <linux/kernel.h>
-@@ -70,6 +71,7 @@ struct stm32_usbphyc {
- 	struct regulator *vdda1v1;
- 	struct regulator *vdda1v8;
- 	atomic_t n_pll_cons;
-+	struct clk_hw clk48_hw;
- 	int switch_setup;
- };
- 
-@@ -295,6 +297,61 @@ static const struct phy_ops stm32_usbphyc_phy_ops = {
- 	.owner = THIS_MODULE,
- };
- 
-+static int stm32_usbphyc_clk48_prepare(struct clk_hw *hw)
-+{
-+	struct stm32_usbphyc *usbphyc = container_of(hw, struct stm32_usbphyc, clk48_hw);
-+
-+	return stm32_usbphyc_pll_enable(usbphyc);
-+}
-+
-+static void stm32_usbphyc_clk48_unprepare(struct clk_hw *hw)
-+{
-+	struct stm32_usbphyc *usbphyc = container_of(hw, struct stm32_usbphyc, clk48_hw);
-+
-+	stm32_usbphyc_pll_disable(usbphyc);
-+}
-+
-+static unsigned long stm32_usbphyc_clk48_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
-+{
-+	return 48000000;
-+}
-+
-+static const struct clk_ops usbphyc_clk48_ops = {
-+	.prepare = stm32_usbphyc_clk48_prepare,
-+	.unprepare = stm32_usbphyc_clk48_unprepare,
-+	.recalc_rate = stm32_usbphyc_clk48_recalc_rate,
-+};
-+
-+static void stm32_usbphyc_clk48_unregister(void *data)
-+{
-+	struct stm32_usbphyc *usbphyc = data;
-+
-+	of_clk_del_provider(usbphyc->dev->of_node);
-+	clk_hw_unregister(&usbphyc->clk48_hw);
-+}
-+
-+static int stm32_usbphyc_clk48_register(struct stm32_usbphyc *usbphyc)
-+{
-+	struct device_node *node = usbphyc->dev->of_node;
-+	struct clk_init_data init = { };
-+	int ret = 0;
-+
-+	init.name = "ck_usbo_48m";
-+	init.ops = &usbphyc_clk48_ops;
-+
-+	usbphyc->clk48_hw.init = &init;
-+
-+	ret = clk_hw_register(usbphyc->dev, &usbphyc->clk48_hw);
-+	if (ret)
-+		return ret;
-+
-+	ret = of_clk_add_hw_provider(node, of_clk_hw_simple_get, &usbphyc->clk48_hw);
-+	if (ret)
-+		clk_hw_unregister(&usbphyc->clk48_hw);
-+
-+	return ret;
-+}
-+
- static void stm32_usbphyc_switch_setup(struct stm32_usbphyc *usbphyc,
- 				       u32 utmi_switch)
- {
-@@ -473,6 +530,13 @@ static int stm32_usbphyc_probe(struct platform_device *pdev)
- 		goto clk_disable;
- 	}
- 
-+	ret = stm32_usbphyc_clk48_register(usbphyc);
-+	if (ret) {
-+		dev_err(dev,
-+			"failed to register ck_usbo_48m clock: %d\n", ret);
-+		goto clk_disable;
-+	}
-+
- 	version = readl_relaxed(usbphyc->base + STM32_USBPHYC_VERSION);
- 	dev_info(dev, "registered rev:%lu.%lu\n",
- 		 FIELD_GET(MAJREV, version), FIELD_GET(MINREV, version));
-@@ -497,6 +561,8 @@ static int stm32_usbphyc_remove(struct platform_device *pdev)
- 		if (usbphyc->phys[port]->active)
- 			stm32_usbphyc_phy_exit(usbphyc->phys[port]->phy);
- 
-+	stm32_usbphyc_clk48_unregister(usbphyc);
-+
- 	clk_disable_unprepare(usbphyc->clk);
- 
- 	return 0;
--- 
-2.17.1
-
+							Thanx, Paul
