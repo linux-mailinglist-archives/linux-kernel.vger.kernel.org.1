@@ -2,166 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0502F6067
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8A52F606B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728518AbhANLkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 06:40:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52528 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727220AbhANLkv (ORCPT
+        id S1728456AbhANLmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 06:42:13 -0500
+Received: from smtpweb147.aruba.it ([62.149.158.147]:44968 "EHLO
+        smtpweb147.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726948AbhANLmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 06:40:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610624363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FWSCsULV8D2VOcK8u1F6d/iVpJrDsWQFMD1WA7PL7GA=;
-        b=ZM8wrOpAm+Q8jL1sNn+Tpk+xsaLblhMDCem7IEnD0NCQhp+WsTnNTCaplETRaZJ0YPoCpy
-        +F6My17Oscc70L107M1+52L9ir8BYe8IqIokN/q9pEOMLTWjr1vaBnopRBqvc5lx0qEH4e
-        AMOBaJ3dGKnz4g2zk2EFMq9p3zIWD5Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-215-AlMHmV3NPcKz0DLidKap6Q-1; Thu, 14 Jan 2021 06:39:21 -0500
-X-MC-Unique: AlMHmV3NPcKz0DLidKap6Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F27BF1842143;
-        Thu, 14 Jan 2021 11:39:19 +0000 (UTC)
-Received: from starship (unknown [10.35.206.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EE22860C69;
-        Thu, 14 Jan 2021 11:39:12 +0000 (UTC)
-Message-ID: <932e6ab3da191bd342e354ad7e4d05c835f785e9.camel@redhat.com>
-Subject: Re: [PATCH 2/2] KVM: SVM: Add support for VMCB address check change
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Wei Huang <wei.huang2@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, vkuznets@redhat.com, joro@8bytes.org,
-        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
-        dgilbert@redhat.com
-Date:   Thu, 14 Jan 2021 13:39:11 +0200
-In-Reply-To: <X/316tCByxsBQP5t@google.com>
-References: <20210112063703.539893-1-wei.huang2@amd.com>
-         <20210112063703.539893-2-wei.huang2@amd.com> <X/316tCByxsBQP5t@google.com>
-Content-Type: multipart/mixed; boundary="=-EVQygRQtbtdeLy3t4p4U"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Thu, 14 Jan 2021 06:42:12 -0500
+Received: from [192.168.1.184] ([79.10.42.7])
+        by Aruba Outgoing Smtp  with ESMTPA
+        id 00zhlmCP65BgL00zilVupq; Thu, 14 Jan 2021 12:40:52 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1610624452; bh=5fQqfvw4DkWANFTt5ckFnOsldleYY7vSY0pJjS8pZDU=;
+        h=Subject:To:From:Date:MIME-Version:Content-Type;
+        b=ip+aYt1qggLYSmK3c2sbh8LUW/Nucij64rUPQGyTYzXAR6ITw/LE6xoftdOvK1BFn
+         a6KFB0AEUzepiqp3F6BebnTAITOWDu5RysAlo49L9k1/XY4S7dm2dHxCHEBjyn/gW1
+         WtvzJCjXSz2/2ZB1IimdZOgc4DAC63AZf0hOMvNKx9P8UBbMlgppJgfzCjtfeKN91s
+         1u3s4QodU/ROl868SIPLq3/4/x2tNmofp3ZNtq7tBMgD4HAvc/VpqfGMqJnxBnpjH/
+         PGWfUpYOYmqWUI920O6GKD1JiNj+PpXNQgecibF0LafXANIZddkTF1GgYp7sUAlz1Y
+         N6rD/NJkGtu7g==
+Subject: Re: [PATCH v6] drm/sun4i: tcon: fix inverted DCLK polarity
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     wens@csie.org, daniel@ffwll.ch, airlied@linux.ie,
+        treding@nvidia.com, Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Giulio Benetti <giulio.benetti@micronovasrl.com>
+References: <d244aa6b-00b7-d768-83cb-e5a228b7ee08@trexom.it>
+ <20210114081732.9386-1-giulio.benetti@benettiengineering.com>
+From:   Marjan Pascolo <marjan.pascolo@trexom.it>
+Message-ID: <08782c29-4988-8b8e-fbd2-61b9beff9fef@trexom.it>
+Date:   Thu, 14 Jan 2021 12:40:49 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210114081732.9386-1-giulio.benetti@benettiengineering.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: it
+X-CMAE-Envelope: MS4wfBVV2/iWGDhknf2LRCaTWYHc0JBSU+9FbBOzV8xo1c9IaZP6h0MQedJBMvbEL045NtestzcjSdSR2QaDGCw/d+/Y5OjyuRGE7NqkpLpAdHTT4QGs/FQu
+ oAJ2p1vXfFyj8eZZ85HpydmmlVcGff2KC99Of4vyzOmgpwwp2I9Isi4Ur761XZmUv9xk6KDcS4MrJZy5TXaVzOSNQWK52uWGqXKMHHWEurHxf5SXYgnPkeBg
+ ecSqKI/z/2abJHwwLEKkUJSB7kg5ujdPsLaEuSIO6Mk7cNFMfhVy5xU2cLkqlzOR/HE9lCo/oiVMvxgsXSZvdNW1nE6SLZDk21i3/QJhQzyPNkzsN26LdYEs
+ av01kIWcpAikbGXS10un/VXrwgHx6KKxORU8mSgnz7K6aNbEwH4QD51DOX/YwG0oTD44YJr7nV3hRRPsUhW1UkeSgEeNQrVf1IVK5NS6V8pO1Amp3kLFpB8j
+ T00PUHifcvBzKs5SZn//uiDXu+Y6l9bqTTWJsHupvhMUG3futlMa3S68UJhp/j/dl62YLHl+Wm6mOq8X
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---=-EVQygRQtbtdeLy3t4p4U
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Tested on a13 and works.
 
-On Tue, 2021-01-12 at 11:18 -0800, Sean Christopherson wrote:
-> On Tue, Jan 12, 2021, Wei Huang wrote:
-> > New AMD CPUs have a change that checks VMEXIT intercept on special SVM
-> > instructions before checking their EAX against reserved memory region.
-> > This change is indicated by CPUID_0x8000000A_EDX[28]. If it is 1, KVM
-> > doesn't need to intercept and emulate #GP faults for such instructions
-> > because #GP isn't supposed to be triggered.
-> > 
-> > Co-developed-by: Bandan Das <bsd@redhat.com>
-> > Signed-off-by: Bandan Das <bsd@redhat.com>
-> > Signed-off-by: Wei Huang <wei.huang2@amd.com>
-> > ---
-> >  arch/x86/include/asm/cpufeatures.h | 1 +
-> >  arch/x86/kvm/svm/svm.c             | 2 +-
-> >  2 files changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> > index 84b887825f12..ea89d6fdd79a 100644
-> > --- a/arch/x86/include/asm/cpufeatures.h
-> > +++ b/arch/x86/include/asm/cpufeatures.h
-> > @@ -337,6 +337,7 @@
-> >  #define X86_FEATURE_AVIC		(15*32+13) /* Virtual Interrupt Controller */
-> >  #define X86_FEATURE_V_VMSAVE_VMLOAD	(15*32+15) /* Virtual VMSAVE VMLOAD */
-> >  #define X86_FEATURE_VGIF		(15*32+16) /* Virtual GIF */
-> > +#define X86_FEATURE_SVME_ADDR_CHK	(15*32+28) /* "" SVME addr check */
-> 
-> Heh, KVM should advertise this to userspace by setting the kvm_cpu_cap bit.  KVM
-> KVM forwards relevant VM-Exits to L1 without checking if rAX points at an
-> invalid L1 GPA.
+Here are results:
+
+with DRIVE_NEGEDGE
+
+https://pasteboard.co/JJAGDAy.jpg
+
+https://pasteboard.co/JJAHDAj.jpg
+
+with DRIVE_POSEDGE
+
+https://pasteboard.co/JJAIbBf.jpg
+
+https://pasteboard.co/JJAIGfo.jpg
 
 
-I agree that we should be able to fix/hide the errata from the L1,
-and expose this bit to L1 to avoid it trying to apply this workaround
-itself when it itself runs nested guests.
+Il 14/01/2021 09:17, Giulio Benetti ha scritto:
+> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
+>
+> During commit 88bc4178568b ("drm: Use new
+> DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags") DRM_BUS_FLAG_*
+> macros have been changed to avoid ambiguity but just because of this
+> ambiguity previous DRM_BUS_FLAG_PIXDATA_(POS/NEG)EDGE were used meaning
+> _SAMPLE_ not _DRIVE_. This leads to DLCK inversion and need to fix but
+> instead of swapping phase values, let's adopt an easier approach Maxime
+> suggested:
+> It turned out that bit 26 of SUN4I_TCON0_IO_POL_REG is dedicated to
+> invert DCLK polarity and this makes things really easier than before. So
+> let's handle DCLK polarity by adding SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE
+> as bit 26 and activating according to bus_flags the same way it is done
+> for all the other signals polarity.
+>
+> Fixes: 88bc4178568b ("drm: Use new DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags")
+> Suggested-by: Maxime Ripard <maxime@cerno.tech>
+> Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
 
-Note that there is currently a bug in this patch series, that prevents
-this workaround to work for a guest that runs nested guests itself (e.g L3):
+Tested-by: Marjan Pascolo <marjan.pascolo@trexom.it>
+[Tested successfully with A13]
 
-(when we intercept the #GP, and we are running
-a nested guest, we should do a vmexit with SVM_EXIT_VMRUN/VMSAVE/etc exit
-reason instead of running the instruction), but this can be fixed,
-I did it locally and it works.
-
-(lightly tested) patch for that attached.
-
-Best regards,
-	Maxim Levitsky
-> 
-> >  /* Intel-defined CPU features, CPUID level 0x00000007:0 (ECX), word 16 */
-> >  #define X86_FEATURE_AVX512VBMI		(16*32+ 1) /* AVX512 Vector Bit Manipulation instructions*/
-> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> > index 74620d32aa82..451b82df2eab 100644
-> > --- a/arch/x86/kvm/svm/svm.c
-> > +++ b/arch/x86/kvm/svm/svm.c
-> > @@ -311,7 +311,7 @@ int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
-> >  	svm->vmcb->save.efer = efer | EFER_SVME;
-> >  	vmcb_mark_dirty(svm->vmcb, VMCB_CR);
-> >  	/* Enable GP interception for SVM instructions if needed */
-> > -	if (efer & EFER_SVME)
-> > +	if ((efer & EFER_SVME) && !boot_cpu_has(X86_FEATURE_SVME_ADDR_CHK))
-> >  		set_exception_intercept(svm, GP_VECTOR);
-> >  
-> >  	return 0;
-> > -- 
-> > 2.27.0
-> > 
-
-
-
-
-
-
---=-EVQygRQtbtdeLy3t4p4U
-Content-Disposition: attachment; filename="patch.diff"
-Content-Type: text/x-patch; name="patch.diff"; charset="UTF-8"
-Content-Transfer-Encoding: base64
-
-Y29tbWl0IDI4YWI4OWFhYTExMzgwMzA2YmFmYmY0OTI2NTIyMmYyYTJkYTcxZGEKQXV0aG9yOiBN
-YXhpbSBMZXZpdHNreSA8bWxldml0c2tAcmVkaGF0LmNvbT4KRGF0ZTogICBUaHUgSmFuIDE0IDEw
-OjUzOjI1IDIwMjEgKzAyMDAKCiAgICBrdm06IHg4NjogZml4IHRoYXQgZXJyYXRhIGZvciBuZXN0
-ZWQgZ3Vlc3RzCgpkaWZmIC0tZ2l0IGEvYXJjaC94ODYva3ZtL3N2bS9zdm0uYyBiL2FyY2gveDg2
-L2t2bS9zdm0vc3ZtLmMKaW5kZXggYzMxZTAwNTI1MmQ2OS4uOWNmYTU5NDZmYWM2OSAxMDA2NDQK
-LS0tIGEvYXJjaC94ODYva3ZtL3N2bS9zdm0uYworKysgYi9hcmNoL3g4Ni9rdm0vc3ZtL3N2bS5j
-CkBAIC0yMDI3LDYgKzIwMjcsMjYgQEAgc3RhdGljIGludCBzdm1fZW11bGF0ZV92bV9pbnN0cihz
-dHJ1Y3Qga3ZtX3ZjcHUgKnZjcHUsIHU4IG1vZHJtKQogewogCXN0cnVjdCB2Y3B1X3N2bSAqc3Zt
-ID0gdG9fc3ZtKHZjcHUpOwogCisJaWYgKGlzX2d1ZXN0X21vZGUodmNwdSkpIHsKKwkJc3dpdGNo
-IChtb2RybSkgeworCQljYXNlIDB4ZDg6IC8qIFZNUlVOICovCisJCQlzdm0tPnZtY2ItPmNvbnRy
-b2wuZXhpdF9jb2RlID0gU1ZNX0VYSVRfVk1SVU47CisJCQlicmVhazsKKwkJY2FzZSAweGRhOiAv
-KiBWTUxPQUQgKi8KKwkJCXN2bS0+dm1jYi0+Y29udHJvbC5leGl0X2NvZGUgPSBTVk1fRVhJVF9W
-TUxPQUQ7CisJCQlicmVhazsKKwkJY2FzZSAweGRiOiAvKiBWTVNBVkUgKi8KKwkJCXN2bS0+dm1j
-Yi0+Y29udHJvbC5leGl0X2NvZGUgPSBTVk1fRVhJVF9WTUxPQUQ7CisJCQlicmVhazsKKwkJZGVm
-YXVsdDoKKwkJCWdvdG8gaW5qZWN0X2V4Y2VwdGlvbjsKKwkJfQorCisJCXN2bS0+dm1jYi0+Y29u
-dHJvbC5leGl0X2luZm9fMSA9IDA7CisJCXN2bS0+dm1jYi0+Y29udHJvbC5leGl0X2luZm9fMiA9
-IDA7CisJCXJldHVybiBuZXN0ZWRfc3ZtX3ZtZXhpdChzdm0pOworCX0KKwogCXN3aXRjaCAobW9k
-cm0pIHsKIAljYXNlIDB4ZDg6IC8qIFZNUlVOICovCiAJCXJldHVybiB2bXJ1bl9pbnRlcmNlcHRp
-b24oc3ZtKTsKQEAgLTIwMzUsNiArMjA1NSw3IEBAIHN0YXRpYyBpbnQgc3ZtX2VtdWxhdGVfdm1f
-aW5zdHIoc3RydWN0IGt2bV92Y3B1ICp2Y3B1LCB1OCBtb2RybSkKIAljYXNlIDB4ZGI6IC8qIFZN
-U0FWRSAqLwogCQlyZXR1cm4gdm1zYXZlX2ludGVyY2VwdGlvbihzdm0pOwogCWRlZmF1bHQ6Citp
-bmplY3RfZXhjZXB0aW9uOgogCQkvKiBpbmplY3QgYSAjR1AgZm9yIGFsbCBvdGhlciBjYXNlcyAq
-LwogCQlrdm1fcXVldWVfZXhjZXB0aW9uX2UodmNwdSwgR1BfVkVDVE9SLCAwKTsKIAkJcmV0dXJu
-IDE7Cg==
-
-
---=-EVQygRQtbtdeLy3t4p4U--
-
+> ---
+> V2->V3:
+> - squash 2 patches into 1
+> V3->V4:
+> - add SUN4I_TCON0_IO_POL_DCLK_POSITIVE to regmap_update_bits() as suggested by Maxime
+> V4->V5:
+> polarity is still wrong so:
+> - let's use SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE macro
+>    instead of _DCLK_POSITIVE(that would make sense only in realtion with DCLK)
+> - invert condition using _NEGEDGE instead of _POSEDGE and then matching with
+>    register bit SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE
+> - correct commit log according to V4->V5 changes
+> V5->V6:
+> - fix typo in SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE as suggested by Marjan
+> ---
+>   drivers/gpu/drm/sun4i/sun4i_tcon.c | 21 ++-------------------
+>   drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
+>   2 files changed, 3 insertions(+), 19 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> index eaaf5d70e352..6b9af4c08cd6 100644
+> --- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> @@ -569,30 +569,13 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tcon *tcon,
+>   	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
+>   		val |= SUN4I_TCON0_IO_POL_DE_NEGATIVE;
+>   
+> -	/*
+> -	 * On A20 and similar SoCs, the only way to achieve Positive Edge
+> -	 * (Rising Edge), is setting dclk clock phase to 2/3(240°).
+> -	 * By default TCON works in Negative Edge(Falling Edge),
+> -	 * this is why phase is set to 0 in that case.
+> -	 * Unfortunately there's no way to logically invert dclk through
+> -	 * IO_POL register.
+> -	 * The only acceptable way to work, triple checked with scope,
+> -	 * is using clock phase set to 0° for Negative Edge and set to 240°
+> -	 * for Positive Edge.
+> -	 * On A33 and similar SoCs there would be a 90° phase option,
+> -	 * but it divides also dclk by 2.
+> -	 * Following code is a way to avoid quirks all around TCON
+> -	 * and DOTCLOCK drivers.
+> -	 */
+> -	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
+> -		clk_set_phase(tcon->dclk, 240);
+> -
+>   	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
+> -		clk_set_phase(tcon->dclk, 0);
+> +		val |= SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE;
+>   
+>   	regmap_update_bits(tcon->regs, SUN4I_TCON0_IO_POL_REG,
+>   			   SUN4I_TCON0_IO_POL_HSYNC_POSITIVE |
+>   			   SUN4I_TCON0_IO_POL_VSYNC_POSITIVE |
+> +			   SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE |
+>   			   SUN4I_TCON0_IO_POL_DE_NEGATIVE,
+>   			   val);
+>   
+> diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.h b/drivers/gpu/drm/sun4i/sun4i_tcon.h
+> index cfbf4e6c1679..c5ac1b02482c 100644
+> --- a/drivers/gpu/drm/sun4i/sun4i_tcon.h
+> +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.h
+> @@ -113,6 +113,7 @@
+>   #define SUN4I_TCON0_IO_POL_REG			0x88
+>   #define SUN4I_TCON0_IO_POL_DCLK_PHASE(phase)		((phase & 3) << 28)
+>   #define SUN4I_TCON0_IO_POL_DE_NEGATIVE			BIT(27)
+> +#define SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE		BIT(26)
+>   #define SUN4I_TCON0_IO_POL_HSYNC_POSITIVE		BIT(25)
+>   #define SUN4I_TCON0_IO_POL_VSYNC_POSITIVE		BIT(24)
+>   
