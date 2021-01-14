@@ -2,243 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2042F6708
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0672F66FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:15:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbhANRKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:10:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
+        id S1728095AbhANRJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:09:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728189AbhANRJy (ORCPT
+        with ESMTP id S1727628AbhANRJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:09:54 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D544C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:08:39 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id f4so9255465ejx.7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:08:39 -0800 (PST)
+        Thu, 14 Jan 2021 12:09:15 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46AE1C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:08:35 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id i6so5841325otr.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:08:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Yyk1VCADWCOtnTqYMeHY5n4r0ojuUJlLb/a2WuLwo1w=;
-        b=mPjPwjS76keC69Orxdpik9MecxeBsduAbm25sCylxVU+KPdqAWMInSWZdxYaGT3a7Y
-         lIu5ryp30HVGgXu0oX6NGkVTD8GU+zSM6sxHv/XAv7y0BH86NhYs2CowacD9rCO3F0DZ
-         1uC+6KSe2mIYMkB1yqQVC1czBeDRhdqPBV5x0fCxujClISq4zkFyfpUl7DCNBjggzJVV
-         4J0wer0sTzepr01KrJ8XkItARutOE4H5WvUQ5ggBVdAxgJ1RtSp1th0KJzSNhNoi5nY5
-         7/b1cskmEWMj8OQUaE/4JH0nekPgsIlthjQ7uTqRWwdoHWBk7rHXS2fOhwAqioWDcrzD
-         bbAQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JJ76hElPviEmL0kai1yU1qfanE+KP56ktX49es7QOLA=;
+        b=VLRraNpf8Uod0P+jXq5oUWVhmv0tHCnpj0PBAkhb6VVRbTd2M0G6yfOhWlavZ0DaBy
+         Q7UCBBLeB/dNUjXghVaJ6FQTgmtOJJ0YOwo5NG5pSau2j5NtBgrsbMLJGIP8aM5dqIed
+         KKopZzR9oU90sGzZ64oGsA8W9NGW82xUs0qzXl41Fak4fpMJKG1nS8bnjrdig/lY648c
+         CO2FCHr16UTj8tSXZSYNFO1OCo431r789AdSBcqR5W5d+FZ1pvYZbDQT/x6a5lAfB+aD
+         uogwcRMteU08B0zE5XEGT6lUPBTnoF72sJW8I35Z5XxEDlSbTlvKtm+PmhMDCFRmhjJO
+         rB1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Yyk1VCADWCOtnTqYMeHY5n4r0ojuUJlLb/a2WuLwo1w=;
-        b=NcND+oZG9ltwbnLUP5LjKnZcCyz8W9Y4X80/TQr/9L+MN7iPuDRCCaYUWcz4xtQsRE
-         dqfu7vS34Mg6m05UKH8S0Jw4jjj9W/gAvjPnMVPr4WMHhk6xpYGCUhMBVS1gTjhjBPX6
-         84w7xyD2Oa3am3lAMEywK7J4Spuzdv6EA68WlikLQSFCbFzJVMi1fSjQ0rXcj7Ui9p2u
-         Q/5BrpgIHiH/kPWjPShcpyo/qXfV1cbJksdw4uCaWdaNFtHzcLz/NddARshihD0Jw5QL
-         ywJjqQV9ybUiY691tqIL8sdHDSXftNQ9HYjNdVlPXFkOw9GIR0xPEzBpvHRJY9HuO/bB
-         V0Ug==
-X-Gm-Message-State: AOAM530Zce6nS6A2Nz7dy8yID934Nww2n8ZFsXGgjvpgnZIJzQUXh64H
-        DxrSLRw16ouk1/jGcCyl0XQvOPWAinTY7w==
-X-Google-Smtp-Source: ABdhPJyRoPUfFhN5wjD0OMaIKBWPVS0QtZ1bnkRlUaBxmCmnJAVRO2H6BNu1jafgvYbBipxw2VXQQA==
-X-Received: by 2002:a17:907:9483:: with SMTP id dm3mr5965483ejc.120.1610644117955;
-        Thu, 14 Jan 2021 09:08:37 -0800 (PST)
-Received: from yoga-910.localhost (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id be6sm2397644edb.29.2021.01.14.09.08.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 09:08:37 -0800 (PST)
-From:   Ioana Ciornei <ciorneiioana@gmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Cc:     laurentiu.tudor@nxp.com, Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH 5/5] bus: fsl-mc: add autorescan sysfs
-Date:   Thu, 14 Jan 2021 19:07:52 +0200
-Message-Id: <20210114170752.2927915-6-ciorneiioana@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210114170752.2927915-1-ciorneiioana@gmail.com>
-References: <20210114170752.2927915-1-ciorneiioana@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JJ76hElPviEmL0kai1yU1qfanE+KP56ktX49es7QOLA=;
+        b=fC4XPmVQyjKmy393UeSr5Ni+IQUp4UyMLMIWrdGAYBiZsLaMJwmX/GvQEKoxsY0fYw
+         VcHvufveMYOTX0mAmBBnlehTLdBnO5IrdmOgJMzEf3JgdoLAXySkZZq4W6OFG0IUIoFY
+         et43dTKjrf+Njgr1YyZKVAMl79jhiC0tUAiaOmgNdVwEMKJvP0fhw8f7IOq4Dd9aRc+p
+         s5Xh4p4+930XLz/o5xWoUPLBV6IBj43MkBhMhF+oCUZtERngWkRcM8fxSCz9+jFWdBMD
+         kWXp4zQZVPVPClHXQaD3C2Nu4MfwUimvqeqxNiFg6QkKfeqVaby0v3UAfHEqe0+fVyN9
+         +uvQ==
+X-Gm-Message-State: AOAM532QpJS6/Nb+ws5rWjt0rzizSVEaekIc40sDJWLYhr36rAmgR4Gn
+        JLlrkM9j9VUnsegcrvPyTgp1eKBAujmgd3nRwoY=
+X-Google-Smtp-Source: ABdhPJxEO/hs3H3eMB9abvpHfAIzUeDjeNa8BAjSdlHYHxcsp6EAq+lPgPgEsgv3I5tRm4PXiz2ZMDNoCq+6fbPxl/g=
+X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr5449231ote.132.1610644114763;
+ Thu, 14 Jan 2021 09:08:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210113080752.1003793-1-lee.jones@linaro.org> <20210113080752.1003793-8-lee.jones@linaro.org>
+In-Reply-To: <20210113080752.1003793-8-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 14 Jan 2021 12:08:23 -0500
+Message-ID: <CADnq5_OO8xcFHzmnN2-=k9sC8Fb3UnLy4EGeHu6Dh_kmJxkXgw@mail.gmail.com>
+Subject: Re: [PATCH 07/30] drm/amd/display/dc/core/dc_link: Remove unused
+ variable 'status'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ioana Ciornei <ioana.ciornei@nxp.com>
+On Wed, Jan 13, 2021 at 3:08 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link.c: In function =E2=
+=80=98query_hdcp_capability=E2=80=99:
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link.c:599:28: warning:=
+ variable =E2=80=98status=E2=80=99 set but not used [-Wunused-but-set-varia=
+ble]
+>
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Add the autorescan sysfs in order to enable/disable the DPRC IRQs on
-which automatic rescan of the bus is performed. This is important when
-dynamic creation of objects is needed to happen in a timely manner because
-object creation can be bundled together.
+Applied.  Thanks!
 
-Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
----
- Documentation/ABI/stable/sysfs-bus-fsl-mc | 10 +++++
- drivers/bus/fsl-mc/dprc-driver.c          | 17 ++++++-
- drivers/bus/fsl-mc/fsl-mc-bus.c           | 55 +++++++++++++++++++++++
- drivers/bus/fsl-mc/fsl-mc-private.h       |  5 +++
- 4 files changed, 85 insertions(+), 2 deletions(-)
+Alex
 
-diff --git a/Documentation/ABI/stable/sysfs-bus-fsl-mc b/Documentation/ABI/stable/sysfs-bus-fsl-mc
-index a4d384df9ba8..58f06c7eeed7 100644
---- a/Documentation/ABI/stable/sysfs-bus-fsl-mc
-+++ b/Documentation/ABI/stable/sysfs-bus-fsl-mc
-@@ -7,3 +7,13 @@ Description:	Writing a non-zero value to this attribute will
- 		synchronize the objects under fsl-mc bus and the
- 		Management Complex firmware.
- Users:		Userspace drivers and management tools
-+
-+What:		/sys/bus/fsl-mc/autorescan
-+Date:		January 2021
-+KernelVersion:	5.12
-+Contact:	Ioana Ciornei <ioana.ciornei@nxp.com>
-+Description:	Writing a zero value to this attribute will
-+		disable the DPRC IRQs on which automatic rescan
-+		of the fsl-mc bus is performed. A non-zero value
-+		will enable the DPRC IRQs.
-+Users:		Userspace drivers and management tools
-diff --git a/drivers/bus/fsl-mc/dprc-driver.c b/drivers/bus/fsl-mc/dprc-driver.c
-index 4adb6f318884..e3e2ae41c22b 100644
---- a/drivers/bus/fsl-mc/dprc-driver.c
-+++ b/drivers/bus/fsl-mc/dprc-driver.c
-@@ -458,8 +458,9 @@ static irqreturn_t dprc_irq0_handler_thread(int irq_num, void *arg)
- /*
-  * Disable and clear interrupt for a given DPRC object
-  */
--static int disable_dprc_irq(struct fsl_mc_device *mc_dev)
-+int disable_dprc_irq(struct fsl_mc_device *mc_dev)
- {
-+	struct fsl_mc_bus *mc_bus = to_fsl_mc_bus(mc_dev);
- 	int error;
- 	struct fsl_mc_io *mc_io = mc_dev->mc_io;
- 
-@@ -496,9 +497,18 @@ static int disable_dprc_irq(struct fsl_mc_device *mc_dev)
- 		return error;
- 	}
- 
-+	mc_bus->irq_enabled = 0;
-+
- 	return 0;
- }
- 
-+int get_dprc_irq_state(struct fsl_mc_device *mc_dev)
-+{
-+	struct fsl_mc_bus *mc_bus = to_fsl_mc_bus(mc_dev);
-+
-+	return mc_bus->irq_enabled;
-+}
-+
- static int register_dprc_irq_handler(struct fsl_mc_device *mc_dev)
- {
- 	int error;
-@@ -525,8 +535,9 @@ static int register_dprc_irq_handler(struct fsl_mc_device *mc_dev)
- 	return 0;
- }
- 
--static int enable_dprc_irq(struct fsl_mc_device *mc_dev)
-+int enable_dprc_irq(struct fsl_mc_device *mc_dev)
- {
-+	struct fsl_mc_bus *mc_bus = to_fsl_mc_bus(mc_dev);
- 	int error;
- 
- 	/*
-@@ -554,6 +565,8 @@ static int enable_dprc_irq(struct fsl_mc_device *mc_dev)
- 		return error;
- 	}
- 
-+	mc_bus->irq_enabled = 1;
-+
- 	return 0;
- }
- 
-diff --git a/drivers/bus/fsl-mc/fsl-mc-bus.c b/drivers/bus/fsl-mc/fsl-mc-bus.c
-index 77708eaf2700..28d5da1c011c 100644
---- a/drivers/bus/fsl-mc/fsl-mc-bus.c
-+++ b/drivers/bus/fsl-mc/fsl-mc-bus.c
-@@ -241,8 +241,63 @@ static ssize_t rescan_store(struct bus_type *bus,
- }
- static BUS_ATTR_WO(rescan);
- 
-+static int fsl_mc_bus_set_autorescan(struct device *dev, void *data)
-+{
-+	struct fsl_mc_device *root_mc_dev;
-+	unsigned long val;
-+	char *buf = data;
-+
-+	if (!fsl_mc_is_root_dprc(dev))
-+		goto exit;
-+
-+	root_mc_dev = to_fsl_mc_device(dev);
-+
-+	if (kstrtoul(buf, 0, &val) < 0)
-+		return -EINVAL;
-+
-+	if (val)
-+		enable_dprc_irq(root_mc_dev);
-+	else
-+		disable_dprc_irq(root_mc_dev);
-+
-+exit:
-+	return 0;
-+}
-+
-+static int fsl_mc_bus_get_autorescan(struct device *dev, void *data)
-+{
-+	struct fsl_mc_device *root_mc_dev;
-+	char *buf = data;
-+
-+	if (!fsl_mc_is_root_dprc(dev))
-+		goto exit;
-+
-+	root_mc_dev = to_fsl_mc_device(dev);
-+
-+	sprintf(buf, "%d\n", get_dprc_irq_state(root_mc_dev));
-+exit:
-+	return 0;
-+}
-+
-+static ssize_t autorescan_store(struct bus_type *bus,
-+				const char *buf, size_t count)
-+{
-+	bus_for_each_dev(bus, NULL, (void *)buf, fsl_mc_bus_set_autorescan);
-+
-+	return count;
-+}
-+
-+static ssize_t autorescan_show(struct bus_type *bus, char *buf)
-+{
-+	bus_for_each_dev(bus, NULL, (void *)buf, fsl_mc_bus_get_autorescan);
-+	return strlen(buf);
-+}
-+
-+static BUS_ATTR_RW(autorescan);
-+
- static struct attribute *fsl_mc_bus_attrs[] = {
- 	&bus_attr_rescan.attr,
-+	&bus_attr_autorescan.attr,
- 	NULL,
- };
- 
-diff --git a/drivers/bus/fsl-mc/fsl-mc-private.h b/drivers/bus/fsl-mc/fsl-mc-private.h
-index 42bdb8679a36..1958fa065360 100644
---- a/drivers/bus/fsl-mc/fsl-mc-private.h
-+++ b/drivers/bus/fsl-mc/fsl-mc-private.h
-@@ -578,6 +578,7 @@ struct fsl_mc_bus {
- 	struct mutex scan_mutex;    /* serializes bus scanning */
- 	struct dprc_attributes dprc_attr;
- 	struct fsl_mc_uapi uapi_misc;
-+	int irq_enabled;
- };
- 
- #define to_fsl_mc_bus(_mc_dev) \
-@@ -656,4 +657,8 @@ static inline void fsl_mc_uapi_remove_device_file(struct fsl_mc_bus *mc_bus)
- 
- #endif
- 
-+int disable_dprc_irq(struct fsl_mc_device *mc_dev);
-+int enable_dprc_irq(struct fsl_mc_device *mc_dev);
-+int get_dprc_irq_state(struct fsl_mc_device *mc_dev);
-+
- #endif /* _FSL_MC_PRIVATE_H_ */
--- 
-2.29.2
-
+> ---
+>  drivers/gpu/drm/amd/display/dc/core/dc_link.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/=
+drm/amd/display/dc/core/dc_link.c
+> index f4a2088ab1792..8ccda8b9ac2eb 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+> @@ -596,8 +596,6 @@ static void query_hdcp_capability(enum signal_type si=
+gnal, struct dc_link *link)
+>         dc_process_hdcp_msg(signal, link, &msg22);
+>
+>         if (signal =3D=3D SIGNAL_TYPE_DISPLAY_PORT || signal =3D=3D SIGNA=
+L_TYPE_DISPLAY_PORT_MST) {
+> -               enum hdcp_message_status status =3D HDCP_MESSAGE_UNSUPPOR=
+TED;
+> -
+>                 msg14.data =3D &link->hdcp_caps.bcaps.raw;
+>                 msg14.length =3D sizeof(link->hdcp_caps.bcaps.raw);
+>                 msg14.msg_id =3D HDCP_MESSAGE_ID_READ_BCAPS;
+> @@ -605,7 +603,7 @@ static void query_hdcp_capability(enum signal_type si=
+gnal, struct dc_link *link)
+>                 msg14.link =3D HDCP_LINK_PRIMARY;
+>                 msg14.max_retries =3D 5;
+>
+> -               status =3D dc_process_hdcp_msg(signal, link, &msg14);
+> +               dc_process_hdcp_msg(signal, link, &msg14);
+>         }
+>
+>  }
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
