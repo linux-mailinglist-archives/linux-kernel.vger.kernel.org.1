@@ -2,168 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE26E2F6BB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C532F6BBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730378AbhANUAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 15:00:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726459AbhANUAK (ORCPT
+        id S1729203AbhANUC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 15:02:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48107 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726590AbhANUC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 15:00:10 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C87C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:59:30 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id b11so669244ybj.9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:59:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CVX4hjQG171pq3hAFqWgHQZmY5orHRtD4DKUrqpfc8k=;
-        b=smdNBJbVI/K24tKPUpEEJ2KKez/vtOQlocB8RmXEuj7OvOzYrhF12dkBtAWF+xMQhK
-         e8pa2c5sWrM9IwbzTV1nr3II83gc+a6s20FNkI2kYKOGh6M/VYhc55fQUBs74xiDJFS/
-         Jd6PEVmJ28njwCMTKGYU6QNd6MVoiu5fz2pwEz0qwCZQ54a0Gz0D0kuuAVV9MWBpapPi
-         Na25bqt/8oxUMmH3nlJ624hqwIZFohdmSpfvQZjHYjb6adF5xzUO5nigG0deMxGq0EWN
-         KsHOBCavD8zVRVQ1Hx6NELTSbrpZM16Ym6GuVtptnhf+ssZR1yDKal7H6ztJay/rdY6A
-         sJ2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CVX4hjQG171pq3hAFqWgHQZmY5orHRtD4DKUrqpfc8k=;
-        b=HjpFIQAc792QtOe4lOe2ggNoMomcTVGvPPoF5RfIiKO2W+Qs7kKFR/JXYWElN15bwU
-         td2QWgydUM0uIHgIom4HmvqYol6peKoPjHF/lcYAlN7L3Hm33s9UtjrOi+kADcE70g7P
-         eN3ByUhGBAceBJTQgolEDyYEKUTYmRX5vEw8XzJg6aZq1EmJZlFpUo5VhPmhPdDMY4tk
-         DMWc67N2kF+YstwLFhFxC6ctl9trenKT2U98kKeGiN2hkocMKZrp7Ve4ZKiYhIgGUmLy
-         +m3UWytohCvKBGOS7RvrrZquJ+XuTCi3kirwywI0VLcIdoFHAd3ELM6uQOhRnhoZW2kT
-         c/Pw==
-X-Gm-Message-State: AOAM533uJ07O9Snnu/JiL/kzT5Js8aRFec/MIiDm7e1Ge3bf8BSyoADC
-        qLENPJc2e0QyK05pEKBYi6VtpjO0PldBV98dptSCdw==
-X-Google-Smtp-Source: ABdhPJx1B3sj27mURuownmtoOFqhC1LwKzftYmZIeO0dIpGxGGCpkME1ubEfiKxvCm77/qdfiHQ5faBPcTn0qRi45LU=
-X-Received: by 2002:a25:8b8b:: with SMTP id j11mr9780726ybl.310.1610654369442;
- Thu, 14 Jan 2021 11:59:29 -0800 (PST)
+        Thu, 14 Jan 2021 15:02:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610654492;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6WLCSpTqHMk8dWcHZMUQNdGxWchRF8lVKGN2TPwAULk=;
+        b=desctzjLFrmlDiYwBsjm472GbXpBL1+ETMxTNAGokVwlcdmK1yVg1b4FFCdBkZKhQ809aP
+        JZ9i8WDCTjvAUnAzTOfoihX0u/LkqflTOlTfPacLDV9kCgyzkbyLWQltwzcm9NB/pUkSYs
+        WGb7zCa4DMUHiKaaA1FvwzFF3rL6amo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-q3B-lAhSNWyEFOQOQ-JuSA-1; Thu, 14 Jan 2021 15:01:28 -0500
+X-MC-Unique: q3B-lAhSNWyEFOQOQ-JuSA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D80AF107ACF7;
+        Thu, 14 Jan 2021 20:01:25 +0000 (UTC)
+Received: from krava (unknown [10.40.195.188])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 950BD5D9EF;
+        Thu, 14 Jan 2021 20:01:21 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 21:01:20 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        lkml <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add size arg to build_id_parse function
+Message-ID: <20210114200120.GF1416940@krava>
+References: <20210114134044.1418404-1-jolsa@kernel.org>
+ <20210114134044.1418404-3-jolsa@kernel.org>
+ <19f16729-96d6-cc8e-5bd5-c3f5940365d4@fb.com>
 MIME-Version: 1.0
-References: <2073294.4OfjquceTg@kreacher> <CAGETcx980TXe_Jur3LqpWoMwt0wG9BBvVdXfhAo3jU8-tgv=kw@mail.gmail.com>
- <CAJZ5v0jREeXtYa8LAiLoRBG1ok66BR86MCQxrQ1WPR5qbhTKbw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0jREeXtYa8LAiLoRBG1ok66BR86MCQxrQ1WPR5qbhTKbw@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 14 Jan 2021 11:58:53 -0800
-Message-ID: <CAGETcx-G4YQ2Og0CrpVXK3n9Re=VNQbdSt=d7MA7gzRf8D5SxA@mail.gmail.com>
-Subject: Re: [PATCH] driver core: Extend device_is_dependent()
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <19f16729-96d6-cc8e-5bd5-c3f5940365d4@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 11:38 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Thu, Jan 14, 2021 at 8:32 PM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > On Thu, Jan 14, 2021 at 10:41 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> > >
-> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > >
-> > > When adding a new device link, device_is_dependent() is used to
-> > > check whether or not the prospective supplier device does not
-> > > depend on the prospective consumer one to avoid adding loops
-> > > to the graph of device dependencies.
-> > >
-> > > However, device_is_dependent() does not take the ancestors of
-> > > the target device into account, so it may not detect an existing
-> > > reverse dependency if, for example, the parent of the target
-> > > device depends on the device passed as its first argument.
-> > >
-> > > For this reason, extend device_is_dependent() to also check if
-> > > the device passed as its first argument is an ancestor of the
-> > > target one and return 1 if that is the case.
-> > >
-> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > Reported-by: Stephan Gerhold <stephan@gerhold.net>
-> > > ---
-> > >  drivers/base/core.c |   12 +++++++++++-
-> > >  1 file changed, 11 insertions(+), 1 deletion(-)
-> > >
-> > > Index: linux-pm/drivers/base/core.c
-> > > ===================================================================
-> > > --- linux-pm.orig/drivers/base/core.c
-> > > +++ linux-pm/drivers/base/core.c
-> > > @@ -208,6 +208,16 @@ int device_links_read_lock_held(void)
-> > >  #endif
-> > >  #endif /* !CONFIG_SRCU */
-> > >
-> > > +static bool device_is_ancestor(struct device *dev, struct device *target)
-> > > +{
-> > > +       while (target->parent) {
-> > > +               target = target->parent;
-> > > +               if (dev == target)
-> > > +                       return true;
-> > > +       }
-> > > +       return false;
-> > > +}
-> > > +
-> > >  /**
-> > >   * device_is_dependent - Check if one device depends on another one
-> > >   * @dev: Device to check dependencies for.
-> > > @@ -221,7 +231,7 @@ int device_is_dependent(struct device *d
-> > >         struct device_link *link;
-> > >         int ret;
-> > >
-> > > -       if (dev == target)
-> > > +       if (dev == target || device_is_ancestor(dev, target))
-> > >                 return 1;
-> > >
-> > >         ret = device_for_each_child(dev, target, device_is_dependent);
-> > >
-> >
-> > The code works, but it's not at all obvious what it's doing. Because,
-> > at first glance, it's easy to mistakenly think that it's trying to
-> > catch this case:
-> > dev <- child1 <- child2 <- target
-> >
-> > Maybe it's clearer if we do this check inside the loop?
->
-> Which of the loops do you mean?
+On Thu, Jan 14, 2021 at 10:56:33AM -0800, Yonghong Song wrote:
+> 
+> 
+> On 1/14/21 5:40 AM, Jiri Olsa wrote:
+> > It's possible to have other build id types (other than default SHA1).
+> > Currently there's also ld support for MD5 build id.
+> 
+> Currently, bpf build_id based stackmap does not returns the size of
+> the build_id. Did you see an issue here? I guess user space can check
+> the length of non-zero bits of the build id to decide what kind of
+> type it is, right?
 
-Sorry, the list of consumers loop.
+you can have zero bytes in the build id hash, so you need to get the size
 
-> There are two of them and both need
-> to do the check in each step AFAICS.
+I never saw MD5 being used in practise just SHA1, but we added the
+size to be complete and make sure we'll fit with build id, because
+there's only limited space in mmap2 event
 
-I don't think we need it in the "loop through children" one. Here's why.
+jirka
 
-We already make sure:
-1. The prospective supplier (target) is not a child of the prospective
-consumer (dev).
-2. The prospective supplier (target) is not a consumer of the
-prospective consumer (dev) or any of its children.
+> 
+> > 
+> > Adding size argument to build_id_parse function, that returns (if defined)
+> > size of the parsed build id, so we can recognize the build id type.
+> > 
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Song Liu <songliubraving@fb.com>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >   include/linux/buildid.h |  3 ++-
+> >   kernel/bpf/stackmap.c   |  2 +-
+> >   lib/buildid.c           | 29 +++++++++++++++++++++--------
+> >   3 files changed, 24 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/include/linux/buildid.h b/include/linux/buildid.h
+> > index 08028a212589..40232f90db6e 100644
+> > --- a/include/linux/buildid.h
+> > +++ b/include/linux/buildid.h
+> > @@ -6,6 +6,7 @@
+> >   #define BUILD_ID_SIZE_MAX 20
+> > -int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id);
+> > +int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
+> > +		   __u32 *size);
+> >   #endif
+> > diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+> > index 55d254a59f07..cabaf7db8efc 100644
+> > --- a/kernel/bpf/stackmap.c
+> > +++ b/kernel/bpf/stackmap.c
+> > @@ -189,7 +189,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+> >   	for (i = 0; i < trace_nr; i++) {
+> >   		vma = find_vma(current->mm, ips[i]);
+> > -		if (!vma || build_id_parse(vma, id_offs[i].build_id)) {
+> > +		if (!vma || build_id_parse(vma, id_offs[i].build_id, NULL)) {
+> >   			/* per entry fall back to ips */
+> >   			id_offs[i].status = BPF_STACK_BUILD_ID_IP;
+> >   			id_offs[i].ip = ips[i];
+> > diff --git a/lib/buildid.c b/lib/buildid.c
+> > index 4a4f520c0e29..6156997c3895 100644
+> > --- a/lib/buildid.c
+> > +++ b/lib/buildid.c
+> > @@ -12,6 +12,7 @@
+> >    */
+> >   static inline int parse_build_id(void *page_addr,
+> >   				 unsigned char *build_id,
+> > +				 __u32 *size,
+> >   				 void *note_start,
+> >   				 Elf32_Word note_size)
+> >   {
+> > @@ -38,6 +39,8 @@ static inline int parse_build_id(void *page_addr,
+> >   			       nhdr->n_descsz);
+> >   			memset(build_id + nhdr->n_descsz, 0,
+> >   			       BUILD_ID_SIZE_MAX - nhdr->n_descsz);
+> > +			if (size)
+> > +				*size = nhdr->n_descsz;
+> >   			return 0;
+> >   		}
+> >   		new_offs = note_offs + sizeof(Elf32_Nhdr) +
+> > @@ -50,7 +53,8 @@ static inline int parse_build_id(void *page_addr,
+> >   }
+> [...]
+> 
 
-To address the problem in the commit, we need to make changes to make sure:
-3. The ancestor of prospective supplier (ancestor of target) is not a
-child of prospective consumer (dev)
-4. The ancestor of prospective supplier (ancestor of target) is not a
-consumer of the prospective consumer (dev) or any of its children.
-
-But (3) would be caught automatically when we do (1). Because if (3)
-is true, (1) would also be true.
-So, what's left is (4), for which my suggestion should be sufficient?
-
-Does it make sense? Or am I missing anything else that needs to be checked?
-
--Saravana
-
->
-> > Something like:
-> >
-> >                 if (link->consumer == target ||
-> > device_is_ancestor(link->consumer, target))
-> >                         return 1;
->
-> So would this be sufficient?
