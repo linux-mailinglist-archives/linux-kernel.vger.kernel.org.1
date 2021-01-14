@@ -2,311 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CD72F5EAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:27:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B87202F5E9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728554AbhANKZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 05:25:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726374AbhANKZG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 05:25:06 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5C7C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:24:20 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id r9so3114757qtp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:24:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NJDEbBjFS5xWwFuHLJ8jDkwqK2gv7n9Kmc7tjbhmCQI=;
-        b=Wdi4eveSe9gGh/LEjnP5dqUtXZCU7Meh8bRyFTQ+GEF5GcwpSkY7q0UObPPCyxo43h
-         hA85Npmc7OGqjgEDqQlgDhbaa1UhV8VL2bm794lKG2QvFgEc++9H4uqbHd31jUSG/rxw
-         Nm7MFOyIqNrHkSMI9NXYHBGmYGkCHusYrFlCcrxRJeYDh4DX612sO28BjrGRPNPqrV+b
-         Fsi2HnJpJh1voWsqg9MlL+vFSJ0PBatmixBAjcnq3h6EiHDnzIS/5Co23vMAAJhgS5Mq
-         5ffkq/eN4fEF30767jzGyPbrT+NpcnvzR/T7rb2d8yAtTziVBWiVmL1WBotLkSOjXFA5
-         lKLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NJDEbBjFS5xWwFuHLJ8jDkwqK2gv7n9Kmc7tjbhmCQI=;
-        b=SYdcAcFAiC9CfUqM8sK0TK/BBJIbUTD6/sR4YiELRms9tDk31W+/0+ALsJpWHdkRc0
-         +SIR4NokyPuveuF1Wkwn2YegI9kwCd259cyVjmyOl6FVrapTUIf0CgSZh/zlIj01G3Ge
-         863li8RvLF8BZ6pda/PaP19pO8Zr8ZOwQmQxHgmYOgQomLx01tLyJD3ORBfqcS7iqnYF
-         tjCf49ikCcExjH4lsauIVk6an55HXyLrpbFVEszNn5rIJKfcA+IJDz94Evo9nzGK+5bm
-         EikvwVTtn2IwJYWiQuExBbVxlOaixH9f2023dJ5Eeu8zpgCgb3PXmhqk+iUbtWMtcK6S
-         9naw==
-X-Gm-Message-State: AOAM531kdORiQsJjOW15D7cRtEYBUxuAqrsIqtGirnIjSCI1EKWQBLBT
-        8RlWOpVKlLd2hHMjETDd465DG+R0KTrAdhtkH4LAOA==
-X-Google-Smtp-Source: ABdhPJzW66DsXnQm6i2t1r415s0uytvD0c9kRqbAFwiBdWwYCGWxRDSoiB8DF4ED8u0QWGHpBT9daohpGE/BHWvCqh8=
-X-Received: by 2002:ac8:4e1c:: with SMTP id c28mr6404910qtw.67.1610619859075;
- Thu, 14 Jan 2021 02:24:19 -0800 (PST)
+        id S1728680AbhANKV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 05:21:29 -0500
+Received: from foss.arm.com ([217.140.110.172]:47212 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728535AbhANKV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 05:21:26 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C95D1FB;
+        Thu, 14 Jan 2021 02:20:41 -0800 (PST)
+Received: from [10.0.0.31] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9A4E33F70D;
+        Thu, 14 Jan 2021 02:20:39 -0800 (PST)
+Subject: Re: [PATCH v2 3/4] arm64: mte: Enable async tag check fault
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+References: <20210107172908.42686-1-vincenzo.frascino@arm.com>
+ <20210107172908.42686-4-vincenzo.frascino@arm.com>
+ <20210113181121.GF27045@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <efbb0722-eb4e-7be2-b929-77ec91cc0ae0@arm.com>
+Date:   Thu, 14 Jan 2021 10:24:25 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CACT4Y+bDqMiC+ou5ghb=XB3Oyjw3p-GTDvNw4NkkQqQthw1yuQ@mail.gmail.com>
- <mhng-02b88d43-ede8-48f9-82f1-c84201acb7a8@palmerdabbelt-glaptop> <CACT4Y+aN3LvgaBc_zmW=t=D7ChU-jrWYnjt5sZ2GEDQhg_BC9A@mail.gmail.com>
-In-Reply-To: <CACT4Y+aN3LvgaBc_zmW=t=D7ChU-jrWYnjt5sZ2GEDQhg_BC9A@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 14 Jan 2021 11:24:07 +0100
-Message-ID: <CACT4Y+aC19DaNOm87EO3cER2=MEmO9pmtUxzVmRtg9YhZKuMVA@mail.gmail.com>
-Subject: Re: riscv+KASAN does not boot
-To:     Palmer Dabbelt <palmerdabbelt@google.com>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
-        Bjorn Topel <bjorn.topel@gmail.com>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210113181121.GF27045@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 10:23 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Thu, Jan 14, 2021 at 5:57 AM Palmer Dabbelt <palmerdabbelt@google.com> wrote:
-> >
-> > On Fri, 25 Dec 2020 09:13:23 PST (-0800), dvyukov@google.com wrote:
-> > > On Fri, Dec 25, 2020 at 5:58 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
-> > >>
-> > >> On Dez 25 2020, Dmitry Vyukov wrote:
-> > >>
-> > >> > qemu-system-riscv64 \
-> > >> > -machine virt -bios default -smp 1 -m 2G \
-> > >> > -device virtio-blk-device,drive=hd0 \
-> > >> > -drive file=buildroot-riscv64.ext4,if=none,format=raw,id=hd0 \
-> > >> > -kernel arch/riscv/boot/Image \
-> > >> > -nographic \
-> > >> > -device virtio-rng-device,rng=rng0 -object
-> > >> > rng-random,filename=/dev/urandom,id=rng0 \
-> > >> > -netdev user,id=net0,host=10.0.2.10,hostfwd=tcp::10022-:22 -device
-> > >> > virtio-net-device,netdev=net0 \
-> > >> > -append "root=/dev/vda earlyprintk=serial console=ttyS0 oops=panic
-> > >> > panic_on_warn=1 panic=86400"
-> > >>
-> > >> Do you get more output with earlycon=sbi?
-> > >
-> > > Hi Andreas,
-> > >
-> > > For defconfig+kvm_guest.config+ scripts/config -e KASAN -e
-> > > KASAN_INLINE it actually gave me more output:
-> > >
-> > >
-> > > OpenSBI v0.7
-> > >    ____                    _____ ____ _____
-> > >   / __ \                  / ____|  _ \_   _|
-> > >  | |  | |_ __   ___ _ __ | (___ | |_) || |
-> > >  | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
-> > >  | |__| | |_) |  __/ | | |____) | |_) || |_
-> > >   \____/| .__/ \___|_| |_|_____/|____/_____|
-> > >         | |
-> > >         |_|
-> > >
-> > > Platform Name          : QEMU Virt Machine
-> > > Platform HART Features : RV64ACDFIMSU
-> > > Current Hart           : 0
-> > > Firmware Base          : 0x80000000
-> > > Firmware Size          : 132 KB
-> > > Runtime SBI Version    : 0.2
-> > >
-> > > MIDELEG : 0x0000000000000222
-> > > MEDELEG : 0x000000000000b109
-> > > PMP0    : 0x0000000080000000-0x000000008003ffff (A)
-> > > PMP1    : 0x0000000000000000-0xffffffffffffffff (A,R,W,X)
-> > > [    0.000000] Linux version 5.10.0-01370-g71c5f03154ac
-> > > (dvyukov@dvyukov-desk.muc.corp.google.com) (riscv64-linux-gnu-gcc
-> > > (Debian 10.2.0-9) 10.2.0, GNU ld (GNU Binutils for Debian) 2.35.1) #17
-> > > SMP Fri Dec 25 18:10:12 CET 2020
-> > > [    0.000000] OF: fdt: Ignoring memory range 0x80000000 - 0x80200000
-> > > [    0.000000] earlycon: sbi0 at I/O port 0x0 (options '')
-> > > [    0.000000] printk: bootconsole [sbi0] enabled
-> > > [    0.000000] efi: UEFI not found.
-> > > [    0.000000] Zone ranges:
-> > > [    0.000000]   DMA32    [mem 0x0000000080200000-0x00000000ffffffff]
-> > > [    0.000000]   Normal   empty
-> > > [    0.000000] Movable zone start for each node
-> > > [    0.000000] Early memory node ranges
-> > > [    0.000000]   node   0: [mem 0x0000000080200000-0x00000000ffffffff]
-> > > [    0.000000] Initmem setup node 0 [mem 0x0000000080200000-0x00000000ffffffff]
-> > > [    0.000000] SBI specification v0.2 detected
-> > > [    0.000000] SBI implementation ID=0x1 Version=0x7
-> > > [    0.000000] SBI v0.2 TIME extension detected
-> > > [    0.000000] SBI v0.2 IPI extension detected
-> > > [    0.000000] SBI v0.2 RFENCE extension detected
-> > > [    0.000000] software IO TLB: mapped [mem
-> > > 0x00000000fa3f9000-0x00000000fe3f9000] (64MB)
-> > > [    0.000000] Unable to handle kernel paging request at virtual
-> > > address dfffffc810040000
-> > > [    0.000000] Oops [#1]
-> > > [    0.000000] Modules linked in:
-> > > [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted
-> > > 5.10.0-01370-g71c5f03154ac #17
-> > > [    0.000000] epc: ffffffe00042e3e4 ra : ffffffe000c0462c sp : ffffffe001603ea0
-> > > [    0.000000]  gp : ffffffe0016e3c60 tp : ffffffe00160cd40 t0 :
-> > > dfffffc810040000
-> > > [    0.000000]  t1 : ffffffe000e0a838 t2 : 0000000000000000 s0 :
-> > > ffffffe001603f50
-> > > [    0.000000]  s1 : ffffffe0016e50a8 a0 : dfffffc810040000 a1 :
-> > > 0000000000000000
-> > > [    0.000000]  a2 : 000000000ffc0000 a3 : dfffffc820000000 a4 :
-> > > 0000000000000000
-> > > [    0.000000]  a5 : 000000003e8c6001 a6 : ffffffe000e0a820 a7 :
-> > > 0000000000000900
-> > > [    0.000000]  s2 : dfffffc820000000 s3 : dfffffc800000000 s4 :
-> > > 0000000000000001
-> > > [    0.000000]  s5 : ffffffe0016e5108 s6 : fffffffffffff000 s7 :
-> > > dfffffc810040000
-> > > [    0.000000]  s8 : 0000000000000080 s9 : ffffffffffffffff s10:
-> > > ffffffe07a119000
-> > > [    0.000000]  s11: 000000000000ffc0 t3 : ffffffe0016eb908 t4 :
-> > > 0000000000000001
-> > > [    0.000000]  t5 : ffffffc4001c150a t6 : ffffffe001603be8
-> > > [    0.000000] status: 0000000000000100 badaddr: dfffffc810040000
-> > > cause: 000000000000000f
-> > > [    0.000000] random: get_random_bytes called from
-> > > oops_exit+0x30/0x58 with crng_init=0
-> > > [    0.000000] ---[ end trace 0000000000000000 ]---
-> > > [    0.000000] Kernel panic - not syncing: Fatal exception
-> > > [    0.000000] ---[ end Kernel panic - not syncing: Fatal exception ]---
-> > >
-> > >
-> > > But I first tried with a the kernel image I had in the dir, I think it
-> > > was this config (no KASAN):
-> > > https://gist.githubusercontent.com/dvyukov/b2b62beccf80493781ab03b41430e616/raw/62e673cff08a8a41656d2871b8a37f74b00f509f/gistfile1.txt
-> > >
-> > > and earlycon=sbi did not change anything (no output after OpenSBI).
-> > > So potentially there are 2 different problems.
-> >
-> > Thanks for reporting this.  Looks like I'd forgotten to add a kasan config to
-> > my tests.  There's one in there now, and it's passing as of the fix that Nylon
-> > posted.
->
-> I can boot the KASAN kernel now on riscv/fixes.
->
-> Next problem: I've got only to:
->
-> [   90.498967][    T1] Run /sbin/init as init process
-> [   91.164353][ T4022] init[4022]: unhandled signal 11 code 0x1 at
-> 0x0000000000000bb0 in busybox[10000+d7000]
-> [   91.179640][ T4022] CPU: 1 PID: 4022 Comm: init Not tainted
-> 5.11.0-rc2-00012-g0983834a8393 #19
-> [   91.180853][ T4022] epc: 0000000000000bb0 ra : 0000003fccab09d0 sp
-> : 0000003fffa8c7b0
-> [   91.181861][ T4022]  gp : 00000000000e8d70 tp : 0000003fccaaf820 t0
-> : 000000000000001e
-> [   91.182810][ T4022]  t1 : 0000003fccab0bfc t2 : 000000000000000a s0
-> : 0000003fffa8c850
-> [   91.183749][ T4022]  s1 : 0000003fccab1070 a0 : 0000003fccab1070 a1
-> : 0000003fffa8c8c8
-> [   91.184689][ T4022]  a2 : 0000000000000001 a3 : 0000000000000020 a4
-> : 0000000000000000
-> [   91.185620][ T4022]  a5 : 0000000000000000 a6 : 0000003fcc9c4260 a7
-> : fffffffffffffffe
-> [   91.186566][ T4022]  s2 : 0000000000000000 s3 : 0000003fffa8c8c8 s4
-> : 0000003fccab1000
-> [   91.187500][ T4022]  s5 : 0000003fccab1078 s6 : 0000003fffa8c8d0 s7
-> : 0000000000000010
-> [   91.189672][ T4022]  s8 : 0000000000000016 s9 : 0000000000000000
-> s10: 0000003fffa8c8c8
-> [   91.190637][ T4022]  s11: 0000000000000000 t3 : 0000000000000bb0 t4
-> : 0000000000000000
-> [   91.191568][ T4022]  t5 : 0000003fffa8c360 t6 : 0000000000000000
-> [   91.192389][ T4022] status: 8000000000004020 badaddr:
-> 0000000000000bb0 cause: 000000000000000c
-> [   91.201573][    T1] Kernel panic - not syncing: Attempted to kill
-> init! exitcode=0x0000000b
-> [   91.202906][    T1] CPU: 0 PID: 1 Comm: init Not tainted
-> 5.11.0-rc2-00012-g0983834a8393 #19
-> [   91.204139][    T1] Call Trace:
-> [   91.204849][    T1] [<ffffffe0000095c0>] walk_stackframe+0x0/0x1d0
-> [   91.206124][    T1] [<ffffffe00458b2d8>] show_stack+0x3a/0x46
-> [   91.207240][    T1] [<ffffffe0045a5b72>] dump_stack+0x11c/0x180
-> [   91.208732][    T1] [<ffffffe00458b6a0>] panic+0x20a/0x5cc
-> [   91.209890][    T1] [<ffffffe00002eea4>] do_exit+0x1846/0x1874
-> [   91.211052][    T1] [<ffffffe00002efdc>] do_group_exit+0xa0/0x192
-> [   91.212224][    T1] [<ffffffe000047d30>] get_signal+0x2d6/0x13dc
-> [   91.213390][    T1] [<ffffffe000007eb0>] do_notify_resume+0xa8/0x912
-> [   91.214567][    T1] [<ffffffe00000559c>] ret_from_exception+0x0/0x14
->
-> The image is buildroot on 2020.11.x built with this script:
-> https://gist.githubusercontent.com/dvyukov/1a9a01ca2189e35175a021820c95b04d/raw/5c01d755e83f4eab0d56aa7dc84af3b2d5e80423/gistfile1.txt
->
-> Readelf for init shows the following (is it that [10000+d7000] address
-> is not .text at all?):
->
-> $ riscv64-linux-gnu-readelf --sections image/bin/busybox
-> There are 27 section headers, starting at offset 0xd7f20:
->
-> Section Headers:
->   [Nr] Name              Type             Address           Offset
->        Size              EntSize          Flags  Link  Info  Align
->   [ 0]                   NULL             0000000000000000  00000000
->        0000000000000000  0000000000000000           0     0     0
->   [ 1] .interp           PROGBITS         0000000000010238  00000238
->        0000000000000021  0000000000000000   A       0     0     1
->   [ 2] .note.ABI-tag     NOTE             000000000001025c  0000025c
->        0000000000000020  0000000000000000   A       0     0     4
->   [ 3] .hash             HASH             0000000000010280  00000280
->        00000000000009cc  0000000000000004   A       5     0     8
->   [ 4] .gnu.hash         GNU_HASH         0000000000010c50  00000c50
->        0000000000000ac8  0000000000000000   A       5     0     8
->   [ 5] .dynsym           DYNSYM           0000000000011718  00001718
->        00000000000021f0  0000000000000018   A       6     1     8
->   [ 6] .dynstr           STRTAB           0000000000013908  00003908
->        0000000000000c66  0000000000000000   A       0     0     1
->   [ 7] .gnu.version      VERSYM           000000000001456e  0000456e
->        00000000000002d4  0000000000000002   A       5     0     2
->   [ 8] .gnu.version_r    VERNEED          0000000000014848  00004848
->        0000000000000050  0000000000000000   A       6     2     8
->   [ 9] .rela.dyn         RELA             0000000000014898  00004898
->        00000000000000c0  0000000000000018   A       5     0     8
->   [10] .rela.plt         RELA             0000000000014958  00004958
->        00000000000020a0  0000000000000018  AI       5    22     8
->   [11] .plt              PROGBITS         0000000000016a00  00006a00
->        00000000000015e0  0000000000000010  AX       0     0     16
->   [12] .text             PROGBITS         0000000000017fe0  00007fe0
->        00000000000a3668  0000000000000000  AX       0     0     4
->   [13] .rodata           PROGBITS         00000000000bb648  000ab648
->        000000000002b076  0000000000000000   A       0     0     8
->   [14] .sdata2           PROGBITS         00000000000e66c0  000d66c0
->        0000000000000163  0000000000000000   A       0     0     8
->   [15] .eh_frame_hdr     PROGBITS         00000000000e6824  000d6824
->        0000000000000014  0000000000000000   A       0     0     4
->   [16] .eh_frame         PROGBITS         00000000000e6838  000d6838
->        000000000000002c  0000000000000000   A       0     0     8
->   [17] .preinit_array    PREINIT_ARRAY    00000000000e7df8  000d6df8
->        0000000000000008  0000000000000008  WA       0     0     1
->   [18] .init_array       INIT_ARRAY       00000000000e7e00  000d6e00
->        0000000000000008  0000000000000008  WA       0     0     8
->   [19] .fini_array       FINI_ARRAY       00000000000e7e08  000d6e08
->        0000000000000008  0000000000000008  WA       0     0     8
->   [20] .dynamic          DYNAMIC          00000000000e7e10  000d6e10
->        00000000000001f0  0000000000000010  WA       6     0     8
->   [21] .data             PROGBITS         00000000000e8000  000d7000
->        0000000000000240  0000000000000000  WA       0     0     8
->   [22] .got              PROGBITS         00000000000e8240  000d7240
->        0000000000000af8  0000000000000008  WA       0     0     8
->   [23] .sdata            PROGBITS         00000000000e8d38  000d7d38
->        0000000000000101  0000000000000000  WA       0     0     8
->   [24] .sbss             NOBITS           00000000000e8e40  000d7e39
->        000000000000017f  0000000000000000  WA       0     0     8
->   [25] .bss              NOBITS           00000000000e8fc0  000d7e39
->        00000000000005b0  0000000000000000  WA       0     0     8
->   [26] .shstrtab         STRTAB           0000000000000000  000d7e39
->        00000000000000e6  0000000000000000           0     0     1
->
->
-> Before I spent more time on this, am I doing anything obviously wrong?
-> Is it a known issue? Are there any fresh working recipes?
 
-Humm.. I tried to use 2020.05 which Tobias used here:
-https://github.com/google/syzkaller/blob/master/docs/linux/setup_linux-host_qemu-vm_riscv64-kernel.md#image
-But there is no make qemu_riscv64_virt_defconfig target... though I
-remember I tested these instructions at the time...
+On 1/13/21 6:11 PM, Catalin Marinas wrote:
+> On Thu, Jan 07, 2021 at 05:29:07PM +0000, Vincenzo Frascino wrote:
+>> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+>> index d02aff9f493d..a60d3718baae 100644
+>> --- a/arch/arm64/include/asm/mte.h
+>> +++ b/arch/arm64/include/asm/mte.h
+>> @@ -39,6 +39,7 @@ void mte_free_tag_storage(char *storage);
+>>  /* track which pages have valid allocation tags */
+>>  #define PG_mte_tagged	PG_arch_2
+>>  
+>> +void mte_check_tfsr_el1(void);
+>>  void mte_sync_tags(pte_t *ptep, pte_t pte);
+>>  void mte_copy_page_tags(void *kto, const void *kfrom);
+>>  void flush_mte_state(void);
+>> @@ -56,6 +57,9 @@ void mte_assign_mem_tag_range(void *addr, size_t size);
+>>  /* unused if !CONFIG_ARM64_MTE, silence the compiler */
+>>  #define PG_mte_tagged	0
+>>  
+>> +static inline void mte_check_tfsr_el1(void)
+>> +{
+>> +}
+> 
+> I think we should enable this dummy function when !CONFIG_KASAN_HW_TAGS.
+> It saves us an unnecessary function call in a few places.
+> 
 
-To be precise I used 2020.11, I see there is now 2020.11.1 but I don't
-see any mentions of riscv in the log.
+Ok, I will add it in v3.
+
+>>  static inline void mte_sync_tags(pte_t *ptep, pte_t pte)
+>>  {
+>>  }
+>> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+>> index 5346953e4382..74b020ce72d7 100644
+>> --- a/arch/arm64/kernel/entry-common.c
+>> +++ b/arch/arm64/kernel/entry-common.c
+>> @@ -37,6 +37,8 @@ static void noinstr enter_from_kernel_mode(struct pt_regs *regs)
+>>  	lockdep_hardirqs_off(CALLER_ADDR0);
+>>  	rcu_irq_enter_check_tick();
+>>  	trace_hardirqs_off_finish();
+>> +
+>> +	mte_check_tfsr_el1();
+>>  }
+>>  
+>>  /*
+>> @@ -47,6 +49,8 @@ static void noinstr exit_to_kernel_mode(struct pt_regs *regs)
+>>  {
+>>  	lockdep_assert_irqs_disabled();
+>>  
+>> +	mte_check_tfsr_el1();
+>> +
+>>  	if (interrupts_enabled(regs)) {
+>>  		if (regs->exit_rcu) {
+>>  			trace_hardirqs_on_prepare();
+>> @@ -243,6 +247,8 @@ asmlinkage void noinstr enter_from_user_mode(void)
+>>  
+>>  asmlinkage void noinstr exit_to_user_mode(void)
+>>  {
+>> +	mte_check_tfsr_el1();
+> 
+> While for kernel entry the asynchronous faults are sync'ed automatically
+> with TFSR_EL1, we don't have this for exit, so we'd need an explicit
+> DSB. But rather than placing it here, it's better if we add a bool sync
+> argument to mte_check_tfsr_el1() which issues a dsb() before checking
+> the register. I think that's the only place where such argument would be
+> true (for now).
+> 
+
+Good point, I will add the dsb() in mte_check_tfsr_el1() but instead of a bool
+parameter I will add something more explicit.
+
+>> +
+>>  	trace_hardirqs_on_prepare();
+>>  	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
+>>  	user_enter_irqoff();
+>> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+>> index 5d992e16b420..26030f0b79fe 100644
+>> --- a/arch/arm64/kernel/mte.c
+>> +++ b/arch/arm64/kernel/mte.c
+>> @@ -185,6 +185,34 @@ void mte_enable_kernel(enum kasan_arg_mode mode)
+>>  	isb();
+>>  }
+>>  
+>> +void mte_check_tfsr_el1(void)
+>> +{
+>> +	u64 tfsr_el1;
+>> +
+>> +	if (!IS_ENABLED(CONFIG_KASAN_HW_TAGS))
+>> +		return;
+> 
+> If we define the static inline when !CONFIG_KASAN_HW_TAGS, we could add
+> the #ifdef here around the whole function.
+>
+
+Ok. I will add it in v3.
+
+>> +	if (!system_supports_mte())
+>> +		return;
+>> +
+>> +	tfsr_el1 = read_sysreg_s(SYS_TFSR_EL1);
+>> +
+>> +	/*
+>> +	 * The kernel should never hit the condition TF0 == 1
+>> +	 * at this point because for the futex code we set
+>> +	 * PSTATE.TCO.
+>> +	 */
+>> +	WARN_ON(tfsr_el1 & SYS_TFSR_EL1_TF0);
+>> +
+>> +	if (tfsr_el1 & SYS_TFSR_EL1_TF1) {
+>> +		write_sysreg_s(0, SYS_TFSR_EL1);
+>> +		isb();
+>> +
+>> +		pr_err("MTE: Asynchronous tag exception detected!");
+>> +	}
+>> +}
+>> +NOKPROBE_SYMBOL(mte_check_tfsr_el1);
+> 
+> Do we need this to be NOKPROBE_SYMBOL? It's not that low level.
+>
+It is an inheritance from when I had this code called very early. I will remove
+it in the next version.
+
+>> +
+>>  static void update_sctlr_el1_tcf0(u64 tcf0)
+>>  {
+>>  	/* ISB required for the kernel uaccess routines */
+>> @@ -250,6 +278,15 @@ void mte_thread_switch(struct task_struct *next)
+>>  	/* avoid expensive SCTLR_EL1 accesses if no change */
+>>  	if (current->thread.sctlr_tcf0 != next->thread.sctlr_tcf0)
+>>  		update_sctlr_el1_tcf0(next->thread.sctlr_tcf0);
+>> +
+>> +	/*
+>> +	 * Check if an async tag exception occurred at EL1.
+>> +	 *
+>> +	 * Note: On the context switch patch we rely on the dsb() present
+> 
+> s/patch/path/
+> 
+>> +	 * in __switch_to() to guaranty that the indirect writes to TFSR_EL1
+> 
+> s/guaranty/guarantee/ (well, still valid though I think rarely used).
+> 
+>> +	 * are synchronized before this point.
+>> +	 */
+>> +	mte_check_tfsr_el1();
+>>  }
+>>  
+>>  void mte_suspend_exit(void)
+>> -- 
+>> 2.30.0
+> 
+
+-- 
+Regards,
+Vincenzo
