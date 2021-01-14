@@ -2,207 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AACBA2F6D5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DECE32F6D62
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:46:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730161AbhANViv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 16:38:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728533AbhANVis (ORCPT
+        id S1728677AbhANVnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 16:43:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56313 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726848AbhANVni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 16:38:48 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451E2C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:38:08 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id x126so4149417pfc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:38:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=M25f2Urs67ewtW9Uctz0Ma+cdGhcJesg41jWdEvlv+A=;
-        b=uqmdvUhePZHvP+/tQJW6RM3qU8CZvdbDhob1c2l0dpQjwtQecqMjOumtUyjdUNBKCm
-         IIBgLOuSPwwjDKTn+AuU/brQuU9JQK3X7iaD4rGlVnyk3okjqE3ydvwkI85MsVoGs3or
-         ua7PXg6Vvj5+qBChVRxteAzc98FwM0YG/21w9V9Naq9y6ODjy8aLxPp5ES4YwVb5om9H
-         SXmdAbHIjeUYLha7KX7HntlGiDcZhbNufugBp7jVoy/VXZKQl1xzZGrXf6KbwcA6396D
-         twI9GzCdChg1W3bOXIBfIE0mFhT/6NK/MufyeCEVGGxCSs3cZ0YKugzZp8YYQ2xMyMg8
-         mlqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M25f2Urs67ewtW9Uctz0Ma+cdGhcJesg41jWdEvlv+A=;
-        b=j0bkpuAwZJtPrAsDfDGOYx9hv5kgw9oh2BaY3j6PnrtOIfHWCzWVr4E3JOVyORjBks
-         a7t2ynezzKnB3elyPEnLdw0jdG5ImLtNgWHqnHedIaRH6lR8VTFd8+mekLNM9xfeJ8q9
-         y6gmTQNhUhkH/7NKccAqGFcwJurT7JMa3dVWa7F0GhBMl9ZIYffCVjpatcQYjqBAx5bz
-         yOe7aEpJPmKrPe4h8Sa7pD45+WrVXYEMMoTzMAGIqwatlIfzAyx5NLIN2itsKwNaApK7
-         OenrybmlMG1kvnFS1R3h7AOyuQHI9XV46ir/lXpzHiAOoa58x1NC799Y1L4X0OE+IYXL
-         Zv3Q==
-X-Gm-Message-State: AOAM5338vE+o+aGwig8tOxxTrSTWJazRiNq2cfrcc4kalPSFZTEpJoZe
-        jYd6p67AyZYhnL1WJ8Fe2oqjWw==
-X-Google-Smtp-Source: ABdhPJz7n2VtVsCkeQX6jnx37nrN+RCln1qBV28twX8SpfYzHQdWewvxVNpSLVG13Q2MdhLhvOrskw==
-X-Received: by 2002:a63:dc56:: with SMTP id f22mr3631737pgj.106.1610660287861;
-        Thu, 14 Jan 2021 13:38:07 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id b22sm5955823pfo.163.2021.01.14.13.38.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 13:38:06 -0800 (PST)
-Date:   Thu, 14 Jan 2021 14:38:04 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     peng.fan@nxp.com
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        paul@crapouillou.net, matthias.bgg@gmail.com, agross@kernel.org,
-        patrice.chotard@st.com
-Subject: Re: [PATCH V6 07/10] remoteproc: imx_rproc: add i.MX specific parse
- fw hook
-Message-ID: <20210114213804.GE255481@xps15>
-References: <1610444359-1857-1-git-send-email-peng.fan@nxp.com>
- <1610444359-1857-8-git-send-email-peng.fan@nxp.com>
+        Thu, 14 Jan 2021 16:43:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610660532;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/s4weO8DV932wCkpW85o9rdOlW+6rj8jC6Sd/cwN2cM=;
+        b=FLqFxM13K5NBWsBPs1ysyi6cfgE0ZafHiHSjnnKFwBC06HwC0ywyosxDLA69IB1j/aWqGu
+        0zdp/SYkC2dlcW8dFi67kaci9+mOgKIiyMT6b2YQDPskJeAX7vmT5GmEzeNwATRRWXwFEf
+        ABbT7lA2bTuKEXaxqlvirfFSEDCbq78=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-589-Olb3NcnTOYSFGe-feDeo_w-1; Thu, 14 Jan 2021 16:42:08 -0500
+X-MC-Unique: Olb3NcnTOYSFGe-feDeo_w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97B15612AB;
+        Thu, 14 Jan 2021 21:42:06 +0000 (UTC)
+Received: from redhat.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 639C519C45;
+        Thu, 14 Jan 2021 21:42:05 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 16:42:03 -0500
+From:   Jarod Wilson <jarod@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v2] bonding: add a vlan+mac tx hashing option
+Message-ID: <20210114214203.GI1171031@redhat.com>
+References: <20201218193033.6138-1-jarod@redhat.com>
+ <20210113223548.1171655-1-jarod@redhat.com>
+ <20210113175818.7dce3076@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210114211141.GH1171031@redhat.com>
+ <20210114132314.2c484e9f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1610444359-1857-8-git-send-email-peng.fan@nxp.com>
+In-Reply-To: <20210114132314.2c484e9f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 05:39:16PM +0800, peng.fan@nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Thu, Jan 14, 2021 at 01:23:14PM -0800, Jakub Kicinski wrote:
+> On Thu, 14 Jan 2021 16:11:41 -0500 Jarod Wilson wrote:
+> > In truth, this code started out as a copy of bond_eth_hash(), which also
+> > only uses the last byte, though of both source and destination macs. In
+> > the typical use case for the requesting user, the bond is formed from two
+> > onboard NICs, which typically have adjacent mac addresses, i.e.,
+> > AA:BB:CC:DD:EE:01 and AA:BB:CC:DD:EE:02, so only the last byte is really
+> > relevant to hash differently, but in thinking about it, a replacement NIC
+> > because an onboard one died could have the same last byte, and maybe we
+> > ought to just go full source mac right off the go here.
+> > 
+> > Something like this instead maybe:
+> > 
+> > static u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
+> > {
+> >         struct ethhdr *mac_hdr = (struct ethhdr *)skb_mac_header(skb);
+> >         u32 srcmac = 0;
+> >         u16 vlan;
+> >         int i;
+> > 
+> >         for (i = 0; i < ETH_ALEN; i++)
+> >                 srcmac = (srcmac << 8) | mac_hdr->h_source[i];
+> > 
+> >         if (!skb_vlan_tag_present(skb))
+> >                 return srcmac;
+> > 
+> >         vlan = skb_vlan_tag_get(skb);
+> > 
+> >         return vlan ^ srcmac;
+> > }
+> > 
+> > Then the documentation is spot-on, and we're future-proof, though
+> > marginally less performant in calculating the hash, which may have been a
+> > consideration when the original function was written, but is probably
+> > basically irrelevant w/modern systems...
 > 
-> The hook is used to parse memory-regions and load resource table
-> from the address the remote processor published.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> Reviewed-by: Richard Zhu <hongxing.zhu@nxp.com>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  drivers/remoteproc/imx_rproc.c | 93 ++++++++++++++++++++++++++++++++++
->  1 file changed, 93 insertions(+)
-> 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index 47fc1d06be6a..3c0075dc1787 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -10,6 +10,7 @@
->  #include <linux/mfd/syscon.h>
->  #include <linux/module.h>
->  #include <linux/of_address.h>
-> +#include <linux/of_reserved_mem.h>
->  #include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
-> @@ -241,10 +242,102 @@ static void *imx_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len, bool *i
->  	return va;
->  }
->  
-> +static int imx_rproc_mem_alloc(struct rproc *rproc,
-> +			       struct rproc_mem_entry *mem)
-> +{
-> +	struct device *dev = rproc->dev.parent;
-> +	void *va;
-> +
-> +	dev_dbg(dev, "map memory: %p+%zx\n", &mem->dma, mem->len);
-> +	va = ioremap_wc(mem->dma, mem->len);
-> +	if (IS_ERR_OR_NULL(va)) {
-> +		dev_err(dev, "Unable to map memory region: %p+%zx\n",
-> +			&mem->dma, mem->len);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	/* Update memory entry va */
-> +	mem->va = va;
-> +
-> +	return 0;
-> +}
-> +
-> +static int imx_rproc_mem_release(struct rproc *rproc,
-> +				 struct rproc_mem_entry *mem)
-> +{
-> +	dev_dbg(rproc->dev.parent, "unmap memory: %pa\n", &mem->dma);
-> +	iounmap(mem->va);
-> +
-> +	return 0;
-> +}
-> +
-> +static int imx_rproc_parse_memory_regions(struct rproc *rproc)
-> +{
-> +	struct imx_rproc *priv = rproc->priv;
-> +	struct device_node *np = priv->dev->of_node;
-> +	struct of_phandle_iterator it;
-> +	struct rproc_mem_entry *mem;
-> +	struct reserved_mem *rmem;
-> +	u32 da;
-> +
-> +	/* Register associated reserved memory regions */
-> +	of_phandle_iterator_init(&it, np, "memory-region", NULL, 0);
-> +	while (of_phandle_iterator_next(&it) == 0) {
-> +		/*
-> +		 * Ignore the first memory region which will be used vdev buffer.
-> +		 * No need to do extra handlings, rproc_add_virtio_dev will handle it.
-> +		 */
-> +		if (!strcmp(it.node->name, "vdevbuffer"))
+> No preference, especially if bond_eth_hash() already uses the last byte.
+> Just make sure the choice is explained in the commit message.
 
-Because you are doing a V8, please use "vdev0buffer" and make the change in the
-.yaml file.
+I've sold myself on using the full MAC, because if there's no vlan tag
+present, mac is the only thing used for the hash, increasing the chances
+of getting the same hash for two different interfaces, which won't happen
+if we've got the full MAC. Of course, I'm not sure why someone would be
+using this xmit hash outside of the very particular use-case that includes
+VLANs, but people do strange things...
 
-> +			continue;
-> +
-> +		rmem = of_reserved_mem_lookup(it.node);
-> +		if (!rmem) {
-> +			dev_err(priv->dev, "unable to acquire memory-region\n");
-> +			return -EINVAL;
-> +		}
-> +
-> +		/* No need to translate pa to da, i.MX use same map */
-> +		da = rmem->base;
-> +
-> +		/* Register memory region */
-> +		mem = rproc_mem_entry_init(priv->dev, NULL, (dma_addr_t)rmem->base, rmem->size, da,
-> +					   imx_rproc_mem_alloc, imx_rproc_mem_release,
-> +					   it.node->name);
-> +
-> +		if (mem)
-> +			rproc_coredump_add_segment(rproc, da, rmem->size);
-> +		else
-> +			return -ENOMEM;
-> +
-> +		rproc_add_carveout(rproc, mem);
-> +	}
-> +
-> +	return  0;
-> +}
-> +
-> +static int imx_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
-> +{
-> +	int ret = imx_rproc_parse_memory_regions(rproc);
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = rproc_elf_load_rsc_table(rproc, fw);
-> +	if (ret)
-> +		dev_info(&rproc->dev, "No resource table in elf\n");
-> +
-> +	return 0;
-> +}
-> +
->  static const struct rproc_ops imx_rproc_ops = {
->  	.start		= imx_rproc_start,
->  	.stop		= imx_rproc_stop,
->  	.da_to_va       = imx_rproc_da_to_va,
-> +	.load		= rproc_elf_load_segments,
-> +	.parse_fw	= imx_rproc_parse_fw,
-> +	.find_loaded_rsc_table = rproc_elf_find_loaded_rsc_table,
-> +	.sanity_check	= rproc_elf_sanity_check,
-> +	.get_boot_addr	= rproc_elf_get_boot_addr,
->  };
->  
->  static int imx_rproc_addr_init(struct imx_rproc *priv,
-> -- 
-> 2.28.0
-> 
+-- 
+Jarod Wilson
+jarod@redhat.com
+
