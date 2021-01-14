@@ -2,147 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41AC2F6D09
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 658FD2F6D0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729134AbhANVT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 16:19:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725995AbhANVT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 16:19:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A72A623A50;
-        Thu, 14 Jan 2021 21:18:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610659127;
-        bh=BrJPgq6l56uubqM18BQiREgQCz/KBbMOrPmN8iJX6Jo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Em6O1kBsyqHWuIfLFA/N5t4mC7hDuNwrTPyDt3ifXB+FPVmutrVNE32U3itCz4VP/
-         pEMu7BmU0EiZAN0wzTlUgiTcoyQMzCx7TlxoT7KRQslUJ8o182EypBwVq4CmuA6flQ
-         TIPn6r05r3nKrNNuxInorRtcaFGFMG4m281CrLaT2bkFrDSfWl5LoBZZCigLEoYM+a
-         mRdZ++uRJkrNHxPthzZiHRiJ3PuW89V0otuVKzAApQTNYm4B1q/UoHwaVB76Cs0RRE
-         QjfSgdJVHPqxkPZHYKqP2pRGrJkA3bVEu3U2U0xOQOk54i1AAubEiXC3rw4eXDeFqW
-         ARXEzV28JMQng==
-Date:   Thu, 14 Jan 2021 22:18:42 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Cc:     Sam Ravnborg <sam@ravnborg.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Marco Elver <melver@google.com>
-Subject: Re: [PATCH] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
- undefined symbols
-Message-ID: <20210114211840.GA5617@linux-8ccs>
-References: <20210114054831.343327-1-maskray@google.com>
- <20210114140621.GA15904@linux-8ccs>
- <CAFP8O3Liydjn=6PwaDdYAhtMS1zC3=aKW6oq6UBOXGr9HKoQ1g@mail.gmail.com>
+        id S1729412AbhANVTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 16:19:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729267AbhANVTy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 16:19:54 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659C5C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:19:14 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id p13so8133376ljg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:19:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TceHTcF0McnZIgHI+8wxLqiISbHwn8gweswvaIc4bME=;
+        b=XbFX0KzGGnVD48DEJuWeKWfkf89wTxMXb4xz9YRUmIrBxYqVMl9MHYgoNMQkWBNi5j
+         mhOKtO/24GuCbiPb5GHJyM0o/+dDN5cp70czhChGtKx3RK168n/3DpyiJJ5HDekgoF72
+         gW4ofr1nqKIYdpQVa7P4p+1hdIz625cC0uLBY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TceHTcF0McnZIgHI+8wxLqiISbHwn8gweswvaIc4bME=;
+        b=OwWdJpVqZ2A6D/f0d1VJKEaJOX6UdcrCqedXfvMCJcXZZ+hVcPMNv1GoBY7XRFGmYU
+         eFZxYuyQXLUqg+t/40d3vljhW/V0IPVZL2SEBReCeEsDLfso42/J8PDtKG23TMxA5Kx3
+         VO2gngq/NiVD4RkrVKNgZxdcagnS2u0hT37FmUcwEwHAbnm3q1UBI15GAZANuLfTCUcW
+         daTA06LwjU0WC+q/WEwjhrKNTfjM0lz5u8GJ+BwLMBbJyEZN1u7qaMpc3clGZ4LO73iN
+         JA6geB0BWJtAtFdeLFCJN3vGhRvnGRPyu+gQZXUu4huDRanAy+eH4FHSB62UKH80ZN+c
+         Qzrw==
+X-Gm-Message-State: AOAM533MQGxggCFuTNQ5jegA3XH/ugOsILCpm38iOL5fn+sqxrGzd3S3
+        hStglQ2E5ViojJfIMHOEVOA1mr7JHK/0HA==
+X-Google-Smtp-Source: ABdhPJzQ6+l8YN200Kau88Nz/P+buNYMRvJ95kweMVZfen6woIBIrr6vIZUFlJ9nT3dqR9cjfEp1Sg==
+X-Received: by 2002:a05:651c:1034:: with SMTP id w20mr3689503ljm.367.1610659152595;
+        Thu, 14 Jan 2021 13:19:12 -0800 (PST)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id f29sm664727lfj.47.2021.01.14.13.19.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Jan 2021 13:19:10 -0800 (PST)
+Received: by mail-lj1-f180.google.com with SMTP id u11so8058102ljo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:19:10 -0800 (PST)
+X-Received: by 2002:a2e:9ad7:: with SMTP id p23mr3904170ljj.465.1610659149726;
+ Thu, 14 Jan 2021 13:19:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFP8O3Liydjn=6PwaDdYAhtMS1zC3=aKW6oq6UBOXGr9HKoQ1g@mail.gmail.com>
-X-OS:   Linux linux-8ccs 5.8.0-rc6-lp150.12.61-default+ x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210112224832.10980-1-will@kernel.org> <161055398865.21762.12236232732054213928.b4-ty@arm.com>
+ <CAK7LNASs6dvU6D3jL2GG3jW58fXfaj6VNOe55NJnTB8UPuk2pA@mail.gmail.com>
+ <CAHk-=wiQ_tp8NmKV8PJ-6WMo3dTEZwDo3a0hYjcUFqMdviNTYw@mail.gmail.com>
+ <20210113214436.GL1551@shell.armlinux.org.uk> <CAHk-=wjqGRXUp6KOdx-eHYEotGvY=a5tSY1mF-BkAcX2YAuBYw@mail.gmail.com>
+ <CAMj1kXFaDNRbDvr43VLEHFRHHS0sGGcF=iTfES4sxPg-rZ34NA@mail.gmail.com>
+ <CAHk-=wjHTpG+gMx9vqrZgo8Uw0NqA2kNjS87o63Zv3=WG2K3zA@mail.gmail.com> <fd3f26b7a70d3b90f1368c55532e463ef2fb9fa4.camel@perches.com>
+In-Reply-To: <fd3f26b7a70d3b90f1368c55532e463ef2fb9fa4.camel@perches.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 14 Jan 2021 13:18:53 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjgvt1Ei72BTrEH5fgfqykVH-AYt56-7yBT8Lcprj7bEg@mail.gmail.com>
+Message-ID: <CAHk-=wjgvt1Ei72BTrEH5fgfqykVH-AYt56-7yBT8Lcprj7bEg@mail.gmail.com>
+Subject: Re: [PATCH] compiler.h: Raise minimum version of GCC to 5.1 for arm64
+To:     Joe Perches <joe@perches.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Florian Weimer <fweimer@redhat.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Fāng-ruì Sòng [14/01/21 08:57 -0800]:
->On Thu, Jan 14, 2021 at 6:06 AM Jessica Yu <jeyu@kernel.org> wrote:
->>
->> +++ Fangrui Song [13/01/21 21:48 -0800]:
->> >clang-12 -fno-pic (since
->> >https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6)
->> >can emit `call __stack_chk_fail@PLT` instead of `call __stack_chk_fail`
->> >on x86.  The two forms should have identical behaviors on x86-64 but the
->> >former causes GNU as<2.37 to produce an unreferenced undefined symbol
->> >_GLOBAL_OFFSET_TABLE_.
->> >
->> >(On x86-32, there is an R_386_PC32 vs R_386_PLT32 difference but the
->> >linker behavior is identical as far as Linux kernel is concerned.)
->> >
->> >Simply ignore _GLOBAL_OFFSET_TABLE_ for now, like what
->> >scripts/mod/modpost.c:ignore_undef_symbol does. This also fixes the
->> >problem for gcc/clang -fpie and -fpic, which may emit `call foo@PLT` for
->> >external function calls on x86.
->> >
->> >Note: ld -z defs and dynamic loaders do not error for unreferenced
->> >undefined symbols so the module loader is reading too much.  If we ever
->> >need to ignore more symbols, the code should be refactored to ignore
->> >unreferenced symbols.
->> >
->> >Reported-by: Marco Elver <melver@google.com>
->> >Link: https://github.com/ClangBuiltLinux/linux/issues/1250
->> >Signed-off-by: Fangrui Song <maskray@google.com>
->> >---
->> > kernel/module.c | 10 ++++++++--
->> > 1 file changed, 8 insertions(+), 2 deletions(-)
->> >
->> >diff --git a/kernel/module.c b/kernel/module.c
->> >index 4bf30e4b3eaa..2e2deea99289 100644
->> >--- a/kernel/module.c
->> >+++ b/kernel/module.c
->> >@@ -2395,8 +2395,14 @@ static int simplify_symbols(struct module *mod, const struct load_info *info)
->> >                               break;
->> >                       }
->> >
->> >-                      /* Ok if weak.  */
->> >-                      if (!ksym && ELF_ST_BIND(sym[i].st_info) == STB_WEAK)
->> >+                      /* Ok if weak. Also allow _GLOBAL_OFFSET_TABLE_:
->> >+                       * GNU as before 2.37 produces an unreferenced _GLOBAL_OFFSET_TABLE_
->> >+                       * for call foo@PLT on x86-64.  If the code ever needs to ignore
->> >+                       * more symbols, refactor the code to only warn if referenced by
->> >+                       * a relocation.
->> >+                       */
->> >+                      if (!ksym && (ELF_ST_BIND(sym[i].st_info) == STB_WEAK ||
->> >+                                    !strcmp(name, "_GLOBAL_OFFSET_TABLE_")))
->> >                               break;
->>
->> Hi Fangrui,
->>
->> Thanks for the patch. I am puzzled why we don't already mirror modpost
->> here, that particular line of code in modpost to ignore _GLOBAL_OFFSET_TABLE_
->> has been there long before my time. Let's properly mirror modpost
->> then, and create a similar helper function ignore_undef_symbol() (and
->> stick the _GLOBAL_OFFSET_TABLE_ check in there) to account for future
->> cases like this.
->>
->> Thanks,
->>
->> Jessica
+On Thu, Jan 14, 2021 at 11:52 AM Joe Perches <joe@perches.com> wrote:
 >
->Hi Jessica,
->
->I guess __this_module in scripts/mod/modpost.c:ignore_undef_symbol is
->not a problem.
->For PPC64 _restgpr0_* and _savegpr0_*, I am not sure ignoring the
->undefined functions in kernel/module.c is right.
->(I know they can be produced by gcc -Os in some cases
->(https://reviews.llvm.org/D79977), but I want to learn whether that is
->a real issue before adding them.)
->
->If we ever need to ignore more symbols, the code should be refactored
->to not warn for unreferenced undefined symbols as my description says.
+> Given the upgrade requirement, and how clang version requirements
+> constantly change, how much more difficult would it be for others
+> to use gcc 7.1 or higher now instead of later?
 
-Hi Fangrui,
+What was the argument for jumping all the way to gcc-7.1?
 
-Sorry for the confusion, I did not mean to exactly mirror
-ignore_undef_symbol() in modpost. The conditions are different there
-and not all of them would not apply to kernel/module.c. Like
-__this_module, as you say, is not a problem as this will be resolved
-once all the module *.o are linked in the final .ko. So when it
-reaches the module loader it would no longer be UNDEF. I assume that
-it is a similar situation for the PPC64 symbols.
+I do think we want to have real reasons we can point to, rather than a
+"just because".
 
-What I meant that we could probably make this patch look nicer by
-moving the hardcoded check for "_GLOBAL_OFFSET_TABLE_" to a helper
-function ignore_undef_symbol(), similar to how modpost does it,
-without adding any additional conditions for now. And yes, if we ever
-need to extend this and refactor to not warn for unreferenced
-undefined symbols, we should refactor to generalize this case, but for
-the scope of this patch I think the suggested change is sufficient for
-now.
-
-Thank you,
-
-Jessica
+            Linus
