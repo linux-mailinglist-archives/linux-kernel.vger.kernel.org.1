@@ -2,180 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1232F657B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 525C72F657D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727632AbhANQK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:10:27 -0500
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:19212 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725950AbhANQK0 (ORCPT
+        id S1726891AbhANQLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:11:51 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9936 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726220AbhANQLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:10:26 -0500
-Received: from pps.filterd (m0134423.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10EG8AiN009827;
-        Thu, 14 Jan 2021 16:09:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pps0720;
- bh=nbTSe2TPew7yYRQRa73fby2BSBCCEXeRRh0nfroLVm4=;
- b=IzG58anymel4U8D0YcqFf04JItZzD3Rbcb3hmljwjvdQZA5xAdITJ/YLzJNbUoKlvmha
- /ZFCdr9cmykUvVXSsbinCCzzd5FZTkZgP1/kJS+TP/4ejuk4cTgwnEoz+eZbN1GOICBQ
- dK5K2Pl3GSTL9x93lHu8RVzMgoRWmQHZwT8pvXvdyQ+4P9eW8VaNpJltKBR9z9uZxe8A
- jBdDKMdwHnqSoKFxohs/0QB899kSJwHucioeFa4J+I5N62kJ26Wy69AblBOdjoBkesFs
- 4c/2YxOnjsY85f+wRUOsCBGiXAVnlkBTT2looMcwuyQ1FNp29Ev42YV1i8hygYE+wbuC HA== 
-Received: from g2t2352.austin.hpe.com (g2t2352.austin.hpe.com [15.233.44.25])
-        by mx0b-002e3701.pphosted.com with ESMTP id 361fvrapn6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 16:09:30 +0000
-Received: from G1W8106.americas.hpqcorp.net (g1w8106.austin.hp.com [16.193.72.61])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by g2t2352.austin.hpe.com (Postfix) with ESMTPS id C2DB3C4;
-        Thu, 14 Jan 2021 16:09:29 +0000 (UTC)
-Received: from G9W8672.americas.hpqcorp.net (16.220.49.31) by
- G1W8106.americas.hpqcorp.net (16.193.72.61) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 14 Jan 2021 16:09:29 +0000
-Received: from G9W9210.americas.hpqcorp.net (2002:10dc:429b::10dc:429b) by
- G9W8672.americas.hpqcorp.net (2002:10dc:311f::10dc:311f) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Thu, 14 Jan 2021 16:09:28 +0000
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (15.241.52.12) by
- G9W9210.americas.hpqcorp.net (16.220.66.155) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2 via Frontend Transport; Thu, 14 Jan 2021 16:09:28 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cRCdrjxJwAI/mBwbNjLZckgtYlk2HrafMJpmWjfmTa0Bi8ibKFXYgwiiLRqDcl/rcYfzKeUy0XE5tPCP+HWXboddOusRD3dLI5ZQlsdhKS6NgMiU+v4PUBBjulKTHnRllmGr62F0fUb3PUdMX5JyeUqSdUlIxuOQepXoRuJBhZrf9e/2vhNCs/yAyb4p0h1STmSCH3Rz34EkM7Qdwo90gV35jpDG1SAUbBfOFVF0H8Mm/MbU7ZETXg1csY4gPrOgifUADt8wEKLyWFkVEHrtSXTdfB3ine3Yk/9rkgDdbf2NUQbcPnmO+JUtIWT+l+oncBw9s5NSzqYg5qFXYejLbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nbTSe2TPew7yYRQRa73fby2BSBCCEXeRRh0nfroLVm4=;
- b=Uq4E8oFz0g9h3duxyGAbeCHsD6SZc/2bbkiyf9ZlvCoTwPKw6y9g2P2CNtb8ijAO5jJddQ8tfGpAbzeBJ6Eh4AH/6vX6cXGU1sssEJDMeWeYcHvvM3VvQ1AE1vkInpe7u2UjE/mRdkZX1I/5Ma7chF4MZel6/VMFe7yYgO50XS6obxZc1k3BBKcSLVruAsSEtuWbBnT5Jnlmy+CcvZuvinGHXuz74J5DBs44RrbNbiQ8EXrWT8ALu/H4UIiqAdCHTJ1LIay9edXtN79xKHbD81PVqCjJvbzJGAg1L5gsxcbVRzSQSNg4NEnGqvUU3mouihDPluKY2vrGdIF0jcdZxQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hpe.com; dmarc=pass action=none header.from=hpe.com; dkim=pass
- header.d=hpe.com; arc=none
-Received: from AT5PR8401MB1300.NAMPRD84.PROD.OUTLOOK.COM
- (2a01:111:e400:742b::18) by AT5PR8401MB0770.NAMPRD84.PROD.OUTLOOK.COM
- (2a01:111:e400:7423::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Thu, 14 Jan
- 2021 16:09:26 +0000
-Received: from AT5PR8401MB1300.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::5050:a788:3fd6:f2cf]) by AT5PR8401MB1300.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::5050:a788:3fd6:f2cf%11]) with mapi id 15.20.3742.012; Thu, 14 Jan
- 2021 16:09:26 +0000
-From:   "Ernst, Justin" <justin.ernst@hpe.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-CC:     Jonathan Corbet <corbet@lwn.net>, Borislav Petkov <bp@suse.de>,
-        "Cezary Rojewski" <cezary.rojewski@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Travis, Mike" <mike.travis@hpe.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 04/10] ABI: sysfs-firmware-sgi_uv
-Thread-Topic: [PATCH 04/10] ABI: sysfs-firmware-sgi_uv
-Thread-Index: AQHW6kprtbExhvpb20yqDp4UIy1lYKonRpJQ
-Date:   Thu, 14 Jan 2021 16:09:26 +0000
-Message-ID: <AT5PR8401MB1300C8F431AF7BA93617272287A80@AT5PR8401MB1300.NAMPRD84.PROD.OUTLOOK.COM>
-References: <cover.1610610444.git.mchehab+huawei@kernel.org>
- <452854f2dd0625b9fee33b9f5e29343d6149781e.1610610444.git.mchehab+huawei@kernel.org>
-In-Reply-To: <452854f2dd0625b9fee33b9f5e29343d6149781e.1610610444.git.mchehab+huawei@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=hpe.com;
-x-originating-ip: [165.225.61.83]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 4497206a-287d-4464-8b95-08d8b8a6c43e
-x-ms-traffictypediagnostic: AT5PR8401MB0770:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AT5PR8401MB07709B9BFE5592EE7C8F854487A80@AT5PR8401MB0770.NAMPRD84.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:3631;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WiYcf5ANWmucQ39u9FJsuwlLw7sNEVXE+SBPsvLKY+bBhv78JU+yx29XIOAhpGFBsVD5YRteS2N5nvH565YR+5IzBN3SPFiGJhtAHUDyxtfcA89xCQJZVKfF83OCHKDAIo1gSYh9iGXGvihUYy+GV70AENJi0O3hD3zrT0cV5aEydmEAPeFGpIuLQd08WD+Ghb8n/c0Y+v5e/2TYUs9f0t5GEBETH9TLNhMU63P1PyPMSNI2WEEEQCOtrZcVGWTQ1RIl66Hi8W9GcmFxRe5yHgqdSnBLFtZVBHyOzsQ0NVbhWT7P/5uqxba0VZuWydV3SgwBIlQ+Hv/AmQsZsoTcWWS0nwaNsGbrCMPjgWlJ4XdyWSCEYuiAykT2iapsCZN1szN7xEL1nIBBeLVXvlrVOA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AT5PR8401MB1300.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(376002)(136003)(396003)(39860400002)(366004)(346002)(2906002)(53546011)(55236004)(66556008)(83380400001)(76116006)(86362001)(64756008)(8676002)(8936002)(6506007)(478600001)(4326008)(26005)(33656002)(71200400001)(9686003)(55016002)(110136005)(66946007)(54906003)(66476007)(5660300002)(186003)(7696005)(316002)(52536014)(66446008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?raD4ySSxyzrRs9+u6lG0GI4ZabNp7Pqxm5+HqiLm+QHf0cAewuxqH3GpMqaP?=
- =?us-ascii?Q?db2hcH2NfwhFmcniN+URRTCd48Y0a7MbeeAhZAZuMPQUrNx6r9H+j3vy+/P3?=
- =?us-ascii?Q?IZmeEn32/UcXTMKKWudA71SQSgsSjGo+ex73ioKmDXheMeOlc+VjAxL458sR?=
- =?us-ascii?Q?PxO9Uyl5+xDIZbA7yf+lCUqVJheaNUfyumO1PzBNHfTY+2O8hTtj//zRNC4i?=
- =?us-ascii?Q?p4SkXqwu/lsmDsWbelpaZqjMrLk/uVN3Lyt/hz21f6M54pOCVeCA/mxyrGma?=
- =?us-ascii?Q?gsZlxWIJs068xNn2TK9hQUSnZD818YzbWig5eFI2zAJiuouLQSkwNrSbIcy/?=
- =?us-ascii?Q?hO2kcS0zH4DUjoEJ0qPx0WZzhZlM32wqpR/mPxQETTevYe9h6XUK9CYqB6I7?=
- =?us-ascii?Q?A0b9pNiSXM+ZyfCCqH2t8m+wOaLxz+lWI+1bRCrgKmlqaoDshFk284SJrkcZ?=
- =?us-ascii?Q?F6bl7PQC8F/VJpu0fTa+aSMTrrnE9Eh/Oo9/80qYVDkJt1hvuj/wblK8olz8?=
- =?us-ascii?Q?/pXGr/MvdnIq70uC45NwLCJZS+3g6q8C63PRGXcujyMwiBmerzeihvmGpB8n?=
- =?us-ascii?Q?QEiY0lFZrJei+5vpLz1+Pc6JqLpgVIgIvBrTZSIypCmMhLuddK4lj+MkLevP?=
- =?us-ascii?Q?i2aN2sBaxbljeaheU174VYEVS2icPJz/jeItrRRtA/4Ub4DqzNqtuh1uPILa?=
- =?us-ascii?Q?W85E75FnKSPL5Il4CkEzdM9XDIpX1ZBvBdDpo6PRASHPL11V96Oq1SU90Nsy?=
- =?us-ascii?Q?7LZTUqPtFQfMs/2DfohRQ3G6pyx6fIPHfvW0/QuIsnZm3ttgZFaf1Jm2SJpD?=
- =?us-ascii?Q?fYdjU9ARcz69pp5oC4enCgCg2zyyjrOmi1MJu0+mm8yIDLif8oeAKguUnDbA?=
- =?us-ascii?Q?gp/r5+Ny15olBY17HJPJsVlp7gE9o7rBW4L3pz0KOg1TH8gTmFAqDEu8KQ7e?=
- =?us-ascii?Q?dr5V9fxRmcxICkYhZUcWdRli8k+qCaZIaFvlPx62CtE=3D?=
-Content-Type: text/plain; charset="us-ascii"
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AT5PR8401MB1300.NAMPRD84.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4497206a-287d-4464-8b95-08d8b8a6c43e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jan 2021 16:09:26.7711
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 105b2061-b669-4b31-92ac-24d304d195dc
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: FJxBwT2i6A10oeUDU3/UmZjgCUMzz424QgOZrJXt8TvJ+7laJJ+N3Ggs56GKmVXhdC86Dg7oRm6AMICTcxsyKg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AT5PR8401MB0770
-X-OriginatorOrg: hpe.com
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 14 Jan 2021 11:11:50 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60006d1d0001>; Thu, 14 Jan 2021 08:11:09 -0800
+Received: from [10.26.73.78] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 14 Jan
+ 2021 16:11:04 +0000
+Subject: Re: [PATCH v1 0/5] Enable fw_devlink=on by default
+To:     Saravana Kannan <saravanak@google.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <20201218031703.3053753-1-saravanak@google.com>
+ <56f7d032-ba5a-a8c7-23de-2969d98c527e@nvidia.com>
+ <CAGETcx9FAAa+gUOTJX76DGGOAE4g3cTbZhwNQ-pLioYzg=fTOw@mail.gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <17939709-f6f4-fa9c-836f-9779081c4087@nvidia.com>
+Date:   Thu, 14 Jan 2021 16:11:01 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-14_05:2021-01-14,2021-01-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- clxscore=1011 phishscore=0 impostorscore=0 malwarescore=0
- lowpriorityscore=0 bulkscore=0 suspectscore=0 mlxscore=0
- priorityscore=1501 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101140091
+In-Reply-To: <CAGETcx9FAAa+gUOTJX76DGGOAE4g3cTbZhwNQ-pLioYzg=fTOw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610640669; bh=txmzy9eWPzuk4trDgylEZViEBSx3xBFY2jngASTAuzM=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=dx4O2nwhtIq06qFs4Gry1FSAxJ4dAflblUKQUS8GnmLlW3fGJ7ozMfov1JhX8YCIG
+         F+U4hB6U6VbzTteiDWfb3tMdhA5MwLcvK7s6x6NjoTGFEjUHfuZz1xiFHSkudDziJV
+         dCMth+GKb5E+8322fGCH1ZSo7bW6Rh4dvEqtXfcH4h1APH5V/gb1W6qoWZbJHXB5aK
+         9mkhTbTiL+jdVOXwILuA78M3APvedTJOSF/f6Nd1jCdfs9WivbAWcKOnRyG/gR4r3V
+         b6D5RdYNPGcDF093mCGewmi/i/R4ogFcPPKeJ38dyzdWXyA2BLYQELJ2zt5scN2PDs
+         3yckdfqwN9LrA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mauro Carvalho Chehab [mailto:mchehab@kernel.org] On Behalf Of Maur=
-o Carvalho Chehab
-> Sent: Thursday, January 14, 2021 1:54 AM
-> Subject: [PATCH 04/10] ABI: sysfs-firmware-sgi_uv
->=20
-> Add a missing blank line required to identify a literal block,
-> fixing this warning:
->=20
-> 	.../Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpect=
-ed indentation.
->=20
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Thanks for finding and fixing this. I was able to replicate the warning and=
- confirm the fix.
+On 13/01/2021 21:26, Saravana Kannan wrote:
+> On Wed, Jan 13, 2021 at 3:30 AM Jon Hunter <jonathanh@nvidia.com> wrote:
+>>
+>>
+>> On 18/12/2020 03:16, Saravana Kannan wrote:
+>>> As discussed in LPC 2020, cyclic dependencies in firmware that couldn't
+>>> be broken using logic was one of the last remaining reasons
+>>> fw_devlink=on couldn't be set by default.
+>>>
+>>> This series changes fw_devlink so that when a cyclic dependency is found
+>>> in firmware, the links between those devices fallback to permissive mode
+>>> behavior. This way, the rest of the system still benefits from
+>>> fw_devlink, but the ambiguous cases fallback to permissive mode.
+>>>
+>>> Setting fw_devlink=on by default brings a bunch of benefits (currently,
+>>> only for systems with device tree firmware):
+>>> * Significantly cuts down deferred probes.
+>>> * Device probe is effectively attempted in graph order.
+>>> * Makes it much easier to load drivers as modules without having to
+>>>   worry about functional dependencies between modules (depmod is still
+>>>   needed for symbol dependencies).
+>>
+>>
+>> One issue we have come across with this is the of_mdio.c driver. On
+>> Tegra194 Jetson Xavier I am seeing the following ...
+>>
+>> boot: logs: [       4.194791] WARNING KERN WARNING: CPU: 0 PID: 1 at /dvs/git/dirty/git-master_l4t-upstream/kernel/drivers/base/core.c:1189 device_links_driver_bound+0x240/0x260
+>> boot: logs: [       4.207683] WARNING KERN Modules linked in:
+>> boot: logs: [       4.210691] WARNING KERN CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc3-next-20210112-gdf869cab4b35 #1
+>> boot: logs: [       4.219221] WARNING KERN Hardware name: NVIDIA Jetson AGX Xavier Developer Kit (DT)
+>> boot: logs: [       4.225628] WARNING KERN pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
+>> boot: logs: [       4.231542] WARNING KERN pc : device_links_driver_bound+0x240/0x260
+>> boot: logs: [       4.236587] WARNING KERN lr : device_links_driver_bound+0xf8/0x260
+>> boot: logs: [       4.241560] WARNING KERN sp : ffff800011f4b980
+>> boot: logs: [       4.244819] WARNING KERN x29: ffff800011f4b980 x28: ffff00008208a0a0
+>> boot: logs: [       4.250051] WARNING KERN x27: ffff00008208a080 x26: 00000000ffffffff
+>> boot: logs: [       4.255271] WARNING KERN x25: 0000000000000003 x24: ffff800011b99000
+>> boot: logs: [       4.260489] WARNING KERN x23: 0000000000000001 x22: ffff800011df14f0
+>> boot: logs: [       4.265706] WARNING KERN x21: ffff800011f4b9f8 x20: ffff800011df1000
+>> boot: logs: [       4.270934] WARNING KERN x19: ffff00008208a000 x18: 0000000000000005
+>> boot: logs: [       4.276166] WARNING KERN x17: 0000000000000007 x16: 0000000000000001
+>> boot: logs: [       4.281382] WARNING KERN x15: ffff000080030c90 x14: ffff0000805c9df8
+>> boot: logs: [       4.286618] WARNING KERN x13: 0000000000000000 x12: ffff000080030c90
+>> boot: logs: [       4.291847] WARNING KERN x11: ffff0000805c9da8 x10: 0000000000000040
+>> boot: logs: [       4.297061] WARNING KERN x9 : ffff000080030c98 x8 : 0000000000000000
+>> boot: logs: [       4.302291] WARNING KERN x7 : 0000000000000009 x6 : 0000000000000000
+>> boot: logs: [       4.307509] WARNING KERN x5 : ffff000080100000 x4 : 0000000000000000
+>> boot: logs: [       4.312739] WARNING KERN x3 : ffff800011df1e38 x2 : ffff000080908c10
+>> boot: logs: [       4.317956] WARNING KERN x1 : 0000000000000001 x0 : ffff0000809ca400
+>> boot: logs: [       4.323183] WARNING KERN Call trace:
+>> boot: logs: [       4.325593] WARNING KERN  device_links_driver_bound+0x240/0x260
+>> boot: logs: [       4.330301] WARNING KERN  driver_bound+0x70/0xd0
+>> boot: logs: [       4.333740] WARNING KERN  device_bind_driver+0x50/0x60
+>> boot: logs: [       4.337671] WARNING KERN  phy_attach_direct+0x258/0x2e0
+>> boot: logs: [       4.341718] WARNING KERN  phylink_of_phy_connect+0x7c/0x140
+>> boot: logs: [       4.346081] WARNING KERN  stmmac_open+0xb04/0xc70
+>> boot: logs: [       4.349612] WARNING KERN  __dev_open+0xe0/0x190
+>> boot: logs: [       4.352972] WARNING KERN  __dev_change_flags+0x16c/0x1b8
+>> boot: logs: [       4.357081] WARNING KERN  dev_change_flags+0x20/0x60
+>> boot: logs: [       4.360856] WARNING KERN  ip_auto_config+0x2a0/0xfe8
+>> boot: logs: [       4.364633] WARNING KERN  do_one_initcall+0x58/0x1b8
+>> boot: logs: [       4.368405] WARNING KERN  kernel_init_freeable+0x1ec/0x240
+>> boot: logs: [       4.372698] WARNING KERN  kernel_init+0x10/0x110
+>> boot: logs: [       4.376130] WARNING KERN  ret_from_fork+0x10/0x18
+>>
+>>
+>> So looking at this change does this mean that the of_mdio needs to be
+>> converted to a proper driver?
+> 
+> Sorry, there's not enough context in this log for me to tell how this
+> is even related to of_mdio.c. My guess is this is related to network
+> stack directly calling device_bind_driver() and not updating device
+> link state correctly. See what device_links_check_suppliers() does in
+> the normal path. I think I know which warning this is, but can you
+> check your tree and tell me the code you see in
+> drivers/base/core.c:1189 ?
 
-Reviewed-by: Justin Ernst <justin.ernst@hpe.com>
+Yes this is the warning shown here [0] and this is coming from
+the 'Generic PHY stmmac-0:00' device.
+ 
+> Also, can you give me a few more lines above and below this log and
+> also explain why you think this is related to of_mdio.c? Where is the
+> DT file for this board in case I need to look at it? And where is this
+> phy node defined in DT?
 
-> ---
->  Documentation/ABI/testing/sysfs-firmware-sgi_uv | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/ABI/testing/sysfs-firmware-sgi_uv b/Documentat=
-ion/ABI/testing/sysfs-
-> firmware-sgi_uv
-> index 637c668cbe45..b0f79a1d14b3 100644
-> --- a/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-> +++ b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-> @@ -39,6 +39,7 @@ Description:
->=20
->  		The uv_type entry contains the hub revision number.
->  		This value can be used to identify the UV system version::
-> +
->  			"0.*" =3D Hubless UV ('*' is subtype)
->=20
->  			"3.0" =3D UV2
-> --
-> 2.29.2
+[    4.179760] dwc-eth-dwmac 2490000.ethernet: User ID: 0x10, Synopsys ID: 0x50
+[    4.186743] dwc-eth-dwmac 2490000.ethernet: 	DWMAC4/5
+[    4.191755] dwc-eth-dwmac 2490000.ethernet: DMA HW capability register supported
+[    4.199062] dwc-eth-dwmac 2490000.ethernet: RX Checksum Offload Engine supported
+[    4.206379] dwc-eth-dwmac 2490000.ethernet: TX Checksum insertion supported
+[    4.213247] dwc-eth-dwmac 2490000.ethernet: Wake-Up On Lan supported
+[    4.219617] dwc-eth-dwmac 2490000.ethernet: TSO supported
+[    4.224954] dwc-eth-dwmac 2490000.ethernet: Enable RX Mitigation via HW Watchdog Timer
+[    4.232800] dwc-eth-dwmac 2490000.ethernet: device MAC address 4a:48:a7:a2:2e:d6
+[    4.240115] dwc-eth-dwmac 2490000.ethernet: Enabled Flow TC (entries=8)
+[    4.246638] dwc-eth-dwmac 2490000.ethernet: TSO feature enabled
+[    4.252499] dwc-eth-dwmac 2490000.ethernet: SPH feature enabled
+[    4.258383] dwc-eth-dwmac 2490000.ethernet: Using 40 bits DMA width
+[    4.265058] libphy: stmmac: probed
+[    4.269421] irq: IRQ63: trimming hierarchy from :bus@0:pmc@c360000
+[    4.276957] platform 3610000.usb: probe deferral - supplier 3520000.padctl not ready
+[    4.286759] platform 31c0000.i2c: probe deferral - wait for supplier dpaux@155e0000
+[    4.295970] cpufreq: cpufreq_online: CPU0: Running at unlisted initial frequency: 1305000 KHz, changing to: 1344000 KHz
+[    4.308146] cpufreq: cpufreq_online: CPU2: Running at unlisted initial frequency: 1306000 KHz, changing to: 1344000 KHz
+[    4.320108] cpufreq: cpufreq_online: CPU4: Running at unlisted initial frequency: 1305000 KHz, changing to: 1344000 KHz
+[    4.332191] cpufreq: cpufreq_online: CPU6: Running at unlisted initial frequency: 1305000 KHz, changing to: 1344000 KHz
+[    4.349276] sdhci-tegra 3400000.mmc: Got CD GPIO
+[    4.360405] mmc0: CQHCI version 5.10
+[    4.363006] tegra-xusb 3610000.usb: Firmware timestamp: 2019-07-24 05:47:34 UTC
+[    4.371278] tegra-xusb 3610000.usb: xHCI Host Controller
+[    4.371298] tegra-xusb 3610000.usb: new USB bus registered, assigned bus number 1
+[    4.371958] tegra-xusb 3610000.usb: hcc params 0x0184ff25 hci version 0x110 quirks 0x0000000000010810
+[    4.372001] tegra-xusb 3610000.usb: irq 29, io mem 0x03610000
+[    4.372522] hub 1-0:1.0: USB hub found
+[    4.372546] hub 1-0:1.0: 4 ports detected
+[    4.372887] tegra-xusb 3610000.usb: xHCI Host Controller
+[    4.372894] tegra-xusb 3610000.usb: new USB bus registered, assigned bus number 2
+[    4.372900] tegra-xusb 3610000.usb: Host supports USB 3.1 Enhanced SuperSpeed
+[    4.373227] hub 2-0:1.0: USB hub found
+[    4.373251] hub 2-0:1.0: 4 ports detected
+[    4.376437] platform 31c0000.i2c: probe deferral - wait for supplier dpaux@155e0000
+[    4.447782] platform 31c0000.i2c: probe deferral - wait for supplier dpaux@155e0000
+[    4.457409] irq: IRQ64: trimming hierarchy from :bus@0:pmc@c360000
+[    4.463735] irq: IRQ65: trimming hierarchy from :bus@0:interrupt-controller@3881000
+[    4.471401] input: gpio-keys as /devices/platform/gpio-keys/input/input0
+[    4.476701] mmc0: SDHCI controller on 3460000.mmc [3460000.mmc] using ADMA 64-bit
+[    4.485440] irq: IRQ66: trimming hierarchy from :bus@0:pmc@c360000
+[    4.486043] platform 31c0000.i2c: probe deferral - wait for supplier dpaux@155e0000
+[    4.492120] mmc1: SDHCI controller on 3400000.mmc [3400000.mmc] using ADMA 64-bit
+[    4.507063] platform 31c0000.i2c: probe deferral - wait for supplier dpaux@155e0000
+[    4.514674] ------------[ cut here ]------------
+[    4.524876] WARNING: CPU: 3 PID: 1 at /local/workdir/tegra/mlt-linux_next/kernel/drivers/base/core.c:1188 device_links_driver_bound+0x29c/0x2d8
+[    4.537563] Modules linked in:
+[    4.540602] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc3-next-20210113-dirty #1
+[    4.548545] Hardware name: NVIDIA Jetson AGX Xavier Developer Kit (DT)
+[    4.555019] pstate: 60400009 (nZCv daif +PAN -UAO -TCO BTYPE=--)
+[    4.560938] pc : device_links_driver_bound+0x29c/0x2d8
+[    4.566050] lr : device_links_driver_bound+0x29c/0x2d8
+[    4.571171] sp : ffff800011f4b980
+[    4.574467] x29: ffff800011f4b980 x28: ffff00008208a080 
+[    4.579732] x27: ffff00008208a0a0 x26: ffff000080908c10 
+[    4.585036] x25: ffff800011e4af73 x24: ffff800011b99000 
+[    4.590347] x23: ffff800011df1428 x22: ffff800011f4b9f8 
+[    4.595634] x21: ffff800011df1000 x20: ffff00008208a000 
+[    4.600916] x19: ffff0000809ca400 x18: ffffffffffffffff 
+[    4.606236] x17: 0000000000000007 x16: 0000000000000001 
+[    4.611479] x15: 0000000000000613 x14: ffff800011f4b610 
+[    4.616780] x13: 00000000ffffffea x12: ffff800011c0a320 
+[    4.622027] x11: 0000000000000001 x10: 0000000000000001 
+[    4.627304] x9 : 0000000000000003 x8 : ffff800011bb2378 
+[    4.632589] x7 : ffff800011c0a378 x6 : c0000000ffffefff 
+[    4.637831] x5 : 0000000000017fe8 x4 : 0000000000000000 
+[    4.643124] x3 : 00000000ffffffff x2 : ffff800011bb22e8 
+[    4.645339] mmc0: Command Queue Engine enabled
+[    4.648397] x1 : a13f0a1c9773d600 x0 : 0000000000000000 
+[    4.648414] Call trace:
+[    4.648424]  device_links_driver_bound+0x29c/0x2d8
+[    4.648446]  driver_bound+0x6c/0xf8
+[    4.648455]  device_bind_driver+0x50/0x60
+[    4.648462]  phy_attach_direct+0x258/0x2e0
+[    4.648473]  phylink_of_phy_connect+0x7c/0x140
+[    4.652967] mmc0: new HS200 MMC card at address 0001
+[    4.658075]  stmmac_open+0xb04/0xc70
+[    4.658093]  __dev_open+0xe0/0x190
+[    4.658142]  __dev_change_flags+0x16c/0x1b8
+[    4.665285]  dev_change_flags+0x20/0x60
+[    4.665326]  ip_auto_config+0x2a0/0xfe8
+[    4.665340]  do_one_initcall+0x58/0x1b8
+[    4.672731]  kernel_init_freeable+0x1ec/0x240
+[    4.672746]  kernel_init+0x10/0x110
+[    4.716301]  ret_from_fork+0x10/0x18
+[    4.719865] ---[ end trace 819cead1701ad8da ]---
+[    4.724955] platform 31c0000.i2c: probe deferral - wait for supplier dpaux@155e0000
+[    4.725143] mmcblk0: mmc0:0001 HBG4a2 29.1 GiB 
+[    4.725260] dwc-eth-dwmac 2490000.ethernet eth0: PHY [stmmac-0:00] driver [Generic PHY] (irq=POLL)
+[    4.726387] dwmac4: Master AXI performs any burst length
+[    4.726410] dwc-eth-dwmac 2490000.ethernet eth0: No Safety Features support found
+[    4.726840] dwc-eth-dwmac 2490000.ethernet eth0: IEEE 1588-2008 Advanced Timestamp supported
+[    4.727011] dwc-eth-dwmac 2490000.ethernet eth0: registered PTP clock
+[    4.737024] dwc-eth-dwmac 2490000.ethernet eth0: configuring for phy/rgmii-id link mode
 
+
+The warning is occurring when device_bind_driver() is called in
+phy_attach_direct() [1]. The device-tree ethernet node for this
+board can be found here [2]. 
+
+> If there's an easy way to convert it to a proper driver, that's always
+> better than calling into driver core in a piecemeal fashion.
+
+So this is a generic phy driver that has been around for quite some
+time AFAICT. 
+ 
+>> I would have thought that this will be
+>> seen on several platforms.
+> 
+> I'm surprised you are seeing this issue only now. I'd have expected it
+> to have happened even without this series.
+
+We have automated testing that checks for new warnings with -next and
+this is definitely new and the bisect points to this change.
+
+Cheers
+Jon 
+ 
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/base/core.c?h=next-20210112#n1189
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/net/phy/phy_device.c?h=next-20210112#n1357
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi?h=next-20210112#n31
+
+-- 
+nvpublic
