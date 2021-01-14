@@ -2,196 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393EF2F673D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B672F6758
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728967AbhANRPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:15:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44428 "EHLO
+        id S1729054AbhANRQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:16:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728926AbhANRPv (ORCPT
+        with ESMTP id S1728588AbhANRQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:15:51 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74DAC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:15:10 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id a109so5883099otc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:15:10 -0800 (PST)
+        Thu, 14 Jan 2021 12:16:01 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5A4C0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:15:21 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id o19so9107351lfo.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:15:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qaFSjFq15gJ5kL5BciOwoue8YB8M48nAYhLQvOFNNhY=;
-        b=h1gf3Ri9zlYKv1/Pt/v3LUg3++8O2s/1Owo9/GL5iV43s6JCbl8Eu56f0hAJ2/mtE2
-         K8wSgsL1ZHfGgsp7zJV+74crDethx3ZUxCU39jxneEI2O5ZN+t6FwbwmeDtL9jGw1GpZ
-         2YxuM1mOAlpEgYbzcQhZ8RsYW2WkF1GyqXweLV4jnDt0xX/OChXm34qAavAz11EbOtxN
-         XbAJzG1sICY3TmuIH7hooetViHHwkS8yj7DHGxwUbRJ/xS1im5VjeD5EufJOaC8YE2Nd
-         ifpiyQTkPWd8A8OhQ0AO7GpdnL+Dx9jJmvPuBv/bHU2xkTN7qosp16mFaoCHsxJ3cVm8
-         QDmQ==
+        d=konsulko.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jRpbugOzzcD4vWdxqQSiB7WPu9j6z6Mr66iAcSSwJZc=;
+        b=YFsUaEXzE7PwG8/PiSPYv+xFcwhW6um3lZ+PQtUVk7nx4B1GE1smOkJPyTLcP8iUKL
+         24F+TGLfPFfcEFUEZruZ28RvSZp3DbPwD2BG5twLXzcZp2xHP/pDyV9ItDSp5eY4gSP0
+         0G4TsA7FGmmSnnoUN80m74Agih4U2RgekH4+g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qaFSjFq15gJ5kL5BciOwoue8YB8M48nAYhLQvOFNNhY=;
-        b=jg4pedjAFd+cOfgE47Yrn07FGzqyaucowAENkE61JSr/sdcPcnDpqFPOBTaJCURh9v
-         nPChbcrixXHXjA6uljqNOIExt2CA8CwWFgs+EjDbUqcUvOWsbCFO+3HZq0+RSw5oXap3
-         IOVU33NGc9vspDT4wWJs0ErtRm1YF0zsN8mgsKrv17xdWdXN+IZnqHTYJAhLz/jd3Yt1
-         ThA8bawXQHeAkM/ODupGEDManYWvy3pDBtKl+76yECSl9kw+S3KjFf5+Reov/3m59InA
-         GXfTs830P2qY2iyyOwFWNzySKPfbE05bDdiP4gfWGDlk93DCzi/GsbqZMbJ/gMzQzyIV
-         8oNQ==
-X-Gm-Message-State: AOAM532KpEEPuFGBWSwVSZAEUXZxVFhV+FJzfALGiHa4eN1seOKYDckC
-        H9z2pRknj/F7G42W2FkY+e8cyg==
-X-Google-Smtp-Source: ABdhPJys2GzDnT5HCru2U+086JIhIuoUHn9W/Swzho2QPCnEX4VWamPgoN/so5v99Q7Tl8RProRR9A==
-X-Received: by 2002:a05:6830:1e41:: with SMTP id e1mr5233569otj.143.1610644510091;
-        Thu, 14 Jan 2021 09:15:10 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id s26sm1175595otd.8.2021.01.14.09.15.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 09:15:09 -0800 (PST)
-Date:   Thu, 14 Jan 2021 11:15:07 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        linux-gpio@vger.kernel.org,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 4/4] pinctrl: qcom: Don't clear pending interrupts
- when enabling
-Message-ID: <YAB8G137wfisfOqt@builder.lan>
-References: <20210108093339.v5.1.I3ad184e3423d8e479bc3e86f5b393abb1704a1d1@changeid>
- <20210108093339.v5.4.I7cf3019783720feb57b958c95c2b684940264cd1@changeid>
- <161060848425.3661239.17417977666663714149@swboyd.mtv.corp.google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jRpbugOzzcD4vWdxqQSiB7WPu9j6z6Mr66iAcSSwJZc=;
+        b=IvNCHvleFzfsXN+mABNTiRc89nCMZ/4kop0KSXceK+vR8Z2c3mpsyXW9XaBXMCEhDq
+         bGWctfllftW0lg6njt1e2B2+a2Ru70E4Z60VMT38Kr6j75/W3p/wNcLy7LDC5L/RQPAK
+         0ZAmmIppLyhjo8DtmpnF2YTALPhVfSXeQv7MDtfzMkp8OV3GKPVW4SpceRD7tovYF2Sq
+         ijJyi14ePepQQ5p4TrwT1E01yuOI+zCCTY8XVysc5xx+w/zSZbeH5PQJbEneRVaOKcTF
+         PKjnRswMII+Z9HaVwyZPX3z7I1JbLBvb9wY3E0SH+tWZa6cvk9zvQ7aFNwRf249dr6zk
+         QYBQ==
+X-Gm-Message-State: AOAM531kA9DaK1VfZPF06RCSwye5LEiN8S6NuMPTW+bCB+OgR/6IcIiN
+        hnUzAoK2aGEGMKgHEdRihMjK2apx/B8J14NG1NxQBw==
+X-Google-Smtp-Source: ABdhPJw98wVFP/xXJJyWVqxebD2K8/3IKxc6BaafZzZCj+GPq53hclI4p29ibHEaPZZ65JbG9eLIXGPKMIczkIj5qA0=
+X-Received: by 2002:a05:6512:2009:: with SMTP id a9mr3491536lfb.575.1610644519634;
+ Thu, 14 Jan 2021 09:15:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161060848425.3661239.17417977666663714149@swboyd.mtv.corp.google.com>
+References: <4490cb6a7e2243fba374e40652979e46@hisilicon.com>
+ <CAM4kBBK=5eBdCjWc5VJXcdr=Z4PV1=ZQ2n8fZmJ6ahJbpUyv2A@mail.gmail.com>
+ <08cbef1e43634c4099709be8e99e5d27@hisilicon.com> <CAM4kBBJjCYX0DQZ8de9LsFV6L+eF4tZe-NN=jiAz9WLWYrsCsQ@mail.gmail.com>
+ <1d0d4a3576e74d128d7849342a7e9faf@hisilicon.com> <CAM4kBB+uRrnpta908Gf93VfH90NVpmqv4jNY2kxrrGSdWApz_w@mail.gmail.com>
+ <4e686c73-b453-e714-021a-1fcd0a565984@huawei.com> <CAM4kBB+jtJd5mqBby7j+ou-AxvPgCU777pX4cnwneLi8P4U+7g@mail.gmail.com>
+ <20210114161850.zjcfhsgtmojjjqba@linutronix.de> <CAM4kBBKcj+ZVEv8mkh+rWc0xbomKsyc60UNuuRem_iWPf9YxVA@mail.gmail.com>
+ <20210114165645.czqpsk3lacmiyiik@linutronix.de>
+In-Reply-To: <20210114165645.czqpsk3lacmiyiik@linutronix.de>
+From:   Vitaly Wool <vitaly.wool@konsulko.com>
+Date:   Thu, 14 Jan 2021 18:15:08 +0100
+Message-ID: <CAM4kBBLqgh=ymq4pg6URB3OhjhRSH3O=4AEMRBuaC3Z0-hZ4Lg@mail.gmail.com>
+Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     "tiantao (H)" <tiantao6@huawei.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Mike Galbraith <efault@gmx.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, NitinGupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "tiantao (H)" <tiantao6@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 14 Jan 01:14 CST 2021, Stephen Boyd wrote:
+On Thu, Jan 14, 2021 at 5:56 PM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+>
+> On 2021-01-14 17:29:37 [+0100], Vitaly Wool wrote:
+> > On Thu, 14 Jan 2021, 17:18 Sebastian Andrzej Siewior,
+> > <bigeasy@linutronix.de> wrote:
+> > >
+> > > On 2020-12-23 19:25:02 [+0100], Vitaly Wool wrote:
+> > > > > write the following patch according to your idea, what do you think ?
+> > > >
+> > > > Yep, that is basically what I was thinking of. Some nitpicks below:
+> > >
+> > > Did this go somewhere? The thread just ends here on my end.
+> > > Mike, is this patch fixing / helping your case in anyway?
+> >
+> > Please see
+> > * https://marc.info/?l=linux-mm&m=160889419514019&w=2
+> > * https://marc.info/?l=linux-mm&m=160889418114011&w=2
+> > * https://marc.info/?l=linux-mm&m=160889448814057&w=2
+>
+> Thank you, that would be
+>    1608894171-54174-1-git-send-email-tiantao6@hisilicon.com
+>
+> for b4 compatibility :)
+>
+> > Haven't had time to test these yet but seem to be alright.
+>
+> So zs_map_object() still disables preemption but the mutex part is
+> avoided by the patch?
 
-> Quoting Douglas Anderson (2021-01-08 09:35:16)
-> > Let's deal with the problem like this:
-> > * When we mux away, we'll mask our interrupt.  This isn't necessary in
-> >   the above case since the client already masked us, but it's a good
-> >   idea in general.
-> > * When we mux back will clear any interrupts and unmask.
-> 
-> I'm on board!
-> 
-> > 
-> > Fixes: 4b7618fdc7e6 ("pinctrl: qcom: Add irq_enable callback for msm gpio")
-> > Fixes: 71266d9d3936 ("pinctrl: qcom: Move clearing pending IRQ to .irq_request_resources callback")
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > ---
-> > diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-> > index a6b0c17e2f78..d5d1f3430c6c 100644
-> > --- a/drivers/pinctrl/qcom/pinctrl-msm.c
-> > +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-> > @@ -51,6 +51,7 @@
-> >   * @dual_edge_irqs: Bitmap of irqs that need sw emulated dual edge
-> >   *                  detection.
-> >   * @skip_wake_irqs: Skip IRQs that are handled by wakeup interrupt controller
-> > + * @disabled_for_mux: These IRQs were disabled because we muxed away.
-> >   * @soc:            Reference to soc_data of platform specific data.
-> >   * @regs:           Base addresses for the TLMM tiles.
-> >   * @phys_base:      Physical base address
-> > @@ -72,6 +73,7 @@ struct msm_pinctrl {
-> >         DECLARE_BITMAP(dual_edge_irqs, MAX_NR_GPIO);
-> >         DECLARE_BITMAP(enabled_irqs, MAX_NR_GPIO);
-> >         DECLARE_BITMAP(skip_wake_irqs, MAX_NR_GPIO);
-> > +       DECLARE_BITMAP(disabled_for_mux, MAX_NR_GPIO);
-> >  
-> >         const struct msm_pinctrl_soc_data *soc;
-> >         void __iomem *regs[MAX_NR_TILES];
-> > @@ -179,6 +181,10 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
-> >                               unsigned group)
-> >  {
-> >         struct msm_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
-> > +       struct gpio_chip *gc = &pctrl->chip;
-> > +       unsigned int irq = irq_find_mapping(gc->irq.domain, group);
-> > +       struct irq_data *d = irq_get_irq_data(irq);
-> > +       unsigned int gpio_func = pctrl->soc->gpio_func;
-> >         const struct msm_pingroup *g;
-> >         unsigned long flags;
-> >         u32 val, mask;
-> > @@ -195,6 +201,20 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
-> >         if (WARN_ON(i == g->nfuncs))
-> >                 return -EINVAL;
-> >  
-> > +       /*
-> > +        * If an GPIO interrupt is setup on this pin then we need special
-> > +        * handling.  Specifically interrupt detection logic will still see
-> > +        * the pin twiddle even when we're muxed away.
-> > +        *
-> > +        * When we see a pin with an interrupt setup on it then we'll disable
-> > +        * (mask) interrupts on it when we mux away until we mux back.  Note
-> > +        * that disable_irq() refcounts and interrupts are disabled as long as
-> > +        * at least one disable_irq() has been called.
-> > +        */
-> > +       if (d && i != gpio_func &&
-> > +           !test_and_set_bit(d->hwirq, pctrl->disabled_for_mux))
-> > +               disable_irq(irq);
-> 
-> Does it need to be forced non-lazy so that it is actually disabled at
-> the GIC? I'm trying to understand how the lazy irq disabling plays into
-> this. I think it's a don't care situation because if the line twiddles
-> and triggers an irq then we'll actually disable it at the GIC in the
-> genirq core and mark it pending for resend. I wonder if we wouldn't have
-> to undo the pending state if we actually ignored it at the GIC
-> forcefully. And I also worry that it may cause a random wakeup if the
-> line twiddles, becomes pending at GIC and thus blocks the CPU from
-> running a WFI but it isn't an irq that Linux cares about because it's
-> muxed to UART, and then lazy handling runs and shuts it down. Is that
-> possible?
-> 
+Basically, yes. Minchan was very clear that he didn't want to remove
+that inter-function locking, so be it.
+I wouldn't really advise to use zsmalloc with zswap because zsmalloc
+has no support for reclaim, nevertheless I wouldn't like this
+configuration to stop working for those who are already using it.
 
-I was about to write a question about why we should disable the IRQ
-through the irqchip framework, rather than just do it in the hardware
-directly.
+Would you or Mike be up for testing Tian Taos's patchset?
 
-Which I think means that I came to the same conclusion as you, that if
-we have a pin masked to non-gpio, it will still wake the system up, just
-to actually disable the IRQ lazily.
-
-Is there a problem with leaving the irq framework to believe the IRQ is
-enabled while we disable the delivery in hardware?
-
-Regards,
-Bjorn
-
-> > +
-> >         raw_spin_lock_irqsave(&pctrl->lock, flags);
-> >  
-> >         val = msm_readl_ctl(pctrl, g);
-> > @@ -204,6 +224,20 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
-> >  
-> >         raw_spin_unlock_irqrestore(&pctrl->lock, flags);
-> >  
-> > +       if (d && i == gpio_func &&
-> > +           test_and_clear_bit(d->hwirq, pctrl->disabled_for_mux)) {
-> > +               /*
-> > +                * Clear interrupts detected while not GPIO since we only
-> > +                * masked things.
-> > +                */
-> > +               if (d->parent_data && test_bit(d->hwirq, pctrl->skip_wake_irqs))
-> > +                       irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, false);
-> 
-> So if not lazy this could go away? Although I think this is to clear out
-> the pending state in the GIC and not the PDC which is the parent.
-> 
-> > +               else
-> > +                       msm_ack_intr_status(pctrl, g);
-> > +
-> > +               enable_irq(irq);
-> > +       }
-> > +
+Best regards,
+   Vitaly
