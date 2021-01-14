@@ -2,119 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7907B2F5D32
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA7D2F5D34
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:23:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727712AbhANJWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:22:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34444 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725989AbhANJWg (ORCPT
+        id S1728001AbhANJXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:23:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727776AbhANJXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:22:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610616069;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v+P+ymbxz56cW25ly8svSOtyorypFtEzsoTghRSRpI0=;
-        b=G38lD5Na6cWyhhzEwkKiCuY53iWNwMehrJWPrlJ+rbphb7UeG2pWkfw6ZKLnYl+V8nSwWh
-        2Uuapc8GGOVSRrVpEr9ruv6IU50gY1AWtv5NS3AtqHgF3MKSHMP8AFbytUGcZbz7ApmqRc
-        vxJRcC2BdjTT6PAeOxm3javZp8x8E+o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-227-lYMpLajHM1uB9BTga1zBXQ-1; Thu, 14 Jan 2021 04:21:08 -0500
-X-MC-Unique: lYMpLajHM1uB9BTga1zBXQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8BC0F1015C80;
-        Thu, 14 Jan 2021 09:21:06 +0000 (UTC)
-Received: from [10.36.115.75] (ovpn-115-75.ams2.redhat.com [10.36.115.75])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1067860C47;
-        Thu, 14 Jan 2021 09:21:04 +0000 (UTC)
-Subject: Re: [PATCH] mm: memblock: remove return value of memblock_free_all()
-To:     Daeseok Youn <daeseok.youn@gmail.com>, rppt@kernel.org,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20210114070817.GA2868715@AD01715016>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <726525ab-d30d-e58c-21ea-db9d6ad4ae6b@redhat.com>
-Date:   Thu, 14 Jan 2021 10:21:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 14 Jan 2021 04:23:02 -0500
+Received: from shrek.podlesie.net (shrek-3s.podlesie.net [IPv6:2a00:13a0:3010::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1147CC061575;
+        Thu, 14 Jan 2021 01:22:21 -0800 (PST)
+Received: by shrek.podlesie.net (Postfix, from userid 603)
+        id 5545A49B; Thu, 14 Jan 2021 10:22:18 +0100 (CET)
+Date:   Thu, 14 Jan 2021 10:22:18 +0100
+From:   Krzysztof Mazur <krzysiek@podlesie.net>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/lib: don't use MMX before FPU initialization
+Message-ID: <20210114092218.GA26786@shrek.podlesie.net>
+References: <20201228160631.32732-1-krzysiek@podlesie.net>
+ <20210112000923.GK25645@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20210114070817.GA2868715@AD01715016>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112000923.GK25645@zn.tnic>
+User-Agent: Mutt/1.6.2 (2016-07-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.01.21 08:08, Daeseok Youn wrote:
-> No one checks the return value of memblock_free_all().
-> Make the return value void.
+On Tue, Jan 12, 2021 at 01:09:23AM +0100, Borislav Petkov wrote:
+> On Mon, Dec 28, 2020 at 05:06:31PM +0100, Krzysztof Mazur wrote:
+> > When enabled, the MMX 3DNow! optimized memcpy() is used very early,
+> > even before FPU is initialized. It worked fine, but commit
+> > 7ad816762f9bf89e940e618ea40c43138b479e10 ("x86/fpu: Reset MXCSR
+> > to default in kernel_fpu_begin()") broke that. After that commit
+> > the kernel crashes just after "Booting the kernel." message.
 > 
-> memblock_free_all() is used on mem_init() for each
-> architecture, and the total count of freed pages will be added
-> to _totalram_pages variable by calling totalram_pages_add().
+> Have you figured out in the meantime what exactly is causing the
+> breakage?
 > 
-> so do not need to return total count of freed pages.
+> Does it boot if you comment out
 > 
-> Signed-off-by: Daeseok Youn <daeseok.youn@gmail.com>
-> ---
->  include/linux/memblock.h | 2 +-
->  mm/memblock.c            | 6 +-----
->  2 files changed, 2 insertions(+), 6 deletions(-)
+> +       if (boot_cpu_has(X86_FEATURE_FPU))
+> +               asm volatile ("fninit");
 > 
-> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> index 9c5cc95c7cee..076fda398dff 100644
-> --- a/include/linux/memblock.h
-> +++ b/include/linux/memblock.h
-> @@ -117,7 +117,7 @@ int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
->  int memblock_mark_nomap(phys_addr_t base, phys_addr_t size);
->  int memblock_clear_nomap(phys_addr_t base, phys_addr_t size);
->  
-> -unsigned long memblock_free_all(void);
-> +void memblock_free_all(void);
->  void reset_node_managed_pages(pg_data_t *pgdat);
->  void reset_all_zones_managed_pages(void);
->  void memblock_enforce_memory_reserved_overlap(void);
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index 40ca30bfa387..2a2b1fe4b659 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -2074,10 +2074,8 @@ void __init reset_all_zones_managed_pages(void)
->  
->  /**
->   * memblock_free_all - release free pages to the buddy allocator
-> - *
-> - * Return: the number of pages actually released.
->   */
-> -unsigned long __init memblock_free_all(void)
-> +void __init memblock_free_all(void)
->  {
->  	unsigned long pages;
->  
-> @@ -2086,8 +2084,6 @@ unsigned long __init memblock_free_all(void)
->  
->  	pages = free_low_memory_core_early();
->  	totalram_pages_add(pages);
-> -
-> -	return pages;
->  }
->  
->  #if defined(CONFIG_DEBUG_FS) && defined(CONFIG_ARCH_KEEP_MEMBLOCK)
+> in kernel_fpu_begin()?
 > 
+> I'm guessing K7 doesn't have X86_FEATURE_XMM so the LDMXCSR won't
+> matter...
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+K7 supports both XMM and FXSR:
 
--- 
-Thanks,
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 mmx fxsr sse syscall mmxext 3dnowext 3dnow cpuid 3dnowprefetch vmmcall
 
-David / dhildenb
+and the Linux 5.10 boots fine with:
 
+diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+index eb86a2b831b1..08e5c5bea599 100644
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -141,8 +141,10 @@ void kernel_fpu_begin(void)
+ 	}
+ 	__cpu_invalidate_fpregs_state();
+ 
++#if 0
+ 	if (boot_cpu_has(X86_FEATURE_XMM))
+ 		ldmxcsr(MXCSR_DEFAULT);
++#endif
+ 
+ 	if (boot_cpu_has(X86_FEATURE_FPU))
+ 		asm volatile ("fninit");
+
+
+So, I'm guessing that the K7 does not like ldmxcsr(), when FXSR
+or/and XMM are not enabled in CR4 (in fpu__init_cpu_generic()).
+I verified that by adding kernel_fpu_begin()+kernel_fpu_end()
+pair, before and after cr4_set_bits() in fpu__init_cpu_generic()
+(on a kernel with disabled early MMX-optimized memcpy).
+
+The kernel with kernel_fpu_begin() after cr4_set_bits():
+
+diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
+index 701f196d7c68..6d5db9107411 100644
+--- a/arch/x86/kernel/fpu/init.c
++++ b/arch/x86/kernel/fpu/init.c
+@@ -25,6 +25,9 @@ static void fpu__init_cpu_generic(void)
+ 	if (cr4_mask)
+ 		cr4_set_bits(cr4_mask);
+ 
++	kernel_fpu_begin();
++	kernel_fpu_end();
++
+ 	cr0 = read_cr0();
+ 	cr0 &= ~(X86_CR0_TS|X86_CR0_EM); /* clear TS and EM */
+ 	if (!boot_cpu_has(X86_FEATURE_FPU))
+
+boots fine, but the kernel with kernel_fpu_begin() before
+cr4_set_bits():
+
+diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
+index 701f196d7c68..fcf3e6fbd3f8 100644
+--- a/arch/x86/kernel/fpu/init.c
++++ b/arch/x86/kernel/fpu/init.c
+@@ -22,6 +22,9 @@ static void fpu__init_cpu_generic(void)
+ 		cr4_mask |= X86_CR4_OSFXSR;
+ 	if (boot_cpu_has(X86_FEATURE_XMM))
+ 		cr4_mask |= X86_CR4_OSXMMEXCPT;
++
++	kernel_fpu_begin();
++	kernel_fpu_end();
+ 	if (cr4_mask)
+ 		cr4_set_bits(cr4_mask);
+
+crashes.
+
+
+So the breakage is caused by using ldmxcsr(MXCSR_DEFAULT)
+before X86_CR4_OSFXSR or/and X86_CR4_OSXMMEXCPT are set
+in CR4.
+
+
+So there are at least two alternative approaches (to disabling
+MMX-optimized memcpy early):
+
+	a) initialize FXSR/XMM bits in CR4 very early, before first memcpy()
+
+	b) replacing boot_cpu_has(X86_FEATURE_XMM) in kernel_fpu_begin()
+	   by something that is not enabled before CR4 is initialized.
+	   This approach also comes with a runtime penalty, because
+	   if kernel requires XMM, boot_cpu_has(X86_FEATURE_XMM) is
+	   optimized out.
+
+Best regards,
+Krzysiek
