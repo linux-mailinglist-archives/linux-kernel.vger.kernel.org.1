@@ -2,107 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002702F596E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E21EA2F5982
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbhANDhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 22:37:21 -0500
-Received: from mga07.intel.com ([134.134.136.100]:55688 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726404AbhANDhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 22:37:21 -0500
-IronPort-SDR: 1LVI0qotUX/5cm2/asHnIuaKHYwFhs9UoJEvsXaML+VOWqjxJD7WFca85HgoL/gszx+sJ6EEqG
- +HWVXEirgL1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="242377422"
-X-IronPort-AV: E=Sophos;i="5.79,346,1602572400"; 
-   d="scan'208";a="242377422"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 19:35:35 -0800
-IronPort-SDR: ygzTiOHXJJWannPZltaZAD28jha+8ihALXpvtTjpIPOTgv3dQCeRSxdqh0hOZHE3o5I725urN6
- D/Gk0dnee8QA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,346,1602572400"; 
-   d="scan'208";a="499471394"
-Received: from imail001.iil.intel.com ([10.184.82.104])
-  by orsmga004.jf.intel.com with ESMTP; 13 Jan 2021 19:35:32 -0800
-Received: from [10.215.249.35] (cheolyon-MOBL.gar.corp.intel.com [10.215.249.35])
-        by imail001.iil.intel.com with ESMTP id 10E3ZYsJ004016;
-        Thu, 14 Jan 2021 05:35:35 +0200
-From:   "Kim, Cheol Yong" <cheol.yong.kim@linux.intel.com>
-Subject: Re: [PATCH v9 0/5] spi: cadence-quadspi: Add QSPI controller support
- for Intel LGM SoC
-To:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, rtanwar@maxlinear.com
-Cc:     vigneshr@ti.com, qi-ming.wu@intel.com, cheol.yong.kim@intel.com,
-        p.yadav@ti.com, linux-mtd@lists.infradead.org,
-        "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>, ckim@maxlinear.com
-References: <20201124041840.31066-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <161055171029.21847.3382759454400721764.b4-ty@kernel.org>
-Message-ID: <6916fcc9-3132-2786-5c36-de3b64721694@linux.intel.com>
-Date:   Thu, 14 Jan 2021 11:35:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1727861AbhANDlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 22:41:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45356 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727768AbhANDlD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 22:41:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610595576;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qtF1idSqCy5ua8Az2XtZ/1G+SswhJSq5w0eZMMNKzU8=;
+        b=jWecqsOadZPzEyOtTJA7pjDYatlvo1kIZCJUd771oQ6mMbGkpg421V0SfPNe1k31zCtXwR
+        ipRfUVXpubPQNpfGpuHCQDSNRI1loJXTInkQlxh2ozV6+rr4N4AZVR9mc8Su9Dwl3wTe50
+        hrhcacw/VX1/E4uCW+5+8czppvO+foM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-542--aJiRCZ_NrCYrBKuyUt_sg-1; Wed, 13 Jan 2021 22:39:34 -0500
+X-MC-Unique: -aJiRCZ_NrCYrBKuyUt_sg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 638DB15720;
+        Thu, 14 Jan 2021 03:39:30 +0000 (UTC)
+Received: from [10.72.12.100] (ovpn-12-100.pek2.redhat.com [10.72.12.100])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1C48760C0F;
+        Thu, 14 Jan 2021 03:39:04 +0000 (UTC)
+Subject: Re: [RFC PATCH 0/7] Support for virtio-net hash reporting
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Yuri Benditovich <yuri.benditovich@daynix.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, rdunlap@infradead.org,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
+        cai@lca.pw, Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        bpf <bpf@vger.kernel.org>, Yan Vugenfirer <yan@daynix.com>
+References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
+ <CAOEp5OejaX4ZETThrj4-n8_yZoeTZs56CBPHbQqNsR2oni8dWw@mail.gmail.com>
+ <CAOEp5Oc5qif_krU8oC6qhq6X0xRW-9GpWrBzWgPw0WevyhT8Mg@mail.gmail.com>
+ <CA+FuTSfhBZfEf8+LKNUJQpSxt8c5h1wMpARupekqFKuei6YBsA@mail.gmail.com>
+ <78bbc518-4b73-4629-68fb-2713250f8967@redhat.com>
+ <CA+FuTSfJJhEYr6gXmjpjjXzg6Xm5wWa-dL1SEV-Zt7RcPXGztg@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <8ea218a8-a068-1ed9-929d-67ad30111c3c@redhat.com>
+Date:   Thu, 14 Jan 2021 11:38:48 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <161055171029.21847.3382759454400721764.b4-ty@kernel.org>
+In-Reply-To: <CA+FuTSfJJhEYr6gXmjpjjXzg6Xm5wWa-dL1SEV-Zt7RcPXGztg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 1/13/2021 11:28 PM, Mark Brown wrote:
-> On Tue, 24 Nov 2020 12:18:35 +0800, Ramuthevar, Vadivel MuruganX wrote:
->> Add QSPI controller support for Intel LGM SoC.
+On 2021/1/13 下午10:33, Willem de Bruijn wrote:
+> On Tue, Jan 12, 2021 at 11:11 PM Jason Wang <jasowang@redhat.com> wrote:
 >>
->> Patches to move move bindings over to
->> "Documentation/devicetree/bindings/spi/" directory and also added compatible
->> Support for Intel platform.
+>> On 2021/1/13 上午7:47, Willem de Bruijn wrote:
+>>> On Tue, Jan 12, 2021 at 3:29 PM Yuri Benditovich
+>>> <yuri.benditovich@daynix.com> wrote:
+>>>> On Tue, Jan 12, 2021 at 9:49 PM Yuri Benditovich
+>>>> <yuri.benditovich@daynix.com> wrote:
+>>>>> On Tue, Jan 12, 2021 at 9:41 PM Yuri Benditovich
+>>>>> <yuri.benditovich@daynix.com> wrote:
+>>>>>> Existing TUN module is able to use provided "steering eBPF" to
+>>>>>> calculate per-packet hash and derive the destination queue to
+>>>>>> place the packet to. The eBPF uses mapped configuration data
+>>>>>> containing a key for hash calculation and indirection table
+>>>>>> with array of queues' indices.
+>>>>>>
+>>>>>> This series of patches adds support for virtio-net hash reporting
+>>>>>> feature as defined in virtio specification. It extends the TUN module
+>>>>>> and the "steering eBPF" as follows:
+>>>>>>
+>>>>>> Extended steering eBPF calculates the hash value and hash type, keeps
+>>>>>> hash value in the skb->hash and returns index of destination virtqueue
+>>>>>> and the type of the hash. TUN module keeps returned hash type in
+>>>>>> (currently unused) field of the skb.
+>>>>>> skb->__unused renamed to 'hash_report_type'.
+>>>>>>
+>>>>>> When TUN module is called later to allocate and fill the virtio-net
+>>>>>> header and push it to destination virtqueue it populates the hash
+>>>>>> and the hash type into virtio-net header.
+>>>>>>
+>>>>>> VHOST driver is made aware of respective virtio-net feature that
+>>>>>> extends the virtio-net header to report the hash value and hash report
+>>>>>> type.
+>>>>> Comment from Willem de Bruijn:
+>>>>>
+>>>>> Skbuff fields are in short supply. I don't think we need to add one
+>>>>> just for this narrow path entirely internal to the tun device.
+>>>>>
+>>>> We understand that and try to minimize the impact by using an already
+>>>> existing unused field of skb.
+>>> Not anymore. It was repurposed as a flags field very recently.
+>>>
+>>> This use case is also very narrow in scope. And a very short path from
+>>> data producer to consumer. So I don't think it needs to claim scarce
+>>> bits in the skb.
+>>>
+>>> tun_ebpf_select_queue stores the field, tun_put_user reads it and
+>>> converts it to the virtio_net_hdr in the descriptor.
+>>>
+>>> tun_ebpf_select_queue is called from .ndo_select_queue.  Storing the
+>>> field in skb->cb is fragile, as in theory some code could overwrite
+>>> that between field between ndo_select_queue and
+>>> ndo_start_xmit/tun_net_xmit, from which point it is fully under tun
+>>> control again. But in practice, I don't believe anything does.
+>>>
+>>> Alternatively an existing skb field that is used only on disjoint
+>>> datapaths, such as ingress-only, could be viable.
 >>
->> dt-bindings: spi: cadence-qspi: Add support for Intel lgm-qspi
->> (earlier patch mail thread and Ack-by)
->> link: "https://lore.kernel.org/lkml/5d6d1b85.1c69fb81.96938.0315@mx.google.com/"
+>> A question here. We had metadata support in XDP for cooperation between
+>> eBPF programs. Do we have something similar in the skb?
 >>
->> [...]
-> Applied to
+>> E.g in the RSS, if we want to pass some metadata information between
+>> eBPF program and the logic that generates the vnet header (either hard
+>> logic in the kernel or another eBPF program). Is there any way that can
+>> avoid the possible conflicts of qdiscs?
+> Not that I am aware of. The closest thing is cb[].
 >
->     https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
->
-> Thanks!
->
-> [1/5] spi: cadence-quadspi: Add QSPI support for Intel LGM SoC
->        commit: ab2d28750aacb773dc42d72fbad59146e8a6db5e
-> [2/5] spi: cadence-quadspi: Disable the DAC for Intel LGM SoC
->        commit: ad2775dc3fc5d30dd51984ccbaa736cc7ea9caca
-> [3/5] spi: cadence-quadspi: Add multi-chipselect support for Intel LGM SoC
->        commit: b436fb7d29bfa48ff5e00cbf413609c7a6d4d81e
-> [4/5] spi: Move cadence-quadspi.txt to Documentation/devicetree/bindings/spi
->        commit: eb4aadc31ef4224b926d5165048cb297f4bda34f
-> [5/5] dt-bindings: spi: cadence-qspi: Add support for Intel lgm-qspi
->        commit: fcebca39938fa9f6ed03f27fc75645ad7fd489e9
->
-> All being well this means that it will be integrated into the linux-next
-> tree (usually sometime in the next 24 hours) and sent to Linus during
-> the next merge window (or sooner if it is a bug fix), however if
-> problems are discovered then the patch may be dropped or reverted.
->
-> You may get further e-mails resulting from automated or manual testing
-> and review of the tree, please engage with people reporting problems and
-> send followup patches addressing any issues that are reported if needed.
->
-> If any updates are required or you are submitting further changes they
-> should be sent as incremental updates against current git, existing
-> patches will not be replaced.
->
-> Please add any relevant lists and maintainers to the CCs when replying
-> to this mail.
+> It'll have to aliase a field like that, that is known unused for the given path.
 
-Thanks Mark!
 
-Vadivel left company. Added Rahul <rtanwar@maxlinear.com> as a maintainer
+Right, we need to make sure cb is not used by other ones. I'm not sure 
+how hard to achieve that consider Qemu installs the eBPF program but it 
+doesn't deal with networking configurations.
 
 
 >
-> Thanks,
-> Mark
+> One other approach that has been used within linear call stacks is out
+> of band. Like percpu variables softnet_data.xmit.more and
+> mirred_rec_level. But that is perhaps a bit overwrought for this use
+> case.
+
+
+Yes, and if we go that way then eBPF turns out to be a burden since we 
+need to invent helpers to access those auxiliary data structure. It 
+would be better then to hard-coded the RSS in the kernel.
+
+
+>
+>>>>> Instead, you could just run the flow_dissector in tun_put_user if the
+>>>>> feature is negotiated. Indeed, the flow dissector seems more apt to me
+>>>>> than BPF here. Note that the flow dissector internally can be
+>>>>> overridden by a BPF program if the admin so chooses.
+>>>>>
+>>>> When this set of patches is related to hash delivery in the virtio-net
+>>>> packet in general,
+>>>> it was prepared in context of RSS feature implementation as defined in
+>>>> virtio spec [1]
+>>>> In case of RSS it is not enough to run the flow_dissector in tun_put_user:
+>>>> in tun_ebpf_select_queue the TUN calls eBPF to calculate the hash,
+>>>> hash type and queue index
+>>>> according to the (mapped) parameters (key, hash types, indirection
+>>>> table) received from the guest.
+>>> TUNSETSTEERINGEBPF was added to support more diverse queue selection
+>>> than the default in case of multiqueue tun. Not sure what the exact
+>>> use cases are.
+>>>
+>>> But RSS is exactly the purpose of the flow dissector. It is used for
+>>> that purpose in the software variant RPS. The flow dissector
+>>> implements a superset of the RSS spec, and certainly computes a
+>>> four-tuple for TCP/IPv6. In the case of RPS, it is skipped if the NIC
+>>> has already computed a 4-tuple hash.
+>>>
+>>> What it does not give is a type indication, such as
+>>> VIRTIO_NET_HASH_TYPE_TCPv6. I don't understand how this would be used.
+>>> In datapaths where the NIC has already computed the four-tuple hash
+>>> and stored it in skb->hash --the common case for servers--, That type
+>>> field is the only reason to have to compute again.
+>>
+>> The problem is there's no guarantee that the packet comes from the NIC,
+>> it could be a simple VM2VM or host2VM packet.
+>>
+>> And even if the packet is coming from the NIC that calculates the hash
+>> there's no guarantee that it's the has that guest want (guest may use
+>> different RSS keys).
+> Ah yes, of course.
+>
+> I would still revisit the need to store a detailed hash_type along with
+> the hash, as as far I can tell that conveys no actionable information
+> to the guest.
+
+
+Yes, need to figure out its usage. According to [1], it only mention 
+that storing has type is a charge of driver. Maybe Yuri can answer this.
+
+Thanks
+
+[1] 
+https://docs.microsoft.com/en-us/windows-hardware/drivers/network/indicating-rss-receive-data
+
+
+>
+
