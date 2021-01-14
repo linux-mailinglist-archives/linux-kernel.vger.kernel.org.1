@@ -2,215 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1308B2F6106
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AC62F60FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbhANMX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 07:23:26 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:55578 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727378AbhANMXZ (ORCPT
+        id S1728712AbhANMSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 07:18:53 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10657 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727255AbhANMSx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 07:23:25 -0500
-Received: from mail-oo1-f72.google.com ([209.85.161.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <dongdong.tao@canonical.com>)
-        id 1l01eF-0005se-BB
-        for linux-kernel@vger.kernel.org; Thu, 14 Jan 2021 12:22:43 +0000
-Received: by mail-oo1-f72.google.com with SMTP id y21so2581271ooa.23
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 04:22:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=39q23Keb1WqQfItbOZ2v0vZXTP4HRBS3OrsHfOi0b9M=;
-        b=mqsBOkdYXs0QcpyJeBuJtG5/tleDvuKiBfKgd+T+7gqEp0oFvwDpUeoRcnyVua3zIa
-         9R9pQBomUlC9147t71vHX3lsD+yOhEMEFSMSB4KLbXx5GCLK/rK9MjVYZX/hhzb6JcKe
-         GgaeOrvRP15lTrLF7ZyYzDfbWaS9UC+FLzKdWle+0ywQTOcgkydQgUJIH+N54sVqwhIv
-         DoJ5DDvxSbcCwTr26jhEsSQw/NNLXRpr0EyUN0+xJ5k5bCuN0w5xzKuldajx8GR3OwgK
-         HxWSWkZEmw3p+dXXp9ZZvOaLmlfgAvkNk/Dfq3DvX4G5wnSnh77E4z7VQIFKtLg6LOrW
-         E/uQ==
-X-Gm-Message-State: AOAM5326d2Q0Q74LbFOLFBxf9NuatHTBN5xY2SV6usmWMm5X3aZttFcE
-        gVk6JjgyZjKLf+VBASqyTSMyvoRP4rB5Ip0k4DdWFukWZCHCD4OcwacRPY/o1MbqdNj8XAY+blV
-        3EJnRXGPf37uFHKAhcgZEZk14YemkvCsMTxpIrwG1ZlxuIURRgeN1J1wmvw==
-X-Received: by 2002:a9d:c68:: with SMTP id 95mr4241987otr.328.1610626962137;
-        Thu, 14 Jan 2021 04:22:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxutywbfL5mQOwGMDMYC1AMZ1W6A/CP9TcQfVaRhZjDjmX9U711fZXdSjmi/bOJ5gSqA+cpivThhlu9YlFe0pQ=
-X-Received: by 2002:a9d:c68:: with SMTP id 95mr4241971otr.328.1610626961835;
- Thu, 14 Jan 2021 04:22:41 -0800 (PST)
+        Thu, 14 Jan 2021 07:18:53 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DGjx012GHz15t0F;
+        Thu, 14 Jan 2021 20:17:08 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Thu, 14 Jan 2021
+ 20:18:03 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH] bfq: don't check active group if bfq.weight is not changed
+Date:   Thu, 14 Jan 2021 20:24:26 +0800
+Message-ID: <20210114122426.603813-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <b4163392-0462-ff6f-b958-1f96f33d69e6@huawei.com>
+References: <b4163392-0462-ff6f-b958-1f96f33d69e6@huawei.com>
 MIME-Version: 1.0
-References: <20210105030602.14427-1-tdd21151186@gmail.com> <CAJS8hVK-ZCxJt=E3hwR0hmqPYL1T07_WC_nerb-dZodO+DqtDA@mail.gmail.com>
- <1a4b2a68-a7b0-8eb0-e60b-c3cf5a5a9e56@suse.de> <CAJS8hVL2B=RZr8H4jFbz=bX9k_E9ur7kTeue6BJwzm4pwv1+qQ@mail.gmail.com>
- <084276ab-7c74-31be-b957-3b039d7061a1@suse.de> <CAJS8hVKJMZ-9Ep-8v7FALeW5dGMttpQ45=WKJTQmLUKEozhfXg@mail.gmail.com>
- <299ea3ff-4a9c-734e-0ec1-8b8d7480a019@suse.de> <CAJS8hVLSP2mk0Qzsxp=i5_ZgH4QJppPOrr2LU0oEAM-EOMjOyg@mail.gmail.com>
- <CAJS8hVJDaREvpvG4iO+Xs-KQXQKFi7=k29TrG=NXqjyiPpUCZA@mail.gmail.com> <392abd73-c58a-0a34-bd21-1e9adfffc870@suse.de>
-In-Reply-To: <392abd73-c58a-0a34-bd21-1e9adfffc870@suse.de>
-From:   Dongdong Tao <dongdong.tao@canonical.com>
-Date:   Thu, 14 Jan 2021 20:22:30 +0800
-Message-ID: <CAJS8hV+6Txqvevj1YBAOrEog4=rWpBUbNFUpDrE1rqzwXuT4yg@mail.gmail.com>
-Subject: Re: [PATCH] bcache: consider the fragmentation when update the
- writeback rate
-To:     Coly Li <colyli@suse.de>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        "open list:BCACHE (BLOCK LAYER CACHE)" <linux-bcache@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Gavin Guo <gavin.guo@canonical.com>,
-        Gerald Yang <gerald.yang@canonical.com>,
-        Trent Lloyd <trent.lloyd@canonical.com>,
-        Dominique Poulain <dominique.poulain@canonical.com>,
-        Dongsheng Yang <dongsheng.yang@easystack.cn>,
-        Benjamin Allot <benjamin.allot@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Coly,
+Now the group scheduling in BFQ depends on the check of active group,
+but in most cases group scheduling is not used and the checking
+of active group will cause bfq_asymmetric_scenario() and its caller
+bfq_better_to_idle() to always return true, so the throughput
+will be impacted if the workload doesn't need idle (e.g. random rw)
 
-Why you limit the iodeph to 8 and iops to 150 on cache device?
-For cache device the limitation is small. Iosp 150 with 4KB block size,
-it means every hour writing (150*4*60*60=2160000KB=) 2GB data. For 35
-hours it is only 70GB.
+To fix that, adding check in bfq_io_set_weight_legacy() and
+bfq_pd_init() to check whether or not group scheduling is used
+(a non-default weight is used). If not, there is no need
+to check active group.
 
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ block/bfq-cgroup.c  | 14 ++++++++++++--
+ block/bfq-iosched.c |  8 +++-----
+ block/bfq-iosched.h | 19 +++++++++++++++++++
+ 3 files changed, 34 insertions(+), 7 deletions(-)
 
-What if the iodepth is 128 or 64, and no iops rate limitation ?
--> There are two reasons why I limit the iodepth and iops rate.
-1. If I don't limit them, the dirty cache will be filled up very
-quickly within 20 minutes.
-     It's almost NVME speed before it reaches the 70
-cutoff_writeback_sync, there is no way for any kind of writeback to
-stop it from
-     filling up due to the huge gap between NVME and HDD in terms of
-the throughput,
-     I don't think there is anything we can do about it? and it should
-only happen in a benchmark world, not should in production.
-     The improvement I'm trying to do here is just for normal
-production workload ,not for this benchmark scenario really.
-     I currently can't see any necessity to test this scenario, please
-kindly let me know about this if I'm wrong.
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index b791e2041e49..b4ac42c4bd9f 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -505,12 +505,18 @@ static struct blkcg_policy_data *bfq_cpd_alloc(gfp_t gfp)
+ 	return &bgd->pd;
+ }
+ 
++static inline int bfq_dft_weight(void)
++{
++	return cgroup_subsys_on_dfl(io_cgrp_subsys) ?
++	       CGROUP_WEIGHT_DFL : BFQ_WEIGHT_LEGACY_DFL;
++
++}
++
+ static void bfq_cpd_init(struct blkcg_policy_data *cpd)
+ {
+ 	struct bfq_group_data *d = cpd_to_bfqgd(cpd);
+ 
+-	d->weight = cgroup_subsys_on_dfl(io_cgrp_subsys) ?
+-		CGROUP_WEIGHT_DFL : BFQ_WEIGHT_LEGACY_DFL;
++	d->weight = bfq_dft_weight();
+ }
+ 
+ static void bfq_cpd_free(struct blkcg_policy_data *cpd)
+@@ -554,6 +560,9 @@ static void bfq_pd_init(struct blkg_policy_data *pd)
+ 	bfqg->bfqd = bfqd;
+ 	bfqg->active_entities = 0;
+ 	bfqg->rq_pos_tree = RB_ROOT;
++
++	if (entity->new_weight != bfq_dft_weight())
++		bfqd_enable_active_group_check(bfqd);
+ }
+ 
+ static void bfq_pd_free(struct blkg_policy_data *pd)
+@@ -1013,6 +1022,7 @@ static void bfq_group_set_weight(struct bfq_group *bfqg, u64 weight, u64 dev_wei
+ 		 */
+ 		smp_wmb();
+ 		bfqg->entity.prio_changed = 1;
++		bfqd_enable_active_group_check(bfqg->bfqd);
+ 	}
+ }
+ 
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index 9e4eb0fc1c16..1b695de1df95 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -699,11 +699,8 @@ static bool bfq_asymmetric_scenario(struct bfq_data *bfqd,
+ 		(bfqd->busy_queues[0] && bfqd->busy_queues[2]) ||
+ 		(bfqd->busy_queues[1] && bfqd->busy_queues[2]);
+ 
+-	return varied_queue_weights || multiple_classes_busy
+-#ifdef CONFIG_BFQ_GROUP_IOSCHED
+-	       || bfqd->num_groups_with_pending_reqs > 0
+-#endif
+-		;
++	return varied_queue_weights || multiple_classes_busy ||
++	       bfqd_has_active_group(bfqd);
+ }
+ 
+ /*
+@@ -6472,6 +6469,7 @@ static int bfq_init_queue(struct request_queue *q, struct elevator_type *e)
+ 
+ 	bfqd->queue_weights_tree = RB_ROOT_CACHED;
+ 	bfqd->num_groups_with_pending_reqs = 0;
++	bfqd->check_active_group = false;
+ 
+ 	INIT_LIST_HEAD(&bfqd->active_list);
+ 	INIT_LIST_HEAD(&bfqd->idle_list);
+diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
+index 703895224562..216509013012 100644
+--- a/block/bfq-iosched.h
++++ b/block/bfq-iosched.h
+@@ -524,6 +524,8 @@ struct bfq_data {
+ 
+ 	/* true if the device is non rotational and performs queueing */
+ 	bool nonrot_with_queueing;
++	/* true if need to check num_groups_with_pending_reqs */
++	bool check_active_group;
+ 
+ 	/*
+ 	 * Maximum number of requests in driver in the last
+@@ -1066,6 +1068,17 @@ static inline void bfq_pid_to_str(int pid, char *str, int len)
+ }
+ 
+ #ifdef CONFIG_BFQ_GROUP_IOSCHED
++static inline void bfqd_enable_active_group_check(struct bfq_data *bfqd)
++{
++	cmpxchg_relaxed(&bfqd->check_active_group, false, true);
++}
++
++static inline bool bfqd_has_active_group(struct bfq_data *bfqd)
++{
++	return bfqd->check_active_group &&
++	       bfqd->num_groups_with_pending_reqs > 0;
++}
++
+ struct bfq_group *bfqq_group(struct bfq_queue *bfqq);
+ 
+ #define bfq_log_bfqq(bfqd, bfqq, fmt, args...)	do {			\
+@@ -1085,6 +1098,12 @@ struct bfq_group *bfqq_group(struct bfq_queue *bfqq);
+ } while (0)
+ 
+ #else /* CONFIG_BFQ_GROUP_IOSCHED */
++static inline void bfqd_enable_active_group_check(struct bfq_data *bfqd) {}
++
++static inline bool bfqd_has_active_group(struct bfq_data *bfqd)
++{
++	return false;
++}
+ 
+ #define bfq_log_bfqq(bfqd, bfqq, fmt, args...) do {	\
+ 	char pid_str[MAX_PID_STR_LENGTH];	\
+-- 
+2.25.4
 
-2. The reason that I set iodepth to 8 and iops to 150 is based on the
-experience that I observed from production env, mostly ceph,
-    ceph-osd has less than 10 thread(default setting) that will send
-io to bcache in parallel. But I'm not sure about other applications.
-    I agree that we can increase the iodepth to 64 or 128 and it's
-doable. But we have to limit the iops, 150 IOPS is a reasonable
-workload.
-    The most busy ceph-osd that I've seen is about 1000 IOPS, but on
-average is still only about 600.
-    I can set the IOPS to a higher value like 600 and the iodepth to
-128 to perform the later test if it make sense to you?
-
-Lastly, please allow me to clarify more about the production issue
-that this patch is trying to address:
-
-In the production env that hit this issue, it usually takes a very
-long time (many take days) for the cache_available_percent to drop to
-30, and the dirty data is mostly staying at a very low level (around
-10 percent), which means that the bcache isn't being stressed very
-hard most of the time.
- There is no intention to save the cutoff_writeback_sync when the
-bcache is being stressed without limitation, hope above make sense :)
-
-By the way, my colleague and I are trying to gathering some production
-bcache stats, I hope we can give you the performance number before and
-after applying the patch.
-
-Thanks,
-Dongdong
-
-
-
-
-
-On Thu, Jan 14, 2021 at 6:05 PM Coly Li <colyli@suse.de> wrote:
->
-> On 1/14/21 12:45 PM, Dongdong Tao wrote:
-> > Hi Coly,
-> >
-> > I've got the testing data for multiple threads with larger IO depth.
-> >
->
-> Hi Dongdong,
->
-> Thanks for the testing number.
->
-> > *Here is the testing steps:
-> > *1. make-bcache -B <> -C <> --writeback
-> >
-> > 2. Open two tabs, start different fio task in them at the same time.
-> > Tab1 run below fio command:
-> > sudo fio --name=random-writers --filename=/dev/bcache0 --ioengine=libaio
-> > --iodepth=32 --rw=randrw --blocksize=64k,8k  --direct=1 --runtime=24000
-> >
-> > Tab2 run below fio command:
-> > sudo fio --name=random-writers2 --filename=/dev/bcache0
-> > --ioengine=libaio --iodepth=8 --rw=randwrite --bs=4k --rate_iops=150
-> > --direct=1 --write_lat_log=rw --log_avg_msec=20
-> >
->
->
-> Why you limit the iodep to 8 and iops to 150 on cache device?
-> For cache device the limitation is small. Iosp 150 with 4KB block size,
-> it means every hour writing (150*4*60*60=2160000KB=) 2GB data. For 35
-> hours it is only 70GB.
->
->
-> What if the iodeps is 128 or 64, and no iops rate limitation ?
->
->
-> > Note
-> > - Tab1 fio will run for 24000 seconds, which is the one to cause the
-> > fragmentation and made the cache_available_percent drops to under 40.
-> > - Tab2 fio is the one that I'm capturing the latency and I have let it
-> > run for about 35 hours, which is long enough to allow the
-> > cache_available_percent drops under 30.
-> > - This testing method utilized fio benchmark with larger read block
-> > size/small write block size to cause the high fragmentation, However in
-> > a real production env, there could be
-> >    various reasons or a combination of various reasons to cause the high
-> > fragmentation,  but I believe it should be ok to use any method to cause
-> > the fragmentation to verify if
-> >    bcache with this patch is responding better than the master in this
-> > situation.
-> >
-> > *Below is the testing result:*
-> >
-> > The total run time is about 35 hours, the latency points in the charts
-> > for each run are 1.5 million
-> >
-> > Master:
-> > fio-lat-mater.png
-> >
-> > Master + patch:
-> > fio-lat-patch.png
-> > Combine them together:
-> > fio-lat-mix.png
-> >
-> > Now we can see the master is even worse when we increase the iodepth,
-> > which makes sense since the backing HDD is being stressed more hardly.
-> >
-> > *Below are the cache stats changing during the run:*
-> > Master:
-> > bcache-stats-master.png
-> >
-> > Master + the patch:
-> > bcache-stats-patch.png
-> >
-> > That's all the testing done with 400GB NVME with 512B block size.
-> >
-> > Coly, do you want me to continue the same testing on 1TB nvme with
-> > different block size ?
-> > or is it ok to skip the 1TB testing and continue the test with 400GB
-> > NVME but with different block size?
-> > feel free to let me know any other test scenarios that we should cover
-> > here.
->
-> Yes please, more testing is desired for performance improvement. So far
-> I don't see performance number for real high work load yet.
->
-> Thanks.
->
-> Coly Li
->
