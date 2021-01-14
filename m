@@ -2,148 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DED2F6CA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:56:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 573F72F6CA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727331AbhANUxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 15:53:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34966 "EHLO
+        id S1728970AbhANUzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 15:55:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbhANUxY (ORCPT
+        with ESMTP id S1725988AbhANUzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 15:53:24 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0B4C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 12:52:43 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id i6so6512391otr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 12:52:43 -0800 (PST)
+        Thu, 14 Jan 2021 15:55:18 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50CE3C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 12:54:38 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id cq1so3792492pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 12:54:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language;
-        bh=WMRVmV5maA7pUe5nDzLek/XXxNjHWhNj+CjmLV41vcA=;
-        b=Jmjlv5d1UWTL0j3rIlEuXsEEDkB2v+tPtwKeqtBtCr4Q9IzYG/sM5pEm7K4sZki1cV
-         nSO77MCo9ebaBhIkeT8RRKHdvb52Ej+RzKFSMU8QuM5Jf/YB0KA1+SXxHklV9WWgwFJv
-         igCKELnB5exaKusRy3Iw9/ffN4vS7AE16IDt0=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jD7vbDbD0h84CsDujjRSLvXMFR2wSvaymJTCUCRVyTg=;
+        b=i4ANxg8Q3GY1CKfPo+klvkSjAhcsfVbNRqK+K/aQ/iToZldEMxU8NHBcNKw6UiXjq0
+         JOaf8WHB+ZRym59WBEzqIO8fSNdU5TfCYCLb7V+NuC833UbYh+Qe4jnSCo5qbzILKgOe
+         ZCtM7mU+AKviHFbajnRGNd9uuqwb5C2h5qCDtW8MiFGKZclK1cVhdY18laToooYZVFNe
+         5gTSksJXBxPeXBQHIrvw8OvxYowfx5fNvMqwFL/B+6Xli9GAXFZNvxWFEVbJfqXw3Id+
+         5rKeRDeu0YnRxzQ0ei0wp8zeAofbx/+H5ZTcajDcb6MvU6sbkRDUBWcGV2yCe5kwnyx4
+         ShVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language;
-        bh=WMRVmV5maA7pUe5nDzLek/XXxNjHWhNj+CjmLV41vcA=;
-        b=msuPleDxl0QI8zECFs+vhZMVb7EIa7zwuxJ4TEedex2rH5fwIlzLkdqNnH8deXAeUF
-         JvnyjvjxdMfop6M9G917mEdg6ENzfjyR+sN8j+w8VwEC+OnJD/T5jkHs3ImxWuy6dDi1
-         L/WuOjLUt8mJyGRtlAumCGDlppo4q+zmjZ9OV7aSPfplzvwQQDdLXyKPxxgjAe5lAM62
-         McOHvgotWVBu5QQcoHrqqrlmfJRdxQxa+sEhJDhSwELiqDKuQCd2+d28/+leLZLOUTL9
-         gmeSdUJug8Ml/qguw9y10YdcWroGcLlvTTMqiHGClTakT+mjMdhkO+UF+xP7ydocIiiL
-         npRg==
-X-Gm-Message-State: AOAM531bZPIS2tMpy+8Tm9u701ck2slTRUhvf5N+OCaQ8sESl5rEgfsU
-        pC/99NZfJTlXd7Jsg/VGoYU5CQF5VZkwfw==
-X-Google-Smtp-Source: ABdhPJwlSnSrE+ja7Jt3eFQnXVCVcATiFtvR+TKHwF9bwkcqrgJkIJUeo0xy9D9ox1PfAWOfCojd1A==
-X-Received: by 2002:a9d:7746:: with SMTP id t6mr6119012otl.349.1610657562985;
-        Thu, 14 Jan 2021 12:52:42 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 65sm1282557otp.35.2021.01.14.12.52.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jan 2021 12:52:42 -0800 (PST)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] Kselftest fixes for Linux 5.11-rc4
-Message-ID: <e60bdae0-2df1-9401-a8e0-3949884a7db0@linuxfoundation.org>
-Date:   Thu, 14 Jan 2021 13:52:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jD7vbDbD0h84CsDujjRSLvXMFR2wSvaymJTCUCRVyTg=;
+        b=C/cowNxABT1mtHTLLMs5OjpRbtSMTFLRrhphWqFqJehtbSJ2Hq4+G7wMQTfoWgPhnE
+         T6Gbxt24rGZrjv8z+DU8iICJ1uVXqA5yBSKCGrO/Ic/DmABQD6rZEhwS3TQ7ja0p6nTR
+         DXNSpELPJU0/lNFKz54C6P5kBMbCu8IfDaG92XMHJB0SKJ5OLdfqzI2HjQzrD9faZW8e
+         r6Lu0ohMcSTVTqX6ka+Vzh0wSBBo2w6O+enx/Xjo7NE9FfB4IACx7JOhXpBSwgLw0qGm
+         31f4dmFU5xSEJbmzDwe6cyQBnkune3ayhmbn22hrZzVD+eG7A5emdVQjb29s4XvKgakO
+         /+Mw==
+X-Gm-Message-State: AOAM532sTjjMFfJOtsRUY3a2vGeN2J9k/4f/8uq6jTBdSPExzlqkzB0p
+        zOf3AoGDiRueddq8wA/VESqy3Q==
+X-Google-Smtp-Source: ABdhPJwHSp4h2t6bqX0badjP/w9fNcURWQGRTeksXWdcWRqrH8U8NT/f7kVg2Tt51R5DDZxijhwg+Q==
+X-Received: by 2002:a17:90a:bf05:: with SMTP id c5mr6907923pjs.90.1610657677823;
+        Thu, 14 Jan 2021 12:54:37 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id fv22sm6486172pjb.14.2021.01.14.12.54.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 12:54:37 -0800 (PST)
+Date:   Thu, 14 Jan 2021 13:54:35 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     peng.fan@nxp.com
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        o.rempel@pengutronix.de, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        paul@crapouillou.net, matthias.bgg@gmail.com, agross@kernel.org,
+        patrice.chotard@st.com
+Subject: Re: [PATCH V6 09/10] remoteproc: imx_rproc: ignore mapping vdev
+ regions
+Message-ID: <20210114205435.GC255481@xps15>
+References: <1610444359-1857-1-git-send-email-peng.fan@nxp.com>
+ <1610444359-1857-10-git-send-email-peng.fan@nxp.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------C4F8C71A66D473BE00FD780B"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610444359-1857-10-git-send-email-peng.fan@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------C4F8C71A66D473BE00FD780B
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Tue, Jan 12, 2021 at 05:39:18PM +0800, peng.fan@nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> vdev regions are vdev0vring0, vdev0vring1, vdevbuffer and similar.
+> They are handled by remoteproc common code, no need to map in imx
+> rproc driver.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/remoteproc/imx_rproc.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+> index f80428afb8a7..e62a53ee128e 100644
+> --- a/drivers/remoteproc/imx_rproc.c
+> +++ b/drivers/remoteproc/imx_rproc.c
+> @@ -417,6 +417,9 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
+>  		struct resource res;
+>  
+>  		node = of_parse_phandle(np, "memory-region", a);
+> +		/* Not map vdev region */
+> +		if (!strcmp(node->name, "vdev"))
+> +			continue;
 
-Hi Linus,
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Please pull the following Kselftest fixes update for Linux 5.11-rc4
-
-This Kselftest fixes update for Linux 5.11-rc4 consists of one single
-fix to skip BPF selftests by default. BPF selftests have a hard
-dependency on cutting edge versions of tools in the BPF ecosystem
-including LLVM.
-
-Skipping BPF allows by default will make it easier for users interested
-in running kselftest as a whole. Users can include BPF in Kselftest
-build by via SKIP_TARGETS variable.
-
-diff is attached.
-
-thanks,
--- Shuah
-
-----------------------------------------------------------------
-The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
-
-   Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest 
-tags/linux-kselftest-fixes-5.11-rc4
-
-for you to fetch changes up to 7a6eb7c34a78498742b5f82543b7a68c1c443329:
-
-   selftests: Skip BPF seftests by default (2021-01-04 09:27:20 -0700)
-
-----------------------------------------------------------------
-linux-kselftest-fixes-5.11-rc4
-
-This Kselftest fixes update for Linux 5.11-rc4 consists of one single
-fix to skip BPF selftests by default. BPF selftests have a hard
-dependency on cutting edge versions of tools in the BPF ecosystem
-including LLVM.
-
-Skipping BPF allows by default will make it easier for users interested
-in running kselftest as a whole. Users can include BPF in Kselftest
-build by via SKIP_TARGETS variable.
-
-----------------------------------------------------------------
-Mark Brown (1):
-       selftests: Skip BPF seftests by default
-
-  tools/testing/selftests/Makefile | 6 ++++--
-  1 file changed, 4 insertions(+), 2 deletions(-)
-
-----------------------------------------------------------------
-
---------------C4F8C71A66D473BE00FD780B
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-kselftest-fixes-5.11-rc4.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="linux-kselftest-fixes-5.11-rc4.diff"
-
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index afbab4aeef3c..8a917cb4426a 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -77,8 +77,10 @@ TARGETS += zram
- TARGETS_HOTPLUG = cpu-hotplug
- TARGETS_HOTPLUG += memory-hotplug
- 
--# User can optionally provide a TARGETS skiplist.
--SKIP_TARGETS ?=
-+# User can optionally provide a TARGETS skiplist.  By default we skip
-+# BPF since it has cutting edge build time dependencies which require
-+# more effort to install.
-+SKIP_TARGETS ?= bpf
- ifneq ($(SKIP_TARGETS),)
- 	TMP := $(filter-out $(SKIP_TARGETS), $(TARGETS))
- 	override TARGETS := $(TMP)
-
---------------C4F8C71A66D473BE00FD780B--
+>  		err = of_address_to_resource(node, 0, &res);
+>  		if (err) {
+>  			dev_err(dev, "unable to resolve memory region\n");
+> -- 
+> 2.28.0
+> 
