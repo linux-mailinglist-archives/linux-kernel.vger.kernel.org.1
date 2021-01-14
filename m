@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E43F22F5A31
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 06:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EBB82F5A32
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 06:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbhANFKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 00:10:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57664 "EHLO
+        id S1726677AbhANFKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 00:10:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726204AbhANFKP (ORCPT
+        with ESMTP id S1726208AbhANFKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 00:10:15 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E21C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:09:35 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id c132so2996293pga.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:09:35 -0800 (PST)
+        Thu, 14 Jan 2021 00:10:17 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0E5C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:09:37 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id r4so2308256pls.11
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:09:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=l0SVd2Z6z2wiunvJxS4KRqjbI/ytm6ARhNhbn0IZGIA=;
-        b=q8RNlcBRjFP2BNecOlGAIXcVb2tcLxP0m95wws3L5nfz3R/bj6jLK6ZSlQyqecVGBH
-         baWhTyopNPQiosVcCHCn5G2V+Cz0RbU9VjcuMuUGuwJRSsmFix4TpJVcBMM6Gl9DJceK
-         QZxFMOVhh2CGrfq/kKFRKbyl91TauSsfMJVrrl7NB9lRvt32B9Ev3N3IxOhGKeznjVdH
-         ouOAtgS9qv+pwl2EoqItCQgCZn7OBqxrxPImdq8oqFLcPE9qhbgY/IAWQpD4QjbSZ1hP
-         cqeple8OV0xEa6wqT5Fd4Oi6OEoElfJuVi5MxdB7XX1rwn6hwD5G9sPAd2XUkLBDQ/Pe
-         hrsA==
+        bh=KcEA2nbzXx0jru83yIQ190/mImRN9DXek195EgNHMTM=;
+        b=ItvMJreq/VrK59JsNEZhxHcD41LpU029J3ATPXNn4VP79v8smYm5CKi6tvsZLZ0IMN
+         stLb6jdptaiX2p2VLSOmVluSITFwuKCpP5FEuqVCUWsrzyDAzQaAiyEuUV2piCLv2QlR
+         Fm5le6VT20CABM5QMDgNso6BR/g9B1sbWPIG1OHXkQ1RD8NVb22molvVS5maGkslFNKP
+         gKXjakFIy2btTOKIedtUM8ufKnw8YbY/bFCKaixINOyWVYxfvnLSg1M0N3B9YeyQRBJ1
+         IJvNQ7bCH1ipvvL9LDC7WXNt6eKC+b/tvd/K3Aj5ZXD/pGgOJocHlq4MYdrYdzrDEQTn
+         0Www==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=l0SVd2Z6z2wiunvJxS4KRqjbI/ytm6ARhNhbn0IZGIA=;
-        b=eeO7x+oBzOWV9vCmm6lMGU/VbgJqF4CnrJVaL5QPzF/CVAMbEwtmVsy/+/f5ObVUwN
-         WJhU5bZ5R0G5PE8fwPjnSLa60XjwTEpTZNMuenmeKtjZ86MMDvZWqmFof2sbiYwI822R
-         d/JupT7RVXl3O6rVjMP1OxBrg4iSZbEUkqQod2FtSVhsZ2uiQYeJPrFuXBE6yQcEdY+7
-         9c561WqmdFpiqQNAyzs2Dp7OdJuQunU12UHBPMScbh3wWHgSSppJsKpQikW9EOqLyZ2u
-         49LqIUMgI05ta2EczM0r0PMRzXeyzMkMzMPzhBcn378pMxe0NVkjq01CAOuGtPTTGD/Q
-         om5Q==
-X-Gm-Message-State: AOAM5328AChzIW3HfJfXytkMI7XdftKsyDkirCJIABwkwvIWJH5femiH
-        E8MFvUXkh1hNXBqTozLrJ/i+di5YXJQgbg==
-X-Google-Smtp-Source: ABdhPJxYDip1RIxxaby45IP3aK2dYVPkxBLmeZ5dufXHqw2Cb/0PSEBpQNl4WBi+G21aOj0gWHPjVA==
-X-Received: by 2002:a65:6659:: with SMTP id z25mr5697984pgv.427.1610600975227;
-        Wed, 13 Jan 2021 21:09:35 -0800 (PST)
+        bh=KcEA2nbzXx0jru83yIQ190/mImRN9DXek195EgNHMTM=;
+        b=h+ZkUyCRdZQG3SUEZZTpkIbuYYLoLZM5Ol2xdxOEiXBhJ2WlJ6U5cRhYO8YYruUJMu
+         2ONFBa/hMN1wjkuDhIPQ0roi5H6voR9XVkU3LOQR5PISfm9Dd7lQztdF3dbLljmHj9MD
+         zz6WyvElVwLKlSEEJAM7q7W8jhvRBPBF8BRsErE3CIpALwR1+mSqD+M2uqZOnbzcVFJO
+         i4uWb2g4nsvhvins0HW52HkghfJS1pDcztT6y2nTxWXFKMXE7xmNWVLEyLIObQ03T3Dl
+         OyGd0yDMtkmpszkBQd7DtxnbncoUrs51vmoaJ8zCyHa7+CsZVoeOkPZda/yGxv0njhmC
+         vJxQ==
+X-Gm-Message-State: AOAM533h+d8+i6Og+3tKW6LqLXgMtVobKLMHZKbh5mfy7a2pxcQ6Ck3+
+        OC/XNYXsDA3NSNFT2rCrs2ij2qrbmHoDJQ==
+X-Google-Smtp-Source: ABdhPJw5w1qfQyweI0KL/cYR8X7oUo5hoLXAq5yFReqxbhNLHD/d8jUY4iz/0NIR9UIQwenjXQsvMQ==
+X-Received: by 2002:a17:902:9a4a:b029:dc:435c:70ad with SMTP id x10-20020a1709029a4ab02900dc435c70admr5884019plv.77.1610600976917;
+        Wed, 13 Jan 2021 21:09:36 -0800 (PST)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id p8sm4103108pjo.21.2021.01.13.21.09.34
+        by smtp.gmail.com with ESMTPSA id s29sm4277278pgn.65.2021.01.13.21.09.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 21:09:34 -0800 (PST)
-Date:   Wed, 13 Jan 2021 21:09:34 -0800 (PST)
-X-Google-Original-Date: Wed, 13 Jan 2021 21:08:16 PST (-0800)
-Subject:     Re: [PATCH 3/4] RISC-V: Fix L1_CACHE_BYTES for RV32
-In-Reply-To: <20210107092652.3438696-4-atish.patra@wdc.com>
+        Wed, 13 Jan 2021 21:09:36 -0800 (PST)
+Date:   Wed, 13 Jan 2021 21:09:36 -0800 (PST)
+X-Google-Original-Date: Wed, 13 Jan 2021 21:09:24 PST (-0800)
+Subject:     Re: [PATCH 0/4] Assorted fixes for RV32
+In-Reply-To: <20210107092652.3438696-1-atish.patra@wdc.com>
 CC:     linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
         aou@eecs.berkeley.edu, akpm@linux-foundation.org,
         Anup Patel <Anup.Patel@wdc.com>, ardb@kernel.org,
@@ -59,7 +59,7 @@ CC:     linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
         Paul Walmsley <paul.walmsley@sifive.com>, mick@ics.forth.gr
 From:   Palmer Dabbelt <palmer@dabbelt.com>
 To:     Atish Patra <Atish.Patra@wdc.com>
-Message-ID: <mhng-1400a3dd-651b-4a78-bb2d-1f10580add75@palmerdabbelt-glaptop>
+Message-ID: <mhng-a7496321-17ee-4286-a31c-1474c80d4fce@palmerdabbelt-glaptop>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -67,40 +67,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 07 Jan 2021 01:26:51 PST (-0800), Atish Patra wrote:
-> SMP_CACHE_BYTES/L1_CACHE_BYTES should be defined as 32 instead of
-> 64 for RV32. Otherwise, there will be hole of 32 bytes with each memblock
-> allocation if it is requested to be aligned with SMP_CACHE_BYTES.
+On Thu, 07 Jan 2021 01:26:48 PST (-0800), Atish Patra wrote:
+> This series fixes various issues observed in latest kernel on RV32.
+> The first two patches fixes an resource tree introduced in 5.11-rc1
+> while the last two fixes the case where 2GB physical memory is used
+> on RV32.
 >
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> ---
->  arch/riscv/include/asm/cache.h | 4 ++++
->  1 file changed, 4 insertions(+)
+> There are may be better way to fix the issue pointed out in PATCH 3
+> as it seems a generic kernel issue where kernel pointers can not use
+> last 4k of addressable memory. I am open to other better alternate
+> suggestions.
 >
-> diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
-> index 9b58b104559e..c9c669ea2fe6 100644
-> --- a/arch/riscv/include/asm/cache.h
-> +++ b/arch/riscv/include/asm/cache.h
-> @@ -7,7 +7,11 @@
->  #ifndef _ASM_RISCV_CACHE_H
->  #define _ASM_RISCV_CACHE_H
+> Atish Patra (4):
+> RISC-V: Do not allocate memblock while iterating reserved memblocks
+> RISC-V: Set current memblock limit
+> RISC-V: Fix L1_CACHE_BYTES for RV32
+> RISC-V: Fix maximum allowed phsyical memory for RV32
 >
-> +#ifdef CONFIG_64BIT
->  #define L1_CACHE_SHIFT		6
-> +#else
-> +#define L1_CACHE_SHIFT		5
-> +#endif
->
->  #define L1_CACHE_BYTES		(1 << L1_CACHE_SHIFT)
+> arch/riscv/Kconfig             |  6 ++++--
+> arch/riscv/include/asm/cache.h |  4 ++++
+> arch/riscv/kernel/setup.c      | 24 +++++++++++++-----------
+> arch/riscv/mm/init.c           | 16 ++++++++++++++--
+> 4 files changed, 35 insertions(+), 15 deletions(-)
 
-Should we not instead just
-
-#define SMP_CACHE_BYTES L1_CACHE_BYTES
-
-like a handful of architectures do?
-
-The cache size is sort of fake here, as we don't have any non-coherent
-mechanisms, but IIRC we wrote somewhere that it's recommended to have 64-byte
-cache lines in RISC-V implementations as software may assume that for
-performance reasons.  Not really a strong reason, but I'd prefer to just make
-these match.
+I took all of them but that L1_CACHE_BYTES one, which I had a comment on.
+Thanks!
