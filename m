@@ -2,144 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0605B2F61F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBF52F61F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729017AbhANN1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:27:16 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:46881 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbhANN1P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:27:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1610630835; x=1642166835;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Lxcchmlm8obu3rlFf5uFKJiK+GEdYu44ZP1HH6VEu0A=;
-  b=Nrhx9MW1tvHUF3jfkYeegLYzahZdfCAyrlI6oHUmPYsbRpXqa5DCJpJL
-   0ij5VIDwp0IPVCEMT+WKF7WiKrOJe3/pCsOAO5fOWpiJ3LXItpJHpgRJ4
-   zvFFMWN0oMw0Brv7tR0o6PZ9zY0S0viM8zRO5OE+p8RLOS0xdHtqfFm9z
-   CqKZMw0OySSEJYF13d6CO33e7Z6sn+MPtm6NpoNIJNEbDZhMVzuN8TmQ9
-   0XEogWYfa8BLE5DPnmKSXrNDSB+zm7t0UuNm5REXwBzDgR5WGYxSASEiP
-   +h82tUqfSCgRQsqbHkZPYrw/yjopKGGAvUZIxZdGpCx1lW/MUWvx7EQQr
-   Q==;
-IronPort-SDR: HS83lwaP6ijJaUvp1aN1KbgF8STYQ5+aTFT8pX7xB14EikaZUu4n6lI4Vwkw5hfiLw2vD4Iiym
- /716B0oD02hyloapviCb9KSbKhn/UDdpYekkrcardj4jwgKjRMDIiqfX1zBivl+qksOq26SXEc
- CgRDudCe7rsMFyfWSPVsC6xxbjwHabPqktzASzzQIy7w2YDCt3CRtUtGh1/OVR8nVVsJWjwFnr
- /KWzW8ATlfZZMCKEIn3BWzr37cEXQw+o3eXpNATgPbGZM/178WJCvd35+gJBL+97XqmlM6QXtF
- OEY=
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="111032907"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Jan 2021 06:25:57 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 14 Jan 2021 06:25:57 -0700
-Received: from tyr.hegelund-hansen.dk (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 14 Jan 2021 06:25:55 -0700
-Message-ID: <f819a37076d8bbb49b7c3288c03b75e23d4eb6f9.camel@microchip.com>
-Subject: Re: [PATCH 1/3] dt-bindings: reset: microchip sparx5 reset driver
- bindings
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>
-Date:   Thu, 14 Jan 2021 14:25:54 +0100
-In-Reply-To: <80d4d9b16628847c59a7f94a7c002d8ce859b0ca.camel@pengutronix.de>
-References: <20210113201915.2734205-1-steen.hegelund@microchip.com>
-         <20210113201915.2734205-2-steen.hegelund@microchip.com>
-         <80d4d9b16628847c59a7f94a7c002d8ce859b0ca.camel@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3 
+        id S1728803AbhANN1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 08:27:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725878AbhANN1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 08:27:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3668623A58;
+        Thu, 14 Jan 2021 13:26:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610630790;
+        bh=pUHiAeG5B7eg+14rQEcLNRaPP+p/BvCBAhX+WbpqzEo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kL+7l6nV0RlFWn8vNRaoNotAHdkSEZNQTh1EFxa2ZZLqXOiOAX4Ji0NuL/7eL3sI1
+         RrUcIt8olVZjn10misz9gXVu9x+wjWzv1XEs1+3xrIOFhUnMv6NOHcd4woFkej9cHi
+         wi7c9P64wViO1q4AOuubR3XOUDvSP9Ck9vUbnyUm9o59jNS53aGBCttL/Ck2S2/LoC
+         QCxgyFkZ4A1/xCrfN6uuejigAsjuTgY0hBtCzXaBTtKbgUE8Mfy1EP5+5G2TsdAqGl
+         QQ9b3PJpBkzBDi+VyLBuULL4JiTiDtfC2GoHXkqt77ZrhzNIXbKJ+RYlfsJMq1H1nZ
+         JdWjA4IjRRnjw==
+Date:   Thu, 14 Jan 2021 15:26:27 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     tglx@linutronix.de, ashok.raj@intel.com, kevin.tian@intel.com,
+        dave.jiang@intel.com, megha.dey@intel.com, dwmw2@infradead.org,
+        alex.williamson@redhat.com, bhelgaas@google.com,
+        dan.j.williams@intel.com, will@kernel.org, joro@8bytes.org,
+        dmaengine@vger.kernel.org, eric.auger@redhat.com,
+        jacob.jun.pan@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
+        kwankhede@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org,
+        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
+        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
+        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
+        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
+        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com
+Subject: Re: [RFC PATCH v3 1/2] iommu: Add capability IOMMU_CAP_VIOMMU
+Message-ID: <20210114132627.GA944463@unreal>
+References: <20210114013003.297050-1-baolu.lu@linux.intel.com>
+ <20210114013003.297050-2-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210114013003.297050-2-baolu.lu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+On Thu, Jan 14, 2021 at 09:30:02AM +0800, Lu Baolu wrote:
+> Some vendor IOMMU drivers are able to declare that it is running in a VM
+> context. This is very valuable for the features that only want to be
+> supported on bare metal. Add a capability bit so that it could be used.
 
+And how is it used? Who and how will set it?
 
-On Thu, 2021-01-14 at 10:39 +0100, Philipp Zabel wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you
-> know the content is safe
-> 
-> Hi Steen,
-> 
-> On Wed, 2021-01-13 at 21:19 +0100, Steen Hegelund wrote:
-> > Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> > ---
-> >  .../bindings/reset/microchip,rst.yaml         | 52
-> > +++++++++++++++++++
-> >  1 file changed, 52 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/reset/microchip,rst.yaml
-> > 
-> > diff --git
-> > a/Documentation/devicetree/bindings/reset/microchip,rst.yaml
-> > b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
-> > new file mode 100644
-> > index 000000000000..b5526753e85d
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
-> > @@ -0,0 +1,52 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: "http://devicetree.org/schemas/reset/microchip,rst.yaml#"
-> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> > +
-> > +title: Microchip Sparx5 Switch Reset Controller
-> > +
-> > +maintainers:
-> > +  - Steen Hegelund <steen.hegelund@microchip.com>
-> > +  - Lars Povlsen <lars.povlsen@microchip.com>
-> > +
-> > +description: |
-> > +  The Microchip Sparx5 Switch provides reset control and
-> > implements the following
-> > +  functions
-> > +    - One Time Switch Core Reset (Soft Reset)
-> > +
-> > +properties:
-> > +  $nodename:
-> > +    pattern: "^reset-controller@[0-9a-f]+$"
-> > +
-> > +  compatible:
-> > +    const: microchip,sparx5-switch-reset
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  "#reset-cells":
-> > +    const: 1
-> > +
-> > +  syscons:
-> > +    $ref: "/schemas/types.yaml#/definitions/phandle-array"
-> > +    description: Array of syscons used to access reset registers
-> > +    minItems: 2
-> 
-> The order seems to be important in the driver, so this should specify
-> which is the CPU syscon and which is the GCB syscon. I'm not sure if
-> it
-> would be better to have two separately named syscon properties with a
-> single phandle each.
+>
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  drivers/iommu/intel/iommu.c  | 20 ++++++++++++++++++++
+>  drivers/iommu/virtio-iommu.c |  9 +++++++++
+>  include/linux/iommu.h        |  1 +
+>  3 files changed, 30 insertions(+)
+>
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index cb205a04fe4c..8eb022d0e8aa 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -5738,12 +5738,32 @@ static inline bool nested_mode_support(void)
+>  	return ret;
+>  }
+>
+> +static inline bool caching_mode_enabled(void)
+> +{
 
-Yes you got a point.  I will change that.
+Kernel coding style is not in favour of inline functions in *.c files.
 
-> 
-> regards
-> Philipp
-
-BR
-Steen
-
+> +	struct dmar_drhd_unit *drhd;
+> +	struct intel_iommu *iommu;
+> +	bool ret = false;
+> +
+> +	rcu_read_lock();
+> +	for_each_active_iommu(iommu, drhd) {
+> +		if (cap_caching_mode(iommu->cap)) {
+> +			ret = true;
+> +			break;
+> +		}
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	return ret;
+> +}
+> +
+>  static bool intel_iommu_capable(enum iommu_cap cap)
+>  {
+>  	if (cap == IOMMU_CAP_CACHE_COHERENCY)
+>  		return domain_update_iommu_snooping(NULL) == 1;
+>  	if (cap == IOMMU_CAP_INTR_REMAP)
+>  		return irq_remapping_enabled == 1;
+> +	if (cap == IOMMU_CAP_VIOMMU)
+> +		return caching_mode_enabled();
+>
+>  	return false;
+>  }
+> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+> index 2bfdd5734844..719793e103db 100644
+> --- a/drivers/iommu/virtio-iommu.c
+> +++ b/drivers/iommu/virtio-iommu.c
+> @@ -931,7 +931,16 @@ static int viommu_of_xlate(struct device *dev, struct of_phandle_args *args)
+>  	return iommu_fwspec_add_ids(dev, args->args, 1);
+>  }
+>
+> +static bool viommu_capable(enum iommu_cap cap)
+> +{
+> +	if (cap == IOMMU_CAP_VIOMMU)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+>  static struct iommu_ops viommu_ops = {
+> +	.capable		= viommu_capable,
+>  	.domain_alloc		= viommu_domain_alloc,
+>  	.domain_free		= viommu_domain_free,
+>  	.attach_dev		= viommu_attach_dev,
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index b95a6f8db6ff..1d24be667a03 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -94,6 +94,7 @@ enum iommu_cap {
+>  					   transactions */
+>  	IOMMU_CAP_INTR_REMAP,		/* IOMMU supports interrupt isolation */
+>  	IOMMU_CAP_NOEXEC,		/* IOMMU_NOEXEC flag */
+> +	IOMMU_CAP_VIOMMU,		/* IOMMU can declar running in a VM */
+>  };
+>
+>  /*
+> --
+> 2.25.1
+>
