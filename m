@@ -2,157 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1275E2F6CBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBD72F6CC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730052AbhANU6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 15:58:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24453 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727380AbhANU57 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 15:57:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610657793;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G9+4Pk0QfMyGrL+EPSU/M84dgufmtwgcIjPfqAvJ8sg=;
-        b=IQE7vJZlhtmGmsvRDKO6+pEn0sZ2neH4VgVPzQtXUMblX1LaS/mtPazuLnepyTpWDHtv5d
-        r1cZOqV4lGQ+H59p/3GV8o4MlJI1PdcldGHjjAVmdb/Tyc5W8XU3TAF4V+P8sgNKEdGxNH
-        u9Tz89uyQcDCQ5Q/Zd4nve9hir9qwZI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-48-d1u3mahQOtyoXoN_KPF6aw-1; Thu, 14 Jan 2021 15:56:29 -0500
-X-MC-Unique: d1u3mahQOtyoXoN_KPF6aw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A454107ACF7;
-        Thu, 14 Jan 2021 20:56:27 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5952E12D7E;
-        Thu, 14 Jan 2021 20:56:26 +0000 (UTC)
-Date:   Thu, 14 Jan 2021 14:56:24 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, Miroslav Benes <mbenes@suse.cz>
-Subject: [PATCH v1.1 12/21] objtool: Add CONFIG_CFI_CLANG support
-Message-ID: <20210114205624.dpodesrcljpnfsaj@treble>
-References: <cover.1610652862.git.jpoimboe@redhat.com>
- <c1889131d5de558e58700ba559e7d8606fe9c680.1610652862.git.jpoimboe@redhat.com>
-MIME-Version: 1.0
+        id S1730431AbhANU6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 15:58:43 -0500
+Received: from mail-eopbgr680044.outbound.protection.outlook.com ([40.107.68.44]:31143
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730271AbhANU6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 15:58:42 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C4VyFDdRuEJy3lzQ6m6SYoAHc4VNIk+hZo299+sAO9y7XLEArwB2qP9UVWHqeUTZPnWURL/yERcblZtkLRoL30C+tMwDSOBGgM59v2Mxf0tp7K9+V1bAnPkziKO6AlpQhzeKhJmV5Gqr6CkY5xcZ7/x7msH/RH48kYavkR8/4FMRsogixvoJsO8AIrJXF8EZe3Lo885EXI4iZKP98eOUhp6ClradX2Pza4+VtR7qkotHxS0GHxX7pif20GYXEfcHB2BKicrwTlqCp0BHoJJM00HSditK66a2M/SLZKAJ94dbrVjh0+7WddZQULAvHXy0bWDleiXqpXCwS5gz6bJ+6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ymbSXyGpClSwPtyDWIZB/QPAVtW3GgbjFIk1m7oOi50=;
+ b=ab2havncNZq3nZhG1q7FTGVEu7V9x0pXCCc7zJsHCsCped++XkfnSIfrLsvAln1HKMEt+/YBAKGuFvLwRgQD9bfyXZRUMGdjzLyduqixomSm7IolMIyfROuAJNu29rjs7jCZmx+F7JqHAtZ+dRk/MpIxQxr0LE8Q5DPePnSf+4v7cfW6u+PPan+QboX7zegqH1V/MnUIN7cqFc7iu1VRkSVkJsAkBwNeFoSkAZZ0aA5CzhPgu6Seqjfocxxo9pqLXBG2d7b9gKca72Ih40VG0soLSaqQZ+bg0OSvUsI3A7/0CypoYt/UjXj0fXEhWNu5QH8O3SYzrsrq/6IncV+tSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ymbSXyGpClSwPtyDWIZB/QPAVtW3GgbjFIk1m7oOi50=;
+ b=5N/lnzoouDXJf5mip4EG7m4BjSiCEWsVFkKR9L8URMKf624MPm/jkO10Wej8mxC54fJbw0t3yyuFEVlJ5pu4J0FMMW9gD25f0WuUU1OZetMloGeJgFU8e+SJ2Rmn727nsbfqrX1oVoWtkfnbsubFyIkaTmn8IfXQatq4+YA3D9A=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SN6PR12MB4750.namprd12.prod.outlook.com (2603:10b6:805:e3::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Thu, 14 Jan
+ 2021 20:57:53 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::18a2:699:70b3:2b8a]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::18a2:699:70b3:2b8a%6]) with mapi id 15.20.3742.012; Thu, 14 Jan 2021
+ 20:57:53 +0000
+Cc:     brijesh.singh@amd.com, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH v2 01/14] KVM: SVM: Zero out the VMCB array used to track
+ SEV ASID association
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20210114003708.3798992-1-seanjc@google.com>
+ <20210114003708.3798992-2-seanjc@google.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <6d329b0c-e34e-6fed-8cc5-10b9ece82409@amd.com>
+Date:   Thu, 14 Jan 2021 14:57:51 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
+In-Reply-To: <20210114003708.3798992-2-seanjc@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c1889131d5de558e58700ba559e7d8606fe9c680.1610652862.git.jpoimboe@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [70.112.153.56]
+X-ClientProxiedBy: SA9PR13CA0079.namprd13.prod.outlook.com
+ (2603:10b6:806:23::24) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SA9PR13CA0079.namprd13.prod.outlook.com (2603:10b6:806:23::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.7 via Frontend Transport; Thu, 14 Jan 2021 20:57:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 24b2cc73-94e3-464b-2983-08d8b8cf0f92
+X-MS-TrafficTypeDiagnostic: SN6PR12MB4750:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR12MB4750B5A9124F91D545BC7CEEE5A80@SN6PR12MB4750.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: B4usfC9rHFjqavgJXW8M7evna0iJ+/yHag8SzCw4Y2KnDRuEvXqy4Xc9XUhGg+1yWM77c9pvZAx1yCkIySv6PBNbJGV0PSxlhnFTuBXEWadNr98KlqZ1E4sbjFhQzyS+Y1NURhGx+eYsEhhI0ruxUVnVLYR3tfJJqStaeOTU+fX1GIRDWsmE9WpD/DSNQjYyD7hq3+v/ULlXDTX48ITk2h/x6vxKdIe9Y57DeHQ8meSQxKYlvOJlLwhg9vmCnznhmtGscEalslSXBTaqbzvHyjqio+ys0c+380CgyXelacx0VYYtGJaThtya2sAmPNO7gpKKQdngEVCcnnx9jWOc5kaFc+zR1jkUaP3KRjMPNM1suql+NmYfJfh9sRMEvmt1t1Tql8sKes0NtEd7hmx0a1AzB4q5UYzvHuDLd3nFln/0HmYMtPnA+QsFsQVKq/1WIbnI2D5BXOC0Fc+Gva+8u5Uzg7rn1nCYbHTnjt+exZc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(136003)(366004)(376002)(2906002)(2616005)(956004)(44832011)(478600001)(6512007)(66556008)(316002)(8676002)(66476007)(6506007)(52116002)(83380400001)(7416002)(110136005)(6486002)(66946007)(186003)(16526019)(31696002)(5660300002)(8936002)(31686004)(54906003)(4326008)(26005)(53546011)(86362001)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RXFROEVjQm1PZFFDTkpDZ09zS2NvWmZsSjgxemU2T3FuUDR6MkJoSGd6cjdB?=
+ =?utf-8?B?S0xhdlBuQ0ZETU44TVRGSUxhM2RRRUdvQjFncGxpRXA1Qi9hWjFqZjQ0T2Jz?=
+ =?utf-8?B?NlhxNzFPUEVQU2cybVhvOW1VSTkzaEh5cXdPajNnZk1EVFVhU0JhQzdocWhF?=
+ =?utf-8?B?R3VSemQwb3BnMHFwVlBMYzhHN2hKNVlNMkgweG9Tbk1RdlRoc25MK1ZRdkpH?=
+ =?utf-8?B?K3JhcUxsNTZKck8yMW4vT3k2Y3hRbERHbGpONmp3UEtJOHY0Wjc5T1QwNnM3?=
+ =?utf-8?B?bG9xVTUxNFNsVmhVOWNCSVRmcm9VRDNwM2tQWFlFbXh6M0o3Z2ZtbHV1QmJm?=
+ =?utf-8?B?cXFTNGRvUlRQNUE2VE8vbjErZGt3aDh5MFFUdzZ2N3RUZFJJQzM0V3UyWWJY?=
+ =?utf-8?B?ZGhDUVdUbGFlYnJlQmxKWlBSQ1ViYll1Nlc4QTZ2QWZGcXdCV3phd1I5ZzND?=
+ =?utf-8?B?Z094TnBOWGkxZjZDcmFsYnZlMUhCa21Sbmp6T2tvL2RTMGI2dmZ3MlljR051?=
+ =?utf-8?B?Qk0xRVNFRUpITm94Z1ByTC9OdG1aYm1aWjc2bzBqUG4wM3c0cEdaNFYwNnZu?=
+ =?utf-8?B?MFB0b2FYSGROcEM2VDhrNU1vdjVTemZiSWxVaDhRZnQvWlRQdzJibitTa21s?=
+ =?utf-8?B?Z2ZMTEpRYnY3UERJZm9sa1B3QndDelcrZ25tTnBZRzVWSThrbHV6MVRMZENF?=
+ =?utf-8?B?Ly9qeWJkdFRxRWdzR2VER2NEQmloSHdJeUJ6dk1GM0t3c3hxRk9ZL1NpM2hv?=
+ =?utf-8?B?a0szUUQrRDl6VW1zWkMyaEJNbmxFUi9UR0sxRUllY3BObVNOcjFEQ0ZqckFl?=
+ =?utf-8?B?VFdjUTBCMmhmSlVmd2krcXRmUk10MFVESEZXVm9hQUw3eUxHMTl5N0pxYm81?=
+ =?utf-8?B?U2dPQk9aemlSSmRYS1NicjB2KzdXeWhzN1JDd2UvUDZHeEFuN2VYdTJMRXhT?=
+ =?utf-8?B?MUNFcmFZRkN3WFN4RGE3WUZyeXdsMGlOZnFnbHVlODdncTB6ZkV4aUdUYUIr?=
+ =?utf-8?B?YzlQRVFZdWxTQStxZ3M3SVUxNzRBb0tKaC9xWGRWYUMzbk1YMkk3L1JmaXcv?=
+ =?utf-8?B?d0l4Y2hHd05pVm9WTWo0TndZZ1AyL0lXQmFlNzlQbEpvM1pTck9WZ2RCUCtZ?=
+ =?utf-8?B?WGNEWDRIL2xsaXpZTWlYVjlONEVHbHNKL0x1dmtNakh1Vy8vdHBGYWFFWkdP?=
+ =?utf-8?B?RTFaRERrYjJLQVh2NnRlL1MxZjdsS1Fucm95dWY5ak8yanJWWnJ1TEJXS05J?=
+ =?utf-8?B?U2lpKzNVQkJkOTA3STRIc1IrNDRvQzRITTNVU2VFOGpmN1A4SUJ5L29mWnB2?=
+ =?utf-8?Q?KkFfQIG7mgQua1KOej37KVm5QhZrkK+Dqr?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jan 2021 20:57:53.1263
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 24b2cc73-94e3-464b-2983-08d8b8cf0f92
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eBp2BM/IreevUB0Zkse9MGoMw7Y22W8yGNSc7/dUYW1vM+tvczRbXUZKYQunQ1PqMijr68rUnkLvnmLy9HtuIw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB4750
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-The upcoming CONFIG_CFI_CLANG support uses -fsanitize=cfi, the
-non-canonical version of which hijacks function entry by changing
-function relocation references to point to an intermediary jump table.
+On 1/13/21 6:36 PM, Sean Christopherson wrote:
+> Zero out the array of VMCB pointers so that pre_sev_run() won't see
+> garbage when querying the array to detect when an SEV ASID is being
+> associated with a new VMCB.  In practice, reading random values is all
+> but guaranteed to be benign as a false negative (which is extremely
+> unlikely on its own) can only happen on CPU0 on the first VMRUN and would
+> only cause KVM to skip the ASID flush.  For anything bad to happen, a
+> previous instance of KVM would have to exit without flushing the ASID,
+> _and_ KVM would have to not flush the ASID at any time while building the
+> new SEV guest.
+>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Fixes: 70cd94e60c73 ("KVM: SVM: VMRUN should use associated ASID when SEV is enabled")
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/svm/svm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 7ef171790d02..ccf52c5531fb 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -573,7 +573,7 @@ static int svm_cpu_init(int cpu)
+>  	if (svm_sev_enabled()) {
+>  		sd->sev_vmcbs = kmalloc_array(max_sev_asid + 1,
+>  					      sizeof(void *),
+> -					      GFP_KERNEL);
+> +					      GFP_KERNEL | __GFP_ZERO);
+>  		if (!sd->sev_vmcbs)
+>  			goto free_save_area;
+>  	}
 
-For example:
 
-  Relocation section '.rela.discard.func_stack_frame_non_standard' at offset 0x37e018 contains 6 entries:
-      Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
-  0000000000000000  0002944700000002 R_X86_64_PC32          00000000000023f0 do_suspend_lowlevel + 0
-  0000000000000008  0003c11900000001 R_X86_64_64            0000000000000008 xen_cpuid$e69bc59f4fade3b6f2b579b3934137df.cfi_jt + 0
-  0000000000000010  0003980900000001 R_X86_64_64            0000000000000060 machine_real_restart.cfi_jt + 0
-  0000000000000018  0003962b00000001 R_X86_64_64            0000000000000e18 kretprobe_trampoline.cfi_jt + 0
-  0000000000000020  000028f300000001 R_X86_64_64            0000000000000000 .rodata + 12
-  0000000000000028  000349f400000001 R_X86_64_64            0000000000000018 __crash_kexec.cfi_jt + 0
+Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
 
-  0000000000000060 <machine_real_restart.cfi_jt>:
-    60: e9 00 00 00 00          jmpq   65 <machine_real_restart.cfi_jt+0x5>
-                        61: R_X86_64_PLT32      machine_real_restart-0x4
-    65: cc                      int3
-    66: cc                      int3
-    67: cc                      int3
-
-This breaks objtool vmlinux validation in many ways, including static
-call site detection and the STACK_FRAME_NON_STANDARD() macro.
-
-Fix it by converting those relocations' symbol references back to their
-original non-jump-table versions.  Note this doesn't change the actual
-relocations in the object itself, it just changes objtool's view of
-them.
-
-Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- tools/objtool/elf.c | 28 ++++++++++++++++++++++++++++
- tools/objtool/elf.h |  2 +-
- 2 files changed, 29 insertions(+), 1 deletion(-)
-
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index 6d248a19e2c6..142b2ce49328 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -382,6 +382,11 @@ static int read_sections(struct elf *elf)
- 		}
- 		sec->len = sec->sh.sh_size;
- 
-+		/* Detect -fsanitize=cfi related sections */
-+		if (!strcmp(sec->name, ".text.__cfi_check") ||
-+		    !strncmp(sec->name, ".text..L.cfi.jumptable", 22))
-+			sec->cfi_jt = true;
-+
- 		list_add_tail(&sec->list, &elf->sections);
- 		elf_hash_add(elf->section_hash, &sec->hash, sec->idx);
- 		elf_hash_add(elf->section_name_hash, &sec->name_hash, str_hash(sec->name));
-@@ -613,6 +618,29 @@ static int read_relocs(struct elf *elf)
- 				return -1;
- 			}
- 
-+			/*
-+			 * Deal with -fsanitize=cfi (CONFIG_CFI_CLANG), which
-+			 * hijacks function entry by arbitrarily changing a lot
-+			 * of relocation symbol references to refer to an
-+			 * intermediate jump table.  Undo that conversion so
-+			 * objtool can make sense of things.
-+			 */
-+			if (reloc->sym->sec->cfi_jt) {
-+				struct symbol *func, *sym;
-+
-+				if (reloc->sym->type == STT_SECTION)
-+					sym = find_func_by_offset(reloc->sym->sec,
-+								  reloc->addend);
-+				else
-+					sym = reloc->sym;
-+
-+				if (find_unsuffixed_func(elf, sym, ".cfi_jt", &func))
-+					return -1;
-+
-+				if (func)
-+					reloc->sym = func;
-+			}
-+
- 			elf_add_reloc(elf, reloc);
- 			nr_reloc++;
- 		}
-diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
-index e6890cc70a25..bcc524d73f51 100644
---- a/tools/objtool/elf.h
-+++ b/tools/objtool/elf.h
-@@ -39,7 +39,7 @@ struct section {
- 	char *name;
- 	int idx;
- 	unsigned int len;
--	bool changed, text, rodata, noinstr;
-+	bool changed, text, rodata, noinstr, cfi_jt;
- };
- 
- struct symbol {
--- 
-2.29.2
 
