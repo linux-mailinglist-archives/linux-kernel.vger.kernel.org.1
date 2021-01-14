@@ -2,95 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0889E2F5EAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A53942F5EA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:23:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728709AbhANKXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 05:23:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40124 "EHLO
+        id S1728553AbhANKXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 05:23:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728519AbhANKXv (ORCPT
+        with ESMTP id S1726518AbhANKXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 05:23:51 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F7DC061795
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:22:27 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id h17so3851854wmq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:22:27 -0800 (PST)
+        Thu, 14 Jan 2021 05:23:04 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFBAC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:22:24 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id d26so5152431wrb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:22:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kuQJlHeIpWuiXs634c2G5t39x/XMLzJOuHHOGIxib1k=;
-        b=ZuNFTFgmeZ3uVGqeCtbEb1qyYgwTDek5nE0ZqD8PeZAiJoMcRjR4MslFEsfrFwC3og
-         zE1KlRytS992d+G+PBShFOjgJB8eRWzxII/SYlQ0RhDVoYLtKYp/vaJJsgAi5xOBTFc9
-         yR7VLXozp7BhFRrfsCaPqmJ8Lcwaj2Zh1Zvn9MV3yukP74kx2XYPlLjMbU/lqwZcgxDL
-         1HauxgSEcAHHOpgcBX5pa7LQv1FV6eWxRxCNwhf1K2ib4RPd7OgPci+fQTLFTwobATFc
-         lXGT4A14TY6dq115Ib/sEMvBD0D4JIaTJUETLUo51QW7s483hKQjCFqTfw/WP733gkcY
-         6O9w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=QIyL9Uw+vfuGT5cNV4SCiN59pKgDZZ0r/aGN6Gj7Cbc=;
+        b=W6U/rx99DHjceiADT1UQoT/TYprMOmBw5kgwTq9TVJEE4SOMKJsN/+127+O3+E3FQ2
+         nI+puxdYpYyUHiK817ifu11spReZQAK1MoekYSJOiVYn2sKc8YAf7aoQbMgOKHQVJKJT
+         lqvuucIyQQD5R7ovABl1dRGacOY5Iwb1MrOnmwmacqHpbFakdV+vcbc3Al0KHnoQVPnH
+         SOmwMNH+Y9Vq+u8wnX+q8kIXwaeCmAdlnP4SMA1HdDUPjSBxbUDPus2TFzc3r7E/MNEP
+         /iY4kiuOORNBIYCxT0oP0uWxYWqNBCf5yjsKXmpFJ7NdjItUksDKXVkvoKyPNlWAzRVd
+         NhSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kuQJlHeIpWuiXs634c2G5t39x/XMLzJOuHHOGIxib1k=;
-        b=Cv9HLaUkkH1CNypfxQHI14ilJT67n0lNVtB9/Ou9+HV2yxWqAnyBV31b2UOqlZCdD/
-         I0V7HkLRp672zf1BQekReEC6P99sjOdbqy2GHhz3P1TbTS++obn15QSPQlAA3ZYHTNQQ
-         xfTVJviXtcDTLPXhJUQSORi+5nCExehvUuaxmIQgqBIwgb+XmMZtH1dqWSTJfjh9Osy7
-         rG+RnyOOE33zz9nyQNU6aekqN+JX6VtvuDRbMz2vXLlQHN+132xkmJXzvmTNHcB3rr9o
-         6qZpuju7rXzdEWKWyHhPlRkN7qL3vaqBNPESeUwIp+UJy49jfLPPYSyvylg7ExJKxoga
-         lG6Q==
-X-Gm-Message-State: AOAM530h/3ZfairVfyy5qX1mpQhIsaMUS3ydaL/iZ0a7E3eZJBn11p9i
-        vFmUYGmlNuDR/n8k6o8Wvc/ibg==
-X-Google-Smtp-Source: ABdhPJw0VY3l74mN0Ah9IUZk7JMLhszhCcIpAR2nnaH38umPC9B1cjSGBeU4YhhUoS4bpVkOVDh3rA==
-X-Received: by 2002:a1c:f302:: with SMTP id q2mr3127800wmq.15.1610619745952;
-        Thu, 14 Jan 2021 02:22:25 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id l7sm2468467wmg.41.2021.01.14.02.22.25
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=QIyL9Uw+vfuGT5cNV4SCiN59pKgDZZ0r/aGN6Gj7Cbc=;
+        b=Ad5ZdFoXhErc4v7BpOPTi32AEsQBvJ5ti6UvKoN7H5p5pjgAZ6QTf86/DX7g3JdV56
+         4XmeNjcVQhDvdq0QsHe3Pf2B1DwoOVjkknNWBhbNsIsPuphH1VTwBQ6BSyETBdkZrVt9
+         ZEwmMnqazx8GVSEtVNjN58WQ+vcXfLKJ0lcJPWSkW8A9ER7HSN67HZ1eFTE5C06BEM4/
+         am7pVfzIXDfsjI2o0/7zVyI+hS8+GFYmbah0RA0edz+4VR5ZJyYKuv1rcDeDAc+BSCvC
+         iqTk1RSKxEm0M5OOp9Xbp9L4NPSbyGPA642LlJYl4l45p4do3y3dluQKoR2JkFZPdF0v
+         G4+A==
+X-Gm-Message-State: AOAM531npR4NWciOROmmhGmNpTwtUPX/ZVG+FpvPp5yGn05buOYLHohK
+        M54pDrPFSzgWFNWCGTaeSUStySyOSvIofr5U
+X-Google-Smtp-Source: ABdhPJzXp6RVWiSV2k3P66UHDVAXtYbJxyLKjpObtngmdn134g5aUph55JB7GTPQAi3/+R/YLQa29w==
+X-Received: by 2002:a5d:5049:: with SMTP id h9mr7359351wrt.404.1610619743123;
+        Thu, 14 Jan 2021 02:22:23 -0800 (PST)
+Received: from dell ([91.110.221.178])
+        by smtp.gmail.com with ESMTPSA id u83sm7616248wmu.12.2021.01.14.02.22.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 02:22:25 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-rtc@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v5 3/3] rtc: s5m: check the return value of s5m8767_rtc_init_reg()
-Date:   Thu, 14 Jan 2021 11:22:19 +0100
-Message-Id: <20210114102219.23682-4-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20210114102219.23682-1-brgl@bgdev.pl>
-References: <20210114102219.23682-1-brgl@bgdev.pl>
+        Thu, 14 Jan 2021 02:22:22 -0800 (PST)
+Date:   Thu, 14 Jan 2021 10:22:20 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] mfd: intel-lpss: Add Intel Alder Lake PCH-P PCI IDs
+Message-ID: <20210114102220.GS3975472@dell>
+References: <20210105153925.62283-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210105153925.62283-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Tue, 05 Jan 2021, Andy Shevchenko wrote:
 
-This function can fail if regmap operations fail so check its return
-value in probe().
+> Add Intel Alder Lake LPSS PCI IDs.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/mfd/intel-lpss-pci.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/rtc/rtc-s5m.c | 2 ++
- 1 file changed, 2 insertions(+)
+Applied, thanks.
 
-diff --git a/drivers/rtc/rtc-s5m.c b/drivers/rtc/rtc-s5m.c
-index 858d5f0e860f..80b66f16db89 100644
---- a/drivers/rtc/rtc-s5m.c
-+++ b/drivers/rtc/rtc-s5m.c
-@@ -791,6 +791,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, info);
- 
- 	ret = s5m8767_rtc_init_reg(info);
-+	if (ret)
-+		return ret;
- 
- 	device_init_wakeup(&pdev->dev, 1);
- 
 -- 
-2.29.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
