@@ -2,115 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8362F6B96
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1442F6B9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730264AbhANTzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:55:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
+        id S1730313AbhANT5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:57:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725869AbhANTze (ORCPT
+        with ESMTP id S1729114AbhANT5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:55:34 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6717AC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:54:54 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id b24so6368054otj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:54:54 -0800 (PST)
+        Thu, 14 Jan 2021 14:57:13 -0500
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C612C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:56:33 -0800 (PST)
+Received: by mail-oo1-xc34.google.com with SMTP id k7so1666011ooa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:56:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/SuJMUWVOi8e1e2W8L0m+9Q9z4tau/lW1SPqWZ+fTKM=;
-        b=Ql0fQZzKudSAhdA0CI4dbCMC8Z8UbIE4TgV+t2l0ROTQBEqe4wojrRKiDeAzriahuG
-         JA7Z76tsVytkVeUpcDx/Dv/qX3yXS7cYW3fL9zTsCiYgfo/rnoKExJ1qUVUGZWw+NtRP
-         fkWRprDWcN/+Mic6bX+o65swo+vIarp0GgTMjMLFXvJ/J9A7StJ3umjsLZIIqlSyUTY/
-         qulUfMeyjQBnCfUp+20Fzbvw/+XcfZ6PEvpJeGzbGW/ujIBRXUA6zW0bgdmGBwOBuFSO
-         CCFHvjerD7xrQA6AwMj/8rcpvkwaWmF+H5s+Qc5ZpFMJV2gUVCuoJQLRpgKjwm65YM1b
-         2TCA==
+        bh=ZAcc3zNp7VGprtlxhdh/3qjDl2q8+DBIOh9GzZOOC9c=;
+        b=vmXs67opHZMsHKBRz9S4jhbrtQZYZ2sk+Iu4XwbNOhJMP2WH2LrsKhHrAzFKTliWM0
+         Ic/2n1TyYxSkKaJicov1ee5QzQYe6QangS0QfCGICadiwrvUxaNQdX2mD5IAIvEJ0KKu
+         gsbgPlA2PaEpJztqi1Io7QAXMJG44t4Q/I1czERV5oIMmhaBs68dDdAKnGSS0Z+SOm5R
+         LuHDT8sF1qDUkDNYGUGMkwh8CQIRosW41Kw4XLfZT+uEpDpB+bt3aCunI/9LwmmpLYG5
+         QWt23AAJb4k2kb9M6QDq0EMpYUTk5WR491MD8qMyFlXez0+1GzobQVjqlMp/SLJL1y7I
+         +JTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/SuJMUWVOi8e1e2W8L0m+9Q9z4tau/lW1SPqWZ+fTKM=;
-        b=MdBpdLW3hfQTlaFYbXIhyf8Oh8KYJn1WAxNCN0W4Fsnb4y38cH8cqyNTL+ey8ggUyf
-         /Ld3f5NrSKT8bIDN+LlS577xMKhE9MK1nAvOKSygFdTjEzJxVgzyyPDC/WrH9qKiNyk+
-         WnR85DJXrLfcevnGQBavr85XbXCJxNJJcVu4/xz6IUpu9H3aL1e8vYXMhcLHiMqotzre
-         gzMa39hrOuPm8AOtBYA5+OeDtATPJuLlQs7k8l0VROApRFDYoMPCRMGfEDJk9itiQIQy
-         TTgy5SGVyrQWzW3On/PONknYdPnhhQBWKu+jUmjVmNzT11Fb958v+jvBH+j/KEeNj6vj
-         1DSA==
-X-Gm-Message-State: AOAM533609naaKDsOO6zcsf1yfJ1FGVgv3cC1LYknHTTlgoxWDONWEVR
-        oGxZNiRSKzdNtMiP2tfd7ZHq/NzEraMHNHNDICUyig==
-X-Google-Smtp-Source: ABdhPJyGMoiavQ4kURubCDjavlDtKAm6koB678nF+gelqrQ7MvvW4FCmaIJ8ym0zJHbl5hc+phrhTSZPIzsWeZr99p8=
-X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr5923004ots.251.1610654093639;
- Thu, 14 Jan 2021 11:54:53 -0800 (PST)
+        bh=ZAcc3zNp7VGprtlxhdh/3qjDl2q8+DBIOh9GzZOOC9c=;
+        b=uYsb8AedMQ2sdLTunt0yzF7okk614SikzTW8MTbpWtYaXGu00KEjSX62wWdDWIopNk
+         w4vauy+iefAl5Tgn9Qxr81qn3hXsGaHHwfPkAMyOsjXQwAtRk4ukHpAf3zopZiRT1CE7
+         KEtEHKQjymRviTE60/Oa2OH8EKhv+rZzuBHgmtnDbCq5Ek2ALOS4BPDJa3+nEXTncfDL
+         P83TF/GR/RUCGRMXb+gSp8QZSV8fi5+XdccyQ4nQGh+77+jc/3Qh5jf5eq/wRCLDBAfU
+         T4THv3fOZme0xPBLVFGGfI3iXEpfe0UeE+u0dD8h1xCVOFQfV0dMJ6YRhXB3wrt3StR+
+         0WRw==
+X-Gm-Message-State: AOAM531VMO2crM/6Dj9tfIFo4GKZeDXfhKeIzipoJWqyZW8NZOlvGrch
+        79NxK3RPYn9DBl15RTW8rNGMIXOmTn575SwqgEFOJw==
+X-Google-Smtp-Source: ABdhPJyLa62+jHhxWdEgxjXJycNhlQSq/fBgOo4qQHvR5bY4u6pn3J9ETjhhgibepZ6UyHJfmzBm5klziTjyWZtArz0=
+X-Received: by 2002:a4a:e1c1:: with SMTP id n1mr5779219oot.36.1610654192707;
+ Thu, 14 Jan 2021 11:56:32 -0800 (PST)
 MIME-Version: 1.0
-References: <0000000000004a33a005b8b8eaab@google.com> <20210112194058.GA200254@ubuntu-m3-large-x86>
- <CACT4Y+YFZf=BnCQJQUYwG-UpaYKG97VD-XWpEdXoR3ZnOxH5NQ@mail.gmail.com>
- <CACT4Y+Z-f+r_Bm5RD+ZFrspHdVrDrzPgEB_9_uACa_8o4vz7aw@mail.gmail.com> <CAKwvOdmBGNK0iVCAGc=7oKx9k1fE1C6y7G9S+hCYLmdu5kaKLQ@mail.gmail.com>
-In-Reply-To: <CAKwvOdmBGNK0iVCAGc=7oKx9k1fE1C6y7G9S+hCYLmdu5kaKLQ@mail.gmail.com>
+References: <cover.1610554432.git.andreyknvl@google.com> <77015767eb7cfe1cc112a564d31e749d68615a0f.1610554432.git.andreyknvl@google.com>
+ <CANpmjNPX9yn5izxtYMq14Aas2y4NA1ijkcS9KN4QQ-7Hv8qZEQ@mail.gmail.com> <CAAeHK+zD17_esgDvsUd3Yku4cCKDdADo82_u3c47tMWtHL63oQ@mail.gmail.com>
+In-Reply-To: <CAAeHK+zD17_esgDvsUd3Yku4cCKDdADo82_u3c47tMWtHL63oQ@mail.gmail.com>
 From:   Marco Elver <elver@google.com>
-Date:   Thu, 14 Jan 2021 20:54:42 +0100
-Message-ID: <CANpmjNMmObBWzHqcQ2VHru2Tdu8k0KOkVUE2upPitsOh3OoF3Q@mail.gmail.com>
-Subject: Re: upstream build error (12)
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        syzbot <syzbot+76880518931d755473cf@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+Date:   Thu, 14 Jan 2021 20:56:21 +0100
+Message-ID: <CANpmjNNGBCrTwcm=3wrXfdy5A5=3Vd-MVdLd8BBzHRseykFX6Q@mail.gmail.com>
+Subject: Re: [PATCH v2 11/14] kasan: fix bug detection via ksize for HW_TAGS mode
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 at 19:07, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> On Thu, Jan 14, 2021 at 4:38 AM 'Dmitry Vyukov' via Clang Built Linux
-> <clang-built-linux@googlegroups.com> wrote:
+On Thu, 14 Jan 2021 at 19:01, 'Andrey Konovalov' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+> On Wed, Jan 13, 2021 at 5:54 PM Marco Elver <elver@google.com> wrote:
 > >
-> > On Thu, Jan 14, 2021 at 12:32 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > >
-> > > On Tue, Jan 12, 2021 at 8:41 PM Nathan Chancellor
-> > > <natechancellor@gmail.com> wrote:
-> > > >
-> > > > Would it be possible for clang-built-linux@googlegroups.com to be CC'd
-> > > > when there is a build error and the compiler is clang? Especially if
-> > > > clang is hitting an assertion.
-> > >
-> > > Hi Nathan,
-> > >
-> > > I am adding functionality to CC specific emails on build errors on
-> > > specific instances:
-> > > https://github.com/google/syzkaller/pull/2388
+> > > +/*
+> > > + * Unlike kasan_check_read/write(), kasan_check_byte() is performed even for
+> > > + * the hardware tag-based mode that doesn't rely on compiler instrumentation.
+> > > + */
+> > > +bool __kasan_check_byte(const void *addr, unsigned long ip);
+> > > +static __always_inline bool kasan_check_byte(const void *addr, unsigned long ip)
+> > > +{
+> > > +       if (kasan_enabled())
+> > > +               return __kasan_check_byte(addr, ip);
+> > > +       return true;
+> > > +}
 > >
-> > I've updated configs to CC clang-built-linux@googlegroups.com. This
-> > should take effect on the next build failure (hopefully).
+> > Why was this not added to kasan-checks.h? I'd assume including all of
+> > kasan.h is also undesirable for tag-based modes if we just want to do
+> > a kasan_check_byte().
 >
-> Thanks Dmitry, (and thanks Marco for updating syzbot's clang).
->
-> Marco, can you update:
-> https://github.com/google/syzkaller/blob/master/docs/syzbot.md#crash-does-not-reproduce
+> It requires kasan_enabled() definition. I can move both to
+> kasan-checks.h if you prefer. However, the only place where
+> kasan_check_byte() is currently used includes kasan.h anyway.
 
-We have:
-
-> compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-
-Which is in the list of compilers:
-https://storage.googleapis.com/syzkaller/clang-11-prerelease-ca2dcbd030e.tar.xz
-
-> I wasn't able to reproduce the reported compiler crash with ToT llvm
-> and the reported config, so I assume it was a mid-release of llvm-11
-> bug that has since been fixed.  Do we need to report to syzbot to
-> close the issue? I did a quick skim of
-> https://github.com/google/syzkaller/blob/master/docs/syzbot.md, but it
-> looks like communication with syzbot is based on commit messages?
-
-Given we this is likely due to a prerelease compiler, we can just use:
-
-#syz invalid
-
-^^ it should pick this up.
+Hmm, if it makes too much of a mess, let's just leave as-is.
 
 Thanks,
 -- Marco
