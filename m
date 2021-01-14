@@ -2,138 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454852F668F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C172F6693
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727589AbhANQ6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:58:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726311AbhANQ6D (ORCPT
+        id S1727760AbhANRAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:00:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58598 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725854AbhANRAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:58:03 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B57C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:57:22 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id q4so3196127plr.7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:57:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6sD1tCBoGAOrvfd86vyt9hIg6YLWE1pvXhNfgkiWDvM=;
-        b=mFllyiyBMkF3ksbiFU5nzudfKx1bOEzWgi+LJy1gIMGegLO/wEHcUWoBv494G8wJSi
-         4xYXVcN/eagkT7KwBSKDEttLN6to3szcTm5OQuuKY/eD6EqFfxmnMO/uQFZBT3aIYbWN
-         /8aSrxdW+sdYs2s79xsURBGckzNCAJTMioV6nbvcdFJScpZoZTHjxSWZvSUkCVPupSsg
-         567ADMvqioTW6EmWmyj9beBqFMHu/FkuVQoP8jt1KGSky06V+4Hw1QIW3yNrEC8oc3N/
-         LmSHcm78sHM0KtRcRW4UZiWRpc4UNhOAQksYmOw2mIGhIOOgB3yeH+jZNIrw99FUCn7G
-         qnpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6sD1tCBoGAOrvfd86vyt9hIg6YLWE1pvXhNfgkiWDvM=;
-        b=nF4HsZER/oVuz9cTVjjq8lp3QVHe13dd+SQ7DfdafvLK3VE4EzpH9eo6A/QrWU72Dh
-         OGIZWEZvg3fDEVs5bwpBF8crYyknOnIAMsRPpqNXicL+//O8caH3zIHvrBM14gTJzs8C
-         zll2/0u+3Wp3aqW0QlmmDFT5pHoQdIsPJ4oX0qxBw428bXYTIUFQZ7lSdUbq+UAn4G4c
-         x08u8Dlnk7aklQzfnjXdj4dFGwg3rqtnuNOj2PpOHEaoX4vjFjg8axk1H/GCfYSww5FV
-         8tc1eCRDezta9lR6a+QUk8sCeQs+2dWadbaI7qfnGbA71dVERvwI7evCtT6aGLFIacxY
-         HZPQ==
-X-Gm-Message-State: AOAM530USWCl94JxCVKTk3cojkI2Wtk3LpbgFHcAEw2+VYB5AJeWcIgm
-        x3yRtVxVWaJ+IZx6nvO6wXm7Fg4Br8chhRjaexbwBA==
-X-Google-Smtp-Source: ABdhPJyWdPWhBk6LFGwCn2FbIWPWbQhEmhP+NDlFW1LcmSnkpSTn9osRRvx7suhuAkVxF4KYgth10D50JObrMw2+nO0=
-X-Received: by 2002:a17:902:d50d:b029:de:5b13:498d with SMTP id
- b13-20020a170902d50db02900de5b13498dmr3192064plg.38.1610643442083; Thu, 14
- Jan 2021 08:57:22 -0800 (PST)
+        Thu, 14 Jan 2021 12:00:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610643522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JUsobyLQttNjQOv/bXY7/VpogIuR8SlRFnvnIc1/ovQ=;
+        b=b8ZkIMZhbMh4ocPVa7zTnEpkQUUY/t5yqITdSXt6B8Ykf/Kl2gWMlHyzQWCQbl6A0lKrnr
+        y9v7RSyU6/XHYgKX4A3qPYSMGJeUuMY+bltOWghOxWNQuQKeSxdZ0+dG/cyF8XVCwSQjnA
+        Y+gXPgYz2/pTWogTea3JR8DyPEAFjtw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-kDmtCxkbOTycjfoyiKu1nw-1; Thu, 14 Jan 2021 11:58:38 -0500
+X-MC-Unique: kDmtCxkbOTycjfoyiKu1nw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D3FA69CC03;
+        Thu, 14 Jan 2021 16:58:35 +0000 (UTC)
+Received: from [10.36.114.165] (ovpn-114-165.ams2.redhat.com [10.36.114.165])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4845D5D9E2;
+        Thu, 14 Jan 2021 16:58:29 +0000 (UTC)
+Subject: Re: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
+ unmanaged ASIDs
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Xieyingtai <xieyingtai@huawei.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        wangxingang <wangxingang5@huawei.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        qubingbing <qubingbing@hisilicon.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>
+References: <20201118112151.25412-8-eric.auger@redhat.com>
+ <1606829590-25924-1-git-send-email-wangxingang5@huawei.com>
+ <2e69adf5-8207-64f7-fa8e-9f2bd3a3c4e3@redhat.com>
+ <e10ad90dc5144c0d9df98a9a078091af@huawei.com>
+ <20201204095338.GA1912466@myrica>
+ <2de03a797517452cbfeab022e12612b7@huawei.com>
+ <0bf50dd6-ef3c-7aba-cbc1-1c2e17088470@redhat.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <d68b6269-ee99-9ed7-de30-867e4519d104@redhat.com>
+Date:   Thu, 14 Jan 2021 17:58:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20210114054831.343327-1-maskray@google.com> <20210114140621.GA15904@linux-8ccs>
-In-Reply-To: <20210114140621.GA15904@linux-8ccs>
-From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Date:   Thu, 14 Jan 2021 08:57:10 -0800
-Message-ID: <CAFP8O3Liydjn=6PwaDdYAhtMS1zC3=aKW6oq6UBOXGr9HKoQ1g@mail.gmail.com>
-Subject: Re: [PATCH] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
- undefined symbols
-To:     Jessica Yu <jeyu@kernel.org>, Sam Ravnborg <sam@ravnborg.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Marco Elver <melver@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0bf50dd6-ef3c-7aba-cbc1-1c2e17088470@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 6:06 AM Jessica Yu <jeyu@kernel.org> wrote:
->
-> +++ Fangrui Song [13/01/21 21:48 -0800]:
-> >clang-12 -fno-pic (since
-> >https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6)
-> >can emit `call __stack_chk_fail@PLT` instead of `call __stack_chk_fail`
-> >on x86.  The two forms should have identical behaviors on x86-64 but the
-> >former causes GNU as<2.37 to produce an unreferenced undefined symbol
-> >_GLOBAL_OFFSET_TABLE_.
-> >
-> >(On x86-32, there is an R_386_PC32 vs R_386_PLT32 difference but the
-> >linker behavior is identical as far as Linux kernel is concerned.)
-> >
-> >Simply ignore _GLOBAL_OFFSET_TABLE_ for now, like what
-> >scripts/mod/modpost.c:ignore_undef_symbol does. This also fixes the
-> >problem for gcc/clang -fpie and -fpic, which may emit `call foo@PLT` for
-> >external function calls on x86.
-> >
-> >Note: ld -z defs and dynamic loaders do not error for unreferenced
-> >undefined symbols so the module loader is reading too much.  If we ever
-> >need to ignore more symbols, the code should be refactored to ignore
-> >unreferenced symbols.
-> >
-> >Reported-by: Marco Elver <melver@google.com>
-> >Link: https://github.com/ClangBuiltLinux/linux/issues/1250
-> >Signed-off-by: Fangrui Song <maskray@google.com>
-> >---
-> > kernel/module.c | 10 ++++++++--
-> > 1 file changed, 8 insertions(+), 2 deletions(-)
-> >
-> >diff --git a/kernel/module.c b/kernel/module.c
-> >index 4bf30e4b3eaa..2e2deea99289 100644
-> >--- a/kernel/module.c
-> >+++ b/kernel/module.c
-> >@@ -2395,8 +2395,14 @@ static int simplify_symbols(struct module *mod, const struct load_info *info)
-> >                               break;
-> >                       }
-> >
-> >-                      /* Ok if weak.  */
-> >-                      if (!ksym && ELF_ST_BIND(sym[i].st_info) == STB_WEAK)
-> >+                      /* Ok if weak. Also allow _GLOBAL_OFFSET_TABLE_:
-> >+                       * GNU as before 2.37 produces an unreferenced _GLOBAL_OFFSET_TABLE_
-> >+                       * for call foo@PLT on x86-64.  If the code ever needs to ignore
-> >+                       * more symbols, refactor the code to only warn if referenced by
-> >+                       * a relocation.
-> >+                       */
-> >+                      if (!ksym && (ELF_ST_BIND(sym[i].st_info) == STB_WEAK ||
-> >+                                    !strcmp(name, "_GLOBAL_OFFSET_TABLE_")))
-> >                               break;
->
-> Hi Fangrui,
->
-> Thanks for the patch. I am puzzled why we don't already mirror modpost
-> here, that particular line of code in modpost to ignore _GLOBAL_OFFSET_TABLE_
-> has been there long before my time. Let's properly mirror modpost
-> then, and create a similar helper function ignore_undef_symbol() (and
-> stick the _GLOBAL_OFFSET_TABLE_ check in there) to account for future
-> cases like this.
->
-> Thanks,
->
-> Jessica
+Hi Shameer, Jean-Philippe,
 
-Hi Jessica,
+On 12/4/20 11:23 AM, Auger Eric wrote:
+> Hi Shameer, Jean-Philippe,
+> 
+> On 12/4/20 11:20 AM, Shameerali Kolothum Thodi wrote:
+>> Hi Jean,
+>>
+>>> -----Original Message-----
+>>> From: Jean-Philippe Brucker [mailto:jean-philippe@linaro.org]
+>>> Sent: 04 December 2020 09:54
+>>> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+>>> Cc: Auger Eric <eric.auger@redhat.com>; wangxingang
+>>> <wangxingang5@huawei.com>; Xieyingtai <xieyingtai@huawei.com>;
+>>> kvm@vger.kernel.org; maz@kernel.org; joro@8bytes.org; will@kernel.org;
+>>> iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
+>>> vivek.gautam@arm.com; alex.williamson@redhat.com;
+>>> zhangfei.gao@linaro.org; robin.murphy@arm.com;
+>>> kvmarm@lists.cs.columbia.edu; eric.auger.pro@gmail.com; Zengtao (B)
+>>> <prime.zeng@hisilicon.com>; qubingbing <qubingbing@hisilicon.com>
+>>> Subject: Re: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
+>>> unmanaged ASIDs
+>>>
+>>> Hi Shameer,
+>>>
+>>> On Thu, Dec 03, 2020 at 06:42:57PM +0000, Shameerali Kolothum Thodi wrote:
+>>>> Hi Jean/zhangfei,
+>>>> Is it possible to have a branch with minimum required SVA/UACCE related
+>>> patches
+>>>> that are already public and can be a "stable" candidate for future respin of
+>>> Eric's series?
+>>>> Please share your thoughts.
+>>>
+>>> By "stable" you mean a fixed branch with the latest SVA/UACCE patches
+>>> based on mainline? 
+>>
+>> Yes. 
+>>
+>>  The uacce-devel branches from
+>>> https://github.com/Linaro/linux-kernel-uadk do provide this at the moment
+>>> (they track the latest sva/zip-devel branch
+>>> https://jpbrucker.net/git/linux/ which is roughly based on mainline.)
+As I plan to respin shortly, please could you confirm the best branch to
+rebase on still is that one (uacce-devel from the linux-kernel-uadk git
+repo). Is it up to date? Commits seem to be quite old there.
 
-I guess __this_module in scripts/mod/modpost.c:ignore_undef_symbol is
-not a problem.
-For PPC64 _restgpr0_* and _savegpr0_*, I am not sure ignoring the
-undefined functions in kernel/module.c is right.
-(I know they can be produced by gcc -Os in some cases
-(https://reviews.llvm.org/D79977), but I want to learn whether that is
-a real issue before adding them.)
+Thanks
 
-If we ever need to ignore more symbols, the code should be refactored
-to not warn for unreferenced undefined symbols as my description says.
+Eric
+>>
+>> Thanks. 
+>>
+>> Hi Eric,
+>>
+>> Could you please take a look at the above branches and see whether it make sense
+>> to rebase on top of either of those?
+>>
+>> From vSVA point of view, it will be less rebase hassle if we can do that.
+> 
+> Sure. I will rebase on top of this ;-)
+> 
+> Thanks
+> 
+> Eric
+>>
+>> Thanks,
+>> Shameer
+>>
+>>> Thanks,
+>>> Jean
+>>
+> 
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> 
+
