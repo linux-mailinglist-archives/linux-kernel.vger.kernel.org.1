@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887292F6391
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30AB12F639D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:02:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729150AbhANO6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:58:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35982 "EHLO mx2.suse.de"
+        id S1729070AbhANPCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 10:02:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726761AbhANO6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:58:22 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E8496AC5B;
-        Thu, 14 Jan 2021 14:57:40 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8150C1E0488; Thu, 14 Jan 2021 15:57:40 +0100 (CET)
-Date:   Thu, 14 Jan 2021 15:57:40 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Steve Magnani <magnani@ieee.org>
-Cc:     Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] udf: fix silent AED tagLocation corruption
-Message-ID: <20210114145740.GA27380@quack2.suse.cz>
-References: <20210107234116.6190-1-magnani@ieee.org>
- <20210107234116.6190-2-magnani@ieee.org>
+        id S1726459AbhANPC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 10:02:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4211F23A7E;
+        Thu, 14 Jan 2021 15:01:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610636505;
+        bh=9B84DmHm2+LoU9vhzsqNNfyGvLUj3dh2HjqdmTrBpJs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=I3vcu7zZ+kwwHRprxq+sVbd2kjWbAAfkkuKssqt/dp+PxIDqJL3R5am0MtQ4JwSJQ
+         V3KZim1N+ZxLZQlj47GFFTuaAeYiOEqAqyRLHK+tKukkqPK7FqjFpdIQgDomJ+Zf45
+         3spt6ztsS5eQgdkevVXcopUwSMA5SCtBMJ9TZwsylDHUb1O5yrdrKk2BTw1I2wPFAq
+         J1V62QloCRvBf6EgsUjxPVBEcmX9qh6ZV5hZM6ypYWHs9SkNEd4b6x1PrJMqfsu4Kk
+         kh/v7sKMbB3PfdQwTuqQKisaxoMJNuNAEinJPFHU/8IY4menlR0LyVvOJPeQHVEEq6
+         UoIaYFapl7Clg==
+Received: by mail-ed1-f51.google.com with SMTP id p22so5997832edu.11;
+        Thu, 14 Jan 2021 07:01:45 -0800 (PST)
+X-Gm-Message-State: AOAM530s9rSebuNziJlfla1pbQOGDmVrddVWP3dcolGs9sgbNV2UFXJl
+        n1wdF2zwYHtSYLdpTGE6Z6kJfob0Wbb3KghKPQ==
+X-Google-Smtp-Source: ABdhPJxN5d0vZEvTJNolKULIWiaph0OQBqrRQaIswy0bO5DCN9vovErPYaXiKZjEaFqTrP06tQ39Axga+QYnpLISToQ=
+X-Received: by 2002:a05:6402:ca2:: with SMTP id cn2mr5976211edb.137.1610636503797;
+ Thu, 14 Jan 2021 07:01:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107234116.6190-2-magnani@ieee.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
+ <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
+ <CAL_JsqLpbSOk-OST8Oi7uyFVjekX-15713F1FbDCQWfVWgikMw@mail.gmail.com> <20210114050309.wokrhw4o3cjxj5uo@vireshk-i7>
+In-Reply-To: <20210114050309.wokrhw4o3cjxj5uo@vireshk-i7>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 14 Jan 2021 09:01:31 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJ=jxBo2JsjNTcBnV_8OrGjUc4ZQEpdVWsfFwWb9YzyFQ@mail.gmail.com>
+Message-ID: <CAL_JsqJ=jxBo2JsjNTcBnV_8OrGjUc4ZQEpdVWsfFwWb9YzyFQ@mail.gmail.com>
+Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 07-01-21 17:41:16, Steve Magnani wrote:
-> From: Steven J. Magnani <magnani@ieee.org>
-> 
-> When extending a file, make sure that the pointer to the last written
-> extent does not get adjusted into the header (tag) portion of an
-> Allocation Extent Descriptor. Otherwise, a subsequent call to
-> udf_update_exents() can clobber the AED's tagLocation field, replacing
-> it with the logical block number of a file extent.
-> 
-> Signed-off-by: Steven J. Magnani <magnani@ieee.org>
+On Wed, Jan 13, 2021 at 11:03 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 11-01-21, 09:46, Rob Herring wrote:
+> > On Fri, Jan 8, 2021 at 2:41 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > >
+> > > Now that fdtoverlay is part of the kernel build, start using it to test
+> > > the unitest overlays we have by applying them statically.
+> >
+> > Nice idea.
+> >
+> > > The file overlay_base.dtb have symbols of its own and we need to apply
+> > > overlay.dtb to overlay_base.dtb alone first to make it work, which gives
+> > > us intermediate-overlay.dtb file.
+> >
+> > Okay? If restructuring things helps we should do that. Frank?
+>
+> Frank, do we want to do something about it ? Maybe make overlay_base.dts an dtsi
+> and include it from testcases.dts like the other ones ?
 
-Thanks! It took me some time to understand what's the actual problem but
-eventually I've understood - I've updated the changelog and a comment to
-explain a bit more and merged the patch into my tree.
+No, because overlay_base.dts is an overlay dt. I think we need an
+empty, minimal base.dtb to apply overlay_base.dtbo to.
 
-								Honza
+And then fdtoverlay needs a fix to apply overlays to the root node?
 
-> ---
-> --- a/fs/udf/inode.c	2020-12-28 20:51:29.000000000 -0600
-> +++ b/fs/udf/inode.c	2021-01-01 19:20:37.163767576 -0600
-> @@ -547,11 +547,14 @@ static int udf_do_extend_file(struct ino
->  
->  		udf_write_aext(inode, last_pos, &last_ext->extLocation,
->  				last_ext->extLength, 1);
-> -		/*
-> -		 * We've rewritten the last extent but there may be empty
-> -		 * indirect extent after it - enter it.
-> -		 */
-> -		udf_next_aext(inode, last_pos, &tmploc, &tmplen, 0);
-> +
-> +		if (new_block_bytes || prealloc_len) {
-> +			/*
-> +			 * We've rewritten the last extent but there may be empty
-> +			 * indirect extent after it - enter it.
-> +			 */
-> +			udf_next_aext(inode, last_pos, &tmploc, &tmplen, 0);
-> +		}
->  	}
->  
->  	/* Managed to do everything necessary? */
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Rob
