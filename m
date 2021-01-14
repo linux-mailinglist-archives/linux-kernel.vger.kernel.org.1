@@ -2,160 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E672F5A27
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 06:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FDE2F5A2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 06:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbhANFE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 00:04:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
+        id S1726035AbhANFG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 00:06:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726404AbhANFEz (ORCPT
+        with ESMTP id S1725890AbhANFGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 00:04:55 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE3CC061786;
-        Wed, 13 Jan 2021 21:04:15 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id my11so3368618pjb.1;
-        Wed, 13 Jan 2021 21:04:15 -0800 (PST)
+        Thu, 14 Jan 2021 00:06:55 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E072C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:06:16 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id c13so2647624pfi.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 21:06:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=U6mWvLFGrJbf1ZAi2Z/+qx3it4kX5Grq7lBXDPCBTAQ=;
-        b=hyflFSU0yOLK6mWfIREyPuITZ+sfE+VdSTjY8CRaUma8mHq3bQXJVhmmGqK5eEspMy
-         lgh07yhWGiOfCoEVdAUbvmbdpt2oXgrEC8eIJUYQLE8VECc979Mglfw0OFIqQwAx6QK1
-         XxeRB302Vxo11YCCsDGVCUFQL8y53smR0gucjkNBJDAZFqdGyOO9kGEFfTkg9y40+VB+
-         gcrJW8qbABkkX8d7SNZRUYlAdKnE57Z/icbfZzPj9RNVB5QpUf9ZLpZHRXgugiueu7fx
-         Z7WXQx++o7K9xHDpotfufejXAxiU8eqcz308AJeezxPSXTphighRHkVDS3gpeOmXHDlX
-         hgrw==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cmW33qlO71FuFS0D0i4aOF0xAQVuqZ6YYIiHQHZsXwY=;
+        b=qgzm9VdGcQzdu1NpjKCRUihyaTDBY0/J80BjgJGDtqFhGzAYBaleoIDl4HbHwEONdJ
+         jzaVo0BTrA0DqtLLlfY6GSjE/ZLKLiyM+P/aDKiMCf6ZXBVodZQKtxOV4RcdmvLLrw5j
+         6PxbfsXHvdoJy20YJjwd3hZVjO4g9QNU09vWA7/YUBKoo/PHqQ2umuL8aZvbebJ/8noQ
+         gDXrVcJAaxxZWqQZ1LbXgPV6THOUmnjc5H/A/oI1rIOCfQN5GkMTe5mAVovQdNszNhUT
+         gJaH4t8dJGh//poXe6kl+cI9fsrlR2MuWPBwNnMLJyWF4jp4PWrLXnSXc0CwrVV6g2dx
+         bJ/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=U6mWvLFGrJbf1ZAi2Z/+qx3it4kX5Grq7lBXDPCBTAQ=;
-        b=ruW0Q4aViRdvhiJG2o38WKiCpO+adn8W6k+wc2chxwSoBJjRLh3pamB3+0eYF2z1wb
-         ptFUK0HaXE7OUOkKLEMA2M/Dqq6JHZ8/gkJB8I1+w/UPVBmzL2e2oemoPce/FEJK7sfQ
-         zzGNm9uHj72FIxkrQPT7dkzpAbhn8TbJO78hFHAcX81XYb4lYSZVYSBgU71XW1vDETCH
-         CCumAR23aEDOdCpAs12nztGlfRmJQUwk/BZ568WgS7Ms4BNoC+qbDwGvxQkjQq7nau9A
-         dYODx+z7YPM/wJEgXGpe9UigrDhg0hE9Cb/8WHJ1MU2m49oavldBGtk2rv4xmsm/8ACS
-         ytgQ==
-X-Gm-Message-State: AOAM532uQFosRCdW2Gg5STfyworRd54nRtWzJLnJjISzVLu83V8U9Ovy
-        l/atHllLJMTaCoZ1eBHdcWo=
-X-Google-Smtp-Source: ABdhPJzWuRO/cEQgD9jc3DfhT5vwwcuYLHjNjq27ZyYgcftQcwMAFHBI6HvR2QzhMSsO5AsHXj6GDg==
-X-Received: by 2002:a17:902:6acb:b029:dc:2e9d:7ca with SMTP id i11-20020a1709026acbb02900dc2e9d07camr5881619plt.56.1610600655322;
-        Wed, 13 Jan 2021 21:04:15 -0800 (PST)
-Received: from b29397-desktop ([194.5.48.251])
-        by smtp.gmail.com with ESMTPSA id n1sm3974215pfu.28.2021.01.13.21.04.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 Jan 2021 21:04:14 -0800 (PST)
-Date:   Thu, 14 Jan 2021 13:04:02 +0800
-From:   Peter Chen <hzpeterchen@gmail.com>
-To:     Daewoong Kim <daewoong00.kim@lge.com>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        allen.lkml@gmail.com, gustavoars@kernel.org,
-        a.darwish@linutronix.de, romain.perier@gmail.com,
-        dvyukov@google.com, andreyknvl@google.com, mathias.nyman@intel.com,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH 1/1] usb: xhci: setup packets don't need DMA mapping
-Message-ID: <20210114050402.GA18650@b29397-desktop>
-References: <1610593147-12511-1-git-send-email-daewoong00.kim@lge.com>
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=cmW33qlO71FuFS0D0i4aOF0xAQVuqZ6YYIiHQHZsXwY=;
+        b=ohuT6C1r90BdHZe5uj+v8rAt4Je4z7syz1yeQwzP8LRqDtlF53Lvl7ruTFRYr8VlYy
+         QvyjFt4qGyhYJa3rQJ4xJ32FIr/g1T9LMdDva7oNVIymcWDgb/l6XBqLRxEF4JI/CQpZ
+         YBf1NuuRKhtrJwIzlNzuXvyNhHmTm6om/WWLtPo9KvxOjEvwu5AFwtfDM6X2c0rLXkSa
+         7FFyUpaUk6+HNUeo3W9sgKboAMS0OyUnk4R0R+0fyX1eVusqx3pxr7xjrUh354DAwm0E
+         9dvThNMywfp5WUEtDM2ZDBB4sltn5wxhME3QrvnHzTID/7k7IxqsPU/EM58E3dOa6MAs
+         DtxQ==
+X-Gm-Message-State: AOAM532D73eV7kVBwS3e3BFArH1RXNhs6WtZSQafIBn84Grh47Xg1yY4
+        kGrUTgHiYHE6fI7KN5Z+yhE=
+X-Google-Smtp-Source: ABdhPJxRjmFZ6cjSa8WMoTkgqGL0HgozPceOhzWFZlg+TecD744B6sdOb+iu7gbpu39tUvANk/+zYw==
+X-Received: by 2002:a65:690e:: with SMTP id s14mr5624504pgq.302.1610600775687;
+        Wed, 13 Jan 2021 21:06:15 -0800 (PST)
+Received: from balhae.roam.corp.google.com ([114.129.115.223])
+        by smtp.gmail.com with ESMTPSA id z3sm3931483pfb.157.2021.01.13.21.06.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 21:06:14 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        David Laight <David.Laight@aculab.com>,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v2] perf test: Fix shadow stat test for non-bash shells
+Date:   Thu, 14 Jan 2021 14:06:09 +0900
+Message-Id: <20210114050609.1258820-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610593147-12511-1-git-send-email-daewoong00.kim@lge.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-14 11:59:07, Daewoong Kim wrote:
-> DMA mapping of urb->setup_packet is not necessary for xHCI host
-> controllers. The xHCI specification says that Setup Stage TRB includes
-> whole Setup Data; therefore, urb->setup_dma will not be used in the xhci
-> HCD code.
-> 
+It was using some bash-specific features and failed to parse when
+running with a different shell like below:
 
-How about bypass map/unmap operation for xHCI control transfer directly?
+  root@kbl-ppc:~/kbl-ws/perf-dev/lck-9077/acme.tmp/tools/perf# ./perf test 83 -vv
+  83: perf stat metrics (shadow stat) test                            :
+  --- start ---
+  test child forked, pid 3922
+  ./tests/shell/stat+shadow_stat.sh: 19: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  ./tests/shell/stat+shadow_stat.sh: 24: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  ./tests/shell/stat+shadow_stat.sh: 30: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  (standard_in) 2: syntax error
+  ./tests/shell/stat+shadow_stat.sh: 36: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  ./tests/shell/stat+shadow_stat.sh: 19: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  ./tests/shell/stat+shadow_stat.sh: 24: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  ./tests/shell/stat+shadow_stat.sh: 30: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  (standard_in) 2: syntax error
+  ./tests/shell/stat+shadow_stat.sh: 36: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  ./tests/shell/stat+shadow_stat.sh: 45: ./tests/shell/stat+shadow_stat.sh: declare: not found
+  test child finished with -1
+  ---- end ----
+  perf stat metrics (shadow stat) test: FAILED!
 
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 91ab81c3fc79..0a0ab14b7638 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -1374,7 +1374,8 @@ static int xhci_map_urb_for_dma(struct usb_hcd *hcd, struct urb *urb,
+Reported-by: Jin Yao <yao.jin@linux.intel.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/tests/shell/stat+shadow_stat.sh | 30 ++++++++++------------
+ 1 file changed, 14 insertions(+), 16 deletions(-)
+
+diff --git a/tools/perf/tests/shell/stat+shadow_stat.sh b/tools/perf/tests/shell/stat+shadow_stat.sh
+index 249dfe48cf6a..ebebd3596cf9 100755
+--- a/tools/perf/tests/shell/stat+shadow_stat.sh
++++ b/tools/perf/tests/shell/stat+shadow_stat.sh
+@@ -9,31 +9,29 @@ perf stat -a true > /dev/null 2>&1 || exit 2
  
- 	xhci = hcd_to_xhci(hcd);
+ test_global_aggr()
+ {
+-	local cyc
+-
+ 	perf stat -a --no-big-num -e cycles,instructions sleep 1  2>&1 | \
+ 	grep -e cycles -e instructions | \
+ 	while read num evt hash ipc rest
+ 	do
+ 		# skip not counted events
+-		if [[ $num == "<not" ]]; then
++		if [ "$num" = "<not" ]; then
+ 			continue
+ 		fi
  
--	if (xhci_urb_suitable_for_idt(urb))
-+	if (xhci_urb_suitable_for_idt(urb) ||
-+		(usb_endpoint_xfer_control(&urb->ep->desc)))
- 		return 0;
+ 		# save cycles count
+-		if [[ $evt == "cycles" ]]; then
++		if [ "$evt" = "cycles" ]; then
+ 			cyc=$num
+ 			continue
+ 		fi
  
- 	if (xhci->quirks & XHCI_SG_TRB_CACHE_SIZE_QUIRK) {
-@@ -1389,6 +1390,9 @@ static void xhci_unmap_urb_for_dma(struct usb_hcd *hcd, struct urb *urb)
- 	struct xhci_hcd *xhci;
- 	bool unmap_temp_buf = false;
+ 		# skip if no cycles
+-		if [[ -z $cyc ]]; then
++		if [ -z "$cyc" ]; then
+ 			continue
+ 		fi
  
-+	if (usb_endpoint_xfer_control(&urb->ep->desc))
-+		return;
+ 		# use printf for rounding and a leading zero
+-		local res=`printf "%.2f" $(echo "scale=6; $num / $cyc" | bc -q)`
+-		if [[ $ipc != $res ]]; then
++		res=`printf "%.2f" $(echo "scale=6; $num / $cyc" | bc -q)`
++		if [ "$ipc" != "$res" ]; then
+ 			echo "IPC is different: $res != $ipc  ($num / $cyc)"
+ 			exit 1
+ 		fi
+@@ -42,32 +40,32 @@ test_global_aggr()
+ 
+ test_no_aggr()
+ {
+-	declare -A results
+-
+ 	perf stat -a -A --no-big-num -e cycles,instructions sleep 1  2>&1 | \
+ 	grep ^CPU | \
+ 	while read cpu num evt hash ipc rest
+ 	do
+ 		# skip not counted events
+-		if [[ $num == "<not" ]]; then
++		if [ "$num" = "<not" ]; then
+ 			continue
+ 		fi
+ 
+ 		# save cycles count
+-		if [[ $evt == "cycles" ]]; then
+-			results[$cpu]=$num
++		if [ "$evt" = "cycles" ]; then
++			results="$results $cpu:$num"
+ 			continue
+ 		fi
+ 
++		cyc=${results##* $cpu:}
++		cyc=${cyc%% *}
 +
- 	xhci = hcd_to_xhci(hcd);
+ 		# skip if no cycles
+-		local cyc=${results[$cpu]}
+-		if [[ -z $cyc ]]; then
++		if [ -z "$cyc" ]; then
+ 			continue
+ 		fi
  
- 	if (urb->num_sgs && (urb->transfer_flags & URB_DMA_MAP_SINGLE))
-> Signed-off-by: Daewoong Kim <daewoong00.kim@lge.com>
-> ---
->  drivers/usb/core/hcd.c  | 4 +++-
->  drivers/usb/host/xhci.c | 1 +
->  include/linux/usb.h     | 4 ++++
->  3 files changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-> index ad5a0f405a75..b1f9eac93f0d 100644
-> --- a/drivers/usb/core/hcd.c
-> +++ b/drivers/usb/core/hcd.c
-> @@ -1411,7 +1411,9 @@ int usb_hcd_map_urb_for_dma(struct usb_hcd *hcd, struct urb *urb,
->  	if (usb_endpoint_xfer_control(&urb->ep->desc)) {
->  		if (hcd->self.uses_pio_for_control)
->  			return ret;
-> -		if (hcd->localmem_pool) {
-> +		if (hcd->self.uses_pio_for_setup_pkt) {
-> +			;	/* do nothing */
-> +		} else if (hcd->localmem_pool) {
->  			ret = hcd_alloc_coherent(
->  					urb->dev->bus, mem_flags,
->  					&urb->setup_dma,
-> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-> index e86940571b4c..c263aee82dc0 100644
-> --- a/drivers/usb/host/xhci.c
-> +++ b/drivers/usb/host/xhci.c
-> @@ -643,6 +643,7 @@ int xhci_run(struct usb_hcd *hcd)
->  	 */
->  
->  	hcd->uses_new_polling = 1;
-> +	hcd->self.uses_pio_for_setup_pkt = 1;
->  	if (!usb_hcd_is_primary_hcd(hcd))
->  		return xhci_run_finished(xhci);
->  
-> diff --git a/include/linux/usb.h b/include/linux/usb.h
-> index 7d72c4e0713c..76600e8de414 100644
-> --- a/include/linux/usb.h
-> +++ b/include/linux/usb.h
-> @@ -430,6 +430,10 @@ struct usb_bus {
->  					 * Does the host controller use PIO
->  					 * for control transfers?
->  					 */
-> +	u8 uses_pio_for_setup_pkt;	/*
-> +					 * Does the host controller use PIO
-> +					 * for setup packets?
-> +					 */
->  	u8 otg_port;			/* 0, or number of OTG/HNP port */
->  	unsigned is_b_host:1;		/* true during some HNP roleswitches */
->  	unsigned b_hnp_enable:1;	/* OTG: did A-Host enable HNP? */
-> -- 
-> 2.17.1
-> 
-
+ 		# use printf for rounding and a leading zero
+-		local res=`printf "%.2f" $(echo "scale=6; $num / $cyc" | bc -q)`
+-		if [[ $ipc != $res ]]; then
++		res=`printf "%.2f" $(echo "scale=6; $num / $cyc" | bc -q)`
++		if [ "$ipc" != "$res" ]; then
+ 			echo "IPC is different for $cpu: $res != $ipc  ($num / $cyc)"
+ 			exit 1
+ 		fi
 -- 
-
-Thanks,
-Peter Chen
+2.30.0.284.gd98b1dd5eaa7-goog
 
