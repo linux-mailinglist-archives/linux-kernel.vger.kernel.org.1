@@ -2,149 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DAF62F634D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D39DD2F6356
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729196AbhANOia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:38:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29346 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729143AbhANOi3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:38:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610635023;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4up8iL2UjGLCCTseIriUTgakG+YpC7Jv5oAbQ6UAgWE=;
-        b=F/+B4wigg6MDGbTT0PFOOQC5oVTdnCUp+RlzS+OQxF6gpT/bTO1VPdBc7GcjDDwDgDyW84
-        nOTTiw+mncNR5pbZDNKQodFrsVp+xdjdOi98fBuJZ7cw9GlKg9XM4DnyMa8heuJ49f5gCp
-        nJxBArSJMpN46cay6wPz4ZFvQVpfTeE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-211-BNY-NKKPMtmOnee4wvRguA-1; Thu, 14 Jan 2021 09:36:59 -0500
-X-MC-Unique: BNY-NKKPMtmOnee4wvRguA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729115AbhANOlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:41:08 -0500
+Received: from ms.lwn.net ([45.79.88.28]:58396 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727645AbhANOlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:41:07 -0500
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 413841DDE4;
-        Thu, 14 Jan 2021 14:36:57 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CE3EA5D9E2;
-        Thu, 14 Jan 2021 14:36:52 +0000 (UTC)
-Date:   Thu, 14 Jan 2021 08:36:50 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH] Documentation: livepatch: document reliable stacktrace
-Message-ID: <20210114143650.nsqhejalpk4k5qfl@treble>
-References: <20210113165743.3385-1-broonie@kernel.org>
- <20210113192735.rg2fxwlfrzueinci@treble>
- <20210114115418.GB2739@C02TD0UTHF1T.local>
+        by ms.lwn.net (Postfix) with ESMTPSA id C5F106139;
+        Thu, 14 Jan 2021 14:40:26 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net C5F106139
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1610635227; bh=qRURchjLTP1weg90nrfIXrzmaVl3oLNx+1rbmhDEPaY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HXuN4/253F0cmvtyKg2ri1O3gYGZsIA701UezYuLGaeoW3abk/V5QNB/DwAq1sqJa
+         Rsk89g+5eed750UTMB8r8QJ2Szgh0TwHWvxi4RCKA+4NY5bbS592440c75jdHslYJk
+         pcsyeD+tbMUMHCCPlDd8HWJaPhG8r3zylKPRFaexu8Jy1M+JcgGe3TWSd0uhYUM47B
+         Koj0ysm0Rd0QKV0PbNPIWjkEpYTOy5wlCiVYA2BStEjoAzm5fe2rbbin060I5t5Cgd
+         HAyc4xu4tibayPlcTArxjIQ2LrYlv7oQszYaNqTf5DzFTNEP7JHfb8ja50kX19SAUi
+         9MUPhr23ZNf/Q==
+Date:   Thu, 14 Jan 2021 07:40:25 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Harry Wei <harryxiyou@gmail.com>,
+        "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/10] doc/zh_CN: fix Sphinx errors
+Message-ID: <20210114074025.44b29891@lwn.net>
+In-Reply-To: <ad0badc92b4cda71384951e1e501e1babb6d8d4f.1610610444.git.mchehab+huawei@kernel.org>
+References: <cover.1610610444.git.mchehab+huawei@kernel.org>
+        <ad0badc92b4cda71384951e1e501e1babb6d8d4f.1610610444.git.mchehab+huawei@kernel.org>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210114115418.GB2739@C02TD0UTHF1T.local>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 11:54:18AM +0000, Mark Rutland wrote:
-> On Wed, Jan 13, 2021 at 01:33:13PM -0600, Josh Poimboeuf wrote:
-> > On Wed, Jan 13, 2021 at 04:57:43PM +0000, Mark Brown wrote:
-> > > From: Mark Rutland <mark.rutland@arm.com>
-> > > +There are several ways an architecture may identify kernel code which is deemed
-> > > +unreliable to unwind from, e.g.
-> > > +
-> > > +* Using metadata created by objtool, with such code annotated with
-> > > +  SYM_CODE_{START,END} or STACKFRAME_NON_STANDARD().
-> > 
-> > I'm not sure why SYM_CODE_{START,END} is mentioned here, but it doesn't
-> > necessarily mean the code is unreliable, and objtool doesn't treat it as
-> > such.  Its mention can probably be removed unless there was some other
-> > point I'm missing.
-> > 
-> > Also, s/STACKFRAME/STACK_FRAME/
+On Thu, 14 Jan 2021 08:53:36 +0100
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+
+> The whitespacing with some translations are weird,
+> which causes errors like this one:
 > 
-> When I wrote this, I was under the impression that (for x86) code marked
-> as SYM_CODE_{START,END} wouldn't be considered as a function by objtool.
-> Specifically SYM_FUNC_END() marks the function with SYM_T_FUNC whereas
-> SYM_CODE_END() marks it with SYM_T_NONE, and IIRC I thought that objtool
-> only generated ORC for SYM_T_FUNC functions, and hence anything else
-> would be considered not unwindable due to the absence of ORC.
+> 	devel/v4l/docs/Documentation/translations/zh_CN/mips/ingenic-tcu.rst:61: WARNING: Malformed table.
+> 	Text in column margin in table line 6.
 > 
-> Just to check, is that understanding for x86 correct, or did I get that
-> wrong?
-
-Doh, I suppose you read the documentation ;-)
-
-I realize your understanding is pretty much consistent with
-tools/objtool/Documentation/stack-validation.txt:
-
-2. Conversely, each section of code which is *not* callable should *not*
-   be annotated as an ELF function.  The ENDPROC macro shouldn't be used
-   in this case.
-
-   This rule is needed so that objtool can ignore non-callable code.
-   Such code doesn't have to follow any of the other rules.
-
-But this statement is no longer true:
-
-  **This rule is needed so that objtool can ignore non-callable code.**
-
-[ and it looks like the ENDPROC reference is also out of date ]
-
-Since that document was written, around the time ORC was written we
-realized objtool shouldn't ignore SYM_CODE after all.  That way we can
-get full coverage for ORC (including interrupts/exceptions), as well as
-some of the other validations like retpoline, uaccess, noinstr, etc.
-
-Though it's still true that SYM_CODE doesn't have to follow the
-function-specific rules, e.g. frame pointers.
-
-So now objtool requires that it be able to traverse and understand *all*
-code, otherwise it will spit out "unreachable instruction" warnings.
-But since SYM_CODE isn't a normal callable function, objtool doesn't
-know to interpret it directly.  Therefore all SYM_CODE must be reachable
-by objtool in some other way:
-
-- either indirectly, via a jump from a SYM_FUNC; or
-
-- via an UNWIND_HINT
-
-(And that's true for both ORC and frame pointers.)
-
-If you look closely at arch/x86/entry/entry_64.S you should be able to
-see that's the case.
-
-> If that's right, it might be worth splitting this into two points, e.g.
+> 	===========         =====
+> 	时钟                drivers/clk/ingenic/tcu.c
+> 	中断                drivers/irqchip/irq-ingenic-tcu.c
+> 	定时器              drivers/clocksource/ingenic-timer.c
+> 	OST                 drivers/clocksource/ingenic-ost.c
+> 	脉冲宽度调制器      drivers/pwm/pwm-jz4740.c
+> 	看门狗              drivers/watchdog/jz4740_wdt.c
+> 	===========         =====
 > 
-> | * Using metadata created by objtool, with such code annotated with
-> |   STACKFRAME_NON_STANDARD().
-> |
-> |
-> | * Using ELF symbol attributes, with such code annotated with
-> |   SYM_CODE_{START,END}, and not having a function type.
-> 
-> If that's wrong, I suspect there are latent issues here?
+> Fix it.
 
-For ORC, UNWIND_HINT_EMPTY is used to annotate that some code is
-non-unwindable.  (Note I have plans to split that into UNWIND_HINT_ENTRY
-and UNWIND_HINT_UNDEFINED.)
+This one has already been taken care of.
 
-For frame pointers, the hints aren't used, other than by objtool to
-follow the code flow as described above.  But objtool doesn't produce
-any metadata for the FP unwinder.  Instead the FP unwinder makes such
-determinations about unwindability at runtime.
+Thanks,
 
--- 
-Josh
-
+jon
