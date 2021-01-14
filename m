@@ -2,186 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D173D2F5E14
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BBB2F5E19
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727663AbhANJwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:52:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbhANJwS (ORCPT
+        id S1728332AbhANJx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:53:29 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2342 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728182AbhANJx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:52:18 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2445BC061573
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 01:51:48 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id b64so6671199qkc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 01:51:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yxYQK6YSchj/5tz12GdK3iWKS925woovB4KSStjvLsw=;
-        b=dsg6gCEha6NEUyRN9p08CkWxSkPALUSogf8aqNruAiqnDuuKmt641bkFtzqy6MjXdg
-         AXK8e7MqD328P/iDK6IWSFzZTGFQKhtJjMRcWGxoeKkEUs+pCP9QE3CH/+HB1FWiZsE0
-         DALdXWC5xA8eEBGE8g50iPKMPX1jhcb//M/UFHJ07LSv7rRvsHjufFuU7U4tF8EPcqjp
-         19KeStMKA1XLW2IsGotHD/KavpW4hSjfxFtxDng76gk0++/cc+UBDW/jPhVMaDygmtqZ
-         dPdfqgFxJkbRdS9HZfOodzcBuI4+7mViC5RQZD1si6vPb+R3eOHaNDZ00YCtDWIRsC0y
-         4zWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yxYQK6YSchj/5tz12GdK3iWKS925woovB4KSStjvLsw=;
-        b=mB0CSnuE8aXG6mg1Jv1FaOMvu0cX+VtKkvpn50rmqyyeKwszSavv+XcFulNFb95TO8
-         DSkPU01b1a+XoYJ37Ml2M93aw4uF6AKEUv0UJg6PEBzi9xOV4OFP5enG2qr2qjTaKivU
-         mFI8bHT3qEiJuRJtoiMAm6Uue15s8Z99NPf1/8eQHY6chNwNAFp9FJ6dDkxK1bCFX9DG
-         LeVKDDE+nA7cHk/WruwyXcL6pW5A2bZHLdaBaNrqjVkNQRI51o5RJ84ug3KwUrYx6vAn
-         3ZaCModwsExUbfcI8g/kyhq7mgy8eMQCA5a/G6UdYDw67BIngOwhQ4trMMIlbtTTcxHG
-         L61Q==
-X-Gm-Message-State: AOAM532yMImJ5r2l/1DTyaZnPe5xEED8isAe8mHToMXqbBo0A7KlPbgV
-        Vwta+Kn7ag9Zh/M5zi96lQUsUf7xVkrIZiwqQXa1Aw==
-X-Google-Smtp-Source: ABdhPJzJYr2OFcAcpM5em2Bemn9ria+MS8gS8XOJONyd1jXl3RKfI4/K+dYO4Fe1ZrIuo8o+5ozg0uMrvLEeAPQK3EA=
-X-Received: by 2002:a37:a747:: with SMTP id q68mr6347636qke.352.1610617907047;
- Thu, 14 Jan 2021 01:51:47 -0800 (PST)
+        Thu, 14 Jan 2021 04:53:28 -0500
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DGffy30TCz67ZsW;
+        Thu, 14 Jan 2021 17:49:46 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 14 Jan 2021 10:52:46 +0100
+Received: from [10.210.171.141] (10.210.171.141) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 14 Jan 2021 09:52:45 +0000
+Subject: Re: [PATCH v2 00/19] scsi: libsas: Remove in_interrupt() check
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+CC:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        <linux-scsi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>
+References: <20210112110647.627783-1-a.darwish@linutronix.de>
+ <8683f401-29b6-4067-af51-7b518ad3a10f@huawei.com> <X/2h0yNqtmgoLIb+@lx-t490>
+ <e9bc0c89-a4d6-1e5b-793d-3c246882210e@huawei.com> <X/3dUkPCC1SrLT4m@lx-t490>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <20e1034c-98af-a000-65ed-ae5f0e7a758f@huawei.com>
+Date:   Thu, 14 Jan 2021 09:51:35 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <20210113091657.1456216-1-glider@google.com> <20210113091657.1456216-3-glider@google.com>
- <20210113160612.32f8b67494521ce23cc9cba5@linux-foundation.org>
-In-Reply-To: <20210113160612.32f8b67494521ce23cc9cba5@linux-foundation.org>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 14 Jan 2021 10:51:34 +0100
-Message-ID: <CAG_fn=Uazu=RTW_-TizPU89KpHUR6akeTSvfhxJVJDSGuHJHLA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] lib: add error_report_notify to collect debugging
- tools' reports
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <X/3dUkPCC1SrLT4m@lx-t490>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.171.141]
+X-ClientProxiedBy: lhreml714-chm.china.huawei.com (10.201.108.65) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 1:06 AM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Wed, 13 Jan 2021 10:16:55 +0100 Alexander Potapenko <glider@google.com> wrote:
->
-> > With the introduction of various production error-detection tools, such as
-> > MTE-based KASAN and KFENCE, the need arises to efficiently notify the
-> > userspace OS components about kernel errors. Currently, no facility exists
-> > to notify userspace about a kernel error from such bug-detection tools.
-> > The problem is obviously not restricted to the above bug detection tools,
-> > and applies to any error reporting mechanism that does not panic the
-> > kernel; this series, however, will only add support for KASAN and KFENCE
-> > reporting.
-> >
-> > All such error reports appear in the kernel log. But, when such errors
-> > occur, userspace would normally need to read the entire kernel log and
-> > parse the relevant errors. This is error prone and inefficient, as
-> > userspace needs to continuously monitor the kernel log for error messages.
-> > On certain devices, this is unfortunately not acceptable. Therefore, we
-> > need to revisit how reports are propagated to userspace.
-> >
-> > The library added, error_report_notify (CONFIG_ERROR_REPORT_NOTIFY),
-> > solves the above by using the error_report_start/error_report_end tracing
-> > events and exposing the last report and the total report count to the
-> > userspace via /sys/kernel/error_report/last_report and
-> > /sys/kernel/error_report/report_count.
-> >
-> > Userspace apps can call poll(POLLPRI) on those files to get notified about
-> > the new reports without having to watch dmesg in a loop.
->
-> It would be nice to see some user-facing documentation for this, under
-> Documentation/.  How to use it, what the shortcomings are, etc.
+On 12/01/2021 17:33, Ahmed S. Darwish wrote:
+> On Tue, Jan 12, 2021 at 04:00:57PM +0000, John Garry wrote:
+> ...
+>> I boot-tested on my machines which have hisi_sas v2 and v3 hw, and it's ok.
+>> I will ask some guys to test a bit more.
+>>
+> Thanks a lot!
+> 
+>> And generally the changes look ok. But I just have a slight concern that we
+>> don't pass the gfp_flags all the way from the origin caller.
+>>
+>> So we have some really long callchains, for example:
+>>
+>> host.c: sci_controller_error_handler(): atomic, irq handler     (*)
+>> OR host.c: sci_controller_completion_handler(), atomic, tasklet (*)
+>>    -> sci_controller_process_completions()
+>>      -> sci_controller_unsolicited_frame()
+>>        -> phy.c: sci_phy_frame_handler()
+>>          -> sci_change_state(SCI_PHY_SUB_AWAIT_SAS_POWER)
+>>            -> sci_phy_starting_await_sas_power_substate_enter()
+>>              -> host.c: sci_controller_power_control_queue_insert()
+>>                -> phy.c: sci_phy_consume_power_handler()
+>>                  -> sci_change_state(SCI_PHY_SUB_FINAL)
+>>          -> sci_change_state(SCI_PHY_SUB_FINAL)
+>>      -> sci_controller_event_completion()
+>>        -> phy.c: sci_phy_event_handler()
+>>          -> sci_phy_start_sata_link_training()
+>>            -> sci_change_state(SCI_PHY_SUB_AWAIT_SATA_POWER)
+>>              -> sci_phy_starting_await_sata_power_substate_enter
+>>                -> host.c: sci_controller_power_control_queue_insert()
+>>                  -> phy.c: sci_phy_consume_power_handler()
+>>                    -> sci_change_state(SCI_PHY_SUB_FINAL)
+>>
+>> So if someone rearranges the code later, adds new callchains, etc., it could
+>> be missed that the context may have changed than what we assume at the
+>> bottom. But then passing the flags everywhere is cumbersome, and all the
+>> libsas users see little or no significant changes anyway, apart from a
+>> couple.
+>>
+> The deep call chains like the one you've quoted are all within the isci
+> Intel driver (patches #5 => #7), due to the*massive*  state transitions
+> that driver has. But as the commit logs of these three patches show,
+> almost all of such transitions happened under atomic context anyway and
+> GFP_ATOMIC was thus used.
+> 
+> The GFP_KERNEL call-chains were all very simple: a workqueue, functions
+> already calling msleep() or wait_event_timeout() two or three lines
+> nearby, and so on.
+> 
+> All the other libsas clients (that is, except isci) also had normal call
+> chains that were IMHO easy to follow.
 
-Good point, will do.
+To me, the series looks fine. Well, the end result - I didn't go through 
+patch by patch. So:
 
-> For instance...  what happens when userspace is slow reading
-> /sys/kernel/error_report/last_report?  Does that file buffer multiple
-> reports?  Does the previous one get overwritten?  etc.  Words on how
-> this obvious issue is handled...
+Reviewed-by: John Garry <john.garry@huawei.com>
 
-Yes, there can be issues with overwriting, and the recommended way to
-handle them would be to check the value in
-/sys/kernel/error_report/report_count before and after reading the
-report.
+I'm still hoping some guys are testing a bit for me, but I'll let you 
+know if any problem.
 
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -209,6 +209,20 @@ config DEBUG_BUGVERBOSE
-> >         of the BUG call as well as the EIP and oops trace.  This aids
-> >         debugging but costs about 70-100K of memory.
-> >
-> > +config ERROR_REPORT_NOTIFY
-> > +     bool "Expose memory error reports to the userspace"
->
-> There's really nothing "memory" specific about this?  Any kernel
-> subsystem could use it?
+As an aside, your analysis showed some quite poor usage of spinlocks in 
+some drivers, specifically grabbing a lock and then calling into a depth 
+of 3 or 4 functions.
 
-Indeed. Perhaps it's better to emphasize "production" here, because
-users of debugging tools are more or less happy with dmesg output.
-
->
-> > +     depends on TRACING
-> > +     help
-> > +       When enabled, captures error reports from debugging tools (such as
-> > +       KFENCE or KASAN) using console tracing, and exposes reports in
-> > +       /sys/kernel/error_report/: the file last_report contains the last
-> > +       report (with maximum report length of PAGE_SIZE), and report_count,
-> > +       the total report count.
-> > +
-> > +       Userspace programs can call poll(POLLPRI) on those files to get
-> > +       notified about the new reports without having to watch dmesg in a
-> > +       loop.
->
-> So we have a whole new way of getting debug info out of the kernel.  I
-> fear this will become a monster.  And anticipating that, we should make
-> darn sure that the interface is right, and is extensible.
-
-Let me elaborate a bit on the problem we are trying to solve here.
-It is specific to Android, but other Linux-based systems may require
-something similar.
-There's a userspace daemon that collects kernel/userspace crashes from
-the device if its owner has opted into that, and we want that daemon
-to also collect non-fatal error reports.
-
-There are several issues with that:
- - there is currently no way to synchronously notify the userspace
-about an error, and without that the daemon will have to actively
-monitor the kernel log (or some other file, e.g. /proc/kernel/tainted
-for certain strings;
-- once we figure out there is an error report available, the daemon
-will have to find its beginning and end, and also filter out the lines
-that do not belong to that report;
- - this all requires letting that daemon see the whole dmesg output,
-which may contain sensitive data accidentally printed by the kernel.
-
-So, first of all, our solution had to provide some poll()-based
-interface to avoid reading files in a loop, and that interface should
-trigger every time an error report is printed.
-Adding ftrace tracepoints to every tool at the points where reports
-start/end is perhaps least invasive, and also allows multiple
-subscribers (plus free tracing!).
-Then, since the notification library was already in the business of
-trace probes, we thought it makes sense to capture the whole report,
-assuming that every dmesg line from the same task/cpu between the
-report probes belongs to the report.
-That drastically reduces the amount of data the userspace daemon has
-access to (only the report instead of the whole dmesg), and removes
-the need of active polling.
-
-A potential pinch-point is the report size, which cannot exceed 4K if
-we want it to live in sysfs.
-It turned out certain reports didn't fit under that limit when taken
-as-is, but stripping away the timestamps and task IDs printed by
-CONFIG_PRINTK_CALLER saved us 1.5-2K in those cases.
-
-Given that the information we expose is a subset of what dmesg
-provides, I wouldn't call it a "whole new way" though.
-Existing users will probably still stick to dmesg unless they want to
-be notified of errors.
+Thanks,
+John
