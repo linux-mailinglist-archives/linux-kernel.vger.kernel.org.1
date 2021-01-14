@@ -2,101 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E93B2F5968
+	by mail.lfdr.de (Postfix) with ESMTP id 845612F5969
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbhANDeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 22:34:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726705AbhANDeO (ORCPT
+        id S1727021AbhANDer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 22:34:47 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:56646 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725902AbhANDer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 22:34:14 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AE1C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 19:33:28 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id c22so2823163pgg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 19:33:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=M5N5hogdb1VE5N+GuBnvP2hTDvEwQA42F7hxBNyZMt4=;
-        b=FEqCHqMKatXUgxZo1m9x9XWMmJmnZLrMOpBLIkbng24V512Il3r0ZQNAi5YHI/s2R1
-         jau3yFgUJELL5UKibd7Q+RdwJfmPO6VUTfxHGI1Fvo3b+OXTuqIXNOKJ9EuXHdWcpsfP
-         Z56E1Z56qn5TiRUlQPzBOzUmZlpSLF9suPKq54/u2GWIMt6H5b/3wla+uMVvIU6MUs2N
-         RhYeiH4AADdHT+10avtmDmWydRpeILPcsagg4Dh7RPBLV5kR0KnjmzyBt1eyMABFzrq6
-         4Q0IpMrPCVk9hdMawRcOc1y7AaS3gQtK4BSbUAZzVimkJYuwmS2xjK5oW7wu4y5RUAkN
-         QmqA==
+        Wed, 13 Jan 2021 22:34:47 -0500
+Received: by mail-io1-f71.google.com with SMTP id m2so6270345iow.23
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 19:34:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=M5N5hogdb1VE5N+GuBnvP2hTDvEwQA42F7hxBNyZMt4=;
-        b=FD6FE/G8RLqTRwZTUnYuLjQPbBfcfh+9eVLanTp0d00nbAKIRLVTXkeerXA4rs2r30
-         7NRxh9HxNhFiXyPCdYdxuIxTh4cW2Uh4MlnocdeLSjOMcbLl76OcmR7jY5G2h4yK3EzN
-         z3tCZaOSeqwIjmqdHVaUv+/yc08X5nkMJEFopLe/NWv8O6tmHfNj3d13wTOieUHGZpux
-         i4az17lChKdk4cqofNlAKGWYCsyzHCLR7e66/jANChHe2xrgLKK/cJs2NFnb73dkXXlF
-         V48NXvwAkICt4Gv24Ujd0iENtmWY5AuTPkrMUCLdRHvXhCRcbXCYiOKADpNlC5r24e51
-         nX2g==
-X-Gm-Message-State: AOAM5330aor080oLb33IU+0of1Bz66SHPIytNQ82Jadz2ZOO0TBlL9mL
-        YkS+LwzEYdnOd23kdVtEjKg=
-X-Google-Smtp-Source: ABdhPJwiK1AxhqNUts0GEcLWi4jomLrxuNv7CTGtOmpeAc78Pv+9YmYaaJopyRQaoE1OdGlIACQ6og==
-X-Received: by 2002:a63:f512:: with SMTP id w18mr5354005pgh.154.1610595208352;
-        Wed, 13 Jan 2021 19:33:28 -0800 (PST)
-Received: from localhost ([100.87.84.221])
-        by smtp.gmail.com with ESMTPSA id o129sm3611513pfg.66.2021.01.13.19.33.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 19:33:27 -0800 (PST)
-Date:   Thu, 14 Jan 2021 12:33:10 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: madvise(MADV_REMOVE) deadlocks on shmem THP
-Message-ID: <X/+7dkbhNtAVV+wd@google.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=f22n4Aak+hB+/IuxcnatE3srzcBWoURgUFOb64w1dNE=;
+        b=GH7UgPpypuYPYOJkbx79zX5nj0HwgTbCDOPgiH5JVP6kshBAMNyNW5gSGwc+RMGhyQ
+         w5kFgKMrhetl8Qm0uk2PIXJCPF/lY+82lTQKfh+ZYHFhkrjxKkuCvdKUr5nuqtF0if7g
+         rJHRaaX4BAaRHJ4yM5qMg9BEjms2RU5nGne2WRan0VrbtUJRWdW8FdwAzYwug6l40CdH
+         yEbWcILSJlUlApkpIB6hmec0N1qovbP55Y+yFOTYDhFrK6g+03vRIrGHv/6711ZyOGwW
+         a6yIohU88ox34nLXDkn3snM8etKtdPmoKarzkiNHgNcCfICAARcWCE2ZO79Shj2YYj1E
+         q9Rg==
+X-Gm-Message-State: AOAM5339b54uh1yPi9cfQoMXlJaMf41/gGDGX2hI1BLmFaG8rKu04D5K
+        AwxLLamTa/oP16N0Utel1lWc+PIAjkQzLPUUY0+kroQUagfn
+X-Google-Smtp-Source: ABdhPJzVfIo14TqfHwIBnkwUXlFkwsfabGz8IMixGLGwcg0hqqrLwUBpRANSVcJW4gHGkgBcAvUDMpUgixw3kbXug/YrfOIQujBq
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Received: by 2002:a05:6638:2243:: with SMTP id m3mr4942918jas.115.1610595246502;
+ Wed, 13 Jan 2021 19:34:06 -0800 (PST)
+Date:   Wed, 13 Jan 2021 19:34:06 -0800
+In-Reply-To: <000000000000484e4b05b3bbdcf4@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008b7b2405b8d3ed48@google.com>
+Subject: Re: WARNING in put_i2c_dev
+From:   syzbot <syzbot+0a05df8ed151f2ed3a05@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        rafael@kernel.org, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+syzbot suspects this issue was fixed by commit:
 
-We are running into lockups during the memory pressure tests on our
-boards, which essentially NMI panic them. In short the test case is
+commit c318840fb2a42ce25febc95c4c19357acf1ae5ca
+Author: Alan Stern <stern@rowland.harvard.edu>
+Date:   Wed Dec 30 16:20:44 2020 +0000
 
-- THP shmem
-    echo advise > /sys/kernel/mm/transparent_hugepage/shmem_enabled
+    USB: Gadget: dummy-hcd: Fix shift-out-of-bounds bug
 
-- And a user-space process doing madvise(MADV_HUGEPAGE) on new mappings,
-  and madvise(MADV_REMOVE) when it wants to remove the page range
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14cddcaf500000
+start commit:   2c85ebc5 Linux 5.10
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8aff533d6c635e6
+dashboard link: https://syzkaller.appspot.com/bug?extid=0a05df8ed151f2ed3a05
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a47b7f500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=166f12cb500000
 
-The problem boils down to the reverse locking chain:
-	kswapd does
+If the result looks correct, please mark the issue as fixed by replying with:
 
-		lock_page(page) -> down_read(page->mapping->i_mmap_rwsem)
+#syz fix: USB: Gadget: dummy-hcd: Fix shift-out-of-bounds bug
 
-	madvise() process does
-
-		down_write(page->mapping->i_mmap_rwsem) -> lock_page(page)
-
-
-
-CPU0                                                       CPU1
-
-kswapd                                                     vfs_fallocate()
- shrink_node()                                              shmem_fallocate()
-  shrink_active_list()                                       unmap_mapping_range()
-   page_referenced() << lock page:PG_locked >>                unmap_mapping_pages()  << down_write(mapping->i_mmap_rwsem) >>
-    rmap_walk_file()                                           zap_page_range_single()
-     down_read(mapping->i_mmap_rwsem) << W-locked on CPU1>>     unmap_page_range()
-      rwsem_down_read_failed()                                   __split_huge_pmd()
-       __rwsem_down_read_failed_common()                          __lock_page()  << PG_locked on CPU0 >>
-        schedule()                                                 wait_on_page_bit_common()
-                                                                    io_schedule()
-
-	-ss
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
