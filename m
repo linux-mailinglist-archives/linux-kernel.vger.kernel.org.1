@@ -2,92 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71EC2F5940
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 204552F5954
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:32:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbhANDW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 22:22:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34578 "EHLO
+        id S1728160AbhANDYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 22:24:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727422AbhANDW5 (ORCPT
+        with ESMTP id S1727155AbhANDX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 22:22:57 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7079DC0617B1;
-        Wed, 13 Jan 2021 19:22:15 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id g15so2823081pgu.9;
-        Wed, 13 Jan 2021 19:22:15 -0800 (PST)
+        Wed, 13 Jan 2021 22:23:58 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34434C0617A2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 19:23:18 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id u11so4890715ljo.13
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 19:23:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=CTVTbkumnoEU1uD8jeXUwaSLTKMW7UIby0+r1GJ/mQU=;
-        b=HOKsM+IQEJkdY4froDriO6Lqn1yDmr/mfX8mE4/Z7gP6r6Zmkd8EYzgRUUe0zIufFI
-         wq/r81L7aMknI8S1OYLKVTHQA5mz7V0Uzf1NLSOX+exGPoreIjj4HxKMpVz05Ml4IVSv
-         AG4fmn1zWcfyS/OTpGDqQfuMmryj9rXRJzObpf+0zqSAJBCJVvNjDTsH8yLy/3QZ6tIw
-         S9MlbbILOAvo9wOYTp9y/3LM6HKE77wbKn1oGsUiQ7qgFlhLY5roMf0UXZh4cMTtOnOw
-         mjX0Bxjb1VJSwZY6NF72hk4XGU/q67zRcL+4at/2aD/ZsfA8bNR24nLfVPRC2NeRIKj1
-         8F/w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FEfB7z2Pg3tEbsUuKrEZpLqRqQiSI7cwvfIpRmMaPsg=;
+        b=ERDheW9rkL9QnlcBk+gjMEWNicKOrODmm03n00UhTyuOanz3yIf+tVQ2IhyWO8CwON
+         GKpMHZiqMwxQyAHoTp5gWGJ9T/9Cv+QqTqzD/Q0j7l6WJ3FK2LOR2lYJleXMUi/HaPtq
+         hAo0tLKKn2Q7t/UBKM4+ZCJT32+rgjpcSTro39e8R9WGksf2PWbqS4pLDiAzVnHdQwFS
+         cKqbNI76NaFU69m3LsyPmjdP3CzRq2oPRT9ho+fOAmBKu1eGIxoQiB5laGLfmKCFbLTh
+         A+1wPcGioLznXyUUcakh1ovdoJ4a55uHhp/zcRprrvdM7164eLO9rwAW7zpziuw26kme
+         wiUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=CTVTbkumnoEU1uD8jeXUwaSLTKMW7UIby0+r1GJ/mQU=;
-        b=cgdqgOIb4ejUX6etWQEmByf4vjjpIQYtOOHiOqZyHdjT+23XcfqsrtnWX9+E/9PKnv
-         FYvkQ6B2xi9QLkXBIBDmv/o/YN460x9PQKll3Cqb1yn5NdDnJ4uRJtBQ6rNTFl/g5+wq
-         cMkijbxvtwmIqtqZevlkbdd/hGSWKj9U2Vk6hE5N13PigCOiv9QhBteY5eNuKk3DGZoD
-         QGCk8DNbT18J2uuZH7IEghmEFcWPWHASOnbXRfuNV/ZnjTPA9LgfEiqnz0znNTqVTXX3
-         dGIWPd8mTS/Jn0VJhsNkmcOjGPaaaSJ6BRd0akZsTuQyBjOi6SVx8Q70NnpPRAaycDN3
-         OFcw==
-X-Gm-Message-State: AOAM532Zg6kCAARgwVruRIKPiDRUK7JJ3MYytHbFgilXedmhlzYZmBO9
-        3GAb1VQJmIdogQXSOebfl5E=
-X-Google-Smtp-Source: ABdhPJwxTugB+JHU93MxVdDPdyHO33wJrVeX/cP1LOwxXHHk52vfGUBghXOxmxVWZv3+pNrVbvCjGA==
-X-Received: by 2002:aa7:81d6:0:b029:19e:2987:7465 with SMTP id c22-20020aa781d60000b029019e29877465mr5425258pfn.29.1610594534941;
-        Wed, 13 Jan 2021 19:22:14 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:54a])
-        by smtp.gmail.com with ESMTPSA id h17sm3742463pfo.220.2021.01.13.19.22.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 19:22:14 -0800 (PST)
-Date:   Wed, 13 Jan 2021 19:22:11 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf-next v6 00/11] Atomics for eBPF
-Message-ID: <20210114032211.ynhesnthmsrfotfv@ast-mbp.dhcp.thefacebook.com>
-References: <20210112154235.2192781-1-jackmanb@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FEfB7z2Pg3tEbsUuKrEZpLqRqQiSI7cwvfIpRmMaPsg=;
+        b=X9L850Arv1WUEj9TzdM9W5sjrU3qlNxozsAV9zcyZpqlMZHCOKhwu4ybp3RccFEqMn
+         xUyR1LUt0YtdZ4S1Qs84DiEOcy+30tjbySVfLkf3+vKyoYfQWTVNLzErQsL2cptLwOAe
+         UDVG6tggKi2w1ABrnnhRkdEC527Mt9cirKX4L2dFc9GEcX+U462MfVOMGOX5GaY0st88
+         5lb4PbvIw8AzGXvi70J5Ge70Cz56QzyGR7Tc+GnejGca7yifmH0G+Cw2DkUz8nM5I/Cp
+         28wQTkFZyg/OhDpehDdCuWqRpds/Gc8bNXf5NZ26Mq1gqOWT4/WQglZHMUePGBRPwFbf
+         OgJA==
+X-Gm-Message-State: AOAM531XtbYg7uLZ18I25HQSi8w8Fd2fSq8cIgDArMg08wS8meBDiPkQ
+        YE+FpElwbUeRCSdbzOVW4a39ckvkqJeJK2HGgNBL9w==
+X-Google-Smtp-Source: ABdhPJzfRhrd1kMrfF3j3pfT5UxcaTNs6jz7zJ40MKXw+hJC73ejwL+h4IUubxMUXNGPVLdYIr3TdisY3PE9ZGevcmg=
+X-Received: by 2002:a2e:593:: with SMTP id 141mr2267937ljf.86.1610594596352;
+ Wed, 13 Jan 2021 19:23:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210112154235.2192781-1-jackmanb@google.com>
+References: <20201209192839.1396820-1-mic@digikod.net>
+In-Reply-To: <20201209192839.1396820-1-mic@digikod.net>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 14 Jan 2021 04:22:50 +0100
+Message-ID: <CAG48ez3DE8xgr_etVGV5eNjH2CXXo9MR7jTcu+_LCkJUchLXcQ@mail.gmail.com>
+Subject: Re: [PATCH v26 00/12] Landlock LSM
+To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 03:42:24PM +0000, Brendan Jackman wrote:
-> Happy new year everyone, and thanks once again for the reviews.
-> 
-> There's still one unresolved review comment from John[3] but I don't
-> think it needs to block the patchset as it stands, it can be a
-> separate patch. Hope that's OK.
-> 
-> Differences from v5->v6 [1]:
-> 
-> * Carried Björn Töpel's ack for RISC-V code, plus a couple more acks from
->   Yonhgong.
-> 
-> * Doc fixups.
-> 
-> * Trivial cleanups.
+On Wed, Dec 9, 2020 at 8:28 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> w=
+rote:
+> This patch series adds new built-time checks, a new test, renames some
+> variables and functions to improve readability, and shift syscall
+> numbers to align with -next.
 
-Please fix riscv build and resubmit.
-I think that's the only outstanding issue left.
+Sorry, I've finally gotten around to looking at v26 - I hadn't
+actually looked at v25 either yet. I think there's still one remaining
+small issue in the filesystem access logic, but I think that's very
+simple to fix, as long as we agree on what the expected semantics are.
+Otherwise it basically looks good, apart from some typos.
+
+I think v27 will be the final version of this series. :) (And I'll try
+to actually look at that version much faster - I realize that waiting
+for code reviews this long sucks.)
