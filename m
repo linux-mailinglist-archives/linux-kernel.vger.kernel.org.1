@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440522F676F
+	by mail.lfdr.de (Postfix) with ESMTP id B0B052F6770
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbhANRVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:21:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45736 "EHLO
+        id S1727290AbhANRXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:23:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725935AbhANRVw (ORCPT
+        with ESMTP id S1725961AbhANRXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:21:52 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2DBAC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:21:11 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id f132so6626822oib.12
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:21:11 -0800 (PST)
+        Thu, 14 Jan 2021 12:23:01 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7207C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:22:20 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id x13so6673207oic.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:22:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=0potRu9mijL2B6HQx5jkNelrrnJJVWm3UpHe2HZ0UkI=;
-        b=dkkmdGU5SlZ0ua3SCcGU3Bpw8R1lwPTH0z7h9tR3dKOXN5O2GusOiBM8f7ZQX8w/DX
-         V8qYgr75uDn1fomgq80iLg9hjx7GVbiFxxR5Y+/o5ojzkgqHwSV/4YOnG135poq9Heft
-         WXcD7NkHAxhXI2TO7+bQ7DO+HcyZ1LbcTzChM2XREx65/QW2ZIsMjQOyiuBrYPiIBNjV
-         OxRs8w7Sr3gxgXxSGLg5+lXEf4pYnG/QXxtUItf2sfst4lyZD8DtrEHXJcge6Ltp18Bw
-         kQG7G2AEaYQatprXSeT2LxELLyL07gKUZjo22q2J+QWpLfXCIybbK4dkGu1YgPQs/q6n
-         7C5g==
+        bh=37ddaPMJznDGqfBXLUSWG1nOoKmE58YLamtgoypX3IU=;
+        b=p39y94sDm9dB8c0hQIsd3MfKJYptGKEW6eiAeOc6mjkiEdYdL70MNYnn6uJgAC6rFW
+         avjS8S2xiptxaJYSjnB76B6lHNz7QH07yjBMWluW9B4LRnS+Bb8S6ETWOywWq/qdnGa3
+         pKkEIBIOMGQYeYQJKacNXfLiHbmzY13f26NtRB/wyVF+zm4dK6Tbr93AdurRmKlyseQb
+         1uDh1B9kyD48+57L9S5r096oiCnBvtqlrwstBW+DQZPI4bDPRBDZQOxz2FGljXcrPU0i
+         9cMeGSRV/psIi8gFZ29x/b/Y4F6TUBuUNVgcxKmhY6z/b3jZ6qHXGARRC8hpBEuy8J0p
+         BZlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0potRu9mijL2B6HQx5jkNelrrnJJVWm3UpHe2HZ0UkI=;
-        b=RJgfPMkCAjmyxqt1Z5yqbtGavDNKLEOcLCXCezkZmpDPzRyUxxyjxpQtx7aJyNEx1Q
-         rsLYzy0Chkj0Ik/axfXGLRJyQOBFIGib7ZNHiiJ44IgOLe8zayaVcSaCQjkMheB+hZM2
-         +bR041la2n5Mu78rTe6/3XnCMGymPLlXE5M0V0qkb5rdYlW62H0Fxw1+MYGM9SpFuFae
-         RUCD0u89CrJAlS3tO3wROGPjckM+0Lj/SQkKkeq/x79+YgZesqDExohpdZEP5h81TPHW
-         CtLFSBoo5PjkCjhzJBzb7zyiKZod9GVjlD0ZbDePSL85FieOTCudy0GA92cxvi777Tre
-         5LFg==
-X-Gm-Message-State: AOAM5338Zy4z4PQjzVQ3weNue3ZiXdev666ndoYn+zdbXEUGZRTsMGA+
-        SYXV0k0RJ0Emkz7oDvYLJ3b+r2uZe3QeafAhpXI=
-X-Google-Smtp-Source: ABdhPJyn7PJvDDprZivb8ih1mYMbCzJxKFwXet2VyRvoQcNfjsbey8uwLYLhfIp0+R/GxGXpS0WipFfH3Bo27FZudg8=
-X-Received: by 2002:a54:4083:: with SMTP id i3mr3148051oii.120.1610644871430;
- Thu, 14 Jan 2021 09:21:11 -0800 (PST)
+        bh=37ddaPMJznDGqfBXLUSWG1nOoKmE58YLamtgoypX3IU=;
+        b=qppUeVzu6L9kj4g4EPYN2lmFmS3bfy6w+a/BbDdSl4uepeGwe+6zaeWchhC05ThtPy
+         rM7ROsH0Nwunf0kCclsJ2I+bNF9sy/dZq0vpt5r/lfMWjFW9MEdG9U6Z60UuvIPhg/6J
+         lVgzW4ncMd+LkestylCl3Viw4eJw6dIZqfXxx36GajijYlNrp5ZsWMgFZY0vxcnprr38
+         o3MuEh+wQGt9ZOcK4QA4jG6VIPmqh3vEPIvw8wsdNMjPEsetbnGADggMl2CWqkAD5FpP
+         wrQcmfHA58zaQaGqIsk959AlcR6+T2JKKy1XXnbNdnL/SOFVaic/7vw/8JSJwPniHm8h
+         AKew==
+X-Gm-Message-State: AOAM532OioW4WX5+YBTtqV7A/tfyhhKS/yQL+pa4cITNw/PS/e/bFI6U
+        MSiu+M2npY90udnZcdPvVKfWIQcdMXPkKet6VJA=
+X-Google-Smtp-Source: ABdhPJy3q6REKnQtFOsH3kR612FjwY/o2f5ag9r1qFY/yokHo7wXC3LoNqqjv3P28ocWCKUXTNenI3YFtj4f6OVNFFI=
+X-Received: by 2002:aca:4f97:: with SMTP id d145mr3121002oib.123.1610644940159;
+ Thu, 14 Jan 2021 09:22:20 -0800 (PST)
 MIME-Version: 1.0
-References: <20210113080752.1003793-1-lee.jones@linaro.org> <20210113080752.1003793-20-lee.jones@linaro.org>
-In-Reply-To: <20210113080752.1003793-20-lee.jones@linaro.org>
+References: <20210113080752.1003793-1-lee.jones@linaro.org> <20210113080752.1003793-21-lee.jones@linaro.org>
+In-Reply-To: <20210113080752.1003793-21-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 14 Jan 2021 12:21:00 -0500
-Message-ID: <CADnq5_O5mSkD0badwkm0ZsTnOBaoUd0grM7zwuKRX98U3zW8+Q@mail.gmail.com>
-Subject: Re: [PATCH 19/30] drm/amd/display/dc/core/dc_link_dp: Mark
- 'result_write_min_hblank' as __maybe_unused
+Date:   Thu, 14 Jan 2021 12:22:09 -0500
+Message-ID: <CADnq5_O6QD17sFLTPBUGcKi5FKH2o8A0fkPqg5xNeadbCisw+g@mail.gmail.com>
+Subject: Re: [PATCH 20/30] drm/amd/display/dc/core/dc: Fix a bunch of
+ documentation misdemeanours
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
@@ -68,15 +68,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, Jan 13, 2021 at 3:08 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> It looks like it could be used inside the DC_TRACE_LEVEL_MESSAGE() macro.
->
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c: In function =
-=E2=80=98dpcd_set_source_specific_data=E2=80=99:
->  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c:4403:18: warn=
-ing: variable =E2=80=98result_write_min_hblank=E2=80=99 set but not used [-=
-Wunused-but-set-variable]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:287: warning: Cannot =
+understand  ***************************************************************=
+**************
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:366: warning: Functio=
+n parameter or member 'crc_window' not described in 'dc_stream_configure_cr=
+c'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:430: warning: Functio=
+n parameter or member 'r_cr' not described in 'dc_stream_get_crc'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:430: warning: Functio=
+n parameter or member 'g_y' not described in 'dc_stream_get_crc'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:430: warning: Functio=
+n parameter or member 'b_cb' not described in 'dc_stream_get_crc'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:2026: warning: Functi=
+on parameter or member 'dc' not described in 'dc_check_update_surfaces_for_=
+stream'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:2026: warning: Functi=
+on parameter or member 'updates' not described in 'dc_check_update_surfaces=
+_for_stream'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:2026: warning: Functi=
+on parameter or member 'surface_count' not described in 'dc_check_update_su=
+rfaces_for_stream'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:2026: warning: Functi=
+on parameter or member 'stream_update' not described in 'dc_check_update_su=
+rfaces_for_stream'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:2026: warning: Functi=
+on parameter or member 'stream_status' not described in 'dc_check_update_su=
+rfaces_for_stream'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:2822: warning: Functi=
+on parameter or member 'dc' not described in 'dc_interrupt_set'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:2822: warning: Functi=
+on parameter or member 'src' not described in 'dc_interrupt_set'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:2822: warning: Functi=
+on parameter or member 'enable' not described in 'dc_interrupt_set'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:2962: warning: Functi=
+on parameter or member 'link' not described in 'dc_link_add_remote_sink'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:2962: warning: Functi=
+on parameter or member 'edid' not described in 'dc_link_add_remote_sink'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:2962: warning: Functi=
+on parameter or member 'len' not described in 'dc_link_add_remote_sink'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:2962: warning: Functi=
+on parameter or member 'init_data' not described in 'dc_link_add_remote_sin=
+k'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:3022: warning: Functi=
+on parameter or member 'link' not described in 'dc_link_remove_remote_sink'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:3022: warning: Functi=
+on parameter or member 'sink' not described in 'dc_link_remove_remote_sink'
 >
 > Cc: Harry Wentland <harry.wentland@amd.com>
 > Cc: Leo Li <sunpeng.li@amd.com>
@@ -92,28 +131,114 @@ Applied.  Thanks!
 
 Alex
 
-
 > ---
->  drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/gpu/drm/amd/display/dc/core/dc.c | 33 ++++++++++++------------
+>  1 file changed, 16 insertions(+), 17 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/g=
-pu/drm/amd/display/dc/core/dc_link_dp.c
-> index 3c33b8fe218e5..b9e5e0eee3d24 100644
-> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-> @@ -4400,7 +4400,7 @@ void dp_set_fec_enable(struct dc_link *link, bool e=
-nable)
->  void dpcd_set_source_specific_data(struct dc_link *link)
->  {
->         if (!link->dc->vendor_signature.is_valid) {
-> -               enum dc_status result_write_min_hblank =3D DC_NOT_SUPPORT=
-ED;
-> +               enum dc_status __maybe_unused result_write_min_hblank =3D=
- DC_NOT_SUPPORTED;
->                 struct dpcd_amd_signature amd_signature;
->                 amd_signature.AMD_IEEE_TxSignature_byte1 =3D 0x0;
->                 amd_signature.AMD_IEEE_TxSignature_byte2 =3D 0x0;
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/a=
+md/display/dc/core/dc.c
+> index 0a07e608485ff..3ee3978fae977 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
+> @@ -284,20 +284,16 @@ static void dc_perf_trace_destroy(struct dc_perf_tr=
+ace **perf_trace)
+>  }
+>
+>  /**
+> - ***********************************************************************=
+******
+> - *  Function: dc_stream_adjust_vmin_vmax
+> + *  dc_stream_adjust_vmin_vmax:
+>   *
+> - *  @brief
+> - *     Looks up the pipe context of dc_stream_state and updates the
+> - *     vertical_total_min and vertical_total_max of the DRR, Dynamic Ref=
+resh
+> - *     Rate, which is a power-saving feature that targets reducing panel
+> - *     refresh rate while the screen is static
+> + *  Looks up the pipe context of dc_stream_state and updates the
+> + *  vertical_total_min and vertical_total_max of the DRR, Dynamic Refres=
+h
+> + *  Rate, which is a power-saving feature that targets reducing panel
+> + *  refresh rate while the screen is static
+>   *
+> - *  @param [in] dc: dc reference
+> - *  @param [in] stream: Initial dc stream state
+> - *  @param [in] adjust: Updated parameters for vertical_total_min and
+> - *  vertical_total_max
+> - ***********************************************************************=
+******
+> + *  @dc:     dc reference
+> + *  @stream: Initial dc stream state
+> + *  @adjust: Updated parameters for vertical_total_min and vertical_tota=
+l_max
+>   */
+>  bool dc_stream_adjust_vmin_vmax(struct dc *dc,
+>                 struct dc_stream_state *stream,
+> @@ -355,6 +351,7 @@ bool dc_stream_get_crtc_position(struct dc *dc,
+>   * @dc: DC Object
+>   * @stream: The stream to configure CRC on.
+>   * @enable: Enable CRC if true, disable otherwise.
+> + * @crc_window: CRC window (x/y start/end) information
+>   * @continuous: Capture CRC on every frame if true. Otherwise, only capt=
+ure
+>   *              once.
+>   *
+> @@ -420,7 +417,9 @@ bool dc_stream_configure_crc(struct dc *dc, struct dc=
+_stream_state *stream,
+>   * dc_stream_get_crc() - Get CRC values for the given stream.
+>   * @dc: DC object
+>   * @stream: The DC stream state of the stream to get CRCs from.
+> - * @r_cr, g_y, b_cb: CRC values for the three channels are stored here.
+> + * @r_cr: CRC value for the first of the 3 channels stored here.
+> + * @g_y:  CRC value for the second of the 3 channels stored here.
+> + * @b_cb: CRC value for the third of the 3 channels stored here.
+>   *
+>   * dc_stream_configure_crc needs to be called beforehand to enable CRCs.
+>   * Return false if stream is not found, or if CRCs are not enabled.
+> @@ -2012,7 +2011,7 @@ static enum surface_update_type check_update_surfac=
+es_for_stream(
+>         return overall_type;
+>  }
+>
+> -/**
+> +/*
+>   * dc_check_update_surfaces_for_stream() - Determine update type (fast, =
+med, or full)
+>   *
+>   * See :c:type:`enum surface_update_type <surface_update_type>` for expl=
+anation of update types
+> @@ -2815,7 +2814,7 @@ enum dc_irq_source dc_interrupt_to_irq_source(
+>         return dal_irq_service_to_irq_source(dc->res_pool->irqs, src_id, =
+ext_id);
+>  }
+>
+> -/**
+> +/*
+>   * dc_interrupt_set() - Enable/disable an AMD hw interrupt source
+>   */
+>  bool dc_interrupt_set(struct dc *dc, enum dc_irq_source src, bool enable=
+)
+> @@ -2949,7 +2948,7 @@ static bool link_add_remote_sink_helper(struct dc_l=
+ink *dc_link, struct dc_sink
+>         return true;
+>  }
+>
+> -/**
+> +/*
+>   * dc_link_add_remote_sink() - Create a sink and attach it to an existin=
+g link
+>   *
+>   * EDID length is in bytes
+> @@ -3012,7 +3011,7 @@ struct dc_sink *dc_link_add_remote_sink(
+>         return NULL;
+>  }
+>
+> -/**
+> +/*
+>   * dc_link_remove_remote_sink() - Remove a remote sink from a dc_link
+>   *
+>   * Note that this just removes the struct dc_sink - it doesn't
 > --
 > 2.25.1
 >
