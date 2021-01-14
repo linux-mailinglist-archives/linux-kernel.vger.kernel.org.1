@@ -2,164 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30F92F6A6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4452C2F6A74
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:05:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbhANTEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:04:20 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:55137 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbhANTES (ORCPT
+        id S1729642AbhANTE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:04:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728881AbhANTE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:04:18 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210114190336euoutp013e72240966150bc0969d11dbbbc564c4~aLpDyvETT2821428214euoutp01T
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 19:03:36 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210114190336euoutp013e72240966150bc0969d11dbbbc564c4~aLpDyvETT2821428214euoutp01T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1610651016;
-        bh=p9JyyoEzSfZPYysKaNAbup8AeW9Ygru9GNwL3DVNY30=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=iQK/0vq0ZGCl/UKVD3EJtrNEXMICLr435myXg60lutkYzRljk6EsGkMWJStu2VY2q
-         ayZ8JfBNqbOr3GaMpvxOn7BJiTzUxk0rXnZ1iFOc5F/uS930y37IEx5ZdVqMMLwVEa
-         YG+M3ceKguNF3DfAp/KP6VR9jt3WQQ8vOVFFsuWo=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210114190335eucas1p29ad219336e7348c5398b5e0a6eb475be~aLpCyefoq0423104231eucas1p2m;
-        Thu, 14 Jan 2021 19:03:35 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 9A.1A.45488.78590006; Thu, 14
-        Jan 2021 19:03:35 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210114190335eucas1p209f9ccf7e413aa34ff712afa1216c7ef~aLpCQsflj2716227162eucas1p2P;
-        Thu, 14 Jan 2021 19:03:35 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210114190335eusmtrp12a2aa4abe2f2dd74b830899758ae9d95~aLpCQH7RY2919329193eusmtrp1c;
-        Thu, 14 Jan 2021 19:03:35 +0000 (GMT)
-X-AuditID: cbfec7f5-c5fff7000000b1b0-96-60009587a9d7
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 9C.1C.16282.68590006; Thu, 14
-        Jan 2021 19:03:35 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210114190334eusmtip1d845562ee9967990b013f8997594077b~aLpBzp5vE0394703947eusmtip1Y;
-        Thu, 14 Jan 2021 19:03:34 +0000 (GMT)
-Subject: Re: [PATCH] soc: samsung: pm_domains: Convert to regular platform
- driver
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <58e1cfb2-cd35-badf-0238-7c62122e2d05@samsung.com>
-Date:   Thu, 14 Jan 2021 20:03:35 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.6.1
+        Thu, 14 Jan 2021 14:04:26 -0500
+Received: from smtp-8faa.mail.infomaniak.ch (smtp-8faa.mail.infomaniak.ch [IPv6:2001:1600:4:17::8faa])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA9AC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:03:41 -0800 (PST)
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DGty40K9jzMq8Xg;
+        Thu, 14 Jan 2021 20:03:40 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DGty16Bhkzlh8T2;
+        Thu, 14 Jan 2021 20:03:37 +0100 (CET)
+Subject: Re: [PATCH v26 00/12] Landlock LSM
+To:     Jann Horn <jannh@google.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+References: <20201209192839.1396820-1-mic@digikod.net>
+ <CAG48ez3DE8xgr_etVGV5eNjH2CXXo9MR7jTcu+_LCkJUchLXcQ@mail.gmail.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <92df89c9-3442-0761-224a-ab53bb917850@digikod.net>
+Date:   Thu, 14 Jan 2021 20:03:47 +0100
+User-Agent: 
 MIME-Version: 1.0
-In-Reply-To: <CAGETcx9wJVnBAe6mKxfi9DC9YFf6DLzAyxBC8DxhQUqpfTDR3A@mail.gmail.com>
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAG48ez3DE8xgr_etVGV5eNjH2CXXo9MR7jTcu+_LCkJUchLXcQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Se0hTcRT2d+/17rqaXae2g0rBxMJKbSQ2yqKizAoqiyh66cyLmjpzcz21
-        bD1dD0yT3FJT0hKppmNqzjBckpjkRK3M1PWw6OEIc1lZ6zF/VP73fed85/d95/BjSGGuqw+T
-        KE/nFHJZspjmU7X3v1mCTuW7xMwtez5TWl2gd5VaLFU8aZepkJYWWBoJaZE9n5RqzA56CR1Z
-        YlBFGiqz6cjzxkoUOWKYtp7ayg+P45IT93KKkMUx/ISGziN77F77WwoHiSyU56FBDANsKAwY
-        wzSIzwjZCgRVxaMIEzuCyuY2V0xGEHzJqf9D3MYnunvHeLhxHYG9vIbEZBjB6EcN6VR5shvh
-        XLaVcGIvdhYYHr+inCKS/YDgqqOL52zQrAQ0Ng3txAJ2MXzJNtLOUBQbAN2Xx9282Vjo77tH
-        YIkHtGoHKSd2Y6PguzFr/BmSnQ51tkISYxH0Dl4hnF7AdjDQfHSIwLGXg7bmI42xJ7xvMfIw
-        9oO2vLMUHjiG4EX7TR4mZxF0qQsQVi2Evvax8XQkGwh6UwguL4W2J3oCX9IdemweOIQ75NZe
-        InFZAKdPCrF6Buhabv2zberoJHOQWDdhNd2EdXQT1tH99y1BVCUScSplSjynnCfn9gUrZSlK
-        lTw+eFdqigH9+TZtP1s+30YV74eDzYhgkBkBQ4q9BKn+LjFCQZzswEFOkRqtUCVzSjPyZSix
-        SGCquREtZONl6VwSx+3hFH+7BOPmk0VcJKfsskxaesFn7KT2QlXj3PjSKJcfGTvfHVPz7+ob
-        LYJprSNJb6POXFu2/WtE7Iz5ogMPbm6enCV56mvJsGqbhf6SwPAFtm117m+MzbsXiqzq9dui
-        Szj/zFANT6XL2MQeZyY/7OdSzxedWym9owiVOKp5n7iVXmJhaX1Zv2nd1Z5lj3y7qbK9wWnF
-        J6oMQ95qojAkttavbKbj4qoNfHteuMNPRVnn0Mawz2OWiMOGgaY1AzEbZUvSdpR3jMYlBL3O
-        rBhtSJKkp1lt2oDZFdUjv/gp+kR+xKbul8+G7PLMhLAcz+EVPnPqStIXNTRteWXONUG/h2Hq
-        Ie/T3qvXlsaqxZQyQSaZRSqUst+9A3mDpQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCIsWRmVeSWpSXmKPExsVy+t/xu7rtUxkSDH5MZ7bYOGM9q8X58xvY
-        LS7vmsNmMeP8PiaLuV+mMlt0HfrL5sDmsWBTqcemVZ1sHn1bVjF6fN4kF8ASpWdTlF9akqqQ
-        kV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eTkpqTWZZapG+XoJex+1J9wReRiuNznjA1
-        ME4W7GLk5JAQMJG4cusXO4gtJLCUUWLGXQ6IuIzEyWkNrBC2sMSfa11sXYxcQDXvGSV2bj/D
-        DJIQFgiW6O28zwRiiwhoSWy69pgFpIhZ4DWjxLq9p5khOm4wShx/dBOsg03AUKLrLcgoTg5e
-        ATuJ751bgGwODhYBVYkrs8G2iQokSZyY9YkZokRQ4uTMJywgNqdAoMTvLQ1glzILmEnM2/yQ
-        GcKWl9j+dg6ULS5x68l8pgmMQrOQtM9C0jILScssJC0LGFlWMYqklhbnpucWG+kVJ+YWl+al
-        6yXn525iBEbXtmM/t+xgXPnqo94hRiYOxkOMEhzMSiK8+coMCUK8KYmVValF+fFFpTmpxYcY
-        TYHemcgsJZqcD4zvvJJ4QzMDU0MTM0sDU0szYyVxXpMja+KFBNITS1KzU1MLUotg+pg4OKUa
-        mDy3c6vdjONh0p9y4tajaX0O2zMjC/J+NqXKr/UQkVl9bl/2b4m42QKn/8bx13/+vZ031/7G
-        PP7by1lX8WrPjjL+tORc9qSc2fmCX0stL83epLBZdFb0l3em1nnlW58VbmxtmXZpZ/Kvk1Mt
-        Ljhdn9Vs7u4nN/viv22dTJ/MNxkKNMvN8irkEQgN07jAN8/HYYb7wSLGwsPHPn/Y+aDzucSZ
-        wsgtZxqVl1ZMiV3AKN8yq1B7r6CcgYqxGIvSrceMG1hmqq9jyp7ItG3XztZZlicYsq/91Pl3
-        R/+OvcBt/dJQ/1mia/5/u5x5o2/2l36NxvU316/69FJ417pL3z/8SYrY2qFpHybQutYqQLl7
-        pbgSS3FGoqEWc1FxIgAjxTeONwMAAA==
-X-CMS-MailID: 20210114190335eucas1p209f9ccf7e413aa34ff712afa1216c7ef
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210113110330eucas1p1e7efa719b5db55ccf3774450a8c1e452
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210113110330eucas1p1e7efa719b5db55ccf3774450a8c1e452
-References: <CGME20210113110330eucas1p1e7efa719b5db55ccf3774450a8c1e452@eucas1p1.samsung.com>
-        <20210113110320.13149-1-m.szyprowski@samsung.com>
-        <CAGETcx9wJVnBAe6mKxfi9DC9YFf6DLzAyxBC8DxhQUqpfTDR3A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
 
-On 13.01.2021 21:27, Saravana Kannan wrote:
-> On Wed, Jan 13, 2021 at 3:03 AM Marek Szyprowski
-> <m.szyprowski@samsung.com> wrote:
->> When Exynos power domain driver was introduced, the only way to ensure
->> that power domains will be instantiated before the devices which belongs
->> to them was to initialize them early enough, before the devices are
->> instantiated in the system. This in turn required not to use any platform
->> device infrastructure at all, as there have been no way to ensure proper
->> probe order between devices.
->>
->> This has been finally changed and patch e590474768f1 ("driver core: Set
->> fw_devlink=on by default") ensures that each device will be probbed only
->> when its resource providers are ready. This allows to convert Exynos
->> power domain driver to regular platform driver.
->>
->> This is also required by the mentioned commit to enable probing any
->> device which belongs to the Exynos power domains, as otherwise the core
->> won't notice that the power domains are in fact available.
->>
->> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
->> ---
->> Some more comments are in the following thread:
->> https://protect2.fireeye.com/v1/url?k=8ac052ac-d55b6ba4-8ac1d9e3-0cc47a31c8b4-9068b559b0fd155d&q=1&e=b393c3ff-16ba-48a4-9d72-6805d02971d5&u=https%3A%2F%2Flore.kernel.org%2Flkml%2F2556a69b-5da5-bf80-e051-df2d02fbc40f%40samsung.com%2F
->> ---
->> ...
-> Skimmed through this patch and at a high level, it looks good for what
-> it's trying to do. Thanks for doing this!
->
-> Btw, I assume that this won't work with fw_devlink=off/permissive
-> (default since 5.10 or earlier)? My concern is that we might
-> temporarily set fw_devlink=permissive by default if the other
-> breakages aren't fixed in time for 5.12? How do you want to handle that?
+On 14/01/2021 04:22, Jann Horn wrote:
+> On Wed, Dec 9, 2020 at 8:28 PM Mickaël Salaün <mic@digikod.net> wrote:
+>> This patch series adds new built-time checks, a new test, renames some
+>> variables and functions to improve readability, and shift syscall
+>> numbers to align with -next.
+> 
+> Sorry, I've finally gotten around to looking at v26 - I hadn't
+> actually looked at v25 either yet. I think there's still one remaining
+> small issue in the filesystem access logic, but I think that's very
+> simple to fix, as long as we agree on what the expected semantics are.
+> Otherwise it basically looks good, apart from some typos.
+> 
+> I think v27 will be the final version of this series. :) (And I'll try
+> to actually look at that version much faster - I realize that waiting
+> for code reviews this long sucks.)
+> 
 
-I've applied my patch on top of vanilla v5.10 and checked on my test 
-boards. Surprisingly everything works fine, so something must have been 
-changed during the last few years as the power domain driver in the 
-current form has been written long time ago. I remember that the moment 
-when platform devices are created from the of nodes has been change at 
-some point, so maybe this is somehow related. Anyway, the platform 
-driver for Exynos power domains registered from core_initcall works fine 
-with v5.10 kernel.
-
-I have no strong opinion on the way of merging this fix. It can go via 
-Samsung tree, so in the end the v5.12-rc1 will have both my fix and your 
-change, but won't be fully bisectable in-between. Krzysztof, what's your 
-opinion?
-
-Best regards
-
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+I'm improving the tests, especially with bind mounts and overlayfs
+tests. The v27 will also contains a better documentation to clarify the
+semantic and explain how these mounts are handled. Thanks!
