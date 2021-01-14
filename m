@@ -2,62 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33D72F6E4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:37:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F75C2F6E54
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730784AbhANWee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 17:34:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730686AbhANWee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 17:34:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5B0523107;
-        Thu, 14 Jan 2021 22:33:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610663634;
-        bh=TDsxr8TTkWkSQFGv6iTVrjmtNAhZptF8/N/0Q6MMqIA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SPGMrDGNehe/WDAJz5u+dW3WSsT3EiTaze4Hrxnd4TPS9j/SH8RmOWrbT9W6VWDud
-         M5B9u6LicBJXnsTA90y3yb8ekDC8Mh0b5OEmeZ37VkRM97rWMW6Qwr30Q5EBbUkh+3
-         UdtQkwC2Lc7/vTKcGeYSad3KXP29a1/5ZXIKq9CA/LAtBba6quKNqDH2Dw4HvoNzVg
-         MFKuNn0BXZk2pkTXB82vZOTUeThXsc+/UE6e+AnFk5vOqZduEXGE9eEfT4ocyuAhZL
-         PZqX1c7qJvXlGH3aeMzE/K3vRTO1TcnbZf4LVRvGNO3ZRnwvLOmOMiXKX4jr9BewpZ
-         TlqDVhSBZtZlQ==
-Date:   Thu, 14 Jan 2021 14:33:52 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] Networking for 5.11-rc4
-Message-ID: <20210114143352.7bfe4b94@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAHk-=wjWP_7VU8Pi6A-88-1X7F_fs+2qoGf6qjkVOUnFQd3CDw@mail.gmail.com>
-References: <20210114200551.208209-1-kuba@kernel.org>
-        <CAHk-=wjWP_7VU8Pi6A-88-1X7F_fs+2qoGf6qjkVOUnFQd3CDw@mail.gmail.com>
+        id S1730684AbhANWiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 17:38:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730575AbhANWiL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 17:38:11 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678B0C061575;
+        Thu, 14 Jan 2021 14:37:31 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id r9so14486238ioo.7;
+        Thu, 14 Jan 2021 14:37:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4qLi4Dg+g0R8VVN/tPzeo2VYp9du8E2CQ9jumM2kylY=;
+        b=NtqJtobesGpygwwHl27SLj7KgMDYD0qtl1D5q8Nmm2wV3x8Ucca6+xgsshGaup/SNQ
+         aG7ZxHs8AK37B2SX+ZKtWjTaZ2ux9jKIqo9UglY86v5u+ormp/fjckWHn5fOcKUjCrkG
+         oWPEGNe4ggbEXV/MkouOsZh1nd/WLTAF++ifhve+NaZ2GJOs3pK46HhbxhRVkI8UuDzc
+         gF4PrmfODCHNmGOeFfz0+vyAefyKXE8wCk6gbspznmeD3IQYi+0TuooHr+Oj82jacfLP
+         OkmYREy+giTCsaJWXiZJtexkPbmi4+vmy0Jro9BFH9Xoe5i2nlpqMUcotF0namByg8wN
+         UQJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4qLi4Dg+g0R8VVN/tPzeo2VYp9du8E2CQ9jumM2kylY=;
+        b=FrL2uWqOPCPXfunY2RgJR/HfTqByuW/HZjPbX0UtAGJYuQsR47hU9ORXyNugW0u8tK
+         k/pwgS/s/KOulnwSUy3VQOz8wtyN5OzztbjIEriYQJSFNfNm0wWwkV90G7XxFixCekEt
+         ZS3eDCZCCK2Si8vU9aDNjhdBzY80ezQHIzXuNRDqntNWq9BMLMt3WKEplVsDEJ/wEQJN
+         xwK8wBdbCuRG3B8TUuONwtYbKHxoZJcdeQllreaI+TQh5ofJ/2n/4nrh9reUWD1WQnFz
+         xpchhM0vLJ5wns7lSZpt8Ygaa9LwL9ht22SUmLErc8nFwV6Q/IshS+g67Ib38Tvfh1Xe
+         5uCw==
+X-Gm-Message-State: AOAM531ddyKlytlKFexXygPcqDlXwE+bHlAmTK0PahSLAHWG293xCGVy
+        5jhDVxByAkms27xvE09nvANhjxoHiSBVvmkHgzT6bt/VZrw=
+X-Google-Smtp-Source: ABdhPJxAE3niWU3lMdhyD6iZZ//AvuDx07evfAw+VuR6wmjklOvnVeCLdNX4LfeC8wYdvKKrdETMSGGhrNGKnwhmnFU=
+X-Received: by 2002:a05:6e02:1b8b:: with SMTP id h11mr8628774ili.32.1610663850911;
+ Thu, 14 Jan 2021 14:37:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210114221059.483390-1-angelogioacchino.delregno@somainline.org> <20210114221059.483390-6-angelogioacchino.delregno@somainline.org>
+In-Reply-To: <20210114221059.483390-6-angelogioacchino.delregno@somainline.org>
+From:   Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Date:   Thu, 14 Jan 2021 15:37:20 -0700
+Message-ID: <CAOCk7NoVts21FjhhLtZp-0Xdw6-BnrKio_-tuZBRsgapsUdwfw@mail.gmail.com>
+Subject: Re: [PATCH v2 05/11] clk: qcom: gcc-msm8998: Mark gpu_cfg_ahb_clk as critical
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        phone-devel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
+        DTML <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 13:37:17 -0800 Linus Torvalds wrote:
-> On Thu, Jan 14, 2021 at 12:05 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > Current release - regressions:
-> >  ...
-> > Current release - always broken:  
-> 
-> So I understand what you mean, but it does sound odd with that
-> "Current release - always broken" thing not being a regression. The
-> "always broken" makes it sound like it's some old broken code that has
-> never worked, which it clearly isn't.
-> 
-> Maybe rephrase it as "new code bugs" or something? You've done that
-> before ("bugs in new features").
-> 
-> I left it alone in the merge message, since we've had that pattern of
-> speech before, but for some reason I reacted to it this time.
+On Thu, Jan 14, 2021 at 3:13 PM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@somainline.org> wrote:
+>
+> The GPU IOMMU depends on this clock and the hypervisor will crash
+> the SoC if this clock gets disabled because the secure contexts
+> that have been set on this IOMMU by the bootloader will become
+> unaccessible (or they get reset).
+> Mark this clock as critical to avoid this issue when the Adreno
+> GPU is enabled.
+>
 
-Will do, I succumbed to the lure of matching "Previous releases -
-always broken".
+You should go review the last attempt to do this -
+https://lkml.org/lkml/2019/12/17/881
