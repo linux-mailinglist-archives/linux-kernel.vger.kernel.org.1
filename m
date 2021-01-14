@@ -2,92 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6F72F5695
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDCF82F5692
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728596AbhANBte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:49:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54320 "EHLO
+        id S1728578AbhANBtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729889AbhANAcY (ORCPT
+        with ESMTP id S1727834AbhANAfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 19:32:24 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6013FC061786;
-        Wed, 13 Jan 2021 16:31:14 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DGQGQ2Jmmz9sVw;
-        Thu, 14 Jan 2021 11:31:09 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1610584272;
-        bh=It9u9AKn8AqBdEwES376MSZ2+L2Lf5GTcdM2JalDxYM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=q98T5wVzCNjJktmx2+1FOtj7sQImUpqYcy0fQPY0+Torhr+Xfw9453WacLy1wXVaM
-         IVpxEFG5LZ7lltJkDI8SY9CoZ5d4Lu5/9Ey23znTPXn5Oov/f4Z206iLfedsP2zX1v
-         9p1gRN6gFB+yjARaPX5XYu+5U+So7m4Je8jMkeo73h43zoT4N3uIIdFMpo/2iFPCin
-         joggwauko+vU4xegW/hiBkMZDosMwL+F4NqwQo8sdUhynId4ZhoQosTEdzokcCSW3v
-         9spztwD1RIms1nUNwdbnX1Ku7aMTZ6pz1p8y1YTmnlqcjnaQ6VbdIBpvCbpk5Vw70y
-         Q9CSxN7ROv4LA==
-Date:   Thu, 14 Jan 2021 11:31:07 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20210114113107.622102e0@canb.auug.org.au>
+        Wed, 13 Jan 2021 19:35:43 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0205EC061786;
+        Wed, 13 Jan 2021 16:35:03 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id x126so2310733pfc.7;
+        Wed, 13 Jan 2021 16:35:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9a07HwA8hrHoGWjqCa9LIGmpHo9wPiO5hANO4XpbneU=;
+        b=QuGjfVfi20kU6iytMLkRF5hq73PukNbSStaPBz9RkC2qsnTr9gGdZdrObgaetKGqpw
+         F+N8E1B+u9sBA3LR6Awko7WzdqYuX+lKgIKtHAig8yURCMfxtVubQhEqLEMBRRmqx0SH
+         LJVNgdY79TEktoczw1JFw6XGaif/5a5kMQ8WCUNwX+Bz3kuJ2JnAWDzru3vtSG4OXUnu
+         W/86vFLS2L3f7AUVFJt6nQ793duG8cGaOWc4gxzJHZqirv/ue3LsD7D4IAbfk7rYS59v
+         kJeLa3wxL/q9CIvXWbvUIZXLONJ3QRLM2YNthvfxDJdmKpIvnjPFpqWMwH+VEQUaDz0L
+         tmAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9a07HwA8hrHoGWjqCa9LIGmpHo9wPiO5hANO4XpbneU=;
+        b=ae51WK0jfGEDMKjHIMJVHnLvSa6fD0dkAGp+kTdvqebkdS0hJJXhjY/njbBAF5Rl9w
+         l2eiQG0vEKt1f7a0kzWyM5Wuk/pXr6MhwlRS3pdERhBcK9y6hZRHSgwPyD1EO6zEoPPw
+         K7XUPQK5mKFOID07Nm8NoG0AqZ24WnBBptSIq2uIIkDC/BqlfIrqEqmaFRJBSRus8rRg
+         BLwB8An768uPvdrcgGLFJcEKuVTeOPb7jTfCNX8iG5JHD6H2FEXg9wbvPqPwITtuvL/Y
+         HtuS55T1igbbFh1S4t+fwZEaw8JFpigPGCl2ZFox9sM2Ai4+oqmYVlMyfC5nOLVnSfEr
+         ZPnw==
+X-Gm-Message-State: AOAM533cKE3uZa0/ATHO4VCvphOdrZA0Gmcjr2/5YST+GNwMlV/lzCx7
+        8xygd4qojXv634k/ZSvxwi8=
+X-Google-Smtp-Source: ABdhPJzu6D6O4GmQFu0dJCINRH3MLi6q/D9VJn7pPW7Inzy/Pnif67lrA7r7iD0g8jS96bSp0peRSQ==
+X-Received: by 2002:a62:7651:0:b029:1a5:929b:1681 with SMTP id r78-20020a6276510000b02901a5929b1681mr4709294pfc.27.1610584502401;
+        Wed, 13 Jan 2021 16:35:02 -0800 (PST)
+Received: from Ryzen-9-3900X.localdomain (ip68-104-204-241.ph.ph.cox.net. [68.104.204.241])
+        by smtp.gmail.com with ESMTPSA id 82sm3667890pfv.117.2021.01.13.16.35.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 16:35:01 -0800 (PST)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>
+Subject: [PATCH] Documentation/llvm: Add a section about supported architectures
+Date:   Wed, 13 Jan 2021 17:34:47 -0700
+Message-Id: <20210114003447.7363-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/.60J4ibaN=8y4IZ8pGCRClm";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/.60J4ibaN=8y4IZ8pGCRClm
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The most common question around building the Linux kernel with clang is
+"does it work?" and the answer has always been "it depends on your
+architecture, configuration, and LLVM version" with no hard answers for
+users wanting to experiment. LLVM support has significantly improved
+over the past couple of years, resulting in more architectures and
+configurations supported, and continuous integration has made it easier
+to see what works and what does not.
 
-Hi all,
+Add a section that goes over what architectures are supported in the
+current kernel version, how they should be built (with just clang or the
+LLVM utilities as well), and the level of support they receive. This
+will make it easier for people to try out building their kernel with
+LLVM and reporting issues that come about from it.
 
-After merging the drm-misc tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+Suggested-by: Miguel Ojeda <ojeda@kernel.org>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ Documentation/kbuild/llvm.rst | 44 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
-drivers/gpu/drm/drm_cache.c: In function 'drm_need_swiotlb':
-drivers/gpu/drm/drm_cache.c:202:6: error: implicit declaration of function =
-'mem_encrypt_active' [-Werror=3Dimplicit-function-declaration]
-  202 |  if (mem_encrypt_active())
-      |      ^~~~~~~~~~~~~~~~~~
+diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
+index 21c847890d03..b18401d2ba82 100644
+--- a/Documentation/kbuild/llvm.rst
++++ b/Documentation/kbuild/llvm.rst
+@@ -63,6 +63,50 @@ They can be enabled individually. The full list of the parameters: ::
+ Currently, the integrated assembler is disabled by default. You can pass
+ ``LLVM_IAS=1`` to enable it.
+ 
++Supported Architectures
++-----------------------
++
++LLVM does not target all of the architectures that Linux supports and
++just because a target is supported in LLVM does not mean that the kernel
++will build or work without any issues. Below is a general summary of
++architectures that currently work with ``CC=clang`` or ``LLVM=1``. Level
++of support corresponds to "S" values in the MAINTAINERS files. If an
++architecture is not present, it either means that LLVM does not target
++it or there are known issues. Using the latest stable version of LLVM or
++even the development tree will generally yield the best results.
++An architecture's ``defconfig`` is generally expected to work well,
++certain configurations may have problems that have not been uncovered
++yet. Bug reports are always welcome at the issue tracker below!
++
++.. list-table::
++   :widths: 10 10 10
++   :header-rows: 1
++
++   * - Architecture
++     - Level of support
++     - ``make`` command
++   * - arm
++     - Supported
++     - ``LLVM=1``
++   * - arm64
++     - Supported
++     - ``LLVM=1``
++   * - mips
++     - Maintained
++     - ``CC=clang``
++   * - powerpc
++     - Maintained
++     - ``CC=clang``
++   * - riscv
++     - Maintained
++     - ``CC=clang``
++   * - s390
++     - Maintained
++     - ``CC=clang``
++   * - x86
++     - Supported
++     - ``LLVM=1``
++
+ Getting Help
+ ------------
+ 
 
+base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
+-- 
+2.30.0
 
-Caused by commit
-
-  3abc66706385 ("drm: Implement drm_need_swiotlb() in drm_cache.c")
-
-I have used the drm-misc tree from next-20210107 again for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/.60J4ibaN=8y4IZ8pGCRClm
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl//kMsACgkQAVBC80lX
-0Gzqswf/ULSfqCkg299tDBU1Jv00UQUpTkd2drH/SRDVl76H3qegClo8UzQnkpNS
-g4xUBFGhY5gnjwrT7lbeDobdFaZxDA6pJWfAESEYev7/Sm31gKxNXQBTVDF/+yEk
-8gIcSjyg24WYTjSZCNLOd4Fo9GoDur5nReYvjz0aSF3+YwHi8QcFKVawcgtiufEj
-QK/hjDBQfWuULsFe2I1VeXP+Z9MGRMvm2udW/Pok1vh1GmKLSGCIcRrdAQD0u9Dc
-uYHXUAFNRC/+mpWEOcAXXJUbwHwMiI5rb9GjqZmd/JWM1hhidDcbtZg/CqpsMYMk
-maZV82UkTtFvMKEo3DhJQBBREE+wiA==
-=V+bW
------END PGP SIGNATURE-----
-
---Sig_/.60J4ibaN=8y4IZ8pGCRClm--
