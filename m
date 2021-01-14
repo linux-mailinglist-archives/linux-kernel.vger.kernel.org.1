@@ -2,118 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0526A2F6D89
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9302F6D8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730450AbhANVwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 16:52:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726755AbhANVwK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 16:52:10 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F64EC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:51:30 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id y128so3175287ybf.10
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:51:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8MaJhCChLvMA5q7Hc7EGz9x2JBN/Mr/+/kQsJO4ydp0=;
-        b=giJjqVe3Kr//U30LVgKzadlQb8wdA/+YGhxY7JPrxL8nWL6SpFSejBXGGRnbs3Swbt
-         NhA/luSJJs/kbOWr1t0yuKsKMUTOGL1dmLqEULuCHyI6uWj3RSfCCBxJGKE57yqRQtG/
-         f9UVuM+T08zZpLGrUgtsQ6SHVS8urxRmV63GmO81u1VohhaCljESsqeKLP4Ilc30rQFJ
-         SOb106qBEmPmCswU8nttfm2L+GcfmScDYDmKRM/g4a4jbQ97euKG1/pY57Hi0cF/e9Vc
-         wjja0Ee1USX8DCfchkLKG23qhaKtPlP1Is9VoKyH59XzKgNB4UpTx5pXXrwahoI53+96
-         Undg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8MaJhCChLvMA5q7Hc7EGz9x2JBN/Mr/+/kQsJO4ydp0=;
-        b=c/5ZiuBrbsBUgoSWiK8Mq9ygN9aDMUJlMysV+vSSwO2WZcZCa5IDrV/VMHel7v9IW0
-         e1i9l7Q/nvDQfqRpXcQnANdFRd3qBLNPPOYEshT8RT/e2F8Mfq75NMuhSqHPUhnPAzOC
-         zwCAErd8YAez6n9XqbA3M1RKkct4Up2gqZCDhLDl3Q+KQfIlRy4obwX/4fF1OUDrzOEI
-         uic37muJUkpvVfXO2JVtlaTTrfJMq4uKZHNGzdF/WDuTdk8TdgJLaZyJ3/Q9xDE134l9
-         RHN0wGP4yUE2VLX75Z+m0tqO/Pm9sE4FOQlaJ/VfM3k9wcUE4bqe+QDms/InW/THxhxB
-         QoSw==
-X-Gm-Message-State: AOAM531yHRfqFDdDPh072t6fAdMtBBFJV2euc9wIvzs4dsW7WImkdvVI
-        lW7cwLLqD/xePkA5MHq4+URY/MUpwlI6mdFrjbVifw==
-X-Google-Smtp-Source: ABdhPJxsaHc1Q9X8x1mbLGU3fLEE/2MXeR/09DpXj+8UneKPE7+VKoOfuy3x1/kBXIcpRJdIx02Qu9lRbZDNhE/LXwM=
-X-Received: by 2002:a25:d295:: with SMTP id j143mr14364937ybg.20.1610661089343;
- Thu, 14 Jan 2021 13:51:29 -0800 (PST)
+        id S1729594AbhANVyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 16:54:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729123AbhANVy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 16:54:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAC7523A5E;
+        Thu, 14 Jan 2021 21:53:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610661228;
+        bh=LZDXMs+IwNxt9SSavL2uZ4wrZhW2+BbtcWkyjK6KhwI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GYzayenKVF9dkvKT2ZIbtQ5/nrGyUCSmlvrrbwMeHsgvnxePgZGbLCm3dq2WE6ngM
+         G5A2HT08K4bNn1YkwYb0HJdt7DQvWrrwoAttVv/f6LgLGSApjt7+w0CqVak0bGyb5m
+         K76Gp9Q86tOUJPi3TAV+HddUX/zbyFxZ0TATcbZTa/uM4QUpVb5zUp9Y8iQ6MMVjZH
+         ZSIUcgDFJ9UYmpzrHstyUoSJWkT4CnDIFxYTOvHIUYHuNsSv7wR+LZiYRDwKnioZLX
+         DnrMC9GKADZc1tYwZqNNBaQf1ceK2EkfPyZknebXxZxaRs6FogeEN+fXIwR0v0vRZl
+         eAMsdqV9SCwUg==
+Date:   Thu, 14 Jan 2021 13:53:47 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [PATCH v2] f2fs: fix to keep isolation of atomic write
+Message-ID: <YAC9a6quO2VOirLi@google.com>
+References: <20201230075557.108818-1-yuchao0@huawei.com>
 MIME-Version: 1.0
-References: <20201218031703.3053753-1-saravanak@google.com>
- <X/dpkgTnUk+inKHK@kroah.com> <e28e1f38d87c12a3c714a6573beba6e1@kernel.org>
- <ba2fcbfb-d714-2f73-3bd0-962f49363b62@nvidia.com> <CAGETcx8pdPnH1ndOCoi7Qyz8DDshCfMTzDLQM=oEaCjyds9reA@mail.gmail.com>
- <17703ac8-2238-0b64-3c98-ddadc7ae8a36@nvidia.com> <CAGETcx-=y4Ps41Lb0b_MTCbNTC_ah0cJTmPP+GajywFBc7kEfw@mail.gmail.com>
- <f0240065-a4a0-d985-a696-eba4d42ea580@nvidia.com> <CAGETcx_QmbOcof5T8Wo_zFXKB+qswPN3Cbwz5a6A+m+VrnWg0A@mail.gmail.com>
- <a38c0566-a58e-aaf7-ef57-dc294c4e71b4@nvidia.com>
-In-Reply-To: <a38c0566-a58e-aaf7-ef57-dc294c4e71b4@nvidia.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 14 Jan 2021 13:50:53 -0800
-Message-ID: <CAGETcx9szf-=JjFNp0p-0LmOfOU1MWE3QqDNe-bAn2wXPH9pEQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] Enable fw_devlink=on by default
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230075557.108818-1-yuchao0@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 10:55 AM Jon Hunter <jonathanh@nvidia.com> wrote:
->
->
-> On 14/01/2021 16:52, Saravana Kannan wrote:
->
-> ...
->
-> > Thanks! I think you forgot to enable those logs though. Also, while
-> > you are at it, maybe enable the logs in device_link_add() too please?
->
->
-> Sorry try this one.
->
-> Cheers
-> Jon
+On 12/30, Chao Yu wrote:
+> ThreadA					ThreadB
+> - f2fs_ioc_start_atomic_write
+> - write
+> - f2fs_ioc_commit_atomic_write
+>  - f2fs_commit_inmem_pages
+>  - f2fs_drop_inmem_pages
+>  - f2fs_drop_inmem_pages
+>   - __revoke_inmem_pages
+> 					- f2fs_vm_page_mkwrite
+> 					 - set_page_dirty
+> 					  - tag ATOMIC_WRITTEN_PAGE and add page
+> 					    to inmem_pages list
+>   - clear_inode_flag(FI_ATOMIC_FILE)
+> 					- f2fs_vm_page_mkwrite
+> 					  - set_page_dirty
+> 					   - f2fs_update_dirty_page
+> 					    - f2fs_trace_pid
+> 					     - tag inmem page private to pid
 
-Phew! That took almost 4 hours to debug on the side! I think I figured
-it out. Can you try this patch? If it works or improves things, I'll
-explain why it helps.
+Hmm, how about removing fs/f2fs/trace.c to make private more complicated
+like this? I think we can get IO traces from tracepoints.
 
--Saravana
-
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 5f9eed79a8aa..1c8c65c4a887 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1258,6 +1258,8 @@ DEFINE_SIMPLE_PROP(pinctrl5, "pinctrl-5", NULL)
- DEFINE_SIMPLE_PROP(pinctrl6, "pinctrl-6", NULL)
- DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
- DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
-+DEFINE_SIMPLE_PROP(gpio_compat, "gpio", "#gpio-cells")
-+DEFINE_SIMPLE_PROP(gpios_compat, "gpios", "#gpio-cells")
- DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
- DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
- DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
-@@ -1296,6 +1298,8 @@ static const struct supplier_bindings
-of_supplier_bindings[] = {
-        { .parse_prop = parse_pinctrl6, },
-        { .parse_prop = parse_pinctrl7, },
-        { .parse_prop = parse_pinctrl8, },
-+       { .parse_prop = parse_gpio_compat, },
-+       { .parse_prop = parse_gpios_compat, },
-        { .parse_prop = parse_regulators, },
-        { .parse_prop = parse_gpio, },
-        { .parse_prop = parse_gpios, },
+> 					- truncate
+> 					 - f2fs_invalidate_page
+> 					 - set page->mapping to NULL
+> 					  then it will cause panic once we
+> 					  access page->mapping
+> 
+> The root cause is we missed to keep isolation of atomic write in the case
+> of commit_atomic_write vs mkwrite, let commit_atomic_write helds i_mmap_sem
+> lock to avoid this issue.
+> 
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> ---
+> v2:
+> - use i_mmap_sem to avoid mkwrite racing with below flows:
+>  * f2fs_ioc_start_atomic_write
+>  * f2fs_drop_inmem_pages
+>  * f2fs_commit_inmem_pages
+> 
+>  fs/f2fs/file.c    | 3 +++
+>  fs/f2fs/segment.c | 7 +++++++
+>  2 files changed, 10 insertions(+)
+> 
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 4e6d4b9120a8..a48ec650d691 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -2050,6 +2050,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+>  		goto out;
+>  
+>  	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+> +	down_write(&F2FS_I(inode)->i_mmap_sem);
+>  
+>  	/*
+>  	 * Should wait end_io to count F2FS_WB_CP_DATA correctly by
+> @@ -2060,6 +2061,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+>  			  inode->i_ino, get_dirty_pages(inode));
+>  	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
+>  	if (ret) {
+> +		up_write(&F2FS_I(inode)->i_mmap_sem);
+>  		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>  		goto out;
+>  	}
+> @@ -2073,6 +2075,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+>  	/* add inode in inmem_list first and set atomic_file */
+>  	set_inode_flag(inode, FI_ATOMIC_FILE);
+>  	clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
+> +	up_write(&F2FS_I(inode)->i_mmap_sem);
+>  	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>  
+>  	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index d8570b0359f5..dab870d9faf6 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -327,6 +327,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
+>  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>  	struct f2fs_inode_info *fi = F2FS_I(inode);
+>  
+> +	down_write(&F2FS_I(inode)->i_mmap_sem);
+> +
+>  	while (!list_empty(&fi->inmem_pages)) {
+>  		mutex_lock(&fi->inmem_lock);
+>  		__revoke_inmem_pages(inode, &fi->inmem_pages,
+> @@ -344,6 +346,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
+>  		sbi->atomic_files--;
+>  	}
+>  	spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
+> +
+> +	up_write(&F2FS_I(inode)->i_mmap_sem);
+>  }
+>  
+>  void f2fs_drop_inmem_page(struct inode *inode, struct page *page)
+> @@ -467,6 +471,7 @@ int f2fs_commit_inmem_pages(struct inode *inode)
+>  	f2fs_balance_fs(sbi, true);
+>  
+>  	down_write(&fi->i_gc_rwsem[WRITE]);
+> +	down_write(&F2FS_I(inode)->i_mmap_sem);
+>  
+>  	f2fs_lock_op(sbi);
+>  	set_inode_flag(inode, FI_ATOMIC_COMMIT);
+> @@ -478,6 +483,8 @@ int f2fs_commit_inmem_pages(struct inode *inode)
+>  	clear_inode_flag(inode, FI_ATOMIC_COMMIT);
+>  
+>  	f2fs_unlock_op(sbi);
+> +
+> +	up_write(&F2FS_I(inode)->i_mmap_sem);
+>  	up_write(&fi->i_gc_rwsem[WRITE]);
+>  
+>  	return err;
+> -- 
+> 2.29.2
