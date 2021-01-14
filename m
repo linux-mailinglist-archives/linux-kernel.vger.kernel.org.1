@@ -2,189 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FA22F686F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:55:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A0B2F6887
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729363AbhANRzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:55:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39946 "EHLO mail.kernel.org"
+        id S1728389AbhANR5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:57:00 -0500
+Received: from foss.arm.com ([217.140.110.172]:53928 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727460AbhANRzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:55:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6540D23A57;
-        Thu, 14 Jan 2021 17:54:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610646895;
-        bh=G3GC1hucK9xYKXNXmO3eHSnGDiDgRjhzWWI+4CvgXG4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WvnfJZ7yMZG8M8lcxWCL4NEKnAuoauadu1x9YR8exc+Q2xB6A4luQ7lpXtAsWc4Ei
-         Yw2ecoxY0KNzH/DBWso30nk8buxtrfg+CzqkMwbi5jsvzhiAusXLp46uV/QoZzMcjm
-         H+J30ocesOSwp6R5dRspR6p/BC611rtvlmbIJJJQJWaVGcxewtNFCO8uPxmx66aaXg
-         z7Y2gRIS7FJaQRGLbxCf3ahNsOpbUmtH5u3RMDUDBNIpTPCli8IM9I4iu8V2N26NIf
-         8g0hvqneE3kmBVPqH96BbrdHbRq8o6YiVEOzdWVdAQBhFlOXu5RYikPP5KYVpheZtc
-         vPZqCj59EZkKA==
-Date:   Thu, 14 Jan 2021 19:54:50 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Kosina <trivial@kernel.org>
-Subject: Re: [PATCH RFC] x86/sgx: Add trivial NUMA allocation
-Message-ID: <YACFasdDi0siM2ML@kernel.org>
-References: <20201216135031.21518-1-jarkko@kernel.org>
- <34b1acd1-e769-0dc2-a225-8ce3d2b6a085@intel.com>
+        id S1726428AbhANR47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 12:56:59 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9605D6E;
+        Thu, 14 Jan 2021 09:56:13 -0800 (PST)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D7C63F70D;
+        Thu, 14 Jan 2021 09:56:13 -0800 (PST)
+Subject: Re: [PATCH v2] arm64: PCI: Enable SMC conduit
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
+        lorenzo.pieralisi@arm.com, sudeep.holla@arm.com,
+        bhelgaas@google.com, robh@kernel.org, vidyas@nvidia.com,
+        linux-kernel@vger.kernel.org
+References: <20210113224054.1769514-1-jeremy.linton@arm.com>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <84072c8c-ec38-5d78-62d0-ba8524cffc8f@arm.com>
+Date:   Thu, 14 Jan 2021 11:56:08 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <34b1acd1-e769-0dc2-a225-8ce3d2b6a085@intel.com>
+In-Reply-To: <20210113224054.1769514-1-jeremy.linton@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 04:24:01PM -0800, Dave Hansen wrote:
-> On 12/16/20 5:50 AM, Jarkko Sakkinen wrote:
-> > Create a pointer array for each NUMA node with the references to the
-> > contained EPC sections. Use this in __sgx_alloc_epc_page() to knock the
-> > current NUMA node before the others.
-> 
-> It makes it harder to comment when I'm not on cc.
-> 
-> Hint, hint... ;)
-> 
-> We need a bit more information here as well.  What's the relationship
-> between NUMA nodes and sections?  How does the BIOS tell us which NUMA
-> nodes a section is in?  Is it the same or different from normal RAM and
-> PMEM?
+Hi,
 
-How does it go with pmem?
+Since I don't have a cover letter I forgot the changes list.
 
-> > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> > index c519fc5f6948..0da510763c47 100644
-> > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > @@ -13,6 +13,13 @@
-> >  #include "encl.h"
-> >  #include "encls.h"
-> >  
-> > +struct sgx_numa_node {
-> > +	struct sgx_epc_section *sections[SGX_MAX_EPC_SECTIONS];
-> > +	int nr_sections;
-> > +};
-> 
-> So, we have a 'NUMA node' structure already: pg_data_t.  Why don't we
-> just hang the epc sections off there?
-> 
-> > +static struct sgx_numa_node sgx_numa_nodes[MAX_NUMNODES];
-> 
-> Hmm...  Time to see if I can still do math.
-> 
-> #define SGX_MAX_EPC_SECTIONS            8
-> 
-> (sizeof(struct sgx_epc_section *) + sizeof(int)) * 8 * MAX_NUMNODES
-> 
-> CONFIG_NODES_SHIFT=10 (on Fedora)
-> #define MAX_NUMNODES (1 << NODES_SHIFT)
-> 
-> 12*8*1024 = ~100k.  Yikes.  For *EVERY* system that enables SGX,
-> regardless if they are NUMA or not.'
-> 
-> Trivial is great, this may be too trivial.
-> 
-> Adding a list_head to pg_data_t and sgx_epc_section would add
-> SGX_MAX_EPC_SECTIONS*sizeof(list_head)=192 bytes plus 16 bytes per
-> *present* NUMA node.
+V1->V2:
 
-I'm hearing you.
+Add SMC_PCI_FEATURES calls to verify _READ, _WRITE and _SEG_INFO 
+functions exist.
+Add a _SEG_INFO bus start, end validation against the ACPI table.
+Adjust some function naming, and log messages.
 
-> >  /**
-> >   * __sgx_alloc_epc_page() - Allocate an EPC page
-> >   *
-> > @@ -485,14 +511,19 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_sec
-> >   */
-> >  struct sgx_epc_page *__sgx_alloc_epc_page(void)
-> >  {
-> > -	struct sgx_epc_section *section;
-> >  	struct sgx_epc_page *page;
-> > +	int nid = numa_node_id();
-> >  	int i;
-> >  
-> > -	for (i = 0; i < sgx_nr_epc_sections; i++) {
-> > -		section = &sgx_epc_sections[i];
-> > +	page = __sgx_alloc_epc_page_from_node(nid);
-> > +	if (page)
-> > +		return page;
-> >  
-> > -		page = __sgx_alloc_epc_page_from_section(section);
-> > +	for (i = 0; i < sgx_nr_numa_nodes; i++) {
-> > +		if (i == nid)
-> > +			continue;
-> 
-> Yikes.  That's a horribly inefficient loop.  Consider if nodes 0 and
-> 1023 were the only ones with EPC.  What would this loop do?  I think
-> it's a much better idea to keep a nodemask_t of nodes that have EPC.
-> Then, just do bitmap searches.
 
-OK, so we need to maintain nodemask_t containing nodes with EPC.
+On 1/13/21 4:40 PM, Jeremy Linton wrote:
+> Given that most arm64 platforms' PCI implementations need quirks
+> to deal with problematic config accesses, this is a good place
+> to apply a firmware abstraction. The ARM PCI Configuration Space
+> Access Firmware Interface specification details a standard SMC
+> conduit designed to provide a simple PCI config accessor. This
+> specification enhances the existing ACPI/PCI abstraction and
+> expects power, config, etc., is handled by the platform. It also
+> is very explicit that the resulting config space registers must
+> behave as is specified by the PCI specification.
+> 
+> Hook the ACPI/PCI config path, and when missing MCFG data is
+> detected, attempt to probe the SMC conduit. If the conduit
+> exists and responds to the requested segment,  provided by the
+> ACPI namespace, attach a custom pci_ecam_ops which redirects
+> all config read/write requests to the firmware.
+> 
+> The Arm PCI Configuration Space Access Firmware Interface:
+> https://developer.arm.com/documentation/den0115/latest
+> 
+> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> ---
+>   arch/arm64/kernel/pci.c   | 109 ++++++++++++++++++++++++++++++++++++++
+>   include/linux/arm-smccc.h |  29 ++++++++++
+>   2 files changed, 138 insertions(+)
+> 
+> diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
+> index 1006ed2d7c60..bcbca70ef219 100644
+> --- a/arch/arm64/kernel/pci.c
+> +++ b/arch/arm64/kernel/pci.c
+> @@ -7,6 +7,7 @@
+>    */
+>   
+>   #include <linux/acpi.h>
+> +#include <linux/arm-smccc.h>
+>   #include <linux/init.h>
+>   #include <linux/io.h>
+>   #include <linux/kernel.h>
+> @@ -107,6 +108,112 @@ static int pci_acpi_root_prepare_resources(struct acpi_pci_root_info *ci)
+>   	return status;
+>   }
+>   
+> +static int smccc_pcie_has_conduit(void)
+> +{
+> +	struct arm_smccc_res res;
+> +
+> +	if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE)
+> +		return -EOPNOTSUPP;
+> +
+> +	arm_smccc_smc(SMCCC_PCI_VERSION, 0, 0, 0, 0, 0, 0, 0, &res);
+> +	if ((int)res.a0 < 0)
+> +		return -EOPNOTSUPP;
+> +
+> +	arm_smccc_smc(SMCCC_PCI_FEATURES,
+> +		      SMCCC_PCI_WRITE, 0, 0, 0, 0, 0, 0, &res);
+> +	if ((int)res.a0 < 0)
+> +		return -EOPNOTSUPP;
+> +
+> +	arm_smccc_smc(SMCCC_PCI_FEATURES,
+> +		      SMCCC_PCI_READ, 0, 0, 0, 0, 0, 0, &res);
+> +	if ((int)res.a0 < 0)
+> +		return -EOPNOTSUPP;
+> +
+> +	arm_smccc_smc(SMCCC_PCI_FEATURES,
+> +		      SMCCC_PCI_SEG_INFO, 0, 0, 0, 0, 0, 0, &res);
+> +	if ((int)res.a0 < 0)
+> +		return -EOPNOTSUPP;
+> +
+> +	return 0;
+> +}
+> +
+> +static int smccc_pcie_config_read(struct pci_bus *bus, unsigned int devfn,
+> +				  int where, int size, u32 *val)
+> +{
+> +	struct arm_smccc_res res;
+> +
+> +	devfn |= bus->number << 8;
+> +	devfn |= bus->domain_nr << 16;
+> +
+> +	arm_smccc_smc(SMCCC_PCI_READ, devfn, where, size, 0, 0, 0, 0, &res);
+> +	if (res.a0) {
+> +		*val = ~0;
+> +		return -PCIBIOS_BAD_REGISTER_NUMBER;
+> +	}
+> +
+> +	*val = res.a1;
+> +	return PCIBIOS_SUCCESSFUL;
+> +}
+> +
+> +static int smccc_pcie_config_write(struct pci_bus *bus, unsigned int devfn,
+> +				   int where, int size, u32 val)
+> +{
+> +	struct arm_smccc_res res;
+> +
+> +	devfn |= bus->number << 8;
+> +	devfn |= bus->domain_nr << 16;
+> +
+> +	arm_smccc_smc(SMCCC_PCI_WRITE, devfn, where, size, val, 0, 0, 0, &res);
+> +	if (res.a0)
+> +		return -PCIBIOS_BAD_REGISTER_NUMBER;
+> +
+> +	return PCIBIOS_SUCCESSFUL;
+> +}
+> +
+> +static const struct pci_ecam_ops smccc_pcie_ops = {
+> +	.pci_ops	= {
+> +		.read		= smccc_pcie_config_read,
+> +		.write		= smccc_pcie_config_write,
+> +	}
+> +};
+> +
+> +static struct pci_config_window *
+> +pci_acpi_setup_smccc_mapping(struct acpi_pci_root *root)
+> +{
+> +	struct device *dev = &root->device->dev;
+> +	struct arm_smccc_res res;
+> +	struct resource *bus_res = &root->secondary;
+> +	struct pci_config_window *cfg;
+> +	u16 seg = root->segment;
+> +
+> +	arm_smccc_smc(SMCCC_PCI_SEG_INFO, seg, 0, 0, 0, 0, 0, 0, &res);
+> +	if ((int)res.a0 < 0) {
+> +		pr_warn("PCI: SMC segment %d doesn't exist\n", seg);
+> +		return NULL;
+> +	}
+> +
+> +	if (FIELD_GET(SMCCC_PCI_SEG_INFO_START_BUS, res.a1) != bus_res->start ||
+> +	    FIELD_GET(SMCCC_PCI_SEG_INFO_END_BUS, res.a1) != bus_res->end) {
+> +		pr_warn("PCI: SMC segment %d doesn't match ACPI description\n", seg);
+> +		return NULL;
+> +	}
+> +
+> +	cfg = kzalloc(sizeof(*cfg), GFP_KERNEL);
+> +	if (!cfg)
+> +		return NULL;
+> +
+> +	cfg->parent = dev;
+> +	cfg->ops = &smccc_pcie_ops;
+> +	cfg->busr.start = bus_res->start;
+> +	cfg->busr.end = bus_res->end;
+> +	cfg->busr.flags = IORESOURCE_BUS;
+> +	cfg->res.name = "PCI SMCCC";
+> +
+> +	pr_info("PCI: SMC conduit attached to segment %d\n", seg);
+> +
+> +	return cfg;
+> +}
+> +
+>   /*
+>    * Lookup the bus range for the domain in MCFG, and set up config space
+>    * mapping.
+> @@ -125,6 +232,8 @@ pci_acpi_setup_ecam_mapping(struct acpi_pci_root *root)
+>   
+>   	ret = pci_mcfg_lookup(root, &cfgres, &ecam_ops);
+>   	if (ret) {
+> +		if (!smccc_pcie_has_conduit())
+> +			return pci_acpi_setup_smccc_mapping(root);
+>   		dev_err(dev, "%04x:%pR ECAM region not found\n", seg, bus_res);
+>   		return NULL;
+>   	}
+> diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
+> index f860645f6512..a1a8fe0ea5aa 100644
+> --- a/include/linux/arm-smccc.h
+> +++ b/include/linux/arm-smccc.h
+> @@ -89,6 +89,35 @@
+>   
+>   #define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED	1
+>   
+> +/* PCI ECAM conduit (defined by ARM DEN0115A) */
+> +#define SMCCC_PCI_VERSION						\
+> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
+> +			   ARM_SMCCC_SMC_32,				\
+> +			   ARM_SMCCC_OWNER_STANDARD, 0x0130)
+> +
+> +#define SMCCC_PCI_FEATURES						\
+> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
+> +			   ARM_SMCCC_SMC_32,				\
+> +			   ARM_SMCCC_OWNER_STANDARD, 0x0131)
+> +
+> +#define SMCCC_PCI_READ							\
+> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
+> +			   ARM_SMCCC_SMC_32,				\
+> +			   ARM_SMCCC_OWNER_STANDARD, 0x0132)
+> +
+> +#define SMCCC_PCI_WRITE							\
+> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
+> +			   ARM_SMCCC_SMC_32,				\
+> +			   ARM_SMCCC_OWNER_STANDARD, 0x0133)
+> +
+> +#define SMCCC_PCI_SEG_INFO						\
+> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
+> +			   ARM_SMCCC_SMC_32,				\
+> +			   ARM_SMCCC_OWNER_STANDARD, 0x0134)
+> +
+> +#define SMCCC_PCI_SEG_INFO_START_BUS  GENMASK(7, 0)
+> +#define SMCCC_PCI_SEG_INFO_END_BUS    GENMASK(15, 8)
+> +
+>   /* Paravirtualised time calls (defined by ARM DEN0057A) */
+>   #define ARM_SMCCC_HV_PV_TIME_FEATURES				\
+>   	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
+> 
 
-Probably also split the patch to a patch that builds nodemask_t,
-and the one that uses it. They are separately reviewable clearly.
-The allocation part can considered sorted out now.
-> 
-> > +		page = __sgx_alloc_epc_page_from_node(i);
-> >  		if (page)
-> >  			return page;
-> >  	}
-> > @@ -661,11 +692,28 @@ static inline u64 __init sgx_calc_section_metric(u64 low, u64 high)
-> >  	       ((high & GENMASK_ULL(19, 0)) << 32);
-> >  }
-> >  
-> > +static int __init sgx_pfn_to_nid(unsigned long pfn)
-> > +{
-> > +	pg_data_t *pgdat;
-> > +	int nid;
-> > +
-> > +	for (nid = 0; nid < nr_node_ids; nid++) {
-> > +		pgdat = NODE_DATA(nid);
-> > +
-> > +		if (pfn >= pgdat->node_start_pfn &&
-> > +		    pfn < (pgdat->node_start_pfn + pgdat->node_spanned_pages))
-> > +			return nid;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> 
-> I'm not positive this works.  I *thought* these ->node_start_pfn and
-> ->node_spanned_pages are really only guaranteed to cover memory which is
-> managed by the kernel and has 'struct page' for it.
-> 
-> EPC doesn't have a 'struct page', so won't necessarily be covered by the
-> pgdat-> and zone-> ranges.  I *think* you may have to go all the way
-> back to the ACPI SRAT for this.
-> 
-> It would also be *possible* to have an SRAT constructed like this:
-> 
-> 0->1GB System RAM - Node 0
-> 1->2GB Reserved   - Node 1
-> 2->3GB System RAM - Node 0
-> 
-> Where the 1->2GB is EPC.  The Node 0 pg_data_t would be:
-> 
-> 	pgdat->node_start_pfn = 0
-> 	pgdat->node_spanned_pages = 3GB
-
-If I've understood the current Linux memory architecture correctly.
-
-- Memory is made available through mm/memory_hotplug.c, which is populated
-  by drivers/acpi/acpi_memhotplug.c.
-- drivers/acpi/numa/srat.c provides the conversion API from proximity node to
-  logical node but I'm not *yet* sure how the interaction goes with memory
-  hot plugging
-
-I'm not sure of I'm following the idea of alternative SRAT construciton.
-So are you saying that srat.c would somehow group pxm's with EPC to
-specific node numbers?
-
-/Jarkko
