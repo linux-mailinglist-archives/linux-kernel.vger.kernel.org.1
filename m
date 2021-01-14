@@ -2,163 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645522F6CEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 693D82F6CF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729368AbhANVMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 16:12:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726625AbhANVMG (ORCPT
+        id S1729642AbhANVNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 16:13:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34244 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728764AbhANVNP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 16:12:06 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A62C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:11:25 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id o6so14027975iob.10
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:11:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M8WYmU1OYy2bAwdAfp39SgsoayoGxiD9AS0X3mtcrDU=;
-        b=e3m26mYJjCGBBdtqDDHsBYwE7TbY6swQ2IwrVvIrw742/+Pc51y1VHryFH/8mkKHa3
-         r0i9z+Qm5krgPVFtetMDbxdLKAgZgAQoESA5W5DExpgIUL2QvmbPeIiM86+4GQKkW0vw
-         cfF8R78HLM3uNjYI6HetbcovnaWzijtUJzZ/s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M8WYmU1OYy2bAwdAfp39SgsoayoGxiD9AS0X3mtcrDU=;
-        b=YzWo1+XfwRL+xMDP1hetLGVgHLHj6Smt31ljaHNLcJySfpGlzGQVmDkHdQONfFA3Z6
-         7uX2idP2K93BTLqPWyX594Gwu53BLFmTqdx+rEJCcBRI/xYS7LQ5iwAYdm3GTIC28rB7
-         /y/iJRU0Bm6Lzdc2y2fwPptZMuZoyfmXPejdtUD3thMIdU0JSoCQIp4AaTU+TqU0QBEz
-         EhvnDcQ6Hfh5aSwTCF9TijCtL08OUsUrBieIG2KYG0qMkpVajlGXU2GLPmVUizI2k8ur
-         TVcbKeA9se4BSF5DZWD13JhhPzdVxyDMBEiK93yDbgR/MDbBAmdgYnVOazDcgRw2pwzq
-         UKOg==
-X-Gm-Message-State: AOAM53147prdztA4GlrBdOyUmmR2fwjcCwHjOJP1LoPAnpA0G6nrzf42
-        3wgAAIo/qGOyBGNWqC5ZIA/34pF/eRAaHnb0W1Fu
-X-Google-Smtp-Source: ABdhPJyRJhPjAGjwKf+7QRz7LzAj+ARJ1RCho5T78E0d2vC821Cj5/V5y/gXoeFDnOHUkU3yGgT1ZaZOqJBkk2z3zhs=
-X-Received: by 2002:a05:6638:13c6:: with SMTP id i6mr6096314jaj.141.1610658685204;
- Thu, 14 Jan 2021 13:11:25 -0800 (PST)
+        Thu, 14 Jan 2021 16:13:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610658708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GSCfvzaG4WiMcrguQP0u8pZSoPVwwncg644eemt1prI=;
+        b=TH2q87EojUtIhPXJp01xZAiODM6aBsbGeoqSX8tktMIhaP9JP1FYBQX37h29U0wXIXOZ9o
+        fKdPVp6U4h5fIC8S6dPwjLvzCHJ5uJwou5OvcUAA/p37KDYYRDOfGMr05XoycNnRsZmicG
+        hdTkdwDHzzy2JeNBL5imfu9zi4M3bQs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-554-A6oLVsTLPxa2lDEKxgFWPw-1; Thu, 14 Jan 2021 16:11:46 -0500
+X-MC-Unique: A6oLVsTLPxa2lDEKxgFWPw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A89D806663;
+        Thu, 14 Jan 2021 21:11:45 +0000 (UTC)
+Received: from redhat.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E150A10016F7;
+        Thu, 14 Jan 2021 21:11:43 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 16:11:41 -0500
+From:   Jarod Wilson <jarod@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v2] bonding: add a vlan+mac tx hashing option
+Message-ID: <20210114211141.GH1171031@redhat.com>
+References: <20201218193033.6138-1-jarod@redhat.com>
+ <20210113223548.1171655-1-jarod@redhat.com>
+ <20210113175818.7dce3076@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <CAOnJCU+mCPwbeOQpmHmu3ar_17otmgftiKHLL+Z4_nExpj0=cA@mail.gmail.com>
- <mhng-4458ef4d-9443-491e-9118-aec3596058ed@penguin>
-In-Reply-To: <mhng-4458ef4d-9443-491e-9118-aec3596058ed@penguin>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Thu, 14 Jan 2021 13:11:14 -0800
-Message-ID: <CAOnJCUJON3B6ugWDY1=rcDOMS2+m=SVBsiAEnwV=QDL7omnsfA@mail.gmail.com>
-Subject: Re: [PATCH 3/4] RISC-V: Fix L1_CACHE_BYTES for RV32
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Atish Patra <Atish.Patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113175818.7dce3076@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 11:46 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->
-> On Thu, 14 Jan 2021 10:33:01 PST (-0800), atishp@atishpatra.org wrote:
-> > On Wed, Jan 13, 2021 at 9:10 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> >>
-> >> On Thu, 07 Jan 2021 01:26:51 PST (-0800), Atish Patra wrote:
-> >> > SMP_CACHE_BYTES/L1_CACHE_BYTES should be defined as 32 instead of
-> >> > 64 for RV32. Otherwise, there will be hole of 32 bytes with each memblock
-> >> > allocation if it is requested to be aligned with SMP_CACHE_BYTES.
-> >> >
-> >> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> >> > ---
-> >> >  arch/riscv/include/asm/cache.h | 4 ++++
-> >> >  1 file changed, 4 insertions(+)
-> >> >
-> >> > diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
-> >> > index 9b58b104559e..c9c669ea2fe6 100644
-> >> > --- a/arch/riscv/include/asm/cache.h
-> >> > +++ b/arch/riscv/include/asm/cache.h
-> >> > @@ -7,7 +7,11 @@
-> >> >  #ifndef _ASM_RISCV_CACHE_H
-> >> >  #define _ASM_RISCV_CACHE_H
-> >> >
-> >> > +#ifdef CONFIG_64BIT
-> >> >  #define L1_CACHE_SHIFT               6
-> >> > +#else
-> >> > +#define L1_CACHE_SHIFT               5
-> >> > +#endif
-> >> >
-> >> >  #define L1_CACHE_BYTES               (1 << L1_CACHE_SHIFT)
-> >>
-> >> Should we not instead just
-> >>
-> >> #define SMP_CACHE_BYTES L1_CACHE_BYTES
-> >>
-> >> like a handful of architectures do?
-> >>
-> >
-> > The generic code already defines it that way in include/linux/cache.h
-> >
-> >> The cache size is sort of fake here, as we don't have any non-coherent
-> >> mechanisms, but IIRC we wrote somewhere that it's recommended to have 64-byte
-> >> cache lines in RISC-V implementations as software may assume that for
-> >> performance reasons.  Not really a strong reason, but I'd prefer to just make
-> >> these match.
-> >>
-> >
-> > If it is documented somewhere in the kernel, we should update that. I
-> > think SMP_CACHE_BYTES being 64
-> > actually degrades the performance as there will be a fragmented memory
-> > blocks with 32 bit bytes gap wherever
-> > SMP_CACHE_BYTES is used as an alignment requirement.
->
-> I don't buy that: if you're trying to align to the cache size then the gaps are
-> the whole point.  IIUC the 64-byte cache lines come from DDR, not XLEN, so
-> there's really no reason for these to be different between the base ISAs.
->
+On Wed, Jan 13, 2021 at 05:58:18PM -0800, Jakub Kicinski wrote:
+> On Wed, 13 Jan 2021 17:35:48 -0500 Jarod Wilson wrote:
+> > This comes from an end-user request, where they're running multiple VMs on
+> > hosts with bonded interfaces connected to some interest switch topologies,
+> > where 802.3ad isn't an option. They're currently running a proprietary
+> > solution that effectively achieves load-balancing of VMs and bandwidth
+> > utilization improvements with a similar form of transmission algorithm.
+> > 
+> > Basically, each VM has it's own vlan, so it always sends its traffic out
+> > the same interface, unless that interface fails. Traffic gets split
+> > between the interfaces, maintaining a consistent path, with failover still
+> > available if an interface goes down.
+> > 
+> > This has been rudimetarily tested to provide similar results, suitable for
+> > them to use to move off their current proprietary solution. A patch for
+> > iproute2 is forthcoming as well, to properly support the new mode there as
+> > well.
+> 
+> > Signed-off-by: Jarod Wilson <jarod@redhat.com>
+> > ---
+> > v2: verified netlink interfaces working, added Documentation, changed
+> > tx hash mode name to vlan+mac for consistency and clarity.
+> > 
+> >  Documentation/networking/bonding.rst | 13 +++++++++++++
+> >  drivers/net/bonding/bond_main.c      | 27 +++++++++++++++++++++++++--
+> >  drivers/net/bonding/bond_options.c   |  1 +
+> >  include/linux/netdevice.h            |  1 +
+> >  include/uapi/linux/if_bonding.h      |  1 +
+> >  5 files changed, 41 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Documentation/networking/bonding.rst b/Documentation/networking/bonding.rst
+> > index adc314639085..c78ceb7630a0 100644
+> > --- a/Documentation/networking/bonding.rst
+> > +++ b/Documentation/networking/bonding.rst
+> > @@ -951,6 +951,19 @@ xmit_hash_policy
+> >  		packets will be distributed according to the encapsulated
+> >  		flows.
+> >  
+> > +	vlan+mac
+> > +
+> > +		This policy uses a very rudimentary vland ID and source mac
+> > +		ID hash to load-balance traffic per-vlan, with failover
+> > +		should one leg fail. The intended use case is for a bond
+> > +		shared by multiple virtual machines, all configured to
+> > +		use their own vlan, to give lacp-like functionality
+> > +		without requiring lacp-capable switching hardware.
+> > +
+> > +		The formula for the hash is simply
+> > +
+> > +		hash = (vlan ID) XOR (source MAC)
+> 
+> But in the code it's only using one byte of the MAC, currently.
+> 
+> I think that's fine for the particular use case but should we call out
+> explicitly in the commit message why it's considered sufficient?
+> 
+> Someone can change it later, if needed, but best if we spell out the
+> current motivation.
 
-Got your point. I noticed this when fixing the resource tree issue
-where the SMP_CACHE_BYTES
-alignment was not intentional but causing the issue. The real issue
-was solved via another patch in this series though.
+In truth, this code started out as a copy of bond_eth_hash(), which also
+only uses the last byte, though of both source and destination macs. In
+the typical use case for the requesting user, the bond is formed from two
+onboard NICs, which typically have adjacent mac addresses, i.e.,
+AA:BB:CC:DD:EE:01 and AA:BB:CC:DD:EE:02, so only the last byte is really
+relevant to hash differently, but in thinking about it, a replacement NIC
+because an onboard one died could have the same last byte, and maybe we
+ought to just go full source mac right off the go here.
 
-Just to clarify, if the allocation function intends to allocate
-consecutive memory, it should use 32 instead of SMP_CACHE_BYTES.
-This will lead to a #ifdef macro in the code.
+Something like this instead maybe:
 
-> > In addition to that, Geert Uytterhoeven mentioned some panic on vex32
-> > without this patch.
-> > I didn't see anything in Qemu though.
->
-> Something like that is probably only going to show up on real hardware, QEMU
-> doesn't really do anything with the cache line size.  That said, as there's
-> nothing in our kernel now related to non-coherent memory there really should
-> only be performance issue (at least until we have non-coherent systems).
->
-> I'd bet that the change is just masking some other bug, either in the software
-> or the hardware.  I'd prefer to root cause this rather than just working around
-> it, as it'll probably come back later and in a more difficult way to find.
->
+static u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
+{
+        struct ethhdr *mac_hdr = (struct ethhdr *)skb_mac_header(skb);
+        u32 srcmac = 0;
+        u16 vlan;
+        int i;
 
-Agreed. @Geert Uytterhoeven Can you do a further analysis of the panic
-you were saying ?
-We may need to change an alignment requirement to 32 for RV32 manually
-at some place in code.
+        for (i = 0; i < ETH_ALEN; i++)
+                srcmac = (srcmac << 8) | mac_hdr->h_source[i];
 
-> >> _______________________________________________
-> >> linux-riscv mailing list
-> >> linux-riscv@lists.infradead.org
-> >> http://lists.infradead.org/mailman/listinfo/linux-riscv
+        if (!skb_vlan_tag_present(skb))
+                return srcmac;
 
+        vlan = skb_vlan_tag_get(skb);
 
+        return vlan ^ srcmac;
+}
+
+Then the documentation is spot-on, and we're future-proof, though
+marginally less performant in calculating the hash, which may have been a
+consideration when the original function was written, but is probably
+basically irrelevant w/modern systems...
+
+> >  	The default value is layer2.  This option was added in bonding
+> >  	version 2.6.3.  In earlier versions of bonding, this parameter
+> >  	does not exist, and the layer2 policy is the only policy.  The
+> 
+> > +static inline u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
+> 
+> Can we drop the inline? It's a static function called once.
+
+Works for me. That was also inherited by copying bond_eth_hash(). :)
+
+> > +{
+> > +	struct ethhdr *mac_hdr = (struct ethhdr *)skb_mac_header(skb);
+> 
+> I don't see anything in the patch making sure the interface actually
+> has a L2 header. Should we validate somehow the ifc is Ethernet?
+
+I don't think it's necessary. There doesn't appear to be any explicit
+check for BOND_XMIT_POLICY_LAYER2 either. I believe we're guaranteed to
+not have anything but an ethernet header here, as the only other type I'm
+aware of being supported is Infiniband, but we limit that to active-backup
+only, and xmit_hash_policy isn't valid for active-backup.
 
 -- 
-Regards,
-Atish
+Jarod Wilson
+jarod@redhat.com
+
