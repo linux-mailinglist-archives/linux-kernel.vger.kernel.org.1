@@ -2,158 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEF22F6AB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8B72F6ABD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729825AbhANTRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:17:41 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:62254 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729770AbhANTRk (ORCPT
+        id S1729908AbhANTSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:18:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727530AbhANTSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:17:40 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610651835; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=2CS72TCnxt3Fqc0caK4ll84m6yjTGbSgg54c4Wku140=; b=JRW20ab7R3JnI44AmOkZa5l4BxdJzZciDPVidPXGeZw15adzDHjIO/R8U5mok3iuRH2J7vOx
- v8nsSk1sbuzFqpiyEs0oDKuwy+/hpSVZ+KPEcM4cP4O8aAh02J72wJUvvS0QOB5W1+AjAqhT
- wEdw29tYhb4Xdnm6iduquB9OphQ=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
- 6000989e9dddba11a6cce4bf (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 19:16:46
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0DBFCC43461; Thu, 14 Jan 2021 19:16:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F24A6C433C6;
-        Thu, 14 Jan 2021 19:16:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F24A6C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        carl.yin@quectel.com, naveen.kumar@quectel.com,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v2 3/3] bus: mhi: core: Process execution environment changes serially
-Date:   Thu, 14 Jan 2021 11:16:35 -0800
-Message-Id: <1610651795-31287-4-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1610651795-31287-1-git-send-email-bbhatt@codeaurora.org>
-References: <1610651795-31287-1-git-send-email-bbhatt@codeaurora.org>
+        Thu, 14 Jan 2021 14:18:16 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA419C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:17:35 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id g15so4418005pgu.9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 11:17:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BrtldUOeu+hnXE15tO0kF01exYGRde7kUMNnM3ud9F4=;
+        b=cd9onR3Brmte3kL09DzE0Cgh6BPn45EsyBihDJu6gX6usEh8TmbwtpKcBJSSUqFGNh
+         1voOWLtw2pBBaw9sHzfW21IQbhzAdAEiQW7heBui7ygrZaiTcMfMHx4UstNbpGh/l15f
+         l91UIVsYdHy9V2TOUwosP6u4nN6QhkYfNAztwb47PmA8LCzFTMCl7PXSLj+IYHeUY6Ws
+         MFMVUr684KSA7FxFYNSFqYcq/OnPkslp735XBmzvF+LSp8ZN2/sIKWpPseHTiSXg3QEA
+         osJ+5khHsGD8KPCz4IX6axFFId+vl/BqIVb59pKrekADB4YoUCibt6jidJ1DEd7nq29l
+         EAYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BrtldUOeu+hnXE15tO0kF01exYGRde7kUMNnM3ud9F4=;
+        b=K/S8rnlWZLB6GjA6iBLr4NaJn3tBA3yVf8sG7DIpVcPf0lF7jEY2XA+wsiHWJwtElB
+         Vz5Ef0LzrRvCSzQSxr8AF3i0KvH5OQZu4BKgyhjHnJr07EazbRWEQwauGdzLp4MiwPB3
+         OfTvo9etQy8DANtSz+m2OXvA5biLdosCUb9l5FQx/YG+8dbmmTrFE77Z0Fvgz9eMX+7j
+         wfHnKlNkmC8L/+2inz17/nVwqyjHmBmgo+MpHPbVwFuowwPW/Jp8SU2rSe5pWhHmGaVw
+         FmXDnGDK4kbj8+0vKiMkL+uVspHv2rADddOpD2f1MhkY+tgiZ/Nd259OqHrzgj5O3cdm
+         f6Ow==
+X-Gm-Message-State: AOAM530vcI+ixRemD43L2AwhBy/PJuZvx7qpo5DGUjIVA1663ggFV+7g
+        nBC3Ux2NwmCRQTnxrouOY8JC2Q==
+X-Google-Smtp-Source: ABdhPJzbwD0JrHREGhIIZoS98kiThcriePWQtFFWefgrpZhr93P+JXhUBVD+nQwpFcRyYddS+wBxNQ==
+X-Received: by 2002:aa7:979d:0:b029:1a4:3b76:a559 with SMTP id o29-20020aa7979d0000b02901a43b76a559mr8716680pfp.49.1610651855097;
+        Thu, 14 Jan 2021 11:17:35 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id t23sm6015241pfc.0.2021.01.14.11.17.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 11:17:34 -0800 (PST)
+Date:   Thu, 14 Jan 2021 11:17:27 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v2 02/14] KVM: SVM: Free sev_asid_bitmap during init if
+ SEV setup fails
+Message-ID: <YACYx68nBGOe2ROg@google.com>
+References: <20210114003708.3798992-1-seanjc@google.com>
+ <20210114003708.3798992-3-seanjc@google.com>
+ <b1a6403b-249d-9e98-3a2d-7117ed03f392@amd.com>
+ <YAB7ceKeOdfkDnoA@google.com>
+ <12cfd19a-7f6f-c422-5d6a-5317c1df72ae@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <12cfd19a-7f6f-c422-5d6a-5317c1df72ae@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In current design, whenever the BHI interrupt is fired, the execution
-environment is updated. This can cause race conditions and impede any
-ongoing power up/down processing. For example, if a power down is in
-progress and the host has updated the execution environment to a
-local "disabled" state, any BHI interrupt firing later could replace
-it with the value from the BHI EE register. Another example would be
-that the device can enter mission mode while device creation for SBL
-is still going on, leading to multiple attempts at opening the same
-channel.
+On Thu, Jan 14, 2021, Tom Lendacky wrote:
+> On 1/14/21 11:12 AM, Sean Christopherson wrote:
+> > On Thu, Jan 14, 2021, Tom Lendacky wrote:
+> > > On 1/13/21 6:36 PM, Sean Christopherson wrote:
+> > > > Free sev_asid_bitmap if the reclaim bitmap allocation fails, othwerise
+> > > > KVM will unnecessarily keep the bitmap when SEV is not fully enabled.
+> > > > 
+> > > > Freeing the page is also necessary to avoid introducing a bug when a
+> > > > future patch eliminates svm_sev_enabled() in favor of using the global
+> > > > 'sev' flag directly.  While sev_hardware_enabled() checks max_sev_asid,
+> > > > which is true even if KVM setup fails, 'sev' will be true if and only
+> > > > if KVM setup fully succeeds.
+> > > > 
+> > > > Fixes: 33af3a7ef9e6 ("KVM: SVM: Reduce WBINVD/DF_FLUSH invocations")
+> 
+> Oops, missed this last time... I don't think the Fixes: tag is needed
+> anymore unless you don't want the memory consumption of the first bitmap,
 
-Ensure that EE changes are handled only from appropriate places and
-occur one after another and handle only PBL or RDDM EE changes as
-critical events directly from the interrupt handler. This also makes
-sure that we use the correct execution environment to notify the
-controller driver when the device resets to one of the PBL execution
-environments.
+If Fixes is viewed as purely a "this needs to be backported", then yes, it
+should be dropped.  But, since KVM policy is to backport only patches that are
+explicitly tagged with stable@, I like to use to Fixes to create a paper trail
+for bug fixes even if the bug is essentially benign.
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
----
- drivers/bus/mhi/core/main.c | 14 ++++++++------
- drivers/bus/mhi/core/pm.c   |  5 +++--
- 2 files changed, 11 insertions(+), 8 deletions(-)
+That being said, I have no objection to dropping it if anyone feels strongly
+about not playing fast and loose with Fixes.
 
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index 1a7192e..2929e9f 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -411,7 +411,7 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 	enum mhi_state state = MHI_STATE_MAX;
- 	enum mhi_pm_state pm_state = 0;
--	enum mhi_ee_type ee = 0;
-+	enum mhi_ee_type ee = MHI_EE_MAX;
- 
- 	write_lock_irq(&mhi_cntrl->pm_lock);
- 	if (!MHI_REG_ACCESS_VALID(mhi_cntrl->pm_state)) {
-@@ -420,8 +420,7 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
- 	}
- 
- 	state = mhi_get_mhi_state(mhi_cntrl);
--	ee = mhi_cntrl->ee;
--	mhi_cntrl->ee = mhi_get_exec_env(mhi_cntrl);
-+	ee = mhi_get_exec_env(mhi_cntrl);
- 	dev_dbg(dev, "local ee:%s device ee:%s dev_state:%s\n",
- 		TO_MHI_EXEC_STR(mhi_cntrl->ee), TO_MHI_EXEC_STR(ee),
- 		TO_MHI_STATE_STR(state));
-@@ -439,8 +438,9 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
- 		if (!mhi_is_active(mhi_cntrl))
- 			goto exit_intvec;
- 
--		if (mhi_cntrl->ee == MHI_EE_RDDM && mhi_cntrl->ee != ee) {
-+		if (ee == MHI_EE_RDDM && mhi_cntrl->ee != MHI_EE_RDDM) {
- 			mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_EE_RDDM);
-+			mhi_cntrl->ee = ee;
- 			wake_up_all(&mhi_cntrl->state_event);
- 		}
- 		goto exit_intvec;
-@@ -450,10 +450,12 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
- 		wake_up_all(&mhi_cntrl->state_event);
- 
- 		/* For fatal errors, we let controller decide next step */
--		if (MHI_IN_PBL(ee))
-+		if (MHI_IN_PBL(ee)) {
- 			mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
--		else
-+			mhi_cntrl->ee = ee;
-+		} else {
- 			mhi_pm_sys_err_handler(mhi_cntrl);
-+		}
- 	}
- 
- exit_intvec:
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index 44aa7eb..c870fa8 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -384,14 +384,15 @@ static int mhi_pm_mission_mode_transition(struct mhi_controller *mhi_cntrl)
- 
- 	write_lock_irq(&mhi_cntrl->pm_lock);
- 	if (MHI_REG_ACCESS_VALID(mhi_cntrl->pm_state))
--		mhi_cntrl->ee = mhi_get_exec_env(mhi_cntrl);
-+		ee = mhi_get_exec_env(mhi_cntrl);
- 
--	if (!MHI_IN_MISSION_MODE(mhi_cntrl->ee)) {
-+	if (!MHI_IN_MISSION_MODE(ee)) {
- 		mhi_cntrl->pm_state = MHI_PM_LD_ERR_FATAL_DETECT;
- 		write_unlock_irq(&mhi_cntrl->pm_lock);
- 		wake_up_all(&mhi_cntrl->state_event);
- 		return -EIO;
- 	}
-+	mhi_cntrl->ee = ee;
- 	write_unlock_irq(&mhi_cntrl->pm_lock);
- 
- 	wake_up_all(&mhi_cntrl->state_event);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+> should the allocation of the second bitmap fail, until kvm_amd is rmmod'ed.
+> Up to you.
