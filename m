@@ -2,103 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BCF2F5F6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C6B2F5FB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727784AbhANLA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 06:00:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728769AbhANLAy (ORCPT
+        id S1727979AbhANLTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 06:19:22 -0500
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:53162 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726262AbhANLTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 06:00:54 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C58C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 03:00:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DIj4I4aRg2hxrhAvA7PTugIJcF97MBBWwvgR9lnTVHU=; b=VaZsinXlRVA1TNv8E5c2IUIldB
-        7IEd37sBl7J75xudE3XfnOfE1/XyIEwG9m1+9uYwo7Vj+UfDqztV28dZNdMRPBKHx3h92uzr/36+b
-        1+W5Hhca1Q5p5NO+4A5sMgu//NZ5BvaMrWy1mfdcZKdtu7EOhWMZ+4dBWz5TA8NjG9MxVGybM9Y9i
-        XXFR40oShM6IWMgTTbJb2JeaY2ovavuFhVwdI89t/fPbQeZtd7zpohKSSz6Jb8vqOPkdZa3bZLVIr
-        KDz9SA3TsHMwy3/BAqpvSqEHT2S4Xev0VOLPUbXi3FXwAVrlQqFyRYjgUz/G6CFYb2+tkJfBRVlCX
-        Jd4CQYqg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l00LI-007TBg-Cd; Thu, 14 Jan 2021 10:59:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BCD7030015A;
-        Thu, 14 Jan 2021 11:59:01 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AE2BE200D400D; Thu, 14 Jan 2021 11:59:01 +0100 (CET)
-Date:   Thu, 14 Jan 2021 11:59:01 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        aryabinin@virtuozzo.com, dvyukov@google.com, keescook@chromium.org
-Subject: [PATCH] ubsan: Require GCC-8+ or Clang to use UBSAN
-Message-ID: <YAAj9aAcPsV9I6UL@hirez.programming.kicks-ass.net>
-References: <590998aa9cc50f431343f76cae72b2abf8ac1fdd.1608699683.git.jpoimboe@redhat.com>
- <20210104151317.GR3021@hirez.programming.kicks-ass.net>
+        Thu, 14 Jan 2021 06:19:20 -0500
+Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 148523B2D11;
+        Thu, 14 Jan 2021 11:03:39 +0000 (UTC)
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 5EAE2FF802;
+        Thu, 14 Jan 2021 11:02:15 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 12:02:14 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Device Tree List <devicetree@vger.kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH v12 1/4] dt-bindings: phy: Add sparx5-serdes bindings
+Message-ID: <20210114110214.GY3654@piout.net>
+References: <20210107091924.1569575-1-steen.hegelund@microchip.com>
+ <20210107091924.1569575-2-steen.hegelund@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210104151317.GR3021@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210107091924.1569575-2-steen.hegelund@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 04:13:17PM +0100, Peter Zijlstra wrote:
-> On Tue, Dec 22, 2020 at 11:04:54PM -0600, Josh Poimboeuf wrote:
-> > GCC 7 has a known bug where UBSAN ignores '-fwrapv' and generates false
-> > signed-overflow-UB warnings.  The type mismatch between 'i' and
-> > 'nr_segs' in copy_compat_iovec_from_user() is causing such a warning,
-> > which also happens to violate uaccess rules:
-> > 
-> >   lib/iov_iter.o: warning: objtool: iovec_from_user()+0x22d: call to __ubsan_handle_add_overflow() with UACCESS enabled
-> > 
-> > Fix it by making the variable types match.
-> > 
-> > This is similar to a previous commit:
-> > 
-> >   29da93fea3ea ("mm/uaccess: Use 'unsigned long' to placate UBSAN warnings on older GCC versions")
+On 07/01/2021 10:19:21+0100, Steen Hegelund wrote:
+> Document the Sparx5 ethernet serdes phy driver bindings.
 > 
-> Maybe it's time we make UBSAN builds depend on GCC-8+ ?
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
----
-Subject: ubsan: Require GCC-8+ or Clang to use UBSAN
+> ---
+>  .../bindings/phy/microchip,sparx5-serdes.yaml | 100 ++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml b/Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
+> new file mode 100644
+> index 000000000000..bdbdb3bbddbe
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
+> @@ -0,0 +1,100 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/phy/microchip,sparx5-serdes.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip Sparx5 Serdes controller
+> +
+> +maintainers:
+> +  - Steen Hegelund <steen.hegelund@microchip.com>
+> +
+> +description: |
+> +  The Sparx5 SERDES interfaces share the same basic functionality, but
+> +  support different operating modes and line rates.
+> +
+> +  The following list lists the SERDES features:
+> +
+> +  * RX Adaptive Decision Feedback Equalizer (DFE)
+> +  * Programmable continuous time linear equalizer (CTLE)
+> +  * Rx variable gain control
+> +  * Rx built-in fault detector (loss-of-lock/loss-of-signal)
+> +  * Adjustable tx de-emphasis (FFE)
+> +  * Tx output amplitude control
+> +  * Supports rx eye monitor
+> +  * Multiple loopback modes
+> +  * Prbs generator and checker
+> +  * Polarity inversion control
+> +
+> +  SERDES6G:
+> +
+> +  The SERDES6G is a high-speed SERDES interface, which can operate at
+> +  the following data rates:
+> +
+> +  * 100 Mbps (100BASE-FX)
+> +  * 1.25 Gbps (SGMII/1000BASE-X/1000BASE-KX)
+> +  * 3.125 Gbps (2.5GBASE-X/2.5GBASE-KX)
+> +  * 5.15625 Gbps (5GBASE-KR/5G-USXGMII)
+> +
+> +  SERDES10G
+> +
+> +  The SERDES10G is a high-speed SERDES interface, which can operate at
+> +  the following data rates:
+> +
+> +  * 100 Mbps (100BASE-FX)
+> +  * 1.25 Gbps (SGMII/1000BASE-X/1000BASE-KX)
+> +  * 3.125 Gbps (2.5GBASE-X/2.5GBASE-KX)
+> +  * 5 Gbps (QSGMII/USGMII)
+> +  * 5.15625 Gbps (5GBASE-KR/5G-USXGMII)
+> +  * 10 Gbps (10G-USGMII)
+> +  * 10.3125 Gbps (10GBASE-R/10GBASE-KR/USXGMII)
+> +
+> +  SERDES25G
+> +
+> +  The SERDES25G is a high-speed SERDES interface, which can operate at
+> +  the following data rates:
+> +
+> +  * 1.25 Gbps (SGMII/1000BASE-X/1000BASE-KX)
+> +  * 3.125 Gbps (2.5GBASE-X/2.5GBASE-KX)
+> +  * 5 Gbps (QSGMII/USGMII)
+> +  * 5.15625 Gbps (5GBASE-KR/5G-USXGMII)
+> +  * 10 Gbps (10G-USGMII)
+> +  * 10.3125 Gbps (10GBASE-R/10GBASE-KR/USXGMII)
+> +  * 25.78125 Gbps (25GBASE-KR/25GBASE-CR/25GBASE-SR/25GBASE-LR/25GBASE-ER)
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^serdes@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    const: microchip,sparx5-serdes
+> +
+> +  reg:
+> +    minItems: 1
+> +
+> +  '#phy-cells':
+> +    const: 1
+> +    description: |
+> +      - The main serdes input port
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#phy-cells'
+> +  - clocks
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    serdes: serdes@10808000 {
+> +      compatible = "microchip,sparx5-serdes";
+> +      #phy-cells = <1>;
+> +      clocks = <&sys_clk>;
+> +      reg = <0x10808000 0x5d0000>;
+> +    };
+> +
+> +...
+> -- 
+> 2.29.2
+> 
 
-Just like how we require GCC-8.2 for KASAN due to compiler bugs, require
-a sane version of GCC for UBSAN.
-
-Specifically, before GCC-8 UBSAN doesn't respect -fwrapv and thinks
-signed arithmetic is buggered.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- lib/Kconfig.ubsan | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
-index 8b635fd75fe4..acc3df62460e 100644
---- a/lib/Kconfig.ubsan
-+++ b/lib/Kconfig.ubsan
-@@ -2,8 +2,13 @@
- config ARCH_HAS_UBSAN_SANITIZE_ALL
- 	bool
- 
-+# UBSAN prior to GCC-8 gets -fwrapv wrong, we rely on that
-+config UBSAN_SANE
-+	def_bool !CC_IS_GCC || GCC_VERSION >= 80000
-+
- menuconfig UBSAN
- 	bool "Undefined behaviour sanity checker"
-+	depends on UBSAN_SANE
- 	help
- 	  This option enables the Undefined Behaviour sanity checker.
- 	  Compile-time instrumentation is used to detect various undefined
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
