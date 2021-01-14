@@ -2,91 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872802F69E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54AF72F69F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729471AbhANSpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:45:53 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:37569 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727346AbhANSpw (ORCPT
+        id S1729582AbhANSst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:48:49 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:51348 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727888AbhANSss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:45:52 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610649934; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=3zjXkQXLJWqqe3jg+JhaQfBk8Fz3LZHrdbV179oe6tw=;
- b=tugGo8JJb5Iybi1Z5GaM2ZLHDkpZl71Tb2Wq4dn95k3EBMmkDShKoX4ZPdSwctgtDzs5CflK
- ZlE/7WuE049wIiW8tPLVVUqtHJ0P40Xf8BtMvY6w4ZrYXNrxy7YusY4HBDUkxLHSsaDyuT0G
- +gXyAOGcLvybZar/+VPlhtM9W4Y=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 600091314104d9478dc728ad (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 18:45:05
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 54D81C43467; Thu, 14 Jan 2021 18:45:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 09882C433C6;
-        Thu, 14 Jan 2021 18:45:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 09882C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Thu, 14 Jan 2021 13:48:48 -0500
+Received: from 89-64-81-33.dynamic.chello.pl (89.64.81.33) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
+ id 46e5cad22987c8fd; Thu, 14 Jan 2021 19:48:06 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Hans De Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 0/2] ACPI: scan: Janitorial changes in acpi_device_add()
+Date:   Thu, 14 Jan 2021 19:45:41 +0100
+Message-ID: <3494203.VBaj39JGmp@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 4/7] wil6210: select CONFIG_CRC32
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210103213645.1994783-4-arnd@kernel.org>
-References: <20210103213645.1994783-4-arnd@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Maya Erez <merez@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "John W. Linville" <linville@tuxdriver.com>,
-        Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>,
-        linux-wireless@vger.kernel.org, wil6210@qti.qualcomm.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210114184505.54D81C43467@smtp.codeaurora.org>
-Date:   Thu, 14 Jan 2021 18:45:05 +0000 (UTC)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> wrote:
+Hi,
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Without crc32, the driver fails to link:
-> 
-> arm-linux-gnueabi-ld: drivers/net/wireless/ath/wil6210/fw.o: in function `wil_fw_verify':
-> fw.c:(.text+0x74c): undefined reference to `crc32_le'
-> arm-linux-gnueabi-ld: drivers/net/wireless/ath/wil6210/fw.o:fw.c:(.text+0x758): more undefined references to `crc32_le' follow
-> 
-> Fixes: 151a9706503f ("wil6210: firmware download")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+As per the subject on top of linux-next from today.
 
-Dave had already applied this so dropping from my queue.
+Please refer to the patch changelogs for details.
 
-Patch set to Not Applicable.
+Thanks!
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210103213645.1994783-4-arnd@kernel.org/
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
