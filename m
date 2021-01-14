@@ -2,165 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CD82F6EED
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 00:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7687B2F6F08
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 00:41:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730953AbhANX2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 18:28:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727838AbhANX2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 18:28:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 710EF23AC6;
-        Thu, 14 Jan 2021 23:27:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610666840;
-        bh=4Zj3Wl9MmezHCv26E0/LT5ibGDbwFsMqnirwMOVtjqE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aBLoFuP9S4Nc3XrlPFcxpWS2vWovEqXQd9fxBf6JZfHE2hegibJmRABAh+PPF7RLr
-         73MX39xJBmv973lJK2GoCa78CI7e7G04MIaff7ut6UhF0nf7DXAlQp6HjQtzcLRfPf
-         qcKkvU09liZCmxbEsjeFf/3FIG+og4y4FNILMH6O3Azz0G2n6fx34/CS4Ifp+IRf8P
-         GlSwRBKhSCKwj6xECjsMMrWT7dC3mTU2EJcd+cX61/zSv/Bf6Jedjx7HfcjCJeaHMw
-         qHg4v4Gty8N54mrBohg1Eb9qnSlVTgZ9PnbsE1nflAsGuiMaKbYb5ZnqU4rge2ElDP
-         RpGeHwhRWfojA==
-Received: by mail-ej1-f42.google.com with SMTP id q22so10748124eja.2;
-        Thu, 14 Jan 2021 15:27:20 -0800 (PST)
-X-Gm-Message-State: AOAM532ZGnwEX26aYNhEPvp9CAmQwxXDlEGutRBSdAv15Sxi9Aa+5E9n
-        73a58zWuZM3GRxlpwYF6MWiMMZNIsPYW+hmkpg==
-X-Google-Smtp-Source: ABdhPJwT7znQYQKLZ+6Sn6y2n9e+stArAY5GAuMtoUClRK/SPi6pP38lZV6DIyg4QRGopg8Iq3NUruuIGHT/VFxhO+Y=
-X-Received: by 2002:a17:906:fb1a:: with SMTP id lz26mr6911340ejb.194.1610666838951;
- Thu, 14 Jan 2021 15:27:18 -0800 (PST)
+        id S1731054AbhANXlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 18:41:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730755AbhANXla (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 18:41:30 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA66AC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 15:40:50 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id b8so3725173plh.12
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 15:40:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KwOjwyg6i4iA1UJ1S2Hj9B446AoSw0O4Qio8BG/OuQM=;
+        b=Yo6HU+GsLdc4Gahgl+nfm4NocqQdafahxS/Vy3BfbRYl3bgPmcG6TSygnYPzXrNXeu
+         CRDUVqqTqJvsei4ONiyztLN9CEtAv3hcZZktGya9ZbG3dQBAj4BGykJtAztwLAeIwN/n
+         VrfRce4jDw7P8biviuBPvVBlVU7wfOHpmAdKE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KwOjwyg6i4iA1UJ1S2Hj9B446AoSw0O4Qio8BG/OuQM=;
+        b=CGr6bSsiC4n25bQ4rrDYBH8xD4sKXesq4Hd9qkeJmsFfDbbOjXTmohcUC9NecHDAIP
+         pf4Bf6yw0cZNUUJNDQVajYsxpAEM7fhV3zX7TGYFUDUajlzwEUHPoKx+wlxDCWuxD8Is
+         RmAV1NPRehjbSRcfeQZL/bnEvK+Rjl7zdq/7wanJ34mo8RbxCaWVHswapia9NLLswDtr
+         XxpZ/ddqldN3wuhbNV0ZNExknA92fWlatv22qMl2Aqt+zQVIerTX1Ll0exrP1JWjFB4m
+         dgefdh555TULVuKHZFB3unURaefDAjOVBexW/2aspqcoR8q1KIMO9cB/HEJTq670Wpqg
+         V7+A==
+X-Gm-Message-State: AOAM532EC1KeP3P9tnnjNFkBDHjV1VK5zxJx//YN006obnhUUR5c8PsU
+        hO8ENHxVw6sZHlkapikcU2aduQ==
+X-Google-Smtp-Source: ABdhPJyK2hTjgJqcjghcPAjC14/kP/FnaiRkzCCIPV1ht4vchLlBt1rWXpO8h+VZXa4U0HFKpDBIuw==
+X-Received: by 2002:a17:902:7007:b029:dc:e89:50f1 with SMTP id y7-20020a1709027007b02900dc0e8950f1mr9940803plk.72.1610667650223;
+        Thu, 14 Jan 2021 15:40:50 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id x1sm6498804pfj.95.2021.01.14.15.40.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 15:40:49 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        linux-gpio@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 1/4] pinctrl: qcom: Allow SoCs to specify a GPIO function that's not 0
+Date:   Thu, 14 Jan 2021 15:40:24 -0800
+Message-Id: <20210114154004.v6.1.I3ad184e3423d8e479bc3e86f5b393abb1704a1d1@changeid>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 MIME-Version: 1.0
-References: <1609989081-29353-1-git-send-email-yongqiang.niu@mediatek.com>
- <1609989081-29353-6-git-send-email-yongqiang.niu@mediatek.com> <CAAOTY__Ox7jxLxQvm_mvAqEedj48=grH0Mao7xZ5bLuABZNeMQ@mail.gmail.com>
-In-Reply-To: <CAAOTY__Ox7jxLxQvm_mvAqEedj48=grH0Mao7xZ5bLuABZNeMQ@mail.gmail.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Fri, 15 Jan 2021 07:27:07 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_8psXwmWqKidGKZN05jcNqhq4igNmbbXX2xePYDgwHDDg@mail.gmail.com>
-Message-ID: <CAAOTY_8psXwmWqKidGKZN05jcNqhq4igNmbbXX2xePYDgwHDDg@mail.gmail.com>
-Subject: Re: [PATCH v9, 05/11] drm/mediatek: add fifo_size into rdma private data
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
+There's currently a comment in the code saying function 0 is GPIO.
+Instead of hardcoding it, let's add a member where an SoC can specify
+it.  No known SoCs use a number other than 0, but this just makes the
+code clearer.  NOTE: no SoC code needs to be updated since we can rely
+on zero-initialization.
 
-Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=887=
-=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=886:05=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> Hi, Yongqiang:
->
-> Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=
-=887=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8811:12=E5=AF=AB=E9=81=93=
-=EF=BC=9A
-> >
-> > Get the fifo size from device tree
-> > because each rdma in the same SoC may have different fifo size
->
-> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
+Tested-by: Maulik Shah <mkshah@codeaurora.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
 
-Applied to mediatek-drm-next [1], thanks.
+Changes in v6:
+- Don't wrap line; bust through 80 columns!
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
+ drivers/pinctrl/qcom/pinctrl-msm.c | 3 +--
+ drivers/pinctrl/qcom/pinctrl-msm.h | 2 ++
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-Regards,
-Chun-Kuang.
+diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+index e051aecf95c4..d1261188fb6e 100644
+--- a/drivers/pinctrl/qcom/pinctrl-msm.c
++++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+@@ -210,8 +210,7 @@ static int msm_pinmux_request_gpio(struct pinctrl_dev *pctldev,
+ 	if (!g->nfuncs)
+ 		return 0;
+ 
+-	/* For now assume function 0 is GPIO because it always is */
+-	return msm_pinmux_set_mux(pctldev, g->funcs[0], offset);
++	return msm_pinmux_set_mux(pctldev, g->funcs[pctrl->soc->gpio_func], offset);
+ }
+ 
+ static const struct pinmux_ops msm_pinmux_ops = {
+diff --git a/drivers/pinctrl/qcom/pinctrl-msm.h b/drivers/pinctrl/qcom/pinctrl-msm.h
+index 333f99243c43..e31a5167c91e 100644
+--- a/drivers/pinctrl/qcom/pinctrl-msm.h
++++ b/drivers/pinctrl/qcom/pinctrl-msm.h
+@@ -118,6 +118,7 @@ struct msm_gpio_wakeirq_map {
+  * @wakeirq_dual_edge_errata: If true then GPIOs using the wakeirq_map need
+  *                            to be aware that their parent can't handle dual
+  *                            edge interrupts.
++ * @gpio_func: Which function number is GPIO (usually 0).
+  */
+ struct msm_pinctrl_soc_data {
+ 	const struct pinctrl_pin_desc *pins;
+@@ -134,6 +135,7 @@ struct msm_pinctrl_soc_data {
+ 	const struct msm_gpio_wakeirq_map *wakeirq_map;
+ 	unsigned int nwakeirq_map;
+ 	bool wakeirq_dual_edge_errata;
++	unsigned int gpio_func;
+ };
+ 
+ extern const struct dev_pm_ops msm_pinctrl_dev_pm_ops;
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
->
-> >
-> > Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> > ---
-> >  drivers/gpu/drm/mediatek/mtk_disp_rdma.c | 19 ++++++++++++++++++-
-> >  1 file changed, 18 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm=
-/mediatek/mtk_disp_rdma.c
-> > index d46b8ae..8c64d5c 100644
-> > --- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-> > +++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-> > @@ -64,6 +64,7 @@ struct mtk_disp_rdma {
-> >         struct mtk_ddp_comp             ddp_comp;
-> >         struct drm_crtc                 *crtc;
-> >         const struct mtk_disp_rdma_data *data;
-> > +       u32                             fifo_size;
-> >  };
-> >
-> >  static inline struct mtk_disp_rdma *comp_to_rdma(struct mtk_ddp_comp *=
-comp)
-> > @@ -132,12 +133,18 @@ static void mtk_rdma_config(struct mtk_ddp_comp *=
-comp, unsigned int width,
-> >         unsigned int threshold;
-> >         unsigned int reg;
-> >         struct mtk_disp_rdma *rdma =3D comp_to_rdma(comp);
-> > +       u32 rdma_fifo_size;
-> >
-> >         mtk_ddp_write_mask(cmdq_pkt, width, comp,
-> >                            DISP_REG_RDMA_SIZE_CON_0, 0xfff);
-> >         mtk_ddp_write_mask(cmdq_pkt, height, comp,
-> >                            DISP_REG_RDMA_SIZE_CON_1, 0xfffff);
-> >
-> > +       if (rdma->fifo_size)
-> > +               rdma_fifo_size =3D rdma->fifo_size;
-> > +       else
-> > +               rdma_fifo_size =3D RDMA_FIFO_SIZE(rdma);
-> > +
-> >         /*
-> >          * Enable FIFO underflow since DSI and DPI can't be blocked.
-> >          * Keep the FIFO pseudo size reset default of 8 KiB. Set the
-> > @@ -146,7 +153,7 @@ static void mtk_rdma_config(struct mtk_ddp_comp *co=
-mp, unsigned int width,
-> >          */
-> >         threshold =3D width * height * vrefresh * 4 * 7 / 1000000;
-> >         reg =3D RDMA_FIFO_UNDERFLOW_EN |
-> > -             RDMA_FIFO_PSEUDO_SIZE(RDMA_FIFO_SIZE(rdma)) |
-> > +             RDMA_FIFO_PSEUDO_SIZE(rdma_fifo_size) |
-> >               RDMA_OUTPUT_VALID_FIFO_THRESHOLD(threshold);
-> >         mtk_ddp_write(cmdq_pkt, reg, comp, DISP_REG_RDMA_FIFO_CON);
-> >  }
-> > @@ -292,6 +299,16 @@ static int mtk_disp_rdma_probe(struct platform_dev=
-ice *pdev)
-> >                 return comp_id;
-> >         }
-> >
-> > +       if (of_find_property(dev->of_node, "mediatek,rdma-fifo-size", &=
-ret)) {
-> > +               ret =3D of_property_read_u32(dev->of_node,
-> > +                                          "mediatek,rdma-fifo-size",
-> > +                                          &priv->fifo_size);
-> > +               if (ret) {
-> > +                       dev_err(dev, "Failed to get rdma fifo size\n");
-> > +                       return ret;
-> > +               }
-> > +       }
-> > +
-> >         ret =3D mtk_ddp_comp_init(dev, dev->of_node, &priv->ddp_comp, c=
-omp_id,
-> >                                 &mtk_disp_rdma_funcs);
-> >         if (ret) {
-> > --
-> > 1.8.1.1.dirty
-> > _______________________________________________
-> > Linux-mediatek mailing list
-> > Linux-mediatek@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-mediatek
