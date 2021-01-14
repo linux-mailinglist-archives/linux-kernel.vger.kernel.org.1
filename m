@@ -2,110 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643D42F6156
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88ABC2F6161
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbhANM6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 07:58:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726259AbhANM6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 07:58:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1227623A05;
-        Thu, 14 Jan 2021 12:57:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610629061;
-        bh=BUpI2I9YMH+a7xHPqtdhvLSJlin/ivqWxM8HyiZg4sg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RqD9XxyWlekyv/gLyTaL9PcpnRwyBGF2MDWXMSpSA/9GoJ/TVUGCFDzeUNEVVLJMD
-         j/B+Q3ecGOk7Csd54uib6opA/iPDCHcYcPb8s+nOJZC4Zs4CMGwpvImj3PTog4i/NC
-         k0CkI828OisKLYIZOdSjj6tCzemN53F03SmzBYZakH91sUHL3NiI8o/baDFsYAnKS+
-         DcdWTEtyN+eaWXF0OOSStNFND8LLSp2SMSuNzh5E6yLs6+DyhrYdbKA9ar3kjBVZ7N
-         2dXOAq/Ei+4ubSoLkXBaiZM0jmdokv5DCpqlzDWOo6xvMt1IyywrSL8RAQRNqkqUj7
-         wExK0MJKh9d/A==
-Date:   Thu, 14 Jan 2021 14:57:34 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ia64: fix build failure caused by memory model changes
-Message-ID: <20210114125734.GI1106298@kernel.org>
-References: <20201218163550.8838-1-rppt@kernel.org>
+        id S1727707AbhANM6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 07:58:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727063AbhANM63 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 07:58:29 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1048FC061574;
+        Thu, 14 Jan 2021 04:57:49 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id c132so3749945pga.3;
+        Thu, 14 Jan 2021 04:57:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gGbzt6fi80meG4s9AF3mOHr1Et9Lp5WnhuA9zSO3M+Q=;
+        b=Ro1jsE6YzpXcypgAljTFVXzP33Rs9jQKrv10VocKgzevdXuk9QLARA9f7oemxJPag0
+         5tMHz36Ta2vWR0E6+NLuZRoFZVa5yFyUcoTehDD2/wP+z2cRvK3U+VxDmbUO1XOSx8Zf
+         gxMagogc7JM5ZZg5pICYFv/zMyaBCvDxiffVfuZ8/tplfNlAIry0jacgidAmViJcxYJI
+         CGBDXF1goGNy33bhKev0J9Kmkd78IjE1lZcy/9JcpKnrWn6EXrdMmr3fPVaTNGERAvqS
+         6XwA/ssHbq+jcr/3660EXBiwlTBm9+8DhuUfh/V4c42L5kZmpsZqQa/HjvC4yVLhdUbp
+         FsiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gGbzt6fi80meG4s9AF3mOHr1Et9Lp5WnhuA9zSO3M+Q=;
+        b=E6voOyneDfEwhOugYKOS3jxM+XIx9Q2w0z/ODw7aPEGL3nM1ox0WdiCwAxYhtP4W40
+         jcEynB4LenugqY6kos+evr2h+XelCEOVDwizAu/UNzao1YIEXhJjRh3jHVzlTguKY+LB
+         oxyvv8LGY7SSgEWri357OTqP2G20LYWDGxA0ElcxdmzTFbVZJLllR94Uc67AR/Wdummb
+         NV/tROtbFiTq71zavfSuhnXTigO9SNzOM2UY87JU1UL1b2PyyzXtKQDQqdbXDUA+HUDN
+         FGcpCcYK6TdrmH1om77zEtzX9LjpZOHvkr0/Ws5H/Ac0keG6mN9v6Zbd/ufh2qe0UIZY
+         arVQ==
+X-Gm-Message-State: AOAM530Dui0JOMgZWX7YF5CEesfh46RvKYL2ehpl4nZWIX3zX4DyLtiA
+        ygYKHZFN5DQemlC8mZdXPQ==
+X-Google-Smtp-Source: ABdhPJwnANuoGmoTzO1w3y9QcxqYJwi43TGuaOSb8SwumIz2tqtt7MF3YUBn2VTf15RNQyLupo9x5A==
+X-Received: by 2002:aa7:80d8:0:b029:1ae:6ac5:5324 with SMTP id a24-20020aa780d80000b02901ae6ac55324mr7215401pfn.1.1610629068644;
+        Thu, 14 Jan 2021 04:57:48 -0800 (PST)
+Received: from PWN ([218.190.226.47])
+        by smtp.gmail.com with ESMTPSA id 7sm5287413pfh.142.2021.01.14.04.57.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 04:57:47 -0800 (PST)
+Date:   Thu, 14 Jan 2021 07:57:42 -0500
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Phong Tran <tranmanphong@gmail.com>,
+        Jason Gerecke <killertofu@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: wacom: Fix memory leak in wacom_probe()
+Message-ID: <20210114125742.GA644967@PWN>
+References: <20201210112258.477636-1-yepeilin.cs@gmail.com>
+ <nycvar.YFH.7.76.2101141320210.13752@cbobk.fhfr.pm>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201218163550.8838-1-rppt@kernel.org>
+In-Reply-To: <nycvar.YFH.7.76.2101141320210.13752@cbobk.fhfr.pm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew,
+Hi Jiri,
 
-Would you like me to
-On Fri, Dec 18, 2020 at 06:35:50PM +0200, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Thu, Jan 14, 2021 at 01:21:13PM +0100, Jiri Kosina wrote:
+> > wacom_probe() is leaking memory. Free `&wacom_wac->pen_fifo` when
+> > hid_parse() or wacom_parse_and_register() fails.
 > 
-> The change of ia64's default memory model to SPARSEMEM causes defconfig
-> build to fail:
-> 
->   CC      kernel/async.o
-> In file included from include/linux/numa.h:25,
->                  from include/linux/async.h:13,
->                  from kernel/async.c:47:
-> arch/ia64/include/asm/sparsemem.h:14:40: warning: "PAGE_SHIFT" is not defined, evaluates to 0 [-Wundef]
->    14 | #if ((CONFIG_FORCE_MAX_ZONEORDER - 1 + PAGE_SHIFT) > SECTION_SIZE_BITS)
->       |                                        ^~~~~~~~~~
-> In file included from include/linux/gfp.h:6,
->                  from include/linux/xarray.h:14,
->                  from include/linux/radix-tree.h:19,
->                  from include/linux/idr.h:15,
->                  from include/linux/kernfs.h:13,
->                  from include/linux/sysfs.h:16,
->                  from include/linux/kobject.h:20,
->                  from include/linux/energy_model.h:7,
->                  from include/linux/device.h:16,
->                  from include/linux/async.h:14,
->                  from kernel/async.c:47:
-> include/linux/mmzone.h:1156:2: error: #error Allocator MAX_ORDER exceeds SECTION_SIZE
->  1156 | #error Allocator MAX_ORDER exceeds SECTION_SIZE
->       |  ^~~~~
-> 
-> The error cause is the missing definition of PAGE_SHIFT in the calculation
-> of SECTION_SIZE_BITS.
-> 
-> Add include of <asm/page.h> to arch/ia64/include/asm/sparsemem.h to solve
-> the problem.
-> 
-> Fixes: 214496cb1870 ("ia64: make SPARSEMEM default and disable DISCONTIGMEM")
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
-> 
-> Surprisingly, only Guenter's bot caught this.
-> 
-> @Andrew, if you prefer I can take this via memblock tree.
-> 
->  arch/ia64/include/asm/sparsemem.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/ia64/include/asm/sparsemem.h b/arch/ia64/include/asm/sparsemem.h
-> index dd8c166ffd7b..42ed5248fae9 100644
-> --- a/arch/ia64/include/asm/sparsemem.h
-> +++ b/arch/ia64/include/asm/sparsemem.h
-> @@ -3,6 +3,7 @@
->  #define _ASM_IA64_SPARSEMEM_H
->  
->  #ifdef CONFIG_SPARSEMEM
-> +#include <asm/page.h>
->  /*
->   * SECTION_SIZE_BITS            2^N: how big each section will be
->   * MAX_PHYSMEM_BITS             2^N: how much memory we can have in that space
-> -- 
-> 2.28.0
-> 
+> Thanks for the patch. It's however already been fixed in 
+> hid.git#for-5.11/upstream-fixes (37309f47e2f5) branch that will be going 
+> to Linus shortly.
 
--- 
-Sincerely yours,
-Mike.
+Ah...  I checked linux-input@ before I started working on the bug, but
+it seems that Ping sent out a patch just a few hours before I did.
+
+Sorry for the race condition,
+Peilin Ye
+
