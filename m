@@ -2,127 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807AE2F61E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288A92F61E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729064AbhANNYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:24:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726377AbhANNYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:24:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8F5923A05;
-        Thu, 14 Jan 2021 13:23:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610630612;
-        bh=N4MLOcaBrg+ObtW8saTWFTIwry4CM2IZkHEMOlfdUBE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H+NvHe0OMhIhxGZRoLH3VviN3uYMqqteXIlzhRhOHJnEZvYSuZ7Y6encH1ZUWYMAD
-         coxOX1wuKEmfzBiY/Z0aNGdPIr0exq130aoFm3FTBd81APc8Yrs1Y2am7rXFKZ7CNr
-         LfQtavxrV7gKDpAxYI+oOXmctLAaw6Vv2hPhXIGr1gH+Kv2RcdOOmgeRvXKkzL/u8V
-         iNjhcLSF8LObyOL8P62i0/HbGqhBH6Vt58eRxfU7lhh0hh5kFhVLAbWc23qwthKXks
-         2R4f3Kr14WAbHRMzV8hcGKrPO/IqcTHX7EbmYG1OjlplbYlsXNVzli5yMRItxsMgGd
-         3HlSoc7iXPkkw==
-Date:   Thu, 14 Jan 2021 13:22:58 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>
-Subject: Re: SPI not working on 5.10 and 5.11, bisected to 766c6b63aa04
- ("spi: fix client driver breakages when using GPIO descriptors")
-Message-ID: <20210114132258.GD4854@sirena.org.uk>
-References: <dc5d8d35-31aa-b36d-72b0-17c8a7c13061@csgroup.eu>
- <20210113123345.GD4641@sirena.org.uk>
- <9400d900-f315-815f-a358-16ed4963da6c@csgroup.eu>
- <20210114115958.GB4854@sirena.org.uk>
- <006d1594-8eec-3aad-1651-919071e89f3b@csgroup.eu>
+        id S1728885AbhANNYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 08:24:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725991AbhANNX7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 08:23:59 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26073C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:23:13 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id m4so5731162wrx.9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:23:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=w18EgFsICE9OM9Lgz5TZtzB0U3rL3q7eXbxHjw0SRmk=;
+        b=wCenm0LTZXGohBZS2mhPOl3I6iU1HBg2g1hVyfM/8fvLnXC9LEvQ4jk0KxYydouyAK
+         VIFLx127WDy9mxX8vrYC1l1Xa3WZ56lIzuI9aQTBI9zBF5TMmT4UlQZY7OLpKhdarkcC
+         uJdHsxgURi5rw/LbfcguUHajtgyBxR4JDg0VC8RAkjv/yYM6ApbK83O2wAY6+/T/y+tT
+         yo/P3/g4ldNPURMQayQbIobUYkc8DETmcJSxYkNZ2vaPS+hrgGVd3XYSIh3GHgMvbqC1
+         mC8cXhkvFdlDMYKZBB9FhapMy9gqDSmAN8x1+9DvlswMkrf67H/VZ9vgkeXoLERoG/7o
+         j8og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=w18EgFsICE9OM9Lgz5TZtzB0U3rL3q7eXbxHjw0SRmk=;
+        b=XSWPoblql4npHpfN3P89G1Y8bva++Mian0mOKoiPIZ5WeOEZx4O1rEsqIWZ8yLko5P
+         IFtck+YhiJ5TyKTpxxVlc7TkobnAkldiQ9lVHdLAj2BxcijkVqBV0X4VSJNZ5u5rS/uY
+         q24HdmkpENPrKusmEJmDPk1G3Jk0FXrC7efkqSOPJ7mZegt/MXQL9ju8m1m1uFOASKpz
+         UhTcdqb26MdQaZeHbmfUfLcwvr5jFhrg/IbUF9lQLuU9kjbVGR8m0WkOXb7EWwELdCBD
+         tiwc3cvI4sgXlRFHGOYkfF/Ohg5rTxi92tfzTwIEVtI3j0wwfxFQapCZnTavCN8PIPGX
+         eVBQ==
+X-Gm-Message-State: AOAM533sdQK1CXMXI4enK4WkJPtVY8ZPa1QHDAgO7H4f92a6VVVocEaH
+        aYMhr20/Wa+WBkxeVjOwEK7xig==
+X-Google-Smtp-Source: ABdhPJynWdeB69P74lHrmCKDJaY9677JD3ZBTrVO4s+++6r/TNmyYHVdueAvSKeBzwehTjU/UYVi9w==
+X-Received: by 2002:a5d:504d:: with SMTP id h13mr8036892wrt.246.1610630591776;
+        Thu, 14 Jan 2021 05:23:11 -0800 (PST)
+Received: from dell ([91.110.221.178])
+        by smtp.gmail.com with ESMTPSA id l16sm10100728wrx.5.2021.01.14.05.23.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 05:23:11 -0800 (PST)
+Date:   Thu, 14 Jan 2021 13:23:09 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
+Subject: Re: [PATCH v3 1/1] mfd: intel-m10-bmc: expose mac address and count
+Message-ID: <20210114132309.GV3975472@dell>
+References: <20210105225520.14473-1-russell.h.weight@intel.com>
+ <20210105225520.14473-2-russell.h.weight@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="WChQLJJJfbwij+9x"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <006d1594-8eec-3aad-1651-919071e89f3b@csgroup.eu>
-X-Cookie: You have taken yourself too seriously.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210105225520.14473-2-russell.h.weight@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 05 Jan 2021, Russ Weight wrote:
 
---WChQLJJJfbwij+9x
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Create two sysfs entries for exposing the MAC address
+> and count from the MAX10 BMC register space. The MAC
+> address is the first in a sequential block of MAC addresses
+> reserved for the FPGA card. The MAC count is the number
+> of MAC addresses in the reserved block.
+> 
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> ---
+> v3:
+>   - Updated Date and KernelVersion in ABI documentation
+> v2:
+>   - Updated the documentation for the mac_address and mac_count
+>     sysfs nodes to clarify their usage.
+>   - Changed sysfs _show() functions to use sysfs_emit() instead
+>     of sprintf.
+> ---
+>  .../ABI/testing/sysfs-driver-intel-m10-bmc    | 21 +++++++++
+>  drivers/mfd/intel-m10-bmc.c                   | 43 +++++++++++++++++++
+>  include/linux/mfd/intel-m10-bmc.h             |  9 ++++
+>  3 files changed, 73 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
+> index 979a2d62513f..9773925138af 100644
+> --- a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
+> +++ b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
+> @@ -13,3 +13,24 @@ Contact:	Xu Yilun <yilun.xu@intel.com>
+>  Description:	Read only. Returns the firmware version of Intel MAX10
+>  		BMC chip.
+>  		Format: "0x%x".
+> +
+> +What:		/sys/bus/spi/devices/.../mac_address
+> +Date:		January 2021
+> +KernelVersion:  5.12
+> +Contact:	Russ Weight <russell.h.weight@intel.com>
+> +Description:	Read only. Returns the first MAC address in a block
+> +		of sequential MAC addresses assigned to the board
+> +		that is managed by the Intel MAX10 BMC. It is stored in
+> +		FLASH storage and is mirrored in the MAX10 BMC register
+> +		space.
+> +		Format: "%02x:%02x:%02x:%02x:%02x:%02x".
+> +
+> +What:		/sys/bus/spi/devices/.../mac_count
+> +Date:		January 2021
+> +KernelVersion:  5.12
+> +Contact:	Russ Weight <russell.h.weight@intel.com>
+> +Description:	Read only. Returns the number of sequential MAC
+> +		addresses assigned to the board managed by the Intel
+> +		MAX10 BMC. This value is stored in FLASH and is mirrored
+> +		in the MAX10 BMC register space.
+> +		Format: "%u".
+> diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
+> index b84579b7b4f0..751c0ecf95d6 100644
+> --- a/drivers/mfd/intel-m10-bmc.c
+> +++ b/drivers/mfd/intel-m10-bmc.c
+> @@ -60,9 +60,52 @@ static ssize_t bmcfw_version_show(struct device *dev,
+>  }
+>  static DEVICE_ATTR_RO(bmcfw_version);
+>  
+> +static ssize_t mac_address_show(struct device *dev,
+> +				struct device_attribute *attr, char *buf)
+> +{
+> +	struct intel_m10bmc *max10 = dev_get_drvdata(dev);
+> +	unsigned int macaddr1, macaddr2;
 
-On Thu, Jan 14, 2021 at 01:33:50PM +0100, Christophe Leroy wrote:
-> Le 14/01/2021 =E0 12:59, Mark Brown a =E9crit=A0:
-> > On Thu, Jan 14, 2021 at 12:27:42PM +0100, Christophe Leroy wrote:
+This naming convention is confusing.
 
-> > > Today I have in the DTS the CS GPIOs declared as ACTIVE_LOW.
+It took me a minute to work it out.
 
-> > > If I declare them as ACTIVE_HIGH instead, then I also have to set
-> > > spi-cs-high property, otherwise of_gpio_flags_quirks() is not happy a=
-nd
-> > > forces the GPIO ACTIVE LOW.
+Does 'high' and 'low' make sense?
 
-> > > When I set spi-cs-high property, it sets the SPI_CS_HIGH bit in spi->=
-mode.
+> +	int ret;
+> +
+> +	ret = m10bmc_sys_read(max10, M10BMC_MACADDR1, &macaddr1);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = m10bmc_sys_read(max10, M10BMC_MACADDR2, &macaddr2);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return sysfs_emit(buf, "%02x:%02x:%02x:%02x:%02x:%02x\n",
+> +			  (u8)FIELD_GET(M10BMC_MAC_BYTE1, macaddr1),
+> +			  (u8)FIELD_GET(M10BMC_MAC_BYTE2, macaddr1),
+> +			  (u8)FIELD_GET(M10BMC_MAC_BYTE3, macaddr1),
+> +			  (u8)FIELD_GET(M10BMC_MAC_BYTE4, macaddr1),
+> +			  (u8)FIELD_GET(M10BMC_MAC_BYTE5, macaddr2),
+> +			  (u8)FIELD_GET(M10BMC_MAC_BYTE6, macaddr2));
+> +}
+> +static DEVICE_ATTR_RO(mac_address);
+> +
+> +static ssize_t mac_count_show(struct device *dev,
+> +			      struct device_attribute *attr, char *buf)
+> +{
+> +	struct intel_m10bmc *max10 = dev_get_drvdata(dev);
+> +	unsigned int macaddr2;
+> +	int ret;
+> +
+> +	ret = m10bmc_sys_read(max10, M10BMC_MACADDR2, &macaddr2);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return sysfs_emit(buf, "%u\n",
+> +			  (u8)FIELD_GET(M10BMC_MAC_COUNT, macaddr2));
+> +}
+> +static DEVICE_ATTR_RO(mac_count);
+> +
+>  static struct attribute *m10bmc_attrs[] = {
+>  	&dev_attr_bmc_version.attr,
+>  	&dev_attr_bmcfw_version.attr,
+> +	&dev_attr_mac_address.attr,
+> +	&dev_attr_mac_count.attr,
+>  	NULL,
+>  };
+>  ATTRIBUTE_GROUPS(m10bmc);
+> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
+> index c8ef2f1654a4..2279e34f0814 100644
+> --- a/include/linux/mfd/intel-m10-bmc.h
+> +++ b/include/linux/mfd/intel-m10-bmc.h
+> @@ -15,6 +15,15 @@
+>  
+>  /* Register offset of system registers */
+>  #define NIOS2_FW_VERSION		0x0
+> +#define M10BMC_MACADDR1			0x10
+> +#define M10BMC_MAC_BYTE4		GENMASK(7, 0)
+> +#define M10BMC_MAC_BYTE3		GENMASK(15, 8)
+> +#define M10BMC_MAC_BYTE2		GENMASK(23, 16)
+> +#define M10BMC_MAC_BYTE1		GENMASK(31, 24)
+> +#define M10BMC_MACADDR2			0x14
+> +#define M10BMC_MAC_BYTE6		GENMASK(7, 0)
+> +#define M10BMC_MAC_BYTE5		GENMASK(15, 8)
+> +#define M10BMC_MAC_COUNT		GENMASK(23, 16)
+>  #define M10BMC_TEST_REG			0x3c
+>  #define M10BMC_BUILD_VER		0x68
+>  #define M10BMC_VER_MAJOR_MSK		GENMASK(23, 16)
 
-> > OK, so it sounds like you want SPI_CS_HIGH and that is being set
-> > correctly?
-
-> > > In fsl_spi_chipselect(), we have
-> > >=20
-> > > 	bool pol =3D spi->mode & SPI_CS_HIGH
-> > >=20
-> > > Then
-> > > 	pdata->cs_control(spi, pol);
-
-> > > So changing the board config is compensated by the above, and at the =
-end it still doesn't work.
-
-> > This is a driver bug, the driver set_cs() operation should not be
-> > modifying the value it is told to set.
-
-> A driver bug ? Or maybe a change forgotten in commit  766c6b63aa04 ("spi:
-> fix client driver breakages when using GPIO descriptors") ?
-
-The expectation that the driver will be using the chip select exactly as
-passed in and not attempting to implement SPI_CS_HIGH itself when it has
-set_cs() has been there for a considerable time now, that's not new with
-the cleanup.  Drivers should only be paying attention to SPI_CS_HIGH in
-cases where the hardware controls the chip select autonomously and so
-set_cs() can't be provided.
-
-> I'm almost sure it was not a bug, it is in line which what is said in
-> the comment removed by the above mentionned commit.
-
-Please take a look at the list archive discussions around this - there's
-been a lot of confusion with GPIO descriptors in particular due to there
-being multiple places where you can set the inversion.  Note that the
-situation you describe above is that you end up with all the various
-places other than your driver agreeing that the chip select is active
-high as it (AFAICT from what you're saying) actually is. =20
-
-For GPIO chipselects you should really fix the driver to just hand the
-GPIO off to the core rather than trying to implement this itself, that
-will avoid driver specific differences like this.
-
---WChQLJJJfbwij+9x
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAARbEACgkQJNaLcl1U
-h9APTgf/aLwStecUVq1BEe96Q18/NhiIwRQPg/47gbkg+FKp4HlYPvBaXHWBArpP
-1fUIEScYwM6Fw4n+mrL3+fxvQUaYacXxD37oQcBV6R+WlTPPSLofypBXy44k45vj
-oMB3QWLUcLIC+K7AFAAbo9RA6QnSRT719RYo9NHF4qzcgGfweVckj7AkbIkcAbqN
-Vte+RnwqZkY3iLTviZyfCMdIGtDy3+9pNHO9La9/LaLULemKMcMf2sdgHH2j7Ult
-SnihJ2d39fxoNHSw+BgurYZ9APuiiHLL7Hq8sYbCkAZvdpFHR2TD8uovZeMbXZrs
-42Uykbf8X9XIV9EtnwEkNN5ulcQnKw==
-=oOhx
------END PGP SIGNATURE-----
-
---WChQLJJJfbwij+9x--
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
