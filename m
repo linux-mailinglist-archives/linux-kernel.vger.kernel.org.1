@@ -2,143 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F902F620D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC1E2F620F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727527AbhANNbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:31:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726220AbhANNbc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:31:32 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D4EC061574;
-        Thu, 14 Jan 2021 05:30:52 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id g25so5531068wmh.1;
-        Thu, 14 Jan 2021 05:30:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5gtQnymxrJU4U/yydHBIyEMWxn2DtKpp2p8TKsUkvAE=;
-        b=t9ScDnhL0kdFbaMBnwSr9ldDMzRrCHF9JPG0ADBs9MXR22YBlAMfQN/Ueh2rMCnm7u
-         eQQPj3w2VkmPEUPXyDFOrbA5FOBygYyxBIEYkPhjhic+YsFagMhrLUzqJ+zFqAJyh/o2
-         jyf1eu4HMnvxZaS2LHmHjEFqh1quRV0GENmo8k/ALq5UMMJITIP5/d0YRSSlibxwzNjp
-         VnE7wLD1hU+K89DfF6+SGvWBBWCNWgVM/f8Lohc61CBNp8rU2cSBcjN6tAZsZ7lYrUOU
-         0td8b1yKdmLe/YoBsMyRBO96kwXwZmiEJSs0zmATSe6x/H4UCOAFGeA+XAJVrarwhDcd
-         40OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5gtQnymxrJU4U/yydHBIyEMWxn2DtKpp2p8TKsUkvAE=;
-        b=CM0rc8YvO8lDDwElEkakzfio4tJjGVdqohYukRNlX10vDx/xFVefI1x1+5txauTOgD
-         yP2TmyLDNW4cRPEhR6Tpvi7VG6n4wA4eXK9uKE9vRoPFaidAKAnLVFHwfExrXx7CfpLn
-         XKTT6Fo2wiBJgwnwjg6p1BgpIF2CEmIjT1DvAh41XnknC1JLnnU+bw8jOyswYKfV1ECv
-         0YquADyFkwn2i3K7cCs3jkZbGi1Tqks9uBISb6LIcSxV+lQDPi9arX0JWBUFIWmpQlsR
-         dB10E9okP52XYCiwb4rD8JxDGa17PZ1OV05g/K4H4DSz2Pwkf0YubcJtS8rScj8feFl2
-         DCVA==
-X-Gm-Message-State: AOAM530mMbCDdiU1P7yJG7slE3YrUoZNJXctx9KvNURLje12tuxCcXfk
-        7GNJowyp0Wb/rhhTc7ZEkV4YKHYdtXjuxvletlw=
-X-Google-Smtp-Source: ABdhPJy80OE8PhB2egv6HX2NYHBoNMNittli7hcX0Nr+DiNqxs15T3dg1QBQfZMC4NvRDIlHuRmEePmxzhmx6m2U1Js=
-X-Received: by 2002:a05:600c:3549:: with SMTP id i9mr3814488wmq.89.1610631050890;
- Thu, 14 Jan 2021 05:30:50 -0800 (PST)
+        id S1728497AbhANNcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 08:32:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46592 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725955AbhANNcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 08:32:12 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 97982AD78;
+        Thu, 14 Jan 2021 13:31:30 +0000 (UTC)
+To:     Dongdong Tao <dongdong.tao@canonical.com>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        "open list:BCACHE (BLOCK LAYER CACHE)" <linux-bcache@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Gavin Guo <gavin.guo@canonical.com>,
+        Gerald Yang <gerald.yang@canonical.com>,
+        Trent Lloyd <trent.lloyd@canonical.com>,
+        Dominique Poulain <dominique.poulain@canonical.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Benjamin Allot <benjamin.allot@canonical.com>
+References: <20210105030602.14427-1-tdd21151186@gmail.com>
+ <CAJS8hVK-ZCxJt=E3hwR0hmqPYL1T07_WC_nerb-dZodO+DqtDA@mail.gmail.com>
+ <1a4b2a68-a7b0-8eb0-e60b-c3cf5a5a9e56@suse.de>
+ <CAJS8hVL2B=RZr8H4jFbz=bX9k_E9ur7kTeue6BJwzm4pwv1+qQ@mail.gmail.com>
+ <084276ab-7c74-31be-b957-3b039d7061a1@suse.de>
+ <CAJS8hVKJMZ-9Ep-8v7FALeW5dGMttpQ45=WKJTQmLUKEozhfXg@mail.gmail.com>
+ <299ea3ff-4a9c-734e-0ec1-8b8d7480a019@suse.de>
+ <CAJS8hVLSP2mk0Qzsxp=i5_ZgH4QJppPOrr2LU0oEAM-EOMjOyg@mail.gmail.com>
+ <CAJS8hVJDaREvpvG4iO+Xs-KQXQKFi7=k29TrG=NXqjyiPpUCZA@mail.gmail.com>
+ <392abd73-c58a-0a34-bd21-1e9adfffc870@suse.de>
+ <CAJS8hV+6Txqvevj1YBAOrEog4=rWpBUbNFUpDrE1rqzwXuT4yg@mail.gmail.com>
+From:   Coly Li <colyli@suse.de>
+Subject: Re: [PATCH] bcache: consider the fragmentation when update the
+ writeback rate
+Message-ID: <3ca15755-9ad2-1d57-b86a-fb659f701cfb@suse.de>
+Date:   Thu, 14 Jan 2021 21:31:25 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <1610612968-26612-1-git-send-email-wuht06@gmail.com>
- <1610612968-26612-3-git-send-email-wuht06@gmail.com> <20210114085233.GO4678@unreal>
- <CAG_R4_UJ0=8=31XZD-SiiuL91M02N+fn=CLNA4_5Xm7jRDE1Rg@mail.gmail.com> <20210114130624.GR4678@unreal>
-In-Reply-To: <20210114130624.GR4678@unreal>
-From:   Hongtao Wu <wuht06@gmail.com>
-Date:   Thu, 14 Jan 2021 21:30:39 +0800
-Message-ID: <CAG_R4_UdQay0xh11Snt7G+uS+1E7E0NQf1rE-JpA0fge9jeLRQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v5 2/2] PCI: sprd: Add support for Unisoc SoCs'
- PCIe controller
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hongtao Wu <billows.wu@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAJS8hV+6Txqvevj1YBAOrEog4=rWpBUbNFUpDrE1rqzwXuT4yg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 9:06 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Thu, Jan 14, 2021 at 08:00:50PM +0800, Hongtao Wu wrote:
-> > On Thu, Jan 14, 2021 at 4:52 PM Leon Romanovsky <leon@kernel.org> wrote=
-:
-> > >
-> > > On Thu, Jan 14, 2021 at 04:29:28PM +0800, Hongtao Wu wrote:
-> > > > From: Hongtao Wu <billows.wu@unisoc.com>
-> > > >
-> > > > This series adds PCIe controller driver for Unisoc SoCs.
-> > > > This controller is based on DesignWare PCIe IP.
-> > > >
-> > > > Signed-off-by: Hongtao Wu <billows.wu@unisoc.com>
-> > > > ---
-> > > >  drivers/pci/controller/dwc/Kconfig     |  12 ++
-> > > >  drivers/pci/controller/dwc/Makefile    |   1 +
-> > > >  drivers/pci/controller/dwc/pcie-sprd.c | 293 +++++++++++++++++++++=
-++++++++++++
-> > > >  3 files changed, 306 insertions(+)
-> > > >  create mode 100644 drivers/pci/controller/dwc/pcie-sprd.c
-> > >
-> > > <...>
-> > >
-> > > > +static struct platform_driver sprd_pcie_driver =3D {
-> > > > +     .probe =3D sprd_pcie_probe,
-> > > > +     .remove =3D __exit_p(sprd_pcie_remove),
-> > >                    ^^^^^^ why is that?
-> > >
-> >
-> > Thanks for the review.
-> >
-> > I think that if 'MODULE' is defined, '.remove =3D sprd_pcie_remove',
-> > else '.remove =3D NULL'.
-> > I would appreciate hearing your opinion about this.
->
-> If module not defined, these .probe and .remove won't be called.
->
-> >
-> > > > +     .driver =3D {
-> > > > +             .name =3D "sprd-pcie",
-> > > > +             .of_match_table =3D sprd_pcie_of_match,
-> > > > +     },
-> > > > +};
-> > > > +
-> > > > +module_platform_driver(sprd_pcie_driver);
-> > > > +
-> > > > +MODULE_DESCRIPTION("Unisoc PCIe host controller driver");
-> > > > +MODULE_LICENSE("GPL v2");
-> > >
-> > > I think that it needs to be "GPL" and not "GPL v2".
-> > >
-> >
-> > Many platform drivers use 'GPL v2', but others use 'GPL'.
-> > I am not sure whether to use 'GPL' or 'GPL v2'.
-> > Could you tell me why =E2=80=98GPL=E2=80=99 is needed here?
->
-> Because GPL already means v2, see Documentation/process/license-rules.rst
->
->   447
->   448     "GPL v2"                      Same as "GPL". It exists for hist=
-oric
->   449                                   reasons.
->
+On 1/14/21 8:22 PM, Dongdong Tao wrote:
+> Hi Coly,
+> 
+> Why you limit the iodeph to 8 and iops to 150 on cache device?
+> For cache device the limitation is small. Iosp 150 with 4KB block size,
+> it means every hour writing (150*4*60*60=2160000KB=) 2GB data. For 35
+> hours it is only 70GB.
+> 
+> 
+> What if the iodepth is 128 or 64, and no iops rate limitation ?
+> -> There are two reasons why I limit the iodepth and iops rate.
+> 1. If I don't limit them, the dirty cache will be filled up very
+> quickly within 20 minutes.
+>      It's almost NVME speed before it reaches the 70
+> cutoff_writeback_sync, there is no way for any kind of writeback to
+> stop it from
+>      filling up due to the huge gap between NVME and HDD in terms of
+> the throughput,
+>      I don't think there is anything we can do about it? and it should
+> only happen in a benchmark world, not should in production.
+>      The improvement I'm trying to do here is just for normal
+> production workload ,not for this benchmark scenario really.
+>      I currently can't see any necessity to test this scenario, please
+> kindly let me know about this if I'm wrong.
+> 
+> 2. The reason that I set iodepth to 8 and iops to 150 is based on the
+> experience that I observed from production env, mostly ceph,
+>     ceph-osd has less than 10 thread(default setting) that will send
+> io to bcache in parallel. But I'm not sure about other applications.
+>     I agree that we can increase the iodepth to 64 or 128 and it's
+> doable. But we have to limit the iops, 150 IOPS is a reasonable
+> workload.
+>     The most busy ceph-osd that I've seen is about 1000 IOPS, but on
+> average is still only about 600.
+>     I can set the IOPS to a higher value like 600 and the iodepth to
+> 128 to perform the later test if it make sense to you?
+> 
 
-Thanks for the explanation!
-I'll update =E2=80=9CGPL=E2=80=9D and ".remove" in the next version.
+OK, now I know the reason with the extra information. Since the cache
+device is filled up within 20 minutes, it is unnecessary to do the
+faster testing on your side. Let me do it later on my hardware.
 
->
-> >
-> > > Thanks
-> > >
-> > > > --
-> > > > 2.7.4
-> > > >
+
+> Lastly, please allow me to clarify more about the production issue
+> that this patch is trying to address:
+> 
+> In the production env that hit this issue, it usually takes a very
+> long time (many take days) for the cache_available_percent to drop to
+> 30, and the dirty data is mostly staying at a very low level (around
+> 10 percent), which means that the bcache isn't being stressed very
+> hard most of the time.
+>  There is no intention to save the cutoff_writeback_sync when the
+> bcache is being stressed without limitation, hope above make sense :)
+> 
+
+Yes you explained clearly previously. What I worried was whether a
+faster writeback may interfere throughput and latency of regular I/O
+regular I/Os.
+
+From your current testing data it looks find with me.
+
+
+> By the way, my colleague and I are trying to gathering some production
+> bcache stats, I hope we can give you the performance number before and
+> after applying the patch.
+
+Yes that will be great.
+
+And could you please gather all current data chats into a single email,
+and reference it in your patch via lore ? Then for people don't
+subscribe linux-bcache mailing list, they may find all the posted
+performance data from you patch.
+
+In general your testing data is convinced IMHO, and I will add your
+updated patch for 5.12 merge window.
+
+
+Thanks.
+
+Coly Li
+
+
+> 
+> 
+> On Thu, Jan 14, 2021 at 6:05 PM Coly Li <colyli@suse.de> wrote:
+>>
+>> On 1/14/21 12:45 PM, Dongdong Tao wrote:
+>>> Hi Coly,
+>>>
+>>> I've got the testing data for multiple threads with larger IO depth.
+>>>
+>>
+>> Hi Dongdong,
+>>
+>> Thanks for the testing number.
+>>
+>>> *Here is the testing steps:
+>>> *1. make-bcache -B <> -C <> --writeback
+>>>
+>>> 2. Open two tabs, start different fio task in them at the same time.
+>>> Tab1 run below fio command:
+>>> sudo fio --name=random-writers --filename=/dev/bcache0 --ioengine=libaio
+>>> --iodepth=32 --rw=randrw --blocksize=64k,8k  --direct=1 --runtime=24000
+>>>
+>>> Tab2 run below fio command:
+>>> sudo fio --name=random-writers2 --filename=/dev/bcache0
+>>> --ioengine=libaio --iodepth=8 --rw=randwrite --bs=4k --rate_iops=150
+>>> --direct=1 --write_lat_log=rw --log_avg_msec=20
+>>>
+>>
+>>
+>> Why you limit the iodep to 8 and iops to 150 on cache device?
+>> For cache device the limitation is small. Iosp 150 with 4KB block size,
+>> it means every hour writing (150*4*60*60=2160000KB=) 2GB data. For 35
+>> hours it is only 70GB.
+>>
+>>
+>> What if the iodeps is 128 or 64, and no iops rate limitation ?
+>>
+>>
+>>> Note
+>>> - Tab1 fio will run for 24000 seconds, which is the one to cause the
+>>> fragmentation and made the cache_available_percent drops to under 40.
+>>> - Tab2 fio is the one that I'm capturing the latency and I have let it
+>>> run for about 35 hours, which is long enough to allow the
+>>> cache_available_percent drops under 30.
+>>> - This testing method utilized fio benchmark with larger read block
+>>> size/small write block size to cause the high fragmentation, However in
+>>> a real production env, there could be
+>>>    various reasons or a combination of various reasons to cause the high
+>>> fragmentation,  but I believe it should be ok to use any method to cause
+>>> the fragmentation to verify if
+>>>    bcache with this patch is responding better than the master in this
+>>> situation.
+>>>
+>>> *Below is the testing result:*
+>>>
+>>> The total run time is about 35 hours, the latency points in the charts
+>>> for each run are 1.5 million
+>>>
+>>> Master:
+>>> fio-lat-mater.png
+>>>
+>>> Master + patch:
+>>> fio-lat-patch.png
+>>> Combine them together:
+>>> fio-lat-mix.png
+>>>
+>>> Now we can see the master is even worse when we increase the iodepth,
+>>> which makes sense since the backing HDD is being stressed more hardly.
+>>>
+>>> *Below are the cache stats changing during the run:*
+>>> Master:
+>>> bcache-stats-master.png
+>>>
+>>> Master + the patch:
+>>> bcache-stats-patch.png
+>>>
+>>> That's all the testing done with 400GB NVME with 512B block size.
+>>>
+>>> Coly, do you want me to continue the same testing on 1TB nvme with
+>>> different block size ?
+>>> or is it ok to skip the 1TB testing and continue the test with 400GB
+>>> NVME but with different block size?
+>>> feel free to let me know any other test scenarios that we should cover
+>>> here.
+>>
+>> Yes please, more testing is desired for performance improvement. So far
+>> I don't see performance number for real high work load yet.
+>>
+>> Thanks.
+>>
+>> Coly Li
+>>
+
