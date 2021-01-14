@@ -2,40 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38C92F5BAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CED552F5BB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbhANHyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 02:54:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56650 "EHLO mail.kernel.org"
+        id S1727927AbhANHzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 02:55:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726893AbhANHyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 02:54:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEAE5239EB;
-        Thu, 14 Jan 2021 07:53:49 +0000 (UTC)
+        id S1726510AbhANHzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 02:55:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 317DC23A1D;
+        Thu, 14 Jan 2021 07:53:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1610610830;
-        bh=BfR7Hw4xHA9KGq6SfRhpALDGRDIIsusN8JYXc3PJDIw=;
+        bh=idK8XxiiyoaOs4dRWdbCzNyTgXtfNWQ9SoHpDwL3m2Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O8lxQtJjlauI3y2svqA6PtVEQTUJtxAUN44am9OR9/B6Gqsh+TIdUopujBFRW2u6/
-         kw+u0RHEX1yAqDMtLk48sCWxYdYKgJZhTky+gOmKjy5AZwts3IjXdjKzXCHZcEqcOv
-         8Cs02hl6wt8kYTr+1PAVLlkFYwV2w3DQUMtNU25tiJRIb23vJNvjVZgXyDFhU+QNgf
-         6shX0bJS4j8hsmJIZW812x8Uux3ip9lRoW2sTIxfkIwJ3C16sYNrjx1nMas9PsFDDY
-         B9KhELqUHhHnV3Cae6uPS2upkb076CDL+v5i4pFbj5dPTCEvSnDmNDWRBzEhIBtUB8
-         lH+9dmF9g4usA==
+        b=b8dswQE7d/kB9wq8ybsSfUBXKKkwU+3so8XJ12vaHCSCAOzrG/sIRTcotmO+FIOzz
+         1vYZ9ljGc1MW0Dj8OJg8cwTbG7ah/bKjkBpZS81UQc9bIZT7kpwEtysxp9kyeC8YNj
+         BMMhNdj1HDHIU9lKBErMLGWf4PUEUI/PXXdnQHHtLit/GTocSZ6mEiu4Nylnqtzsul
+         ksCxayncQ43o2mIIT9YzYNt5rl3Nf9z6BzewjVkiJbV7Q+HxaIxb1oeDssyR4stJ7v
+         EYAIbYlNrw8cYi6Lm52mUAvcyXiJjjdqMR0SlsYePai6Os9DQUGBzvjpx8uYG1+sIY
+         /zv635ZwB6Tmw==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kzxRz-00EPuB-85; Thu, 14 Jan 2021 08:53:47 +0100
+        id 1kzxRz-00EPuD-9C; Thu, 14 Jan 2021 08:53:47 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>, Moritz Fischer <mdf@kernel.org>,
-        Wu Hao <hao.wu@intel.com>
+To:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
         "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
-        Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 05/10] docs: fpga: dfl.rst: Fix a couple building issues
-Date:   Thu, 14 Jan 2021 08:53:40 +0100
-Message-Id: <fca8e53692b1e57242e09fc3436cacd1961c8d8b.1610610444.git.mchehab+huawei@kernel.org>
+        Alex Deucher <alexander.deucher@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Wayne Lin <Wayne.Lin@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 06/10] drm: amd: amdgpu_dm.h: fix a wrong kernel-doc markup
+Date:   Thu, 14 Jan 2021 08:53:41 +0100
+Message-Id: <8e16f3aa553786cd193e49882ce5131e3769afb8.1610610444.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1610610444.git.mchehab+huawei@kernel.org>
 References: <cover.1610610444.git.mchehab+huawei@kernel.org>
@@ -46,46 +57,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A title markup length is smaller than required;
-A literal block is not marked as such.
+There's a missing colon, causing the markup to be ignored,
+solving those warnings:
 
-This fixes the warnings below:
-
-    .../Documentation/fpga/dfl.rst:505: WARNING: Title underline too short.
-
-    Location of DFLs on a PCI Device
-    ===========================
-    .../Documentation/fpga/dfl.rst:523: WARNING: Unexpected indentation.
-    .../Documentation/fpga/dfl.rst:523: WARNING: Blank line required after table.
-    .../Documentation/fpga/dfl.rst:524: WARNING: Block quote ends without a blank line; unexpected unindent.
+	../drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:340: warning: Incorrect use of kernel-doc format:          * @active_vblank_irq_count
+	../drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:379: warning: Function parameter or member 'active_vblank_irq_count' not described in 'amdgpu_display_manager'
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/fpga/dfl.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-index ea8cefc18bdb..716a3d705046 100644
---- a/Documentation/fpga/dfl.rst
-+++ b/Documentation/fpga/dfl.rst
-@@ -502,7 +502,7 @@ FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
- could be a reference.
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+index f084e2fc9569..5ee1b766884e 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+@@ -337,7 +337,7 @@ struct amdgpu_display_manager {
+ 	const struct gpu_info_soc_bounding_box_v1_0 *soc_bounding_box;
  
- Location of DFLs on a PCI Device
--===========================
-+================================
- The original method for finding a DFL on a PCI device assumed the start of the
- first DFL to offset 0 of bar 0.  If the first node of the DFL is an FME,
- then further DFLs in the port(s) are specified in FME header registers.
-@@ -513,7 +513,7 @@ VSEC ID of 0x43 for this purpose.  The vendor specific
- data begins with a 4 byte vendor specific register for the number of DFLs followed 4 byte
- Offset/BIR vendor specific registers for each DFL. Bits 2:0 of Offset/BIR register
- indicates the BAR, and bits 31:3 form the 8 byte aligned offset where bits 2:0 are
--zero.
-+zero::
- 
-         +----------------------------+
-         |31     Number of DFLS      0|
+ 	/**
+-	 * @active_vblank_irq_count
++	 * @active_vblank_irq_count:
+ 	 *
+ 	 * number of currently active vblank irqs
+ 	 */
 -- 
 2.29.2
 
