@@ -2,140 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94CD62F6BDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:14:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D752F6BE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbhANULa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 15:11:30 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:62080 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726382AbhANUL3 (ORCPT
+        id S1729235AbhANUMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 15:12:10 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:35047 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727181AbhANUMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 15:11:29 -0500
-Date:   Thu, 14 Jan 2021 20:10:39 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1610655046;
-        bh=ulfYdd/znJ0wKOYLZIAjghjo9MVr60+df9iJJXRe/kM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=DnGX8c2zCbPMe6+bLs78s6zn6aJHd1iLkNf/ymoamcdYLzXBiGEZhxbOShdrKsGMq
-         YZ3C78yAVVqzMIapilCqadKu1+2q+p9exjwYYv7xSSt8pbDHOucGYaQ8r960RXJmsx
-         xqJWS9+bN35ulBL3kdv6JlDDMl/Ivn5TGKXWV/iw=
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: Re: [PATCH v3 1/2] arm64: dts: sdm845: add oneplus6/6t devices
-Message-ID: <4db0807e-c33e-5913-1818-1fc055e35acb@connolly.tech>
-In-Reply-To: <17d49d19-7672-520c-12d3-c6ed8c12ae47@somainline.org>
-References: <20210114185227.25265-1-caleb@connolly.tech> <20210114185227.25265-2-caleb@connolly.tech> <17d49d19-7672-520c-12d3-c6ed8c12ae47@somainline.org>
+        Thu, 14 Jan 2021 15:12:09 -0500
+Received: by mail-ot1-f51.google.com with SMTP id i6so6398585otr.2;
+        Thu, 14 Jan 2021 12:11:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gqqq+fMHkEpgHgpA0O4FcNTUfXZo6tu9q7RhXRCTixs=;
+        b=fae0QKIfRVgJB4FfAyyi3c7Zll4jyZ162dvnLzNuPV0GMfhE/CabczIvTojcPiao8F
+         t2GAQ20Oxtcr8/D3XuF2Dd7A4OfF9Oy8LTzTkcpEDHGB0pFn4adwxMVzhsjxnknNFW+d
+         Ppr4h5L4utR2+2w2f+ogE6fRVQK7V8ounNugXfwFyB2sq2qQJEgm4yA+JS354oHBxBFE
+         n310cnuu8B/V1edvuAKpcC9vGd3kAd1EtZ3lC/pTybqmzp+V/7+X8vBse+YLY2LySlw7
+         kLKFr/1XEExJZkkhGLsWVJKBwps3rCixGBwynVl4kMUztoMh2lCdJ8YB34QMCTeoEWCS
+         yohg==
+X-Gm-Message-State: AOAM530aB9wFc70mzzgwiFC2Dd3lpxUSU45mYYSchkfwApl6oQZjBoIc
+        CTFbdGjO6YdGJR813bMdog==
+X-Google-Smtp-Source: ABdhPJzUAspNmh+1Adxo+Z/qLjyL/qp2ewL2ZVCRVvAggfRb4+fY4cnYDFMIX9o1IPxhR5fOQcGk2w==
+X-Received: by 2002:a05:6830:1d58:: with SMTP id p24mr6083765oth.286.1610655088615;
+        Thu, 14 Jan 2021 12:11:28 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 8sm1276191oii.45.2021.01.14.12.11.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 12:11:27 -0800 (PST)
+Received: (nullmailer pid 3509247 invoked by uid 1000);
+        Thu, 14 Jan 2021 20:11:26 -0000
+Date:   Thu, 14 Jan 2021 14:11:26 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Ondrej Jirman <megous@megous.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 01/10] dt-bindings: irq: sun6i-r: Split the binding
+ from sun7i-nmi
+Message-ID: <20210114201126.GA3509187@robh.at.kernel.org>
+References: <20210112055950.21209-1-samuel@sholland.org>
+ <20210112055950.21209-2-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112055950.21209-2-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 11 Jan 2021 23:59:41 -0600, Samuel Holland wrote:
+> The R_INTC in the A31 and newer sun8i/sun50i SoCs has additional
+> functionality compared to the sun7i/sun9i NMI controller. Among other
+> things, it multiplexes access to up to 128 interrupts corresponding to
+> (and in parallel to) the first 128 GIC SPIs. This means the NMI is no
+> longer the lowest-numbered hwirq at this irqchip, since it is SPI 32 or
+> 96 (depending on SoC). hwirq 0 now corresponds to SPI 0, usually UART0.
+> 
+> To allow access to all multiplexed IRQs, the R_INTC requires a new
+> binding where the interrupt number matches the GIC interrupt number.
+> Otherwise, interrupts with hwirq numbers below the NMI would not be
+> representable in the device tree.
+> 
+> For simplicity, copy the three-cell GIC binding; this disambiguates
+> interrupt 0 in the old binding (the NMI) from interrupt 0 in the new
+> binding (SPI 0) by the number of cells.
+> 
+> Because the H6 R_INTC has a different mapping from multiplexed IRQs to
+> top-level register bits, it is no longer compatible with the A31 R_INTC.
+> 
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>  .../allwinner,sun6i-a31-r-intc.yaml           | 66 +++++++++++++++++++
+>  .../allwinner,sun7i-a20-sc-nmi.yaml           | 10 ---
+>  2 files changed, 66 insertions(+), 10 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/allwinner,sun6i-a31-r-intc.yaml
+> 
 
-On 14/01/2021 7:19 pm, Konrad Dybcio wrote:
-> Hi!
->
->>   dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-db845c.dtb
->>   dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-mtp.dtb
->>   dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-xiaomi-beryllium.dtb
->> +dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-oneplus-enchilada.dtb
->> +dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-oneplus-fajita.dtb
->>   dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm850-lenovo-yoga-c630.dtb
-> Please sort.
->
->> +/ {
->> +
-> Redundant newline.
->> +=09gpio-keys {
->> +=09=09compatible =3D "gpio-keys";
->> +=09=09label =3D "Volume keys";
->> +=09=09autorepeat;
->> +
->> +=09=09pinctrl-names =3D "default";
->> +=09=09pinctrl-0 =3D <&volume_down_gpio &volume_up_gpio>;
->> +
->> +=09=09vol-down {
->> +=09=09=09label =3D "Volume down";
->> +=09=09=09linux,code =3D <KEY_VOLUMEDOWN>;
->> +=09=09=09gpios =3D <&pm8998_gpio 5 GPIO_ACTIVE_LOW>;
->> +=09=09=09debounce-interval =3D <15>;
->> +=09=09};
->> +
->> +=09=09vol-up {
->> +=09=09=09label =3D "Volume up";
->> +=09=09=09linux,code =3D <KEY_VOLUMEUP>;
->> +=09=09=09gpios =3D <&pm8998_gpio 6 GPIO_ACTIVE_LOW>;
->> +=09=09=09debounce-interval =3D <15>;
->> +=09=09};
->> +=09};
-> Perhaps gpio-keys could come before the fixed regulators to keep it a bit=
- more sane/sorted?
->> +&adsp_pas {
-> This should come before apps_rsc alphabetically.
->> +// Prevent garbage data on bluetooth UART lines
-> Please use C-style comments (/* thing */).
->> +&usb_1 {
->> +=09status =3D "okay";
->> +
->> +=09/*
->> +=09 * disable USB3 clock requirement as the device only supports
->> +=09 * USB2.
->> +=09 */
->> +=09qcom,select-utmi-as-pipe-clk;
->> +};
->> +
->> +&usb_1_dwc3 {
->> +=09/*
->> +=09 * We don't have the capability to switch modes yet.
->> +=09 */
->> +=09dr_mode =3D "peripheral";
->> +
->> +=09/* fastest mode for USB 2 */
->> +=09maximum-speed =3D "high-speed";
->> +
->> +=09/* Remove USB3 phy as it's unused on this device. */
->> +=09phys =3D <&usb_1_hsphy>;
->> +=09phy-names =3D "usb2-phy";
->> +};
-> Are you sure you can't get USB3 in host mode? Perhaps it's not worth disc=
-arding it upfront, as some boards can do that, definitely do check!
-The device definitely doesn't support USB3, although downstream does=20
-leave the USB3 phy enabled the hardware doesn't support it. So it made=20
-sense to disable it here.
->> \ No newline at end of file
-> Please add a newline.
->
->
-> The DTS files look correct, but don't you need at least one of msm-id, bo=
-ard-id, pmic-id? I'm not exactly sure what OnePlus does, but I can imagine =
-they would require such properties..
-
-OnePlus' bootloader doesn't seem to care about these values so I left=20
-them out for simplicity.
-
-Cheers,
-
-Caleb
-
->
-> Konrad
->
-
+Reviewed-by: Rob Herring <robh@kernel.org>
