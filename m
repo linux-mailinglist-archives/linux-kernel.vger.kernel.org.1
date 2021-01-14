@@ -2,109 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4917C2F56B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 809ED2F55FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbhANBwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:52:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729761AbhANAHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 19:07:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 826A522A83;
-        Thu, 14 Jan 2021 00:06:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1610582773;
-        bh=Aiw3hocSNpc8d9OKmlwQqHpnJKjeH4oS+tO9UNk2TzU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EgnOpW22kfWBxWqD1DOqx1hCoc4GMerWJ5chcd4kxykizcxOJXYYII0BnKZyBiKWn
-         21cZnuCqb9QCDJ6rffWdwpnOcKLKmJYIvk8Z/KOtn4oIhuZFJcWT1cMsdgWhbYKHth
-         tJtJyCKyIyURYJ3e1+uuoMJ/cMAiQnI4En2jLpic=
-Date:   Wed, 13 Jan 2021 16:06:12 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     linux-kernel@vger.kernel.org, Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 2/4] lib: add error_report_notify to collect debugging
- tools' reports
-Message-Id: <20210113160612.32f8b67494521ce23cc9cba5@linux-foundation.org>
-In-Reply-To: <20210113091657.1456216-3-glider@google.com>
-References: <20210113091657.1456216-1-glider@google.com>
-        <20210113091657.1456216-3-glider@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1729922AbhANAi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 19:38:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729898AbhANAe4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 19:34:56 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F50C0617A4;
+        Wed, 13 Jan 2021 16:10:07 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id b6so3404106edx.5;
+        Wed, 13 Jan 2021 16:10:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=rj2crcQ/IZtgH+p50bCWVHg0wJ+YFm6EnGhDzudnKJQ=;
+        b=CJ5IyqYDwPIrmHWDzzDJ0wqTuECN6JmIEq20ZUg64UFA0hixOQwfgEt7soECHdlyDE
+         dxTtKDFaONXywjzklxS7ea+fdi74NYhBuVT5mx8FCkYiiogbG0fmrYnk2r73+4vJj1TL
+         8r6F7KgrXiTPws7HFCRj8116a8/u4OK02cs9tghFG6wo0OOqqOPiHcP9Bbkh0ir/KcS4
+         TRKLnanNiReovvhzEsivbpfqop/ygUM4h+LL2q3/w4YNrgWmCvQFn9AqVid+3RZV/Ay1
+         +TSTTkcAxZW6/TqR/PY7NJII8xVpAmNz+dIv8/0/uReoC8gQQg5Rqm21pUhBzGxfvITX
+         KkpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=rj2crcQ/IZtgH+p50bCWVHg0wJ+YFm6EnGhDzudnKJQ=;
+        b=EhrIlxl3SQxYdlrq2sBlOQz0BmTVr7pplImTgRI1TKMulkmTyFEnc4oisopVaZjNff
+         mDPV83UvCshu5bmZq48ju7nuukOr6KWoJLftquf2QVY49fiwP0zmTKztG0aCSW1/b1EP
+         5qPVxZgcEQ6t8P/gLNeZ+Z7uOIg2wbd/GpQC0bKb3lN73o1P/HNhMzQV3Q+thV3JMetK
+         M6shP9vAcfxnuujRv3DDk0XsLTP1PDBcGRtX6fiZhav7eTozLk6IaoYxtes2XHJRxNlU
+         YZhPhW3xCWUP/7gO75oFrSREjwOldEmcRrd/KixmMNSs346SfWC2Nj0Z7pOgWsTEzgc0
+         hZBQ==
+X-Gm-Message-State: AOAM533PehRzRtwrscbQKswGoKXvVDDuKQcT7rHrH3siokO2YVbS/jv4
+        pdGjCumtAMxr6RB/JgIrjxY=
+X-Google-Smtp-Source: ABdhPJxnh3zMjUvL+BojCxLrT3H1ehKl0PvJZWs1BTMoRw0/pTaVAm+QX6ptLLf8Oh0PE30gRaxUiw==
+X-Received: by 2002:a05:6402:310f:: with SMTP id dc15mr3695554edb.225.1610583006295;
+        Wed, 13 Jan 2021 16:10:06 -0800 (PST)
+Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id hr31sm1265819ejc.125.2021.01.13.16.10.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 16:10:05 -0800 (PST)
+Date:   Thu, 14 Jan 2021 02:10:04 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Gilles DOFFE <gilles.doffe@savoirfairelinux.com>
+Cc:     netdev@vger.kernel.org, Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net 3/6] net: dsa: ksz: insert tag on ks8795 ingress
+ packets
+Message-ID: <20210114001004.zn7yf5ztej2mujsh@skbuf>
+References: <cover.1610540603.git.gilles.doffe@savoirfairelinux.com>
+ <bc79946d1dafded91729ee1674c1b88a3beea110.1610540603.git.gilles.doffe@savoirfairelinux.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bc79946d1dafded91729ee1674c1b88a3beea110.1610540603.git.gilles.doffe@savoirfairelinux.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021 10:16:55 +0100 Alexander Potapenko <glider@google.com> wrote:
-
-> With the introduction of various production error-detection tools, such as
-> MTE-based KASAN and KFENCE, the need arises to efficiently notify the
-> userspace OS components about kernel errors. Currently, no facility exists
-> to notify userspace about a kernel error from such bug-detection tools.
-> The problem is obviously not restricted to the above bug detection tools,
-> and applies to any error reporting mechanism that does not panic the
-> kernel; this series, however, will only add support for KASAN and KFENCE
-> reporting.
+On Wed, Jan 13, 2021 at 01:45:19PM +0100, Gilles DOFFE wrote:
+> If 802.1q VLAN tag is removed from egress traffic, ingress
+> traffic should by logic be tagged.
 > 
-> All such error reports appear in the kernel log. But, when such errors
-> occur, userspace would normally need to read the entire kernel log and
-> parse the relevant errors. This is error prone and inefficient, as
-> userspace needs to continuously monitor the kernel log for error messages.
-> On certain devices, this is unfortunately not acceptable. Therefore, we
-> need to revisit how reports are propagated to userspace.
+> Signed-off-by: Gilles DOFFE <gilles.doffe@savoirfairelinux.com>
+> ---
+>  drivers/net/dsa/microchip/ksz8795.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> The library added, error_report_notify (CONFIG_ERROR_REPORT_NOTIFY),
-> solves the above by using the error_report_start/error_report_end tracing
-> events and exposing the last report and the total report count to the
-> userspace via /sys/kernel/error_report/last_report and
-> /sys/kernel/error_report/report_count.
-> 
-> Userspace apps can call poll(POLLPRI) on those files to get notified about
-> the new reports without having to watch dmesg in a loop.
-
-It would be nice to see some user-facing documentation for this, under
-Documentation/.  How to use it, what the shortcomings are, etc.
-
-For instance...  what happens when userspace is slow reading
-/sys/kernel/error_report/last_report?  Does that file buffer multiple
-reports?  Does the previous one get overwritten?  etc.  Words on how
-this obvious issue is handled...
-
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -209,6 +209,20 @@ config DEBUG_BUGVERBOSE
->  	  of the BUG call as well as the EIP and oops trace.  This aids
->  	  debugging but costs about 70-100K of memory.
+> diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
+> index 4b060503b2e8..193f03ef9160 100644
+> --- a/drivers/net/dsa/microchip/ksz8795.c
+> +++ b/drivers/net/dsa/microchip/ksz8795.c
+> @@ -874,6 +874,7 @@ static void ksz8795_port_vlan_add(struct dsa_switch *ds, int port,
+>  	}
 >  
-> +config ERROR_REPORT_NOTIFY
-> +	bool "Expose memory error reports to the userspace"
+>  	ksz_port_cfg(dev, port, P_TAG_CTRL, PORT_REMOVE_TAG, untagged);
+> +	ksz_port_cfg(dev, port, P_TAG_CTRL, PORT_INSERT_TAG, !untagged);
+>  }
+>  
+>  static int ksz8795_port_vlan_del(struct dsa_switch *ds, int port,
+> -- 
+> 2.25.1
+> 
 
-There's really nothing "memory" specific about this?  Any kernel
-subsystem could use it?
+KSZ8795 manual says:
 
-> +	depends on TRACING
-> +	help
-> +	  When enabled, captures error reports from debugging tools (such as
-> +	  KFENCE or KASAN) using console tracing, and exposes reports in
-> +	  /sys/kernel/error_report/: the file last_report contains the last
-> +	  report (with maximum report length of PAGE_SIZE), and report_count,
-> +	  the total report count.
-> +
-> +	  Userspace programs can call poll(POLLPRI) on those files to get
-> +	  notified about the new reports without having to watch dmesg in a
-> +	  loop.
+TABLE 4-4: PORT REGISTERS
+Bit 2: Tag insertion
+1 = When packets are output on the port, the switch
+will add 802.1q tags to packets without 802.1q tags
+when received. The switch will not add tags to
+packets already tagged. The tag inserted is the
+ingress port’s “Port VID.”
+0 = Disable tag insertion.
 
-So we have a whole new way of getting debug info out of the kernel.  I
-fear this will become a monster.  And anticipating that, we should make
-darn sure that the interface is right, and is extensible.
+Bit 1: Tag Removal
+1 = When packets are output on the port, the switch
+will remove 802.1q tags from packets with 802.1q
+tags when received. The switch will not modify
+packets received without tags.
+0 = Disable tag removal.
 
+What I understand from this is that the "Tag Removal" bit controls
+whether the port will send all VLANs as egress-untagged or not.
 
+Whereas the "Tag insertion" bit controls whether the pvid of the ingress
+port will be sent as egress-tagged (if the insertion bit is 1), or as-is
+(probably egress-untagged) (if the insertion bit is 0) on the egress
+port.
+
+I deduce that the "Tag Removal" bit overrules the "Tag insertion" bit of
+a different port, if both are set. Example:
+
+lan0:               lan1
+pvid=20
+Tag insertion=1     Tag removal=0
+
+An untagged packet forwarded from lan0 to lan1 should be transmitted as
+egress-tagged, because lan0 is configured to insert its pvid into the
+frames.
+
+But:
+
+lan0:               lan1
+pvid=20
+Tag insertion=1     Tag removal=1
+
+An untagged packet forwarded from lan0 to lan1 should be transmitted as
+untagged, because even though lan0 inserted its pvid into the frame,
+lan1 removed it.
+
+Based on my interpretation of the manual, I believe you have a lot more
+work to do than simply operating "by logic". You can test, but I don't
+believe that the PORT_INSERT_TAG flag affects the port on which the
+switchdev VLAN object is supposed to be offloading. On the contrary: it
+affects every other port in the same bridge _except_ for that one.
