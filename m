@@ -2,259 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE372F64C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D412F64C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728389AbhANPhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 10:37:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbhANPhG (ORCPT
+        id S1727693AbhANPgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 10:36:17 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:33533 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727083AbhANPgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 10:37:06 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A38C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:36:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KMQ5a1jCaVWlGMjircKGxy9Cp4FtuzMM1Q3cqH1gOQE=; b=WlRlMPxdA0mn4qEgo8p4ly4XOt
-        RbCYbuJ1jzUC/Ix985vWGPQokeGa+Iy1Bex5nfC+i1+vEd/7Lwa+689tIqdTATgAMHp+ZwpI+05PI
-        jravGA1AZQNt2RZ3nsuKhjz6+ITxs7jdJxzQo+XmfUtQkkumlW+0S+k9xRkLJ5RqLxR7kN1mGoIV/
-        hAcH9lf+rqGzNTrkU9Y5uZMw9EDOlsyspHqjzjLY1678Q3hkgaT1e/LEgUa8EUKxYq6bHrFirNTEV
-        Lhw0F36RcqIb1osKkx/7D17yBELrZ9EBk4ip+s5rEfReKcVW/i0ivDqDPVOvnaf1GbFl8nSy6ZKuv
-        aaEFnztw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l04eG-007jrs-6z; Thu, 14 Jan 2021 15:35:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 08DD130015A;
-        Thu, 14 Jan 2021 16:34:53 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E7F4520CC02C7; Thu, 14 Jan 2021 16:34:52 +0100 (CET)
-Date:   Thu, 14 Jan 2021 16:34:52 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 3/4] workqueue: Tag bound workers with KTHREAD_IS_PER_CPU
-Message-ID: <YABknAqDe4h35+GY@hirez.programming.kicks-ass.net>
-References: <20210112144344.850850975@infradead.org>
- <20210112144843.849135905@infradead.org>
- <CAJhGHyD_xuSpYOp5A9PumWGsBA=DNqM0ge3_NgRkfro7fafGqA@mail.gmail.com>
- <YABDI6Qkp5PNslUS@hirez.programming.kicks-ass.net>
- <jhjlfcvhcx5.mognet@arm.com>
+        Thu, 14 Jan 2021 10:36:16 -0500
+Received: from mail-oi1-f200.google.com ([209.85.167.200])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <dongdong.tao@canonical.com>)
+        id 1l04er-0003ht-BV
+        for linux-kernel@vger.kernel.org; Thu, 14 Jan 2021 15:35:33 +0000
+Received: by mail-oi1-f200.google.com with SMTP id t206so2552923oib.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 07:35:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qYot9zCDucWco4V0yid0zIuAnNyVpGykxmK/k1V5cpE=;
+        b=cOq5Uw3bTZTkyOT9vxvx3bpgY8fhTHHQOCIcTYwGStbwPqveL7HD0k/P5xQPEqDCVF
+         yeL8h3OQVihB9y/qJiukwbA8k3K5jY3eIqMThV5LMtYJzGdGbrPb6dDmiE3MMg+IoXoa
+         9UWMzY6pgi/uc19HZ2M5Wq+4vX+N1cUIFrCnxLrTzcG6IjvDrORjF7paqfdBI4voa2Gt
+         B2CSPBFTA3dYG2v1Qysi1Uwetk/p0YYJ1Ud3PmN7EfxQVh3MpV6p3rPGeROI0Q1Eeluw
+         tMAgVYeg1HzHeaxI5tzIwIJ8uZFk9Dqrl2kPR0zpVa8FhKpmXnLOCNEE8hsqAQjD1qP9
+         VSsw==
+X-Gm-Message-State: AOAM532G1Vd+Nr5XR/V4xYfi8w16ObzWY3KQrnuKLLj6GEFypVkApMdg
+        TaMWUEyhrfwu679SiBcouCE2ZEQEBJPO9M8x5oRO4tlJ/0abbxd8aqAGlIAOaul32dMQHn7kV3c
+        924c+9DL+YJshMURQlAQoa81grQguhWr4Llzrw4SKNzz2vjNfSQVzFFQluQ==
+X-Received: by 2002:a9d:c68:: with SMTP id 95mr4789377otr.328.1610638530800;
+        Thu, 14 Jan 2021 07:35:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxANdpRp9+6+4Dn7V3m8sTpXcMJ/sjragibUIEDUssykDLszLMj+AByozc8E489CfriOTjD+EgS6YH2U0lLRbw=
+X-Received: by 2002:a9d:c68:: with SMTP id 95mr4789283otr.328.1610638529053;
+ Thu, 14 Jan 2021 07:35:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jhjlfcvhcx5.mognet@arm.com>
+References: <20210105030602.14427-1-tdd21151186@gmail.com> <CAJS8hVK-ZCxJt=E3hwR0hmqPYL1T07_WC_nerb-dZodO+DqtDA@mail.gmail.com>
+ <1a4b2a68-a7b0-8eb0-e60b-c3cf5a5a9e56@suse.de> <CAJS8hVL2B=RZr8H4jFbz=bX9k_E9ur7kTeue6BJwzm4pwv1+qQ@mail.gmail.com>
+ <084276ab-7c74-31be-b957-3b039d7061a1@suse.de> <CAJS8hVKJMZ-9Ep-8v7FALeW5dGMttpQ45=WKJTQmLUKEozhfXg@mail.gmail.com>
+ <299ea3ff-4a9c-734e-0ec1-8b8d7480a019@suse.de> <CAJS8hVLSP2mk0Qzsxp=i5_ZgH4QJppPOrr2LU0oEAM-EOMjOyg@mail.gmail.com>
+ <CAJS8hVJDaREvpvG4iO+Xs-KQXQKFi7=k29TrG=NXqjyiPpUCZA@mail.gmail.com>
+ <392abd73-c58a-0a34-bd21-1e9adfffc870@suse.de> <CAJS8hV+6Txqvevj1YBAOrEog4=rWpBUbNFUpDrE1rqzwXuT4yg@mail.gmail.com>
+ <3ca15755-9ad2-1d57-b86a-fb659f701cfb@suse.de>
+In-Reply-To: <3ca15755-9ad2-1d57-b86a-fb659f701cfb@suse.de>
+From:   Dongdong Tao <dongdong.tao@canonical.com>
+Date:   Thu, 14 Jan 2021 23:35:16 +0800
+Message-ID: <CAJS8hVLthLcaSLt3bZ6VGNqHZZhW6ou4zLqg_NJoKhgW3V90Sw@mail.gmail.com>
+Subject: Re: [PATCH] bcache: consider the fragmentation when update the
+ writeback rate
+To:     Coly Li <colyli@suse.de>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        "open list:BCACHE (BLOCK LAYER CACHE)" <linux-bcache@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Gavin Guo <gavin.guo@canonical.com>,
+        Gerald Yang <gerald.yang@canonical.com>,
+        Trent Lloyd <trent.lloyd@canonical.com>,
+        Dominique Poulain <dominique.poulain@canonical.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Benjamin Allot <benjamin.allot@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 01:21:26PM +0000, Valentin Schneider wrote:
-> On 14/01/21 14:12, Peter Zijlstra wrote:
+Hi Coly,
 
-> > -		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task,
-> > -						  pool->attrs->cpumask) < 0);
-> > +		kthread_park(worker->task);
-> 
-> Don't we still need an affinity change here, to undo what was done in
-> unbind_workers()?
-> 
-> Would something like
-> 
->   __kthread_bind_mask(worker->task, pool->attrs->cpumask, TASK_PARKED)
-> 
-> even work?
-> 
-> >               kthread_set_per_cpu(worker->task, true);
-> > +		kthread_unpark(worker->task);
+Apologies for any confusion that I might have caused, and thanks a lot
+for your patience and your help !
 
-Nope, look at what kthread_unpark() does, what was missing was assigning
-kthread->cpu though.
+On Thu, Jan 14, 2021 at 9:31 PM Coly Li <colyli@suse.de> wrote:
+>
+> On 1/14/21 8:22 PM, Dongdong Tao wrote:
+> > Hi Coly,
+> >
+> > Why you limit the iodeph to 8 and iops to 150 on cache device?
+> > For cache device the limitation is small. Iosp 150 with 4KB block size,
+> > it means every hour writing (150*4*60*60=2160000KB=) 2GB data. For 35
+> > hours it is only 70GB.
+> >
+> >
+> > What if the iodepth is 128 or 64, and no iops rate limitation ?
+> > -> There are two reasons why I limit the iodepth and iops rate.
+> > 1. If I don't limit them, the dirty cache will be filled up very
+> > quickly within 20 minutes.
+> >      It's almost NVME speed before it reaches the 70
+> > cutoff_writeback_sync, there is no way for any kind of writeback to
+> > stop it from
+> >      filling up due to the huge gap between NVME and HDD in terms of
+> > the throughput,
+> >      I don't think there is anything we can do about it? and it should
+> > only happen in a benchmark world, not should in production.
+> >      The improvement I'm trying to do here is just for normal
+> > production workload ,not for this benchmark scenario really.
+> >      I currently can't see any necessity to test this scenario, please
+> > kindly let me know about this if I'm wrong.
+> >
+> > 2. The reason that I set iodepth to 8 and iops to 150 is based on the
+> > experience that I observed from production env, mostly ceph,
+> >     ceph-osd has less than 10 thread(default setting) that will send
+> > io to bcache in parallel. But I'm not sure about other applications.
+> >     I agree that we can increase the iodepth to 64 or 128 and it's
+> > doable. But we have to limit the iops, 150 IOPS is a reasonable
+> > workload.
+> >     The most busy ceph-osd that I've seen is about 1000 IOPS, but on
+> > average is still only about 600.
+> >     I can set the IOPS to a higher value like 600 and the iodepth to
+> > 128 to perform the later test if it make sense to you?
+> >
+>
+> OK, now I know the reason with the extra information. Since the cache
+> device is filled up within 20 minutes, it is unnecessary to do the
+> faster testing on your side. Let me do it later on my hardware.
+>
+>
+> > Lastly, please allow me to clarify more about the production issue
+> > that this patch is trying to address:
+> >
+> > In the production env that hit this issue, it usually takes a very
+> > long time (many take days) for the cache_available_percent to drop to
+> > 30, and the dirty data is mostly staying at a very low level (around
+> > 10 percent), which means that the bcache isn't being stressed very
+> > hard most of the time.
+> >  There is no intention to save the cutoff_writeback_sync when the
+> > bcache is being stressed without limitation, hope above make sense :)
+> >
+>
+> Yes you explained clearly previously. What I worried was whether a
+> faster writeback may interfere throughput and latency of regular I/O
+> regular I/Os.
+>
+> From your current testing data it looks find with me.
+>
+>
+> > By the way, my colleague and I are trying to gathering some production
+> > bcache stats, I hope we can give you the performance number before and
+> > after applying the patch.
+>
+> Yes that will be great.
+>
+> And could you please gather all current data chats into a single email,
+> and reference it in your patch via lore ? Then for people don't
+> subscribe linux-bcache mailing list, they may find all the posted
+> performance data from you patch.
+>
 
-The below seems to actually work. Rescuer is still a problem though.
+Sounds good, I'll update the patch comment with reference data.
+But it seems like the linux mailing list doesn't accept chart ?
+(always been detected as SPAM)
+But, I can't be sure, I'll try to send it again, but if not, I'll put
+all those data into a google doc.
 
----
- include/linux/kthread.h |  2 +-
- kernel/kthread.c        | 14 ++++++++------
- kernel/sched/core.c     | 19 ++++++++++++++++++-
- kernel/smpboot.c        |  2 +-
- kernel/workqueue.c      | 22 +++++++++++++---------
- 5 files changed, 41 insertions(+), 18 deletions(-)
+> In general your testing data is convinced IMHO, and I will add your
+> updated patch for 5.12 merge window.
+>
+Thank you Coly, that's great !!!
 
-diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-index fdd5a52e35d8..2484ed97e72f 100644
---- a/include/linux/kthread.h
-+++ b/include/linux/kthread.h
-@@ -33,7 +33,7 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
- 					  unsigned int cpu,
- 					  const char *namefmt);
- 
--void kthread_set_per_cpu(struct task_struct *k, bool set);
-+void kthread_set_per_cpu(struct task_struct *k, int cpu);
- bool kthread_is_per_cpu(struct task_struct *k);
- 
- /**
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index bead90275d2b..e0e4a423f184 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -497,19 +497,21 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
- 	return p;
- }
- 
--void kthread_set_per_cpu(struct task_struct *k, bool set)
-+void kthread_set_per_cpu(struct task_struct *k, int cpu)
- {
- 	struct kthread *kthread = to_kthread(k);
- 	if (!kthread)
- 		return;
- 
--	if (set) {
--		WARN_ON_ONCE(!(k->flags & PF_NO_SETAFFINITY));
--		WARN_ON_ONCE(k->nr_cpus_allowed != 1);
--		set_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
--	} else {
-+	WARN_ON_ONCE(!(k->flags & PF_NO_SETAFFINITY));
-+
-+	if (cpu < 0) {
- 		clear_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
-+		return;
- 	}
-+
-+	kthread->cpu = cpu;
-+	set_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
- }
- 
- bool kthread_is_per_cpu(struct task_struct *k)
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 60b257d845fa..c2fdeeb6af2b 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7589,7 +7589,24 @@ int sched_cpu_dying(unsigned int cpu)
- 	sched_tick_stop(cpu);
- 
- 	rq_lock_irqsave(rq, &rf);
--	BUG_ON(rq->nr_running != 1 || rq_has_pinned_tasks(rq));
-+	if (rq->nr_running != 1 || rq_has_pinned_tasks(rq)) {
-+		struct task_struct *g, *p;
-+
-+		pr_crit("CPU%d nr_running=%d\n", cpu, rq->nr_running);
-+		rcu_read_lock();
-+		for_each_process_thread(g, p) {
-+			if (task_cpu(p) != cpu)
-+				continue;
-+
-+			if (!task_on_rq_queued(p))
-+				continue;
-+
-+			pr_crit("\tp=%s\n", p->comm);
-+		}
-+		rcu_read_unlock();
-+
-+		WARN_ON_ONCE(1);
-+	}
- 	rq_unlock_irqrestore(rq, &rf);
- 
- 	calc_load_migrate(rq);
-diff --git a/kernel/smpboot.c b/kernel/smpboot.c
-index b0abe575a524..f25208e8df83 100644
---- a/kernel/smpboot.c
-+++ b/kernel/smpboot.c
-@@ -188,7 +188,7 @@ __smpboot_create_thread(struct smp_hotplug_thread *ht, unsigned int cpu)
- 		kfree(td);
- 		return PTR_ERR(tsk);
- 	}
--	kthread_set_per_cpu(tsk, true);
-+	kthread_set_per_cpu(tsk, cpu);
- 	/*
- 	 * Park the thread so that it could start right on the CPU
- 	 * when it is available.
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index ec0771e4a3fb..b518fd67a792 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1862,7 +1862,7 @@ static void worker_attach_to_pool(struct worker *worker,
- 	if (pool->flags & POOL_DISASSOCIATED)
- 		worker->flags |= WORKER_UNBOUND;
- 	else
--		kthread_set_per_cpu(worker->task, true);
-+		kthread_set_per_cpu(worker->task, pool->cpu);
- 
- 	list_add_tail(&worker->node, &pool->workers);
- 	worker->pool = pool;
-@@ -1885,7 +1885,7 @@ static void worker_detach_from_pool(struct worker *worker)
- 
- 	mutex_lock(&wq_pool_attach_mutex);
- 
--	kthread_set_per_cpu(worker->task, false);
-+	kthread_set_per_cpu(worker->task, -1);
- 	list_del(&worker->node);
- 	worker->pool = NULL;
- 
-@@ -2371,6 +2371,7 @@ static int worker_thread(void *__worker)
- 	/* tell the scheduler that this is a workqueue worker */
- 	set_pf_worker(true);
- woke_up:
-+	kthread_parkme();
- 	raw_spin_lock_irq(&pool->lock);
- 
- 	/* am I supposed to die? */
-@@ -2428,7 +2429,7 @@ static int worker_thread(void *__worker)
- 			move_linked_works(work, &worker->scheduled, NULL);
- 			process_scheduled_works(worker);
- 		}
--	} while (keep_working(pool));
-+	} while (keep_working(pool) && !kthread_should_park());
- 
- 	worker_set_flags(worker, WORKER_PREP);
- sleep:
-@@ -2440,9 +2441,12 @@ static int worker_thread(void *__worker)
- 	 * event.
- 	 */
- 	worker_enter_idle(worker);
--	__set_current_state(TASK_IDLE);
-+	set_current_state(TASK_IDLE);
- 	raw_spin_unlock_irq(&pool->lock);
--	schedule();
-+
-+	if (!kthread_should_park())
-+		schedule();
-+
- 	goto woke_up;
- }
- 
-@@ -4923,7 +4927,7 @@ static void unbind_workers(int cpu)
- 		raw_spin_unlock_irq(&pool->lock);
- 
- 		for_each_pool_worker(worker, pool) {
--			kthread_set_per_cpu(worker->task, false);
-+			kthread_set_per_cpu(worker->task, -1);
- 			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
- 		}
- 
-@@ -4978,9 +4982,9 @@ static void rebind_workers(struct worker_pool *pool)
- 	 * from CPU_ONLINE, the following shouldn't fail.
- 	 */
- 	for_each_pool_worker(worker, pool) {
--		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task,
--						  pool->attrs->cpumask) < 0);
--		kthread_set_per_cpu(worker->task, true);
-+		WARN_ON_ONCE(kthread_park(worker->task) < 0);
-+		kthread_set_per_cpu(worker->task, pool->cpu);
-+		kthread_unpark(worker->task);
- 	}
- 
- 	raw_spin_lock_irq(&pool->lock);
+>
+> Thanks.
+>
+> Coly Li
+>
+>
+> >
+> >
+> > On Thu, Jan 14, 2021 at 6:05 PM Coly Li <colyli@suse.de> wrote:
+> >>
+> >> On 1/14/21 12:45 PM, Dongdong Tao wrote:
+> >>> Hi Coly,
+> >>>
+> >>> I've got the testing data for multiple threads with larger IO depth.
+> >>>
+> >>
+> >> Hi Dongdong,
+> >>
+> >> Thanks for the testing number.
+> >>
+> >>> *Here is the testing steps:
+> >>> *1. make-bcache -B <> -C <> --writeback
+> >>>
+> >>> 2. Open two tabs, start different fio task in them at the same time.
+> >>> Tab1 run below fio command:
+> >>> sudo fio --name=random-writers --filename=/dev/bcache0 --ioengine=libaio
+> >>> --iodepth=32 --rw=randrw --blocksize=64k,8k  --direct=1 --runtime=24000
+> >>>
+> >>> Tab2 run below fio command:
+> >>> sudo fio --name=random-writers2 --filename=/dev/bcache0
+> >>> --ioengine=libaio --iodepth=8 --rw=randwrite --bs=4k --rate_iops=150
+> >>> --direct=1 --write_lat_log=rw --log_avg_msec=20
+> >>>
+> >>
+> >>
+> >> Why you limit the iodep to 8 and iops to 150 on cache device?
+> >> For cache device the limitation is small. Iosp 150 with 4KB block size,
+> >> it means every hour writing (150*4*60*60=2160000KB=) 2GB data. For 35
+> >> hours it is only 70GB.
+> >>
+> >>
+> >> What if the iodeps is 128 or 64, and no iops rate limitation ?
+> >>
+> >>
+> >>> Note
+> >>> - Tab1 fio will run for 24000 seconds, which is the one to cause the
+> >>> fragmentation and made the cache_available_percent drops to under 40.
+> >>> - Tab2 fio is the one that I'm capturing the latency and I have let it
+> >>> run for about 35 hours, which is long enough to allow the
+> >>> cache_available_percent drops under 30.
+> >>> - This testing method utilized fio benchmark with larger read block
+> >>> size/small write block size to cause the high fragmentation, However in
+> >>> a real production env, there could be
+> >>>    various reasons or a combination of various reasons to cause the high
+> >>> fragmentation,  but I believe it should be ok to use any method to cause
+> >>> the fragmentation to verify if
+> >>>    bcache with this patch is responding better than the master in this
+> >>> situation.
+> >>>
+> >>> *Below is the testing result:*
+> >>>
+> >>> The total run time is about 35 hours, the latency points in the charts
+> >>> for each run are 1.5 million
+> >>>
+> >>> Master:
+> >>> fio-lat-mater.png
+> >>>
+> >>> Master + patch:
+> >>> fio-lat-patch.png
+> >>> Combine them together:
+> >>> fio-lat-mix.png
+> >>>
+> >>> Now we can see the master is even worse when we increase the iodepth,
+> >>> which makes sense since the backing HDD is being stressed more hardly.
+> >>>
+> >>> *Below are the cache stats changing during the run:*
+> >>> Master:
+> >>> bcache-stats-master.png
+> >>>
+> >>> Master + the patch:
+> >>> bcache-stats-patch.png
+> >>>
+> >>> That's all the testing done with 400GB NVME with 512B block size.
+> >>>
+> >>> Coly, do you want me to continue the same testing on 1TB nvme with
+> >>> different block size ?
+> >>> or is it ok to skip the 1TB testing and continue the test with 400GB
+> >>> NVME but with different block size?
+> >>> feel free to let me know any other test scenarios that we should cover
+> >>> here.
+> >>
+> >> Yes please, more testing is desired for performance improvement. So far
+> >> I don't see performance number for real high work load yet.
+> >>
+> >> Thanks.
+> >>
+> >> Coly Li
+> >>
+>
