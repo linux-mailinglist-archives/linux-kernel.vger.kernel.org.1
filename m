@@ -2,89 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492C32F5F9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F452F5FA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 12:17:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727438AbhANLPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 06:15:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40960 "EHLO mail.kernel.org"
+        id S1727035AbhANLR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 06:17:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53314 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726497AbhANLPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 06:15:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23634238A1;
-        Thu, 14 Jan 2021 11:14:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610622896;
-        bh=HEn6x8XwIMQYX5cf2Cfwj/acaJyDmQOqh8W59GekF8E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V7u08RCLdM+KtZsvcdKRaIMwQwwW+USMkLqv2FG95OT9E3vTITF7t82wi97ZJqYog
-         trIPVU4lmVePaaR7vfeitaonyAmiKNYCM0keKY9/HxE20EFIl02QNkvTzVzwWk7GGC
-         u1iuXXs+6pLCsJ23d1+AmpL7iTKgAJMoq7akF+4EnW9epo6tq8Mc3VWvWw8rTqmP5l
-         FCwB5wG6gCBQHqyuC1ec23U3TmMaoT1ivo/D0hu0/UqfH6ImGVo1P60KQdWzBhHbOm
-         z3XW/LW+3zL5ygnfZO/xpQU+PAheuw3LsLhrXGO44JBJuJ+/XPo3SsEr7xDV2H6lUh
-         VQEJiOuajCz9g==
-Date:   Thu, 14 Jan 2021 11:14:22 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     Rob Herring <robh@kernel.org>, kuninori.morimoto.gx@renesas.com,
-        nsaenzjulienne@suse.de, f.fainelli@gmail.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 2/6] dt-bindings: audio-graph-card: Add plls and
- sysclks properties
-Message-ID: <20210114111422.GA4854@sirena.org.uk>
-References: <20210108160501.7638-1-rf@opensource.cirrus.com>
- <20210108160501.7638-3-rf@opensource.cirrus.com>
- <20210113152225.GA2334778@robh.at.kernel.org>
- <c12a846f-9e79-4646-e7f4-397f074eb613@opensource.cirrus.com>
+        id S1726458AbhANLR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 06:17:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E5D7AB7A6;
+        Thu, 14 Jan 2021 11:16:43 +0000 (UTC)
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210114113107.622102e0@canb.auug.org.au>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <524351d0-506d-bd49-ab50-66316d7e5105@suse.de>
+Date:   Thu, 14 Jan 2021 12:16:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
-Content-Disposition: inline
-In-Reply-To: <c12a846f-9e79-4646-e7f4-397f074eb613@opensource.cirrus.com>
-X-Cookie: You have taken yourself too seriously.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210114113107.622102e0@canb.auug.org.au>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="jJL4pOPwDC6gspy7p5JwzKT8iKU9cxx8Y"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--jJL4pOPwDC6gspy7p5JwzKT8iKU9cxx8Y
+Content-Type: multipart/mixed; boundary="oYbDUBfhMYZhf86gzX4V6y4JZK6TwFz2I";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>,
+ Intel Graphics <intel-gfx@lists.freedesktop.org>,
+ DRI <dri-devel@lists.freedesktop.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>
+Message-ID: <524351d0-506d-bd49-ab50-66316d7e5105@suse.de>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+References: <20210114113107.622102e0@canb.auug.org.au>
+In-Reply-To: <20210114113107.622102e0@canb.auug.org.au>
 
---pf9I7BMVVzbSWLtt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--oYbDUBfhMYZhf86gzX4V6y4JZK6TwFz2I
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 14, 2021 at 10:31:10AM +0000, Richard Fitzgerald wrote:
-> On 13/01/2021 15:22, Rob Herring wrote:
+Hi
 
-> > This appears to all be configuration of clocks within the codec, so
-> > these properties belong in the codec or cpu nodes.
+Am 14.01.21 um 01:31 schrieb Stephen Rothwell:
+> Hi all,
+>=20
+> After merging the drm-misc tree, today's linux-next build (arm
+> multi_v7_defconfig) failed like this:
+>=20
+> drivers/gpu/drm/drm_cache.c: In function 'drm_need_swiotlb':
+> drivers/gpu/drm/drm_cache.c:202:6: error: implicit declaration of funct=
+ion 'mem_encrypt_active' [-Werror=3Dimplicit-function-declaration]
+>    202 |  if (mem_encrypt_active())
+>        |      ^~~~~~~~~~~~~~~~~~
+>=20
+>=20
+> Caused by commit
+>=20
+>    3abc66706385 ("drm: Implement drm_need_swiotlb() in drm_cache.c")
+>=20
+> I have used the drm-misc tree from next-20210107 again for today.
 
-> audio-graph-card doesn't have codec or cpu nodes. Those were in
-> simple-card but are replaced in audio-graph-card by a simple phandle
-> array forming a graph.
+Sorry for the breakage. Fixed in drm-misc-next.
 
-> I could assume that all clock settings apply to the codec and that there
-> is only ever one codec in an audio-graph-card configuration.
+Best regards
+Thomas
 
-The suggestion here is to put properties in the node for the relevant
-device rather than the card.
+>=20
 
---pf9I7BMVVzbSWLtt
-Content-Type: application/pgp-signature; name="signature.asc"
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=FCrnberg, Germany
+(HRB 36809, AG N=FCrnberg)
+Gesch=E4ftsf=FChrer: Felix Imend=F6rffer
+
+
+--oYbDUBfhMYZhf86gzX4V6y4JZK6TwFz2I--
+
+--jJL4pOPwDC6gspy7p5JwzKT8iKU9cxx8Y
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAAJ44ACgkQJNaLcl1U
-h9C5hgf/c2ZJGYL10xAvFbrBmbviZFuAh9cGNdSkafHv1OUH4E5CZNwTOSCwi+CE
-fJ7wykl1RjbEdTBdW0LFyMN47/dHLLFh2579jfRqVgBlEHn9oRLyfdJZjhjbrFfb
-FApz80U1oaVv6OlzmGdpzXvtuyqBooIt9yYyd3n9yFWWoetQGT9gn/ulWrrL3qyh
-J5GYZl0aoCdzxl2pA++666p7B5SYtwedDO+NeRVpuHVSvz/nFl7JKHoQWYaVXTmx
-0MTbcB+BtfSwN73s1YQW7CXmi+Pa2nDg552Wfld2eSf/lYnqBpPohF0jU05OAb1y
-vPPBJMABELNIG8+Cod8+RCi7wDzaLQ==
-=3PWv
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAAKBoFAwAAAAAACgkQlh/E3EQov+Bt
+zA//b9VYy7/b8sble+TS3HnmjvwcuMbp5ETrD8Ju40SU8bM+8Qb9NT6TL9FeAQro5UFKzMt1Jmci
+zXK+lkNyUxUo44hoDIUTVVlvvQQqUYbtB/wMWS6FoKHODyG/jfR9JtTPzmRuSmn2gesrBmZcCGe5
+0FL6UEJHH+U7Xw9Lmlxo7GSsVx6SUbDFNMz82DDoWU5lOd0Z0wMbJO/FVv5nGrlj3LuvDv+bUxf+
+BOWPyseaVLGYCu6ZfSfTWjNF8sN/ZI6XIrWidRjWeBK+rQFMKTqkkZFb+QtfPQLvcHiHlPEFv5FN
+bUfM65PZ4hxLWsdW6qhMSInDEqU6BwmWXph12UvX7ZvROz8xm3u/LqhGX3xNo/plmr/xFY4CkH8p
+BWWrO43zVbrqK1SEj8rQkPECiXXVhu8fD493WOT/dTaZkGbhqUrokLnATUdVBlfSFDurbr30JPSb
+8qAXS/40K6xNYUwpvCkSOxnvmjTH5GLGB8OjMGGhz/bEUx/mQNwIC3uRSjRioiBd+9DA9KMz3lvG
+C0nnQd7i9KwQVrAs3Me/cPmzcEYQUv39vmSLxoPaCGmyxG8VX/rwdPTSZ5EBm68jisj9quvzyEJx
+Kz7QoaUeG4dP6DGtezZ78rH5Yt8FyfPfCrc/YDdqApG4CojSLAPZ22aBQLLPnJM/dBwxtGVbHFt5
+jqU=
+=0oEf
 -----END PGP SIGNATURE-----
 
---pf9I7BMVVzbSWLtt--
+--jJL4pOPwDC6gspy7p5JwzKT8iKU9cxx8Y--
