@@ -2,103 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162352F62B4
+	by mail.lfdr.de (Postfix) with ESMTP id 819D62F62B5
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728907AbhANOHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:07:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727313AbhANOHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:07:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B5BF23A69;
-        Thu, 14 Jan 2021 14:06:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610633187;
-        bh=bAYELvIG7I8zVi2HFRgsyj9ehliYdNEQMQDaCGmkLiY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ravwqlsbBGOkiPgs97Qs4AfJ4uCrsNBH4b2Mv3aCSnztRkVS/ENISW05KXGjoUzDj
-         WiUCG2ZTvo0yXCpXQTTgLtYwEHOzILCplypXnyScCaL63+4Azg/Xlkz6j9lAMin06J
-         rGkSN9WZrXQOs6VsegSOs9hzizi8W11UHHBV7YXeHn/WjY095xNdeWCtqMfIsC9P0g
-         JUhurmf04WmomnSgiZ8oZtbq2ZiCbKQRGi1MxNtOqahoyxpNc6bf4VGJMEk4yK4Zig
-         T/Ob8BBhdFPkTICmVnigIYe6LBslBLADZcjBQbCHqWa6OIPcZuJ9W2WtFQ8bLQPS14
-         u36KNqjfi6nRA==
-Date:   Thu, 14 Jan 2021 15:06:22 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Fangrui Song <maskray@google.com>
-Cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Marco Elver <melver@google.com>
-Subject: Re: [PATCH] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
- undefined symbols
-Message-ID: <20210114140621.GA15904@linux-8ccs>
-References: <20210114054831.343327-1-maskray@google.com>
+        id S1729008AbhANOHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:07:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726810AbhANOHP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:07:15 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DDFC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 06:06:35 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id d20so5267649otl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 06:06:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FqVRxnaEr6fxC2Np3c8vMV9XMhe2EyasTUleGDdIiio=;
+        b=D6MODicRMqbQQrqQVvw89GhxAZYUzTkESKlqdoc3nmD11tujGqgeuWnlkzNHjBMuA/
+         rsCgb9LUAd5IvQ5pLw9D9I9tRD9xM2wmqMvyNJhkartSsDQx7kZsRJuu9w+zFVrLqNRG
+         RXYnIam3eUm0Onzm6xxIraQEAHClT+3yvDCXM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FqVRxnaEr6fxC2Np3c8vMV9XMhe2EyasTUleGDdIiio=;
+        b=ZxWbpmyu3pDOcZRaZMWf4vJSzrXmW34ORru6hD+RAxJl30xcOj3dQ7moDn+PQQSDkt
+         xZni3nYkGelwUoZ3a0/y90p/vCNuMiaBRDzG7UvkBwo3IQTKgOF7ihXj9ZjLrMniRPaB
+         ovTViTXoL8+qj5IXHQoxXrorLvrNxCRzfT1iwZwllJWNvfR8drs4QMWparVXXII75gUL
+         N/LhMuVD0Um1PYbUuyJ8mzpTsKo+SNzm5+HJU0mk+DlHyePA+s3t/Kklm/9nnjNia9v+
+         bAfM6W4y6acOSexNtJDK2BRPQ68cSwd+b8jr3ZIfYcIdvtPnxIbHHlmm+U3Gdsms31Oa
+         V+VA==
+X-Gm-Message-State: AOAM531NHxDDxSESwc7JPFHbrKNDKyvEkH+PRH1P/4Bj0lhtE5wlnp0/
+        UdD3E+IBBXFcqQ9YxEMECgO3YIOFHZVJsfRNA5q3THaXXKQWnw==
+X-Google-Smtp-Source: ABdhPJyw9HaWyyzCICTVUTT7wUNnge/s8N2IbJcsIfDuGT9CYuReZqXPAG/KZccfmoHhjVFHWIs/pOYUFiPFjiTQAg8=
+X-Received: by 2002:a05:6830:1bef:: with SMTP id k15mr4587211otb.303.1610633194394;
+ Thu, 14 Jan 2021 06:06:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210114054831.343327-1-maskray@google.com>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.28-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CABXGCsPSYh-Nvfig4j4N8073vA6WDdhdg13meAcUgCr_pd5mYw@mail.gmail.com>
+ <816e944c-72bc-d94d-449f-bfb915382290@amd.com> <6e55d84c-7b9a-167c-34cf-9e980f8e2354@amd.com>
+ <CABXGCsM8yYNz7gQW26a4hHwBR+MunXoopHEiyDJdC-muNrRxkQ@mail.gmail.com>
+ <77b696b9-3248-d329-4f7d-5e27a21eabff@amd.com> <CABXGCsOcBMT4rL-bb4K_TzK70YmQsgNX37sHEHiqp_1kK1_UEQ@mail.gmail.com>
+ <5f9e7752-68e8-aa5f-80ff-bb1196ea458d@amd.com>
+In-Reply-To: <5f9e7752-68e8-aa5f-80ff-bb1196ea458d@amd.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 14 Jan 2021 15:06:23 +0100
+Message-ID: <CAKMK7uHhpEUXmJCS8=EzxYmT0R1UUF-RCRWx0guFKZo0JKTHhw@mail.gmail.com>
+Subject: Re: [drm:dm_plane_helper_prepare_fb [amdgpu]] *ERROR* Failed to pin
+ framebuffer with error -12
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Fangrui Song [13/01/21 21:48 -0800]:
->clang-12 -fno-pic (since
->https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6)
->can emit `call __stack_chk_fail@PLT` instead of `call __stack_chk_fail`
->on x86.  The two forms should have identical behaviors on x86-64 but the
->former causes GNU as<2.37 to produce an unreferenced undefined symbol
->_GLOBAL_OFFSET_TABLE_.
+On Thu, Jan 14, 2021 at 2:56 PM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
 >
->(On x86-32, there is an R_386_PC32 vs R_386_PLT32 difference but the
->linker behavior is identical as far as Linux kernel is concerned.)
+> Am 14.01.21 um 01:22 schrieb Mikhail Gavrilov:
+> > On Tue, 12 Jan 2021 at 01:45, Christian K=C3=B6nig <christian.koenig@am=
+d.com> wrote:
+> >> But what you have in your logs so far are only unrelated symptoms, the
+> >> root of the problem is that somebody is leaking memory.
+> >>
+> >> What you could do as well is to try to enable kmemleak
+> > I captured some memleaks.
+> > Do they contain any useful information?
 >
->Simply ignore _GLOBAL_OFFSET_TABLE_ for now, like what
->scripts/mod/modpost.c:ignore_undef_symbol does. This also fixes the
->problem for gcc/clang -fpie and -fpic, which may emit `call foo@PLT` for
->external function calls on x86.
+> Unfortunately not of hand.
 >
->Note: ld -z defs and dynamic loaders do not error for unreferenced
->undefined symbols so the module loader is reading too much.  If we ever
->need to ignore more symbols, the code should be refactored to ignore
->unreferenced symbols.
+> I also don't see any bug reports from other people and can't reproduce
+> the last backtrace you send out TTM here.
 >
->Reported-by: Marco Elver <melver@google.com>
->Link: https://github.com/ClangBuiltLinux/linux/issues/1250
->Signed-off-by: Fangrui Song <maskray@google.com>
->---
-> kernel/module.c | 10 ++++++++--
-> 1 file changed, 8 insertions(+), 2 deletions(-)
->
->diff --git a/kernel/module.c b/kernel/module.c
->index 4bf30e4b3eaa..2e2deea99289 100644
->--- a/kernel/module.c
->+++ b/kernel/module.c
->@@ -2395,8 +2395,14 @@ static int simplify_symbols(struct module *mod, const struct load_info *info)
-> 				break;
-> 			}
->
->-			/* Ok if weak.  */
->-			if (!ksym && ELF_ST_BIND(sym[i].st_info) == STB_WEAK)
->+			/* Ok if weak. Also allow _GLOBAL_OFFSET_TABLE_:
->+			 * GNU as before 2.37 produces an unreferenced _GLOBAL_OFFSET_TABLE_
->+			 * for call foo@PLT on x86-64.  If the code ever needs to ignore
->+			 * more symbols, refactor the code to only warn if referenced by
->+			 * a relocation.
->+			 */
->+			if (!ksym && (ELF_ST_BIND(sym[i].st_info) == STB_WEAK ||
->+				      !strcmp(name, "_GLOBAL_OFFSET_TABLE_")))
-> 				break;
+> Do you have any local modifications or special setup in your system?
+> Like bpf scripts or something like that?
 
-Hi Fangrui,
+There's another bug report (for rcar-du, bisected to the a switch to
+use more cma helpers) about leaking mmaps, which keeps too many fb
+alive, so maybe we have gained a refcount leak somewhere recently. But
+could also be totally unrelated.
+-Daniel
 
-Thanks for the patch. I am puzzled why we don't already mirror modpost
-here, that particular line of code in modpost to ignore _GLOBAL_OFFSET_TABLE_
-has been there long before my time. Let's properly mirror modpost
-then, and create a similar helper function ignore_undef_symbol() (and
-stick the _GLOBAL_OFFSET_TABLE_ check in there) to account for future
-cases like this.
 
-Thanks,
 
-Jessica
+>
+> Christian.
+>
+> >
+> > [1] https://pastebin.com/n0FE7Hsu
+> > [2] https://pastebin.com/MUX55L1k
+> > [3] https://pastebin.com/a3FT7DVG
+> > [4] https://pastebin.com/1ALvJKz7
+> >
+> > --
+> > Best Regards,
+> > Mike Gavrilov.
+> > _______________________________________________
+> > amd-gfx mailing list
+> > amd-gfx@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
