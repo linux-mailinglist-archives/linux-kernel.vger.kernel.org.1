@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2AE2F59D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 05:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9462F59D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 05:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbhANENE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 23:13:04 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:41688 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726013AbhANEND (ORCPT
+        id S1727134AbhANEPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 23:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725997AbhANEPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 23:13:03 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0ULg9c1f_1610597536;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0ULg9c1f_1610597536)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 14 Jan 2021 12:12:16 +0800
-Subject: Re: [PATCH] tpm/tpm_tis: Fix variable reset during IRQ probing
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-References: <20210113120021.59045-1-tianjia.zhang@linux.alibaba.com>
- <X/+xr/L+m2k5fObZ@kernel.org>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <44c35c27-0cd4-e451-1b9c-d6fe48e58e51@linux.alibaba.com>
-Date:   Thu, 14 Jan 2021 12:12:16 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <X/+xr/L+m2k5fObZ@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 13 Jan 2021 23:15:53 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9CAC061575;
+        Wed, 13 Jan 2021 20:15:07 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id cq1so2394174pjb.4;
+        Wed, 13 Jan 2021 20:15:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=i/xZY8DpdABEtyxGJwRPJ3Gox+RIWU/dLajPoWgwjqs=;
+        b=Fv5i6Gtp40PbeMJwpKIdACaEM36r4nswQT66xInERfTRx/Dps1FhpiZpPvE3V6CIMH
+         lFRIuuFABGaFGdPLEe6hBwyvqU8hDz2GeAS/mOy7IEd7qoWbBVgNaeQ15tFBeBg87FD+
+         Zjx/wdrmdj/0C83Sq0hY1wTp4mkUEdYw0YP2zlH8uam/k1bZOY0R1baDt5wS8/DLtMQO
+         cJDJ4iX7TJS0Ly4rLYt6xqovTsBnVfd/3BtmRDT6KqQpR26BjMYrm89l0tzYm6kSadu8
+         yuTKQLwQF4cOIWKPozw2hdlr7SnmkMVgdTLfe/m59IWDRJuCyTT62QidyeIbvzH4fMYY
+         aWeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=i/xZY8DpdABEtyxGJwRPJ3Gox+RIWU/dLajPoWgwjqs=;
+        b=uHcVjdCDZyBUqNjWNqzM6w9MJbOEJxo2c1+ue3ndaPnUf3a2wPbLTYxLRv8qyZpop4
+         hyJVexbgb1TyDyMs4IPjnnDlXSiSYShrDXdlbm/Tg+Aw1mRLSiF07oZ4u5wYLDa3mVnv
+         4V7+GjU2ndTT8EUl10AcwLJQsEAedubNDhmw3bgnjoKauy6hbfQzszP7ZHKrzSrhkTwu
+         hv9REQw9A4GZvYDQIEjEfIDmd2WS6QA5uPITHOTcLHYpW3brcUb1iTQWuIS2e5ynQzbn
+         oON6yhBsrcqyFnFBlR8da/kFTZTGgIjmbi6jbx0JHZVUuMbk0/y1dlzTCRnfpFSs73X2
+         kZ0w==
+X-Gm-Message-State: AOAM531U7MlwfwL/F0XLOirHMDecobikzSl2j5leCApuh6G16XZMeuKe
+        UHGGeL+P4axcTYgNvyw7ztA=
+X-Google-Smtp-Source: ABdhPJyz6UUg9D+AVhweeioOxbEoLYSIkELCtNpqwduCHFHytLFcBJU8kPEDp8DtaUKli5OvnnQ+Xw==
+X-Received: by 2002:a17:90a:2f22:: with SMTP id s31mr2948608pjd.192.1610597706920;
+        Wed, 13 Jan 2021 20:15:06 -0800 (PST)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id l7sm4033523pjy.29.2021.01.13.20.15.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 13 Jan 2021 20:15:06 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     edumazet@google.com, davem@davemloft.net, kuznet@ms2.inr.ac.ru,
+        yoshfuji@linux-ipv6.org, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yejune.deng@gmail.com
+Subject: [PATCH] tcp_cubic: use memset and offsetof init
+Date:   Thu, 14 Jan 2021 12:14:56 +0800
+Message-Id: <1610597696-128610-1-git-send-email-yejune.deng@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In bictcp_reset(), use memset and offsetof instead of = 0.
 
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ net/ipv4/tcp_cubic.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-On 1/14/21 10:51 AM, Jarkko Sakkinen wrote:
-> On Wed, Jan 13, 2021 at 08:00:21PM +0800, Tianjia Zhang wrote:
->> In tpm_tis_core_init(), tpm2_probe() will be called first, this
->> function will eventually call tpm_tis_send(), and then
->> tpm_tis_probe_irq_single() will detect whether the interrupt is
->> normal, mainly the installation interrupted, set `priv->irq_tested`
->> to false. The logic will eventually be executed to tpm_tis_send()
->> to trigger an interrupt.
->>
->> There is currently such a scenario, which will cause the IRQ probe
->> code to never be executed, so that the TPM device is in polling
->> mode: after setting irq_tested to false, an interrupt occurs
->> between entering the ttpm_tis_send() function, and the interrupt
->> will be first set irq_tested to true will cause the IRQ probe code
->> to never be executed.
-> 
-> Can you describe the scenario more detail?
-> 
+diff --git a/net/ipv4/tcp_cubic.c b/net/ipv4/tcp_cubic.c
+index c7bf5b2..ffcbe46 100644
+--- a/net/ipv4/tcp_cubic.c
++++ b/net/ipv4/tcp_cubic.c
+@@ -104,16 +104,7 @@ struct bictcp {
+ 
+ static inline void bictcp_reset(struct bictcp *ca)
+ {
+-	ca->cnt = 0;
+-	ca->last_max_cwnd = 0;
+-	ca->last_cwnd = 0;
+-	ca->last_time = 0;
+-	ca->bic_origin_point = 0;
+-	ca->bic_K = 0;
+-	ca->delay_min = 0;
+-	ca->epoch_start = 0;
+-	ca->ack_cnt = 0;
+-	ca->tcp_cwnd = 0;
++	memset(ca, 0, offsetof(struct bictcp, unused));
+ 	ca->found = 0;
+ }
+ 
+-- 
+1.9.1
 
-The problematic scenario we encountered is like this. The following 
-figure shows the execution flow of tpm_tis_core_init(). An interrupt 
-occurred before the IRQ probe. This interrupt was caused by 
-tpm2_probe(), but it was triggered before the IRQ probe was executed, 
-and the interrupt handler would set irq_tested to true, so the IRQ probe 
-code can never execute, that is, the code marked 2 in the figure will 
-never happen.
-
-                                          IRQ
-   tpm_tis_core_init()
-
-     tpm2_probe()
-
-       tpm_tis_send()           -----------+
-                                           |
-     tpm_tis_probe_irq_single()            |
-                                           |
-       devm_request_irq()                  | 1
-       priv->irq_tested = false            |
-       tpm_tis_gen_interrupt()             |
-                                           |
-         tpm_tis_send()                    |
-                         irq_tested = true |
-                        <------------------+
-           if (priv->irq_tested)
-             return tpm_tis_send_main()
-
-           /* probe IRQ */
-           tpm_tis_send_main()     --------+
-                                           | 2
-           chip->flags |= FLAG_IRQ <-------+
-           priv->irq_tested = true
-
-Best regards,
-Tianjia
