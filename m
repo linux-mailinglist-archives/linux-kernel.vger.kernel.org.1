@@ -2,136 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C622F636F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 189092F6375
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:53:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729114AbhANOsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:48:36 -0500
-Received: from foss.arm.com ([217.140.110.172]:50956 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726175AbhANOsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:48:35 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 789EE1FB;
-        Thu, 14 Jan 2021 06:47:49 -0800 (PST)
-Received: from [10.57.56.97] (unknown [10.57.56.97])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FA283F70D;
-        Thu, 14 Jan 2021 06:47:47 -0800 (PST)
-Subject: Re: [PATCH V2 11/11] dts: bindings: Document device tree bindings for
- Arm TRBE
-To:     Rob Herring <robh@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <1610511498-4058-1-git-send-email-anshuman.khandual@arm.com>
- <1610511498-4058-12-git-send-email-anshuman.khandual@arm.com>
- <20210114140754.GA2816889@robh.at.kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <54b49858-3475-f3db-7c81-f0a251a261af@arm.com>
-Date:   Thu, 14 Jan 2021 14:47:37 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <20210114140754.GA2816889@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S1728218AbhANOvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:51:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726175AbhANOvq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:51:46 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A68C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 06:51:05 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id w135so3495086pff.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 06:51:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=7kvb6SONHWlWJj0uvlf5mKCiFCFFS7yUKPi3x7vpoHg=;
+        b=WMxGQG4KUm26LkHOmsdz+QN5JZugw1rTz0r2kxwWcuT9rBvfwOf8X0o3XXeWB2Aq9x
+         eDyyU228NDk9+wMT+2TZXn5sWhxd2XAYGsR8E2eYU2jaG8PdNZICZaJr6bdRTSwAuX4p
+         q1M5tfETC6/FnGYd7u5vM27I84VoO1xPX24hvrCSwaMGqyIX7AmySPiPV1koq2iApDQv
+         uyHurOzhl9oRYo70SyaspR1eMKeVF1TSNr+SP4AZlcT0rFCzk2bSxSN/gBFU9jJJZYyg
+         mvqlSTzKkK5Ht+1lSC3oTX8CK00s3GuKooXI+GiFQ6ADT119Vhn/MgzQ88sbzwTTJ2zr
+         Dr8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=7kvb6SONHWlWJj0uvlf5mKCiFCFFS7yUKPi3x7vpoHg=;
+        b=XXoBuIMPeispJtLybJUDdzi/e9eRrgnf9qAfr8T0lPiZy0OmmNxallqmrtqgLfPMFx
+         GiEUt1rsC3my07I/rznWXD+n5JqIccYFeKZ+r8WFmcMIxRP5gDGzYj/E6nV/pbPGtJLj
+         kDjFOOln1jAavf6zl+usRnV9l+tmyl75CzoIRxnie1T+24mmqrZM2N+CRtIuOMiBgICK
+         CpaUUANOPZoacPquLYWNgVUgdJFgbYCjiMFqg5Fg+rwqaNywS/bj7LWowhuwjCEfK/N0
+         PQVpwRVx9+LO1IQi/+Q4Zud+WEHkL/VggxIyAwKAyr1qLlOv/patQSlhO7sQqKyLAio3
+         4VUA==
+X-Gm-Message-State: AOAM533qC2Ob/8mu6FHXWDbGzxfQEL3yy2xpii/a6UBVn4N2/oUUW7vb
+        HoT6a+1JG5jqMpn4kdoKx1+uFOO5dGVN
+X-Google-Smtp-Source: ABdhPJzCskz4Kp5ieZDTzHicrrsh6DAQIAhhmclUFnJqDDfaXKz9SPAFZz8ZCz8ktWv4H8hNUx2k0Sk/wcal
+Sender: "kyletso via sendgmr" <kyletso@kyletso.ntc.corp.google.com>
+X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:3e52:82ff:fe5b:30db])
+ (user=kyletso job=sendgmr) by 2002:a62:84ca:0:b029:19e:6f95:11b1 with SMTP id
+ k193-20020a6284ca0000b029019e6f9511b1mr7753364pfd.68.1610635864657; Thu, 14
+ Jan 2021 06:51:04 -0800 (PST)
+Date:   Thu, 14 Jan 2021 22:50:50 +0800
+Message-Id: <20210114145053.1952756-1-kyletso@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH v6 0/3] AMS, Collision Avoidance, and Protocol Error
+From:   Kyle Tso <kyletso@google.com>
+To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org, hdegoede@redhat.com
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kyle Tso <kyletso@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/14/21 2:07 PM, Rob Herring wrote:
-> On Wed, Jan 13, 2021 at 09:48:18AM +0530, Anshuman Khandual wrote:
->> From: Suzuki K Poulose <suzuki.poulose@arm.com>
->>
->> Document the device tree bindings for Trace Buffer Extension (TRBE).
->>
->> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Rob Herring <robh@kernel.org>
->> Cc: devicetree@vger.kernel.org
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>   Documentation/devicetree/bindings/arm/trbe.yaml | 46 +++++++++++++++++++++++++
->>   1 file changed, 46 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/arm/trbe.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/arm/trbe.yaml b/Documentation/devicetree/bindings/arm/trbe.yaml
->> new file mode 100644
->> index 0000000..2258595
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/arm/trbe.yaml
->> @@ -0,0 +1,46 @@
->> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
->> +# Copyright 2021, Arm Ltd
->> +%YAML 1.2
->> +---
->> +$id: "http://devicetree.org/schemas/arm/trbe.yaml#"
->> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->> +
->> +title: ARM Trace Buffer Extensions
->> +
->> +maintainers:
->> +  - Anshuman Khandual <anshuman.khandual@arm.com>
->> +
->> +description: |
->> +  Description of TRBE hw
-> 
-> Huh?
-> 
+v5 https://lore.kernel.org/r/20210105163927.1376770-1-kyletso@google.com
 
-Doh ! That was due to a miscommunication between us.
-This should be :
+"usb: typec: tcpm: AMS and Collision Avoidance"
+ - removed the signed-off
+ - modified the coding style suggested from Heikki
+ - added FR_SWAP AMS handling
 
-description: |
-   Arm Trace Buffer Extension (TRBE) is a per CPU component
-   for storing trace generated on the CPU to memory. It is
-   accessed via CPU system registers. The software can verify
-   if it is permitted to use the component by checking the
-   TRBIDR register.
+"usb: typec: tcpm: Protocol Error handling"
+ - removed the signed-off
+ - modified the coding style suggested from Heikki
+ - modified more coding style problems (line wrapping limit)
 
->> +
->> +properties:
->> +  $nodename:
->> +    pattern: "trbe"
-> 
-> const: trbe
-> 
->> +  compatible:
->> +    items:
->> +      - const: arm,trace-buffer-extension
-> 
-> Any versioning to this? Or is that discoverable?
-> 
+"usb: typec: tcpm: Respond Wait if VDM state machine is running"
+ - no change
 
-It must be discoverable via ID_AA64DFR0_EL1.TraceBuffer.
-The IP is entirely accessed by the CPU system registers. So, any
-further changes can be interpreted from the system registers
-(including if the access is blocked by a higher exception level).
+-------------------------------------------------------------------
 
->> +
->> +  interrupts:
->> +    description: |
->> +       Exactly 1 PPI must be listed. For heterogeneous systems where
->> +       TRBE is only supported on a subset of the CPUs, please consult
->> +       the arm,gic-v3 binding for details on describing a PPI partition.
->> +    maxItems: 1
->> +
->> +required:
->> +  - compatible
->> +  - interrupts
->> +
->> +additionalProperties: false
->> +
->> +
-> 
-> Extra blank line.
+Kyle Tso (3):
+  usb: typec: tcpm: AMS and Collision Avoidance
+  usb: typec: tcpm: Protocol Error handling
+  usb: typec: tcpm: Respond Wait if VDM state machine is running
 
-Removed.
+ drivers/usb/typec/tcpm/tcpm.c | 1001 +++++++++++++++++++++++++++------
+ include/linux/usb/pd.h        |    2 +
+ include/linux/usb/tcpm.h      |    4 +
+ 3 files changed, 829 insertions(+), 178 deletions(-)
 
-Cheers
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
-Suzuki
