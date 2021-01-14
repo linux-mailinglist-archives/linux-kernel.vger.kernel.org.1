@@ -2,152 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D465B2F55A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 01:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E8C2F559E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 01:36:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729944AbhANAn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 19:43:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54968 "EHLO
+        id S1729725AbhANAex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 19:34:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729903AbhANAe4 (ORCPT
+        with ESMTP id S1729846AbhANAY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 19:34:56 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3870CC061575;
-        Wed, 13 Jan 2021 16:09:53 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id d20so3691290otl.3;
-        Wed, 13 Jan 2021 16:09:53 -0800 (PST)
+        Wed, 13 Jan 2021 19:24:57 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9039DC0617B9;
+        Wed, 13 Jan 2021 16:15:09 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id e18so5630840ejt.12;
+        Wed, 13 Jan 2021 16:15:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=vZV+6JNZ9AMFDA8LKCfNVRXM0e5aK8AvdT2wlgQnc3k=;
-        b=q0/tymPT6nywwo4ZK4mafniJnz7/UEhMIXp0D0wJkWPM3A82Hakn9jFHlPW2DTNSAX
-         WRa9mg6tdeTc+Vp6hau//5KLiH0ebjVMEvX0tyHYHYAw5mFcsLHpvd3ha/zrqywuRVzW
-         GkgKIvXq6xqZQmtvBJZXh6WnMcCc/lJa4gToEWDucKRtd8AaC4HRfVymjwNLPO887q/D
-         uX3iFplDliuZYDKGPMHzYb2DPbC2ra9Re/uIxeCPgpqDcAmADBB8r+KWouwaPf6QQHZz
-         pLxQ74S53dwq7DWs+yIUNZzur7xwap6iSBCno9xHhunIfSg+LsyGFn+1V83h+Tz6Zent
-         /7oQ==
+        bh=XlWfjr8XMrkEAg8D23u8wLcqUf6of5HHp8CfoujNfI8=;
+        b=Z41cYbE99xDN54+2s6ZYyjhGwHWi418jYGnUv/HQxpBDv7Ovi43p/TA/yWzgtDkLVY
+         QpxlLib4Y9WAceiMPSXWvOmG1lDwQqVZDI5cfIRyzk4u4W9aEn62E1JvrffhLHZLNS8x
+         FEIUePvBSQ4+poQVC2aS1QWBki1/W4FcFyhcEIN/8CAX8BOQ8YqFz+3Sh1FWdPHr6y9c
+         ksOrq8v5fWOMtEyo+mmchvaHJ2DNEAPiaikGK307J7NarvwfsUNNRGWHn1kM40ub2P8t
+         r2mxGoOu8HAEgU5mIEALhFk69uXBa4Ke4OqJPq92/ofFy0VoG2NqL76stxbyE2om4PVp
+         qj7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=vZV+6JNZ9AMFDA8LKCfNVRXM0e5aK8AvdT2wlgQnc3k=;
-        b=fQ+o18jDLdRJvm5qonO2xYH9Xl+Cz3wUwjNF78i5dRENWlTqTZN0fwpxo6DD3R7Em7
-         jLIWAZVx9RSVwhOkdmSCqELFj7220LVTNhxXzI9pezaeUR42Eqrd1MzR022wT3d0Pb2b
-         d6B+gSvLTzZHS2LgG109UrCxEOs5Lb/0udwCgUGrKMbIu/9tSwp3mjaTws9+6apM9aC3
-         NZFRTpuWlmcu5BbdpA9wp6h/ewGd33lvaSaX4ljiQu9x1Wx3l+MgHuNBQBoAkBBdtdkd
-         vgoEeG0nVZW7f9xBRt6HsqpulADLKfjzNjF0ZZxHYCSGr7babDQJBLxmV85UJgFne07L
-         1rNg==
-X-Gm-Message-State: AOAM530JcYZhvp6vEH1/W2+zPjR62SxAZTzXYU1xy7uxvip61NMdcaYv
-        BEYNFBpWYUDFYCi7NoSrfS8=
-X-Google-Smtp-Source: ABdhPJwHFfDDLFOXeMUgqQeMwRHbMGqZlXkwH2K+H8iTAvFBvQiXnhTfI1m4RHCGobgmq5EO7jFgvQ==
-X-Received: by 2002:a9d:d31:: with SMTP id 46mr2808936oti.1.1610582992623;
-        Wed, 13 Jan 2021 16:09:52 -0800 (PST)
-Received: from localhost.localdomain (99-6-134-177.lightspeed.snmtca.sbcglobal.net. [99.6.134.177])
-        by smtp.gmail.com with ESMTPSA id p18sm756575ood.48.2021.01.13.16.09.51
+        bh=XlWfjr8XMrkEAg8D23u8wLcqUf6of5HHp8CfoujNfI8=;
+        b=nH2MHH7PCmORJrWHFzgjZclvNTDa3kasaTksNNpDbhV8XMzMZBrTf97XTGLCbPFwb5
+         HndYsLc6ZiXZbb5QQAkUwhZuts77lkCsc/WHsYdIahJ3OZcE8xYPuKJlxlsCdTexR1DT
+         ezTqsSPJMlpg70MIjYlHpUXZxb73TB4SqyuLV7yt3BrY3iZCAJvwDqGQD9SX8TlHM3II
+         KKx+eh2583rwXTmYrDwaDCRmcbrNG6ImIVN0U5h4fwxTu9etxLgpMHYI7BeDKFzXOWXs
+         5Wkcyqv5F9qTeamvAHqxUjZUrOMKKNB2OWqMWvNYh13+LtmAzJi/gyk+dmiU881KRgnO
+         vJZQ==
+X-Gm-Message-State: AOAM532St2vDIrJOS1n1vcbDOS2zwFh+qqhZ3aPGVZH7Y22FpKejBZeL
+        3Mmy2m6DAewelg0WgdrPb0E=
+X-Google-Smtp-Source: ABdhPJxBZf6yib3Y+jACYM3LMRD7RmY4xqYFTGOor14oiqnhdHiW3He4IM2l/uBu9zkYJSe3f7nxhw==
+X-Received: by 2002:a17:906:440e:: with SMTP id x14mr3341806ejo.77.1610583308305;
+        Wed, 13 Jan 2021 16:15:08 -0800 (PST)
+Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id da9sm1457482edb.84.2021.01.13.16.15.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 16:09:52 -0800 (PST)
-Date:   Wed, 13 Jan 2021 16:09:49 -0800
-From:   Enke Chen <enkechen2020@gmail.com>
-To:     Yuchung Cheng <ycheng@google.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
+        Wed, 13 Jan 2021 16:15:07 -0800 (PST)
+Date:   Thu, 14 Jan 2021 02:15:06 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Gilles DOFFE <gilles.doffe@savoirfairelinux.com>
+Cc:     netdev@vger.kernel.org, Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Maxwell <jmaxwell37@gmail.com>,
-        William McCall <william.mccall@gmail.com>
-Subject: Re: [PATCH] tcp: fix TCP_USER_TIMEOUT with zero window
-Message-ID: <20210114000949.GC3738@localhost.localdomain>
-References: <20210113201201.GC2274@localhost.localdomain>
- <CANn89iJh1_fCm93B0w2VAzCLPUTSow85JMBQT3sy=0sALbXhrQ@mail.gmail.com>
- <CAK6E8=d=ct4J-tUOXxE+1og5CfPwaJ=Wd=Bj9pqaVdrOdnAR_g@mail.gmail.com>
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net 4/6] net: dsa: ksz: do not change tagging on del
+Message-ID: <20210114001506.d2hg6b6evju3iyl6@skbuf>
+References: <cover.1610540603.git.gilles.doffe@savoirfairelinux.com>
+ <c3effba30b2ae979a4b7990bbf6096ca26e3de7a.1610540603.git.gilles.doffe@savoirfairelinux.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK6E8=d=ct4J-tUOXxE+1og5CfPwaJ=Wd=Bj9pqaVdrOdnAR_g@mail.gmail.com>
+In-Reply-To: <c3effba30b2ae979a4b7990bbf6096ca26e3de7a.1610540603.git.gilles.doffe@savoirfairelinux.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, I am convinced :-) Thanks to Eric, Neal and Yuchung for their help.
-
--- Enke
-
-On Wed, Jan 13, 2021 at 01:20:55PM -0800, Yuchung Cheng wrote:
-> On Wed, Jan 13, 2021 at 12:49 PM Eric Dumazet <edumazet@google.com> wrote:
-> >
-> > On Wed, Jan 13, 2021 at 9:12 PM Enke Chen <enkechen2020@gmail.com> wrote:
-> > >
-> > > From: Enke Chen <enchen@paloaltonetworks.com>
-> > >
-> > > The TCP session does not terminate with TCP_USER_TIMEOUT when data
-> > > remain untransmitted due to zero window.
-> > >
-> > > The number of unanswered zero-window probes (tcp_probes_out) is
-> > > reset to zero with incoming acks irrespective of the window size,
-> > > as described in tcp_probe_timer():
-> > >
-> > >     RFC 1122 4.2.2.17 requires the sender to stay open indefinitely
-> > >     as long as the receiver continues to respond probes. We support
-> > >     this by default and reset icsk_probes_out with incoming ACKs.
-> > >
-> > > This counter, however, is the wrong one to be used in calculating the
-> > > duration that the window remains closed and data remain untransmitted.
-> > > Thanks to Jonathan Maxwell <jmaxwell37@gmail.com> for diagnosing the
-> > > actual issue.
-> > >
-> > > In this patch a separate counter is introduced to track the number of
-> > > zero-window probes that are not answered with any non-zero window ack.
-> > > This new counter is used in determining when to abort the session with
-> > > TCP_USER_TIMEOUT.
-> > >
-> >
-> > I think one possible issue would be that local congestion (full qdisc)
-> > would abort early,
-> > because tcp_model_timeout() assumes linear backoff.
-> Yes exactly. if ZWPs are dropped due to local congestion, the
-> model_timeout computes incorrectly. Therefore having a starting
-> timestamp is the surest way b/c it does not assume any specific
-> backoff behavior.
+On Wed, Jan 13, 2021 at 01:45:20PM +0100, Gilles DOFFE wrote:
+> If a VLAN is removed, the tagging policy should not be changed as
+> still active VLANs could be impacted.
 > 
-> >
-> > Neal or Yuchung can further comment on that, it is late for me in France.
-> >
-> > packetdrill test would be :
-> >
-> >    0 socket(..., SOCK_STREAM, IPPROTO_TCP) = 3
-> >    +0 setsockopt(3, SOL_SOCKET, SO_REUSEADDR, [1], 4) = 0
-> >    +0 bind(3, ..., ...) = 0
-> >    +0 listen(3, 1) = 0
-> >
-> >
-> >    +0 < S 0:0(0) win 0 <mss 1460>
-> >    +0 > S. 0:0(0) ack 1 <mss 1460>
-> >
-> >   +.1 < . 1:1(0) ack 1 win 65530
-> >    +0 accept(3, ..., ...) = 4
-> >
-> >    +0 setsockopt(4, SOL_TCP, TCP_USER_TIMEOUT, [3000], 4) = 0
-> >    +0 write(4, ..., 24) = 24
-> >    +0 > P. 1:25(24) ack 1
-> >    +.1 < . 1:1(0) ack 25 win 65530
-> >    +0 %{ assert tcpi_probes == 0, tcpi_probes; \
-> >          assert tcpi_backoff == 0, tcpi_backoff }%
-> >
-> > // install a qdisc dropping all packets
-> >    +0 `tc qdisc delete dev tun0 root 2>/dev/null ; tc qdisc add dev
-> > tun0 root pfifo limit 0`
-> >    +0 write(4, ..., 24) = 24
-> >    // When qdisc is congested we retry every 500ms therefore in theory
-> >    // we'd retry 6 times before hitting 3s timeout. However, since we
-> >    // estimate the elapsed time based on exp backoff of actual RTO (300ms),
-> >    // we'd bail earlier with only 3 probes.
-> >    +2.1 write(4, ..., 24) = -1
-> >    +0 %{ assert tcpi_probes == 3, tcpi_probes; \
-> >          assert tcpi_backoff == 0, tcpi_backoff }%
-> >    +0 close(4) = 0
-> >
+> Signed-off-by: Gilles DOFFE <gilles.doffe@savoirfairelinux.com>
+> ---
+>  drivers/net/dsa/microchip/ksz8795.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
+> index 193f03ef9160..b55fb2761993 100644
+> --- a/drivers/net/dsa/microchip/ksz8795.c
+> +++ b/drivers/net/dsa/microchip/ksz8795.c
+> @@ -880,7 +880,6 @@ static void ksz8795_port_vlan_add(struct dsa_switch *ds, int port,
+>  static int ksz8795_port_vlan_del(struct dsa_switch *ds, int port,
+>  				 const struct switchdev_obj_port_vlan *vlan)
+>  {
+> -	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
+>  	struct ksz_device *dev = ds->priv;
+>  	u16 data, vid, pvid, new_pvid = 0;
+>  	u8 fid, member, valid;
+> @@ -888,8 +887,6 @@ static int ksz8795_port_vlan_del(struct dsa_switch *ds, int port,
+>  	ksz_pread16(dev, port, REG_PORT_CTRL_VID, &pvid);
+>  	pvid = pvid & 0xFFF;
+>  
+> -	ksz_port_cfg(dev, port, P_TAG_CTRL, PORT_REMOVE_TAG, untagged);
+> -
+>  	for (vid = vlan->vid_begin; vid <= vlan->vid_end; vid++) {
+>  		ksz8795_r_vlan_table(dev, vid, &data);
+>  		ksz8795_from_vlan(data, &fid, &member, &valid);
+> -- 
+> 2.25.1
+> 
+
+What do you mean the tagging policy "should not be changed". Nothing is
+changed, the write to PORT_REMOVE_TAG is identical to the one done on
+.port_vlan_add. If anything, the egress untagging policy is reinforced
+on delete, not changed...
+
+What's the actual problem (beside for the fact that the driver is
+obviously a lot more broken than you can fix through patches to "net")?
