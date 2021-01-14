@@ -2,185 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CFA92F6962
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:22:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B312F6955
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729849AbhANSUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:20:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58434 "EHLO
+        id S1729745AbhANSTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:19:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729848AbhANSUK (ORCPT
+        with ESMTP id S1729706AbhANSTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:20:10 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69766C0617A5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:18:39 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id a12so9381398lfl.6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:18:39 -0800 (PST)
+        Thu, 14 Jan 2021 13:19:45 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E14C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:19:19 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id v67so9402641lfa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:19:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pJvCZAHLaqoKEh3y+oXgKjwlwnBYnY7borzTim+qS1o=;
-        b=cS4njNwz1nYL1oLQgguEnWk/vDzwqTbhtnDQOGZFDlONuogA+k6cMdUtps27GV41L/
-         eM8uU49Q5s4mDy3pPtaNcswW/tT9DMGkPJ/mlrPx2a/2GUm7nUZcOq2oV2smZePEhD++
-         S+YWl3vuAzLSeIEFoL1okEkoP/yPulGSm20Hc=
+        bh=p5+Iu0D3KKU369AvPLEzIT1mfTbZwWzsPxK8gu9Bl3U=;
+        b=Ff91w5SC7YAdLa8ezSNsw+RRCTfNQ4d2QEDtkSQDt2N+aVX3kEEH9+QV8TvQbzyAw0
+         lo6eDRNx7M1CUkCJY1BoDLgFhbRbnBNflbmUtW7SIVVl1BgpQMHCyDx0S+0jSc08fv4B
+         xXMMVGOMFGPPkUd/cNyLT+dOK11t00qbH2pfvCjleUI9ysgzNWUaJyUeJxba8ZwxRYwS
+         sL8bytGGMSOkulopX6KYd8sWJ1qLtuqzPyXXcBMMvguvk3QIrQEHl5uzYmgkMW8s7FkO
+         d4Ok9fhbZzlBJjWiXb1bpjJhBUJCqta6/DplSW4khyjdpQmysDW3phBuOM2MOxbCI7zb
+         7KxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pJvCZAHLaqoKEh3y+oXgKjwlwnBYnY7borzTim+qS1o=;
-        b=UEUc3m321uDKAau7s6AqhS2eHznNwaJBSePxvt7AuNGIxLXZdDJD2q1DtR4CGvkCfx
-         NoIMh6//Dwo7FSJfCFs5kgckx0i1wHRr8LaBouh0KiuOqIXnRNhwDP8GWK3gn8K2VEnP
-         DXgstmIbqbJY7vibTjJ4j4pVrXB4uJP1Ne5aHqlkUqiaCizGtSib4dgQA5VRycEazCbo
-         ft60FCVsojBw3134L9HQm+eWmZZPz1xCDErID5ret+xeJBEDorXfpcTGGNQ+0pfJIACS
-         p2DEv3/Wo2NuHkO5zQQPvjPPiAVZ899hDPlm9I3B88mZVwa5+WNNFJsZud3/+f4p6T9B
-         Wg7Q==
-X-Gm-Message-State: AOAM5321aJc5eaukHnAvkPhGtlPbz7mhn0sZckumbmZtABNfRiZNs22A
-        RujG5DuWJlItX5GhOQr9/v3TuFIRyEtGEA==
-X-Google-Smtp-Source: ABdhPJwHPks5MM+IARzPl6/u0bpoWVvaEv1026y5xiKisnhXmYV49G3wo1zgjHw6peUOrMlVEgZeMg==
-X-Received: by 2002:ac2:5d4f:: with SMTP id w15mr3674272lfd.321.1610648317350;
-        Thu, 14 Jan 2021 10:18:37 -0800 (PST)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id o26sm532810ljg.55.2021.01.14.10.18.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jan 2021 10:18:36 -0800 (PST)
-Received: by mail-lj1-f178.google.com with SMTP id p13so7572519ljg.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 10:18:36 -0800 (PST)
-X-Received: by 2002:a2e:a40b:: with SMTP id p11mr3547850ljn.315.1610648315779;
- Thu, 14 Jan 2021 10:18:35 -0800 (PST)
+        bh=p5+Iu0D3KKU369AvPLEzIT1mfTbZwWzsPxK8gu9Bl3U=;
+        b=ZB6pY74NPJ2BwnqRB3i7mh3DQoRRlVWqJqUMMRiYmWt+3gwNr4p7Fmik4bIuoLbzql
+         POr6c++8nMsIIU213AO14/moLR5L0SGvUatKH1Hx/nP1Vkearw4U5cgiMywGwb053Kv9
+         BX51uhuaGN3OeercBdfU13ubRiYundUUaV5OzQuI+60HFYiqP1XTHXPEV0aLBRLzuyJg
+         TZGb70nudVIZ9rP66gsuVByzFWf21xdUF3udODVSBDoiJyt1W2Md50X0LBd36cRNeoA8
+         N6zXsYk3Nm3tTXwhKHDhCMpy2eaYcgbqbFxIyg3iljlbYeJlIT9tnkRo2Dc5lMGtK7DT
+         twWA==
+X-Gm-Message-State: AOAM533nYFESIR7irWmiNOYSLygB3hgcd9rIYummppmcaccX/Hs5Nzub
+        slaUeCEfckZXIaqqfx/MdNVigyjIrUTNCin10wfstA==
+X-Google-Smtp-Source: ABdhPJzagQddRmcMWNu+seuYyLPsdgSvq2dS/tzP2KDnHeukIR+aZq3lJLfF2tN/SgIJ1wou0vbbHdP4d7Y8xqUjtDQ=
+X-Received: by 2002:a19:ecb:: with SMTP id 194mr3631354lfo.70.1610648357986;
+ Thu, 14 Jan 2021 10:19:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118234025.376412-1-evgreen@chromium.org> <20201118153951.RESEND.v3.2.Idef164c23d326f5e5edecfc5d3eb2a68fcf18be1@changeid>
- <CAHp75VdtwyCj7emc7Bk87q7kMQA0sSX81-aK-fMq4qTfTF-c_g@mail.gmail.com>
- <CAE=gft4OW7_pWfco4+kY65tbUGUDzXXDfsVMCP8MN93inVem4A@mail.gmail.com> <20210105102505.GG2000@ninjato>
-In-Reply-To: <20210105102505.GG2000@ninjato>
-From:   Evan Green <evgreen@chromium.org>
-Date:   Thu, 14 Jan 2021 10:17:59 -0800
-X-Gmail-Original-Message-ID: <CAE=gft42nQECU9Sn9yC-o8+VE9EDoRgLmqVR0Uwma+vBTiEh-Q@mail.gmail.com>
-Message-ID: <CAE=gft42nQECU9Sn9yC-o8+VE9EDoRgLmqVR0Uwma+vBTiEh-Q@mail.gmail.com>
-Subject: Re: [RESEND PATCH v3 2/2] i2c: i2c-mux-gpio: Enable this driver in
- ACPI land
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Peter Rosin <peda@axentia.se>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Korsgaard <peter.korsgaard@barco.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201205004848.2541215-1-willmcvicker@google.com>
+ <X9e5vl+nw4GQNYEw@google.com> <nycvar.YFH.7.76.2012171119240.25826@cbobk.fhfr.pm>
+ <CABYd82Z-HJfn1Ts=k7RYrvWCHj=1578--9Y7A0giFn2=RRWcVA@mail.gmail.com>
+In-Reply-To: <CABYd82Z-HJfn1Ts=k7RYrvWCHj=1578--9Y7A0giFn2=RRWcVA@mail.gmail.com>
+From:   Will McVicker <willmcvicker@google.com>
+Date:   Thu, 14 Jan 2021 10:19:01 -0800
+Message-ID: <CABYd82bdoNDpHd3kH47eEyAV7JrxHPFRGd4eCO6Y55ZwzKz_JQ@mail.gmail.com>
+Subject: Re: [PATCH v1] HID: make arrays usage and value to be the same
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        security@kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Will Coster <willcoster@google.com>,
+        stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 2:25 AM Wolfram Sang <wsa@kernel.org> wrote:
->
-> On Fri, Nov 20, 2020 at 10:59:12AM -0800, Evan Green wrote:
-> > On Thu, Nov 19, 2020 at 7:24 AM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> > >
-> > > On Thu, Nov 19, 2020 at 1:40 AM Evan Green <evgreen@chromium.org> wrote:
-> > > >
-> > > > Enable i2c-mux-gpio devices to be defined via ACPI. The idle-state
-> > > > property translates directly to a fwnode_property_*() call. The child
-> > > > reg property translates naturally into _ADR in ACPI.
-> > > >
-> > > > The i2c-parent binding is a relic from the days when the bindings
-> > > > dictated that all direct children of an I2C controller had to be I2C
-> > > > devices. These days that's no longer required. The i2c-mux can sit as a
-> > > > direct child of its parent controller, which is where it makes the most
-> > > > sense from a hardware description perspective. For the ACPI
-> > > > implementation we'll assume that's always how the i2c-mux-gpio is
-> > > > instantiated.
-> > >
-> > > ...
-> > >
-> > > > +#ifdef CONFIG_ACPI
-> > > > +
-> > > > +static int i2c_mux_gpio_get_acpi_adr(struct device *dev,
-> > > > +                                    struct fwnode_handle *fwdev,
-> > > > +                                    unsigned int *adr)
-> > > > +
-> > > > +{
-> > > > +       unsigned long long adr64;
-> > > > +       acpi_status status;
-> > > > +
-> > > > +       status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwdev),
-> > > > +                                      METHOD_NAME__ADR,
-> > > > +                                      NULL, &adr64);
-> > > > +
-> > > > +       if (!ACPI_SUCCESS(status)) {
-> > > > +               dev_err(dev, "Cannot get address\n");
-> > > > +               return -EINVAL;
-> > > > +       }
-> > > > +
-> > > > +       *adr = adr64;
-> > > > +       if (*adr != adr64) {
-> > > > +               dev_err(dev, "Address out of range\n");
-> > > > +               return -ERANGE;
-> > > > +       }
-> > > > +
-> > > > +       return 0;
-> > > > +}
-> > > > +
-> > > > +#else
-> > > > +
-> > > > +static int i2c_mux_gpio_get_acpi_adr(struct device *dev,
-> > > > +                                    struct fwnode_handle *fwdev,
-> > > > +                                    unsigned int *adr)
-> > > > +{
-> > > > +       return -EINVAL;
-> > > > +}
-> > > > +
-> > > > +#endif
-> > >
-> > > I'm wondering if you may use acpi_find_child_device() here.
-> > > Or is it a complementary function?
-> >
-> > I think it's complementary. The code above is "I have a device, I want
-> > its _ADR". whereas acpi_find_child_device() is "I have an _ADR, I want
-> > its device". I could flip things around to use this, but it would turn
-> > the code from linear into quadratic. I'd have to scan each possible
-> > address and call acpi_find_child_device() with that _ADR to see if
-> > there's a child device there.
-> >
-> > >
-> > > ...
-> > >
-> > > > +       device_for_each_child_node(dev, child) {
-> > > > +               if (is_of_node(child)) {
-> > > > +                       fwnode_property_read_u32(child, "reg", values + i);
-> > > > +
-> > > > +               } else if (is_acpi_node(child)) {
-> > > > +                       rc = i2c_mux_gpio_get_acpi_adr(dev, child, values + i);
-> > > > +                       if (rc)
-> > > > +                               return rc;
-> > > > +               }
-> > > > +
-> > > >                 i++;
-> > > >         }
-> > >
-> > > And for this I already told in two different threads with similar code
-> > > that perhaps we need common helper that will check reg followed by
-> > > _ADR.
-> >
-> > Oh, I'm not aware of those threads. I'd need some advice: I guess a
-> > new fwnode_* API would make sense for this, but I had trouble coming
-> > up with a generic interface. _ADR is just a blobbo 64 bit int, but
-> > DT's "reg" is a little more flexible, having a length, and potentially
-> > being an array. I suppose it would have to be something like:
-> >
-> > int fwnode_property_read_reg(const struct fwnode_handle *fwnode,
-> >                                  size_t index, uint64_t *addr, uint64_t *len);
-> >
-> > But then ACPI would always return 0 for length, and only index 0 would
-> > ever work? I'm worried I'm designing an API that's only useful to me.
-> >
-> > I tried to look around for other examples of this specific pattern of
-> > _ADR then "reg", but struggled to turn up much.
-> > -Evan
->
-> Andy, is Evan's answer satisfying for you?
+Hi Jiri,
 
-Can this be accepted as-is, or should I resend?
--Evan
+I noticed this hasn't merged yet. So just sending a friendly reminder.
+
+Thanks,
+Will
+
+On Thu, Dec 17, 2020 at 10:42 AM Will McVicker <willmcvicker@google.com> wrote:
+>
+> Great! Thanks for the reply.
+>
+> --Will
+>
+> On Thu, Dec 17, 2020 at 2:19 AM Jiri Kosina <jikos@kernel.org> wrote:
+> >
+> > On Mon, 14 Dec 2020, Will McVicker wrote:
+> >
+> > > > The HID subsystem allows an "HID report field" to have a different
+> > > > number of "values" and "usages" when it is allocated. When a field
+> > > > struct is created, the size of the usage array is guaranteed to be at
+> > > > least as large as the values array, but it may be larger. This leads to
+> > > > a potential out-of-bounds write in
+> > > > __hidinput_change_resolution_multipliers() and an out-of-bounds read in
+> > > > hidinput_count_leds().
+> > > >
+> > > > To fix this, let's make sure that both the usage and value arrays are
+> > > > the same size.
+> > > >
+> > > > Signed-off-by: Will McVicker <willmcvicker@google.com>
+> > > > ---
+> > > >  drivers/hid/hid-core.c | 6 +++---
+> > > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+> > > > index 56172fe6995c..8a8b2b982f83 100644
+> > > > --- a/drivers/hid/hid-core.c
+> > > > +++ b/drivers/hid/hid-core.c
+> > > > @@ -90,7 +90,7 @@ EXPORT_SYMBOL_GPL(hid_register_report);
+> > > >   * Register a new field for this report.
+> > > >   */
+> > > >
+> > > > -static struct hid_field *hid_register_field(struct hid_report *report, unsigned usages, unsigned values)
+> > > > +static struct hid_field *hid_register_field(struct hid_report *report, unsigned usages)
+> > > >  {
+> > > >     struct hid_field *field;
+> > > >
+> > > > @@ -101,7 +101,7 @@ static struct hid_field *hid_register_field(struct hid_report *report, unsigned
+> > > >
+> > > >     field = kzalloc((sizeof(struct hid_field) +
+> > > >                      usages * sizeof(struct hid_usage) +
+> > > > -                    values * sizeof(unsigned)), GFP_KERNEL);
+> > > > +                    usages * sizeof(unsigned)), GFP_KERNEL);
+> > > >     if (!field)
+> > > >             return NULL;
+> > > >
+> > > > @@ -300,7 +300,7 @@ static int hid_add_field(struct hid_parser *parser, unsigned report_type, unsign
+> > > >     usages = max_t(unsigned, parser->local.usage_index,
+> > > >                              parser->global.report_count);
+> > > >
+> > > > -   field = hid_register_field(report, usages, parser->global.report_count);
+> > > > +   field = hid_register_field(report, usages);
+> > > >     if (!field)
+> > > >             return 0;
+> > > >
+> > > > --
+> > > > 2.29.2.576.ga3fc446d84-goog
+> > > >
+> > >
+> > > Hi Jiri and Benjamin,
+> > >
+> > > This is a friendly reminder in case this got lost in your inbox.
+> >
+> > Hi Will,
+> >
+> > I am planning to merge it once the merge window is over.
+> >
+> > --
+> > Jiri Kosina
+> > SUSE Labs
+> >
