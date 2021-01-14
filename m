@@ -2,193 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6632F5F36
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 708332F5F31
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728883AbhANKrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 05:47:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36024 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726503AbhANKqq (ORCPT
+        id S1728866AbhANKqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 05:46:48 -0500
+Received: from mail-40133.protonmail.ch ([185.70.40.133]:42594 "EHLO
+        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726376AbhANKqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 05:46:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610621118;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=NFAkK5CyoahxNRi5k7hi2fue0ERjnOdXOmjImxzpbMM=;
-        b=D0A0d0pHghEVhcfsxCfTGTGytRzL6hioR2OWM1ArB5Qco/tTzfwdUVXdxPtQxPWrqSCyCn
-        6jsa+ziWNnuHKXRwBcBZdcIqMBaK8RGpuO1kxT6DGnBtEIFA2FSEmL21cBJp9vQ6CRzW/j
-        FqsbtDr33zICftz+YvAiS6hgsv+gtic=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547--bCAKj4MNqC10Gxu7zSNiA-1; Thu, 14 Jan 2021 05:45:16 -0500
-X-MC-Unique: -bCAKj4MNqC10Gxu7zSNiA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1179F80666B;
-        Thu, 14 Jan 2021 10:45:14 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9402F60C64;
-        Thu, 14 Jan 2021 10:45:06 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com
-cc:     dhowells@redhat.com, jlayton@redhat.com, dwysocha@redhat.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Christoph Hellwig <hch@lst.de>, dchinner@redhat.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Redesigning and modernising fscache
+        Thu, 14 Jan 2021 05:46:45 -0500
+Date:   Thu, 14 Jan 2021 10:45:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610621155; bh=XpwNCeb1mFbjLCNKv9rUGAnouMUACeCtRMftN/AM0qc=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=IudfYQhDlfGgR4hKqavEK/j7eLpgdoYg6P1XkmAKsrsEzXUobC/UgNMvsnnEYV4UE
+         s6nzyGXe3jvtnAiLXg/o37Z1wRzayK3JaXUyr+06VlIGhgo9RKNz+pDgD8FDQ+LFx/
+         LpZXWf5uitJLmfBFE5xiuTc/1L8xg3i+fV9VzKhIZVmsINwrF/61BjDPt2OEMf8OQc
+         O9fd9WCPy+D08LE2084nyl/A9zfPUJL7BZ7DKctCkxjqp9tYTItJMbqiuiyu51ae5Y
+         3X+qr6jTufxa/EjHhsSZIJjtku5n8XpN/EzPm2g/Ec4ml7DfKIX8qMsa+xMjWpZIOG
+         8hqSTNECenywg==
+To:     Paolo Abeni <pabeni@redhat.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Dongseok Yi <dseok.yi@samsung.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH v2 net-next] udp: allow forwarding of plain (non-fraglisted) UDP GRO packets
+Message-ID: <20210114104510.6240-1-alobakin@pm.me>
+In-Reply-To: <532f2d63cc7b842f6d75a22da277c2a841dcb40e.camel@redhat.com>
+References: <20210113103232.4761-1-alobakin@pm.me> <532f2d63cc7b842f6d75a22da277c2a841dcb40e.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2758810.1610621106.1@warthog.procyon.org.uk>
-Date:   Thu, 14 Jan 2021 10:45:06 +0000
-Message-ID: <2758811.1610621106@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Paolo Abeni <pabeni@redhat.com>
+Date: Wed, 13 Jan 2021 19:37:18 +0100
 
-I've been working on modernising fscache, primarily with help from Jeff Layton
-and Dave Wysochanski with porting Ceph and NFS to it, and with Willy helpfully
-reinventing the VM I/O interface beneath us;-).
+> On Wed, 2021-01-13 at 10:32 +0000, Alexander Lobakin wrote:
+>> Commit 9fd1ff5d2ac7 ("udp: Support UDP fraglist GRO/GSO.") actually
+>> not only added a support for fraglisted UDP GRO, but also tweaked
+>> some logics the way that non-fraglisted UDP GRO started to work for
+>> forwarding too.
+>> Commit 2e4ef10f5850 ("net: add GSO UDP L4 and GSO fraglists to the
+>> list of software-backed types") added GSO UDP L4 to the list of
+>> software GSO to allow virtual netdevs to forward them as is up to
+>> the real drivers.
+>>
+>> Tests showed that currently forwarding and NATing of plain UDP GRO
+>> packets are performed fully correctly, regardless if the target
+>> netdevice has a support for hardware/driver GSO UDP L4 or not.
+>> Add the last element and allow to form plain UDP GRO packets if
+>> there is no socket -> we are on forwarding path.
+>
+> If I read correctly, the above will make UDP GRO in the forwarding path
+> always enabled (admin can't disable that, if forwarding is enabled).
+>
+> UDP GRO can introduce measurable latency for UDP packets staging in the
+> napi GRO hash (no push flag for UDP ;).
+>
+> Currently the admin (for fraglist) or the application (for socket-based
+> "plain" GRO) have to explicitly enable the feature, but this change
+> will impact every user.
+>
+> I think we need at lest an explict switch for this.
 
-However, there've been some objections to the approach I've taken to
-implementing this.  The way I've done it is to disable the use of fscache by
-the five network filesystems that use it, remove much of the old code, put in
-the reimplementation, then cut the filesystems over.  I.e. rip-and-replace.
-It leaves unported filesystems unable to use it - but three of the five are
-done (afs, ceph, nfs), and I've supplied partially-done patches for the other
-two (9p, cifs).
+Fraglist UDP GRO is controlled by netdev feature / ethtool, plain UDO
+GRO is controlled by the sockopt. Regarding that we have no sock on
+forwarding, what kind of switch should we introduce here? One more
+netdev feature, smth like NETIF_F_GRO_UDP_L4?
 
-It's been suggested that it's too hard to review this way and that either I
-should go for a gradual phasing in or build the new one in parallel.  The
-first is difficult because I want to change how almost everything in there
-works - but the parts are tied together; the second is difficult because there
-are areas that would *have* to overlap (the UAPI device file, the cache
-storage, the cache size limits and at least some state for managing these), so
-there would have to be interaction between the two variants.  One refinement
-of the latter would be to make the two implementations mutually exclusive: you
-can build one or the other, but not both.
+> Cheers,
+>
+> Paolo
 
-However.  Given that I want to replace the on-disk format in cachefiles at
-some point, and change what the userspace component does, maybe I should
-create a new, separate UAPI interface and do the on-disk format change at the
-same time.  In which case, it makes sense to build a parallel variant
-
-
-Anyway, a bit of background into the why.  There are a number of things that
-need to be fixed in fscache/cachefiles:
-
- (1) The use of bmap to test whether the backing fs contains a cache block.
-     This is not reliable in a modern extent-based filesystem as it can insert
-     and remove bridging blocks of zeros at will.
-
-     Having discussed this with Christoph Hellwig and Dave Chinner, I think I
-     that the cache really needs to keep track of this for itself.
-
- (2) The use of pagecache waitlist snooping to find out if a backing
-     filesystem page has been updated yet.  I have the feeling that this is
-     not 100% reliable from untrackdownable bugs that seem to relate to this.
-
-     I really would rather be told directly by the backing fs that the op was
-     complete.  Switching over to kiocbs means that can be done.
-
- (3) Having to go through the pagecache attached to the backing file, copying
-     data from it or using vfs_write() to write into it.  This doubles the
-     amount of pagecache required and adds a bunch of copies for good measure.
-
-     When I wrote the cachefiles caching backend, using direct I/O from within
-     the kernel wasn't possible - but, now that kiocbs are available, I can
-     actually do async DIO from the backing files to/from the netfs pages,
-     cutting out copies in both direction, and using the kiocb completion
-     function to tell me when it's done.
-
- (4) fscache's structs have a number of pointers back into the netfs, which
-     makes it tricky if the netfs instance goes away whilst the cache is
-     active.
-
-     I really want no pointers back - apart from very transient I/O completion
-     callbacks.  I can store the metadata I need in the cookie.
-
-Modernising this affords the opportunity to make huge simplifications in the
-code (shaving off over 1000 lines, maybe as many as 3000).
-
-One thing I've done is to make a helper library that handles a number of
-features on behalf of a netfs if it wants to use the library:
-
- (*) Local caching.
-
- (*) Segmentation and shaping of read operations.
-
-     This takes a ->readahead() request from the VM and translates it into one
-     or more reads against the cache and the netfs, allowing both to
-     adjust/expand the size of the individual subops according to internal
-     alignments.
-
-     Allowing the cache to expand a read request to put it on a larger
-     granularity allows the cache to use less metadata to represent what it
-     contains.
-
-     It also provides a place to retry operations (something that's required
-     if a read against the cache fails and we need to send it to the server
-     instead).
-
- (*) Transparent huge pages (Willy).
-
- (*) A place to put fscrypt support (Jeff).
-
-We have the first three working - with some limitations - for afs, nfs and
-ceph, and I've produced partial patches for 9p and cifs. afs, nfs and ceph are
-able to handle xfstests with a cache now - which is something that the old
-fscache code will just explode with.
-
-
-So, as stated, much of that code is written and working.  However, if I do a
-complete replacement all the way out to userspace, there are further changes
-I'm thinking of making:
-
- (*) Get rid of the ability to remove a cache that's in use.  This accounts
-     for a *lot* of the complexity in fscache.  All the synchronisation
-     required to effect the removal of a live cache at any time whilst it's
-     actually being used.
-
- (*) Change cachefiles so that it uses an index file and a single data file
-     and perform culling by marking the index rather than deleting data files.
-     Culling would then be moved into the kernel.  cachefilesd is then
-     unnecessary, except to load the config and keep the cache open.
-
-     Moving the culling into an index would also make manual invalidation
-     easier.
-
- (*) Rather than using cachefilesd to hold the cache open, do something akin
-     to swapon/swapoff to add and remove the cache.
-     
-     Attempting to remove an in-use cache would either fail EBUSY or mark the
-     cache to be removed when it becomes unused and not allow further new
-     users.
-
- (*) Declare the size of the cache up front rather than declaring that it has
-     to maintain a certain amount of free space, reducing the cache to make
-     more space if the level drops.
-
- (*) Merge cachefiles into fscache.  Give up the ability to have alternate
-     cache backends.  That would allow a bit more reduction in the complexity
-     and reduce the number of function pointers gone through.
-
-David
+Thanks,
+Al
 
