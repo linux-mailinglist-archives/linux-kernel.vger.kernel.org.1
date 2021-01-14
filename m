@@ -2,140 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E472F662F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 393242F6637
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbhANQpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:45:25 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58506 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726067AbhANQpX (ORCPT
+        id S1727021AbhANQp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:45:59 -0500
+Received: from mail-pf1-f182.google.com ([209.85.210.182]:36845 "EHLO
+        mail-pf1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725935AbhANQp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:45:23 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10EGgr0d055922;
-        Thu, 14 Jan 2021 11:44:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=eF2v+ZQkH+xDAE5NMv5INoHHD/SQP10arN2yyBt97WQ=;
- b=WsrapMxyd9iyUDozV+uO91GC9y5cyb+oEhCeaqtoswYVcnzXrSB3DSqFUSNQrTvkW+1Z
- uuDDPm1NaN0dy+MxFUsc4obEpImciBsl4vVoYrU7bFsLiqRZyblly/NNJwOAIY/EYswU
- t0GgtX6RthB4x6Csk1XNZmqwaGUU/suu7yDJqqbrfIMeLxmUb0D7osYMMT8eGsfsuWdN
- algozukhSB/IzM1pDj/XTgQfhPWHKkLMDGurVbplRv5KOCCadR+zCYNuIaamutiL7AL3
- c0l0Mx3I2qjhgWW4a6Xq/qOJCmu9SpLZRMkcAjB+p4HisjNZMGnoeYBNQZI4Hmg056LP zQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 362sqbr12b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 11:44:36 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10EGh70k056353;
-        Thu, 14 Jan 2021 11:44:36 -0500
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 362sqbr11m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 11:44:36 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10EGbVht003453;
-        Thu, 14 Jan 2021 16:44:34 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma05fra.de.ibm.com with ESMTP id 35y448be54-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 16:44:34 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10EGiQUF33161524
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Jan 2021 16:44:26 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EE11E4C046;
-        Thu, 14 Jan 2021 16:44:31 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8C3244C04E;
-        Thu, 14 Jan 2021 16:44:28 +0000 (GMT)
-Received: from sig-9-65-209-51.ibm.com (unknown [9.65.209.51])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Jan 2021 16:44:28 +0000 (GMT)
-Message-ID: <99be76345f375bb2f485f08a53dcb8ed806dc538.camel@linux.ibm.com>
-Subject: Re: [PATCH v10 8/8] selinux: include a consumer of the new IMA
- critical data hook
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, tyhicks@linux.microsoft.com,
-        sashal@kernel.org, James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Date:   Thu, 14 Jan 2021 11:44:27 -0500
-In-Reply-To: <fc80b1a1-ff4d-3bf2-59bd-2cb56135bf0f@linux.microsoft.com>
-References: <20210108040708.8389-1-tusharsu@linux.microsoft.com>
-         <20210108040708.8389-9-tusharsu@linux.microsoft.com>
-         <CAHC9VhSJk0wG=WzO3bwsueiy19mMi9m6MamTrQfH8C=gXUtvGw@mail.gmail.com>
-         <97328fc71687a0e1c327f6821548be9ba35bb193.camel@linux.ibm.com>
-         <CAHC9VhTzaQ_q8gJ0oeok_yJ54XLETNvOuhhKnyRwgqsqvpBLCw@mail.gmail.com>
-         <71cddb6c8676ccd63c89364d805cfca76d32cb6e.camel@linux.ibm.com>
-         <CAHC9VhRhYWEcK7TepZ=LK1m=9Zn_gtOZyAYfamP-TFU3rRH+zw@mail.gmail.com>
-         <e29a618645b0e73ec06960a02b6da465614689ff.camel@linux.ibm.com>
-         <CAHC9VhTHqwKem=MyQBY4TNAq-DOVhwEZS8pjrSE=4OxdEVm-GA@mail.gmail.com>
-         <3746bc7673df25354411151442a7772b867be396.camel@linux.ibm.com>
-         <fc80b1a1-ff4d-3bf2-59bd-2cb56135bf0f@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-14_05:2021-01-14,2021-01-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 bulkscore=0
- impostorscore=0 clxscore=1015 priorityscore=1501 adultscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101140091
+        Thu, 14 Jan 2021 11:45:58 -0500
+Received: by mail-pf1-f182.google.com with SMTP id b3so3689936pft.3;
+        Thu, 14 Jan 2021 08:45:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/jWsiQ1w3u/g8oejbHAE82yi0Cw2WGPbx1yC69EielU=;
+        b=eaM/iayaQwPX7v7kZ6cjgLIwZJY6DccKtS5nc0yj0EJ5ViFUU1Gd09ZYyn87FCtM3Q
+         L1FAd6OeQEqxoa9hHIt1OxP49EZsRcNIh4K21dvl296G62HsOA6ej+eIU/Tv+LJoa75S
+         IsAM1WdKBDtbrB5+NzybRGBp3wpwMizXneNqppzxtJ3rQVIxN6wC7Vlz62lNRvmxe1XQ
+         Pi0bzenius2eLga0vwB3rge1gpog8zpNDoIvwE6lAIqUd9hprck8FXhMlzX3rPKUewaj
+         yRxCV0wfFjtnLa88OeJNKkNKyomYaPI+Xtk7G2pyxJ/PZAGT9w4RIWhwRbyCsWha63+z
+         IHYg==
+X-Gm-Message-State: AOAM530YigmXazrxswzZk68cIP98j980WQcfO2DUtVUT1BHkCr16WBYW
+        AD77LxQVK/kYHFbKfpkOuMs=
+X-Google-Smtp-Source: ABdhPJxyEG9pQ7fxWN/pfOiCVS8p+hIRD+x/Ymr7B4pv+077NnbZJfiPyWHn4B+lSMVevKaQU3wnTg==
+X-Received: by 2002:a65:4105:: with SMTP id w5mr8426668pgp.52.1610642717606;
+        Thu, 14 Jan 2021 08:45:17 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id q16sm5803974pfg.139.2021.01.14.08.45.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 08:45:16 -0800 (PST)
+Date:   Thu, 14 Jan 2021 08:45:15 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>, Wu Hao <hao.wu@intel.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        linux-fpga@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] fpga: dfl-pci: rectify ReST formatting
+Message-ID: <YAB1G9e4lCaKq0sq@epycbox.lan>
+References: <20210111112113.27242-1-lukas.bulwahn@gmail.com>
+ <X/x0j+hWRdJ6U/MG@kroah.com>
+ <CAKXUXMzR2J895_+ZsRqcJ___Pu0HnRfiiFFrGfehQe8J4kQrgg@mail.gmail.com>
+ <X/yVflU6ccIlAtgO@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/yVflU6ccIlAtgO@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc'ing Sasha]
+Hi Greg,
 
-Hi Lakshmi,
-
-On Thu, 2021-01-14 at 08:22 -0800, Lakshmi Ramasubramanian wrote:
-> On 1/13/21 6:49 PM, Mimi Zohar wrote:
-
-> >>> Lakshmi is trying to address the situation where an event changes a
-> >>> value, but then is restored to the original value.  The original and
-> >>> subsequent events are measured, but restoring to the original value
-> >>> isn't re-measured.  This isn't any different than when a file is
-> >>> modified and then reverted.
-> >>>
-> >>> Instead of changing the name like this, which doesn't work for files,
-> >>> allowing duplicate measurements should be generic, based on policy.
-> >>
-> >> Perhaps it is just the end of the day and I'm a bit tired, but I just
-> >> read all of the above and I have no idea what your current thoughts
-> >> are regarding this patch.
+On Mon, Jan 11, 2021 at 07:14:22PM +0100, Greg Kroah-Hartman wrote:
+> On Mon, Jan 11, 2021 at 05:34:57PM +0100, Lukas Bulwahn wrote:
+> > On Mon, Jan 11, 2021 at 4:52 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Mon, Jan 11, 2021 at 12:21:13PM +0100, Lukas Bulwahn wrote:
+> > > > Commit fa41d10589be ("fpga: dfl-pci: locate DFLs by PCIe vendor specific
+> > > > capability") provides documentation to the FPGA Device Feature List (DFL)
+> > > > Framework Overview, but introduced new documentation warnings:
+> > > >
+> > > >   ./Documentation/fpga/dfl.rst:
+> > > >     505: WARNING: Title underline too short.
+> > > >     523: WARNING: Unexpected indentation.
+> > > >     523: WARNING: Blank line required after table.
+> > > >     524: WARNING: Block quote ends without a blank line; unexpected unindent.
+> > > >
+> > > > Rectify ReST formatting in ./Documentation/fpga/dfl.rst.
+> > > >
+> > > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > >
 > > 
-> > Other than appending the timestamp, which is a hack, the patch is fine.
-> > Support for re-measuring an event can be upstreamed independently.
+> > > You forgot a Reported-by: tag for the person who notified you of this :(
 > > 
+> > Greg, would you believe that I run 'make htmldocs' on linux-next myself?
 > 
-> Thanks for clarifying the details related to duplicate measurement 
-> detection and re-measuring.
+> Sure, just seemed to match up with when Stephen reported this a few
+> hours earlier...
 > 
-> I will keep the timestamp for the time being, even though its a hack, as 
-> it helps with re-measuring state changes in SELinux. We will add support 
-> for "policy driven" re-measurement as a subsequent patch series.
+> thanks,
+> 
+> greg k-h
 
-Once including the timestamp is upstreamed, removing it will be
-difficult, especially if different userspace applications are dependent
-on it.  Unless everyone is on board that removing the timestamp
-wouldn't be considered a regression, it cannot be upstreamed.
+Are you waiting for a resend on this? Just asking because we got three
+versions of this patch by now :)
 
-thanks,
+I haven't re-sent this since you were already on the thread.
 
-Mimi
-
+- Moritz
