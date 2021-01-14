@@ -2,183 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45182F60CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:12:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24F52F60D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728146AbhANMMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 07:12:03 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11099 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726427AbhANMMD (ORCPT
+        id S1728657AbhANMNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 07:13:18 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:52680 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726643AbhANMNR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 07:12:03 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DGjmm3wbLzMKPF;
-        Thu, 14 Jan 2021 20:10:00 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 14 Jan 2021 20:11:09 +0800
-Subject: Re: [PATCH 4/5] vfio/iommu_type1: Carefully use unmap_unpin_all
- during dirty tracking
-To:     Alex Williamson <alex.williamson@redhat.com>
-References: <20210107092901.19712-1-zhukeqian1@huawei.com>
- <20210107092901.19712-5-zhukeqian1@huawei.com>
- <20210111144913.3092b1b1@omen.home.shazbot.org>
- <198f0afd-343a-9fbc-9556-95670ca76a2c@huawei.com>
- <20210112125331.789f47a5@omen.home.shazbot.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Will Deacon <will@kernel.org>, "Marc Zyngier" <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thu, 14 Jan 2021 07:13:17 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10ECAAQp153199;
+        Thu, 14 Jan 2021 12:12:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=w9+dNPCu+MdawUc3ua+vPpypVjNaP2LE91fqALsojHU=;
+ b=v8l5N5tsQ8hxgO+7sQn0E+GP24QKWejwxI8DBKu4LnM+vDnsasBL8UOa+yGUUH8TRrzr
+ l9rL6hhklVo+X+UN4zuoAoOblPbH3C7U5mB8Ldserk4gdTPBbtpbfdhVvn47TSc5sO+L
+ 1PUwN/F57ZZfTRZEezJpHa4rgy0F9dhnlHgNGwVx7krJcvHJ8zSSnZTj9Z59nlSQmBBa
+ PAMRHI3vzrVPyTdl8Re1k20caNIxP0P6Qojdc0z436eVpjNE+uhkN/yoPQlVJWdmoYVE
+ dXjDYUds6zb1aB9gCXxjX8ZTXift0E9Je5/oKDtKde6CC6Ir2OMG3y3kl0Yy+AXkeohQ ng== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 360kg1yyv8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Jan 2021 12:12:18 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10EC6DQX078979;
+        Thu, 14 Jan 2021 12:12:17 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 360kf24maa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Jan 2021 12:12:17 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10ECCEuM013458;
+        Thu, 14 Jan 2021 12:12:15 GMT
+Received: from starbug-mbp.localdomain (/79.97.215.145)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 14 Jan 2021 04:12:14 -0800
+Received: by starbug-mbp.localdomain (Postfix, from userid 501)
+        id A3F982DC3650; Thu, 14 Jan 2021 12:12:12 +0000 (GMT)
+From:   Darren Kenny <darren.kenny@oracle.com>
+To:     Sami Tolvanen <samitolvanen@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <14ee2346-ea9e-ab24-40d7-45a3bd16510d@huawei.com>
-Date:   Thu, 14 Jan 2021 20:11:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Kees Cook <keescook@chromium.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH] x86/sgx: fix the return type of sgx_init
+In-Reply-To: <20210113232311.277302-1-samitolvanen@google.com>
+References: <20210113232311.277302-1-samitolvanen@google.com>
+Date:   Thu, 14 Jan 2021 12:12:12 +0000
+Message-ID: <m2zh1bvhsz.fsf@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20210112125331.789f47a5@omen.home.shazbot.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9863 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101140072
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9863 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ clxscore=1011 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101140072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wednesday, 2021-01-13 at 15:23:11 -08, Sami Tolvanen wrote:
+> device_initcall() expects a function of type initcall_t, which returns
+> an integer. Change the signature of sgx_init() to match.
+>
+> Fixes: e7e0545299d8c ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
+Makes sense.
 
-On 2021/1/13 3:53, Alex Williamson wrote:
-> On Tue, 12 Jan 2021 20:04:38 +0800
-> Keqian Zhu <zhukeqian1@huawei.com> wrote:
-> 
->> On 2021/1/12 5:49, Alex Williamson wrote:
->>> On Thu, 7 Jan 2021 17:29:00 +0800
->>> Keqian Zhu <zhukeqian1@huawei.com> wrote:
->>>   
->>>> If we detach group during dirty page tracking, we shouldn't remove
->>>> vfio_dma, because dirty log will lose.
->>>>
->>>> But we don't prevent unmap_unpin_all in vfio_iommu_release, because
->>>> under normal procedure, dirty tracking has been stopped.  
->>>
->>> This looks like it's creating a larger problem than it's fixing, it's
->>> not our job to maintain the dirty bitmap regardless of what the user
->>> does.  If the user detaches the last group in a container causing the
->>> mappings within that container to be deconstructed before the user has
->>> collected dirty pages, that sounds like a user error.  A container with
->>> no groups is de-privileged and therefore loses all state.  Thanks,
->>>
->>> Alex  
->>
->> Hi Alex,
->>
->> This looks good to me ;-). That's a reasonable constraint for user behavior.
->>
->> What about replacing this patch with an addition to the uapi document of
->> VFIO_GROUP_UNSET_CONTAINER? User should pay attention to this when call this
->> ioctl during dirty tracking.
-> 
-> Here's the current uapi comment:
-> 
-> /**
->  * VFIO_GROUP_UNSET_CONTAINER - _IO(VFIO_TYPE, VFIO_BASE + 5)
->  *
->  * Remove the group from the attached container.  This is the
->  * opposite of the SET_CONTAINER call and returns the group to
->  * an initial state.  All device file descriptors must be released
->  * prior to calling this interface.  When removing the last group
->  * from a container, the IOMMU will be disabled and all state lost,
->  * effectively also returning the VFIO file descriptor to an initial
->  * state.
->  * Return: 0 on success, -errno on failure.
->  * Availability: When attached to container
->  */
-> 
-> So we already indicate that "all state" of the container is lost when
-> removing the last group, I don't see that it's necessarily to
-> explicitly include dirty bitmap state beyond that statement.  Without
-> mappings there can be no dirty bitmap to track.
-OK :-) .
+Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
 
-> 
->  > And any comments on other patches? thanks.
-> 
-> I had a difficult time mapping the commit log to the actual code
-> change, I'll likely have some wording suggestions.  Is patch 5/5 still
-> necessary if this patch is dropped?  Thanks,
-> 
-I think the 5th patch is still necessary. vfio_sanity_check_pfn_list() is used to check
-whether pfn_list of vfio_dma is empty. but we apply this check just for external domain.
-If the iommu backed domain also pin some pages, then this check fails. So I think we should
-use this check only when all domains are about to be removed.
-
-Besides, this patch should extract the "WARN_ON(iommu->notifier.head);" just for external domain.
-
-Thanks,
-Keqian
-
-> Alex
-> 
->>>> Fixes: d6a4c185660c ("vfio iommu: Implementation of ioctl for dirty pages tracking")
->>>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
->>>> ---
->>>>  drivers/vfio/vfio_iommu_type1.c | 14 ++++++++++++--
->>>>  1 file changed, 12 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
->>>> index 26b7eb2a5cfc..9776a059904d 100644
->>>> --- a/drivers/vfio/vfio_iommu_type1.c
->>>> +++ b/drivers/vfio/vfio_iommu_type1.c
->>>> @@ -2373,7 +2373,12 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->>>>  			if (list_empty(&iommu->external_domain->group_list)) {
->>>>  				vfio_sanity_check_pfn_list(iommu);
->>>>  
->>>> -				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu))
->>>> +				/*
->>>> +				 * During dirty page tracking, we can't remove
->>>> +				 * vfio_dma because dirty log will lose.
->>>> +				 */
->>>> +				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu) &&
->>>> +				    !iommu->dirty_page_tracking)
->>>>  					vfio_iommu_unmap_unpin_all(iommu);
->>>>  
->>>>  				kfree(iommu->external_domain);
->>>> @@ -2406,10 +2411,15 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->>>>  		 * iommu and external domain doesn't exist, then all the
->>>>  		 * mappings go away too. If it's the last domain with iommu and
->>>>  		 * external domain exist, update accounting
->>>> +		 *
->>>> +		 * Note: During dirty page tracking, we can't remove vfio_dma
->>>> +		 * because dirty log will lose. Just update accounting is a good
->>>> +		 * choice.
->>>>  		 */
->>>>  		if (list_empty(&domain->group_list)) {
->>>>  			if (list_is_singular(&iommu->domain_list)) {
->>>> -				if (!iommu->external_domain)
->>>> +				if (!iommu->external_domain &&
->>>> +				    !iommu->dirty_page_tracking)
->>>>  					vfio_iommu_unmap_unpin_all(iommu);
->>>>  				else
->>>>  					vfio_iommu_unmap_unpin_reaccount(iommu);  
->>>
->>> .
->>>   
->>
-> 
-> .
-> 
+> ---
+>  arch/x86/kernel/cpu/sgx/main.c | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index c519fc5f6948..8df81a3ed945 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -700,25 +700,27 @@ static bool __init sgx_page_cache_init(void)
+>  	return true;
+>  }
+>  
+> -static void __init sgx_init(void)
+> +static int __init sgx_init(void)
+>  {
+>  	int ret;
+>  	int i;
+>  
+>  	if (!cpu_feature_enabled(X86_FEATURE_SGX))
+> -		return;
+> +		return -ENODEV;
+>  
+>  	if (!sgx_page_cache_init())
+> -		return;
+> +		return -ENOMEM;
+>  
+> -	if (!sgx_page_reclaimer_init())
+> +	if (!sgx_page_reclaimer_init()) {
+> +		ret = -ENOMEM;
+>  		goto err_page_cache;
+> +	}
+>  
+>  	ret = sgx_drv_init();
+>  	if (ret)
+>  		goto err_kthread;
+>  
+> -	return;
+> +	return 0;
+>  
+>  err_kthread:
+>  	kthread_stop(ksgxd_tsk);
+> @@ -728,6 +730,8 @@ static void __init sgx_init(void)
+>  		vfree(sgx_epc_sections[i].pages);
+>  		memunmap(sgx_epc_sections[i].virt_addr);
+>  	}
+> +
+> +	return ret;
+>  }
+>  
+>  device_initcall(sgx_init);
+>
+> base-commit: 65f0d2414b7079556fbbcc070b3d1c9f9587606d
+> -- 
+> 2.30.0.284.gd98b1dd5eaa7-goog
