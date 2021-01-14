@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BFB2F58F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:31:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E50D22F590D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:32:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727229AbhANDIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 22:08:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbhANDIB (ORCPT
+        id S1727324AbhANDOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 22:14:31 -0500
+Received: from labrats.qualcomm.com ([199.106.110.90]:34373 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726483AbhANDO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 22:08:01 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E8AC061575;
-        Wed, 13 Jan 2021 19:07:21 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id x5so3987909otp.9;
-        Wed, 13 Jan 2021 19:07:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Wt4c3hj4ZNh4hMLpR61yHCrDZAWL6JHj7ZjRuFGj1Pw=;
-        b=fBsj0RnZa25qYcgFyptF/Ij/98L05uF/+BBI0N0B+3SuTyalm+A3fl6HDAqOhe+OyR
-         sWGebKw6B7VLU+UU2zP0MsjnS7Bs2xSQkurR2HRx2qugh8TD5e1GWD2SEhqbASOpvDKF
-         JOr0GHl0ebEaASF7MMtIkWxwBvcViT5X0QkSGKujZar59berdPvDYDgJ7E5sYG42zC8Q
-         JpAnF01i1kzJEXa9XYY6bT8pIfe7hK5H7KYQTyKPyuzEl2Z3B3nsImO0Z21Et7mswboW
-         kbVDjLlAsonlg+X2HWDvDnVYgHhgQdEyISIXR4Qpxy7EFBybh2dai0de8FTTawMziwZU
-         bnRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Wt4c3hj4ZNh4hMLpR61yHCrDZAWL6JHj7ZjRuFGj1Pw=;
-        b=foAOqK1K+CoPPa8kq5bKGBKLSoxgxk96BDOiyzvllA9FZgFovPVFv9XxnNB5Pk3ldw
-         8SOl8dgNElXuc97DSwxL8jVhOPkm+2dOxuEV8Ev8Qde0N+5W5XDwBR4AkwzqWA9lAkJf
-         vBxb56jAOlOohdKCF6V9Z6KN66XZT5aPHXCn9ISHw24e7uM8LWfEIz2fuPG6H7XLA3w3
-         m40jhFeQoA4FH1hR9OcoltuNIo1HlfFjWw5qcVvat3xjF6wQZOePX44uhpVorUNSfms/
-         9sxMEA+unmm6CQlKQQfZ1Ag/K2k+au4ApJpfnil+Fa3ckMz1fSdPEDF8FY+qg9LtpVSN
-         92oA==
-X-Gm-Message-State: AOAM533/9B81bNhJ1jcHVM8g3aEnmrP2QcSTnfbwQYDu28PDqrmjOOaC
-        16lh7NjCUjJ9VtYThEBPgEo=
-X-Google-Smtp-Source: ABdhPJxF0kTUTYxrv+YeLvUo0YQUlV/1rUkKv3GXl1lH1tr0FVEujO5BYSs07NnlMKqzAAMElY1+QQ==
-X-Received: by 2002:a9d:7407:: with SMTP id n7mr3276817otk.189.1610593640069;
-        Wed, 13 Jan 2021 19:07:20 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u76sm817425oia.48.2021.01.13.19.07.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 Jan 2021 19:07:18 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 13 Jan 2021 19:07:15 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Paul Zimmerman <Paul.Zimmerman@synopsys.com>,
-        Felipe Balbi <balbi@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Hudson <skrll@netbsd.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Minas Harutyunyan <hminas@synopsys.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] usb: dwc2: Fixes and improvements
-Message-ID: <20210114030715.GA102157@roeck-us.net>
-References: <20210113112052.17063-1-nsaenzjulienne@suse.de>
- <CAD=FV=VnsVgTGTkr9VYQHCkBSVVksT1UGfsmk+dqTyQ1sqF=Qw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=VnsVgTGTkr9VYQHCkBSVVksT1UGfsmk+dqTyQ1sqF=Qw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Wed, 13 Jan 2021 22:14:29 -0500
+IronPort-SDR: L+ZCJcCj9SCwDytXmebOvFTTkQcMJY6ZuXqN/QcKJW+ZXH3P97aNY4wcGlY9T3o06x/ipiRwSI
+ FcNzBadLc15j1JY/J8O2EAEG85ZJNfp2hwWpC0v6BEJEsLGyi4drekeq6e/i6zEI21Qjvx2Znh
+ TU5RMMSVk+uDor1V9Os50LbokCeItMhUeRsQJeiZkgvAznCU/o8LZBqb1AJIyf6RnDFusftmqg
+ RDT1w+N5AccQg1mz5eraFPNZWVxJn6lmWBoqi+35Aql2EzDw1bWKVrf5R2QhuwEXbmdqmXWaih
+ Tmc=
+X-IronPort-AV: E=Sophos;i="5.79,346,1602572400"; 
+   d="scan'208";a="29539977"
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by labrats.qualcomm.com with ESMTP; 13 Jan 2021 19:13:38 -0800
+X-QCInternal: smtphost
+Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP; 13 Jan 2021 19:13:36 -0800
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id 916BE216AD; Wed, 13 Jan 2021 19:13:36 -0800 (PST)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: [PATCH v5 1/2] scsi: ufs: Fix a possible NULL pointer issue
+Date:   Wed, 13 Jan 2021 19:13:27 -0800
+Message-Id: <1610594010-7254-2-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1610594010-7254-1-git-send-email-cang@codeaurora.org>
+References: <1610594010-7254-1-git-send-email-cang@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 03:20:55PM -0800, Doug Anderson wrote:
-> Hi,
-> 
-[ ... ]
-> 
-> It's been long enough ago that I've forgotten where this was left off,
-> but IIRC the 3 patches that you have here are all fine to land (and
-> have my Reviewed-by tag).  However, I think Guenter was still tracking
-> down additional problems.  Guenter: does that match your recollection?
-> 
-> It looks like there are still bugs open for this on our public bug tracker:
-> 
-> https://issuetracker.google.com/issues/172208170
-> https://issuetracker.google.com/issues/172216241
-> 
-> ...but, as Guenter said, I don't think there's anyone actively working on them.
-> 
-> I'm not really doing too much with dwc2 these days either and don't
-> currently have good HW setup for testing, so for the most part I'll
-> leave it to you.  I wanted to at least summarize what I remembered,
-> though!  :-)
-> 
+During system resume/suspend, hba could be NULL. In this case, do not touch
+eh_sem.
 
-The patches in this series still match what I had in my latest test code,
-so it makes sense to move forward with them. I don't think I ever found
-an acceptable version of the DMA alignment code.
+Fixes: 88a92d6ae4fe ("scsi: ufs: Serialize eh_work with system PM events and async scan")
 
-Guenter
+Acked-by: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 53fd59c..969aed9 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -94,6 +94,8 @@
+ 		       16, 4, buf, __len, false);                        \
+ } while (0)
+ 
++static bool early_suspend;
++
+ int ufshcd_dump_regs(struct ufs_hba *hba, size_t offset, size_t len,
+ 		     const char *prefix)
+ {
+@@ -8953,8 +8955,14 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
+ 	int ret = 0;
+ 	ktime_t start = ktime_get();
+ 
++	if (!hba) {
++		early_suspend = true;
++		return 0;
++	}
++
+ 	down(&hba->eh_sem);
+-	if (!hba || !hba->is_powered)
++
++	if (!hba->is_powered)
+ 		return 0;
+ 
+ 	if ((ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl) ==
+@@ -9002,9 +9010,12 @@ int ufshcd_system_resume(struct ufs_hba *hba)
+ 	int ret = 0;
+ 	ktime_t start = ktime_get();
+ 
+-	if (!hba) {
+-		up(&hba->eh_sem);
++	if (!hba)
+ 		return -EINVAL;
++
++	if (unlikely(early_suspend)) {
++		early_suspend = false;
++		down(&hba->eh_sem);
+ 	}
+ 
+ 	if (!hba->is_powered || pm_runtime_suspended(hba->dev))
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
