@@ -2,108 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982732F698F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4D32F699C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:36:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728832AbhANSa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:30:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726395AbhANSa5 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:30:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D53AC23B1A;
-        Thu, 14 Jan 2021 18:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610649016;
-        bh=yxP+U1naF2x/75BiAkB62FgxaTsZjjyw+RQ5kurm97k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W4L27KdLGSwhEgjft2ZqQ7Mh2jHIpoBvKiswhJMB5iSi9g5+0IoejjtqkDbliAwkn
-         rxYRDqrzeF33G9sNbB08j0CgmAby8OjPz5+GiF+TeuBeUgzdKTgAnTx3Q7AhfrR9uy
-         609ximeig+HAKTmcxVHjnWRsuFF5u3r1DCVgHhy1xdso01bA2+steoXZeqvMCImZXi
-         52M9OFI4MSpN4RZJLRqK/r1YYpsTF3G4uMHTLHTnrFDWvOROKsq/7aR9dpokJp8xZg
-         BrkG1tXkaAG/3Rmc5Q6tV8mBltjnaZh1L76J3QShpEm0YfmdGD7/xTNN/PbI2gy6Zi
-         ay+j99Phq+vyw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 96E82411E9; Thu, 14 Jan 2021 15:30:47 -0300 (-03)
-Date:   Thu, 14 Jan 2021 15:30:47 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
-        peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v5] perf stat: Fix wrong skipping for per-die aggregation
-Message-ID: <20210114183047.GB307547@kernel.org>
-References: <20210113015631.8748-1-yao.jin@linux.intel.com>
- <20210113110701.GC1331835@krava>
+        id S1729348AbhANScz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:32:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726398AbhANScy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 13:32:54 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87F0C061575;
+        Thu, 14 Jan 2021 10:32:14 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id y128so2671164ybf.10;
+        Thu, 14 Jan 2021 10:32:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jkDWkm7+rWVZYk8MvVS//EXKogbXqdcBArZyL8FNxdM=;
+        b=mUUX5puMI8nBttMrblkC5tIrFOQQ+iRww4NO7pijYMjz+7KqaOQdJ6sAaM2VwH+xZH
+         xt5lbTz6Tfdfw+iL3zy7liPL3aLW3BMZRP1zf9H/DfnssbzW6kEeONm6Nt17mYGqE8Ir
+         vOYVUP8+2jHzTgrsTGt9P0g7c/NF4pwzHgmaZajv52J7IndVGPhwdHo8172daCI/OF0a
+         WFcPy/47bEyq3MWe9lg0utZlZ81P9x9ehvzClvae+lA/KTzNYt7sfyvYZc9isNxT1IAy
+         HClveohBhINKv8Am+97yxvosavh2Q6Bhrs9Hc5mPp2iEgExHyUpm4zdwLk5hjFv2/rPr
+         z2XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jkDWkm7+rWVZYk8MvVS//EXKogbXqdcBArZyL8FNxdM=;
+        b=W8gsMBN+FphJPIAC0DAqfi5zOTwdfwCIQBcIyrsRpIcrIWUclr5GEhTf9xFFBsJgj8
+         fxyFIW9nvj39FjJp0vbCSCK32NISAseXqC7UbgFXQrI5ZwILZcMbJge+XIl/pCJ+N+Dj
+         UcW3ER08ZafNv/vcZLtDf+dhRgddKtuTTqxMWaQzBo7e+KX+PTtyBQNdrGl0C3MxhRAT
+         mlwG05CcurEar4jAT2gUiPGfLnimj4zTY+5vpC64casBQ02mCwM/wNfRVuIZ1sX6Cfqy
+         rEwvYrA5+vbvxi6wXWSGYoLtiuGynfu7EhdFsiS4cIj+lB5iZx+VCFsqXteMwkUPZiUZ
+         NsZA==
+X-Gm-Message-State: AOAM530YYaa37TW4N5mzt8YMaQjVjSps0SqyYvD2JhkBepSgDX4h1LrD
+        9y2D4wUf/8KlznskqQiNSb80z7JhFTI8zymwoyI=
+X-Google-Smtp-Source: ABdhPJy8ukIRNIUZgZETLWMyY7NRPBEE94Oq69IvViHhxx/SGPq9zp7K9WbXAX+dU4BYlyziEqd94fSUfStQnvJw0UM=
+X-Received: by 2002:a25:50a:: with SMTP id 10mr12601986ybf.115.1610649134102;
+ Thu, 14 Jan 2021 10:32:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113110701.GC1331835@krava>
-X-Url:  http://acmel.wordpress.com
+References: <20210114180709.303370-1-masahiroy@kernel.org>
+In-Reply-To: <20210114180709.303370-1-masahiroy@kernel.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 14 Jan 2021 19:32:03 +0100
+Message-ID: <CANiq72mMnQBD6eVoNjfjiwz4TrQDz=DSh+gHen=grA3YqsYKmg@mail.gmail.com>
+Subject: Re: [PATCH v3] kbuild: check the minimum compiler version in Kconfig
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jan 13, 2021 at 12:07:01PM +0100, Jiri Olsa escreveu:
-> On Wed, Jan 13, 2021 at 09:56:31AM +0800, Jin Yao wrote:
-> 
-> SNIP
-> 
-> > 
-> > root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
-> >      1.001586691 S0-D0           1            1229440 Bytes llc_misses.mem_read
-> >      1.001586691 S0-D1           1             976832 Bytes llc_misses.mem_read
-> >      1.001586691 S1-D0           1             938304 Bytes llc_misses.mem_read
-> >      1.001586691 S1-D1           1            1227328 Bytes llc_misses.mem_read
-> >      2.003776312 S0-D0           1            1586752 Bytes llc_misses.mem_read
-> >      2.003776312 S0-D1           1             875392 Bytes llc_misses.mem_read
-> >      2.003776312 S1-D0           1             855616 Bytes llc_misses.mem_read
-> >      2.003776312 S1-D1           1             949376 Bytes llc_misses.mem_read
-> >      3.006512788 S0-D0           1            1338880 Bytes llc_misses.mem_read
-> >      3.006512788 S0-D1           1             920064 Bytes llc_misses.mem_read
-> >      3.006512788 S1-D0           1             877184 Bytes llc_misses.mem_read
-> >      3.006512788 S1-D1           1            1020736 Bytes llc_misses.mem_read
-> >      4.008895291 S0-D0           1             926592 Bytes llc_misses.mem_read
-> >      4.008895291 S0-D1           1             906368 Bytes llc_misses.mem_read
-> >      4.008895291 S1-D0           1             892224 Bytes llc_misses.mem_read
-> >      4.008895291 S1-D1           1             987712 Bytes llc_misses.mem_read
-> >      5.001590993 S0-D0           1             962624 Bytes llc_misses.mem_read
-> >      5.001590993 S0-D1           1             912512 Bytes llc_misses.mem_read
-> >      5.001590993 S1-D0           1             891200 Bytes llc_misses.mem_read
-> >      5.001590993 S1-D1           1             978432 Bytes llc_misses.mem_read
-> > 
-> > On no-die system, die_id is 0, actually it's hashmap(socket,0), original behavior
-> > is not changed.
-> > 
-> > Reported-by: Huang Ying <ying.huang@intel.com>
-> > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> > ---
-> > v5:
-> >  Hash key is changed to die_id << 32 | socket.
-> >  In pkg_id_hash, return (int64_t)key & 0xffffffff; actually it's socket.
-> 
-> seems ok, but I'm getting python test fail:
+On Thu, Jan 14, 2021 at 7:08 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> I unified the similar two scripts, gcc-version.sh and clang-version.sh
+> into the new cc-version.sh. The old scripts invoked the compiler multiple
+> times (3 times for gcc-version.sh, 4 times for clang-version.sh). I
+> refactored the code so the new one invokes the compiler just once, and
+> also tried my best to use shell-builtin commands where possible.
 
-He addressed that in v6, so I've sticked an Acked-by: jolsa, ok?
+Tested v3 with GCC, Clang and an old GCC too:
 
-- Arnaldo
- 
-> 	$ sudo ./perf test python -v
-> 	19: 'import perf' in python                                         :
-> 	--- start ---
-> 	test child forked, pid 1352066
-> 	python usage test: "echo "import sys ; sys.path.append('python'); import perf" | '/usr/bin/python2' "
-> 	Traceback (most recent call last):
-> 	  File "<stdin>", line 1, in <module>
-> 	ImportError: python/perf.so: undefined symbol: hashmap__free
-> 	test child finished with -1
-> 	---- end ----
-> 	'import perf' in python: FAILED!
-> 
-> jirka
-> 
+$ scripts/cc-version.sh gcc-4.6.4
+***
+*** Compiler is too old.
+***   Your GCC version:    4.6.4
+***   Minimum GCC version: 4.9.0
+***
 
--- 
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+Tested-by: Miguel Ojeda <ojeda@kernel.org>
 
-- Arnaldo
+Cheers,
+Miguel
