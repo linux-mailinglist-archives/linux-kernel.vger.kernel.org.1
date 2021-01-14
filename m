@@ -2,323 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965702F6AAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:17:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA94D2F6AB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728712AbhANTQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:16:10 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:55012 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbhANTQK (ORCPT
+        id S1729436AbhANTRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:17:07 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:46848 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725950AbhANTRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:16:10 -0500
-Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 69F9F20B6C40;
-        Thu, 14 Jan 2021 11:15:28 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 69F9F20B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1610651728;
-        bh=I5hySNT1aoAPIwQkhC/+V7JRkIrmhf0Xu/FEZ6KXXW4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Td0Fx+CeRn6s+fDsdbJZa2yRtu/4W4otrnYPzxW37Yr3yoHxhcM845K5aiTkyopsW
-         eyOUL7DPGox3FcagCLTU89BckFXDVw+umaxrfLr0fgruCtGllGqA7lrL/dzas8UWXX
-         699tp94EmwXF4KuBeWyNsHDSRvS+DaRJAYIdbols=
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, tusharsu@linux.microsoft.com
-Cc:     tyhicks@linux.microsoft.com, casey@schaufler-ca.com,
-        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
-        sashal@kernel.org, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selinux: include a consumer of the new IMA critical data hook
-Date:   Thu, 14 Jan 2021 11:15:22 -0800
-Message-Id: <20210114191522.4001-1-nramas@linux.microsoft.com>
-X-Mailer: git-send-email 2.30.0
+        Thu, 14 Jan 2021 14:17:06 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10EJE4ue013147;
+        Thu, 14 Jan 2021 19:16:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=W8xArUkCjxBmZ8x/Oydz945GnUtSXMcioOXYuDzOlT0=;
+ b=WBBpG+5mRJWKXyN4GAV3YivEHfNc0FXg7TRb5DtWs1GqRyzYVkCe87V3DrIcOzwS1mgt
+ gRe/UUvllQUKwKUczX6FJLGa9tjkWSRYvdMyhsM/ZLLo7M5IEwZhWeJx/q7o9/MoBt1c
+ qBoP0KIOSVGNItyTrzaUeiQ6V9xbiYVdtyMzCInd6R/6DFKaQiDmnpiwnxLkOO6Ko8LT
+ SM9sR8Cvp0/zTbp7K8xD9igSSteioYhkr+9kzzSqCT4Db4WGR8DjRi16r11lXuOSPDaJ
+ WRKtIC+2lHy3UYseuXIYI7a/zk6nHgPp4iIzODWVN5mK6I85T4wOz/RD2jPY+LN08B08 5g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 360kd01sr2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Jan 2021 19:16:10 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10EJBmfX006237;
+        Thu, 14 Jan 2021 19:16:09 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 360keaa1n3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Jan 2021 19:16:09 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10EJG6U0028547;
+        Thu, 14 Jan 2021 19:16:06 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 14 Jan 2021 11:16:06 -0800
+Subject: Re: [PATCH] mm/hugetlb: avoid unnecessary hugetlb_acct_memory() call
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
+Cc:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210114113140.23069-1-linmiaohe@huawei.com>
+ <853d6aa4-b84c-7ac2-00d4-402893fcf6b3@redhat.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <b7587d72-fb5b-4e0f-4fa0-d63e035e521c@oracle.com>
+Date:   Thu, 14 Jan 2021 11:16:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <853d6aa4-b84c-7ac2-00d4-402893fcf6b3@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101140109
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101140109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SELinux stores the active policy in memory, so the changes to this data
-at runtime would have an impact on the security guarantees provided
-by SELinux.  Measuring in-memory SELinux policy through IMA subsystem
-provides a secure way for the attestation service to remotely validate
-the policy contents at runtime.
+On 1/14/21 4:32 AM, David Hildenbrand wrote:
+> On 14.01.21 12:31, Miaohe Lin wrote:
+>> When gbl_reserve is 0, hugetlb_acct_memory() will do nothing except holding
+>> and releasing hugetlb_lock.
+> 
+> So, what's the deal then? Adding more code?
+> 
+> If this is a performance improvement, we should spell it out. Otherwise
+> I don't see a real benefit of this patch.
+> 
 
-Measure the hash of the loaded policy by calling the IMA hook
-ima_measure_critical_data().  Since the size of the loaded policy
-can be large (several MB), measure the hash of the policy instead of
-the entire policy to avoid bloating the IMA log entry.
+Thanks for finding/noticing this.
 
-To enable SELinux data measurement, the following steps are required:
+As David points out, the commit message should state that this is a
+performance improvement.  Mention that such a change avoids an unnecessary
+hugetlb_lock lock/unlock cycle.  You can also mention that this unnecessary
+lock cycle is happening on 'most' hugetlb munmap operations.
 
-1, Add "ima_policy=critical_data" to the kernel command line arguments
-   to enable measuring SELinux data at boot time.
-For example,
-  BOOT_IMAGE=/boot/vmlinuz-5.10.0-rc1+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
+>>
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  mm/hugetlb.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>> index 737b2dce19e6..fe2da9ad6233 100644
+>> --- a/mm/hugetlb.c
+>> +++ b/mm/hugetlb.c
+>> @@ -5241,7 +5241,8 @@ long hugetlb_unreserve_pages(struct inode *inode, long start, long end,
+>>  	 * reservations to be released may be adjusted.
+>>  	 */
+>>  	gbl_reserve = hugepage_subpool_put_pages(spool, (chg - freed));
+>> -	hugetlb_acct_memory(h, -gbl_reserve);
+>> +	if (gbl_reserve)
+>> +		hugetlb_acct_memory(h, -gbl_reserve);
 
-2, Add the following rule to /etc/ima/ima-policy
-   measure func=CRITICAL_DATA label=selinux
+It is true that gbl_reserve is likely to be 0 in this code path.  However,
+there are other code paths where hugetlb_acct_memory is called with a delta
+value of 0 as well.  I would rather see a simple check at the beginning of
+hugetlb_acct_memory like.
 
-Sample measurement of the hash of SELinux policy:
+	if (!delta)
+		return 0;
 
-To verify the measured data with the current SELinux policy run
-the following commands and verify the output hash values match.
-
-  sha256sum /sys/fs/selinux/policy | cut -d' ' -f 1
-
-  grep "selinux-policy-hash" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6
-
-Note that the actual verification of SELinux policy would require loading
-the expected policy into an identical kernel on a pristine/known-safe
-system and run the sha256sum /sys/kernel/selinux/policy there to get
-the expected hash.
-
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Acked-by: Paul Moore <paul@paul-moore.com>
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
----
- Documentation/ABI/testing/ima_policy |  3 +-
- security/selinux/Makefile            |  2 +
- security/selinux/ima.c               | 44 +++++++++++++++++++
- security/selinux/include/ima.h       | 24 +++++++++++
- security/selinux/include/security.h  |  3 +-
- security/selinux/ss/services.c       | 64 ++++++++++++++++++++++++----
- 6 files changed, 129 insertions(+), 11 deletions(-)
- create mode 100644 security/selinux/ima.c
- create mode 100644 security/selinux/include/ima.h
-
-diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
-index 54fe1c15ed50..8365596cb42b 100644
---- a/Documentation/ABI/testing/ima_policy
-+++ b/Documentation/ABI/testing/ima_policy
-@@ -52,8 +52,9 @@ Description:
- 			template:= name of a defined IMA template type
- 			(eg, ima-ng). Only valid when action is "measure".
- 			pcr:= decimal value
--			label:= [data_label]
-+			label:= [selinux]|[data_label]
- 			data_label:= a unique string used for grouping and limiting critical data.
-+			For example, "selinux" to measure critical data for SELinux.
- 
- 		  default policy:
- 			# PROC_SUPER_MAGIC
-diff --git a/security/selinux/Makefile b/security/selinux/Makefile
-index 4d8e0e8adf0b..776162444882 100644
---- a/security/selinux/Makefile
-+++ b/security/selinux/Makefile
-@@ -16,6 +16,8 @@ selinux-$(CONFIG_NETLABEL) += netlabel.o
- 
- selinux-$(CONFIG_SECURITY_INFINIBAND) += ibpkey.o
- 
-+selinux-$(CONFIG_IMA) += ima.o
-+
- ccflags-y := -I$(srctree)/security/selinux -I$(srctree)/security/selinux/include
- 
- $(addprefix $(obj)/,$(selinux-y)): $(obj)/flask.h
-diff --git a/security/selinux/ima.c b/security/selinux/ima.c
-new file mode 100644
-index 000000000000..03715893ff97
---- /dev/null
-+++ b/security/selinux/ima.c
-@@ -0,0 +1,44 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright (C) 2021 Microsoft Corporation
-+ *
-+ * Author: Lakshmi Ramasubramanian (nramas@linux.microsoft.com)
-+ *
-+ * Measure critical data structures maintainted by SELinux
-+ * using IMA subsystem.
-+ */
-+#include <linux/vmalloc.h>
-+#include <linux/ima.h>
-+#include "security.h"
-+#include "ima.h"
-+
-+/*
-+ * selinux_ima_measure_state - Measure hash of the SELinux policy
-+ *
-+ * @state: selinux state struct
-+ *
-+ * NOTE: This function must be called with policy_mutex held.
-+ */
-+void selinux_ima_measure_state(struct selinux_state *state)
-+{
-+	void *policy = NULL;
-+	size_t policy_len;
-+	int rc = 0;
-+
-+	/*
-+	 * Measure SELinux policy only after initialization is completed.
-+	 */
-+	if (!selinux_initialized(state))
-+		return;
-+
-+	rc = security_read_state_kernel(state, &policy, &policy_len);
-+	if (rc) {
-+		pr_err("SELinux: %s: failed to read policy %d.\n", __func__, rc);
-+		return;
-+	}
-+
-+	ima_measure_critical_data("selinux", "selinux-policy-hash",
-+				  policy, policy_len, true);
-+
-+	vfree(policy);
-+}
-diff --git a/security/selinux/include/ima.h b/security/selinux/include/ima.h
-new file mode 100644
-index 000000000000..d69c36611423
---- /dev/null
-+++ b/security/selinux/include/ima.h
-@@ -0,0 +1,24 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+/*
-+ * Copyright (C) 2021 Microsoft Corporation
-+ *
-+ * Author: Lakshmi Ramasubramanian (nramas@linux.microsoft.com)
-+ *
-+ * Measure critical data structures maintainted by SELinux
-+ * using IMA subsystem.
-+ */
-+
-+#ifndef _SELINUX_IMA_H_
-+#define _SELINUX_IMA_H_
-+
-+#include "security.h"
-+
-+#ifdef CONFIG_IMA
-+extern void selinux_ima_measure_state(struct selinux_state *selinux_state);
-+#else
-+static inline void selinux_ima_measure_state(struct selinux_state *selinux_state)
-+{
-+}
-+#endif
-+
-+#endif	/* _SELINUX_IMA_H_ */
-diff --git a/security/selinux/include/security.h b/security/selinux/include/security.h
-index 3cc8bab31ea8..29cae32d3fc5 100644
---- a/security/selinux/include/security.h
-+++ b/security/selinux/include/security.h
-@@ -229,7 +229,8 @@ void selinux_policy_cancel(struct selinux_state *state,
- 			struct selinux_policy *policy);
- int security_read_policy(struct selinux_state *state,
- 			 void **data, size_t *len);
--
-+int security_read_state_kernel(struct selinux_state *state,
-+			       void **data, size_t *len);
- int security_policycap_supported(struct selinux_state *state,
- 				 unsigned int req_cap);
- 
-diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
-index 9704c8a32303..cc8dbc4ed8db 100644
---- a/security/selinux/ss/services.c
-+++ b/security/selinux/ss/services.c
-@@ -65,6 +65,7 @@
- #include "ebitmap.h"
- #include "audit.h"
- #include "policycap_names.h"
-+#include "ima.h"
- 
- /* Forward declaration. */
- static int context_struct_to_string(struct policydb *policydb,
-@@ -2180,6 +2181,7 @@ static void selinux_notify_policy_change(struct selinux_state *state,
- 	selinux_status_update_policyload(state, seqno);
- 	selinux_netlbl_cache_invalidate();
- 	selinux_xfrm_notify_policyload();
-+	selinux_ima_measure_state(state);
- }
- 
- void selinux_policy_commit(struct selinux_state *state,
-@@ -3875,8 +3877,33 @@ int security_netlbl_sid_to_secattr(struct selinux_state *state,
- }
- #endif /* CONFIG_NETLABEL */
- 
-+/**
-+ * __security_read_policy - read the policy.
-+ * @policy: SELinux policy
-+ * @data: binary policy data
-+ * @len: length of data in bytes
-+ *
-+ */
-+static int __security_read_policy(struct selinux_policy *policy,
-+				  void *data, size_t *len)
-+{
-+	int rc;
-+	struct policy_file fp;
-+
-+	fp.data = data;
-+	fp.len = *len;
-+
-+	rc = policydb_write(&policy->policydb, &fp);
-+	if (rc)
-+		return rc;
-+
-+	*len = (unsigned long)fp.data - (unsigned long)data;
-+	return 0;
-+}
-+
- /**
-  * security_read_policy - read the policy.
-+ * @state: selinux_state
-  * @data: binary policy data
-  * @len: length of data in bytes
-  *
-@@ -3885,8 +3912,6 @@ int security_read_policy(struct selinux_state *state,
- 			 void **data, size_t *len)
- {
- 	struct selinux_policy *policy;
--	int rc;
--	struct policy_file fp;
- 
- 	policy = rcu_dereference_protected(
- 			state->policy, lockdep_is_held(&state->policy_mutex));
-@@ -3898,14 +3923,35 @@ int security_read_policy(struct selinux_state *state,
- 	if (!*data)
- 		return -ENOMEM;
- 
--	fp.data = *data;
--	fp.len = *len;
-+	return __security_read_policy(policy, *data, len);
-+}
- 
--	rc = policydb_write(&policy->policydb, &fp);
--	if (rc)
--		return rc;
-+/**
-+ * security_read_state_kernel - read the policy.
-+ * @state: selinux_state
-+ * @data: binary policy data
-+ * @len: length of data in bytes
-+ *
-+ * Allocates kernel memory for reading SELinux policy.
-+ * This function is for internal use only and should not
-+ * be used for returning data to user space.
-+ *
-+ * This function must be called with policy_mutex held.
-+ */
-+int security_read_state_kernel(struct selinux_state *state,
-+			       void **data, size_t *len)
-+{
-+	struct selinux_policy *policy;
- 
--	*len = (unsigned long)fp.data - (unsigned long)*data;
--	return 0;
-+	policy = rcu_dereference_protected(
-+			state->policy, lockdep_is_held(&state->policy_mutex));
-+	if (!policy)
-+		return -EINVAL;
-+
-+	*len = policy->policydb.len;
-+	*data = vmalloc(*len);
-+	if (!*data)
-+		return -ENOMEM;
- 
-+	return __security_read_policy(policy, *data, len);
- }
 -- 
-2.30.0
+Mike Kravetz
 
+>>  
+>>  	return 0;
+>>  }
+>>
+> 
+> 
