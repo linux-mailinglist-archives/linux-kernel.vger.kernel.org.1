@@ -2,108 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0332F6392
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 887292F6391
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbhANO6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:58:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29873 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725878AbhANO6o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:58:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610636238;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/ppwJSqDEjfy1jUVKvhzNEie3ebwOMmvOLlmQbJW//U=;
-        b=I3OauxujAxmGEbgSBIQeeKwNtZPaudho6PbqePRBJYth99nnefJ3JWGYU0yrLVmao37gOA
-        FoEnpEqq5UlZJDbsJ984jGSH4KhiCS1JtyyRbZmOu9svdNT7ByZzOY+97vAGA8gZzKoila
-        Gjls+ylNPAJYTMNc2ZRte+ItFwxJ1kg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-188-wv0VLSzDMN-f09iPugNMOw-1; Thu, 14 Jan 2021 09:57:16 -0500
-X-MC-Unique: wv0VLSzDMN-f09iPugNMOw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA301107ACF7;
-        Thu, 14 Jan 2021 14:57:14 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 39F5B10023B9;
-        Thu, 14 Jan 2021 14:57:13 +0000 (UTC)
-Date:   Thu, 14 Jan 2021 08:57:11 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Bernd Petrovitsch <bernd@petrovitsch.priv.at>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Toolchain-dependent config options
-Message-ID: <20210114145711.3yfx2x6snjij3bxl@treble>
-References: <20210113222112.ej4rrd5xw2pwegvw@treble>
- <CAK7LNASbYiZ+UVTmUwRDGMMHQXO-oE-3a4RxbEqX+=dCG2U6dw@mail.gmail.com>
- <53fccf6d59938e94f71a823d704e26903b98fb7d.camel@petrovitsch.priv.at>
+        id S1729150AbhANO6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:58:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35982 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726761AbhANO6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:58:22 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E8496AC5B;
+        Thu, 14 Jan 2021 14:57:40 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 8150C1E0488; Thu, 14 Jan 2021 15:57:40 +0100 (CET)
+Date:   Thu, 14 Jan 2021 15:57:40 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Steve Magnani <magnani@ieee.org>
+Cc:     Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] udf: fix silent AED tagLocation corruption
+Message-ID: <20210114145740.GA27380@quack2.suse.cz>
+References: <20210107234116.6190-1-magnani@ieee.org>
+ <20210107234116.6190-2-magnani@ieee.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <53fccf6d59938e94f71a823d704e26903b98fb7d.camel@petrovitsch.priv.at>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210107234116.6190-2-magnani@ieee.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 12:55:26PM +0100, Bernd Petrovitsch wrote:
-> Hi all!
+On Thu 07-01-21 17:41:16, Steve Magnani wrote:
+> From: Steven J. Magnani <magnani@ieee.org>
 > 
-> On Thu, 2021-01-14 at 13:56 +0900, Masahiro Yamada wrote:
-> > On Thu, Jan 14, 2021 at 7:21 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> [...]
-> > > If I copy a config with CONFIG_GCC_PLUGINS to another system which
-> > > doesn't have the gcc-plugin-devel package, it gets silently disabled by
-> > > "make olddefconfig".
-> > > 
-> > > I've seen multiple cases lately where this is causing confusion.  I
-> > > suspect the problem is getting worse with recent added support for a
-> > > variety of toolchains and toolchain-dependent features.
-> > > 
-> > > Would it be possible to have an error (or at least a warning) in this
-> > > case?
-> > > 
-> > > For example, a "depends-error" which triggers an error if its failure
-> > > would disable a feature?
-> [...]
-> > We disable any feature that is unsupported by the compiler in use.
-> > 
-> > Conventionally, we did that in the top Makefile
-> > by using $(call cc-option, ) macro or by running some scripts.
-> > 
-> > Recently, we are moving such compiler tests to the Kconfig stage.
-> > 
-> > Anyway, we disable unsupported features so any combination
-> > of CONFIG options builds successfully.
-> > This will ease randconfg and allmodconfig tests.
+> When extending a file, make sure that the pointer to the last written
+> extent does not get adjusted into the header (tag) portion of an
+> Allocation Extent Descriptor. Otherwise, a subsequent call to
+> udf_update_exents() can clobber the AED's tagLocation field, replacing
+> it with the logical block number of a file extent.
 > 
-> For options of $CC, that makes sense since there are different
-> compilers and lots of versions of them out there.
-> 
-> > A lot of people and CI systems are running allmodconfig tests
-> > for various architectures and toolchains.
-> 
-> Isn't some kind of defying (or more killing) the usefulness
-> of regression compile runs if one does `make allmodconfig`
-> and some (lots?) of stuff gets automatically configured
-> out just because some
-> -dev(|el) package is missing?
+> Signed-off-by: Steven J. Magnani <magnani@ieee.org>
 
-Right, it sort of defeats the purpose of CI if new toolchain-dependent
-features never get tested.  There needs to be some way to alert the user
-they're not testing everything, despite "allyesconfig".
+Thanks! It took me some time to understand what's the actual problem but
+eventually I've understood - I've updated the changelog and a comment to
+explain a bit more and merged the patch into my tree.
 
-I suppose such config options can stop using this new "depends on
-some_script" feature and just do it the old-fashioned way with an
-$(error) in the makefile.
+								Honza
 
+> ---
+> --- a/fs/udf/inode.c	2020-12-28 20:51:29.000000000 -0600
+> +++ b/fs/udf/inode.c	2021-01-01 19:20:37.163767576 -0600
+> @@ -547,11 +547,14 @@ static int udf_do_extend_file(struct ino
+>  
+>  		udf_write_aext(inode, last_pos, &last_ext->extLocation,
+>  				last_ext->extLength, 1);
+> -		/*
+> -		 * We've rewritten the last extent but there may be empty
+> -		 * indirect extent after it - enter it.
+> -		 */
+> -		udf_next_aext(inode, last_pos, &tmploc, &tmplen, 0);
+> +
+> +		if (new_block_bytes || prealloc_len) {
+> +			/*
+> +			 * We've rewritten the last extent but there may be empty
+> +			 * indirect extent after it - enter it.
+> +			 */
+> +			udf_next_aext(inode, last_pos, &tmploc, &tmplen, 0);
+> +		}
+>  	}
+>  
+>  	/* Managed to do everything necessary? */
+> 
 -- 
-Josh
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
