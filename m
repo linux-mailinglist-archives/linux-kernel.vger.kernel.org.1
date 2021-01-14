@@ -2,86 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD302F61FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E204E2F6201
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729021AbhANN2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:28:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726703AbhANN2v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:28:51 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4822C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:28:10 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id d26so5747593wrb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 05:28:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=dlcz7oRn2yaQTqvuHBDSXrktv8ILXcA2nR44UFm0ZcI=;
-        b=rsh00TpiE4oLzBqWSh7ccwDvLeX0X61gVe+od40kGrmW6UG3ZLM8GGXAIqphpNhiRS
-         8wTDbLz7QVdCu1p9Md642s7HT3LOMf9tkkKTrD9Sm5IX6RrnoT6/dR18nEO4+/glrsD6
-         qJbx+woz5zMoB/gAFsxvHfVa79sb+V8H0wnuMiqyrzvaSrhoBfg6gXCPrFRPvW4124rc
-         ZWDGdmFpZ1nMCnHJQzt2xSdfDUtNkT6Pa6ov+ivsq73tj5NUE/BIDz7+0jeVr1Dm7rwo
-         yX28gukG73v9nAaQpTqdfsVgWuDpb1yw3gtrAqYZJPMkVBueQlwruB7kd4/QekKm8Akm
-         jVoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=dlcz7oRn2yaQTqvuHBDSXrktv8ILXcA2nR44UFm0ZcI=;
-        b=DJpu5yMIGPko1+U6qHOtAX7uCeoCifEitK+Smt/eTSkFvGmvg65aZywtf/x0uqAcnM
-         ALLmIVSLJ8SVVXYd/VxlqKn5JYEcigesIvZrgqk17U77mVcNMru4N3Zj4n87lBD6Mt0Y
-         7YGesJB4QcrFPXQa8exIGVkHVWQ7HZme8vjk7qqTAXwhppFl4vWgPuCz7csZL35Z1GNn
-         CAmGzXoXihUmaQMngNfiVJ2GD22BW761ZV13MAMeQ6mnKv0EXKGUfUsXqsPu+i9+g2pv
-         JP7hqT8p7b14NGu/ezENByOaSuRjELxtMFFMvf6unMT+RvTV91dXrLbcdWA9A2plomto
-         TU0A==
-X-Gm-Message-State: AOAM532ZrTuABei4gGBpxxT7OceriLztld2yT/ffjeZxbTvyJ8pKPbKi
-        1TDIbyf9gCY7G6ws2HDmaRyDxg==
-X-Google-Smtp-Source: ABdhPJxlj7+hO1id7PH/koLlxYaZ/bWvUGu5JPGMcwurs3OkFnOErAadchHhsBTj64KFJq5paFBVpQ==
-X-Received: by 2002:adf:b343:: with SMTP id k3mr7844050wrd.202.1610630889619;
-        Thu, 14 Jan 2021 05:28:09 -0800 (PST)
-Received: from dell ([91.110.221.178])
-        by smtp.gmail.com with ESMTPSA id b19sm8116213wmj.37.2021.01.14.05.28.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 05:28:09 -0800 (PST)
-Date:   Thu, 14 Jan 2021 13:28:07 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] dt-bindings: mfd: gateworks-gsc: Add fan-tach mode
-Message-ID: <20210114132807.GW3975472@dell>
-References: <1609183716-26529-1-git-send-email-tharvey@gateworks.com>
+        id S1729055AbhANN25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 08:28:57 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:52306 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729028AbhANN24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 08:28:56 -0500
+Received: from zn.tnic (p200300ec2f1aa9000d5c8ff8171504e8.dip0.t-ipconnect.de [IPv6:2003:ec:2f1a:a900:d5c:8ff8:1715:4e8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1DA2F1EC04F3;
+        Thu, 14 Jan 2021 14:28:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610630895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Gsx3hXRw+pWKKzqut1Ush7pyeSMmp2ZCnERRJ1prroQ=;
+        b=F4XklBpuOo2kav+B+Hj/WlCU2yiyhQVshdz0xeJoNAAPK8BiaQI8qNIfPsfOaEDNBUjh+3
+        HhoaRWIRvLPVwFlEHE03osTFDF7+sZTo7UJTYzNVtn54egCQzmAwwVMgaPM+SZolKuKnfB
+        1kwj9tzbs+roaO+KJee2+FO/goS9SAM=
+Date:   Thu, 14 Jan 2021 14:28:09 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: [PATCH] x86/entry: Remove put_ret_addr_in_rdi THUNK macro argument
+Message-ID: <20210114132809.GC12284@zn.tnic>
+References: <20210112115421.GB13086@zn.tnic>
+ <20210112194625.4181814-1-ndesaulniers@google.com>
+ <20210112210154.GI4646@sirena.org.uk>
+ <20210113165923.acvycpcu5tzksbbi@treble>
+ <CAKwvOdnAMsYF-v1LAqttBV3e3rHhSFZmPcRRV0+v=+9AyMFgNA@mail.gmail.com>
+ <20210114103928.GB12284@zn.tnic>
+ <YAAszZJ2GcIYZmB5@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1609183716-26529-1-git-send-email-tharvey@gateworks.com>
+In-Reply-To: <YAAszZJ2GcIYZmB5@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Dec 2020, Tim Harvey wrote:
+On Thu, Jan 14, 2021 at 12:36:45PM +0100, Peter Zijlstra wrote:
+> And while looking, I suppose we can delete the put_ret_addr_in_rdi crud,
+> but that's another patch.
 
-> In 7497d4a66c59 ("hwmon: (gsc-hwmon) add fan sensor") a mode
-> was added to report RPM's from a fan tach input.
-> 
-> Add this mode to the dt-bindings for the Gateworks System Controller.
-> 
-> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> ---
->  Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+---
+From: Borislav Petkov <bp@suse.de>
+Date: Thu, 14 Jan 2021 14:25:35 +0100
+Subject: [PATCH] x86/entry: Remove put_ret_addr_in_rdi THUNK macro argument
 
-Applied, thanks.
+That logic is unused since
+
+  320100a5ffe5 ("x86/entry: Remove the TRACE_IRQS cruft")
+
+Remove it.
+
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ arch/x86/entry/thunk_64.S | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
+index c9a9fbf1655f..496b11ec469d 100644
+--- a/arch/x86/entry/thunk_64.S
++++ b/arch/x86/entry/thunk_64.S
+@@ -10,7 +10,7 @@
+ #include <asm/export.h>
+ 
+ 	/* rdi:	arg1 ... normal C conventions. rax is saved/restored. */
+-	.macro THUNK name, func, put_ret_addr_in_rdi=0
++	.macro THUNK name, func
+ SYM_FUNC_START_NOALIGN(\name)
+ 	pushq %rbp
+ 	movq %rsp, %rbp
+@@ -25,11 +25,6 @@ SYM_FUNC_START_NOALIGN(\name)
+ 	pushq %r10
+ 	pushq %r11
+ 
+-	.if \put_ret_addr_in_rdi
+-	/* 8(%rbp) is return addr on stack */
+-	movq 8(%rbp), %rdi
+-	.endif
+-
+ 	call \func
+ 	jmp  __thunk_restore
+ SYM_FUNC_END(\name)
+-- 
+2.29.2
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
