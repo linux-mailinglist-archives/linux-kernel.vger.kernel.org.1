@@ -2,119 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7F82F6B6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF212F6B5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730424AbhANTn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:43:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36944 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729175AbhANTnZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:43:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610653319;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0vEE4omOoEVIIrSo277ugwb7AgXeFGkOd1dV5Hy4GDU=;
-        b=NP2Vwcl1I40C9d7WQnZJKHXz4ugewW8gOH0r0VAuoA87GhQxROOYE9TSOPBdhZk6PmvfP9
-        +6drtmnjQIBEIjlIfh6opCMWOfQph01BPbCG8XUJq+EBANODIFDIbTCyPWTmlIv7Lf/CKI
-        +UJxiO498qYR9zgVLCt9T4fFML8702I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-Ku4PqDyfMuSj9BmsnWN6Gw-1; Thu, 14 Jan 2021 14:41:54 -0500
-X-MC-Unique: Ku4PqDyfMuSj9BmsnWN6Gw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A2D7107ACF8;
-        Thu, 14 Jan 2021 19:41:53 +0000 (UTC)
-Received: from treble.redhat.com (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A76341001E73;
-        Thu, 14 Jan 2021 19:41:50 +0000 (UTC)
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        Miroslav Benes <mbenes@suse.cz>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>
-Subject: [PATCH 21/21] x86/power: Support objtool validation in hibernate_asm_64.S
-Date:   Thu, 14 Jan 2021 13:40:17 -0600
-Message-Id: <0df4a9767074ec0f493fefdd4a2e57b4c9c53d00.1610652862.git.jpoimboe@redhat.com>
-In-Reply-To: <cover.1610652862.git.jpoimboe@redhat.com>
-References: <cover.1610652862.git.jpoimboe@redhat.com>
+        id S1730301AbhANTmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:42:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730177AbhANTmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 14:42:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3987F239EF;
+        Thu, 14 Jan 2021 19:41:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610653295;
+        bh=j72ES8sG143mJE4qoXOz2HxLviBlz2SE24DDEx8XP0o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GTupvysEJQdFamE1YxFEmpRUIuOtDSMco9l+VnAqtDreicebY/e5TFTBV9T5lPwJ+
+         6W98Bz9ewmb/e7mc6z4cmTGMvJcALkWW4pn/lVbGNshU51fDceDJu4+NDs5qAvnbAe
+         8Q5ISSNEjsp8luCkE7n0yHHwg/NVITpnY62NAYheMibO6W3ZZZpOaJ1q/a2GO5hiMI
+         OtadQ5JviuBgoZEv46qUSwHKJtrMv4lr9Roo1oP/94omk3v5kzX5ks27TPQg3anIkz
+         aflwvl5gc9Ezt6aWY2gqecU5AmLW5R2yS+PCkuE//tZGOHmaq5EKszKubPvzUJcJTj
+         PV2DQLD3R1zxg==
+Date:   Thu, 14 Jan 2021 19:41:29 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        ndesaulniers@google.com
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Hugh Dickins <hughd@google.com>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [RFC PATCH 4/8] mm: Separate fault info out of 'struct vm_fault'
+Message-ID: <20210114194129.GA13314@willie-the-truck>
+References: <20210114175934.13070-1-will@kernel.org>
+ <20210114175934.13070-5-will@kernel.org>
+ <CAHk-=wixsPuT5ingsEqj2a1PKuc+rTS_oeD_VL0p8G_3oRiJhA@mail.gmail.com>
+ <20210114190021.GB13135@willie-the-truck>
+ <CAHk-=wjdJmL22+zk3_rWAfEJJCf=oDxiJ530qk-WNk_Ji0qhxw@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <CAHk-=wjdJmL22+zk3_rWAfEJJCf=oDxiJ530qk-WNk_Ji0qhxw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The OBJECT_FILES_NON_STANDARD annotation is used to tell objtool to
-ignore a file.  File-level ignores won't work when validating vmlinux.o.
+On Thu, Jan 14, 2021 at 11:09:01AM -0800, Linus Torvalds wrote:
+> On Thu, Jan 14, 2021 at 11:00 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > I tried that initially, but I found that I had to make all of the
+> > members const to get it to work, at which point the anonymous struct
+> > wasn't really adding anything. Did I just botch the syntax?
+> 
+> I'm not sure what you tried. But this stupid test-case sure works for me:
+> 
+>     struct hello {
+>         const struct {
+>                 unsigned long address;
+>         };
+>         unsigned int flags;
+>     };
+> 
+>     extern int fn(struct hello *);
+> 
+>     int test(void)
+>     {
+>         struct hello a = {
+>                 .address = 1,
+>         };
+>         a.flags = 0;
+>         return fn(&a);
+>     }
+> 
+> and because "address" is in that unnamed constant struct, you can only
+> set it within that initializer, and cannot do
+> 
+>         a.address = 0;
+> 
+> without an error (the way you _can_ do "a.flags = 0").
+> 
+> I don't see naming the struct making a difference - apart from forcing
+> that big rename patch, of course.
+> 
+> But maybe we're talking about different issues?
 
-Instead, convert restore_image() and core_restore_code() to be ELF
-functions.  Their code is conventional enough for objtool to be able to
-understand them.
+Urgh...
 
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- arch/x86/power/Makefile           | 1 -
- arch/x86/power/hibernate_asm_64.S | 8 ++++----
- 2 files changed, 4 insertions(+), 5 deletions(-)
+We _are_ both on the same page, and your reply above had me thinking I've
+lost the plot, so I went back to the start. Check out v5.11-rc3 and apply
+this patch:
 
-diff --git a/arch/x86/power/Makefile b/arch/x86/power/Makefile
-index 6907b523e856..3ff80156f21a 100644
---- a/arch/x86/power/Makefile
-+++ b/arch/x86/power/Makefile
-@@ -1,5 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
--OBJECT_FILES_NON_STANDARD_hibernate_asm_$(BITS).o := y
- 
- # __restore_processor_state() restores %gs after S3 resume and so should not
- # itself be stack-protected
-diff --git a/arch/x86/power/hibernate_asm_64.S b/arch/x86/power/hibernate_asm_64.S
-index 4ca6d68b0293..fce9ed03e939 100644
---- a/arch/x86/power/hibernate_asm_64.S
-+++ b/arch/x86/power/hibernate_asm_64.S
-@@ -99,7 +99,7 @@ SYM_FUNC_START(swsusp_arch_suspend)
- 	ret
- SYM_FUNC_END(swsusp_arch_suspend)
- 
--SYM_CODE_START(restore_image)
-+SYM_FUNC_START(restore_image)
- 	/* prepare to jump to the image kernel */
- 	movq	restore_jump_address(%rip), %r8
- 	movq	restore_cr3(%rip), %r9
-@@ -114,10 +114,10 @@ SYM_CODE_START(restore_image)
- 	/* jump to relocated restore code */
- 	movq	relocated_restore_code(%rip), %rcx
- 	JMP_NOSPEC rcx
--SYM_CODE_END(restore_image)
-+SYM_FUNC_END(restore_image)
- 
- 	/* code below has been relocated to a safe page */
--SYM_CODE_START(core_restore_code)
-+SYM_FUNC_START(core_restore_code)
- 	/* switch to temporary page tables */
- 	movq	%rax, %cr3
- 	/* flush TLB */
-@@ -145,4 +145,4 @@ SYM_CODE_START(core_restore_code)
- .Ldone:
- 	/* jump to the restore_registers address from the image header */
- 	JMP_NOSPEC r8
--SYM_CODE_END(core_restore_code)
-+SYM_FUNC_END(core_restore_code)
--- 
-2.29.2
 
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index ecdf8a8cd6ae..1eb950865450 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -514,11 +514,14 @@ static inline bool fault_flag_allow_retry_first(unsigned int flags)
+  * pgoff should be used in favour of virtual_address, if possible.
+  */
+ struct vm_fault {
+-       struct vm_area_struct *vma;     /* Target VMA */
++       const struct {
++               struct vm_area_struct *vma;     /* Target VMA */
++               gfp_t gfp_mask;                 /* gfp mask to be used for allocations */
++               pgoff_t pgoff;                  /* Logical page offset based on vma */
++               unsigned long address;          /* Faulting virtual address */
++       };
++
+        unsigned int flags;             /* FAULT_FLAG_xxx flags */
+-       gfp_t gfp_mask;                 /* gfp mask to be used for allocations */
+-       pgoff_t pgoff;                  /* Logical page offset based on vma */
+-       unsigned long address;          /* Faulting virtual address */
+        pmd_t *pmd;                     /* Pointer to pmd entry matching
+                                         * the 'address' */
+        pud_t *pud;                     /* Pointer to pud entry matching
+
+
+Sure enough, an arm64 defconfig builds perfectly alright with that change,
+but it really shouldn't. I'm using clang 11.0.5, so I had another go with
+GCC 9.2.1 and bang:
+
+mm/filemap.c: In function ‘filemap_map_pages’:
+mm/filemap.c:2963:16: error: assignment of member ‘address’ in read-only object
+ 2963 |   vmf->address += (xas.xa_index - last_pgoff) << PAGE_SHIFT;
+      |                ^~
+make[1]: *** [scripts/Makefile.build:279: mm/filemap.o] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1805: mm] Error 2
+make: *** Waiting for unfinished jobs....
+
+Nick -- any clue what's happening here? We would like that const anonymous
+struct to behave like a const struct member, as the alternative (naming the
+thing) results in a lot of refactoring churn.
+
+Cheers,
+
+Will
