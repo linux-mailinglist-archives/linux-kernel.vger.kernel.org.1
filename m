@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D502F5BBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7604C2F5BB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728003AbhANHza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 02:55:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56964 "EHLO mail.kernel.org"
+        id S1727882AbhANHzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 02:55:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727839AbhANHzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727567AbhANHzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Jan 2021 02:55:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA624233FD;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1204239EC;
         Thu, 14 Jan 2021 07:53:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1610610830;
-        bh=TrTQY3hajtzLk4b1OtE5yfKC0rZRhinwUQjn/1F4J0M=;
+        bh=oyRypSip+Dc6mUsxTJ/NR8kO+Bc/LQvciK+2bI5BDPI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=szafSbjx4BpAyqfIGLJSc9RiCobHoiCKUGdi8h9VPYgM03qq9ITPDEoQjFXd+4e2F
-         wprL2LmT1ccAyVW/Yj8p8dQ6q8Tj0SjHxWbdEE03c0gP0Xyb1Sdl82fkv9OHl7jm74
-         58mQZA79eTj0sZynB1HGp5/J82ffaZRg+uqyg7HWfDQU9z655sZdNLPNvwslr/iFeS
-         jwNs0A3Bz/VGnIMxWLmBAW4wP1WdZo65cEyGaxFmee/AQg8S0v+SNFoKA10Ng03+D9
-         UXLUdbfeMW88C0kIBeVu+MsBpI8KHQTQBLWWR/q3Lox41iTBIgAmX37JzKLYctyWfN
-         pS4tAoDNd0oag==
+        b=fu6Y+8Z2c2jNzdxmHJcHGbjFIpriwkan8PSime9yLvdEOx3mbLiU6UpR6haB09q67
+         PkZpFljmQVwYCCpyilM/g3tMlxzNaePZG8QmYr7BU0nJFfklT2sqArPV6Hf3dBmWHj
+         OhUNr87N/xWawio1R2WJKXPkCOV7wnnxhePrx9zOiM7yhL0jUX1Si32+YAQjf4CMW+
+         LPSj31e36F+935DZspytxDTrVnIkxlpXd2LryUOsIMB3BO9FRBUyMrdLPF8y6eHGTq
+         Z7z8hRsZJLOFCpH5TDvc+mOQvbr31QV0UGOZRL7ADp9HG85c6I37uag1FDXqWDN66I
+         VvXn1JB+Txscw==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kzxRz-00EPu7-63; Thu, 14 Jan 2021 08:53:47 +0100
+        id 1kzxRz-00EPu9-78; Thu, 14 Jan 2021 08:53:47 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        "Jonathan Corbet" <corbet@lwn.net>, Borislav Petkov <bp@suse.de>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Justin Ernst <justin.ernst@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 03/10] KVM: x86: hyper-v: add a blank line to remove building warnings
-Date:   Thu, 14 Jan 2021 08:53:38 +0100
-Message-Id: <a5a20cd7ff9870b5316825fa1abad0b867832700.1610610444.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 04/10] ABI: sysfs-firmware-sgi_uv
+Date:   Thu, 14 Jan 2021 08:53:39 +0100
+Message-Id: <452854f2dd0625b9fee33b9f5e29343d6149781e.1610610444.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1610610444.git.mchehab+huawei@kernel.org>
 References: <cover.1610610444.git.mchehab+huawei@kernel.org>
@@ -46,27 +49,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-.../Documentation/virt/kvm/api.rst:4536: WARNING: Unexpected indentation.
-.../Documentation/virt/kvm/api.rst:4538: WARNING: Block quote ends without a blank line; unexpected unindent.
+Add a missing blank line required to identify a literal block,
+fixing this warning:
 
-Fixes: c21d54f0307f ("KVM: x86: hyper-v: allow KVM_GET_SUPPORTED_HV_CPUID as a system ioctl")
+	.../Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpected indentation.
+
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/virt/kvm/api.rst | 1 +
+ Documentation/ABI/testing/sysfs-firmware-sgi_uv | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index c136e254b496..c95572a66a7b 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -4532,6 +4532,7 @@ userspace should not expect to get any particular value there.
- Note, vcpu version of KVM_GET_SUPPORTED_HV_CPUID is currently deprecated. Unlike
- system ioctl which exposes all supported feature bits unconditionally, vcpu
- version has the following quirks:
+diff --git a/Documentation/ABI/testing/sysfs-firmware-sgi_uv b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
+index 637c668cbe45..b0f79a1d14b3 100644
+--- a/Documentation/ABI/testing/sysfs-firmware-sgi_uv
++++ b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
+@@ -39,6 +39,7 @@ Description:
+ 
+ 		The uv_type entry contains the hub revision number.
+ 		This value can be used to identify the UV system version::
 +
- - HYPERV_CPUID_NESTED_FEATURES leaf and HV_X64_ENLIGHTENED_VMCS_RECOMMENDED
-   feature bit are only exposed when Enlightened VMCS was previously enabled
-   on the corresponding vCPU (KVM_CAP_HYPERV_ENLIGHTENED_VMCS).
+ 			"0.*" = Hubless UV ('*' is subtype)
+ 
+ 			"3.0" = UV2
 -- 
 2.29.2
 
