@@ -2,159 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD0D2F5E49
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6772C2F5E45
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728522AbhANKEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 05:04:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48474 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728480AbhANKEa (ORCPT
+        id S1728408AbhANKD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 05:03:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727906AbhANKDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 05:04:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610618585;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xXjNcBX1zyUVY22wn0iABMXWOTnE52HCbnMakakpYNA=;
-        b=VbclXDgS+vYtvlz0BJpIzzWF5fgZeSdow1f22alM95qhiKV4/xEYBIARk0vke0TVgajNy+
-        7PoedDtagvdUTA6e/Jb7Ey9voeHx6FDIL0G1U4CFOPrLuDTXfpDX9hdgDfhIfoYXbI4v5J
-        45Q7FHYvbuSdTiqu1ukbQsUYExgt8/o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-348-p58qiEhWMVmNF5ryZwfFhw-1; Thu, 14 Jan 2021 05:03:01 -0500
-X-MC-Unique: p58qiEhWMVmNF5ryZwfFhw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8338084A5E8;
-        Thu, 14 Jan 2021 10:02:59 +0000 (UTC)
-Received: from [10.36.114.165] (ovpn-114-165.ams2.redhat.com [10.36.114.165])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B7CBF71D60;
-        Thu, 14 Jan 2021 10:02:56 +0000 (UTC)
-Subject: Re: [PATCH 1/9] KVM: arm64: vgic-v3: Fix some error codes when
- setting RDIST base
-To:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, maz@kernel.org,
-        drjones@redhat.com
-Cc:     james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
-References: <20201212185010.26579-1-eric.auger@redhat.com>
- <20201212185010.26579-2-eric.auger@redhat.com>
- <fa73780d-b72b-6810-460e-5ed1057df093@arm.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <e37f1942-dcb7-3579-0aba-e131e4bd9217@redhat.com>
-Date:   Thu, 14 Jan 2021 11:02:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Thu, 14 Jan 2021 05:03:55 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66F4C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:03:16 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id c5so5114640wrp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:03:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=oVf5kDc7i4gGrzg222CFywiTCholDlEVEzBooRbeXN8=;
+        b=lNr9TM2KRK50yFUSVqvQRC2+d8NR6/ezTC8nz87RztuEm0sg8oFVZ8y/GwJu5fmbuy
+         fYHUI2RWogLsikN9SnHQipAiHDGDc1iscx3mN0jbaxwjTcDQ0ZVtTW8fUsLtiGBQW1Q1
+         AKfeQ1ODq0/1MA3AOJBalS1gNW0n1axzkT2WZXyba4RRsLVzZn2saNJpv/dEYHRUicJF
+         cy5rlCwzCpe0zLOzmTd1UhR5H8lUdW/NIPwujCtBAv7zdrfaCFXLG4Tew5MNdkvkGGm0
+         1fvVpBLtBl0dMLy8xB3oQ4gsFCDJ3uv0n491bAWkFkP/SVR3QtNXDcjHubOMox2quEnn
+         hbJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=oVf5kDc7i4gGrzg222CFywiTCholDlEVEzBooRbeXN8=;
+        b=lWMtviDrCHtR9MaR3W/T+IaFReWy+x7UPC+4J/LyZuuF2edzLOEJPUsbATYvhRBLV4
+         f8xAm8zfqp4i2wqs5RZJ8qRNfATON8GF7VvuIN6ky2LqJxvQRsL6rtsAfkYg/cnrEdLC
+         WBWTPqWfTO5+i3Yr2C7gxlD26HpMuzr7chPB8W3vEeDyll01TuRNBWqwEfUTpPNzXeD8
+         7cJAl8A++231JDDVUHrgO+plBD9Ba2aTqDU1w1M4dZqqci0Zq24eBvS+LuVBTOntUZAM
+         Wb05QfUmZpkDwnDhzGrl6vjlpFxp88Uf+BNEQTyI5OXpeIp79yAqE42IorPOodWtsq7x
+         CuBg==
+X-Gm-Message-State: AOAM531cGgI69TCwqiRt5+8oflKJB/6rrwuDDr4f30uHmmFm4WFXuix8
+        pgNlkzhrTk2K2Ck6U8sgB8XR7w==
+X-Google-Smtp-Source: ABdhPJx/ZTFqNdbwMrPPQXGb4a5AARaWdvmncwYK2q1w7//JoVyn/n68+kesxeF+gvUR8rMoynCXCw==
+X-Received: by 2002:adf:ef06:: with SMTP id e6mr6917001wro.231.1610618595259;
+        Thu, 14 Jan 2021 02:03:15 -0800 (PST)
+Received: from dell ([91.110.221.178])
+        by smtp.gmail.com with ESMTPSA id b3sm2474771wrn.70.2021.01.14.02.03.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 02:03:14 -0800 (PST)
+Date:   Thu, 14 Jan 2021 10:03:12 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Alexander Dahl <post@lespocky.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, Alexander Dahl <ada@thorsis.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, Jeff LaBundy <jeff@labundy.com>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v9 1/4] dt-bindings: mfd: Fix schema warnings for pwm-leds
+Message-ID: <20210114100312.GL3975472@dell>
+References: <20201228163217.32520-1-post@lespocky.de>
+ <20201228163217.32520-2-post@lespocky.de>
 MIME-Version: 1.0
-In-Reply-To: <fa73780d-b72b-6810-460e-5ed1057df093@arm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20201228163217.32520-2-post@lespocky.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandru,
+On Mon, 28 Dec 2020, Alexander Dahl wrote:
 
-On 1/6/21 5:32 PM, Alexandru Elisei wrote:
-> Hi Eric,
+> The node names for devices using the pwm-leds driver follow a certain
+> naming scheme (now).  Parent node name is not enforced, but recommended
+> by DT project.
 > 
-> On 12/12/20 6:50 PM, Eric Auger wrote:
->> KVM_DEV_ARM_VGIC_GRP_ADDR group doc says we should return
->> -EEXIST in case the base address of the redist is already set.
->> We currently return -EINVAL.
->>
->> However we need to return -EINVAL in case a legacy REDIST address
->> is attempted to be set while REDIST_REGIONS were set. This case
->> is discriminated by looking at the count field.
->>
->> Signed-off-by: Eric Auger <eric.auger@redhat.com>
->> ---
->>  arch/arm64/kvm/vgic/vgic-mmio-v3.c | 9 +++++++--
->>  1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
->> index 15a6c98ee92f..8e8a862def76 100644
->> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
->> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
->> @@ -792,8 +792,13 @@ static int vgic_v3_insert_redist_region(struct kvm *kvm, uint32_t index,
->>  	int ret;
->>  
->>  	/* single rdist region already set ?*/
->> -	if (!count && !list_empty(rd_regions))
->> -		return -EINVAL;
->> +	if (!count && !list_empty(rd_regions)) {
->> +		rdreg = list_last_entry(rd_regions,
->> +				       struct vgic_redist_region, list);
->> +		if (rdreg->count)
->> +			return -EINVAL; /* Mixing REDIST and REDIST_REGION API */
->> +		return -EEXIST;
->> +	}
+>   DTC     Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
+>   CHECK   Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
+> /home/alex/build/linux/Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml: pwmleds: 'panel' does not match any of the regexes: '^led(-[0-9a-f]+)?$', 'pinctrl-[0-9]+'
+>         From schema: /home/alex/src/linux/leds/Documentation/devicetree/bindings/leds/leds-pwm.yaml
 > 
-> A few instructions below:
+> Signed-off-by: Alexander Dahl <post@lespocky.de>
+> Acked-by: Jeff LaBundy <jeff@labundy.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
 > 
->     if (list_empty(rd_regions)) {
->         [..]
->     } else {
->         rdreg = list_last_entry(rd_regions,
->                     struct vgic_redist_region, list);
->         [..]
+> Notes:
+>     v8 -> v9:
+>       * added forgotten Acked-by (Jeff LaBundy)
+>       * rebased on v5.11-rc1
+>     
+>     v7 -> v8:
+>       * rebased on recent pavel/for-next (post v5.10-rc1)
+>       * added Acked-by (Rob Herring)
+>     
+>     v6 -> v7:
+>       * added warning message to commit message (Krzysztof Kozlowski)
+>     
+>     v6:
+>       * added this patch to series
 > 
->         /* Cannot add an explicitly sized regions after legacy region */
->         if (!rdreg->count)
->             return -EINVAL;
->     }
-> 
-> Isn't this testing for the same thing, but using the opposite condition? Or am I
-> misunderstanding the code (quite likely)?
-the 1st test sequence handles the case where the legacy
-KVM_VGIC_V3_ADDR_TYPE_REDIST is used (!count) while the second handles
-the case where the REDIST_REGION is used. Nevertheless I think this can
-be simplified into:
+>  Documentation/devicetree/bindings/mfd/iqs62x.yaml | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 
-        if (list_empty(rd_regions)) {
-                if (index != 0)
-                        return -EINVAL;
-        } else {
-                rdreg = list_last_entry(rd_regions,
-                                        struct vgic_redist_region, list);
+Failed to apply:
 
-                if ((!count) != (!rdreg->count))
-                        return -EINVAL; /* Mix REDIST and REDIST_REGION */
+Applying: dt-bindings: mfd: Fix schema warnings for pwm-leds
+Using index info to reconstruct a base tree...
+M	Documentation/devicetree/bindings/mfd/iqs62x.yaml
+/home/lee/projects/linux/kernel/.git/worktrees/mfd/rebase-apply/patch:34: indent with spaces.
+            led-1 {
+/home/lee/projects/linux/kernel/.git/worktrees/mfd/rebase-apply/patch:35: indent with spaces.
+                    label = "panel";
+warning: 2 lines add whitespace errors.
+Falling back to patching base and 3-way merge...
+Auto-merging Documentation/devicetree/bindings/mfd/iqs62x.yaml
+CONFLICT (content): Merge conflict in Documentation/devicetree/bindings/mfd/iqs62x.yaml
+Recorded preimage for 'Documentation/devicetree/bindings/mfd/iqs62x.yaml'
 
-                if (!count)
-                        return -EEXIST;
-
-                if (index != rdreg->index + 1)
-                        return -EINVAL;
-        }
-
-
-
-
-
-
-> 
-> Looks to me like KVM_DEV_ARM_VGIC_GRP_ADDR(KVM_VGIC_V3_ADDR_TYPE_REDIST{,_REGION})
-> used to return -EEXIST (from vgic_check_ioaddr()) before commit ccc27bf5be7b7
-> ("KVM: arm/arm64: Helper to register a new redistributor region") which added the
-> vgic_v3_insert_redist_region() function, so bringing back the -EEXIST return code
-> looks the right thing to me.
-
-OK thank you for the detailed study.
-
-Eric
-> 
-> Thanks,
-> Alex
->>  
->>  	/* cross the end of memory ? */
->>  	if (base + size < base)
-> 
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
