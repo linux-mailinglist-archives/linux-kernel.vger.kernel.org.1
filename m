@@ -2,73 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39DD2F6356
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:42:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C252F6358
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729115AbhANOlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:41:08 -0500
-Received: from ms.lwn.net ([45.79.88.28]:58396 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727645AbhANOlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:41:07 -0500
-Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id C5F106139;
-        Thu, 14 Jan 2021 14:40:26 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net C5F106139
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1610635227; bh=qRURchjLTP1weg90nrfIXrzmaVl3oLNx+1rbmhDEPaY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HXuN4/253F0cmvtyKg2ri1O3gYGZsIA701UezYuLGaeoW3abk/V5QNB/DwAq1sqJa
-         Rsk89g+5eed750UTMB8r8QJ2Szgh0TwHWvxi4RCKA+4NY5bbS592440c75jdHslYJk
-         pcsyeD+tbMUMHCCPlDd8HWJaPhG8r3zylKPRFaexu8Jy1M+JcgGe3TWSd0uhYUM47B
-         Koj0ysm0Rd0QKV0PbNPIWjkEpYTOy5wlCiVYA2BStEjoAzm5fe2rbbin060I5t5Cgd
-         HAyc4xu4tibayPlcTArxjIQ2LrYlv7oQszYaNqTf5DzFTNEP7JHfb8ja50kX19SAUi
-         9MUPhr23ZNf/Q==
-Date:   Thu, 14 Jan 2021 07:40:25 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Harry Wei <harryxiyou@gmail.com>,
-        "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/10] doc/zh_CN: fix Sphinx errors
-Message-ID: <20210114074025.44b29891@lwn.net>
-In-Reply-To: <ad0badc92b4cda71384951e1e501e1babb6d8d4f.1610610444.git.mchehab+huawei@kernel.org>
-References: <cover.1610610444.git.mchehab+huawei@kernel.org>
-        <ad0badc92b4cda71384951e1e501e1babb6d8d4f.1610610444.git.mchehab+huawei@kernel.org>
-Organization: LWN.net
+        id S1729157AbhANOlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:41:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727645AbhANOlO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:41:14 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CB7C061574;
+        Thu, 14 Jan 2021 06:40:34 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id a188so3445707pfa.11;
+        Thu, 14 Jan 2021 06:40:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=ePYx9dKDNpbUDjL182iKKsQVVt1VuxmjJIv0p7ij4fU=;
+        b=NxZ95+4RbRdPqWaQmaihXe2AouiSI7ayT+emMpPbQ0mfttzG9dVN/Y07MBhlkmop0n
+         1K5PZjs8tz/63upN6JxzOdk2JHQZRFMWhvKIc0tVSWoUTbgqlbZDS7cXqevRmpT17VBz
+         ujC+YLr/9zhjUZXwTnPm9onb3FxiV+jSQpLpaY+wWTWlHWOmsl++VMD482C4E11yYjt9
+         Ts4JxNDNxyuamP5yRdbPNt/Hao4fDp5Hl6v7s/qCblYORvPNA09gslV1QrSs4ayzENOD
+         BvRuQJazOfxXfh0JKeMW2QM8ZqXXeaufOyC88GqLrtO3NK8G8l67Bexww7ALgiN0t9Oh
+         YHLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=ePYx9dKDNpbUDjL182iKKsQVVt1VuxmjJIv0p7ij4fU=;
+        b=WOYJIpEoNDoUcUOVSsuGrLcGV5GMti/pCZXizuthJxyNqcx5NnpGo1TiTdK7Ihlnt1
+         w9To2n2kYPHzl8wB587HvOKqptekvYo/ei4OwivbFmkNIGrNft4NHvqF80LroLnZTSjT
+         OImkhET1AcBG6HF67nR2gUO8Wu253PFUJg/yLsZVm48FHVjMDmMADXRvLhuuQlujj2CU
+         2mApaKOY8r5R1QFJCCz2oCtpUey0NOt+ixtL6RF6+Ho4w6JNrJJ48TKhpGIUF738LDFk
+         5SoEeULSuXGupmbgwEiDGqGOduBYrmyjnbPKFZYo/Vpss8r0DvYLLyABxpWbZNA/IRUP
+         5m8g==
+X-Gm-Message-State: AOAM53092Dcj4ss4RsjHi7ksATsFrn3c4Zu3alvRDM/iF8Yz7+cgnJ+r
+        6bp6y9Zg22Y+lBmyKS2jVsM=
+X-Google-Smtp-Source: ABdhPJx+riCtG5h3gZgsChhEc6rcJrlhVYlFN94Ax4q2ALDpwzFK2SHJo4nD0HDYawJ8JAXuThJBzA==
+X-Received: by 2002:aa7:9d81:0:b029:19d:ca64:3c62 with SMTP id f1-20020aa79d810000b029019dca643c62mr7922193pfq.16.1610635233734;
+        Thu, 14 Jan 2021 06:40:33 -0800 (PST)
+Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id b7sm5647052pff.96.2021.01.14.06.40.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Jan 2021 06:40:32 -0800 (PST)
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Akira Yokosawa <akiyks@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Subject: [PATCH -rcu] tools/memory-model: Remove reference to atomic_ops.rst
+Message-ID: <28849fc0-1d1e-6e1b-380c-672da2622aec@gmail.com>
+Date:   Thu, 14 Jan 2021 23:40:26 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 08:53:36 +0100
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+From 1d7642add7f74ca307f1bf70569e23edf8b1a023 Mon Sep 17 00:00:00 2001
+From: Akira Yokosawa <akiyks@gmail.com>
+Date: Thu, 14 Jan 2021 23:09:07 +0900
+Subject: [PATCH -rcu] tools/memory-model: Remove reference to atomic_ops.rst
 
-> The whitespacing with some translations are weird,
-> which causes errors like this one:
-> 
-> 	devel/v4l/docs/Documentation/translations/zh_CN/mips/ingenic-tcu.rst:61: WARNING: Malformed table.
-> 	Text in column margin in table line 6.
-> 
-> 	===========         =====
-> 	时钟                drivers/clk/ingenic/tcu.c
-> 	中断                drivers/irqchip/irq-ingenic-tcu.c
-> 	定时器              drivers/clocksource/ingenic-timer.c
-> 	OST                 drivers/clocksource/ingenic-ost.c
-> 	脉冲宽度调制器      drivers/pwm/pwm-jz4740.c
-> 	看门狗              drivers/watchdog/jz4740_wdt.c
-> 	===========         =====
-> 
-> Fix it.
+atomic_ops.rst was removed by commit f0400a77ebdc ("atomic: Delete
+obsolete documentation").
+Remove the broken link in tools/memory-model/Documentation/simple.txt.
 
-This one has already been taken care of.
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+---
+Hi Paul,
 
-Thanks,
+This is relative to dev of -rcu.
 
-jon
+        Thanks, Akira
+--
+ tools/memory-model/Documentation/simple.txt | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/tools/memory-model/Documentation/simple.txt b/tools/memory-model/Documentation/simple.txt
+index 81e1a0ec5342..4c789ec8334f 100644
+--- a/tools/memory-model/Documentation/simple.txt
++++ b/tools/memory-model/Documentation/simple.txt
+@@ -189,7 +189,6 @@ Additional information may be found in these files:
+ 
+ Documentation/atomic_t.txt
+ Documentation/atomic_bitops.txt
+-Documentation/core-api/atomic_ops.rst
+ Documentation/core-api/refcount-vs-atomic.rst
+ 
+ Reading code using these primitives is often also quite helpful.
+-- 
+2.17.1
+
