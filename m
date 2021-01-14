@@ -2,282 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E8D2F6710
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC852F6711
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728203AbhANRL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:11:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43456 "EHLO
+        id S1728358AbhANRLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:11:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726882AbhANRLY (ORCPT
+        with ESMTP id S1727153AbhANRLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:11:24 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF9BC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:10:44 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id l23so3560427pjg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:10:44 -0800 (PST)
+        Thu, 14 Jan 2021 12:11:33 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71DB3C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:11:18 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id a109so5869178otc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:11:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DU6EfVHpfE16ScnT80T7nC0eZHdvi7Kl4iLqwSk34mc=;
-        b=QROHkNd5qoqWTod5o8Dq5RVffd3El5j2vEYnFQLWQ1lsnVzIFk1/61BjwscU07dG8W
-         mCyAMAqf+tXIKiPJDbdCHZL51Sqcu9lMNWG4AAZzeNk8nqgUPWC57LNIPSH4K/xrzLoY
-         /LQ0wLryIOcoZBIua5sy8VagssEhEXULhIWCiaXc7u2YgeiIFaXXt6d3QEIL7RqZ8/Ft
-         dOYKVHCCLDKa7HDz62lbbCAcWq7dj1CYnWDE+NgzpgiV5MWN7lZ7KoO1it4KfxEW7HVd
-         Q/mgKngvFeoxfylcwDVDQk6805gNaM634FUdH0uRYZbMJL9Ui5cuWylngRQESYytyVgB
-         NWvA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NfiPn9PLaQKtUN6T1QDFoz96DhnMF0UCTa6RtqwvtD8=;
+        b=PGJ7IOgGNfDdVkNbift3flxymeO6Z2LGjXmEa0DHJKFbpQHW6fNXVZiOOe6FUhoyw7
+         43wJNtuMpFcpqp6v+Rl7t6Z3SePMNN11KRLrpwZcWwwPwdfOfQgOMdoXp9j/uLC9qkCh
+         pchZ6z0e0SvQNBGB6oSslbbPc2ZOk6Na1QCe+KCTWI2Px+yLgApMaUtLoc+JceSvwhnW
+         ahDI3jEjDQVD7T5his3mMKxwu1Psx66XT3+ZNLzrxT6lzo8eMxumgl5rnDk/e2uRhvGf
+         bS66Yt2sCdUKnSjT0gsG00sYQroUE+xzZEIPWwU48nD1cq3k1ORAGt6ohRaYKSTtQozh
+         W4/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DU6EfVHpfE16ScnT80T7nC0eZHdvi7Kl4iLqwSk34mc=;
-        b=NAcolaklu3+SxQqzbt3mWtAdwJ9HKHv7pXqwwGYshdBGrfeQweEQ+s5wf3LdFZGu8I
-         jSEYYQhox/YbyVn59DKvp1mD8GyEWnw7R4bzVmVOFQxCngXdWDChPfL747RSRU60cif9
-         0OVU52ZB2J2tqvbvP6/h+UgvLKQ9vmK7r/wuOtr3ePPVkeR7FrCEeLxL+YxnCXpzZica
-         XW6VqkK3pGEVkwKo65cHzJ6DlDwYwB2m8cYsEz9sbsg1twAZdJjCNgQumLYDe4BTixhy
-         +KEgSqmwSNF061g22evHRRL9jFPkPeb0ECi+G/qlGQMrZXCd8DswQKDkdlM7kekdGuII
-         Torw==
-X-Gm-Message-State: AOAM533KqdSCsD4RvSmX4sRFggop9KoWxHnZsvc6eZjj9YFpB5ETG1NU
-        qGDcvg/CsoM5zx0AQYSfHEjoXg==
-X-Google-Smtp-Source: ABdhPJzQk+OO/oGn8KF5m19vYRacPibuH5SDOwRIOaTJa6p52eAHnAJV1YPClpqXpZ5WweQZG7jXEQ==
-X-Received: by 2002:a17:90b:338d:: with SMTP id ke13mr5883311pjb.48.1610644243923;
-        Thu, 14 Jan 2021 09:10:43 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id d4sm5718515pfo.127.2021.01.14.09.10.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 09:10:42 -0800 (PST)
-Date:   Thu, 14 Jan 2021 10:10:40 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paul@crapouillou.net" <paul@crapouillou.net>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "patrice.chotard@st.com" <patrice.chotard@st.com>
-Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping vdev regions
-Message-ID: <20210114171040.GA255481@xps15>
-References: <20201229033019.25899-1-peng.fan@nxp.com>
- <20201229033019.25899-8-peng.fan@nxp.com>
- <20210111215023.GJ144935@xps15>
- <DB6PR0402MB2760F6F982C32B6557467C9188AA0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
- <20210112184629.GA186830@xps15>
- <DB6PR0402MB27602E812FD657F7EC81854F88A90@DB6PR0402MB2760.eurprd04.prod.outlook.com>
- <20210113161727.GA213180@xps15>
- <DB6PR0402MB276015A108C846FA77A6E05388A80@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NfiPn9PLaQKtUN6T1QDFoz96DhnMF0UCTa6RtqwvtD8=;
+        b=bca/T86W/yb7M6MVjtlLsTQ4Mm+CfjqjPwYYog7C3cZxqfvqPmfnXUsiwc+SqHU74Z
+         9XkV59T+BLAq8KH5mtF0BpNEyed/jcGjNKLKckA+ZYYtE8OyPY4aciIyNc39y9jCIcEE
+         7T581kFN2AKlnYjjcpJH+BXkmQvEmez5ef8hln2SDCKfvIUPbo+hb3IJkbQ94WM064pe
+         F7lKZMRaLZAoOIt2Z+72lH6CdRl8M5d1aA7FxWOnpIw3x7Z31XIRNm4lKlI9vLH1hdaW
+         b38g801lcDcBIYlLvqv520FtL5qADHw7fB/7/InCTfK4q2SMzlEb70HQaAyMEYRgNY2I
+         XrRA==
+X-Gm-Message-State: AOAM530obc3pM4K91h2DfzDIYTi5bTqMltiUVq6Kn5qpGCOCV2TTEO77
+        wJOWWsN1WvNRtR5IdJUu2OdHxTk52pi7Q6dNVjQ=
+X-Google-Smtp-Source: ABdhPJzoUTQGcSw614Y41hTX+kKqaPEG+iqQ99MRM6XTrh1EXkI6DKDjcxehgC2LC+xMaoLB6U6s71UYy0zTaVLSNF4=
+X-Received: by 2002:a9d:75d4:: with SMTP id c20mr5278877otl.311.1610644277946;
+ Thu, 14 Jan 2021 09:11:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DB6PR0402MB276015A108C846FA77A6E05388A80@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <20210113080752.1003793-1-lee.jones@linaro.org> <20210113080752.1003793-11-lee.jones@linaro.org>
+In-Reply-To: <20210113080752.1003793-11-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 14 Jan 2021 12:11:06 -0500
+Message-ID: <CADnq5_PR-huyKKLFm0Z74SE-CH51cJnDrhWywSJ=3bDicqbRqA@mail.gmail.com>
+Subject: Re: [PATCH 10/30] drm/amd/display/dc/core/dc: Staticise local
+ function 'apply_ctx_interdependent_lock'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 09:52:13AM +0000, Peng Fan wrote:
-> > Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping vdev
-> > regions
-> > 
-> > On Wed, Jan 13, 2021 at 02:19:32AM +0000, Peng Fan wrote:
-> > > > Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping
-> > > > vdev regions
-> > > >
-> > > > On Tue, Jan 12, 2021 at 09:41:12AM +0000, Peng Fan wrote:
-> > > > > > Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore
-> > > > > > mapping vdev regions
-> > > > > >
-> > > > > > On Tue, Dec 29, 2020 at 11:30:18AM +0800, peng.fan@nxp.com
-> > wrote:
-> > > > > > > From: Peng Fan <peng.fan@nxp.com>
-> > > > > > >
-> > > > > > > vdev regions are vdev0vring0, vdev0vring1, vdevbuffer and similar.
-> > > > > > > They are handled by remoteproc common code, no need to map in
-> > > > > > > imx rproc driver.
-> > > > > > >
-> > > > > > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > > > > > > ---
-> > > > > > >  drivers/remoteproc/imx_rproc.c | 3 +++
-> > > > > > >  1 file changed, 3 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/drivers/remoteproc/imx_rproc.c
-> > > > > > > b/drivers/remoteproc/imx_rproc.c index
-> > > > > > > f80428afb8a7..e62a53ee128e
-> > > > > > > 100644
-> > > > > > > --- a/drivers/remoteproc/imx_rproc.c
-> > > > > > > +++ b/drivers/remoteproc/imx_rproc.c
-> > > > > > > @@ -417,6 +417,9 @@ static int imx_rproc_addr_init(struct
-> > > > > > > imx_rproc
-> > > > > > *priv,
-> > > > > > >  		struct resource res;
-> > > > > > >
-> > > > > > >  		node = of_parse_phandle(np, "memory-region", a);
-> > > > > > > +		/* Not map vdev region */
-> > > > > > > +		if (!strcmp(node->name, "vdev"))
-> > > > > > > +			continue;
-> > > > > >
-> > > > > > I am very confused and because I don't see an example for the DT
-> > > > > > in the bindings document I have to guess what is going on.
-> > > > >
-> > > > > V6 will include the DT yaml.
-> > > > >
-> > > > > >
-> > > > > > So I am guessing that you have laid out the memory regions for
-> > > > > > the vrings and the vdev0buffer in the DT "memory-region".
-> > > > >
-> > > > > The dts part will be similar as following:
-> > > > >
-> > > > > +    #include <dt-bindings/clock/imx8mm-clock.h>
-> > > > > +    rsc_table: rsc_table@550ff000 {
-> > > > > +      no-map;
-> > > > > +      reg = <0x550ff000 0x1000>;
-> > > > > +    };
-> > > > > +
-> > > > > +    vdev0vring0: vdev0vring0@55000000 {
-> > > > > +      no-map;
-> > > > > +      reg = <0x55000000 0x8000>;
-> > > > > +    };
-> > > > > +
-> > > > > +    vdev0vring1: vdev0vring1@55008000 {
-> > > > > +      reg = <0x55008000 0x8000>;
-> > > > > +      no-map;
-> > > > > +    };
-> > > > > +
-> > > > > +    vdevbuffer: vdevbuffer@55400000 {
-> > > > > +      compatible = "shared-dma-pool";
-> > > > > +      reg = <0x55400000 0x100000>;
-> > > > > +      no-map;
-> > > > > +    };
-> > > > > +
-> > > > > +    imx8mm-cm4 {
-> > > > > +      compatible = "fsl,imx8mm-cm4";
-> > > > > +      clocks = <&clk IMX8MM_CLK_M4_DIV>;
-> > > > > +      mbox-names = "tx", "rx", "rxdb";
-> > > > > +      mboxes = <&mu 0 1
-> > > > > +                &mu 1 1
-> > > > > +                &mu 3 1>;
-> > > > > +      memory-region = <&vdevbuffer>, <&vdev0vring0>,
-> > > > > + <&vdev0vring1>,
-> > > > <&rsc_table>;
-> > > > > +      syscon = <&src>;
-> > > > > +    };
-> > > > >
-> > > > > >
-> > > > > > For the vrings I don't see the allocation of a carveout, which
-> > > > > > means that you will take the memory out of the DMA pool and the
-> > > > > > reserve memory will be wasted.
-> > > > >
-> > > > > imx_rproc_parse_memory_regions will alloc carveout.
-> > > >
-> > > > They _will_ but for now they don't and as such there a discrepancy
-> > > > between the bindings and the code that was published in V6.  At this
-> > > > point you can either drop the vrings in the DT or send another
-> > > > revision with the carveouts allocated.  I would definitely prefer
-> > > > the latter because it wouldn't involve yet another modification of the
-> > bindings.
-> > >
-> > > You mean I drop patch v5 7/8 and send v7, right?
-> > >
-> > 
-> > If you do that than the implementation won't reflect the bindings.
-> > 
-> > > Or are there other changes that I need to do?
-> > 
-> > If you want to keep the bindings the same way you have them in V6,
-> > carveouts are required in the implementation.
-> 
-> ok. Could you share more info about carveouts are required?
-> imx_rproc_parse_memory_regions in my pachset already have
-> rproc_add_carveout. I am not clear what else needs to be done.
+On Wed, Jan 13, 2021 at 3:08 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:806:6: warning: no pr=
+evious prototype for =E2=80=98apply_ctx_interdependent_lock=E2=80=99 [-Wmis=
+sing-prototypes]
+>
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Ah yes, I see now.  In your answer above you wrote
-"imx_rproc_parse_memory_regions will alloc carveout", which I interpreted as
-"will do so in a future patchset".
+Applied.  Thanks!
 
-I will review V6 - no need to change anything at this time.
+Alex
 
-> 
-> Thanks,
-> Peng.
-> 
-> > 
-> > >
-> > > Thanks,
-> > > Peng.
-> > >
-> > > >
-> > > > >
-> > > > > >
-> > > > > > For the vdev0buffer, what you have will work *only* if that
-> > > > > > entry is the first one in the list of memory regions, as we agreed here
-> > [2].
-> > > > >
-> > > > > Yes. I agree and follow this rule from then.
-> > > > >
-> > > > > Thanks,
-> > > > > Peng.
-> > > > >
-> > > > > >
-> > > > > > [1].
-> > > > > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%
-> > > > > > 2Fel
-> > > > > > ixir.b
-> > > > > >
-> > > >
-> > ootlin.com%2Flinux%2Fv5.11-rc3%2Fsource%2Fdrivers%2Fremoteproc%2Fre
-> > > > > >
-> > > >
-> > moteproc_core.c%23L321&amp;data=04%7C01%7Cpeng.fan%40nxp.com%7
-> > > > > >
-> > > >
-> > C581784529b1646b9d34b08d8b67ae8c7%7C686ea1d3bc2b4c6fa92cd99c5c
-> > > > > >
-> > > >
-> > 301635%7C0%7C0%7C637459986311799770%7CUnknown%7CTWFpbGZsb3
-> > > > > >
-> > > >
-> > d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0
-> > > > > > %3D%7C1000&amp;sdata=Qur6YiTWlak0ZRnrUZRzawfoO38EBrAItqZ
-> > m66
-> > > > b4
-> > > > > > m20%3D&amp;reserved=0
-> > > > > > [2].
-> > > > > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%
-> > > > > > 2Fpa
-> > > > > > tch
-> > > > > >
-> > > >
-> > work.kernel.org%2Fproject%2Flinux-remoteproc%2Fpatch%2F202007221315
-> > > > > >
-> > > >
-> > 43.7024-1-peng.fan%40nxp.com%2F&amp;data=04%7C01%7Cpeng.fan%40n
-> > > > > >
-> > > >
-> > xp.com%7C581784529b1646b9d34b08d8b67ae8c7%7C686ea1d3bc2b4c6fa9
-> > > > > >
-> > > >
-> > 2cd99c5c301635%7C0%7C0%7C637459986311799770%7CUnknown%7CTW
-> > > > > >
-> > > >
-> > FpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJX
-> > > > > >
-> > > >
-> > VCI6Mn0%3D%7C1000&amp;sdata=b%2F8muWtb3yxKIsnXmKmRGYYV33%2
-> > > > > > FHjwA6a8x58geY7eE%3D&amp;reserved=0
-> > > > > >
-> > > > > > >  		err = of_address_to_resource(node, 0, &res);
-> > > > > > >  		if (err) {
-> > > > > > >  			dev_err(dev, "unable to resolve memory region\n");
-> > > > > > > --
-> > > > > > > 2.28.0
-> > > > > > >
+> ---
+>  drivers/gpu/drm/amd/display/dc/core/dc.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/a=
+md/display/dc/core/dc.c
+> index 8f1cadb823c71..0a07e608485ff 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
+> @@ -803,7 +803,8 @@ static void disable_all_writeback_pipes_for_stream(
+>                 stream->writeback_info[i].wb_enabled =3D false;
+>  }
+>
+> -void apply_ctx_interdependent_lock(struct dc *dc, struct dc_state *conte=
+xt, struct dc_stream_state *stream, bool lock)
+> +static void apply_ctx_interdependent_lock(struct dc *dc, struct dc_state=
+ *context,
+> +                                         struct dc_stream_state *stream,=
+ bool lock)
+>  {
+>         int i =3D 0;
+>
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
