@@ -2,141 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E59F2F65FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 076982F6607
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:35:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727553AbhANQbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:31:13 -0500
-Received: from foss.arm.com ([217.140.110.172]:52544 "EHLO foss.arm.com"
+        id S1726969AbhANQdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:33:42 -0500
+Received: from mga03.intel.com ([134.134.136.65]:49402 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726150AbhANQbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:31:12 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BCEAEED1;
-        Thu, 14 Jan 2021 08:30:26 -0800 (PST)
-Received: from [10.57.56.43] (unknown [10.57.56.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D6C63F70D;
-        Thu, 14 Jan 2021 08:30:25 -0800 (PST)
-Subject: Re: [PATCH] iommu/arm-smmu-v3: Handle duplicated Stream IDs from
- other masters
-To:     Ajay Kumar <ajaykumar.rs1989@gmail.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Ajay Kumar <ajaykumar.rs@samsung.com>, mark.rutland@arm.com,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <CGME20210107092826epcas5p100f2c57a63715baa2b3fa7219ab58c7b@epcas5p1.samsung.com>
- <20210107093340.15279-1-ajaykumar.rs@samsung.com>
- <20210107130319.GA2986@willie-the-truck>
- <5e047da1-6619-c716-927c-ae07a90f1597@arm.com>
- <CADe9J7Er0wnP5ZZbWM1CkUx7ry0znKr05Lvx7PEMdHuwKr_RZQ@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <a47fbbc0-e904-006b-9bc4-92eca915f76b@arm.com>
-Date:   Thu, 14 Jan 2021 16:30:24 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+        id S1725918AbhANQdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 11:33:41 -0500
+IronPort-SDR: IkwCFRfwR6N+FbypxKHUjRSCai+G9CcP8N4JNozIBljlp40EG6/C6LkJvlwSLVrtIzMbCaMcUG
+ xxwqe6xQMZtQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="178487074"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="178487074"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 08:31:37 -0800
+IronPort-SDR: PhuSSOl3/L9Bq54Qe1iplCPK7ViqzicEJw3Gq44LLukvBow7XrPZ65TRX0CXd71PWkXBCGQ3qz
+ tp3x7Qw/JHOA==
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="353960982"
+Received: from aantonov-mobl.ccr.corp.intel.com (HELO [10.249.226.96]) ([10.249.226.96])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 08:31:28 -0800
+Subject: Re: [PATCH v2 3/6] perf stat: Basic support for iiostat in perf
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20201223130320.3930-1-alexander.antonov@linux.intel.com>
+ <20201223130320.3930-4-alexander.antonov@linux.intel.com>
+ <CAM9d7ciA3MzvzobN=_NEChKwet+RzHUu3gf+KTzdXcvTmiChLw@mail.gmail.com>
+ <64c262e4-fc97-c200-6983-81d966e922e0@linux.intel.com>
+ <CAM9d7ci5qSnm1V4VCpdZn+b5uPajs27uAV+J-+W2QHPCbCohTQ@mail.gmail.com>
+From:   Alexander Antonov <alexander.antonov@linux.intel.com>
+Message-ID: <c8b59d48-7307-8298-8f8b-367a48d72c69@linux.intel.com>
+Date:   Thu, 14 Jan 2021 19:30:44 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <CADe9J7Er0wnP5ZZbWM1CkUx7ry0znKr05Lvx7PEMdHuwKr_RZQ@mail.gmail.com>
+In-Reply-To: <CAM9d7ci5qSnm1V4VCpdZn+b5uPajs27uAV+J-+W2QHPCbCohTQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-12 20:29, Ajay Kumar wrote:
-> On Tue, Jan 12, 2021 at 12:57 AM Robin Murphy <robin.murphy@arm.com> wrote:
+
+On 1/14/2021 6:34 AM, Namhyung Kim wrote:
+> Hello,
+>
+> On Wed, Jan 13, 2021 at 8:34 PM Alexander Antonov
+> <alexander.antonov@linux.intel.com> wrote:
 >>
->> On 2021-01-07 13:03, Will Deacon wrote:
->>> On Thu, Jan 07, 2021 at 03:03:40PM +0530, Ajay Kumar wrote:
->>>> When PCI function drivers(ex:pci-endpoint-test) are probed for already
->>>> initialized PCIe-RC(Root Complex), and PCIe-RC is already bound to SMMU,
->>>> then we encounter a situation where the function driver tries to attach
->>>> itself to the smmu with the same stream-id as PCIe-RC and re-initialize
->>>> an already initialized STE. This causes ste_live BUG_ON() in the driver.
->>
->> Note that this is actually expected behaviour, since Stream ID aliasing
->> has remained officially not supported until a sufficiently compelling
->> reason to do so appears. I always thought the most likely scenario would
->> be a legacy PCI bridge with multiple devices behind it, but even that
->> seems increasingly improbable for a modern SMMUv3-based system to ever see.
-> Thanks to Will and Robin for reviewing this. I am pretty new to PCI,
-> sorry about that.
-> I assumed that the support for stream-id alias is already handled as
-> part of this patch:
-> https://www.spinics.net/lists/arm-kernel/msg626087.html
-> which prevents STE re-initialization. But, what I do not understand is
-> why the path
-> taken by the arm-smmu-v3 driver misses the aforementioned check for my usecase.
+>> On 1/6/2021 11:56 AM, Namhyung Kim wrote:
+>>> On Wed, Dec 23, 2020 at 10:03 PM Alexander Antonov
+>>> <alexander.antonov@linux.intel.com> wrote:
+>>>> Add basic flow for a new iiostat mode in perf. Mode is intended to
+>>>> provide four I/O performance metrics per each IIO stack: Inbound Read,
+>>>> Inbound Write, Outbound Read, Outbound Write.
+>>> It seems like a generic analysis and other archs can extend it later..
+>>> Then we can make it a bit more general.. at least, names? :)
+>> I'm not sure that I fully understand you. Do you mean to rename metrics?
+>> The mode is intended to provide PCIe metrics which are appliable for
+>> other archs
+>> as well.
+>> Actually, I suppose we can rename 'iiostat' to 'pciestat' or something
+>> like this
+>> to make it a bit more general because the name 'IIO' (Integrated I/O
+>> stack) is
+>> Intel specific and it can be named in different way on other platforms.
+>> In this
+>> case the code has to be updated in the same way as well.
+> Maybe just 'iostat' ?
+Yeah, it looks better :)
 
-That case is where a single device, due to combinations of PCI DMA 
-aliasing conditions, has multiple IDs of its own, and two or more of 
-those IDs also happen to end up the same as each other. What you have is 
-two distinct devices both claiming the same ID, since apparently they 
-both represent the same underlying physical device (I don't know how the 
-endpoint and pcieport drivers interoperate and/or coexist, but I can 
-easily imagine that some liberties may be taken that the IOMMU layer 
-doesn't really anticipate).
-
->>> I don't understand why the endpoint is using the same stream ID as the root
->>> complex in this case. Why is that? Is the grouping logic not working
->>> properly?
->>
->> It's not so much that it isn't working properly, it's more that it needs
->> to be implemented at all ;)
-> The pci_endpoint_test picks up the same of_ DMA config node as the PCI RC
-> because they sit on the same PCI bus [via pci_dma_configure( )]
-> While in the arm-smmu-v3 driver, I can see that the pci_device_group( ) hands
-> over the same iommu group as the Root Complex to the newly added master
-> device (pci_endpoint_test in our case) because they share the same stream ID.
-> Shouldn't they?
-
-I'd imagine it's most likely that the PCI grouping rules are just 
-putting everything together due to a lack of ACS. Either way, I'm pretty 
-sure the PCI logic *doesn't* consider actual PCI devices having 
-overlapping Requester IDs, because that isn't a real thing (how would 
-config accesses work?). You can consider yourself lucky that the devices 
-do happen to be grouped already in your particular case, but that 
-doesn't change the fact that there's basically no point in trying to 
-handle Stream ID aliasing within groups without properly implementing 
-the grouping-by-Stream-ID logic in the first place (note that even 
-distinct ACS-isolated PCI endpoints could still alias beyond the host 
-bridge at the SMMU input if the system's translation from Requester ID 
-space to Stream ID space isn't 1:1)
-
->>>> There is an already existing check in the driver to manage duplicated ids
->>>> if duplicated ids are added in same master device, but there can be
->>>> scenarios like above where we need to extend the check for other masters
->>>> using the same stream-id.
+>
+>>>> The actual code to compute the metrics and attribute it to
+>>>> evsel::perf_device is in follow-on patches.
 >>>>
->>>> Signed-off-by: Ajay Kumar <ajaykumar.rs@samsung.com>
+>>>> Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
 >>>> ---
->>>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 33 +++++++++++++++++++++
->>>>    1 file changed, 33 insertions(+)
+>>>>    tools/perf/builtin-stat.c      | 33 ++++++++++++++++++++++++++++-
+>>>>    tools/perf/util/iiostat.h      | 33 +++++++++++++++++++++++++++++
+>>>>    tools/perf/util/stat-display.c | 38 +++++++++++++++++++++++++++++++++-
+>>>>    tools/perf/util/stat-shadow.c  | 11 +++++++++-
+>>>>    tools/perf/util/stat.h         |  1 +
+>>>>    5 files changed, 113 insertions(+), 3 deletions(-)
+>>>>    create mode 100644 tools/perf/util/iiostat.h
+>>>>
+>>>> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+>>>> index 72f9d0aa3f96..14c3da136927 100644
+>>>> --- a/tools/perf/builtin-stat.c
+>>>> +++ b/tools/perf/builtin-stat.c
+>>>> @@ -67,6 +67,7 @@
+>>>>    #include "util/top.h"
+>>>>    #include "util/affinity.h"
+>>>>    #include "util/pfm.h"
+>>>> +#include "util/iiostat.h"
+>>>>    #include "asm/bug.h"
+>>>>
+>>>>    #include <linux/time64.h>
+>>>> @@ -198,7 +199,8 @@ static struct perf_stat_config stat_config = {
+>>>>           .walltime_nsecs_stats   = &walltime_nsecs_stats,
+>>>>           .big_num                = true,
+>>>>           .ctl_fd                 = -1,
+>>>> -       .ctl_fd_ack             = -1
+>>>> +       .ctl_fd_ack             = -1,
+>>>> +       .iiostat_run            = false,
+>>>>    };
+>>>>
+>>>>    static bool cpus_map_matched(struct evsel *a, struct evsel *b)
+>>>> @@ -1073,6 +1075,14 @@ static int parse_stat_cgroups(const struct option *opt,
+>>>>           return parse_cgroups(opt, str, unset);
+>>>>    }
+>>>>
+>>>> +__weak int iiostat_parse(const struct option *opt __maybe_unused,
+>>>> +                        const char *str __maybe_unused,
+>>>> +                        int unset __maybe_unused)
+>>>> +{
+>>>> +       pr_err("iiostat mode is not supported\n");
+>>>> +       return -1;
+>>>> +}
+>>>> +
+>>>>    static struct option stat_options[] = {
+>>>>           OPT_BOOLEAN('T', "transaction", &transaction_run,
+>>>>                       "hardware transaction statistics"),
+>>>> @@ -1185,6 +1195,8 @@ static struct option stat_options[] = {
+>>>>                        "\t\t\t  Optionally send control command completion ('ack\\n') to ack-fd descriptor.\n"
+>>>>                        "\t\t\t  Alternatively, ctl-fifo / ack-fifo will be opened and used as ctl-fd / ack-fd.",
+>>>>                         parse_control_option),
+>>>> +       OPT_CALLBACK_OPTARG(0, "iiostat", &evsel_list, &stat_config, "root port",
+>>>> +                           "measure PCIe metrics per IIO stack", iiostat_parse),
+>>>>           OPT_END()
+>>>>    };
+>>>>
+>>>> @@ -1509,6 +1521,12 @@ static int perf_stat_init_aggr_mode_file(struct perf_stat *st)
+>>>>           return 0;
+>>>>    }
+>>>>
+>>>> +__weak int iiostat_show_root_ports(struct evlist *evlist __maybe_unused,
+>>>> +                                  struct perf_stat_config *config __maybe_unused)
+>>>> +{
+>>>> +       return 0;
+>>>> +}
+>>> I think it's too specific, maybe iiostat_prepare() ?
+>> What do you think about iiostat_show_root_ports() -> iiostat_show()?
+> I'm ok with it, I thought it needs some initialization work there.
+>
+>>>> +
+>>>>    /*
+>>>>     * Add default attributes, if there were no attributes specified or
+>>>>     * if -d/--detailed, -d -d or -d -d -d is used:
+>>>> @@ -2054,6 +2072,10 @@ static void setup_system_wide(int forks)
+>>>>           }
+>>>>    }
+>>>>
+>>>> +__weak void iiostat_delete_root_ports(struct evlist *evlist __maybe_unused)
+>>>> +{
+>>>> +}
+>>> Same here..
+>> I suggest to rename iiostat_delete_root_ports() -> iiostat_release().
+>> What do you think?
+> Looks good.
+>
+>>>> +
+>>>>    int cmd_stat(int argc, const char **argv)
+>>>>    {
+>>>>           const char * const stat_usage[] = {
+>>>> @@ -2230,6 +2252,12 @@ int cmd_stat(int argc, const char **argv)
+>>>>                   goto out;
+>>>>           }
+>>>>
+>>>> +       if (stat_config.iiostat_run) {
+>>>> +               status = iiostat_show_root_ports(evsel_list, &stat_config);
+>>>> +               if (status || !stat_config.iiostat_run)
+>>>> +                       goto out;
+>>>> +       }
+>>>> +
+>>>>           if (add_default_attributes())
+>>>>                   goto out;
+>>>>
+> [SNIP]
+>>>> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+>>>> index 3bfcdb80443a..9eb8484e8b90 100644
+>>>> --- a/tools/perf/util/stat-display.c
+>>>> +++ b/tools/perf/util/stat-display.c
+>>>> @@ -17,6 +17,7 @@
+>>>>    #include "cgroup.h"
+>>>>    #include <api/fs/fs.h>
+>>>>    #include "util.h"
+>>>> +#include "iiostat.h"
+>>>>
+>>>>    #define CNTR_NOT_SUPPORTED     "<not supported>"
+>>>>    #define CNTR_NOT_COUNTED       "<not counted>"
+>>>> @@ -310,6 +311,12 @@ static void print_metric_header(struct perf_stat_config *config,
+>>>>           struct outstate *os = ctx;
+>>>>           char tbuf[1024];
+>>>>
+>>>> +       /* In case of iiostat, print metric header for first perf_device only */
+>>>> +       if (os->evsel->perf_device && os->evsel->evlist->selected->perf_device &&
+>>>> +           config->iiostat_run &&
+>>> When is the perf_device set?  Is it possible to be NULL in the iiostat mode?
 >>>
->>> It doesn't feel like the driver is the right place to fix this, as the same
->>> issue could surely occur for other IOMMUs too, right? In which case, I think
->>> we should avoid getting into the situation where different groups have
->>> overlapping stream IDs.
+>> The perf_device field is initialized inside iiostat.c::iiostat_event_group()
+>> and it cannot be NULL.
+>> The idea is to attribute events to PCIe ports through perf_device field.
 >>
->> Yes, this patch does not represent the correct thing to do either way.
->> The main reason that Stream ID aliasing hasn't been supported so far is
->> that the required Stream ID to group lookup is rather awkward, and
->> adding all of that complexity just for the sake of a rather unlikely
->> possibility seemed dubious. However, PRI support has always had a more
->> pressing need to implement almost the same thing (Stream ID to device),
->> so once that lands we can finally get round to adding the rest of proper
->> group support relatively easily.
-> I hope the support will be added soon. Also, can you point me to few drivers
-> which already handle this type of stream-ID aliasing?
+> If it's guaranteed non-NULL, we can check config->iiostat_run only and make
+> the condition simpler.
+>
+> Thanks,
+> Namhyung
+>
+I will update it in the next version of patchset.
 
-We handle it in the SMMUv2 driver - the way that architecture does 
-stream mapping makes it really easy to hang group pointers off the S2CRs 
-and have arm_smmu_master_alloc_smes() and arm_smmu_device_group() work 
-nicely together. Unfortunately it's not feasible to take the same 
-approach for SMMUv3, since the Stream Table there may be up to 2^32 
-entries (vs. up to 128 S2CRs), and there just isn't enough room to 
-encode a group pointer directly in an STE itself (you don't want to 
-imagine how much time I've spent trying to think up schemes for that...)
-
-Robin.
+Thanks,
+Alexander
+>
+>>>> +           os->evsel->perf_device != os->evsel->evlist->selected->perf_device)
+>>>> +               return;
+>>>> +
+>>>>           if (!valid_only_metric(unit))
+>>>>                   return;
+>>>>           unit = fixunit(tbuf, os->evsel, unit);
