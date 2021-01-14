@@ -2,176 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B91322F5C34
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D792F5C39
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbhANIJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 03:09:55 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:53295 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727721AbhANIJy (ORCPT
+        id S1727984AbhANIKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 03:10:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726742AbhANIKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 03:09:54 -0500
-X-Originating-IP: 93.61.96.190
-Received: from uno.localdomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 9F3A2C0025;
-        Thu, 14 Jan 2021 08:09:09 +0000 (UTC)
-Date:   Thu, 14 Jan 2021 09:09:27 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        sergei.shtylyov@gmail.com
-Subject: Re: [PATCH v6 5/5] media: i2c: max9286: Configure reverse channel
- amplitude
-Message-ID: <20210114080927.idz5v472ex25p5r4@uno.localdomain>
-References: <20201215170957.92761-1-jacopo+renesas@jmondi.org>
- <20201215170957.92761-6-jacopo+renesas@jmondi.org>
- <X9pCSfxE722rnPHE@pendragon.ideasonboard.com>
- <20210111104311.e6nyxhzhvlyjjxxw@uno.localdomain>
- <X/wvc26LXz2VsCkp@pendragon.ideasonboard.com>
- <20210111112023.brrhxgfedo5fer53@uno.localdomain>
- <X/0triYZZJiXaf07@pendragon.ideasonboard.com>
- <20210112090805.myglp2lpozo3blq5@uno.localdomain>
- <X//cYHkyELaH4XHb@pendragon.ideasonboard.com>
+        Thu, 14 Jan 2021 03:10:21 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F654C061786;
+        Thu, 14 Jan 2021 00:09:41 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id d9so9512119iob.6;
+        Thu, 14 Jan 2021 00:09:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=yJph4w0lqPRbllahTQ9qs1P5veXDXR9nP72ddW4htp4=;
+        b=KPjP628f24AwBIV1SfEzodWxdvXH+6+KTbCR6QfDh7pMLn2IGHbmDHici+WXacM5BV
+         P+wVpQhTMBKQXczvqoYxrH322L+YXsieDz+4FT5MyYnHLZeSaBT9gYQt5nXDhcE5COAx
+         t7gnEpRWflK/udSLJoeSSNLll4hOfX7TbEeoiu31bIRFYU+Jd6KIZyBiNAfNib4AzcBG
+         6cyAO6XahYXb4xBrljK5fkCeM9BYOPLAzB88FSeuEHLwWLcelg8cGLQkW7NBQd0931P+
+         Kqk54BfEtl26Wk1bgFdsrK3Vl4OONzDM99fRN6PtlOD5w8Qga5ETuQnMQhTs9jrxsI2f
+         MgGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=yJph4w0lqPRbllahTQ9qs1P5veXDXR9nP72ddW4htp4=;
+        b=pNf8v2z6HFcazOmv7J08a9FcslewQ72p0NdZi7zvPy6zPah6W2cIOEUR6y/uqg1MPs
+         VkZ7/ZYnvVdwTTE4jbf+wID6+W0epzvqh7bMRNATrlUOK9zuYuEXsb6bD8AmuOCOBdx5
+         JsWE6F7X4PO3dF351IG2/IHTfkamYYar2VOSYvisOLrCbFR47AOJxqfvTLTUSl3thh22
+         CIM63BuxKZoNGnChdGPns3c3rSvzQCPRvKjvO/31LM3aMmZ+R25UwFVi8vs0GhKz88kA
+         XrG5/Vt1FKoiPU4qN0N6l3HkCZ5/CujEjqToZ9xmer/nZathmnrkhB0bqER7RwsHWEA0
+         qEXw==
+X-Gm-Message-State: AOAM532PxU4escenWJXWPJMt4HMSAIM376hJHC9OIeO9nuQ6d3JMCQdn
+        9N5KbBLxm3KER8UphFMYf8AANis6519EHEJtNGdz91AaG7I=
+X-Google-Smtp-Source: ABdhPJxRQ8ZDtfgKfpmPeJik+sWpL6jJo0tSNodYWGS6OPH3+aco2htCjWmUT/IOXPHx8uRPXIrf74sG1+/9K+rPHN8=
+X-Received: by 2002:a05:6602:2f93:: with SMTP id u19mr4461318iow.110.1610611780953;
+ Thu, 14 Jan 2021 00:09:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <X//cYHkyELaH4XHb@pendragon.ideasonboard.com>
+References: <20210114042420.229524-1-masahiroy@kernel.org> <CAHFW8PRr6kjEE=7BSzWo7itSZgAhy_dhmnSe1yq5wMfDwEyJ9g@mail.gmail.com>
+In-Reply-To: <CAHFW8PRr6kjEE=7BSzWo7itSZgAhy_dhmnSe1yq5wMfDwEyJ9g@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 14 Jan 2021 09:09:29 +0100
+Message-ID: <CA+icZUWBUiM2XgGW6Q_KHT1d=1M5nsu2rRaf--xhTR90u2tjeQ@mail.gmail.com>
+Subject: Re: [PATCH v2] kbuild: check the minimum compiler version in Kconfig
+To:     Ilie Halip <ilie.halip@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
-
-On Thu, Jan 14, 2021 at 07:53:36AM +0200, Laurent Pinchart wrote:
-> Hi Jacopo,
+On Thu, Jan 14, 2021 at 8:55 AM Ilie Halip <ilie.halip@gmail.com> wrote:
 >
-> >
-> > All in all:
-> > - yes, I think there might be a need to control the noise immunity
-> >   settings after initialization
-> > - I think it should be done on the serializer side, possibly with a DT
-> >   property, possibly something like a boolean 'maxim,high-threshold-enable'
-> > - the deserializer can query that information with a kAPI like
-> >   get_mbus_config() after the remote has probed
-> > - Because of that there is no need for an additional deserializer property
-> >
-> > Hope this makes sense
+> Hi Masahiro,
 >
-> Now I get what you meant. Sorry for missing the point.
+> > +       #elif defined(__INTEL_COMPILER)
+> > +       /* How to get the version of intel compiler? */
+> > +       ICC     0               0               0
 >
-> While it would be technically feasible to query the property from the
-> serializer at runtime, there's the additional issue that the
-> deserializer has a single reverse channel amplitude setting for all the
-> channels. We would need to ensure that the property is set to the same
-> value in all camera DT nodes. Wouldn't it be best to then set it once
-> only, in the deserializer node ?
+> According to Intel documentation[1], this should do the trick:
+>
+>     ICC     __INTEL_COMPILER  __INTEL_COMPILER_UPDATE
+> __INTEL_COMPILER_BUILD_DATE
+>
+> I don't have the compiler installed, but I tested this on godbolt[2] and
+> looks fine to me. What do you think?
 >
 
-To be honest I wouldn't mind a run-time error, or a fallback like "the
-first one to probe is the authoritative one, the rest have to follow".
-And don't forget we would need a serializer property anyway to tell
-the chip if it has to enable its noise immunity threshold or not.
+I remember at university I used ICC successfully with building a Linux-kernel.
+Anyone has used ICC recently?
 
-But anyway, the here introduced new property already requires
-knwoledge on the deserializer about which camera is connected on the
-other side. It's not so bad, as if cameras are described in a .dtsi or
-.dtbo the deserializer property can be overridden. We can do the same
-for an additional property.
+I cannot remember to have seen any bug-reports regarding ICC to
+linux-kernel or linux-kbuild mailing-lists.
 
-ie. a deserializer-serializer 'maxim,high-threshold-enable' property
+- Sedat -
 
-RDACM20: pre-programmed high threshold enable
-
--------------- rdacm20.dtsi -------------------
-&gmsl {
-        maxim,reverse-channel-microvolt = <170000>;
-
-        i2c-mux {
-                i2c@0 {
-                        camera@51 {
-                                ....
-
-                        }
-
-                }
-
-        }
-};
--------------------------------------------------
-
-RDACM21: no pre-programmed high-threshold, high threshold enabled
-after camera probe
-
--------------- rdacm21.dtsi -------------------
-&gmsl {
-        maxim,reverse-channel-microvolt = <100000>;
-        maxim,high-threshold-enable;
-
-        i2c-mux {
-                i2c@0 {
-                        camera@51 {
-                                maxim,high-threshold-enable;
-                                ....
-
-                        }
-
-                }
-
-        }
-};
--------------------------------------------------
-
-RDACM21: no high-threshold enabled at all
-
--------------- rdacm21.dtsi -------------------
-&gmsl {
-        maxim,reverse-channel-microvolt = <100000>;
-
-        i2c-mux {
-                i2c@0 {
-                        camera@51 {
-                                ....
-
-                        }
-
-                }
-
-        }
-};
--------------------------------------------------
-
-For the serializer it's a boolean, for the deser we might need to
-specify a voltage, so it might become an uint32
-'maxim,high-threshold-microvolt' there.
-
--------------- rdacm21.dtsi -------------------
-&gmsl {
-        maxim,reverse-channel-microvolt = <100000>;
-        maxim,high-threshold-microvolt = <170000>;
-
-        i2c-mux {
-                i2c@0 {
-                        camera@51 {
-                                maxim,high-threshold-enable;
-                                ....
-
-                        }
-
-                }
-
-        }
-};
--------------------------------------------------
-
+> [1] https://software.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference/top/compiler-reference/macros/additional-predefined-macros.html
+> [2] https://godbolt.org/z/E5PE6f
+>
+> I.H.
+>
 > --
-> Regards,
->
-> Laurent Pinchart
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAHFW8PRr6kjEE%3D7BSzWo7itSZgAhy_dhmnSe1yq5wMfDwEyJ9g%40mail.gmail.com.
