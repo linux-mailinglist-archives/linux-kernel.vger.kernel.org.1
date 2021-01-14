@@ -2,220 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDED2F6D58
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AACBA2F6D5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729586AbhANViU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 16:38:20 -0500
-Received: from mail-bn8nam12on2069.outbound.protection.outlook.com ([40.107.237.69]:4193
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726921AbhANViO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 16:38:14 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ipsO/gfQFdpCKf+G4rAW48P2aCAB1Gm90U+kRNIMglMAtQeUY0WDvKRoACqt0Azb6ZzMF7F+4HYKYhsWwQu7CC1AWf7JU8TiMChKmw3g1gxgSBVPxl3FhRk4oZJu8wey64/PmZ39i0ePLdOHzim7S6RjHEPD10vbzazQ5MlfTP4pOXikiB+4dXd7Yi4eVKlR6kzDZeO4KdsSvos5sDI/ua/ud8hMwaRWqp1IB1NVgmGyNnUEwt/yMVWGsHiUZWlgW8L74iDYUthN4RjZOcbZo9oPMvTymBd4BVo/xECrpKKuMmoe8ENJhkqtWnQCId1YO9D+Cz0e2pIdQ8LYTFVG9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qzYa0YsO0fYuUTOHTaf5pvaK00/JrAvwgy9dtI/AGA8=;
- b=KUk6u0t6U0+fynAPnACTM16LegjOCjcrKdgPTg1HN8V+QDhqt2YpGV4ewgSkeSSexOnDiMmLd9esO8Nf107Dlv7PURaJaLKSzQ8J1GWuEo1bp6A2wlcZ/Rs4AuqrkO8TUcROzw6tz9U/95Qtg0PI2ZxE82cBx3LePnNXAv6aNAg9rkDlqbR934YOEXcHtFyHLPu7w0tS89/eth2ukFyfKR+NUWTcv98OC1yePWktbIK74Yk/sqVleoz3v8NfbjuaWjArvo6kpSWuwoeDYJEEjffxyKF6RWLWvNZe4QhFvmFi/dkBn1JQu340cJLuP+DV8Wk6fDX8uipNETdHr9LvKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qzYa0YsO0fYuUTOHTaf5pvaK00/JrAvwgy9dtI/AGA8=;
- b=Yk1FgsbVYe8yjBpT1WIz5gU0eWg940eYghYWxdOTGBvjwHu3poMKpYjxFcfAluj01Xtr1xLmW+S/njetcqCLfB0sP7h9ZG9Sby3DkH0D557ddxZrWY4XlKOAxzyHfY+UXYc5kwhdRb2R58SY4SFVH8UlcgSbg7A4krrwbi62EAo=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SA0PR12MB4573.namprd12.prod.outlook.com (2603:10b6:806:9c::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Thu, 14 Jan
- 2021 21:37:21 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::18a2:699:70b3:2b8a]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::18a2:699:70b3:2b8a%6]) with mapi id 15.20.3742.012; Thu, 14 Jan 2021
- 21:37:21 +0000
-Cc:     brijesh.singh@amd.com, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH v2 11/14] KVM: SVM: Move SEV VMCB tracking allocation to
- sev.c
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210114003708.3798992-1-seanjc@google.com>
- <20210114003708.3798992-12-seanjc@google.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <10d43bb0-e19d-6d53-20f7-fa73983adb4a@amd.com>
-Date:   Thu, 14 Jan 2021 15:37:19 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
-In-Reply-To: <20210114003708.3798992-12-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [70.112.153.56]
-X-ClientProxiedBy: SA0PR11CA0076.namprd11.prod.outlook.com
- (2603:10b6:806:d2::21) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+        id S1730161AbhANViv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 16:38:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728533AbhANVis (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 16:38:48 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451E2C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:38:08 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id x126so4149417pfc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:38:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=M25f2Urs67ewtW9Uctz0Ma+cdGhcJesg41jWdEvlv+A=;
+        b=uqmdvUhePZHvP+/tQJW6RM3qU8CZvdbDhob1c2l0dpQjwtQecqMjOumtUyjdUNBKCm
+         IIBgLOuSPwwjDKTn+AuU/brQuU9JQK3X7iaD4rGlVnyk3okjqE3ydvwkI85MsVoGs3or
+         ua7PXg6Vvj5+qBChVRxteAzc98FwM0YG/21w9V9Naq9y6ODjy8aLxPp5ES4YwVb5om9H
+         SXmdAbHIjeUYLha7KX7HntlGiDcZhbNufugBp7jVoy/VXZKQl1xzZGrXf6KbwcA6396D
+         twI9GzCdChg1W3bOXIBfIE0mFhT/6NK/MufyeCEVGGxCSs3cZ0YKugzZp8YYQ2xMyMg8
+         mlqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M25f2Urs67ewtW9Uctz0Ma+cdGhcJesg41jWdEvlv+A=;
+        b=j0bkpuAwZJtPrAsDfDGOYx9hv5kgw9oh2BaY3j6PnrtOIfHWCzWVr4E3JOVyORjBks
+         a7t2ynezzKnB3elyPEnLdw0jdG5ImLtNgWHqnHedIaRH6lR8VTFd8+mekLNM9xfeJ8q9
+         y6gmTQNhUhkH/7NKccAqGFcwJurT7JMa3dVWa7F0GhBMl9ZIYffCVjpatcQYjqBAx5bz
+         yOe7aEpJPmKrPe4h8Sa7pD45+WrVXYEMMoTzMAGIqwatlIfzAyx5NLIN2itsKwNaApK7
+         OenrybmlMG1kvnFS1R3h7AOyuQHI9XV46ir/lXpzHiAOoa58x1NC799Y1L4X0OE+IYXL
+         Zv3Q==
+X-Gm-Message-State: AOAM5338vE+o+aGwig8tOxxTrSTWJazRiNq2cfrcc4kalPSFZTEpJoZe
+        jYd6p67AyZYhnL1WJ8Fe2oqjWw==
+X-Google-Smtp-Source: ABdhPJz7n2VtVsCkeQX6jnx37nrN+RCln1qBV28twX8SpfYzHQdWewvxVNpSLVG13Q2MdhLhvOrskw==
+X-Received: by 2002:a63:dc56:: with SMTP id f22mr3631737pgj.106.1610660287861;
+        Thu, 14 Jan 2021 13:38:07 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id b22sm5955823pfo.163.2021.01.14.13.38.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 13:38:06 -0800 (PST)
+Date:   Thu, 14 Jan 2021 14:38:04 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     peng.fan@nxp.com
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        o.rempel@pengutronix.de, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        paul@crapouillou.net, matthias.bgg@gmail.com, agross@kernel.org,
+        patrice.chotard@st.com
+Subject: Re: [PATCH V6 07/10] remoteproc: imx_rproc: add i.MX specific parse
+ fw hook
+Message-ID: <20210114213804.GE255481@xps15>
+References: <1610444359-1857-1-git-send-email-peng.fan@nxp.com>
+ <1610444359-1857-8-git-send-email-peng.fan@nxp.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SA0PR11CA0076.namprd11.prod.outlook.com (2603:10b6:806:d2::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10 via Frontend Transport; Thu, 14 Jan 2021 21:37:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9744f790-9e7e-4d4a-7a0b-08d8b8d49368
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4573:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB457315C1991CCD4DC1F3AF9BE5A80@SA0PR12MB4573.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oYfMFMDCSMlOr1w8F8pJ/a5HovdjasP78pDKWnoax+yP0ta5XrcS/yBukj7KKr2ZyLIQXDNgcLdhvRbQZ7kxZW+91RF7bGfE7vzA7vhzoAL34EbC3JdqgNKAEUdYWJCsbflb1jCFQcb3YNQh7zWXJBrtm6J6T6Kjnt1E33XMFPXoFTDMBzz3CmWr7ZSTSrcqnVlDiB12Lm/5Zl9f+62F2VoE6G8D+kKqruqeIRajer9LJ6+sJ/LFGDiYEtwGsDlUNOj4cus99XvL2wRf8yZ8liqXjQvnDyoc86qzBHzGmGT4+I/KRLyi2A5jsFlFdMgLL5twDlyxL2fdbEuBqrgUkTTeIl8IUGwrrP6QI4rhjGr3zPYOzHnUSCx+TYzx+sEgHa1+jYqJr5FRgjZlXlV5QDa1AlCRQitQHW4NDm5ylNBSoDj1BB2eMK2LqO5YgL0Nieibnrl9U7/ArSjSvU3ggDHACY+TxbTfQURXMc4dTJw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(366004)(39860400002)(136003)(346002)(4326008)(6506007)(7416002)(53546011)(8676002)(83380400001)(26005)(16526019)(110136005)(5660300002)(31686004)(186003)(31696002)(86362001)(316002)(6486002)(2906002)(36756003)(54906003)(6512007)(66946007)(66476007)(478600001)(956004)(8936002)(2616005)(66556008)(44832011)(52116002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MlEveDVVRlZ3OGhSbmdZMmJhWUpRbFNSbXBDL3NmSy95eUhFZjRwVlNnV0F4?=
- =?utf-8?B?WlhrSFp0Z1EyWlRrU05VbSs2amp5b083OG40Qlg2RCsyVW1OV09JWWtYLzM2?=
- =?utf-8?B?WC9uMlRSZjZZamxoTU01Qnp2MUxaYkVuQzFLY1dVeVhrMU5CdFBaM0FQb2ZR?=
- =?utf-8?B?YUIxS1F0TGQwWWhnM3A3MFp5OUlLV3RVMEpFaHROS09ZNCtSbUU3M1ZTYlVw?=
- =?utf-8?B?YXRwanBjWmliWGdnd3ZSeXN0Vmd4aVB1WmN6NUwyZWU2OUhNRFRaczJXQi9t?=
- =?utf-8?B?WVlNUnZxbFVPeW1CcWlIbXcxR2p0L082N0xlaTNnRENLOFc0S2M1RUpUcFQz?=
- =?utf-8?B?enJiVTNkem80Zk1sSTN4L255VmRISGN0d2V2OXBLL2lVNjhZRlArN1owTUlm?=
- =?utf-8?B?UmNEdG5GdmNCV0pxR1JxR0kzUnNGMjlxRDlVRDNndnNxMkxnN3pLRGNnZ1Ru?=
- =?utf-8?B?UXdCMjFlQW11NHovc2xUZTFxY3RHeklMMUFkWHR5dExvTkZZd3gvNE1TYmpE?=
- =?utf-8?B?MS9qYUFQMUdRQ1BIcTUrTElqMWVWWnpJUVVYVTZORFBFOFBndlFyeU5OdHRO?=
- =?utf-8?B?aXVuUXJsNWtPYUJFbUZ5MUtUMk5yUTZFTlYyZHVnbHVhSGJuWnc1MGlHTWdn?=
- =?utf-8?B?SnVkYmNiSHBCa25Icnd6ODZnc1M4eDNrelphQjBRS1hpaDRGYy9YT3BBTFpX?=
- =?utf-8?B?bjJnYUhVTk1TeVdTaFpyblJHb0xUcDBrNEt5djF2Vis2bnMrTEJCY3l3aytr?=
- =?utf-8?B?dVdCRUNwajFYR1dsc2ZMdjNmT0NSVHVMbUc5NHR1TGozcjRXbEN1SEloWmNH?=
- =?utf-8?B?ZjRUZTZCZ3JiVVNyTG1yYnpReWgzc3FvS2dOQmtPWVZwSVltWVFxbmZQRjlE?=
- =?utf-8?B?L1NKaDdMa2VCcGY3Z2Nvakk3dXpsaDJMRklSNW1EQ1NERm1nWENBWnY0dm14?=
- =?utf-8?B?VDRicVVqSmxtUW5RTEhtTjdmY3JGaDdUL2xyNm52S0RRZmtFYkFSdmQ1ejdI?=
- =?utf-8?B?a0gxcDhualJoU1IwVzMzTHU0emRrTU40b1ZWWUpIWGZGcWhJN0NZdUN3UUNa?=
- =?utf-8?B?YnJxbVZrM0YyamxhZFVBRW8yMStHM04wbC9FN1VIWmRteG9ieGRLR2piSzdi?=
- =?utf-8?B?RmwySllqOTRyOE9ubllsb1pxUEZueUpmU2RXeUkvaFkrVVA2NXlMODZrdThJ?=
- =?utf-8?B?V3FOSC9vMmRUUXJVT0liYTNRSUQxYXZMbnF0Yk50L0hqVU1VemhNSUZaNG5h?=
- =?utf-8?B?WnU2VGRsMDkvcHBlbmg3OU5rUTgydDdmQjM2OWJKbUxqemRrWXFoSmRHYk1z?=
- =?utf-8?Q?W2F5osm4CP8gVRiq7KN4uoWh5ITX/w7KcL?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jan 2021 21:37:21.8000
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9744f790-9e7e-4d4a-7a0b-08d8b8d49368
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Qt+F6WW3UxoWf4AYVT2sdyIuvpzU5Oz8TAU0fDAq5sJnCMCPcukwxATT3qxtAKqMCrvdJGvsISbfwDdZJGJerg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4573
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610444359-1857-8-git-send-email-peng.fan@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 1/13/21 6:37 PM, Sean Christopherson wrote:
-> Move the allocation of the SEV VMCB array to sev.c to help pave the way
-> toward encapsulating SEV enabling wholly within sev.c.
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On Tue, Jan 12, 2021 at 05:39:16PM +0800, peng.fan@nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> The hook is used to parse memory-regions and load resource table
+> from the address the remote processor published.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> Reviewed-by: Richard Zhu <hongxing.zhu@nxp.com>
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 > ---
->  arch/x86/kvm/svm/sev.c | 13 +++++++++++++
->  arch/x86/kvm/svm/svm.c | 17 ++++++++---------
->  arch/x86/kvm/svm/svm.h |  1 +
->  3 files changed, 22 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 1a143340103e..a2c3e2d42a7f 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1330,6 +1330,19 @@ void sev_hardware_teardown(void)
->  	sev_flush_asids();
+>  drivers/remoteproc/imx_rproc.c | 93 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 93 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+> index 47fc1d06be6a..3c0075dc1787 100644
+> --- a/drivers/remoteproc/imx_rproc.c
+> +++ b/drivers/remoteproc/imx_rproc.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/module.h>
+>  #include <linux/of_address.h>
+> +#include <linux/of_reserved_mem.h>
+>  #include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regmap.h>
+> @@ -241,10 +242,102 @@ static void *imx_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len, bool *i
+>  	return va;
 >  }
 >  
-> +int sev_cpu_init(struct svm_cpu_data *sd)
+> +static int imx_rproc_mem_alloc(struct rproc *rproc,
+> +			       struct rproc_mem_entry *mem)
 > +{
-> +	if (!svm_sev_enabled())
-> +		return 0;
+> +	struct device *dev = rproc->dev.parent;
+> +	void *va;
 > +
-> +	sd->sev_vmcbs = kmalloc_array(max_sev_asid + 1, sizeof(void *),
-> +				      GFP_KERNEL | __GFP_ZERO);
-
-
-I saw Tom recommended to use kzalloc.. instead of __GFP_ZERO in previous
-patch. With that fixed,
-
-Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
-
-
-> +	if (!sd->sev_vmcbs)
+> +	dev_dbg(dev, "map memory: %p+%zx\n", &mem->dma, mem->len);
+> +	va = ioremap_wc(mem->dma, mem->len);
+> +	if (IS_ERR_OR_NULL(va)) {
+> +		dev_err(dev, "Unable to map memory region: %p+%zx\n",
+> +			&mem->dma, mem->len);
 > +		return -ENOMEM;
+> +	}
+> +
+> +	/* Update memory entry va */
+> +	mem->va = va;
 > +
 > +	return 0;
 > +}
 > +
->  /*
->   * Pages used by hardware to hold guest encrypted state must be flushed before
->   * returning them to the system.
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index bb7b99743bea..89b95fb87a0c 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -552,23 +552,22 @@ static void svm_cpu_uninit(int cpu)
->  static int svm_cpu_init(int cpu)
->  {
->  	struct svm_cpu_data *sd;
-> +	int ret;
->  
->  	sd = kzalloc(sizeof(struct svm_cpu_data), GFP_KERNEL);
->  	if (!sd)
->  		return -ENOMEM;
->  	sd->cpu = cpu;
->  	sd->save_area = alloc_page(GFP_KERNEL);
-> -	if (!sd->save_area)
-> +	if (!sd->save_area) {
-> +		ret = -ENOMEM;
->  		goto free_cpu_data;
+> +static int imx_rproc_mem_release(struct rproc *rproc,
+> +				 struct rproc_mem_entry *mem)
+> +{
+> +	dev_dbg(rproc->dev.parent, "unmap memory: %pa\n", &mem->dma);
+> +	iounmap(mem->va);
+> +
+> +	return 0;
+> +}
+> +
+> +static int imx_rproc_parse_memory_regions(struct rproc *rproc)
+> +{
+> +	struct imx_rproc *priv = rproc->priv;
+> +	struct device_node *np = priv->dev->of_node;
+> +	struct of_phandle_iterator it;
+> +	struct rproc_mem_entry *mem;
+> +	struct reserved_mem *rmem;
+> +	u32 da;
+> +
+> +	/* Register associated reserved memory regions */
+> +	of_phandle_iterator_init(&it, np, "memory-region", NULL, 0);
+> +	while (of_phandle_iterator_next(&it) == 0) {
+> +		/*
+> +		 * Ignore the first memory region which will be used vdev buffer.
+> +		 * No need to do extra handlings, rproc_add_virtio_dev will handle it.
+> +		 */
+> +		if (!strcmp(it.node->name, "vdevbuffer"))
+
+Because you are doing a V8, please use "vdev0buffer" and make the change in the
+.yaml file.
+
+> +			continue;
+> +
+> +		rmem = of_reserved_mem_lookup(it.node);
+> +		if (!rmem) {
+> +			dev_err(priv->dev, "unable to acquire memory-region\n");
+> +			return -EINVAL;
+> +		}
+> +
+> +		/* No need to translate pa to da, i.MX use same map */
+> +		da = rmem->base;
+> +
+> +		/* Register memory region */
+> +		mem = rproc_mem_entry_init(priv->dev, NULL, (dma_addr_t)rmem->base, rmem->size, da,
+> +					   imx_rproc_mem_alloc, imx_rproc_mem_release,
+> +					   it.node->name);
+> +
+> +		if (mem)
+> +			rproc_coredump_add_segment(rproc, da, rmem->size);
+> +		else
+> +			return -ENOMEM;
+> +
+> +		rproc_add_carveout(rproc, mem);
 > +	}
->  	clear_page(page_address(sd->save_area));
->  
-> -	if (svm_sev_enabled()) {
-> -		sd->sev_vmcbs = kmalloc_array(max_sev_asid + 1,
-> -					      sizeof(void *),
-> -					      GFP_KERNEL | __GFP_ZERO);
-> -		if (!sd->sev_vmcbs)
-> -			goto free_save_area;
-> -	}
-> +	ret = sev_cpu_init(sd);
+> +
+> +	return  0;
+> +}
+> +
+> +static int imx_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
+> +{
+> +	int ret = imx_rproc_parse_memory_regions(rproc);
+> +
 > +	if (ret)
-> +		goto free_save_area;
+> +		return ret;
+> +
+> +	ret = rproc_elf_load_rsc_table(rproc, fw);
+> +	if (ret)
+> +		dev_info(&rproc->dev, "No resource table in elf\n");
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct rproc_ops imx_rproc_ops = {
+>  	.start		= imx_rproc_start,
+>  	.stop		= imx_rproc_stop,
+>  	.da_to_va       = imx_rproc_da_to_va,
+> +	.load		= rproc_elf_load_segments,
+> +	.parse_fw	= imx_rproc_parse_fw,
+> +	.find_loaded_rsc_table = rproc_elf_find_loaded_rsc_table,
+> +	.sanity_check	= rproc_elf_sanity_check,
+> +	.get_boot_addr	= rproc_elf_get_boot_addr,
+>  };
 >  
->  	per_cpu(svm_data, cpu) = sd;
->  
-> @@ -578,7 +577,7 @@ static int svm_cpu_init(int cpu)
->  	__free_page(sd->save_area);
->  free_cpu_data:
->  	kfree(sd);
-> -	return -ENOMEM;
-> +	return ret;
->  
->  }
->  
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 8e169835f52a..4eb4bab0ca3e 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -583,6 +583,7 @@ int svm_unregister_enc_region(struct kvm *kvm,
->  void pre_sev_run(struct vcpu_svm *svm, int cpu);
->  void __init sev_hardware_setup(void);
->  void sev_hardware_teardown(void);
-> +int sev_cpu_init(struct svm_cpu_data *sd);
->  void sev_free_vcpu(struct kvm_vcpu *vcpu);
->  int sev_handle_vmgexit(struct vcpu_svm *svm);
->  int sev_es_string_io(struct vcpu_svm *svm, int size, unsigned int port, int in);
+>  static int imx_rproc_addr_init(struct imx_rproc *priv,
+> -- 
+> 2.28.0
+> 
