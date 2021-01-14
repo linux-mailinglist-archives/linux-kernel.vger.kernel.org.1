@@ -2,156 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8A22F6762
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0BEF2F6764
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbhANRSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:18:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbhANRR7 (ORCPT
+        id S1727406AbhANRTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:19:13 -0500
+Received: from outbound-smtp22.blacknight.com ([81.17.249.190]:33383 "EHLO
+        outbound-smtp22.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727291AbhANRTM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:17:59 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16B5C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:17:18 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id s2so6666072oij.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:17:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=o7k9+/ImOTT6+O+qwUq3epvb/TE+j4Ep2dyuyw1DcuA=;
-        b=GdRk7PiAEQ2racZn2Yzx9pBj0WEiHaF3uwKHS3reKPG1MTiN6y+MVTLxKkAdvRMha0
-         Z3CQVHbWYxlXCeRPxZzv/bTr0cUtQOcXPQy49V8xjgqS5aTznmBg/XUeuBzXuO5XsLHR
-         JojfAOML0XuvM3KiZCEt4PDyiM3KOrToOypLxrP7pYN+YuOMyZlS0Fgvhxrlw1/Y8sjC
-         FFjlER+x5mHVSWWTkLUWI27PbrO5PWHfhIA1rmsf1f5R0AmjKB+De9RgvsQ9Y7cpwrPh
-         zwWxXqNCHeQbzEGGVojA1gizs7EBU6owOXHT+2gaSB4dnWY0uzHDtcBqjm+w9i/u3RPm
-         kzjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=o7k9+/ImOTT6+O+qwUq3epvb/TE+j4Ep2dyuyw1DcuA=;
-        b=Z+Vkdb8LSRx+fJwcV7mMvzNiH3OkQyACLF5ahKoPyhcD5gzJQdYw5+TMdj6zPuwmZj
-         jsH4pCATqF8m4VXoGg1Hrht2fN2/f1xzGl7eL4ZgjPqmcn8RgRYCvPBeYJrKrxtTE4Pr
-         T1PxpAqBPj3B1BUbC9eJDnAdLbiH7Uy1hbW6dTW6qJhCf0Cf61nItn8dhv+GKLCV/5xT
-         DY9oJpQJhOxVo3WxNMt+fyjWF7CQcAElirvtkvEag+TXUro/Y+VmfJibxgR79kViTB7w
-         PrkJuBG0VsTN3Fkd+stKWJ2yUYmM5/sY1jRW3J9sNeZPlYjuoFSyFH93Sp3N7GlZ+Rtq
-         BAbA==
-X-Gm-Message-State: AOAM5323WGvp8EPmpNUTjmsktLRhC/OVB0n7EVLQ5lsX+Sa5+uyz/MRL
-        tFp3CdKDObV10+yytCUcNg96KV9irl0UR9aTgkc=
-X-Google-Smtp-Source: ABdhPJwsFTzqKJOb92K9lMAKQ2TAuKfznueOrtNTEENsEck3k6NwpbJfi1zNkDGWF7xDukXcd1864+GPnAVpno9t1T0=
-X-Received: by 2002:aca:6202:: with SMTP id w2mr3020084oib.5.1610644638152;
- Thu, 14 Jan 2021 09:17:18 -0800 (PST)
+        Thu, 14 Jan 2021 12:19:12 -0500
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp22.blacknight.com (Postfix) with ESMTPS id 09906BB11A
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 17:18:20 +0000 (GMT)
+Received: (qmail 25073 invoked from network); 14 Jan 2021 17:18:19 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 14 Jan 2021 17:18:19 -0000
+Date:   Thu, 14 Jan 2021 17:18:18 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Li Aubrey <aubrey.li@linux.intel.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/5] sched/fair: Merge select_idle_core/cpu()
+Message-ID: <20210114171818.GO3592@techsingularity.net>
+References: <20210111155047.10657-1-mgorman@techsingularity.net>
+ <20210111155047.10657-6-mgorman@techsingularity.net>
+ <CAKfTPtDPZA1CdE_t+co4DmvfEUys9OiUdgtessFdQe6dYjo4pg@mail.gmail.com>
+ <20210114093543.GM3592@techsingularity.net>
+ <CAKfTPtAbQLYgjRTqdpDPwA+1ff2cUtNqOVbd5cGz_cHpZO=9WA@mail.gmail.com>
+ <20210114135328.GN3592@techsingularity.net>
+ <CAKfTPtCCjsJG8G5EQfdyLgiaQUqZFiapRGtrP8wTP7k-6qvSxQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210113080752.1003793-1-lee.jones@linaro.org> <20210113080752.1003793-19-lee.jones@linaro.org>
-In-Reply-To: <20210113080752.1003793-19-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 14 Jan 2021 12:17:07 -0500
-Message-ID: <CADnq5_P7zmV5sTmOTPQHRjnPmr2oTb=rupsBUNXZEDeW7eaz_Q@mail.gmail.com>
-Subject: Re: [PATCH 18/30] drm/amd/display/dc/core/dc_link: Move some local
- data from the stack to the heap
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtCCjsJG8G5EQfdyLgiaQUqZFiapRGtrP8wTP7k-6qvSxQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 3:08 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link.c: In function =E2=
-=80=98dc_link_construct=E2=80=99:
->  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link.c:1588:1: warning:=
- the frame size of 1176 bytes is larger than 1024 bytes [-Wframe-larger-tha=
-n=3D]
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Thu, Jan 14, 2021 at 04:44:46PM +0100, Vincent Guittot wrote:
+> > domain. There is no need to make it specific to the core account and we
+> > are already doing the full scan. Throttling that would be a separate patch.
+> >
+> > > This patch 5 should focus on merging select_idle_core and
+> > > select_idle_cpu so we keep (almost) the same behavior but each CPU is
+> > > checked only once.
+> > >
+> >
+> > Which I think it's already doing. Main glitch really is that
+> > __select_idle_cpu() shouldn't be taking *idle_cpu as it does not consume
+> > the information.
+> 
+>  don't really like the if (smt) else in the for_each_cpu_wrap(cpu,
+> cpus, target) loop  because it just looks like we fail to merge idle
+> core and idle cpu search loop at the end.
+> 
 
-Applied.  Thanks!
+While it's not the best, I did at one point have a series that fully
+unified this function and it wasn't pretty.
 
-Alex
+> But there is probably not much we can do without changing what is
+> accounted idle core  search in the avg_scan_cost
+> 
 
-> ---
->  drivers/gpu/drm/amd/display/dc/core/dc_link.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/=
-drm/amd/display/dc/core/dc_link.c
-> index 8ccda8b9ac2eb..3366a49f11dc7 100644
-> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-> @@ -1364,13 +1364,17 @@ static bool dc_link_construct(struct dc_link *lin=
-k,
->         struct dc_context *dc_ctx =3D init_params->ctx;
->         struct encoder_init_data enc_init_data =3D { 0 };
->         struct panel_cntl_init_data panel_cntl_init_data =3D { 0 };
-> -       struct integrated_info info =3D {{{ 0 }}};
-> +       struct integrated_info *info;
->         struct dc_bios *bios =3D init_params->dc->ctx->dc_bios;
->         const struct dc_vbios_funcs *bp_funcs =3D bios->funcs;
->         struct bp_disp_connector_caps_info disp_connect_caps_info =3D { 0=
- };
->
->         DC_LOGGER_INIT(dc_ctx->logger);
->
-> +       info =3D kzalloc(sizeof(info), GFP_KERNEL);
-> +       if (!info)
-> +               goto create_fail;
-> +
->         link->irq_source_hpd =3D DC_IRQ_SOURCE_INVALID;
->         link->irq_source_hpd_rx =3D DC_IRQ_SOURCE_INVALID;
->
-> @@ -1532,12 +1536,12 @@ static bool dc_link_construct(struct dc_link *lin=
-k,
->         }
->
->         if (bios->integrated_info)
-> -               info =3D *bios->integrated_info;
-> +               memcpy(info, bios->integrated_info, sizeof(*info));
->
->         /* Look for channel mapping corresponding to connector and device=
- tag */
->         for (i =3D 0; i < MAX_NUMBER_OF_EXT_DISPLAY_PATH; i++) {
->                 struct external_display_path *path =3D
-> -                       &info.ext_disp_conn_info.path[i];
-> +                       &info->ext_disp_conn_info.path[i];
->
->                 if (path->device_connector_id.enum_id =3D=3D link->link_i=
-d.enum_id &&
->                     path->device_connector_id.id =3D=3D link->link_id.id =
-&&
-> @@ -1584,6 +1588,8 @@ static bool dc_link_construct(struct dc_link *link,
->                 link->hpd_gpio =3D NULL;
->         }
->
-> +       kfree(info);
-> +
->         return false;
->  }
->
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Indeed. Maybe in the future it'll make more sense to consolidate it
+further but between the depth search and possibly using SIS_PROP core
+core searches, we've bigger fish to fry.
+
+Current delta between this series and what is being tested is simply
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 7bfa73de6a8d..ada8faac2e4d 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -7446,7 +7446,6 @@ int sched_cpu_activate(unsigned int cpu)
+ #ifdef CONFIG_SCHED_SMT
+ 	do {
+ 		int weight = cpumask_weight(cpu_smt_mask(cpu));
+-		extern int sched_smt_weight;
+ 
+ 		if (weight > sched_smt_weight)
+ 			sched_smt_weight = weight;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 84f02abb29e3..6c0f841e9e75 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6006,7 +6006,7 @@ static inline int find_idlest_cpu(struct sched_domain *sd, struct task_struct *p
+ 	return new_cpu;
+ }
+ 
+-static inline int __select_idle_cpu(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
++static inline int __select_idle_cpu(struct task_struct *p, int core, struct cpumask *cpus)
+ {
+ 	if (available_idle_cpu(core) || sched_idle_cpu(core))
+ 		return core;
+@@ -6080,7 +6080,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
+ 	int cpu;
+ 
+ 	if (!static_branch_likely(&sched_smt_present))
+-		return __select_idle_cpu(p, core, cpus, idle_cpu);
++		return __select_idle_cpu(p, core, cpus);
+ 
+ 	for_each_cpu(cpu, cpu_smt_mask(core)) {
+ 		if (!available_idle_cpu(cpu)) {
+@@ -6120,7 +6120,7 @@ static inline bool test_idle_cores(int cpu, bool def)
+ 
+ static inline int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
+ {
+-	return __select_idle_cpu(p, core, cpus, idle_cpu);
++	return __select_idle_cpu(p, core, cpus);
+ }
+ 
+ #endif /* CONFIG_SCHED_SMT */
+@@ -6177,7 +6177,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ 				return i;
+ 
+ 		} else {
+-			i = __select_idle_cpu(p, cpu, cpus, &idle_cpu);
++			i = __select_idle_cpu(p, cpu, cpus);
+ 			if ((unsigned int)i < nr_cpumask_bits) {
+ 				idle_cpu = i;
+ 				break;
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 12ada79d40f3..29aabe98dd1d 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1107,6 +1107,8 @@ static inline void update_idle_core(struct rq *rq)
+ 		__update_idle_core(rq);
+ }
+ 
++extern int sched_smt_weight;
++
+ #else
+ static inline void update_idle_core(struct rq *rq) { }
+ #endif
+-- 
+Mel Gorman
+SUSE Labs
