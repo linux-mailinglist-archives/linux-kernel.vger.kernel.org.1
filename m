@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCCB52F6888
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 153402F6899
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728486AbhANR51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:57:27 -0500
-Received: from smtprelay0237.hostedemail.com ([216.40.44.237]:60208 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725854AbhANR50 (ORCPT
+        id S1729394AbhANR6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727850AbhANR6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:57:26 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 4A746837F24D;
-        Thu, 14 Jan 2021 17:56:45 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:4321:5007:7652:7807:9040:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12740:12895:13069:13255:13311:13357:13439:13894:14659:14721:21080:21627:21990,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: vein42_380c97427528
-X-Filterd-Recvd-Size: 2342
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 14 Jan 2021 17:56:43 +0000 (UTC)
-Message-ID: <d9ebc10ac5c4ba5231ed50ef0d2a15f424547736.camel@perches.com>
-Subject: Re: [PATCH v2 3/4] staging: hikey9xx: phy-hi3670-usb3.c:
- hi3670_is_abbclk_seleted() returns bool
-From:   Joe Perches <joe@perches.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yu Chen <chenyu56@huawei.com>, devel@driverdev.osuosl.org,
+        Thu, 14 Jan 2021 12:58:49 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97976C061796
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:57:38 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l06sF-0004R8-H9; Thu, 14 Jan 2021 18:57:31 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l06sC-0002l1-1t; Thu, 14 Jan 2021 18:57:28 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Thu, 14 Jan 2021 09:56:41 -0800
-In-Reply-To: <d1e0d94381e214157545d6808835fdfe99448f76.1610645385.git.mchehab+huawei@kernel.org>
-References: <cover.1610645385.git.mchehab+huawei@kernel.org>
-         <d1e0d94381e214157545d6808835fdfe99448f76.1610645385.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+Subject: [PATCH 0/3] tty: some cleanups in remove functions
+Date:   Thu, 14 Jan 2021 18:57:15 +0100
+Message-Id: <20210114175718.137483-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-01-14 at 18:35 +0100, Mauro Carvalho Chehab wrote:
-> Instead of using 1/0 for true/false, change the type to boolean
-> and change the returned value.
-[]
-> diff --git a/drivers/staging/hikey9xx/phy-hi3670-usb3.c b/drivers/staging/hikey9xx/phy-hi3670-usb3.c
-[]
-> @@ -326,24 +326,24 @@ static int hi3670_phy_set_params(struct hi3670_priv *priv)
->  	return ret;
->  }
-> 
-> -static int hi3670_is_abbclk_seleted(struct hi3670_priv *priv)
-> +static bool hi3670_is_abbclk_seleted(struct hi3670_priv *priv)
+Hello,
 
-Presumably this should be "selected" not "seleted"
+while working on changing the prototype of struct vio_driver::remove to
+return void I noticed a few exit paths in such callbacks that return an
+error code.
 
->  {
->  	u32 reg;
-> 
->  	if (!priv->sctrl) {
->  		dev_err(priv->dev, "priv->sctrl is null!\n");
-> -		return 1;
-> +		return true;
->  	}
-> 
->  	if (regmap_read(priv->sctrl, SCTRL_SCDEEPSLEEPED, &reg)) {
->  		dev_err(priv->dev, "SCTRL_SCDEEPSLEEPED read failed!\n");
-> -		return 1;
-> +		return true;
->  	}
-> 
->  	if ((reg & USB_CLK_SELECTED) == 0)
-> -		return 1;
-> +		return true;
-> 
-> -	return 0;
-> +	return false;
->  }
+This is a bad thing because the return value is ignored (which is the
+motivation to make it void) and the corresponding device then ends in
+some limbo state.
 
-	if (foo)
-		return true;
-	return false;
+Luckily for the three offenders here these cases cannot happen and are
+simplified accordingly. This then makes the patch that changes the
+remove callback's prototype simpler because it only changes prototypes
+and drops "return 0"s.
 
-should generally be consolidated into a single test.
+Best regards and thanks for considering,
+Uwe Kleine-KÃ¶nig
 
-So this is perhaps better as:
+Uwe Kleine-KÃ¶nig (3):
+  tty: hvcs: Drop unnecessary if block
+  tty: vcc: Drop unnecessary if block
+  tty: vcc: Drop impossible to hit WARN_ON
 
-	return (!(reg & USB_CLK_SELECTED));
+ drivers/tty/hvc/hvcs.c |  3 ---
+ drivers/tty/vcc.c      | 10 ++--------
+ 2 files changed, 2 insertions(+), 11 deletions(-)
 
-But the return value seems backwards.
-
+-- 
+2.29.2
 
