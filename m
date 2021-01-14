@@ -2,134 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF412F61D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8EB2F61DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728993AbhANNVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:21:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42714 "EHLO mx2.suse.de"
+        id S1729054AbhANNWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 08:22:19 -0500
+Received: from foss.arm.com ([217.140.110.172]:50012 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726579AbhANNVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:21:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610630437; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mrq5I+QVlJUh9/9A4rAlfhWdMxXwrp+yU+zELor8u74=;
-        b=O7imhw2XH9Wm0AmsDJ5+YI+xkcS6y4614S0zj6i5hTSBUELK/M1Ctkelsfzc5kZK/mYW6D
-        0Djtx9FUfm+ZXamewmTQPbIzx63fdOeZZx8hBCVYr2nBN/idBttPkldPeHUqrf5OT89S5T
-        Ir4cxxxpbVWts+p91kd3BwR3Gl9fahE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 83A9FACB0;
-        Thu, 14 Jan 2021 13:20:37 +0000 (UTC)
-Date:   Thu, 14 Jan 2021 14:20:36 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v5 3/5] mm: hugetlb: fix a race between freeing and
- dissolving the page
-Message-ID: <20210114132036.GA27777@dhcp22.suse.cz>
-References: <20210114103515.12955-1-songmuchun@bytedance.com>
- <20210114103515.12955-4-songmuchun@bytedance.com>
+        id S1726315AbhANNWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 08:22:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 810D41FB;
+        Thu, 14 Jan 2021 05:21:33 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E13E43F719;
+        Thu, 14 Jan 2021 05:21:31 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 3/4] workqueue: Tag bound workers with KTHREAD_IS_PER_CPU
+In-Reply-To: <YABDI6Qkp5PNslUS@hirez.programming.kicks-ass.net>
+References: <20210112144344.850850975@infradead.org> <20210112144843.849135905@infradead.org> <CAJhGHyD_xuSpYOp5A9PumWGsBA=DNqM0ge3_NgRkfro7fafGqA@mail.gmail.com> <YABDI6Qkp5PNslUS@hirez.programming.kicks-ass.net>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Thu, 14 Jan 2021 13:21:26 +0000
+Message-ID: <jhjlfcvhcx5.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210114103515.12955-4-songmuchun@bytedance.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 14-01-21 18:35:13, Muchun Song wrote:
-> There is a race condition between __free_huge_page()
-> and dissolve_free_huge_page().
-> 
-> CPU0:                         CPU1:
-> 
-> // page_count(page) == 1
-> put_page(page)
->   __free_huge_page(page)
->                               dissolve_free_huge_page(page)
->                                 spin_lock(&hugetlb_lock)
->                                 // PageHuge(page) && !page_count(page)
->                                 update_and_free_page(page)
->                                 // page is freed to the buddy
->                                 spin_unlock(&hugetlb_lock)
->     spin_lock(&hugetlb_lock)
->     clear_page_huge_active(page)
->     enqueue_huge_page(page)
->     // It is wrong, the page is already freed
->     spin_unlock(&hugetlb_lock)
-> 
-> The race windows is between put_page() and dissolve_free_huge_page().
-> 
-> We should make sure that the page is already on the free list
-> when it is dissolved.
+On 14/01/21 14:12, Peter Zijlstra wrote:
+> On Wed, Jan 13, 2021 at 09:28:13PM +0800, Lai Jiangshan wrote:
+>> On Tue, Jan 12, 2021 at 10:51 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>> > @@ -4972,9 +4977,11 @@ static void rebind_workers(struct worker
+>> >          * of all workers first and then clear UNBOUND.  As we're called
+>> >          * from CPU_ONLINE, the following shouldn't fail.
+>> >          */
+>> > -       for_each_pool_worker(worker, pool)
+>> > +       for_each_pool_worker(worker, pool) {
+>> >                 WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task,
+>> >                                                   pool->attrs->cpumask) < 0);
+>> > +               kthread_set_per_cpu(worker->task, true);
+>>
+>> Will the schedule break affinity in the middle of these two lines due to
+>> patch4 allowing it and result in Paul's reported splat.
+>
+> So something like the below _should_ work, except i'm seeing odd WARNs.
+> I'll prod at it some more.
+>
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -2371,6 +2371,7 @@ static int worker_thread(void *__worker)
+>       /* tell the scheduler that this is a workqueue worker */
+>       set_pf_worker(true);
+>  woke_up:
+> +	kthread_parkme();
+>       raw_spin_lock_irq(&pool->lock);
+>
+>       /* am I supposed to die? */
+> @@ -2428,6 +2429,7 @@ static int worker_thread(void *__worker)
+>                       move_linked_works(work, &worker->scheduled, NULL);
+>                       process_scheduled_works(worker);
+>               }
+> +		kthread_parkme();
+>       } while (keep_working(pool));
+>
+>       worker_set_flags(worker, WORKER_PREP);
+> @@ -4978,9 +4980,9 @@ static void rebind_workers(struct worker
+>        * from CPU_ONLINE, the following shouldn't fail.
+>        */
+>       for_each_pool_worker(worker, pool) {
+> -		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task,
+> -						  pool->attrs->cpumask) < 0);
+> +		kthread_park(worker->task);
 
-Please describe user visible effects as suggested in
-http://lkml.kernel.org/r/20210113093134.GU22493@dhcp22.suse.cz
+Don't we still need an affinity change here, to undo what was done in
+unbind_workers()?
 
-> Fixes: c8721bbbdd36 ("mm: memory-hotplug: enable memory hotplug to handle hugepage")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: stable@vger.kernel.org
-> ---
->  mm/hugetlb.c | 41 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
-[...]
-> +retry:
->  	/* Not to disrupt normal path by vainly holding hugetlb_lock */
->  	if (!PageHuge(page))
->  		return 0;
-> @@ -1770,6 +1789,28 @@ int dissolve_free_huge_page(struct page *page)
->  		int nid = page_to_nid(head);
->  		if (h->free_huge_pages - h->resv_huge_pages == 0)
->  			goto out;
-> +
-> +		/*
-> +		 * We should make sure that the page is already on the free list
-> +		 * when it is dissolved.
-> +		 */
-> +		if (unlikely(!PageHugeFreed(head))) {
-> +			spin_unlock(&hugetlb_lock);
-> +
-> +			/*
-> +			 * Theoretically, we should return -EBUSY when we
-> +			 * encounter this race. In fact, we have a chance
-> +			 * to successfully dissolve the page if we do a
-> +			 * retry. Because the race window is quite small.
-> +			 * If we seize this opportunity, it is an optimization
-> +			 * for increasing the success rate of dissolving page.
-> +			 */
-> +			while (PageHeadHuge(head) && !PageHugeFreed(head))
-> +				cond_resched();
+Would something like
 
-Sorry, I should have raised that when replying to the previous version
-already but we have focused more on other things. Is there any special
-reason that you didn't simply
-	if (!PageHugeFreed(head)) {
-		spin_unlock(&hugetlb_lock);
-		cond_resched();
-		goto retry;
-	}
+  __kthread_bind_mask(worker->task, pool->attrs->cpumask, TASK_PARKED)
 
-This would be less code and a very slight advantage would be that the
-waiter might get blocked on the spin lock while the concurrent freeing
-is happening. But maybe you wanted to avoid exactly this contention?
-Please put your thinking into the changelog.
+even work?
 
-> +
-> +			goto retry;
-> +		}
-> +
->  		/*
->  		 * Move PageHWPoison flag from head page to the raw error page,
->  		 * which makes any subpages rather than the error page reusable.
-> -- 
-> 2.11.0
-
--- 
-Michal Hocko
-SUSE Labs
+>               kthread_set_per_cpu(worker->task, true);
+> +		kthread_unpark(worker->task);
+>       }
+>
+>       raw_spin_lock_irq(&pool->lock);
