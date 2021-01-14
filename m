@@ -2,208 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57122F56BA
+	by mail.lfdr.de (Postfix) with ESMTP id 4917C2F56B9
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbhANBwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:52:24 -0500
-Received: from mga05.intel.com ([192.55.52.43]:47711 "EHLO mga05.intel.com"
+        id S1727418AbhANBwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:52:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729721AbhANAFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 19:05:45 -0500
-IronPort-SDR: msxixhFI5Alohq9vx5cB/QFryzTfWgnifdjFWi5uR0D+qW5Ip2ZMJQmyAcyzcsCS1/3At1l76I
- CzHO0yXWz7dQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="263076604"
-X-IronPort-AV: E=Sophos;i="5.79,345,1602572400"; 
-   d="scan'208";a="263076604"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 16:04:55 -0800
-IronPort-SDR: JCFTtKesH+ftdFU3ItTYyoPT0bdtqjqkn8tNHI21jxfVvnTWvwxB4VtEaXDXEsyNJZbHJxQ+kg
- oZG6F8dMsaRA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,345,1602572400"; 
-   d="scan'208";a="353678010"
-Received: from lkp-server01.sh.intel.com (HELO d5d1a9a2c6bb) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Jan 2021 16:04:53 -0800
-Received: from kbuild by d5d1a9a2c6bb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kzq8D-0000Pi-4i; Thu, 14 Jan 2021 00:04:53 +0000
-Date:   Thu, 14 Jan 2021 08:04:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/entry] BUILD SUCCESS
- bde718b7e154afc99e1956b18a848401ce8e1f8e
-Message-ID: <5fff8a74.wrO40EvpifSUim6P%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1729761AbhANAHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 19:07:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 826A522A83;
+        Thu, 14 Jan 2021 00:06:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1610582773;
+        bh=Aiw3hocSNpc8d9OKmlwQqHpnJKjeH4oS+tO9UNk2TzU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EgnOpW22kfWBxWqD1DOqx1hCoc4GMerWJ5chcd4kxykizcxOJXYYII0BnKZyBiKWn
+         21cZnuCqb9QCDJ6rffWdwpnOcKLKmJYIvk8Z/KOtn4oIhuZFJcWT1cMsdgWhbYKHth
+         tJtJyCKyIyURYJ3e1+uuoMJ/cMAiQnI4En2jLpic=
+Date:   Wed, 13 Jan 2021 16:06:12 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     linux-kernel@vger.kernel.org, Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 2/4] lib: add error_report_notify to collect debugging
+ tools' reports
+Message-Id: <20210113160612.32f8b67494521ce23cc9cba5@linux-foundation.org>
+In-Reply-To: <20210113091657.1456216-3-glider@google.com>
+References: <20210113091657.1456216-1-glider@google.com>
+        <20210113091657.1456216-3-glider@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/entry
-branch HEAD: bde718b7e154afc99e1956b18a848401ce8e1f8e  x86/entry: Emit a symbol for register restoring thunk
+On Wed, 13 Jan 2021 10:16:55 +0100 Alexander Potapenko <glider@google.com> wrote:
 
-elapsed time: 727m
+> With the introduction of various production error-detection tools, such as
+> MTE-based KASAN and KFENCE, the need arises to efficiently notify the
+> userspace OS components about kernel errors. Currently, no facility exists
+> to notify userspace about a kernel error from such bug-detection tools.
+> The problem is obviously not restricted to the above bug detection tools,
+> and applies to any error reporting mechanism that does not panic the
+> kernel; this series, however, will only add support for KASAN and KFENCE
+> reporting.
+> 
+> All such error reports appear in the kernel log. But, when such errors
+> occur, userspace would normally need to read the entire kernel log and
+> parse the relevant errors. This is error prone and inefficient, as
+> userspace needs to continuously monitor the kernel log for error messages.
+> On certain devices, this is unfortunately not acceptable. Therefore, we
+> need to revisit how reports are propagated to userspace.
+> 
+> The library added, error_report_notify (CONFIG_ERROR_REPORT_NOTIFY),
+> solves the above by using the error_report_start/error_report_end tracing
+> events and exposing the last report and the total report count to the
+> userspace via /sys/kernel/error_report/last_report and
+> /sys/kernel/error_report/report_count.
+> 
+> Userspace apps can call poll(POLLPRI) on those files to get notified about
+> the new reports without having to watch dmesg in a loop.
 
-configs tested: 146
-configs skipped: 2
+It would be nice to see some user-facing documentation for this, under
+Documentation/.  How to use it, what the shortcomings are, etc.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+For instance...  what happens when userspace is slow reading
+/sys/kernel/error_report/last_report?  Does that file buffer multiple
+reports?  Does the previous one get overwritten?  etc.  Words on how
+this obvious issue is handled...
 
-gcc tested configs:
-arm                                 defconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-arm64                            allyesconfig
-m68k                          hp300_defconfig
-powerpc64                           defconfig
-ia64                             allyesconfig
-m68k                          multi_defconfig
-powerpc                      pasemi_defconfig
-mips                         bigsur_defconfig
-mips                       rbtx49xx_defconfig
-c6x                              alldefconfig
-sparc                            alldefconfig
-powerpc                      ppc64e_defconfig
-sh                   sh7770_generic_defconfig
-powerpc                         wii_defconfig
-arm                        magician_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                         lubbock_defconfig
-arm                        vexpress_defconfig
-mips                         tb0226_defconfig
-arc                     nsimosci_hs_defconfig
-c6x                        evmc6474_defconfig
-arm                      jornada720_defconfig
-arm                         shannon_defconfig
-sh                          sdk7786_defconfig
-mips                      bmips_stb_defconfig
-powerpc                     ksi8560_defconfig
-arm                         axm55xx_defconfig
-m68k                            q40_defconfig
-arm                        mini2440_defconfig
-powerpc                     tqm8560_defconfig
-sh                         ecovec24_defconfig
-sh                         ap325rxa_defconfig
-sh                           se7751_defconfig
-arm                       versatile_defconfig
-mips                          ath79_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                  mpc866_ads_defconfig
-um                           x86_64_defconfig
-mips                          malta_defconfig
-parisc                              defconfig
-powerpc                      walnut_defconfig
-c6x                         dsk6455_defconfig
-m68k                          sun3x_defconfig
-arm                          collie_defconfig
-mips                           xway_defconfig
-arm                           u8500_defconfig
-sh                           se7343_defconfig
-sh                     sh7710voipgw_defconfig
-sh                        sh7785lcr_defconfig
-mips                     cu1830-neo_defconfig
-powerpc                     tqm5200_defconfig
-riscv                    nommu_virt_defconfig
-mips                      maltasmvp_defconfig
-arc                        nsimosci_defconfig
-m68k                        m5307c3_defconfig
-arc                      axs103_smp_defconfig
-m68k                        mvme16x_defconfig
-powerpc                 mpc837x_rdb_defconfig
-powerpc                     akebono_defconfig
-sh                         microdev_defconfig
-sh                        apsh4ad0a_defconfig
-mips                        vocore2_defconfig
-riscv                            allmodconfig
-powerpc                      ppc44x_defconfig
-sh                           se7722_defconfig
-mips                     loongson1b_defconfig
-powerpc                    mvme5100_defconfig
-powerpc                 canyonlands_defconfig
-xtensa                         virt_defconfig
-parisc                generic-64bit_defconfig
-mips                           rs90_defconfig
-ia64                         bigsur_defconfig
-arm                          ixp4xx_defconfig
-powerpc                      tqm8xx_defconfig
-mips                      pic32mzda_defconfig
-arm                     am200epdkit_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210113
-x86_64               randconfig-a004-20210113
-x86_64               randconfig-a001-20210113
-x86_64               randconfig-a005-20210113
-x86_64               randconfig-a003-20210113
-x86_64               randconfig-a002-20210113
-i386                 randconfig-a002-20210113
-i386                 randconfig-a005-20210113
-i386                 randconfig-a006-20210113
-i386                 randconfig-a003-20210113
-i386                 randconfig-a001-20210113
-i386                 randconfig-a004-20210113
-i386                 randconfig-a012-20210113
-i386                 randconfig-a011-20210113
-i386                 randconfig-a016-20210113
-i386                 randconfig-a013-20210113
-i386                 randconfig-a015-20210113
-i386                 randconfig-a014-20210113
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                    nommu_k210_defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-x86_64                           allyesconfig
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -209,6 +209,20 @@ config DEBUG_BUGVERBOSE
+>  	  of the BUG call as well as the EIP and oops trace.  This aids
+>  	  debugging but costs about 70-100K of memory.
+>  
+> +config ERROR_REPORT_NOTIFY
+> +	bool "Expose memory error reports to the userspace"
 
-clang tested configs:
-x86_64               randconfig-a015-20210113
-x86_64               randconfig-a012-20210113
-x86_64               randconfig-a013-20210113
-x86_64               randconfig-a016-20210113
-x86_64               randconfig-a014-20210113
-x86_64               randconfig-a011-20210113
+There's really nothing "memory" specific about this?  Any kernel
+subsystem could use it?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> +	depends on TRACING
+> +	help
+> +	  When enabled, captures error reports from debugging tools (such as
+> +	  KFENCE or KASAN) using console tracing, and exposes reports in
+> +	  /sys/kernel/error_report/: the file last_report contains the last
+> +	  report (with maximum report length of PAGE_SIZE), and report_count,
+> +	  the total report count.
+> +
+> +	  Userspace programs can call poll(POLLPRI) on those files to get
+> +	  notified about the new reports without having to watch dmesg in a
+> +	  loop.
+
+So we have a whole new way of getting debug info out of the kernel.  I
+fear this will become a monster.  And anticipating that, we should make
+darn sure that the interface is right, and is extensible.
+
+
