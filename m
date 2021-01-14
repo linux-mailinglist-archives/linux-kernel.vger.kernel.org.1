@@ -2,168 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0975A2F6AD5
+	by mail.lfdr.de (Postfix) with ESMTP id E53302F6AD7
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730008AbhANTVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:21:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727017AbhANTVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:21:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0764423B40;
-        Thu, 14 Jan 2021 19:20:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610652058;
-        bh=RqVCL5R8u/uiaCf/QQG+CR/jl+1+F4XOpwQKBqz7ZEU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=I2PivtTkIbmElL1nDEsoNWNYVisYbzDom+ou3cor+tQigc1unPLaILWshIO5lt080
-         qZU8hLPX0sX7CmqHoFoPScbFBXZWVE55zGaoFIFmj3/vNLrpwOprVoZAvrEVdNmlzV
-         JfnW1B5BwoTLF7mPFKGYCE2XpnJ3WCAXeT5oiUfsr7Mn7plBcnV/otXX0J9PasUkQw
-         5WOs2fRrS9Baafg1vL87ORZaIfavot2zQl5B1wT1suukPbi6T2tuZDBqjpjfmSUucw
-         rNL13dvKOxLsNSX6HGujdLNbtTKTbcdLFPxqDQtl+qXZG4KYUpBXjVj4eFS3II2wqj
-         jU5dGSedjy5sQ==
-Date:   Thu, 14 Jan 2021 13:20:56 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Dominik Mierzejewski <dominik@greysector.net>
-Cc:     Peter Jones <pjones@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Bug 211189] New: vgaarb overrides boot device unexpectedly with
- Intel and discrete AMDGPU
-Message-ID: <20210114192056.GA2013381@bjorn-Precision-5520>
+        id S1730010AbhANTWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:22:32 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:55824 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727327AbhANTWb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 14:22:31 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 662FE20B6C40;
+        Thu, 14 Jan 2021 11:21:50 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 662FE20B6C40
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1610652110;
+        bh=I4cAP2yTfzfJ6bR1hO7JL9ZSqeT+XfkyJmkXNFA+Ri8=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=QTUPALLIP+CeQ8+1BOPVQ92E6WwlvlOttIjBn6qLzJKYlREA/eVVZSv2tNFgveO89
+         5vcDmYzq/27jUvRw7Hh5bEoFqsPPDi4fVhfui8t7/v1pMWtJ/PJsnCdj4bEGHCKnSP
+         m/816JO+CtnH58UGFzByFXInU6P3NcpJN8LDnrTM=
+Subject: Re: [PATCH v10 8/8] selinux: include a consumer of the new IMA
+ critical data hook
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, tyhicks@linux.microsoft.com,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20210108040708.8389-1-tusharsu@linux.microsoft.com>
+ <20210108040708.8389-9-tusharsu@linux.microsoft.com>
+ <CAHC9VhSJk0wG=WzO3bwsueiy19mMi9m6MamTrQfH8C=gXUtvGw@mail.gmail.com>
+ <97328fc71687a0e1c327f6821548be9ba35bb193.camel@linux.ibm.com>
+ <CAHC9VhTzaQ_q8gJ0oeok_yJ54XLETNvOuhhKnyRwgqsqvpBLCw@mail.gmail.com>
+ <71cddb6c8676ccd63c89364d805cfca76d32cb6e.camel@linux.ibm.com>
+ <CAHC9VhRhYWEcK7TepZ=LK1m=9Zn_gtOZyAYfamP-TFU3rRH+zw@mail.gmail.com>
+ <e29a618645b0e73ec06960a02b6da465614689ff.camel@linux.ibm.com>
+ <CAHC9VhTHqwKem=MyQBY4TNAq-DOVhwEZS8pjrSE=4OxdEVm-GA@mail.gmail.com>
+ <3746bc7673df25354411151442a7772b867be396.camel@linux.ibm.com>
+ <fc80b1a1-ff4d-3bf2-59bd-2cb56135bf0f@linux.microsoft.com>
+ <99be76345f375bb2f485f08a53dcb8ed806dc538.camel@linux.ibm.com>
+ <f42d49d2e876379c0ef6e31a34027be95ffb1375.camel@linux.ibm.com>
+ <e883298b-1027-2a58-dcf8-fc940ebc27ff@linux.microsoft.com>
+Message-ID: <507ebab8-828b-8b44-45be-2dbff3406b72@linux.microsoft.com>
+Date:   Thu, 14 Jan 2021 11:21:46 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <e883298b-1027-2a58-dcf8-fc940ebc27ff@linux.microsoft.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <bug-211189-41252@https.bugzilla.kernel.org/>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[cc'd efifb and vgaarb maintainers on bugzilla, but not sure whether
-people pay attention to that]
+On 1/14/21 9:48 AM, Lakshmi Ramasubramanian wrote:
+> On 1/14/21 8:50 AM, Mimi Zohar wrote:
+>> On Thu, 2021-01-14 at 11:44 -0500, Mimi Zohar wrote:
+>>> [Cc'ing Sasha]
+>>>
+>>> Hi Lakshmi,
+>>>
+>>> On Thu, 2021-01-14 at 08:22 -0800, Lakshmi Ramasubramanian wrote:
+>>>> On 1/13/21 6:49 PM, Mimi Zohar wrote:
+>>>
+>>>>>>> Lakshmi is trying to address the situation where an event changes a
+>>>>>>> value, but then is restored to the original value.  The original and
+>>>>>>> subsequent events are measured, but restoring to the original value
+>>>>>>> isn't re-measured.  This isn't any different than when a file is
+>>>>>>> modified and then reverted.
+>>>>>>>
+>>>>>>> Instead of changing the name like this, which doesn't work for 
+>>>>>>> files,
+>>>>>>> allowing duplicate measurements should be generic, based on policy.
+>>>>>>
+>>>>>> Perhaps it is just the end of the day and I'm a bit tired, but I just
+>>>>>> read all of the above and I have no idea what your current thoughts
+>>>>>> are regarding this patch.
+>>>>>
+>>>>> Other than appending the timestamp, which is a hack, the patch is 
+>>>>> fine.
+>>>>> Support for re-measuring an event can be upstreamed independently.
+>>>>>
+>>>>
+>>>> Thanks for clarifying the details related to duplicate measurement
+>>>> detection and re-measuring.
+>>>>
+>>>> I will keep the timestamp for the time being, even though its a 
+>>>> hack, as
+>>>> it helps with re-measuring state changes in SELinux. We will add 
+>>>> support
+>>>> for "policy driven" re-measurement as a subsequent patch series.
+>>>
+>>> Once including the timestamp is upstreamed, removing it will be
+>>> difficult, especially if different userspace applications are dependent
+>>> on it.  Unless everyone is on board that removing the timestamp
+>>> wouldn't be considered a regression, it cannot be upstreamed.
+>>
+>> Feel free to just re-post just this one patch.  Otherwise the patch set
+>> looks good.
+>>
+>> thanks,
+>>
+> 
+> Sounds good Mimi - I will remove the timestamp and re-post the selinux 
+> patch.
+> 
 
-On Thu, Jan 14, 2021 at 10:42:53AM +0000, bugzilla-daemon@bugzilla.kernel.org wrote:
-> https://bugzilla.kernel.org/show_bug.cgi?id=211189
-> 
->             Bug ID: 211189
->            Summary: vgaarb overrides boot device unexpectedly with Intel
->                     and discrete AMDGPU
->            Product: Drivers
->            Version: 2.5
->     Kernel Version: 5.10.7-200.fc33.x86_64
->           Hardware: x86-64
->                 OS: Linux
->               Tree: Mainline
->             Status: NEW
->           Severity: normal
->           Priority: P1
->          Component: PCI
->           Assignee: drivers_pci@kernel-bugs.osdl.org
->           Reporter: dominik@greysector.net
->         Regression: No
-> 
-> The system is a MSI Z77A-GD65 mainboard configured to boot in UEFI mode.
-> Despite setting integrated GPU (from i5-3570K CPU) as the default in firmware
-> setup, the kernel sets the discrete GPU (Radeon HD 7950) as boot_vga. This
-> results in wrong order in e.g. switcherooctl:
-> $ switcherooctl list
-> Device: 0
->   Name:        Advanced Micro Devices, Inc. [AMD®/ATI] Tahiti PRO [Radeon HD
-> 7950/8950 OEM / R9 280]
->   Default:     yes
->   Environment: DRI_PRIME=pci-0000_01_00_0
-> 
-> Device: 1
->   Name:        Intel® HD Graphics 4000
->   Default:     no
->   Environment: DRI_PRIME=pci-0000_00_02_0
-> $ lspci -vnn
-> ...
-> 00:02.0 VGA compatible controller [0300]: Intel Corporation Xeon E3-1200 v2/3rd
-> Gen Core processor Graphics Controller [8086:0162] (rev 09) (prog-if 00 [VGA
-> controller])
->         DeviceName:  Onboard IGD
->         Subsystem: Micro-Star International Co., Ltd. [MSI] Device [1462:2111]
->         Flags: bus master, fast devsel, latency 0, IRQ 31
->         Memory at f7800000 (64-bit, non-prefetchable) [size=4M]
->         Memory at d0000000 (64-bit, prefetchable) [size=256M]
->         I/O ports at f000 [size=64]
->         Capabilities: [90] MSI: Enable+ Count=1/1 Maskable- 64bit-
->         Capabilities: [d0] Power Management version 2
->         Capabilities: [a4] PCI Advanced Features
->         Kernel driver in use: i915
->         Kernel modules: i915
-> ...
-> 01:00.0 VGA compatible controller [0300]: Advanced Micro Devices, Inc.
-> [AMD/ATI] Tahiti PRO [Radeon HD 7950/8950 OEM / R9 280] [1002:679a] (prog-if 00
-> [VGA controller])
->         Subsystem: Micro-Star International Co., Ltd. [MSI] Device [1462:2761]
->         Flags: bus master, fast devsel, latency 0, IRQ 32
->         Memory at e0000000 (64-bit, prefetchable) [size=256M]
->         Memory at f7d00000 (64-bit, non-prefetchable) [size=256K]
->         I/O ports at e000 [size=256]
->         Expansion ROM at 000c0000 [disabled] [size=128K]
->         Capabilities: [48] Vendor Specific Information: Len=08 <?>
->         Capabilities: [50] Power Management version 3
->         Capabilities: [58] Express Legacy Endpoint, MSI 00
->         Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
->         Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010
-> <?>
->         Capabilities: [150] Advanced Error Reporting
->         Capabilities: [270] Secondary PCI Express
->         Capabilities: [2b0] Address Translation Service (ATS)
->         Capabilities: [2c0] Page Request Interface (PRI)
->         Capabilities: [2d0] Process Address Space ID (PASID)
->         Kernel driver in use: amdgpu
->         Kernel modules: radeon, amdgpu
-> 
-> $ for f in /sys/bus/pci/devices/*/boot_vga ; do echo -n "$f:" ; cat $f ; done
-> /sys/bus/pci/devices/0000:00:02.0/boot_vga:0
-> /sys/bus/pci/devices/0000:01:00.0/boot_vga:1
-> 
-> $ dmesg
-> ...
-> [    0.267216] pci 0000:01:00.0: BAR 0: assigned to efifb
+I have removed the timestamp in the event name and have posted the 
+selinux patch alone.
 
-This is from drivers/video/fbdev/efifb.c and makes me wonder if this
-is a firmware defect.  You set 00:02.0 to be the default in firmware
-setup, but apparently the EFI FB is using 01:00.0?
+Thanks a lot for reviewing the changes.
 
-> [    0.268571] pci 0000:00:02.0: vgaarb: setting as boot VGA device
-> [    0.268571] pci 0000:00:02.0: vgaarb: VGA device added:
-> decodes=io+mem,owns=io+mem,locks=none
-> [    0.268571] pci 0000:01:00.0: vgaarb: VGA device added:
-> decodes=io+mem,owns=io+mem,locks=none
-> [    0.268571] pci 0000:00:02.0: vgaarb: no bridge control possible
-> [    0.268571] pci 0000:01:00.0: vgaarb: bridge control possible
-> [    0.268571] pci 0000:01:00.0: vgaarb: overriding boot device
-> [    0.268571] vgaarb: loaded
-> [    0.754748] efifb: probing for efifb
-> [    0.754766] efifb: No BGRT, not showing boot graphics
-> [    0.754768] efifb: framebuffer at 0xe0000000, using 8100k, total 8100k
-> [    0.754769] efifb: mode is 1920x1080x32, linelength=7680, pages=1
-> [    0.754770] efifb: scrolling: redraw
-> [    0.754772] efifb: Truecolor: size=8:8:8:8, shift=24:16:8:0
-> [    2.984727] i915 0000:00:02.0: vgaarb: changed VGA decodes:
-> olddecodes=io+mem,decodes=none:owns=io+mem
-> [    3.011601] [drm] Initialized i915 1.6.0 20200917 for 0000:00:02.0 on minor
-> 0
-> [    3.213870] [drm] amdgpu kernel modesetting enabled.
-> [    3.275739] i915 0000:00:02.0: [drm] fb1: i915drmfb frame buffer device
-> [    3.275972] fb0: switching to amdgpudrmfb from EFI VGA
-> [    3.276112] amdgpu 0000:01:00.0: vgaarb: deactivate vga console
-> [    3.276240] [drm] initializing kernel modesetting (TAHITI 0x1002:0x679A
-> 0x1462:0x2761 0x00).
-> ...
-> [    4.069577] amdgpu 0000:01:00.0: [drm] fb0: amdgpudrmfb frame buffer device
-> [    4.351324] [drm] Initialized amdgpu 3.40.0 20150101 for 0000:01:00.0 on
-> minor 1
-> 
-> -- 
-> You may reply to this email to add a comment.
-> 
-> You are receiving this mail because:
-> You are watching the assignee of the bug.
+  -lakshmi
+
+
