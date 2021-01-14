@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093822F6290
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AAD2F6296
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728474AbhANN7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:59:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43518 "EHLO mail.kernel.org"
+        id S1728929AbhANOAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:00:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726315AbhANN7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:59:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D30B123A69;
-        Thu, 14 Jan 2021 13:58:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610632737;
-        bh=JuYT1GxneNabSoFH3WZkBMhsNU+ayJ6vKtjnmLGo5UU=;
+        id S1726730AbhANOAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:00:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83AA123A69;
+        Thu, 14 Jan 2021 13:59:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610632780;
+        bh=ladoP6+LmH3OTLqx40cXlLNjDwqMk+v5QZwHRlHcYHQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iWXUZyilQSXoQ+iBcLZPhjuW4vX6gHfo5CdcnHkIUt/CKiLIrVK1F9jgYP5WGgDyR
-         J4wWJOYjIvKcAnTEInUdsEVgAqNjkzgNYO0YI1YB3Ltiquo8FV3zHOmddp1n11v25D
-         pquNvzxWrL+MTp9VvffODGZ9zTYbobGQrExRQgtM=
-Date:   Thu, 14 Jan 2021 14:58:54 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Viktor Mihajlovski <mihajlov@linux.ibm.com>
-Subject: Re: [RFC 1/1] s390/pci: expose UID checking state in sysfs
-Message-ID: <YABOHuejsuriwSPn@kroah.com>
-References: <20210113185500.GA1918216@bjorn-Precision-5520>
- <675aa466-59ea-cf8a-6eec-caa6478ba4cd@linux.ibm.com>
- <20210114134453.bkfik4zjt5ehz6d5@wittgenstein>
+        b=MS2p0kePgx1mItBQV8PxP9zm4Rnw2L2Xxk/El67hV9Vi+315U5V7diGBJwg8b7BN5
+         iSK4UmtGJFl6amo5/6t+q2BaLGWNMsqhUBTZevtK4j7TRCcvt8lS5rcKboq2tP99dK
+         e8asBdVB5kJVmvKsk7Ky5qWtUZG+HwuDiXlwRTOqJBtnLYg2iSroSnsVfWyohxaauQ
+         hmD5v1B36dJFqur3QcKpCornGufYDgx9LY3fy5KXxYZd7NjkL4lJ2jQPhD62nCLEAz
+         vA31LD5zSHLLDP24y7U18dWC1AnsCjaWze1PkuZB0RPOHeN1f+6IvNz6pOnZnj0lUq
+         r24FRwrefZGMw==
+Date:   Thu, 14 Jan 2021 13:59:06 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>
+Subject: Re: SPI not working on 5.10 and 5.11, bisected to 766c6b63aa04
+ ("spi: fix client driver breakages when using GPIO descriptors")
+Message-ID: <20210114135906.GF4854@sirena.org.uk>
+References: <dc5d8d35-31aa-b36d-72b0-17c8a7c13061@csgroup.eu>
+ <20210113123345.GD4641@sirena.org.uk>
+ <9400d900-f315-815f-a358-16ed4963da6c@csgroup.eu>
+ <20210114115958.GB4854@sirena.org.uk>
+ <006d1594-8eec-3aad-1651-919071e89f3b@csgroup.eu>
+ <20210114132258.GD4854@sirena.org.uk>
+ <adbf508d-ed5a-e06a-4a59-98df0229d7b4@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Il7n/DHsA0sMLmDu"
 Content-Disposition: inline
-In-Reply-To: <20210114134453.bkfik4zjt5ehz6d5@wittgenstein>
+In-Reply-To: <adbf508d-ed5a-e06a-4a59-98df0229d7b4@csgroup.eu>
+X-Cookie: You have taken yourself too seriously.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 02:44:53PM +0100, Christian Brauner wrote:
-> On Thu, Jan 14, 2021 at 02:20:10PM +0100, Niklas Schnelle wrote:
-> > 
-> > 
-> > On 1/13/21 7:55 PM, Bjorn Helgaas wrote:
-> > > On Wed, Jan 13, 2021 at 08:47:58AM +0100, Niklas Schnelle wrote:
-> > >> On 1/12/21 10:50 PM, Bjorn Helgaas wrote:
-> > >>> On Mon, Jan 11, 2021 at 10:38:57AM +0100, Niklas Schnelle wrote:
-> > >>>> We use the UID of a zPCI adapter, or the UID of the function zero if
-> > >>>> there are multiple functions in an adapter, as PCI domain if and only if
-> > >>>> UID Checking is turned on.
-> > >>>> Otherwise we automatically generate domains as devices appear.
-> > >>>>
-> > >>>> The state of UID Checking is thus essential to know if the PCI domain
-> > >>>> will be stable, yet currently there is no way to access this information
-> > >>>> from userspace.
-> > >>>> So let's solve this by showing the state of UID checking as a sysfs
-> > >>>> attribute in /sys/bus/pci/uid_checking
-> > > 
-> > >>>> +/* Global zPCI attributes */
-> > >>>> +static ssize_t uid_checking_show(struct kobject *kobj,
-> > >>>> +				 struct kobj_attribute *attr, char *buf)
-> > >>>> +{
-> > >>>> +	return sprintf(buf, "%i\n", zpci_unique_uid);
-> > >>>> +}
-> > >>>> +
-> > >>>> +static struct kobj_attribute sys_zpci_uid_checking_attr =
-> > >>>> +	__ATTR(uid_checking, 0444, uid_checking_show, NULL);
-> > >>>
-> > >>> Use DEVICE_ATTR_RO instead of __ATTR.
-> > >>
-> > >> It's my understanding that DEVICE_ATTR_* is only for
-> > >> per device attributes. This one is global for the entire
-> > >> Z PCI. I just tried with BUS_ATTR_RO instead
-> > >> and that works but only if I put the attribute at
-> > >> /sys/bus/pci/uid_checking instead of with a zpci
-> > >> subfolder. This path would work for us too, we
-> > >> currently don't have any other global attributes
-> > >> that we are planning to expose but those could of
-> > >> course come up in the future.
-> > > 
-> > > Ah, I missed the fact that this is a kobj_attribute, not a
-> > > device_attribute.  Maybe KERNEL_ATTR_RO()?  Very few uses so far, but
-> > > seems like it might fit?
-> > > 
-> > > Bjorn
-> > > 
-> > 
-> > KERNEL_ATTR_* is currently not exported in any header. After
-> > adding it to include/linuc/sysfs.h it indeed works perfectly.
-> > Adding Christian Brauner as suggested by get_maintainers for
-> > their opinion. I'm of course willing to provide a patch
-> 
-> Hey Niklas et al. :)
-> 
-> I think this will need input from Greg. He should be best versed in
-> sysfs attributes. The problem with KERNEL_ATTR_* to me seems that it's
-> supposed to be kernel internal. Now, that might just be a matter of
-> renaming the macro but let's see whether Greg has any better idea or
-> more questions. :)
 
-The big question is, why are you needing this?
+--Il7n/DHsA0sMLmDu
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No driver or driver subsystem should EVER be messing with a "raw"
-kobject like this.  Just use the existing DEVICE_* macros instead
-please.
+On Thu, Jan 14, 2021 at 02:42:26PM +0100, Christophe Leroy wrote:
+> Le 14/01/2021 =E0 14:22, Mark Brown a =E9crit=A0:
 
-If you are using a raw kobject, please ask me how to do this properly,
-as that is something that should NEVER show up in the /sys/devices/*
-tree.  Otherwise userspace tools will break.
+> > For GPIO chipselects you should really fix the driver to just hand the
+> > GPIO off to the core rather than trying to implement this itself, that
+> > will avoid driver specific differences like this.
 
-thanks,
+> IIUC, it is not trivial as it requires implementing transfer_one() instead
+> of the existing transfer_one_message() in the driver. Am I right ?
 
-greg k-h
+Yes, that's a good idea in general though.  It should normally be pretty
+simple since the conversion is mostly just deleting code doing things
+which will be handled by the core.
+
+> What's the difference/benefit of transfer_one() compared to the existing =
+transfer_one_message() ?
+
+It factors out all the handling of chip selects, including per-transfer
+chip select inversion and so on, and also factors out all the handling
+of in-message delays.  If nothing else it reduces the amount of
+duplicated code that might require maintainance can have issues with
+misaligned expectations from the core or client drivers.
+
+--Il7n/DHsA0sMLmDu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAATikACgkQJNaLcl1U
+h9BW6Af+Pw9Y1WvW7FDLeDR69lK5Jq9X67HuG7iEoAFDhmj/Q6Jb4DzPkSeG1LRs
+YRbcTBvXoPs2vVAU3bisyy4MmTmnhW5BtlkigV2NTXPKi3qzRu5YjhxEjPAmgeJ9
+RZhHco4yXMm7dP7g7EPvlb3VqjBH+ARZRnT5SN870EkDnQV6aEBR9YRHbQmKsabV
+VkU2uvRlXIdpJ9FKBbDcV0jWKqJdVphdBhEKhr9mWKxG5FBQ05iGyJdDL0c2zr5x
+oBubtYUiq/yd41w96NV4/4O9h9DmTDxiQ1QM8kW6mbgU4JykUhq5qr6ua3G0pRLC
+/9vXvRuBpx6IbHr7IM1p2oasKi1WsA==
+=nlRk
+-----END PGP SIGNATURE-----
+
+--Il7n/DHsA0sMLmDu--
