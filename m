@@ -2,458 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7C12F6C0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7E02F6C2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727248AbhANU1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 15:27:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbhANU1m (ORCPT
+        id S1727318AbhANUcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 15:32:42 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32224 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726007AbhANUck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 15:27:42 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D4BC0613C1;
-        Thu, 14 Jan 2021 12:27:01 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id y187so5835016wmd.3;
-        Thu, 14 Jan 2021 12:27:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YlxuI/i04NvIizUtgMPcZo6k8/UWR0iA/vF7+00yv84=;
-        b=W5n6Fj9hOjpYHK8JYqZ4SaAmJVA3bK6bEHD9e1f7WWjszxIWqd8KO7WdrOgXHxBVN6
-         mk5F/KtjNP6+6rAfngix4FhoisiK+73bd3QQDjBHNYiR14d6+XZraiyZ977XJ81Vux85
-         JPYUIPRxEllahkv6AieOdcL5VrZKuACI0hNwvz7nYuEDIXBszIckzp6dBiX0Hk0XM6qs
-         K2qVfO3PUhYpxgzgza8a33z5n7DDbhGLI4Y/4ajoSadepcBVT+EDJ3SS+kNWCohAOzjY
-         Rh7GTDfk1IkVyOrBkcPjBvKwa1HVzyFQBRFEHWWZFem9Zy7gT587LCfJnRF6pcTeTA5Q
-         dn2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YlxuI/i04NvIizUtgMPcZo6k8/UWR0iA/vF7+00yv84=;
-        b=ChOEWTMkSMkD0KlzZnreXnm2aOZqUn01jcZJh/4GTrjblZ4ITs50kdzyzsPSzcuoS7
-         iK5L+2BUjK32TuhKNuqFqbJ4cwYWAVIyaSyUuOQpPr8c3tPJ3ppZlpC1BNytLrcRX8x9
-         wcLjhCPgdERR5vmZL7AAA/QyrP8oC7aTLok5QPGm60QzrMq2UUj+aFuR5FvpU6EytzjC
-         sUnEJfh0x2XpfRrmyClTSxyjOh310khc4O0ak5HzR/On5ogBuyp+/69Hypt2ZD9xvPfD
-         0zoYvv4PTH2w0y41QncaeGkto7VWWFCos+UUtZrpYK3oLbSf6q1V+buIqf1suXpv1wmJ
-         EPoQ==
-X-Gm-Message-State: AOAM531wv9EIxycVDlti9uGsDmQKLekO81XS6JNX7eAaUP4SLpQiN4iO
-        0PbF4nnGudTMVcPrUz0YSVXUCsFR8KjJTLOO960=
-X-Google-Smtp-Source: ABdhPJzDHvFWvjfQy2UrYjS1w+x210yySc8VZqArHUn3u2wuCfj1Fli4gySN+bVKr+E4vs+qH/4CDQ==
-X-Received: by 2002:a7b:cd91:: with SMTP id y17mr5287868wmj.171.1610656020102;
-        Thu, 14 Jan 2021 12:27:00 -0800 (PST)
-Received: from anparri.mshome.net (host-80-116-1-51.retail.telecomitalia.it. [80.116.1.51])
-        by smtp.gmail.com with ESMTPSA id d7sm2188625wmb.47.2021.01.14.12.26.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 12:26:59 -0800 (PST)
-From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        linux-hyperv@vger.kernel.org,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH v2] hv_netvsc: Add (more) validation for untrusted Hyper-V values
-Date:   Thu, 14 Jan 2021 21:26:28 +0100
-Message-Id: <20210114202628.119541-1-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 14 Jan 2021 15:32:40 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10EK3eFO188422;
+        Thu, 14 Jan 2021 15:31:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=yb88OLKBP+AJmj0kV5KKr5DZmvyl7S3yGW+RSF3VqMs=;
+ b=WkQFYndShidZxsWtvQCcXJaU4jXDI2k5PGVVmpV3b2R0LY7NvdPdJP4jjRtE4GqXt4eg
+ nRmxb4fIydVE8W0iYLgh9TkQBwbnRef2APTqs4APIRrEGXRLS1A2+LXwoUWiM3qDS7gN
+ 7iVF7eAAS9jMX60zqfxIqoxyFWhqhTDrqLnadqPHRnKS0qOG49d7XJVLCGM/BG1NIN7e
+ 9sQ/Mq2fdWKirHEObLbGU904u4YLy2jjL8+GcuLbMh6kZUWohqACGqQR5EavLwMTbixH
+ YYaINoDTb0ZZf/5QjEOTYJtZk99buWtfNPew5+xa0HGfflX23c4owfoUecHSovn5lKB9 3w== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 362vfkgy2c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Jan 2021 15:31:52 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10EKSBnb015074;
+        Thu, 14 Jan 2021 20:31:52 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma02dal.us.ibm.com with ESMTP id 35y44a1q2j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Jan 2021 20:31:52 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10EKVoN924248648
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Jan 2021 20:31:50 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 55E486E058;
+        Thu, 14 Jan 2021 20:31:50 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 09C6D6E04C;
+        Thu, 14 Jan 2021 20:31:49 +0000 (GMT)
+Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Jan 2021 20:31:49 +0000 (GMT)
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+To:     james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: [PATCH v5 00/21] ibmvfc: initial MQ development/enablement
+Date:   Thu, 14 Jan 2021 14:31:27 -0600
+Message-Id: <20210114203148.246656-1-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-14_07:2021-01-14,2021-01-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 mlxlogscore=999 spamscore=0
+ malwarescore=0 suspectscore=0 clxscore=1015 phishscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101140115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For additional robustness in the face of Hyper-V errors or malicious
-behavior, validate all values that originate from packets that Hyper-V
-has sent to the guest.  Ensure that invalid values cannot cause indexing
-off the end of an array, or subvert an existing validation via integer
-overflow.  Ensure that outgoing packets do not have any leftover guest
-memory that has not been zeroed out.
+Recent updates in pHyp Firmware and VIOS releases provide new infrastructure
+towards enabling Subordinate Command Response Queues (Sub-CRQs) such that each
+Sub-CRQ is a channel backed by an actual hardware queue in the FC stack on the
+partner VIOS. Sub-CRQs are registered with the firmware via hypercalls and then
+negotiated with the VIOS via new Management Datagrams (MADs) for channel setup.
 
-Reported-by: Juan Vazquez <juvazq@microsoft.com>
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org
----
-Applies to 5.11-rc3 (and hyperv-next).
+This initial implementation adds the necessary Sub-CRQ framework and implements
+the new MADs for negotiating and assigning a set of Sub-CRQs to associated VIOS
+HW backed channels.
 
-Changes since v1 (Juan Vazquez):
-  - Improve validation in rndis_set_link_state() and rndis_get_ppi()
-  - Remove memory/skb leak in netvsc_alloc_recv_skb()
+This latest series is completely rebased and reimplemented on top of the recent
+("ibmvfc: MQ prepartory locking work") series. [1]
 
- drivers/net/hyperv/netvsc.c       |   3 +-
- drivers/net/hyperv/netvsc_bpf.c   |   6 ++
- drivers/net/hyperv/netvsc_drv.c   |  18 +++-
- drivers/net/hyperv/rndis_filter.c | 171 +++++++++++++++++++-----------
- 4 files changed, 136 insertions(+), 62 deletions(-)
+[1] https://lore.kernel.org/linux-scsi/20210106201835.1053593-1-tyreld@linux.ibm.com/
 
-diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-index 1510a236aa341..d9324961e0d64 100644
---- a/drivers/net/hyperv/netvsc.c
-+++ b/drivers/net/hyperv/netvsc.c
-@@ -887,6 +887,7 @@ static inline int netvsc_send_pkt(
- 	int ret;
- 	u32 ring_avail = hv_get_avail_to_write_percent(&out_channel->outbound);
- 
-+	memset(&nvmsg, 0, sizeof(struct nvsp_message));
- 	nvmsg.hdr.msg_type = NVSP_MSG1_TYPE_SEND_RNDIS_PKT;
- 	if (skb)
- 		rpkt->channel_type = 0;		/* 0 is RMC_DATA */
-@@ -1306,7 +1307,7 @@ static void netvsc_send_table(struct net_device *ndev,
- 			 sizeof(union nvsp_6_message_uber);
- 
- 	/* Boundary check for all versions */
--	if (offset > msglen - count * sizeof(u32)) {
-+	if (msglen < count * sizeof(u32) || offset > msglen - count * sizeof(u32)) {
- 		netdev_err(ndev, "Received send-table offset too big:%u\n",
- 			   offset);
- 		return;
-diff --git a/drivers/net/hyperv/netvsc_bpf.c b/drivers/net/hyperv/netvsc_bpf.c
-index 440486d9c999e..11f0588a88843 100644
---- a/drivers/net/hyperv/netvsc_bpf.c
-+++ b/drivers/net/hyperv/netvsc_bpf.c
-@@ -37,6 +37,12 @@ u32 netvsc_run_xdp(struct net_device *ndev, struct netvsc_channel *nvchan,
- 	if (!prog)
- 		goto out;
- 
-+	/* Ensure that the below memcpy() won't overflow the page buffer. */
-+	if (len > ndev->mtu + ETH_HLEN) {
-+		act = XDP_DROP;
-+		goto out;
-+	}
-+
- 	/* allocate page buffer for data */
- 	page = alloc_page(GFP_ATOMIC);
- 	if (!page) {
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index f32f28311d573..e5501c1a0cbd4 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -760,6 +760,16 @@ void netvsc_linkstatus_callback(struct net_device *net,
- 	if (indicate->status == RNDIS_STATUS_LINK_SPEED_CHANGE) {
- 		u32 speed;
- 
-+		/* Validate status_buf_offset */
-+		if (indicate->status_buflen < sizeof(speed) ||
-+		    indicate->status_buf_offset < sizeof(*indicate) ||
-+		    resp->msg_len - RNDIS_HEADER_SIZE < indicate->status_buf_offset ||
-+		    resp->msg_len - RNDIS_HEADER_SIZE - indicate->status_buf_offset
-+				< indicate->status_buflen) {
-+			netdev_err(net, "invalid rndis_indicate_status packet\n");
-+			return;
-+		}
-+
- 		speed = *(u32 *)((void *)indicate
- 				 + indicate->status_buf_offset) / 10000;
- 		ndev_ctx->speed = speed;
-@@ -865,8 +875,14 @@ static struct sk_buff *netvsc_alloc_recv_skb(struct net_device *net,
- 	 */
- 	if (csum_info && csum_info->receive.ip_checksum_value_invalid &&
- 	    csum_info->receive.ip_checksum_succeeded &&
--	    skb->protocol == htons(ETH_P_IP))
-+	    skb->protocol == htons(ETH_P_IP)) {
-+		/* Check that there is enough space to hold the IP header. */
-+		if (skb_headlen(skb) < sizeof(struct iphdr)) {
-+			kfree_skb(skb);
-+			return NULL;
-+		}
- 		netvsc_comp_ipcsum(skb);
-+	}
- 
- 	/* Do L4 checksum offload if enabled and present. */
- 	if (csum_info && (net->features & NETIF_F_RXCSUM)) {
-diff --git a/drivers/net/hyperv/rndis_filter.c b/drivers/net/hyperv/rndis_filter.c
-index 7e6dee2f02a43..68091a9a5070d 100644
---- a/drivers/net/hyperv/rndis_filter.c
-+++ b/drivers/net/hyperv/rndis_filter.c
-@@ -131,66 +131,84 @@ static void dump_rndis_message(struct net_device *netdev,
- {
- 	switch (rndis_msg->ndis_msg_type) {
- 	case RNDIS_MSG_PACKET:
--		netdev_dbg(netdev, "RNDIS_MSG_PACKET (len %u, "
--			   "data offset %u data len %u, # oob %u, "
--			   "oob offset %u, oob len %u, pkt offset %u, "
--			   "pkt len %u\n",
--			   rndis_msg->msg_len,
--			   rndis_msg->msg.pkt.data_offset,
--			   rndis_msg->msg.pkt.data_len,
--			   rndis_msg->msg.pkt.num_oob_data_elements,
--			   rndis_msg->msg.pkt.oob_data_offset,
--			   rndis_msg->msg.pkt.oob_data_len,
--			   rndis_msg->msg.pkt.per_pkt_info_offset,
--			   rndis_msg->msg.pkt.per_pkt_info_len);
-+		if (rndis_msg->msg_len - RNDIS_HEADER_SIZE >= sizeof(struct rndis_packet)) {
-+			const struct rndis_packet *pkt = &rndis_msg->msg.pkt;
-+			netdev_dbg(netdev, "RNDIS_MSG_PACKET (len %u, "
-+				   "data offset %u data len %u, # oob %u, "
-+				   "oob offset %u, oob len %u, pkt offset %u, "
-+				   "pkt len %u\n",
-+				   rndis_msg->msg_len,
-+				   pkt->data_offset,
-+				   pkt->data_len,
-+				   pkt->num_oob_data_elements,
-+				   pkt->oob_data_offset,
-+				   pkt->oob_data_len,
-+				   pkt->per_pkt_info_offset,
-+				   pkt->per_pkt_info_len);
-+		}
- 		break;
- 
- 	case RNDIS_MSG_INIT_C:
--		netdev_dbg(netdev, "RNDIS_MSG_INIT_C "
--			"(len %u, id 0x%x, status 0x%x, major %d, minor %d, "
--			"device flags %d, max xfer size 0x%x, max pkts %u, "
--			"pkt aligned %u)\n",
--			rndis_msg->msg_len,
--			rndis_msg->msg.init_complete.req_id,
--			rndis_msg->msg.init_complete.status,
--			rndis_msg->msg.init_complete.major_ver,
--			rndis_msg->msg.init_complete.minor_ver,
--			rndis_msg->msg.init_complete.dev_flags,
--			rndis_msg->msg.init_complete.max_xfer_size,
--			rndis_msg->msg.init_complete.
--			   max_pkt_per_msg,
--			rndis_msg->msg.init_complete.
--			   pkt_alignment_factor);
-+		if (rndis_msg->msg_len - RNDIS_HEADER_SIZE >=
-+				sizeof(struct rndis_initialize_complete)) {
-+			const struct rndis_initialize_complete *init_complete =
-+				&rndis_msg->msg.init_complete;
-+			netdev_dbg(netdev, "RNDIS_MSG_INIT_C "
-+				"(len %u, id 0x%x, status 0x%x, major %d, minor %d, "
-+				"device flags %d, max xfer size 0x%x, max pkts %u, "
-+				"pkt aligned %u)\n",
-+				rndis_msg->msg_len,
-+				init_complete->req_id,
-+				init_complete->status,
-+				init_complete->major_ver,
-+				init_complete->minor_ver,
-+				init_complete->dev_flags,
-+				init_complete->max_xfer_size,
-+				init_complete->max_pkt_per_msg,
-+				init_complete->pkt_alignment_factor);
-+		}
- 		break;
- 
- 	case RNDIS_MSG_QUERY_C:
--		netdev_dbg(netdev, "RNDIS_MSG_QUERY_C "
--			"(len %u, id 0x%x, status 0x%x, buf len %u, "
--			"buf offset %u)\n",
--			rndis_msg->msg_len,
--			rndis_msg->msg.query_complete.req_id,
--			rndis_msg->msg.query_complete.status,
--			rndis_msg->msg.query_complete.
--			   info_buflen,
--			rndis_msg->msg.query_complete.
--			   info_buf_offset);
-+		if (rndis_msg->msg_len - RNDIS_HEADER_SIZE >=
-+				sizeof(struct rndis_query_complete)) {
-+			const struct rndis_query_complete *query_complete =
-+				&rndis_msg->msg.query_complete;
-+			netdev_dbg(netdev, "RNDIS_MSG_QUERY_C "
-+				"(len %u, id 0x%x, status 0x%x, buf len %u, "
-+				"buf offset %u)\n",
-+				rndis_msg->msg_len,
-+				query_complete->req_id,
-+				query_complete->status,
-+				query_complete->info_buflen,
-+				query_complete->info_buf_offset);
-+		}
- 		break;
- 
- 	case RNDIS_MSG_SET_C:
--		netdev_dbg(netdev,
--			"RNDIS_MSG_SET_C (len %u, id 0x%x, status 0x%x)\n",
--			rndis_msg->msg_len,
--			rndis_msg->msg.set_complete.req_id,
--			rndis_msg->msg.set_complete.status);
-+		if (rndis_msg->msg_len - RNDIS_HEADER_SIZE + sizeof(struct rndis_set_complete)) {
-+			const struct rndis_set_complete *set_complete =
-+				&rndis_msg->msg.set_complete;
-+			netdev_dbg(netdev,
-+				"RNDIS_MSG_SET_C (len %u, id 0x%x, status 0x%x)\n",
-+				rndis_msg->msg_len,
-+				set_complete->req_id,
-+				set_complete->status);
-+		}
- 		break;
- 
- 	case RNDIS_MSG_INDICATE:
--		netdev_dbg(netdev, "RNDIS_MSG_INDICATE "
--			"(len %u, status 0x%x, buf len %u, buf offset %u)\n",
--			rndis_msg->msg_len,
--			rndis_msg->msg.indicate_status.status,
--			rndis_msg->msg.indicate_status.status_buflen,
--			rndis_msg->msg.indicate_status.status_buf_offset);
-+		if (rndis_msg->msg_len - RNDIS_HEADER_SIZE >=
-+				sizeof(struct rndis_indicate_status)) {
-+			const struct rndis_indicate_status *indicate_status =
-+				&rndis_msg->msg.indicate_status;
-+			netdev_dbg(netdev, "RNDIS_MSG_INDICATE "
-+				"(len %u, status 0x%x, buf len %u, buf offset %u)\n",
-+				rndis_msg->msg_len,
-+				indicate_status->status,
-+				indicate_status->status_buflen,
-+				indicate_status->status_buf_offset);
-+		}
- 		break;
- 
- 	default:
-@@ -246,11 +264,20 @@ static void rndis_set_link_state(struct rndis_device *rdev,
- {
- 	u32 link_status;
- 	struct rndis_query_complete *query_complete;
-+	u32 msg_len = request->response_msg.msg_len;
-+
-+	/* Ensure the packet is big enough to access its fields */
-+	if (msg_len - RNDIS_HEADER_SIZE < sizeof(struct rndis_query_complete))
-+		return;
- 
- 	query_complete = &request->response_msg.msg.query_complete;
- 
- 	if (query_complete->status == RNDIS_STATUS_SUCCESS &&
--	    query_complete->info_buflen == sizeof(u32)) {
-+	    query_complete->info_buflen >= sizeof(u32) &&
-+	    query_complete->info_buf_offset >= sizeof(*query_complete) &&
-+	    msg_len - RNDIS_HEADER_SIZE >= query_complete->info_buf_offset &&
-+	    msg_len - RNDIS_HEADER_SIZE - query_complete->info_buf_offset
-+			>= query_complete->info_buflen) {
- 		memcpy(&link_status, (void *)((unsigned long)query_complete +
- 		       query_complete->info_buf_offset), sizeof(u32));
- 		rdev->link_state = link_status != 0;
-@@ -343,7 +370,8 @@ static void rndis_filter_receive_response(struct net_device *ndev,
-  */
- static inline void *rndis_get_ppi(struct net_device *ndev,
- 				  struct rndis_packet *rpkt,
--				  u32 rpkt_len, u32 type, u8 internal)
-+				  u32 rpkt_len, u32 type, u8 internal,
-+				  u32 ppi_size)
- {
- 	struct rndis_per_packet_info *ppi;
- 	int len;
-@@ -359,7 +387,8 @@ static inline void *rndis_get_ppi(struct net_device *ndev,
- 		return NULL;
- 	}
- 
--	if (rpkt->per_pkt_info_len > rpkt_len - rpkt->per_pkt_info_offset) {
-+	if (rpkt->per_pkt_info_len < sizeof(*ppi) ||
-+	    rpkt->per_pkt_info_len > rpkt_len - rpkt->per_pkt_info_offset) {
- 		netdev_err(ndev, "Invalid per_pkt_info_len: %u\n",
- 			   rpkt->per_pkt_info_len);
- 		return NULL;
-@@ -381,8 +410,15 @@ static inline void *rndis_get_ppi(struct net_device *ndev,
- 			continue;
- 		}
- 
--		if (ppi->type == type && ppi->internal == internal)
-+		if (ppi->type == type && ppi->internal == internal) {
-+			/* ppi->size should be big enough to hold the returned object. */
-+			if (ppi->size - ppi->ppi_offset < ppi_size) {
-+				netdev_err(ndev, "Invalid ppi: size %u ppi_offset %u\n",
-+					   ppi->size, ppi->ppi_offset);
-+				continue;
-+			}
- 			return (void *)((ulong)ppi + ppi->ppi_offset);
-+		}
- 		len -= ppi->size;
- 		ppi = (struct rndis_per_packet_info *)((ulong)ppi + ppi->size);
- 	}
-@@ -461,13 +497,16 @@ static int rndis_filter_receive_data(struct net_device *ndev,
- 		return NVSP_STAT_FAIL;
- 	}
- 
--	vlan = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, IEEE_8021Q_INFO, 0);
-+	vlan = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, IEEE_8021Q_INFO, 0, sizeof(*vlan));
- 
--	csum_info = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, TCPIP_CHKSUM_PKTINFO, 0);
-+	csum_info = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, TCPIP_CHKSUM_PKTINFO, 0,
-+				  sizeof(*csum_info));
- 
--	hash_info = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, NBL_HASH_VALUE, 0);
-+	hash_info = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, NBL_HASH_VALUE, 0,
-+				  sizeof(*hash_info));
- 
--	pktinfo_id = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, RNDIS_PKTINFO_ID, 1);
-+	pktinfo_id = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, RNDIS_PKTINFO_ID, 1,
-+				   sizeof(*pktinfo_id));
- 
- 	data = (void *)msg + data_offset;
- 
-@@ -522,9 +561,6 @@ int rndis_filter_receive(struct net_device *ndev,
- 	struct net_device_context *net_device_ctx = netdev_priv(ndev);
- 	struct rndis_message *rndis_msg = data;
- 
--	if (netif_msg_rx_status(net_device_ctx))
--		dump_rndis_message(ndev, rndis_msg);
--
- 	/* Validate incoming rndis_message packet */
- 	if (buflen < RNDIS_HEADER_SIZE || rndis_msg->msg_len < RNDIS_HEADER_SIZE ||
- 	    buflen < rndis_msg->msg_len) {
-@@ -533,6 +569,9 @@ int rndis_filter_receive(struct net_device *ndev,
- 		return NVSP_STAT_FAIL;
- 	}
- 
-+	if (netif_msg_rx_status(net_device_ctx))
-+		dump_rndis_message(ndev, rndis_msg);
-+
- 	switch (rndis_msg->ndis_msg_type) {
- 	case RNDIS_MSG_PACKET:
- 		return rndis_filter_receive_data(ndev, net_dev, nvchan,
-@@ -567,6 +606,7 @@ static int rndis_filter_query_device(struct rndis_device *dev,
- 	u32 inresult_size = *result_size;
- 	struct rndis_query_request *query;
- 	struct rndis_query_complete *query_complete;
-+	u32 msg_len;
- 	int ret = 0;
- 
- 	if (!result)
-@@ -634,8 +674,19 @@ static int rndis_filter_query_device(struct rndis_device *dev,
- 
- 	/* Copy the response back */
- 	query_complete = &request->response_msg.msg.query_complete;
-+	msg_len = request->response_msg.msg_len;
-+
-+	/* Ensure the packet is big enough to access its fields */
-+	if (msg_len - RNDIS_HEADER_SIZE < sizeof(struct rndis_query_complete)) {
-+		ret = -1;
-+		goto cleanup;
-+	}
- 
--	if (query_complete->info_buflen > inresult_size) {
-+	if (query_complete->info_buflen > inresult_size ||
-+	    query_complete->info_buf_offset < sizeof(*query_complete) ||
-+	    msg_len - RNDIS_HEADER_SIZE < query_complete->info_buf_offset ||
-+	    msg_len - RNDIS_HEADER_SIZE - query_complete->info_buf_offset
-+			< query_complete->info_buflen) {
- 		ret = -1;
- 		goto cleanup;
- 	}
+changes in v5:
+* Addressed comments from brking in following patches:
+* Patch 18: Drop queue lock in loop after sending cancel event
+	    Remove cancel event from list after completion
+	    Return -EIO on unknown failure
+* Patch 21: Removed can_queue rebase artifact and range check user supplied
+            nr_scsi_hw_queue value
+
+changes in v4:
+* Series rebased and reworked on top of previous ibmvfc locking series
+* Dropped all previous Reviewed-by tags
+
+changes in v3:
+* Patch 4: changed firmware support logging to dev_warn_once
+* Patch 6: adjusted locking
+* Patch 15: dropped logging verbosity, moved cancel event tracking into subqueue
+* Patch 17: removed write permission for migration module parameters
+	    drive hard reset after update to num of scsi channels
+
+changes in v2:
+* Patch 4: NULL'd scsi_scrq reference after deallocation
+* Patch 6: Added switch case to handle XPORT event
+* Patch 9: fixed ibmvfc_event leak and double free
+* added support for cancel command with MQ
+* added parameter toggles for MQ settings
+
+Tyrel Datwyler (21):
+  ibmvfc: add vhost fields and defaults for MQ enablement
+  ibmvfc: move event pool init/free routines
+  ibmvfc: init/free event pool during queue allocation/free
+  ibmvfc: add size parameter to ibmvfc_init_event_pool
+  ibmvfc: define hcall wrapper for registering a Sub-CRQ
+  ibmvfc: add Subordinate CRQ definitions
+  ibmvfc: add alloc/dealloc routines for SCSI Sub-CRQ Channels
+  ibmvfc: add Sub-CRQ IRQ enable/disable routine
+  ibmvfc: add handlers to drain and complete Sub-CRQ responses
+  ibmvfc: define Sub-CRQ interrupt handler routine
+  ibmvfc: map/request irq and register Sub-CRQ interrupt handler
+  ibmvfc: implement channel enquiry and setup commands
+  ibmvfc: advertise client support for using hardware channels
+  ibmvfc: set and track hw queue in ibmvfc_event struct
+  ibmvfc: send commands down HW Sub-CRQ when channelized
+  ibmvfc: register Sub-CRQ handles with VIOS during channel setup
+  ibmvfc: add cancel mad initialization helper
+  ibmvfc: send Cancel MAD down each hw scsi channel
+  ibmvfc: purge scsi channels after transport loss/reset
+  ibmvfc: enable MQ and set reasonable defaults
+  ibmvfc: provide modules parameters for MQ settings
+
+ drivers/scsi/ibmvscsi/ibmvfc.c | 917 ++++++++++++++++++++++++++++-----
+ drivers/scsi/ibmvscsi/ibmvfc.h |  39 ++
+ 2 files changed, 828 insertions(+), 128 deletions(-)
+
 -- 
-2.25.1
+2.27.0
 
