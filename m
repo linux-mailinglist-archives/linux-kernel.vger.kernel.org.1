@@ -2,137 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD442F566C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 576F02F5667
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728305AbhANBrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:47:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
+        id S1727364AbhANBri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:47:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729808AbhANAlU (ORCPT
+        with ESMTP id S1729814AbhANAlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 19:41:20 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457D3C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:38:11 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id x17so2920213qvo.23
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:38:11 -0800 (PST)
+        Wed, 13 Jan 2021 19:41:51 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D06FC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:41:11 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id c1so2497471qtc.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 16:41:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=GWAuLMH7Ls1Ey0iR5g9WiKswv9AMybZldn+rr0xf6ac=;
-        b=EA5dGny0b2252/x6CNsCPKBTA7REUvSuQY/vkBnPivTVuhM8e9yuI+i12+7oOOBfFs
-         Odc8VO6oCuwkhgHeMO+Kxl6qhi2hPsfF3AMD/AelinGodE7PUAjSE2Hbn6mYPuzD+w4d
-         LW+nnVBmYuL7Q9TFywnfbudkkng1w4GhDAzXOBhadAtiu9hGgckJrjPvsivW2pFpifvX
-         h6E0oo6T0I6oQ0JDleuIMT5bTm+bToe6ZTjz8pFVJZzaiJJwRGcqDwuTYFwkyCcriWBq
-         RRUBgVnbMg3apSIZ/HOwOt7LW/AeIm7+/suFXahOMBLws5n4KwAcBrIv8PxRySYRViTF
-         k6Bw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RXIGwza+eRGXsahFU/+e0gxGzLpturMRd+ajguSF/Mo=;
+        b=oWeKM/1R75GxiUXHH8f0MlEoPx5Up/rkSPATa3aVUhZnyWxw0l5AWaUvR23C7YEXxX
+         oHxzxB9KEFgf/jXlxWJ7THfdFzZVvGTJqHq/diyiFHe+OZqjS852XM+xAfKtug8fLBle
+         Enk41zwKAY9e9lrURfmtZo2KZid+JmQni4znOVdEoauadGgJsWonlFEe7OQHzgoAPVb3
+         xjktpK2Pry0v2IFwXOs1PNTWdv4au9TSP823+xa3DiwYvRwpINfYQmHbQxOPb3SJCdts
+         pvfHlCHzU5rMw4TnVw5hF3zP6oRBtvVM+/5ddU2QKacpIK21NJUVeDg1aMsHFrBsaTz0
+         NHyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=GWAuLMH7Ls1Ey0iR5g9WiKswv9AMybZldn+rr0xf6ac=;
-        b=DK4KEC/4FDSb91oSk3hBBWhv7s0VfbLQ1SLVbywmG7kJFPJjVSHGwe87gc9y1IT+MP
-         ZkopVcHHEEZ1ZtLiKxOxS5YAVkEtRqDCK6YciuTjb3A/0ebdYR7Y8KcizgCs99vzsjQM
-         8uJNpB33Oo64GUZIsUb/ejs5FW4cMgNJesKfs3WHo3L5NMYS9i601QYL1n65V5jACgJZ
-         Rrio+gMt+Fgf86u4/8deqTbOjHRVG26Y5WErGiL49+USAY+UH/+s32mmHOT4xGiMLM+C
-         r+SANwZiYEOfVdex4NeoZJopCD8T/Vbgtsy0kZpoHK8J/9Jhn/4xFvbc1XzvBK7YQ4Lp
-         1bCQ==
-X-Gm-Message-State: AOAM531hawdkB8H/wij91fY2XEk0Wx2RfvXf5OJR8tPt6rHPmejieeEb
-        OmeGPRgMMWdoUTbASOfNAwBLGTXHZq0=
-X-Google-Smtp-Source: ABdhPJxd26knuMip8++7sqtHgt8IOL56+LllnVUDn9Zy+jMdU8upn1suW+wnmfnhT20jDRW580FRWd3GuJ0=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
- (user=seanjc job=sendgmr) by 2002:a25:cf08:: with SMTP id f8mr7105191ybg.210.1610584690440;
- Wed, 13 Jan 2021 16:38:10 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 13 Jan 2021 16:37:08 -0800
-In-Reply-To: <20210114003708.3798992-1-seanjc@google.com>
-Message-Id: <20210114003708.3798992-15-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210114003708.3798992-1-seanjc@google.com>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v2 14/14] KVM: SVM: Skip SEV cache flush if no ASIDs have been used
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RXIGwza+eRGXsahFU/+e0gxGzLpturMRd+ajguSF/Mo=;
+        b=HQOMog9eiSN9iP+o0P6H7BTZWqGbxrb5fK9S8n6X3JN2ZrBljM0COdyj44aGts3y1F
+         3Il+8KRRVTBsggCOwCtuSkBXq31u0eoLeeGXCI0AexAmESc2sjhonkzxiXR9q8zr8UAx
+         N47kJOWNtY7XXR8Nusd/XYpgexy2Wyjn8FLzjZrXnt1SdxTIBzVxOH6S9Og7Rv4/ERSr
+         w8tnOKODpPVv0T+ZMBVwQRbF7f0OtHt3Sq5vQFMK5E5CcT1jbMaUOpSqC7bFJXZiFf9j
+         Nj/WFu3bvQy15Pnp7ZBTiwVRoj2BKVRplsCG9RHeGqanxCpHe9ElrMAEZy7w1xaXSnkm
+         2mHg==
+X-Gm-Message-State: AOAM530r96l/SFel7rY+SoENSsLGqJ6HR7Te16RxkCsNISCUVu401NFm
+        hNY59NKKANPoyEd9IOxHO7j5huSpOBkhsQ==
+X-Google-Smtp-Source: ABdhPJwqfikwdFKpaZgHA7x+7sj32BkFPYFmXf95ctr6XGmuosVqxvC/GYPWBQtRC3fzKg8bJPQh2A==
+X-Received: by 2002:ac8:74c7:: with SMTP id j7mr4890479qtr.102.1610584870385;
+        Wed, 13 Jan 2021 16:41:10 -0800 (PST)
+Received: from localhost.localdomain ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id h26sm2146958qtc.81.2021.01.13.16.41.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 16:41:09 -0800 (PST)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] MAINTAINERS: Add a couple more files to the Clang/LLVM section
+Date:   Wed, 13 Jan 2021 17:40:59 -0700
+Message-Id: <20210114004059.2129921-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Skip SEV's expensive WBINVD and DF_FLUSH if there are no SEV ASIDs
-waiting to be reclaimed, e.g. if SEV was never used.  This "fixes" an
-issue where the DF_FLUSH fails during hardware teardown if the original
-SEV_INIT failed.  Ideally, SEV wouldn't be marked as enabled in KVM if
-SEV_INIT fails, but that's a problem for another day.
+The K: entry should ensure that Nick and I always get CC'd on patches
+that touch these files but it is better to be explicit rather than
+implicit.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 ---
- arch/x86/kvm/svm/sev.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 23a4bead4a82..e71bc742d8da 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -56,9 +56,14 @@ struct enc_region {
- 	unsigned long size;
- };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index cc1e6a5ee6e6..9127456b7eb1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4313,7 +4313,9 @@ W:	https://clangbuiltlinux.github.io/
+ B:	https://github.com/ClangBuiltLinux/linux/issues
+ C:	irc://chat.freenode.net/clangbuiltlinux
+ F:	Documentation/kbuild/llvm.rst
++F:	include/linux/compiler-clang.h
+ F:	scripts/clang-tools/
++F:	scripts/clang-version.sh
+ F:	scripts/lld-version.sh
+ K:	\b(?i:clang|llvm)\b
  
--static int sev_flush_asids(void)
-+static int sev_flush_asids(int min_asid, int max_asid)
- {
--	int ret, error = 0;
-+	int ret, pos, error = 0;
-+
-+	/* Check if there are any ASIDs to reclaim before performing a flush */
-+	pos = find_next_bit(sev_reclaim_asid_bitmap, max_sev_asid, min_asid);
-+	if (pos >= max_asid)
-+		return -EBUSY;
- 
- 	/*
- 	 * DEACTIVATE will clear the WBINVD indicator causing DF_FLUSH to fail,
-@@ -80,14 +85,7 @@ static int sev_flush_asids(void)
- /* Must be called with the sev_bitmap_lock held */
- static bool __sev_recycle_asids(int min_asid, int max_asid)
- {
--	int pos;
--
--	/* Check if there are any ASIDs to reclaim before performing a flush */
--	pos = find_next_bit(sev_reclaim_asid_bitmap, max_sev_asid, min_asid);
--	if (pos >= max_asid)
--		return false;
--
--	if (sev_flush_asids())
-+	if (sev_flush_asids(min_asid, max_asid))
- 		return false;
- 
- 	/* The flush process will flush all reclaimable SEV and SEV-ES ASIDs */
-@@ -1323,10 +1321,10 @@ void sev_hardware_teardown(void)
- 	if (!sev_enabled)
- 		return;
- 
-+	sev_flush_asids(0, max_sev_asid);
-+
- 	bitmap_free(sev_asid_bitmap);
- 	bitmap_free(sev_reclaim_asid_bitmap);
--
--	sev_flush_asids();
- }
- 
- int sev_cpu_init(struct svm_cpu_data *sd)
+
+base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
 -- 
-2.30.0.284.gd98b1dd5eaa7-goog
+2.30.0
 
