@@ -2,122 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826192F58A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:02:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C45AA2F58A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727197AbhANCsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:48:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725888AbhANCsW (ORCPT
+        id S1727460AbhANCuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:50:04 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53352 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725888AbhANCuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 21:48:22 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EEE5C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 18:47:42 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id h186so2512397pfe.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 18:47:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bb9vztNKh5yOtZxuyb9LtKscOOsr5r79L3TCOP8Fxpw=;
-        b=Wk++KEvZgXFQglTG6qkX5vApZwPahrumxGHE8eNv2CrTeJFuPxhxtOXMtfsNf1zQX0
-         Wfrjth2PgAq46N8ehgJNMpslq7pfh80U7P7kKisKrHSeEZnm0FqsNg5UwJnkiXIGyzGc
-         Gp1KcCZ4XiF0zPNuZoecIks4e2PHOLy1i2vnQ7j1hFbjVjbm4YbbFxtwC5eYrigiyWJQ
-         4qZPAThDKIPGpxb01tmXNxQrWrwOxHdZB88eNyuAgDFktUCZW82VXqxmihXZ3kpBcIt5
-         kt2HAslL91h9mlxwKEl06c0oooWMJZu/yEM8LDp94GxCtg4gfc7pb55RGnycJhyGqoz2
-         Cxcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bb9vztNKh5yOtZxuyb9LtKscOOsr5r79L3TCOP8Fxpw=;
-        b=HI5tH3kiZBjFNLncy7ApV2qskRfpBQ+rk16GAq6ZtCJYT98XN7Xv21yoHcwlTlkyD+
-         yzdYFuZuKfu1/qIeZmx/MSHBMOVly5d5o0LaF52H6ppur6g8Z/IWGM73QStd8qM6D6Nn
-         byewMILhV6n0rtJtX2NxYJqUdpUbZiU/Ca6/0O/9Dh4UNo6lXWGbq7pZjL8fa9qSX5nj
-         euZzw/ToOU1ePbRDri4HmMDyVJwopeva1SUMaLNfRq+ee2ar+P7jtUc16NJ+LWvFoS6b
-         MRpKOtPTG9sClTTy1KhPcdA+EpDx1x3l0s7GCUHparMj0n4YGeEdBE2SNMEdh011T1zn
-         eCnQ==
-X-Gm-Message-State: AOAM531b8MiC4NKQoHWXd17qqzYkmXuCO2zlGayby5/YYmYJbw16cemj
-        ib85cd2CAPhMWM6XktmgeyUjo9tnhohSvoFgiEv73w==
-X-Google-Smtp-Source: ABdhPJybZQMKqUQbok9qICM/zCjzBBjPXnnfJENEz8sj+4/RhLsx2i+9EOD9iTXswcQBmlv38NIlS/VowHGzLG5fPJ8=
-X-Received: by 2002:a63:50a:: with SMTP id 10mr5142821pgf.273.1610592461638;
- Wed, 13 Jan 2021 18:47:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20210106141931.73931-1-songmuchun@bytedance.com>
- <20210106141931.73931-13-songmuchun@bytedance.com> <c4afa795-c679-420b-a228-d7f08cf49d02@oracle.com>
-In-Reply-To: <c4afa795-c679-420b-a228-d7f08cf49d02@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 14 Jan 2021 10:47:04 +0800
-Message-ID: <CAMZfGtWdd79PMRRPydmtsdDyOG1YzfzOK0PbYzESaXAHZVU9Bw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v12 12/13] mm/hugetlb: Gather discrete
- indexes of tail page
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 13 Jan 2021 21:50:01 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10E2XHYZ146495;
+        Wed, 13 Jan 2021 21:49:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=9xb9gz7S2m6AmBErpV3TLXXY1zLjbE8oW8KfQl8jMyE=;
+ b=leJs81loCNuL9ba6PBeJP0bS+zEEKE55O/5CUDY8DRFetzQpNITWvbhgILyZeLm35j7Y
+ oQBmyoPWDPiVFnWAM2J1AR8U8hyZe2ezjSR532lzE0lejBqIAQkwQDggfQtKMIQJ5ANP
+ YI36IR54OB+F0utkI0aBuMY/cjLxlaFA9bO6cTau6ZyYJsWSBrGAtxVnP46Y0JnDcDLb
+ c580aqo8hLL13NkqWWwvUIQG9QqnoZCvhsCtxfXyxXuDNZefqwESaeB4GIXHJ2KukWmL
+ kM/Rib8zoes5AIYE/AMN1VUUcY2GcRQCdAoAs9891ae78a/xun//a/3r80ggyZnFxeFK hQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 362d890cmf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 21:49:15 -0500
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10E2Yhrf003467;
+        Wed, 13 Jan 2021 21:49:15 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 362d890ckt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 21:49:15 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10E2n5IL021095;
+        Thu, 14 Jan 2021 02:49:13 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 35y448b1e3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Jan 2021 02:49:12 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10E2nAY244106238
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Jan 2021 02:49:10 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6F425AE045;
+        Thu, 14 Jan 2021 02:49:10 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BAFE7AE051;
+        Thu, 14 Jan 2021 02:49:06 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.57.196])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Jan 2021 02:49:06 +0000 (GMT)
+Message-ID: <3746bc7673df25354411151442a7772b867be396.camel@linux.ibm.com>
+Subject: Re: [PATCH v10 8/8] selinux: include a consumer of the new IMA
+ critical data hook
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, tyhicks@linux.microsoft.com,
+        sashal@kernel.org, James Morris <jmorris@namei.org>,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Wed, 13 Jan 2021 21:49:05 -0500
+In-Reply-To: <CAHC9VhTHqwKem=MyQBY4TNAq-DOVhwEZS8pjrSE=4OxdEVm-GA@mail.gmail.com>
+References: <20210108040708.8389-1-tusharsu@linux.microsoft.com>
+         <20210108040708.8389-9-tusharsu@linux.microsoft.com>
+         <CAHC9VhSJk0wG=WzO3bwsueiy19mMi9m6MamTrQfH8C=gXUtvGw@mail.gmail.com>
+         <97328fc71687a0e1c327f6821548be9ba35bb193.camel@linux.ibm.com>
+         <CAHC9VhTzaQ_q8gJ0oeok_yJ54XLETNvOuhhKnyRwgqsqvpBLCw@mail.gmail.com>
+         <71cddb6c8676ccd63c89364d805cfca76d32cb6e.camel@linux.ibm.com>
+         <CAHC9VhRhYWEcK7TepZ=LK1m=9Zn_gtOZyAYfamP-TFU3rRH+zw@mail.gmail.com>
+         <e29a618645b0e73ec06960a02b6da465614689ff.camel@linux.ibm.com>
+         <CAHC9VhTHqwKem=MyQBY4TNAq-DOVhwEZS8pjrSE=4OxdEVm-GA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-13_14:2021-01-13,2021-01-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0 bulkscore=0
+ priorityscore=1501 malwarescore=0 phishscore=0 mlxlogscore=999
+ clxscore=1015 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101140010
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 8:18 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 1/6/21 6:19 AM, Muchun Song wrote:
-> > For HugeTLB page, there are more metadata to save in the struct page.
-> > But the head struct page cannot meet our needs, so we have to abuse
-> > other tail struct page to store the metadata. In order to avoid
-> > conflicts caused by subsequent use of more tail struct pages, we can
-> > gather these discrete indexes of tail struct page. In this case, it
-> > will be easier to add a new tail page index later.
+On Wed, 2021-01-13 at 21:40 -0500, Paul Moore wrote:
+> On Wed, Jan 13, 2021 at 6:11 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > On Wed, 2021-01-13 at 17:10 -0500, Paul Moore wrote:
+> > > On Wed, Jan 13, 2021 at 4:11 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > > > On Wed, 2021-01-13 at 14:19 -0500, Paul Moore wrote:
+> > > > > On Wed, Jan 13, 2021 at 2:13 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > > > > > On Tue, 2021-01-12 at 11:27 -0500, Paul Moore wrote:
+> > > > > > > On Thu, Jan 7, 2021 at 11:07 PM Tushar Sugandhi
+> > > > > > > <tusharsu@linux.microsoft.com> wrote:
+> > > > > > > > From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> > > > > > > >
+> > > > > > > > SELinux stores the active policy in memory, so the changes to this data
+> > > > > > > > at runtime would have an impact on the security guarantees provided
+> > > > > > > > by SELinux.  Measuring in-memory SELinux policy through IMA subsystem
+> > > > > > > > provides a secure way for the attestation service to remotely validate
+> > > > > > > > the policy contents at runtime.
+> > > > > > > >
+> > > > > > > > Measure the hash of the loaded policy by calling the IMA hook
+> > > > > > > > ima_measure_critical_data().  Since the size of the loaded policy
+> > > > > > > > can be large (several MB), measure the hash of the policy instead of
+> > > > > > > > the entire policy to avoid bloating the IMA log entry.
+> > > > > > > >
+> > > > > > > > To enable SELinux data measurement, the following steps are required:
+> > > > > > > >
+> > > > > > > > 1, Add "ima_policy=critical_data" to the kernel command line arguments
+> > > > > > > >    to enable measuring SELinux data at boot time.
+> > > > > > > > For example,
+> > > > > > > >   BOOT_IMAGE=/boot/vmlinuz-5.10.0-rc1+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
+> > > > > > > >
+> > > > > > > > 2, Add the following rule to /etc/ima/ima-policy
+> > > > > > > >    measure func=CRITICAL_DATA label=selinux
+> > > > > > > >
+> > > > > > > > Sample measurement of the hash of SELinux policy:
+> > > > > > > >
+> > > > > > > > To verify the measured data with the current SELinux policy run
+> > > > > > > > the following commands and verify the output hash values match.
+> > > > > > > >
+> > > > > > > >   sha256sum /sys/fs/selinux/policy | cut -d' ' -f 1
+> > > > > > > >
+> > > > > > > >   grep "selinux-policy-hash" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6
+> > > > > > > >
+> > > > > > > > Note that the actual verification of SELinux policy would require loading
+> > > > > > > > the expected policy into an identical kernel on a pristine/known-safe
+> > > > > > > > system and run the sha256sum /sys/kernel/selinux/policy there to get
+> > > > > > > > the expected hash.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> > > > > > > > Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> > > > > > > > Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > > > > > > > ---
+> > > > > > > >  Documentation/ABI/testing/ima_policy |  3 +-
+> > > > > > > >  security/selinux/Makefile            |  2 +
+> > > > > > > >  security/selinux/ima.c               | 64 ++++++++++++++++++++++++++++
+> > > > > > > >  security/selinux/include/ima.h       | 24 +++++++++++
+> > > > > > > >  security/selinux/include/security.h  |  3 +-
+> > > > > > > >  security/selinux/ss/services.c       | 64 ++++++++++++++++++++++++----
+> > > > > > > >  6 files changed, 149 insertions(+), 11 deletions(-)
+> > > > > > > >  create mode 100644 security/selinux/ima.c
+> > > > > > > >  create mode 100644 security/selinux/include/ima.h
+> > > > > > >
+> > > > > > > I remain concerned about the possibility of bypassing a measurement by
+> > > > > > > tampering with the time, but I appear to be the only one who is
+> > > > > > > worried about this so I'm not going to block this patch on those
+> > > > > > > grounds.
+> > > > > > >
+> > > > > > > Acked-by: Paul Moore <paul@paul-moore.com>
+> > > > > >
+> > > > > > Thanks, Paul.
+> > > > > >
+> > > > > > Including any unique string would cause the buffer hash to change,
+> > > > > > forcing a new measurement.  Perhaps they were concerned with
+> > > > > > overflowing a counter.
+> > > > >
+> > > > > My understanding is that Lakshmi wanted to force a new measurement
+> > > > > each time and felt using a timestamp would be the best way to do that.
+> > > > > A counter, even if it wraps, would have a different value each time
+> > > > > whereas a timestamp is vulnerable to time adjustments.  While a
+> > > > > properly controlled and audited system could be configured and
+> > > > > monitored to detect such an event (I *think*), why rely on that if it
+> > > > > isn't necessary?
+> > > >
+> > > > Why are you saying that even if the counter wraps a new measurement is
+> > > > guaranteed.   I agree with the rest of what you said.
+> > >
+> > > I was assuming that the IMA code simply compares the passed
+> > > "policy_event_name" value to the previous value, if they are different
+> > > a new measurement is taken, if they are the same the measurement
+> > > request is ignored.  If this is the case the counter value is only
+> > > important in as much as that it is different from the previous value,
+> > > even simply toggling a single bit back and forth would suffice in this
+> > > case.  IMA doesn't keep a record of every previous "policy_event_name"
+> > > value does it?  Am I misunderstanding how
+> > > ima_measure_critical_data(...) works?
 > >
-> > There are only (RESERVE_VMEMMAP_SIZE / sizeof(struct page)) struct
-> > page structs that can be used when CONFIG_HUGETLB_PAGE_FREE_VMEMMAP,
-> > so add a BUILD_BUG_ON to catch invalid usage of the tail struct page.
+> > Originally, there was quite a bit of discussion as to how much or how
+> > little should be measured for a number of reasons.  One reason is that
+> > the TPM is relatively slow.  Another reason is to limit the size of the
+> > measurement list.  For this reason, duplicate hashes aren't added to
+> > the measurement list or extended into the TPM.
 > >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> > ---
-> >  include/linux/hugetlb.h        | 14 ++++++++++++++
-> >  include/linux/hugetlb_cgroup.h | 15 +++++++++------
-> >  mm/hugetlb.c                   | 25 ++++++++++++-------------
-> >  mm/hugetlb_vmemmap.c           |  8 ++++++++
-> >  4 files changed, 43 insertions(+), 19 deletions(-)
->
-> My apologies!  I did not get to this patch in previous versions of the
-> series.  My "RFC create hugetlb flags to consolidate state" was done
-> before I even noticed your efforts here.
->
-> At least we agree the metadata could be better organized. :)
->
-> IMO, using page.private of the head page to consolidate flags will be
-> easier to manage.  So, I would like to use that.
+> > When a dentry is removed from cache, its also removed from IMA's iint
+> > cache.  A subsequent file read would result in adding the measurement
+> > and extending the TPM again.  ima_lookup_digest_entry() is called to
+> > prevent adding the duplicate entry.
+> >
+> > Lakshmi is trying to address the situation where an event changes a
+> > value, but then is restored to the original value.  The original and
+> > subsequent events are measured, but restoring to the original value
+> > isn't re-measured.  This isn't any different than when a file is
+> > modified and then reverted.
+> >
+> > Instead of changing the name like this, which doesn't work for files,
+> > allowing duplicate measurements should be generic, based on policy.
+> 
+> Perhaps it is just the end of the day and I'm a bit tired, but I just
+> read all of the above and I have no idea what your current thoughts
+> are regarding this patch.
 
-Agree. Using page.private to manage the page flag is a good
-choice. When your RFC patch is applied, I will rebase it and
-rework this patch.
+Other than appending the timestamp, which is a hack, the patch is fine.
+Support for re-measuring an event can be upstreamed independently.
 
->
-> The BUILD_BUG_ON in this patch makes sense.
-> --
-> Mike Kravetz
+Mimi
+
