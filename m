@@ -2,89 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C922F66C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB7E2F66C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728260AbhANRGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:06:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726212AbhANRGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:06:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C14C23B1C;
-        Thu, 14 Jan 2021 17:05:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610643933;
-        bh=hwf3Sj/6g5H0FgDr5lRz9hWS4NsLDeGdj2FQI3Njcdw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kCHIxu1Ium/Rgyz9SefxLajRjTZIbQFN2FuB/rX1oEHn0mJkVmz7ZTNvVOHIKd6jG
-         MYb9a/yLBsC+WqGiW5yEWMm8/U1Di9efvc0l2YwFC6JC2xZSfONs0c4vdtuj31cSgB
-         +pJkSIM0retppMmDDkFcqgMIgoK4Qimua9I+m9zw=
-Date:   Thu, 14 Jan 2021 18:05:30 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>, Wu Hao <hao.wu@intel.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        linux-fpga@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] fpga: dfl-pci: rectify ReST formatting
-Message-ID: <YAB52nrYo2MTdlzA@kroah.com>
-References: <20210111112113.27242-1-lukas.bulwahn@gmail.com>
- <X/x0j+hWRdJ6U/MG@kroah.com>
- <CAKXUXMzR2J895_+ZsRqcJ___Pu0HnRfiiFFrGfehQe8J4kQrgg@mail.gmail.com>
- <X/yVflU6ccIlAtgO@kroah.com>
- <YAB1G9e4lCaKq0sq@epycbox.lan>
+        id S1728289AbhANRGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:06:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726275AbhANRGt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 12:06:49 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3A2C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:06:08 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id r9so5793135otk.11
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:06:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ssuwm5geZ6avPsQABGpir+jMcKxJQOkzJqc/fGTa4j0=;
+        b=vGjwCEmiDqj01desICX/fCkLT7uffyYwfgLvgAZKFbZiIVtqeS+vfY4HOoClGo/fDs
+         WCdeGo5kz15jut2PHHzt6riva9ddYbgprKSy98pCIf5V3cR1vdzM1jmcTCBzRuwRpFRn
+         Z4ONbFKb/suIUvG8BiXj+RpKWtFH/mfNSsa9pUoxCqm0obH21c9HyRqHxHdQ69EwNc6n
+         VC4vF2nKcX5OyoxaNhfTY0+rnBfIvj+fY6GbbxLOfuRh6QRLgwTI80gD/qjBHb0rLpFC
+         NTULDoSO2GJbFNSg3rAwVeDYe0tnwg5xk56rN/Xz5CoB8ibkJNsDRFbmbIfZaMlZBVZk
+         N9xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ssuwm5geZ6avPsQABGpir+jMcKxJQOkzJqc/fGTa4j0=;
+        b=qMZgSmlGI0pifcqZ65ICCmS7+H+zAv8uJcscRkGo1lF87AI47bL2gOEUQyWOMn6kZZ
+         VHNM/CrRUdS0Zhl5zJklunV6o1YCDwDv3G+C9cjf917wUulq3/ErGXzAEEJLbdaHbTQy
+         AmzqnXnjPv18U6riu8ZSNiECflOeuZ6gjP5/66eGVlBoA0nge23K1XyDB8Vl/KpAFMrV
+         DwDnpmksnhr7esNwrrmbU+BtHiSjqj3cMTGTwMqRt55KOlQeCFg1+OjFfHfCS+O32TwA
+         T4xV4xfRDH7MJhKcIIGCslJ+vnsuJvAIxZYNN9miqyih6EYXera7C6O1yErJx0hyKAFN
+         XgaA==
+X-Gm-Message-State: AOAM531TuvoHjpST31TeRpQEqimv13R3y9kkL6ZRObp7Bc174WVhHMcn
+        ab9Ku4qNCFZpnmpS9wlgWo/ToLshWZqZ3em4VWI=
+X-Google-Smtp-Source: ABdhPJyb9XIR5l58CoU8oUzP0D7Jskp6KZ4We+iu6vQHk7LdiQd7dLVurjs2uHDUrD24xuURiOdG73ldLAMxUlxPnno=
+X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr5438999ote.132.1610643968152;
+ Thu, 14 Jan 2021 09:06:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAB1G9e4lCaKq0sq@epycbox.lan>
+References: <20210113080752.1003793-1-lee.jones@linaro.org> <20210113080752.1003793-5-lee.jones@linaro.org>
+In-Reply-To: <20210113080752.1003793-5-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 14 Jan 2021 12:05:56 -0500
+Message-ID: <CADnq5_PzcLKd9rMZKaF83FKSEp0Y2tcHXHSJYV=qU+PsjXXbrA@mail.gmail.com>
+Subject: Re: [PATCH 04/30] drm/amd/display/modules/power/power_helpers:
+ Staticify local functions
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 08:45:15AM -0800, Moritz Fischer wrote:
-> Hi Greg,
-> 
-> On Mon, Jan 11, 2021 at 07:14:22PM +0100, Greg Kroah-Hartman wrote:
-> > On Mon, Jan 11, 2021 at 05:34:57PM +0100, Lukas Bulwahn wrote:
-> > > On Mon, Jan 11, 2021 at 4:52 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Mon, Jan 11, 2021 at 12:21:13PM +0100, Lukas Bulwahn wrote:
-> > > > > Commit fa41d10589be ("fpga: dfl-pci: locate DFLs by PCIe vendor specific
-> > > > > capability") provides documentation to the FPGA Device Feature List (DFL)
-> > > > > Framework Overview, but introduced new documentation warnings:
-> > > > >
-> > > > >   ./Documentation/fpga/dfl.rst:
-> > > > >     505: WARNING: Title underline too short.
-> > > > >     523: WARNING: Unexpected indentation.
-> > > > >     523: WARNING: Blank line required after table.
-> > > > >     524: WARNING: Block quote ends without a blank line; unexpected unindent.
-> > > > >
-> > > > > Rectify ReST formatting in ./Documentation/fpga/dfl.rst.
-> > > > >
-> > > > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > > >
-> > > 
-> > > > You forgot a Reported-by: tag for the person who notified you of this :(
-> > > 
-> > > Greg, would you believe that I run 'make htmldocs' on linux-next myself?
-> > 
-> > Sure, just seemed to match up with when Stephen reported this a few
-> > hours earlier...
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> Are you waiting for a resend on this? Just asking because we got three
-> versions of this patch by now :)
-> 
-> I haven't re-sent this since you were already on the thread.
+On Wed, Jan 13, 2021 at 3:08 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../display/modules/power/power_helpers.c:281:=
+6: warning: no previous prototype for =E2=80=98fill_iram_v_2=E2=80=99 [-Wmi=
+ssing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/modules/power/power_helpers.c:455:=
+6: warning: no previous prototype for =E2=80=98fill_iram_v_2_2=E2=80=99 [-W=
+missing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/modules/power/power_helpers.c:601:=
+6: warning: no previous prototype for =E2=80=98fill_iram_v_2_3=E2=80=99 [-W=
+missing-prototypes]
+>
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-I'll just take this one, for some reason I thought Lukas was going to
-resend, my fault...
+Applied.  Thanks!
 
-greg k-h
+Alex
+
+
+> ---
+>  drivers/gpu/drm/amd/display/modules/power/power_helpers.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/modules/power/power_helpers.c b/=
+drivers/gpu/drm/amd/display/modules/power/power_helpers.c
+> index 4fd8bce95d843..3d4c66933f518 100644
+> --- a/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
+> +++ b/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
+> @@ -278,7 +278,7 @@ static void fill_backlight_transform_table_v_2_2(stru=
+ct dmcu_iram_parameters par
+>         }
+>  }
+>
+> -void fill_iram_v_2(struct iram_table_v_2 *ram_table, struct dmcu_iram_pa=
+rameters params)
+> +static void fill_iram_v_2(struct iram_table_v_2 *ram_table, struct dmcu_=
+iram_parameters params)
+>  {
+>         unsigned int set =3D params.set;
+>
+> @@ -452,7 +452,7 @@ void fill_iram_v_2(struct iram_table_v_2 *ram_table, =
+struct dmcu_iram_parameters
+>                         params, ram_table);
+>  }
+>
+> -void fill_iram_v_2_2(struct iram_table_v_2_2 *ram_table, struct dmcu_ira=
+m_parameters params)
+> +static void fill_iram_v_2_2(struct iram_table_v_2_2 *ram_table, struct d=
+mcu_iram_parameters params)
+>  {
+>         unsigned int set =3D params.set;
+>
+> @@ -598,7 +598,7 @@ void fill_iram_v_2_2(struct iram_table_v_2_2 *ram_tab=
+le, struct dmcu_iram_parame
+>                         params, ram_table, true);
+>  }
+>
+> -void fill_iram_v_2_3(struct iram_table_v_2_2 *ram_table, struct dmcu_ira=
+m_parameters params, bool big_endian)
+> +static void fill_iram_v_2_3(struct iram_table_v_2_2 *ram_table, struct d=
+mcu_iram_parameters params, bool big_endian)
+>  {
+>         unsigned int i, j;
+>         unsigned int set =3D params.set;
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
