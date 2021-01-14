@@ -2,83 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 366392F5C37
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B91322F5C34
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727893AbhANIKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 03:10:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727794AbhANIKQ (ORCPT
+        id S1727789AbhANIJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 03:09:55 -0500
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:53295 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727721AbhANIJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 03:10:16 -0500
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B244C061575;
-        Thu, 14 Jan 2021 00:09:36 -0800 (PST)
-Received: by mail-oo1-xc2a.google.com with SMTP id j21so1172236oou.11;
-        Thu, 14 Jan 2021 00:09:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=aflm5DlmshNk5nchTDEsVtg98kBiImMjb4vEn+XiP+I=;
-        b=J2uRbV9ScW/yeAQB/5037uG8RTqrLuzjhALs9mpRTRPXf+WelAq+TiZlgPMP7Ecm/H
-         mwNsbEUnFd3so7hzqY55Zu8FFg9OxMxshIey2sBN+v+51Z6rDkNwOeZFpENKY/QgMCUo
-         +A22NNO0EbplDtsX26HIN6nPtkpZui3kDr/HRDMTn63AJusqQ6uP7BtSK44ThAcmZArh
-         NGVlfH6h4566PdYgjAZ5bjqRL3hv9weKQ6hjkQzoikuwruxCeGowNRrjIonzk6bjC3w1
-         +uTlktjamovNXivAs8CPOoqiS9+/3hBqsE/lla5N1GgRGAXWkof20bjZEeHRGoS8pwTl
-         XEHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=aflm5DlmshNk5nchTDEsVtg98kBiImMjb4vEn+XiP+I=;
-        b=lyeWY2WdNKqOFgyWgK0kzo/SDUNqykzbJdAYVQBPK1Z08BPJVBF5rovX0mJoZdDxda
-         7jkt3fK2BcoNxSEgNHt16sM7Wpr0uPSAZmeoQQNjku3lD+bbTPyMmkUfNCPCXPBwkWsd
-         BtE7drIJBoA4PV7dZhquoBLrMQjgtg5UO0I0U/hrDWPPuVzuGwi53l+uixA2IDTOnHyQ
-         onjsBkFWfrrfuXKNVZK1FEpEZ3W30sQj/TfAS4RcCkySdRJHxZkrK2Rv5VqGzT5Wk9xD
-         r9Fy2t/v2S2cuGnw20hs+I5K7nWQDHnieyNWDJct4VO7khT9UJJAaT+jaIGvcoJ5XCvZ
-         YxKQ==
-X-Gm-Message-State: AOAM531Pne1WFn+IqrYSxrKFtAFYhIezdHr3ln86ZZAfDoocOA27HvmB
-        GcY7QpCZEa/Ge7JvL1PUI+w=
-X-Google-Smtp-Source: ABdhPJwoNeknftbdzuSmdphSD4dYiRbgD//HFMkTGqVzX7WNsIGGH/z930cevVDohwHufitHqIe/rA==
-X-Received: by 2002:a4a:e89e:: with SMTP id g30mr3924003ooe.17.1610611775597;
-        Thu, 14 Jan 2021 00:09:35 -0800 (PST)
-Received: from localhost ([172.243.146.206])
-        by smtp.gmail.com with ESMTPSA id t25sm945601oic.15.2021.01.14.00.09.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 00:09:34 -0800 (PST)
-Date:   Thu, 14 Jan 2021 00:09:26 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Brendan Jackman <jackmanb@google.com>
-Message-ID: <5ffffc36c3ffa_1eeef2081e@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210112154235.2192781-1-jackmanb@google.com>
-References: <20210112154235.2192781-1-jackmanb@google.com>
-Subject: RE: [PATCH bpf-next v6 00/11] Atomics for eBPF
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Thu, 14 Jan 2021 03:09:54 -0500
+X-Originating-IP: 93.61.96.190
+Received: from uno.localdomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 9F3A2C0025;
+        Thu, 14 Jan 2021 08:09:09 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 09:09:27 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        sergei.shtylyov@gmail.com
+Subject: Re: [PATCH v6 5/5] media: i2c: max9286: Configure reverse channel
+ amplitude
+Message-ID: <20210114080927.idz5v472ex25p5r4@uno.localdomain>
+References: <20201215170957.92761-1-jacopo+renesas@jmondi.org>
+ <20201215170957.92761-6-jacopo+renesas@jmondi.org>
+ <X9pCSfxE722rnPHE@pendragon.ideasonboard.com>
+ <20210111104311.e6nyxhzhvlyjjxxw@uno.localdomain>
+ <X/wvc26LXz2VsCkp@pendragon.ideasonboard.com>
+ <20210111112023.brrhxgfedo5fer53@uno.localdomain>
+ <X/0triYZZJiXaf07@pendragon.ideasonboard.com>
+ <20210112090805.myglp2lpozo3blq5@uno.localdomain>
+ <X//cYHkyELaH4XHb@pendragon.ideasonboard.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <X//cYHkyELaH4XHb@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Brendan Jackman wrote:
-> Happy new year everyone, and thanks once again for the reviews.
-> 
-> There's still one unresolved review comment from John[3] but I don't
-> think it needs to block the patchset as it stands, it can be a
-> separate patch. Hope that's OK.
+Hi Laurent,
 
-Its ok on my side if it comes as a follow up. I think it limits the
-use cases without it, but no reason to hold up the series IMO.
+On Thu, Jan 14, 2021 at 07:53:36AM +0200, Laurent Pinchart wrote:
+> Hi Jacopo,
+>
+> >
+> > All in all:
+> > - yes, I think there might be a need to control the noise immunity
+> >   settings after initialization
+> > - I think it should be done on the serializer side, possibly with a DT
+> >   property, possibly something like a boolean 'maxim,high-threshold-enable'
+> > - the deserializer can query that information with a kAPI like
+> >   get_mbus_config() after the remote has probed
+> > - Because of that there is no need for an additional deserializer property
+> >
+> > Hope this makes sense
+>
+> Now I get what you meant. Sorry for missing the point.
+>
+> While it would be technically feasible to query the property from the
+> serializer at runtime, there's the additional issue that the
+> deserializer has a single reverse channel amplitude setting for all the
+> channels. We would need to ensure that the property is set to the same
+> value in all camera DT nodes. Wouldn't it be best to then set it once
+> only, in the deserializer node ?
+>
+
+To be honest I wouldn't mind a run-time error, or a fallback like "the
+first one to probe is the authoritative one, the rest have to follow".
+And don't forget we would need a serializer property anyway to tell
+the chip if it has to enable its noise immunity threshold or not.
+
+But anyway, the here introduced new property already requires
+knwoledge on the deserializer about which camera is connected on the
+other side. It's not so bad, as if cameras are described in a .dtsi or
+.dtbo the deserializer property can be overridden. We can do the same
+for an additional property.
+
+ie. a deserializer-serializer 'maxim,high-threshold-enable' property
+
+RDACM20: pre-programmed high threshold enable
+
+-------------- rdacm20.dtsi -------------------
+&gmsl {
+        maxim,reverse-channel-microvolt = <170000>;
+
+        i2c-mux {
+                i2c@0 {
+                        camera@51 {
+                                ....
+
+                        }
+
+                }
+
+        }
+};
+-------------------------------------------------
+
+RDACM21: no pre-programmed high-threshold, high threshold enabled
+after camera probe
+
+-------------- rdacm21.dtsi -------------------
+&gmsl {
+        maxim,reverse-channel-microvolt = <100000>;
+        maxim,high-threshold-enable;
+
+        i2c-mux {
+                i2c@0 {
+                        camera@51 {
+                                maxim,high-threshold-enable;
+                                ....
+
+                        }
+
+                }
+
+        }
+};
+-------------------------------------------------
+
+RDACM21: no high-threshold enabled at all
+
+-------------- rdacm21.dtsi -------------------
+&gmsl {
+        maxim,reverse-channel-microvolt = <100000>;
+
+        i2c-mux {
+                i2c@0 {
+                        camera@51 {
+                                ....
+
+                        }
+
+                }
+
+        }
+};
+-------------------------------------------------
+
+For the serializer it's a boolean, for the deser we might need to
+specify a voltage, so it might become an uint32
+'maxim,high-threshold-microvolt' there.
+
+-------------- rdacm21.dtsi -------------------
+&gmsl {
+        maxim,reverse-channel-microvolt = <100000>;
+        maxim,high-threshold-microvolt = <170000>;
+
+        i2c-mux {
+                i2c@0 {
+                        camera@51 {
+                                maxim,high-threshold-enable;
+                                ....
+
+                        }
+
+                }
+
+        }
+};
+-------------------------------------------------
+
+> --
+> Regards,
+>
+> Laurent Pinchart
