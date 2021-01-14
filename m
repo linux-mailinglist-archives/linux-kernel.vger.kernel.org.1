@@ -2,64 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6CD2F61E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D122F61E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 14:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729072AbhANNYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 08:24:31 -0500
-Received: from lucky1.263xmail.com ([211.157.147.135]:51442 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726381AbhANNYa (ORCPT
+        id S1729045AbhANNYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 08:24:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35588 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725991AbhANNYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 08:24:30 -0500
-Received: from localhost (unknown [192.168.167.32])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 2DB9BA61C4;
-        Thu, 14 Jan 2021 21:22:03 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 0
-X-SPAM-CHECKED: 5
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from laptop-6u0merh5 (unknown [113.57.152.160])
-        by smtp.263.net (postfix) whith ESMTP id P1325T139709754091264S1610630522873965_;
-        Thu, 14 Jan 2021 21:22:03 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <8ba1458bc9cec944c29d4f799cdd513c>
-X-RL-SENDER: changlianzhi@uniontech.com
-X-SENDER: changlianzhi@uniontech.com
-X-LOGIN-NAME: changlianzhi@uniontech.com
-X-FST-TO: jack@suse.cz
-X-SENDER-IP: 113.57.152.160
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Date:   Thu, 14 Jan 2021 21:22:04 +0800
-From:   "changlianzhi@uniontech.com" <changlianzhi@uniontech.com>
-To:     "Jan Kara" <jack@suse.cz>
-Cc:     magnani <magnani@ieee.org>, jack <jack@suse.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        282827961 <282827961@qq.com>
-Subject: =?utf-8?B?UmU6IFtQQVRDSF0gdWRmOiBmaXggdGhlIHByb2JsZW0gdGhhdCB0aGUgZGlzYyBjb250ZW50IGlzIG5vdA0KIGRpc3BsYXllZOOAkFN1c3BlY3RlZCBwaGlzaGluZyBlbWFpbCwgcGxlYXNlIHBheSBhdHRlbnRpb24gdG8gcGFzc3dvcmQgc2VjdXJpdHnjgJE=?=
-References: <20210114075741.30448-1-changlianzhi@uniontech.com>, 
-        <20210114104157.GB25790@quack2.suse.cz>
-X-Priority: 3
-X-GUID: C352C534-DBB1-4A47-B454-96AF890CA9E4
-X-Has-Attach: no
-X-Mailer: Foxmail 7.2.20.258[cn]
-Mime-Version: 1.0
-Message-ID: <202101142122033215757@uniontech.com>
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 14 Jan 2021 08:24:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610630555;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9RLfx2LEZjsSITiGQmMI4unqomIKtXYwKtgG0whp/WI=;
+        b=hcIhhwjw45EUhz+fAcqdszKg52yIZK8lZcHhkc8BkmsA6PAZiTb0Z/s60aGaQit/CPSwF/
+        DMGmS9qgR1AY4qiEk/e5GqKeO8TVkgcC4C0ymLlD3oSe7OnfRjy7VvsEfwl2lR8RyB1kP/
+        aNdOQKnMAeUexDe6t7heLnvZncoITZk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-iMeSBMkrMUqK0e30NGCIAw-1; Thu, 14 Jan 2021 08:22:31 -0500
+X-MC-Unique: iMeSBMkrMUqK0e30NGCIAw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4749A9CDA0;
+        Thu, 14 Jan 2021 13:22:29 +0000 (UTC)
+Received: from krava (unknown [10.40.195.188])
+        by smtp.corp.redhat.com (Postfix) with SMTP id ECC7F19727;
+        Thu, 14 Jan 2021 13:22:26 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 14:22:26 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH v2 1/2] perf stat: Introduce struct runtime_stat_data
+Message-ID: <20210114132226.GA1409793@krava>
+References: <20210112061431.1122838-1-namhyung@kernel.org>
+ <20210113111902.GD1331835@krava>
+ <CAM9d7cig3+P3Q+gAQNRQJJqB+wcNT+KVjo+9AU92AZ+QvP6ZAg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7cig3+P3Q+gAQNRQJJqB+wcNT+KVjo+9AU92AZ+QvP6ZAg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cj5UaGVyZSdzIGltYmFsYW5jZWQgcGFyZW50aGVzZXMgaGVyZSwgSSdsbCBmaXggaXQgdXAgb24g
-Y29tbWl0LiBPdGhlcndpc2UKPnRoZSBmaXggbG9va3MgZ29vZCB0byBtZS4gVGhhbmtzIQoKPi0t
-Cj5KYW4gS2FyYSA8amFja0BzdXNlLmNvbT4KPlNVU0UgTGFicywgQ1IKCnNvcnJ5LEkgd2lsbCBy
-ZXN1Ym1pdCBpdCBhZ2Fpbu+8gXRoYW5rIHlvdSB2ZXJ5IG11Y2ghCg==
+On Thu, Jan 14, 2021 at 12:25:39PM +0900, Namhyung Kim wrote:
+> Hi Jiri,
+> 
+> On Wed, Jan 13, 2021 at 8:19 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Tue, Jan 12, 2021 at 03:14:30PM +0900, Namhyung Kim wrote:
+> > > To pass more info to the saved_value in the runtime_stat, add a new
+> > > struct runtime_stat_data.  Currently it only has 'ctx' field but later
+> > > patch will add more.
+> > >
+> > > Suggested-by: Andi Kleen <ak@linux.intel.com>
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+> > >  tools/perf/util/stat-shadow.c | 346 +++++++++++++++++-----------------
+> > >  1 file changed, 173 insertions(+), 173 deletions(-)
+> > >
+> > > diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
+> > > index 901265127e36..a1565b6e38f2 100644
+> > > --- a/tools/perf/util/stat-shadow.c
+> > > +++ b/tools/perf/util/stat-shadow.c
+> > > @@ -114,6 +114,10 @@ static struct saved_value *saved_value_lookup(struct evsel *evsel,
+> > >
+> > >       rblist = &st->value_list;
+> > >
+> > > +     /* don't use context info for clock events */
+> > > +     if (type == STAT_NSECS)
+> > > +             dm.ctx = 0;
+> > > +
+> >
+> > I think this should go to separate patch and be explained,
+> > the change is advertised as adding struct for arguments
+> 
+> Actually it was already there and I found it during this work.
+> Basically it passes ctx for lookup but it uses 0 for time.
+> Please see below..
 
+ah nice, did not see that.. could be mentioned in the changelog ;-)
 
+thanks,
+jirka
 
