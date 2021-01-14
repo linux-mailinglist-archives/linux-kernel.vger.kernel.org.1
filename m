@@ -2,127 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2757F2F5625
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 801C52F562E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727997AbhANBmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:42:38 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:10964 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726508AbhANBmf (ORCPT
+        id S1727775AbhANBoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:44:03 -0500
+Received: from mail-pj1-f45.google.com ([209.85.216.45]:52363 "EHLO
+        mail-pj1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727319AbhANBoC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 20:42:35 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DGRq31btxzj69R;
-        Thu, 14 Jan 2021 09:41:03 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 14 Jan 2021 09:41:45 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v5 5/5] f2fs: introduce sb_status sysfs node
-Date:   Thu, 14 Jan 2021 09:41:27 +0800
-Message-ID: <20210114014127.54510-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        Wed, 13 Jan 2021 20:44:02 -0500
+Received: by mail-pj1-f45.google.com with SMTP id v1so2225755pjr.2;
+        Wed, 13 Jan 2021 17:43:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nhGGUKQp3iIGumGW0JSHdb3eHww+a9fUNcP2GsUbZME=;
+        b=O0F4Vlc+hvpRo7rOsq6MQye74RWhJvpOXSPSGMDciqccQ52DzAsGu7uZq5DJturXuX
+         yr8f+f1zZ685lhSp2LfsDg3MmtfrsXLqdBFUz6H/KDGvkmIJSg6iVxuFo3V0GjyJlOcJ
+         qQMlCvgC6KwouJq/mHsPMsdUSLe1guqlArkT/2kCsGamlI4x7c1uErK1Y40Ft6zMVqa2
+         nnC4ubsdMdhSjqL8PTJrt+1R2vMZ1VjEZB0j5x0kcC0X5ofJvbkxc40hgx/DiLumskJz
+         Hish82MjejkDLH3QmsgMqppdJa2pmb2zNRGRlfkiqLvZopRvvZ6YYtchUN14OL2EdE0w
+         e2Pg==
+X-Gm-Message-State: AOAM531QdgzdEFhibpfiJSwFBGt5AcmfqG/bKHqEzaGdIm5ezkIxzMAD
+        tFsAvF++OtEwY9RPG5QbGvM=
+X-Google-Smtp-Source: ABdhPJw18RCVSky7edGM+fQ8iYuOqozo18ui3MzTaUhjO+czTB7CDPz/Qgx9H9bXtHxykoiyD309AA==
+X-Received: by 2002:a17:90a:c084:: with SMTP id o4mr2289007pjs.165.1610588601514;
+        Wed, 13 Jan 2021 17:43:21 -0800 (PST)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id m22sm3810610pgj.46.2021.01.13.17.43.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jan 2021 17:43:20 -0800 (PST)
+Subject: Re: [PATCH 4.19 06/77] scsi: scsi_transport_spi: Set RQF_PM for
+ domain validation commands
+To:     Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Woody Suwalski <terraluna977@gmail.com>,
+        Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Stan Johnson <userm57@yahoo.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Hannes Reinecke <hare@suse.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+References: <20210111130036.414620026@linuxfoundation.org>
+ <20210111130036.711898511@linuxfoundation.org>
+ <20210113114745.GA2843@duo.ucw.cz>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <e1fd4693-95f5-58c2-20c6-fbd96653edfe@acm.org>
+Date:   Wed, 13 Jan 2021 17:43:18 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210113114745.GA2843@duo.ucw.cz>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce /sys/fs/f2fs/<devname>/stat/sb_status to show superblock
-status in real time as a hexadecimal value.
+On 1/13/21 3:47 AM, Pavel Machek wrote:
+>> From: Bart Van Assche <bvanassche@acm.org>
+>>
+>> [ Upstream commit cfefd9f8240a7b9fdd96fcd54cb029870b6d8d88 ]
+>>
+>> Disable runtime power management during domain validation. Since a later
+>> patch removes RQF_PREEMPT, set RQF_PM for domain validation commands such
+>> that these are executed in the quiesced SCSI device state.
+> 
+> This and "05/77] scsi: ide: Do not set the RQF_PREEMPT flag for" do
+> not fix anything AFAICT. They are in series with other patches in
+> 5.10, so they may make sense there, but I don't think we need them in
+> 4.19.
 
-value           sb status macro                 description
+Agreed. Please either backport the entire series of 8 patches or do not
+backport any patch from that series. Selecting a subset of the patches
+of that series is dangerous. As an example, applying patch 8/8 without
+applying the prior patches from that series would break SCSI domain
+validation. See also
+https://lore.kernel.org/linux-scsi/20201209052951.16136-1-bvanassche@acm.org/
 
-0x1             SBI_IS_DIRTY,                   /* dirty flag for checkpoint */
-0x2             SBI_IS_CLOSE,                   /* specify unmounting */
-0x4             SBI_NEED_FSCK,                  /* need fsck.f2fs to fix */
-0x8             SBI_POR_DOING,                  /* recovery is doing or not */
-0x10            SBI_NEED_SB_WRITE,              /* need to recover superblock */
-0x20            SBI_NEED_CP,                    /* need to checkpoint */
-0x40            SBI_IS_SHUTDOWN,                /* shutdown by ioctl */
-0x80            SBI_IS_RECOVERED,               /* recovered orphan/data */
-0x100           SBI_CP_DISABLED,                /* CP was disabled last mount */
-0x200           SBI_CP_DISABLED_QUICK,          /* CP was disabled quickly */
-0x400           SBI_QUOTA_NEED_FLUSH,           /* need to flush quota info in CP */
-0x800           SBI_QUOTA_SKIP_FLUSH,           /* skip flushing quota in current CP */
-0x1000          SBI_QUOTA_NEED_REPAIR,          /* quota file may be corrupted */
-0x2000          SBI_IS_RESIZEFS,                /* resizefs is in process */
+Thanks,
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-v5:
-- fix compile warning reported by Stephen:
-Documentation/ABI/testing/sysfs-fs-f2fs:382: WARNING: Malformed table.
- Documentation/ABI/testing/sysfs-fs-f2fs | 23 +++++++++++++++++++++++
- fs/f2fs/sysfs.c                         |  8 ++++++++
- 2 files changed, 31 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 3dfee94e0618..362803901614 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -377,3 +377,26 @@ Description:	This gives a control to limit the bio size in f2fs.
- 		Default is zero, which will follow underlying block layer limit,
- 		whereas, if it has a certain bytes value, f2fs won't submit a
- 		bio larger than that size.
-+
-+What:		/sys/fs/f2fs/<disk>/stat/sb_status
-+Date:		December 2020
-+Contact:	"Chao Yu" <yuchao0@huawei.com>
-+Description:	Show status of f2fs superblock in real time.
-+
-+		====== ===================== =================================
-+		value  sb status macro       description
-+		0x1    SBI_IS_DIRTY          dirty flag for checkpoint
-+		0x2    SBI_IS_CLOSE          specify unmounting
-+		0x4    SBI_NEED_FSCK         need fsck.f2fs to fix
-+		0x8    SBI_POR_DOING         recovery is doing or not
-+		0x10   SBI_NEED_SB_WRITE     need to recover superblock
-+		0x20   SBI_NEED_CP           need to checkpoint
-+		0x40   SBI_IS_SHUTDOWN       shutdown by ioctl
-+		0x80   SBI_IS_RECOVERED      recovered orphan/data
-+		0x100  SBI_CP_DISABLED       CP was disabled last mount
-+		0x200  SBI_CP_DISABLED_QUICK CP was disabled quickly
-+		0x400  SBI_QUOTA_NEED_FLUSH  need to flush quota info in CP
-+		0x800  SBI_QUOTA_SKIP_FLUSH  skip flushing quota in current CP
-+		0x1000 SBI_QUOTA_NEED_REPAIR quota file may be corrupted
-+		0x2000 SBI_IS_RESIZEFS       resizefs is in process
-+		====== ===================== =================================
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index bd1174ed2e6f..f39874d512ea 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -96,6 +96,12 @@ static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
- 				sbi->sectors_written_start) >> 1)));
- }
- 
-+static ssize_t sb_status_show(struct f2fs_attr *a,
-+		struct f2fs_sb_info *sbi, char *buf)
-+{
-+	return sprintf(buf, "%lx\n", sbi->s_flag);
-+}
-+
- static ssize_t features_show(struct f2fs_attr *a,
- 		struct f2fs_sb_info *sbi, char *buf)
- {
-@@ -702,7 +708,9 @@ static struct attribute *f2fs_feat_attrs[] = {
- };
- ATTRIBUTE_GROUPS(f2fs_feat);
- 
-+F2FS_GENERAL_RO_ATTR(sb_status);
- static struct attribute *f2fs_stat_attrs[] = {
-+	ATTR_LIST(sb_status),
- 	NULL,
- };
- ATTRIBUTE_GROUPS(f2fs_stat);
--- 
-2.29.2
-
+Bart.
