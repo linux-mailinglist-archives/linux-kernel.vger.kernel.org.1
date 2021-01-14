@@ -2,115 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882032F6A5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFDF2F6A55
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbhANTBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:01:46 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:24341 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726275AbhANTBq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:01:46 -0500
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 10EJ0p2F020399;
-        Fri, 15 Jan 2021 04:00:51 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 10EJ0p2F020399
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1610650851;
-        bh=v2AYBQlJ05bi3CulFwutOGp/6+jUWQd6ecahrfOvaoY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=su9Y8puERPenWCFdRsCvTk694wDpn2e3U5AIfTbBbua9j3ao3NYwDrYy4oNqlaWNE
-         guCm0R3HpMBuXPRE7A95bs/6ODv24lLkWStrSnjG+fOd9qyJRgZqdGayCCt/n0kRwR
-         i7cdLVpIpy9xGFn5pvR85jHJUv//R6ReIO+Fed0sbIOiUAvOI5Z4XWhBRVvLtoMxsT
-         jG8arEv1eo8CMwIygn48QADpvrU/Gd+iWF9eJjkDQl0ApulLS6WsCQdUM+OAN48pnJ
-         Q+PqjEiIwnjfhPXX3IgEraTT2dZ0hoB6ds3b1O8x8/7K6C7I8p6YaScP4opW3GLCGH
-         1xP5d9JsdPiow==
-X-Nifty-SrcIP: [209.85.216.43]
-Received: by mail-pj1-f43.google.com with SMTP id md11so3624724pjb.0;
-        Thu, 14 Jan 2021 11:00:51 -0800 (PST)
-X-Gm-Message-State: AOAM530S9XhzjbOlQNrkqUgOGJfey1ATGQIJBopcVHZETWRPU0mn/sNh
-        veWRFFO1WtRDFCAOF1ptw938u7aXSC2hRCg8B/4=
-X-Google-Smtp-Source: ABdhPJzQpbxA5mkeLQ2IVek4ulR9or8pQGqgOmX2tiWXzncDVrwn0Db05P7K4bcnLLWZD5dU5CFfDmLkuSbkWf5VUZQ=
-X-Received: by 2002:a17:902:d713:b029:de:4450:ee0d with SMTP id
- w19-20020a170902d713b02900de4450ee0dmr6213522ply.47.1610650850513; Thu, 14
- Jan 2021 11:00:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20210114100216.11787-1-info@metux.net>
-In-Reply-To: <20210114100216.11787-1-info@metux.net>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 15 Jan 2021 04:00:13 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARE2nGgRGgux9jRcv1ogfFBgBzxKygHxeHwy_GcnZO7sg@mail.gmail.com>
-Message-ID: <CAK7LNARE2nGgRGgux9jRcv1ogfFBgBzxKygHxeHwy_GcnZO7sg@mail.gmail.com>
-Subject: Re: [PATCH] scripts: kconfig: fix HOSTCC call
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+        id S1729693AbhANTBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:01:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726275AbhANTBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 14:01:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD48023A05;
+        Thu, 14 Jan 2021 19:00:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610650827;
+        bh=7t82loxEyJ2bTsA9EqHNDMaRiGP+/aM7PE+ab8wFi3Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KVJfEn3qBdkiv78bi7h7P6opC4Z40CkSidAeQv04OpgmsJGT1DefXtedEe/3ApXXq
+         frODFjMe7gyBnqWivoA1VoPLHuoMIHS2AdIA5NhVk396FO2Lahcjb0hjoj6R8w08x0
+         /0fRNwXorPLfMcYC1JLTgR2gJipADH+l5ni0t9F+vYKH1fLpWh6f6la0iUUwcJgTVV
+         LNlfiTw/CvD01hZAK5b3faqZv2P1oXRgX1l9dWE2SxDuDjH0zDnyv5ySGApykE+zzu
+         MEq6690HQGRwLECS3Am+M0zHKU2fniDxYyJvGTffliyXQSq1Ycslrz93Bj9HO4W9Xz
+         Gbgg16YmpSDXA==
+Date:   Thu, 14 Jan 2021 19:00:22 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Hugh Dickins <hughd@google.com>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [RFC PATCH 4/8] mm: Separate fault info out of 'struct vm_fault'
+Message-ID: <20210114190021.GB13135@willie-the-truck>
+References: <20210114175934.13070-1-will@kernel.org>
+ <20210114175934.13070-5-will@kernel.org>
+ <CAHk-=wixsPuT5ingsEqj2a1PKuc+rTS_oeD_VL0p8G_3oRiJhA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wixsPuT5ingsEqj2a1PKuc+rTS_oeD_VL0p8G_3oRiJhA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 7:05 PM Enrico Weigelt, metux IT consult
-<info@metux.net> wrote:
->
+On Thu, Jan 14, 2021 at 10:16:13AM -0800, Linus Torvalds wrote:
+> On Thu, Jan 14, 2021 at 10:01 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > Try to clean this up by splitting the immutable fault information out
+> > into a new 'struct vm_fault_info' which is embedded in 'struct vm_fault'
+> > and will later be made 'const'. The vast majority of this change was
+> > performed with a coccinelle patch:
+> 
+> You may have a reason for doing it this way, but my reaction to this
+> was: "just make the new embedded struct unnamed".
+> 
+> Then you wouldn't need to do all the automated coccinelle changes.
+> 
+> Is there some reason you didn't do that, or just a "oh, I didn't think of
+> it".
 
-Thanks for catching this.
+I tried that initially, e.g.
 
+struct vm_fault {
+	const struct {
+		unsigned long address;
+		...
+	};
+};
 
-> The change c0f975af1745391749e4306aa8081b9a4d2cced8 introduces a bug when
+but I found that I had to make all of the members const to get it to work,
+at which point the anonymous struct wasn't really adding anything. Did I
+just botch the syntax?
 
-Please use 12-digit hash ("subject") style.
-
-
-Commit c0f975af1745 ("kconfig: Support building mconf with vendor
-sysroot ncurses")
-
-
-
-> HOSTCC contains parameters: the whole command line is treated as the program
-> name (with spaces in it). Therefore, we have to remove the quotes.
->
-> Fixes: c0f975af1745391749e4306aa8081b9a4d2cced8
-
-Ditto.
-
-Fixes: c0f975af1745 ("kconfig: Support building mconf with vendor
-sysroot ncurses")
-
-
-
-> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
-> ---
->  scripts/kconfig/mconf-cfg.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/scripts/kconfig/mconf-cfg.sh b/scripts/kconfig/mconf-cfg.sh
-> index fcd4acd4e9cb..40fa449ed049 100755
-> --- a/scripts/kconfig/mconf-cfg.sh
-> +++ b/scripts/kconfig/mconf-cfg.sh
-> @@ -35,7 +35,7 @@ fi
->
->  # As a final fallback before giving up, check if $HOSTCC knows of a default
->  # ncurses installation (e.g. from a vendor-specific sysroot).
-> -if echo '#include <ncurses.h>' | "${HOSTCC}" -E - >/dev/null 2>&1; then
-> +if echo '#include <ncurses.h>' | ${HOSTCC} -E - >/dev/null ; then
-
-
-Please keep 2>&1.
-
-This script will display the enough error message at the end.
-
-
-
->         echo cflags=\"-D_GNU_SOURCE\"
->         echo libs=\"-lncurses\"
->         exit 0
-> --
-> 2.11.0
->
-
-
--- 
-Best Regards
-Masahiro Yamada
+Will
