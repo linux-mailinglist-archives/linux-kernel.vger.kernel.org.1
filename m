@@ -2,220 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3572F6A42
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E62E62F6A47
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729137AbhANS6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:58:49 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:30548 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726287AbhANS6s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:58:48 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10EIife3009921;
-        Thu, 14 Jan 2021 10:56:38 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=rZv+jzu6sFvGuaxWb4xVpZ9UWPePj/XLijyNIZ0NNcE=;
- b=W8rG3ydh35LsaEcQhlSB3fFLYuLO9aebuipz4knCSXBpOHakgYy+FJR0HTCrvi2vovM4
- qjnmeMmCUvBzMmyJLvkBdvli61vko6XHXqRpRmlLWqrpd1RM2QKvb0GoB0us/4JbV6cp
- TMTtJAAhTPGYNYu/9CLanC+NjFu/UVGpIJY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 361fpumgwj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 14 Jan 2021 10:56:38 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 14 Jan 2021 10:56:37 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XGSIn5lNwOoKMGijXy8IPz09lpb0HUC1x/4V1vab6Kp9bBA9i6C2AYEmHhkpofre0DypdnapD9kBAPRd0Zwc/jqmpGVdbOPyVfZ/xclBfuU7JBxd61lYRBrIQNYPYi1UQs61bRM5PP3aWWwF+OPw1kKUyVuePcsRguOmNpsVPwhs1a2DpfTXjssday3dLAQ6+Kr8iYsN2mbq7U/wf7c7+OMovZeJZc60HUK8if0AQik4EdnETqbCJsSzvhEMyfwkUHzeTXX2Fmc7tcu2C5qMTyFgIbPAtSQ7mKnDkXVrCOp1nyHCxXrDRtYb//tTZFunUOOKmo5qDPcbSZwDRCS8SA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rZv+jzu6sFvGuaxWb4xVpZ9UWPePj/XLijyNIZ0NNcE=;
- b=YCdLIJ7y4MoyXX4F69WuABfQzIKUCeXLQOT3azS/Qqf75ghlybled4rh/v/lL34TyOJBmscAY3N/mI1vXgkGtFEjGTP24C/jTEWO0i1MKsebK91I8HqYtSoVQQ+LI5tF/CdnwzGiZCBKqxFWPeId/2Ootm+IPQMy/9WLNGy3J96Aua6wTmpuRo9S0n7dvueIX6TqrnkM1/ZNKQENYmqXER86/+QQbI0gZKe0S8VfRKhDgBCezv1NrQv24q6SwC+SvrhdYqdMatBI2XroKH/bnWmsWPfDKeyK5CY3oXlyRiBexZQY2sbUVALB0noO36IZKvLZoWFylC0G+buM1J5d/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rZv+jzu6sFvGuaxWb4xVpZ9UWPePj/XLijyNIZ0NNcE=;
- b=AgjWUDl7Z7aQ0dpL2vLUCZ+B18y7mYvy2CeKBseaIgUKaKxAt4FyymkCgTcAz3+g4kMVhjwEIsfh+Wg2OCkE13A5/ZOq11UVBHLEMH03+dTeyx7shGJ7lYngPWTjMTJk9quQ/o+cgffHW+oNxtNP+MGK2hvXZ8SusYWmt5hKZvY=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2584.namprd15.prod.outlook.com (2603:10b6:a03:150::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9; Thu, 14 Jan
- 2021 18:56:36 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3763.011; Thu, 14 Jan 2021
- 18:56:36 +0000
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add size arg to build_id_parse function
-To:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        lkml <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-References: <20210114134044.1418404-1-jolsa@kernel.org>
- <20210114134044.1418404-3-jolsa@kernel.org>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <19f16729-96d6-cc8e-5bd5-c3f5940365d4@fb.com>
-Date:   Thu, 14 Jan 2021 10:56:33 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
-In-Reply-To: <20210114134044.1418404-3-jolsa@kernel.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:ab59]
-X-ClientProxiedBy: MWHPR10CA0066.namprd10.prod.outlook.com
- (2603:10b6:300:2c::28) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1729558AbhANS7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:59:21 -0500
+Received: from mout.gmx.net ([212.227.15.19]:42209 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725883AbhANS7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 13:59:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1610650622;
+        bh=qTnwybr7PbsPLKQjkyg5ukkUUsz3nfbiEC4dr4IScgk=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=WE6yu5cBKqBlZd+2auacjujUWLevlLZZmWkpwCVHpWDNprXL0Vtof3vNJ44NMAjHZ
+         ORRi5dByXY+wcMZvsCeuLt02YGf0cyXzTpBfcS8SrXRdcevt1ug/sBfxoq2SLUsDEy
+         fHMhD6UgaAs9vfROLDBfpUB2dXAwdOblNJvuGIfA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([5.146.194.208]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M3UUy-1l0flf2kUM-000c5l; Thu, 14
+ Jan 2021 19:57:02 +0100
+Date:   Thu, 14 Jan 2021 19:56:51 +0100
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v7 3/7] mfd: Add base driver for Netronix embedded
+ controller
+Message-ID: <YACT87oEA17yJiff@latitude>
+References: <20210109180220.121511-1-j.neuschaefer@gmx.net>
+ <20210109180220.121511-4-j.neuschaefer@gmx.net>
+ <20210112203649.67f66996@aktux>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e1::13f6] (2620:10d:c090:400::5:ab59) by MWHPR10CA0066.namprd10.prod.outlook.com (2603:10b6:300:2c::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Thu, 14 Jan 2021 18:56:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5b8db0fa-3b1e-4d61-0e1d-08d8b8be1e56
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2584:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2584475838E78FC2991D0E4CD3A80@BYAPR15MB2584.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ou37/oZAOzVFhSg0E3hLAbdmRVYQ/a+zhJdsZNFORYmhKDztot7tlN0ejlSuaWmXfmvW7fB0yn5Y4+dhl2WwXzgl/YF26KSg50JcmKuPNFlubUEcN0D8C91KQuOuFT4tdH+ry4VRy1H3Z8LZlzlGkd69Re/ovsVV1omw2TDtfWl7izOxh7pNxVgSUKUFwztFprqx/On8n2MUNswTAJnKmylxw5NRKHbIyFaKWvtUzfUEd+R22dvOazISyASZxZNeFBXtGD/pfCM7TeWxPb5io4Ea0FfrcpBHpdksdRKH2DgEPgGZElcqwcddqsIW70tdOV2Yw9I+A37YCPUFWoAGuZGKZbBpfAcSryiqqTmnC6u8W/i1rMbQlzVrGvWSoTllUYcEjjQ3MV9EsTRrviIOiNVa//LlBY7EzWiZcAeI6RMtkphjPn9+NgxB9NaCUtLhMi2MS1++2StYuIWFRPno/9DJYRcP5SqaS2m3Cmwft7k=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(376002)(366004)(39860400002)(346002)(8936002)(36756003)(31696002)(8676002)(6486002)(53546011)(478600001)(110136005)(7416002)(2616005)(83380400001)(52116002)(66556008)(31686004)(54906003)(4326008)(316002)(5660300002)(186003)(2906002)(86362001)(16526019)(66946007)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?AERAt7tH4d+xhOI/16NgbAfhWy7mkBhY42vRfO5gpG8xEjW7Kjh1NrWb?=
- =?Windows-1252?Q?tlRLVHBjCXTkvFRdXLy3Wl3C7idNCWi8KEwQhu0sESTauFwGxuSfLyPG?=
- =?Windows-1252?Q?2BDZbfy1LmnvFlx6omjSvcS1ZMMrsKmK+8syar0MFG3NJdPcpL+W/WR5?=
- =?Windows-1252?Q?RcR7yEEsOHRHi3XS/E777ED9q03XbliSLzoLH+58nzpc6u4JBLQ/szEt?=
- =?Windows-1252?Q?p8D58MpumDKunuRRzYVLbBaOsP/54isheb9cFx/3xk6sJarVH0gABQVk?=
- =?Windows-1252?Q?QsVgEDVcVzlNeLAiskjgsi+SsOSE1zW4oPPmuGcxx3jTMfyrnYxUKs86?=
- =?Windows-1252?Q?vvMc63KxLhrK9jpEDAp1g3KrF0ov69Dl9q6QzOTot2IgitJOCDzUrFfU?=
- =?Windows-1252?Q?V1sjJIvGh//lQHZHw7pIMaeHoxcuTSdJyH9TQRP1m9Hw1n5xtVqgmTf+?=
- =?Windows-1252?Q?qxlE4HQvf9439i+XGj/LA2YOfbx6VXJ/uZ9EkGfHTLopKmAsBchg6q+z?=
- =?Windows-1252?Q?lKz9crdFHNgMwOqa+OF6oSj+XrHAzGEh8uzWL6i1ZCehgiZlVuJJ6h9v?=
- =?Windows-1252?Q?WduPvoiE0rQssuUupCeFcOMVw3wAwT9/8JeXZaW4ZtB/JAxLJGRWE1UW?=
- =?Windows-1252?Q?PS355VQ6QjqaaqjkgwSkenkMnT/WHX7Aulwz9aXdCJvb/nyNWV4RjPVQ?=
- =?Windows-1252?Q?DyzQP4li+XquB1gOXK7sM4hxtjOdvJOtfpqtp2GXfXSpfKE5Q6tLffFj?=
- =?Windows-1252?Q?/Y5w44pi4iQrMm1Vaq0u4tkJOLTU4J8FFLzbGGUQiB6CAoM2y7a2EXqB?=
- =?Windows-1252?Q?2BiEmgEyC0LdT8+77gvApkDIlNmHzJyy/8y6Dra16BpyMb4h0PFZ4iiy?=
- =?Windows-1252?Q?513bcJ9mFohi/5f6XS5/jmDoUhU+QvEYP4B3iY4BGtwZUH93M/r40Gh0?=
- =?Windows-1252?Q?mAFKCGFAo/L6H1MC/w/+xTnOkL39Mr4SvmjQZqG9TPe+w+bNXz0s4ox2?=
- =?Windows-1252?Q?gADC9Up4gddjaN8oNtRIZUl/nt95gSTFHF18FDv0bPtviMxCB4wZ962B?=
- =?Windows-1252?Q?czq8dhN21Ml1cKk9LKBAFRDvk2KF85UaJnC7CQ=3D=3D?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jan 2021 18:56:36.4538
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b8db0fa-3b1e-4d61-0e1d-08d8b8be1e56
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: T02A60MTI8dVHXRA5U+pvDB2mkde00OPu4R6GMX6nnkFdUESnJDbUytmGmUIBKFA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2584
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-14_07:2021-01-14,2021-01-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1011
- adultscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0 malwarescore=0
- suspectscore=0 bulkscore=0 priorityscore=1501 mlxscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101140108
-X-FB-Internal: deliver
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HZCy9zKgDQy/QBjw"
+Content-Disposition: inline
+In-Reply-To: <20210112203649.67f66996@aktux>
+X-Provags-ID: V03:K1:cfFZLGgxjJbjT3NU7hnDESPThEwx2O8w4wIxZ67/Uqiws1AR9t0
+ 9FCBqnb6Kyvt6JlTv8eQOjBDHYyEyJymQBOzSJCjcvUALYN6khskivau2zg385i+XZL/OR7
+ TEBIR8vN6ySlqPIlSXiiRdRlxiiicZlH24xk0SJRik4ZLuXZQmowI9QeN2Os7OzLmxL681M
+ d/fPe6Rbzr4mPKsTc354Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wUOO+tWvK3k=:7eZPRXsOhlOSHNHavMx/JP
+ ClzFnZRTnPvgBvfuhyuzNjXEGj9LY57QS8xSJ/gk6/D3eqT9/GkhC4lgrg3ufdfPbF+andw7x
+ UW9A4DYAU3rjdbB9PrMOm4lzEl+9oNeMWSQKzoB25Mw9imgIa6EL+qfbObvePCuTrFH4bCSWf
+ S2WPzSkb3gVhTAbfn8zHHpnAA4qUkz/SNuBq6/w4AkbQ+ngpHcJdfh3TPqoGUz97vFYM4+DUu
+ oODoi683Sqs0qry53f6jt1V7f/+gtyhbFvvSpI8z2EwWLjogQC8x7nqlDYZWHdOz3i+R89W24
+ dC2ixfzuuxumJ5anpdHkbbjl4a17lhrC5BSC901cf/qY4o+VL4MjezMCXb1TbzjEN6VRZfh6v
+ pNIKw918k7l6CpAGr5fB7Mt0SA8tcu03RhDWTYMq5EXnZeEiEdSD5jX2gY18HZQIgWJSoKzWc
+ rV3V87ltBPTCDQeCzOqM/TUeO89+J29LUAAJqrgAwCDXk/N0ZlgziG0NX2XqZtuoDby2hVlK9
+ BYEJzYK19deX1gTYF3R8jVEFNnDoPcagC1KwOwGqFhw1cXvNe1GAwY1cOjryg6p5VWTe3Sdq6
+ l/iVxkFnpSeLUnL/rV0Fbowmw4uSwGO1T6jbr0JKqevhQSPFOIinDg9XGZvQYx08qEd7y8U9h
+ /aCbHZfiCqdAJ3siVXDZbAZuVpIsbKn9YazVW5DSXkTATq0zDnr9L8mq0gM5EMJdbuSqKd4ZA
+ 708TAgBvjInsb9AL5KGMerlUjEP/XGyLv4FRXov83lrhcKMcX151OLIZJSA52BNfZ6y2fuMCC
+ gbeXYJvKqeZzc4E3qM29xV6upyu6NI13wTyMeEV2fVwQxzXlXEUDVczXQbwyOiIMjzFP4zfdu
+ MdKhj+NggeNW0A11FlDg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--HZCy9zKgDQy/QBjw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 1/14/21 5:40 AM, Jiri Olsa wrote:
-> It's possible to have other build id types (other than default SHA1).
-> Currently there's also ld support for MD5 build id.
-
-Currently, bpf build_id based stackmap does not returns the size of
-the build_id. Did you see an issue here? I guess user space can check
-the length of non-zero bits of the build id to decide what kind of
-type it is, right?
-
-> 
-> Adding size argument to build_id_parse function, that returns (if defined)
-> size of the parsed build id, so we can recognize the build id type.
-> 
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Song Liu <songliubraving@fb.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->   include/linux/buildid.h |  3 ++-
->   kernel/bpf/stackmap.c   |  2 +-
->   lib/buildid.c           | 29 +++++++++++++++++++++--------
->   3 files changed, 24 insertions(+), 10 deletions(-)
-> 
-> diff --git a/include/linux/buildid.h b/include/linux/buildid.h
-> index 08028a212589..40232f90db6e 100644
-> --- a/include/linux/buildid.h
-> +++ b/include/linux/buildid.h
-> @@ -6,6 +6,7 @@
->   
->   #define BUILD_ID_SIZE_MAX 20
->   
-> -int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id);
-> +int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
-> +		   __u32 *size);
->   
->   #endif
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index 55d254a59f07..cabaf7db8efc 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -189,7 +189,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
->   
->   	for (i = 0; i < trace_nr; i++) {
->   		vma = find_vma(current->mm, ips[i]);
-> -		if (!vma || build_id_parse(vma, id_offs[i].build_id)) {
-> +		if (!vma || build_id_parse(vma, id_offs[i].build_id, NULL)) {
->   			/* per entry fall back to ips */
->   			id_offs[i].status = BPF_STACK_BUILD_ID_IP;
->   			id_offs[i].ip = ips[i];
-> diff --git a/lib/buildid.c b/lib/buildid.c
-> index 4a4f520c0e29..6156997c3895 100644
-> --- a/lib/buildid.c
-> +++ b/lib/buildid.c
-> @@ -12,6 +12,7 @@
->    */
->   static inline int parse_build_id(void *page_addr,
->   				 unsigned char *build_id,
-> +				 __u32 *size,
->   				 void *note_start,
->   				 Elf32_Word note_size)
->   {
-> @@ -38,6 +39,8 @@ static inline int parse_build_id(void *page_addr,
->   			       nhdr->n_descsz);
->   			memset(build_id + nhdr->n_descsz, 0,
->   			       BUILD_ID_SIZE_MAX - nhdr->n_descsz);
-> +			if (size)
-> +				*size = nhdr->n_descsz;
->   			return 0;
->   		}
->   		new_offs = note_offs + sizeof(Elf32_Nhdr) +
-> @@ -50,7 +53,8 @@ static inline int parse_build_id(void *page_addr,
->   }
->   
+On Tue, Jan 12, 2021 at 08:36:49PM +0100, Andreas Kemnade wrote:
+> On Sat,  9 Jan 2021 19:02:16 +0100
+> Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net> wrote:
 [...]
+> > +static const struct of_device_id of_ntxec_match_table[] =3D {
+> > +	{ .compatible =3D "netronix,ntxec", },
+> > +	{}
+> > +};
+> > +
+> MODULE_DEVICE_TABLE?
+
+Yes, good idea.
+
+> > +static struct i2c_driver ntxec_driver =3D {
+> > +	.driver =3D {
+> > +		.name =3D "ntxec",
+> > +		.of_match_table =3D of_ntxec_match_table,
+> > +	},
+> > +	.probe_new =3D ntxec_probe,
+> > +	.remove =3D ntxec_remove,
+> > +};
+> > +module_i2c_driver(ntxec_driver);
+>=20
+> MODULE_LICENSE()?
+>=20
+> modpost moans about that here.
+
+I forgot those. Thanks for noticing.
+I'll add the MODULE_ lines in v8.
+
+
+
+Thanks,
+Jonathan
+
+--HZCy9zKgDQy/QBjw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmAAk+oACgkQCDBEmo7z
+X9szGg//QvOXORc7uh9Jjyie8pM10KL+AGsOtYoNGGd6pZu/uUmCTdY3bJ3PsYNS
+tFEETWnnlg7zvIvi5ct92QGwmIYtg2zd1gYQbwOh513AGCArH94ow7g6aJtxk3HA
+I8Xd/4pMrMaDZpv9S6xc09EBCLvniWaUxQ+1b/NAf4PgHDQpH/aOcoxG8PxxxsDD
+dfBEqCOWR6rAKAy1wA0gdzzSX+v7QMoYnejpAjLdi1Lhnu6v2GhzYsPMiSxC95i+
+ZzZna44PPaVE8LiwC2PqORimyXsF63srsY93kZEFfd10qe+zGCZx7qLjBLiKeTK8
+JMt7QUz3ll9SWF8oYlMdofO7HHrtmqnWTMjgaYbhYqr2oqOunLWKyF2RUF1OMlU2
+0HZS+wX3PGODLsPeyVup3Qx9hrkqQI2AOsQyW1nyDu/idUjC4bPGTK/7QpOGWFwx
+eI3riV02jUpETGg93V3OrcHhefNdLJIPd9FGNDuz4gI1nmSggzfcnNlGIWvk1Pdi
+ELV+NBvGXnxKPHvjlKSyiI5/oqw4Ernexb+yRnn0spfB8zGzomzUXOkp0WD8a0FA
+5KT3UW/KnYg9kAl41zZksLacmuj4gQ7ZKRd2M2rakue0gi7mji1Zd8LZO7K6W4lb
+LV4K5c05oLVqjumvUDXEzlrb9KfRz18HrBZs/F1d3+iV/6k0r74=
+=fKvQ
+-----END PGP SIGNATURE-----
+
+--HZCy9zKgDQy/QBjw--
