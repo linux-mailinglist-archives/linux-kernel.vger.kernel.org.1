@@ -2,59 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1C02F66FA
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2612F66FB
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 18:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbhANRJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 12:09:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42968 "EHLO
+        id S1727987AbhANRJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 12:09:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbhANRJN (ORCPT
+        with ESMTP id S1725950AbhANRJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:09:13 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677FAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:08:33 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id jx16so9229975ejb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:08:33 -0800 (PST)
+        Thu, 14 Jan 2021 12:09:15 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB8BC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:08:34 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id d17so9231860ejy.9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 09:08:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hZBe6+BA7tdZGkyochkRBwv5ISoXDHJ6XemChWzr63Y=;
-        b=Jj1zFKh+4yTO85hcuIosWpVFXEmtoROxkTyphLYun1n6kaN2CkjGvNXCzmX2RkB94R
-         7Ig1DvDG9LOcg3SAoQc54oKSPYIEu0KBULIzDuphh/xMVBOs1iuP5Qz0uSEgBvXmnyRY
-         M2veC8ZLnFTu2y76KmwZcBSMF57rT1UDyGUUvDukIrhlg5z6R1E893Y1oc96j8AMl/an
-         0Z/JLuj3dE9Q7yWmBbA86o/tL/QWWnlcvt+uEde02GoHM21b1CVR5XVT3/pLKL+Z0vVm
-         oLZkiYY3qZf2iJKN9i02mkb6NZWTeZC+aus7p7kBdGXT/V0FQJPaE6Wi96KZUGEku0Oa
-         zx9A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=A6V6QqtKy7QTWrKapPBu+ZYpP/RWiVAOJ6BtvVV2mls=;
+        b=B4YXhIQYl0t10KBG05mXejTQqNYBbYVzi5sCwh7aOdTfH9xQDxMCVPnjcZ/D8hGuKu
+         +8fdk71v6RDFAUVPQtheGVxLuVH55oUbMu8a4zM0RRFtvo9A2wORjFVMW4g3AJKMIXRT
+         h3Ig1WAnPaYxCTk+qTe0SksipIJvLyda/ieuAmAMJ4/K8rvHWi6EcSBbrL968P8lToRE
+         tP14bmwYDBblfo1rof1EJc8BdrZz9pGECo9SjO5uec9D4OW18gF58cvTCIXl5SUMKwIX
+         w7P9PQQhn3xbpKHz6FFCKJP3+bxcrmQYK1wdrLv/ZoEQn1BHzhf3/76PsvGK81hzXpnE
+         oYOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hZBe6+BA7tdZGkyochkRBwv5ISoXDHJ6XemChWzr63Y=;
-        b=ttVZ22k32COgIM4eFAndpoMruhWg6REh8gR8N6G05ehy7geB3vjSecfaJ5WYfI2Hj6
-         n91EpHpPzQrFAuyRKw9P/yxl1c8WBoTeie5pXwg7vt3YWevuOoVmUrInpwGFymZp6dz5
-         +ID4kt0o7IY+u4tdXherwNROBOEEFZXJ7pR//SED2sAax6i+g8LwXD8drNR2ub0VvM0a
-         qQmLk5PBfNlP1Sn7e7869HBLZNFmsix1JI7H3wzbcQn7QS1M8an9jyxz3yE0uqgzQoLR
-         aXyQxzGTs5LvdDRfRFzDUBkujDkQXvUTNpgM1X+Yj5FVuW7V4qa9iWkwjFqpO7Pp8MoW
-         2A+A==
-X-Gm-Message-State: AOAM5310P/SiwWA15Aahg9O/Oc9QbMuqoTABsSb9a99ZbphFm4dofX/2
-        RgujfaBXTMaHheVJA70tQlmN7jKCwKX3rg==
-X-Google-Smtp-Source: ABdhPJwxukBQL4HcZQR29MAZHscDUpiFLJVX3dztYzf7R0Zq6fBT6sdF4hQbpBfGR6KCtKMILT6Q3Q==
-X-Received: by 2002:a17:906:7090:: with SMTP id b16mr6106096ejk.76.1610644111903;
-        Thu, 14 Jan 2021 09:08:31 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=A6V6QqtKy7QTWrKapPBu+ZYpP/RWiVAOJ6BtvVV2mls=;
+        b=crosEMU0oU25I8OGwBFSNCzklERoj9KW1Io5tuFpoAfv6L9+loMvxmhS0XbPKdQ2sl
+         l9+j9nioZQQu3IuVB+4ybBV54L15ZaphWxQaELPtmbX4twPj5qvTBS/nPF2Q4FgOtOfe
+         VsN+JbbLvkZ9OHZ+mELrwlaphh3ylEQU6w12w9oAshlvkphdhl2k78+ksiIIcyTjMFN2
+         HTrQUss+kwnyssA+rYRN9fd7LStIPxFBlf+ffPYlMVhJ5LnvLxbInt6oYdHsrBfbEZYk
+         R/n6OnWycSwLOKLxSGA02/pB/MRyZGi0YscPcfYCRm1UPKuQJRs7H464WFFlacgUw9ne
+         0D4Q==
+X-Gm-Message-State: AOAM532I2iDbfzNSeMm1qPN0bwB+e2aQgxynaq9EC+J9OniMx8emCECd
+        vHUOdt8F1ccp+EPgTy2WOR6je4mZtwLMJQ==
+X-Google-Smtp-Source: ABdhPJzlEkX6y7TYYW4cKlFVcX4qc0zGMOXoe4qHIV6Ftr+hmqtFoXVuZJ1PohxU5AX0oIOEcpMofg==
+X-Received: by 2002:a17:906:d98:: with SMTP id m24mr2212219eji.428.1610644113205;
+        Thu, 14 Jan 2021 09:08:33 -0800 (PST)
 Received: from yoga-910.localhost (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id be6sm2397644edb.29.2021.01.14.09.08.30
+        by smtp.gmail.com with ESMTPSA id be6sm2397644edb.29.2021.01.14.09.08.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 09:08:31 -0800 (PST)
+        Thu, 14 Jan 2021 09:08:32 -0800 (PST)
 From:   Ioana Ciornei <ciorneiioana@gmail.com>
 To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
 Cc:     laurentiu.tudor@nxp.com, Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH 0/5] bus: fsl-mc: add userspace support
-Date:   Thu, 14 Jan 2021 19:07:47 +0200
-Message-Id: <20210114170752.2927915-1-ciorneiioana@gmail.com>
+Subject: [PATCH 1/5] bus: fsl-mc: move fsl_mc_command struct in a uapi header
+Date:   Thu, 14 Jan 2021 19:07:48 +0200
+Message-Id: <20210114170752.2927915-2-ciorneiioana@gmail.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210114170752.2927915-1-ciorneiioana@gmail.com>
+References: <20210114170752.2927915-1-ciorneiioana@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -63,62 +65,93 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ioana Ciornei <ioana.ciornei@nxp.com>
 
-This patch set adds userspace support in the fsl-mc bus along with a
-rescan attribute to the root DPRC container. An earlier discussion on
-this functionality can be found at the link below. I didn't continue
-with the versioning scheme since quite some time has passed since the
-last discussion.
-https://lkml.org/lkml/2018/11/20/1162
+Define "struct fsl_mc_command" as a structure that can cross the
+user/kernel boundary.
 
-The FSL_MC_SEND_MC_COMMAND ioctl acts as a direct passthrough to the
-Management Complex (or MC) by passing fixed-length command/response
-pairs. Keeping in mind that the MC manages DPAA2 hardware resources and
-provides and object-based abstraction for sofware drivers, the proposed
-ioctl interface enables userspace tools to do the following: 
- - Get layout information about the available resources abstracted and
-   exported by the Management Complex firmware. This is especially
-   useful to generate a complete description of the current hardware
-   resource partitioning.
- - Manage DPAA2 objects lifecycle (create, destroy) and establish
-   connection between different components as needed.
-
-The ioctl interface is intended for dynamic usecases where DPAA2 objects
-need to be created on demand or destroyed so that the underlying
-hardware resources can be further repurposed. In static usecases,
-depending on the requirements, a firmware configuration file can be used
-to describe the needed DPAA2 objects, their attributes or any link
-between them.
-
-Each command received through the ioctl interface is first checked
-against a list of accepted MC commands. Also, commands which would alter
-the hardware resource management require CAP_NET_ADMIN.  The command is
-also check so that it does not contain garbage beyond the maximum size
-expected for that command id.
-
-Ioana Ciornei (5):
-  bus: fsl-mc: move fsl_mc_command struct in a uapi header
-  bus: fsl-mc: export mc_cmd_hdr_read_cmdid() to the fsl-mc bus
-  bus: fsl-mc: add fsl-mc userspace support
-  bus: fsl-mc: add bus rescan attribute
-  bus: fsl-mc: add autorescan sysfs
-
- Documentation/ABI/stable/sysfs-bus-fsl-mc     |  19 +
- .../userspace-api/ioctl/ioctl-number.rst      |   1 +
- MAINTAINERS                                   |   2 +
- drivers/bus/fsl-mc/Kconfig                    |   7 +
- drivers/bus/fsl-mc/Makefile                   |   3 +
- drivers/bus/fsl-mc/dprc-driver.c              |  33 +-
- drivers/bus/fsl-mc/fsl-mc-bus.c               |  96 +++
- drivers/bus/fsl-mc/fsl-mc-private.h           |  49 ++
- drivers/bus/fsl-mc/fsl-mc-uapi.c              | 547 ++++++++++++++++++
- drivers/bus/fsl-mc/mc-sys.c                   |   2 +-
- include/linux/fsl/mc.h                        |   8 +-
- include/uapi/linux/fsl_mc.h                   |  34 ++
- 12 files changed, 789 insertions(+), 12 deletions(-)
- create mode 100644 Documentation/ABI/stable/sysfs-bus-fsl-mc
- create mode 100644 drivers/bus/fsl-mc/fsl-mc-uapi.c
+Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+---
+ MAINTAINERS                 |  1 +
+ include/linux/fsl/mc.h      |  8 +-------
+ include/uapi/linux/fsl_mc.h | 25 +++++++++++++++++++++++++
+ 3 files changed, 27 insertions(+), 7 deletions(-)
  create mode 100644 include/uapi/linux/fsl_mc.h
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c2cb79198288..13b589396b61 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14654,6 +14654,7 @@ S:	Maintained
+ F:	Documentation/devicetree/bindings/misc/fsl,qoriq-mc.txt
+ F:	Documentation/networking/device_drivers/ethernet/freescale/dpaa2/overview.rst
+ F:	drivers/bus/fsl-mc/
++F:	include/uapi/linux/fsl_mc.h
+ 
+ QT1010 MEDIA DRIVER
+ M:	Antti Palosaari <crope@iki.fi>
+diff --git a/include/linux/fsl/mc.h b/include/linux/fsl/mc.h
+index db244874e834..63b56aba925a 100644
+--- a/include/linux/fsl/mc.h
++++ b/include/linux/fsl/mc.h
+@@ -13,6 +13,7 @@
+ #include <linux/device.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/interrupt.h>
++#include <uapi/linux/fsl_mc.h>
+ 
+ #define FSL_MC_VENDOR_FREESCALE	0x1957
+ 
+@@ -209,8 +210,6 @@ struct fsl_mc_device {
+ #define to_fsl_mc_device(_dev) \
+ 	container_of(_dev, struct fsl_mc_device, dev)
+ 
+-#define MC_CMD_NUM_OF_PARAMS	7
+-
+ struct mc_cmd_header {
+ 	u8 src_id;
+ 	u8 flags_hw;
+@@ -220,11 +219,6 @@ struct mc_cmd_header {
+ 	__le16 cmd_id;
+ };
+ 
+-struct fsl_mc_command {
+-	__le64 header;
+-	__le64 params[MC_CMD_NUM_OF_PARAMS];
+-};
+-
+ enum mc_cmd_status {
+ 	MC_CMD_STATUS_OK = 0x0, /* Completed successfully */
+ 	MC_CMD_STATUS_READY = 0x1, /* Ready to be processed */
+diff --git a/include/uapi/linux/fsl_mc.h b/include/uapi/linux/fsl_mc.h
+new file mode 100644
+index 000000000000..cf56d46f052e
+--- /dev/null
++++ b/include/uapi/linux/fsl_mc.h
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * Management Complex (MC) userspace public interface
++ *
++ * Copyright 2021 NXP
++ *
++ */
++#ifndef _UAPI_FSL_MC_H_
++#define _UAPI_FSL_MC_H_
++
++#include <linux/types.h>
++
++#define MC_CMD_NUM_OF_PARAMS	7
++
++/**
++ * struct fsl_mc_command - Management Complex (MC) command structure
++ * @header: MC command header
++ * @params: MC command parameters
++ */
++struct fsl_mc_command {
++	__le64 header;
++	__le64 params[MC_CMD_NUM_OF_PARAMS];
++};
++
++#endif /* _UAPI_FSL_MC_H_ */
 -- 
 2.29.2
 
