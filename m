@@ -2,92 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBFC2F5D9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3DF2F5DB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbhANJdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:33:01 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2341 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727784AbhANJc7 (ORCPT
+        id S1728438AbhANJe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:34:26 -0500
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:37323 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728096AbhANJeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:32:59 -0500
-Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DGf8p2d9yz67bTC;
-        Thu, 14 Jan 2021 17:27:06 +0800 (CST)
-Received: from lhreml741-chm.china.huawei.com (10.201.108.191) by
- fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 14 Jan 2021 10:32:17 +0100
-Received: from [10.199.170.166] (10.199.170.166) by
- lhreml741-chm.china.huawei.com (10.201.108.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 14 Jan 2021 09:32:11 +0000
-Subject: Re: [PATCH v2 1/2] perf tools: add 'perf irq' to measure the hardware
- interrupts
-To:     Bixuan Cui <cuibixuan@huawei.com>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <namhyung@kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <john.wanghui@huawei.com>
-References: <20210114074852.13231-1-cuibixuan@huawei.com>
- <20210114074852.13231-2-cuibixuan@huawei.com>
-From:   Alexei Budankov <abudankov@huawei.com>
-Message-ID: <4ad7a048-8982-577b-b7c0-ca7e25f901d6@huawei.com>
-Date:   Thu, 14 Jan 2021 12:32:05 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 14 Jan 2021 04:34:10 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 7FBAE20012;
+        Thu, 14 Jan 2021 09:33:25 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 10:33:25 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Philipp Rosenberger <p.rosenberger@kunbus.com>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, dan.carpenter@oracle.com,
+        biwen.li@nxp.com, lvb@xiphos.com, bruno.thomsen@gmail.com,
+        l.sanfilippo@kunbus.com, Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] rtc: pcf2127: Disable Power-On Reset Override
+Message-ID: <20210114093325.GU3654@piout.net>
+References: <20210113112742.7354-1-p.rosenberger@kunbus.com>
+ <20210113112742.7354-2-p.rosenberger@kunbus.com>
+ <20210114080533.tnipsnqfxeqotvlg@pengutronix.de>
+ <39a69676-83f2-07f4-99ae-ce4f89d5314c@kunbus.com>
 MIME-Version: 1.0
-In-Reply-To: <20210114074852.13231-2-cuibixuan@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.199.170.166]
-X-ClientProxiedBy: braeml707-chm.china.huawei.com (10.226.71.37) To
- lhreml741-chm.china.huawei.com (10.201.108.191)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <39a69676-83f2-07f4-99ae-ce4f89d5314c@kunbus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 14.01.2021 10:48, Bixuan Cui wrote:
-> Add 'perf irq' to trace/measure the hardware interrupts.
+On 14/01/2021 10:10:32+0100, Philipp Rosenberger wrote:
 > 
-> Now three functions are provided:
->   1. 'perf irq record <command>' to record the irq handler events.
->   2. 'perf irq script' to see a detailed trace of the workload that
->    was recorded.
->   3. 'perf irq report' to calculate the time consumed by each
->    hardware interrupt processing function.
 > 
-> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-> ---
->  tools/perf/Build         |   1 +
->  tools/perf/builtin-irq.c | 287 +++++++++++++++++++++++++++++++++++++++
->  tools/perf/builtin.h     |   1 +
->  tools/perf/perf.c        |   1 +
->  4 files changed, 290 insertions(+)
->  create mode 100644 tools/perf/builtin-irq.c
+> On 14.01.21 09:05, Uwe Kleine-König wrote:
+> > On Wed, Jan 13, 2021 at 12:27:41PM +0100, Philipp Rosenberger wrote:
+> > > To resume normal operation after a total power loss (no or empty
+> > > battery) the "Power-On Reset Override (PORO)" facility needs to be
+> > > disabled.
+> > > 
+> > > As the oscillator may take a long time (200 ms to 2 s) to resume normal
+> > > operation. The default behaviour is to use the PORO facility.
+> > 
+> > I'd write instead: The register reset value sets PORO enabled and the
+> > data sheet recommends setting it to disabled for normal operation.
+> 
+> Sounds good, I will rephrase it.
+> 
+> > In my eyes having a reset default value that is unsuitable for
+> > production use is just another bad design choice of this chip. At least
+> > now this is known and can be somewhat fixed in software. :-\
+> 
+> Yes, had my fair share of WTF moments with this chip.
+> 
+> > > But with the PORO active no interrupts are generated on the interrupt
+> > > pin (INT).
+> > 
+> > This sentence about no interrupts is your observation, or does this base
+> > on some authoritative source (datasheet, FAE or similar)?
+> > 
+> 
+> Yes this is only may observation. I tested this with the OM13513 demoboard
+> with PCF2127 and pcf2129. So I should rephrase it to something like this:
+> 
+> Some testes suggests that no interrupts are generated on the interrupt pin
+> if the PORP is active.
+> 
+> > > Signed-off-by: Philipp Rosenberger <p.rosenberger@kunbus.com>
+> > > ---
+> > >   drivers/rtc/rtc-pcf2127.c | 18 ++++++++++++++++++
+> > >   1 file changed, 18 insertions(+)
+> > > 
+> > > diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
+> > > index 39a7b5116aa4..378b1ce812d6 100644
+> > > --- a/drivers/rtc/rtc-pcf2127.c
+> > > +++ b/drivers/rtc/rtc-pcf2127.c
+> > > @@ -26,6 +26,7 @@
+> > >   /* Control register 1 */
+> > >   #define PCF2127_REG_CTRL1		0x00
+> > > +#define PCF2127_BIT_CTRL1_POR_OVRD		BIT(3)
+> > >   #define PCF2127_BIT_CTRL1_TSF1			BIT(4)
+> > >   /* Control register 2 */
+> > >   #define PCF2127_REG_CTRL2		0x01
+> > > @@ -612,6 +613,23 @@ static int pcf2127_probe(struct device *dev, struct regmap *regmap,
+> > >   		ret = devm_rtc_nvmem_register(pcf2127->rtc, &nvmem_cfg);
+> > >   	}
+> > > +	/*
+> > > +	 * The "Power-On Reset Override" facility prevents the RTC to do a reset
+> > > +	 * after power on. For normal operation the PORO must be disabled.
+> > > +	 */
+> > > +	regmap_clear_bits(pcf2127->regmap, PCF2127_REG_CTRL1,
+> > > +				PCF2127_BIT_CTRL1_POR_OVRD);
+> > > +	/*
+> > > +	 * If the PORO can't be disabled, just move on. The RTC should
+> > > +	 * work fine, but functions like watchdog and alarm interrupts might
+> > > +	 * not work. There will be no interrupt generated on the interrupt pin.
+> > > +	 */
+> > > +	ret = regmap_test_bits(pcf2127->regmap, PCF2127_REG_CTRL1, PCF2127_BIT_CTRL1_POR_OVRD);
+> > > +	if (ret <= 0) {
+> > > +		dev_err(dev, "%s: can't disable PORO (ctrl1).\n", __func__);
+> > > +		dev_warn(dev, "Watchdog and alarm functions might not work properly\n");
+> > 
+> > I would not emit two messages here. Also including __func__ isn't so
+> > nice IMHO. (Great for debugging, but not in production code IMHO.)
+> 
+> Yes, I dislike the style of the messages in this module. I just thought to
+> keep it consistent.
 
-<SNIP>
+No one will ever read the message, the whole test is useless.
 
-> +static int __cmd_record(int argc, const char **argv)
-> +{
-> +	unsigned int rec_argc, i, j;
-> +	const char **rec_argv;
-> +	const char * const record_args[] = {
-> +		"record",
-> +		"-a",
+> 
+> I'm thinking of rewriting this driver as MFD driver. We use the CLKOUT for
+> some products. So maybe a RTC, watchdog and clock driver on top of an MFD.
+> But I'm not sure if it is really a good idea. The behavior of the chip to
+> disable the watchdog when reading ctrl2 (i think it was) giving me a
+> headache.
 
-Could you please make it configurable from the command line 
-jointly with -p option?
+Don't, this is not an MFD. There is no issue with having the RTC driver
+being a clock provider.
 
-> +		"-R",
-> +		"-c", "1",
-> +		"-e", "irq:irq_handler_entry",
-> +		"-e", "irq:irq_handler_exit",
-> +	};
 
-Thanks,
-Alexei
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
