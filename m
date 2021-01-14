@@ -2,258 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1859C2F59A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A522F59A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727251AbhANDxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 22:53:21 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:61902 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726677AbhANDxV (ORCPT
+        id S1727262AbhANDyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 22:54:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54567 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726266AbhANDya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 22:53:21 -0500
-X-IronPort-AV: E=Sophos;i="5.79,346,1602518400"; 
-   d="scan'208";a="103466040"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 14 Jan 2021 11:52:18 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 929244CE602D;
-        Thu, 14 Jan 2021 11:52:16 +0800 (CST)
-Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
- (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 14 Jan
- 2021 11:52:17 +0800
-Subject: Re: [PATCH 04/10] mm, fsdax: Refactor memory-failure handler for dax
- mapping
-To:     zhong jiang <zhongjiang-ali@linux.alibaba.com>,
-        Jan Kara <jack@suse.cz>
-CC:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-raid@vger.kernel.org>,
-        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <david@fromorbit.com>, <hch@lst.de>, <song@kernel.org>,
-        <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
-References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
- <20201230165601.845024-5-ruansy.fnst@cn.fujitsu.com>
- <20210106154132.GC29271@quack2.suse.cz>
- <75164044-bfdf-b2d6-dff0-d6a8d56d1f62@cn.fujitsu.com>
- <781f276b-afdd-091c-3dba-048e415431ab@linux.alibaba.com>
- <ef29ba5c-96d7-d0bb-e405-c7472a518b32@cn.fujitsu.com>
- <e2f7ad16-8162-4933-9091-72e690e9877e@linux.alibaba.com>
-From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Message-ID: <4f184987-3cc2-c72d-0774-5d20ea2e1d49@cn.fujitsu.com>
-Date:   Thu, 14 Jan 2021 11:52:14 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Wed, 13 Jan 2021 22:54:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610596384;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6fpQY7UlpMXveilA95KGU9W/hHWNl3BythnUbapXejc=;
+        b=YHw1rcfU5GAojX+JmBW9BQQbdrJLRatvZbX74GnUamUBRQoR85zacGn2QGCjgz1gyYdqR8
+        wu0HDuV1AIE/MeJPzprBJ1dgZrx0VJRuBi47YXTKzoZHhOWa9z2cR1kWtyJAvGNXfNe2Ac
+        Hy+8kx/n0DNjUAcHGwe5N15vc7zssWg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-178-W9_8viw0MYSqZHxzsHY_yg-1; Wed, 13 Jan 2021 22:53:00 -0500
+X-MC-Unique: W9_8viw0MYSqZHxzsHY_yg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35F60107ACF7;
+        Thu, 14 Jan 2021 03:52:57 +0000 (UTC)
+Received: from T590 (ovpn-13-18.pek2.redhat.com [10.72.13.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6084360D08;
+        Thu, 14 Jan 2021 03:52:47 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 11:52:42 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     Ming Lei <tom.leiming@gmail.com>,
+        Changheun Lee <nanich.lee@samsung.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "jisoo2146.oh@samsung.com" <jisoo2146.oh@samsung.com>,
+        "junho89.kim@samsung.com" <junho89.kim@samsung.com>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "mj0123.lee@samsung.com" <mj0123.lee@samsung.com>,
+        "seunghwan.hyun@samsung.com" <seunghwan.hyun@samsung.com>,
+        "sookwan7.kim@samsung.com" <sookwan7.kim@samsung.com>,
+        Tejun Heo <tj@kernel.org>,
+        "yt0928.kim@samsung.com" <yt0928.kim@samsung.com>,
+        "woosung2.lee@samsung.com" <woosung2.lee@samsung.com>
+Subject: Re: [PATCH] bio: limit bio max size.
+Message-ID: <20210114035242.GB237540@T590>
+References: <CGME20210113040146epcas1p230596c7c3760471dca442d1f7ce4dc55@epcas1p2.samsung.com>
+ <CH2PR04MB65225EDDA7069CCD47A459A5E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
+ <20210113034637.1382-1-nanich.lee@samsung.com>
+ <CACVXFVMb0eE5-yo2k3KvnJjKN+aDLzOuT9rKQ7LY5-4WTgM3jw@mail.gmail.com>
+ <CH2PR04MB65228D54F66068DA125CCE47E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
+ <20210113102450.GA220440@T590>
+ <CH2PR04MB6522CF231DAA4615DABA8457E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
+ <20210113114722.GA233746@T590>
+ <CH2PR04MB652295091E1D9455D2132BD8E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <e2f7ad16-8162-4933-9091-72e690e9877e@linux.alibaba.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.167.225.141]
-X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
-X-yoursite-MailScanner-ID: 929244CE602D.ADB7E
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CH2PR04MB652295091E1D9455D2132BD8E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/1/14 上午11:26, zhong jiang wrote:
+On Wed, Jan 13, 2021 at 12:02:44PM +0000, Damien Le Moal wrote:
+> On 2021/01/13 20:48, Ming Lei wrote:
+> > On Wed, Jan 13, 2021 at 11:16:11AM +0000, Damien Le Moal wrote:
+> >> On 2021/01/13 19:25, Ming Lei wrote:
+> >>> On Wed, Jan 13, 2021 at 09:28:02AM +0000, Damien Le Moal wrote:
+> >>>> On 2021/01/13 18:19, Ming Lei wrote:
+> >>>>> On Wed, Jan 13, 2021 at 12:09 PM Changheun Lee <nanich.lee@samsung.com> wrote:
+> >>>>>>
+> >>>>>>> On 2021/01/12 21:14, Changheun Lee wrote:
+> >>>>>>>>> On 2021/01/12 17:52, Changheun Lee wrote:
+> >>>>>>>>>> From: "Changheun Lee" <nanich.lee@samsung.com>
+> >>>>>>>>>>
+> >>>>>>>>>> bio size can grow up to 4GB when muli-page bvec is enabled.
+> >>>>>>>>>> but sometimes it would lead to inefficient behaviors.
+> >>>>>>>>>> in case of large chunk direct I/O, - 64MB chunk read in user space -
+> >>>>>>>>>> all pages for 64MB would be merged to a bio structure if memory address is
+> >>>>>>>>>> continued phsycally. it makes some delay to submit until merge complete.
+> >>>>>>>>>> bio max size should be limited as a proper size.
+> >>>>>>>>>
+> >>>>>>>>> But merging physically contiguous pages into the same bvec + later automatic bio
+> >>>>>>>>> split on submit should give you better throughput for large IOs compared to
+> >>>>>>>>> having to issue a bio chain of smaller BIOs that are arbitrarily sized and will
+> >>>>>>>>> likely need splitting anyway (because of DMA boundaries etc).
+> >>>>>>>>>
+> >>>>>>>>> Do you have a specific case where you see higher performance with this patch
+> >>>>>>>>> applied ? On Intel, BIO_MAX_SIZE would be 1MB... That is arbitrary and too small
+> >>>>>>>>> considering that many hardware can execute larger IOs than that.
+> >>>>>>>>>
+> >>>>>>>>
+> >>>>>>>> When I tested 32MB chunk read with O_DIRECT in android, all pages of 32MB
+> >>>>>>>> is merged into a bio structure.
+> >>>>>>>> And elapsed time to merge complete was about 2ms.
+> >>>>>>>> It means first bio-submit is after 2ms.
+> >>>>>>>> If bio size is limited with 1MB with this patch, first bio-submit is about
+> >>>>>>>> 100us by bio_full operation.
+> >>>>>>>
+> >>>>>>> bio_submit() will split the large BIO case into multiple requests while the
+> >>>>>>> small BIO case will likely result one or two requests only. That likely explain
+> >>>>>>> the time difference here. However, for the large case, the 2ms will issue ALL
+> >>>>>>> requests needed for processing the entire 32MB user IO while the 1MB bio case
+> >>>>>>> will need 32 different bio_submit() calls. So what is the actual total latency
+> >>>>>>> difference for the entire 32MB user IO ? That is I think what needs to be
+> >>>>>>> compared here.
+> >>>>>>>
+> >>>>>>> Also, what is your device max_sectors_kb and max queue depth ?
+> >>>>>>>
+> >>>>>>
+> >>>>>> 32MB total latency is about 19ms including merge time without this patch.
+> >>>>>> But with this patch, total latency is about 17ms including merge time too.
+> >>>>>
+> >>>>> 19ms looks too big just for preparing one 32MB sized bio, which isn't
+> >>>>> supposed to
+> >>>>> take so long.  Can you investigate where the 19ms is taken just for
+> >>>>> preparing one
+> >>>>> 32MB sized bio?
+> >>>>
+> >>>> Changheun mentioned that the device side IO latency is 16.7ms out of the 19ms
+> >>>> total. So the BIO handling, submission+completion takes about 2.3ms, and
+> >>>> Changheun points above to 2ms for the submission part.
+> >>>
+> >>> OK, looks I misunderstood the data.
+> >>>
+> >>>>
+> >>>>>
+> >>>>> It might be iov_iter_get_pages() for handling page fault. If yes, one suggestion
+> >>>>> is to enable THP(Transparent HugePage Support) in your application.
+> >>>>
+> >>>> But if that was due to page faults, the same large-ish time would be taken for
+> >>>> the preparing the size-limited BIOs too, no ? No matter how the BIOs are diced,
+> >>>> all 32MB of pages of the user IO are referenced...
+> >>>
+> >>> If bio size is reduced to 1MB, just 256 pages need to be faulted before submitting this
+> >>> bio, instead of 256*32 pages, that is why the following words are mentioned:
+> >>>
+> >>> 	It means first bio-submit is after 2ms.
+> >>> 	If bio size is limited with 1MB with this patch, first bio-submit is about
+> >>> 	100us by bio_full operation.
+> >>
+> >> Yes, but eventually, all pages for the 32MB IO will be faulted in, just not in
+> >> one go. Overall number of page faults is likely the same as with the large BIO
+> >> preparation. So I think we are back to my previous point, that is, reducing the
+> >> device idle time by starting a BIO more quickly, even a small one, leads to
+> >> overlap between CPU time needed for the next BIO preparation and previous BIO
+> >> execution, reducing overall the latency for the entire 32MB user IO.
+> > 
+> > When bio size is reduced from 32M to 1M:
+> > 
+> > 1MB/(P(1M) + D(1M)) may become bigger than 32MB/(P(1M) + D(1M)), so
+> > throughput is improved.
 > 
-> On 2021/1/14 9:44 上午, Ruan Shiyang wrote:
->>
->>
->> On 2021/1/13 下午6:04, zhong jiang wrote:
->>>
->>> On 2021/1/12 10:55 上午, Ruan Shiyang wrote:
->>>>
->>>>
->>>> On 2021/1/6 下午11:41, Jan Kara wrote:
->>>>> On Thu 31-12-20 00:55:55, Shiyang Ruan wrote:
->>>>>> The current memory_failure_dev_pagemap() can only handle 
->>>>>> single-mapped
->>>>>> dax page for fsdax mode.  The dax page could be mapped by multiple 
->>>>>> files
->>>>>> and offsets if we let reflink feature & fsdax mode work together. So,
->>>>>> we refactor current implementation to support handle memory 
->>>>>> failure on
->>>>>> each file and offset.
->>>>>>
->>>>>> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
->>>>>
->>>>> Overall this looks OK to me, a few comments below.
->>>>>
->>>>>> ---
->>>>>>   fs/dax.c            | 21 +++++++++++
->>>>>>   include/linux/dax.h |  1 +
->>>>>>   include/linux/mm.h  |  9 +++++
->>>>>>   mm/memory-failure.c | 91 
->>>>>> ++++++++++++++++++++++++++++++++++-----------
->>>>>>   4 files changed, 100 insertions(+), 22 deletions(-)
->>>>
->>>> ...
->>>>
->>>>>>   @@ -345,9 +348,12 @@ static void add_to_kill(struct task_struct 
->>>>>> *tsk, struct page *p,
->>>>>>       }
->>>>>>         tk->addr = page_address_in_vma(p, vma);
->>>>>> -    if (is_zone_device_page(p))
->>>>>> -        tk->size_shift = dev_pagemap_mapping_shift(p, vma);
->>>>>> -    else
->>>>>> +    if (is_zone_device_page(p)) {
->>>>>> +        if (is_device_fsdax_page(p))
->>>>>> +            tk->addr = vma->vm_start +
->>>>>> +                    ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
->>>>>
->>>>> It seems strange to use 'pgoff' for dax pages and not for any other 
->>>>> page.
->>>>> Why? I'd rather pass correct pgoff from all callers of 
->>>>> add_to_kill() and
->>>>> avoid this special casing...
->>>>
->>>> Because one fsdax page can be shared by multiple pgoffs.  I have to 
->>>> pass each pgoff in each iteration to calculate the address in vma 
->>>> (for tk->addr).  Other kinds of pages don't need this. They can get 
->>>> their unique address by calling "page_address_in_vma()".
->>>>
->>> IMO,   an fsdax page can be shared by multiple files rather than 
->>> multiple pgoffs if fs query support reflink.   Because an page only 
->>> located in an mapping(page->mapping is exclusive), hence it  only has 
->>> an pgoff or index pointing at the node.
->>>
->>>   or  I miss something for the feature ?  thanks,
->>
->> Yes, a fsdax page is shared by multiple files because of reflink. I 
->> think my description of 'pgoff' here is not correct.  This 'pgoff' 
->> means the offset within the a file.  (We use rmap to find out all the 
->> sharing files and their offsets.)  So, I said that "can be shared by 
->> multiple pgoffs".  It's my bad.
->>
->> I think I should name it another word to avoid misunderstandings.
->>
-> IMO,  All the sharing files should be the same offset to share the fsdax 
-> page.  why not that ? 
+> I think that the reason is that P(1M) < D(1M) and so there is overlap between P
+> and D: P of the next BIO is done on the CPU while D of the previous BIO is
+> ongoing on the device, assuming there is no plugging.
 
-The dedupe operation can let different files share their same data 
-extent, though offsets are not same.  So, files can share one fsdax page 
-at different offset.
+Looks you are talking about AIO. IMO, if AIO is used in Changheun's
+test, the UFS controller pipeline can be saturated easily by many
+enough(> 8 or more) 32M requests(preparing each takes 2ms, and device need
+16ms to handle 32MB req), then there shouldn't be such issue.
 
-> As you has said,  a shared fadax page should be 
-> inserted to different mapping files.  but page->index and page->mapping 
-> is exclusive.  hence an page only should be placed in an mapping tree.
+So I guess Changheun uses sync dio, and the 2ms preparing time is added
+to bio submission delay every time.
 
-We can't use page->mapping and page->index here for reflink & fsdax. 
-And that's this patchset aims to solve.  I introduced a series of 
-->corrupted_range(), from mm to pmem driver to block device and finally 
-to filesystem, to use rmap feature of filesystem to find out all files 
-sharing same data extent (fsdax page).
+Changheun, can you talk about your 32MB block size direct IO test in a
+bit detail? AIO or sync dio? Do you have fio command line to reproduce
+this issue?
 
 
---
-Thanks,
-Ruan Shiyang.
-
-> 
-> And In the current patch,  we failed to found out that all process use 
-> the fsdax page shared by multiple files and kill them.
-> 
-> 
-> Thanks,
-> 
->> -- 
->> Thanks,
->> Ruan Shiyang.
->>
->>>
->>>> So, I added this fsdax case here.  This patchset only implemented 
->>>> the fsdax case, other cases also need to be added here if to be 
->>>> implemented.
->>>>
->>>>
->>>> -- 
->>>> Thanks,
->>>> Ruan Shiyang.
->>>>
->>>>>
->>>>>> +        tk->size_shift = dev_pagemap_mapping_shift(p, vma, 
->>>>>> tk->addr);
->>>>>> +    } else
->>>>>>           tk->size_shift = page_shift(compound_head(p));
->>>>>>         /*
->>>>>> @@ -495,7 +501,7 @@ static void collect_procs_anon(struct page 
->>>>>> *page, struct list_head *to_kill,
->>>>>>               if (!page_mapped_in_vma(page, vma))
->>>>>>                   continue;
->>>>>>               if (vma->vm_mm == t->mm)
->>>>>> -                add_to_kill(t, page, vma, to_kill);
->>>>>> +                add_to_kill(t, page, NULL, 0, vma, to_kill);
->>>>>>           }
->>>>>>       }
->>>>>>       read_unlock(&tasklist_lock);
->>>>>> @@ -505,24 +511,19 @@ static void collect_procs_anon(struct page 
->>>>>> *page, struct list_head *to_kill,
->>>>>>   /*
->>>>>>    * Collect processes when the error hit a file mapped page.
->>>>>>    */
->>>>>> -static void collect_procs_file(struct page *page, struct 
->>>>>> list_head *to_kill,
->>>>>> -                int force_early)
->>>>>> +static void collect_procs_file(struct page *page, struct 
->>>>>> address_space *mapping,
->>>>>> +        pgoff_t pgoff, struct list_head *to_kill, int force_early)
->>>>>>   {
->>>>>>       struct vm_area_struct *vma;
->>>>>>       struct task_struct *tsk;
->>>>>> -    struct address_space *mapping = page->mapping;
->>>>>> -    pgoff_t pgoff;
->>>>>>         i_mmap_lock_read(mapping);
->>>>>>       read_lock(&tasklist_lock);
->>>>>> -    pgoff = page_to_pgoff(page);
->>>>>>       for_each_process(tsk) {
->>>>>>           struct task_struct *t = task_early_kill(tsk, force_early);
->>>>>> -
->>>>>>           if (!t)
->>>>>>               continue;
->>>>>> -        vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff,
->>>>>> -                      pgoff) {
->>>>>> +        vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, 
->>>>>> pgoff) {
->>>>>>               /*
->>>>>>                * Send early kill signal to tasks where a vma covers
->>>>>>                * the page but the corrupted page is not necessarily
->>>>>> @@ -531,7 +532,7 @@ static void collect_procs_file(struct page 
->>>>>> *page, struct list_head *to_kill,
->>>>>>                * to be informed of all such data corruptions.
->>>>>>                */
->>>>>>               if (vma->vm_mm == t->mm)
->>>>>> -                add_to_kill(t, page, vma, to_kill);
->>>>>> +                add_to_kill(t, page, mapping, pgoff, vma, to_kill);
->>>>>>           }
->>>>>>       }
->>>>>>       read_unlock(&tasklist_lock);
->>>>>> @@ -550,7 +551,8 @@ static void collect_procs(struct page *page, 
->>>>>> struct list_head *tokill,
->>>>>>       if (PageAnon(page))
->>>>>>           collect_procs_anon(page, tokill, force_early);
->>>>>>       else
->>>>>> -        collect_procs_file(page, tokill, force_early);
->>>>>> +        collect_procs_file(page, page->mapping, page_to_pgoff(page),
->>>>>
->>>>> Why not use page_mapping() helper here? It would be safer for THPs 
->>>>> if they
->>>>> ever get here...
->>>>>
->>>>>                                 Honza
->>>>>
->>>>
->>>
->>>
->>
-> 
-> 
-
+Thanks, 
+Ming
 
