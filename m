@@ -2,206 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14CE2F5F04
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C48342F5F21
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728945AbhANKjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 05:39:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728853AbhANKjt (ORCPT
+        id S1728833AbhANKnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 05:43:09 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:5555 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726822AbhANKnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 05:39:49 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA1BC061575;
-        Thu, 14 Jan 2021 02:39:35 -0800 (PST)
-Received: from zn.tnic (p200300ec2f1aa900dc6a18505a7e3253.dip0.t-ipconnect.de [IPv6:2003:ec:2f1a:a900:dc6a:1850:5a7e:3253])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 824741EC04DF;
-        Thu, 14 Jan 2021 11:39:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610620772;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Uz5M8jM6ROkPD6VOKuFFM9kmh68b0rkKCdwLPFJrhGI=;
-        b=YqglV8SWnI4cHBOVnPrO5se3k4FwvgHO83L1bJU2aSITWTixgSlMBl4E91liLS/MU4Lf6j
-        F20kSVKxUhQ0jiFsCr5XueP3qX8UkYo9lJ9QUPR4Xiv0PnxQGRMVhx1UvKhFhF1xDpMbo3
-        MPxzAAcC0BSRxprBsHs+Y+fRryuS/Lg=
-Date:   Thu, 14 Jan 2021 11:39:28 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH v4] x86/entry: emit a symbol for register restoring thunk
-Message-ID: <20210114103928.GB12284@zn.tnic>
-References: <20210112115421.GB13086@zn.tnic>
- <20210112194625.4181814-1-ndesaulniers@google.com>
- <20210112210154.GI4646@sirena.org.uk>
- <20210113165923.acvycpcu5tzksbbi@treble>
- <CAKwvOdnAMsYF-v1LAqttBV3e3rHhSFZmPcRRV0+v=+9AyMFgNA@mail.gmail.com>
+        Thu, 14 Jan 2021 05:43:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1610620985; x=1642156985;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=sXN9DbQVc/sgKaFnh/p2/p/3ilUNERt3JAO34CLinWs=;
+  b=OJUCFl4Ww+VPpmHKNjavVFurx8lCyv0VWbi8SE9uoVHS0YT2qEt+7+US
+   Bm6uPpO+wgS4Z3qYBWPWUgkvHiN1nwvj+HDuhCgjkCoVG6kSr4hmGZplh
+   zRPongmvT1RFnJmBQAvCfTrC1raJRilCUBMUdviEjyj/TglmBqndebP3Q
+   tYSFi6aM+h2WPgpttLRkRltnC3ZUkN0b4rHAdb3mBo6594A86FkHtYtmV
+   xVNa6ov4HEkQ5k2HvOcwWDdPoIVnA0ScpuAYPoWdVPka5gCdK7eDQWB6D
+   /z5hDOpfvF802SmJoV2do9rr6PojxvZsFCLZXAQ9+qWL4AF/aedY9wDie
+   Q==;
+IronPort-SDR: x3+lJNpVxUieZ1DpDoiVU/9R5lEpBsPeCRkLK/ptBSTPjt1xbFne2ezggc/DxHw1veJG3VEfwb
+ qveQIwK5E2lfWuzLqpgR5VsVpMwn1WAQSN/HzDIj0tPW7q5c5kxADS5fmj9DSlwR9GJcvyyonc
+ hjGcyQfdjNCBErULur4B3Q0q2PuGkESv3T+5Zm5x4eP23ZBkCqlStvNl7KYeuX2zL5fctG13vx
+ tqj1OD1Zu57sI1dGXWHNXBOtdkdaj4qhoxUlMMxz10iBwAUNTfLlF9s3tp4y9nvrQSgh1G2veq
+ P+g=
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="40393262"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Jan 2021 03:41:49 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 14 Jan 2021 03:41:48 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Thu, 14 Jan 2021 03:41:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gPbao10oYZf51SQ4IYFpI84nCJjQzqMSF3p23/e6+zj2p9lITUiGTGIUuNYg87k3QQ2HrEJSnApoyRGnqiqMCAxT6rTe45J6ZnQJRf4qrLl39rhdrjqjkQ7bxgA4smYG9qoUUXQRe4K5lP09BI3/zfGjY5oc1wACsz6w0TojrRyz2NnAHFCvOJwosBj4IUZ9a6tu31H/CsjGb4dIJyMQ7Rjw4BzhGjdf2cA7sSq81cdzbhqOavzX/wHWpfZ1+/gxKV913zxj/F4j5bP2Rs6URQJ4gal/2UHAdX0lr0PfMldnTm6JXCMTEeBcY2F7noDnuavPfgXwFw5cNZPcZiW3FA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sXN9DbQVc/sgKaFnh/p2/p/3ilUNERt3JAO34CLinWs=;
+ b=Xc+Yi5zV+yFwKhZ3knoCk9Rj4TdXNY9KnyE0ZXri0FtcDUTS0EeXBvkg4PRz1ANwzdJMAQQH7msXK7iynWLn/+jAwgQwGmIK5ckTdbOQUwb4Y40k1FN3j28DKQopDQPNRI8D7E71zQip+51eFRE05VTii7eEH7i1a8e37sVVryQp5IkPNfQxXwhQLDY6skWGHuUsgp5h6elFBd7CE+IqMw2KxpoL87DZk9XcMdiJyr/s8VS/p3xE6viI6JSh0hspJUPCIUl77uvnvpwLysG/U0eNSqzM1kpzNOcNc2t6VMlTdnL1aD2EGkXwW77M6USmOp3Eu4pkooKhLO8fX9JPSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sXN9DbQVc/sgKaFnh/p2/p/3ilUNERt3JAO34CLinWs=;
+ b=WFZfh7134QZOfPmFKXFLcFIWW/nZCtYH5IHs3YF0cZCWOZDh0lI/IqSfshrlRS9xMlHJOEIl2VK5fixV2LBRpJCczQdbgUSQr4nfB3+iLFKewQm8qQlLBYBjWsmHCwi9aZz+WnWvQLhfNHo5mnqHybgADCS/zvrKwU+Ic9lriYs=
+Received: from DM6PR11MB3420.namprd11.prod.outlook.com (2603:10b6:5:69::31) by
+ DM5PR11MB1674.namprd11.prod.outlook.com (2603:10b6:4:b::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3763.9; Thu, 14 Jan 2021 10:41:46 +0000
+Received: from DM6PR11MB3420.namprd11.prod.outlook.com
+ ([fe80::b96e:6776:6971:80f4]) by DM6PR11MB3420.namprd11.prod.outlook.com
+ ([fe80::b96e:6776:6971:80f4%5]) with mapi id 15.20.3763.010; Thu, 14 Jan 2021
+ 10:41:46 +0000
+From:   <Claudiu.Beznea@microchip.com>
+To:     <linux@armlinux.org.uk>
+CC:     <hkallweit1@gmail.com>, <andrew@lunn.ch>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <rjw@rjwysocki.net>, <pavel@ucw.cz>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH] net: phy: micrel: reconfigure the phy on resume
+Thread-Topic: [PATCH] net: phy: micrel: reconfigure the phy on resume
+Thread-Index: AQHW6Y6UrG2j4PiM1k2BT3XuGZuJHg==
+Date:   Thu, 14 Jan 2021 10:41:46 +0000
+Message-ID: <fe4c31a0-b807-0eb2-1223-c07d7580e1fc@microchip.com>
+References: <1610120754-14331-1-git-send-email-claudiu.beznea@microchip.com>
+ <25ec943f-ddfc-9bcd-ef30-d0baf3c6b2a2@gmail.com>
+ <ce20d4f3-3e43-154a-0f57-2c2d42752597@microchip.com>
+ <ee0fd287-c737-faa5-eee1-99ffa120540a@gmail.com>
+ <ae4e73e9-109f-fdb9-382c-e33513109d1c@microchip.com>
+ <7976f7df-c22f-d444-c910-b0462b3d7f61@gmail.com>
+ <d9fcf8da-c0b0-0f18-48e9-a7534948bc93@microchip.com>
+ <20210114102508.GO1551@shell.armlinux.org.uk>
+In-Reply-To: <20210114102508.GO1551@shell.armlinux.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: armlinux.org.uk; dkim=none (message not signed)
+ header.d=none;armlinux.org.uk; dmarc=none action=none
+ header.from=microchip.com;
+x-originating-ip: [82.76.227.226]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 10fe355b-c275-4dc5-5a52-08d8b878fdf6
+x-ms-traffictypediagnostic: DM5PR11MB1674:
+x-microsoft-antispam-prvs: <DM5PR11MB1674397A8C169DCDEBA4381187A80@DM5PR11MB1674.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1+9eqpDft6dwB+SnsrpWKtRVsoXik+GmYGxzf3gpQKCdFqWt9MG1jL59pqDGTbBck6lv12WRQ6DgGV9xz2sZX7PulxRQxRtTIbJc2hZvbRFy/nM1fM+09cxAnd1A3WQjnAzZzXNg+eOyOo39rDb5YpCKDgITj3SgHzujicqzAcjBgZQm9t0YEAzEnooaxWCwOAUPXUrvriZOnYCn/WVUgY2C1erJy5LQc776nq/Il86//kHE/G0tIDD8aklzYc2UjEjHWEcqQI73Ob2lKSCcBcBz0xkW024AcVG6ZL7PSMgvaOzH8Ha1FpfJXYtyyqAXmZp2xqhFEGvXN3fLbZ1H/PDLBZ4QbtCid2a4ntOiABO4Xlb0mwBdTy+WnEaqHhy4N1c+qp4S49bOpFAPi8VpuQZuaApJIVV/mM8kZdTjkLZm3Y8KSz0vDhpxdeM/nobVTHnPa9QMwL/L8Unv4zP0YLS9h2pKKCic5BYZORKQ7O00RB75hb9dkwqW2AKU8fICrpMguqC0WeswKy2JXBdkq3pA4sKDnAe+dcPLZSSOxM44yQfhp5cPDU0lwvdXzaB8
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3420.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(136003)(39860400002)(366004)(376002)(66946007)(66446008)(8936002)(64756008)(36756003)(186003)(66556008)(66476007)(8676002)(91956017)(76116006)(6512007)(83380400001)(53546011)(26005)(31696002)(6506007)(6486002)(4744005)(54906003)(31686004)(4326008)(478600001)(966005)(6916009)(316002)(7416002)(71200400001)(2616005)(86362001)(2906002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?L0hnVGs5aHFpYlp4cWVaM0ZLM2VJa3dudzFTZFJFV1g5Y0lMZlBOSk1EUDZ3?=
+ =?utf-8?B?bDh0MHBxcmVJNDY2V2V6dzMwZHk1SUFxNkUxNHNvTUh5ZFpjSmxuQ0t0cmNS?=
+ =?utf-8?B?TEVVK293SmF6dkNCTTV3Sm5nblF5SnUxRzBoeDdESUhrUHZYcm5WdkpkRWZi?=
+ =?utf-8?B?L3ZrTm13cW4rYld2WVhBVXUrSzVwcUdKT20wUGU5NXgrUTJNMXNBNHJqalFu?=
+ =?utf-8?B?L3VjNVZWZlBIUUNCdHRTYlR2YzJ4RlMzUThPZzUwcmxkd3RsbWkwZENuREVm?=
+ =?utf-8?B?Z1V3Z3BUMk1rZGR0UGVwZ3RqZlhDNGY3VUtKRFRFbHVhWW13Q0tjZU9NVUtz?=
+ =?utf-8?B?anl0NXY0ZFBPSnA3K1FvOUdsaDhudVNBWUgwRXp0cC9wUFczNy9TeFFwcEw4?=
+ =?utf-8?B?NXpLWTcvOGp1U3N4UjBndm45TlY3bzNZRGE5M21sTzJYa1JoTVpVZlhYZWVa?=
+ =?utf-8?B?cWk3OUtmVWxTcjdET0VrZitMTk5adkMzcnphQXZqa3ZaZDYybml0bzN4U1Az?=
+ =?utf-8?B?MHk4a1gyb0VFbEJqMjlPUEZPVlJlWCs5WWhWdXJPZGFET0NCd3pqMlJoRUFi?=
+ =?utf-8?B?eXRXaHZLSC93eFNoekRWUWRGUTNnRnUzSjYvL2hZZnJTQ3JyTFJlcHZKV1lM?=
+ =?utf-8?B?NVpJVVJ3ZktFOGxwVEJuVUh5RVJiVE90MjNvUW1ZRUg5UlRvNUtZaEhZTE14?=
+ =?utf-8?B?U25GMlpDMFZUQUpBN2VtLzZpQUk3bVluMTNITWVjSDV1QmVIem9MMDd2MlIx?=
+ =?utf-8?B?NCtXK1RuTFpDYWdhTkpxMUV5ZmJ4UkpZTmtKVmhZZlFHTGFFeTFUNnlKQUx2?=
+ =?utf-8?B?aHZkZnNFRDJ4bEJiY1NXcmoxT0JmeVZmQ01pZitqc25GdXd6eDE3eTl1eFhW?=
+ =?utf-8?B?OFN1NWxaOTZtUGNsZ3ZEeHVGekdPdW1RRHZmS2JlTEw1cWhNaTZMRTc4UnZw?=
+ =?utf-8?B?OGRFQTFvMlRuOFZzWlNaclR5RDJ4NmFiRGN3YUZXdnlwY2c3ZFIvYVAyTjRC?=
+ =?utf-8?B?eGJBZjFlL0FvOTRLdldPaDUxbHZsOGd2WWR1RDRWcG1zQ3ZnbXZlM1h5Y283?=
+ =?utf-8?B?NlFvUnNTSXRjSkFUYXRWZm1heTlWZzhoM1pWQXFRb0VQZE4vNWtZc3BWY3hq?=
+ =?utf-8?B?QVhIVDRSeTRqUmVZSUN0UUl1ZjBUTEpDYlpuSWt2YnpKYUxnRmwzOTViV08r?=
+ =?utf-8?B?ZTdRZ29ocS9KaXkzRDdnTVlKRmNEQTVTaEZTUDc0M0N1RU5uZm5JQ2RIa3Ft?=
+ =?utf-8?B?T3R6cGNxaXZEVGlJTjFjTU80ODFoWk5lUFZFTWpkaFJPVU4vOXVDS1pqeXdF?=
+ =?utf-8?Q?URMAccFex70lLDaVkmYttzB1mnBSojB/75?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0B109A135574A5448683246C753961E8@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnAMsYF-v1LAqttBV3e3rHhSFZmPcRRV0+v=+9AyMFgNA@mail.gmail.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3420.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10fe355b-c275-4dc5-5a52-08d8b878fdf6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jan 2021 10:41:46.8112
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wfmWtEw5A+gJx20JuopMAZH+o1GxXOm2cjieW9Qc3eCdLK7xYoHl2q5i8DKwBwB5XbFhzJ5LPgYq5vkUJYedo7w7tJ/1SjHHT7/gAUfFysM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1674
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 09:56:04AM -0800, Nick Desaulniers wrote:
-> Apologies, that was not my intention.  I've sent a follow up in
-> https://lore.kernel.org/lkml/20210113174620.958429-1-ndesaulniers@google.com/T/#u
-> since BP picked up v3 in tip x86/entry:
-> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=x86/entry&id=bde718b7e154afc99e1956b18a848401ce8e1f8e
-
-It is the topmost patch so I can rebase...
-
-Also, I replicated that text into linkage.h and removed the change over
-SYM_CODE_START and I've got the below.
-
-Further complaints?
-
----
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Tue, 12 Jan 2021 11:46:24 -0800
-Subject: [PATCH] x86/entry: Emit a symbol for register restoring thunk
-
-Arnd found a randconfig that produces the warning:
-
-  arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at
-  offset 0x3e
-
-when building with LLVM_IAS=1 (Clang's integrated assembler). Josh
-notes:
-
-  With the LLVM assembler not generating section symbols, objtool has no
-  way to reference this code when it generates ORC unwinder entries,
-  because this code is outside of any ELF function.
-
-  The limitation now being imposed by objtool is that all code must be
-  contained in an ELF symbol.  And .L symbols don't create such symbols.
-
-  So basically, you can use an .L symbol *inside* a function or a code
-  segment, you just can't use the .L symbol to contain the code using a
-  SYM_*_START/END annotation pair.
-
-Fangrui notes that this optimization is helpful for reducing image size
-when compiling with -ffunction-sections and -fdata-sections. I have
-observed on the order of tens of thousands of symbols for the kernel
-images built with those flags.
-
-A patch has been authored against GNU binutils to match this behavior
-of not generating unused section symbols ([1]), so this will
-also become a problem for users of GNU binutils once they upgrade to 2.36.
-
-Omit the .L prefix on a label so that the assembler will emit an entry
-into the symbol table for the label, with STB_LOCAL binding. This
-enables objtool to generate proper unwind info here with LLVM_IAS=1 or
-GNU binutils 2.36+.
-
- [ bp: Massage commit message. ]
-
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Suggested-by: Borislav Petkov <bp@alien8.de>
-Suggested-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210112194625.4181814-1-ndesaulniers@google.com
-Link: https://github.com/ClangBuiltLinux/linux/issues/1209
-Link: https://reviews.llvm.org/D93783
-Link: https://sourceware.org/binutils/docs/as/Symbol-Names.html
-Link: https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=d1bcae833b32f1408485ce69f844dcd7ded093a8 [1]
----
- Documentation/asm-annotations.rst | 5 +++++
- arch/x86/entry/thunk_64.S         | 8 ++++----
- include/linux/linkage.h           | 5 +++++
- 3 files changed, 14 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/asm-annotations.rst b/Documentation/asm-annotations.rst
-index 32ea57483378..76424e0431f4 100644
---- a/Documentation/asm-annotations.rst
-+++ b/Documentation/asm-annotations.rst
-@@ -100,6 +100,11 @@ Instruction Macros
- ~~~~~~~~~~~~~~~~~~
- This section covers ``SYM_FUNC_*`` and ``SYM_CODE_*`` enumerated above.
- 
-+``objtool`` requires that all code must be contained in an ELF symbol. Symbol
-+names that have a ``.L`` prefix do not emit symbol table entries. ``.L``
-+prefixed symbols can be used within a code region, but should be avoided for
-+denoting a range of code via ``SYM_*_START/END`` annotations.
-+
- * ``SYM_FUNC_START`` and ``SYM_FUNC_START_LOCAL`` are supposed to be **the
-   most frequent markings**. They are used for functions with standard calling
-   conventions -- global and local. Like in C, they both align the functions to
-diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
-index ccd32877a3c4..c9a9fbf1655f 100644
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -31,7 +31,7 @@ SYM_FUNC_START_NOALIGN(\name)
- 	.endif
- 
- 	call \func
--	jmp  .L_restore
-+	jmp  __thunk_restore
- SYM_FUNC_END(\name)
- 	_ASM_NOKPROBE(\name)
- 	.endm
-@@ -44,7 +44,7 @@ SYM_FUNC_END(\name)
- #endif
- 
- #ifdef CONFIG_PREEMPTION
--SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
-+SYM_CODE_START_LOCAL_NOALIGN(__thunk_restore)
- 	popq %r11
- 	popq %r10
- 	popq %r9
-@@ -56,6 +56,6 @@ SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
- 	popq %rdi
- 	popq %rbp
- 	ret
--	_ASM_NOKPROBE(.L_restore)
--SYM_CODE_END(.L_restore)
-+	_ASM_NOKPROBE(__thunk_restore)
-+SYM_CODE_END(__thunk_restore)
- #endif
-diff --git a/include/linux/linkage.h b/include/linux/linkage.h
-index 5bcfbd972e97..dbf8506decca 100644
---- a/include/linux/linkage.h
-+++ b/include/linux/linkage.h
-@@ -178,6 +178,11 @@
-  * Objtool generates debug info for both FUNC & CODE, but needs special
-  * annotations for each CODE's start (to describe the actual stack frame).
-  *
-+ * Objtool requires that all code must be contained in an ELF symbol. Symbol
-+ * names that have a  .L prefix do not emit symbol table entries. .L
-+ * prefixed symbols can be used within a code region, but should be avoided for
-+ * denoting a range of code via ``SYM_*_START/END`` annotations.
-+ *
-  * ALIAS -- does not generate debug info -- the aliased function will
-  */
- 
--- 
-2.29.2
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+DQoNCk9uIDE0LjAxLjIwMjEgMTI6MjUsIFJ1c3NlbGwgS2luZyAtIEFSTSBMaW51eCBhZG1pbiB3
+cm90ZToNCj4gDQo+IEFzIEkndmUgc2FpZCwgaWYgcGh5bGliL1BIWSBkcml2ZXIgaXMgbm90IHJl
+c3RvcmluZyB0aGUgc3RhdGUgb2YgdGhlDQo+IFBIWSBvbiByZXN1bWUgZnJvbSBzdXNwZW5kLXRv
+LXJhbSwgdGhlbiB0aGF0J3MgYW4gaXNzdWUgd2l0aCBwaHlsaWINCj4gYW5kL29yIHRoZSBwaHkg
+ZHJpdmVyLg0KDQpJbiB0aGUgcGF0Y2ggSSBwcm9wb3NlZCBpbiB0aGlzIHRocmVhZCB0aGUgcmVz
+dG9yaW5nIGlzIGRvbmUgaW4gUEhZIGRyaXZlci4NCkRvIHlvdSB0aGluayBJIHNob3VsZCBjb250
+aW51ZSB0aGUgaW52ZXN0aWdhdGlvbiBhbmQgY2hlY2sgaWYgc29tZXRoaW5nDQpzaG91bGQgYmUg
+ZG9uZSBmcm9tIHRoZSBwaHlsaWIgaXRzZWxmPw0KDQpUaGFuayB5b3UsDQpDbGF1ZGl1IEJlem5l
+YQ0KDQo+IA0KPiAtLQ0KPiBSTUsncyBQYXRjaCBzeXN0ZW06IGh0dHBzOi8vd3d3LmFybWxpbnV4
+Lm9yZy51ay9kZXZlbG9wZXIvcGF0Y2hlcy8NCj4gRlRUUCBpcyBoZXJlISA0ME1icHMgZG93biAx
+ME1icHMgdXAuIERlY2VudCBjb25uZWN0aXZpdHkgYXQgbGFzdCENCj4g
