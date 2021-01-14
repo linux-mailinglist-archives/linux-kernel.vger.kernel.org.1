@@ -2,112 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DF72F59CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 05:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA682F59CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 05:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbhANEKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 23:10:05 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:22363 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726705AbhANEKE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 23:10:04 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610597389; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=KEhEnxDdZvkvCPxXrDuP2+CvAQyFcZ9lrV7IBZA6ja4=;
- b=UIyOQk4WziOlVV7U118jrXusSPzrgVPF0uxWgdF66Xe3QMunbznIxSRImPha0kDGyiRhUTkC
- VwyGZ9QjueY0et8Y/v7LwFchZDNSiSBaOylbd01vlWDMTwXt7+vDDgyCQzunzvJh3e+iVyj/
- jjJYudZQyxyIFZU/Ve128tlmoTE=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5fffc3e5c88af06107e11723 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Jan 2021 04:09:09
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DEC3CC43464; Thu, 14 Jan 2021 04:09:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 222F1C433CA;
-        Thu, 14 Jan 2021 04:09:08 +0000 (UTC)
+        id S1726590AbhANELq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 23:11:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725875AbhANELp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 23:11:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02CEB238E2;
+        Thu, 14 Jan 2021 04:11:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610597465;
+        bh=EcXltmbDH7agC/QQ9g8sTB1INtLzRk5tXb2WEeddGSg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vHl0CcQMjqieB74YQO0YRnLVCwZ/FExUmZrO2tImyB39Bj3QKNmKbll2FU+k3jwFF
+         L5fe/HoRqpdvgASi4GKeuQsTwmGbu71xC/9uMe966LttBjzQ62oh5O7sguM7HrKG3Z
+         CU1hQufVTsU/8qLG/y7JnYXfm1SH4wIKJdRh9s8s2Crh7ICE/Qd7VbcbbOI/cJGyfY
+         VVVnctUTfGZyj83VwPuSloLivsLGwvrqlvs88E9TsjsNgZjNMC8Ena0K1McRscLQMS
+         Lt/HG0MLxtSUqWvd3DLsDlt8dpN7wZP7HoxlnZDWP7sILGmhdkdUHyMHw1W2cInGMl
+         QtLP1IylmXPgg==
+Date:   Wed, 13 Jan 2021 20:11:03 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     David Wu <david.wu@rock-chips.com>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, joabreu@synopsys.com,
+        alexandre.torgue@st.com, peppe.cavallaro@st.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: stmmac: Fixed mtu channged by cache aligned
+Message-ID: <20210113201103.721a80b6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210113034109.27865-1-david.wu@rock-chips.com>
+References: <20210113034109.27865-1-david.wu@rock-chips.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 14 Jan 2021 12:09:08 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     daejun7.park@samsung.com
-Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
-        bvanassche@acm.org, huobean@gmail.com,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-Subject: Re: [PATCH v18 3/3] scsi: ufs: Prepare HPB read for cached sub-region
-In-Reply-To: <20210113013633epcms2p60b9dccaa405ff568a18d28b94089665b@epcms2p6>
-References: <e9b2479d0371e3cbe8aeb6c90ffb5d72@codeaurora.org>
- <20201222015704epcms2p643f0c5011064a7ce56b08331811a8509@epcms2p6>
- <20201222015854epcms2p1bdc30b8fab8ef01502451b75e7fbaf49@epcms2p1>
- <CGME20201222015704epcms2p643f0c5011064a7ce56b08331811a8509@epcms2p6>
- <20210113013633epcms2p60b9dccaa405ff568a18d28b94089665b@epcms2p6>
-Message-ID: <c6a4e4abd856aa03b6b91b619cddbeb7@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daejun,
-
-On 2021-01-13 09:36, Daejun Park wrote:
-> Hi Can Guo,
+On Wed, 13 Jan 2021 11:41:09 +0800 David Wu wrote:
+> Since the original mtu is not used when the mtu is updated,
+> the mtu is aligned with cache, this will get an incorrect.
+> For example, if you want to configure the mtu to be 1500,
+> but mtu 1536 is configured in fact.
 > 
->> > +static void
->> > +ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb
->> > *lrbp,
->> > +				  u32 lpn, u64 ppn,  unsigned int transfer_len)
->> > +{
->> > +	unsigned char *cdb = lrbp->ucd_req_ptr->sc.cdb;
->> > +
->> > +	cdb[0] = UFSHPB_READ;
->> 
->> You are only replacing opcode in cdb[0], but 
->> ufshcd_add_command_trace()
->> is
->> counting on lrbp->cmd->cmnd. This will lead to wrong opcode recorded 
->> by
->> UFS ftrace.
->> 
-> You're comment is good point for improving this patch. But there is no
-> "case" for HPB read (0xF8) in ufshcd_add_command_trace().
-> So I will add codes to support tracing HPB read command in
-> ufshcd_add_command_trace() on next patch.
+> Fixed: eaf4fac478077 ("net: stmmac: Do not accept invalid MTU values")
+> Signed-off-by: David Wu <david.wu@rock-chips.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index 5b1c12ff98c0..e8640123db76 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -4025,7 +4025,7 @@ static void stmmac_set_rx_mode(struct net_device *dev)
+>  static int stmmac_change_mtu(struct net_device *dev, int new_mtu)
+>  {
+>  	struct stmmac_priv *priv = netdev_priv(dev);
+> -	int txfifosz = priv->plat->tx_fifo_size;
+> +	int txfifosz = priv->plat->tx_fifo_size, mtu = new_mtu;
 
-It is not just about ftrace. If HPB READ cmd fails with sense key infos.
-When SCSI layer prints the cmd, it still prints the READ(10) CDB, which 
-is
-misleading.
+Adjusted the code a little here to keep the variable declaration lines
+ordered longest to shortest, and applied. 
 
-Thanks,
-Can Guo.
-
-> Thanks,
-> Daejun
+Thanks!
