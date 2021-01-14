@@ -2,97 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D046A2F6CEC
+	by mail.lfdr.de (Postfix) with ESMTP id 645522F6CEB
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 22:12:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729503AbhANVMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 16:12:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
+        id S1729368AbhANVMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 16:12:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726625AbhANVMN (ORCPT
+        with ESMTP id S1726625AbhANVMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 16:12:13 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3221EC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:11:33 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id f17so8039418ljg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:11:33 -0800 (PST)
+        Thu, 14 Jan 2021 16:12:06 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A62C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:11:25 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id o6so14027975iob.10
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:11:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=atishpatra.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WZbWNTyCdiUNNLsPZb0uOA1PP4wQXROq46k1F1yytJw=;
-        b=hen/WPHdi8Ht1TwC4P1EMLL6ADt5dJQsfTqWvojSe7pq3AVL/qQ0ufNnDDHPKoOGSi
-         MYVjA4WG9Ppv9qI7iT3VnsqoeJWQREPL+moru7JOkpLRprs9K6Jiq0aRVURVoY5lfYVr
-         jLkCnNQivZmx2z41fetvafqYYGLGeUBOPuu18=
+        bh=M8WYmU1OYy2bAwdAfp39SgsoayoGxiD9AS0X3mtcrDU=;
+        b=e3m26mYJjCGBBdtqDDHsBYwE7TbY6swQ2IwrVvIrw742/+Pc51y1VHryFH/8mkKHa3
+         r0i9z+Qm5krgPVFtetMDbxdLKAgZgAQoESA5W5DExpgIUL2QvmbPeIiM86+4GQKkW0vw
+         cfF8R78HLM3uNjYI6HetbcovnaWzijtUJzZ/s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WZbWNTyCdiUNNLsPZb0uOA1PP4wQXROq46k1F1yytJw=;
-        b=MiA7aPUxzcK1idHQ5nrb94WNnzzDxT8o4ynwoUKWzzkftlgSrGPJ3hLQb2uKiWtXFB
-         QyfIAg1q8mmTa9c/7Gwm7c+O3MlxM4yun72MudAm+34ve/VeLUy4/OLqJSZ/Faa0sQPN
-         u3QDuYH/t3coH9XYHqDfVXOg7NnqXpkv9u7YU26ePt8zKEIlpD93ovaxuG+aIE4TmwGf
-         UpSVPbIJ9eengJwIMfPxiwFL+KCGxUMgqIBMa0+OpYEgVkdlbRXql3/vxpneRUbiZnXS
-         DkaxOnhoG18RxoOZvxRQezqSbSGSBpk4rARSyrDF85v1SebFavvloSWMdEO9uIK2vrp+
-         EZkA==
-X-Gm-Message-State: AOAM531PE1Q1Mr84OCv3wyXxrbSMN6DGlUVpBvUNFB53/CH/jwwUNocM
-        KY6svdYeqpUeyfjMtXKXZZZlixm4Sz75+w==
-X-Google-Smtp-Source: ABdhPJwf1Wjd2UtK9NBe+nsIE6tpdodyxX+LqOSSwt2wYEghHTHc2uKXhQYy5kZ22RyML39gO402yQ==
-X-Received: by 2002:a2e:80d4:: with SMTP id r20mr3827190ljg.495.1610658691392;
-        Thu, 14 Jan 2021 13:11:31 -0800 (PST)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id w15sm660920lfd.95.2021.01.14.13.11.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jan 2021 13:11:29 -0800 (PST)
-Received: by mail-lj1-f173.google.com with SMTP id e7so8064113ljg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 13:11:28 -0800 (PST)
-X-Received: by 2002:a2e:6f17:: with SMTP id k23mr3837756ljc.411.1610658688595;
- Thu, 14 Jan 2021 13:11:28 -0800 (PST)
+        bh=M8WYmU1OYy2bAwdAfp39SgsoayoGxiD9AS0X3mtcrDU=;
+        b=YzWo1+XfwRL+xMDP1hetLGVgHLHj6Smt31ljaHNLcJySfpGlzGQVmDkHdQONfFA3Z6
+         7uX2idP2K93BTLqPWyX594Gwu53BLFmTqdx+rEJCcBRI/xYS7LQ5iwAYdm3GTIC28rB7
+         /y/iJRU0Bm6Lzdc2y2fwPptZMuZoyfmXPejdtUD3thMIdU0JSoCQIp4AaTU+TqU0QBEz
+         EhvnDcQ6Hfh5aSwTCF9TijCtL08OUsUrBieIG2KYG0qMkpVajlGXU2GLPmVUizI2k8ur
+         TVcbKeA9se4BSF5DZWD13JhhPzdVxyDMBEiK93yDbgR/MDbBAmdgYnVOazDcgRw2pwzq
+         UKOg==
+X-Gm-Message-State: AOAM53147prdztA4GlrBdOyUmmR2fwjcCwHjOJP1LoPAnpA0G6nrzf42
+        3wgAAIo/qGOyBGNWqC5ZIA/34pF/eRAaHnb0W1Fu
+X-Google-Smtp-Source: ABdhPJyRJhPjAGjwKf+7QRz7LzAj+ARJ1RCho5T78E0d2vC821Cj5/V5y/gXoeFDnOHUkU3yGgT1ZaZOqJBkk2z3zhs=
+X-Received: by 2002:a05:6638:13c6:: with SMTP id i6mr6096314jaj.141.1610658685204;
+ Thu, 14 Jan 2021 13:11:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20210114175934.13070-1-will@kernel.org> <20210114175934.13070-5-will@kernel.org>
- <CAHk-=wixsPuT5ingsEqj2a1PKuc+rTS_oeD_VL0p8G_3oRiJhA@mail.gmail.com>
- <20210114190021.GB13135@willie-the-truck> <CAHk-=wjdJmL22+zk3_rWAfEJJCf=oDxiJ530qk-WNk_Ji0qhxw@mail.gmail.com>
- <20210114194129.GA13314@willie-the-truck>
-In-Reply-To: <20210114194129.GA13314@willie-the-truck>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 14 Jan 2021 13:11:12 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wixswKjAPt0eEVSHqOQB9tBuO5FeqfyKyxFWyBLEG6EcQ@mail.gmail.com>
-Message-ID: <CAHk-=wixswKjAPt0eEVSHqOQB9tBuO5FeqfyKyxFWyBLEG6EcQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/8] mm: Separate fault info out of 'struct vm_fault'
-To:     Will Deacon <will@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+References: <CAOnJCU+mCPwbeOQpmHmu3ar_17otmgftiKHLL+Z4_nExpj0=cA@mail.gmail.com>
+ <mhng-4458ef4d-9443-491e-9118-aec3596058ed@penguin>
+In-Reply-To: <mhng-4458ef4d-9443-491e-9118-aec3596058ed@penguin>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Thu, 14 Jan 2021 13:11:14 -0800
+Message-ID: <CAOnJCUJON3B6ugWDY1=rcDOMS2+m=SVBsiAEnwV=QDL7omnsfA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] RISC-V: Fix L1_CACHE_BYTES for RV32
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Atish Patra <Atish.Patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Hugh Dickins <hughd@google.com>,
-        Android Kernel Team <kernel-team@android.com>
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 11:41 AM Will Deacon <will@kernel.org> wrote:
+On Thu, Jan 14, 2021 at 11:46 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
 >
-> Sure enough, an arm64 defconfig builds perfectly alright with that change,
-> but it really shouldn't. I'm using clang 11.0.5, so I had another go with
-> GCC 9.2.1 and bang:
+> On Thu, 14 Jan 2021 10:33:01 PST (-0800), atishp@atishpatra.org wrote:
+> > On Wed, Jan 13, 2021 at 9:10 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> >>
+> >> On Thu, 07 Jan 2021 01:26:51 PST (-0800), Atish Patra wrote:
+> >> > SMP_CACHE_BYTES/L1_CACHE_BYTES should be defined as 32 instead of
+> >> > 64 for RV32. Otherwise, there will be hole of 32 bytes with each memblock
+> >> > allocation if it is requested to be aligned with SMP_CACHE_BYTES.
+> >> >
+> >> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> >> > ---
+> >> >  arch/riscv/include/asm/cache.h | 4 ++++
+> >> >  1 file changed, 4 insertions(+)
+> >> >
+> >> > diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
+> >> > index 9b58b104559e..c9c669ea2fe6 100644
+> >> > --- a/arch/riscv/include/asm/cache.h
+> >> > +++ b/arch/riscv/include/asm/cache.h
+> >> > @@ -7,7 +7,11 @@
+> >> >  #ifndef _ASM_RISCV_CACHE_H
+> >> >  #define _ASM_RISCV_CACHE_H
+> >> >
+> >> > +#ifdef CONFIG_64BIT
+> >> >  #define L1_CACHE_SHIFT               6
+> >> > +#else
+> >> > +#define L1_CACHE_SHIFT               5
+> >> > +#endif
+> >> >
+> >> >  #define L1_CACHE_BYTES               (1 << L1_CACHE_SHIFT)
+> >>
+> >> Should we not instead just
+> >>
+> >> #define SMP_CACHE_BYTES L1_CACHE_BYTES
+> >>
+> >> like a handful of architectures do?
+> >>
+> >
+> > The generic code already defines it that way in include/linux/cache.h
+> >
+> >> The cache size is sort of fake here, as we don't have any non-coherent
+> >> mechanisms, but IIRC we wrote somewhere that it's recommended to have 64-byte
+> >> cache lines in RISC-V implementations as software may assume that for
+> >> performance reasons.  Not really a strong reason, but I'd prefer to just make
+> >> these match.
+> >>
+> >
+> > If it is documented somewhere in the kernel, we should update that. I
+> > think SMP_CACHE_BYTES being 64
+> > actually degrades the performance as there will be a fragmented memory
+> > blocks with 32 bit bytes gap wherever
+> > SMP_CACHE_BYTES is used as an alignment requirement.
+>
+> I don't buy that: if you're trying to align to the cache size then the gaps are
+> the whole point.  IIUC the 64-byte cache lines come from DDR, not XLEN, so
+> there's really no reason for these to be different between the base ISAs.
+>
 
-Ok, looks like a clang bug, but a reasonably benign one.
+Got your point. I noticed this when fixing the resource tree issue
+where the SMP_CACHE_BYTES
+alignment was not intentional but causing the issue. The real issue
+was solved via another patch in this series though.
 
-As long as we have sufficient coverage with gcc, we'll get error
-reporting in a timely manner for any new incorrect assignments, so I
-think we can do that constant anonymous struct even if it does mean
-that clang might let some bad cases through (I personally use gcc for
-build testing, and then clang for building my boot kernels, so I'd
-catch anything x86-64 allmodconfig in my build tests).
+Just to clarify, if the allocation function intends to allocate
+consecutive memory, it should use 32 instead of SMP_CACHE_BYTES.
+This will lead to a #ifdef macro in the code.
 
-And keeping it unnamed it would avoid a lot of noisy churn..
+> > In addition to that, Geert Uytterhoeven mentioned some panic on vex32
+> > without this patch.
+> > I didn't see anything in Qemu though.
+>
+> Something like that is probably only going to show up on real hardware, QEMU
+> doesn't really do anything with the cache line size.  That said, as there's
+> nothing in our kernel now related to non-coherent memory there really should
+> only be performance issue (at least until we have non-coherent systems).
+>
+> I'd bet that the change is just masking some other bug, either in the software
+> or the hardware.  I'd prefer to root cause this rather than just working around
+> it, as it'll probably come back later and in a more difficult way to find.
+>
 
-             Linus
+Agreed. @Geert Uytterhoeven Can you do a further analysis of the panic
+you were saying ?
+We may need to change an alignment requirement to 32 for RV32 manually
+at some place in code.
+
+> >> _______________________________________________
+> >> linux-riscv mailing list
+> >> linux-riscv@lists.infradead.org
+> >> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+
+
+-- 
+Regards,
+Atish
