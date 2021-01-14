@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF402F6E7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB352F6E83
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 23:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730872AbhANWpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 17:45:04 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30002 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730835AbhANWpD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 17:45:03 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10EMWYFT159097;
-        Thu, 14 Jan 2021 17:44:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ix5xI4eV4ktS+Si1szwX06PnD5N08iIL8loUbC9USd4=;
- b=eCJa6k7bKleRGCBoMhxI3u5Eabi8l4g+BmhSpWm4Gj3BfTPkx75g3EAhUb6+IBhpa7jQ
- wK3iDSDgwjAxfsw5wLwo3OH+rBhawLkw9HAOJzRhQwjni03jriAYvsVKHB3jQq2zKOoX
- 0RUa4rKL71aQOqCyt93nO5ZVHyfBjtaB6PjQq/rf9n0rk62lP0FIMPLVzTBA3kdPn8EQ
- /wCGdAZfNnn1wXSrPrltOytu6AhIEFBtj4leTLCq21gZQOlk55QDQ56W0ooAFQa3gO96
- VF0+InFU3MdA5Ah0cbfewL4jLoo4y85gnywqKGqmM3O3yecHZM5NlCYusw4RRei7YMaw JA== 
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 362xtbrb2p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 17:44:14 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10EMg7HK011681;
-        Thu, 14 Jan 2021 22:44:14 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma01dal.us.ibm.com with ESMTP id 35y449tkkd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 22:44:13 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10EMiCnw30999014
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Jan 2021 22:44:12 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6E47CC6EDD;
-        Thu, 14 Jan 2021 22:44:12 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F2AE4C6EDF;
-        Thu, 14 Jan 2021 22:44:11 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.163.16.139])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Jan 2021 22:44:11 +0000 (GMT)
-Subject: Re: [PATCH v5 21/21] ibmvfc: provide modules parameters for MQ
- settings
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20210114203148.246656-1-tyreld@linux.ibm.com>
- <20210114203148.246656-22-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <1e7bb9c6-6ea2-7c98-81fa-f24dd33a0b89@linux.vnet.ibm.com>
-Date:   Thu, 14 Jan 2021 16:44:11 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1730838AbhANWqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 17:46:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730660AbhANWqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 17:46:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3E3623435;
+        Thu, 14 Jan 2021 22:45:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610664320;
+        bh=IBGkG3CnkOtbMmVWZtUacB2eKWvCsPvXkLU7ce8QxyI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GcB+SBqjgTzwqRUqiVczurF6zNoO+M4GyxGqLhtNKcL/6YeETnJ5il5ulWzbsE8KT
+         lUopkz0GlFK2kk90LrXtrZMTOMAM+o1liQwCFDVTDjl+Q9Oj7a+c8VKJPgKCAPNwI5
+         aFBYu8R/ZQ/g4GX6q290OtuYu2yICe8LT8WXv6Hts5ZrU4k90y+1ycPPlDUJMyVGMV
+         OUbFZwipTwgCaw8qPV4j/Vgx3qTNcMiCD+Na+p9lkMNpsoZ7Skc8CJZaXpgejvdNCv
+         MGMS89cFv/Rqtcd94w6rr81LySJge30fjh2yzdnM+Dnp0zz31ZCtpg+1oVpHmn0WiP
+         b3RuGgjJODpZw==
+Received: by earth.universe (Postfix, from userid 1000)
+        id B7FD53C0C94; Thu, 14 Jan 2021 23:45:17 +0100 (CET)
+Date:   Thu, 14 Jan 2021 23:45:17 +0100
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the battery tree
+Message-ID: <20210114224517.wkeuujwbxr4j5mjo@earth.universe>
+References: <20210115063935.30edd44a@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210114203148.246656-22-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-14_10:2021-01-14,2021-01-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=894
- clxscore=1015 adultscore=0 phishscore=0 malwarescore=0 bulkscore=0
- suspectscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101140126
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cha6musilkoi7xkf"
+Content-Disposition: inline
+In-Reply-To: <20210115063935.30edd44a@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Brian King <brking@linux.vnet.ibm.com>
 
+--cha6musilkoi7xkf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
+Hi Stephen,
 
+On Fri, Jan 15, 2021 at 06:39:35AM +1100, Stephen Rothwell wrote:
+> In commit
+>=20
+>   e1cc2d7d3868 ("power: supply: bq256xx: Fix BQ256XX_NUM_WD_VAL and bq256=
+xx_watchdog_time[] overrun")
+>=20
+> Fixes tag
+>=20
+>   Fixes: 32e4978bb92 ("power: supply: bq256xx: Introduce the BQ256XX char=
+ger driver")
+>=20
+> has these problem(s):
+>=20
+>   - SHA1 should be at least 12 digits long
+>=20
+> Probably not worth rebasing to fix.
+>=20
+> Can be fixed in the future by setting core.abbrev to 12 (or more) or (for
+> git v2.11 or later) just making sure it is not set (or set to "auto").
+
+Thanks for the report. I rebased and fixed this up, since there were
+also Tony's incorrect fixes Tags.
+
+-- Sebastian
+
+--cha6musilkoi7xkf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAAyX0ACgkQ2O7X88g7
++pqKxw/+IhHyNmtsd7uoot3xuz1IoPgaMDdrIZno3BzIuGwmK6W40rec91YYCLLx
+p6Ub4hJV9GdsAZGSkaWuTo3uxOqAhzn5YC4sPZMH06r/0JeNk3bGB/LI1D/10tmk
+iJ1XtPqKcDoXIAJxkRODnScXCqQt2uX/PN+t62JKGuwXCO6cdWvsCYmFmuvNvLc+
+zji6/n6SIHAMghXClrG7yolvDRUBYB36xKDacnSP7NzDPW/Vl8sN6UEQb6uveNHb
+ea4xX2W7qWGQ4HiyAOVyj1s8eHHA9nWLMkDgtAItkU8xvcCEFVzDwBvgdvDjhyV0
+qIR2CkPXuKOVVtRAj4QM6ci2v63F6DxQ751yqzuyRzKVhLKxxkvqVsuy0AlMaTxL
+lYvvY9HuTm98BJricr6sbetcGQnMW4sezgSD4ZyBlztxIq2MD8xRu7jWMXAdcoy1
+kcuh613Hfuzr/RryFomSTJd3zocv4A6twJPgY3DXZcwQ5iESZ6L6qxAqynwDCTyf
+HAmrfDAzBLI17DA2DDSzNVPgCACE4QfP7n46qoy1tYsViwd5PLy7+GnFUJLtTLX9
+/MQcsAcfl+O2yQadeXzaxN8FUVBIEHQGAXITaQ6iLRFccesHxpVAQA6qoOlA6oWE
+8LBGo/41ByhCvAdbwE7UWw5LVUxoJyX917QwaqtjBXp1Hawh8tI=
+=Dlei
+-----END PGP SIGNATURE-----
+
+--cha6musilkoi7xkf--
