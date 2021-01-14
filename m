@@ -2,158 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDEE2F6B77
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD072F6B6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 20:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730206AbhANTsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 14:48:41 -0500
-Received: from forward103p.mail.yandex.net ([77.88.28.106]:50774 "EHLO
-        forward103p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728474AbhANTsk (ORCPT
+        id S1730436AbhANTo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 14:44:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22140 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729205AbhANTo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:48:40 -0500
-X-Greylist: delayed 484 seconds by postgrey-1.27 at vger.kernel.org; Thu, 14 Jan 2021 14:48:39 EST
-Received: from forward101q.mail.yandex.net (forward101q.mail.yandex.net [IPv6:2a02:6b8:c0e:4b:0:640:4012:bb98])
-        by forward103p.mail.yandex.net (Yandex) with ESMTP id 8962018C011C;
-        Thu, 14 Jan 2021 22:39:50 +0300 (MSK)
-Received: from vla1-68d3ce55e22b.qloud-c.yandex.net (vla1-68d3ce55e22b.qloud-c.yandex.net [IPv6:2a02:6b8:c0d:3385:0:640:68d3:ce55])
-        by forward101q.mail.yandex.net (Yandex) with ESMTP id 85040CF40002;
-        Thu, 14 Jan 2021 22:39:50 +0300 (MSK)
-Received: from vla3-23c3b031fed5.qloud-c.yandex.net (vla3-23c3b031fed5.qloud-c.yandex.net [2a02:6b8:c15:2582:0:640:23c3:b031])
-        by vla1-68d3ce55e22b.qloud-c.yandex.net (mxback/Yandex) with ESMTP id V1KbJSjY6B-doDKQJhK;
-        Thu, 14 Jan 2021 22:39:50 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=brighterdan.com; s=mail;
-        t=1610653190; bh=xnAMj8oxVA7uToZzeLoL8rfnq1jFRysju2h0drLGuO4=;
-        h=Subject:To:From:Date:Message-ID:Cc;
-        b=UlKHR8SpWEV75IBg75yZE26/9MH2o2xXyzovCd4dN9aawMqYvkI9bGA805FZh8N7f
-         BU8fSk6QRvPq2StVOmm6FBcNHX8ZRpAYK3/lddif5Dd17oGqcmuGkZ17G64HV8WzWL
-         ZtgfR1uy6Yef/wCzwIhQdvFWkAJw8dKJODCKuC+Y=
-Authentication-Results: vla1-68d3ce55e22b.qloud-c.yandex.net; dkim=pass header.i=@brighterdan.com
-Received: by vla3-23c3b031fed5.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id bgBVLx8IYD-dnIWVDB7;
-        Thu, 14 Jan 2021 22:39:49 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Date:   Thu, 14 Jan 2021 19:39:45 +0000
-From:   Daniel Santos <hello@brighterdan.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, torvalds@transmeta.com
-Subject: USB Keyboard having problems to be detected
-Message-ID: <20210114193945.1bfb6a67@torre.local>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 14 Jan 2021 14:44:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610653381;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=utbSIuyoQOkLB93xAGsbds2nLdvkpqUcRNTv/wbR8kg=;
+        b=IRlZiiYt187DVd+Cgg+pvxpmfmA//8bk/5umjHolXoLcuZyCH0S9yDdEl328kvAzZWG6Qt
+        tD6UeASYW+B3k5XXBArHYl+tKsbYjjs0rx3/Ldcra+fImdVySpFkEf5qAkQRY6cgCE0AqR
+        04O1fQGP9EUn1II6TPx59PBmxYNnliA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-14-OJ937Q2pNXCbNls68d4EZw-1; Thu, 14 Jan 2021 14:40:24 -0500
+X-MC-Unique: OJ937Q2pNXCbNls68d4EZw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 98E39806663;
+        Thu, 14 Jan 2021 19:40:22 +0000 (UTC)
+Received: from treble.redhat.com (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5DC09101E663;
+        Thu, 14 Jan 2021 19:40:21 +0000 (UTC)
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, Miroslav Benes <mbenes@suse.cz>
+Subject: [PATCH 00/21] objtool: vmlinux.o and CLANG LTO support
+Date:   Thu, 14 Jan 2021 13:39:56 -0600
+Message-Id: <cover.1610652862.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/0NpbN0Hg800t7yuJD=pg78n"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---MP_/0NpbN0Hg800t7yuJD=pg78n
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Add support for proper vmlinux.o validation, which will be needed for
+Sami's upcoming x86 LTO set.  (And vmlinux validation is the future for
+objtool anyway, for other reasons.)
 
-I am using a ArchLinux distribution. `uname -a` gives me:
+This isn't 100% done -- most notably, crypto still needs to be supported
+-- but I think this gets us most of the way there.
 
-Linux torre 5.4.87-1-lts #1 SMP Wed, 06 Jan 2021 14:56:05 +0000 x86_64
-GNU/Linux
+This can also be found at
 
-So, some months ago, my USB Keyboard stopped being detected at
-boot. I mean, eventually got detected, after the 9 seconds timeout and
-this is a bit frustrating, since, 1. it is a keyboard, meaning that it
-should not have any problem, and 2. I start typing immediately, only to
-find how that my keystrokes are getting lost.
+  git://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git objtool-vmlinux
 
-This did not happen when I started using ArchLinux, 2 years from now.
-Also this did not happen like 5 months from now, imprecisely calculated.
+And for more testing it can be combined with Sami's x86 LTO patches:
 
-Today, I took the time to look at the journal and this is what it has
-to say about my issue:
+  https://github.com/samitolvanen/linux clang-lto
 
-jan 14 19:05:03 torre kernel: usb 1-5: device descriptor read/all,
-error -110 jan 14 19:05:03 torre kernel: usb 1-5: new high-speed USB
-device number 4 using ehci-pci 
-(...) 
-jan 14 19:05:14 torre kernel: usb 1-5: device descriptor read/all,
-error -110 jan 14 19:05:14 torre kernel: usb usb1-port5: attempt power
-cycle jan 14 19:05:14 torre kernel: usb 1-5: new high-speed USB device
-number 5 using ehci-pci jan 14 19:05:19 torre kernel: usb 1-5: device
-descriptor read/8, error -110 jan 14 19:05:19 torre kernel: usb 1-5:
-New USB device found, idVendor=046d, idProduct=0825, bcdDevice= 0.12
-jan 14 19:05:19 torre kernel: usb 1-5: New USB device strings: Mfr=0,
-Product=0, SerialNumber=2 jan 14 19:05:19 torre kernel: usb 1-5:
-SerialNumber: 324EC190 jan 14 19:05:21 torre kernel: usb 1-5: set
-resolution quirk: cval->res = 384 jan 14 19:05:21 torre kernel: usb
-6-3: new low-speed USB device number 2 using ohci-pci jan 14 19:05:22
-torre kernel: usb 6-3: New USB device found, idVendor=0c45,
-idProduct=8603, bcdDevice= 2.00 jan 14 19:05:22 torre kernel: usb 6-3:
-New USB device strings: Mfr=1, Product=2, SerialNumber=0 jan 14
-19:05:22 torre kernel: usb 6-3: Product: SI Gaming Keyboard jan 14
-19:05:22 torre kernel: usb 6-3: Manufacturer: SONiX jan 14 19:05:22
-torre kernel: input: SONiX SI Gaming Keyboard as
-/devices/pci0000:00/0000:00:12.1/usb6/6-3/6-3:1.0/0003:0C45:8603.0003/input/input14
-jan 14 19:05:22 torre kernel: hid-generic 0003:0C45:8603.0003:
-input,hidraw2: USB HID v1.11 Keyboard [SONiX SI Gaming Keyboard] on
-usb-0000:00:12.1-3/input0 jan 14 19:05:22 torre kernel: input: SONiX SI
-Gaming Keyboard Consumer Control as
-/devices/pci0000:00/0000:00:12.1/usb6/6-3/6-3:1.1/0003:0C45:8603.0004/input/input15
-jan 14 19:05:22 torre kernel: input: SONiX SI Gaming Keyboard System
-Control as
-/devices/pci0000:00/0000:00:12.1/usb6/6-3/6-3:1.1/0003:0C45:8603.0004/input/input16
-jan 14 19:05:22 torre kernel: hid-generic 0003:0C45:8603.0004:
-input,hidraw3: USB HID v1.11 Device [SONiX SI Gaming Keyboard] on
-usb-0000:00:12.1-3/input1 jan 14 19:05:22 torre systemd-logind[326]:
-Watching system buttons on /dev/input/event15 (SONiX SI Gaming Keyboard
-Consumer Control) jan 14 19:05:22 torre systemd-logind[326]: Watching
-system buttons on /dev/input/event14 (SONiX SI Gaming Keyboard) jan 14
-19:05:22 torre systemd-logind[326]: Watching system buttons on
-/dev/input/event16 (SONiX SI Gaming Keyboard System Control) jan 14
-19:05:22 torre kernel: videodev: Linux video capture interface: v2.00
-jan 14 19:05:22 torre kernel: uvcvideo: Found UVC 1.00 device <unnamed>
-(046d:0825) jan 14 19:05:22 torre kernel: input: UVC Camera (046d:0825)
-as /devices/pci0000:00/0000:00:12.2/usb1/1-5/1-5:1.0/input/input17 jan
-14 19:05:22 torre kernel: usbcore: registered new interface driver
-uvcvideo jan 14 19:05:22 torre kernel: USB Video Class driver (1.1.1)
 
-Hope someone can make my keyboard detect as soon as my Linux is booted.
 
-Best regards,
+Josh Poimboeuf (21):
+  objtool: Fix seg fault in BT_FUNC() with fake jump
+  objtool: Fix error handling for STD/CLD warnings
+  objtool: Fix retpoline detection in asm code
+  objtool: Fix ".cold" section suffix check for newer versions of GCC
+  objtool: Support retpoline jump detection for vmlinux.o
+  x86/ftrace: Add UNWIND_HINT_FUNC annotation for ftrace_stub
+  objtool: Assume only ELF functions do sibling calls
+  objtool: Add asm version of STACK_FRAME_NON_STANDARD
+  objtool: Combine UNWIND_HINT_RET_OFFSET and UNWIND_HINT_FUNC
+  objtool: Add xen_start_kernel() to noreturn list
+  objtool: Move unsuffixed symbol conversion to a helper function
+  objtool: Add CONFIG_CFI_CLANG support
+  x86/xen: Support objtool validation in xen-asm.S
+  x86/xen: Support objtool vmlinux.o validation in xen-head.S
+  x86/xen/pvh: Convert indirect jump to retpoline
+  x86/ftrace: Support objtool vmlinux.o validation in ftrace_64.S
+  x86/acpi: Convert indirect jump to retpoline
+  x86/acpi: Support objtool validation in wakeup_64.S
+  x86/power: Convert indirect jumps to retpolines
+  x86/power: Move restore_registers() to top of the file
+  x86/power: Support objtool validation in hibernate_asm_64.S
 
-Daniel Santos
+ arch/x86/include/asm/unwind_hints.h |  13 +---
+ arch/x86/kernel/acpi/Makefile       |   1 -
+ arch/x86/kernel/acpi/wakeup_64.S    |   5 +-
+ arch/x86/kernel/ftrace_64.S         |   8 +--
+ arch/x86/lib/retpoline.S            |   2 +-
+ arch/x86/platform/pvh/head.S        |   3 +-
+ arch/x86/power/Makefile             |   1 -
+ arch/x86/power/hibernate_asm_64.S   | 105 ++++++++++++++--------------
+ arch/x86/xen/Makefile               |   1 -
+ arch/x86/xen/xen-asm.S              |  29 +++++---
+ arch/x86/xen/xen-head.S             |   5 +-
+ include/linux/objtool.h             |  13 +++-
+ tools/include/linux/objtool.h       |  13 +++-
+ tools/objtool/arch/x86/decode.c     |   4 +-
+ tools/objtool/arch/x86/special.c    |   2 +-
+ tools/objtool/check.c               |  91 +++++++++++++-----------
+ tools/objtool/check.h               |  12 +++-
+ tools/objtool/elf.c                 |  87 +++++++++++++++++------
+ tools/objtool/elf.h                 |   2 +-
+ 19 files changed, 241 insertions(+), 156 deletions(-)
 
---MP_/0NpbN0Hg800t7yuJD=pg78n
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=keyboard-bug.txt
+-- 
+2.29.2
 
-jan 14 19:05:03 torre kernel: usb 1-5: device descriptor read/all, error -110
-jan 14 19:05:03 torre kernel: usb 1-5: new high-speed USB device number 4 using ehci-pci
-
-(...)
-
-jan 14 19:05:14 torre kernel: usb 1-5: device descriptor read/all, error -110
-jan 14 19:05:14 torre kernel: usb usb1-port5: attempt power cycle
-jan 14 19:05:14 torre kernel: usb 1-5: new high-speed USB device number 5 using ehci-pci
-jan 14 19:05:19 torre kernel: usb 1-5: device descriptor read/8, error -110
-jan 14 19:05:19 torre kernel: usb 1-5: New USB device found, idVendor=046d, idProduct=0825, bcdDevice= 0.12
-jan 14 19:05:19 torre kernel: usb 1-5: New USB device strings: Mfr=0, Product=0, SerialNumber=2
-jan 14 19:05:19 torre kernel: usb 1-5: SerialNumber: 324EC190
-jan 14 19:05:21 torre kernel: usb 1-5: set resolution quirk: cval->res = 384
-jan 14 19:05:21 torre kernel: usb 6-3: new low-speed USB device number 2 using ohci-pci
-jan 14 19:05:22 torre kernel: usb 6-3: New USB device found, idVendor=0c45, idProduct=8603, bcdDevice= 2.00
-jan 14 19:05:22 torre kernel: usb 6-3: New USB device strings: Mfr=1, Product=2, SerialNumber=0
-jan 14 19:05:22 torre kernel: usb 6-3: Product: SI Gaming Keyboard
-jan 14 19:05:22 torre kernel: usb 6-3: Manufacturer: SONiX
-jan 14 19:05:22 torre kernel: input: SONiX SI Gaming Keyboard as /devices/pci0000:00/0000:00:12.1/usb6/6-3/6-3:1.0/0003:0C45:8603.0003/input/input14
-jan 14 19:05:22 torre kernel: hid-generic 0003:0C45:8603.0003: input,hidraw2: USB HID v1.11 Keyboard [SONiX SI Gaming Keyboard] on usb-0000:00:12.1-3/input0
-jan 14 19:05:22 torre kernel: input: SONiX SI Gaming Keyboard Consumer Control as /devices/pci0000:00/0000:00:12.1/usb6/6-3/6-3:1.1/0003:0C45:8603.0004/input/input15
-jan 14 19:05:22 torre kernel: input: SONiX SI Gaming Keyboard System Control as /devices/pci0000:00/0000:00:12.1/usb6/6-3/6-3:1.1/0003:0C45:8603.0004/input/input16
-jan 14 19:05:22 torre kernel: hid-generic 0003:0C45:8603.0004: input,hidraw3: USB HID v1.11 Device [SONiX SI Gaming Keyboard] on usb-0000:00:12.1-3/input1
-jan 14 19:05:22 torre systemd-logind[326]: Watching system buttons on /dev/input/event15 (SONiX SI Gaming Keyboard Consumer Control)
-jan 14 19:05:22 torre systemd-logind[326]: Watching system buttons on /dev/input/event14 (SONiX SI Gaming Keyboard)
-jan 14 19:05:22 torre systemd-logind[326]: Watching system buttons on /dev/input/event16 (SONiX SI Gaming Keyboard System Control)
-jan 14 19:05:22 torre kernel: videodev: Linux video capture interface: v2.00
-jan 14 19:05:22 torre kernel: uvcvideo: Found UVC 1.00 device <unnamed> (046d:0825)
-jan 14 19:05:22 torre kernel: input: UVC Camera (046d:0825) as /devices/pci0000:00/0000:00:12.2/usb1/1-5/1-5:1.0/input/input17
-jan 14 19:05:22 torre kernel: usbcore: registered new interface driver uvcvideo
-jan 14 19:05:22 torre kernel: USB Video Class driver (1.1.1)
-
---MP_/0NpbN0Hg800t7yuJD=pg78n--
