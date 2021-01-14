@@ -2,145 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E502F5C32
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9C32F5BF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727680AbhANIJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 03:09:39 -0500
-Received: from smtpweb146.aruba.it ([62.149.158.146]:45873 "EHLO
-        smtpweb146.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727377AbhANIJe (ORCPT
+        id S1727275AbhANID2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 03:03:28 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.166]:31334 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725989AbhANID0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 03:09:34 -0500
-X-Greylist: delayed 570 seconds by postgrey-1.27 at vger.kernel.org; Thu, 14 Jan 2021 03:09:34 EST
-Received: from [192.168.1.184] ([79.10.42.7])
-        by Aruba Outgoing Smtp  with ESMTPA
-        id zxWnkhIPa5BgLzxWnkSPzT; Thu, 14 Jan 2021 08:58:48 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1610611128; bh=Rgd6zs9jBI4RaCIuGbuEUvq7+uJ588fkUWgOYTT3LZI=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=EQp4nMTDbE7S70XFNLXWHAjMsmPeRpE14xdXU/P8ZstpO88UY3ffDXkcTxOwzyCTW
-         gIYhfldV40TDHEl1pqBoXx8WDHTEIU/+iSBBLjz2xIhx0fcs9sKO8cOLT04B3fnaOw
-         KiImq0JmRcH53iKsed+jc9slKsjOJdkNLn/jmirGlUjvBFnAnvITP28ZVejqRvSBUr
-         GnxaAfJVPJZoIvOX/kLH9W6aEJg2OBcyPX+NUicg5zId3cindTklr3k9L3B531wix1
-         T19vSw/7aPIsx8g5/79N4fmxdanZfrKxmqTNblqg/F7IqM/dqcJ2jq9exikQIghzpW
-         WM9twBnmg1zUw==
-Subject: Re: [PATCH v5] drm/sun4i: tcon: fix inverted DCLK polarity
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     wens@csie.org, daniel@ffwll.ch, airlied@linux.ie,
-        treding@nvidia.com, Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Giulio Benetti <giulio.benetti@micronovasrl.com>
-References: <20210113104725.770459-1-giulio.benetti@benettiengineering.com>
- <20210113160526.928766-1-giulio.benetti@benettiengineering.com>
-From:   Marjan Pascolo <marjan.pascolo@trexom.it>
-Message-ID: <d244aa6b-00b7-d768-83cb-e5a228b7ee08@trexom.it>
-Date:   Thu, 14 Jan 2021 08:58:44 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Thu, 14 Jan 2021 03:03:26 -0500
+X-Greylist: delayed 42689 seconds by postgrey-1.27 at vger.kernel.org; Thu, 14 Jan 2021 03:03:23 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1610611230;
+        s=strato-dkim-0002; d=gerhold.net;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Subject:Sender;
+        bh=bkNGPZ13uWjd8cczvmb4km7OHCtXFosYNbuypWXDBRA=;
+        b=NqGG2mz/r9j2kudl8YSN9Yz7Jy+vpCjX88yIHXS9pZfxds4E/BklInwrm0igxLJp/N
+        LIqxEwQWVFncrJLetOjdwrPVrWjtyawvyY2uTr+TpMCS5dYfJ82ZP0E6nb8AqH9uLfwD
+        frjFiwzLES1QwoX9AxnlddA2JkfF9/uYBtjcrcWCJz2+/GfS5eO4U5+WTwWqAlno7rj/
+        nDygaICbGdiJHnHgy5+eIBPSLl91BvkboXAGfp0ca/NXiSG4oslS6Va8dl3fGh9wY/6Q
+        DmS6CtPUL37GttC96XVsspoGB5Jaq1bK4dGkrz3Rf1eqwr7ODxoFhWN4FUwe3QJOguud
+        pyhQ==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j5IczAa4o="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
+        with ESMTPSA id R0a218x0E80Ch2A
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Thu, 14 Jan 2021 09:00:12 +0100 (CET)
+Date:   Thu, 14 Jan 2021 08:59:59 +0100
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        bgoswami@codeaurora.org,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com,
+        agross@kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+        broonie@kernel.org, rohitkr@codeaurora.org,
+        bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 0/7] Qualcomm's lpass-hdmi ASoC driver to support
+ audio over dp port
+Message-ID: <X//58kig1QK4htdA@gerhold.net>
+References: <1602134223-2562-1-git-send-email-srivasam@codeaurora.org>
+ <244e74f6-fa8c-692a-aa84-4677a0fd815b@linaro.org>
+ <X/9TS6bQa3Zh+EXa@gerhold.net>
+ <4b34bd4f-e7bc-84f9-5e8a-b2348c17b7aa@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210113160526.928766-1-giulio.benetti@benettiengineering.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: it
-X-CMAE-Envelope: MS4wfLhZtaxuk1is0TviLubUDK7iLG3VsdjeGut0x/doPPt8TCZzu0LzNW+3DIn7dZLIt3Nz49HXwQ3gSEQYI0vPZuQGhCtRnz+poXmT2Xs75p8h0xqeZrI9
- bBUYq9sKoyRSu5lVEc0jEcflHwVCDtlOToHrqOWORfgKpFh7sPJh2sxl1XdjeH6pZoqimK92An4eV0Nfz7r4w5DU12K34ji8R+oA/TB6jIYiuDxHQU2bLw4m
- 3Ta4zmo4NJL7ncSSpKlt9VFkkCtkub3NuFRlo1Mon0VANgIA+VArbX+GHTV4mTrcCV0282w8JsuylVD3+Xhj1b9pKQP5avsaFNYRazJncvpTGBfXm8sq1wv7
- 7OILg7KZjzFUUFWP4sBuYZbl2ckATI0i68VF9k1gFtG6hM6+yYh5sLusVPORGXImhZBaurf+E89ZHszPRS1DZmEP3XtSrIV/8PByxPXn0xUTzuCifnDKMaEx
- GE3Jt1/zR7Mbh8TMDTy+4hJeG2v3QBGL21Ik/aVJWsnrQZQzC6YINKUNteZRFWsD0OQwwlU4w2hNO2lL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4b34bd4f-e7bc-84f9-5e8a-b2348c17b7aa@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Giulio,
+Hi,
 
-You did a typo
+On Wed, Jan 13, 2021 at 10:24:49PM +0000, Srinivas Kandagatla wrote:
+> On 13/01/2021 20:08, Stephan Gerhold wrote:
+> > On Thu, Oct 08, 2020 at 06:37:40AM +0100, Srinivas Kandagatla wrote:
+> > > On 08/10/2020 06:16, Srinivasa Rao Mandadapu wrote:
+> > > > These patches are to support audio over DP port on Qualcomm's SC7180 LPASS
+> > > > Asoc. It includes machine driver, cpu driver, platform driver updates for
+> > > > HDMI path support, device tree documention, lpass variant structure
+> > > > optimization and configuration changes.
+> > > > These patches depends on the DP patch series
+> > > > https://patchwork.kernel.org/project/dri-devel/list/?series=332029
+> > > > https://lore.kernel.org/patchwork/project/lkml/list/?series=464856
+> > > > 
+> > > > changes since V10:
+> > > >       -- Moved hdmi regmap functions from lpass-hdmi.c to lpass-cpu.c
+> > > >       -- Moved QCOM_REGMAP_FIELD_ALLOC macro from lpass-hdmi.c to lpass.h
+> > > > changes since V9:
+> > > >       -- Removed unused structures lpass_hdmi.h
+> > > > changes since V8:
+> > > >       -- Removed redundant structure wrapper for reg map field memebrs
+> > > >       -- Updated lpass_hdmi_regmap_volatile API with appropriate registers as true
+> > > >          and others as false.
+> > > > changes since V7:
+> > > >       -- Fixed typo errors
+> > > >       -- Created Separate patch for buffer size change
+> > > > changes since V6:
+> > > >       -- Removed compile time define flag, which used for enabling
+> > > >        HDMI code, based on corresponding config param is included.
+> > > >       -- Updated reg map alloc API with reg map bulk API.
+> > > >       -- Removed unnecessary line splits
+> > > > changes since V5:
+> > > >       -- Removed unused struct regmap *map in lpass_platform_alloc_hdmidmactl_fields.
+> > > >       -- DMA alloc and free API signature change in lpass-apq8016.c, lpass-ipq806x.c
+> > > >       -- Keeping API "irqreturn_t lpass_platform_hdmiif_irq" under ifdef macro
+> > > > Changes Since v4:
+> > > >       -- Updated with single compatible node for both I2S and HDMI.
+> > > > Changes Since v3:
+> > > >       -- Removed id in lpass variant structure and used snd_soc_dai_driver id.
+> > > > Changes Since v2:
+> > > >       -- Audio buffer size(i.e. LPASS_PLATFORM_BUFFER_SIZE) in lpass-platform.c increased.
+> > > > Changes Since v1:
+> > > >       -- Commit messages are updated
+> > > >       -- Addressed Rob Herring review comments
+> > > > 
+> > > > V Sujith Kumar Reddy (7):
+> > > >     ASoC: Add sc7180-lpass binding header hdmi define
+> > > >     ASoC: dt-bindings: Add dt binding for lpass hdmi
+> > > >     Asoc:qcom:lpass-cpu:Update dts property read API
+> > > >     Asoc: qcom: lpass:Update lpaif_dmactl members order
+> > > >     ASoC: qcom: Add support for lpass hdmi driver
+> > > >     Asoc: qcom: lpass-platform : Increase buffer size
+> > > >     ASoC: qcom: sc7180: Add support for audio over DP
+> > > > 
+> > > >    .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  74 ++--
+> > > >    include/dt-bindings/sound/sc7180-lpass.h           |   1 +
+> > > >    sound/soc/qcom/Kconfig                             |   5 +
+> > > >    sound/soc/qcom/Makefile                            |   2 +
+> > > >    sound/soc/qcom/lpass-apq8016.c                     |   4 +-
+> > > >    sound/soc/qcom/lpass-cpu.c                         | 249 ++++++++++++-
+> > > >    sound/soc/qcom/lpass-hdmi.c                        | 258 ++++++++++++++
+> > > >    sound/soc/qcom/lpass-hdmi.h                        | 102 ++++++
+> > > >    sound/soc/qcom/lpass-ipq806x.c                     |   4 +-
+> > > >    sound/soc/qcom/lpass-lpaif-reg.h                   |  49 ++-
+> > > >    sound/soc/qcom/lpass-platform.c                    | 395 +++++++++++++++++----
+> > > >    sound/soc/qcom/lpass-sc7180.c                      | 116 +++++-
+> > > >    sound/soc/qcom/lpass.h                             | 124 ++++++-
+> > > >    13 files changed, 1240 insertions(+), 143 deletions(-)
+> > > >    create mode 100644 sound/soc/qcom/lpass-hdmi.c
+> > > >    create mode 100644 sound/soc/qcom/lpass-hdmi.h
+> > > > 
+> > > 
+> > > Tested this series on DragonBoard 410c
+> > > 
+> > > Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > > Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > 
+> > I spent quite some time today trying to track down another regression
+> > for MSM8916/DragonBoard 410c audio in 5.10 and identified this patch
+> > series as the cause. So I'm very surprised that you successfully tested
+> > this on DB410c.
+> > 
+> > Attempting to play HDMI audio results in:
+> > 
+> >    ADV7533: lpass_platform_pcmops_hw_params: invalid  interface: 3
+> >    ADV7533: lpass_platform_pcmops_trigger: invalid 3 interface
+> >    apq8016-lpass-cpu 7708000.audio-controller: ASoC: error at soc_component_trigger on 7708000.audio-controller: -22
+> > 
+> > Attempting to record analog audio results in:
+> > 
+> >    Unable to handle kernel NULL pointer dereference at virtual address 00000000000001e4
+> >    Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> >    CPU: 1 PID: 1568 Comm: arecord Not tainted 5.11.0-rc3 #20
+> >    Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+> >    pc : regmap_write+0x14/0x80
+> >    lr : lpass_platform_pcmops_open+0xd8/0x210 [snd_soc_lpass_platform]
+> >    Call trace:
+> >     regmap_write+0x14/0x80
+> >     lpass_platform_pcmops_open+0xd8/0x210 [snd_soc_lpass_platform]
+> >     snd_soc_component_open+0x2c/0x94
+> >     ...
+> > 
+> > Looking at the changes in "ASoC: qcom: Add support for lpass hdmi driver"
+> > there is a quite obvious mistake there. lpass.h now contains
+> > 
+> 
+> We did hit these two bugs recently while June was testing a platform based
+> of 410c.
+> 
+> we had to these 2 fixes in his dev branch
+> 
+> https://paste.ubuntu.com/p/MCbpBgH7JV/
+> 
 
-Il 13/01/2021 17:05, Giulio Benetti ha scritto:
-> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
->
-> During commit 88bc4178568b ("drm: Use new
-> DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags") DRM_BUS_FLAG_*
-> macros have been changed to avoid ambiguity but just because of this
-> ambiguity previous DRM_BUS_FLAG_PIXDATA_(POS/NEG)EDGE were used meaning
-> _SAMPLE_ not _DRIVE_. This leads to DLCK inversion and need to fix but
-> instead of swapping phase values, let's adopt an easier approach Maxime
-> suggested:
-> It turned out that bit 26 of SUN4I_TCON0_IO_POL_REG is dedicated to
-> invert DCLK polarity and this makes things really easier than before. So
-> let's handle DCLK polarity by adding SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE
-> as bit 26 and activating according to bus_flags the same way it is done
-> for all the other signals polarity.
->
-> Fixes: 88bc4178568b ("drm: Use new DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags")
-> Suggested-by: Maxime Ripard <maxime@cerno.tech>
-> Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
-> ---
-> V2->V3:
-> - squash 2 patches into 1
-> V3->V4:
-> - add SUN4I_TCON0_IO_POL_DCLK_POSITIVE to regmap_update_bits()
-> V4->V5:
-> polarity is still wrong so:
-> - let's use SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE macro
->    instead of _DCLK_POSITIVE(that would make sense only in realtion with DCLK)
-> - invert condition using _NEGEDGE instead of _POSEDGE and then matching with
->    register bit SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE
-> - correct commit log according to V4->V5 changes
-> ---
->   drivers/gpu/drm/sun4i/sun4i_tcon.c | 21 ++-------------------
->   drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
->   2 files changed, 3 insertions(+), 19 deletions(-)
->
-> diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-> index eaaf5d70e352..c172ccfff7e5 100644
-> --- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
-> +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-> @@ -569,30 +569,13 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tcon *tcon,
->   	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
->   		val |= SUN4I_TCON0_IO_POL_DE_NEGATIVE;
->   
-> -	/*
-> -	 * On A20 and similar SoCs, the only way to achieve Positive Edge
-> -	 * (Rising Edge), is setting dclk clock phase to 2/3(240°).
-> -	 * By default TCON works in Negative Edge(Falling Edge),
-> -	 * this is why phase is set to 0 in that case.
-> -	 * Unfortunately there's no way to logically invert dclk through
-> -	 * IO_POL register.
-> -	 * The only acceptable way to work, triple checked with scope,
-> -	 * is using clock phase set to 0° for Negative Edge and set to 240°
-> -	 * for Positive Edge.
-> -	 * On A33 and similar SoCs there would be a 90° phase option,
-> -	 * but it divides also dclk by 2.
-> -	 * Following code is a way to avoid quirks all around TCON
-> -	 * and DOTCLOCK drivers.
-> -	 */
-> -	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
-> -		clk_set_phase(tcon->dclk, 240);
-> -
->   	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
-> -		clk_set_phase(tcon->dclk, 0);
-> +		val |= SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE;
->   
->   	regmap_update_bits(tcon->regs, SUN4I_TCON0_IO_POL_REG,
->   			   SUN4I_TCON0_IO_POL_HSYNC_POSITIVE |
->   			   SUN4I_TCON0_IO_POL_VSYNC_POSITIVE |
-Here Below you missed an 'E'
-> +			   SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGDGE |
->   			   SUN4I_TCON0_IO_POL_DE_NEGATIVE,
->   			   val);
->   
-> diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.h b/drivers/gpu/drm/sun4i/sun4i_tcon.h
-> index cfbf4e6c1679..c5ac1b02482c 100644
-> --- a/drivers/gpu/drm/sun4i/sun4i_tcon.h
-> +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.h
-> @@ -113,6 +113,7 @@
->   #define SUN4I_TCON0_IO_POL_REG			0x88
->   #define SUN4I_TCON0_IO_POL_DCLK_PHASE(phase)		((phase & 3) << 28)
->   #define SUN4I_TCON0_IO_POL_DE_NEGATIVE			BIT(27)
-> +#define SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE		BIT(26)
->   #define SUN4I_TCON0_IO_POL_HSYNC_POSITIVE		BIT(25)
->   #define SUN4I_TCON0_IO_POL_VSYNC_POSITIVE		BIT(24)
->   
+I fixed that one a bit differently in
+"ASoC: hdmi-codec: Fix return value in hdmi_codec_set_jack()"
+https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/?h=for-5.11&id=2a0435df963f996ca870a2ef1cbf1773dc0ea25a
+
+It might be useful to implement the jack detection in adv7511, but
+I guess we would also need some changes in sound/soc/qcom/apq8016_sbc.c
+to setup SND_JACK_LINEOUT. And somehow there would need to be a way to
+differentiate between the normal audio jack and the "HDMI jack".
+
+> and a hack:
+> https://paste.ubuntu.com/p/GYDSDmJt7Y/
+> 
+> I got side tracked with other stuff, so I could not cleanup the lpass hack
+> patch to send it!
+> 
+> With this two patches June was able to test all the usecases for 410c.
+> 
+> [...]
+> 
+> We should probably consolidate these defines to a single lpass.h file in
+> include/dt-bindings/ and not split them into soc specific.
+> 
+
+I agree, especially in case more special DAIs are added in the future.
+However, in my patch I tried to avoid doing that for the following two reasons:
+
+  - Changing dt-bindings after they are added is generally discouraged.
+
+but more importantly:
+
+  - lpass-ipq806x.c does not seem to have PRIMARY, SECONDARY, ...
+    but something completely different. I know nothing about that
+    platform so I would not know how to handle it.
+
+I will post my patch and then you can decide.
+
+Thanks,
+Stephan
