@@ -2,132 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309AA2F665D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D66112F665A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727524AbhANQuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:50:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
+        id S1727444AbhANQuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:50:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbhANQuS (ORCPT
+        with ESMTP id S1727355AbhANQuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:50:18 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA61C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:49:37 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id g4so2355215ybo.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:49:37 -0800 (PST)
+        Thu, 14 Jan 2021 11:50:03 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01584C061574;
+        Thu, 14 Jan 2021 08:49:23 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id w79so8851048qkb.5;
+        Thu, 14 Jan 2021 08:49:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3flWftvGerUtHOc/UBeXeoAZbOIBV75pAafgEogkVqE=;
-        b=esIpWe7U6STmq0pn1F8FzDD3IakFxSohETjST/CdldSpNKdaEf46zdSLVvp0nfiMu6
-         Sb5FRPom/tSNscgf7XCFU6QSQuJYhrnHIBS87MJXImNAfWo96EMiP5DMs7PetSp3gzPm
-         xgQSxLSq3jRfP3LTuO1ct4nA7LeuMFMKWWtKg3UViCfdvrOZvR1aj04GOaE0aTVJSVkw
-         Jf9CoBrmzdjAg4x1ehne0Br0eTltr9ySpVcU5DsVS2jBo7SgpLmDVYrNit2YVSeP6QOo
-         VrvdGNGupJ8NfgmbPZhIcafbxCKRb1+NAxx+BpBAZH9xkeB0VuufWaEGalV54K9cJco6
-         51uw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=23Gq+U8tqRW6jTOvnenkJZDTDWUxbLpLE/rkMRigKH8=;
+        b=GaUR9vgAYSjgkwC5BQA6RgqGZVtkAirpuTeWejfYS22oRO8Ucb4FW55h1/ihOqlmfe
+         Wyuvmr8MDrC10rJZC1IRIq4dXmkPa8g2i82GcSMDtX8W6RR9optsWdIhjSU2AFDss7rR
+         6iDGQkgkDGQTfGzaqkyJu8PZHFGt90ySq8InE1AlQI2Hxjm7vyYVya38Z6C13H/K94hy
+         YObB+ccpyNROGAxl2MmXAo9WWJ9GUn6RVp4j6+wG92dhPsrURu3/Ua5xjwMUXZZM94Et
+         i9LF575Z62Liz7TH50QS7UZjmDpPTQ7a0Fico+QModaYHV6lBH2UCELGRstV+tNi/g9/
+         bnvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3flWftvGerUtHOc/UBeXeoAZbOIBV75pAafgEogkVqE=;
-        b=QjHYruAOQvNo+7CXzyfSn3SLWl8ByfhDPmhXIKAW74fWDZTsmZ4PQjj5VQBRRBzuCn
-         dS5OFXrcWmFPr5+TAsvrhalpcYkciO21C6a4C/+Rg6YP+ylFOMeFgGL9XfMRvWLpqX2E
-         kK62V3VI9K1YZqEPzD+bgXDVG76xFbIFNxQ9JXqGAotcFSJtEHezMGUK0sJC6b0lXtXC
-         GkpYY9zJPiGTL9BdJ/1ygTX+4t64L8huCyREyGEVUc+devQ4toF6isKEw5BFL/14LvXp
-         lkrSNXSIToPCLJg3fKdRQ8IWbYqKkQ07/pM7yVcB1chFYTbef3Fxg6GuWOh3ddw+Ocmw
-         GF3Q==
-X-Gm-Message-State: AOAM5319mbqf53IcDPsX24RNyZpIqe7BVs0VrZy80kEoPgnCMe3N8zA9
-        VYh0kIw3Gpaac4b6RViWaZGPC4LLTo1XiDzUn0QCOw==
-X-Google-Smtp-Source: ABdhPJyusiIS68gz/S8pZMJM4tmwMW7sKnfG2jonBk5+w7GNuPdg5lBA2IuvIYn2lGmWuAm31SZgc2j+l3Cq/blGv5M=
-X-Received: by 2002:a25:8b8b:: with SMTP id j11mr8659623ybl.310.1610642976862;
- Thu, 14 Jan 2021 08:49:36 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=23Gq+U8tqRW6jTOvnenkJZDTDWUxbLpLE/rkMRigKH8=;
+        b=frC7xXOVUdgfF3XeNeFbNxNx7+k8kPRC37KVrGogkq93VEPEkhXxDEozgo10GQNRDo
+         2uxagXlgSO5J7nZq5yyviqmCi8mAMNn81l0pVtCLt7zoMByq0Y8MIvzdwbYs28XQ8PXm
+         /QJwmxQkXMwkVfdNaPJqh22aksDzwuOZPE5lurflTOGHHMeL54K9LY6vR+9cQggHUYMA
+         PbkWajNoWuDfbIjjirXSfPXXdnfsx6cS5aV6dup8SiXS744Tlcssv2bf8J59uxct1hUF
+         VZQ+7i10SOiO/RMvW8sh9o+m35u9puLXpR/M4TXlu79wjS9VpjtKnSodUkfKXMnA5ZSo
+         UwVg==
+X-Gm-Message-State: AOAM531XGBf68zojq7/DbULnxxF2e6MmS6GWFNvNhh3km4Z3hX6wj/nJ
+        LoGJ+DleOHHWmsNC98ybt2oqdVZHuPphVg==
+X-Google-Smtp-Source: ABdhPJyflr9W90ItsxS/m3igzcBqIh4SLvb04HwWrDjLEpQiG7pwQEUrrBawAIBXR9lwG5OImNqBYA==
+X-Received: by 2002:a05:620a:1239:: with SMTP id v25mr7727606qkj.91.1610642962085;
+        Thu, 14 Jan 2021 08:49:22 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id q3sm3288275qkb.73.2021.01.14.08.49.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 08:49:21 -0800 (PST)
+Date:   Thu, 14 Jan 2021 09:49:20 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Ilie Halip <ilie.halip@gmail.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] kbuild: check the minimum compiler version in Kconfig
+Message-ID: <20210114164920.GA258518@ubuntu-m3-large-x86>
+References: <20210114042420.229524-1-masahiroy@kernel.org>
+ <CAHFW8PRr6kjEE=7BSzWo7itSZgAhy_dhmnSe1yq5wMfDwEyJ9g@mail.gmail.com>
+ <CAK7LNAQHA7FpYfdDaOuf+t+nMCtLH=Z7cdoK+3z3ScZ3Fn9Xww@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201218031703.3053753-1-saravanak@google.com>
- <20201221161822.572e5cbe@xhacker.debian> <CAHp75VfqL1QuvjCZ7p23e_2qhY3DUgVNaS--Uk1mEoEHsD8GBA@mail.gmail.com>
-In-Reply-To: <CAHp75VfqL1QuvjCZ7p23e_2qhY3DUgVNaS--Uk1mEoEHsD8GBA@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 14 Jan 2021 08:49:01 -0800
-Message-ID: <CAGETcx-=g-qU-A5YO5co52Q02OtKnP6R6Z4YbisiG91R+QkaJQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] Enable fw_devlink=on by default
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAQHA7FpYfdDaOuf+t+nMCtLH=Z7cdoK+3z3ScZ3Fn9Xww@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 11:48 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
->
->
-> On Monday, December 21, 2020, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
->>
->> On Thu, 17 Dec 2020 19:16:58 -0800 Saravana Kannan wrote:
->>
->>
->> >
->> >
->> > As discussed in LPC 2020, cyclic dependencies in firmware that couldn't
->> > be broken using logic was one of the last remaining reasons
->> > fw_devlink=on couldn't be set by default.
->> >
->> > This series changes fw_devlink so that when a cyclic dependency is found
->> > in firmware, the links between those devices fallback to permissive mode
->> > behavior. This way, the rest of the system still benefits from
->> > fw_devlink, but the ambiguous cases fallback to permissive mode.
->> >
->> > Setting fw_devlink=on by default brings a bunch of benefits (currently,
->> > only for systems with device tree firmware):
->> > * Significantly cuts down deferred probes.
->> > * Device probe is effectively attempted in graph order.
->> > * Makes it much easier to load drivers as modules without having to
->> >   worry about functional dependencies between modules (depmod is still
->> >   needed for symbol dependencies).
->> >
->> > Greg/Rafael,
->> >
->> > Can we get this pulled into 5.11-rc1 or -rc2 soon please? I expect to
->> > see some issues due to device drivers that aren't following best
->> > practices (they don't expose the device to driver core). Want to
->> > identify those early on and try to have them fixed before 5.11 release.
->> > See [1] for an example of such a case.
->> >
->> > If we do end up have to revert anything, it'll just be Patch 5/5 (a one
->> > liner).
->> >
->> > Marc,
->> >
->> > You had hit issues with fw_devlink=on before on some of your systems.
->> > Want to give this a shot?
->> >
->> > Jisheng,
->> >
->> > Want to fix up one of those gpio drivers you were having problems with?
->> >
->>
->> Hi Saravana,
->>
->> I didn't send fix for the gpio-dwapb.c in last development window, so can
->> send patch once 5.11-rc1 is released.
->
->
-> If you are going to do anything with that GPIO driver, it should be removal of compatible strings from the device child nodes. The driver IIRC never used them anyhow anyway.
+On Thu, Jan 14, 2021 at 06:20:15PM +0900, Masahiro Yamada wrote:
+> BTW, when I tried ICC a few years ago,
+> I could not build the kernel with it.
 
-We already discussed this in a different thread. Just deleting DT is
-not okay. That breaks a new kernel + old DT combo. Upgrading the
-kernel shouldn't break a board.
+Looking at the history behind include/linux/compiler-intel.h, the last
+time I see a change that actually references building a kernel with icc
+was 503cf95c061a ("x86, build, icc: Remove uninitialized_var() from
+compiler-intel.h"), all the way back in 2013. Since then, there do not
+appear to be any meaningful changes; every change is basically doing
+something for clang or gcc and not wanting to leave icc behind. It might
+be worth considering tearing it out.
 
--Saravana
+Cheers,
+Nathan
