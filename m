@@ -2,152 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43DE62F641D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:20:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE91A2F644D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 16:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729382AbhANPRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 10:17:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728098AbhANPRv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 10:17:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BD8623A9B;
-        Thu, 14 Jan 2021 15:17:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610637430;
-        bh=4vhYsyOGQ/G1Pgl289h+WrEYlBRCR3Y/lE2C1wGE8e0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nn+dbqMeNUr4Xmc7Dbe9GHD5TIu0mhZxzz+JyQ9SmFMVU38k1vQoUWzdWT9DOjH6z
-         qOXwkfyKhTUbWGOZYNs7qhYl9jmI2NuVAZnL1xh1qNWECBNhzP0pEXJ79hOg37ZsC7
-         PFFoqA+jmWlXWVHl+z4sMiwtMDbTE5iiv05mPIx0=
-Date:   Thu, 14 Jan 2021 16:17:06 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Viktor Mihajlovski <mihajlov@linux.ibm.com>
-Subject: Re: [RFC 1/1] s390/pci: expose UID checking state in sysfs
-Message-ID: <YABgcnWPLJxYlWUR@kroah.com>
-References: <20210113185500.GA1918216@bjorn-Precision-5520>
- <675aa466-59ea-cf8a-6eec-caa6478ba4cd@linux.ibm.com>
- <20210114134453.bkfik4zjt5ehz6d5@wittgenstein>
- <YABOHuejsuriwSPn@kroah.com>
- <a567c3d2-1dd2-6b33-8b1a-0a607b601ef8@linux.ibm.com>
+        id S1729575AbhANPU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 10:20:29 -0500
+Received: from smtp-42aa.mail.infomaniak.ch ([84.16.66.170]:49351 "EHLO
+        smtp-42aa.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729125AbhANPTy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 10:19:54 -0500
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DGnyv17ylzMprrf;
+        Thu, 14 Jan 2021 16:19:03 +0100 (CET)
+Received: from localhost (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DGnys0Ff7zlh8TH;
+        Thu, 14 Jan 2021 16:19:00 +0100 (CET)
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: [PATCH v3 00/10] Enable root to update the blacklist keyring
+Date:   Thu, 14 Jan 2021 16:18:59 +0100
+Message-Id: <20210114151909.2344974-1-mic@digikod.net>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a567c3d2-1dd2-6b33-8b1a-0a607b601ef8@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 04:06:11PM +0100, Niklas Schnelle wrote:
-> 
-> 
-> On 1/14/21 2:58 PM, Greg Kroah-Hartman wrote:
-> > On Thu, Jan 14, 2021 at 02:44:53PM +0100, Christian Brauner wrote:
-> >> On Thu, Jan 14, 2021 at 02:20:10PM +0100, Niklas Schnelle wrote:
-> >>>
-> >>>
-> >>> On 1/13/21 7:55 PM, Bjorn Helgaas wrote:
-> >>>> On Wed, Jan 13, 2021 at 08:47:58AM +0100, Niklas Schnelle wrote:
-> >>>>> On 1/12/21 10:50 PM, Bjorn Helgaas wrote:
-> >>>>>> On Mon, Jan 11, 2021 at 10:38:57AM +0100, Niklas Schnelle wrote:
-> >>>>>>> We use the UID of a zPCI adapter, or the UID of the function zero if
-> >>>>>>> there are multiple functions in an adapter, as PCI domain if and only if
-> >>>>>>> UID Checking is turned on.
-> >>>>>>> Otherwise we automatically generate domains as devices appear.
-> >>>>>>>
-> >>>>>>> The state of UID Checking is thus essential to know if the PCI domain
-> >>>>>>> will be stable, yet currently there is no way to access this information
-> >>>>>>> from userspace.
-> >>>>>>> So let's solve this by showing the state of UID checking as a sysfs
-> >>>>>>> attribute in /sys/bus/pci/uid_checking
-> >>>>
-> >>>>>>> +/* Global zPCI attributes */
-> >>>>>>> +static ssize_t uid_checking_show(struct kobject *kobj,
-> >>>>>>> +				 struct kobj_attribute *attr, char *buf)
-> >>>>>>> +{
-> >>>>>>> +	return sprintf(buf, "%i\n", zpci_unique_uid);
-> >>>>>>> +}
-> >>>>>>> +
-> >>>>>>> +static struct kobj_attribute sys_zpci_uid_checking_attr =
-> >>>>>>> +	__ATTR(uid_checking, 0444, uid_checking_show, NULL);
-> >>>>>>
-> >>>>>> Use DEVICE_ATTR_RO instead of __ATTR.
-> >>>>>
-> >>>>> It's my understanding that DEVICE_ATTR_* is only for
-> >>>>> per device attributes. This one is global for the entire
-> >>>>> Z PCI. I just tried with BUS_ATTR_RO instead
-> >>>>> and that works but only if I put the attribute at
-> >>>>> /sys/bus/pci/uid_checking instead of with a zpci
-> >>>>> subfolder. This path would work for us too, we
-> >>>>> currently don't have any other global attributes
-> >>>>> that we are planning to expose but those could of
-> >>>>> course come up in the future.
-> >>>>
-> >>>> Ah, I missed the fact that this is a kobj_attribute, not a
-> >>>> device_attribute.  Maybe KERNEL_ATTR_RO()?  Very few uses so far, but
-> >>>> seems like it might fit?
-> >>>>
-> >>>> Bjorn
-> >>>>
-> >>>
-> >>> KERNEL_ATTR_* is currently not exported in any header. After
-> >>> adding it to include/linuc/sysfs.h it indeed works perfectly.
-> >>> Adding Christian Brauner as suggested by get_maintainers for
-> >>> their opinion. I'm of course willing to provide a patch
-> >>
-> >> Hey Niklas et al. :)
-> >>
-> >> I think this will need input from Greg. He should be best versed in
-> >> sysfs attributes. The problem with KERNEL_ATTR_* to me seems that it's
-> >> supposed to be kernel internal. Now, that might just be a matter of
-> >> renaming the macro but let's see whether Greg has any better idea or
-> >> more questions. :)
-> > 
-> > The big question is, why are you needing this?
-> > 
-> > No driver or driver subsystem should EVER be messing with a "raw"
-> > kobject like this.  Just use the existing DEVICE_* macros instead
-> > please.
-> > 
-> > If you are using a raw kobject, please ask me how to do this properly,
-> > as that is something that should NEVER show up in the /sys/devices/*
-> > tree.  Otherwise userspace tools will break.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> Hi Greg,
-> 
-> this is for an architecture specific but global i.e. not device bound PCI
-> attribute. That's why DEVICE_ATTR_* does not work. BUS_ATTR_* would work
-> but only if we place the attribute directly under /sys/bus/pci/new_attr.
+This third patch series includes back three fix patches taken from the first
+series (and cherry-picked from David Howells's tree [1]), and one cosmetic fix
+from Alex Shi which helps avoid future conflicts.  I also added some Acked-by
+and improved comments.  As requested, this series is based on v5.11-rc3.
 
-Then you are doing something wrong :)
+The goal of these patches is to add a new configuration option to enable the
+root user to load signed keys in the blacklist keyring.  This keyring is useful
+to "untrust" certificates or files.  Enabling to safely update this keyring
+without recompiling the kernel makes it more usable.
 
-Where _exactly_ are you wanting to put this attribute?
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=keys-fixes
 
-> I'm aware that this is quite unusual in fact I couldn't find anything
-> similar. That's why this is an RFC, with a lengthy cover letter
-> explaining our use case, that I sent to Bjorn to figure out where to
-> even place the attribute.
-> 
-> So I guess this is indeed me asking you how to do this properly.
-> That said it does not show up under /sys/devices/* only /sys/bus/pci/*.
+Previous patch series:
+https://lore.kernel.org/lkml/20201211190330.2586116-1-mic@digikod.net/
 
-Do NOT put random kobjects under a bus subsystem.  If you need that,
-then use BUS_ATTR_* as that is what it is there for.
+Regards,
 
-Again, if you are in a driver subsystem, do not use a raw kobject.
-Either something is already there for you, or what you want to do is not
-correct :)
+Alex Shi (1):
+  certs/blacklist: fix kernel doc interface issue
 
-thanks,
+David Howells (1):
+  certs: Fix blacklist flag type confusion
 
-greg k-h
+Mickaël Salaün (8):
+  certs: Fix blacklisted hexadecimal hash string check
+  PKCS#7: Fix missing include
+  certs: Replace K{U,G}IDT_INIT() with GLOBAL_ROOT_{U,G}ID
+  certs: Make blacklist_vet_description() more strict
+  certs: Factor out the blacklist hash creation
+  certs: Check that builtin blacklist hashes are valid
+  certs: Allow root user to append signed hashes to the blacklist
+    keyring
+  tools/certs: Add print-cert-tbs-hash.sh
+
+ MAINTAINERS                                   |   2 +
+ certs/.gitignore                              |   1 +
+ certs/Kconfig                                 |  10 +
+ certs/Makefile                                |  15 +-
+ certs/blacklist.c                             | 217 ++++++++++++++----
+ certs/system_keyring.c                        |   5 +-
+ crypto/asymmetric_keys/x509_public_key.c      |   3 +-
+ include/keys/system_keyring.h                 |  14 +-
+ include/linux/key.h                           |   1 +
+ include/linux/verification.h                  |   2 +
+ scripts/check-blacklist-hashes.awk            |  37 +++
+ security/integrity/ima/ima_mok.c              |   4 +-
+ .../platform_certs/keyring_handler.c          |  26 +--
+ security/keys/key.c                           |   2 +
+ tools/certs/print-cert-tbs-hash.sh            |  91 ++++++++
+ 15 files changed, 345 insertions(+), 85 deletions(-)
+ create mode 100755 scripts/check-blacklist-hashes.awk
+ create mode 100755 tools/certs/print-cert-tbs-hash.sh
+
+
+base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
+-- 
+2.30.0
+
