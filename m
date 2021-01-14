@@ -2,74 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0B12F5C1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB382F5C0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 09:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728467AbhANIHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 03:07:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728124AbhANIGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 03:06:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD98123A57;
-        Thu, 14 Jan 2021 08:05:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610611500;
-        bh=aM+KUU8ND9pyof4k4ykSf1dVmSEm8guTu48Zq/aOrf0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u4NqcvP0nUPY2+HwZQCa3P3Qty+DCPQOpt2FxL8ZXN0PQcmWo7Le3ZdKbcG/SOi6s
-         MzYDcHleMrNAfTdNkYoK5YlEkqvheOOU78YjjXiPDQb0MjMys7pQTt2+6Ktcv275d2
-         g+KywtcbpVfqw+Ku0Dtur8A6BSnx7MWq0Qm04Jl4UoKIVv5uIpAgvBFEFXpp/ptvs1
-         WTeBcbUCFuKtMRZaOYQPy6BaepHq9KxJMTM+HjtcF5fKWugBEaiB5sOccyfpebX+5/
-         Hfq8OpNqLQAkfm0mS9oQvjfUM/df9MiQCG+98pYeMPEAGa9Bzpi2FVLdiTIUlesbdk
-         /18zqSh2nVQVQ==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kzxco-00EQ74-Hy; Thu, 14 Jan 2021 09:04:58 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: [PATCH v6 16/16] platform/surface: aggregator: fix a kernel-doc markup
-Date:   Thu, 14 Jan 2021 09:04:52 +0100
-Message-Id: <4a6bf33cfbd06654d78294127f2b6d354d073089.1610610937.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1610610937.git.mchehab+huawei@kernel.org>
-References: <cover.1610610937.git.mchehab+huawei@kernel.org>
+        id S1728243AbhANIGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 03:06:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726897AbhANIGZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 03:06:25 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28195C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 00:05:45 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kzxdP-0000a9-GU; Thu, 14 Jan 2021 09:05:35 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kzxdN-0004qT-Ol; Thu, 14 Jan 2021 09:05:33 +0100
+Date:   Thu, 14 Jan 2021 09:05:33 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Philipp Rosenberger <p.rosenberger@kunbus.com>
+Cc:     dan.carpenter@oracle.com, biwen.li@nxp.com, lvb@xiphos.com,
+        bruno.thomsen@gmail.com, l.sanfilippo@kunbus.com,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] rtc: pcf2127: Disable Power-On Reset Override
+Message-ID: <20210114080533.tnipsnqfxeqotvlg@pengutronix.de>
+References: <20210113112742.7354-1-p.rosenberger@kunbus.com>
+ <20210113112742.7354-2-p.rosenberger@kunbus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7hlg47jdrphncaem"
+Content-Disposition: inline
+In-Reply-To: <20210113112742.7354-2-p.rosenberger@kunbus.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A function has a different name between their prototype
-and its kernel-doc markup:
 
-	../drivers/platform/surface/aggregator/ssh_request_layer.c:1065: warning: expecting prototype for ssh_rtl_tx_start(). Prototype was for ssh_rtl_start() instead
+--7hlg47jdrphncaem
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/platform/surface/aggregator/ssh_request_layer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Jan 13, 2021 at 12:27:41PM +0100, Philipp Rosenberger wrote:
+> To resume normal operation after a total power loss (no or empty
+> battery) the "Power-On Reset Override (PORO)" facility needs to be
+> disabled.
+>=20
+> As the oscillator may take a long time (200 ms to 2 s) to resume normal
+> operation. The default behaviour is to use the PORO facility.
 
-diff --git a/drivers/platform/surface/aggregator/ssh_request_layer.c b/drivers/platform/surface/aggregator/ssh_request_layer.c
-index bb1c862411a2..25db4d638cfa 100644
---- a/drivers/platform/surface/aggregator/ssh_request_layer.c
-+++ b/drivers/platform/surface/aggregator/ssh_request_layer.c
-@@ -1056,7 +1056,7 @@ void ssh_rtl_destroy(struct ssh_rtl *rtl)
- }
- 
- /**
-- * ssh_rtl_tx_start() - Start request transmitter and receiver.
-+ * ssh_rtl_start() - Start request transmitter and receiver.
-  * @rtl: The request transport layer.
-  *
-  * Return: Returns zero on success, a negative error code on failure.
--- 
-2.29.2
+I'd write instead: The register reset value sets PORO enabled and the
+data sheet recommends setting it to disabled for normal operation.
+In my eyes having a reset default value that is unsuitable for
+production use is just another bad design choice of this chip. At least
+now this is known and can be somewhat fixed in software. :-\
 
+> But with the PORO active no interrupts are generated on the interrupt
+> pin (INT).
+
+This sentence about no interrupts is your observation, or does this base
+on some authoritative source (datasheet, FAE or similar)?
+
+> Signed-off-by: Philipp Rosenberger <p.rosenberger@kunbus.com>
+> ---
+>  drivers/rtc/rtc-pcf2127.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>=20
+> diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
+> index 39a7b5116aa4..378b1ce812d6 100644
+> --- a/drivers/rtc/rtc-pcf2127.c
+> +++ b/drivers/rtc/rtc-pcf2127.c
+> @@ -26,6 +26,7 @@
+> =20
+>  /* Control register 1 */
+>  #define PCF2127_REG_CTRL1		0x00
+> +#define PCF2127_BIT_CTRL1_POR_OVRD		BIT(3)
+>  #define PCF2127_BIT_CTRL1_TSF1			BIT(4)
+>  /* Control register 2 */
+>  #define PCF2127_REG_CTRL2		0x01
+> @@ -612,6 +613,23 @@ static int pcf2127_probe(struct device *dev, struct =
+regmap *regmap,
+>  		ret =3D devm_rtc_nvmem_register(pcf2127->rtc, &nvmem_cfg);
+>  	}
+> =20
+> +	/*
+> +	 * The "Power-On Reset Override" facility prevents the RTC to do a reset
+> +	 * after power on. For normal operation the PORO must be disabled.
+> +	 */
+> +	regmap_clear_bits(pcf2127->regmap, PCF2127_REG_CTRL1,
+> +				PCF2127_BIT_CTRL1_POR_OVRD);
+> +	/*
+> +	 * If the PORO can't be disabled, just move on. The RTC should
+> +	 * work fine, but functions like watchdog and alarm interrupts might
+> +	 * not work. There will be no interrupt generated on the interrupt pin.
+> +	 */
+> +	ret =3D regmap_test_bits(pcf2127->regmap, PCF2127_REG_CTRL1, PCF2127_BI=
+T_CTRL1_POR_OVRD);
+> +	if (ret <=3D 0) {
+> +		dev_err(dev, "%s: can't disable PORO (ctrl1).\n", __func__);
+> +		dev_warn(dev, "Watchdog and alarm functions might not work properly\n"=
+);
+
+I would not emit two messages here. Also including __func__ isn't so
+nice IMHO. (Great for debugging, but not in production code IMHO.)
+
+We should consider a Cc: to stable.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--7hlg47jdrphncaem
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl//+0oACgkQwfwUeK3K
+7AnncwgAmgwavQFuGTcL160YS+dop1vuwxFgXqqpsvGaYddNW3rPLnOfo6GAl0ZR
+sbKuNYlkHcgrz5LzWT8iDF+WS6R/TVoFVg0arUJxtBMhnKkAVnUUi36Rte0Quttk
+v5i7scFgboKKxMHFcsqUVGOHhC6LcuNKOAuZg52Np8zgnnthgOIqrmKvQ1kYi1xa
++VFoCjvoKfIrjNISraPacqHu/mHWB8P1KXxbvqADjrrUDRQQU5/TNhlFVAF3Nwa/
+ln0x/BR0a/OxGf0qK93kLbVZkifN1j/6dgWtP2kvgnDnD98z56Twwlikm9dKgsbm
+HHJqz7/IHTc9jZ2wXyEykVllrU2W8A==
+=GfZX
+-----END PGP SIGNATURE-----
+
+--7hlg47jdrphncaem--
