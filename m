@@ -2,268 +2,777 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C5C2F6C49
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 377672F6C15
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 21:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730313AbhANUfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 15:35:17 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10652 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726693AbhANUfN (ORCPT
+        id S1728095AbhANUcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 15:32:45 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:60749 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727290AbhANUco (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 15:35:13 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10EK2riw051326;
-        Thu, 14 Jan 2021 15:32:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=KJuvTZ9SlAAfX4HEuXhK5kdGQ8DRK12f0BqL9jyuIlo=;
- b=S9ZbKLoy8dGOXJVHzQ9RcaQlRWloyxj9+ckDIIIYeRuVXqFXWN1HjmLKX3bO6nYU13l2
- LeyzeetHTI91IrKpsYkQ+cztm68/332PJF9UKBmQX2N77lCUYeaCkSG/V668LslUcX9V
- 4eIC0iA2IJ4Uf9mgg6Sf6Yk+OVD5fDbbAolCu/9hcL4zEAjrRdoZET0Nn9xJDYPbO7VV
- hqyP9FS1HL9c/4+J2JDodZZTtiL3G2+q84kvLeFdmxtsLIPD0gDvpEVtioCzCfBEkpeu
- CUQTQBy2jWtSXCLeALUwi250H5VG273H4qqNW36C9BLgY0KLoAcZsT/0lRAw5av39ifH 2w== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 362v29sgje-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 15:32:01 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10EKS7RL026094;
-        Thu, 14 Jan 2021 20:32:00 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma03dal.us.ibm.com with ESMTP id 35y449snet-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 20:32:00 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10EKVxbi26083768
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Jan 2021 20:31:59 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E78F46E052;
-        Thu, 14 Jan 2021 20:31:58 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 929B16E04E;
-        Thu, 14 Jan 2021 20:31:58 +0000 (GMT)
-Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Jan 2021 20:31:58 +0000 (GMT)
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-To:     james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
-Subject: [PATCH v5 21/21] ibmvfc: provide modules parameters for MQ settings
-Date:   Thu, 14 Jan 2021 14:31:48 -0600
-Message-Id: <20210114203148.246656-22-tyreld@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210114203148.246656-1-tyreld@linux.ibm.com>
-References: <20210114203148.246656-1-tyreld@linux.ibm.com>
+        Thu, 14 Jan 2021 15:32:44 -0500
+Date:   Thu, 14 Jan 2021 20:31:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
+        s=protonmail; t=1610656320;
+        bh=tA9CL0qveLR89ZWUMLARClpF4nB/G0G3lZpUU9YRwdQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=qvd2pgT0OpqcYmr4dFz5tj2MjLXDQkOM7cvIUF1BPCephAhZdjw6fvveSUsojLso3
+         7nlbFiL6LaQ7QekXNFwTr6DAH4knmNmHneaQG+ImRfVNrOri4kdPTCskepzqzBtibG
+         jW9DFE2UJZRHlgp74Pob3kzh0ztYF9dOxXqV/1OM=
+To:     caleb@connolly.tech, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+From:   Caleb Connolly <caleb@connolly.tech>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Caleb Connolly <caleb@connolly.tech>
+Subject: [PATCH v4 1/2] arm64: dts: sdm845: add oneplus6/6t devices
+Message-ID: <20210114203057.64541-2-caleb@connolly.tech>
+In-Reply-To: <20210114203057.64541-1-caleb@connolly.tech>
+References: <20210114203057.64541-1-caleb@connolly.tech>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-14_07:2021-01-14,2021-01-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- priorityscore=1501 mlxlogscore=999 malwarescore=0 impostorscore=0
- spamscore=0 clxscore=1015 bulkscore=0 adultscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101140115
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the various module parameter toggles for adjusting the MQ
-characteristics at boot/load time as well as a device attribute for
-changing the client scsi channel request amount.
+Add initial support for the OnePlus 6 (enchilada) and 6T (fajita) based
+on the sdm845-mtp DT with the following functionality:
 
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+ * Touch
+ * Display
+ * GPU
+ * Wlan and Bluetooth
+ * USB peripheral mode
+ * Remoteproc
+
+Signed-off-by: Caleb Connolly <caleb@connolly.tech>
 ---
- drivers/scsi/ibmvscsi/ibmvfc.c | 75 ++++++++++++++++++++++++++++++----
- drivers/scsi/ibmvscsi/ibmvfc.h |  1 +
- 2 files changed, 67 insertions(+), 9 deletions(-)
+ arch/arm64/boot/dts/qcom/Makefile             |   2 +
+ .../boot/dts/qcom/sdm845-oneplus-common.dtsi  | 622 ++++++++++++++++++
+ .../dts/qcom/sdm845-oneplus-enchilada.dts     |  19 +
+ .../boot/dts/qcom/sdm845-oneplus-fajita.dts   |  23 +
+ 4 files changed, 666 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+ create mode 100644 arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dts
 
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index d314dffaafc4..7097028d4cb6 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -40,6 +40,12 @@ static unsigned int disc_threads = IBMVFC_MAX_DISC_THREADS;
- static unsigned int ibmvfc_debug = IBMVFC_DEBUG;
- static unsigned int log_level = IBMVFC_DEFAULT_LOG_LEVEL;
- static unsigned int cls3_error = IBMVFC_CLS3_ERROR;
-+static unsigned int mq_enabled = IBMVFC_MQ;
-+static unsigned int nr_scsi_hw_queues = IBMVFC_SCSI_HW_QUEUES;
-+static unsigned int nr_scsi_channels = IBMVFC_SCSI_CHANNELS;
-+static unsigned int mig_channels_only = IBMVFC_MIG_NO_SUB_TO_CRQ;
-+static unsigned int mig_no_less_channels = IBMVFC_MIG_NO_N_TO_M;
+diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/M=
+akefile
+index 5113fac80b7a..b8934ec4e640 100644
+--- a/arch/arm64/boot/dts/qcom/Makefile
++++ b/arch/arm64/boot/dts/qcom/Makefile
+@@ -43,6 +43,8 @@ dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-cheza-r2.dtb
+ dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-cheza-r3.dtb
+ dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-db845c.dtb
+ dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-mtp.dtb
++dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-oneplus-enchilada.dtb
++dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-oneplus-fajita.dtb
+ dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm845-xiaomi-beryllium.dtb
+ dtb-$(CONFIG_ARCH_QCOM)=09+=3D sdm850-lenovo-yoga-c630.dtb
+ dtb-$(CONFIG_ARCH_QCOM)=09+=3D sm8150-hdk.dtb
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi b/arch/arm=
+64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+new file mode 100644
+index 000000000000..fc5e314896c7
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+@@ -0,0 +1,622 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * SDM845 OnePlus 6(T) (enchilada / fajita) common device tree source
++ *
++ * Copyright (c) 2020, The Linux Foundation. All rights reserved.
++ */
 +
- static LIST_HEAD(ibmvfc_head);
- static DEFINE_SPINLOCK(ibmvfc_driver_lock);
- static struct scsi_transport_template *ibmvfc_transport_template;
-@@ -49,6 +55,22 @@ MODULE_AUTHOR("Brian King <brking@linux.vnet.ibm.com>");
- MODULE_LICENSE("GPL");
- MODULE_VERSION(IBMVFC_DRIVER_VERSION);
- 
-+module_param_named(mq, mq_enabled, uint, S_IRUGO);
-+MODULE_PARM_DESC(mq, "Enable multiqueue support. "
-+		 "[Default=" __stringify(IBMVFC_MQ) "]");
-+module_param_named(scsi_host_queues, nr_scsi_hw_queues, uint, S_IRUGO);
-+MODULE_PARM_DESC(scsi_host_queues, "Number of SCSI Host submission queues. "
-+		 "[Default=" __stringify(IBMVFC_SCSI_HW_QUEUES) "]");
-+module_param_named(scsi_hw_channels, nr_scsi_channels, uint, S_IRUGO);
-+MODULE_PARM_DESC(scsi_hw_channels, "Number of hw scsi channels to request. "
-+		 "[Default=" __stringify(IBMVFC_SCSI_CHANNELS) "]");
-+module_param_named(mig_channels_only, mig_channels_only, uint, S_IRUGO);
-+MODULE_PARM_DESC(mig_channels_only, "Prevent migration to non-channelized system. "
-+		 "[Default=" __stringify(IBMVFC_MIG_NO_SUB_TO_CRQ) "]");
-+module_param_named(mig_no_less_channels, mig_no_less_channels, uint, S_IRUGO);
-+MODULE_PARM_DESC(mig_no_less_channels, "Prevent migration to system with less channels. "
-+		 "[Default=" __stringify(IBMVFC_MIG_NO_N_TO_M) "]");
++/dts-v1/;
 +
- module_param_named(init_timeout, init_timeout, uint, S_IRUGO | S_IWUSR);
- MODULE_PARM_DESC(init_timeout, "Initialization timeout in seconds. "
- 		 "[Default=" __stringify(IBMVFC_INIT_TIMEOUT) "]");
-@@ -926,7 +948,7 @@ static int ibmvfc_reset_crq(struct ibmvfc_host *vhost)
- 	crq->cur = 0;
- 
- 	if (vhost->scsi_scrqs.scrqs) {
--		for (i = 0; i < IBMVFC_SCSI_HW_QUEUES; i++) {
-+		for (i = 0; i < nr_scsi_hw_queues; i++) {
- 			scrq = &vhost->scsi_scrqs.scrqs[i];
- 			spin_lock(scrq->q_lock);
- 			memset(scrq->msgs.scrq, 0, PAGE_SIZE);
-@@ -3397,6 +3419,37 @@ static ssize_t ibmvfc_store_log_level(struct device *dev,
- 	return strlen(buf);
- }
- 
-+static ssize_t ibmvfc_show_scsi_channels(struct device *dev,
-+					 struct device_attribute *attr, char *buf)
-+{
-+	struct Scsi_Host *shost = class_to_shost(dev);
-+	struct ibmvfc_host *vhost = shost_priv(shost);
-+	unsigned long flags = 0;
-+	int len;
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/linux-event-codes.h>
++#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
 +
-+	spin_lock_irqsave(shost->host_lock, flags);
-+	len = snprintf(buf, PAGE_SIZE, "%d\n", vhost->client_scsi_channels);
-+	spin_unlock_irqrestore(shost->host_lock, flags);
-+	return len;
-+}
++#include "sdm845.dtsi"
++#include "pm8998.dtsi"
++#include "pmi8998.dtsi"
 +
-+static ssize_t ibmvfc_store_scsi_channels(struct device *dev,
-+					 struct device_attribute *attr,
-+					 const char *buf, size_t count)
-+{
-+	struct Scsi_Host *shost = class_to_shost(dev);
-+	struct ibmvfc_host *vhost = shost_priv(shost);
-+	unsigned long flags = 0;
-+	unsigned int channels;
++/delete-node/ &rmtfs_mem;
 +
-+	spin_lock_irqsave(shost->host_lock, flags);
-+	channels = simple_strtoul(buf, NULL, 10);
-+	vhost->client_scsi_channels = min(channels, nr_scsi_hw_queues);
-+	ibmvfc_hard_reset_host(vhost);
-+	spin_unlock_irqrestore(shost->host_lock, flags);
-+	return strlen(buf);
-+}
++/ {
++=09aliases {
++=09=09hsuart0 =3D &uart6;
++=09};
 +
- static DEVICE_ATTR(partition_name, S_IRUGO, ibmvfc_show_host_partition_name, NULL);
- static DEVICE_ATTR(device_name, S_IRUGO, ibmvfc_show_host_device_name, NULL);
- static DEVICE_ATTR(port_loc_code, S_IRUGO, ibmvfc_show_host_loc_code, NULL);
-@@ -3405,6 +3458,8 @@ static DEVICE_ATTR(npiv_version, S_IRUGO, ibmvfc_show_host_npiv_version, NULL);
- static DEVICE_ATTR(capabilities, S_IRUGO, ibmvfc_show_host_capabilities, NULL);
- static DEVICE_ATTR(log_level, S_IRUGO | S_IWUSR,
- 		   ibmvfc_show_log_level, ibmvfc_store_log_level);
-+static DEVICE_ATTR(nr_scsi_channels, S_IRUGO | S_IWUSR,
-+		   ibmvfc_show_scsi_channels, ibmvfc_store_scsi_channels);
- 
- #ifdef CONFIG_SCSI_IBMVFC_TRACE
- /**
-@@ -3461,6 +3516,7 @@ static struct device_attribute *ibmvfc_attrs[] = {
- 	&dev_attr_npiv_version,
- 	&dev_attr_capabilities,
- 	&dev_attr_log_level,
-+	&dev_attr_nr_scsi_channels,
- 	NULL
- };
- 
-@@ -4866,9 +4922,9 @@ static void ibmvfc_channel_enquiry(struct ibmvfc_host *vhost)
- 	mad->common.opcode = cpu_to_be32(IBMVFC_CHANNEL_ENQUIRY);
- 	mad->common.length = cpu_to_be16(sizeof(*mad));
- 
--	if (IBMVFC_MIG_NO_SUB_TO_CRQ)
-+	if (mig_channels_only)
- 		mad->flags |= cpu_to_be32(IBMVFC_NO_CHANNELS_TO_CRQ_SUPPORT);
--	if (IBMVFC_MIG_NO_N_TO_M)
-+	if (mig_no_less_channels)
- 		mad->flags |= cpu_to_be32(IBMVFC_NO_N_TO_M_CHANNELS_SUPPORT);
- 
- 	ibmvfc_set_host_action(vhost, IBMVFC_HOST_ACTION_INIT_WAIT);
-@@ -5655,13 +5711,13 @@ static int ibmvfc_init_sub_crqs(struct ibmvfc_host *vhost)
- 
- 	ENTER;
- 
--	vhost->scsi_scrqs.scrqs = kcalloc(IBMVFC_SCSI_HW_QUEUES,
-+	vhost->scsi_scrqs.scrqs = kcalloc(nr_scsi_hw_queues,
- 					  sizeof(*vhost->scsi_scrqs.scrqs),
- 					  GFP_KERNEL);
- 	if (!vhost->scsi_scrqs.scrqs)
- 		return -1;
- 
--	for (i = 0; i < IBMVFC_SCSI_HW_QUEUES; i++) {
-+	for (i = 0; i < nr_scsi_hw_queues; i++) {
- 		if (ibmvfc_register_scsi_channel(vhost, i)) {
- 			for (j = i; j > 0; j--)
- 				ibmvfc_deregister_scsi_channel(vhost, j - 1);
-@@ -5685,7 +5741,7 @@ static void ibmvfc_release_sub_crqs(struct ibmvfc_host *vhost)
- 	if (!vhost->scsi_scrqs.scrqs)
- 		return;
- 
--	for (i = 0; i < IBMVFC_SCSI_HW_QUEUES; i++)
-+	for (i = 0; i < nr_scsi_hw_queues; i++)
- 		ibmvfc_deregister_scsi_channel(vhost, i);
- 
- 	kfree(vhost->scsi_scrqs.scrqs);
-@@ -5873,6 +5929,7 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
- 	struct Scsi_Host *shost;
- 	struct device *dev = &vdev->dev;
- 	int rc = -ENOMEM;
-+	unsigned int max_scsi_queues = IBMVFC_MAX_SCSI_QUEUES;
- 
- 	ENTER;
- 	shost = scsi_host_alloc(&driver_template, sizeof(*vhost));
-@@ -5888,7 +5945,7 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
- 	shost->max_sectors = IBMVFC_MAX_SECTORS;
- 	shost->max_cmd_len = IBMVFC_MAX_CDB_LEN;
- 	shost->unique_id = shost->host_no;
--	shost->nr_hw_queues = IBMVFC_MQ ? IBMVFC_SCSI_HW_QUEUES : 1;
-+	shost->nr_hw_queues = mq_enabled ? min(max_scsi_queues, nr_scsi_hw_queues) : 1;
- 
- 	vhost = shost_priv(shost);
- 	INIT_LIST_HEAD(&vhost->targets);
-@@ -5900,8 +5957,8 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
- 	vhost->log_level = log_level;
- 	vhost->task_set = 1;
- 
--	vhost->mq_enabled = IBMVFC_MQ;
--	vhost->client_scsi_channels = IBMVFC_SCSI_CHANNELS;
-+	vhost->mq_enabled = mq_enabled;
-+	vhost->client_scsi_channels = min(shost->nr_hw_queues, nr_scsi_channels);
- 	vhost->using_channels = 0;
- 	vhost->do_enquiry = 1;
- 
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.h b/drivers/scsi/ibmvscsi/ibmvfc.h
-index 0391cb746d0b..19dcec3ae9ba 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.h
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.h
-@@ -43,6 +43,7 @@
- #define IBMVFC_CLS3_ERROR		0
- #define IBMVFC_MQ			1
- #define IBMVFC_SCSI_CHANNELS		8
-+#define IBMVFC_MAX_SCSI_QUEUES		16
- #define IBMVFC_SCSI_HW_QUEUES		8
- #define IBMVFC_MIG_NO_SUB_TO_CRQ	0
- #define IBMVFC_MIG_NO_N_TO_M		0
--- 
-2.27.0
++=09reserved-memory {
++=09=09/*
++=09=09 * The rmtfs memory region in downstream is 'dynamically allocated'
++=09=09 * but given the same address every time. Hard code it as this addre=
+ss is
++=09=09 * where the modem firmware expects it to be.
++=09=09 */
++=09=09rmtfs_mem: memory@f5b01000 {
++=09=09=09compatible =3D "qcom,rmtfs-mem";
++=09=09=09reg =3D <0 0xf5b01000 0 0x200000>;
++=09=09=09no-map;
++
++=09=09=09qcom,client-id =3D <1>;
++=09=09=09qcom,vmid =3D <15>;
++=09=09};
++
++=09=09/*
++=09=09 * It seems like reserving the old rmtfs_mem region is also needed t=
+o prevent
++=09=09 * random crashes which are most likely modem related, more testing =
+needed.
++=09=09 */
++=09=09removed_region: memory@88f00000 {
++=09=09=09no-map;
++=09=09=09reg =3D <0 0x88f00000 0 0x200000>;
++=09=09};
++
++=09=09ramoops: ramoops@ac300000 {
++=09=09=09compatible =3D "ramoops";
++=09=09=09reg =3D <0 0xac300000 0 0x400000>;
++=09=09=09record-size =3D <0x40000>;
++=09=09=09console-size =3D <0x40000>;
++=09=09=09ftrace-size =3D <0x40000>;
++=09=09=09pmsg-size =3D <0x200000>;
++=09=09=09devinfo-size =3D <0x1000>;
++=09=09=09ecc-size =3D <16>;
++=09=09};
++=09};
++
++=09gpio-keys {
++=09=09compatible =3D "gpio-keys";
++=09=09label =3D "Volume keys";
++=09=09autorepeat;
++
++=09=09pinctrl-names =3D "default";
++=09=09pinctrl-0 =3D <&volume_down_gpio &volume_up_gpio>;
++
++=09=09vol-down {
++=09=09=09label =3D "Volume down";
++=09=09=09linux,code =3D <KEY_VOLUMEDOWN>;
++=09=09=09gpios =3D <&pm8998_gpio 5 GPIO_ACTIVE_LOW>;
++=09=09=09debounce-interval =3D <15>;
++=09=09};
++
++=09=09vol-up {
++=09=09=09label =3D "Volume up";
++=09=09=09linux,code =3D <KEY_VOLUMEUP>;
++=09=09=09gpios =3D <&pm8998_gpio 6 GPIO_ACTIVE_LOW>;
++=09=09=09debounce-interval =3D <15>;
++=09=09};
++=09};
++
++=09vph_pwr: vph-pwr-regulator {
++=09=09compatible =3D "regulator-fixed";
++=09=09regulator-name =3D "vph_pwr";
++=09=09regulator-min-microvolt =3D <3700000>;
++=09=09regulator-max-microvolt =3D <3700000>;
++=09};
++
++=09/*
++=09 * Apparently RPMh does not provide support for PM8998 S4 because it
++=09 * is always-on; model it as a fixed regulator.
++=09 */
++=09vreg_s4a_1p8: pm8998-smps4 {
++=09=09compatible =3D "regulator-fixed";
++=09=09regulator-name =3D "vreg_s4a_1p8";
++
++=09=09regulator-min-microvolt =3D <1800000>;
++=09=09regulator-max-microvolt =3D <1800000>;
++
++=09=09regulator-always-on;
++=09=09regulator-boot-on;
++
++=09=09vin-supply =3D <&vph_pwr>;
++=09};
++
++=09/*
++=09 * The touchscreen regulator seems to be controlled somehow by a gpio.
++=09 * Model it as a fixed regulator and keep it on. Without schematics we
++=09 * don't know how this is actually wired up...
++=09 */
++=09ts_1p8_supply: ts-1p8-regulator {
++=09=09compatible =3D "regulator-fixed";
++=09=09regulator-name =3D "ts_1p8_supply";
++
++=09=09regulator-min-microvolt =3D <1800000>;
++=09=09regulator-max-microvolt =3D <1800000>;
++
++=09=09gpio =3D <&tlmm 88 0>;
++=09=09enable-active-high;
++=09=09regulator-boot-on;
++=09};
++};
++
++&adsp_pas {
++=09status =3D "okay";
++=09firmware-name =3D "qcom/sdm845/oneplus6/adsp.mbn";
++};
++
++&apps_rsc {
++=09pm8998-rpmh-regulators {
++=09=09compatible =3D "qcom,pm8998-rpmh-regulators";
++=09=09qcom,pmic-id =3D "a";
++
++=09=09vdd-s1-supply =3D <&vph_pwr>;
++=09=09vdd-s2-supply =3D <&vph_pwr>;
++=09=09vdd-s3-supply =3D <&vph_pwr>;
++=09=09vdd-s4-supply =3D <&vph_pwr>;
++=09=09vdd-s5-supply =3D <&vph_pwr>;
++=09=09vdd-s6-supply =3D <&vph_pwr>;
++=09=09vdd-s7-supply =3D <&vph_pwr>;
++=09=09vdd-s8-supply =3D <&vph_pwr>;
++=09=09vdd-s9-supply =3D <&vph_pwr>;
++=09=09vdd-s10-supply =3D <&vph_pwr>;
++=09=09vdd-s11-supply =3D <&vph_pwr>;
++=09=09vdd-s12-supply =3D <&vph_pwr>;
++=09=09vdd-s13-supply =3D <&vph_pwr>;
++=09=09vdd-l1-l27-supply =3D <&vreg_s7a_1p025>;
++=09=09vdd-l2-l8-l17-supply =3D <&vreg_s3a_1p35>;
++=09=09vdd-l3-l11-supply =3D <&vreg_s7a_1p025>;
++=09=09vdd-l4-l5-supply =3D <&vreg_s7a_1p025>;
++=09=09vdd-l6-supply =3D <&vph_pwr>;
++=09=09vdd-l7-l12-l14-l15-supply =3D <&vreg_s5a_2p04>;
++=09=09vdd-l9-supply =3D <&vreg_bob>;
++=09=09vdd-l10-l23-l25-supply =3D <&vreg_bob>;
++=09=09vdd-l13-l19-l21-supply =3D <&vreg_bob>;
++=09=09vdd-l16-l28-supply =3D <&vreg_bob>;
++=09=09vdd-l18-l22-supply =3D <&vreg_bob>;
++=09=09vdd-l20-l24-supply =3D <&vreg_bob>;
++=09=09vdd-l26-supply =3D <&vreg_s3a_1p35>;
++=09=09vin-lvs-1-2-supply =3D <&vreg_s4a_1p8>;
++
++=09=09vreg_s3a_1p35: smps3 {
++=09=09=09regulator-min-microvolt =3D <1352000>;
++=09=09=09regulator-max-microvolt =3D <1352000>;
++=09=09};
++
++=09=09vreg_s5a_2p04: smps5 {
++=09=09=09regulator-min-microvolt =3D <1904000>;
++=09=09=09regulator-max-microvolt =3D <2040000>;
++=09=09};
++
++=09=09vreg_s7a_1p025: smps7 {
++=09=09=09regulator-min-microvolt =3D <900000>;
++=09=09=09regulator-max-microvolt =3D <1028000>;
++=09=09};
++
++=09=09vdda_mipi_dsi0_pll:
++=09=09vdda_qlink_lv:
++=09=09vdda_ufs1_core:
++=09=09vdda_usb1_ss_core:
++=09=09vreg_l1a_0p875: ldo1 {
++=09=09=09regulator-min-microvolt =3D <880000>;
++=09=09=09regulator-max-microvolt =3D <880000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vreg_l2a_1p2: ldo2 {
++=09=09=09regulator-min-microvolt =3D <1200000>;
++=09=09=09regulator-max-microvolt =3D <1200000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09=09regulator-always-on;
++=09=09};
++
++=09=09vreg_l5a_0p8: ldo5 {
++=09=09=09regulator-min-microvolt =3D <800000>;
++=09=09=09regulator-max-microvolt =3D <800000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vreg_l7a_1p8: ldo7 {
++=09=09=09regulator-min-microvolt =3D <1800000>;
++=09=09=09regulator-max-microvolt =3D <1800000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vdda_qusb_hs0_1p8:
++=09=09vreg_l12a_1p8: ldo12 {
++=09=09=09regulator-min-microvolt =3D <1800000>;
++=09=09=09regulator-max-microvolt =3D <1800000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vreg_l14a_1p88: ldo14 {
++=09=09=09regulator-min-microvolt =3D <1800000>;
++=09=09=09regulator-max-microvolt =3D <1800000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09=09regulator-always-on;
++=09=09};
++
++=09=09vreg_l17a_1p3: ldo17 {
++=09=09=09regulator-min-microvolt =3D <1304000>;
++=09=09=09regulator-max-microvolt =3D <1304000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vreg_l20a_2p95: ldo20 {
++=09=09=09regulator-min-microvolt =3D <2704000>;
++=09=09=09regulator-max-microvolt =3D <2960000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vdda_qusb_hs0_3p1:
++=09=09vreg_l24a_3p075: ldo24 {
++=09=09=09regulator-min-microvolt =3D <3088000>;
++=09=09=09regulator-max-microvolt =3D <3088000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vreg_l25a_3p3: ldo25 {
++=09=09=09regulator-min-microvolt =3D <3300000>;
++=09=09=09regulator-max-microvolt =3D <3312000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++=09=09vdda_mipi_dsi0_1p2:
++=09=09vdda_ufs1_1p2:
++=09=09vreg_l26a_1p2: ldo26 {
++=09=09=09regulator-min-microvolt =3D <1200000>;
++=09=09=09regulator-max-microvolt =3D <1200000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++
++=09=09vreg_l28a_3p0: ldo28 {
++=09=09=09regulator-min-microvolt =3D <2856000>;
++=09=09=09regulator-max-microvolt =3D <3008000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
++=09=09};
++=09};
++
++=09pmi8998-rpmh-regulators {
++=09=09compatible =3D "qcom,pmi8998-rpmh-regulators";
++=09=09qcom,pmic-id =3D "b";
++
++=09=09vdd-bob-supply =3D <&vph_pwr>;
++
++=09=09vreg_bob: bob {
++=09=09=09regulator-min-microvolt =3D <3312000>;
++=09=09=09regulator-max-microvolt =3D <3600000>;
++=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_AUTO>;
++=09=09=09regulator-allow-bypass;
++=09=09};
++=09};
++
++=09pm8005-rpmh-regulators {
++=09=09compatible =3D "qcom,pm8005-rpmh-regulators";
++=09=09qcom,pmic-id =3D "c";
++
++=09=09vdd-s1-supply =3D <&vph_pwr>;
++=09=09vdd-s2-supply =3D <&vph_pwr>;
++=09=09vdd-s3-supply =3D <&vph_pwr>;
++=09=09vdd-s4-supply =3D <&vph_pwr>;
++
++=09=09vreg_s3c_0p6: smps3 {
++=09=09=09regulator-min-microvolt =3D <600000>;
++=09=09=09regulator-max-microvolt =3D <600000>;
++=09=09};
++=09};
++};
++
++&cdsp_pas {
++=09status =3D "okay";
++=09firmware-name =3D "qcom/sdm845/oneplus6/cdsp.mbn";
++};
++
++&dsi0 {
++=09status =3D "okay";
++=09vdda-supply =3D <&vdda_mipi_dsi0_1p2>;
++
++=09#address-cells =3D <1>;
++=09#size-cells =3D <0>;
++
++=09/*
++=09 * Both devices use different panels but all other properties
++=09 * are common. Compatible line is declared in device dts.
++=09 */
++=09display_panel: panel@0 {
++=09=09status =3D "disabled";
++
++=09=09#address-cells =3D <1>;
++=09=09#size-cells =3D <0>;
++=09=09reg =3D <0>;
++
++=09=09vddio-supply =3D <&vreg_l14a_1p88>;
++
++=09=09reset-gpios =3D <&tlmm 6 GPIO_ACTIVE_LOW>;
++
++=09=09pinctrl-names =3D "default";
++=09=09pinctrl-0 =3D <&panel_reset_pins &panel_te_pin &panel_esd_pin>;
++
++=09=09port {
++=09=09=09panel_in: endpoint {
++=09=09=09=09remote-endpoint =3D <&dsi0_out>;
++=09=09=09};
++=09=09};
++=09};
++};
++
++&dsi0_out {
++=09remote-endpoint =3D <&panel_in>;
++=09data-lanes =3D <0 1 2 3>;
++};
++
++&dsi0_phy {
++=09status =3D "okay";
++=09vdds-supply =3D <&vdda_mipi_dsi0_pll>;
++};
++
++&gcc {
++=09protected-clocks =3D <GCC_QSPI_CORE_CLK>,
++=09=09=09=09<GCC_QSPI_CORE_CLK_SRC>,
++=09=09=09=09<GCC_QSPI_CNOC_PERIPH_AHB_CLK>,
++=09=09=09=09<GCC_LPASS_Q6_AXI_CLK>,
++=09=09=09=09<GCC_LPASS_SWAY_CLK>;
++};
++
++&gpu {
++=09zap-shader {
++=09=09memory-region =3D <&gpu_mem>;
++=09=09firmware-name =3D "qcom/sdm845/oneplus6/a630_zap.mbn";
++=09};
++};
++
++&i2c12 {
++=09status =3D "okay";
++=09clock-frequency =3D <400000>;
++
++=09synaptics-rmi4-i2c@20 {
++=09=09compatible =3D "syna,rmi4-i2c";
++=09=09reg =3D <0x20>;
++=09=09#address-cells =3D <1>;
++=09=09#size-cells =3D <0>;
++=09=09interrupts-extended =3D <&tlmm 125 IRQ_TYPE_EDGE_FALLING>;
++
++=09=09pinctrl-names =3D "default";
++=09=09pinctrl-0 =3D <&ts_default_pins>;
++
++=09=09vdd-supply =3D <&vreg_l28a_3p0>;
++=09=09vio-supply =3D <&ts_1p8_supply>;
++
++=09=09syna,reset-delay-ms =3D <200>;
++=09=09syna,startup-delay-ms =3D <200>;
++
++=09=09rmi4-f01@1 {
++=09=09=09reg =3D <0x01>;
++=09=09=09syna,nosleep-mode =3D <1>;
++=09=09};
++
++=09=09rmi4_f12: rmi4-f12@12 {
++=09=09=09reg =3D <0x12>;
++=09=09=09touchscreen-x-mm =3D <68>;
++=09=09=09touchscreen-y-mm =3D <144>;
++=09=09=09syna,sensor-type =3D <1>;
++=09=09=09syna,rezero-wait-ms =3D <200>;
++=09=09};
++=09};
++};
++
++&mdss {
++=09status =3D "okay";
++};
++
++&mdss_mdp {
++=09status =3D "okay";
++};
++
++/* Modem/wifi*/
++&mss_pil {
++=09status =3D "okay";
++=09firmware-name =3D "qcom/sdm845/oneplus6/mba.mbn", "qcom/sdm845/oneplus6=
+/modem.mbn";
++};
++
++&pm8998_gpio {
++=09volume_down_gpio: pm8998_gpio5 {
++=09=09pinconf {
++=09=09=09pins =3D "gpio5";
++=09=09=09function =3D "normal";
++=09=09=09input-enable;
++=09=09=09bias-pull-up;
++=09=09=09qcom,drive-strength =3D <0>;
++=09=09};
++=09};
++
++=09volume_up_gpio: pm8998_gpio6 {
++=09=09pinconf {
++=09=09=09pins =3D "gpio6";
++=09=09=09function =3D "normal";
++=09=09=09input-enable;
++=09=09=09bias-pull-up;
++=09=09=09qcom,drive-strength =3D <0>;
++=09=09};
++=09};
++};
++
++&qupv3_id_1 {
++=09status =3D "okay";
++};
++
++&qupv3_id_0 {
++=09status =3D "okay";
++};
++
++&qup_i2c12_default {
++=09mux {
++=09=09pins =3D "gpio49", "gpio50";
++=09=09function =3D "qup12";
++=09=09drive-strength =3D <2>;
++=09=09bias-disable;
++=09};
++};
++
++&qup_i2c10_default {
++=09pinconf {
++=09=09pins =3D "gpio55", "gpio56";
++=09=09drive-strength =3D <2>;
++=09=09bias-disable;
++=09};
++};
++
++&qup_uart9_default {
++=09pinconf-tx {
++=09=09pins =3D "gpio4";
++=09=09drive-strength =3D <2>;
++=09=09bias-disable;
++=09};
++
++=09pinconf-rx {
++=09=09pins =3D "gpio5";
++=09=09drive-strength =3D <2>;
++=09=09bias-pull-up;
++=09};
++};
++
++/*
++ * Prevent garbage data on bluetooth UART lines
++ */
++&qup_uart6_default {
++=09pinmux {
++=09=09pins =3D "gpio45", "gpio46", "gpio47", "gpio48";
++=09=09function =3D "qup6";
++=09};
++
++=09cts {
++=09=09pins =3D "gpio45";
++=09=09bias-pull-down;
++=09};
++
++=09rts-tx {
++=09=09pins =3D "gpio46", "gpio47";
++=09=09drive-strength =3D <2>;
++=09=09bias-disable;
++=09};
++
++=09rx {
++=09=09pins =3D "gpio48";
++=09=09bias-pull-up;
++=09};
++};
++
++&uart6 {
++=09status =3D "okay";
++
++=09bluetooth {
++=09=09compatible =3D "qcom,wcn3990-bt";
++
++=09=09/*
++=09=09 * This path is relative to the qca/
++=09=09 * subdir under lib/firmware.
++=09=09 */
++=09=09firmware-name =3D "oneplus6/crnv21.bin";
++
++=09=09vddio-supply =3D <&vreg_s4a_1p8>;
++=09=09vddxo-supply =3D <&vreg_l7a_1p8>;
++=09=09vddrf-supply =3D <&vreg_l17a_1p3>;
++=09=09vddch0-supply =3D <&vreg_l25a_3p3>;
++=09=09max-speed =3D <3200000>;
++=09};
++};
++
++&ufs_mem_hc {
++=09status =3D "okay";
++
++=09reset-gpios =3D <&tlmm 150 GPIO_ACTIVE_LOW>;
++
++=09vcc-supply =3D <&vreg_l20a_2p95>;
++=09vcc-max-microamp =3D <600000>;
++};
++
++&ufs_mem_phy {
++=09status =3D "okay";
++
++=09vdda-phy-supply =3D <&vdda_ufs1_core>;
++=09vdda-pll-supply =3D <&vdda_ufs1_1p2>;
++};
++
++&usb_1 {
++=09status =3D "okay";
++
++=09/*
++=09 * disable USB3 clock requirement as the device only supports
++=09 * USB2.
++=09 */
++=09qcom,select-utmi-as-pipe-clk;
++};
++
++&usb_1_dwc3 {
++=09/*
++=09 * We don't have the capability to switch modes yet.
++=09 */
++=09dr_mode =3D "peripheral";
++
++=09/* fastest mode for USB 2 */
++=09maximum-speed =3D "high-speed";
++
++=09/* Remove USB3 phy as it's unused on this device. */
++=09phys =3D <&usb_1_hsphy>;
++=09phy-names =3D "usb2-phy";
++};
++
++&usb_1_hsphy {
++=09status =3D "okay";
++
++=09vdd-supply =3D <&vdda_usb1_ss_core>;
++=09vdda-pll-supply =3D <&vdda_qusb_hs0_1p8>;
++=09vdda-phy-dpdm-supply =3D <&vdda_qusb_hs0_3p1>;
++
++=09qcom,imp-res-offset-value =3D <8>;
++=09qcom,hstx-trim-value =3D <QUSB2_V2_HSTX_TRIM_21_6_MA>;
++=09qcom,preemphasis-level =3D <QUSB2_V2_PREEMPHASIS_5_PERCENT>;
++=09qcom,preemphasis-width =3D <QUSB2_V2_PREEMPHASIS_WIDTH_HALF_BIT>;
++};
++
++&tlmm {
++=09gpio-reserved-ranges =3D <0 4>, <81 4>;
++
++=09tri_state_key_default: tri_state_key_default {
++=09=09mux {
++=09=09=09pins =3D "gpio40", "gpio42", "gpio26";
++=09=09=09function =3D "gpio";
++=09=09=09drive-strength =3D <2>;
++=09=09=09bias-disable;
++=09=09};
++=09};
++
++=09ts_default_pins: ts-int {
++=09=09mux {
++=09=09=09pins =3D "gpio99", "gpio125";
++=09=09=09function =3D "gpio";
++=09=09=09drive-strength =3D <16>;
++=09=09=09bias-pull-up;
++=09=09};
++=09};
++
++=09panel_reset_pins: panel-reset {
++=09=09mux {
++=09=09=09pins =3D "gpio6", "gpio25", "gpio26";
++=09=09=09function =3D "gpio";
++=09=09=09drive-strength =3D <8>;
++=09=09=09bias-disable =3D <0>;
++=09=09};
++=09};
++
++=09panel_te_pin: panel-te {
++=09=09mux {
++=09=09=09pins =3D "gpio10";
++=09=09=09function =3D "mdp_vsync";
++=09=09=09drive-strength =3D <2>;
++=09=09=09bias-disable;
++=09=09=09input-enable;
++=09=09};
++=09};
++
++=09panel_esd_pin: panel-esd {
++=09=09mux {
++=09=09=09pins =3D "gpio30";
++=09=09=09function =3D "gpio";
++=09=09=09drive-strength =3D <2>;
++=09=09=09bias-pull-down;
++=09=09=09input-enable;
++=09=09};
++=09};
++};
++
++&wifi {
++=09status =3D "okay";
++=09vdd-0.8-cx-mx-supply =3D <&vreg_l5a_0p8>;
++=09vdd-1.8-xo-supply =3D <&vreg_l7a_1p8>;
++=09vdd-1.3-rfa-supply =3D <&vreg_l17a_1p3>;
++=09vdd-3.3-ch0-supply =3D <&vreg_l25a_3p3>;
++
++=09qcom,snoc-host-cap-8bit-quirk;
++};
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dts b/arch/a=
+rm64/boot/dts/qcom/sdm845-oneplus-enchilada.dts
+new file mode 100644
+index 000000000000..72842c887617
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dts
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * SDM845 OnePlus 6 (enchilada) device tree.
++ *
++ * Copyright (c) 2020, The Linux Foundation. All rights reserved.
++ */
++
++#include "sdm845-oneplus-common.dtsi"
++
++/ {
++=09model =3D "OnePlus 6";
++=09compatible =3D "oneplus,enchilada", "qcom,sdm845";
++};
++
++&display_panel {
++=09status =3D "okay";
++
++=09compatible =3D "samsung,sofef00";
++};
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dts b/arch/arm6=
+4/boot/dts/qcom/sdm845-oneplus-fajita.dts
+new file mode 100644
+index 000000000000..969b36dc9e2c
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dts
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * SDM845 OnePlus 6T (fajita) device tree.
++ *
++ * Copyright (c) 2020, The Linux Foundation. All rights reserved.
++ */
++
++#include "sdm845-oneplus-common.dtsi"
++
++/ {
++=09model =3D "OnePlus 6T";
++=09compatible =3D "oneplus,fajita", "qcom,sdm845";
++};
++
++&display_panel {
++=09status =3D "okay";
++
++=09compatible =3D "samsung,s6e3fc2x01";
++};
++
++&rmi4_f12 {
++=09touchscreen-y-mm =3D <148>;
++};
+--=20
+2.29.2
+
 
