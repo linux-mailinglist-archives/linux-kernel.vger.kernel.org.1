@@ -2,97 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679752F6115
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A35332F611B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 13:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728722AbhANMem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 07:34:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727986AbhANMel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 07:34:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B611B23A53;
-        Thu, 14 Jan 2021 12:33:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610627640;
-        bh=EdSlPG4RuQzaA2DtueRN4oem+FBAVXvWJBKrOj/ojf8=;
-        h=Date:From:To:cc:Subject:From;
-        b=DJZuBknLl++nr0wVTc7WLDWuPQigX5aZnNzk1JQD3peUxYArD3PQ492Oz4vZDgJMF
-         5BPn7WGCu+LOEsktRC9hqwCzSLlB04apSiGm0dDPUyTIxvGtBds2opS4fEXSmPuQu4
-         GX3Hx8+cz+dZ8O8BGinWtTdexAiivWvbd4/kK/xd1F43bLJf/JCFomgmwNapbq8Imd
-         /sSmVBHA42V0itODlgi1AVwtSpoZE5fkbNpRuGyG01ugcblKFXCw2qjC4WrVPXkFRk
-         azcgXZYfe151i4qpLRlQzGbuw+Q6zwfMtP77M1V/9OaXRbHc4R77k1+dBjdIfNcewJ
-         R3+rotT1PsLhw==
-Date:   Thu, 14 Jan 2021 13:33:57 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     linux-kernel@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: [GIT PULL] HID fixes
-Message-ID: <nycvar.YFH.7.76.2101141332140.13752@cbobk.fhfr.pm>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1728443AbhANMhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 07:37:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726259AbhANMhl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 07:37:41 -0500
+Received: from shrek.podlesie.net (shrek-3s.podlesie.net [IPv6:2a00:13a0:3010::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EE66FC061574;
+        Thu, 14 Jan 2021 04:36:58 -0800 (PST)
+Received: by shrek.podlesie.net (Postfix, from userid 603)
+        id D198549B; Thu, 14 Jan 2021 13:36:57 +0100 (CET)
+Date:   Thu, 14 Jan 2021 13:36:57 +0100
+From:   Krzysztof Mazur <krzysiek@podlesie.net>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/lib: don't use MMX before FPU initialization
+Message-ID: <20210114123657.GA6358@shrek.podlesie.net>
+References: <20201228160631.32732-1-krzysiek@podlesie.net>
+ <20210112000923.GK25645@zn.tnic>
+ <20210114092218.GA26786@shrek.podlesie.net>
+ <20210114094425.GA12284@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210114094425.GA12284@zn.tnic>
+User-Agent: Mutt/1.6.2 (2016-07-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Thu, Jan 14, 2021 at 10:44:25AM +0100, Borislav Petkov wrote:
+> I believe the correct fix should be
+> 
+> 	if (unlikely(in_interrupt()) || !(cr4_read_shadow() & X86_CR4_OSFXSR))
+> 		return __memcpy(to, from, len);
+> 
+> in _mmx_memcpy() as you had it in your first patch.
+> 
 
-please pull from
+The OSFXSR must be set only on CPUs with SSE. There
+are some CPUs with 3DNow!, but without SSE and FXSR (like AMD
+Geode LX, which is still used in many embedded systems).
+So, I've changed that to:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
+if (unlikely(in_interrupt()) || (boot_cpu_has(X86_FEATURE_XMM) &&
+		unlikely(!(cr4_read_shadow() & X86_CR4_OSFXSR))))
 
-to receive fixes for HID subsystem;
 
-=====
-- memory leak fix for Wacom driver (Ping Cheng)
-- various trivial small fixes, cleanups and device ID additions
-=====
+However, I'm not sure that adding two taken branches (that
+second unlikely() does not help gcc to generate better code) and
+a call to cr4_read_shadow() (not inlined) is a good idea.
+The static branch adds a single jump, which is changed to
+NOP. The code with boot_cpu_has() and CR4 checks adds:
 
-Thanks.
+c09932ad:	a1 50 50 c3 c0       	mov    0xc0c35050,%eax
+c09932b2:	a9 00 00 00 02       	test   $0x2000000,%eax
+/* this branch is taken */
+c09932b7:	0f 85 13 01 00 00    	jne    c09933d0 <_mmx_memcpy+0x140>
 
-----------------------------------------------------------------
-Arnd Bergmann (2):
-      HID: sfh: fix address space confusion
-      HID: sony: select CONFIG_CRC32
+c09932bd:	/* MMX code is here */
 
-Filipe Laíns (1):
-      HID: logitech-dj: add the G602 receiver
+/* cr4_read_shadow is not inlined */
+c09933d0:	e8 8b 01 78 ff       	call   c0113560 <cr4_read_shadow>
+c09933d5:	f6 c4 02             	test   $0x2,%ah
+/* this branch is also taken */
+c09933d8:	0f 85 df fe ff ff    	jne    c09932bd <_mmx_memcpy+0x2d>
 
-Kai-Heng Feng (1):
-      HID: multitouch: Enable multi-input for Synaptics pointstick/touchpad device
 
-Nicholas Miell (1):
-      HID: logitech-hidpp: Add product ID for MX Ergo in Bluetooth mode
+However, except for some embedded systems, probably almost nobody uses
+that code today, and the most imporant is avoiding future breakage. And
+I'm not sure which approach is better. Because that CR4 test tests
+for a feature that is not used in mmx_memcpy(), but it's used in
+kernel_fpu_begin(). And in future kernel_fpu_begin() may change and
+require also other stuff. So I think that the best approach would be
+delay any FPU optimized memcpy() after fpu__init_system() is executed.
 
-Ping Cheng (1):
-      HID: wacom: Fix memory leakage caused by kfifo_alloc
+Best regards,
+Krzysiek
+-- >8 --
+Subject: [PATCH] x86/lib: don't use mmx_memcpy() to early
 
-Seth Miller (1):
-      HID: Ignore battery for Elan touchscreen on ASUS UX550
+The MMX 3DNow! optimized memcpy() is used very early,
+even before FPU is initialized in the kernel. It worked fine, but commit
+7ad816762f9bf89e940e618ea40c43138b479e10 ("x86/fpu: Reset MXCSR
+to default in kernel_fpu_begin()") broke that. After that
+commit the kernel_fpu_begin() assumes that FXSR is enabled in
+the CR4 register on all processors with SSE. Because memcpy() is used
+before FXSR is enabled, the kernel crashes just after "Booting the kernel."
+message. It affects all kernels with CONFIG_X86_USE_3DNOW (enabled when
+some AMD/Cyrix processors are selected) on processors with SSE
+(like AMD K7, which supports both MMX 3DNow! and SSE).
 
-Tom Rix (2):
-      HID: uclogic: remove h from printk format specifier
-      HID: wiimote: remove h from printk format specifier
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Signed-off-by: Krzysztof Mazur <krzysiek@podlesie.net>
+---
+ arch/x86/lib/mmx_32.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
- drivers/hid/Kconfig                      |  1 +
- drivers/hid/amd-sfh-hid/amd_sfh_client.c |  8 ++++----
- drivers/hid/amd-sfh-hid/amd_sfh_hid.h    |  2 +-
- drivers/hid/amd-sfh-hid/amd_sfh_pcie.c   |  2 +-
- drivers/hid/amd-sfh-hid/amd_sfh_pcie.h   |  2 +-
- drivers/hid/hid-ids.h                    |  1 +
- drivers/hid/hid-input.c                  |  2 ++
- drivers/hid/hid-logitech-dj.c            |  4 ++++
- drivers/hid/hid-logitech-hidpp.c         |  2 ++
- drivers/hid/hid-multitouch.c             |  4 ++++
- drivers/hid/hid-uclogic-params.c         |  2 +-
- drivers/hid/hid-wiimote-core.c           |  2 +-
- drivers/hid/wacom_sys.c                  | 35 +++++++++++++++++++++++++++++---
- 13 files changed, 55 insertions(+), 12 deletions(-)
-
+diff --git a/arch/x86/lib/mmx_32.c b/arch/x86/lib/mmx_32.c
+index 4321fa02e18d..70aa769570e6 100644
+--- a/arch/x86/lib/mmx_32.c
++++ b/arch/x86/lib/mmx_32.c
+@@ -25,13 +25,20 @@
+ 
+ #include <asm/fpu/api.h>
+ #include <asm/asm.h>
++#include <asm/tlbflush.h>
+ 
+ void *_mmx_memcpy(void *to, const void *from, size_t len)
+ {
+ 	void *p;
+ 	int i;
+ 
+-	if (unlikely(in_interrupt()))
++	/*
++	 * kernel_fpu_begin() assumes that FXSR is enabled on all processors
++	 * with SSE. Thus, MMX-optimized version can't be used
++	 * before the kernel enables FXSR (OSFXSR bit in the CR4 register).
++	 */
++	if (unlikely(in_interrupt()) || (boot_cpu_has(X86_FEATURE_XMM) &&
++			unlikely(!(cr4_read_shadow() & X86_CR4_OSFXSR))))
+ 		return __memcpy(to, from, len);
+ 
+ 	p = to;
 -- 
-Jiri Kosina
-SUSE Labs
+2.27.0.rc1.207.gb85828341f
 
