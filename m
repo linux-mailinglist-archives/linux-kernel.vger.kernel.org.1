@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5D82F5E9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E882F5EA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728702AbhANKVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 05:21:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39692 "EHLO
+        id S1728194AbhANKXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 05:23:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727092AbhANKVy (ORCPT
+        with ESMTP id S1726055AbhANKXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 05:21:54 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6D9C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:21:07 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id y187so4184879wmd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:21:07 -0800 (PST)
+        Thu, 14 Jan 2021 05:23:03 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15F1C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:22:23 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id y23so4185171wmi.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:22:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ioElmSSQBq4ewe2c9MnqUseUB/dr1wIzp1aRLBynftE=;
-        b=MNFuI1a2ZkTCD4CEWQMX5EffUUluvlOh9lFR1B8cCTvtiJD/R9Qe5b0+ermZaSc4QF
-         XBc/SNJlWS+348uT+XqYOYpnZXu5tKHXL7gawp/L9iwIqnC2HdSGvcq6DI9ztmAUyK1N
-         HdKxQfFBssRviDwGpJC9xV65i5qnQiV4lRFNVyWmrZltRmweB6iDWoAcmPjy1mnPMrQt
-         jz9Zr0SHt27Beql0xVNXdZ0yeAWArliK4O7Jq27teApQSFIFoGEFIOIivpTzMCRCCG6N
-         ER9M5zU6etIwKV1Mq3CkbTAmB/ev+ciqAAXHq8qcDxxMZcVeSn5jo8U7+aYFxeRSs1yY
-         aZIA==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TDBOHLIzbUobbB/H8vBPt1OXjZemmTv6BVFzaBtUnnA=;
+        b=vkadCAqk5+2FVW0RSnQ2RReuN+Ncfp0p3LHyEsMIxgG1AG6L38MculRERwD8h1JBXq
+         x4bL1kIScSX0vyT8Slp72d2Up1UezdewatH4h5bYtmii6h1FIJR0RwgNjm27m2EK/JC+
+         QsiMYxXBYsv6QEgjr2vdw0ffmjkm6eWNU5Aksn7Kv9bLQChG3/RfphR3ygJr8+1ovFiC
+         nFPpOTyZY7u755QXnvn8FlX3GwDnvZ1Q5YnJisOcPF4l2FceSPNabB/7JK9lSJrjj+aC
+         cLFBlp86yVyvSY2v3s9cjKpj/vkPe96/Tw198/KM2CLax+6ICjmFL3fJ3LX8sEd9BRE2
+         ba6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ioElmSSQBq4ewe2c9MnqUseUB/dr1wIzp1aRLBynftE=;
-        b=VHpkCNa0lhZo6FDUtTeUMyQ8VnmA/s1f6wlNFkMfCrNP8fCaScmMKqSq7pvi+w3jVD
-         BeaK7ky44VUuu1sAA0zeMDhUlqgd+v6s/OG1Eorgy4fGfrV9mU4m0yRyrAbzHCJRZoqT
-         NwlyVh2oVjzwuHodzlkBRLQlpKolfJgUWXviNQYTv7rsQVFE7lU4aS7/ObGcFyoEAdXe
-         8SUMrDvylJIltIy/H4o4WAH/6Oj8WOClmrZtnXufbFS570KEGTgGlJM48St0wcGhc3Ml
-         t3FcuE7Hmykryoggs6VMI+9lXEBr8RnnatruXgFF+y9W1dGQTPtn4rapTP001EBIpHYj
-         Iyjg==
-X-Gm-Message-State: AOAM532NqkbkkUwjm+aSz1AODmgBjqwRHzVCvHALJONPhBtQzkr1g0MU
-        XOR4+C2bvWpUigcZGErbC4cv7zBi4eSjU4h5
-X-Google-Smtp-Source: ABdhPJyFS90xToHcA74Izr3EeLRMPB+YGrBjX4TNVnW9dnGc5Y3pYmH9w0f8dmV0mOfvOyLJCJ+VIA==
-X-Received: by 2002:a05:600c:154c:: with SMTP id f12mr3242162wmg.120.1610619666615;
-        Thu, 14 Jan 2021 02:21:06 -0800 (PST)
-Received: from dell ([91.110.221.178])
-        by smtp.gmail.com with ESMTPSA id r20sm10457496wrg.66.2021.01.14.02.21.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TDBOHLIzbUobbB/H8vBPt1OXjZemmTv6BVFzaBtUnnA=;
+        b=PCThjucy0zqtzD67tuRkHeFq83oC1BhSH5kEg5t9QOoHUa5wFGzIOaMpe8x/sNroRR
+         hU5gPuc65RKvKZ5lfX5dIvtWAKwfClG8n782/6F1tKba1CB1zBARDFGXwvM15m3T/aaP
+         B0GqfXbqr5OmYnMv4dxu20YsULy/6rC+aJAcvRhzU1OCPDybPjrtOXfFndR7BqpTnaF4
+         fUXeRKiRl6wJtCGlr+s7gqcL3TvaMhWDNOXkJyDOaKwGRqRqpC7RGF1tvHGxC1qM+3Uk
+         KowmuQAPsDGBt40ck68+hjJNyBZVQrSM0DbBR8TfAEobWuT/nnEMxKePq08ieSCNya/0
+         3w2g==
+X-Gm-Message-State: AOAM533KoW2cnEcnjSVUZ3T0g+2Rry5+JzHmsnxz9CjDK6tRkiiUILbL
+        n6IPQXUZ3HMoN67tAjalPmRP7Q==
+X-Google-Smtp-Source: ABdhPJz/Us+lTCzL6I6kTkiPk48eVv4ZkplclXvz1XWx01j9qMAig1MBrV4LTxMJ0NefnEK47i24QQ==
+X-Received: by 2002:a7b:c85a:: with SMTP id c26mr3152510wml.160.1610619742692;
+        Thu, 14 Jan 2021 02:22:22 -0800 (PST)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id l7sm2468467wmg.41.2021.01.14.02.22.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 02:21:05 -0800 (PST)
-Date:   Thu, 14 Jan 2021 10:21:04 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Jeff LaBundy <jeff@labundy.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] mfd: iqs62x: Do not change clock frequency during ATI
-Message-ID: <20210114102104.GR3975472@dell>
-References: <1609707369-11297-1-git-send-email-jeff@labundy.com>
- <1609707369-11297-7-git-send-email-jeff@labundy.com>
+        Thu, 14 Jan 2021 02:22:22 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-rtc@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v5 0/3] rtc: s5m: driver improvements
+Date:   Thu, 14 Jan 2021 11:22:16 +0100
+Message-Id: <20210114102219.23682-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1609707369-11297-7-git-send-email-jeff@labundy.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 03 Jan 2021, Jeff LaBundy wrote:
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-> After a reset event, the device automatically triggers ATI at the
-> default core clock frequency (16 MHz). Soon afterward, the driver
-> loads firmware which may attempt to lower the frequency.
-> 
-> If this initial ATI cycle is still in progress when the frequency
-> is changed, however, the device incorrectly reports channels 0, 1
-> and 2 to be in a state of touch once ATI finally completes.
-> 
-> To solve this problem, wait until ATI is complete before lowering
-> the frequency. Because this particular ATI cycle occurs following
-> a reset event, its duration is predictable and a simple delay can
-> suffice.
-> 
-> Signed-off-by: Jeff LaBundy <jeff@labundy.com>
-> ---
->  drivers/mfd/iqs62x.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+This is a set of improvements for the rtc-s5m driver. The first patch
+is new in v4: I noticed the I2C regmap is not selected by this driver's
+Kconfig. Two subsequent patches were already submitted separately.
 
-For my own reference (apply this as-is to your sign-off block):
+v1 -> v2:
+- remove the remove() callback
 
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+v2 -> v3:
+- fix an error pointed out by the build robot
+
+v3 -> v4:
+- add patch 1/3: ("rtc: s5m: select REGMAP_I2C")
+- fix issues raised by the kernel bot
+
+v4 -> v5:
+- change the order of the patches to keep them bisectable
+
+Bartosz Golaszewski (3):
+  rtc: s5m: select REGMAP_I2C
+  rtc: s5m: use devm_i2c_new_dummy_device()
+  rtc: s5m: check the return value of s5m8767_rtc_init_reg()
+
+ drivers/rtc/Kconfig   |  1 +
+ drivers/rtc/rtc-s5m.c | 33 +++++++++------------------------
+ 2 files changed, 10 insertions(+), 24 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.29.1
+
