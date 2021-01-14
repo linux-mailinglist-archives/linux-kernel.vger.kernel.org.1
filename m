@@ -2,201 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B87202F5E9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD2A2F5EB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 11:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728680AbhANKV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 05:21:29 -0500
-Received: from foss.arm.com ([217.140.110.172]:47212 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728535AbhANKV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 05:21:26 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C95D1FB;
-        Thu, 14 Jan 2021 02:20:41 -0800 (PST)
-Received: from [10.0.0.31] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9A4E33F70D;
-        Thu, 14 Jan 2021 02:20:39 -0800 (PST)
-Subject: Re: [PATCH v2 3/4] arm64: mte: Enable async tag check fault
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-References: <20210107172908.42686-1-vincenzo.frascino@arm.com>
- <20210107172908.42686-4-vincenzo.frascino@arm.com>
- <20210113181121.GF27045@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <efbb0722-eb4e-7be2-b929-77ec91cc0ae0@arm.com>
-Date:   Thu, 14 Jan 2021 10:24:25 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728677AbhANK0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 05:26:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726559AbhANKZ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 05:25:57 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DFB4C061573;
+        Thu, 14 Jan 2021 02:25:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=ABEMejHZD9ftpZr7JO65Pg5rVQtvXlEBPbFOaUOhqnk=; b=LGypZ1msxVhIcQURUYXk5rEj1
+        w/XmVmrW3fLBWMGUuqRk9+/brVVSFKv0Cv7HHuQ7TaGJ6p1puSBjdEyb0h0810ePQqamh9S5puaEu
+        6VDlmx9HtK1xS7P4NGIs+q+xAEvUm5I/b6qiOAPLVuVTeIoT1OY8APFfWx/3cML5PiPX79SSGeJmM
+        Acb9NmFBe+KHr5AZ+9fZl5JNIj1i/vqCpfvVBW7jitE6RzfbvD3wja1QEhW9TPuPJmqxHRa5u2ll5
+        sSOoyLKKzpKw/3oBMks3NKWrzt1KAZrLr9SLlojOxcuax3UXQUkAUxlsfwmR9ctOuOvt4lixKeZHi
+        WvKwqNEqA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47820)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kzzoU-0002It-0D; Thu, 14 Jan 2021 10:25:10 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kzzoS-0008Fl-Eg; Thu, 14 Jan 2021 10:25:08 +0000
+Date:   Thu, 14 Jan 2021 10:25:08 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Claudiu.Beznea@microchip.com
+Cc:     hkallweit1@gmail.com, andrew@lunn.ch, davem@davemloft.net,
+        kuba@kernel.org, rjw@rjwysocki.net, pavel@ucw.cz,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH] net: phy: micrel: reconfigure the phy on resume
+Message-ID: <20210114102508.GO1551@shell.armlinux.org.uk>
+References: <1610120754-14331-1-git-send-email-claudiu.beznea@microchip.com>
+ <25ec943f-ddfc-9bcd-ef30-d0baf3c6b2a2@gmail.com>
+ <ce20d4f3-3e43-154a-0f57-2c2d42752597@microchip.com>
+ <ee0fd287-c737-faa5-eee1-99ffa120540a@gmail.com>
+ <ae4e73e9-109f-fdb9-382c-e33513109d1c@microchip.com>
+ <7976f7df-c22f-d444-c910-b0462b3d7f61@gmail.com>
+ <d9fcf8da-c0b0-0f18-48e9-a7534948bc93@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20210113181121.GF27045@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d9fcf8da-c0b0-0f18-48e9-a7534948bc93@microchip.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 14, 2021 at 10:12:13AM +0000, Claudiu.Beznea@microchip.com wrote:
+> Up to this moment we treat this backup mode as S2R mode since the memory
+> was kept in self-refresh mode. Each driver was saving/restoring in/from RAM
+> the content of associated registers in the suspend/resume phase.
 
-On 1/13/21 6:11 PM, Catalin Marinas wrote:
-> On Thu, Jan 07, 2021 at 05:29:07PM +0000, Vincenzo Frascino wrote:
->> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
->> index d02aff9f493d..a60d3718baae 100644
->> --- a/arch/arm64/include/asm/mte.h
->> +++ b/arch/arm64/include/asm/mte.h
->> @@ -39,6 +39,7 @@ void mte_free_tag_storage(char *storage);
->>  /* track which pages have valid allocation tags */
->>  #define PG_mte_tagged	PG_arch_2
->>  
->> +void mte_check_tfsr_el1(void);
->>  void mte_sync_tags(pte_t *ptep, pte_t pte);
->>  void mte_copy_page_tags(void *kto, const void *kfrom);
->>  void flush_mte_state(void);
->> @@ -56,6 +57,9 @@ void mte_assign_mem_tag_range(void *addr, size_t size);
->>  /* unused if !CONFIG_ARM64_MTE, silence the compiler */
->>  #define PG_mte_tagged	0
->>  
->> +static inline void mte_check_tfsr_el1(void)
->> +{
->> +}
-> 
-> I think we should enable this dummy function when !CONFIG_KASAN_HW_TAGS.
-> It saves us an unnecessary function call in a few places.
-> 
+This is exactly what suspend-to-RAM is. The system is largely powered
+down with the state saved in RAM, and the RAM placed in self-refresh
+mode. Some devices or parts of devices may remain powered up if needed
+to be a wake-up source.
 
-Ok, I will add it in v3.
+> The questions that arries this topic (Heiner, Russel, anyone involved in
+> the discussion, correct me if I wrongly understood):
+> 1/ is it OK to still treat this backup mode as a S2R mode or as a hibernate
+> mode? Since hibernate would treat the devices (including Ethernet PHY in
+> this case) as they were just powered and restore the registers content but
+> taking into account that in backup mode we keep the RAM in self-refresh?
 
->>  static inline void mte_sync_tags(pte_t *ptep, pte_t pte)
->>  {
->>  }
->> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
->> index 5346953e4382..74b020ce72d7 100644
->> --- a/arch/arm64/kernel/entry-common.c
->> +++ b/arch/arm64/kernel/entry-common.c
->> @@ -37,6 +37,8 @@ static void noinstr enter_from_kernel_mode(struct pt_regs *regs)
->>  	lockdep_hardirqs_off(CALLER_ADDR0);
->>  	rcu_irq_enter_check_tick();
->>  	trace_hardirqs_off_finish();
->> +
->> +	mte_check_tfsr_el1();
->>  }
->>  
->>  /*
->> @@ -47,6 +49,8 @@ static void noinstr exit_to_kernel_mode(struct pt_regs *regs)
->>  {
->>  	lockdep_assert_irqs_disabled();
->>  
->> +	mte_check_tfsr_el1();
->> +
->>  	if (interrupts_enabled(regs)) {
->>  		if (regs->exit_rcu) {
->>  			trace_hardirqs_on_prepare();
->> @@ -243,6 +247,8 @@ asmlinkage void noinstr enter_from_user_mode(void)
->>  
->>  asmlinkage void noinstr exit_to_user_mode(void)
->>  {
->> +	mte_check_tfsr_el1();
-> 
-> While for kernel entry the asynchronous faults are sync'ed automatically
-> with TFSR_EL1, we don't have this for exit, so we'd need an explicit
-> DSB. But rather than placing it here, it's better if we add a bool sync
-> argument to mte_check_tfsr_el1() which issues a dsb() before checking
-> the register. I think that's the only place where such argument would be
-> true (for now).
-> 
+Hibernate mode is a deeper power-saving mode, where all that applies
+with suspend-to-ram applies, plus the critical contents of the RAM is
+stored to non-volatile media, and the RAM powered down in addition to
+what would also be powered down in the suspend-to-ram case.
 
-Good point, I will add the dsb() in mte_check_tfsr_el1() but instead of a bool
-parameter I will add something more explicit.
+If you are placing the RAM in self-refresh and powering the system down,
+you are in suspend-to-ram mode, not hibernate mode.
 
->> +
->>  	trace_hardirqs_on_prepare();
->>  	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
->>  	user_enter_irqoff();
->> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
->> index 5d992e16b420..26030f0b79fe 100644
->> --- a/arch/arm64/kernel/mte.c
->> +++ b/arch/arm64/kernel/mte.c
->> @@ -185,6 +185,34 @@ void mte_enable_kernel(enum kasan_arg_mode mode)
->>  	isb();
->>  }
->>  
->> +void mte_check_tfsr_el1(void)
->> +{
->> +	u64 tfsr_el1;
->> +
->> +	if (!IS_ENABLED(CONFIG_KASAN_HW_TAGS))
->> +		return;
-> 
-> If we define the static inline when !CONFIG_KASAN_HW_TAGS, we could add
-> the #ifdef here around the whole function.
->
+> 2/ is it OK to have these kind of reconfiguration of one device that end up
+> in suspend mode with no power (in this case the Ethernet PHY) due to a
+> system power cut off (in this case CPU + PMIC)?
 
-Ok. I will add it in v3.
+You have nothing out of the ordinary here.  Going back years, the
+Assabet/Neponest (SA1110 based platform) does this. When the CPU
+enters suspend mode, a pin on the processor indicates to the external
+world that has happened, and that cuts power to most of the system
+including the smc91x and integrated PHY. (it doesn't use phylib.)
 
->> +	if (!system_supports_mte())
->> +		return;
->> +
->> +	tfsr_el1 = read_sysreg_s(SYS_TFSR_EL1);
->> +
->> +	/*
->> +	 * The kernel should never hit the condition TF0 == 1
->> +	 * at this point because for the futex code we set
->> +	 * PSTATE.TCO.
->> +	 */
->> +	WARN_ON(tfsr_el1 & SYS_TFSR_EL1_TF0);
->> +
->> +	if (tfsr_el1 & SYS_TFSR_EL1_TF1) {
->> +		write_sysreg_s(0, SYS_TFSR_EL1);
->> +		isb();
->> +
->> +		pr_err("MTE: Asynchronous tag exception detected!");
->> +	}
->> +}
->> +NOKPROBE_SYMBOL(mte_check_tfsr_el1);
-> 
-> Do we need this to be NOKPROBE_SYMBOL? It's not that low level.
->
-It is an inheritance from when I had this code called very early. I will remove
-it in the next version.
+So there's really nothing special about your situation; from what you
+have described, it's a pretty standard suspend-to-ram implementation.
 
->> +
->>  static void update_sctlr_el1_tcf0(u64 tcf0)
->>  {
->>  	/* ISB required for the kernel uaccess routines */
->> @@ -250,6 +278,15 @@ void mte_thread_switch(struct task_struct *next)
->>  	/* avoid expensive SCTLR_EL1 accesses if no change */
->>  	if (current->thread.sctlr_tcf0 != next->thread.sctlr_tcf0)
->>  		update_sctlr_el1_tcf0(next->thread.sctlr_tcf0);
->> +
->> +	/*
->> +	 * Check if an async tag exception occurred at EL1.
->> +	 *
->> +	 * Note: On the context switch patch we rely on the dsb() present
-> 
-> s/patch/path/
-> 
->> +	 * in __switch_to() to guaranty that the indirect writes to TFSR_EL1
-> 
-> s/guaranty/guarantee/ (well, still valid though I think rarely used).
-> 
->> +	 * are synchronized before this point.
->> +	 */
->> +	mte_check_tfsr_el1();
->>  }
->>  
->>  void mte_suspend_exit(void)
->> -- 
->> 2.30.0
-> 
+As I've said, if phylib/PHY driver is not restoring the state of the
+PHY on resume from suspend-to-ram, then that's an issue with phylib
+and/or the phy driver.
 
 -- 
-Regards,
-Vincenzo
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
