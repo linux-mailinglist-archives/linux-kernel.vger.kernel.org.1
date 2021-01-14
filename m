@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400CE2F68B3
+	by mail.lfdr.de (Postfix) with ESMTP id CFEB32F68B4
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 19:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbhANSB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 13:01:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41692 "EHLO mail.kernel.org"
+        id S1728952AbhANSB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 13:01:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725883AbhANSB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726293AbhANSB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Jan 2021 13:01:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8631A23B54;
-        Thu, 14 Jan 2021 18:00:41 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E4B123B70;
+        Thu, 14 Jan 2021 18:00:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610647243;
-        bh=G3ARswVyqp23HZWDNA9hDqr3zRmuJAHlm2iWSEqrmWg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=i5iosR+wUNY1CTBNSdAnMM6JSYTxumiNwGv8gudF0Pp5CnikJZDGQJFdMzQlYwV5t
-         hRruhhi6M82xR1UIJ8oHjI/kL0um5NLNV0ZJ1zAlkPz5OAn7ZyMyaEg9ezT1BolZx3
-         7PggPcRyicD8H/fGsqjIcoXXjuOKZ9oA+Jj78sjZDuD4RXV4vK+TQ0t4ChNBFHRNbp
-         GyXHhdU7zc+HDkxRPbwLCXcSawPPLI4SW0MNhy8JNRrSLCAkG4QKPcxN92rHYe9wcy
-         O7hwO4YlhORADMBQIBXI4u+8wbbGXz7AQfIW8rGWOSVlyydK5lUCiZMD47QUaVbsUF
-         HHkw5+tF+L7ug==
+        s=k20201202; t=1610647246;
+        bh=7hVoGKHfkQYPCcmWTeMSVBvC5VODyPKgv0dL+I7dBDw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=rP9g3qBYI0/cxLQ8kwWqFeqSGztRofEENZOcO6F+v/V3xY6P/FJTk3fnIZMJdjtRl
+         BTqEQ1CEZdxrbX0JjNmW8Wi7hHjqTpg0K8P7vc+8CPdtffBrEEoKCFO3l+44DND9ZI
+         +rKQ26XHaHVl9T0hQvlB8WlEqwMERptWAuqVCUBvHK1wQoJN8l/q5PLwsGn6HVfrEm
+         zef3RF35ArYiUNNiJHblmixA4y/rBNqg2CilY81u7DJ4V5vTgr6i2r7Ocl3m1VIAvN
+         kA9SCCxxTviJr7+8EOJ8LqmQ0wnPKfK4NixGWzDNabzI4Nr9WqneaUU7yMtJ2148Ig
+         kdDj3UVljBX6g==
 From:   Will Deacon <will@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
@@ -34,202 +34,658 @@ Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Vinayak Menon <vinmenon@codeaurora.org>,
         Hugh Dickins <hughd@google.com>, kernel-team@android.com
-Subject: [PATCH v3 0/8] Create 'old' ptes for faultaround mappings on arm64 with hardware access flag
-Date:   Thu, 14 Jan 2021 17:59:26 +0000
-Message-Id: <20210114175934.13070-1-will@kernel.org>
+Subject: [PATCH v3 1/8] mm: Cleanup faultaround and finish_fault() codepaths
+Date:   Thu, 14 Jan 2021 17:59:27 +0000
+Message-Id: <20210114175934.13070-2-will@kernel.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210114175934.13070-1-will@kernel.org>
+References: <20210114175934.13070-1-will@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi again folks,
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-This is the third version of the patches I previously posted here:
+alloc_set_pte() has two users with different requirements: in the
+faultaround code, it called from an atomic context and PTE page table
+has to be preallocated. finish_fault() can sleep and allocate page table
+as needed.
 
-  v1: https://lore.kernel.org/r/20201209163950.8494-1-will@kernel.org
-  v2: https://lore.kernel.org/r/20210108171517.5290-1-will@kernel.org
+PTL locking rules are also strange, hard to follow and overkill for
+finish_fault().
 
-The patches allow architectures to opt-in at runtime for faultaround
-mappings to be created as 'old' instead of 'young'. Although there have
-been previous attempts at this, they failed either because the decision
-was deferred to userspace [1] or because it was done unconditionally and
-shown to regress benchmarks for particular architectures [2].
+Let's untangle the mess. alloc_set_pte() has gone now. All locking is
+explicit.
 
-Minor changes since v2 include:
+The price is some code duplication to handle huge pages in faultaround
+path, but it should be fine, having overall improvement in readability.
 
-  * Update commit messages
-  * Remove repeated word 'from from' in a comment
-  * Restore 'vmf->flags' in filemap_map_pages()
+Link: https://lore.kernel.org/r/20201229132819.najtavneutnf7ajp@box
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+[will: s/from from/from/ in comment; spotted by willy]
+Signed-off-by: Will Deacon <will@kernel.org>
+---
+ fs/xfs/xfs_file.c       |   6 +-
+ include/linux/mm.h      |  12 ++-
+ include/linux/pgtable.h |  11 +++
+ mm/filemap.c            | 177 ++++++++++++++++++++++++++---------
+ mm/memory.c             | 199 ++++++++++++----------------------------
+ 5 files changed, 213 insertions(+), 192 deletions(-)
 
-The major additions are in the five RFC patches at the end of the
-series, which attempt to implement a suggestion from Linus to split up
-'struct vm_fault', clearly separating the mutable and immutable fields
-in the data structure. I used Coccinelle to do most of the mechanical
-work, but I also ran into some tricky problems along the way:
-
-1. 'vmf->flags' is modified on the '->page_mkwrite()' path so I couldn't
-   find a satisfactory way to move it to the new const structure. I toyed
-   with getting rid of FAULT_FLAG_[MK]WRITE completely and just tracking
-   these as bools, but there's also a weird piece of code in
-   vmw_bo_vm_mkwrite() which modifies FAULT_FLAG_ALLOW_RETRY, so I gave
-   up and left the 'flags' field alone.
-
-2. I had to perform terrifying surgery on __collapse_huge_page_swapin()
-   and, in doing so, I'm a bit wary about the initialisation of 'pgoff',
-   as it isn't updated along with the address (this matches the old code).
-
-3. vmf_insert_pfn_pmd() and friends take both a 'struct vm_fault' _and_
-   a 'bool write'. I have left them alone, but that FAULT_FLAG_WRITE is
-   causing trouble again.
-
-4. Turns out 'struct vm_fault' is popular, so the diffstat is bloody
-   massive.
-
-Anyway, be good to hear any thoughts on this lot, particular with regards
-to my comments above. I've also pushed the series here:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=faultaround
-
-Cheers
-
-Will
-
-[1] https://www.spinics.net/lists/linux-mm/msg143831.html
-[2] 315d09bf30c2 ("Revert "mm: make faultaround produce old ptes"")
-
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Vinayak Menon <vinmenon@codeaurora.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: <kernel-team@android.com>
-
---->8
-
-Kirill A. Shutemov (1):
-  mm: Cleanup faultaround and finish_fault() codepaths
-
-Will Deacon (7):
-  mm: Allow architectures to request 'old' entries when prefaulting
-  arm64: mm: Implement arch_wants_old_prefaulted_pte()
-  mm: Separate fault info out of 'struct vm_fault'
-  mm: Pass 'address' to map to do_set_pte() and drop FAULT_FLAG_PREFAULT
-  mm: Avoid modifying vmf.info.address in __collapse_huge_page_swapin()
-  mm: Use static initialisers for 'info' field of 'struct vm_fault'
-  mm: Mark 'info' field of 'struct vm_fault' as 'const'
-
- arch/arm64/include/asm/pgtable.h           |  12 +-
- arch/arm64/kernel/vdso.c                   |   4 +-
- arch/powerpc/kvm/book3s_64_vio.c           |   6 +-
- arch/powerpc/kvm/book3s_hv_uvmem.c         |   4 +-
- arch/powerpc/kvm/book3s_xive_native.c      |  13 +-
- arch/powerpc/platforms/cell/spufs/file.c   |  16 +-
- arch/s390/kernel/vdso.c                    |   4 +-
- arch/s390/kvm/kvm-s390.c                   |   2 +-
- arch/x86/entry/vdso/vma.c                  |  22 +-
- arch/x86/kernel/cpu/sgx/encl.c             |   4 +-
- drivers/char/agp/alpha-agp.c               |   2 +-
- drivers/char/mspec.c                       |   6 +-
- drivers/dax/device.c                       |  37 +-
- drivers/dma-buf/heaps/cma_heap.c           |   6 +-
- drivers/dma-buf/udmabuf.c                  |   4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c    |   4 +-
- drivers/gpu/drm/armada/armada_gem.c        |   6 +-
- drivers/gpu/drm/drm_gem_shmem_helper.c     |   8 +-
- drivers/gpu/drm/drm_vm.c                   |  18 +-
- drivers/gpu/drm/etnaviv/etnaviv_gem.c      |  10 +-
- drivers/gpu/drm/gma500/framebuffer.c       |   4 +-
- drivers/gpu/drm/gma500/gem.c               |   8 +-
- drivers/gpu/drm/i915/gem/i915_gem_mman.c   |   8 +-
- drivers/gpu/drm/msm/msm_gem.c              |  11 +-
- drivers/gpu/drm/nouveau/nouveau_dmem.c     |   8 +-
- drivers/gpu/drm/nouveau/nouveau_ttm.c      |   2 +-
- drivers/gpu/drm/omapdrm/omap_gem.c         |  20 +-
- drivers/gpu/drm/radeon/radeon_ttm.c        |   4 +-
- drivers/gpu/drm/tegra/gem.c                |   6 +-
- drivers/gpu/drm/ttm/ttm_bo_vm.c            |  10 +-
- drivers/gpu/drm/vc4/vc4_bo.c               |   2 +-
- drivers/gpu/drm/vgem/vgem_drv.c            |   6 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c |  12 +-
- drivers/hsi/clients/cmt_speech.c           |   2 +-
- drivers/hwtracing/intel_th/msu.c           |   8 +-
- drivers/infiniband/core/uverbs_main.c      |  10 +-
- drivers/infiniband/hw/hfi1/file_ops.c      |   2 +-
- drivers/infiniband/hw/qib/qib_file_ops.c   |   2 +-
- drivers/media/v4l2-core/videobuf-dma-sg.c  |   6 +-
- drivers/misc/cxl/context.c                 |   9 +-
- drivers/misc/ocxl/context.c                |  10 +-
- drivers/misc/ocxl/sysfs.c                  |   8 +-
- drivers/misc/sgi-gru/grumain.c             |   4 +-
- drivers/scsi/cxlflash/ocxl_hw.c            |   6 +-
- drivers/scsi/cxlflash/superpipe.c          |   2 +-
- drivers/scsi/sg.c                          |   4 +-
- drivers/target/target_core_user.c          |   6 +-
- drivers/uio/uio.c                          |   6 +-
- drivers/usb/mon/mon_bin.c                  |   4 +-
- drivers/vfio/pci/vfio_pci.c                |   2 +-
- drivers/vfio/pci/vfio_pci_nvlink2.c        |   8 +-
- drivers/vhost/vdpa.c                       |   6 +-
- drivers/video/fbdev/core/fb_defio.c        |  14 +-
- drivers/xen/privcmd-buf.c                  |   5 +-
- drivers/xen/privcmd.c                      |   4 +-
- fs/9p/vfs_file.c                           |   2 +-
- fs/afs/write.c                             |   2 +-
- fs/btrfs/inode.c                           |   4 +-
- fs/ceph/addr.c                             |   6 +-
- fs/dax.c                                   |  53 +--
- fs/ext2/file.c                             |   6 +-
- fs/ext4/file.c                             |   6 +-
- fs/ext4/inode.c                            |   4 +-
- fs/f2fs/file.c                             |   8 +-
- fs/fuse/dax.c                              |   2 +-
- fs/fuse/file.c                             |   4 +-
- fs/gfs2/file.c                             |   8 +-
- fs/iomap/buffered-io.c                     |   2 +-
- fs/kernfs/file.c                           |   4 +-
- fs/nfs/file.c                              |   2 +-
- fs/nilfs2/file.c                           |   2 +-
- fs/ocfs2/mmap.c                            |   8 +-
- fs/orangefs/file.c                         |   2 +-
- fs/orangefs/inode.c                        |   4 +-
- fs/proc/vmcore.c                           |   4 +-
- fs/ubifs/file.c                            |   2 +-
- fs/userfaultfd.c                           |  17 +-
- fs/xfs/xfs_file.c                          |  18 +-
- fs/zonefs/super.c                          |   6 +-
- include/linux/huge_mm.h                    |   6 +-
- include/linux/mm.h                         |  21 +-
- include/linux/pgtable.h                    |  11 +
- include/trace/events/fs_dax.h              |  28 +-
- ipc/shm.c                                  |   2 +-
- kernel/events/core.c                       |  12 +-
- kernel/relay.c                             |   4 +-
- lib/test_hmm.c                             |   4 +-
- mm/filemap.c                               | 208 +++++++---
- mm/huge_memory.c                           |  57 +--
- mm/hugetlb.c                               |   6 +-
- mm/internal.h                              |   4 +-
- mm/khugepaged.c                            |  39 +-
- mm/memory.c                                | 452 +++++++++------------
- mm/mmap.c                                  |   6 +-
- mm/shmem.c                                 |  16 +-
- mm/swap_state.c                            |  19 +-
- mm/swapfile.c                              |  13 +-
- samples/vfio-mdev/mbochs.c                 |  10 +-
- security/selinux/selinuxfs.c               |   4 +-
- sound/core/pcm_native.c                    |   8 +-
- sound/usb/usx2y/us122l.c                   |   4 +-
- sound/usb/usx2y/usX2Yhwdep.c               |   8 +-
- sound/usb/usx2y/usx2yhwdeppcm.c            |   4 +-
- virt/kvm/kvm_main.c                        |  12 +-
- 104 files changed, 821 insertions(+), 730 deletions(-)
-
+diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+index 5b0f93f73837..111fe73bb8a7 100644
+--- a/fs/xfs/xfs_file.c
++++ b/fs/xfs/xfs_file.c
+@@ -1319,17 +1319,19 @@ xfs_filemap_pfn_mkwrite(
+ 	return __xfs_filemap_fault(vmf, PE_SIZE_PTE, true);
+ }
+ 
+-static void
++static vm_fault_t
+ xfs_filemap_map_pages(
+ 	struct vm_fault		*vmf,
+ 	pgoff_t			start_pgoff,
+ 	pgoff_t			end_pgoff)
+ {
+ 	struct inode		*inode = file_inode(vmf->vma->vm_file);
++	vm_fault_t ret;
+ 
+ 	xfs_ilock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
+-	filemap_map_pages(vmf, start_pgoff, end_pgoff);
++	ret = filemap_map_pages(vmf, start_pgoff, end_pgoff);
+ 	xfs_iunlock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
++	return ret;
+ }
+ 
+ static const struct vm_operations_struct xfs_file_vm_ops = {
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index ecdf8a8cd6ae..4572a9bc5862 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -542,8 +542,8 @@ struct vm_fault {
+ 					 * is not NULL, otherwise pmd.
+ 					 */
+ 	pgtable_t prealloc_pte;		/* Pre-allocated pte page table.
+-					 * vm_ops->map_pages() calls
+-					 * alloc_set_pte() from atomic context.
++					 * vm_ops->map_pages() sets up a page
++					 * table from atomic context.
+ 					 * do_fault_around() pre-allocates
+ 					 * page table to avoid allocation from
+ 					 * atomic context.
+@@ -578,7 +578,7 @@ struct vm_operations_struct {
+ 	vm_fault_t (*fault)(struct vm_fault *vmf);
+ 	vm_fault_t (*huge_fault)(struct vm_fault *vmf,
+ 			enum page_entry_size pe_size);
+-	void (*map_pages)(struct vm_fault *vmf,
++	vm_fault_t (*map_pages)(struct vm_fault *vmf,
+ 			pgoff_t start_pgoff, pgoff_t end_pgoff);
+ 	unsigned long (*pagesize)(struct vm_area_struct * area);
+ 
+@@ -988,7 +988,9 @@ static inline pte_t maybe_mkwrite(pte_t pte, struct vm_area_struct *vma)
+ 	return pte;
+ }
+ 
+-vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct page *page);
++vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page);
++void do_set_pte(struct vm_fault *vmf, struct page *page);
++
+ vm_fault_t finish_fault(struct vm_fault *vmf);
+ vm_fault_t finish_mkwrite_fault(struct vm_fault *vmf);
+ #endif
+@@ -2622,7 +2624,7 @@ extern void truncate_inode_pages_final(struct address_space *);
+ 
+ /* generic vm_area_ops exported for stackable file systems */
+ extern vm_fault_t filemap_fault(struct vm_fault *vmf);
+-extern void filemap_map_pages(struct vm_fault *vmf,
++extern vm_fault_t filemap_map_pages(struct vm_fault *vmf,
+ 		pgoff_t start_pgoff, pgoff_t end_pgoff);
+ extern vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf);
+ 
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index 8fcdfa52eb4b..36eb748f3c97 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -1314,6 +1314,17 @@ static inline int pmd_trans_unstable(pmd_t *pmd)
+ #endif
+ }
+ 
++/*
++ * the ordering of these checks is important for pmds with _page_devmap set.
++ * if we check pmd_trans_unstable() first we will trip the bad_pmd() check
++ * inside of pmd_none_or_trans_huge_or_clear_bad(). this will end up correctly
++ * returning 1 but not before it spams dmesg with the pmd_clear_bad() output.
++ */
++static inline int pmd_devmap_trans_unstable(pmd_t *pmd)
++{
++	return pmd_devmap(*pmd) || pmd_trans_unstable(pmd);
++}
++
+ #ifndef CONFIG_NUMA_BALANCING
+ /*
+  * Technically a PTE can be PROTNONE even when not doing NUMA balancing but
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 5c9d564317a5..c1f2dc89b8a7 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -42,6 +42,7 @@
+ #include <linux/psi.h>
+ #include <linux/ramfs.h>
+ #include <linux/page_idle.h>
++#include <asm/pgalloc.h>
+ #include "internal.h"
+ 
+ #define CREATE_TRACE_POINTS
+@@ -2911,74 +2912,164 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+ }
+ EXPORT_SYMBOL(filemap_fault);
+ 
+-void filemap_map_pages(struct vm_fault *vmf,
+-		pgoff_t start_pgoff, pgoff_t end_pgoff)
++static bool filemap_map_pmd(struct vm_fault *vmf, struct page *page)
+ {
+-	struct file *file = vmf->vma->vm_file;
++	struct mm_struct *mm = vmf->vma->vm_mm;
++
++	/* Huge page is mapped? No need to proceed. */
++	if (pmd_trans_huge(*vmf->pmd)) {
++		unlock_page(page);
++		put_page(page);
++		return true;
++	}
++
++	if (pmd_none(*vmf->pmd) && PageTransHuge(page)) {
++	    vm_fault_t ret = do_set_pmd(vmf, page);
++	    if (!ret) {
++		    /* The page is mapped successfully, reference consumed. */
++		    unlock_page(page);
++		    return true;
++	    }
++	}
++
++	if (pmd_none(*vmf->pmd)) {
++		vmf->ptl = pmd_lock(mm, vmf->pmd);
++		if (likely(pmd_none(*vmf->pmd))) {
++			mm_inc_nr_ptes(mm);
++			pmd_populate(mm, vmf->pmd, vmf->prealloc_pte);
++			vmf->prealloc_pte = NULL;
++		}
++		spin_unlock(vmf->ptl);
++	}
++
++	/* See comment in handle_pte_fault() */
++	if (pmd_devmap_trans_unstable(vmf->pmd)) {
++		unlock_page(page);
++		put_page(page);
++		return true;
++	}
++
++	return false;
++}
++
++static struct page *next_uptodate_page(struct page *page,
++				       struct address_space *mapping,
++				       struct xa_state *xas, pgoff_t end_pgoff)
++{
++	unsigned long max_idx;
++
++	do {
++		if (!page)
++			return NULL;
++		if (xas_retry(xas, page))
++			continue;
++		if (xa_is_value(page))
++			continue;
++		if (PageLocked(page))
++			continue;
++		if (!page_cache_get_speculative(page))
++			continue;
++		/* Has the page moved or been split? */
++		if (unlikely(page != xas_reload(xas)))
++			goto skip;
++		if (!PageUptodate(page) || PageReadahead(page))
++			goto skip;
++		if (PageHWPoison(page))
++			goto skip;
++		if (!trylock_page(page))
++			goto skip;
++		if (page->mapping != mapping)
++			goto unlock;
++		if (!PageUptodate(page))
++			goto unlock;
++		max_idx = DIV_ROUND_UP(i_size_read(mapping->host), PAGE_SIZE);
++		if (xas->xa_index >= max_idx)
++			goto unlock;
++		return page;
++unlock:
++		unlock_page(page);
++skip:
++		put_page(page);
++	} while ((page = xas_next_entry(xas, end_pgoff)) != NULL);
++
++	return NULL;
++}
++
++static inline struct page *first_map_page(struct address_space *mapping,
++					  struct xa_state *xas,
++					  pgoff_t end_pgoff)
++{
++	return next_uptodate_page(xas_find(xas, end_pgoff),
++				  mapping, xas, end_pgoff);
++}
++
++static inline struct page *next_map_page(struct address_space *mapping,
++					 struct xa_state *xas,
++					 pgoff_t end_pgoff)
++{
++	return next_uptodate_page(xas_next_entry(xas, end_pgoff),
++				  mapping, xas, end_pgoff);
++}
++
++vm_fault_t filemap_map_pages(struct vm_fault *vmf,
++			     pgoff_t start_pgoff, pgoff_t end_pgoff)
++{
++	struct vm_area_struct *vma = vmf->vma;
++	struct file *file = vma->vm_file;
+ 	struct address_space *mapping = file->f_mapping;
+ 	pgoff_t last_pgoff = start_pgoff;
+-	unsigned long max_idx;
++	unsigned long address = vmf->address;
+ 	XA_STATE(xas, &mapping->i_pages, start_pgoff);
+ 	struct page *head, *page;
+ 	unsigned int mmap_miss = READ_ONCE(file->f_ra.mmap_miss);
++	vm_fault_t ret = 0;
+ 
+ 	rcu_read_lock();
+-	xas_for_each(&xas, head, end_pgoff) {
+-		if (xas_retry(&xas, head))
+-			continue;
+-		if (xa_is_value(head))
+-			goto next;
++	head = first_map_page(mapping, &xas, end_pgoff);
++	if (!head)
++		goto out;
+ 
+-		/*
+-		 * Check for a locked page first, as a speculative
+-		 * reference may adversely influence page migration.
+-		 */
+-		if (PageLocked(head))
+-			goto next;
+-		if (!page_cache_get_speculative(head))
+-			goto next;
++	if (filemap_map_pmd(vmf, head)) {
++		ret = VM_FAULT_NOPAGE;
++		goto out;
++	}
+ 
+-		/* Has the page moved or been split? */
+-		if (unlikely(head != xas_reload(&xas)))
+-			goto skip;
++	vmf->address = vma->vm_start + ((start_pgoff - vma->vm_pgoff) << PAGE_SHIFT);
++	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address, &vmf->ptl);
++	do {
+ 		page = find_subpage(head, xas.xa_index);
+-
+-		if (!PageUptodate(head) ||
+-				PageReadahead(page) ||
+-				PageHWPoison(page))
+-			goto skip;
+-		if (!trylock_page(head))
+-			goto skip;
+-
+-		if (head->mapping != mapping || !PageUptodate(head))
+-			goto unlock;
+-
+-		max_idx = DIV_ROUND_UP(i_size_read(mapping->host), PAGE_SIZE);
+-		if (xas.xa_index >= max_idx)
++		if (PageHWPoison(page))
+ 			goto unlock;
+ 
+ 		if (mmap_miss > 0)
+ 			mmap_miss--;
+ 
+ 		vmf->address += (xas.xa_index - last_pgoff) << PAGE_SHIFT;
+-		if (vmf->pte)
+-			vmf->pte += xas.xa_index - last_pgoff;
++		vmf->pte += xas.xa_index - last_pgoff;
+ 		last_pgoff = xas.xa_index;
+-		if (alloc_set_pte(vmf, page))
++
++		if (!pte_none(*vmf->pte))
+ 			goto unlock;
++
++		do_set_pte(vmf, page);
++		/* no need to invalidate: a not-present page won't be cached */
++		update_mmu_cache(vma, vmf->address, vmf->pte);
+ 		unlock_page(head);
+-		goto next;
++
++		/* The fault is handled */
++		if (vmf->address == address)
++			ret = VM_FAULT_NOPAGE;
++		continue;
+ unlock:
+ 		unlock_page(head);
+-skip:
+ 		put_page(head);
+-next:
+-		/* Huge page is mapped? No need to proceed. */
+-		if (pmd_trans_huge(*vmf->pmd))
+-			break;
+-	}
++	} while ((head = next_map_page(mapping, &xas, end_pgoff)) != NULL);
++	pte_unmap_unlock(vmf->pte, vmf->ptl);
++out:
+ 	rcu_read_unlock();
++	vmf->address = address;
+ 	WRITE_ONCE(file->f_ra.mmap_miss, mmap_miss);
++	return ret;
+ }
+ EXPORT_SYMBOL(filemap_map_pages);
+ 
+diff --git a/mm/memory.c b/mm/memory.c
+index feff48e1465a..3e2fc2950ad7 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3503,7 +3503,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+ 	if (pte_alloc(vma->vm_mm, vmf->pmd))
+ 		return VM_FAULT_OOM;
+ 
+-	/* See the comment in pte_alloc_one_map() */
++	/* See comment in handle_pte_fault() */
+ 	if (unlikely(pmd_trans_unstable(vmf->pmd)))
+ 		return 0;
+ 
+@@ -3643,66 +3643,6 @@ static vm_fault_t __do_fault(struct vm_fault *vmf)
+ 	return ret;
+ }
+ 
+-/*
+- * The ordering of these checks is important for pmds with _PAGE_DEVMAP set.
+- * If we check pmd_trans_unstable() first we will trip the bad_pmd() check
+- * inside of pmd_none_or_trans_huge_or_clear_bad(). This will end up correctly
+- * returning 1 but not before it spams dmesg with the pmd_clear_bad() output.
+- */
+-static int pmd_devmap_trans_unstable(pmd_t *pmd)
+-{
+-	return pmd_devmap(*pmd) || pmd_trans_unstable(pmd);
+-}
+-
+-static vm_fault_t pte_alloc_one_map(struct vm_fault *vmf)
+-{
+-	struct vm_area_struct *vma = vmf->vma;
+-
+-	if (!pmd_none(*vmf->pmd))
+-		goto map_pte;
+-	if (vmf->prealloc_pte) {
+-		vmf->ptl = pmd_lock(vma->vm_mm, vmf->pmd);
+-		if (unlikely(!pmd_none(*vmf->pmd))) {
+-			spin_unlock(vmf->ptl);
+-			goto map_pte;
+-		}
+-
+-		mm_inc_nr_ptes(vma->vm_mm);
+-		pmd_populate(vma->vm_mm, vmf->pmd, vmf->prealloc_pte);
+-		spin_unlock(vmf->ptl);
+-		vmf->prealloc_pte = NULL;
+-	} else if (unlikely(pte_alloc(vma->vm_mm, vmf->pmd))) {
+-		return VM_FAULT_OOM;
+-	}
+-map_pte:
+-	/*
+-	 * If a huge pmd materialized under us just retry later.  Use
+-	 * pmd_trans_unstable() via pmd_devmap_trans_unstable() instead of
+-	 * pmd_trans_huge() to ensure the pmd didn't become pmd_trans_huge
+-	 * under us and then back to pmd_none, as a result of MADV_DONTNEED
+-	 * running immediately after a huge pmd fault in a different thread of
+-	 * this mm, in turn leading to a misleading pmd_trans_huge() retval.
+-	 * All we have to ensure is that it is a regular pmd that we can walk
+-	 * with pte_offset_map() and we can do that through an atomic read in
+-	 * C, which is what pmd_trans_unstable() provides.
+-	 */
+-	if (pmd_devmap_trans_unstable(vmf->pmd))
+-		return VM_FAULT_NOPAGE;
+-
+-	/*
+-	 * At this point we know that our vmf->pmd points to a page of ptes
+-	 * and it cannot become pmd_none(), pmd_devmap() or pmd_trans_huge()
+-	 * for the duration of the fault.  If a racing MADV_DONTNEED runs and
+-	 * we zap the ptes pointed to by our vmf->pmd, the vmf->ptl will still
+-	 * be valid and we will re-check to make sure the vmf->pte isn't
+-	 * pte_none() under vmf->ptl protection when we return to
+-	 * alloc_set_pte().
+-	 */
+-	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
+-			&vmf->ptl);
+-	return 0;
+-}
+-
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ static void deposit_prealloc_pte(struct vm_fault *vmf)
+ {
+@@ -3717,7 +3657,7 @@ static void deposit_prealloc_pte(struct vm_fault *vmf)
+ 	vmf->prealloc_pte = NULL;
+ }
+ 
+-static vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
++vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
+ {
+ 	struct vm_area_struct *vma = vmf->vma;
+ 	bool write = vmf->flags & FAULT_FLAG_WRITE;
+@@ -3775,52 +3715,17 @@ static vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
+ 	return ret;
+ }
+ #else
+-static vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
++vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
+ {
+-	BUILD_BUG();
+-	return 0;
++	return VM_FAULT_FALLBACK;
+ }
+ #endif
+ 
+-/**
+- * alloc_set_pte - setup new PTE entry for given page and add reverse page
+- * mapping. If needed, the function allocates page table or use pre-allocated.
+- *
+- * @vmf: fault environment
+- * @page: page to map
+- *
+- * Caller must take care of unlocking vmf->ptl, if vmf->pte is non-NULL on
+- * return.
+- *
+- * Target users are page handler itself and implementations of
+- * vm_ops->map_pages.
+- *
+- * Return: %0 on success, %VM_FAULT_ code in case of error.
+- */
+-vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct page *page)
++void do_set_pte(struct vm_fault *vmf, struct page *page)
+ {
+ 	struct vm_area_struct *vma = vmf->vma;
+ 	bool write = vmf->flags & FAULT_FLAG_WRITE;
+ 	pte_t entry;
+-	vm_fault_t ret;
+-
+-	if (pmd_none(*vmf->pmd) && PageTransCompound(page)) {
+-		ret = do_set_pmd(vmf, page);
+-		if (ret != VM_FAULT_FALLBACK)
+-			return ret;
+-	}
+-
+-	if (!vmf->pte) {
+-		ret = pte_alloc_one_map(vmf);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	/* Re-check under ptl */
+-	if (unlikely(!pte_none(*vmf->pte))) {
+-		update_mmu_tlb(vma, vmf->address, vmf->pte);
+-		return VM_FAULT_NOPAGE;
+-	}
+ 
+ 	flush_icache_page(vma, page);
+ 	entry = mk_pte(page, vma->vm_page_prot);
+@@ -3837,14 +3742,8 @@ vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct page *page)
+ 		page_add_file_rmap(page, false);
+ 	}
+ 	set_pte_at(vma->vm_mm, vmf->address, vmf->pte, entry);
+-
+-	/* no need to invalidate: a not-present page won't be cached */
+-	update_mmu_cache(vma, vmf->address, vmf->pte);
+-
+-	return 0;
+ }
+ 
+-
+ /**
+  * finish_fault - finish page fault once we have prepared the page to fault
+  *
+@@ -3862,12 +3761,12 @@ vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct page *page)
+  */
+ vm_fault_t finish_fault(struct vm_fault *vmf)
+ {
++	struct vm_area_struct *vma = vmf->vma;
+ 	struct page *page;
+-	vm_fault_t ret = 0;
++	vm_fault_t ret;
+ 
+ 	/* Did we COW the page? */
+-	if ((vmf->flags & FAULT_FLAG_WRITE) &&
+-	    !(vmf->vma->vm_flags & VM_SHARED))
++	if ((vmf->flags & FAULT_FLAG_WRITE) && !(vma->vm_flags & VM_SHARED))
+ 		page = vmf->cow_page;
+ 	else
+ 		page = vmf->page;
+@@ -3876,12 +3775,38 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+ 	 * check even for read faults because we might have lost our CoWed
+ 	 * page
+ 	 */
+-	if (!(vmf->vma->vm_flags & VM_SHARED))
+-		ret = check_stable_address_space(vmf->vma->vm_mm);
+-	if (!ret)
+-		ret = alloc_set_pte(vmf, page);
+-	if (vmf->pte)
+-		pte_unmap_unlock(vmf->pte, vmf->ptl);
++	if (!(vma->vm_flags & VM_SHARED)) {
++		ret = check_stable_address_space(vma->vm_mm);
++		if (ret)
++			return ret;
++	}
++
++	if (pmd_none(*vmf->pmd)) {
++		if (PageTransCompound(page)) {
++			ret = do_set_pmd(vmf, page);
++			if (ret != VM_FAULT_FALLBACK)
++				return ret;
++		}
++
++		if (unlikely(pte_alloc(vma->vm_mm, vmf->pmd)))
++			return VM_FAULT_OOM;
++	}
++
++	/* See comment in handle_pte_fault() */
++	if (pmd_devmap_trans_unstable(vmf->pmd))
++		return 0;
++
++	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd,
++				      vmf->address, &vmf->ptl);
++	ret = 0;
++	/* Re-check under ptl */
++	if (likely(pte_none(*vmf->pte)))
++		do_set_pte(vmf, page);
++	else
++		ret = VM_FAULT_NOPAGE;
++
++	update_mmu_tlb(vma, vmf->address, vmf->pte);
++	pte_unmap_unlock(vmf->pte, vmf->ptl);
+ 	return ret;
+ }
+ 
+@@ -3951,13 +3876,12 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
+ 	pgoff_t start_pgoff = vmf->pgoff;
+ 	pgoff_t end_pgoff;
+ 	int off;
+-	vm_fault_t ret = 0;
+ 
+ 	nr_pages = READ_ONCE(fault_around_bytes) >> PAGE_SHIFT;
+ 	mask = ~(nr_pages * PAGE_SIZE - 1) & PAGE_MASK;
+ 
+-	vmf->address = max(address & mask, vmf->vma->vm_start);
+-	off = ((address - vmf->address) >> PAGE_SHIFT) & (PTRS_PER_PTE - 1);
++	address = max(address & mask, vmf->vma->vm_start);
++	off = ((vmf->address - address) >> PAGE_SHIFT) & (PTRS_PER_PTE - 1);
+ 	start_pgoff -= off;
+ 
+ 	/*
+@@ -3965,7 +3889,7 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
+ 	 *  the vma or nr_pages from start_pgoff, depending what is nearest.
+ 	 */
+ 	end_pgoff = start_pgoff -
+-		((vmf->address >> PAGE_SHIFT) & (PTRS_PER_PTE - 1)) +
++		((address >> PAGE_SHIFT) & (PTRS_PER_PTE - 1)) +
+ 		PTRS_PER_PTE - 1;
+ 	end_pgoff = min3(end_pgoff, vma_pages(vmf->vma) + vmf->vma->vm_pgoff - 1,
+ 			start_pgoff + nr_pages - 1);
+@@ -3973,31 +3897,11 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
+ 	if (pmd_none(*vmf->pmd)) {
+ 		vmf->prealloc_pte = pte_alloc_one(vmf->vma->vm_mm);
+ 		if (!vmf->prealloc_pte)
+-			goto out;
++			return VM_FAULT_OOM;
+ 		smp_wmb(); /* See comment in __pte_alloc() */
+ 	}
+ 
+-	vmf->vma->vm_ops->map_pages(vmf, start_pgoff, end_pgoff);
+-
+-	/* Huge page is mapped? Page fault is solved */
+-	if (pmd_trans_huge(*vmf->pmd)) {
+-		ret = VM_FAULT_NOPAGE;
+-		goto out;
+-	}
+-
+-	/* ->map_pages() haven't done anything useful. Cold page cache? */
+-	if (!vmf->pte)
+-		goto out;
+-
+-	/* check if the page fault is solved */
+-	vmf->pte -= (vmf->address >> PAGE_SHIFT) - (address >> PAGE_SHIFT);
+-	if (!pte_none(*vmf->pte))
+-		ret = VM_FAULT_NOPAGE;
+-	pte_unmap_unlock(vmf->pte, vmf->ptl);
+-out:
+-	vmf->address = address;
+-	vmf->pte = NULL;
+-	return ret;
++	return vmf->vma->vm_ops->map_pages(vmf, start_pgoff, end_pgoff);
+ }
+ 
+ static vm_fault_t do_read_fault(struct vm_fault *vmf)
+@@ -4353,7 +4257,18 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+ 		 */
+ 		vmf->pte = NULL;
+ 	} else {
+-		/* See comment in pte_alloc_one_map() */
++		/*
++		 * If a huge pmd materialized under us just retry later.  Use
++		 * pmd_trans_unstable() via pmd_devmap_trans_unstable() instead
++		 * of pmd_trans_huge() to ensure the pmd didn't become
++		 * pmd_trans_huge under us and then back to pmd_none, as a
++		 * result of MADV_DONTNEED running immediately after a huge pmd
++		 * fault in a different thread of this mm, in turn leading to a
++		 * misleading pmd_trans_huge() retval. All we have to ensure is
++		 * that it is a regular pmd that we can walk with
++		 * pte_offset_map() and we can do that through an atomic read
++		 * in C, which is what pmd_trans_unstable() provides.
++		 */
+ 		if (pmd_devmap_trans_unstable(vmf->pmd))
+ 			return 0;
+ 		/*
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
