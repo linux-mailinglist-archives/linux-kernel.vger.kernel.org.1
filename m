@@ -2,157 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810B32F6660
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 640162F6662
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 17:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727697AbhANQus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 11:50:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38958 "EHLO
+        id S1727729AbhANQvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 11:51:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727214AbhANQuq (ORCPT
+        with ESMTP id S1725935AbhANQvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:50:46 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57007C061574;
-        Thu, 14 Jan 2021 08:50:06 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id hs11so6827322ejc.1;
-        Thu, 14 Jan 2021 08:50:06 -0800 (PST)
+        Thu, 14 Jan 2021 11:51:13 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3202FC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:50:33 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id d8so5766228otq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 08:50:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tlbKPE7uTZZR7ghtrcJbjkI4MtAdaHYk7YXhrBrERiw=;
-        b=LFAVkpoOP4ym75SjjeKlxMP30bXZQd/la1MU80s7ATLCMNl0imGhVeCf7r3Ez0HBDp
-         RHzpPCwZaYHxxvtA2Y1icrrWVut3k36nkOU6YQYAT+NR3ok2ZmwZQRwwT2H5iB++Qfqc
-         ceky3/JElTRWxv7RMlsUtfT5/PRZEJgE0x/gOsfzpbagjgfs2KjhvrMebcHHrL2T3TFe
-         GZwgvq8qokbl3DJrvZHJB4lfJhHQwylxtpkDCKZP/vzPwFCFAaNwTJewdztJs8EgP1Go
-         eyvLhVg89sfGJ+TWStdce2c4WMyiJ7VwIPM3um7WILmyZD9s2uPxcfs23cnjUYMn2QET
-         FDfw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=L+TgfptYtNVwPcoqIzpc+5x5pT5jGcrCtNNE8GbycVQ=;
+        b=OU+ltv1/I1mq2l+2K0dxg49+eeRyGQPUoZIqH6PnpCygeJzSwYom/ikzMn/exSo+kG
+         XGryLRYg/tmP2bElPqcqydE71+8acjxa8ClBmwzdjoTlltEbALf6+nILf6YUYQfBiHOu
+         ewTMAhgmHUA9jAMuDXKdUWR2eh1u4g4vIa0+bnJlkhGfqEFQDba0JDXa8cnR4qumPQEU
+         kzhG9d0F2tDVUdlfwMkqFFy+l/+xKw46w9D5Yqwtxdi5Epq42DOuv4HUIvrVq3VrOwgN
+         k+RVxTcfgQrWqltPgBFuwsgm0B5dZtnRq+AB6iShCbYnYCUB9aNFaB/0FGLoXdNk3EOL
+         pV9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tlbKPE7uTZZR7ghtrcJbjkI4MtAdaHYk7YXhrBrERiw=;
-        b=MFinXC89tsjNv4shlLp7yiDi5zaUbdR3y6lfSu4tPYTcB5K0RIUlTEsErZcFzp5vSm
-         6pLoTS7vUAIBFJF0YEmfSPwPRfExvsJWFnDfb2FES0Mjjy8rN1hEyC11yiinNqkIInkP
-         TIZnjCjnIDn5mZ32i1K8IfB2I+rtgAGb727b+PYmX/4yoapt5leFDaLF8xBNXuq3gmsn
-         RW9e7fsOp+w38/UpgmGwPX4PASWK/NFJ4Jy+EyUqmqYVljNUYUhVmAwjYxisWK6iBPSp
-         4pI/0SVv4XlVYX70tWka1JazQtGm268Ri/zFxcDt7rrkoOTPYnpqV2KuK2bLVH5re6dX
-         jCqg==
-X-Gm-Message-State: AOAM531BPW2xqlJd/KcmOh/LWP49PryadcQgGH0NBkQm1wmk5ApDx3f2
-        8gixerYAfkOuPUy3oBH0wJc=
-X-Google-Smtp-Source: ABdhPJznUfoVSAxoHGale9B+KIbksfqRnSUgxQr4Tq75l4SnGXbgepoKsdJ4RyW5ZAWJ7H77RCFaKQ==
-X-Received: by 2002:a17:906:2695:: with SMTP id t21mr6155193ejc.287.1610643005032;
-        Thu, 14 Jan 2021 08:50:05 -0800 (PST)
-Received: from [192.168.178.40] (ipbcc05d1b.dynamic.kabel-deutschland.de. [188.192.93.27])
-        by smtp.gmail.com with ESMTPSA id bo20sm2435232edb.1.2021.01.14.08.50.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jan 2021 08:50:04 -0800 (PST)
-Subject: Re: [PATCH] scsi: target: tcmu: Fix wrong uio handling causing big
- memory leak
-To:     Mike Christie <michael.christie@oracle.com>,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20201218141534.9918-1-bostroesser@gmail.com>
- <73dc2d01-6398-c1d1-df47-66034d184eec@oracle.com>
- <aa95b4db-ca88-e38c-3871-fb935f1e2212@gmail.com>
- <3caa89ba-47b8-d85c-e7a5-54d84d1471f0@oracle.com>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <f2bf0c02-0d44-4b75-7c36-5d5fb213d747@gmail.com>
-Date:   Thu, 14 Jan 2021 17:50:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=L+TgfptYtNVwPcoqIzpc+5x5pT5jGcrCtNNE8GbycVQ=;
+        b=LaWSKB6sFi37H+nbXxh5vRujfJwsY//kRfezqArjFVg2Z61aef3+XFnEMHCeG8QN4t
+         2Wj/9TAc+qWYzQ0IgKf40EbS8NkRZmxkTRX8MkFj8gcBC8zakhs0dQlfI79Nl6JhRb/7
+         WDURNZh0jqWSHvXM7UeOnB7pn7kpZ4E9T3+GoJbxpxjXBjDpQb+SIPicfTeCONOgT8Sl
+         luxeVh2+CF0b1oKP/Bu3mJQ3P5zmWvT3IhSXcIGn7ZC431HhlYF0nP8KjexntH1V5HOX
+         ackilZxyDIzMLIJ3VdbywuWLvEdZax2OmQP5kLUPcAXuYd7Fn5JFn+GhDYTaQa48+Vdc
+         /5fA==
+X-Gm-Message-State: AOAM531UypoKISnftSXOiA5jrpEbzOCEqNabULMUGoGaBCTiSpksE7zl
+        jOccLPMyPf/dZ6OUdhBjS29OovWT+SIc01AyueI=
+X-Google-Smtp-Source: ABdhPJyDq5ns73KgHKa6b8H0X02mufxys2TirNlA/0Nqjtj6UrkIsOVk0kiLYwtG+xP1vqvJELUEAj5pmPN1zv3Moeg=
+X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr5391755ote.132.1610643032581;
+ Thu, 14 Jan 2021 08:50:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <3caa89ba-47b8-d85c-e7a5-54d84d1471f0@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-22-lee.jones@linaro.org>
+In-Reply-To: <20210108201457.3078600-22-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 14 Jan 2021 11:50:21 -0500
+Message-ID: <CADnq5_MK8VqPiRzLFAn4a7U_-Ptq12bR6KYHdq4D0yzNjWPpQg@mail.gmail.com>
+Subject: Re: [PATCH 21/40] drm/amd/display/dc/calcs/dce_calcs: Remove unused
+ variables 'v_filter_init_mode' and 'sclk_lvl'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.01.21 22:04, Mike Christie wrote:
-> On 1/13/21 11:59 AM, Bodo Stroesser wrote:
->> On 12.01.21 19:36, Mike Christie wrote:
->>> On 12/18/20 8:15 AM, Bodo Stroesser wrote:
->>>> tcmu calls uio_unregister_device from tcmu_destroy_device.
->>>> After that uio will never call tcmu_release for this device.
->>>> If userspace still had the uio device open and / or mmap'ed
->>>> during uio_unregister_device, tcmu_release will not be called and
->>>> udev->kref will never go down to 0.
->>>>
->>>
->>> I didn't get why the release function is not called if you call
->>> uio_unregister_device while a device is open. Does the device_destroy call in
->>> uio_unregister_device completely free the device or does it set some bits so
->>> uio_release is not called later?
->>
->> uio_unregister_device() resets the pointer (idev->info) to the struct uio_info which tcmu provided in uio_register_device().
->> The uio device itself AFAICS is kept while it is open / mmap'ed.
->> But no matter what userspace does, uio will not call tcmu's callbacks
->> since info pointer now is NULL.
->>
->> When userspace finally closes the uio device, uio_release is called, but
->> tcmu_release can not be called.
->>
->>>
->>> Do other drivers hit this? Should uio have refcounting so uio_release is called
->>> when the last ref (from userspace open/close/mmap calls and from the kernel by
->>> drivers like target_core_user) is done?
->>>
->>
->> To be honest I don't know exactly.
->> tcmu seems to be a special case in that is has it's own mmap callback.
->> That allows us to map pages allocated by tcmu.
->> As long as userspace still holds the mapping, we should not unmap those
->> pages, because userspace then could get killed by SIGSEGV.
->> So we have to wait for userspace closing uio before we may unmap and
->> free the pages.
-> 
-> 
-> If we removed the clearing of idev->info in uio_unregister_device, and
-> then moved the idev->info->release call from uio_release to
-> uio_device_release it would work like you need right? The release callback
-> would always be called and called when userspace has dropped it's refs.
-> You need to also fix up the module refcount and some other bits because
-> it looks like uio uses the uio->info check to determine if the device is
-> being removed.
+Applied.  Thanks!
 
-I fear that would not work, because uio_release must be called always,
-no matter whether userspace closes the device before or after
-uio_unregister_device.
+Alex
 
-But we could add a new callback pointer 'late_release' to struct
-uio_info and struct uio_device. During uio_register_device we would
-copy the pointer from info to idev.
-
-If info == NULL, uio_release calls idev->late_release if != NULL.
-
-tcmu would of course set info->release and ->late_release both to
-tcmu_release.
-
-> 
-> I don't know if that is the correct approach. It looks like non
-> target_core_user drivers could hit a similar issue. It seems like drivers
-> like qedi/bnx2i could hit the issue if their port is removed from the
-> kernel before their uio daemon closes the device. However, they also
-> could do a driver specific fix and handle the issue by adding some extra
-> kernel/userspace bits to sync the port removal.
-> 
-
-I had a closer look into qedi. I assume there might be a leak also,
-because qedi_uio_close calls "qedi_ll2_free_skbs(qedi)".
-
-Unfortunately my above proposal would not work here without adding a
-new refcount to qedi_uio_dev, because currently in __qedi_free_uio
-the udev is freed shortly after uio_unregister_device. So later calls
-of qedi_uio_close(udev) would be harmful.
-
-But I guess the leak can be fixed by adding two lines after the
-uio_unregister_device() in __qedi_free_uio:
-
-	if (test_bit(UIO_DEV_OPENED, &udev->qedi->flags)
-		qedi_ll2_free_skbs(qedi);
+On Fri, Jan 8, 2021 at 3:15 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c: In function =
+=E2=80=98calculate_bandwidth=E2=80=99:
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:109:18: warni=
+ng: variable =E2=80=98v_filter_init_mode=E2=80=99 set but not used [-Wunuse=
+d-but-set-variable]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c: In function =
+=E2=80=98bw_calcs=E2=80=99:
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:3031:21: warn=
+ing: variable =E2=80=98sclk_lvl=E2=80=99 set but not used [-Wunused-but-set=
+-variable]
+>
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c b/drivers/g=
+pu/drm/amd/display/dc/calcs/dce_calcs.c
+> index ef41b287cbe23..158d927c03e55 100644
+> --- a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
+> +++ b/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
+> @@ -106,7 +106,6 @@ static void calculate_bandwidth(
+>         bool lpt_enabled;
+>         enum bw_defines sclk_message;
+>         enum bw_defines yclk_message;
+> -       enum bw_defines v_filter_init_mode[maximum_number_of_surfaces];
+>         enum bw_defines tiling_mode[maximum_number_of_surfaces];
+>         enum bw_defines surface_type[maximum_number_of_surfaces];
+>         enum bw_defines voltage;
+> @@ -792,12 +791,8 @@ static void calculate_bandwidth(
+>                                 data->v_filter_init[i] =3D bw_add(data->v=
+_filter_init[i], bw_int_to_fixed(1));
+>                         }
+>                         if (data->stereo_mode[i] =3D=3D bw_def_top_bottom=
+) {
+> -                               v_filter_init_mode[i] =3D bw_def_manual;
+>                                 data->v_filter_init[i] =3D bw_min2(data->=
+v_filter_init[i], bw_int_to_fixed(4));
+>                         }
+> -                       else {
+> -                               v_filter_init_mode[i] =3D bw_def_auto;
+> -                       }
+>                         if (data->stereo_mode[i] =3D=3D bw_def_top_bottom=
+) {
+>                                 data->num_lines_at_frame_start =3D bw_int=
+_to_fixed(1);
+>                         }
+> @@ -3028,7 +3023,7 @@ bool bw_calcs(struct dc_context *ctx,
+>                 calcs_output->all_displays_in_sync =3D false;
+>
+>         if (data->number_of_displays !=3D 0) {
+> -               uint8_t yclk_lvl, sclk_lvl;
+> +               uint8_t yclk_lvl;
+>                 struct bw_fixed high_sclk =3D vbios->high_sclk;
+>                 struct bw_fixed mid1_sclk =3D vbios->mid1_sclk;
+>                 struct bw_fixed mid2_sclk =3D vbios->mid2_sclk;
+> @@ -3049,7 +3044,6 @@ bool bw_calcs(struct dc_context *ctx,
+>                 calculate_bandwidth(dceip, vbios, data);
+>
+>                 yclk_lvl =3D data->y_clk_level;
+> -               sclk_lvl =3D data->sclk_level;
+>
+>                 calcs_output->nbp_state_change_enable =3D
+>                         data->nbp_state_change_enable;
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
