@@ -2,134 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39862F5661
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F232F565E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbhANBqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:46:55 -0500
-Received: from mga11.intel.com ([192.55.52.93]:41975 "EHLO mga11.intel.com"
+        id S1728216AbhANBqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:46:38 -0500
+Received: from foss.arm.com ([217.140.110.172]:42570 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726784AbhANA42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 19:56:28 -0500
-IronPort-SDR: Ext10eaOhXfYbKHZaX12nKe7uXebQOdi+BN/usTqrCtbb81a+hPe+2VOTAgJDJoJbGJSoOYK6U
- 0cxVn5VH+85w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="174781378"
-X-IronPort-AV: E=Sophos;i="5.79,345,1602572400"; 
-   d="scan'208";a="174781378"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 16:43:38 -0800
-IronPort-SDR: 5HKoXBKoyGb3n9NZ5CSoSgpslTMJGeu3Q/HP1qdDNEM0W8PUXDj/VZ5I9mv6uURdMVoGUcknp1
- WxWFxf/T5a8g==
-X-IronPort-AV: E=Sophos;i="5.79,345,1602572400"; 
-   d="scan'208";a="568019431"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 16:43:38 -0800
-Subject: [PATCH v4 5/5] mm: Fix memory_failure() handling of dax-namespace
- metadata
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     akpm@linux-foundation.org
-Cc:     Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Date:   Wed, 13 Jan 2021 16:43:37 -0800
-Message-ID: <161058501758.1840162.4239831989762604527.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <161058499000.1840162.702316708443239771.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <161058499000.1840162.702316708443239771.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1727012AbhANA55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 19:57:57 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1DB191FB;
+        Wed, 13 Jan 2021 16:45:58 -0800 (PST)
+Received: from slackpad.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A3073F719;
+        Wed, 13 Jan 2021 16:45:55 -0800 (PST)
+Date:   Thu, 14 Jan 2021 00:45:12 +0000
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Icenowy Zheng <icenowy@aosc.xyz>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v2 02/21] dt-bindings: pinctrl: Add Allwinner H616
+ compatible strings
+Message-ID: <20210114004512.6cc7bd10@slackpad.fritz.box>
+In-Reply-To: <20201214093728.ehd2362jzclbxwp5@gilmour>
+References: <20201211011934.6171-1-andre.przywara@arm.com>
+        <20201211011934.6171-3-andre.przywara@arm.com>
+        <20201214093728.ehd2362jzclbxwp5@gilmour>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Given 'struct dev_pagemap' spans both data pages and metadata pages be
-careful to consult the altmap if present to delineate metadata. In fact
-the pfn_first() helper already identifies the first valid data pfn, so
-export that helper for other code paths via pgmap_pfn_valid().
+On Mon, 14 Dec 2020 10:37:28 +0100
+Maxime Ripard <maxime@cerno.tech> wrote:
 
-Other usage of get_dev_pagemap() are not a concern because those are
-operating on known data pfns having been looked up by get_user_pages().
-I.e. metadata pfns are never user mapped.
+> On Fri, Dec 11, 2020 at 01:19:15AM +0000, Andre Przywara wrote:
+> > A new SoC, a new compatible string.
+> > Also we were too miserly with just allowing seven interrupt banks.
+> > 
+> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> > ---
+> >  .../pinctrl/allwinner,sun4i-a10-pinctrl.yaml   | 18
+> > ++++++++++++++++-- 1 file changed, 16 insertions(+), 2 deletions(-)
+> > 
+> > diff --git
+> > a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
+> > b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
+> > index 5240487dfe50..292b05d9ed08 100644 ---
+> > a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
+> > +++
+> > b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
+> > @@ -53,6 +53,8 @@ properties:
+> >        - allwinner,sun50i-h5-pinctrl
+> >        - allwinner,sun50i-h6-pinctrl
+> >        - allwinner,sun50i-h6-r-pinctrl
+> > +      - allwinner,sun50i-h616-pinctrl
+> > +      - allwinner,sun50i-h616-r-pinctrl
+> >        - allwinner,suniv-f1c100s-pinctrl
+> >        - nextthing,gr8-pinctrl
+> >  
+> > @@ -61,7 +63,7 @@ properties:
+> >  
+> >    interrupts:
+> >      minItems: 1
+> > -    maxItems: 7
+> > +    maxItems: 8
+> >      description:
+> >        One interrupt per external interrupt bank supported on the
+> >        controller, sorted by bank number ascending order.
+> > @@ -91,7 +93,7 @@ properties:
+> >        bank found in the controller
+> >      $ref: /schemas/types.yaml#/definitions/uint32-array
+> >      minItems: 1
+> > -    maxItems: 5
+> > +    maxItems: 8
+> >  
+> >  patternProperties:
+> >    # It's pretty scary, but the basic idea is that:
+> > @@ -145,6 +147,18 @@ allOf:
+> >    # boards are defining it at the moment so it would generate a
+> > lot of # warnings.
+> >  
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          enum:
+> > +            - allwinner,sun50i-h616-pinctrl
+> > +
+> > +    then:
+> > +      properties:
+> > +        interrupts:
+> > +          minItems: 8
+> > +          maxItems: 8
+> > +  
+> 
+> You don't need to have both if they are equals, and in this particular
 
-Fixes: 6100e34b2526 ("mm, memory_failure: Teach memory_failure() about dev_pagemap pages")
-Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Reported-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- include/linux/memremap.h |    6 ++++++
- mm/memory-failure.c      |    6 ++++++
- mm/memremap.c            |   15 +++++++++++++++
- 3 files changed, 27 insertions(+)
+Mmh, but all the other compatibles have both equal, so what would be
+the recommended way to describe this? Just minItems? I don't find a
+good explanation at the moment how to handle an explicit number, other
+than by enumerating the items explicitly.
 
-diff --git a/include/linux/memremap.h b/include/linux/memremap.h
-index 79c49e7f5c30..f5b464daeeca 100644
---- a/include/linux/memremap.h
-+++ b/include/linux/memremap.h
-@@ -137,6 +137,7 @@ void *devm_memremap_pages(struct device *dev, struct dev_pagemap *pgmap);
- void devm_memunmap_pages(struct device *dev, struct dev_pagemap *pgmap);
- struct dev_pagemap *get_dev_pagemap(unsigned long pfn,
- 		struct dev_pagemap *pgmap);
-+bool pgmap_pfn_valid(struct dev_pagemap *pgmap, unsigned long pfn);
- 
- unsigned long vmem_altmap_offset(struct vmem_altmap *altmap);
- void vmem_altmap_free(struct vmem_altmap *altmap, unsigned long nr_pfns);
-@@ -165,6 +166,11 @@ static inline struct dev_pagemap *get_dev_pagemap(unsigned long pfn,
- 	return NULL;
- }
- 
-+static inline bool pgmap_pfn_valid(struct dev_pagemap *pgmap, unsigned long pfn)
-+{
-+	return false;
-+}
-+
- static inline unsigned long vmem_altmap_offset(struct vmem_altmap *altmap)
- {
- 	return 0;
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 78b173c7190c..541569cb4a99 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1308,6 +1308,12 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
- 		 */
- 		put_page(page);
- 
-+	/* device metadata space is not recoverable */
-+	if (!pgmap_pfn_valid(pgmap, pfn)) {
-+		rc = -ENXIO;
-+		goto out;
-+	}
-+
- 	/*
- 	 * Prevent the inode from being freed while we are interrogating
- 	 * the address_space, typically this would be handled by
-diff --git a/mm/memremap.c b/mm/memremap.c
-index 16b2fb482da1..2455bac89506 100644
---- a/mm/memremap.c
-+++ b/mm/memremap.c
-@@ -80,6 +80,21 @@ static unsigned long pfn_first(struct dev_pagemap *pgmap, int range_id)
- 	return pfn + vmem_altmap_offset(pgmap_altmap(pgmap));
- }
- 
-+bool pgmap_pfn_valid(struct dev_pagemap *pgmap, unsigned long pfn)
-+{
-+	int i;
-+
-+	for (i = 0; i < pgmap->nr_range; i++) {
-+		struct range *range = &pgmap->ranges[i];
-+
-+		if (pfn >= PHYS_PFN(range->start) &&
-+		    pfn <= PHYS_PFN(range->end))
-+			return pfn >= pfn_first(pgmap, i);
-+	}
-+
-+	return false;
-+}
-+
- static unsigned long pfn_end(struct dev_pagemap *pgmap, int range_id)
- {
- 	const struct range *range = &pgmap->ranges[range_id];
+> case we already check that the maximum is 8 so there's no need to
+> repeat that check here.
 
+Are you referring to the overall "maxItems: 8" above, in the 2nd hunk?
+While this will become redundant, this is apparently prone to changes
+(as only "7" would be redundant at the moment), so I would rather not
+rely on a global limit.
+
+Cheers,
+Andre.
