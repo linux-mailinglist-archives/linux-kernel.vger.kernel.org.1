@@ -2,372 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 889F92F5B0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:08:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4672F5B12
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 08:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbhANHIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 02:08:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54592 "EHLO
+        id S1726828AbhANHJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 02:09:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbhANHIB (ORCPT
+        with ESMTP id S1725989AbhANHJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 02:08:01 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CDCC061786;
-        Wed, 13 Jan 2021 23:07:15 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id d13so6071625ioy.4;
-        Wed, 13 Jan 2021 23:07:15 -0800 (PST)
+        Thu, 14 Jan 2021 02:09:06 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA012C061575;
+        Wed, 13 Jan 2021 23:08:25 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id 30so3155081pgr.6;
+        Wed, 13 Jan 2021 23:08:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=0stmh3NIYlgebx8Y/ofg9MESt0nCd9lK5OpOQ6ToFYE=;
-        b=Q+oMooQ8Nco/VaEsMjiNiNVSt+tyZbYh4+9LlrcDisQX2JvNet34LLcwca93iFEtJT
-         2/nnnDwgSK8SWT/paV1AQTSR8h7fLzamv5zRihNPQsx5MLaNwfe+XdmBYe3Jd2LkxqsP
-         Yz5KECO0+d2VBG1mfoYSYOkaf7syoXZb8l4LPqtMoGx+gU4F0McM2jUImKsjZ27EpIc0
-         m0oRagTfbU7YpVsjsTKHZY52zK+peR+wPnuAFEXXrv7pLBdDj5tnMrXmhjJD8SXyG61I
-         XV15na7MVbPsmysSgdAGprFjz1JvIPFkH8SSr73XXEET2yaql7T5u6f4sUAxRGm6s07q
-         0PDA==
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=S9qA10US8vCCyMBqu6NxHUPr7KRXGMvBnqk5YeBK5uU=;
+        b=S2i9xG0O5qTsxksVhtuBm9dz9WBe1wbZF91O8ZA5i4u3PK+iSjkg8QdiaR4xUo5vCU
+         y7R+uZlw/cF9RkMVAQNHZ+JTP4wzsklKrpaCLGD9tXYRYfPn4DpZahcOmOK8Dir1Lh63
+         Adum+a4NlBCexoCl0EJ46aVRPGOOcyQnd7R5WrLivr+oCIP7mPhbFhAulMwG/MK3d0T1
+         YzCK5b9/PRCA+/8sZjNLEgmW7gAW2v3G2nIHcsFU0VDIJBD4JNMyCGl4EYA8Dp/UlYoI
+         6BmI8sUR6V0mBZAdwCY5co32fcLgAcxwA1Wfe5csfzM5WQrdUhvF5Bk1SCDlcExGhYeE
+         wYtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=0stmh3NIYlgebx8Y/ofg9MESt0nCd9lK5OpOQ6ToFYE=;
-        b=PmIm8q3N4Jlo0yQ5iDORxjmZq99rijuh1BCUWw3my2xM9INxnqzsJ8mIrEONFsaniI
-         RAT+mFnJtL5KUS8S7z/pbEfl7GCdzx78tcVw2NHw4h0jyHfApQboZeeAb0xyFU2yF1l4
-         nYYxTG2cdaJeUdVn+//QGYbFLaMKegU8IIqObdjR4xrWuCnUUNsAwt3ODRBsYXC/MD5M
-         4wo87hRdgTPLrv49EeVHFMp59pPxPRqZTTuuV583oFM0AzHANzdKr5JLuWcwOcQiV9ta
-         tM/3tTJcgdl5kzQEBhdcfJVtpwTFeZZeO6hJ4VT6mbqlZFDaCXUPynpoEbgyVu6pPSfw
-         t9zg==
-X-Gm-Message-State: AOAM532sjPHroFbkWDNpq0ga7oqk+n07kO2KWXo0wa4ikIT7huo+MWBm
-        L9LN/mKuPHIou966umEHy/w1F+R/WIXzDis19JYN5vb+cydi0Q==
-X-Google-Smtp-Source: ABdhPJwtdEHkgUWYWMrBsowDu9HmNX4yCYcvV+NazLEuwq/9mPinK1+t45e7zC8Gwt7/DC0dXev1Mn4jKCP++668Oxc=
-X-Received: by 2002:a05:6e02:eb0:: with SMTP id u16mr5461148ilj.209.1610608029589;
- Wed, 13 Jan 2021 23:07:09 -0800 (PST)
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=S9qA10US8vCCyMBqu6NxHUPr7KRXGMvBnqk5YeBK5uU=;
+        b=BElCHnG8byuZApCaWnM0pDMokGy5y3JCFxK0Z35N6okHdMFJyAxZjoaLkpX3VSg8g9
+         fbnjecOF4IXimg1DqY0imk0fegpDF3OUbJ1hASrYEotselDzwxTCbOy/gT6woCxX3wCi
+         KSgZN6EGc24dSJnSAH+8QjNJphrzT93Dnc31voOUlnIG4eGMOB4WZ2153GRlDEeucGGJ
+         Jk92ef97Jou5JUaLumLP3kNPnTlf1psnsjZCvegCWj8F/xH6zXmtRLGYGWH9t3hZBUD2
+         1DVrkoiJevj02qhLrRtC5IYAfs1Q930yl/DveiglPrDmWtESTQSuk84bvUCTlVz3paaD
+         SF+w==
+X-Gm-Message-State: AOAM530lIIo6VJGfLRCJllnTIYpoNRtdYvQgsRipzmzNcsvPbQivcPM1
+        rb6vL8xpCaJQ96R4jb2Q5wJzT4VaVeg=
+X-Google-Smtp-Source: ABdhPJwxDHyY9npG8eI2PkJ4ofN3B0BPll4vjsU5rS46O4tX4xQS9OMKqpS+PcAOnEe5ffQ471PwCA==
+X-Received: by 2002:a65:68cb:: with SMTP id k11mr6098855pgt.271.1610608105465;
+        Wed, 13 Jan 2021 23:08:25 -0800 (PST)
+Received: from AD01715016 ([211.249.70.61])
+        by smtp.gmail.com with ESMTPSA id t8sm224291pjm.45.2021.01.13.23.08.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 23:08:24 -0800 (PST)
+Date:   Thu, 14 Jan 2021 16:08:17 +0900
+From:   Daeseok Youn <daeseok.youn@gmail.com>
+To:     rppt@kernel.org, akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] mm: memblock: remove return value of memblock_free_all()
+Message-ID: <20210114070817.GA2868715@AD01715016>
 MIME-Version: 1.0
-References: <20210114041623.226419-1-masahiroy@kernel.org>
-In-Reply-To: <20210114041623.226419-1-masahiroy@kernel.org>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 14 Jan 2021 08:06:57 +0100
-Message-ID: <CA+icZUXOk+tAWdH+sr6fj3NU+v8megZZFGL6ZxBXyt0Omf3tkQ@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: check the minimum compiler version in Kconfig
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Will Deacon <will@kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 5:17 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Paul Gortmaker reported a regression in the GCC version check [1].
-> If you use GCC 4.8, the build breaks before showing the error message
-> "error Sorry, your version of GCC is too old - please use 4.9 or newer."
->
+No one checks the return value of memblock_free_all().
+Make the return value void.
 
-Hi Masahiro,
+memblock_free_all() is used on mem_init() for each
+architecture, and the total count of freed pages will be added
+to _totalram_pages variable by calling totalram_pages_add().
 
-This patch is really helpful and user-friendly.
+so do not need to return total count of freed pages.
 
-I ran into an issue with pahole requirement seen when
-scripts/link-vmlinux.sh is run (see [1])
-That happened after 3 hours of build-time.
-Such things make me really unhappy.
+Signed-off-by: Daeseok Youn <daeseok.youn@gmail.com>
+---
+ include/linux/memblock.h | 2 +-
+ mm/memblock.c            | 6 +-----
+ 2 files changed, 2 insertions(+), 6 deletions(-)
 
-Nathan proposed a fix for the pahole issue (see [2]).
+diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+index 9c5cc95c7cee..076fda398dff 100644
+--- a/include/linux/memblock.h
++++ b/include/linux/memblock.h
+@@ -117,7 +117,7 @@ int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
+ int memblock_mark_nomap(phys_addr_t base, phys_addr_t size);
+ int memblock_clear_nomap(phys_addr_t base, phys_addr_t size);
+ 
+-unsigned long memblock_free_all(void);
++void memblock_free_all(void);
+ void reset_node_managed_pages(pg_data_t *pgdat);
+ void reset_all_zones_managed_pages(void);
+ void memblock_enforce_memory_reserved_overlap(void);
+diff --git a/mm/memblock.c b/mm/memblock.c
+index 40ca30bfa387..2a2b1fe4b659 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -2074,10 +2074,8 @@ void __init reset_all_zones_managed_pages(void)
+ 
+ /**
+  * memblock_free_all - release free pages to the buddy allocator
+- *
+- * Return: the number of pages actually released.
+  */
+-unsigned long __init memblock_free_all(void)
++void __init memblock_free_all(void)
+ {
+ 	unsigned long pages;
+ 
+@@ -2086,8 +2084,6 @@ unsigned long __init memblock_free_all(void)
+ 
+ 	pages = free_low_memory_core_early();
+ 	totalram_pages_add(pages);
+-
+-	return pages;
+ }
+ 
+ #if defined(CONFIG_DEBUG_FS) && defined(CONFIG_ARCH_KEEP_MEMBLOCK)
+-- 
+2.25.1
 
-I definitely will enjoy testing your v2.
-
-Regards,
-- Sedat -
-
-[1] https://marc.info/?t=161036949500004&r=1&w=2
-[2] https://marc.info/?t=161038851500003&r=1&w=2
-
-> I do not want to apply his fix-up since it implies we would not be able
-> to remove any cc-option test. Anyway, I admit checking the GCC version
-> in <linux/compiler-gcc.h> is too late.
->
-> Almost at the same time, Linus also suggested to move the compiler
-> version error to Kconfig time. [2]
->
-> I unified the similar two scripts, gcc-version.sh and clang-version.sh
-> into the new cc-version.sh. The old scripts invoked the compiler multiple
-> times (3 times for gcc-version.sh, 4 times for clang-version.sh). I
-> refactored the code so the new one invokes the compiler just once, and
-> also tried my best to use shell-builtin commands where possible.
->
-> The new script runs faster.
->
->   $ time ./scripts/clang-version.sh clang
->   120000
->
->   real    0m0.029s
->   user    0m0.012s
->   sys     0m0.021s
->
->   $ time ./scripts/cc-version.sh clang
->   Clang 120000
->
->   real    0m0.009s
->   user    0m0.006s
->   sys     0m0.004s
->
-> The cc-version.sh also shows the error if the compiler is old:
->
->   $ make defconfig CC=clang-9
->   *** Default configuration is based on 'x86_64_defconfig'
->   ***
->   *** Compiler is too old.
->   ***   Your Clang version:    9.0.1
->   ***   Minimum Clang version: 10.0.1
->   ***
->   scripts/Kconfig.include:46: Sorry, this compiler is unsupported.
->   make[1]: *** [scripts/kconfig/Makefile:81: defconfig] Error 1
->   make: *** [Makefile:602: defconfig] Error 2
->
-> I removed the clang version check from <linux/compiler-clang.h>
->
-> For now, I did not touch <linux/compiler-gcc.h> in order to avoid
-> merge conflict with [3], which has been queued up in the arm64 tree.
-> We will be able to clean it up later.
->
-> I put the stub for ICC because I see <linux/compiler-intel.h> although
-> I am not sure if building the kernel with ICC is well-supported.
->
-> [1] https://lkml.org/lkml/2021/1/10/250
-> [2] https://lkml.org/lkml/2021/1/12/1708
-> [3] https://lkml.org/lkml/2021/1/12/1533
->
-> Fixes: 87de84c9140e ("kbuild: remove cc-option test of -Werror=date-time")
-> Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
->  include/linux/compiler-clang.h | 10 -----
->  init/Kconfig                   |  9 +++--
->  scripts/Kconfig.include        |  6 +++
->  scripts/cc-version.sh          | 69 ++++++++++++++++++++++++++++++++++
->  scripts/clang-version.sh       | 19 ----------
->  scripts/gcc-version.sh         | 20 ----------
->  6 files changed, 80 insertions(+), 53 deletions(-)
->  create mode 100755 scripts/cc-version.sh
->  delete mode 100755 scripts/clang-version.sh
->  delete mode 100755 scripts/gcc-version.sh
->
-> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-> index 98cff1b4b088..04c0a5a717f7 100644
-> --- a/include/linux/compiler-clang.h
-> +++ b/include/linux/compiler-clang.h
-> @@ -3,16 +3,6 @@
->  #error "Please don't include <linux/compiler-clang.h> directly, include <linux/compiler.h> instead."
->  #endif
->
-> -#define CLANG_VERSION (__clang_major__ * 10000 \
-> -                    + __clang_minor__ * 100    \
-> -                    + __clang_patchlevel__)
-> -
-> -#if CLANG_VERSION < 100001
-> -#ifndef __BPF_TRACING__
-> -# error Sorry, your version of Clang is too old - please use 10.0.1 or newer.
-> -#endif
-> -#endif
-> -
->  /* Compiler specific definitions for Clang compiler */
->
->  /* same as gcc, this was present in clang-2.6 so we can assume it works
-> diff --git a/init/Kconfig b/init/Kconfig
-> index b77c60f8b963..01108dd1318b 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -26,11 +26,11 @@ config CC_VERSION_TEXT
->             and then every file will be rebuilt.
->
->  config CC_IS_GCC
-> -       def_bool $(success,echo "$(CC_VERSION_TEXT)" | grep -q gcc)
-> +       def_bool $(success,test $(cc-name) = GCC)
->
->  config GCC_VERSION
->         int
-> -       default $(shell,$(srctree)/scripts/gcc-version.sh $(CC)) if CC_IS_GCC
-> +       default $(cc-version) if CC_IS_GCC
->         default 0
->
->  config LD_VERSION
-> @@ -38,14 +38,15 @@ config LD_VERSION
->         default $(shell,$(LD) --version | $(srctree)/scripts/ld-version.sh)
->
->  config CC_IS_CLANG
-> -       def_bool $(success,echo "$(CC_VERSION_TEXT)" | grep -q clang)
-> +       def_bool $(success,test $(cc-name) = Clang)
->
->  config LD_IS_LLD
->         def_bool $(success,$(LD) -v | head -n 1 | grep -q LLD)
->
->  config CLANG_VERSION
->         int
-> -       default $(shell,$(srctree)/scripts/clang-version.sh $(CC))
-> +       default $(cc-version) if CC_IS_CLANG
-> +       default 0
->
->  config LLD_VERSION
->         int
-> diff --git a/scripts/Kconfig.include b/scripts/Kconfig.include
-> index a5fe72c504ff..cdc8726d2904 100644
-> --- a/scripts/Kconfig.include
-> +++ b/scripts/Kconfig.include
-> @@ -39,6 +39,12 @@ as-instr = $(success,printf "%b\n" "$(1)" | $(CC) $(CLANG_FLAGS) -c -x assembler
->  $(error-if,$(failure,command -v $(CC)),compiler '$(CC)' not found)
->  $(error-if,$(failure,command -v $(LD)),linker '$(LD)' not found)
->
-> +# Get the compiler name, version, and error out if it is unsupported.
-> +cc-info := $(shell,scripts/cc-version.sh $(CC))
-> +$(error-if,$(success,test -z "$(cc-info)"),Sorry$(comma) this compiler is unsupported.)
-> +cc-name := $(shell,set -- $(cc-info); echo $1)
-> +cc-version := $(shell,set -- $(cc-info); echo $2)
-> +
->  # Fail if the linker is gold as it's not capable of linking the kernel proper
->  $(error-if,$(success, $(LD) -v | grep -q gold), gold linker '$(LD)' not supported)
->
-> diff --git a/scripts/cc-version.sh b/scripts/cc-version.sh
-> new file mode 100755
-> index 000000000000..32df0e2940f5
-> --- /dev/null
-> +++ b/scripts/cc-version.sh
-> @@ -0,0 +1,69 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Print the compiler name and its version in a 5 or 6-digit form.
-> +# Also, perform the minimum version check.
-> +
-> +set -e
-> +
-> +# When you raise the compiler version, please update
-> +# Documentation/process/changes.rst as well.
-> +gcc_min_version=4.9.0
-> +clang_min_version=10.0.1
-> +
-> +# print the compiler name, major version, minor version, patchlevel version
-> +get_compiler_info()
-> +{
-> +       cat <<- EOF | "$@" -E -P -x c - 2>/dev/null
-> +       #if defined(__clang__)
-> +       Clang   __clang_major__ __clang_minor__ __clang_patchlevel__
-> +       #elif defined(__INTEL_COMPILER)
-> +       /* How to get the version of intel compiler? */
-> +       ICC     0               0               0
-> +       #elif defined(__GNUC__)
-> +       GCC     __GNUC__        __GNUC_MINOR__  __GNUC_PATCHLEVEL__
-> +       #else
-> +       unsupported     0               0               0
-> +       #endif
-> +       EOF
-> +}
-> +
-> +# convert the version to a canonical 5 or 6-digit form for numerical comparison
-> +get_canonical_version()
-> +{
-> +       IFS=.
-> +       set -- $1
-> +       echo $((10000 * $1 + 100 * $2 + $3))
-> +}
-> +
-> +# $@ instead of $1 because multiple words might be given e.g. CC="ccache gcc"
-> +orig_args="$@"
-> +set -- $(run_preprocessor "$@")
-> +
-> +name=$1
-> +version=$2.$3.$4
-> +
-> +case "$name" in
-> +GCC) min_version=$gcc_min_version;;
-> +Clang) min_version=$clang_min_version;;
-> +ICC) ;; # ICC min version undefined?
-> +*) echo "$orig_args: unknown compiler" >&2; exit 1;;
-> +esac
-> +
-> +cversion=$(get_canonical_version $version)
-> +
-> +if [ -n "$min_version" ]; then
-> +
-> +       min_cversion=$(get_canonical_version $min_version)
-> +
-> +       if [ "$cversion" -lt "$min_cversion" ]; then
-> +               echo >&2 "***"
-> +               echo >&2 "*** Compiler is too old."
-> +               echo >&2 "***   Your $name version:    $version"
-> +               echo >&2 "***   Minimum $name version: $min_version"
-> +               echo >&2 "***"
-> +               exit 1
-> +       fi
-> +fi
-> +
-> +echo $name $cversion
-> diff --git a/scripts/clang-version.sh b/scripts/clang-version.sh
-> deleted file mode 100755
-> index 6fabf0695761..000000000000
-> --- a/scripts/clang-version.sh
-> +++ /dev/null
-> @@ -1,19 +0,0 @@
-> -#!/bin/sh
-> -# SPDX-License-Identifier: GPL-2.0
-> -#
-> -# clang-version clang-command
-> -#
-> -# Print the compiler version of `clang-command' in a 5 or 6-digit form
-> -# such as `50001' for clang-5.0.1 etc.
-> -
-> -compiler="$*"
-> -
-> -if ! ( $compiler --version | grep -q clang) ; then
-> -       echo 0
-> -       exit 1
-> -fi
-> -
-> -MAJOR=$(echo __clang_major__ | $compiler -E -x c - | tail -n 1)
-> -MINOR=$(echo __clang_minor__ | $compiler -E -x c - | tail -n 1)
-> -PATCHLEVEL=$(echo __clang_patchlevel__ | $compiler -E -x c - | tail -n 1)
-> -printf "%d%02d%02d\\n" $MAJOR $MINOR $PATCHLEVEL
-> diff --git a/scripts/gcc-version.sh b/scripts/gcc-version.sh
-> deleted file mode 100755
-> index ae353432539b..000000000000
-> --- a/scripts/gcc-version.sh
-> +++ /dev/null
-> @@ -1,20 +0,0 @@
-> -#!/bin/sh
-> -# SPDX-License-Identifier: GPL-2.0
-> -#
-> -# gcc-version gcc-command
-> -#
-> -# Print the gcc version of `gcc-command' in a 5 or 6-digit form
-> -# such as `29503' for gcc-2.95.3, `30301' for gcc-3.3.1, etc.
-> -
-> -compiler="$*"
-> -
-> -if [ ${#compiler} -eq 0 ]; then
-> -       echo "Error: No compiler specified." >&2
-> -       printf "Usage:\n\t$0 <gcc-command>\n" >&2
-> -       exit 1
-> -fi
-> -
-> -MAJOR=$(echo __GNUC__ | $compiler -E -x c - | tail -n 1)
-> -MINOR=$(echo __GNUC_MINOR__ | $compiler -E -x c - | tail -n 1)
-> -PATCHLEVEL=$(echo __GNUC_PATCHLEVEL__ | $compiler -E -x c - | tail -n 1)
-> -printf "%d%02d%02d\\n" $MAJOR $MINOR $PATCHLEVEL
-> --
-> 2.27.0
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210114041623.226419-1-masahiroy%40kernel.org.
