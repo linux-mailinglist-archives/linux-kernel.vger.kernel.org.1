@@ -2,107 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 303CF2F5610
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2757F2F5625
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727759AbhANBkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:40:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727518AbhANBkh (ORCPT
+        id S1727997AbhANBmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:42:38 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:10964 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726508AbhANBmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 20:40:37 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BD9C0617AB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 17:39:54 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id q7so2689816pgm.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 17:39:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=0v4ffsos0rapW38+1t0CY4y2xO4VTxoL80FfHQGQHck=;
-        b=X7s9AnVbndF4RvTXQ8vTFmzEB1dtqOySA2TSPxuQDLtzuZoko9RNhzDwklcgUoZvHD
-         HCF4ESox7Pbj/vHh1slDuHF5Vx/qM6zlYKuQq3FK/1mCyL/6LiLu8cafeDTKDGJ57mpH
-         j2AytFr3UsnPvsCPaN+80cPgSMnkuL69RuICU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=0v4ffsos0rapW38+1t0CY4y2xO4VTxoL80FfHQGQHck=;
-        b=eIrKU+OTBbHDB/tE38dI6iWC0Z8VGo+DW0UGx0zomT9Hcj2+QyyqOI6ZTi4hHHE4/J
-         GijglNiLOI0hbVgMxPBTwraQu2Y7X3B4yKH8emAgYc83aQoeqYfNGtL9wrNb9H1bGz6I
-         QwlPRWUh0Da6ldgNcuPFw8yONXL1rNF6zhl7nBBdsqOULOjSQleNbj7TgaxUTs5mLGh5
-         CziWKNZaLAIhHyyafZYl+GCkW0Ixiuy0+maStKBwuFJ/MgxuZZBxc57VezK6zPhAiF/N
-         47rm31JJl3bIrcx9OIExD9fQN06bPiiD2igGAwm+LpVhkWbf+UNHWpPxXfAWm1iPizHP
-         CYpw==
-X-Gm-Message-State: AOAM530OAmTmtB6jFdPv1gkwidXd4LOc83aR2eRqBN6M3lSrHEDXS6ww
-        vhQ+mZ/5TQGJwtw0A6aCzBDZKyma/uQWnA==
-X-Google-Smtp-Source: ABdhPJzG+fk+uWdlidBTt4vZOHuxgbfVDrkaQGxK7TVTc260Bc5HQzaLT4n9+LG5IBcC72Mc0YmYIw==
-X-Received: by 2002:a63:5304:: with SMTP id h4mr4853326pgb.199.1610588393450;
-        Wed, 13 Jan 2021 17:39:53 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id v11sm4012814pju.40.2021.01.13.17.39.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 17:39:52 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 13 Jan 2021 20:42:35 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DGRq31btxzj69R;
+        Thu, 14 Jan 2021 09:41:03 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 14 Jan 2021 09:41:45 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH v5 5/5] f2fs: introduce sb_status sysfs node
+Date:   Thu, 14 Jan 2021 09:41:27 +0800
+Message-ID: <20210114014127.54510-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CA+cxXhmV_RxLupD18aOxLwaGGKSxihTY8ZZvQKzdd-dsYYf5dQ@mail.gmail.com>
-References: <20210107154200.v4.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid> <20210107154200.v4.2.Ibe7d7d53c5b4fe72c60de90111ff763b53f38dbb@changeid> <161041827643.3661239.17919996906733477213@swboyd.mtv.corp.google.com> <CA+cxXhm45emyg-9j99U=UWY8QuhzWifh+VvsFBaTOTWs81tvUQ@mail.gmail.com> <161052058590.3661239.5654596152411573148@swboyd.mtv.corp.google.com> <CA+cxXhmZd0eeLjUwcTevZRNovbZWXNKQH5qOX_YFCKowxHNVfQ@mail.gmail.com> <161057967168.3661239.10329365279391431594@swboyd.mtv.corp.google.com> <CA+cxXhmV_RxLupD18aOxLwaGGKSxihTY8ZZvQKzdd-dsYYf5dQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] Input: cros-ec-keyb - Expose function row physical map to userspace
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org
-To:     Philip Chen <philipchen@chromium.org>
-Date:   Wed, 13 Jan 2021 17:39:51 -0800
-Message-ID: <161058839125.3661239.15252566946929589144@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-01-13 17:29:05)
-> On Wed, Jan 13, 2021 at 3:14 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > Quoting Philip Chen (2021-01-13 14:47:18)
-> > > On Tue, Jan 12, 2021 at 10:49 PM Stephen Boyd <swboyd@chromium.org> w=
-rote:
-> > > >
-> > > > Quoting Philip Chen (2021-01-12 15:55:28)
-> > > > > On Mon, Jan 11, 2021 at 6:24 PM Stephen Boyd <swboyd@chromium.org=
-> wrote:
-> > > > > >
-> > > > > > Is it documented in Documentation/ABI/?
-> > > > > Not yet.
-> > > > > Is it proper to add the documentation to `testing/sysfs-driver-in=
-put-keyboard`?
-> > > >
-> > > > Somewhere in testing is fine. I'm not sure if it is a generic propr=
-ty
-> > > > for all keyboards though? What's the path in sysfs?
-> > > I wouldn't say it's generic.
-> > > It is available in the keyboard device node only when the board has a
-> > > custom top-row keyboard design.
-> > > The path in sysfs is something like:
-> > > /sys/class/input/input0/device/function_row_physmap, where input0 is
-> > > cros_ec.
-> >
-> > I see that atkbd already has this so at least it would be common to some
-> > sort of keyboard device. I'm not sure where to document it though. I see
-> > that atkbd has a handful of undocumented sysfs attributes so adding all
-> > of those may lead to a common path. At the least it sounds OK to have a
-> > sysfs-driver-input-keyboard file if input folks are OK with it.
-> Since there are other undocumented sysfs attributes for input/keyboard
-> anyway, we should probably leave the documentation to another patch?
-> For now, let's move to patch v5, where I've addressed all of the
-> comments so far.
+Introduce /sys/fs/f2fs/<devname>/stat/sb_status to show superblock
+status in real time as a hexadecimal value.
 
-Please document this one that's being introduced. We should document all
-the sysfs attributes but we don't always do a good job at it.
+value           sb status macro                 description
+
+0x1             SBI_IS_DIRTY,                   /* dirty flag for checkpoint */
+0x2             SBI_IS_CLOSE,                   /* specify unmounting */
+0x4             SBI_NEED_FSCK,                  /* need fsck.f2fs to fix */
+0x8             SBI_POR_DOING,                  /* recovery is doing or not */
+0x10            SBI_NEED_SB_WRITE,              /* need to recover superblock */
+0x20            SBI_NEED_CP,                    /* need to checkpoint */
+0x40            SBI_IS_SHUTDOWN,                /* shutdown by ioctl */
+0x80            SBI_IS_RECOVERED,               /* recovered orphan/data */
+0x100           SBI_CP_DISABLED,                /* CP was disabled last mount */
+0x200           SBI_CP_DISABLED_QUICK,          /* CP was disabled quickly */
+0x400           SBI_QUOTA_NEED_FLUSH,           /* need to flush quota info in CP */
+0x800           SBI_QUOTA_SKIP_FLUSH,           /* skip flushing quota in current CP */
+0x1000          SBI_QUOTA_NEED_REPAIR,          /* quota file may be corrupted */
+0x2000          SBI_IS_RESIZEFS,                /* resizefs is in process */
+
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+v5:
+- fix compile warning reported by Stephen:
+Documentation/ABI/testing/sysfs-fs-f2fs:382: WARNING: Malformed table.
+ Documentation/ABI/testing/sysfs-fs-f2fs | 23 +++++++++++++++++++++++
+ fs/f2fs/sysfs.c                         |  8 ++++++++
+ 2 files changed, 31 insertions(+)
+
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 3dfee94e0618..362803901614 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -377,3 +377,26 @@ Description:	This gives a control to limit the bio size in f2fs.
+ 		Default is zero, which will follow underlying block layer limit,
+ 		whereas, if it has a certain bytes value, f2fs won't submit a
+ 		bio larger than that size.
++
++What:		/sys/fs/f2fs/<disk>/stat/sb_status
++Date:		December 2020
++Contact:	"Chao Yu" <yuchao0@huawei.com>
++Description:	Show status of f2fs superblock in real time.
++
++		====== ===================== =================================
++		value  sb status macro       description
++		0x1    SBI_IS_DIRTY          dirty flag for checkpoint
++		0x2    SBI_IS_CLOSE          specify unmounting
++		0x4    SBI_NEED_FSCK         need fsck.f2fs to fix
++		0x8    SBI_POR_DOING         recovery is doing or not
++		0x10   SBI_NEED_SB_WRITE     need to recover superblock
++		0x20   SBI_NEED_CP           need to checkpoint
++		0x40   SBI_IS_SHUTDOWN       shutdown by ioctl
++		0x80   SBI_IS_RECOVERED      recovered orphan/data
++		0x100  SBI_CP_DISABLED       CP was disabled last mount
++		0x200  SBI_CP_DISABLED_QUICK CP was disabled quickly
++		0x400  SBI_QUOTA_NEED_FLUSH  need to flush quota info in CP
++		0x800  SBI_QUOTA_SKIP_FLUSH  skip flushing quota in current CP
++		0x1000 SBI_QUOTA_NEED_REPAIR quota file may be corrupted
++		0x2000 SBI_IS_RESIZEFS       resizefs is in process
++		====== ===================== =================================
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index bd1174ed2e6f..f39874d512ea 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -96,6 +96,12 @@ static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
+ 				sbi->sectors_written_start) >> 1)));
+ }
+ 
++static ssize_t sb_status_show(struct f2fs_attr *a,
++		struct f2fs_sb_info *sbi, char *buf)
++{
++	return sprintf(buf, "%lx\n", sbi->s_flag);
++}
++
+ static ssize_t features_show(struct f2fs_attr *a,
+ 		struct f2fs_sb_info *sbi, char *buf)
+ {
+@@ -702,7 +708,9 @@ static struct attribute *f2fs_feat_attrs[] = {
+ };
+ ATTRIBUTE_GROUPS(f2fs_feat);
+ 
++F2FS_GENERAL_RO_ATTR(sb_status);
+ static struct attribute *f2fs_stat_attrs[] = {
++	ATTR_LIST(sb_status),
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(f2fs_stat);
+-- 
+2.29.2
+
