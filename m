@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13A92F6312
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4AE2F631D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:29:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729175AbhANOZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:25:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726805AbhANOZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:25:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1090A208C3;
-        Thu, 14 Jan 2021 14:25:15 +0000 (UTC)
-Date:   Thu, 14 Jan 2021 14:25:13 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: [PATCH v2 3/4] arm64: mte: Enable async tag check fault
-Message-ID: <20210114142512.GB16561@gaia>
-References: <20210107172908.42686-1-vincenzo.frascino@arm.com>
- <20210107172908.42686-4-vincenzo.frascino@arm.com>
- <20210113181121.GF27045@gaia>
- <efbb0722-eb4e-7be2-b929-77ec91cc0ae0@arm.com>
+        id S1729069AbhANO2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:28:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726730AbhANO2b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:28:31 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212A3C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 06:27:45 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id a12so5947455wrv.8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 06:27:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=stURBibHeymSTQotO4y7jVW0jLXFO/bJV0OvfHx8/Ow=;
+        b=fhyQomvCom1FnwqmnHAbPTCnd0LMPSC1mqIoFA5OZ1Zgg17bwZDLU5KO1gmbEBqcIp
+         YXIPhQ0GvJBZ7V4KjAkdpNk8Vbr3fPg1LUcu9POniajMxCP0erZ1u88GCrBaFhiy+FdN
+         tVDBg3CRCCKH4azQ0/EPNm434Xan+AeW3X7wmtOgA31CDosXjFEBvXxYcwUw+jT9uHvJ
+         /WPpe0HcdoOnSgatKDKfXg1geiL7eYH29nuVy1BmcqevKsMAOEaO5vZnZUnajjI790vs
+         9EaGJwjx+uFxrvuvwjVLycDv3gsRr8yowd8eunI72m69qv1qrUNBzpNbP/lFKWbKiSIO
+         3yQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=stURBibHeymSTQotO4y7jVW0jLXFO/bJV0OvfHx8/Ow=;
+        b=cadRByaSAVlJMN5RyW4JN+NkMqRYNW+SYkBy1KJsXtPhPgp4cjvpFkGmDcMm7Ktynz
+         ij4NsDalyupBxvIptB0LHxs3aWO8Fv2K7ou2PW66TN+6ySbfiCLAJj3BJKcr7Hn09qAg
+         xzxAbGnvQ+Ez6le219+YifpapgM1EXrXCb4mjCRDgb3lnocSHkfIWf9FDrqvzVAUjyoT
+         Z8V4hzB5nMRaC6NOJ7g1L3pIG+ArfJSy5aNVYN/UsPERYySVZ0MkULsxWEfONM54X/IF
+         Iil6KMcW6PrAvgG569KSzLz+hTP0F1i3PbQCv5sVnWh2VOmj/HMrHVaDCrhRUZeh663d
+         kNaA==
+X-Gm-Message-State: AOAM5334zKBqlAdRLCmZ8SC0yDoDyndXIXmeDzC2ObccVE4FbTGmDH6Z
+        KCJZvQ+rzAp0EYAPzJNlVwwpJ0+PuGpu5BVu
+X-Google-Smtp-Source: ABdhPJyXrFe2m39uAyQy2h7tZOKGTMg+Vg9rbr1bpTyqBQ3zqWU671dcf51KtVjNjgEuIROfT8ikKw==
+X-Received: by 2002:a5d:45d0:: with SMTP id b16mr8085208wrs.220.1610634463919;
+        Thu, 14 Jan 2021 06:27:43 -0800 (PST)
+Received: from dell ([91.110.221.178])
+        by smtp.gmail.com with ESMTPSA id l7sm3707755wmg.41.2021.01.14.06.27.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 06:27:43 -0800 (PST)
+Date:   Thu, 14 Jan 2021 14:27:41 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Sebastian Reichel <sre@kernel.org>, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 1/3] dt-bindings: mfd: Add ENE KB930 Embedded
+ Controller binding
+Message-ID: <20210114142741.GZ3975472@dell>
+References: <20201228160547.30562-1-digetx@gmail.com>
+ <20201228160547.30562-2-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <efbb0722-eb4e-7be2-b929-77ec91cc0ae0@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201228160547.30562-2-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 10:24:25AM +0000, Vincenzo Frascino wrote:
-> On 1/13/21 6:11 PM, Catalin Marinas wrote:
-> > On Thu, Jan 07, 2021 at 05:29:07PM +0000, Vincenzo Frascino wrote:
-> >>  static inline void mte_sync_tags(pte_t *ptep, pte_t pte)
-> >>  {
-> >>  }
-> >> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-> >> index 5346953e4382..74b020ce72d7 100644
-> >> --- a/arch/arm64/kernel/entry-common.c
-> >> +++ b/arch/arm64/kernel/entry-common.c
-> >> @@ -37,6 +37,8 @@ static void noinstr enter_from_kernel_mode(struct pt_regs *regs)
-> >>  	lockdep_hardirqs_off(CALLER_ADDR0);
-> >>  	rcu_irq_enter_check_tick();
-> >>  	trace_hardirqs_off_finish();
-> >> +
-> >> +	mte_check_tfsr_el1();
-> >>  }
-> >>  
-> >>  /*
-> >> @@ -47,6 +49,8 @@ static void noinstr exit_to_kernel_mode(struct pt_regs *regs)
-> >>  {
-> >>  	lockdep_assert_irqs_disabled();
-> >>  
-> >> +	mte_check_tfsr_el1();
-> >> +
-> >>  	if (interrupts_enabled(regs)) {
-> >>  		if (regs->exit_rcu) {
-> >>  			trace_hardirqs_on_prepare();
-> >> @@ -243,6 +247,8 @@ asmlinkage void noinstr enter_from_user_mode(void)
-> >>  
-> >>  asmlinkage void noinstr exit_to_user_mode(void)
-> >>  {
-> >> +	mte_check_tfsr_el1();
-> > 
-> > While for kernel entry the asynchronous faults are sync'ed automatically
-> > with TFSR_EL1, we don't have this for exit, so we'd need an explicit
-> > DSB. But rather than placing it here, it's better if we add a bool sync
-> > argument to mte_check_tfsr_el1() which issues a dsb() before checking
-> > the register. I think that's the only place where such argument would be
-> > true (for now).
+On Mon, 28 Dec 2020, Dmitry Osipenko wrote:
+
+> Add binding document for the ENE KB930 Embedded Controller.
 > 
-> Good point, I will add the dsb() in mte_check_tfsr_el1() but instead of a bool
-> parameter I will add something more explicit.
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../devicetree/bindings/mfd/ene-kb930.yaml    | 65 +++++++++++++++++++
+>  1 file changed, 65 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/ene-kb930.yaml
 
-Or rename the function to mte_check_tfsr_el1_no_sync() and have a static
-inline mte_check_tfsr_el1() which issues a dsb() before calling the
-*no_sync variant.
-
-Adding an enum instead here is not worth it (if that's what you meant by
-not using a bool).
+Applied, thanks.
 
 -- 
-Catalin
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
