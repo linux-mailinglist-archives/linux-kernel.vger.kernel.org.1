@@ -2,261 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74C72F59EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 05:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BAE2F59EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 05:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbhANEaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 23:30:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbhANEaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 23:30:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B778238E5;
-        Thu, 14 Jan 2021 04:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610598559;
-        bh=LNZaBu0bZWzWaktkT4ruEhuuVbtX9HPo/Vg84YNQs00=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Njajt8s/wc2N/H+BgYIZeJGarm2vJX8fCIB8r0ctsrvcsWWrAZmu7GxAA+jklpF6D
-         PutmWYlYMLYqPfS2eVfEL5Zm8O397H9mdMmed7S9WJpU8bSCACi4cZkbWDjJz+tpvB
-         LQOGDbmNmzZgscK7oTkaahpjxyox+/6ele04yf5tkGcOYC9KoqhGLqyU8Bn5yLMnkj
-         T0x15Z4emBNAhu8t1IjfxzhuhVT8FAef2ecZ8fWEt2cnSaOCou3Z0XALSWMPf4uTt1
-         /48DK/2LDfBLW5MEhwoGX22Rio7jxQsA3y8phwSwIJZ1XU2p18LutG5iBXjDAdtraQ
-         gkCxQreDogDRA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 2698B3522B05; Wed, 13 Jan 2021 20:29:19 -0800 (PST)
-Date:   Wed, 13 Jan 2021 20:29:19 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Rong Chen <rong.a.chen@intel.com>
-Cc:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [rcu:rcu/next] BUILD SUCCESS WITH WARNING
- f81f6edb74f27c5c8917d20a2bc128aca39aae11
-Message-ID: <20210114042919.GE2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <5ffee678.hGIGL5g5dXHl2qP9%lkp@intel.com>
- <20210113151417.GT2743@paulmck-ThinkPad-P72>
- <2277b94b-e705-c1d3-6d6f-8a877f08c330@intel.com>
+        id S1726808AbhANEcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 23:32:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725953AbhANEcW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 23:32:22 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8C4C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 20:31:41 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id p5so4671401oif.7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 20:31:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=JpVnzwXDtkHwenpkUE21vZW7L/3kV39UhMH2nbmFqWM=;
+        b=blug7ajAa4fgIPSwbXBLHxHwHiV9Qvfp5d6NtwgJBghtC9xEuMxvbuYSM+uNcpJ4yv
+         WEEqy/x4Qs9hKoiZUTYaBk152lxV95Dv5r//cXWFE7rZhqZ5Mip2eJZlS/e8Cv0gLxV6
+         XEA/ZDoodq0Ic83FCJPuuEFjIlyzAMdYyG+RUwIq2dUnMKUCgf6Ths9d2SmoYJnieaOl
+         atdKKkK3GmHjh55E9xyp+7Ww3EmcUtrhssgT1pLVl9dtIBQ9AxtQ7R/ntTd0YKiSVi8/
+         nVP8eodhJ9IwgRGInQZFBICbe8j0Z7PTx0e2TlVSuWUD8hM1FGwlABqt0NKsP7d6KiWN
+         FAoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=JpVnzwXDtkHwenpkUE21vZW7L/3kV39UhMH2nbmFqWM=;
+        b=iM8e3SYUytrJDq75FCLPJpTboI6bdi8QWe2ghLyzOaVZN1BZ6td2McYykIK123XWkz
+         IWtP2HftejPJyk2J4wp4QMusBuSuS2B+F7OhPSROyu6qq1IK+d03h2ceGmBr/Mw0Ir/0
+         ZtKXhK0SBHTR5R9pfuIWOmWccsJBnGa8XbbGm+UAOCFPXcXLukokr+1VgjacJFxwTxX2
+         iWxxkL8lKRGxdjioRfmfHGIgapAkK8QtacLMik6L0VmVv/h6tzOdgjyXIUyAHVhsuelR
+         VqumOIhEzlOG0aOqE0g3Hei2cPkAA6R29nOf5UmAbBGEBs141ObXdd6RxUhox9Lxq9uK
+         QskQ==
+X-Gm-Message-State: AOAM530wurhQ348pVEAdNi5rThUo5v8YSH2mw4ouz8wBFv1tMPQARMCL
+        3LhoGjagd548D509EuWOyIDadw==
+X-Google-Smtp-Source: ABdhPJzPPGAlo4IKNDwvJg9HpgNIDt7ESoLbeCmOrKt0BADqAxkIOsbmR8aY4eREXFuBKl5Ppwwpzg==
+X-Received: by 2002:a05:6808:8f0:: with SMTP id d16mr1543795oic.47.1610598699830;
+        Wed, 13 Jan 2021 20:31:39 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x31sm861435otb.4.2021.01.13.20.31.38
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 13 Jan 2021 20:31:39 -0800 (PST)
+Date:   Wed, 13 Jan 2021 20:31:23 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: madvise(MADV_REMOVE) deadlocks on shmem THP
+In-Reply-To: <X/+7dkbhNtAVV+wd@google.com>
+Message-ID: <alpine.LSU.2.11.2101132000500.4777@eggly.anvils>
+References: <X/+7dkbhNtAVV+wd@google.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2277b94b-e705-c1d3-6d6f-8a877f08c330@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 09:38:47AM +0800, Rong Chen wrote:
-> 
-> 
-> On 1/13/21 11:14 PM, Paul E. McKenney wrote:
-> > On Wed, Jan 13, 2021 at 08:24:24PM +0800, kernel test robot wrote:
-> > > tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
-> > > branch HEAD: f81f6edb74f27c5c8917d20a2bc128aca39aae11  rcu: Remove spurious instrumentation_end() in rcu_nmi_enter()
-> > > 
-> > > Warning ids grouped by kconfigs:
-> > > 
-> > > gcc_recent_errors
-> > > |-- h8300-randconfig-c003-20210112
-> > > |   `-- kernel-rcu-rcutorture.c:WARNING-kmalloc-is-used-to-allocate-this-memory-at-line
-> > > |-- i386-randconfig-c001-20210112
-> > > |   `-- kernel-rcu-rcutorture.c:WARNING-kmalloc-is-used-to-allocate-this-memory-at-line
-> > > `-- powerpc-randconfig-c004-20210112
-> > >      `-- kernel-rcu-rcutorture.c:WARNING-kmalloc-is-used-to-allocate-this-memory-at-line
-> > OK, I will bite...  At which line?
-> > 
-> > 							Thanx, Paul
-> 
-> Hi Paul,
-> 
-> It's a coccinelle warning, it seems Julia Lawall didn't forward it to you,
-> it maybe not a real problem.
-> 
-> https://lists.01.org/hyperkitty/list/kbuild@lists.01.org/message/ZN45D2QHCG5W4KMOGVBLUCUOKH32LFHE/
+On Thu, 14 Jan 2021, Sergey Senozhatsky wrote:
 
-Indeed.  The kmalloc() at line 1887 is freed via kfree() at line 1893,
-then 1894 does a vmalloc() that is vfree()ed at line 1900.  It looks like
-the script paired 1887 with 1900, losing lines 1893 and 1894.  ;-)
-
-							Thanx, Paul
-
-> Best Regards,
-> Rong Chen
+> Hi,
 > 
-> > 
-> > > elapsed time: 722m
-> > > 
-> > > configs tested: 164
-> > > configs skipped: 2
-> > > 
-> > > gcc tested configs:
-> > > arm                                 defconfig
-> > > arm64                            allyesconfig
-> > > arm64                               defconfig
-> > > arm                              allyesconfig
-> > > arm                              allmodconfig
-> > > arm                         shannon_defconfig
-> > > powerpc                       maple_defconfig
-> > > arm                              zx_defconfig
-> > > mips                            e55_defconfig
-> > > arm                       spear13xx_defconfig
-> > > arm                  colibri_pxa300_defconfig
-> > > sh                           se7206_defconfig
-> > > arc                 nsimosci_hs_smp_defconfig
-> > > powerpc                   lite5200b_defconfig
-> > > sh                  sh7785lcr_32bit_defconfig
-> > > mips                       lemote2f_defconfig
-> > > sh                      rts7751r2d1_defconfig
-> > > m68k                        m5272c3_defconfig
-> > > sh                            migor_defconfig
-> > > powerpc                        icon_defconfig
-> > > sh                               alldefconfig
-> > > mips                     cu1000-neo_defconfig
-> > > arm                       cns3420vb_defconfig
-> > > mips                 decstation_r4k_defconfig
-> > > arm                           corgi_defconfig
-> > > arm                     eseries_pxa_defconfig
-> > > ia64                          tiger_defconfig
-> > > powerpc                      pasemi_defconfig
-> > > mips                         bigsur_defconfig
-> > > mips                       rbtx49xx_defconfig
-> > > c6x                              alldefconfig
-> > > mips                     decstation_defconfig
-> > > sh                   sh7770_generic_defconfig
-> > > arm                            hisi_defconfig
-> > > c6x                        evmc6472_defconfig
-> > > microblaze                          defconfig
-> > > xtensa                  cadence_csp_defconfig
-> > > powerpc                    mvme5100_defconfig
-> > > m68k                         amcore_defconfig
-> > > mips                        bcm47xx_defconfig
-> > > mips                        workpad_defconfig
-> > > h8300                     edosk2674_defconfig
-> > > powerpc                 mpc8313_rdb_defconfig
-> > > mips                           xway_defconfig
-> > > arc                           tb10x_defconfig
-> > > sh                           se7721_defconfig
-> > > arm                         axm55xx_defconfig
-> > > m68k                            q40_defconfig
-> > > arm                        mini2440_defconfig
-> > > powerpc                     tqm8560_defconfig
-> > > sh                         ecovec24_defconfig
-> > > c6x                        evmc6457_defconfig
-> > > arm                        mvebu_v7_defconfig
-> > > mips                      pistachio_defconfig
-> > > m68k                          multi_defconfig
-> > > s390                       zfcpdump_defconfig
-> > > xtensa                    smp_lx200_defconfig
-> > > h8300                    h8300h-sim_defconfig
-> > > arm                       multi_v4t_defconfig
-> > > arm                     davinci_all_defconfig
-> > > sh                          r7780mp_defconfig
-> > > arm                        keystone_defconfig
-> > > ia64                            zx1_defconfig
-> > > mips                      maltaaprp_defconfig
-> > > sh                           se7724_defconfig
-> > > sh                          urquell_defconfig
-> > > sparc                            alldefconfig
-> > > arm                        multi_v5_defconfig
-> > > powerpc                      pmac32_defconfig
-> > > powerpc                     ksi8560_defconfig
-> > > powerpc                    amigaone_defconfig
-> > > arc                     haps_hs_smp_defconfig
-> > > csky                                defconfig
-> > > um                            kunit_defconfig
-> > > powerpc                 mpc832x_rdb_defconfig
-> > > powerpc                      mgcoge_defconfig
-> > > ia64                        generic_defconfig
-> > > powerpc                      bamboo_defconfig
-> > > arm                      pxa255-idp_defconfig
-> > > sh                           se7705_defconfig
-> > > parisc                              defconfig
-> > > m68k                        m5407c3_defconfig
-> > > m68k                          atari_defconfig
-> > > powerpc                 mpc832x_mds_defconfig
-> > > powerpc                        fsp2_defconfig
-> > > m68k                       m5275evb_defconfig
-> > > powerpc                      ppc44x_defconfig
-> > > arm                            qcom_defconfig
-> > > sh                ecovec24-romimage_defconfig
-> > > arm                          tango4_defconfig
-> > > mips                          ath25_defconfig
-> > > sh                           sh2007_defconfig
-> > > arm                         socfpga_defconfig
-> > > m68k                       m5249evb_defconfig
-> > > mips                  decstation_64_defconfig
-> > > ia64                             allmodconfig
-> > > ia64                                defconfig
-> > > ia64                             allyesconfig
-> > > m68k                             allmodconfig
-> > > m68k                                defconfig
-> > > m68k                             allyesconfig
-> > > nios2                               defconfig
-> > > arc                              allyesconfig
-> > > nds32                             allnoconfig
-> > > c6x                              allyesconfig
-> > > nds32                               defconfig
-> > > nios2                            allyesconfig
-> > > alpha                               defconfig
-> > > alpha                            allyesconfig
-> > > xtensa                           allyesconfig
-> > > h8300                            allyesconfig
-> > > arc                                 defconfig
-> > > sh                               allmodconfig
-> > > s390                             allyesconfig
-> > > parisc                           allyesconfig
-> > > s390                                defconfig
-> > > i386                             allyesconfig
-> > > sparc                            allyesconfig
-> > > sparc                               defconfig
-> > > i386                               tinyconfig
-> > > i386                                defconfig
-> > > mips                             allyesconfig
-> > > mips                             allmodconfig
-> > > powerpc                          allyesconfig
-> > > powerpc                          allmodconfig
-> > > powerpc                           allnoconfig
-> > > x86_64               randconfig-a006-20210113
-> > > x86_64               randconfig-a004-20210113
-> > > x86_64               randconfig-a001-20210113
-> > > x86_64               randconfig-a005-20210113
-> > > x86_64               randconfig-a003-20210113
-> > > x86_64               randconfig-a002-20210113
-> > > i386                 randconfig-a002-20210113
-> > > i386                 randconfig-a005-20210113
-> > > i386                 randconfig-a006-20210113
-> > > i386                 randconfig-a003-20210113
-> > > i386                 randconfig-a001-20210113
-> > > i386                 randconfig-a004-20210113
-> > > i386                 randconfig-a012-20210113
-> > > i386                 randconfig-a011-20210113
-> > > i386                 randconfig-a016-20210113
-> > > i386                 randconfig-a013-20210113
-> > > i386                 randconfig-a015-20210113
-> > > i386                 randconfig-a014-20210113
-> > > riscv                    nommu_k210_defconfig
-> > > riscv                            allyesconfig
-> > > riscv                    nommu_virt_defconfig
-> > > riscv                             allnoconfig
-> > > riscv                               defconfig
-> > > riscv                          rv32_defconfig
-> > > riscv                            allmodconfig
-> > > x86_64                                   rhel
-> > > x86_64                           allyesconfig
-> > > x86_64                    rhel-7.6-kselftests
-> > > x86_64                              defconfig
-> > > x86_64                               rhel-8.3
-> > > x86_64                      rhel-8.3-kbuiltin
-> > > x86_64                                  kexec
-> > > 
-> > > clang tested configs:
-> > > x86_64               randconfig-a015-20210113
-> > > x86_64               randconfig-a012-20210113
-> > > x86_64               randconfig-a013-20210113
-> > > x86_64               randconfig-a016-20210113
-> > > x86_64               randconfig-a014-20210113
-> > > x86_64               randconfig-a011-20210113
-> > > 
-> > > ---
-> > > 0-DAY CI Kernel Test Service, Intel Corporation
-> > > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> We are running into lockups during the memory pressure tests on our
+> boards, which essentially NMI panic them. In short the test case is
 > 
+> - THP shmem
+>     echo advise > /sys/kernel/mm/transparent_hugepage/shmem_enabled
+> 
+> - And a user-space process doing madvise(MADV_HUGEPAGE) on new mappings,
+>   and madvise(MADV_REMOVE) when it wants to remove the page range
+> 
+> The problem boils down to the reverse locking chain:
+> 	kswapd does
+> 
+> 		lock_page(page) -> down_read(page->mapping->i_mmap_rwsem)
+> 
+> 	madvise() process does
+> 
+> 		down_write(page->mapping->i_mmap_rwsem) -> lock_page(page)
+> 
+> 
+> 
+> CPU0                                                       CPU1
+> 
+> kswapd                                                     vfs_fallocate()
+>  shrink_node()                                              shmem_fallocate()
+>   shrink_active_list()                                       unmap_mapping_range()
+>    page_referenced() << lock page:PG_locked >>                unmap_mapping_pages()  << down_write(mapping->i_mmap_rwsem) >>
+>     rmap_walk_file()                                           zap_page_range_single()
+>      down_read(mapping->i_mmap_rwsem) << W-locked on CPU1>>     unmap_page_range()
+>       rwsem_down_read_failed()                                   __split_huge_pmd()
+>        __rwsem_down_read_failed_common()                          __lock_page()  << PG_locked on CPU0 >>
+>         schedule()                                                 wait_on_page_bit_common()
+>                                                                     io_schedule()
+
+Very interesting, Sergey: many thanks for this report.
+
+There is no doubt that kswapd is right in its lock ordering:
+__split_huge_pmd() is in the wrong to be attempting lock_page().
+
+Which used not to be done, but was added in 5.8's c444eb564fb1 ("mm:
+thp: make the THP mapcount atomic against __split_huge_pmd_locked()").
+
+Which explains why this deadlock was not seen years ago: that
+surprised me at first, since the case you show to reproduce it is good,
+but I'd expect more common ways in which that deadlock could show up.
+
+And your report is remarkably timely too: I have two other reasons
+for looking at that change at the moment (I'm currently catching up
+with recent discussion of page_count versus mapcount when deciding
+COW page reuse).
+
+I won't say more tonight, but should have more to add tomorrow.
+
+Hugh
