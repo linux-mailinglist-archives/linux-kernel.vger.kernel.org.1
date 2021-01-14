@@ -2,98 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AAD2F6296
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7EA2F6297
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728929AbhANOAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729023AbhANOAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:00:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728629AbhANOAV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Jan 2021 09:00:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726730AbhANOAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:00:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83AA123A69;
-        Thu, 14 Jan 2021 13:59:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610632780;
-        bh=ladoP6+LmH3OTLqx40cXlLNjDwqMk+v5QZwHRlHcYHQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MS2p0kePgx1mItBQV8PxP9zm4Rnw2L2Xxk/El67hV9Vi+315U5V7diGBJwg8b7BN5
-         iSK4UmtGJFl6amo5/6t+q2BaLGWNMsqhUBTZevtK4j7TRCcvt8lS5rcKboq2tP99dK
-         e8asBdVB5kJVmvKsk7Ky5qWtUZG+HwuDiXlwRTOqJBtnLYg2iSroSnsVfWyohxaauQ
-         hmD5v1B36dJFqur3QcKpCornGufYDgx9LY3fy5KXxYZd7NjkL4lJ2jQPhD62nCLEAz
-         vA31LD5zSHLLDP24y7U18dWC1AnsCjaWze1PkuZB0RPOHeN1f+6IvNz6pOnZnj0lUq
-         r24FRwrefZGMw==
-Date:   Thu, 14 Jan 2021 13:59:06 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>
-Subject: Re: SPI not working on 5.10 and 5.11, bisected to 766c6b63aa04
- ("spi: fix client driver breakages when using GPIO descriptors")
-Message-ID: <20210114135906.GF4854@sirena.org.uk>
-References: <dc5d8d35-31aa-b36d-72b0-17c8a7c13061@csgroup.eu>
- <20210113123345.GD4641@sirena.org.uk>
- <9400d900-f315-815f-a358-16ed4963da6c@csgroup.eu>
- <20210114115958.GB4854@sirena.org.uk>
- <006d1594-8eec-3aad-1651-919071e89f3b@csgroup.eu>
- <20210114132258.GD4854@sirena.org.uk>
- <adbf508d-ed5a-e06a-4a59-98df0229d7b4@csgroup.eu>
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B9DC061574;
+        Thu, 14 Jan 2021 05:59:40 -0800 (PST)
+Date:   Thu, 14 Jan 2021 13:59:38 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610632779;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ogUHp5aiq/8iZeUtNqms1TJD2XrHTDH5G7wD1ffdJjc=;
+        b=HKf+URE829XVMa9gd06K9BOTKBNKGoWhhmtJ5G8gu4WYDAao9pqHTs7CygEpsBo8q5e34X
+        5BPRb8HGIllKDV0xhIITRqQaISsOhA5hfvUgFIAawVrNye+SKkrUXR4dORP7Lv7O8Az1ZY
+        dLjh0h8D87IIR4LhiayyWY83DuG/6CEIPqrANwBR8pZVMZS/Sq6X/OubEdEhgAtz/BtLDh
+        jGoR2jxwHFxlGFAgekYjj+waRAEWGIqW7PtQAON4VjSnj++F2JvorSf4KFTQE0ZmwrrHuA
+        wbOagLxSpEuj4szjWxenO6A+2gwRdhwGVW8HIlbu7tSp7x0zzUvoJcrfeDvdHQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610632779;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ogUHp5aiq/8iZeUtNqms1TJD2XrHTDH5G7wD1ffdJjc=;
+        b=d7dMMz91CbpGO8cdu2e9zrzwlioyDCWQm7dpEDsmqwhrKgcchXuaXH/FGLgLtvlpAgZCct
+        feBEXn7IA6i6R5Aw==
+From:   "tip-bot2 for Sami Tolvanen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sgx] x86/sgx: Fix the return type of sgx_init()
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Darren Kenny <darren.kenny@oracle.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210113232311.277302-1-samitolvanen@google.com>
+References: <20210113232311.277302-1-samitolvanen@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Il7n/DHsA0sMLmDu"
-Content-Disposition: inline
-In-Reply-To: <adbf508d-ed5a-e06a-4a59-98df0229d7b4@csgroup.eu>
-X-Cookie: You have taken yourself too seriously.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <161063277811.414.15752543711619531745.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/sgx branch of tip:
 
---Il7n/DHsA0sMLmDu
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     745b56b065618aaee7c2ab4ca3c85e2cdbebc1d6
+Gitweb:        https://git.kernel.org/tip/745b56b065618aaee7c2ab4ca3c85e2cdbebc1d6
+Author:        Sami Tolvanen <samitolvanen@google.com>
+AuthorDate:    Wed, 13 Jan 2021 15:23:11 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 14 Jan 2021 14:50:54 +01:00
 
-On Thu, Jan 14, 2021 at 02:42:26PM +0100, Christophe Leroy wrote:
-> Le 14/01/2021 =E0 14:22, Mark Brown a =E9crit=A0:
+x86/sgx: Fix the return type of sgx_init()
 
-> > For GPIO chipselects you should really fix the driver to just hand the
-> > GPIO off to the core rather than trying to implement this itself, that
-> > will avoid driver specific differences like this.
+device_initcall() expects a function of type initcall_t, which returns
+an integer. Change the signature of sgx_init() to match.
 
-> IIUC, it is not trivial as it requires implementing transfer_one() instead
-> of the existing transfer_one_message() in the driver. Am I right ?
+Fixes: e7e0545299d8c ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+Link: https://lkml.kernel.org/r/20210113232311.277302-1-samitolvanen@google.com
+---
+ arch/x86/kernel/cpu/sgx/main.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-Yes, that's a good idea in general though.  It should normally be pretty
-simple since the conversion is mostly just deleting code doing things
-which will be handled by the core.
-
-> What's the difference/benefit of transfer_one() compared to the existing =
-transfer_one_message() ?
-
-It factors out all the handling of chip selects, including per-transfer
-chip select inversion and so on, and also factors out all the handling
-of in-message delays.  If nothing else it reduces the amount of
-duplicated code that might require maintainance can have issues with
-misaligned expectations from the core or client drivers.
-
---Il7n/DHsA0sMLmDu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAATikACgkQJNaLcl1U
-h9BW6Af+Pw9Y1WvW7FDLeDR69lK5Jq9X67HuG7iEoAFDhmj/Q6Jb4DzPkSeG1LRs
-YRbcTBvXoPs2vVAU3bisyy4MmTmnhW5BtlkigV2NTXPKi3qzRu5YjhxEjPAmgeJ9
-RZhHco4yXMm7dP7g7EPvlb3VqjBH+ARZRnT5SN870EkDnQV6aEBR9YRHbQmKsabV
-VkU2uvRlXIdpJ9FKBbDcV0jWKqJdVphdBhEKhr9mWKxG5FBQ05iGyJdDL0c2zr5x
-oBubtYUiq/yd41w96NV4/4O9h9DmTDxiQ1QM8kW6mbgU4JykUhq5qr6ua3G0pRLC
-/9vXvRuBpx6IbHr7IM1p2oasKi1WsA==
-=nlRk
------END PGP SIGNATURE-----
-
---Il7n/DHsA0sMLmDu--
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index c519fc5..8df81a3 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -700,25 +700,27 @@ static bool __init sgx_page_cache_init(void)
+ 	return true;
+ }
+ 
+-static void __init sgx_init(void)
++static int __init sgx_init(void)
+ {
+ 	int ret;
+ 	int i;
+ 
+ 	if (!cpu_feature_enabled(X86_FEATURE_SGX))
+-		return;
++		return -ENODEV;
+ 
+ 	if (!sgx_page_cache_init())
+-		return;
++		return -ENOMEM;
+ 
+-	if (!sgx_page_reclaimer_init())
++	if (!sgx_page_reclaimer_init()) {
++		ret = -ENOMEM;
+ 		goto err_page_cache;
++	}
+ 
+ 	ret = sgx_drv_init();
+ 	if (ret)
+ 		goto err_kthread;
+ 
+-	return;
++	return 0;
+ 
+ err_kthread:
+ 	kthread_stop(ksgxd_tsk);
+@@ -728,6 +730,8 @@ err_page_cache:
+ 		vfree(sgx_epc_sections[i].pages);
+ 		memunmap(sgx_epc_sections[i].virt_addr);
+ 	}
++
++	return ret;
+ }
+ 
+ device_initcall(sgx_init);
