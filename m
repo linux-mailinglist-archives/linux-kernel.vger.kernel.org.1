@@ -2,234 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CEA42F5CE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DAAC2F5D01
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 10:15:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728009AbhANJHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 04:07:12 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:47988 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727319AbhANJHH (ORCPT
+        id S1727994AbhANJNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 04:13:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727244AbhANJM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 04:07:07 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0F3FE279;
-        Thu, 14 Jan 2021 10:06:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1610615184;
-        bh=tNMa+mShBy7Vx5Z8KggwYfkKbc+EU8VJr7oZaGAeAiw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uQ/F0rBRNzvZEsyM0aO5253P5Ci7MYAJPBLJvD6KBqFbzqwIdHYIvf7lQAK1NOZ+J
-         DF6BHHF7bfdcfxnRKlrqeeDPH0TJKZNzqr8FoixOtADUTWVUFr8gTtnIMuWoisbnaK
-         hU1FoQ5PqyM02veU5zuW4hkQRfR6UTVSvVOgq2NE=
-Date:   Thu, 14 Jan 2021 11:06:06 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo@jmondi.org>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        sergei.shtylyov@gmail.com
-Subject: Re: [PATCH v7 3/7] fixup! media: i2c: rdacm21: Break-out ov10640
- initialization
-Message-ID: <YAAJfkaZ4zCmjB7h@pendragon.ideasonboard.com>
-References: <20210113185506.119808-1-jacopo+renesas@jmondi.org>
- <20210113185506.119808-4-jacopo+renesas@jmondi.org>
- <X/+A7btfIZpdktrL@pendragon.ideasonboard.com>
- <20210114075228.wbvvzcwh5qwubpda@uno.localdomain>
+        Thu, 14 Jan 2021 04:12:59 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F35C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 01:12:13 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id s15so2593091plr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 01:12:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r2clGFKfMvWdEL24a/hrPW/SoKgcT/5YZOK8G2tupLA=;
+        b=X7SGbsqsGRlUtP0PJCg54RJ4TAlmaAHUG3xPdqjVb0oScLVfStGatbndpS03GsNgnP
+         Ay7KF7sGV28MuK8UBUQD50tmV7MICCg9iHgn3dDmdiN2V0+w2jb02zv0Fvhtiq/Aou7X
+         FWO4E0ky5/69bheieFiKWNwRnHzuorBEbyewE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r2clGFKfMvWdEL24a/hrPW/SoKgcT/5YZOK8G2tupLA=;
+        b=s/DNt5FkjiRVYrToQuTXuhEL3tJ0tE8sazy25Ovn4qnfVaJ7TRcIpIZRtUcMfdF6t4
+         Vf7ZjYmdebUN5bHSalDkN1bE3h0LvmUzcy7nyo5WsVWLBYyCdeIzzec4R9mQIzMRLvqg
+         H1krL34v/SYIVRw5eB1QziAzZvhwWhCR//QfXhCdGfkMdTPq8OZXCProDG8kjQtXkzhK
+         cZ1XWiifpKTjeEJjRYw+FBsORmcEIgoxnRW8ZDGU3or0Ar1K6SSt6b8XmXc2cJHu5jp1
+         jF1s0Stm3H11kpCKz8ulVjJlh4lijV1FV2IIsLvtqkXAuttKuMLhkio0XhokhC+iC8UH
+         2nbA==
+X-Gm-Message-State: AOAM5315/071aHLI72LLDqPBqIJrQubyf/CavNDXbeoEtce1EI/lcXY8
+        hd48kN4FT3FbpV4wNTXbIQyHPaHSuNgAug==
+X-Google-Smtp-Source: ABdhPJy9C6cAnQpEbsQZCyhTOnlPYlT+aq9iHVuiVO+8bwpNc2qySGRhOUi1NPBKSto4FHAI7rgh2g==
+X-Received: by 2002:a17:902:ea0f:b029:de:5fd5:abb9 with SMTP id s15-20020a170902ea0fb02900de5fd5abb9mr1123175plg.46.1610615532762;
+        Thu, 14 Jan 2021 01:12:12 -0800 (PST)
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com. [209.85.215.170])
+        by smtp.gmail.com with ESMTPSA id q16sm4801579pfg.139.2021.01.14.01.12.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Jan 2021 01:12:12 -0800 (PST)
+Received: by mail-pg1-f170.google.com with SMTP id n7so3369396pgg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 01:12:12 -0800 (PST)
+X-Received: by 2002:a92:ce8f:: with SMTP id r15mr4926327ilo.303.1610615178346;
+ Thu, 14 Jan 2021 01:06:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210114075228.wbvvzcwh5qwubpda@uno.localdomain>
+References: <20210106034124.30560-1-tientzu@chromium.org> <20210106034124.30560-3-tientzu@chromium.org>
+ <20210113124209.GA1383@lst.de>
+In-Reply-To: <20210113124209.GA1383@lst.de>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Thu, 14 Jan 2021 17:06:07 +0800
+X-Gmail-Original-Message-ID: <CALiNf2-a6JpbeyfCoGdjFAbguxwW5kn1r_Oq6yr+k1rGum7O8Q@mail.gmail.com>
+Message-ID: <CALiNf2-a6JpbeyfCoGdjFAbguxwW5kn1r_Oq6yr+k1rGum7O8Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 2/6] swiotlb: Add restricted DMA pool
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <joro@8bytes.org>, will@kernel.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
+        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
+        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        rdunlap@infradead.org, dan.j.williams@intel.com,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        xen-devel@lists.xenproject.org, Tomasz Figa <tfiga@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+On Wed, Jan 13, 2021 at 8:42 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> > +#ifdef CONFIG_SWIOTLB
+> > +     struct io_tlb_mem       *dma_io_tlb_mem;
+> >  #endif
+>
+> Please add a new config option for this code instead of always building
+> it when swiotlb is enabled.
+>
+> > +static int swiotlb_init_io_tlb_mem(struct io_tlb_mem *mem, phys_addr_t start,
+> > +                                size_t size)
+>
+> Can you split the refactoring in swiotlb.c into one or more prep
+> patches?
+>
+> > +static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
+> > +                                 struct device *dev)
+> > +{
+> > +     struct io_tlb_mem *mem = rmem->priv;
+> > +     int ret;
+> > +
+> > +     if (dev->dma_io_tlb_mem)
+> > +             return -EBUSY;
+> > +
+> > +     if (!mem) {
+> > +             mem = kzalloc(sizeof(*mem), GFP_KERNEL);
+> > +             if (!mem)
+> > +                     return -ENOMEM;
+>
+> What is the calling convention here that allows for a NULL and non-NULL
+> private data?
 
-On Thu, Jan 14, 2021 at 08:52:28AM +0100, Jacopo Mondi wrote:
-> On Thu, Jan 14, 2021 at 01:23:25AM +0200, Laurent Pinchart wrote:
-> > On Wed, Jan 13, 2021 at 07:55:01PM +0100, Jacopo Mondi wrote:
-> > > The embedded OV490 ISP chip provides a secondary SCCB interface and
-> > > two GPIO lines to control the connected OV10640 image sensor.
-> > >
-> > > Break out the OV10640 initialization from the OV490 initialization and
-> > > explicitely control the powerdown and reset GPIOs. After the image
-> >
-> > s/explicitely/explicitly/
-> >
-> > > sensor has been hard reset, implement a more clear handling of the
-> > > secondary SCCB interface to read the image sensor chip ID.
-> > >
-> > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > > ---
-> > >  drivers/media/i2c/rdacm21.c | 75 ++++++++++++++++++++++++++++++-------
-> > >  1 file changed, 61 insertions(+), 14 deletions(-)
-> > >
-> > > diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
-> > > index 0428e3209463..944009687de5 100644
-> > > --- a/drivers/media/i2c/rdacm21.c
-> > > +++ b/drivers/media/i2c/rdacm21.c
-> > > @@ -30,11 +30,24 @@
-> > >  #define OV490_PAGE_HIGH_REG		0xfffd
-> > >  #define OV490_PAGE_LOW_REG		0xfffe
-> > >
-> > > +/*
-> > > + * The SCCB slave handling is undocumented; the registers naming scheme is
-> > > + * totally arbitrary.
-> > > + */
-> > > +#define OV490_SCCB_SLAVE_WRITE		0x00
-> > > +#define OV490_SCCB_SLAVE_READ		0x01
-> > > +#define OV490_SCCB_SLAVE0_DIR		0x80195000
-> > > +#define OV490_SCCB_SLAVE0_ADDR_HIGH	0x80195001
-> > > +#define OV490_SCCB_SLAVE0_ADDR_LOW	0x80195002
-> > > +
-> > >  #define OV490_DVP_CTRL3			0x80286009
-> > >
-> > >  #define OV490_ODS_CTRL_FRAME_OUTPUT_EN	0x0c
-> > >  #define OV490_ODS_CTRL			0x8029d000
-> > >
-> > > +#define OV490_HOST_CMD			0x808000c0
-> > > +#define OV490_HOST_CMD_TRIGGER		0xc1
-> > > +
-> > >  #define OV490_ID_VAL			0x0490
-> > >  #define OV490_ID(_p, _v)		((((_p) & 0xff) << 8) | ((_v) & 0xff))
-> > >  #define OV490_PID			0x8080300a
-> > > @@ -42,12 +55,22 @@
-> > >  #define OV490_PID_TIMEOUT		20
-> > >  #define OV490_OUTPUT_EN_TIMEOUT		300
-> > >
-> > > +#define OV490_GPIO0_RESETB		0x01
-> >
-> > Shouldn't this be named just OV490_GPIO0 ? The fact that it's connected
-> > to the RESETB signal of the OV10640 is board-specific, not an OV490
-> > intrinsic property.
-> >
-> > BIT(0) ?
-> >
-> > > +#define OV490_SPWDN0			0x01
-> >
-> > Same here.
-> >
-> 
-> Correct, I'll fix...
-> 
-> > > +#define OV490_GPIO_SEL0			0x80800050
-> > > +#define OV490_GPIO_SEL1			0x80800051
-> > > +#define OV490_GPIO_DIRECTION0		0x80800054
-> > > +#define OV490_GPIO_DIRECTION1		0x80800055
-> > > +#define OV490_GPIO_OUTPUT_VALUE0	0x80800058
-> > > +#define OV490_GPIO_OUTPUT_VALUE1	0x80800059
-> > > +
-> > >  #define OV490_ISP_HSIZE_LOW		0x80820060
-> > >  #define OV490_ISP_HSIZE_HIGH		0x80820061
-> > >  #define OV490_ISP_VSIZE_LOW		0x80820062
-> > >  #define OV490_ISP_VSIZE_HIGH		0x80820063
-> > >
-> > > -#define OV10640_ID_LOW			0xa6
-> > > +#define OV10640_ID_HIGH			0xa6
-> > > +#define OV10640_CHIP_ID			0x300a
-> > >  #define OV10640_PIXEL_RATE		55000000
-> > >
-> > >  struct rdacm21_device {
-> > > @@ -306,6 +329,39 @@ static const struct v4l2_subdev_ops rdacm21_subdev_ops = {
-> > >  	.pad		= &rdacm21_subdev_pad_ops,
-> > >  };
-> > >
-> > > +static int ov10640_initialize(struct rdacm21_device *dev)
-> > > +{
-> > > +	u8 val;
-> > > +
-> > > +	/* Power-up OV10640 by setting RESETB and PWDNB pins high. */
-> > > +	ov490_write_reg(dev, OV490_GPIO_SEL0, OV490_GPIO0_RESETB);
-> > > +	ov490_write_reg(dev, OV490_GPIO_SEL1, OV490_SPWDN0);
-> > > +	ov490_write_reg(dev, OV490_GPIO_DIRECTION0, OV490_GPIO0_RESETB);
-> > > +	ov490_write_reg(dev, OV490_GPIO_DIRECTION1, OV490_SPWDN0);
-> > > +	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_GPIO0_RESETB);
-> > > +	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_SPWDN0);
-> > > +	usleep_range(3000, 5000);
-> >
-> > So the OV490 firmware doesn't handle this ?
-> 
-> Do you mean the delay or the reset of the ov10640 ?
-> 
-> I need the delay here otherwise reading the ov10640 id fails below.
-> Same for the reset :)
-> 
-> About reset, it seems it does not... The ov490 settings are loaded
-> from an EEPROM but I don't know what it content is, maybe it's just
-> about the imaging-related settings ?
-
-I meant the configuration of the GPIOs and the reset of the sensor, yes.
-I was just curious, as I was expecting the firmware to handle all the
-platform-specific data.
-
-> > > +
-> > > +	/* Read OV10640 ID to test communications. */
-> > > +	ov490_write_reg(dev, OV490_SCCB_SLAVE0_DIR, OV490_SCCB_SLAVE_READ);
-> > > +	ov490_write_reg(dev, OV490_SCCB_SLAVE0_ADDR_HIGH, OV10640_CHIP_ID >> 8);
-> > > +	ov490_write_reg(dev, OV490_SCCB_SLAVE0_ADDR_LOW, (u8)OV10640_CHIP_ID);
-> > > +
-> > > +	/* Trigger SCCB slave transaction and give it some time to complete. */
-> > > +	ov490_write_reg(dev, OV490_HOST_CMD, OV490_HOST_CMD_TRIGGER);
-> > > +	usleep_range(1000, 1500);
-> > > +
-> > > +	ov490_read_reg(dev, OV490_SCCB_SLAVE0_DIR, &val);
-> > > +	if (val != OV10640_ID_HIGH) {
-> > > +		dev_err(dev->dev, "OV10640 ID mismatch: (0x%02x)\n", val);
-> > > +		return -ENODEV;
-> > > +	}
-> >
-> > Would it make sense to create an ov490_sensor_read() helper ?
-> 
-> While developing this I went and also tested reading other registers
-> of the ov10640 and I had contradictory results. I'm mostly wondering
-> if OV490_HOST_CMD_TRIGGER is correct in all cases, as I have some BSP
-> code that uses a different value.
-> 
-> Can we wait for an helper until we have more users ?
-
-I don't mind.
-
-> > > +
-> > > +	dev_dbg(dev->dev, "OV10640 ID = 0x%2x\n", val);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > >  static int ov490_initialize(struct rdacm21_device *dev)
-> > >  {
-> > >  	u8 pid, ver, val;
-> > > @@ -349,20 +405,11 @@ static int ov490_initialize(struct rdacm21_device *dev)
-> > >  		return -ENODEV;
-> > >  	}
-> > >
-> > > -	/* Read OV10640 Id to test communications. */
-> > > -	ov490_write_reg(dev, 0x80195000, 0x01);
-> > > -	ov490_write_reg(dev, 0x80195001, 0x30);
-> > > -	ov490_write_reg(dev, 0x80195002, 0x0a);
-> > > -	ov490_write_reg(dev, 0x808000c0, 0xc1);
-> > > -
-> > > -	ov490_read_reg(dev, 0x80195000, &val);
-> > > -	if (val != OV10640_ID_LOW) {
-> > > -		dev_err(dev->dev, "OV10640 ID mismatch: (0x%02x)\n", val);
-> > > -		return -ENODEV;
-> > > -	}
-> > > -
-> > > -	dev_dbg(dev->dev, "OV10640 ID = 0x%2x\n", val);
-> > > +	ret = ov10640_initialize(dev);
-> > > +	if (ret)
-> > > +		return ret;
-> > >
-> > > +	/* Program OV490 with register-value table. */
-> > >  	for (i = 0; i < ARRAY_SIZE(ov490_regs_wizard); ++i) {
-> > >  		ret = ov490_write(dev, ov490_regs_wizard[i].reg,
-> > >  				  ov490_regs_wizard[i].val);
-
--- 
-Regards,
-
-Laurent Pinchart
+Since multiple devices can share the same pool, the private data,
+io_tlb_mem struct, will be initialized by the first device attached to
+it.
+This is similar to rmem_dma_device_init() in kernel/dma/coherent.c.
+I'll add a comment for it in next version.
