@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FC32F6387
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0332F6392
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 15:58:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729235AbhANOyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 09:54:07 -0500
-Received: from foss.arm.com ([217.140.110.172]:51026 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726236AbhANOyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:54:06 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38C49ED1;
-        Thu, 14 Jan 2021 06:53:20 -0800 (PST)
-Received: from [10.37.12.3] (unknown [10.37.12.3])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 40A493F70D;
-        Thu, 14 Jan 2021 06:53:18 -0800 (PST)
-Subject: Re: [PATCH v2 3/4] arm64: mte: Enable async tag check fault
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-References: <20210107172908.42686-1-vincenzo.frascino@arm.com>
- <20210107172908.42686-4-vincenzo.frascino@arm.com>
- <20210113181121.GF27045@gaia> <efbb0722-eb4e-7be2-b929-77ec91cc0ae0@arm.com>
- <20210114142512.GB16561@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <80492795-4ebf-0d77-3f07-37593845a733@arm.com>
-Date:   Thu, 14 Jan 2021 14:57:03 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729158AbhANO6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 09:58:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29873 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725878AbhANO6o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:58:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610636238;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/ppwJSqDEjfy1jUVKvhzNEie3ebwOMmvOLlmQbJW//U=;
+        b=I3OauxujAxmGEbgSBIQeeKwNtZPaudho6PbqePRBJYth99nnefJ3JWGYU0yrLVmao37gOA
+        FoEnpEqq5UlZJDbsJ984jGSH4KhiCS1JtyyRbZmOu9svdNT7ByZzOY+97vAGA8gZzKoila
+        Gjls+ylNPAJYTMNc2ZRte+ItFwxJ1kg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-188-wv0VLSzDMN-f09iPugNMOw-1; Thu, 14 Jan 2021 09:57:16 -0500
+X-MC-Unique: wv0VLSzDMN-f09iPugNMOw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA301107ACF7;
+        Thu, 14 Jan 2021 14:57:14 +0000 (UTC)
+Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 39F5B10023B9;
+        Thu, 14 Jan 2021 14:57:13 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 08:57:11 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Bernd Petrovitsch <bernd@petrovitsch.priv.at>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Toolchain-dependent config options
+Message-ID: <20210114145711.3yfx2x6snjij3bxl@treble>
+References: <20210113222112.ej4rrd5xw2pwegvw@treble>
+ <CAK7LNASbYiZ+UVTmUwRDGMMHQXO-oE-3a4RxbEqX+=dCG2U6dw@mail.gmail.com>
+ <53fccf6d59938e94f71a823d704e26903b98fb7d.camel@petrovitsch.priv.at>
 MIME-Version: 1.0
-In-Reply-To: <20210114142512.GB16561@gaia>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <53fccf6d59938e94f71a823d704e26903b98fb7d.camel@petrovitsch.priv.at>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/14/21 2:25 PM, Catalin Marinas wrote:
-> On Thu, Jan 14, 2021 at 10:24:25AM +0000, Vincenzo Frascino wrote:
->> On 1/13/21 6:11 PM, Catalin Marinas wrote:
->>> On Thu, Jan 07, 2021 at 05:29:07PM +0000, Vincenzo Frascino wrote:
->>>>  static inline void mte_sync_tags(pte_t *ptep, pte_t pte)
->>>>  {
->>>>  }
->>>> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
->>>> index 5346953e4382..74b020ce72d7 100644
->>>> --- a/arch/arm64/kernel/entry-common.c
->>>> +++ b/arch/arm64/kernel/entry-common.c
->>>> @@ -37,6 +37,8 @@ static void noinstr enter_from_kernel_mode(struct pt_regs *regs)
->>>>  	lockdep_hardirqs_off(CALLER_ADDR0);
->>>>  	rcu_irq_enter_check_tick();
->>>>  	trace_hardirqs_off_finish();
->>>> +
->>>> +	mte_check_tfsr_el1();
->>>>  }
->>>>  
->>>>  /*
->>>> @@ -47,6 +49,8 @@ static void noinstr exit_to_kernel_mode(struct pt_regs *regs)
->>>>  {
->>>>  	lockdep_assert_irqs_disabled();
->>>>  
->>>> +	mte_check_tfsr_el1();
->>>> +
->>>>  	if (interrupts_enabled(regs)) {
->>>>  		if (regs->exit_rcu) {
->>>>  			trace_hardirqs_on_prepare();
->>>> @@ -243,6 +247,8 @@ asmlinkage void noinstr enter_from_user_mode(void)
->>>>  
->>>>  asmlinkage void noinstr exit_to_user_mode(void)
->>>>  {
->>>> +	mte_check_tfsr_el1();
->>>
->>> While for kernel entry the asynchronous faults are sync'ed automatically
->>> with TFSR_EL1, we don't have this for exit, so we'd need an explicit
->>> DSB. But rather than placing it here, it's better if we add a bool sync
->>> argument to mte_check_tfsr_el1() which issues a dsb() before checking
->>> the register. I think that's the only place where such argument would be
->>> true (for now).
->>
->> Good point, I will add the dsb() in mte_check_tfsr_el1() but instead of a bool
->> parameter I will add something more explicit.
+On Thu, Jan 14, 2021 at 12:55:26PM +0100, Bernd Petrovitsch wrote:
+> Hi all!
 > 
-> Or rename the function to mte_check_tfsr_el1_no_sync() and have a static
-> inline mte_check_tfsr_el1() which issues a dsb() before calling the
-> *no_sync variant.
+> On Thu, 2021-01-14 at 13:56 +0900, Masahiro Yamada wrote:
+> > On Thu, Jan 14, 2021 at 7:21 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> [...]
+> > > If I copy a config with CONFIG_GCC_PLUGINS to another system which
+> > > doesn't have the gcc-plugin-devel package, it gets silently disabled by
+> > > "make olddefconfig".
+> > > 
+> > > I've seen multiple cases lately where this is causing confusion.  I
+> > > suspect the problem is getting worse with recent added support for a
+> > > variety of toolchains and toolchain-dependent features.
+> > > 
+> > > Would it be possible to have an error (or at least a warning) in this
+> > > case?
+> > > 
+> > > For example, a "depends-error" which triggers an error if its failure
+> > > would disable a feature?
+> [...]
+> > We disable any feature that is unsupported by the compiler in use.
+> > 
+> > Conventionally, we did that in the top Makefile
+> > by using $(call cc-option, ) macro or by running some scripts.
+> > 
+> > Recently, we are moving such compiler tests to the Kconfig stage.
+> > 
+> > Anyway, we disable unsupported features so any combination
+> > of CONFIG options builds successfully.
+> > This will ease randconfg and allmodconfig tests.
 > 
-> Adding an enum instead here is not worth it (if that's what you meant by
-> not using a bool).
+> For options of $CC, that makes sense since there are different
+> compilers and lots of versions of them out there.
 > 
+> > A lot of people and CI systems are running allmodconfig tests
+> > for various architectures and toolchains.
+> 
+> Isn't some kind of defying (or more killing) the usefulness
+> of regression compile runs if one does `make allmodconfig`
+> and some (lots?) of stuff gets automatically configured
+> out just because some
+> -dev(|el) package is missing?
 
-I like this option more, thanks for pointing it out.
+Right, it sort of defeats the purpose of CI if new toolchain-dependent
+features never get tested.  There needs to be some way to alert the user
+they're not testing everything, despite "allyesconfig".
+
+I suppose such config options can stop using this new "depends on
+some_script" feature and just do it the old-fashioned way with an
+$(error) in the makefile.
 
 -- 
-Regards,
-Vincenzo
+Josh
+
