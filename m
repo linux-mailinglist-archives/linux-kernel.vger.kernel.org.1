@@ -2,147 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F27D02F8640
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1AA2F864A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388310AbhAOUGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 15:06:32 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:36386 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbhAOUG3 (ORCPT
+        id S1726815AbhAOUJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 15:09:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726136AbhAOUJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 15:06:29 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10FK3pqs040051;
-        Fri, 15 Jan 2021 20:05:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=4+iqo9mstJm/PHD1CMGgzYJg604QoA69wE32Q+faFOA=;
- b=cEIampobplEClwEe2j4+iY6VFITXyI7EUYlL9Uoy/SrOGveHyN0oV+kxV7RhtMvA9ifB
- X8i/vugzZANc3MlygzvT3KYZgNF7hZmMWru93mGytMqw6Fa+nsNQRCyN2pRCt6zsJKtM
- KWC3XMsLITilgceKfmIukO69h26HbAc2NZxwmhzy0uSFMKjCFIq6mvDLBkBMmLRTghDv
- 17QDz6ebf71VV1qJmPePgK8N2KTsnSTW4zlZdUjAu3PorOFrHIZZWwml/nFAWNPMhHMm
- 8MBXekXPwmm16J2CNqbKnhza7HNrsip8/grAllHgYqHHOy+3DzcdyndYouxDR1voGmGA Uw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 360kg26maa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Jan 2021 20:05:35 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10FK52aH169710;
-        Fri, 15 Jan 2021 20:05:34 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 360keqce31-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Jan 2021 20:05:34 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10FK5VJV004883;
-        Fri, 15 Jan 2021 20:05:31 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 15 Jan 2021 12:05:30 -0800
-Subject: Re: [RFC PATCH 2/3] hugetlb: convert page_huge_active() to
- HPageMigratable flag
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210111210152.118394-1-mike.kravetz@oracle.com>
- <20210111210152.118394-3-mike.kravetz@oracle.com>
- <20210115091755.GB4092@linux>
- <d98039ef-8489-6d8c-a323-44e3f0d8acee@oracle.com>
-Message-ID: <41ca9f90-63e3-f991-3f78-433f77250527@oracle.com>
-Date:   Fri, 15 Jan 2021 12:05:29 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Fri, 15 Jan 2021 15:09:56 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB80DC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:09:15 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 190so8483614wmz.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:09:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c+7DadD0dH9745VxT7RGgUcZc8wWMxigcxcfDKgHA0M=;
+        b=NGmfFs6An4O5Z1bTOhZvumD/b4aFaBLo5GodZjrpzZAET9hm3fXvg9Nat+QCjYyvUd
+         Cu51qhHS/zcfGaUQTdOBKgaBLX6K/BCwPlrksmeEtHwUoIUBY9nB42PNg0260erKlRlj
+         2DUVbt/VkBrxXGJW9CIugFaL8RtaUt01KqIeKMDG289Vs46noZhkbpHesaP2CnwmRG2N
+         iXVwbCu6GW+WxsV6056N191kIDEz/EmAxTeGZW8Zy7NCzdpFepH5NSB8fni7nBIYJ763
+         fxfAEDkdKoVffdFqVIJMUAuFA2wHGu9xpBnfqJK/+at08FCDWczw/hm8ESWiPSMbuGdq
+         zWRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c+7DadD0dH9745VxT7RGgUcZc8wWMxigcxcfDKgHA0M=;
+        b=cDn8tXBivHCWMlqiNWeWSs1qrUrpDAH3txLy/bA6CMOk1ad3BuVM0xZRb0fTI1AIEv
+         uif/YqP2W99cGs92BnQyL3XGqXMH4Y+vIzZfq6tPZZ7UcEpkufTiZhWI/x18Q9MRZsEE
+         MRmSiDGdVZSvHZVfo+IbogBBTvQQ502ukiwrgnQ4d0JWI4tIspWXN/5gmcXL/XBCvnz3
+         3IOd0ZCD8cyeKxrXk73UttPkFFISOYO9VMHHkOCNKnaWPrLu9HkrMLP5ZJVql+ictjzL
+         ZoR3D27vWjHElbuAeSyJOkSxV7IHwyCK3aoT1CLNYhuMuqdSJinbgNRjSZAFBySDwMbG
+         JSfw==
+X-Gm-Message-State: AOAM531Lz+sO7sHYaVKWWvsQuTT5AQGyTlgiPRW8ZrtiPrXp/cpwBDGJ
+        +YOHND4IjCmvJL7mjWydxOwG1A==
+X-Google-Smtp-Source: ABdhPJzRbd30yjZefst2rKry0v+qGXIk906iFx/zco+XZMf5YM39ujaWaXx9Rhy6Yqec4ppN1urxlA==
+X-Received: by 2002:a1c:a707:: with SMTP id q7mr10222048wme.15.1610741354435;
+        Fri, 15 Jan 2021 12:09:14 -0800 (PST)
+Received: from dell.default ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id d85sm9187863wmd.2.2021.01.15.12.09.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 12:09:13 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Dany Madden <drt@linux.ibm.com>,
+        Daris A Nevil <dnevil@snmc.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Erik Stahlman <erik@vt.edu>,
+        Geoff Levand <geoff@infradead.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Ishizaki Kou <kou.ishizaki@toshiba.co.jp>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jens Osterkamp <Jens.Osterkamp@de.ibm.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Allen <jallen@linux.vnet.ibm.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Lijun Pan <ljp@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>, netdev@vger.kernel.org,
+        Nicolas Pitre <nico@fluxnic.net>, Paul Durrant <paul@xen.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Cammaert <pc@denkart.be>,
+        Russell King <rmk@arm.linux.org.uk>,
+        Rusty Russell <rusty@rustcorp.com.au>,
+        Santiago Leon <santi_leon@yahoo.com>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
+        Utz Bacher <utz.bacher@de.ibm.com>,
+        Wei Liu <wei.liu@kernel.org>, xen-devel@lists.xenproject.org
+Subject: [RESEND v2 0/7] Rid W=1 warnings in Ethernet
+Date:   Fri, 15 Jan 2021 20:08:58 +0000
+Message-Id: <20210115200905.3470941-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <d98039ef-8489-6d8c-a323-44e3f0d8acee@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9865 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 spamscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101150121
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9865 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- clxscore=1015 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101150121
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/15/21 9:43 AM, Mike Kravetz wrote:
-> On 1/15/21 1:17 AM, Oscar Salvador wrote:
->> On Mon, Jan 11, 2021 at 01:01:51PM -0800, Mike Kravetz wrote:
->>> Use the new hugetlb page specific flag to replace the page_huge_active
->>> interfaces.  By it's name, page_huge_active implied that a huge page
->>> was on the active list.  However, that is not really what code checking
->>> the flag wanted to know.  It really wanted to determine if the huge
->>> page could be migrated.  This happens when the page is actually added
->>> the page cache and/or task page table.  This is the reasoning behind the
->>> name change.
->>>
->>> The VM_BUG_ON_PAGE() calls in the interfaces were not really necessary
->>> as in all case but one we KNOW the page is a hugetlb page.  Therefore,
->>> they are removed.  In one call to HPageMigratable() is it possible for
->>> the page to not be a hugetlb page due to a race.  However, the code
->>> making the call (scan_movable_pages) is inherently racy, and page state
->>> will be validated later in the migration process.
->>>
->>> Note:  Since HPageMigratable is used outside hugetlb.c, it can not be
->>> static.  Therefore, a new set of hugetlb page flag macros is added for
->>> non-static flag functions.
->>
->> Two things about this one:
->>
->> I am not sure about the name of this one.
->> It is true that page_huge_active() was only called by memory-hotplug and all
->> it wanted to know was whether the page was in-use and so if it made sense
->> to migrate it, so I see some value in the new PageMigratable flag.
->>
->> However, not all in-use hugetlb can be migrated, e.g: we might have constraints
->> when it comes to migrate certain sizes of hugetlb, right?
->> So setting HPageMigratable to all active hugetlb pages might be a bit misleading?
->> HPageActive maybe? (Sorry, don't have a replacement)
-> 
-> You concerns about the name change are correct.
-> 
-> The reason for the change came about from discussions about Muchun's series
-> of fixes and the need for a new 'page is freed' status to fix a race.  In
-> that discussion, Michal asked 'Why can't we simply set page_huge_active when
-> the page is allocated and put on the active list?'.  That is mentioned above,
-> but we really do not want to try and migrate pages after they are allocated
-> and before they are in use.  That causes problems in the fault handling code.
-> 
-> Anyway, that is how the suggestion for Migration came about.
-> 
-> In that discussion David Hildenbrand noted that code in alloc_contig_range
-> should migrate free hugetlb pages, but there is no support for that today.
-> I plan to look at that if nobody else does.  When such code is added, the
-> name 'Migratable' will become less applicable.
-> 
-> I'm not great at naming.  Perhaps 'In_Use' as a flag name might fit better.
-> 
+Resending the stragglers again.
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.                                                                                         
 
-I went back and took a closer look.  Migration is the reason the existing
-page_huge_active interfaces were introduced.  And, the only use of the
-page_huge_active check is to determine if a page can be migrated.  So,
-I think 'Migratable' may be the most suitable name.
+No changes since v2, just a rebase onto net-next.
 
-To address the concern about not all hugetlb sizes are migratable, we can
-just make a check before setting the flag.  This should even help in the
-migration/offline paths as we will know sooner if the page can be
-migrated or not.
+v2:                                                                                                             
+ - Squashed IBM patches                                                                                     
+ - Fixed real issue in SMSC
+ - Added Andrew's Reviewed-by tags on remainder
 
-We can address naming in the 'migrating free hugetlb pages' issue when
-that code is written.
+Lee Jones (7):
+  net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
+  net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
+  net: ethernet: ti: am65-cpsw-qos: Demote non-conformant function
+    header
+  net: ethernet: ti: am65-cpts: Document am65_cpts_rx_enable()'s 'en'
+    parameter
+  net: ethernet: ibm: ibmvnic: Fix some kernel-doc misdemeanours
+  net: ethernet: toshiba: ps3_gelic_net: Fix some kernel-doc
+    misdemeanours
+  net: ethernet: toshiba: spider_net: Document a whole bunch of function
+    parameters
+
+ drivers/net/ethernet/ibm/ibmvnic.c           | 27 ++++++++++----------
+ drivers/net/ethernet/smsc/smc91x.c           |  2 +-
+ drivers/net/ethernet/ti/am65-cpsw-qos.c      |  2 +-
+ drivers/net/ethernet/ti/am65-cpts.c          |  2 +-
+ drivers/net/ethernet/toshiba/ps3_gelic_net.c |  8 +++---
+ drivers/net/ethernet/toshiba/spider_net.c    | 18 ++++++++-----
+ drivers/net/xen-netback/xenbus.c             |  4 +--
+ drivers/net/xen-netfront.c                   |  6 ++---
+ 8 files changed, 37 insertions(+), 32 deletions(-)
+
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: bpf@vger.kernel.org
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Dany Madden <drt@linux.ibm.com>
+Cc: Daris A Nevil <dnevil@snmc.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Erik Stahlman <erik@vt.edu>
+Cc: Geoff Levand <geoff@infradead.org>
+Cc: Grygorii Strashko <grygorii.strashko@ti.com>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Ishizaki Kou <kou.ishizaki@toshiba.co.jp>
+Cc: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Jens Osterkamp <Jens.Osterkamp@de.ibm.com>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: John Allen <jallen@linux.vnet.ibm.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Kurt Kanzenbach <kurt@linutronix.de>
+Cc: Lijun Pan <ljp@linux.ibm.com>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: netdev@vger.kernel.org
+Cc: Nicolas Pitre <nico@fluxnic.net>
+Cc: Paul Durrant <paul@xen.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Peter Cammaert <pc@denkart.be>
+Cc: Russell King <rmk@arm.linux.org.uk>
+Cc: Rusty Russell <rusty@rustcorp.com.au>
+Cc: Santiago Leon <santi_leon@yahoo.com>
+Cc: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+Cc: Thomas Falcon <tlfalcon@linux.vnet.ibm.com>
+Cc: Utz Bacher <utz.bacher@de.ibm.com>
+Cc: Wei Liu <wei.liu@kernel.org>
+Cc: xen-devel@lists.xenproject.org
 -- 
-Mike Kravetz
+2.25.1
+
