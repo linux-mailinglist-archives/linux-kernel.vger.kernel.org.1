@@ -2,112 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976332F77DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8A62F77DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:44:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbhAOLoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:44:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23137 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725880AbhAOLoA (ORCPT
+        id S1726962AbhAOLoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:44:09 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:49822 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726375AbhAOLoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:44:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610710954;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bhu4y2f3F+cLocNZKlQ1jcFMY431IMwK7wnJQxmVPic=;
-        b=GUFLj7Vaw3qgvXlkajK/HF3tAy7kLeU72aoEX4ELwGQswame6Me+uB5ZnWwkrJ722e+LsX
-        Zv+D5SpL2CYgM/n67LPxJlxH/XJzSHMGuywf+j3btT4NFn0AIge8ImupKSWMSvemyuPxSK
-        iAAANSeOykN1r5KT0Sl40V+z3PdeXjQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-195-gXi2dR1QPn-FMSxt9-y8_A-1; Fri, 15 Jan 2021 06:42:32 -0500
-X-MC-Unique: gXi2dR1QPn-FMSxt9-y8_A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E88011034B3A;
-        Fri, 15 Jan 2021 11:42:29 +0000 (UTC)
-Received: from localhost (ovpn-12-38.pek2.redhat.com [10.72.12.38])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 51FD65C1A3;
-        Fri, 15 Jan 2021 11:42:23 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 19:42:19 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        David Hildenbrand <david@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org
-Subject: Re: [PATCH 0/2] x86/setup: consolidate early memory reservations
-Message-ID: <20210115114219.GA19300@MiWiFi-R3L-srv>
-References: <20210115083255.12744-1-rppt@kernel.org>
+        Fri, 15 Jan 2021 06:44:08 -0500
+Received: by mail-io1-f70.google.com with SMTP id v7so13994814ioj.16
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 03:43:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=hpftx0jAbEhydpZgk9H3QZlGfFkysavuEi8adv7RKds=;
+        b=iN//9+qjRUKxrZv3njxot4IzdI0TEQb2e+U1XOAxKJHqnsBjET2YBfa+RLfokxk3NG
+         aoqxt6a5G3PpsCwg26yRuJPlFL8CWUqiSJb+iLkcW2Lt+630Gb+hmmTG7PliN7gFDDuw
+         aABZm35dIcwgHdEjVWtFM4JHtS7CFeNr12UOclIoZG9yN/bFFBaWm3HTSmYxBfo2mTz/
+         DC58ZBam4Zu4kR1sNan5qOpbyC80EFs53fTI8n91KJJ22FVR9qA2rbOiw+YqA0MyTSGQ
+         q+JFgt6XSnvwNwmbuzVfmnOM6Z8nnEaLIjbTtxGbOk0MmKryd8F1BGsMHCRBAHt1LMx8
+         fwuw==
+X-Gm-Message-State: AOAM533/ECzaLEZRvEuSY0kMSLf9MnXEGC6OSpGpDfu3tE8R5VqgEy2G
+        7QlyMh4YPDn4s9eJ+BKllUV3dl+WAd30V91e4s+X0OlPEqYB
+X-Google-Smtp-Source: ABdhPJwjmrFwQlb+qBOZ4wN2CHp7/cgF51rpj0BMoV9EtlktQh2agcShFwn5uuexu5w0lSeAfNKLkN66mJghx+oA5rrFkXV6oj4n
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210115083255.12744-1-rppt@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Received: by 2002:a92:b6ca:: with SMTP id m71mr10328318ill.232.1610711007730;
+ Fri, 15 Jan 2021 03:43:27 -0800 (PST)
+Date:   Fri, 15 Jan 2021 03:43:27 -0800
+In-Reply-To: <00000000000077819e05b8e0acc8@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000073a06905b8eee114@google.com>
+Subject: Re: WARNING in smk_write_relabel_self
+From:   syzbot <syzbot+670d1a1e6b6face0440a@syzkaller.appspotmail.com>
+To:     casey@schaufler-ca.com, jmorris@namei.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, serge@hallyn.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/15/21 at 10:32am, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Hi,
-> 
-> David noticed that we do some of memblock_reserve() calls after allocations
-> are possible:
-> 
-> https://lore.kernel.org/lkml/6ba6bde3-1520-5cd0-f987-32d543f0b79f@redhat.com
+syzbot has found a reproducer for the following issue on:
 
-Thanks for CC-ing me, so I think the above patch from Roman is dangerous.
-KASLR does put kernel randomly in a place, but we did a brutal parse to
-get SRAT table so that we know where is hotpluggable area during boot
-decompression stage. In kernel, at the beginning, we don't know that
-before ACPI init. Roman's patch is wrong if I don't miss something.
+HEAD commit:    5ee88057 Merge tag 'drm-fixes-2021-01-15' of git://anongit..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16a68ee7500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ee2266946ed36986
+dashboard link: https://syzkaller.appspot.com/bug?extid=670d1a1e6b6face0440a
+compiler:       clang version 11.0.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ec309f500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15d8889f500000
 
-I will add comment in that thread.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+670d1a1e6b6face0440a@syzkaller.appspotmail.com
 
-Thanks
-Baoquan
-
-> 
-> For now there is no actual problem because in top-down mode we allocate
-> from the end of the memory and in bottom-up mode we allocate above the
-> kernel image. But there is a patch in the mm tree that allow bottom-up
-> allocations below the kernel:
-> 
-> https://lore.kernel.org/lkml/20201217201214.3414100-2-guro@fb.com
-> 
-> and with this change we may get a memory corruption if an allocation steps
-> on some of the firmware areas that are yet to be reserved.
-> 
-> The below patches consolidate early memory reservations done during
-> setup_arch() so that memory used by firmware, bootloader, kernel text/data
-> and the memory that should be excluded from the available memory for
-> whatever other reason is reserved before memblock allocations are possible.
-> 
-> The patches are vs v5.11-rc3-mmots-2021-01-12-02-00 as I think they are
-> prerequisite for the memblock bottom-up changes, but if needed I can rebase
-> then on another tree.
-> 
-> Mike Rapoport (2):
->   x86/setup: consolidate early memory reservations
->   x86/setup: merge several reservations of start of the memory
-> 
->  arch/x86/kernel/setup.c | 85 +++++++++++++++++++++--------------------
->  1 file changed, 43 insertions(+), 42 deletions(-)
-> 
-> -- 
-> 2.28.0
-> 
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8457 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5020
+Modules linked in:
+CPU: 0 PID: 8457 Comm: syz-executor864 Not tainted 5.11.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5020
+Code: aa 09 00 e9 dd fd ff ff 44 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c eb fd ff ff 4c 89 ef e8 54 aa 09 00 8b 74 24 18 e9 da fd ff ff <0f> 0b e9 f3 fd ff ff a9 00 00 08 00 75 16 8b 4c 24 1c 89 cb 81 e3
+RSP: 0018:ffffc900012ef9a0 EFLAGS: 00010246
+RAX: ffffc900012efa20 RBX: ffffc900012efa20 RCX: 0000000000000000
+RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc900012efa48
+RBP: ffffc900012efae0 R08: dffffc0000000000 R09: ffffc900012efa20
+R10: fffff5200025df49 R11: 0000000000000000 R12: dffffc0000000000
+R13: 0000000000000012 R14: 1ffff9200025df40 R15: 0000000000040cc0
+FS:  00000000023a2880(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8e9dc94000 CR3: 0000000014b8a000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x40/0x130 mm/slab_common.c:837
+ kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
+ kmalloc_large include/linux/slab.h:481 [inline]
+ __kmalloc_track_caller+0x246/0x330 mm/slub.c:4457
+ memdup_user_nul+0x26/0xf0 mm/util.c:260
+ smk_write_relabel_self+0x17a/0x510 security/smack/smackfs.c:2748
+ vfs_write+0x289/0xc90 fs/read_write.c:603
+ ksys_write+0x171/0x2a0 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440389
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffd61b9f558 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440389
+RDX: 0000000020000398 RSI: 0000000020000340 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401b90
+R13: 0000000000401c20 R14: 0000000000000000 R15: 0000000000000000
 
