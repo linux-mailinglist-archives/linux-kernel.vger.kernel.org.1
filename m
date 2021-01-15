@@ -2,145 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C98D2F82CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DAE2F82D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728375AbhAORpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:45:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726309AbhAORpd (ORCPT
+        id S1730489AbhAORqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:46:14 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:58619 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728849AbhAORqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:45:33 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A871CC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:44:52 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id o144so5800796ybc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:44:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tM4MaXgvTZAlvr1leXTujrQPLxqm/ubLgNUK1RNGKmU=;
-        b=C6TxA79SS2UHJZWdjOMsdX5j68QB687xUftG/IEQRsXZBbcqHTKLZqBvIQQ/f3tPLt
-         KisHSDb8dANHLMht8Ztl6L5lBkGSbu8V2hwlXHfu4I2csQYrvaxrsYFh8P/9WPPe4vTP
-         pb78VMwiNnqt169FBuqm8h0oJl7wrovy6XUFuW0bRVH5dAQpIv9akaF8wtjhlFpr9zbc
-         uRJ4sG88aJZ8bEc8lu/6CqoGgu5soHlqnUsj3HhZABuF3U7kecNGmBxAaF7AgOzRFpMg
-         kMCWsnrfADjqTuz/lccK25DnmtFHhlmO+hqDV1HyxIlXcPoqYaq+5XqKUBloIn+IQKD3
-         10JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tM4MaXgvTZAlvr1leXTujrQPLxqm/ubLgNUK1RNGKmU=;
-        b=ZYIWh4KqohZbDr0J3xIDT5TTN9VB0AmhUMiy4eM7EpOXzfWms/BucdubevQsZQCcLf
-         NDv8MKUN+Z4N+a5oxAEFDNeT3teeFfpjpMBXtlPHR9kL9TcNJXM53zMtwMzwz0Iy/i7O
-         PHD3pHShCurIpMCKm3w23jthtoIYUkb5BXHuruECACFSOoZRYHgQ4brSWZEQYGk86Vw9
-         VtRoCsWUlv82iny9+PkrERu47n3LS8tVIeTGkTjMqyxFEauMYpODiuIwMZFdDDeOR/5p
-         /4941Wbl/xkt9PNgZxYsOtetpHUAEJF4xgMuj/AniEtTwleo2YervhJtozysUT48KMIl
-         I0qQ==
-X-Gm-Message-State: AOAM5333JpG+o1lLd4aBc5kVu53biZzCiMAIx+JORJUq91P3zdreuRt1
-        YaRK/n+w1ZI6/34CHU48bHtz36O+7v5aQtV8x4Sa4Q==
-X-Google-Smtp-Source: ABdhPJzOpXG72PdWzknvcYxjm8t378ZP8M5mL+Ez5KLDIpZx81kJp0pmKfaanhvbEoSDWZ2FNufqczsa/hxe4/FUXiI=
-X-Received: by 2002:a25:c343:: with SMTP id t64mr4791124ybf.228.1610732691634;
- Fri, 15 Jan 2021 09:44:51 -0800 (PST)
+        Fri, 15 Jan 2021 12:46:14 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610732739; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=a8ujjx/etzALhWVqswySGv673znSR41d9Rv5ixKpPRs=; b=v+dwexm5K2U63TKeBeDGI4QQz5UhResgdSqW6RQB/F3F90hiTGddDWzt2OJFC5WE97pnbDQ7
+ aTiTSWb/N/V3txtTO3wQcDdA3PrItNGcsKCDmPbdnPHhGa7qkVmbTJ4Y/onzChVl0ErT14iJ
+ rTHi1r007L1JocjZuXszwRFvOrI=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 6001d4a88a0374a501b6d90b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 Jan 2021 17:45:12
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 45726C43464; Fri, 15 Jan 2021 17:45:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 27039C433CA;
+        Fri, 15 Jan 2021 17:45:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 27039C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v2 1/3] bus: mhi: core: Clear devices when moving
+ execution environments
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, carl.yin@quectel.com,
+        naveen.kumar@quectel.com, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org
+References: <1610651795-31287-1-git-send-email-bbhatt@codeaurora.org>
+ <1610651795-31287-2-git-send-email-bbhatt@codeaurora.org>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <7629e0f1-0046-b22c-7d1e-2bf6851c8725@codeaurora.org>
+Date:   Fri, 15 Jan 2021 09:45:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201218031703.3053753-1-saravanak@google.com>
- <X/dpkgTnUk+inKHK@kroah.com> <e28e1f38d87c12a3c714a6573beba6e1@kernel.org>
- <ba2fcbfb-d714-2f73-3bd0-962f49363b62@nvidia.com> <CAGETcx8pdPnH1ndOCoi7Qyz8DDshCfMTzDLQM=oEaCjyds9reA@mail.gmail.com>
- <17703ac8-2238-0b64-3c98-ddadc7ae8a36@nvidia.com> <CAGETcx-=y4Ps41Lb0b_MTCbNTC_ah0cJTmPP+GajywFBc7kEfw@mail.gmail.com>
- <f0240065-a4a0-d985-a696-eba4d42ea580@nvidia.com> <CAGETcx_QmbOcof5T8Wo_zFXKB+qswPN3Cbwz5a6A+m+VrnWg0A@mail.gmail.com>
- <a38c0566-a58e-aaf7-ef57-dc294c4e71b4@nvidia.com> <CAGETcx9szf-=JjFNp0p-0LmOfOU1MWE3QqDNe-bAn2wXPH9pEQ@mail.gmail.com>
- <f3683601-66db-ffe3-9066-ac94a9372727@nvidia.com>
-In-Reply-To: <f3683601-66db-ffe3-9066-ac94a9372727@nvidia.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 15 Jan 2021 09:44:15 -0800
-Message-ID: <CAGETcx-3wjcmTgrqEyDiHx7dj0m3ME8PmVyGm2kLjFoUT=bfAQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] Enable fw_devlink=on by default
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1610651795-31287-2-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 8:13 AM Jon Hunter <jonathanh@nvidia.com> wrote:
->
->
-> On 14/01/2021 21:50, Saravana Kannan wrote:
-> > On Thu, Jan 14, 2021 at 10:55 AM Jon Hunter <jonathanh@nvidia.com> wrote:
-> >>
-> >>
-> >> On 14/01/2021 16:52, Saravana Kannan wrote:
-> >>
-> >> ...
-> >>
-> >>> Thanks! I think you forgot to enable those logs though. Also, while
-> >>> you are at it, maybe enable the logs in device_link_add() too please?
-> >>
-> >>
-> >> Sorry try this one.
-> >>
-> >> Cheers
-> >> Jon
-> >
-> > Phew! That took almost 4 hours to debug on the side! I think I figured
-> > it out. Can you try this patch? If it works or improves things, I'll
-> > explain why it helps.
-> >
-> > -Saravana
-> >
-> > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > index 5f9eed79a8aa..1c8c65c4a887 100644
-> > --- a/drivers/of/property.c
-> > +++ b/drivers/of/property.c
-> > @@ -1258,6 +1258,8 @@ DEFINE_SIMPLE_PROP(pinctrl5, "pinctrl-5", NULL)
-> >  DEFINE_SIMPLE_PROP(pinctrl6, "pinctrl-6", NULL)
-> >  DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
-> >  DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
-> > +DEFINE_SIMPLE_PROP(gpio_compat, "gpio", "#gpio-cells")
-> > +DEFINE_SIMPLE_PROP(gpios_compat, "gpios", "#gpio-cells")
-> >  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
-> >  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
-> >  DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
-> > @@ -1296,6 +1298,8 @@ static const struct supplier_bindings
-> > of_supplier_bindings[] = {
-> >         { .parse_prop = parse_pinctrl6, },
-> >         { .parse_prop = parse_pinctrl7, },
-> >         { .parse_prop = parse_pinctrl8, },
-> > +       { .parse_prop = parse_gpio_compat, },
-> > +       { .parse_prop = parse_gpios_compat, },
-> >         { .parse_prop = parse_regulators, },
-> >         { .parse_prop = parse_gpio, },
-> >         { .parse_prop = parse_gpios, },
-> >
->
-> Thanks, that worked!
->
-> Tested-by: Jon Hunter <jonathanh@nvidia.com>
->
-> Thanks for digging into that one. Would have taken me more than 4 hours!
-
-Thanks for testing. What was happening was that there was a cycle of
-2-3 devices. A -(depends on)-> B -> C -> A.
-
-And fw_devlink only understood A -> B since the rest were the gpio
-bindings I added above. Without fw_devlink seeing the cycle, it can't
-do cycle workarounds. So C's driver was deferring probe waiting on A
-and none of them probed.
-
-Once I added these and made the cycle visible to fw_devlink, it
-handled it fine (basically between A, B and C, the device links don't
-affect probe order anymore).
 
 
--Saravana
+On 1/14/21 11:16 AM, Bhaumik Bhatt wrote:
+> When moving from SBL to mission mode execution environment, there
+> is no remove callback notification to MHI client drivers which
+> operate on SBL mode only. Client driver devices are being created
+> in SBL or AMSS(mission mode) and only destroyed after power down
+> or SYS_ERROR. If there exist any SBL-specific channels, those are
+> left open and client drivers are thus unaware of the new execution
+> environment where those channels cannot operate. Close the gap and
+> issue remove callbacks to SBL-specific client drivers once device
+> enters mission mode.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
