@@ -2,134 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898D82F82D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:48:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E82632F82D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728649AbhAORr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:47:58 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:34418 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726765AbhAORr5 (ORCPT
+        id S1731681AbhAORsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:48:30 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:25531 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727973AbhAORs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:47:57 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10FHjC9Z016587;
-        Fri, 15 Jan 2021 17:47:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=SIXDqzr6jK0GrkDqRzVkNtY2qFgcoJUNx4ERzzoji/s=;
- b=JPZ5gulHdW45siXj/bDD+TZcFd77JOrZOx05Uey3wL6IcZb6mw/FJYnJoe9PZz859EGZ
- A9yNcRqUeufU1QZPPgdKJWI7QT/ujIBzKwI4ae4LKbjUK7WGHeTVWo0VKRzPeAjkiH/W
- FJJ0LKTwi7VCFrDGvJngZmkO1rxtWGxDLNIuYiW2svJ6gRIBlB7+8HalzYDtFwBgSxXB
- zy/IhnLKUQ0328zQcSRSo5ul2HKg9EQ/cu35veYY5w66xUfYqqbmLcld3Yp3XfBgIWYE
- 0BwQ3SgHvuKa7OqOaMCydm0NeZ/rsc6fjaD/hofI6WWQOgraiDDwx2Xxe1Heqtu0R5ZV IQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 360kd061h4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Jan 2021 17:47:07 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10FHk6hT157876;
-        Fri, 15 Jan 2021 17:47:07 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 360kebdu4p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Jan 2021 17:47:07 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10FHl5t1009700;
-        Fri, 15 Jan 2021 17:47:05 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 15 Jan 2021 09:47:05 -0800
-Subject: Re: [RFC PATCH 3/3] hugetlb: convert PageHugeTemporary() to
- HPageTempSurplus
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210111210152.118394-1-mike.kravetz@oracle.com>
- <20210111210152.118394-4-mike.kravetz@oracle.com>
- <20210115101629.GA5213@linux>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <6735bbc5-4eae-b541-d47d-23f7f98b00cf@oracle.com>
-Date:   Fri, 15 Jan 2021 09:47:02 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Fri, 15 Jan 2021 12:48:29 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610732892; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=yPs9AZ7vGF+EOyeowC3T0JA6NYTKMrHgZGdMhY8gYQI=; b=in5SW5aBQDW/9z5OJPkf8uxBnlQfYi/FY2xEACN3Nmi/Fo8KmR6kMpS1HYSd7xEfx5FkQcRN
+ 9wriyzMpgb5zUnIMX9UGCVAFiFaBhlvTabVkOnyr+0yEzrh+m9vZl5ZziaPvW1N25lH8PrUZ
+ WpHqMedrMXY3Nd/9nUPwSuRDarQ=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 6001d53c3b6dceb132aab1dc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 Jan 2021 17:47:40
+ GMT
+Sender: jackp=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 40968C433C6; Fri, 15 Jan 2021 17:47:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jackp)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 22C23C433CA;
+        Fri, 15 Jan 2021 17:47:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 22C23C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
+From:   Jack Pham <jackp@codeaurora.org>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Wesley Cheng <wcheng@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Jack Pham <jackp@codeaurora.org>
+Subject: [PATCH v2 0/4] SM8350 USB and dt-bindings updates
+Date:   Fri, 15 Jan 2021 09:47:19 -0800
+Message-Id: <20210115174723.7424-1-jackp@codeaurora.org>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-In-Reply-To: <20210115101629.GA5213@linux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9865 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
- mlxlogscore=897 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101150108
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9865 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
- impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 clxscore=1015 mlxlogscore=906 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101150108
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/15/21 2:16 AM, Oscar Salvador wrote:
-> On Mon, Jan 11, 2021 at 01:01:52PM -0800, Mike Kravetz wrote:
->> Use new hugetlb specific flag HPageTempSurplus to replace the
->> PageHugeTemporary() interfaces.
->>
->> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->> ---
->>  mm/hugetlb.c | 38 +++++++++-----------------------------
->>  1 file changed, 9 insertions(+), 29 deletions(-)
->>
->> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->> index 34ce82f4823c..949e1f987319 100644
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -58,6 +58,7 @@ static unsigned long hugetlb_cma_size __initdata;
->>  enum htlb_page_flags {
->>  	HPAGE_RestoreReserve = 0,
->>  	HPAGE_Migratable,
->> +	HPAGE_TempSurplus,
->>  };
->>  
->>  /*
->> @@ -99,6 +100,7 @@ void ClearHPage##flname(struct page *page)	\
->>  
->>  HPAGEFLAG(RestoreReserve)
->>  EXT_HPAGEFLAG(Migratable)
->> +HPAGEFLAG(TempSurplus)
-> 
-> Would HPAGE_Temporary/Temporary not be a better fit?
+This series adds support for the SM8350 USB PHY to the QMP PHY driver
+as well as adds the documentation for the QMP, SNPS PHY and DWC3
+controller bindings. This also adds the bindings for SM8150 and SM8250
+to the same docs which had not been added previously even though they
+are in use now.
 
-Yes it would.
+v2: Reordered Patches 1 & 2; added missing entry to match_table
 
-> The point about current PageHugeTemporary is that these pages are temporary as
-> they do not belong to the pool and will vanish once the last reference gets drop.
-> We do not really care that much about the surplus part?
-> 
-> Besides, alloc_migrate_huge_page seems to not want to thread these pages as surplus.
-> 
+Jack Pham (4):
+  dt-bindings: phy: qcom,qmp: Add SM8150, SM8250 and SM8350 USB PHY
+    bindings
+  phy: qcom-qmp: Add SM8350 USB QMP PHYs
+  dt-bindings: phy: qcom,usb-snps-femto-v2: Add SM8250 and SM8350
+    bindings
+  dt-bindings: usb: qcom,dwc3: Add bindings for SM8150, SM8250, SM8350
 
-All correct, not sure why I was thinking 'surplus' when naming the flag.
-
-> Also, I would add a comment either next to each flag or above
-> the enum htlb_page_flags (probably the latter) with a brief explanation
-> of each flag.
-
-Will do.
+ .../devicetree/bindings/phy/qcom,qmp-phy.yaml |  67 ++++++
+ .../bindings/phy/qcom,usb-snps-femto-v2.yaml  |   2 +
+ .../devicetree/bindings/usb/qcom,dwc3.yaml    |   3 +
+ drivers/phy/qualcomm/phy-qcom-qmp.c           | 209 ++++++++++++++++++
+ drivers/phy/qualcomm/phy-qcom-qmp.h           | 100 +++++++++
+ 5 files changed, 381 insertions(+)
 
 -- 
-Mike Kravetz
+2.24.0
 
-> Besides that, it looks fine to me.
-> Here I do not see the same problem in
-> stripping the PageHuge check in PageHugeTemporary, as I did in previous patch,
-> because all callers of it make sure they operate on a hugetlb page.
-> 
