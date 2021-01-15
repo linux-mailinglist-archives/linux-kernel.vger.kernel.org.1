@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496D02F7EED
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5999D2F7F01
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731745AbhAOPGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:06:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725910AbhAOPGq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:06:46 -0500
-Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com [IPv6:2620:100:9005:57f::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682B0C061757;
-        Fri, 15 Jan 2021 07:06:06 -0800 (PST)
-Received: from pps.filterd (m0050102.ppops.net [127.0.0.1])
-        by m0050102.ppops.net-00190b01. (8.16.0.43/8.16.0.43) with SMTP id 10FF04VL010363;
-        Fri, 15 Jan 2021 15:05:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=jan2016.eng;
- bh=t4D3b08MA2SNQwJ5TsRTS+jCUfe2o2LLA+ePXnlcC20=;
- b=cPB1v7jChjvDbn8E/ayfejlQOFVKbErjzvyEfhuqLK77l4M4pM5M4NyacRASnLmnLekA
- 40Nrq1EQ0XgzByXYJCZuPyJMdLwT5nKQjs0HWSGY76Zcq7K03O7Sv3xmAWkUlarAUieR
- 7v8/6KU3ZEOPQ/iQJ2fHlloDEHvZQcPbLpfPUxkpyDNyLV3oK3Eum16gLmvsdD9thpGA
- TBl4/DwyY9vKsOfE+u07UL64pCNQQB7kQUoPtnrDj7RCFsyv/6X7MDiOCUNeizV1fwOP
- Far6yelF39ppBP9CwCxPu4eIr3iCQ+kxUaca96f5/WngEHNURNFzR62UXcYmJx+kuLVT +w== 
-Received: from prod-mail-ppoint7 (a72-247-45-33.deploy.static.akamaitechnologies.com [72.247.45.33] (may be forged))
-        by m0050102.ppops.net-00190b01. with ESMTP id 363a6nxh6g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Jan 2021 15:05:48 +0000
-Received: from pps.filterd (prod-mail-ppoint7.akamai.com [127.0.0.1])
-        by prod-mail-ppoint7.akamai.com (8.16.0.43/8.16.0.43) with SMTP id 10FF5DU6020731;
-        Fri, 15 Jan 2021 10:05:47 -0500
-Received: from prod-mail-relay19.dfw02.corp.akamai.com ([172.27.165.173])
-        by prod-mail-ppoint7.akamai.com with ESMTP id 35y8q4jhbm-1;
-        Fri, 15 Jan 2021 10:05:47 -0500
-Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
-        by prod-mail-relay19.dfw02.corp.akamai.com (Postfix) with ESMTP id ECDD860544;
-        Fri, 15 Jan 2021 15:05:46 +0000 (GMT)
-Subject: Re: [PATCH v2 1/3] KVM: X86: append vmx/svm prefix to additional
- kvm_x86_ops functions
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     pbonzini@redhat.com, seanjc@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andrea Arcangeli <aarcange@redhat.com>
-References: <cover.1610680941.git.jbaron@akamai.com>
- <ed594696f8e2c2b2bfc747504cee9bbb2a269300.1610680941.git.jbaron@akamai.com>
- <YAFe6b/sSdDvXSM3@hirez.programming.kicks-ass.net>
-From:   Jason Baron <jbaron@akamai.com>
-Message-ID: <80e5aca8-8855-e039-c679-1399bd49c17e@akamai.com>
-Date:   Fri, 15 Jan 2021 10:05:46 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732256AbhAOPHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:07:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730766AbhAOPHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 10:07:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D6572388B;
+        Fri, 15 Jan 2021 15:07:04 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 15:06:59 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] kasan, arm64: fix pointer tags in KASAN reports
+Message-ID: <20210115150658.GE16707@gaia>
+References: <cover.1610553773.git.andreyknvl@google.com>
+ <1965508bcbec62699715d32bef91628ef55b4b44.1610553774.git.andreyknvl@google.com>
+ <20210113165441.GC27045@gaia>
+ <CAAeHK+zThyq7ApsRTu-En7pL9yAAOrEpV45KOuJV3PCpdjVuiw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YAFe6b/sSdDvXSM3@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-15_08:2021-01-15,2021-01-15 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
- mlxlogscore=720 suspectscore=0 mlxscore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101150095
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-15_08:2021-01-15,2021-01-15 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 suspectscore=0 impostorscore=0 mlxscore=0 clxscore=1015
- malwarescore=0 mlxlogscore=616 phishscore=0 spamscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101150095
-X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 72.247.45.33)
- smtp.mailfrom=jbaron@akamai.com smtp.helo=prod-mail-ppoint7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAeHK+zThyq7ApsRTu-En7pL9yAAOrEpV45KOuJV3PCpdjVuiw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jan 15, 2021 at 02:12:24PM +0100, Andrey Konovalov wrote:
+> On Wed, Jan 13, 2021 at 5:54 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> >
+> > On Wed, Jan 13, 2021 at 05:03:30PM +0100, Andrey Konovalov wrote:
+> > > As of the "arm64: expose FAR_EL1 tag bits in siginfo" patch, the address
+> > > that is passed to report_tag_fault has pointer tags in the format of 0x0X,
+> > > while KASAN uses 0xFX format (note the difference in the top 4 bits).
+> > >
+> > > Fix up the pointer tag before calling kasan_report.
+> > >
+> > > Link: https://linux-review.googlesource.com/id/I9ced973866036d8679e8f4ae325de547eb969649
+> > > Fixes: dceec3ff7807 ("arm64: expose FAR_EL1 tag bits in siginfo")
+> > > Fixes: 4291e9ee6189 ("kasan, arm64: print report from tag fault handler")
+> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > > ---
+> > >  arch/arm64/mm/fault.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+> > > index 3c40da479899..a218f6f2fdc8 100644
+> > > --- a/arch/arm64/mm/fault.c
+> > > +++ b/arch/arm64/mm/fault.c
+> > > @@ -304,6 +304,8 @@ static void report_tag_fault(unsigned long addr, unsigned int esr,
+> > >  {
+> > >       bool is_write  = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
+> > >
+> > > +     /* The format of KASAN tags is 0xF<x>. */
+> > > +     addr |= (0xF0UL << MTE_TAG_SHIFT);
+> >
+> > Ah, I see, that top 4 bits are zeroed by do_tag_check_fault(). When this
+> > was added, the only tag faults were generated for user addresses.
+> >
+> > Anyway, I'd rather fix it in there based on bit 55, something like (only
+> > compile-tested):
+> >
+> > diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+> > index 3c40da479899..2b71079d2d32 100644
+> > --- a/arch/arm64/mm/fault.c
+> > +++ b/arch/arm64/mm/fault.c
+> > @@ -709,10 +709,11 @@ static int do_tag_check_fault(unsigned long far, unsigned int esr,
+> >                               struct pt_regs *regs)
+> >  {
+> >         /*
+> > -        * The architecture specifies that bits 63:60 of FAR_EL1 are UNKNOWN for tag
+> > -        * check faults. Mask them out now so that userspace doesn't see them.
+> > +        * The architecture specifies that bits 63:60 of FAR_EL1 are UNKNOWN
+> > +        * for tag check faults. Set them to the corresponding bits in the
+> > +        * untagged address.
+> >          */
+> > -       far &= (1UL << 60) - 1;
+> > +       far = (untagged_addr(far) & ~MTE_TAG_MASK) | (far & MTE_TAG_MASK) ;
+> >         do_bad_area(far, esr, regs);
+> >         return 0;
+> >  }
+> 
+> Sounds good, will do in v3, thanks!
 
+I wonder if this one gives the same result (so please check):
 
-On 1/15/21 4:22 AM, Peter Zijlstra wrote:
-> 
-> On Thu, Jan 14, 2021 at 10:27:54PM -0500, Jason Baron wrote:
-> 
->> -static void update_exception_bitmap(struct kvm_vcpu *vcpu)
->> +static void svm_update_exception_bitmap(struct kvm_vcpu *vcpu)
-> 
-> Just to be a total pendant: s/append/Prepend/ on $Subject
-> 
+	far = u64_replace_bits(untagged_addr(far), far, MTE_TAG_MASK);
 
-Ha - I actually switched $subject to prepend and then switched it
-back because I thought I was being pedantic. But maybe not :)
+(defined in linux/bitfield.h)
+
+-- 
+Catalin
