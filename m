@@ -2,97 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA28F2F7490
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5562F7497
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727999AbhAOItR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 03:49:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35094 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725950AbhAOItQ (ORCPT
+        id S1728200AbhAOIu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 03:50:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726439AbhAOIu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 03:49:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610700469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7+3aFpRnpA/Vn6XuyDfHSEJMgBWrcsXLf+cf+V33kME=;
-        b=ZRUex7LUyfN6+/GcmBlheTDjrPvXoPhL6duYZDIIvN9o+8LDwxzh2mbfnxeC4PZEbQLjH6
-        b8yzi3wfkQwb4vLnibQVyp90eQmerod6AeEmc7R/IjfJ+0vuC914ylfO9yF4ZeCkqUxx0u
-        tq+PFouWWWuFm5jJY5hoRwksHVibrfQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-385-o8zcdaJIPFejOLZrNvxqZQ-1; Fri, 15 Jan 2021 03:47:48 -0500
-X-MC-Unique: o8zcdaJIPFejOLZrNvxqZQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB33D1DDE0;
-        Fri, 15 Jan 2021 08:47:46 +0000 (UTC)
-Received: from [10.36.112.11] (ovpn-112-11.ams2.redhat.com [10.36.112.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AC5FD60C6B;
-        Fri, 15 Jan 2021 08:47:45 +0000 (UTC)
-Subject: Re: [PATCH] mm/hugetlb: avoid unnecessary hugetlb_acct_memory() call
-To:     Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210114113140.23069-1-linmiaohe@huawei.com>
- <853d6aa4-b84c-7ac2-00d4-402893fcf6b3@redhat.com>
- <b7587d72-fb5b-4e0f-4fa0-d63e035e521c@oracle.com>
- <9841241e-eb8f-9b49-8d2d-d84effda8ba4@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <d5ea6179-7e0d-7727-50d2-efa694ba84b3@redhat.com>
-Date:   Fri, 15 Jan 2021 09:47:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 15 Jan 2021 03:50:57 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2556C061757;
+        Fri, 15 Jan 2021 00:50:16 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id u17so16782010iow.1;
+        Fri, 15 Jan 2021 00:50:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kPMXpX5qpR3CJZ1K+xbqsLksYzchwvV9Jojvc6tLjhw=;
+        b=jRQrdRvhWftgoG6phrV/VhF0KOZLhPah28jYzmicAmueBvd1MFi3hSlwffrNn0shpM
+         ZCi8bvAtr/YhKpyNUO+wBpuU5e/ZHB48a7h6Wc4n6IObAMFkEKxlyEva+4V9xbAoQroQ
+         qPjKyCcLmL7J4ps5+25ofW+8IqNePnLfLBzmkQTJeR27Xf2odYwGABDbD62Y9xwVQCAd
+         6i6dBh5WxXHD3EaNYNGfJ/Qz1w3gFZ4E8pxVDtlCOOuxQtynifzxGKOMUmLCmPyWj4Nh
+         AI/8fd0j8LHrEB+YycTFfVW28Vzv5rGP3Ls49nTcU5T4CVYHkd6UoL9fmkQege42qQ8V
+         dyVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kPMXpX5qpR3CJZ1K+xbqsLksYzchwvV9Jojvc6tLjhw=;
+        b=QmxJuq+MYsUoHlf0ljAiWkKY+E9IUWNxnCnyHhHiPJh8bC2eYs6OjtCdz0sB9xzh6i
+         C98Gn/9DNCwxIke6dGXOUFPuU1auS6fSvZDs+RUBLBQxHTMipFyTPQKCGAZNH5Ub4NP4
+         EoP+6zNchVZtuF7Idjdhsv1ogGqQqYl8L3QIQe0N0LPZaGmpOAQV54mEAEBzc+3LoWMR
+         GMZG+zHtBcVtKL6DDRd5Vb2CrFYkxYTorMcEsYlQfqwRUhr/nA4QzcDQKJZ6T/bG9uXi
+         8oV/mGukkXGq3r0X3g+WIhpKLbJ77MokRj0xV4cijpVGydtt9nXFhsB/fzZt9HVOe/8u
+         SedQ==
+X-Gm-Message-State: AOAM532vMwfjBoIzWgCja1u+Y6nhxmN/g4T4eGFMwE+7WNYVLOIp240y
+        2FC/svXWirovFaut1rLOH0uH+wqdGOIHSmGjcvoYnwSNT3+cqw==
+X-Google-Smtp-Source: ABdhPJxp/9Hdim39Vq4JepGKeoqre+PYKGQU0++N9W5WVVTwNmBxH7ZptHnnW74tuInQu/DuLsmMFN1qGnsB3uN5dyY=
+X-Received: by 2002:a05:6e02:1447:: with SMTP id p7mr10137889ilo.93.1610700615983;
+ Fri, 15 Jan 2021 00:50:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <9841241e-eb8f-9b49-8d2d-d84effda8ba4@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <CAHKzcEPuwZFei+6RehMn1yzRD45k_xfMgGC2Ma4eeR9y5rnFow@mail.gmail.com>
+ <20210114205142.GA2021118@bjorn-Precision-5520>
+In-Reply-To: <20210114205142.GA2021118@bjorn-Precision-5520>
+From:   Waldemar Rymarkiewicz <waldemar.rymarkiewicz@gmail.com>
+Date:   Fri, 15 Jan 2021 09:49:40 +0100
+Message-ID: <CAHKzcEPcw_6XSQ5hqbgxAKY9P0MOeRo68WoWyRo27gp-FCw68g@mail.gmail.com>
+Subject: Re: Hook up a PCIe device into the thermal framework
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>, linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.01.21 03:04, Miaohe Lin wrote:
-> Hi:
-> 
-> On 2021/1/15 3:16, Mike Kravetz wrote:
->> On 1/14/21 4:32 AM, David Hildenbrand wrote:
->>> On 14.01.21 12:31, Miaohe Lin wrote:
->>>> When gbl_reserve is 0, hugetlb_acct_memory() will do nothing except holding
->>>> and releasing hugetlb_lock.
->>>
->>> So, what's the deal then? Adding more code?
->>>
->>> If this is a performance improvement, we should spell it out. Otherwise
->>> I don't see a real benefit of this patch.
->>>
->>
->> Thanks for finding/noticing this.
->>
->> As David points out, the commit message should state that this is a
->> performance improvement.  Mention that such a change avoids an unnecessary
->> hugetlb_lock lock/unlock cycle.  You can also mention that this unnecessary
->> lock cycle is happening on 'most' hugetlb munmap operations.
->>
-> 
-> My bad. I should spell this out explicitly. Many thanks for both of you.
+Hi,
 
-With the "lock cycle is happening on 'most' hugetlb munmap operations"
-part added
+> > topology that DT modification will not work and still I have no device
+> > node.
+>
+> I'm absolutely not a DT expert, but I assume that a thermal zone would
+> be associated with some resource fixed by the platform, such as a fan,
+> so I would think a thermal zone would have to be described in terms of
+> the platform physical topology, not the PCI device type.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+The thermal zone needs a temperature sensor device to read out
+temperature and also some cooling devices which are mapped to specific
+zone trips.
+In a below scenario, when TZ hists the wifi_allert0 trip it will run
+the fan but if the temp still rises it will try to dissipate the heat
+by running some actions within wifi adapter eg. switch off some
+antennas.
 
-Thanks!
+[...]
+wifi_thermal: wifi-thermal {
+    thermal-sensors = <&wifi_device>;
+    trips {
+        wifi_alert0: wifi-alert0 {
+            temperature = <90000>;
+            hysteresis = <5000>;
+            type = "active";
+        };
 
--- 
-Thanks,
+        wifi_alert1: wifi-alert1 {
+            temperature = <110000>;
+            hysteresis = <5000>;
+            type = "passive";
+        };
 
-David / dhildenb
+        cooling-maps {
+            map0 {
+                 trip = <&wifi_alert0>;
+                 cooling-device = <&fan0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+            };
+            map1 {
+                 trip = <&wifi_alert1>;
+                 cooling-device = <&wifi_device THERMAL_NO_LIMIT
+THERMAL_NO_LIMIT>;
+            };
+        };
+};
+[...]
 
+My problem is not a cooling method but the binding of the PCI device
+(it has a thermal sensor) with the thermal zone
+
+    thermal-sensors = <&wifi_device>;     // wifi_devcie does not
+exist until I will statically define it under PCI controller
+
+The point here is that defining wifi_device under the controller I
+need to reflect the PCI topology. Which is fair as DT should reflect
+the HW connection. Even if I define a wifi_device anywhere in DT and
+assuming the PCI core will search whole DT and not only subnodes of
+the controller/bridge/switch here likely comes another problem. What
+should be the key to search for the device node? PCI addresses devices
+by bus:device: function and this is known after PCI scan.
+
+To me seems that so far no one found a good way to handle thermal
+within PCI devices, so some drivers statically create TZ and handle it
+within the driver. This way, unfortunately, we lose the flexibility of
+thermal control from a system-wide perspective. WiFi adapter is not
+aware of the fan for example.
+
+/Waldek
