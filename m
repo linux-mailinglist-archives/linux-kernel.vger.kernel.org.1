@@ -2,129 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763ED2F7C1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4865E2F7C08
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:09:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387707AbhAONJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:09:17 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20524 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732697AbhAONJN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:09:13 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10FD4XRt124176;
-        Fri, 15 Jan 2021 08:08:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=llJi/OMxHgn3H9Db7HWf4+KNzFiqFCWEBYm3DrO1KZ8=;
- b=T2pgB+3ox1sTrn+4EPHbnVLShUJT7Z8S0dwBAul4yh1ZaeAJoqXYNp8GBBCaj5sQJnR3
- xXE4I/e+GKzIGTlvtWJkWRZ/Z5v6YDM1r+bfsYheuFqegqTH4UBNR1vCpefIkZuzAP/h
- 4TPgKCEUdl16vdVlqsD+q73MemzRAOOWxxHYvy9nD2kWxtYPMJZ158mUeyFW6LgpXcJy
- dboaMvfe9PA+r4moTHQw1RRqxdx+1Xotxqjwp93VyoUk+ExmA6m0YsQXzsmHTnToEQq/
- nmA1/qGSmXa/71TfE6JWo1yJk/9PqbsP3DQDsbm9JgayUpOUz8K9HRThqXtWpeWDBQAF Zw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 363af5t65b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Jan 2021 08:08:01 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10FD5A5s127151;
-        Fri, 15 Jan 2021 08:07:23 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 363af5t5gu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Jan 2021 08:07:23 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10FD6Wae005060;
-        Fri, 15 Jan 2021 13:07:04 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 35y448fr3a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Jan 2021 13:07:04 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10FD71Ai35848662
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Jan 2021 13:07:01 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9AEC64C04E;
-        Fri, 15 Jan 2021 13:07:01 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 56C6E4C046;
-        Fri, 15 Jan 2021 13:06:58 +0000 (GMT)
-Received: from sig-9-65-220-78.ibm.com (unknown [9.65.220.78])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 15 Jan 2021 13:06:58 +0000 (GMT)
-Message-ID: <e1c072eba237e75fc687e9318f65e7395e2ca00b.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 09/10] certs: Allow root user to append signed hashes
- to the blacklist keyring
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Date:   Fri, 15 Jan 2021 08:06:57 -0500
-In-Reply-To: <20210114151909.2344974-10-mic@digikod.net>
-References: <20210114151909.2344974-1-mic@digikod.net>
-         <20210114151909.2344974-10-mic@digikod.net>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
+        id S1732721AbhAONIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:08:15 -0500
+Received: from mga12.intel.com ([192.55.52.136]:30033 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731957AbhAONIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 08:08:12 -0500
+IronPort-SDR: FXqdTMvEsB93t+kcUR+4gI49aL9UY1mLGegMDCg2VPphywYKtTytvpOLEEprFnuKV7CbKD+7x0
+ ZwXQZ1zxmsKg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="157724043"
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="157724043"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 05:07:31 -0800
+IronPort-SDR: 6YR778+hus2fU+STJcThOeRRIhWnhQOy3bMSti4spS1Bi8wSghUjWZHFSBgH0DeF2nXcMyH6ya
+ bd1FvZt8ozZA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="354299548"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
+  by fmsmga008.fm.intel.com with ESMTP; 15 Jan 2021 05:07:26 -0800
+Subject: Re: [PATCH v2 1/2] scsi: ufs: Fix a possible NULL pointer issue
+To:     Can Guo <cang@codeaurora.org>, Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1609479893-8889-1-git-send-email-cang@codeaurora.org>
+ <1609479893-8889-2-git-send-email-cang@codeaurora.org>
+ <7cff30c3-6df8-7b8c-0f5b-a95980b8f706@acm.org>
+ <b2385bdf0ce1ac799ccf77c2e952d9bf@codeaurora.org>
+ <204e13398c0b4c3d61786815e757e0bf@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <8dea503d-9ab7-c003-9ade-3470def21764@intel.com>
+Date:   Fri, 15 Jan 2021 15:07:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <204e13398c0b4c3d61786815e757e0bf@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-15_07:2021-01-15,2021-01-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
- bulkscore=0 mlxlogscore=834 lowpriorityscore=0 priorityscore=1501
- phishscore=0 adultscore=0 suspectscore=0 impostorscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101150077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Micka�l,
-
-On Thu, 2021-01-14 at 16:19 +0100, Micka�l Sala�n wrote:
-> From: Micka�l Sala�n <mic@linux.microsoft.com>
+On 2/01/21 3:10 pm, Can Guo wrote:
+> On 2021-01-02 20:29, Can Guo wrote:
+>> On 2021-01-02 00:05, Bart Van Assche wrote:
+>>> On 12/31/20 9:44 PM, Can Guo wrote:
+>>>> During system resume/suspend, hba could be NULL. In this case, do not touch
+>>>> eh_sem.
+>>>>
+>>>> Fixes: 88a92d6ae4fe ("scsi: ufs: Serialize eh_work with system PM events
+>>>> and async scan")
+>>>>
+>>>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>>>> ---
+>>>>  drivers/scsi/ufs/ufshcd.c | 9 +++++----
+>>>>  1 file changed, 5 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>>>> index e221add..34e2541 100644
+>>>> --- a/drivers/scsi/ufs/ufshcd.c
+>>>> +++ b/drivers/scsi/ufs/ufshcd.c
+>>>> @@ -8896,8 +8896,11 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
+>>>>      int ret = 0;
+>>>>      ktime_t start = ktime_get();
+>>>>
+>>>> +    if (!hba)
+>>>> +        return 0;
+>>>> +
+>>>>      down(&hba->eh_sem);
+>>>> -    if (!hba || !hba->is_powered)
+>>>> +    if (!hba->is_powered)
+>>>>          return 0;
+>>>>
+>>>>      if ((ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl) ==
+>>>> @@ -8945,10 +8948,8 @@ int ufshcd_system_resume(struct ufs_hba *hba)
+>>>>      int ret = 0;
+>>>>      ktime_t start = ktime_get();
+>>>>
+>>>> -    if (!hba) {
+>>>> -        up(&hba->eh_sem);
+>>>> +    if (!hba)
+>>>>          return -EINVAL;
+>>>> -    }
+>>>>
+>>>>      if (!hba->is_powered || pm_runtime_suspended(hba->dev))
+>>>>          /*
+>>>
+>>> Hi Can,
+>>>
+>>> How can ufshcd_system_suspend() or ufshcd_system_resume() be called with a
+>>> NULL argument? In ufshcd_pci_probe() I see that pci_set_drvdata() is called
+>>> before pm_runtime_allow(). ufshcd_pci_remove() calls pm_runtime_forbid().
+>>>
+>>> Thanks,
+>>>
+>>> Bart.
+>>
+>> Hi Bart,
+>>
+>> You are right about ufshcd_RUNTIME_suspend/resume() - platform_set_drvdata()
+>> is called before pm_runtime_enable(), so runtime suspend/resume cannot happen
+>> before pm_runtime_enable() is called. We can remove the sanity checks of
+>> !hba there, they are outdated.
 > 
-> Add a kernel option SYSTEM_BLACKLIST_AUTH_UPDATE to enable the root user
-> to dynamically add new keys to the blacklist keyring.  This enables to
-> invalidate new certificates, either from being loaded in a keyring, or
-> from being trusted in a PKCS#7 certificate chain.  This also enables to
-> add new file hashes to be denied by the integrity infrastructure.
+> Add more history here - before Stanley's change (see below),
+> platform_set_drvdata()
+> is called AFTER pm_runtime_enable(), which was why we needed sanity checks
+> of !hba.
+> But now the sanity checks are unnecessary in
+> ufshcd_RUNTIME_suspend/resume(), so
+> feel free to remove them.
 > 
-> Being able to untrust a certificate which could have normaly been
-> trusted is a sensitive operation.  This is why adding new hashes to the
-> blacklist keyring is only allowed when these hashes are signed and
-> vouched by the builtin trusted keyring.  A blacklist hash is stored as a
-> key description.  The PKCS#7 signature of this description must be
-> provided as the key payload.
+> But still, things are a bit different for ufshcd_SYSTEM_suspend/resume(), we
+> need
+> the sanity checks of !hba there if my understanding is correct.
 > 
-> Marking a certificate as untrusted should be enforced while the system
-> is running.  It is then forbiden to remove such blacklist keys.
+> commit 24e2e7a19f7e4b83d0d5189040d997bce3596473
+> Author: Stanley Chu <stanley.chu@mediatek.com>
+> Date:   Wed Jun 12 23:19:05 2019 +0800
 > 
-> Update blacklist keyring and blacklist key access rights:
-> * allows the root user to search for a specific blacklisted hash, which
->   make sense because the descriptions are already viewable;
-> * forbids key update;
-> * restricts kernel rights on the blacklist keyring to align with the
->   root user rights.
+>     scsi: ufs: Avoid runtime suspend possibly being blocked forever
 > 
-> See the help in tools/certs/print-cert-tbs-hash.sh provided by a
-> following commit.
+> Thanks,
+> Can Guo.
+> 
+>>
+>> But for ufshcd_SYSTEM_suspend/resume() callbacks (not runtime ones), my
+>> understanding is that system suspend/resume may happen after probe (vendor
+>> driver probe calls ufshcd_pltfrm_init()) starts but before
+>> platform_set_drvdata()
+>> is called, in this case hba is NULL.
+>>
+>> int ufshcd_pltfrm_init(struct platform_device *pdev,
+>>                const struct ufs_hba_variant_ops *vops)
+>> {
+>> ...
+>>      platform_set_drvdata(pdev, hba);
+>>
+>>     pm_runtime_set_active(&pdev->dev);
+>>     pm_runtime_enable(&pdev->dev);
+>> }
 
-The design looks good.  I'm hoping to review/test at least this patch
-next week.
+Hi Can
 
-thanks,
+I expect probe and system suspend are synchronized e.g. by device_lock(), so
+hba would not be NULL.  Is there any example of it being NULL in system suspend?
 
-Mimi
-
+Regards
+Adrian
