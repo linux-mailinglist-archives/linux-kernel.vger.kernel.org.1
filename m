@@ -2,175 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81742F7FB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:36:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B728F2F7FC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731632AbhAOPfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:35:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbhAOPfw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:35:52 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A160EC0613C1;
-        Fri, 15 Jan 2021 07:35:11 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id q18so9717485wrn.1;
-        Fri, 15 Jan 2021 07:35:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ESX6noLsCkIO+iwpxKWPA2ym8CNQ0B0VrfopXTaNMvE=;
-        b=FKX7N3zPinoMooJcVVc0Sul+W4MuG3BE0bFE6iGvHrfIiOqkaREXyINpMin1far4Id
-         E04bd3N5MYIdx6u8wDKioAevVfC3CvXnTJHsha8bOmtKvjrKlyvzEBpLkie0yoXzeHaL
-         w0CV0nBGKymAWXZZQ90gTHGyiwdnAe17/+rAAHKUVkPjN4luBy42B6HAz+1mba5Pn0EQ
-         gY5jTM+y/PWCPX4Ex1nS7DDHk4zHyJTVTWJRP9czrQiW7WR3CQuic/cRSl+x9WAXjbrA
-         ZdlFr+CO2VKtvapR/Mmgt3Z4YegfYZ2x3GtRD9zDMtK7n6j1oixFpJdfVklhyDlPZMkO
-         RN9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ESX6noLsCkIO+iwpxKWPA2ym8CNQ0B0VrfopXTaNMvE=;
-        b=qL772CTezKnCvJiXjBnYWvVaoSeS+9EhEcQI9lMgzHMVIUwTDfTHvW0VJZwWzldbPy
-         dsjdLeT7gq09zyymGmfhr4hWgJi0tDfNdAzEn/iBfCzL1hdh/IT0BFgqrPiHsnTQ3BM6
-         10yPPJGSvM2cXaQ+O0Uj9MnyQ+YOiiDA+Pb97Rh3MgR8h9hYhSq38A8c6qUUMRjIHppq
-         eAoh4Kb1CfcMnPJOnITrQsEGUHbOzEvIj69HQYe/TPShFCzrFnReoB+8CX+QTwk2JnSX
-         eKNN77dqYm/hMOC+sUkGR861hqfMbwpoQkduAasH5/N+2u+J2SlYv5mqvIBMdh+OkfYn
-         G5yA==
-X-Gm-Message-State: AOAM532pC2d02R9mY0NmjRLmmftcyhrgcJAPndwEnpkHxQ41Esra+9Dj
-        i03G1jaJv68wq2NpIRalMdU=
-X-Google-Smtp-Source: ABdhPJz/Wu7xnv0xzKek8K70k69xs98gJ80/O6x3djJk4M+rXGYYY30sfdUBjoGV41dBshMXS9edJw==
-X-Received: by 2002:adf:fad0:: with SMTP id a16mr14302085wrs.390.1610724910415;
-        Fri, 15 Jan 2021 07:35:10 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id w13sm14787841wrt.52.2021.01.15.07.35.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 07:35:09 -0800 (PST)
-Date:   Fri, 15 Jan 2021 16:35:07 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/5] ALSA: hda/tegra: Reset hardware
-Message-ID: <YAG2K4CjtCdSs6P2@ulmo>
-References: <20210112125834.21545-1-digetx@gmail.com>
- <20210112125834.21545-3-digetx@gmail.com>
+        id S1732152AbhAOPiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:38:50 -0500
+Received: from foss.arm.com ([217.140.110.172]:43068 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727198AbhAOPiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 10:38:50 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0E60D6E;
+        Fri, 15 Jan 2021 07:38:03 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.41.13])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7F28C3F70D;
+        Fri, 15 Jan 2021 07:37:59 -0800 (PST)
+Date:   Fri, 15 Jan 2021 15:37:56 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: [PATCH v3 3/4] arm64: mte: Enable async tag check fault
+Message-ID: <20210115153756.GC44111@C02TD0UTHF1T.local>
+References: <20210115120043.50023-1-vincenzo.frascino@arm.com>
+ <20210115120043.50023-4-vincenzo.frascino@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="uOznnLuw98Lbh+eo"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210112125834.21545-3-digetx@gmail.com>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+In-Reply-To: <20210115120043.50023-4-vincenzo.frascino@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---uOznnLuw98Lbh+eo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jan 12, 2021 at 03:58:31PM +0300, Dmitry Osipenko wrote:
-> Reset hardware in order to bring it into a predictable state.
->=20
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+On Fri, Jan 15, 2021 at 12:00:42PM +0000, Vincenzo Frascino wrote:
+> MTE provides a mode that asynchronously updates the TFSR_EL1 register
+> when a tag check exception is detected.
+> 
+> To take advantage of this mode the kernel has to verify the status of
+> the register at:
+>   1. Context switching
+>   2. Return to user/EL0 (Not required in entry from EL0 since the kernel
+>   did not run)
+>   3. Kernel entry from EL1
+>   4. Kernel exit to EL1
+> 
+> If the register is non-zero a trace is reported.
+> 
+> Add the required features for EL1 detection and reporting.
+> 
+> Note: ITFSB bit is set in the SCTLR_EL1 register hence it guaranties that
+> the indirect writes to TFSR_EL1 are synchronized at exception entry to
+> EL1. On the context switch path the synchronization is guarantied by the
+> dsb() in __switch_to().
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 > ---
->  sound/pci/hda/hda_tegra.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
->=20
-> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-> index 4c799661c2f6..e406b7980f31 100644
-> --- a/sound/pci/hda/hda_tegra.c
-> +++ b/sound/pci/hda/hda_tegra.c
-> @@ -17,6 +17,7 @@
->  #include <linux/moduleparam.h>
->  #include <linux/mutex.h>
->  #include <linux/of_device.h>
-> +#include <linux/reset.h>
->  #include <linux/slab.h>
->  #include <linux/time.h>
->  #include <linux/string.h>
-> @@ -70,6 +71,7 @@
->  struct hda_tegra {
->  	struct azx chip;
->  	struct device *dev;
-> +	struct reset_control *reset;
->  	struct clk_bulk_data clocks[3];
->  	unsigned int nclocks;
->  	void __iomem *regs;
-> @@ -167,6 +169,12 @@ static int __maybe_unused hda_tegra_runtime_resume(s=
-truct device *dev)
->  	struct hda_tegra *hda =3D container_of(chip, struct hda_tegra, chip);
->  	int rc;
-> =20
-> +	if (!(chip && chip->running)) {
+>  arch/arm64/include/asm/mte.h     | 21 +++++++++++++++++++
+>  arch/arm64/kernel/entry-common.c | 11 ++++++++++
+>  arch/arm64/kernel/mte.c          | 35 ++++++++++++++++++++++++++++++++
+>  3 files changed, 67 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+> index d02aff9f493d..1a715963d909 100644
+> --- a/arch/arm64/include/asm/mte.h
+> +++ b/arch/arm64/include/asm/mte.h
+> @@ -92,5 +92,26 @@ static inline void mte_assign_mem_tag_range(void *addr, size_t size)
+>  
+>  #endif /* CONFIG_ARM64_MTE */
+>  
+> +#ifdef CONFIG_KASAN_HW_TAGS
+> +void mte_check_tfsr_el1_no_sync(void);
+> +static inline void mte_check_tfsr_el1(void)
+> +{
+> +	mte_check_tfsr_el1_no_sync();
+> +	/*
+> +	 * The asynchronous faults are synch'ed automatically with
 
-Isn't that check for !chip a bit redundant? If that pointer isn't valid,
-we're just going to go crash when dereferencing hda later on, so I think
-this can simply be:
+Nit: can we please use "sync" rather than "synch", to match what we do
+elsewhere, e.g. mte_check_tfsr_el1_no_sync immediately above. The
+inconsistency is unfortunate and distracting.
 
-	if (!chip->running)
+> +	 * TFSR_EL1 on kernel entry but for exit an explicit dsb()
+> +	 * is required.
+> +	 */
+> +	dsb(ish);
+> +}
 
-I guess you took this from the inverse check below, but I think we can
-also drop it from there, perhaps in a separate patch.
+Did you mean to have the barrier /before/ checking the TFSR? I'm
+confused as to why it's after the check if the point of it is to ensure
+that TFSR has been updated.
 
-> +		rc =3D reset_control_assert(hda->reset);
-> +		if (rc)
-> +			return rc;
-> +	}
+I don't understand this difference between the entry/exit paths; are you
+relying on a prior DSB in the entry path?
+
+Is the DSB alone sufficient to update the TFSR (i.e. is an indirect
+write ordered before a direct read)? ... or do you need a DSB + ISB
+here?
+
+It's probably worth a comment as to why the ISH domain is correct here
+rather than NSH or SY. I'm not entirely certain if ISH is necessary or
+sufficient, but it depends on the completion rules.
+
+[...]
+
+> >  
+>  /*
+> @@ -47,6 +49,13 @@ static void noinstr exit_to_kernel_mode(struct pt_regs *regs)
+>  {
+>  	lockdep_assert_irqs_disabled();
+>  
+> +	/*
+> +	 * The dsb() in mte_check_tfsr_el1() is required to relate
+> +	 * the asynchronous tag check fault to the context in which
+> +	 * it happens.
+> +	 */
+> +	mte_check_tfsr_el1();
+
+I think this comment is misplaced, given that mte_check_tfsr_el1() isn't
+even in the same file.
+
+If you need to do different things upon entry/exit, I'd rather we had
+separate functions, e.g.
+
+* mte_check_tfsr_entry();
+* mte_check_tfsr_exit();
+
+... since then it's immediately obvious in context as to whether we're
+using the right function, and then we can have a comment within each of
+the functions explaining what we need to do in that specific case.
+
+>  	if (interrupts_enabled(regs)) {
+>  		if (regs->exit_rcu) {
+>  			trace_hardirqs_on_prepare();
+> @@ -243,6 +252,8 @@ asmlinkage void noinstr enter_from_user_mode(void)
+>  
+>  asmlinkage void noinstr exit_to_user_mode(void)
+>  {
+> +	mte_check_tfsr_el1();
 > +
->  	rc =3D clk_bulk_prepare_enable(hda->nclocks, hda->clocks);
->  	if (rc !=3D 0)
->  		return rc;
-> @@ -176,6 +184,10 @@ static int __maybe_unused hda_tegra_runtime_resume(s=
-truct device *dev)
->  		/* disable controller wake up event*/
->  		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
->  			   ~STATESTS_INT_MASK);
-> +	} else {
-> +		rc =3D reset_control_reset(hda->reset);
+>  	trace_hardirqs_on_prepare();
+>  	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
+>  	user_enter_irqoff();
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index df7a1ae26d7c..6cb92e9d6ad1 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -180,6 +180,32 @@ void mte_enable_kernel(enum kasan_hw_tags_mode mode)
+>  	isb();
+>  }
+>  
+> +#ifdef CONFIG_KASAN_HW_TAGS
+> +void mte_check_tfsr_el1_no_sync(void)
+> +{
+> +	u64 tfsr_el1;
+> +
+> +	if (!system_supports_mte())
+> +		return;
+> +
+> +	tfsr_el1 = read_sysreg_s(SYS_TFSR_EL1);
+> +
+> +	/*
+> +	 * The kernel should never hit the condition TF0 == 1
+> +	 * at this point because for the futex code we set
+> +	 * PSTATE.TCO.
+> +	 */
 
-The "if (chip)" part definitely doesn't make sense after this anymore
-because now if chip =3D=3D NULL, then we end up in here and dereference an
-invalid "hda" pointer.
+I thing it's worth spelling out what TF0 == 1 means, e.g.
 
-Also, why reset_control_reset() here? We'll reach this if we ran
-reset_control_assert() above, so this should just be
-reset_control_deassert() to undo that, right? I suppose it wouldn't hurt
-to put throw that standard usleep_range() in there as well that we use
-to wait between reset assert and deassert to make sure the clocks have
-stabilized and the reset has indeed propagated through the whole IP.
+	/*
+	 * The kernel should never trigger an asynchronous fault on a
+	 * TTBR0 address, so we should never see TF0 set.
+	 * For futexes we disable checks via PSTATE.TCO.
+	 */
 
-Thierry
+... what about regular uaccess using LDTR/STTR? What happens for those?
 
---uOznnLuw98Lbh+eo
-Content-Type: application/pgp-signature; name="signature.asc"
+> +	WARN_ON(tfsr_el1 & SYS_TFSR_EL1_TF0);
 
------BEGIN PGP SIGNATURE-----
+It's probably worth giving this a message so that we can debug it more
+easily, e.g.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmABtigACgkQ3SOs138+
-s6FeaRAAsz1n0eikp0rj/uwYC3OvRDA8cLTe9YBU9D16waXKHN4oJ+gx0zWhCVj1
-9yQQOfnF335Xke/RTeCrv+9Powa81YgGqPdveTuj3MmaP58PsHvIC/22XFnjw2zK
-ott21GlSMITx0JMrGjYI3dTSq6rSzRWMAr7YADDgahbpoN/AMnI7Dxh6Inqmu8F0
-NdGSS6WPqZ6rDf+ICY0nSd06BjQB5sPuqUleMIK1RGxGWYH7rq5gj51Ovc98z+B4
-NfCMZHB1LFI9v/soLABPeTbCRn6SXOyfaLeZFn3a/H34xPF0BZw9CCYWzJq8PWBH
-j89p364+whgu210XuppIcGL58u/T2BtjayTJSr1H4YgP2MbUZw1rw5ZvX+KxYdhf
-fYr/lkmUvSha4VjBJOM+kymJaVHNWwheHwX9VJtJRiAzet7oKqto4p0X2wWFjztn
-mi8ZUngUTKYczi0gXP3Mvy/+95/HVwmW+9qmJQ1gBA9IrWvENmhimH3qa8kQP2/5
-1yns9vqGx/N+IAdANR7gzBfyf2rjQxIo1ritAlPiHa0/U+fSPjwp8IeHdJgtpziV
-bWRfvo0emWaj8cbZsB4/inTPyiCfhk+hQeYtpYRp9HJodO/1LbE1n/fvwATlMIdA
-epFJUgIuI4OlFQ5vGY5Cl73pxHnrJOJjLmOBj/CNjZmgoHoQT9g=
-=bc5e
------END PGP SIGNATURE-----
+	WARN(tfsr_el1 & SYS_TFSR_EL1_TF0,
+	     "Kernel async tag fault on TTBR0 address");
 
---uOznnLuw98Lbh+eo--
+> +	if (tfsr_el1 & SYS_TFSR_EL1_TF1) {
+
+It might be worth wrapping this with an unlikely(), given we hope this
+never happens.
+
+Thanks,
+Mark.
+
+> +		write_sysreg_s(0, SYS_TFSR_EL1);
+> +		isb();
+> +
+> +		pr_err("MTE: Asynchronous tag exception detected!");
+> +	}
+> +}
+> +#endif
+> +
+>  static void update_sctlr_el1_tcf0(u64 tcf0)
+>  {
+>  	/* ISB required for the kernel uaccess routines */
+> @@ -245,6 +271,15 @@ void mte_thread_switch(struct task_struct *next)
+>  	/* avoid expensive SCTLR_EL1 accesses if no change */
+>  	if (current->thread.sctlr_tcf0 != next->thread.sctlr_tcf0)
+>  		update_sctlr_el1_tcf0(next->thread.sctlr_tcf0);
+> +
+> +	/*
+> +	 * Check if an async tag exception occurred at EL1.
+> +	 *
+> +	 * Note: On the context switch path we rely on the dsb() present
+> +	 * in __switch_to() to guarantee that the indirect writes to TFSR_EL1
+> +	 * are synchronized before this point.
+> +	 */
+> +	mte_check_tfsr_el1_no_sync();
+>  }
+>  
+>  void mte_suspend_exit(void)
+> -- 
+> 2.30.0
+> 
