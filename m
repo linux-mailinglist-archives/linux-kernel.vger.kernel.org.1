@@ -2,118 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBDB2F7683
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DD72F7689
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbhAOKUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 05:20:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57314 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726385AbhAOKUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 05:20:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD1C8235F9;
-        Fri, 15 Jan 2021 10:19:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610705977;
-        bh=bf0jQ2O0tO4O/8qlgaE5+O21nA4lPigurpD7Qz3bnAA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jk1VDTw2wrccTJWzhst5krnjAqTHk/VuQjLsYhD7KP/Uz8MXpaKPINNbg7OYFt+KC
-         obDmPNXEOHahdIKfTVUPPeIdQukJPqV+ncUHpVTcvqjUQpt74idSvp+KKVM5KbrzsP
-         VpO6EKJ9SYlK80kJ8JD47qf689xQ2k9DTUiDX896RvvQkCkAwxWExkoCyNaiq1AOo5
-         l31Xr7QWNLwvpeKzVYd8GXqOdNzUAeWditxIj6ZE0DDgQVgVU6dlphSLkMSGsKDDaO
-         qRbanA9N+c0sUsgfwI3RscYlyNBFXAePnAwwLv3OOLRCeym5PbDGbgIIWMIB2w3vGO
-         L5H1gwu3/iscQ==
-Date:   Fri, 15 Jan 2021 12:19:32 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Kosina <trivial@kernel.org>
-Subject: Re: [PATCH RFC] x86/sgx: Add trivial NUMA allocation
-Message-ID: <YAFsNJZgyzfkYoSR@kernel.org>
-References: <20201216135031.21518-1-jarkko@kernel.org>
- <34b1acd1-e769-0dc2-a225-8ce3d2b6a085@intel.com>
- <YACFasdDi0siM2ML@kernel.org>
- <16b26a00-eb6b-7c19-6c33-144efe516b6b@intel.com>
+        id S1726913AbhAOKWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 05:22:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725950AbhAOKV6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 05:21:58 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343DDC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 02:21:19 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id v15so5040655wrx.4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 02:21:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2V/bZEZDEb3V/fhFz7mUvhwT4BoeshuJFwVGruvza08=;
+        b=aYjLFPlRopkC8U+z0eeACcdHQr5l3mA5gCPJGb7hvxxDKTu77jLMB36mJ9NcXLPXe9
+         DN0RymKSRhrU8jSS/Dewg6Y281s+HKwVt325kb508PUn+bn0FrWwiU8L2EC4KT90r+vY
+         +cRvk7ZkOh9a8IXv140J5YgXsZM9fnQcWQmKA9nRSMUdb82slzKK2N1WewCRChtQEgkj
+         v4ZP6fwXlv23OfWd+byqBPULGtjjn7PR/KwMmgwroXNqXWK2tXUB+xSAaC9EElgp3EJC
+         hUNBOFcfKV554D9fzkBhUqYZT8UCJmznSPHsscChw15ZbNp/KxOkMtky8bypYbAGGCaK
+         LuFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2V/bZEZDEb3V/fhFz7mUvhwT4BoeshuJFwVGruvza08=;
+        b=q8UwE/GNN74+56RO8NsSF4DEYPfzuywf47DfQUZk9LyynI25NABzBib9ShOumS/Li/
+         vpd4QGweVpyQ7amAUMpBkzGGJVNiEMeggFjRMvyJ5YP1BFp4JYTS/G72NhUzxt/8P7TM
+         2Ql6JFcTHO5dObe2l0+eRWaBJyucQ5XKW1nAMEsKK1tI7F+gorOCsqGnYol6Dmqcrmpl
+         x73FFGPn2b+mrE0302/0am2a9AoUc8LVHuVUQBHoI6ogt5q3IPhh2dLNL2SsdzlEafjU
+         +SLMn5U2VTG7gkAnoMnRSLBVgjs0jR+O99Fcx/Y5R+3PUStW+RNqjSwjmcB9D00KGAc5
+         AEaQ==
+X-Gm-Message-State: AOAM532HMula47Cc7YAXufH+ajdeLp/fK6HtWiAXB/E6TbVyPzypyP9o
+        ld4sVGrQMubi/JAgRU7n+N6Tnw==
+X-Google-Smtp-Source: ABdhPJwakoU+7BSQGbhR1JfvHegL+hWVJpGp1oN3cDW5tg3nshzdGm4R96q2lqQmaHmjIqHM8lN3Gg==
+X-Received: by 2002:adf:e410:: with SMTP id g16mr12476278wrm.364.1610706077647;
+        Fri, 15 Jan 2021 02:21:17 -0800 (PST)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id o20sm1876407wmm.24.2021.01.15.02.21.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 02:21:17 -0800 (PST)
+Date:   Fri, 15 Jan 2021 10:21:15 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     jason.wessel@windriver.com, kgdb-bugreport@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH] kgdb: Schedule breakpoints via workqueue
+Message-ID: <20210115102115.twv3oy3pmnhdejij@maple.lan>
+References: <20210115001344.117108-1-dave@stgolabs.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <16b26a00-eb6b-7c19-6c33-144efe516b6b@intel.com>
+In-Reply-To: <20210115001344.117108-1-dave@stgolabs.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 10:35:03AM -0800, Dave Hansen wrote:
-> On 1/14/21 9:54 AM, Jarkko Sakkinen wrote:
-> > On Tue, Jan 12, 2021 at 04:24:01PM -0800, Dave Hansen wrote:
-> >> We need a bit more information here as well.  What's the relationship
-> >> between NUMA nodes and sections?  How does the BIOS tell us which NUMA
-> >> nodes a section is in?  Is it the same or different from normal RAM and
-> >> PMEM?
-> > 
-> > How does it go with pmem?
+On Thu, Jan 14, 2021 at 04:13:44PM -0800, Davidlohr Bueso wrote:
+> The original functionality was added back in:
 > 
-> I just wanted to point out PMEM as being referred to by the SRAT, but as
-> something which is *not* "System RAM".  There might be some overlap in
-> NUMA for PMEM and NUMA for SGX memory since neither is enumerated as
-> "System RAM".
-
-Right.
-
-> ...
-> >> I'm not positive this works.  I *thought* these ->node_start_pfn and
-> >> ->node_spanned_pages are really only guaranteed to cover memory which is
-> >> managed by the kernel and has 'struct page' for it.
-> >>
-> >> EPC doesn't have a 'struct page', so won't necessarily be covered by the
-> >> pgdat-> and zone-> ranges.  I *think* you may have to go all the way
-> >> back to the ACPI SRAT for this.
-> >>
-> >> It would also be *possible* to have an SRAT constructed like this:
-> >>
-> >> 0->1GB System RAM - Node 0
-> >> 1->2GB Reserved   - Node 1
-> >> 2->3GB System RAM - Node 0
-> >>
-> >> Where the 1->2GB is EPC.  The Node 0 pg_data_t would be:
-> >>
-> >> 	pgdat->node_start_pfn = 0
-> >> 	pgdat->node_spanned_pages = 3GB
-> > 
-> > If I've understood the current Linux memory architecture correctly.
-> > 
-> > - Memory is made available through mm/memory_hotplug.c, which is populated
-> >   by drivers/acpi/acpi_memhotplug.c.
-> > - drivers/acpi/numa/srat.c provides the conversion API from proximity node to
-> >   logical node but I'm not *yet* sure how the interaction goes with memory
-> >   hot plugging
-> > 
-> > I'm not sure of I'm following the idea of alternative SRAT construciton.
-> > So are you saying that srat.c would somehow group pxm's with EPC to
-> > specific node numbers?
+>     1cee5e35f15 (kgdb: Add the ability to schedule a breakpoint via a tasklet)
 > 
-> Basically, go look at the "SRAT:" messages in boot.  Are there SRAT
-> entries that cover all the EPC?  For instance, take this SRAT:
+> However tasklets have long been deprecated as being too heavy on
+> the system by running in irq context - and this is not a performance
+> critical path. If a higher priority process wants to run, it must
+> wait for the tasklet to finish before doing so. Instead, generate
+> the breakpoint exception in process context.
+
+I don't agree that "this is not a performance critical path".
+
+kgdb is a stop-the-world debugger: if the developer trying to understand
+the system behaviour has commanded the system to halt then that is what
+it should be doing. It should not be scheduling tasks that are not
+necessary to bring the system a halt.
+
+In other words this code is using tasklets *specifically* to benefit
+from their weird calling context.
+
+However I am aware the way the wind is blowing w.r.t. tasklets
+and...
+
+> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+> ---
+> Compile-tested only.
+
+... this code can only ever be compile tested since AFAIK it has no
+in-kernel callers.
+
+There is a (still maintained) out-of-tree user that provides
+kgdb-over-ethernet using the netpoll API. It must defer the stop to a
+tasklet to avoid problems with netpoll running alongside the RX handler.
+
+Whilst I have some sympathy, that code has been out-of-tree for more
+than 10 years and I don't recall any serious attempt to upstream it at
+any point in the last five.
+
+So unless someone yells (convincingly) perhaps it's time to rip this
+out and help prepare for a tasklet-free future?
+
+
+Daniel.
+
+
 > 
-> [    0.000000] ACPI: SRAT: Node 1 PXM 2 [mem 0x00000000-0xcfffffff]
-> [    0.000000] ACPI: SRAT: Node 1 PXM 2 [mem 0x100000000-0x82fffffff]
-> [    0.000000] ACPI: SRAT: Node 0 PXM 1 [mem 0x830000000-0xe2fffffff]
-
-Right!
-
-> If EPC were at 0x100000000, we would be in good shape.  It is covered by
-> an SRAT entry that Linux parses as RAM.  But, if it were at 0xd0000000,
-> it would be in an SRAT "hole", uncovered by an SRAT entry.  In this
-> case, since 'Node 1" spans that hole the "Node 1" pgdat would span this
-> hole.  But, if some memory was removed from the system, "Node 1" might
-> no longer span that hole and EPC in this hole would not be assignable to
-> Node 1.
+>  kernel/debug/debug_core.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 > 
-> Please just make sure that there *ARE* SRAT entries that cover EPC
-> memory ranges.
-
-OK, I'm on page now, thanks.
-
-/Jarkko
+> diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+> index af6e8b4fb359..e1ff974c6b6f 100644
+> --- a/kernel/debug/debug_core.c
+> +++ b/kernel/debug/debug_core.c
+> @@ -119,7 +119,7 @@ static DEFINE_RAW_SPINLOCK(dbg_slave_lock);
+>   */
+>  static atomic_t			masters_in_kgdb;
+>  static atomic_t			slaves_in_kgdb;
+> -static atomic_t			kgdb_break_tasklet_var;
+> +static atomic_t			kgdb_break_work_var;
+>  atomic_t			kgdb_setting_breakpoint;
+>  
+>  struct task_struct		*kgdb_usethread;
+> @@ -1085,27 +1085,27 @@ static void kgdb_unregister_callbacks(void)
+>  }
+>  
+>  /*
+> - * There are times a tasklet needs to be used vs a compiled in
+> + * There are times a workqueue needs to be used vs a compiled in
+>   * break point so as to cause an exception outside a kgdb I/O module,
+>   * such as is the case with kgdboe, where calling a breakpoint in the
+>   * I/O driver itself would be fatal.
+>   */
+> -static void kgdb_tasklet_bpt(unsigned long ing)
+> +static void kgdb_work_bpt(struct work_struct *unused)
+>  {
+>  	kgdb_breakpoint();
+> -	atomic_set(&kgdb_break_tasklet_var, 0);
+> +	atomic_set(&kgdb_break_work_var, 0);
+>  }
+>  
+> -static DECLARE_TASKLET_OLD(kgdb_tasklet_breakpoint, kgdb_tasklet_bpt);
+> +static DECLARE_WORK(kgdb_async_breakpoint, kgdb_work_bpt);
+>  
+>  void kgdb_schedule_breakpoint(void)
+>  {
+> -	if (atomic_read(&kgdb_break_tasklet_var) ||
+> +	if (atomic_read(&kgdb_break_work_var) ||
+>  		atomic_read(&kgdb_active) != -1 ||
+>  		atomic_read(&kgdb_setting_breakpoint))
+>  		return;
+> -	atomic_inc(&kgdb_break_tasklet_var);
+> -	tasklet_schedule(&kgdb_tasklet_breakpoint);
+> +	atomic_inc(&kgdb_break_work_var);
+> +	schedule_work(&kgdb_async_breakpoint);
+>  }
+>  EXPORT_SYMBOL_GPL(kgdb_schedule_breakpoint);
+>  
+> -- 
+> 2.26.2
+> 
