@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612492F7998
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0562F791E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732200AbhAOMig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:38:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45790 "EHLO mail.kernel.org"
+        id S1732767AbhAOMbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:31:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387518AbhAOMi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:38:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4C392256F;
-        Fri, 15 Jan 2021 12:37:45 +0000 (UTC)
+        id S1732618AbhAOMb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEA5A238E3;
+        Fri, 15 Jan 2021 12:30:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714266;
-        bh=fip9LsIw/fuTpb8HCUU2MKHFkHvdDURgaJVNA8Hvq0M=;
+        s=korg; t=1610713824;
+        bh=7DhH4CeaiM1Ol8TRHyRqIFvNkZi+WpYGPYti91uLLGk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0j049/eGhMWuV60nhqr2aZi2AGgx0eiBNztzJv4QdzHrFVShiWzc4WGExhgZU+LzZ
-         45tOvqwfclqRjowWVlqZbwvdv4a9GDRAq6/puPUJagzpq/1os9CXIy4AfaWMjxwFur
-         v80wlmngJ4PtdII7G5D+P39pYDJJueS0u2qL3WJo=
+        b=iIi6/ky/0FhiKEUftAoszCNhsPjB0Bbmnv6ooO5jiHO7bGcQ9FgW6YTBgZYmOrbRz
+         PrGkNdesvZiOYmcUtcDTMoeSXw991/2+zORT9fjXfgJOvOudLFnogY1eyqpWAtYubY
+         qTYFxE57lspVpwJNryU6irxbzakOPu4eCm3vWK8g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 058/103] can: kvaser_pciefd: select CONFIG_CRC32
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 4.9 20/25] iommu/intel: Fix memleak in intel_irq_remapping_alloc
 Date:   Fri, 15 Jan 2021 13:27:51 +0100
-Message-Id: <20210115122008.857031771@linuxfoundation.org>
+Message-Id: <20210115121957.682602102@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
-References: <20210115122006.047132306@linuxfoundation.org>
+In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
+References: <20210115121956.679956165@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit 1d48595c786b1b9dc6be301e8d7f6fc74e9882aa upstream.
+commit ff2b46d7cff80d27d82f7f3252711f4ca1666129 upstream.
 
-Without crc32, this driver fails to link:
+When irq_domain_get_irq_data() or irqd_cfg() fails
+at i == 0, data allocated by kzalloc() has not been
+freed before returning, which leads to memleak.
 
-arm-linux-gnueabi-ld: drivers/net/can/kvaser_pciefd.o: in function `kvaser_pciefd_probe':
-kvaser_pciefd.c:(.text+0x2b0): undefined reference to `crc32_be'
-
-Fixes: 26ad340e582d ("can: kvaser_pciefd: Add driver for Kvaser PCIEcan devices")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: b106ee63abcc ("irq_remapping/vt-d: Enhance Intel IR driver to support hierarchical irqdomains")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+Link: https://lore.kernel.org/r/20210105051837.32118-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/can/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/iommu/intel_irq_remapping.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -123,6 +123,7 @@ config CAN_JANZ_ICAN3
- config CAN_KVASER_PCIEFD
- 	depends on PCI
- 	tristate "Kvaser PCIe FD cards"
-+	select CRC32
- 	  help
- 	  This is a driver for the Kvaser PCI Express CAN FD family.
- 
+--- a/drivers/iommu/intel_irq_remapping.c
++++ b/drivers/iommu/intel_irq_remapping.c
+@@ -1350,6 +1350,8 @@ static int intel_irq_remapping_alloc(str
+ 		irq_data = irq_domain_get_irq_data(domain, virq + i);
+ 		irq_cfg = irqd_cfg(irq_data);
+ 		if (!irq_data || !irq_cfg) {
++			if (!i)
++				kfree(data);
+ 			ret = -EINVAL;
+ 			goto out_free_data;
+ 		}
 
 
