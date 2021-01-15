@@ -2,92 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81ED2F70DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBE92F70E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:20:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732434AbhAODSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 22:18:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32858 "EHLO
+        id S1732453AbhAODTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 22:19:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732423AbhAODSW (ORCPT
+        with ESMTP id S1732439AbhAODTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 22:18:22 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659CDC061575;
-        Thu, 14 Jan 2021 19:18:07 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id j26so5158614qtq.8;
-        Thu, 14 Jan 2021 19:18:07 -0800 (PST)
+        Thu, 14 Jan 2021 22:19:00 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38328C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 19:18:20 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id cq1so4270234pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 19:18:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5ZQN0t+SyirEWcCnAtJWFZVAj9QfKHKmBdxx1H8XwTE=;
-        b=odr0pw6Tc4JOSEerz1bsmasAi60PTA3HexpYK4sUs3CMn4UPSHFwTCje4xad/XxtEo
-         CL84jc8pHGUYe8mImzQQI3TrdZy6n/CgU1UHZSBLdxA5xctlwgyV+D4xOimaT3M6uWyT
-         yiC+nw82au74Mn/hxt1Q73E4iXvgTMSWKcum2qqT00gXo5gMUSwrJNfOUBzDgWGhaVZr
-         A+HnmBgxn9RcuYCDgGweJehTinfBAxFcUQLNNsL5QESd//9e+7jh3Jq2A0LopjvMf4re
-         P6TlcVR0r52q1udIrdYpghFbEKwq+iNPduY4Xrr4tZCXtYcK1zOszrey0pwB48dKpeTq
-         MTmg==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=CYL61nUpT9QBPPOoJporp4vlEmNkT+pHSZF51yBwgfY=;
+        b=H147E/W6ElX0kdzhQq8m290rGMnwBel2jhgKL0V8XhKc/7KgcrZuOOwV32wMytwdsq
+         QwsCwRHbFm6ES5ynCtkkJBwUlIb1ek6yQJcQ7eiPOsUQP5EUFXNL81Dc0jVFkQXj8hwg
+         veTzFlFbCZI1QE7UIktlECNH3nD30ld5r+ybQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=5ZQN0t+SyirEWcCnAtJWFZVAj9QfKHKmBdxx1H8XwTE=;
-        b=ouu/qK/nCL88aUzcG46TMPXzEB570BC138ZuZMd4/8DGgIoG3Fpk0CkeByTEzMbBVd
-         4EbjNRbe1fZyClsGu1kjtdJgHdIiGjd5CI2AqdsjzNLENN1yo3Y3F6Wv8GPe4ZcMJ4l1
-         az++lL1ce3Wa9END7WOQaH7K67YroElq4AgXbbJElyJWVbLaQuampu1ju3hAqTamJeYI
-         Q7uxgVXWqmMBSWryZZg4AWgBxqkio8bNRs/HxQRqZUE/7WX1LkocJ3i+kfBayVv+T1Ev
-         vzB49N1cOU6jB921+T0Tv9S0yJtAtJbqTCUd2ablm59dOnDydF4wp/czaF1yx0G1kkEN
-         q3ZQ==
-X-Gm-Message-State: AOAM533sO3LamVBFGcgX0RZ972tuAbNke9fwbvNkAcQWTP222EyCyPaK
-        haslpmQW/7JtVMiRhxKb0Dc=
-X-Google-Smtp-Source: ABdhPJw8HJjhzyHwUf31NT2HnwAkb5iOzHboKS6INWtGtE+2frw4nADvVWrGcv0jHhVrEAShsd+hXQ==
-X-Received: by 2002:ac8:6f65:: with SMTP id u5mr9949979qtv.303.1610680686426;
-        Thu, 14 Jan 2021 19:18:06 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:c885])
-        by smtp.gmail.com with ESMTPSA id c7sm3929094qtw.70.2021.01.14.19.18.05
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=CYL61nUpT9QBPPOoJporp4vlEmNkT+pHSZF51yBwgfY=;
+        b=YSnxCwXZuGJXDS482SDB5nDd4wIIPyfv2g4yFkEWa/i6fGaoyGNGdo4iwqgQ0dC/5X
+         jv/ITYQqGFPCuASQBSeEpLBEk0Js9Zr/Jp1uwXXBMtwqDAgfEQ3ekQ0PohfXtTfv6Fkl
+         Ya228YVm5FsWsycKWtHVOR/teIgDKdxxN23ucZxsz91xg58tBExsEzzA3ZdIwImENHlD
+         wVeQVWaKNUGiOakdepD6CjZkWI2vRjOVIIKC+CPDne7oBRhFeslUs8Z0xW5/diUh6GS4
+         F8Ub6rgo7DBF7OIOHQPPYYRDZPlM5tt4cHjS/GDOO8ym6KAV2qVtRGFqj4jwWxuquCz3
+         Vldw==
+X-Gm-Message-State: AOAM5314usiNW1mAa5C2frUMRAvUEMoax9+sZcQ+xgowwx5cecNSfbbH
+        9YEjIMytNS9SJNgnCF8z9/l9xg==
+X-Google-Smtp-Source: ABdhPJwKK/Ocxu/ROS6mrbWbApoVD7MGfUwi3WiESvR/TWJTzsbvbigTM0iW13OtrNg66Ss0ABX2+w==
+X-Received: by 2002:a17:90b:14c7:: with SMTP id jz7mr8308072pjb.40.1610680699797;
+        Thu, 14 Jan 2021 19:18:19 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id x15sm6207760pfi.184.2021.01.14.19.18.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 19:18:05 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 14 Jan 2021 22:17:18 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     chenzhou <chenzhou10@huawei.com>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] cgroup-v1: add disabled controller check in
- cgroup1_parse_param()
-Message-ID: <YAEJPs4DJIgAXWul@mtj.duckdns.org>
-References: <20201218061755.121205-1-chenzhou10@huawei.com>
- <YABDWvI2PWQpnv59@blackbook>
- <d4ba14b0-ee06-b793-a840-2c2ff369d890@huawei.com>
- <YAB3Wuu+hFpN698N@blackbook>
- <7804658e-7644-8edb-5ca8-0c97389c8c62@huawei.com>
+        Thu, 14 Jan 2021 19:18:19 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7804658e-7644-8edb-5ca8-0c97389c8c62@huawei.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1601448168-18396-3-git-send-email-srivasam@codeaurora.org>
+References: <1601448168-18396-1-git-send-email-srivasam@codeaurora.org> <1601448168-18396-3-git-send-email-srivasam@codeaurora.org>
+Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sc7180-trogdor: Add lpass dai link for HDMI
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org
+Date:   Thu, 14 Jan 2021 19:18:17 -0800
+Message-ID: <161068069765.3661239.6061499369110570958@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Quoting Srinivasa Rao Mandadapu (2020-09-29 23:42:48)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/bo=
+ot/dts/qcom/sc7180-trogdor.dtsi
+> index 5724982..850b43e 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> @@ -231,6 +231,7 @@
+> =20
+>                 audio-jack =3D <&alc5682>;
+> =20
+> +               #sound-dai-cells =3D <0>;
+>                 #address-cells =3D <1>;
+>                 #size-cells =3D <0>;
+> =20
+> @@ -257,6 +258,17 @@
+>                                 sound-dai =3D <&max98357a>;
+>                         };
+>                 };
 
-On Fri, Jan 15, 2021 at 09:55:43AM +0800, chenzhou wrote:
-> Yeah, this will select all enabled controllers, but which doesn't the behavior we want.
-> I think the case should return error with information "Disabled controller xx" rather than
-> attaching all the other enabled controllers.
-> 
-> For example, boot with cgroup_no_v1=cpu, and then mount with
-> "mount -t cgroup -o cpu cpu /sys/fs/cgroup/cpu", then all enabled controllers will
-> be attached expect cpu.
+Can you please add a newline here?
 
-Okay, that explanation actually makes sense. Can you please update the
-description to include what's broken and how it's being fixed? It really
-isn't clear what the patch is trying to achieve from the current
-description.
+> +               dai-link@2 {
+> +                       link-name =3D "MultiMedia2";
+> +                       reg =3D <2>;
+> +                       cpu {
+> +                               sound-dai =3D <&lpass_cpu 2>;
+> +                       };
+> +
+> +                       codec {
+> +                               sound-dai =3D <&msm_dp>;
+> +                       };
+> +               };
+>         };
+>  };
+> =20
+> @@ -782,6 +794,9 @@ hp_i2c: &i2c9 {
+>                 reg =3D <MI2S_SECONDARY>;
+>                 qcom,playback-sd-lines =3D <0>;
+>         };
 
-Thanks.
+Can you please add a newline here?
 
--- 
-tejun
+> +       hdmi-primary@0 {
+
+This should be hdmi-primary@2 {
+
+Or a more generic node name should be devised. dai@2 perhaps?
+
+> +               reg =3D <LPASS_DP_RX>;
+> +       };
+>  };
+>
