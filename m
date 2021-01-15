@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4482F7B19
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:58:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9819B2F7A26
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387619AbhAOM57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:57:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39612 "EHLO mail.kernel.org"
+        id S2388252AbhAOMpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:45:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733284AbhAOMd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:33:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DF7923339;
-        Fri, 15 Jan 2021 12:33:41 +0000 (UTC)
+        id S1733203AbhAOMiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:38:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 133B3235F8;
+        Fri, 15 Jan 2021 12:37:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714021;
-        bh=QdGBz/Vky3oN2/OTnll2QfPUiJqMytbFuaokbv5SXiY=;
+        s=korg; t=1610714268;
+        bh=ZZWmJlUIDJ2JPv5b9I0qOYxGiQAFlC00RJvtuJxTiWg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zC57HeNnnGwz2MmmRS9v7tgBrBfYI21aQ4qR9tUA/2HtftFMBZ0TkBVRC/vxReCBP
-         amGkW9z2FfPozP1J4BqE4fB1MYcMbBUjgvptdiO+XQ38gJEf9KOMb7LEqRmUIan/fw
-         K+mIDVBG/Ke22irTYAiq9PHe6E/2IWbm+kepydh8=
+        b=rL9JWbDkJ7h2ECcHw8a/Q3rMv3GjHEgks1/9XiblxlTeve+ltHI4RU5DPRQ7naTGi
+         AJn6fbKJs1xHNRAFEHOGw+1SZ6VDmZJbP71MEofdYN1BBGjILi0gjL0uxcolnDDKJP
+         6lR2nDLedWW0ss3Vkzdf90ry8qlUvRBjDe+0oLdQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 02/62] vfio iommu: Add dma available capability
-Date:   Fri, 15 Jan 2021 13:27:24 +0100
-Message-Id: <20210115121958.517746065@linuxfoundation.org>
+        stable@vger.kernel.org, Rohit Maheshwari <rohitm@chelsio.com>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 032/103] chtls: Avoid unnecessary freeing of oreq pointer
+Date:   Fri, 15 Jan 2021 13:27:25 +0100
+Message-Id: <20210115122007.613127635@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
+References: <20210115122006.047132306@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,100 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Rosato <mjrosato@linux.ibm.com>
+From: Ayush Sawal <ayush.sawal@chelsio.com>
 
-[ Upstream commit 7d6e1329652ed971d1b6e0e7bea66fba5044e271 ]
+[ Upstream commit f8d15d29d6e6b32704c8fce9229716ca145a0de2 ]
 
-The following functional changes were needed for backport:
-- vfio_iommu_type1_get_info doesn't exist, call
-  vfio_iommu_dma_avail_build_caps from vfio_iommu_type1_ioctl.
-- As further fallout from this, vfio_iommu_dma_avail_build_caps must
-  acquire and release the iommu mutex lock.  To do so, the return value is
-  stored in a local variable as in vfio_iommu_iova_build_caps.
+In chtls_pass_accept_request(), removing the chtls_reqsk_free()
+call to avoid oreq freeing twice. Here oreq is the pointer to
+struct request_sock.
 
-Upstream commit description:
-Commit 492855939bdb ("vfio/type1: Limit DMA mappings per container")
-added the ability to limit the number of memory backed DMA mappings.
-However on s390x, when lazy mapping is in use, we use a very large
-number of concurrent mappings.  Let's provide the current allowable
-number of DMA mappings to userspace via the IOMMU info chain so that
-userspace can take appropriate mitigation.
-
-Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: cc35c88ae4db ("crypto : chtls - CPL handler definition")
+Signed-off-by: Rohit Maheshwari <rohitm@chelsio.com>
+Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/vfio/vfio_iommu_type1.c | 22 ++++++++++++++++++++++
- include/uapi/linux/vfio.h       | 15 +++++++++++++++
- 2 files changed, 37 insertions(+)
+ drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index 3b31e83a92155..bc6ba41686fa3 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -2303,6 +2303,24 @@ static int vfio_iommu_iova_build_caps(struct vfio_iommu *iommu,
- 	return ret;
- }
+--- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c
++++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c
+@@ -1396,7 +1396,7 @@ static void chtls_pass_accept_request(st
  
-+static int vfio_iommu_dma_avail_build_caps(struct vfio_iommu *iommu,
-+					   struct vfio_info_cap *caps)
-+{
-+	struct vfio_iommu_type1_info_dma_avail cap_dma_avail;
-+	int ret;
-+
-+	mutex_lock(&iommu->lock);
-+	cap_dma_avail.header.id = VFIO_IOMMU_TYPE1_INFO_DMA_AVAIL;
-+	cap_dma_avail.header.version = 1;
-+
-+	cap_dma_avail.avail = iommu->dma_avail;
-+
-+	ret = vfio_info_add_capability(caps, &cap_dma_avail.header,
-+				       sizeof(cap_dma_avail));
-+	mutex_unlock(&iommu->lock);
-+	return ret;
-+}
-+
- static long vfio_iommu_type1_ioctl(void *iommu_data,
- 				   unsigned int cmd, unsigned long arg)
- {
-@@ -2349,6 +2367,10 @@ static long vfio_iommu_type1_ioctl(void *iommu_data,
- 		info.iova_pgsizes = vfio_pgsize_bitmap(iommu);
+ 	newsk = chtls_recv_sock(sk, oreq, network_hdr, req, cdev);
+ 	if (!newsk)
+-		goto free_oreq;
++		goto reject;
  
- 		ret = vfio_iommu_iova_build_caps(iommu, &caps);
-+
-+		if (!ret)
-+			ret = vfio_iommu_dma_avail_build_caps(iommu, &caps);
-+
- 		if (ret)
- 			return ret;
+ 	if (chtls_get_module(newsk))
+ 		goto reject;
+@@ -1412,8 +1412,6 @@ static void chtls_pass_accept_request(st
+ 	kfree_skb(skb);
+ 	return;
  
-diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-index 9e843a147ead0..cabc93118f9c8 100644
---- a/include/uapi/linux/vfio.h
-+++ b/include/uapi/linux/vfio.h
-@@ -748,6 +748,21 @@ struct vfio_iommu_type1_info_cap_iova_range {
- 	struct	vfio_iova_range iova_ranges[];
- };
- 
-+/*
-+ * The DMA available capability allows to report the current number of
-+ * simultaneously outstanding DMA mappings that are allowed.
-+ *
-+ * The structure below defines version 1 of this capability.
-+ *
-+ * avail: specifies the current number of outstanding DMA mappings allowed.
-+ */
-+#define VFIO_IOMMU_TYPE1_INFO_DMA_AVAIL 3
-+
-+struct vfio_iommu_type1_info_dma_avail {
-+	struct	vfio_info_cap_header header;
-+	__u32	avail;
-+};
-+
- #define VFIO_IOMMU_GET_INFO _IO(VFIO_TYPE, VFIO_BASE + 12)
- 
- /**
--- 
-2.27.0
-
+-free_oreq:
+-	chtls_reqsk_free(oreq);
+ reject:
+ 	mk_tid_release(reply_skb, 0, tid);
+ 	cxgb4_ofld_send(cdev->lldi->ports[0], reply_skb);
 
 
