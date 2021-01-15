@@ -2,62 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A98942F804D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:11:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE20A2F8049
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:10:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732102AbhAOQKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:10:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729011AbhAOQKK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:10:10 -0500
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1F0C0613C1;
-        Fri, 15 Jan 2021 08:09:15 -0800 (PST)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4DHR2J0pZ0z1rspt;
-        Fri, 15 Jan 2021 17:09:08 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4DHR2D14rrz1tYWR;
-        Fri, 15 Jan 2021 17:09:08 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id 7kEKBGdiBY6k; Fri, 15 Jan 2021 17:09:06 +0100 (CET)
-X-Auth-Info: Vj8+/1od6rEBBzbfIm+0iNjQRk/UCqGp2M1lVqlesjY=
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        id S1729116AbhAOQJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:09:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726046AbhAOQJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 11:09:57 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Fri, 15 Jan 2021 17:09:06 +0100 (CET)
-Subject: Re: [PATCH] net: ks8851: remove definition of DEBUG
-To:     trix@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        andrew@lunn.ch, zhengyongjun3@huawei.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210115153128.131026-1-trix@redhat.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <e7844d89-b0af-53ce-c923-a1d91b4ec0cc@denx.de>
-Date:   Fri, 15 Jan 2021 17:09:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        by mail.kernel.org (Postfix) with ESMTPSA id EE2102388B;
+        Fri, 15 Jan 2021 16:09:15 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 11:09:14 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>
+Subject: Re: [Intel-gfx] [BUG] on reboot: bisected to: drm/i915: Shut down
+ displays gracefully on reboot
+Message-ID: <20210115110914.540bf44d@gandalf.local.home>
+In-Reply-To: <CAHk-=wgqPnjOUa0aDRHXC0UAePrM6kRUD9gR4g2x0mq91FD4xA@mail.gmail.com>
+References: <20210114163206.4a562d82@gandalf.local.home>
+        <161066015368.19482.10094410867880595092@build.alporthouse.com>
+        <20210114170137.002763b3@gandalf.local.home>
+        <CAHk-=wgqPnjOUa0aDRHXC0UAePrM6kRUD9gR4g2x0mq91FD4xA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210115153128.131026-1-trix@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/15/21 4:31 PM, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> Defining DEBUG should only be done in development.
-> So remove DEBUG.
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+On Thu, 14 Jan 2021 20:15:45 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Reviewed-by: Marek Vasut <marex@denx.de>
+> On Thu, Jan 14, 2021 at 2:01 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > Thanks, I take it, it will be going into mainline soon.  
+> 
+> Just got merged - it might be a good idea to verify that your problem is solved.
+> 
 
-Thanks
+Yep, I just tested commit: 5ee88057889bbca5f5bb96031b62b3756b33e164 which
+was your master of this morning. The problem appears to be removed.
+
+Thanks!
+
+-- Steve
