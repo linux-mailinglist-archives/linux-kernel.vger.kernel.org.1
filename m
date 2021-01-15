@@ -2,66 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7A62F80F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BDD82F80FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732648AbhAOQij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:38:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbhAOQii (ORCPT
+        id S1730150AbhAOQjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:39:22 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:50640 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726657AbhAOQjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:38:38 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34420C0613C1;
-        Fri, 15 Jan 2021 08:37:58 -0800 (PST)
-Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 48FF4614C;
-        Fri, 15 Jan 2021 16:37:57 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 48FF4614C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1610728677; bh=8OCXLSQVLLtY+CaM+1GW8kkBfV3J/mP2yF5r3Gw5CX4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OnHKa6DR8rn0KB7nsQG/TQ5LY/wZPokH9t5Vq8lOtMDCIbnlUcgEYMVyzWHhpyST1
-         chGc5PXoX/dsYx8cSwTLMvXfHXxjNn1NkgOwbca2iPAiE453znWdcf+KEVsRWVy7Eo
-         i8a5Ne0JmV5/SNjeBODCPOOzWTN4M5Axnoq0XG9CYfjZoIlYi9lLRHXcnCcW9ouXSd
-         6OJ9gk+XT1sU2/rPc7kGnCwywbk0FB7WG+Q9TR01diSGhEhj7UCfD55sPwC0d6nLqJ
-         qsjztSu0bAXWu++O+clZrfLRf8mHTcXYTnObBQup0WBVA0NL1rNAS67rtzBDaFngCt
-         mavCxzUX7ypcg==
-Date:   Fri, 15 Jan 2021 09:37:56 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     mchehab+huawei@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/10] Fix documentation warnings at linux-next
-Message-ID: <20210115093756.5feaf63c@lwn.net>
-In-Reply-To: <CAKXUXMziQ2H7_oiVSxbt1=bDFkjLQYOiOgd00YGyDnCTVDhbqA@mail.gmail.com>
-References: <CAKXUXMziQ2H7_oiVSxbt1=bDFkjLQYOiOgd00YGyDnCTVDhbqA@mail.gmail.com>
-Organization: LWN.net
+        Fri, 15 Jan 2021 11:39:21 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10FGcXss005195;
+        Fri, 15 Jan 2021 10:38:33 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610728713;
+        bh=wZQyTzD4KHELT+ZdhYxfwSJ38y+1CC1synxgDs8UPD8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ngsAgzkoNdxHP9ir5eBRVRJn2QRI4cKo5lE073rNIcSJ5VEgv+HaOYjlgjr8DCmWh
+         VdEz2LCPFx4ehyBkNAszqYg3Y0DqjNFYuGiFsGZa4kPpIkRUKk2FBLx6rrv66Ym1Cj
+         yzdxcI1cNE0euuTbyGc1wj/paQ+KE+F8Kzznh42s=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10FGcXtr088735
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 Jan 2021 10:38:33 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
+ Jan 2021 10:38:32 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 15 Jan 2021 10:38:32 -0600
+Received: from [10.250.34.42] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10FGcWG4069644;
+        Fri, 15 Jan 2021 10:38:32 -0600
+Subject: Re: [PATCH] dt-bindings: soc: ti: Update TI PRUSS bindings about
+ schemas to include
+To:     <santosh.shilimkar@oracle.com>
+CC:     Rob Herring <robh@kernel.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        <tony@atomide.com>, <linux-omap@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>,
+        <ssantosh@kernel.org>, <praneeth@ti.com>, <lee.jones@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201216225027.2681-1-grzegorz.jaszczyk@linaro.org>
+ <20201221213234.GA596829@robh.at.kernel.org>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <6f5b6609-bb9e-31f7-c0c2-3bb261a54d6a@ti.com>
+Date:   Fri, 15 Jan 2021 10:38:27 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201221213234.GA596829@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 07:12:38 +0100
-Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+Hi Santosh,
 
-> We both, Mauro and I, have been submitting patches to address the
-> documentation warnings on linux-next. If it is okay with you, Mauro, I
-> would like to take responsibility for the task to send out the patches
-> to address all warnings on linux-next in make htmldocs and follow up
-> with all the discussions. I can also provide a short weekly summary
-> (probably always on Friday) on what is pending where and what I could
-> not resolve by myself.
+On 12/21/20 3:32 PM, Rob Herring wrote:
+> On Wed, 16 Dec 2020 23:50:27 +0100, Grzegorz Jaszczyk wrote:
+>> Now after ti,pruss-intc.yaml and ti,pru-rproc.yaml are merged, include
+>> them in proper property and extend the examples section.
+>>
+>> At the occasion extend the allowed property list about dma-ranges.
+>>
+>> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+>> ---
+>>  .../devicetree/bindings/soc/ti/ti,pruss.yaml  | 76 +++++++++++++++++++
+>>  1 file changed, 76 insertions(+)
+>>
 > 
-> Is that okay for you?
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> 
 
-I'm certainly not going to complain about warning fixes!  If you want to
-take up this work, all I can say is - I'm looking forward to the patches.
-Thanks for doing this.
+Gentle reminder, I haven't seen this patch yet on linux-next.
+Can you please pick this up for 5.12.
 
-jon
+Thanks,
+Suman
+
+
