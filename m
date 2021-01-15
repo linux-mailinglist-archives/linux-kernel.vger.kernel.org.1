@@ -2,251 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0202F7EC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 964182F7EC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732346AbhAOPAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:00:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27410 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731503AbhAOO7y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:59:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610722707;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dmVQjQTpqOnD4r9o3Q6+/fS9ZXoOCu6z+q20+s/vvWQ=;
-        b=QH75kkNUjnFtmHIIAnk1g5yTdMJo0KL0iIzcAuux4a77OpfG8gGALAvTJeogWJxk77+1LD
-        ZtQ5oSEyrbE9XSsjxVZP5rNEPuyibBv/BMPGdZjmGkKk6Wxgj0sXfo5FLVC5bh+ft/lqMw
-        qhwKXS+fpj342daF/MzD0fZLwA3MkM8=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-453-rgGdeWj0MmifTgpM8s-7vQ-1; Fri, 15 Jan 2021 09:58:25 -0500
-X-MC-Unique: rgGdeWj0MmifTgpM8s-7vQ-1
-Received: by mail-wr1-f72.google.com with SMTP id j5so4267585wro.12
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:58:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dmVQjQTpqOnD4r9o3Q6+/fS9ZXoOCu6z+q20+s/vvWQ=;
-        b=DUzFz/DxVzITpoyKx5JvwkY63zgC0nXdYdUw3emUF6Y13QWL9FeNvNYJ2BINzGK+5/
-         6Lb3q9JYQD2Ewe7q/juVvBH1APG0J7JdY3Ez1K1pLR5fZm7HwzSyqKaVRA34J7RQgTi7
-         bYo5xxyBLq9ZLAV5Abv7aJP7XVbF2zm9THIMZdEK9U/mjGdUuZ5EWqTZbRmDwEb237ZB
-         9Gu2O48Neq9g6X4JteQ9v679K6qbb0aX9e6Qi3O65Q2BmUysymZ1fuDAi315atdS3npU
-         DxEkTEKHaTXTlgD9LnyHaWw8zN5x0Idchp58uRbFBgU4utXSSt4lxZ9pUW32XCEVMD2A
-         jucg==
-X-Gm-Message-State: AOAM531t5oXp81Q9BL5Veojuhsj22mkjyxb2p6sNbYzKgFnHu4QFPG8B
-        2lyL4fzMlkYjuKW9jueVRegT66QMVimW10d09FJZegc1SWMn7kRNLsPdypyyKRrb8YEQsjKjSD6
-        SihAotDxeD3PQzySVHApMnNXYX4f2znt4W+8tgk0vMdE/hCy8tShaQ5/T2ph5vGqawp9wmI76n6
-        qMQYa6Ne4P7OWz4Q==
-X-Received: by 2002:a1c:e255:: with SMTP id z82mr1118491wmg.60.1610722704235;
-        Fri, 15 Jan 2021 06:58:24 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwW+XSWfmPhbHhzTUqZ64FJxtNe1z+L1rkyzhGjXUijdF1PlSioAAyUWeDkY39cnqvjrYChFw==
-X-Received: by 2002:a1c:e255:: with SMTP id z82mr1118429wmg.60.1610722703896;
-        Fri, 15 Jan 2021 06:58:23 -0800 (PST)
-Received: from ?IPv6:2a01:e34:eea6:7961::e71? ([2a01:e34:eea6:7961::e71])
-        by smtp.gmail.com with ESMTPSA id f14sm15410402wre.69.2021.01.15.06.58.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Jan 2021 06:58:23 -0800 (PST)
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: Re: [PATCH v8 0/4] HID: i2c-hid: Reorganize to allow supporting
- goodix,gt7375p
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andrea Borgia <andrea@borgia.bo.it>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Playfair Cal <daniel.playfair.cal@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>,
-        Jiri Kosina <jikos@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Max Krummenacher <max.oss.09@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Pavel Balan <admin@kryma.net>, Shawn Guo <shawnguo@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, Will Deacon <will@kernel.org>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20201211222448.2115188-1-dianders@chromium.org>
- <CAD=FV=Ve4wGJ=KxQjraYsiAQZHG_5qEeFW0ZhmBBkRmtdm7Gwg@mail.gmail.com>
- <CAO-hwJK+=537C-EbgNXPY3=m5LvM8SVKCDB5X145BfSMHgUMdw@mail.gmail.com>
- <CAO-hwJLuzAccZbLSCvyP0JnkCW8fgswrm8RJfMaVKjtyF5Yg_A@mail.gmail.com>
- <CAD=FV=W3uzNPwAGPCUfjC-zoWEPyY4bF8TE4JgPP21s-3MAfpQ@mail.gmail.com>
- <CAO-hwJ+Gz_yp_vn1prREvhcU=YqVatqd_Hp+95L5i2=bcwfhbA@mail.gmail.com>
-Message-ID: <f3add027-d732-0846-fa54-b3c51430b152@redhat.com>
-Date:   Fri, 15 Jan 2021 15:58:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1732584AbhAOPAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:00:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731658AbhAOPAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 10:00:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A01952339E;
+        Fri, 15 Jan 2021 14:59:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610722771;
+        bh=Ik1NuJKdacrlEixUtDe19QzuGeWMixLfuUqX1mnIO50=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ya1VZrVQiAR5FhLobD+bmANbGND/ZpOFLCXPd09K3tLLmEn4UpkZwVeh9fncFzsby
+         GF0o7rHYblreNcHU+vj9T5uj/LvTF8WvdY622DNCo92IzS723k2UBsrPfQv7YNpRC9
+         2GcMkytd9/Lv7yuQ5udDVcaNyCakKll8/h+QspOc5jVDCyZ3mNXK331Xo+Ydrt5I6I
+         8r+KjnPjT6/7wI3Jft1/pSCpK7OjniA2i8Xh7qTkOmtTfGAqPXorZFtsgKdLLyHKEv
+         UHkooHNui/r1M9EeRUQqxIy80QFtAYn2s+idahRRue6GwBgOMvKdhES0C0oTm1LiEZ
+         ZO3FqBxlZtnuQ==
+Date:   Fri, 15 Jan 2021 06:59:30 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v3 1/5] f2fs: compress: add compress_inode to
+ cache compressed blocks
+Message-ID: <YAGt0i244dWXym4H@google.com>
+References: <cdd681ad-462d-cb37-2b4b-8f9d547bc718@huawei.com>
+ <b44c2af4-d142-baff-387c-6b967f76065c@huawei.com>
+ <X/0DxG+AcX54730W@google.com>
+ <160f2cf9-73ca-18cd-6ad0-2498821b8db6@huawei.com>
+ <X/4kYf11oyoMY8P+@google.com>
+ <abc09f9f-561d-df8a-b835-6b5d7a15232c@huawei.com>
+ <X/8UtJU9Dy30kC7I@google.com>
+ <37ba41db-2589-e155-c416-d0c8832026cb@huawei.com>
+ <X//DPI10+ZXvHkYH@google.com>
+ <8e88b1e2-0176-9487-b925-9c7a31a7e5cd@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CAO-hwJ+Gz_yp_vn1prREvhcU=YqVatqd_Hp+95L5i2=bcwfhbA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8e88b1e2-0176-9487-b925-9c7a31a7e5cd@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 01/15, Chao Yu wrote:
+> On 2021/1/14 12:06, Jaegeuk Kim wrote:
+> > On 01/14, Chao Yu wrote:
+> > > On 2021/1/13 23:41, Jaegeuk Kim wrote:
+> > > > [58690.961685] F2FS-fs (vdb) : inject page get in f2fs_pagecache_get_page of f2fs_quota_write+0x150/0x1f0 [f2fs]
+> > > > [58691.071481] F2FS-fs (vdb): Inconsistent error blkaddr:31058, sit bitmap:0
+> > > > [58691.077338] ------------[ cut here ]------------
+> > > > [58691.081461] WARNING: CPU: 5 PID: 8308 at fs/f2fs/checkpoint.c:151 f2fs_is_valid_blkaddr+0x1e9/0x280 [f2fs]
+> > > > [58691.086734] Modules linked in: f2fs(O) quota_v2 quota_tree dm_multipath scsi_dh_rdac scsi_dh_emc scsi_dh_alua ppdev intel_rapl_msr intel_rapl_common sb_edac kvm_intel kvm irqbypass joydev parport_pc parport input_leds serio_raw mac_hid qemu_fw_cfg sch_fq_codel ip_tables x_tables autofs4 btrfs blake2b_generic raid10 raid456 async_raid6_recov async_memcpy asy
+> > > > [58691.120632] CPU: 5 PID: 8308 Comm: kworker/u17:5 Tainted: G      D    O      5.11.0-rc3-custom #1
+> > > > [58691.125438] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
+> > > > [58691.129625] Workqueue: f2fs_post_read_wq f2fs_post_read_work [f2fs]
+> > > > [58691.133142] RIP: 0010:f2fs_is_valid_blkaddr+0x1e9/0x280 [f2fs]
+> > > > [58691.136221] Code: 3c 07 b8 01 00 00 00 d3 e0 21 f8 75 57 83 fa 07 75 52 89 f2 31 c9 48 c7 c6 20 6a a7 c0 48 89 df e8 bc d6 03 00 f0 80 4b 48 04 <0f> 0b 31 c0 e9 5e fe ff ff 48 8b 57 10 8b 42 30 d3 e0 03 42 48 39
+> > > > [58691.143142] RSP: 0018:ffffb429047afd40 EFLAGS: 00010206
+> > > > [58691.145639] RAX: 0000000000000000 RBX: ffff9c3b84041000 RCX: 0000000000000000
+> > > > [58691.148899] RDX: 0000000000000000 RSI: ffff9c3bbbd58940 RDI: ffff9c3bbbd58940
+> > > > [58691.152130] RBP: ffffb429047afd48 R08: ffff9c3bbbd58940 R09: ffffb429047afaa8
+> > > > [58691.155266] R10: 00000000001ba090 R11: 0000000000000003 R12: 0000000000007952
+> > > > [58691.158304] R13: fffff5cc81266ac0 R14: 00000000000000db R15: 0000000000000000
+> > > > [58691.161160] FS:  0000000000000000(0000) GS:ffff9c3bbbd40000(0000) knlGS:0000000000000000
+> > > > [58691.164286] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > [58691.166869] CR2: 00007f0fee9d3000 CR3: 000000005ee76001 CR4: 0000000000370ee0
+> > > > [58691.169714] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > [58691.173102] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > [58691.176163] Call Trace:
+> > > > [58691.177948]  f2fs_cache_compressed_page+0x69/0x280 [f2fs]
+> > > > [58691.180549]  ? newidle_balance+0x253/0x3d0
+> > > > [58691.183238]  f2fs_end_read_compressed_page+0x5a/0x70 [f2fs]
+> > > > [58691.188205]  f2fs_post_read_work+0x11d/0x120 [f2fs]
+> > > > [58691.192489]  process_one_work+0x221/0x3a0
+> > > > [58691.194482]  worker_thread+0x4d/0x3f0
+> > > > [58691.198867]  kthread+0x114/0x150
+> > > > [58691.202243]  ? process_one_work+0x3a0/0x3a0
+> > > > [58691.205367]  ? kthread_park+0x90/0x90
+> > > > [58691.208244]  ret_from_fork+0x22/0x30
+> > > 
+> > > Below patch fixes two issues, I expect this can fix above warning at least.
+> > 
+> > [106115.591837] general protection fault, probably for non-canonical address 0x6b6b6b6b6b6b6b73: 0000 [#1] SMP PTI
+> > [106115.595584] CPU: 3 PID: 10109 Comm: fsstress Tainted: G           O      5.11.0-rc3-custom #1
+> > [106115.601087] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
+> > [106115.601087] RIP: 0010:f2fs_read_multi_pages+0x415/0xa70 [f2fs]
+> 
+> Jaegeuk,
+> 
+> Could you please help to run:
+> 
+> gdb f2fs.ko
+> (gdb) l *(f2fs_read_multi_pages+0x415)
+> 
+> to see where we hit the panic.
 
-On Wed, Jan 13, 2021 at 8:35 PM Benjamin Tissoires <benjamin.tissoires@redhat.com> wrote:
->
-> On Wed, Jan 13, 2021 at 5:05 PM Doug Anderson <dianders@chromium.org> wrote:
-> >
-> > Hi,
-> >
-> > On Wed, Jan 13, 2021 at 7:09 AM Benjamin Tissoires
-> > <benjamin.tissoires@redhat.com> wrote:
-> > >
-> > > > I wanted to apply the series yesterday, but for these kinds of changes
-> > > > I like giving it a spin on actual hardware. Turns out that my XPS-13
-> > > > can not boot to v5.11-rc2, which makes testing the new branch slightly
-> > > > more difficult.
-> > > >
-> > > > I'll give it a spin next week, but I think I should be able to land it for 5.12.
-> > > >
-> > > > Regarding the defconfig conflict, no worries, we can handle it with
-> > > > Stephen and Linus.
-> > > >
-> > >
-> > > After 2 full kernel bisects (I messed up the first because I am an
-> > > idiot and inverted good and bad after the first reboot), I found my
-> > > culprit, and I was able to test the series today.
-> > >
-> > > The series works fine regarding enumeration and removing of devices,
-> > > but it prevents my system from being suspended. If I rmmod
-> > > i2c-hid-acpi, suspend works fine, but if it is present, it immediately
-> > > comes back, which makes me think that something must be wrong.
-> > >
-> > > I also just reverted the series and confirmed that suspend/resume now
-> > > works, meaning that patch 1/4 needs to be checked.
-> >
-> > Can you give me any hints about what type of failure you're seeing?
-> > Any logs?  I don't have an ACPI system to test with...
->
-> I don't have any logs, just that the system comes back up. There is a
-> chance we are not powering the device down correctly, which triggers
-> an IRQ and which puts the system back on.
->
-> >
-> > Is there any chance that some type of userspace / udev rule is getting
-> > tripped up by the driver being renamed?  We ran into something like
-> > this recently on Chrome OS where we had a tool that was hardcoded to
-> > look for "i2c-hid" and needed to be adapted to account for the new
-> > driver name.  Often userspace tweaks with wakeup rules based on driver
-> > name...
->
-> I don't think there is anything like that on a regular desktop.
->
-> >
-> > I'll go stare at the code now and see if anything jumps out.
-> >
->
-> Thanks, but don't spend too much time on it, unless something really
-> jumps out. I'll debug that tomorrow. It's much easier with an actual
-> device than by just looking at the code.
->
+It's fs/f2fs/data.c:2203
 
-Well, that's weird. Now suspend resume works reliably even with your
-series. It could just have been that the lid sensor was too close to a
-magnet or something like that. Though while testing the old version of
-i2c-hid, it was working... Such a mystery :)
-
-Anyway, while trying to dig up that now-non-issue, I got the following patch
-that you likely want to squash into 1/4:
-
----
-
-diff --git a/drivers/hid/i2c-hid/i2c-hid-acpi.c b/drivers/hid/i2c-hid/i2c-hid-acpi.c
-index 0f86060f01b4..dd6d9f74e7e7 100644
---- a/drivers/hid/i2c-hid/i2c-hid-acpi.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-acpi.c
-@@ -31,7 +31,6 @@
-  struct i2c_hid_acpi {
-         struct i2chid_ops ops;
-         struct i2c_client *client;
--       bool power_fixed;
-  };
-
-  static const struct acpi_device_id i2c_hid_acpi_blacklist[] = {
-@@ -75,25 +74,6 @@ static int i2c_hid_acpi_get_descriptor(struct i2c_client *client)
-         return hid_descriptor_address;
-  }
-
--static int i2c_hid_acpi_power_up(struct i2chid_ops *ops)
--{
--       struct i2c_hid_acpi *ihid_of =
--               container_of(ops, struct i2c_hid_acpi, ops);
--       struct device *dev = &ihid_of->client->dev;
--       struct acpi_device *adev;
--
--       /* Only need to call acpi_device_fix_up_power() the first time */
--       if (ihid_of->power_fixed)
--               return 0;
--       ihid_of->power_fixed = true;
--
--       adev = ACPI_COMPANION(dev);
--       if (adev)
--               acpi_device_fix_up_power(adev);
--
--       return 0;
--}
--
-  static void i2c_hid_acpi_shutdown_tail(struct i2chid_ops *ops)
-  {
-         struct i2c_hid_acpi *ihid_of =
-@@ -107,6 +87,7 @@ static int i2c_hid_acpi_probe(struct i2c_client *client,
-  {
-         struct device *dev = &client->dev;
-         struct i2c_hid_acpi *ihid_acpi;
-+       struct acpi_device *adev;
-         u16 hid_descriptor_address;
-         int ret;
-
-@@ -115,7 +96,6 @@ static int i2c_hid_acpi_probe(struct i2c_client *client,
-                 return -ENOMEM;
-
-         ihid_acpi->client = client;
--       ihid_acpi->ops.power_up = i2c_hid_acpi_power_up;
-         ihid_acpi->ops.shutdown_tail = i2c_hid_acpi_shutdown_tail;
-
-         ret = i2c_hid_acpi_get_descriptor(client);
-@@ -123,6 +103,10 @@ static int i2c_hid_acpi_probe(struct i2c_client *client,
-                 return ret;
-         hid_descriptor_address = ret;
-
-+       adev = ACPI_COMPANION(dev);
-+       if (adev)
-+               acpi_device_fix_up_power(adev);
-+
-         if (acpi_gbl_FADT.flags & ACPI_FADT_LOW_POWER_S0) {
-                 device_set_wakeup_capable(dev, true);
-                 device_set_wakeup_enable(dev, false);
+2199                 goto out_put_dnode;
+2200         }
+2201
+2202         for (i = 0; i < dic->nr_cpages; i++) {
+2203                 struct page *page = dic->cpages[i];
+2204                 block_t blkaddr;
+2205                 struct bio_post_read_ctx *ctx;
+2206
+2207                 blkaddr = data_blkaddr(dn.inode, dn.node_page,
+2208                                                 dn.ofs_in_node + i + 1);
 
 
----
-
-This allows to keep the powering ordering of the old i2c-hid module
-(power up before setting device wakeup capable), and simplify the
-not so obvious power_fixed field of struct i2c_hid_acpi.
-
-(I can also send it as a followup on the series if you prefer).
-
-Cheers,
-Benjamin
-
+> 
+> Thanks,
+> 
+> > [106115.601087] Code: ff ff ff 45 31 ff f7 d0 25 00 00 08 00 89 45 80 48 8b 45 a0 48 83 c0 6c 48 89 85 78 ff ff ff 48 8b 7d a0 49 63 c7 48 8b 57 30 <48> 8b 1c c2 8b 45 c4 8d 50 01 48 8b 45 b8 48 2b 05 c6 55 92 dc 48
+> > [106115.601087] RSP: 0018:ffffc0a4822f7710 EFLAGS: 00010206
+> > [106115.620978] RAX: 0000000000000001 RBX: ffffe801820034c0 RCX: 0000000000200000
+> > [106115.620978] RDX: 6b6b6b6b6b6b6b6b RSI: ffffffffc09487af RDI: ffff9bc1d87c4200
+> > [106115.627351] RBP: ffffc0a4822f77c0 R08: 0000000000000000 R09: 0000000000000000
+> > [106115.627351] R10: ffff9bc1d87c4200 R11: 0000000000000001 R12: 0000000000105343
+> > [106115.627351] R13: ffff9bc2d2184000 R14: 0000000000000000 R15: 0000000000000001
+> > [106115.635587] FS:  00007f188e909b80(0000) GS:ffff9bc2fbcc0000(0000) knlGS:0000000000000000
+> > [106115.635587] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [106115.635587] CR2: 000056446d88b358 CR3: 00000000534b4002 CR4: 0000000000370ee0
+> > [106115.635587] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > [106115.635587] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > [106115.635587] Call Trace:
+> > [106115.635587]  f2fs_mpage_readpages+0x4e4/0xac0 [f2fs]
+> > [106115.635587]  f2fs_readahead+0x47/0x90 [f2fs]
+> > [106115.635587]  read_pages+0x8e/0x280
+> > [106115.635587]  page_cache_ra_unbounded+0x11f/0x1f0
+> > [106115.665909]  do_page_cache_ra+0x3d/0x40
+> > [106115.670756]  ondemand_readahead+0x2c1/0x2e0
+> > [106115.671682]  page_cache_sync_ra+0xd4/0xe0
+> > [106115.675622]  generic_file_buffered_read_get_pages+0x126/0x8d0
+> > [106115.679158]  generic_file_buffered_read+0x113/0x4a0
+> > [106115.679158]  ? __filemap_fdatawrite_range+0xd8/0x110
+> > [106115.685672]  ? __mark_inode_dirty+0x98/0x330
+> > [106115.691168]  ? f2fs_direct_IO+0x80/0x6f0 [f2fs]
+> > [106115.691168]  generic_file_read_iter+0xdf/0x140
+> > [106115.691168]  f2fs_file_read_iter+0x34/0xb0 [f2fs]
+> > [106115.699450]  aio_read+0xef/0x1b0
+> > [106115.699450]  ? do_user_addr_fault+0x1b8/0x450
+> > [106115.699450]  io_submit_one+0x217/0xbc0
+> > [106115.699450]  ? io_submit_one+0x217/0xbc0
+> > [106115.699450]  __x64_sys_io_submit+0x8d/0x180
+> > [106115.699450]  ? __x64_sys_io_submit+0x8d/0x180
+> > [106115.712018]  ? exit_to_user_mode_prepare+0x3d/0x1a0
+> > [106115.717468]  do_syscall_64+0x38/0x90
+> > [106115.723157]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > 
+> > > 
+> > > - detect truncation during f2fs_cache_compressed_page()
+> > > - don't set PageUptodate for temporary page in f2fs_load_compressed_page()
+> > > 
+> > > From: Chao Yu <yuchao0@huawei.com>
+> > > 
+> > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> > > ---
+> > >   fs/f2fs/compress.c | 20 +++++++++++++-------
+> > >   fs/f2fs/data.c     |  3 +--
+> > >   fs/f2fs/f2fs.h     |  6 +++---
+> > >   3 files changed, 17 insertions(+), 12 deletions(-)
+> > > 
+> > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> > > index 0fec71e40001..f364c10c506c 100644
+> > > --- a/fs/f2fs/compress.c
+> > > +++ b/fs/f2fs/compress.c
+> > > @@ -1741,7 +1741,7 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > >   	if (!test_opt(sbi, COMPRESS_CACHE))
+> > >   		return;
+> > > 
+> > > -	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE))
+> > > +	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
+> > >   		return;
+> > > 
+> > >   	si_meminfo(&si);
+> > > @@ -1774,21 +1774,25 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > >   		return;
+> > >   	}
+> > > 
+> > > -	memcpy(page_address(cpage), page_address(page), PAGE_SIZE);
+> > > -	SetPageUptodate(cpage);
+> > > -
+> > >   	f2fs_set_page_private(cpage, ino);
+> > > 
+> > > +	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
+> > > +		goto out;
+> > > +
+> > > +	memcpy(page_address(cpage), page_address(page), PAGE_SIZE);
+> > > +	SetPageUptodate(cpage);
+> > > +out:
+> > >   	f2fs_put_page(cpage, 1);
+> > >   }
+> > > 
+> > > -void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > +bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > >   								block_t blkaddr)
+> > >   {
+> > >   	struct page *cpage;
+> > > +	bool hitted = false;
+> > > 
+> > >   	if (!test_opt(sbi, COMPRESS_CACHE))
+> > > -		return;
+> > > +		return false;
+> > > 
+> > >   	cpage = f2fs_pagecache_get_page(COMPRESS_MAPPING(sbi),
+> > >   				blkaddr, FGP_LOCK | FGP_NOWAIT, GFP_NOFS);
+> > > @@ -1797,10 +1801,12 @@ void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > >   			atomic_inc(&sbi->compress_page_hit);
+> > >   			memcpy(page_address(page),
+> > >   				page_address(cpage), PAGE_SIZE);
+> > > -			SetPageUptodate(page);
+> > > +			hitted = true;
+> > >   		}
+> > >   		f2fs_put_page(cpage, 1);
+> > >   	}
+> > > +
+> > > +	return hitted;
+> > >   }
+> > > 
+> > >   void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino)
+> > > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> > > index b3973494b102..3705c272b76a 100644
+> > > --- a/fs/f2fs/data.c
+> > > +++ b/fs/f2fs/data.c
+> > > @@ -2211,8 +2211,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+> > >   		blkaddr = data_blkaddr(dn.inode, dn.node_page,
+> > >   						dn.ofs_in_node + i + 1);
+> > > 
+> > > -		f2fs_load_compressed_page(sbi, page, blkaddr);
+> > > -		if (PageUptodate(page)) {
+> > > +		if (f2fs_load_compressed_page(sbi, page, blkaddr)) {
+> > >   			if (atomic_dec_and_test(&dic->remaining_pages))
+> > >   				f2fs_decompress_cluster(dic);
+> > >   			continue;
+> > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > > index 9f79a6825f06..b807970d67b1 100644
+> > > --- a/fs/f2fs/f2fs.h
+> > > +++ b/fs/f2fs/f2fs.h
+> > > @@ -3951,7 +3951,7 @@ struct address_space *COMPRESS_MAPPING(struct f2fs_sb_info *sbi);
+> > >   void f2fs_invalidate_compress_page(struct f2fs_sb_info *sbi, block_t blkaddr);
+> > >   void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > >   						nid_t ino, block_t blkaddr);
+> > > -void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > +bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > >   								block_t blkaddr);
+> > >   void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino);
+> > >   #else
+> > > @@ -3990,8 +3990,8 @@ static inline void f2fs_invalidate_compress_page(struct f2fs_sb_info *sbi,
+> > >   				block_t blkaddr) { }
+> > >   static inline void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi,
+> > >   				struct page *page, nid_t ino, block_t blkaddr) { }
+> > > -static inline void f2fs_load_compressed_page(struct f2fs_sb_info *sbi,
+> > > -				struct page *page, block_t blkaddr) { }
+> > > +static inline bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi,
+> > > +				struct page *page, block_t blkaddr) { return false; }
+> > >   static inline void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi,
+> > >   							nid_t ino) { }
+> > >   #endif
+> > > -- 
+> > > 2.29.2
+> > .
+> > 
