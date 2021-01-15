@@ -2,87 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFBE2F70F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:32:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D762F7104
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732513AbhAODa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 22:30:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbhAODa4 (ORCPT
+        id S1732598AbhAODc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 22:32:57 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:55532 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728186AbhAODc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 22:30:56 -0500
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497BAC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 19:30:16 -0800 (PST)
-Received: by mail-ua1-x92e.google.com with SMTP id t15so2480181ual.6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 19:30:16 -0800 (PST)
+        Thu, 14 Jan 2021 22:32:56 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F3KK0t168201;
+        Fri, 15 Jan 2021 03:31:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=FCQ/65N9EuV1za5A2Dfm2755nqXpTVDwH3ZYsZwBNkU=;
+ b=it/e2ICDujaoGhI2jcFhK6aCRHSlBCIQpEVx5rTN2GcCxG++Umeh8c6cv8nDjSC2g8O7
+ Y7VB21lyNrZEXinE0AMF3VhVQHIYHsqSRqOqxUvPJ0MbJfyGSwknxSKLCWXa8q1SGs26
+ /Wu89EEHwbGjTl0NlZJYPbjGPJXgB610T6D3n1fY0I5a8aij6wvj7QIeLAkdVtRey0cb
+ 9J/OZXtMdaFyO0dDGi7tfynnsN3M3Y93RkbDMU94A+5x/5KQN3Z18/yjLPBUfxZy3h8v
+ 5Dfmhjw01OEtMLIuwF0oa+OhGYlSOOynZEJa9W5Pgq8LKYEehdJMIH5dYrqsK0axInp3 kQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 360kd035n8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 03:31:58 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F3KuTT174278;
+        Fri, 15 Jan 2021 03:31:58 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
+        by userp3020.oracle.com with ESMTP id 360kfafv7c-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 03:31:58 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C79ZpezSVSendANJC0reFNpYp3YOc0e3LGGYKwuYr27PeNelnewxLqgwugrSG0jjKBAZOEGT9Rj0qQtT0NNaUDO13QjfWp9+ivzCoPaCbzr7PVwx6yV2h3ZsvReIBWr2znlHXhy0Rks/wDg9aKtOj/glitIo3L7hy2YDruNnBrGPwAOtD9Yt3MszU9vVtF2j/pxIVVGSW37ovyt2VtH9tVwZzxi/PaG1ftvwM6cRxEjoUrWjf8iiqST5HCWRv3iXIwT9vbCnZEZv8sklWm/BVipwtWBapRlW2z/pTMg2+VHKh3hDEA8NEKKHIZedbmhrFarkaZL0/FPIWxWGqoGMsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FCQ/65N9EuV1za5A2Dfm2755nqXpTVDwH3ZYsZwBNkU=;
+ b=OZmsl/xACyC//P93uaOJU0ZOpnF77tZje15IXD5OutwMsImPP3m13fYfYGexWR9Ua8p40t4FhhxWO/9qISfD7oE/ArOkcSLFPHgZqrfVzPdUJ0yRHemh3aYde8k+k5oYO3/McoOYMQaG7Zivsxjr6ww/ihbiuMqHmqW7s/hdmNIWaRxwmkbOqKFGXfrzOi+yoXZjkTIbea5lbrOs2QnjK7819jPU+5SVXEWcG9UiW4nMb5AYdQhUjhA6YN5dABeWnCoCrU/mrq39/nvLcrCBdd/LjYiFNBsEJvkUYZ+d8vODU8KtZjFookwDbqivXFaOI+AwhCZ6JwEEvMXlo1hnMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FHB4fMBtfKDMwN9w9JdCzRXoxbs4xAQTsyrkwH5WUSA=;
-        b=lDrTqRAmOyTHtKoQN7FBr4FOu44a9JPSGOR2jxU/vvAjs9jeZEuc3W9V1xmt0FAm4y
-         G3WfA1n3aOtX9mKjEyYCUE9VZvpMTwtfiavn88Q54AVQBMCOk4GxxmAx0wRtpBNgE8LI
-         CNjQlmVzWn/1JBrMal5k5hg0tW75iDYVZkUvyyZaHMq3XN6AjcHx6mItzPIGzZPNP67f
-         1hPE2etZ+TDNEhxST75xYY4AOig8aHBAlXo+TLIBGxLhLdeE3Yfq3YbI3D21GxKKu8mq
-         owD8bmtfQS+SXbQ29f9xwZhF0rqqr1SUtUldetYwhZi23VWOkr4IDKLISV5KeyuRlTNN
-         /M8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FHB4fMBtfKDMwN9w9JdCzRXoxbs4xAQTsyrkwH5WUSA=;
-        b=nfxtmq01zZMizs0OUpJxgqSbULT4AB/FfNoxYOqZFJgwZhSSt2U7bYpVH3rhiCD5t8
-         On1g7fTte96GfSesaR9Dz5OoxRGtz+qoQOnDiDfIqavRn82fjzo/RCIzOt61t4gIGRFF
-         UpnjBrglekOvnVW/VdO+/feNtVK7qXozuGOQNwQiXT1nMoQl5p8QUrhgZtScPBLxmVWM
-         R9qWcl4mS7orn14bZHqLR3PO1WSoC54/lGIlr8yHhSGW5GI2BID4+bm9qnq4STJgAf/b
-         4Z62LEFvlQpDanwJOQOXDZcDac6zanCSD+dAiff/WVcWcesunMIVmnlGSG6TFDKk/2ml
-         PyNQ==
-X-Gm-Message-State: AOAM532Vb+L+VX/lh7kTyeRNipuU1VWXsaNOMgFCboHm4AtEyR7dtBHz
-        RDbDju6A5r0CNo4A5i0//GssL9CmcNgHUPtHDxSdyQQyRcEupi/PrU8=
-X-Google-Smtp-Source: ABdhPJyN0jpln82clSMDqfYY3n10nf1X2e7qZe1UJ0WGM+Ui1KmCf7Lp56vWBEt8DjaamTchOWz/xXi4HwyQ+m5Jmg0=
-X-Received: by 2002:ab0:2388:: with SMTP id b8mr8290397uan.122.1610681415412;
- Thu, 14 Jan 2021 19:30:15 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FCQ/65N9EuV1za5A2Dfm2755nqXpTVDwH3ZYsZwBNkU=;
+ b=sNIWHpW0bLQkAECntbBcr4ruCjkuPx27WKgNRbQIlRCHbsBbPmHFZ/O21cjBpmCru10mSftHcd4rN51V8R0ZnSviDQuOq148QZ7hdHCmGIquyHEQ5OqfpMIvqUvRnxw+i+1D4TkZYlBfvn3kB8UH4+lsC7pNtXrt3jLTieG3RvQ=
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4648.namprd10.prod.outlook.com (2603:10b6:510:30::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Fri, 15 Jan
+ 2021 03:31:54 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3763.011; Fri, 15 Jan 2021
+ 03:31:54 +0000
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>
+Cc:     james.bottomley@hansenpartnership.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, brking@linux.ibm.com
+Subject: Re: [PATCH v5 00/21] ibmvfc: initial MQ development/enablement
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq17doeswoi.fsf@ca-mkp.ca.oracle.com>
+References: <20210114203148.246656-1-tyreld@linux.ibm.com>
+Date:   Thu, 14 Jan 2021 22:31:51 -0500
+In-Reply-To: <20210114203148.246656-1-tyreld@linux.ibm.com> (Tyrel Datwyler's
+        message of "Thu, 14 Jan 2021 14:31:27 -0600")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: BYAPR02CA0061.namprd02.prod.outlook.com
+ (2603:10b6:a03:54::38) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-References: <20210113160621.98615-1-fengli@smartx.com> <SN4PR0401MB35985C08E5FFCDF0F5817A9D9BA90@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <87698545-de26-c0ca-01e9-4dc2ddcacc80@grimberg.me> <20210114174311.GB31188@lst.de>
-In-Reply-To: <20210114174311.GB31188@lst.de>
-From:   Li Feng <fengli@smartx.com>
-Date:   Fri, 15 Jan 2021 11:30:06 +0800
-Message-ID: <CAHckoCzhJVAWFSYeCAMHZ+fVqzv_1XxvM97QmvCESnEcc5AQuQ@mail.gmail.com>
-Subject: Re: [PATCH] nvme: reject the ns when the block size is smaller than a sector
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "lifeng1519@gmail.com" <lifeng1519@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BYAPR02CA0061.namprd02.prod.outlook.com (2603:10b6:a03:54::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Fri, 15 Jan 2021 03:31:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5ccde7f0-dbf0-4c88-b1d3-08d8b9061ade
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4648:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB46484BFD484933B29959E22F8EA70@PH0PR10MB4648.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Z2kDspNriN+cRYsSfleqg7u3hD2dr0w/TrqH2idWLOYX6SNgP4j734MVp+JNuv7Xpn2VXkdS0fyZ92A/wIWfMuw0i5rygI/5uQ0EzFSspq7ojpBRGwRrOJ49Qx4R7dhDZfc3Fe9IjTPy4zi/6r8wpRQ5SyUNhv4pDkri5CsTlIEgorQUjeLC4ahMEkiUQv6fPJKKWBcKuSwknPMxTgTaWhsZ4iZBK/U0YX/60XZ61XLAtkT7nN18p2BZtI7K+rdbX9mHyLmfoOIyP47nrM5f78FG5vNuGnTt8VDY8bEl9xC2UJ9F9xeHkX024r5oWlZBCZ0i2iwkmnhA0bbQ8Mm6y1pyIFrq4SSdxJm54YK9Soq5DIL7Ra/aSvUAsU818UxgdmTEb7BY9cVgTRi7DMLxiw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(346002)(396003)(366004)(376002)(136003)(66556008)(55016002)(66476007)(8676002)(5660300002)(6916009)(26005)(956004)(7696005)(66946007)(4326008)(478600001)(186003)(36916002)(16526019)(4744005)(8936002)(316002)(2906002)(83380400001)(6666004)(86362001)(52116002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?UdWVj3BHtDztfdtj3FLCqHZji8WbQZVDvQrq+JNc0L9VfAFLDaelJiAXEBWs?=
+ =?us-ascii?Q?nNRfZTLaie58hoJNerks0a/JNRWwcyNHJsbIxkxznJmqCM2drv/UBjt9ljN0?=
+ =?us-ascii?Q?gAeSRFs4SOxSX2ZlV1Uo7ZbntXeiHcFQN7cFZ3TebN6IC/CdKgw3b+BzbNSd?=
+ =?us-ascii?Q?aP7QZc3XA1ADrP6lk/cshaxdLsB5kM2gzUUWScJmbUDFFfEgE/9ew645aFXo?=
+ =?us-ascii?Q?PpKxWBQ4Pfv49F3yN+bzAdvjD7WF6JHAg5j9WbUW9JC29835yAhkiNC6YASU?=
+ =?us-ascii?Q?tT4JdYVzxaD3Ea+ihOBQOolKSKO74yVAlZBU/+wV/I8Ufj92mkAUWuyRR1bg?=
+ =?us-ascii?Q?1kjNWoj7U0KOxuX6yNB3Gbkf2io4rSkgC32vJxc+YQrJ6Z6/hUluQMQ5AWYF?=
+ =?us-ascii?Q?94ZNxKt3T1e0N62ZLlwGv1MBPP2mwnLytD5f5Vk2cXdtuqJAFxlKfH2KivW7?=
+ =?us-ascii?Q?CtyCl7QopvL8GzXRIQNkI4Vp9BD651Hg+1DGVaxkpYuX0DA0O6iUSO/er6vk?=
+ =?us-ascii?Q?JSJZTLdGTYtdEa2uhWhq191c5L7GDcT3lO7YtvN6vY6rWO8FMVcjeG7VVnpM?=
+ =?us-ascii?Q?+Fjt1yyYx2+AGksnIsQIuS/77NB9ouj9uLggZ6uxRiX+mkxij+hUjnxYuUOo?=
+ =?us-ascii?Q?Ghjg1uSWF79srFa19rC8z0Blyvyd+S2437hjqFfkYVY1GFfy2B2YpOWnG2q9?=
+ =?us-ascii?Q?kalJ0OF8662S8VBMFpMSkuwfsnAj8lcl1tM5wPUlTT3jXGUo8uwgfwmOWZj7?=
+ =?us-ascii?Q?XvAnW1MY6BBSzCsCHZEqF5on0XkH0ffWU8J4lTCdLpLCGfNsyyTG1Lw0uW2d?=
+ =?us-ascii?Q?Xym3PnhalyTOblMKHVjR+zMeJ79k3i3b8qgtWD2udAib5xqZuoFqvaEIoQsd?=
+ =?us-ascii?Q?56snNfRb9yEMaD4fLQWejfC11LSr20/4nbkhfernOUQheJAZurdIhYCjOJj4?=
+ =?us-ascii?Q?qAdPolpP3//U8u4+VnpTxsy4M8akCpSZg59hwX/1RsM=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ccde7f0-dbf0-4c88-b1d3-08d8b9061ade
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2021 03:31:54.6551
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hry5gys37NbPeKD7G+2P1FLMJXsGfV36EnyWsuXyMDwLBkzQa8c/MEc2+Cw8TBlFDfy+AQE/l1eIcN3ubo5opJGCSENTbtaYdlVbkli24ME=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4648
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 bulkscore=0 spamscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101150015
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101150015
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Hellwig <hch@lst.de> =E4=BA=8E2021=E5=B9=B41=E6=9C=8815=E6=97=A5=
-=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=881:43=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Wed, Jan 13, 2021 at 02:12:59PM -0800, Sagi Grimberg wrote:
-> >> But this only catches a physical block size < 512 for NVMe, not any ot=
-her block device.
-> >>
-> >> Please fix it for the general case in blk_queue_physical_block_size().
-> >
-> > We actually call that later and would probably be better to check here.=
-.
->
-> We had a series for that a short while ago that got lost.
-Where is the series? Or could you advise on how to fix this issue is accept=
-able?
-This issue will generate an oops, check it here:
-https://lkml.org/lkml/2021/1/12/1064
 
-Thanks,
-Feng Li
+Tyrel,
+
+> Recent updates in pHyp Firmware and VIOS releases provide new
+> infrastructure towards enabling Subordinate Command Response Queues
+> (Sub-CRQs) such that each Sub-CRQ is a channel backed by an actual
+> hardware queue in the FC stack on the partner VIOS. Sub-CRQs are
+> registered with the firmware via hypercalls and then negotiated with
+> the VIOS via new Management Datagrams (MADs) for channel setup.
+>
+> This initial implementation adds the necessary Sub-CRQ framework and
+> implements the new MADs for negotiating and assigning a set of
+> Sub-CRQs to associated VIOS HW backed channels.
+
+Applied to 5.12/scsi-staging, thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
