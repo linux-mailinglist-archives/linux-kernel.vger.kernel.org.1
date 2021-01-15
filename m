@@ -2,152 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DFAF2F87C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CBB2F87CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:43:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbhAOVlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 16:41:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44594 "EHLO
+        id S1726646AbhAOVms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 16:42:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726032AbhAOVlD (ORCPT
+        with ESMTP id S1726499AbhAOVmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 16:41:03 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 087D9C061794
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:40:23 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id x18so5372420pln.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:40:22 -0800 (PST)
+        Fri, 15 Jan 2021 16:42:45 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C60C061795
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:42:05 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id y205so487801pfc.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:42:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=n0vrgI0v5AqdqRBlnR2zrY3ADnVU6Fc4aa8ej4oQxWI=;
-        b=ikcuoSYxk+o95pgvXIejJia6Wa7r/h9H62sZs/9Cpe0sUYFhlD4wlTCAyWvkqgnFeR
-         b7uz4pJ+VSk13U7/kgu/HN1fbjzCSiL1Fr0tHbBdEWI44HuPCaufm4EjQCvtNWcFY6+/
-         h95/5c9l7eYKlBEOHbNdaa2yfxd3eC8jF8lwQpuB1SvDRSoI2oxkC+6E8vKloU9c86LN
-         IuNA0+P1JPndHgec5mX3JNo4ycRIS4mRaYQDTuy9Zq2PWmpA0bgKE+73iqWJ1AIXZ/J7
-         6pMr0mOQacx5TQxTFcRF6X8aapFgYLuxV1FzvvJ7e/IztP5mDs0dHeu+8yUz7dw4VE2m
-         TDAg==
+        bh=bgjnqtpec69vUmjqa2UifvxbYQW35/sgPsKU/7Bo9aI=;
+        b=OggvUw0Hm9klzCb2gWzL1xpvM4h0B34ZYVQsxN3wC/zdRTLky1sIVS+aP+RMem0Lx+
+         dhCHyUumtATf+63/HrQ39p6Plwn+OkdZ92Gyx3QGmotDVqQ0vYf+OMXeU1OQmZYDLp23
+         G67G8V+nMMaSDcNKFXoJsHO5cGVnEx6jZqJiA8UQp+Rg3CH83hN9RC4c94IlDyEIP/st
+         zg0JlRpy3X+IW2jLP5T+VNP8gpjIkw7faoZac0GCm/4Jn2YSbPTsHrfhyi9oLgSFjKtZ
+         f/L89Eha2I7pIfgNg69nuV+z1VE8VInqryQK7DnoxnSVe+pgyAvVhEv/BLD+I5uOc5dA
+         14Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=n0vrgI0v5AqdqRBlnR2zrY3ADnVU6Fc4aa8ej4oQxWI=;
-        b=TwhIzwKeAygFS2z3K2+pKxbAtni0jHwt37itELRWnWVKpkRA3IekByu0q+qSY4bOAb
-         m8WL7q8hwJ8DvtapVMShgTPJFhB7IWvZYjsw06K44m3eiaHtyOO6dGUUbrf4cZ1G/wO+
-         CTnMoGjyD1dKK+6Yk5eYVOZ6B2j+ocTaxNR30bjCIjrbPsAYUy3FBu5TMgKY/NLUGLp+
-         mwQY2bwmomnTyyAeyPELQOT/xI46tE4sTMjEjMJo6Y8YRNLGioWqmMmuQJmw9G6MEOv/
-         JWqGuDiJpse/A1OGhx2Rj+vpIzw5bKIhSZk6UbQvLRRDcBlQBIgcRx6rF7rbJF9vxrzO
-         7flw==
-X-Gm-Message-State: AOAM532xX+SX/Klki7alx8BFSNS5Y1yxQX5G2kLWbadqWlSJY+hxHQLQ
-        2BOHss+a9orREgzrIM3EJeyLwQ==
-X-Google-Smtp-Source: ABdhPJyON92K2TmcPW2QR85yuolP22tM0R4t7l3u4HZpjfPFf8vlelLyS2GSnGt/ynZIDrLg6P8b7Q==
-X-Received: by 2002:a17:902:8216:b029:dc:1e79:e74c with SMTP id x22-20020a1709028216b02900dc1e79e74cmr14532231pln.5.1610746821003;
-        Fri, 15 Jan 2021 13:40:21 -0800 (PST)
-Received: from x1 ([2601:1c0:4701:ae70:1a90:2b4:7e34:6b31])
-        by smtp.gmail.com with ESMTPSA id e5sm8744463pfc.76.2021.01.15.13.40.19
+        bh=bgjnqtpec69vUmjqa2UifvxbYQW35/sgPsKU/7Bo9aI=;
+        b=k44qlUi3FXI5cgPV58uaaYgWUGInxBLr5e9kceIA9SaN7dSW1+Y5/dYcEfvUwkH6Jx
+         4tpBDdobwrdZWDXKdZKTAK4xCsmYxr2+70o2XZDEyRAmVRW1m5F+2MmBzVqH9mHtNcmE
+         oUDBVUYUIkHOCnwZpgaeU2481By1VG7muozmZ7l8/xP+DhT+9e68qJd0ByogzgKyOQpY
+         Buezt/0r+NHRTB+qGhJQwhMkiYEhLqNbeHha7q9NUj/mb5Hb9oGSMUnhfTKZvnGXpdwT
+         4hDZv+wlaE2tau62YSbjk6gL0dHdFK+rVTFBbl/MwmVFobLgKGPJkdzcIqN0S+0LZ2Gi
+         ug6Q==
+X-Gm-Message-State: AOAM532hoEZg9u5II2jiEQBJCY8UjEsomFLbHsAX67oCObaLrKGaQ/iz
+        Qq7mTri0yzsgfPpE2m9hHxShAA==
+X-Google-Smtp-Source: ABdhPJxDU0ySQcc7fvev8M9M1d13VC+GIj7HBHfRSvtrxjqTvfzYTvW0G31AsN1nGGS2Xfbxazi8WQ==
+X-Received: by 2002:a63:d305:: with SMTP id b5mr14631064pgg.452.1610746924450;
+        Fri, 15 Jan 2021 13:42:04 -0800 (PST)
+Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
+        by smtp.gmail.com with ESMTPSA id a5sm8911135pgl.41.2021.01.15.13.42.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 13:40:20 -0800 (PST)
-Date:   Fri, 15 Jan 2021 13:40:18 -0800
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Emmanuel Vadot <manu@bidouilliste.com>
-Cc:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        devicetree@vger.kernel.org, bcousson@baylibre.com,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>
-Subject: Re: [PATCH v4 2/2] ARM: dts: am33xx-l4: change #pinctrl-cells from 1
- to 2
-Message-ID: <20210115214018.GA554007@x1>
-References: <20200701013320.130441-1-drew@beagleboard.org>
- <20200701013320.130441-3-drew@beagleboard.org>
- <20210115190201.9273b637a7f967e7e55bc740@bidouilliste.com>
+        Fri, 15 Jan 2021 13:42:03 -0800 (PST)
+Date:   Fri, 15 Jan 2021 13:41:59 -0800
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Patch v4 2/2] cgroup: svm: Encryption IDs cgroup documentation.
+Message-ID: <YAIMJ9E8NneoAp8H@google.com>
+References: <20210108012846.4134815-1-vipinsh@google.com>
+ <20210108012846.4134815-3-vipinsh@google.com>
+ <YAICaoSyk2O2nU+P@mtj.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115190201.9273b637a7f967e7e55bc740@bidouilliste.com>
+In-Reply-To: <YAICaoSyk2O2nU+P@mtj.duckdns.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 07:02:01PM +0100, Emmanuel Vadot wrote:
-> 
->  Hello Drew,
-> 
-> On Wed,  1 Jul 2020 03:33:20 +0200
-> Drew Fustini <drew@beagleboard.org> wrote:
-> 
-> > Increase #pinctrl-cells to 2 so that mux and conf be kept separate. This
-> > requires the AM33XX_PADCONF macro in omap.h to also be modified to keep pin
-> > conf and pin mux values separate.
+On Fri, Jan 15, 2021 at 04:00:26PM -0500, Tejun Heo wrote:
+> On Thu, Jan 07, 2021 at 05:28:46PM -0800, Vipin Sharma wrote:
+> > Documentation for both cgroup versions, v1 and v2, of Encryption IDs
+> > controller. This new controller is used to track and limit usage of
+> > hardware memory encryption capabilities on the CPUs.
 > > 
-> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> > Signed-off-by: Vipin Sharma <vipinsh@google.com>
+> > Reviewed-by: David Rientjes <rientjes@google.com>
+> > Reviewed-by: Dionna Glaze <dionnaglaze@google.com>
 > > ---
-> >  arch/arm/boot/dts/am33xx-l4.dtsi   | 2 +-
-> >  include/dt-bindings/pinctrl/omap.h | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/arm/boot/dts/am33xx-l4.dtsi b/arch/arm/boot/dts/am33xx-l4.dtsi
-> > index a9cbefc80c0c..3141590e5889 100644
-> > --- a/arch/arm/boot/dts/am33xx-l4.dtsi
-> > +++ b/arch/arm/boot/dts/am33xx-l4.dtsi
-> > @@ -278,7 +278,7 @@ scm: scm@0 {
-> >  				am33xx_pinmux: pinmux@800 {
-> >  					compatible = "pinctrl-single";
-> >  					reg = <0x800 0x238>;
-> > -					#pinctrl-cells = <1>;
-> > +					#pinctrl-cells = <2>;
-> >  					pinctrl-single,register-width = <32>;
-> >  					pinctrl-single,function-mask = <0x7f>;
-> >  				};
-> > diff --git a/include/dt-bindings/pinctrl/omap.h b/include/dt-bindings/pinctrl/omap.h
-> > index 625718042413..2d2a8c737822 100644
-> > --- a/include/dt-bindings/pinctrl/omap.h
-> > +++ b/include/dt-bindings/pinctrl/omap.h
-> > @@ -65,7 +65,7 @@
-> >  #define DM814X_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
-> >  #define DM816X_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
-> >  #define AM33XX_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
-> > -#define AM33XX_PADCONF(pa, dir, mux)	OMAP_IOPAD_OFFSET((pa), 0x0800) ((dir) | (mux))
-> > +#define AM33XX_PADCONF(pa, conf, mux)	OMAP_IOPAD_OFFSET((pa), 0x0800) (conf) (mux)
-> >  
-> >  /*
-> >   * Macros to allow using the offset from the padconf physical address
-> > -- 
-> > 2.25.1
+> >  .../admin-guide/cgroup-v1/encryption_ids.rst  | 108 ++++++++++++++++++
+> >  Documentation/admin-guide/cgroup-v2.rst       |  78 ++++++++++++-
 > 
->  Based on the bindings doc a value of 2 is only acceptable if one uses
-> pinctrl-single,bits but all the am33xx pins still uses
-> pinctrl-single,pins.
->  I noticed this because this breaks FreeBSD when I tried with 5.9 dts.
+> Given how trivial it is, I'm not gonna object to adding new v1 interface but
+> maybe just point to v2 doc from v1?
+> 
+
+Sure, I will just add the path to v2 doc in v1.
+
+> Thanks.
 > 
 > -- 
-> Emmanuel Vadot <manu@bidouilliste.com> <manu@freebsd.org>
-
-Hello Emmanuel,
-
-Sorry to hear about that. This change was made based on discussion with
-Tony Lindgren this past July. Trent Piepho later pointed out issues wtih
-the change including the binding documentation. I had tried to fix
-the documentation in September [1]. However, I notice that it seems I
-missed changing the lines near the top of pinctrl-single.txt [2]:
-
-- #pinctrl-cells : number of cells in addition to the index, set to 1
-  for pinctrl-single,pins and 2 for pinctrl-single,bits
-
-I am thinking that should be re-written as:
-
-- #pinctrl-cells : number of cells in addition to the index, this value
-  can be 1 or 2 for pinctrl-single,pins and must be 2 for pinctrl-single,bits
-
-Tony - what do you think?
-
-
-Thanks,
-Drew
-
-[1] https://lore.kernel.org/linux-gpio/20200919200836.3218536-1-drew@beagleboard.org/
-[2] https://www.kernel.org/doc/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
+> tejun
