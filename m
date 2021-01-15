@@ -2,103 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34622F705A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A30F2F705B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731871AbhAOCJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 21:09:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728497AbhAOCJQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 21:09:16 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4260DC0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:08:36 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id u4so4306217pjn.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:08:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=s4glimfX6ZrQ7lXIX7N60ewBb6BcNo8mLwcaocWfkJs=;
-        b=dY9OunBvsaqpupDqw3wIfJ59xluWzpOXkKsWrHiV1VSh7kJngUXFqL48GWAURzSM2+
-         A39t0pz/abgIGYobx75srbeUK1CwzdLdlaHYFRlD5WzvWdz0GKAKUUXi6Cgojm5o3txs
-         oJ51aXxaKp7Dg03GutCJzeQFtpXQHSvl/m9sw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=s4glimfX6ZrQ7lXIX7N60ewBb6BcNo8mLwcaocWfkJs=;
-        b=ftqJZinnUDgfEoWSek1reORQDefyD8VZW7pz34LvvO+KcjxzJJnmpoii4rZsme/RSK
-         82PaAlx3q8v6Vd8UJR0ElYrWt9GQnOpFo5caTVAp9JYxvo6zJEElrZEwhlPeTwyF3T/D
-         KGTArPpKNqF72rScrlwVghEJgJtggVopP0UYOIBqjI67KhOItH63pUC0meNUJjH5VtwW
-         KwVL8PNc7wcJxhXrd8ys649kv3URAr8B0Ogp/3Kxhlxig0neVGPO24vR1/5SuL2+cfQW
-         vMJgsSDpR8e6LPp75C9NSW0sc2mK4LknSG6/UJTehX+XuK4qU7IiiKP5zI59u9F0d+8k
-         sPXQ==
-X-Gm-Message-State: AOAM530YHWya3FVekmd4eETpD4mo+3gSCTuBhLeyku7SayEaSo1BcNTN
-        /LW0oKnTO8jWZZA+XYSpyZy8xA==
-X-Google-Smtp-Source: ABdhPJy310EDfrLfGpIKbZ8t+e/T4xlaUFlgpdfagBPjUnLp0m+FQ7SHjGS9SyEFYn6hVflloBwVeQ==
-X-Received: by 2002:a17:90a:6fe4:: with SMTP id e91mr6532625pjk.39.1610676515759;
-        Thu, 14 Jan 2021 18:08:35 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id o32sm7204075pgm.10.2021.01.14.18.08.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 18:08:34 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S1731896AbhAOCJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 21:09:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728497AbhAOCJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 21:09:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2734323A5A;
+        Fri, 15 Jan 2021 02:08:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610676518;
+        bh=rcRq46pn+nUjx1vJmbG3T+X9yuIw9cT5nQhnpMECJso=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jSUmp7BkecOVTitvKj9w9PfHSw38fOBX2jsykoaN/KtR5Pepvfj2oiqINRhd0t8Sz
+         9InCXgKHjBZmYa+nrAEGxCpf34Vf34oclUH8bKF3K5THhGf1qx9J5GaxECzsttsVr2
+         E9T/zoGHQPvjmvNRHsliSZaUS2v6D5324QllGjG4Hx8Coz0jNEBMqJnc5o7rgWmaif
+         l0kwLbJCWR/H8NCOY5pWQooqYc5Q6P+xLApMnnyVCXiMHm6YLbL2cGftmAxSyucXk8
+         ZyyBLqo+a5unAIVDHaT30gKVV9zypPpdL0nwaRFixFPI73UPtxLML+nZ8eh62hcp34
+         A73zz0csMHwxQ==
+Date:   Thu, 14 Jan 2021 18:08:37 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Saeed Mahameed <saeed@kernel.org>, Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, evgreen@chromium.org,
+        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 0/6] net: ipa: GSI interrupt updates
+Message-ID: <20210114180837.793879ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <183ca04bc2b03a5f9c64fa29a3148983e4594963.camel@kernel.org>
+References: <20210113171532.19248-1-elder@linaro.org>
+        <183ca04bc2b03a5f9c64fa29a3148983e4594963.camel@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210114154004.v6.4.I7cf3019783720feb57b958c95c2b684940264cd1@changeid>
-References: <20210114154004.v6.1.I3ad184e3423d8e479bc3e86f5b393abb1704a1d1@changeid> <20210114154004.v6.4.I7cf3019783720feb57b958c95c2b684940264cd1@changeid>
-Subject: Re: [PATCH v6 4/4] pinctrl: qcom: Don't clear pending interrupts when enabling
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Maulik Shah <mkshah@codeaurora.org>,
-        linux-gpio@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-To:     Douglas Anderson <dianders@chromium.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Date:   Thu, 14 Jan 2021 18:08:33 -0800
-Message-ID: <161067651323.3661239.14709087785393568909@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2021-01-14 15:40:27)
-> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pi=
-nctrl-msm.c
-> index 192ed31eabf4..712a693425fc 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-> @@ -1097,16 +1128,11 @@ static int msm_gpio_irq_reqres(struct irq_data *d)
->         }
-> =20
->         /*
-> -        * Clear the interrupt that may be pending before we enable
-> -        * the line.
-> -        * This is especially a problem with the GPIOs routed to the
-> -        * PDC. These GPIOs are direct-connect interrupts to the GIC.
-> -        * Disabling the interrupt line at the PDC does not prevent
-> -        * the interrupt from being latched at the GIC. The state at
-> -        * GIC needs to be cleared before enabling.
-> +        * The disable / clear-enable workaround we do in msm_pinmux_set_=
-mux()
-> +        * only works if disable is not lazy since we only clear any bogus
-> +        # interrupt in hardware. Explicitly mark the interrupt as UNLAZY.
-
-Ah! What is # doing there?
-
->          */
-> -       if (d->parent_data && test_bit(d->hwirq, pctrl->skip_wake_irqs))
-> -               irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, 0);
-> +       irq_set_status_flags(d->irq, IRQ_DISABLE_UNLAZY);
+On Thu, 14 Jan 2021 15:22:54 -0800 Saeed Mahameed wrote:
+> On Wed, 2021-01-13 at 11:15 -0600, Alex Elder wrote:
+> > This series implements some updates for the GSI interrupt code,
+> > buliding on some bug fixes implemented last month.
+> > 
+> > The first two are simple changes made to improve readability and
+> > consistency.  The third replaces all msleep() calls with comparable
+> > usleep_range() calls.
+> > 
+> > The remainder make some more substantive changes to make the code
+> > align with recommendations from Qualcomm.  The fourth implements a
+> > much shorter timeout for completion GSI commands, and the fifth
+> > implements a longer delay between retries of the STOP channel
+> > command.  Finally, the last implements retries for stopping TX
+> > channels (in addition to RX channels).
 >
+> A minor thing that bothers me about this series is that it looks like
+> it is based on magic numbers and some redefined constant values
+> according to some mysterious sources ;-) .. It would be nice to have
+> some wording in the commit messages explaining reasoning and maybe
+> "semi-official" sources behind the changes.
+> 
+> LGMT code style wise :) 
+> 
+> Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
+
+Dropped the fixes tags (since its not a series of fixes) and applied.
+
+Thanks!
