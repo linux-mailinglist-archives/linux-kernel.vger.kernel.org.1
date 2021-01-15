@@ -2,77 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E1D2F748E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 894A12F748B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727687AbhAOIsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 03:48:54 -0500
-Received: from mga09.intel.com ([134.134.136.24]:55382 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725950AbhAOIsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 03:48:53 -0500
-IronPort-SDR: thnlNs/BUGLW2zWmzEotKQwhtFiK1mxvoaRvdtTTAqGaFSkY+PTKKQYzl1og4MH9jBJSjcuCdv
- UJ6y5JfHcLeA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="178669450"
-X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="178669450"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 00:47:04 -0800
-IronPort-SDR: SdOdKSFHHg3PsRBqDfAzO4qO7AQvuyr+ujeq23zbjofLXPQY7BG4cCkwDVcRojxTTlLR7Pks5S
- eOM6YisK+Svg==
-X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="382590183"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 00:46:59 -0800
-Subject: Re: [PATCH] KVM: x86/pmu: Fix HW_REF_CPU_CYCLES event pseudo-encoding
- in intel_arch_events[]
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Stephane Eranian <eranian@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201230081916.63417-1-like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <1ff5381c-3057-7ca2-6f62-bbdcefd8e427@linux.intel.com>
-Date:   Fri, 15 Jan 2021 16:46:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1731085AbhAOIsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 03:48:07 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:39508 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727961AbhAOIsG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 03:48:06 -0500
+Received: by mail-io1-f70.google.com with SMTP id n9so13235001iog.6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 00:47:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=3ckr1Mfn/YY+HNQ+AHLOJlRAcQoosqzSNDPBWIcaTtY=;
+        b=C5/OlMiBGCKe7JZZfsmikgf5lHKzHpGqNR7HZLH388X5Vw20SDnxIeGeTKx6RIH6id
+         ynN6ylIKZM5qAK9svqbAjFgq6itD70BivFZAFl2VI/rw9wha1N1ZqCU6yH8Dt/GSbEmL
+         GQ8G+ElXNIUmFjvvYX/iWz8D2km7gE9P6GMZ1x2EO5oEnIffHNGkkfcdLGx0+uLK/OHv
+         19/ZRtzedndve7HCsj7bKizMNX2/DN4HQDUaCVE66dUdOWAg14CtIlvDJsdOeZrBgMaQ
+         hB3/x9zax/Y5Anv/4rowso6e/4QuHfxsZupd1Zql28x4Lo8vXfmmrDV+8UqCRCoqVAkM
+         ntQA==
+X-Gm-Message-State: AOAM530PJTQQusbQwsym/2M7jYKDwS0gt41aPFbE2ibnDWZpj5hh76ts
+        u6LelRTiqRHj0cTtuz+fgYf1bJdNUooIxO+Ht0BgSm2V4Jee
+X-Google-Smtp-Source: ABdhPJzptic/hQVbC4RZn0b9E2+GUjLcLL/KforQ9fhnZiLUTe4Efxou5W3MviG+iKNFS8sgoZyos4sskWf5MPAbMMw7EJvRxuGo
 MIME-Version: 1.0
-In-Reply-To: <20201230081916.63417-1-like.xu@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Received: by 2002:a6b:5018:: with SMTP id e24mr7746963iob.184.1610700445592;
+ Fri, 15 Jan 2021 00:47:25 -0800 (PST)
+Date:   Fri, 15 Jan 2021 00:47:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e635df05b8ec6b6e@google.com>
+Subject: KMSAN: uninit-value in snd_seq_oss_synth_make_info (2)
+From:   syzbot <syzbot+e42504ff21cff05a595f@syzkaller.appspotmail.com>
+To:     alsa-devel@alsa-project.org, glider@google.com,
+        linux-kernel@vger.kernel.org, perex@perex.cz,
+        syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping ?
+Hello,
 
-On 2020/12/30 16:19, Like Xu wrote:
-> The HW_REF_CPU_CYCLES event on the fixed counter 2 is pseudo-encoded as
-> 0x0300 in the intel_perfmon_event_map[]. Correct its usage.
->
-> Fixes: 62079d8a4312 ("KVM: PMU: add proper support for fixed counter 2")
-> Signed-off-by: Like Xu <like.xu@linux.intel.com>
-> ---
->   arch/x86/kvm/vmx/pmu_intel.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-> index a886a47daebd..013e8d253dfa 100644
-> --- a/arch/x86/kvm/vmx/pmu_intel.c
-> +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> @@ -29,7 +29,7 @@ static struct kvm_event_hw_type_mapping intel_arch_events[] = {
->   	[4] = { 0x2e, 0x41, PERF_COUNT_HW_CACHE_MISSES },
->   	[5] = { 0xc4, 0x00, PERF_COUNT_HW_BRANCH_INSTRUCTIONS },
->   	[6] = { 0xc5, 0x00, PERF_COUNT_HW_BRANCH_MISSES },
-> -	[7] = { 0x00, 0x30, PERF_COUNT_HW_REF_CPU_CYCLES },
-> +	[7] = { 0x00, 0x03, PERF_COUNT_HW_REF_CPU_CYCLES },
->   };
->   
->   /* mapping between fixed pmc index and intel_arch_events array */
+syzbot found the following issue on:
 
+HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=10284200d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2cdf4151c9653e32
+dashboard link: https://syzkaller.appspot.com/bug?extid=e42504ff21cff05a595f
+compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e42504ff21cff05a595f@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in strlen lib/string.c:576 [inline]
+BUG: KMSAN: uninit-value in strlcpy+0x8c/0x1c0 lib/string.c:143
+CPU: 1 PID: 10203 Comm: syz-executor.3 Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ strlen lib/string.c:576 [inline]
+ strlcpy+0x8c/0x1c0 lib/string.c:143
+ snd_seq_oss_synth_make_info+0x381/0x820 sound/core/seq/oss/seq_oss_synth.c:619
+ snd_seq_oss_synth_info_user sound/core/seq/oss/seq_oss_ioctl.c:24 [inline]
+ snd_seq_oss_ioctl+0x12b4/0x2530 sound/core/seq/oss/seq_oss_ioctl.c:139
+ odev_ioctl sound/core/seq/oss/seq_oss.c:180 [inline]
+ odev_ioctl_compat+0x247/0x290 sound/core/seq/oss/seq_oss.c:190
+ __do_compat_sys_ioctl fs/ioctl.c:842 [inline]
+ __se_compat_sys_ioctl+0x53d/0x1100 fs/ioctl.c:793
+ __ia32_compat_sys_ioctl+0x4a/0x70 fs/ioctl.c:793
+ do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
+ __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:139
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f8c549
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000f55860cc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00000000c08c5114
+RDX: 0000000020000080 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Local variable ----minf@snd_seq_oss_synth_make_info created at:
+ snd_seq_oss_synth_make_info+0x22a/0x820 sound/core/seq/oss/seq_oss_synth.c:613
+ snd_seq_oss_synth_make_info+0x22a/0x820 sound/core/seq/oss/seq_oss_synth.c:613
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
