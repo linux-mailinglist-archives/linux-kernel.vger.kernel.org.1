@@ -2,83 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9468E2F77BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:36:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6292F77C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726599AbhAOLgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:36:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbhAOLgi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:36:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530B6C061757;
-        Fri, 15 Jan 2021 03:35:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=n7b0j6ZnpjR0uvwKHqBC1yHKTSPAWtivnsJi023r8K0=; b=qNRd6LPZfN2CdKG5QAOhJagyVF
-        cPLXOcZm47U6c3wfPxXh9E9m5YyF9zFOHBHQgyrKXY/wc7YovPAXM0gKwIm/PHBjvQY3E2TdYaeKS
-        Ep7ZBLzdqMIOZ+DbNOEceKeXj2A5cbL5fnxjtNCh9BWyQQSYyIiiI4aZ0KEEtKHk0zUbKycAYvNkw
-        UV37TFJa/Mr/JAe6eKekEmRALKpWkPg8Dpcwh1gzbbFsSqsl6Jwuiz44luGK7pUzUquPKB8Riu1EW
-        nTGKa8IgDVu3N/5xK9YgEsZe73OeIkiIRM6uUHb1GESY+AQorfEfm+TBtpRZEFBGCY1pD9Fbjshne
-        rNHMPRww==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l0NMZ-008qrT-49; Fri, 15 Jan 2021 11:34:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E63A0301324;
-        Fri, 15 Jan 2021 12:33:46 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CA6622C9CD1CD; Fri, 15 Jan 2021 12:33:46 +0100 (CET)
-Date:   Fri, 15 Jan 2021 12:33:46 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <andi@firstfloor.org>,
-        Kan Liang <kan.liang@linux.intel.com>, wei.w.wang@intel.com,
-        luwei.kang@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 05/17] KVM: x86/pmu: Reprogram guest PEBS event to
- emulate guest PEBS counter
-Message-ID: <YAF9mulfhGCIyNz+@hirez.programming.kicks-ass.net>
-References: <20210104131542.495413-1-like.xu@linux.intel.com>
- <20210104131542.495413-6-like.xu@linux.intel.com>
+        id S1728260AbhAOLhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:37:47 -0500
+Received: from foss.arm.com ([217.140.110.172]:36404 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727137AbhAOLhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 06:37:47 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52ABFD6E;
+        Fri, 15 Jan 2021 03:37:01 -0800 (PST)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 02E983F719;
+        Fri, 15 Jan 2021 03:36:59 -0800 (PST)
+Date:   Fri, 15 Jan 2021 11:36:54 +0000
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Zheng Yongjun <zhengyongjun3@huawei.com>, minghuan.Lian@nxp.com,
+        mingkai.hu@nxp.com, roy.zang@nxp.com, robh@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] pci/controller/dwc: convert comma to semicolon
+Message-ID: <20210115113654.GA22508@e121166-lin.cambridge.arm.com>
+References: <20201216131944.14990-1-zhengyongjun3@huawei.com>
+ <20210106190722.GA1327553@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210104131542.495413-6-like.xu@linux.intel.com>
+In-Reply-To: <20210106190722.GA1327553@bjorn-Precision-5520>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 09:15:30PM +0800, Like Xu wrote:
-> When a guest counter is configured as a PEBS counter through
-> IA32_PEBS_ENABLE, a guest PEBS event will be reprogrammed by
-> configuring a non-zero precision level in the perf_event_attr.
+On Wed, Jan 06, 2021 at 01:07:22PM -0600, Bjorn Helgaas wrote:
+> On Wed, Dec 16, 2020 at 09:19:44PM +0800, Zheng Yongjun wrote:
+> > Replace a comma between expression statements by a semicolon.
 > 
-> The guest PEBS overflow PMI bit would be set in the guest
-> GLOBAL_STATUS MSR when PEBS facility generates a PEBS
-> overflow PMI based on guest IA32_DS_AREA MSR.
+> Looks like a good fix, but read this about the changelog title:
 > 
-> The attr.precise_ip would be adjusted to a special precision
-> level when the new PEBS-PDIR feature is supported later which
-> would affect the host counters scheduling.
+> https://lore.kernel.org/r/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
 
-This seems like a random collection of changes, all required, but
-loosely related.
+I would request NXP maintainers to take this patch, rewrite it as
+Bjorn requested and resend it as fast as possible, this is a very
+relevant fix.
 
-> The guest PEBS event would not be reused for non-PEBS
-> guest event even with the same guest counter index.
+Thanks,
+Lorenzo
 
-/me rolls eyes at the whole destroy+create nonsense...
+> > Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> > ---
+> >  drivers/pci/controller/dwc/pci-layerscape-ep.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> > index 84206f265e54..917ba8d254fc 100644
+> > --- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> > +++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> > @@ -178,7 +178,7 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
+> >  	pci->dev = dev;
+> >  	pci->ops = pcie->drvdata->dw_pcie_ops;
+> >  
+> > -	ls_epc->bar_fixed_64bit = (1 << BAR_2) | (1 << BAR_4),
+> > +	ls_epc->bar_fixed_64bit = (1 << BAR_2) | (1 << BAR_4);
+> >  
+> >  	pcie->pci = pci;
+> >  	pcie->ls_epc = ls_epc;
+> > -- 
+> > 2.22.0
+> > 
+> > 
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
