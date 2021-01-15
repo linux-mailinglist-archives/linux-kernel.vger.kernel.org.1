@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB502F7EEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 496D02F7EED
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:07:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731685AbhAOPGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:06:18 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:49427 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726370AbhAOPGR (ORCPT
+        id S1731745AbhAOPGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:06:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725910AbhAOPGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:06:17 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 1546ACCF;
-        Fri, 15 Jan 2021 10:05:31 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 15 Jan 2021 10:05:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=LQrVwo9g/bkxN/JrjYk/uzA9cZ6
-        yv5o1mfqNW+Pqmws=; b=aYgoUlV3wVDYATN8VCPiytqqIYdnPnqS7GNhu4cUnT1
-        iBOGZv/AzduKLp3+6D+6IJMOh3Z4FWZDTLFjHRKx5hzg0H29fnf1R0D+Gob59+An
-        anbTbd2U8eFFtZpWsVnJx373CxxGvfefiK3QgChlv11f3jh4EZ35y/TjX2t7u/z3
-        C7SAN2ytRah4RtjrB3gEcVH0JYw6+5YtGwL6YtpUU06anHQSS+0xSvIhPSzXBstY
-        b/+mw71ev7Bu+zqor2C7glOtSDzcso5ctYna2/s5f8SbrVVWpuVP3N5jw9Z/Zgwz
-        f5vdgg0tHS5Og+aBmDE86iYtCgYRbamiZzTlOC4266Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=LQrVwo
-        9g/bkxN/JrjYk/uzA9cZ6yv5o1mfqNW+Pqmws=; b=lmHQDarjO/LldLOJHEHrAR
-        iDGTzVJFiN2HNoeXifYkBNvIiQCqgATc/vO+CvlS9k46W5nmxD9YygWxG4LVOYvZ
-        lz1GJ51vRu/u4brW+IyU47hT5qXL0v1ik4zrxgsrLXwzdJmWkVGMr3Pl7WteVama
-        GTeN3ZQ0BtLE75MVBN4790TG0sYAriFfLE+YeMxnZRFPWRdiK8r8a+DF6b0GJjPa
-        utlPWFop+pP//iKfOjcFzrXNFac6LEsU5hPnyeFx19xCBeUhFs+zmHAPsZV64lSJ
-        ++3N8u4pZ3ClxpgDo7cVTjqbmnC5LuhdzU2RSkfQx46wMN4RK7RWPfisH5edD7hQ
-        ==
-X-ME-Sender: <xms:Oa8BYFJ9DNe-O0EbiuW_c_zDcWS0ZJENJSEHiL-QCdbFY8wVAspA1Q>
-    <xme:Oa8BYBIkd7TAHCFvDfU2kXvlh0kmdUOESHFhiKWyY4JbdO_E_o_vdY3VZg4cYPgGI
-    Ajdgf_nYheClQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtddvgdegjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
-    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:Oa8BYNvfGrWBDvl5nIzCLbCvmjd0XajNfaRr4stBsI2tjHQ-9NEZUA>
-    <xmx:Oa8BYGZ-V852H6EacENqiCNRlwDajb6-NbUIU9olFUmKYZIvMt7O0Q>
-    <xmx:Oa8BYMY5HK3v2OEhcIARmj5MtQzCXpTwp8XLuGLunFHcX8rF9eKtTQ>
-    <xmx:Oq8BYDU48TfbDgxJZGySCe8icIyujF47IVHwknwd6TivbkaF9trBBA>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A39EF1080059;
-        Fri, 15 Jan 2021 10:05:29 -0500 (EST)
-Date:   Fri, 15 Jan 2021 16:05:28 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] Remove one more platform_device_add_properties()
- call
-Message-ID: <YAGvOFllCbDoD1at@kroah.com>
-References: <20210111141045.14027-1-heikki.krogerus@linux.intel.com>
- <X/2MupFIWVI5DTUe@kroah.com>
- <YAGuURTCW/9HAprF@kroah.com>
+        Fri, 15 Jan 2021 10:06:46 -0500
+Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com [IPv6:2620:100:9005:57f::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682B0C061757;
+        Fri, 15 Jan 2021 07:06:06 -0800 (PST)
+Received: from pps.filterd (m0050102.ppops.net [127.0.0.1])
+        by m0050102.ppops.net-00190b01. (8.16.0.43/8.16.0.43) with SMTP id 10FF04VL010363;
+        Fri, 15 Jan 2021 15:05:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=t4D3b08MA2SNQwJ5TsRTS+jCUfe2o2LLA+ePXnlcC20=;
+ b=cPB1v7jChjvDbn8E/ayfejlQOFVKbErjzvyEfhuqLK77l4M4pM5M4NyacRASnLmnLekA
+ 40Nrq1EQ0XgzByXYJCZuPyJMdLwT5nKQjs0HWSGY76Zcq7K03O7Sv3xmAWkUlarAUieR
+ 7v8/6KU3ZEOPQ/iQJ2fHlloDEHvZQcPbLpfPUxkpyDNyLV3oK3Eum16gLmvsdD9thpGA
+ TBl4/DwyY9vKsOfE+u07UL64pCNQQB7kQUoPtnrDj7RCFsyv/6X7MDiOCUNeizV1fwOP
+ Far6yelF39ppBP9CwCxPu4eIr3iCQ+kxUaca96f5/WngEHNURNFzR62UXcYmJx+kuLVT +w== 
+Received: from prod-mail-ppoint7 (a72-247-45-33.deploy.static.akamaitechnologies.com [72.247.45.33] (may be forged))
+        by m0050102.ppops.net-00190b01. with ESMTP id 363a6nxh6g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Jan 2021 15:05:48 +0000
+Received: from pps.filterd (prod-mail-ppoint7.akamai.com [127.0.0.1])
+        by prod-mail-ppoint7.akamai.com (8.16.0.43/8.16.0.43) with SMTP id 10FF5DU6020731;
+        Fri, 15 Jan 2021 10:05:47 -0500
+Received: from prod-mail-relay19.dfw02.corp.akamai.com ([172.27.165.173])
+        by prod-mail-ppoint7.akamai.com with ESMTP id 35y8q4jhbm-1;
+        Fri, 15 Jan 2021 10:05:47 -0500
+Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
+        by prod-mail-relay19.dfw02.corp.akamai.com (Postfix) with ESMTP id ECDD860544;
+        Fri, 15 Jan 2021 15:05:46 +0000 (GMT)
+Subject: Re: [PATCH v2 1/3] KVM: X86: append vmx/svm prefix to additional
+ kvm_x86_ops functions
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     pbonzini@redhat.com, seanjc@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andrea Arcangeli <aarcange@redhat.com>
+References: <cover.1610680941.git.jbaron@akamai.com>
+ <ed594696f8e2c2b2bfc747504cee9bbb2a269300.1610680941.git.jbaron@akamai.com>
+ <YAFe6b/sSdDvXSM3@hirez.programming.kicks-ass.net>
+From:   Jason Baron <jbaron@akamai.com>
+Message-ID: <80e5aca8-8855-e039-c679-1399bd49c17e@akamai.com>
+Date:   Fri, 15 Jan 2021 10:05:46 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAGuURTCW/9HAprF@kroah.com>
+In-Reply-To: <YAFe6b/sSdDvXSM3@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-15_08:2021-01-15,2021-01-15 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
+ mlxlogscore=720 suspectscore=0 mlxscore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101150095
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-15_08:2021-01-15,2021-01-15 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 impostorscore=0 mlxscore=0 clxscore=1015
+ malwarescore=0 mlxlogscore=616 phishscore=0 spamscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101150095
+X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 72.247.45.33)
+ smtp.mailfrom=jbaron@akamai.com smtp.helo=prod-mail-ppoint7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 04:01:37PM +0100, Greg KH wrote:
-> On Tue, Jan 12, 2021 at 12:49:14PM +0100, Greg KH wrote:
-> > On Mon, Jan 11, 2021 at 05:10:42PM +0300, Heikki Krogerus wrote:
-> > > Hi Felipe, Rafael,
-> > > 
-> > > This is the second version of this series. There are no real changes,
-> > > but I added the Tiger Lake ID patch to this series in hope that it
-> > > will make your life a bit easier, assuming that Rafael will still pick
-> > > these.
-> > 
-> > I can take all 3 of these if that makes it easier.  Rafael, let me know
-> > what you want to do, either is fine with me.
+
+
+On 1/15/21 4:22 AM, Peter Zijlstra wrote:
 > 
-> I've added it to my usb-next branch now.
+> On Thu, Jan 14, 2021 at 10:27:54PM -0500, Jason Baron wrote:
+> 
+>> -static void update_exception_bitmap(struct kvm_vcpu *vcpu)
+>> +static void svm_update_exception_bitmap(struct kvm_vcpu *vcpu)
+> 
+> Just to be a total pendant: s/append/Prepend/ on $Subject
+> 
 
-Argh, grabbed the wrong one, will drop this and grab v3...
-
-
+Ha - I actually switched $subject to prepend and then switched it
+back because I thought I was being pedantic. But maybe not :)
