@@ -2,114 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B70B2F7F1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:11:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C40B42F7F1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:12:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732264AbhAOPLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:11:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726849AbhAOPLJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:11:09 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA427C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 07:10:28 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id b9so6206338qtr.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 07:10:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=caQyvQJ1mfFLUe31r5kUFdAkkpEYFOjRe/4yfEGC0jc=;
-        b=udKB5mwPziVmbw/vjk4IevHaynthJ+gAOwQtXdt27e2y7Vz40+VMU982WTce+VLW7I
-         kuFDEwKmcU85/avIKT4zPvTk29vouIiRucrBLuaQzw9/WGGT2D105q0KyGF86fpUtTqx
-         ptJMScJADBbnTvdWMpGQoPlogYFc/zJDHZ0uA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=caQyvQJ1mfFLUe31r5kUFdAkkpEYFOjRe/4yfEGC0jc=;
-        b=lNY/oVIxdNe8XlnjhZ9lAEm8EvUhhA7egE6AiKllVQWG6GYiNKfv7lyVFDDABE1peW
-         j+JLvYKsuRbFHxDOTi69QH3+0hHRC31pXZzjVVIgPr1t5DKr4wN3A5beUCS8VECbe44d
-         bNsGP7OceC5Aiy69EZpjvoxPcKqU9D9UKz3xAeHtx7svWKEWOR5R1OZjIxwWPR491TAh
-         8BaHOEvlP/P48ZQ5wJhgKt1GE0WzUci8rHY1W1zzG1X1NEzDIKgH5TyB80tKPRljqsBF
-         CGH/SatNHmTjijlctUO+hAB9PVbyETBO31u2MtSySUPOTkdyRKfOk2KYGiHvOTwc3vTx
-         iWeg==
-X-Gm-Message-State: AOAM533HS5lJaPW0yAgpc2Idk5CuDmFQOigLEqlLriY/p/+6/Ib1lRUY
-        KMY9O50q8ia9Al3eITCITSe1TQ==
-X-Google-Smtp-Source: ABdhPJx/a9fC/Jqe2ND2PrIq+7U1F9dR4QXXDLtw7g2db695ifyypLceLcZaNCFROW02LES7rFVjRg==
-X-Received: by 2002:aed:29a5:: with SMTP id o34mr11768517qtd.379.1610723428011;
-        Fri, 15 Jan 2021 07:10:28 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id 190sm5235151qkf.61.2021.01.15.07.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 07:10:27 -0800 (PST)
-Date:   Fri, 15 Jan 2021 10:10:26 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Balbir Singh <bsingharora@gmail.com>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 32/32] sched: Debug bits...
-Message-ID: <YAGwYmEXTtCtz3N/@google.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-33-joel@joelfernandes.org>
- <20201201002137.GG473773@balbir-desktop>
+        id S1732449AbhAOPLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:11:54 -0500
+Received: from mga12.intel.com ([192.55.52.136]:38601 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728878AbhAOPLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 10:11:53 -0500
+IronPort-SDR: h7FgO+b0laePwwlVj1d4ENZe1TOV+4iDyOvGU1V9DaNpoYf6WPYQIHZusylZPEvENtPuY2yle8
+ NMH/awEVBPjg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="157739688"
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="157739688"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 07:11:12 -0800
+IronPort-SDR: qvFDr4gis4W2L8H3+grQyof86sZPJVgFEH/lzW5XVSoHgll869oG6tg6xJNYbqaPDja4+RTyb8
+ 7EZNMuJWjwQw==
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="465611249"
+Received: from bmkierna-mobl3.ger.corp.intel.com (HELO localhost) ([10.213.221.58])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 07:11:07 -0800
+From:   Jani Nikula <jani.nikula@intel.com>
+To:     Lyude Paul <lyude@redhat.com>, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Anshuman Gupta <anshuman.gupta@intel.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Dave Airlie <airlied@redhat.com>
+Subject: Re: [PATCH v7 1/5] drm/i915: Pass port to intel_panel_bl_funcs.get()
+In-Reply-To: <8735z2pazc.fsf@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210114221709.2261452-1-lyude@redhat.com> <20210114221709.2261452-2-lyude@redhat.com> <8735z2pazc.fsf@intel.com>
+Date:   Fri, 15 Jan 2021 17:11:04 +0200
+Message-ID: <87wnwensl3.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201002137.GG473773@balbir-desktop>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 11:21:37AM +1100, Balbir Singh wrote:
-> On Tue, Nov 17, 2020 at 06:20:02PM -0500, Joel Fernandes (Google) wrote:
-> > Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
-> > Not-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > ---
-> 
-> May be put it under a #ifdef CONFIG_SCHED_CORE_DEBUG, even then please
-> make it more driven by selection via tracing rather than just trace_printk()
+On Fri, 15 Jan 2021, Jani Nikula <jani.nikula@intel.com> wrote:
+> On Thu, 14 Jan 2021, Lyude Paul <lyude@redhat.com> wrote:
+>> In the next commit where we split PWM related backlight functions from
+>> higher-level backlight functions, we'll want to be able to retrieve the
+>> backlight level for the current display panel from the
+>> intel_panel_bl_funcs->setup() function using pwm_funcs->get(). Since
+>> intel_panel_bl_funcs->setup() is called before we've fully read in the
+>> current hardware state into our atomic state, we can't grab atomic
+>> modesetting locks safely anyway in intel_panel_bl_funcs->setup(), and some
+>> PWM backlight functions (vlv_get_backlight() in particular) require knowing
+>> the currently used pipe we need to be able to discern the current display
+>> pipe through other means. Luckily, we're already passing the current
+>> display pipe to intel_panel_bl_funcs->setup() so all we have to do in order
+>> to achieve this is pass down that parameter to intel_panel_bl_funcs->get().
+>>
+>> So, fix this by accepting an additional pipe parameter in
+>> intel_panel_bl_funcs->get(), and leave figuring out the current display
+>> pipe up to the caller.
+>>
+>> Signed-off-by: Lyude Paul <lyude@redhat.com>
+>
+> Much neater than anything I suggested!
+>
+> Reviewed-by: Jani Nikula <jani.nikula@intel.com>
 
-This particular patch is only for debug and is not for merging.
+And pushed this one to drm-intel-next, thanks for the patch.
 
-Peter is preparing a tree with some patches already applied, once that's done
-we will send a new series with the remaining patches (mostly interface and
-docs left).
+BR,
+Jani.
 
-thanks,
+>
+>> ---
+>>  .../drm/i915/display/intel_display_types.h    |  2 +-
+>>  .../drm/i915/display/intel_dp_aux_backlight.c |  4 +-
+>>  .../i915/display/intel_dsi_dcs_backlight.c    |  2 +-
+>>  drivers/gpu/drm/i915/display/intel_panel.c    | 40 ++++++++-----------
+>>  4 files changed, 21 insertions(+), 27 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/display/intel_display_types.h b/drivers/gpu/drm/i915/display/intel_display_types.h
+>> index 585bb1edea04..b1f4ec144207 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_display_types.h
+>> +++ b/drivers/gpu/drm/i915/display/intel_display_types.h
+>> @@ -228,7 +228,7 @@ struct intel_encoder {
+>>  struct intel_panel_bl_funcs {
+>>  	/* Connector and platform specific backlight functions */
+>>  	int (*setup)(struct intel_connector *connector, enum pipe pipe);
+>> -	u32 (*get)(struct intel_connector *connector);
+>> +	u32 (*get)(struct intel_connector *connector, enum pipe pipe);
+>>  	void (*set)(const struct drm_connector_state *conn_state, u32 level);
+>>  	void (*disable)(const struct drm_connector_state *conn_state, u32 level);
+>>  	void (*enable)(const struct intel_crtc_state *crtc_state,
+>> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+>> index 9775f33d1aac..de764dae1e66 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+>> @@ -128,7 +128,7 @@ static bool intel_dp_aux_vesa_backlight_dpcd_mode(struct intel_connector *connec
+>>   * Read the current backlight value from DPCD register(s) based
+>>   * on if 8-bit(MSB) or 16-bit(MSB and LSB) values are supported
+>>   */
+>> -static u32 intel_dp_aux_vesa_get_backlight(struct intel_connector *connector)
+>> +static u32 intel_dp_aux_vesa_get_backlight(struct intel_connector *connector, enum pipe unused)
+>>  {
+>>  	struct intel_dp *intel_dp = intel_attached_dp(connector);
+>>  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+>> @@ -381,7 +381,7 @@ static int intel_dp_aux_vesa_setup_backlight(struct intel_connector *connector,
+>>  		return -ENODEV;
+>>  
+>>  	panel->backlight.min = 0;
+>> -	panel->backlight.level = intel_dp_aux_vesa_get_backlight(connector);
+>> +	panel->backlight.level = intel_dp_aux_vesa_get_backlight(connector, pipe);
+>>  	panel->backlight.enabled = intel_dp_aux_vesa_backlight_dpcd_mode(connector) &&
+>>  				   panel->backlight.level != 0;
+>>  
+>> diff --git a/drivers/gpu/drm/i915/display/intel_dsi_dcs_backlight.c b/drivers/gpu/drm/i915/display/intel_dsi_dcs_backlight.c
+>> index 88628764956d..584c14c4cbd0 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_dsi_dcs_backlight.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_dsi_dcs_backlight.c
+>> @@ -43,7 +43,7 @@
+>>  
+>>  #define PANEL_PWM_MAX_VALUE		0xFF
+>>  
+>> -static u32 dcs_get_backlight(struct intel_connector *connector)
+>> +static u32 dcs_get_backlight(struct intel_connector *connector, enum pipe unused)
+>>  {
+>>  	struct intel_encoder *encoder = intel_attached_encoder(connector);
+>>  	struct intel_dsi *intel_dsi = enc_to_intel_dsi(encoder);
+>> diff --git a/drivers/gpu/drm/i915/display/intel_panel.c b/drivers/gpu/drm/i915/display/intel_panel.c
+>> index 7a4239d1c241..7587aaefc7a0 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_panel.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_panel.c
+>> @@ -530,21 +530,21 @@ static u32 intel_panel_compute_brightness(struct intel_connector *connector,
+>>  	return val;
+>>  }
+>>  
+>> -static u32 lpt_get_backlight(struct intel_connector *connector)
+>> +static u32 lpt_get_backlight(struct intel_connector *connector, enum pipe unused)
+>>  {
+>>  	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+>>  
+>>  	return intel_de_read(dev_priv, BLC_PWM_PCH_CTL2) & BACKLIGHT_DUTY_CYCLE_MASK;
+>>  }
+>>  
+>> -static u32 pch_get_backlight(struct intel_connector *connector)
+>> +static u32 pch_get_backlight(struct intel_connector *connector, enum pipe unused)
+>>  {
+>>  	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+>>  
+>>  	return intel_de_read(dev_priv, BLC_PWM_CPU_CTL) & BACKLIGHT_DUTY_CYCLE_MASK;
+>>  }
+>>  
+>> -static u32 i9xx_get_backlight(struct intel_connector *connector)
+>> +static u32 i9xx_get_backlight(struct intel_connector *connector, enum pipe unused)
+>>  {
+>>  	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+>>  	struct intel_panel *panel = &connector->panel;
+>> @@ -564,23 +564,17 @@ static u32 i9xx_get_backlight(struct intel_connector *connector)
+>>  	return val;
+>>  }
+>>  
+>> -static u32 _vlv_get_backlight(struct drm_i915_private *dev_priv, enum pipe pipe)
+>> +static u32 vlv_get_backlight(struct intel_connector *connector, enum pipe pipe)
+>>  {
+>> +	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+>> +
+>>  	if (drm_WARN_ON(&dev_priv->drm, pipe != PIPE_A && pipe != PIPE_B))
+>>  		return 0;
+>>  
+>>  	return intel_de_read(dev_priv, VLV_BLC_PWM_CTL(pipe)) & BACKLIGHT_DUTY_CYCLE_MASK;
+>>  }
+>>  
+>> -static u32 vlv_get_backlight(struct intel_connector *connector)
+>> -{
+>> -	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+>> -	enum pipe pipe = intel_connector_get_pipe(connector);
+>> -
+>> -	return _vlv_get_backlight(dev_priv, pipe);
+>> -}
+>> -
+>> -static u32 bxt_get_backlight(struct intel_connector *connector)
+>> +static u32 bxt_get_backlight(struct intel_connector *connector, enum pipe unused)
+>>  {
+>>  	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+>>  	struct intel_panel *panel = &connector->panel;
+>> @@ -589,7 +583,7 @@ static u32 bxt_get_backlight(struct intel_connector *connector)
+>>  			     BXT_BLC_PWM_DUTY(panel->backlight.controller));
+>>  }
+>>  
+>> -static u32 ext_pwm_get_backlight(struct intel_connector *connector)
+>> +static u32 ext_pwm_get_backlight(struct intel_connector *connector, enum pipe unused)
+>>  {
+>>  	struct intel_panel *panel = &connector->panel;
+>>  	struct pwm_state state;
+>> @@ -1233,7 +1227,7 @@ static u32 intel_panel_get_backlight(struct intel_connector *connector)
+>>  	mutex_lock(&dev_priv->backlight_lock);
+>>  
+>>  	if (panel->backlight.enabled) {
+>> -		val = panel->backlight.funcs->get(connector);
+>> +		val = panel->backlight.funcs->get(connector, intel_connector_get_pipe(connector));
+>>  		val = intel_panel_compute_brightness(connector, val);
+>>  	}
+>>  
+>> @@ -1646,9 +1640,9 @@ static int lpt_setup_backlight(struct intel_connector *connector, enum pipe unus
+>>  		   !(pch_ctl1 & BLM_PCH_OVERRIDE_ENABLE) &&
+>>  		   (cpu_ctl2 & BLM_PWM_ENABLE);
+>>  	if (cpu_mode)
+>> -		val = pch_get_backlight(connector);
+>> +		val = pch_get_backlight(connector, unused);
+>>  	else
+>> -		val = lpt_get_backlight(connector);
+>> +		val = lpt_get_backlight(connector, unused);
+>>  
+>>  	if (cpu_mode) {
+>>  		drm_dbg_kms(&dev_priv->drm,
+>> @@ -1690,7 +1684,7 @@ static int pch_setup_backlight(struct intel_connector *connector, enum pipe unus
+>>  
+>>  	panel->backlight.min = get_backlight_min_vbt(connector);
+>>  
+>> -	val = pch_get_backlight(connector);
+>> +	val = pch_get_backlight(connector, unused);
+>>  	val = intel_panel_compute_brightness(connector, val);
+>>  	panel->backlight.level = clamp(val, panel->backlight.min,
+>>  				       panel->backlight.max);
+>> @@ -1731,7 +1725,7 @@ static int i9xx_setup_backlight(struct intel_connector *connector, enum pipe unu
+>>  
+>>  	panel->backlight.min = get_backlight_min_vbt(connector);
+>>  
+>> -	val = i9xx_get_backlight(connector);
+>> +	val = i9xx_get_backlight(connector, unused);
+>>  	val = intel_panel_compute_brightness(connector, val);
+>>  	panel->backlight.level = clamp(val, panel->backlight.min,
+>>  				       panel->backlight.max);
+>> @@ -1765,7 +1759,7 @@ static int i965_setup_backlight(struct intel_connector *connector, enum pipe unu
+>>  
+>>  	panel->backlight.min = get_backlight_min_vbt(connector);
+>>  
+>> -	val = i9xx_get_backlight(connector);
+>> +	val = i9xx_get_backlight(connector, unused);
+>>  	val = intel_panel_compute_brightness(connector, val);
+>>  	panel->backlight.level = clamp(val, panel->backlight.min,
+>>  				       panel->backlight.max);
+>> @@ -1798,7 +1792,7 @@ static int vlv_setup_backlight(struct intel_connector *connector, enum pipe pipe
+>>  
+>>  	panel->backlight.min = get_backlight_min_vbt(connector);
+>>  
+>> -	val = _vlv_get_backlight(dev_priv, pipe);
+>> +	val = vlv_get_backlight(connector, pipe);
+>>  	val = intel_panel_compute_brightness(connector, val);
+>>  	panel->backlight.level = clamp(val, panel->backlight.min,
+>>  				       panel->backlight.max);
+>> @@ -1840,7 +1834,7 @@ bxt_setup_backlight(struct intel_connector *connector, enum pipe unused)
+>>  
+>>  	panel->backlight.min = get_backlight_min_vbt(connector);
+>>  
+>> -	val = bxt_get_backlight(connector);
+>> +	val = bxt_get_backlight(connector, unused);
+>>  	val = intel_panel_compute_brightness(connector, val);
+>>  	panel->backlight.level = clamp(val, panel->backlight.min,
+>>  				       panel->backlight.max);
+>> @@ -1880,7 +1874,7 @@ cnp_setup_backlight(struct intel_connector *connector, enum pipe unused)
+>>  
+>>  	panel->backlight.min = get_backlight_min_vbt(connector);
+>>  
+>> -	val = bxt_get_backlight(connector);
+>> +	val = bxt_get_backlight(connector, unused);
+>>  	val = intel_panel_compute_brightness(connector, val);
+>>  	panel->backlight.level = clamp(val, panel->backlight.min,
+>>  				       panel->backlight.max);
 
- - Joel
-
-
+-- 
+Jani Nikula, Intel Open Source Graphics Center
