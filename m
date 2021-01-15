@@ -2,140 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FA92F6F30
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 194C12F6F49
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731129AbhANX70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 18:59:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731056AbhANX7Z (ORCPT
+        id S1731190AbhAOAKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 19:10:06 -0500
+Received: from esgaroth.petrovitsch.at ([78.47.184.11]:1201 "EHLO
+        esgaroth.tuxoid.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731040AbhAOAKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 18:59:25 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9128EC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 15:58:45 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id be12so3760216plb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 15:58:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Nvc3IiVsp1txtwU1w62SIZO9MP6aDBCxGAMOxwFlnfU=;
-        b=H7nzFgoD0mmZjC3G98NJ258zxdOB4jQUx4WZeToA057UC7qaekindB4sM8jX+Y1oEl
-         QGti5hPv1oA8iNHAOK2sp8TMWpMHyEjXvJjyNtfxBnWu0wIPGlctClYj9kgCW1yZlldb
-         e+/Hs1Ji1KMtFSFo6t3FrGZVICol56ot6OE+zthMFkMElc13Ijd0dgMWhPDCSk2jCzVR
-         5EsunfSh6ZH0Txhw2m4PvHQwA0xIj2Ivg3HU6wAzPqnKH2v4YxIQglIWxriNsEuhoRSu
-         jTluatQOg7eYnkLfj3C2+wKHUqpTHKhRXCJ310FSG6QfH9FNr2Wbn+DzHDIgx/71ZYHl
-         petw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Nvc3IiVsp1txtwU1w62SIZO9MP6aDBCxGAMOxwFlnfU=;
-        b=uhlp2yhZsGYPRcjNbAus86R9R8z4brLYeYIntvslJMdND7P4srYMqE4QBPmvfVDZUX
-         KnLWXrbsWvUiBsW5+gNYSY+gqY3R4y5SyIB/YHHWp5BjYVQm9Y/HVmzmsCx6bq7pSBc1
-         h8EEUgOVfGR1ycyihEFMCCC8VXrEKvUl/5MRj93AVVYjXpm7D1xOeQOXeLcMkCai/BCZ
-         GHRa6qL1Fw1dJEfP1NMuyZbo0xz903pGKgiC2K60PUR8JSVgbLCYGx5OL0bCumAVT+Pq
-         owH2JNIl4zcisUkJB3Xs4Bnf+LbkfP/oS7+H7nDB7DZSmAQtW7m3JmMQxteIM8vAfi/g
-         TbMw==
-X-Gm-Message-State: AOAM5333Dw6SuPwRiHm1GwOQonRDV63X5Ve+PvraSCHd62/L8LEJTI3Q
-        arzMh1JyAgIXfDAY2qzhUss0ww==
-X-Google-Smtp-Source: ABdhPJzFHsi9Kv8DysKPjSpNxctiO1nz5yAe/V4FeI1lp/9eO+PQMeZV6DvVBkNf6U3Z5fBtrsJaMg==
-X-Received: by 2002:a17:902:6b89:b029:da:fc41:baec with SMTP id p9-20020a1709026b89b02900dafc41baecmr10011317plk.39.1610668724942;
-        Thu, 14 Jan 2021 15:58:44 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id z23sm5926576pfn.202.2021.01.14.15.58.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 15:58:44 -0800 (PST)
-Date:   Thu, 14 Jan 2021 15:58:37 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Jim Mattson <jmattson@google.com>
-Subject: Re: [PATCH v2 1/3] KVM: nVMX: Always call sync_vmcs02_to_vmcs12_rare
- on migration
-Message-ID: <YADarUMsE9uDKxOe@google.com>
-References: <20210114205449.8715-1-mlevitsk@redhat.com>
- <20210114205449.8715-2-mlevitsk@redhat.com>
+        Thu, 14 Jan 2021 19:10:06 -0500
+Received: from thorin.petrovitsch.priv.at (80-110-120-15.cgn.dynamic.surfer.at [80.110.120.15])
+        (authenticated bits=0)
+        by esgaroth.tuxoid.at (8.15.2/8.15.2) with ESMTPSA id 10F03Ikx015508
+        (version=TLSv1 cipher=AES256-SHA bits=256 verify=NO);
+        Fri, 15 Jan 2021 01:03:19 +0100
+Message-ID: <6437080014a3a9af63f2c50b620f389c1f104e91.camel@petrovitsch.priv.at>
+Subject: Re: Old platforms: bring out your dead
+From:   Bernd Petrovitsch <bernd@petrovitsch.priv.at>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Arnd Bergmann <arnd@kernel.org>, Willy Tarreau <w@1wt.eu>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.osdn.me>,
+        Mark Salter <msalter@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Date:   Fri, 15 Jan 2021 01:03:14 +0100
+In-Reply-To: <CAHp75VceqwbfQ=z34K=soKu4-qvLVEtobFg1sO4jukRcT7BXBg@mail.gmail.com>
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+         <20210109055645.GA2009@1wt.eu>
+         <CAK8P3a1C+EUvyLm3fo8TGOV39hhaxhtDM3cX_QLc-=WCzRksMw@mail.gmail.com>
+         <6fb7e3f5035d44fab9801001f1811b59@AcuMS.aculab.com>
+         <CAHp75Vf43_zqDX9K4GmkRd7fujY2zC8=LneSMFpC2qnJL_uG1A@mail.gmail.com>
+         <CACRpkdaH-1s8DnRUPVRSQgqUE99MdWjKGLv_y6iYnXU6p4dwUg@mail.gmail.com>
+         <CAHp75Ve3QqLqe2sQhNgdrDfKm2uSwXFwMr5_GgGf3tiuCp2DBQ@mail.gmail.com>
+         <CAHp75VceqwbfQ=z34K=soKu4-qvLVEtobFg1sO4jukRcT7BXBg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210114205449.8715-2-mlevitsk@redhat.com>
+Content-Transfer-Encoding: 7bit
+X-DCC-wuwien-Metrics: esgaroth.tuxoid.at 1290; Body=35 Fuz1=35 Fuz2=35
+X-Virus-Scanned: clamav-milter 0.97 at esgaroth.tuxoid.at
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-0.5 required=5.0 tests=AWL,UNPARSEABLE_RELAY
+        autolearn=unavailable version=3.3.1
+X-Spam-Report: *  0.0 UNPARSEABLE_RELAY Informational: message has unparseable relay lines
+        * -0.5 AWL AWL: Adjusted score from AWL reputation of From: address
+X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on esgaroth.tuxoid.at
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject is confusing, and technically wrong.  Confusing because there is no call
-to sync_vmcs02_to_vmcs12_rare().  Technically wrong because sync_...() won't be
-called if need_sync_vmcs02_to_vmcs12_rare==false.
+On Wed, 2021-01-13 at 14:21 +0200, Andy Shevchenko wrote:
+[...]
+> WRT x86 I run the search
+> https://pc104.org/product-search-results/?kw=x86&post_tag=&product_type=&specifications=&pc-bus-technology=&user=Filter+by+Member+Company
+> seems like all of them are based on Vortex86DX.
 
-Maybe something like?
+There are some real/true PC104 boards left -
+still in production - with boards (though
+they tend to loose features like
+"memory-mapping over the ISA-bus").
 
-KVM: nVMX: Sync unsync'd vmcs02 state to vmcs12 on migration
+One is a - according to /proc/cpuinfo - a
+"Intel(R) Atom(TM) CPU  E3825  @ 1.33GHz".
 
-On Thu, Jan 14, 2021, Maxim Levitsky wrote:
-> Even when we are outside the nested guest, some vmcs02 fields
-> are not in sync vs vmcs12.
+Sry, I cannot get the product name.
 
-s/are not/may not be
+MfG,
+	BErnd
+-- 
+Bernd Petrovitsch                  Email : bernd@petrovitsch.priv.at
+There is no cloud, just other people computers. - FSFE
+                     LUGA : http://www.luga.at
 
-It'd be helpful to provide more details in the changelog, e.g. for those not in
-the loop, it's not obvious that KVM intentionally keeps those fields unsync'd,
-even across nested VM-Exit.
 
-> However during the migration, the vmcs12 has to be up to date
-> to be able to load it later after the migration.
-> 
-> To fix that, call that function.
-
-s/that function/copy_vmcs02_to_vmcs12_rare().  Characters are cheap, and it's
-jarring to have to jump back all the way back to the subject.  And, as mentioned
-above, this doesn't actually call sync_ directly.
-
-For the code,
-
-Reviewed-by: Sean Christopherson <seanjc@google.com> 
-
-> 
-> Fixes: 7952d769c29ca ("KVM: nVMX: Sync rarely accessed guest fields only when needed")
-> 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->  arch/x86/kvm/vmx/nested.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 0fbb46990dfce..776688f9d1017 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -6077,11 +6077,14 @@ static int vmx_get_nested_state(struct kvm_vcpu *vcpu,
->  	if (is_guest_mode(vcpu)) {
->  		sync_vmcs02_to_vmcs12(vcpu, vmcs12);
->  		sync_vmcs02_to_vmcs12_rare(vcpu, vmcs12);
-> -	} else if (!vmx->nested.need_vmcs12_to_shadow_sync) {
-> -		if (vmx->nested.hv_evmcs)
-> -			copy_enlightened_to_vmcs12(vmx);
-> -		else if (enable_shadow_vmcs)
-> -			copy_shadow_to_vmcs12(vmx);
-> +	} else  {
-> +		copy_vmcs02_to_vmcs12_rare(vcpu, get_vmcs12(vcpu));
-> +		if (!vmx->nested.need_vmcs12_to_shadow_sync) {
-> +			if (vmx->nested.hv_evmcs)
-> +				copy_enlightened_to_vmcs12(vmx);
-> +			else if (enable_shadow_vmcs)
-> +				copy_shadow_to_vmcs12(vmx);
-> +		}
->  	}
->  
->  	BUILD_BUG_ON(sizeof(user_vmx_nested_state->vmcs12) < VMCS12_SIZE);
-> -- 
-> 2.26.2
-> 
