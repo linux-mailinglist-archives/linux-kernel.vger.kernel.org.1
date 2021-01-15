@@ -2,199 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22322F8065
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:16:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E80C2F8069
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731063AbhAOQPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:15:23 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:47205 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726669AbhAOQPW (ORCPT
+        id S1731883AbhAOQP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:15:57 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4918 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731175AbhAOQP4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:15:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1610727321; x=1642263321;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=U6Yns/fScwCLTy8KUEUsiROmPYCAVzDaghvDoJYoAwI=;
-  b=iNsIHdaUgAwjgujsvvNFXS46V6NUkbh+jFNx8e6soWMiF93urasXs0Dg
-   Ut6j/jiFUZJdxkPSSjzKDSO/AeNrUbpsWIGdc+kdQNLYc1wXWqp8JL/Al
-   5TfxoUFQpD5rbPA1Q4GkRsqoWnV6LVdIBMwSLM1IBUNYsLKo+hnaXVkNa
-   rOHR/UWZdScQPKD75wMW7NrCZc/tVPsZ6RBPjdxZb0AbOUvaZcyqiU534
-   /gz5NWw2udceWjZfEvouhvttZYfpcfMvLtkE/Tjk9n3G5G6o0ByF19gW3
-   tTfRM8V9Jf34NaF6FVEExxBlnaPdKqEf65+I/DghkU2cficQt3aC5V7DJ
-   w==;
-IronPort-SDR: cd78FlAEDaZ2Fw8OdlabZqG5BMVwsRjVhQ5IupxFe7QQz6ozLpAKAR8LfDv4qepB0lH3c0i26v
- peHUhZf/yYb9+Js8i+em3l8OmbccUR8D0kpGYwumlkednBdwMEt1SeUbt1Dtt3R48ygN7q+FPF
- MlTD/eZEWUkUm8UeqH4LowT+DEn2Xq0A7ZrF/TNw5MlA7bQUVxc0e97nV6uoef5ukPBsFEM/U5
- de3fCa3TTFLDByjAgMOT+ApzUpfVVEJ1wB70CVNShonyt99V6cHAxyRGkFgR1YgidNpn5x3vwt
- g64=
-X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="100226554"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Jan 2021 09:14:03 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 15 Jan 2021 09:14:03 -0700
-Received: from tyr.hegelund-hansen.dk (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 15 Jan 2021 09:14:01 -0700
-Message-ID: <f35e3c33f011b6aabd96d3b6de3750bf3d04b699.camel@microchip.com>
-Subject: Re: [PATCH v12 2/4] phy: Add ethernet serdes configuration option
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-Date:   Fri, 15 Jan 2021 17:14:00 +0100
-In-Reply-To: <92a943cc-b332-4ac6-42a8-bb3cdae13bc0@ti.com>
-References: <20210107091924.1569575-1-steen.hegelund@microchip.com>
-         <20210107091924.1569575-3-steen.hegelund@microchip.com>
-         <92a943cc-b332-4ac6-42a8-bb3cdae13bc0@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3 
+        Fri, 15 Jan 2021 11:15:56 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10FG2YWM072538;
+        Fri, 15 Jan 2021 11:15:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=B/4HRDnyhmj9fJ4cKRJwya+B3ylVKYJDlIQMBgurGTo=;
+ b=W/09TNZ68Lh6bd7wNkO8+dew5IZKvbVIpKjtopti6t5pKbfI2EVbZwnI/lV+RTHIJ95l
+ GIrl+/xcBXChd1tsHg5mG9XlS4SwCLJ6jvGb4KQVMz/21aNie0cJc6HBLI4GP01McwGp
+ 4uJULeKKnV+r/zOKzPNbTqMMcWvVHd/jnbiNxfWkGPwkVayH6Aj/JJQANmZDh3mEbuEV
+ fpB1ufr/0CE+UahsGDHJr3BRyZvYUBEMeERAaLRm1zDrXHoZUD26bRmy/rIKWqnESFvm
+ GcJ+ExAfKHg55mmthShyoQ681MZvcf655ykLdAyV7/HgLuvcefAKbG4fQ3UzVlB+jDj+ jQ== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 363dhk9qb6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Jan 2021 11:15:11 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10FG6l5B015433;
+        Fri, 15 Jan 2021 16:15:09 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma01fra.de.ibm.com with ESMTP id 35y448435y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Jan 2021 16:15:09 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10FGF1FA28901716
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 16:15:01 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9429611C06E;
+        Fri, 15 Jan 2021 16:15:06 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 28CF611C05B;
+        Fri, 15 Jan 2021 16:15:06 +0000 (GMT)
+Received: from [9.145.69.127] (unknown [9.145.69.127])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 15 Jan 2021 16:15:06 +0000 (GMT)
+Subject: Re: [RFC 1/1] s390/pci: expose UID checking state in sysfs
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Viktor Mihajlovski <mihajlov@linux.ibm.com>
+References: <20210115152903.GA2086339@bjorn-Precision-5520>
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Message-ID: <304b1ae8-0862-4986-bdbc-31ede7294fd1@linux.ibm.com>
+Date:   Fri, 15 Jan 2021 17:15:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210115152903.GA2086339@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-15_08:2021-01-15,2021-01-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ adultscore=0 mlxlogscore=999 phishscore=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 impostorscore=0 spamscore=0
+ lowpriorityscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101150098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
 
-On Fri, 2021-01-15 at 21:22 +0530, Kishon Vijay Abraham I wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you
-> know the content is safe
+
+On 1/15/21 4:29 PM, Bjorn Helgaas wrote:
+> On Fri, Jan 15, 2021 at 12:20:59PM +0100, Niklas Schnelle wrote:
+>> On 1/14/21 5:14 PM, Greg Kroah-Hartman wrote:
+>>> On Thu, Jan 14, 2021 at 04:51:17PM +0100, Niklas Schnelle wrote:
+>>>> On 1/14/21 4:17 PM, Greg Kroah-Hartman wrote:
+>>>>> On Thu, Jan 14, 2021 at 04:06:11PM +0100, Niklas Schnelle wrote:
+>>>>>> On 1/14/21 2:58 PM, Greg Kroah-Hartman wrote:
+>>>>>>> On Thu, Jan 14, 2021 at 02:44:53PM +0100, Christian Brauner wrote:
+>>>>>>>> On Thu, Jan 14, 2021 at 02:20:10PM +0100, Niklas Schnelle wrote:
+>>>>>>>>> On 1/13/21 7:55 PM, Bjorn Helgaas wrote:
+>>>>>>>>>> On Wed, Jan 13, 2021 at 08:47:58AM +0100, Niklas Schnelle wrote:
+>>>>>>>>>>> On 1/12/21 10:50 PM, Bjorn Helgaas wrote:
+>> ... snip ...
+>>>>>>>>
+>>>>>>>> Hey Niklas et al. :)
+>>>>>>>>
+>>>>>>>> I think this will need input from Greg. He should be best versed in
+>>>>>>>> sysfs attributes. The problem with KERNEL_ATTR_* to me seems that it's
+>>>>>>>> supposed to be kernel internal. Now, that might just be a matter of
+>>>>>>>> renaming the macro but let's see whether Greg has any better idea or
+>>>>>>>> more questions. :)
+>>>>>>>
+>>>>>>> The big question is, why are you needing this?
+>>>>>>>
+>>>>>>> No driver or driver subsystem should EVER be messing with a "raw"
+>>>>>>> kobject like this.  Just use the existing DEVICE_* macros instead
+>>>>>>> please.
+>>>>>>>
+>>>>>>> If you are using a raw kobject, please ask me how to do this properly,
+>>>>>>> as that is something that should NEVER show up in the /sys/devices/*
+>>>>>>> tree.  Otherwise userspace tools will break.
+>>>>>>>
+>>>>>>> thanks,
+>>>>>>>
+>>>>>>> greg k-h
+>>>>>>
+>>>>>> Hi Greg,
+>>>>>>
+>>>>>> this is for an architecture specific but global i.e. not device bound PCI
+>>>>>> attribute. That's why DEVICE_ATTR_* does not work. BUS_ATTR_* would work
+>>>>>> but only if we place the attribute directly under /sys/bus/pci/new_attr.
+>>>>>
+>>>>> Then you are doing something wrong :)
+>>>>
+>>>> That is very possible.
+>>>>
+>>>>>
+>>>>> Where _exactly_ are you wanting to put this attribute?
+>>>>
+>>>> I'm trying for /sys/bus/pci/zpci/uid_checking, I'm using
+>>>> the below code and the attribute even shows up but reading
+>>>> it gives me two 0 bytes only.
+>>>> The relevant code is only a slight alteration of the original patch
+>>>> as follows:
+>>>>
+>>>> static ssize_t uid_checking_show(struct bus_type *bus, char *buf)
+>>>> {
+>>>> 	return sprintf(buf, "%i\n", zpci_unique_uid);
+>>>> }
+>>>> static BUS_ATTR_RO(uid_checking);
+>>>>
+>>>> static struct kset *zpci_global_kset;
+>>>>
+>>>> static struct attribute *zpci_attrs_global[] = {
+>>>> 	&bus_attr_uid_checking.attr,
+>>>> 	NULL,
+>>>> };
+>>>>
+>>>> static struct attribute_group zpci_attr_group_global = {
+>>>> 	.attrs = zpci_attrs_global,
+>>>> };
+>>>
+>>> Name your attribute group, and then you do not have to mess with a
+>>> "raw" kobject like you are below:
+>>
+>> Thanks for this tip and sorry for bothering you again.
+>>
+>>>
+>>>>
+>>>> int __init zpci_sysfs_init(void)
+>>>> {
+>>>> 	struct kset *pci_bus_kset;
+>>>>
+>>>> 	pci_bus_kset = bus_get_kset(&pci_bus_type);
+>>>>
+>>>> 	zpci_global_kset = kset_create_and_add("zpci", NULL, &pci_bus_kset->kobj);
+>>>
+>>> No, do not mess with at kset, just set the default attribute group for
+>>> the bus to the above, and you should be fine.
+>>
+>> Oh ok, I got this idea from the code adding /sys/bus/pci/slots/ in
+>> drivers/pci/slot.c:pci_slot_init(). See below maybe we can clean that up too.
+>>
+>>>
+>>>> 	if (!zpci_global_kset)
+>>>> 		return -ENOMEM;
+>>>>
+>>>> 	return sysfs_create_group(&zpci_global_kset->kobj, &zpci_attr_group_global);
+>>>
+>>> Huge hint, if in a driver, or bus subsystem, and you call sysfs_*,
+>>> that's usually a huge clue that you are doing something wrong.
+>>>
+>>> Try the above again, with a simple attribute group, and name for it, and
+>>> it should "just work".
+>>
+>> I'm probably missing something but I don't get how this could work
+>> in this case. If I'm seeing this right the default attribute group
+>> here is pci_bus_type.bus_groups and that is already set in
+>> drivers/pci/pci-driver.c so I don't think I should set that.
+>>
+>> I did however find bus_create_file() which does work when using the
+>> path /sys/bus/pci/uid_checking instead. This would work for us if
+>> Bjorn is okay with that path and the code is really clean and simple
+>> too.
+>>
+>> That said, I think we could also add something like
+>> bus_create_group().  Then we could use that to also clean up
+>> drivers/pci/slot.c:pci_slot_init() and get the original path
+>> /sys/bus/pci/zpci/uid_checking.
 > 
-> Hi,
-> 
-> On 07/01/21 2:49 pm, Steen Hegelund wrote:
-> > Provide a new ethernet phy configuration structure, that
-> > allow PHYs used for ethernet to be configured with
-> > speed, media type and clock information.
-> > 
-> > Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> > Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> > ---
-> >  include/linux/phy/phy-ethernet-serdes.h | 30
-> > +++++++++++++++++++++++++
-> >  include/linux/phy/phy.h                 |  4 ++++
-> >  2 files changed, 34 insertions(+)
-> >  create mode 100644 include/linux/phy/phy-ethernet-serdes.h
-> > 
-> > diff --git a/include/linux/phy/phy-ethernet-serdes.h
-> > b/include/linux/phy/phy-ethernet-serdes.h
-> > new file mode 100644
-> > index 000000000000..d2462fadf179
-> > --- /dev/null
-> > +++ b/include/linux/phy/phy-ethernet-serdes.h
-> > @@ -0,0 +1,30 @@
-> > +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
-> > +/*
-> > + * Microchip Sparx5 Ethernet SerDes driver
-> > + *
-> > + * Copyright (c) 2020 Microschip Inc
-> > + */
-> > +#ifndef __PHY_ETHERNET_SERDES_H_
-> > +#define __PHY_ETHERNET_SERDES_H_
-> > +
-> > +#include <linux/types.h>
-> > +
-> > +enum ethernet_media_type {
-> > +     ETH_MEDIA_DEFAULT,
-> > +     ETH_MEDIA_SR,
-> > +     ETH_MEDIA_DAC,
-> > +};
-> 
-> I'm not familiar with Ethernet. Are these generic media types? what
-> does
-> SR or DAC refer to? 
+> I don't think "uid_checking" is quite the right name.  It says
+> something about the *implementation*, but it doesn't convey what that
+> *means* to userspace.  IIUC this file tells userspace something about
+> whether a given PCI device always has the same PCI domain/bus/dev/fn
+> address (or maybe just the same domain?)
 
-The SR stands for Short Reach and is a fiber type connection used by
-SFPs.  There also other "reach" variants.
-
-DAC stands for Direct Attach Copper and is a type of cable that plugs
-into an SFP cage and provides information back to the user via its
-EEPROM regarding supported speed and capabilities in general.  These
-typically supports speed of 5G or more.
-
-The SFP/Phylink is the "out-of-band" method that provides the type of
-connection: speed and media type that allows the client to adapt the
-SerDes configuration to the type of media selected by the user.
-
-> Are there other media types? What is the out-of-band
-> mechanism by which the controller gets the media type? Why was this
-> not
-> required for other existing Ethernet SERDES? 
-
-This is probably a matter of the interface speed are now getting higher
-and the amount of configuration needed for the SerDes have increased,
-at the same time as this is not being a static setup, because the user
-an plug and unplug media to the SFP cage.
-
-> Are you aware of any other
-> vendors who might require this?
-
-I suspect that going forward it will become more widespread, at least
-we have more chips in the pipeline that need this SerDes for high speed
-connectivity.
-
+Yes you're right, in fact we internally also started to think about
+something more meaning oriented like "unique_uids". This indeed results
+in PCI addresses which can be relied upon as stable identifiers. For us
+it's enough that the domain matches as the bus is always 0 and
+dev/fn are determined by the device and SR-IOV stride etc.
+so will remain the same for equivalent configurations.
 
 > 
-> Thanks
-> Kishon
-> > +
-> > +/**
-> > + * struct phy_configure_opts_eth_serdes - Ethernet SerDes This
-> > structure is used
-> > + * to represent the configuration state of a Ethernet Serdes PHY.
-> > + * @speed: Speed of the serdes interface in Mbps
-> > + * @media_type: Specifies which media the serdes will be using
-> > + */
-> > +struct phy_configure_opts_eth_serdes {
-> > +     u32                        speed;
-> > +     enum ethernet_media_type   media_type;
-> > +};
-> > +
-> > +#endif
-> > +
-> > diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-> > index e435bdb0bab3..78ecb375cede 100644
-> > --- a/include/linux/phy/phy.h
-> > +++ b/include/linux/phy/phy.h
-> > @@ -18,6 +18,7 @@
-> > 
-> >  #include <linux/phy/phy-dp.h>
-> >  #include <linux/phy/phy-mipi-dphy.h>
-> > +#include <linux/phy/phy-ethernet-serdes.h>
-> > 
-> >  struct phy;
-> > 
-> > @@ -49,11 +50,14 @@ enum phy_mode {
-> >   *
-> >   * @mipi_dphy:       Configuration set applicable for phys
-> > supporting
-> >   *           the MIPI_DPHY phy mode.
-> > + * @eth_serdes: Configuration set applicable for phys supporting
-> > + *           the ethernet serdes.
-> >   * @dp:              Configuration set applicable for phys
-> > supporting
-> >   *           the DisplayPort protocol.
-> >   */
-> >  union phy_configure_opts {
-> >       struct phy_configure_opts_mipi_dphy     mipi_dphy;
-> > +     struct phy_configure_opts_eth_serdes    eth_serdes;
-> >       struct phy_configure_opts_dp            dp;
-> >  };
-> > 
-> > 
+> It sounds like this feature could be useful beyond just s390, and
+> other arches might implement it differently, without the UID concept.
+> If so, I'm OK with something at the /sys/bus/pci/xxx level as long as
+> the name is not s390-specific (and "uid" sounds s390-specific).
+> 
+> I assume it would also help with the udev/systemd end if you could
+> make this less s390 dependent.
+> 
+> Bjorn
 
-Best Regards
-Steen
-
+That's a very good point! I'm absolutely open to making this a
+common concept. I think the gist could be that the addressing/ids on
+the bus are reproducible, there might be some user configuration
+required but then they can be relied upon for stable names like
+network interfaces. So maybe a name like "reproducible_addressing"?
+I guess one non-s390 exclusive case of this could be virtualized
+PCI under QEMU/KVM etc. versus real hardware or even UEFI/Firmware
+guarantees, right?
