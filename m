@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6DBA2F7A22
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF492F7B07
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388138AbhAOMpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:45:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45258 "EHLO mail.kernel.org"
+        id S2387669AbhAOM5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:57:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731350AbhAOMiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:38:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D920A22473;
-        Fri, 15 Jan 2021 12:37:56 +0000 (UTC)
+        id S2387456AbhAOMeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:34:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0C992336F;
+        Fri, 15 Jan 2021 12:33:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714277;
-        bh=I6ahcIlSY4WZ1+YM5bz9xxfpeSXZAbpokCAoOh9w/8Q=;
+        s=korg; t=1610714015;
+        bh=YCuT/meOWi39fL2ZvWvY68jiEeri71aX+oqCkmAL4ec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=svtesNsONVYdwPA/b3B6y4CJNUysVMs5CoJK99zPyqCqSL4PbvRxVeCqXA+9/f/KV
-         XapZXljLsxee6OPb4PsN1V+r2pA3XntM2i4RMBPkg4Q3nK6FulJGYtYD+AIjesxwQI
-         SQBfVau3n/Qzmp5Orf4h9VwM8VtEmTsCQFP6vjRI=
+        b=mP1C+16JZ2/3LTtcQci6mG2CpAAFudOQtiSB0rcbnFcbQLjojzuPfNnRgaas1sXy1
+         YvhjTVg0L9Icu2RdtHtzPsP9YW55udvi23Z6+KjCiR4KH+R0omM8Kz9RASgyfteWI6
+         sR5F58uiHdDsrdFFHOAChF3FaY4yk47VQaAslAbk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Guskov <rguskov@dh-electronics.com>,
-        Marek Vasut <marex@denx.de>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 062/103] spi: stm32: FIFO threshold level - fix align packet size
+        stable@vger.kernel.org, Linhua Xu <linhua.xu@unisoc.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 4.19 25/43] i2c: sprd: use a specific timeout to avoid system hang up issue
 Date:   Fri, 15 Jan 2021 13:27:55 +0100
-Message-Id: <20210115122009.046794550@linuxfoundation.org>
+Message-Id: <20210115121958.272354531@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
-References: <20210115122006.047132306@linuxfoundation.org>
+In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
+References: <20210115121957.037407908@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Guskov <rguskov@dh-electronics.com>
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-commit a590370d918fc66c62df6620445791fbe840344a upstream.
+commit 0b884fe71f9ee6a5df35e677154256ea2099ebb8 upstream.
 
-if cur_bpw <= 8 and xfer_len < 4 then the value of fthlv will be 1 and
-SPI registers content may have been lost.
+If the i2c device SCL bus being pulled up due to some exception before
+message transfer done, the system cannot receive the completing interrupt
+signal any more, it would not exit waiting loop until MAX_SCHEDULE_TIMEOUT
+jiffies eclipse, that would make the system seemed hang up. To avoid that
+happen, this patch adds a specific timeout for message transfer.
 
-* If SPI data register is accessed as a 16-bit register and DSIZE <= 8bit,
-  better to select FTHLV = 2, 4, 6 etc
-
-* If SPI data register is accessed as a 32-bit register and DSIZE > 8bit,
-  better to select FTHLV = 2, 4, 6 etc, while if DSIZE <= 8bit,
-  better to select FTHLV = 4, 8, 12 etc
-
-Signed-off-by: Roman Guskov <rguskov@dh-electronics.com>
-Fixes: dcbe0d84dfa5 ("spi: add driver for STM32 SPI controller")
-Reviewed-by: Marek Vasut <marex@denx.de>
-Link: https://lore.kernel.org/r/20201221123532.27272-1-rguskov@dh-electronics.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 8b9ec0719834 ("i2c: Add Spreadtrum I2C controller driver")
+Signed-off-by: Linhua Xu <linhua.xu@unisoc.com>
+Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+[wsa: changed errno to ETIMEDOUT]
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-stm32.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/i2c/busses/i2c-sprd.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -493,9 +493,9 @@ static u32 stm32h7_spi_prepare_fthlv(str
+--- a/drivers/i2c/busses/i2c-sprd.c
++++ b/drivers/i2c/busses/i2c-sprd.c
+@@ -71,6 +71,8 @@
  
- 	/* align packet size with data registers access */
- 	if (spi->cur_bpw > 8)
--		fthlv -= (fthlv % 2); /* multiple of 2 */
-+		fthlv += (fthlv % 2) ? 1 : 0;
- 	else
--		fthlv -= (fthlv % 4); /* multiple of 4 */
-+		fthlv += (fthlv % 4) ? (4 - (fthlv % 4)) : 0;
+ /* timeout (ms) for pm runtime autosuspend */
+ #define SPRD_I2C_PM_TIMEOUT	1000
++/* timeout (ms) for transfer message */
++#define I2C_XFER_TIMEOUT	1000
  
- 	if (!fthlv)
- 		fthlv = 1;
+ /* SPRD i2c data structure */
+ struct sprd_i2c {
+@@ -244,6 +246,7 @@ static int sprd_i2c_handle_msg(struct i2
+ 			       struct i2c_msg *msg, bool is_last_msg)
+ {
+ 	struct sprd_i2c *i2c_dev = i2c_adap->algo_data;
++	unsigned long time_left;
+ 
+ 	i2c_dev->msg = msg;
+ 	i2c_dev->buf = msg->buf;
+@@ -273,7 +276,10 @@ static int sprd_i2c_handle_msg(struct i2
+ 
+ 	sprd_i2c_opt_start(i2c_dev);
+ 
+-	wait_for_completion(&i2c_dev->complete);
++	time_left = wait_for_completion_timeout(&i2c_dev->complete,
++				msecs_to_jiffies(I2C_XFER_TIMEOUT));
++	if (!time_left)
++		return -ETIMEDOUT;
+ 
+ 	return i2c_dev->err;
+ }
 
 
