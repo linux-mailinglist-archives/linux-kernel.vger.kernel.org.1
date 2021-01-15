@@ -2,96 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB30C2F73B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7B72F73BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:33:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731513AbhAOHbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 02:31:17 -0500
-Received: from mail-qt1-f175.google.com ([209.85.160.175]:44042 "EHLO
-        mail-qt1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731419AbhAOHbQ (ORCPT
+        id S1731584AbhAOHd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 02:33:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729451AbhAOHd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 02:31:16 -0500
-Received: by mail-qt1-f175.google.com with SMTP id r9so5420790qtp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:31:00 -0800 (PST)
+        Fri, 15 Jan 2021 02:33:26 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D503CC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:32:45 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id h17so6266646wmq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:32:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Dg3fcenP6YIm0aYs5w4I6Adx/SFGTjlnu+FOvTsHu6s=;
+        b=gxUveA9YGhNb2E0mZMUvTHI+xbr056FxLZgftfCZZGeNOF+yJ9kajtQExO+pdJR3qx
+         BLnTtJDuM10lTPfSe/TNs/D6zWrnF+RDifagNGXkh9NzzEPnWLATnD41wIUUXTU3msTk
+         Mq5Tkcpzrr9Y/X/lAsccBF2PsbSF/xuTcOOOXSl82oWcuDtlv73iVqwrlUF4P462WsPR
+         w/UjHkhGsQJK0QC1WuIzsvDRmaanz15SvGJXwYOm7R/MSO4PtmnYA8Ix054Ghw5VnjW7
+         74nqHDrKqAVyPcPhYjEAHt9B+qR2m+wBK6xmMz4DkHGOntE0rS6A6mbthBP1uMf2rFdk
+         cOUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IC6nYnjWq4nKpkNfzmQBFmOCWxCpv8qHmwxuE4KKiAQ=;
-        b=nwOCjyw0zrqv+Abb4PRDiS5MaBv17+yyejzRpEjTk9lFxCAZCZqtsDFG8oj+HFogjl
-         cquCmTpbBb7qViw85BSyLBGJwejF+J/LQ2ZPQyPeHe6VoyjMJ4841/TvSCwr1F0eZamu
-         Kyz2ahZmHa+b5tfQsMswtYeb/Fljnmxpmp0CC3GhlYqwo6yGSCoCAJt8VKYthICxFU51
-         ljZs/H4L7g7qhzBTSo8WKHLwF3XGpenw9eXL3aUVoer8nhfAvTUaZQGgQuWaBzex1/sw
-         RHWqKxfiTDXP6757yvf7yNayN+igl2Pw6fZP0mZ+Igzb57hk4A+pYsk2j15RKR9yD8ms
-         L7rA==
-X-Gm-Message-State: AOAM533LQbSwhAFYGTCEn6crIb0T6i5UCFHrPN1mhhDGGknQyMrbZsP3
-        zPcPnIP4YFlmKwJgy/VAS+8tVEW0sIPuTns2JcA=
-X-Google-Smtp-Source: ABdhPJwomW6rTW7s4wID/Brjwniin9+SEXga2rV2ofQcEuXcTydW4AYrNoLcJll29YsWK0Y/dKiUzv9jueCoiOKsAqQ=
-X-Received: by 2002:ac8:4711:: with SMTP id f17mr2263591qtp.256.1610695834700;
- Thu, 14 Jan 2021 23:30:34 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Dg3fcenP6YIm0aYs5w4I6Adx/SFGTjlnu+FOvTsHu6s=;
+        b=s3BDBu94qPOrdGaNBFQI65ZzXmIRg+WUKJYfOQyDHyFqx5OqGF+yLeNafLHbgRVVwD
+         T7PpjCQEQCQDHl4JJfM3Hb2yqE/ji+JBExVlMl+Zrc5V+4e0bPYU5t0N32feuKzYg6xf
+         Oj5ODX4yksZUhpnZwSVndaEI13zDDHzaKVzr8d0cwIg1DtHPD56DUV2kCiPpv/vUUmx0
+         +j3ZDaOHvgAdRcu0gXbQW3u6djThTkBAz8FPnKLG8EkAFsT224msuIdjij5mt9XZveUQ
+         /iPvTPMM14HY/6zwJFvxSQcU2gFV9CYuvKnDHCCdZkb6AFdRKwYn5ziNDRkufax0GVYk
+         /pnA==
+X-Gm-Message-State: AOAM530cVUUh1MX8c/P75ZC0hU64Y1KRHtXnB1ICKddG1VbdhDk/EcZ8
+        xPzokZ/uLAhm2ktLmlbsS8SoHQ==
+X-Google-Smtp-Source: ABdhPJyDsyZ0WWe8TcdEBpHT5umYuSY/TkSm8W+40uVNy+0csJt6A1ZznlatODu7M7D5wl3RVsB1vQ==
+X-Received: by 2002:a1c:df85:: with SMTP id w127mr7535799wmg.166.1610695964629;
+        Thu, 14 Jan 2021 23:32:44 -0800 (PST)
+Received: from dell ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id w13sm13281029wrt.52.2021.01.14.23.32.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 23:32:43 -0800 (PST)
+Date:   Fri, 15 Jan 2021 07:32:41 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>, sre@kernel.org,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, ChiYuan Huang <cy_huang@richtek.com>,
+        benjamin.chao@mediatek.com
+Subject: Re: [PATCH v7 04/11] mfd: mt6360: Combine mt6360 pmic/ldo resources
+ into mt6360 regulator resources
+Message-ID: <20210115073241.GC3975472@dell>
+References: <1605177598-23501-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1605177598-23501-5-git-send-email-gene.chen.richtek@gmail.com>
+ <74b127eb-9a3c-20c9-5692-b00b982f4da3@gmail.com>
+ <CAE+NS34qR9f2LOpvxTBDF4OR=Xq-SFP+uHdWe3dZ5x8xggS8kA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210114154646.209024-1-leo.yan@linaro.org>
-In-Reply-To: <20210114154646.209024-1-leo.yan@linaro.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 15 Jan 2021 16:30:23 +0900
-Message-ID: <CAM9d7cgXcvysJXZEWuskgB3ucdRkVg3OzUxcWvEcc2mrDpasBg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/6] perf c2c: Code refactoring
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Joe Mario <jmario@redhat.com>, David Ahern <dsahern@gmail.com>,
-        Don Zickus <dzickus@redhat.com>, Joe Perches <joe@perches.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAE+NS34qR9f2LOpvxTBDF4OR=Xq-SFP+uHdWe3dZ5x8xggS8kA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, 15 Jan 2021, Gene Chen wrote:
 
-On Fri, Jan 15, 2021 at 12:46 AM Leo Yan <leo.yan@linaro.org> wrote:
->
-> This patch series is for several minor code refactoring, which is
-> extracted from the patch series "perf c2c: Sort cacheline with all
-> loads" [1].
->
-> There has a known issue for Arm SPE store operations and Arm SPE is
-> the only consumer for soring with all loads, this is the reason in this
-> series drops the changes for dimensions and sorting, and only extracts
-> the patches related with code refactoring.  So this series doesn't
-> introduce any functionality change.
->
-> The patches have been tested on x86_64 and compared the result before
-> and after applying the patches, and confirmed no difference for the
-> output result.
->
-> Changes from v3:
-> * Refined patch 03/06 to remove unnecessary parentheses and test and
->   return early in the function filter_display() (Joe Perches);
-> * Added new patch 04/06 to make argument type as u32 for percent().
->
-> Changes from v2:
-> * Changed to use static functions to replace macros (Namhyung);
-> * Added Jiri's Ack tags in the unchanged patches;
-> * Minor improvement in the commit logs.
->
-> [1] https://lore.kernel.org/patchwork/cover/1353064/
->
->
-> Leo Yan (6):
->   perf c2c: Rename for shared cache line stats
->   perf c2c: Refactor hist entry validation
->   perf c2c: Refactor display filter
->   perf c2c: Fix argument type for percent()
->   perf c2c: Refactor node display
->   perf c2c: Add local variables for output metrics
+> Matthias Brugger <matthias.bgg@gmail.com> 於 2021年1月12日 週二 下午8:32寫道：
+> >
+> >
+> >
+> > On 12/11/2020 11:39, Gene Chen wrote:
+> > > From: Gene Chen <gene_chen@richtek.com>
+> > >
+> > > Combine mt6360 pmic/ldo resources into mt6360 regulator resources
+> > > to simplify the similar resources object.
+> > >
+> > > Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> > > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> > > ---
+> > >  drivers/mfd/mt6360-core.c | 11 +++--------
+> > >  1 file changed, 3 insertions(+), 8 deletions(-)
+> > >
+> > > diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
+> > > index 692e47b..5119e51 100644
+> > > --- a/drivers/mfd/mt6360-core.c
+> > > +++ b/drivers/mfd/mt6360-core.c
+> > > @@ -265,7 +265,7 @@ static const struct resource mt6360_led_resources[] = {
+> > >       DEFINE_RES_IRQ_NAMED(MT6360_FLED1_STRB_TO_EVT, "fled1_strb_to_evt"),
+> > >  };
+> > >
+> > > -static const struct resource mt6360_pmic_resources[] = {
+> > > +static const struct resource mt6360_regulator_resources[] = {
+> > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_PGB_EVT, "buck1_pgb_evt"),
+> > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OC_EVT, "buck1_oc_evt"),
+> > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OV_EVT, "buck1_ov_evt"),
+> > > @@ -278,9 +278,6 @@ static const struct resource mt6360_pmic_resources[] = {
+> > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO7_OC_EVT, "ldo7_oc_evt"),
+> > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO6_PGB_EVT, "ldo6_pgb_evt"),
+> > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO7_PGB_EVT, "ldo7_pgb_evt"),
+> > > -};
+> > > -
+> > > -static const struct resource mt6360_ldo_resources[] = {
+> > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO1_OC_EVT, "ldo1_oc_evt"),
+> > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO2_OC_EVT, "ldo2_oc_evt"),
+> > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO3_OC_EVT, "ldo3_oc_evt"),
+> > > @@ -298,10 +295,8 @@ static const struct mfd_cell mt6360_devs[] = {
+> > >                   NULL, 0, 0, "mediatek,mt6360-chg"),
+> > >       OF_MFD_CELL("mt6360-led", mt6360_led_resources,
+> > >                   NULL, 0, 0, "mediatek,mt6360-led"),
+> > > -     OF_MFD_CELL("mt6360-pmic", mt6360_pmic_resources,
+> > > -                 NULL, 0, 0, "mediatek,mt6360-pmic"),
+> > > -     OF_MFD_CELL("mt6360-ldo", mt6360_ldo_resources,
+> > > -                 NULL, 0, 0, "mediatek,mt6360-ldo"),
+> > > +     OF_MFD_CELL("mt6360-regulator", mt6360_regulator_resources,
+> > > +                 NULL, 0, 0, "mediatek,mt6360-regulator"),
+> >
+> > As discussed with the MFD maintainer [1], the regulator (and probably all cells)
+> > shouldn't have a DT binding.
+> >
+> > So please send a new version which fixes that.
+> >
+> > Regards,
+> > Matthias
+> >
+> > [1] https://lore.kernel.org/linux-mediatek/20210111164118.GE4728@sirena.org.uk/
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+I don't think Mark is correct here.
 
-Thanks,
-Namhyung
+We usually do implement compatible strings for sub-devices and they do
+tend to have their own device nodes.
+
+It's a very long time ago since I coded this up myself, but from
+memory, you can't have 2 devices share a compatible string.
+
+> Should I use parent's device to find sub-devices of_node if without
+> compatible name?
+> I trace the function mfd_add_device,
+> 
+> if (IS_ENABLED(CONFIG_OF) && parent->of_node && cell->of_compatible) {
+>     .....
+>     ret = mfd_match_of_node_to_dev(pdev, np, cell);
+>     .....
+> }
+> 
+> which is binding mfd sub-device with compatible. Does it be removed in
+> the feature?
+> 
+> > >       OF_MFD_CELL("mt6360-tcpc", NULL,
+> > >                   NULL, 0, 0, "mediatek,mt6360-tcpc"),
+> > >  };
+> > >
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
