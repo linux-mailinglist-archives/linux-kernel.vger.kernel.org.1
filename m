@@ -2,156 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6572F7485
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C0F2F7487
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730655AbhAOIpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 03:45:13 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:59470 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbhAOIpM (ORCPT
+        id S1731049AbhAOIqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 03:46:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20341 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730930AbhAOIqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 03:45:12 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10F8iMkr085444;
-        Fri, 15 Jan 2021 02:44:22 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1610700262;
-        bh=T5opbELEPVZD8CSZzRFeTmLVA03iXY5+DsRAa8s1kHQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=AVYlVE7GrP/tJDkO+Whhk4i7peL7BwcmeMokLuct5EMCSz2zVUYf51NODsKIIUrUX
-         oAIxlvaawOYbcGO7CdldiKkJfP03CDq7MIdpM9QiRK3hCFd/rghOt5gB9E45g5GWI9
-         r0RiMVxKwe7H/AHaD+Ip98LgTAtCiEpJjpaJlaMc=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10F8iM0m037004
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 15 Jan 2021 02:44:22 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
- Jan 2021 02:44:22 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 15 Jan 2021 02:44:22 -0600
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10F8iIeq086209;
-        Fri, 15 Jan 2021 02:44:19 -0600
-Subject: Re: [PATCH v12 2/4] phy: Add ethernet serdes configuration option
-To:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-References: <20210107091924.1569575-1-steen.hegelund@microchip.com>
- <20210107091924.1569575-3-steen.hegelund@microchip.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <41e40e7b-6a3a-cdb9-adfc-e42f6627ea7b@ti.com>
-Date:   Fri, 15 Jan 2021 14:14:17 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 15 Jan 2021 03:46:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610700298;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9VyTGSu/4EdqeONLHwub0wAsTysdWglfufBwrKW4n0M=;
+        b=M43QMpv1+99s/WOkPlTBkGJb4Z6xf9wdSvykrOmaOvF83RLBGcH3oTxpmkKn3I/BRSaWS3
+        T5ZEeqXSMQDhb9LUy5oWuzqSG5uZtYX4qPY0b6grKqdIN4bR4rORGKw5YHUorjzzzxY9wL
+        KfwOUtWkp1qL1r3PRB8ej87pCIfGz+8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-80-nIGqQn1gMb6VBMTslY6LVw-1; Fri, 15 Jan 2021 03:44:52 -0500
+X-MC-Unique: nIGqQn1gMb6VBMTslY6LVw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D15671936B6D;
+        Fri, 15 Jan 2021 08:44:50 +0000 (UTC)
+Received: from krava (unknown [10.40.194.69])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4D26610013C0;
+        Fri, 15 Jan 2021 08:44:48 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 09:44:47 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Joe Mario <jmario@redhat.com>, David Ahern <dsahern@gmail.com>,
+        Don Zickus <dzickus@redhat.com>, Joe Perches <joe@perches.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/6] perf c2c: Code refactoring
+Message-ID: <20210115084447.GC1470103@krava>
+References: <20210114154646.209024-1-leo.yan@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210107091924.1569575-3-steen.hegelund@microchip.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210114154646.209024-1-leo.yan@linaro.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 07/01/21 2:49 pm, Steen Hegelund wrote:
-> Provide a new ethernet phy configuration structure, that
-> allow PHYs used for ethernet to be configured with
-> speed, media type and clock information.
+On Thu, Jan 14, 2021 at 11:46:40PM +0800, Leo Yan wrote:
+> This patch series is for several minor code refactoring, which is
+> extracted from the patch series "perf c2c: Sort cacheline with all
+> loads" [1].
 > 
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> ---
->  include/linux/phy/phy-ethernet-serdes.h | 30 +++++++++++++++++++++++++
->  include/linux/phy/phy.h                 |  4 ++++
->  2 files changed, 34 insertions(+)
->  create mode 100644 include/linux/phy/phy-ethernet-serdes.h
+> There has a known issue for Arm SPE store operations and Arm SPE is
+> the only consumer for soring with all loads, this is the reason in this
+> series drops the changes for dimensions and sorting, and only extracts
+> the patches related with code refactoring.  So this series doesn't
+> introduce any functionality change.
 > 
-> diff --git a/include/linux/phy/phy-ethernet-serdes.h b/include/linux/phy/phy-ethernet-serdes.h
-> new file mode 100644
-> index 000000000000..d2462fadf179
-> --- /dev/null
-> +++ b/include/linux/phy/phy-ethernet-serdes.h
-> @@ -0,0 +1,30 @@
-> +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
-> +/*
-> + * Microchip Sparx5 Ethernet SerDes driver
-> + *
-> + * Copyright (c) 2020 Microschip Inc
-> + */
-> +#ifndef __PHY_ETHERNET_SERDES_H_
-> +#define __PHY_ETHERNET_SERDES_H_
-> +
-> +#include <linux/types.h>
-> +
-> +enum ethernet_media_type {
-> +	ETH_MEDIA_DEFAULT,
-> +	ETH_MEDIA_SR,
-> +	ETH_MEDIA_DAC,
-> +};
-> +
-> +/**
-> + * struct phy_configure_opts_eth_serdes - Ethernet SerDes This structure is used
-> + * to represent the configuration state of a Ethernet Serdes PHY.
-> + * @speed: Speed of the serdes interface in Mbps
-> + * @media_type: Specifies which media the serdes will be using
-> + */
-> +struct phy_configure_opts_eth_serdes {
-> +	u32                        speed;
-> +	enum ethernet_media_type   media_type;
-> +};
-
-Is media type going to be determined dynamically by the Ethernet
-controller. If it's not determined dynamically, it shouldn't be in PHY
-ops but rather as a DT parameter.
-
-phy_configure_opts is mostly used with things like DP where the
-controller probes the configurations supported by SERDES using the
-configure and validate ops. I don't think for Ethernet it is required.
-
-Thanks
-Kishon
-
-> +
-> +#endif
-> +
-> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-> index e435bdb0bab3..78ecb375cede 100644
-> --- a/include/linux/phy/phy.h
-> +++ b/include/linux/phy/phy.h
-> @@ -18,6 +18,7 @@
->  
->  #include <linux/phy/phy-dp.h>
->  #include <linux/phy/phy-mipi-dphy.h>
-> +#include <linux/phy/phy-ethernet-serdes.h>
->  
->  struct phy;
->  
-> @@ -49,11 +50,14 @@ enum phy_mode {
->   *
->   * @mipi_dphy:	Configuration set applicable for phys supporting
->   *		the MIPI_DPHY phy mode.
-> + * @eth_serdes: Configuration set applicable for phys supporting
-> + *		the ethernet serdes.
->   * @dp:		Configuration set applicable for phys supporting
->   *		the DisplayPort protocol.
->   */
->  union phy_configure_opts {
->  	struct phy_configure_opts_mipi_dphy	mipi_dphy;
-> +	struct phy_configure_opts_eth_serdes	eth_serdes;
->  	struct phy_configure_opts_dp		dp;
->  };
->  
+> The patches have been tested on x86_64 and compared the result before
+> and after applying the patches, and confirmed no difference for the
+> output result.
 > 
+> Changes from v3:
+> * Refined patch 03/06 to remove unnecessary parentheses and test and
+>   return early in the function filter_display() (Joe Perches);
+> * Added new patch 04/06 to make argument type as u32 for percent().
+
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+thanks,
+jirka
+
+> 
+> Changes from v2:
+> * Changed to use static functions to replace macros (Namhyung);
+> * Added Jiri's Ack tags in the unchanged patches;
+> * Minor improvement in the commit logs.
+> 
+> [1] https://lore.kernel.org/patchwork/cover/1353064/
+> 
+> 
+> Leo Yan (6):
+>   perf c2c: Rename for shared cache line stats
+>   perf c2c: Refactor hist entry validation
+>   perf c2c: Refactor display filter
+>   perf c2c: Fix argument type for percent()
+>   perf c2c: Refactor node display
+>   perf c2c: Add local variables for output metrics
+> 
+>  tools/perf/builtin-c2c.c | 168 +++++++++++++++++++++++----------------
+>  1 file changed, 99 insertions(+), 69 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
+
