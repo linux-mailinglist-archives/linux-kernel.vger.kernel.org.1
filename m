@@ -2,85 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C962F7E54
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DA02F7E50
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733156AbhAOOdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 09:33:41 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:36927 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726046AbhAOOdj (ORCPT
+        id S1733093AbhAOOdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 09:33:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728439AbhAOOdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 09:33:39 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10FESAKE007013;
-        Fri, 15 Jan 2021 15:32:43 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : subject
- : date : message-id : mime-version : content-type; s=selector1;
- bh=L3iN3yrmVDvMpCGi/fPZ69/2cDOE2wson7OCPRa1tMI=;
- b=H5Tdd/yRm3AeJIeQyynaeHBYWspkbUwkJrm5rMUEEv0sJ2zwuIeqMaa0d3ZCE/lngtlH
- HTMHTWcU8kxQC46rwfcQ/EwYFiWwdbKWvOabhp/dIhii6EIVYgKp4T/h1xVMVMWtF7vT
- i8NylSeFJ0TI2dQ/kIMWeul5jmKTpVeU1xYfkxkS6Me2OQhRSuodRk1xO7+tepOrHZjM
- PAbEFUghx5h7F/znypMCJTcKYMKZbvkHo6xL+aoL9YGpOxrePQOw69NzdYKOUVs5aZCu
- amYOhcbwoKvkKM/qe8k8ehuxvzbr9cYVsZ8f7TED7XVS0qqCVWjQAU1m/lUczQ3FwWTx kg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 35y5gxm2vq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Jan 2021 15:32:43 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A033B10002A;
-        Fri, 15 Jan 2021 15:32:41 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6E6CE24974F;
-        Fri, 15 Jan 2021 15:32:41 +0100 (CET)
-Received: from localhost (10.75.127.49) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 15 Jan 2021 15:32:41
- +0100
-From:   Yannick Fertre <yannick.fertre@foss.st.com>
-To:     Alexandre Torgue <alexandre.torgue@st.com>,
-        Philippe Cornu <philippe.cornu@foss.st.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ARM: multi_v7_defconfig: add STM32 CEC support
-Date:   Fri, 15 Jan 2021 15:32:36 +0100
-Message-ID: <20210115143236.27675-1-yannick.fertre@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6B4C061757;
+        Fri, 15 Jan 2021 06:32:59 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 8E8321F45FC7
+Received: by earth.universe (Postfix, from userid 1000)
+        id D04903C0C94; Fri, 15 Jan 2021 15:32:55 +0100 (CET)
+Date:   Fri, 15 Jan 2021 15:32:55 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Colin King <colin.king@canonical.com>, linux-pm@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] power: supply: cpcap-charger: Fix power_supply_put
+ on null battery pointer
+Message-ID: <20210115143255.ornoji7wr232topr@earth.universe>
+References: <20210115131524.71339-1-colin.king@canonical.com>
+ <YAGXgWeWvy/0FyqN@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-15_08:2021-01-15,2021-01-15 signatures=0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="u7krr22x5oqasrjc"
+Content-Disposition: inline
+In-Reply-To: <YAGXgWeWvy/0FyqN@atomide.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable CEC support for STMicroelectronics as loadable module.
 
-Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+--u7krr22x5oqasrjc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index c5f25710fedc..05cc0607a9ad 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -656,6 +656,7 @@ CONFIG_V4L_TEST_DRIVERS=y
- CONFIG_VIDEO_VIVID=m
- CONFIG_CEC_PLATFORM_DRIVERS=y
- CONFIG_CEC_SAMSUNG_S5P=m
-+CONFIG_CEC_STM32=m
- CONFIG_VIDEO_ADV7180=m
- CONFIG_VIDEO_ADV7604=m
- CONFIG_VIDEO_ADV7604_CEC=y
--- 
-2.17.1
+Hi,
 
+On Fri, Jan 15, 2021 at 03:24:17PM +0200, Tony Lindgren wrote:
+> * Colin King <colin.king@canonical.com> [210115 13:15]:
+> > From: Colin Ian King <colin.king@canonical.com>
+> >=20
+> > Currently if the pointer battery is null there is a null pointer
+> > dereference on the call to power_supply_put.  Fix this by only
+> > performing the put if battery is not null.
+> >=20
+> > Addresses-Coverity: ("Dereference after null check")
+> > Fixes: 4bff91bb3231 ("power: supply: cpcap-charger: Fix missing power_s=
+upply_put()")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>=20
+> Oopsie, thanks for fixing it:
+>=20
+> Acked-by: Tony Lindgren <tony@atomide.com>
+
+Thanks, queued.
+
+-- Sebastian
+
+> >  drivers/power/supply/cpcap-charger.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/power/supply/cpcap-charger.c b/drivers/power/suppl=
+y/cpcap-charger.c
+> > index 823d666f09e0..641dcad1133f 100644
+> > --- a/drivers/power/supply/cpcap-charger.c
+> > +++ b/drivers/power/supply/cpcap-charger.c
+> > @@ -300,8 +300,9 @@ cpcap_charger_get_bat_const_charge_voltage(struct c=
+pcap_charger_ddata *ddata)
+> >  				&prop);
+> >  		if (!error)
+> >  			voltage =3D prop.intval;
+> > +
+> > +		power_supply_put(battery);
+> >  	}
+> > -	power_supply_put(battery);
+> > =20
+> >  	return voltage;
+> >  }
+> > --=20
+> > 2.29.2
+> >=20
+
+--u7krr22x5oqasrjc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmABp48ACgkQ2O7X88g7
++po0jxAAh7jfrbid8B+lxearz9t9C+okKFY4PfYtDMOOzoomxqzZ0NSjbRTsScrU
+HBDqwOkt25UmllTEIBm6fn+LYn4ND8O2Ur2GyuLMjVB4a1j6qs76Ha3sA3o2E6Zk
+z7VNlkGyejQFgsBOUGekvdlr+LSxSelj8vtY8VbeQczHt5SFQ5eqx2YSDgzpX15W
+aL3h3Xlq2SodQtb6QJ833y1p1XsxjrJAxBGATI/Ry1LWRdNCkq4VtQNP49n2JGzL
+2fV2GJ03tKYDrRq2E9Pbm4b7p6nALi3QwpYNJoqdSU4cHcIX4oq4p6in1/JOU2hL
+TnUIPXXLO1uUQr5/HpbOyUbPfhFW3hzKecr+KmGKjjG52vga4Ws1OQUPRKnA3kwe
+GEEqDNCpDF7Eo4Z5UfQybVBIJyr72bffvjtd6gQgkPpYCdR9hmXumZFBkMYifJBC
+dGNaOQzQSztTLGTpiEhIDufpPvDNnQvpWQ6Qz4mdCldmyygC8CHogptacuZPKaV7
+qMwiN3vwtAw9vpMRIx7gYXZfS4+IeNrMh98xO2Ks8GyH1EX/uMFB+rPjiifMyy4N
+25LZdChqJe+cDDiZ7UW6euABvOd+AbP5DBKHSLoxXDQ2QIgFR58TtCR8YurVOUrM
+rzpmqDr9AhzCB7S/3v80ouzcayieGIxMEP81GWRdIpuFzGd1yOg=
+=nwqI
+-----END PGP SIGNATURE-----
+
+--u7krr22x5oqasrjc--
