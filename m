@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BD92F7E4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA38F2F7E4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733011AbhAOOd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 09:33:28 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:39270 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726402AbhAOOd1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:33:27 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10FEQieu012767;
-        Fri, 15 Jan 2021 15:32:30 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : subject
- : date : message-id : mime-version : content-type; s=selector1;
- bh=20mI/yLvK9/ogh5zbaHOf1X4owesvcwj4/m6TdHC+ns=;
- b=l/sKPrBte54ACnoQtjd74G+H6JjxXKxBg+rR+IHTECOo9EXoJaw9x/9HzMRotGoclcEM
- oP8ZGGQiMuwDhJRgZPrYvuQd3MBtnv17ngExwi+1eq1jrzfNpl/Z6lLo3N0sYRrLVGio
- mNau1tNOixbVQYaRsR2hzJJEsT8JTySVXDvYMir54DQYfITFaQfbQyUNt1w9PnTX0WCw
- Bbta9u7TTwKnyF3zvo0EhnOj9jqORyoK9OUN1gIg3VhVbBZrTfn5Ws4fD5ktArkaEOwq
- vqxVot3T67OxwotBRBzA5wryU78gyOWdaXm9kDPAiP/F0osKi9kL1OcDSUW+ps3dDQ0R fQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 35y5m04yyh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Jan 2021 15:32:30 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2E6D710002A;
-        Fri, 15 Jan 2021 15:32:29 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1E58724974F;
-        Fri, 15 Jan 2021 15:32:29 +0100 (CET)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 15 Jan 2021 15:31:46
- +0100
-From:   Yannick Fertre <yannick.fertre@foss.st.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Yannick Fertre <yannick.fertre@foss.st.com>,
-        Etienne Carriere <etienne.carriere@st.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        <linux-media@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Philippe Cornu <philippe.cornu@foss.st.com>
-Subject: [PATCH] media: cec: add stm32 driver
-Date:   Fri, 15 Jan 2021 15:31:44 +0100
-Message-ID: <20210115143144.27468-1-yannick.fertre@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+        id S1732963AbhAOOcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 09:32:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59768 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726019AbhAOOcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 09:32:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610721114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=H7N+SEhZ45fsxR0kXGVHPeygiOlR6ozuZnfFEqaXE/o=;
+        b=h6RJLtDDTU3b1J8TKvxwOxWBRLuNzZ8TD2zsnRN0LNJobty8gVjUU/WwFbBBLPd0mEb+HT
+        8jFmPkyJVALTJ5daj+VE7YydzSWB19jdooUdm63mEJ+VGDIVA6cNtMvzvvYKC+C8rmqnHe
+        MvtZu943WLwYwpXe5ObsV6eetz03WjI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 37D88ABDA;
+        Fri, 15 Jan 2021 14:31:54 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        boris.ostrovsky@oracle.com
+Subject: [GIT PULL] xen: branch for v5.11-rc4
+Date:   Fri, 15 Jan 2021 15:31:53 +0100
+Message-Id: <20210115143153.30040-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-15_08:2021-01-15,2021-01-15 signatures=0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Missing stm32 directory to Makefile.
+Linus,
 
-Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
----
- drivers/media/cec/platform/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+Please git pull the following tag:
 
-diff --git a/drivers/media/cec/platform/Makefile b/drivers/media/cec/platform/Makefile
-index 3a947159b25a..ea6f8ee8161c 100644
---- a/drivers/media/cec/platform/Makefile
-+++ b/drivers/media/cec/platform/Makefile
-@@ -10,5 +10,6 @@ obj-$(CONFIG_CEC_MESON_AO)	+= meson/
- obj-$(CONFIG_CEC_SAMSUNG_S5P)	+= s5p/
- obj-$(CONFIG_CEC_SECO)		+= seco/
- obj-$(CONFIG_CEC_STI)		+= sti/
-+obj-$(CONFIG_CEC_STM32)		+= stm32/
- obj-$(CONFIG_CEC_TEGRA)		+= tegra/
- 
--- 
-2.17.1
+ git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.11-rc4-tag
 
+xen: branch for v5.11-rc4
+
+It contains:
+
+- A series for fixing a regression when running as a fully virtualized
+  guest on an old Xen hypervisor not supporting PV interrupt callbacks
+  for HVM guests.
+
+- A patch for adding support to query Xen resource sizes (setting was
+  possible already) from user mode.
+
+
+Thanks.
+
+Juergen
+
+ Documentation/admin-guide/kernel-parameters.txt |  4 ++
+ arch/arm/xen/enlighten.c                        |  2 +-
+ arch/x86/xen/enlighten_hvm.c                    | 15 ++++-
+ arch/x86/xen/smp_hvm.c                          | 27 ++++++---
+ drivers/xen/events/events_base.c                | 10 ---
+ drivers/xen/platform-pci.c                      |  8 ++-
+ drivers/xen/privcmd.c                           | 25 ++++++--
+ drivers/xen/xenbus/xenbus.h                     |  1 +
+ drivers/xen/xenbus/xenbus_comms.c               |  8 ---
+ drivers/xen/xenbus/xenbus_probe.c               | 81 ++++++++++++++++++++-----
+ include/xen/xenbus.h                            |  2 +-
+ 11 files changed, 129 insertions(+), 54 deletions(-)
+
+David Woodhouse (5):
+      xen: Fix event channel callback via INTX/GSI
+      xen: Set platform PCI device INTX affinity to CPU0
+      x86/xen: Add xen_no_vector_callback option to test PCI INTX delivery
+      x86/xen: Don't register Xen IPIs when they aren't going to be used
+      x86/xen: Fix xen_hvm_smp_init() when vector callback not available
+
+Roger Pau Monne (1):
+      xen/privcmd: allow fetching resource sizes
