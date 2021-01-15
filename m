@@ -2,39 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51632F78F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 600422F78F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731871AbhAOMaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:30:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35702 "EHLO mail.kernel.org"
+        id S1731908AbhAOMaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:30:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731598AbhAOMaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:30:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8361B2371F;
-        Fri, 15 Jan 2021 12:29:19 +0000 (UTC)
+        id S1731809AbhAOMaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:30:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF9622389B;
+        Fri, 15 Jan 2021 12:29:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713760;
-        bh=YYv2yWbu4aahuXNSgH0rFbsaCiOTOXUFDUmfpXx2N0w=;
+        s=korg; t=1610713762;
+        bh=rTDdodoFS6VeSOmu9ygZvIE0Lxa6/vIcqvRYcAPLnlY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=duBz0XpftdoOX+guTeU93RIJhEJlkfZHcxdUE8LSmtbMJE/+PcBUmp38EMyHy4u82
-         5EVPB750w/falL4/CUds37IHnsEhh7d1HVHP1tUVeWBuLbxRl7EGZl+NoynMvifa6g
-         OJE0h8pDDCq9cnMDo7U68VuFCfPvARFDuGdZhXok=
+        b=KcybRCk1lM325IvpseNVnsDKTtb08g8PoqLsLqlxytzBu8qaXL+zulcVdPBAOWeqp
+         LVg71kEca2qp9uw8jvM+del6k/WTIHOxtm0rmxJdCydKgnILqLPvFmaSZf0tj4htVt
+         bNRtdPauq4tWJ0sNoIAnb6UybfhoYdeD9uDlWjzw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jian Cai <jiancai@google.com>,
-        =?UTF-8?q?F=C4=81ng-ru=C3=AC=20S=C3=B2ng?= <maskray@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Luis Lozano <llozano@google.com>,
-        Manoj Gupta <manojgupta@google.com>,
-        linux-arch@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH 4.4 10/18] vmlinux.lds.h: Add PGO and AutoFDO input sections
-Date:   Fri, 15 Jan 2021 13:27:38 +0100
-Message-Id: <20210115121955.616396308@linuxfoundation.org>
+        stable@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.4 11/18] ubifs: wbuf: Dont leak kernel memory to flash
+Date:   Fri, 15 Jan 2021 13:27:39 +0100
+Message-Id: <20210115121955.664241781@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210115121955.112329537@linuxfoundation.org>
 References: <20210115121955.112329537@linuxfoundation.org>
@@ -46,87 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Richard Weinberger <richard@nod.at>
 
-commit eff8728fe69880d3f7983bec3fb6cea4c306261f upstream.
+commit 20f1431160c6b590cdc269a846fc5a448abf5b98 upstream
 
-Basically, consider .text.{hot|unlikely|unknown}.* part of .text, too.
+Write buffers use a kmalloc()'ed buffer, they can leak
+up to seven bytes of kernel memory to flash if writes are not
+aligned.
+So use ubifs_pad() to fill these gaps with padding bytes.
+This was never a problem while scanning because the scanner logic
+manually aligns node lengths and skips over these gaps.
 
-When compiling with profiling information (collected via PGO
-instrumentations or AutoFDO sampling), Clang will separate code into
-.text.hot, .text.unlikely, or .text.unknown sections based on profiling
-information. After D79600 (clang-11), these sections will have a
-trailing `.` suffix, ie.  .text.hot., .text.unlikely., .text.unknown..
-
-When using -ffunction-sections together with profiling infomation,
-either explicitly (FGKASLR) or implicitly (LTO), code may be placed in
-sections following the convention:
-.text.hot.<foo>, .text.unlikely.<bar>, .text.unknown.<baz>
-where <foo>, <bar>, and <baz> are functions.  (This produces one section
-per function; we generally try to merge these all back via linker script
-so that we don't have 50k sections).
-
-For the above cases, we need to teach our linker scripts that such
-sections might exist and that we'd explicitly like them grouped
-together, otherwise we can wind up with code outside of the
-_stext/_etext boundaries that might not be mapped properly for some
-architectures, resulting in boot failures.
-
-If the linker script is not told about possible input sections, then
-where the section is placed as output is a heuristic-laiden mess that's
-non-portable between linkers (ie. BFD and LLD), and has resulted in many
-hard to debug bugs.  Kees Cook is working on cleaning this up by adding
---orphan-handling=warn linker flag used in ARCH=powerpc to additional
-architectures. In the case of linker scripts, borrowing from the Zen of
-Python: explicit is better than implicit.
-
-Also, ld.bfd's internal linker script considers .text.hot AND
-.text.hot.* to be part of .text, as well as .text.unlikely and
-.text.unlikely.*. I didn't see support for .text.unknown.*, and didn't
-see Clang producing such code in our kernel builds, but I see code in
-LLVM that can produce such section names if profiling information is
-missing. That may point to a larger issue with generating or collecting
-profiles, but I would much rather be safe and explicit than have to
-debug yet another issue related to orphan section placement.
-
-Reported-by: Jian Cai <jiancai@google.com>
-Suggested-by: Fāng-ruì Sòng <maskray@google.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Tested-by: Luis Lozano <llozano@google.com>
-Tested-by: Manoj Gupta <manojgupta@google.com>
-Acked-by: Kees Cook <keescook@chromium.org>
-Cc: linux-arch@vger.kernel.org
-Cc: stable@vger.kernel.org
-Link: https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff;h=add44f8d5c5c05e08b11e033127a744d61c26aee
-Link: https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff;h=1de778ed23ce7492c523d5850c6c6dbb34152655
-Link: https://reviews.llvm.org/D79600
-Link: https://bugs.chromium.org/p/chromium/issues/detail?id=1084760
-Link: https://lore.kernel.org/r/20200821194310.3089815-7-keescook@chromium.org
-
-Debugged-by: Luis Lozano <llozano@google.com>
-[nc: Fix conflicts around lack of TEXT_MAIN, NOINSTR_TEXT, and
-     .text..refcount]
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Cc: <stable@vger.kernel.org>
+Fixes: 1e51764a3c2ac05a2 ("UBIFS: add new flash file system")
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+[sudip: adjust context]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/asm-generic/vmlinux.lds.h |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/ubifs/io.c |   13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -422,7 +422,10 @@
-  * during second ld run in second ld pass when generating System.map */
- #define TEXT_TEXT							\
- 		ALIGN_FUNCTION();					\
--		*(.text.hot .text .text.fixup .text.unlikely)		\
-+		*(.text.hot .text.hot.*)				\
-+		*(.text .text.fixup)					\
-+		*(.text.unlikely .text.unlikely.*)			\
-+		*(.text.unknown .text.unknown.*)			\
- 		*(.ref.text)						\
- 	MEM_KEEP(init.text)						\
- 	MEM_KEEP(exit.text)						\
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -331,7 +331,7 @@ void ubifs_pad(const struct ubifs_info *
+ {
+ 	uint32_t crc;
+ 
+-	ubifs_assert(pad >= 0 && !(pad & 7));
++	ubifs_assert(pad >= 0);
+ 
+ 	if (pad >= UBIFS_PAD_NODE_SZ) {
+ 		struct ubifs_ch *ch = buf;
+@@ -721,6 +721,10 @@ int ubifs_wbuf_write_nolock(struct ubifs
+ 		 * write-buffer.
+ 		 */
+ 		memcpy(wbuf->buf + wbuf->used, buf, len);
++		if (aligned_len > len) {
++			ubifs_assert(aligned_len - len < 8);
++			ubifs_pad(c, wbuf->buf + wbuf->used + len, aligned_len - len);
++		}
+ 
+ 		if (aligned_len == wbuf->avail) {
+ 			dbg_io("flush jhead %s wbuf to LEB %d:%d",
+@@ -813,13 +817,18 @@ int ubifs_wbuf_write_nolock(struct ubifs
+ 	}
+ 
+ 	spin_lock(&wbuf->lock);
+-	if (aligned_len)
++	if (aligned_len) {
+ 		/*
+ 		 * And now we have what's left and what does not take whole
+ 		 * max. write unit, so write it to the write-buffer and we are
+ 		 * done.
+ 		 */
+ 		memcpy(wbuf->buf, buf + written, len);
++		if (aligned_len > len) {
++			ubifs_assert(aligned_len - len < 8);
++			ubifs_pad(c, wbuf->buf + len, aligned_len - len);
++		}
++	}
+ 
+ 	if (c->leb_size - wbuf->offs >= c->max_write_size)
+ 		wbuf->size = c->max_write_size;
 
 
