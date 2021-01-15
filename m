@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120AC2F7AD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:56:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E50592F798E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388456AbhAOMzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:55:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41338 "EHLO mail.kernel.org"
+        id S2388116AbhAOMiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:38:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387640AbhAOMfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:35:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00644223E0;
-        Fri, 15 Jan 2021 12:35:04 +0000 (UTC)
+        id S1731786AbhAOMiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:38:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8886623884;
+        Fri, 15 Jan 2021 12:37:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714105;
-        bh=Qe4Gq1BiktvxjL/ZaekxISO/O3xNb6cvTOm77gyAm74=;
+        s=korg; t=1610714242;
+        bh=fyikLbb/LEAHZwVIuursngZ7vEyKxGaizjk4UMcZPyI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v7RY86qbKJF9QPaKX8IZBHPaq/gR0b++N2FQxn+nseBdv9RCytlfMjkqGnhBkph46
-         7WZfipB/MUkhRbd+Bn4rwNktFpyvYVpf+JSNNhho/RvR9K0LQbmGUpXoz2iigjxXoM
-         c+f8SHzScgkLwZvqmJzgXSMoUV9rsUwC8wdWFp6o=
+        b=TwOpgfIBrtaZHOlAtV5/y6nNibg9zZ13Y2AQOItSSUlmJZnqMKuKlmOZrJFC0vj/W
+         n2rsuxiGHxFps6B/h4xJfqVYVoXTYgYFc1wUakUhMyVjiQZ/wEbS0Or+Dph0EWcPQI
+         HXbwXkqIoPHnm7Db87jwFEHiGCUa3Oopdhk5ShCU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aleksander Jan Bajkowski <olek2@wp.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 18/62] net: dsa: lantiq_gswip: Exclude RMII from modes that report 1 GbE
-Date:   Fri, 15 Jan 2021 13:27:40 +0100
-Message-Id: <20210115121959.282968059@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.10 048/103] scsi: lpfc: Fix variable vport set but not used in lpfc_sli4_abts_err_handler()
+Date:   Fri, 15 Jan 2021 13:27:41 +0100
+Message-Id: <20210115122008.383318449@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
+References: <20210115122006.047132306@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksander Jan Bajkowski <olek2@wp.pl>
+From: James Smart <james.smart@broadcom.com>
 
-[ Upstream commit 3545454c7801e391b0d966f82c98614d45394770 ]
+commit 6998ff4e21619d47ebf4f5eb4cafa65c65856221 upstream.
 
-Exclude RMII from modes that report 1 GbE support. Reduced MII supports
-up to 100 MbE.
+Remove vport variable that is assigned but not used in
+lpfc_sli4_abts_err_handler().
 
-Fixes: 14fceff4771e ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
-Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20210107195818.3878-1-olek2@wp.pl
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Link: https://lore.kernel.org/r/20201119203407.121913-1-james.smart@broadcom.com
+Fixes: e7dab164a9aa ("scsi: lpfc: Fix scheduling call while in softirq context in lpfc_unreg_rpi")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: James Smart <james.smart@broadcom.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/dsa/lantiq_gswip.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/net/dsa/lantiq_gswip.c
-+++ b/drivers/net/dsa/lantiq_gswip.c
-@@ -1419,11 +1419,12 @@ static void gswip_phylink_validate(struc
- 	phylink_set(mask, Pause);
- 	phylink_set(mask, Asym_Pause);
+---
+ drivers/scsi/lpfc/lpfc_sli.c |    2 --
+ 1 file changed, 2 deletions(-)
+
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -10459,7 +10459,6 @@ lpfc_sli4_abts_err_handler(struct lpfc_h
+ 			   struct lpfc_nodelist *ndlp,
+ 			   struct sli4_wcqe_xri_aborted *axri)
+ {
+-	struct lpfc_vport *vport;
+ 	uint32_t ext_status = 0;
  
--	/* With the exclusion of MII and Reverse MII, we support Gigabit,
--	 * including Half duplex
-+	/* With the exclusion of MII, Reverse MII and Reduced MII, we
-+	 * support Gigabit, including Half duplex
- 	 */
- 	if (state->interface != PHY_INTERFACE_MODE_MII &&
--	    state->interface != PHY_INTERFACE_MODE_REVMII) {
-+	    state->interface != PHY_INTERFACE_MODE_REVMII &&
-+	    state->interface != PHY_INTERFACE_MODE_RMII) {
- 		phylink_set(mask, 1000baseT_Full);
- 		phylink_set(mask, 1000baseT_Half);
+ 	if (!ndlp || !NLP_CHK_NODE_ACT(ndlp)) {
+@@ -10469,7 +10468,6 @@ lpfc_sli4_abts_err_handler(struct lpfc_h
+ 		return;
  	}
+ 
+-	vport = ndlp->vport;
+ 	lpfc_printf_log(phba, KERN_WARNING, LOG_SLI,
+ 			"3116 Port generated FCP XRI ABORT event on "
+ 			"vpi %d rpi %d xri x%x status 0x%x parameter x%x\n",
 
 
