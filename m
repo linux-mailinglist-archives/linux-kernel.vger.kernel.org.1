@@ -2,184 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1994E2F86F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:56:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CD42F86FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730065AbhAOU4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 15:56:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34892 "EHLO
+        id S1731265AbhAOU6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 15:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726286AbhAOU4T (ORCPT
+        with ESMTP id S1726410AbhAOU6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 15:56:19 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E14DC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:55:39 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id z20so7053043qtq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:55:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SlNlvcKcVOLSQ+6ubVv+zQmNdKKd35YVKlEcU4lZbR0=;
-        b=08diUBE1TRDu8jkonn5T7HGIPR4ggImv2F40SdRk2Vj2uUcUYhKHWt3hXjiCtm3yKM
-         ktR2KdE6uaQ1EEo4scHUcpcm3q/u8L3zD02rEv+YWZ+/RjgfnSCX4igqLCJNqbP8JkhD
-         wuai1GglPwLSYmuoHuc7NqKeNnvJ1fFTjed821X7BinBBXs30qDK83vV98QDudCTf35I
-         B+3ADJAZ0QlHeLaozMOEt0o3EiMZpPbbLotoxVgV/V9yQv0oW9G4KO4F/FfwPOppPk8E
-         Mq/xHc64yoKMTsKPSzaN74uXJU7RrcYKPM1MYdxLZUTxaZ/NPHUWglckARwnmnDXyPCl
-         4wIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SlNlvcKcVOLSQ+6ubVv+zQmNdKKd35YVKlEcU4lZbR0=;
-        b=L0vU8cZo/1a3bEyq+ZcaMxWnrAwJL//OmG5hPK/ylr8snnfrj0iCfnifmiYOA3yrEb
-         X/BzcxrxzElZqFBO5J6iyvL9+390zVgkrI/6LbfTwQC7NaVqAEjaByEevVfIRVNsKUF8
-         /n05wFq5IO3tcG8gVTBA4IcRiVYZVsrNvHtahDfu5EYzaB1yyikJAEcX84ioLapVqynW
-         vK+TZkJlPnW7D8lxB3uVg3R7Fbju8XAGPrWzFG8zoaioKJmhgXpemhT2EuzbLS4tqqbi
-         sgEkZwqSqg5++izM8yPJ8u05wj/ZyP2ueKaETgG1mEAr2nONRbB2zpCSIRhndaPMStYy
-         M6ag==
-X-Gm-Message-State: AOAM532YW3GwBFLozgag7sz09QZRepZSxjZHvg5bCKRjVJH7CXbH3278
-        zQXzEgixn7X4ZBMcS9U0Excx8pKJOwrZ3A==
-X-Google-Smtp-Source: ABdhPJwk80MpECSM3D92ftFoulMk04vWZTvZa9AnLWrgNQu5NlTm9g0uQg+Mlh5ocsoZenQ38JBsLw==
-X-Received: by 2002:ac8:45d7:: with SMTP id e23mr13629017qto.149.1610744138477;
-        Fri, 15 Jan 2021 12:55:38 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:dbed])
-        by smtp.gmail.com with ESMTPSA id 190sm5870540qkf.61.2021.01.15.12.55.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 12:55:37 -0800 (PST)
-Date:   Fri, 15 Jan 2021 15:55:36 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing
- memory.high
-Message-ID: <YAIBSJg3btQ+2CNZ@cmpxchg.org>
-References: <20210112163011.127833-1-hannes@cmpxchg.org>
- <20210113144654.GD22493@dhcp22.suse.cz>
- <YAHA4uBSLlnxxAbu@cmpxchg.org>
- <20210115170341.GA631549@carbon.dhcp.thefacebook.com>
+        Fri, 15 Jan 2021 15:58:39 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39358C061757;
+        Fri, 15 Jan 2021 12:57:59 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F32CB58B;
+        Fri, 15 Jan 2021 21:57:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610744277;
+        bh=VjE+h+vZVJvv9Us4y8H19WCA00VSbF5Mv39d7q0MA9U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BV3hEMjlk7/sEuKZRq6pt0i2HuaqsH60PVECUzrsL2O1TD7ANDlEjKgpfLxpsno0J
+         V+GDPEX+RT1JaaqsMkgbVNMHG6qTeG7N7mWXbGklvGmCYKw1yxb3d/evRKRLjIbvkr
+         5xrKIgguJLiN4CHn4qNUfx/2EFxHOtUVq3DDfbUg=
+Date:   Fri, 15 Jan 2021 22:57:40 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org,
+        Alexey Brodkin <abrodkin@synopsys.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Brian Starkey <brian.starkey@arm.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Edmund Dea <edmund.j.dea@intel.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomi Valkeinen <tomba@kernel.org>,
+        Dave Airlie <airlied@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        Melissa Wen <melissa.srw@gmail.com>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        spice-devel@lists.freedesktop.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 07/10] drm: Store new plane state in a variable for
+ atomic_update and disable
+Message-ID: <YAIBxF2kiy0twoV+@pendragon.ideasonboard.com>
+References: <20210115125703.1315064-1-maxime@cerno.tech>
+ <20210115125703.1315064-7-maxime@cerno.tech>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210115170341.GA631549@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20210115125703.1315064-7-maxime@cerno.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 09:03:41AM -0800, Roman Gushchin wrote:
-> On Fri, Jan 15, 2021 at 11:20:50AM -0500, Johannes Weiner wrote:
-> > On Wed, Jan 13, 2021 at 03:46:54PM +0100, Michal Hocko wrote:
-> > > On Tue 12-01-21 11:30:11, Johannes Weiner wrote:
-> > > > When a value is written to a cgroup's memory.high control file, the
-> > > > write() context first tries to reclaim the cgroup to size before
-> > > > putting the limit in place for the workload. Concurrent charges from
-> > > > the workload can keep such a write() looping in reclaim indefinitely.
-> > > > 
-> > > > In the past, a write to memory.high would first put the limit in place
-> > > > for the workload, then do targeted reclaim until the new limit has
-> > > > been met - similar to how we do it for memory.max. This wasn't prone
-> > > > to the described starvation issue. However, this sequence could cause
-> > > > excessive latencies in the workload, when allocating threads could be
-> > > > put into long penalty sleeps on the sudden memory.high overage created
-> > > > by the write(), before that had a chance to work it off.
-> > > > 
-> > > > Now that memory_high_write() performs reclaim before enforcing the new
-> > > > limit, reflect that the cgroup may well fail to converge due to
-> > > > concurrent workload activity. Bail out of the loop after a few tries.
-> > > 
-> > > I can see that you have provided some more details in follow up replies
-> > > but I do not see any explicit argument why an excessive time for writer
-> > > is an actual problem. Could you be more specific?
-> > 
-> > Our writer isn't necessarily time sensitive, but there is a difference
-> > between a) the write taking a few seconds to reclaim down the
-> > requested delta and b) the writer essentially turning into kswapd for
-> > the workload and busy-spinning inside the kernel indefinitely.
-> > 
-> > We've seen the writer stuck in this function for minutes, long after
-> > the requested delta has been reclaimed, consuming alarming amounts of
-> > CPU cycles - CPU time that should really be accounted to the workload,
-> > not the system software performing the write.
-> > 
-> > Obviously, we could work around it using timeouts and signals. In
-> > fact, we may have to until the new kernel is deployed everywhere. But
-> > this is the definition of an interface change breaking userspace, so
-> > I'm a bit surprised by your laid-back response.
-> > 
-> > > > Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
-> > > > Cc: <stable@vger.kernel.org> # 5.8+
-> > > 
-> > > Why is this worth backporting to stable? The behavior is different but I
-> > > do not think any of them is harmful.
-> > 
-> > The referenced patch changed user-visible behavior in a way that is
-> > causing real production problems for us. From stable-kernel-rules:
-> > 
-> >  - It must fix a real bug that bothers people (not a, "This could be a
-> >    problem..." type thing).
-> > 
-> > > > Reported-by: Tejun Heo <tj@kernel.org>
-> > > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > > 
-> > > I am not against the patch. The existing interface doesn't provide any
-> > > meaningful feedback to the userspace anyway. User would have to re check
-> > > to see the result of the operation. So how hard we try is really an
-> > > implementation detail.
-> > 
-> > Yeah, I wish it was a bit more consistent from an interface POV.
-> > 
-> > Btw, if you have noticed, Roman's patch to enforce memcg->high *after*
-> > trying to reclaim went into the tree at the same exact time as Chris's
-> > series "mm, memcg: reclaim harder before high throttling" (commit
-> > b3ff92916af3b458712110bb83976a23471c12fa). It's likely they overlap.
-> > 
-> > Chris's patch changes memory.high reclaim on the allocation side from
-> > 
-> > 	reclaim once, sleep if there is still overage
-> > 
-> > to
-> > 
-> > 	reclaim the overage as long as you make forward progress;
-> > 	sleep after 16 no-progress loops if there is still overage
-> > 
-> > Roman's patch describes a problem where allocating threads go to sleep
-> > when memory.high is lowered by a wider step. This is exceedingly
-> > unlikely after Chris's change.
-> > 
-> > Because after Chris's change, memory.high is reclaimed on the
-> > allocation side as aggressively as memory.max. The only difference is
-> > that upon failure, one sleeps and the other OOMs.
-> > 
-> > If Roman's issue were present after Chris's change, then we'd also see
-> > premature OOM kills when memory.max is lowered by a large step. And I
-> > have never seen that happening.
-> > 
-> > So I suggest instead of my fix here, we revert Roman's patch instead,
-> > as it should no longer be needed. Thoughts?
+Hi Maxime,
+
+Thank you for the patch.
+
+On Fri, Jan 15, 2021 at 01:56:59PM +0100, Maxime Ripard wrote:
+> In order to store the new plane state in a subsequent helper, let's move
+> the plane->state dereferences into a variable.
 > 
-> Chris's patch was merged way earlier than mine into the kernel tree which
-> was used when I observed the problem in the production. So likely it was there.
+> This was done using the following coccinelle script, plus some hand
+> changes for vmwgfx:
+> 
+> @ plane_atomic_func @
+> identifier helpers;
+> identifier func;
+> @@
+> 
+> (
+>  static const struct drm_plane_helper_funcs helpers = {
+>  	...,
+>  	.atomic_disable = func,
+> 	...,
+>  };
+> |
+>  static const struct drm_plane_helper_funcs helpers = {
+>  	...,
+>  	.atomic_update = func,
+> 	...,
+>  };
+> )
+> 
+> @ has_new_state_old_state @
+> identifier plane_atomic_func.func;
+> identifier plane;
+> identifier new_state;
+> symbol old_state;
+> @@
+> 
+>  func(struct drm_plane *plane, struct drm_plane_state *old_state)
+>  {
+>  	...
+>  	struct drm_plane_state *new_state = plane->state;
+> 	...
+>  }
+> 
+> @ depends on !has_new_state_old_state @
+> identifier plane_atomic_func.func;
+> identifier plane;
+> symbol old_state;
+> @@
+> 
+>  func(struct drm_plane *plane, struct drm_plane_state *old_state)
+>  {
+> +	struct drm_plane_state *new_state = plane->state;
+>  	<+...
+> -	plane->state
+> +	new_state
+> 	...+>
+>  }
+> 
+> @ has_new_state_state @
+> identifier plane_atomic_func.func;
+> identifier plane;
+> identifier new_state;
+> symbol state;
+> @@
+> 
+>  func(struct drm_plane *plane, struct drm_plane_state *state)
+>  {
+>  	...
+>  	struct drm_plane_state *new_state = plane->state;
+> 	...
+>  }
+> 
+> @ depends on !has_new_state_state @
+> identifier plane_atomic_func.func;
+> identifier plane;
+> symbol state;
+> @@
+> 
+>  func(struct drm_plane *plane, struct drm_plane_state *state)
+>  {
+> +	struct drm_plane_state *new_plane_state = plane->state;
+>  	<+...
+> -	plane->state
+> +	new_plane_state
+> 	...+>
+>  }
+> 
+> @ has_new_state_old_s @
+> identifier plane_atomic_func.func;
+> identifier plane;
+> identifier new_state;
+> symbol old_s;
+> @@
+> 
+>  func(struct drm_plane *plane, struct drm_plane_state *old_s)
+>  {
+>  	...
+>  	struct drm_plane_state *new_state = plane->state;
+> 	...
+>  }
+> 
+> @ depends on !has_new_state_old_s @
+> identifier plane_atomic_func.func;
+> identifier plane;
+> symbol old_s;
+> @@
+> 
+>  func(struct drm_plane *plane, struct drm_plane_state *old_s)
+>  {
+> +	struct drm_plane_state *new_s = plane->state;
+>  	<+...
+> -	plane->state
+> +	new_s
+> 	...+>
+>  }
 
-Chris's patch was in the tree earlier, but the first release
-containing it was tagged a day before you put in your change, so I
-doubt it was on the production system where you observed the issue.
+I may have taken this as an opportunity to align naming conventions for
+variables across drivers, but that may just be me.
 
-As per above, it'd be very surprising to see premature sleeps when
-lowering memory.high, when allocation-side reclaim keeps going until
-the cgroup meets the definition of OOM.
+> 
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> ---
 
-> I think it makes sense to try to reclaim memory first before putting
-> all processes in the cgroup into reclaim mode. Even without artificial delays
-> it creates some latency and btw doesn't make the reclaim process more efficient.
+[snip]
 
-It's not obvious that this is a practical problem. It certainly isn't
-for memory.max, and there should be a good reason why the two should
-be different aside from the documented OOM vs sleep behavior.
+>  drivers/gpu/drm/omapdrm/omap_plane.c          |  5 ++-
+>  drivers/gpu/drm/rcar-du/rcar_du_plane.c       |  5 ++-
+>  drivers/gpu/drm/rcar-du/rcar_du_vsp.c         |  3 +-
+>  drivers/gpu/drm/xlnx/zynqmp_disp.c            |  7 ++--
 
-Absent any concrete evidence to the contrary, I'd make the behavior
-the same again for those two.
+For these, with the small issue below addressed,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+[snip]
+
+> diff --git a/drivers/gpu/drm/omapdrm/omap_plane.c b/drivers/gpu/drm/omapdrm/omap_plane.c
+> index 1042e1147e74..de5ad69af4cb 100644
+> --- a/drivers/gpu/drm/omapdrm/omap_plane.c
+> +++ b/drivers/gpu/drm/omapdrm/omap_plane.c
+> @@ -88,11 +88,12 @@ static void omap_plane_atomic_update(struct drm_plane *plane,
+>  static void omap_plane_atomic_disable(struct drm_plane *plane,
+>  				      struct drm_plane_state *old_state)
+>  {
+> +	struct drm_plane_state *new_state = plane->state;
+>  	struct omap_drm_private *priv = plane->dev->dev_private;
+>  	struct omap_plane *omap_plane = to_omap_plane(plane);
+>  
+> -	plane->state->rotation = DRM_MODE_ROTATE_0;
+> -	plane->state->zpos = plane->type == DRM_PLANE_TYPE_PRIMARY
+> +	new_state->rotation = DRM_MODE_ROTATE_0;
+> +	new_state->zpos = plane->type == DRM_PLANE_TYPE_PRIMARY
+>  			   ? 0 : omap_plane->id;
+
+Can you fix the indentation ?
+
+>  	dispc_ovl_enable(priv->dispc, omap_plane->id, false);
+
+[snip]
+
+-- 
+Regards,
+
+Laurent Pinchart
