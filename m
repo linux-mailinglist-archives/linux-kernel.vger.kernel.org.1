@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241A92F83F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 803E42F83E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388675AbhAOSSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:18:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
+        id S2387567AbhAOSRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:17:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388650AbhAOSSI (ORCPT
+        with ESMTP id S2388568AbhAOSRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:18:08 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88613C0617BC
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:44 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id k10so8220798wmi.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:44 -0800 (PST)
+        Fri, 15 Jan 2021 13:17:43 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B55C0617BD
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:46 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id c5so10209167wrp.6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=j+QQ91dB4nAV9iX95BjLXpaQb9N2TCvRIGQTNY+K7sU=;
-        b=yL85iXlSpJyIEsW9uR5KjI1ME5UqZGtzQv4FY99XBi+FD088mPsLJUgEUFKevvrlE9
-         ksl9DXvhysqqBdDc7ZadLjyb25WhWQ3i98QOp0XqAdIZxIWspprCXgzshIS98HW4wMGh
-         I+dGjog07idrdB7GQ459SKQnXFCQ4I9gK+KFnSmHEK1XhiM5kcv9UoCyCxCQC61JS0ll
-         ++XOFxnTRs1eBVYdPEs8eE+RG4iiu7oN+whS/TdHU+B6/+ipOqkC164lqBL+udM5S+Pe
-         D+5z0HQ/r2jtn0PRy9nwsj2+X61EY1IqPKGMyzXLvzaeE1LhdUG1dXwChy5gE9CV1QlA
-         lmVQ==
+        bh=uVp68mdiDdBXS5aeK/400FDUtXHrGa18qKz0SHB/q8Y=;
+        b=FZ8N+MseSySo4v1ZYJtrG+RSruEOZbWyzJ1DhpH1v0o9O26kSKf9zYaVCXBCYmJ+EC
+         VoxYOA5ngWznxOD7xhM2a0Pkaizwwul9w7Rfjcea5PZaJm1aoa0R4crh+20jESbp1kdK
+         umz/oOgofPJ5OhfLo6ROYuKEi8ubJWt7mD7CclpQig1hod1srd6KCwkwIc7FESEoj9il
+         zDkA2g6rDRYYmoOHUF5t8Lvf5nek8ri3xn0b2lRsszC/PWDWrDpS9axdl2fnukKBGjXd
+         5BhHxJV9fsMGGK2Pu3BvSUx0NH1avx4aYo88U1gblimRQ9gQnqZLnM3IMbWIRhg4VHl7
+         KkkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=j+QQ91dB4nAV9iX95BjLXpaQb9N2TCvRIGQTNY+K7sU=;
-        b=Bhr3uoe97FSDqezm/kGoTgbyrsIQ3nEur5k8XD81mF1wh8hONQA52h0DrLem/FnzNk
-         qagI4r56+Tlq0aNa5v/e+bohy05OhHGw+jFt/5QgF3Opp00ciSQv5mL8nhbMM+7DuQTC
-         xEQqWPFyUva3YSCYvN7jHTM64LRdxJ46cbN3HcF/o1szUBNwF9ZFmDh9XvI39AJIRzrg
-         /Xmijc4ybbiB661WCzhI5BMg7K67fN0jl/gBBil7cdHKYXk4PBe9ojg5ZD9/OXITrWXa
-         AqAPe3+jbx9K04UPa2/qDNERWMTv90aTfcK1WmTv7BoNYOgRhx/AGVRg4G+DpAIqkQUd
-         qzdQ==
-X-Gm-Message-State: AOAM532g9B1Tccj6AgP3mjY7ljHONN7u5nYeLZMcnkSNUIQcp1/5bmPr
-        WSCukFwNbCQaeUjV5o44d8W12A==
-X-Google-Smtp-Source: ABdhPJwD+S7K+2xo6XGPzpZWOm/R/Wcr70/IAr4BByEl7I7vZ/Ps4PA7dJVttdYLp/fDi5wADTpg5g==
-X-Received: by 2002:a1c:4b14:: with SMTP id y20mr2838766wma.6.1610734603340;
-        Fri, 15 Jan 2021 10:16:43 -0800 (PST)
+        bh=uVp68mdiDdBXS5aeK/400FDUtXHrGa18qKz0SHB/q8Y=;
+        b=a9z3GMmWVJx5KUYHGL51A0yMJ1F+hV7dEroXfItCHrkZn45QcpZhQNyvbJMrk8eP/g
+         S3VIlElVRUy4rTI9F3By/BEQEqcjWeiJbtqS0apjuOiphBywMJcuxTh5LCfIyMZ2Byxr
+         7LgP0/CcMG8Y+H+8TvxJSjWIO+R7btmfFGWvJcvycy+Ke+8ylpleliJG9uEC1E9jeDf4
+         FxAxmNnIQ2yK5cU70RQbSoUTJkyQ/aDFYJyp6GsmPoi3nzwFP2B1fy3kVw+o2BIbmBYv
+         78clJoz18IZhLncIAmQEtQ2V2NdQeNvCB/wAaSr+fW0SrcRR+N4XCf/FduWLvhypKovl
+         PatA==
+X-Gm-Message-State: AOAM530ED8Tzg4r8mGd5HuFpLwm2/JuhUWSgSiKnNN1/E5kVsfhrvlff
+        Bw/NAVqHCwZ86axPGkgSRMjhhw==
+X-Google-Smtp-Source: ABdhPJwrZlGGrGjAf3GMC7apd31gRe5Dhy4mYcG3vGI74Rt7B8oSthJtP0F4vFDP74WcZg3XO1aKvg==
+X-Received: by 2002:a5d:4fcf:: with SMTP id h15mr14103236wrw.323.1610734604791;
+        Fri, 15 Jan 2021 10:16:44 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id b133sm14405979wme.33.2021.01.15.10.16.42
+        by smtp.gmail.com with ESMTPSA id b133sm14405979wme.33.2021.01.15.10.16.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:16:42 -0800 (PST)
+        Fri, 15 Jan 2021 10:16:43 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
-Subject: [PATCH 27/29] drm/nouveau/nouveau_bios: Remove unused variable 'pdev' from 'nouveau_bios_init()'
-Date:   Fri, 15 Jan 2021 18:15:59 +0000
-Message-Id: <20210115181601.3432599-28-lee.jones@linaro.org>
+Subject: [PATCH 28/29] drm/nouveau/nouveau_ioc32: Demote kernel-doc abuse to standard comment block
+Date:   Fri, 15 Jan 2021 18:16:00 +0000
+Message-Id: <20210115181601.3432599-29-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210115181601.3432599-1-lee.jones@linaro.org>
 References: <20210115181601.3432599-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -69,8 +68,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/nouveau/nouveau_bios.c: In function ‘nouveau_bios_init’:
- drivers/gpu/drm/nouveau/nouveau_bios.c:2086:18: warning: variable ‘pdev’ set but not used [-Wunused-but-set-variable]
+ drivers/gpu/drm/nouveau/nouveau_ioc32.c:52: warning: Function parameter or member 'filp' not described in 'nouveau_compat_ioctl'
+ drivers/gpu/drm/nouveau/nouveau_ioc32.c:52: warning: Function parameter or member 'cmd' not described in 'nouveau_compat_ioctl'
+ drivers/gpu/drm/nouveau/nouveau_ioc32.c:52: warning: Function parameter or member 'arg' not described in 'nouveau_compat_ioctl'
 
 Cc: Ben Skeggs <bskeggs@redhat.com>
 Cc: David Airlie <airlied@linux.ie>
@@ -79,27 +79,22 @@ Cc: dri-devel@lists.freedesktop.org
 Cc: nouveau@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/nouveau/nouveau_bios.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_ioc32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_bios.c b/drivers/gpu/drm/nouveau/nouveau_bios.c
-index 7cc683b8dc7a6..e8c445eb11004 100644
---- a/drivers/gpu/drm/nouveau/nouveau_bios.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_bios.c
-@@ -2083,13 +2083,11 @@ nouveau_bios_init(struct drm_device *dev)
- {
- 	struct nouveau_drm *drm = nouveau_drm(dev);
- 	struct nvbios *bios = &drm->vbios;
--	struct pci_dev *pdev;
- 	int ret;
+diff --git a/drivers/gpu/drm/nouveau/nouveau_ioc32.c b/drivers/gpu/drm/nouveau/nouveau_ioc32.c
+index 8ddf9b2325a42..2af3615c5205c 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_ioc32.c
++++ b/drivers/gpu/drm/nouveau/nouveau_ioc32.c
+@@ -38,7 +38,7 @@
  
- 	/* only relevant for PCI devices */
- 	if (!dev_is_pci(dev->dev))
- 		return 0;
--	pdev = to_pci_dev(dev->dev);
+ #include "nouveau_ioctl.h"
  
- 	if (!NVInitVBIOS(dev))
- 		return -ENODEV;
+-/**
++/*
+  * Called whenever a 32-bit process running under a 64-bit kernel
+  * performs an ioctl on /dev/dri/card<n>.
+  *
 -- 
 2.25.1
 
