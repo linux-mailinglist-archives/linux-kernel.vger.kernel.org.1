@@ -2,95 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503BF2F81AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:10:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 550962F81DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732286AbhAORKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:10:05 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:61744 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732153AbhAORKD (ORCPT
+        id S2387654AbhAORNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:13:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728329AbhAORKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:10:03 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610730582; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=aiKLgWl9D/qmUkm2ChFG0sCHujSYfskh5yLKLQlSwFY=; b=j9JPfPcMTUHe5kP5D8xMWKgp5k84N5757ZmP8zfuS9yqr3r2D2B5+t3m/8123HnuaeR+BRjm
- dzZQYljKtDqo73CnDgKLHxpBb7fsoMK4GL8sr8+o6U+5icisBOle/xSOz3QuHOhiL+XUtDBj
- RgICt+gzCDfm0JY/l19NwB+xowk=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 6001cc37859d74370ddbd08f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 Jan 2021 17:09:11
- GMT
-Sender: jackp=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4965FC43468; Fri, 15 Jan 2021 17:09:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: jackp)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 590D7C43464;
-        Fri, 15 Jan 2021 17:09:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 590D7C43464
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
-Date:   Fri, 15 Jan 2021 09:09:06 -0800
-From:   Jack Pham <jackp@codeaurora.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/4] phy: qcom-qmp: Add SM8350 USB QMP PHYs
-Message-ID: <20210115170906.GB5063@jackp-linux.qualcomm.com>
-References: <20210115104047.3460-1-jackp@codeaurora.org>
- <20210115104047.3460-2-jackp@codeaurora.org>
- <2c5481fe-f5be-5d6a-f62f-c93d04b9210e@somainline.org>
- <20210115124736.GF2771@vkoul-mobl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210115124736.GF2771@vkoul-mobl>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Fri, 15 Jan 2021 12:10:43 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F0AC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:10:02 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id h1so8239416qvr.7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:10:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=1EfdZrGF6ccrmWfpU+pLhGkociDM7fhd/S74GNWvRSA=;
+        b=cscuEghJ1bZoRcIsVm8MzOXvnzruFGXU9UG2j47H86Z5IG6MwXprMj/21Fma0++XCF
+         16Q4m9NzTe8g7RY+1EAWCpEETzyGfjBySrUzbvgyitscJVbqskIZUgc2LIGlO60Ih4x7
+         b+L5/VWG3dtZOFcabDtwY093f6sW9CWa+b3czQmGC3aBmAYsI6ItjCuuAJXe7khUXYpU
+         n8TdY63zJxSdOAQ+tyzjNi//s8THMvgyzXw/YqeBscIYjkhCzSJWaYbSWANjzAvWwdFj
+         3RqpvIWXuIrhj3mIXzjC5jyJLFIcmiH93LuYFep1zRcf4siFYFCGWpCmx2u/OiztvG/R
+         iIvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=1EfdZrGF6ccrmWfpU+pLhGkociDM7fhd/S74GNWvRSA=;
+        b=OrzSgJvSuCsvuK6MQdA2lx56vxVfA5DUXWLAl5nsNLNC+lzNhKeDpd11Qr87/iE7i6
+         wDbxn3R0CFVJ9dzl75iZCMhr3b47TyBWxTQwkIAfxj58x/rv3N9Y8Zg3FOGcimpURxRW
+         Xa5ipmYz/0x5DcnKRii5llIDEkn1xVlZ6mIkBvls1ry2YBu8ysfxWwp+2Tj6sfSQnUze
+         psHUH2IU2rQM07RfNGrpoIrEzma+5kcREHiXl6vCxmDK5/dYTc27u3MMYLTqWHgoGzAN
+         oY5CBEOzzdzRUATAxvpPZA4xSPVYxqObhGMaiC9wWshYcRCTGsg1+vEbT2V73Pe6+JVz
+         tZug==
+X-Gm-Message-State: AOAM532zO+tqFqPh76x6B2KUVAhYfk2VaIB9e6C3sTF2dn7YuFTKXM3S
+        23COL+yW0baBY/cUhH6YgXKWQZ0tgQ==
+X-Google-Smtp-Source: ABdhPJyC3WXmr2b301r+U2q8h7PDpXSg+ZRnJlVZRNNE5q5QthO9KJfqrz0nQJ9cknKmSLbe87VEySfzGQ==
+Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+ (user=elver job=sendgmr) by 2002:a0c:ec85:: with SMTP id u5mr13036504qvo.32.1610730602049;
+ Fri, 15 Jan 2021 09:10:02 -0800 (PST)
+Date:   Fri, 15 Jan 2021 18:09:53 +0100
+Message-Id: <20210115170953.3035153-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH] kcsan: Add missing license and copyright headers
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, paulmck@kernel.org
+Cc:     dvyukov@google.com, glider@google.com, andreyknvl@google.com,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+Adds missing license and/or copyright headers for KCSAN source files.
 
-On Fri, Jan 15, 2021 at 06:17:36PM +0530, Vinod Koul wrote:
-> On 15-01-21, 12:54, Konrad Dybcio wrote:
-> > I might be wrong but it looks as if you forgot to add a compatible
-> > for the "sm8350_usb3_uniphy_cfg" configuration.
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ Documentation/dev-tools/kcsan.rst | 3 +++
+ include/linux/kcsan-checks.h      | 6 ++++++
+ include/linux/kcsan.h             | 7 +++++++
+ kernel/kcsan/atomic.h             | 5 +++++
+ kernel/kcsan/core.c               | 5 +++++
+ kernel/kcsan/debugfs.c            | 5 +++++
+ kernel/kcsan/encoding.h           | 5 +++++
+ kernel/kcsan/kcsan.h              | 3 ++-
+ kernel/kcsan/report.c             | 5 +++++
+ kernel/kcsan/selftest.c           | 5 +++++
+ 10 files changed, 48 insertions(+), 1 deletion(-)
 
-I believe Konrad was referring to the driver in which I had neglected to
-add the compatible to the qcom_qmp_phy_of_match_table. My mistake.
-
-> It seems to be documented in patch 2, ideally we should have the
-> bindings patches first and this as patch 3...
-
-Ok. I think driver change would be patch 2 rather, with the bindings in
-patch 1? Patch 3 and 4 are dt-bindings updates to the SNPS Femto PHY and
-DWC3 QCOM docs respectively.
-
-Will send v2, thanks.
-
-Jack
+diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
+index be7a0b0e1f28..d85ce238ace7 100644
+--- a/Documentation/dev-tools/kcsan.rst
++++ b/Documentation/dev-tools/kcsan.rst
+@@ -1,3 +1,6 @@
++.. SPDX-License-Identifier: GPL-2.0
++.. Copyright (C) 2019, Google LLC.
++
+ The Kernel Concurrency Sanitizer (KCSAN)
+ ========================================
+ 
+diff --git a/include/linux/kcsan-checks.h b/include/linux/kcsan-checks.h
+index cf14840609ce..9fd0ad80fef6 100644
+--- a/include/linux/kcsan-checks.h
++++ b/include/linux/kcsan-checks.h
+@@ -1,4 +1,10 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * KCSAN access checks and modifiers. These can be used to explicitly check
++ * uninstrumented accesses, or change KCSAN checking behaviour of accesses.
++ *
++ * Copyright (C) 2019, Google LLC.
++ */
+ 
+ #ifndef _LINUX_KCSAN_CHECKS_H
+ #define _LINUX_KCSAN_CHECKS_H
+diff --git a/include/linux/kcsan.h b/include/linux/kcsan.h
+index 53340d8789f9..fc266ecb2a4d 100644
+--- a/include/linux/kcsan.h
++++ b/include/linux/kcsan.h
+@@ -1,4 +1,11 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * The Kernel Concurrency Sanitizer (KCSAN) infrastructure. Public interface and
++ * data structures to set up runtime. See kcsan-checks.h for explicit checks and
++ * modifiers. For more info please see Documentation/dev-tools/kcsan.rst.
++ *
++ * Copyright (C) 2019, Google LLC.
++ */
+ 
+ #ifndef _LINUX_KCSAN_H
+ #define _LINUX_KCSAN_H
+diff --git a/kernel/kcsan/atomic.h b/kernel/kcsan/atomic.h
+index 75fe701f4127..530ae1bda8e7 100644
+--- a/kernel/kcsan/atomic.h
++++ b/kernel/kcsan/atomic.h
+@@ -1,4 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Rules for implicitly atomic memory accesses.
++ *
++ * Copyright (C) 2019, Google LLC.
++ */
+ 
+ #ifndef _KERNEL_KCSAN_ATOMIC_H
+ #define _KERNEL_KCSAN_ATOMIC_H
+diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+index 3bf98db9c702..8c3867640c21 100644
+--- a/kernel/kcsan/core.c
++++ b/kernel/kcsan/core.c
+@@ -1,4 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0
++/*
++ * KCSAN core runtime.
++ *
++ * Copyright (C) 2019, Google LLC.
++ */
+ 
+ #define pr_fmt(fmt) "kcsan: " fmt
+ 
+diff --git a/kernel/kcsan/debugfs.c b/kernel/kcsan/debugfs.c
+index 3c8093a371b1..c837ce6c52e6 100644
+--- a/kernel/kcsan/debugfs.c
++++ b/kernel/kcsan/debugfs.c
+@@ -1,4 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0
++/*
++ * KCSAN debugfs interface.
++ *
++ * Copyright (C) 2019, Google LLC.
++ */
+ 
+ #define pr_fmt(fmt) "kcsan: " fmt
+ 
+diff --git a/kernel/kcsan/encoding.h b/kernel/kcsan/encoding.h
+index 7ee405524904..170a2bb22f53 100644
+--- a/kernel/kcsan/encoding.h
++++ b/kernel/kcsan/encoding.h
+@@ -1,4 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * KCSAN watchpoint encoding.
++ *
++ * Copyright (C) 2019, Google LLC.
++ */
+ 
+ #ifndef _KERNEL_KCSAN_ENCODING_H
+ #define _KERNEL_KCSAN_ENCODING_H
+diff --git a/kernel/kcsan/kcsan.h b/kernel/kcsan/kcsan.h
+index 8d4bf3431b3c..594a5dd4842a 100644
+--- a/kernel/kcsan/kcsan.h
++++ b/kernel/kcsan/kcsan.h
+@@ -1,8 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-
+ /*
+  * The Kernel Concurrency Sanitizer (KCSAN) infrastructure. For more info please
+  * see Documentation/dev-tools/kcsan.rst.
++ *
++ * Copyright (C) 2019, Google LLC.
+  */
+ 
+ #ifndef _KERNEL_KCSAN_KCSAN_H
+diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
+index d3bf87e6007c..13dce3c664d6 100644
+--- a/kernel/kcsan/report.c
++++ b/kernel/kcsan/report.c
+@@ -1,4 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0
++/*
++ * KCSAN reporting.
++ *
++ * Copyright (C) 2019, Google LLC.
++ */
+ 
+ #include <linux/debug_locks.h>
+ #include <linux/delay.h>
+diff --git a/kernel/kcsan/selftest.c b/kernel/kcsan/selftest.c
+index 9014a3a82cf9..7f29cb0f5e63 100644
+--- a/kernel/kcsan/selftest.c
++++ b/kernel/kcsan/selftest.c
+@@ -1,4 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0
++/*
++ * KCSAN short boot-time selftests.
++ *
++ * Copyright (C) 2019, Google LLC.
++ */
+ 
+ #define pr_fmt(fmt) "kcsan: " fmt
+ 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.30.0.284.gd98b1dd5eaa7-goog
+
