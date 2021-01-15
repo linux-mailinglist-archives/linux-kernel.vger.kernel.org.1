@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0D52F76D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:42:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7C72F76E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731486AbhAOKmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 05:42:16 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:14328 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731299AbhAOKmD (ORCPT
+        id S1731592AbhAOKnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 05:43:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726808AbhAOKm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 05:42:03 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610707300; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=fx3iEICIQ3xcsBUZZuCUmPDnj2VVlP6W6Q3W+bu+4DA=; b=l4RqDm/Z3uJ6vviIPSu1dDGdfBnOGXNNXtTtj4afWy+9kPNiFr+seLFTFkNScnwIy0+XApJT
- vzSfzd+0LVKOKW3k6BC+yoKfpW2mueUcXsHn4imUmZsKkEzrQV7DYUVJ/m+Z2Ci5vE89S5Oh
- Fd4D1NXY0X6zkPnYGEjD3LML6UI=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 600171498a0374a5016c7989 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 Jan 2021 10:41:13
- GMT
-Sender: jackp=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 517B8C43461; Fri, 15 Jan 2021 10:41:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jackp)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6A8DBC433C6;
-        Fri, 15 Jan 2021 10:41:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6A8DBC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
-From:   Jack Pham <jackp@codeaurora.org>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Wesley Cheng <wcheng@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Jack Pham <jackp@codeaurora.org>
-Subject: [PATCH 4/4] dt-bindings: usb: qcom,dwc3: Add bindings for SM8150, SM8250, SM8350
-Date:   Fri, 15 Jan 2021 02:40:47 -0800
-Message-Id: <20210115104047.3460-5-jackp@codeaurora.org>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20210115104047.3460-1-jackp@codeaurora.org>
-References: <20210115104047.3460-1-jackp@codeaurora.org>
+        Fri, 15 Jan 2021 05:42:56 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF85C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 02:42:17 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id n4so17145853iow.12
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 02:42:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3WziMzMlpDQny9OmQLegGMEVnRn11mbJDrmEoffrpPg=;
+        b=RZQnBhM+70MBAOt8V+WF1xxEARu4RAPtj/N2SIiW6zG5KtT4SoG4CMIUuKtJRpAMEM
+         og1NQ17LtFJkiN0077KvHEfRs7J2VS5K/rGqzzWEsR8oBG/dpf0aU+BWu7SLchsgixkB
+         qm7O+2r+rl7wAc/iXXbzW7TSuhMaI9pQUvxA6jX3nmzVx+xVE+qfSph1EiWbtI6HDbC9
+         iEp6oUieHq1geMVKFB7DcDYO0yuvuW5jhN60eSWSXnjyDK3QXIEwG9ueD50Fn5A9Mbht
+         TfevGUvt79LH44d9PUYvvaesbGNRWOfZYY+ZnueVV1RrzW4/IAhlRQ+2vvlwoJ/C0IUn
+         IA8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3WziMzMlpDQny9OmQLegGMEVnRn11mbJDrmEoffrpPg=;
+        b=TkT3Uz+ns6Cj9ygTdKbJmuQD+iGOYINZ+ydjwM4bN1+aQF7so1Ol+VRTZpPbV8BiPz
+         7GQUz+H6jQfXxmOC/TOjjfYaOeZLbI2dCZkA6yDPLlBtwIHrs0kKs80RKzMKJw8jwYNm
+         AYyZdRUlmizuJEajt1z6uaxHJt08UVjiIuu8rUEyDOx8uh+Oc05QAg/LtvcjRl1rKcJM
+         HAXTiCRy3BkgKdHKdvmjxWsna8v8zWx+X2S7nwhktyk7NI51lY4iMfKmwqqyDeT6iZ0W
+         EK+h/bZ1qHp/DUYZdllbve4v1r87XnTJltM2+sRdxBxyB7UCrSakrZRrSEiKWkh2gAR0
+         3S0g==
+X-Gm-Message-State: AOAM531ifu47SzAO9kDMjk3YEvu9fxY3G5DG5C9YRhsbR76n/jY3trhd
+        9aqBvvnlzlB0y/GOO8Es/kDGilSXA61QaA==
+X-Google-Smtp-Source: ABdhPJw0k5jswm7iZ8swCZ95R7G2bJnZ3cdZhXeek6DNwjYIU6WOkjuSsHjmuk28pCW815fvrF46Ug==
+X-Received: by 2002:a05:6602:2c49:: with SMTP id x9mr292563iov.173.1610707336091;
+        Fri, 15 Jan 2021 02:42:16 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id s1sm3870489iot.0.2021.01.15.02.42.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Jan 2021 02:42:15 -0800 (PST)
+Subject: Re: [PATCH net-next 0/6] net: ipa: GSI interrupt updates
+To:     Jakub Kicinski <kuba@kernel.org>, Saeed Mahameed <saeed@kernel.org>
+Cc:     davem@davemloft.net, evgreen@chromium.org,
+        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210113171532.19248-1-elder@linaro.org>
+ <183ca04bc2b03a5f9c64fa29a3148983e4594963.camel@kernel.org>
+ <20210114180837.793879ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <7cce0055-3fd3-693b-b663-c8cf5c8b4982@linaro.org>
+Date:   Fri, 15 Jan 2021 04:42:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210114180837.793879ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible strings for the USB DWC3 controller on QCOM SM8150,
-SM8250 and SM8350 SoCs.
+On 1/14/21 8:08 PM, Jakub Kicinski wrote:
+> Dropped the fixes tags (since its not a series of fixes) and applied.
 
-Note the SM8150 & SM8250 compatibles are already being used in the
-dts and driver implementation but was missing from the documentation.
+Thanks for applying these.
 
-Signed-off-by: Jack Pham <jackp@codeaurora.org>
----
- Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+Do you only want "Fixes" tags on patches posted for the net
+branch (and not net-next)?
 
-diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-index 2cf525d21e05..da47f43d6b04 100644
---- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-@@ -17,6 +17,9 @@ properties:
-           - qcom,msm8998-dwc3
-           - qcom,sc7180-dwc3
-           - qcom,sdm845-dwc3
-+          - qcom,sm8150-dwc3
-+          - qcom,sm8250-dwc3
-+          - qcom,sm8350-dwc3
-       - const: qcom,dwc3
- 
-   reg:
--- 
-2.24.0
+I think I might have debated sending these as bug fixes but
+decided they weren't serious enough to warrant that.  Anyway
+if I know it's important to *not* use that tag I can avoid
+including it.
 
+Thanks.
+
+					-Alex
