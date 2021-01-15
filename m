@@ -2,111 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057ED2F723C
+	by mail.lfdr.de (Postfix) with ESMTP id E7DA32F723E
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 06:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731850AbhAOFfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 00:35:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34076 "EHLO
+        id S1731900AbhAOFf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 00:35:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731816AbhAOFfw (ORCPT
+        with ESMTP id S1731853AbhAOFf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 00:35:52 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F735C061575;
-        Thu, 14 Jan 2021 21:35:11 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DH8yh12K5z9sVw;
-        Fri, 15 Jan 2021 16:35:08 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1610688908;
-        bh=emPXlB/8XFwtYHEnzgQ3UY9TP5R8bJvzm3zmq4Ffy3I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=sM3n04L2wT+fjXCmz7ZB4qnGvtfW6zWjzrR186OUjATl8zYxWuNTyd8yaVbFCQMQg
-         xaSZDr3ig44aihz9IZMifO+shqpGCs6iPtBSEhJjPP5WWGwNQLyTrs5McBia0CxUTJ
-         X0PRCdv8mAXjQYETrPtSSecesTaGOWTzAamnIrKbJZgk/OJoRdoUg8LNlAcKwMLfAl
-         9XHlXEPwattzfhy+uQ1uxIJPvWivbDUCN1OcIZv1IgFPEAT394zKDgY4AbAlweKR08
-         TYCcTgz279s3O4Jvdd6czAfzkAXQ/fHJUjvKN6I4LMos1Wb2IlvYcwtyMDKbx0CvQ8
-         YhPBh57wGof7g==
-Date:   Fri, 15 Jan 2021 16:35:05 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Huang Rui <ray.huang@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the amdgpu tree
-Message-ID: <20210115163505.4132a5b3@canb.auug.org.au>
+        Fri, 15 Jan 2021 00:35:56 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5A4C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 21:35:15 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id i6so7539350otr.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 21:35:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ex4djiKQkwoRFj7tuh1SXMLnnmR875ehYAWqWZ5AG64=;
+        b=pdIWbmM15yChIPntLQv5+/QprnenTPRTblXc8b6ddirrDosII9dBhujL5WB51xLEUV
+         bie0mZtZ/QY2HgeOb56sjn2jNAhO/h/6lxhxon8hk6vgMSMXG4s9FWnoddP13ycJ3Dyf
+         LrOHQAp1KNA4ANcd2UWVrcchPgs3fsM8QEsNIDWkYAF27Vus9N1QYNgB9S8Et+Z8LORq
+         osa2if+iZh02QM3oYubjV8R3hcEkZ3DykKkskg8dMOZ7CJ4XS32O3zfbbFaEOsHOgq1C
+         3odr9enQp4oPwcuWweybcQxREznR6HilvH8znoyjdpKxS7ICBDCmrt3yQU6MwUoyz1up
+         wU3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ex4djiKQkwoRFj7tuh1SXMLnnmR875ehYAWqWZ5AG64=;
+        b=ct1IhtQdkDdNU3x4Xy4j+V2amZiWNqkYxTIAeF/hTEe+eJMC0HN7Pz9Q+RgntGIGrC
+         KfBJdo/JdyUn+N/6IHuDL/kINWVVOf2xqOdFI1i6Mw8I7vwfJ/vpAqDzPtvhaCJ7EVci
+         Ejk0dJRHLUkzxxPTRxRfFVDDDadL4ZKksqEtrSop3d6xuLQPkHopuoplgPKy9URyNHZu
+         HzhVUA1YBL9fwVG+uhHxmwilwlRgSSPz52YL9W75U9DLkGvmtILOLouNmkDv6KhtHWvH
+         FuA7eYfAQ5DVrSUnHYPyXL5HV3zWFDu4tHhhR0G9qL69W4Use4ADuvZJgZNQnRwgn26Z
+         MpSA==
+X-Gm-Message-State: AOAM533566iyjUbg+i/UCaTS5NHnpKv+pLOPezK40d8VqqkRuiuqanil
+        Ow2H2SdoQYjI8R03vZS7k1CgbQ==
+X-Google-Smtp-Source: ABdhPJymcQ2AVQBNxFOrunqHg+Yhv5fJ/wqDhYf4YCO4gaImXFpt1lmK6+OCZiG5lwnYm/GeLmHjQw==
+X-Received: by 2002:a9d:711b:: with SMTP id n27mr7096073otj.221.1610688915306;
+        Thu, 14 Jan 2021 21:35:15 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 63sm1583434otx.2.2021.01.14.21.35.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 21:35:14 -0800 (PST)
+Date:   Thu, 14 Jan 2021 23:35:12 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        sumit.semwal@linaro.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org
+Subject: Re: [PATCH v2 6/7] dt-bindings: regulator: qcom-labibb: Document
+ SCP/OCP interrupts
+Message-ID: <YAEpkHSuf+Uv2kv+@builder.lan>
+References: <20210113194214.522238-1-angelogioacchino.delregno@somainline.org>
+ <20210113194214.522238-7-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/H2fiLh1ghCTXHVqBaUO8Y2g";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113194214.522238-7-angelogioacchino.delregno@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/H2fiLh1ghCTXHVqBaUO8Y2g
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed 13 Jan 13:42 CST 2021, AngeloGioacchino Del Regno wrote:
 
-Hi all,
+> Short-Circuit Protection (SCP) and Over-Current Protection (OCP) are
+> now implemented in the driver: document the interrupts.
+> This also fixes wrong documentation about the SCP interrupt for LAB.
+> 
 
-After merging the amdgpu tree, today's linux-next build (powerpc
-allyesconfig) failed like this:
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c: In function 'va=
-ngogh_get_smu_metrics_data':
-drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:300:10: error: '=
-boot_cpu_data' undeclared (first use in this function); did you mean 'boot_=
-cpuid'?
-  300 |          boot_cpu_data.x86_max_cores * sizeof(uint16_t));
-      |          ^~~~~~~~~~~~~
-      |          boot_cpuid
-drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c: In function 'va=
-ngogh_read_sensor':
-drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:1320:11: error: =
-'boot_cpu_data' undeclared (first use in this function); did you mean 'boot=
-_cpuid'?
- 1320 |   *size =3D boot_cpu_data.x86_max_cores * sizeof(uint16_t);
-      |           ^~~~~~~~~~~~~
-      |           boot_cpuid
-drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c: In function 'va=
-ngogh_od_edit_dpm_table':
-drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:1460:19: error: =
-'boot_cpu_data' undeclared (first use in this function); did you mean 'boot=
-_cpuid'?
- 1460 |   if (input[0] >=3D boot_cpu_data.x86_max_cores) {
-      |                   ^~~~~~~~~~~~~
-      |                   boot_cpuid
+Regards,
+Bjorn
 
-Caused by commits
-
-  517cb957c43b ("drm/amd/pm: implement the processor clocks which read by m=
-etric")
-  0d90d0ddd10e ("drm/amd/pm: implement processor fine grain feature for van=
-gogh (v3)")
-
-The only thing I could do easily is to disable CONFIG_DRM_AMDGPU for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/H2fiLh1ghCTXHVqBaUO8Y2g
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmABKYkACgkQAVBC80lX
-0Gzcvwf9FMxLyUAQnhew3amfypq9a3ESOn7cq8a2BdIgt7wJjJ3OlXp4/0QkBnql
-2Ee5mGx4EkNHeFUl9AmrfCnlkWNmEoqU2WSKMCS7J2PwvRimzMo2O6h2FAd2xjea
-N2+cpkMvh6ChQxwoMRLn7lsjk7mJSc4SExc9T0qEQRTKozujv4rTiPPwP4ejbKBS
-bK/4XaJK9UJP0QsWwboXmd39NNIvHIL+etT3ilDnyzSyC78M7rwGfmcaGTKdeSAj
-PFyu3NU+Cbse9K2Vm0qqVIifxqyg43gZqw3wbxWQJ1nY+amjQrTzUgRQ+eWv5gnZ
-o5p9InibKdzZrhQoFUiSB0DcI5u7OA==
-=2hcq
------END PGP SIGNATURE-----
-
---Sig_/H2fiLh1ghCTXHVqBaUO8Y2g--
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>  .../regulator/qcom-labibb-regulator.yaml      | 20 +++++++++++--------
+>  1 file changed, 12 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
+> index 7a507692f1ba..cf784bd1f5e5 100644
+> --- a/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
+> +++ b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
+> @@ -29,9 +29,10 @@ properties:
+>          default: 200
+>  
+>        interrupts:
+> -        maxItems: 1
+> +        minItems: 1
+> +        maxItems: 2
+>          description:
+> -          Short-circuit interrupt for lab.
+> +          Short-circuit and over-current interrupts for lab.
+>  
+>      required:
+>        - interrupts
+> @@ -47,9 +48,10 @@ properties:
+>          default: 300
+>  
+>        interrupts:
+> -        maxItems: 1
+> +        minItems: 1
+> +        maxItems: 2
+>          description:
+> -          Short-circuit interrupt for lab.
+> +          Short-circuit and over-current interrupts for ibb.
+>  
+>      required:
+>        - interrupts
+> @@ -67,13 +69,15 @@ examples:
+>        compatible = "qcom,pmi8998-lab-ibb";
+>  
+>        lab {
+> -        interrupts = <0x3 0x0 IRQ_TYPE_EDGE_RISING>;
+> -        interrupt-names = "sc-err";
+> +        interrupts = <0x3 0xde 0x1 IRQ_TYPE_EDGE_RISING>,
+> +                     <0x3 0xde 0x0 IRQ_TYPE_LEVEL_LOW>;
+> +        interrupt-names = "sc-err", "ocp";
+>        };
+>  
+>        ibb {
+> -        interrupts = <0x3 0x2 IRQ_TYPE_EDGE_RISING>;
+> -        interrupt-names = "sc-err";
+> +        interrupts = <0x3 0xdc 0x2 IRQ_TYPE_EDGE_RISING>,
+> +                     <0x3 0xdc 0x0 IRQ_TYPE_LEVEL_LOW>;
+> +        interrupt-names = "sc-err", "ocp";
+>        };
+>      };
+>  
+> -- 
+> 2.29.2
+> 
