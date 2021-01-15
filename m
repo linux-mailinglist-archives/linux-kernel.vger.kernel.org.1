@@ -2,77 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946752F75C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7007F2F75BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:47:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726070AbhAOJrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:47:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728828AbhAOJrr (ORCPT
+        id S1728705AbhAOJqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:46:51 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:35451 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726849AbhAOJqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:47:47 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3537C061757;
-        Fri, 15 Jan 2021 01:47:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=u+9qKbdLTbihydxXPBHhixLKpJmqcDJjB4iyY7fOB4E=; b=GsRJs85DDYl2xoYosCony1sBvg
-        kb6wMsVR6Wnti22lY65CdS7GCc3gOHJUlXhdeh0Zk3BgDlR5pk0cB9HckmpXt+pR/4DzETBuWJRq1
-        XwbZZktqPvjrNsdcm+FEBmB6ZNJqP24MA0DHUhYCOfgJJJw3JD00eEerWuTb6t6dfEzO+pNJsUFDt
-        ac46mYSLaGFxg2IHWHovmYsWBpxTQlKKBNC6Vsfl5ewh5+Xcs/W90AQeHlK6SoeNKizatklsZE0jU
-        HNlgR2cGqC+ZHCWqDoAamG7t/bMByGtD3u8cVrP0y3lajvdtg4OcT1fSfz6JJBULCtxmsWnPMD3FP
-        rGUTVR+w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l0Lfy-008kAX-EL; Fri, 15 Jan 2021 09:46:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Fri, 15 Jan 2021 04:46:49 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CF5E3305CC3;
-        Fri, 15 Jan 2021 10:45:49 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A9A0620B5D691; Fri, 15 Jan 2021 10:45:49 +0100 (CET)
-Date:   Fri, 15 Jan 2021 10:45:49 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jason Baron <jbaron@akamai.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH v2 3/3] KVM: x86: use static calls to reduce kvm_x86_ops
- overhead
-Message-ID: <YAFkTSnSut1h/jWt@hirez.programming.kicks-ass.net>
-References: <cover.1610680941.git.jbaron@akamai.com>
- <e057bf1b8a7ad15652df6eeba3f907ae758d3399.1610680941.git.jbaron@akamai.com>
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 9A47723E59;
+        Fri, 15 Jan 2021 10:46:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1610703974;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yW5+sW/iNL6QDHA2UIJPSkV9BAe3+M083pp8li0kZiQ=;
+        b=FzVEPnq5SU6mAMue7gdxjElP/OjMX/6rmMktxfeZb+3KFh/8tyfsuDLGYcZDBMahHQkIXS
+        JPnY4DDNiVDvAnvAaT7ZeJL5Glm9MCf2uxJoEpsRz+bBqYZk6qacG0flxfDUD1KT1KI9Zy
+        JFQhGzTzru+OrUUwP6V6P27LMoloV4U=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e057bf1b8a7ad15652df6eeba3f907ae758d3399.1610680941.git.jbaron@akamai.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 15 Jan 2021 10:46:10 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, Li Yang <leoyang.li@nxp.com>
+Subject: Re: [PATCH 2/2] arm64: dts: freescale: sl28: add variant 1
+In-Reply-To: <20210115093412.GK28365@dragon>
+References: <20201229120321.17103-1-michael@walle.cc>
+ <20201229120321.17103-2-michael@walle.cc> <20210111013442.GU28365@dragon>
+ <838c9860e19dcfb18d35cffde773ad93@walle.cc> <20210115093412.GK28365@dragon>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <0f1556f0b7eeaa0704907c291545ed69@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 10:27:56PM -0500, Jason Baron wrote:
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 5060922..9d4492b 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1350,7 +1350,7 @@ void kvm_arch_free_vm(struct kvm *kvm);
->  static inline int kvm_arch_flush_remote_tlb(struct kvm *kvm)
->  {
->  	if (kvm_x86_ops.tlb_remote_flush &&
-> -	    !kvm_x86_ops.tlb_remote_flush(kvm))
-> +	    !static_call(kvm_x86_tlb_remote_flush)(kvm))
->  		return 0;
->  	else
->  		return -ENOTSUPP;
+Am 2021-01-15 10:34, schrieb Shawn Guo:
+> On Mon, Jan 11, 2021 at 09:00:37AM +0100, Michael Walle wrote:
+>> Am 2021-01-11 02:34, schrieb Shawn Guo:
+>> > On Tue, Dec 29, 2020 at 01:03:21PM +0100, Michael Walle wrote:
+>> > > There is a new variant 1 of this board available. It features up to
+>> > > four
+>> > > SerDes lanes for customer use. Add a new device tree which features
+>> > > just
+>> > > the basic peripherals. A customer will then have to modify or append
+>> > > to
+>> > > this device tree.
+>> > >
+>> > > Signed-off-by: Michael Walle <michael@walle.cc>
+>> > > ---
+>> > >  arch/arm64/boot/dts/freescale/Makefile        |  1 +
+>> > >  .../fsl-ls1028a-kontron-sl28-var1.dts         | 61
+>> > > +++++++++++++++++++
+>> > >  2 files changed, 62 insertions(+)
+>> > >  create mode 100644
+>> > > arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts
+>> > >
+>> > > diff --git a/arch/arm64/boot/dts/freescale/Makefile
+>> > > b/arch/arm64/boot/dts/freescale/Makefile
+>> > > index 6f0777ee6cd6..79cb0025fcc6 100644
+>> > > --- a/arch/arm64/boot/dts/freescale/Makefile
+>> > > +++ b/arch/arm64/boot/dts/freescale/Makefile
+>> > > @@ -6,6 +6,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1012a-qds.dtb
+>> > >  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1012a-rdb.dtb
+>> > >  dtb-$(CONFIG_ARCH_LAYERSCAPE) +=
+>> > > fsl-ls1028a-kontron-kbox-a-230-ls.dtb
+>> > >  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-kontron-sl28.dtb
+>> > > +dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-kontron-sl28-var1.dtb
+>> > >  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-kontron-sl28-var2.dtb
+>> > >  dtb-$(CONFIG_ARCH_LAYERSCAPE) +=
+>> > > fsl-ls1028a-kontron-sl28-var3-ads2.dtb
+>> > >  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-kontron-sl28-var4.dtb
+>> > > diff --git
+>> > > a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts
+>> > > b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts
+>> > > new file mode 100644
+>> > > index 000000000000..52f2f3ffdce1
+>> > > --- /dev/null
+>> > > +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts
+>> > > @@ -0,0 +1,61 @@
+>> > > +// SPDX-License-Identifier: GPL-2.0+
+>> > > +/*
+>> > > + * Device Tree file for the Kontron SMARC-sAL28 board.
+>> > > + *
+>> > > + * This is for the network variant 1 which has one ethernet port.
+>> > > It is
+>> > > + * different than the base variant, which also has one port, but
+>> > > here the
+>> > > + * port is connected via RGMII. This port is not TSN aware.
+>> > > + * None of the  four SerDes lanes are used by the module, instead
+>> > > they are
+>> > > + * all led out to the carrier for customer use.
+>> > > + *
+>> > > + * Copyright (C) 2020 Michael Walle <michael@walle.cc>
+>> > > + *
+>> > > + */
+>> > > +
+>> > > +/dts-v1/;
+>> > > +#include "fsl-ls1028a-kontron-sl28.dts"
+>> > > +#include <dt-bindings/net/qca-ar803x.h>
+>> > > +
+>> > > +/ {
+>> > > +	model = "Kontron SMARC-sAL28 (4 Lanes)";
+>> > > +	compatible = "kontron,sl28-var1", "kontron,sl28", "fsl,ls1028a";
+>> > > +};
+>> > > +
+>> > > +&enetc_port0 {
+>> > > +	status = "disabled";
+>> > > +	/delete-property/ phy-handle;
+>> > > +	/delete-node/ mdio;
+>> >
+>> > As it's disabled anyway, why do we bother to delete the property and
+>> > child node?
+>> 
+>> Because beneath that node is also the old phy0 label. So you'd be 
+>> getting
+>> arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts:38.24-55.5:
+>> ERROR (duplicate_label):
+>> /soc/pcie@1f0000000/ethernet@0,1/mdio/ethernet-phy@4: Duplicate label 
+>> 'phy0'
+>> on /soc/pcie@1f0000000/ethernet@0,1/mdio/ethernet-phy@4 and
+>> /soc/pcie@1f0000000/ethernet@0,0/mdio/ethernet-phy@5
+> 
+> So labelling enetc_port1 phy as 'phy1' would fix it, right?
 
-Would you be able to use something like this?
+That might fix it, but I don't want an old unused phy node in the device 
+tree
+which isn't even there. Also I don't want one board starting the labels 
+with
+phy0 and the other with phy1.
 
-  https://lkml.kernel.org/r/20201110101307.GO2651@hirez.programming.kicks-ass.net
+If you don't like that /delete-node/ stuff, I'd have to reorganize the
+includes. var1 and var2 unfortunately isn't compatible with the base 
+variant
+fsl-ls1028a-kontron-sl28.dts regarding the phy configurations. Thus I'd
+probably have to split "fsl-ls1028a-kontron-sl28.dts" into a common dtsi 
+and
+one which handles the networking.
 
-we could also add __static_call_return1(), if that would help.
+-michael
