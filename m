@@ -2,138 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5DA2F73FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2629D2F7406
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732112AbhAOIH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 03:07:26 -0500
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:46130 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbhAOIHZ (ORCPT
+        id S1732280AbhAOIJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 03:09:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725950AbhAOIJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 03:07:25 -0500
-Received: by mail-oi1-f179.google.com with SMTP id q205so8686432oig.13;
-        Fri, 15 Jan 2021 00:07:10 -0800 (PST)
+        Fri, 15 Jan 2021 03:09:43 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46182C061575;
+        Fri, 15 Jan 2021 00:09:03 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id h186so5014311pfe.0;
+        Fri, 15 Jan 2021 00:09:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=FiTUf7nc7yy9jR7tyMkjzq+KmoD8V4MoKYuzDq3AhDs=;
+        b=bRN84fqhW3ZLZOOrZ4/bA/aFz+50ftrD79WDwxox3efELymGM6/g+24Aoqp3K9oh+m
+         sWv4UFodQT80J5nYwrXZ96juDo6PRaMYaS7V0F71Xe3mvDxlinHAwJDQ7SY7FIUDfuU4
+         eUjwDwiaYKZ8EVhjE/AqLPRe9tXvqsofIVtc138nB5qbUvE2p7QBvJLDio7ZDVert6Um
+         +iHJxfVT5T3k6MrOg+x7Hgbn4k8k26ieZQhkpHxkYkq6e5gZRLNLIjDeIfoFOvgAG+tQ
+         SHrA/6MmU6r5DCHqpn3U25pChQ0e2UzH/ZfBjwjM3QFgDvepuWs4qIfWzXBxafQAyHM6
+         HP3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KHJ4LFBTeySXrAB0B3j8k7W0q4a43BLWpsk73jsTU8I=;
-        b=NoLkyZsN+ZgPjDcb6PrXIWaPgVLiEBhFVaC15tvTWzZTUId5jh5K/2zcATLH8Dbged
-         jJRqx2FNWthMvuf3+4DHWomQZJp6WEMEXaxq+Sg988OYZV+tDGMeA2IjcgvTgRIzlRgO
-         0v733gm7fvpLvEQbsyRl3nhjFq04gtt3iK89wbJB03+KcE8Fj84HZRjdrOn7Tpt2RXmu
-         OeoD0Yidw6DVRPpNyPfvph1PwfPUNKQ/jeQwIxOXXXeca3w5RqhNKRr+Oj/Ah/hiPgQ/
-         Ridhjq0vALzeGpzpJLZRZ2P/7f4BzGAey7zbzepgoZEi+XKgzbm3GmFp0DECLawgBnJY
-         p2Pg==
-X-Gm-Message-State: AOAM531HPJYd5jpuHhRtnXxQY+jzgj6JX1uWIC5QKGQWGDjISXe4WT0G
-        4WNMY9Q1e/3YC9I2a02aiqiqxR7Lj8IV0XZNtQU=
-X-Google-Smtp-Source: ABdhPJxGZI0PFSd8/9cz6QQtwsEnLh5GsODfVqU6ivhGty9KZLXuVxw9DoF5rLCTCgOv7jS7bGnrUuqWBkh8Mye41/s=
-X-Received: by 2002:aca:4b16:: with SMTP id y22mr4929340oia.148.1610698004707;
- Fri, 15 Jan 2021 00:06:44 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=FiTUf7nc7yy9jR7tyMkjzq+KmoD8V4MoKYuzDq3AhDs=;
+        b=h7vVrjd07GmNtCvztq4m+OhrDAEeoSJo4z9uP8Z0GRrXNJ7h1pPOKO5v2adBTyOx8p
+         Nvq2YBz9CWESZ3X62luy6IJwsXQfUV00khN17cOBXT/uoCc95GIEum8IrSFt9whYdH2l
+         0brqc/SZQYXsj3+0/B3lkzUCuzROEMxVIyPFKQwazQtYmKGm8+IbTt8e7GQAD0Qupl+g
+         RueclLBKF7NINeDNJrmwKbEcDp6mOQmdOtVt4GtUTjWwHP0ie11IERYPg2hiFXoVU/49
+         umk/SfbLXGNkCZdcNW72BmI+E3OLA/CCwkxZjdaARLBrxWY7al9spJdfvAgZ8UfgAA0K
+         HxiA==
+X-Gm-Message-State: AOAM533ia/NiqXfICOwQn8U7Uf+aEhXjj+iO8Ru5GSZ1eQCJfHVFkQq+
+        Q/Dr6qY4dMu7JVf0SuwjZKlFP5NHGSji
+X-Google-Smtp-Source: ABdhPJyKOtSp/IgI/0Q8VQm9IhylA/Ykto/CggxRuIoDNfWraZRWfxqxO8Gx0H7QWtbL3+sxX1AmQA==
+X-Received: by 2002:a62:c504:0:b029:1a5:b198:18dc with SMTP id j4-20020a62c5040000b02901a5b19818dcmr11327505pfg.79.1610698142869;
+        Fri, 15 Jan 2021 00:09:02 -0800 (PST)
+Received: from localhost.localdomain ([216.52.21.4])
+        by smtp.gmail.com with ESMTPSA id x14sm7342534pfp.77.2021.01.15.00.09.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 15 Jan 2021 00:09:02 -0800 (PST)
+From:   Praveen Chaudhary <praveen5582@gmail.com>
+X-Google-Original-From: Praveen Chaudhary <pchaudhary@linkedin.com>
+To:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net,
+        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: RE: [PATCH v1 net-next 1/1] Allow user to set metric on default route learned via Router Advertisement.
+Date:   Fri, 15 Jan 2021 00:08:57 -0800
+Message-Id: <20210115080857.8978-1-pchaudhary@linkedin.com>
+X-Mailer: git-send-email 2.29.0
+In-Reply-To: <e894509c-e081-3682-7cc4-a20812f41984@gmail.com>
+References: <e894509c-e081-3682-7cc4-a20812f41984@gmail.com>
 MIME-Version: 1.0
-References: <20200916205434.GA10389@duo.ucw.cz> <87czyf5jjp.fsf@vps.thesusis.net>
- <CAHk-=wjsjC1h7fskwYaaRLykN1ms6ZtxGvucQgmL-zZTfxPdBA@mail.gmail.com>
- <CAKMK7uEGXOC_ci=Drm=Hz+xPGdcoxv8YZ-gcOckoPmu2XijiSA@mail.gmail.com>
- <CAMuHMdVzCjVim4A3eAZzztqUyjb6a2bjmSkgxUnaugQFv42qag@mail.gmail.com> <CAKMK7uEwHu5GLF16wn83PLZUjoJWgF0dcLXwsGkt_aBpOgLt+w@mail.gmail.com>
-In-Reply-To: <CAKMK7uEwHu5GLF16wn83PLZUjoJWgF0dcLXwsGkt_aBpOgLt+w@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 15 Jan 2021 09:06:33 +0100
-Message-ID: <CAMuHMdUf3eeK=Fr_pasUdXkk_zuicFBqNY+jSnH6EgUgmG+3hA@mail.gmail.com>
-Subject: Re: fbcon: remove soft scrollback code (missing Doc. patch)
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Phillip Susi <phill@thesusis.net>, Pavel Machek <pavel@ucw.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Hi David
 
-On Thu, Jan 14, 2021 at 5:11 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> On Thu, Jan 14, 2021 at 4:56 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Tue, Jan 12, 2021 at 5:00 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > On Sat, Jan 9, 2021 at 12:11 AM Linus Torvalds
-> > > <torvalds@linux-foundation.org> wrote:
-> > > > On Fri, Jan 8, 2021 at 11:13 AM Phillip Susi <phill@thesusis.net> wrote:
-> > > > > > Could we pause this madness? Scrollback is still useful. I needed it
-> > > > > > today... it was too small, so command results I was looking for
-> > > > > > already scrolled away, but... life will be really painful with 0
-> > > > > > scrollback.
-> > > > >
-> > > > > > You'll need it, too... as soon as you get oops and will want to see
-> > > > > > errors just prior to that oops.
-> > > > >
-> > > > > > If it means I get to maintain it... I'm not happy about it but that's
-> > > > > > better than no scrollback.
-> > > > >
-> > > > > Amen!  What self respecting admin installs a gui on servers?  What do we
-> > > > > have to do to get this back in?  What was so buggy with this code that
-> > > > > it needed to be removed?  Why was it such a burden to just leave it be?
-> > > >
-> > > > It really was buggy, with security implications. And we have no maintainers.
-> > > >
-> > > > So the scroll-back code can't come back until we have a maintainer and
-> > > > a cleaner and simpler implementation.
-> > > >
-> > > > And no, maintaining it really doesn't mean "just get it back to the
-> > > > old broken state".
-> > > >
-> > > > So far I haven't actually seen any patches, which means that it's not
-> > > > coming back.
-> > > >
-> > > > The good news? If you have an actual text VGA console, that should
-> > > > still work just fine.
-> >
-> > IIRC, all of this was written for systems lacking VGA text consoles
-> > in the first place...
-> >
-> > > Also on anything that is remotely modern (i.e. runs a drm kernel
-> > > modesetting driver undearneath the fbdev/fbcon stack) there's a pile
-> > > more issues on top of just the scrollback/fbcon code being a mess.
-> >
-> > Would it help to remove DRM_FBDEV_EMULATION (instead)?
->
-> It's a problem with the hardware. "Write some registers and done"
-> isn't how display blocks work nowadays. So your proposal amounts to
-> "no fbdev/fbcon for anything modern-ish".
+Thanks a lot for Review,
 
-With "modern-ish" actually meaning: "desktop/gaming/mobile-style
-3D-accelerated wide-color display hardware".  There's plenty of display
-hardware that doesn't fall into that class, and is served by fbdev (also
-out-of-tree due to the moratorium) because of that.
+I have raised v2 after addressing your review comments from
+https://lkml.org/lkml/2021/1/14/1400.
 
-> Also I said "a pile more", most of the issues in fbcon/fbdev code
-> apply for all drivers.
->
-> > > Specifically the locking is somewhere between yolo and outright
-> > > deadlocks. This holds even more so if the use case here is "I want
-> > > scrollback for an oops". There's rough sketches for how it could be
-> > > solved, but it's all very tricky work.
-> >
-> > When an oops happens, all bets are off.  At that point, all information
-> > you can extract from the system is valuable, and additional locking
-> > issues are moot.
->
-> Except the first oops then scrolls aways because it's getting buried
-> under further fail. Your locking needs to be minimally good enough to
-> not make the situation worse.
+List of changes in v2:
+---
+1.) Replace accept_ra_defrtr_metric with ra_defrtr_metric.
+2.) Change Type to __u32 instead of __s32.
+3.) Change description in Documentation/networking/ip-sysctl.rst.
+4.) Use proc_douintvec instead of proc_dointvec.
+5.) Code style in ndisc_router_discovery().
+6.) Change Type to u32 instead of unsigned int.
+---
 
-When an oops happens, all bets are off...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks a lot again for help.
