@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3E22F8699
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4AD2F869C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:25:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387729AbhAOUXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 15:23:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56010 "EHLO
+        id S2388237AbhAOUYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 15:24:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731529AbhAOUXF (ORCPT
+        with ESMTP id S1727649AbhAOUYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 15:23:05 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC7BC061757;
-        Fri, 15 Jan 2021 12:22:24 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id v5so6968580qtv.7;
-        Fri, 15 Jan 2021 12:22:24 -0800 (PST)
+        Fri, 15 Jan 2021 15:24:48 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85965C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:24:08 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id x78so1724330ybe.11
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:24:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uMf/40ZOBursAcunQbNmwliT9GLzVostWCpfGDtK61s=;
-        b=r4HR8iICuMdp2jfdiVmjAzp+pkoLhnv4i1xsKfoO51eTUIkYMhUWDw/gNZvJsf4aB5
-         7WyWXScXOaX8gPCAYN4gvzwgC2ojlgiHflOW6Grlik3KPtnJt9FjFcOhLb3Iv89h+WMK
-         Cgoc+OWYzjBnAt6odVF+IJw8vgNjJG7qv1TieWSsySuke2x/lw0XKLyyKAE7W7xJMUOo
-         CZ7BT8hzl5K6PdVNLT3+QvdeNJI1dqx1YV1NzQOEKzOBUl+nP7gIXGVq8wpKU+G5oKS0
-         O0nagHnNw883bdfHDtMPqFysbfkq9ftGZ9tllPnRnLsFixKJ5EduwujhU8/SPkvmWEK+
-         xwwA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A9RX5qj7rGFsbJXJNhBoN2LaZMygrpZRt1un2PekIsg=;
+        b=Lws9KxcTbF/05kFWM5ca/fUUTv9qdz9Gq6nJSPR8gOYdAJJYISEV3k8IiV7U/ca4vK
+         FKRCwkcQ5VkxJBYfvm1xiCrIdlm1TNTgMeoHtKxxNQPAVZqU1b7tUfTGWnNyHgtlOaNx
+         2iAcfnRu710KgMObu7nfIPrNr9YsQeQ6S13YY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uMf/40ZOBursAcunQbNmwliT9GLzVostWCpfGDtK61s=;
-        b=l6AWWk7CFDR9e+Jf9WA3Yt2Ieu6raNtDUWAWkYGi0i8O+Jud9mq7Qn95ZzpamW4Az3
-         A8yYuPnNG7H1dkeU3y1erjcKTjq9X35aSKZTJogiDMrezBWdcCtJRhpc0zc8aKztNyC8
-         vITO2UramwqB9xzyAmAv+WuU+rnu8/czA9IQIxv2+Doq2useaIQCA7xBRXdjRo0atyod
-         FNla4HcIvPFWjQZ17u/XpixIJwQVOxgr+rrp0mH8V5jZS8fqv2d57Toq6hdfZ5vOx+an
-         x1MJySakOkDEq0guNH07hTLyP7G6BiN9J9isymEvYhVIaqy72iIJ6Umh7+wVSFdy9Ipt
-         +zXw==
-X-Gm-Message-State: AOAM530JpaY3oMDYoCMvKIAvYwO5tE0cCU28voGDk8T5Ksro4dlVcQfp
-        nVdOI8W7ePIwgrK2Sd7MzhY7ul56yR8=
-X-Google-Smtp-Source: ABdhPJwiK/LKljooy9WTXnSxp/hPmhNuv86f9XMBQNXb+ZcubA6dmSWaoZ41flxNmq+81cYavt62SA==
-X-Received: by 2002:aed:23d6:: with SMTP id k22mr13752718qtc.226.1610742143863;
-        Fri, 15 Jan 2021 12:22:23 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id 38sm3268337qtb.67.2021.01.15.12.22.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 12:22:23 -0800 (PST)
-Date:   Fri, 15 Jan 2021 13:22:21 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Xiaolei Wang <xiaolei.wang@windriver.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5.10 086/103] regmap: debugfs: Fix a memory leak when
- calling regmap_attach_dev
-Message-ID: <20210115202221.GA209258@ubuntu-m3-large-x86>
-References: <20210115122006.047132306@linuxfoundation.org>
- <20210115122010.175920983@linuxfoundation.org>
- <20210115201819.GA8375@amd>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A9RX5qj7rGFsbJXJNhBoN2LaZMygrpZRt1un2PekIsg=;
+        b=PHqa3uZ/ulZ6nN7qWSBlARvSsJ4NeB5dL8Z7MJwjgklhQgImv/6ZuSW5+Tiiv8XHbU
+         p6wj2SEuJjJRgVMO1plsdvqh19Cztxz0RlqLDdBzExMdl+4+0M2luB4jQ66w0WsmuBFg
+         dERTQR9jeI+W7ICpsML0snxZLQpBngDQE83vqBc/2AhF6KfTHGISXWjxYfz4kBTSsnQ4
+         1vDkP6cUmJn/LrAA4WxsnE5GjU8TTZvFQ8UgPi2NA+6XG4+VqJjpbIqjjECN6Ls/nbcQ
+         a2gBOwNz8xNBdT9AN6VpSKfjgJgmytOgcNnFrpzHAr5SMVREDG79m2sBRn1Lk4Z1Z2p/
+         c+9w==
+X-Gm-Message-State: AOAM532L0sM0h25LALljMxfhWI6DcIrsUzrYsnz0rkCUT3nmZ03ZaJXK
+        +894OfA0F82v/Awajs6XmrDFnElOsTEDvld/H18UWA==
+X-Google-Smtp-Source: ABdhPJzbKp6kvJAB2wHiJiHdtH6OLS0uBJV8n51BolL+iPUV2rkxC1Oi3wvGezDc7Xv/goZFG8cSN0t+ZDBCl2aWpro=
+X-Received: by 2002:a25:3a04:: with SMTP id h4mr20270835yba.285.1610742247860;
+ Fri, 15 Jan 2021 12:24:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210115201819.GA8375@amd>
+References: <20210114183010.v6.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
+ <161067828422.3661239.16933057782247961610@swboyd.mtv.corp.google.com>
+In-Reply-To: <161067828422.3661239.16933057782247961610@swboyd.mtv.corp.google.com>
+From:   Philip Chen <philipchen@chromium.org>
+Date:   Fri, 15 Jan 2021 12:23:57 -0800
+Message-ID: <CA+cxXhnimCistZF6e-7Uxz7aZ2Ugm7yoBPhO9RWzCtCm65xgbg@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] dt-bindings: input: cros-ec-keyb: Add a new property
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org,
+        linux-input@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 09:18:19PM +0100, Pavel Machek wrote:
-> Hi!
-> 
-> > From: Xiaolei Wang <xiaolei.wang@windriver.com>
-> > 
-> > commit cffa4b2122f5f3e53cf3d529bbc74651f95856d5 upstream.
-> > 
-> > After initializing the regmap through
-> > syscon_regmap_lookup_by_compatible, then regmap_attach_dev to the
-> > device, because the debugfs_name has been allocated, there is no
-> > need to redistribute it again
-> 
-> ? redistribute?
-> 
-> Anyway, this patch is clearly buggy:
-> 
-> >  
-> >  	if (!strcmp(name, "dummy")) {
-> > -		kfree(map->debugfs_name);
-> > +		if (!map->debugfs_name)
-> > +			kfree(map->debugfs_name);
-> >  
-> 
-> It runs kfree only if the variable is NULL. That's clearly useless,
-> kfree(NULL) is NOP, and this causes memory leak.
-
-Fixed by commit f6bcb4c7f366 ("regmap: debugfs: Fix a reversed if
-statement in regmap_debugfs_init()") in mainline.
-
-Cheers,
-Nathan
+On Thu, Jan 14, 2021 at 6:38 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Philip Chen (2021-01-14 18:30:30)
+> > Add a new property `function-row-physmap` to the
+> > device tree for the custom keyboard top row design.
+> >
+> > The property describes the rows/columns of the top row keys
+> > from left to right.
+> >
+> > Signed-off-by: Philip Chen <philipchen@chromium.org>
+>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+>
+> One nit below.
+>
+> > diff --git a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+> > index 8e50c14a9d778..a742b0777ee6d 100644
+> > --- a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+> > +++ b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+> > @@ -43,6 +54,18 @@ examples:
+> >          keypad,num-rows = <8>;
+> >          keypad,num-columns = <13>;
+> >          google,needs-ghost-filter;
+> > +        function-row-physmap = <
+> > +                0x00020000      /* T1 */
+> > +                0x03020000      /* T2 */
+> > +                0x02020000      /* T3 */
+> > +                0x01020000      /* T4 */
+> > +                0x03040000      /* T5 */
+> > +                0x02040000      /* T6 */
+> > +                0x01040000      /* T7 */
+> > +                0x02090000      /* T8 */
+> > +                0x01090000      /* T9 */
+> > +                0x00040000      /* T10 */
+>
+> Can we include the header file for MATRIX_KEY so we can use the macro
+> here?
+Sure.
