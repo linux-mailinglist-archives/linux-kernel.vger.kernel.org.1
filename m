@@ -2,70 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334F62F8526
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E32D2F852B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387790AbhAOTL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 14:11:57 -0500
-Received: from one.firstfloor.org ([193.170.194.197]:46312 "EHLO
-        one.firstfloor.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733159AbhAOTLz (ORCPT
+        id S2388089AbhAOTMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 14:12:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388029AbhAOTMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 14:11:55 -0500
-Received: by one.firstfloor.org (Postfix, from userid 503)
-        id 724AF86852; Fri, 15 Jan 2021 20:11:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firstfloor.org;
-        s=mail; t=1610737873;
-        bh=V4l2I3v0GSHTyKiki+4APxm2kYXFuyZMSHfMsKLhGZs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NBWC5xAQhnRr0zGIjYFJ2JFHdnvxCO9FqHoip1/gXPAVp6+rosEHAOdu4q6X3Ir2w
-         Cao0D0TLCdRC/0j9kx6YkYHNOmjlkWxJr1sJwZEB9tpN4bsW3tEl03REk5iwMhUhed
-         mDlxlnJjoZ+myVZ8boUSBgRtC5qDpTMvtISl3CLA=
-Date:   Fri, 15 Jan 2021 11:11:13 -0800
-From:   Andi Kleen <andi@firstfloor.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Andi Kleen <andi@firstfloor.org>, "Xu, Like" <like.xu@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, wei.w.wang@intel.com,
-        luwei.kang@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/17] KVM: x86/pmu: Add support to enable Guest PEBS
- via DS
-Message-ID: <20210115191113.nktlnmivc3edstiv@two.firstfloor.org>
-References: <20210104131542.495413-1-like.xu@linux.intel.com>
- <YACXQwBPI8OFV1T+@google.com>
- <f8a8e4e2-e0b1-8e68-81d4-044fb62045d5@intel.com>
- <YAHXlWmeR9p6JZm2@google.com>
- <20210115182700.byczztx3vjhsq3p3@two.firstfloor.org>
- <YAHkOiQsxMfOMYvp@google.com>
+        Fri, 15 Jan 2021 14:12:15 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0493C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 11:11:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=97EbPmBOmEAiBPBdi5v4C1/U9Nu8MZDKrWuawwATbk4=; b=NylniFpYzdRNq7XYSg5yfbUrUr
+        smVYQAcX0LAfJ+WE0dfbDYvsBUKZwhUrXlYlJqIpiNSkZMHiFGmSe7V+StdyGMQCCrjKKUnCELEDf
+        NBw/AshIaCAtGJMVp1LBlg/2U2FOX6t2pD41hYK4a+S3wWUuWnTcFV8su8qNLdYlPsDrcgQGQNAMc
+        oZ0KoVvo3F5T16SnGcpGEAN0BdmgDnMnHzdp3hXkBZveVXUuw8p1aJ1fKqbJQ+FJ3bdEYNtZb8p5g
+        7dRPH7Rad3RLAsdSF3N4Ko1HmifTcJc/ai2gIBM9g4/Zw+ujMbx7Zfqzk16tZlq9vK++W/B2Y+XN7
+        vta/TSlQ==;
+Received: from [2601:1c0:6280:3f0::9abc] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l0UVP-0007kz-Jb; Fri, 15 Jan 2021 19:11:32 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH -next] x86/xen: fix 'nopvspin' build error
+Date:   Fri, 15 Jan 2021 11:11:23 -0800
+Message-Id: <20210115191123.27572-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAHkOiQsxMfOMYvp@google.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 10:51:38AM -0800, Sean Christopherson wrote:
-> On Fri, Jan 15, 2021, Andi Kleen wrote:
-> > > I'm asking about ucode/hardare.  Is the "guest pebs buffer write -> PEBS PMI"
-> > > guaranteed to be atomic?
-> > 
-> > Of course not.
-> 
-> So there's still a window where the guest could observe the bad counter index,
-> correct?
+Fix build error in x86/xen/ when PARAVIRT_SPINLOCKS is not enabled.
 
-Yes.
+Fixes this build error:
 
-But with single record PEBS it doesn't really matter with normal perfmon
-drivers.
+../arch/x86/xen/smp_hvm.c: In function ‘xen_hvm_smp_init’:
+../arch/x86/xen/smp_hvm.c:77:3: error: ‘nopvspin’ undeclared (first use in this function)
+   nopvspin = true;
 
--Andi
+Fixes: 3d7746bea925 ("x86/xen: Fix xen_hvm_smp_init() when vector callback not available")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Cc: Juergen Gross <jgross@suse.com>
+---
+I tried to use IS_ENABLED(CONFIG_PARAVIRT_SPINLOCKS) on the if line
+and on the nopvspin assignment line but both of those failed for me--
+using gcc 7.5.0.
+
+ arch/x86/xen/smp_hvm.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- linux-next-20210115.orig/arch/x86/xen/smp_hvm.c
++++ linux-next-20210115/arch/x86/xen/smp_hvm.c
+@@ -74,7 +74,9 @@ void __init xen_hvm_smp_init(void)
+ 	smp_ops.cpu_die = xen_hvm_cpu_die;
+ 
+ 	if (!xen_have_vector_callback) {
++#ifdef CONFIG_PARAVIRT_SPINLOCKS
+ 		nopvspin = true;
++#endif
+ 		return;
+ 	}
+ 
