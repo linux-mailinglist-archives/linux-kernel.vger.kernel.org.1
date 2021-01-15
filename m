@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175102F83CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B022F83C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388214AbhAOSP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:15:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56686 "EHLO
+        id S2387969AbhAOSPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:15:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388118AbhAOSPT (ORCPT
+        with ESMTP id S1728241AbhAOSOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:15:19 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546F2C0617AA
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:49 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id 91so10212756wrj.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:49 -0800 (PST)
+        Fri, 15 Jan 2021 13:14:54 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE7EC0617AB
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:50 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id h17so8029278wmq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DX8peXw6vQkx3jgWc3AcDMwXWV0VAjfbUs3tjUz1hsU=;
-        b=ueBZVZqMr1lRsNLHjtgml8MUHZ8WPI5E1fhSjTu3fXUJMjMMvwHI/uSOLq9dNiDaBZ
-         l8D48/8MD8sGUTJ7ok+RfTlAepBXTN0/ReLbpyiQ1n5RfIrI7AU71FkZBZlsTKbFbl9C
-         GX699dS+59SbIwW+me01VcUegxQz5X+mAv7xP7fiqrUmFKVcuWVZuN5rxP/oyPjX3Xmb
-         N4jiZhb9Y3K5PK6yRxA1B+pKsXR7dGiJ+EJyQsUhFa7erqWQesY0p9ab6HkI1sTX/xCW
-         pKLVT6RzBila8u6b82o61DhEIKLiKLrfc20PA2LnNCSJ/9d8omqrEejSGYsA5Uprv/26
-         pQfA==
+        bh=dP3O8GvG4KjVneRsCzuySK+Xofh1JQYhFAzp9Cmygd0=;
+        b=NvYZ7daMri4pWwZQmsX5ru4VU0SpWalBIl53yLzN3/Cv4z4K9Il8axaTUtk/Mlvcau
+         +1zefGgSce+JpOwuRVKR3bjhjjlic21dn6xpsJbCJKdmtIUTgynojMfsyD1RiRLzRcOS
+         BUazqGqqSbbAxNfZw4rLZ1d+zkIPJuftk5Y/Van2ipPmeFYkmxf5jYJHtfiDr2togNJ5
+         busT5EsVamr7PP37HD9pDJ//Ea6+P+0UPXBKsSTwXk304J/xX2a3ngh/9eaGz9wRpcMu
+         MW83FaYOeNLaGah3GsQPDVsikgx72qqFoQ4+YNRiBI3lwcFC9yojl5gaQtTx6w54zp3P
+         Vy8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DX8peXw6vQkx3jgWc3AcDMwXWV0VAjfbUs3tjUz1hsU=;
-        b=l+6s7B1Edisx6citRyktQIAVBTdl+a3MkwN8lNqejNi4KeFQqvlTet06j/uC6TRbhy
-         rmMYqh0fzqvJ8vjDVZrakEUt1nszKklKWe0LArOVuUk6H1oFr2Z1XgfNAxOyIpJ/7SoO
-         yXm5XgGS5V0NEL0ILJAU2ONsgsEMU2508Ow4TTAFqaheZ3MnWsHmaF6GHmsGhO9T/Xhv
-         pSaYD6IC7r481qeDSY/ZNh92DcM9Wc1Y2Df8p75nF3VPDb1Yh+znDh8V10s1UoEtHXyW
-         RAixt5Ay/MVPCBR6sLGu57BjnvlAIo88S/pPLxWpOL7YE6pWSej88mMqyFdn5uiIpBxC
-         fLyQ==
-X-Gm-Message-State: AOAM532dLXZynWkvRZDyjB9++3JAARj8kD2yTyAUCSDyOEcpLNB3+omg
-        b8I26Jj8TtaiQ0aeOPA0CfgFwOc2oB2P1IEo
-X-Google-Smtp-Source: ABdhPJwpTvCHhrRMhMhC083vAOcxnBNtkEy10vvuPrBOfIVJBD37uYFht6hVp6TUpt/pPyifOrjx+w==
-X-Received: by 2002:a5d:6607:: with SMTP id n7mr14020998wru.206.1610734428099;
-        Fri, 15 Jan 2021 10:13:48 -0800 (PST)
+        bh=dP3O8GvG4KjVneRsCzuySK+Xofh1JQYhFAzp9Cmygd0=;
+        b=IcQ3buRb27muR/iN253V6ptg88Y4Lv14/p6Jq5Tdr7dA6jzQc1sW50CDy+Ub7VWcmF
+         28YczxcQaFVdI0MFOT0nLKCXQmO4r2x4JHLL8XjEqj2vZSYypRQZZC4fKS6+a4x46Ue6
+         V6oAJ7dBvVAj+8kcup97Pdg6nY/i4RXJtOsoM1sNi1tHJwr3G502X6E7EfqZyEQa4yj+
+         tVBntlVcd1HjQPMxN6R7XwJAKuEhA8nhC1XNc8PC4wSa/b9k2WVCdIqKfgMmjEtz8Ejn
+         X5vtDnNDkpvAou+7/hLgyW4i2Irc7dhAIMq8QZcIDZq6deCgPZAVK76PnMXDO3IaXd42
+         k9MA==
+X-Gm-Message-State: AOAM532FSeQmsXWuZ3uOcuBLpGdGE8ld8H6IYwyDyzPHgusZTODhq3TP
+        sY2yuh1Xtnz+94Lho+6IXRhEgw==
+X-Google-Smtp-Source: ABdhPJylLVYhZtPQf2lvdbnpBfE2TpTiOfADIk0wEfZBOn1gHRWMAPa8rKFyyYAyBG8ecnMgxD3D8g==
+X-Received: by 2002:a7b:c385:: with SMTP id s5mr9873876wmj.170.1610734429439;
+        Fri, 15 Jan 2021 10:13:49 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.46
+        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:13:47 -0800 (PST)
+        Fri, 15 Jan 2021 10:13:48 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Vetter <daniel@ffwll.ch>, Eric Anholt <eric@anholt.net>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 20/40] drm/vmwgfx/vmwgfx_kms: Update worthy function headers and demote others
-Date:   Fri, 15 Jan 2021 18:12:53 +0000
-Message-Id: <20210115181313.3431493-21-lee.jones@linaro.org>
+Subject: [PATCH 21/40] drm/gma500/gma_display: Demote kernel-doc abuses to standard comment blocks
+Date:   Fri, 15 Jan 2021 18:12:54 +0000
+Message-Id: <20210115181313.3431493-22-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210115181313.3431493-1-lee.jones@linaro.org>
 References: <20210115181313.3431493-1-lee.jones@linaro.org>
@@ -70,92 +69,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- In file included from drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:37:
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:483: warning: Function parameter or member 'new_state' not described in 'vmw_du_cursor_plane_atomic_check'
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:483: warning: Excess function parameter 'state' description in 'vmw_du_cursor_plane_atomic_check'
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:1069: warning: Function parameter or member 'vfb' not described in 'vmw_framebuffer_pin'
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:1281: warning: Function parameter or member 'dev_priv' not described in 'vmw_kms_srf_ok'
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:1907: warning: Function parameter or member 'crtc' not described in 'vmw_get_vblank_counter'
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:1915: warning: Function parameter or member 'crtc' not described in 'vmw_enable_vblank'
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:1923: warning: Function parameter or member 'crtc' not described in 'vmw_disable_vblank'
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:2131: warning: Function parameter or member 'mode' not described in 'vmw_guess_mode_timing'
+ drivers/gpu/drm/gma500/gma_display.c:27: warning: Function parameter or member 'crtc' not described in 'gma_pipe_has_type'
+ drivers/gpu/drm/gma500/gma_display.c:27: warning: Function parameter or member 'type' not described in 'gma_pipe_has_type'
+ drivers/gpu/drm/gma500/gma_display.c:190: warning: Function parameter or member 'crtc' not described in 'gma_crtc_dpms'
+ drivers/gpu/drm/gma500/gma_display.c:190: warning: Function parameter or member 'mode' not described in 'gma_crtc_dpms'
+ drivers/gpu/drm/gma500/gma_display.c:573: warning: Function parameter or member 'crtc' not described in 'gma_crtc_save'
+ drivers/gpu/drm/gma500/gma_display.c:616: warning: Function parameter or member 'crtc' not described in 'gma_crtc_restore'
 
-Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
-Cc: Roland Scheidegger <sroland@vmware.com>
+Cc: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Eric Anholt <eric@anholt.net>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/gma500/gma_display.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-index 9293dc19a7683..84143b707cd32 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-@@ -467,7 +467,7 @@ int vmw_du_primary_plane_atomic_check(struct drm_plane *plane,
-  * vmw_du_cursor_plane_atomic_check - check if the new state is okay
-  *
-  * @plane: cursor plane
-- * @state: info on the new plane state
-+ * @new_state: info on the new plane state
-  *
-  * This is a chance to fail if the new cursor state does not fit
-  * our requirements.
-@@ -1057,7 +1057,7 @@ static const struct drm_framebuffer_funcs vmw_framebuffer_bo_funcs = {
- 	.dirty = vmw_framebuffer_bo_dirty_ext,
- };
+diff --git a/drivers/gpu/drm/gma500/gma_display.c b/drivers/gpu/drm/gma500/gma_display.c
+index cadae842a0e9e..b03f7b8241f2b 100644
+--- a/drivers/gpu/drm/gma500/gma_display.c
++++ b/drivers/gpu/drm/gma500/gma_display.c
+@@ -20,7 +20,7 @@
+ #include "psb_intel_drv.h"
+ #include "psb_intel_reg.h"
  
 -/**
 +/*
-  * Pin the bofer in a location suitable for access by the
-  * display system.
+  * Returns whether any output on the specified pipe is of the specified type
   */
-@@ -1267,6 +1267,7 @@ static int vmw_kms_new_framebuffer_bo(struct vmw_private *dev_priv,
- /**
-  * vmw_kms_srf_ok - check if a surface can be created
-  *
-+ * @dev_priv: Pointer to device private struct.
-  * @width: requested width
-  * @height: requested height
-  *
-@@ -1896,7 +1897,7 @@ bool vmw_kms_validate_mode_vram(struct vmw_private *dev_priv,
- }
- 
- 
--/**
-+/*
-  * Function called by DRM code called with vbl_lock held.
-  */
- u32 vmw_get_vblank_counter(struct drm_crtc *crtc)
-@@ -1904,7 +1905,7 @@ u32 vmw_get_vblank_counter(struct drm_crtc *crtc)
+ bool gma_pipe_has_type(struct drm_crtc *crtc, int type)
+@@ -180,7 +180,7 @@ int gma_crtc_gamma_set(struct drm_crtc *crtc, u16 *red, u16 *green, u16 *blue,
  	return 0;
  }
  
 -/**
 +/*
-  * Function called by DRM code called with vbl_lock held.
-  */
- int vmw_enable_vblank(struct drm_crtc *crtc)
-@@ -1912,7 +1913,7 @@ int vmw_enable_vblank(struct drm_crtc *crtc)
- 	return -EINVAL;
+  * Sets the power management mode of the pipe and plane.
+  *
+  * This code should probably grow support for turning the cursor off and back
+@@ -566,7 +566,7 @@ int gma_crtc_set_config(struct drm_mode_set *set,
+ 	return ret;
  }
  
 -/**
 +/*
-  * Function called by DRM code called with vbl_lock held.
+  * Save HW states of given crtc
   */
- void vmw_disable_vblank(struct drm_crtc *crtc)
-@@ -2120,7 +2121,7 @@ static struct drm_display_mode vmw_kms_connector_builtin[] = {
-  * vmw_guess_mode_timing - Provide fake timings for a
-  * 60Hz vrefresh mode.
-  *
-- * @mode - Pointer to a struct drm_display_mode with hdisplay and vdisplay
-+ * @mode: Pointer to a struct drm_display_mode with hdisplay and vdisplay
-  * members filled in.
+ void gma_crtc_save(struct drm_crtc *crtc)
+@@ -609,7 +609,7 @@ void gma_crtc_save(struct drm_crtc *crtc)
+ 		crtc_state->savePalette[i] = REG_READ(palette_reg + (i << 2));
+ }
+ 
+-/**
++/*
+  * Restore HW states of given crtc
   */
- void vmw_guess_mode_timing(struct drm_display_mode *mode)
+ void gma_crtc_restore(struct drm_crtc *crtc)
 -- 
 2.25.1
 
