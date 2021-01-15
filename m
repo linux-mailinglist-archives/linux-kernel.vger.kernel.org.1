@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F055A2F8431
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:23:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8582F8422
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388743AbhAOSVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:21:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43862 "EHLO mail.kernel.org"
+        id S2388735AbhAOSVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:21:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726434AbhAOSVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:21:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13EE923AA7;
-        Fri, 15 Jan 2021 18:20:35 +0000 (UTC)
+        id S1733119AbhAOSVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 13:21:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD0CE23AFC;
+        Fri, 15 Jan 2021 18:20:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610734836;
-        bh=yywxwDqzhCGsowbf6Lp1h6NAOX0mTHDYPddZyQTe1ZA=;
+        s=k20201202; t=1610734831;
+        bh=Rzl9zISM7Y5XM+HBsSUTizk0jJUUmy+FRaBFRx/4l6k=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=HVtOaB4YVRF7tyEqDy4FPLguR4hJxrNBUgjNdbrKtR51R6rZp0c9OY9pednANeGcZ
-         5eqpEZf6JRVve4q1AETTslDOCyOeqhJcO2QO1Tvd2GziUQ8yM8HWMz7iQT9a1OKMwV
-         tsHBqxLf+RRRogOXIebyHFv3QdnUQ9xWC3Iuk09c2ekCbm80REl0Rjyf97b0lH2/WZ
-         i1ZVPmjook3gxY+0c3LjT5bZVT+xkXDlQ0HPK7K6XaCGum6ySerJA0z2bzpvzzbg1x
-         kj2zMV8Y9KNYOXWCuTZuPvmcFkeTndukZ76VcYBWfRiGGwUQhaTUH6PQ/OgEu39j3b
-         dR/elNyIMXQug==
+        b=WauPeOggsiDQYj0OYxsMCCfd4Qi5EIRi4zXd5ufHqyld595ou5xlTPNnupVLBKImw
+         umdSQZn7wRsIHf1W7FoQ5VxIbQi/2Fw9lcO+3JuRlyDZyG+vwriyr7yxAHRmHezdFY
+         0JbZccCcEXcnOnWNlLZ5XeFjbgjecPoDef8TiEn1Fw03dbA5q4bZ3r87BBDMNut3gF
+         Q6ypZWdMaSIChCuP6QCpxiemsZ7lu0mWjZuAoraDm/woIi/+b2B2Xw2fBwUtZhz7Lx
+         Qy7JMzAaVWvaUQlL5h5q5P497kY/DCdCW4eAcmJegvJbAb3hrAvzTDJyMCm0qL1NMK
+         VCcPW+azH7DUA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        jagan@amarulasolutions.com, devicetree@vger.kernel.org,
-        lgirdwood@gmail.com
-In-Reply-To: <20210113222016.1915993-1-adrien.grassein@gmail.com>
-References: <20210113222016.1915993-1-adrien.grassein@gmail.com>
-Subject: Re: [PATCH v4 0/6] Fix issues on pf8x00 driver
-Message-Id: <161073479107.12431.7161364443941484976.b4-ty@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        linux-arm-msm@vger.kernel.org
+Cc:     bjorn.andersson@linaro.org, sumit.semwal@linaro.org,
+        martin.botka@somainline.org, robh+dt@kernel.org, agross@kernel.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        phone-devel@vger.kernel.org, marijn.suijten@somainline.org,
+        devicetree@vger.kernel.org, lgirdwood@gmail.com
+In-Reply-To: <20210113194214.522238-1-angelogioacchino.delregno@somainline.org>
+References: <20210113194214.522238-1-angelogioacchino.delregno@somainline.org>
+Subject: Re: (subset) [PATCH v2 0/7] Really implement Qualcomm LAB/IBB regulators
+Message-Id: <161073479108.12431.17135576809621290489.b4-ty@kernel.org>
 Date:   Fri, 15 Jan 2021 18:19:51 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -40,14 +44,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021 23:20:10 +0100, Adrien Grassein wrote:
-> this patch set aims is to fix some issues contains in the pf8x00 driver.
-> Some issues are documentation ones, some others are in code.
-> 
-> These issues where found while developing another version of the same
-> driver. I prefer to share with you the patch for it.
-> 
-> I do these patches on the master branch of the linux-next repository.
+On Wed, 13 Jan 2021 20:42:07 +0100, AngeloGioacchino Del Regno wrote:
+> Okay, the title may be a little "aggressive"? However, the qcom-labibb
+> driver wasn't really .. doing much.
+> The current form of this driver is only taking care of enabling or
+> disabling the regulators, which is pretty useless if they were not
+> pre-set from the bootloader, which sets them only if continuous
+> splash is enabled.
+> Moreover, some bootloaders are setting a higher voltage and/or a higher
+> current limit compared to what's actually required by the attached
+> hardware (which is, in 99.9% of the cases, a display) and this produces
+> a higher power consumption, higher heat output and a risk of actually
+> burning the display if kept up for a very long time: for example, this
+> is true on at least some Sony Xperia MSM8998 (Yoshino platform) and
+> especially on some Sony Xperia SDM845 (Tama platform) smartphones.
 > 
 > [...]
 
@@ -57,18 +67,8 @@ Applied to
 
 Thanks!
 
-[1/6] regulator: pf8x00: add a doc for the module
-      commit: 4d23b84d1fcd1eadbc5c6cd93e76b02a8d191d66
-[2/6] regulator: dt-bindings: pf8x00: fix nxp,phase-shift doc
-      commit: 988d0d42509a2c1fad0844a6e8f9c7bce7c930dd
-[3/6] regulator: dt-bindings: pf8x00: mark nxp,ilim-ma property as deprecated
-      commit: 34b860aa0b6221b21eea6bac76357063f525b561
-[4/6] regulator: pf8x00: mark nxp,ilim-ma property as deprecated
-      commit: 245f5f65229a6c6f5b04fa90221b44818a928916
-[5/6] regulator: pf8x00: use linear range for buck 1-6
-      commit: 35a93349932e0e04c284f8a4954f3d1236c97d85
-[6/6] regulator: pf8x00: fix nxp,phase-shift
-      commit: 475a5d85ff62f7ca73f51f23977e7e3ec8c9f906
+[1/7] regulator: qcom-labibb: Implement voltage selector ops
+      commit: dd582369c6c1f39ec475af6191a934f3e57fda35
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
