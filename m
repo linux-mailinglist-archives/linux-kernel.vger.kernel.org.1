@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D442F746D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EE82F746F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730100AbhAOIcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 03:32:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57128 "EHLO mail.kernel.org"
+        id S1730177AbhAOIeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 03:34:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726439AbhAOIcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 03:32:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1A3E22C7D;
-        Fri, 15 Jan 2021 08:32:10 +0000 (UTC)
+        id S1725880AbhAOIeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 03:34:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8017522597;
+        Fri, 15 Jan 2021 08:33:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610699530;
-        bh=l+vS3UHXXMrTJUBoLO6zBmJwtTma5Au1XHnUzyN4zW4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mTMCN0X3oCQgUbwZMAHO0vL3f6cxtUsRT65kSyGPT+GXs3QkYrfXawcTRCWViqOZO
-         1LdEl4aYVgSnElv5L+bIM1numvEjmB34RIgsXX5XpGlM6TvImsWwkRn3GVRcuLSkpH
-         /2ds2Ev+bEJPiooSiogiv7dTfiVla3XwoXFDgdqcmB3zcdKkRJE0SPK1CXkkA7YbDw
-         P9lfMRsGOuF7A5J0sfUWSVEj/qZXg9zM1WPb6lvqM8BOYNQ62vEUpXpInb7aLdCyth
-         9g4wDW7hUH8X2JZ5earEN2Q9UsTEuo2IdJSeJ9Te8t7xm4uI/7uz5WGNC1LuLsr06F
-         teb1dmHfxHYRQ==
-Received: by mail-ot1-f46.google.com with SMTP id o11so7845944ote.4;
-        Fri, 15 Jan 2021 00:32:10 -0800 (PST)
-X-Gm-Message-State: AOAM53394MTcbjWV5CuCGt2Byh40TZMxFgoLBluQio0McZ4jy43Q3Y0B
-        vsyD0mDl81J5j/7K9QxQL+4dQ8Lp9CiLCvYcVNU=
-X-Google-Smtp-Source: ABdhPJyAZ9w6n+VSogM+tjnZEM6qr0MpVtvpDIkaBLigf9jGDThlrmNDUxXZPg7dZ6Yqzz7x4XxQ8NocTkgvdDdGixg=
-X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr7509680otm.305.1610699529936;
- Fri, 15 Jan 2021 00:32:09 -0800 (PST)
+        s=k20201202; t=1610699600;
+        bh=KpXmcXL6FYc320RhBuERzath9qSEZFkBf2bJF4H4cmc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SW/g2dTWKGHibp7GcZoc7RanuaeEfvCGzUkMd2N28NQnlLJpd21DXiKc+XHf8fh8I
+         xo3OBIE5Vdj31zcF/CR2c2TE2vijLaJb0ipZGQMTgENBPS79Hh3J/W4eX41XpWh1Q7
+         MFTK5UQvdchPjerlzxb5j+EtLXFpulrVGXTYtlfTEkleyvB+x1BHxUEgt6g9PgPO5P
+         4YchAEcLGJamFPM4LH6yfLPxCGMDVR6+ep8jsTXJWiztRpiFJOLEIntGHZIOP+hHaO
+         LriShka04lSjY7Ny1aZ8GmGlyNI2eTUMMFFkvURjmf8D2gWY/36k5FDT5A4iYejy7x
+         MqaCavw9ej1hg==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org
+Subject: [PATCH 0/2] x86/setup: consolidate early memory reservations
+Date:   Fri, 15 Jan 2021 10:32:53 +0200
+Message-Id: <20210115083255.12744-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
- <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net> <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
- <CACRpkda4E2NwNw29J7x5gehtqn_m3M_Z2dHpc7xRgvb0b-p22A@mail.gmail.com>
- <1be37673-db0e-f09d-68c8-f929be4019ab@physik.fu-berlin.de>
- <CAK8P3a1+SdAW8VKnvMdXNVcpR-ykNdPoqLqb59uxzB+jNFJRtg@mail.gmail.com> <CAMo8Bf+geJqaaTkwaRyMUZPJgGC1ELXTdnYGq92UNnaaz2CFVg@mail.gmail.com>
-In-Reply-To: <CAMo8Bf+geJqaaTkwaRyMUZPJgGC1ELXTdnYGq92UNnaaz2CFVg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 15 Jan 2021 09:31:53 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a16dta82GOVZCcMgFokB4Mo6y6Vje=+5gUH-t-1ATQYUw@mail.gmail.com>
-Message-ID: <CAK8P3a16dta82GOVZCcMgFokB4Mo6y6Vje=+5gUH-t-1ATQYUw@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Gerhard Pircher <gerhard_pircher@gmx.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 12:09 AM Max Filippov <jcmvbkbc@gmail.com> wrote:
-> On Thu, Jan 14, 2021 at 1:25 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > | arch/mips/Kconfig:config HIGHMEM
-> > | arch/xtensa/Kconfig:config HIGHMEM
-> >
-> > AFAICT On MIPS (prior to MIPS32r3) and xtensa, you have at
-> > most 512MB in the linear map, so the VMSPLIT_2G or VMSPLIT_4G_4G
-> > tricks won't work.
->
-> Regarding xtensa this was done to minimize difference between
-> MMUv2 and MMUv3 virtual memory layouts. MMUv2 has been
-> obsoleted more than 10 years ago, and MMUv3 is much more
-> flexible and can do e.g. 4GB linear map. The only piece of xtensa
-> MMUv2 hardware that I have has 96MB of DRAM which fits into
-> its linear mapping. So maybe it's time to do a cleanup and
-> rearrange virtual memory layout to eliminate the need of highmem.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Yes, I think that sounds like a useful preparation for the future.
+Hi,
 
-> > I have no idea who uses xtensa systems with lots of memory on
-> > modern kernels.
->
-> We definitely use it for development internally at Cadence/Tensilica,
-> mainly on simulators, but also on FPGA boards (e.g. on KC705 we
-> can use all of the 1GB onboard DRAM).
-> In the last few years we've had a few support requests for linux on
-> xtensa cores with MMU, but AFAICT none of them had to deal with
-> more than 512MB of onboard memory.
+David noticed that we do some of memblock_reserve() calls after allocations
+are possible:
 
-If 1GB of RAM is a useful upper bound on MMUv3, the easiest way is
-probably to hardcode the CONFIG_VMSPLIT_3G_OPT behavior
-from x86 and ARM, using 2.75GB of user addresses (TASK_SIZE),
-and 1.25 GB that gets split between linear map and vmalloc space,
-but no uncached linear map and ioremap() pointing into vmalloc
-instead. If you want to be prepared for machines with 2GB of linear
-lowmem, you could do the same with VMSPLIT_2G_OPT
-(TASK_SIZE == 0x70000000).
+https://lore.kernel.org/lkml/6ba6bde3-1520-5cd0-f987-32d543f0b79f@redhat.com
 
-      Arnd
+For now there is no actual problem because in top-down mode we allocate
+from the end of the memory and in bottom-up mode we allocate above the
+kernel image. But there is a patch in the mm tree that allow bottom-up
+allocations below the kernel:
+
+https://lore.kernel.org/lkml/20201217201214.3414100-2-guro@fb.com
+
+and with this change we may get a memory corruption if an allocation steps
+on some of the firmware areas that are yet to be reserved.
+
+The below patches consolidate early memory reservations done during
+setup_arch() so that memory used by firmware, bootloader, kernel text/data
+and the memory that should be excluded from the available memory for
+whatever other reason is reserved before memblock allocations are possible.
+
+The patches are vs v5.11-rc3-mmots-2021-01-12-02-00 as I think they are
+prerequisite for the memblock bottom-up changes, but if needed I can rebase
+then on another tree.
+
+Mike Rapoport (2):
+  x86/setup: consolidate early memory reservations
+  x86/setup: merge several reservations of start of the memory
+
+ arch/x86/kernel/setup.c | 85 +++++++++++++++++++++--------------------
+ 1 file changed, 43 insertions(+), 42 deletions(-)
+
+-- 
+2.28.0
+
