@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A282F7964
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9172F792A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387727AbhAOMfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:35:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42672 "EHLO mail.kernel.org"
+        id S1731110AbhAOMcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:32:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729990AbhAOMfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:35:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37DA2236FB;
-        Fri, 15 Jan 2021 12:34:56 +0000 (UTC)
+        id S1728292AbhAOMcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:32:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E152723339;
+        Fri, 15 Jan 2021 12:31:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714096;
-        bh=rSih70okvAofANG/VIkYzxE2fl9zFMm++0vCfDGt0EQ=;
+        s=korg; t=1610713916;
+        bh=85VCItOyBSzkmNzXmzukWng1sNE51ex2TaAMK5W/5Iw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DOF0UgUmm5MmUwvWVAvlx/yyzJpt8aEvdgfn59Ayy9VAnG9TJyB+Yv5Y6lICUsfws
-         AjVsLGtCVqanHGvSuE3E4SlJUimbx5NQtEIdTrRWjPAoNgZO8sBOGdn5K3cBLJLxkd
-         Nwa74iLF7eI7pcB05gjGF3s/9r2xoWuVhVLvZhVI=
+        b=HcCAAB699eLD8Ovje2otzrzObtLMXD/A+e8D/sNNIacBOmY6pvGcOjJQYemFmaXQl
+         Ekrpy5cZ597RZ9ippJpDgfXs7EEqBCFPuCSpC+udW57HeCgDraFXs60ioI6sBC2w3G
+         aVC6PuaCmOfg0U0bgm3xO+Eiv5rZMwb6PHgvs4Mc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.4 43/62] dmaengine: mediatek: mtk-hsdma: Fix a resource leak in the error handling path of the probe function
+        syzbot+7010af67ced6105e5ab6@syzkaller.appspotmail.com,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 28/28] net: drop bogus skb with CHECKSUM_PARTIAL and offset beyond end of trimmed packet
 Date:   Fri, 15 Jan 2021 13:28:05 +0100
-Message-Id: <20210115122000.478035318@linuxfoundation.org>
+Message-Id: <20210115121958.158487270@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115121956.731354372@linuxfoundation.org>
+References: <20210115121956.731354372@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit 33cbd54dc515cc04b5a603603414222b4bb1448d upstream.
+commit 54970a2fbb673f090b7f02d7f57b10b2e0707155 upstream.
 
-'mtk_hsdma_hw_deinit()' should be called in the error handling path of the
-probe function to undo a previous 'mtk_hsdma_hw_init()' call, as already
-done in the remove function.
+syzbot reproduces BUG_ON in skb_checksum_help():
+tun creates (bogus) skb with huge partial-checksummed area and
+small ip packet inside. Then ip_rcv trims the skb based on size
+of internal ip packet, after that csum offset points beyond of
+trimmed skb. Then checksum_tg() called via netfilter hook
+triggers BUG_ON:
 
-Fixes: 548c4597e984 ("dmaengine: mediatek: Add MediaTek High-Speed DMA controller for MT7622 and MT7623 SoC")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201219124718.182664-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+        offset = skb_checksum_start_offset(skb);
+        BUG_ON(offset >= skb_headlen(skb));
+
+To work around the problem this patch forces pskb_trim_rcsum_slow()
+to return -EINVAL in described scenario. It allows its callers to
+drop such kind of packets.
+
+Link: https://syzkaller.appspot.com/bug?id=b419a5ca95062664fe1a60b764621eb4526e2cd0
+Reported-by: syzbot+7010af67ced6105e5ab6@syzkaller.appspotmail.com
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Link: https://lore.kernel.org/r/1b2494af-2c56-8ee2-7bc0-923fcad1cdf8@virtuozzo.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/dma/mediatek/mtk-hsdma.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/core/skbuff.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/dma/mediatek/mtk-hsdma.c
-+++ b/drivers/dma/mediatek/mtk-hsdma.c
-@@ -1007,6 +1007,7 @@ static int mtk_hsdma_probe(struct platfo
- 	return 0;
- 
- err_free:
-+	mtk_hsdma_hw_deinit(hsdma);
- 	of_dma_controller_free(pdev->dev.of_node);
- err_unregister:
- 	dma_async_device_unregister(dd);
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -1850,6 +1850,12 @@ int pskb_trim_rcsum_slow(struct sk_buff
+ 		skb->csum = csum_block_sub(skb->csum,
+ 					   skb_checksum(skb, len, delta, 0),
+ 					   len);
++	} else if (skb->ip_summed == CHECKSUM_PARTIAL) {
++		int hdlen = (len > skb_headlen(skb)) ? skb_headlen(skb) : len;
++		int offset = skb_checksum_start_offset(skb) + skb->csum_offset;
++
++		if (offset + sizeof(__sum16) > hdlen)
++			return -EINVAL;
+ 	}
+ 	return __pskb_trim(skb, len);
+ }
 
 
