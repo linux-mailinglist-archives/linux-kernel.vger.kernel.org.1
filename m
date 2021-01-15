@@ -2,155 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C672F7790
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A9C2F779E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:27:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbhAOLYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:24:23 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:58081 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726046AbhAOLYW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:24:22 -0500
-X-UUID: 69a24a2d07a641f392b1dff7cc47ea39-20210115
-X-UUID: 69a24a2d07a641f392b1dff7cc47ea39-20210115
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <crystal.guo@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1357855546; Fri, 15 Jan 2021 19:23:37 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 15 Jan 2021 19:23:36 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 15 Jan 2021 19:23:35 +0800
-From:   Crystal Guo <crystal.guo@mediatek.com>
-To:     <p.zabel@pengutronix.de>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>, <crystal.guo@mediatek.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <stanley.chu@mediatek.com>, <srv_heupstream@mediatek.com>,
-        <seiya.wang@mediatek.com>, <fan.chen@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>, <Yingjoe.Chen@mediatek.com>,
-        <s-anna@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <Yidi.Lin@mediatek.com>, <ikjn@chromium.org>
-Subject: [v7,2/2] reset-controller: ti: introduce an integrated reset handler
-Date:   Fri, 15 Jan 2021 19:23:31 +0800
-Message-ID: <20210115112331.27434-3-crystal.guo@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210115112331.27434-1-crystal.guo@mediatek.com>
-References: <20210115112331.27434-1-crystal.guo@mediatek.com>
+        id S1726865AbhAOL1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:27:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726101AbhAOL1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 06:27:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74B52221F7;
+        Fri, 15 Jan 2021 11:26:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610709984;
+        bh=Ud2aU3k2amrcKUSS+xZ+7kbwFYaKD8iDQJBdhP/vXCU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=kjFFbT+cftc/qgBpV2O5kcSyfAGq9i70VipVaLTA4N5FvBFUAi3CnAJsdcuvwnsMK
+         EG/W0QdAYqsWMNkN5EDMbz+k05nzFRKnLC8FsA2G1+wxquxKT42lKFgPbHL4swHi0I
+         Yds6sKl5nmGCrUO5HWkfqg+OpHHDkedAs/I4E+UetBp/qIRtmMkyN25e34KNLmm50j
+         efnjTDxK1OQXZVKa/JXGIWT7I6udj+57OoHVNzff/z9Q5FHCw1dgJTU0iZF2RphOsN
+         Vx7Y/nSDM5LKEHm13LX3daUWT5zjF//9j8MJ74/HJ7LqLoNERJ5QlAHs2mjsSHcHit
+         rdWFDtaL+H/mQ==
+Date:   Fri, 15 Jan 2021 11:26:20 +0000
+From:   Will Deacon <will@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     iommu <iommu@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [GIT PULL] IOMMU fixes for -rc4
+Message-ID: <20210115112619.GA14253@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 5E853876C392C9C9401EA3500EE0D371DA375EFC9FD4FBEBB67153AC2FA3F1082000:8
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce ti_syscon_reset() to integrate assert and deassert together.
-If some modules need do serialized assert and deassert operations
-to reset itself, reset_control_reset can be called for convenience.
+Hi Linus,
 
-Such as reset-qcom-aoss.c, it integrates assert and deassert together
-by 'reset' method. MTK Socs also need this method to perform reset.
+Please pull these three IOMMU fixes for -rc4. The main one is a change
+to the Intel IOMMU driver to fix the handling of unaligned addresses
+when invalidating the TLB. The fix itself is a bit ugly (the caller does
+a bunch of shifting which is then effectively undone later in the
+callchain), but Lu has patches to clean all of this up in 5.12.
 
-Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
----
- drivers/reset/reset-ti-syscon.c | 39 +++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+Thanks,
 
-diff --git a/drivers/reset/reset-ti-syscon.c b/drivers/reset/reset-ti-syscon.c
-index 218370faf37b..a30cb17362a4 100644
---- a/drivers/reset/reset-ti-syscon.c
-+++ b/drivers/reset/reset-ti-syscon.c
-@@ -15,15 +15,24 @@
-  * GNU General Public License for more details.
-  */
- 
-+#include <linux/delay.h>
- #include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/reset-controller.h>
- 
- #include <dt-bindings/reset/ti-syscon.h>
- 
-+#define MTK_SYSCON_RESET_FLAG	BIT(0)
-+#define MT_RESET_DURATION	10
-+
-+struct mediatek_reset_data {
-+	unsigned int flag;
-+};
-+
- /**
-  * struct ti_syscon_reset_control - reset control structure
-  * @assert_offset: reset assert control register offset from syscon base
-@@ -56,6 +65,7 @@ struct ti_syscon_reset_data {
- 	struct regmap *regmap;
- 	struct ti_syscon_reset_control *controls;
- 	unsigned int nr_controls;
-+	const struct mediatek_reset_data *reset_data;
- };
- 
- #define to_ti_syscon_reset_data(rcdev)	\
-@@ -158,9 +168,32 @@ static int ti_syscon_reset_status(struct reset_controller_dev *rcdev,
- 		!(control->flags & STATUS_SET);
- }
- 
-+static int mtk_syscon_reset(struct reset_controller_dev *rcdev, unsigned long id)
-+{
-+	int ret;
-+
-+	ret = ti_syscon_reset_assert(rcdev, id);
-+	if (ret)
-+		return ret;
-+	usleep_range(MT_RESET_DURATION, MT_RESET_DURATION * 2);
-+
-+	return ti_syscon_reset_deassert(rcdev, id);
-+}
-+
-+static int ti_syscon_reset(struct reset_controller_dev *rcdev, unsigned long id)
-+{
-+	struct ti_syscon_reset_data *data = to_ti_syscon_reset_data(rcdev);
-+
-+	if (data->reset_data && data->reset_data->flag & MTK_SYSCON_RESET_FLAG)
-+		return mtk_syscon_reset(rcdev, id);
-+	else
-+		return -ENOTSUPP;
-+}
-+
- static const struct reset_control_ops ti_syscon_reset_ops = {
- 	.assert		= ti_syscon_reset_assert,
- 	.deassert	= ti_syscon_reset_deassert,
-+	.reset		= ti_syscon_reset,
- 	.status		= ti_syscon_reset_status,
- };
- 
-@@ -182,6 +215,7 @@ static int ti_syscon_reset_probe(struct platform_device *pdev)
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
- 
-+	data->reset_data = of_device_get_match_data(&pdev->dev);
- 	list = of_get_property(np, "ti,reset-bits", &size);
- 	if (!list || (size / sizeof(*list)) % 7 != 0) {
- 		dev_err(dev, "invalid DT reset description\n");
-@@ -217,8 +251,13 @@ static int ti_syscon_reset_probe(struct platform_device *pdev)
- 	return devm_reset_controller_register(dev, &data->rcdev);
- }
- 
-+static const struct mediatek_reset_data mtk_reset_data = {
-+	.flag = MTK_SYSCON_RESET_FLAG,
-+};
-+
- static const struct of_device_id ti_syscon_reset_of_match[] = {
- 	{ .compatible = "ti,syscon-reset", },
-+	{ .compatible = "mediatek,syscon-reset", .data = &mtk_reset_data},
- 	{ /* sentinel */ },
- };
- MODULE_DEVICE_TABLE(of, ti_syscon_reset_of_match);
--- 
-2.18.0
+Will
 
+--->8
+
+The following changes since commit 7c29ada5e70083805bc3a68daa23441df421fbee:
+
+  iommu/vt-d: Fix ineffective devTLB invalidation for subdevices (2021-01-07 14:38:15 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/iommu-fixes
+
+for you to fetch changes up to 694a1c0adebee9152a9ba0320468f7921aca647d:
+
+  iommu/vt-d: Fix duplicate included linux/dma-map-ops.h (2021-01-12 16:56:20 +0000)
+
+----------------------------------------------------------------
+iommu fixes for -rc4
+
+- Fix address alignment handling for VT-D TLB invalidation
+
+- Enable workarounds for buggy Qualcomm firmware on two more SoCs
+
+- Drop duplicate #include
+
+----------------------------------------------------------------
+Konrad Dybcio (1):
+      iommu: arm-smmu-qcom: Add sdm630/msm8998 compatibles for qcom quirks
+
+Lu Baolu (1):
+      iommu/vt-d: Fix unaligned addresses for intel_flush_svm_range_dev()
+
+Tian Tao (1):
+      iommu/vt-d: Fix duplicate included linux/dma-map-ops.h
+
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c |  2 ++
+ drivers/iommu/intel/iommu.c                |  1 -
+ drivers/iommu/intel/svm.c                  | 22 ++++++++++++++++++++--
+ 3 files changed, 22 insertions(+), 3 deletions(-)
