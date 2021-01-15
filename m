@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCA22F7BD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCFF2F7BB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388556AbhAONGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:06:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36244 "EHLO mail.kernel.org"
+        id S1732665AbhAOMbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:31:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732608AbhAOMb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:31:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E94A23136;
-        Fri, 15 Jan 2021 12:30:56 +0000 (UTC)
+        id S1732552AbhAOMbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC8C723356;
+        Fri, 15 Jan 2021 12:30:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713857;
-        bh=1pMyVfnnOHoa+A67Ck+9KWJEzsoqnZJAgAAndxT2vC8=;
+        s=korg; t=1610713848;
+        bh=gQXy+mR9D1IBVflhFmLHtMzWnt6Si8GyfQOWY9wZi1k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Eg7QcihwoZTWj9GV4Ph3GNS6XjGMkzoTYLzlYgnT099BsbN4aEqnYdXcmtWlCJWPR
-         8RljQF0iOaUzVkG/cfU1RUDnl9v9shzXTK4+VrqhgaeZGXBprAvBH4RfOSN3CUqKAi
-         t4Ubk7k1BwVCseSypCuZfR5ouQuRHp6rqKxsg+qU=
+        b=Blx4PZ5ahhfrk4vXLn2Jz7LHg+Tc5+Vn+nuUzSQXEjNuU4YIS8FBs9pFBuM71SZM6
+         0H0LW6bDbJkZ4jGriXLYGF0cq+l9CFCmUEgA0tMLw1+PIO6ekMZ3V4H5OByC2x1A1V
+         VJfYjJ+QEt9y60+brcKfijayNXXrUV53Zey0D4Co=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 01/28] powerpc: Fix incorrect stw{, ux, u, x} instructions in __set_pte_at
-Date:   Fri, 15 Jan 2021 13:27:38 +0100
-Message-Id: <20210115121956.808660055@linuxfoundation.org>
+        Christian Perle <christian.perle@secunet.com>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 08/25] net: ip: always refragment ip defragmented packets
+Date:   Fri, 15 Jan 2021 13:27:39 +0100
+Message-Id: <20210115121957.096031181@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121956.731354372@linuxfoundation.org>
-References: <20210115121956.731354372@linuxfoundation.org>
+In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
+References: <20210115121956.679956165@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,69 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit d85be8a49e733dcd23674aa6202870d54bf5600d ]
+[ Upstream commit bb4cc1a18856a73f0ff5137df0c2a31f4c50f6cf ]
 
-The placeholder for instruction selection should use the second
-argument's operand, which is %1, not %0. This could generate incorrect
-assembly code if the memory addressing of operand %0 is a different
-form from that of operand %1.
+Conntrack reassembly records the largest fragment size seen in IPCB.
+However, when this gets forwarded/transmitted, fragmentation will only
+be forced if one of the fragmented packets had the DF bit set.
 
-Also remove the %Un placeholder because having %Un placeholders
-for two operands which are based on the same local var (ptep) doesn't
-make much sense. By the way, it doesn't change the current behaviour
-because "<>" constraint is missing for the associated "=m".
+In that case, a flag in IPCB will force fragmentation even if the
+MTU is large enough.
 
-[chleroy: revised commit log iaw segher's comments and removed %U0]
+This should work fine, but this breaks with ip tunnels.
+Consider client that sends a UDP datagram of size X to another host.
 
-Fixes: 9bf2b5cdc5fe ("powerpc: Fixes for CONFIG_PTE_64BIT for SMP support")
-Cc: <stable@vger.kernel.org> # v2.6.28+
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Acked-by: Segher Boessenkool <segher@kernel.crashing.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/96354bd77977a6a933fe9020da57629007fdb920.1603358942.git.christophe.leroy@csgroup.eu
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The client fragments the datagram, so two packets, of size y and z, are
+sent. DF bit is not set on any of these packets.
+
+Middlebox netfilter reassembles those packets back to single size-X
+packet, before routing decision.
+
+packet-size-vs-mtu checks in ip_forward are irrelevant, because DF bit
+isn't set.  At output time, ip refragmentation is skipped as well
+because x is still smaller than the mtu of the output device.
+
+If ttransmit device is an ip tunnel, the packet size increases to
+x+overhead.
+
+Also, tunnel might be configured to force DF bit on outer header.
+
+In this case, packet will be dropped (exceeds MTU) and an ICMP error is
+generated back to sender.
+
+But sender already respects the announced MTU, all the packets that
+it sent did fit the announced mtu.
+
+Force refragmentation as per original sizes unconditionally so ip tunnel
+will encapsulate the fragments instead.
+
+The only other solution I see is to place ip refragmentation in
+the ip_tunnel code to handle this case.
+
+Fixes: d6b915e29f4ad ("ip_fragment: don't forward defragmented DF packet")
+Reported-by: Christian Perle <christian.perle@secunet.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/include/asm/book3s/32/pgtable.h | 4 ++--
- arch/powerpc/include/asm/nohash/pgtable.h    | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ net/ipv4/ip_output.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/include/asm/book3s/32/pgtable.h b/arch/powerpc/include/asm/book3s/32/pgtable.h
-index 016579ef16d3d..ec98abca0df03 100644
---- a/arch/powerpc/include/asm/book3s/32/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
-@@ -414,9 +414,9 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
- 	if (pte_val(*ptep) & _PAGE_HASHPTE)
- 		flush_hash_entry(mm, ptep, addr);
- 	__asm__ __volatile__("\
--		stw%U0%X0 %2,%0\n\
-+		stw%X0 %2,%0\n\
- 		eieio\n\
--		stw%U0%X0 %L2,%1"
-+		stw%X1 %L2,%1"
- 	: "=m" (*ptep), "=m" (*((unsigned char *)ptep+4))
- 	: "r" (pte) : "memory");
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -300,7 +300,7 @@ static int ip_finish_output(struct net *
+ 	if (skb_is_gso(skb))
+ 		return ip_finish_output_gso(net, sk, skb, mtu);
  
-diff --git a/arch/powerpc/include/asm/nohash/pgtable.h b/arch/powerpc/include/asm/nohash/pgtable.h
-index 5c68f4a59f758..e9171b8242e4b 100644
---- a/arch/powerpc/include/asm/nohash/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/pgtable.h
-@@ -157,9 +157,9 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
- 		flush_hash_entry(mm, ptep, addr);
- #endif
- 	__asm__ __volatile__("\
--		stw%U0%X0 %2,%0\n\
-+		stw%X0 %2,%0\n\
- 		eieio\n\
--		stw%U0%X0 %L2,%1"
-+		stw%X1 %L2,%1"
- 	: "=m" (*ptep), "=m" (*((unsigned char *)ptep+4))
- 	: "r" (pte) : "memory");
+-	if (skb->len > mtu || (IPCB(skb)->flags & IPSKB_FRAG_PMTU))
++	if (skb->len > mtu || IPCB(skb)->frag_max_size)
+ 		return ip_fragment(net, sk, skb, mtu, ip_finish_output2);
  
--- 
-2.27.0
-
+ 	return ip_finish_output2(net, sk, skb);
 
 
