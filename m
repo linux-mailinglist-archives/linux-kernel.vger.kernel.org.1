@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35732F79AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EC72F796E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388339AbhAOMjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:39:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47034 "EHLO mail.kernel.org"
+        id S2387880AbhAOMg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:36:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388284AbhAOMjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:39:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23D2D235F9;
-        Fri, 15 Jan 2021 12:38:49 +0000 (UTC)
+        id S2387828AbhAOMgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:36:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0BE52336F;
+        Fri, 15 Jan 2021 12:35:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714330;
-        bh=OfHwcpKeF5C1319OmThlbPWXSa63NkVHz8FSKR2z9AM=;
+        s=korg; t=1610714127;
+        bh=f0uF12iWYdWqVFfYSAYT6oY8N3u3USLCdiO3LCSqxd0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JVcouQSxwVThOvN1YUCc4OuNMs2125ed3BF1z3XuQwWp5UUN/d0XrAMAV0CAhaDDF
-         cpDsxlQ6o9jGadMNYl3k7wB881Pzrr0H+DHQ9YdurAVpQTDwY/wSYoYB3wbln7dZlV
-         i81CCrBsLxxGZ9Tg2tb3ljdLVR2zZscvuU0/aoW0=
+        b=UN1CAjrbUbCZ8tUlMwxUfrjYvr2KWQgUIk6ZTcQOuO//hodKvz2GURPTOb18ReSs7
+         euZgcVZzILanqEHJwNFUtZOWdA1UGkim0LDGjSb3w7e+iJmmuiSL+ul9vmKLaj5xYo
+         +WNCBPxmdcUPrqCGBRDTwpyDgbe84MQnSCfAhDXs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 087/103] wan: ds26522: select CONFIG_BITREVERSE
-Date:   Fri, 15 Jan 2021 13:28:20 +0100
-Message-Id: <20210115122010.224549699@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 5.4 59/62] KVM: arm64: Dont access PMCR_EL0 when no PMU is available
+Date:   Fri, 15 Jan 2021 13:28:21 +0100
+Message-Id: <20210115122001.241016765@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
-References: <20210115122006.047132306@linuxfoundation.org>
+In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
+References: <20210115121958.391610178@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Marc Zyngier <maz@kernel.org>
 
-commit 69931e11288520c250152180ecf9b6ac5e6e40ed upstream.
+commit 2a5f1b67ec577fb1544b563086e0377f095f88e2 upstream.
 
-Without this, the driver runs into a link failure
+We reset the guest's view of PMCR_EL0 unconditionally, based on
+the host's view of this register. It is however legal for an
+implementation not to provide any PMU, resulting in an UNDEF.
 
-arm-linux-gnueabi-ld: drivers/net/wan/slic_ds26522.o: in function `slic_ds26522_probe':
-slic_ds26522.c:(.text+0x100c): undefined reference to `byte_rev_table'
-arm-linux-gnueabi-ld: slic_ds26522.c:(.text+0x1cdc): undefined reference to `byte_rev_table'
-arm-linux-gnueabi-ld: drivers/net/wan/slic_ds26522.o: in function `slic_write':
-slic_ds26522.c:(.text+0x1e4c): undefined reference to `byte_rev_table'
+The obvious fix is to skip the reset of this shadow register
+when no PMU is available, sidestepping the issue entirely.
+If no PMU is available, the guest is not able to request
+a virtual PMU anyway, so not doing nothing is the right thing
+to do!
 
-Fixes: c37d4a0085c5 ("Maxim/driver: Add driver for maxim ds26522")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+It is unlikely that this bug can hit any HW implementation
+though, as they all provide a PMU. It has been found using nested
+virt with the host KVM not implementing the PMU itself.
+
+Fixes: ab9468340d2bc ("arm64: KVM: Add access handler for PMCR register")
+Reviewed-by: Alexandru Elisei <alexandru.elisei@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20201210083059.1277162-1-maz@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/wan/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/kvm/sys_regs.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/net/wan/Kconfig
-+++ b/drivers/net/wan/Kconfig
-@@ -282,6 +282,7 @@ config SLIC_DS26522
- 	tristate "Slic Maxim ds26522 card support"
- 	depends on SPI
- 	depends on FSL_SOC || ARCH_MXC || ARCH_LAYERSCAPE || COMPILE_TEST
-+	select BITREVERSE
- 	help
- 	  This module initializes and configures the slic maxim card
- 	  in T1 or E1 mode.
+--- a/arch/arm64/kvm/sys_regs.c
++++ b/arch/arm64/kvm/sys_regs.c
+@@ -625,6 +625,10 @@ static void reset_pmcr(struct kvm_vcpu *
+ {
+ 	u64 pmcr, val;
+ 
++	/* No PMU available, PMCR_EL0 may UNDEF... */
++	if (!kvm_arm_support_pmu_v3())
++		return;
++
+ 	pmcr = read_sysreg(pmcr_el0);
+ 	/*
+ 	 * Writable bits of PMCR_EL0 (ARMV8_PMU_PMCR_MASK) are reset to UNKNOWN
 
 
