@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6FC2F83BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 175102F83CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387945AbhAOSPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:15:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
+        id S2388214AbhAOSP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:15:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727726AbhAOSOx (ORCPT
+        with ESMTP id S2388118AbhAOSPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:14:53 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135B2C0617A9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:47 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id y187so8408813wmd.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:47 -0800 (PST)
+        Fri, 15 Jan 2021 13:15:19 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546F2C0617AA
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:49 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id 91so10212756wrj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JrCpsOWXkuV27y08h0Q+/ggDFvdkszKPoUD+Vqs5v1w=;
-        b=eVFjcBEjg45hUFWoVNeBlMVtPQHjgY33qJV2wsQfY8RkMAyofnRpc0YZ1XYm+r0A7Y
-         Zbtu3nTeYVVwJ0jgnSciJOe2iz1iAebYEOimoRIIy5WqtDESpunxBekCZ7xDMWEMoHdZ
-         rLV9mZvOvRDJ/dBtu6HIjJtJSljsv2pn9y+p2be/yBdsXEG3llyBDmQekQKxQLHH9D0i
-         CfIbL+qXIcylUVdMz/dkHb1N+PS3jTYTpb45WnOA47U6ex0lSL88A2NUfuFPAH8eaqOV
-         4nzXINrDwQoCI00pVGUjquUOFC4sguTTyQTZ6+iOqwYnnbKhsXefFRKH/xVaCVWYkCKc
-         YLlg==
+        bh=DX8peXw6vQkx3jgWc3AcDMwXWV0VAjfbUs3tjUz1hsU=;
+        b=ueBZVZqMr1lRsNLHjtgml8MUHZ8WPI5E1fhSjTu3fXUJMjMMvwHI/uSOLq9dNiDaBZ
+         l8D48/8MD8sGUTJ7ok+RfTlAepBXTN0/ReLbpyiQ1n5RfIrI7AU71FkZBZlsTKbFbl9C
+         GX699dS+59SbIwW+me01VcUegxQz5X+mAv7xP7fiqrUmFKVcuWVZuN5rxP/oyPjX3Xmb
+         N4jiZhb9Y3K5PK6yRxA1B+pKsXR7dGiJ+EJyQsUhFa7erqWQesY0p9ab6HkI1sTX/xCW
+         pKLVT6RzBila8u6b82o61DhEIKLiKLrfc20PA2LnNCSJ/9d8omqrEejSGYsA5Uprv/26
+         pQfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JrCpsOWXkuV27y08h0Q+/ggDFvdkszKPoUD+Vqs5v1w=;
-        b=azr5Zkj/H+VPozaVjf660N5gTKt9Wn8RAZ10hNotiJn5Dz3NjkO/10tNdFLhArmX3c
-         WcBNlbsIKkSysO46cOvwOk7zCQ5kZb7PeTwTSeqRk/69+5sn5HwWM0cG734w8lTrTKIw
-         svQ/ENoAoVdnkovlppXsZzZmWDPOTw3dRTIoZdAj+gjB7WBwM41E2b/G6hgUIrlWn+QT
-         b8fTurOb3CKwFRWWSr+OODBCddcMBmxopQ1F0remF5qpYpVbDWIxmf3bTSOQ8yDVtc61
-         Wany8bwTRH0NNlIxapURrV4QhfAWpDwGa25szednfl+I6U42oXphlGsPxCjLBMqYUDNC
-         I4+A==
-X-Gm-Message-State: AOAM531g2FcwLA+62S6hKSeaLowLp/M2jSOewN3I1SEFoAHE9lpXGiZO
-        +Vz2jNoCP8GonoZmO1P0zMXlMA==
-X-Google-Smtp-Source: ABdhPJweojZ0h6yHoiV/u4YZr4avFre/S61l1Q1UIOKC9yloexr0L9KKgA+LNR50Re7apQpMu0NL8w==
-X-Received: by 2002:a1c:4c14:: with SMTP id z20mr9997363wmf.149.1610734426511;
-        Fri, 15 Jan 2021 10:13:46 -0800 (PST)
+        bh=DX8peXw6vQkx3jgWc3AcDMwXWV0VAjfbUs3tjUz1hsU=;
+        b=l+6s7B1Edisx6citRyktQIAVBTdl+a3MkwN8lNqejNi4KeFQqvlTet06j/uC6TRbhy
+         rmMYqh0fzqvJ8vjDVZrakEUt1nszKklKWe0LArOVuUk6H1oFr2Z1XgfNAxOyIpJ/7SoO
+         yXm5XgGS5V0NEL0ILJAU2ONsgsEMU2508Ow4TTAFqaheZ3MnWsHmaF6GHmsGhO9T/Xhv
+         pSaYD6IC7r481qeDSY/ZNh92DcM9Wc1Y2Df8p75nF3VPDb1Yh+znDh8V10s1UoEtHXyW
+         RAixt5Ay/MVPCBR6sLGu57BjnvlAIo88S/pPLxWpOL7YE6pWSej88mMqyFdn5uiIpBxC
+         fLyQ==
+X-Gm-Message-State: AOAM532dLXZynWkvRZDyjB9++3JAARj8kD2yTyAUCSDyOEcpLNB3+omg
+        b8I26Jj8TtaiQ0aeOPA0CfgFwOc2oB2P1IEo
+X-Google-Smtp-Source: ABdhPJwpTvCHhrRMhMhC083vAOcxnBNtkEy10vvuPrBOfIVJBD37uYFht6hVp6TUpt/pPyifOrjx+w==
+X-Received: by 2002:a5d:6607:: with SMTP id n7mr14020998wru.206.1610734428099;
+        Fri, 15 Jan 2021 10:13:48 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.44
+        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:13:45 -0800 (PST)
+        Fri, 15 Jan 2021 10:13:47 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Roland Scheidegger <sroland@vmware.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Benjamin Defnet <benjamin.r.defnet@intel.com>,
-        Rajesh Poornachandran <rajesh.poornachandran@intel.com>,
-        Alan Cox <alan@linux.intel.com>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 19/40] drm/gma500/power: Fix a bunch of *dev documentation issues
-Date:   Fri, 15 Jan 2021 18:12:52 +0000
-Message-Id: <20210115181313.3431493-20-lee.jones@linaro.org>
+Subject: [PATCH 20/40] drm/vmwgfx/vmwgfx_kms: Update worthy function headers and demote others
+Date:   Fri, 15 Jan 2021 18:12:53 +0000
+Message-Id: <20210115181313.3431493-21-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210115181313.3431493-1-lee.jones@linaro.org>
 References: <20210115181313.3431493-1-lee.jones@linaro.org>
@@ -72,66 +70,92 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/gma500/power.c:101: warning: Function parameter or member 'pdev' not described in 'gma_resume_display'
- drivers/gpu/drm/gma500/power.c:155: warning: Function parameter or member 'pdev' not described in 'gma_resume_pci'
- drivers/gpu/drm/gma500/power.c:155: warning: Excess function parameter 'dev' description in 'gma_resume_pci'
- drivers/gpu/drm/gma500/power.c:189: warning: Function parameter or member '_dev' not described in 'gma_power_suspend'
- drivers/gpu/drm/gma500/power.c:189: warning: Excess function parameter 'pdev' description in 'gma_power_suspend'
- drivers/gpu/drm/gma500/power.c:189: warning: Excess function parameter 'state' description in 'gma_power_suspend'
- drivers/gpu/drm/gma500/power.c:216: warning: Function parameter or member '_dev' not described in 'gma_power_resume'
- drivers/gpu/drm/gma500/power.c:216: warning: Excess function parameter 'pdev' description in 'gma_power_resume'
+ In file included from drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:37:
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:483: warning: Function parameter or member 'new_state' not described in 'vmw_du_cursor_plane_atomic_check'
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:483: warning: Excess function parameter 'state' description in 'vmw_du_cursor_plane_atomic_check'
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:1069: warning: Function parameter or member 'vfb' not described in 'vmw_framebuffer_pin'
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:1281: warning: Function parameter or member 'dev_priv' not described in 'vmw_kms_srf_ok'
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:1907: warning: Function parameter or member 'crtc' not described in 'vmw_get_vblank_counter'
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:1915: warning: Function parameter or member 'crtc' not described in 'vmw_enable_vblank'
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:1923: warning: Function parameter or member 'crtc' not described in 'vmw_disable_vblank'
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c:2131: warning: Function parameter or member 'mode' not described in 'vmw_guess_mode_timing'
 
-Cc: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
+Cc: Roland Scheidegger <sroland@vmware.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Benjamin Defnet <benjamin.r.defnet@intel.com>
-Cc: Rajesh Poornachandran <rajesh.poornachandran@intel.com>
-Cc: Alan Cox <alan@linux.intel.com>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/gma500/power.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/gma500/power.c b/drivers/gpu/drm/gma500/power.c
-index f0fc171e6705e..89842e09cd2aa 100644
---- a/drivers/gpu/drm/gma500/power.c
-+++ b/drivers/gpu/drm/gma500/power.c
-@@ -93,6 +93,7 @@ static void gma_suspend_display(struct drm_device *dev)
- 
- /**
-  *	gma_resume_display	-	resume display side logic
-+ *	@pdev: PCI device
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+index 9293dc19a7683..84143b707cd32 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+@@ -467,7 +467,7 @@ int vmw_du_primary_plane_atomic_check(struct drm_plane *plane,
+  * vmw_du_cursor_plane_atomic_check - check if the new state is okay
   *
-  *	Resume the display hardware restoring state and enabling
-  *	as necessary.
-@@ -146,7 +147,7 @@ static void gma_suspend_pci(struct pci_dev *pdev)
- 
- /**
-  *	gma_resume_pci		-	resume helper
-- *	@dev: our PCI device
-+ *	@pdev: our PCI device
+  * @plane: cursor plane
+- * @state: info on the new plane state
++ * @new_state: info on the new plane state
   *
-  *	Perform the resume processing on our PCI device state - rewrite
-  *	register state and re-enable the PCI device
-@@ -178,7 +179,7 @@ static bool gma_resume_pci(struct pci_dev *pdev)
+  * This is a chance to fail if the new cursor state does not fit
+  * our requirements.
+@@ -1057,7 +1057,7 @@ static const struct drm_framebuffer_funcs vmw_framebuffer_bo_funcs = {
+ 	.dirty = vmw_framebuffer_bo_dirty_ext,
+ };
  
- /**
-  *	gma_power_suspend		-	bus callback for suspend
-- *	@pdev: our PCI device
-+ *	@_dev: our device
-  *	@state: suspend type
-  *
-  *	Called back by the PCI layer during a suspend of the system. We
-@@ -208,7 +209,7 @@ int gma_power_suspend(struct device *_dev)
- 
- /**
-  *	gma_power_resume		-	resume power
-- *	@pdev: PCI device
-+ *	@_dev: our device
-  *
-  *	Resume the PCI side of the graphics and then the displays
+-/**
++/*
+  * Pin the bofer in a location suitable for access by the
+  * display system.
   */
+@@ -1267,6 +1267,7 @@ static int vmw_kms_new_framebuffer_bo(struct vmw_private *dev_priv,
+ /**
+  * vmw_kms_srf_ok - check if a surface can be created
+  *
++ * @dev_priv: Pointer to device private struct.
+  * @width: requested width
+  * @height: requested height
+  *
+@@ -1896,7 +1897,7 @@ bool vmw_kms_validate_mode_vram(struct vmw_private *dev_priv,
+ }
+ 
+ 
+-/**
++/*
+  * Function called by DRM code called with vbl_lock held.
+  */
+ u32 vmw_get_vblank_counter(struct drm_crtc *crtc)
+@@ -1904,7 +1905,7 @@ u32 vmw_get_vblank_counter(struct drm_crtc *crtc)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * Function called by DRM code called with vbl_lock held.
+  */
+ int vmw_enable_vblank(struct drm_crtc *crtc)
+@@ -1912,7 +1913,7 @@ int vmw_enable_vblank(struct drm_crtc *crtc)
+ 	return -EINVAL;
+ }
+ 
+-/**
++/*
+  * Function called by DRM code called with vbl_lock held.
+  */
+ void vmw_disable_vblank(struct drm_crtc *crtc)
+@@ -2120,7 +2121,7 @@ static struct drm_display_mode vmw_kms_connector_builtin[] = {
+  * vmw_guess_mode_timing - Provide fake timings for a
+  * 60Hz vrefresh mode.
+  *
+- * @mode - Pointer to a struct drm_display_mode with hdisplay and vdisplay
++ * @mode: Pointer to a struct drm_display_mode with hdisplay and vdisplay
+  * members filled in.
+  */
+ void vmw_guess_mode_timing(struct drm_display_mode *mode)
 -- 
 2.25.1
 
