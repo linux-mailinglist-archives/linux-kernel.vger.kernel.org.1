@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8582F8422
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A82D92F8437
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388735AbhAOSVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:21:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43792 "EHLO mail.kernel.org"
+        id S2388071AbhAOSVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:21:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733119AbhAOSVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:21:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD0CE23AFC;
-        Fri, 15 Jan 2021 18:20:30 +0000 (UTC)
+        id S2388032AbhAOSVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 13:21:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8B57222B3;
+        Fri, 15 Jan 2021 18:21:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610734831;
-        bh=Rzl9zISM7Y5XM+HBsSUTizk0jJUUmy+FRaBFRx/4l6k=;
+        s=k20201202; t=1610734863;
+        bh=e0oNvf86GUa97Isa1a5/fLm89OCm35ofDxoL0Fvrm10=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=WauPeOggsiDQYj0OYxsMCCfd4Qi5EIRi4zXd5ufHqyld595ou5xlTPNnupVLBKImw
-         umdSQZn7wRsIHf1W7FoQ5VxIbQi/2Fw9lcO+3JuRlyDZyG+vwriyr7yxAHRmHezdFY
-         0JbZccCcEXcnOnWNlLZ5XeFjbgjecPoDef8TiEn1Fw03dbA5q4bZ3r87BBDMNut3gF
-         Q6ypZWdMaSIChCuP6QCpxiemsZ7lu0mWjZuAoraDm/woIi/+b2B2Xw2fBwUtZhz7Lx
-         Qy7JMzAaVWvaUQlL5h5q5P497kY/DCdCW4eAcmJegvJbAb3hrAvzTDJyMCm0qL1NMK
-         VCcPW+azH7DUA==
+        b=rv2XEMqnDk1jnhPTGXA3wZ9vk740DBIgJ4HiBhn7CkDIFlPZWLvG7nymhtqVFq8v4
+         cWvIRrVvBE1Eo4ufMQKWdeO1YlV34l4nwKw2eqmQ59tXjEjOPLxLsRf9T8ASJ+D2k3
+         4gpCEG2Y2TMI5hWU9YXkcqiieoOYnBiebZA3BDy/bwx6TYj1mMppv0aS8Jo9O1Wq0M
+         +jtXRKx+1vNDj7QaBHsvZ2/xFOFqT7XRZWPa4YE6uyC00eLJbdb0ZZpcYXDOnv+Wgr
+         KeFKqZU2hM7shjV6RmbUVjZ0r+ASmlXrJYLsTfZbM3hXKwW+Uu9AMxplbLnghjSVX6
+         rk4SU1XMYIjxw==
 From:   Mark Brown <broonie@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     bjorn.andersson@linaro.org, sumit.semwal@linaro.org,
-        martin.botka@somainline.org, robh+dt@kernel.org, agross@kernel.org,
-        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
-        phone-devel@vger.kernel.org, marijn.suijten@somainline.org,
-        devicetree@vger.kernel.org, lgirdwood@gmail.com
-In-Reply-To: <20210113194214.522238-1-angelogioacchino.delregno@somainline.org>
-References: <20210113194214.522238-1-angelogioacchino.delregno@somainline.org>
-Subject: Re: (subset) [PATCH v2 0/7] Really implement Qualcomm LAB/IBB regulators
-Message-Id: <161073479108.12431.17135576809621290489.b4-ty@kernel.org>
-Date:   Fri, 15 Jan 2021 18:19:51 +0000
+To:     linux-spi@vger.kernel.org,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-kernel@vger.kernel.org
+Cc:     harinik@xilinx.com, michael.hennerich@analog.com
+In-Reply-To: <20210114154217.51996-1-alexandru.ardelean@analog.com>
+References: <20210114154217.51996-1-alexandru.ardelean@analog.com>
+Subject: Re: [PATCH] spi: cadence: cache reference clock rate during probe
+Message-Id: <161073482876.12522.5231767630721106173.b4-ty@kernel.org>
+Date:   Fri, 15 Jan 2021 18:20:28 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,31 +40,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021 20:42:07 +0100, AngeloGioacchino Del Regno wrote:
-> Okay, the title may be a little "aggressive"? However, the qcom-labibb
-> driver wasn't really .. doing much.
-> The current form of this driver is only taking care of enabling or
-> disabling the regulators, which is pretty useless if they were not
-> pre-set from the bootloader, which sets them only if continuous
-> splash is enabled.
-> Moreover, some bootloaders are setting a higher voltage and/or a higher
-> current limit compared to what's actually required by the attached
-> hardware (which is, in 99.9% of the cases, a display) and this produces
-> a higher power consumption, higher heat output and a risk of actually
-> burning the display if kept up for a very long time: for example, this
-> is true on at least some Sony Xperia MSM8998 (Yoshino platform) and
-> especially on some Sony Xperia SDM845 (Tama platform) smartphones.
-> 
-> [...]
+On Thu, 14 Jan 2021 17:42:17 +0200, Alexandru Ardelean wrote:
+> The issue is that using SPI from a callback under the CCF lock will
+> deadlock, since this code uses clk_get_rate().
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/7] regulator: qcom-labibb: Implement voltage selector ops
-      commit: dd582369c6c1f39ec475af6191a934f3e57fda35
+[1/1] spi: cadence: cache reference clock rate during probe
+      commit: 4d163ad79b155c71bf30366dc38f8d2502f78844
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
