@@ -2,89 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DAD2F6FBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A462F6FC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:55:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731455AbhAOAwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 19:52:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
+        id S1727533AbhAOAyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 19:54:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727632AbhAOAwf (ORCPT
+        with ESMTP id S1726427AbhAOAye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 19:52:35 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70421C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:51:55 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id md11so4104371pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:51:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/td70cr+yDErqlpQZSN0xSXqF6ggiQpM1ujSGmXKino=;
-        b=i/N5cWKJMXR9btra/mDwceUyegdLU1QW5FEaQo0CjdYVdBB9TZvuR9iqkQ1eRJRVI0
-         lXuUAI7SzLYPjlhoLqHpHh6VCT2GltZ68W6UyKIBmoliHySInQzKXXIRQ5ep/LL4y82J
-         KT14p6G0C4UXnNzB79Kejka9hHfn9R2ldxvsXcLvDjOy33V9H6Y/NToBD8UufmfpRZIw
-         79PeUhWP/p53KrniAUqZTyMypIKrA3z4quawrTn/MXHPOiu5ZLjMqv3fp87OkXm7Fnpc
-         snC2Xo//XlOQo+qCL6dluFthhzQuPkPlt1oayeJC4ZKP4/eo+itEW2+SAu1qzuOGAMaO
-         PrIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/td70cr+yDErqlpQZSN0xSXqF6ggiQpM1ujSGmXKino=;
-        b=g/R7W/33UKp1ArS/Xaujp0gkrrS6eRuG9vrvaPrBMYgdKxicUcVbDmhHR2d2iJj08a
-         X6iXYMqapXJiqQhicZcxBLrl3T/E4K2cDPaw9yoT+XLDuoncg34EY/oq/eZWxM4P3X/P
-         QY3d9N+SqKEgnr/T65zEhb+tIrfIzLK6rihcb67eySE9YnvnvFhEPhmiE1hfmMmSNQPy
-         XwkDfa+6HYl/UJkOEhLcveEQNjxhshSIo4/Th21uJBD5UUMrH/jn03ZfJx6Hi3O+b7Ec
-         uFPkOUPv/pBgW3g4BrarTAYeT/PyUI3KmBCx4ZXq2VdTGsh6W4IOS2gbH8eLvwOzTRh2
-         aL5A==
-X-Gm-Message-State: AOAM533C4tzOF9v/TLPHbdroZ+hnvtMb7BSaFD/VE7CfLDF4ZsgRMSL3
-        +lHrxHtF2Ll/5hH16P+nfp6fAfVVz3GOsvXIMPYiCA==
-X-Google-Smtp-Source: ABdhPJxAML1u8IxFbY1gxIAH5Aa6MyIJaIP6JgpWhERW096CY/AcAT5FGNdKal4w+kp3PtdZ/WM4GZIU5k1kg6FPRGQ=
-X-Received: by 2002:a17:90a:de03:: with SMTP id m3mr8009830pjv.20.1610671914862;
- Thu, 14 Jan 2021 16:51:54 -0800 (PST)
-MIME-Version: 1.0
-References: <20210115003913.1406896-1-dlatypov@google.com>
-In-Reply-To: <20210115003913.1406896-1-dlatypov@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 14 Jan 2021 16:51:44 -0800
-Message-ID: <CAFd5g44=5LDpoFiy_Z0mnLe=4h2P=c9TMPNS5Rj6R=WEbo5K9Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] kunit: tool: surface and address more typing issues
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>,
+        Thu, 14 Jan 2021 19:54:34 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC48C061575;
+        Thu, 14 Jan 2021 16:53:53 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DH2k71Wbhz9sVw;
+        Fri, 15 Jan 2021 11:53:51 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610672031;
+        bh=15cnUrgeHKK+qzQdJxWfBVjeukiu2TA48dejMOaim5Q=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NilADp15nbvkHai9kKhGZ0P7WCJ0+NfEpw+Q8oWRFYs3q3KPWnXmI+Lx7zQyPyqoB
+         LiuJ5gr3cDUxHh/21lBD8/cl2C54OHOopHb46FuQhf3wn7aohBd4r/VzHXt6CQ5SIp
+         vNeq4UoZwWb0xPuVz0bZ4yUbhb2XPjWeFeq87Y40qEwj7Id4PYHzo3xzvuppT8hO4V
+         GHSlkaq9igMhMySj90Bgn0gYBx3RS9QTMESwPMPyyAIK9JvJyQ7PrnZXXgK1mJwhiP
+         Sy55BTKbYdcoA/CL+C8nS4uIzjgl8+v/w34JCC0PGnE31PDrhPLT+iG+AJb2Htyuse
+         Z/F3R0U3UUWjw==
+Date:   Fri, 15 Jan 2021 11:53:48 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Wesley Chalmers <Wesley.Chalmers@amd.com>
+Subject: linux-next: manual merge of the amdgpu tree with Linus' tree
+Message-ID: <20210115115348.023e64d6@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/iAw8G0IWPqpE0AyJhE/=E6t";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 4:39 PM Daniel Latypov <dlatypov@google.com> wrote:
->
-> The authors of this tool were more familiar with a different
-> type-checker, https://github.com/google/pytype.
->
-> That's open source, but mypy seems more prevalent (and runs faster).
-> And unlike pytype, mypy doesn't try to infer types so it doesn't check
-> unanotated functions.
->
-> So annotate ~all functions in kunit tool to increase type-checking
-> coverage.
-> Note: per https://www.python.org/dev/peps/pep-0484/, `__init__()` should
-> be annotated as `-> None`.
->
-> Doing so makes mypy discover a number of new violations.
-> Exclude main() since we reuse `request` for the different types of
-> requests, which mypy isn't happy about.
->
-> This commit fixes all but one error, where `TestSuite.status` might be
-> None.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> Reviewed-by: David Gow <davidgow@google.com>
+--Sig_/iAw8G0IWPqpE0AyJhE/=E6t
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Brendan Higgins <brendanhiggins@google.com>
-Acked-by: Brendan Higgins <brendanhiggins@google.com>
+Hi all,
+
+Today's linux-next merge of the amdgpu tree got a conflict in:
+
+  drivers/gpu/drm/amd/display/dc/dcn10/dcn10_mpc.c
+
+between commit:
+
+  61d791365b72 ("drm/amd/display: avoid uninitialized variable warning")
+
+from Linus' tree and commit:
+
+  f03e80d2e82c ("drm/amd/display: Initialize stack variable")
+
+from the amdgpu tree.
+
+I fixed it up (I used the latter version) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/iAw8G0IWPqpE0AyJhE/=E6t
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAA55wACgkQAVBC80lX
+0GyQrAf9EGZj13wKjiGa3C9T2o3SsZHJmU2AxnkESTN5mjSQpPmeRi59XNmpuouk
+IzfS/PktOMw4SIMfqaEaEkRx5Hu73aozH5OFssmgYTeBRsmIpDrZwZU5+2sjRKd6
+z+1J0ga3RshzwyzQ0YJD2YBEFTuL/9rB0+5srBp3UlIZQORAdqWp6foy5VscGA8r
+II+nlfkz8Yy4b7OoCV2suCQTbUb5OVS7KeNUeEpP+M8FvCKggqxqjsxc29wmcgXm
+kl/ETn1WGbVNiuYhdL0q5W2IsyCxoCTWq5Rg+1KqcholfHLGx4lsFCqfFCMf3QRq
+Q9zCaA4SkqUvtysn1HGaTksf335LGA==
+=cz6O
+-----END PGP SIGNATURE-----
+
+--Sig_/iAw8G0IWPqpE0AyJhE/=E6t--
