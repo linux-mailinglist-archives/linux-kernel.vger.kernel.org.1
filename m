@@ -2,89 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F4D2F8143
+	by mail.lfdr.de (Postfix) with ESMTP id BBFE72F8144
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727582AbhAOQxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:53:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42266 "EHLO mail.kernel.org"
+        id S1727899AbhAOQx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:53:29 -0500
+Received: from ms.lwn.net ([45.79.88.28]:36120 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726970AbhAOQxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:53:23 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1726970AbhAOQx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 11:53:28 -0500
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D245222B3;
-        Fri, 15 Jan 2021 16:52:41 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 11:52:39 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Marco Elver <elver@google.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [PATCH v2 3/5] docs: ABI: add /sys/kernel/error_report/
- documentation
-Message-ID: <20210115115239.1f3693ac@gandalf.local.home>
-In-Reply-To: <CAG_fn=Xen6Nd9qJnW6F4r5vgj7WAUo40BHeN_FXKpJ2jrpT6-g@mail.gmail.com>
-References: <20210115130336.2520663-1-glider@google.com>
-        <20210115130336.2520663-4-glider@google.com>
-        <YAGckOeJxqCcHKa+@kroah.com>
-        <CAG_fn=Xen6Nd9qJnW6F4r5vgj7WAUo40BHeN_FXKpJ2jrpT6-g@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by ms.lwn.net (Postfix) with ESMTPSA id 280B8614D;
+        Fri, 15 Jan 2021 16:52:48 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 280B8614D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1610729568; bh=7VkGsCvR1km/mioSiHbHP45lykLsrwe8rUibzc6hfCQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=m/9gfY72TImnlsZPWNX6vggnVMXdpZ66zWenN3Xd/mzj5UaeGtC53kVwdwL9fL7X8
+         OoJ48FIGRgpDMvKtnaax1lkArYPRAcSTkMh0nQrYoTutm9UFt8P05a94a5Y8nAzEAR
+         JZJXpIcZlH526EPYYjSBFGzNsIHSid0d8BP6Kl8WJa0FApM74VPvknwsBSWOS+LeuX
+         IReS+X6tIlNM/de8SjrGqnDY1JZsprKXpwTHjwfrBdjAIC7suKFMXT0HDkN8ULBFry
+         utrGy+XPI2hiCrZYqmXrk/VwX6urPfnlsmY3P/nyn17zYoqi+v4iEKDucZVTMfblrn
+         IfcvlBO6FyrcQ==
+Date:   Fri, 15 Jan 2021 09:52:46 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Wolfgang Mauerer <wolfgang.mauerer@oth-regensburg.de>
+Subject: Re: Related work to MAINTAINERS truth and fiction
+Message-ID: <20210115095246.653748af@lwn.net>
+In-Reply-To: <CAKXUXMzj=LYJK74Le+rYnAaY3ji6AxugppwHwneAEL_xTTAyGw@mail.gmail.com>
+References: <CAKXUXMzj=LYJK74Le+rYnAaY3ji6AxugppwHwneAEL_xTTAyGw@mail.gmail.com>
+Organization: LWN.net
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 16:26:21 +0100
-Alexander Potapenko <glider@google.com> wrote:
+On Fri, 15 Jan 2021 07:57:51 +0100
+Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
 
-> > please put something like this in
-> > tracefs, as there is no such rules there.  Or debugfs, but please, not
-> > sysfs.  
-> Does tracefs have anything similar to sysfs_notify() or any other way
-> to implement a poll() handler?
-> Our main goal is to let users wait on poll(), so that they don't have
-> to check the file for new contents every now and then. Is it possible
-> with tracefs or debugfs?
-
-Polling should work on tracefs. I hope it does, as I depend on it ;-)
-
-And if there's an issue, we can always add more features.
-
+> Pia Eichinger has done some related analysis and work in this area as
+> part of her bachelor's thesis on Maintainers Expectations vs.
+> Maintainers Reality: An Analysis of Organisational and Maintenance
+> Structure of the Linux Kernel. Simply quoting her conclusion:
 > 
-> Also, for our goal debugfs isn't a particularly good fit, as Android
-> kernels do not enable debugfs.
-> Not sure about tracefs, they seem to have it, need to check.
-
-I believe tracefs is used extensively on Android.
-
+> "We showed that around 20% of all patches were theoretically wrongly
+> integrated when strictly analysing MAINTAINERS. The reality of
+> integration and maintenance structure is more complicated than that,
+> which we also explored. Furthermore, we identified 12 major subsystems
+> of the Linux kernel. This is very helpful for an overview of the
+> organisational structure, realistic grouping of subsystems and further
+> Linux kernel topology discussions."
 > 
-> Do you think it is viable to keep
-> /sys/kernel/error_report/report_count in sysfs and use it for
-> notifications, but move last_report somewhere else?
-> (I'd probably prefer procfs, but it could be tracefs as well, if you
-> find that better).
+> Announcement and thesis here:
+> https://lists.elisa.tech/g/devel/message/1269
+> https://drive.google.com/file/d/12ta2YxgEzEfrIcmWid8kwIyVEywbUjbA/view?usp=sharing
 
-If you do use tracefs, add it to the top level tracing directory (no need
-to have instances of it), and rename it to "kernel_warnings", as
-"error_report" is too close to the existing "error_log" which holds error
-messages of syntactic errors done by users entering in commands to some of
-the special files.
+Interesting, I was completely unaware of this work.  I blame Wolfgang, who
+should have pointed it out to me :)
 
-That is, /sys/kernel/tracing/kernel_warnings/ would be your error_report/
-directory you have now.
+Thanks,
 
-Use the function in kernel/trace/trace.c: tracer_init_tracefs() to add that
-directory. That's for files in the tracefs directory that will not be
-duplicated by instances.
-
--- Steve
+jon
