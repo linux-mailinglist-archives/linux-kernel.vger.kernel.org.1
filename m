@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50C12F83F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 241A92F83F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387916AbhAOSTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:19:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
+        id S2388675AbhAOSSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:18:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388567AbhAOSRn (ORCPT
+        with ESMTP id S2388650AbhAOSSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:17:43 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B4C4C0617BB
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:43 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 190so8232519wmz.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:43 -0800 (PST)
+        Fri, 15 Jan 2021 13:18:08 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88613C0617BC
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:44 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id k10so8220798wmi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sdXKnDa6lvIb811vAIyU+syK3ZIQA1yBtXwMvcVTZ1I=;
-        b=NQSMyoh8n63rM3uQJJJSde6hMFXcBhFL3jjHN2XG3bUDERwDZuGBn6aChRJvncceeY
-         Nl1812QytdqWcMvSlIWSZs3R/Dee0ZfLy+TxyNAcZlqt6u3FC25PoPHIIpzxaW3Etaew
-         Je9/kvEYITSeRo+yfUIOy7BxqSCKpBZf6t8yfDvYcGiqz0B0zS6dHCvl6gyJtydwQxOH
-         OtO89GlReKUeFDHPErBHe2G1TQ6xlV1T8MAB2twrcAPKywjZ5rSkCRwMMuD9WwvGjlNX
-         NeHbSKC+bRET3FbGuC79UjlPm8Kydr/Uvx+Cp2uLfDQTA7IU/vKzsW39bEFUhAqIl9Gm
-         cxTA==
+        bh=j+QQ91dB4nAV9iX95BjLXpaQb9N2TCvRIGQTNY+K7sU=;
+        b=yL85iXlSpJyIEsW9uR5KjI1ME5UqZGtzQv4FY99XBi+FD088mPsLJUgEUFKevvrlE9
+         ksl9DXvhysqqBdDc7ZadLjyb25WhWQ3i98QOp0XqAdIZxIWspprCXgzshIS98HW4wMGh
+         I+dGjog07idrdB7GQ459SKQnXFCQ4I9gK+KFnSmHEK1XhiM5kcv9UoCyCxCQC61JS0ll
+         ++XOFxnTRs1eBVYdPEs8eE+RG4iiu7oN+whS/TdHU+B6/+ipOqkC164lqBL+udM5S+Pe
+         D+5z0HQ/r2jtn0PRy9nwsj2+X61EY1IqPKGMyzXLvzaeE1LhdUG1dXwChy5gE9CV1QlA
+         lmVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sdXKnDa6lvIb811vAIyU+syK3ZIQA1yBtXwMvcVTZ1I=;
-        b=RaNmWX9iV1o0xurZh2BLmycDQBcOk/N6v2+IvQxoJuJ0N25D1VFqHyTXnzRAMBIh4b
-         mQ8B0QJTh693t22R7n7qzHYtM5ypGjh334LF8/iCtLdcwz1gx12IiP/Fhcl+8iX6ZM/x
-         BuUE4WoP1wFTh/8ZYmyrdJOCCQ6T0qcSaSDyGuGqF2bQ3kTT32Sjk1MLRJ4XY/KE8kjj
-         T/btnvx3IhV/wyS3sz5vknMcwzq0u/lleXVpS3O/4Mg8XV+dYzBvPtc3qG1XSigKns+H
-         2sbKzZZGk+RJTSQIXU3JnH8GD/QugL4PH3aCjujKcqcU7uCRknm99dmExIne9zMhajYT
-         TVfQ==
-X-Gm-Message-State: AOAM532Lfvvc8UYnGabkYMRFzbrUZga/oXu7HxC3zetgF3+xcjNCWIeM
-        WpHHssRlYILT5AMepPbKDdBBrQ==
-X-Google-Smtp-Source: ABdhPJx4NtGILv95iDZVo/kBmSY+uqOCH7ceKa8UeLHrPa4hZE9zW2fYatEf47XO+P2w6X6gSd5LyA==
-X-Received: by 2002:a1c:a145:: with SMTP id k66mr9753170wme.11.1610734602115;
-        Fri, 15 Jan 2021 10:16:42 -0800 (PST)
+        bh=j+QQ91dB4nAV9iX95BjLXpaQb9N2TCvRIGQTNY+K7sU=;
+        b=Bhr3uoe97FSDqezm/kGoTgbyrsIQ3nEur5k8XD81mF1wh8hONQA52h0DrLem/FnzNk
+         qagI4r56+Tlq0aNa5v/e+bohy05OhHGw+jFt/5QgF3Opp00ciSQv5mL8nhbMM+7DuQTC
+         xEQqWPFyUva3YSCYvN7jHTM64LRdxJ46cbN3HcF/o1szUBNwF9ZFmDh9XvI39AJIRzrg
+         /Xmijc4ybbiB661WCzhI5BMg7K67fN0jl/gBBil7cdHKYXk4PBe9ojg5ZD9/OXITrWXa
+         AqAPe3+jbx9K04UPa2/qDNERWMTv90aTfcK1WmTv7BoNYOgRhx/AGVRg4G+DpAIqkQUd
+         qzdQ==
+X-Gm-Message-State: AOAM532g9B1Tccj6AgP3mjY7ljHONN7u5nYeLZMcnkSNUIQcp1/5bmPr
+        WSCukFwNbCQaeUjV5o44d8W12A==
+X-Google-Smtp-Source: ABdhPJwD+S7K+2xo6XGPzpZWOm/R/Wcr70/IAr4BByEl7I7vZ/Ps4PA7dJVttdYLp/fDi5wADTpg5g==
+X-Received: by 2002:a1c:4b14:: with SMTP id y20mr2838766wma.6.1610734603340;
+        Fri, 15 Jan 2021 10:16:43 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id b133sm14405979wme.33.2021.01.15.10.16.40
+        by smtp.gmail.com with ESMTPSA id b133sm14405979wme.33.2021.01.15.10.16.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:16:41 -0800 (PST)
+        Fri, 15 Jan 2021 10:16:42 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
-Subject: [PATCH 26/29] drm/nouveau/nouveau_svm: Remove unused variable 'ret' from void function
-Date:   Fri, 15 Jan 2021 18:15:58 +0000
-Message-Id: <20210115181601.3432599-27-lee.jones@linaro.org>
+Subject: [PATCH 27/29] drm/nouveau/nouveau_bios: Remove unused variable 'pdev' from 'nouveau_bios_init()'
+Date:   Fri, 15 Jan 2021 18:15:59 +0000
+Message-Id: <20210115181601.3432599-28-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210115181601.3432599-1-lee.jones@linaro.org>
 References: <20210115181601.3432599-1-lee.jones@linaro.org>
@@ -69,8 +69,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/nouveau/nouveau_svm.c: In function ‘nouveau_pfns_map’:
- drivers/gpu/drm/nouveau/nouveau_svm.c:810:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+ drivers/gpu/drm/nouveau/nouveau_bios.c: In function ‘nouveau_bios_init’:
+ drivers/gpu/drm/nouveau/nouveau_bios.c:2086:18: warning: variable ‘pdev’ set but not used [-Wunused-but-set-variable]
 
 Cc: Ben Skeggs <bskeggs@redhat.com>
 Cc: David Airlie <airlied@linux.ie>
@@ -79,32 +79,27 @@ Cc: dri-devel@lists.freedesktop.org
 Cc: nouveau@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/nouveau/nouveau_svm.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_bios.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
-index 4f69e4c3dafde..84c5bf53fe967 100644
---- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-@@ -807,7 +807,6 @@ nouveau_pfns_map(struct nouveau_svmm *svmm, struct mm_struct *mm,
- 		 unsigned long addr, u64 *pfns, unsigned long npages)
+diff --git a/drivers/gpu/drm/nouveau/nouveau_bios.c b/drivers/gpu/drm/nouveau/nouveau_bios.c
+index 7cc683b8dc7a6..e8c445eb11004 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_bios.c
++++ b/drivers/gpu/drm/nouveau/nouveau_bios.c
+@@ -2083,13 +2083,11 @@ nouveau_bios_init(struct drm_device *dev)
  {
- 	struct nouveau_pfnmap_args *args = nouveau_pfns_to_args(pfns);
--	int ret;
+ 	struct nouveau_drm *drm = nouveau_drm(dev);
+ 	struct nvbios *bios = &drm->vbios;
+-	struct pci_dev *pdev;
+ 	int ret;
  
- 	args->p.addr = addr;
- 	args->p.size = npages << PAGE_SHIFT;
-@@ -815,8 +814,8 @@ nouveau_pfns_map(struct nouveau_svmm *svmm, struct mm_struct *mm,
- 	mutex_lock(&svmm->mutex);
+ 	/* only relevant for PCI devices */
+ 	if (!dev_is_pci(dev->dev))
+ 		return 0;
+-	pdev = to_pci_dev(dev->dev);
  
- 	svmm->vmm->vmm.object.client->super = true;
--	ret = nvif_object_ioctl(&svmm->vmm->vmm.object, args, sizeof(*args) +
--				npages * sizeof(args->p.phys[0]), NULL);
-+	nvif_object_ioctl(&svmm->vmm->vmm.object, args, sizeof(*args) +
-+			  npages * sizeof(args->p.phys[0]), NULL);
- 	svmm->vmm->vmm.object.client->super = false;
- 
- 	mutex_unlock(&svmm->mutex);
+ 	if (!NVInitVBIOS(dev))
+ 		return -ENODEV;
 -- 
 2.25.1
 
