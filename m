@@ -2,170 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8442F777F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:20:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4312F7789
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbhAOLTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:19:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727009AbhAOLTW (ORCPT
+        id S1726731AbhAOLVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:21:51 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47802 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726019AbhAOLVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:19:22 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33C8C061793;
-        Fri, 15 Jan 2021 03:18:41 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id h205so12584105lfd.5;
-        Fri, 15 Jan 2021 03:18:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8lRJYc4BKAdg1abXpS4nArMEOY798PG8SuBDu3ZJSlk=;
-        b=Z5AjfT+9sIEoizTRGkvN4w7h+aIbEWUFfVlvbDDmlnjohr4b0yWluxpJGKYyhP8D/V
-         I1i0WOneHrJlvabZSEV484vqeRo06wzgYuy4/74GQxjPiexyiI2Fkm1ofKktZpg7HkEF
-         r4ZvbU4mI0geYG/QB4JeSCJf9N8xgug1O0oF5ndx9wZAMViLLczKz9zrs25GRrbzUDEv
-         BJMyglfRGKtxkz4nP7IGeIWrG8nPeHLzf8SGJ9CXAJE6BD9YW/chFgczD1Sznmje0srx
-         hhkjxqAvvBo8ZwYRisJz7S9OxGneqG3bM72c4IQ6Shyld3PwIXKv9EAlWxxvF/sX+Hcn
-         DGOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8lRJYc4BKAdg1abXpS4nArMEOY798PG8SuBDu3ZJSlk=;
-        b=LrrYOgSvoFZZfGFNnQCC1EQB/hB+Mr7Iso+Vzx9YfpVJRYyTJBPT0AcVd9Zf2ycQkn
-         MMXWM+janQbwgGN73MKpjv/Of04ZJN5R/wU6VnATR6bW4mQdJKV6LzCt5aLNQelwhu/W
-         FpwFCnr7pVTL1hAlzK0bPbMpuIhRbGNbr4sLKYxSWq7dF4/mWtYy/unzBP2dfKgSv+Sd
-         xKtJ4veYKsG1iTUPWhhCC6bPThztZ9vtv72ZVfaI5FSEWMy0qeAuPqi75ekfPT9qkj1O
-         h6G0utJdCIX4lgGSuie1/eEFLalFB3EqVf4X7SRHcF/HDZOmXeiI1kgf66rx/o4HoBvC
-         zIjg==
-X-Gm-Message-State: AOAM5310ZbAGUg937/+/B6hZAW+6yXt0m4q0tsLjTE1oOjpBROFmbJYe
-        nUDAgUTF3RGvv9CzG83MYrc=
-X-Google-Smtp-Source: ABdhPJzgPbg0C6JprZSQzMH73kmf9AQHoEvG+h92c+jF6B1XAfqd45EqfR1dJgICUMDoG+cffcK6Cw==
-X-Received: by 2002:a05:6512:3157:: with SMTP id s23mr5355726lfi.275.1610709520473;
-        Fri, 15 Jan 2021 03:18:40 -0800 (PST)
-Received: from home.paul.comp (paulfertser.info. [2001:470:26:54b:226:9eff:fe70:80c2])
-        by smtp.gmail.com with ESMTPSA id x125sm864994lff.58.2021.01.15.03.18.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 03:18:39 -0800 (PST)
-Received: from home.paul.comp (home.paul.comp [IPv6:0:0:0:0:0:0:0:1])
-        by home.paul.comp (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTP id 10FBIaNw004539;
-        Fri, 15 Jan 2021 14:18:37 +0300
-Received: (from paul@localhost)
-        by home.paul.comp (8.15.2/8.15.2/Submit) id 10FBITBj004538;
-        Fri, 15 Jan 2021 14:18:29 +0300
-Date:   Fri, 15 Jan 2021 14:18:29 +0300
-From:   Paul Fertser <fercerpav@gmail.com>
-To:     Ernesto Corona <ernesto.corona@intel.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Amithash Prasad <amithash@fb.com>, Rgrs <rgrs@protonmail.com>,
-        Christian Gromm <christian.gromm@microchip.com>,
-        Yiwei Zhang <zzyiwei@google.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Steven Filary <steven.a.filary@intel.com>,
-        Alessandro Rubini <rubini@gnudd.com>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>, Johan Hovold <johan@kernel.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jens Axboe <axboe@kernel.dk>, Tony Luck <tony.luck@intel.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Patrick Williams <patrickw3@fb.com>,
-        Federico Vaga <federico.vaga@cern.ch>,
-        Oleksandr Shamray <oleksandrs@mellanox.com>,
-        Vadim Pasternak <vadimp@mellanox.com>
-Subject: Re: [PATCH v29 1/6] drivers: jtag: Add JTAG core driver
-Message-ID: <20210115111829.GB2971@home.paul.comp>
-References: <20200413222920.4722-1-ernesto.corona@intel.com>
- <20200413222920.4722-2-ernesto.corona@intel.com>
+        Fri, 15 Jan 2021 06:21:50 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10FB2Vnb137221;
+        Fri, 15 Jan 2021 06:21:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=QdKpibyt3j07Ur30JcvPON3QdeWUrnH8CWmdF3tGrNU=;
+ b=OEPUWW1CccLDv0RJ8UiSInwKwa/1WPvIMkFVQ2Uoikwn+bRjWVUD4dU49HwwNCnrNC4s
+ B69C8jY4yVnnOZZtv1r4XhZwqXv5fENT4uHGPpTdbisdg/n5CiVLZ75+/LgkKwSLCOxN
+ 1C617GCUsfQOQLZ4Rq3V8N/8BFK9c1BC6tAphEoynlgfWeAueuPts5lj7NsaBeZLXHfY
+ l5b5kqcIOfVcmO7/Z9d2W9OaxmQo6gAcwp7+IQmOfw+W3SkjS2PIYEO4jzgMF7EJOOnZ
+ 58F85tLmeco1wdfrLKgCOoZjDkfxKAxjjPo9+OXViQKlRcjIMFUS7mGW16341bby5foW fQ== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36394rskhn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Jan 2021 06:21:05 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10FBGrUn021690;
+        Fri, 15 Jan 2021 11:21:03 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma01fra.de.ibm.com with ESMTP id 35y4483xmv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Jan 2021 11:21:03 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10FBL0TM49545636
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 11:21:00 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ADFF5AE045;
+        Fri, 15 Jan 2021 11:21:00 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 39F1DAE056;
+        Fri, 15 Jan 2021 11:21:00 +0000 (GMT)
+Received: from [9.145.69.127] (unknown [9.145.69.127])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 15 Jan 2021 11:21:00 +0000 (GMT)
+Subject: Re: [RFC 1/1] s390/pci: expose UID checking state in sysfs
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Viktor Mihajlovski <mihajlov@linux.ibm.com>
+References: <20210113185500.GA1918216@bjorn-Precision-5520>
+ <675aa466-59ea-cf8a-6eec-caa6478ba4cd@linux.ibm.com>
+ <20210114134453.bkfik4zjt5ehz6d5@wittgenstein> <YABOHuejsuriwSPn@kroah.com>
+ <a567c3d2-1dd2-6b33-8b1a-0a607b601ef8@linux.ibm.com>
+ <YABgcnWPLJxYlWUR@kroah.com>
+ <f63d5de5-6a31-8839-72ce-c6e937f91d4a@linux.ibm.com>
+ <YABt38yz5BJ8gARG@kroah.com>
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Message-ID: <aeae8e23-0263-dfe7-d068-ec925432a4a2@linux.ibm.com>
+Date:   Fri, 15 Jan 2021 12:20:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413222920.4722-2-ernesto.corona@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YABt38yz5BJ8gARG@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-15_06:2021-01-15,2021-01-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 mlxscore=0 phishscore=0 spamscore=0 suspectscore=0
+ priorityscore=1501 mlxlogscore=999 malwarescore=0 clxscore=1015
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101150063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 03:29:15PM -0700, Ernesto Corona wrote:
-> --- /dev/null
-> +++ b/drivers/jtag/jtag.c
-> +	 case JTAG_SIOCFREQ:
-> +		if (!jtag->ops->freq_set)
-> +			return -EOPNOTSUPP;
-> +
-> +		if (get_user(value, (__u32 __user *)arg))
-> +			return -EFAULT;
 
-Does this need to be a pointer to a variable even if it's just a
-number?
 
-> +	case JTAG_IOCXFER:
-> +		if (copy_from_user(&xfer, (const void __user *)arg,
-> +				   sizeof(struct jtag_xfer)))
-> +			return -EFAULT;
-> +
-> +		if (xfer.length >= JTAG_MAX_XFER_DATA_LEN)
-> +			return -EINVAL;
-> +
-> +		if (xfer.type > JTAG_SDR_XFER)
-> +			return -EINVAL;
-> +
-> +		if (xfer.direction > JTAG_READ_WRITE_XFER)
-> +			return -EINVAL;
-> +
-> +		if (xfer.endstate > JTAG_STATE_UPDATEIR)
-> +			return -EINVAL;
-> +
-> +		data_size = DIV_ROUND_UP(xfer.length, BITS_PER_BYTE);
-> +		xfer_data = memdup_user(u64_to_user_ptr(xfer.tdio), data_size);
+On 1/14/21 5:14 PM, Greg Kroah-Hartman wrote:
+> On Thu, Jan 14, 2021 at 04:51:17PM +0100, Niklas Schnelle wrote:
+>>
+>>
+>> On 1/14/21 4:17 PM, Greg Kroah-Hartman wrote:
+>>> On Thu, Jan 14, 2021 at 04:06:11PM +0100, Niklas Schnelle wrote:
+>>>>
+>>>>
+>>>> On 1/14/21 2:58 PM, Greg Kroah-Hartman wrote:
+>>>>> On Thu, Jan 14, 2021 at 02:44:53PM +0100, Christian Brauner wrote:
+>>>>>> On Thu, Jan 14, 2021 at 02:20:10PM +0100, Niklas Schnelle wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> On 1/13/21 7:55 PM, Bjorn Helgaas wrote:
+>>>>>>>> On Wed, Jan 13, 2021 at 08:47:58AM +0100, Niklas Schnelle wrote:
+>>>>>>>>> On 1/12/21 10:50 PM, Bjorn Helgaas wrote:
+... snip ...
+>>>>>>
+>>>>>> Hey Niklas et al. :)
+>>>>>>
+>>>>>> I think this will need input from Greg. He should be best versed in
+>>>>>> sysfs attributes. The problem with KERNEL_ATTR_* to me seems that it's
+>>>>>> supposed to be kernel internal. Now, that might just be a matter of
+>>>>>> renaming the macro but let's see whether Greg has any better idea or
+>>>>>> more questions. :)
+>>>>>
+>>>>> The big question is, why are you needing this?
+>>>>>
+>>>>> No driver or driver subsystem should EVER be messing with a "raw"
+>>>>> kobject like this.  Just use the existing DEVICE_* macros instead
+>>>>> please.
+>>>>>
+>>>>> If you are using a raw kobject, please ask me how to do this properly,
+>>>>> as that is something that should NEVER show up in the /sys/devices/*
+>>>>> tree.  Otherwise userspace tools will break.
+>>>>>
+>>>>> thanks,
+>>>>>
+>>>>> greg k-h
+>>>>
+>>>> Hi Greg,
+>>>>
+>>>> this is for an architecture specific but global i.e. not device bound PCI
+>>>> attribute. That's why DEVICE_ATTR_* does not work. BUS_ATTR_* would work
+>>>> but only if we place the attribute directly under /sys/bus/pci/new_attr.
+>>>
+>>> Then you are doing something wrong :)
+>>
+>> That is very possible.
+>>
+>>>
+>>> Where _exactly_ are you wanting to put this attribute?
+>>
+>> I'm trying for /sys/bus/pci/zpci/uid_checking, I'm using
+>> the below code and the attribute even shows up but reading
+>> it gives me two 0 bytes only.
+>> The relevant code is only a slight alteration of the original patch
+>> as follows:
+>>
+>> static ssize_t uid_checking_show(struct bus_type *bus, char *buf)
+>> {
+>> 	return sprintf(buf, "%i\n", zpci_unique_uid);
+>> }
+>> static BUS_ATTR_RO(uid_checking);
+>>
+>> static struct kset *zpci_global_kset;
+>>
+>> static struct attribute *zpci_attrs_global[] = {
+>> 	&bus_attr_uid_checking.attr,
+>> 	NULL,
+>> };
+>>
+>> static struct attribute_group zpci_attr_group_global = {
+>> 	.attrs = zpci_attrs_global,
+>> };
+> 
+> Name your attribute group, and then you do not have to mess with a
+> "raw" kobject like you are below:
 
-So this might copy more bits than the user specified, but that's
-probably OK.
+Thanks for this tip and sorry for bothering you again.
 
-> +		if (IS_ERR(xfer_data))
-> +			return -EFAULT;
-> +
-> +		err = jtag->ops->xfer(jtag, &xfer, xfer_data);
-> +		if (err) {
-> +			kfree(xfer_data);
-> +			return err;
-> +		}
-> +
-> +		err = copy_to_user(u64_to_user_ptr(xfer.tdio),
-> +				   (void *)xfer_data, data_size);
+> 
+>>
+>> int __init zpci_sysfs_init(void)
+>> {
+>> 	struct kset *pci_bus_kset;
+>>
+>> 	pci_bus_kset = bus_get_kset(&pci_bus_type);
+>>
+>> 	zpci_global_kset = kset_create_and_add("zpci", NULL, &pci_bus_kset->kobj);
+> 
+> No, do not mess with at kset, just set the default attribute group for
+> the bus to the above, and you should be fine.
 
-And this might overwrite some bits and it's not OK, at least not
-without a warning in the documentation.
+Oh ok, I got this idea from the code adding /sys/bus/pci/slots/ in
+drivers/pci/slot.c:pci_slot_init(). See below maybe we can clean that up too.
 
-> --- /dev/null
-> +++ b/include/uapi/linux/jtag.h
-> @@ -0,0 +1,194 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +// include/uapi/linux/jtag.h - JTAG class driver uapi
-> +//
-> +// Copyright (c) 2018 Mellanox Technologies. All rights reserved.
-> +// Copyright (c) 2018 Oleksandr Shamray <oleksandrs@mellanox.com>
-> +
-> +#ifndef __UAPI_LINUX_JTAG_H
-> +#define __UAPI_LINUX_JTAG_H
-> +
+> 
+>> 	if (!zpci_global_kset)
+>> 		return -ENOMEM;
+>>
+>> 	return sysfs_create_group(&zpci_global_kset->kobj, &zpci_attr_group_global);
+> 
+> Huge hint, if in a driver, or bus subsystem, and you call sysfs_*,
+> that's usually a huge clue that you are doing something wrong.
+> 
+> Try the above again, with a simple attribute group, and name for it, and
+> it should "just work".
 
-Missing <linux/types.h>
+I'm probably missing something but I don't get how this could work in
+this case. If I'm seeing this right the default attribute group here
+is pci_bus_type.bus_groups and that is already set in drivers/pci/pci-driver.c
+so I don't think I should set that.
 
-Other API comments will be sent as a reply to the "Documentation:
-jtag: Add ABI documentation" patch as they are not
-implementation-specific.
+I did however find bus_create_file() which does work when using the path
+/sys/bus/pci/uid_checking instead. This would work for us if Bjorn is okay with
+that path and the code is really clean and simple too.
 
--- 
-Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
-mailto:fercerpav@gmail.com
+That said, I think we could also add something like bus_create_group().
+Then we could use that to also clean up drivers/pci/slot.c:pci_slot_init()
+and get the original path /sys/bus/pci/zpci/uid_checking.
+
+I think this would also allow us to get rid of pci_bus_get_kset() which is
+only used in that function and seems to me like it encourages use of raw ksets.
+Or I'm completely off the mark and just missing something important.
+
+thanks,
+Niklas
