@@ -2,125 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFCA2F8562
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC452F8567
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:29:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387823AbhAOT1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 14:27:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728081AbhAOT1R (ORCPT
+        id S2387964AbhAOT23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 14:28:29 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:58761 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726410AbhAOT22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 14:27:17 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E038EC061757;
-        Fri, 15 Jan 2021 11:26:36 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id az16so4505012qvb.5;
-        Fri, 15 Jan 2021 11:26:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wI2uI3+2FzYpX+KeqH6pO7iQOIAE34VnV+1RkmvqBfE=;
-        b=mf3PqmEpDtpRpnPWuxmzKuTTUKWRTeDqffC2DgmZRyE897531vZpY6Ec/xn0aw6uLS
-         B/PJnjvnmJBbEpy4hcX2//BSi1M+y5f7MM2KIUmE/Y4roQ/xOBvznSJE6IhOy0WXYtF2
-         QXLNLb8QqeY1wECnN6HH92dSG5kEX6FxfU1GwvMRGSDMv7B0+JlPyGPCUS7FN1+sq4K+
-         XoJoeAy0xZof8LFCbUi1/YKETUIvVMcDtraSR9WffmgBjNkM2ycupbY1i7CgI2Gy8eMS
-         GQk3OR7ATRpe31boj0xPqgdiimsuXyR7QAsuPBY1qKe4ki4nUqGee2Tpohhe0I0moUA4
-         O2/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wI2uI3+2FzYpX+KeqH6pO7iQOIAE34VnV+1RkmvqBfE=;
-        b=JGbmRzapTLwNliNIEjxvAGdKBXheD0TnKBB9IKqwlX6qu07p/53YS+QXTyQc+uGD2d
-         +fcECgDoueTAhcgxXmaM9JNsSz1AZexuCfwDV4kVIyh6zsrlCAVt+D6NqYJHJ8zCy9V9
-         PQu84VMrOwqOz/5T7yV3RIu+Ov0U79kNGdFlGHMUyWYhgIYy18/8eFIBD7MGsrIlF+nT
-         zjW4LozFK8/pTBNheauwPQqOeIfua4nuaiZrW+hJOh/kCxj9+lN1FtqnBLEvEfzUUdSc
-         Zpw27nsjGARyBXdnVbEyg4DyR+oTs9wEPptydIN3BU+NPXJWyYFpIAV2lC1leyqbnv9x
-         bstQ==
-X-Gm-Message-State: AOAM530J2wAlIxJnsI5+bkF5SVdnsb+okgDCo54UHGovxNXWcxxb+fo9
-        iElzgEKjMku/uV+MWS7hfhk=
-X-Google-Smtp-Source: ABdhPJzBldBdArrpCk82v9Vpj5Nezb/uflqHljq+TNKRFLYxL46if+OX4UMTE0jlWTT3LjohGVqZTw==
-X-Received: by 2002:a05:6214:533:: with SMTP id x19mr13839323qvw.20.1610738796075;
-        Fri, 15 Jan 2021 11:26:36 -0800 (PST)
-Received: from localhost.localdomain ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id w42sm2557457qtw.22.2021.01.15.11.26.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 11:26:35 -0800 (PST)
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        stable@vger.kernel.org, Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH] MIPS: VDSO: Use CLANG_FLAGS instead of filtering out '--target='
-Date:   Fri, 15 Jan 2021 12:26:22 -0700
-Message-Id: <20210115192622.3828545-1-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Fri, 15 Jan 2021 14:28:28 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 69AB95C0140;
+        Fri, 15 Jan 2021 14:27:22 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 15 Jan 2021 14:27:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hmh.eng.br; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=h77nPCYht3txjg+nUmTjHkq/nfm
+        P49yYK/WpXV7YqO8=; b=ipNtdEZJLlyTUIcPGINdeOubDZitwr/oEYae+hx8IyZ
+        Vu5sy2yHBVUQ4bFJX8gjWsxGWPLpDWpaS3bWuYAp537z4aaaOIuf0A6gIcTJQJuS
+        1nSLGETg04LufNmpw9BUwpZkC++v9HYNMvDFwAYFRNjnXFaTfhwLA+NjU/6tibRO
+        4stfUk/K8TvDDepxYw9jGWdxFZYCQZTQSkUjkCbeFPS/O3v2Ia4xTE04VLG3oSp4
+        JT52rOkXVyUH0jqcy5WgLFVAnm0N8vTMeCW7FGv1DQT1okLQ4GjSeH3dDZYHcWIW
+        tznjBtX7e9TFbLYZrJFUzpzIUZBXyc5s4Dskpgn2+xQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=h77nPC
+        Yht3txjg+nUmTjHkq/nfmP49yYK/WpXV7YqO8=; b=elEiK2KcarRXZU5NvqbqaZ
+        zzDo4odT8xcw4477cHOIdQJvaFO7yNVFVcvKP6KTOS1T6stWhgaboRb6l/+/UmXd
+        9nm1ZFrQniCXZYW2+oZOkCYd5beuFYvVoDsrx7fk0HZAXWyO5flaHatzEFB0YJhw
+        ezUVq62YXXsqYt1mD8fMqJKMW5IW9pz/JXcvIlsETr512yox3YXl0bJR5vJZoV2Z
+        DiLNInfyBYOxtptnFrVoTDFS5ARzRCH70Ya4l6j3/2ztuVCLFPt+TDitOuykINxi
+        Jg/eWVER27Qgot2FQNR4SxluWd+VOrt59Rn+MVYXIXm+ecmEh8B8qWqC7lV1aHvw
+        ==
+X-ME-Sender: <xms:mewBYGJ8y7Us_bMd2ObOf6EoiqVTxmd1g-HPIJqnynnZEF0Sq-1Tsg>
+    <xme:mewBYOIdsicWpF0E8yuHlvdahcltBnulExjO2SiE9Ust9fLDDDetz5ZhCfQeNppVN
+    WpQGmXyW6VjRg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtddvgddutddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujggfsehttd
+    dttddtredvnecuhfhrohhmpefjvghnrhhiqhhuvgcuuggvucfoohhrrggvshcujfholhhs
+    tghhuhhhuceohhhmhheshhhmhhdrvghnghdrsghrqeenucggtffrrghtthgvrhhnpeevud
+    etjeegiedufeeugfeiheeljeekfeduhfejfeegkeehkedvvdehheelgeevieenucfkphep
+    udejjedrudelgedrjedrfedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhephhhmhheshhhmhhdrvghnghdrsghr
+X-ME-Proxy: <xmx:mewBYGsdaG3_XdRs3HlzBQfrwu8sZzQqdBQ7HXZIL_-WCcc55AG3pw>
+    <xmx:mewBYLYUSk1K6XU7flDp2tTvcIXtRvI6kGdzpa67R6rsdw01rQBySw>
+    <xmx:mewBYNYZMp8pqWXkzrJTMpjeo2V2-n11uwAnRaDQFq0YG5zvqTiw_w>
+    <xmx:muwBYBHkM0HFzcxPMSg3ZeZMAIsu1N53dKtnlrBgQ5vvrY3snc2wpg>
+Received: from khazad-dum.debian.net (unknown [177.194.7.32])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7DE8D1080057;
+        Fri, 15 Jan 2021 14:27:21 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by localhost.khazad-dum.debian.net (Postfix) with ESMTP id 8E30F3403215;
+        Fri, 15 Jan 2021 16:27:19 -0300 (-03)
+X-Virus-Scanned: Debian amavisd-new at khazad-dum.debian.net
+Received: from khazad-dum.debian.net ([127.0.0.1])
+        by localhost (khazad-dum2.khazad-dum.debian.net [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id 5Dz2lDureRDU; Fri, 15 Jan 2021 16:27:19 -0300 (-03)
+Received: by khazad-dum.debian.net (Postfix, from userid 1000)
+        id 0E0113403214; Fri, 15 Jan 2021 16:27:18 -0300 (-03)
+Date:   Fri, 15 Jan 2021 16:27:18 -0300
+From:   Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+To:     Joe Perches <joe@perches.com>
+Cc:     YANG LI <abaci-bugfix@linux.alibaba.com>, hdegoede@redhat.com,
+        mgross@linux.intel.com, ibm-acpi@hmh.eng.br,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] thinkpad_acpi: fix: use scnprintf instead of snprintf.
+Message-ID: <20210115192718.GB10895@khazad-dum.debian.net>
+References: <1609914976-28113-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+ <2d5f6ffcf47ec4675cde21ff52fc70a9dd13b023.camel@perches.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d5f6ffcf47ec4675cde21ff52fc70a9dd13b023.camel@perches.com>
+X-GPG-Fingerprint1: 4096R/0x0BD9E81139CB4807: C467 A717 507B BAFE D3C1  6092
+ 0BD9 E811 39CB 4807
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit ee67855ecd9d ("MIPS: vdso: Allow clang's --target flag in VDSO
-cflags") allowed the '--target=' flag from the main Makefile to filter
-through to the vDSO. However, it did not bring any of the other clang
-specific flags for controlling the integrated assembler and the GNU
-tools locations (--prefix=, --gcc-toolchain=, and -no-integrated-as).
-Without these, we will get a warning (visible with tinyconfig):
+On Wed, 06 Jan 2021, Joe Perches wrote:
+> On Wed, 2021-01-06 at 14:36 +0800, YANG LI wrote:
+> > The snprintf() function returns the number of characters which would
+> > have been printed if there were enough space, but the scnprintf()
+> > returns the number of characters which were actually printed. If the
+> > buffer is not large enough, then using snprintf() would result in a
+> > read overflow and an information leak. This error was found with the
+> > help of coccicheck.
+> 
+> In all cases, the buffer _is_ large enough.
 
-arch/mips/vdso/elf.S:14:1: warning: DWARF2 only supports one section per
-compilation unit
-.pushsection .note.Linux, "a",@note ; .balign 4 ; .long 2f - 1f ; .long
-4484f - 3f ; .long 0 ; 1:.asciz "Linux" ; 2:.balign 4 ; 3:
-^
-arch/mips/vdso/elf.S:34:2: warning: DWARF2 only supports one section per
-compilation unit
- .section .mips_abiflags, "a"
- ^
+Thank you for double-checking!
 
-All of these flags are bundled up under CLANG_FLAGS in the main Makefile
-and exported so that they can be added to Makefiles that set their own
-CFLAGS. Use this value instead of filtering out '--target=' so there is
-no warning and all of the tools are properly used.
+> _show function lengths are OK for all the uses with PAGE_SIZE.
+> And it's probably better to use sysfs_emit for all the _show functions
 
-Cc: stable@vger.kernel.org
-Fixes: ee67855ecd9d ("MIPS: vdso: Allow clang's --target flag in VDSO cflags")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1256
-Reported-by: Anders Roxell <anders.roxell@linaro.org>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
----
- arch/mips/vdso/Makefile | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Indeed.
 
-diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index 5810cc12bc1d..2131d3fd7333 100644
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -16,16 +16,13 @@ ccflags-vdso := \
- 	$(filter -march=%,$(KBUILD_CFLAGS)) \
- 	$(filter -m%-float,$(KBUILD_CFLAGS)) \
- 	$(filter -mno-loongson-%,$(KBUILD_CFLAGS)) \
-+	$(CLANG_FLAGS) \
- 	-D__VDSO__
- 
- ifndef CONFIG_64BIT
- ccflags-vdso += -DBUILD_VDSO32
- endif
- 
--ifdef CONFIG_CC_IS_CLANG
--ccflags-vdso += $(filter --target=%,$(KBUILD_CFLAGS))
--endif
--
- #
- # The -fno-jump-tables flag only prevents the compiler from generating
- # jump tables but does not prevent the compiler from emitting absolute
-
-base-commit: 7b490a8ab0f2d3ab8d838a4ff22ae86edafd34a1
 -- 
-2.30.0
-
+  Henrique Holschuh
