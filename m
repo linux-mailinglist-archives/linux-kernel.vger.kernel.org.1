@@ -2,127 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FCA2F7849
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1B92F784C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:07:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730388AbhAOMFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:05:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33044 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726278AbhAOMFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:05:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEAC5238EB
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:05:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610712308;
-        bh=3V9YgqwfCB9ETu7vLXXaseU8NA9t72oMsp6sjmLYI4Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HUb+cSyHFudL1n0aRcQCKP9IbSE9++VdVFL/NMkaWcC5fzHtTosni2avPTVPydhKL
-         5i4P9f7U3z+sB6nkAj6eGCDXnv3GuB+70YsYUWfq0qcbindDBbzFLzP9tWwApkLNHd
-         acXap9ET5i/9XA1lRAYRn/Re6yQPY7qhMqpWP++FaQLkC9+1h27BC37VFU7uwj8+Xo
-         chVtfya1zstM6CvsB/fIZtdOLapsZknEFjdCwv/JMZ2KgaUydwofdk/JtoMZPcQ8WN
-         ha4FMRoc3APG0n1JysMdkn8MM/nq3YXbapcAXm5sWU/Zu9EkJopQpkGJrc5NT6h/8z
-         5DFxy4fU9kEVw==
-Received: by mail-ot1-f46.google.com with SMTP id b24so8312100otj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:05:08 -0800 (PST)
-X-Gm-Message-State: AOAM532kKyeFe/9TutznCkCy8QZAF0PoGWMnIA3epSKjRATDmfxQvqsi
-        +nS037xbIi9A60XjVMVWwWtThEUaSI3S6fBP3uM=
-X-Google-Smtp-Source: ABdhPJwDY0gtt9AZV/Oq8OAS9zQr424m/yvdwXMVC3cBMuaELzC4yGMUUWhDHXq8OJLgz0w6Q1ZXl+uSsK9+FqZ9ECA=
-X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr7991233otm.305.1610712307942;
- Fri, 15 Jan 2021 04:05:07 -0800 (PST)
+        id S1729099AbhAOMGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:06:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726981AbhAOMGs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:06:48 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF9DC061757;
+        Fri, 15 Jan 2021 04:06:08 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id q1so17583435ion.8;
+        Fri, 15 Jan 2021 04:06:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=na1PUSYsGVLnNX7HLmjyBX8gmNyghDEM4Z5I4FTRdlA=;
+        b=WZvYRJ3RiaZHZgJyc9mNLm2rnOzE8QOVDq965/Rm3DixSxMc+EVIFsld+OmVkbkCUY
+         cH87kbyfcuKVxTuetQ+25uSc6lBZkOvX1HFipZOBkP3CUEnUk007zb0DgVr2Adib1cNt
+         crKTFcgGylH8S20V4gjS6enWt5riRX8B6nig76GpTINmMU9Tc8omexlNms6d5i/DJOPE
+         3yZt/jCJyavsnTujdGtlY2nPc+eraszYh5B8JVLSmWfJZp+czzm+LZw5mcwILubhVcDk
+         U7CLWOn//ZQS6hnHyuFrG2/EjmUpSj288nARBgIZCAvEgA2ajm7ngWLlv/rdN7j/zXKF
+         KgaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=na1PUSYsGVLnNX7HLmjyBX8gmNyghDEM4Z5I4FTRdlA=;
+        b=inHPXFh+HloetPA+PEw4t3CYb8VJHYe3Up67mAPNUZlovhiqFMt6fir6JrZv7ieLwu
+         YCsx8/fQCcq1g20nddJQCO2x3hQMyjrZ3DRlbsP6ry0MSQZ8V3exY1og3Z7SbigczvG9
+         +0APBF+d4dOvsS3BiNYwEjTD30e++qctQU/8hXd/vZ7pLpvAE+gJ7mpw4vZ5eoCR4gQD
+         jmPNnL0N+/ZPuWD7Y36brTa5ez+Lc2sptzj0Pckwz6B5+SbXzPSSpIdg5muqMvaQrQLI
+         WaNn+suKoAUtOPFbuhoigbQCY3kYSHX/B2gC99V86QF5TaXrefCIdaNChRSO1rR9xPYv
+         V4Hw==
+X-Gm-Message-State: AOAM533WrkkKLHsirAzvCyFQO89fd1O53ObWYPzbQzxinwuzvxazNtzx
+        jlv23YwrJzdx1Js7PVBFekyBhJyEHXAtNxTSYTc=
+X-Google-Smtp-Source: ABdhPJxxAJKcnZHUMm9cZ8ePtFoOwNf/v7mPgWKulE4JiANqv5qr69rplXZAYNH9UdfBqE4zyJxfRXjMlHE7xIVGRMM=
+X-Received: by 2002:a92:cd8c:: with SMTP id r12mr10192718ilb.221.1610712367656;
+ Fri, 15 Jan 2021 04:06:07 -0800 (PST)
 MIME-Version: 1.0
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <CAK8P3a2DZ8xQp7R=H=wewHnT2=a_=M53QsZOueMVEf7tOZLKNg@mail.gmail.com>
- <60013F54.9050305@hisilicon.com> <CAK8P3a26Ca_59NiGGGv+CHYZSmkTRESpgV4aGFPhrY=KBa8aBA@mail.gmail.com>
- <14914300-b98a-fc60-fc06-0a6d62729d8e@huawei.com>
-In-Reply-To: <14914300-b98a-fc60-fc06-0a6d62729d8e@huawei.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 15 Jan 2021 13:04:51 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3wXPANtLwPOHUqWw_EtdVwOJhwmUeT5WZbc7XKiyK7mQ@mail.gmail.com>
-Message-ID: <CAK8P3a3wXPANtLwPOHUqWw_EtdVwOJhwmUeT5WZbc7XKiyK7mQ@mail.gmail.com>
-Subject: Re: [v2] Old platforms: bring out your dead
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Wei Xu <xuwei5@hisilicon.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+References: <CAKXUXMziQ2H7_oiVSxbt1=bDFkjLQYOiOgd00YGyDnCTVDhbqA@mail.gmail.com>
+ <20210115104947.71d99e87@coco.lan>
+In-Reply-To: <20210115104947.71d99e87@coco.lan>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Fri, 15 Jan 2021 13:05:56 +0100
+Message-ID: <CAKXUXMxRp4tRbMi4+P6pW4Zom7vZ0hfAWX47+aQ7nunLmyYpUQ@mail.gmail.com>
+Subject: Re: [PATCH 00/10] Fix documentation warnings at linux-next
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Tony Prisk <linux@prisktech.co.nz>,
-        Krzysztof Halasa <khalasa@piap.pl>
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 12:09 PM Leizhen (ThunderTown)
-<thunder.leizhen@huawei.com> wrote:
-> On 2021/1/15 17:26, Arnd Bergmann wrote:
-> > On Fri, Jan 15, 2021 at 8:08 AM Wei Xu <xuwei5@hisilicon.com> wrote:
-> >> On 2021/1/14 0:14, Arnd Bergmann wrote:
-> >>> On Fri, Jan 8, 2021 at 11:55 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> >>> * mmp -- added in 2009, DT support is active, but board files might go
-> >>> * cns3xxx -- added in 2010, last fixed in 2019, probably no users left
-> >>> * hisi (hip01/hip05) -- servers added in 2013, replaced with arm64 in 2016
-> >>
-> >> I think it is OK to drop the support of the hip01(arm32) and hip05(arm64).
-> >> Could you also help to drop the support of the hip04(arm32) which I think nobody use as well?
-> >
-> > Thank you for your reply! I actually meant to write hip04 instead of hip05,
-> > so I was only asking about the two 32-bit targets. I would expect that
-> > hip05 still has a few users, but wouldn't mind removing that as well if you
-> > are sure there are none.
-> >
-> > Since Zhen Lei is starting to upstream Kunpeng506 and Kunpeng509
-> > support, can you clarify how much reuse of IP blocks there is between
-> > hip04 and those? In particular, hip04 has custom code for (at least)
-> > platmcpm, clk, irqchip, ethernet, and hw_rng, probably more as those
-> > were only the ones I see on a quick grep.
-> >
-> > If we remove hip04, should we remove all these drivers right away,
-> > or keep some of them around?
+On Fri, Jan 15, 2021 at 10:49 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
 >
-> I think the drivers should be kept.
+> Hi Lukas,
+>
+> Em Fri, 15 Jan 2021 07:12:38 +0100
+> Lukas Bulwahn <lukas.bulwahn@gmail.com> escreveu:
+>
+> > [reduced the recipient list to the main responsible ones and list]
+> >
+> > Hi Mauro, hi Jonathan,
+> >
+> > We both, Mauro and I, have been submitting patches to address the
+> > documentation warnings on linux-next. If it is okay with you, Mauro, I
+> > would like to take responsibility for the task to send out the patches
+> > to address all warnings on linux-next in make htmldocs and follow up
+> > with all the discussions. I can also provide a short weekly summary
+> > (probably always on Friday) on what is pending where and what I could
+> > not resolve by myself.
+> >
+> > Is that okay for you?
+> >
+> > If at some point I do not have the time to take care anymore, I will
+> > let you know.
+>
+> Yeah, sure!
+>
+> Anyway, after applying the patches I sent this week, the warnings
+> I'm getting are all due to the validation scripts I wrote. So, if
+> everything gets merged (either yours or my version), we'll have zero
+> Sphinx/kernel-doc warnings again.
+>
 
-Ok, will do.
+It is a never ending story... I already have seen two new warnings on
+today's linux-next and sent out patches.
 
-> Currently, at least hip04_eth.c and irq-hip04.c are used. These drivers
-> were originally written for Hip04, but the drivers used by other boards
-> maybe similar to them. Therefore, these drivers are extended without
-> adding new drivers.
+> $ scripts/documentation-file-ref-check
+> $ scripts/get_abi.pl validate
 
-Right, so the other chips just use compatible="hisilicon,hip04-intc"
-etc. in their device trees? Is there a public copy of the dts files
-somewhere that I can use for cross-referencing? Sorry if I'm
-messing up the timeline for your upstreaming plans.
+I will also try out those two scripts, but I cannot commit to
+follow-up on all of those yet. I am also looking into addressing all
+kerneldoc warnings, even if not pulled in by make htmldocs.
 
-It might actually be easier to leave hip01 and hip04 in the
-tree for the moment until you have upstreamed the other SoC
-support, and then we clean up by removing the unused bits
-afterwards. I'll leave it to you both to tell me which way is easier
-for you.
-
-      Arnd
+Lukas
