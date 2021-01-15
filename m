@@ -2,72 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4F12F6F77
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 324312F6F97
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731245AbhAOA3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 19:29:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731207AbhAOA3R (ORCPT
+        id S1731415AbhAOAgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 19:36:02 -0500
+Received: from mx1.opensynergy.com ([217.66.60.4]:62738 "EHLO
+        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729048AbhAOAgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 19:29:17 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED04C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:28:37 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id m5so4185592pjv.5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:28:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DadB4dMZfg/PLRa3chi8uXwQiVldY6EMSgs5DP9rrBo=;
-        b=oXVhkH6dCM2gjm68QD6+hm1iRHcUxyvZs11zaQG/5mJgPOO8GR49OJrTw524YZnZlp
-         Bl+oUUNXRkg7Xx2mWaPt057iWZOyu6k3+FDJj99pMxYxYG2ro4+oxBu6DixH9mt8A7ej
-         kM+uSP6DaP8wcLBhk9vRhS/V3UGdx/E/V101DJZXFmhyGdHLkjRGzbzhXYiHZDg9uoNG
-         uteInz7XDpl33zyPHiHjKP6FwbnXO6m7M6ZO3rIAh63T/KeX1cHXrk7zCNR+DqDU/yOJ
-         AEVjqKHCg548bfKMuUUQPQjljnozesgvlkROwrp4GHWKWNHMXa56SwY81i00wW0f3lVF
-         8Fxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DadB4dMZfg/PLRa3chi8uXwQiVldY6EMSgs5DP9rrBo=;
-        b=Wb22nbclAHlUqV7gztegFr5fvdvdMsTEsgtj2Maa0ByukduWazqFrKVCTVxyT9yasD
-         S8jl+L25eI5W3IbeJsjvC3rRYiVHD2llf+BiF+OVEHKRIQ2ZLNZyLTqB12P+mlnOKhFW
-         nImqvnlvyfb8hRsP+BB+B40UjoFUdtIOBv6GW+9qOl1G3BVutNtgIwBFUl/bDSJm1uY7
-         H7urB/qXqPWwGmGDsUhL/NNk93jBUI2hdMRsG8qzHyhIVivNLRNbjr8b2rp9J0ty+anO
-         TGR8Q2iWOL3949xWSocuU1NZz1nrNsu2Zi/kYhKRiMeVnUgsbD7O/n49X1MOghf91P7g
-         m4aA==
-X-Gm-Message-State: AOAM533WJQiQSgZ1pYkysP3Ed14x1f+r3CCcvZU8MvhswmR0pnmJvyn0
-        rHCMp6OwaU8iY1LF7o1gxhhN4yLDqGiiRk2Q178JxA==
-X-Google-Smtp-Source: ABdhPJys+dJ+QBolCgxszC0GuoEzeOYfrtCrTYKp3dTkUKqnqu5sT8cfZ4T2ZXf8z3EY7Bil7K/cw3b3eNX5WXD7Ojw=
-X-Received: by 2002:a17:902:fe87:b029:da:5d3b:4a84 with SMTP id
- x7-20020a170902fe87b02900da5d3b4a84mr10049761plm.51.1610670516665; Thu, 14
- Jan 2021 16:28:36 -0800 (PST)
+        Thu, 14 Jan 2021 19:36:01 -0500
+X-Greylist: delayed 520 seconds by postgrey-1.27 at vger.kernel.org; Thu, 14 Jan 2021 19:36:01 EST
+Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
+        by mx1.opensynergy.com (Proxmox) with ESMTP id 09218A1372;
+        Fri, 15 Jan 2021 01:26:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+         h=cc:cc:content-transfer-encoding:content-type:content-type
+        :date:from:from:message-id:mime-version:reply-to:subject:subject
+        :to:to; s=srmailgate02; bh=vjQz/FTdcUA4ikts1emzODkjkcrbE4dUUeRlg
+        xezK8s=; b=qW2W7tpA30Q0V4IIuz28HwNuJ/Ixfi/osS5uVNjrsQX3QtIenqFor
+        o5ZPjJVKypOQFbZEU8O+C2sne911M4vQ5odKwrH3YxV6r8XF3m3Ht2IJfJ8wegqS
+        0lmKcrTApoySlxWOu1KRWuFdaJ/nk1rJEPQGdXx+EKqMF9tv4d3Ri7Y0mqgv8PQs
+        aGyrQGx9zXMfwREtBUdzElhoxQiPLrg8YXYESz8J8EqO8OdSo8mki9J+XMnPcdt7
+        KAUvZ80eZ+6Dd/rkdIRlkiajLBXj90AowVuHCP/f9KjDva9aGEycaoBSu+4GmqgB
+        +F774G3+DvXRU+UDSorxhle2JqZhMmyQQ==
+From:   Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
+To:     <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>
+CC:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Mathias Crombez <mathias.crombez@faurecia.com>,
+        Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
+Subject: [PATCH RESEND v3] virtio-input: add multi-touch support
+Date:   Fri, 15 Jan 2021 02:26:23 +0200
+Message-ID: <20210115002623.8576-1-vasyl.vavrychuk@opensynergy.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20201211223232.697679-1-davidgow@google.com>
-In-Reply-To: <20201211223232.697679-1-davidgow@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 14 Jan 2021 16:28:25 -0800
-Message-ID: <CAFd5g46UQtLeLoJYtOC=F1zhfz9FaHkYxUcqPjhC+7CQjshz_Q@mail.gmail.com>
-Subject: Re: [PATCH] kunit: tool: Fix spelling of "diagnostic" in kunit_parser
-To:     David Gow <davidgow@google.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 2:32 PM David Gow <davidgow@google.com> wrote:
->
-> Various helper functions were misspelling "diagnostic" in their names.
-> It finally got annoying, so fix it.
->
-> Signed-off-by: David Gow <davidgow@google.com>
+From: Mathias Crombez <mathias.crombez@faurecia.com>
 
-Tested-by: Brendan Higgins <brendanhiggins@google.com>
+Without multi-touch slots allocated, ABS_MT_SLOT events will be lost by
+input_handle_abs_event.
+
+Implementation is based on uinput_create_device.
+
+Signed-off-by: Mathias Crombez <mathias.crombez@faurecia.com>
+Co-developed-by: Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
+Signed-off-by: Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
+---
+v2: fix patch corrupted by corporate email server
+v3: use number of slots from the host
+
+Resend since to feedback.
+
+ drivers/virtio/virtio_input.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/virtio/virtio_input.c b/drivers/virtio/virtio_input.c
+index f1f6208edcf5..f643536807dd 100644
+--- a/drivers/virtio/virtio_input.c
++++ b/drivers/virtio/virtio_input.c
+@@ -7,6 +7,7 @@
+ 
+ #include <uapi/linux/virtio_ids.h>
+ #include <uapi/linux/virtio_input.h>
++#include <linux/input/mt.h>
+ 
+ struct virtio_input {
+ 	struct virtio_device       *vdev;
+@@ -204,7 +205,7 @@ static int virtinput_probe(struct virtio_device *vdev)
+ 	struct virtio_input *vi;
+ 	unsigned long flags;
+ 	size_t size;
+-	int abs, err;
++	int abs, err, nslots;
+ 
+ 	if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1))
+ 		return -ENODEV;
+@@ -289,6 +290,13 @@ static int virtinput_probe(struct virtio_device *vdev)
+ 				continue;
+ 			virtinput_cfg_abs(vi, abs);
+ 		}
++
++		if (test_bit(ABS_MT_SLOT, vi->idev->absbit)) {
++			nslots = input_abs_get_max(vi->idev, ABS_MT_SLOT) + 1;
++			err = input_mt_init_slots(vi->idev, nslots, 0);
++			if (err)
++				goto err_mt_init_slots;
++		}
+ 	}
+ 
+ 	virtio_device_ready(vdev);
+@@ -304,6 +312,7 @@ static int virtinput_probe(struct virtio_device *vdev)
+ 	spin_lock_irqsave(&vi->lock, flags);
+ 	vi->ready = false;
+ 	spin_unlock_irqrestore(&vi->lock, flags);
++err_mt_init_slots:
+ 	input_free_device(vi->idev);
+ err_input_alloc:
+ 	vdev->config->del_vqs(vdev);
+-- 
+2.20.1
+
+
