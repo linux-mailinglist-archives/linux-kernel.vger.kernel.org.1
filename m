@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 888742F79B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 510EB2F793C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387888AbhAOMj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:39:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47498 "EHLO mail.kernel.org"
+        id S1733244AbhAOMdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:33:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729409AbhAOMjy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:39:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9586C2399C;
-        Fri, 15 Jan 2021 12:39:12 +0000 (UTC)
+        id S1733218AbhAOMdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:33:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C349223339;
+        Fri, 15 Jan 2021 12:33:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714353;
-        bh=G8hWhxVEJt2ydwtQjT7XhKDCirqG7g/kKbU6IWwjgvg=;
+        s=korg; t=1610714004;
+        bh=MfLHoS0vnrYuPWiEEYF5pa32RrfYysgWSlR23/eQX0E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lK3mQr/T4frRm6KeLmksuea2bIAGvm3m7fJ79FdDgyvnjhGjyRzzlFE+0E5leN/TF
-         I9F94P0A6FpyzWqBJ71U2A176XcE5hnYPwVV1M07ge2STPlMLx3MI9aIiAz3Eg9t0m
-         8wrYrmAuyQb0j4I2XsmtZ2LyJV6MlNOYgO43HDlw=
+        b=ldBVeE+/0sC6dDfVI6nKJvCx2TRhsh9czebO0mLiNc/tn13ypwDJZMDkl08Ab46S2
+         zUHZUmXbK8kok8CP4xTCZVRYq5M3HapUi8cKXqCLaZDICcVAkFHw2cEEq6JZfJ7hQe
+         Izs88PJDOJsrIpuF6WMmniNZkIzZsub537uM8zDE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Georgi Djakov <georgi.djakov@linaro.org>
-Subject: [PATCH 5.10 067/103] interconnect: qcom: fix rpmh link failures
+        stable@vger.kernel.org,
+        Shravya Kumbham <shravya.kumbham@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 4.19 30/43] dmaengine: xilinx_dma: fix incompatible param warning in _child_probe()
 Date:   Fri, 15 Jan 2021 13:28:00 +0100
-Message-Id: <20210115122009.284192435@linuxfoundation.org>
+Message-Id: <20210115121958.506620898@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
-References: <20210115122006.047132306@linuxfoundation.org>
+In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
+References: <20210115121957.037407908@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,95 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Shravya Kumbham <shravya.kumbham@xilinx.com>
 
-commit 512d4a26abdbd11c6ffa03032740e5ab3c62c55b upstream.
+commit faeb0731be0a31e2246b21a85fa7dabbd750101d upstream.
 
-When CONFIG_COMPILE_TEST is set, it is possible to build some
-of the interconnect drivers into the kernel while their dependencies
-are loadable modules, which is bad:
+In xilinx_dma_child_probe function, the nr_channels variable is
+passed to of_property_read_u32() which expects an u32 return value
+pointer. Modify the nr_channels variable type from int to u32 to
+fix the incompatible parameter coverity warning.
 
-arm-linux-gnueabi-ld: drivers/interconnect/qcom/bcm-voter.o: in function `qcom_icc_bcm_voter_commit':
-(.text+0x1f8): undefined reference to `rpmh_invalidate'
-arm-linux-gnueabi-ld: (.text+0x20c): undefined reference to `rpmh_write_batch'
-arm-linux-gnueabi-ld: (.text+0x2b0): undefined reference to `rpmh_write_batch'
-arm-linux-gnueabi-ld: (.text+0x2e8): undefined reference to `rpmh_write_batch'
-arm-linux-gnueabi-ld: drivers/interconnect/qcom/icc-rpmh.o: in function `qcom_icc_bcm_init':
-(.text+0x2ac): undefined reference to `cmd_db_read_addr'
-arm-linux-gnueabi-ld: (.text+0x2c8): undefined reference to `cmd_db_read_aux_data'
-
-The exact dependencies are a bit complicated, so split them out into a
-hidden Kconfig symbol that all drivers can in turn depend on to get it
-right.
-
-Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20201204165030.3747484-1-arnd@kernel.org
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+Addresses-Coverity: Event incompatible_param.
+Fixes: 1a9e7a03c761 ("dmaengine: vdma: Add support for mulit-channel dma mode")
+Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
+Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Link: https://lore.kernel.org/r/1608722462-29519-3-git-send-email-radhey.shyam.pandey@xilinx.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/interconnect/qcom/Kconfig |   23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+ drivers/dma/xilinx/xilinx_dma.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/interconnect/qcom/Kconfig
-+++ b/drivers/interconnect/qcom/Kconfig
-@@ -42,13 +42,23 @@ config INTERCONNECT_QCOM_QCS404
- 	  This is a driver for the Qualcomm Network-on-Chip on qcs404-based
- 	  platforms.
+--- a/drivers/dma/xilinx/xilinx_dma.c
++++ b/drivers/dma/xilinx/xilinx_dma.c
+@@ -2529,7 +2529,8 @@ static int xilinx_dma_chan_probe(struct
+ static int xilinx_dma_child_probe(struct xilinx_dma_device *xdev,
+ 				    struct device_node *node)
+ {
+-	int ret, i, nr_channels = 1;
++	int ret, i;
++	u32 nr_channels = 1;
  
-+config INTERCONNECT_QCOM_RPMH_POSSIBLE
-+	tristate
-+	default INTERCONNECT_QCOM
-+	depends on QCOM_RPMH || (COMPILE_TEST && !QCOM_RPMH)
-+	depends on QCOM_COMMAND_DB || (COMPILE_TEST && !QCOM_COMMAND_DB)
-+	depends on OF || COMPILE_TEST
-+	help
-+	  Compile-testing RPMH drivers is possible on other platforms,
-+	  but in order to avoid link failures, drivers must not be built-in
-+	  when QCOM_RPMH or QCOM_COMMAND_DB are loadable modules
-+
- config INTERCONNECT_QCOM_RPMH
- 	tristate
- 
- config INTERCONNECT_QCOM_SC7180
- 	tristate "Qualcomm SC7180 interconnect driver"
--	depends on INTERCONNECT_QCOM
--	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
-+	depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
- 	select INTERCONNECT_QCOM_RPMH
- 	select INTERCONNECT_QCOM_BCM_VOTER
- 	help
-@@ -57,8 +67,7 @@ config INTERCONNECT_QCOM_SC7180
- 
- config INTERCONNECT_QCOM_SDM845
- 	tristate "Qualcomm SDM845 interconnect driver"
--	depends on INTERCONNECT_QCOM
--	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
-+	depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
- 	select INTERCONNECT_QCOM_RPMH
- 	select INTERCONNECT_QCOM_BCM_VOTER
- 	help
-@@ -67,8 +76,7 @@ config INTERCONNECT_QCOM_SDM845
- 
- config INTERCONNECT_QCOM_SM8150
- 	tristate "Qualcomm SM8150 interconnect driver"
--	depends on INTERCONNECT_QCOM
--	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
-+	depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
- 	select INTERCONNECT_QCOM_RPMH
- 	select INTERCONNECT_QCOM_BCM_VOTER
- 	help
-@@ -77,8 +85,7 @@ config INTERCONNECT_QCOM_SM8150
- 
- config INTERCONNECT_QCOM_SM8250
- 	tristate "Qualcomm SM8250 interconnect driver"
--	depends on INTERCONNECT_QCOM
--	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
-+	depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
- 	select INTERCONNECT_QCOM_RPMH
- 	select INTERCONNECT_QCOM_BCM_VOTER
- 	help
+ 	ret = of_property_read_u32(node, "dma-channels", &nr_channels);
+ 	if ((ret < 0) && xdev->mcdma)
 
 
