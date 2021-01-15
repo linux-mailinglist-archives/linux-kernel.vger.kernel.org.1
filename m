@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12CC2F888D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 332752F8899
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727432AbhAOWjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 17:39:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57144 "EHLO
+        id S1727531AbhAOWjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 17:39:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726442AbhAOWjU (ORCPT
+        with ESMTP id S1726442AbhAOWjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 17:39:20 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5607AC061794
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:38:40 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id y12so5887470pji.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:38:40 -0800 (PST)
+        Fri, 15 Jan 2021 17:39:53 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA19AC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:39:12 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id c12so6390818pfo.10
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:39:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:content-transfer-encoding:in-reply-to:references
          :subject:from:cc:to:date:message-id:user-agent;
-        bh=vzqinN2+UhVFxQp7UQhMoz+Hz7a/jxePWrrSbiXEW1Q=;
-        b=SUJkDbkeqFa0niCmchghzTPcQISva7+HwlO0JDlJ3g+Xo6ppx1eA7gMlxtQC+qbJCr
-         /Fu5llikLVPkimI3NGMVYk/1NPGfbEZmGvMIoW+B8Q5vBjeQUoJdiC+r23szudiG81jn
-         AcNVZIp7x0NuyJgyfxbuva5b8eViIWiFY7gQ8=
+        bh=Y+c9HS3HJQoqEUWQRXGWZKY5dKQmAKWSEZz8d5vX0FU=;
+        b=P0fiHh/oe3hWdW5Wx4pzUmfwyiQzjlFLEMallmyifhCooJCVq7w5B5NWF+ZAinmnba
+         xh805OL650c5mw8CBh7JLgvt8QcKl2prrZPuk+UgelMY0PH73TcezAl/aDjqDIW31Pp4
+         eIvv1fTiod+GgbZBkM4U3BwFzYsl/HO0sUbFI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:content-transfer-encoding
          :in-reply-to:references:subject:from:cc:to:date:message-id
          :user-agent;
-        bh=vzqinN2+UhVFxQp7UQhMoz+Hz7a/jxePWrrSbiXEW1Q=;
-        b=dPSVb/rs77LBC8yrZtYISvKv2KjAtUzVP2yZgFuFeFutZELiOPpfsNZE0ifI08v7QS
-         O6tyktsfcwYM4qhDHkOMu9JyIggXmpX7lmsWZNOw7q2OtfoMLgA23cvrvWbS4NrFyc1B
-         sILvJoLVPxDwx0mc2gU4O0gSVN/Qbq10+ZSOWiZBeKVNHBZ0DntINtnOKNR2fu3dFdGd
-         gQvMIbyC/e8PxZrvnYO/HdDJi/KbBE2WmyO/e7zWF04MCzSh6bIEFh8SF9/03W/rBnN9
-         uzFJV5lTbEDkhY8RxbU5EliORhkoEH3FO+J4hgaG3HZfX9XDjDmcURaHYkQEAn7/fWOg
-         vWVA==
-X-Gm-Message-State: AOAM532n3mNIJWRMuOCzyr8Slw02ISrFlOE06ijRm5p/TOPJPdaHrhsI
-        k7nUx5w9DmKXKLXv0n+pGFqyUQ==
-X-Google-Smtp-Source: ABdhPJzutLbitTSWzkEsDp6ySaoZVq3QJzhDCKX0WAWNMrBkne9/L167nB5ZFL0lsuvZCgBeXyEAkQ==
-X-Received: by 2002:a17:90b:8d7:: with SMTP id ds23mr5548341pjb.116.1610750319851;
-        Fri, 15 Jan 2021 14:38:39 -0800 (PST)
+        bh=Y+c9HS3HJQoqEUWQRXGWZKY5dKQmAKWSEZz8d5vX0FU=;
+        b=l0Xl1FTaADHvj3V3H6lqY36VOs2xrCSd3D+aeIxFecR9+mxcKDOCQZp8Kd823pk/dD
+         coMe4A6xR6hR0VAuPb9gENGVB/4zZyGJp74x+eIEivxO/5KglD0JuJSFNdyXj6sJen8I
+         PaaC0kK3Le0EAKscRCUWUSeDojdmfeE/GzfHt/1CFeGDc/u+wt6mfg3GGJpsTshLtK0c
+         NX3506uGXah/gaQK8XN4ZRT+7wc9Eo7VUsncHBu1hB8oAy/dU7rzK4NQir3tuvTw76Td
+         sd3aa3ah+Vdeo1fhQwJVqaeVZs8TLsWlLCPe3tgTP9XsoDIA2D8lQp5KsiHK8Xm1W0WY
+         1bVw==
+X-Gm-Message-State: AOAM532her+xsL1hXbMCi7ajo7LHQ2oI6fqCwlLBSWNE7DUZ9pTMQVoa
+        xgYNTM+1X9rwXyoQhOvnx1EI1A==
+X-Google-Smtp-Source: ABdhPJwetKTrsYDO/MS3uQ/4bM25Gvzem9TMvE7hVpCR9+DEgOQIq0GoGhBZnQW4prM8us8FZ9T/gA==
+X-Received: by 2002:a62:15d2:0:b029:1a1:c2f2:e851 with SMTP id 201-20020a6215d20000b02901a1c2f2e851mr14981471pfv.7.1610750352548;
+        Fri, 15 Jan 2021 14:39:12 -0800 (PST)
 Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id t15sm9303405pfc.12.2021.01.15.14.38.39
+        by smtp.gmail.com with ESMTPSA id gv22sm736919pjb.56.2021.01.15.14.39.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 14:38:39 -0800 (PST)
+        Fri, 15 Jan 2021 14:39:12 -0800 (PST)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210115143555.v6.2.I9ec9c3c61eded22a5f7fbff838d23fc95ec7cfe0@changeid>
-References: <20210115143555.v6.1.Iaa8a60cf2ed4b7ad5e2fbb4ad76a1c600ee36113@changeid> <20210115143555.v6.2.I9ec9c3c61eded22a5f7fbff838d23fc95ec7cfe0@changeid>
-Subject: Re: [PATCH v6 2/3] ARM: dts: cros-ec-keyboard: Use keymap macros
+In-Reply-To: <20210115143555.v6.3.I96134907488f41f358d03f3c1b08194f9547e670@changeid>
+References: <20210115143555.v6.1.Iaa8a60cf2ed4b7ad5e2fbb4ad76a1c600ee36113@changeid> <20210115143555.v6.3.I96134907488f41f358d03f3c1b08194f9547e670@changeid>
+Subject: Re: [PATCH v6 3/3] dt-bindings: input: Fix the keymap for LOCK key
 From:   Stephen Boyd <swboyd@chromium.org>
 Cc:     dianders@chromium.org, Philip Chen <philipchen@chromium.org>,
         Benson Leung <bleung@chromium.org>,
@@ -61,19 +61,16 @@ Cc:     dianders@chromium.org, Philip Chen <philipchen@chromium.org>,
 To:     LKML <linux-kernel@vger.kernel.org>,
         Philip Chen <philipchen@chromium.org>,
         dmitry.torokhov@gmail.com
-Date:   Fri, 15 Jan 2021 14:38:37 -0800
-Message-ID: <161075031796.3661239.5637804199088801218@swboyd.mtv.corp.google.com>
+Date:   Fri, 15 Jan 2021 14:39:10 -0800
+Message-ID: <161075035048.3661239.6086252465678815045@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-01-15 14:36:16)
-> The common cros-ec keymap has been defined as macros. This patch uses
-> the macros to simply linux,keymap in cros-ec-keyboard.dtsi file.
->=20
-> This patch also creates an alias for keyboard-controller to make it
-> easier to override the keymap in board-specific dts later.
+Quoting Philip Chen (2021-01-15 14:36:17)
+> Decouple LOCK from F13 and directly map the LOCK key (KSI3/KSO9) to
+> KEY_SLEEP action key code.
 >=20
 > Signed-off-by: Philip Chen <philipchen@chromium.org>
 > ---
