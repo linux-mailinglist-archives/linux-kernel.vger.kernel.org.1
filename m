@@ -2,119 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5E52F8701
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AE12F870A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732055AbhAOU7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 15:59:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726286AbhAOU70 (ORCPT
+        id S2388058AbhAOVBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 16:01:03 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59434 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733195AbhAOVBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 15:59:26 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B87EC061757;
-        Fri, 15 Jan 2021 12:58:46 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id y17so10583560wrr.10;
-        Fri, 15 Jan 2021 12:58:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JNPQQq0esyAUv0SaJP9M+5H+0D0Ooff203N1KcpXtkI=;
-        b=bjN1pCMQoob0hn1vxVNxALaWBggxOr0JAwGKdyH4dFjGsCcgrrK67crS2mMfYlL4R4
-         Z3uHdnlcFVoiBpQom4yFMSCP7L+UPAsy2QS+pyl/BUjm+PT89w8JRFtGjNC127fwC/1F
-         Pl9hGF3H/dzAsSAn+BSplb2+LKZ+JjIUCTYi7KrhnjElKScVeSOnpzX9xSn8TEw4eZRE
-         n6EObZ+TIPvIr8aYbNRZuj3J01f47zRfn2wGL0uU8d/7VenVI7xG1GAQ8XVAg/a98aZj
-         DXprMuplm5mNOn/u3HhgeuNA9YNUBGxWfS3cCllex8x+0w7uGhz6vh/XKSPOdHLkerX5
-         7Qqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JNPQQq0esyAUv0SaJP9M+5H+0D0Ooff203N1KcpXtkI=;
-        b=EOBhh8EJtUMug1EcP3ke2uGgwRuiQ3EcXEa9Or0U1l11O9gGGKacMBlCXUJ0uEGC2f
-         pBmEs4Cw/fKclBM6946eYUEgHUGr0NXCzZ2wmjgmj6LxKVHF2Ftr1Gq9wu831Uan2feU
-         2kUlhi5fof1r5UpWxJKZU0dDsEyp0NkftTFG2wVaXB7bxt250/MlyAe1DxHBw3LJeEbA
-         fqrvNwHEBO9EJpU/xxcKnhYM+QzvEHSl3jarQHe6uCIIigl+yznzTZCAJ78/vJe+ouq4
-         7bHW7Q+FiGzQMEPcuBGjzMpKL2ZZ6FWGkMYlo4QlI/HCgPSe7Qt25XlUO8RuCtnShjjs
-         5GuA==
-X-Gm-Message-State: AOAM530/Vqjx+5Zb+SL4seNEfKrIuvygnWaT+SN3cc6EB+QGPB8khZzW
-        ov/2+NYFnbT7fFHzMSFCMdiYUyyHaLyheQ==
-X-Google-Smtp-Source: ABdhPJxBjBNQ3eVsS6Me/YyVKPaoeFY86umXQH74NxE82tUEBDOT0B3bzYaEh4RJgUVktwEZLs4QyQ==
-X-Received: by 2002:a5d:4e51:: with SMTP id r17mr15130734wrt.94.1610744325301;
-        Fri, 15 Jan 2021 12:58:45 -0800 (PST)
-Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
-        by smtp.gmail.com with ESMTPSA id h14sm16016927wrx.37.2021.01.15.12.58.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 12:58:44 -0800 (PST)
-Date:   Fri, 15 Jan 2021 17:58:38 -0300
-From:   Melissa Wen <melissa.srw@gmail.com>
-To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] drm/vkms: Fix missing kmalloc allocation failure
- check
-Message-ID: <20210115205838.7hff6mmyyl55pgek@smtp.gmail.com>
-References: <20210115130911.71073-1-colin.king@canonical.com>
- <CACAkLuqG+4cq9w9=JEjB-5KPcxu==2+Sen6GMknM495vELgEFA@mail.gmail.com>
+        Fri, 15 Jan 2021 16:01:00 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10FKwSrX040711;
+        Fri, 15 Jan 2021 14:58:28 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610744308;
+        bh=Sc+E12C0KeMsBR6ZQgAShxwFlyogleIJrGrKpJQw9+I=;
+        h=From:To:CC:Subject:Date;
+        b=hAMQdGnvcb+3/Pvup+bHNMIKe6CD91W4IfLTwa0vehyzv+7A0+jJ3V5ZPwVva9WU0
+         0F59yFvUzIPWjpaXMSBSTPxuwOzMWAgu9bEJLhHBfy7V/EHerB2wsLJZYqnxRfrFIG
+         qcj5rMx0D804of+T5c8Jy29RitVo/nGntMGo5h+U=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10FKwSQs041781
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 Jan 2021 14:58:28 -0600
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
+ Jan 2021 14:58:28 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 15 Jan 2021 14:58:28 -0600
+Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10FKwSCL042823;
+        Fri, 15 Jan 2021 14:58:28 -0600
+Received: from localhost ([10.250.34.42])
+        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 10FKwRS9077904;
+        Fri, 15 Jan 2021 14:58:28 -0600
+From:   Suman Anna <s-anna@ti.com>
+To:     Rob Herring <robh+dt@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+CC:     Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        David Lechner <david@lechnology.com>,
+        <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Suman Anna <s-anna@ti.com>
+Subject: [PATCH] dt-bindings: irqchip: Add #address-cells to PRUSS INTC
+Date:   Fri, 15 Jan 2021 14:58:19 -0600
+Message-ID: <20210115205819.19426-1-s-anna@ti.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACAkLuqG+4cq9w9=JEjB-5KPcxu==2+Sen6GMknM495vELgEFA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/15, Sumera Priyadarsini wrote:
-> On Fri, Jan 15, 2021 at 6:39 PM Colin King <colin.king@canonical.com> wrote:
-> >
-> > From: Colin Ian King <colin.king@canonical.com>
-> >
-> > Currently the kmalloc allocation for config is not being null
-> > checked and could potentially lead to a null pointer dereference.
-> > Fix this by adding the missing null check.
-> >
-> > Addresses-Coverity: ("Dereference null return value")
-> > Fixes: 2df7af93fdad ("drm/vkms: Add vkms_config type")
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> 
-> Good catch, thank you!
-> 
-> Reviewed-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+The '#address-cells' property looks to be a required property for
+interrupt controller nodes as indicated by a warning message seen
+when building dtbs with W=2. Adding the property to the PRUSS INTC
+dts nodes though fails the dtbs_check. Add this property to the
+PRUSS INTC binding to make it compliant with both dtbs_check and
+building dtbs.
 
-Applied to drm-misc-next.
+Signed-off-by: Suman Anna <s-anna@ti.com>
+---
+Hi Rob,
 
-Thanks,
-Melissa Wen
-> > ---
-> >  drivers/gpu/drm/vkms/vkms_drv.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
-> > index 708f7f54001d..2173b82606f6 100644
-> > --- a/drivers/gpu/drm/vkms/vkms_drv.c
-> > +++ b/drivers/gpu/drm/vkms/vkms_drv.c
-> > @@ -188,7 +188,11 @@ static int vkms_create(struct vkms_config *config)
-> >
-> >  static int __init vkms_init(void)
-> >  {
-> > -       struct vkms_config *config = kmalloc(sizeof(*config), GFP_KERNEL);
-> > +       struct vkms_config *config;
-> > +
-> > +       config = kmalloc(sizeof(*config), GFP_KERNEL);
-> > +       if (!config)
-> > +               return -ENOMEM;
-> >
-> >         default_config = config;
-> >
-> > --
-> > 2.29.2
-> >
-> regards,
-> Sumera
+This patch is also part of our effort to get rid of the warnings seen
+around interrupt providers on TI K3 dtbs [1]. I needed this in the PRUSS
+INTC bindings to not get a warning with dtbs_check while also ensuring
+no warnings while building dtbs with W=2.
+
+I would have expected the '#address-cells' requirement to be inherited
+automatically. And looking through the schema files, I actually do not
+see the interrupt-controller.yaml included automatically anywhere. You
+had asked us to drop the inclusion in this binding in our first version
+with YAML [3]. Am I missing something, and how do we ensure that this
+is enforced automatically for everyone?
+
+regards
+Suman
+
+[1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210115083003.27387-1-lokeshvutla@ti.com/
+[2] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210114194805.8231-1-s-anna@ti.com/
+[3] https://patchwork.kernel.org/comment/23484523/
+
+ .../bindings/interrupt-controller/ti,pruss-intc.yaml        | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml b/Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
+index c2ce215501a5..dcbfe08e997d 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
+@@ -79,6 +79,9 @@ properties:
+       mapping and channels to host interrupts so through this property entire
+       mapping is provided.
+ 
++  "#address-cells":
++    const: 0
++
+   ti,irqs-reserved:
+     $ref: /schemas/types.yaml#/definitions/uint8
+     description: |
+@@ -100,6 +103,7 @@ required:
+   - interrupt-names
+   - interrupt-controller
+   - "#interrupt-cells"
++  - "#address-cells"
+ 
+ additionalProperties: false
+ 
+@@ -123,6 +127,7 @@ examples:
+                               "host_intr6", "host_intr7";
+             interrupt-controller;
+             #interrupt-cells = <3>;
++            #address-cells = <0>;
+         };
+     };
+ 
+@@ -142,6 +147,7 @@ examples:
+             reg = <0x20000 0x2000>;
+             interrupt-controller;
+             #interrupt-cells = <3>;
++            #address-cells = <0>;
+             interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>,
+                    <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>,
+                    <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>,
+-- 
+2.29.2
+
