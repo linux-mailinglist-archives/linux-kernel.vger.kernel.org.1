@@ -2,123 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 960E72F73DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:51:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D0E2F73E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731978AbhAOHvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 02:51:15 -0500
-Received: from mga07.intel.com ([134.134.136.100]:8825 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730295AbhAOHvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 02:51:14 -0500
-IronPort-SDR: YxfGEA2f5Zz9Ab5i3K1hkwrKOT3i8sguTlAS1Wrmxv3AMyOIMVJK4aMpvMgFBbPFQpavFaJOc2
- lmS+U7d3/qrg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="242582928"
-X-IronPort-AV: E=Sophos;i="5.79,348,1602572400"; 
-   d="scan'208";a="242582928"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 23:50:32 -0800
-IronPort-SDR: sE+wicejpdjwI5sz3rL5UivRYWPuYpz0Sz9m2SC0oCkt7LnNQVNXOCiFK41XEwO6phK9OHXeQ3
- nR4jMXqTPgaA==
-X-IronPort-AV: E=Sophos;i="5.79,348,1602572400"; 
-   d="scan'208";a="382575810"
-Received: from bmkierna-mobl3.ger.corp.intel.com (HELO localhost) ([10.213.221.58])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 23:50:28 -0800
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        ville.syrjala@linux.intel.com, lukas@wunner.de,
-        chris@chris-wilson.co.uk
-Subject: Re: [BUG] on reboot: bisected to: drm/i915: Shut down displays gracefully on reboot
-In-Reply-To: <20210114163435.767ccbb0@gandalf.local.home>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210114163206.4a562d82@gandalf.local.home> <20210114163435.767ccbb0@gandalf.local.home>
-Date:   Fri, 15 Jan 2021 09:50:25 +0200
-Message-ID: <87mtxaprjy.fsf@intel.com>
+        id S1732054AbhAOHxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 02:53:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730295AbhAOHxu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 02:53:50 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F468C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:53:10 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id y8so4285718plp.8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:53:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k5rUWYQ53xu61NYNf2N+FFBOArG/WXlQJYbUH9t64RY=;
+        b=QY5+gDN5VQmgj0lztLbKDumIK/YeAPPVjlWdL/rFU1w9qbzynU4Vphn6xB1iU6o8wW
+         d5IoDMDjioobQNWqXJWuFc0WOog6d4CPrd4GdV2y738jlOKlp9d9/pGHaR3ZFLYx3KR2
+         3y/AL+XvPl8lMkWBbmTwBNeNuPnSHeoVHt+Hg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k5rUWYQ53xu61NYNf2N+FFBOArG/WXlQJYbUH9t64RY=;
+        b=VfdQJcUvgMom8pyH4nfg8lpCRxmRyxhdD8Wkhg+LT3UNVI/6PuIAwdMnAIeEz0h6y7
+         GRNIv+2yCIWNQ7vyFay81uWM2zl2cTuPhLzL27+LA7bcJDTlKuxoAlWCSavW9CZBgDN6
+         ab0VcAVGH1Ou1ieiOIhggPwmKEQPgMMPBO4CJ0N6CADmFrx14/dt6y9ZAEzHWWwQDws3
+         E7kuGZWGFTDKo9DT1Qj508G4reF+Ntt+chP7/IksXaxEKZ5jee/J+km6ISUQez5qlX74
+         Y3uEwOUZWgCtUlEhE2DK6dd35qzzW3mS3Uk7EbhtQXEXyU8JybcsekBboIFAzcpQJtHP
+         +o3w==
+X-Gm-Message-State: AOAM532+wdDX+wnwvAQv0Q2SiYBU1ZAboS/cPvPPJoBPWjsBI5a8oPOq
+        IJ3wrIg/Mtb4CBjVrsuhp2ftfoNzR3i5bokk
+X-Google-Smtp-Source: ABdhPJzhirIDFWw+9irQUOwF9CKpaqpYnbavJoyZQgwKjRnVwoHcOgNCZOjMIBDbKCCCuYIQTE4C8w==
+X-Received: by 2002:a17:902:c155:b029:da:9460:99a0 with SMTP id 21-20020a170902c155b02900da946099a0mr11443829plj.20.1610697189811;
+        Thu, 14 Jan 2021 23:53:09 -0800 (PST)
+Received: from localhost ([2401:fa00:1:10:725a:fff:fe46:44eb])
+        by smtp.gmail.com with ESMTPSA id p3sm7113402pjg.53.2021.01.14.23.53.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Jan 2021 23:53:09 -0800 (PST)
+From:   Yu-Hsuan Hsu <yuhsuan@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH v7 1/2] cros_ec_commands: Add EC_CODEC_I2S_RX_RESET
+Date:   Fri, 15 Jan 2021 15:53:00 +0800
+Message-Id: <20210115075301.47995-1-yuhsuan@chromium.org>
+X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021, Steven Rostedt <rostedt@goodmis.org> wrote:
-> [ Forgot to add those on the commit itself ]
->
-> -- Steve
->
->
-> On Thu, 14 Jan 2021 16:32:06 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
->
->> On reboot, one of my test boxes now triggers the following warning:
->> 
->>  ------------[ cut here ]------------
->>  RPM raw-wakeref not held
->>  WARNING: CPU: 4 PID: 1 at drivers/gpu/drm/i915/intel_runtime_pm.h:106 gen6_write32+0x1bc/0x2a0 [i915]
->>  Modules linked in: ebtable_filter ebtables bridge stp llc ip6t_REJECT nf_reject_ipv6 vsock vmw_vmci xt_state xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip6table_filter ip6_tables snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_generic le
->> 15 snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hwdep i2c_algo_bit snd_hda_core snd_seq intel_rapl_msr snd_seq_device intel_rapl_common snd_pcm x86_pkg_temp_thermal intel_powerclamp snd_timer snd coretemp kvm_intel soundcore kvm mei_wdt irqbypass joydev 
->> _pmc_bxt hp_wmi wmi_bmof sparse_keymap rfkill iTCO_vendor_support crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel drm_kms_helper i2c_i801 cec drm rapl intel_cstate intel_uncore mei_me i2c_smbus e1000e tpm_infineon wmi serio_raw mei video lpc_i
->> 
->>  CPU: 4 PID: 1 Comm: systemd-shutdow Not tainted 5.9.0-rc4-test+ #861
->>  Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
->>  RIP: 0010:gen6_write32+0x1bc/0x2a0 [i915]
->>  Code: 5d 82 e0 0f 0b e9 b5 fe ff ff 80 3d 95 6b 22 00 00 0f 85 b2 fe ff ff 48 c7 c7 04 d2 a4 c0 c6 05 81 6b 22 00 01 e8 f6 5c 82 e0 <0f> 0b e9 98 fe ff ff 80 3d 6d 6b 22 00 00 0f 85 95 fe ff ff 48 c7
->>  RSP: 0018:ffffb9c1c002fd08 EFLAGS: 00010296
->>  RAX: 0000000000000018 RBX: ffff99aec8881010 RCX: ffff99aeda400000
->>  RDX: 0000000000000000 RSI: ffffffffa115d9ef RDI: ffffffffa115d9ef
->>  RBP: 0000000000044004 R08: 0000000000000001 R09: 0000000000000000
->>  R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
->>  R13: 0000000000000001 R14: 00000000ffffffff R15: 0000000000000000
->>  FS:  00007f91257a9940(0000) GS:ffff99aeda400000(0000) knlGS:0000000000000000
->>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>  CR2: 00007f9126829400 CR3: 00000001088f0006 CR4: 00000000001706e0
->>  Call Trace:
->>   gen3_irq_reset+0x2e/0xd0 [i915]
->>   intel_irq_reset+0x59/0x6a0 [i915]
->>   intel_runtime_pm_disable_interrupts+0xe/0x30 [i915]
->>   i915_driver_shutdown+0x2e/0x40 [i915]
->>   pci_device_shutdown+0x34/0x60
->>   device_shutdown+0x15d/0x1b3
->>   kernel_restart+0xe/0x30
->>   __do_sys_reboot+0x1d7/0x210
->>   ? vfs_writev+0x9d/0xe0
->>   ? syscall_enter_from_user_mode+0x1d/0x70
->>   ? trace_hardirqs_on+0x2c/0xe0
->>   do_syscall_64+0x33/0x40
->>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>  RIP: 0033:0x7f912675f2d7
->>  Code: 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 89 fa be 69 19 12 28 bf ad de e1 fe b8 a9 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 81 8b 0c 00 f7 d8 64 89 02 b8
->>  RSP: 002b:00007ffeca28e148 EFLAGS: 00000206 ORIG_RAX: 00000000000000a9
->>  RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f912675f2d7
->>  RDX: 0000000001234567 RSI: 0000000028121969 RDI: 00000000fee1dead
->>  RBP: 00007ffeca28e3d0 R08: 000000000000000a R09: 0000000000000000
->>  R10: 0000000000000232 R11: 0000000000000206 R12: 0000000000000001
->>  R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffeca28e4b8
->>  ---[ end trace 2ed17eabd3ab6938 ]---
->>  ------------[ cut here ]------------
->> 
->> The bisect came to this commit:
->> 
->>   fe0f1e3bfdfeb53e18f1206aea4f40b9bd1f291c
->>   ("drm/i915: Shut down displays gracefully on reboot")
->> 
->> Which makes sense, as it happens on shutdown.
+Add the new command EC_CODEC_I2S_RX_RESET in ec_codec_i2s_rx_subcmd,
+which is used for resetting the EC codec.
 
-Please try this pull, heading to -rc4, which cointains "drm/i915:
-Disable RPM wakeref assertions during driver shutdown":
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+---
+ include/linux/platform_data/cros_ec_commands.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-http://lore.kernel.org/r/87sg73pz42.fsf@intel.com
-
-
-BR,
-Jani.
-
->> 
->> -- Steve
->
-
+diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+index 86376779ab31..95889ada83a3 100644
+--- a/include/linux/platform_data/cros_ec_commands.h
++++ b/include/linux/platform_data/cros_ec_commands.h
+@@ -4600,6 +4600,7 @@ enum ec_codec_i2s_rx_subcmd {
+ 	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
+ 	EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
+ 	EC_CODEC_I2S_RX_SET_BCLK = 0x4,
++	EC_CODEC_I2S_RX_RESET = 0x5,
+ 	EC_CODEC_I2S_RX_SUBCMD_COUNT,
+ };
+ 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+2.30.0.296.g2bfb1c46d8-goog
+
