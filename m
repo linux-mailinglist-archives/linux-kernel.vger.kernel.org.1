@@ -2,164 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D693B2F7B4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 982CF2F7B8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:04:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388381AbhAONAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:00:17 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:33651 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726137AbhAONAM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:00:12 -0500
-Received: by mail-oi1-f173.google.com with SMTP id d203so9452040oia.0;
-        Fri, 15 Jan 2021 04:59:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YvhCbOA5k3IxeAVfkiAa0smIV4HU4p/9zKuQCQSUGuA=;
-        b=d3Df1OQWM7JhlLwuGGl4ks/DRfFzKHSVJJxCveRIpooutIpsA1RF3O1SJ+X+/IFt6Q
-         5UJpEkk3CWMKSWCEm1mIIPzY+A0THjxf5sY+o6h4HV6N0NVwzReGK+ff7ALudNx4A1zZ
-         OR+p2hporsTzuB1nj8UvqsYVSQT+P40CQz+xxtbNj65Posy9vId+WhKOS9tqpGSZR2lY
-         ZQ4QMo3lqGoV0ONkK376cKLXslw5FwPJuLHxn10R9r4P0pp6XI8As7MEhR2CKW6Fzq6B
-         iqxeBDmMVzLR8MhrN/QZYgOvSoAF61kyibqMykVQF1kfyq0zimwQqZeDUBjpGwUUYOIB
-         YVGA==
-X-Gm-Message-State: AOAM5328V4x0ShoFPzCKxtMhNmLvodJUq9C+qD4j6qjp9mYFExXQrKp0
-        FRydQqFk2m3hiJMtcvKGYcLIhOC1zeLm5B/xhsY=
-X-Google-Smtp-Source: ABdhPJzfeNsLfCbNEnl1Wxpov3PlygdxuZSAjP6IZbsk08NqecL/DEtG1ZxX7kxEXIO9udsCfLeE5f1LcHmC25DWG+k=
-X-Received: by 2002:aca:d6c8:: with SMTP id n191mr5229964oig.69.1610715570885;
- Fri, 15 Jan 2021 04:59:30 -0800 (PST)
+        id S1733109AbhAONDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:03:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732594AbhAONDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 08:03:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED709221FA;
+        Fri, 15 Jan 2021 13:02:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610715754;
+        bh=ecEu9xVKi9pky1OPVUSqIbl4j8EhR8DIBnOEeNIL5V4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hWmt9Xc0Kxq+bcUtvPNzlCo5BOUJVvCpBdUhQzwyEIU+09ebIzLuCxlzcUzwnILeo
+         ILbKlnifzAhxqfHu0kvK5rkFhbyKhxx6EoR63F5UW1ft7Kz078LC7hluuRCf6RrRGL
+         DcgpyfsAqOQN/juc57ICGmj12K7VREZK8l4rQuv9YKT2pd12385sN4GnLbVpR8MF3A
+         s4ZkUV7S+3jC3ake8U6KXyQXm+ECpvKtTJQTghuImVJxXIWcoZI2CwE5ewzDj21o8M
+         pdr+Hb42wb5rKnz0gFdriDT/OeMozDrMjktdVHcfPELrm9+Db1NP3B66dZmDzNZGi9
+         6citvBgVzGO9g==
+Date:   Fri, 15 Jan 2021 18:32:29 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vivek Aknurwar <viveka@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jeevan Shriram <jshriram@codeaurora.org>,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org
+Subject: Re: [PATCH 2/4] clk: qcom: clk-alpha-pll: Add support for Lucid 5LPE
+ PLL
+Message-ID: <20210115130229.GG2771@vkoul-mobl>
+References: <20210105154645.217998-1-vkoul@kernel.org>
+ <20210105154645.217998-3-vkoul@kernel.org>
+ <c1354fed-7887-f60f-e288-df7b64d419b7@somainline.org>
 MIME-Version: 1.0
-References: <2073294.4OfjquceTg@kreacher> <CAGETcx980TXe_Jur3LqpWoMwt0wG9BBvVdXfhAo3jU8-tgv=kw@mail.gmail.com>
- <CAJZ5v0jREeXtYa8LAiLoRBG1ok66BR86MCQxrQ1WPR5qbhTKbw@mail.gmail.com> <CAGETcx-G4YQ2Og0CrpVXK3n9Re=VNQbdSt=d7MA7gzRf8D5SxA@mail.gmail.com>
-In-Reply-To: <CAGETcx-G4YQ2Og0CrpVXK3n9Re=VNQbdSt=d7MA7gzRf8D5SxA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 15 Jan 2021 13:59:19 +0100
-Message-ID: <CAJZ5v0ganM6exWL62Pua4ETY_RNieW0JHixQZAx3ebiya94qNQ@mail.gmail.com>
-Subject: Re: [PATCH] driver core: Extend device_is_dependent()
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c1354fed-7887-f60f-e288-df7b64d419b7@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 8:59 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Thu, Jan 14, 2021 at 11:38 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Thu, Jan 14, 2021 at 8:32 PM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > On Thu, Jan 14, 2021 at 10:41 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> > > >
-> > > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > >
-> > > > When adding a new device link, device_is_dependent() is used to
-> > > > check whether or not the prospective supplier device does not
-> > > > depend on the prospective consumer one to avoid adding loops
-> > > > to the graph of device dependencies.
-> > > >
-> > > > However, device_is_dependent() does not take the ancestors of
-> > > > the target device into account, so it may not detect an existing
-> > > > reverse dependency if, for example, the parent of the target
-> > > > device depends on the device passed as its first argument.
-> > > >
-> > > > For this reason, extend device_is_dependent() to also check if
-> > > > the device passed as its first argument is an ancestor of the
-> > > > target one and return 1 if that is the case.
-> > > >
-> > > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > > Reported-by: Stephan Gerhold <stephan@gerhold.net>
-> > > > ---
-> > > >  drivers/base/core.c |   12 +++++++++++-
-> > > >  1 file changed, 11 insertions(+), 1 deletion(-)
-> > > >
-> > > > Index: linux-pm/drivers/base/core.c
-> > > > ===================================================================
-> > > > --- linux-pm.orig/drivers/base/core.c
-> > > > +++ linux-pm/drivers/base/core.c
-> > > > @@ -208,6 +208,16 @@ int device_links_read_lock_held(void)
-> > > >  #endif
-> > > >  #endif /* !CONFIG_SRCU */
-> > > >
-> > > > +static bool device_is_ancestor(struct device *dev, struct device *target)
-> > > > +{
-> > > > +       while (target->parent) {
-> > > > +               target = target->parent;
-> > > > +               if (dev == target)
-> > > > +                       return true;
-> > > > +       }
-> > > > +       return false;
-> > > > +}
-> > > > +
-> > > >  /**
-> > > >   * device_is_dependent - Check if one device depends on another one
-> > > >   * @dev: Device to check dependencies for.
-> > > > @@ -221,7 +231,7 @@ int device_is_dependent(struct device *d
-> > > >         struct device_link *link;
-> > > >         int ret;
-> > > >
-> > > > -       if (dev == target)
-> > > > +       if (dev == target || device_is_ancestor(dev, target))
-> > > >                 return 1;
-> > > >
-> > > >         ret = device_for_each_child(dev, target, device_is_dependent);
-> > > >
-> > >
-> > > The code works, but it's not at all obvious what it's doing. Because,
-> > > at first glance, it's easy to mistakenly think that it's trying to
-> > > catch this case:
-> > > dev <- child1 <- child2 <- target
-> > >
-> > > Maybe it's clearer if we do this check inside the loop?
-> >
-> > Which of the loops do you mean?
->
-> Sorry, the list of consumers loop.
->
-> > There are two of them and both need
-> > to do the check in each step AFAICS.
->
-> I don't think we need it in the "loop through children" one. Here's why.
->
-> We already make sure:
-> 1. The prospective supplier (target) is not a child of the prospective
-> consumer (dev).
-> 2. The prospective supplier (target) is not a consumer of the
-> prospective consumer (dev) or any of its children.
->
-> To address the problem in the commit, we need to make changes to make sure:
-> 3. The ancestor of prospective supplier (ancestor of target) is not a
-> child of prospective consumer (dev)
-> 4. The ancestor of prospective supplier (ancestor of target) is not a
-> consumer of the prospective consumer (dev) or any of its children.
+On 13-01-21, 23:39, AngeloGioacchino Del Regno wrote:
+> Il 05/01/21 16:46, Vinod Koul ha scritto:
+> > From: Vivek Aknurwar <viveka@codeaurora.org>
+> > 
+> > Lucid 5LPE is a slightly different Lucid PLL with different offsets and
+> > porgramming sequence so add support for these
+> > 
+> > Signed-off-by: Vivek Aknurwar <viveka@codeaurora.org>
+> > Signed-off-by: Jeevan Shriram <jshriram@codeaurora.org>
+> > [vkoul: rebase and tidy up for upstream]
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > ---
+> >   drivers/clk/qcom/clk-alpha-pll.c | 217 +++++++++++++++++++++++++++++++
+> >   drivers/clk/qcom/clk-alpha-pll.h |   4 +
+> >   2 files changed, 221 insertions(+)
+> > 
+> > diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+> > index f7721088494c..843c43649a5a 100644
+> > --- a/drivers/clk/qcom/clk-alpha-pll.c
+> > +++ b/drivers/clk/qcom/clk-alpha-pll.c
+> > @@ -156,6 +156,12 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
+> >   /* LUCID PLL specific settings and offsets */
+> >   #define LUCID_PCAL_DONE		BIT(27)
+> > +/* LUCID 5LPE PLL specific settings and offsets */
+> > +#define LUCID_5LPE_PCAL_DONE		BIT(11)
+> > +#define LUCID_5LPE_ALPHA_PLL_ACK_LATCH	BIT(13)
+> > +#define LUCID_5LPE_PLL_LATCH_INPUT	BIT(14)
+> > +#define LUCID_5LPE_ENABLE_VOTE_RUN	BIT(21)
+> > +
+> >   #define pll_alpha_width(p)					\
+> >   		((PLL_ALPHA_VAL_U(p) - PLL_ALPHA_VAL(p) == 4) ?	\
+> >   				 ALPHA_REG_BITWIDTH : ALPHA_REG_16BIT_WIDTH)
+> > @@ -1600,3 +1606,214 @@ const struct clk_ops clk_alpha_pll_agera_ops = {
+> >   	.set_rate = clk_alpha_pll_agera_set_rate,
+> >   };
+> >   EXPORT_SYMBOL_GPL(clk_alpha_pll_agera_ops);
+> > +
+> > +static int alpha_pll_lucid_5lpe_enable(struct clk_hw *hw)
+> > +{
+> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> > +	u32 val;
+> > +	int ret;
+> > +
+> > +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* If in FSM mode, just vote for it */
+> > +	if (val & LUCID_5LPE_ENABLE_VOTE_RUN) {
+> > +		ret = clk_enable_regmap(hw);
+> > +		if (ret)
+> > +			return ret;
+> > +		return wait_for_pll_enable_lock(pll);
+> > +	}
+> > +
+> > +	/* Check if PLL is already enabled, return if enabled */
+> > +	ret = trion_pll_is_enabled(pll, pll->clkr.regmap);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	regmap_write(pll->clkr.regmap, PLL_OPMODE(pll), PLL_RUN);
+> > +
+> > +	ret = wait_for_pll_enable_lock(pll);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Enable the PLL outputs */
+> > +	ret = regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, PLL_OUT_MASK);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Enable the global PLL outputs */
+> > +	return regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_OUTCTRL, PLL_OUTCTRL);
+> > +}
+> > +
+> > +static void alpha_pll_lucid_5lpe_disable(struct clk_hw *hw)
+> > +{
+> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> > +	u32 val;
+> > +	int ret;
+> > +
+> > +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
+> > +	if (ret)
+> > +		return;
+> > +
+> > +	/* If in FSM mode, just unvote it */
+> > +	if (val & LUCID_5LPE_ENABLE_VOTE_RUN) {
+> > +		clk_disable_regmap(hw);
+> > +		return;
+> > +	}
+> > +
+> > +	/* Disable the global PLL output */
+> > +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_OUTCTRL, 0);
+> > +	if (ret)
+> > +		return;
+> > +
+> > +	/* Disable the PLL outputs */
+> > +	ret = regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, 0);
+> > +	if (ret)
+> > +		return;
+> > +
+> > +	/* Place the PLL mode in STANDBY */
+> > +	regmap_write(pll->clkr.regmap, PLL_OPMODE(pll), PLL_STANDBY);
+> > +}
+> > +
+> > +/*
+> > + * The Lucid 5LPE PLL requires a power-on self-calibration which happens
+> > + * when the PLL comes out of reset. Calibrate in case it is not completed.
+> > + */
+> > +static int alpha_pll_lucid_5lpe_prepare(struct clk_hw *hw)
+> > +{
+> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> > +	struct clk_hw *p;
+> > +	u32 val;
+> > +	int ret;
+> > +
+> > +	/* Return early if calibration is not needed. */
+> > +	regmap_read(pll->clkr.regmap, PLL_MODE(pll), &val);
+> > +	if (val & LUCID_5LPE_PCAL_DONE)
+> > +		return 0;
+> > +
+> > +	p = clk_hw_get_parent(hw);
+> > +	if (!p)
+> > +		return -EINVAL;
+> > +
+> > +	ret = alpha_pll_lucid_5lpe_enable(hw);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	alpha_pll_lucid_5lpe_disable(hw);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int alpha_pll_lucid_5lpe_set_rate(struct clk_hw *hw, unsigned long rate,
+> > +					 unsigned long prate)
+> > +{
+> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> > +	unsigned long rrate;
+> > +	u32 val, l;
+> > +	u64 a;
+> > +	int ret;
+> > +
+> > +	rrate = alpha_pll_round_rate(rate, prate, &l, &a, ALPHA_REG_16BIT_WIDTH);
+> > +
+> > +	/*
+> > +	 * Due to a limited number of bits for fractional rate programming, the
+> > +	 * rounded up rate could be marginally higher than the requested rate.
+> > +	 */
+> > +	ret = alpha_pll_check_rate_margin(hw, rrate, rate);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	regmap_write(pll->clkr.regmap, PLL_L_VAL(pll), l);
+> > +	regmap_write(pll->clkr.regmap, PLL_ALPHA_VAL(pll), a);
+> > +
+> > +	/* Latch the PLL input */
+> > +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll),
+> > +				 LUCID_5LPE_PLL_LATCH_INPUT, LUCID_5LPE_PLL_LATCH_INPUT);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Wait for 2 reference cycles before checking the ACK bit. */
+> > +	udelay(1);
+> > +	regmap_read(pll->clkr.regmap, PLL_MODE(pll), &val);
+> > +	if (!(val & LUCID_5LPE_ALPHA_PLL_ACK_LATCH)) {
+> > +		pr_err("Lucid 5LPE PLL latch failed. Output may be unstable!\n");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	/* Return the latch input to 0 */
+> > +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), LUCID_5LPE_PLL_LATCH_INPUT, 0);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (clk_hw_is_enabled(hw)) {
+> > +		ret = wait_for_pll_enable_lock(pll);
+> > +		if (ret)
+> > +			return ret;
+> > +	}
+> > +
+> > +	/* Wait for PLL output to stabilize */
+> > +	udelay(100);
+> > +	return 0;
+> > +}
+> > +
+> 
+> This one looks exactly like alpha_pll_trion_set_rate() but:
+> 1. You are forcing ALPHA_REG_16BIT_WIDTH for the alpha_pll_round_rate
+>    call: this is bad, you should actually use pll_alpha_width(pll) here,
+>    unless you have a very good reason that I didn't understand...
+> 2. The only change between these two functions (trion and
+>    lucid_5lpe_set_rate) is that PLL_UPDATE becomes
+>    LUCID_5LPE_PLL_LATCH_INPUT, and that you check for
+>    LUCID_5LPE_ALPHA_PLL_ACK_LATCH instead of ALPHA_PLL_ACK_LATCH: this
+>    looks like being 95% code duplication.
+> 
+> The best options here, in my opinion, would be to commonize the function
+> alpha_pll_trion_set_rate: that will avoid this huge duplication.
 
-This should be taken care of by the recursive device_is_depedent()
-invocation in the loop over consumers, but only if (and that's what's
-really missing) the supplier has been fully registered.
+Yeah I agree we could reuse, I can redo this. I was thinking of making
+this bit as one of the values in register and use that but that does not
+look good as this is not a register offset, so only option is to have a
+new type of PLL for this and use that as here..
 
-If the supplier has been initialized, which is specifically checked by
-device_link_add(), but not added, it may be missing from its parent's
-list of children, but device_is_depedent() only checks those lists.
-
-> But (3) would be caught automatically when we do (1). Because if (3)
-> is true, (1) would also be true.
-> So, what's left is (4), for which my suggestion should be sufficient?
->
-> Does it make sense? Or am I missing anything else that needs to be checked?
-
-AFAICS, the failing case is when the suppliers has been initialized
-already, but not fully registered yet, because in that case it is not
-sufficient to walk the list of children, it is also necessary to look
-at the supplier's parent pointer (and the whole chain of direct
-ancestors associated with it).
-
-So the code change in the patch is correct, but the description of it isn't.
-
-Let me respin.
+-- 
+~Vinod
