@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB78F2F7B87
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:04:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9512F7B7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733077AbhAONC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:02:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38812 "EHLO mail.kernel.org"
+        id S1732989AbhAOMcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:32:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730547AbhAOMc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:32:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E0C72336F;
-        Fri, 15 Jan 2021 12:31:46 +0000 (UTC)
+        id S1732970AbhAOMcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:32:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D1AF23370;
+        Fri, 15 Jan 2021 12:31:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713907;
-        bh=KKI8c2MnX3T8Cm0yAMypUIKdS5rZfUM5pbM2z1a3cWc=;
+        s=korg; t=1610713911;
+        bh=Dt8vvzvb3KqJE72tEHare2drQPOaOXOvXKCrvsFGocI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Esm9vDJTxF1aHESU0VTrBw7l18C29vTt/j1A+Ndaujgjyy41hwKsujIXDg+1mRaOd
-         DIKDWT9seaHu0/suQcz4yTBDdfX5C+/eRwzCr7NC5Gaa+EAfKBzlTjgQE3QPBrmLL5
-         Fd8j9zKGw6C6NwOZBUmTjDAaCXrop+kUHKsOLNUI=
+        b=BkfdE74D/kZ13K+ATlj9i6JNvyVMKqMPgk8v8DwjnBsReLbxV5HL/XIxZstgmacdE
+         5EDSgqIHYhrdFQGhqzr65/VB8dTlxvxbszqgGPx5LY4tBl9VoYtBgvVFZwq0NTtw8g
+         zxJ5bQcBNBJe5lVh/kNc5mcRWXqEG2JCFO/vFzV0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH 4.14 24/28] net/mlx5e: Fix two double free cases
-Date:   Fri, 15 Jan 2021 13:28:01 +0100
-Message-Id: <20210115121957.959826861@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 4.14 26/28] KVM: arm64: Dont access PMCR_EL0 when no PMU is available
+Date:   Fri, 15 Jan 2021 13:28:03 +0100
+Message-Id: <20210115121958.058017373@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210115121956.731354372@linuxfoundation.org>
 References: <20210115121956.731354372@linuxfoundation.org>
@@ -40,45 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Marc Zyngier <maz@kernel.org>
 
-commit 7a6eb072a9548492ead086f3e820e9aac71c7138 upstream.
+commit 2a5f1b67ec577fb1544b563086e0377f095f88e2 upstream.
 
-mlx5e_create_ttc_table_groups() frees ft->g on failure of
-kvzalloc(), but such failure will be caught by its caller
-in mlx5e_create_ttc_table() and ft->g will be freed again
-in mlx5e_destroy_flow_table(). The same issue also occurs
-in mlx5e_create_ttc_table_groups(). Set ft->g to NULL after
-kfree() to avoid double free.
+We reset the guest's view of PMCR_EL0 unconditionally, based on
+the host's view of this register. It is however legal for an
+implementation not to provide any PMU, resulting in an UNDEF.
 
-Fixes: 7b3722fa9ef6 ("net/mlx5e: Support RSS for GRE tunneled packets")
-Fixes: 33cfaaa8f36f ("net/mlx5e: Split the main flow steering table")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+The obvious fix is to skip the reset of this shadow register
+when no PMU is available, sidestepping the issue entirely.
+If no PMU is available, the guest is not able to request
+a virtual PMU anyway, so not doing nothing is the right thing
+to do!
+
+It is unlikely that this bug can hit any HW implementation
+though, as they all provide a PMU. It has been found using nested
+virt with the host KVM not implementing the PMU itself.
+
+Fixes: ab9468340d2bc ("arm64: KVM: Add access handler for PMCR register")
+Reviewed-by: Alexandru Elisei <alexandru.elisei@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20201210083059.1277162-1-maz@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_fs.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/kvm/sys_regs.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-@@ -961,6 +961,7 @@ static int mlx5e_create_inner_ttc_table_
- 	in = kvzalloc(inlen, GFP_KERNEL);
- 	if (!in) {
- 		kfree(ft->g);
-+		ft->g = NULL;
- 		return -ENOMEM;
- 	}
+--- a/arch/arm64/kvm/sys_regs.c
++++ b/arch/arm64/kvm/sys_regs.c
+@@ -470,6 +470,10 @@ static void reset_pmcr(struct kvm_vcpu *
+ {
+ 	u64 pmcr, val;
  
-@@ -1181,6 +1182,7 @@ static int mlx5e_create_l2_table_groups(
- 	in = kvzalloc(inlen, GFP_KERNEL);
- 	if (!in) {
- 		kfree(ft->g);
-+		ft->g = NULL;
- 		return -ENOMEM;
- 	}
- 
++	/* No PMU available, PMCR_EL0 may UNDEF... */
++	if (!kvm_arm_support_pmu_v3())
++		return;
++
+ 	pmcr = read_sysreg(pmcr_el0);
+ 	/*
+ 	 * Writable bits of PMCR_EL0 (ARMV8_PMU_PMCR_MASK) are reset to UNKNOWN
 
 
