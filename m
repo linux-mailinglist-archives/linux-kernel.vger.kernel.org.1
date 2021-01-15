@@ -2,119 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF992F75EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:54:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CC02F75F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730369AbhAOJxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:53:06 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:51679 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726468AbhAOJxE (ORCPT
+        id S1730585AbhAOJyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:54:11 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11539 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbhAOJyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:53:04 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0ULo6iiE_1610704282;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0ULo6iiE_1610704282)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 15 Jan 2021 17:51:48 +0800
-From:   Yang Li <abaci-bugfix@linux.alibaba.com>
-To:     ulf.hansson@linaro.org
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, linux-mmc@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH v2] host: omap_hsmmc: style: Simplify bool comparison and conversion
-Date:   Fri, 15 Jan 2021 17:51:21 +0800
-Message-Id: <1610704281-11036-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 15 Jan 2021 04:54:09 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DHGgC2fHkzMKkq;
+        Fri, 15 Jan 2021 17:52:07 +0800 (CST)
+Received: from DESKTOP-5IS4806.china.huawei.com (10.174.184.42) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 15 Jan 2021 17:53:16 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Will Deacon <will@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+CC:     Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+Subject: [PATCH] kvm: arm64: Properly align the end address of table walk
+Date:   Fri, 15 Jan 2021 17:53:07 +0800
+Message-ID: <20210115095307.12912-1-zhukeqian1@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
-./drivers/mmc/host/omap_hsmmc.c:297:6-25: WARNING: Comparison of 0/1 to
-bool variable
+When align the end address, ought to use its original value.
 
-According to the context, vqmmc_enabled is more suitable for bool
-type.
-
-Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
+Fixes: b1e57de62cfb ("KVM: arm64: Add stand-alone page-table walker infrastructure")
+Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
 ---
-Changes in v2:
- -clean up all use of "pbias_enabled", and do the same clean up for
-"vqmmc_enabled".
+ arch/arm64/kvm/hyp/pgtable.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/mmc/host/omap_hsmmc.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
-index aa9cc49..2f8038d 100644
---- a/drivers/mmc/host/omap_hsmmc.c
-+++ b/drivers/mmc/host/omap_hsmmc.c
-@@ -177,7 +177,7 @@ struct omap_hsmmc_host {
- 	struct	regulator	*pbias;
- 	bool			pbias_enabled;
- 	void	__iomem		*base;
--	int			vqmmc_enabled;
-+	bool			vqmmc_enabled;
- 	resource_size_t		mapbase;
- 	spinlock_t		irq_lock; /* Prevent races with irq handler */
- 	unsigned int		dma_len;
-@@ -232,7 +232,7 @@ static int omap_hsmmc_enable_supply(struct mmc_host *mmc)
- 			dev_err(mmc_dev(mmc), "vmmc_aux reg enable failed\n");
- 			goto err_vqmmc;
- 		}
--		host->vqmmc_enabled = 1;
-+		host->vqmmc_enabled = true;
- 	}
- 
- 	return 0;
-@@ -256,7 +256,7 @@ static int omap_hsmmc_disable_supply(struct mmc_host *mmc)
- 			dev_err(mmc_dev(mmc), "vmmc_aux reg disable failed\n");
- 			return ret;
- 		}
--		host->vqmmc_enabled = 0;
-+		host->vqmmc_enabled = false;
- 	}
- 
- 	if (!IS_ERR(mmc->supply.vmmc)) {
-@@ -285,22 +285,22 @@ static int omap_hsmmc_set_pbias(struct omap_hsmmc_host *host, bool power_on)
- 		return 0;
- 
- 	if (power_on) {
--		if (host->pbias_enabled == 0) {
-+		if (!host->pbias_enabled) {
- 			ret = regulator_enable(host->pbias);
- 			if (ret) {
- 				dev_err(host->dev, "pbias reg enable fail\n");
- 				return ret;
- 			}
--			host->pbias_enabled = 1;
-+			host->pbias_enabled = true;
- 		}
- 	} else {
--		if (host->pbias_enabled == 1) {
-+		if (host->pbias_enabled) {
- 			ret = regulator_disable(host->pbias);
- 			if (ret) {
- 				dev_err(host->dev, "pbias reg disable fail\n");
- 				return ret;
- 			}
--			host->pbias_enabled = 0;
-+			host->pbias_enabled = false;
- 		}
- 	}
- 
-@@ -1861,8 +1861,8 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
- 	host->base	= base + pdata->reg_offset;
- 	host->power_mode = MMC_POWER_OFF;
- 	host->next_data.cookie = 1;
--	host->pbias_enabled = 0;
--	host->vqmmc_enabled = 0;
-+	host->pbias_enabled = false;
-+	host->vqmmc_enabled = false;
- 
- 	platform_set_drvdata(pdev, host);
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index bdf8e55ed308..670b0ef12440 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -296,7 +296,7 @@ int kvm_pgtable_walk(struct kvm_pgtable *pgt, u64 addr, u64 size,
+ 	struct kvm_pgtable_walk_data walk_data = {
+ 		.pgt	= pgt,
+ 		.addr	= ALIGN_DOWN(addr, PAGE_SIZE),
+-		.end	= PAGE_ALIGN(walk_data.addr + size),
++		.end	= PAGE_ALIGN(addr + size),
+ 		.walker	= walker,
+ 	};
  
 -- 
-1.8.3.1
+2.19.1
 
