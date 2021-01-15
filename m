@@ -2,128 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF602F7F2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F452F7F38
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732423AbhAOPOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:14:20 -0500
-Received: from foss.arm.com ([217.140.110.172]:42532 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731014AbhAOPOT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:14:19 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C2EF3D6E;
-        Fri, 15 Jan 2021 07:13:33 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.41.13])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E732D3F70D;
-        Fri, 15 Jan 2021 07:13:29 -0800 (PST)
-Date:   Fri, 15 Jan 2021 15:13:27 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: [PATCH v3 2/4] arm64: mte: Add asynchronous mode support
-Message-ID: <20210115151327.GB44111@C02TD0UTHF1T.local>
-References: <20210115120043.50023-1-vincenzo.frascino@arm.com>
- <20210115120043.50023-3-vincenzo.frascino@arm.com>
+        id S1732822AbhAOPOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:14:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731014AbhAOPOt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 10:14:49 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A09C0613C1;
+        Fri, 15 Jan 2021 07:14:08 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id q18so9646147wrn.1;
+        Fri, 15 Jan 2021 07:14:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Ig07a06RJYhstJUTtuTXnM88Wle9PbNTUQG1v2vMeJ8=;
+        b=O+keQBl+QSDanNb32m8TwXA2KNoj5a2rF9ZRcJlGW/uzYxkc07P/fUeE1MWAuuthUA
+         bhDqUnvVzrSQr0ITpRGefg/EXl4VhM/9Ev1JqFszBDPjvP7OQcHcHxhEqvILanx7O5YV
+         oJPd1wtCt3NdkRdV6tO3OWBSOU7VI/TqpoFteWYtBd18QbT5iOnuAZgF8L+thU7G+4EU
+         nPAomvo+f+g3Z8LRnffoKlxJip5AfXDUYma3FsDPHqqo4M/IhCfQSmA5GOKZyS4YUboI
+         PkXPOm7LEVcYpKaRrwtxuTb4XCKrrdJ/Teos/Rdf6KevhFcds6UaiXJExQ7MQqA61ot2
+         I2KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ig07a06RJYhstJUTtuTXnM88Wle9PbNTUQG1v2vMeJ8=;
+        b=DAu/345heFz8B81TLOyLbLgkq/1vCMszCvRqQn7x4rZB73TpBRrnB13xNopu1LRbDg
+         951dsq0FzHpFD7DTo6x7pWOPn85I+2DxDP8OWBtQrAidatC1ldSA91U61J16MacZxOrE
+         TMlEl+8rjvBChYQE0zVgqOMh8aLZAOg4//PzQpcDQlYx4zM0bEAw0sQCF6m4KtNzPXYH
+         vjS7McE9UW9knT3CHiiCNZLgJvElhYjlHeBWBj9343AVLv5Q3HjgTENpQMvTrvawi2mk
+         LCBc+SJGEXjiXpwQn7IG7SzR2MiNNecqbvSrtm0HsXBfxgFBYe8mY1QWesC3Qq8Jck1T
+         aqqQ==
+X-Gm-Message-State: AOAM530Yhx7sdHzVL3FSn27gh2LkGQoGiJPgowL4blKC6G+P8sLn4cgG
+        rjguPdzp/jFe7e2dcC+A+SiLq/+5Spc=
+X-Google-Smtp-Source: ABdhPJwR57JCT5Mt+hvTlyf2X6XItRzZ97oHiK9O1wz2Q+KgGRO09uSyXC+vSEgux9S2ZOKFknpirA==
+X-Received: by 2002:adf:dc87:: with SMTP id r7mr13803060wrj.305.1610723647676;
+        Fri, 15 Jan 2021 07:14:07 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id x17sm14952793wro.40.2021.01.15.07.14.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 07:14:06 -0800 (PST)
+Date:   Fri, 15 Jan 2021 16:14:04 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] clk: tegra: Halve SCLK rate on Tegra20
+Message-ID: <YAGxPEWGN3sgovJo@ulmo>
+References: <20210112122724.1712-1-digetx@gmail.com>
+ <20210112122724.1712-5-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="PnIn8VStIBEjcSUJ"
 Content-Disposition: inline
-In-Reply-To: <20210115120043.50023-3-vincenzo.frascino@arm.com>
+In-Reply-To: <20210112122724.1712-5-digetx@gmail.com>
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 12:00:41PM +0000, Vincenzo Frascino wrote:
-> MTE provides an asynchronous mode for detecting tag exceptions. In
-> particular instead of triggering a fault the arm64 core updates a
-> register which is checked by the kernel after the asynchronous tag
-> check fault has occurred.
-> 
-> Add support for MTE asynchronous mode.
-> 
-> The exception handling mechanism will be added with a future patch.
-> 
-> Note: KASAN HW activates async mode via kasan.mode kernel parameter.
-> The default mode is set to synchronous.
-> The code that verifies the status of TFSR_EL1 will be added with a
-> future patch.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+
+--PnIn8VStIBEjcSUJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jan 12, 2021 at 03:27:23PM +0300, Dmitry Osipenko wrote:
+> Higher SCLK rates on Tegra20 require high core voltage. The higher
+> clock rate may have a positive performance effect only for AHB DMA
+> transfers and AVP CPU, but both aren't used by upstream kernel at all.
+> Halve SCLK rate on Tegra20 in order to remove the high core voltage
+> requirement.
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->  arch/arm64/kernel/mte.c | 26 ++++++++++++++++++++++++--
->  1 file changed, 24 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> index 53a6d734e29b..df7a1ae26d7c 100644
-> --- a/arch/arm64/kernel/mte.c
-> +++ b/arch/arm64/kernel/mte.c
-> @@ -153,8 +153,30 @@ void mte_init_tags(u64 max_tag)
->  
->  void mte_enable_kernel(enum kasan_hw_tags_mode mode)
->  {
-> -	/* Enable MTE Sync Mode for EL1. */
-> -	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
-> +	const char *m;
-> +
-> +	/* Preset parameter values based on the mode. */
-> +	switch (mode) {
-> +	case KASAN_HW_TAGS_ASYNC:
-> +		/* Enable MTE Async Mode for EL1. */
-> +		sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_ASYNC);
-> +		m = "asynchronous";
-> +		break;
-> +	case KASAN_HW_TAGS_SYNC:
-> +		sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
-> +		m = "synchronous";
-> +		break;
-> +	default:
-> +		/*
-> +		 * kasan mode should be always set hence we should
-> +		 * not reach this condition.
-> +		 */
-> +		WARN_ON_ONCE(1);
-> +		return;
-> +	}
-> +
-> +	pr_info_once("MTE: enabled in %s mode at EL1\n", m);
-> +
->  	isb();
->  }
+>  drivers/clk/tegra/clk-tegra20.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-For clarity, we should have that ISB before the pr_info_once().
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-As with my comment on patch 1, I think with separate functions this
-would be much clearer and simpler:
+--PnIn8VStIBEjcSUJ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-static inline void __mte_enable_kernel(const char *mode, unsigned long tcf)
-{
-	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, tcf);
-	isb();
+-----BEGIN PGP SIGNATURE-----
 
-	pr_info_once("MTE: enabled in %s mode at EL1\n", mode);
-}
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmABsTwACgkQ3SOs138+
+s6FuzQ/5ARFFUFkrWCz5UZGMJfVegH8DUhtKTtMzaqPZIvFnmMAymkei5mA9xJAC
+EVjkgKRg1Wf7K2jHxiqtLhPHPCQbu/qaG9yNKrptUUDMh1iBKqM9NKiGZYThfIjk
+IytrbIEKUqwk/YHtmCSqn0Uj6Wcy4pXsnpv1ER0N6efnCvfOKury8jPdaRtXVCHh
+pp8z4gqMUVGy7ATXHpMG739WZvk3y+M+Lm2vmmgJV0CVOWzKE+KXm7viSVFOsP6m
+UFxZwkp0Kld6flCZaGp4DY/KB/aHeEp56bJ8/fHGenRSt0dVifFL7bSJWuTetpet
+mXZXiXNJ0yQD9Ct5ZoToWKMI/JDMmG1O4UqAUcO+tAgp7dRG6vBwPWn7TWvMqtPJ
+DT4r/EZtXHoBqdYNm4FP73voa5NI6LguDfb0lQBPIK6xq9+pRV6pSZNb8R56haEd
+wDdIQDRxeA/aScEymwCC7JeYvDV4zuIvALCJIAs1f9U2DRW+I9KxaUuseVTubb6R
+6U9ZCbTw2PMmAz2cvylvfk9Jc3rByitKO40/NEmcCPU+osThOTb3AAkPoiM7Wdu2
+FNxGZaZ2Mb2Tbwz3+/sVgZnp85HRmoF2wBRbxyiv7bSFxb+OnkZs9QlUrP5u07+O
+Cqx2zeXPx1imsojsqt7hu8gL91PFxpK54UPOvfooAHQUtyR68UM=
+=4t7Z
+-----END PGP SIGNATURE-----
 
-void mte_enable_kernel_sync(void)
-{
-	__mte_enable_kernel("synchronous", SCTLR_ELx_TCF_SYNC);
-}
-
-void mte_enable_kernel_async(void)
-{
-	__mte_enable_kernel("asynchronous", SCTLR_ELx_TCF_ASYNC);
-}
-
-Thanks,
-Mark.
+--PnIn8VStIBEjcSUJ--
