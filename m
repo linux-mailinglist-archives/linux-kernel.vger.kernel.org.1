@@ -2,106 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31392F709D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:33:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B888D2F709F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732180AbhAOCd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 21:33:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732041AbhAOCd1 (ORCPT
+        id S1732193AbhAOCdd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Jan 2021 21:33:33 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2979 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732041AbhAOCdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 21:33:27 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731C5C0613C1;
-        Thu, 14 Jan 2021 18:32:47 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id q7so5073802pgm.5;
-        Thu, 14 Jan 2021 18:32:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Js7XzYqItBY+i0QhBsDA1F48BtZPIA6D0H3nxDg2jZQ=;
-        b=iTWaP9JCYE8VuqxHMB/fdhtdNQan3plzui0/bBJtEnF3NsZJ0fU3HKQftknaZ73+V0
-         DPyKVkAaYheuK8rHBALfOPFD6PMLRhdcAa+jC0XKipxtwDDT/tw2p+rlStYh6eZPoe/o
-         zviNrteGG+EqM3vNDaZ1TzFCIB//nEq8siH7OXzLClrNfYg1Yas8JXBVCTi9koHV0Ylf
-         BLLuhzaBz7BT37l3qR2Z6pMC9CGYUvzAJLdKTcG9jTrlzCbMTvWGXlCgrxdJSpDFpE3+
-         D1nELygi+K5bDDugp1AwFgrQ1ZYy5gUnorftW7YwxANkt0jFYEtQVXqU5mISy5A4dER2
-         9IqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Js7XzYqItBY+i0QhBsDA1F48BtZPIA6D0H3nxDg2jZQ=;
-        b=BhiPeBvmN0lao0Oou9gOGWO+3QSdAZqLn9XEaLUruxVaFQMpITYbshxxYT4cKbFqEg
-         1z+mKeHh8wgUHlkhwij2wGrxj92m4FzivOx511dLgdHhk3MYf5mS8hyc5Vo1JY9Lhrl3
-         w4JylxzT7uDl2BZRKesvnSDbL8PfLNkXGj+uaEggVUErHjhjvnRe4su9oYmDnFgohEgA
-         vieaC6fc3Zc/4qbdsJahdWZyveNTEkHevD3wPGHDKl6/7tkpPj12JuE9Y8s9bBoRyMVg
-         Uai5aag/iOMmTtqZcVd/WWcQwN410Gv8RpKvFU6J1J9HM9pP1bvjEga3srgrWYYulHHt
-         woUQ==
-X-Gm-Message-State: AOAM5333ZdeA6G2+c8umLIw0KwRr4X4MZSWNSIdpelqOvsbAeeg3MlrA
-        DHfCsz7pHtM++xuweaPNig4=
-X-Google-Smtp-Source: ABdhPJwwtVMLJO6n2mOk8r73Bz2daX1Tru4uphSiBpryvFGidhNp3dYVV4+mExLgS9udWsqF6gYd0A==
-X-Received: by 2002:a65:51c8:: with SMTP id i8mr10374458pgq.81.1610677966920;
-        Thu, 14 Jan 2021 18:32:46 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id c3sm6720113pfi.135.2021.01.14.18.32.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 18:32:46 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     kuba@kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH v2 net-next] net: tap: check vlan with eth_type_vlan() method
-Date:   Thu, 14 Jan 2021 18:32:38 -0800
-Message-Id: <20210115023238.4681-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 14 Jan 2021 21:33:32 -0500
+Received: from dggemi402-hub.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DH4vD0fFdzR3wk;
+        Fri, 15 Jan 2021 10:31:52 +0800 (CST)
+Received: from DGGEMI529-MBS.china.huawei.com ([169.254.5.72]) by
+ dggemi402-hub.china.huawei.com ([10.3.17.135]) with mapi id 14.03.0509.000;
+ Fri, 15 Jan 2021 10:32:41 +0800
+From:   zhangqiumiao <zhangqiumiao1@huawei.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "jirislaby@kernel.org" <jirislaby@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "Chenxiang (EulerOS)" <rose.chen@huawei.com>,
+        "Yanan (Euler)" <yanan@huawei.com>
+Subject: Re: [PATCH v3] tty: make pl011 serial port driver support 485 mode
+Thread-Topic: [PATCH v3] tty: make pl011 serial port driver support 485 mode
+Thread-Index: Adbq3ptkIAave/tYR++q7vAdgjWI4A==
+Date:   Fri, 15 Jan 2021 02:32:39 +0000
+Message-ID: <BEEC2888CE24964AA5C6EAB9EA9DA122272F78@dggemi529-mbs.china.huawei.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.136.113.59]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On Thu, Jan 14, 2021 at 08:28:30PM +0800, zhangqiumiao1@huawei.com wrote:
+> From: Qiumiao Zhang <zhangqiumiao1@huawei.com>
+> 
+> make pl011 serial port support 485 mode full duplex communication
+> 
+> Signed-off-by: Qiumiao Zhang <zhangqiumiao1@huawei.com>
+> ---
+> Changes in v3:
+>   -Fix busy loop forever in pl011_tx_empty
+>   -Move the definition of cr into uart_amba_port
+>   -run checkpatch with no error or warning
+> 
+> Changes in v2:
+>   -Fix two compilation errors
+> 
+>  drivers/tty/serial/amba-pl011.c | 32 ++++++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/amba-pl011.c 
+> b/drivers/tty/serial/amba-pl011.c index c255476..9da10a4 100644
+> --- a/drivers/tty/serial/amba-pl011.c
+> +++ b/drivers/tty/serial/amba-pl011.c
+> @@ -44,6 +44,7 @@
+> 
+>  #include "amba-pl011.h"
+> 
+> +#define ISEMPTY			1
+>  #define UART_NR			14
+> 
+>  #define SERIAL_AMBA_MAJOR	204
+> @@ -264,6 +265,7 @@ struct uart_amba_port {
+>  	unsigned int		fifosize;	/* vendor-specific */
+>  	unsigned int		old_cr;		/* state during shutdown */
+>  	unsigned int		fixed_baud;	/* vendor-set fixed baud rate */
+> +	unsigned int		cr;
+>  	char			type[12];
+>  #ifdef CONFIG_DMA_ENGINE
+>  	/* DMA stuff */
+> @@ -1284,6 +1286,8 @@ static inline bool pl011_dma_rx_running(struct uart_amba_port *uap)
+>  #define pl011_dma_flush_buffer	NULL
+>  #endif
+> 
+> +static unsigned int pl011_tx_empty(struct uart_port *port);
+> +
+>  static void pl011_stop_tx(struct uart_port *port)  {
+>  	struct uart_amba_port *uap =
+> @@ -1292,6 +1296,17 @@ static void pl011_stop_tx(struct uart_port *port)
+>  	uap->im &= ~UART011_TXIM;
+>  	pl011_write(uap->im, uap, REG_IMSC);
+>  	pl011_dma_tx_stop(uap);
+> +	if (port->rs485.flags & SER_RS485_ENABLED) {
+> +		while(pl011_tx_empty(port) != ISEMPTY) ;
 
-Replace some checks for ETH_P_8021Q and ETH_P_8021AD in
-drivers/net/tap.c with eth_type_vlan.
+I intend to change this to:
+        while(pl011_tx_empty(port) != ISEMPTY)
+			cpu_relax();
+Is this ok?
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
-v2:
-- use eth_type_vlan() in tap_get_user_xdp() too.
----
- drivers/net/tap.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+> +
+> +		uap->cr = pl011_read(uap, REG_CR);
+> +		if (port->rs485.flags & SER_RS485_RTS_AFTER_SEND) {
+> +			uap->cr |= UART011_CR_RTS;
+> +		} else {
+> +			uap->cr &= ~UART011_CR_RTS;
+> +		}
 
-diff --git a/drivers/net/tap.c b/drivers/net/tap.c
-index 3c652c8ac5ba..ff4aa35979a1 100644
---- a/drivers/net/tap.c
-+++ b/drivers/net/tap.c
-@@ -713,8 +713,7 @@ static ssize_t tap_get_user(struct tap_queue *q, void *msg_control,
- 	skb_probe_transport_header(skb);
- 
- 	/* Move network header to the right position for VLAN tagged packets */
--	if ((skb->protocol == htons(ETH_P_8021Q) ||
--	     skb->protocol == htons(ETH_P_8021AD)) &&
-+	if (eth_type_vlan(skb->protocol) &&
- 	    __vlan_get_protocol(skb, skb->protocol, &depth) != 0)
- 		skb_set_network_header(skb, depth);
- 
-@@ -1164,8 +1163,7 @@ static int tap_get_user_xdp(struct tap_queue *q, struct xdp_buff *xdp)
- 	}
- 
- 	/* Move network header to the right position for VLAN tagged packets */
--	if ((skb->protocol == htons(ETH_P_8021Q) ||
--	     skb->protocol == htons(ETH_P_8021AD)) &&
-+	if (eth_type_vlan(skb->protocol) &&
- 	    __vlan_get_protocol(skb, skb->protocol, &depth) != 0)
- 		skb_set_network_header(skb, depth);
- 
--- 
-2.25.1
+Checkpatch doesn't find the problem here. Please tell me what's wrong here?
 
+thanks,
+
+Qiumiao Zhang
