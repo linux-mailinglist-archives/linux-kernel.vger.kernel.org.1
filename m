@@ -2,134 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C97432F708D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B27572F708F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:25:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732073AbhAOCYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 21:24:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49686 "EHLO
+        id S1732102AbhAOCZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 21:25:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726182AbhAOCYl (ORCPT
+        with ESMTP id S1732085AbhAOCZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 21:24:41 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD40C061575;
-        Thu, 14 Jan 2021 18:24:01 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id 15so5060963pgx.7;
-        Thu, 14 Jan 2021 18:24:01 -0800 (PST)
+        Thu, 14 Jan 2021 21:25:03 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C33C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:24:22 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id j13so4334936pjz.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:24:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=0+CNzsPI08lc0FEN4jQWPjCrTyVyDSMDwF2TyVIOOB0=;
-        b=W0HvD9T5SMroyQM1zDFU9Z+AoN9DEnCUXIuOY/TawBj4BB/GqU7nSgXjGnwYrQnye2
-         Et7mJ2fjIxmbpSQEe6s/WMsLb3duB74xtdcW6dleS+yuAwOVEooii9h7S4NyweaO94N2
-         jJcwHn1ALZjXAt1UxwIk3dq+jFqxPCFuiDn4p41riOdNAQQEcoz3PPkJbTuIEtNoImIS
-         4H4xivrxtQFGRvGDM70dMlXLCKgSeQVeusJmzCUH/UGe3vIqYT9viDktBJsEqzg6asiR
-         UhUVzk107+g8Ft2GAhfHrVOVF0NHy4JQj+WWyr/p6Ko2JdO5kGNGrtwbyM2yuvf3TrR8
-         TCPg==
+        bh=Cu1r4kHEpk1ipx1WHIOmDfUVLP4Os78haqvXs5XVFiU=;
+        b=Zud2h77QBS795wG6yXJKYrE+EwcIZRELGrnX5yhmhtv4zDM0D/nOUTiAvTXeVP2sIO
+         L/GSnmxhC8D6JQ6YgphQ4pJjFpxOQa4SyVKkuilYcZlfavsyfqtFjm8plUrNEuW4slPm
+         /x528V9+0E7RU2i4JTSfp5f7gF2I1kCLUoqRjVWM0+kgzVnNnAt83iWDiO+sSUZVSbT4
+         Qg8dFew5Ph4PFw+zlDZKoZYpypd2Gf8TCDH/GUMIocKwriLl+Aodh9Fu7wl+/wjEjVmG
+         RNq7gTt489xXkC1FjodlAIF7iZ5Y5FjQq3VYhMFsFsiClZau/uySQ4uVQMw6vaoLRQXq
+         7v4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0+CNzsPI08lc0FEN4jQWPjCrTyVyDSMDwF2TyVIOOB0=;
-        b=kG5oCSmy+rmnhZG26MERA2f2a2bR+njXNt9Y9owbWQvrW/MnozJh38p9yfHHX9BQUL
-         8mksNzEEl9BJ1uyRTefqd3nssoBsZUoutH0eDJ0viciHmJt6GLZXykh+VFkuM+tIr/Lu
-         HNykuw17LhVt+GFWPZKT54f8veiJs7Xlw1PUHc99HhH9npNQ7KyHGwznu/RuGiWEKTrD
-         eUccVahDk4C9L6auUSgyMoBzI1j0MazkQ+NxdrlRJs2ivQxMDDl9JhRu/mH0FyXOkper
-         XJg/SICrjRqGvu6FTU5ut6TRl2ciCH6uCu+C+8EcTiNRPXlFl3Ynqooh2lVaVwqYsfcm
-         apLQ==
-X-Gm-Message-State: AOAM53353xIgcPRTklCTe2T2VHakc9yJ5fVaLdPbeo/SAWPEnFm8ai/1
-        tS6bjJgO+fdBchH8AlKfWSw=
-X-Google-Smtp-Source: ABdhPJynUIMXg3f4JrUG9f9WwCA8Xf8sVPFjK8cXa0E0voFwWHMsfzn9D3V+64BdEkHL+67AeVuKVA==
-X-Received: by 2002:a63:5d7:: with SMTP id 206mr10647259pgf.384.1610677440765;
-        Thu, 14 Jan 2021 18:24:00 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id b12sm6214127pft.114.2021.01.14.18.23.58
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=Cu1r4kHEpk1ipx1WHIOmDfUVLP4Os78haqvXs5XVFiU=;
+        b=PAI0EK476EJbpwMpxsIcEEK+2FvCltetu+mVGlB64J8kkfmJclI9V5S64LGlpzLATt
+         GeyU7OzWeCyLjsccfYlN6jn/F2nA4Crf7rt9i56xmU28+CKMSKNyko7WIW1tGgSUjNBL
+         npIWbEs6wj434XFYpKsKIJT4Ro8TH5PUDDaNlWhT13hhfBo0icDnJm2h/PztlBw0DUJL
+         d1gTx7wuZY7ZsbPrxqQfqLs6E5xQ7G1MVQTCVzUh2ct4lWkFcJDjZcmHkPQE+PjamWBc
+         CyWqp+wpAa8lscMbiZGpdcz3bx8omEP8UVih2jPVJhKlzJJSlz1pF3NrqV0/eq5Bjerc
+         K64g==
+X-Gm-Message-State: AOAM533yPCm9aDJZqgoo4P1ETA3A1rFfW2izYWTpS1n+Rq2AghUDR/Nt
+        020Xa2j5y2ETXp/IPuKPIgaWWA==
+X-Google-Smtp-Source: ABdhPJwZH1E+fKAbcid8dzJLVB3v/Csakmz5hxoyrQbsXKM3WODJcZDSzmxxQFad2rYO5A2oXoftYA==
+X-Received: by 2002:a17:90b:a47:: with SMTP id gw7mr8102445pjb.1.1610677462419;
+        Thu, 14 Jan 2021 18:24:22 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id x12sm6401588pfj.25.2021.01.14.18.24.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 18:24:00 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     nikolay@nvidia.com
-Cc:     roopa@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH v2 net-next] net: bridge: check vlan with eth_type_vlan() method
-Date:   Thu, 14 Jan 2021 18:23:44 -0800
-Message-Id: <20210115022344.4407-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+        Thu, 14 Jan 2021 18:24:21 -0800 (PST)
+Date:   Thu, 14 Jan 2021 18:24:21 -0800 (PST)
+X-Google-Original-Date: Thu, 14 Jan 2021 18:24:20 PST (-0800)
+Subject:     Re: [PATCH 1/1] riscv/kasan: add KASAN_VMALLOC support
+In-Reply-To: <20210113022822.9230-2-nylon7@andestech.com>
+CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, aou@eecs.berkeley.edu,
+        Paul Walmsley <paul.walmsley@sifive.com>, dvyukov@google.com,
+        glider@google.com, aryabinin@virtuozzo.com, alankao@andestech.com,
+        nickhu@andestech.com, nylon7@andestech.com, nylon7717@gmail.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     nylon7@andestech.com
+Message-ID: <mhng-681abd1f-506e-4e1a-88e7-f48af7e6cc0e@penguin>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On Tue, 12 Jan 2021 18:28:22 PST (-0800), nylon7@andestech.com wrote:
+> It's reference x86/s390 architecture.
+>
+> So, it's don't map the early shadow page to cover VMALLOC space.
+>
+> Prepopulate top level page table for the range that would otherwise be
+> empty.
+>
+> lower levels are filled dynamically upon memory allocation while
+> booting.
+>
+> Signed-off-by: Nylon Chen <nylon7@andestech.com>
+> Signed-off-by: Nick Hu <nickhu@andestech.com>
+> ---
+>  arch/riscv/Kconfig         |  1 +
+>  arch/riscv/mm/kasan_init.c | 66 +++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 66 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 81b76d44725d..15a2c8088bbe 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -57,6 +57,7 @@ config RISCV
+>  	select HAVE_ARCH_JUMP_LABEL
+>  	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+>  	select HAVE_ARCH_KASAN if MMU && 64BIT
+> +	select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
+>  	select HAVE_ARCH_KGDB
+>  	select HAVE_ARCH_KGDB_QXFER_PKT
+>  	select HAVE_ARCH_MMAP_RND_BITS if MMU
+> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+> index 12ddd1f6bf70..ee332513d728 100644
+> --- a/arch/riscv/mm/kasan_init.c
+> +++ b/arch/riscv/mm/kasan_init.c
+> @@ -9,6 +9,19 @@
+>  #include <linux/pgtable.h>
+>  #include <asm/tlbflush.h>
+>  #include <asm/fixmap.h>
+> +#include <asm/pgalloc.h>
+> +
+> +static __init void *early_alloc(size_t size, int node)
+> +{
+> +        void *ptr = memblock_alloc_try_nid(size, size,
+> +                        __pa(MAX_DMA_ADDRESS), MEMBLOCK_ALLOC_ACCESSIBLE, node);
+> +
+> +        if (!ptr)
+> +                panic("%pS: Failed to allocate %zu bytes align=%zx nid=%d from=%llx\n",
+> +                      __func__, size, size, node, (u64)__pa(MAX_DMA_ADDRESS));
+> +
+> +        return ptr;
+> +}
+>
+>  extern pgd_t early_pg_dir[PTRS_PER_PGD];
+>  asmlinkage void __init kasan_early_init(void)
+> @@ -83,6 +96,49 @@ static void __init populate(void *start, void *end)
+>  	memset(start, 0, end - start);
+>  }
+>
+> +void __init kasan_shallow_populate(void *start, void *end)
+> +{
+> +	unsigned long vaddr = (unsigned long)start & PAGE_MASK;
+> +	unsigned long vend = PAGE_ALIGN((unsigned long)end);
+> +	unsigned long pfn;
+> +	int index;
+> +	void *p;
+> +	pud_t *pud_dir, *pud_k;
+> +	pmd_t *pmd_dir, *pmd_k;
+> +	pgd_t *pgd_dir, *pgd_k;
+> +	p4d_t *p4d_dir, *p4d_k;
+> +
+> +	while (vaddr < vend) {
+> +		index = pgd_index(vaddr);
+> +		pfn = csr_read(CSR_SATP) & SATP_PPN;
+> +		pgd_dir = (pgd_t *)pfn_to_virt(pfn) + index;
+> +		pgd_k = init_mm.pgd + index;
+> +		pgd_dir = pgd_offset_k(vaddr);
+> +		set_pgd(pgd_dir, *pgd_k);
+> +
+> +		p4d_dir = p4d_offset(pgd_dir, vaddr);
+> +		p4d_k  = p4d_offset(pgd_k,vaddr);
+> +
+> +		vaddr = (vaddr + PUD_SIZE) & PUD_MASK;
+> +		pud_dir = pud_offset(p4d_dir, vaddr);
+> +		pud_k = pud_offset(p4d_k,vaddr);
+> +
+> +		if (pud_present(*pud_dir)) {
+> +			p = early_alloc(PAGE_SIZE, NUMA_NO_NODE);
+> +			pud_populate(&init_mm, pud_dir, p);
+> +		}
+> +
+> +		pmd_dir = pmd_offset(pud_dir, vaddr);
+> +		pmd_k = pmd_offset(pud_k,vaddr);
+> +		set_pmd(pmd_dir, *pmd_k);
+> +		if (pmd_present(*pmd_dir)) {
+> +			p = early_alloc(PAGE_SIZE, NUMA_NO_NODE);
+> +			pmd_populate(&init_mm, pmd_dir, p);
+> +		}
+> +		vaddr += PAGE_SIZE;
+> +	}
+> +}
+> +
+>  void __init kasan_init(void)
+>  {
+>  	phys_addr_t _start, _end;
+> @@ -90,7 +146,15 @@ void __init kasan_init(void)
+>
+>  	kasan_populate_early_shadow((void *)KASAN_SHADOW_START,
+>  				    (void *)kasan_mem_to_shadow((void *)
+> -								VMALLOC_END));
+> +								VMEMMAP_END));
+> +	if (IS_ENABLED(CONFIG_KASAN_VMALLOC))
+> +		kasan_shallow_populate(
+> +			(void *)kasan_mem_to_shadow((void *)VMALLOC_START),
+> +			(void *)kasan_mem_to_shadow((void *)VMALLOC_END));
+> +	else
+> +		kasan_populate_early_shadow(
+> +			(void *)kasan_mem_to_shadow((void *)VMALLOC_START),
+> +			(void *)kasan_mem_to_shadow((void *)VMALLOC_END));
+>
+>  	for_each_mem_range(i, &_start, &_end) {
+>  		void *start = (void *)_start;
 
-Replace some checks for ETH_P_8021Q and ETH_P_8021AD with
-eth_type_vlan().
-
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
-v2:
-- use eth_type_vlan() in br_validate() and __br_vlan_set_proto()
-  too.
----
- net/bridge/br_forward.c |  3 +--
- net/bridge/br_netlink.c | 11 +++--------
- net/bridge/br_vlan.c    |  2 +-
- 3 files changed, 5 insertions(+), 11 deletions(-)
-
-diff --git a/net/bridge/br_forward.c b/net/bridge/br_forward.c
-index e28ffadd1371..6e9b049ae521 100644
---- a/net/bridge/br_forward.c
-+++ b/net/bridge/br_forward.c
-@@ -39,8 +39,7 @@ int br_dev_queue_push_xmit(struct net *net, struct sock *sk, struct sk_buff *skb
- 	br_drop_fake_rtable(skb);
- 
- 	if (skb->ip_summed == CHECKSUM_PARTIAL &&
--	    (skb->protocol == htons(ETH_P_8021Q) ||
--	     skb->protocol == htons(ETH_P_8021AD))) {
-+	    eth_type_vlan(skb->protocol)) {
- 		int depth;
- 
- 		if (!__vlan_get_protocol(skb, skb->protocol, &depth))
-diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
-index 49700ce0e919..15cfcad846c5 100644
---- a/net/bridge/br_netlink.c
-+++ b/net/bridge/br_netlink.c
-@@ -1096,14 +1096,9 @@ static int br_validate(struct nlattr *tb[], struct nlattr *data[],
- 		return 0;
- 
- #ifdef CONFIG_BRIDGE_VLAN_FILTERING
--	if (data[IFLA_BR_VLAN_PROTOCOL]) {
--		switch (nla_get_be16(data[IFLA_BR_VLAN_PROTOCOL])) {
--		case htons(ETH_P_8021Q):
--		case htons(ETH_P_8021AD):
--			break;
--		default:
--			return -EPROTONOSUPPORT;
--		}
-+	if (data[IFLA_BR_VLAN_PROTOCOL] &&
-+	    !eth_type_vlan(nla_get_be16(data[IFLA_BR_VLAN_PROTOCOL]))) {
-+		return -EPROTONOSUPPORT;
- 	}
- 
- 	if (data[IFLA_BR_VLAN_DEFAULT_PVID]) {
-diff --git a/net/bridge/br_vlan.c b/net/bridge/br_vlan.c
-index 701cad646b20..24660fe33545 100644
---- a/net/bridge/br_vlan.c
-+++ b/net/bridge/br_vlan.c
-@@ -917,7 +917,7 @@ int __br_vlan_set_proto(struct net_bridge *br, __be16 proto)
- 
- int br_vlan_set_proto(struct net_bridge *br, unsigned long val)
- {
--	if (val != ETH_P_8021Q && val != ETH_P_8021AD)
-+	if (!eth_type_vlan(val))
- 		return -EPROTONOSUPPORT;
- 
- 	return __br_vlan_set_proto(br, htons(val));
--- 
-2.25.1
-
+There are a bunch of checkpatch issues here.
