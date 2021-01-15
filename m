@@ -2,147 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57762F73ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC742F73F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732224AbhAOIAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 03:00:37 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:26783 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732102AbhAOIAf (ORCPT
+        id S1732248AbhAOIBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 03:01:06 -0500
+Received: from mail-oo1-f41.google.com ([209.85.161.41]:36310 "EHLO
+        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728688AbhAOIBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 03:00:35 -0500
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210115075952epoutp037ed9f7a0542dfa60d3cc378323e4ea9a~aWO0_LnuB1846618466epoutp03_
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 07:59:52 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210115075952epoutp037ed9f7a0542dfa60d3cc378323e4ea9a~aWO0_LnuB1846618466epoutp03_
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1610697592;
-        bh=HzW5oVWVK5z4kC0Iznp8lV7xOqPzoYkWXP5R8aanphA=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=hpGF9PY9ogthIpxdkzuUuxF4y4ccykYaiYocdzRpHgmmgA3ShTvESyHkr9ZhDVUHD
-         BvSWZDzbG3WYWWbpUQEL10sciLphmj5kLHtLF6fu4YmYhEjxjB/EIrfRtxzsBJ7495
-         fLc+yoQOHreTVce/5unAgdH1cPH7PIn4V4EwZB94=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20210115075940epcas2p21d59f7d6dffb0b4ad0233b5f5c5938e9~aWOpksumn1145611456epcas2p2u;
-        Fri, 15 Jan 2021 07:59:40 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.190]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4DHD9R1HPVz4x9QB; Fri, 15 Jan
-        2021 07:59:39 +0000 (GMT)
-X-AuditID: b6c32a45-337ff7000001297d-2c-60014b6b87df
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C4.15.10621.B6B41006; Fri, 15 Jan 2021 16:59:39 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v18 3/3] scsi: ufs: Prepare HPB read for cached
- sub-region
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Can Guo <cang@codeaurora.org>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <c6a4e4abd856aa03b6b91b619cddbeb7@codeaurora.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210115075935epcms2p6e7fb72edab9f5f1390164b3c66c016d5@epcms2p6>
-Date:   Fri, 15 Jan 2021 16:59:35 +0900
-X-CMS-MailID: 20210115075935epcms2p6e7fb72edab9f5f1390164b3c66c016d5
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLJsWRmVeSWpSXmKPExsWy7bCmqW62N2OCwZ8ZLBYb775itXgwbxub
-        xd62E+wWL39eZbM4fPsdu8W0Dz+ZLT6tX8Zq8fKQpsWqB+EWzYvXs1nMOdvAZNHbv5XNYtGN
-        bUwWl3fNYbPovr6DzWL58X9MFre3cFks3XqT0aJz+hoWi0ULd7M4iHhcvuLtcbmvl8lj56y7
-        7B4TFh1g9Ng/dw27R8vJ/SweH5/eYvHo27KK0ePzJjmP9gPdTAFcUTk2GamJKalFCql5yfkp
-        mXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUDPKSmUJeaUAoUCEouLlfTtbIry
-        S0tSFTLyi0tslVILUnIKDA0L9IoTc4tL89L1kvNzrQwNDIxMgSoTcjLe/VzGUrCTo+LArQ1M
-        DYw72LoYOTkkBEwk1ja1A9lcHEICOxglDt/sY+li5ODgFRCU+LtDGMQUFgiR2LknEKRcSEBJ
-        Yv3FWewgtrCAnsSth2sYQWw2AR2J6Sfug8VFBDwlvk5ezQoykllgMZvEhJ8HoXbxSsxof8oC
-        YUtLbF++FayZU8BOYu3Ee1A1GhI/lvUyQ9iiEjdXv2WHsd8fm88IYYtItN47C1UjKPHg526o
-        uKTEsd0fmCDseomtd34xghwhIdAD9NfOW6wQCX2Jax0bwY7gFfCV6F+6CWwQi4CqxJ3b26GO
-        c5E4d3cb2CBmAXmJ7W/nMIMCgllAU2L9Ln0QU0JAWeLILRaYtxo2/mZHZzML8El0HP4LF98x
-        7wnUaWoS636uZ5rAqDwLEdCzkOyahbBrASPzKkax1ILi3PTUYqMCQ+S43cQITudarjsYJ7/9
-        oHeIkYmD8RCjBAezkghvvjJDghBvSmJlVWpRfnxRaU5q8SFGU6AvJzJLiSbnAzNKXkm8oamR
-        mZmBpamFqZmRhZI4b7HBg3ghgfTEktTs1NSC1CKYPiYOTqkGpgWPc8+sDvmyvFT1SeGhvUuO
-        umw2Waayrs7RYePrRVXyjRsNWd4ebvK5Ino0PDzY+VAfx1WDs5cF1mQtnrfznv2V9Hxja7mS
-        j6erk5PeLC83LfPfX19342XG1aMJ7cUBUQIai9yP8HLJx7f3H4kJ2rdOxdtJp/9UvujJlFOl
-        Z04//JMkP7H740t/1d07XWVSV2/Lm7p56bl0Id3cDOfpFxtumLG7pSQcO6B7hPkz97dVc7I/
-        CB3dwMfksH/WzbJXlqt6Pj3VmGW1y/kjyxMfp311nAWiQuI7EtK+s8cq9evb6R4tuz8tzsWZ
-        6fR9M4ewGZb3Xkk4dn1zmtuvPyVqztGmFO7QFXue6S2XkheboMRSnJFoqMVcVJwIAEJegDZw
-        BAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201222015704epcms2p643f0c5011064a7ce56b08331811a8509
-References: <c6a4e4abd856aa03b6b91b619cddbeb7@codeaurora.org>
-        <e9b2479d0371e3cbe8aeb6c90ffb5d72@codeaurora.org>
-        <20201222015704epcms2p643f0c5011064a7ce56b08331811a8509@epcms2p6>
-        <20201222015854epcms2p1bdc30b8fab8ef01502451b75e7fbaf49@epcms2p1>
-        <20210113013633epcms2p60b9dccaa405ff568a18d28b94089665b@epcms2p6>
-        <CGME20201222015704epcms2p643f0c5011064a7ce56b08331811a8509@epcms2p6>
+        Fri, 15 Jan 2021 03:01:05 -0500
+Received: by mail-oo1-f41.google.com with SMTP id j8so2006194oon.3;
+        Fri, 15 Jan 2021 00:00:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=9kXUvk5r5wmoJiypHdN3S2Vu6BTC52Np6aUDp7nDGvI=;
+        b=WWHQwWewVVrtx66YgyFkuXcP2QVPH9xnNG99gOhDs3ygkoQpRjScz/tiGuQXHlahsN
+         x/DIVmOojSruLpuXZcLkicaAeIBNlPDGrIX0zB6pfGlfEZNTZhxWK3dxH1mTbNKOusOC
+         jqsetTUdKfHjLsmw+QmErSL2u4MXp+kIhH4GolTJ2Vm3+9VxRyEnkuGiDDuwd2mGHdPw
+         ZalVcb3n/TCrkuH1jS7T5PhzEExXb0owN7hVy2hKzvLF2dVKdIK5UkQdSd+CkoanCfGM
+         yodkfyoSBRdgj9uRN1wKeQza6hIGqafLXdtx7OLZselC9SYN5+KtRN6xgS9e6HEV+yze
+         s+jg==
+X-Gm-Message-State: AOAM530nTA23Cs0oUntyAKKjDXl/Nudn1FaYPyUhm4bBdfQESe4H18eG
+        +1F9/UKYfTBSUNNH7CCxafQAt1370t3KUvtJZdo=
+X-Google-Smtp-Source: ABdhPJz7EssXixQz7eMJk3rSBT5mLf+NEM4oOC5TdqDezkvy/1R9ZzkkV/X9kqdd4/+a705Ud73QQdv6k0cmjIdNepc=
+X-Received: by 2002:a4a:c191:: with SMTP id w17mr7438191oop.1.1610697624607;
+ Fri, 15 Jan 2021 00:00:24 -0800 (PST)
+MIME-Version: 1.0
+References: <20201228112715.14947-1-wsa+renesas@sang-engineering.com>
+ <20201228112715.14947-2-wsa+renesas@sang-engineering.com> <CAMuHMdUDPaaaHsDP11qZJzWzd+tss97iZXXATCHdVQZE1vLHSg@mail.gmail.com>
+ <20210114205756.GB16693@kunai>
+In-Reply-To: <20210114205756.GB16693@kunai>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 15 Jan 2021 09:00:13 +0100
+Message-ID: <CAMuHMdU4=_ZdwmpNchNC58z-4OfWV9Za2apnAhDfzUM8pQD9Qw@mail.gmail.com>
+Subject: Re: [PATCH 1/6] arm64: dts: renesas: r8a779a0: add & update SCIF nodes
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linh Phung <linh.phung.jy@renesas.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Can Guo,
+Hi Wolfram,
 
-> 
-> On 2021-01-13 09:36, Daejun Park wrote:
-> > Hi Can Guo,
-> > 
-> >> > +static void
-> >> > +ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb
-> >> > *lrbp,
-> >> > +				  u32 lpn, u64 ppn,  unsigned int transfer_len)
-> >> > +{
-> >> > +	unsigned char *cdb = lrbp->ucd_req_ptr->sc.cdb;
-> >> > +
-> >> > +	cdb[0] = UFSHPB_READ;
-> >> 
-> >> You are only replacing opcode in cdb[0], but 
-> >> ufshcd_add_command_trace()
-> >> is
-> >> counting on lrbp->cmd->cmnd. This will lead to wrong opcode recorded 
-> >> by
-> >> UFS ftrace.
-> >> 
-> > You're comment is good point for improving this patch. But there is no
-> > "case" for HPB read (0xF8) in ufshcd_add_command_trace().
-> > So I will add codes to support tracing HPB read command in
-> > ufshcd_add_command_trace() on next patch.
-> > 
-> 
-> It is not just about ftrace. If HPB READ cmd fails with sense key infos.
-> When SCSI layer prints the cmd, it still prints the READ(10) CDB, which 
-> is
-> misleading.
+On Thu, Jan 14, 2021 at 9:57 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> > > +               scif3: serial@e6c50000 {
+> >
+> > Please move scif3 before scif4.
+>
+> I thought we are sorting by reg value?
 
-Oh, thanks. I will fix this problem on next patch.
+Yeah, but we group nodes of the same type, and sort them by
+label within the group.
 
+We really need a script to take care of the sorting...
 
-Daejun
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
