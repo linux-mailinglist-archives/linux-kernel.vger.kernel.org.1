@@ -2,126 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02802F7667
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A46322F7676
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730788AbhAOKOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 05:14:39 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10660 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728088AbhAOKOf (ORCPT
+        id S1729295AbhAOKRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 05:17:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726652AbhAOKRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 05:14:35 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DHH74456Wz15tPH;
-        Fri, 15 Jan 2021 18:12:48 +0800 (CST)
-Received: from DESKTOP-5IS4806.china.huawei.com (10.174.184.42) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 15 Jan 2021 18:13:42 +0800
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-Subject: [RESEND PATCH v2 2/2] vfio/iommu_type1: Sanity check pfn_list when remove vfio_dma
-Date:   Fri, 15 Jan 2021 18:13:21 +0800
-Message-ID: <20210115101321.12084-3-zhukeqian1@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20210115101321.12084-1-zhukeqian1@huawei.com>
-References: <20210115101321.12084-1-zhukeqian1@huawei.com>
+        Fri, 15 Jan 2021 05:17:37 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955B7C061757;
+        Fri, 15 Jan 2021 02:16:57 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id n8so989326ljg.3;
+        Fri, 15 Jan 2021 02:16:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZXuInPt5XugZp+FubZRX8WPAHVc2hVpGy3We37oEAS0=;
+        b=Az69gZ4nMi/Dq/AsNp/woo1FI7lbYOAgmMI0VSoWdFu1OH1jEd5oYjv4MolhYoBLbv
+         aIJT63ySekLiffbg56NZRMR4B5knuLF1BH9VUSdDgXKFRT3narxSIPNNruOVHFqtqiyv
+         TDBmFkuaA55ZwvhE/q7UEBZBpDUFoTA5LZthnlGMtAVoHicMARad8IvotL7siLWeQJOV
+         Uq/kxS++BvuDO4jSoz7dkWz4KnqpHMViNNcmffu8EcXnr0wAkN/+2fnmBBhdkMZlK7xo
+         5BVFu+Jxlqz0/HJwDxk3bMcJQ6kshspTUGy17m90n0HS88p2d5KhnBvEe+gOPM14MBkK
+         0xpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZXuInPt5XugZp+FubZRX8WPAHVc2hVpGy3We37oEAS0=;
+        b=VbFpOVrCcddyI79jsIFvHoA4a2w5SJcWHlIobUycPBq/pZLvIIzNCbbwNcoLPGOK18
+         Xr3qO5XET98tNGpi/S5tgKyTQNg3D60HI8ZhCFkOHvbjVwBATgFfzMX4Iymy01fiOOXi
+         vcAjPwA0p9WSBgK8r7oUGzepUoS91J59wOGLJJbsfPHINOdIPDt6P0xoxy4LJoU6zTgL
+         rb8+/rRJftPFNBLp1cOMpxBoyFirZAjmifPcSQRpO+YytLHhlXImNkIzkqYQXqD4oGUg
+         Uv8uBCD8/iKPgI3XSJI9TDFu/zjb47mK15NlTVLjiZgAaexTSGsdPUEZiliIYh6jEuc3
+         jPMQ==
+X-Gm-Message-State: AOAM531l4bhNao3rbTf1UXY6lVItt/gnYeyG1QAm/NTmUns6AjjGpuG0
+        7GrJG5lAVNzfWrqYdLkcjNsTf91bwxJ+xQ==
+X-Google-Smtp-Source: ABdhPJxhuyosdrez0tbHJ9NG+xNNVIsAbFxuJ+0CnE2EHVHGw5LwuJKo16Qj9JGczgu4kzBiroxWyA==
+X-Received: by 2002:a2e:965a:: with SMTP id z26mr5067140ljh.349.1610705816148;
+        Fri, 15 Jan 2021 02:16:56 -0800 (PST)
+Received: from endpoint.lan ([185.188.71.122])
+        by smtp.gmail.com with ESMTPSA id g26sm758033ljn.90.2021.01.15.02.16.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 02:16:55 -0800 (PST)
+From:   Pawel Dembicki <paweldembicki@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Yangbo Lu <yangbo.lu@nxp.com>,
+        Pawel Dembicki <paweldembicki@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] arm64: dts: fsl-ls1012a-rdb: add i2c devices
+Date:   Fri, 15 Jan 2021 11:16:12 +0100
+Message-Id: <20210115101613.1490837-1-paweldembicki@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vfio_sanity_check_pfn_list() is used to check whether pfn_list of
-vfio_dma is empty when remove the external domain, so it makes a
-wrong assumption that only external domain will add pfn to dma pfn_list.
+LS1012A-RDB equipped in some i2c devices:
+  - 3x GPIO Expander: PCAL9555A (NXP)
+  - Gyro: FXAS21002 (NXP)
+  - Accelerometer: FXOS8700 (NXP)
+  - Current & Power Monitor: INA220 (TI)
 
-Now we apply this check when remove a specific vfio_dma and extract
-the notifier check just for external domain.
+This patch add listed devices to dts.
 
-Fixes: a54eb55045ae ("vfio iommu type1: Add support for mediated devices")
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
 ---
- drivers/vfio/vfio_iommu_type1.c | 24 +++++-------------------
- 1 file changed, 5 insertions(+), 19 deletions(-)
+ .../boot/dts/freescale/fsl-ls1012a-rdb.dts    | 45 +++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index c16924cd54e7..9b7fcff6bd81 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -958,6 +958,7 @@ static long vfio_unmap_unpin(struct vfio_iommu *iommu, struct vfio_dma *dma,
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
+index d45c17620b98..12117a973eb6 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
+@@ -7,6 +7,7 @@
+  */
+ /dts-v1/;
  
- static void vfio_remove_dma(struct vfio_iommu *iommu, struct vfio_dma *dma)
- {
-+	WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list));
- 	vfio_unmap_unpin(iommu, dma, true);
- 	vfio_unlink_dma(iommu, dma);
- 	put_task_struct(dma->task);
-@@ -2251,23 +2252,6 @@ static void vfio_iommu_unmap_unpin_reaccount(struct vfio_iommu *iommu)
- 	}
- }
++#include <dt-bindings/interrupt-controller/irq.h>
+ #include "fsl-ls1012a.dtsi"
  
--static void vfio_sanity_check_pfn_list(struct vfio_iommu *iommu)
--{
--	struct rb_node *n;
--
--	n = rb_first(&iommu->dma_list);
--	for (; n; n = rb_next(n)) {
--		struct vfio_dma *dma;
--
--		dma = rb_entry(n, struct vfio_dma, node);
--
--		if (WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list)))
--			break;
--	}
--	/* mdev vendor driver must unregister notifier */
--	WARN_ON(iommu->notifier.head);
--}
--
- /*
-  * Called when a domain is removed in detach. It is possible that
-  * the removed domain decided the iova aperture window. Modify the
-@@ -2367,7 +2351,8 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
- 			kfree(group);
+ / {
+@@ -33,6 +34,50 @@ &esdhc1 {
  
- 			if (list_empty(&iommu->external_domain->group_list)) {
--				vfio_sanity_check_pfn_list(iommu);
-+				/* mdev vendor driver must unregister notifier */
-+				WARN_ON(iommu->notifier.head);
+ &i2c0 {
+ 	status = "okay";
++
++	accelerometer@1e {
++		compatible = "nxp,fxos8700";
++		reg = <0x1e>;
++		interrupt-parent = <&gpio26>;
++		interrupts = <13 IRQ_TYPE_EDGE_RISING>;
++		interrupt-names = "INT1";
++	};
++
++	gyroscope@20 {
++		compatible = "nxp,fxas21002c";
++		reg = <0x20>;
++	};
++
++	gpio@24 {
++		compatible = "nxp,pcal9555a";
++		reg = <0x24>;
++		gpio-controller;
++		#gpio-cells = <2>;
++	};
++
++	gpio@25 {
++		compatible = "nxp,pcal9555a";
++		reg = <0x25>;
++		gpio-controller;
++		#gpio-cells = <2>;
++	};
++
++	gpio26: gpio@26 {
++		compatible = "nxp,pcal9555a";
++		reg = <0x26>;
++		interrupt-parent = <&gpio0>;
++		interrupts = <13 IRQ_TYPE_EDGE_FALLING>;
++		interrupt-controller;
++		#interrupt-cells = <2>;
++		gpio-controller;
++		#gpio-cells = <2>;
++	};
++
++	current-sensor@40 {
++		compatible = "ti,ina220";
++		reg = <0x40>;
++		shunt-resistor = <2000>;
++	};
+ };
  
- 				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu))
- 					vfio_iommu_unmap_unpin_all(iommu);
-@@ -2492,7 +2477,8 @@ static void vfio_iommu_type1_release(void *iommu_data)
- 
- 	if (iommu->external_domain) {
- 		vfio_release_domain(iommu->external_domain, true);
--		vfio_sanity_check_pfn_list(iommu);
-+		/* mdev vendor driver must unregister notifier */
-+		WARN_ON(iommu->notifier.head);
- 		kfree(iommu->external_domain);
- 	}
- 
+ &qspi {
 -- 
-2.19.1
+2.25.1
 
