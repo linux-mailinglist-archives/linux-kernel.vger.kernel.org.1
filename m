@@ -2,85 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A11662F7903
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F71F2F78E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732177AbhAOMap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:30:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36296 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732134AbhAOMal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:30:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06F0723339;
-        Fri, 15 Jan 2021 12:29:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713775;
-        bh=LMQDJL6IMoGr4gmCyC0xciArqURJfZSJriojVS7m+jU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AApCyUqLLrzvylDMP0zP0240m5vatLD013emKmmr9jVz3Komm9kDbtAQSr7VDW+6Z
-         7o/X8sv1c6yq1k8S0AnNBrQ17Es9QVG9Vz0Oq9PaiONymEC3DVUiH7HpJnte07CGSb
-         QNIv0O6OsqnYDcbRFCc1vR1QWxTn8A9RUslwKEWw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+825f0f9657d4e528046e@syzkaller.appspotmail.com,
-        Ming Lei <ming.lei@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.4 17/18] block: fix use-after-free in disk_part_iter_next
-Date:   Fri, 15 Jan 2021 13:27:45 +0100
-Message-Id: <20210115121955.957022131@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121955.112329537@linuxfoundation.org>
-References: <20210115121955.112329537@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1727645AbhAOM3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:29:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725880AbhAOM3G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:29:06 -0500
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77673C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:28:09 -0800 (PST)
+Received: from [192.168.1.101] (abaf224.neoplus.adsl.tpnet.pl [83.6.169.224])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 9F72A3EF0F;
+        Fri, 15 Jan 2021 13:28:06 +0100 (CET)
+Subject: Re: [PATCH v4 1/2] arm64: dts: sdm845: add oneplus6/6t devices
+To:     Caleb Connolly <caleb@connolly.tech>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210114203057.64541-1-caleb@connolly.tech>
+ <20210114203057.64541-2-caleb@connolly.tech>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <061f8c37-533f-b694-f9a8-393cb9a34e01@somainline.org>
+Date:   Fri, 15 Jan 2021 13:28:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210114203057.64541-2-caleb@connolly.tech>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
 
-commit aebf5db917055b38f4945ed6d621d9f07a44ff30 upstream.
+Please move gpio-keys before reserved-memory to keep things sorted.
 
-Make sure that bdgrab() is done on the 'block_device' instance before
-referring to it for avoiding use-after-free.
 
-Cc: <stable@vger.kernel.org>
-Reported-by: syzbot+825f0f9657d4e528046e@syzkaller.appspotmail.com
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> +		vreg_l25a_3p3: ldo25 {
+> +			regulator-min-microvolt = <3300000>;
+> +			regulator-max-microvolt = <3312000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +		};
+> +		vdda_mipi_dsi0_1p2:
 
----
- block/genhd.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -158,14 +158,17 @@ struct hd_struct *disk_part_iter_next(st
- 		part = rcu_dereference(ptbl->part[piter->idx]);
- 		if (!part)
- 			continue;
-+		get_device(part_to_dev(part));
-+		piter->part = part;
- 		if (!part_nr_sects_read(part) &&
- 		    !(piter->flags & DISK_PITER_INCL_EMPTY) &&
- 		    !(piter->flags & DISK_PITER_INCL_EMPTY_PART0 &&
--		      piter->idx == 0))
-+		      piter->idx == 0)) {
-+			put_device(part_to_dev(part));
-+			piter->part = NULL;
- 			continue;
-+		}
- 
--		get_device(part_to_dev(part));
--		piter->part = part;
- 		piter->idx += inc;
- 		break;
- 	}
+Add a newline between the "};" and "vdda_mipi_dsi0_1p2:" to keep it consistent.
 
+
+After that, you can add:
+
+Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 
