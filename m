@@ -2,249 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CD42F86FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5E52F8701
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731265AbhAOU6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 15:58:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
+        id S1732055AbhAOU7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 15:59:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbhAOU6j (ORCPT
+        with ESMTP id S1726286AbhAOU70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 15:58:39 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39358C061757;
-        Fri, 15 Jan 2021 12:57:59 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F32CB58B;
-        Fri, 15 Jan 2021 21:57:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1610744277;
-        bh=VjE+h+vZVJvv9Us4y8H19WCA00VSbF5Mv39d7q0MA9U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BV3hEMjlk7/sEuKZRq6pt0i2HuaqsH60PVECUzrsL2O1TD7ANDlEjKgpfLxpsno0J
-         V+GDPEX+RT1JaaqsMkgbVNMHG6qTeG7N7mWXbGklvGmCYKw1yxb3d/evRKRLjIbvkr
-         5xrKIgguJLiN4CHn4qNUfx/2EFxHOtUVq3DDfbUg=
-Date:   Fri, 15 Jan 2021 22:57:40 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Brian Starkey <brian.starkey@arm.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Edmund Dea <edmund.j.dea@intel.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomi Valkeinen <tomba@kernel.org>,
-        Dave Airlie <airlied@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        Fri, 15 Jan 2021 15:59:26 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B87EC061757;
+        Fri, 15 Jan 2021 12:58:46 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id y17so10583560wrr.10;
+        Fri, 15 Jan 2021 12:58:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JNPQQq0esyAUv0SaJP9M+5H+0D0Ooff203N1KcpXtkI=;
+        b=bjN1pCMQoob0hn1vxVNxALaWBggxOr0JAwGKdyH4dFjGsCcgrrK67crS2mMfYlL4R4
+         Z3uHdnlcFVoiBpQom4yFMSCP7L+UPAsy2QS+pyl/BUjm+PT89w8JRFtGjNC127fwC/1F
+         Pl9hGF3H/dzAsSAn+BSplb2+LKZ+JjIUCTYi7KrhnjElKScVeSOnpzX9xSn8TEw4eZRE
+         n6EObZ+TIPvIr8aYbNRZuj3J01f47zRfn2wGL0uU8d/7VenVI7xG1GAQ8XVAg/a98aZj
+         DXprMuplm5mNOn/u3HhgeuNA9YNUBGxWfS3cCllex8x+0w7uGhz6vh/XKSPOdHLkerX5
+         7Qqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JNPQQq0esyAUv0SaJP9M+5H+0D0Ooff203N1KcpXtkI=;
+        b=EOBhh8EJtUMug1EcP3ke2uGgwRuiQ3EcXEa9Or0U1l11O9gGGKacMBlCXUJ0uEGC2f
+         pBmEs4Cw/fKclBM6946eYUEgHUGr0NXCzZ2wmjgmj6LxKVHF2Ftr1Gq9wu831Uan2feU
+         2kUlhi5fof1r5UpWxJKZU0dDsEyp0NkftTFG2wVaXB7bxt250/MlyAe1DxHBw3LJeEbA
+         fqrvNwHEBO9EJpU/xxcKnhYM+QzvEHSl3jarQHe6uCIIigl+yznzTZCAJ78/vJe+ouq4
+         7bHW7Q+FiGzQMEPcuBGjzMpKL2ZZ6FWGkMYlo4QlI/HCgPSe7Qt25XlUO8RuCtnShjjs
+         5GuA==
+X-Gm-Message-State: AOAM530/Vqjx+5Zb+SL4seNEfKrIuvygnWaT+SN3cc6EB+QGPB8khZzW
+        ov/2+NYFnbT7fFHzMSFCMdiYUyyHaLyheQ==
+X-Google-Smtp-Source: ABdhPJxBjBNQ3eVsS6Me/YyVKPaoeFY86umXQH74NxE82tUEBDOT0B3bzYaEh4RJgUVktwEZLs4QyQ==
+X-Received: by 2002:a5d:4e51:: with SMTP id r17mr15130734wrt.94.1610744325301;
+        Fri, 15 Jan 2021 12:58:45 -0800 (PST)
+Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
+        by smtp.gmail.com with ESMTPSA id h14sm16016927wrx.37.2021.01.15.12.58.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 12:58:44 -0800 (PST)
+Date:   Fri, 15 Jan 2021 17:58:38 -0300
+From:   Melissa Wen <melissa.srw@gmail.com>
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
+Cc:     Colin King <colin.king@canonical.com>,
         Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Melissa Wen <melissa.srw@gmail.com>,
         Haneen Mohammed <hamohammed.sa@gmail.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 07/10] drm: Store new plane state in a variable for
- atomic_update and disable
-Message-ID: <YAIBxF2kiy0twoV+@pendragon.ideasonboard.com>
-References: <20210115125703.1315064-1-maxime@cerno.tech>
- <20210115125703.1315064-7-maxime@cerno.tech>
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] drm/vkms: Fix missing kmalloc allocation failure
+ check
+Message-ID: <20210115205838.7hff6mmyyl55pgek@smtp.gmail.com>
+References: <20210115130911.71073-1-colin.king@canonical.com>
+ <CACAkLuqG+4cq9w9=JEjB-5KPcxu==2+Sen6GMknM495vELgEFA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115125703.1315064-7-maxime@cerno.tech>
+In-Reply-To: <CACAkLuqG+4cq9w9=JEjB-5KPcxu==2+Sen6GMknM495vELgEFA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+On 01/15, Sumera Priyadarsini wrote:
+> On Fri, Jan 15, 2021 at 6:39 PM Colin King <colin.king@canonical.com> wrote:
+> >
+> > From: Colin Ian King <colin.king@canonical.com>
+> >
+> > Currently the kmalloc allocation for config is not being null
+> > checked and could potentially lead to a null pointer dereference.
+> > Fix this by adding the missing null check.
+> >
+> > Addresses-Coverity: ("Dereference null return value")
+> > Fixes: 2df7af93fdad ("drm/vkms: Add vkms_config type")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 
+> Good catch, thank you!
+> 
+> Reviewed-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
 
-Thank you for the patch.
+Applied to drm-misc-next.
 
-On Fri, Jan 15, 2021 at 01:56:59PM +0100, Maxime Ripard wrote:
-> In order to store the new plane state in a subsequent helper, let's move
-> the plane->state dereferences into a variable.
-> 
-> This was done using the following coccinelle script, plus some hand
-> changes for vmwgfx:
-> 
-> @ plane_atomic_func @
-> identifier helpers;
-> identifier func;
-> @@
-> 
-> (
->  static const struct drm_plane_helper_funcs helpers = {
->  	...,
->  	.atomic_disable = func,
-> 	...,
->  };
-> |
->  static const struct drm_plane_helper_funcs helpers = {
->  	...,
->  	.atomic_update = func,
-> 	...,
->  };
-> )
-> 
-> @ has_new_state_old_state @
-> identifier plane_atomic_func.func;
-> identifier plane;
-> identifier new_state;
-> symbol old_state;
-> @@
-> 
->  func(struct drm_plane *plane, struct drm_plane_state *old_state)
->  {
->  	...
->  	struct drm_plane_state *new_state = plane->state;
-> 	...
->  }
-> 
-> @ depends on !has_new_state_old_state @
-> identifier plane_atomic_func.func;
-> identifier plane;
-> symbol old_state;
-> @@
-> 
->  func(struct drm_plane *plane, struct drm_plane_state *old_state)
->  {
-> +	struct drm_plane_state *new_state = plane->state;
->  	<+...
-> -	plane->state
-> +	new_state
-> 	...+>
->  }
-> 
-> @ has_new_state_state @
-> identifier plane_atomic_func.func;
-> identifier plane;
-> identifier new_state;
-> symbol state;
-> @@
-> 
->  func(struct drm_plane *plane, struct drm_plane_state *state)
->  {
->  	...
->  	struct drm_plane_state *new_state = plane->state;
-> 	...
->  }
-> 
-> @ depends on !has_new_state_state @
-> identifier plane_atomic_func.func;
-> identifier plane;
-> symbol state;
-> @@
-> 
->  func(struct drm_plane *plane, struct drm_plane_state *state)
->  {
-> +	struct drm_plane_state *new_plane_state = plane->state;
->  	<+...
-> -	plane->state
-> +	new_plane_state
-> 	...+>
->  }
-> 
-> @ has_new_state_old_s @
-> identifier plane_atomic_func.func;
-> identifier plane;
-> identifier new_state;
-> symbol old_s;
-> @@
-> 
->  func(struct drm_plane *plane, struct drm_plane_state *old_s)
->  {
->  	...
->  	struct drm_plane_state *new_state = plane->state;
-> 	...
->  }
-> 
-> @ depends on !has_new_state_old_s @
-> identifier plane_atomic_func.func;
-> identifier plane;
-> symbol old_s;
-> @@
-> 
->  func(struct drm_plane *plane, struct drm_plane_state *old_s)
->  {
-> +	struct drm_plane_state *new_s = plane->state;
->  	<+...
-> -	plane->state
-> +	new_s
-> 	...+>
->  }
-
-I may have taken this as an opportunity to align naming conventions for
-variables across drivers, but that may just be me.
-
-> 
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
-
-[snip]
-
->  drivers/gpu/drm/omapdrm/omap_plane.c          |  5 ++-
->  drivers/gpu/drm/rcar-du/rcar_du_plane.c       |  5 ++-
->  drivers/gpu/drm/rcar-du/rcar_du_vsp.c         |  3 +-
->  drivers/gpu/drm/xlnx/zynqmp_disp.c            |  7 ++--
-
-For these, with the small issue below addressed,
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-[snip]
-
-> diff --git a/drivers/gpu/drm/omapdrm/omap_plane.c b/drivers/gpu/drm/omapdrm/omap_plane.c
-> index 1042e1147e74..de5ad69af4cb 100644
-> --- a/drivers/gpu/drm/omapdrm/omap_plane.c
-> +++ b/drivers/gpu/drm/omapdrm/omap_plane.c
-> @@ -88,11 +88,12 @@ static void omap_plane_atomic_update(struct drm_plane *plane,
->  static void omap_plane_atomic_disable(struct drm_plane *plane,
->  				      struct drm_plane_state *old_state)
->  {
-> +	struct drm_plane_state *new_state = plane->state;
->  	struct omap_drm_private *priv = plane->dev->dev_private;
->  	struct omap_plane *omap_plane = to_omap_plane(plane);
->  
-> -	plane->state->rotation = DRM_MODE_ROTATE_0;
-> -	plane->state->zpos = plane->type == DRM_PLANE_TYPE_PRIMARY
-> +	new_state->rotation = DRM_MODE_ROTATE_0;
-> +	new_state->zpos = plane->type == DRM_PLANE_TYPE_PRIMARY
->  			   ? 0 : omap_plane->id;
-
-Can you fix the indentation ?
-
->  	dispc_ovl_enable(priv->dispc, omap_plane->id, false);
-
-[snip]
-
--- 
-Regards,
-
-Laurent Pinchart
+Thanks,
+Melissa Wen
+> > ---
+> >  drivers/gpu/drm/vkms/vkms_drv.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
+> > index 708f7f54001d..2173b82606f6 100644
+> > --- a/drivers/gpu/drm/vkms/vkms_drv.c
+> > +++ b/drivers/gpu/drm/vkms/vkms_drv.c
+> > @@ -188,7 +188,11 @@ static int vkms_create(struct vkms_config *config)
+> >
+> >  static int __init vkms_init(void)
+> >  {
+> > -       struct vkms_config *config = kmalloc(sizeof(*config), GFP_KERNEL);
+> > +       struct vkms_config *config;
+> > +
+> > +       config = kmalloc(sizeof(*config), GFP_KERNEL);
+> > +       if (!config)
+> > +               return -ENOMEM;
+> >
+> >         default_config = config;
+> >
+> > --
+> > 2.29.2
+> >
+> regards,
+> Sumera
