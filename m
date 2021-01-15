@@ -2,68 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E8532F7E88
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:48:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 517672F7E74
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731924AbhAOOrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 09:47:51 -0500
-Received: from elvis.franken.de ([193.175.24.41]:53922 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728292AbhAOOru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:47:50 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l0QNY-0006aU-03; Fri, 15 Jan 2021 15:47:08 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id E782CC057E; Fri, 15 Jan 2021 15:42:22 +0100 (CET)
-Date:   Fri, 15 Jan 2021 15:42:22 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Aurelien Jarno <aurelien@aurel32.net>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        YunQiang Su <syq@debian.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: Support binutils configured with
- --enable-mips-fix-loongson3-llsc=yes
-Message-ID: <20210115144222.GD15166@alpha.franken.de>
-References: <20210109193048.478339-1-aurelien@aurel32.net>
+        id S1731718AbhAOOoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 09:44:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728559AbhAOOog (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 09:44:36 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B982C061793
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:43:56 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id n42so8675635ota.12
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:43:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=x0jeRffU+yop2UeLzXkeiDQE3IGPjGYo516b3eTS6oY=;
+        b=IJ+4HWXUdwcAH3GtOhYa7ypaWMxhh5MbHnIQIlibpi840ZZ02W/dhYFnc5rH20mGNY
+         2j6gViUNbEwJ8P8kJktJN6VHMMlRbOMzCRMyHhNYqYfe0J2e9g1R9jDBNUVAd8YeAh/e
+         UnaXRNXhH5OtAZk7GlTbSBzLDOaj7K7ylyIXBcQs47u5LmTRHKAOxoC81VPBJc7197fo
+         IDbB/nAPrSO23dHFAajc+A0m8bbOKSAoauPfBo9/ALGAwmDUHct2YYpcPVFzlkC5z/KG
+         qCs17nZy3BmyuqPx6F09zdIGNeJ09QzAynUqXrKN2qcmrZQ3UO7Pudaa1llDn5CGE5IR
+         Fziw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=x0jeRffU+yop2UeLzXkeiDQE3IGPjGYo516b3eTS6oY=;
+        b=KpBhMe82udFc+Q7xu0jDS7SlEhU0xDWKoqcoi31c5HXDNqj6GGqzpjT0wHktQBC1np
+         seEsAVcPqfRw6gBYarfoTgiBJdz9FrVpz2vjlnng7ZTYdavespW7RcULPVnlm6Cx1+CP
+         gTtOX7WuPJS/pjdA8Y10ruzu+zYidp2k5I10//+bvyeziEjUHi0L1zRTymwnC4AMumkV
+         DvL1GbRGjiFNx9TKnjUkUuanVk6b6Rg+46+Q1RSqkoB5RH7Dxi5kcKAMi93jnpMcZRSA
+         Id2COnNapOshr/ySLQ6hhQXPwp9QZnYjKjH5vB6LqyaGDP1a6MMDq0oj/TJretZCDY0w
+         4GsQ==
+X-Gm-Message-State: AOAM532f7bWvgsst4QAjlKJDzScPx/AgeCssaY3I15Xx6MhROCKbYMsq
+        SY6REu+tCBsPkXX1OoEWfJt7Nw==
+X-Google-Smtp-Source: ABdhPJxjeiUubZZgCiEeMMb59uqjChQ3EteGlfG88/A7rOidXAq3ujcrFUAaVhSD6WWTbVBchNAgXw==
+X-Received: by 2002:a9d:3e0d:: with SMTP id a13mr8552934otd.194.1610721835721;
+        Fri, 15 Jan 2021 06:43:55 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w10sm1695715oic.44.2021.01.15.06.43.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 06:43:55 -0800 (PST)
+Date:   Fri, 15 Jan 2021 08:43:53 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>, ulf.hansson@linaro.org,
+        viresh.kumar@linaro.org
+Cc:     robh+dt@kernel.org, wsa@kernel.org, swboyd@chromium.org,
+        dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
+        mka@chromium.org, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, parashar@codeaurora.org,
+        rnayak@codeaurora.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH 3/3] i2c: i2c-qcom-geni: Add support for
+ 'assigned-performance-states'
+Message-ID: <YAGqKfDfB7EEuZVn@builder.lan>
+References: <20201224111210.1214-1-rojay@codeaurora.org>
+ <20201224111210.1214-4-rojay@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210109193048.478339-1-aurelien@aurel32.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201224111210.1214-4-rojay@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 09, 2021 at 08:30:47PM +0100, Aurelien Jarno wrote:
-> >From version 2.35, binutils can be configured with
-> --enable-mips-fix-loongson3-llsc=yes, which means it defaults to
-> -mfix-loongson3-llsc. This breaks labels which might then point at the
-> wrong instruction.
+On Thu 24 Dec 05:12 CST 2020, Roja Rani Yarubandi wrote:
+
+> @@ -629,6 +658,16 @@ static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
+>  	struct geni_i2c_dev *gi2c = dev_get_drvdata(dev);
+>  
+>  	disable_irq(gi2c->irq);
+> +
+> +	/* Drop the assigned performance state */
+> +	if (gi2c->assigned_pstate) {
+> +		ret = dev_pm_genpd_set_performance_state(dev, 0);
+> +		if (ret) {
+> +			dev_err(dev, "Failed to set performance state\n");
+> +			return ret;
+> +		}
+> +	}
+> +
+
+Ulf, Viresh, I think we discussed this at the time of introducing the
+performance states.
+
+The client's state does not affect if its performance_state should
+be included in the calculation of the aggregated performance_state, so
+each driver that needs to keep some minimum performance state needs to
+have these two snippets.
+
+Would it not make sense to on enable/disable re-evaluate the
+performance_state and potentially reconfigure the hardware
+automatically?
+
+Regards,
+Bjorn
+
+>  	ret = geni_se_resources_off(&gi2c->se);
+>  	if (ret) {
+>  		enable_irq(gi2c->irq);
+> @@ -654,6 +693,16 @@ static int __maybe_unused geni_i2c_runtime_resume(struct device *dev)
+>  	if (ret)
+>  		return ret;
+>  
+> +	/* Set the assigned performance state */
+> +	if (gi2c->assigned_pstate) {
+> +		ret = dev_pm_genpd_set_performance_state(dev,
+> +							 gi2c->assigned_pstate);
+> +		if (ret) {
+> +			dev_err(dev, "Failed to set performance state\n");
+> +			return ret;
+> +		}
+> +	}
+> +
+>  	enable_irq(gi2c->irq);
+>  	gi2c->suspended = 0;
+>  	return 0;
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
 > 
-> The workaround to explicitly pass -mno-fix-loongson3-llsc has been
-> added in Linux version 5.1, but is only enabled when building a Loongson
-> 64 kernel. As vendors might use a common toolchain for building Loongson
-> and non-Loongson kernels, just move that workaround to
-> arch/mips/Makefile. At the same time update the comments to reflect the
-> current status.
-> 
-> Cc: stable@vger.kernel.org # 5.1+
-> Cc: YunQiang Su <syq@debian.org>
-> Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
-> ---
->  arch/mips/Makefile            | 19 +++++++++++++++++++
->  arch/mips/loongson64/Platform | 22 ----------------------
->  2 files changed, 19 insertions(+), 22 deletions(-)
-
-I've applied it to mips-next, but I consider such changes as rather rude.
-I would have expected, that the workaround is only enabled via command
-line option and not by default.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
