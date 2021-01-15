@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2722F7BC0
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7442F7BC1
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733239AbhAONFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:05:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
+        id S2387769AbhAONFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:05:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388204AbhAONFC (ORCPT
+        with ESMTP id S2388203AbhAONFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 08:05:02 -0500
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DF7C061795
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:03:50 -0800 (PST)
-Received: by mail-wm1-x349.google.com with SMTP id h25so277250wmb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:03:50 -0800 (PST)
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB87C061796
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:03:52 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id m8so7581045qvk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:03:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=954/Z+Hv6LNpyU9utqCctaUUru/bs3BWptIPfUnFtmI=;
-        b=pm4+xcjwk+Pr+UXPk5mF0s3bJV0j+KWfPkIsrbpPDRrSGfSXWBhGeKkX90a+jelTbP
-         KobHEq/XLzDeNe8BVOYEBsHJt+9fd4Fe6SXeDxDdH8twkCSYLrd6w5n9kb5cNWd2An61
-         tGxF3QVINmmir4xsF/oOxOBZHJt6pgFg/Y/5XUxgAvDAH27gJb8dnxRW1eXv22rxVshe
-         yiK42IHcUltxQuoaL3rkds8EwUjK149viM/GwhS7MDBL2Yv5nMWcUrRmeKkK/x6mUTSs
-         TWyfFxXakDmtc0W2MI8DMYz5U3IuCtGiId61uFrkRxKcC/N8C8JsJAfp5Gp28rVv312K
-         TOTQ==
+        bh=hLav+6cEwiPVPNQ10H8mUnfXDXSTPqRFsNjQotE+jzA=;
+        b=Sh2HR2ssv22qj/Ox0Y413CCPV307dbT5KXC2u/9JMQT47kKYkHhqe+TBznrMD4j545
+         zwfZJu/moFJjgslO5+Z7LAOidJv6WifGvAYC/7O4n9t6th4ICiC0SvHHnnCfnPF8gY+0
+         0/vyBQtKyVn2YEGQ2MU95deZJIvVOgVPz5W0KVc8OCqTyv3V5UOECCjA2LYhdyxphVg8
+         7PsWmj//xJCAdfcM/cpfBMzQD/jP4Ondyz4a5K1SXb9h1Trm/kOFV2OmmXzkmbq7ACwV
+         27N3pJtJHvUV/aSDWZqoQMgMRQJdenMHlImacDTD1pXymW4TyqHp9jgfrUibN88WBRKv
+         2F6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=954/Z+Hv6LNpyU9utqCctaUUru/bs3BWptIPfUnFtmI=;
-        b=FyJLPUYmM2VRHxD1bDXv1sp9JVwC9IwwIvGjwys6QkKBVwmvCRv34W0guMY5chC7A7
-         m1qef3guz0PzJi0HvnCjHYuZiov7u/VjTsDYlkbYtw4OHGzTS4ZSyy1o4dhFE+o7cVHX
-         G8A27KyX0ZLt5COWq9A/s+mSh8NcVf12gxdxst8CXoshLi+xZOqAefD3Cyyf6f+y6zlH
-         26BY9w5Xy8LOWwFOYrhP3l91lHKDecYDFFHBBlXgSErfjxy4w/e4kTM1p4D8GfEIg8uG
-         pzeCXamRVkFMxDJu0Y/NcvaGfZ0r2smw8IMccKjaaWQcSfB8JujMGE8dv5OR1xzTz9uo
-         zl/A==
-X-Gm-Message-State: AOAM533uKWkMreOGLRjzgcyxRSoYTZ3bC0mH8K4LKcFedVhmZx7dABjU
-        cAiOqSXHtyGcfg3MqKGL3DHJnd/aoi3G8pNnkuO3fTiH/USDe9Lm2qUNv+2ENzahk6uXa91IowE
-        nkwlmHrPOCsJZo1YgBXV/L+6MOVYXu5NOqo9BJyYwHHsxPY7/cngsu6EVzGGD4d/M90T+Ww==
-X-Google-Smtp-Source: ABdhPJxtwFBxiD7OEYrh/qyl7LW2IZQ1kWN66X1jJsjmKqpZeYgm33eaNA3UEIbQL3cBZ7Drz1VxX8M5jug=
+        bh=hLav+6cEwiPVPNQ10H8mUnfXDXSTPqRFsNjQotE+jzA=;
+        b=intmz49HbaBsjW49PUr26tempnRGNYsX7+8uVh+/aoKW+KqFJCqxmuXBqZX88QBMmC
+         46eViR1r7NLJpnrUsABrIhgEMn/Ro3eGz37zHMsgt8AH4qroOABztbkIALOfZl+SFxw/
+         3yjIK6f9dG0X1/00d4+61VP6hQCCdTVOk2k2zryfZzQkUSNyF5Zu3eSPRrC0mbCPnnL2
+         z1u5/Eif7ak+CNBDywFL/gl8iZaUhK8RNefV63S2esm9EgincqeRhHMnpIy0pz34Sjex
+         Qu67eqG9pBGfnwsCGk0UjbrHdE6AMdsaYffbZRkCqyNDzj9OCcpL54BleTaMOWBTi/YZ
+         p4YA==
+X-Gm-Message-State: AOAM530aC4obhIFMEy2w5umocb5o/sAzfDS1nrjR5ZBj4Aj/aWl+K9fN
+        zTskjUXkEeSDmsKSIUNTcG0ln51Iir3VgE81aueWvLJ2slTDz2+HCwJaUmwfXJCzKd80TJRFGR7
+        BUYQcqFHXkKw9f0EMJloxoslS5bIKzTB9GBnfWS+n69tKMKZaS9UZx+s8mWSJ7cCDpE512g==
+X-Google-Smtp-Source: ABdhPJwcxbW4F0oXAeIpK+OvuTtdxUQ7SsZtruNCXPi/u8cr2SIDC13l6xM4zNss2rTVBUqx4VJstHIKwJ8=
 Sender: "glider via sendgmr" <glider@glider.muc.corp.google.com>
 X-Received: from glider.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:9ff])
- (user=glider job=sendgmr) by 2002:a1c:2c89:: with SMTP id s131mr934969wms.0.1610715829142;
- Fri, 15 Jan 2021 05:03:49 -0800 (PST)
-Date:   Fri, 15 Jan 2021 14:03:35 +0100
+ (user=glider job=sendgmr) by 2002:a05:6214:140d:: with SMTP id
+ n13mr11772979qvx.45.1610715831400; Fri, 15 Jan 2021 05:03:51 -0800 (PST)
+Date:   Fri, 15 Jan 2021 14:03:36 +0100
 In-Reply-To: <20210115130336.2520663-1-glider@google.com>
-Message-Id: <20210115130336.2520663-5-glider@google.com>
+Message-Id: <20210115130336.2520663-6-glider@google.com>
 Mime-Version: 1.0
 References: <20210115130336.2520663-1-glider@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v2 4/5] kfence: use error_report_start and error_report_end tracepoints
+Subject: [PATCH v2 5/5] kasan: use error_report_start and error_report_end tracepoints
 From:   Alexander Potapenko <glider@google.com>
 To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org
 Cc:     andreyknvl@google.com, dvyukov@google.com, mingo@redhat.com,
@@ -64,7 +64,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make it possible to trace KFENCE error reporting (in particular, for
+Make it possible to trace KASAN error reporting (in particular, for
 compatibility with CONFIG_ERROR_REPORT_NOTIFY).
 
 Suggested-by: Marco Elver <elver@google.com>
@@ -85,37 +85,79 @@ v2:
    to accept enum error_detector instead of char*
    (as suggested by Steven Rostedt)
 ---
- mm/kfence/report.c | 3 +++
- 1 file changed, 3 insertions(+)
+ mm/kasan/report.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/mm/kfence/report.c b/mm/kfence/report.c
-index 4dedc2ff8f28..bbe7dad5f249 100644
---- a/mm/kfence/report.c
-+++ b/mm/kfence/report.c
-@@ -9,6 +9,7 @@
- #include <linux/seq_file.h>
- #include <linux/stacktrace.h>
- #include <linux/string.h>
+diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+index c0fb21797550..78b8bbc84dc2 100644
+--- a/mm/kasan/report.c
++++ b/mm/kasan/report.c
+@@ -25,6 +25,7 @@
+ #include <linux/module.h>
+ #include <linux/sched/task_stack.h>
+ #include <linux/uaccess.h>
 +#include <trace/events/error_report.h>
  
- #include <asm/kfence.h>
+ #include <asm/sections.h>
  
-@@ -184,6 +185,7 @@ void kfence_report_error(unsigned long address, struct pt_regs *regs,
- 	lockdep_off();
+@@ -74,7 +75,7 @@ static void print_error_description(struct kasan_access_info *info)
  
+ static DEFINE_SPINLOCK(report_lock);
+ 
+-static void start_report(unsigned long *flags)
++static void start_report(unsigned long *flags, unsigned long addr)
+ {
+ 	/*
+ 	 * Make sure we don't end up in loop.
+@@ -82,10 +83,12 @@ static void start_report(unsigned long *flags)
+ 	kasan_disable_current();
+ 	spin_lock_irqsave(&report_lock, *flags);
  	pr_err("==================================================================\n");
-+	trace_error_report_start(ERROR_DETECTOR_KFENCE, address);
- 	/* Print report header. */
- 	switch (type) {
- 	case KFENCE_ERROR_OOB: {
-@@ -232,6 +234,7 @@ void kfence_report_error(unsigned long address, struct pt_regs *regs,
- 		show_regs(regs);
- 	else
- 		dump_stack_print_info(KERN_ERR);
-+	trace_error_report_end(ERROR_DETECTOR_KFENCE, address);
- 	pr_err("==================================================================\n");
++	trace_error_report_start(ERROR_DETECTOR_KASAN, addr);
+ }
  
- 	lockdep_on();
+-static void end_report(unsigned long *flags)
++static void end_report(unsigned long *flags, unsigned long addr)
+ {
++	trace_error_report_end(ERROR_DETECTOR_KASAN, addr);
+ 	pr_err("==================================================================\n");
+ 	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
+ 	spin_unlock_irqrestore(&report_lock, *flags);
+@@ -348,14 +351,14 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
+ 		kasan_update_kunit_status(current->kunit_test);
+ #endif /* IS_ENABLED(CONFIG_KUNIT) */
+ 
+-	start_report(&flags);
++	start_report(&flags, (unsigned long)object);
+ 	pr_err("BUG: KASAN: double-free or invalid-free in %pS\n", (void *)ip);
+ 	print_tags(tag, object);
+ 	pr_err("\n");
+ 	print_address_description(object, tag);
+ 	pr_err("\n");
+ 	print_memory_metadata(object);
+-	end_report(&flags);
++	end_report(&flags, (unsigned long)object);
+ }
+ 
+ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+@@ -385,7 +388,7 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+ 	info.is_write = is_write;
+ 	info.ip = ip;
+ 
+-	start_report(&flags);
++	start_report(&flags, addr);
+ 
+ 	print_error_description(&info);
+ 	if (addr_has_metadata(untagged_addr))
+@@ -400,7 +403,7 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+ 		dump_stack();
+ 	}
+ 
+-	end_report(&flags);
++	end_report(&flags, addr);
+ }
+ 
+ bool kasan_report(unsigned long addr, size_t size, bool is_write,
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
