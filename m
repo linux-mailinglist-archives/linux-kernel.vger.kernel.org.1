@@ -2,121 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872CA2F8967
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 00:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2492F8969
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 00:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727723AbhAOXcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 18:32:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22856 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725863AbhAOXcQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 18:32:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610753450;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZcqGdAWvT6/fidF7kC53r5O0Fwn58WR7GKMoHqohBAc=;
-        b=PqNGSO1apcingLTq1MDr1/754xN/XwuYsVDohHh62tmO7QPDJhEYeeUfDc9uCwAPukpB7U
-        bErHXuegRujGaNNLYobdjnKJpIiBmfqiA7HU1JR3n4oNgNQ0mmkJo9oLwL1B0dxNp7Xq6J
-        1ZRCZJJWR++T4+7JKKjkdcpG75mKEgI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-MbQGIl4pMwCRKRrqXq0k5Q-1; Fri, 15 Jan 2021 18:30:46 -0500
-X-MC-Unique: MbQGIl4pMwCRKRrqXq0k5Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 290C2180A092;
-        Fri, 15 Jan 2021 23:30:43 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7E3D66F7EF;
-        Fri, 15 Jan 2021 23:30:41 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 16:30:41 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, Cornelia Huck <cohuck@redhat.com>,
-        Will Deacon <will@kernel.org>, "Marc Zyngier" <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-Subject: Re: [PATCH 3/6] vfio/iommu_type1: Initially set the
- pinned_page_dirty_scope
-Message-ID: <20210115163041.704a4e9d@omen.home.shazbot.org>
-In-Reply-To: <20210107044401.19828-4-zhukeqian1@huawei.com>
-References: <20210107044401.19828-1-zhukeqian1@huawei.com>
-        <20210107044401.19828-4-zhukeqian1@huawei.com>
+        id S1727935AbhAOXch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 18:32:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725863AbhAOXch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 18:32:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7C9B239ED;
+        Fri, 15 Jan 2021 23:31:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610753516;
+        bh=/4FDLVLCDDwhVe0VLRVT2f/4U/mN3Mm3RhnvczWdt88=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=hMGnU2jeSBR2vnqdtNX5GaxKbzyNS7l25VjsmMmJ14vAYeR1eQ3HX8oKtfxZIfbEX
+         tbv8ZFyxnfTw9q3fUI2i4ZCsJx8USZ68BSIUyQCK7FfrLgLhAhqE25N/258VPtdGmM
+         Hb8dzHyqQ68h+gBEMHyaDAKQtCosdNkYhJIUWMsHhLTZ/xEsPfJ+fcCsagx56n4bFr
+         U5AYLK8/M4Pz5EDGrNa+C2W/ajALrOJb1sgb7OqlCGRH5lQB6ojH6kAV2IJicpktaj
+         aFLR/zu/3cL39QLndYUHQc4nHe+CeoCyldBRSBKljI0RuHda+GR/5OPGZpbWZ60uqr
+         F+rv6RQBoy98w==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 741BE352162B; Fri, 15 Jan 2021 15:31:56 -0800 (PST)
+Date:   Fri, 15 Jan 2021 15:31:56 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] kcsan: Add missing license and copyright headers
+Message-ID: <20210115233156.GO2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210115170953.3035153-1-elver@google.com>
+ <20210115215817.GN2743@paulmck-ThinkPad-P72>
+ <CANpmjNM9++GSuSHH+Lyfi23kW8v0aXLX+YbD20UX8k5jAAaSnA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNM9++GSuSHH+Lyfi23kW8v0aXLX+YbD20UX8k5jAAaSnA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Jan 2021 12:43:58 +0800
-Keqian Zhu <zhukeqian1@huawei.com> wrote:
-
-> For now there are 3 ways to promote the pinned_page_dirty_scope
-> status of vfio_iommu:
+On Sat, Jan 16, 2021 at 12:21:53AM +0100, Marco Elver wrote:
+> On Fri, 15 Jan 2021 at 22:58, Paul E. McKenney <paulmck@kernel.org> wrote:
 > 
-> 1. Through vfio pin interface.
-> 2. Detach a group without pinned_dirty_scope.
-> 3. Attach a group with pinned_dirty_scope.
+> > This one seemed straightforward and I heard no objections to the previous
+> > two-patch series, so I queued them for the v5.13 merge window, thank you!
+> >
+> > If any of them need adjustment, please send me the updated patch and
+> > tell me which one it replaces.  Something about -rcu being in heavy
+> > experimental mode at the moment.  ;-)
 > 
-> For point 3, the only chance to promote the pinned_page_dirty_scope
-> status is when vfio_iommu is newly created. As we can safely set
-> empty vfio_iommu to be at pinned status, then the point 3 can be
-> removed to reduce operations.
+> Thank you!
 > 
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> ---
->  drivers/vfio/vfio_iommu_type1.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 110ada24ee91..b596c482487b 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -2045,11 +2045,8 @@ static int vfio_iommu_type1_attach_group(void *iommu_data,
->  			 * Non-iommu backed group cannot dirty memory directly,
->  			 * it can only use interfaces that provide dirty
->  			 * tracking.
-> -			 * The iommu scope can only be promoted with the
-> -			 * addition of a dirty tracking group.
->  			 */
->  			group->pinned_page_dirty_scope = true;
-> -			promote_pinned_page_dirty_scope(iommu);
->  			mutex_unlock(&iommu->lock);
->  
->  			return 0;
-> @@ -2436,6 +2433,7 @@ static void *vfio_iommu_type1_open(unsigned long arg)
->  	INIT_LIST_HEAD(&iommu->iova_list);
->  	iommu->dma_list = RB_ROOT;
->  	iommu->dma_avail = dma_entry_limit;
-> +	iommu->pinned_page_dirty_scope = true;
->  	mutex_init(&iommu->lock);
->  	BLOCKING_INIT_NOTIFIER_HEAD(&iommu->notifier);
->  
+> I would have given the go-ahead for the other series next week Monday,
+> but I think that's a holiday anyway. :-)
 
-This would be resolved automatically if we used the counter approach I
-mentioned on the previous patch, adding a pinned-page scope group simply
-wouldn't increment the iommu counter, which would initially be zero
-indicating no "all-dma" groups.  Thanks,
+It is indeed!  I guess you had Wednesday last week, with next up being
+Friday April 2?  ;-)
 
-Alex
-
+							Thanx, Paul
