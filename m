@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8453E2F7BC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2504F2F7BA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388511AbhAONFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:05:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36440 "EHLO mail.kernel.org"
+        id S2387811AbhAONEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:04:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732674AbhAOMbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:31:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19A2A238E7;
-        Fri, 15 Jan 2021 12:31:11 +0000 (UTC)
+        id S1732700AbhAOMbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A48E238A0;
+        Fri, 15 Jan 2021 12:31:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713872;
-        bh=2lfO5BMhBRCISYYSfisVBIn98GspxvrD9EFkcEhvGtg=;
+        s=korg; t=1610713874;
+        bh=NahTOkR+9aPL6JZsWrG55pB7FafAa/JdFnzdbVfWbM8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SynfEvpPe1LzrzTPbjJPcEh8vaZ9GL6cGc2Gebu/OqcCT2XulbI2S5Rk+mgnDkXtz
-         iCYrCPbq6/Lw/9gxqJIe/3fkvGSGFw+wWPovVXj2yMnNzg14QkoXI14/dsMuLjgSSG
-         XAUjQdcUnYI12GjLeSbgeOJ74D3GaojPfAksz7DI=
+        b=HCjQeDPebpAtqRx07yiGEaljd0Z6teK1PbiR3UgSTc733PVtLgUo/zr71CJ99pFe8
+         TnojyzpsYyYosmKt3wG3S+YNty59a4/8DKJm8bT3M0MET30Cjcb+pjiLPK8VpjQsqA
+         R5ayQ7d5br0BX745rXG02/OqrbskNYI/TGe4q+5w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.14 16/28] cpufreq: powernow-k8: pass policy rather than use cpufreq_cpu_get()
-Date:   Fri, 15 Jan 2021 13:27:53 +0100
-Message-Id: <20210115121957.564911000@linuxfoundation.org>
+        stable@vger.kernel.org, Roman Guskov <rguskov@dh-electronics.com>,
+        Marek Vasut <marex@denx.de>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.14 17/28] spi: stm32: FIFO threshold level - fix align packet size
+Date:   Fri, 15 Jan 2021 13:27:54 +0100
+Message-Id: <20210115121957.614595194@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210115121956.731354372@linuxfoundation.org>
 References: <20210115121956.731354372@linuxfoundation.org>
@@ -40,63 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Roman Guskov <rguskov@dh-electronics.com>
 
-commit 943bdd0cecad06da8392a33093230e30e501eccc upstream.
+commit a590370d918fc66c62df6620445791fbe840344a upstream.
 
-Currently there is an unlikely case where cpufreq_cpu_get() returns a
-NULL policy and this will cause a NULL pointer dereference later on.
+if cur_bpw <= 8 and xfer_len < 4 then the value of fthlv will be 1 and
+SPI registers content may have been lost.
 
-Fix this by passing the policy to transition_frequency_fidvid() from
-the caller and hence eliminating the need for the cpufreq_cpu_get()
-and cpufreq_cpu_put().
+* If SPI data register is accessed as a 16-bit register and DSIZE <= 8bit,
+  better to select FTHLV = 2, 4, 6 etc
 
-Thanks to Viresh Kumar for suggesting the fix.
+* If SPI data register is accessed as a 32-bit register and DSIZE > 8bit,
+  better to select FTHLV = 2, 4, 6 etc, while if DSIZE <= 8bit,
+  better to select FTHLV = 4, 8, 12 etc
 
-Addresses-Coverity: ("Dereference null return")
-Fixes: b43a7ffbf33b ("cpufreq: Notify all policy->cpus in cpufreq_notify_transition()")
-Suggested-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Roman Guskov <rguskov@dh-electronics.com>
+Fixes: dcbe0d84dfa5 ("spi: add driver for STM32 SPI controller")
+Reviewed-by: Marek Vasut <marex@denx.de>
+Link: https://lore.kernel.org/r/20201221123532.27272-1-rguskov@dh-electronics.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/cpufreq/powernow-k8.c |    9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/spi/spi-stm32.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/cpufreq/powernow-k8.c
-+++ b/drivers/cpufreq/powernow-k8.c
-@@ -887,9 +887,9 @@ static int get_transition_latency(struct
+--- a/drivers/spi/spi-stm32.c
++++ b/drivers/spi/spi-stm32.c
+@@ -299,9 +299,9 @@ static u32 stm32_spi_prepare_fthlv(struc
  
- /* Take a frequency, and issue the fid/vid transition command */
- static int transition_frequency_fidvid(struct powernow_k8_data *data,
--		unsigned int index)
-+		unsigned int index,
-+		struct cpufreq_policy *policy)
- {
--	struct cpufreq_policy *policy;
- 	u32 fid = 0;
- 	u32 vid = 0;
- 	int res;
-@@ -921,9 +921,6 @@ static int transition_frequency_fidvid(s
- 	freqs.old = find_khz_freq_from_fid(data->currfid);
- 	freqs.new = find_khz_freq_from_fid(fid);
+ 	/* align packet size with data registers access */
+ 	if (spi->cur_bpw > 8)
+-		fthlv -= (fthlv % 2); /* multiple of 2 */
++		fthlv += (fthlv % 2) ? 1 : 0;
+ 	else
+-		fthlv -= (fthlv % 4); /* multiple of 4 */
++		fthlv += (fthlv % 4) ? (4 - (fthlv % 4)) : 0;
  
--	policy = cpufreq_cpu_get(smp_processor_id());
--	cpufreq_cpu_put(policy);
--
- 	cpufreq_freq_transition_begin(policy, &freqs);
- 	res = transition_fid_vid(data, fid, vid);
- 	cpufreq_freq_transition_end(policy, &freqs, res);
-@@ -978,7 +975,7 @@ static long powernowk8_target_fn(void *a
- 
- 	powernow_k8_acpi_pst_values(data, newstate);
- 
--	ret = transition_frequency_fidvid(data, newstate);
-+	ret = transition_frequency_fidvid(data, newstate, pol);
- 
- 	if (ret) {
- 		pr_err("transition frequency failed\n");
+ 	return fthlv;
+ }
 
 
