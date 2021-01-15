@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DF82F7926
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 987A52F7945
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732962AbhAOMcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:32:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36246 "EHLO mail.kernel.org"
+        id S2387446AbhAOMeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:34:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732902AbhAOMcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:32:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9BD42339D;
-        Fri, 15 Jan 2021 12:31:44 +0000 (UTC)
+        id S2387411AbhAOMeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:34:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0556023136;
+        Fri, 15 Jan 2021 12:33:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713905;
-        bh=yyKG51TFr5nmyyBWUHygy67mu7D8MjIYdZJXAt2amRw=;
+        s=korg; t=1610714006;
+        bh=pFEZn7e8aaz0Dah5R4LTyV/HwgbH9/jP5oTMkHsNmWw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K4vlsCG986xQT/iGOLIIDIcZPtyyiBZcVgfzsyA+DyZ7oRU6tfVCUVz9v4fm4aG59
-         rnbNM6lveDS2KO/G+fePGOMgneie4FR1qAF93V6aPo94JU24mg07XjIHqwrc2qmDHQ
-         sMJw9DzB8hGXptSLOdE6NNxB+B4DgttLlavwanDI=
+        b=hxppn74lR8PRWvlGlC+lnLiBqRujz4WtVJN42Gsun62wAm+HK4/Gde93aC18izdJM
+         eBa0d++baIRiA8STusPgWYsAHmHoylLVtADVr1VDimzLBhF2qmUh1QBxNE0eMxSR/7
+         fvCbhTgPRfJ7wpM4YqFtkM4IPRe/B/3fLe/C/pFw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH 4.14 23/28] net/mlx5e: Fix memleak in mlx5e_create_l2_table_groups
-Date:   Fri, 15 Jan 2021 13:28:00 +0100
-Message-Id: <20210115121957.908836920@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Shravya Kumbham <shravya.kumbham@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 4.19 31/43] dmaengine: xilinx_dma: fix mixed_enum_type coverity warning
+Date:   Fri, 15 Jan 2021 13:28:01 +0100
+Message-Id: <20210115121958.556041435@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121956.731354372@linuxfoundation.org>
-References: <20210115121956.731354372@linuxfoundation.org>
+In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
+References: <20210115121957.037407908@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Shravya Kumbham <shravya.kumbham@xilinx.com>
 
-commit 5b0bb12c58ac7d22e05b5bfdaa30a116c8c32e32 upstream.
+commit 2d5efea64472469117dc1a9a39530069e95b21e9 upstream.
 
-When mlx5_create_flow_group() fails, ft->g should be
-freed just like when kvzalloc() fails. The caller of
-mlx5e_create_l2_table_groups() does not catch this
-issue on failure, which leads to memleak.
+Typecast the fls(width -1) with (enum dmaengine_alignment) in
+xilinx_dma_chan_probe function to fix the coverity warning.
 
-Fixes: 33cfaaa8f36f ("net/mlx5e: Split the main flow steering table")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Addresses-Coverity: Event mixed_enum_type.
+Fixes: 9cd4360de609 ("dma: Add Xilinx AXI Video Direct Memory Access Engine driver support")
+Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
+Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Link: https://lore.kernel.org/r/1608722462-29519-4-git-send-email-radhey.shyam.pandey@xilinx.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_fs.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/dma/xilinx/xilinx_dma.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-@@ -1226,6 +1226,7 @@ err_destroy_groups:
- 	ft->g[ft->num_groups] = NULL;
- 	mlx5e_destroy_groups(ft);
- 	kvfree(in);
-+	kfree(ft->g);
+--- a/drivers/dma/xilinx/xilinx_dma.c
++++ b/drivers/dma/xilinx/xilinx_dma.c
+@@ -2426,7 +2426,7 @@ static int xilinx_dma_chan_probe(struct
+ 		has_dre = false;
  
- 	return err;
- }
+ 	if (!has_dre)
+-		xdev->common.copy_align = fls(width - 1);
++		xdev->common.copy_align = (enum dmaengine_alignment)fls(width - 1);
+ 
+ 	if (of_device_is_compatible(node, "xlnx,axi-vdma-mm2s-channel") ||
+ 	    of_device_is_compatible(node, "xlnx,axi-dma-mm2s-channel") ||
 
 
