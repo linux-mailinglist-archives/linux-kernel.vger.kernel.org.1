@@ -2,37 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4B42F7B5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:02:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D102F7B96
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:04:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733049AbhAOMdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:33:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39676 "EHLO mail.kernel.org"
+        id S1730604AbhAONDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:03:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731622AbhAOMcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:32:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8560B224F9;
-        Fri, 15 Jan 2021 12:32:13 +0000 (UTC)
+        id S1732814AbhAOMbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4ED6223E0;
+        Fri, 15 Jan 2021 12:31:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713934;
-        bh=LYZmCsTkbQKp4v2/nLIq6dpggX2NPhwPt6DjTkzcvvE=;
+        s=korg; t=1610713892;
+        bh=ywoUHKCi0smieEK+SvYseF8rMMCIbmHFRL9jbMC+D4M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MMIwJVN2GZdHz782dPXvkVCD6/VPmDQFdiFFtcKc2g+MpUcGq647RJj1h1hwqwlln
-         lH1ocFaOCdKwDFuWST2vsCUkn9sp+Mqilf2cYIi5WReRMajgEaXGquc/pjEP+CutHV
-         Zvw92hbVGr6/0emKSZQD+GWhQPxYm9VBacJr9jGk=
+        b=aJIWbjFKwlDG/dwVJAxsfYiByB6I0wuI4eEogxDSUuHnQnGzn2j8EDSGSwbWzVo4N
+         DRGqW2GyXR7MBy1+HhMgRZQ/cdRGjRjPyJXMcQP/8FMlW6DdO2GcYc6W828tQKtwA2
+         uZ4GAUJyzroWciNh3lwdWITG36QVkhRsqbgEDhVA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 15/43] chtls: Fix chtls resources release sequence
+        stable@vger.kernel.org, Jian Cai <jiancai@google.com>,
+        =?UTF-8?q?F=C4=81ng-ru=C3=AC=20S=C3=B2ng?= <maskray@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Luis Lozano <llozano@google.com>,
+        Manoj Gupta <manojgupta@google.com>,
+        linux-arch@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH 4.14 08/28] vmlinux.lds.h: Add PGO and AutoFDO input sections
 Date:   Fri, 15 Jan 2021 13:27:45 +0100
-Message-Id: <20210115121957.784400767@linuxfoundation.org>
+Message-Id: <20210115121957.158347707@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
-References: <20210115121957.037407908@linuxfoundation.org>
+In-Reply-To: <20210115121956.731354372@linuxfoundation.org>
+References: <20210115121956.731354372@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,61 +46,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ayush Sawal <ayush.sawal@chelsio.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-[ Upstream commit 15ef6b0e30b354253e2c10b3836bc59767eb162b ]
+commit eff8728fe69880d3f7983bec3fb6cea4c306261f upstream.
 
-CPL_ABORT_RPL is sent after releasing the resources by calling
-chtls_release_resources(sk); and chtls_conn_done(sk);
-eventually causing kernel panic. Fixing it by calling release
-in appropriate order.
+Basically, consider .text.{hot|unlikely|unknown}.* part of .text, too.
 
-Fixes: cc35c88ae4db ("crypto : chtls - CPL handler definition")
-Signed-off-by: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
-Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+When compiling with profiling information (collected via PGO
+instrumentations or AutoFDO sampling), Clang will separate code into
+.text.hot, .text.unlikely, or .text.unknown sections based on profiling
+information. After D79600 (clang-11), these sections will have a
+trailing `.` suffix, ie.  .text.hot., .text.unlikely., .text.unknown..
+
+When using -ffunction-sections together with profiling infomation,
+either explicitly (FGKASLR) or implicitly (LTO), code may be placed in
+sections following the convention:
+.text.hot.<foo>, .text.unlikely.<bar>, .text.unknown.<baz>
+where <foo>, <bar>, and <baz> are functions.  (This produces one section
+per function; we generally try to merge these all back via linker script
+so that we don't have 50k sections).
+
+For the above cases, we need to teach our linker scripts that such
+sections might exist and that we'd explicitly like them grouped
+together, otherwise we can wind up with code outside of the
+_stext/_etext boundaries that might not be mapped properly for some
+architectures, resulting in boot failures.
+
+If the linker script is not told about possible input sections, then
+where the section is placed as output is a heuristic-laiden mess that's
+non-portable between linkers (ie. BFD and LLD), and has resulted in many
+hard to debug bugs.  Kees Cook is working on cleaning this up by adding
+--orphan-handling=warn linker flag used in ARCH=powerpc to additional
+architectures. In the case of linker scripts, borrowing from the Zen of
+Python: explicit is better than implicit.
+
+Also, ld.bfd's internal linker script considers .text.hot AND
+.text.hot.* to be part of .text, as well as .text.unlikely and
+.text.unlikely.*. I didn't see support for .text.unknown.*, and didn't
+see Clang producing such code in our kernel builds, but I see code in
+LLVM that can produce such section names if profiling information is
+missing. That may point to a larger issue with generating or collecting
+profiles, but I would much rather be safe and explicit than have to
+debug yet another issue related to orphan section placement.
+
+Reported-by: Jian Cai <jiancai@google.com>
+Suggested-by: Fāng-ruì Sòng <maskray@google.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Tested-by: Luis Lozano <llozano@google.com>
+Tested-by: Manoj Gupta <manojgupta@google.com>
+Acked-by: Kees Cook <keescook@chromium.org>
+Cc: linux-arch@vger.kernel.org
+Cc: stable@vger.kernel.org
+Link: https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff;h=add44f8d5c5c05e08b11e033127a744d61c26aee
+Link: https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff;h=1de778ed23ce7492c523d5850c6c6dbb34152655
+Link: https://reviews.llvm.org/D79600
+Link: https://bugs.chromium.org/p/chromium/issues/detail?id=1084760
+Link: https://lore.kernel.org/r/20200821194310.3089815-7-keescook@chromium.org
+
+Debugged-by: Luis Lozano <llozano@google.com>
+[nc: Resolve small conflict due to lack of NOINSTR_TEXT]
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/crypto/chelsio/chtls/chtls_cm.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ include/asm-generic/vmlinux.lds.h |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/crypto/chelsio/chtls/chtls_cm.c
-+++ b/drivers/crypto/chelsio/chtls/chtls_cm.c
-@@ -1884,9 +1884,9 @@ static void bl_abort_syn_rcv(struct sock
- 	queue = csk->txq_idx;
- 
- 	skb->sk	= NULL;
--	do_abort_syn_rcv(child, lsk);
- 	chtls_send_abort_rpl(child, skb, BLOG_SKB_CB(skb)->cdev,
- 			     CPL_ABORT_NO_RST, queue);
-+	do_abort_syn_rcv(child, lsk);
- }
- 
- static int abort_syn_rcv(struct sock *sk, struct sk_buff *skb)
-@@ -1916,8 +1916,8 @@ static int abort_syn_rcv(struct sock *sk
- 	if (!sock_owned_by_user(psk)) {
- 		int queue = csk->txq_idx;
- 
--		do_abort_syn_rcv(sk, psk);
- 		chtls_send_abort_rpl(sk, skb, cdev, CPL_ABORT_NO_RST, queue);
-+		do_abort_syn_rcv(sk, psk);
- 	} else {
- 		skb->sk = sk;
- 		BLOG_SKB_CB(skb)->backlog_rcv = bl_abort_syn_rcv;
-@@ -1960,12 +1960,11 @@ static void chtls_abort_req_rss(struct s
- 
- 		if (sk->sk_state == TCP_SYN_RECV && !abort_syn_rcv(sk, skb))
- 			return;
--
--		chtls_release_resources(sk);
--		chtls_conn_done(sk);
- 	}
- 
- 	chtls_send_abort_rpl(sk, skb, csk->cdev, rst_status, queue);
-+	chtls_release_resources(sk);
-+	chtls_conn_done(sk);
- }
- 
- static void chtls_abort_rpl_rss(struct sock *sk, struct sk_buff *skb)
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -459,7 +459,10 @@
+  */
+ #define TEXT_TEXT							\
+ 		ALIGN_FUNCTION();					\
+-		*(.text.hot TEXT_MAIN .text.fixup .text.unlikely)	\
++		*(.text.hot .text.hot.*)				\
++		*(TEXT_MAIN .text.fixup)				\
++		*(.text.unlikely .text.unlikely.*)			\
++		*(.text.unknown .text.unknown.*)			\
+ 		*(.text..refcount)					\
+ 		*(.ref.text)						\
+ 	MEM_KEEP(init.text)						\
 
 
