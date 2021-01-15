@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A52F2F7B59
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F0A2F7B6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:02:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388035AbhAONBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:01:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40006 "EHLO mail.kernel.org"
+        id S1731614AbhAOMcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:32:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733058AbhAOMdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:33:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF87622473;
-        Fri, 15 Jan 2021 12:32:26 +0000 (UTC)
+        id S1733010AbhAOMco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:32:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 055432336F;
+        Fri, 15 Jan 2021 12:32:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713947;
-        bh=0D2WU/KUDq2zpa4vQ6R8y1QVPUQDtfr46/x/T/HDcW8=;
+        s=korg; t=1610713949;
+        bh=6gvE6nzPjcWnoQZJOaFtUVrfogYLaWHJndWXDwnj+P8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XiKHHE+AjQ+EfAgIgpXdO9tV0c/tjVEK/j8FIoIF0duhSvhKRuybGpllWveClAWj7
-         dv60U90P+yYd2LKTW6exm6Lbmgm9CJDMq4otfhXaAvtPxTd+me+60V/1UBvz3lXdzA
-         MuuHJ013YvhKDCBkwJmtCjIjqa9zLxHc+tYf99uY=
+        b=FUaRu6XbqvOUDTQhyd1bBPWFz+U80gQ+y8AbNd7R/PDSyg1UWglVjrxi9AEa5HiJ5
+         4ipvwK0J/6v9ceQIiO0IjnjzYXNQJeRPo6zLTXeniYKmeMpK7ZUIG4DLDnfZtezFX9
+         7I0x5JN/Fj+FgxXvn0+fgNLU1Tw6OnCjad2QJaPQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Sean Nyekjaer <sean@geanix.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.19 20/43] spi: pxa2xx: Fix use-after-free on unbind
-Date:   Fri, 15 Jan 2021 13:27:50 +0100
-Message-Id: <20210115121958.030492373@linuxfoundation.org>
+Subject: [PATCH 4.19 21/43] iio: imu: st_lsm6dsx: flip irq return logic
+Date:   Fri, 15 Jan 2021 13:27:51 +0100
+Message-Id: <20210115121958.071514885@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
 References: <20210115121957.037407908@linuxfoundation.org>
@@ -40,49 +40,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Sean Nyekjaer <sean@geanix.com>
 
-commit 5626308bb94d9f930aa5f7c77327df4c6daa7759 upstream
+commit ec76d918f23034f9f662539ca9c64e2ae3ba9fba upstream
 
-pxa2xx_spi_remove() accesses the driver's private data after calling
-spi_unregister_controller() even though that function releases the last
-reference on the spi_controller and thereby frees the private data.
+No need for using reverse logic in the irq return,
+fix this by flip things around.
 
-Fix by switching over to the new devm_spi_alloc_master/slave() helper
-which keeps the private data accessible until the driver has unbound.
-
-Fixes: 32e5b57232c0 ("spi: pxa2xx: Fix controller unregister order")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v2.6.17+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v2.6.17+: 32e5b57232c0: spi: pxa2xx: Fix controller unregister order
-Cc: <stable@vger.kernel.org> # v2.6.17+
-Link: https://lore.kernel.org/r/5764b04d4a6e43069ebb7808f64c2f774ac6f193.1607286887.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-[sudip: adjust context]
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-pxa2xx.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/spi/spi-pxa2xx.c
-+++ b/drivers/spi/spi-pxa2xx.c
-@@ -1572,7 +1572,7 @@ static int pxa2xx_spi_probe(struct platf
- 		return -ENODEV;
- 	}
+--- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c
++++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c
+@@ -481,7 +481,7 @@ static irqreturn_t st_lsm6dsx_handler_th
+ 	count = st_lsm6dsx_read_fifo(hw);
+ 	mutex_unlock(&hw->fifo_lock);
  
--	master = spi_alloc_master(dev, sizeof(struct driver_data));
-+	master = devm_spi_alloc_master(dev, sizeof(*drv_data));
- 	if (!master) {
- 		dev_err(&pdev->dev, "cannot alloc spi_master\n");
- 		pxa_ssp_free(ssp);
-@@ -1759,7 +1759,6 @@ out_error_dma_irq_alloc:
- 	free_irq(ssp->irq, drv_data);
- 
- out_error_master_alloc:
--	spi_controller_put(master);
- 	pxa_ssp_free(ssp);
- 	return status;
+-	return !count ? IRQ_NONE : IRQ_HANDLED;
++	return count ? IRQ_HANDLED : IRQ_NONE;
  }
+ 
+ static int st_lsm6dsx_buffer_preenable(struct iio_dev *iio_dev)
 
 
