@@ -2,150 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23CE72F85C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC7A2F85C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:55:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387929AbhAOTxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 14:53:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387598AbhAOTxH (ORCPT
+        id S2388254AbhAOTyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 14:54:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27949 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729079AbhAOTyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 14:53:07 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BADC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 11:52:26 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id a11so8294112qto.16
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 11:52:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=hIBuX1lFcyKuQyrZ5+wCeMHBsoAjyJ/AkMUpbHJsyDA=;
-        b=vPUz2aDCW5pdZVD7KqFIIagVxy491m4FJi/LuKcocOVjg44wS5kI5kgKz+dwBnL9JX
-         uQxW52bGaLwjEJSLkfQYdHoM0/fK993FQ1CrKsVEIbiIld0DLatHwyP7MY6kFzbx6uGl
-         BZLmhYS6LI+DlxuGghqj27f7CSqb9ASt00odH4NLFhL1U6zC/AbLRXdhseUFdPmEXTNV
-         alCiSATBPsV8olT+/MGL4j9aEt9lP7trzOPDIpbESuqVlHPs3jVxVji3krL5TUKREIUX
-         pjmgn5iquINuJMzrnza6CT7/yyDSMzcyiU+75JNykyWO8iZPUWti3aNULASoj0vrU0Bu
-         Vktg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=hIBuX1lFcyKuQyrZ5+wCeMHBsoAjyJ/AkMUpbHJsyDA=;
-        b=X2WkbQvjKquve4CL7XbC1mTDYWnRev4Q5YzfhLedtVD4DGn7LstmOneofcoitDol0e
-         BTDw6YFPCg/s4PpVmKSuSUcZP0TMUpU5feRNJQkTC9OEcTk4TkkvF2rO1Oime/QxStxQ
-         Y2j8/FA0BREPLKmwfq0eTYMeKNmDy5kcAIQM57cvMCiw+A5iT9GglUp7JXPxUFourbv0
-         J5zFM8E1I5Xc0d9UEo5iPhD/753KDxfw1uflOQvgF+TiXHvCDmfoFiEpc24dM7qV7MUo
-         92pupdz2tgeoVArFhCPzw19h64LEUfAmVkHxFsVuea1ZyIKfofljRsVZneqydD8Q5iKH
-         c0tA==
-X-Gm-Message-State: AOAM532JY7bXocJC5dAxAuf50DyWfA7w6oR/U8pVqlXztmwNBlA9a4qd
-        oV6Lws74qHnpGk9vgM2YlAeYG3m/tL4Wwe7BS5KmQ/3Alqsh0za8g3ePawmh/xHTrR3dZ0p3nbP
-        2c8dnDtpTErD+urnahRIo9RUOtLq8jIgvtYoPk9Y4mhdd2KYEaKZI5NnAyrKshW6RWORPtiz8
-X-Google-Smtp-Source: ABdhPJxp/LuMeuiKxR5HxdBrN9uDMj+wwFPRaHYDOEyL+aRqs7ah2kIjiukl7fnv05x8XZ9fknjvXwplSime
-Sender: "maskray via sendgmr" <maskray@maskray1.svl.corp.google.com>
-X-Received: from maskray1.svl.corp.google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
- (user=maskray job=sendgmr) by 2002:ad4:54a3:: with SMTP id
- r3mr13796004qvy.26.1610740345862; Fri, 15 Jan 2021 11:52:25 -0800 (PST)
-Date:   Fri, 15 Jan 2021 11:52:22 -0800
-In-Reply-To: <20210114211840.GA5617@linux-8ccs>
-Message-Id: <20210115195222.3453262-1-maskray@google.com>
-Mime-Version: 1.0
-References: <20210114211840.GA5617@linux-8ccs>
-X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
-Subject: [PATCH v3] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
- undefined symbols
-From:   Fangrui Song <maskray@google.com>
-To:     linux-kernel@vger.kernel.org, Jessica Yu <jeyu@kernel.org>
-Cc:     clang-built-linux@googlegroups.com,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Fangrui Song <maskray@google.com>,
-        Marco Elver <elver@google.com>,
+        Fri, 15 Jan 2021 14:54:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610740355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JYUX2O2Url/4uImMaTVPMyONJrBt2Lv/2+C4E8uQ6Pw=;
+        b=CAlbNLEe38GjFAnbCaf9YvbkyOK8T1Mko+EpJjQXX2mR/tZOEgkZqf7A7Ux1C35v7x9kwq
+        eHohXULQ04vIm8OqO+U0wwUH2Sg8YqgMwwMFTPhoLhSXP3z/yiMjJ1Nme+dq0F6gUSl+BP
+        YIQkAidySSrjfNC1A0EQIXNY9OIcGDg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-gXpwSsl0Mh2Do2FIQbWDKQ-1; Fri, 15 Jan 2021 14:52:31 -0500
+X-MC-Unique: gXpwSsl0Mh2Do2FIQbWDKQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 80050107ACF7;
+        Fri, 15 Jan 2021 19:52:29 +0000 (UTC)
+Received: from treble (ovpn-116-102.rdu2.redhat.com [10.10.116.102])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9745D5C675;
+        Fri, 15 Jan 2021 19:52:28 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 13:52:26 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Miroslav Benes <mbenes@suse.cz>
+Subject: Re: [PATCH 00/21] objtool: vmlinux.o and CLANG LTO support
+Message-ID: <20210115195226.uiclol5lji3tuxgx@treble>
+References: <cover.1610652862.git.jpoimboe@redhat.com>
+ <CABCJKudgPc5FFAD5BKX2dK7BJYs_Dpa_JRFgKgGh8b2Xs6khUA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABCJKudgPc5FFAD5BKX2dK7BJYs_Dpa_JRFgKgGh8b2Xs6khUA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clang-12 -fno-pic (since
-https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6)
-can emit `call __stack_chk_fail@PLT` instead of `call __stack_chk_fail`
-on x86.  The two forms should have identical behaviors on x86-64 but the
-former causes GNU as<2.37 to produce an unreferenced undefined symbol
-_GLOBAL_OFFSET_TABLE_.
+On Thu, Jan 14, 2021 at 04:41:28PM -0800, Sami Tolvanen wrote:
+> Hi Josh,
+> 
+> On Thu, Jan 14, 2021 at 11:40 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >
+> > Add support for proper vmlinux.o validation, which will be needed for
+> > Sami's upcoming x86 LTO set.  (And vmlinux validation is the future for
+> > objtool anyway, for other reasons.)
+> >
+> > This isn't 100% done -- most notably, crypto still needs to be supported
+> > -- but I think this gets us most of the way there.
+> >
+> > This can also be found at
+> >
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git objtool-vmlinux
+> >
+> > And for more testing it can be combined with Sami's x86 LTO patches:
+> >
+> >   https://github.com/samitolvanen/linux clang-lto
+> 
+> Thank you for sending these! I applied this series on top of the
+> clang-lto tree and built allyesconfig with LTO_CLANG enabled and the
+> following crypto options disabled:
+> 
+> CRYPTO_AES_NI_INTEL
+> CRYPTO_CAMELLIA_AESNI_AVX2_X86_64
+> CRYPTO_SHA1_SSSE3
+> CRYPTO_SHA256_SSSE3
+> CRYPTO_SHA512_SSSE3
+> CRYPTO_CRC32C_INTEL
+> 
+> I can confirm that all the warnings I previously saw are now fixed,
+> but I'm seeing a few new ones:
+> 
+> vmlinux.o: warning: objtool: balance_leaf_when_delete()+0x17d4: stack
+> state mismatch: cfa1=7+192 cfa2=7+176
+> vmlinux.o: warning: objtool: internal_move_pointers_items()+0x9f7:
+> stack state mismatch: cfa1=7+160 cfa2=7+176
+> vmlinux.o: warning: objtool: strncpy_from_user()+0x181: call to
+> do_strncpy_from_user() with UACCESS enabled
+> vmlinux.o: warning: objtool: strnlen_user()+0x12b: call to
+> do_strnlen_user() with UACCESS enabled
+> vmlinux.o: warning: objtool: i915_gem_execbuffer2_ioctl()+0x390: call
+> to __ubsan_handle_negate_overflow() with UACCESS enabled
+> vmlinux.o: warning: objtool: .text.snd_trident_free_voice: unexpected
+> end of section
+> 
+> I haven't had a chance to take a closer look yet, but some of these
+> are probably related to
+> https://github.com/ClangBuiltLinux/linux/issues/1192. However, I can
+> reproduce these also with ToT Clang, not just with Clang 11.
 
-(On x86-32, there is an R_386_PC32 vs R_386_PLT32 difference but the
-linker behavior is identical as far as Linux kernel is concerned.)
+Thanks, I'm able to reproduce these.  Will take a look.
 
-Simply ignore _GLOBAL_OFFSET_TABLE_ for now, like what
-scripts/mod/modpost.c:ignore_undef_symbol does. This also fixes the
-problem for gcc/clang -fpie and -fpic, which may emit `call foo@PLT` for
-external function calls on x86.
-
-Note: ld -z defs and dynamic loaders do not error for unreferenced
-undefined symbols so the module loader is reading too much.  If we ever
-need to ignore more symbols, the code should be refactored to ignore
-unreferenced symbols.
-
-Reported-by: Marco Elver <elver@google.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1250
-Signed-off-by: Fangrui Song <maskray@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Marco Elver <elver@google.com>
-Cc: <stable@vger.kernel.org>
-
----
-Changes in v2:
-* Fix Marco's email address
-* Add a function ignore_undef_symbol similar to scripts/mod/modpost.c:ignore_undef_symbol
----
-Changes in v3:
-* Fix the style of a multi-line comment.
-* Use static bool ignore_undef_symbol.
----
- kernel/module.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/module.c b/kernel/module.c
-index 4bf30e4b3eaa..805c49d1b86d 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2348,6 +2348,21 @@ static int verify_exported_symbols(struct module *mod)
- 	return 0;
- }
- 
-+static bool ignore_undef_symbol(Elf_Half emachine, const char *name)
-+{
-+	/*
-+	 * On x86, PIC code and Clang non-PIC code may have call foo@PLT. GNU as
-+	 * before 2.37 produces an unreferenced _GLOBAL_OFFSET_TABLE_ on x86-64.
-+	 * i386 has a similar problem but may not deserve a fix.
-+	 *
-+	 * If we ever have to ignore many symbols, consider refactoring the code to
-+	 * only warn if referenced by a relocation.
-+	 */
-+	if (emachine == EM_386 || emachine == EM_X86_64)
-+		return !strcmp(name, "_GLOBAL_OFFSET_TABLE_");
-+	return false;
-+}
-+
- /* Change all symbols so that st_value encodes the pointer directly. */
- static int simplify_symbols(struct module *mod, const struct load_info *info)
- {
-@@ -2395,8 +2410,10 @@ static int simplify_symbols(struct module *mod, const struct load_info *info)
- 				break;
- 			}
- 
--			/* Ok if weak.  */
--			if (!ksym && ELF_ST_BIND(sym[i].st_info) == STB_WEAK)
-+			/* Ok if weak or ignored.  */
-+			if (!ksym &&
-+			    (ELF_ST_BIND(sym[i].st_info) == STB_WEAK ||
-+			     ignore_undef_symbol(info->hdr->e_machine, name)))
- 				break;
- 
- 			ret = PTR_ERR(ksym) ?: -ENOENT;
 -- 
-2.30.0.296.g2bfb1c46d8-goog
+Josh
 
