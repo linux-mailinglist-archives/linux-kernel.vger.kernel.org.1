@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4212F77E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4752F77E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727966AbhAOLoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:44:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
+        id S1728150AbhAOLqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:46:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726983AbhAOLoU (ORCPT
+        with ESMTP id S1726137AbhAOLqa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:44:20 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3055AC061757;
-        Fri, 15 Jan 2021 03:43:40 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id r12so1494148ejb.9;
-        Fri, 15 Jan 2021 03:43:40 -0800 (PST)
+        Fri, 15 Jan 2021 06:46:30 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30161C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 03:45:50 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id t16so7376923qvk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 03:45:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=/9sksIUuZatO+aX8p4iLJ2mKZetuSFmDz0PF+YiOHOI=;
-        b=YEJANZ1/9r+EPbKaQQTb3YhWamtM4DH9to+g8PWbIoYfCC2B9io/PF88pVRzv8fh61
-         Wapvntn5ABjZ4BADq3kEhzYrfLziVhaprSzQD1mSf1hjsxKCDAxUsCWMtzTpTyJwZ/Ql
-         2OKtFYFS//RkJM5MTRb5VHYlKtLi9PAgP2o50L/4C4rwV7bn6D8U0duHKDpPSdNh6r8E
-         fybYpMd8V3cr0MKirGnUYPOuP/QV5wYCu0q7b9Pr2IZ35zwJ6tnVquuJfw/sbV7u9O9h
-         oxFe7U6FfWf/79W+zxcUMZshS+fHCd56UJ7c8Y63FqlccwNeRBJ3ePAYCGUunR7p5scq
-         zUsg==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=A1L5LiBXauTNSiThdiKpn8PiuSiEsdxg7IXuLjvuJiE=;
+        b=quv2i1zkZlwy1Dp26TdFDlOdkrMzdCjPwdHofP6/kJ8sMM2YlaOx2CUK+C+xMaeCcC
+         wiYqUlER9Y68k4CGt/pkNbnTPZXwJgl2hgUIw186/H7EkDLChdsSYp7hntFw2G2bBwj6
+         HsbKZHCLS94PSlGncDsBfIm5UMR66O9MSlyJGCzIWh3g/MUjuL7aQlG2HuOYLMEdRaVY
+         jnsXXd1Lu3RKEwzbNeQAz4JpIRigk4R00jCj7TS3SheFiAe3c7E3IuXkBf5lZ+xsuj8+
+         USW7iakliYd2dlHltzTIbqAJj5pNmWuRZ/FZnUQG5VdnzWI18o/BJS/RrAxFTXTAWJuH
+         dnqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=/9sksIUuZatO+aX8p4iLJ2mKZetuSFmDz0PF+YiOHOI=;
-        b=gglOrfA+8I24DrHzvEuG6tbrJE/4edqiRfnuKV92TRYxAVfDCJwn8cTirP1TFn82y6
-         xmRuQByCZw5VmlbxcI18DK2Xip3ONmUUoh7xGPA/FU8a3E84lGZ9nwA5QeySGv8YTQtr
-         3uRKeEu9le1gJ3e2vPqMvEAS1CeEdFvLO+VWCD4VDo5a3dsgf3AwXeZllGfdE+JRgqtw
-         1t56gfFmSJrVfIcXkaRHSPfGIAm/OJEKVBVfyY+tOtkDeKGiuUsp4ricc3DgUF7UiMNn
-         +PWh3LlNTtdNIejxTE64Mf8G50NJzEIG1mFvMAj/WO5PA9jhkhB/v8jDdnzHl/zUmz5W
-         cy/g==
-X-Gm-Message-State: AOAM533Oyl9Qcbs11KD2TLq1soIUl5OwbRm346SE8adn64O0cIAiC52j
-        DfudEo7spc8lxxBee0Zn/k8=
-X-Google-Smtp-Source: ABdhPJwET0Z8ZFGqMNHwdHfY36RdnFX6xRQgu56Fz+Cxj0NantVxngAd4EdKk1sELCE/DGiWkoU/OQ==
-X-Received: by 2002:a17:906:48c:: with SMTP id f12mr3397945eja.431.1610711018663;
-        Fri, 15 Jan 2021 03:43:38 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d39:a000:7c85:8e80:b862:a8bf])
-        by smtp.gmail.com with ESMTPSA id a2sm3184105ejt.46.2021.01.15.03.43.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 03:43:37 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        intel-gfx@lists.freedesktop.org
-Cc:     David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] drm/dp_helper: tweak kerneldoc to address warning
-Date:   Fri, 15 Jan 2021 12:43:29 +0100
-Message-Id: <20210115114329.27152-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=A1L5LiBXauTNSiThdiKpn8PiuSiEsdxg7IXuLjvuJiE=;
+        b=gCN9udQ2eZ0UHNAM09eub5xIKJ4VK0+knVS3fQndw5Qg7hlTwcVzonFIVvhcmW+XTd
+         ergY6GnlLfTBmw5zyQg2vgzXRoWNPZmjPC0dvzvUBS08yzKgkdOCK9yi+q0EqLyCnReU
+         c1VOqFUaLj6nPmbUMQeGhPARfsJkTiYcbEqVNCsNC8V/92bj9wvMgl2EXEhZt7GclsyO
+         1MSVNStJkGDZeq7/dnimBqKhqsIUfWEFFoIWgnEk+oDDWeWR23/ebHQ+kTYDIst9rQzE
+         oF2St6rrdRlrJsZHPGJjSXXBVj5VsZ2KDFDwAc+vS3/CB8iHFG5NeoLUblwffZiQSMaG
+         sDCw==
+X-Gm-Message-State: AOAM530yDiylupjO5Fvz5EYJbcZsbSvxcSBTys6lpcTwnuO36or1mhR4
+        A4lxkxEECAuwBN4stL5hwUYbfCv+r5S7
+X-Google-Smtp-Source: ABdhPJzmRzMTYsK6JufS+gg1o2UjoLxakUX7PNu5dhXrEwOvB0uPXPmlthwFWXtHETHU1JpMEW26vrHLVvFe
+Sender: "qperret via sendgmr" <qperret@r2d2-qp.c.googlers.com>
+X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1652])
+ (user=qperret job=sendgmr) by 2002:a0c:99c8:: with SMTP id
+ y8mr11358708qve.35.1610711148511; Fri, 15 Jan 2021 03:45:48 -0800 (PST)
+Date:   Fri, 15 Jan 2021 11:45:42 +0000
+Message-Id: <20210115114544.1830068-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH 0/2] fdt: A couple of no-map fixes
+From:   Quentin Perret <qperret@google.com>
+To:     robh+dt@kernel.org, frowand.list@gmail.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        drinkcat@chromium.org, swboyd@chromium.org, f.fainelli@gmail.com,
+        karahmed@amazon.de, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 07c9b8634fb6 ("drm/dp_helper: Add helpers to configure PCONs
-RGB-YCbCr Conversion") introduces a warning with make htmldocs in
-./drivers/gpu/drm/drm_dp_helper.c:965 for
-drm_dp_downstream_rgb_to_ycbcr_conversion():
+In the context of a KVM/arm64 thread [1], it became apparent that the
+difference in behaviour of EFI and DT with respect to no-map regions was
+something worth fixing.
 
-  warning: Excess function parameter 'colorspc' description
-  warning: Function parameter or member 'color_spc' not described
+Rob pointed out in that thread that a couple of patches in this area had
+been sent but still needed to be integrated together, which is basically
+what this series attempts to do.
 
-Tweak the kerneldoc for drm_dp_downstream_rgb_to_ycbcr_conversion().
+ - Patch 01 is a generic fix that should make sense on its own;
 
-Fixes: 07c9b8634fb6 ("drm/dp_helper: Add helpers to configure PCONs RGB-YCbCr Conversion")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20210115
+ - Patch 02 allows the kernel to have a saner behaviour with a broken DT.
+   This one had a small rebase conflict (caused by patch 01). I tested
+   it in qemu and everything is looking good, the error message shows up
+   in dmesg when it should.
 
-Jani, please pick this minor doc warning fixup.
+Thanks,
+Quentin
 
- drivers/gpu/drm/drm_dp_helper.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+[1] https://lore.kernel.org/kvmarm/20210108121524.656872-1-qperret@google.com/
 
-diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-index 3ecde451f523..d60e94ac6fdd 100644
---- a/drivers/gpu/drm/drm_dp_helper.c
-+++ b/drivers/gpu/drm/drm_dp_helper.c
-@@ -954,7 +954,7 @@ EXPORT_SYMBOL(drm_dp_downstream_444_to_420_conversion);
-  *                                               RGB->YCbCr conversion capability
-  * @dpcd: DisplayPort configuration data
-  * @port_cap: downstream facing port capabilities
-- * @colorspc: Colorspace for which conversion cap is sought
-+ * @color_spc: Colorspace for which conversion cap is sought
-  *
-  * Returns: whether the downstream facing port can convert RGB->YCbCr for a given
-  * colorspace.
-@@ -3134,7 +3134,7 @@ int drm_dp_pcon_pps_override_param(struct drm_dp_aux *aux, u8 pps_param[6])
- }
- EXPORT_SYMBOL(drm_dp_pcon_pps_override_param);
- 
--/*
-+/**
-  * drm_dp_pcon_convert_rgb_to_ycbcr() - Configure the PCon to convert RGB to Ycbcr
-  * @aux: displayPort AUX channel
-  * @color_spc: Color-space/s for which conversion is to be enabled, 0 for disable.
+KarimAllah Ahmed (1):
+  fdt: Properly handle "no-map" field in the memory region
+
+Nicolas Boichat (1):
+  of/fdt: Make sure no-map does not remove already reserved regions
+
+ drivers/of/fdt.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
 -- 
-2.17.1
+2.30.0.284.gd98b1dd5eaa7-goog
 
