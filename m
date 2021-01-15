@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FAF2F791A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8932D2F7AB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732605AbhAOMbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:31:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36414 "EHLO mail.kernel.org"
+        id S2387772AbhAOMxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:53:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732527AbhAOMbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:31:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A035D23339;
-        Fri, 15 Jan 2021 12:30:45 +0000 (UTC)
+        id S2387736AbhAOMfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:35:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BED6D2371F;
+        Fri, 15 Jan 2021 12:35:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713846;
-        bh=fwfK3Cjw5KQlGYuRSfYC+n9P4IGZjq4m/e0VWEnXWlo=;
+        s=korg; t=1610714103;
+        bh=l5VtkXtMu9krPHv6MBjrU/BJhCHUV69z+qQ4LPpChyE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CNnLec2xbYZKTqwy8L9EXiPO3nSPzxQGhjnXBrBMckvzpuH+FdD+D/WHEjj1X0WF7
-         +mDJh7pEFdc+iMAgTp2vprXHVxxxNSESwu0yBthyLjY1LMyz8G1OxKS6N7dZu/KrW9
-         5k4w0aWeKZZANV7tcoyIJlXcTY09EbKAudf+cT4A=
+        b=me35RYdH/Ncg0jl0OP3e3+oetykIkdkdhhTd6EdTj36JHnShJ+sb2Ox/QKbAoFugP
+         +CpJ+1R9CpwtT/xubUTVbTdZ1Q/BbjiNNK8/SS69x88HR2BEyWIJS+ROGdc5pgF5s7
+         tSsIbx6qYFPPX7+aYg96uVaALQ6X5KkbWqJVQX9M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 07/25] powerpc: Fix incorrect stw{, ux, u, x} instructions in __set_pte_at
-Date:   Fri, 15 Jan 2021 13:27:38 +0100
-Message-Id: <20210115121957.046695393@linuxfoundation.org>
+        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 17/62] s390/qeth: fix L2 header access in qeth_l3_osa_features_check()
+Date:   Fri, 15 Jan 2021 13:27:39 +0100
+Message-Id: <20210115121959.239459241@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
-References: <20210115121956.679956165@linuxfoundation.org>
+In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
+References: <20210115121958.391610178@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,62 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-[ Upstream commit d85be8a49e733dcd23674aa6202870d54bf5600d ]
+[ Upstream commit f9c4845385c8f6631ebd5dddfb019ea7a285fba4 ]
 
-The placeholder for instruction selection should use the second
-argument's operand, which is %1, not %0. This could generate incorrect
-assembly code if the memory addressing of operand %0 is a different
-form from that of operand %1.
+ip_finish_output_gso() may call .ndo_features_check() even before the
+skb has a L2 header. This conflicts with qeth_get_ip_version()'s attempt
+to inspect the L2 header via vlan_eth_hdr().
 
-Also remove the %Un placeholder because having %Un placeholders
-for two operands which are based on the same local var (ptep) doesn't
-make much sense. By the way, it doesn't change the current behaviour
-because "<>" constraint is missing for the associated "=m".
+Switch to vlan_get_protocol(), as already used further down in the
+common qeth_features_check() path.
 
-[chleroy: revised commit log iaw segher's comments and removed %U0]
-
-Fixes: 9bf2b5cdc5fe ("powerpc: Fixes for CONFIG_PTE_64BIT for SMP support")
-Cc: <stable@vger.kernel.org> # v2.6.28+
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Acked-by: Segher Boessenkool <segher@kernel.crashing.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/96354bd77977a6a933fe9020da57629007fdb920.1603358942.git.christophe.leroy@csgroup.eu
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: f13ade199391 ("s390/qeth: run non-offload L3 traffic over common xmit path")
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/include/asm/book3s/32/pgtable.h |    4 ++--
- arch/powerpc/include/asm/nohash/pgtable.h    |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/s390/net/qeth_l3_main.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/powerpc/include/asm/book3s/32/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
-@@ -411,9 +411,9 @@ static inline void __set_pte_at(struct m
- 	if (pte_val(*ptep) & _PAGE_HASHPTE)
- 		flush_hash_entry(mm, ptep, addr);
- 	__asm__ __volatile__("\
--		stw%U0%X0 %2,%0\n\
-+		stw%X0 %2,%0\n\
- 		eieio\n\
--		stw%U0%X0 %L2,%1"
-+		stw%X1 %L2,%1"
- 	: "=m" (*ptep), "=m" (*((unsigned char *)ptep+4))
- 	: "r" (pte) : "memory");
- 
---- a/arch/powerpc/include/asm/nohash/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/pgtable.h
-@@ -155,9 +155,9 @@ static inline void __set_pte_at(struct m
- 		flush_hash_entry(mm, ptep, addr);
- #endif
- 	__asm__ __volatile__("\
--		stw%U0%X0 %2,%0\n\
-+		stw%X0 %2,%0\n\
- 		eieio\n\
--		stw%U0%X0 %L2,%1"
-+		stw%X1 %L2,%1"
- 	: "=m" (*ptep), "=m" (*((unsigned char *)ptep+4))
- 	: "r" (pte) : "memory");
- 
+--- a/drivers/s390/net/qeth_l3_main.c
++++ b/drivers/s390/net/qeth_l3_main.c
+@@ -2114,7 +2114,7 @@ static netdev_features_t qeth_l3_osa_fea
+ 						    struct net_device *dev,
+ 						    netdev_features_t features)
+ {
+-	if (qeth_get_ip_version(skb) != 4)
++	if (vlan_get_protocol(skb) != htons(ETH_P_IP))
+ 		features &= ~NETIF_F_HW_VLAN_CTAG_TX;
+ 	return qeth_features_check(skb, dev, features);
+ }
 
 
