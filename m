@@ -2,114 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839402F7F4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BD82F7F46
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732815AbhAOPSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:18:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45060 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732208AbhAOPSK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:18:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610723804;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gk/kn7jsUx99go9pXyOS699OdqvAXfBJlm34KUBZcPw=;
-        b=VLkL2LYdR++LS7AmMg57aPPcD2si41/DDZJJAUqsoElUk2IPcdul0fQt7pd2MY0rk4Lhj/
-        Yv4m8zQvUgUIszJRj/iUt6uFtXmGzXch0trLhP/TSh/G53TWJD0JyDMXDiB6Kc/C9SaJfR
-        dPCbw3k8Oi/VRvEP9Bw3B9XqORaYKAE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-228-e0qZgkjYP_idxDLrqEdSaA-1; Fri, 15 Jan 2021 10:16:40 -0500
-X-MC-Unique: e0qZgkjYP_idxDLrqEdSaA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DDD4A1005D44;
-        Fri, 15 Jan 2021 15:16:38 +0000 (UTC)
-Received: from treble (ovpn-116-102.rdu2.redhat.com [10.10.116.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CDF5D19C45;
-        Fri, 15 Jan 2021 15:16:34 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 09:16:32 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
-        live-patching@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v3] Documentation: livepatch: document reliable stacktrace
-Message-ID: <20210115151609.lqrl2yuy2zvrcm47@treble>
-References: <20210115142446.13880-1-broonie@kernel.org>
+        id S1732627AbhAOPRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:17:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726849AbhAOPRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 10:17:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6B1223884;
+        Fri, 15 Jan 2021 15:16:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610723789;
+        bh=H/e/KKTE+srWdTPVgF44EaHDnUGnWYaqJasgmyGLOKI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vFc2LuA4V74rwad12/XoPP1tq7P/1wQGs1O4QCPJKxtI6Q3bCBD6Z5MGJxdWMWnr5
+         1ZeieZmXhsj+w2vru2KCZQBnP7CYItoxJyqKAJnR7ryaRORyq8JnrtGKrwW7paztoJ
+         GHEonSt6G0cOapxx7h0D4eKgbCq0uOdEU7WD2uY2Hm1M02/4kaOUsdqm3Jjsr9fmv6
+         s0AYKRDKuw7+E/xQ540WOPfmDFubBnfJ6WEI4lhIKbR3+4z+oh7KVUVorTBAhITKyY
+         8GJtjFvYW5H6K7ChJmh5rhdfMmY4ngi/0C1CkZprgwfu5BKGQBDbIu2YUQ2b4E68Jy
+         x98H/yp796bJA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D43A040522; Fri, 15 Jan 2021 12:17:01 -0300 (-03)
+Date:   Fri, 15 Jan 2021 12:17:01 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joe Mario <jmario@redhat.com>, David Ahern <dsahern@gmail.com>,
+        Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
+        James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/11] perf c2c: Sort cacheline with all loads
+Message-ID: <20210115151701.GA412118@kernel.org>
+References: <20201213133850.10070-1-leo.yan@linaro.org>
+ <20210103225219.GA850408@krava>
+ <20210104020930.GA4897@leoy-ThinkPad-X240s>
+ <20210104093540.GA872376@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115142446.13880-1-broonie@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20210104093540.GA872376@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 02:24:46PM +0000, Mark Brown wrote:
-> From: Mark Rutland <mark.rutland@arm.com>
+Em Mon, Jan 04, 2021 at 10:35:40AM +0100, Jiri Olsa escreveu:
+> On Mon, Jan 04, 2021 at 10:09:38AM +0800, Leo Yan wrote:
 > 
-> Add documentation for reliable stacktrace. This is intended to describe
-> the semantics and to be an aid for implementing architecture support for
-> HAVE_RELIABLE_STACKTRACE.
+> SNIP
 > 
-> Unwinding is a subtle area, and architectures vary greatly in both
-> implementation and the set of concerns that affect them, so I've tried
-> to avoid making this too specific to any given architecture. I've used
-> examples from both x86_64 and arm64 to explain corner cases in more
-> detail, but I've tried to keep the descriptions sufficient for those who
-> are unfamiliar with the particular architecture.
+> > > > Leo Yan (11):
+> > > >   perf c2c: Add dimensions for total load hit
+> > > >   perf c2c: Add dimensions for load hit
+> > > >   perf c2c: Add dimensions for load miss
+> > > >   perf c2c: Rename for shared cache line stats
+> > > >   perf c2c: Refactor hist entry validation
+> > > >   perf c2c: Refactor display filter macro
+> > > >   perf c2c: Refactor node display macro
+> > > >   perf c2c: Refactor node header
+> > > >   perf c2c: Add local variables for output metrics
+> > > >   perf c2c: Sort on all cache hit for load operations
+> > > >   perf c2c: Update documentation for display option 'all'
+> > > > 
+> > > >  tools/perf/Documentation/perf-c2c.txt |  21 +-
+> > > >  tools/perf/builtin-c2c.c              | 548 ++++++++++++++++++++++----
+> > > >  2 files changed, 487 insertions(+), 82 deletions(-)
+> > > 
+> > > Joe might want to test it first, but it looks all good to me:
+> > > 
+> > > Acked-by: Jiri Olsa <jolsa@redhat.com>
+> > 
+> > Thanks for the review, Jiri.
+> > 
+> > Note, after testing with Arm SPE, we found the store operations don't
+> > contain the information for L1 cache hit or miss, this leads to there
+> > have no statistics for "st_l1hit" and "st_l1miss"; finally the single
+> > cache line view only can show the load samples and fails to show store
+> > opreations due to the empty statistics for "st_l1hit" and "st_l1miss".
+> > 
+> > This is related the hardware issue, after some discussion internally,
+> > so far cannot find a easy way to set memory flag for L1 cache hit or
+> > miss for store operations (more specific, set flags PERF_MEM_LVL_HIT or
+> > PERF_MEM_LVL_MISS for store's L1 cache accessing).
+> > 
+> > Given it is uncertain for this issue, please hold on for this patch
+> > series and I will resend if have any conclusion.
+> > 
+> > And really sorry I notify this too late.
 > 
-> I've tried to give rationale for all the recommendations/requirements,
-> since that makes it easier to spot nearby issues, or when a check
-> happens to catch a few things at once. I believe what I have written is
-> sound, but as some of this was reverse-engineered I may have missed
-> things worth noting.
-> 
-> I've made a few assumptions about preferred behaviour, notably:
-> 
-> * If you can reliably unwind through exceptions, you should (as x86_64
->   does).
-> 
-> * It's fine to omit ftrace_return_to_handler and other return
->   trampolines so long as these are not subject to patching and the
->   original return address is reported. Most architectures do this for
->   ftrace_return_handler, but not other return trampolines.
-> 
-> * For cases where link register unreliability could result in duplicate
->   entries in the trace or an inverted trace, I've assumed this should be
->   treated as unreliable. This specific case shouldn't matter to
->   livepatching, but I assume that that we want a reliable trace to have
->   the correct order.
-> 
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: Joe Lawrence <joe.lawrence@redhat.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Miroslav Benes <mbenes@suse.cz>
-> Cc: Petr Mladek <pmladek@suse.com>
-> Cc: linux-doc@vgert.kernel.org
-> Cc: live-patching@vger.kernel.org
-> [Updates following review -- broonie]
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
-> 
-> v3:
->  - Incorporated objtool section from Mark.
->  - Deleted confusing notes about using annotations.
+> no problem, I think we can take some of the refactoring patches anyway
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Agreed, in fact I already processed this series in my local branch and
+I'm test building everything now.
 
--- 
-Josh
-
+- Arnaldo
