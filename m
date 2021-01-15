@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FDC2F7881
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B362F7883
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731142AbhAOMPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:15:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:37738 "EHLO foss.arm.com"
+        id S1731217AbhAOMPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:15:40 -0500
+Received: from foss.arm.com ([217.140.110.172]:37740 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730742AbhAOMPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730758AbhAOMPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 07:15:34 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6EE1C14BF;
-        Fri, 15 Jan 2021 04:14:42 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62FA11480;
+        Fri, 15 Jan 2021 04:14:47 -0800 (PST)
 Received: from usa.arm.com (a074945.blr.arm.com [10.162.16.71])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EC5FA3F70D;
-        Fri, 15 Jan 2021 04:14:37 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E01B63F70D;
+        Fri, 15 Jan 2021 04:14:42 -0800 (PST)
 From:   Vivek Gautam <vivek.gautam@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         iommu@lists.linux-foundation.org,
@@ -27,9 +27,9 @@ Cc:     joro@8bytes.org, will.deacon@arm.com, mst@redhat.com,
         kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
         yi.l.liu@intel.com, lorenzo.pieralisi@arm.com,
         shameerali.kolothum.thodi@huawei.com, vivek.gautam@arm.com
-Subject: [PATCH RFC v1 10/15] iommu/virtio: Prepare to add attach pasid table infrastructure
-Date:   Fri, 15 Jan 2021 17:43:37 +0530
-Message-Id: <20210115121342.15093-11-vivek.gautam@arm.com>
+Subject: [PATCH RFC v1 11/15] iommu/virtio: Add headers for binding pasid table in iommu
+Date:   Fri, 15 Jan 2021 17:43:38 +0530
+Message-Id: <20210115121342.15093-12-vivek.gautam@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210115121342.15093-1-vivek.gautam@arm.com>
 References: <20210115121342.15093-1-vivek.gautam@arm.com>
@@ -37,9 +37,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to add attach pasid table op, separate out the
-existing attach request code to a separate method.
+From: Jean-Philippe Brucker <jean-philippe.brucker@arm.com>
 
+Add the required UAPI defines for binding pasid tables in virtio-iommu.
+This mode allows to hand stage-1 page tables over to the guest.
+
+Signed-off-by: Jean-Philippe Brucker <jean-philippe.brucker@arm.com>
+[Vivek: Refactor to cleanup headers for invalidation]
 Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
 Cc: Joerg Roedel <joro@8bytes.org>
 Cc: Will Deacon <will.deacon@arm.com>
@@ -54,137 +58,109 @@ Cc: Liu Yi L <yi.l.liu@intel.com>
 Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Cc: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
 ---
- drivers/iommu/virtio-iommu.c | 73 +++++++++++++++++++++++++-----------
- 1 file changed, 51 insertions(+), 22 deletions(-)
+ include/uapi/linux/virtio_iommu.h | 68 +++++++++++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
 
-diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
-index 12d73321dbf4..ae5dfd3f8269 100644
---- a/drivers/iommu/virtio-iommu.c
-+++ b/drivers/iommu/virtio-iommu.c
-@@ -52,6 +52,8 @@ struct viommu_dev {
- 	/* Supported MAP flags */
- 	u32				map_flags;
- 	u32				probe_size;
-+
-+	bool				has_map:1;
+diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
+index 8a0624bab4b2..3481e4a3dd24 100644
+--- a/include/uapi/linux/virtio_iommu.h
++++ b/include/uapi/linux/virtio_iommu.h
+@@ -16,6 +16,7 @@
+ #define VIRTIO_IOMMU_F_BYPASS			3
+ #define VIRTIO_IOMMU_F_PROBE			4
+ #define VIRTIO_IOMMU_F_MMIO			5
++#define VIRTIO_IOMMU_F_ATTACH_TABLE		6
+ 
+ struct virtio_iommu_range_64 {
+ 	__le64					start;
+@@ -44,6 +45,8 @@ struct virtio_iommu_config {
+ #define VIRTIO_IOMMU_T_MAP			0x03
+ #define VIRTIO_IOMMU_T_UNMAP			0x04
+ #define VIRTIO_IOMMU_T_PROBE			0x05
++#define VIRTIO_IOMMU_T_ATTACH_TABLE		0x06
++#define VIRTIO_IOMMU_T_INVALIDATE		0x07
+ 
+ /* Status types */
+ #define VIRTIO_IOMMU_S_OK			0x00
+@@ -82,6 +85,37 @@ struct virtio_iommu_req_detach {
+ 	struct virtio_iommu_req_tail		tail;
  };
  
- struct viommu_mapping {
-@@ -60,6 +62,11 @@ struct viommu_mapping {
- 	u32				flags;
- };
- 
-+struct viommu_mm {
-+	struct io_pgtable_ops		*ops;
-+	struct viommu_domain		*domain;
++struct virtio_iommu_req_attach_table {
++	struct virtio_iommu_req_head		head;
++	__le32					domain;
++	__le32					endpoint;
++	__le16					format;
++	__u8					reserved[62];
++	struct virtio_iommu_req_tail		tail;
 +};
 +
- struct viommu_domain {
- 	struct iommu_domain		domain;
- 	struct viommu_dev		*viommu;
-@@ -67,12 +74,20 @@ struct viommu_domain {
- 	unsigned int			id;
- 	u32				map_flags;
- 
-+	/* Default address space when a table is bound */
-+	struct viommu_mm		mm;
++#define VIRTIO_IOMMU_PSTF_ARM_SMMU_V3_LINEAR	0x0
++#define VIRTIO_IOMMU_PSTF_ARM_SMMU_V3_4KL2	0x1
++#define VIRTIO_IOMMU_PSTF_ARM_SMMU_V3_64KL2	0x2
 +
-+	/* When no table is bound, use generic mappings */
- 	spinlock_t			mappings_lock;
- 	struct rb_root_cached		mappings;
- 
- 	unsigned long			nr_endpoints;
++#define VIRTIO_IOMMU_PSTF_ARM_SMMU_V3_DSS_TERM	0x0
++#define VIRTIO_IOMMU_PSTF_ARM_SMMU_V3_DSS_BYPASS 0x1
++#define VIRTIO_IOMMU_PSTF_ARM_SMMU_V3_DSS_0	0x2
++
++/* Arm SMMUv3 PASID Table Descriptor */
++struct virtio_iommu_req_attach_pst_arm {
++	struct virtio_iommu_req_head		head;
++	__le32					domain;
++	__le32					endpoint;
++	__le16					format;
++	__u8					s1fmt;
++	__u8					s1dss;
++	__le64					s1contextptr;
++	__le32					s1cdmax;
++	__u8					reserved[48];
++	struct virtio_iommu_req_tail		tail;
++};
++
+ #define VIRTIO_IOMMU_MAP_F_READ			(1 << 0)
+ #define VIRTIO_IOMMU_MAP_F_WRITE		(1 << 1)
+ #define VIRTIO_IOMMU_MAP_F_MMIO			(1 << 2)
+@@ -188,6 +222,40 @@ struct virtio_iommu_req_probe {
+ 	 */
  };
  
-+#define vdev_for_each_id(i, eid, vdev)					\
-+	for (i = 0; i < vdev->dev->iommu->fwspec->num_ids &&		\
-+		({ eid = vdev->dev->iommu->fwspec->ids[i]; 1; }); i++)
++#define VIRTIO_IOMMU_INVAL_G_DOMAIN		(1 << 0)
++#define VIRTIO_IOMMU_INVAL_G_PASID		(1 << 1)
++#define VIRTIO_IOMMU_INVAL_G_VA			(1 << 2)
 +
- struct viommu_endpoint {
- 	struct device			*dev;
- 	struct viommu_dev		*viommu;
-@@ -750,12 +765,40 @@ static void viommu_domain_free(struct iommu_domain *domain)
- 	kfree(vdomain);
- }
- 
-+static int viommu_simple_attach(struct viommu_domain *vdomain,
-+				struct viommu_endpoint *vdev)
-+{
-+	int i, eid, ret;
-+	struct virtio_iommu_req_attach req = {
-+		.head.type	= VIRTIO_IOMMU_T_ATTACH,
-+		.domain		= cpu_to_le32(vdomain->id),
-+	};
++#define VIRTIO_IOMMU_INV_T_IOTLB		(1 << 0)
++#define VIRTIO_IOMMU_INV_T_DEV_IOTLB		(1 << 1)
++#define VIRTIO_IOMMU_INV_T_PASID		(1 << 2)
 +
-+	if (!vdomain->viommu->has_map)
-+		return -ENODEV;
++#define VIRTIO_IOMMU_INVAL_F_PASID		(1 << 0)
++#define VIRTIO_IOMMU_INVAL_F_ARCHID		(1 << 1)
++#define VIRTIO_IOMMU_INVAL_F_LEAF		(1 << 2)
 +
-+	vdev_for_each_id(i, eid, vdev) {
-+		req.endpoint = cpu_to_le32(eid);
++struct virtio_iommu_req_invalidate {
++	struct virtio_iommu_req_head		head;
++	__le16					inv_gran;
++	__le16					inv_type;
 +
-+		ret = viommu_send_req_sync(vdomain->viommu, &req, sizeof(req));
-+		if (ret)
-+			return ret;
-+	}
++	__le16					flags;
++	__u8					reserved1[2];
++	__le32					domain;
 +
-+	if (!vdomain->nr_endpoints) {
-+		/*
-+		 * This endpoint is the first to be attached to the domain.
-+		 * Replay existing mappings if any (e.g. SW MSI).
-+		 */
-+		ret = viommu_replay_mappings(vdomain);
-+	}
++	__le32					pasid;
++	__u8					reserved2[4];
 +
-+	return ret;
-+}
++	__le64					archid;
++	__le64					virt_start;
++	__le64					nr_pages;
 +
- static int viommu_attach_dev(struct iommu_domain *domain, struct device *dev)
- {
--	int i;
- 	int ret = 0;
--	struct virtio_iommu_req_attach req;
--	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
- 	struct viommu_endpoint *vdev = dev_iommu_priv_get(dev);
- 	struct viommu_domain *vdomain = to_viommu_domain(domain);
- 
-@@ -790,25 +833,9 @@ static int viommu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 	if (vdev->vdomain)
- 		vdev->vdomain->nr_endpoints--;
- 
--	req = (struct virtio_iommu_req_attach) {
--		.head.type	= VIRTIO_IOMMU_T_ATTACH,
--		.domain		= cpu_to_le32(vdomain->id),
--	};
--
--	for (i = 0; i < fwspec->num_ids; i++) {
--		req.endpoint = cpu_to_le32(fwspec->ids[i]);
--
--		ret = viommu_send_req_sync(vdomain->viommu, &req, sizeof(req));
--		if (ret)
--			return ret;
--	}
--
--	if (!vdomain->nr_endpoints) {
--		/*
--		 * This endpoint is the first to be attached to the domain.
--		 * Replay existing mappings (e.g. SW MSI).
--		 */
--		ret = viommu_replay_mappings(vdomain);
-+	if (!vdomain->mm.ops) {
-+		/* If we couldn't bind any table, use the mapping tree */
-+		ret = viommu_simple_attach(vdomain, vdev);
- 		if (ret)
- 			return ret;
- 	}
-@@ -1142,6 +1169,8 @@ static int viommu_probe(struct virtio_device *vdev)
- 				struct virtio_iommu_config, probe_size,
- 				&viommu->probe_size);
- 
-+	viommu->has_map = virtio_has_feature(vdev, VIRTIO_IOMMU_F_MAP_UNMAP);
++	/* Page size, in nr of bits, typically 12 for 4k, 30 for 2MB, etc.) */
++	__u8					granule;
++	__u8					reserved3[11];
++	struct virtio_iommu_req_tail		tail;
++};
 +
- 	viommu->geometry = (struct iommu_domain_geometry) {
- 		.aperture_start	= input_start,
- 		.aperture_end	= input_end,
+ /* Fault types */
+ #define VIRTIO_IOMMU_FAULT_R_UNKNOWN		0
+ #define VIRTIO_IOMMU_FAULT_R_DOMAIN		1
 -- 
 2.17.1
 
