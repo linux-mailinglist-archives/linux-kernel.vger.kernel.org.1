@@ -2,133 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65242F81FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5F62F81D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728620AbhAORRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:17:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
+        id S2387549AbhAORMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:12:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbhAORRM (ORCPT
+        with ESMTP id S2387529AbhAORMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:17:12 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AA1C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:16:32 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id u11so733890plg.13
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:16:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zr+usiajQbvXCJZeiaAQ7ZOJ3FmLL56sdTHwAb93MCM=;
-        b=YUoXFs0RFlgOeIyrZijD+N1grI8gVMlfGS9AkiyjIwbdZy5Rv4lR2QQNWrEF/vTkln
-         hQ6gcZkOry9+vQ2+RJuTyZEjOqbZMfyprQINzU0SP0iuCwg66PGVc9YnP1v5O4YhHlOC
-         hIoEXrUwRl6VsOk2/vvfHU1qdc9OlSHcSN/Fc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zr+usiajQbvXCJZeiaAQ7ZOJ3FmLL56sdTHwAb93MCM=;
-        b=a1KDNTReLyiI6Y1L6/7wIx06cE6mBsP+W5PAIvX4GOCMDJNgqrBCeWDL7GhKKLw0ho
-         0uUqLFERsG/DL5ek7UfIdeXDm5aRLoTkPWbkr2/YAI41Kbgdxb5fLBFh+ISl4P7xU1S9
-         EtiNdb1JU0YV+gQJQS+dxSPTwv+OTFC5o49t4dx8NH29dH6wAMm9kfX5/v10XIOCTYbG
-         sDlowuysCC4IaD67PpG3SX6eX00K/qFu712f8VwqU9NpTwLAQDy/YkrLokbUbNTae8NQ
-         oDtKgR43Dak5gkepSr0KTmrHudDA79Kt9LXeBjgHIslJUt/xneIRO7ecwe9Y1qRLH74+
-         rDBg==
-X-Gm-Message-State: AOAM531EV+i0C/FWBG6ogPMkSCDRmxxhQt1KgbLteqBMk2pNrBsow4tI
-        t/aphyXGiAfZ7xeCA4/k7vb+IFJ1NuZ5SA==
-X-Google-Smtp-Source: ABdhPJxNDNXEdR1yCiH+It2tF9/Ij6NAaaZyubkoxZ/5xZmps10oc2ASp+HUKc7keQBA85ayFnJt8A==
-X-Received: by 2002:a17:90a:a60f:: with SMTP id c15mr11970244pjq.53.1610730991756;
-        Fri, 15 Jan 2021 09:16:31 -0800 (PST)
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com. [209.85.214.177])
-        by smtp.gmail.com with ESMTPSA id v1sm9115940pga.63.2021.01.15.09.16.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Jan 2021 09:16:31 -0800 (PST)
-Received: by mail-pl1-f177.google.com with SMTP id x12so5015229plr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:16:31 -0800 (PST)
-X-Received: by 2002:a67:70c6:: with SMTP id l189mr10887922vsc.34.1610730685365;
- Fri, 15 Jan 2021 09:11:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20201211222448.2115188-1-dianders@chromium.org>
- <CAD=FV=Ve4wGJ=KxQjraYsiAQZHG_5qEeFW0ZhmBBkRmtdm7Gwg@mail.gmail.com>
- <CAO-hwJK+=537C-EbgNXPY3=m5LvM8SVKCDB5X145BfSMHgUMdw@mail.gmail.com>
- <CAO-hwJLuzAccZbLSCvyP0JnkCW8fgswrm8RJfMaVKjtyF5Yg_A@mail.gmail.com>
- <CAD=FV=W3uzNPwAGPCUfjC-zoWEPyY4bF8TE4JgPP21s-3MAfpQ@mail.gmail.com>
- <CAO-hwJ+Gz_yp_vn1prREvhcU=YqVatqd_Hp+95L5i2=bcwfhbA@mail.gmail.com> <f3add027-d732-0846-fa54-b3c51430b152@redhat.com>
-In-Reply-To: <f3add027-d732-0846-fa54-b3c51430b152@redhat.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 15 Jan 2021 09:11:12 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VfikuXYH5uq=cqqFJzCPNv86tMto-vezne3mVe3dTbcA@mail.gmail.com>
-Message-ID: <CAD=FV=VfikuXYH5uq=cqqFJzCPNv86tMto-vezne3mVe3dTbcA@mail.gmail.com>
-Subject: Re: [PATCH v8 0/4] HID: i2c-hid: Reorganize to allow supporting goodix,gt7375p
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andrea Borgia <andrea@borgia.bo.it>,
-        Anson Huang <Anson.Huang@nxp.com>,
+        Fri, 15 Jan 2021 12:12:14 -0500
+Received: from relay05.th.seeweb.it (relay05.th.seeweb.it [IPv6:2001:4b7a:2000:18::166])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45966C0613D3;
+        Fri, 15 Jan 2021 09:11:34 -0800 (PST)
+Received: from localhost.localdomain (abaf224.neoplus.adsl.tpnet.pl [83.6.169.224])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 270D53E9B5;
+        Fri, 15 Jan 2021 18:11:32 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Playfair Cal <daniel.playfair.cal@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Jiri Kosina <jikos@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Max Krummenacher <max.oss.09@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Pavel Balan <admin@kryma.net>, Shawn Guo <shawnguo@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, Will Deacon <will@kernel.org>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] pinctrl: qcom-pmic-gpio: Add support for pm8019
+Date:   Fri, 15 Jan 2021 18:11:13 +0100
+Message-Id: <20210115171115.123155-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+PM8019 provides 6 GPIOs. Add a compatible to support that.
 
-On Fri, Jan 15, 2021 at 6:58 AM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> > Thanks, but don't spend too much time on it, unless something really
-> > jumps out. I'll debug that tomorrow. It's much easier with an actual
-> > device than by just looking at the code.
-> >
->
-> Well, that's weird. Now suspend resume works reliably even with your
-> series. It could just have been that the lid sensor was too close to a
-> magnet or something like that. Though while testing the old version of
-> i2c-hid, it was working... Such a mystery :)
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+ Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 1 +
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c                     | 1 +
+ 2 files changed, 2 insertions(+)
 
-Friggin magnets, how do those work?  ;-)
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+index 7648ab00f4e2..c4de3be1d7be 100644
+--- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+@@ -9,6 +9,7 @@ PMIC's from Qualcomm.
+ 	Definition: must be one of:
+ 		    "qcom,pm8005-gpio"
+ 		    "qcom,pm8018-gpio"
++		    "qcom,pm8019-gpio"
+ 		    "qcom,pm8038-gpio"
+ 		    "qcom,pm8058-gpio"
+ 		    "qcom,pm8916-gpio"
+diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+index 9801c717e311..4018c64011f8 100644
+--- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
++++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+@@ -1105,6 +1105,7 @@ static int pmic_gpio_remove(struct platform_device *pdev)
+ 
+ static const struct of_device_id pmic_gpio_of_match[] = {
+ 	{ .compatible = "qcom,pm8005-gpio", .data = (void *) 4 },
++	{ .compatible = "qcom,pm8019-gpio", .data = (void *) 6 },
+ 	{ .compatible = "qcom,pm8916-gpio", .data = (void *) 4 },
+ 	{ .compatible = "qcom,pm8941-gpio", .data = (void *) 36 },
+ 	/* pm8950 has 8 GPIOs with holes on 3 */
+-- 
+2.29.2
 
-I also managed to obtain remote access to a device with an ACPI
-i2c-hid device and confirmed that suspend/resume was working and that
-I saw no errors, though obviously I couldn't physically interact with
-the device remotely.  Hopefully that gives a tiny bit of extra
-confidence that the series is OK...
-
-
-> This allows to keep the powering ordering of the old i2c-hid module
-> (power up before setting device wakeup capable), and simplify the
-> not so obvious power_fixed field of struct i2c_hid_acpi.
->
-> (I can also send it as a followup on the series if you prefer).
-
-Squashed it into a v9 as well as a local variable rename that I
-noticed while looking at the code with fresh eyes.  My v9 also
-incorporates the new Goodix timing that I self-commented about on v8.
-
-Crossing fingers that it's all good now.  :-)
-
--Doug
