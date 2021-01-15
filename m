@@ -2,146 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9813F2F8790
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CC92F879B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbhAOVVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 16:21:21 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49545 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725536AbhAOVVU (ORCPT
+        id S1726073AbhAOVYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 16:24:44 -0500
+Received: from smtprelay0211.hostedemail.com ([216.40.44.211]:54972 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725536AbhAOVYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 16:21:20 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 10FLKUJh027837
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Jan 2021 16:20:30 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id D861115C399F; Fri, 15 Jan 2021 16:20:29 -0500 (EST)
-Date:   Fri, 15 Jan 2021 16:20:29 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] ext4 bug fixes for v5.11-rc4
-Message-ID: <YAIHHfxGQfj96di/@mit.edu>
+        Fri, 15 Jan 2021 16:24:43 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 6EAE58378163;
+        Fri, 15 Jan 2021 21:24:02 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3865:3866:3867:3868:3870:3871:3872:5007:7652:8660:8957:10004:10400:10848:11026:11657:11658:11914:12043:12048:12296:12297:12555:12679:12760:13019:13069:13148:13161:13221:13229:13230:13311:13357:13439:14181:14394:14659:14721:21080:21433:21450:21451:21627:21939:21990:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: sand31_0516eba27532
+X-Filterd-Recvd-Size: 1966
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 15 Jan 2021 21:24:00 +0000 (UTC)
+Message-ID: <f4ce30f297be4678634b5be4917401767ee6ebc5.camel@perches.com>
+Subject: [PATCH] RDMA: usnic: Fix misuse of sysfs_emit_at
+From:   Joe Perches <joe@perches.com>
+To:     Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Greg KH <greg@kroah.com>
+Date:   Fri, 15 Jan 2021 13:23:59 -0800
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Note: there is a fairly simple merge conflict, which can be resolved
-by taking EXT4_SB(sb) and replacing it with sbi using the version in
-your tree.  My merge resolution (which I used to run regression tests)
-is attached below.
+In commit e28bf1f03b01 ("RDMA: Convert various random sprintf sysfs _show
+uses to sysfs_emit") I mistakenly used len = sysfs_emit_at to overwrite
+the last trailing space of potentially multiple entry output.
 
-					- Ted
+The length of the last sysfs_emit_at call is 1 and it should instead be
+ignored.  Do so.
+
+Fixes: e28bf1f03b01 ("RDMA: Convert various random sprintf sysfs _show uses to sysfs_emit")
+
+Reported-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ drivers/infiniband/hw/usnic/usnic_ib_sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/usnic/usnic_ib_sysfs.c b/drivers/infiniband/hw/usnic/usnic_ib_sysfs.c
+index e59615a4c9d9..fc077855b46c 100644
+--- a/drivers/infiniband/hw/usnic/usnic_ib_sysfs.c
++++ b/drivers/infiniband/hw/usnic/usnic_ib_sysfs.c
+@@ -231,7 +231,7 @@ static ssize_t summary_show(struct usnic_ib_qp_grp *qp_grp, char *buf)
+ 		}
+ 	}
+ 
+-	len = sysfs_emit_at(buf, len, "\n");
++	sysfs_emit_at(buf, len, "\n");	/* Overwrite the last trailing space */
+ 
+ 	return len;
+ }
 
 
-The following changes since commit be993933d2e997fdb72b8b1418d2a84df79b8962:
 
-  ext4: remove unnecessary wbc parameter from ext4_bio_write_page (2020-12-22 13:08:45 -0500)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
-
-for you to fetch changes up to e9f53353e166a67dfe4f8295100f8ac39d6cf10b:
-
-  ext4: remove expensive flush on fast commit (2021-01-15 14:41:31 -0500)
-
-----------------------------------------------------------------
-A number of bug fixes for ext4:
-
-   * For the new fast_commit feature
-   * Fix some error handling codepaths in whiteout handling and
-     mountpoint sampling
-   * Fix how we write ext4_error information so it goes through the journal
-     when journalling is active, to avoid races that can lead to lost
-     error information, superblock checksum failures, or DIF/DIX features.
-
-----------------------------------------------------------------
-Daejun Park (2):
-      ext4: fix wrong list_splice in ext4_fc_cleanup
-      ext4: remove expensive flush on fast commit
-
-Jan Kara (7):
-      ext4: combine ext4_handle_error() and save_error_info()
-      ext4: drop sync argument of ext4_commit_super()
-      ext4: protect superblock modifications with a buffer lock
-      ext4: save error info to sb through journal if available
-      ext4: use sbi instead of EXT4_SB(sb) in ext4_update_super()
-      ext4: fix superblock checksum failure when setting password salt
-      ext4: drop ext4_handle_dirty_super()
-
-Theodore Ts'o (1):
-      ext4: don't leak old mountpoint samples
-
-Yi Li (1):
-      ext4: use IS_ERR instead of IS_ERR_OR_NULL and set inode null when IS_ERR
-
-yangerkun (1):
-      ext4: fix bug for rename with RENAME_WHITEOUT
-
- fs/ext4/ext4_jbd2.c   |  17 ------
- fs/ext4/ext4_jbd2.h   |   5 --
- fs/ext4/fast_commit.c |  35 +++++------
- fs/ext4/file.c        |   7 ++-
- fs/ext4/inode.c       |   6 +-
- fs/ext4/ioctl.c       |   3 +
- fs/ext4/namei.c       |  27 +++++---
- fs/ext4/resize.c      |  20 ++++--
- fs/ext4/super.c       | 193 ++++++++++++++++++++++++++++++++++++----------------------
- fs/ext4/xattr.c       |   5 +-
- 10 files changed, 187 insertions(+), 131 deletions(-)
-
--------------------------
-
-commit c3d123034d72849414f4b88bcd78843cec16caa5
-Merge: 146620506274 8f4949dacec8
-Author: Theodore Ts'o <tytso@mit.edu>
-Date:   Thu Jan 14 22:09:51 2021 -0500
-
-    Merge branch 'dev' into test
-
-diff --cc fs/ext4/super.c
-index 21121787c874,0f0db49031dc..9a6f9875aa34
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@@ -5450,18 -5494,22 +5488,18 @@@ static void ext4_update_super(struct su
-  	 */
-  	if (!(sb->s_flags & SB_RDONLY))
-  		ext4_update_tstamp(es, s_wtime);
- -	if (sb->s_bdev->bd_part)
- -		es->s_kbytes_written =
- -			cpu_to_le64(sbi->s_kbytes_written +
- -			    ((part_stat_read(sb->s_bdev->bd_part,
- -					     sectors[STAT_WRITE]) -
- -			      sbi->s_sectors_written_start) >> 1));
- -	else
- -		es->s_kbytes_written = cpu_to_le64(sbi->s_kbytes_written);
- +	es->s_kbytes_written =
-- 		cpu_to_le64(EXT4_SB(sb)->s_kbytes_written +
-++		cpu_to_le64(sbi->s_kbytes_written +
- +		    ((part_stat_read(sb->s_bdev, sectors[STAT_WRITE]) -
-- 		      EXT4_SB(sb)->s_sectors_written_start) >> 1));
-- 	if (percpu_counter_initialized(&EXT4_SB(sb)->s_freeclusters_counter))
-++		      sbi->s_sectors_written_start) >> 1));
-+ 	if (percpu_counter_initialized(&sbi->s_freeclusters_counter))
-  		ext4_free_blocks_count_set(es,
-- 			EXT4_C2B(EXT4_SB(sb), percpu_counter_sum_positive(
-- 				&EXT4_SB(sb)->s_freeclusters_counter)));
-- 	if (percpu_counter_initialized(&EXT4_SB(sb)->s_freeinodes_counter))
-+ 			EXT4_C2B(sbi, percpu_counter_sum_positive(
-+ 				&sbi->s_freeclusters_counter)));
-+ 	if (percpu_counter_initialized(&sbi->s_freeinodes_counter))
-  		es->s_free_inodes_count =
-  			cpu_to_le32(percpu_counter_sum_positive(
-- 				&EXT4_SB(sb)->s_freeinodes_counter));
-+ 				&sbi->s_freeinodes_counter));
-  	/* Copy error information to the on-disk superblock */
-  	spin_lock(&sbi->s_error_lock);
-  	if (sbi->s_add_error_count > 0) {
