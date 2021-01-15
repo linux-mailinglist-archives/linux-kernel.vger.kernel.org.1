@@ -2,102 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A497D2F77BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C05632F77B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728002AbhAOLes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:34:48 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2356 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726137AbhAOLer (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:34:47 -0500
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DHJpn61gPz67c1b;
-        Fri, 15 Jan 2021 19:28:49 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 15 Jan 2021 12:34:04 +0100
-Received: from [10.47.4.21] (10.47.4.21) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Fri, 15 Jan
- 2021 11:34:02 +0000
-Subject: Re: [RESEND PATCH v3 0/4] iommu/iova: Solve longterm IOVA issue
-To:     <robin.murphy@arm.com>, <joro@8bytes.org>, <will@kernel.org>
-CC:     <xiyou.wangcong@gmail.com>, <iommu@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <chenxiang66@hisilicon.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Kashyap Desai <kashyap.desai@broadcom.com>
-References: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <8830b44d-3893-6096-0cf1-37a1e8bc6c6b@huawei.com>
-Date:   Fri, 15 Jan 2021 11:32:52 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1727039AbhAOLe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:34:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726045AbhAOLe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 06:34:27 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49258221F7;
+        Fri, 15 Jan 2021 11:33:46 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l0NMO-007j6G-3L; Fri, 15 Jan 2021 11:33:44 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>, kvmarm@lists.cs.columbia.edu
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kernel-team@android.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-kernel@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH] KVM: arm64: Allow PSCI SYSTEM_OFF/RESET to return
+Date:   Fri, 15 Jan 2021 11:33:40 +0000
+Message-Id: <161071039698.2624485.5615829758205647389.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201229160059.64135-1-dbrazdil@google.com>
+References: <20201229160059.64135-1-dbrazdil@google.com>
 MIME-Version: 1.0
-In-Reply-To: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.4.21]
-X-ClientProxiedBy: lhreml708-chm.china.huawei.com (10.201.108.57) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, will@kernel.org, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, kernel-team@android.com, lorenzo.pieralisi@arm.com, linux-kernel@vger.kernel.org, sudeep.holla@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ linux-scsi (see 
-https://lore.kernel.org/linux-iommu/1607538189-237944-4-git-send-email-john.garry@huawei.com/)
+On Tue, 29 Dec 2020 16:00:59 +0000, David Brazdil wrote:
+> The KVM/arm64 PSCI relay assumes that SYSTEM_OFF and SYSTEM_RESET should
+> not return, as dictated by the PSCI spec. However, there is firmware out
+> there which breaks this assumption, leading to a hyp panic. Make KVM
+> more robust to broken firmware by allowing these to return.
 
-On 17/11/2020 10:25, John Garry wrote:
-> This series contains a patch to solve the longterm IOVA issue which
-> leizhen originally tried to address at [0].
-> 
-> A sieved kernel log is at the following, showing periodic dumps of IOVA
-> sizes, per CPU and per depot bin, per IOVA size granule:
-> https://raw.githubusercontent.com/hisilicon/kernel-dev/topic-iommu-5.10-iova-debug-v3/aging_test
-> 
-> Notice, for example, the following logs:
-> [13175.355584] print_iova1 cpu_total=40135 depot_total=3866 total=44001
-> [83483.457858] print_iova1 cpu_total=62532 depot_total=24476 total=87008
-> 
-> Where total IOVA rcache size has grown from 44K->87K over a long time.
-> 
+Applied to next, thanks!
 
-JFYI, I am able to reproduce this aging issue on another storage card, 
-an LSI SAS 3008, so now it's harder to say it's an issue specific to a 
-(buggy) single driver.
+[1/1] KVM: arm64: Allow PSCI SYSTEM_OFF/RESET to return
+      commit: 2c91ef39216149df6703c3fa6a47dd9a1e6091c1
 
-A log of the IOVA size dumps is here:
-https://raw.githubusercontent.com/hisilicon/kernel-dev/064c4dc8869b3f2ad07edffceafde0b129f276b0/lsi3008_dmesg
+Cheers,
 
-Notice again how the total IOVA size goes up over time, like:
-[ 68.176914] print_iova1 cpu_total=23663 depot_total=256 total=23919
-[ 2337.008194] print_iova1 cpu_total=67361 depot_total=9088 total=76449
-[17141.860078] print_iova1 cpu_total=73397 depot_total=10368 total=83765
-[27087.850830] print_iova1 cpu_total=73386 depot_total=10624 total=84010
-[10434.042877] print_iova1 cpu_total=90652 depot_total=12928 total=103580
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
 
-I had to change some settings for that storage card to reproduce, though 
-[0]. Could explain why no other reports.
 
-So please consider this issue again...
-
-Thanks,
-john
-
-[0] 
-https://lore.kernel.org/linux-scsi/dd8e6fdc-397d-b6ad-3371-0b65d1932ad1@huawei.com/T/#m953d21446a5756981412c92d0924ca65c8d2f3a5
-
-> Along with this patch, I included the following:
-> - A smaller helper to clear all IOVAs for a domain
-> - Change polarity of the IOVA magazine helpers
-> - Small optimisation from Cong Wang included, which was never applied [1].
->    There was some debate of the other patches in that series, but this one
->    is quite straightforward.
-> 
-> Differnces to v2:
-> - Update commit message for patch 3/4
