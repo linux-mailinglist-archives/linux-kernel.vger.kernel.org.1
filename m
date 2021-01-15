@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2E22F7F0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3462F7F12
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732596AbhAOPJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:09:09 -0500
-Received: from relay.smtp-ext.broadcom.com ([192.19.232.172]:41212 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729568AbhAOPJI (ORCPT
+        id S1732742AbhAOPJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:09:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39913 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727335AbhAOPJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:09:08 -0500
-Received: from bld-lvn-bcawlan-34.lvn.broadcom.net (bld-lvn-bcawlan-34.lvn.broadcom.net [10.75.138.137])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 7AD972435A;
-        Fri, 15 Jan 2021 07:08:07 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 7AD972435A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1610723287;
-        bh=17aCG3PbjBsTi6eKwhku2AiY0ZV4VTUvwU5ztGM7hss=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=IxBEJdxZDjnprWsJ3SbEzuBPb+kposF2ZJqZcbE+88NgPFXEIn1JgxotM9j63Ucnq
-         TdL3mhg8kxfd66pcgc2CBI771OmnBuwo669x0sucuTL820TcyhTBXT89DKiJPTVy/0
-         rlenY0BPHXXnY/ae/DtN777wEz/Teu/S+ZJLqHA0=
-Received: from [10.230.40.117] (unknown [10.230.40.117])
-        by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id C264B187289;
-        Fri, 15 Jan 2021 07:08:04 -0800 (PST)
-Subject: Re: [PATCH v2] brcmfmac: add support for CQM RSSI notifications
-To:     Andrew Zaborowski <andrew.zaborowski@intel.com>
-Cc:     =?UTF-8?Q?Alvin_=c5=a0ipraga?= <ALSI@bang-olufsen.dk>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "brcm80211-dev-list.pdl@broadcom.com" 
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        "SHA-cyfmac-dev-list@infineon.com" <SHA-cyfmac-dev-list@infineon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210114163641.2427591-1-alsi@bang-olufsen.dk>
- <2adec5d6-fbc9-680c-01d6-25f83327bf21@broadcom.com>
- <CAOq732KGRmQ0eq46cqkF-EW-A8W6QiOb02NZEq6H7K_28YSstA@mail.gmail.com>
-From:   Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <6a87845e-3f9d-2921-051a-d1fe7d27cbd3@broadcom.com>
-Date:   Fri, 15 Jan 2021 16:08:02 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 15 Jan 2021 10:09:46 -0500
+X-Greylist: delayed 70072 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 Jan 2021 10:09:45 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610723299;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NJb6ukKVIDGK20PzckBJC7srAf03mNvPdQ0z7RPLWw8=;
+        b=LyGfAwQiJ0frKOHsMR4tLA48DYTpEK+1hEx0bvq2AvEmqUS63JoN2XDcgO/08I9y6yc7kt
+        dY8tGaCYnd+czOIIiIhfD+ttc5J6Ib4mMA+8rNUPbQUj3ohDb2fQWhzO8zQ/g8P6eL4TOt
+        BisY5V2HnhYHoK3Jcdh9p4mYTWViCJQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-20-iMfeSiUpMzKE07biV3KWzQ-1; Fri, 15 Jan 2021 10:08:15 -0500
+X-MC-Unique: iMfeSiUpMzKE07biV3KWzQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C759CE650;
+        Fri, 15 Jan 2021 15:08:14 +0000 (UTC)
+Received: from treble (ovpn-116-102.rdu2.redhat.com [10.10.116.102])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EE9DD60BF3;
+        Fri, 15 Jan 2021 15:08:12 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 09:08:11 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        Miroslav Benes <mbenes@suse.cz>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: Re: [PATCH 15/21] x86/xen/pvh: Convert indirect jump to retpoline
+Message-ID: <20210115150811.abom3lkutyrwetpi@treble>
+References: <cover.1610652862.git.jpoimboe@redhat.com>
+ <adfa2afe5ddc831017222db9f48ad0fbff17c807.1610652862.git.jpoimboe@redhat.com>
+ <12afb52c-f555-656e-d544-c2965a616bdc@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <CAOq732KGRmQ0eq46cqkF-EW-A8W6QiOb02NZEq6H7K_28YSstA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <12afb52c-f555-656e-d544-c2965a616bdc@suse.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/15/2021 3:51 PM, Andrew Zaborowski wrote:
-> On Fri, 15 Jan 2021 at 15:12, Arend Van Spriel
-> <arend.vanspriel@broadcom.com> wrote:>
->> + Johannes
->> - netdevs
->>
->> On 1/14/2021 5:36 PM, 'Alvin Šipraga' via BRCM80211-DEV-LIST,PDL wrote:
->>> Add support for CQM RSSI measurement reporting and advertise the
->>> NL80211_EXT_FEATURE_CQM_RSSI_LIST feature. This enables a userspace
->>> supplicant such as iwd to be notified of changes in the RSSI for roaming
->>> and signal monitoring purposes.
->>
->> The more I am looking into this API the less I understand it or at least
->> it raises a couple of questions. Looking into nl80211_set_cqm_rssi() [1]
->> two behaviors are supported: 1) driver is provisioned with a threshold
->> and hysteresis, or 2) driver is provisioned with high and low threshold.
+On Fri, Jan 15, 2021 at 06:24:10AM +0100, Jürgen Groß wrote:
+> On 14.01.21 20:40, Josh Poimboeuf wrote:
+> > It's kernel policy to not have (unannotated) indirect jumps because of
+> > Spectre v2.  This one's probably harmless, but better safe than sorry.
+> > Convert it to a retpoline.
+> > 
+> > Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> > Cc: Juergen Gross <jgross@suse.com>
+> > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> > ---
+> >   arch/x86/platform/pvh/head.S | 3 ++-
+> >   1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/platform/pvh/head.S b/arch/x86/platform/pvh/head.S
+> > index 43b4d864817e..d87cebd08d32 100644
+> > --- a/arch/x86/platform/pvh/head.S
+> > +++ b/arch/x86/platform/pvh/head.S
+> > @@ -16,6 +16,7 @@
+> >   #include <asm/boot.h>
+> >   #include <asm/processor-flags.h>
+> >   #include <asm/msr.h>
+> > +#include <asm/nospec-branch.h>
+> >   #include <xen/interface/elfnote.h>
+> >   	__HEAD
+> > @@ -105,7 +106,7 @@ SYM_CODE_START_LOCAL(pvh_start_xen)
+> >   	/* startup_64 expects boot_params in %rsi. */
+> >   	mov $_pa(pvh_bootparams), %rsi
+> >   	mov $_pa(startup_64), %rax
+> > -	jmp *%rax
+> > +	JMP_NOSPEC rax
 > 
-> Right.
+> I'd rather have it annotated only.
 > 
->>
->> The second behavior is used when the driver advertises
->> NL80211_EXT_FEATURE_CQM_RSSI_LIST *and* user-space provides more than
->> one RSSI threshold.
-> 
-> Or, when the driver doesn't implement set_cqm_rssi_config (the old
-> method).  So the driver can stop supporting set_cqm_rssi_config when
-> it implements set_cqm_rssi_range_config.
+> Using ALTERNATIVE in very early boot code is just adding needless
+> clutter, as the retpoline variant won't ever be active.
 
-Argh. Totally overlooked these were two different callbacks. In that 
-case it is easy to determine what is being requested.
+Yeah, Andy pointed out something similar.  I'll be changing this to an
+annotation.
 
-Thanks,
-Arend
+-- 
+Josh
+
