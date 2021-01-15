@@ -2,141 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299002F834F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DF72F83CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbhAOSJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:09:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50613 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725818AbhAOSJE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:09:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610734057;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3Md7vRoyiKJc0iq4tJJs8CQ7dxbz/DxlqmE3R+5lMtE=;
-        b=BYvs5MlMUkJdZYEkNaImTE86tFj2DB2P1kXePOh7zsgj9Vx/xjao6TSGOg711b1vZlcX0K
-        ruWiwRYK82dQsZ8bm+5s7Y+9pNMp+QLvxdARjamFHxkmiFeuk5cl/W9dVkHxwWnz/Lqtef
-        bf5BoZz6iXFyMatwbCsGvQPUteqSwdg=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-536-_9lyEfZOPQu7UuzpVBRlfA-1; Fri, 15 Jan 2021 13:07:28 -0500
-X-MC-Unique: _9lyEfZOPQu7UuzpVBRlfA-1
-Received: by mail-qt1-f199.google.com with SMTP id e14so8031577qtr.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:07:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=3Md7vRoyiKJc0iq4tJJs8CQ7dxbz/DxlqmE3R+5lMtE=;
-        b=EG11bjLdBCx3dLhpNGWlbj/X/6VxvTFMF7qq2hnDC9FLANuY51fOoGkxJVc5Smmz9W
-         wCxcGH9JYoU/CpDMPI6v2wyXAZpB7VujZQpHs142hXD9RU9rCNe0NVska/CodI+2hm0n
-         15u3c1TcuWbcrtINPJr7jQ4ShLEyXZAB1R0S+aTx/Gm7E0Q4cWNzIgUxdsZLyhnaMcsm
-         fXwgV5hBMmZAo5lidVVGsHEZwGOjsIvIArOKpRjXNpM7oYjG94FR7QVDtDWR2OnrpuxP
-         oFr26upOZwP4mC7YGwSH2KVlqYp3qc0MtNQZYQbtkdPNNRzvnrBFB8TS6LwRRuYGmYJU
-         c20g==
-X-Gm-Message-State: AOAM532lNvbsljjnfJg50aLuviBOdod6GAbHj06kmvyBz3uyBKK6OunS
-        lHQWPBD+SMLeBbfKitzkwp4BmG4m0mY68GD8Ip4kK+ii5jyE5KFC0bCUlsTVDZzfdxG0gBgH+dL
-        2Ubh8MkLApqBpouEngdSCWCvp
-X-Received: by 2002:ae9:d847:: with SMTP id u68mr13552520qkf.409.1610734048020;
-        Fri, 15 Jan 2021 10:07:28 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyxGGsdmnjkULss7tilHK1g+lYfiaHQlYY+K09kc6sxYHVqk6Jy1JquyFM9u53peKnWffQPag==
-X-Received: by 2002:ae9:d847:: with SMTP id u68mr13552493qkf.409.1610734047725;
-        Fri, 15 Jan 2021 10:07:27 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id a203sm5516833qkb.31.2021.01.15.10.07.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Jan 2021 10:07:27 -0800 (PST)
-Subject: Re: [PATCH 1/2] dt-bindings: fpga: Add compatible value for Xilinx
- DFX AXI shutdown manger
-To:     Nava kishore Manne <nava.manne@xilinx.com>, mdf@kernel.org,
-        robh+dt@kernel.org, michal.simek@xilinx.com,
-        linux-fpga@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     git@xilinx.com, chinnikishore369@gmail.com
-References: <20210115013431.27667-1-nava.manne@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <2dd1a504-9bb7-3bdb-028e-7edd0ed99668@redhat.com>
-Date:   Fri, 15 Jan 2021 10:07:25 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S2388228AbhAOSPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:15:38 -0500
+Received: from smtp.uniroma2.it ([160.80.6.22]:46866 "EHLO smtp.uniroma2.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388117AbhAOSPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 13:15:21 -0500
+X-Greylist: delayed 359 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 Jan 2021 13:15:19 EST
+Received: from smtpauth-2019-1.uniroma2.it (smtpauth-2019-1.uniroma2.it [160.80.5.46])
+        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 10FI7vZW015460;
+        Fri, 15 Jan 2021 19:08:03 +0100
+Received: from localhost.localdomain (unknown [160.80.103.223])
+        by smtpauth-2019-1.uniroma2.it (Postfix) with ESMTPSA id D87ED121201;
+        Fri, 15 Jan 2021 19:07:53 +0100 (CET)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=uniroma2.it;
+        s=ed201904; t=1610734073; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:references; bh=LJEA/5MtyWxj0SJkJfYLMUOcHhaFD/6OGDjv8d8oG1Y=;
+        b=KXsnZX4soY8XZ++3aZhKn0UZAKN1jU0QkE4m4D9xgFJ6lb5EoDW1C5Hn2rQNbHUBzOD/38
+        1QjpnQxI9QXcCgCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniroma2.it; s=rsa201904;
+        t=1610734073; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:references; bh=LJEA/5MtyWxj0SJkJfYLMUOcHhaFD/6OGDjv8d8oG1Y=;
+        b=Dc18PDg7V1yUyKfsISC2vRrzBHfXTvigAFvp7f6sAgYIYJ8hwc7GWtpZAFkNuwRcLCS2Yc
+        n/EcfycPVKvHhviNza8g8uEMvH09eNZTSN6JStvCpvDcWpQ6eZE/b4h2wOZZ6ZbfyWjFu0
+        MP7qdGTXKrWKFjlgOGE5ciSuCCpZoAdVtLvxD46fVUudQgP8SePFEN06xGL35A4EfSQ9On
+        loiXffDR9mP1Vd/5Ram4A8U6X1NFZqVWEJAxlgWXu5gVcR25eqoTZShIME2MzyGy0vL9/r
+        jDKVKo/G3hnyQp3pm3CaKKMARhFrN66iIJITvh3YCdghqyfYvSJCHLgXBSuhrg==
+From:   Marco Faltelli <marco.faltelli@uniroma2.it>
+To:     tglx@linutronix.de, linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Marco Faltelli <marco.faltelli@uniroma2.it>
+Subject: [PATCH] kernel/time: Add hr_sleep syscall, a high-resolution sleep service
+Date:   Fri, 15 Jan 2021 18:07:33 +0000
+Message-Id: <20210115180733.5663-1-marco.faltelli@uniroma2.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210115013431.27667-1-nava.manne@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+hr_sleep is a new system call engineered for nanosecond time scale
+granularities.
+With respect to nanosleep, it uses a single value representation
+of the sleep period.
+hr_sleep achieves 15x improvement for microsecond scale timers
+w.r.t. nanosleep: the reason is the use of a CPU register for
+passing the sleep period (avoiding cross-ring data move) and
+the use of the thread's kernel stack area (avoiding in-kernel
+memory allocations).
+Further details about hr_sleep and the evaluation compared
+to nanosleep can be found in Section 3 of our paper "Metronome:
+adaptive and precise intermittent packet retrieval in DPDK"
+hr_sleep in this patch has syscall number 442, so you can try it
+calling syscall(442, sleep_period)
 
-On 1/14/21 5:34 PM, Nava kishore Manne wrote:
-> This patch Adds compatible value for Xilinx Dynamic Function eXchnage(DFX)
-> AXI Shutdown manager IP.
+Signed-off-by: Marco Faltelli <marco.faltelli@uniroma2.it>
+---
+ arch/x86/entry/syscalls/syscall_64.tbl |  1 +
+ kernel/time/hrtimer.c                  | 61 ++++++++++++++++++++++++++
+ 2 files changed, 62 insertions(+)
 
-A multi patch set should have a cover letter.
-
-Use git format-patch --cover-letter
-
-> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
-> ---
->  .../bindings/fpga/xilinx-pr-decoupler.txt     | 19 ++++++++++++++++---
->  1 file changed, 16 insertions(+), 3 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/fpga/xilinx-pr-decoupler.txt b/Documentation/devicetree/bindings/fpga/xilinx-pr-decoupler.txt
-> index 4284d293fa61..42fca058a5f4 100644
-> --- a/Documentation/devicetree/bindings/fpga/xilinx-pr-decoupler.txt
-> +++ b/Documentation/devicetree/bindings/fpga/xilinx-pr-decoupler.txt
-> @@ -7,13 +7,26 @@ changes from passing through the bridge.  The controller can also
->  couple / enable the bridges which allows traffic to pass through the
->  bridge normally.
-Below is some wordsmithing to make the compatibility explicit and remove unneeded words
->  
-> +Xilinx LogiCORE Dynamic Function eXchange(DFX) AXI shutdown manager
-> +Softcore
-is compatible with the Xilinx LogiCORE pr-decoupler.
-> +
-> +The Xilinx LogiCORE Dynamic Function eXchange(DFX) AXI shutdown manager
-> +manages one or more shutdown managers / fpga bridges.
-> +The controller can shutdown/passthrough the bridges which prevents
-
-Delete 4 lines above.
-
-The DFX AXI shutdown manager prevents
-
-> +AXI traffic from passing through the bridge. The controller safely
-> +handles AXI4MM and AXI4-Lite interfaces on a Reconfigurable Partition
-> +when it is undergoing dynamic reconfiguration (DFX), preventing system
-
-I don't know about the use of '(DFX)' here, above it is Dynamic Function eXchange'
-
-Here it is dynamic reconfiguration, maybe just delete the '(DFX)'
-
-> +deadlock that can occur if AXI transactions are interrupted by DFX
-> +
->  The Driver supports only MMIO handling. A PR region can have multiple
-> -PR Decouplers which can be handled independently or chained via decouple/
-> -decouple_status signals.
-> +PR Decouplers/AXI shutdown manager which can be handled independently
-> +or chained via decouple/ decouple_status signals.
-Being compatible, i don't think it is necessary to add to / change this section.
->  
->  Required properties:
->  - compatible		: Should contain "xlnx,pr-decoupler-1.00" followed by
-> -                          "xlnx,pr-decoupler"
-> +                          "xlnx,pr-decoupler" or
-> +			  "xlnx,dfx-axi-shutdown-manager-1.00" followed by
-> +			  "xlnx,dfx-axi-shutdown-manager"
->  - regs			: base address and size for decoupler module
->  - clocks		: input clock to IP
->  - clock-names		: should contain "aclk"
-
-Adding an example similar to the existing would be helpful.
-
-Tom
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index 78672124d28b..27343c016e42 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -363,6 +363,7 @@
+ 439	common	faccessat2		sys_faccessat2
+ 440	common	process_madvise		sys_process_madvise
+ 441	common	epoll_pwait2		sys_epoll_pwait2
++442	common	hr_sleep		sys_hr_sleep
+ 
+ #
+ # Due to a historical design error, certain syscalls are numbered differently
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 743c852e10f2..422410c60a9f 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -1988,6 +1988,67 @@ SYSCALL_DEFINE2(nanosleep_time32, struct old_timespec32 __user *, rqtp,
+ }
+ #endif
+ 
++#ifdef CONFIG_64BIT
++
++
++typedef struct _control_record {
++	struct task_struct *task;
++	int pid;
++	int awake;
++	struct hrtimer hr_timer;
++} control_record;
++
++
++static enum hrtimer_restart hr_sleep_callback(struct hrtimer *timer)
++{
++	control_record *control;
++	struct task_struct *the_task;
++
++	control = (control_record *)container_of(timer, control_record, hr_timer);
++	control->awake = 1;
++	the_task = control->task;
++	wake_up_process(the_task);
++
++	return HRTIMER_NORESTART;
++}
++
++/**
++ * hr_sleep - a high-resolution sleep service for fine-grained timeouts
++ * @nanoseconds:	the requested sleep period in nanoseconds
++ *
++ * Returns:
++ * 0 when the sleep request successfully terminated
++ * -EINVAL if a sleep period < 0 is requested
++ */
++SYSCALL_DEFINE1(hr_sleep, long, nanoseconds)
++{
++	DECLARE_WAIT_QUEUE_HEAD(the_queue);//here we use a private queue
++	control_record *control;
++	ktime_t ktime_interval;
++
++	if (nanoseconds < 0)
++		return -EINVAL;
++
++	if (nanoseconds == 0)
++		return 0;
++
++	ktime_interval = ktime_set(0, nanoseconds);
++	control = (control_record *)((void *) current->stack + sizeof(struct thread_info));
++	hrtimer_init(&(control->hr_timer), CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++	control->hr_timer.function = &hr_sleep_callback;
++	control->task = current;
++	control->pid  = control->task->pid; //current->pid is more costly
++	control->awake = 0;
++	hrtimer_start(&(control->hr_timer), ktime_interval, HRTIMER_MODE_REL);
++	wait_event_interruptible(the_queue, control->awake == 1);
++	hrtimer_cancel(&(control->hr_timer));
++
++	return 0;
++
++}
++
++#endif
++
+ /*
+  * Functions related to boot-time initialization:
+  */
+-- 
+2.25.1
 
