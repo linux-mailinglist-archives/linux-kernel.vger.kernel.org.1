@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194C12F6F49
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D162F6F3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731190AbhAOAKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 19:10:06 -0500
-Received: from esgaroth.petrovitsch.at ([78.47.184.11]:1201 "EHLO
-        esgaroth.tuxoid.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731040AbhAOAKG (ORCPT
+        id S1731167AbhAOAFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 19:05:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44892 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731129AbhAOAFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 19:10:06 -0500
-Received: from thorin.petrovitsch.priv.at (80-110-120-15.cgn.dynamic.surfer.at [80.110.120.15])
-        (authenticated bits=0)
-        by esgaroth.tuxoid.at (8.15.2/8.15.2) with ESMTPSA id 10F03Ikx015508
-        (version=TLSv1 cipher=AES256-SHA bits=256 verify=NO);
-        Fri, 15 Jan 2021 01:03:19 +0100
-Message-ID: <6437080014a3a9af63f2c50b620f389c1f104e91.camel@petrovitsch.priv.at>
-Subject: Re: Old platforms: bring out your dead
-From:   Bernd Petrovitsch <bernd@petrovitsch.priv.at>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Arnd Bergmann <arnd@kernel.org>, Willy Tarreau <w@1wt.eu>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.osdn.me>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Date:   Fri, 15 Jan 2021 01:03:14 +0100
-In-Reply-To: <CAHp75VceqwbfQ=z34K=soKu4-qvLVEtobFg1sO4jukRcT7BXBg@mail.gmail.com>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
-         <20210109055645.GA2009@1wt.eu>
-         <CAK8P3a1C+EUvyLm3fo8TGOV39hhaxhtDM3cX_QLc-=WCzRksMw@mail.gmail.com>
-         <6fb7e3f5035d44fab9801001f1811b59@AcuMS.aculab.com>
-         <CAHp75Vf43_zqDX9K4GmkRd7fujY2zC8=LneSMFpC2qnJL_uG1A@mail.gmail.com>
-         <CACRpkdaH-1s8DnRUPVRSQgqUE99MdWjKGLv_y6iYnXU6p4dwUg@mail.gmail.com>
-         <CAHp75Ve3QqLqe2sQhNgdrDfKm2uSwXFwMr5_GgGf3tiuCp2DBQ@mail.gmail.com>
-         <CAHp75VceqwbfQ=z34K=soKu4-qvLVEtobFg1sO4jukRcT7BXBg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 14 Jan 2021 19:05:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610669053;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xQ0ErKvc7UzwqNKxM2CmsA5gF/0THDUFsSSbaFvNOvI=;
+        b=ZKVtR86mFyIUTizHKhJ6SDG5yGb77hx411RUHOTNlDlTfSQbKNR1pjX5Um/IClRjnfESxQ
+        x68SxvsrH7tdKg1+tK6eA1Nx89DspedvBEjnvdvL9JZjgaC/B+NdZ6GgAtJl8zKIfH+420
+        sj8tvctqxxlbFfM4AObogGCaUaDD2m4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-jopQxvanNzadbIv647B3qA-1; Thu, 14 Jan 2021 19:04:10 -0500
+X-MC-Unique: jopQxvanNzadbIv647B3qA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 425DE107ACF7;
+        Fri, 15 Jan 2021 00:04:08 +0000 (UTC)
+Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B534B19C45;
+        Fri, 15 Jan 2021 00:04:01 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 18:03:59 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH] Documentation: livepatch: document reliable stacktrace
+Message-ID: <20210115000359.dxzivd7hvqvhkqji@treble>
+References: <20210113165743.3385-1-broonie@kernel.org>
+ <20210113192735.rg2fxwlfrzueinci@treble>
+ <20210113202315.GI4641@sirena.org.uk>
+ <20210113222541.ysvtievx4o5r42ym@treble>
+ <20210114181013.GE2739@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-DCC-wuwien-Metrics: esgaroth.tuxoid.at 1290; Body=35 Fuz1=35 Fuz2=35
-X-Virus-Scanned: clamav-milter 0.97 at esgaroth.tuxoid.at
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-0.5 required=5.0 tests=AWL,UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.1
-X-Spam-Report: *  0.0 UNPARSEABLE_RELAY Informational: message has unparseable relay lines
-        * -0.5 AWL AWL: Adjusted score from AWL reputation of From: address
-X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on esgaroth.tuxoid.at
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210114181013.GE2739@C02TD0UTHF1T.local>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-13 at 14:21 +0200, Andy Shevchenko wrote:
-[...]
-> WRT x86 I run the search
-> https://pc104.org/product-search-results/?kw=x86&post_tag=&product_type=&specifications=&pc-bus-technology=&user=Filter+by+Member+Company
-> seems like all of them are based on Vortex86DX.
+On Thu, Jan 14, 2021 at 06:10:13PM +0000, Mark Rutland wrote:
+> On Wed, Jan 13, 2021 at 04:25:41PM -0600, Josh Poimboeuf wrote:
+> > On Wed, Jan 13, 2021 at 08:23:15PM +0000, Mark Brown wrote:
+> > > On Wed, Jan 13, 2021 at 01:33:13PM -0600, Josh Poimboeuf wrote:
+> > > 
+> > > > I think it's worth mentioning a little more about objtool.  There are a
+> > > > few passing mentions of objtool's generation of metadata (i.e. ORC), but
+> > > > objtool has another relevant purpose: stack validation.  That's
+> > > > particularly important when it comes to frame pointers.
+> > > 
+> > > > For some architectures like x86_64 and arm64 (but not powerpc/s390),
+> > > > it's far too easy for a human to write asm and/or inline asm which
+> > > > violates frame pointer protocol, silently causing the violater's callee
+> > > > to get skipped in the unwind.  Such architectures need objtool
+> > > > implemented for CONFIG_STACK_VALIDATION.
+> > > 
+> > > This basically boils down to just adding a statement saying "you may
+> > > need to depend on objtool" I think?
+> > 
+> > Right, but maybe it would be a short paragraph or two.
+> 
+> I reckon that's a top-level section between requirements and
+> consideration along the lines of:
+> 
+> 3. Compile-time analysis
+> ========================
+> 
+> To ensure that kernel code can be correctly unwound in all cases,
+> architectures may need to verify that code has been compiled in a manner
+> expected by the unwinder. For example, an unwinder may expect that
+> functions manipulate the stack pointer in a limited way, or that all
+> functions use specific prologue and epilogue sequences. Architectures
+> with such requirements should verify the kernel compilation using
+> objtool.
+> 
+> In some cases, an unwinder may require metadata to correctly unwind.
+> Where necessary, this metadata should be generated at build time using
+> objtool.
 
-There are some real/true PC104 boards left -
-still in production - with boards (though
-they tend to loose features like
-"memory-mapping over the ISA-bus").
+Sounds good to me.
 
-One is a - according to /proc/cpuinfo - a
-"Intel(R) Atom(TM) CPU  E3825  @ 1.33GHz".
-
-Sry, I cannot get the product name.
-
-MfG,
-	BErnd
 -- 
-Bernd Petrovitsch                  Email : bernd@petrovitsch.priv.at
-There is no cloud, just other people computers. - FSFE
-                     LUGA : http://www.luga.at
-
+Josh
 
