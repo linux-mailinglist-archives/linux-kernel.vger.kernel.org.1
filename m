@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651922F7AFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 039C92F7930
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388097AbhAOM4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:56:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41466 "EHLO mail.kernel.org"
+        id S1733013AbhAOMcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:32:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732079AbhAOMef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:34:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 769672389B;
-        Fri, 15 Jan 2021 12:33:54 +0000 (UTC)
+        id S1731366AbhAOMcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:32:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5814123356;
+        Fri, 15 Jan 2021 12:32:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714034;
-        bh=l/nbjSbORLmGViyj3t9CdQfuvI62Sk4S7BDeyEKBqoQ=;
+        s=korg; t=1610713920;
+        bh=s9BxNrvpscGgwT1e3MQossA3gfz3bqCYc0r2CbY/HFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZVPUkXkPQa4qCu6Kac0J3cryyfY+iVVgcOK4jeV6FQbRrP40g0ouKyWyqZtCxbvv7
-         W3jXMLs2H9dj5vis0vWiosc8xdG3qnUwNkyqKTYKVOoNMllm8jYcHE/qCbrRfFBi+0
-         jT555X8ndOOtTnO5X5COutUucXttayQPC1hPSEDs=
+        b=TzLn81eZFUb0Y2kerKVvlsk5fpt3U4D69233YVAYdcFLaRPHFJ/gGs80PCANSlJUy
+         er1i5MheeBLo6d2AcT+sq0ko7YzyZHIjWQI6hctS9qYcsHMboNPtUswkkGlnDcDf54
+         y7T87MOwkDRUrPBVWxgukIccJLYKBrIEdKwGLlDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        "=?UTF-8?q?Jouni=20K . =20Sepp=C3=A4nen?=" <jks@iki.fi>,
+        kernel test robot <lkp@intel.com>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 08/62] net: vlan: avoid leaks on register_vlan_dev() failures
-Date:   Fri, 15 Jan 2021 13:27:30 +0100
-Message-Id: <20210115121958.800341440@linuxfoundation.org>
+Subject: [PATCH 4.19 01/43] net: cdc_ncm: correct overhead in delayed_ndp_size
+Date:   Fri, 15 Jan 2021 13:27:31 +0100
+Message-Id: <20210115121957.114342575@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
+References: <20210115121957.037407908@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -39,39 +44,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+From: "Jouni K. Sepp�nen" <jks@iki.fi>
 
-[ Upstream commit 55b7ab1178cbf41f979ff83236d3321ad35ed2ad ]
+[ Upstream commit 7a68d725e4ea384977445e0bcaed3d7de83ab5b3 ]
 
-VLAN checks for NETREG_UNINITIALIZED to distinguish between
-registration failure and unregistration in progress.
+Aligning to tx_ndp_modulus is not sufficient because the next align
+call can be cdc_ncm_align_tail, which can add up to ctx->tx_modulus +
+ctx->tx_remainder - 1 bytes. This used to lead to occasional crashes
+on a Huawei 909s-120 LTE module as follows:
 
-Since commit cb626bf566eb ("net-sysfs: Fix reference count leak")
-registration failure may, however, result in NETREG_UNREGISTERED
-as well as NETREG_UNINITIALIZED.
+- the condition marked /* if there is a remaining skb [...] */ is true
+  so the swaps happen
+- skb_out is set from ctx->tx_curr_skb
+- skb_out->len is exactly 0x3f52
+- ctx->tx_curr_size is 0x4000 and delayed_ndp_size is 0xac
+  (note that the sum of skb_out->len and delayed_ndp_size is 0x3ffe)
+- the for loop over n is executed once
+- the cdc_ncm_align_tail call marked /* align beginning of next frame */
+  increases skb_out->len to 0x3f56 (the sum is now 0x4002)
+- the condition marked /* check if we had enough room left [...] */ is
+  false so we break out of the loop
+- the condition marked /* If requested, put NDP at end of frame. */ is
+  true so the NDP is written into skb_out
+- now skb_out->len is 0x4002, so padding_count is minus two interpreted
+  as an unsigned number, which is used as the length argument to memset,
+  leading to a crash with various symptoms but usually including
 
-This fix is similer to cebb69754f37 ("rtnetlink: Fix
-memory(net_device) leak when ->newlink fails")
+> Call Trace:
+>  <IRQ>
+>  cdc_ncm_fill_tx_frame+0x83a/0x970 [cdc_ncm]
+>  cdc_mbim_tx_fixup+0x1d9/0x240 [cdc_mbim]
+>  usbnet_start_xmit+0x5d/0x720 [usbnet]
 
-Fixes: cb626bf566eb ("net-sysfs: Fix reference count leak")
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+The cdc_ncm_align_tail call first aligns on a ctx->tx_modulus
+boundary (adding at most ctx->tx_modulus-1 bytes), then adds
+ctx->tx_remainder bytes. Alternatively, the next alignment call can
+occur in cdc_ncm_ndp16 or cdc_ncm_ndp32, in which case at most
+ctx->tx_ndp_modulus-1 bytes are added.
+
+A similar problem has occurred before, and the code is nontrivial to
+reason about, so add a guard before the crashing call. By that time it
+is too late to prevent any memory corruption (we'll have written past
+the end of the buffer already) but we can at least try to get a warning
+written into an on-disk log by avoiding the hard crash caused by padding
+past the buffer with a huge number of zeros.
+
+Signed-off-by: Jouni K. Seppänen <jks@iki.fi>
+Fixes: 4a0e3e989d66 ("cdc_ncm: Add support for moving NDP to end of NCM frame")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=209407
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Bjørn Mork <bjorn@mork.no>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/8021q/vlan.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/usb/cdc_ncm.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/net/8021q/vlan.c
-+++ b/net/8021q/vlan.c
-@@ -280,7 +280,8 @@ static int register_vlan_device(struct n
- 	return 0;
+--- a/drivers/net/usb/cdc_ncm.c
++++ b/drivers/net/usb/cdc_ncm.c
+@@ -1127,7 +1127,10 @@ cdc_ncm_fill_tx_frame(struct usbnet *dev
+ 	 * accordingly. Otherwise, we should check here.
+ 	 */
+ 	if (ctx->drvflags & CDC_NCM_FLAG_NDP_TO_END)
+-		delayed_ndp_size = ALIGN(ctx->max_ndp_size, ctx->tx_ndp_modulus);
++		delayed_ndp_size = ctx->max_ndp_size +
++			max_t(u32,
++			      ctx->tx_ndp_modulus,
++			      ctx->tx_modulus + ctx->tx_remainder) - 1;
+ 	else
+ 		delayed_ndp_size = 0;
  
- out_free_newdev:
--	if (new_dev->reg_state == NETREG_UNINITIALIZED)
-+	if (new_dev->reg_state == NETREG_UNINITIALIZED ||
-+	    new_dev->reg_state == NETREG_UNREGISTERED)
- 		free_netdev(new_dev);
- 	return err;
- }
+@@ -1308,7 +1311,8 @@ cdc_ncm_fill_tx_frame(struct usbnet *dev
+ 	if (!(dev->driver_info->flags & FLAG_SEND_ZLP) &&
+ 	    skb_out->len > ctx->min_tx_pkt) {
+ 		padding_count = ctx->tx_curr_size - skb_out->len;
+-		skb_put_zero(skb_out, padding_count);
++		if (!WARN_ON(padding_count > ctx->tx_curr_size))
++			skb_put_zero(skb_out, padding_count);
+ 	} else if (skb_out->len < ctx->tx_curr_size &&
+ 		   (skb_out->len % dev->maxpacket) == 0) {
+ 		skb_put_u8(skb_out, 0);	/* force short packet */
 
 
