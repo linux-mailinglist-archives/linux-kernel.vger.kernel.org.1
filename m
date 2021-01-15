@@ -2,83 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2322C2F77AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A497D2F77BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbhAOLcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:32:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35152 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725910AbhAOLcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:32:08 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EF8CAACB0;
-        Fri, 15 Jan 2021 11:31:26 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 12:31:26 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: Re: [PATCH] objtool: Don't fail on missing symbol table
-In-Reply-To: <a96c3f76173c7021a2298bd73362313736e674b6.1610663051.git.jpoimboe@redhat.com>
-Message-ID: <alpine.LSU.2.21.2101151217000.4375@pobox.suse.cz>
-References: <a96c3f76173c7021a2298bd73362313736e674b6.1610663051.git.jpoimboe@redhat.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1728002AbhAOLes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:34:48 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2356 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726137AbhAOLer (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 06:34:47 -0500
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DHJpn61gPz67c1b;
+        Fri, 15 Jan 2021 19:28:49 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 15 Jan 2021 12:34:04 +0100
+Received: from [10.47.4.21] (10.47.4.21) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Fri, 15 Jan
+ 2021 11:34:02 +0000
+Subject: Re: [RESEND PATCH v3 0/4] iommu/iova: Solve longterm IOVA issue
+To:     <robin.murphy@arm.com>, <joro@8bytes.org>, <will@kernel.org>
+CC:     <xiyou.wangcong@gmail.com>, <iommu@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <chenxiang66@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Kashyap Desai <kashyap.desai@broadcom.com>
+References: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <8830b44d-3893-6096-0cf1-37a1e8bc6c6b@huawei.com>
+Date:   Fri, 15 Jan 2021 11:32:52 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.4.21]
+X-ClientProxiedBy: lhreml708-chm.china.huawei.com (10.201.108.57) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021, Josh Poimboeuf wrote:
++ linux-scsi (see 
+https://lore.kernel.org/linux-iommu/1607538189-237944-4-git-send-email-john.garry@huawei.com/)
 
-> Thanks to a recent binutils change which doesn't generate unused
-> symbols, it's now possible for thunk_64.o be completely empty with
-> CONFIG_PREEMPTION: no text, no data, no symbols.
-
-"without CONFIG_PREEMPTION", or did I misunderstand?
- 
-> We could edit the Makefile to only build that file when
-> CONFIG_PREEMPTION is enabled, but that will likely create confusion
-> if/when the thunks end up getting used by some other code again.
+On 17/11/2020 10:25, John Garry wrote:
+> This series contains a patch to solve the longterm IOVA issue which
+> leizhen originally tried to address at [0].
 > 
-> Just ignore it and move on.
+> A sieved kernel log is at the following, showing periodic dumps of IOVA
+> sizes, per CPU and per depot bin, per IOVA size granule:
+> https://raw.githubusercontent.com/hisilicon/kernel-dev/topic-iommu-5.10-iova-debug-v3/aging_test
 > 
-> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-
-with the note below.
-
-> ---
->  tools/objtool/elf.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+> Notice, for example, the following logs:
+> [13175.355584] print_iova1 cpu_total=40135 depot_total=3866 total=44001
+> [83483.457858] print_iova1 cpu_total=62532 depot_total=24476 total=87008
 > 
-> diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-> index be89c741ba9a..2b0f4f52f7b5 100644
-> --- a/tools/objtool/elf.c
-> +++ b/tools/objtool/elf.c
-> @@ -380,8 +380,11 @@ static int read_symbols(struct elf *elf)
->  
->  	symtab = find_section_by_name(elf, ".symtab");
->  	if (!symtab) {
-> -		WARN("missing symbol table");
-> -		return -1;
-> +		/*
-> +		 * A missing symbol table is actually possible if it's an empty
-> +		 * .o file.  This can happen for thunk_64.o.
-> +		 */
-> +		return 0;
->  	}
+> Where total IOVA rcache size has grown from 44K->87K over a long time.
+> 
 
-We rely on .symtab presence elsewhere in the code. See 
-elf_create_{rel,rela}_reloc_section(). However, there should never be a 
-problem. If there is a need to create a new reloc section (either for a 
-static call site, or ORC), there should always be a symbol to create it 
-for (or because of it).
+JFYI, I am able to reproduce this aging issue on another storage card, 
+an LSI SAS 3008, so now it's harder to say it's an issue specific to a 
+(buggy) single driver.
 
-Miroslav
+A log of the IOVA size dumps is here:
+https://raw.githubusercontent.com/hisilicon/kernel-dev/064c4dc8869b3f2ad07edffceafde0b129f276b0/lsi3008_dmesg
+
+Notice again how the total IOVA size goes up over time, like:
+[ 68.176914] print_iova1 cpu_total=23663 depot_total=256 total=23919
+[ 2337.008194] print_iova1 cpu_total=67361 depot_total=9088 total=76449
+[17141.860078] print_iova1 cpu_total=73397 depot_total=10368 total=83765
+[27087.850830] print_iova1 cpu_total=73386 depot_total=10624 total=84010
+[10434.042877] print_iova1 cpu_total=90652 depot_total=12928 total=103580
+
+I had to change some settings for that storage card to reproduce, though 
+[0]. Could explain why no other reports.
+
+So please consider this issue again...
+
+Thanks,
+john
+
+[0] 
+https://lore.kernel.org/linux-scsi/dd8e6fdc-397d-b6ad-3371-0b65d1932ad1@huawei.com/T/#m953d21446a5756981412c92d0924ca65c8d2f3a5
+
+> Along with this patch, I included the following:
+> - A smaller helper to clear all IOVAs for a domain
+> - Change polarity of the IOVA magazine helpers
+> - Small optimisation from Cong Wang included, which was never applied [1].
+>    There was some debate of the other patches in that series, but this one
+>    is quite straightforward.
+> 
+> Differnces to v2:
+> - Update commit message for patch 3/4
