@@ -2,129 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9950C2F7EE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B772F7EE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732655AbhAOPFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:05:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732392AbhAOPFE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:05:04 -0500
-Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [IPv6:2620:100:9001:583::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D60C0613C1;
-        Fri, 15 Jan 2021 07:04:24 -0800 (PST)
-Received: from pps.filterd (m0050093.ppops.net [127.0.0.1])
-        by m0050093.ppops.net-00190b01. (8.16.0.43/8.16.0.43) with SMTP id 10FExjQB021067;
-        Fri, 15 Jan 2021 15:03:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=jan2016.eng;
- bh=4NGpeS4WaMCORqksBK+py+vQk/geyPMnN+ZkOixm5oI=;
- b=T0L7p+Jfe699n9pw++xezCPGrALh5GOi+wbx9bYtCzEDKhreXMeJhdO2KgWjUBE3+E2F
- rpGAnA2/do2Yjrfre4xmjMfDDZeehUfqUMHzdtNUKwZ09clXXdARJ5UAzWs1tIQp+KeA
- wgK3Dq9O3AmfE2NL8ntodeIaWaY0TD0ch1RS+JlCloERKXp3klCvJdtXLc3gSR0czmzm
- R3F73kuYpnbjy2AXoXhVQF3fJjTJ80EnU0fl3N9X+/rfkDiONi+N3PA4dycdgTbeJGcV
- UHRMdBMSKmtQxqwhMCuM1zJZRa28v5ZCeXehxAjef3rmkP+GjduQp8WkQiqyqCqqTwT2 xg== 
-Received: from prod-mail-ppoint1 (prod-mail-ppoint1.akamai.com [184.51.33.18] (may be forged))
-        by m0050093.ppops.net-00190b01. with ESMTP id 3605hd50um-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Jan 2021 15:03:55 +0000
-Received: from pps.filterd (prod-mail-ppoint1.akamai.com [127.0.0.1])
-        by prod-mail-ppoint1.akamai.com (8.16.0.43/8.16.0.43) with SMTP id 10FF3lnr004193;
-        Fri, 15 Jan 2021 10:03:54 -0500
-Received: from prod-mail-relay11.akamai.com ([172.27.118.250])
-        by prod-mail-ppoint1.akamai.com with ESMTP id 361qhxxn3j-1;
-        Fri, 15 Jan 2021 10:03:53 -0500
-Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
-        by prod-mail-relay11.akamai.com (Postfix) with ESMTP id 977CF24A4C;
-        Fri, 15 Jan 2021 15:03:53 +0000 (GMT)
-Subject: Re: [PATCH v2 2/3] KVM: x86: introduce definitions to support static
- calls for kvm_x86_ops
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     seanjc@google.com, kvm@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andrea Arcangeli <aarcange@redhat.com>
-References: <cover.1610680941.git.jbaron@akamai.com>
- <e5cc82ead7ab37b2dceb0837a514f3f8bea4f8d1.1610680941.git.jbaron@akamai.com>
- <YAFf2+nvhvWjGImy@hirez.programming.kicks-ass.net>
- <84b2f5ba-1a16-cb01-646c-37e25d659650@redhat.com>
-From:   Jason Baron <jbaron@akamai.com>
-Message-ID: <2e2cd2d9-e010-b435-3aba-35bac1b4cc14@akamai.com>
-Date:   Fri, 15 Jan 2021 10:03:53 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <84b2f5ba-1a16-cb01-646c-37e25d659650@redhat.com>
-Content-Type: text/plain; charset=utf-8
+        id S1732030AbhAOPFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:05:00 -0500
+Received: from mail-bn7nam10on2073.outbound.protection.outlook.com ([40.107.92.73]:21984
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726019AbhAOPE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 10:04:59 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SJ5kBHXA2/4i8kq671qXo3ye4jSQo9f2ViYB/Qt5rs9PgcChUO8as6PKlFo2l09H7U2434XRj9GMbdHnKIjE90FaKfjEMVplzNPHTqU6aw9zwfD+te9TjBl92lVzDRbkmBYHYoWuB6yHV64HScfGLqaDsu22rIhXAnsS+Ni8Ho70s+XZ5908kaAJJOlus6i/JCE9rTGTgvK2uvKlbk29LQxjwEZrA/SQAbvz1h2R6DBh2UinGhOqTA/Joi13F27aONaJL7GgyHFCbvN3328EW3lVLiJ4mrsh4LihqRwaY5JOf7AL4U+MotcdLIsIf6iLaIU2GZD1s0kGn8gSPp4+iA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2u97677o1xT7Y5Pcq8UXX0toGys6bFBdhxtFRH/nl3o=;
+ b=Jbf/9EDeMaMkQ2F6Fa3F83sBSgs6OQwuZxRjoKPNOc1rq7jTnC3c0jJH+Mv0jWmIFeNLMbdyUaRBPuq/SYglMRGkevBIxDNC4qf9RJ7Jmji9xZgsnf+le3FWbWBV67hoanQel45BLvrstmXmHm0v081QhEmnCZhOFq9DyLtq069qnUsa5HSrlAQHsCbooU77d1BmR5z1Fo8QpGw3zC1LtnmEStPJQIWb5rzTKd2HcO6dhmIRpYo3PW6Ri4hDbIPov6Tnc/F7nGamY4agkZnoAz22+/mm9oPgEkzJzg3Ic7xE4QGAuUZwrSPB/HXat8ItHJaD1lmbbm01PERzwYTn3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2u97677o1xT7Y5Pcq8UXX0toGys6bFBdhxtFRH/nl3o=;
+ b=oL27IsW1dem9HweBMW/8jwgpfBmOiWCAF4zNdU7GS4px3SiH449QVHX58Dr58prr+v8Rr+wDWN8S6U2svd1EJF01y0Fhm5Z49DAvvhJ7sbCgN0/Lq7SrCUukIKIVswnt9QV8QO1feIYcYflqxP0EDhSe1NI5yiUuRwYRlKel/6Y=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB3916.namprd12.prod.outlook.com (2603:10b6:5:1ca::21)
+ by DM6PR12MB3355.namprd12.prod.outlook.com (2603:10b6:5:115::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Fri, 15 Jan
+ 2021 15:04:05 +0000
+Received: from DM6PR12MB3916.namprd12.prod.outlook.com
+ ([fe80::f872:3677:28c3:660b]) by DM6PR12MB3916.namprd12.prod.outlook.com
+ ([fe80::f872:3677:28c3:660b%5]) with mapi id 15.20.3763.012; Fri, 15 Jan 2021
+ 15:04:05 +0000
+Subject: Re: linux-next: build warnings after merge of the drm-misc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Darren Salt <devspam@moreofthesa.me.uk>,
+        Nirmoy Das <nirmoy.das@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210115122310.7dd6bb11@canb.auug.org.au>
+From:   Nirmoy <nirmodas@amd.com>
+Message-ID: <9bb019ff-cbaa-3b1e-4688-80440a6d5c10@amd.com>
+Date:   Fri, 15 Jan 2021 16:03:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+In-Reply-To: <20210115122310.7dd6bb11@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-15_08:2021-01-15,2021-01-15 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 malwarescore=0
- spamscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101150095
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-15_08:2021-01-15,2021-01-15 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
- malwarescore=0 priorityscore=1501 mlxlogscore=999 adultscore=0
- clxscore=1015 bulkscore=0 spamscore=0 impostorscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101150095
-X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 184.51.33.18)
- smtp.mailfrom=jbaron@akamai.com smtp.helo=prod-mail-ppoint1
+X-Originating-IP: [165.204.84.11]
+X-ClientProxiedBy: BN4PR12CA0020.namprd12.prod.outlook.com
+ (2603:10b6:403:2::30) To DM6PR12MB3916.namprd12.prod.outlook.com
+ (2603:10b6:5:1ca::21)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (165.204.84.11) by BN4PR12CA0020.namprd12.prod.outlook.com (2603:10b6:403:2::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Fri, 15 Jan 2021 15:04:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 57d19b76-9661-4c2b-3584-08d8b966ccc0
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3355:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB33554351990901A7A4BAFDD18BA70@DM6PR12MB3355.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:32;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: j/1fVnVLuqPdPeB9IDrcRnfm1IdQiqJnuXgdgxle5wuPNj9/xfEMrqjIc5AHbRyyiMVnAaNb6jaTjipRyIllj7n55p8TZrx7QJrOTSuR5x6jHgvTF4CM82JwikHOXfC2nXoAhjP4mYUg6oarZcMikdl9u14zzl8tFNp3k4qluzyP+8IVZe7qMpg+cZPr3Qkv/knAw5OLvME6HBUOTum/B3QLXtUZmbJ5bip3JkSxXri76uicc8MOCkNzN3Vj0bPBXvSvlpy+cp1HVaS3kjFtdNMcxxf18Nr8pU09p/huRvIEkg3ziJXzkIlGARFPu32Mue9vzJdtv4RKfmntvGhumZNUym7Rprrh2h3HxyRj+hPyn8EavpifM4JPMgTh+7WLDW0VTeyP6bc2UYkCy8naIbqRrioTsBSatMtC4qg5aDoH2XFk0It4pO9H8O8WbF192HDLRweD9lWf+B1ijEhylJzd7E6JV0QzyCv5s1BLfzhA3cDZDEPQLwFHZ2IH8m2DX+Ie9341rwiEj9XInGvKzgSox6ZukVvViLJB//cIdmvAhc9eXYZHEBBwzzDdvbUit548dT24H3xO8fhTQWBZnAIKI6rrYftBu5q9/l2X17Q=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3916.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39860400002)(366004)(8676002)(110136005)(956004)(53546011)(2616005)(6512007)(66476007)(186003)(26005)(6506007)(54906003)(4326008)(316002)(52116002)(16526019)(5660300002)(6666004)(6486002)(478600001)(31686004)(2906002)(8936002)(66556008)(83380400001)(36756003)(66946007)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?sixYt3kUxBbXuRC0BhqQK2XUicZoicliDqMq+tMfVoxEwN3or2oJlrJM?=
+ =?Windows-1252?Q?DBlJ97cZMtUcwzsVbukrpCQIH/3LJn61BD9ASvJ7jqfodFJuyG/jZuKY?=
+ =?Windows-1252?Q?851GfMZ3mS6GndmYsAf9JHmGbEAtR3Mm+4cUmfxYOuVwUbanbGVYumrW?=
+ =?Windows-1252?Q?//sNDVHeXPa5ZrIf6iuW/GrctZVKLxu8KlXdfEOVG3ziCPSfK1MBTPEg?=
+ =?Windows-1252?Q?ANPcxIiI+1Zsk2jn7Q2yXW5A9vCyfRuP+FiV+63VUmoQ3j8AQyKFUyN0?=
+ =?Windows-1252?Q?k9H6EjvRKG2gE9N4s2ACHUlt1evNlN6gVHwyj/C8h6b+2Od/6BVa0GGH?=
+ =?Windows-1252?Q?tjfmVVqu9zEJoQN19g3I8AA3Crxsyl2WvMaMsyUHeln32FWnmh2pLvAd?=
+ =?Windows-1252?Q?7JGz8huFgKSJ0Ycj+uTtcAPQErVIHPA1JWOW+YhpfOBW1N7gzDqUf3Aq?=
+ =?Windows-1252?Q?UQXqo6IovPrMvdKNOztW6DzvpbEPPm6t1clzCzHNgaHB/1t1+3ku1ze0?=
+ =?Windows-1252?Q?JO0/jPE3GS/cytwnIiVL743xOK8TsEceUnrvTLkD5wcLOppKIqoL1rLI?=
+ =?Windows-1252?Q?ySxLmdzOc7F9iO1Hpd4VFcW/DFeG5krI+vjDCltcE8cHJTJaaa41rt8S?=
+ =?Windows-1252?Q?HYPJ9LnVTwmtKBL9PBVkxue2AZZLVH5vYedmHeEzXwCb1jzP6Jhs402E?=
+ =?Windows-1252?Q?LyvEVpU4vLWgifrduSw66GiNrzEMpGM1wteUozk+KlLeB1Ffyzt8tWch?=
+ =?Windows-1252?Q?SzfwhzJo62oQ8lCMRjuS2vPeZHrGQFPTn/KV065tVwqsj8XET8tI1YlM?=
+ =?Windows-1252?Q?4kfn6X9pl41SkClIXI5kdNHGVpgREWNuCy1klCbf7LVhYIWkIKk6Wx9i?=
+ =?Windows-1252?Q?pXK2h2qZjXcwcwl/TW0fIdYWX3LqlyNoQKNWBNgFgVDwswl2AaZFqOEf?=
+ =?Windows-1252?Q?01v+1ECatcwEnhqDMsgCajPbXgqKOlblKtH8pRjCQ79E/wrP1ixCFL4/?=
+ =?Windows-1252?Q?6cKaLNyyMas0uJt8iFuCDw77bp5Iy8ePeDoIXLZ7U+qDOZemMvl/kI3n?=
+ =?Windows-1252?Q?nROFiPlRI7YxXKDJ?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57d19b76-9661-4c2b-3584-08d8b966ccc0
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3916.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2021 15:04:04.8804
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Q/GDQYF7+nRJqDu7o3i+BgHfPqi7cbPxrcr4jwAUv46H7otcZYsSFPWDxq0czzZnjfiqKGrk1oCt6CZHWF6cMg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3355
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Stephen,
+
+On 1/15/21 2:23 AM, Stephen Rothwell wrote:
+> Hi all,
+>
+> After merging the drm-misc tree, today's linux-next build (x86_64
+> allmodconfig) produced this warning:
+>
+> drivers/gpu/drm/amd/amdgpu/amdgpu_display.c: In function 'amdgpu_display_user_framebuffer_create':
+> drivers/gpu/drm/amd/amdgpu/amdgpu_display.c:929:24: warning: unused variable 'adev' [-Wunused-variable]
+>    929 |  struct amdgpu_device *adev = drm_to_adev(dev);
+>        |                        ^~~~
+>
+> Introduced by commit
+>
+>    8f66090b7bb7 ("drm/amdgpu: Remove references to struct drm_device.pdev")
 
 
-On 1/15/21 8:50 AM, Paolo Bonzini wrote:
-> On 15/01/21 10:26, Peter Zijlstra wrote:
->>> +#define KVM_X86_OP(func)                         \
->>> +    DEFINE_STATIC_CALL_NULL(kvm_x86_##func,                 \
->>> +                *(((struct kvm_x86_ops *)0)->func));
->>> +#define KVM_X86_OP_NULL KVM_X86_OP
->>> +#include <asm/kvm-x86-ops.h>
->>> +EXPORT_STATIC_CALL_GPL(kvm_x86_get_cs_db_l_bits);
->>> +EXPORT_STATIC_CALL_GPL(kvm_x86_cache_reg);
->>> +EXPORT_STATIC_CALL_GPL(kvm_x86_tlb_flush_current);
->> Would something like:
->>
->>   
->> https://urldefense.com/v3/__https://lkml.kernel.org/r/20201110103909.GD2594@hirez.programming.kicks-ass.net__;!!GjvTz_vk!GbAPurpdyP1TaDRZN0NvvBkOLJhmRHzNtv0ZVIwZqNrJpMYze75mJzpUNJMRAg$
->>
->> Be useful? That way modules can call the static_call() but not change
->> it.
->>
-> 
-> Maybe not in these cases, but in general there may be cases where we later want to change the static_call (for example replacing jump labels with
-> static_calls).
-> 
-> Paolo
-> 
+I just sent a patch for this.
 
-I tried this out but got:
 
-ERROR: modpost: "__SCK__kvm_x86_cache_reg" [arch/x86/kvm/kvm-amd.ko] undefined!
-ERROR: modpost: "__SCK__kvm_x86_tlb_flush_current" [arch/x86/kvm/kvm-intel.ko] undefined!
-ERROR: modpost: "__SCK__kvm_x86_get_cs_db_l_bits" [arch/x86/kvm/kvm-intel.ko] undefined!
-ERROR: modpost: "__SCK__kvm_x86_cache_reg" [arch/x86/kvm/kvm-intel.ko] undefined!
+>
+> drivers/gpu/drm/amd/amdgpu/amdgpu_device.c: In function 'amdgpu_device_resize_fb_bar':
+> drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:1109:6: warning: unused variable 'space_needed' [-Wunused-variable]
+>   1109 |  u64 space_needed = roundup_pow_of_two(adev->gmc.real_vram_size);
+>        |      ^~~~~~~~~~~~
+>
+> Introduced by commit
+>
+>    453f617a30aa ("drm/amdgpu: Resize BAR0 to the maximum available size, even if it doesn't cover VRAM")
 
-I'm a bit confused because we have:
 
-#define __static_call(name)                                             \
-({                                                                      \
-        __ADDRESSABLE(STATIC_CALL_KEY(name));                           \
-        &STATIC_CALL_TRAMP(name);                                       \
-})
+We have a fix already merged in drm-misc-next for this.
 
-And so it looks to me like we need to still reference the key from the module code.
 
 Thanks,
 
--Jason
+Nirmoy
+
+>
