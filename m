@@ -2,166 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5CE2F806A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EB72F8077
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732364AbhAOQP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:15:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731175AbhAOQP5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:15:57 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9344C06179B
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 08:15:36 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id r9so8976065otk.11
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 08:15:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iPVfTfHT6gBAu795m3aMHoadgoj03D2XwLab0IXl/KI=;
-        b=fRz2PsY+IiJRIlRpWYA01nOlQDMkIc3+bzy+f+B3aETjnc4lrmL82O34lrRJeAYqKL
-         PM7VboLHDgF94iykA1AUpoK8oygf7ee74W4KXWCxaR6dkDpeq7obO32vFpV90rZn31T3
-         lVAM1dMP/1x17O+tHeAZJNy8RWm/xgt6OOr1WIRwZ5WTpyjGYCLWMhIvMB/C0FFH3YXf
-         czLJtem84F+aidVI8flVnY5X/HxvkhkCIWaxkMO7/76f8Hlf2bnIaonltDEGT9Ah5SNz
-         BZhAxg1Kkf8ItwwFKeM+15072ayLQeSrlP4gGq8AtfbQFvMK3pArIrJdl/Wk+m62zDWP
-         UlUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iPVfTfHT6gBAu795m3aMHoadgoj03D2XwLab0IXl/KI=;
-        b=EHpyb7uI73zIvUBbWARe/WFQsP4RN/XtKp4p9XA9IiPbWu/jnpaktm2CzRlCyUUdWt
-         G+0aZxsxHTrQarmisVkVMYdglVadZB6xzXL7rEf5fSJ/bAm2JsqAkuyYTYlgsA+fTk9c
-         S9wZ0Mnp7V04sSqwh5UAD8Y8EUHGszsX7QHSbtjLtgFGlJ9vxfn2SGzEgAjfDK4mhcz0
-         roND4I1/VZQoIGmXTBJcE1+qN2OZdq+oxk+m19mPy1xPNIpaTTMVtHXtzhSQ6Og8lX89
-         Jowe7jcyi1n2kvap6JG+D5oga3sABXB01/ZxxXd6y2XrZaqSwTORHCDtAE49o9QgPApQ
-         tqoA==
-X-Gm-Message-State: AOAM5339IF15y/QWKtJ5i9O9MSJCFmylrx4d/8BItdxKc49DjHKJcmDH
-        panYrJgQbXM4hGRMKYZ7i5NP9g==
-X-Google-Smtp-Source: ABdhPJwhQwng3lLCyVUn+0lS0lljn8lNlR018JLdd32oPBp51d9spPV8DW2uWmJVivUOa7dZtWxpxg==
-X-Received: by 2002:a05:6830:44a:: with SMTP id d10mr8631694otc.254.1610727336025;
-        Fri, 15 Jan 2021 08:15:36 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id m3sm1924324ots.72.2021.01.15.08.15.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 08:15:35 -0800 (PST)
-Date:   Fri, 15 Jan 2021 10:15:32 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Roja Rani Yarubandi <rojay@codeaurora.org>
-Cc:     ulf.hansson@linaro.org, robh+dt@kernel.org, wsa@kernel.org,
-        swboyd@chromium.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, mka@chromium.org,
-        akashast@codeaurora.org, msavaliy@qti.qualcomm.com,
-        parashar@codeaurora.org, rnayak@codeaurora.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        agross@kernel.org, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: power: Introduce
- 'assigned-performance-states' property
-Message-ID: <YAG/pNXQOS+C2zLr@builder.lan>
-References: <20201224111210.1214-1-rojay@codeaurora.org>
- <20201224111210.1214-2-rojay@codeaurora.org>
+        id S1728533AbhAOQSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:18:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726801AbhAOQSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 11:18:37 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D3CA23772;
+        Fri, 15 Jan 2021 16:17:55 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 11:17:53 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH 1/4] tracing: add error_report trace points
+Message-ID: <20210115111753.5b69579d@gandalf.local.home>
+In-Reply-To: <CAG_fn=Uq9SeT4wBsbuEEniy7UmQBvtaLwkgAAR_FqkqD7aoDfw@mail.gmail.com>
+References: <20210113091657.1456216-1-glider@google.com>
+        <20210113091657.1456216-2-glider@google.com>
+        <20210113161044.43bc1c1a@gandalf.local.home>
+        <CAG_fn=XSkOChCwBp=Vg6jWhZ8K44seCo=0Zu38iUpAj6eCUxjQ@mail.gmail.com>
+        <20210114095232.7ba3f9a8@gandalf.local.home>
+        <CAG_fn=Uq9SeT4wBsbuEEniy7UmQBvtaLwkgAAR_FqkqD7aoDfw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201224111210.1214-2-rojay@codeaurora.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 24 Dec 05:12 CST 2020, Roja Rani Yarubandi wrote:
+On Fri, 15 Jan 2021 13:53:19 +0100
+Alexander Potapenko <glider@google.com> wrote:
 
-> While most devices within power-domains which support performance states,
-> scale the performance state dynamically, some devices might want to
-> set a static/default performance state while the device is active.
-> These devices typically would also run off a fixed clock and not support
-> dynamically scaling the device's performance, also known as DVFS
-> techniques.
+> > #define REPORT_TOOL_LIST \
+> >   EM(KFENCE, kfence) \
+> >   EMe(KASAN, kasan)  
 > 
-> Add a property 'assigned-performance-states' which client devices can
-> use to set this default performance state on their power-domains.
-> 
-> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
-> ---
->  .../bindings/power/power-domain.yaml          | 49 +++++++++++++++++++
->  1 file changed, 49 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/power/power-domain.yaml b/Documentation/devicetree/bindings/power/power-domain.yaml
-> index aed51e9dcb11..a42977a82d06 100644
-> --- a/Documentation/devicetree/bindings/power/power-domain.yaml
-> +++ b/Documentation/devicetree/bindings/power/power-domain.yaml
-> @@ -66,6 +66,18 @@ properties:
->        by the given provider should be subdomains of the domain specified
->        by this binding.
->  
-> +  assigned-performance-states:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    description:
-> +       Some devices might need to configure their power domains in a default
-> +       performance state while the device is active. These devices typcially
-> +       would also run off a fixed clock and not support dynamically scaling
-> +       the device's performance, also known as DVFS techniques. Each cell in
-> +       performance state value corresponds to one power domain specified as
-> +       part of the power-domains property. Performance state value can be an
-> +       opp-level inside an OPP table of the power-domain and need not match
-> +       with any OPP table performance state.
-> +
->  required:
->    - "#power-domain-cells"
->  
-> @@ -131,3 +143,40 @@ examples:
->              min-residency-us = <7000>;
->          };
->      };
-> +
-> +  - |
-> +    parent4: power-controller@12340000 {
-> +        compatible = "foo,power-controller";
-> +        reg = <0x12340000 0x1000>;
-> +        #power-domain-cells = <0>;
-> +    };
-> +
-> +    parent5: power-controller@43210000 {
-> +        compatible = "foo,power-controller";
-> +        reg = <0x43210000 0x1000>;
-> +        #power-domain-cells = <0>;
-> +        operating-points-v2 = <&power_opp_table>;
-> +
-> +        power_opp_table: opp-table {
-> +            compatible = "operating-points-v2";
-> +
-> +            power_opp_low: opp1 {
-> +                opp-level = <16>;
-> +            };
-> +
-> +            rpmpd_opp_ret: opp2 {
-> +                opp-level = <64>;
-> +            };
-> +
-> +            rpmpd_opp_svs: opp3 {
-> +                opp-level = <256>;
-> +            };
-> +        };
-> +    };
-> +
-> +    child4: consumer@12341000 {
-> +        compatible = "foo,consumer";
-> +        reg = <0x12341000 0x1000>;
-> +        power-domains = <&parent4>, <&parent5>;
-> +        assigned-performance-states = <0>, <256>;
+> Thanks, will be done in v2!
+> Note that checkpatch doesn't really like this declaration style,
+> claiming that "Macros with complex values should be enclosed in
+> parentheses".
+> (although it is consistent with what's done in other trace event headers)
 
-May I ask how this is different from saying something like:
+checkpatch.pl hates most of the tracing macro code ;-)
 
-	required-opps = <&??>, <&rpmpd_opp_svs>:
+It's the one place that you can mostly ignore checkpatch reports.
 
-Regards,
-Bjorn
-
-> +    };
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+-- Steve
