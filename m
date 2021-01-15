@@ -2,217 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E922A2F759D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:40:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 475392F75A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728206AbhAOJj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:39:28 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:46283 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726045AbhAOJj1 (ORCPT
+        id S1729549AbhAOJkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:40:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728622AbhAOJkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:39:27 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0ULo2AUV_1610703515;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0ULo2AUV_1610703515)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 15 Jan 2021 17:38:41 +0800
-From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-To:     amitkarwar@gmail.com
-Cc:     ganapathi.bhat@nxp.com, huxinming820@gmail.com,
-        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] marvell/mwifiex: replace one-element array with flexible-array member.
-Date:   Fri, 15 Jan 2021 17:38:33 +0800
-Message-Id: <1610703513-933-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 15 Jan 2021 04:40:06 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA191C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 01:39:33 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id o10so1538675wmc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 01:39:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=imaj/ctA3L/wlWp3n7QdUSQrNtHtAb2R0yMsutlcFPY=;
+        b=cgNHpF2O+P66n9VszplNB6gDRihOfYqmDe4a9OIAshp+cU/z6aXgBreHhneSyDALZB
+         BFYGYyGUabYUiTlTHxRBvbTeYEGj5y+kFZ5f8osmjYQjsw8koD7JA2Krcm+uU5ZdCOXL
+         6UPcAz0nGGLXfXm0bGER9yAs+cwACT/tfr1gxEPjNxsGj6M1OHAAKFSlXDLO/i73v669
+         z9Iy84NcAxp0HiERnGCV2OdGBbHfRI2cyESBg8jBGFPVcrJtjpKUD8n2PBChgYLQ4+N+
+         GmZdCzUZXwIvOg9O3aik1NfifD3b9uFRIEsjXiDJuW6HQpBfj2Sw6TVSc22OTr5CQlO6
+         PHOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=imaj/ctA3L/wlWp3n7QdUSQrNtHtAb2R0yMsutlcFPY=;
+        b=JUevpCxBUeTDJ5Aq9w66pMNzJGSwre0/lVfBguP2Nu4xHB8BeDelyvpBjEsJyA2l+w
+         /s5PS6v4jI3ohbfJxMNFa4Caz8AivsNPb8vMjz/UVRzA2kuJQqJLqLMbcfN8kqg1G/lx
+         cGJJRE7nPWC8skPnA9IHmjDxrR5Rqfu0qopyshnJmkDhTwQy48wIz7c9fHD3aUWcrTYt
+         839bopwqNaBSm7BpaBcsxRzP0Q35TzVrXE3pzZjqXeensMA4g6P288f4wnuV/Wkm0/HY
+         +PWGompponUPp5iJT3D86jWmbLxwS1zKGd7xKUQoaql+Wnven07YFvIrDsJZ6RCq2hp7
+         MgJw==
+X-Gm-Message-State: AOAM531sRivUOjGGDdN63Y72fkBUuf/Pf3jA+OzaPXzfmraCJ/kSJiN6
+        fvYAtJd0NungHU0u9zyHd5G2BnmIkPfk2eUjezUY7g==
+X-Google-Smtp-Source: ABdhPJzdRWu/TfyZ/Gd97tSU+o2o0bt1wD1y05MueGCvzmmH7EPSDgX4zaroWKovIWX7b3kAAonKNBo6s9Su7SNi1RQ=
+X-Received: by 2002:a1c:1fc2:: with SMTP id f185mr7918821wmf.134.1610703572400;
+ Fri, 15 Jan 2021 01:39:32 -0800 (PST)
+MIME-Version: 1.0
+References: <20210111212031.2422-1-vitaly.wool@konsulko.com>
+In-Reply-To: <20210111212031.2422-1-vitaly.wool@konsulko.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Fri, 15 Jan 2021 15:09:21 +0530
+Message-ID: <CAAhSdy04Nm+ET3Oepe5zRyVWiWpZzmfe=0BrdOEPUHGEOF86Vw@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: simplify BUILTIN_DTB processing
+To:     Vitaly Wool <vitaly.wool@konsulko.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the follow coccicheck warnings:
+On Tue, Jan 12, 2021 at 2:51 AM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
+>
+> Provide __dtb_start as a parameter to setup_vm() in case
+> CONFIG_BUILTIN_DTB is true, so we don't have to duplicate
+> BUILTIN_DTB specific processing in MMU-enabled and MMU-disabled
+> versions of setup_vm().
+>
+> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
+> ---
+>  arch/riscv/kernel/head.S | 4 ++++
+>  arch/riscv/mm/init.c     | 4 ----
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+> index 16e9941900c4..f5a9bad86e58 100644
+> --- a/arch/riscv/kernel/head.S
+> +++ b/arch/riscv/kernel/head.S
+> @@ -260,7 +260,11 @@ clear_bss_done:
+>
+>         /* Initialize page tables and relocate to virtual addresses */
+>         la sp, init_thread_union + THREAD_SIZE
+> +#ifdef CONFIG_BUILTIN_DTB
+> +       la a0, __dtb_start
+> +#else
+>         mv a0, s1
+> +#endif /* CONFIG_BUILTIN_DTB */
+>         call setup_vm
+>  #ifdef CONFIG_MMU
+>         la a0, early_pg_dir
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index 5b17f8d22f91..45faad7c4291 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -615,11 +615,7 @@ static void __init setup_vm_final(void)
+>  #else
+>  asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>  {
+> -#ifdef CONFIG_BUILTIN_DTB
+> -       dtb_early_va = (void *) __dtb_start;
+> -#else
+>         dtb_early_va = (void *)dtb_pa;
+> -#endif
+>         dtb_early_pa = dtb_pa;
+>  }
+>
+> --
+> 2.20.1
+>
 
-./drivers/net/wireless/marvell/mwifiex/fw.h: WARNING use flexible-array
-member instead(https://www.kernel.org/doc/html/latest/process/
-deprecated.html#zero-length-and-one-element-arrays)
+We can avoid the early DTB mapping for MMU-enabled case when
+BUILTIN_DTB is enabled (same as previous discussion). Otherwise
+looks good to me.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
----
- drivers/net/wireless/marvell/mwifiex/fw.h | 40 +++++++++++++++----------------
- 1 file changed, 20 insertions(+), 20 deletions(-)
+Reviewed-by: Anup Patel <anup@brainfault.org>
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/fw.h b/drivers/net/wireless/marvell/mwifiex/fw.h
-index 470d669..a9cb209 100644
---- a/drivers/net/wireless/marvell/mwifiex/fw.h
-+++ b/drivers/net/wireless/marvell/mwifiex/fw.h
-@@ -53,7 +53,7 @@ struct mwifiex_fw_header {
- struct mwifiex_fw_data {
- 	struct mwifiex_fw_header header;
- 	__le32 seq_num;
--	u8 data[1];
-+	u8 data[];
- } __packed;
- 
- struct mwifiex_fw_dump_header {
-@@ -653,7 +653,7 @@ struct mwifiex_ie_types_header {
- 
- struct mwifiex_ie_types_data {
- 	struct mwifiex_ie_types_header header;
--	u8 data[1];
-+	u8 data[];
- } __packed;
- 
- #define MWIFIEX_TxPD_POWER_MGMT_NULL_PACKET 0x01
-@@ -781,7 +781,7 @@ struct mwifiex_chan_scan_param_set {
- 
- struct mwifiex_ie_types_chan_list_param_set {
- 	struct mwifiex_ie_types_header header;
--	struct mwifiex_chan_scan_param_set chan_scan_param[1];
-+	struct mwifiex_chan_scan_param_set chan_scan_param[];
- } __packed;
- 
- struct mwifiex_ie_types_rxba_sync {
-@@ -791,7 +791,7 @@ struct mwifiex_ie_types_rxba_sync {
- 	u8 reserved;
- 	__le16 seq_num;
- 	__le16 bitmap_len;
--	u8 bitmap[1];
-+	u8 bitmap[];
- } __packed;
- 
- struct chan_band_param_set {
-@@ -801,17 +801,17 @@ struct chan_band_param_set {
- 
- struct mwifiex_ie_types_chan_band_list_param_set {
- 	struct mwifiex_ie_types_header header;
--	struct chan_band_param_set chan_band_param[1];
-+	struct chan_band_param_set chan_band_param[];
- } __packed;
- 
- struct mwifiex_ie_types_rates_param_set {
- 	struct mwifiex_ie_types_header header;
--	u8 rates[1];
-+	u8 rates[];
- } __packed;
- 
- struct mwifiex_ie_types_ssid_param_set {
- 	struct mwifiex_ie_types_header header;
--	u8 ssid[1];
-+	u8 ssid[];
- } __packed;
- 
- struct mwifiex_ie_types_num_probes {
-@@ -853,13 +853,13 @@ struct mwifiex_ietypes_chanstats {
- struct mwifiex_ie_types_wildcard_ssid_params {
- 	struct mwifiex_ie_types_header header;
- 	u8 max_ssid_length;
--	u8 ssid[1];
-+	u8 ssid[];
- } __packed;
- 
- #define TSF_DATA_SIZE            8
- struct mwifiex_ie_types_tsf_timestamp {
- 	struct mwifiex_ie_types_header header;
--	u8 tsf_data[1];
-+	u8 tsf_data[];
- } __packed;
- 
- struct mwifiex_cf_param_set {
-@@ -919,7 +919,7 @@ struct mwifiex_ie_types_tdls_idle_timeout {
- 
- struct mwifiex_ie_types_rsn_param_set {
- 	struct mwifiex_ie_types_header header;
--	u8 rsn_ie[1];
-+	u8 rsn_ie[];
- } __packed;
- 
- #define KEYPARAMSET_FIXED_LEN 6
-@@ -1343,7 +1343,7 @@ struct host_cmd_ds_802_11_snmp_mib {
- 	__le16 query_type;
- 	__le16 oid;
- 	__le16 buf_size;
--	u8 value[1];
-+	u8 value[];
- } __packed;
- 
- struct mwifiex_rate_scope {
-@@ -1440,7 +1440,7 @@ struct mwifiex_tdls_stop_cs_params {
- 
- struct host_cmd_ds_tdls_config {
- 	__le16 tdls_action;
--	u8 tdls_data[1];
-+	u8 tdls_data[];
- } __packed;
- 
- struct mwifiex_chan_desc {
-@@ -1511,7 +1511,7 @@ struct mwifiex_scan_cmd_config {
- 	 *  TLV_TYPE_CHANLIST, mwifiex_ie_types_chan_list_param_set
- 	 *  WLAN_EID_SSID, mwifiex_ie_types_ssid_param_set
- 	 */
--	u8 tlv_buf[1];	/* SSID TLV(s) and ChanList TLVs are stored
-+	u8 tlv_buf[];	/* SSID TLV(s) and ChanList TLVs are stored
- 				   here */
- } __packed;
- 
-@@ -1581,18 +1581,18 @@ struct ie_body {
- struct host_cmd_ds_802_11_scan {
- 	u8 bss_mode;
- 	u8 bssid[ETH_ALEN];
--	u8 tlv_buffer[1];
-+	u8 tlv_buffer[];
- } __packed;
- 
- struct host_cmd_ds_802_11_scan_rsp {
- 	__le16 bss_descript_size;
- 	u8 number_of_sets;
--	u8 bss_desc_and_tlv_buffer[1];
-+	u8 bss_desc_and_tlv_buffer[];
- } __packed;
- 
- struct host_cmd_ds_802_11_scan_ext {
- 	u32   reserved;
--	u8    tlv_buffer[1];
-+	u8    tlv_buffer[];
- } __packed;
- 
- struct mwifiex_ie_types_bss_mode {
-@@ -1603,7 +1603,7 @@ struct mwifiex_ie_types_bss_mode {
- struct mwifiex_ie_types_bss_scan_rsp {
- 	struct mwifiex_ie_types_header header;
- 	u8 bssid[ETH_ALEN];
--	u8 frame_body[1];
-+	u8 frame_body[];
- } __packed;
- 
- struct mwifiex_ie_types_bss_scan_info {
-@@ -1643,7 +1643,7 @@ struct host_cmd_ds_802_11_bg_scan_query_rsp {
- struct mwifiex_ietypes_domain_param_set {
- 	struct mwifiex_ie_types_header header;
- 	u8 country_code[IEEE80211_COUNTRY_STRING_LEN];
--	struct ieee80211_country_ie_triplet triplet[1];
-+	struct ieee80211_country_ie_triplet triplet[];
- } __packed;
- 
- struct host_cmd_ds_802_11d_domain_info {
-@@ -1740,7 +1740,7 @@ struct mwifiex_ie_types_local_pwr_constraint {
- 
- struct mwifiex_ie_types_wmm_param_set {
- 	struct mwifiex_ie_types_header header;
--	u8 wmm_ie[1];
-+	u8 wmm_ie[];
- } __packed;
- 
- struct mwifiex_ie_types_mgmt_frame {
-@@ -1966,7 +1966,7 @@ struct host_cmd_tlv_wep_key {
- 	struct mwifiex_ie_types_header header;
- 	u8 key_index;
- 	u8 is_default;
--	u8 key[1];
-+	u8 key[];
- };
- 
- struct host_cmd_tlv_auth_type {
--- 
-1.8.3.1
-
+Regards,
+Anup
