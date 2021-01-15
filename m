@@ -2,79 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6292F77C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 947342F77CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:40:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728260AbhAOLhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:37:47 -0500
-Received: from foss.arm.com ([217.140.110.172]:36404 "EHLO foss.arm.com"
+        id S1727911AbhAOLke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:40:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40246 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727137AbhAOLhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:37:47 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52ABFD6E;
-        Fri, 15 Jan 2021 03:37:01 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 02E983F719;
-        Fri, 15 Jan 2021 03:36:59 -0800 (PST)
-Date:   Fri, 15 Jan 2021 11:36:54 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Zheng Yongjun <zhengyongjun3@huawei.com>, minghuan.Lian@nxp.com,
-        mingkai.hu@nxp.com, roy.zang@nxp.com, robh@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] pci/controller/dwc: convert comma to semicolon
-Message-ID: <20210115113654.GA22508@e121166-lin.cambridge.arm.com>
-References: <20201216131944.14990-1-zhengyongjun3@huawei.com>
- <20210106190722.GA1327553@bjorn-Precision-5520>
+        id S1726918AbhAOLke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 06:40:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CE253ACB0;
+        Fri, 15 Jan 2021 11:39:52 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 12:39:52 +0100 (CET)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@suse.de>,
+        Julien Thierry <jthierry@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH] objtool: Don't fail the kernel build on fatal errors
+In-Reply-To: <9ec7a9531e99f461e02adc18a4124c921c0ab777.1610664286.git.jpoimboe@redhat.com>
+Message-ID: <alpine.LSU.2.21.2101151239330.4375@pobox.suse.cz>
+References: <9ec7a9531e99f461e02adc18a4124c921c0ab777.1610664286.git.jpoimboe@redhat.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106190722.GA1327553@bjorn-Precision-5520>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 01:07:22PM -0600, Bjorn Helgaas wrote:
-> On Wed, Dec 16, 2020 at 09:19:44PM +0800, Zheng Yongjun wrote:
-> > Replace a comma between expression statements by a semicolon.
+On Thu, 14 Jan 2021, Josh Poimboeuf wrote:
+
+> This is basically a revert of commit 644592d32837 ("objtool: Fail the
+> kernel build on fatal errors").
 > 
-> Looks like a good fix, but read this about the changelog title:
+> That change turned out to be more trouble than it's worth.  Failing the
+> build is an extreme measure which sometimes gets too much attention and
+> blocks CI build testing.
 > 
-> https://lore.kernel.org/r/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
+> These fatal-type warnings aren't yet as rare as we'd hope, due to the
+> ever-increasing matrix of supported toolchains/plugins and their
+> fast-changing nature as of late.
+> 
+> Also, there are more people (and bots) looking for objtool warnings than
+> ever before, so such warnings not likely to be ignored for long.
+> 
+> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-I would request NXP maintainers to take this patch, rewrite it as
-Bjorn requested and resend it as fast as possible, this is a very
-relevant fix.
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
 
-Thanks,
-Lorenzo
-
-> > Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> > ---
-> >  drivers/pci/controller/dwc/pci-layerscape-ep.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> > index 84206f265e54..917ba8d254fc 100644
-> > --- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> > +++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> > @@ -178,7 +178,7 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
-> >  	pci->dev = dev;
-> >  	pci->ops = pcie->drvdata->dw_pcie_ops;
-> >  
-> > -	ls_epc->bar_fixed_64bit = (1 << BAR_2) | (1 << BAR_4),
-> > +	ls_epc->bar_fixed_64bit = (1 << BAR_2) | (1 << BAR_4);
-> >  
-> >  	pcie->pci = pci;
-> >  	pcie->ls_epc = ls_epc;
-> > -- 
-> > 2.22.0
-> > 
-> > 
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+M
