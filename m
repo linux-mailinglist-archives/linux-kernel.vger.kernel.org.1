@@ -2,203 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743002F715E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 05:06:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F6A2F7167
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 05:10:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729955AbhAOEFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 23:05:23 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:59341 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729152AbhAOEFX (ORCPT
+        id S1728483AbhAOEJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 23:09:26 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:51506 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725919AbhAOEJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 23:05:23 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 6868F15AD;
-        Thu, 14 Jan 2021 23:04:16 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 14 Jan 2021 23:04:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=m
-        iv0kQgf9qxy5Btjbf60hP7klLvl7l2WrF4uzxnahAM=; b=kZSMnFmxuSthPoeAc
-        1VcoCw+oPGvL8reaPBQaCogrsEGzHViOSuT8oEaelv4eYcI891LzgD8xauJeOA7/
-        zSlNDc++z6AvK0zIwiLPl2Ky9DHHxgGqxtWKHXB2+l2YMcHYQ+ReKjXFedvEDKAv
-        gVaTBWOwCa6pdEhRop4unAyoH+nsliXH8LKVNHHkDm77xX3VbXKXQVxT2LWlbOZV
-        fa9lL4DoCvmxEWoaY/wqF3rmE0QtWqvsB9kt4NW7MQdJvgq7Tom9lJQvlCHxQiFc
-        GW73PgD+i9OxN0I5177SgPZpV3iNzGJcTehyBmJ5gGkkDMNgL3vdzM3NzKskZA9X
-        evelQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=miv0kQgf9qxy5Btjbf60hP7klLvl7l2WrF4uzxnah
-        AM=; b=bweC5aEdpdGd2rnEfWWR3+5PuinhEfnt3fULSY6h+4+xT5Rre13jHyQZJ
-        FSFST3yfvNOUXfNKErDHXh5El7X2L3J5aTymDSe/+8iNnhZKHg7LHTN+MZ0U0bYm
-        yDgNxui33102hnntDUcaucgP/P2HY9AyKsXT4sQsy+2kv+iVoxHSwDiokyGfo4KJ
-        3lbwLSQQFj8TC3eb8IXdt+yJ3UX+oollxP3J+mlR7n6y10n6tq9YYXoDuu7Qugaq
-        MoySde2Ed9VgqMzvHznPim7uNPJg7PjCdYnbJnPP6t3uKwlvf0SbJLe5hIgIjMpq
-        HUESdb2tZFbypb3hP1/SFI456FL7Q==
-X-ME-Sender: <xms:PxQBYLRiZ-4-K2VE6edTUj-jHFoNGc4KmaRGUb9NQtSzqAh8YynMKw>
-    <xme:PxQBYMzamMITshENZ0TBUVTgHEQnJayc9OzpNi3QQDVbaLzPLzL19k-vLj-zeL8-U
-    QJCkrlO0ZAqiheYzg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtddugdeiiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpefurghmuhgv
-    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
-    frrghtthgvrhhnpefgveffteelheffjeeukedvkedviedtheevgeefkeehueeiieeuteeu
-    gfettdeggeenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
-    ugdrohhrgh
-X-ME-Proxy: <xmx:PxQBYA3JGMP1OG2BLIBYswodlqiOmFrtWQwrl-lqrTbQWLdBK1ssLQ>
-    <xmx:PxQBYLC0DjkQ_o5w1tfYGf8WcGkDp1NlxpdHfN6cZCfRyI8qwkrigg>
-    <xmx:PxQBYEjTHPBTPT03vKdb03gBQwORbnJxMLk83s0IFKmj_N4weQ4xwA>
-    <xmx:QBQBYAiwXjEHTK_RF-oEsBSr4bsfTqj6WQOdTy5PKV62oa1x5ZgjZQ>
-Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 756711080057;
-        Thu, 14 Jan 2021 23:04:15 -0500 (EST)
-Subject: Re: [PATCH v4 04/10] irqchip/sun6i-r: Add wakeup support
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210112055950.21209-1-samuel@sholland.org>
- <20210112055950.21209-5-samuel@sholland.org> <87sg73jirb.wl-maz@kernel.org>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <bb3749f1-9ebe-1b70-ba79-d72a9c04a834@sholland.org>
-Date:   Thu, 14 Jan 2021 22:04:15 -0600
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Thu, 14 Jan 2021 23:09:24 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F43wiw055358;
+        Fri, 15 Jan 2021 04:08:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=z+JbpC1JWZB/0Sw85u4Z7xXy/BD+u09i3l9kk7+XyJ4=;
+ b=FfFpFuePG5+Ouo0YNdXq4Bjh3gMVuyAOA4eq4Bnp8J/l1VyjtHUw+gkZ6tnHXLZkAe0k
+ BpJnY3l146G9CzoqPlYMgVCEsc02E9Wt5MZiNtX7X50QVuO935bZu7BfeeEPdld6yNy2
+ vt/mk5pAASlS48qCY1XFFK4XouOKEC742XU63xnp+bROHmPuBZCVQN9m2TBrOpCJacNy
+ VVORTwpDFnI0wtfj11jDeORAM9TSxAvF/w1D6/VnPmDPUeQ6XqZZ0MlnhQj5CQmi0bTq
+ ChiuttHKfRG2q9uvx5hyob7+D7TbdSrfv+BNDkza1btzzYp2zAwcp+GRWC1A6TNI8Huw 0A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 360kd037w8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 04:08:36 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F45kkS018735;
+        Fri, 15 Jan 2021 04:08:36 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2175.outbound.protection.outlook.com [104.47.59.175])
+        by aserp3020.oracle.com with ESMTP id 360keaqqn4-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 04:08:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CM9ZTpfmIBlSKBblgravGSBumffFZknNt1B8TWCTBH6uAV+WJ1TLNBiyVsiEt5yNcbT/1EbTdNB3VywLw/upMDbKF/jnrXp7CzTuKOkX6Nug2KtBZ9XD/KaRCfrl+IfQ4zQaEkCHC2AY14Tco9OruXELOyivUhqSqqUNiVsp52V5WimEIVROwWDLddgNwtz78xmiJO6VG/zWafZUfT0WWqrZf31OS6lTIn2+r3UzwrqvHVpkrn5IUgIX2gxBDaC0R3sHd8HFBlGVce11hyL5sHf0t2usLjHvuJHlJOWEBaUyeYJxvaho6uMWNFQ67R7XDs9ovPOBi/J5ySVxZ8U0sA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z+JbpC1JWZB/0Sw85u4Z7xXy/BD+u09i3l9kk7+XyJ4=;
+ b=WrdBGyMdDbW4wUcDt6QUx6rj2qduSfWiVHrt88MRbjDffp6ALoYuU+zTR5b7UnbjPLjkojN1HLn/EK1UQImAVNTHR3PHGuFpVD30x8wyq9bEMcywr8VsjAvaN2IFmXavZVfnTAZv/xtl2JW6achqGkpCQnEkEvEnItGhM3x4BrqTx8h0yM9iXrsU6Hzn2uGcaqtM46E9PqJ/dMFtkuHfy2TCzAvPBxLcN5TpUzMvNbD15lECUJiIPjx9J81EtMlz0mcrKNaPR4AJgDTAFlhlGepU+ztyjV2v+9SxJUWaXCHsQ7ik3fJtmyiQGuYWl4wYf/j8mlzNL4J+64L9ePlo9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z+JbpC1JWZB/0Sw85u4Z7xXy/BD+u09i3l9kk7+XyJ4=;
+ b=t06CYh2gw79Db9E03YIZ1/z8QdKFv+95KWOMYWrDXleVGpxSI1+4HMCEr1o0Ce8mIEekaoAxOaAax8EUHj723bePfGBw8H/aPZfyNDrKrLufgiPkuyreJG5/gMwqapj9kgpVsMvbezhEdgMT5yyK6RZqTMa0BppczM7SGp4jwSk=
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4568.namprd10.prod.outlook.com (2603:10b6:510:41::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Fri, 15 Jan
+ 2021 04:08:34 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3763.011; Fri, 15 Jan 2021
+ 04:08:34 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     jejb@linux.ibm.com, YANG LI <abaci-bugfix@linux.alibaba.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        intel-linux-scu@intel.com, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, artur.paszkiewicz@intel.com
+Subject: Re: [PATCH] isci: style: remove the unneeded variable: "status".
+Date:   Thu, 14 Jan 2021 23:08:18 -0500
+Message-Id: <161068333183.18181.7869993200164278107.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <1609311860-102820-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+References: <1609311860-102820-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [138.3.200.9]
+X-ClientProxiedBy: SN4PR0501CA0139.namprd05.prod.outlook.com
+ (2603:10b6:803:2c::17) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-In-Reply-To: <87sg73jirb.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.mkp.ca.oracle.com (138.3.200.9) by SN4PR0501CA0139.namprd05.prod.outlook.com (2603:10b6:803:2c::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.7 via Frontend Transport; Fri, 15 Jan 2021 04:08:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c410152c-b4f3-42e3-bbfb-08d8b90b39bc
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4568:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB45683360AD99E409B854F67E8EA70@PH0PR10MB4568.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: U4mwL6bHFhhFHQBiKInlhISZ8cUnYOkSTjbXC5GOD6WdncqVRjREMsNSS8veQDqiuu33Pn1t4diYkBDwQOxXlUPdetel10jTPEms+OLnH4OiwWuhnDjEiTVYmrJ4Y3GWMgOFAX7mtlNNmaJ6KgAjRY6zqP00XCgILQnIvvfb++dAZa0lzW5RJJ0I5keftVIwv6a5bCNAq3GRPxRuT1YVv9dqZa1bUUJE+YtsfvPpYTNPo2467j8JHLIGYiXhB8gN01kRzAZP7C4gQRn1ZeyhxXklq7isytOq5Y7L9E/hQRXVLvCSJdAXH+TOl85P9EdId1cQ4jnbYxuqI+moExokgW18SYNd7MQwG0vmyMSkZs6yFerOkN9pZPK5RXOjEyB9EtiUbd2JlTVUwumS9cIlA/4oL7V0heTTP4J2XqxvQqQLvmyY/OXZlRtP21L/G04zuccdt/lArZTtDlkCqyN3+Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(136003)(396003)(39850400004)(36756003)(6666004)(316002)(4326008)(83380400001)(6486002)(8936002)(2906002)(86362001)(7696005)(52116002)(8676002)(103116003)(966005)(26005)(66946007)(4744005)(66556008)(478600001)(66476007)(186003)(5660300002)(16526019)(6916009)(956004)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cWVVbHZHRVFRM1hxRFgxc3dxU25Ld0Y5VWJNQjRnMS9aQlpTNER2SUlyRDZE?=
+ =?utf-8?B?MWpLeXBHVjhlVDh5TVRoajBtRmR5S1JLOUpXVU5HSEhNTkNvdHgwdEhFYWFq?=
+ =?utf-8?B?U0cxQVRYbjlRejdmRFZ2bWprK0hPcFBwUXVSNVJLYm5qTU9DRWc1NjA2TTVv?=
+ =?utf-8?B?Wk1XNWZwWTF0WUR5eWtHTi9iajFQNGVweGU1bVdoSmxUdXkxdFVvWU1vT09H?=
+ =?utf-8?B?aFdBR2d3Qzd4amgzT0hMSldmakE0YXQrQlloUVFKOVltUXRFQlNUVDVZeHRI?=
+ =?utf-8?B?RnEzZTdCVWFpK2xwY2pESHZRaXM5QThMQ2g3UCtZWVhyY1Q5cVhuSnZNTU5k?=
+ =?utf-8?B?QVJHOUlzMHBTWGYvVWpsdWlncXdwT3Y0a2xuK2NjaXo5MEdGdFF3cjhiYVo0?=
+ =?utf-8?B?Yi8vQTNpUnB1eFEvSDMwTFp2SFFaNmpKZWt1dFF6WVV3enlHcHpDOVFadVFq?=
+ =?utf-8?B?dEEzOFV1T3ErbDNwN2pDUGM1WFRrV2lzaWFucWc3VGUxK1VlajMyRmd0eVM2?=
+ =?utf-8?B?aURSMy84MXcyckpMNTIzT3MzOFZQcTBmL2hPekZuU0wxeS9ybzJCUWgyWHBz?=
+ =?utf-8?B?Yjc0UkJJUmxrZzhYeXNPSnVJenlYbFhvbSsrRFRESm1MbWpIYnkvNVNSY0cx?=
+ =?utf-8?B?cWh2bVZGR2IyU2gwV2dSVDMwUWR5a2lMQVVoeXBGUmRyTU9sR2I4Ym5NSURn?=
+ =?utf-8?B?MVMwY1lrUVIrNlQzSklxYVR3Sm1XamE5YWFXR0owSC9MQy9EbVpZdjJSVFlj?=
+ =?utf-8?B?UHErUDZnajhYbGdWelk3S1A5MXhzVytMUnBuUTlXVmNYbXZEY05RVUJJb1BK?=
+ =?utf-8?B?ZUY0UXBnNmlTSHplckl4R2lKVkozLzBkdjlmbUh5Y28zc0JEQTJoVEE0Ykkw?=
+ =?utf-8?B?NkR2TkhZRTRPcFhjWk5ST2d3alhFejNpRDMrR3cya3UwRVhseE9qVUJTNW9w?=
+ =?utf-8?B?TlBKWjkySzBYVU1tK2IzWUh2U2E0Mnlma29GZWhzV012NE41YU54SU9rZi9k?=
+ =?utf-8?B?dUdhT3pTY2FTVnErbTVpakVTNU9ac3VzSk4xdWREenFvVk1rS0h3bWMwOUNi?=
+ =?utf-8?B?ZWo2Y2kwOUlIWXU0cHpySHVSd3RjdUdHaXVuOWQ5cjJCcUc5Qm9YbWY3QURK?=
+ =?utf-8?B?d1dCOEV5aUovOEFYUFRpNDdoWDhOUzBxVFBya2lvb0F6eHJqOG1UWTV6aG5C?=
+ =?utf-8?B?TWN6d3BGek0vUFBDdVVWdnhrS1NLV3lZendpdmNacDVqWnJlOE43UnNzSEtH?=
+ =?utf-8?B?QWNNU2J4MzNQS0x6MWZEdFd1U0xVOEpSWnZoMnRVSXpIbFhlL0U5SWxUNlZL?=
+ =?utf-8?Q?KpahzuQZDtBQY=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c410152c-b4f3-42e3-bbfb-08d8b90b39bc
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2021 04:08:33.9703
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7ottSFreHjdLaF1uiAxvmByxRhgi7iZQacEO4AqEnFJAs2DJcv0FO5TzV1QrjmsvK4ymkJlqvDVBX0gATx9StfvDgwOshJYM0jyBGFndEAw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4568
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=931 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101150019
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1011 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101150019
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/14/21 3:44 PM, Marc Zyngier wrote:
-> On Tue, 12 Jan 2021 05:59:44 +0000,
-> Samuel Holland <samuel@sholland.org> wrote:
->>
->> Maintain bitmaps of wake-enabled IRQs and mux inputs, and program them
->> to the hardware during the syscore phase of suspend and shutdown. Then
->> restore the original set of enabled IRQs (only the NMI) during resume.
->>
->> This serves two purposes. First, it lets power management firmware
->> running on the ARISC coprocessor know which wakeup sources Linux wants
->> to have enabled. That way, it can avoid turning them off when it shuts
->> down the remainder of the clock tree. Second, it preconfigures the
->> coprocessor's interrupt controller, so the firmware's wakeup logic
->> is as simple as waiting for an interrupt to arrive.
->>
->> The suspend/resume logic is not conditional on PM_SLEEP because it is
->> identical to the init/shutdown logic. Wake IRQs may be enabled during
->> shutdown to allow powering the board back on. As an example, see
->> commit a5c5e50cce9d ("Input: gpio-keys - add shutdown callback").
->>
->> Signed-off-by: Samuel Holland <samuel@sholland.org>
->> ---
->>  drivers/irqchip/irq-sun6i-r.c | 107 ++++++++++++++++++++++++++++++++--
->>  1 file changed, 101 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/irqchip/irq-sun6i-r.c b/drivers/irqchip/irq-sun6i-r.c
->> index d04d067423f4..a1b58c98d6ca 100644
->> --- a/drivers/irqchip/irq-sun6i-r.c
->> +++ b/drivers/irqchip/irq-sun6i-r.c
->> @@ -39,6 +39,7 @@
->>   * set of 128 mux bits. This requires a second set of top-level registers.
->>   */
->>  
->> +#include <linux/bitmap.h>
->>  #include <linux/interrupt.h>
->>  #include <linux/irq.h>
->>  #include <linux/irqchip.h>
->> @@ -46,6 +47,7 @@
->>  #include <linux/of.h>
->>  #include <linux/of_address.h>
->>  #include <linux/of_irq.h>
->> +#include <linux/syscore_ops.h>
->>  
->>  #include <dt-bindings/interrupt-controller/arm-gic.h>
->>  
->> @@ -67,8 +69,17 @@
->>  #define SUN6I_NR_DIRECT_IRQS		16
->>  #define SUN6I_NR_MUX_BITS		128
->>  
->> +struct sun6i_r_intc_variant {
->> +	u32		first_mux_irq;
->> +	u32		nr_mux_irqs;
->> +	u32		mux_valid[BITS_TO_U32(SUN6I_NR_MUX_BITS)];
->> +};
->> +
->>  static void __iomem *base;
->>  static irq_hw_number_t nmi_hwirq;
->> +static DECLARE_BITMAP(wake_irq_enabled, SUN6I_NR_TOP_LEVEL_IRQS);
->> +static DECLARE_BITMAP(wake_mux_enabled, SUN6I_NR_MUX_BITS);
->> +static DECLARE_BITMAP(wake_mux_valid, SUN6I_NR_MUX_BITS);
->>  
->>  static void sun6i_r_intc_ack_nmi(void)
->>  {
->> @@ -145,6 +156,21 @@ static int sun6i_r_intc_nmi_set_irqchip_state(struct irq_data *data,
->>  	return irq_chip_set_parent_state(data, which, state);
->>  }
->>  
->> +static int sun6i_r_intc_irq_set_wake(struct irq_data *data, unsigned int on)
->> +{
->> +	unsigned long offset_from_nmi = data->hwirq - nmi_hwirq;
->> +
->> +	if (offset_from_nmi < SUN6I_NR_DIRECT_IRQS)
->> +		assign_bit(offset_from_nmi, wake_irq_enabled, on);
->> +	else if (test_bit(data->hwirq, wake_mux_valid))
->> +		assign_bit(data->hwirq, wake_mux_enabled, on);
->> +	else
->> +		/* Not wakeup capable. */
->> +		return -EPERM;
->> +
->> +	return 0;
->> +}
->> +
->>  static struct irq_chip sun6i_r_intc_nmi_chip = {
->>  	.name			= "sun6i-r-intc",
->>  	.irq_ack		= sun6i_r_intc_nmi_ack,
->> @@ -154,8 +180,19 @@ static struct irq_chip sun6i_r_intc_nmi_chip = {
->>  	.irq_set_affinity	= irq_chip_set_affinity_parent,
->>  	.irq_set_type		= sun6i_r_intc_nmi_set_type,
->>  	.irq_set_irqchip_state	= sun6i_r_intc_nmi_set_irqchip_state,
->> -	.flags			= IRQCHIP_SET_TYPE_MASKED |
->> -				  IRQCHIP_SKIP_SET_WAKE,
->> +	.irq_set_wake		= sun6i_r_intc_irq_set_wake,
->> +	.flags			= IRQCHIP_SET_TYPE_MASKED,
->> +};
->> +
->> +static struct irq_chip sun6i_r_intc_wakeup_chip = {
->> +	.name			= "sun6i-r-intc",
->> +	.irq_mask		= irq_chip_mask_parent,
->> +	.irq_unmask		= irq_chip_unmask_parent,
->> +	.irq_eoi		= irq_chip_eoi_parent,
->> +	.irq_set_affinity	= irq_chip_set_affinity_parent,
->> +	.irq_set_type		= irq_chip_set_type_parent,
->> +	.irq_set_wake		= sun6i_r_intc_irq_set_wake,
->> +	.flags			= IRQCHIP_SET_TYPE_MASKED,
-> 
-> Worth implementing irq_get/set_irqchip_state() using the _parent
-> helper, I guess.
+On Wed, 30 Dec 2020 15:04:20 +0800, YANG LI wrote:
 
-This is the same situation as the previous patch. Assuming it is safe to
-rely on the behavior of the top-level functions, adding the callbacks
-here would be redundant.
+> The variable 'status' is being initialized with SCI_SUCCESS and never
+> update later with a new value. The initialization is redundant and can
+> be removed.
 
-Cheers,
-Samuel
+Applied to 5.12/scsi-queue, thanks!
 
-> Thanks,
-> 
-> 	M.
-> 
+[1/1] isci: style: remove the unneeded variable: "status".
+      https://git.kernel.org/mkp/scsi/c/dc0bfdb563c8
 
+-- 
+Martin K. Petersen	Oracle Linux Engineering
