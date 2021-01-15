@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE762F8130
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F4D2F8143
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727848AbhAOQuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:50:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41882 "EHLO mail.kernel.org"
+        id S1727582AbhAOQxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:53:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725910AbhAOQuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:50:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0966B222B3;
-        Fri, 15 Jan 2021 16:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610729409;
-        bh=4TPOAVSgQzirc/H2ZzkAHJamp1LB/G2EZTjrlQgOIPY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W9I5fyXDifpCokLdlk55lMXiZZdA6FEdy7X+0rBPXD58WQeNxYQC9Vq50pglm27wo
-         I0IT03Fd4XAKRs7443r00rHe+8xTml2A3GjthT/FY1j00c4TC4g/Bgt6YQiFvDwtzK
-         HF13w1f6PHYHa2+xq2Up0PC5qmZz5wQcn55VscpByT9cQPY4izRGWfVaOvQYWF3Q7+
-         6zsIbAUnh4wmzNHO5YgnunKg9t8wXFKaiyBv8FkjMqdyliQy887QaBflM7zJOrO0gO
-         cRyjUjCdjLdf3pGdyB66FmjeEgzo1Wl9GCsU95c1C0KeUmDhVXqr39INQQ72dO0PbW
-         TFGs1/HdHXd0A==
-Date:   Fri, 15 Jan 2021 16:50:04 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:KERNEL VIRTUAL MACHINE (KVM)" <kvm@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        android-kvm@google.com, kernel-team@android.com
-Subject: Re: [PATCH] KVM: Documentation: Fix spec for KVM_CAP_ENABLE_CAP_VM
-Message-ID: <20210115165004.GA14556@willie-the-truck>
-References: <20210108165349.747359-1-qperret@google.com>
+        id S1726970AbhAOQxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 11:53:23 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D245222B3;
+        Fri, 15 Jan 2021 16:52:41 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 11:52:39 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Marco Elver <elver@google.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH v2 3/5] docs: ABI: add /sys/kernel/error_report/
+ documentation
+Message-ID: <20210115115239.1f3693ac@gandalf.local.home>
+In-Reply-To: <CAG_fn=Xen6Nd9qJnW6F4r5vgj7WAUo40BHeN_FXKpJ2jrpT6-g@mail.gmail.com>
+References: <20210115130336.2520663-1-glider@google.com>
+        <20210115130336.2520663-4-glider@google.com>
+        <YAGckOeJxqCcHKa+@kroah.com>
+        <CAG_fn=Xen6Nd9qJnW6F4r5vgj7WAUo40BHeN_FXKpJ2jrpT6-g@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108165349.747359-1-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 04:53:49PM +0000, Quentin Perret wrote:
-> The documentation classifies KVM_ENABLE_CAP with KVM_CAP_ENABLE_CAP_VM
-> as a vcpu ioctl, which is incorrect. Fix it by specifying it as a VM
-> ioctl.
+On Fri, 15 Jan 2021 16:26:21 +0100
+Alexander Potapenko <glider@google.com> wrote:
+
+> > please put something like this in
+> > tracefs, as there is no such rules there.  Or debugfs, but please, not
+> > sysfs.  
+> Does tracefs have anything similar to sysfs_notify() or any other way
+> to implement a poll() handler?
+> Our main goal is to let users wait on poll(), so that they don't have
+> to check the file for new contents every now and then. Is it possible
+> with tracefs or debugfs?
+
+Polling should work on tracefs. I hope it does, as I depend on it ;-)
+
+And if there's an issue, we can always add more features.
+
 > 
-> Fixes: e5d83c74a580 ("kvm: make KVM_CAP_ENABLE_CAP_VM architecture agnostic")
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  Documentation/virt/kvm/api.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Also, for our goal debugfs isn't a particularly good fit, as Android
+> kernels do not enable debugfs.
+> Not sure about tracefs, they seem to have it, need to check.
+
+I believe tracefs is used extensively on Android.
+
 > 
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index 70254eaa5229..68898b623d86 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -1328,7 +1328,7 @@ documentation when it pops into existence).
->  
->  :Capability: KVM_CAP_ENABLE_CAP_VM
->  :Architectures: all
-> -:Type: vcpu ioctl
-> +:Type: vm ioctl
->  :Parameters: struct kvm_enable_cap (in)
->  :Returns: 0 on success; -1 on error
+> Do you think it is viable to keep
+> /sys/kernel/error_report/report_count in sysfs and use it for
+> notifications, but move last_report somewhere else?
+> (I'd probably prefer procfs, but it could be tracefs as well, if you
+> find that better).
 
-I tripped over this as well, so:
+If you do use tracefs, add it to the top level tracing directory (no need
+to have instances of it), and rename it to "kernel_warnings", as
+"error_report" is too close to the existing "error_log" which holds error
+messages of syntactic errors done by users entering in commands to some of
+the special files.
 
-Acked-by: Will Deacon <will@kernel.org>
+That is, /sys/kernel/tracing/kernel_warnings/ would be your error_report/
+directory you have now.
 
-Will
+Use the function in kernel/trace/trace.c: tracer_init_tracefs() to add that
+directory. That's for files in the tracefs directory that will not be
+duplicated by instances.
+
+-- Steve
