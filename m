@@ -2,105 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1F72F6FF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:24:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B54522F6FF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:27:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbhAOBX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 20:23:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbhAOBX6 (ORCPT
+        id S1731483AbhAOB04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 20:26:56 -0500
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:32482 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725815AbhAOB0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 20:23:58 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F11C061575;
-        Thu, 14 Jan 2021 17:23:17 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DH3N04yNjz9sVr;
-        Fri, 15 Jan 2021 12:23:11 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1610673794;
-        bh=HuR/UqsyYV6V2u8mtzj/Ev7wCFWabBAH4XNDWYxTz6A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Ee+XO8v5HN+j72pKq6l6bqD93UKVTfLr+C9twDIrMFrBPj8rU9yo51mQv4lS7Zl3Q
-         RrihKh0wbRhJbjXge1mpqc3KM0gboWpb2AAznpn00ntXyYDx42ikRo9zSFNc3AtClU
-         Iet8U61KPV/xfMhbySBlg2b7B7ov4Dars1J9OGw9Xnkc2IYiqXFMECl5UIMFaT1d/m
-         J7KEbm7uSbMU/N8GZenMIZKR1igONxvW1cL4PW16wjcQhbxxHqiqNFUcemqJ9LgrD9
-         PlTRUb4b+OzavmU8WDJ1LLetru5wp3QHWRuOa+viWVN2QI+uxib65wyEkP2UV1K+j3
-         gRrpSGEA3gFPA==
-Date:   Fri, 15 Jan 2021 12:23:10 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Darren Salt <devspam@moreofthesa.me.uk>,
-        Nirmoy Das <nirmoy.das@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the drm-misc tree
-Message-ID: <20210115122310.7dd6bb11@canb.auug.org.au>
+        Thu, 14 Jan 2021 20:26:55 -0500
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 10F1Psc1004710;
+        Fri, 15 Jan 2021 10:25:55 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 10F1Psc1004710
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1610673955;
+        bh=LIljr1P6iCBWA5zG5KVb7+x3iDad2gv902xOCN8W3X4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=T4+JPlmsXW/rV33sZqCuMML8oT78soshLGgzoVDnu068HKvD2xjyNiEVjIb0d2Fvl
+         HbX8Bag1dv4n+Nr2jdSg7Dv2/tQg2XONLY7EUUjv5Y9MgGvbkZWzbATOdSsCkyN8na
+         8Ixs14QfiHNZdb90ZJo3sy0Ne14zcKG3MNjJTg7bu92zIjI/Et+SCBSwe42wZGSgmx
+         2SiCaYfxj4mF7gGfpmyjHP/DELIiAXhgH8BbizBdfczacnHcMysv4mp7pLo31k4Ln4
+         BdFO5ySh9+xS+Asp+u6I9ZmkfzoXGZBB7Grcmu1HhY2TBMdtCJNoIcjRaXi/7h8Gsk
+         H8MJsDUn0ZzfQ==
+X-Nifty-SrcIP: [209.85.216.51]
+Received: by mail-pj1-f51.google.com with SMTP id m5so4254818pjv.5;
+        Thu, 14 Jan 2021 17:25:54 -0800 (PST)
+X-Gm-Message-State: AOAM532wlX12evdOvGZvA/RPupLV84qGQVn4qAaC+ol+JOjJqzjK719/
+        2OvTaTVcYFVxQOyPmdaP1QBwUm8vLtTnVur7kpo=
+X-Google-Smtp-Source: ABdhPJx0tVmxZaFqtRy0eHjurPh24Wt0zrqjSjO0MbfRdJlc6jJYMpxtOLDBnWhAT/HD1UYbc87yZqkae5+aQqZIY0c=
+X-Received: by 2002:a17:90b:1b50:: with SMTP id nv16mr3346586pjb.153.1610673954067;
+ Thu, 14 Jan 2021 17:25:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Vpa+x8VRDC3FcD559.RaF=y";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <1610500731-30960-2-git-send-email-jjohnson@codeaurora.org>
+ <1610660990-18812-1-git-send-email-jjohnson@codeaurora.org> <CAKwvOdnfm9XvKsgn30HSUYoCSibHND-JSTqNH0yU7bfpYog_3w@mail.gmail.com>
+In-Reply-To: <CAKwvOdnfm9XvKsgn30HSUYoCSibHND-JSTqNH0yU7bfpYog_3w@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 15 Jan 2021 10:25:17 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARGOwGyZMw=bfBEPRS9K6DbCOgVzhgP1K6mMfOBLHN_bA@mail.gmail.com>
+Message-ID: <CAK7LNARGOwGyZMw=bfBEPRS9K6DbCOgVzhgP1K6mMfOBLHN_bA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] kbuild: handle excessively long argument lists
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Jeff Johnson <jjohnson@codeaurora.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Elliot Berman <eberman@quicinc.com>,
+        Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Vpa+x8VRDC3FcD559.RaF=y
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jan 15, 2021 at 10:01 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Thu, Jan 14, 2021 at 1:50 PM Jeff Johnson <jjohnson@codeaurora.org> wrote:
+> >
+> > From: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
+> >
+> > Modules with a large number of compilation units may be
+> > exceeding AR and LD command argument list. Handle this gracefully by
+> > writing the long argument list in a file. The command line options
+> > read from file are inserted in place of the original @file option.
+> >
+> > The usage is well documented at
+> > https://www.gnu.org/software/make/manual/html_node/File-Function.html
+> >
+> > Signed-off-by: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
+> > Signed-off-by: Jeff Johnson <jjohnson@codeaurora.org>
+> > ---
+> >
+> > Changes in v2:
+> >   - Remove spurious endif
+> >
+> > scripts/Makefile.build | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> > index 252b7d2..787dca2 100644
+> > --- a/scripts/Makefile.build
+> > +++ b/scripts/Makefile.build
+> > @@ -425,7 +425,10 @@ $(obj)/lib.a: $(lib-y) FORCE
+> >  # module is turned into a multi object module, $^ will contain header file
+> >  # dependencies recorded in the .*.cmd file.
+> >  quiet_cmd_link_multi-m = LD [M]  $@
+> > -      cmd_link_multi-m = $(LD) $(ld_flags) -r -o $@ $(filter %.o,$^)
+> > +      cmd_link_multi-m =                                       \
+> > +       $(file >$@.in,$(filter %.o,$^))                         \
+> > +       $(LD) $(ld_flags) -r -o $@ @$@.in;                      \
+> > +       rm -f $@.in
+>
+> The GNU Make docs linked above use an `@` before the invocation of
+> `rm`. I don't know what that's about, but that or even this patch
+> doesn't affect my ability to build negatively. LGTM
 
-Hi all,
 
-After merging the drm-misc tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+See this:
 
-drivers/gpu/drm/amd/amdgpu/amdgpu_display.c: In function 'amdgpu_display_us=
-er_framebuffer_create':
-drivers/gpu/drm/amd/amdgpu/amdgpu_display.c:929:24: warning: unused variabl=
-e 'adev' [-Wunused-variable]
-  929 |  struct amdgpu_device *adev =3D drm_to_adev(dev);
-      |                        ^~~~
+https://www.gnu.org/software/make/manual/html_node/Echoing.html#Echoing
 
-Introduced by commit
 
-  8f66090b7bb7 ("drm/amdgpu: Remove references to struct drm_device.pdev")
 
-drivers/gpu/drm/amd/amdgpu/amdgpu_device.c: In function 'amdgpu_device_resi=
-ze_fb_bar':
-drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:1109:6: warning: unused variable=
- 'space_needed' [-Wunused-variable]
- 1109 |  u64 space_needed =3D roundup_pow_of_two(adev->gmc.real_vram_size);
-      |      ^~~~~~~~~~~~
 
-Introduced by commit
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+> >
+> >  $(multi-used-m): FORCE
+> >         $(call if_changed,link_multi-m)
+> > --
+> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> > a Linux Foundation Collaborative Project
+> >
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
 
-  453f617a30aa ("drm/amdgpu: Resize BAR0 to the maximum available size, eve=
-n if it doesn't cover VRAM")
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/Vpa+x8VRDC3FcD559.RaF=y
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAA7n4ACgkQAVBC80lX
-0GwDEwf/fmr7nK+fiyHfcFlaNUOW7oDnJ8N3XqSam65tbF5eqAFACd79w+UrHr3l
-nRofuChmVJ1cXGKC0HegELL7XakKuqinfxuqOle4k0lqkN+ZRlMlUo99TQDfEY+J
-WSXhCkLYf6jSwUtpg1WEmCc81ljhcJy3HonWN/UqlFdC9oSDg5MvTQMfakXl0/SO
-kaGp/Gjw7+w99zb8gZhofC+jcow6Uq7qftXn4vRsrL4pUAjbQu/dq4YtExewXBQs
-qAIX3yKN2sSTz6opGWFnPH+grzf8MAgfIO61vWfHsbfxt0WAwsA+KmnQAhwU7sxJ
-ZpGvaBUlk25Ub7Kv6JJVDyHtTdc0Xg==
-=Hkir
------END PGP SIGNATURE-----
-
---Sig_/Vpa+x8VRDC3FcD559.RaF=y--
+-- 
+Best Regards
+Masahiro Yamada
