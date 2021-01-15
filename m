@@ -2,105 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460FA2F8530
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DC22F852D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388189AbhAOTOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 14:14:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732702AbhAOTOO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 14:14:14 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CBDC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 11:13:34 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id n8so2768328ljg.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 11:13:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PftEDz+QoIuMD7vFvCCvvry9AT4u1Otsfrl7LAEO2DM=;
-        b=e7I/8+0QvWciJwJHjYocoB/Sg05ul/a7lpQKebKIuyVkAqM/jxAc2FD5yjXDRci1IZ
-         ld19f8724W4QnUgvHUIvL4Wz5vcrxLMGa++CSO4K594lvJUjAYGVcdsYOy9DaEOhFSY0
-         eJhbmQ2FFUH1ChR9vKuRiQ1wyHmiSiMWXy4EKZhTCPe8QwoK/hzR93e04UoHmNbqLy6k
-         hz6Sl+aRItr8IfwatmIuIlWYJ0V8/K2vZ3qTiNzmqw3AT5f1G95Ljvj7djaJXBlHMdhT
-         uPgl5lcq5abEIDY7xpIFeU42QowkQKcsnCLDPCOfH7SZwjHgWv6h/ZXs9fkN/rAItn6s
-         rMvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PftEDz+QoIuMD7vFvCCvvry9AT4u1Otsfrl7LAEO2DM=;
-        b=QjWObqMfGaoQDnJGC3AenmqKE9evG0DKs8PZKc/EfQr8w40mxUCWaB9W4i9MDwvx97
-         b2o8tKFTdo3etrKGOycpsAyPTkkrNt7YSiLB3xZWgNarhWA+03J9k7MDRarLqWj53ngv
-         V0Abzf/HPU72daSj4RytUYuHPgBsDvdKrvecokLyajG2gS9DYhXiJqAax77d7w4N7I78
-         HwooGuxg2bI9NbdgykFUIt1Focb232drvtKbIiUpMqQZQQL08mC2oPMjWxAHuxb404yz
-         7T0on3xKWhSg6fkNrvOz1gFDemSzOzcNh7qlbBSbGgnE3gWoU86ytdfbfJXe2ldL/TbO
-         VSCw==
-X-Gm-Message-State: AOAM532Mw0TsSYGDVUFLu7yGnXyMhDYLUqQPTFNHgu4UJahAyb+lO6lY
-        OAjmO6VCPTxp2/j1MEK81Ey25w==
-X-Google-Smtp-Source: ABdhPJxbPRHWjL6kx/iZHWN3F1EaM4GLuZEgGUuQDMr5sDZhXuds79Cgh3mUSIpAdCcq2XUgVC5lOg==
-X-Received: by 2002:a2e:86c4:: with SMTP id n4mr5594493ljj.208.1610738012915;
-        Fri, 15 Jan 2021 11:13:32 -0800 (PST)
-Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
-        by smtp.gmail.com with ESMTPSA id t17sm998823lfr.5.2021.01.15.11.13.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 11:13:32 -0800 (PST)
-From:   Anders Roxell <anders.roxell@linaro.org>
-To:     tsbogend@alpha.franken.de, natechancellor@gmail.com,
-        ndesaulniers@google.com
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Anders Roxell <anders.roxell@linaro.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] mips: vdso: fix DWARF2 warning
-Date:   Fri, 15 Jan 2021 20:13:30 +0100
-Message-Id: <20210115191330.2319352-1-anders.roxell@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        id S2388150AbhAOTOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 14:14:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726136AbhAOTN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 14:13:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B25E221E2;
+        Fri, 15 Jan 2021 19:13:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610737998;
+        bh=A2eqb8T20Y6jSWc/cz8kQLpsS8QVL+nK+0r2QTHPUGU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ddu+24lBaZf5eCsNh6XtFqizn/1kvji6j71ds8PvDtktFtDMXc+AqBe0KRJkOG+3Q
+         PwZcBW3zTYotoCfh54kSWEeZwfHlTLfdW3f8qNASMVuDgl0RvJ1o6wceIJHIipnGuk
+         5xh6jXrqEX3MIkyqedVdRY39J3VpW1C7jDoYoTCG31+zyGcGQacmUKR89ZPLM9JJHE
+         9+tkHlnDM94kWJ/108Uipt8+JSmVP7MNbHKBpp22vkIblPmhsRl+ZJdRNqQVyMS+Tt
+         GB3guPsWPNjqJteDQ+nyoBNqm34XpOY7Vl3O820inMv7TE+nLyAcJDOnskNxkFYJ3V
+         lNyYcaKF6A81g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3A54B40522; Fri, 15 Jan 2021 16:13:51 -0300 (-03)
+Date:   Fri, 15 Jan 2021 16:13:51 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     James Clark <james.clark@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, coresight@lists.linaro.org,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>, Leo Yan <leo.yan@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Al Grant <al.grant@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: Re: [PATCH] perf tools: Update OpenCSD to v1.0.0
+Message-ID: <20210115191351.GF457607@kernel.org>
+References: <20210108142752.27872-1-james.clark@arm.com>
+ <20210111165604.GA144935@xps15>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111165604.GA144935@xps15>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building mips tinyconifg the following warning show up
+Em Mon, Jan 11, 2021 at 09:56:04AM -0700, Mathieu Poirier escreveu:
+> On Fri, Jan 08, 2021 at 04:27:52PM +0200, James Clark wrote:
+> > Replace the OCSD_INSTR switch statement with an if to
+> > fix compilation error about unhandled values and avoid
+> > this issue again in the future.
+> > 
+> > Add new OCSD_GEN_TRC_ELEM_SYNC_MARKER and
+> > OCSD_GEN_TRC_ELEM_MEMTRANS enum values to fix unhandled
+> > value compilation error. Currently they are ignored.
+> > 
+> > Increase the minimum version number to v1.0.0 now
+> > that new enum values are used that are only present
+> > in this version.
+> > 
+> > Signed-off-by: James Clark <james.clark@arm.com>
+> > Cc: John Garry <john.garry@huawei.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > Cc: Leo Yan <leo.yan@linaro.org>
+> > Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > Cc: Mike Leach <mike.leach@linaro.org>
+> > Cc: Al Grant <al.grant@arm.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> > Cc: Jiri Olsa <jolsa@redhat.com>
+> > Cc: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/build/feature/test-libopencsd.c           |  4 ++--
+> >  tools/perf/util/cs-etm-decoder/cs-etm-decoder.c | 15 ++++-----------
+> >  2 files changed, 6 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/tools/build/feature/test-libopencsd.c b/tools/build/feature/test-libopencsd.c
+> > index 1547bc2c0950..52c790b0317b 100644
+> > --- a/tools/build/feature/test-libopencsd.c
+> > +++ b/tools/build/feature/test-libopencsd.c
+> > @@ -4,9 +4,9 @@
+> >  /*
+> >   * Check OpenCSD library version is sufficient to provide required features
+> >   */
+> > -#define OCSD_MIN_VER ((0 << 16) | (14 << 8) | (0))
+> > +#define OCSD_MIN_VER ((1 << 16) | (0 << 8) | (0))
+> >  #if !defined(OCSD_VER_NUM) || (OCSD_VER_NUM < OCSD_MIN_VER)
+> > -#error "OpenCSD >= 0.14.0 is required"
+> > +#error "OpenCSD >= 1.0.0 is required"
+> >  #endif
+> >  
+> >  int main(void)
+> > diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> > index cd007cc9c283..3f4bc4050477 100644
+> > --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> > +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> > @@ -419,19 +419,10 @@ cs_etm_decoder__buffer_range(struct cs_etm_queue *etmq,
+> >  	packet->last_instr_subtype = elem->last_i_subtype;
+> >  	packet->last_instr_cond = elem->last_instr_cond;
+> >  
+> > -	switch (elem->last_i_type) {
+> > -	case OCSD_INSTR_BR:
+> > -	case OCSD_INSTR_BR_INDIRECT:
+> > +	if (elem->last_i_type == OCSD_INSTR_BR || elem->last_i_type == OCSD_INSTR_BR_INDIRECT)
+> >  		packet->last_instr_taken_branch = elem->last_instr_exec;
+> > -		break;
+> > -	case OCSD_INSTR_ISB:
+> > -	case OCSD_INSTR_DSB_DMB:
+> > -	case OCSD_INSTR_WFI_WFE:
+> > -	case OCSD_INSTR_OTHER:
+> > -	default:
+> > +	else
+> >  		packet->last_instr_taken_branch = false;
+> > -		break;
+> > -	}
+> >  
+> >  	packet->last_instr_size = elem->last_instr_sz;
+> >  
+> > @@ -572,6 +563,8 @@ static ocsd_datapath_resp_t cs_etm_decoder__gen_trace_elem_printer(
+> >  	case OCSD_GEN_TRC_ELEM_EVENT:
+> >  	case OCSD_GEN_TRC_ELEM_SWTRACE:
+> >  	case OCSD_GEN_TRC_ELEM_CUSTOM:
+> > +	case OCSD_GEN_TRC_ELEM_SYNC_MARKER:
+> > +	case OCSD_GEN_TRC_ELEM_MEMTRANS:
+> >  	default:
+> >  		break;
+> 
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> 
+> Arnaldo please consider.
 
-make --silent --keep-going --jobs=8 O=/home/anders/src/kernel/next/out/builddir ARCH=mips CROSS_COMPILE=mips-linux-gnu- HOSTCC=clang CC=clang
-/srv/src/kernel/next/arch/mips/vdso/elf.S:14:1: warning: DWARF2 only supports one section per compilation unit
-.pushsection .note.Linux, "a",@note ; .balign 4 ; .long 2f - 1f ; .long 4484f - 3f ; .long 0 ; 1:.asciz "Linux" ; 2:.balign 4 ; 3:
-^
-/srv/src/kernel/next/arch/mips/vdso/elf.S:34:2: warning: DWARF2 only supports one section per compilation unit
- .section .mips_abiflags, "a"
- ^
+Thanks, applied.
 
-Rework so the mips vdso Makefile adds flag '-no-integrated-as' unless
-LLVM_IAS is defined.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/1256
-Cc: stable@vger.kernel.org # v4.19+
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
----
- arch/mips/vdso/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index 5810cc12bc1d..83e8cf216ac8 100644
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -26,6 +26,10 @@ ifdef CONFIG_CC_IS_CLANG
- ccflags-vdso += $(filter --target=%,$(KBUILD_CFLAGS))
- endif
- 
-+ifneq ($(LLVM_IAS),1)
-+ccflags-vdso += -no-integrated-as
-+endif
-+
- #
- # The -fno-jump-tables flag only prevents the compiler from generating
- # jump tables but does not prevent the compiler from emitting absolute
--- 
-2.29.2
+- Arnaldo
 
