@@ -2,124 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C9C2F7F3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:16:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3653C2F7F45
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733154AbhAOPQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:16:08 -0500
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:38207 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730136AbhAOPQF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:16:05 -0500
-Received: by mail-wm1-f43.google.com with SMTP id y187so7917960wmd.3;
-        Fri, 15 Jan 2021 07:15:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=euDAszylF/ga+ziDscAVs0cSlmh+mJLUqDd+OrH+iq4=;
-        b=iti7b1AtIxmQLGyges4XcHNyfGe6jCSyW4ku4yqYezqJO/tpZ0wD09RzV0cUSwchxJ
-         AYrEFpV/MfZjqhcZnqrlQnCmVig6R+M+tfRXOB0AC6SD0Z5SAybtyualgdw/cWPCOX1g
-         f68HYmRaS4hXuypXC+T+vKKV4/R9nHNP2LUltPcmBtFf7NwZ20UptoIZ/sZKdTkzagDO
-         +jIuUgMMYwMbm+OpSle0Ag1a87f/y94j+hRDL8JHNCcfPkfbId0L6XxFwKajpqyTwjBE
-         zepQpKiM6OJV7ysICSwg1mxTCb6W2IYxk55zTVFN0Ms/FIoQ6gcK8UssmR7UCZm4RStD
-         XgpA==
-X-Gm-Message-State: AOAM533zr7oARGwnBp7TcxxK5svTKkk7S74Ac71hN65xZ1iuxQv1A8K0
-        Rn1u6vw3lcDukkr5kcvTC0E=
-X-Google-Smtp-Source: ABdhPJwqRU7rsnknKCUNz6a1Xv7V6y3ZTg7CJUZpCOk4twBGjvRFV4/51R4z7epuQoNSw1eZq+cm0g==
-X-Received: by 2002:a7b:c18d:: with SMTP id y13mr1369845wmi.22.1610723723238;
-        Fri, 15 Jan 2021 07:15:23 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id p15sm15309614wrt.15.2021.01.15.07.15.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 07:15:22 -0800 (PST)
-Date:   Fri, 15 Jan 2021 16:15:20 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH] soc: samsung: pm_domains: Convert to regular platform
- driver
-Message-ID: <20210115151520.GA43049@kozik-lap>
-References: <CGME20210113110330eucas1p1e7efa719b5db55ccf3774450a8c1e452@eucas1p1.samsung.com>
- <20210113110320.13149-1-m.szyprowski@samsung.com>
- <CAGETcx9wJVnBAe6mKxfi9DC9YFf6DLzAyxBC8DxhQUqpfTDR3A@mail.gmail.com>
- <58e1cfb2-cd35-badf-0238-7c62122e2d05@samsung.com>
- <CAGETcx_Q_FvdL7ghC9Z7p9RcoBRYHeyTB1PRYk==HMv+NzJBzw@mail.gmail.com>
+        id S1733178AbhAOPQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:16:28 -0500
+Received: from foss.arm.com ([217.140.110.172]:42600 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730792AbhAOPQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 10:16:27 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DE103D6E;
+        Fri, 15 Jan 2021 07:15:40 -0800 (PST)
+Received: from [10.57.56.43] (unknown [10.57.56.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CAF3E3F70D;
+        Fri, 15 Jan 2021 07:15:39 -0800 (PST)
+Subject: Re: [PATCH] iommu: check for the deferred attach when attaching a
+ device
+To:     lijiang <lijiang@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Lendacky, Thomas" <thomas.lendacky@amd.com>, jroedel@suse.de,
+        iommu@lists.linux-foundation.org, will@kernel.org
+References: <20201226053959.4222-1-lijiang@redhat.com>
+ <33b6f925-71e6-5d9e-74c3-3e1eaf13398e@redhat.com>
+ <b385db3b-4506-6d75-49e1-e11064e65d6a@redhat.com>
+ <8273ce28-5ba6-2a39-5073-ec0f2b12dd2f@arm.com>
+ <e42b426e-00c1-1144-4f1f-630d52f91215@redhat.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <d31d93ec-2491-bfb6-1083-139d2dcd38e4@arm.com>
+Date:   Fri, 15 Jan 2021 15:15:38 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAGETcx_Q_FvdL7ghC9Z7p9RcoBRYHeyTB1PRYk==HMv+NzJBzw@mail.gmail.com>
+In-Reply-To: <e42b426e-00c1-1144-4f1f-630d52f91215@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 11:07:30AM -0800, Saravana Kannan wrote:
-> On Thu, Jan 14, 2021 at 11:03 AM Marek Szyprowski
-> <m.szyprowski@samsung.com> wrote:
-> >
-> > Hi Saravana,
-> >
-> > On 13.01.2021 21:27, Saravana Kannan wrote:
-> > > On Wed, Jan 13, 2021 at 3:03 AM Marek Szyprowski
-> > > <m.szyprowski@samsung.com> wrote:
-> > >> When Exynos power domain driver was introduced, the only way to ensure
-> > >> that power domains will be instantiated before the devices which belongs
-> > >> to them was to initialize them early enough, before the devices are
-> > >> instantiated in the system. This in turn required not to use any platform
-> > >> device infrastructure at all, as there have been no way to ensure proper
-> > >> probe order between devices.
-> > >>
-> > >> This has been finally changed and patch e590474768f1 ("driver core: Set
-> > >> fw_devlink=on by default") ensures that each device will be probbed only
-> > >> when its resource providers are ready. This allows to convert Exynos
-> > >> power domain driver to regular platform driver.
-> > >>
-> > >> This is also required by the mentioned commit to enable probing any
-> > >> device which belongs to the Exynos power domains, as otherwise the core
-> > >> won't notice that the power domains are in fact available.
-> > >>
-> > >> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> > >> ---
-> > >> Some more comments are in the following thread:
-> > >> https://protect2.fireeye.com/v1/url?k=8ac052ac-d55b6ba4-8ac1d9e3-0cc47a31c8b4-9068b559b0fd155d&q=1&e=b393c3ff-16ba-48a4-9d72-6805d02971d5&u=https%3A%2F%2Flore.kernel.org%2Flkml%2F2556a69b-5da5-bf80-e051-df2d02fbc40f%40samsung.com%2F
-> > >> ---
-> > >> ...
-> > > Skimmed through this patch and at a high level, it looks good for what
-> > > it's trying to do. Thanks for doing this!
-> > >
-> > > Btw, I assume that this won't work with fw_devlink=off/permissive
-> > > (default since 5.10 or earlier)? My concern is that we might
-> > > temporarily set fw_devlink=permissive by default if the other
-> > > breakages aren't fixed in time for 5.12? How do you want to handle that?
-> >
-> > I've applied my patch on top of vanilla v5.10 and checked on my test
-> > boards. Surprisingly everything works fine, so something must have been
-> > changed during the last few years as the power domain driver in the
-> > current form has been written long time ago. I remember that the moment
-> > when platform devices are created from the of nodes has been change at
-> > some point, so maybe this is somehow related. Anyway, the platform
-> > driver for Exynos power domains registered from core_initcall works fine
-> > with v5.10 kernel.
-> >
-> > I have no strong opinion on the way of merging this fix. It can go via
-> > Samsung tree, so in the end the v5.12-rc1 will have both my fix and your
-> > change, but won't be fully bisectable in-between. Krzysztof, what's your
-> > opinion?
+On 2021-01-15 14:26, lijiang wrote:
+> Hi, Robin
 > 
-> If it doesn't break anything without my changes, then let's try to get
-> it merged independent of my series. This is a good change even without
-> my changes.
+> Thank you for the comment.
+> 
+> 在 2021年01月13日 01:29, Robin Murphy 写道:
+>> On 2021-01-05 07:52, lijiang wrote:
+>>> 在 2021年01月05日 11:55, lijiang 写道:
+>>>> Hi,
+>>>>
+>>>> Also add Joerg to cc list.
+>>>>
+>>>
+>>> Also add more people to cc list, Jerry Snitselaar and Tom Lendacky.
+>>>
+>>> Thanks.
+>>>
+>>>> Thanks.
+>>>> Lianbo
+>>>> 在 2020年12月26日 13:39, Lianbo Jiang 写道:
+>>>>> Currently, because domain attach allows to be deferred from iommu
+>>>>> driver to device driver, and when iommu initializes, the devices
+>>>>> on the bus will be scanned and the default groups will be allocated.
+>>>>>
+>>>>> Due to the above changes, some devices could be added to the same
+>>>>> group as below:
+>>>>>
+>>>>> [    3.859417] pci 0000:01:00.0: Adding to iommu group 16
+>>>>> [    3.864572] pci 0000:01:00.1: Adding to iommu group 16
+>>>>> [    3.869738] pci 0000:02:00.0: Adding to iommu group 17
+>>>>> [    3.874892] pci 0000:02:00.1: Adding to iommu group 17
+>>>>>
+>>>>> But when attaching these devices, it doesn't allow that a group has
+>>>>> more than one device, otherwise it will return an error. This conflicts
+>>>>> with the deferred attaching. Unfortunately, it has two devices in the
+>>>>> same group for my side, for example:
+>>>>>
+>>>>> [    9.627014] iommu_group_device_count(): device name[0]:0000:01:00.0
+>>>>> [    9.633545] iommu_group_device_count(): device name[1]:0000:01:00.1
+>>>>> ...
+>>>>> [   10.255609] iommu_group_device_count(): device name[0]:0000:02:00.0
+>>>>> [   10.262144] iommu_group_device_count(): device name[1]:0000:02:00.1
+>>>>>
+>>>>> Finally, which caused the failure of tg3 driver when tg3 driver calls
+>>>>> the dma_alloc_coherent() to allocate coherent memory in the tg3_test_dma().
+>>>>>
+>>>>> [    9.660310] tg3 0000:01:00.0: DMA engine test failed, aborting
+>>>>> [    9.754085] tg3: probe of 0000:01:00.0 failed with error -12
+>>>>> [    9.997512] tg3 0000:01:00.1: DMA engine test failed, aborting
+>>>>> [   10.043053] tg3: probe of 0000:01:00.1 failed with error -12
+>>>>> [   10.288905] tg3 0000:02:00.0: DMA engine test failed, aborting
+>>>>> [   10.334070] tg3: probe of 0000:02:00.0 failed with error -12
+>>>>> [   10.578303] tg3 0000:02:00.1: DMA engine test failed, aborting
+>>>>> [   10.622629] tg3: probe of 0000:02:00.1 failed with error -12
+>>>>>
+>>>>> In addition, the similar situations also occur in other drivers such
+>>>>> as the bnxt_en driver. That can be reproduced easily in kdump kernel
+>>>>> when SME is active.
+>>>>>
+>>>>> Add a check for the deferred attach in the iommu_attach_device() and
+>>>>> allow to attach the deferred device regardless of how many devices
+>>>>> are in a group.
+>>
+>> Is this iommu_attach_device() call is coming from iommu-dma? (if not, then whoever's calling it probably shouldn't be)
+>>
+> 
+> Yes, you are right, the iommu_attach_device call is coming from iommu-dma.
+>   
+>> Assuming so, then probably what should happen is to move the handling currently in iommu_dma_deferred_attach() into the core so that it can call __iommu_attach_device() directly - the intent is just to replay that exact call skipped in iommu_group_add_device(), so the legacy external iommu_attach_device() interface isn't really the right tool for the job
+> 
+> Sounds good. I will check if this can work in various cases. If it's OK, I will post again.
+> 
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index f0305e6aac1b..5e7da902ac36 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -23,7 +23,6 @@
+>   #include <linux/swiotlb.h>
+>   #include <linux/scatterlist.h>
+>   #include <linux/vmalloc.h>
+> -#include <linux/crash_dump.h>
+>   #include <linux/dma-direct.h>
+>   
+>   struct iommu_dma_msi_page {
+> @@ -378,21 +377,6 @@ static int iommu_dma_init_domain(struct iommu_domain *domain, dma_addr_t base,
+>   	return iova_reserve_iommu_regions(dev, domain);
+>   }
+>   
+> -static int iommu_dma_deferred_attach(struct device *dev,
+> -		struct iommu_domain *domain)
+> -{
+> -	const struct iommu_ops *ops = domain->ops;
+> -
+> -	if (!is_kdump_kernel())
+> -		return 0;
+> -
+> -	if (unlikely(ops->is_attach_deferred &&
+> -			ops->is_attach_deferred(domain, dev)))
+> -		return iommu_attach_device(domain, dev);
+> -
+> -	return 0;
+> -}
+> -
+>   /**
+>    * dma_info_to_prot - Translate DMA API directions and attributes to IOMMU API
+>    *                    page flags.
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index ffeebda8d6de..4fed1567b498 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -23,6 +23,7 @@
+>   #include <linux/property.h>
+>   #include <linux/fsl/mc.h>
+>   #include <linux/module.h>
+> +#include <linux/crash_dump.h>
+>   #include <trace/events/iommu.h>
+>   
+>   static struct kset *iommu_group_kset;
+> @@ -1952,6 +1953,21 @@ static int __iommu_attach_device(struct iommu_domain *domain,
+>   	return ret;
+>   }
+>   
+> +int iommu_dma_deferred_attach(struct device *dev,
+> +                struct iommu_domain *domain)
+> +{
+> +        const struct iommu_ops *ops = domain->ops;
+> +
+> +        if (!is_kdump_kernel())
+> +                return 0;
+> +
+> +        if (unlikely(ops->is_attach_deferred &&
+> +                        ops->is_attach_deferred(domain, dev)))
+> +                return __iommu_attach_device(domain, dev);
+> +
+> +        return 0;
+> +}
+> +
+>   int iommu_attach_device(struct iommu_domain *domain, struct device *dev)
+>   {
+>   	struct iommu_group *group;
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index b3f0e2018c62..8e0ee96ca456 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -424,6 +424,8 @@ extern struct iommu_group *iommu_group_get_by_id(int id);
+>   extern void iommu_domain_free(struct iommu_domain *domain);
+>   extern int iommu_attach_device(struct iommu_domain *domain,
+>   			       struct device *dev);
+> +extern int iommu_dma_deferred_attach(struct device *dev,
+> +                struct iommu_domain *domain);
+>   extern void iommu_detach_device(struct iommu_domain *domain,
+>   				struct device *dev);
+>   extern int iommu_uapi_cache_invalidate(struct iommu_domain *domain,
+> @@ -680,6 +682,12 @@ static inline int iommu_attach_device(struct iommu_domain *domain,
+>   	return -ENODEV;
+>   }
+>   
+> +static inline int iommu_dma_deferred_attach(struct device *dev,
+> +					    struct iommu_domain *domain)
+> +{
+> +	return -ENODEV;
+> +}
+> +
+>   static inline void iommu_detach_device(struct iommu_domain *domain,
+>   				       struct device *dev)
+>   {
 
-I agree, I'll take it via Samsung SoC. It's not the perfect solution -
-as Marek said, the tree won't be bisectable. Have in mind that some
-other boards/architectures might be broken where no one reported it yet,
-so fw_devlink=off/permissive might still be good choice for v5.12.
+Yeah, that's more or less what I had in mind (FWIW I don't think we need 
+the stub definition since this should only ever be called by other 
+IOMMU-API-dependent code). However I'd really like to minimise the 
+fast-path impact to the normal case, so how about throwing something 
+like this into the mix as well? (where iommu_do_deferred_attach() 
+represents what you have above minus the move of the kdump check)
 
-Best regards,
-Krzysztof
+Cheers,
+Robin.
 
+----->8-----
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 4078358ed66e..638222558248 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -51,6 +51,8 @@ struct iommu_dma_cookie {
+  	struct iommu_domain		*fq_domain;
+  };
+
++DEFINE_STATIC_KEY_FALSE(deferred_attach);
++
+  void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
+  		struct iommu_domain *domain)
+  {
+@@ -378,21 +380,6 @@ static int iommu_dma_init_domain(struct 
+iommu_domain *domain, dma_addr_t base,
+  	return iova_reserve_iommu_regions(dev, domain);
+  }
+
+-static int iommu_dma_deferred_attach(struct device *dev,
+-		struct iommu_domain *domain)
+-{
+-	const struct iommu_ops *ops = domain->ops;
+-
+-	if (!is_kdump_kernel())
+-		return 0;
+-
+-	if (unlikely(ops->is_attach_deferred &&
+-			ops->is_attach_deferred(domain, dev)))
+-		return iommu_attach_device(domain, dev);
+-
+-	return 0;
+-}
+-
+  /**
+   * dma_info_to_prot - Translate DMA API directions and attributes to 
+IOMMU API
+   *                    page flags.
+@@ -535,7 +522,8 @@ static dma_addr_t __iommu_dma_map(struct device 
+*dev, phys_addr_t phys,
+  	size_t iova_off = iova_offset(iovad, phys);
+  	dma_addr_t iova;
+
+-	if (unlikely(iommu_dma_deferred_attach(dev, domain)))
++	if (static_branch_unlikely(&deferred_attach) &&
++	    iommu_do_deferred_attach(domain, dev))
+  		return DMA_MAPPING_ERROR;
+
+  	size = iova_align(iovad, size + iova_off);
+@@ -693,7 +681,8 @@ static void *iommu_dma_alloc_remap(struct device 
+*dev, size_t size,
+
+  	*dma_handle = DMA_MAPPING_ERROR;
+
+-	if (unlikely(iommu_dma_deferred_attach(dev, domain)))
++	if (static_branch_unlikely(&deferred_attach) &&
++	    iommu_do_deferred_attach(domain, dev))
+  		return NULL;
+
+  	min_size = alloc_sizes & -alloc_sizes;
+@@ -976,7 +965,8 @@ static int iommu_dma_map_sg(struct device *dev, 
+struct scatterlist *sg,
+  	unsigned long mask = dma_get_seg_boundary(dev);
+  	int i;
+
+-	if (unlikely(iommu_dma_deferred_attach(dev, domain)))
++	if (static_branch_unlikely(&deferred_attach) &&
++	    iommu_do_deferred_attach(domain, dev))
+  		return 0;
+
+  	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+@@ -1424,6 +1414,9 @@ void iommu_dma_compose_msi_msg(struct msi_desc *desc,
+
+  static int iommu_dma_init(void)
+  {
++	if (is_kdump_kernel())
++		static_branch_enable(&deferred_attach);
++
+  	return iova_cache_get();
+  }
+  arch_initcall(iommu_dma_init);
