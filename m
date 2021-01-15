@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2504F2F7BA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4967F2F7BC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387811AbhAONEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:04:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37056 "EHLO mail.kernel.org"
+        id S2387724AbhAONFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:05:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732700AbhAOMbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:31:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A48E238A0;
-        Fri, 15 Jan 2021 12:31:14 +0000 (UTC)
+        id S1732638AbhAOMba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E283238E8;
+        Fri, 15 Jan 2021 12:30:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713874;
-        bh=NahTOkR+9aPL6JZsWrG55pB7FafAa/JdFnzdbVfWbM8=;
+        s=korg; t=1610713833;
+        bh=n8GLVtX2sebaSW0ZA7xgFtuKbzGC87YbZ4+1E2AITnA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HCjQeDPebpAtqRx07yiGEaljd0Z6teK1PbiR3UgSTc733PVtLgUo/zr71CJ99pFe8
-         TnojyzpsYyYosmKt3wG3S+YNty59a4/8DKJm8bT3M0MET30Cjcb+pjiLPK8VpjQsqA
-         R5ayQ7d5br0BX745rXG02/OqrbskNYI/TGe4q+5w=
+        b=xFUbKa8av0MSgTNd8qy+yojUoSMpeD/U8VqCvgCNSO5tURsDBUR74UmaPEQhcYlDG
+         HBf/cwxQ2Kxw2IR8sZsjNP6O/sL/M3wdwCgRdErNhLuQkU468ZivWntUHH+OP9mSZ5
+         8O9D0IuYg8SoHnFUHMkYqmGNuHH8WS1kLht3AoHw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Guskov <rguskov@dh-electronics.com>,
-        Marek Vasut <marex@denx.de>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.14 17/28] spi: stm32: FIFO threshold level - fix align packet size
+        stable@vger.kernel.org,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 4.9 23/25] KVM: arm64: Dont access PMCR_EL0 when no PMU is available
 Date:   Fri, 15 Jan 2021 13:27:54 +0100
-Message-Id: <20210115121957.614595194@linuxfoundation.org>
+Message-Id: <20210115121957.833201200@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121956.731354372@linuxfoundation.org>
-References: <20210115121956.731354372@linuxfoundation.org>
+In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
+References: <20210115121956.679956165@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Guskov <rguskov@dh-electronics.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit a590370d918fc66c62df6620445791fbe840344a upstream.
+commit 2a5f1b67ec577fb1544b563086e0377f095f88e2 upstream.
 
-if cur_bpw <= 8 and xfer_len < 4 then the value of fthlv will be 1 and
-SPI registers content may have been lost.
+We reset the guest's view of PMCR_EL0 unconditionally, based on
+the host's view of this register. It is however legal for an
+implementation not to provide any PMU, resulting in an UNDEF.
 
-* If SPI data register is accessed as a 16-bit register and DSIZE <= 8bit,
-  better to select FTHLV = 2, 4, 6 etc
+The obvious fix is to skip the reset of this shadow register
+when no PMU is available, sidestepping the issue entirely.
+If no PMU is available, the guest is not able to request
+a virtual PMU anyway, so not doing nothing is the right thing
+to do!
 
-* If SPI data register is accessed as a 32-bit register and DSIZE > 8bit,
-  better to select FTHLV = 2, 4, 6 etc, while if DSIZE <= 8bit,
-  better to select FTHLV = 4, 8, 12 etc
+It is unlikely that this bug can hit any HW implementation
+though, as they all provide a PMU. It has been found using nested
+virt with the host KVM not implementing the PMU itself.
 
-Signed-off-by: Roman Guskov <rguskov@dh-electronics.com>
-Fixes: dcbe0d84dfa5 ("spi: add driver for STM32 SPI controller")
-Reviewed-by: Marek Vasut <marex@denx.de>
-Link: https://lore.kernel.org/r/20201221123532.27272-1-rguskov@dh-electronics.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: ab9468340d2bc ("arm64: KVM: Add access handler for PMCR register")
+Reviewed-by: Alexandru Elisei <alexandru.elisei@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20201210083059.1277162-1-maz@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-stm32.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/kvm/sys_regs.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -299,9 +299,9 @@ static u32 stm32_spi_prepare_fthlv(struc
+--- a/arch/arm64/kvm/sys_regs.c
++++ b/arch/arm64/kvm/sys_regs.c
+@@ -450,6 +450,10 @@ static void reset_pmcr(struct kvm_vcpu *
+ {
+ 	u64 pmcr, val;
  
- 	/* align packet size with data registers access */
- 	if (spi->cur_bpw > 8)
--		fthlv -= (fthlv % 2); /* multiple of 2 */
-+		fthlv += (fthlv % 2) ? 1 : 0;
- 	else
--		fthlv -= (fthlv % 4); /* multiple of 4 */
-+		fthlv += (fthlv % 4) ? (4 - (fthlv % 4)) : 0;
- 
- 	return fthlv;
- }
++	/* No PMU available, PMCR_EL0 may UNDEF... */
++	if (!kvm_arm_support_pmu_v3())
++		return;
++
+ 	pmcr = read_sysreg(pmcr_el0);
+ 	/*
+ 	 * Writable bits of PMCR_EL0 (ARMV8_PMU_PMCR_MASK) are reset to UNKNOWN
 
 
