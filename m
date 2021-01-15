@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6DE2F83C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A59042F83D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388156AbhAOSPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:15:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
+        id S2388319AbhAOSQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:16:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388024AbhAOSPJ (ORCPT
+        with ESMTP id S2388029AbhAOSPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 13:15:09 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11943C061381
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:14:11 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id a9so6748701wrt.5
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:14:10 -0800 (PST)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3155CC061382
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:14:12 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id v15so6543255wrx.4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:14:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Zk69YegOGJqysgGJbDn5xfrwzKa0lDxp7+yp3s1Kj6U=;
-        b=dseFE4l/a7Wm6ykCQlC4gaq/QvUbmlCUt5gKH0q+IywCOX3NvEoX4BwK6m03B9VDXs
-         1SuhGTsHQqMW0lwqBNgvjdN6LqP7wXL1vty08oacmKr1HNMacqDFja6hyg1EryPPh1Wz
-         qxo4jjbHw3Knhoig20reJn2pzkM4e+gTMiKwBwz+tD53xJEA7BIKhGYysAKbmkH7jH+O
-         WDtWvkXFDI9vzX74EWQET78aNV2d7JIUsoqMic7S/ma0eYZ/UQJ/vieSlU8W+dk4aI2q
-         LPwi5vp8uhWFUS0YL6n0QoHiQBFn1GzjkjfIzCTrXXa8w2WQCfN3EI3TW/ycUM2X8gYj
-         NPEA==
+        bh=Am4t8b9En1HIfsclMg+25TY7LAvRdlrz1SUTzn1fYz4=;
+        b=M77jBSyJi06eqwSb0fQBTfnZ6ireTJ4ExXO9TEhHwoQ0gXWo1v183KS92TUeVaZNun
+         YaX4duc8tuj90M1fTQ98u9PMbQ7Bejo7m/hnKIcm49IzS1dh3qyft6nJFFvkFkYBiNry
+         1Q/zs3xW7pMSKqv/lq/YTh6y5aZnafrgpq2vVAWsmVe0Q+UNzzL0nacr2TGkrdOlb/eq
+         T3pzb174ylDgVUTO5QSkquN67H3RgsAoicWZOaTge4rkS7bE4D0HJRPNMF+NSBzgHaLx
+         ZrQpEF7vifXb2dfhbkakdeZikPe+eIitwHnJCTNbbkkaP9BR8tNBrZemhTmDcmOFhh0g
+         kzyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Zk69YegOGJqysgGJbDn5xfrwzKa0lDxp7+yp3s1Kj6U=;
-        b=FXVCprjo03nF1V7FmrqiRYKdMDTSs8kevpqTOnJ6TUZRt99iqxEql241ohU1dLcNPo
-         knw49II3llx93lYAnSQqPs8Dm3KragXw1f4ahjzB2P3gSMB24SjoHy/4NH2ujlA4J4R0
-         j/5YRNsZvyfdEDIqFE/SBigusCWVZo1jNcnvqthvLd26FCIGxxd/5ryrK3IekRtSrGtE
-         RbRU09XSxPYG2I13wJYiH2Gck7NU4NfW9ETDsCSkvgcXs/rGsSRO89OPossnIuM2XxrM
-         6TkLwKG1Y9lf8Uv1zLdkFaGp1oZQfsRJzB+EaiCEWWpX38AtdQobq1QdKeZG+U5Ovx8q
-         aKHw==
-X-Gm-Message-State: AOAM531xtC+3Z8FFPxcfUR6lKVUr+DIaUhTXYXC3TlADRAI65/1tecIh
-        jYWY07mIrf4twIw2/Z/EUQpN2A==
-X-Google-Smtp-Source: ABdhPJxJn2M/cVUxIKsLXpE4PrVC/2KvRxL71cjUJKAp6k49EoS6r2Bcuo7xn4BEbu5GHJcv4KxSgw==
-X-Received: by 2002:a5d:4c45:: with SMTP id n5mr14779840wrt.396.1610734449759;
-        Fri, 15 Jan 2021 10:14:09 -0800 (PST)
+        bh=Am4t8b9En1HIfsclMg+25TY7LAvRdlrz1SUTzn1fYz4=;
+        b=RFwhzZ38QL6XYbyH2KZSHDO0251dccgSm31Jk8+5Pm2aywnzV7dFiTI9vRXB7em4U6
+         j+j+XxCdf/fltvRP/YE+ocqJXtL8ESuIl/nUEsXPG90DEvQ7dBNbnZZCp3dZHYak5rP8
+         VCcdZE0GnKi3RC7UH43LYXOpDIpJKUpwgKk8lH+fBDh2UZpq4H5Bpk+PETt0+Gc9kA2n
+         4TwAh6pnZvV79VK2TH9lJ0mGlfbkpx059mLMqTAAMiJfkX0R/iBDYcS2jehyfnuDDoxy
+         QVjiEkEv+n34VbJNXm6FcZE+ks/ShDPcHGK2LEjOWYM9sd+NsEsEsn9THym+lb6qvMHA
+         beKQ==
+X-Gm-Message-State: AOAM532061JfsfT6tw2JpvG8YAzCiFD4SOmPFv8FuS77CRvvi2LjHd3v
+        z/m4k1lVOZ97M1d+HOSvItY1vg==
+X-Google-Smtp-Source: ABdhPJxzcvRMerU+KtZl29WVJZPfR54Qpi1F+qdlK8hpl724S36xxPcQ89RHjXLf3mqalXSZNoQr5g==
+X-Received: by 2002:adf:902a:: with SMTP id h39mr14400546wrh.147.1610734450977;
+        Fri, 15 Jan 2021 10:14:10 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.14.08
+        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.14.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:14:09 -0800 (PST)
+        Fri, 15 Jan 2021 10:14:10 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 36/40] drm/vmwgfx/vmwgfx_shader: Demote kernel-doc abuses and fix-up worthy headers
-Date:   Fri, 15 Jan 2021 18:13:09 +0000
-Message-Id: <20210115181313.3431493-37-lee.jones@linaro.org>
+Subject: [PATCH 37/40] drm/vmwgfx/vmwgfx_cmdbuf: Fix a bunch of missing or incorrectly formatted/named params
+Date:   Fri, 15 Jan 2021 18:13:10 +0000
+Message-Id: <20210115181313.3431493-38-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210115181313.3431493-1-lee.jones@linaro.org>
 References: <20210115181313.3431493-1-lee.jones@linaro.org>
@@ -70,12 +70,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/vmwgfx/vmwgfx_shader.c:134: warning: Function parameter or member 'res' not described in 'vmw_res_to_shader'
- drivers/gpu/drm/vmwgfx/vmwgfx_shader.c:663: warning: Function parameter or member 'base' not described in 'vmw_user_shader_base_to_res'
- drivers/gpu/drm/vmwgfx/vmwgfx_shader.c:695: warning: Function parameter or member 'p_base' not described in 'vmw_user_shader_base_release'
- drivers/gpu/drm/vmwgfx/vmwgfx_shader.c:965: warning: Function parameter or member 'dev_priv' not described in 'vmw_compat_shader_add'
- drivers/gpu/drm/vmwgfx/vmwgfx_shader.c:965: warning: Function parameter or member 'size' not described in 'vmw_compat_shader_add'
- drivers/gpu/drm/vmwgfx/vmwgfx_shader.c:965: warning: Excess function parameter 'tfile' description in 'vmw_compat_shader_add'
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c:58: warning: Function parameter or member 'block_submission' not described in 'vmw_cmdbuf_context'
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c:109: warning: cannot understand function prototype: 'struct vmw_cmdbuf_man '
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c:164: warning: Function parameter or member 'handle' not described in 'vmw_cmdbuf_header'
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c:257: warning: Function parameter or member 'header' not described in '__vmw_cmdbuf_header_free'
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c:380: warning: Function parameter or member 'notempty' not described in 'vmw_cmdbuf_ctx_process'
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c:1168: warning: Function parameter or member 'context' not described in 'vmw_cmdbuf_preempt'
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c:1193: warning: Function parameter or member 'context' not described in 'vmw_cmdbuf_startstop'
 
 Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
 Cc: Roland Scheidegger <sroland@vmware.com>
@@ -84,56 +85,77 @@ Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_shader.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_shader.c b/drivers/gpu/drm/vmwgfx/vmwgfx_shader.c
-index 905ae50aaa2ae..a0db065640131 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_shader.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_shader.c
-@@ -125,7 +125,7 @@ static const struct vmw_res_func vmw_dx_shader_func = {
- 	.commit_notify = vmw_dx_shader_commit_notify,
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c b/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c
+index 45fbc41440f1e..3158924ffa852 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c
+@@ -48,6 +48,7 @@
+  * @hw_submitted: List of command buffers submitted to hardware.
+  * @preempted: List of preempted command buffers.
+  * @num_hw_submitted: Number of buffers currently being processed by hardware
++ * @block_submission: Identifies a block command submission.
+  */
+ struct vmw_cmdbuf_context {
+ 	struct list_head submitted;
+@@ -58,7 +59,7 @@ struct vmw_cmdbuf_context {
  };
  
--/**
-+/*
-  * Shader management:
+ /**
+- * struct vmw_cmdbuf_man: - Command buffer manager
++ * struct vmw_cmdbuf_man - Command buffer manager
+  *
+  * @cur_mutex: Mutex protecting the command buffer used for incremental small
+  * kernel command submissions, @cur.
+@@ -143,7 +144,7 @@ struct vmw_cmdbuf_man {
+  * @cb_context: The device command buffer context.
+  * @list: List head for attaching to the manager lists.
+  * @node: The range manager node.
+- * @handle. The DMA address of @cb_header. Handed to the device on command
++ * @handle: The DMA address of @cb_header. Handed to the device on command
+  * buffer submission.
+  * @cmd: Pointer to the command buffer space of this buffer.
+  * @size: Size of the command buffer space of this buffer.
+@@ -249,7 +250,7 @@ static void vmw_cmdbuf_header_inline_free(struct vmw_cmdbuf_header *header)
+  * __vmw_cmdbuf_header_free - Free a struct vmw_cmdbuf_header  and its
+  * associated structures.
+  *
+- * header: Pointer to the header to free.
++ * @header: Pointer to the header to free.
+  *
+  * For internal use. Must be called with man::lock held.
   */
- 
-@@ -654,7 +654,7 @@ int vmw_dx_shader_add(struct vmw_cmdbuf_res_manager *man,
- 
- 
- 
--/**
-+/*
-  * User-space shader management:
-  */
- 
-@@ -686,7 +686,7 @@ static void vmw_shader_free(struct vmw_resource *res)
- 			    vmw_shader_size);
+@@ -365,10 +366,11 @@ static void vmw_cmdbuf_ctx_submit(struct vmw_cmdbuf_man *man,
  }
  
--/**
-+/*
-  * This function is called when user space has no more references on the
-  * base object. It releases the base-object's reference on the resource object.
-  */
-@@ -945,13 +945,13 @@ int vmw_shader_remove(struct vmw_cmdbuf_res_manager *man,
-  * vmw_compat_shader_add - Create a compat shader and stage it for addition
-  * as a command buffer managed resource.
+ /**
+- * vmw_cmdbuf_ctx_submit: Process a command buffer context.
++ * vmw_cmdbuf_ctx_process - Process a command buffer context.
   *
-+ * @dev_priv: Pointer to device private structure.
-  * @man: Pointer to the compat shader manager identifying the shader namespace.
-  * @user_key: The key that is used to identify the shader. The key is
-  * unique to the shader type.
-  * @bytecode: Pointer to the bytecode of the shader.
-  * @shader_type: Shader type.
-- * @tfile: Pointer to a struct ttm_object_file that the guest-backed shader is
-- * to be created with.
-+ * @size: Command size.
-  * @list: Caller's list of staged command buffer resource actions.
+  * @man: The command buffer manager.
+  * @ctx: The command buffer context.
++ * @notempty: Pass back count of non-empty command submitted lists.
   *
+  * Submit command buffers to hardware if possible, and process finished
+  * buffers. Typically freeing them, but on preemption or error take
+@@ -1161,6 +1163,7 @@ static int vmw_cmdbuf_send_device_command(struct vmw_cmdbuf_man *man,
+  * context.
+  *
+  * @man: The command buffer manager.
++ * @context: Device context to pass command through.
+  *
+  * Synchronously sends a preempt command.
   */
+@@ -1184,6 +1187,7 @@ static int vmw_cmdbuf_preempt(struct vmw_cmdbuf_man *man, u32 context)
+  * context.
+  *
+  * @man: The command buffer manager.
++ * @context: Device context to start/stop.
+  * @enable: Whether to enable or disable the context.
+  *
+  * Synchronously sends a device start / stop context command.
 -- 
 2.25.1
 
