@@ -2,85 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0D62F81FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F882F8178
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728695AbhAORRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:17:25 -0500
-Received: from mail-m964.mail.126.com ([123.126.96.4]:55906 "EHLO
-        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726065AbhAORRY (ORCPT
+        id S1727779AbhAOREi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:04:38 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11023 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725923AbhAOREi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:17:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=bWFFo4adEeRjhOoRH4
-        Jacj17hKzJ2ydg4soThbYz5qA=; b=WvvnIAmUTeu9pCqhZ47vTHqDCnRwpQ9tZ7
-        PTTB+d4L4D+HSPtUsAoxEy2LHew0CDOePzzv7I8EmsgGPMsTZR/1EXDp8geeW30y
-        oEBrtK0uBhSacQE3oFXz+lA7u2VDp5KKjg+9ymaXUJFVmSk8b8S6ddvQK4AL9kYL
-        iw3d6fy0c=
-Received: from localhost.localdomain (unknown [116.162.2.41])
-        by smtp9 (Coremail) with SMTP id NeRpCgBndpc_ogFgm_vTQw--.4290S2;
-        Fri, 15 Jan 2021 22:10:08 +0800 (CST)
-From:   wangyingjie55@126.com
-To:     davem@davemloft.net, kuba@kernel.org, vraman@marvell.com,
-        skardach@marvell.com
-Cc:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
-        jerinj@marvell.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yingjie Wang <wangyingjie55@126.com>
-Subject: [PATCH v3] octeontx2-af: Fix missing check bugs in rvu_cgx.c
-Date:   Fri, 15 Jan 2021 06:10:04 -0800
-Message-Id: <1610719804-35230-1-git-send-email-wangyingjie55@126.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: NeRpCgBndpc_ogFgm_vTQw--.4290S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Aw13Cr4xJryDtFW7XF4xWFg_yoW8Xw4Up3
-        y0yryrZrn2ka1xCw4DJa18JrWUta1Dtaykt34UC3s5uFn5WF13XF4DKa1UK3WUCrWrC3y7
-        tF1jk393uF1DJFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j-0edUUUUU=
-X-Originating-IP: [116.162.2.41]
-X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbiVwEbp1pECd3elgAAso
+        Fri, 15 Jan 2021 12:04:38 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DHSDB4JtVzj8G9;
+        Sat, 16 Jan 2021 01:02:50 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 16 Jan 2021 01:03:47 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>, <arnd@arndb.de>,
+        <akpm@linux-foundation.org>, <xuwei5@hisilicon.com>,
+        <lorenzo.pieralisi@arm.com>, <helgaas@kernel.org>,
+        <jiaxun.yang@flygoat.com>, <song.bao.hua@hisilicon.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-mips@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linuxarm@openeuler.org>, John Garry <john.garry@huawei.com>
+Subject: [PATCH RFC 0/4] Fix arm64 crash for accessing unmapped IO port regions (reboot)
+Date:   Sat, 16 Jan 2021 00:58:45 +0800
+Message-ID: <1610729929-188490-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yingjie Wang <wangyingjie55@126.com>
+This is a reboot of my original series to address the problem of drivers
+for legacy ISA devices accessing unmapped IO port regions on arm64 systems
+and causing the system to crash.
 
-In rvu_mbox_handler_cgx_mac_addr_get()
-and rvu_mbox_handler_cgx_mac_addr_set(),
-the msg is expected only from PFs that are mapped to CGX LMACs.
-It should be checked before mapping,
-so we add the is_cgx_config_permitted() in the functions.
+There was another recent report of such an issue [0], and some old ones
+[1] and [2] for reference.
 
-Fixes: 96be2e0da85e ("octeontx2-af: Support for MAC address filters in CGX")
-Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
-Reviewed-by: Geetha sowjanya<gakula@marvell.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+The background is that many systems do not include PCI host controllers,
+or they do and controller probe may have failed. For these cases, no IO
+ports are mapped. However, loading drivers for legacy ISA devices can
+crash the system as there is nothing to stop them accessing those IO
+ports (which have not been io remap'ed).
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-index d298b9357177..6c6b411e78fd 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-@@ -469,6 +469,9 @@ int rvu_mbox_handler_cgx_mac_addr_set(struct rvu *rvu,
- 	int pf = rvu_get_pf(req->hdr.pcifunc);
- 	u8 cgx_id, lmac_id;
- 
-+	if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
-+		return -EPERM;
-+
- 	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
- 
- 	cgx_lmac_addr_set(cgx_id, lmac_id, req->mac_addr);
-@@ -485,6 +488,9 @@ int rvu_mbox_handler_cgx_mac_addr_get(struct rvu *rvu,
- 	int rc = 0, i;
- 	u64 cfg;
- 
-+	if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
-+		return -EPERM;
-+
- 	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
- 
- 	rsp->hdr.rc = rc;
+My original solution tried to keep the kernel alive in these situations by
+rejecting logical PIO access to PCI IO regions until PCI IO port regions
+have been mapped.
+
+This series goes one step further, by just reserving the complete legacy
+IO port range in 0x0--0xffff for arm64. The motivation for doing this is
+to make the request_region() calls for those drivers fail, like this:
+
+root@ubuntu:/home/john# insmod mk712.ko
+ [ 3415.575800] mk712: unable to get IO region
+insmod: ERROR: could not insert module mk712.ko: No such device
+
+Otherwise, in theory, those drivers could initiate rogue accesses to
+mapped IO port regions for other devices and cause corruptions or
+side-effects. Indeed, those drivers should not be allowed to access
+IO ports at all in such a system.
+
+As a secondary defence, for broken drivers who do not call
+request_region(), IO port accesses in range 0--0xffff will be ignored,
+again preserving the system.
+
+I am sending as an RFC as I am not sure of any problem with reserving
+first 0x10000 of IO space like this. There is reserve= commandline
+argument, which does allow this already.
+
+For reference, here's how /proc/ioports looks on my arm64 system with
+this change:
+
+root@ubuntu:/home/john# more /proc/ioports
+00010000-0001ffff : PCI Bus 0002:f8
+  00010000-00010fff : PCI Bus 0002:f9
+    00010000-00010007 : 0002:f9:00.0
+      00010000-00010007 : serial
+    00010008-0001000f : 0002:f9:00.1
+      00010008-0001000f : serial
+    00010010-00010017 : 0002:f9:00.2
+    00010018-0001001f : 0002:f9:00.2
+00020000-0002ffff : PCI Bus 0004:88
+00030000-0003ffff : PCI Bus 0005:78
+00040000-0004ffff : PCI Bus 0006:c0
+00050000-0005ffff : PCI Bus 0007:90
+00060000-0006ffff : PCI Bus 000a:10
+00070000-0007ffff : PCI Bus 000c:20
+00080000-0008ffff : PCI Bus 000d:30
+
+[0] https://lore.kernel.org/linux-input/20210112055129.7840-1-song.bao.hua@hisilicon.com/T/#mf86445470160c44ac110e9d200b09245169dc5b6
+[1] https://lore.kernel.org/linux-pci/56F209A9.4040304@huawei.com
+[2] https://lore.kernel.org/linux-arm-kernel/e6995b4a-184a-d8d4-f4d4-9ce75d8f47c0@huawei.com/
+
+Difference since v4:
+https://lore.kernel.org/linux-pci/1560262374-67875-1-git-send-email-john.garry@huawei.com/
+- Reserve legacy ISA region
+
+John Garry (4):
+  arm64: io: Introduce IO_SPACE_BASE
+  asm-generic/io.h: Add IO_SPACE_BASE
+  kernel/resource: Make ioport_resource.start configurable
+  logic_pio: Warn on and discard accesses to addresses below
+    IO_SPACE_BASE
+
+ arch/arm64/include/asm/io.h |  1 +
+ include/asm-generic/io.h    |  4 ++++
+ include/linux/logic_pio.h   |  5 +++++
+ kernel/resource.c           |  2 +-
+ lib/logic_pio.c             | 20 ++++++++++++++------
+ 5 files changed, 25 insertions(+), 7 deletions(-)
+
 -- 
-2.7.4
+2.26.2
 
