@@ -2,97 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CBB2F87CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 621BD2F87D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726646AbhAOVms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 16:42:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44964 "EHLO
+        id S1726737AbhAOVnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 16:43:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726499AbhAOVmp (ORCPT
+        with ESMTP id S1726194AbhAOVnQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 16:42:45 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C60C061795
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:42:05 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id y205so487801pfc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:42:05 -0800 (PST)
+        Fri, 15 Jan 2021 16:43:16 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA8CBC061757;
+        Fri, 15 Jan 2021 13:42:35 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id q1so20955069ion.8;
+        Fri, 15 Jan 2021 13:42:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bgjnqtpec69vUmjqa2UifvxbYQW35/sgPsKU/7Bo9aI=;
-        b=OggvUw0Hm9klzCb2gWzL1xpvM4h0B34ZYVQsxN3wC/zdRTLky1sIVS+aP+RMem0Lx+
-         dhCHyUumtATf+63/HrQ39p6Plwn+OkdZ92Gyx3QGmotDVqQ0vYf+OMXeU1OQmZYDLp23
-         G67G8V+nMMaSDcNKFXoJsHO5cGVnEx6jZqJiA8UQp+Rg3CH83hN9RC4c94IlDyEIP/st
-         zg0JlRpy3X+IW2jLP5T+VNP8gpjIkw7faoZac0GCm/4Jn2YSbPTsHrfhyi9oLgSFjKtZ
-         f/L89Eha2I7pIfgNg69nuV+z1VE8VInqryQK7DnoxnSVe+pgyAvVhEv/BLD+I5uOc5dA
-         14Rg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=KrJ2mYVoEchRR2uOsqZY+9xKiUZ8oXU02si2kBeet+s=;
+        b=JddejzpwdZ+xHh+Mu9RkK/LncpeptkmDLu/UhOCGBNd5pr6p2Ka1IEKDNU2wde8KSj
+         g4mys6dnDhYHQwP34ksbSNZzIYF2JxS6mtZMF86hZT3Q1dey77VhUQ+qxG5yHRUZhMIZ
+         MYHEUUQnbBy/xJ80XZ/viXhoCwgcZQ/CBRfwivFuqozf3F3oHzUE8/ZLsBRp8CPQ1vLn
+         v3XzJaYelgHvB7Psyw471Fv9JsuXJmdq9ESvByAmNZ95b+kxL+5ZBQBNlwO5mBHXZ3Vf
+         SV6thLVL9qGJm217fFsPJqDUZHC+vzrzFdUOAHPrWz5A1YdkjkADwMkyq3R4eIo4mUHr
+         3MLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bgjnqtpec69vUmjqa2UifvxbYQW35/sgPsKU/7Bo9aI=;
-        b=k44qlUi3FXI5cgPV58uaaYgWUGInxBLr5e9kceIA9SaN7dSW1+Y5/dYcEfvUwkH6Jx
-         4tpBDdobwrdZWDXKdZKTAK4xCsmYxr2+70o2XZDEyRAmVRW1m5F+2MmBzVqH9mHtNcmE
-         oUDBVUYUIkHOCnwZpgaeU2481By1VG7muozmZ7l8/xP+DhT+9e68qJd0ByogzgKyOQpY
-         Buezt/0r+NHRTB+qGhJQwhMkiYEhLqNbeHha7q9NUj/mb5Hb9oGSMUnhfTKZvnGXpdwT
-         4hDZv+wlaE2tau62YSbjk6gL0dHdFK+rVTFBbl/MwmVFobLgKGPJkdzcIqN0S+0LZ2Gi
-         ug6Q==
-X-Gm-Message-State: AOAM532hoEZg9u5II2jiEQBJCY8UjEsomFLbHsAX67oCObaLrKGaQ/iz
-        Qq7mTri0yzsgfPpE2m9hHxShAA==
-X-Google-Smtp-Source: ABdhPJxDU0ySQcc7fvev8M9M1d13VC+GIj7HBHfRSvtrxjqTvfzYTvW0G31AsN1nGGS2Xfbxazi8WQ==
-X-Received: by 2002:a63:d305:: with SMTP id b5mr14631064pgg.452.1610746924450;
-        Fri, 15 Jan 2021 13:42:04 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
-        by smtp.gmail.com with ESMTPSA id a5sm8911135pgl.41.2021.01.15.13.42.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 13:42:03 -0800 (PST)
-Date:   Fri, 15 Jan 2021 13:41:59 -0800
-From:   Vipin Sharma <vipinsh@google.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
-        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Patch v4 2/2] cgroup: svm: Encryption IDs cgroup documentation.
-Message-ID: <YAIMJ9E8NneoAp8H@google.com>
-References: <20210108012846.4134815-1-vipinsh@google.com>
- <20210108012846.4134815-3-vipinsh@google.com>
- <YAICaoSyk2O2nU+P@mtj.duckdns.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=KrJ2mYVoEchRR2uOsqZY+9xKiUZ8oXU02si2kBeet+s=;
+        b=r+LLHSojJ6+KXNwcpgZBDvEflfQGDehWf0Rj8V9hHdUV4wRJZTmZ3UUK4K8sjHNt5l
+         DhIh7Zayx8da+d2ICT1tEaOGpKLlnalWrzUwOxudkkWuhdkgN11nem6OBzVOzdKoN+2o
+         OBJluceSvxMonoDxroVzfqxYGhx8caU3/zT1F3UJsJOqbtugFFZTRedRRKmmAAzSbIER
+         bJR4Z5XWix0eddktkLU3oO8Ab1ed5bVrI4FL8epV/TQ3w/SrGGXB+gIKjsQoBwsU4wCh
+         fTrT04dgIBX4wkrv2gDm+xhZW0TVPtJhqZIt/F5ptoC4XpudvbourFE6/7pQSgxKAYdS
+         VsgA==
+X-Gm-Message-State: AOAM533eRxnEnMbNcYImzpUr7qOJHOOs2b62EjbzZEqL8ETcCC6beltD
+        fsDnIF1lZa8hp7/Xx+HHAcDbbi81GknNVufHvSS7W6MdrNatMA==
+X-Google-Smtp-Source: ABdhPJznYYOZiD/MY7wFS6nPFmr+C64FWP+vZvQAeSJT4Yf+ZPZpNH+hV5+GyakXc/VPMUlgrkfCciqcIWUvSyqM0OA=
+X-Received: by 2002:a02:9f19:: with SMTP id z25mr11926529jal.30.1610746955254;
+ Fri, 15 Jan 2021 13:42:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAICaoSyk2O2nU+P@mtj.duckdns.org>
+References: <20210115210616.404156-1-ndesaulniers@google.com> <20210115210616.404156-3-ndesaulniers@google.com>
+In-Reply-To: <20210115210616.404156-3-ndesaulniers@google.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 15 Jan 2021 22:42:23 +0100
+Message-ID: <CA+icZUXYFdrHQYkM6J5WajaP6zCBHB2gEnDt6p1W6gRsTk__Zg@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] Kbuild: make DWARF version a choice
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 04:00:26PM -0500, Tejun Heo wrote:
-> On Thu, Jan 07, 2021 at 05:28:46PM -0800, Vipin Sharma wrote:
-> > Documentation for both cgroup versions, v1 and v2, of Encryption IDs
-> > controller. This new controller is used to track and limit usage of
-> > hardware memory encryption capabilities on the CPUs.
-> > 
-> > Signed-off-by: Vipin Sharma <vipinsh@google.com>
-> > Reviewed-by: David Rientjes <rientjes@google.com>
-> > Reviewed-by: Dionna Glaze <dionnaglaze@google.com>
-> > ---
-> >  .../admin-guide/cgroup-v1/encryption_ids.rst  | 108 ++++++++++++++++++
-> >  Documentation/admin-guide/cgroup-v2.rst       |  78 ++++++++++++-
-> 
-> Given how trivial it is, I'm not gonna object to adding new v1 interface but
-> maybe just point to v2 doc from v1?
-> 
+On Fri, Jan 15, 2021 at 10:06 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
+> explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
+> way that's forward compatible with existing configs, and makes adding
+> future versions more straightforward.
+>
+> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+> Suggested-by: Fangrui Song <maskray@google.com>
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  Makefile          | 13 ++++++-------
+>  lib/Kconfig.debug | 21 ++++++++++++++++-----
+>  2 files changed, 22 insertions(+), 12 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index d49c3f39ceb4..4eb3bf7ee974 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -826,13 +826,12 @@ else
+>  DEBUG_CFLAGS   += -g
+>  endif
+>
+> -ifneq ($(LLVM_IAS),1)
+> -KBUILD_AFLAGS  += -Wa,-gdwarf-2
+> -endif
+> -
+> -ifdef CONFIG_DEBUG_INFO_DWARF4
+> -DEBUG_CFLAGS   += -gdwarf-4
+> -endif
+> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
+> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
+> +DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
+> +# Binutils 2.35+ required for -gdwarf-4+ support.
+> +dwarf-aflag    := $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-version-y))
+> +KBUILD_AFLAGS  += $(dwarf-aflag)
+>
+>  ifdef CONFIG_DEBUG_INFO_REDUCED
+>  DEBUG_CFLAGS   += $(call cc-option, -femit-struct-debug-baseonly) \
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index dd7d8d35b2a5..e80770fac4f0 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -256,13 +256,24 @@ config DEBUG_INFO_SPLIT
+>           to know about the .dwo files and include them.
+>           Incompatible with older versions of ccache.
+>
+> +choice
+> +       prompt "DWARF version"
 
-Sure, I will just add the path to v2 doc in v1.
+Here you use "DWARF version" so keep this for v2 and v4.
 
-> Thanks.
-> 
-> -- 
-> tejun
+> +       help
+> +         Which version of DWARF debug info to emit.
+> +
+> +config DEBUG_INFO_DWARF2
+> +       bool "Generate DWARF Version 2 debuginfo"
+
+s/DWARF Version/DWARF version
+
+> +       help
+> +         Generate DWARF v2 debug info.
+> +
+>  config DEBUG_INFO_DWARF4
+> -       bool "Generate dwarf4 debuginfo"
+> +       bool "Generate DWARF Version 4 debuginfo"
+
+Same here: s/DWARF Version/DWARF version
+
+- Sedat -
+
+>         help
+> -         Generate dwarf4 debug info. This requires recent versions
+> -         of gcc and gdb. It makes the debug information larger.
+> -         But it significantly improves the success of resolving
+> -         variables in gdb on optimized code.
+> +         Generate DWARF v4 debug info. This requires gcc 4.5+ and gdb 7.0+.
+> +         It makes the debug information larger, but it significantly
+> +         improves the success of resolving variables in gdb on optimized code.
+> +
+> +endchoice # "DWARF version"
+>
+>  config DEBUG_INFO_BTF
+>         bool "Generate BTF typeinfo"
+> --
+> 2.30.0.284.gd98b1dd5eaa7-goog
+>
