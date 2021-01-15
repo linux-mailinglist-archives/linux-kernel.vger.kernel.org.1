@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CEB2F7551
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:28:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D08EB2F755E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730373AbhAOJ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:27:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55470 "EHLO
+        id S1730899AbhAOJ2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:28:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728106AbhAOJ1o (ORCPT
+        with ESMTP id S1729172AbhAOJ1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 04:27:44 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2130C061798
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 01:26:26 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id w1so12284425ejf.11
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 01:26:26 -0800 (PST)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DEF6C06179A
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 01:26:28 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id q22so12334804eja.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 01:26:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=NiDOyGK2bOsrwUw3iahcb+Ehu3HtnFpXGarV1c+5LM8=;
-        b=ZFsRL5mF1MBomvAa3QRzKuOzv/1Y2Eeyf90TC5tvrq8mNB+QD2ypMStgZXbhQldc8Y
-         khcdK5GjLd4UuwFsmyOrVdhCNH2h6Wnvr0mtmWbl3Gt9R88Vvb8PlwY9U3oJ1SxVPTua
-         BtPPn8Q7/t+xiasgCXlLVnSDzgQz5lrfMJGjYPszGDp0eVkj3Am0Ip9r5srZ7/PO+VGJ
-         mu6xZsT0UlAQW4r7SuRsNnCEwrZ6AKoPBYwzBsc2SCNk/++uSUzf19EVdz2x+eTfPi5c
-         RJHhIRIKslEbyCiJS/I8QDI4YRQmHy6VjQWru77tNEHq98MigM2rCso4Uj21+3rq49+n
-         A7Iw==
+        bh=VW5Rdf+XabAMEub3RqiNA/1skv+IyyCxHOSnvL012VA=;
+        b=z2Wv0QSRd3GkWD535rvz6m8unClRZByA43tSFjS/7Okri/MEoSku1aBaSe0anhfGAZ
+         rRX0/UivBJuFtEjBMWYGNBo5W5gHYfXZFksgkHaR7qud9BUTzHVU5/kU5sUp7l8fOXPS
+         l/MGPeFUcfA8xFvJSphcCeGdMvXoeWgjvGSPi+6IK7RsAh0CZicbp8LTE0GQr0urncaA
+         uWYbPVCb78dbzF4Q/EVyzSmY3sAukWQnDrlL5NKVi5mPtAb4JQeLEwupoMzb8eM2C8Es
+         uztncevZbGcBWWKgi99aV8kCu05JSfQE0ez/flmPT/mMcynaJtBVKA6DrFmQIll+NO2z
+         2TiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=NiDOyGK2bOsrwUw3iahcb+Ehu3HtnFpXGarV1c+5LM8=;
-        b=pm8q6nwilVDb2sdBiZhzMSvhzwqrAcSlOsrmesIUSC+K1Tt9XnvWr68aK8Z2hC05hW
-         wUOP+5emxUP8RL9UcAS7LVw5DBXuJtQ9hgqUUqrDgD0FTH0PtaDOSd4tMF1Da2TJeL5X
-         yWmeR3+tdQErSDRbThHoPTgyKAg6C1QAK1E+8bhhEU/rMCQYmLaE0ey851TbGg45XnXN
-         6EbPt0viA7Ritswx3rGdEHQskyNOFpcqIiPbKfEJOGOxcXrKIKXBk8rVw4KGBmtDcL/4
-         OYEe7VihOllu5LB5d60CzioJad2LSHiyc0a0IHXV9espoFUKueG8q/dsM1/3Q3LlWmdV
-         IeIw==
-X-Gm-Message-State: AOAM5308NoUQSbSpTGS2wq/YdSET7xjsVrss4NhdBXOUsxTmNUg8Dc9Q
-        s12VCqd8WOvTj7SOdtwE/eIPWw==
-X-Google-Smtp-Source: ABdhPJyX7rZZcVY49O3f8EhLNpc21KMU6uOJ/7/y1etku1GyJRlAIo6rilAKq9+Pcp7XWLDZS2ChKg==
-X-Received: by 2002:a17:907:96aa:: with SMTP id hd42mr3009334ejc.526.1610702785385;
-        Fri, 15 Jan 2021 01:26:25 -0800 (PST)
+        bh=VW5Rdf+XabAMEub3RqiNA/1skv+IyyCxHOSnvL012VA=;
+        b=lUZBkzObBJM2+FxkMKlD/qF/8hIvBH+QWtRYQ9m4oKa0+lvl8T+6OLIrcFVtEWSuxe
+         NH4NO/+4mJnJK4EW6qfTFCq45trjCcaPMLFX914usTzQGEdmLzzSJESi1OK9fhb9EVlq
+         4XKB5YGK0SktnyoOLv3v0DZtUBDH2zK8x6AwdyDSv7Y5UDsFA1MATnFZw+eOlE37O2xM
+         FFgy5hQ6hfCqLMCgJ29xHWZ9csd763YkpXLvOMo+9tNOFLb49FnTRwsMoDEMeKDGCwXj
+         eE+G9KjgBEGNkj2myAZdUtdYrbsKCoXanMC0W16aGoO6yyKbJIs/yYbnMMvSqlB2ACJI
+         P/Rg==
+X-Gm-Message-State: AOAM533edliusRI1UCGfnpNjIaPMEZl72DGdl9fw28jrK4ZpW4rQlRYS
+        lARB6z/50asYIqc4XaqEbedFYg==
+X-Google-Smtp-Source: ABdhPJzwuVLCk6y+NZ0ic1yM0vHMbHrK2z/3ikq1Z8bjk8WsJUtP9JjSNByNGhIqL9eo9utCmnYsxA==
+X-Received: by 2002:a17:907:3e02:: with SMTP id hp2mr7990039ejc.411.1610702786861;
+        Fri, 15 Jan 2021 01:26:26 -0800 (PST)
 Received: from localhost.localdomain (hst-221-63.medicom.bg. [84.238.221.63])
-        by smtp.gmail.com with ESMTPSA id u24sm3004140eje.71.2021.01.15.01.26.24
+        by smtp.gmail.com with ESMTPSA id u24sm3004140eje.71.2021.01.15.01.26.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 01:26:24 -0800 (PST)
+        Fri, 15 Jan 2021 01:26:26 -0800 (PST)
 From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
 To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v2 2/4] venus: vdec: Add support for display delay and delay enable controls
-Date:   Fri, 15 Jan 2021 11:26:05 +0200
-Message-Id: <20210115092607.29849-3-stanimir.varbanov@linaro.org>
+Subject: [PATCH v2 3/4] s5p-mfc: Use display delay and display enable std controls
+Date:   Fri, 15 Jan 2021 11:26:06 +0200
+Message-Id: <20210115092607.29849-4-stanimir.varbanov@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210115092607.29849-1-stanimir.varbanov@linaro.org>
 References: <20210115092607.29849-1-stanimir.varbanov@linaro.org>
@@ -62,100 +62,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for display delay and display delay enable std controls.
-With this we implement decoder decode output order (decode vs display).
-Once firmware implement few new features the controls will be used
-for other use-cases.
+Use the standard display_delay and display_delay_enable controls,
+the legacy private MFC controls are kept for backward compatibility.
 
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
 Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 ---
- drivers/media/platform/qcom/venus/core.h       |  2 ++
- drivers/media/platform/qcom/venus/vdec.c       | 10 +++++++++-
- drivers/media/platform/qcom/venus/vdec_ctrls.c | 16 +++++++++++++++-
- 3 files changed, 26 insertions(+), 2 deletions(-)
+ drivers/media/platform/s5p-mfc/s5p_mfc_dec.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index b984d508ed71..1028b492216c 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -172,6 +172,8 @@ struct vdec_controls {
- 	u32 post_loop_deb_mode;
- 	u32 profile;
- 	u32 level;
-+	u32 display_delay;
-+	u32 display_delay_enable;
- };
+diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc_dec.c b/drivers/media/platform/s5p-mfc/s5p_mfc_dec.c
+index a71753d459ba..a92a9ca6e87e 100644
+--- a/drivers/media/platform/s5p-mfc/s5p_mfc_dec.c
++++ b/drivers/media/platform/s5p-mfc/s5p_mfc_dec.c
+@@ -167,6 +167,13 @@ static struct mfc_control controls[] = {
+ 		.step = 1,
+ 		.default_value = 0,
+ 	},
++	{
++		.id = V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY,
++		.type = V4L2_CTRL_TYPE_INTEGER,
++		.minimum = 0,
++		.maximum = 16383,
++		.default_value = 0,
++	},
+ 	{
+ 		.id = V4L2_CID_MPEG_MFC51_VIDEO_DECODER_H264_DISPLAY_DELAY_ENABLE,
+ 		.type = V4L2_CTRL_TYPE_BOOLEAN,
+@@ -176,6 +183,13 @@ static struct mfc_control controls[] = {
+ 		.step = 1,
+ 		.default_value = 0,
+ 	},
++	{
++		.id = V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY_ENABLE,
++		.type = V4L2_CTRL_TYPE_BOOLEAN,
++		.minimum = 0,
++		.maximum = 1,
++		.default_value = 0,
++	},
+ 	{
+ 		.id = V4L2_CID_MPEG_VIDEO_DECODER_MPEG4_DEBLOCK_FILTER,
+ 		.type = V4L2_CTRL_TYPE_BOOLEAN,
+@@ -690,9 +704,11 @@ static int s5p_mfc_dec_s_ctrl(struct v4l2_ctrl *ctrl)
  
- struct venc_controls {
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index e4dc97f00fc3..c20496a14a55 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -620,7 +620,7 @@ static int vdec_set_properties(struct venus_inst *inst)
- {
- 	struct vdec_controls *ctr = &inst->controls.dec;
- 	struct hfi_enable en = { .enable = 1 };
--	u32 ptype;
-+	u32 ptype, decode_order;
- 	int ret;
- 
- 	if (ctr->post_loop_deb_mode) {
-@@ -630,6 +630,14 @@ static int vdec_set_properties(struct venus_inst *inst)
- 			return ret;
- 	}
- 
-+	if (ctr->display_delay_enable && ctr->display_delay == 0) {
-+		ptype = HFI_PROPERTY_PARAM_VDEC_OUTPUT_ORDER;
-+		decode_order = HFI_OUTPUT_ORDER_DECODE;
-+		ret = hfi_session_set_property(inst, ptype, &decode_order);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/media/platform/qcom/venus/vdec_ctrls.c b/drivers/media/platform/qcom/venus/vdec_ctrls.c
-index 974110b75b93..07680aae0a36 100644
---- a/drivers/media/platform/qcom/venus/vdec_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/vdec_ctrls.c
-@@ -30,6 +30,12 @@ static int vdec_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_VP9_LEVEL:
- 		ctr->level = ctrl->val;
- 		break;
+ 	switch (ctrl->id) {
+ 	case V4L2_CID_MPEG_MFC51_VIDEO_DECODER_H264_DISPLAY_DELAY:
 +	case V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY:
-+		ctr->display_delay = ctrl->val;
-+		break;
+ 		ctx->display_delay = ctrl->val;
+ 		break;
+ 	case V4L2_CID_MPEG_MFC51_VIDEO_DECODER_H264_DISPLAY_DELAY_ENABLE:
 +	case V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY_ENABLE:
-+		ctr->display_delay_enable = ctrl->val;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -89,7 +95,7 @@ int vdec_ctrl_init(struct venus_inst *inst)
- 	struct v4l2_ctrl *ctrl;
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 9);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 11);
- 	if (ret)
- 		return ret;
- 
-@@ -158,6 +164,14 @@ int vdec_ctrl_init(struct venus_inst *inst)
- 	if (ctrl)
- 		ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
- 
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &vdec_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY,
-+			  0, 16383, 1, 0);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &vdec_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY_ENABLE,
-+			  0, 1, 1, 0);
-+
- 	ret = inst->ctrl_handler.error;
- 	if (ret) {
- 		v4l2_ctrl_handler_free(&inst->ctrl_handler);
+ 		ctx->display_delay_enable = ctrl->val;
+ 		break;
+ 	case V4L2_CID_MPEG_VIDEO_DECODER_MPEG4_DEBLOCK_FILTER:
 -- 
 2.17.1
 
