@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0862F7AFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5492F7914
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388474AbhAOM4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:56:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41310 "EHLO mail.kernel.org"
+        id S1732485AbhAOMbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:31:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387474AbhAOMen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:34:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4099F207C4;
-        Fri, 15 Jan 2021 12:34:27 +0000 (UTC)
+        id S1732423AbhAOMbE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F3FF238E7;
+        Fri, 15 Jan 2021 12:30:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714067;
-        bh=qD8t3yfuxRe1FK7vPwW1t7d8isOLIsh2qYREjRYkVAA=;
+        s=korg; t=1610713830;
+        bh=fA0KTB++A7mRqnSitYulWdbeN4Ebxk5der3k//c7uXg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WF0h0uxtF45YlHp2Bi5A46tp0uLzE2aChUzZO+WMUF33KdafUqHvgZP0egpkBU9ZA
-         UW1xjiN+XwA71nh7Kx87pnRZX6x2zAhHdmTCfZIsr9a5HcNE9u/1moaHWYyO2hc+oS
-         WT+ygFcvgNCFlk8oYQaTup2v9dhXzSNQhVnACFP4=
+        b=XqmweKeL2liDtik5yJwOt0a/Nx/RIyANMSvkmlezDLeUlXrq+PF7qlZOR06XzdEff
+         3p5b3ySwh0lXEHHZwoAKjiRx5CO4KIceaskDSMvlUBpmmAj+bU+EvcrakVzmbx2n80
+         oe67e+0iptssJahnrOBmK8hELjYKLuw8oKpIi2jg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 5.4 31/62] iio: imu: st_lsm6dsx: fix edge-trigger interrupts
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 22/25] wan: ds26522: select CONFIG_BITREVERSE
 Date:   Fri, 15 Jan 2021 13:27:53 +0100
-Message-Id: <20210115121959.912680991@linuxfoundation.org>
+Message-Id: <20210115121957.783492596@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
+References: <20210115121956.679956165@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 3f9bce7a22a3f8ac9d885c9d75bc45569f24ac8b upstream
+commit 69931e11288520c250152180ecf9b6ac5e6e40ed upstream.
 
-If we are using edge IRQs, new samples can arrive while processing
-current interrupt since there are no hw guarantees the irq line
-stays "low" long enough to properly detect the new interrupt.
-In this case the new sample will be missed.
-Polling FIFO status register in st_lsm6dsx_handler_thread routine
-allow us to read new samples even if the interrupt arrives while
-processing previous data and the timeslot where the line is "low"
-is too short to be properly detected.
+Without this, the driver runs into a link failure
 
-Fixes: 89ca88a7cdf2 ("iio: imu: st_lsm6dsx: support active-low interrupts")
-Fixes: 290a6ce11d93 ("iio: imu: add support to lsm6dsx driver")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Link: https://lore.kernel.org/r/5e93cda7dc1e665f5685c53ad8e9ea71dbae782d.1605378871.git.lorenzo@kernel.org
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-[sudip: manual backport to old irq handler path]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+arm-linux-gnueabi-ld: drivers/net/wan/slic_ds26522.o: in function `slic_ds26522_probe':
+slic_ds26522.c:(.text+0x100c): undefined reference to `byte_rev_table'
+arm-linux-gnueabi-ld: slic_ds26522.c:(.text+0x1cdc): undefined reference to `byte_rev_table'
+arm-linux-gnueabi-ld: drivers/net/wan/slic_ds26522.o: in function `slic_write':
+slic_ds26522.c:(.text+0x1e4c): undefined reference to `byte_rev_table'
+
+Fixes: c37d4a0085c5 ("Maxim/driver: Add driver for maxim ds26522")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c |   26 ++++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
 
---- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c
-+++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c
-@@ -664,13 +664,29 @@ static irqreturn_t st_lsm6dsx_handler_ir
- static irqreturn_t st_lsm6dsx_handler_thread(int irq, void *private)
- {
- 	struct st_lsm6dsx_hw *hw = private;
--	int count;
-+	int fifo_len = 0, len;
- 
--	mutex_lock(&hw->fifo_lock);
--	count = hw->settings->fifo_ops.read_fifo(hw);
--	mutex_unlock(&hw->fifo_lock);
-+	/*
-+	 * If we are using edge IRQs, new samples can arrive while
-+	 * processing current interrupt since there are no hw
-+	 * guarantees the irq line stays "low" long enough to properly
-+	 * detect the new interrupt. In this case the new sample will
-+	 * be missed.
-+	 * Polling FIFO status register allow us to read new
-+	 * samples even if the interrupt arrives while processing
-+	 * previous data and the timeslot where the line is "low" is
-+	 * too short to be properly detected.
-+	 */
-+	do {
-+		mutex_lock(&hw->fifo_lock);
-+		len = hw->settings->fifo_ops.read_fifo(hw);
-+		mutex_unlock(&hw->fifo_lock);
- 
--	return count ? IRQ_HANDLED : IRQ_NONE;
-+		if (len > 0)
-+			fifo_len += len;
-+	} while (len > 0);
-+
-+	return fifo_len ? IRQ_HANDLED : IRQ_NONE;
- }
- 
- static int st_lsm6dsx_buffer_preenable(struct iio_dev *iio_dev)
+---
+ drivers/net/wan/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/drivers/net/wan/Kconfig
++++ b/drivers/net/wan/Kconfig
+@@ -295,6 +295,7 @@ config SLIC_DS26522
+ 	tristate "Slic Maxim ds26522 card support"
+ 	depends on SPI
+ 	depends on FSL_SOC || ARCH_MXC || ARCH_LAYERSCAPE || COMPILE_TEST
++	select BITREVERSE
+ 	help
+ 	  This module initializes and configures the slic maxim card
+ 	  in T1 or E1 mode.
 
 
