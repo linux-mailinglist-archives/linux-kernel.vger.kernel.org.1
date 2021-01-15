@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3632F79FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A03DD2F7938
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387463AbhAOMnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:43:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45790 "EHLO mail.kernel.org"
+        id S1733196AbhAOMdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:33:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387632AbhAOMin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:38:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABC902256F;
-        Fri, 15 Jan 2021 12:38:27 +0000 (UTC)
+        id S1733147AbhAOMd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:33:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B88DC23359;
+        Fri, 15 Jan 2021 12:33:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714308;
-        bh=w/CCngwlvQXfR6R9z2V8zA7OSINpshvyHzofDEeKu5M=;
+        s=korg; t=1610713991;
+        bh=NV5wkySH4VnUgK2tzF+GQZE4gy+uyLRbMXb4TMmlVpg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a9chk7LM3pCvWEnls/Tp5MGKz5htyKOTIAERcpujtlzyLgXEppp0LUEJYh1LeMTQW
-         aXcwF/rZ4XuBKfomUHDF+Z1P/hlseM2gcWDu7P8DNDGZi69s1Fd4FiDS/BkRyayzQu
-         4Bjtx3mQSvbg3yWfbTuMasmQVfiyjoqxhgIkrX5A=
+        b=i7bA25RyK5/UZHBONB7ijhbIJWv+LthNoNb6bwYAQuaZVeE4ZHWNRT2gi7VNhkk6P
+         pAKGczvBSqF2wfko1KrpdJDswDfIdiXunFLd2cvmhtNYB3FQEXm6LZ0yOSiP97errK
+         WA/FpMs1cCs23+Jz2AtShSfi1CV1ZEM/DmsFFMQ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        stable@vger.kernel.org,
+        syzbot+825f0f9657d4e528046e@syzkaller.appspotmail.com,
+        Ming Lei <ming.lei@redhat.com>, Christoph Hellwig <hch@lst.de>,
         Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 078/103] lightnvm: select CONFIG_CRC32
+Subject: [PATCH 4.19 41/43] block: fix use-after-free in disk_part_iter_next
 Date:   Fri, 15 Jan 2021 13:28:11 +0100
-Message-Id: <20210115122009.801109446@linuxfoundation.org>
+Message-Id: <20210115121959.034428248@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
-References: <20210115122006.047132306@linuxfoundation.org>
+In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
+References: <20210115121957.037407908@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Ming Lei <ming.lei@redhat.com>
 
-commit 19cd3403cb0d522dd5e10188eef85817de29e26e upstream.
+commit aebf5db917055b38f4945ed6d621d9f07a44ff30 upstream.
 
-Without CRC32 support, this fails to link:
+Make sure that bdgrab() is done on the 'block_device' instance before
+referring to it for avoiding use-after-free.
 
-arm-linux-gnueabi-ld: drivers/lightnvm/pblk-init.o: in function `pblk_init':
-pblk-init.c:(.text+0x2654): undefined reference to `crc32_le'
-arm-linux-gnueabi-ld: drivers/lightnvm/pblk-init.o: in function `pblk_exit':
-pblk-init.c:(.text+0x2a7c): undefined reference to `crc32_le'
-
-Fixes: a4bd217b4326 ("lightnvm: physical block device (pblk) target")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: <stable@vger.kernel.org>
+Reported-by: syzbot+825f0f9657d4e528046e@syzkaller.appspotmail.com
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/lightnvm/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ block/genhd.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/lightnvm/Kconfig
-+++ b/drivers/lightnvm/Kconfig
-@@ -19,6 +19,7 @@ if NVM
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -208,14 +208,17 @@ struct hd_struct *disk_part_iter_next(st
+ 		part = rcu_dereference(ptbl->part[piter->idx]);
+ 		if (!part)
+ 			continue;
++		get_device(part_to_dev(part));
++		piter->part = part;
+ 		if (!part_nr_sects_read(part) &&
+ 		    !(piter->flags & DISK_PITER_INCL_EMPTY) &&
+ 		    !(piter->flags & DISK_PITER_INCL_EMPTY_PART0 &&
+-		      piter->idx == 0))
++		      piter->idx == 0)) {
++			put_device(part_to_dev(part));
++			piter->part = NULL;
+ 			continue;
++		}
  
- config NVM_PBLK
- 	tristate "Physical Block Device Open-Channel SSD target"
-+	select CRC32
- 	help
- 	  Allows an open-channel SSD to be exposed as a block device to the
- 	  host. The target assumes the device exposes raw flash and must be
+-		get_device(part_to_dev(part));
+-		piter->part = part;
+ 		piter->idx += inc;
+ 		break;
+ 	}
 
 
