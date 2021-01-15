@@ -2,82 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6087F2F8195
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 634CE2F8193
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:06:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730136AbhAORGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:06:32 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:30290 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729258AbhAORGa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:06:30 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610730373; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=wjgIsm5r+W+QCFqaE40wKTkYfo5MCRy14S3C/mBWwqs=; b=e+S0aCpSVZnBx4Gf/F4kA9VWz4/CZ+t6BPs0XArrjhxsplxrnZpyQhC1apxTQc4J+0UOO0qx
- lr6F7biH0cNQwXx53iYCdaVv6NrmPU+ImXrAK1bUAtzTSw6lostbW/1c09ENZ/NI7mTYJ9Ma
- We9/O+NpRG3UcoJpZL9b51d9T3w=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 6001cb6175e5c01cba1308c6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 Jan 2021 17:05:37
- GMT
-Sender: jackp=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C1D84C43469; Fri, 15 Jan 2021 17:05:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: jackp)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B06CAC43466;
-        Fri, 15 Jan 2021 17:05:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B06CAC43466
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
-Date:   Fri, 15 Jan 2021 09:05:29 -0800
-From:   Jack Pham <jackp@codeaurora.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/4] phy: qcom-qmp: Add SM8350 USB QMP PHYs
-Message-ID: <20210115170529.GA5063@jackp-linux.qualcomm.com>
-References: <20210115104047.3460-1-jackp@codeaurora.org>
- <20210115104047.3460-2-jackp@codeaurora.org>
- <2c5481fe-f5be-5d6a-f62f-c93d04b9210e@somainline.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2c5481fe-f5be-5d6a-f62f-c93d04b9210e@somainline.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1729130AbhAORG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:06:26 -0500
+Received: from foss.arm.com ([217.140.110.172]:45946 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728943AbhAORGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 12:06:24 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D1C78D6E;
+        Fri, 15 Jan 2021 09:05:38 -0800 (PST)
+Received: from e123648.arm.com (unknown [10.57.3.129])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0612A3F719;
+        Fri, 15 Jan 2021 09:05:36 -0800 (PST)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        cw00.choi@samsung.com
+Cc:     lukasz.luba@arm.com, myungjoo.ham@samsung.com,
+        kyungmin.park@samsung.com
+Subject: [PATCH] PM / devfreq: Add sysfs attributes to simple_ondemand governor
+Date:   Fri, 15 Jan 2021 17:05:30 +0000
+Message-Id: <20210115170530.22603-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 12:54:26PM +0100, Konrad Dybcio wrote:
-> I might be wrong but it looks as if you forgot to add a compatible for
-> the "sm8350_usb3_uniphy_cfg" configuration.
+The simple_ondemand devfreq governor is used by quite a few devices, like
+GPUs, DSPs, memory controllers, etc. It implements algorithm which tries
+to predict the device frequency based on past statistics. There are two
+tunables for the algorithm: 'upthreshold' and 'downdifferential'. These
+tunables change the behavior of the decision, e.g. how fast to increase
+the frequency or how rapidly limit the frequency. These values might be
+different based on the application which is currently running, e.g.
+different behavior is needed for a game than for web browsing or clean
+desktop. The patch exports these two tunables so they can be adjusted
+based on current need. There is also a check with the allowed ranges
+to make sure the values are correct and safe.
 
-Not wrong at all! My mistake, will add it in v2.
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+---
+ drivers/devfreq/governor_simpleondemand.c | 135 ++++++++++++++++++++++
+ 1 file changed, 135 insertions(+)
 
-Thanks,
-Jack
+diff --git a/drivers/devfreq/governor_simpleondemand.c b/drivers/devfreq/governor_simpleondemand.c
+index d57b82a2b570..4b3c182e0a49 100644
+--- a/drivers/devfreq/governor_simpleondemand.c
++++ b/drivers/devfreq/governor_simpleondemand.c
+@@ -15,6 +15,7 @@
+ /* Default constants for DevFreq-Simple-Ondemand (DFSO) */
+ #define DFSO_UPTHRESHOLD	(90)
+ #define DFSO_DOWNDIFFERENCTIAL	(5)
++#define DFSO_MAX_VALUE		(100)
+ static int devfreq_simple_ondemand_func(struct devfreq *df,
+ 					unsigned long *freq)
+ {
+@@ -84,15 +85,149 @@ static int devfreq_simple_ondemand_func(struct devfreq *df,
+ 	return 0;
+ }
+ 
++static ssize_t upthreshold_show(struct device *dev,
++				struct device_attribute *attr, char *buf)
++{
++	struct devfreq_simple_ondemand_data *data;
++	struct devfreq *df = to_devfreq(dev);
++
++	if (!df->data)
++		return -EINVAL;
++
++	data = df->data;
++
++	return sprintf(buf, "%d\n", data->upthreshold);
++}
++
++static ssize_t upthreshold_store(struct device *dev,
++				 struct device_attribute *attr,
++				 const char *buf, size_t count)
++{
++	struct devfreq_simple_ondemand_data *data;
++	struct devfreq *df = to_devfreq(dev);
++	unsigned int value;
++	int ret;
++
++	if (!df->data)
++		return -EINVAL;
++
++	data = df->data;
++
++	ret = kstrtouint(buf, 10, &value);
++	if (ret < 0)
++		return -EINVAL;
++
++	mutex_lock(&df->lock);
++
++	if (value > DFSO_MAX_VALUE || value <= data->downdifferential) {
++		mutex_unlock(&df->lock);
++		return -EINVAL;
++	}
++
++	data->upthreshold = value;
++	mutex_unlock(&df->lock);
++
++	return count;
++}
++static DEVICE_ATTR_RW(upthreshold);
++
++static ssize_t downdifferential_show(struct device *dev,
++				     struct device_attribute *attr, char *buf)
++{
++	struct devfreq_simple_ondemand_data *data;
++	struct devfreq *df = to_devfreq(dev);
++
++	if (!df->data)
++		return -EINVAL;
++
++	data = df->data;
++
++	return sprintf(buf, "%d\n", data->downdifferential);
++}
++
++static ssize_t downdifferential_store(struct device *dev,
++				      struct device_attribute *attr,
++				      const char *buf, size_t count)
++{
++	struct devfreq_simple_ondemand_data *data;
++	struct devfreq *df = to_devfreq(dev);
++	unsigned int value;
++	int ret;
++
++	if (!df->data)
++		return -EINVAL;
++
++	data = df->data;
++
++	ret = kstrtouint(buf, 10, &value);
++	if (ret < 0)
++		return -EINVAL;
++
++	mutex_lock(&df->lock);
++
++	if (value > DFSO_MAX_VALUE || value >= data->upthreshold) {
++		mutex_unlock(&df->lock);
++		return -EINVAL;
++	}
++
++	data->downdifferential = value;
++	mutex_unlock(&df->lock);
++
++	return count;
++}
++static DEVICE_ATTR_RW(downdifferential);
++
++static void devfreq_simple_ondemand_sysfs_setup(struct devfreq *df)
++{
++	struct devfreq_simple_ondemand_data *data;
++	int ret;
++
++	if (!df->data) {
++		/* The memory will be freed automatically */
++		df->data = devm_kzalloc(&df->dev,
++				sizeof(struct devfreq_simple_ondemand_data),
++				GFP_KERNEL);
++		if (!df->data) {
++			dev_warn(&df->dev, "Unable to allocate memory");
++			return;
++		}
++	}
++
++	data = df->data;
++
++	/* After new allocation setup default values, since they are used */
++	if (!data->upthreshold)
++		data->upthreshold = DFSO_UPTHRESHOLD;
++
++	if (!data->downdifferential)
++		data->downdifferential = DFSO_DOWNDIFFERENCTIAL;
++
++	ret = sysfs_create_file(&df->dev.kobj, &dev_attr_upthreshold.attr);
++	if (ret < 0)
++		dev_warn(&df->dev, "Unable to create 'upthreshold' attr\n");
++
++	ret = sysfs_create_file(&df->dev.kobj, &dev_attr_downdifferential.attr);
++	if (ret < 0)
++		dev_warn(&df->dev, "Unable to create 'downdifferential' attr\n");
++}
++
++static void devfreq_simple_ondemand_sysfs_remove(struct devfreq *df)
++{
++	sysfs_remove_file(&df->dev.kobj, &dev_attr_upthreshold.attr);
++	sysfs_remove_file(&df->dev.kobj, &dev_attr_downdifferential.attr);
++}
++
+ static int devfreq_simple_ondemand_handler(struct devfreq *devfreq,
+ 				unsigned int event, void *data)
+ {
+ 	switch (event) {
+ 	case DEVFREQ_GOV_START:
+ 		devfreq_monitor_start(devfreq);
++		devfreq_simple_ondemand_sysfs_setup(devfreq);
+ 		break;
+ 
+ 	case DEVFREQ_GOV_STOP:
++		devfreq_simple_ondemand_sysfs_remove(devfreq);
+ 		devfreq_monitor_stop(devfreq);
+ 		break;
+ 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.17.1
+
