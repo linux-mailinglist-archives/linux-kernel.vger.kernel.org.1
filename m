@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31DE92F7AB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5922F7A9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387797AbhAOMx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:53:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43108 "EHLO
+        id S2388114AbhAOMw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:52:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387983AbhAOMwP (ORCPT
+        with ESMTP id S2388039AbhAOMwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:52:15 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6464BC06179B
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:50:58 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id b19so15329505ioa.9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:50:58 -0800 (PST)
+        Fri, 15 Jan 2021 07:52:16 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643B3C06179A
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:50:59 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id w18so17884776iot.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:50:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Ijl7ke0iXPO6hOHYeKFTmnnrMsXMs0BUA8XlyHgNlok=;
-        b=Mc9ADDnnnwX3YZ5XXXnOTMJhwH9KTtI4eBuZCODN3bPiyrVcthEGgvuho4ikKP275X
-         ju9isuNruW9yao4rIFQzOOr2vlQpCdgfrdm1QKyPig7bJA24AcWuERKqCV5bdpt5iY0r
-         TLDrGUED7WassXd2c7ynjo4Eu4xKPyMsYdjTNn1jyINja8zU2Um5xb6DoH7JfGHDu5U7
-         zUnYVOjZAD5OQ/HslDe0CG/UzAkzbJcz/4pxnOUTKpWP2U7WFIvaFVBg10Rjiow5SvbC
-         01lQ+E1vaYTun/jIucQPECZczjGQNyz8Oi/J2X3GUPp4A3G03KA118K+wXRaQY5mqlfQ
-         vP1g==
+        bh=XfRJBAuwxkFe9MRJG/5cSKWNhxAuQvwcEflUN1LY3nE=;
+        b=UnfYX33Fna0JZ/2Df+rkQOYbUBXHbLOe8AFwOyVCwgCfPnskCF5080GcDYg5UZqMic
+         ppKwX00Z2MdsoiuYJtLOhzQY16GUJTypFje5NeApz+kBNwtIn7Gg349lFfLi+a9pUF/Y
+         0OtqPCHdH6S+gO0OojIYHXJWx8JS2jYO0Xv5phbiyhFhUw385Gl482XLLyP8LQbqKQ7T
+         sKaQuxgblQwscKM70rwBneOmSF+WPL6FTkxT6d/ZffHk1QSybC9aLbgOopYjEcGxn/+j
+         6fAub15nhCmX4Qsenh1QABpwW+NJfe+Lj1x0fjnenIkYKzkYbmJERdIt+LNPJN5biOnR
+         elQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Ijl7ke0iXPO6hOHYeKFTmnnrMsXMs0BUA8XlyHgNlok=;
-        b=pdHHdNUdwA/RhuJEr315ttdG4oY4MoY9yTWr7rQwG23q9ZKpJ4u8/+IbK32DYdI5hQ
-         ivcNk0WTYNIStketClLgc5bZ6E9DwgnFF692U4h6vzVpWXZ1DYL1S+c1Mb7FJ53UWOuB
-         7WJq0axs3Oigo3Q20Qn1dnlRLXFxBbJLZfUtA88y2F/z0QVI0E5ltve37w7/4U7daWNU
-         37xFiQIYoaFYdeCsWczFAr822C6NVxAuC+HEnvnzCTazYlWZtx6ikC4SgRvIVDs9cy1h
-         JzkhezUbnIDl+9kF+rS27VbG4a9cvZHBGiaWshTbqjZVG4U5MykAZq8HOYWQvevtqTAw
-         8xAw==
-X-Gm-Message-State: AOAM532VWMrqpP7tXUfdaILdwXoy4aIPQXAxcXJWkBfEBSSnG/dgJTEX
-        Bb9DHeK7aEdtxjKv3ogVe0iKzQ==
-X-Google-Smtp-Source: ABdhPJzVVT2+YHMsnUDsFDAdnuDOCR+vXrxVORBiYnHSzC7zy3xT8dWrO2//ikw9XuRMkgG0ZPbmQA==
-X-Received: by 2002:a5e:c00e:: with SMTP id u14mr8274095iol.194.1610715057781;
-        Fri, 15 Jan 2021 04:50:57 -0800 (PST)
+        bh=XfRJBAuwxkFe9MRJG/5cSKWNhxAuQvwcEflUN1LY3nE=;
+        b=I2cZrEghuLFBQBMFiQmTvRwDA4RlOevYVtfEroNlnlQCOJVxrYZtvpDZSdiYZQR0Vx
+         G/Aqh2L40aORVt1UiH30Nk7rQGzWPbB88eRnR2FL5zlPzbtwCcwZLjqUwef/W0Tz5PA7
+         slpxd38fotjQRZn1HUfQSDGV93uvHTjG76bv5V7sx5iTk2VpXiytzTBlKw172gCTvAVc
+         GZi3BduH3h+Lo2UAbhly+z6/W9iwv5EFjfLqti7ajyuWobRJuFUMBYXuGsgFi46pYinR
+         bKkRwQ02wgK1etL+2vHb8mcXLOGSkRGz6n5j77/B9yue+C8KoggjMYM8Tkg10FHY/m7o
+         J7BA==
+X-Gm-Message-State: AOAM530I0tPzcIWfkjA71gFLqswCii7RVBaR8M2vqdJ6Lp6MhvEyQQfr
+        rBZfamtHyUsDAuffrrc7GjZ3Lg==
+X-Google-Smtp-Source: ABdhPJwmvXu2xJbc3vh8OWCqcuGwIKYln30n3CyDkyqZpDfqYIrkReZzvZbd1wGqAqjOxt3bao6Xwg==
+X-Received: by 2002:a92:154f:: with SMTP id v76mr10637337ilk.272.1610715058829;
+        Fri, 15 Jan 2021 04:50:58 -0800 (PST)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id f13sm3952450iog.18.2021.01.15.04.50.56
+        by smtp.gmail.com with ESMTPSA id f13sm3952450iog.18.2021.01.15.04.50.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 04:50:57 -0800 (PST)
+        Fri, 15 Jan 2021 04:50:58 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     evgreen@chromium.org, bjorn.andersson@linaro.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 4/7] net: ipa: store average and peak interconnect bandwidth
-Date:   Fri, 15 Jan 2021 06:50:47 -0600
-Message-Id: <20210115125050.20555-5-elder@linaro.org>
+Subject: [PATCH net-next 5/7] net: ipa: add interconnect name to configuration data
+Date:   Fri, 15 Jan 2021 06:50:48 -0600
+Message-Id: <20210115125050.20555-6-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210115125050.20555-1-elder@linaro.org>
 References: <20210115125050.20555-1-elder@linaro.org>
@@ -65,217 +65,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add fields in the ipa_interconnect structure to hold the average and
-peak bandwidth values for the interconnect.  Pass the configuring
-data for interconnects to ipa_interconnect_init() so these values
-can be recorded, and use them when enabling the interconnects.
-
-There's no longer any need to keep a copy of the interconnect data
-after initialization.
+Add the name to the configuration data for each interconnect.  Use
+this information rather than a constant string during initialization.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_clock.c | 88 ++++++++++++++++++++++---------------
- 1 file changed, 52 insertions(+), 36 deletions(-)
+ drivers/net/ipa/ipa_clock.c       | 6 +++---
+ drivers/net/ipa/ipa_data-sc7180.c | 3 +++
+ drivers/net/ipa/ipa_data-sdm845.c | 3 +++
+ drivers/net/ipa/ipa_data.h        | 2 ++
+ 4 files changed, 11 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/ipa/ipa_clock.c b/drivers/net/ipa/ipa_clock.c
-index 2bf5af6823d8c..537c72b5267f6 100644
+index 537c72b5267f6..07069dbc6d033 100644
 --- a/drivers/net/ipa/ipa_clock.c
 +++ b/drivers/net/ipa/ipa_clock.c
-@@ -33,9 +33,13 @@
- /**
-  * struct ipa_interconnect - IPA interconnect information
-  * @path:		Interconnect path
-+ * @average_bandwidth:	Average interconnect bandwidth (KB/second)
-+ * @peak_bandwidth:	Peak interconnect bandwidth (KB/second)
-  */
- struct ipa_interconnect {
- 	struct icc_path *path;
-+	u32 average_bandwidth;
-+	u32 peak_bandwidth;
- };
- 
- /**
-@@ -44,14 +48,12 @@ struct ipa_interconnect {
-  * @mutex:		Protects clock enable/disable
-  * @core:		IPA core clock
-  * @interconnect:	Interconnect array
-- * @interconnect_data:	Interconnect configuration data
-  */
- struct ipa_clock {
- 	refcount_t count;
- 	struct mutex mutex; /* protects clock enable/disable */
- 	struct clk *core;
--	struct ipa_interconnect *interconnect[IPA_INTERCONNECT_COUNT];
--	const struct ipa_interconnect_data *interconnect_data;
-+	struct ipa_interconnect interconnect[IPA_INTERCONNECT_COUNT];
- };
- 
- static struct icc_path *
-@@ -61,38 +63,52 @@ ipa_interconnect_init_one(struct device *dev, const char *name)
- 
- 	path = of_icc_get(dev, name);
- 	if (IS_ERR(path))
--		dev_err(dev, "error %ld getting %s interconnect\n",
--			PTR_ERR(path), name);
-+		dev_err(dev, "error %d getting %s interconnect\n",
-+			(int)PTR_ERR(path), name);
- 
- 	return path;
- }
- 
- /* Initialize interconnects required for IPA operation */
--static int ipa_interconnect_init(struct ipa_clock *clock, struct device *dev)
-+static int ipa_interconnect_init(struct ipa_clock *clock, struct device *dev,
-+				 const struct ipa_interconnect_data *data)
- {
-+	struct ipa_interconnect *interconnect;
+@@ -76,7 +76,7 @@ static int ipa_interconnect_init(struct ipa_clock *clock, struct device *dev,
+ 	struct ipa_interconnect *interconnect;
  	struct icc_path *path;
  
- 	path = ipa_interconnect_init_one(dev, "memory");
+-	path = ipa_interconnect_init_one(dev, "memory");
++	path = ipa_interconnect_init_one(dev, data->name);
  	if (IS_ERR(path))
  		goto err_return;
--	clock->interconnect[IPA_INTERCONNECT_MEMORY]->path = path;
-+	interconnect = &clock->interconnect[IPA_INTERCONNECT_MEMORY];
-+	interconnect->path = path;
-+	interconnect->average_bandwidth = data->average_bandwidth;
-+	interconnect->peak_bandwidth = data->peak_bandwidth;
-+	data++;
+ 	interconnect = &clock->interconnect[IPA_INTERCONNECT_MEMORY];
+@@ -85,7 +85,7 @@ static int ipa_interconnect_init(struct ipa_clock *clock, struct device *dev,
+ 	interconnect->peak_bandwidth = data->peak_bandwidth;
+ 	data++;
  
- 	path = ipa_interconnect_init_one(dev, "imem");
+-	path = ipa_interconnect_init_one(dev, "imem");
++	path = ipa_interconnect_init_one(dev, data->name);
  	if (IS_ERR(path))
  		goto err_memory_path_put;
--	clock->interconnect[IPA_INTERCONNECT_IMEM]->path = path;
-+	interconnect = &clock->interconnect[IPA_INTERCONNECT_IMEM];
-+	interconnect->path = path;
-+	interconnect->average_bandwidth = data->average_bandwidth;
-+	interconnect->peak_bandwidth = data->peak_bandwidth;
-+	data++;
+ 	interconnect = &clock->interconnect[IPA_INTERCONNECT_IMEM];
+@@ -94,7 +94,7 @@ static int ipa_interconnect_init(struct ipa_clock *clock, struct device *dev,
+ 	interconnect->peak_bandwidth = data->peak_bandwidth;
+ 	data++;
  
- 	path = ipa_interconnect_init_one(dev, "config");
+-	path = ipa_interconnect_init_one(dev, "config");
++	path = ipa_interconnect_init_one(dev, data->name);
  	if (IS_ERR(path))
  		goto err_imem_path_put;
--	clock->interconnect[IPA_INTERCONNECT_CONFIG]->path = path;
-+	interconnect = &clock->interconnect[IPA_INTERCONNECT_CONFIG];
-+	interconnect->path = path;
-+	interconnect->average_bandwidth = data->average_bandwidth;
-+	interconnect->peak_bandwidth = data->peak_bandwidth;
-+	data++;
+ 	interconnect = &clock->interconnect[IPA_INTERCONNECT_CONFIG];
+diff --git a/drivers/net/ipa/ipa_data-sc7180.c b/drivers/net/ipa/ipa_data-sc7180.c
+index 491572c0a34dc..1936ecb4c1104 100644
+--- a/drivers/net/ipa/ipa_data-sc7180.c
++++ b/drivers/net/ipa/ipa_data-sc7180.c
+@@ -314,15 +314,18 @@ static struct ipa_clock_data ipa_clock_data = {
+ 	/* Interconnect bandwidths are in 1000 byte/second units */
+ 	.interconnect = {
+ 		[IPA_INTERCONNECT_MEMORY] = {
++			.name			= "memory",
+ 			.peak_bandwidth		= 465000,	/* 465 MBps */
+ 			.average_bandwidth	= 80000,	/* 80 MBps */
+ 		},
+ 		/* Average bandwidth unused for the next two interconnects */
+ 		[IPA_INTERCONNECT_IMEM] = {
++			.name			= "imem",
+ 			.peak_bandwidth		= 68570,	/* 68.57 MBps */
+ 			.average_bandwidth	= 0,		/* unused */
+ 		},
+ 		[IPA_INTERCONNECT_CONFIG] = {
++			.name			= "config",
+ 			.peak_bandwidth		= 30000,	/* 30 MBps */
+ 			.average_bandwidth	= 0,		/* unused */
+ 		},
+diff --git a/drivers/net/ipa/ipa_data-sdm845.c b/drivers/net/ipa/ipa_data-sdm845.c
+index c62b86171b929..3b556b5a63406 100644
+--- a/drivers/net/ipa/ipa_data-sdm845.c
++++ b/drivers/net/ipa/ipa_data-sdm845.c
+@@ -334,15 +334,18 @@ static struct ipa_clock_data ipa_clock_data = {
+ 	/* Interconnect bandwidths are in 1000 byte/second units */
+ 	.interconnect = {
+ 		[IPA_INTERCONNECT_MEMORY] = {
++			.name			= "memory",
+ 			.peak_bandwidth		= 600000,	/* 600 MBps */
+ 			.average_bandwidth	= 80000,	/* 80 MBps */
+ 		},
+ 		/* Average bandwidth unused for the next two interconnects */
+ 		[IPA_INTERCONNECT_IMEM] = {
++			.name			= "imem",
+ 			.peak_bandwidth		= 350000,	/* 350 MBps */
+ 			.average_bandwidth	= 0,		/* unused */
+ 		},
+ 		[IPA_INTERCONNECT_CONFIG] = {
++			.name			= "config",
+ 			.peak_bandwidth		= 40000,	/* 40 MBps */
+ 			.average_bandwidth	= 0,		/* unused */
+ 		},
+diff --git a/drivers/net/ipa/ipa_data.h b/drivers/net/ipa/ipa_data.h
+index 96a9771a6cc05..d8ea6266dc6a1 100644
+--- a/drivers/net/ipa/ipa_data.h
++++ b/drivers/net/ipa/ipa_data.h
+@@ -268,10 +268,12 @@ enum ipa_interconnect_id {
  
- 	return 0;
- 
- err_imem_path_put:
--	icc_put(clock->interconnect[IPA_INTERCONNECT_IMEM]->path);
-+	icc_put(clock->interconnect[IPA_INTERCONNECT_IMEM].path);
- err_memory_path_put:
--	icc_put(clock->interconnect[IPA_INTERCONNECT_MEMORY]->path);
-+	icc_put(clock->interconnect[IPA_INTERCONNECT_MEMORY].path);
- err_return:
- 	return PTR_ERR(path);
- }
-@@ -100,44 +116,44 @@ static int ipa_interconnect_init(struct ipa_clock *clock, struct device *dev)
- /* Inverse of ipa_interconnect_init() */
- static void ipa_interconnect_exit(struct ipa_clock *clock)
- {
--	icc_put(clock->interconnect[IPA_INTERCONNECT_CONFIG]->path);
--	icc_put(clock->interconnect[IPA_INTERCONNECT_IMEM]->path);
--	icc_put(clock->interconnect[IPA_INTERCONNECT_MEMORY]->path);
-+	icc_put(clock->interconnect[IPA_INTERCONNECT_CONFIG].path);
-+	icc_put(clock->interconnect[IPA_INTERCONNECT_IMEM].path);
-+	icc_put(clock->interconnect[IPA_INTERCONNECT_MEMORY].path);
- }
- 
- /* Currently we only use one bandwidth level, so just "enable" interconnects */
- static int ipa_interconnect_enable(struct ipa *ipa)
- {
--	const struct ipa_interconnect_data *data;
-+	struct ipa_interconnect *interconnect;
- 	struct ipa_clock *clock = ipa->clock;
- 	int ret;
- 
--	data = &clock->interconnect_data[IPA_INTERCONNECT_MEMORY];
--	ret = icc_set_bw(clock->interconnect[IPA_INTERCONNECT_MEMORY]->path,
--			 data->average_bandwidth, data->peak_bandwidth);
-+	interconnect = &clock->interconnect[IPA_INTERCONNECT_MEMORY];
-+	ret = icc_set_bw(interconnect->path, interconnect->average_bandwidth,
-+			 interconnect->peak_bandwidth);
- 	if (ret)
- 		return ret;
- 
--	data = &clock->interconnect_data[IPA_INTERCONNECT_IMEM];
--	ret = icc_set_bw(clock->interconnect[IPA_INTERCONNECT_IMEM]->path,
--			 data->average_bandwidth, data->peak_bandwidth);
-+	interconnect = &clock->interconnect[IPA_INTERCONNECT_IMEM];
-+	ret = icc_set_bw(interconnect->path, interconnect->average_bandwidth,
-+			 interconnect->peak_bandwidth);
- 	if (ret)
- 		goto err_memory_path_disable;
- 
--	data = &clock->interconnect_data[IPA_INTERCONNECT_CONFIG];
--	ret = icc_set_bw(clock->interconnect[IPA_INTERCONNECT_CONFIG]->path,
--			 data->average_bandwidth, data->peak_bandwidth);
-+	interconnect = &clock->interconnect[IPA_INTERCONNECT_CONFIG];
-+	ret = icc_set_bw(interconnect->path, interconnect->average_bandwidth,
-+			 interconnect->peak_bandwidth);
- 	if (ret)
- 		goto err_imem_path_disable;
- 
- 	return 0;
- 
- err_imem_path_disable:
--	(void)icc_set_bw(clock->interconnect[IPA_INTERCONNECT_IMEM]->path,
--			 0, 0);
-+	interconnect = &clock->interconnect[IPA_INTERCONNECT_IMEM];
-+	(void)icc_set_bw(interconnect->path, 0, 0);
- err_memory_path_disable:
--	(void)icc_set_bw(clock->interconnect[IPA_INTERCONNECT_MEMORY]->path,
--			 0, 0);
-+	interconnect = &clock->interconnect[IPA_INTERCONNECT_MEMORY];
-+	(void)icc_set_bw(interconnect->path, 0, 0);
- 
- 	return ret;
- }
-@@ -145,22 +161,23 @@ static int ipa_interconnect_enable(struct ipa *ipa)
- /* To disable an interconnect, we just its bandwidth to 0 */
- static void ipa_interconnect_disable(struct ipa *ipa)
- {
-+	struct ipa_interconnect *interconnect;
- 	struct ipa_clock *clock = ipa->clock;
- 	int result = 0;
- 	int ret;
- 
--	ret = icc_set_bw(clock->interconnect[IPA_INTERCONNECT_MEMORY]->path,
--			 0, 0);
-+	interconnect = &clock->interconnect[IPA_INTERCONNECT_MEMORY];
-+	ret = icc_set_bw(interconnect->path, 0, 0);
- 	if (ret)
- 		result = ret;
- 
--	ret = icc_set_bw(clock->interconnect[IPA_INTERCONNECT_IMEM]->path,
--			 0, 0);
-+	interconnect = &clock->interconnect[IPA_INTERCONNECT_IMEM];
-+	ret = icc_set_bw(interconnect->path, 0, 0);
- 	if (ret && !result)
- 		result = ret;
- 
--	ret = icc_set_bw(clock->interconnect[IPA_INTERCONNECT_CONFIG]->path,
--			 0, 0);
-+	interconnect = &clock->interconnect[IPA_INTERCONNECT_IMEM];
-+	ret = icc_set_bw(interconnect->path, 0, 0);
- 	if (ret && !result)
- 		result = ret;
- 
-@@ -286,9 +303,8 @@ ipa_clock_init(struct device *dev, const struct ipa_clock_data *data)
- 		goto err_clk_put;
- 	}
- 	clock->core = clk;
--	clock->interconnect_data = data->interconnect;
- 
--	ret = ipa_interconnect_init(clock, dev);
-+	ret = ipa_interconnect_init(clock, dev, data->interconnect);
- 	if (ret)
- 		goto err_kfree;
- 
+ /**
+  * struct ipa_interconnect_data - description of IPA interconnect bandwidths
++ * @name:		Interconnect name (matches interconnect-name in DT)
+  * @peak_bandwidth:	Peak interconnect bandwidth (in 1000 byte/sec units)
+  * @average_bandwidth:	Average interconnect bandwidth (in 1000 byte/sec units)
+  */
+ struct ipa_interconnect_data {
++	const char *name;
+ 	u32 peak_bandwidth;
+ 	u32 average_bandwidth;
+ };
 -- 
 2.20.1
 
