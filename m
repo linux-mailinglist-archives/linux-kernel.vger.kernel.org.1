@@ -2,118 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC652F868C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40DC72F8692
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:21:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388690AbhAOUU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 15:20:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55538 "EHLO
+        id S2388784AbhAOUVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 15:21:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388588AbhAOUUw (ORCPT
+        with ESMTP id S1731816AbhAOUVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 15:20:52 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8AEC0613D3;
-        Fri, 15 Jan 2021 12:20:12 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id d81so5430378iof.3;
-        Fri, 15 Jan 2021 12:20:12 -0800 (PST)
+        Fri, 15 Jan 2021 15:21:30 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F5DC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:20:49 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id md11so5705287pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:20:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3XzHspCX9O1x943fOc9JVbEHt7+srRIHgKjIIe0gcTw=;
-        b=NgWS5kVabAPxdHhBiKkubPCMxZN3NZ2xmbF8XalcBWU3OrQ3/tV+zpDt/IDcz+5IkC
-         U3+38yv5icRvZyOmDELIfUuDz2bazw0ZDq+9azXPkIlqimmDJ+H7dLk1zGUcuZbzXw7J
-         7/95a4q72b7v/RTX2DePIsNQIaentHQ63Vey+hFENcrAIMRia9po4SjMbhemuvPSPOJv
-         CxemdbgEYCzsYDesOub6heMvvjV3px1PPvTCbyYATyauWYmJqjOCdu8YRwROtwKtrJNL
-         8k41j0IB2qf8fy1A9fyrs/RWrWql4NwyH5z++D5WY0hFQ+cR2fydYUxMVl/rU09uZOB7
-         p/kg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5FQr0UCI/MaWdaqFfV2TlbW914Ru2H540vOm4R4tCNg=;
+        b=XHitNSqGdGBzX4wnF2kiAEEigqDAIJf+b2Y0O/qCdnk/L+IB59vOGCOWshd3Ud7+XH
+         76dBfR1PKxJ0CW5nGN8hEQLspA6Gm9ixRKQd5ivDnLbo1V64In44W+aEkYxZAt6guBNQ
+         cNkKAKgDdpMBeL2ixQR73/IDBqCLB/pFWzS0vNPo9bIDcsSh+bNDfthz85SP1n/owfNh
+         qrgqQnsmhb32eSC8kIt3LsW1Oyqhq1lcfOFqM12TIBDif8UfDq55Onq5/MwLAETwZDVM
+         TJpJ5GSkwn1qpjILYhaLD4q9Dn+/cOA92hlB1Z0mb1dV75p4QiTE9txEWubeOwi/zjXI
+         7xZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3XzHspCX9O1x943fOc9JVbEHt7+srRIHgKjIIe0gcTw=;
-        b=Kid3kpYDTx3X69+CKIo+YJrDwH3JzquXxCYhgzVrwsMzsFf4ZJpRXM3mRoU794YyQN
-         oEXxFLZMIdVICVLzd2ICYXXV5GcU4Yu9/oQKgHbVOFWcdQB4YPaIr8bI5rV9Sy6dD4U0
-         h9uOe4lYRwgi23BxWRjrh1G99S5KzZ/BCJoE9k6VESVuBD2uWZbEHNoZIdV+mDOhcXbM
-         8gnhs+PKT/Q9RR641ksu3Qw4DZbjEtpI1+Rf30VonbKIx9NZd7jbFdHdzU4vWczbqjWr
-         A5tbWju8c25W2jMyN180fMlxRKRmLTov7zax4pObaNhzCL2hKW3MPHJBhvrOAnAzN3G5
-         dLHw==
-X-Gm-Message-State: AOAM530JvDvNi+QkjMK9eqKAT+onVGDnOdUHPjrtEvimdtK3JNrpTeAm
-        dEaWCJ5WW3eGODsxz12HVBOWEwvLAk3LuPC7
-X-Google-Smtp-Source: ABdhPJwKEbWqA8LJEeHIYAOPbhOtSAIGSkE20xlarQKNl+/RedBLvYsuTNRj6JxcFkzNL6Pch4Hy6w==
-X-Received: by 2002:a6b:6f09:: with SMTP id k9mr9923958ioc.30.1610742011324;
-        Fri, 15 Jan 2021 12:20:11 -0800 (PST)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:475c:c79e:a431:bccb])
-        by smtp.gmail.com with ESMTPSA id e28sm4194900iov.38.2021.01.15.12.20.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 12:20:10 -0800 (PST)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 4/4] net: ethernet: ravb: Enable optional refclk
-Date:   Fri, 15 Jan 2021 14:19:51 -0600
-Message-Id: <20210115201953.443710-4-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210115201953.443710-1-aford173@gmail.com>
-References: <20210115201953.443710-1-aford173@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5FQr0UCI/MaWdaqFfV2TlbW914Ru2H540vOm4R4tCNg=;
+        b=mTOxwBoLVqgskxvJu5ZZ+DQpqH94EBDa81tcLzCrL6iU1FaNg/jM/dF2ghL5qCbWbG
+         cfqPpJDPIt0IBiCmMDGKIH+cM2PJWEEh1iCKJwPve4vcScBV4o5coKfZcW3Gn1igahCL
+         M8MWwoL/gEPbWUgUL8HeP+883kZGFJ93DXHpB7dfIa3hZJM25UDDAbU+uTTt+LBZJv52
+         Z+g+1oLNeiYhiG8gpTN6VifOlC2atHQCHSXdVY2hbURErU5Gz7gdR2mYdsqGvR6PJWdH
+         AJUkboWi9kdpr+N9HGXTboaJQ5N81CkmdAuBuPKrEevZLELsfXxBh9eMjB0DkDrd5A8e
+         C5jQ==
+X-Gm-Message-State: AOAM530QGHB4NLy/1YZKEJ/msdcICWNMH8QL2AeOhm0lIkDcxoISy5lt
+        xnGg3mx4aijCEi9RsY2DyGCKpeK7nRZPWiU/yAlmag==
+X-Google-Smtp-Source: ABdhPJyv0m03B81aOGsnzS5skp35T91GNbgpsPhDMyV35buImCVHa0cTzz6OHrToB+fUT8W6HcRvihOXC4WlsIot3kA=
+X-Received: by 2002:a17:902:ed14:b029:da:9da4:3091 with SMTP id
+ b20-20020a170902ed14b02900da9da43091mr14215466pld.29.1610742049240; Fri, 15
+ Jan 2021 12:20:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210115191330.2319352-1-anders.roxell@linaro.org>
+ <20210115192803.GA3828660@ubuntu-m3-large-x86> <CADYN=9Kt597LsfW=Aq6v+kWr+ja+55_+Z3s5mFaJULa+9J4EfA@mail.gmail.com>
+ <20210115201342.76nssqtbs4kttgts@google.com>
+In-Reply-To: <20210115201342.76nssqtbs4kttgts@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 15 Jan 2021 12:20:38 -0800
+Message-ID: <CAKwvOdnzxsuSb3LPkuLYMfH0jeh65dFt8BsHPa8wM+6e69Rc_w@mail.gmail.com>
+Subject: Re: [PATCH] mips: vdso: fix DWARF2 warning
+To:     Fangrui Song <maskray@google.com>
+Cc:     Anders Roxell <anders.roxell@linaro.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "# 3.4.x" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For devices that use a programmable clock for the avb reference clock,
-the driver may need to enable them.  Add code to find the optional clock
-and enable it when available.
+On Fri, Jan 15, 2021 at 12:13 PM Fangrui Song <maskray@google.com> wrote:
+>
+> http://lore.kernel.org/r/20201202010850.jibrjpyu6xgkff5p@google.com
+> Personally I'd drop DWARF v2 as an option.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
----
- drivers/net/ethernet/renesas/ravb.h      | 1 +
- drivers/net/ethernet/renesas/ravb_main.c | 8 ++++++++
- 2 files changed, 9 insertions(+)
+WIP :P
 
-V2:  The previous patch to fetch the fclk was dropped.  In its place
-     is code to enable the refclk
-
-diff --git a/drivers/net/ethernet/renesas/ravb.h b/drivers/net/ethernet/renesas/ravb.h
-index 7453b17a37a2..ff363797bd2b 100644
---- a/drivers/net/ethernet/renesas/ravb.h
-+++ b/drivers/net/ethernet/renesas/ravb.h
-@@ -994,6 +994,7 @@ struct ravb_private {
- 	struct platform_device *pdev;
- 	void __iomem *addr;
- 	struct clk *clk;
-+	struct clk *refclk;
- 	struct mdiobb_ctrl mdiobb;
- 	u32 num_rx_ring[NUM_RX_QUEUE];
- 	u32 num_tx_ring[NUM_TX_QUEUE];
-diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index bd30505fbc57..739e30f45daa 100644
---- a/drivers/net/ethernet/renesas/ravb_main.c
-+++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -2148,6 +2148,14 @@ static int ravb_probe(struct platform_device *pdev)
- 		goto out_release;
- 	}
- 
-+	priv->refclk = devm_clk_get_optional(&pdev->dev, "refclk");
-+	if (IS_ERR(priv->refclk)) {
-+		error = PTR_ERR(priv->refclk);
-+		goto out_release;
-+	} else {
-+		(void)clk_prepare_enable(priv->refclk);
-+	}
-+
- 	ndev->max_mtu = 2048 - (ETH_HLEN + VLAN_HLEN + ETH_FCS_LEN);
- 	ndev->min_mtu = ETH_MIN_MTU;
- 
 -- 
-2.25.1
-
+Thanks,
+~Nick Desaulniers
