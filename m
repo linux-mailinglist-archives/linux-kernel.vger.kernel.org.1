@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA582F838F
+	by mail.lfdr.de (Postfix) with ESMTP id 305BE2F838E
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733296AbhAOSOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:14:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56406 "EHLO
+        id S1733234AbhAOSOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:14:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728241AbhAOSOX (ORCPT
+        with ESMTP id S1730399AbhAOSOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 13:14:23 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD04CC0617A0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:32 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id v15so6541463wrx.4
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:32 -0800 (PST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9022C0617A1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:34 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id 91so10212088wrj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ja/1FFTGOv6AaggbEFEZcUW2YjyBuvrOQaBJpOOoCfs=;
-        b=ghF0kG8rNEQVOXAUreNjXGcJ48KjNg9l5Ypq/mQHTLuOAZzim1Tgi51UYfBff6o/5k
-         SqJZsUxrQ2OQ2MC4A/in2xeKuyglvlerxtbegG8LeZMZWP5cxJRHQK0X354kmcGB6Ran
-         s9B8lpGNLa3wdOJvkz7ETmHhR9fgPWpeJ6rsQF3l8L7MsEelRNXwQqZqKso6zKDgNR8C
-         e6DcT9hKAhYY+8mR7q/15hXGU0+6zlJjE1MoYm4ZEF8FQkcJxX1KOEhVNUBsIhSjt7kf
-         cN1gw5k2GbmPbroZiq6Hv+zvbSvAQBcsJ4nrPDlKUVifSUUV8B8dCoQokTHyAQm3r3wt
-         Qzsg==
+        bh=fAAEuD3RlEr/SK+ua/zk+cZbQLwjXz0Jv5gG/pDSRFI=;
+        b=RNlz61U66+BUG1s+nfI5teKJXRzuhAMcV/qAFVRXV+wo32MjqVdz82qZ+lAO7fU6y1
+         6AeYS8NZOV1XOpHbW/l8uDFRm91lwC39apk+K9velV1B1eYzstpRzlMpCDA8KTHqXr9w
+         UKqvIVaChpMvb5Xu2BYeV67rF7W62o/haTbVgcfVDoNHWaS2uYXSsrYQuwtsaA7cFUD0
+         1d4o9RxUprSwq8f+2rKLEt1HiQFe3SzaQ+tFDP7FSt6o6cK8dxAjmEmaTxYFQuKq5WbD
+         s1Im/XIHYHvruuyaGxAt3cLHIhdXy44KcuI/A0h5AKziCv8119TfPyA8Cbu5/MZhOwBg
+         4szw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ja/1FFTGOv6AaggbEFEZcUW2YjyBuvrOQaBJpOOoCfs=;
-        b=gw2REoiNLRSii3xF8ixzOIBDts3utfvnM9g2hhSABfUsO0DUc4LUoFc2j5OHDp6FYB
-         zVt3Hm7JoXEdnnksacoAzrUKnnLsD5dlaMLeelEBaM6gY4hYC/fuYyf7y1eczwp0y8Sn
-         jAZFi1NV+sp8j52gbH9FuiYPz7d1MuCT81hLCCuVi9n1lbQ0LvlWop7nbY7MIlIE0Pxg
-         SSmBfwmeukRW/QhhDh8aeqneKuG/ooPwlvfMheWAueYlU45PL74s4MFptMpj9JME/EXQ
-         QBt1FXO9i+pfLJJv2rXVvWCOBPP3J2eYy9hMN14BnQheVa3V05HGF/SbAsqKjPWc8kY1
-         1pYA==
-X-Gm-Message-State: AOAM530La7K/jqf7Yoy3cbPqfBxW5XzgHOW+lxxv0yHjbC8knStrMQBs
-        xnAFiUlb+OHcThwsCv1bJbkUb8NHsW8bZYvL
-X-Google-Smtp-Source: ABdhPJxs93jdlE+R+l0+00KbInYFz0hyGWh21RRCg+gQ2ikl2wjRWfhBWoZr6RR9J0t/xrD1VNYXrg==
-X-Received: by 2002:adf:ab5b:: with SMTP id r27mr14285129wrc.282.1610734411548;
-        Fri, 15 Jan 2021 10:13:31 -0800 (PST)
+        bh=fAAEuD3RlEr/SK+ua/zk+cZbQLwjXz0Jv5gG/pDSRFI=;
+        b=ZSEqbxtQvHbNo93dxHEzuB8Bs2z6tQoe8FracPucd1lkDmAJiSIl2cNoPFPc2pdZo7
+         RFvHhFbH656LvBL5xnanZWOfS4JsiY19gVBr7L8I9egZB8u+ntFGwghzZjvSqY93xPhL
+         wj2g2s9FzyXSMZXMWlVffhP8C83p4968Jq3TJt8O1JdsxtwVjykdepEzEeQKx+JNCaHn
+         LvX2WS1PEH9IPcS6TPzbkmMpdlBxlNiReAcSKB7NXfJMOYUk/VZ5nhnQ+cPUGm5a6ibU
+         yMW74gaAWrRb96yh/jurY46nkVDPxmfAhBNRe1VkD4rqNANvOLY7Ty4qz8YxBe4J+S1k
+         XWdw==
+X-Gm-Message-State: AOAM531o9QaGP9YOHpZFOlMNTDSVqsZCpZwBkefnRTrWnOhERzLPe0Rr
+        7q0aERsICo+4FWGZ46uofRi+nw==
+X-Google-Smtp-Source: ABdhPJzlmSdMVzlgQMNkUxNs186KSUwDnAnO4SsNgnPYTbXf9gsWuDYH8x8BWmMJW6fVGztzH9DU9A==
+X-Received: by 2002:a5d:4c45:: with SMTP id n5mr14777366wrt.396.1610734413540;
+        Fri, 15 Jan 2021 10:13:33 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.30
+        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:13:30 -0800 (PST)
+        Fri, 15 Jan 2021 10:13:32 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 11/40] drm/vmwgfx/vmwgfx_ttm_buffer: Supply some missing parameter descriptions
-Date:   Fri, 15 Jan 2021 18:12:44 +0000
-Message-Id: <20210115181313.3431493-12-lee.jones@linaro.org>
+Subject: [PATCH 12/40] drm/vmwgfx/vmwgfx_fifo: Demote non-conformant kernel-doc header
+Date:   Fri, 15 Jan 2021 18:12:45 +0000
+Message-Id: <20210115181313.3431493-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210115181313.3431493-1-lee.jones@linaro.org>
 References: <20210115181313.3431493-1-lee.jones@linaro.org>
@@ -70,8 +70,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c:275: warning: Function parameter or member 'p_offset' not described in 'vmw_piter_start'
- drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c:676: warning: Function parameter or member 'evict' not described in 'vmw_move_notify'
+ drivers/gpu/drm/vmwgfx/vmwgfx_fifo.c:299: warning: Function parameter or member 'dev_priv' not described in 'vmw_local_fifo_reserve'
+ drivers/gpu/drm/vmwgfx/vmwgfx_fifo.c:299: warning: Function parameter or member 'bytes' not described in 'vmw_local_fifo_reserve'
 
 Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
 Cc: Roland Scheidegger <sroland@vmware.com>
@@ -80,29 +80,22 @@ Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c b/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c
-index dbb068830d800..6a44567e4ba52 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c
-@@ -265,6 +265,7 @@ static dma_addr_t __vmw_piter_sg_addr(struct vmw_piter *viter)
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c b/drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c
+index 7400d617ae3cc..20246a7c97c9d 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c
+@@ -276,7 +276,7 @@ static int vmw_fifo_wait(struct vmw_private *dev_priv,
+ 	return ret;
+ }
+ 
+-/**
++/*
+  * Reserve @bytes number of bytes in the fifo.
   *
-  * @viter: Pointer to the iterator to initialize
-  * @vsgt: Pointer to a struct vmw_sg_table to initialize from
-+ * @p_offset: Pointer offset used to update current array position
-  *
-  * Note that we're following the convention of __sg_page_iter_start, so that
-  * the iterator doesn't point to a valid page after initialization; it has
-@@ -664,6 +665,7 @@ static int vmw_ttm_io_mem_reserve(struct ttm_bo_device *bdev, struct ttm_resourc
-  * vmw_move_notify - TTM move_notify_callback
-  *
-  * @bo: The TTM buffer object about to move.
-+ * @evict: Unused
-  * @mem: The struct ttm_resource indicating to what memory
-  *       region the move is taking place.
-  *
+  * This function will return NULL (error) on two conditions:
 -- 
 2.25.1
 
