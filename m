@@ -2,103 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43E62F7AC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:55:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8DA2F7AC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388072AbhAOMyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:54:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43548 "EHLO
+        id S2388124AbhAOMyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:54:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387814AbhAOMyM (ORCPT
+        with ESMTP id S2387936AbhAOMy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:54:12 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D804BC061793
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:53:31 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id v3so3593777qtw.4
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:53:31 -0800 (PST)
+        Fri, 15 Jan 2021 07:54:28 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582A8C061794
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:53:48 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id y22so10219097ljn.9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:53:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h9BqWIgWq/g/lc4wxnz/C2MSjqoIDnb6hVrxU6/5964=;
-        b=fsxbLQTv4QHG2UcsckTqMjmrG03y3+pTx+WTSO8AeJJ+GASM54h8CQ3OeflsRyvuBa
-         ODfEbZ5T0w/m5QxidfUTRdMzn+1sRznlV+k4bL0o4mv3QWA9b7Tiwhy0eDdt8Ts/b6AV
-         uTProyUUXB6BZ1FLkR75KQ4R+kbcatGnuYLZkPsmuoHQq47jRf4QsUdVv02hWSO6rEC5
-         71prJRRhVbmWvZnOQLdHfbwbFZxXN+EB/6TFYmLx0T5kVyFREPTx6GTtEHXxJa/8shd+
-         2n31E30fmPRLW4xt4dfuJA0krrhXcYEGUB5m8nUjM6+irdLOK0yAqttoSbBSWrRtZBFB
-         Tu2w==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=VjEFTzjjy7UfcRr38PIirv9uGpeJ4msU93rZmqcravg=;
+        b=V9cz6V4B2mu9hml80VDmuIlCRlIEDkrkvi+eOluueawvaC3mWmxIjXK8xbUgls2DoW
+         ItnjOE+3nUYI5A0wgJDZtFd/xSlr1mPMfCook8XFKp2yQT4XZ97/v1wY2jKTZqdJGZkD
+         w1cwgVXOwElvmC9MUvnoZYPjBPA7mN6Q1OJQ/xJc52vgUA0vqQJhDwMx+9Iqc21Vejdj
+         0CY5ercQonp5vX7E8QcMQITlhtEO/F3OaivwPtzDlTmdNcNzvtWcz1ZGXiHaVE/DipCl
+         eVWDzG0f6JBqhNv1Kt2hFuNwsxXw5cq5rUh/s5bNSOFpvCv98OtyFz1lUNdI9P/5Nnv1
+         6c7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h9BqWIgWq/g/lc4wxnz/C2MSjqoIDnb6hVrxU6/5964=;
-        b=Ay0J3B0XM7QgJ6YhZvJvFleSfMQDrkSZjlPmFehF0tQuNSQOhAhBOEkjMkzYvZBl/h
-         0m3R9rE9lHvb03r9z7zV0C2bm6+qWtT1qqkPv4LEiMFrHlbQAhBbPA1fIukAHbGVaph5
-         48nzuI9OlbpCPvyl+tydAgqPVlSZCnazqSy4Zu5rzP/kGE1qmbkYzPNWVhaapdQs1b+y
-         eSMBpreUO2vSiomAS3YL+fwKXZRR+3FMg/MA7aSP9W5wDzMFBHypaBj4sVmVGiYz3TVm
-         k9LG+id5NKdsWb+zgWxE/qzrBbr49OXEGuKL5GVUKqhY8KccEWfeFTgfd3Lnz4uCRLi6
-         mjfQ==
-X-Gm-Message-State: AOAM532FgvwD4esrZf8/6d5HEYg/ug7O2e52bZg3DyKzyLq7V3NXjhIu
-        MWtyL9r5oF5b9YKN+2+QVGm6vuoI64MyFVa4rQhnDw==
-X-Google-Smtp-Source: ABdhPJyR26Dq7PRJCQR60dg/UhwPOr3JlA1eLMB/yfyYpZYY3e3g+nHZdP7UF5zVM70UIkbAmIhp62krHnUXfAkZYII=
-X-Received: by 2002:ac8:7111:: with SMTP id z17mr11638832qto.369.1610715210857;
- Fri, 15 Jan 2021 04:53:30 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=VjEFTzjjy7UfcRr38PIirv9uGpeJ4msU93rZmqcravg=;
+        b=Gd13KGDekjaQJGDWGQocWZUyFC5O2dEmDAVrlYKiDSL29xT3DYpQqzjHzCrMUD+baO
+         zAOov56xzX/6RkKivW0xDy1FGywNqK7JxPxBYoUmwWve9LZn9aGR3g9sSEa+QR6LD89x
+         17vSYOIieqwSvSNkaWVBrA/Y61BKjD93lqpJNMpXw8F6LRjk57kBujy6Sz+jX72oQN4W
+         0oMeueJT5rdslfXKRkShxTbUcUmOx1ZmAccoMHXJPg2JRare1rQgc2jawg+lJV+W4Jeq
+         ZF4ykQWWwmUWXoHEUB61SVyC9FbCJ0Is4ggDxh8t7ofOixs8VKoU0Xlahcav5W7YVl3Q
+         LnQg==
+X-Gm-Message-State: AOAM532d+KyDV6rjqk+ARu4mFleK7GvNFS7iJF+L7G4q+BZLd3VgLcln
+        fqQ2bL8pXw1wHWX0oe2PrZmln9mp9pgiU/My8A==
+X-Google-Smtp-Source: ABdhPJylfnDuQsbrnpsXSDAI3RlhrqmCcvx+gjvyhgGzgM95tPtgaI2IU9j6AtoHHiYhOBAacbHQz+MTTrqZa7b2+3M=
+X-Received: by 2002:a2e:9f52:: with SMTP id v18mr5372750ljk.510.1610715226871;
+ Fri, 15 Jan 2021 04:53:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20210113091657.1456216-1-glider@google.com> <20210113091657.1456216-2-glider@google.com>
- <20210113161044.43bc1c1a@gandalf.local.home> <CAG_fn=XSkOChCwBp=Vg6jWhZ8K44seCo=0Zu38iUpAj6eCUxjQ@mail.gmail.com>
- <20210114095232.7ba3f9a8@gandalf.local.home>
-In-Reply-To: <20210114095232.7ba3f9a8@gandalf.local.home>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 15 Jan 2021 13:53:19 +0100
-Message-ID: <CAG_fn=Uq9SeT4wBsbuEEniy7UmQBvtaLwkgAAR_FqkqD7aoDfw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] tracing: add error_report trace points
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linux Memory Management List <linux-mm@kvack.org>
+Reply-To: mohammedssaaaad@gmail.com
+Sender: mramaniaru@gmail.com
+Received: by 2002:ab3:6154:0:0:0:0:0 with HTTP; Fri, 15 Jan 2021 04:53:46
+ -0800 (PST)
+From:   Mohammed Saad <mohammedsaadht@gmail.com>
+Date:   Fri, 15 Jan 2021 04:53:46 -0800
+X-Google-Sender-Auth: 5bbfaxYDoesUtkgbT9m_48R7D5Q
+Message-ID: <CAF+m9ZASY+PbDv0Vmx-Y24pwGTCdd6afjQUs7Jkj4GMYLF6gxg@mail.gmail.com>
+Subject: OK.........................
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 3:52 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Thu, 14 Jan 2021 08:49:57 +0100
-> Alexander Potapenko <glider@google.com> wrote:
->
-> > We'll need to explicitly list the enum values once again in
-> > __print_symbolic(), right? E.g.:
-> >
-> > enum debugging_tool {
-> >          TOOL_KFENCE,
-> >          TOOL_KASAN,
-> >          ...
-> > }
-> >
-> > TP_printk(__print_symbolic(__entry->error_detector, TOOL_KFENCE,
-> > TOOL_KASAN, ...),
->
-> Usually what is done is to make this into a macro:
->
-> #define REPORT_TOOL_LIST \
->   EM(KFENCE, kfence) \
->   EMe(KASAN, kasan)
+Dear Friend,
 
-Thanks, will be done in v2!
-Note that checkpatch doesn't really like this declaration style,
-claiming that "Macros with complex values should be enclosed in
-parentheses".
-(although it is consistent with what's done in other trace event headers)
+An oil business man made a fixed deposit of =E2=82=AC15 MILLION Euros in my
+bank branch where I am a director and he died with his entire family
+in a plane crash  leaving behind no next of kin. I Propose to present
+you as next of kin to claim the funds,if interested contact me with
+your full name, and telephone number to reach you and most
+importantly, a confirmation of acceptance from you.
 
->
-> #define EM(a,b) TRACE_DEFINE_ENUM(a)
-> #define EMe(a,b) TRACE_DEFINE_ENUM(a)
-
-These lines must end with a semicolon, according to other headers (and
-that becomes yet another thing that checkpatch barks at).
+Mr Mohammed Saad
