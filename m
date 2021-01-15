@@ -2,84 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7E32F6FCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 158FD2F6FCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729772AbhAOBA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 20:00:58 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:43127 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726159AbhAOBA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 20:00:57 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DH2sW2ltrz9sBy;
-        Fri, 15 Jan 2021 12:00:15 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1610672415;
-        bh=pFZtsSKV3VID14I9NxcVzyczo37+sO1HzkPktURB6Dw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=SZ7Z1qgHppuwW9l+Cvh+nPManb1LR1MQ/Lwne0kRh4TWfj8oiUEnO8GehW9NfsL5F
-         N+nenJTQ/UfcTvlf7mNfWalgeDcUCVTxWuipr6hDmzy8I/SatMuhs6nJ4l3SV0aObO
-         90wrFboOeSM8n3bStB0oIjaekno2NsNgqjIYGceUNkCpTf28ZgfZglEGuK5rU6dOPY
-         vgWFf96ZQixkZNfCxd1Xzslv6pALxgFQzv0N31GyDvRfZMk3EbmV3+QcUbCpoh5sfw
-         TPy40wQ+wwcjsxMvSDfg/u06k4qlR1vaYHc6UeoxI8pZA/COV/aiHZqmMOCaOxgGSi
-         176+7G/rdmmuA==
-Date:   Fri, 15 Jan 2021 12:00:14 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the amdgpu tree
-Message-ID: <20210115120014.4211dec6@canb.auug.org.au>
+        id S1727820AbhAOBBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 20:01:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726215AbhAOBBs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 20:01:48 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A333C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 17:01:08 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id i7so4941536pgc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 17:01:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l3WeFaKNJEz4OecO9N42Dpu4fB89NTF5qv7y1AdEYTM=;
+        b=tSNS1CnMXMY4MD92ZyP8uZtFqK6+/HTf0XPlBgegGtQ9XePOsTqRlN7z6ukXZLrTF+
+         vo6nqJpSDJu2YaS/EfmTWPumeIlAl6mQZBpvsEWZHm721/C2DwEs6VneiFjx3bLmb49i
+         xYQ+oyNKFiPzgci073pFC6IeUn8YYJWCkQBdOJu3AMk6Jfok4VCGLgMnP2mFOCQU9o61
+         02QLwfK8Tov9cBFW/fdWSya9NPrqk0r7EcAtCIl3zZnCMmviFTK1GrhKkfs0u9iGmpOV
+         Oi0sA0UlMK3WcFDUReNKxZxWWgFF2ejJE1DkxrTAyD2Hf4/bxSuAl/eDKxlFCojxjtWQ
+         dD3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l3WeFaKNJEz4OecO9N42Dpu4fB89NTF5qv7y1AdEYTM=;
+        b=UJq/nWb4HWnU0+dDQCZuglr2JPGUoToAEHYx0f4NjetTS/btt7GLEnC9duvineClSF
+         naZ/d+5AbVPSpLaYLYLeva0MRKEmlgDdJMYCL4TUkksH1wUC/9vSxX9A7i9ZsPou/Dvj
+         jvW5Q9exVF3zqLEs4R/xThAL4yjMsjalwEcAfd0dNfHjikVwLZV7n3TpWzhI6AF1sePu
+         f+2cscml4iMCUCBprp19QtxudQQ1d+F4r2PwIBoTvGffH3N8j7QifMKxxkbqwng97zgr
+         UeYuNH66WWCMT/8K4ewN5aieQK0m3Z4/vorwozMTZYrPPnizmKoqm8QhW90SSEYThTqP
+         NYhA==
+X-Gm-Message-State: AOAM532SMWVUlNsmulM8YXbovGV0VZ4OfQr/T4CYnAPWl1nhL6N/cSnO
+        0ELNyU0tG/hfLRnrR4XDBzwPc1028/NUy1Bn1EMLUQ==
+X-Google-Smtp-Source: ABdhPJzfndZUuw1upmwGox7mHE72uLgE5zPIjFF+9u35KdDGolzTQHRIumBQs7SsVzvAJ81KsLR9Qgvi/6jR4L1Ftcw=
+X-Received: by 2002:a63:1f47:: with SMTP id q7mr10190029pgm.10.1610672467320;
+ Thu, 14 Jan 2021 17:01:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rUleKG7Uah2E5vgc_m5JP0k";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <1610500731-30960-2-git-send-email-jjohnson@codeaurora.org> <1610660990-18812-1-git-send-email-jjohnson@codeaurora.org>
+In-Reply-To: <1610660990-18812-1-git-send-email-jjohnson@codeaurora.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 14 Jan 2021 17:00:56 -0800
+Message-ID: <CAKwvOdnfm9XvKsgn30HSUYoCSibHND-JSTqNH0yU7bfpYog_3w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] kbuild: handle excessively long argument lists
+To:     Jeff Johnson <jjohnson@codeaurora.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Elliot Berman <eberman@quicinc.com>,
+        Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/rUleKG7Uah2E5vgc_m5JP0k
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jan 14, 2021 at 1:50 PM Jeff Johnson <jjohnson@codeaurora.org> wrote:
+>
+> From: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
+>
+> Modules with a large number of compilation units may be
+> exceeding AR and LD command argument list. Handle this gracefully by
+> writing the long argument list in a file. The command line options
+> read from file are inserted in place of the original @file option.
+>
+> The usage is well documented at
+> https://www.gnu.org/software/make/manual/html_node/File-Function.html
+>
+> Signed-off-by: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
+> Signed-off-by: Jeff Johnson <jjohnson@codeaurora.org>
+> ---
+>
+> Changes in v2:
+>   - Remove spurious endif
+>
+> scripts/Makefile.build | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> index 252b7d2..787dca2 100644
+> --- a/scripts/Makefile.build
+> +++ b/scripts/Makefile.build
+> @@ -425,7 +425,10 @@ $(obj)/lib.a: $(lib-y) FORCE
+>  # module is turned into a multi object module, $^ will contain header file
+>  # dependencies recorded in the .*.cmd file.
+>  quiet_cmd_link_multi-m = LD [M]  $@
+> -      cmd_link_multi-m = $(LD) $(ld_flags) -r -o $@ $(filter %.o,$^)
+> +      cmd_link_multi-m =                                       \
+> +       $(file >$@.in,$(filter %.o,$^))                         \
+> +       $(LD) $(ld_flags) -r -o $@ @$@.in;                      \
+> +       rm -f $@.in
 
-Hi all,
+The GNU Make docs linked above use an `@` before the invocation of
+`rm`. I don't know what that's about, but that or even this patch
+doesn't affect my ability to build negatively. LGTM
 
-After merging the amdgpu tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
 
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function 'd=
-m_set_vblank':
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5380:33: warnin=
-g: unused variable 'dm' [-Wunused-variable]
- 5380 |  struct amdgpu_display_manager *dm =3D &adev->dm;
-      |                                 ^~
+>
+>  $(multi-used-m): FORCE
+>         $(call if_changed,link_multi-m)
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+>
 
-Caused by commit
 
-  98ab5f3513f9 ("drm/amd/display: Fix deadlock during gpu reset v3")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/rUleKG7Uah2E5vgc_m5JP0k
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAA6R4ACgkQAVBC80lX
-0GxAaAgAn2klmAI0wOutSvxHjuCLfjTb6qLSJXnQdYr8NiPYY3xbb4rsvbSI7S48
-uBgKFHfO6w8bjiwAQZr972q+DZ140tqKq+4adiI+A1PI7L//dp6vKSpbOv3ckI3M
-3kssZn48TnrCUojPCVgm8NycYywDPR2wufnyT+MQ8BQ2spXg9KtxwM7H26fhPpQi
-5wBOZpv/ZoTtRTokClGH9Z4352yYJvU+/y2yd9NphsVEu2emUaLhzpceNjDIp8JT
-YkRIcR0iwk61233g3xN2FRS8N/znXRdtqhrVXfAT+4HrybxrMYWlOPoQQvBiIEAw
-HMQMu7bzqeQxgSjVODvs64GDmj+9UQ==
-=rt4T
------END PGP SIGNATURE-----
-
---Sig_/rUleKG7Uah2E5vgc_m5JP0k--
+-- 
+Thanks,
+~Nick Desaulniers
