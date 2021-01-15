@@ -2,91 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FB32F7E8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 178CA2F7E89
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732450AbhAOOsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 09:48:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730439AbhAOOsJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:48:09 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A205C061793;
-        Fri, 15 Jan 2021 06:47:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nJTc/pAdfA38jUmc+xoUyUrdzRZSuGL4fw7w4qEDkgo=; b=JwAZ9NHR5n4Bsz2eU3EhYVhsdJ
-        KSYfAK+6+e4uNW42H5ZjjkLVXZgswQn3vjNORESYccY5F49xqQKs5H+Xw8CW3Q5OqlkMwk13cBhZ8
-        rH/ptiHkeXnP0R8gUKlnTpByCacjh5sg9Y5FpvCu9hpQweSpOnn2OPOdVfe+i6QtC8EhfUtOx3h8r
-        9P/GOwjYO1xze3D1/kpQYO1pSxRzYjO6SG/ymVo4WaW0fEBoPisLJVAWCOBzfAjGKRgZMOcX68Wll
-        jlKh5+nZLfC515ogtRE5JmZSgPlWR7vp5KTMbq5szhvBclKLPdMAfn1jsfTiG9CycNmIoUA2Nv22C
-        4pQrgoYQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l0QMX-0093Hd-E5; Fri, 15 Jan 2021 14:46:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AB3F7301324;
-        Fri, 15 Jan 2021 15:46:04 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9CA3A20D6F7BA; Fri, 15 Jan 2021 15:46:04 +0100 (CET)
-Date:   Fri, 15 Jan 2021 15:46:04 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <andi@firstfloor.org>,
-        Kan Liang <kan.liang@linux.intel.com>, wei.w.wang@intel.com,
-        luwei.kang@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 06/17] KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR
- emulation for extended PEBS
-Message-ID: <YAGqrIqTxNU/PMxo@hirez.programming.kicks-ass.net>
-References: <20210104131542.495413-1-like.xu@linux.intel.com>
- <20210104131542.495413-7-like.xu@linux.intel.com>
+        id S1732186AbhAOOrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 09:47:52 -0500
+Received: from elvis.franken.de ([193.175.24.41]:53932 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728586AbhAOOru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 09:47:50 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1l0QNY-0006aU-04; Fri, 15 Jan 2021 15:47:08 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 0D7CAC057E; Fri, 15 Jan 2021 15:46:32 +0100 (CET)
+Date:   Fri, 15 Jan 2021 15:46:31 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jinyang He <hejinyang@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Burton <paulburton@kernel.org>,
+        Jun-Ru Chang <jrjang@realtek.com>
+Subject: Re: [PATCH 1/4] MIPS: process: Reorder header files
+Message-ID: <20210115144631.GE15166@alpha.franken.de>
+References: <1610454557-25867-1-git-send-email-hejinyang@loongson.cn>
+ <1610454557-25867-2-git-send-email-hejinyang@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210104131542.495413-7-like.xu@linux.intel.com>
+In-Reply-To: <1610454557-25867-2-git-send-email-hejinyang@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 09:15:31PM +0800, Like Xu wrote:
+On Tue, Jan 12, 2021 at 08:29:14PM +0800, Jinyang He wrote:
+> Just reorder the header files.
 
-> +	if (cpuc->pebs_enabled & ~cpuc->intel_ctrl_host_mask) {
-> +		arr[1].msr = MSR_IA32_PEBS_ENABLE;
-> +		arr[1].host = cpuc->pebs_enabled & ~cpuc->intel_ctrl_guest_mask;
-> +		arr[1].guest = cpuc->pebs_enabled & ~cpuc->intel_ctrl_host_mask;
-> +		/*
-> +		 * The guest PEBS will be disabled once the host PEBS is enabled
-> +		 * since the both enabled case may brings a unknown PMI to
-> +		 * confuse host and the guest PEBS overflow PMI would be missed.
-> +		 */
-> +		if (arr[1].host)
-> +			arr[1].guest = 0;
-> +		arr[0].guest |= arr[1].guest;
-> +		*nr = 2;
+This alone isn't worth a commit, IMHO. I bet there are lots of includes
+no longer needed, so removing and sorting them is ok for me.
 
-Elsewhere you write:
+Thomas.
 
-> When we have a PEBS PMI due to guest workload and vm-exits,
-> the code path from vm-exit to the host PEBS PMI handler may also
-> bring PEBS PMI and mark the status bit. The current PMI handler
-> can't distinguish them and would treat the later one as a suspicious
-> PMI and output a warning.
-
-So the reason isn't that spurious PMIs are tedious, but that the
-hardware is actually doing something weird.
-
-Or am I not reading things straight?
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
