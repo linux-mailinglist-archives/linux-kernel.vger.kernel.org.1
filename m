@@ -2,175 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0EB62F8829
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B132F882E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:09:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727808AbhAOWGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 17:06:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726459AbhAOWGM (ORCPT
+        id S1727207AbhAOWHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 17:07:55 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:42740 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726417AbhAOWHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 17:06:12 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3307C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:05:32 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id x126so6339588pfc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:05:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KN78Q17MGRiBbbDRSKVXa79TEYkMqvDyXwMUFINzonU=;
-        b=oCaduNG4QbuGqwh1onPGbaLjRDDKevaN8DaXoeXbxEBsQU06c3p0l3GM/MONvKCJ5c
-         /1cSKHx+XZbuoa+UIHkSdOEuOD7/3fw1qPb7jnl15lXWsQqck23jZr4tLw6L8VybNJFt
-         EZVMNndQM4tIWKTavPqhTV2f7N5dvi0XqaaS0r8P/MD8fY6rFrpoSFDjEOsHKxZzreZ1
-         f/U3T/Klvug/QInnPrKH5qv1Thnjtl2zcBgKuugefxx9nlUTvVYhof4VNChQwdtAfz4Q
-         lEHpoF5fq2a86PwLM00GdEUXm3O01/JJJ7qB/n0Yt8z3krshDGlQvciROuYZNXBevYMi
-         aXdA==
+        Fri, 15 Jan 2021 17:07:54 -0500
+Received: by mail-io1-f69.google.com with SMTP id k26so9671491ios.9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:07:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KN78Q17MGRiBbbDRSKVXa79TEYkMqvDyXwMUFINzonU=;
-        b=bewjSZdI/DFZOR3a7P3Kg+ZwBKGqD1LmidCdSYsF0/vpe3YFDXaM7iwwg0dWWV9S35
-         Wp5lIY63UVonaKRTEGqqtc1W+5JiwDXSyHN+wOMgZZf7vdZjeCeLM4XWT9Q196UbkMS+
-         IkcCQH+rh4/e3Bow61VA/ZCCe4aferg3oyumGpIMiKYuBtd/nhalkvupdL0XE9lX9bHN
-         2c4qb9KG95tTZDq7DWoYGf33CyB2X3ykBQG1EA1yesOgse4BOG2Kq/HN9UiAL/Eb1Zsd
-         /a5I646HPAv7NzrpF+dEwa+S68ZiHvA/dOo1kV3qWMgCT3yOYDYZyx8W7GfgiA66eGXY
-         vxxg==
-X-Gm-Message-State: AOAM532NRBrAyQHsrvRb6wyiyDjx/aTJLsaQXhVbXzzqiojFI39tAVFd
-        PT67Qkx0XvbaHLsVcbT50gB1/A==
-X-Google-Smtp-Source: ABdhPJwzV8dwpmzdHcLPY+EwjPVL3iiv//cO15VZQnk6SRoMw1Uopnd4ioameiyB1W5rUWFsT1UNag==
-X-Received: by 2002:aa7:9707:0:b029:19d:c5a8:155e with SMTP id a7-20020aa797070000b029019dc5a8155emr14810092pfg.62.1610748332125;
-        Fri, 15 Jan 2021 14:05:32 -0800 (PST)
-Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
-        by smtp.gmail.com with ESMTPSA id x19sm502602pfp.207.2021.01.15.14.05.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 14:05:31 -0800 (PST)
-Date:   Fri, 15 Jan 2021 14:05:28 -0800
-From:   Fangrui Song <maskray@google.com>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        Jakub Jelinek <jakub@redhat.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Subject: Re: [PATCH v5 2/3] Kbuild: make DWARF version a choice
-Message-ID: <20210115220528.pyyr7hls2lgca3o7@google.com>
-References: <20210115210616.404156-1-ndesaulniers@google.com>
- <20210115210616.404156-3-ndesaulniers@google.com>
- <CA+icZUXYFdrHQYkM6J5WajaP6zCBHB2gEnDt6p1W6gRsTk__Zg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Ni8yaQuabPx7HTWh4ePzjfz8VlgGJ45ofwREdAgCaIA=;
+        b=QaEeQbyHCJB49TexuutZHgtJAUkc8AsxoPWz30TPy+tTBYutVW+o0Jj+W3gpawVxn2
+         sdVC5JsqNRsjcLth77zzfjw9KnKb884VMO8m/JBynsOZLH4n7o38wk7MxjnVA/UcDJvw
+         YK27NoSDpqJFuKMWlycQ0ycN3pQ5X/fKdVo4G2yixYb6PSspUrREbSwyOijBmyWJovjt
+         74QDoetmkZpib6ZrMImDHD+lMhyBkt57xptAh77MBfK2aB8b70DZzQKst3p22Ov91vfJ
+         ++9IcLg7B/m2V+DJmnb22gG15IWhUWTIXhl0mclO9VvtZLuiiWU+FBvWjtfunefRH4/z
+         j8VQ==
+X-Gm-Message-State: AOAM531/FWVhl6EEPP/VVvFrXeHghmlSs9fjKfEPe2JSs9O8BHAGSe2B
+        r3g/e2M6MpMHKlD0idrGOKE1uE/DrGpXcdrYVZ18vHzJ6Xvc
+X-Google-Smtp-Source: ABdhPJwl5lqi00q3NK/YL4hxeMbwf8+7Xw7x+Xx7N2oQtjO9QTWtGNrmxRFpAhlx4fn68gu+vAWrPashN7vHa2ezNTX9R9pKv/+c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CA+icZUXYFdrHQYkM6J5WajaP6zCBHB2gEnDt6p1W6gRsTk__Zg@mail.gmail.com>
+X-Received: by 2002:a05:6e02:13e2:: with SMTP id w2mr12778970ilj.155.1610748433062;
+ Fri, 15 Jan 2021 14:07:13 -0800 (PST)
+Date:   Fri, 15 Jan 2021 14:07:13 -0800
+In-Reply-To: <0000000000005d946305a9f5d206@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002ce11a05b8f7980a@google.com>
+Subject: Re: INFO: rcu detected stall in sock_close (3)
+From:   syzbot <syzbot+4168fa4c45be33afa73c@syzkaller.appspotmail.com>
+To:     Markus.Elfring@web.de, axboe@kernel.dk,
+        christian.brauner@ubuntu.com, davem@davemloft.net,
+        ebiederm@xmission.com, fweisbec@gmail.com, hdanton@sina.com,
+        jmaloy@redhat.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, netdev@vger.kernel.org, oleg@redhat.com,
+        pcc@google.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        tipc-discussion@lists.sourceforge.net, tuong.t.lien@dektech.com.au,
+        ying.xue@windriver.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-15, Sedat Dilek wrote:
->On Fri, Jan 15, 2021 at 10:06 PM Nick Desaulniers
-><ndesaulniers@google.com> wrote:
->>
->> Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
->> explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
->> way that's forward compatible with existing configs, and makes adding
->> future versions more straightforward.
->>
->> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
->> Suggested-by: Fangrui Song <maskray@google.com>
->> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
->> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
->> ---
->>  Makefile          | 13 ++++++-------
->>  lib/Kconfig.debug | 21 ++++++++++++++++-----
->>  2 files changed, 22 insertions(+), 12 deletions(-)
->>
->> diff --git a/Makefile b/Makefile
->> index d49c3f39ceb4..4eb3bf7ee974 100644
->> --- a/Makefile
->> +++ b/Makefile
->> @@ -826,13 +826,12 @@ else
->>  DEBUG_CFLAGS   += -g
->>  endif
->>
->> -ifneq ($(LLVM_IAS),1)
->> -KBUILD_AFLAGS  += -Wa,-gdwarf-2
->> -endif
->> -
->> -ifdef CONFIG_DEBUG_INFO_DWARF4
->> -DEBUG_CFLAGS   += -gdwarf-4
->> -endif
->> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
->> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
->> +DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
->> +# Binutils 2.35+ required for -gdwarf-4+ support.
->> +dwarf-aflag    := $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-version-y))
->> +KBUILD_AFLAGS  += $(dwarf-aflag)
->>
->>  ifdef CONFIG_DEBUG_INFO_REDUCED
->>  DEBUG_CFLAGS   += $(call cc-option, -femit-struct-debug-baseonly) \
->> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
->> index dd7d8d35b2a5..e80770fac4f0 100644
->> --- a/lib/Kconfig.debug
->> +++ b/lib/Kconfig.debug
->> @@ -256,13 +256,24 @@ config DEBUG_INFO_SPLIT
->>           to know about the .dwo files and include them.
->>           Incompatible with older versions of ccache.
->>
->> +choice
->> +       prompt "DWARF version"
->
->Here you use "DWARF version" so keep this for v2 and v4.
->
->> +       help
->> +         Which version of DWARF debug info to emit.
->> +
->> +config DEBUG_INFO_DWARF2
->> +       bool "Generate DWARF Version 2 debuginfo"
->
->s/DWARF Version/DWARF version
->
->> +       help
->> +         Generate DWARF v2 debug info.
->> +
->>  config DEBUG_INFO_DWARF4
->> -       bool "Generate dwarf4 debuginfo"
->> +       bool "Generate DWARF Version 4 debuginfo"
->
->Same here: s/DWARF Version/DWARF version
+syzbot suspects this issue was fixed by commit:
 
-DWARF Version 2 is fine and preferable.
+commit 98b89b649fce39dacb9dc036d6d0fdb8caff73f7
+Author: Jens Axboe <axboe@kernel.dk>
+Date:   Fri Oct 9 22:03:01 2020 +0000
 
-I have checked DWARF Version 2/3/4/5 specifications.
-"DWARF Version 2" is the official way that version is referred to...
+    signal: kill JOBCTL_TASK_WORK
 
->
->- Sedat -
->
->>         help
->> -         Generate dwarf4 debug info. This requires recent versions
->> -         of gcc and gdb. It makes the debug information larger.
->> -         But it significantly improves the success of resolving
->> -         variables in gdb on optimized code.
->> +         Generate DWARF v4 debug info. This requires gcc 4.5+ and gdb 7.0+.
->> +         It makes the debug information larger, but it significantly
->> +         improves the success of resolving variables in gdb on optimized code.
->> +
->> +endchoice # "DWARF version"
->>
->>  config DEBUG_INFO_BTF
->>         bool "Generate BTF typeinfo"
->> --
->> 2.30.0.284.gd98b1dd5eaa7-goog
->>
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14b99c20d00000
+start commit:   7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=183dd243398ba7ec
+dashboard link: https://syzkaller.appspot.com/bug?extid=4168fa4c45be33afa73c
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112223b7100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154793a3100000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: signal: kill JOBCTL_TASK_WORK
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
