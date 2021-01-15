@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6961F2F8327
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4532F8329
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727599AbhAOR6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:58:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
+        id S1729026AbhAOR6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:58:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbhAOR6F (ORCPT
+        with ESMTP id S1726779AbhAOR63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:58:05 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FCADC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:57:25 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id n2so2608165iom.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:57:25 -0800 (PST)
+        Fri, 15 Jan 2021 12:58:29 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAC0C061793
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:57:49 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id g15so1328546pjd.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:57:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=M5BcvnzgflJduEgKE2tu+RY63yJ/WtPEtTDr/c+TeE0=;
-        b=ZW5wj3+U+c90HGP5GaNhKJ2gsEvMj6pxKQrrnVzHqrsKDGbvbXy+wgKbBTxWeo0g/f
-         FZjdRxhnICm0GU8xIzBOydRTChXCzMLS9/aGuruWEJ/Ik0BUM+3llZlxz3xcwWenwfSo
-         ObeznzDrdtzgT/B1NaSsHrLyytHz9VkfwVEio=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uEflp91SYEJEoNcnlfy5sa1fP5kmkuZCXVCSskOFlC0=;
+        b=ef0SziCCt1lkNSKK0R2jZx4Sw8hjm9L2wzdjpzq4IQaPH36hpLM5s0vnieW9z5ZpB9
+         da9hsXQ/zJ0+Fp/SUDT4O+0P2hwa5WfyUJz95cvFRn0X7CNpS0ru+U1zbSTNFaCyKYw+
+         98AxW3+SW3nz/e9ES33250BC6DW22qwOxZ2ou8zEPkuMTH3hPysZT+q0vrsdysHw9nG0
+         4Sn/BUxxHz1siIU8eDu3mPCJ7/RQ+wzC0kcr9xUnrbMwHg/HcmacvZ324eV9+u1s3ctN
+         mzYH9d56EYPctpqCa2ZmNJe7KimcbBfmKMrQ9rtT6WFM6U+rKMCXHJHgfzIbdu7IaFFh
+         VlGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M5BcvnzgflJduEgKE2tu+RY63yJ/WtPEtTDr/c+TeE0=;
-        b=iumzDpuSufLmHbyLQLI6Az9n3oYpIoaVomehxgZwIDQYbUMW82QU4UIZbElr636Hxb
-         ImI5m3HA2capkn1k7Mir1DrlckBNMN1ifumAqLeTdCsZt96UjoGBJf3HNQiyfHO+7KJE
-         pZpUIDYk8FnJeYit9Zh+J49tMmE6Jaipkcmxxt/r+JVG1SYh/frfq016ptEW8Xn2+kIT
-         8ENEXuSnQWba747Z6dJhNoAzV+9CPgXPsqDRfQ4Q2DJUHEYEF5MkUEfnCWTQZK974K9k
-         QJHR6358GsyBkqFxVT1q2aN7/WxUNItNDtgld4RXO+Cc+zkg6lFStXKz6tU0qsad1wCt
-         fVTg==
-X-Gm-Message-State: AOAM530QRtAcle+1qsTKXrdpmj5gvleDVnhjTxalMos4A+6zCbSLXVfG
-        eedo0mVkw1t3+pJoYP8j9BNGEQ==
-X-Google-Smtp-Source: ABdhPJwojGycUje7NlW8TGiVdxup+AVmyN/RuH9EDoAAE6grjW/n8pvUKxk7ZASjnBeUQ9Lu6ewI0Q==
-X-Received: by 2002:a92:4101:: with SMTP id o1mr12217020ila.82.1610733444929;
-        Fri, 15 Jan 2021 09:57:24 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id i4sm1610172ios.54.2021.01.15.09.57.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Jan 2021 09:57:24 -0800 (PST)
-Subject: Re: [PATCH -next] usb: usbip: Use DEFINE_SPINLOCK() for spinlock
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>,
-        valentina.manea.m@gmail.com, shuah@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201223141431.835-1-zhengyongjun3@huawei.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <de699446-4f00-ce6a-4dfb-1f95669325f1@linuxfoundation.org>
-Date:   Fri, 15 Jan 2021 10:57:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uEflp91SYEJEoNcnlfy5sa1fP5kmkuZCXVCSskOFlC0=;
+        b=bl+2DRU8edg3HtVMFE6QVYJdpYDZjCDueP83oo71kRWKH9Q3iDJKfwgFGaVYQbIheo
+         QdaRqhnU5XGXW2jpwNfF4ReqYYltC+6DxLRORZsM+cV/z2I6KvjjxjW6EL3mDbc7gMlO
+         UOqbfRZKwRj1yiTn4e3x+n3rf/eXkE8pep7kbRD2eMpxeqMVYnh8RBXZ35U0iV4MBnRm
+         lwmL/gbx6DA1HPS0cXodMQ+S5CoNuXruGCqH5XpFWt4D6Urtts+Vho+HbDFqqUJNhRPU
+         F3vU3dDyEMR70pOdh7HNuLbkz5ToktWojwP9P8WafzxUNBP5lyvABURfHxjYdOnn6CVV
+         cXGQ==
+X-Gm-Message-State: AOAM531d0EBm854yGmnnG69jdDwVrZd/p5KUMw6ItGH2ShytK2883BCl
+        p77ySshoIJN0bbpZHtBaJzRSRg==
+X-Google-Smtp-Source: ABdhPJx5AHJi8xLqblPt4mK/T3MI+zTtlRSpgv7rxkVTIYJlnurw/CfsDVR0EzhgrGajzNlyYO8ZBg==
+X-Received: by 2002:a17:90a:9918:: with SMTP id b24mr11761239pjp.108.1610733468909;
+        Fri, 15 Jan 2021 09:57:48 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id f67sm8773844pfg.159.2021.01.15.09.57.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 09:57:48 -0800 (PST)
+Date:   Fri, 15 Jan 2021 09:57:41 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Xu, Like" <like.xu@intel.com>
+Cc:     Andi Kleen <andi@firstfloor.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/17] KVM: x86/pmu: Add support to enable Guest PEBS
+ via DS
+Message-ID: <YAHXlWmeR9p6JZm2@google.com>
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <YACXQwBPI8OFV1T+@google.com>
+ <f8a8e4e2-e0b1-8e68-81d4-044fb62045d5@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201223141431.835-1-zhengyongjun3@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f8a8e4e2-e0b1-8e68-81d4-044fb62045d5@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/23/20 7:14 AM, Zheng Yongjun wrote:
-> spinlock can be initialized automatically with DEFINE_SPINLOCK()
-> rather than explicitly calling spin_lock_init().
+On Fri, Jan 15, 2021, Xu, Like wrote:
+> Hi Sean,
 > 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->   drivers/usb/usbip/stub_main.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
+> Thanks for your comments !
 > 
-> diff --git a/drivers/usb/usbip/stub_main.c b/drivers/usb/usbip/stub_main.c
-> index c1c0bbc9f8b1..77a5b3f8736a 100644
-> --- a/drivers/usb/usbip/stub_main.c
-> +++ b/drivers/usb/usbip/stub_main.c
-> @@ -23,7 +23,7 @@ struct kmem_cache *stub_priv_cache;
->    */
->   #define MAX_BUSID 16
->   static struct bus_id_priv busid_table[MAX_BUSID];
-> -static spinlock_t busid_table_lock;
-> +static DEFINE_SPINLOCK(busid_table_lock);
->   
->   static void init_busid_table(void)
->   {
-> @@ -35,8 +35,6 @@ static void init_busid_table(void)
->   	 */
->   	memset(busid_table, 0, sizeof(busid_table));
->   
-> -	spin_lock_init(&busid_table_lock);
-> -
->   	for (i = 0; i < MAX_BUSID; i++)
->   		spin_lock_init(&busid_table[i].busid_lock);
->   }
+> On 2021/1/15 3:10, Sean Christopherson wrote:
+> > On Mon, Jan 04, 2021, Like Xu wrote:
+> > > 2) Slow path (part 3, patch 0012-0017)
+> > > 
+> > > This is when the host assigned physical PMC has a different index
+> > > from the virtual PMC (e.g. using physical PMC1 to emulate virtual PMC0)
+> > > In this case, KVM needs to rewrite the PEBS records to change the
+> > > applicable counter indexes to the virtual PMC indexes, which would
+> > > otherwise contain the physical counter index written by PEBS facility,
+> > > and switch the counter reset values to the offset corresponding to
+> > > the physical counter indexes in the DS data structure.
+> > > 
+> > > Large PEBS needs to be disabled by KVM rewriting the
+> > > pebs_interrupt_threshold filed in DS to only one record in
+> > > the slow path.  This is because a guest may implicitly drain PEBS buffer,
+> > > e.g., context switch. KVM doesn't get a chance to update the PEBS buffer.
+> > Are the PEBS record write, PEBS index update, and subsequent PMI atomic with
+> > respect to instruction execution?  If not, doesn't this approach still leave a
+> > window where the guest could see the wrong counter?
 > 
+> First, KVM would limit/rewrite guest DS pebs_interrupt_threshold to one
+> record before vm-entry,
+> (see patch [PATCH v3 14/17] KVM: vmx/pmu: Limit pebs_interrupt_threshold in
+> the guest DS area)
+> which means once a PEBS record is written into the guest pebs buffer,
+> a PEBS PMI will be generated immediately and thus vm-exit.
 
+I'm asking about ucode/hardare.  Is the "guest pebs buffer write -> PEBS PMI"
+guaranteed to be atomic?
 
-Sorry for the delay on this.
-
-Looks good to me.
-
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+In practice, under what scenarios will guest counters get cross-mapped?  And,
+how does this support affect guest accuracy?  I.e. how bad do things get for the
+guest if we simply disable guest counters if they can't have a 1:1 association
+with their physical counter?
