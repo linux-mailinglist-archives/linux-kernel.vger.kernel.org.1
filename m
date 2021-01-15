@@ -2,102 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608302F71AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 05:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8712F71B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 05:48:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731343AbhAOEpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 23:45:18 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:36109 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726032AbhAOEpR (ORCPT
+        id S1731452AbhAOEs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 23:48:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35953 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728445AbhAOEs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 23:45:17 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7CF975C00AE;
-        Thu, 14 Jan 2021 23:44:31 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 14 Jan 2021 23:44:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=who-t.net; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=HddAvGpngy7gMAMoANW+9cHBGjv
-        IshbqLk0/grNgfO4=; b=f1ayHlkTp6zhZkh/s/h43Koq7wd4JoK3+IVZAigx4Ae
-        G3x4XHAb/4uiqz6Kn9DHJkFM74pARaqlMBS/z0bDTqGWHp2mQgbpldq2jEt8jr54
-        zrHhr0eUFmBbE8sk9++0hgk6MDJCg+QET0hXYjKsBbswJInrClrHQwDKv0h7eroz
-        8N5Gg/92K1blTFv1qO4lrzRqHK9PVQ4Yn+apQ0vmVofu9nRrkmaBnHX7uYGyQKyn
-        sXe8YK4Nx77+05Es06e3j+jqDw+Bi6aWDUH/e7jejjA9ePX2l/zhBWDVYnfGXFxx
-        AXv6TQqey7uKEq1wqXIONQo1XvQ3p7cnDYsvNlkwg8w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=HddAvG
-        pngy7gMAMoANW+9cHBGjvIshbqLk0/grNgfO4=; b=ljoezSl2KpGUor+YfKT9IP
-        X5BcxRVtqxXZGG+prpKLlHIY/X6Jt9TyBx8rsz+UBg8BexEeCHsAMMLs0+pmbUsZ
-        1pMrbGKFWakn9MBuRSguNQVQEAmXyks/5LhPS1tmLgYmWLdGGHXwIguK1y5zveH7
-        uCz7AwHFyQ2eXpVpdSVeZsJV6gJuXkkDbauo8E8BAAuYTZyHE3rQgfy7Op/kg3A/
-        afmUUQgvgbFZmrEy7vZKirM8hbFz+T96tQk8wHUYiw+egLPcjCapdHRIB967RRhD
-        OjsT+RjuA830G/cm5T+OmYEcGCpa2kmj/xOXLB/iDVsQAuiz9Okp4QjgcfDXHFww
-        ==
-X-ME-Sender: <xms:rx0BYBZMPtFobrdHP3sfWHMnLuX_9slhfqN2b9V8kkn0uC0ZSG4CBQ>
-    <xme:rx0BYIZFIJA7o7l7Xt4of5mdJ96vtprc2akOjuKEdrhZJDDSURKnlcL9CvjOTJUQ0
-    xf70_NqsbgSzjavOig>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtddugdejgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheprfgvthgvrhcu
-    jfhuthhtvghrvghruceophgvthgvrhdrhhhuthhtvghrvghrseifhhhoqdhtrdhnvghtqe
-    enucggtffrrghtthgvrhhnpeehhfehfffgheelgeeuudelhefgvdefveekudevjeevjeev
-    vefggefguddufeeuveenucfkphepuddujedrvddtrdejuddrjeefnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepphgvthgvrhdrhhhuthhtvghr
-    vghrseifhhhoqdhtrdhnvght
-X-ME-Proxy: <xmx:rx0BYD9WHJ8bYi1BVyRdd5L3WDQ1OR4ziIh9cgk-eVC3T_SLMFqZCg>
-    <xmx:rx0BYPq-hJ1fHkUKgf6UW29Va5XgY7W9viOYyq-GasFDAcI6yNXoVw>
-    <xmx:rx0BYMqw1WvDKyWwMdqe-w6FqFzQJhLP7pmqr0kI3BCIfDU3am4fvA>
-    <xmx:rx0BYHW6XkoanXZs0xaMB6mkTunYLgjWIpSimcO_T6r71g1jkw5qjw>
-Received: from koala (117-20-71-73.751447.bne.nbn.aussiebb.net [117.20.71.73])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 34ADB1080057;
-        Thu, 14 Jan 2021 23:44:28 -0500 (EST)
-Date:   Fri, 15 Jan 2021 14:44:25 +1000
-From:   Peter Hutterer <peter.hutterer@who-t.net>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        seobrien@chromium.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] HID: hid-input: avoid splitting keyboard, system and
- consumer controls
-Message-ID: <20210115044425.GA1395024@koala>
-References: <X//jjawwbm8FxbQU@google.com>
+        Thu, 14 Jan 2021 23:48:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610686019;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5qlVp+V62hJFOmojeKBtO6bnSDZxjgJebYHvIlsbcQM=;
+        b=B+w76z7Lex0cFEQnQSBvlE5nhM3X4NJTL6P5z1S9MHhVZs4pBJ6dAoGY0CD6+X8766LHNz
+        ajJUoJk6hEALN/Me+X0sQ0h9kyX1sqFeOUCbV/EPN+ZEcHROClAMEyINgRZFBGXbe5IH9f
+        S03kvOhYh3moKlUpOJiCSIXqFJ3ubm0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-438-WfDJ3MOTPVeX0K0c1Yjy4Q-1; Thu, 14 Jan 2021 23:46:55 -0500
+X-MC-Unique: WfDJ3MOTPVeX0K0c1Yjy4Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A6E30802B45;
+        Fri, 15 Jan 2021 04:46:51 +0000 (UTC)
+Received: from [10.72.13.19] (ovpn-13-19.pek2.redhat.com [10.72.13.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A958771D52;
+        Fri, 15 Jan 2021 04:46:29 +0000 (UTC)
+Subject: Re: [RFC PATCH v3 1/2] iommu: Add capability IOMMU_CAP_VIOMMU
+To:     Lu Baolu <baolu.lu@linux.intel.com>, tglx@linutronix.de,
+        ashok.raj@intel.com, kevin.tian@intel.com, dave.jiang@intel.com,
+        megha.dey@intel.com, dwmw2@infradead.org
+Cc:     alex.williamson@redhat.com, bhelgaas@google.com,
+        dan.j.williams@intel.com, will@kernel.org, joro@8bytes.org,
+        dmaengine@vger.kernel.org, eric.auger@redhat.com,
+        jacob.jun.pan@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
+        kwankhede@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org,
+        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
+        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
+        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
+        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
+        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com, leon@kernel.org
+References: <20210114013003.297050-1-baolu.lu@linux.intel.com>
+ <20210114013003.297050-2-baolu.lu@linux.intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <f2a50326-58de-919a-5992-130224c5725a@redhat.com>
+Date:   Fri, 15 Jan 2021 12:46:28 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X//jjawwbm8FxbQU@google.com>
+In-Reply-To: <20210114013003.297050-2-baolu.lu@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 10:24:13PM -0800, Dmitry Torokhov wrote:
-> A typical USB keyboard usually splits its keys into several reports:
-> 
-> - one for the basic alphanumeric keys, modifier keys, F<n> keys, six pack
->   keys and keypad. This report's application is normally listed as
->   GenericDesktop.Keyboard
-> - a GenericDesktop.SystemControl report for the system control keys, such
->   as power and sleep
-> - Consumer.ConsumerControl report for multimedia (forward, rewind,
->   play/pause, mute, etc) and other extended keys.
-> - additional output, vendor specific, and feature reports
-> 
-> Splitting each report into a separate input device is wasteful and even
-> hurts userspace as it makes it harder to determine the true capabilities
-> (set of available keys) of a keyboard, so let's adjust application
-> matching to merge system control and consumer control reports with
-> keyboard report, if one has already been processed.
-> 
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Acked-by: Peter Hutterer <peter.hutterer@who-t.net>
+On 2021/1/14 上午9:30, Lu Baolu wrote:
+> Some vendor IOMMU drivers are able to declare that it is running in a VM
+> context. This is very valuable for the features that only want to be
+> supported on bare metal. Add a capability bit so that it could be used.
+>
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>   drivers/iommu/intel/iommu.c  | 20 ++++++++++++++++++++
+>   drivers/iommu/virtio-iommu.c |  9 +++++++++
+>   include/linux/iommu.h        |  1 +
+>   3 files changed, 30 insertions(+)
+>
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index cb205a04fe4c..8eb022d0e8aa 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -5738,12 +5738,32 @@ static inline bool nested_mode_support(void)
+>   	return ret;
+>   }
+>   
+> +static inline bool caching_mode_enabled(void)
+> +{
+> +	struct dmar_drhd_unit *drhd;
+> +	struct intel_iommu *iommu;
+> +	bool ret = false;
+> +
+> +	rcu_read_lock();
+> +	for_each_active_iommu(iommu, drhd) {
+> +		if (cap_caching_mode(iommu->cap)) {
+> +			ret = true;
+> +			break;
+> +		}
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	return ret;
+> +}
+> +
+>   static bool intel_iommu_capable(enum iommu_cap cap)
+>   {
+>   	if (cap == IOMMU_CAP_CACHE_COHERENCY)
+>   		return domain_update_iommu_snooping(NULL) == 1;
+>   	if (cap == IOMMU_CAP_INTR_REMAP)
+>   		return irq_remapping_enabled == 1;
+> +	if (cap == IOMMU_CAP_VIOMMU)
+> +		return caching_mode_enabled();
 
-I think, let's see if there's any fallout from that :)
 
-Cheers,
-   Peter
+This part I don't understand. Does it mean Intel IOMMU can't be used in 
+VM without caching mode?
+
+Thanks
+
+
+>   
+>   	return false;
+>   }
+> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+> index 2bfdd5734844..719793e103db 100644
+> --- a/drivers/iommu/virtio-iommu.c
+> +++ b/drivers/iommu/virtio-iommu.c
+> @@ -931,7 +931,16 @@ static int viommu_of_xlate(struct device *dev, struct of_phandle_args *args)
+>   	return iommu_fwspec_add_ids(dev, args->args, 1);
+>   }
+>   
+> +static bool viommu_capable(enum iommu_cap cap)
+> +{
+> +	if (cap == IOMMU_CAP_VIOMMU)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+>   static struct iommu_ops viommu_ops = {
+> +	.capable		= viommu_capable,
+>   	.domain_alloc		= viommu_domain_alloc,
+>   	.domain_free		= viommu_domain_free,
+>   	.attach_dev		= viommu_attach_dev,
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index b95a6f8db6ff..1d24be667a03 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -94,6 +94,7 @@ enum iommu_cap {
+>   					   transactions */
+>   	IOMMU_CAP_INTR_REMAP,		/* IOMMU supports interrupt isolation */
+>   	IOMMU_CAP_NOEXEC,		/* IOMMU_NOEXEC flag */
+> +	IOMMU_CAP_VIOMMU,		/* IOMMU can declar running in a VM */
+>   };
+>   
+>   /*
+
