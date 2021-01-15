@@ -2,108 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A692F7625
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAF42F7628
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729581AbhAOKA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 05:00:27 -0500
-Received: from forward103p.mail.yandex.net ([77.88.28.106]:43402 "EHLO
-        forward103p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730699AbhAOKAT (ORCPT
+        id S1731275AbhAOKBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 05:01:30 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:40688 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730285AbhAOKB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 05:00:19 -0500
-Received: from iva7-b2551a6f14a8.qloud-c.yandex.net (iva7-b2551a6f14a8.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:2f9c:0:640:b255:1a6f])
-        by forward103p.mail.yandex.net (Yandex) with ESMTP id 08A5518C0FCB;
-        Fri, 15 Jan 2021 12:59:37 +0300 (MSK)
-Received: from iva3-dd2bb2ff2b5f.qloud-c.yandex.net (iva3-dd2bb2ff2b5f.qloud-c.yandex.net [2a02:6b8:c0c:7611:0:640:dd2b:b2ff])
-        by iva7-b2551a6f14a8.qloud-c.yandex.net (mxback/Yandex) with ESMTP id C4vTl272uK-xaDuFG0R;
-        Fri, 15 Jan 2021 12:59:36 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1610704776;
-        bh=3nwl8ujtSIs9eCC8kSIL1MZLqNVqrBzoldVBFcpqhp0=;
-        h=In-Reply-To:From:Date:References:To:Subject:Message-ID:Cc;
-        b=nVmCPkOAFYrbTW+xC0K4x/0O+6/NgZ2btTTQVzBwuLuM2Uskw/Vlib78QBjHkon+E
-         1d5mx5gP218R+7m5IYf41gc1b7WjW86ozI9hLHLayy6mU7gM/rKCL98xuXz0tfYmwQ
-         eOsGMxjAI3/cVxaFil4nz2TDBCfWxLk35UvaP/zQ=
-Authentication-Results: iva7-b2551a6f14a8.qloud-c.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by iva3-dd2bb2ff2b5f.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id mW8S2PjIqj-xZIi97rg;
-        Fri, 15 Jan 2021 12:59:35 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [RFC PATCH v2 00/13] virtio/vsock: introduce SOCK_SEQPACKET
- support.
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        oxffffaa@gmail.com
-References: <20210115053553.1454517-1-arseny.krasnov@kaspersky.com>
-From:   stsp <stsp2@yandex.ru>
-Message-ID: <2fd6fc75-c534-7f70-c116-50b1c804b594@yandex.ru>
-Date:   Fri, 15 Jan 2021 12:59:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210115053553.1454517-1-arseny.krasnov@kaspersky.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        Fri, 15 Jan 2021 05:01:29 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0ULo6k2d_1610704830;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0ULo6k2d_1610704830)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 15 Jan 2021 18:00:41 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     mst@redhat.com
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] virtio_ring: boolean values to a bool variable
+Date:   Fri, 15 Jan 2021 18:00:25 +0800
+Message-Id: <1610704825-17724-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.01.2021 08:35, Arseny Krasnov пишет:
-> 	This patchset impelements support of SOCK_SEQPACKET for virtio
-> transport.
-> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
-> do it, new packet operation was added: it marks start of record (with
-> record length in header), such packet doesn't carry any data.  To send
-> record, packet with start marker is sent first, then all data is sent
-> as usual 'RW' packets. On receiver's side, length of record is known
-> from packet with start record marker. Now as  packets of one socket
-> are not reordered neither on vsock nor on vhost transport layers, such
-> marker allows to restore original record on receiver's side. If user's
-> buffer is smaller that
+Fix the following coccicheck warnings:
 
-than
+./drivers/virtio/virtio_ring.c:1637:1-29: WARNING: Assignment of
+0/1 to bool variable.
 
+./drivers/virtio/virtio_ring.c:1636:1-30: WARNING: Assignment of
+0/1 to bool variable.
 
->   record length, when
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+---
+ drivers/virtio/virtio_ring.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-then
-
-
->   v1 -> v2:
->   - patches reordered: af_vsock.c changes now before virtio vsock
->   - patches reorganized: more small patches, where +/- are not mixed
-
-If you did this because I asked, then this
-is not what I asked. :)
-You can't just add some static func in a
-separate patch, as it will just produce the
-compilation warning of an unused function.
-I only asked to separate the refactoring from
-the new code. I.e. if you move some code
-block to a separate function, you shouldn't
-split that into 2 patches, one that adds a
-code block and another one that removes it.
-It should be in one patch, so that it is clear
-what was moved, and no new warnings are
-introduced.
-What I asked to separate, is the old code
-moves with the new code additions. Such
-things can definitely go in a separate patches.
-
-NB: just trying to help, as I already played
-with your code a bit. I am neither a
-maintainer nor a contributor here, but
-it would be cool to have the vsock SEQPACKET
-support.
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 71e16b5..5adb361 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -1633,8 +1633,8 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 	vq->packed.vring.device = device;
+ 
+ 	vq->packed.next_avail_idx = 0;
+-	vq->packed.avail_wrap_counter = 1;
+-	vq->packed.used_wrap_counter = 1;
++	vq->packed.avail_wrap_counter = true;
++	vq->packed.used_wrap_counter = true;
+ 	vq->packed.event_flags_shadow = 0;
+ 	vq->packed.avail_used_flags = 1 << VRING_PACKED_DESC_F_AVAIL;
+ 
+-- 
+1.8.3.1
 
