@@ -2,79 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE712F7C72
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF97D2F7C7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732867AbhAONWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:22:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40810 "EHLO mx2.suse.de"
+        id S1732231AbhAONYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:24:45 -0500
+Received: from muru.com ([72.249.23.125]:45008 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732113AbhAONWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:22:41 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 606C5AD18;
-        Fri, 15 Jan 2021 13:22:16 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 14:22:13 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v6 3/5] mm: hugetlb: fix a race between freeing and
- dissolving the page
-Message-ID: <20210115132209.GA10102@linux>
-References: <20210115124942.46403-1-songmuchun@bytedance.com>
- <20210115124942.46403-4-songmuchun@bytedance.com>
+        id S1730819AbhAONYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 08:24:44 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 5197F805C;
+        Fri, 15 Jan 2021 13:24:22 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 15:24:17 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] power: supply: cpcap-charger: Fix power_supply_put
+ on null battery pointer
+Message-ID: <YAGXgWeWvy/0FyqN@atomide.com>
+References: <20210115131524.71339-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115124942.46403-4-songmuchun@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210115131524.71339-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 08:49:40PM +0800, Muchun Song wrote:
-> There is a race condition between __free_huge_page()
-> and dissolve_free_huge_page().
+* Colin King <colin.king@canonical.com> [210115 13:15]:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> CPU0:                         CPU1:
+> Currently if the pointer battery is null there is a null pointer
+> dereference on the call to power_supply_put.  Fix this by only
+> performing the put if battery is not null.
 > 
-> // page_count(page) == 1
-> put_page(page)
->   __free_huge_page(page)
->                               dissolve_free_huge_page(page)
->                                 spin_lock(&hugetlb_lock)
->                                 // PageHuge(page) && !page_count(page)
->                                 update_and_free_page(page)
->                                 // page is freed to the buddy
->                                 spin_unlock(&hugetlb_lock)
->     spin_lock(&hugetlb_lock)
->     clear_page_huge_active(page)
->     enqueue_huge_page(page)
->     // It is wrong, the page is already freed
->     spin_unlock(&hugetlb_lock)
-> 
-> The race windows is between put_page() and dissolve_free_huge_page().
-> 
-> We should make sure that the page is already on the free list
-> when it is dissolved.
-> 
-> As a result __free_huge_page would corrupt page(s) already in the buddy
-> allocator.
-> 
-> Fixes: c8721bbbdd36 ("mm: memory-hotplug: enable memory hotplug to handle hugepage")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: stable@vger.kernel.org
+> Addresses-Coverity: ("Dereference after null check")
+> Fixes: 4bff91bb3231 ("power: supply: cpcap-charger: Fix missing power_supply_put()")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-LGTM,
+Oopsie, thanks for fixing it:
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Acked-by: Tony Lindgren <tony@atomide.com>
 
 
--- 
-Oscar Salvador
-SUSE L3
+>  drivers/power/supply/cpcap-charger.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/power/supply/cpcap-charger.c b/drivers/power/supply/cpcap-charger.c
+> index 823d666f09e0..641dcad1133f 100644
+> --- a/drivers/power/supply/cpcap-charger.c
+> +++ b/drivers/power/supply/cpcap-charger.c
+> @@ -300,8 +300,9 @@ cpcap_charger_get_bat_const_charge_voltage(struct cpcap_charger_ddata *ddata)
+>  				&prop);
+>  		if (!error)
+>  			voltage = prop.intval;
+> +
+> +		power_supply_put(battery);
+>  	}
+> -	power_supply_put(battery);
+>  
+>  	return voltage;
+>  }
+> -- 
+> 2.29.2
+> 
