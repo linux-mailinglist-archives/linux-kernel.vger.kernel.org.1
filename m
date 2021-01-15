@@ -2,95 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABCC2F8355
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:11:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 528642F8356
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729774AbhAOSJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:09:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55482 "EHLO
+        id S1732290AbhAOSKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:10:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbhAOSJu (ORCPT
+        with ESMTP id S1725818AbhAOSKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:09:50 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8956BC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:09:10 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id b8so5116638plx.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:09:10 -0800 (PST)
+        Fri, 15 Jan 2021 13:10:42 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98EEC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:10:01 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id 15so6506921pgx.7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:10:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GeuXFTMHH/dqlLS30TqVtIZ+iZRqb8fjBFP+mG2mN+E=;
-        b=Xpx51qo9Kemp9C08NnM+/vvKtmkeN700Xd2RXiEx9imbbsKJrIovSuD9Eq+cLLBRSG
-         1myDAIHn1uYpi5wMOauhn1wJxnNKW88XyT4P3oeRvlHrKKAO6WX/DdOWCy9nxbzUEpNK
-         VR9FIK54FhxjPif+hcQY5QqwWE1FuJCf1EujuCzF0VTmu1Muyf8aEdMya+psKYcEP2FC
-         bSBoMaZoyHxMWhdIs1mQ4NUFMYXG3alZvxPtMkXayqpan5YI7VZPLrVsZCuYpn+ZXvOm
-         776ncNs78b2pCIQnWyyj6XGlnZk9LOHuWXxqr02wc06nGO6A7Xo3QX8O9ShXN4PIhTlf
-         LBRA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=A8HU57lnNGXivwjmV5hD7UIXYBjhrtMp5tMlgZSsho0=;
+        b=YgjCZxlUX8zIn6UUzJNeBbd/T6EBt4wgcjHLo6RzW50hLGTjG6rqz5Uq0SOCDcWT96
+         Co6Z1YZE5sY8El66WZy7CsA45bBR31DpKk5qD9dDCyEMvaCbZWhXIZkHMqYGA/wcVdTm
+         LwvWdURhcQYsNLp2TvpmD7fcKV+sMH1s/r0h3iI43hcSSIJDPQM+yie14SpuDeWUv1v+
+         Q2sJK5/rfaEiyEgI0XQ4Lb13GCGT3VY0oxSZMmqN/vgZXot9ySDK2KT+Y8Nsh/ERd5JX
+         g4QLmw2/TecEKSHYhFR3Ui/gpX+R1/stZlzDf52p46JLvyUuSkEM//RwrIxPq364c6Jo
+         fFQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GeuXFTMHH/dqlLS30TqVtIZ+iZRqb8fjBFP+mG2mN+E=;
-        b=a6f/6+Tja9XEnZfyHhvxPxIHKQBcP80MlmMxUuSVTaMU7emgTYwLCwXeyTyGgNDi7h
-         5u4YgBhhiHgUuZ1UwYQWsdg+97t+lwybke2nMBwMxYJwjtZ0cHO9ShQzkCqkyv+xUWq2
-         AajAFsc2Zjl19N0ul+78KUZVIfTL/oFzlbmZxpWT7+7wUUz7xQlQBfqxD1/pG1Lcg32f
-         jCKXSf60Fzp6/tlphw/bnl24eTCmLUXxvS9e/CkCnbjFvl+z8O7FSUcODPFKz98ETfRC
-         IPc7+njJ3JEXOBid/MHIGCXzql66jSavGUUiL8IJuk/XC38Gnvq3EVG2KtmLb2oaFnFr
-         UjTg==
-X-Gm-Message-State: AOAM531TjgzIIW9pWeWKPqH3QPFmEjonjJ/WVjit3Cq44GhD3cpRInoX
-        0E4vz9DItH8G95Rlg8ygT3ScTI/e/MsULwij3Ajo5A==
-X-Google-Smtp-Source: ABdhPJzNbllQto9hwL/hLOtREAy9hdEgCBOaHkZMrbkIngkRxP3KA/e7z9cQRQcPdWhR3yD4nVi9m8qtj4aod37PQo8=
-X-Received: by 2002:a17:902:ff06:b029:de:362c:bd0b with SMTP id
- f6-20020a170902ff06b02900de362cbd0bmr13048327plj.13.1610734149962; Fri, 15
- Jan 2021 10:09:09 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=A8HU57lnNGXivwjmV5hD7UIXYBjhrtMp5tMlgZSsho0=;
+        b=M+oKNrcKU98yh2BxRdiHHoMimHuULZaB/PMViTV6WAV19xnetj+lclaW8CV4Lb/xif
+         c6BGYKFfnBlHZx6nGJ6NNmy03eapCrAwXV5JrhM4leea0gX8+UrwUoo43KqjYMozLbbF
+         KQgS6DFcUqGyYTYPjyiqrtoLSqqDZmF5bfDBnlcxlRTXrsiW1ffRWDgcbId0CmqGPAWS
+         /ApPtR9hxSOy2U3NbeZXGLogCtJriSvZYiF0SQ0T2zif6D8WDBeMg6r2/HWpGo5WMehG
+         ExX9Sn9DyXeYQsQat9tXFzZZfZPY4P0irhOs1oWBVvoFDpkaFKALNADP1ZX4b1iDkxud
+         iPQw==
+X-Gm-Message-State: AOAM532eKwwvPc3kad7D8IPyyw+rN3wlqCSmk59PDpQGuTD2XRsOqS+/
+        a7zG1CASgXM6Q6TJZrlRtPUvDA==
+X-Google-Smtp-Source: ABdhPJwPv/lvnonyIREFYeM8j+JUI2wrlGzj8IloDhV+QBYpX2nG/g0QM/KmYtg+wSyPkEnfC4YvNg==
+X-Received: by 2002:a62:d14f:0:b029:1ae:72f9:254c with SMTP id t15-20020a62d14f0000b02901ae72f9254cmr13740607pfl.38.1610734201153;
+        Fri, 15 Jan 2021 10:10:01 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id x23sm10738953pge.47.2021.01.15.10.09.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 10:10:00 -0800 (PST)
+Date:   Fri, 15 Jan 2021 10:09:53 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH 0/3] x86/KVM/VMX: Introduce and use try_cmpxchg64()
+Message-ID: <YAHaceikAK+xYxUg@google.com>
+References: <20201215182805.53913-1-ubizjak@gmail.com>
 MIME-Version: 1.0
-References: <cover.1610731872.git.andreyknvl@google.com> <ff30b0afe6005fd046f9ac72bfb71822aedccd89.1610731872.git.andreyknvl@google.com>
- <20210115175922.GI16707@gaia>
-In-Reply-To: <20210115175922.GI16707@gaia>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 15 Jan 2021 19:08:59 +0100
-Message-ID: <CAAeHK+xGDcd1DQVGU-WX+5aM6+0dO08xp20YBLPUJj0i3RWGKQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] kasan, arm64: fix pointer tags in KASAN reports
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215182805.53913-1-ubizjak@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 6:59 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Fri, Jan 15, 2021 at 06:41:53PM +0100, Andrey Konovalov wrote:
-> > As of the "arm64: expose FAR_EL1 tag bits in siginfo" patch, the address
-> > that is passed to report_tag_fault has pointer tags in the format of 0x0X,
-> > while KASAN uses 0xFX format (note the difference in the top 4 bits).
-> >
-> > Fix up the pointer tag for kernel pointers in do_tag_check_fault by
-> > setting them to the same value as bit 55. Explicitly use __untagged_addr()
-> > instead of untagged_addr(), as the latter doesn't affect TTBR1 addresses.
-> >
-> > Link: https://linux-review.googlesource.com/id/I9ced973866036d8679e8f4ae325de547eb969649
->
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
->
-> Unless there are other comments, I'll queue this for -rc5 through the
-> arm64 tree (I already finalised the arm64 for-next/fixes branch for this
-> week).
+On Tue, Dec 15, 2020, Uros Bizjak wrote:
+> This patch series introduces try_cmpxchg64() atomic locking function.
+> 
+> try_cmpxchg64() provides the same interface for 64 bit and 32 bit targets,
+> emits CMPXCHGQ for 64 bit targets and CMPXCHG8B for 32 bit targets,
+> and provides appropriate fallbacks when CMPXCHG8B is unavailable.
+> 
+> try_cmpxchg64() reuses flags from CMPXCHGQ/CMPXCHG8B instructions and
+> avoids unneeded CMP for 64 bit targets or XOR/XOR/OR sequence for
+> 32 bit targets.
+> 
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Cc: Wanpeng Li <wanpengli@tencent.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> 
+> Uros Bizjak (3):
+>   asm-generic/atomic: Add try_cmpxchg64() instrumentation
+>   locking/atomic/x86: Introduce arch_try_cmpxchg64()
+>   KVM/VMX: Use try_cmpxchg64() in posted_intr.c
 
-Sounds good, thank you!
+For anyone else trying to apply this, it depends on v5.11-rc1 (commit
+29f006fdefe6, "asm-generic/atomic: Add try_cmpxchg() fallbacks"), which hasn't
+yet been merged into Paolo's tree.
+
+>  arch/x86/include/asm/cmpxchg_32.h         | 62 +++++++++++++++++++----
+>  arch/x86/include/asm/cmpxchg_64.h         |  6 +++
+>  arch/x86/kvm/vmx/posted_intr.c            |  9 ++--
+>  include/asm-generic/atomic-instrumented.h | 46 ++++++++++++++++-
+>  scripts/atomic/gen-atomic-instrumented.sh |  2 +-
+>  5 files changed, 108 insertions(+), 17 deletions(-)
+> 
+> -- 
+> 2.26.2
+> 
