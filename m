@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBFE2F7058
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E34622F705A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:09:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731868AbhAOCFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 21:05:07 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11534 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731857AbhAOCFG (ORCPT
+        id S1731871AbhAOCJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 21:09:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728497AbhAOCJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 21:05:06 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DH4G04rtLzMKKS;
-        Fri, 15 Jan 2021 10:03:04 +0800 (CST)
-Received: from [10.174.176.197] (10.174.176.197) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 15 Jan 2021 10:04:19 +0800
-Subject: Re: [PATCH] mm/hugetlb: avoid unnecessary hugetlb_acct_memory() call
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210114113140.23069-1-linmiaohe@huawei.com>
- <853d6aa4-b84c-7ac2-00d4-402893fcf6b3@redhat.com>
- <b7587d72-fb5b-4e0f-4fa0-d63e035e521c@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <9841241e-eb8f-9b49-8d2d-d84effda8ba4@huawei.com>
-Date:   Fri, 15 Jan 2021 10:04:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <b7587d72-fb5b-4e0f-4fa0-d63e035e521c@oracle.com>
+        Thu, 14 Jan 2021 21:09:16 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4260DC0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:08:36 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id u4so4306217pjn.4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:08:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=s4glimfX6ZrQ7lXIX7N60ewBb6BcNo8mLwcaocWfkJs=;
+        b=dY9OunBvsaqpupDqw3wIfJ59xluWzpOXkKsWrHiV1VSh7kJngUXFqL48GWAURzSM2+
+         A39t0pz/abgIGYobx75srbeUK1CwzdLdlaHYFRlD5WzvWdz0GKAKUUXi6Cgojm5o3txs
+         oJ51aXxaKp7Dg03GutCJzeQFtpXQHSvl/m9sw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=s4glimfX6ZrQ7lXIX7N60ewBb6BcNo8mLwcaocWfkJs=;
+        b=ftqJZinnUDgfEoWSek1reORQDefyD8VZW7pz34LvvO+KcjxzJJnmpoii4rZsme/RSK
+         82PaAlx3q8v6Vd8UJR0ElYrWt9GQnOpFo5caTVAp9JYxvo6zJEElrZEwhlPeTwyF3T/D
+         KGTArPpKNqF72rScrlwVghEJgJtggVopP0UYOIBqjI67KhOItH63pUC0meNUJjH5VtwW
+         KwVL8PNc7wcJxhXrd8ys649kv3URAr8B0Ogp/3Kxhlxig0neVGPO24vR1/5SuL2+cfQW
+         vMJgsSDpR8e6LPp75C9NSW0sc2mK4LknSG6/UJTehX+XuK4qU7IiiKP5zI59u9F0d+8k
+         sPXQ==
+X-Gm-Message-State: AOAM530YHWya3FVekmd4eETpD4mo+3gSCTuBhLeyku7SayEaSo1BcNTN
+        /LW0oKnTO8jWZZA+XYSpyZy8xA==
+X-Google-Smtp-Source: ABdhPJy310EDfrLfGpIKbZ8t+e/T4xlaUFlgpdfagBPjUnLp0m+FQ7SHjGS9SyEFYn6hVflloBwVeQ==
+X-Received: by 2002:a17:90a:6fe4:: with SMTP id e91mr6532625pjk.39.1610676515759;
+        Thu, 14 Jan 2021 18:08:35 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id o32sm7204075pgm.10.2021.01.14.18.08.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 18:08:34 -0800 (PST)
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.197]
-X-CFilter-Loop: Reflected
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210114154004.v6.4.I7cf3019783720feb57b958c95c2b684940264cd1@changeid>
+References: <20210114154004.v6.1.I3ad184e3423d8e479bc3e86f5b393abb1704a1d1@changeid> <20210114154004.v6.4.I7cf3019783720feb57b958c95c2b684940264cd1@changeid>
+Subject: Re: [PATCH v6 4/4] pinctrl: qcom: Don't clear pending interrupts when enabling
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, Maulik Shah <mkshah@codeaurora.org>,
+        linux-gpio@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+To:     Douglas Anderson <dianders@chromium.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Date:   Thu, 14 Jan 2021 18:08:33 -0800
+Message-ID: <161067651323.3661239.14709087785393568909@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
+Quoting Douglas Anderson (2021-01-14 15:40:27)
+> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pi=
+nctrl-msm.c
+> index 192ed31eabf4..712a693425fc 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+> @@ -1097,16 +1128,11 @@ static int msm_gpio_irq_reqres(struct irq_data *d)
+>         }
+> =20
+>         /*
+> -        * Clear the interrupt that may be pending before we enable
+> -        * the line.
+> -        * This is especially a problem with the GPIOs routed to the
+> -        * PDC. These GPIOs are direct-connect interrupts to the GIC.
+> -        * Disabling the interrupt line at the PDC does not prevent
+> -        * the interrupt from being latched at the GIC. The state at
+> -        * GIC needs to be cleared before enabling.
+> +        * The disable / clear-enable workaround we do in msm_pinmux_set_=
+mux()
+> +        * only works if disable is not lazy since we only clear any bogus
+> +        # interrupt in hardware. Explicitly mark the interrupt as UNLAZY.
 
-On 2021/1/15 3:16, Mike Kravetz wrote:
-> On 1/14/21 4:32 AM, David Hildenbrand wrote:
->> On 14.01.21 12:31, Miaohe Lin wrote:
->>> When gbl_reserve is 0, hugetlb_acct_memory() will do nothing except holding
->>> and releasing hugetlb_lock.
->>
->> So, what's the deal then? Adding more code?
->>
->> If this is a performance improvement, we should spell it out. Otherwise
->> I don't see a real benefit of this patch.
->>
-> 
-> Thanks for finding/noticing this.
-> 
-> As David points out, the commit message should state that this is a
-> performance improvement.  Mention that such a change avoids an unnecessary
-> hugetlb_lock lock/unlock cycle.  You can also mention that this unnecessary
-> lock cycle is happening on 'most' hugetlb munmap operations.
-> 
+Ah! What is # doing there?
 
-My bad. I should spell this out explicitly. Many thanks for both of you.
-
->>>
->>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>> ---
->>>  mm/hugetlb.c | 3 ++-
->>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->>> index 737b2dce19e6..fe2da9ad6233 100644
->>> --- a/mm/hugetlb.c
->>> +++ b/mm/hugetlb.c
->>> @@ -5241,7 +5241,8 @@ long hugetlb_unreserve_pages(struct inode *inode, long start, long end,
->>>  	 * reservations to be released may be adjusted.
->>>  	 */
->>>  	gbl_reserve = hugepage_subpool_put_pages(spool, (chg - freed));
->>> -	hugetlb_acct_memory(h, -gbl_reserve);
->>> +	if (gbl_reserve)
->>> +		hugetlb_acct_memory(h, -gbl_reserve);
-> 
-> It is true that gbl_reserve is likely to be 0 in this code path.  However,
-> there are other code paths where hugetlb_acct_memory is called with a delta
-> value of 0 as well.  I would rather see a simple check at the beginning of
-> hugetlb_acct_memory like.
-> 
-> 	if (!delta)
-> 		return 0;
-> 
-
-Sounds good. Will do it in v2. Many thanks again.
+>          */
+> -       if (d->parent_data && test_bit(d->hwirq, pctrl->skip_wake_irqs))
+> -               irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, 0);
+> +       irq_set_status_flags(d->irq, IRQ_DISABLE_UNLAZY);
+>
