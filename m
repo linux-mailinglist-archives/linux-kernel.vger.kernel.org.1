@@ -2,242 +2,515 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271BC2F81FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 172D02F8201
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728844AbhAORSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:18:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbhAORSY (ORCPT
+        id S1729278AbhAORS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:18:58 -0500
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:44761 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728537AbhAORS6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:18:24 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010F7C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:17:44 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id c14so6543462qtn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:17:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/DHaZOpAOYW+CVAQpgGqLKRGRisryfn2+7uDhop5wiY=;
-        b=nWG6nkLP2W832dXmwscLjoKUdOBGPYCgnSpWhfC8a3bWNfA3MO+kMOxC9x46VDUdHT
-         +nYmt4sigwb0D1GXaDdtv5qWHeP+3Zxp9uhS5/+h2U7wkJKnWwbij7Cr8oysLba9DWDc
-         UOcARMtGLoPIJlC4Se89RRNeP3lshYhbPNE983NFiOk7WtB817qJHroXPorYOZYR59Jt
-         eV3WIM0xQkTXtushzJfbDQorIfZr3F3u7NU213oZa8qtYoWpizVyDiKGBJSpGj4UAtjo
-         eE0B17ufL0T2FIVTRNXtJsQyjjT5Yf6x46HcWsJHO04glW3MhS5RhJSQHS5cjey4yg8v
-         2hMw==
+        Fri, 15 Jan 2021 12:18:58 -0500
+Received: by mail-wr1-f45.google.com with SMTP id w5so10017284wrm.11;
+        Fri, 15 Jan 2021 09:18:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/DHaZOpAOYW+CVAQpgGqLKRGRisryfn2+7uDhop5wiY=;
-        b=cszz2Qat9LQx++/ONAFz40+yLQAcdXblc4kaNiTX1Y9eeG2JJF1PXkRLexqVKwLrHT
-         p0/weHQSNMi/lDHQmZwtMXulsPRTobiLWLX5zf9ae0AnhLXdVTyUAhh9h0M9BrA0w8dU
-         l9/KrdcH/m+kHx4/HZIJJHTcGEGbcJOVoiSMtPVJaT/jdaWW3kF+rzlb5rMUzVHfC7hg
-         0f8Cb/vaYir4Jo8xN/K56vJeEOZoebgM8m7c+THSeuZ6agdvwKLZqrlcbEnvvkJxwU/B
-         ZG1Hd077Fp0i8CsF4L7DLhsntHnfMh+kVikS4iGjmjTuyhqZVpS9xKJqcWfEVwclGC1f
-         cvkg==
-X-Gm-Message-State: AOAM531Wmhl6OlbjpS61vA8QLoPoFdyi9ZWIvknhrfq+p8HKGqr29kic
-        B83n7nictN9JIV9IuZxoQ1a+rYLOEGeRzlA/49dkfQ==
-X-Google-Smtp-Source: ABdhPJwrhbcCaDD/baTLOprNNrD/xSRJFUJeBmlRgVauzzrolfvDAlDbLX+jx+zbI9U2zXUvVlreppV8EWfQnIdOpN8=
-X-Received: by 2002:ac8:7512:: with SMTP id u18mr12796120qtq.300.1610731062778;
- Fri, 15 Jan 2021 09:17:42 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XT45Vq3RKUCpWrhvNqP5nEW9Yg/Fw3wWYnWKTgouWcU=;
+        b=omyAgpxUz5Hp62nAkIbAJXB+PVgEU3AjJm8uYXVEGwthh86N4LDmQIl/qpjygtzXJT
+         G6UObAzc+L6qX6yDXrrYmyhcwzMWrm2wdarwKgfwj7zORPiqeODy7wcsoXx+NsMuXHmm
+         QXbBCYNyHbIXkPP0XeRL3k+qlbhpQXsCa8QGwfD4WfzgHb/owoa4/0upuvAEpblI+pTA
+         xEr22E+F0gHgIBeeb/Dsxxi+yfLo2Qqq8dfseo7tVNHsqfK8ct8zVQMsAwIHCMkIhdbV
+         xIcjIXQ6yXuEgRz0mwGrg/X5iJ+curcgjLCfUYHhlIzDw5qkcJXzs9W57Xm/F6RxiD9U
+         9HiA==
+X-Gm-Message-State: AOAM532Yu34++NyGUe7Un4CT/GnRJ3jFGKInifZPz/PoHKHYkoMwOI/E
+        Mea0rlzaUiqJMhZP1gip36Y=
+X-Google-Smtp-Source: ABdhPJzJpe7McJnoBVrsj169V3+NWbPAUA1XrcEw/w7uT1zfNDtH7HJ3FIcQISFUixLWTKvSTZw5Lg==
+X-Received: by 2002:a5d:4dc6:: with SMTP id f6mr14450469wru.336.1610731095071;
+        Fri, 15 Jan 2021 09:18:15 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id d7sm5323515wmb.47.2021.01.15.09.18.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 09:18:13 -0800 (PST)
+Date:   Fri, 15 Jan 2021 18:18:12 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 2/3] arm64: dts: imx: Add i.mx8mm nitrogen8mm basic
+ dts support
+Message-ID: <20210115171812.GB45379@kozik-lap>
+References: <20210113173855.1509417-1-adrien.grassein@gmail.com>
+ <20210113173855.1509417-3-adrien.grassein@gmail.com>
 MIME-Version: 1.0
-References: <20210115130336.2520663-1-glider@google.com> <20210115130336.2520663-3-glider@google.com>
- <YAGdqgjLd2XHAjjm@kroah.com>
-In-Reply-To: <YAGdqgjLd2XHAjjm@kroah.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 15 Jan 2021 18:17:30 +0100
-Message-ID: <CAG_fn=WwMzCNyDMd7zARr+3fNp-eKReo1f7R4KvpQXkPpD2_7g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] lib: add error_report_notify to collect debugging
- tools' reports
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Marco Elver <elver@google.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210113173855.1509417-3-adrien.grassein@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 2:50 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> Minor comments, if in the future, you really do want to mess around in sysfs:
->
-Thanks! Guess most of these comments apply even if I choose another FS
-to mess around with.
+On Wed, Jan 13, 2021 at 06:38:54PM +0100, Adrien Grassein wrote:
+> Tested with a basic Build Root configuration booting from sdcard.
+> 
+> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+> ---
+>  arch/arm64/boot/dts/freescale/Makefile        |   1 +
+>  .../dts/freescale/imx8mm-nitrogen8mm_rev2.dts | 417 ++++++++++++++++++
+>  2 files changed, 418 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-nitrogen8mm_rev2.dts
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+> index 901d80086b47..b2eb7a5e4db3 100644
+> --- a/arch/arm64/boot/dts/freescale/Makefile
+> +++ b/arch/arm64/boot/dts/freescale/Makefile
+> @@ -45,6 +45,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mq-librem5-devkit.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mq-librem5-r2.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mq-librem5-r3.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mq-nitrogen.dtb
+> +dtb-$(CONFIG_ARCH_MXC) += imx8mm-nitrogen8mm_rev2.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mq-phanbell.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mq-pico-pi.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8mq-thor96.dtb
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-nitrogen8mm_rev2.dts b/arch/arm64/boot/dts/freescale/imx8mm-nitrogen8mm_rev2.dts
+> new file mode 100644
+> index 000000000000..a83fa8d05e81
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-nitrogen8mm_rev2.dts
+> @@ -0,0 +1,417 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Device Tree file for Boundary Devices i.MX8MMini Nitrogen8MM Rev2 board.
+> + * Adrien Grassein <adrien.grassein@gmail.com.com>
+> + */
+> +/dts-v1/;
+> +#include "imx8mm.dtsi"
+> +
+> +/ {
+> +	model = "Boundary Devices i.MX8MMini Nitrogen8MM Rev2";
+> +	compatible = "boundary,imx8mm-nitrogen8mm", "fsl,imx8mm";
+> +};
+> +
+> +&A53_0 {
+> +	cpu-supply = <&reg_sw3>;
+> +};
+> +
+> +&A53_1 {
+> +	cpu-supply = <&reg_sw3>;
+> +};
+> +
+> +&A53_2 {
+> +	cpu-supply = <&reg_sw3>;
+> +};
+> +
+> +&A53_3 {
+> +	cpu-supply = <&reg_sw3>;
+> +};
+> +
+> +&fec1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_fec1>;
+> +
+> +	phy-mode = "rgmii-id";
+> +	phy-handle = <&ethphy0>;
+> +	fsl,magic-packet;
+> +	status = "okay";
+> +
+> +	mdio {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		ethphy0: ethernet-phy@4 {
+> +			compatible = "ethernet-phy-id004d.d072",
+> +				"ethernet-phy-ieee802.3-c22";
+> +			reg = <4>;
+> +			interrupts-extended = <&gpio3 16 IRQ_TYPE_LEVEL_LOW>;
+> +		};
+> +	};
+> +};
+> +
+> +&i2c1 {
+> +	clock-frequency = <400000>;
+> +	pinctrl-names = "default", "gpio";
+> +	pinctrl-0 = <&pinctrl_i2c1>;
+> +	pinctrl-1 = <&pinctrl_i2c1_1>;
+> +	scl-gpios = <&gpio5 14 GPIO_OPEN_DRAIN>;
+> +	sda-gpios = <&gpio5 15 GPIO_OPEN_DRAIN>;
+> +	status = "okay";
+> +
+> +	pmic@8 {
+> +		compatible = "nxp,pf8121a";
+> +		reg = <0x8>;
+> +		status = "okay";
+> +
+> +		regulators {
+> +		    reg_ldo1: ldo1 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-max-microvolt = <5000000>;
+> +				regulator-min-microvolt = <1500000>;
 
-> No copyright notice for the file?  While acceptable, odds are your
-> corporate lawyers will not be happy with that :(
+Thanks for the changes.
 
-You are right, will fix.
+The usual convention is to order the fields from min to max, as it is
+used in most of other bindings. So first goes min, then max.
 
-> > +/*
-> > + * Userspace notification interface for debugging tools.
-> > + *
-> > + * Provide two sysfs files:
-> > + *  - /sys/kernel/error_report/last_report
-> > + *  - /sys/kernel/error_report/report_count
-> > + * that contain the last debugging tool report (taken from dmesg, delimited by
-> > + * the error_report_start/error_report_end tracing events) and the total report
-> > + * count.
-> > + */
-> > +
-> > +#include <linux/atomic.h>
-> > +#include <linux/fs.h>
-> > +#include <linux/kobject.h>
-> > +#include <linux/string.h>
-> > +#include <linux/sysfs.h>
-> > +#include <linux/tracepoint.h>
-> > +#include <linux/workqueue.h>
-> > +#include <trace/events/error_report.h>
-> > +#include <trace/events/printk.h>
-> > +
-> > +static struct kobject *error_report_kobj;
-> > +
-> > +/* sysfs files are capped at PAGE_SIZE. */
-> > +#define BUF_SIZE PAGE_SIZE
-> > +/* Two buffers to store the finished report and the report being recorded. */
-> > +static char report_buffer[2][BUF_SIZE];
-> > +/*
-> > + * Total report count. Also serves as a latch for report_buffer:
-> > + * report_buffer[num_reports % 2] is the currently available report,
-> > + * report_buffer[(num_reports + 1) % 2] is the report being recorded.
-> > + */
-> > +static atomic_t num_reports;
-> > +
-> > +/*
-> > + * PID of the task currently recording the report, as returned by
-> > + * get_encoded_pid(), or -1. Used as a writer lock for report_buffer.
-> > + * A regular spinlock couldn't be used here, as probe_console() can be called
-> > + * from any thread, and it needs to know whether that thread is holding the
-> > + * lock.
-> > + */
-> > +static atomic_t current_pid = ATOMIC_INIT(-1);
->
-> how do you handle pid namespaces?
+Somehow the nxp,pf8x00-regulator.yaml example codes has less logical
+order (also starting with always-on and boot-on) and people (last time I
+think Jagan) tend to copy it...  don't. Do like all other regulators and
+DTSes. It makes life of reviewers and future contributors easier.
 
-Doesn't current->pid hold the global PID of the task?
-See the description of task_pid_nr() here:
-https://elixir.bootlin.com/linux/latest/source/include/linux/sched.h#L1386,
-which is supposed to return a global task ID.
+> +			};
+> +
+> +			reg_ldo2: ldo2 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-max-microvolt = <5000000>;
+> +				regulator-min-microvolt = <1500000>;
+> +			};
+> +
+> +			reg_ldo3: ldo3 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-max-microvolt = <5000000>;
+> +				regulator-min-microvolt = <1500000>;
+> +			};
+> +
+> +			reg_ldo4: ldo4 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-max-microvolt = <5000000>;
+> +				regulator-min-microvolt = <1500000>;
+> +			};
+> +
+> +			reg_buck1: buck1 {
+> +				nxp,ilim-ma = <4500>;
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-min-microvolt =  <400000>;
+> +			};
+> +
+> +			reg_buck2: buck2 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-min-microvolt =  <400000>;
+> +			};
+> +
+> +			reg_sw3: buck3 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-min-microvolt =  <400000>;
+> +			};
+> +
+> +			reg_buck4: buck4 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-min-microvolt =  <400000>;
+> +			};
+> +
+> +			reg_buck5: buck5 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-min-microvolt =  <400000>;
+> +			};
+> +
+> +			reg_buck6: buck6 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-min-microvolt =  <400000>;
+> +			};
+> +
+> +			reg_buck7: buck7 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-min-microvolt = <3300000>;
+> +			};
+> +
+> +			reg_vsnvs: vsnvs {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-min-microvolt = <1800000>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&i2c3 {
+> +	clock-frequency = <100000>;
+> +	pinctrl-names = "default", "gpio";
+> +	pinctrl-0 = <&pinctrl_i2c3>;
+> +	pinctrl-1 = <&pinctrl_i2c3_1>;
+> +	scl-gpios = <&gpio5 18 GPIO_OPEN_DRAIN>;
+> +	sda-gpios = <&gpio5 19 GPIO_OPEN_DRAIN>;
+> +	status = "okay";
+> +
+> +	i2cmux@70 {
+> +		compatible = "nxp,pca9540";
+> +		reg = <0x70>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		i2c3@0 {
+> +			reg = <0>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			rtc@68 {
+> +				compatible = "microcrystal,rv4162";
+> +				pinctrl-names = "default";
+> +				pinctrl-0 = <&pinctrl_i2c3a_rv4162>;
+> +				reg = <0x68>;
+> +				interrupts-extended = <&gpio4 22 IRQ_TYPE_LEVEL_LOW>;
+> +				wakeup-source;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +/* console */
+> +&uart2 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_uart2>;
+> +	assigned-clocks = <&clk IMX8MM_CLK_UART2>;
+> +	assigned-clock-parents = <&clk IMX8MM_CLK_24M>;
+> +	status = "okay";
+> +};
+> +
+> +/* eMMC */
+> +&usdhc1 {
+> +	bus-width = <8>;
+> +	sdhci-caps-mask = <0x80000000 0x0>;
+> +	non-removable;
+> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+> +	pinctrl-0 = <&pinctrl_usdhc1>;
+> +	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
+> +	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
+> +	status = "okay";
+> +};
+> +
+> +/* sdcard */
+> +&usdhc2 {
+> +	bus-width = <4>;
+> +	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
+> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+> +	pinctrl-0 = <&pinctrl_usdhc2>;
+> +	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
+> +	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
+> +	status = "okay";
+> +	vqmmc-supply = <&reg_ldo2>;
+> +};
+> +
+> +&wdog1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_wdog>;
+> +	fsl,ext-reset-output;
+> +	status = "okay";
+> +};
+> +
+> +&iomuxc {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_hog>;
+> +
+> +	pinctrl_fec1: fec1grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_ENET_MDC_ENET1_MDC			0x3
+> +			MX8MM_IOMUXC_ENET_MDIO_ENET1_MDIO		0x3
+> +			MX8MM_IOMUXC_ENET_TD3_ENET1_RGMII_TD3		0x1f
+> +			MX8MM_IOMUXC_ENET_TD2_ENET1_RGMII_TD2		0x1f
+> +			MX8MM_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f
+> +			MX8MM_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f
+> +			MX8MM_IOMUXC_ENET_RD3_ENET1_RGMII_RD3		0x91
+> +			MX8MM_IOMUXC_ENET_RD2_ENET1_RGMII_RD2		0x91
+> +			MX8MM_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91
+> +			MX8MM_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91
+> +			MX8MM_IOMUXC_ENET_TXC_ENET1_RGMII_TXC		0x1f
+> +			MX8MM_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91
+> +			MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91
+> +			MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
+> +			MX8MM_IOMUXC_NAND_READY_B_GPIO3_IO16		0x159
+> +		>;
+> +	};
+> +
+> +	pinctrl_hog: hoggrp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3 0x09
+> +			MX8MM_IOMUXC_GPIO1_IO08_GPIO1_IO8 0x09
+> +		>;
+> +	};
+> +
+> +	pinctrl_i2c1: i2c1grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL 0x400001c3
+> +			MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA 0x400001c3
+> +		>;
+> +	};
+> +
+> +	pinctrl_i2c1_1: i2c1-1grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_I2C1_SCL_GPIO5_IO14 0x400001c3
+> +			MX8MM_IOMUXC_I2C1_SDA_GPIO5_IO15 0x400001c3
+> +		>;
+> +	};
+> +
+> +	pinctrl_i2c3: i2c3grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_I2C3_SCL_I2C3_SCL 0x400001c3
+> +			MX8MM_IOMUXC_I2C3_SDA_I2C3_SDA 0x400001c3
+> +		>;
+> +	};
+> +
+> +	pinctrl_i2c3_1: i2c3-1grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_I2C3_SCL_GPIO5_IO18 0x400001c3
+> +			MX8MM_IOMUXC_I2C3_SDA_GPIO5_IO19 0x400001c3
+> +		>;
+> +	};
+> +
+> +	pinctrl_i2c3a_rv4162: i2c3a-rv4162grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SAI2_RXC_GPIO4_IO22 0x1c0
+> +		>;
+> +	};
+> +
+> +	pinctrl_uart2: uart2grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_UART2_RXD_UART2_DCE_RX 0x140
+> +			MX8MM_IOMUXC_UART2_TXD_UART2_DCE_TX 0x140
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc1: usdhc1grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SD1_CLK_USDHC1_CLK		0x190
+> +			MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD		0x1d0
+> +			MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0	0x1d0
+> +			MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1	0x1d0
+> +			MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2	0x1d0
+> +			MX8MM_IOMUXC_SD1_DATA3_USDHC1_DATA3	0x1d0
+> +			MX8MM_IOMUXC_SD1_DATA4_USDHC1_DATA4	0x1d0
+> +			MX8MM_IOMUXC_SD1_DATA5_USDHC1_DATA5	0x1d0
+> +			MX8MM_IOMUXC_SD1_DATA6_USDHC1_DATA6	0x1d0
+> +			MX8MM_IOMUXC_SD1_DATA7_USDHC1_DATA7	0x1d0
+> +			MX8MM_IOMUXC_SD1_RESET_B_GPIO2_IO10	0x141
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc1_100mhz: usdhc1-100mhz-grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SD1_CLK_USDHC1_CLK		0x194
+> +			MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD		0x1d4
+> +			MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0	0x1d4
+> +			MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1	0x1d4
+> +			MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2	0x1d4
+> +			MX8MM_IOMUXC_SD1_DATA3_USDHC1_DATA3	0x1d4
+> +			MX8MM_IOMUXC_SD1_DATA4_USDHC1_DATA4	0x1d4
+> +			MX8MM_IOMUXC_SD1_DATA5_USDHC1_DATA5	0x1d4
+> +			MX8MM_IOMUXC_SD1_DATA6_USDHC1_DATA6	0x1d4
+> +			MX8MM_IOMUXC_SD1_DATA7_USDHC1_DATA7	0x1d4
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc1_200mhz: usdhc1-200mhz-grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SD1_CLK_USDHC1_CLK		0x196
+> +			MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD		0x1d6
+> +			MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0	0x1d6
+> +			MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1	0x1d6
+> +			MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2	0x1d6
+> +			MX8MM_IOMUXC_SD1_DATA3_USDHC1_DATA3	0x1d6
+> +			MX8MM_IOMUXC_SD1_DATA4_USDHC1_DATA4	0x1d6
+> +			MX8MM_IOMUXC_SD1_DATA5_USDHC1_DATA5	0x1d6
+> +			MX8MM_IOMUXC_SD1_DATA6_USDHC1_DATA6	0x1d6
+> +			MX8MM_IOMUXC_SD1_DATA7_USDHC1_DATA7	0x1d6
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc2: usdhc2grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x190
+> +			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d0
+> +			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d0
+> +			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d0
+> +			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d0
+> +			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d0
+> +			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12	0x1c4
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc2_100mhz: usdhc2-100mhz-grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x194
+> +			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d4
+> +			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d4
+> +			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d4
+> +			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d4
+> +			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d4
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc2_200mhz: usdhc2-200mhz-grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x196
+> +			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d6
+> +			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d6
+> +			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d6
+> +			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d6
+> +			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d6
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc3: usdhc3grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK		0x190
+> +			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD		0x1d0
+> +			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0		0x1d0
+> +			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1		0x1d0
+> +			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2		0x1d0
+> +			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3		0x1d0
+> +			MX8MM_IOMUXC_GPIO1_IO00_ANAMIX_REF_CLK_32K	0x03
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc3_100mhz: usdhc3-100mhz-grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK	0x194
+> +			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD	0x1d4
+> +			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0	0x1d4
+> +			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1	0x1d4
+> +			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2	0x1d4
+> +			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3	0x1d4
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc3_200mhz: usdhc3-200mhz-grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK	0x196
+> +			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD	0x1d6
+> +			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0	0x1d6
+> +			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1	0x1d6
+> +			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2	0x1d6
+> +			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3	0x1d6
+> +		>;
+> +	};
+> +
+> +	pinctrl_wdog: wdoggrp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_GPIO1_IO02_WDOG1_WDOG_B 0x140
+> +		>;
+> +	};
+> +
 
-> > +     if (atomic_cmpxchg_acquire(&current_pid, -1, get_encoded_pid()) != -1)
-> > +             return;
->
-> pid namespaces?
-See above.
+Unneeded blank line.
 
->
-> pid namespaces?
->
-Same.
-
-> > +     int idx;
-> > +
-> > +     if (pid != get_encoded_pid())
-> > +             return;
-> > +
-> > +     idx = (atomic_read(&num_reports) + 1) % 2;
->
-> You read, but it could change before:
-
-Not sure I follow. num_reports can be only incremented by the same
-task that started the report, this cannot happen concurrently.
-
-
->
-> > +     if (current_pos == BUF_SIZE)
-> > +             report_buffer[idx][current_pos - 1] = 0;
-> > +     else
-> > +             report_buffer[idx][current_pos] = 0;
-> > +
-> > +     /* Pairs with acquire in last_report_show(). */
-> > +     atomic_inc_return_release(&num_reports);
->
-> Not good?
-
-> > +static ssize_t last_report_show(struct kobject *kobj,
-> > +                             struct kobj_attribute *attr, char *buf)
-> > +{
-> > +     ssize_t ret;
-> > +     int index;
-> > +
-> > +     do {
-> > +             /* Pairs with release in probe_report_end(). */
-> > +             index = atomic_read_acquire(&num_reports);
-> > +             /*
-> > +              * If index and old_index mismatch, we might be accessing
-> > +              * report_buffer concurrently with a writer thread. In that
-> > +              * case the read data will be discarded.
-> > +              */
-> > +             ret = data_race(strscpy(buf, report_buffer[index % 2], BUF_SIZE));
-> > +             /*
-> > +              * Prevent reordering between the memcpy above and the atomic
-> > +              * read below.
-> > +              * See the comments in include/linux/seqlock.h for more
-> > +              * details.
-> > +              */
-> > +             smp_rmb();
-> > +     } while (index != atomic_read(&num_reports));
->
-> endless loops, what could go wrong...
-Fair enough, this needs to be fixed.
-
->
-> Why are you rolling your own hacky locks in here?
-
-We've also considered using a seqlock here, but thought that required
-too much boilerplate code (the current implementation reuses the
-report counter as a seqlock latch, whereas otherwise we'd need to
-introduce an extra seqcount_latch_t plus call the seqlock API
-functions). I think this can be reconsidered.
-
-> And again, sysfs is "one value" not "one buffer".
->
-> > +     return ret;
-> > +}
-> > +
-> > +/*
-> > + * read() handler for /sys/kernel/error_report/report_count.
-> > + */
-> > +static ssize_t report_count_show(struct kobject *kobj,
-> > +                              struct kobj_attribute *attr, char *buf)
-> > +{
-> > +     return scnprintf(buf, PAGE_SIZE, "%d\n", atomic_read(&num_reports));
->
-> sysfs_emit()?
-
-Good, haven't seen that one. I think I just took
-Documentation/filesystems/sysfs.txt as an example.
-
-> And you just read it, but what keeps it from changing?
-Nothing; we can't really guarantee nobody reported another error while
-we were processing the previous one.
-Similarly, we cannot be sure that any other vfs file still has the
-same contents once we read it ;)
-
-
-> > +static const struct attribute_group error_report_sysfs_attr_group = {
-> > +     .attrs = error_report_sysfs_attrs,
-> > +};
->
-> ATTRIBUTE_GROUPS()?
-
-Ack.
-
-> > +late_initcall(error_report_notify_setup);
->
-> You never clean up the kobject or files?
-Will fix, thanks!
-
-> Anyway, please move this to tracefs, that's where it belongs.
-Will do in v3.
+Best regards,
+Krzysztof
