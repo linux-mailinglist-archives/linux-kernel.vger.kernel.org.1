@@ -2,231 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636532F87A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 769912F879F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:28:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbhAOV0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 16:26:04 -0500
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:56200 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726957AbhAOV0D (ORCPT
+        id S1726711AbhAOVZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 16:25:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbhAOVZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 16:26:03 -0500
-Received: from localhost.localdomain ([92.131.99.25])
-        by mwinf5d04 with ME
-        id H9QF2400C0Ys01Y039QHn8; Fri, 15 Jan 2021 22:24:18 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 15 Jan 2021 22:24:18 +0100
-X-ME-IP: 92.131.99.25
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     mchehab@kernel.org, dwlsalmeida@gmail.com,
-        hverkuil-cisco@xs4all.nl, vaibhavgupta40@gmail.com,
-        liushixin2@huawei.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] media: saa7164: switch from 'pci_' to 'dma_' API
-Date:   Fri, 15 Jan 2021 22:24:15 +0100
-Message-Id: <20210115212415.497079-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        Fri, 15 Jan 2021 16:25:51 -0500
+X-Greylist: delayed 544 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 15 Jan 2021 13:25:10 PST
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B867C061757;
+        Fri, 15 Jan 2021 13:25:10 -0800 (PST)
+Received: from dslb-188-096-136-022.188.096.pools.vodafone-ip.de ([188.96.136.22] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1l0Wab-000574-2e; Fri, 15 Jan 2021 22:25:01 +0100
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Toan Le <toan@os.amperecomputing.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH v4 1/3] PCI: altera-msi: Remove IRQ handler and data in one go
+Date:   Fri, 15 Jan 2021 22:24:33 +0100
+Message-Id: <20210115212435.19940-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201108191140.23227-1-martin@kaiser.cx>
+References: <20201108191140.23227-1-martin@kaiser.cx>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+Call irq_set_chained_handler_and_data() to clear the chained handler
+and the handler's data under irq_desc->lock.
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+See also 2cf5a03cb29d ("PCI/keystone: Fix race in installing chained
+IRQ handler").
 
-When memory is allocated in 'saa7164_buffer_alloc()' GFP_KERNEL can be used
-because this function is already using this flag just a few lines above.
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 ---
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/media/pci/saa7164/saa7164-buffer.c | 16 +++++++++-------
- drivers/media/pci/saa7164/saa7164-core.c   |  2 +-
- 2 files changed, 10 insertions(+), 8 deletions(-)
+Hi Lorenzo,
+here's another bunch of simple patches that were discussed in November.
+Could you have a look?
+Thanks,
+Martin
 
-diff --git a/drivers/media/pci/saa7164/saa7164-buffer.c b/drivers/media/pci/saa7164/saa7164-buffer.c
-index 245d9db280aa..89c5b79a5b24 100644
---- a/drivers/media/pci/saa7164/saa7164-buffer.c
-+++ b/drivers/media/pci/saa7164/saa7164-buffer.c
-@@ -103,13 +103,13 @@ struct saa7164_buffer *saa7164_buffer_alloc(struct saa7164_port *port,
- 	buf->pt_size = (SAA7164_PT_ENTRIES * sizeof(u64)) + 0x1000;
+v4:
+ - resend after two months
+ - capitalize the commit message properly
+v3:
+ - rewrite the commit message again. this is no race condition if we
+   remove the interrupt handler. sorry for the noise.
+v2:
+ - rewrite the commit message to clarify that this is a bugfix
+
+
+ drivers/pci/controller/pcie-altera-msi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/pci/controller/pcie-altera-msi.c b/drivers/pci/controller/pcie-altera-msi.c
+index e1636f7714ca..42691dd8ebef 100644
+--- a/drivers/pci/controller/pcie-altera-msi.c
++++ b/drivers/pci/controller/pcie-altera-msi.c
+@@ -204,8 +204,7 @@ static int altera_msi_remove(struct platform_device *pdev)
+ 	struct altera_msi *msi = platform_get_drvdata(pdev);
  
- 	/* Allocate contiguous memory */
--	buf->cpu = pci_alloc_consistent(port->dev->pci, buf->pci_size,
--		&buf->dma);
-+	buf->cpu = dma_alloc_coherent(&port->dev->pci->dev, buf->pci_size,
-+				      &buf->dma, GFP_KERNEL);
- 	if (!buf->cpu)
- 		goto fail1;
+ 	msi_writel(msi, 0, MSI_INTMASK);
+-	irq_set_chained_handler(msi->irq, NULL);
+-	irq_set_handler_data(msi->irq, NULL);
++	irq_set_chained_handler_and_data(msi->irq, NULL, NULL);
  
--	buf->pt_cpu = pci_alloc_consistent(port->dev->pci, buf->pt_size,
--		&buf->pt_dma);
-+	buf->pt_cpu = dma_alloc_coherent(&port->dev->pci->dev, buf->pt_size,
-+					 &buf->pt_dma, GFP_KERNEL);
- 	if (!buf->pt_cpu)
- 		goto fail2;
+ 	altera_free_domains(msi);
  
-@@ -137,7 +137,8 @@ struct saa7164_buffer *saa7164_buffer_alloc(struct saa7164_port *port,
- 	goto ret;
- 
- fail2:
--	pci_free_consistent(port->dev->pci, buf->pci_size, buf->cpu, buf->dma);
-+	dma_free_coherent(&port->dev->pci->dev, buf->pci_size, buf->cpu,
-+			  buf->dma);
- fail1:
- 	kfree(buf);
- 
-@@ -160,8 +161,9 @@ int saa7164_buffer_dealloc(struct saa7164_buffer *buf)
- 	if (buf->flags != SAA7164_BUFFER_FREE)
- 		log_warn(" freeing a non-free buffer\n");
- 
--	pci_free_consistent(dev->pci, buf->pci_size, buf->cpu, buf->dma);
--	pci_free_consistent(dev->pci, buf->pt_size, buf->pt_cpu, buf->pt_dma);
-+	dma_free_coherent(&dev->pci->dev, buf->pci_size, buf->cpu, buf->dma);
-+	dma_free_coherent(&dev->pci->dev, buf->pt_size, buf->pt_cpu,
-+			  buf->pt_dma);
- 
- 	kfree(buf);
- 
-diff --git a/drivers/media/pci/saa7164/saa7164-core.c b/drivers/media/pci/saa7164/saa7164-core.c
-index f3a4e575a782..7973ae42873a 100644
---- a/drivers/media/pci/saa7164/saa7164-core.c
-+++ b/drivers/media/pci/saa7164/saa7164-core.c
-@@ -1273,7 +1273,7 @@ static int saa7164_initdev(struct pci_dev *pci_dev,
- 
- 	pci_set_master(pci_dev);
- 	/* TODO */
--	err = pci_set_dma_mask(pci_dev, 0xffffffff);
-+	err = dma_set_mask(&pci_dev->dev, 0xffffffff);
- 	if (err) {
- 		printk("%s/0: Oops: no 32bit PCI DMA ???\n", dev->name);
- 		goto fail_irq;
 -- 
-2.27.0
+2.20.1
 
