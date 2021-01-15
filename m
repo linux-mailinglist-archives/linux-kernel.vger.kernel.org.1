@@ -2,94 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C80692F6F94
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A112F6F99
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:40:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731402AbhAOAeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 19:34:12 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:55444 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729048AbhAOAeL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 19:34:11 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F0F1Sm192568;
-        Fri, 15 Jan 2021 00:33:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=EoYf07ye+2pvEM8W2e9X5zV3+hXXa21IpM2ZAyZNnz4=;
- b=XE7kWDv7toO88nfu3YaqyDyntOiUkYXKCmJ+K04xbeuMnf28mzsk2SfsbUs58ZtV7rHt
- St3M57Q6yUYe18yF6RZ/7aNMfBVNIvd8T9WgpIE9jj42WeMhZLV+mreISV9iV310A9fB
- vq5DpFEg8r2DZcqjAkQG368+bB7xUZXxbzIOo4/XXonXNv8H/GDgtFVHiyNewLY+hzm0
- mEcb8+f3ahXUv4WbykEx66HcZbsJ51+ZnOkJtyNbKzsASUru5K1l4snAoewjcITMXEgO
- u3YHq+Wu7isV65gVdsrwUr6akusatrm77HH4/1h8I5LWgDub99aC9UJvYVdcjjor17GL WA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 360kg22vm8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Jan 2021 00:33:14 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F0GErJ137495;
-        Fri, 15 Jan 2021 00:33:14 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 360kf2tnf5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Jan 2021 00:33:14 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10F0XCHX006621;
-        Fri, 15 Jan 2021 00:33:12 GMT
-Received: from [10.39.240.226] (/10.39.240.226)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 14 Jan 2021 16:33:12 -0800
-Subject: Re: [PATCH 15/21] x86/xen/pvh: Convert indirect jump to retpoline
-To:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
+        id S1731297AbhAOAjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 19:39:08 -0500
+Received: from mga05.intel.com ([192.55.52.43]:21828 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727674AbhAOAjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 19:39:07 -0500
+IronPort-SDR: nbyRNf675crH1Vqjw7COph3Ia/KjA78SsDouiDl4/NhjrDoKoeoy/mIY2Hif3j3ZlGRAt4QOJU
+ 9GMkTJ7l0dQA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="263262908"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="263262908"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 16:38:26 -0800
+IronPort-SDR: sSB7hu1PDVQZRTVYDGxc+nZHE8UD1NIkAcilI3HBux3TR2GReW3Ztwxp5lQcHew/yJaVgqNnE7
+ ytWtcCNre8Gg==
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="382465326"
+Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 16:38:26 -0800
+From:   Tony Luck <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tony Luck <tony.luck@intel.com>, x86@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        Miroslav Benes <mbenes@suse.cz>,
-        Juergen Gross <jgross@suse.com>
-References: <cover.1610652862.git.jpoimboe@redhat.com>
- <adfa2afe5ddc831017222db9f48ad0fbff17c807.1610652862.git.jpoimboe@redhat.com>
-From:   boris.ostrovsky@oracle.com
-Organization: Oracle Corporation
-Message-ID: <f7335fd4-6204-101c-c628-e5f30c9d4463@oracle.com>
-Date:   Thu, 14 Jan 2021 19:33:10 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        Darren Hart <dvhart@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v3] x86/mce: Avoid infinite loop for copy from user recovery
+Date:   Thu, 14 Jan 2021 16:38:17 -0800
+Message-Id: <20210115003817.23657-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20210111214452.1826-1-tony.luck@intel.com>
+References: <20210111214452.1826-1-tony.luck@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <adfa2afe5ddc831017222db9f48ad0fbff17c807.1610652862.git.jpoimboe@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101150000
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- clxscore=1015 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101150000
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Recovery action when get_user() triggers a machine check uses the fixup
+path to make get_user() return -EFAULT.  Also queue_task_work() sets up
+so that kill_me_maybe() will be called on return to user mode to send a
+SIGBUS to the current process.
 
-On 1/14/21 2:40 PM, Josh Poimboeuf wrote:
-> It's kernel policy to not have (unannotated) indirect jumps because of
-> Spectre v2.  This one's probably harmless, but better safe than sorry.
-> Convert it to a retpoline.
->
-> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Cc: Juergen Gross <jgross@suse.com>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+But there are places in the kernel where the code assumes that this
+EFAULT return was simply because of a page fault. The code takes some
+action to fix that, and then retries the access. This results in a second
+machine check.
 
+While processing this second machine check queue_task_work() is called
+again. But since this uses the same callback_head structure that
+was used in the first call, the net result is an entry on the
+current->task_works list that points to itself. When task_work_run()
+is called it loops forever in this code:
 
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+		do {
+			next = work->next;
+			work->func(work);
+			work = next;
+			cond_resched();
+		} while (work);
+
+Add a "mce_busy" counter so that task_work_add() is only called once
+per faulty page in this task.
+
+Do not allow too many repeated machine checks, or machine checks to
+a different page from the first.
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+---
+
+V3: Thanks to extensive commentary from Andy & Boris
+
+Throws out the changes to get_user() and subsequent changes to core
+code. Everything is now handled in the machine check code. Downside is
+that we can (and do) take multiple machine checks from a single poisoned
+page before generic kernel code finally gets the message that a page is
+really and truly gone (but all the failed get_user() calls still return
+the legacy -EFAULT code, so none of that code will ever mistakenly use
+a value from a bad page). But even on an old machine that does broadcast
+interrupts for each machine check things survive multiple cycles of my
+test injection into a futex operation.
+
+I picked "10" as the magic upper limit for how many times the machine
+check code will allow a fault from the same page before deciding to
+panic.  We can bike shed that value if you like.
+
+ arch/x86/kernel/cpu/mce/core.c | 27 ++++++++++++++++++++-------
+ include/linux/sched.h          |  1 +
+ 2 files changed, 21 insertions(+), 7 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 13d3f1cbda17..25daf6517dc9 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1246,6 +1246,7 @@ static void kill_me_maybe(struct callback_head *cb)
+ 	struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
+ 	int flags = MF_ACTION_REQUIRED;
+ 
++	p->mce_count = 0;
+ 	pr_err("Uncorrected hardware memory error in user-access at %llx", p->mce_addr);
+ 
+ 	if (!p->mce_ripv)
+@@ -1266,12 +1267,24 @@ static void kill_me_maybe(struct callback_head *cb)
+ 	}
+ }
+ 
+-static void queue_task_work(struct mce *m, int kill_current_task)
++static void queue_task_work(struct mce *m, char *msg, int kill_current_task)
+ {
+-	current->mce_addr = m->addr;
+-	current->mce_kflags = m->kflags;
+-	current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
+-	current->mce_whole_page = whole_page(m);
++	if (current->mce_count++ == 0) {
++		current->mce_addr = m->addr;
++		current->mce_kflags = m->kflags;
++		current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
++		current->mce_whole_page = whole_page(m);
++	}
++
++	if (current->mce_count > 10)
++		mce_panic("Too many machine checks while accessing user data", m, msg);
++
++	if (current->mce_count > 1 || (current->mce_addr >> PAGE_SHIFT) != (m->addr >> PAGE_SHIFT))
++		mce_panic("Machine checks to different user pages", m, msg);
++
++	/* Do not call task_work_add() more than once */
++	if (current->mce_count > 1)
++		return;
+ 
+ 	if (kill_current_task)
+ 		current->mce_kill_me.func = kill_me_now;
+@@ -1414,7 +1427,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
+ 		/* If this triggers there is no way to recover. Die hard. */
+ 		BUG_ON(!on_thread_stack() || !user_mode(regs));
+ 
+-		queue_task_work(&m, kill_current_task);
++		queue_task_work(&m, msg, kill_current_task);
+ 
+ 	} else {
+ 		/*
+@@ -1432,7 +1445,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
+ 		}
+ 
+ 		if (m.kflags & MCE_IN_KERNEL_COPYIN)
+-			queue_task_work(&m, kill_current_task);
++			queue_task_work(&m, msg, kill_current_task);
+ 	}
+ out:
+ 	mce_wrmsrl(MSR_IA32_MCG_STATUS, 0);
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 6e3a5eeec509..386366c9c757 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1362,6 +1362,7 @@ struct task_struct {
+ 					mce_whole_page : 1,
+ 					__mce_reserved : 62;
+ 	struct callback_head		mce_kill_me;
++	int				mce_count;
+ #endif
+ 
+ #ifdef CONFIG_KRETPROBES
+-- 
+2.21.1
 
