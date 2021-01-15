@@ -2,126 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD4E2F7F4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5E52F7F63
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731921AbhAOPSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:18:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbhAOPSC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:18:02 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F00C061757;
-        Fri, 15 Jan 2021 07:17:22 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id a9so6181698wrt.5;
-        Fri, 15 Jan 2021 07:17:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Rn8B8MuwQWnHgwFQsAJAfdLGa99uP8DpkyAhVSsSfbk=;
-        b=E2T3IAbHP6omiSvK4BCmnPErJZQtT8mFjhg9kk0r8EzmhqXpMKoCC1diosA11ESjvv
-         Fq6kG1YaRM+kt/xC3HFuRUepB/lzb5XNH32UmksJtVPO3QtSNTYTRKxP7iXRsC6zOCGa
-         k8fFoxEKrA8IIxo+FvpaV29hZnCQRLKnmElgZQZTuMiGSfpij51pu4p5uWNOZlY5/9Tw
-         l3o0uB8Szm99NAuOFlnsaOZJBS5ZVGY0ouVNhAXBV+mSpJ5mRzjndDX7MYaLWtYcUw/D
-         O1p3eVbbu5N2L2dV6UsRAY52V/TDtAb1Jh6qD5rsX673qKHzg2vhfXK4kXi12qCqazlB
-         D7LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Rn8B8MuwQWnHgwFQsAJAfdLGa99uP8DpkyAhVSsSfbk=;
-        b=qUmcoh6i85FvS2X0z3tFeedUCun9zME8XkislaH0coACRxXIMCMOJye1gZqW8GEDSV
-         XddhILK4NJ44/Qq6ZVMfCXdOfn9NaQxy7TRfGnW3URqP0g1FoAug8he9znlX0h40QE72
-         Hc/qInYzbHFVPILWxkTz6ptGdhtZBfaM3S2G6D8WJZDKIdm7xoOYdIbfQF0X53HRV6xk
-         aMRgxeiSqLyYUrMAKAgMKoZNJIxwd9XGNbR14b1iG9MLaqvxVok+LQAlaHNIev6VHJC6
-         PtBF8W9NyM9FRvqw8bLAU7++qZ/B1yxypA2wX++UhQPg2MwqZbfvIvnUsakypH6XIzxP
-         ycIA==
-X-Gm-Message-State: AOAM531LvORS5lFvPcmPC4buDyMYoDzWO0l/plHNZxkxzpCGmOLtBPss
-        pJIcaKTrzsLD4ybpg1T6OrIBHCwxUCA=
-X-Google-Smtp-Source: ABdhPJxG1MfvfUBsrVny1rN9Q4NK+drXL1XNjSIiahS4cwsYT6H43DunZ0iFiSP9HjUNj0UGJ7ojJA==
-X-Received: by 2002:a5d:68ce:: with SMTP id p14mr13594764wrw.386.1610723840990;
-        Fri, 15 Jan 2021 07:17:20 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id o14sm12994184wmc.28.2021.01.15.07.17.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 07:17:19 -0800 (PST)
-Date:   Fri, 15 Jan 2021 16:17:18 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] clk: tegra: Fix refcounting of gate clocks
-Message-ID: <YAGx/vLxbz61Ccfy@ulmo>
-References: <20210112122724.1712-1-digetx@gmail.com>
- <20210112122724.1712-3-digetx@gmail.com>
+        id S1728953AbhAOPVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:21:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726105AbhAOPVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 10:21:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DF902389B;
+        Fri, 15 Jan 2021 15:20:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610724039;
+        bh=7+nF2l9TtNjF6HXmyJWfi6x41zb59s8IRwjRZniglYs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NT9bamE7cphEMa59UXgq5aSSmzjPkDxEc6wajUhyD3LeEwpPjmOVt/sWF4ok96KDQ
+         T3Dk3yXadr5+L9Vd0GEO6pAifTTVFDCS3eRsSRXwYpVwSrjbO1SgNFxtATLJj1hxtH
+         bpnqehb3VdtZiD0AUmhzD9RbzMogVTiqdvnZELwFLHGV4edteDE/mqXjFgbVkSeXM+
+         RqV+pjw/G/YVXa2fsFhmTxBu/GGi0Vwzbif2d/CGPoOkUtMDB2ixyAMH2fIv6mLmNj
+         zwr8AIuMdW2EPzHgbOoZkYlzBDhgwkDk4EnYTi0LwtG10eT1TAhIIDVECokl4999Mf
+         Ti2rRgiuqeAsQ==
+Date:   Fri, 15 Jan 2021 15:20:04 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     Rob Herring <robh@kernel.org>, kuninori.morimoto.gx@renesas.com,
+        nsaenzjulienne@suse.de, f.fainelli@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 2/6] dt-bindings: audio-graph-card: Add plls and
+ sysclks properties
+Message-ID: <20210115152004.GD4384@sirena.org.uk>
+References: <20210108160501.7638-1-rf@opensource.cirrus.com>
+ <20210108160501.7638-3-rf@opensource.cirrus.com>
+ <20210113152225.GA2334778@robh.at.kernel.org>
+ <20210113160917.GF4641@sirena.org.uk>
+ <ee3d0b75-dc2f-9994-19a4-a3c3f21a2c65@opensource.cirrus.com>
+ <20210115131142.GA4384@sirena.org.uk>
+ <1ec5e5f4-f672-2c60-23a5-9d985b943379@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="nE3Hy/EvnDZdy3nP"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="YToU2i3Vx8H2dn7O"
 Content-Disposition: inline
-In-Reply-To: <20210112122724.1712-3-digetx@gmail.com>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+In-Reply-To: <1ec5e5f4-f672-2c60-23a5-9d985b943379@opensource.cirrus.com>
+X-Cookie: Debug is human, de-fix divine.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---nE3Hy/EvnDZdy3nP
+--YToU2i3Vx8H2dn7O
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 12, 2021 at 03:27:21PM +0300, Dmitry Osipenko wrote:
-> The refcounting of the gate clocks has a bug causing the enable_refcnt
-> to underflow when unused clocks are disabled. This happens because clk
-> provider erroneously bumps the refcount if clock is enabled at a boot
-> time, which it shouldn't be doing, and it does this only for the gate
-> clocks, while peripheral clocks are using the same gate ops and the
-> peripheral clocks are missing the initial bump. Hence the refcount of
-> the peripheral clocks is 0 when unused clocks are disabled and then the
-> counter is decremented further by the gate ops, causing the integer
-> underflow.
->=20
-> Fix this problem by removing the erroneous bump and by implementing the
-> disable_unused() callback, which disables the unused gates properly.
->=20
-> The visible effect of the bug is such that the unused clocks are never
-> gated if a loaded kernel module grabs the unused clocks and starts to use
-> them. In practice this shouldn't cause any real problems for the drivers
-> and boards supported by the kernel today.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/clk/tegra/clk-periph-gate.c | 72 +++++++++++++++++++----------
->  drivers/clk/tegra/clk-periph.c      | 11 +++++
->  2 files changed, 58 insertions(+), 25 deletions(-)
+On Fri, Jan 15, 2021 at 02:42:12PM +0000, Richard Fitzgerald wrote:
+> On 15/01/2021 13:11, Mark Brown wrote:
+> > On Fri, Jan 15, 2021 at 10:35:23AM +0000, Richard Fitzgerald wrote:
+> > > On 13/01/2021 16:09, Mark Brown wrote:
+> > > > On Wed, Jan 13, 2021 at 09:22:25AM -0600, Rob Herring wrote:
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+> > > some_codec {
+> > > 	pll: pll {
+> > > 		compatible =3D "fixed-clock";
+> > > 		clocks =3D <&audio_mclk>;
+> > > 		clock-frequency =3D <98304000>;
+> > > 	}
 
---nE3Hy/EvnDZdy3nP
+> > A PLL is not a fixed clock, why would you define a fixed clock here?
+
+> It's a fixed clock if you are only setting one configuration. Call it
+> compatible=3D"any-other-dummy-clock-type" if you like, it doesn't matter
+> what it is for the purposes of what I was describing.
+
+> This isn't a clk driver for a pll, it's just a setting to be passed to
+> snd_soc_component_set_pll() using a clock binding to specify it.
+
+So you're trying to describe a crystal on the board?  Why would this be
+a subnode of the CODEC then?  Surely it's just a standard fixed clock
+which provides some input to the CODEC in the same way you'd describe
+any other input to the CODEC.  The above doesn't look anything like the
+hardware.  But if that's what you're doing how is that related to
+configuring the FLL except possibly as the input clock you'd reference?
+
+> > Are you confusing the selection of rates on existing clocks with the use
+> > of the assigned-* properties that the clock binding provides?
+
+> I'm not at all sure what you and Rob have in mind here. Perhaps you
+> could give an example of what you are thinking the .dts would look like
+> to define some pll/sysclk settings for audio-graph-card to apply. An
+> example is worth a thousand emails.
+
+As far as I can tell you are trying to configure the FLL in the CODEC,
+telling it to take an input clock and produce a fixed output clock rate
+=66rom that.  The FLL is a fairly basic clock, there are examples for both
+that and choosing a configuration for a clock in the clock bindings. =20
+
+> > That seems like a *very* surprising requirement - why would the clock
+> > binding have that requirement?  It would seem to create issues for a
+> > single device providing multiple clocks which should be a pretty common
+> > coase.
+
+> You misunderstand me. What I'm saying is that to do this:
+
+> 	sound {
+> 		clocks =3D <&pll>;
+> 	}
+
+> The node 'pll' must correspond to a clock provider driver. It can't be
+> just a bare node with some properties pick-n-mixed from the clock
+> binding, like this:
+
+I'm pretty sure I understand you perfectly; again, what makes you say
+that a description of a clock in the device tree has any requirement
+for a separate compatible string?
+
+> So the question I'm trying to ask is: when you and Rob said use
+> the clock binding, did you mean pointing to that binding from
+> clocks=3D<...>, or from a custom property like my audio-graph-card,plls
+> example above.
+
+When we say to use the clock binding what we are saying is to use the
+actual clock bindings to describe the clocks, not make a custom binding
+that looks kind of like them - making a custom binding doesn't address
+the problem.
+
+--YToU2i3Vx8H2dn7O
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmABsf4ACgkQ3SOs138+
-s6ECxA//RfZCHoNJPDi3/f3A/5AMK2y6gZ60LAyfi7b3R8gmG4V6qvVhlbNglqSj
-VuiBxeyAe+9tXd3bd8emWyi+nPvvf/bH6wOyZ44vlwTGmFwYDgci9D1h3Pz79DG4
-9FOl0ve1stOk7rdvc7RdvAv2FulsoBG+CDMSo7xnsMpMKhMLpcjPJ72owhUgzEww
-lXe9IDiqBKkzysvVpd8HJ06G/NW7ulfc/GOgUt9htQXVIDf0RByCvNGKbN27U93F
-Gjsk1Z1OR2s5KGwFxW4ZeCdWW0ZDDtSxBc4SAyk7X3cPBDgnhKkl1nAqgA1etJi7
-1FvIZTiUBDAION/3k8+aHu4xn0LrfF7ENDa6rPIp+72xQKxYvsfF4y/A/zQitKfm
-4Q08Hc8c6LdMXhcimsj0gIiQ6Jinyhq4SDiuChSH1gqHAr/Vv0gRy222hlSbWMYQ
-Xcjee83nm/fTRGN77BUKSHk7/u8O5viRPvwwfGDnp56ZJUnmRqMlLXgx/hpomaeU
-BSucw23k4VMxGxajn4w091MkjXH0yjQpO6r7hm4+Yb/Y4UrC0dP/qNDh5av3FB26
-YJGesQWHvrXM5HaIPsesK2T4gT70T66CgtZGmRD4OIUzuUvGKBR/hUmCEifrJ/IJ
-v49hoqb5DAAPR9Bn//z90SUsdDvIUxcg/o8Li/41c5H61Y9pyWU=
-=B5fn
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmABsqMACgkQJNaLcl1U
+h9A0MQf9FqJR9Ff8vWBFntAW6Bpppj//aQxSRdj8Hf9cUqOn3izt8QDVsNc5+UwG
+i0qQPlRQ4+so1rwDVyI11eNTbTNu0fepzlCPw9e1Q5mxwHqIHqZNTr+HctdgiIEa
+41PDMPv5NXFoeED7b/q0D+u+0Wzjpt1ydDnvcv4sSZehkLjjQ+B7B7HFuwt0QY8g
+1n7EiinZIaQkMnkx7krT7NzJqqR7F8PeGr40/HJkZtUwT54iwTJce9fT5HR4CUdZ
+1Q2BOz4RuXrd3Frmef6SYLKNA3+z7IAvd/Qbvb/siCDaZU8FlNIEFQYR8sMtEpYS
+FfOJHFjeekGzQr+MgiArBkNUW9NuCg==
+=m3Ta
 -----END PGP SIGNATURE-----
 
---nE3Hy/EvnDZdy3nP--
+--YToU2i3Vx8H2dn7O--
