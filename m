@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9282F7959
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:37:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B0D2F791D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732849AbhAOMfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:35:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41782 "EHLO mail.kernel.org"
+        id S1732749AbhAOMbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:31:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387525AbhAOMeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:34:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5400923884;
-        Fri, 15 Jan 2021 12:34:05 +0000 (UTC)
+        id S1732596AbhAOMbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C80D2389B;
+        Fri, 15 Jan 2021 12:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714045;
-        bh=ePc4RHuz3oSByRJOaZyYHMVIKa+viM/GlSRP+QYhTUU=;
+        s=korg; t=1610713810;
+        bh=eLxc/JivcVOfxYy1bCgsF9Ag5XJf1/dejhZPv7KCAeE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iungp3SUUxLkT7iseH52AnyUZUOAm6sxbLlWD+xRqSNYinjg/yOoHlPVSgZ0NFvUK
-         CtWLToE9qrZDhwjN2K7AMjpAlWmTPZgNGU5fTH19QAkPF3PQhEbgvQAlAnbMaM6Nfa
-         xmjPE5PmZtlN1yaAjvjdACb0nxnTLaXWb9wAMWm4=
+        b=Ivg5ZJ5ro2rO1SH4wjBIqg6BXcycI/F5i/Jzwl75ugRXSuSFMYCQF3PArQRDzVdHP
+         ZaHat4n8UNTczOr3i1fFfYKq4RyIcW5lI/XaBU56eQO78922Nfd4xO+Cu0puTwOIgI
+         Okzdr9zUqApe0DEKoGgXwkZxerPgy8YksDq8ALSY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rohit Maheshwari <rohitm@chelsio.com>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 22/62] chtls: Remove invalid set_tcb call
-Date:   Fri, 15 Jan 2021 13:27:44 +0100
-Message-Id: <20210115121959.484272920@linuxfoundation.org>
+        stable@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Tony Lindgren <tony@atomide.com>
+Subject: [PATCH 4.9 14/25] ARM: OMAP2+: omap_device: fix idling of devices during probe
+Date:   Fri, 15 Jan 2021 13:27:45 +0100
+Message-Id: <20210115121957.384405797@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
+References: <20210115121956.679956165@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ayush Sawal <ayush.sawal@chelsio.com>
+From: Andreas Kemnade <andreas@kemnade.info>
 
-[ Upstream commit 827d329105bfde6701f0077e34a09c4a86e27145 ]
+commit ec76c2eea903947202098090bbe07a739b5246e9 upstream.
 
-At the time of SYN_RECV, connection information is not
-initialized at FW, updating tcb flag over uninitialized
-connection causes adapter crash. We don't need to
-update the flag during SYN_RECV state, so avoid this.
+On the GTA04A5 od->_driver_status was not set to BUS_NOTIFY_BIND_DRIVER
+during probe of the second mmc used for wifi. Therefore
+omap_device_late_idle idled the device during probing causing oopses when
+accessing the registers.
 
-Fixes: cc35c88ae4db ("crypto : chtls - CPL handler definition")
-Signed-off-by: Rohit Maheshwari <rohitm@chelsio.com>
-Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+It was not set because od->_state was set to OMAP_DEVICE_STATE_IDLE
+in the notifier callback. Therefore set od->_driver_status also in that
+case.
+
+This came apparent after commit 21b2cec61c04 ("mmc: Set
+PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4") causing this
+oops:
+
+omap_hsmmc 480b4000.mmc: omap_device_late_idle: enabled but no driver.  Idling
+8<--- cut here ---
+Unhandled fault: external abort on non-linefetch (0x1028) at 0xfa0b402c
+...
+(omap_hsmmc_set_bus_width) from [<c07996bc>] (omap_hsmmc_set_ios+0x11c/0x258)
+(omap_hsmmc_set_ios) from [<c077b2b0>] (mmc_power_up.part.8+0x3c/0xd0)
+(mmc_power_up.part.8) from [<c077c14c>] (mmc_start_host+0x88/0x9c)
+(mmc_start_host) from [<c077d284>] (mmc_add_host+0x58/0x84)
+(mmc_add_host) from [<c0799190>] (omap_hsmmc_probe+0x5fc/0x8c0)
+(omap_hsmmc_probe) from [<c0666728>] (platform_drv_probe+0x48/0x98)
+(platform_drv_probe) from [<c066457c>] (really_probe+0x1dc/0x3b4)
+
+Fixes: 04abaf07f6d5 ("ARM: OMAP2+: omap_device: Sync omap_device and pm_runtime after probe defer")
+Fixes: 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4")
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+[tony@atomide.com: left out extra parens, trimmed description stack trace]
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/crypto/chelsio/chtls/chtls_cm.c |    3 ---
- 1 file changed, 3 deletions(-)
 
---- a/drivers/crypto/chelsio/chtls/chtls_cm.c
-+++ b/drivers/crypto/chelsio/chtls/chtls_cm.c
-@@ -1941,9 +1941,6 @@ static void chtls_abort_req_rss(struct s
- 	int queue = csk->txq_idx;
- 
- 	if (is_neg_adv(req->status)) {
--		if (sk->sk_state == TCP_SYN_RECV)
--			chtls_set_tcb_tflag(sk, 0, 0);
--
- 		kfree_skb(skb);
- 		return;
- 	}
+---
+ arch/arm/mach-omap2/omap_device.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+--- a/arch/arm/mach-omap2/omap_device.c
++++ b/arch/arm/mach-omap2/omap_device.c
+@@ -224,10 +224,12 @@ static int _omap_device_notifier_call(st
+ 		break;
+ 	case BUS_NOTIFY_BIND_DRIVER:
+ 		od = to_omap_device(pdev);
+-		if (od && (od->_state == OMAP_DEVICE_STATE_ENABLED) &&
+-		    pm_runtime_status_suspended(dev)) {
++		if (od) {
+ 			od->_driver_status = BUS_NOTIFY_BIND_DRIVER;
+-			pm_runtime_set_active(dev);
++			if (od->_state == OMAP_DEVICE_STATE_ENABLED &&
++			    pm_runtime_status_suspended(dev)) {
++				pm_runtime_set_active(dev);
++			}
+ 		}
+ 		break;
+ 	case BUS_NOTIFY_ADD_DEVICE:
 
 
