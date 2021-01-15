@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536ED2F83D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8722F83CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388282AbhAOSPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:15:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56692 "EHLO
+        id S2388248AbhAOSPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:15:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388126AbhAOSPT (ORCPT
+        with ESMTP id S2388129AbhAOSPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 13:15:19 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0113AC061793
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:14:00 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id d26so10188181wrb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:59 -0800 (PST)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD4FC061794
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:14:01 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id u14so4192639wmq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:14:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Clem9oGlYEGrbDU0lDjY42b02EcBqg1/k29GPavGgpg=;
-        b=w7kJiKffb+UC6FN4MbUl3hcif4Ao5PrzLRGEJBPBjkUCSG9AJgdTwQm0TtB3bhU4eC
-         2E5zcBTxMAM9x7bVsuwBM4gxxzPdYkRkC9mJ7Yyl0LUZpwSFrevFqHUQ11rXy7O1CcjA
-         huRymOZyg36Fs7ojzhz66e0zhryoc5NCBAj+WSUBIsDLS4H2oemqmnZC3w+C/RYBvLdV
-         SYf6iz35K1ReS5FwE6GOuzYP0ISGJsazo9iwFUl/U0MJn9GPMmHZaK8HrTQbRNTbvaG1
-         do7wy1cbFdwiVT2Zns7YE2MWRne9n7I9qENsTVzKjBYzZL++G+XG6qXkQ6oykegTYwjj
-         eQ9A==
+        bh=eAMyYaaj1VFxGbNOafp+nzJ0Q2eH0I8k2Xo9CJpOSL4=;
+        b=yVjWmOGvJzeDni3tCIMOzMmMGeotfx0zrqnDbf4Clmyd04/rjS+q0vmqap5y7zg4Io
+         7h1D4HYxOw/emRxXYKSS0UPCw+YELiJjQhMGu6Fy0Uj+H1b1v6SEx18+huC92+skY/oE
+         ysSeaM6p0n4eY95XH9EEsl1HIJT0gd5ayHE8di3BTOfP4imM+Ivsp8UyOqj7f4SECp8T
+         naf24hYPEYQWtTPW3tTd4cbe0Y1G8nanx71tnqR/WsoDLa2c2NVoI7n/nf+Yv+wa5XPc
+         CImYGw6BvnacySDNght925HnYU893MxmOQbdVzZhvA0BUaQXeAuUjkStV7Rn3CMAm7HK
+         t/NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Clem9oGlYEGrbDU0lDjY42b02EcBqg1/k29GPavGgpg=;
-        b=kssPw4DsNwGlwj/5EDDxQGwsVgcl18pHh9aURTxN0NSr4zvmM73QdT+g1es0jjm6NW
-         OhSkdUjlPMEQmEwA1P1CRyLUFC5uK+RdJawHn5iMzxDDHaEqYHTrtsLepPMdkOT55KEX
-         KwQS4w0A7WeJNmKCqt9c026TFgNb7gGRuP/S8NJJsotm3AuPvSxVAUViRAiKXZBlonTR
-         4jVc/L3/HD9jY5RcMulxoLSWUPAsD3mixBEETBy2Ulcg4Hp6nFXqxRAxxvT3hSyAxcPY
-         Z9Jyn+dq6PDysoopXSUNwBa7dYv9oU/bO4hBn1MRbzYzukVrmqBcpndouAJDyFXyGydl
-         gVjQ==
-X-Gm-Message-State: AOAM533SaZeWxD8cyNXaCUPY4DfPa2rXI9jPJpMMv4HvuE6nbMITDdh7
-        bIex+qBj7M2YFUjDfMky3mf2fw==
-X-Google-Smtp-Source: ABdhPJyv/fDErsavQlK/fWf8PXQiUArsAlsCjCiC/JaSrC/YrLefouSMJ01A21nPnYQKjJDUWtgXCg==
-X-Received: by 2002:adf:d187:: with SMTP id v7mr73152wrc.50.1610734438759;
-        Fri, 15 Jan 2021 10:13:58 -0800 (PST)
+        bh=eAMyYaaj1VFxGbNOafp+nzJ0Q2eH0I8k2Xo9CJpOSL4=;
+        b=V0U018jEPf7yge/5CmBj/KWLznARfa4CymnvHeg7qx6kfOOzE1mGs4/nKIe7Ucrkxc
+         qX8SBxLiMSvluBdXkDEc5nYtvHZxq9QsvbV2eHS39RntqxkopThphkDPsUirim7RaNfE
+         JPA0C6NSwHj3Yo9glzQLIoGcBoYD4CNn4p4DjBk/r0UMXANEqm8sfuOItJfELKtZLyhy
+         z1pyZvm3JEJRaxQXR0urk3wtbf/axt+ucwDhthqH9cU28lVhrQ+pxjrC0z7ZwP1K4RRe
+         AhFvpInqB6+YqYTtW4bEettY4despsz0Ps3PJkxDYZkY3Q71o/j29WjbLqDK0NeE8j+p
+         69GA==
+X-Gm-Message-State: AOAM530sXnLAqcc37KgmTV+gk5h9LFc0GVDwOdhhfYKtJYmjwYumTmqZ
+        Qp5k3tbzaS7nSgjxYrVXfzorvw==
+X-Google-Smtp-Source: ABdhPJwe9r4nkJlVMT4urFaM/FAN0HUOKO2Kd3dORP++jhEf8U1Dg6bSWhgp5TG+hNJ3w3cTCkA9Rw==
+X-Received: by 2002:a7b:ce96:: with SMTP id q22mr10104491wmj.165.1610734439880;
+        Fri, 15 Jan 2021 10:13:59 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.57
+        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:13:58 -0800 (PST)
+        Fri, 15 Jan 2021 10:13:59 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 27/40] drm/vmwgfx/vmwgfx_bo: Remove superfluous param description and supply another
-Date:   Fri, 15 Jan 2021 18:13:00 +0000
-Message-Id: <20210115181313.3431493-28-lee.jones@linaro.org>
+Subject: [PATCH 28/40] drm/vmwgfx/vmwgfx_context: Demote kernel-doc abuses
+Date:   Fri, 15 Jan 2021 18:13:01 +0000
+Message-Id: <20210115181313.3431493-29-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210115181313.3431493-1-lee.jones@linaro.org>
 References: <20210115181313.3431493-1-lee.jones@linaro.org>
@@ -70,8 +70,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/vmwgfx/vmwgfx_bo.c:142: warning: Excess function parameter 'pin' description in 'vmw_bo_pin_in_vram_or_gmr'
- drivers/gpu/drm/vmwgfx/vmwgfx_bo.c:647: warning: Function parameter or member 'p_base' not described in 'vmw_user_bo_alloc'
+ drivers/gpu/drm/vmwgfx/vmwgfx_context.c:121: warning: Function parameter or member 'dev_priv' not described in 'vmw_context_cotables_unref'
+ drivers/gpu/drm/vmwgfx/vmwgfx_context.c:121: warning: Function parameter or member 'uctx' not described in 'vmw_context_cotables_unref'
+ drivers/gpu/drm/vmwgfx/vmwgfx_context.c:681: warning: Function parameter or member 'base' not described in 'vmw_user_context_base_to_res'
+ drivers/gpu/drm/vmwgfx/vmwgfx_context.c:707: warning: Function parameter or member 'p_base' not described in 'vmw_user_context_base_release'
 
 Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
 Cc: Roland Scheidegger <sroland@vmware.com>
@@ -80,29 +82,40 @@ Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_bo.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_context.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_bo.c b/drivers/gpu/drm/vmwgfx/vmwgfx_bo.c
-index 63dbc44eebe0b..ab0844b47d4d7 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_bo.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_bo.c
-@@ -131,7 +131,6 @@ int vmw_bo_pin_in_placement(struct vmw_private *dev_priv,
-  *
-  * @dev_priv:  Driver private.
-  * @buf:  DMA buffer to move.
-- * @pin:  Pin buffer if true.
-  * @interruptible:  Use interruptible wait.
-  * Return: Zero on success, Negative error code on failure. In particular
-  * -ERESTARTSYS if interrupted by a signal
-@@ -635,6 +634,7 @@ static void vmw_user_bo_ref_obj_release(struct ttm_base_object *base,
-  * @handle: Pointer to where the handle value should be assigned.
-  * @p_vbo: Pointer to where the refcounted struct vmw_buffer_object pointer
-  * should be assigned.
-+ * @p_base: The TTM base object pointer about to be allocated.
-  * Return: Zero on success, negative error code on error.
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_context.c b/drivers/gpu/drm/vmwgfx/vmwgfx_context.c
+index 6f4d0da11ad87..4a5a3e246216d 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_context.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_context.c
+@@ -112,7 +112,7 @@ static const struct vmw_res_func vmw_dx_context_func = {
+ 	.unbind = vmw_dx_context_unbind
+ };
+ 
+-/**
++/*
+  * Context management:
   */
- int vmw_user_bo_alloc(struct vmw_private *dev_priv,
+ 
+@@ -672,7 +672,7 @@ static int vmw_dx_context_destroy(struct vmw_resource *res)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * User-space context management:
+  */
+ 
+@@ -698,7 +698,7 @@ static void vmw_user_context_free(struct vmw_resource *res)
+ 			    vmw_user_context_size);
+ }
+ 
+-/**
++/*
+  * This function is called when user space has no more references on the
+  * base object. It releases the base-object's reference on the resource object.
+  */
 -- 
 2.25.1
 
