@@ -2,100 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C3A2F825E
+	by mail.lfdr.de (Postfix) with ESMTP id 39CC02F825D
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733269AbhAORat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:30:49 -0500
-Received: from mail-m964.mail.126.com ([123.126.96.4]:45598 "EHLO
-        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729043AbhAORas (ORCPT
+        id S1733189AbhAORac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:30:32 -0500
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:41578 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726519AbhAORab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:30:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=NkKcJLt4ThG3LLnSMb
-        RcwfL6SMK7zMcmCaQHYrdOndM=; b=gMD5dJfe28my/ziflxyrRXjJtWB+DKX36G
-        pxjw2YL7INLEb7QGQzQcHD2JkFDdIp+VRk+izdtmjhT2bLGQFFluYdLxGm8L/16c
-        LJRnqN6EtNAVT9WdNvPm6fNib8ObunHRC5KYIWc8rpeWHj2Qzpm59y8qqF9igyo5
-        2bzSzd6jU=
-Received: from localhost.localdomain (unknown [116.162.2.41])
-        by smtp9 (Coremail) with SMTP id NeRpCgAHeHoSmAFgtpvSQw--.4294S2;
-        Fri, 15 Jan 2021 21:26:44 +0800 (CST)
-From:   wangyingjie55@126.com
-To:     davem@davemloft.net, kuba@kernel.org, vraman@marvell.com,
-        skardach@marvell.com
-Cc:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
-        jerinj@marvell.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yingjie Wang <wangyingjie55@126.com>
-Subject: [PATCH v3] octeontx2-af: Fix missing check bugs in rvu_cgx.c
-Date:   Fri, 15 Jan 2021 05:26:23 -0800
-Message-Id: <1610717183-34425-1-git-send-email-wangyingjie55@126.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: NeRpCgAHeHoSmAFgtpvSQw--.4294S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Aw13Cr4xJryDtFW7XF4xWFg_yoW8Zryfp3
-        yvyryfCr1kGF4xCw4kJay8ZrWYga1Dta9Fg34UZas5uF1kGF1aqF1DKa1Yk3WUCrW8C3y7
-        tF1akw4furn5GFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j21v3UUUUU=
-X-Originating-IP: [116.162.2.41]
-X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbiKRUbp1pECc849AAAsU
+        Fri, 15 Jan 2021 12:30:31 -0500
+Received: by mail-oi1-f176.google.com with SMTP id 15so10310212oix.8;
+        Fri, 15 Jan 2021 09:30:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9bNlanUlLIZiV9jMZbmi1S66JbvTJeqySZ2DAtAruDg=;
+        b=SNm02dPVhSgCVJMe2zeBAR7V8fCc+jC7/B7Yhfu8xa+kE2M33hpVNqgngkxN7xTldV
+         2ajqK2pl/9bV/wWaupW58i7XlGjwyrrPSIWbzbxDlYVy5Q9zwRFf2MknvJEJUfzf4DEu
+         GE/ZMFodrvKG1cowh87AFhVEni1ma0uWbBrjI2JakQxb+vtMLK8M9kCGHZxN+iBdpzAA
+         gLtuC/wBb25vfcGnvPTmMHe3yi1Mx5mUR8jwrlrUlxy7Vc3+1N16+gH70FbP5L3LL0Lj
+         UXB5eJA+PV8sJoWEWBBY/rDCdb8osifSfqRHEi+r9rbONFGXZIrtRML3me3i8hVY9MfC
+         W+Vg==
+X-Gm-Message-State: AOAM531yQW1v4G5OJ4fznrEQSsc31AzwFg8As6kabLb/E6URgHY+Wtka
+        vdjBNQNZGaHD39EnLsyamHM6GLiI9A==
+X-Google-Smtp-Source: ABdhPJzoBo4X3FoK2C3WCQP/Cli/G8FN3JUg4u7kBAo4Q8d2jRCB8jJGU0MZjm2ToRWFK3+DGZrvsw==
+X-Received: by 2002:aca:3dd6:: with SMTP id k205mr6391840oia.96.1610731790874;
+        Fri, 15 Jan 2021 09:29:50 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y35sm1919098otb.5.2021.01.15.09.29.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 09:29:50 -0800 (PST)
+Received: (nullmailer pid 1495288 invoked by uid 1000);
+        Fri, 15 Jan 2021 17:29:49 -0000
+Date:   Fri, 15 Jan 2021 11:29:49 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     robh+dt@kernel.org, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, frowand.list@gmail.com,
+        drinkcat@chromium.org, swboyd@chromium.org, karahmed@amazon.de,
+        f.fainelli@gmail.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] fdt: Properly handle "no-map" field in the memory
+ region
+Message-ID: <20210115172949.GA1495225@robh.at.kernel.org>
+References: <20210115114544.1830068-1-qperret@google.com>
+ <20210115114544.1830068-2-qperret@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210115114544.1830068-2-qperret@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yingjie Wang <wangyingjie55@126.com>
+On Fri, 15 Jan 2021 11:45:43 +0000, Quentin Perret wrote:
+> From: KarimAllah Ahmed <karahmed@amazon.de>
+> 
+> Mark the memory region with NOMAP flag instead of completely removing it
+> from the memory blocks. That makes the FDT handling consistent with the EFI
+> memory map handling.
+> 
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Frank Rowand <frowand.list@gmail.com>
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: KarimAllah Ahmed <karahmed@amazon.de>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  drivers/of/fdt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-In rvu_mbox_handler_cgx_mac_addr_get()
-and rvu_mbox_handler_cgx_mac_addr_set(),
-the msg is expected only from PFs that are mapped to CGX LMACs.
-It should be checked before mapping,
-so we add the is_cgx_config_permitted() in the functions.
-
-Fixes: 96be2e0da85e ("octeontx2-af: Support for MAC address filters in CGX")
-Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
-Reviewed-by: Geetha sowjanya<gakula@marvell.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c | 6 ++++++
- net/ipv4/igmp.c                                     | 3 +++
- 2 files changed, 9 insertions(+)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-index d298b9357177..6c6b411e78fd 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-@@ -469,6 +469,9 @@ int rvu_mbox_handler_cgx_mac_addr_set(struct rvu *rvu,
- 	int pf = rvu_get_pf(req->hdr.pcifunc);
- 	u8 cgx_id, lmac_id;
- 
-+	if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
-+		return -EPERM;
-+
- 	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
- 
- 	cgx_lmac_addr_set(cgx_id, lmac_id, req->mac_addr);
-@@ -485,6 +488,9 @@ int rvu_mbox_handler_cgx_mac_addr_get(struct rvu *rvu,
- 	int rc = 0, i;
- 	u64 cfg;
- 
-+	if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
-+		return -EPERM;
-+
- 	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
- 
- 	rsp->hdr.rc = rc;
-diff --git a/net/ipv4/igmp.c b/net/ipv4/igmp.c
-index 7b272bbed2b4..1b6f91271cfd 100644
---- a/net/ipv4/igmp.c
-+++ b/net/ipv4/igmp.c
-@@ -2248,6 +2248,9 @@ int ip_mc_leave_group(struct sock *sk, struct ip_mreqn *imr)
- 	u32 ifindex;
- 	int ret = -EADDRNOTAVAIL;
- 
-+	if (!ipv4_is_multicast(group))
-+		return -EINVAL;
-+
- 	ASSERT_RTNL();
- 
- 	in_dev = ip_mc_find_dev(net, imr);
--- 
-2.7.4
-
+Applied, thanks!
