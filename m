@@ -2,200 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92872F72BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 07:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 360BD2F72AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 07:03:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbhAOGLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 01:11:30 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:59594 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726200AbhAOGL3 (ORCPT
+        id S1726928AbhAOGD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 01:03:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726430AbhAOGD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 01:11:29 -0500
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210115061043epoutp0342791a9cd13affbdb70eb064a1e51dfb~aUvheVbkH2941129411epoutp03I
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:10:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210115061043epoutp0342791a9cd13affbdb70eb064a1e51dfb~aUvheVbkH2941129411epoutp03I
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1610691043;
-        bh=/ClZBDspCYZj+U5ATmBXmCgRr4LZt11VuernE0g7V68=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=EyiBgKkdOCPQGCAjJThu4qrAnUq3rGXYeG39VXnwMaNnFnB0qlJwZB1TBhEDFrTWz
-         BzXFD+4LizRbkYuiaUbaLYiWzEEhkFQIgBG2Ezc3MQz6y6guYlaA3l0YC8+vFqDyj8
-         xfUNUYRypxMBzZUgqnBl9BAxHIfHzTceC2Xd7/wg=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20210115061042epcas2p20b960fe46f842c0865ae9e21d1b6bb07~aUvg29chO2011920119epcas2p2t;
-        Fri, 15 Jan 2021 06:10:42 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.187]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4DH9lh3n3Dz4x9QM; Fri, 15 Jan
-        2021 06:10:40 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C1.1A.52511.0E131006; Fri, 15 Jan 2021 15:10:40 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210115061039epcas2p479bc5f3dd3dad5a250c4e0fc42896704~aUveGCn4X2762527625epcas2p4p;
-        Fri, 15 Jan 2021 06:10:39 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210115061039epsmtrp18a68105e92a576c0b2a89ac7dce5389d~aUveFQdVA2704227042epsmtrp1L;
-        Fri, 15 Jan 2021 06:10:39 +0000 (GMT)
-X-AuditID: b6c32a48-4f9ff7000000cd1f-56-600131e028f8
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4E.99.08745.FD131006; Fri, 15 Jan 2021 15:10:39 +0900 (KST)
-Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210115061039epsmtip1370aaaa876c4e7f4df790d32f9dbc9d4~aUvd2JheV3029930299epsmtip1e;
-        Fri, 15 Jan 2021 06:10:39 +0000 (GMT)
-From:   Dongseok Yi <dseok.yi@samsung.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Cc:     namkyu78.kim@samsung.com, Alexander Lobakin <alobakin@pm.me>,
-        Dongseok Yi <dseok.yi@samsung.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net] udp: ipv4: manipulate network header of NATed UDP GRO
- fraglist
-Date:   Fri, 15 Jan 2021 14:58:24 +0900
-Message-Id: <1610690304-167832-1-git-send-email-dseok.yi@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOKsWRmVeSWpSXmKPExsWy7bCmhe4DQ8YEg+2PBSxWPd7OYjHnfAuL
-        xZVpfxgtLmzrY7W4vGsOm0XDnWY2i2MLxCx2d/5gt3i35Qi7xde9XSwOXB5bVt5k8liwqdRj
-        06pONo+2a6uYPI7uOcfm0bdlFaPHptYlrB6fN8kFcETl2GSkJqakFimk5iXnp2TmpdsqeQfH
-        O8ebmhkY6hpaWpgrKeQl5qbaKrn4BOi6ZeYAnaikUJaYUwoUCkgsLlbSt7Mpyi8tSVXIyC8u
-        sVVKLUjJKTA0LNArTswtLs1L10vOz7UyNDAwMgWqTMjJWPY4sOCPaMX3DzPZGxjPCXYxcnJI
-        CJhIbPzUxtTFyMUhJLCDUeLavf0sEM4nRokdbdsYQaqEBD4zSjx+XwHT0f1lFVTRLkaJhq1X
-        oJwfjBJv131nBaliE9CQ2P/uBZgtIhAn0XG0gxGkiFlgGpPE6untYGOFBUIlrjzqYQexWQRU
-        Jabf+MYGYvMKuEqsevSWDWKdnMTNc53MEPY1dokjJ4C2cQDZLhK7FvlAhIUlXh3fwg5hS0m8
-        7G9jhyipl2jtjgFZKyHQwyhxZd8TFogaY4lZz0BO4AC6R1Ni/S59iHJliSO3wCqYBfgkOg7/
-        hZrCK9HRJgRhKklM/BIPMUNC4sXJyVDzPCS+dzwCO0tIIFbi/QLvCYyysxCmL2BkXMUollpQ
-        nJueWmxUYIIcP5sYwSlOy2MH4+y3H/QOMTJxMB5ilOBgVhLhzVdmSBDiTUmsrEotyo8vKs1J
-        LT7EaAoMqonMUqLJ+cAkm1cSb2hqZGZmYGlqYWpmZKEkzltk8CBeSCA9sSQ1OzW1ILUIpo+J
-        g1OqgUnD+1xf89q2lStdCzKXmjlnFLIsExD+sOi/ybKqFcczN8i679HMUfxqEbhvud19bjH7
-        UwotF48WPI7NCeN/fvrh1ItzfY/yu35ts/16KW/WfjfNJ/GHo15P3BaRsm+y7pmEkq0qHgkJ
-        L5lMjpy9vb675/Myu+rGFnmN9F0ThVXZZ9wIE1pRXca9J6Zos8XedQ8Vn32d+GTCJZuoKct5
-        dW9qc/HbBe8J2l0Q4OO4tvW6Tfmf9/Eb5OoeGb6Zme5ybldKbl/fw+iNWqL2x63/zto0i7lG
-        LsPE+CO7Zr+WWNeejwcWZ3slTtN7PzNo9YqA6R9rj1+UDanpSVU8yJysr7tw0aso5o4nyyYv
-        vVtyYokSS3FGoqEWc1FxIgDXGCK/+gMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJLMWRmVeSWpSXmKPExsWy7bCSnO59Q8YEg2vz1S1WPd7OYjHnfAuL
-        xZVpfxgtLmzrY7W4vGsOm0XDnWY2i2MLxCx2d/5gt3i35Qi7xde9XSwOXB5bVt5k8liwqdRj
-        06pONo+2a6uYPI7uOcfm0bdlFaPHptYlrB6fN8kFcERx2aSk5mSWpRbp2yVwZSx7HFjwR7Ti
-        +4eZ7A2M5wS7GDk5JARMJLq/rGLpYuTiEBLYwShxdGYbaxcjB1BCQmLXZleIGmGJ+y1HWCFq
-        vjFKHPv2mxkkwSagIbH/3QtWEFtEIE7i0KxlYDazwDwmiQM3i0BsYYFgieevbrOB2CwCqhLT
-        b3wDs3kFXCVWPXrLBrFATuLmuU7mCYw8CxgZVjFKphYU56bnFhsWGOWllusVJ+YWl+al6yXn
-        525iBIeeltYOxj2rPugdYmTiYDzEKMHBrCTCm6/MkCDEm5JYWZValB9fVJqTWnyIUZqDRUmc
-        90LXyXghgfTEktTs1NSC1CKYLBMHp1QDE2vtG60NshyCvqt6q8LO+uje1PTXsuNtXbZ7orvU
-        XuXijxWqvxmt9h27sfjVpedZqZ+SZh5rTptrby14nf9SLfPqRWYv47/Gr7RcH3ZEPEjyQbXu
-        WtXSxEsplldUWzd97okPdvnWf+pg9ISnKY7hWln1JnddH164elSoUeehz6QT5sc/Tfty647b
-        lk/dHH2N3SvEk77rxz59ob5ug2BMkHTnpDhRy8dybUY1ugFPX/Tfuh9/6N4E+yPGXx47Vc1j
-        OHb+UhiDYP/azht7gpM2315dnBxsYfLd30z/ffsJ671tf7TUDloEz9OU5D+f9InnzuGaFemb
-        tZ03WvS2b2aeJTB1NbuyPIe5feNW6TdBSizFGYmGWsxFxYkAJuVp/awCAAA=
-X-CMS-MailID: 20210115061039epcas2p479bc5f3dd3dad5a250c4e0fc42896704
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210115061039epcas2p479bc5f3dd3dad5a250c4e0fc42896704
-References: <CGME20210115061039epcas2p479bc5f3dd3dad5a250c4e0fc42896704@epcas2p4.samsung.com>
+        Fri, 15 Jan 2021 01:03:27 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55525C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 22:02:46 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id m10so9155539lji.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 22:02:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MDmlV62xy2dTAa7jUaW4qdfTp5nhVCOQRSmVDFfq7CU=;
+        b=P3f/TC0N21PLslxgUMkEFSMq6IEjaNybcJJZ9sGTGnSYNOG2usJJTVflhsSmi4hqHR
+         KN06JeUoyNa7d3JQCTiClZLNTEcyDizNR63bHhj/nr66vJLqBVq0wsG6z/M0+ht2q9QW
+         aGskVR2SNoz2AmO8Ad2lStOC76v9OnGDq/QyQ+wISQgNLdZx7kcJkH+Uz2V+JXLJ78mW
+         BXRHu0W6VcWo1rVP/TqK9xCMkJE3QIgdaDSJqdhEcf7YqGQkxJ7SH9gRjTFEy9FslFfb
+         /4ZCr3zhKywmBqS6j721detK5gmAfBUoyFS5OZt72xdBTeJ81NKxZ0c6BjI9gc+8hXCC
+         1/QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MDmlV62xy2dTAa7jUaW4qdfTp5nhVCOQRSmVDFfq7CU=;
+        b=cUQyKXPV/1HQv8UIsFMUQ+ZP/kjkiicbOP7tqMSo7WP2ARobdwn4Lvz8qkx9/UyKxL
+         kU3dhluezl3flHFGf4bK7RmEUD/3vmnY0SZnqQZaiLgye2FDIFKsuK5Wg5IM4DokhWk0
+         U4ReyHYMh/sqEXY2E6TfFGZDvm2tGma/SUnrm2/U4mLK4U6KGE/VFojBarsuBOxeU5mv
+         p1/AbsHbFfGMc2yUW64nrcCqChhocbfrXkTlk0pk103AqbJTq8Vibdx4noRFGPF2hFEI
+         jjFMRoI1W/Xq75FOLAhO77kausKdTubAXm5nyZdngKu01hk5a5pC43F34JUcVuTTT4VG
+         lFww==
+X-Gm-Message-State: AOAM532Y40n03NPHyZ7Y6c6uRVX9Nw3YrwtMdyS2e3Y2bbXZgHjO7bKi
+        TK2RahO+8pc96vtc7O/UJm81XclSdi5BZwabFohZxg==
+X-Google-Smtp-Source: ABdhPJx95UKtrbv3RMWAwaHdwARhnz6c9CWvdsRsZhfDyk0HF1CL0Rx8irqQzcSP9Qi0gnaJ8BTByLuHRW09qLnJd7M=
+X-Received: by 2002:a2e:2242:: with SMTP id i63mr4467220lji.343.1610690563696;
+ Thu, 14 Jan 2021 22:02:43 -0800 (PST)
+MIME-Version: 1.0
+References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
+ <1604419306-26105-3-git-send-email-sumit.garg@linaro.org> <X/x+N0fgrzIZTeNi@kernel.org>
+ <CAFA6WYOUvWAZtYfR4q8beZFkX-CtdxqwJaRQM+GHNMDfQiEWOA@mail.gmail.com> <X/+m6+m2/snYj9Vc@kernel.org>
+In-Reply-To: <X/+m6+m2/snYj9Vc@kernel.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri, 15 Jan 2021 11:32:31 +0530
+Message-ID: <CAFA6WYNyirit_AFhoE+XR9PHw=OjRgEdXDqz1uanj_SN2NXeMw@mail.gmail.com>
+Subject: Re: [PATCH v8 2/4] KEYS: trusted: Introduce TEE based Trusted Keys
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Janne Karhunen <janne.karhunen@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Markus Wamser <Markus.Wamser@mixed-mode.de>,
+        Luke Hinds <lhinds@redhat.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        op-tee@lists.trustedfirmware.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
-forwarding. Only the header of head_skb from ip_finish_output_gso ->
-skb_gso_segment is updated but following frag_skbs are not updated.
+On Thu, 14 Jan 2021 at 07:35, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+>
+> On Wed, Jan 13, 2021 at 04:47:00PM +0530, Sumit Garg wrote:
+> > Hi Jarkko,
+> >
+> > On Mon, 11 Jan 2021 at 22:05, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > >
+> > > On Tue, Nov 03, 2020 at 09:31:44PM +0530, Sumit Garg wrote:
+> > > > Add support for TEE based trusted keys where TEE provides the functionality
+> > > > to seal and unseal trusted keys using hardware unique key.
+> > > >
+> > > > Refer to Documentation/tee.txt for detailed information about TEE.
+> > > >
+> > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > >
+> > > I haven't yet got QEMU environment working with aarch64, this produces
+> > > just a blank screen:
+> > >
+> > > ./output/host/usr/bin/qemu-system-aarch64 -M virt -cpu cortex-a53 -smp 1 -kernel output/images/Image -initrd output/images/rootfs.cpio -serial stdio
+> > >
+> > > My BuildRoot fork for TPM and keyring testing is located over here:
+> > >
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/buildroot-tpmdd.git/
+> > >
+> > > The "ARM version" is at this point in aarch64 branch. Over time I will
+> > > define tpmdd-x86_64 and tpmdd-aarch64 boards and everything will be then
+> > > in the master branch.
+> > >
+> > > To create identical images you just need to
+> > >
+> > > $ make tpmdd_defconfig && make
+> > >
+> > > Can you check if you see anything obviously wrong? I'm eager to test this
+> > > patch set, and in bigger picture I really need to have ready to run
+> > > aarch64 environment available.
+> >
+> > I would rather suggest you to follow steps listed here [1] as to test
+> > this feature on Qemu aarch64 we need to build firmwares such as TF-A,
+> > OP-TEE, UEFI etc. which are all integrated into OP-TEE Qemu build
+> > system [2]. And then it would be easier to migrate them to your
+> > buildroot environment as well.
+> >
+> > [1] https://lists.trustedfirmware.org/pipermail/op-tee/2020-May/000027.html
+> > [2] https://optee.readthedocs.io/en/latest/building/devices/qemu.html#qemu-v8
+> >
+> > -Sumit
+>
+> Can you provide 'keyctl_change'? Otherwise, the steps are easy to follow.
+>
 
-A call path skb_mac_gso_segment -> inet_gso_segment ->
-udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
-does not try to update UDP/IP header of the segment list.
+$ cat keyctl_change
+diff --git a/common.mk b/common.mk
+index aeb7b41..663e528 100644
+--- a/common.mk
++++ b/common.mk
+@@ -229,6 +229,7 @@ BR2_PACKAGE_OPTEE_TEST_SDK ?= $(OPTEE_OS_TA_DEV_KIT_DIR)
+ BR2_PACKAGE_OPTEE_TEST_SITE ?= $(OPTEE_TEST_PATH)
+ BR2_PACKAGE_STRACE ?= y
+ BR2_TARGET_GENERIC_GETTY_PORT ?= $(if
+$(CFG_NW_CONSOLE_UART),ttyAMA$(CFG_NW_CONSOLE_UART),ttyAMA0)
++BR2_PACKAGE_KEYUTILS := y
 
-Update dport, daddr and checksums of each skb of the segment list
-after __udp_gso_segment.
+ # All BR2_* variables from the makefile or the environment are appended to
+ # ../out-br/extra.conf. All values are quoted "..." except y and n.
+diff --git a/kconfigs/qemu.conf b/kconfigs/qemu.conf
+index 368c18a..832ab74 100644
+--- a/kconfigs/qemu.conf
++++ b/kconfigs/qemu.conf
+@@ -20,3 +20,5 @@ CONFIG_9P_FS=y
+ CONFIG_9P_FS_POSIX_ACL=y
+ CONFIG_HW_RANDOM=y
+ CONFIG_HW_RANDOM_VIRTIO=y
++CONFIG_TRUSTED_KEYS=y
++CONFIG_ENCRYPTED_KEYS=y
 
-Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
-Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
----
-Steffen Klassert said, there could be 2 options.
-https://lore.kernel.org/patchwork/patch/1362257/
+> After I've successfully tested 2/4, I'd suggest that you roll out one more
+> version and CC the documentation patch to Elaine and Mini, and clearly
+> remark in the commit message that TEE is a standard, with a link to the
+> specification.
+>
 
-I was trying to write a quick fix, but it was not easy to forward
-segmented list. Currently, assuming DNAT only. Should we consider
-SNAT too?
+Sure, I will roll out the next version after your testing.
 
- net/ipv4/udp_offload.c | 45 +++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 41 insertions(+), 4 deletions(-)
+-Sumit
 
-diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index ff39e94..7e24928 100644
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -309,10 +309,12 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
- 					 netdev_features_t features)
- {
- 	struct sk_buff *segs = ERR_PTR(-EINVAL);
-+	struct sk_buff *seg;
- 	unsigned int mss;
- 	__wsum csum;
--	struct udphdr *uh;
--	struct iphdr *iph;
-+	struct udphdr *uh, *uh2;
-+	struct iphdr *iph, *iph2;
-+	bool is_fraglist = false;
- 
- 	if (skb->encapsulation &&
- 	    (skb_shinfo(skb)->gso_type &
-@@ -327,8 +329,43 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
- 	if (!pskb_may_pull(skb, sizeof(struct udphdr)))
- 		goto out;
- 
--	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
--		return __udp_gso_segment(skb, features);
-+	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
-+		if (skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST)
-+			is_fraglist = true;
-+
-+		segs = __udp_gso_segment(skb, features);
-+		if (IS_ERR_OR_NULL(segs) || !is_fraglist)
-+			return segs;
-+
-+		seg = segs;
-+		uh = udp_hdr(seg);
-+		iph = ip_hdr(seg);
-+
-+		while ((seg = seg->next)) {
-+			uh2 = udp_hdr(seg);
-+			iph2 = ip_hdr(seg);
-+
-+			if (uh->dest == uh2->dest && iph->daddr == iph2->daddr)
-+				continue;
-+
-+			if (uh2->check) {
-+				inet_proto_csum_replace4(&uh2->check, seg,
-+							 iph2->daddr,
-+							 iph->daddr, true);
-+				inet_proto_csum_replace2(&uh2->check, seg,
-+							 uh2->dest, uh->dest,
-+							 false);
-+				if (!uh2->check)
-+					uh2->check = CSUM_MANGLED_0;
-+			}
-+			uh2->dest = uh->dest;
-+
-+			csum_replace4(&iph2->check, iph2->daddr, iph->daddr);
-+			iph2->daddr = iph->daddr;
-+		}
-+
-+		return segs;
-+	}
- 
- 	mss = skb_shinfo(skb)->gso_size;
- 	if (unlikely(skb->len <= mss))
--- 
-2.7.4
-
+> /Jarkko
