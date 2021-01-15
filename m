@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04652F81D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F1F2F81BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387583AbhAORMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:12:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21593 "EHLO
+        id S1732992AbhAORK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:10:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32939 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732751AbhAORKz (ORCPT
+        by vger.kernel.org with ESMTP id S1732707AbhAORKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 12:10:55 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
@@ -18,40 +18,40 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/1vlUeHhytX0Zn1XKXcct2jvLo89TqfY4pIBek2Nk6w=;
-        b=i2PMG+VQU1ZSf5nDoTJ9gvLkGgoaKjjN+Fs9+n2j3cR1xI2vUyLpC1aCQ8ew84PgoaYuEi
-        CIVdco5OpXrv0xaLMCgUfCgX2D/2e1JZJncNcS86QPz8pL4Yc2uQSFFe2o8DDp7vfbHPFk
-        jY/u3KDrBKq8h2zFslCdtv9wrSpv3Ic=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-572-S1cSDfZHM5-JmGk8BF1ClQ-1; Fri, 15 Jan 2021 12:09:25 -0500
-X-MC-Unique: S1cSDfZHM5-JmGk8BF1ClQ-1
-Received: by mail-qt1-f199.google.com with SMTP id c14so7880722qtn.5
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:09:25 -0800 (PST)
+        bh=pU1W6eF+5acoXg0XrMV/kYBFP7oiRoIxFmy0y+UKd/k=;
+        b=BqK0i76oHblEKMM5o3Yrb+fc74QuUzrOwh1jKwtiW7y84xVhB6Vqp18iMauh/wCCYY8K76
+        mAV0uFo0Q6S++1IBn4ojt+NEw3GXMY8Qn4eWEm7OrrNdyBN/d+QYYIKIYtYCw2mtY1F44S
+        YVqSYOmcacsUA2c/zPX4wLqeK58aF34=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-GTGuzSfRNn-gTLgVgvMX1g-1; Fri, 15 Jan 2021 12:09:26 -0500
+X-MC-Unique: GTGuzSfRNn-gTLgVgvMX1g-1
+Received: by mail-qv1-f69.google.com with SMTP id f7so8266721qvr.4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:09:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/1vlUeHhytX0Zn1XKXcct2jvLo89TqfY4pIBek2Nk6w=;
-        b=mW9zzOSIhMUMYuiHwBfV8hA9AjbsA2UWktZtRiKxy7Z1ZWz6gTSJgHkpcQi5W0SVyi
-         LZaF/AMc7RUb9Axa2PeIf6sWL7Jb6ojIXYC3lj2vrmsUFWtFi/ADWRosKE4yh2aYr00B
-         rN1C0hwgjS4mWcduPEWXIxwR9y2ESaPlex0nS+U56QDfxwSTCQMhiW0lotP7DXaeCqkF
-         +oU2Vo/yqDS8P/euwx3GzqjdCqwHKV7Cm7xrEg0dmJdErT0lysN0AStB6mdO52GERxfV
-         OHSPwSRI4cq0mRyGA/doe58yg1xbmzl7actoL4tK5xLcIp8B3G/44v6Z1CRWTfsB4VIQ
-         HXKw==
-X-Gm-Message-State: AOAM531WlLStLs2jvfNLJwEBAdFva5Aq2Mus2vCnZwaPdqc/eC6NOt8I
-        LALw6YGBjuu/7JlfX4tpm1ewJUbyw/waf4ZLpLQbNzC+3GqrBHhlMDBCLmgBUMOT0WKUEDdTlfQ
-        r6IKoRifSzDhYTnONjMcUIdkBCmVZQ5cApSuP3cKiGVQPcMhRUxw+sorXTQCEWV3pWXC6LlIBaQ
+        bh=pU1W6eF+5acoXg0XrMV/kYBFP7oiRoIxFmy0y+UKd/k=;
+        b=Azti7AORYnakeJ/kONASZBPYsb7F+K9BvuJS/B5NCVN9OlJ9q2aCFtOdL+olCfLkGX
+         Na/wr+gleQbD1fX+gZVZtsQt1CBKLKc7H73rzn2KlIvtkSBk86Q568Rv2fDW1DLdRrKu
+         zuKILyXt05EqaLAC4Ckmi4B30T4wGdfzvXHz70aG8xB/F8ypEByNsY3CJYe/7V+qNAwc
+         oREyTnPcSKtsKbGlv/zC9WN+QUsk4XM0eBFWT1wAq3EB1dnzRfjHseznCO1CFbPDL3CW
+         uHLFLkfqHVHIHJ3kUt+Q8vmqvTgIFfi4mLoaIjbVO2tv50hYlUf4QneC77G0O0J03nbD
+         X/QQ==
+X-Gm-Message-State: AOAM533UujHww2pKylqzm0jGTBirJ0PyY5f3CczxDoxckYv9qwhRS+bL
+        x9ZIKUoPGHIBAt0kZZVUw9bsDFMziyucu9uoSe3m3o9GXemSA+hYWXxbIfWDCG4uCMEU3jhfF6S
+        oEoQ2aujjV9ermXRnIzPBDZsnMASp9G78q/CEomzzeXyURokzrZn2kaDmSJ2GM5ha25y9GCv3zw
         ==
-X-Received: by 2002:a37:a1d6:: with SMTP id k205mr13509311qke.384.1610730563156;
-        Fri, 15 Jan 2021 09:09:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyUDTEd6KHwD8hcYvYDXopX+e8jSdEwnqhv+y4ihKk9o1h30UduZojRTJB6Qc+C6GSA3qFLSQ==
-X-Received: by 2002:a37:a1d6:: with SMTP id k205mr13509268qke.384.1610730562780;
-        Fri, 15 Jan 2021 09:09:22 -0800 (PST)
+X-Received: by 2002:a0c:bd2b:: with SMTP id m43mr12934485qvg.32.1610730564996;
+        Fri, 15 Jan 2021 09:09:24 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJynSq2SBFF8P8zjh3jGjKduQkRr9w+ZGRCy7Dj1mcGpq2w7EdvE3LxZusU0Nl55C86yHtpjRA==
+X-Received: by 2002:a0c:bd2b:: with SMTP id m43mr12934439qvg.32.1610730564546;
+        Fri, 15 Jan 2021 09:09:24 -0800 (PST)
 Received: from localhost.localdomain ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id d123sm5187840qke.95.2021.01.15.09.09.21
+        by smtp.gmail.com with ESMTPSA id d123sm5187840qke.95.2021.01.15.09.09.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 09:09:21 -0800 (PST)
+        Fri, 15 Jan 2021 09:09:23 -0800 (PST)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Mike Rapoport <rppt@linux.vnet.ibm.com>,
@@ -64,9 +64,9 @@ Cc:     Mike Rapoport <rppt@linux.vnet.ibm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Nadav Amit <nadav.amit@gmail.com>
-Subject: [PATCH RFC 07/30] mm/swap: Introduce the idea of special swap ptes
-Date:   Fri, 15 Jan 2021 12:08:44 -0500
-Message-Id: <20210115170907.24498-8-peterx@redhat.com>
+Subject: [PATCH RFC 08/30] shmem/userfaultfd: Handle uffd-wp special pte in page fault handler
+Date:   Fri, 15 Jan 2021 12:08:45 -0500
+Message-Id: <20210115170907.24498-9-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210115170907.24498-1-peterx@redhat.com>
 References: <20210115170907.24498-1-peterx@redhat.com>
@@ -76,313 +76,236 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We used to have special swap entries, like migration entries, hw-poison
-entries, device private entries, etc.
+File-backed memories are prone to unmap/swap so the ptes are always unstable.
+This could lead to userfaultfd-wp information got lost when unmapped or swapped
+out on such types of memory, for example, shmem.  To keep such an information
+persistent, we will start to use the newly introduced swap-like special ptes to
+replace a null pte when those ptes were removed.
 
-Those "special swap entries" reside in the range that they need to be at least
-swap entries first, and their types are decided by swp_type(entry).
+Prepare this by handling such a special pte first before it is applied.  Here
+a new fault flag FAULT_FLAG_UFFD_WP is introduced.  When this flag is set, it
+means the current fault is to resolve a page access (either read or write) to
+the uffd-wp special pte.
 
-This patch introduces another idea called "special swap ptes".
+The handling of this special pte page fault is similar to missing fault, but it
+should happen after the pte missing logic since the special pte is designed to
+be a swap-like pte.  Meanwhile it should be handled before do_swap_page() so
+that the swap core logic won't be confused to see such an illegal swap pte.
 
-It's very easy to get confused against "special swap entries", but a speical
-swap pte should never contain a swap entry at all.  It means, it's illegal to
-call pte_to_swp_entry() upon a special swap pte.
+This is a slow path of uffd-wp handling, because unmap of wr-protected shmem
+ptes should be rare.  So far it should only trigger in two conditions:
 
-Make the uffd-wp special pte to be the first special swap pte.
+  (1) When trying to punch holes in shmem_fallocate(), there will be a
+      pre-unmap optimization before evicting the page.  That will create
+      unmapped shmem ptes with wr-protected pages covered.
 
-Before this patch, is_swap_pte()==true means one of the below:
+  (2) Swapping out of shmem pages
 
-   (a.1) The pte has a normal swap entry (non_swap_entry()==false).  For
-         example, when an anonymous page got swapped out.
+Because of this, the page fault handling is simplifed too by always assuming
+it's a read fault when calling do_fault().  When it's a write fault, it'll
+fault again when retry the page access, then do_wp_page() will handle the rest
+of message generation and delivery to the userfaultfd.
 
-   (a.2) The pte has a special swap entry (non_swap_entry()==true).  For
-         example, a migration entry, a hw-poison entry, etc.
-
-After this patch, is_swap_pte()==true means one of the below, where case (b) is
-added:
-
- (a) The pte contains a swap entry.
-
-   (a.1) The pte has a normal swap entry (non_swap_entry()==false).  For
-         example, when an anonymous page got swapped out.
-
-   (a.2) The pte has a special swap entry (non_swap_entry()==true).  For
-         example, a migration entry, a hw-poison entry, etc.
-
- (b) The pte does not contain a swap entry at all (so it cannot be passed
-     into pte_to_swp_entry()).  For example, uffd-wp special swap pte.
-
-Teach the whole mm core about this new idea.  It's done by introducing another
-helper called pte_has_swap_entry() which stands for case (a.1) and (a.2).
-Before this patch, it will be the same as is_swap_pte() because there's no
-special swap pte yet.  Now for most of the previous use of is_swap_entry() in
-mm core, we'll need to use the new helper pte_has_swap_entry() instead, to make
-sure we won't try to parse a swap entry from a swap special pte (which does not
-contain a swap entry at all!).  We either handle the swap special pte, or it'll
-naturally use the default "else" paths.
-
-Warn properly (e.g., in do_swap_page()) when we see a special swap pte - we
-should never call do_swap_page() upon those ptes, but just to bail out early if
-it happens.
+Disable fault-around for such a special page fault, because the introduced new
+flag (FAULT_FLAG_UFFD_WP) only applies to current pte rather than all the pages
+around it.  Doing fault-around with the new flag could confuse all the rest of
+pages when installing ptes from page cache when there's a cache hit.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- fs/proc/task_mmu.c      | 14 ++++++++------
- include/linux/swapops.h | 39 ++++++++++++++++++++++++++++++++++++++-
- mm/khugepaged.c         | 11 ++++++++++-
- mm/memcontrol.c         |  2 +-
- mm/memory.c             |  7 +++++++
- mm/migrate.c            |  2 +-
- mm/mprotect.c           |  2 +-
- mm/mremap.c             |  2 +-
- mm/page_vma_mapped.c    |  6 +++---
- 9 files changed, 70 insertions(+), 15 deletions(-)
+ include/linux/mm.h |   2 +
+ mm/memory.c        | 107 +++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 105 insertions(+), 4 deletions(-)
 
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index ee5a235b3056..5286fd23bbf4 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -498,7 +498,7 @@ static void smaps_pte_entry(pte_t *pte, unsigned long addr,
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index db6ae4d3fb4e..85d928764b64 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -426,6 +426,7 @@ extern pgprot_t protection_map[16];
+  * @FAULT_FLAG_REMOTE: The fault is not for current task/mm.
+  * @FAULT_FLAG_INSTRUCTION: The fault was during an instruction fetch.
+  * @FAULT_FLAG_INTERRUPTIBLE: The fault can be interrupted by non-fatal signals.
++ * @FAULT_FLAG_UFFD_WP: When install new page entries, set uffd-wp bit.
+  *
+  * About @FAULT_FLAG_ALLOW_RETRY and @FAULT_FLAG_TRIED: we can specify
+  * whether we would allow page faults to retry by specifying these two
+@@ -456,6 +457,7 @@ extern pgprot_t protection_map[16];
+ #define FAULT_FLAG_REMOTE			0x80
+ #define FAULT_FLAG_INSTRUCTION  		0x100
+ #define FAULT_FLAG_INTERRUPTIBLE		0x200
++#define FAULT_FLAG_UFFD_WP			0x400
  
- 	if (pte_present(*pte)) {
- 		page = vm_normal_page(vma, addr, *pte);
--	} else if (is_swap_pte(*pte)) {
-+	} else if (pte_has_swap_entry(*pte)) {
- 		swp_entry_t swpent = pte_to_swp_entry(*pte);
- 
- 		if (!non_swap_entry(swpent)) {
-@@ -518,8 +518,10 @@ static void smaps_pte_entry(pte_t *pte, unsigned long addr,
- 			page = migration_entry_to_page(swpent);
- 		else if (is_device_private_entry(swpent))
- 			page = device_private_entry_to_page(swpent);
--	} else if (unlikely(IS_ENABLED(CONFIG_SHMEM) && mss->check_shmem_swap
--							&& pte_none(*pte))) {
-+	} else if (unlikely(IS_ENABLED(CONFIG_SHMEM) &&
-+			    mss->check_shmem_swap &&
-+			    /* Here swap special pte is the same as none pte */
-+			    (pte_none(*pte) || is_swap_special_pte(*pte)))) {
- 		page = xa_load(&vma->vm_file->f_mapping->i_pages,
- 						linear_page_index(vma, addr));
- 		if (xa_is_value(page))
-@@ -688,7 +690,7 @@ static int smaps_hugetlb_range(pte_t *pte, unsigned long hmask,
- 
- 	if (pte_present(*pte)) {
- 		page = vm_normal_page(vma, addr, *pte);
--	} else if (is_swap_pte(*pte)) {
-+	} else if (pte_has_swap_entry(*pte)) {
- 		swp_entry_t swpent = pte_to_swp_entry(*pte);
- 
- 		if (is_migration_entry(swpent))
-@@ -1053,7 +1055,7 @@ static inline void clear_soft_dirty(struct vm_area_struct *vma,
- 		ptent = pte_wrprotect(old_pte);
- 		ptent = pte_clear_soft_dirty(ptent);
- 		ptep_modify_prot_commit(vma, addr, pte, old_pte, ptent);
--	} else if (is_swap_pte(ptent)) {
-+	} else if (pte_has_swap_entry(ptent)) {
- 		ptent = pte_swp_clear_soft_dirty(ptent);
- 		set_pte_at(vma->vm_mm, addr, pte, ptent);
- 	}
-@@ -1366,7 +1368,7 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
- 		page = vm_normal_page(vma, addr, pte);
- 		if (pte_soft_dirty(pte))
- 			flags |= PM_SOFT_DIRTY;
--	} else if (is_swap_pte(pte)) {
-+	} else if (pte_has_swap_entry(pte)) {
- 		swp_entry_t entry;
- 		if (pte_swp_soft_dirty(pte))
- 			flags |= PM_SOFT_DIRTY;
-diff --git a/include/linux/swapops.h b/include/linux/swapops.h
-index 7dd57303bb0c..7b7387d2892f 100644
---- a/include/linux/swapops.h
-+++ b/include/linux/swapops.h
-@@ -5,6 +5,7 @@
- #include <linux/radix-tree.h>
- #include <linux/bug.h>
- #include <linux/mm_types.h>
-+#include <linux/userfaultfd_k.h>
- 
- #ifdef CONFIG_MMU
- 
-@@ -52,12 +53,48 @@ static inline pgoff_t swp_offset(swp_entry_t entry)
- 	return entry.val & SWP_OFFSET_MASK;
- }
- 
--/* check whether a pte points to a swap entry */
-+/*
-+ * is_swap_pte() returns true for three cases:
-+ *
-+ * (a) The pte contains a swap entry.
-+ *
-+ *   (a.1) The pte has a normal swap entry (non_swap_entry()==false).  For
-+ *         example, when an anonymous page got swapped out.
-+ *
-+ *   (a.2) The pte has a special swap entry (non_swap_entry()==true).  For
-+ *         example, a migration entry, a hw-poison entry, etc.
-+ *
-+ * (b) The pte does not contain a swap entry at all (so it cannot be passed
-+ *     into pte_to_swp_entry()).  For example, uffd-wp special swap pte.
-+ */
- static inline int is_swap_pte(pte_t pte)
+ /*
+  * The default fault flags that should be used by most of the
+diff --git a/mm/memory.c b/mm/memory.c
+index 394c2602dce7..0b687f0be4d0 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3797,6 +3797,7 @@ static vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
+ vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct page *page)
  {
- 	return !pte_none(pte) && !pte_present(pte);
+ 	struct vm_area_struct *vma = vmf->vma;
++	bool pte_changed, uffd_wp = vmf->flags & FAULT_FLAG_UFFD_WP;
+ 	bool write = vmf->flags & FAULT_FLAG_WRITE;
+ 	pte_t entry;
+ 	vm_fault_t ret;
+@@ -3807,14 +3808,27 @@ vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct page *page)
+ 			return ret;
+ 	}
+ 
++	/*
++	 * Note: besides pte missing, FAULT_FLAG_UFFD_WP could also trigger
++	 * this path where vmf->pte got released before reaching here.  In that
++	 * case, even if vmf->pte==NULL, the pte actually still contains the
++	 * protection pte (by pte_swp_mkuffd_wp_special()).  For that case,
++	 * we'd also like to allocate a new pte like pte none, but check
++	 * differently for changing pte.
++	 */
+ 	if (!vmf->pte) {
+ 		ret = pte_alloc_one_map(vmf);
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
++	if (unlikely(uffd_wp))
++		pte_changed = !pte_swp_uffd_wp_special(*vmf->pte);
++	else
++		pte_changed = !pte_none(*vmf->pte);
++
+ 	/* Re-check under ptl */
+-	if (unlikely(!pte_none(*vmf->pte))) {
++	if (unlikely(pte_changed)) {
+ 		update_mmu_tlb(vma, vmf->address, vmf->pte);
+ 		return VM_FAULT_NOPAGE;
+ 	}
+@@ -3824,6 +3838,11 @@ vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct page *page)
+ 	entry = pte_sw_mkyoung(entry);
+ 	if (write)
+ 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
++	if (uffd_wp) {
++		/* This should only be triggered by a read fault */
++		WARN_ON_ONCE(write);
++		entry = pte_mkuffd_wp(pte_wrprotect(entry));
++	}
+ 	/* copy-on-write page */
+ 	if (write && !(vma->vm_flags & VM_SHARED)) {
+ 		inc_mm_counter_fast(vma->vm_mm, MM_ANONPAGES);
+@@ -3997,9 +4016,27 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
+ 	return ret;
  }
  
-+/*
-+ * A swap-like special pte should only be used as special marker to trigger a
-+ * page fault.  We should treat them similarly as pte_none() in most cases,
-+ * except that it may contain some special information that can persist within
-+ * the pte.  Currently the only special swap pte is UFFD_WP_SWP_PTE_SPECIAL.
-+ *
-+ * Note: we should never call pte_to_swp_entry() upon a special swap pte,
-+ * Because a swap special pte does not contain a swap entry!
-+ */
-+static inline bool is_swap_special_pte(pte_t pte)
++/* Return true if we should do read fault-around, false otherwise */
++static inline bool should_fault_around(struct vm_fault *vmf)
 +{
-+	return pte_swp_uffd_wp_special(pte);
++	/* No ->map_pages?  No way to fault around... */
++	if (!vmf->vma->vm_ops->map_pages)
++		return false;
++
++	/*
++	 * Don't do fault around for FAULT_FLAG_UFFD_WP because it means we
++	 * want to recover a previously wr-protected pte.  This flag is a
++	 * per-pte information, so it could confuse all the pages around the
++	 * current page when faulted in.  Give up on that quickly.
++	 */
++	if (vmf->flags & FAULT_FLAG_UFFD_WP)
++		return false;
++
++	return fault_around_bytes >> PAGE_SHIFT > 1;
++}
++
+ static vm_fault_t do_read_fault(struct vm_fault *vmf)
+ {
+-	struct vm_area_struct *vma = vmf->vma;
+ 	vm_fault_t ret = 0;
+ 
+ 	/*
+@@ -4007,7 +4044,7 @@ static vm_fault_t do_read_fault(struct vm_fault *vmf)
+ 	 * if page by the offset is not ready to be mapped (cold cache or
+ 	 * something).
+ 	 */
+-	if (vma->vm_ops->map_pages && fault_around_bytes >> PAGE_SHIFT > 1) {
++	if (should_fault_around(vmf)) {
+ 		ret = do_fault_around(vmf);
+ 		if (ret)
+ 			return ret;
+@@ -4322,6 +4359,68 @@ static vm_fault_t wp_huge_pud(struct vm_fault *vmf, pud_t orig_pud)
+ 	return VM_FAULT_FALLBACK;
+ }
+ 
++static vm_fault_t uffd_wp_clear_special(struct vm_fault *vmf)
++{
++	vmf->pte = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
++				       vmf->address, &vmf->ptl);
++	/*
++	 * Be careful so that we will only recover a special uffd-wp pte into a
++	 * none pte.  Otherwise it means the pte could have changed, so retry.
++	 */
++	if (pte_swp_uffd_wp_special(*vmf->pte))
++		pte_clear(vmf->vma->vm_mm, vmf->address, vmf->pte);
++	pte_unmap_unlock(vmf->pte, vmf->ptl);
++	return 0;
 +}
 +
 +/*
-+ * Returns true if the pte contains a swap entry.  This includes not only the
-+ * normal swp entry case, but also for migration entries, etc.
++ * This is actually a page-missing access, but with uffd-wp special pte
++ * installed.  It means this pte was wr-protected before being unmapped.
 + */
-+static inline bool pte_has_swap_entry(pte_t pte)
++vm_fault_t uffd_wp_handle_special(struct vm_fault *vmf)
 +{
-+	return is_swap_pte(pte) && !is_swap_special_pte(pte);
++	/* Careful!  vmf->pte unmapped after return */
++	if (!pte_unmap_same(vmf))
++		return 0;
++
++	/*
++	 * Just in case there're leftover special ptes even after the region
++	 * got unregistered - we can simply clear them.
++	 */
++	if (unlikely(!userfaultfd_wp(vmf->vma) || vma_is_anonymous(vmf->vma)))
++		return uffd_wp_clear_special(vmf);
++
++	/*
++	 * Tell all the rest of the fault code: we're handling a special pte,
++	 * always remember to arm the uffd-wp bit when intalling the new pte.
++	 */
++	vmf->flags |= FAULT_FLAG_UFFD_WP;
++
++	/*
++	 * Let's assume this is a read fault no matter what.  If it is a real
++	 * write access, it'll fault again into do_wp_page() where the message
++	 * will be generated before the thread yields itself.
++	 *
++	 * Ideally we can also handle write immediately before return, but this
++	 * should be a slow path already (pte unmapped), so be simple first.
++	 */
++	vmf->flags &= ~FAULT_FLAG_WRITE;
++
++	return do_fault(vmf);
++}
++
++static vm_fault_t do_swap_pte(struct vm_fault *vmf)
++{
++	/*
++	 * We need to handle special swap ptes before handling ptes that
++	 * contain swap entries, always.
++	 */
++	if (unlikely(pte_swp_uffd_wp_special(vmf->orig_pte)))
++		return uffd_wp_handle_special(vmf);
++
++	return do_swap_page(vmf);
 +}
 +
  /*
-  * Convert the arch-dependent pte representation of a swp_entry_t into an
-  * arch-independent swp_entry_t.
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 4e3dff13eb70..20807163a25f 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1006,7 +1006,7 @@ static bool __collapse_huge_page_swapin(struct mm_struct *mm,
- 	for (; vmf.address < address + HPAGE_PMD_NR*PAGE_SIZE;
- 			vmf.pte++, vmf.address += PAGE_SIZE) {
- 		vmf.orig_pte = *vmf.pte;
--		if (!is_swap_pte(vmf.orig_pte))
-+		if (!pte_has_swap_entry(vmf.orig_pte))
- 			continue;
- 		swapped_in++;
- 		ret = do_swap_page(&vmf);
-@@ -1238,6 +1238,15 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
- 	     _pte++, _address += PAGE_SIZE) {
- 		pte_t pteval = *_pte;
- 		if (is_swap_pte(pteval)) {
-+			if (is_swap_special_pte(pteval)) {
-+				/*
-+				 * Reuse SCAN_PTE_UFFD_WP.  If there will be
-+				 * new users of is_swap_special_pte(), we'd
-+				 * better introduce a new result type.
-+				 */
-+				result = SCAN_PTE_UFFD_WP;
-+				goto out_unmap;
-+			}
- 			if (++unmapped <= khugepaged_max_ptes_swap) {
- 				/*
- 				 * Always be strict with uffd-wp
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 29459a6ce1c7..3af43a218b8b 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5776,7 +5776,7 @@ static enum mc_target_type get_mctgt_type(struct vm_area_struct *vma,
+  * These routines also need to handle stuff like marking pages dirty
+  * and/or accessed for architectures that don't do it in hardware (most
+@@ -4385,7 +4484,7 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+ 	}
  
- 	if (pte_present(ptent))
- 		page = mc_handle_present_pte(vma, addr, ptent);
--	else if (is_swap_pte(ptent))
-+	else if (pte_has_swap_entry(ptent))
- 		page = mc_handle_swap_pte(vma, ptent, &ent);
- 	else if (pte_none(ptent))
- 		page = mc_handle_file_pte(vma, addr, ptent, &ent);
-diff --git a/mm/memory.c b/mm/memory.c
-index 5ab3106cdd35..394c2602dce7 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3255,6 +3255,13 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	if (!pte_unmap_same(vmf))
- 		goto out;
+ 	if (!pte_present(vmf->orig_pte))
+-		return do_swap_page(vmf);
++		return do_swap_pte(vmf);
  
-+	/*
-+	 * We should never call do_swap_page upon a swap special pte; just be
-+	 * safe to bail out if it happens.
-+	 */
-+	if (WARN_ON_ONCE(is_swap_special_pte(vmf->orig_pte)))
-+		goto out;
-+
- 	entry = pte_to_swp_entry(vmf->orig_pte);
- 	if (unlikely(non_swap_entry(entry))) {
- 		if (is_migration_entry(entry)) {
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 5795cb82e27c..8a5459859e17 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -318,7 +318,7 @@ void __migration_entry_wait(struct mm_struct *mm, pte_t *ptep,
- 
- 	spin_lock(ptl);
- 	pte = *ptep;
--	if (!is_swap_pte(pte))
-+	if (!pte_has_swap_entry(pte))
- 		goto out;
- 
- 	entry = pte_to_swp_entry(pte);
-diff --git a/mm/mprotect.c b/mm/mprotect.c
-index 56c02beb6041..e75bfe43cedd 100644
---- a/mm/mprotect.c
-+++ b/mm/mprotect.c
-@@ -139,7 +139,7 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
- 			}
- 			ptep_modify_prot_commit(vma, addr, pte, oldpte, ptent);
- 			pages++;
--		} else if (is_swap_pte(oldpte)) {
-+		} else if (pte_has_swap_entry(oldpte)) {
- 			swp_entry_t entry = pte_to_swp_entry(oldpte);
- 			pte_t newpte;
- 
-diff --git a/mm/mremap.c b/mm/mremap.c
-index 138abbae4f75..f736fcbe1247 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -106,7 +106,7 @@ static pte_t move_soft_dirty_pte(pte_t pte)
- #ifdef CONFIG_MEM_SOFT_DIRTY
- 	if (pte_present(pte))
- 		pte = pte_mksoft_dirty(pte);
--	else if (is_swap_pte(pte))
-+	else if (pte_has_swap_entry(pte))
- 		pte = pte_swp_mksoft_dirty(pte);
- #endif
- 	return pte;
-diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
-index 5e77b269c330..c97884007232 100644
---- a/mm/page_vma_mapped.c
-+++ b/mm/page_vma_mapped.c
-@@ -36,7 +36,7 @@ static bool map_pte(struct page_vma_mapped_walk *pvmw)
- 			 * For more details on device private memory see HMM
- 			 * (include/linux/hmm.h or mm/hmm.c).
- 			 */
--			if (is_swap_pte(*pvmw->pte)) {
-+			if (pte_has_swap_entry(*pvmw->pte)) {
- 				swp_entry_t entry;
- 
- 				/* Handle un-addressable ZONE_DEVICE memory */
-@@ -88,7 +88,7 @@ static bool check_pte(struct page_vma_mapped_walk *pvmw)
- 
- 	if (pvmw->flags & PVMW_MIGRATION) {
- 		swp_entry_t entry;
--		if (!is_swap_pte(*pvmw->pte))
-+		if (!pte_has_swap_entry(*pvmw->pte))
- 			return false;
- 		entry = pte_to_swp_entry(*pvmw->pte);
- 
-@@ -96,7 +96,7 @@ static bool check_pte(struct page_vma_mapped_walk *pvmw)
- 			return false;
- 
- 		pfn = migration_entry_to_pfn(entry);
--	} else if (is_swap_pte(*pvmw->pte)) {
-+	} else if (pte_has_swap_entry(*pvmw->pte)) {
- 		swp_entry_t entry;
- 
- 		/* Handle un-addressable ZONE_DEVICE memory */
+ 	if (pte_protnone(vmf->orig_pte) && vma_is_accessible(vmf->vma))
+ 		return do_numa_page(vmf);
 -- 
 2.26.2
 
