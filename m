@@ -2,91 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A592F89B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 00:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 304C92F89AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 00:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728869AbhAOX6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 18:58:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21574 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727954AbhAOX6W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 18:58:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610755016;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=8BoaeYSbnhYHGMsWAgpt+dfteZsuHNcO9/b1daInITU=;
-        b=K70WOXeZt2i1kmzbT8UV22ZdT1J+578ub6L5Mhmd9BsWoobKt3YUi8zRB/Shab8oMOeCkn
-        aBu3LvxeEz4ftGAHlf6Gl5tqXIBEDSQsGms8Zb2H4wrQO85QifdWw+2Vqd54kQBFVxD/Yc
-        q19qPUVX8y4jk9OYTS6L00ucAtIidNE=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-389-UiJxA8bdOoSwUtFjtGkVUA-1; Fri, 15 Jan 2021 18:56:52 -0500
-X-MC-Unique: UiJxA8bdOoSwUtFjtGkVUA-1
-Received: by mail-qv1-f69.google.com with SMTP id l3so9259052qvr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 15:56:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8BoaeYSbnhYHGMsWAgpt+dfteZsuHNcO9/b1daInITU=;
-        b=rZ3DzkD+QsinaNcd4A4e33WG4AYSPSJQULg6p9aYts4+1Ny5mBqxjqAai/WV7bqhkf
-         jydptYuEnKiiyvQ3Jae+FWJm/pHmlj+CW5GtXk4XnWprap7q/W/VU/n4vGiO+FNNDmMU
-         JJpuv0TkpKvBKgConaxZAyelcSdaWejYms5LPfwj0IcINW0D2e/EthMPBSKyqLHx8AAo
-         xmx6gciALVQVLCKCIQQxud2+9DO8t3Trw2cXoZFJFaqTx0lrKamoF0sCDiNVRIvJWogT
-         aEZn8Tg6iAcNCG9bRHttEb/001XS9fHplTgY8pS60YHN7/+BVr/4OPUkOt5T2stXpGMD
-         DGGA==
-X-Gm-Message-State: AOAM531yazNT/f+GfCiYPioC3FgMdKD6PK+2gE4E544bQGXc4ipQL2Fc
-        V+Er4x9diZ+hVGjnMIIMHavDGOUPf7VkuJJf6OPzpog7EOmywboxV72pgHvq/43Y6F0kc3CUIvN
-        MfDs62JfCjIQ9qCZkPq9R7r/z
-X-Received: by 2002:a0c:d403:: with SMTP id t3mr14890951qvh.4.1610755011962;
-        Fri, 15 Jan 2021 15:56:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxjKSLexl7Fp6MgKjz16sscMkGaxTgQOsQ1o4HAxGadnjYl7TlbGw+xYpjqr7eylu8ADlekUg==
-X-Received: by 2002:a0c:d403:: with SMTP id t3mr14890942qvh.4.1610755011823;
-        Fri, 15 Jan 2021 15:56:51 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id m64sm6010151qkb.90.2021.01.15.15.56.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 15:56:51 -0800 (PST)
-From:   trix@redhat.com
-To:     jacob.jun.pan@linux.intel.com, lenb@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] intel_idle: remove definition of DEBUG
-Date:   Fri, 15 Jan 2021 15:56:46 -0800
-Message-Id: <20210115235646.290819-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+        id S1728798AbhAOX6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 18:58:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727410AbhAOX6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 18:58:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BC01239E5;
+        Fri, 15 Jan 2021 23:57:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610755043;
+        bh=Jugm7yT041wqfvRSYw3MdlF8tLFsAvalmyiaeKw8Jd4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=N0xHbYmttdidoLVINDbT8f4OEoalscoXogfQ9zam8wgk+OGu2ipltKpv8YaAIqtlT
+         pypHYIT2Gsqj+jFVcpEf93gIEG1wXXrII1JwUwMJS6naXP6AQUGrSwdEDEZCsY9G54
+         usmXPtaL8Oqe5bK7KzLbrwwsf7W4I6aYn7mpSCjweCXZfYCt6WrNTYbDWBMamd1dHe
+         7vSVZsgbByxNmW+q5/22fEmooCXS5skphnD0xEAJV9JzRu2040wPMMp3cHnzqs3wvA
+         LMrOGFKVNoEFSeYHS+lsCHe9n4WOTN+sKyeZYgEYoJtcZDlNiROEjeeYY6TRHgktnf
+         xRZNOY2lptl1Q==
+Date:   Fri, 15 Jan 2021 17:57:21 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: Re: [PATCH v2] PCI: Fix Intel i210 by avoiding overlapping of BARs
+Message-ID: <20210115235721.GA1862880@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3b101fff85ec1c490e9a14305a999cbe@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Wed, Jan 13, 2021 at 12:32:32AM +0100, Michael Walle wrote:
+> Am 2021-01-12 23:58, schrieb Bjorn Helgaas:
+> > On Sat, Jan 09, 2021 at 07:31:46PM +0100, Michael Walle wrote:
+> > > Am 2021-01-08 22:20, schrieb Bjorn Helgaas:
 
-Defining DEBUG should only be done in development.
-So remove DEBUG.
+> > > > 3) If the Intel i210 is defective in how it handles an Expansion ROM
+> > > > that overlaps another BAR, a quirk might be the right fix. But my
+> > > > guess is the device is working correctly per spec and there's
+> > > > something wrong in how firmware/Linux is assigning things.  That would
+> > > > mean we need a more generic fix that's not a quirk and not tied to the
+> > > > Intel i210.
+> > > 
+> > > Agreed, but as you already stated (and I've also found that in
+> > > the PCI spec) the Expansion ROM address decoder can be shared by
+> > > the other BARs and it shouldn't matter as long as the ExpROM BAR
+> > > is disabled, which is the case here.
+> > 
+> > My point is just that if this could theoretically affect devices
+> > other than the i210, the fix should not be an i210-specific quirk.
+> > I'll assume this is a general problem and wait for a generic PCI
+> > core solution unless it's i210-specific.
+> 
+> I guess the culprit here is that linux skips the programming of the
+> BAR because of some broken Matrox card. That should have been a
+> quirk instead, right? But I don't know if we want to change that, do
+> we? How many other cards depend on that?
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/idle/intel_idle.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Oh, right.  There's definitely some complicated history there that
+makes me a little scared to change things.  But it's also unfortunate
+if we have to pile quirks on top of quirks.
 
-diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
-index 28f93b9aa51b..3273360f30f7 100644
---- a/drivers/idle/intel_idle.c
-+++ b/drivers/idle/intel_idle.c
-@@ -37,7 +37,7 @@
-  */
+> And still, how do we find out that the i210 is behaving correctly?
+> In my opinion it is clearly not. You can change the ExpROM BAR value
+> during runtime and it will start working (while keeping it
+> disabled).  Am I missing something here?
+
+I agree; if the ROM BAR is disabled, I don't think it should matter at
+all what it contains, so this does look like an i210 defect.
+
+Would you mind trying the patch below?  It should update the ROM BAR
+value even when it is disabled.  With the current pci_enable_rom()
+code that doesn't rely on the value read from the BAR, I *think* this
+should be safe even on the Matrox and similar devices.
+
+Bjorn
+
+
+commit 0ca2233eb71f ("PCI: Update ROM BAR even if disabled")
+Author: Bjorn Helgaas <bhelgaas@google.com>
+Date:   Fri Jan 15 17:17:44 2021 -0600
+
+    PCI: Update ROM BAR even if disabled
+    
+    Test patch for i210 issue reported by Michael Walle:
+    https://lore.kernel.org/r/20201230185317.30915-1-michael@walle.cc
+
+diff --git a/drivers/pci/rom.c b/drivers/pci/rom.c
+index 8fc9a4e911e3..fc638034628c 100644
+--- a/drivers/pci/rom.c
++++ b/drivers/pci/rom.c
+@@ -35,9 +35,8 @@ int pci_enable_rom(struct pci_dev *pdev)
+ 		return 0;
  
- /* un-comment DEBUG to enable pr_debug() statements */
--#define DEBUG
-+/* #define DEBUG */
+ 	/*
+-	 * Ideally pci_update_resource() would update the ROM BAR address,
+-	 * and we would only set the enable bit here.  But apparently some
+-	 * devices have buggy ROM BARs that read as zero when disabled.
++	 * Some ROM BARs read as zero when disabled, so we can't simply
++	 * read the BAR, set the enable bit, and write it back.
+ 	 */
+ 	pcibios_resource_to_bus(pdev->bus, &region, res);
+ 	pci_read_config_dword(pdev, pdev->rom_base_reg, &rom_addr);
+diff --git a/drivers/pci/setup-res.c b/drivers/pci/setup-res.c
+index 7f1acb3918d0..f69b7d179617 100644
+--- a/drivers/pci/setup-res.c
++++ b/drivers/pci/setup-res.c
+@@ -69,18 +69,10 @@ static void pci_std_update_resource(struct pci_dev *dev, int resno)
+ 	if (resno < PCI_ROM_RESOURCE) {
+ 		reg = PCI_BASE_ADDRESS_0 + 4 * resno;
+ 	} else if (resno == PCI_ROM_RESOURCE) {
+-
+-		/*
+-		 * Apparently some Matrox devices have ROM BARs that read
+-		 * as zero when disabled, so don't update ROM BARs unless
+-		 * they're enabled.  See
+-		 * https://lore.kernel.org/r/43147B3D.1030309@vc.cvut.cz/
+-		 */
+-		if (!(res->flags & IORESOURCE_ROM_ENABLE))
+-			return;
++		if (res->flags & IORESOURCE_ROM_ENABLE)
++			new |= PCI_ROM_ADDRESS_ENABLE;
  
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 		reg = dev->rom_base_reg;
+-		new |= PCI_ROM_ADDRESS_ENABLE;
+ 	} else
+ 		return;
  
--- 
-2.27.0
-
+@@ -99,7 +91,8 @@ static void pci_std_update_resource(struct pci_dev *dev, int resno)
+ 	pci_write_config_dword(dev, reg, new);
+ 	pci_read_config_dword(dev, reg, &check);
+ 
+-	if ((new ^ check) & mask) {
++	/* Some ROM BARs read as zero when disabled */
++	if (resno != PCI_ROM_RESOURCE && (new ^ check) & mask) {
+ 		pci_err(dev, "BAR %d: error updating (%#08x != %#08x)\n",
+ 			resno, new, check);
+ 	}
