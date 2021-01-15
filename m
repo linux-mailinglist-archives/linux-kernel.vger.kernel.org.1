@@ -2,236 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBB42F7F6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 026DC2F7F7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732005AbhAOPW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:22:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47460 "EHLO
+        id S1728981AbhAOP1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:27:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731334AbhAOPW5 (ORCPT
+        with ESMTP id S1726030AbhAOP1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:22:57 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB22C0613C1;
-        Fri, 15 Jan 2021 07:22:16 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id d26so9637090wrb.12;
-        Fri, 15 Jan 2021 07:22:16 -0800 (PST)
+        Fri, 15 Jan 2021 10:27:14 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618EDC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 07:26:34 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id a1so4092455qvd.13
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 07:26:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Tnfm7gtEx0dAkvKQ5TuqitkxF+T0R813w6cmMs8GDJo=;
-        b=utqjm9qz9J3H29otHUpKGdu8lVrAt8+InF3X8ZZ/LGCQ0AV83RVue+M0xUaRGbiLXq
-         u0aTdRK8SX3cLjGzLe+CVUzoON1DTM8vSFJCljdw1DDF0+yNdx4Id5OgYn8K7NI6CEsM
-         64JdJkwMlsrHUrcxzrF3CvrySSprZfrw+bl3X4ZBwthSVtWFeXRhY9b3+ejEwwJcutPv
-         B5udzGuwhebNP2LAawPaz0Xh5bqwOcikTQTKp12SKL/MGfHuXgjXYZUbXIu3ZH3OPCVH
-         +K/m3Iw618n5JXyp8mmkum8DktQ9U9I+Y3RDY2c+oQ7iFP4cXs1t5EP3WVa/5aHRwBxJ
-         d8PQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=aXa0cKHLVR9Tqw/zGTSb/zrOKdjPP+sDBHyXkAcY+V4=;
+        b=Z5dIwm1tiQpDlio11nv3Wu0JOvwrkHcZBdkcpoDOgzMx8p6oxmUUnO5hDlzZFdwMaK
+         F7qEBx6v4zKIEsI6Ygg38RQVXdyiTP6kBqhVxWlW5NCy5Hs7j1FlEyOh9LF/RiTFkYEB
+         i4o3a32NPakRQ9+Vf/axEnED/LC619QBNBprODGEKzLuC8vdAzge2tB3lhNRVAgxSTiA
+         LUOTRuW695jFnjeEw7dyu5YjVb2Jw4Wlf0HTBWkcV5Hm0RL1g2ZHS9LT6GTp3a32z/F4
+         wDfFGWe1IGcfg9n7znu3tPZho1WTHx/YD86hW8atWN7IKdMNknO/l9LV0iiAp1IXxGrY
+         /tKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Tnfm7gtEx0dAkvKQ5TuqitkxF+T0R813w6cmMs8GDJo=;
-        b=EEBeJ+iKqy61bf41m4qY7D8QunSHoccEvDP3ZsSuBywsS10neyGN7kmxhpbSMmYkW5
-         GqxQvAYkSTIOxncyloIESgOcdrAFroMFt0ndTNERxIHado2vvg8rtu0ltZYUD8ERMW4x
-         P3WZI3Mc0PwaDRb8FhBOpIutD8AOlktvfWpzKo3XORnwYwNtxTcXgcrXy+k8/7Q0Dht1
-         vbM/MZZP5FQkUIxJwYBrAf09U5O0rSeXuOhaVj1YqRddWcxVNxTst7pDgahhKv30A7mt
-         gk393lpJFmON35co9eyjNgy76QKcpa7BCOyL4kOp+bk1DHAYrCIsLQ1iI2u6AYlHbiBG
-         2QdA==
-X-Gm-Message-State: AOAM530dmbhhBDgcC7vYw5ntKEwc86v8Q0PH1g7M4Co7w9YoS/2g6NBe
-        jbuiYGE6Wa2aYqM3goCMv78=
-X-Google-Smtp-Source: ABdhPJypwvseEG8WGwKHgyd9YL/CM33D3wv7YiExANdkO1CSjgs9Zmr28/I0ns+6zYRhg0NAKWT7Aw==
-X-Received: by 2002:a5d:5049:: with SMTP id h9mr14168287wrt.404.1610724135173;
-        Fri, 15 Jan 2021 07:22:15 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id f9sm17020621wrw.81.2021.01.15.07.22.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 07:22:14 -0800 (PST)
-Date:   Fri, 15 Jan 2021 16:22:12 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/5] ALSA: hda/tegra: Use clk_bulk helpers
-Message-ID: <YAGzJM7BJqLV0xxY@ulmo>
-References: <20210112125834.21545-1-digetx@gmail.com>
- <20210112125834.21545-2-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aXa0cKHLVR9Tqw/zGTSb/zrOKdjPP+sDBHyXkAcY+V4=;
+        b=ukPBKpAiH7JoMmyTFuMkljTWtWwAlBW7BWfHb//ErHXt2yjD9e0mS2YT1s3hEcvvVl
+         9vqb9HsKNT19PGPFqr6hqhSIfJ9lKmf3cXot6/MtYBEt1u2xjq1+SElnvm92/cCb6EkR
+         5Bl+p72vD/5AgtIfO6KZRoK+nGJNTX9NM3yBkyskAuxTJxD3uWve0HfBZd5eQsMW6Szi
+         DINLLXEQtBEewVl42Kbs49p8Njf8KoCY2sKyLuUdccVZ+x8Wep24fW/IavMaomHIIDMy
+         BwD/iI2rV55fpJp4Equijab6MkEKhKffibmb1USwqixe8zbQBXzmR48+0Wb+P+TnebS/
+         yxwA==
+X-Gm-Message-State: AOAM533vXlZ6BDQYqRdbEwt0GEOJCBkPYoOSU3YaKMbxA/HB7JDhw4i6
+        HIyECXraoUTKZkyirqMTWauqYq00/JdZ0AkHNutXkw==
+X-Google-Smtp-Source: ABdhPJyQr7uo9F3Xok26dWWKni/afho7+kX9trhxSvQzAZ6gyv9nrPMpYXAemIyqSyINcFaCdWe9igDRtPA5KH4ZL6g=
+X-Received: by 2002:ad4:47c4:: with SMTP id p4mr12699275qvw.23.1610724392534;
+ Fri, 15 Jan 2021 07:26:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Au/hUgr6VFbvitZL"
-Content-Disposition: inline
-In-Reply-To: <20210112125834.21545-2-digetx@gmail.com>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+References: <20210115130336.2520663-1-glider@google.com> <20210115130336.2520663-4-glider@google.com>
+ <YAGckOeJxqCcHKa+@kroah.com>
+In-Reply-To: <YAGckOeJxqCcHKa+@kroah.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 15 Jan 2021 16:26:21 +0100
+Message-ID: <CAG_fn=Xen6Nd9qJnW6F4r5vgj7WAUo40BHeN_FXKpJ2jrpT6-g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] docs: ABI: add /sys/kernel/error_report/ documentation
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Marco Elver <elver@google.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> sysfs is "one value per file"
+What about existing interfaces that even export binary blobs through
+sysfs (e.g. /sys/firmware, /sys/boot_params)?
+What qualifies as a "value" in that case?
 
---Au/hUgr6VFbvitZL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> please put something like this in
+> tracefs, as there is no such rules there.  Or debugfs, but please, not
+> sysfs.
+Does tracefs have anything similar to sysfs_notify() or any other way
+to implement a poll() handler?
+Our main goal is to let users wait on poll(), so that they don't have
+to check the file for new contents every now and then. Is it possible
+with tracefs or debugfs?
 
-On Tue, Jan 12, 2021 at 03:58:30PM +0300, Dmitry Osipenko wrote:
-> Use clk_bulk helpers to make code cleaner.
->=20
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  sound/pci/hda/hda_tegra.c | 68 ++++++---------------------------------
->  1 file changed, 9 insertions(+), 59 deletions(-)
+Also, for our goal debugfs isn't a particularly good fit, as Android
+kernels do not enable debugfs.
+Not sure about tracefs, they seem to have it, need to check.
 
-Heh... I have a branch samewhere with this same patch. Glad I can cross
-that off my list. One thing jumped out at me, see below.
+Do you think it is viable to keep
+/sys/kernel/error_report/report_count in sysfs and use it for
+notifications, but move last_report somewhere else?
+(I'd probably prefer procfs, but it could be tracefs as well, if you
+find that better).
+This way it will still be possible to easily notify userspace about
+new reports, but the report itself won't have any atomicity
+guarantees. Users will have to check the report count to ensure it
+didn't change under their feet.
 
-> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-> index 70164d1428d4..4c799661c2f6 100644
-> --- a/sound/pci/hda/hda_tegra.c
-> +++ b/sound/pci/hda/hda_tegra.c
-> @@ -70,9 +70,8 @@
->  struct hda_tegra {
->  	struct azx chip;
->  	struct device *dev;
-> -	struct clk *hda_clk;
-> -	struct clk *hda2codec_2x_clk;
-> -	struct clk *hda2hdmi_clk;
-> +	struct clk_bulk_data clocks[3];
-> +	unsigned int nclocks;
->  	void __iomem *regs;
->  	struct work_struct probe_work;
->  };
-> @@ -113,36 +112,6 @@ static void hda_tegra_init(struct hda_tegra *hda)
->  	writel(v, hda->regs + HDA_IPFS_INTR_MASK);
->  }
-> =20
-> -static int hda_tegra_enable_clocks(struct hda_tegra *data)
-> -{
-> -	int rc;
-> -
-> -	rc =3D clk_prepare_enable(data->hda_clk);
-> -	if (rc)
-> -		return rc;
-> -	rc =3D clk_prepare_enable(data->hda2codec_2x_clk);
-> -	if (rc)
-> -		goto disable_hda;
-> -	rc =3D clk_prepare_enable(data->hda2hdmi_clk);
-> -	if (rc)
-> -		goto disable_codec_2x;
-> -
-> -	return 0;
-> -
-> -disable_codec_2x:
-> -	clk_disable_unprepare(data->hda2codec_2x_clk);
-> -disable_hda:
-> -	clk_disable_unprepare(data->hda_clk);
-> -	return rc;
-> -}
-> -
-> -static void hda_tegra_disable_clocks(struct hda_tegra *data)
-> -{
-> -	clk_disable_unprepare(data->hda2hdmi_clk);
-> -	clk_disable_unprepare(data->hda2codec_2x_clk);
-> -	clk_disable_unprepare(data->hda_clk);
-> -}
-> -
->  /*
->   * power management
->   */
-> @@ -186,7 +155,7 @@ static int __maybe_unused hda_tegra_runtime_suspend(s=
-truct device *dev)
->  		azx_stop_chip(chip);
->  		azx_enter_link_reset(chip);
->  	}
-> -	hda_tegra_disable_clocks(hda);
-> +	clk_bulk_disable_unprepare(hda->nclocks, hda->clocks);
-> =20
->  	return 0;
->  }
-> @@ -198,7 +167,7 @@ static int __maybe_unused hda_tegra_runtime_resume(st=
-ruct device *dev)
->  	struct hda_tegra *hda =3D container_of(chip, struct hda_tegra, chip);
->  	int rc;
-> =20
-> -	rc =3D hda_tegra_enable_clocks(hda);
-> +	rc =3D clk_bulk_prepare_enable(hda->nclocks, hda->clocks);
->  	if (rc !=3D 0)
->  		return rc;
->  	if (chip && chip->running) {
-> @@ -268,29 +237,6 @@ static int hda_tegra_init_chip(struct azx *chip, str=
-uct platform_device *pdev)
->  	return 0;
->  }
-> =20
-> -static int hda_tegra_init_clk(struct hda_tegra *hda)
-> -{
-> -	struct device *dev =3D hda->dev;
-> -
-> -	hda->hda_clk =3D devm_clk_get(dev, "hda");
-> -	if (IS_ERR(hda->hda_clk)) {
-> -		dev_err(dev, "failed to get hda clock\n");
-> -		return PTR_ERR(hda->hda_clk);
-> -	}
-> -	hda->hda2codec_2x_clk =3D devm_clk_get(dev, "hda2codec_2x");
-> -	if (IS_ERR(hda->hda2codec_2x_clk)) {
-> -		dev_err(dev, "failed to get hda2codec_2x clock\n");
-> -		return PTR_ERR(hda->hda2codec_2x_clk);
-> -	}
-> -	hda->hda2hdmi_clk =3D devm_clk_get(dev, "hda2hdmi");
-> -	if (IS_ERR(hda->hda2hdmi_clk)) {
-> -		dev_err(dev, "failed to get hda2hdmi clock\n");
-> -		return PTR_ERR(hda->hda2hdmi_clk);
-> -	}
-> -
-> -	return 0;
-> -}
-> -
->  static int hda_tegra_first_init(struct azx *chip, struct platform_device=
- *pdev)
->  {
->  	struct hda_tegra *hda =3D container_of(chip, struct hda_tegra, chip);
-> @@ -495,7 +441,11 @@ static int hda_tegra_probe(struct platform_device *p=
-dev)
->  		return err;
->  	}
-> =20
-> -	err =3D hda_tegra_init_clk(hda);
-> +	hda->clocks[hda->nclocks++].id =3D "hda";
-> +	hda->clocks[hda->nclocks++].id =3D "hda2hdmi";
-> +	hda->clocks[hda->nclocks++].id =3D "hda2codec_2x";
+> Also, any reason you didn't cc: the sysfs maintainers?
+Only my lack of common sense :)
+I'll add them should the following patches rely on sysfs, thank you!
 
-Originally the code did this in this order: "hda", "hda2codec_2x" and
-"hda2hdmi". I don't expect the exact order to be very relevant, but was
-there any particular reason to change it?
+Alex
 
-In either case, this should be fine:
 
-Acked-by: Thierry Reding <treding@nvidia.com>
 
---Au/hUgr6VFbvitZL
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+--
+Alexander Potapenko
+Software Engineer
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmABsyQACgkQ3SOs138+
-s6FoyRAAkCUvQ9bydbIYbQCgIODgmtk4NEpFc9gLUNSaSU1q6Rosi0xLJ73jJw2q
-8w4X6TL9a1kc91y4DuIt+iMfP35eG/OY1fz5FsWfHZkGSwytqKZeiOZWq6mlOJ47
-KT2LXeqiuDao04vW5USXuhvp9kNLlGOwDFZ32suVw1cOfKZYBG3gYTzMZetHfd2g
-Ey+/quceJjpaOOPqCja7Fzysz0xTMfPuLZjy533q/qOwpLH1HSiiOQZXlEzruU1w
-niOa7lo9z5kYplb+ubMq2JD3nP2oFMQ1BjZxPQeaZwFWtrCKUTDRa4upv3fEyDB1
-l+v9loObsYuLxJrVTTIKaOh1vXr875Lv2DItLCXj+qPd1r+dvHwz3Ccf7XxlK0/n
-XdWXa+CTUHY6DAGHlg3EWaaeYUcRfLP/v8Kw1Ydm6SCKIh8XapVNrfxqaEmDRSV9
-yzJI0VTQw8ZHDAJ4W9Rb+vRiUcOeXiuJSbvoEW+72/5asspEiJIMyQfUtQUyibqS
-eYgLmYk9Lp88dobozS9DexoP7xVwE9S66+alZ7k3+MxymWimmBoyRDwFUh2NatxB
-9f3/aGwQ1+q0PZti2vpmUZfpPbB3xJxv1w1WnNAvA6Rpcef1RoRpkwXXiTt4lFVs
-1OTsiV1mbKlCRos1I7DR+d7BIG8UhtBEBFw/EK2wBEA/J1uM7Ic=
-=AaZO
------END PGP SIGNATURE-----
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
 
---Au/hUgr6VFbvitZL--
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
