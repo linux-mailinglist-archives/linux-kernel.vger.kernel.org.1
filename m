@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10002F8576
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E2D2F857B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388382AbhAOTaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 14:30:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38119 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387501AbhAOTaI (ORCPT
+        id S2388498AbhAOTaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 14:30:39 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38086 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729507AbhAOTai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 14:30:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610738922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9L8f/VSlWhMvWlsqTvqtVSbWxu6uLg0mO+eInY55OoY=;
-        b=BeA8Q/BlMSHqAHQFIIqUJXzmzLq9QGsYG9V8rA8nCe5sR8rDaz4yhePnHuxvxiqpGEdcdC
-        Bfvdcy4n7JPI3tYNWCqeCNIWs5J6BuMBrX2wcPyFRi59VyGcTaQp36Ba+ZZ7muIN1nxznj
-        8CRwsGn504GgNLn3F32dXV+a/i6WQA8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-C_VcrnmtOYC_tEVxj5nSKA-1; Fri, 15 Jan 2021 14:28:38 -0500
-X-MC-Unique: C_VcrnmtOYC_tEVxj5nSKA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82D561842142;
-        Fri, 15 Jan 2021 19:28:36 +0000 (UTC)
-Received: from treble (ovpn-116-102.rdu2.redhat.com [10.10.116.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2FF0D19C71;
-        Fri, 15 Jan 2021 19:28:31 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 13:28:27 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Miroslav Benes <mbenes@suse.cz>
-Subject: Re: [PATCH 00/21] objtool: vmlinux.o and CLANG LTO support
-Message-ID: <20210115192827.d6qsfgegp7fsfn7j@treble>
-References: <cover.1610652862.git.jpoimboe@redhat.com>
- <CA+icZUV1a-DEf-dTm8MyyBbp_VYmW5WwJPF9DQb=yJHPykJASQ@mail.gmail.com>
- <CA+icZUVc0M3Ydf=SKSV2MhDmdb49nGSrN-9TjYvjL25vmDHaeQ@mail.gmail.com>
- <CA+icZUUzN96qSudFCJETNAu6-cq1NKfgngh1PM7nxv=FUPuVBQ@mail.gmail.com>
+        Fri, 15 Jan 2021 14:30:38 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10FJT0Rn067814;
+        Fri, 15 Jan 2021 13:29:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610738940;
+        bh=hhYK5dJAuYydgh5h5MfqOpugS5cO5it8t71+CYUq8qU=;
+        h=From:To:CC:Subject:Date;
+        b=NlDBEkCqW8m1IoFgKJrRtBYbidXfl4PcImAB1J/S3i3XASLMFg8qhj9k28QXQ8YFD
+         YtTVF6bwona31kdWBEjS1/yFaJJbfxfbFkLi/CSEl6zQ94Kk4s4XWslVTT1fQgGAjJ
+         jJJyQzcEb1vUEu0VM1nXqDHhvf8KKCaU4Gy3ZSlM=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10FJT0A6025390
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 Jan 2021 13:29:00 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
+ Jan 2021 13:28:59 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 15 Jan 2021 13:28:59 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10FJSwbu057633;
+        Fri, 15 Jan 2021 13:28:59 -0600
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, Sekhar Nori <nsekhar@ti.com>,
+        <devicetree@vger.kernel.org>
+Subject: [net-next 0/6] net: ethernet: ti: am65-cpsw-nuss: introduce support for am64x cpsw3g
+Date:   Fri, 15 Jan 2021 21:28:47 +0200
+Message-ID: <20210115192853.5469-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CA+icZUUzN96qSudFCJETNAu6-cq1NKfgngh1PM7nxv=FUPuVBQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 07:54:29PM +0100, Sedat Dilek wrote:
-> > > I tried this series on top of clang-cfi and it segfaults here.
-> > >
-> > > + info OBJTOOL vmlinux.o
-> > > + [  != silent_ ]
-> > > + printf   %-7s %s\n OBJTOOL vmlinux.o
-> > >  OBJTOOL vmlinux.o
-> > > + tools/objtool/objtool orc generate --duplicate --mcount --vmlinux
-> > > --no-fp --no-unreachable --retpoline --uaccess vmlinux.o
-> > > Segmentation fault
-> > > + on_exit
-> > > + [ 139 -ne 0 ]
-> > > + cleanup
-> > > + rm -f .btf.*
-> > > + rm -f .tmp_System.map
-> > > + rm -f .tmp_initcalls.lds
-> > > + rm -f .tmp_symversions.lds
-> > > + rm -f .tmp_vmlinux*
-> > > + rm -f System.map
-> > > + rm -f vmlinux
-> > > + rm -f vmlinux.o
-> > > make[3]: *** [Makefile:1213: vmlinux] Error 139
-> > >
-> >
-> > I re-tried with the latest clang-lto Git and switched to Debian's LLVM-11.0.1.
-> > This build was successful.
-> > No objtool-vmlinux warnings observed.
-> >
-> > In the next step I try with my selfmade LLVM-11.1.0-rc1 (to see if it's broken).
-> >
-> 
-> Good, my selfmade LLVM-11.1.0-rc1 is not broken with clang-lto.
-> 
-> + info OBJTOOL vmlinux.o
-> + [  != silent_ ]
-> + printf   %-7s %s\n OBJTOOL vmlinux.o
->  OBJTOOL vmlinux.o
-> + tools/objtool/objtool orc generate --duplicate --mcount --vmlinux
-> --no-fp --no-unreachable --retpoline --uaccess vmlinux.o
-> + make -f ./scripts/Makefile.modpost MODPOST_VMLINUX=1
->  scripts/mod/modpost -m    -o vmlinux.symvers vmlinux.o
-> + info MODINFO modules.builtin.modinfo
-> 
-> Josh and Sami, any idea what's going on with clang-cfi an this patchset?
+Hi
 
-No idea, I haven't seen this.  Are you still able to recreate?
+This series introduces basic support for recently introduced TI K3 AM642x SoC [1]
+which contains 3 port (2 external ports) CPSW3g module. The CPSW3g integrated
+in MAIN domain and can be configured in multi port or switch modes.
+In this series only multi port mode is enabled. The initial version of switchdev
+support was introduced by Vignesh Raghavendra [2] and work is in progress.
+
+The overall functionality and DT bindings are similar to other K3 CPSWxg
+versions, so DT binding changes are minimal and driver is mostly re-used for
+TI K3 AM642x CPSW3g.
+
+The main difference is that TI K3 AM642x SoC is not fully DMA coherent and
+instead DMA coherency is supported per DMA channel.
+
+Patches 1-2 - DT bindings update 
+Patches 3-4 - Update driver to support changed DMA coherency model
+Patches 5-6 - adds TI K3 AM642x SoC platform data and so enable CPSW3g 
+
+[1] https://www.ti.com/lit/pdf/spruim2
+[2] https://patchwork.ozlabs.org/project/netdev/cover/20201130082046.16292-1-vigneshr@ti.com/
+
+Grygorii Strashko (2):
+  dt-binding: ti: am65x-cpts: add assigned-clock and power-domains props
+  dt-binding: net: ti: k3-am654-cpsw-nuss: update bindings for am64x cpsw3g
+
+Peter Ujfalusi (2):
+  net: ethernet: ti: am65-cpsw-nuss: Use DMA device for DMA API
+  net: ethernet: ti: am65-cpsw-nuss: Support for transparent ASEL
+    handling
+
+Vignesh Raghavendra (2):
+  net: ti: cpsw_ale: add driver data for AM64 CPSW3g
+  net: ethernet: ti: am65-cpsw: add support for am64x cpsw3g
+
+ .../bindings/net/ti,k3-am654-cpsw-nuss.yaml   | 50 ++++++----
+ .../bindings/net/ti,k3-am654-cpts.yaml        |  7 ++
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c      | 96 +++++++++++--------
+ drivers/net/ethernet/ti/am65-cpsw-nuss.h      |  2 +
+ drivers/net/ethernet/ti/cpsw_ale.c            |  7 ++
+ 5 files changed, 101 insertions(+), 61 deletions(-)
 
 -- 
-Josh
+2.17.1
 
