@@ -2,101 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C64E2F7D2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1872F7D27
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:52:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733058AbhAONvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:51:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55609 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727719AbhAONvt (ORCPT
+        id S1733040AbhAONvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:51:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732087AbhAONva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:51:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610718623;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GClJQCWfDVIp8Abu+51pXYFvR3+SULW6nqe1Zw2Nhco=;
-        b=F+C/Hx6rDj6qxuWxoXF4UDZORvoqvomimmfQoOsHcoZKMBYGVHBSLExAifxSGlvAaOJJBl
-        9+lkUfyfYCNzsEn9TAbCqWGD+UhdB/3cSdgIoQMafk/NPnL9D8VPYFjPIgzaRRq34Bhjnb
-        4p+LlPZHWepEE14XN/D+inHv6mlglS0=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-496-Sw3FYx9nOvSkuVUxAwYhvw-1; Fri, 15 Jan 2021 08:50:21 -0500
-X-MC-Unique: Sw3FYx9nOvSkuVUxAwYhvw-1
-Received: by mail-ej1-f72.google.com with SMTP id b18so1612652ejz.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:50:21 -0800 (PST)
+        Fri, 15 Jan 2021 08:51:30 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B8AC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:50:44 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id h19so5959613qtq.13
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:50:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=M0hImjaHQEijsGWFNVRSK58OPmzXegMGybAGXkorBYA=;
+        b=L8pUKUat+ykI1uF8TQkXwGTb372ZhTqzuwmI22/ms/eFbL6Veam8Yh+HxwJhh2WHsg
+         qom7xmkOWITkpDPZn7fYzaO68cpMdRanw6nzjepTb4GTqyVY7j/NSz06nyrxMWsnu66Y
+         lvy00VUerFk1PFcl3GQUJg7zYGvhbN2L2i8HwEaXk9JsbYEMeYgEq1/JJV3HKbBS4E5m
+         bbgcQOwRNGa2DdTeuiuoZ6pjMCFF8TtXWM9mHJh0mt2GiK8e/Et3nO7jsfI172t3gG64
+         +rREZPiJUw73ghiDy4YIPGd3fg7Ej0loEV4U//C/WirCixNKC1vLFm3tcS8DfBHu5WYd
+         mC3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GClJQCWfDVIp8Abu+51pXYFvR3+SULW6nqe1Zw2Nhco=;
-        b=lhy1FvY2IYT2oSCNBUpE+QCNMin9xorhrNbNCRSEyRN/RFYGTMWoKDaU9Wfs/8GNP5
-         AA6WFl+F5Mr8YATnzSFBZAuaCh0/axjzhJhJTUKZX4DkgSlDqok0lThQ4M95r6djV4jy
-         VrYuozyPfr5QgKBqp9hPn9T1njiec8/NPJ2NcbT/nUWeN7MehImwCXgkZSsxBL/8w5fo
-         w1fs8kIS42iPWW4NiA6BDDZeYxH2CFV3n0pInL6Jf9PlkjjDgpP3kM5hXxW7Mmx/UzLR
-         rNeZUqmsXnO5VoG93N7FNHMboQ3fiBHUkjzNF6nII3oIpOTUkoMj90rHWi1T1Lb7haaw
-         payw==
-X-Gm-Message-State: AOAM533KkXp2stILNZj2h/JxAAvux5+LO4gCcrs7FJL3HQ/CBQnMgxGd
-        Fn7PaE3V1KlQSZBzeltlpgNNdrsUfqLZWifZ/847MojgJO5rhpHlcOuottb+PlM5LYB7iEA9Dd8
-        QQFllf6Gh0J8pjyl1s9CUK17B
-X-Received: by 2002:a17:907:3f13:: with SMTP id hq19mr9060270ejc.142.1610718620211;
-        Fri, 15 Jan 2021 05:50:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxKpmIkaYyI1N+J5ZOU1XodqPeFuoNmwqs4aW3Sw/NgHl/VK+y6PQ/FPUfmzNJDpLKJ7aNWYg==
-X-Received: by 2002:a17:907:3f13:: with SMTP id hq19mr9060257ejc.142.1610718620074;
-        Fri, 15 Jan 2021 05:50:20 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u2sm3461214ejb.65.2021.01.15.05.50.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Jan 2021 05:50:19 -0800 (PST)
-Subject: Re: [PATCH v2 2/3] KVM: x86: introduce definitions to support static
- calls for kvm_x86_ops
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Jason Baron <jbaron@akamai.com>
-Cc:     seanjc@google.com, kvm@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andrea Arcangeli <aarcange@redhat.com>
-References: <cover.1610680941.git.jbaron@akamai.com>
- <e5cc82ead7ab37b2dceb0837a514f3f8bea4f8d1.1610680941.git.jbaron@akamai.com>
- <YAFf2+nvhvWjGImy@hirez.programming.kicks-ass.net>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <84b2f5ba-1a16-cb01-646c-37e25d659650@redhat.com>
-Date:   Fri, 15 Jan 2021 14:50:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=M0hImjaHQEijsGWFNVRSK58OPmzXegMGybAGXkorBYA=;
+        b=FMpfBxjECLNdFGjHiDfYhvaVo5RX6+7gFcFS3vUxVoKPt9hODQ6l31ztTuxDa8o5Eq
+         pcNLn/061ObCF630k9oMTQffoka4DlRqFX+YWETpTrA8K4jsZfvt/XusqLXVjFzm3FI/
+         rYmzof3jxnA0+R3M1KaRqK1htghKWAElYOchU2rUtVlP3p51UjYPd4FwP6borRzhfgW5
+         g0Ow+7el17Qo3f7QhkKjk9YIMUP8K6O7hK8ahVGhTABCkUauzOkN2z8ABBnQc1o3tXqc
+         z6IQxSJwo75TMZWYSmfHJMUWc2nbShqGqXY+7twstwh9MetCUHgZf3Qb6xGkFXh3e4Ml
+         Q7BQ==
+X-Gm-Message-State: AOAM532t707y8X9OI9RkaYjqcLAsOFRM/6TI+WYDQL6gGvrcqjPflUjE
+        PZIqUu4TogPee7S++uK3auO+fmcU2OQFFFmqNMkWZQ==
+X-Google-Smtp-Source: ABdhPJyHVgQc+sLr+sh1R85C4nrGmTF0iEFW34InRE2rGnVLzZOEKq9fHY5RoR8uCKdMc5Bxfriyq0nog38Afe1ug9w=
+X-Received: by 2002:aed:2827:: with SMTP id r36mr11704933qtd.337.1610718643246;
+ Fri, 15 Jan 2021 05:50:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YAFf2+nvhvWjGImy@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <000000000000ee881505b8e27cf2@google.com> <e2f7ee95-1681-3ae5-861e-fa3d7ac12f5a@intel.com>
+In-Reply-To: <e2f7ee95-1681-3ae5-861e-fa3d7ac12f5a@intel.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 15 Jan 2021 14:50:31 +0100
+Message-ID: <CACT4Y+YsSxY=sWHWAahXHj86HbBJ39pPfQqwS3-b1VfFOGz01A@mail.gmail.com>
+Subject: Re: general protection fault in xsk_recvmsg
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Cc:     syzbot <syzbot+b974d32294d1dffbea36@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/01/21 10:26, Peter Zijlstra wrote:
->> +#define KVM_X86_OP(func)					     \
->> +	DEFINE_STATIC_CALL_NULL(kvm_x86_##func,			     \
->> +				*(((struct kvm_x86_ops *)0)->func));
->> +#define KVM_X86_OP_NULL KVM_X86_OP
->> +#include <asm/kvm-x86-ops.h>
->> +EXPORT_STATIC_CALL_GPL(kvm_x86_get_cs_db_l_bits);
->> +EXPORT_STATIC_CALL_GPL(kvm_x86_cache_reg);
->> +EXPORT_STATIC_CALL_GPL(kvm_x86_tlb_flush_current);
-> Would something like:
-> 
->    https://lkml.kernel.org/r/20201110103909.GD2594@hirez.programming.kicks-ass.net
-> 
-> Be useful? That way modules can call the static_call() but not change
-> it.
-> 
+On Fri, Jan 15, 2021 at 1:50 PM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.co=
+m> wrote:
+>
+> #syz fix: xsk: Validate socket state in xsk_recvmsg, prior touching
+> socket members
 
-Maybe not in these cases, but in general there may be cases where we 
-later want to change the static_call (for example replacing jump labels 
-with static_calls).
+-most
 
-Paolo
+This got unrecoverably corrupted with line wraps by email client.
+As my client does the same, there is a special hack that allows to
+send a least a little bit longer titles w/o line wrapping: syz fix
+alone on one line and whole title on the next line:
 
+#syz fix:
+xsk: Validate socket state in xsk_recvmsg, prior touching socket members
