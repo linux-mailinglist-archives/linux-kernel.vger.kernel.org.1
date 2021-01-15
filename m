@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0562F791E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FF12F795C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732767AbhAOMbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:31:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37412 "EHLO mail.kernel.org"
+        id S2387633AbhAOMfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:35:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732618AbhAOMb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:31:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AEA5A238E3;
-        Fri, 15 Jan 2021 12:30:23 +0000 (UTC)
+        id S1730727AbhAOMfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:35:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8FD4223E0;
+        Fri, 15 Jan 2021 12:34:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713824;
-        bh=7DhH4CeaiM1Ol8TRHyRqIFvNkZi+WpYGPYti91uLLGk=;
+        s=korg; t=1610714061;
+        bh=74DnXYi3dJKiO9/TTjPEXWKdhmw8xpPkv/GNiT1DeLY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iIi6/ky/0FhiKEUftAoszCNhsPjB0Bbmnv6ooO5jiHO7bGcQ9FgW6YTBgZYmOrbRz
-         PrGkNdesvZiOYmcUtcDTMoeSXw991/2+zORT9fjXfgJOvOudLFnogY1eyqpWAtYubY
-         qTYFxE57lspVpwJNryU6irxbzakOPu4eCm3vWK8g=
+        b=2ib1pNHZJt5f8y4k0NmzL4pm5LJ+JANchcEKtHK5DimjzHJurgq+M50NeU1ay9lv2
+         IhPe96uWe2tSZ4IxXH8ntuc+QGOQwbqJ+4B+5LIuJwZKJKvbpjOQMNzUBDC0G6+hZO
+         8nbJqhXnIauQc694USwtiG3Dd7OpQTxtd7iVRJOM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 4.9 20/25] iommu/intel: Fix memleak in intel_irq_remapping_alloc
+        stable@vger.kernel.org, Valdis Kletnieks <valdis.kletnieks@vt.edu>
+Subject: [PATCH 5.4 29/62] exfat: Month timestamp metadata accidentally incremented
 Date:   Fri, 15 Jan 2021 13:27:51 +0100
-Message-Id: <20210115121957.682602102@linuxfoundation.org>
+Message-Id: <20210115121959.811767878@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
-References: <20210115121956.679956165@linuxfoundation.org>
+In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
+References: <20210115121958.391610178@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +38,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: "Valdis Klētnieks" <valdis.kletnieks@vt.edu>
 
-commit ff2b46d7cff80d27d82f7f3252711f4ca1666129 upstream.
+The staging/exfat driver has departed, but a lot of distros are still tracking
+5.4-stable, so we should fix this.
 
-When irq_domain_get_irq_data() or irqd_cfg() fails
-at i == 0, data allocated by kzalloc() has not been
-freed before returning, which leads to memleak.
+There was an 0/1 offset error in month handling for file metadata, causing
+the month to get incremented on each reference to the file.
 
-Fixes: b106ee63abcc ("irq_remapping/vt-d: Enhance Intel IR driver to support hierarchical irqdomains")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20210105051837.32118-1-dinghao.liu@zju.edu.cn
-Signed-off-by: Will Deacon <will@kernel.org>
+Thanks to Sebastian Gurtler for troubleshooting this, and Arpad Mueller
+for bringing it to my attention.
+
+Relevant discussions:
+https://bugzilla.kernel.org/show_bug.cgi?id=210997
+https://bugs.launchpad.net/ubuntu/+source/ubuntu-meta/+bug/1872504
+
+Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/iommu/intel_irq_remapping.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/staging/exfat/exfat_super.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iommu/intel_irq_remapping.c
-+++ b/drivers/iommu/intel_irq_remapping.c
-@@ -1350,6 +1350,8 @@ static int intel_irq_remapping_alloc(str
- 		irq_data = irq_domain_get_irq_data(domain, virq + i);
- 		irq_cfg = irqd_cfg(irq_data);
- 		if (!irq_data || !irq_cfg) {
-+			if (!i)
-+				kfree(data);
- 			ret = -EINVAL;
- 			goto out_free_data;
- 		}
+--- a/drivers/staging/exfat/exfat_super.c
++++ b/drivers/staging/exfat/exfat_super.c
+@@ -59,7 +59,7 @@ static void exfat_write_super(struct sup
+ /* Convert a FAT time/date pair to a UNIX date (seconds since 1 1 70). */
+ static void exfat_time_fat2unix(struct timespec64 *ts, struct date_time_t *tp)
+ {
+-	ts->tv_sec = mktime64(tp->Year + 1980, tp->Month + 1, tp->Day,
++	ts->tv_sec = mktime64(tp->Year + 1980, tp->Month, tp->Day,
+ 			      tp->Hour, tp->Minute, tp->Second);
+ 
+ 	ts->tv_nsec = tp->MilliSecond * NSEC_PER_MSEC;
 
 
