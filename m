@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845882F8202
+	by mail.lfdr.de (Postfix) with ESMTP id F1F562F8203
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730506AbhAORT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:19:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44536 "EHLO
+        id S1731555AbhAORTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:19:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726355AbhAORTZ (ORCPT
+        with ESMTP id S1729435AbhAORTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:19:25 -0500
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49357C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:18:45 -0800 (PST)
-Received: by mail-wm1-x349.google.com with SMTP id z12so3223775wmf.9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:18:45 -0800 (PST)
+        Fri, 15 Jan 2021 12:19:30 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9494C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:18:49 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id cc1so8301279qvb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:18:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=PiTweHVaIWwM1Fes5h+y6wnV6pBG4D7sAqs6XrwD/WQ=;
-        b=uryOYOvmlRLFF34f9bw5DcPeMa7fUPhnzb0V9TDTqAJ7Gyqcdsy8tLDdCIiMM7KpXP
-         ZWMG0NpkZUrLs02mmuRkztZ+9mTUlTCH048QVnQCuqJHrgEWO2T4In7N07YBt7ehL4f0
-         L0spBnK+XZW1sScs/zCKmedPD29bAV5XPo3UEW9dy5WCwBKtAROgks8el5MQANiFckDj
-         4N3R6Qqj5gHLtz1uWLgdiNyW9rahx+K8UXLj37k80P6FrcH2H9BO15TiC2FKLk4Jb5O4
-         nQCcXDLmjEizomkyHTzrq6uhKUn2DsAyIeMeN2sN7jtPOvi6pT0jhnKvlpBCJBVpE8DI
-         OJsQ==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=UgDs2wXmKTNFZw7IyERVXhSRi4O+lIRTxi4K3FR+2eo=;
+        b=DYevj3oUdHfFqoPzpKfhqj1mj2K3AAMmzbDr56bDluU1dRt2ncqiu78K58yY20DuOv
+         1wEh1UJa53ZoHOAcbkzm02W8kSdEh60XjZJsmYXmgj3neWu+HpGCga9jR2N1aQsiyz3G
+         rhVRiq1P3lY7XVo1HRvbtUlwLh2uUpsCK1QA8w+WZC7NFOpxq/O7GbdrAMqySleco44z
+         9bF/5xYkpnfPp3bR9l4M6KAcsSUai3NXQZyDbjcan1LwyiEl0jQH65IrjD/PuLguGJ3i
+         fP+CVEG7Sy+HYa94GnjDOdwSWn/crNM+gxy1JOn2fIM3RliKl59o8x9MTdWtdFYtg9nO
+         gEGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=PiTweHVaIWwM1Fes5h+y6wnV6pBG4D7sAqs6XrwD/WQ=;
-        b=Okpp/sdrPrmFQ11nZMWLCS8YOG3QUd9mgLA/ly9y/eS90UsAx06gk23FtB+4MjM+FL
-         v6lWtIAYWU6Pw/WDveV7pFW/xsFcWxsKLvMfqgwwSvWAMgv19DVnj9PhlDqrNKGRU67d
-         M5AFGQdO2QnjGPoQlUAEX7Pa3z1ReIvqPOGXq5EzwQgAsp4bcMlbFqdCR7evV1Vyd0M/
-         DQ74xnwAavsUlca4DANRkDskRgx8inTONdMBMnrj5bNdSBFt3Vw7+r7K5NCALnn5BkeE
-         W/JFBcz/NJ+bFHzDZSw0V+ohGuHdeHS7zS8US2lNryp/UVSgSjWzxldY4kRyPuD+PrdQ
-         jfqQ==
-X-Gm-Message-State: AOAM531hhU0L4XM+/jMn2WUXpcyfUAwIAzb6hnLG9X9P077r8jpOOZI4
-        AL4FINPJXrQc+7iy0oSBW2oUYSVPw/tV
-X-Google-Smtp-Source: ABdhPJx+biyMD+eyfOowD9aimiJnsnswVeW3C5SizJvHyfSyI7N9jNVg4Kuzg91Zu9ZnJNFCeUIc9HWxEgvO
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=UgDs2wXmKTNFZw7IyERVXhSRi4O+lIRTxi4K3FR+2eo=;
+        b=mMxp5f+NSo0jDd5sV4cTn1iml0Tq+s6A7fOf9UYY1BYjEph0bl8ukp0mOKcrmGy6NZ
+         Dm/oKAxFgnzaegNkHRgdSaBFeiPFoho+kJlwaMUu9SAZNIIyNU60saZBxryagm0vuHmC
+         g+kxYLix7Jra37cqkLJDYGkPWaW1XJyvDMdqwR/wWqv5UiPwfuuBjVWFF69kjhAbKwAQ
+         Ny7kUhX8r9A9rOL+DUZy1NyWxLiGDm9jW0qvKHFx3XPEsSqlYslsHUdb2a/wkgjWZd5n
+         SgVOhYMLSVlIf5xfSNJMr/jKoQEXQqC6Ow05avTFQV4HMs2MBdWRl1oMi9N657H3B54Y
+         8InQ==
+X-Gm-Message-State: AOAM5317HnLBJ0DO99FrfPlPgmyRqNEW3PMQyRNfJm2CL02KyoQfN4oa
+        Ea/uHUyKJuquhMswDiSLgD/P3be7HnWr
+X-Google-Smtp-Source: ABdhPJy6ISdrGnRn9CouEV5yxigJFodkL9NQqNNhZDDdgN4wy4Bt8DXBalgoL+ge3A3oT0tlGsHh2R/Jrpyu
 Sender: "lenaptr via sendgmr" <lenaptr@beef.c.googlers.com>
 X-Received: from beef.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1091])
- (user=lenaptr job=sendgmr) by 2002:a7b:c1c6:: with SMTP id
- a6mr9625527wmj.23.1610731123890; Fri, 15 Jan 2021 09:18:43 -0800 (PST)
-Date:   Fri, 15 Jan 2021 17:18:21 +0000
-Message-Id: <20210115171830.3602110-1-lenaptr@google.com>
+ (user=lenaptr job=sendgmr) by 2002:a05:6214:4e2:: with SMTP id
+ cl2mr12940505qvb.27.1610731128896; Fri, 15 Jan 2021 09:18:48 -0800 (PST)
+Date:   Fri, 15 Jan 2021 17:18:22 +0000
+In-Reply-To: <20210115171830.3602110-1-lenaptr@google.com>
+Message-Id: <20210115171830.3602110-2-lenaptr@google.com>
 Mime-Version: 1.0
+References: <20210115171830.3602110-1-lenaptr@google.com>
 X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
-Subject: [PATCH v3 0/9] UBSan Enablement for hyp/nVHE code
+Subject: [PATCH v3 1/9] KVM: arm64: Enable UBSan instrumentation in nVHE hyp code
 From:   Elena Petrova <lenaptr@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     Elena Petrova <lenaptr@google.com>,
@@ -59,63 +62,85 @@ Cc:     Elena Petrova <lenaptr@google.com>,
         James Morse <james.morse@arm.com>,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
-        George Popescu <george.apopescu97@gmail.com>
+        George Popescu <george.apopescu97@gmail.com>,
+        George-Aurelian Popescu <georgepope@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Respin of George's patch series enabling UBSAN for hyp/nVHE code.
+From: George-Aurelian Popescu <georgepope@google.com>
 
-Updates in v3:
-  * rebased onto v5.11-rc3
-  * added base commit info
+Implement UBSan handlers inside nVHe hyp code, as empty functions for the
+moment, so the undefined behaviours, that are triggered there, will be
+linked to them, not to the ones defined in kernel-proper lib/ubsan.c.
 
-Updates in v2:
-  * CONFIG_KVM_ARM_DEBUG_BUFFER removed; __kvm_check_ubsan_buffer is
-    called directly instead of via __kvm_arm_check_debug_buffer.
-  * Bugfixing commits removed as these are already upstream.
-  * Some code brought up to date, i.e. moved from entry.S to host.S.
-  * Merged "Add support for creating and checking a buffer" and
-    "Add a buffer that can pass UBSan data from hyp/nVHE" into
-    one commit as these changes don't work without each other.
+In this way, enabling UBSAN_MISC won't cause a link error.
 
-George Popescu (9):
-  KVM: arm64: Enable UBSan instrumentation in nVHE hyp code
-  KVM: arm64: Add a buffer that can pass UBSan data from hyp/nVHE to
-    kernel
-  KVM: arm64: Enable UBSAN_BOUNDS for the both the kernel and hyp/nVHE
-  KVM: arm64: Enable UBsan check for unreachable code inside hyp/nVHE
-    code
-  KVM: arm64: Enable shift out of bounds undefined behaviour check for
-    hyp/nVHE
-  KVM: arm64: __ubsan_handle_load_invalid_value EL2 implementation.
-  KVM: arm64: Detect type mismatch undefined behaviour from hyp/nVHE
-    code
-  KVM: arm64: Detect arithmetic overflow is inside hyp/nVHE.
-  KVM: arm64: Add UBSan tests for PKVM.
-
- arch/arm64/include/asm/assembler.h          |  10 ++
- arch/arm64/include/asm/kvm_debug_buffer.h   |  34 ++++
- arch/arm64/include/asm/kvm_host.h           |   8 +-
- arch/arm64/include/asm/kvm_ubsan.h          |  50 ++++++
- arch/arm64/kvm/Makefile                     |   2 +
- arch/arm64/kvm/arm.c                        |   9 ++
- arch/arm64/kvm/hyp/include/hyp/test_ubsan.h | 112 +++++++++++++
- arch/arm64/kvm/hyp/nvhe/Makefile            |   3 +-
- arch/arm64/kvm/hyp/nvhe/host.S              |   4 +
- arch/arm64/kvm/hyp/nvhe/hyp-main.c          |   3 +
- arch/arm64/kvm/hyp/nvhe/ubsan.c             | 164 ++++++++++++++++++++
- arch/arm64/kvm/kvm_ubsan_buffer.c           |  81 ++++++++++
- 12 files changed, 478 insertions(+), 2 deletions(-)
- create mode 100644 arch/arm64/include/asm/kvm_debug_buffer.h
- create mode 100644 arch/arm64/include/asm/kvm_ubsan.h
- create mode 100644 arch/arm64/kvm/hyp/include/hyp/test_ubsan.h
+Signed-off-by: Elena Petrova <lenaptr@google.com>
+---
+ arch/arm64/kvm/hyp/nvhe/Makefile |  3 ++-
+ arch/arm64/kvm/hyp/nvhe/ubsan.c  | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+), 1 deletion(-)
  create mode 100644 arch/arm64/kvm/hyp/nvhe/ubsan.c
- create mode 100644 arch/arm64/kvm/kvm_ubsan_buffer.c
 
-
-base-commit: 5ee88057889bbca5f5bb96031b62b3756b33e164
+diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
+index 1f1e351c5fe2..2a683e7c6c5b 100644
+--- a/arch/arm64/kvm/hyp/nvhe/Makefile
++++ b/arch/arm64/kvm/hyp/nvhe/Makefile
+@@ -10,6 +10,8 @@ obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o host.o \
+ 	 hyp-main.o hyp-smp.o psci-relay.o
+ obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o ../entry.o \
+ 	 ../fpsimd.o ../hyp-entry.o ../exception.o
++obj-$(CONFIG_UBSAN) += ubsan.o
++CFLAGS_ubsan.nvhe.o += -I $(srctree)/lib/
+ 
+ ##
+ ## Build rules for compiling nVHE hyp code
+@@ -61,7 +63,6 @@ KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE) $(CC_FLAGS_SCS), $(KBUILD_CFLAG
+ # cause crashes. Just disable it.
+ GCOV_PROFILE	:= n
+ KASAN_SANITIZE	:= n
+-UBSAN_SANITIZE	:= n
+ KCOV_INSTRUMENT	:= n
+ 
+ # Skip objtool checking for this directory because nVHE code is compiled with
+diff --git a/arch/arm64/kvm/hyp/nvhe/ubsan.c b/arch/arm64/kvm/hyp/nvhe/ubsan.c
+new file mode 100644
+index 000000000000..a5db6b61ceb2
+--- /dev/null
++++ b/arch/arm64/kvm/hyp/nvhe/ubsan.c
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright 2020 Google LLC
++ * Author: George Popescu <georgepope@google.com>
++ */
++#include <linux/ctype.h>
++#include <linux/types.h>
++#include <ubsan.h>
++
++void __ubsan_handle_add_overflow(void *_data, void *lhs, void *rhs) {}
++
++void __ubsan_handle_sub_overflow(void *_data, void *lhs, void *rhs) {}
++
++void __ubsan_handle_mul_overflow(void *_data, void *lhs, void *rhs) {}
++
++void __ubsan_handle_negate_overflow(void *_data, void *old_val) {}
++
++void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs) {}
++
++void __ubsan_handle_type_mismatch(struct type_mismatch_data *data, void *ptr) {}
++
++void __ubsan_handle_type_mismatch_v1(void *_data, void *ptr) {}
++
++void __ubsan_handle_out_of_bounds(void *_data, void *index) {}
++
++void __ubsan_handle_shift_out_of_bounds(void *_data, void *lhs, void *rhs) {}
++
++void __ubsan_handle_builtin_unreachable(void *_data) {}
++
++void __ubsan_handle_load_invalid_value(void *_data, void *val) {}
 -- 
 2.30.0.296.g2bfb1c46d8-goog
 
