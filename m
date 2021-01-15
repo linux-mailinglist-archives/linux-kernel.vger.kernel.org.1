@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B1F2F7A27
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 612492F7998
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388393AbhAOMpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:45:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44948 "EHLO mail.kernel.org"
+        id S1732200AbhAOMig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:38:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388101AbhAOMh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:37:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0AB223356;
-        Fri, 15 Jan 2021 12:37:43 +0000 (UTC)
+        id S2387518AbhAOMi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:38:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4C392256F;
+        Fri, 15 Jan 2021 12:37:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714264;
-        bh=GbJMei26G0fohQC1A0d9GCVGqqy5+C27u+N9uVZyxMY=;
+        s=korg; t=1610714266;
+        bh=fip9LsIw/fuTpb8HCUU2MKHFkHvdDURgaJVNA8Hvq0M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dhHkqNRV8NKttmG6fZyqetSyciPVSkmNSeckRNlsTqbpHZOtRcZ4pyekXSRIkbBiH
-         CnEKVbS1cgch3sDePGTq2sgPx0yK0oSNpD0nDpGYPddS/vuAXtz2SkI21XUKv3V9yW
-         vB48Bqcx3b/HxkgOb9QU1Fh9FTrkswFRf8kFkxDM=
+        b=0j049/eGhMWuV60nhqr2aZi2AGgx0eiBNztzJv4QdzHrFVShiWzc4WGExhgZU+LzZ
+         45tOvqwfclqRjowWVlqZbwvdv4a9GDRAq6/puPUJagzpq/1os9CXIy4AfaWMjxwFur
+         v80wlmngJ4PtdII7G5D+P39pYDJJueS0u2qL3WJo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
-        Sriram Dash <sriram.dash@samsung.com>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.10 057/103] can: m_can: m_can_class_unregister(): remove erroneous m_can_clk_stop()
-Date:   Fri, 15 Jan 2021 13:27:50 +0100
-Message-Id: <20210115122008.809554974@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 058/103] can: kvaser_pciefd: select CONFIG_CRC32
+Date:   Fri, 15 Jan 2021 13:27:51 +0100
+Message-Id: <20210115122008.857031771@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
 References: <20210115122006.047132306@linuxfoundation.org>
@@ -41,37 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit c4aec381ab98c9189d47b935832541d520f1f67f upstream.
+commit 1d48595c786b1b9dc6be301e8d7f6fc74e9882aa upstream.
 
-In m_can_class_register() the clock is started, but stopped on exit. When
-calling m_can_class_unregister(), the clock is stopped a second time.
+Without crc32, this driver fails to link:
 
-This patch removes the erroneous m_can_clk_stop() in  m_can_class_unregister().
+arm-linux-gnueabi-ld: drivers/net/can/kvaser_pciefd.o: in function `kvaser_pciefd_probe':
+kvaser_pciefd.c:(.text+0x2b0): undefined reference to `crc32_be'
 
-Fixes: f524f829b75a ("can: m_can: Create a m_can platform framework")
-Cc: Dan Murphy <dmurphy@ti.com>
-Cc: Sriram Dash <sriram.dash@samsung.com>
-Reviewed-by: Sean Nyekjaer <sean@geanix.com>
-Link: https://lore.kernel.org/r/20201215103238.524029-2-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: 26ad340e582d ("can: kvaser_pciefd: Add driver for Kvaser PCIEcan devices")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/can/m_can/m_can.c |    2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/can/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1914,8 +1914,6 @@ EXPORT_SYMBOL_GPL(m_can_class_resume);
- void m_can_class_unregister(struct m_can_classdev *m_can_dev)
- {
- 	unregister_candev(m_can_dev->net);
--
--	m_can_clk_stop(m_can_dev);
- }
- EXPORT_SYMBOL_GPL(m_can_class_unregister);
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -123,6 +123,7 @@ config CAN_JANZ_ICAN3
+ config CAN_KVASER_PCIEFD
+ 	depends on PCI
+ 	tristate "Kvaser PCIe FD cards"
++	select CRC32
+ 	  help
+ 	  This is a driver for the Kvaser PCI Express CAN FD family.
  
 
 
