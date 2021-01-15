@@ -2,103 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 033522F85C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49ADB2F85CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388126AbhAOTxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 14:53:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49688 "EHLO
+        id S2388463AbhAOTzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 14:55:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbhAOTxn (ORCPT
+        with ESMTP id S1726970AbhAOTzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 14:53:43 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67290C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 11:53:03 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id a1so4535025qvd.13
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 11:53:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YOccbbRfNSMXCGHDICvlCYRLO57HHlYqke/K97gEpqY=;
-        b=Vmi+u5PnGq6QrC1+HQaWL+Z9MasdSmvK4regdUEaYNDa3KpJZeZ428RDXeJ9sECCO+
-         M9AcotGIPwNygQxluD0kcNW7qLMofiOdCClq8ak6Rvgq39cQwjWF2dJjOTjRXluBVZea
-         duIg9VogrWWguzhAcMogxS3yK4+OnM1uacXpRMnuCtQodaVSUz4JpZaAi3eut8v4r4uw
-         lQh1tQlSHl+SzlgtaJYhoapjFIFkbSsAgBDJmRIy3bmSwk7EIIJhYy8VJ4DaUh77foP/
-         SNhwo3ld4KVHCbVWNOVvOQerm1h8fkks/sNEJ3phQB52K5Rk7WjazRMk0GzkYZvmnLj4
-         iEOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YOccbbRfNSMXCGHDICvlCYRLO57HHlYqke/K97gEpqY=;
-        b=kCBeUNn3MYqc2wNCE2BVwa/+ad5S7Nl74AU7meI/wDakJbQKJAgURgGN3yFdjK/rZP
-         ckVutupbhK1UtoDLYGcxaFx0Q16AOjPqsUxaujy0Za3kZhZ1ewbu6uwwut8ieRkxul9A
-         jI+S+nzCm2Fc24DApe6CMrdMSp18ewBw44Cbj0fi9633zLSW3Qk0a/Kw/u9CiJFlkCTO
-         mX+uyfdyt6BpqqmwVMR0iHers2yukOnipMR2Wze8JZSE2CfH3y25s2KZ9U/DnL5PDTIS
-         cUsJ9LJxbyfp6r2+qOIYehubbpQ9noN5SxznCe/bCejexyE09V6VbxWJrBcxJOxsGgjZ
-         wcGA==
-X-Gm-Message-State: AOAM532NVyMrQiwAoTFSFvMnVY14QHIS4f2Qe115viVrXEMmekznLb7l
-        H01+1YkbTucsfnDT6p13FKQm7g==
-X-Google-Smtp-Source: ABdhPJxriPVEn+gJbENVTGxzVi7zq0Loc9XYuq8r8ugANKBL+YABpxLTdVL2mVhCv6OgltIqedZo+g==
-X-Received: by 2002:ad4:452f:: with SMTP id l15mr13829167qvu.49.1610740382661;
-        Fri, 15 Jan 2021 11:53:02 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id c49sm603116qta.89.2021.01.15.11.53.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 11:53:02 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l0V9Z-0022NF-Ib; Fri, 15 Jan 2021 15:53:01 -0400
-Date:   Fri, 15 Jan 2021 15:53:01 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Yu Zhao <yuzhao@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
-Message-ID: <20210115195301.GI4605@ziepe.ca>
-References: <20210110004435.26382-1-aarcange@redhat.com>
- <bb071419-bf40-c5ed-4b2d-d5eb03031b0a@redhat.com>
- <20210115183721.GG4605@ziepe.ca>
- <a21e6fdf-5cac-6fda-242e-7909af96027a@redhat.com>
+        Fri, 15 Jan 2021 14:55:35 -0500
+Received: from mail.dr-lotz.de (mail.dr-lotz.de [IPv6:2a01:4f8:161:6ffe::5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D490BC061757;
+        Fri, 15 Jan 2021 11:54:54 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.dr-lotz.de (Postfix) with ESMTP id 71F5F5AE08;
+        Fri, 15 Jan 2021 20:54:50 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at mail.dr-lotz.de
+Received: from mail.dr-lotz.de ([127.0.0.1])
+        by localhost (mail.dr-lotz.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id B8Y0Tjl29kUU; Fri, 15 Jan 2021 20:54:46 +0100 (CET)
+Received: from linus-pc.. (ipb21b6623.dynamic.kabel-deutschland.de [178.27.102.35])
+        by mail.dr-lotz.de (Postfix) with ESMTPSA id 0929C5AE07;
+        Fri, 15 Jan 2021 20:54:44 +0100 (CET)
+From:   Linus Lotz <linus@lotz.li>
+Cc:     Linus Lotz <linus@lotz.li>, kernel test robot <lkp@intel.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, wireguard@lists.zx2c4.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] wireguard: netlink: add multicast notification for peer changes
+Date:   Fri, 15 Jan 2021 20:53:51 +0100
+Message-Id: <20210115195353.11483-1-linus@lotz.li>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210109210056.160597-1-linus@lotz.li>
+References: <20210109210056.160597-1-linus@lotz.li>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a21e6fdf-5cac-6fda-242e-7909af96027a@redhat.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 08:46:48PM +0100, David Hildenbrand wrote:
+This commit adds a new multicast group to the netlink api for wireguard.
+The purpose of this multicast group is to notify userspace when the
+peers of an interface change. Right now this is only done when the
+endpoint is changed by whatever means.
 
-> Just wild ideas. Most probably that has already been discussed, and most
-> probably people figured that it's impossible :)
+An example for an consumer of this API would be a service that keeps
+track of all peer endpoints and sends this information to the peers.
+This would allow NAT-to-NAT connections without the need of using
+STUN on each client.
 
-No, I think it is all fair topics.
+In v2 I fixed a possible uninitialized use.
 
-There is no API reason for any of this to be limited, but in practice,
-I doubt there is more than small 10's
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Linus Lotz <linus@lotz.li>
+---
+ drivers/net/wireguard/netlink.c | 52 ++++++++++++++++++++++++++++++++-
+ drivers/net/wireguard/netlink.h |  4 +++
+ drivers/net/wireguard/socket.c  |  4 +++
+ include/uapi/linux/wireguard.h  |  3 ++
+ 4 files changed, 62 insertions(+), 1 deletion(-)
 
-Huge pages complicate things of course
+diff --git a/drivers/net/wireguard/netlink.c b/drivers/net/wireguard/netlink.c
+index d0f3b6d7f408..e9bb2a3a7b79 100644
+--- a/drivers/net/wireguard/netlink.c
++++ b/drivers/net/wireguard/netlink.c
+@@ -618,6 +618,12 @@ static const struct genl_ops genl_ops[] = {
+ 	}
+ };
+ 
++static struct genl_multicast_group genl_mcgrps[] = {
++	{
++		.name = WG_MULTICAST_GROUP_PEER_CHANGE
++	}
++};
++
+ static struct genl_family genl_family __ro_after_init = {
+ 	.ops = genl_ops,
+ 	.n_ops = ARRAY_SIZE(genl_ops),
+@@ -626,7 +632,9 @@ static struct genl_family genl_family __ro_after_init = {
+ 	.maxattr = WGDEVICE_A_MAX,
+ 	.module = THIS_MODULE,
+ 	.policy = device_policy,
+-	.netnsok = true
++	.netnsok = true,
++	.mcgrps = genl_mcgrps,
++	.n_mcgrps = ARRAY_SIZE(genl_mcgrps)
+ };
+ 
+ int __init wg_genetlink_init(void)
+@@ -638,3 +646,45 @@ void __exit wg_genetlink_uninit(void)
+ {
+ 	genl_unregister_family(&genl_family);
+ }
++
++int wg_genl_mcast_peer_endpoint_change(struct wg_peer *peer)
++{
++	struct sk_buff *skb;
++	void *hdr, *peer_nest, *peer_array_nest;
++	int fail = 0;
++
++	skb = genlmsg_new(NLMSG_GOODSIZE, GFP_KERNEL);
++	hdr = genlmsg_put(skb, 0, 0,
++			  &genl_family, 0, WG_CMD_CHANGED_PEER);
++
++	nla_put_u32(skb, WGDEVICE_A_IFINDEX, peer->device->dev->ifindex);
++	nla_put_string(skb, WGDEVICE_A_IFNAME, peer->device->dev->name);
++
++	peer_nest = nla_nest_start(skb, WGDEVICE_A_PEERS);
++	peer_array_nest = nla_nest_start(skb, 0);
++	down_read(&peer->handshake.lock);
++	nla_put(skb, WGPEER_A_PUBLIC_KEY, NOISE_PUBLIC_KEY_LEN,
++		peer->handshake.remote_static);
++	up_read(&peer->handshake.lock);
++
++	read_lock_bh(&peer->endpoint_lock);
++	if (peer->endpoint.addr.sa_family == AF_INET)
++		fail = nla_put(skb, WGPEER_A_ENDPOINT,
++			       sizeof(peer->endpoint.addr4),
++			       &peer->endpoint.addr4);
++	else if (peer->endpoint.addr.sa_family == AF_INET6)
++		fail = nla_put(skb, WGPEER_A_ENDPOINT,
++			       sizeof(peer->endpoint.addr6),
++			       &peer->endpoint.addr6);
++	read_unlock_bh(&peer->endpoint_lock);
++	if (fail)
++		return fail;
++
++	nla_nest_end(skb, peer_array_nest);
++	nla_nest_end(skb, peer_nest);
++	genlmsg_end(skb, hdr);
++
++	fail = genlmsg_multicast_netns(&genl_family, dev_net(peer->device->dev),
++				       skb, 0, 0, GFP_KERNEL);
++	return fail;
++}
+diff --git a/drivers/net/wireguard/netlink.h b/drivers/net/wireguard/netlink.h
+index 15100d92e2e3..74ecc72a79a6 100644
+--- a/drivers/net/wireguard/netlink.h
++++ b/drivers/net/wireguard/netlink.h
+@@ -6,6 +6,10 @@
+ #ifndef _WG_NETLINK_H
+ #define _WG_NETLINK_H
+ 
++#include "peer.h"
++
++int wg_genl_mcast_peer_endpoint_change(struct wg_peer *peer);
++
+ int wg_genetlink_init(void);
+ void wg_genetlink_uninit(void);
+ 
+diff --git a/drivers/net/wireguard/socket.c b/drivers/net/wireguard/socket.c
+index 410b318e57fb..d826e1f2b51c 100644
+--- a/drivers/net/wireguard/socket.c
++++ b/drivers/net/wireguard/socket.c
+@@ -8,6 +8,7 @@
+ #include "socket.h"
+ #include "queueing.h"
+ #include "messages.h"
++#include "netlink.h"
+ 
+ #include <linux/ctype.h>
+ #include <linux/net.h>
+@@ -293,6 +294,9 @@ void wg_socket_set_peer_endpoint(struct wg_peer *peer,
+ 	dst_cache_reset(&peer->endpoint_cache);
+ out:
+ 	write_unlock_bh(&peer->endpoint_lock);
++
++	/* We need to notify the netlink listeners for about this change */
++	wg_genl_mcast_peer_endpoint_change(peer);
+ }
+ 
+ void wg_socket_set_peer_endpoint_from_skb(struct wg_peer *peer,
+diff --git a/include/uapi/linux/wireguard.h b/include/uapi/linux/wireguard.h
+index ae88be14c947..22a012644d71 100644
+--- a/include/uapi/linux/wireguard.h
++++ b/include/uapi/linux/wireguard.h
+@@ -136,9 +136,12 @@
+ 
+ #define WG_KEY_LEN 32
+ 
++#define WG_MULTICAST_GROUP_PEER_CHANGE          "wg_peer_change"
++
+ enum wg_cmd {
+ 	WG_CMD_GET_DEVICE,
+ 	WG_CMD_SET_DEVICE,
++	WG_CMD_CHANGED_PEER,
+ 	__WG_CMD_MAX
+ };
+ #define WG_CMD_MAX (__WG_CMD_MAX - 1)
 
-Jason
+base-commit: 65f0d2414b7079556fbbcc070b3d1c9f9587606d
+-- 
+2.26.2
+
