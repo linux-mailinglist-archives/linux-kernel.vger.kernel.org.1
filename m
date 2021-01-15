@@ -2,202 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD452F8389
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3DF2F838A
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728999AbhAOSN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:13:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56366 "EHLO
+        id S1732223AbhAOSOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:14:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726541AbhAOSN6 (ORCPT
+        with ESMTP id S1726541AbhAOSN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:13:58 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2242FC0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:18 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id a12so10177785wrv.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:18 -0800 (PST)
+        Fri, 15 Jan 2021 13:13:59 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27042C061793
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:19 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id 7so2965445wrz.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=310sSHEao7tJsu2UmDOFWrsrWQfu1990Uj0j4Ybye0s=;
-        b=N7iHRt5SkUdVMxq65xZRkaCdEEtZwkmVojjDcfia9WNo0dnreS7PNmI+Ko/66J/gIi
-         ADII32ML+RE+7uPDFVtFvvXjJqtZA46PfoaZTbmRYK83ibmQMjgZFyGXl+flumpU8vmx
-         dmoPyA5B22YyetLHZfrg9E/rze/vsnOFXh93eNGItG2dBNsTWcwnKjZPdm5RNo33eAks
-         VaIZYPc7EVNbWwJ/tX0hrvBzeYMT2H7/TpHGScnUNh8Fd3VraTwFo1K86gn7GTsHsD+v
-         8puqWa5qrqQFxkybONpTUkA9ODG3qytMka8gB26ZeBUztFg5qwOYMbV7RsaRFVqZPmCD
-         8wLA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=i/V01bC2aUdNKYNoe3MIVez12Kd/PhheE7jFqPPyQbE=;
+        b=tdtp5zVrXSZ9xCEWq4wDPWmDszIKiusvcCkT6+xOPlHugBuesmhOgr3x1e4Z1OvImt
+         YBwqb6DRNCPOoNnezFV4nQx8TcVWfiHyn1lz8M4xrPH4DJi5oPAofFeKZcXTlbkFMiYC
+         uiVEGcGwGl2hIiDmeJ1sB2lVCBzc5Yi12NMoCTclsFDsYOwl3ulgHNosfoEeFZtm4Ept
+         TK4A8V+lCzJV4yhbrKF3ikkh+h3v2S370L1myjRFFVbW1/TKrLROLVRXtwlkevNxDDLK
+         VonyoP1VxEhoJbflJ3z5jzdRX9JPjqbg5KlCZ0aBbZTT6bSh50NemXefSKW21TW3Fig1
+         8leg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=310sSHEao7tJsu2UmDOFWrsrWQfu1990Uj0j4Ybye0s=;
-        b=gQrv69C4wG9kuMopGf6WpvLK4Hr8hYVj7BNdMhC+dWWwixycGMNdliPH2zVfhtHM6D
-         wnLym3zK3csivrL9udNf7skJ0z6kjn8OlhAe6lRNHg8lawg36uYJklNVd7AJuvNRTeY6
-         x3YlmVaSPgys7h9gM4ii2LUQZ1lBw1XHoQmneFpaZ/x93WrGdUqPKB/Uh1S6HFKMC2hB
-         Jn1IgaPqdkkaIp5jK4ogG8e8lpuW6vBe0Gjldbi+6Nb3OU4UPtgoawjZBjVZUvFTaUEd
-         YNsUA9YhnVvd8nVIJNInCQ4ZCCuOm5yYWwlfXcjaV9urxKMH62fjMJEB1Pku3rOj8NPH
-         bGow==
-X-Gm-Message-State: AOAM531tGTxn3nUP46WJbGfeQIiKz8qRkGnl028D2VFeCP6TUJpKh6O+
-        KZu1eSqwZllRoJZ7qDfS/GOu3w==
-X-Google-Smtp-Source: ABdhPJwZkJUzDyYGJSn4L879Wg9Va9OC82105X+364sfv1aadU8xGto5VQFWiwta2p/MiqbuYUXy9A==
-X-Received: by 2002:adf:e941:: with SMTP id m1mr9194603wrn.240.1610734396902;
-        Fri, 15 Jan 2021 10:13:16 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=i/V01bC2aUdNKYNoe3MIVez12Kd/PhheE7jFqPPyQbE=;
+        b=ZCkbrFmCNGfIZCS/sxycQ8kiwgLGVtvYBP5filba/Z0SqpYeikGaucygqufGB1oM8z
+         XRAbIqTwti/8QUgZqOQnaWcOGqQjhmpvfScSIyyT2QzgR0/uc4dmZ0wT0NVyRz2RenxP
+         3aVvLA6XscU/M19flvPcXa3XpZrR03fyE8I+I8LHl0vLbryvnpYYattHgRhiIVYYD/vZ
+         RHWbg2PnumWzbfPlFqKlNZN1F09dl8kqYfeRV+JJ60f/iiWY5IWral7ozxI5EcFLPtW4
+         qeu787uPkfUDECbM51ST4SrwJ0TwYOSDObXGFosAPqjmPaUzC87CjdMEdZPYhWNFzB0f
+         e1iQ==
+X-Gm-Message-State: AOAM531vB174M3KQsxum2zF8AhHfdhG4krPatu26jSphTkO56Do1kQcU
+        togsl8YYNmWCysZEPkwwTUuhdA==
+X-Google-Smtp-Source: ABdhPJz8O7H223OuzeVo01mBK9mVPgrtOxBxrFaN8ZeUyDOApOAOrP68CCOYVdTVyzjFpfZ3U0kzcg==
+X-Received: by 2002:a5d:4307:: with SMTP id h7mr14649674wrq.353.1610734397874;
+        Fri, 15 Jan 2021 10:13:17 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.15
+        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:13:16 -0800 (PST)
+        Fri, 15 Jan 2021 10:13:17 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Alan Cox <alan@linux.intel.com>,
-        Benjamin Defnet <benjamin.r.defnet@intel.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, Eric Anholt <eric@anholt.net>,
-        Jesse Barnes <jesse.barnes@intel.com>,
-        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Rajesh Poornachandran <rajesh.poornachandran@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>
-Subject: [PATCH 00/40] [Set 14] Rid W=1 warnings from GPU
-Date:   Fri, 15 Jan 2021 18:12:33 +0000
-Message-Id: <20210115181313.3431493-1-lee.jones@linaro.org>
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 01/40] drm/r128/r128_ioc32: Document headers do not make good kernel-doc candidates
+Date:   Fri, 15 Jan 2021 18:12:34 +0000
+Message-Id: <20210115181313.3431493-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210115181313.3431493-1-lee.jones@linaro.org>
+References: <20210115181313.3431493-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+Fixes the following W=1 kernel build warning(s):
 
-Penultimate set, promise. :)
+ drivers/gpu/drm/r128/r128_ioc32.c:2: warning: Cannot understand  * file r128_ioc32.c
 
-Lee Jones (40):
-  drm/r128/r128_ioc32: Document headers do not make good kernel-doc
-    candidates
-  drm/mga/mga_ioc32: Document headers do not make good kernel-doc
-    candidates
-  drm/vmwgfx/vmwgfx_execbuf: Fix some kernel-doc related issues
-  drm/vmwgfx/vmwgfx_kms: Remove unused variable 'ret' from
-    'vmw_du_primary_plane_atomic_check()'
-  drm/r128/r128_ioc32: Fix formatting issues in 'r128_compat_ioctl()'s
-    header
-  drm/mga/mga_ioc32: Fix some formatting issues in 'mga_compat_ioctl's
-    header
-  drm/vmwgfx/vmwgfx_kms: Mark vmw_{cursor,primary}_plane_formats as
-    __maybe_unused
-  drm/vmwgfx/vmwgfx_drv: Fix some kernel-doc misdemeanours
-  drm/vmwgfx/vmwgfx_ioctl: Provide missing '@' sign required by
-    kernel-doc
-  drm/vmwgfx/vmwgfx_resource: Fix worthy function headers demote some
-    others
-  drm/vmwgfx/vmwgfx_ttm_buffer: Supply some missing parameter
-    descriptions
-  drm/vmwgfx/vmwgfx_fifo: Demote non-conformant kernel-doc header
-  drm/vmwgfx/vmwgfx_ldu: Supply descriptions for 'state' function
-    parameter
-  drm/gma500/framebuffer: Fix some possible doc-rot issues
-  drm/gma500/gem: Add and rename some function parameter descriptions
-  drm/gma500/intel_bios: Demote non-conformant kernel-doc header
-  drm/gma500/intel_i2c: Remove superflouous parameter description and
-    rename another
-  drm/gma500/mmu: Make local function 'psb_mmu_pt_alloc_map_lock()'
-    static
-  drm/gma500/power: Fix a bunch of *dev documentation issues
-  drm/vmwgfx/vmwgfx_kms: Update worthy function headers and demote
-    others
-  drm/gma500/gma_display: Demote kernel-doc abuses to standard comment
-    blocks
-  drm/gma500/gma_device: Include our own header containing prototypes
-  drm/vmwgfx/vmwgfx_overlay: Demote kernel-doc abuses to standard
-    comment blocks
-  drm/gma500/psb_intel_display: Demote kernel-doc formatting abuse
-  drm/gma500/psb_intel_lvds: Supply description for 'mode_dev'
-  drm/vmwgfx/vmwgfx_fence: Add, remove and demote various documentation
-    params/headers
-  drm/vmwgfx/vmwgfx_bo: Remove superfluous param description and supply
-    another
-  drm/vmwgfx/vmwgfx_context: Demote kernel-doc abuses
-  drm/vmwgfx/vmwgfx_scrn: Demote unworthy kernel-doc headers and update
-    others
-  drm/gma500/psb_intel_modes: Provide missing descriptions for function
-    param 'adapter'
-  drm/gma500/gem: Do not rely on consumers to include drm/drm_device.h
-    before gem.h
-  drm/gma500/gem: Include our own header containing prototypes
-  drm/vmwgfx/vmwgfx_surface: Fix some kernel-doc related issues
-  drm/gma500/mmu: Remove unused function 'psb_get_default_pd_addr'
-  drm/vmwgfx/vmwgfx_cmdbuf_res: Rename param description and remove
-    another
-  drm/vmwgfx/vmwgfx_shader: Demote kernel-doc abuses and fix-up worthy
-    headers
-  drm/vmwgfx/vmwgfx_cmdbuf: Fix a bunch of missing or incorrectly
-    formatted/named params
-  drm/gma500/power: Remove excess param description 'state'
-  drm/vmwgfx/vmwgfx_cmdbuf_res: Remove unused variable 'ret'
-  drm/vmwgfx/vmwgfx_stdu: Add some missing param/member descriptions
-
- drivers/gpu/drm/gma500/framebuffer.c       |  6 +++---
- drivers/gpu/drm/gma500/gem.c               |  6 ++++--
- drivers/gpu/drm/gma500/gem.h               |  2 ++
- drivers/gpu/drm/gma500/gma_device.c        |  1 +
- drivers/gpu/drm/gma500/gma_display.c       |  8 ++++----
- drivers/gpu/drm/gma500/intel_bios.c        |  2 +-
- drivers/gpu/drm/gma500/intel_i2c.c         |  3 +--
- drivers/gpu/drm/gma500/mmu.c               | 13 ++-----------
- drivers/gpu/drm/gma500/power.c             |  8 ++++----
- drivers/gpu/drm/gma500/psb_intel_display.c |  2 +-
- drivers/gpu/drm/gma500/psb_intel_lvds.c    |  1 +
- drivers/gpu/drm/gma500/psb_intel_modes.c   |  3 ++-
- drivers/gpu/drm/mga/mga_ioc32.c            | 14 +++++++-------
- drivers/gpu/drm/r128/r128_ioc32.c          | 14 +++++++-------
- drivers/gpu/drm/vmwgfx/vmwgfx_bo.c         |  2 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c        |  2 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c     | 12 ++++++++----
- drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf_res.c |  8 ++------
- drivers/gpu/drm/vmwgfx/vmwgfx_context.c    |  6 +++---
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c        |  8 ++++----
- drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c    | 20 ++++++++++++--------
- drivers/gpu/drm/vmwgfx/vmwgfx_fence.c      | 18 ++++++++++--------
- drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c      |  2 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c        | 16 ++++++++--------
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.h        |  4 ++--
- drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c        |  4 +++-
- drivers/gpu/drm/vmwgfx/vmwgfx_overlay.c    | 16 ++++++++--------
- drivers/gpu/drm/vmwgfx/vmwgfx_resource.c   | 10 ++++------
- drivers/gpu/drm/vmwgfx/vmwgfx_scrn.c       | 10 ++++++----
- drivers/gpu/drm/vmwgfx/vmwgfx_shader.c     | 10 +++++-----
- drivers/gpu/drm/vmwgfx/vmwgfx_stdu.c       |  9 +++++++--
- drivers/gpu/drm/vmwgfx/vmwgfx_surface.c    | 17 ++++++++++-------
- drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c |  2 ++
- 33 files changed, 137 insertions(+), 122 deletions(-)
-
-Cc: Alan Cox <alan@linux.intel.com>
-Cc: Benjamin Defnet <benjamin.r.defnet@intel.com>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: dri-devel@lists.freedesktop.org
-Cc: Eric Anholt <eric@anholt.net>
-Cc: Jesse Barnes <jesse.barnes@intel.com>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: linaro-mm-sig@lists.linaro.org
-Cc: linux-media@vger.kernel.org
-Cc: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Cc: Rajesh Poornachandran <rajesh.poornachandran@intel.com>
-Cc: Roland Scheidegger <sroland@vmware.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
-Cc: Zack Rusin <zackr@vmware.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/gpu/drm/r128/r128_ioc32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/r128/r128_ioc32.c b/drivers/gpu/drm/r128/r128_ioc32.c
+index 6ac71755c22dd..187bdc435cb54 100644
+--- a/drivers/gpu/drm/r128/r128_ioc32.c
++++ b/drivers/gpu/drm/r128/r128_ioc32.c
+@@ -1,4 +1,4 @@
+-/**
++/*
+  * \file r128_ioc32.c
+  *
+  * 32-bit ioctl compatibility routines for the R128 DRM.
 -- 
 2.25.1
 
