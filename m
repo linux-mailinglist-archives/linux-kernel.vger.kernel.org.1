@@ -2,82 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F1A2F7695
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:25:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 589C22F7696
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727481AbhAOKYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 05:24:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57894 "EHLO mail.kernel.org"
+        id S1728854AbhAOKZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 05:25:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726091AbhAOKYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 05:24:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 621BE235F9;
-        Fri, 15 Jan 2021 10:23:38 +0000 (UTC)
+        id S1726666AbhAOKZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 05:25:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2F44236FB;
+        Fri, 15 Jan 2021 10:24:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610706221;
-        bh=c/+XqWLmQTEyndmY4XhHmEat6eBL2W+LzNHlJg1xGlc=;
+        s=k20201202; t=1610706260;
+        bh=HMdqhYxMZg+Yr+I0XiCS9E9xDkv6WxF8oA5PAduSBeI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GQwIacPmjs/aOm4bQ1rFpzSRDHy739OTYVDLZinf3vIbt7XaORjK14OSbDSdGh6Ij
-         7DOaM4QxtaG0JZsU18PjC4KvQa6bGICy8UpXQw29+cxhdYimqTY9stfbshm+JhT/cf
-         O821VSuzWQTvjgPq0kr+fXNYeQ1z207Ns8XMzOb7LQpsEu+vFr1+8V8TLI0u9i7PFs
-         Z5bY3BeoxFG57wfFcqto6uPrpKzc3NlFGlVWKMEO+wX9/J5iLo2exKI16IJ1DGDZdB
-         3c4P0oFfKYtWfyHSPqCxayXwV4nWDUlKHeBadwhZArU4E9Q7ZPhnmoyQNBaIjUW+aX
-         q5yeMNOO4fmBw==
-Date:   Fri, 15 Jan 2021 10:23:35 +0000
+        b=iT5eQuZzCxshhUvwbqMO1wsiWDIhBgFJNoGwSg9/QdHkONv8IxDuL9BFTc9dmLSgU
+         K+1xVKUHagqWTDQkC/DQPCEwzOc/QzHi8LcOty+5n7GXBDGxdbz8dz9eqlHjJKYmjJ
+         Z5MAIdlkJWCAcD8RFoUPdE3+c1vAqHPTK1VhxMsYsYz5hzNp1UxvcWz3IyVEcp9KwD
+         LNkrnOeE78lZMeTBo1tFStw0iMm7NkNJsRDCx6ccGFScxt0Dmdd6hCIpwoVAlYcj/X
+         XZi2ee0Fb5MPegwDBAHvydnTIn84IOLFiaxp44MGmvpySOgOLboygDCRC1r/C3Td8n
+         l474gZRYSH1Ng==
+Date:   Fri, 15 Jan 2021 10:24:15 +0000
 From:   Will Deacon <will@kernel.org>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        Marc Zyngier <maz@kernel.org>,
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com
-Subject: Re: [PATCH] kvm: arm64: Properly align the end address of table walk
-Message-ID: <20210115102334.GA14167@willie-the-truck>
-References: <20210115095307.12912-1-zhukeqian1@huawei.com>
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Hugh Dickins <hughd@google.com>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [RFC PATCH 5/8] mm: Pass 'address' to map to do_set_pte() and
+ drop FAULT_FLAG_PREFAULT
+Message-ID: <20210115102414.GB14167@willie-the-truck>
+References: <20210114175934.13070-1-will@kernel.org>
+ <20210114175934.13070-6-will@kernel.org>
+ <CAHk-=whA1yCmrARFQ88Af2fh+z1ufS=62eLdXgETBzfMX2bGUw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115095307.12912-1-zhukeqian1@huawei.com>
+In-Reply-To: <CAHk-=whA1yCmrARFQ88Af2fh+z1ufS=62eLdXgETBzfMX2bGUw@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 05:53:07PM +0800, Keqian Zhu wrote:
-> When align the end address, ought to use its original value.
+On Thu, Jan 14, 2021 at 10:17:22AM -0800, Linus Torvalds wrote:
+> On Thu, Jan 14, 2021 at 10:01 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > Rather than modifying the 'address' field of the 'struct vm_fault_info'
+> > passed to do_set_pte(), leave that to identify the real faulting address
+> > and pass in the virtual address to be mapped by the new pte as a
+> > separate argument.
 > 
-> Fixes: b1e57de62cfb ("KVM: arm64: Add stand-alone page-table walker infrastructure")
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> ---
->  arch/arm64/kvm/hyp/pgtable.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Ack.
 > 
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index bdf8e55ed308..670b0ef12440 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -296,7 +296,7 @@ int kvm_pgtable_walk(struct kvm_pgtable *pgt, u64 addr, u64 size,
->  	struct kvm_pgtable_walk_data walk_data = {
->  		.pgt	= pgt,
->  		.addr	= ALIGN_DOWN(addr, PAGE_SIZE),
-> -		.end	= PAGE_ALIGN(walk_data.addr + size),
-> +		.end	= PAGE_ALIGN(addr + size),
->  		.walker	= walker,
+> In fact - apart from the question I had about the 'info' sub-structure
+> - ack on the whole series. But this one struck me particularly as
+> "that's simpler and clearer" even if that finish_fault() case is now
+> not as pretty (but with an unnamed structure it would be slightly
+> simpler, at least).
 
-Hmm, this is a change in behaviour, no (consider the case where both 'addr'
-and 'size' are misaligned)? The current code is consistent with the
-kerneldoc in asm/kvm_pgtable.h, so I don't see the motivation to change it.
+Thanks. I'll post another spin next week to avoid the named structure, but
+if you (or anybody else) get a chance to glance over some of the other
+things I mentioned in the cover letter beforehand that would be really
+great.
 
-Did you hit a bug somewhere?
+Cheers,
 
 Will
