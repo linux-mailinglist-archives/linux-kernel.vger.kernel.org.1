@@ -2,107 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4412F84CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C93A2F84C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387816AbhAOSxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:53:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726065AbhAOSxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:53:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51804238D7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 18:53:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610736782;
-        bh=eBPMgkqdNGN5q0VLCx1BXi45hrDcP5DmDltyPgSUakE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CJMSSEoRS81MJc5sec3sQxOi1Iq4OOnq7+wE5ZHHwFsV2udTj2vdWe5430MR5Q/JL
-         WK2UU6BtaNckbrPX4RqQkRU797Oq/iUd7w1RSfKKpWguHMtP5E6XVJkTlZYhnJ5nY4
-         sHTFJDOPpCWaRNoHisPpdr8G+3LcUEqRF+2w+l9V12OFC/1Z4HTajfz5BqGR8pHtdp
-         eq/YjcHmarmUknmYn/pjwTrhwFuZo37mAn79p1yyudDsiH8NUPh6WT6SmUWf2Tah32
-         C8CuduG/z3+Q2xDwEGMfzbbl/KrnrPSGk6pBPTkYAIS9IX0dtqdD/kOtP92wfdi3Np
-         U3PEI6WHdIqXg==
-Received: by mail-ed1-f48.google.com with SMTP id by27so10654043edb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:53:02 -0800 (PST)
-X-Gm-Message-State: AOAM532lNfqjJ9UWGZjG7UOtHObKgR2iloO3zPczoo3Z3L+FegEjxHGg
-        lCPdRrL/9hv4qFf1fmtekfc42FAkMAKsGB6XMt0H2A==
-X-Google-Smtp-Source: ABdhPJynrYlEzsGeJwo+4L8uJID8hyP5P3NnjxakIf4SVRJAP698dPyCd6HLEmUXDG1L6OMWYIHZ00rnNww4eH09O1s=
-X-Received: by 2002:a05:6402:1d3b:: with SMTP id dh27mr11106606edb.238.1610736780889;
- Fri, 15 Jan 2021 10:53:00 -0800 (PST)
+        id S2387719AbhAOSxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:53:36 -0500
+Received: from relay04.th.seeweb.it ([5.144.164.165]:43111 "EHLO
+        relay04.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728163AbhAOSxg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 13:53:36 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id C49401F659;
+        Fri, 15 Jan 2021 19:52:53 +0100 (CET)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     stanimir.varbanov@linaro.org
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, phone-devel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH 0/2] SDM630/660 Venus hardware video decoder/encoder
+Date:   Fri, 15 Jan 2021 19:52:50 +0100
+Message-Id: <20210115185252.333562-1-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210115180733.5663-1-marco.faltelli@uniroma2.it>
-In-Reply-To: <20210115180733.5663-1-marco.faltelli@uniroma2.it>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Fri, 15 Jan 2021 10:52:49 -0800
-X-Gmail-Original-Message-ID: <CALCETrWfnL=3M3nmmHs-a3si5JptSCtF6cEtHVtsDNwA5mHnRg@mail.gmail.com>
-Message-ID: <CALCETrWfnL=3M3nmmHs-a3si5JptSCtF6cEtHVtsDNwA5mHnRg@mail.gmail.com>
-Subject: Re: [PATCH] kernel/time: Add hr_sleep syscall, a high-resolution
- sleep service
-To:     Marco Faltelli <marco.faltelli@uniroma2.it>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 10:14 AM Marco Faltelli
-<marco.faltelli@uniroma2.it> wrote:
->
-> hr_sleep is a new system call engineered for nanosecond time scale
-> granularities.
-> With respect to nanosleep, it uses a single value representation
-> of the sleep period.
-> hr_sleep achieves 15x improvement for microsecond scale timers
-> w.r.t. nanosleep:
+This patch series enables the Venus hardware video decoder/encoder
+on the SDM630/660 series of SoCs.
 
-You need to explain what 15x means.
+Please keep in mind that these patches (especially the dt-bindings one)
+depend on series 480030 (SDM630/660 GCC/MMCC/GPUCC clock controllers),
+as the MultiMedia Clock Controller and related fixes in the GCC one
+are needed to enable functionality of the Venus block.
 
-> +/**
-> + * hr_sleep - a high-resolution sleep service for fine-grained timeouts
-> + * @nanoseconds:       the requested sleep period in nanoseconds
-> + *
-> + * Returns:
-> + * 0 when the sleep request successfully terminated
-> + * -EINVAL if a sleep period < 0 is requested
-> + */
-> +SYSCALL_DEFINE1(hr_sleep, long, nanoseconds)
-> +{
-> +       DECLARE_WAIT_QUEUE_HEAD(the_queue);//here we use a private queue
-> +       control_record *control;
-> +       ktime_t ktime_interval;
-> +
-> +       if (nanoseconds < 0)
-> +               return -EINVAL;
-> +
-> +       if (nanoseconds == 0)
-> +               return 0;
-> +
-> +       ktime_interval = ktime_set(0, nanoseconds);
-> +       control = (control_record *)((void *) current->stack + sizeof(struct thread_info));
+This series was tested on SDM630 and SDM636 on the following smartphones:
+- Sony Xperia 10 (SDM630)
+- Sony Xperia 10 Plus (SDM636)
+- Sony Xperia XA2 (SDM630)
+- Sony Xperia XA2 Ultra (SDM630)
 
-What is this trying to do other than writing to memory you don't own?
+P.S.: Remember! SDM636 is a variant of SDM660, *not* a variant of 630.
 
-In C, the way you create a structure on the stack is:
+AngeloGioacchino Del Regno (2):
+  media: venus: core: Add sdm660 DT compatible and resource struct
+  media: dt-bindings: media: venus: Add sdm660 DT schema
 
-struct control_record control;
-
-done, problem solved.  (Also, on modern kernels, thread_info is not on
-the stack, so your arithmetic makes no sense.
-
-> +       wait_event_interruptible(the_queue, control->awake == 1);
-
-Once you start checking the return value (which is absolutely
-necessary), you will discover that you need to do something sensible
-when the return value is nonzero.  At that point you will start
-contemplating how to restart an interrupted wait, and you will have to
-consider the merits of absolute vs relative timeouts and you might
-discover that the complexity of nanosleep(2) is not an accident.
-
-Sure, the seconds/nanoseconds split in nanosleep(2) is probably not
-ideal, and a better API could probably be designed, but your hr_sleep
-needs a lot of work to cover all the cases.
+ .../bindings/media/qcom,sdm660-venus.yaml     | 164 ++++++++++++++++++
+ drivers/media/platform/qcom/venus/core.c      |  66 +++++++
+ 2 files changed, 230 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/qcom,sdm660-venus.yaml
 
 
---Andy
+base-commit: 012bd807cf654b992cdc4db7eab85c1e95f9d571
+prerequisite-patch-id: 734bdefdb043a8f91a48916246cc9a36fb5966e5
+prerequisite-patch-id: 999517c02973237996492a41ed5bfc2990083932
+prerequisite-patch-id: a48910425fac61948a7a26bec4d40d63e3368569
+prerequisite-patch-id: b1a1a4216eed0d04dd16e6e8e1053dee185d06d8
+prerequisite-patch-id: dff12be2631cc21ef1c3c930fba49d979f5055fe
+-- 
+2.29.2
+
