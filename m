@@ -2,226 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4182F83D7
+	by mail.lfdr.de (Postfix) with ESMTP id E736B2F83D8
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388379AbhAOSQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:16:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57014 "EHLO
+        id S2388408AbhAOSQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:16:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388349AbhAOSQr (ORCPT
+        with ESMTP id S2388358AbhAOSQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:16:47 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F654C061793
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:07 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id 6so2910940wri.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:06 -0800 (PST)
+        Fri, 15 Jan 2021 13:16:49 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6808C061794
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:08 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id k10so8219254wmi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nN4YS0/OMIRscREPk7XlxtO6CWNaJY9AfPbSKKbsChI=;
-        b=Yov0HN/yLFQWnmoRImhvbXzZ4UdmnMn+ivBL0UhYPU/9UjFg7lCj2+AfhCw9OTMtN+
-         mLP4CArEMJBh6Gcvkkr7CoFY05ZcD9CHvr0ickqZYKlL/XDRoc7HijHovbddsvEUEevn
-         RTw1Cslx0twXqQ6a6zqdBnsb6xXzglGDgVyGhBhtkPxXJEB967eCuntgmg3PsTAYZbp9
-         VNwdt2tjhc0aOrEFFJ4l0uv/nzZKH05+Haio0IYTUGi0QPMN53p01Mh3NOIDRwxP7F2h
-         MCMJnRGtYvrX6NpFG46saMNFhe49/XcQQBTeauA5640tITtVF6N8ZzHGhs7hZO6rRsNx
-         +88Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=d2FyQ5jLhIdHZJD6YWNJEO3BdrWd8ejeRewtSriPKvY=;
+        b=oo8H3DQngcMqzuyQv+p0ndzTcx2a6xa46E1LV17pUiKJmFYB/HLEV/rZzoO2TuB5Rf
+         WlggPv9nQYUiOsj4KyUx0khpoZNaWM6Dj+FyMlf7zxiRftfs0AXqTWSDDhT/9JdcxuZp
+         tCxeL7ReDwA/x1dZXTqfgIrQki9sQW0m3eqOzvSvIZuNEgesuZVukjlYcR+9kFOvW4a7
+         BWhUcye5v59wpx3O/6PrS31N3SZPmIH1Ahzoh39Lxz5rFSX3JhzQhqVT5MKc0uETdAsx
+         Tl7YjhMnuu+37Hv2pSNoIlTS2lmZoGJiGbYXAjdJfEfIdeThyga1i04Poq2MH3kQIjP6
+         Q0GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nN4YS0/OMIRscREPk7XlxtO6CWNaJY9AfPbSKKbsChI=;
-        b=J2D42qY9LC9mZc4HXJilZum2hgL+ttsNlFxx6cxwgqOMqU+5qqte8R7QcK129G5VA0
-         9DhY4wTV1i08e+q2jGp3YQsyxzeGSVra1hZ693OrQaZ8w8augEkIXjxDzTQ84S51zWWA
-         mKH+rgS0LUjlMlwjxy6Jhgy7D6yeB9OiGA4qBbw0+VMbOgvAxMcJgPYENdFLHBG+d8v4
-         CWK0bi9B7RVZKRxz1cZ0OsUi2fiOl4xNv4ne48a35ael7UfwNCQl+iD7Ge2BSggao2Ap
-         2v0Zf3nU2qXb825OJ2+9i7/wxFM1DiE8u2ek6ChiT9FXCH2jpOeoCbHjLZgNbOxmDWRT
-         EwVQ==
-X-Gm-Message-State: AOAM532Alx5/SSbeIM3cwKMVth3zN1Tlr6Cb/rjXCfyanBSWX79a7ut2
-        VDO3CD5ynKQvW8cRHEZnuehsDA==
-X-Google-Smtp-Source: ABdhPJxDFeYXsvZoB4yYhaLza6IPXBYukAVHXACFFID0st7lfxFY4Rj0isZ2N0Hb6G4aN+d70zHWnA==
-X-Received: by 2002:a05:6000:1088:: with SMTP id y8mr10264491wrw.380.1610734565744;
-        Fri, 15 Jan 2021 10:16:05 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=d2FyQ5jLhIdHZJD6YWNJEO3BdrWd8ejeRewtSriPKvY=;
+        b=NUdY/BhMKmkR39+b9nK/vbwqLunDusuJPhrfsX1DirEUY7oFo7RecieEp6IZFhVnPv
+         qjRK02+GMFogzvTwp2ocS+CYma0wbKsFiY2IQoVOq4kXQBw99jKalZo10xap+yp5Rwts
+         GJM/ugtjpZ1/jLZx5SiEKD1+P90CSfVAYoFai2bOVg/OwGz9y7CaP5EBTISus2hiXiyS
+         BZa/y4/0GORfTr6IuiUvL3occBsqnwUm0DQBrCjZiN43CVJ5WIQZHihuiDv9sCqXJyvN
+         s2uuEXiwUSEKItuhdn2LECqxVcVcQCNGISWUFVwuDLreoPtq+havp30wcjbhdmgHxI1P
+         iwww==
+X-Gm-Message-State: AOAM530v0EYLaIbQAtkVFoproQfKitPEUlaRITB2dplfnJsiMkHXw8AC
+        Ir5oOQaIDITNNJYBeyNk7cQW4w==
+X-Google-Smtp-Source: ABdhPJwcwyOAr0PXhJz2jEx6tQz9gFzPXrNLH0m28OazHlbt4inlSogSJGqy1K3YHg7BHui7FtTezw==
+X-Received: by 2002:a1c:c90c:: with SMTP id f12mr5656814wmb.98.1610734567515;
+        Fri, 15 Jan 2021 10:16:07 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id b133sm14405979wme.33.2021.01.15.10.16.03
+        by smtp.gmail.com with ESMTPSA id b133sm14405979wme.33.2021.01.15.10.16.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:16:04 -0800 (PST)
+        Fri, 15 Jan 2021 10:16:06 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, Eddie Dong <eddie.dong@intel.com>,
-        Eric Anholt <eric@anholt.net>, Faith <faith@valinux.com>,
-        Gareth Hughes <gareth@valinux.com>,
-        intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        Jackie Li <yaodong.li@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Jan Safrata <jan.nikitenko@gmail.com>,
-        Jesse Barnes <jesse.barnes@intel.com>,
-        jim liu <jim.liu@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Keith Packard <keithp@keithp.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, Min He <min.he@intel.com>,
-        Niu Bing <bing.niu@intel.com>, nouveau@lists.freedesktop.org,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Pei Zhang <pei.zhang@intel.com>,
-        Ping Gao <ping.a.gao@intel.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tina Zhang <tina.zhang@intel.com>,
+Cc:     linux-kernel@vger.kernel.org,
         VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhiyuan Lv <zhiyuan.lv@intel.com>
-Subject: [PATCH 00/29] [Set 15] Finally rid W=1 warnings from GPU!
-Date:   Fri, 15 Jan 2021 18:15:32 +0000
-Message-Id: <20210115181601.3432599-1-lee.jones@linaro.org>
+        Roland Scheidegger <sroland@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 01/29] drm/vmwgfx/vmwgfx_cmdbuf: Fix misnaming of 'headers' should be plural
+Date:   Fri, 15 Jan 2021 18:15:33 +0000
+Message-Id: <20210115181601.3432599-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210115181601.3432599-1-lee.jones@linaro.org>
+References: <20210115181601.3432599-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+Fixes the following W=1 kernel build warning(s):
 
-Last set!  All clean after this for; Arm, Arm64, PPC, MIPS and x86.
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c:137: warning: Function parameter or member 'headers' not described in 'vmw_cmdbuf_man'
 
-Lee Jones (29):
-  drm/vmwgfx/vmwgfx_cmdbuf: Fix misnaming of 'headers' should be plural
-  drm/vmwgfx/vmwgfx_cotable: Fix a couple of simple documentation
-    problems
-  drm/vmwgfx/vmwgfx_so: Add description for 'vmw_view's 'rcu' member
-  drm/vmwgfx/vmwgfx_binding: Provide some missing param descriptions and
-    remove others
-  drm/vmwgfx/vmwgfx_msg: Fix misspelling of 'msg'
-  drm/gma500/mmu: Actually return an error if one occurs
-  drm/vmwgfx/vmwgfx_blit: Add description for 'vmw_bo_cpu_blit's 'diff'
-    param
-  drm/vmwgfx/vmwgfx_validation: Add some missing struct member/function
-    param descriptions
-  drm/vmwgfx/ttm_object: Demote half-assed headers and fix-up another
-  drm/vmwgfx/vmwgfx_thp: Add description for 'vmw_thp_manager's member
-    'manager'
-  drm/gma500/psb_intel_sdvo: Demote kernel-doc abuses
-  drm/gma500/psb_irq: Demote kernel-doc abuse
-  drm/drm_dp_helper: Fix spelling issue and add missing description for
-    'enable_frl_ready_hpd'
-  drm/gma500/cdv_intel_crt: Demote kernel-doc abuse in
-    'cdv_intel_crt_detect_hotplug()'s header
-  drm/gma500/cdv_intel_display: Demote kernel-doc abuse in
-    'cdv_intel_panel_fitter_pipe()'s header
-  drm/gma500/cdv_intel_lvds: Demote unworthy headers to standard blocks
-    and fix another
-  drm/gma500/cdv_intel_dp: Demote one unworthy header fix another
-  drm/gma500/oaktrail_lvds_i2c: Remove unused variables 'tmp'
-  drm/gma500/oaktrail_lvds: Demote one documentation header fix another
-  drm/gma500/oaktrail_crtc: Demote unworthy kernel-doc headers
-  drm/gma500/mdfld_dsi_output: Demote a couple of kernel-doc formatting
-    abuses
-  drm/gma500/mdfld_intel_display: Demote three kernel-doc formatting
-    abuses
-  drm/drm_agpsupport: Strip out obviously wrong descriptions and demote
-    to standard headers
-  drm/i915/gvt/handlers: Remove kernel-doc formatting from
-    non-kernel-doc header
-  drm/nouveau/nouveau_ioc32: File headers are not good candidates for
-    kernel-doc
-  drm/nouveau/nouveau_svm: Remove unused variable 'ret' from void
-    function
-  drm/nouveau/nouveau_bios: Remove unused variable 'pdev' from
-    'nouveau_bios_init()'
-  drm/nouveau/nouveau_ioc32: Demote kernel-doc abuse to standard comment
-    block
-  drm/vmwgfx/ttm_object: Reorder header to immediately precede its
-    struct
-
- drivers/gpu/drm/drm_agpsupport.c             | 46 +++++---------------
- drivers/gpu/drm/drm_dp_helper.c              |  3 +-
- drivers/gpu/drm/gma500/cdv_intel_crt.c       |  2 +-
- drivers/gpu/drm/gma500/cdv_intel_display.c   |  2 +-
- drivers/gpu/drm/gma500/cdv_intel_dp.c        |  4 +-
- drivers/gpu/drm/gma500/cdv_intel_lvds.c      |  7 +--
- drivers/gpu/drm/gma500/mdfld_dsi_output.c    |  4 +-
- drivers/gpu/drm/gma500/mdfld_intel_display.c |  6 +--
- drivers/gpu/drm/gma500/mmu.c                 |  2 +-
- drivers/gpu/drm/gma500/oaktrail_crtc.c       |  6 +--
- drivers/gpu/drm/gma500/oaktrail_lvds.c       |  3 +-
- drivers/gpu/drm/gma500/oaktrail_lvds_i2c.c   |  8 ++--
- drivers/gpu/drm/gma500/psb_intel_sdvo.c      |  6 +--
- drivers/gpu/drm/gma500/psb_irq.c             |  3 +-
- drivers/gpu/drm/i915/gvt/handlers.c          |  2 +-
- drivers/gpu/drm/nouveau/nouveau_bios.c       |  2 -
- drivers/gpu/drm/nouveau/nouveau_ioc32.c      |  4 +-
- drivers/gpu/drm/nouveau/nouveau_svm.c        |  5 +--
- drivers/gpu/drm/vmwgfx/ttm_object.c          | 25 ++++++-----
- drivers/gpu/drm/vmwgfx/vmwgfx_binding.c      |  9 ++--
- drivers/gpu/drm/vmwgfx/vmwgfx_blit.c         |  1 +
- drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c       |  2 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_cotable.c      |  3 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_msg.c          |  2 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_so.c           |  1 +
- drivers/gpu/drm/vmwgfx/vmwgfx_thp.c          |  1 +
- drivers/gpu/drm/vmwgfx/vmwgfx_validation.c   |  5 ++-
- 27 files changed, 74 insertions(+), 90 deletions(-)
-
-Cc: Ben Skeggs <bskeggs@redhat.com>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Dave Airlie <airlied@redhat.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: dri-devel@lists.freedesktop.org
-Cc: Eddie Dong <eddie.dong@intel.com>
-Cc: Eric Anholt <eric@anholt.net>
-Cc: Faith <faith@valinux.com>
-Cc: Gareth Hughes <gareth@valinux.com>
-Cc: intel-gfx@lists.freedesktop.org
-Cc: intel-gvt-dev@lists.freedesktop.org
-Cc: Jackie Li <yaodong.li@intel.com>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Jan Safrata <jan.nikitenko@gmail.com>
-Cc: Jesse Barnes <jesse.barnes@intel.com>
-Cc: jim liu <jim.liu@intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Keith Packard <keithp@keithp.com>
-Cc: Kevin Tian <kevin.tian@intel.com>
-Cc: linaro-mm-sig@lists.linaro.org
-Cc: linux-media@vger.kernel.org
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Min He <min.he@intel.com>
-Cc: Niu Bing <bing.niu@intel.com>
-Cc: nouveau@lists.freedesktop.org
-Cc: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Cc: Pei Zhang <pei.zhang@intel.com>
-Cc: Ping Gao <ping.a.gao@intel.com>
-Cc: Rob Clark <rob.clark@linaro.org>
-Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: Roland Scheidegger <sroland@vmware.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Tina Zhang <tina.zhang@intel.com>
 Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
+Cc: Roland Scheidegger <sroland@vmware.com>
 Cc: Zack Rusin <zackr@vmware.com>
-Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc: Zhi Wang <zhi.a.wang@intel.com>
-Cc: Zhiyuan Lv <zhiyuan.lv@intel.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c b/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c
+index 3158924ffa852..2e23e537cdf52 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c
+@@ -89,7 +89,7 @@ struct vmw_cmdbuf_context {
+  * @max_hw_submitted: Max number of in-flight command buffers the device can
+  * handle. Immutable.
+  * @lock: Spinlock protecting command submission queues.
+- * @header: Pool of DMA memory for device command buffer headers.
++ * @headers: Pool of DMA memory for device command buffer headers.
+  * Internal protection.
+  * @dheaders: Pool of DMA memory for device command buffer headers with trailing
+  * space for inline data. Internal protection.
 -- 
 2.25.1
 
