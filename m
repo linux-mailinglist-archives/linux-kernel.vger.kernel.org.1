@@ -2,215 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520682F7B1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5382F7BB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387563AbhAOM6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:58:48 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:58477 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732364AbhAOM6p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:58:45 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B71845807AE;
-        Fri, 15 Jan 2021 07:57:20 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Fri, 15 Jan 2021 07:57:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=20G+8AUDU22Sj
-        rSt9y/AHmfbcg6/OsfMLbojwU1KxMk=; b=GhsLhN2/szyLFn5d5Tb0XzfOyLiNb
-        d+SL3mbsRnNzFfzDC2K8MD1GHi1UcnWahAFyV+aki0mvFZrrDYKidBSjE9uRNg3K
-        +ELucy1OQGCMnvUwy5x/jHFO55D4FbwAc1/xSCkEgixycsT9oFjghZt5AFCsF2xy
-        1o5WByvvujxz5yJ12ez1C1WwjLNbx6spS9zZUPzTs246W8Ns50f65nbZZPQdqMKo
-        ocMwXdBgBheNS/3XyN16gtatLXSETq5nrUEbSoHNwH5etBxRY3fuw6TBuFmksbiz
-        /pRHW6opAEVZjrHGp/5I0yD0v/6C4/oqwpAB07V2hdjDk5TQUWbzNgFdg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=20G+8AUDU22SjrSt9y/AHmfbcg6/OsfMLbojwU1KxMk=; b=pOzQZXTh
-        4ZbBQ7izLFNhvslsa3Vm4OoyljHVe2j7oFdETCmcW1NkWN20Z+VFrgwPLLo02N76
-        76VcMWOMhKQ/5AFJKpsLGVWaD2s4xg/pzLkMOfwxMub3Q0DVdwPm4Lpa5RzvpvUc
-        LcWXpUtGa9jvF21t4TOag2u4XF4na34oKfDGlRc9XFFG/dobT3N59e8CLERvpHap
-        6Cmr7IPsfDVHIpZlforhTazajsxsz3ILDMWIFLql+SLsUN+f+gb08kjAJWvQZTV1
-        0cjnjRL+esiyTUULBTekxk7Sm4RnvwjxYq51Tya9R+O3apYQjTxPpopcCu4LtA1Q
-        01zQRjumf7bQzg==
-X-ME-Sender: <xms:MJEBYEPD0l_yaSKmaPIYZNDxAjel6GF3Ef0HJCDey1rE_I-g_IKrsQ>
-    <xme:MJEBYK9x5YvqZ7HIEYO9sX0fZSDZYF8dw4ACNWiaGIbOwCipVrFy9AR73h68WZ23B
-    DSbfolhxWcDlF4J3cQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtddvgddvvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveevheeh
-    vdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpeehnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:MJEBYLT5iDt1unhJW198sPPEA-WKy99chq_L7BHmIWUX_2cdXT40tw>
-    <xmx:MJEBYMt1ffhAKzrI_Q9dAmdHUm5-v5T4dUaqli8SNvk7S7PkaVHB2A>
-    <xmx:MJEBYMdNp2LvnCtDBAIVO_2TJ67mVfa8JaS7bza72GYkNcKWUiTgtw>
-    <xmx:MJEBYPUWWOdeWE8aBjl_Yn5z5v0QS1v4r91Qhv1Eui6LEvQD_ECZUQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 45B5B1080059;
-        Fri, 15 Jan 2021 07:57:20 -0500 (EST)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>
-Cc:     dri-devel@lists.freedesktop.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Tomi Valkeinen <tomba@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org
-Subject: [PATCH 06/10] drm: Use state helper instead of plane state pointer in atomic_check
-Date:   Fri, 15 Jan 2021 13:56:58 +0100
-Message-Id: <20210115125703.1315064-6-maxime@cerno.tech>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210115125703.1315064-1-maxime@cerno.tech>
-References: <20210115125703.1315064-1-maxime@cerno.tech>
+        id S1732690AbhAOMbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:31:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37058 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727700AbhAOMbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2D60236FB;
+        Fri, 15 Jan 2021 12:29:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610713797;
+        bh=ZFIyyunQqDw20/DH0NFeOcsXXInaOgujlJLJwmFfQ9M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DQI4/JwUK8XPDLRKXrwibrVQJqWWNO5rhKYVw3ax/L3oQD4XA8WCzil/L/aOJsH9i
+         Y8d9j2AfUkrjBhtI33s0ze9grkCRh7wJSI18nx2cYAoHIesSyLRcnIMAsobcdKv9zI
+         ouLD8irPVuLajIF/Ccc2QBjudg5F2BbKkgDYvTYQ=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 4.4 00/18] 4.4.252-rc1 review
+Date:   Fri, 15 Jan 2021 13:27:28 +0100
+Message-Id: <20210115121955.112329537@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.252-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.4.252-rc1
+X-KernelTest-Deadline: 2021-01-17T12:19+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many drivers reference the plane->state pointer in order to get the
-current plane state in their atomic_check hook, which would be the old
-plane state in the global atomic state since _swap_state hasn't happened
-when atomic_check is run.
+This is the start of the stable review cycle for the 4.4.252 release.
+There are 18 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Use the drm_atomic_get_old_plane_state helper to get that state to make
-it more obvious.
+Responses should be made by Sun, 17 Jan 2021 12:19:42 +0000.
+Anything received after that time might be too late.
 
-This was made using the coccinelle script below:
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.252-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+and the diffstat can be found below.
 
-@ plane_atomic_func @
-identifier helpers;
-identifier func;
-@@
+thanks,
 
-static struct drm_plane_helper_funcs helpers = {
-	...,
-	.atomic_check = func,
-	...,
-};
+greg k-h
 
-@ replaces_old_state @
-identifier plane_atomic_func.func;
-identifier plane, state, plane_state;
-@@
+-------------
+Pseudo-Shortlog of commits:
 
- func(struct drm_plane *plane, struct drm_atomic_state *state) {
- 	...
--	struct drm_plane_state *plane_state = plane->state;
-+	struct drm_plane_state *plane_state = drm_atomic_get_old_plane_state(state, plane);
- 	...
- }
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.4.252-rc1
 
-@@
-identifier plane_atomic_func.func;
-identifier plane, state, plane_state;
-@@
+Vasily Averin <vvs@virtuozzo.com>
+    net: drop bogus skb with CHECKSUM_PARTIAL and offset beyond end of trimmed packet
 
- func(struct drm_plane *plane, struct drm_atomic_state *state) {
- 	struct drm_plane_state *plane_state = drm_atomic_get_old_plane_state(state, plane);
- 	...
--	plane->state
-+	plane_state
- 	...
- }
+Ming Lei <ming.lei@redhat.com>
+    block: fix use-after-free in disk_part_iter_next
 
-@ adds_old_state @
-identifier plane_atomic_func.func;
-identifier plane, state;
-@@
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    iommu/intel: Fix memleak in intel_irq_remapping_alloc
 
- func(struct drm_plane *plane, struct drm_atomic_state *state) {
-+	struct drm_plane_state *old_plane_state = drm_atomic_get_old_plane_state(state, plane);
- 	...
--	plane->state
-+	old_plane_state
- 	...
- }
+Arnd Bergmann <arnd@arndb.de>
+    block: rsxx: select CONFIG_CRC32
 
-@ include depends on adds_old_state || replaces_old_state @
-@@
+Arnd Bergmann <arnd@arndb.de>
+    wil6210: select CONFIG_CRC32
 
- #include <drm/drm_atomic.h>
+Colin Ian King <colin.king@canonical.com>
+    cpufreq: powernow-k8: pass policy rather than use cpufreq_cpu_get()
 
-@ no_include depends on !include && (adds_old_state || replaces_old_state) @
-@@
+Lukas Wunner <lukas@wunner.de>
+    spi: pxa2xx: Fix use-after-free on unbind
 
-+ #include <drm/drm_atomic.h>
-  #include <drm/...>
+Richard Weinberger <richard@nod.at>
+    ubifs: wbuf: Don't leak kernel memory to flash
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/gpu/drm/imx/ipuv3-plane.c          | 3 ++-
- drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c | 4 +++-
- drivers/gpu/drm/tilcdc/tilcdc_plane.c      | 3 ++-
- 3 files changed, 7 insertions(+), 3 deletions(-)
+Nick Desaulniers <ndesaulniers@google.com>
+    vmlinux.lds.h: Add PGO and AutoFDO input sections
 
-diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ipuv3-plane.c
-index bf8058bb8206..6b49688652f0 100644
---- a/drivers/gpu/drm/imx/ipuv3-plane.c
-+++ b/drivers/gpu/drm/imx/ipuv3-plane.c
-@@ -348,7 +348,8 @@ static int ipu_plane_atomic_check(struct drm_plane *plane,
- {
- 	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
- 									   plane);
--	struct drm_plane_state *old_state = plane->state;
-+	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
-+									   plane);
- 	struct drm_crtc_state *crtc_state;
- 	struct device *dev = plane->dev->dev;
- 	struct drm_framebuffer *fb = new_state->fb;
-diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
-index 4aac6217a5ad..6ce6ce09fecc 100644
---- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
-+++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
-@@ -406,12 +406,14 @@ static int mdp5_plane_atomic_check_with_state(struct drm_crtc_state *crtc_state,
- static int mdp5_plane_atomic_check(struct drm_plane *plane,
- 				   struct drm_atomic_state *state)
- {
-+	struct drm_plane_state *old_plane_state = drm_atomic_get_old_plane_state(state,
-+										 plane);
- 	struct drm_plane_state *new_plane_state = drm_atomic_get_new_plane_state(state,
- 										 plane);
- 	struct drm_crtc *crtc;
- 	struct drm_crtc_state *crtc_state;
- 
--	crtc = new_plane_state->crtc ? new_plane_state->crtc : plane->state->crtc;
-+	crtc = new_plane_state->crtc ? new_plane_state->crtc : old_plane_state->crtc;
- 	if (!crtc)
- 		return 0;
- 
-diff --git a/drivers/gpu/drm/tilcdc/tilcdc_plane.c b/drivers/gpu/drm/tilcdc/tilcdc_plane.c
-index ebdd42dcaf82..c86258132432 100644
---- a/drivers/gpu/drm/tilcdc/tilcdc_plane.c
-+++ b/drivers/gpu/drm/tilcdc/tilcdc_plane.c
-@@ -26,7 +26,8 @@ static int tilcdc_plane_atomic_check(struct drm_plane *plane,
- 	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
- 									   plane);
- 	struct drm_crtc_state *crtc_state;
--	struct drm_plane_state *old_state = plane->state;
-+	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
-+									   plane);
- 	unsigned int pitch;
- 
- 	if (!new_state->crtc)
--- 
-2.29.2
+Florian Westphal <fw@strlen.de>
+    net: fix pmtu check in nopmtudisc mode
+
+Florian Westphal <fw@strlen.de>
+    net: ip: always refragment ip defragmented packets
+
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+    powerpc: Fix incorrect stw{, ux, u, x} instructions in __set_pte_at
+
+David Disseldorp <ddiss@suse.de>
+    scsi: target: Fix XCOPY NAA identifier lookup
+
+Mike Christie <mchristi@redhat.com>
+    xcopy: loop over devices using idr helper
+
+David Disseldorp <ddiss@suse.de>
+    target: use XCOPY segment descriptor CSCD IDs
+
+David Disseldorp <ddiss@suse.de>
+    target: simplify XCOPY wwn->se_dev lookup helper
+
+David Disseldorp <ddiss@suse.de>
+    target: bounds check XCOPY segment descriptor list
+
+David Disseldorp <ddiss@suse.de>
+    target: add XCOPY target/segment desc sense codes
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                 |   4 +-
+ arch/powerpc/include/asm/pgtable.h       |   4 +-
+ block/genhd.c                            |   9 +-
+ drivers/block/Kconfig                    |   1 +
+ drivers/cpufreq/powernow-k8.c            |   9 +-
+ drivers/iommu/intel_irq_remapping.c      |   2 +
+ drivers/net/wireless/ath/wil6210/Kconfig |   1 +
+ drivers/spi/spi-pxa2xx.c                 |   3 +-
+ drivers/target/target_core_transport.c   |  24 ++++
+ drivers/target/target_core_xcopy.c       | 220 +++++++++++++++++++------------
+ drivers/target/target_core_xcopy.h       |   1 +
+ fs/ubifs/io.c                            |  13 +-
+ include/asm-generic/vmlinux.lds.h        |   5 +-
+ include/target/target_core_base.h        |   4 +
+ net/core/skbuff.c                        |   6 +
+ net/ipv4/ip_output.c                     |   2 +-
+ net/ipv4/ip_tunnel.c                     |  10 +-
+ 17 files changed, 209 insertions(+), 109 deletions(-)
+
 
