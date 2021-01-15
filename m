@@ -2,182 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293CE2F7373
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:05:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E562F737F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731133AbhAOHDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 02:03:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
+        id S1731181AbhAOHEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 02:04:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727143AbhAOHDw (ORCPT
+        with ESMTP id S1726494AbhAOHEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 02:03:52 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5EFC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:03:12 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id i5so5448567pgo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:03:12 -0800 (PST)
+        Fri, 15 Jan 2021 02:04:43 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61968C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:04:03 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id b24so7705911otj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:04:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Jl2+hlh3x6jkGwlX8WqlsLyequQpH3wXfp/SkKRuhe4=;
-        b=Z+cBgFMgXTm78gUF5OKaiv/CgSP2yAzAPQDOk8e7Okn8sxsQ4vpnFw8EOlzyzMDao9
-         om3ph+cY69yK3tHyKd9mF/1IOKtChvr8Wyu8QbG/fgz94sjloBk7MP2w8sNiHHa8YxfC
-         Qzs2gfrkxUeCuXZ0GHRHA4kdl3ff44yIgJ/xE=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JZuzVr+TgXPqb7ivDtim3E40dPuUOJv5AgOFr5mOA50=;
+        b=dd0tjJF73TWEftnKndgklHUfD2jKKb//MFrpjyBgGFXyjxIbMFf/dTVyDuLXDarPQm
+         NlPlhZFkX8ijBW1NxdfE7oOI27GQPlUDFfy4oQ/kOlh2PgAK3T012gccnE9o+lJ/+UR7
+         U2LDMlzNDM0dgAdZHV7Gi0VHwVy1PMnNDSWFNlPZV1vQf3qa5YE6RAouFR2WztIR4If4
+         0L7qAc60fCg32yrihP1EzVkLGCm8YFsKCht5CTYeAIBhbSivUoQB6/+Dc4qeQpKDS7BY
+         KiUkHKDl4WFKyehJW6VuHO2BnjoxFKUrkHQm5JgnEMAizv5EnZCjNQ1ypNNStrpPWrNQ
+         ofSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Jl2+hlh3x6jkGwlX8WqlsLyequQpH3wXfp/SkKRuhe4=;
-        b=X0BXVOq8kXZJ+L1URw4uoiqmRsTGYpjiatX43sB4Iq9N/2JrKK1px6w2LwxESuvSbh
-         5R83/v8idCL7mCTDFFc7krVbL3NbCnvYeNxfKfWDTdK9bRuiNBkOcfCu73W+OKyj737I
-         Uac8xQOFOZTgmdTj8lk8lYk2lRGM1YvXlu6+ToV5uGahwaBQJOyy97mA5yrlSQoPf7L8
-         78PtyP3v4U3qQLkDozcanZVAeJTjvPXTeMM+LYhQYyd6hX5Gfc9/giUE4l5ACppQLAQN
-         89RRSKdzvKLn1t6D4dOUkrcMWoqObfyxS1nWU8sNR8DFWqndniQD6UAecDUdw1BysO87
-         jKHg==
-X-Gm-Message-State: AOAM533wdmdlbaopV05YoIA2MI1dF1u5M2eFS7l/leTTVnX0BtvgHjji
-        QRdizP5otmufwx9TOZEKo+q6fA==
-X-Google-Smtp-Source: ABdhPJyfblq3yeliOQGfgSMELoffZ1xsuuDx5AbEg/nZkDji079XClxuemor1VUY8+ydtI9Oo8u8Pw==
-X-Received: by 2002:a65:488d:: with SMTP id n13mr10912182pgs.315.1610694191580;
-        Thu, 14 Jan 2021 23:03:11 -0800 (PST)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:1a60:24ff:fe89:3e93])
-        by smtp.gmail.com with ESMTPSA id x12sm7101064pfj.25.2021.01.14.23.03.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 23:03:11 -0800 (PST)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Xin Ji <xji@analogixsemi.com>, David Airlie <airlied@linux.ie>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, Rob Herring <robh+dt@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: [PATCH v3 2/2] drm/bridge: anx7625: disable regulators when power off
-Date:   Fri, 15 Jan 2021 15:02:52 +0800
-Message-Id: <20210115070250.2271571-2-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-In-Reply-To: <20210115070250.2271571-1-hsinyi@chromium.org>
-References: <20210115070250.2271571-1-hsinyi@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JZuzVr+TgXPqb7ivDtim3E40dPuUOJv5AgOFr5mOA50=;
+        b=cVilAzPvhbwA5j8B8OzsneYyopRcTXLUaAjs/WEVfuP3dyvMtiiTlCct/mwH31vabR
+         H8U3tqV1g8w7R/tOamZPEVmG1z6Ycz4DNknKMR5KHVYyy+TVmyzfBiAbbmkC15aeeINC
+         szEGUNjSCgNMuiHcuxafS+Oe3Qcx92nVlHT1el3XRHQESF/VNPu24CKtBs/KkKrU32tw
+         JOcscGPUVI5kPsdEFT8NahEXWsFssNu6rt4mBXQ7vR9eosA9pqrr4tS1XZ3GcQzoU/d9
+         wAFYKn8NwIghdza1IsSVPSc2XgPWoizhXuLyCGNkK7QCASWZkSqozjaYKFkgjI+sWGRG
+         PblQ==
+X-Gm-Message-State: AOAM531b/2QWgkpYywMjh8VjR6qIuuzcIazBrJNL+gO+jlVCaOWMaz9B
+        vlAiAMoOfSfWRLoMF+a+aGF0SEfbr1D0J4TjejZasQ==
+X-Google-Smtp-Source: ABdhPJyZVuwU+rk7VghzOedHHAoEnLPn+FmDE3Zz6fzgVoDG5hqFT6Mp1fWckxdU8hMvhERDzVXw1EUlvGilKeWPG48=
+X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr7591335ots.251.1610694242544;
+ Thu, 14 Jan 2021 23:04:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210114211840.GA5617@linux-8ccs> <20210114215416.993167-1-maskray@google.com>
+In-Reply-To: <20210114215416.993167-1-maskray@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 15 Jan 2021 08:03:51 +0100
+Message-ID: <CANpmjNOrD76O2_Zpwo5RJ2d12gczuQpG9bJkXYLY_sOVeEVZGQ@mail.gmail.com>
+Subject: Re: [PATCH v2] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
+ undefined symbols
+To:     Fangrui Song <maskray@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When suspending the driver, anx7625_power_standby() will be called to
-turn off reset-gpios and enable-gpios. However, power supplies are not
-disabled. To save power, the driver can get the power supply regulators
-and turn off them in anx7625_power_standby().
+On Thu, 14 Jan 2021 at 22:54, Fangrui Song <maskray@google.com> wrote:
+> clang-12 -fno-pic (since
+> https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6)
+> can emit `call __stack_chk_fail@PLT` instead of `call __stack_chk_fail`
+> on x86.  The two forms should have identical behaviors on x86-64 but the
+> former causes GNU as<2.37 to produce an unreferenced undefined symbol
+> _GLOBAL_OFFSET_TABLE_.
+>
+> (On x86-32, there is an R_386_PC32 vs R_386_PLT32 difference but the
+> linker behavior is identical as far as Linux kernel is concerned.)
+>
+> Simply ignore _GLOBAL_OFFSET_TABLE_ for now, like what
+> scripts/mod/modpost.c:ignore_undef_symbol does. This also fixes the
+> problem for gcc/clang -fpie and -fpic, which may emit `call foo@PLT` for
+> external function calls on x86.
+>
+> Note: ld -z defs and dynamic loaders do not error for unreferenced
+> undefined symbols so the module loader is reading too much.  If we ever
+> need to ignore more symbols, the code should be refactored to ignore
+> unreferenced symbols.
+>
+> Reported-by: Marco Elver <elver@google.com>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1250
+> Signed-off-by: Fangrui Song <maskray@google.com>
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
-Change:
-v3: add delays between regulators power on
----
- drivers/gpu/drm/bridge/analogix/anx7625.c | 34 +++++++++++++++++++++++
- drivers/gpu/drm/bridge/analogix/anx7625.h |  1 +
- 2 files changed, 35 insertions(+)
+Tested-by: Marco Elver <elver@google.com>
 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index 65cc05982f82..23283ba0c4f9 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -11,6 +11,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/slab.h>
- #include <linux/types.h>
- #include <linux/workqueue.h>
-@@ -875,12 +876,25 @@ static int sp_tx_edid_read(struct anx7625_data *ctx,
- static void anx7625_power_on(struct anx7625_data *ctx)
- {
- 	struct device *dev = &ctx->client->dev;
-+	int ret, i;
- 
- 	if (!ctx->pdata.low_power_mode) {
- 		DRM_DEV_DEBUG_DRIVER(dev, "not low power mode!\n");
- 		return;
- 	}
- 
-+	for (i = 0; i < ARRAY_SIZE(ctx->pdata.supplies); i++) {
-+		ret = regulator_enable(ctx->pdata.supplies[i].consumer);
-+		if (ret < 0) {
-+			DRM_DEV_DEBUG_DRIVER(dev, "cannot enable supply %d: %d\n",
-+					     i, ret);
-+			goto reg_err;
-+		}
-+		usleep_range(2000, 2100);
-+	}
-+
-+	usleep_range(4000, 4100);
-+
- 	/* Power on pin enable */
- 	gpiod_set_value(ctx->pdata.gpio_p_on, 1);
- 	usleep_range(10000, 11000);
-@@ -889,11 +903,16 @@ static void anx7625_power_on(struct anx7625_data *ctx)
- 	usleep_range(10000, 11000);
- 
- 	DRM_DEV_DEBUG_DRIVER(dev, "power on !\n");
-+	return;
-+reg_err:
-+	for (--i; i >= 0; i--)
-+		regulator_disable(ctx->pdata.supplies[i].consumer);
- }
- 
- static void anx7625_power_standby(struct anx7625_data *ctx)
- {
- 	struct device *dev = &ctx->client->dev;
-+	int ret;
- 
- 	if (!ctx->pdata.low_power_mode) {
- 		DRM_DEV_DEBUG_DRIVER(dev, "not low power mode!\n");
-@@ -904,6 +923,12 @@ static void anx7625_power_standby(struct anx7625_data *ctx)
- 	usleep_range(1000, 1100);
- 	gpiod_set_value(ctx->pdata.gpio_p_on, 0);
- 	usleep_range(1000, 1100);
-+
-+	ret = regulator_bulk_disable(ARRAY_SIZE(ctx->pdata.supplies),
-+				     ctx->pdata.supplies);
-+	if (ret < 0)
-+		DRM_DEV_DEBUG_DRIVER(dev, "cannot disable supplies %d\n", ret);
-+
- 	DRM_DEV_DEBUG_DRIVER(dev, "power down\n");
- }
- 
-@@ -1742,6 +1767,15 @@ static int anx7625_i2c_probe(struct i2c_client *client,
- 	platform->client = client;
- 	i2c_set_clientdata(client, platform);
- 
-+	pdata->supplies[0].supply = "vdd10";
-+	pdata->supplies[1].supply = "vdd18";
-+	pdata->supplies[2].supply = "vdd33";
-+	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(pdata->supplies),
-+				      pdata->supplies);
-+	if (ret) {
-+		DRM_DEV_ERROR(dev, "fail to get power supplies: %d\n", ret);
-+		return ret;
-+	}
- 	anx7625_init_gpio(platform);
- 
- 	atomic_set(&platform->power_status, 0);
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
-index 193ad86c5450..e4a086b3a3d7 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.h
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
-@@ -350,6 +350,7 @@ struct s_edid_data {
- struct anx7625_platform_data {
- 	struct gpio_desc *gpio_p_on;
- 	struct gpio_desc *gpio_reset;
-+	struct regulator_bulk_data supplies[3];
- 	struct drm_bridge *panel_bridge;
- 	int intp_irq;
- 	u32 low_power_mode;
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
+Thank you for the patch!
 
+> ---
+>  kernel/module.c | 20 ++++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
+> ---
+> Changes in v2:
+> * Fix Marco's email address
+> * Add a function ignore_undef_symbol similar to scripts/mod/modpost.c:ignore_undef_symbol
+>
+> diff --git a/kernel/module.c b/kernel/module.c
+> index 4bf30e4b3eaa..278f5129bde2 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -2348,6 +2348,20 @@ static int verify_exported_symbols(struct module *mod)
+>         return 0;
+>  }
+>
+> +static int ignore_undef_symbol(Elf_Half emachine, const char *name)
+
+Why not 'bool' return-type?
+
+> +{
+> +       /* On x86, PIC code and Clang non-PIC code may have call foo@PLT. GNU as
+
+Not sure if checkpatch.pl warns about this, but this multi-line
+comment does not follow the normal kernel-style (see elsewhere in
+file):
+
+/*
+ * ...
+ */
+
+> +        * before 2.37 produces an unreferenced _GLOBAL_OFFSET_TABLE_ on x86-64.
+> +        * i386 has a similar problem but may not deserve a fix.
+> +        *
+> +        * If we ever have to ignore many symbols, consider refactoring the code to
+> +        * only warn if referenced by a relocation.
+> +        */
+> +       if (emachine == EM_386 || emachine == EM_X86_64)
+> +               return !strcmp(name, "_GLOBAL_OFFSET_TABLE_");
+> +       return 0;
+> +}
+> +
+>  /* Change all symbols so that st_value encodes the pointer directly. */
+>  static int simplify_symbols(struct module *mod, const struct load_info *info)
+>  {
+> @@ -2395,8 +2409,10 @@ static int simplify_symbols(struct module *mod, const struct load_info *info)
+>                                 break;
+>                         }
+>
+> -                       /* Ok if weak.  */
+> -                       if (!ksym && ELF_ST_BIND(sym[i].st_info) == STB_WEAK)
+> +                       /* Ok if weak or ignored.  */
+> +                       if (!ksym &&
+> +                           (ELF_ST_BIND(sym[i].st_info) == STB_WEAK ||
+> +                            ignore_undef_symbol(info->hdr->e_machine, name)))
+>                                 break;
+>
+>                         ret = PTR_ERR(ksym) ?: -ENOENT;
+> --
+> 2.30.0.296.g2bfb1c46d8-goog
+>
