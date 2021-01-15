@@ -2,62 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 015762F8332
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0462F833C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387448AbhAOSAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:00:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726355AbhAOSAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:00:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A10CB23A59;
-        Fri, 15 Jan 2021 17:59:25 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 17:59:23 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] kasan, arm64: fix pointer tags in KASAN reports
-Message-ID: <20210115175922.GI16707@gaia>
-References: <cover.1610731872.git.andreyknvl@google.com>
- <ff30b0afe6005fd046f9ac72bfb71822aedccd89.1610731872.git.andreyknvl@google.com>
+        id S1727957AbhAOSDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:03:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55347 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726434AbhAOSDV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 13:03:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610733714;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gq10Kr5xse22ieR9b4aF/0j+yRbARGW5WK7gbGTTvCI=;
+        b=AACCP0VmzRAPiQcQ43ied0klwKAs4QBIgqTsiW81gqngo7pN+40H+8LGEWH+63exEV0WLq
+        gy1MHqrsd5FbUIA6Un02tVaW8LertZyhPHrtnpyAB9YPE3yISoL236MOdd0TNrsI42MDdo
+        srlZ9kb2Lt5KN7RuK+o6RfTcyyc6FyY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-280-gAhkavzzP3CD-QHWbBOljQ-1; Fri, 15 Jan 2021 13:01:50 -0500
+X-MC-Unique: gAhkavzzP3CD-QHWbBOljQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A11F6107ACF8;
+        Fri, 15 Jan 2021 18:01:47 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 90E4460BF3;
+        Fri, 15 Jan 2021 18:01:45 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 11:01:44 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+Subject: Re: [PATCH v2 1/2] vfio/iommu_type1: Populate full dirty when
+ detach non-pinned group
+Message-ID: <20210115110144.61e3c843@omen.home.shazbot.org>
+In-Reply-To: <20210115092643.728-2-zhukeqian1@huawei.com>
+References: <20210115092643.728-1-zhukeqian1@huawei.com>
+        <20210115092643.728-2-zhukeqian1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ff30b0afe6005fd046f9ac72bfb71822aedccd89.1610731872.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 06:41:53PM +0100, Andrey Konovalov wrote:
-> As of the "arm64: expose FAR_EL1 tag bits in siginfo" patch, the address
-> that is passed to report_tag_fault has pointer tags in the format of 0x0X,
-> while KASAN uses 0xFX format (note the difference in the top 4 bits).
+On Fri, 15 Jan 2021 17:26:42 +0800
+Keqian Zhu <zhukeqian1@huawei.com> wrote:
+
+> If a group with non-pinned-page dirty scope is detached with dirty
+> logging enabled, we should fully populate the dirty bitmaps at the
+> time it's removed since we don't know the extent of its previous DMA,
+> nor will the group be present to trigger the full bitmap when the user
+> retrieves the dirty bitmap.
 > 
-> Fix up the pointer tag for kernel pointers in do_tag_check_fault by
-> setting them to the same value as bit 55. Explicitly use __untagged_addr()
-> instead of untagged_addr(), as the latter doesn't affect TTBR1 addresses.
+> Fixes: d6a4c185660c ("vfio iommu: Implementation of ioctl for dirty pages tracking")
+> Suggested-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> ---
+>  drivers/vfio/vfio_iommu_type1.c | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
 > 
-> Link: https://linux-review.googlesource.com/id/I9ced973866036d8679e8f4ae325de547eb969649
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index 0b4dedaa9128..4e82b9a3440f 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -236,6 +236,19 @@ static void vfio_dma_populate_bitmap(struct vfio_dma *dma, size_t pgsize)
+>  	}
+>  }
+>  
+> +static void vfio_iommu_populate_bitmap_full(struct vfio_iommu *iommu)
+> +{
+> +	struct rb_node *n;
+> +	unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
+> +
+> +	for (n = rb_first(&iommu->dma_list); n; n = rb_next(n)) {
+> +		struct vfio_dma *dma = rb_entry(n, struct vfio_dma, node);
+> +
+> +		if (dma->iommu_mapped)
+> +			bitmap_set(dma->bitmap, 0, dma->size >> pgshift);
+> +	}
+> +}
+> +
+>  static int vfio_dma_bitmap_alloc_all(struct vfio_iommu *iommu, size_t pgsize)
+>  {
+>  	struct rb_node *n;
+> @@ -2415,8 +2428,11 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>  	 * Removal of a group without dirty tracking may allow the iommu scope
+>  	 * to be promoted.
+>  	 */
+> -	if (update_dirty_scope)
+> +	if (update_dirty_scope) {
+>  		update_pinned_page_dirty_scope(iommu);
+> +		if (iommu->dirty_page_tracking)
+> +			vfio_iommu_populate_bitmap_full(iommu);
+> +	}
+>  	mutex_unlock(&iommu->lock);
+>  }
+>  
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+This doesn't do the right thing.  This marks the bitmap dirty if:
 
-Unless there are other comments, I'll queue this for -rc5 through the
-arm64 tree (I already finalised the arm64 for-next/fixes branch for this
-week).
+ * The detached group dirty scope was not limited to pinned pages
 
--- 
-Catalin
+ AND
+
+ * Dirty tracking is enabled
+
+ AND
+
+ * The vfio_dma is *currently* (ie. after the detach) iommu_mapped
+
+We need to mark the bitmap dirty based on whether the vfio_dma *was*
+iommu_mapped by the group that is now detached.  Thanks,
+
+Alex
+
