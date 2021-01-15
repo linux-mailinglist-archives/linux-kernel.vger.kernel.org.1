@@ -2,92 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A9C2F779E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3747E2F77A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:28:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbhAOL1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:27:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43954 "EHLO mail.kernel.org"
+        id S1726964AbhAOL2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:28:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59904 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726101AbhAOL1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:27:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74B52221F7;
-        Fri, 15 Jan 2021 11:26:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610709984;
-        bh=Ud2aU3k2amrcKUSS+xZ+7kbwFYaKD8iDQJBdhP/vXCU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kjFFbT+cftc/qgBpV2O5kcSyfAGq9i70VipVaLTA4N5FvBFUAi3CnAJsdcuvwnsMK
-         EG/W0QdAYqsWMNkN5EDMbz+k05nzFRKnLC8FsA2G1+wxquxKT42lKFgPbHL4swHi0I
-         Yds6sKl5nmGCrUO5HWkfqg+OpHHDkedAs/I4E+UetBp/qIRtmMkyN25e34KNLmm50j
-         efnjTDxK1OQXZVKa/JXGIWT7I6udj+57OoHVNzff/z9Q5FHCw1dgJTU0iZF2RphOsN
-         Vx7Y/nSDM5LKEHm13LX3daUWT5zjF//9j8MJ74/HJ7LqLoNERJ5QlAHs2mjsSHcHit
-         rdWFDtaL+H/mQ==
-Date:   Fri, 15 Jan 2021 11:26:20 +0000
-From:   Will Deacon <will@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     iommu <iommu@lists.linux-foundation.org>,
+        id S1726019AbhAOL2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 06:28:04 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4A57AACAC;
+        Fri, 15 Jan 2021 11:27:22 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id AD77B1E0800; Fri, 15 Jan 2021 12:27:21 +0100 (CET)
+Date:   Fri, 15 Jan 2021 12:27:21 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [GIT PULL] IOMMU fixes for -rc4
-Message-ID: <20210115112619.GA14253@willie-the-truck>
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>
+Subject: Re: [PATCH 2/2] mm: soft_dirty: userfaultfd: introduce
+ wrprotect_tlb_flush_pending
+Message-ID: <20210115112721.GF27380@quack2.suse.cz>
+References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
+ <20210107200402.31095-1-aarcange@redhat.com>
+ <20210107200402.31095-3-aarcange@redhat.com>
+ <CAHk-=whg-91=EF=8=ayyDQGx_3iuWKp3aHUkDCDkgUb15Yh8AQ@mail.gmail.com>
+ <X/d2DyLfXZmBIreY@redhat.com>
+ <CAHk-=wjs9v-hp_7HV_TrTmisu7pNX=MwZ62ZV82i0evLhPwS1Q@mail.gmail.com>
+ <4100a6f5-ab0b-f7e5-962f-ea1dbcb1e47e@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <4100a6f5-ab0b-f7e5-962f-ea1dbcb1e47e@nvidia.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu 07-01-21 13:53:18, John Hubbard wrote:
+> On 1/7/21 1:29 PM, Linus Torvalds wrote:
+> > On Thu, Jan 7, 2021 at 12:59 PM Andrea Arcangeli <aarcange@redhat.com> wrote:
+> > > 
+> > > The problem is it's not even possible to detect reliably if there's
+> > > really a long term GUP pin because of speculative pagecache lookups.
+> > 
+> > So none of the normal code _needs_ that any more these days, which is
+> > what I think is so nice. Any pinning will do the COW, and then we have
+> > the logic to make sure it stays writable, and that keeps everything
+> > nicely coherent and is all fairly simple.
+> > 
+> > And yes, it does mean that if somebody then explicitly write-protects
+> > a page, it may end up being COW'ed after all, but if you first pinned
+> > it, and then started playing with the protections of that page, why
+> > should you be surprised?
+> > 
+> > So to me, this sounds like a "don't do that then" situation.
+> > 
+> > Anybody who does page pinning and wants coherency should NOT TOUCH THE
+> > MAPPING IT PINNED.
+> > 
+> > (And if you do touch it, it's your own fault, and you get to keep both
+> > of the broken pieces)
+> > 
+> > Now, I do agree that from a QoI standpoint, it would be really lovely
+> > if we actually enforced it. I'm not entirely sure we can, but maybe it
+> > would be reasonable to use that
+> > 
+> >    mm->has_pinned && page_maybe_dma_pinned(page)
+> > 
+> > at least as the beginning of a heuristic.
+> > 
+> > In fact, I do think that "page_maybe_dma_pinned()" could possibly be
+> > made stronger than it is. Because at *THAT* point, we might say "we
+> 
+> What exactly did you have in mind, to make it stronger? I think the
+> answer is in this email but I don't quite see it yet...
+> 
+> Also, now seems to be a good time to mention that I've been thinking about
+> a number of pup/gup pinning cases (Direct IO, GPU/NIC, NVMe/storage peer
+> to peer with GUP/NIC, and HMM support for atomic operations from a device).
+> And it seems like the following approach would help:
+> 
+> * Use pin_user_pages/FOLL_PIN for long-term pins. Long-term here (thanks
+> to Jason for this point) means "user space owns the lifetime". We might
+> even end up deleting either FOLL_PIN or FOLL_LONGTERM, because this would
+> make them mean the same thing. The idea is that there are no "short term"
+> pins of this kind of memory.
+> 
+> * Continue to use FOLL_GET (only) for Direct IO. That's a big change of plans,
+> because several of us had thought that Direct IO needs FOLL_PIN. However, this
+> recent conversation, plus my list of cases above, seems to indicate otherwise.
+> That's because we only have one refcount approach for marking pages in this way,
+> and we should spend it on the long-term pinned pages. Those are both hard to
+> identify otherwise, and actionable once we identify them.
 
-Please pull these three IOMMU fixes for -rc4. The main one is a change
-to the Intel IOMMU driver to fix the handling of unaligned addresses
-when invalidating the TLB. The fix itself is a bit ugly (the caller does
-a bunch of shifting which is then effectively undone later in the
-callchain), but Lu has patches to clean all of this up in 5.12.
+Somewhat late to the game but I disagree here. I think direct IO still
+needs FOLL_PIN so that page_may_be_dma_pinned() returns true for it. At
+least for shared pages. Because filesystems/mm in the writeback path need
+to detect whether the page is pinned and thus its contents can change
+anytime without noticing, the page can be dirtied at random times etc. In
+that case we need to bounce the page during writeback (to avoid checksum
+failures), keep page as dirty in internal filesystem bookkeeping (and in MM
+as well) etc...
 
-Thanks,
-
-Will
-
---->8
-
-The following changes since commit 7c29ada5e70083805bc3a68daa23441df421fbee:
-
-  iommu/vt-d: Fix ineffective devTLB invalidation for subdevices (2021-01-07 14:38:15 +0000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/iommu-fixes
-
-for you to fetch changes up to 694a1c0adebee9152a9ba0320468f7921aca647d:
-
-  iommu/vt-d: Fix duplicate included linux/dma-map-ops.h (2021-01-12 16:56:20 +0000)
-
-----------------------------------------------------------------
-iommu fixes for -rc4
-
-- Fix address alignment handling for VT-D TLB invalidation
-
-- Enable workarounds for buggy Qualcomm firmware on two more SoCs
-
-- Drop duplicate #include
-
-----------------------------------------------------------------
-Konrad Dybcio (1):
-      iommu: arm-smmu-qcom: Add sdm630/msm8998 compatibles for qcom quirks
-
-Lu Baolu (1):
-      iommu/vt-d: Fix unaligned addresses for intel_flush_svm_range_dev()
-
-Tian Tao (1):
-      iommu/vt-d: Fix duplicate included linux/dma-map-ops.h
-
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c |  2 ++
- drivers/iommu/intel/iommu.c                |  1 -
- drivers/iommu/intel/svm.c                  | 22 ++++++++++++++++++++--
- 3 files changed, 22 insertions(+), 3 deletions(-)
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
