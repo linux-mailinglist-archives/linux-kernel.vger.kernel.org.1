@@ -2,110 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3532F7290
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 06:49:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE332F7294
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 06:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732312AbhAOFrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 00:47:32 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:62399 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730872AbhAOFra (ORCPT
+        id S1730659AbhAOFsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 00:48:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729257AbhAOFsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 00:47:30 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610689627; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=uKd60FvtWU74hmbEb+xSaAfRXFvIDWXHtourTMrbpIg=;
- b=Qub5SiFrK91He6a55DbzZfxC8QpBU2oQhsV8e3e+NgPhsrmtZz//a+k6ZwGuhS49lHENDD9q
- /YLbxOrA7Ilgqnz8xTsUF9VMOtHJFFapkFzT88vF4HedYEGck7jeoDqQ+gYimEUnfBFV3wCZ
- Hh1O1iUhk0Y1pZw+saH6KjKA/zM=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
- 60012c323b6dceb1329ae0df (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 Jan 2021 05:46:26
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id ADD34C43461; Fri, 15 Jan 2021 05:46:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 17304C433CA;
-        Fri, 15 Jan 2021 05:46:25 +0000 (UTC)
+        Fri, 15 Jan 2021 00:48:16 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E91FC061575;
+        Thu, 14 Jan 2021 21:47:36 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id b64so10712401qkc.12;
+        Thu, 14 Jan 2021 21:47:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZuuCndbOtvm58/vkKrBedKYmsIRrJvREo1b8S1ptqFQ=;
+        b=et1CTe3omLNz4hbwGZr0zd/j9fOt9f4QTMhnEZJ8KBseCh7DgfR4LQN29AKoaSeJ0Y
+         TlvpcDN2DAVkQ5j+rW4WJZX2VtAiXr7sMsAnM9SQr7udUKDSbuEOIv72OORl4MGl8ODF
+         Ejjwus5n7N4523970dAvJuE5/Ga0sp1PGUS6EUUdlrUcF7jdOiL3ZfjbcIvGqHWthnro
+         DaK02h3iVYhzj7FwtV8n7ghXpwy8wuVaKR3G5Pn426YDFAZZGSkzFu6PKFCeDbQJEl6X
+         dcLucluwpfPtw6qreSANlBnmRXV0nvl6UskP6ACUeMbdWDQ1/FXOC4rKvSHOEPBJCTGN
+         HjuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZuuCndbOtvm58/vkKrBedKYmsIRrJvREo1b8S1ptqFQ=;
+        b=gqdaY+kyC/NI/LmLoV0jypFmAQThbA1ctwXRa8CJjVd/ZcZSV4o54MzTl/ztIM9FzH
+         1++6lCU0hcw736SAhB7Jb86g0myBg4CuO/0KGT1Nr5M2GyMIVGwReDoVj+75QEXCqH/C
+         mHad8LPkFANomv59ec9hiv7JOcQNvns4RLymtitn3Ca6zPb9RTMy+D/3EFX7vLssH+hc
+         xPAIaun+WbXYcOjx4Vna1DMfbR9HT/Vksy7sA8wyc7Cy6REJykKn+L6ujNuKIa50gg3l
+         1n49+ewBDm7eI81UNs+oe+brDKlkZ2lHCJ08zdAnrss/FWRVlLzb0lbC9Us6ePP5rQEl
+         pgmg==
+X-Gm-Message-State: AOAM531GDQX2lF7y0tfNoVRFJzDwNEX8stvB40rNRVyvcthc+4eyAZdK
+        lpkMxLHj3XDjmhF2N4bi2S6pg7FfVC1Kb49ori0=
+X-Google-Smtp-Source: ABdhPJwmHHW5taNBY8omsDPfDQakRE+VuaRoi+8DmQ0LHMYt39pdtsqNaGWk/EZZX2cBFFFV5vK4HFEdek7pAfTw8Ec=
+X-Received: by 2002:a37:a7d0:: with SMTP id q199mr10846239qke.217.1610689655854;
+ Thu, 14 Jan 2021 21:47:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 15 Jan 2021 11:16:24 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Al Grant <al.grant@arm.com>,
-        leo.yan@linaro.org, mnissler@google.com
-Subject: Re: [PATCH] coresight: etm4x: Add config to exclude kernel mode
- tracing
-In-Reply-To: <20201015160257.GA1450102@xps15>
-References: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
- <20201015160257.GA1450102@xps15>
-Message-ID: <dd400fd7017a5d92b55880cf28378267@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210106092740.5808-1-reniuschengl@gmail.com> <CAPDyKFq1EVVfU4HU_=-7TmSRinkTCA41pKWtrMD4C+yCUPYECg@mail.gmail.com>
+ <CAJU4x8uKHQy_hbMhsErzWb2U5USjMRhAZv=+14a9zDn068vHmw@mail.gmail.com> <CAPDyKFrgHgkxFjG5X6v6jx6LYAwx4m5pGROrVY2a42wTPeTKiQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFrgHgkxFjG5X6v6jx6LYAwx4m5pGROrVY2a42wTPeTKiQ@mail.gmail.com>
+From:   Renius Chen <reniuschengl@gmail.com>
+Date:   Fri, 15 Jan 2021 13:47:24 +0800
+Message-ID: <CAJU4x8urzOdFSS=auDSGzxM2Dt1KfMviRiBvKZeeQyyRxRxweg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-pci-gli: Enlarge ASPM L1 entry delay of GL9763E
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        greg.tu@genesyslogic.com.tw
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Mathieu, Suzuki
+> Ulf Hansson <ulf.hansson@linaro.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=8814=
+=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=888:04=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> On Thu, 14 Jan 2021 at 07:25, =E9=99=B3=E5=BB=BA=E5=AE=8F <reniuschengl@g=
+mail.com> wrote:
+> >
+> > > Ulf Hansson <ulf.hansson@linaro.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=
+=8813=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=886:53=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+> > >
+> > > On Wed, 6 Jan 2021 at 10:27, Renius Chen <reniuschengl@gmail.com> wro=
+te:
+> > > >
+> > > > The R/W performance of GL9763E is low with some platforms, which
+> > > > support ASPM mechanism, due to entering L1 state very frequently
+> > > > in R/W process. Enlarge its ASPM L1 entry delay to improve the
+> > > > R/W performance of GL9763E.
+> > >
+> > > What do you mean by frequently? In between a burst of request or
+> > > during a burst of request?
+> >
+> > GL9763E enters ASPM L1 state after a very short idle in default, even
+> > during a burst of request.
+>
+> Okay, then it certainly makes sense to extend the idle period.
+>
+> Would you mind extending the commit message with some of this
+> information, as I think it's useful.
+>
+> >
+> > > I am thinking that this could have an effect on energy instead, but I
+> > > guess it's not always straightforward to decide what's most important=
+.
+> > >
+> > > Anyway, what does it mean when you change to use 0x3FF? Are you
+> > > increasing the idle period? Then for how long?
+> >
+> > Yes, we considered that having high performance is more important than
+> > saving power during a burst of request.
+> > So we increased the idle period for 260us, by setting 0x3FF to the
+> > ASPM L1 entry delay bits of our vendor-specific register.
+> > Anyway, GL9763E can still enter ASPM L1 state by a longer idle.
+>
+> Most mmc controllers that uses runtime PM autosuspend for the same
+> reasons, uses and idle period time of ~50us. 260us is in the same
+> ballpark, so I am fine with that, if that works for you.
+>
+> However, can you please add a comment in the code (and preferably also
+> to the commit message) that 0x3FF means using a 260us idle period?
 
-On 2020-10-15 21:32, Mathieu Poirier wrote:
-> On Thu, Oct 15, 2020 at 06:15:22PM +0530, Sai Prakash Ranjan wrote:
->> On production systems with ETMs enabled, it is preferred to
->> exclude kernel mode(NS EL1) tracing for security concerns and
->> support only userspace(NS EL0) tracing. So provide an option
->> via kconfig to exclude kernel mode tracing if it is required.
->> This config is disabled by default and would not affect the
->> current configuration which has both kernel and userspace
->> tracing enabled by default.
->> 
-> 
-> One requires root access (or be part of a special trace group) to be 
-> able to use
-> the cs_etm PMU.  With this kind of elevated access restricting tracing 
-> at EL1
-> provides little in terms of security.
-> 
+OK, I'll extend the commit message with some of these information and
+add a comment in the code to describe that the idle period is set to
+260us.
 
-Apart from the VM usecase discussed, I am told there are other
-security concerns here regarding need to exclude kernel mode tracing
-even for the privileged users/root. One such case being the ability
-to analyze cryptographic code execution since ETMs can record all
-branch instructions including timestamps in the kernel and there may
-be other cases as well which I may not be aware of and hence have
-added Denis and Mattias. Please let us know if you have any questions
-further regarding this not being a security concern.
+Then I'll submit a newer version: mmc: sdhci-pci-gli: Enlarge ASPM L1
+entry delay of GL9763E (v2).
 
-After this discussion, I would like to post a v2 based on Suzuki's
-feedback earlier. @Suzuki, I have a common config for ETM3 and ETM4
-but couldn't get much idea on how to implement it for Intel PTs, if
-you have any suggestions there, please do share or we can have this
-only for Coresight ETMs.
+Thank you.
 
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+>
+> [...]
+>
+> Kind regards
+> Uffe
