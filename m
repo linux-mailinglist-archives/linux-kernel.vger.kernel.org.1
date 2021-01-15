@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB582F7947
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B27982F7941
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731770AbhAOMeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:34:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40840 "EHLO mail.kernel.org"
+        id S1733293AbhAOMd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:33:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387444AbhAOMeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:34:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A29C02339D;
-        Fri, 15 Jan 2021 12:33:56 +0000 (UTC)
+        id S1733274AbhAOMdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:33:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF08D235F8;
+        Fri, 15 Jan 2021 12:33:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714037;
-        bh=aoInMzShLeeeTg/+4PHS2tDkgza81v84yMhCYK+h/ec=;
+        s=korg; t=1610714019;
+        bh=kaQy7ys6rWfXfo9e5oLIgJe9emh7z0yyBBYl+dFUjME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DLoIjnRtjS0DK1B7wOzlWXWUoLaXkUZdZxBiohsD0AZ95c50KzXndvYsAkJXdjVME
-         AWgy1sjRFzsK6exdHbIG2ElLfvMfue2O56h7A5gNBxkdUcL09/UHf4splbs3SHJRi0
-         07TsUqlHtKMMIfsQwSxKvDyni8zHm9aruQLiEa6U=
+        b=XIASEfc/JU4DEZqz0W7mu4u3CaWDZmAkq/H6gprAbz1OAoMw4yVjjq6SwbHCuksOe
+         KPdtyQJOM+qwhLS1PTlip+qb0jTRm3PDu2hR3pVLiq6qPtbQcRfarWCI8rBKabX4Lo
+         OChOQjnoH5Ywib0Lu7CN1Jse+gcxD8ivjfbZ4EKo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Chris Zankel <chris@zankel.net>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 09/62] net/sonic: Fix some resource leaks in error handling paths
-Date:   Fri, 15 Jan 2021 13:27:31 +0100
-Message-Id: <20210115121958.849755936@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Tranchetti <stranche@codeaurora.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 10/62] net: ipv6: fib: flush exceptions when purging route
+Date:   Fri, 15 Jan 2021 13:27:32 +0100
+Message-Id: <20210115121958.899390981@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
 References: <20210115121958.391610178@linuxfoundation.org>
@@ -43,86 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Sean Tranchetti <stranche@codeaurora.org>
 
-[ Upstream commit 0f7ba7bc46fa0b574ccacf5672991b321e028492 ]
+[ Upstream commit d8f5c29653c3f6995e8979be5623d263e92f6b86 ]
 
-A call to dma_alloc_coherent() is wrapped by sonic_alloc_descriptors().
+Route removal is handled by two code paths. The main removal path is via
+fib6_del_route() which will handle purging any PMTU exceptions from the
+cache, removing all per-cpu copies of the DST entry used by the route, and
+releasing the fib6_info struct.
 
-This is correctly freed in the remove function, but not in the error
-handling path of the probe function. Fix this by adding the missing
-dma_free_coherent() call.
+The second removal location is during fib6_add_rt2node() during a route
+replacement operation. This path also calls fib6_purge_rt() to handle
+cleaning up the per-cpu copies of the DST entries and releasing the
+fib6_info associated with the older route, but it does not flush any PMTU
+exceptions that the older route had. Since the older route is removed from
+the tree during the replacement, we lose any way of accessing it again.
 
-While at it, rename a label in order to be slightly more informative.
+As these lingering DSTs and the fib6_info struct are holding references to
+the underlying netdevice struct as well, unregistering that device from the
+kernel can never complete.
 
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Chris Zankel <chris@zankel.net>
-Fixes: 74f2a5f0ef64 ("xtensa: Add support for the Sonic Ethernet device for the XT2000 board.")
-Fixes: efcce839360f ("[PATCH] macsonic/jazzsonic network drivers update")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 2b760fcf5cfb3 ("ipv6: hook up exception table to store dst cache")
+Signed-off-by: Sean Tranchetti <stranche@codeaurora.org>
+Reviewed-by: David Ahern <dsahern@kernel.org>
+Link: https://lore.kernel.org/r/1609892546-11389-1-git-send-email-stranche@quicinc.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/natsemi/macsonic.c |   12 ++++++++++--
- drivers/net/ethernet/natsemi/xtsonic.c  |    7 +++++--
- 2 files changed, 15 insertions(+), 4 deletions(-)
+ net/ipv6/ip6_fib.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/natsemi/macsonic.c
-+++ b/drivers/net/ethernet/natsemi/macsonic.c
-@@ -540,10 +540,14 @@ static int mac_sonic_platform_probe(stru
+--- a/net/ipv6/ip6_fib.c
++++ b/net/ipv6/ip6_fib.c
+@@ -973,6 +973,8 @@ static void fib6_purge_rt(struct fib6_in
+ {
+ 	struct fib6_table *table = rt->fib6_table;
  
- 	err = register_netdev(dev);
- 	if (err)
--		goto out;
-+		goto undo_probe;
++	/* Flush all cached dst in exception table */
++	rt6_flush_exceptions(rt);
+ 	fib6_drop_pcpu_from(rt, table);
  
- 	return 0;
+ 	if (rt->nh && !list_empty(&rt->nh_list))
+@@ -1839,9 +1841,6 @@ static void fib6_del_route(struct fib6_t
+ 	net->ipv6.rt6_stats->fib_rt_entries--;
+ 	net->ipv6.rt6_stats->fib_discarded_routes++;
  
-+undo_probe:
-+	dma_free_coherent(lp->device,
-+			  SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
-+			  lp->descriptors, lp->descriptors_laddr);
- out:
- 	free_netdev(dev);
- 
-@@ -618,12 +622,16 @@ static int mac_sonic_nubus_probe(struct
- 
- 	err = register_netdev(ndev);
- 	if (err)
--		goto out;
-+		goto undo_probe;
- 
- 	nubus_set_drvdata(board, ndev);
- 
- 	return 0;
- 
-+undo_probe:
-+	dma_free_coherent(lp->device,
-+			  SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
-+			  lp->descriptors, lp->descriptors_laddr);
- out:
- 	free_netdev(ndev);
- 	return err;
---- a/drivers/net/ethernet/natsemi/xtsonic.c
-+++ b/drivers/net/ethernet/natsemi/xtsonic.c
-@@ -265,11 +265,14 @@ int xtsonic_probe(struct platform_device
- 	sonic_msg_init(dev);
- 
- 	if ((err = register_netdev(dev)))
--		goto out1;
-+		goto undo_probe1;
- 
- 	return 0;
- 
--out1:
-+undo_probe1:
-+	dma_free_coherent(lp->device,
-+			  SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
-+			  lp->descriptors, lp->descriptors_laddr);
- 	release_region(dev->base_addr, SONIC_MEM_SIZE);
- out:
- 	free_netdev(dev);
+-	/* Flush all cached dst in exception table */
+-	rt6_flush_exceptions(rt);
+-
+ 	/* Reset round-robin state, if necessary */
+ 	if (rcu_access_pointer(fn->rr_ptr) == rt)
+ 		fn->rr_ptr = NULL;
 
 
