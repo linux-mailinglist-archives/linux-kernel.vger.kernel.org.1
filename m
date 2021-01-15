@@ -2,96 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE9C2F7E2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E10B12F7E37
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731154AbhAOO3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 09:29:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbhAOO33 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:29:29 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677F2C0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:28:49 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id d9so18431242iob.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:28:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4t2xImQTSoylap6FV9VzZoFi72SaBY2B00ks1m41fxg=;
-        b=idUMpCyXLWpO0p8HDuV7CX0Fhq6jcqAFRLDOvLwVY1i0IGlB4vyV71YT9g4DERSqsy
-         zoKh5hQZCZw+r/j9onHTt3dXbJoYlUI+65YZeO2wPHuXZxQcOox/abJcTVPvH7mfZ8Nh
-         4wDryXOSbtj72k7ZFwluMyaRspH91MatZ3vZO8gVhYfDnjjYwKIKE1CGp0vyouHQlLOB
-         FmpvI6oetzpu4uOj15nInUBlIUYT/wsAOGzeDjB8zsCGzLX4FyuapwCbD2ty7PjxvaA+
-         7aC+8s54FUzOVp+Q4B5gNmfuv7ZNvkfYIZckoU74tC6m/nWZVf4DQK+qkPhVE1fal/UN
-         fyPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4t2xImQTSoylap6FV9VzZoFi72SaBY2B00ks1m41fxg=;
-        b=qwQylGUOwRDC3C8qhfoa3r9sdUXTul9KfjQ9kDoYAJUp/NgQoTi+sb0/UlcDYtfXCo
-         OjFW4EVmsDtdeVjCGLHMzatn8UFvEimPcz22vn0FXlVUI/g0sE1bkvuz/3OgJa+t+UrZ
-         LVkwbnBUfvRDHCTuJYteuCY8kMRPrvWyzxklqZBSFEQmmVPrQd+YX+pEVO+N5I3mZIov
-         ainPnV9l9Vu6S6NZkNqxaCA6LatdB7c/nlRGhHMNja+Oq5DahtrrNw7S4yLm3ULlloS/
-         NvQlonJjTzereWgYR4XM4bMHzkJElqiiZnxch2ehIoJpnQba8LVfWCcTN4dzWTpBp4MC
-         /B2A==
-X-Gm-Message-State: AOAM530rbtPh1szV7Hb4jdBAe3ZSPWisqn6VeM46hk7gL7bRJcMUgFRe
-        rM45uws9bD/of5Ll63ZQk+bKQ9tBr9nk2dWRx2AncA==
-X-Google-Smtp-Source: ABdhPJw3idb1i1wKMdzvj93NRD5qYGLjSGZpz5H/XnJJqURG1pAYZzT+ByUtZYFIKGzJwCn6TUpL9mOBVMkpdmaspUg=
-X-Received: by 2002:a02:68a:: with SMTP id 132mr10703746jav.53.1610720928490;
- Fri, 15 Jan 2021 06:28:48 -0800 (PST)
+        id S1731624AbhAOObF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 09:31:05 -0500
+Received: from mga05.intel.com ([192.55.52.43]:31221 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726030AbhAOObE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 09:31:04 -0500
+IronPort-SDR: PXGn5dbfwb0INzVeZuDcWYSZO6B+8DtFirfH1kG3TxuE5xJD2+JJAYjTjj2aulv8CLCIS5D53V
+ dVlVebakEgNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="263348034"
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="263348034"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 06:30:23 -0800
+IronPort-SDR: 4FsvEmS2/X+aI6EkThB/85Bj7aHrFu8rh3bYUNF8Gd+04nOwGYP/j0+4R7yBlOKzQB9PbiYuwH
+ P6rq6QBqHkLQ==
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="382680972"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.249.174.174]) ([10.249.174.174])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 06:30:19 -0800
+Subject: Re: [PATCH v3 04/17] perf: x86/ds: Handle guest PEBS overflow PMI and
+ inject it to guest
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Like Xu <like.xu@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <andi@firstfloor.org>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <20210104131542.495413-5-like.xu@linux.intel.com>
+ <X/86UWuV/9yt14hQ@hirez.programming.kicks-ass.net>
+ <9c343e40-bbdf-8af0-3307-5274070ee3d2@intel.com>
+ <YAGEFgqQv281jVHc@hirez.programming.kicks-ass.net>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <2c197d5a-09a8-968c-a942-c95d18983c9d@intel.com>
+Date:   Fri, 15 Jan 2021 22:30:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210114235423.232737-1-alobakin@pm.me>
-In-Reply-To: <20210114235423.232737-1-alobakin@pm.me>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 15 Jan 2021 15:28:37 +0100
-Message-ID: <CANn89iKi8jsBsCPqNvfQ9Wx6k6EZy5daL33c8YnAfkXZS+QWHw@mail.gmail.com>
-Subject: Re: [PATCH net] skbuff: back tiny skbs with kmalloc() in
- __netdev_alloc_skb() too
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Florian Westphal <fw@strlen.de>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Dongseok Yi <dseok.yi@samsung.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Marco Elver <elver@google.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YAGEFgqQv281jVHc@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 12:55 AM Alexander Lobakin <alobakin@pm.me> wrote:
+On 2021/1/15 20:01, Peter Zijlstra wrote:
+> On Thu, Jan 14, 2021 at 11:39:00AM +0800, Xu, Like wrote:
 >
-> Commit 3226b158e67c ("net: avoid 32 x truesize under-estimation for
-> tiny skbs") ensured that skbs with data size lower than 1025 bytes
-> will be kmalloc'ed to avoid excessive page cache fragmentation and
-> memory consumption.
-> However, the same issue can still be achieved manually via
-> __netdev_alloc_skb(), where the check for size hasn't been changed.
-> Mirror the condition from __napi_alloc_skb() to prevent from that.
+>>> Why do we need to? Can't we simply always forward the PMI if the guest
+>>> has bits set in MSR_IA32_PEBS_ENABLE ? Surely we can access the guest
+>>> MSRs at a reasonable rate..
+>>>
+>>> Sure, it'll send too many PMIs, but is that really a problem?
+>> More vPMI means more guest irq handler calls and
+>> more PMI virtualization overhead.
+> Only if you have both guest and host PEBS. And in that case I really
+> can't be arsed about some overhead to the guest.
+
+Less overhead makes everyone happier.
+
+Ah, can I assume that you're fine with disabling the
+co-existence of guest PEBS and host PEBS as the first upstream step ?
+
 >
-> Fixes: 3226b158e67c ("net: avoid 32 x truesize under-estimation for tiny skbs")
+>> In addition,
+>> the correctness of some workloads (RR?) depends on
+>> the correct number of PMIs and the PMI trigger times
+>> and virt may not want to break this assumption.
+> Are you sure? Spurious NMI/PMIs are known to happen anyway. We have far
+> too much code to deal with them.
 
-No, this tag is wrong, if you fix a bug, bug is much older than linux-5.11
+https://lore.kernel.org/lkml/20170628130748.GI5981@leverpostej/T/
 
-My fix was about GRO head and virtio_net heads, both using pre-sized
-small buffers.
+In the rr workload, the commit change "the PMI interrupts in skid region 
+should be dropped"
+is reverted since some users complain that:
 
-You want to fix something else, and this is fine, because some drivers
-are unfortunately
-doing copy break ( at the cost of additional copy, even for packets
-that might be consumed right away)
+> It seems to me that it might be reasonable to ignore the interrupt if
+> the purpose of the interrupt is to trigger sampling of the CPUs
+> register state.  But if the interrupt will trigger some other
+> operation, such as a signal on an fd, then there's no reason to drop
+> it.
+
+I assume that if the PMI drop is unacceptable, either will spurious PMI 
+injection.
+
+I'm pretty open if you insist that we really need to do this for guest PEBS 
+enabling.
+
+>
+>>>> +	 * If PEBS interrupt threshold on host is not exceeded in a NMI, there
+>>>> +	 * must be a PEBS overflow PMI generated from the guest PEBS counters.
+>>>> +	 * There is no ambiguity since the reported event in the PMI is guest
+>>>> +	 * only. It gets handled correctly on a case by case base for each event.
+>>>> +	 *
+>>>> +	 * Note: KVM disables the co-existence of guest PEBS and host PEBS.
+>>> Where; I need a code reference here.
+>> How about:
+>>
+>> Note: KVM will disable the co-existence of guest PEBS and host PEBS.
+>> In the intel_guest_get_msrs(), when we have host PEBS ctrl bit(s) enabled,
+>> KVM will clear the guest PEBS ctrl enable bit(s) before vm-entry.
+>> The guest PEBS users should be notified of this runtime restriction.
+> Since you had me look at that function, can clean up that
+> CONFIG_RETPOLINE crud and replace it with static_call() ?
+
+Sure. Let me try it.
+
+---
+thx, likexu
+
