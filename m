@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861782F7C10
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:09:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D314E2F7BD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387676AbhAONIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:08:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36412 "EHLO mail.kernel.org"
+        id S2388452AbhAONGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:06:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732157AbhAOMao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:30:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36AB42333E;
-        Fri, 15 Jan 2021 12:29:37 +0000 (UTC)
+        id S1732600AbhAOMbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D90542388B;
+        Fri, 15 Jan 2021 12:30:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713777;
-        bh=8tcTVkAs5155gqV6KdpmUfac/ys7Qi1zjNTA95lHapk=;
+        s=korg; t=1610713815;
+        bh=n761rq/3t9boAak4A1iA/Jpi2B9RN4fWjzunJ+GcDYE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DovKh7WWLRzEs06cTOrY+cntP8TjpoQjwdX+LjKW6uAyNYWToww66XlzhsSHcQpEH
-         4+kIUueFN26S4huazYOuKKE65ZVkTbThuwrrE1p9f20sKgpb9cX5exSXYk7R6Wa0pc
-         V4op6z6Pr1yRAwkRhe2Oxiv1T/HCJ+7DFJtVIrOU=
+        b=ukR/dY8/LTD1BtNQOm414zPyVWHt5YvUShnm/lmyz9BY6eMrZyhkxndlooOJcUgwG
+         jQIMi5IHpc7dFeCd9Hm+ZyIIVRvNv7va+R2sTXZSrFaE0soj+hTCyMRygKJjRXgdnm
+         EweI6TfOgUSfqcAehfxfehwpTM4/gapfD0Ke+SU4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+7010af67ced6105e5ab6@syzkaller.appspotmail.com,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 18/18] net: drop bogus skb with CHECKSUM_PARTIAL and offset beyond end of trimmed packet
-Date:   Fri, 15 Jan 2021 13:27:46 +0100
-Message-Id: <20210115121956.005103672@linuxfoundation.org>
+        Shravya Kumbham <shravya.kumbham@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 4.9 16/25] dmaengine: xilinx_dma: check dma_async_device_register return value
+Date:   Fri, 15 Jan 2021 13:27:47 +0100
+Message-Id: <20210115121957.484683526@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121955.112329537@linuxfoundation.org>
-References: <20210115121955.112329537@linuxfoundation.org>
+In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
+References: <20210115121956.679956165@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Shravya Kumbham <shravya.kumbham@xilinx.com>
 
-commit 54970a2fbb673f090b7f02d7f57b10b2e0707155 upstream.
+commit 99974aedbd73523969afb09f33c6e3047cd0ddae upstream.
 
-syzbot reproduces BUG_ON in skb_checksum_help():
-tun creates (bogus) skb with huge partial-checksummed area and
-small ip packet inside. Then ip_rcv trims the skb based on size
-of internal ip packet, after that csum offset points beyond of
-trimmed skb. Then checksum_tg() called via netfilter hook
-triggers BUG_ON:
+dma_async_device_register() can return non-zero error code. Add
+condition to check the return value of dma_async_device_register
+function and handle the error path.
 
-        offset = skb_checksum_start_offset(skb);
-        BUG_ON(offset >= skb_headlen(skb));
-
-To work around the problem this patch forces pskb_trim_rcsum_slow()
-to return -EINVAL in described scenario. It allows its callers to
-drop such kind of packets.
-
-Link: https://syzkaller.appspot.com/bug?id=b419a5ca95062664fe1a60b764621eb4526e2cd0
-Reported-by: syzbot+7010af67ced6105e5ab6@syzkaller.appspotmail.com
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Link: https://lore.kernel.org/r/1b2494af-2c56-8ee2-7bc0-923fcad1cdf8@virtuozzo.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Addresses-Coverity: Event check_return.
+Fixes: 9cd4360de609 ("dma: Add Xilinx AXI Video Direct Memory Access Engine driver support")
+Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
+Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Link: https://lore.kernel.org/r/1608722462-29519-2-git-send-email-radhey.shyam.pandey@xilinx.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/core/skbuff.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/dma/xilinx/xilinx_dma.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -1516,6 +1516,12 @@ int pskb_trim_rcsum_slow(struct sk_buff
- 		skb->csum = csum_block_sub(skb->csum,
- 					   skb_checksum(skb, len, delta, 0),
- 					   len);
-+	} else if (skb->ip_summed == CHECKSUM_PARTIAL) {
-+		int hdlen = (len > skb_headlen(skb)) ? skb_headlen(skb) : len;
-+		int offset = skb_checksum_start_offset(skb) + skb->csum_offset;
-+
-+		if (offset + sizeof(__sum16) > hdlen)
-+			return -EINVAL;
+--- a/drivers/dma/xilinx/xilinx_dma.c
++++ b/drivers/dma/xilinx/xilinx_dma.c
+@@ -2630,7 +2630,11 @@ static int xilinx_dma_probe(struct platf
  	}
- 	return __pskb_trim(skb, len);
- }
+ 
+ 	/* Register the DMA engine with the core */
+-	dma_async_device_register(&xdev->common);
++	err = dma_async_device_register(&xdev->common);
++	if (err) {
++		dev_err(xdev->dev, "failed to register the dma device\n");
++		goto error;
++	}
+ 
+ 	err = of_dma_controller_register(node, of_dma_xilinx_xlate,
+ 					 xdev);
 
 
