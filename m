@@ -2,172 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7B72F73BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:33:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991DA2F73BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731584AbhAOHd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 02:33:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729451AbhAOHd0 (ORCPT
+        id S1731612AbhAOHee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 02:34:34 -0500
+Received: from mail-qk1-f177.google.com ([209.85.222.177]:46193 "EHLO
+        mail-qk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729451AbhAOHed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 02:33:26 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D503CC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:32:45 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id h17so6266646wmq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:32:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Dg3fcenP6YIm0aYs5w4I6Adx/SFGTjlnu+FOvTsHu6s=;
-        b=gxUveA9YGhNb2E0mZMUvTHI+xbr056FxLZgftfCZZGeNOF+yJ9kajtQExO+pdJR3qx
-         BLnTtJDuM10lTPfSe/TNs/D6zWrnF+RDifagNGXkh9NzzEPnWLATnD41wIUUXTU3msTk
-         Mq5Tkcpzrr9Y/X/lAsccBF2PsbSF/xuTcOOOXSl82oWcuDtlv73iVqwrlUF4P462WsPR
-         w/UjHkhGsQJK0QC1WuIzsvDRmaanz15SvGJXwYOm7R/MSO4PtmnYA8Ix054Ghw5VnjW7
-         74nqHDrKqAVyPcPhYjEAHt9B+qR2m+wBK6xmMz4DkHGOntE0rS6A6mbthBP1uMf2rFdk
-         cOUw==
+        Fri, 15 Jan 2021 02:34:33 -0500
+Received: by mail-qk1-f177.google.com with SMTP id d14so10844870qkc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:34:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Dg3fcenP6YIm0aYs5w4I6Adx/SFGTjlnu+FOvTsHu6s=;
-        b=s3BDBu94qPOrdGaNBFQI65ZzXmIRg+WUKJYfOQyDHyFqx5OqGF+yLeNafLHbgRVVwD
-         T7PpjCQEQCQDHl4JJfM3Hb2yqE/ji+JBExVlMl+Zrc5V+4e0bPYU5t0N32feuKzYg6xf
-         Oj5ODX4yksZUhpnZwSVndaEI13zDDHzaKVzr8d0cwIg1DtHPD56DUV2kCiPpv/vUUmx0
-         +j3ZDaOHvgAdRcu0gXbQW3u6djThTkBAz8FPnKLG8EkAFsT224msuIdjij5mt9XZveUQ
-         /iPvTPMM14HY/6zwJFvxSQcU2gFV9CYuvKnDHCCdZkb6AFdRKwYn5ziNDRkufax0GVYk
-         /pnA==
-X-Gm-Message-State: AOAM530cVUUh1MX8c/P75ZC0hU64Y1KRHtXnB1ICKddG1VbdhDk/EcZ8
-        xPzokZ/uLAhm2ktLmlbsS8SoHQ==
-X-Google-Smtp-Source: ABdhPJyDsyZ0WWe8TcdEBpHT5umYuSY/TkSm8W+40uVNy+0csJt6A1ZznlatODu7M7D5wl3RVsB1vQ==
-X-Received: by 2002:a1c:df85:: with SMTP id w127mr7535799wmg.166.1610695964629;
-        Thu, 14 Jan 2021 23:32:44 -0800 (PST)
-Received: from dell ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id w13sm13281029wrt.52.2021.01.14.23.32.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 23:32:43 -0800 (PST)
-Date:   Fri, 15 Jan 2021 07:32:41 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>, sre@kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, ChiYuan Huang <cy_huang@richtek.com>,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v7 04/11] mfd: mt6360: Combine mt6360 pmic/ldo resources
- into mt6360 regulator resources
-Message-ID: <20210115073241.GC3975472@dell>
-References: <1605177598-23501-1-git-send-email-gene.chen.richtek@gmail.com>
- <1605177598-23501-5-git-send-email-gene.chen.richtek@gmail.com>
- <74b127eb-9a3c-20c9-5692-b00b982f4da3@gmail.com>
- <CAE+NS34qR9f2LOpvxTBDF4OR=Xq-SFP+uHdWe3dZ5x8xggS8kA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h9UhJeIAP+EngKocS/zCFbSC4TCvXsJ8kqGSBlPi5Ow=;
+        b=sl5fAQWXESxkZuL48PZxVbhtPTCceQiNCMC+6AH/gwPdFaj1mFNZKsrEf+ilQbjYoi
+         LTq3NG6TCzwybJ7lt58bpzf9XZP32UYnWPRNAB15urrRBSAl/kYbIvNFnoi2vIces+le
+         10Cu6pb8LFCYYqnKONgtkW3q1LDGZxDiP6RoZJfQ/ZcbyZ/3IwQbH6/HkOZf/d4v3o08
+         EQgbm1JZ/zVMSGiwyy2psHjOKbC7U/6COm/X1/NmjtmYueLkQ10o7rVtRdjl5d2xd4R9
+         RdIHfERo0dbG79nGQCsTfCP/Q/qsMn135n3eppOw9hxMpsTFKVHC02ht77mRWONFBQq6
+         kieQ==
+X-Gm-Message-State: AOAM530fKVKz7tYVSgyi7QE/XoTpYCHe/iH8qTIPLIF/FZ2xtheC9O/2
+        +srDm4NSm7mWuHxC5POqdQUjG/mRd+CHeQBzYHc=
+X-Google-Smtp-Source: ABdhPJx5gz2Fj1LtPCnLajkJStNyVR+tBWgSu7637o5asROBp9ZKcd+48Tu7hFl2/pp9fbRhwIEsbCWtPn7d10KBuN0=
+X-Received: by 2002:a37:4bc1:: with SMTP id y184mr11092398qka.278.1610696032470;
+ Thu, 14 Jan 2021 23:33:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAE+NS34qR9f2LOpvxTBDF4OR=Xq-SFP+uHdWe3dZ5x8xggS8kA@mail.gmail.com>
+References: <20201223130320.3930-1-alexander.antonov@linux.intel.com>
+ <20201223130320.3930-6-alexander.antonov@linux.intel.com> <CAM9d7cgQC7ap6sDympEoNAtFxNy_ibtW3phMDLh-VmzSDB7FXQ@mail.gmail.com>
+ <358dd76f-c6ec-b894-14be-659df0802c87@linux.intel.com> <CAM9d7cjuX8AHpL6hs5AHObOPCjExLg1_GHN-vDdi4hYQmrC5dQ@mail.gmail.com>
+ <20f98862-9087-0368-7124-19a8f2b54db9@linux.intel.com>
+In-Reply-To: <20f98862-9087-0368-7124-19a8f2b54db9@linux.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 15 Jan 2021 16:33:41 +0900
+Message-ID: <CAM9d7cjueVS_MJZxuADi-xw=EWXgncZ++jGDewamxZF8CkvhRw@mail.gmail.com>
+Subject: Re: [PATCH v2 5/6] perf stat: Enable iiostat mode for x86 platforms
+To:     Alexander Antonov <alexander.antonov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021, Gene Chen wrote:
+On Fri, Jan 15, 2021 at 1:41 AM Alexander Antonov
+<alexander.antonov@linux.intel.com> wrote:
+> On 1/14/2021 6:39 AM, Namhyung Kim wrote:
+> > On Wed, Jan 13, 2021 at 9:08 PM Alexander Antonov
+> > <alexander.antonov@linux.intel.com> wrote:
+> >>
+> >> On 1/6/2021 12:02 PM, Namhyung Kim wrote:
+> >>> On Wed, Dec 23, 2020 at 10:03 PM Alexander Antonov
+> >>>> diff --git a/tools/perf/perf-iiostat.sh b/tools/perf/perf-iiostat.sh
+> >>>> new file mode 100644
+> >>>> index 000000000000..2c5168d2550b
+> >>>> --- /dev/null
+> >>>> +++ b/tools/perf/perf-iiostat.sh
+> >>>> @@ -0,0 +1,12 @@
+> >>>> +#!/bin/bash
+> >>>> +# SPDX-License-Identifier: GPL-2.0
+> >>>> +# perf iiostat
+> >>>> +# Alexander Antonov <alexander.antonov@linux.intel.com>
+> >>>> +
+> >>>> +if [[ "$1" == "show" ]] || [[ "$1" =~ ([a-f0-9A-F]{1,}):([a-f0-9A-F]{1,2})(,)? ]]; then
+> >>>> +        DELIMITER="="
+> >>>> +else
+> >>>> +        DELIMITER=" "
+> >>>> +fi
+> >>>> +
+> >>>> +perf stat --iiostat$DELIMITER$*
+> >>> Why is this needed?
+> >>>
+> >>> Thanks,
+> >>> Namhyung
+> >> Arnaldo raised question relates to format of 'perf stat --iiostat'
+> >> subcommand
+> >> and explained how it can be changed to 'perf iiostat' through the aliases
+> >> mechanism in perf.
+> > Yeah, I know that.  What I'm asking is the DELIMITER part.
+> >
+> > Thanks,
+> > Namhyung
+> I'm using DELIMITER to resolve two different cases for format of iiostat
+> command:
+> The first one is the command with an option for iiostat mode, for example:
+> 'perf iiostat show' which should be converted to 'perf stat
+> --iiostat=show' or
+> 'perf iiostat 0000:ae,0000:5d' to 'perf stat --iiostat=0000:ae,0000:5d'.
+> The second is the command without any option for iiostat: 'perf iiostat
+> -I 1000'
+> should be converted to 'perf stat --iiostat -I 1000'.
 
-> Matthias Brugger <matthias.bgg@gmail.com> 於 2021年1月12日 週二 下午8:32寫道：
-> >
-> >
-> >
-> > On 12/11/2020 11:39, Gene Chen wrote:
-> > > From: Gene Chen <gene_chen@richtek.com>
-> > >
-> > > Combine mt6360 pmic/ldo resources into mt6360 regulator resources
-> > > to simplify the similar resources object.
-> > >
-> > > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> > > ---
-> > >  drivers/mfd/mt6360-core.c | 11 +++--------
-> > >  1 file changed, 3 insertions(+), 8 deletions(-)
-> > >
-> > > diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
-> > > index 692e47b..5119e51 100644
-> > > --- a/drivers/mfd/mt6360-core.c
-> > > +++ b/drivers/mfd/mt6360-core.c
-> > > @@ -265,7 +265,7 @@ static const struct resource mt6360_led_resources[] = {
-> > >       DEFINE_RES_IRQ_NAMED(MT6360_FLED1_STRB_TO_EVT, "fled1_strb_to_evt"),
-> > >  };
-> > >
-> > > -static const struct resource mt6360_pmic_resources[] = {
-> > > +static const struct resource mt6360_regulator_resources[] = {
-> > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_PGB_EVT, "buck1_pgb_evt"),
-> > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OC_EVT, "buck1_oc_evt"),
-> > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OV_EVT, "buck1_ov_evt"),
-> > > @@ -278,9 +278,6 @@ static const struct resource mt6360_pmic_resources[] = {
-> > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO7_OC_EVT, "ldo7_oc_evt"),
-> > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO6_PGB_EVT, "ldo6_pgb_evt"),
-> > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO7_PGB_EVT, "ldo7_pgb_evt"),
-> > > -};
-> > > -
-> > > -static const struct resource mt6360_ldo_resources[] = {
-> > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO1_OC_EVT, "ldo1_oc_evt"),
-> > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO2_OC_EVT, "ldo2_oc_evt"),
-> > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO3_OC_EVT, "ldo3_oc_evt"),
-> > > @@ -298,10 +295,8 @@ static const struct mfd_cell mt6360_devs[] = {
-> > >                   NULL, 0, 0, "mediatek,mt6360-chg"),
-> > >       OF_MFD_CELL("mt6360-led", mt6360_led_resources,
-> > >                   NULL, 0, 0, "mediatek,mt6360-led"),
-> > > -     OF_MFD_CELL("mt6360-pmic", mt6360_pmic_resources,
-> > > -                 NULL, 0, 0, "mediatek,mt6360-pmic"),
-> > > -     OF_MFD_CELL("mt6360-ldo", mt6360_ldo_resources,
-> > > -                 NULL, 0, 0, "mediatek,mt6360-ldo"),
-> > > +     OF_MFD_CELL("mt6360-regulator", mt6360_regulator_resources,
-> > > +                 NULL, 0, 0, "mediatek,mt6360-regulator"),
-> >
-> > As discussed with the MFD maintainer [1], the regulator (and probably all cells)
-> > shouldn't have a DT binding.
-> >
-> > So please send a new version which fixes that.
-> >
-> > Regards,
-> > Matthias
-> >
-> > [1] https://lore.kernel.org/linux-mediatek/20210111164118.GE4728@sirena.org.uk/
+Can't we simply use a whitespace ?
 
-I don't think Mark is correct here.
-
-We usually do implement compatible strings for sub-devices and they do
-tend to have their own device nodes.
-
-It's a very long time ago since I coded this up myself, but from
-memory, you can't have 2 devices share a compatible string.
-
-> Should I use parent's device to find sub-devices of_node if without
-> compatible name?
-> I trace the function mfd_add_device,
-> 
-> if (IS_ENABLED(CONFIG_OF) && parent->of_node && cell->of_compatible) {
->     .....
->     ret = mfd_match_of_node_to_dev(pdev, np, cell);
->     .....
-> }
-> 
-> which is binding mfd sub-device with compatible. Does it be removed in
-> the feature?
-> 
-> > >       OF_MFD_CELL("mt6360-tcpc", NULL,
-> > >                   NULL, 0, 0, "mediatek,mt6360-tcpc"),
-> > >  };
-> > >
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+Namhyung
