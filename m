@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F0A2F7B6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 761AB2F7BC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731614AbhAOMcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:32:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38812 "EHLO mail.kernel.org"
+        id S2387710AbhAONFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:05:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733010AbhAOMco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:32:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 055432336F;
-        Fri, 15 Jan 2021 12:32:28 +0000 (UTC)
+        id S1732660AbhAOMbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7DAB235F9;
+        Fri, 15 Jan 2021 12:31:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713949;
-        bh=6gvE6nzPjcWnoQZJOaFtUVrfogYLaWHJndWXDwnj+P8=;
+        s=korg; t=1610713868;
+        bh=eLxc/JivcVOfxYy1bCgsF9Ag5XJf1/dejhZPv7KCAeE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FUaRu6XbqvOUDTQhyd1bBPWFz+U80gQ+y8AbNd7R/PDSyg1UWglVjrxi9AEa5HiJ5
-         4ipvwK0J/6v9ceQIiO0IjnjzYXNQJeRPo6zLTXeniYKmeMpK7ZUIG4DLDnfZtezFX9
-         7I0x5JN/Fj+FgxXvn0+fgNLU1Tw6OnCjad2QJaPQ=
+        b=XFsXr/BTZdKIzNkGjOymAUWg9/8gaXwGNkqB1tjyN2uC5sU7RgR6i9zHe938uNrMc
+         tzZ3n6N/cYt/Jqot8Pyio54qMlVr/mN4655TveL5h6RGxtjizl4uHBPcbCvC1ZmIAg
+         +vPXu4+5jNzJDeGGQqhjWlBVK00pqCFu/wCgHbrQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Nyekjaer <sean@geanix.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.19 21/43] iio: imu: st_lsm6dsx: flip irq return logic
+        stable@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Tony Lindgren <tony@atomide.com>
+Subject: [PATCH 4.14 14/28] ARM: OMAP2+: omap_device: fix idling of devices during probe
 Date:   Fri, 15 Jan 2021 13:27:51 +0100
-Message-Id: <20210115121958.071514885@linuxfoundation.org>
+Message-Id: <20210115121957.466324353@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
-References: <20210115121957.037407908@linuxfoundation.org>
+In-Reply-To: <20210115121956.731354372@linuxfoundation.org>
+References: <20210115121956.731354372@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,31 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+From: Andreas Kemnade <andreas@kemnade.info>
 
-commit ec76d918f23034f9f662539ca9c64e2ae3ba9fba upstream
+commit ec76c2eea903947202098090bbe07a739b5246e9 upstream.
 
-No need for using reverse logic in the irq return,
-fix this by flip things around.
+On the GTA04A5 od->_driver_status was not set to BUS_NOTIFY_BIND_DRIVER
+during probe of the second mmc used for wifi. Therefore
+omap_device_late_idle idled the device during probing causing oopses when
+accessing the registers.
 
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+It was not set because od->_state was set to OMAP_DEVICE_STATE_IDLE
+in the notifier callback. Therefore set od->_driver_status also in that
+case.
+
+This came apparent after commit 21b2cec61c04 ("mmc: Set
+PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4") causing this
+oops:
+
+omap_hsmmc 480b4000.mmc: omap_device_late_idle: enabled but no driver.  Idling
+8<--- cut here ---
+Unhandled fault: external abort on non-linefetch (0x1028) at 0xfa0b402c
+...
+(omap_hsmmc_set_bus_width) from [<c07996bc>] (omap_hsmmc_set_ios+0x11c/0x258)
+(omap_hsmmc_set_ios) from [<c077b2b0>] (mmc_power_up.part.8+0x3c/0xd0)
+(mmc_power_up.part.8) from [<c077c14c>] (mmc_start_host+0x88/0x9c)
+(mmc_start_host) from [<c077d284>] (mmc_add_host+0x58/0x84)
+(mmc_add_host) from [<c0799190>] (omap_hsmmc_probe+0x5fc/0x8c0)
+(omap_hsmmc_probe) from [<c0666728>] (platform_drv_probe+0x48/0x98)
+(platform_drv_probe) from [<c066457c>] (really_probe+0x1dc/0x3b4)
+
+Fixes: 04abaf07f6d5 ("ARM: OMAP2+: omap_device: Sync omap_device and pm_runtime after probe defer")
+Fixes: 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4")
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+[tony@atomide.com: left out extra parens, trimmed description stack trace]
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c
-+++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c
-@@ -481,7 +481,7 @@ static irqreturn_t st_lsm6dsx_handler_th
- 	count = st_lsm6dsx_read_fifo(hw);
- 	mutex_unlock(&hw->fifo_lock);
- 
--	return !count ? IRQ_NONE : IRQ_HANDLED;
-+	return count ? IRQ_HANDLED : IRQ_NONE;
- }
- 
- static int st_lsm6dsx_buffer_preenable(struct iio_dev *iio_dev)
+---
+ arch/arm/mach-omap2/omap_device.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+--- a/arch/arm/mach-omap2/omap_device.c
++++ b/arch/arm/mach-omap2/omap_device.c
+@@ -224,10 +224,12 @@ static int _omap_device_notifier_call(st
+ 		break;
+ 	case BUS_NOTIFY_BIND_DRIVER:
+ 		od = to_omap_device(pdev);
+-		if (od && (od->_state == OMAP_DEVICE_STATE_ENABLED) &&
+-		    pm_runtime_status_suspended(dev)) {
++		if (od) {
+ 			od->_driver_status = BUS_NOTIFY_BIND_DRIVER;
+-			pm_runtime_set_active(dev);
++			if (od->_state == OMAP_DEVICE_STATE_ENABLED &&
++			    pm_runtime_status_suspended(dev)) {
++				pm_runtime_set_active(dev);
++			}
+ 		}
+ 		break;
+ 	case BUS_NOTIFY_ADD_DEVICE:
 
 
