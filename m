@@ -2,64 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651132F752E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:25:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E15162F752B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728765AbhAOJXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:23:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbhAOJXo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:23:44 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3CDC061794;
-        Fri, 15 Jan 2021 01:23:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LrJG/1orjdUo6w8aRSCvysSJq7gF6RZtVnTtika1jcc=; b=HSgSaSX+kvU7ktks1f+Hhm8KPv
-        KE8BhYgZNf+viYyHPk/hGi5zi4CF1f1BJ/1eqyU4vdbKskbjY22I8FomvDOQ3s6SOSryhnhlX4kj2
-        5m/lfTn6wf8l5Y6dR56RmgOK9z8J3o6MijEg6iTZu2UsOPkHmwFdiDkbKGviP5MIGrXINmRxZfzpD
-        Ib1Bp28gTjuovT8Y/u1pFjYm/KJFp0WXocgq1JBkK5IPxA9RfjffzCm2l/MusodBVqAH7sAxeYrSg
-        Z0DAMYhfUGlADVdPB9Kyrg76iEBt0hGNebejAvSrCQiDpTWhG+4iQJ4p/T3Zu5713W+UKshFRfRPt
-        f8JfMpFg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l0LJk-0001li-TU; Fri, 15 Jan 2021 09:22:53 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 36E37305815;
-        Fri, 15 Jan 2021 10:22:50 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0B385200E0BD2; Fri, 15 Jan 2021 10:22:50 +0100 (CET)
-Date:   Fri, 15 Jan 2021 10:22:49 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jason Baron <jbaron@akamai.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH v2 1/3] KVM: X86: append vmx/svm prefix to additional
- kvm_x86_ops functions
-Message-ID: <YAFe6b/sSdDvXSM3@hirez.programming.kicks-ass.net>
-References: <cover.1610680941.git.jbaron@akamai.com>
- <ed594696f8e2c2b2bfc747504cee9bbb2a269300.1610680941.git.jbaron@akamai.com>
+        id S1728184AbhAOJXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:23:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727128AbhAOJXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 04:23:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1148A2339D;
+        Fri, 15 Jan 2021 09:22:54 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 09:22:52 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the arm64-fixes
+ tree
+Message-ID: <20210115092250.GA16707@gaia>
+References: <20210115062448.484390ab@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ed594696f8e2c2b2bfc747504cee9bbb2a269300.1610680941.git.jbaron@akamai.com>
+In-Reply-To: <20210115062448.484390ab@canb.auug.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jan 15, 2021 at 06:24:48AM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Commit
+> 
+>   b5639879902a ("arm64: syscall: include prototype for EL0 SVC functions")
+> 
+> is missing a Signed-off-by from its author.
 
-On Thu, Jan 14, 2021 at 10:27:54PM -0500, Jason Baron wrote:
+Thanks Stephen. Fixed.
 
-> -static void update_exception_bitmap(struct kvm_vcpu *vcpu)
-> +static void svm_update_exception_bitmap(struct kvm_vcpu *vcpu)
-
-Just to be a total pendant: s/append/Prepend/ on $Subject
+-- 
+Catalin
