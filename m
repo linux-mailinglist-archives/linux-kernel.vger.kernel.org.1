@@ -2,108 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8902F7E6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D942F7E6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:43:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730837AbhAOOmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 09:42:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727716AbhAOOmR (ORCPT
+        id S1731149AbhAOOnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 09:43:16 -0500
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:48406 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725910AbhAOOnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:42:17 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC4DC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:41:37 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id d13so9488012wrc.13
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:41:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=b1a2K9NoOIzcPI+2Z+x6S9t4pqcr2xwGE88bWHnXgcQ=;
-        b=axxIY+OfqmEIm1BX2dM8JwMeoF2YzxfNaRhfpskILn9N4YGE3hlYpbhFvyklSNacgB
-         7H5CPHeq8n5HJybix8I3QiLEzY6jecmamH5z38f9LjIEMxApJQXfm6DUDZOqThlAhmi/
-         JCZt6GBE+sA/dlfeE2QB1bAk9IgtZREHahVkHLa+0BJG59tVIobYgBtup9RyGCLwFFOK
-         YJ8T4n7JGTK7Co9QKbfBQXPo3yKg/axTE2E7L5E98/QhNIRzhfp3NhA/Xhc0QljkR5WM
-         RLmQpx9Ofp06oIxIEaCHSGiiRwdb8iRfez9q4CPbN9ikmpRC6n2d28E32gUQzMvgBQgl
-         xW8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=b1a2K9NoOIzcPI+2Z+x6S9t4pqcr2xwGE88bWHnXgcQ=;
-        b=XkoSy1m1ET7rUKXAqXDm1Gj5SPmp6+TQAJQSMtBdMof2/HM1hCLM30rMyWRN6NC8t+
-         DRSMU9Thoa5sPJYWsxyu7lSPtENGMpiReRudKGX0dbh7Tzorv9tHD3z+f4PM1131wqIC
-         UPwjJEriTAE+sZ6TKYUQ6bj5I9FM5Zi0gpMxqW4pFRxbfcxa1ZRFL5ZtoBspF8LJBtZQ
-         caFNfhqxUoABYIJlLxzH5emJeGA6q+POxO6GIuDl2K9NhEgBiFvaemaviPhxgpR6Fr7n
-         sCFJVyVQAl5J5h417Tbpckcmpvl2bbyiqD02W/TTK0VA7EB0Wj5viBcFEq/StXiUafGz
-         fcNQ==
-X-Gm-Message-State: AOAM533FM3m+616oi6IrB+SrDP2F0zLNBOimJu6zlTfTTxHnfTyBv47K
-        SIST4p5BxSfnDyLbwIYalz+NaA==
-X-Google-Smtp-Source: ABdhPJwJX3QAttN03UsnU2yl39vAx5s7+MfY45HApEEA/49i7KPkjri2lPq4vo2Y7Jxivfy05fYFsw==
-X-Received: by 2002:a5d:470d:: with SMTP id y13mr13498157wrq.309.1610721695771;
-        Fri, 15 Jan 2021 06:41:35 -0800 (PST)
-Received: from dell ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id f14sm15362239wre.69.2021.01.15.06.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 06:41:34 -0800 (PST)
-Date:   Fri, 15 Jan 2021 14:41:32 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     mazziesaccount@gmail.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-power@fi.rohmeurope.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: bd718x7, bd71828, Fix dvs voltage levels
-Message-ID: <20210115144132.GP3975472@dell>
-References: <20210115143332.GA721433@localhost.localdomain>
+        Fri, 15 Jan 2021 09:43:15 -0500
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10FEb3p7015653;
+        Fri, 15 Jan 2021 08:42:16 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=UCqd0nfi3jYn7t3HzDEdBbfO8As7XK0/wje7LItu+eA=;
+ b=bf5scJoMYYE1dZUmw8hy4+691YTAfgtufVNSav9wxrPxxPqZoZ524rVHyPL25fh39eMT
+ 5CKpDc0Qr+MgzlqjVGnYH5ZJhAL8jffASqFQXa3MbxVhXIBqVs+T3pT3T9T5+o5Rr0d4
+ AEQKr3pt59eveMg4kI+pFywT3W9kaMwPEmYL5VYrJhhVPGV9eeydUSWFJtJEPgvu+9EF
+ dI0PtAiYYKjSCGB4rlgzuM1nBrPrYnwCUKUGjugBAy/njN/kaRb4mqAQJW7tNFHSYdx0
+ J0dRrPJvMqsAZBgxLIFWFLUop/2R/aagCQZ5fMU3LYLI7mz9YMXhodIYZh4DUJjUml32 UA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 36156kmu1r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 15 Jan 2021 08:42:16 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 15 Jan
+ 2021 14:42:13 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Fri, 15 Jan 2021 14:42:13 +0000
+Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.57])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4DD0A45;
+        Fri, 15 Jan 2021 14:42:13 +0000 (UTC)
+Subject: Re: [PATCH v4 2/6] dt-bindings: audio-graph-card: Add plls and
+ sysclks properties
+To:     Mark Brown <broonie@kernel.org>
+CC:     Rob Herring <robh@kernel.org>, <kuninori.morimoto.gx@renesas.com>,
+        <nsaenzjulienne@suse.de>, <f.fainelli@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-rpi-kernel@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210108160501.7638-1-rf@opensource.cirrus.com>
+ <20210108160501.7638-3-rf@opensource.cirrus.com>
+ <20210113152225.GA2334778@robh.at.kernel.org>
+ <20210113160917.GF4641@sirena.org.uk>
+ <ee3d0b75-dc2f-9994-19a4-a3c3f21a2c65@opensource.cirrus.com>
+ <20210115131142.GA4384@sirena.org.uk>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <1ec5e5f4-f672-2c60-23a5-9d985b943379@opensource.cirrus.com>
+Date:   Fri, 15 Jan 2021 14:42:12 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210115143332.GA721433@localhost.localdomain>
+In-Reply-To: <20210115131142.GA4384@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ suspectscore=0 malwarescore=0 bulkscore=0 clxscore=1015 impostorscore=0
+ lowpriorityscore=0 adultscore=0 priorityscore=1501 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101150092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021, Matti Vaittinen wrote:
-
-> The ROHM BD718x7 and BD71828 drivers support setting HW state
-> specific voltages from device-tree. This is used also by various
-> in-tree DTS files.
+On 15/01/2021 13:11, Mark Brown wrote:
+> On Fri, Jan 15, 2021 at 10:35:23AM +0000, Richard Fitzgerald wrote:
+>> On 13/01/2021 16:09, Mark Brown wrote:
+>>> On Wed, Jan 13, 2021 at 09:22:25AM -0600, Rob Herring wrote:
 > 
-> These drivers do incorrectly try to compose bit-map using enum
-> values. By a chance this works for first two valid levels having
-> values 1 and 2 - but setting values for the rest of the levels
-> do indicate capbility of setting values for first levels as
-> well. Luckily the regulators which support settin values for
-> SUSPEND/LPSR do usually also support setting values for RUN
-> and IDLE too - thus this has not been such a fatal issue.
+>> some_codec {
+>> 	pll: pll {
+>> 		compatible = "fixed-clock";
+>> 		clocks = <&audio_mclk>;
+>> 		clock-frequency = <98304000>;
+>> 	}
 > 
-> Fix this by defining the old enum values as bits and using
-> new enum in parsing code. This allows keeping existing IC
-> specific drivers intact and only adding the defines and
-> slightly changing the rohm-regulator.c
+> A PLL is not a fixed clock, why would you define a fixed clock here?
+
+It's a fixed clock if you are only setting one configuration. Call it
+compatible="any-other-dummy-clock-type" if you like, it doesn't matter
+what it is for the purposes of what I was describing.
+
+This isn't a clk driver for a pll, it's just a setting to be passed to
+snd_soc_component_set_pll() using a clock binding to specify it.
+
+> Are you confusing the selection of rates on existing clocks with the use
+> of the assigned-* properties that the clock binding provides?
 > 
-> Fixes: 21b72156ede8b ("regulator: bd718x7: Split driver to common and bd718x7 specific parts")
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> ---
+
+I'm not at all sure what you and Rob have in mind here. Perhaps you
+could give an example of what you are thinking the .dts would look like
+to define some pll/sysclk settings for audio-graph-card to apply. An
+example is worth a thousand emails.
+
+>> For this to work the clock binding must be a real clock object (so needs
+>> a valid compatible=). But I need to somehow specify the PLL ID and
 > 
-> One more attempt today. I did test the driver is not causing a crash
-> when load but no further tests concluded as I don't have BD71837/47/50
-> at home. This looks now trivial though so I decided to give it a go.
-> Sorry for all the trouble this far - and also for the mistakes to come.
+> That seems like a *very* surprising requirement - why would the clock
+> binding have that requirement?  It would seem to create issues for a
+> single device providing multiple clocks which should be a pretty common
+> coase.
+> 
 
-Why don't you wait until next week when you can run this on real h/w
-with some pretty debug to ensure it does the right thing?
+You misunderstand me. What I'm saying is that to do this:
 
->  drivers/regulator/rohm-regulator.c |  9 ++++++---
->  include/linux/mfd/rohm-generic.h   | 14 ++++++--------
->  2 files changed, 12 insertions(+), 11 deletions(-)
+	sound {
+		clocks = <&pll>;
+	}
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+The node 'pll' must correspond to a clock provider driver. It can't be
+just a bare node with some properties pick-n-mixed from the clock
+binding, like this:
+
+	pll1 : pll1 {
+		clock-frequency = <98304000>;
+	};
+
+which doesn't define a compatible= to match it to a clk driver. An
+attempt to bulk_get the machine driver clocks here will fail.
+
+To use a bare node with pick-n-mixed useful clock binding properties,
+that doesn't represent a real clk provider driver, it would have to be
+pointed to by a custom property that is not treated as a clk framework
+object, e.g.:
+
+	sound {
+		audio-graph-card,plls = <&pll>;
+	}
+
+In this case pll is a node parsed by audio-graph-card that just happens
+to use properties from the clock binding.
+
+So the question I'm trying to ask is: when you and Rob said use
+the clock binding, did you mean pointing to that binding from
+clocks=<...>, or from a custom property like my audio-graph-card,plls
+example above.
