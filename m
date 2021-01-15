@@ -2,94 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CC42F7EDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:03:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F672F7EDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732991AbhAOPCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:02:46 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:51721 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726019AbhAOPCp (ORCPT
+        id S1733007AbhAOPDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:03:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728906AbhAOPDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:02:45 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id BC24AE6D;
-        Fri, 15 Jan 2021 10:01:39 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 15 Jan 2021 10:01:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=DAZvSPO0S+QnpLxAY7yTcaJiZtB
-        epR9CLv2uJSu9blc=; b=NLUILfmvRZ4ZCx7GAXZsWdTwHd1Wm0weJvrchGhnpvx
-        flIUmK6fxaK5BAGl7srXn2FyG5FGlmVKF7B9vXjJ2CeU/Y/PkocKAdzUfbWwgqWV
-        qHjguR8L7ENaj8bQPWp1CFxd81V0hm6ZB2AVzX8Hx2vSl0nHglCShsKLsn//aPBx
-        SPF4G7Oernwu3fmMb/L2jGPZ96evDE7DIjTbL75Ck+JbwOwrZ2NqPtO68aog+YGq
-        diR2bY7lsBMk6fQ9SZGgoxsPTB1AtU85HEGZovAdUdGK5hVWC0CQ/XGmEpEH+ijD
-        bNGmHp4Y2CLgi0RgWXAqFFubFcscwGCqnjJDmhsV5sg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=DAZvSP
-        O0S+QnpLxAY7yTcaJiZtBepR9CLv2uJSu9blc=; b=M1uGAGg0zzuhfj47zxbZwC
-        AWV5Ys27vFa1NQ4zZrkmhE2igwkvWtZ46dDAoDbttsEi5Si3oC1rcHWsckVyUDNj
-        /mECtA+CvZzy44jiHFi6HvStk8nTYD46tQ1P0re4ijYk629Yo3Ix52vLYh9Xv/fa
-        1+uvbiTnFdbJr045f/ccJkgEgEYn1mcd+bqv0H2cYZc5YfSOB9wVcNGWAjKYauXu
-        RSNCZ4P7Nor7W2MVSmCOUeLjSVrz017wbKUynVTnwUY6D6W77S2SON5rJgIbMkfa
-        UuaEGmoonsi/Qeg2EaQYkvwrqEk1rUQMaIVraTFhO2g5kLXtkX+WGSh4e7svfw9A
-        ==
-X-ME-Sender: <xms:Uq4BYNBHXiE90xOq2encA-fcONjsryGjjXSR8V4Yi9k7z3_P3aE-7A>
-    <xme:Uq4BYLiPX8XmN6XN7WxRCcJWJPDYH6ee_6ysdit6df0iUN1mKIDVxIex_rOHYTJhr
-    7ZVLiIBkjH0lA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtddvgdegiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
-    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:Uq4BYInZz-lmiVjxtnLbdpAZgDlCvO-OAGfBjlP9cwyTvl1-52Zf5A>
-    <xmx:Uq4BYHwhIOhsdXbmCfjoztOSm6N0NFeZR8AvOMnTaXsihDizu_iKiA>
-    <xmx:Uq4BYCRuV1aA598MzNYSg-DivYUzU3xyszEpamdmlWqm66wmE1FaVg>
-    <xmx:U64BYINiggfjagkBKvf9lDSP3p4hPRtqDb_gtM9NDKO0tqe5xbDX1g>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 87581240064;
-        Fri, 15 Jan 2021 10:01:38 -0500 (EST)
-Date:   Fri, 15 Jan 2021 16:01:37 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] Remove one more platform_device_add_properties()
- call
-Message-ID: <YAGuURTCW/9HAprF@kroah.com>
-References: <20210111141045.14027-1-heikki.krogerus@linux.intel.com>
- <X/2MupFIWVI5DTUe@kroah.com>
+        Fri, 15 Jan 2021 10:03:11 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61C5C061757;
+        Fri, 15 Jan 2021 07:02:30 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id c14so6187986qtn.0;
+        Fri, 15 Jan 2021 07:02:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bSiHaDW7FBCe87Y0ohNmkO4FYuk7U+giaU0fHS7zJiE=;
+        b=PUFas9IPfibW6hcMTLTvGr+lxwFVittZa95Vy4WX1PPcN3dCmSULvOIOsodV6GaCTA
+         oqoCs8ly3n3+PTpCvmXaFd5DmwQahP39xxg1kjeDYLGvqdxqf2Q5moFm1ouAR0c56dpY
+         U/Oa2Xfh2B0b3hfSdAbKaPXZfXR2iVdnZ1ClmH4dRyuzdjiLWu6e5B6eQVFl4meHX8Vz
+         +8TjtPvuyVx5DxXAksHd5uUE5Hl6xfHQuruWRFfzjsumZWCtFww0SfYI2/tJ8lkoR/6b
+         pBgzZ/PzJxw+uaS16QSk4pQ/YeRh4bVDQyrDeCQ5iK889khnyM5FUpQmteSxp5gImB+u
+         NK6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bSiHaDW7FBCe87Y0ohNmkO4FYuk7U+giaU0fHS7zJiE=;
+        b=tS4ljXNDWPQdQVV1Tczlcw6b23YiRgKAcKPehuhKfxasKxbjhgHgovHiSQ/eMjJms5
+         UlrgmXywwJ54pbC4jpUmVxMqdQF3pudsxB/58fEjaxnLyt9e62J3Cu/Jm2WpieHFirMs
+         0cHUqiE/VJPBohnIr+fdqxlBBuraCul26gxVMLtFIwyjxWt5Zg9/dD5D9QXFHlGQj88b
+         wxfg80PVFT4vYUY+helYyiYmLcZ8exkGthSPVu2bcMH8jNoDxSPTIanmn0y7VJ7lyXXu
+         q2K7EVixzcx6hLv38v6JZwcM+QceZ6RWKZYTg1W8YdwelbeqDPJnmd0p43R7JSjYTV4O
+         /+FA==
+X-Gm-Message-State: AOAM5317caXl5EU7yqL3nkOYEE5R2Hqdbx2zopvgRTBCefDnhVnc8d3g
+        ICB2fqOphbKrLkszeDg1jPo=
+X-Google-Smtp-Source: ABdhPJx0R55YllEPRxZGcROYvpgRmgQpSNVOwKnGKtEJyiAhk9r6hbTzazb4vBXGX1VpYvBejQvKyA==
+X-Received: by 2002:a05:622a:193:: with SMTP id s19mr11914075qtw.366.1610722950132;
+        Fri, 15 Jan 2021 07:02:30 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id c139sm5129276qke.24.2021.01.15.07.02.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 07:02:26 -0800 (PST)
+Date:   Fri, 15 Jan 2021 16:02:24 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] clk: tegra30: Use 300MHz for video decoder by
+ default
+Message-ID: <YAGugCdgeobeahR6@ulmo>
+References: <20210112122724.1712-1-digetx@gmail.com>
+ <20210112122724.1712-2-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="LEbkjMYHQQby9Z2P"
 Content-Disposition: inline
-In-Reply-To: <X/2MupFIWVI5DTUe@kroah.com>
+In-Reply-To: <20210112122724.1712-2-digetx@gmail.com>
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 12:49:14PM +0100, Greg KH wrote:
-> On Mon, Jan 11, 2021 at 05:10:42PM +0300, Heikki Krogerus wrote:
-> > Hi Felipe, Rafael,
-> > 
-> > This is the second version of this series. There are no real changes,
-> > but I added the Tiger Lake ID patch to this series in hope that it
-> > will make your life a bit easier, assuming that Rafael will still pick
-> > these.
-> 
-> I can take all 3 of these if that makes it easier.  Rafael, let me know
-> what you want to do, either is fine with me.
 
-I've added it to my usb-next branch now.
+--LEbkjMYHQQby9Z2P
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
+On Tue, Jan 12, 2021 at 03:27:20PM +0300, Dmitry Osipenko wrote:
+> The 600MHz is a too high clock rate for some SoC versions for the video
+> decoder hardware and this may cause stability issues. Use 300MHz for the
+> video decoder by default, which is supported by all hardware versions.
+>=20
+> Fixes: ed1a2459e20c ("clk: tegra: Add Tegra20/30 EMC clock implementation=
+")
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/clk/tegra/clk-tegra30.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+--LEbkjMYHQQby9Z2P
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmABrnsACgkQ3SOs138+
+s6GCYw//ZjDSSAnbQTHpERlpyrFIm3mZCvxPsr6o97s/zpfKdjTC9FT/zXsZGi35
+CuVUNRrdtLvDv2CmXviO0LPeCWsdBwTTye6/A+jTOZUwkd1SkHLEPLW3xSLI91q2
+AmIv3P4FEdo4PEoF8tlkGhdELNoZCDtzQEZ4jZ/A6mbItxrARzeZF946bUmTAmcA
+igvlV8PiyzMvC0RY5WWgZM0vm+0eUoP4wOWRGEVnVzm4uYHX92R8lBIu6CiMaCa+
++u2L+5Vm3142UgefCnwMdPggOD1P7e1nR4Cf7hp+AGaam/3aUa+ddDdL+4Ebzs2d
+Rj2C5bPmqKGufZ675XtOO7anqK4h6+EdwtID8TUjeiw0nrLcPuHV2jEa+H9XF2a9
+WEsPdAsh8Pi7O7gns2XkUci36tF48c+r4L6j8WVqrl85FC+gOOBxzLRjKBMioGz5
+fwo/55AzikRgx71nQqj4EWJ7ayzE+edQQHid9mCkbbpYZSRmJZsEITn+idol7AZE
+nL37aWaH71wa9Aad39fI0CUS8DrBK6Zq8fCSijQ+YsHDy5dZVppo9GovEl3xf0ok
+NIwqfy/b7y5QafgwMBdSeSJMZCpoW4LJobAfSl/XeW4xQtZ/K+gG7U6ZCXP7ZVvF
+s+e3RcDMLJfPLIaNQnUGk+gzf+u/iLpYAyORwXm4bQOo++o18Ac=
+=LBCu
+-----END PGP SIGNATURE-----
+
+--LEbkjMYHQQby9Z2P--
