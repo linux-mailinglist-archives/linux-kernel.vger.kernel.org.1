@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199E82F798A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:38:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F213A2F7906
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388065AbhAOMhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:37:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44948 "EHLO mail.kernel.org"
+        id S1732278AbhAOMav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:30:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388036AbhAOMhn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:37:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED10323356;
-        Fri, 15 Jan 2021 12:37:01 +0000 (UTC)
+        id S1732134AbhAOMat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:30:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0117C2336E;
+        Fri, 15 Jan 2021 12:29:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714222;
-        bh=fVftOZ3FvMhYPI/2X17NxjKeTATjtxglSj3hylaaX58=;
+        s=korg; t=1610713786;
+        bh=3fVzlPuqtK7F4m77yZ9M97s2IDS8xdwwMqhi/UuDAJc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TBF3iznAPzMFmp0y/uis/zPOP1D1cHZQ12bY0UqtSIwh/Rc3O0NhO6uvYg1Fv9/72
-         HlZMaH1rLSXdeTlH8q1/kbgjtpFDSwi2RqzH1CCsBww9bkWWrokj0AOvakjCpx29f5
-         Q3emR0lql9bV19shQwyXlusSaHQ5G9cR7Ihzw9jo=
+        b=K7Di/zKXO7ZnRogoXm/ZjnHTKtlLMRxcMEbTufQNs4dRcuO8jNPzzFji9uzeQ/jdz
+         FH9g5ggACo8iKsZpgil05Zx5zz06UH6NXYKa4AMuUYbz1JDmCLAz3PsAqsZbFL22O4
+         HjR8qp5DfzQtMHJRBIeuVkbSuFcrK0y2/jQFaKd0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Machata <petrm@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 039/103] nexthop: Bounce NHA_GATEWAY in FDB nexthop groups
-Date:   Fri, 15 Jan 2021 13:27:32 +0100
-Message-Id: <20210115122007.949280095@linuxfoundation.org>
+        stable@vger.kernel.org, Mike Christie <mchristi@redhat.com>,
+        Bart Van Assche <bart.vanassche@wdc.com>,
+        Nicholas Bellinger <nab@linux-iscsi.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 05/18] xcopy: loop over devices using idr helper
+Date:   Fri, 15 Jan 2021 13:27:33 +0100
+Message-Id: <20210115121955.372393760@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
-References: <20210115122006.047132306@linuxfoundation.org>
+In-Reply-To: <20210115121955.112329537@linuxfoundation.org>
+References: <20210115121955.112329537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +41,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Machata <petrm@nvidia.com>
+From: Mike Christie <mchristi@redhat.com>
 
-[ Upstream commit b19218b27f3477316d296e8bcf4446aaf017aa69 ]
+[ Upstream commit 6906d008b4b06e42cad393ac25bec76fbf31fabd ]
 
-The function nh_check_attr_group() is called to validate nexthop groups.
-The intention of that code seems to have been to bounce all attributes
-above NHA_GROUP_TYPE except for NHA_FDB. However instead it bounces all
-these attributes except when NHA_FDB attribute is present--then it accepts
-them.
+This converts the xcopy code to use the idr helper. The next patch
+will drop the g_device_list and make g_device_mutex local to the
+target_core_device.c file.
 
-NHA_FDB validation that takes place before, in rtm_to_nh_config(), already
-bounces NHA_OIF, NHA_BLACKHOLE, NHA_ENCAP and NHA_ENCAP_TYPE. Yet further
-back, NHA_GROUPS and NHA_MASTER are bounced unconditionally.
-
-But that still leaves NHA_GATEWAY as an attribute that would be accepted in
-FDB nexthop groups (with no meaning), so long as it keeps the address
-family as unspecified:
-
- # ip nexthop add id 1 fdb via 127.0.0.1
- # ip nexthop add id 10 fdb via default group 1
-
-The nexthop code is still relatively new and likely not used very broadly,
-and the FDB bits are newer still. Even though there is a reproducer out
-there, it relies on an improbable gateway arguments "via default", "via
-all" or "via any". Given all this, I believe it is OK to reformulate the
-condition to do the right thing and bounce NHA_GATEWAY.
-
-Fixes: 38428d68719c ("nexthop: support for fdb ecmp nexthops")
-Signed-off-by: Petr Machata <petrm@nvidia.com>
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Mike Christie <mchristi@redhat.com>
+Reviewed-by: Bart Van Assche <bart.vanassche@wdc.com>
+Signed-off-by: Nicholas Bellinger <nab@linux-iscsi.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/nexthop.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/target/target_core_xcopy.c | 70 +++++++++++++++++-------------
+ 1 file changed, 41 insertions(+), 29 deletions(-)
 
---- a/net/ipv4/nexthop.c
-+++ b/net/ipv4/nexthop.c
-@@ -496,7 +496,7 @@ static int nh_check_attr_group(struct ne
- 	for (i = NHA_GROUP_TYPE + 1; i < __NHA_MAX; ++i) {
- 		if (!tb[i])
- 			continue;
--		if (tb[NHA_FDB])
-+		if (i == NHA_FDB)
- 			continue;
- 		NL_SET_ERR_MSG(extack,
- 			       "No other attributes can be set in nexthop groups");
+diff --git a/drivers/target/target_core_xcopy.c b/drivers/target/target_core_xcopy.c
+index 32db9180820e7..b0e8f432c7205 100644
+--- a/drivers/target/target_core_xcopy.c
++++ b/drivers/target/target_core_xcopy.c
+@@ -52,48 +52,60 @@ static int target_xcopy_gen_naa_ieee(struct se_device *dev, unsigned char *buf)
+ 	return 0;
+ }
+ 
+-static int target_xcopy_locate_se_dev_e4(const unsigned char *dev_wwn,
+-					struct se_device **found_dev)
++struct xcopy_dev_search_info {
++	const unsigned char *dev_wwn;
++	struct se_device *found_dev;
++};
++
++static int target_xcopy_locate_se_dev_e4_iter(struct se_device *se_dev,
++					      void *data)
+ {
+-	struct se_device *se_dev;
++	struct xcopy_dev_search_info *info = data;
+ 	unsigned char tmp_dev_wwn[XCOPY_NAA_IEEE_REGEX_LEN];
+ 	int rc;
+ 
+-	mutex_lock(&g_device_mutex);
+-	list_for_each_entry(se_dev, &g_device_list, g_dev_node) {
++	if (!se_dev->dev_attrib.emulate_3pc)
++		return 0;
+ 
+-		if (!se_dev->dev_attrib.emulate_3pc)
+-			continue;
++	memset(&tmp_dev_wwn[0], 0, XCOPY_NAA_IEEE_REGEX_LEN);
++	target_xcopy_gen_naa_ieee(se_dev, &tmp_dev_wwn[0]);
+ 
+-		memset(&tmp_dev_wwn[0], 0, XCOPY_NAA_IEEE_REGEX_LEN);
+-		target_xcopy_gen_naa_ieee(se_dev, &tmp_dev_wwn[0]);
++	rc = memcmp(&tmp_dev_wwn[0], info->dev_wwn, XCOPY_NAA_IEEE_REGEX_LEN);
++	if (rc != 0)
++		return 0;
+ 
+-		rc = memcmp(&tmp_dev_wwn[0], dev_wwn, XCOPY_NAA_IEEE_REGEX_LEN);
+-		if (rc != 0)
+-			continue;
++	info->found_dev = se_dev;
++	pr_debug("XCOPY 0xe4: located se_dev: %p\n", se_dev);
+ 
+-		*found_dev = se_dev;
+-		pr_debug("XCOPY 0xe4: located se_dev: %p\n", se_dev);
++	rc = target_depend_item(&se_dev->dev_group.cg_item);
++	if (rc != 0) {
++		pr_err("configfs_depend_item attempt failed: %d for se_dev: %p\n",
++		       rc, se_dev);
++		return rc;
++	}
+ 
+-		rc = target_depend_item(&se_dev->dev_group.cg_item);
+-		if (rc != 0) {
+-			pr_err("configfs_depend_item attempt failed:"
+-				" %d for se_dev: %p\n", rc, se_dev);
+-			mutex_unlock(&g_device_mutex);
+-			return rc;
+-		}
++	pr_debug("Called configfs_depend_item for se_dev: %p se_dev->se_dev_group: %p\n",
++		 se_dev, &se_dev->dev_group);
++	return 1;
++}
++
++static int target_xcopy_locate_se_dev_e4(const unsigned char *dev_wwn,
++					struct se_device **found_dev)
++{
++	struct xcopy_dev_search_info info;
++	int ret;
+ 
+-		pr_debug("Called configfs_depend_item for se_dev: %p"
+-			" se_dev->se_dev_group: %p\n", se_dev,
+-			&se_dev->dev_group);
++	memset(&info, 0, sizeof(info));
++	info.dev_wwn = dev_wwn;
+ 
+-		mutex_unlock(&g_device_mutex);
++	ret = target_for_each_device(target_xcopy_locate_se_dev_e4_iter, &info);
++	if (ret == 1) {
++		*found_dev = info.found_dev;
+ 		return 0;
++	} else {
++		pr_debug_ratelimited("Unable to locate 0xe4 descriptor for EXTENDED_COPY\n");
++		return -EINVAL;
+ 	}
+-	mutex_unlock(&g_device_mutex);
+-
+-	pr_debug_ratelimited("Unable to locate 0xe4 descriptor for EXTENDED_COPY\n");
+-	return -EINVAL;
+ }
+ 
+ static int target_xcopy_parse_tiddesc_e4(struct se_cmd *se_cmd, struct xcopy_op *xop,
+-- 
+2.27.0
+
 
 
