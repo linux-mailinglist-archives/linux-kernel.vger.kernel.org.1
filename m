@@ -2,114 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DA02F7E50
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E302F7E57
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733093AbhAOOdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 09:33:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728439AbhAOOdj (ORCPT
+        id S1729736AbhAOOeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 09:34:22 -0500
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:41972 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730505AbhAOOeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:33:39 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6B4C061757;
-        Fri, 15 Jan 2021 06:32:59 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 8E8321F45FC7
-Received: by earth.universe (Postfix, from userid 1000)
-        id D04903C0C94; Fri, 15 Jan 2021 15:32:55 +0100 (CET)
-Date:   Fri, 15 Jan 2021 15:32:55 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Colin King <colin.king@canonical.com>, linux-pm@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] power: supply: cpcap-charger: Fix power_supply_put
- on null battery pointer
-Message-ID: <20210115143255.ornoji7wr232topr@earth.universe>
-References: <20210115131524.71339-1-colin.king@canonical.com>
- <YAGXgWeWvy/0FyqN@atomide.com>
+        Fri, 15 Jan 2021 09:34:21 -0500
+Received: by mail-lf1-f51.google.com with SMTP id s26so13390750lfc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:34:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=EYynAAe01v0az5oN2AITmKdZxLEimEvKPrB2V3ro+Hs=;
+        b=K6Rz9/uPTW1x4ySLcdxoKas0X7DkBFosGcP8wsrFfKW07xsgGZ2e9VTR3z6axkgsc+
+         c+euxOWR6+mqD63e8TxdXFtY5Wg1U7TgmS/wCt/ttC9hVzy8w2rTrdRdF0c0ex9PAOaV
+         2qfpf38+bTXGy+i3BQKpyOKtLT23yHo3EgA08rp71U0t5oYZjgIfr7mtsN+P8UMNvUW5
+         vaMQYTNijoZrLX5SuRWliU6qkdzmJdn1FTESdlCSFbyms9HaANvOuxQuE8Cw6R0sNEX0
+         ZfZ6NgresJJzIo1NTk7c+9x1G4yPlffn3H1E21Wsob4fzjIFaspk5Ccmg8TAOJxc1tA2
+         REzw==
+X-Gm-Message-State: AOAM5306BdqEG2HsbGHTbt+N2v1JVI5m9vZhoLNp5hBdSePtzGjanvwG
+        xhoAOg/knhKKTlj06x8zvzs=
+X-Google-Smtp-Source: ABdhPJxYYwRXawHojiTYdTNzmA9TiK+cKjV7BVmhwMBT/jy0Qt49eeyRHJInLsJC2yRAu+8EHPQzLA==
+X-Received: by 2002:a19:88c3:: with SMTP id k186mr5471877lfd.276.1610721219340;
+        Fri, 15 Jan 2021 06:33:39 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id f23sm917092lfh.196.2021.01.15.06.33.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 06:33:38 -0800 (PST)
+Date:   Fri, 15 Jan 2021 16:33:32 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-power@fi.rohmeurope.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator: bd718x7, bd71828, Fix dvs voltage levels
+Message-ID: <20210115143332.GA721433@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="u7krr22x5oqasrjc"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YAGXgWeWvy/0FyqN@atomide.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The ROHM BD718x7 and BD71828 drivers support setting HW state
+specific voltages from device-tree. This is used also by various
+in-tree DTS files.
 
---u7krr22x5oqasrjc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+These drivers do incorrectly try to compose bit-map using enum
+values. By a chance this works for first two valid levels having
+values 1 and 2 - but setting values for the rest of the levels
+do indicate capbility of setting values for first levels as
+well. Luckily the regulators which support settin values for
+SUSPEND/LPSR do usually also support setting values for RUN
+and IDLE too - thus this has not been such a fatal issue.
 
-Hi,
+Fix this by defining the old enum values as bits and using
+new enum in parsing code. This allows keeping existing IC
+specific drivers intact and only adding the defines and
+slightly changing the rohm-regulator.c
 
-On Fri, Jan 15, 2021 at 03:24:17PM +0200, Tony Lindgren wrote:
-> * Colin King <colin.king@canonical.com> [210115 13:15]:
-> > From: Colin Ian King <colin.king@canonical.com>
-> >=20
-> > Currently if the pointer battery is null there is a null pointer
-> > dereference on the call to power_supply_put.  Fix this by only
-> > performing the put if battery is not null.
-> >=20
-> > Addresses-Coverity: ("Dereference after null check")
-> > Fixes: 4bff91bb3231 ("power: supply: cpcap-charger: Fix missing power_s=
-upply_put()")
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
->=20
-> Oopsie, thanks for fixing it:
->=20
-> Acked-by: Tony Lindgren <tony@atomide.com>
+Fixes: 21b72156ede8b ("regulator: bd718x7: Split driver to common and bd718x7 specific parts")
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
 
-Thanks, queued.
+One more attempt today. I did test the driver is not causing a crash
+when load but no further tests concluded as I don't have BD71837/47/50
+at home. This looks now trivial though so I decided to give it a go.
+Sorry for all the trouble this far - and also for the mistakes to come.
 
--- Sebastian
+ drivers/regulator/rohm-regulator.c |  9 ++++++---
+ include/linux/mfd/rohm-generic.h   | 14 ++++++--------
+ 2 files changed, 12 insertions(+), 11 deletions(-)
 
-> >  drivers/power/supply/cpcap-charger.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/power/supply/cpcap-charger.c b/drivers/power/suppl=
-y/cpcap-charger.c
-> > index 823d666f09e0..641dcad1133f 100644
-> > --- a/drivers/power/supply/cpcap-charger.c
-> > +++ b/drivers/power/supply/cpcap-charger.c
-> > @@ -300,8 +300,9 @@ cpcap_charger_get_bat_const_charge_voltage(struct c=
-pcap_charger_ddata *ddata)
-> >  				&prop);
-> >  		if (!error)
-> >  			voltage =3D prop.intval;
-> > +
-> > +		power_supply_put(battery);
-> >  	}
-> > -	power_supply_put(battery);
-> > =20
-> >  	return voltage;
-> >  }
-> > --=20
-> > 2.29.2
-> >=20
+diff --git a/drivers/regulator/rohm-regulator.c b/drivers/regulator/rohm-regulator.c
+index 399002383b28..5c558b153d55 100644
+--- a/drivers/regulator/rohm-regulator.c
++++ b/drivers/regulator/rohm-regulator.c
+@@ -52,9 +52,12 @@ int rohm_regulator_set_dvs_levels(const struct rohm_dvs_config *dvs,
+ 	char *prop;
+ 	unsigned int reg, mask, omask, oreg = desc->enable_reg;
+ 
+-	for (i = 0; i < ROHM_DVS_LEVEL_MAX && !ret; i++) {
+-		if (dvs->level_map & (1 << i)) {
+-			switch (i + 1) {
++	for (i = 0; i < ROHM_DVS_LEVEL_VALID_AMOUNT && !ret; i++) {
++		int bit;
++
++		bit = BIT(i);
++		if (dvs->level_map & bit) {
++			switch (bit) {
+ 			case ROHM_DVS_LEVEL_RUN:
+ 				prop = "rohm,dvs-run-voltage";
+ 				reg = dvs->run_reg;
+diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-generic.h
+index 4283b5b33e04..2b85b9deb03a 100644
+--- a/include/linux/mfd/rohm-generic.h
++++ b/include/linux/mfd/rohm-generic.h
+@@ -20,14 +20,12 @@ struct rohm_regmap_dev {
+ 	struct regmap *regmap;
+ };
+ 
+-enum {
+-	ROHM_DVS_LEVEL_UNKNOWN,
+-	ROHM_DVS_LEVEL_RUN,
+-	ROHM_DVS_LEVEL_IDLE,
+-	ROHM_DVS_LEVEL_SUSPEND,
+-	ROHM_DVS_LEVEL_LPSR,
+-	ROHM_DVS_LEVEL_MAX = ROHM_DVS_LEVEL_LPSR,
+-};
++#define ROHM_DVS_LEVEL_RUN		BIT(0)
++#define ROHM_DVS_LEVEL_IDLE		BIT(1)
++#define ROHM_DVS_LEVEL_SUSPEND		BIT(2)
++#define ROHM_DVS_LEVEL_LPSR		BIT(3)
++#define ROHM_DVS_LEVEL_VALID_AMOUNT	4
++#define ROHM_DVS_LEVEL_UNKNOWN		0
+ 
+ /**
+  * struct rohm_dvs_config - dynamic voltage scaling register descriptions
 
---u7krr22x5oqasrjc
-Content-Type: application/pgp-signature; name="signature.asc"
+base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
+-- 
+2.25.4
 
------BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmABp48ACgkQ2O7X88g7
-+po0jxAAh7jfrbid8B+lxearz9t9C+okKFY4PfYtDMOOzoomxqzZ0NSjbRTsScrU
-HBDqwOkt25UmllTEIBm6fn+LYn4ND8O2Ur2GyuLMjVB4a1j6qs76Ha3sA3o2E6Zk
-z7VNlkGyejQFgsBOUGekvdlr+LSxSelj8vtY8VbeQczHt5SFQ5eqx2YSDgzpX15W
-aL3h3Xlq2SodQtb6QJ833y1p1XsxjrJAxBGATI/Ry1LWRdNCkq4VtQNP49n2JGzL
-2fV2GJ03tKYDrRq2E9Pbm4b7p6nALi3QwpYNJoqdSU4cHcIX4oq4p6in1/JOU2hL
-TnUIPXXLO1uUQr5/HpbOyUbPfhFW3hzKecr+KmGKjjG52vga4Ws1OQUPRKnA3kwe
-GEEqDNCpDF7Eo4Z5UfQybVBIJyr72bffvjtd6gQgkPpYCdR9hmXumZFBkMYifJBC
-dGNaOQzQSztTLGTpiEhIDufpPvDNnQvpWQ6Qz4mdCldmyygC8CHogptacuZPKaV7
-qMwiN3vwtAw9vpMRIx7gYXZfS4+IeNrMh98xO2Ks8GyH1EX/uMFB+rPjiifMyy4N
-25LZdChqJe+cDDiZ7UW6euABvOd+AbP5DBKHSLoxXDQ2QIgFR58TtCR8YurVOUrM
-rzpmqDr9AhzCB7S/3v80ouzcayieGIxMEP81GWRdIpuFzGd1yOg=
-=nwqI
------END PGP SIGNATURE-----
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
 
---u7krr22x5oqasrjc--
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
