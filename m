@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0862F8404
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E23412F841F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388270AbhAOSUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:20:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42778 "EHLO mail.kernel.org"
+        id S2388719AbhAOSU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:20:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388063AbhAOSUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:20:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16925222B3;
-        Fri, 15 Jan 2021 18:19:30 +0000 (UTC)
+        id S2388059AbhAOSUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 13:20:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4412723A59;
+        Fri, 15 Jan 2021 18:19:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610734771;
-        bh=3rRDT+rU1u3GZvGDwrSbAniCXS09VSj6vZ/alOvP+cQ=;
+        s=k20201202; t=1610734776;
+        bh=IYih6HK5bywhQPCe8+Ubp9rfmDXcS5Y7rKssma+9IVE=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=luOgCmD3g2dKfofk01BU11o3YgKeJEe3zxEpjOWvZE6xhZ2FNIp6iDzXBui8Ddpkr
-         FTLKNceUkIIn1qaztis+xvtvdPg28RuRE4MNtn4YHszzRMJrJZroQ/ZOS5G8iqAQzk
-         e0xICRheUSWsmLwKu6crP6LKCy6InUrnn37H69KQAXpor429zGr5ExC7WdTppkykhI
-         X+kGcc3GOzhT1YWzszmzZVJ6vpRt+6T0IiLrKjn1jveDn1gAZ4YgfFJjrbrVGlzuqk
-         yae8KH7K8lFIGxY2M46zqR1j7aI/nc8vXDrBRp+nbzcB6Qin0OOLwHEq8JzZVw7UsY
-         vrIAZCrtmXJCw==
+        b=BOIS6Ji++V0fQAyQSsHFJYaaqiy7HWX1p+ZVER5G37YtaClPJVR1Fk06bS+x+Y6pR
+         56dVep3mubKlDlGRJineKYsLuryVFj+ePsFznyx2QYOwkTbXW/D6b+qU0Gl7Q9VTCl
+         sZADmEi85HkKNDEvgMQhagcksWfXJmIV97t7hBl6LNTptVj1d7KY7uT9TGHIinzOw8
+         vepRKpLkYWGJ8gChzIVjfRcVFRlhpVFdU//qGdF7rdKQR613rxxf/Zx17rliEBgpVa
+         hrsdQZ6vTixx2QaCjAIVPJZAdBASQNKRW2arsov734Z+u2qI4tAyJXvyFNQ20rCXY9
+         VcvTdSykkwxjA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Cheng-Yi Chiang <cychiang@chromium.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-arm-msm@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        Srinivasa Rao <srivasam@codeaurora.org>
-In-Reply-To: <20210115034327.617223-1-swboyd@chromium.org>
-References: <20210115034327.617223-1-swboyd@chromium.org>
-Subject: Re: [PATCH 0/4] ASoC: qcom: Minor code cleanups for lpass-cpu
-Message-Id: <161073473698.12268.9934599691128446500.b4-ty@kernel.org>
+To:     alsa-devel@alsa-project.org,
+        Bard Liao <yung-chuan.liao@linux.intel.com>, vkoul@kernel.org
+Cc:     srinivas.kandagatla@linaro.org, jank@cadence.com,
+        hui.wang@canonical.com, rander.wang@linux.intel.com,
+        vinod.koul@linaro.org, tiwai@suse.de,
+        ranjani.sridharan@linux.intel.com, gregkh@linuxfoundation.org,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com, linux-kernel@vger.kernel.org
+In-Reply-To: <20210115061651.9740-1-yung-chuan.liao@linux.intel.com>
+References: <20210115061651.9740-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: (subset) [PATCH 0/2] ASoC/SoundWire: fix timeout values
+Message-Id: <161073473698.12268.1646614149546970077.b4-ty@kernel.org>
 Date:   Fri, 15 Jan 2021 18:18:56 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -46,17 +44,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 19:43:23 -0800, Stephen Boyd wrote:
-> Here's some minor code cleanups for the lpass-cpu driver. I noticed that
-> it casts away const from the driver data from DT. That's not great but
-> fixing it is a little more involved. I'll get to it later. There's also
-> some questionable clk_get() usage that should probably be
-> clk_get_optional(). For now this should help a little.
+On Fri, 15 Jan 2021 14:16:49 +0800, Bard Liao wrote:
+> The timeout for an individual transaction w/ the Cadence IP is the same as
+> the entire resume operation for codecs.
+> This doesn't make sense, we need to have at least one order of magnitude
+> between individual transactions and the entire resume operation.
 > 
-> Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> Cc: Srinivasa Rao <srivasam@codeaurora.org>
-> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
+> Set the timeout on the Cadence side to 500ms and 5s for the codec resume.
 > 
 > [...]
 
@@ -66,14 +60,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: qcom: Remove useless debug print
-      commit: 16117beb16f01a470d40339960ffae1e287c03be
-[2/4] ASoC: qcom: Add some names to regmap configs
-      commit: 03b49bf9a92b18bbfcc3b5eb206cca8447e9f2cb
-[3/4] ASoC: qcom: Stop casting away __iomem for error pointers
-      commit: e697df66876c182927899950971c3b4888df3e6e
-[4/4] ASoC: qcom: Remove duplicate error messages on ioremap
-      commit: 4e15f5060d34dd28591cf3af43d3086a4b76c965
+[1/2] ASoC: codecs: soundwire: increase resume timeout
+      commit: 7ef8c9edc86cff0881b2eb9a3274796258fbd872
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
