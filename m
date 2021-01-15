@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B812F83EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D402F83ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388626AbhAOSR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:17:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57266 "EHLO
+        id S2388648AbhAOSSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:18:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388604AbhAOSRv (ORCPT
+        with ESMTP id S2388607AbhAOSRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 13:17:51 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2344C0617A9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:29 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id m4so10191165wrx.9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:29 -0800 (PST)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF05C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:31 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id c5so10208437wrp.6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ouF11XatezVbFMuPjsn7FwMINIqwkDbexOTfYg8EXx4=;
-        b=Gk/bU3FB1IFDV8OfDg9iJegntzsA+v1LnclxDJt+hsb7B4CgA13LFMBZCzfJN+gsWX
-         4jHt/mC202CfahomgeLpBcXw0YKenaVlwcrOqoWo95y1alita7OLMMIC+RdNbS7Qnlme
-         yyHeijNl3qu0QtHk9jO4YQ5oI7E2HOTmXVR3w88AFncHrcLrmwit+YFBZYpP7uEpwpgG
-         ANejlTeY5nMYc3NEJMrYiVncAdkanlvh1jpcxOo58Rr/KdyXYyY6RYfgLJrjSrnFIHaP
-         plEjM7ddJ8zkdB1439qXoEo6KAX5vVV4wmUA+W8vCa+yhZumnGW7wPFSBZtfA+6CKRMk
-         KQtg==
+        bh=5LH1gDNEpa04mVmMwrdsnTHPuZadf7vRIYykG237nqs=;
+        b=OoioVsm+TQx6nV7gS8EYVFvVJ1Fv6AK0ME2b/TTWZE6GVipp0qR5swgZ83FEbZ12hJ
+         bHfLNqxGSPlvKS/kjMA6EFo0ABSEJZ7RxksriR+eL3aLaSRw+duGxMmfMFNZ/6DWKvR1
+         W10uIAzHzlddHv+JocGFwsSmxmEbLV0Tlhngr0vMllvQKG/JNDysKLzXv0AyOiKStki+
+         WjLofYAriQTZgUtIf2WYUjD/ue1rD7qJbI760ANCfyWYCqT4EUaiH+f56OdxXd2zqSut
+         keQOIR2LCIAHQ4j+dA2EHerIqjTJF5JZ+VvUE4csnjttU6l1DvBN4KjjB/ingtnz4MwT
+         z7Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ouF11XatezVbFMuPjsn7FwMINIqwkDbexOTfYg8EXx4=;
-        b=thwcY7BHnmgz8Xz/BWW7yU0Y36eGh1CyTRoPDJ/Sdd+KBG0sMkdGt+ngqsBhm/9N77
-         1tfotHBgwkO5iGGjl8fUm5VNV0ek0BwXhxvXfPKOraMsR6XxgT4mpeBzA3xEh27jCX7B
-         kQO0ebvhVpQz5wWWJngeuDNSKFZksGr1QFUh60IARne4oPWJ2F8trZ/9dLpcLoYLWU6f
-         O8wQ3Q/mofWNKD91DLijbl3sn0HLobmMtXlshgwNHVPcvPjWByLvIrzgEGHgBAImJNI1
-         HTNjckW2k4hKTbAflKNGWfRaeRDb645ipItVCdwM/i75TLVfg/GfO8Xublk78tMv9Fgd
-         RllA==
-X-Gm-Message-State: AOAM531BHJwn2qXcbRZIv4G3Necv1POQL4KGt9LVTeFgin7rrHYwyvbo
-        dd5wqBzxSCSzk2AJ6tegwb9vYw==
-X-Google-Smtp-Source: ABdhPJxWIcNsX9CfW4n898DqqtkFvgS6ZiJ3Dm+q2aQO76ewoRPXBVCi8e54Aik3hGgwUT/JjGyNYA==
-X-Received: by 2002:adf:ef49:: with SMTP id c9mr10085990wrp.172.1610734588620;
-        Fri, 15 Jan 2021 10:16:28 -0800 (PST)
+        bh=5LH1gDNEpa04mVmMwrdsnTHPuZadf7vRIYykG237nqs=;
+        b=Ds8eFMi0p4q8X6he00RMA+k8SiyMZLNKWKSEWjmzMFx7Dr8pqIwtQ0aNoSmFL4ZgxN
+         KlpVD/kZ2MU0reXO2dx8+Z80jU0G/a7ouvhIbX5ESK2PjYPiN4FuMEyiFsC4XjqWxPMh
+         M3TTIpI8nrh50Gl3y8Q9i+v9PwwiMZ5VY9Hk49UvB9GxeiHy63pu6f22YjppjXCHEzCr
+         UF/LlooLfroSVQkXpg4qTmxeMtDbcdxUZTZz0pqdlvmuH7aZ6JbbrZG0t5NbOtQpG54q
+         w5/kqFuQV6S4+sHIXfhUDgqRlAGc7lxjRTlfrE8oF2EiLogfpBUYcBF9S8upc1DLAqTS
+         jdlA==
+X-Gm-Message-State: AOAM531KMY9gT/u8RkiScb9UHvNnp9TRIDU/tUYxqKqXsdIastlCuw94
+        tAlhTfUMKwExeZA2iw+7DU6yFA==
+X-Google-Smtp-Source: ABdhPJyKcUhDIemsychtub1SOGZ27ei+YoeVSS+BDyIF3O5uT+K79mKwPFMnaxURU7ZO+559zmOaNQ==
+X-Received: by 2002:adf:fdce:: with SMTP id i14mr14514805wrs.58.1610734589879;
+        Fri, 15 Jan 2021 10:16:29 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id b133sm14405979wme.33.2021.01.15.10.16.27
+        by smtp.gmail.com with ESMTPSA id b133sm14405979wme.33.2021.01.15.10.16.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:16:27 -0800 (PST)
+        Fri, 15 Jan 2021 10:16:29 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Eric Anholt <eric@anholt.net>,
-        Jesse Barnes <jesse.barnes@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Keith Packard <keithp@keithp.com>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 16/29] drm/gma500/cdv_intel_lvds: Demote unworthy headers to standard blocks and fix another
-Date:   Fri, 15 Jan 2021 18:15:48 +0000
-Message-Id: <20210115181601.3432599-17-lee.jones@linaro.org>
+Subject: [PATCH 17/29] drm/gma500/cdv_intel_dp: Demote one unworthy header fix another
+Date:   Fri, 15 Jan 2021 18:15:49 +0000
+Message-Id: <20210115181601.3432599-18-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210115181601.3432599-1-lee.jones@linaro.org>
 References: <20210115181601.3432599-1-lee.jones@linaro.org>
@@ -70,64 +70,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/gma500/cdv_intel_lvds.c:83: warning: Function parameter or member 'dev' not described in 'cdv_intel_lvds_set_backlight'
- drivers/gpu/drm/gma500/cdv_intel_lvds.c:83: warning: Function parameter or member 'level' not described in 'cdv_intel_lvds_set_backlight'
- drivers/gpu/drm/gma500/cdv_intel_lvds.c:107: warning: Function parameter or member 'dev' not described in 'cdv_intel_lvds_set_power'
- drivers/gpu/drm/gma500/cdv_intel_lvds.c:107: warning: Function parameter or member 'encoder' not described in 'cdv_intel_lvds_set_power'
- drivers/gpu/drm/gma500/cdv_intel_lvds.c:107: warning: Function parameter or member 'on' not described in 'cdv_intel_lvds_set_power'
- drivers/gpu/drm/gma500/cdv_intel_lvds.c:298: warning: Function parameter or member 'connector' not described in 'cdv_intel_lvds_get_modes'
- drivers/gpu/drm/gma500/cdv_intel_lvds.c:480: warning: Function parameter or member 'mode_dev' not described in 'cdv_intel_lvds_init'
+ drivers/gpu/drm/gma500/cdv_intel_dp.c:315: warning: Function parameter or member 'encoder' not described in 'is_edp'
+ drivers/gpu/drm/gma500/cdv_intel_dp.c:315: warning: Excess function parameter 'intel_dp' description in 'is_edp'
+ drivers/gpu/drm/gma500/cdv_intel_dp.c:1698: warning: Function parameter or member 'connector' not described in 'cdv_intel_dp_detect'
+ drivers/gpu/drm/gma500/cdv_intel_dp.c:1698: warning: Function parameter or member 'force' not described in 'cdv_intel_dp_detect'
 
 Cc: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Eric Anholt <eric@anholt.net>
-Cc: Jesse Barnes <jesse.barnes@intel.com>
+Cc: Keith Packard <keithp@keithp.com>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/gma500/cdv_intel_lvds.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/gma500/cdv_intel_dp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/gma500/cdv_intel_lvds.c b/drivers/gpu/drm/gma500/cdv_intel_lvds.c
-index b62368962c219..5bff7d9e3aa6e 100644
---- a/drivers/gpu/drm/gma500/cdv_intel_lvds.c
-+++ b/drivers/gpu/drm/gma500/cdv_intel_lvds.c
-@@ -74,7 +74,7 @@ static u32 cdv_intel_lvds_get_max_backlight(struct drm_device *dev)
- 	return retval;
- }
- 
--/**
-+/*
-  * Sets the backlight level.
-  *
-  * level backlight level, from 0 to cdv_intel_lvds_get_max_backlight().
-@@ -99,7 +99,7 @@ static void cdv_intel_lvds_set_backlight(struct drm_device *dev, int level)
- 	}
- }
- 
--/**
-+/*
-  * Sets the power state for the panel.
-  */
- static void cdv_intel_lvds_set_power(struct drm_device *dev,
-@@ -291,7 +291,7 @@ static void cdv_intel_lvds_mode_set(struct drm_encoder *encoder,
- 	REG_WRITE(PFIT_CONTROL, pfit_control);
- }
- 
--/**
-+/*
-  * Return the list of DDC modes if available, or the BIOS fixed mode otherwise.
-  */
- static int cdv_intel_lvds_get_modes(struct drm_connector *connector)
-@@ -471,6 +471,7 @@ static bool lvds_is_present_in_vbt(struct drm_device *dev,
+diff --git a/drivers/gpu/drm/gma500/cdv_intel_dp.c b/drivers/gpu/drm/gma500/cdv_intel_dp.c
+index bfd9a15d63b1a..6d3ada39ff867 100644
+--- a/drivers/gpu/drm/gma500/cdv_intel_dp.c
++++ b/drivers/gpu/drm/gma500/cdv_intel_dp.c
+@@ -306,7 +306,7 @@ static uint32_t dp_vswing_premph_table[] = {
+ };
  /**
-  * cdv_intel_lvds_init - setup LVDS connectors on this device
-  * @dev: drm device
-+ * @mode_dev: PSB mode device
+  * is_edp - is the given port attached to an eDP panel (either CPU or PCH)
+- * @intel_dp: DP struct
++ * @encoder: GMA encoder struct
   *
-  * Create the connector, register the LVDS DDC bus, and try to figure out what
-  * modes we can display on the LVDS panel (if present).
+  * If a CPU or PCH DP output is attached to an eDP panel, this function
+  * will return true, and false otherwise.
+@@ -1687,7 +1687,7 @@ static enum drm_connector_status cdv_dp_detect(struct gma_encoder *encoder)
+ 	return status;
+ }
+ 
+-/**
++/*
+  * Uses CRT_HOTPLUG_EN and CRT_HOTPLUG_STAT to detect DP connection.
+  *
+  * \return true if DP port is connected.
 -- 
 2.25.1
 
