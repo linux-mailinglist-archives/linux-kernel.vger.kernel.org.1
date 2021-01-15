@@ -2,142 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0462F833C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8363F2F8353
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:09:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbhAOSDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:03:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55347 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726434AbhAOSDV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:03:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610733714;
+        id S1729000AbhAOSJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:09:25 -0500
+Received: from mx.blih.net ([212.83.155.74]:46812 "EHLO mx.blih.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725818AbhAOSJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 13:09:25 -0500
+X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 Jan 2021 13:09:23 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bidouilliste.com;
+        s=mx; t=1610733721;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Gq10Kr5xse22ieR9b4aF/0j+yRbARGW5WK7gbGTTvCI=;
-        b=AACCP0VmzRAPiQcQ43ied0klwKAs4QBIgqTsiW81gqngo7pN+40H+8LGEWH+63exEV0WLq
-        gy1MHqrsd5FbUIA6Un02tVaW8LertZyhPHrtnpyAB9YPE3yISoL236MOdd0TNrsI42MDdo
-        srlZ9kb2Lt5KN7RuK+o6RfTcyyc6FyY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-280-gAhkavzzP3CD-QHWbBOljQ-1; Fri, 15 Jan 2021 13:01:50 -0500
-X-MC-Unique: gAhkavzzP3CD-QHWbBOljQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A11F6107ACF8;
-        Fri, 15 Jan 2021 18:01:47 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 90E4460BF3;
-        Fri, 15 Jan 2021 18:01:45 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 11:01:44 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-Subject: Re: [PATCH v2 1/2] vfio/iommu_type1: Populate full dirty when
- detach non-pinned group
-Message-ID: <20210115110144.61e3c843@omen.home.shazbot.org>
-In-Reply-To: <20210115092643.728-2-zhukeqian1@huawei.com>
-References: <20210115092643.728-1-zhukeqian1@huawei.com>
-        <20210115092643.728-2-zhukeqian1@huawei.com>
-MIME-Version: 1.0
+        bh=/ukk1KmMKOjY989GVPIe8alQEeaLXXaWWupQX1f4jk4=;
+        b=fI90d3/3h1q91CxwjnZxFLdnBD8nAaoOfyiAg+keL20VrXYOgJ24HaPHb2lrecBjOqU9pT
+        OqdDrnBC2O6divMS/3ZjgATR9MnlTQ0uLYpFSj3jwYz3ky0lpa4zsqfN79jeImfHz/0aF+
+        /3oA5rXvBDodNhSbCJaanO7u0ClqEL8=
+Received: from skull.home.blih.net (lfbn-idf2-1-745-114.w86-247.abo.wanadoo.fr [86.247.192.114])
+        by mx.blih.net (OpenSMTPD) with ESMTPSA id e912b7b2 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Fri, 15 Jan 2021 18:02:01 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 19:02:01 +0100
+From:   Emmanuel Vadot <manu@bidouilliste.com>
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        devicetree@vger.kernel.org, bcousson@baylibre.com,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>
+Subject: Re: [PATCH v4 2/2] ARM: dts: am33xx-l4: change #pinctrl-cells from
+ 1 to 2
+Message-Id: <20210115190201.9273b637a7f967e7e55bc740@bidouilliste.com>
+In-Reply-To: <20200701013320.130441-3-drew@beagleboard.org>
+References: <20200701013320.130441-1-drew@beagleboard.org>
+        <20200701013320.130441-3-drew@beagleboard.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; amd64-portbld-freebsd13.0)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 17:26:42 +0800
-Keqian Zhu <zhukeqian1@huawei.com> wrote:
 
-> If a group with non-pinned-page dirty scope is detached with dirty
-> logging enabled, we should fully populate the dirty bitmaps at the
-> time it's removed since we don't know the extent of its previous DMA,
-> nor will the group be present to trigger the full bitmap when the user
-> retrieves the dirty bitmap.
+ Hello Drew,
+
+On Wed,  1 Jul 2020 03:33:20 +0200
+Drew Fustini <drew@beagleboard.org> wrote:
+
+> Increase #pinctrl-cells to 2 so that mux and conf be kept separate. This
+> requires the AM33XX_PADCONF macro in omap.h to also be modified to keep pin
+> conf and pin mux values separate.
 > 
-> Fixes: d6a4c185660c ("vfio iommu: Implementation of ioctl for dirty pages tracking")
-> Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
 > ---
->  drivers/vfio/vfio_iommu_type1.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
+>  arch/arm/boot/dts/am33xx-l4.dtsi   | 2 +-
+>  include/dt-bindings/pinctrl/omap.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 0b4dedaa9128..4e82b9a3440f 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -236,6 +236,19 @@ static void vfio_dma_populate_bitmap(struct vfio_dma *dma, size_t pgsize)
->  	}
->  }
+> diff --git a/arch/arm/boot/dts/am33xx-l4.dtsi b/arch/arm/boot/dts/am33xx-l4.dtsi
+> index a9cbefc80c0c..3141590e5889 100644
+> --- a/arch/arm/boot/dts/am33xx-l4.dtsi
+> +++ b/arch/arm/boot/dts/am33xx-l4.dtsi
+> @@ -278,7 +278,7 @@ scm: scm@0 {
+>  				am33xx_pinmux: pinmux@800 {
+>  					compatible = "pinctrl-single";
+>  					reg = <0x800 0x238>;
+> -					#pinctrl-cells = <1>;
+> +					#pinctrl-cells = <2>;
+>  					pinctrl-single,register-width = <32>;
+>  					pinctrl-single,function-mask = <0x7f>;
+>  				};
+> diff --git a/include/dt-bindings/pinctrl/omap.h b/include/dt-bindings/pinctrl/omap.h
+> index 625718042413..2d2a8c737822 100644
+> --- a/include/dt-bindings/pinctrl/omap.h
+> +++ b/include/dt-bindings/pinctrl/omap.h
+> @@ -65,7 +65,7 @@
+>  #define DM814X_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
+>  #define DM816X_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
+>  #define AM33XX_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
+> -#define AM33XX_PADCONF(pa, dir, mux)	OMAP_IOPAD_OFFSET((pa), 0x0800) ((dir) | (mux))
+> +#define AM33XX_PADCONF(pa, conf, mux)	OMAP_IOPAD_OFFSET((pa), 0x0800) (conf) (mux)
 >  
-> +static void vfio_iommu_populate_bitmap_full(struct vfio_iommu *iommu)
-> +{
-> +	struct rb_node *n;
-> +	unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
-> +
-> +	for (n = rb_first(&iommu->dma_list); n; n = rb_next(n)) {
-> +		struct vfio_dma *dma = rb_entry(n, struct vfio_dma, node);
-> +
-> +		if (dma->iommu_mapped)
-> +			bitmap_set(dma->bitmap, 0, dma->size >> pgshift);
-> +	}
-> +}
-> +
->  static int vfio_dma_bitmap_alloc_all(struct vfio_iommu *iommu, size_t pgsize)
->  {
->  	struct rb_node *n;
-> @@ -2415,8 +2428,11 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->  	 * Removal of a group without dirty tracking may allow the iommu scope
->  	 * to be promoted.
->  	 */
-> -	if (update_dirty_scope)
-> +	if (update_dirty_scope) {
->  		update_pinned_page_dirty_scope(iommu);
-> +		if (iommu->dirty_page_tracking)
-> +			vfio_iommu_populate_bitmap_full(iommu);
-> +	}
->  	mutex_unlock(&iommu->lock);
->  }
->  
+>  /*
+>   * Macros to allow using the offset from the padconf physical address
+> -- 
+> 2.25.1
 
-This doesn't do the right thing.  This marks the bitmap dirty if:
+ Based on the bindings doc a value of 2 is only acceptable if one uses
+pinctrl-single,bits but all the am33xx pins still uses
+pinctrl-single,pins.
+ I noticed this because this breaks FreeBSD when I tried with 5.9 dts.
 
- * The detached group dirty scope was not limited to pinned pages
-
- AND
-
- * Dirty tracking is enabled
-
- AND
-
- * The vfio_dma is *currently* (ie. after the detach) iommu_mapped
-
-We need to mark the bitmap dirty based on whether the vfio_dma *was*
-iommu_mapped by the group that is now detached.  Thanks,
-
-Alex
-
+-- 
+Emmanuel Vadot <manu@bidouilliste.com> <manu@freebsd.org>
