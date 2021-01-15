@@ -2,143 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D3C2F7FF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF922F8014
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733201AbhAOPqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:46:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:43290 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725910AbhAOPqQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:46:16 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 457CBD6E;
-        Fri, 15 Jan 2021 07:45:30 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.41.13])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 70C153F70D;
-        Fri, 15 Jan 2021 07:45:24 -0800 (PST)
-Date:   Fri, 15 Jan 2021 15:45:20 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: [PATCH v3 4/4] arm64: mte: Optimize mte_assign_mem_tag_range()
-Message-ID: <20210115154520.GD44111@C02TD0UTHF1T.local>
-References: <20210115120043.50023-1-vincenzo.frascino@arm.com>
- <20210115120043.50023-5-vincenzo.frascino@arm.com>
+        id S1732522AbhAOPxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:53:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732171AbhAOPw7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 10:52:59 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E52C061799
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 07:51:45 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l0RNt-0003NK-0o; Fri, 15 Jan 2021 16:51:33 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l0RNr-0008LH-RE; Fri, 15 Jan 2021 16:51:31 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>
+Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        soc@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: [PATCH v2 0/7] Remove ARM platform efm32
+Date:   Fri, 15 Jan 2021 16:51:23 +0100
+Message-Id: <20210115155130.185010-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210115120043.50023-5-vincenzo.frascino@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 12:00:43PM +0000, Vincenzo Frascino wrote:
-> mte_assign_mem_tag_range() is called on production KASAN HW hot
-> paths. It makes sense to optimize it in an attempt to reduce the
-> overhead.
-> 
-> Optimize mte_assign_mem_tag_range() based on the indications provided at
-> [1].
+From: Uwe Kleine-König <uwe@kleine-koenig.org>
 
-... what exactly is the optimization?
+Hello,
 
-I /think/ you're just trying to have it inlined, but you should mention
-that explicitly.
+compared to v1 (Message-Id:
+20210114151630.128830-1-u.kleine-koenig@pengutronix.de) I did the following changes:
 
-> 
-> [1] https://lore.kernel.org/r/CAAeHK+wCO+J7D1_T89DG+jJrPLk3X9RsGFKxJGd0ZcUFjQT-9Q@mail.gmail.com/
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> ---
->  arch/arm64/include/asm/mte.h | 26 +++++++++++++++++++++++++-
->  arch/arm64/lib/mte.S         | 15 ---------------
->  2 files changed, 25 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-> index 1a715963d909..9730f2b07b79 100644
-> --- a/arch/arm64/include/asm/mte.h
-> +++ b/arch/arm64/include/asm/mte.h
-> @@ -49,7 +49,31 @@ long get_mte_ctrl(struct task_struct *task);
->  int mte_ptrace_copy_tags(struct task_struct *child, long request,
->  			 unsigned long addr, unsigned long data);
->  
-> -void mte_assign_mem_tag_range(void *addr, size_t size);
-> +static inline void mte_assign_mem_tag_range(void *addr, size_t size)
-> +{
-> +	u64 _addr = (u64)addr;
-> +	u64 _end = _addr + size;
-> +
-> +	/*
-> +	 * This function must be invoked from an MTE enabled context.
-> +	 *
-> +	 * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
-> +	 * size must be non-zero and MTE_GRANULE_SIZE aligned.
-> +	 */
-> +	do {
-> +		/*
-> +		 * 'asm volatile' is required to prevent the compiler to move
-> +		 * the statement outside of the loop.
-> +		 */
-> +		asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
-> +			     :
-> +			     : "r" (_addr)
-> +			     : "memory");
-> +
-> +		_addr += MTE_GRANULE_SIZE;
-> +	} while (_addr < _end);
+ - add "serial" to the summary line of the patch removing the serial
+   driver
+ - actually remove the serial driver in the patch that claims to do this
+   instead of patch 1.
 
-Is there any chance that this can be used for the last bytes of the
-virtual address space? This might need to change to `_addr == _end` if
-that is possible, otherwise it'll terminate early in that case.
+On irc Arnd signalled to want to merge the first patch. As there are no
+hard interdependencies between these, I think the best approach is for the
+individual maintainers to pick up the patches they are responsible for.
 
-> +}
+Thanks and best regards,
+Uwe
 
-What does the code generation look like for this, relative to the
-assembly version?
+Uwe Kleine-König (7):
+  ARM: drop efm32 platform
+  clk: Drop unused efm32gg driver
+  clocksource: Drop unused efm32 timer code
+  spi: Drop unused efm32 bus driver
+  i2c: Drop unused efm32 bus driver
+  tty: serial: Drop unused efm32 serial driver
+  MAINTAINERS: Remove deleted platform efm32
 
-Thanks,
-Mark.
+ MAINTAINERS                              |   7 -
+ arch/arm/Kconfig                         |  10 +-
+ arch/arm/Kconfig.debug                   |  17 -
+ arch/arm/Makefile                        |   1 -
+ arch/arm/boot/dts/Makefile               |   2 -
+ arch/arm/boot/dts/efm32gg-dk3750.dts     |  88 ---
+ arch/arm/boot/dts/efm32gg.dtsi           | 177 -----
+ arch/arm/configs/efm32_defconfig         |  98 ---
+ arch/arm/include/debug/efm32.S           |  45 --
+ arch/arm/mach-efm32/Makefile             |   2 -
+ arch/arm/mach-efm32/Makefile.boot        |   4 -
+ arch/arm/mach-efm32/dtmachine.c          |  16 -
+ arch/arm/mm/Kconfig                      |   1 -
+ drivers/clk/Makefile                     |   1 -
+ drivers/clk/clk-efm32gg.c                |  84 ---
+ drivers/clocksource/Kconfig              |   9 -
+ drivers/clocksource/Makefile             |   1 -
+ drivers/clocksource/timer-efm32.c        | 278 --------
+ drivers/i2c/busses/Kconfig               |   7 -
+ drivers/i2c/busses/Makefile              |   1 -
+ drivers/i2c/busses/i2c-efm32.c           | 469 -------------
+ drivers/spi/Kconfig                      |   7 -
+ drivers/spi/Makefile                     |   1 -
+ drivers/spi/spi-efm32.c                  | 462 ------------
+ drivers/tty/serial/Kconfig               |  13 -
+ drivers/tty/serial/Makefile              |   1 -
+ drivers/tty/serial/efm32-uart.c          | 852 -----------------------
+ include/linux/platform_data/efm32-spi.h  |  15 -
+ include/linux/platform_data/efm32-uart.h |  19 -
+ include/uapi/linux/serial_core.h         |   3 -
+ 30 files changed, 1 insertion(+), 2690 deletions(-)
+ delete mode 100644 arch/arm/boot/dts/efm32gg-dk3750.dts
+ delete mode 100644 arch/arm/boot/dts/efm32gg.dtsi
+ delete mode 100644 arch/arm/configs/efm32_defconfig
+ delete mode 100644 arch/arm/include/debug/efm32.S
+ delete mode 100644 arch/arm/mach-efm32/Makefile
+ delete mode 100644 arch/arm/mach-efm32/Makefile.boot
+ delete mode 100644 arch/arm/mach-efm32/dtmachine.c
+ delete mode 100644 drivers/clk/clk-efm32gg.c
+ delete mode 100644 drivers/clocksource/timer-efm32.c
+ delete mode 100644 drivers/i2c/busses/i2c-efm32.c
+ delete mode 100644 drivers/spi/spi-efm32.c
+ delete mode 100644 drivers/tty/serial/efm32-uart.c
+ delete mode 100644 include/linux/platform_data/efm32-spi.h
+ delete mode 100644 include/linux/platform_data/efm32-uart.h
 
-> +
->  
->  #else /* CONFIG_ARM64_MTE */
->  
-> diff --git a/arch/arm64/lib/mte.S b/arch/arm64/lib/mte.S
-> index 9e1a12e10053..a0a650451510 100644
-> --- a/arch/arm64/lib/mte.S
-> +++ b/arch/arm64/lib/mte.S
-> @@ -150,18 +150,3 @@ SYM_FUNC_START(mte_restore_page_tags)
->  	ret
->  SYM_FUNC_END(mte_restore_page_tags)
->  
-> -/*
-> - * Assign allocation tags for a region of memory based on the pointer tag
-> - *   x0 - source pointer
-> - *   x1 - size
-> - *
-> - * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
-> - * size must be non-zero and MTE_GRANULE_SIZE aligned.
-> - */
-> -SYM_FUNC_START(mte_assign_mem_tag_range)
-> -1:	stg	x0, [x0]
-> -	add	x0, x0, #MTE_GRANULE_SIZE
-> -	subs	x1, x1, #MTE_GRANULE_SIZE
-> -	b.gt	1b
-> -	ret
-> -SYM_FUNC_END(mte_assign_mem_tag_range)
-> -- 
-> 2.30.0
-> 
+
+base-commit: 5c8fe583cce542aa0b84adc939ce85293de36e5e
+-- 
+2.29.2
+
