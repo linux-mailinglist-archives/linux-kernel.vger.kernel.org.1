@@ -2,217 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926AA2F8767
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FCB2F874C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbhAOVQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 16:16:49 -0500
-Received: from mga18.intel.com ([134.134.136.126]:45764 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726032AbhAOVQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 16:16:48 -0500
-IronPort-SDR: r5ipUybHlY3EcMBvelk83ESCGpfwhlp5fwAmgg7suYc/zhbDAZgqFOzlWeguuSf82bI6Noifi+
- YYInTmu1GFTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9865"; a="166277110"
-X-IronPort-AV: E=Sophos;i="5.79,350,1602572400"; 
-   d="scan'208";a="166277110"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 13:15:15 -0800
-IronPort-SDR: 40vyABUWaWhyy4NQfmGRrBAid59rOdBgKOB6fF8wFnweKcu15M6rqOW4vTMcaiD8N7j/ZJytLG
- Vm5m/mct4GIg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,350,1602572400"; 
-   d="scan'208";a="401418976"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by fmsmga002.fm.intel.com with ESMTP; 15 Jan 2021 13:15:15 -0800
-From:   "Chang S. Bae" <chang.seok.bae@intel.com>
-To:     bp@suse.de, tglx@linutronix.de, mingo@kernel.org, luto@kernel.org,
-        x86@kernel.org
-Cc:     len.brown@intel.com, dave.hansen@intel.com, hjl.tools@gmail.com,
-        Dave.Martin@arm.com, jannh@google.com, mpe@ellerman.id.au,
-        tony.luck@intel.com, ravi.v.shankar@intel.com,
-        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, Borislav Petkov <bp@alien8.de>,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v4 4/4] selftest/x86/signal: Include test cases for validating sigaltstack
-Date:   Fri, 15 Jan 2021 13:10:38 -0800
-Message-Id: <20210115211038.2072-5-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210115211038.2072-1-chang.seok.bae@intel.com>
-References: <20210115211038.2072-1-chang.seok.bae@intel.com>
+        id S1729312AbhAOVOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 16:14:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726434AbhAOVOH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 16:14:07 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AB8C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:13:27 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id l200so10969465oig.9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:13:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DS/wgirre7NaK0TzZMFF79cjJGDSA1mZl1Rm2cIIFm0=;
+        b=Q3aZA16gTTV62EJQsAEB5xifS2dA3X0GFBQR0debjBrxqymblVxAkl01BanSJq316O
+         z/ey47KF1DkpD7EuihxIeZPBTZbpJKh8ScixJUveKJlC90BH4O8y4iAi0sW3HM8BDE/e
+         Z/eQcpta2KMR+fIbhqWO9VOMmAIRd1ah2vwjA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DS/wgirre7NaK0TzZMFF79cjJGDSA1mZl1Rm2cIIFm0=;
+        b=PMOdfRqlyq7dOD7pUp7AMwGDIaOw/4FWXJ7o+eMsSSFjCG8IdzctZB+FdeFf1JGvuY
+         XKNC556BqXgEcmOUfo6lt70mGeb12jAKgTDyTutuCqAUv3jb5RUGv3F/U5HseujCgbfe
+         TvF4LEusZUf8UEh+gpxSB8owLGQt6sGn+oZ9Sar9bKKV6uZl7yG9hGT9WNtQDz0UAl2F
+         TSLq11Ab3YBarJH3EEE3tUZPcNFRqDqyWrj/8dV/NzeYY36p1LJF4GZlu6n/iNcsi6LO
+         huv7bpUsvvgflnymDEpLVwLnSyY/ygb6dXtAVcpXd7EAh5nIlnDSNt2JObbV3pKClQgN
+         VHtQ==
+X-Gm-Message-State: AOAM531HHCmFImV3SowypWRxIqo75JrQJsNIeiiWhKgaSikXrVDwRIxb
+        rIlixGdKQaYnIoFqE2sVn8L4jA==
+X-Google-Smtp-Source: ABdhPJwIImM70d8xTaZFoBIAZAZAynUPj1dipPtwfWPbAbtMuM5wsmbNWRm+dszp8jh8esP+Dr8yFA==
+X-Received: by 2002:aca:5b08:: with SMTP id p8mr7046257oib.23.1610745207041;
+        Fri, 15 Jan 2021 13:13:27 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id z9sm2052530otj.67.2021.01.15.13.13.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Jan 2021 13:13:26 -0800 (PST)
+Subject: Re: [PATCH 5.10 000/103] 5.10.8-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20210115122006.047132306@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <64c441ee-1010-7db0-fcce-3483b2da1bf8@linuxfoundation.org>
+Date:   Fri, 15 Jan 2021 14:13:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The test measures the kernel's signal delivery with different (enough vs.
-insufficient) stack sizes.
+On 1/15/21 5:26 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.8 release.
+> There are 103 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 17 Jan 2021 12:19:42 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.8-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Len Brown <len.brown@intel.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
-Changes from v3:
-* Revised test messages again (Borislav Petkov)
+Compiled and booted on my test system. No dmesg regressions.
 
-Changes from v2:
-* Revised test messages (Borislav Petkov)
----
- tools/testing/selftests/x86/Makefile      |   2 +-
- tools/testing/selftests/x86/sigaltstack.c | 128 ++++++++++++++++++++++
- 2 files changed, 129 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/x86/sigaltstack.c
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
-index 6703c7906b71..e0c52e5ab49e 100644
---- a/tools/testing/selftests/x86/Makefile
-+++ b/tools/testing/selftests/x86/Makefile
-@@ -13,7 +13,7 @@ CAN_BUILD_WITH_NOPIE := $(shell ./check_cc.sh $(CC) trivial_program.c -no-pie)
- TARGETS_C_BOTHBITS := single_step_syscall sysret_ss_attrs syscall_nt test_mremap_vdso \
- 			check_initial_reg_state sigreturn iopl ioperm \
- 			test_vdso test_vsyscall mov_ss_trap \
--			syscall_arg_fault fsgsbase_restore
-+			syscall_arg_fault fsgsbase_restore sigaltstack
- TARGETS_C_32BIT_ONLY := entry_from_vm86 test_syscall_vdso unwind_vdso \
- 			test_FCMOV test_FCOMI test_FISTTP \
- 			vdso_restorer
-diff --git a/tools/testing/selftests/x86/sigaltstack.c b/tools/testing/selftests/x86/sigaltstack.c
-new file mode 100644
-index 000000000000..f689af75e979
---- /dev/null
-+++ b/tools/testing/selftests/x86/sigaltstack.c
-@@ -0,0 +1,128 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#define _GNU_SOURCE
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdbool.h>
-+#include <string.h>
-+#include <err.h>
-+#include <errno.h>
-+#include <limits.h>
-+#include <sys/mman.h>
-+#include <sys/auxv.h>
-+#include <sys/prctl.h>
-+#include <sys/resource.h>
-+#include <setjmp.h>
-+
-+/* sigaltstack()-enforced minimum stack */
-+#define ENFORCED_MINSIGSTKSZ	2048
-+
-+#ifndef AT_MINSIGSTKSZ
-+#  define AT_MINSIGSTKSZ	51
-+#endif
-+
-+static int nerrs;
-+
-+static bool sigalrm_expected;
-+
-+static unsigned long at_minstack_size;
-+
-+static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
-+		       int flags)
-+{
-+	struct sigaction sa;
-+
-+	memset(&sa, 0, sizeof(sa));
-+	sa.sa_sigaction = handler;
-+	sa.sa_flags = SA_SIGINFO | flags;
-+	sigemptyset(&sa.sa_mask);
-+	if (sigaction(sig, &sa, 0))
-+		err(1, "sigaction");
-+}
-+
-+static void clearhandler(int sig)
-+{
-+	struct sigaction sa;
-+
-+	memset(&sa, 0, sizeof(sa));
-+	sa.sa_handler = SIG_DFL;
-+	sigemptyset(&sa.sa_mask);
-+	if (sigaction(sig, &sa, 0))
-+		err(1, "sigaction");
-+}
-+
-+static int setup_altstack(void *start, unsigned long size)
-+{
-+	stack_t ss;
-+
-+	memset(&ss, 0, sizeof(ss));
-+	ss.ss_size = size;
-+	ss.ss_sp = start;
-+
-+	return sigaltstack(&ss, NULL);
-+}
-+
-+static jmp_buf jmpbuf;
-+
-+static void sigsegv(int sig, siginfo_t *info, void *ctx_void)
-+{
-+	if (sigalrm_expected) {
-+		printf("[FAIL]\tWrong signal delivered: SIGSEGV (expected SIGALRM).");
-+		nerrs++;
-+	} else {
-+		printf("[OK]\tSIGSEGV signal delivered.\n");
-+	}
-+
-+	siglongjmp(jmpbuf, 1);
-+}
-+
-+static void sigalrm(int sig, siginfo_t *info, void *ctx_void)
-+{
-+	if (!sigalrm_expected) {
-+		printf("[FAIL]\tWrong signal delivered: SIGALRM (expected SIGSEGV).");
-+		nerrs++;
-+	} else {
-+		printf("[OK]\tSIGALRM signal delivered.\n");
-+	}
-+}
-+
-+static void test_sigaltstack(void *altstack, unsigned long size)
-+{
-+	if (setup_altstack(altstack, size))
-+		err(1, "sigaltstack()");
-+
-+	sigalrm_expected = (size > at_minstack_size) ? true : false;
-+
-+	sethandler(SIGSEGV, sigsegv, 0);
-+	sethandler(SIGALRM, sigalrm, SA_ONSTACK);
-+
-+	if (!sigsetjmp(jmpbuf, 1)) {
-+		printf("[RUN]\tTest an alternate signal stack of %ssufficient size.\n",
-+		       sigalrm_expected ? "" : "in");
-+		printf("\tRaise SIGALRM. %s is expected to be delivered.\n",
-+		       sigalrm_expected ? "It" : "SIGSEGV");
-+		raise(SIGALRM);
-+	}
-+
-+	clearhandler(SIGALRM);
-+	clearhandler(SIGSEGV);
-+}
-+
-+int main(void)
-+{
-+	void *altstack;
-+
-+	at_minstack_size = getauxval(AT_MINSIGSTKSZ);
-+
-+	altstack = mmap(NULL, at_minstack_size + SIGSTKSZ, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0);
-+	if (altstack == MAP_FAILED)
-+		err(1, "mmap()");
-+
-+	if ((ENFORCED_MINSIGSTKSZ + 1) < at_minstack_size)
-+		test_sigaltstack(altstack, ENFORCED_MINSIGSTKSZ + 1);
-+
-+	test_sigaltstack(altstack, at_minstack_size + SIGSTKSZ);
-+
-+	return nerrs == 0 ? 0 : 1;
-+}
--- 
-2.17.1
+thanks,
+-- Shuah
 
