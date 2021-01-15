@@ -2,138 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D12C2F71A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 05:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 608302F71AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 05:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729009AbhAOEmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 23:42:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726032AbhAOEmS (ORCPT
+        id S1731343AbhAOEpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 23:45:18 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:36109 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726032AbhAOEpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 23:42:18 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F74EC061575;
-        Thu, 14 Jan 2021 20:41:38 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id w1so5639242pjc.0;
-        Thu, 14 Jan 2021 20:41:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X5IUJFfkhyOjUeQe/gYauu/2sKrd/DEbUds1gC+B5RU=;
-        b=DpDvfQf3vyJbpzghRJ8Cew7bzqpKpLzkvro4EJtc49amvTSAelFioDvmVj1BFNrFcN
-         vpotcO2IAcg8vzQ1dZqwVLHvDHERBOGOjZ/1eQLboSDqY+YHQ7ZLtNnkM0kXqHEU8sdy
-         t+rgEfzXJ900nUH2ET41LCxgZ00KFeW33M0etBMG/M8ssVzO9BgybOlF8uobyQ4SnU3E
-         189WhrVboNLOjebfz/Qf+s+xUQqcuCof5n7aGc8bnsNWK/HsU8LgYKnqyVV7YrHg5wnE
-         LMcth4tbTxbGxECyb6GG/fA6LBkSeWHaiU6ssOfmQWLa7vu+ldc8M3rFpTOkZB03o4Nu
-         YlCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X5IUJFfkhyOjUeQe/gYauu/2sKrd/DEbUds1gC+B5RU=;
-        b=FGRJednIY5RB8d6ounWrzthaRl9o6MFZpge4VkM9w8eaxybTOn14ewpng7kKWiC888
-         Uy0re1znEKnlQ1Ooj4K+qUJevoj7R6j35G6vxeJfvTG6ALGGDSrkp+nRpKCSCLGfCJ3P
-         G4KwT4uUIKr04uzanNzXOn0kiHMHnOqidHYo8bDPPb/ZN1w4RsdNcNmLkkcANNjybu+R
-         WaaaCRcULwFkEd0ZWxauw87hNUmQ4hFkAtAN5ZdsIhNQ15xnsmsL9mJsnZfsPvPTBw4Y
-         inPp6Qu+gDR0MSc+bljlG9lbPbSxtEQDumHSbTydgWJhxuQg7WMyzIl4r9cKEl+rZBQ8
-         9Z7g==
-X-Gm-Message-State: AOAM532GsGNgVMRmSjra5OkQmpHVu3LL7gCs7ZLLPLlrGJBSlEG4tfuL
-        RlXsjskUYX8Z62y/AG9tAwQ=
-X-Google-Smtp-Source: ABdhPJzVhnD2uVEfIuermtvP0wV3QoRtfc7kohfEt+M9NsHkXTbBJQJGw/HgElaYrtHLps9wW83qgg==
-X-Received: by 2002:a17:90a:ae02:: with SMTP id t2mr8458110pjq.169.1610685697862;
-        Thu, 14 Jan 2021 20:41:37 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id r185sm6358600pfc.53.2021.01.14.20.41.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 20:41:37 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     kuba@kernel.org
-Cc:     roopa@nvidia.com, nikolay@nvidia.com, davem@davemloft.net,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH v3 net-next] net: bridge: check vlan with eth_type_vlan() method
-Date:   Thu, 14 Jan 2021 20:41:31 -0800
-Message-Id: <20210115044131.6039-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 14 Jan 2021 23:45:17 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7CF975C00AE;
+        Thu, 14 Jan 2021 23:44:31 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 14 Jan 2021 23:44:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=who-t.net; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=HddAvGpngy7gMAMoANW+9cHBGjv
+        IshbqLk0/grNgfO4=; b=f1ayHlkTp6zhZkh/s/h43Koq7wd4JoK3+IVZAigx4Ae
+        G3x4XHAb/4uiqz6Kn9DHJkFM74pARaqlMBS/z0bDTqGWHp2mQgbpldq2jEt8jr54
+        zrHhr0eUFmBbE8sk9++0hgk6MDJCg+QET0hXYjKsBbswJInrClrHQwDKv0h7eroz
+        8N5Gg/92K1blTFv1qO4lrzRqHK9PVQ4Yn+apQ0vmVofu9nRrkmaBnHX7uYGyQKyn
+        sXe8YK4Nx77+05Es06e3j+jqDw+Bi6aWDUH/e7jejjA9ePX2l/zhBWDVYnfGXFxx
+        AXv6TQqey7uKEq1wqXIONQo1XvQ3p7cnDYsvNlkwg8w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=HddAvG
+        pngy7gMAMoANW+9cHBGjvIshbqLk0/grNgfO4=; b=ljoezSl2KpGUor+YfKT9IP
+        X5BcxRVtqxXZGG+prpKLlHIY/X6Jt9TyBx8rsz+UBg8BexEeCHsAMMLs0+pmbUsZ
+        1pMrbGKFWakn9MBuRSguNQVQEAmXyks/5LhPS1tmLgYmWLdGGHXwIguK1y5zveH7
+        uCz7AwHFyQ2eXpVpdSVeZsJV6gJuXkkDbauo8E8BAAuYTZyHE3rQgfy7Op/kg3A/
+        afmUUQgvgbFZmrEy7vZKirM8hbFz+T96tQk8wHUYiw+egLPcjCapdHRIB967RRhD
+        OjsT+RjuA830G/cm5T+OmYEcGCpa2kmj/xOXLB/iDVsQAuiz9Okp4QjgcfDXHFww
+        ==
+X-ME-Sender: <xms:rx0BYBZMPtFobrdHP3sfWHMnLuX_9slhfqN2b9V8kkn0uC0ZSG4CBQ>
+    <xme:rx0BYIZFIJA7o7l7Xt4of5mdJ96vtprc2akOjuKEdrhZJDDSURKnlcL9CvjOTJUQ0
+    xf70_NqsbgSzjavOig>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtddugdejgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheprfgvthgvrhcu
+    jfhuthhtvghrvghruceophgvthgvrhdrhhhuthhtvghrvghrseifhhhoqdhtrdhnvghtqe
+    enucggtffrrghtthgvrhhnpeehhfehfffgheelgeeuudelhefgvdefveekudevjeevjeev
+    vefggefguddufeeuveenucfkphepuddujedrvddtrdejuddrjeefnecuvehluhhsthgvrh
+    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepphgvthgvrhdrhhhuthhtvghr
+    vghrseifhhhoqdhtrdhnvght
+X-ME-Proxy: <xmx:rx0BYD9WHJ8bYi1BVyRdd5L3WDQ1OR4ziIh9cgk-eVC3T_SLMFqZCg>
+    <xmx:rx0BYPq-hJ1fHkUKgf6UW29Va5XgY7W9viOYyq-GasFDAcI6yNXoVw>
+    <xmx:rx0BYMqw1WvDKyWwMdqe-w6FqFzQJhLP7pmqr0kI3BCIfDU3am4fvA>
+    <xmx:rx0BYHW6XkoanXZs0xaMB6mkTunYLgjWIpSimcO_T6r71g1jkw5qjw>
+Received: from koala (117-20-71-73.751447.bne.nbn.aussiebb.net [117.20.71.73])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 34ADB1080057;
+        Thu, 14 Jan 2021 23:44:28 -0500 (EST)
+Date:   Fri, 15 Jan 2021 14:44:25 +1000
+From:   Peter Hutterer <peter.hutterer@who-t.net>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        seobrien@chromium.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: hid-input: avoid splitting keyboard, system and
+ consumer controls
+Message-ID: <20210115044425.GA1395024@koala>
+References: <X//jjawwbm8FxbQU@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X//jjawwbm8FxbQU@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On Wed, Jan 13, 2021 at 10:24:13PM -0800, Dmitry Torokhov wrote:
+> A typical USB keyboard usually splits its keys into several reports:
+> 
+> - one for the basic alphanumeric keys, modifier keys, F<n> keys, six pack
+>   keys and keypad. This report's application is normally listed as
+>   GenericDesktop.Keyboard
+> - a GenericDesktop.SystemControl report for the system control keys, such
+>   as power and sleep
+> - Consumer.ConsumerControl report for multimedia (forward, rewind,
+>   play/pause, mute, etc) and other extended keys.
+> - additional output, vendor specific, and feature reports
+> 
+> Splitting each report into a separate input device is wasteful and even
+> hurts userspace as it makes it harder to determine the true capabilities
+> (set of available keys) of a keyboard, so let's adjust application
+> matching to merge system control and consumer control reports with
+> keyboard report, if one has already been processed.
+> 
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Replace some checks for ETH_P_8021Q and ETH_P_8021AD with
-eth_type_vlan().
+Acked-by: Peter Hutterer <peter.hutterer@who-t.net>
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
-v3:
-- fix compile warning in br_vlan_set_proto() by casting 'val' to
-  be16.
+I think, let's see if there's any fallout from that :)
 
-v2:
-- use eth_type_vlan() in br_validate() and __br_vlan_set_proto()
-  too.
----
- net/bridge/br_forward.c |  3 +--
- net/bridge/br_netlink.c | 11 +++--------
- net/bridge/br_vlan.c    |  2 +-
- 3 files changed, 5 insertions(+), 11 deletions(-)
-
-diff --git a/net/bridge/br_forward.c b/net/bridge/br_forward.c
-index e28ffadd1371..6e9b049ae521 100644
---- a/net/bridge/br_forward.c
-+++ b/net/bridge/br_forward.c
-@@ -39,8 +39,7 @@ int br_dev_queue_push_xmit(struct net *net, struct sock *sk, struct sk_buff *skb
- 	br_drop_fake_rtable(skb);
- 
- 	if (skb->ip_summed == CHECKSUM_PARTIAL &&
--	    (skb->protocol == htons(ETH_P_8021Q) ||
--	     skb->protocol == htons(ETH_P_8021AD))) {
-+	    eth_type_vlan(skb->protocol)) {
- 		int depth;
- 
- 		if (!__vlan_get_protocol(skb, skb->protocol, &depth))
-diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
-index 49700ce0e919..15cfcad846c5 100644
---- a/net/bridge/br_netlink.c
-+++ b/net/bridge/br_netlink.c
-@@ -1096,14 +1096,9 @@ static int br_validate(struct nlattr *tb[], struct nlattr *data[],
- 		return 0;
- 
- #ifdef CONFIG_BRIDGE_VLAN_FILTERING
--	if (data[IFLA_BR_VLAN_PROTOCOL]) {
--		switch (nla_get_be16(data[IFLA_BR_VLAN_PROTOCOL])) {
--		case htons(ETH_P_8021Q):
--		case htons(ETH_P_8021AD):
--			break;
--		default:
--			return -EPROTONOSUPPORT;
--		}
-+	if (data[IFLA_BR_VLAN_PROTOCOL] &&
-+	    !eth_type_vlan(nla_get_be16(data[IFLA_BR_VLAN_PROTOCOL]))) {
-+		return -EPROTONOSUPPORT;
- 	}
- 
- 	if (data[IFLA_BR_VLAN_DEFAULT_PVID]) {
-diff --git a/net/bridge/br_vlan.c b/net/bridge/br_vlan.c
-index 701cad646b20..bb2909738518 100644
---- a/net/bridge/br_vlan.c
-+++ b/net/bridge/br_vlan.c
-@@ -917,7 +917,7 @@ int __br_vlan_set_proto(struct net_bridge *br, __be16 proto)
- 
- int br_vlan_set_proto(struct net_bridge *br, unsigned long val)
- {
--	if (val != ETH_P_8021Q && val != ETH_P_8021AD)
-+	if (!eth_type_vlan(htons(val)))
- 		return -EPROTONOSUPPORT;
- 
- 	return __br_vlan_set_proto(br, htons(val));
--- 
-2.25.1
-
+Cheers,
+   Peter
