@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4BE2F856A
+	by mail.lfdr.de (Postfix) with ESMTP id DB93A2F856B
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388125AbhAOT2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 14:28:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44336 "EHLO
+        id S2388179AbhAOT33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 14:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728293AbhAOT2q (ORCPT
+        with ESMTP id S1728293AbhAOT32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 14:28:46 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3078EC061757;
-        Fri, 15 Jan 2021 11:28:06 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id p14so12795325qke.6;
-        Fri, 15 Jan 2021 11:28:06 -0800 (PST)
+        Fri, 15 Jan 2021 14:29:28 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D98C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 11:28:48 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id t6so5223249plq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 11:28:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=6zCZrnhgRt+dBoyQ8tcWZS1tIQoo0VWZii3AgJIF8i0=;
-        b=Vgj8FNW6Or7PTM4LGoU0zBghO/2JuSVuOzZYSsvhZt1xwvDuTGXfNEgsmIhMp7KZGB
-         abRgydY+HCbwOzxUCpfkL3Jb16lX+8Y8M8y6R+5CDXk1cCLA3A5NLT1a85pDGC8NN29w
-         fNYfH1VhgN3NvJfYDN258yEuAD67w0zl1d7ysnrwLERXtZpAZJuKNqx3RQiRvwBPSUrK
-         +v1Tx2CysJW+H6+t8Bq8rp7lbb7portcg9XcIGn96NcxDjrbT+vnuWpfINEXdaELtMBN
-         BDCh9nQnkUkdv2G4lTrcCl2rB7q7czzK/oti2kKkkctq492Dv84k2gfWD82p234tv9zY
-         zipg==
+        bh=o173Lqk2c5CIYKhQy47SbWBS4LsgYs9/wPlGKEJUhZQ=;
+        b=Uxl89bKbQ0EJR0bwVVwTY620vZrEk3wZRGOZUtb7fVjLryPulQ5OtdOqb+1ATwurxm
+         jaFVqeUUm7pucJzBnd01cP9RttMAcnikELQ2DYPIl6O1HzoqZbTk1xFfAKAftpvfKQ0f
+         LTRlvzC1Vk9G5OXXo5JeOM+CD9AiPFP+ZCAjkd+nmchQsRtrmAWrVG9UDvvdz2bLlgab
+         8326RLbVcbuBFJvj54++CN8KsAUK50CCfn5YqvMFNshYFtIj4y5+c4tYWXGCBaEvcd0X
+         JiR94/XOY/Ncxv7SEmmc958sKD+oZRx3v1FtXBzBHaxpOTaS3O3KNpOgnF4v71AN3+BS
+         N0lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=6zCZrnhgRt+dBoyQ8tcWZS1tIQoo0VWZii3AgJIF8i0=;
-        b=IPyfJt2UzuxaCaUv/BbFJg0htMTGJyWH2xlgfADKr4c34sFENaUXF/X0RFP9Iifl9+
-         d3AgPwTzRowbMNtmicudHrWPd8NtfNFxAcfIeLnDtFspAUsfRt0Xu2JXfteEoZpmn4SO
-         gN5DMbt6FaxfUKtGg3LD+sgdvBW1zAWJMNtfDfYpXYtYq/vkEeyXyqJmZBxJaSfARzG7
-         swZA8eOJTQ8e2CKtJwDkxpG3DtvtUiZy13BWkgmJ1ybvtzLgd7ud7rYAjxfHe96tgbg2
-         841ysbbyjWePzoIAkieTFO/P9q+YNij96HI9I0MOdt64iJUH9M26gHWoLgP1ztTdWQ3G
-         u3ZA==
-X-Gm-Message-State: AOAM532zq5R5WIp5TdLX/AA/zwaGRfUid6vTELgM8YebdOordiFGvIjK
-        5Ay6daj3kBgrPp5wu6sOhc4=
-X-Google-Smtp-Source: ABdhPJyS+ly5PTr5BeoK/LKEkRWdF61JTsfd8029OwK5cAQS8wVGCmwJEU/IthF/tu2lg2YLTy2Jxg==
-X-Received: by 2002:a37:78c4:: with SMTP id t187mr13833259qkc.139.1610738885332;
-        Fri, 15 Jan 2021 11:28:05 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id v5sm5619396qkv.64.2021.01.15.11.28.04
+        bh=o173Lqk2c5CIYKhQy47SbWBS4LsgYs9/wPlGKEJUhZQ=;
+        b=atF0jgVreMutFX/F9Uf+EDpmWXyt03F7BOe0ZeyF/s7m0TqyOCADBiO9g6HubDau96
+         Mxge0YYWOLhF3XwKLOPiPDRTN/RBPPt5iYfMm+p1uPVHTsiOm6wNpzP00snCOE3TE8Xz
+         G4CVRd2gGlhN2dJoEVE/gwgPrsBZ7OQ2SNU5d0zk9AT5VBZhuwfy1EVfB6hvUBRi3p9l
+         f2suCORbT+wNkA7Fm45kIiVt2csXDTStkIWhsheuyXcAfYZsV106SAuhu2cYlAQnK4ce
+         TrxUx2zHMf4C8Pt6mGQ0IqwhYdKzWSJBaHNznG0I4wBgel+RTJrKiJcw9wzVrIuSI7fD
+         NrKQ==
+X-Gm-Message-State: AOAM530Kwd2AcGIW+B5hVmTR57ADMy95eDRy3izhKMj1Kbc7jJyJgeml
+        y73Uts2bQJaO+bGvkvB6QEx/Ag==
+X-Google-Smtp-Source: ABdhPJwfOsX4Wx5vyNX8XtAaos1vkW6wGTM5tGYWH1S5rzy+SMeefHNe8U0GzG04aTWa3jyis9E4uw==
+X-Received: by 2002:a17:90a:5581:: with SMTP id c1mr12238856pji.86.1610738927523;
+        Fri, 15 Jan 2021 11:28:47 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id b6sm8319056pfd.43.2021.01.15.11.28.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 11:28:04 -0800 (PST)
-Date:   Fri, 15 Jan 2021 12:28:03 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     tsbogend@alpha.franken.de, ndesaulniers@google.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, stable@vger.kernel.org
-Subject: Re: [PATCH] mips: vdso: fix DWARF2 warning
-Message-ID: <20210115192803.GA3828660@ubuntu-m3-large-x86>
-References: <20210115191330.2319352-1-anders.roxell@linaro.org>
+        Fri, 15 Jan 2021 11:28:46 -0800 (PST)
+Date:   Fri, 15 Jan 2021 11:28:40 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH 3/3] KVM/VMX: Use try_cmpxchg64() in posted_intr.c
+Message-ID: <YAHs6KDoc+O50beV@google.com>
+References: <20201215182805.53913-1-ubizjak@gmail.com>
+ <20201215182805.53913-4-ubizjak@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115191330.2319352-1-anders.roxell@linaro.org>
+In-Reply-To: <20201215182805.53913-4-ubizjak@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 08:13:30PM +0100, Anders Roxell wrote:
-> When building mips tinyconifg the following warning show up
-> 
-> make --silent --keep-going --jobs=8 O=/home/anders/src/kernel/next/out/builddir ARCH=mips CROSS_COMPILE=mips-linux-gnu- HOSTCC=clang CC=clang
-> /srv/src/kernel/next/arch/mips/vdso/elf.S:14:1: warning: DWARF2 only supports one section per compilation unit
-> .pushsection .note.Linux, "a",@note ; .balign 4 ; .long 2f - 1f ; .long 4484f - 3f ; .long 0 ; 1:.asciz "Linux" ; 2:.balign 4 ; 3:
-> ^
-> /srv/src/kernel/next/arch/mips/vdso/elf.S:34:2: warning: DWARF2 only supports one section per compilation unit
->  .section .mips_abiflags, "a"
->  ^
-> 
-> Rework so the mips vdso Makefile adds flag '-no-integrated-as' unless
-> LLVM_IAS is defined.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1256
-> Cc: stable@vger.kernel.org # v4.19+
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+On Tue, Dec 15, 2020, Uros Bizjak wrote:
+> Use try_cmpxchg64() instead of cmpxchg64() to reuse flags from
+> cmpxchg/cmpxchg8b instruction. For 64 bit targets flags reuse
+> avoids a CMP instruction,
 
-I believe this is the better solution:
+It ends up doing way more (in a good way) than eliminate the CMP, at least with
+gcc-10.  There's a ripple effect and the compiler ends up generating the loop
+in-line, whereas without the "try" version the loop is put out-of-line.
 
-https://lore.kernel.org/r/20210115192622.3828545-1-natechancellor@gmail.com/
+> while for 32 bit targets flags reuse avoids XOR/XOR/OR instruction sequence.
+> 
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
 
-Cheers,
-Nathan
+Reviewed-by: Sean Christopherson <seanjc@google.com> 
