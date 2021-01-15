@@ -2,85 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1467D2F775C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4E12F7766
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728920AbhAOLPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:15:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41552 "EHLO mail.kernel.org"
+        id S1729280AbhAOLQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:16:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726981AbhAOLPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:15:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D629D235F9;
-        Fri, 15 Jan 2021 11:14:24 +0000 (UTC)
+        id S1726983AbhAOLQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 06:16:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C690224F9;
+        Fri, 15 Jan 2021 11:15:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610709266;
-        bh=5lyd6863Ma27pfAieJ1TVSBg4uSrd4TdeURetyMDZ5s=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=JgLoSKVFZXEFLeQ9VJ6doX1KcvL+dKiPZU9EI2ux/xHVxXAM8Wa+aE15bjHoQaYYW
-         Ni2tuj4Ss0tEMlWy1MvpICkTxMNV719fsug7BBFZ2pkt5TbV4/uZ1eGpHj7y0bNGmR
-         gM4QRu7BOGqdp1ZBG5xzoeqWH+rUS0OztIQhO6zKxMQaAihYyKEjIqz6RODX5mtcCp
-         vcg64mWL9p8mIgAmANGKAVOeDqqC1F+JEvaMplAXiq7DDoQDuEaPCIY0xNXDkpQc4X
-         E5NG/Pkl9QVFpNNMcgXxqoAXrIS59v10bGgympBE9y6NjhHuZjyMlnQTyMZvyQkkTM
-         20SIB5W08XuBg==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg KH <greg@kroah.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] usb: dwc3: pci: add support for the Intel Alder
- Lake-P
-In-Reply-To: <20210115094914.88401-5-heikki.krogerus@linux.intel.com>
-References: <20210115094914.88401-1-heikki.krogerus@linux.intel.com>
- <20210115094914.88401-5-heikki.krogerus@linux.intel.com>
-Date:   Fri, 15 Jan 2021 13:14:19 +0200
-Message-ID: <87sg721mgk.fsf@kernel.org>
+        s=k20201202; t=1610709325;
+        bh=l6kjuUdwH1J+0RSW3wOI8b+Ktrck5Pp8whJGF52QkIE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PD/jyBuFD2zBhD/OKowdt7KUWwTIyVCxfiXOKXd/u8LnOCRaTxgyl0c/dKc204zAl
+         MFkS1prtkZoWd3JY6bRSz/ESUYjdsatSAcWeMzMHV59Q/wnhLbOpLX/lMeE3Jn9klf
+         egE12hfzBfcmhrBKz4x3+iE3T3GOTBQFJ0HiknW3CrCy4rRoezLB2RrvfYhgGqCx3R
+         hhXh4Iv8/qru2WVCA4LYvShzcB65v04yIFSfIea8fl1D+3k+HIqOPNJzF2AWaEzAwG
+         nIWjSQkSF1Vgw68u8WIzLjnokG/XNLsi2h8F7A8tpZBhS7M27y0iqLGi1JIn412d10
+         Q3nXe7uVrMHSw==
+Received: by mail-ot1-f53.google.com with SMTP id n42so8140977ota.12;
+        Fri, 15 Jan 2021 03:15:25 -0800 (PST)
+X-Gm-Message-State: AOAM531V9ZeU814aJUIXp/MKTtAvb8T+qa7j9cLE3DbJkgyNRsw6bdYK
+        QWLqDrxXYOrLWE3vPox/fB8QtIgkDS9Tw1tQ7oU=
+X-Google-Smtp-Source: ABdhPJxdT2yiEyJyQ1PSbCV6Z82EpynBxTRjdqIE6EVKUyyA7+bqwnepWK2E/W6nJKmTGyHoKeCVn1KG1j/QiHnz1v0=
+X-Received: by 2002:a9d:741a:: with SMTP id n26mr615881otk.210.1610709324684;
+ Fri, 15 Jan 2021 03:15:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+References: <20210110115245.30762-1-alobakin@pm.me> <202101111153.AE5123B6@keescook>
+ <20210111205649.18263-1-alobakin@pm.me> <20210111224305.GA22825@alpha.franken.de>
+In-Reply-To: <20210111224305.GA22825@alpha.franken.de>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 15 Jan 2021 12:15:08 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2oUzcmN01RN==2zzhAiHHP-1rAScsp=nN=v6rWP+eekg@mail.gmail.com>
+Message-ID: <CAK8P3a2oUzcmN01RN==2zzhAiHHP-1rAScsp=nN=v6rWP+eekg@mail.gmail.com>
+Subject: Re: [PATCH v5 mips-next 0/9] MIPS: vmlinux.lds.S sections fixes & cleanup
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Pei Huang <huangpei@loongson.cn>,
+        Fangrui Song <maskray@google.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-Heikki Krogerus <heikki.krogerus@linux.intel.com> writes:
-
-> This patch adds the necessary PCI ID for Intel Alder Lake-P
-> devices.
+On Mon, Jan 11, 2021 at 11:44 PM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+> On Mon, Jan 11, 2021 at 08:57:25PM +0000, Alexander Lobakin wrote:
+> > From: Kees Cook <keescook@chromium.org>
+> > Date: Mon, 11 Jan 2021 11:53:39 -0800
+> >
+> > > On Sun, Jan 10, 2021 at 11:53:50AM +0000, Alexander Lobakin wrote:
+> > >> This series hunts the problems discovered after manual enabling of
+> > >> ARCH_WANT_LD_ORPHAN_WARN. Notably:
+> > >>  - adds the missing PAGE_ALIGNED_DATA() section affecting VDSO
+> > >>    placement (marked for stable);
+> > >>  - stops blind catching of orphan text sections with .text.*
+> > >>    directive;
+> > >>  - properly stops .eh_frame section generation.
+> > >>
+> > >> Compile and runtime tested on MIPS32R2 CPS board with no issues
+> > >> using two different toolkits:
+> > >>  - Binutils 2.35.1, GCC 10.2.1 (with Alpine patches);
+> > >>  - LLVM stack: 11.0.0 and from latest Git snapshot.
+> > >>
+> > >> Since v4 [3]:
+> > >>  - new: drop redundant .text.cps-vec creation and blind inclusion
+> > >>    of orphan text sections via .text.* directive in vmlinux.lds.S;
+> > >>  - don't assert SIZEOF(.rel.dyn) as it's reported that it may be not
+> > >>    empty on certain machines and compilers (Thomas);
+> > >>  - align GOT table like it's done for ARM64;
+> > >>  - new: catch UBSAN's "unnamed data" sections in generic definitions
+> > >>    when building with LD_DEAD_CODE_DATA_ELIMINATION;
+> > >>  - collect Reviewed-bys (Kees, Nathan).
+> > >
+> > > Looks good; which tree will this land through?
+> >
+> > linux-mips/mips-next I guess, since 7 of 9 patches are related only
+> > to this architecture.
+> > This might need Arnd's Acked-bys or Reviewed-by for the two that
+> > refer include/asm-generic, let's see what Thomas think.
 >
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Looks good from my side and I have it already sitting in branch for
+> submission.
+>
+> Arnd, are you ok with the changes in include/asm-generic ?
 
-The only missing my ack:
+Yes, I'm never quite sure about what to make of linker script changes,
+but I trust Kees on the review. For merging it through your tree:
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmABeQsRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQbrIQ//ZAxEwchAfysHEqsi/Ie4N1H323D8J3HA
-jkOYCv20KTb+uja9TWcp0r5Ef1yQ6ATqc5mheL+R+mVdVQQVpb0rotECK81fArur
-BGYPLoR/wRe4yFMff+WuzG3idKaZEcY2lKwQOyClApU4PJpzdg6n36WfQJTzEx6s
-WMaQETXakRACSdKY1mop6oMvbElG3Fgd2Da8posUBO00NKVkRpnSd0L339JDrf34
-2WH9T/Lc94d1937xM/y4/PrC255vIkwtSYxS1ZwKcCpPIz9/HPpXNAMui2nXjTXT
-NuFQ85oIU5R/kMdx3aDvIJ5d2t/vxxHDu6KN7AKdoGsJv+KH35XckCGKMPNl31AU
-jei0Eseg20HZyi5aJEQoMLApzCGdLw7IBaDqvTujG9GJZfIJzqX3E5FavepZeO8v
-vHT5jqKrzOvKDlSrm8Y53dAjyI+5iKVHXvsYr1vQxVzvp/ocK8SsOfBikEHcFwib
-fLCXpg8o2iZ1Z5+MjULUQWVGkr3n8nQA703Ly/8pTWfiFZvfRMb7njxuHONhav4s
-Fp3OcHrMmxGRalvVSLu3ngmPDdOiKZZ2ywiCZExF8wx8qWEs2oeywkXXTroEcx1l
-7Wmj9UOMKdHhV9+xXOrTeyqr5kAqpO1vcTQ4RNaWYHtWMK1yO517ZmQAzFWBozno
-DZcUEyRBYDM=
-=ZzEF
------END PGP SIGNATURE-----
---=-=-=--
+Acked-by: Arnd Bergmann <arnd@arndb.de>
