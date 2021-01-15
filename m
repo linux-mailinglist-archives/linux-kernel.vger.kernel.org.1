@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552F92F7A2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 830A62F7AF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388367AbhAOMqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:46:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44576 "EHLO mail.kernel.org"
+        id S2388030AbhAOM4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:56:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388093AbhAOMh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:37:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68A45221FA;
-        Fri, 15 Jan 2021 12:37:41 +0000 (UTC)
+        id S2387552AbhAOMe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:34:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F0F0235F9;
+        Fri, 15 Jan 2021 12:34:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714261;
-        bh=kgZAR3IAeNFVR66Rs3mtemw0EeM1xQk2pj7RbX5iMlA=;
+        s=korg; t=1610714058;
+        bh=Yc2Cx4Cs0jYWHCPDiwsTGl/dGXIh1X6W1zdM4ZZuelE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BFExK9TiOEpXrO0blLKN93aKmdl/Mm485v702yZfR3X1dhHafGxLTWeuQf0geZP3g
-         3yEWPo8z5v+YRgb4YyQlc/1iXRTFOvtcNVoYJ+FeDXJP0X0PC5dvsPKk+iG7mE2pV4
-         FSez8rpKz+fCaaZ8NuJxeT8GABsl/S2AxbtECyok=
+        b=12ht4WfZMc9WWzaKrkpgG4d/zf5Uw1dVLN4wrxpiDpf5lNo22L4qJvEg6nYehJBJj
+         H3NVWxisjOx9O/7iGwYu8bnrWdF34Xpm7dyW363RwdsRgcHHHGtRfdL8cpwa0pY/do
+         3+s6Bm+svA83zZS+Dolo1h8tjBRmfpLlvMSBvymo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.10 056/103] can: tcan4x5x: fix bittiming const, use common bittiming from m_can driver
-Date:   Fri, 15 Jan 2021 13:27:49 +0100
-Message-Id: <20210115122008.761325984@linuxfoundation.org>
+        stable@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH 5.4 28/62] x86/resctrl: Dont move a task to the same resource group
+Date:   Fri, 15 Jan 2021 13:27:50 +0100
+Message-Id: <20210115121959.764359870@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
-References: <20210115122006.047132306@linuxfoundation.org>
+In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
+References: <20210115121958.391610178@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Fenghua Yu <fenghua.yu@intel.com>
 
-commit aee2b3ccc8a63d1cd7da6a8a153d1f3712d40826 upstream.
+commit a0195f314a25582b38993bf30db11c300f4f4611 upstream
 
-According to the TCAN4550 datasheet "SLLSF91 - DECEMBER 2018" the tcan4x5x has
-the same bittiming constants as a m_can revision 3.2.x/3.3.0.
+Shakeel Butt reported in [1] that a user can request a task to be moved
+to a resource group even if the task is already in the group. It just
+wastes time to do the move operation which could be costly to send IPI
+to a different CPU.
 
-The tcan4x5x chip I'm using identifies itself as m_can revision 3.2.1, so
-remove the tcan4x5x specific bittiming values and rely on the values in the
-m_can driver, which are selected according to core revision.
+Add a sanity check to ensure that the move operation only happens when
+the task is not already in the resource group.
 
-Fixes: 5443c226ba91 ("can: tcan4x5x: Add tcan4x5x driver to the kernel")
-Cc: Dan Murphy <dmurphy@ti.com>
-Reviewed-by: Sean Nyekjaer <sean@geanix.com>
-Link: https://lore.kernel.org/r/20201215103238.524029-3-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+[1] https://lore.kernel.org/lkml/CALvZod7E9zzHwenzf7objzGKsdBmVwTgEJ0nPgs0LUFU3SN5Pw@mail.gmail.com/
+
+Fixes: e02737d5b826 ("x86/intel_rdt: Add tasks files")
+Reported-by: Shakeel Butt <shakeelb@google.com>
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/962ede65d8e95be793cb61102cca37f7bb018e66.1608243147.git.reinette.chatre@intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/net/can/m_can/tcan4x5x.c |   26 --------------------------
- 1 file changed, 26 deletions(-)
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/net/can/m_can/tcan4x5x.c
-+++ b/drivers/net/can/m_can/tcan4x5x.c
-@@ -129,30 +129,6 @@ struct tcan4x5x_priv {
- 	int reg_offset;
- };
- 
--static struct can_bittiming_const tcan4x5x_bittiming_const = {
--	.name = DEVICE_NAME,
--	.tseg1_min = 2,
--	.tseg1_max = 31,
--	.tseg2_min = 2,
--	.tseg2_max = 16,
--	.sjw_max = 16,
--	.brp_min = 1,
--	.brp_max = 32,
--	.brp_inc = 1,
--};
--
--static struct can_bittiming_const tcan4x5x_data_bittiming_const = {
--	.name = DEVICE_NAME,
--	.tseg1_min = 1,
--	.tseg1_max = 32,
--	.tseg2_min = 1,
--	.tseg2_max = 16,
--	.sjw_max = 16,
--	.brp_min = 1,
--	.brp_max = 32,
--	.brp_inc = 1,
--};
--
- static void tcan4x5x_check_wake(struct tcan4x5x_priv *priv)
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -546,6 +546,13 @@ static void update_task_closid_rmid(stru
+ static int __rdtgroup_move_task(struct task_struct *tsk,
+ 				struct rdtgroup *rdtgrp)
  {
- 	int wake_state = 0;
-@@ -479,8 +455,6 @@ static int tcan4x5x_can_probe(struct spi
- 	mcan_class->dev = &spi->dev;
- 	mcan_class->ops = &tcan4x5x_ops;
- 	mcan_class->is_peripheral = true;
--	mcan_class->bit_timing = &tcan4x5x_bittiming_const;
--	mcan_class->data_timing = &tcan4x5x_data_bittiming_const;
- 	mcan_class->net->irq = spi->irq;
- 
- 	spi_set_drvdata(spi, priv);
++	/* If the task is already in rdtgrp, no need to move the task. */
++	if ((rdtgrp->type == RDTCTRL_GROUP && tsk->closid == rdtgrp->closid &&
++	     tsk->rmid == rdtgrp->mon.rmid) ||
++	    (rdtgrp->type == RDTMON_GROUP && tsk->rmid == rdtgrp->mon.rmid &&
++	     tsk->closid == rdtgrp->mon.parent->closid))
++		return 0;
++
+ 	/*
+ 	 * Set the task's closid/rmid before the PQR_ASSOC MSR can be
+ 	 * updated by them.
 
 
