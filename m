@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04022F7969
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB8C2F792B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387780AbhAOMf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:35:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42934 "EHLO mail.kernel.org"
+        id S1730545AbhAOMc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:32:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387738AbhAOMfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:35:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32631224F9;
-        Fri, 15 Jan 2021 12:35:07 +0000 (UTC)
+        id S1730645AbhAOMcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:32:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B63A122473;
+        Fri, 15 Jan 2021 12:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714107;
-        bh=abM/FdqvRGvXSce0XqSOJVe7ENalMwRf16m13G9y+bs=;
+        s=korg; t=1610713925;
+        bh=nphR8ps349+6qq1hFvi2YirUHYDDjl5TVoBuquO7hkg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=thOhImtgbqxk4wcaXoNyJNOkzHVcccD+6PhTjjehXKBZwimLIkUIi2IrwaSPtdG+K
-         1x16ONzghfsAU66C0ZpUvjBWJ9J6s0/Yqo1CJASYv4qDTPsZ40KkUryUFRsE+uTmE3
-         CuhV2E4h8JbmIsMIxWuRjVK1JFMqhf0oME4gREJs=
+        b=tuUGnXHixpr/G84rzDMkx2IVj6khhNYth/7cZycou3tDbADeJXG4ZphZ/pQfPJFFF
+         Pl7Sjg4Hdyty4v9/S+7dlp5dPLecgm2D+Zgshva8ia4N3OyG2nzcGN0Y7WdfHWm4Ms
+         rJ+fC5v/hrUPmBMjAT9yGva1lQApoIQaXUnVim6k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH 5.4 19/62] net/mlx5: Use port_num 1 instead of 0 when delete a RoCE address
+        stable@vger.kernel.org, Rohit Maheshwari <rohitm@chelsio.com>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 11/43] chtls: Remove invalid set_tcb call
 Date:   Fri, 15 Jan 2021 13:27:41 +0100
-Message-Id: <20210115121959.332308387@linuxfoundation.org>
+Message-Id: <20210115121957.588707738@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
+References: <20210115121957.037407908@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Zhang <markzhang@nvidia.com>
+From: Ayush Sawal <ayush.sawal@chelsio.com>
 
-[ Upstream commit 0f2dcade69f2af56b74bce432e48ff3957830ce2 ]
+[ Upstream commit 827d329105bfde6701f0077e34a09c4a86e27145 ]
 
-In multi-port mode, FW reports syndrome 0x2ea48 (invalid vhca_port_number)
-if the port_num is not 1 or 2.
+At the time of SYN_RECV, connection information is not
+initialized at FW, updating tcb flag over uninitialized
+connection causes adapter crash. We don't need to
+update the flag during SYN_RECV state, so avoid this.
 
-Fixes: 80f09dfc237f ("net/mlx5: Eswitch, enable RoCE loopback traffic")
-Signed-off-by: Mark Zhang <markzhang@nvidia.com>
-Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: cc35c88ae4db ("crypto : chtls - CPL handler definition")
+Signed-off-by: Rohit Maheshwari <rohitm@chelsio.com>
+Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/rdma.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/chelsio/chtls/chtls_cm.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/rdma.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/rdma.c
-@@ -116,7 +116,7 @@ free:
- static void mlx5_rdma_del_roce_addr(struct mlx5_core_dev *dev)
- {
- 	mlx5_core_roce_gid_set(dev, 0, 0, 0,
--			       NULL, NULL, false, 0, 0);
-+			       NULL, NULL, false, 0, 1);
- }
+--- a/drivers/crypto/chelsio/chtls/chtls_cm.c
++++ b/drivers/crypto/chelsio/chtls/chtls_cm.c
+@@ -1920,9 +1920,6 @@ static void chtls_abort_req_rss(struct s
+ 	int queue = csk->txq_idx;
  
- static void mlx5_rdma_make_default_gid(struct mlx5_core_dev *dev, union ib_gid *gid)
+ 	if (is_neg_adv(req->status)) {
+-		if (sk->sk_state == TCP_SYN_RECV)
+-			chtls_set_tcb_tflag(sk, 0, 0);
+-
+ 		kfree_skb(skb);
+ 		return;
+ 	}
 
 
