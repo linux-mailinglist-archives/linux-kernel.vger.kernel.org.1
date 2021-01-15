@@ -2,406 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B882F7190
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 05:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A1C2F7156
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 05:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733015AbhAOETJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 23:19:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45964 "EHLO
+        id S1732801AbhAOECH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 23:02:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731373AbhAOETI (ORCPT
+        with ESMTP id S1731101AbhAOECG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 23:19:08 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0135FC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 20:18:28 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id i5so5222140pgo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 20:18:27 -0800 (PST)
+        Thu, 14 Jan 2021 23:02:06 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC3AC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 20:01:25 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id v184so2266317wma.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 20:01:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=resent-from:resent-date:resent-message-id:resent-to:from:to:cc
-         :subject:date:message-id:mime-version:content-transfer-encoding;
-        bh=pylYOssuD+xRyqmaVqxKWcRZayhzdANiRwD8C+b+Riw=;
-        b=aSZBYMfwtJHlXeH1US1C9J95FN5Fe0vBmG3yyplZlNP3xK6IDkckqc4Xhbji/CwLQ8
-         0AjXa3kWgb66P6nm48sjZp9Bha/rrYhg74RVmZxaBDnOuIAyTcywA9MzmX5mWBDv7GOA
-         W1OSH3k5s50t62XqLCBAIP3Tdz6Ngi1RgK0gOczx3whp74yi9VlOM08r97u46LxdNd7H
-         PBX0Gj3GWGRhJXzkcbGHNhFfAcMPj623SbzHUk8vxyfR4TTT7wtToI2BGBOHgChrPINy
-         PECUvFCUVn0hBNKRsXbyEdLRrbxz1BenyQM71o4jlW/EQ6ubRGSlWye1NsLL9A4w26lR
-         T+XQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=YAwc0pXn/Gx7YHsfWcfsW5rb54m4c7aWDsZ6VJ3Rf60=;
+        b=mS6AeXdJ/kHS8D7RB4na4AY5VkCBLDdh/Rv+jJiNMkoxxZcISrp5AE99+4IdnBngRz
+         2EpilqbZryjiHIQPFkAwlXzWo1QHv9gASMQtWActpbe9nCk83eKt5lD6wNO1OjsR0YDQ
+         qbvQ/AX4tAUFSGpBCl+MTs58mzgxdXBPgQzFIMjsDj49YblikoEEJsclS4yJnNdXuU3R
+         hAPONdIZVrpJnB9ULowzCwacR7ylcGB8ga5r0wmXnrtDk66vwihj1s85XB6+sdn473Zd
+         CgKjrQ9K3P2bltyOrUMM0uBXjV6fCZ/JzMOaU9rFCSRZ7sYZIvNwmCijvOMKaH+AKmg/
+         8tUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:resent-from:resent-date:resent-message-id
-         :resent-to:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
          :content-transfer-encoding;
-        bh=pylYOssuD+xRyqmaVqxKWcRZayhzdANiRwD8C+b+Riw=;
-        b=aNV90l57lcvDwN8pKe/Pe8LxToewiG/BYQfidfj7qqsdQn5ANhDw/ZcbCOhKIuiiIX
-         dic2FYKbQvU22t8e3NKJzq4x7KFGPZSItn8POaSoIHwD+Xo5rUdo59wHsol8ussSu2Xp
-         CSfirX2h1rZbAxHDDbQjtNCalW/XILmg4vKyVO+BYUSD4SI9iLVk3jOzWq5YNNmrKUgE
-         rKsJ45flhAozUYWTRVUOM0+9Rc2fZqchRxQRHD8rkDVEF/9MStoYN8PoGwb5s/vbDAfM
-         ymoE6YDpVrAVAYrvlTZP0Dkaf+zGmK3k5d2uK9lk5oHchAGwghapWcJXy2OBkav2Phbl
-         7szQ==
-X-Gm-Message-State: AOAM5309yUDOQ8kV8iossoIZUNdgNvtGGPAkxqh1MCHWrZNw9biOrgpY
-        nt5v8skfhJy5t5DqtpqkuUqB7UvEAXQ5jw==
-X-Google-Smtp-Source: ABdhPJxkO1FxGYsiscJAwFszbLjBsTUPPD9QBXpCFitlpAPHaAIFdzJN9Y3ne727/Z0moRTe+AzIPg==
-X-Received: by 2002:a63:1863:: with SMTP id 35mr10952226pgy.191.1610684307444;
-        Thu, 14 Jan 2021 20:18:27 -0800 (PST)
-Received: from localhost ([122.172.85.111])
-        by smtp.gmail.com with ESMTPSA id nk11sm6697623pjb.26.2021.01.14.20.18.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Jan 2021 20:18:27 -0800 (PST)
-Received: from pop.gmail.com [74.125.24.109]
-        by vireshk-i7 with POP3 (fetchmail-6.3.26)
-        for <vireshk@localhost> (single-drop); Thu, 14 Jan 2021 17:05:32 +0530 (IST)
-Received: from localhost ([122.172.85.111])
-        by smtp.gmail.com with ESMTPSA id z16sm5418507pgj.51.2021.01.14.03.34.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Jan 2021 03:34:49 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Robert Richter <rric@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Arnd Bergmann <arnd@kernel.org>, oprofile-list@lists.sf.net,
-        William Cohen <wcohen@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        anmar.oueja@linaro.org
-Subject: [PATCH 00/18] drivers: Remove oprofile and dcookies
-Date:   Thu, 14 Jan 2021 17:04:24 +0530
-Message-Id: <cover.1610622251.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        bh=YAwc0pXn/Gx7YHsfWcfsW5rb54m4c7aWDsZ6VJ3Rf60=;
+        b=orKT3LvjEVVrd0nxwKqxkmD+XczJIITcqzHm5rONSrgMD0GDsi19nRT3TXun7jTScm
+         Txm2namjTuB+m6UotskCc0LiJY/xqnHZvXO80apXdw6EFrGb9DsPcTWUAM/vVcEEoc4R
+         Z135oi44Zk5Koer//wYBGidGI9Q9ZoRnBuDBNhEhHXDr6Tk/3I2HoCFYXIZgjhaCTAcC
+         2UTxXqEQIOsJCvfB/bJC0jX//ljzj2/O8V9A21vqxrXid6DQX401NHSerfmKJJBJkrmc
+         JntYGkuy8kDNzB90l+6+7C6/WzbD6uBMC0QmESkrXpYEMvT4T2MrNmtn0p/KWTPzlpNn
+         m4kw==
+X-Gm-Message-State: AOAM532jdUDnxNNBP6KIswLFKn5MdLHnLeXGK0kdbN0/hnXfv7dO1JFB
+        WHbDvVxb33U0ayqWQFHRrSaJZNBClDmaCkq6otmpj+sHLl8=
+X-Google-Smtp-Source: ABdhPJyeJydgWViEu0nM62LsO/qd2KD8kO+sOycEKZ2CZ61+EXGENUuHsVuxE+aDvAQhJX4G2OuhEsHDWgqr+X/NBCo=
+X-Received: by 2002:a1c:e902:: with SMTP id q2mr6555021wmc.143.1610683284169;
+ Thu, 14 Jan 2021 20:01:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Label: pen
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 15 Jan 2021 14:01:12 +1000
+Message-ID: <CAPM=9tyyT70W1pkQj3tLWSmQWQpT6V3mSZzOg2n1j+VGa4V-fQ@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.11-rc4
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hey Linus,
 
-The "oprofile" user-space tools don't use the kernel OPROFILE support
-any more, and haven't in a long time. User-space has been converted to
-the perf interfaces.
+Back to mostly regular scheduling for me. Big thanks to Daniel for
+stepping into my duties for the last few turns.
 
-Remove oprofile and dcookies (whose only user is oprofile) support from
-the kernel.
+Regular fixes for rc4, a bunch of fixes across i915, amdgpu and
+nouveau here, along with a couple of TTM fixes, and dma-buf and one
+core pageflip/modifier interaction fix. One notable i915 fix is a HSW
+GT1 regression fix that has been outstanding for quite a while.
+(Thanks to Matt Turner for kicking Intel into getting it fixed).
 
-This was suggested here [1] earlier.
+Ben Skeggs has asked about the possibility of pulling nvidia ampere
+basic display support into fixes as new hardware with nothing outside
+touched, I'll queue up a separate pull after this one and you can
+decide if it's appropriate.
 
-This is build/boot tested by kernel test robot (Intel) and Linaro's
-Tuxmake[2] for a lot of architectures and no failures were reported.
+Dave.
 
+drm-fixes-2021-01-15:
+drm fixes for 5.11-rc4
+
+dma-buf:
+- Fix a memory leak in CMAV heap
+
+core:
+- Fix format check for legacy pageflips
+
+ttm:
+- Pass correct address to dma_mapping_error()
+- Use mutex in pool shrinker
+
+i915:
+- Allow the sysadmin to override security mitigations
+- Restore clear-residual mitigations for ivb/byt
+- Limit VFE threads based on GT
+- GVT: fix vfio edid and full display detection
+- Fix DSI DSC power refcounting
+- Fix LPT CPU mode backlight takeover
+- Disable RPM wakeref assertions during driver shutdown
+- Fix DSI sequence sleeps
+
+amdgpu:
+- Update repo location in MAINTAINERS
+- Add some new renoir PCI IDs
+- Revert CRC UAPI changes
+- Revert OLED display fix which cases clocking problems for some systems
+- Misc vangogh fixes
+- GFX fix for sienna cichlid
+- DCN1.0 fix for pipe split
+- Fix incorrect PSP command
+
+amdkfd:
+- Fix possible out of bounds read in vcrat creation
+
+nouveau:
+- irq handling fix
+- expansion ROM fix
+- hw init dpcd disable
+- aux semaphore owner field fix
+- vram heap sizing fix
+- notifier at 0 is valid fix
+The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837=
+:
+
+  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-01-15
+
+for you to fetch changes up to c8f6364f35f32786dd40336cfa35b9166d91b8ab:
+
+  Merge branch '04.00-ampere-lite-fixes' of
+git://github.com/skeggsb/linux into drm-fixes (2021-01-15 13:26:44
++1000)
+
+----------------------------------------------------------------
+drm fixes for 5.11-rc4
+
+dma-buf:
+- Fix a memory leak in CMAV heap
+
+core:
+- Fix format check for legacy pageflips
+
+ttm:
+- Pass correct address to dma_mapping_error()
+- Use mutex in pool shrinker
+
+i915:
+- Allow the sysadmin to override security mitigations
+- Restore clear-residual mitigations for ivb/byt
+- Limit VFE threads based on GT
+- GVT: fix vfio edid and full display detection
+- Fix DSI DSC power refcounting
+- Fix LPT CPU mode backlight takeover
+- Disable RPM wakeref assertions during driver shutdown
+- Fix DSI sequence sleeps
+
+amdgpu:
+- Update repo location in MAINTAINERS
+- Add some new renoir PCI IDs
+- Revert CRC UAPI changes
+- Revert OLED display fix which cases clocking problems for some systems
+- Misc vangogh fixes
+- GFX fix for sienna cichlid
+- DCN1.0 fix for pipe split
+- Fix incorrect PSP command
+
+amdkfd:
+- Fix possible out of bounds read in vcrat creation
+
+nouveau:
+- irq handling fix
+- expansion ROM fix
+- hw init dpcd disable
+- aux semaphore owner field fix
+- vram heap sizing fix
+- notifier at 0 is valid fix
+
+----------------------------------------------------------------
+Alex Deucher (1):
+      MAINTAINERS: update radeon/amdgpu/amdkfd git trees
+
+Alexandre Demers (1):
+      drm/amdgpu: fix DRM_INFO flood if display core is not supported
+(bug 210921)
+
+Bas Nieuwenhuizen (1):
+      drm: Check actual format for legacy pageflip.
+
+Ben Skeggs (7):
+      drm/nouveau/bios: fix issue shadowing expansion ROMs
+      drm/nouveau/privring: ack interrupts the same way as RM
+      drm/nouveau/i2c/gk110: split out from i2c/gk104
+      drm/nouveau/i2c/gk110-: disable hw-initiated dpcd reads
+      drm/nouveau/i2c/gm200: increase width of aux semaphore owner fields
+      drm/nouveau/mmu: fix vram heap sizing
+      drm/nouveau/kms/nv50-: fix case where notifier buffer is at offset 0
+
+Chris Wilson (4):
+      drm/i915: Disable RPM wakeref assertions during driver shutdown
+      drm/i915/gt: Limit VFE threads based on GT
+      drm/i915/gt: Restore clear-residual mitigations for Ivybridge, Baytra=
+il
+      drm/i915: Allow the sysadmin to override security mitigations
+
+Christian K=C3=B6nig (1):
+      drm/ttm: make the pool shrinker lock a mutex
+
+Colin Xu (1):
+      drm/i915/gvt: Fix vfio_edid issue for BXT/APL
+
+Dave Airlie (4):
+      Merge tag 'drm-misc-fixes-2021-01-12' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+      Merge tag 'drm-intel-fixes-2021-01-14' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+      Merge tag 'amd-drm-fixes-5.11-2021-01-14' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+      Merge branch '04.00-ampere-lite-fixes' of
+git://github.com/skeggsb/linux into drm-fixes
+
+Hans de Goede (1):
+      drm/i915/dsi: Use unconditional msleep for the panel_on_delay
+when there is no reset-deassert MIPI-sequence
+
+Huang Rui (1):
+      drm/amdgpu: fix vram type and bandwidth error for DDR5 and DDR4
+
+Imre Deak (1):
+      drm/i915/icl: Fix initing the DSI DSC power refcount during HW readou=
+t
+
+Jani Nikula (2):
+      drm/i915/backlight: fix CPU mode backlight takeover on LPT
+      Merge tag 'gvt-fixes-2020-01-08' of
+https://github.com/intel/gvt-linux into drm-intel-fixes
+
+Jeremy Cline (2):
+      drm/ttm: Fix address passed to dma_mapping_error() in ttm_pool_map()
+      drm/amdkfd: Fix out-of-bounds read in kdf_create_vcrat_image_cpu()
+
+John Stultz (1):
+      dma-buf: cma_heap: Fix memory leak in CMA heap
+
+Li, Roman (1):
+      drm/amd/display: disable dcn10 pipe split by default
+
+Likun Gao (1):
+      drm/amdgpu: set power brake sequence
+
+Nikola Cornij (1):
+      drm/amd/display: Add a missing DCN3.01 API mapping
+
+Prike Liang (1):
+      drm/amdgpu: add green_sardine device id (v2)
+
+Qingqing Zhuo (1):
+      drm/amd/display: NULL pointer hang
+
+Rodrigo Siqueira (4):
+      Revert "drm/amd/display: Fixed Intermittent blue screen on OLED panel=
+"
+      Revert "drm/amd/display: Fix unused variable warning"
+      Revert "drm/amdgpu/disply: fix documentation warnings in display mana=
+ger"
+      Revert "drm/amd/display: Expose new CRC window property"
+
+Victor Zhao (1):
+      drm/amdgpu/psp: fix psp gfx ctrl cmds
+
+Wayne Lin (1):
+      drm/amd/display: Fix to be able to stop crc calculation
+
+Wesley Chalmers (1):
+      drm/amd/display: Initialize stack variable
+
+chen gong (1):
+      drm/amdgpu/gfx10: add updated GOLDEN_TSC_COUNT_UPPER/LOWER
+register offsets for VGH
+
+mengwang (1):
+      drm/amdgpu: add new device id for Renior
+
+ MAINTAINERS                                        |   4 +-
+ drivers/dma-buf/heaps/cma_heap.c                   |   3 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_atomfirmware.c   |  53 ++++---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c            |   2 +
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c             |  48 ++++++-
+ drivers/gpu/drm/amd/amdgpu/psp_gfx_if.h            |   2 +-
+ drivers/gpu/drm/amd/amdgpu/soc15.c                 |   3 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_crat.c              |  11 +-
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  | 142 ++---------------=
 --
-Viresh
-
-[1] https://lore.kernel.org/lkml/CAHk-=whw9t3ZtV8iA2SJWYQS1VOJuS14P_qhj3v5-9PCBmGQww@mail.gmail.com/
-[2] https://lwn.net/Articles/841624/
-
-Viresh Kumar (18):
-  arch: alpha: Remove CONFIG_OPROFILE support
-  arch: arm: Remove CONFIG_OPROFILE support
-  arch: arc: Remove CONFIG_OPROFILE support
-  arch: hexagon: Don't select HAVE_OPROFILE
-  arch: ia64: Remove CONFIG_OPROFILE support
-  arch: ia64: Remove rest of perfmon support
-  arch: microblaze: Remove CONFIG_OPROFILE support
-  arch: mips: Remove CONFIG_OPROFILE support
-  arch: parisc: Remove CONFIG_OPROFILE support
-  arch: powerpc: Stop building and using oprofile
-  arch: powerpc: Remove oprofile
-  arch: s390: Remove CONFIG_OPROFILE support
-  arch: sh: Remove CONFIG_OPROFILE support
-  arch: sparc: Remove CONFIG_OPROFILE support
-  arch: x86: Remove CONFIG_OPROFILE support
-  arch: xtensa: Remove CONFIG_OPROFILE support
-  drivers: Remove CONFIG_OPROFILE support
-  fs: Remove dcookies support
-
- Documentation/RCU/NMI-RCU.rst                 |    3 +-
- .../admin-guide/kernel-parameters.txt         |   14 -
- Documentation/kbuild/makefiles.rst            |    1 -
- Documentation/process/magic-number.rst        |    1 -
- .../it_IT/process/magic-number.rst            |    1 -
- .../zh_CN/process/magic-number.rst            |    1 -
- MAINTAINERS                                   |   11 -
- arch/Kconfig                                  |   32 -
- arch/alpha/Kconfig                            |    1 -
- arch/alpha/Makefile                           |    1 -
- arch/alpha/oprofile/Makefile                  |   20 -
- arch/alpha/oprofile/common.c                  |  189 --
- arch/alpha/oprofile/op_impl.h                 |   55 -
- arch/alpha/oprofile/op_model_ev4.c            |  114 --
- arch/alpha/oprofile/op_model_ev5.c            |  209 --
- arch/alpha/oprofile/op_model_ev6.c            |  101 -
- arch/alpha/oprofile/op_model_ev67.c           |  261 ---
- arch/arc/Kconfig                              |    1 -
- arch/arc/Makefile                             |    2 -
- arch/arc/oprofile/Makefile                    |   10 -
- arch/arc/oprofile/common.c                    |   23 -
- arch/arm/Kconfig                              |    1 -
- arch/arm/Makefile                             |    2 -
- arch/arm/configs/bcm2835_defconfig            |    1 -
- arch/arm/configs/cns3420vb_defconfig          |    1 -
- arch/arm/configs/corgi_defconfig              |    1 -
- arch/arm/configs/imx_v4_v5_defconfig          |    1 -
- arch/arm/configs/keystone_defconfig           |    1 -
- arch/arm/configs/multi_v5_defconfig           |    1 -
- arch/arm/configs/mv78xx0_defconfig            |    1 -
- arch/arm/configs/mvebu_v5_defconfig           |    1 -
- arch/arm/configs/omap1_defconfig              |    1 -
- arch/arm/configs/omap2plus_defconfig          |    1 -
- arch/arm/configs/orion5x_defconfig            |    1 -
- arch/arm/configs/pxa_defconfig                |    1 -
- arch/arm/configs/qcom_defconfig               |    1 -
- arch/arm/configs/socfpga_defconfig            |    1 -
- arch/arm/configs/spitz_defconfig              |    1 -
- arch/arm/configs/vexpress_defconfig           |    1 -
- arch/arm/oprofile/Makefile                    |   14 -
- arch/arm/oprofile/common.c                    |  132 --
- arch/hexagon/Kconfig                          |    1 -
- arch/ia64/Kconfig                             |    1 -
- arch/ia64/Makefile                            |    1 -
- arch/ia64/configs/bigsur_defconfig            |    1 -
- arch/ia64/include/asm/hw_irq.h                |    1 -
- arch/ia64/include/asm/perfmon.h               |  111 --
- arch/ia64/include/uapi/asm/perfmon.h          |  178 --
- .../include/uapi/asm/perfmon_default_smpl.h   |   84 -
- arch/ia64/kernel/palinfo.c                    |   41 -
- arch/ia64/kernel/perfmon_default_smpl.c       |  297 ---
- arch/ia64/kernel/perfmon_generic.h            |   46 -
- arch/ia64/kernel/perfmon_itanium.h            |    2 +-
- arch/ia64/kernel/perfmon_mckinley.h           |  188 --
- arch/ia64/kernel/perfmon_montecito.h          |  270 ---
- arch/ia64/oprofile/Makefile                   |   10 -
- arch/ia64/oprofile/backtrace.c                |  131 --
- arch/ia64/oprofile/init.c                     |   28 -
- arch/microblaze/Kconfig                       |    1 -
- arch/microblaze/Makefile                      |    2 -
- arch/microblaze/oprofile/Makefile             |   14 -
- .../microblaze/oprofile/microblaze_oprofile.c |   22 -
- arch/mips/Kconfig                             |    3 +-
- arch/mips/Makefile                            |    1 -
- arch/mips/configs/fuloong2e_defconfig         |    1 -
- arch/mips/configs/ip32_defconfig              |    1 -
- arch/mips/configs/lemote2f_defconfig          |    1 -
- arch/mips/configs/mtx1_defconfig              |    1 -
- arch/mips/configs/rs90_defconfig              |    1 -
- .../include/asm/mach-loongson2ef/loongson.h   |    9 -
- arch/mips/loongson2ef/fuloong-2e/irq.c        |    2 +-
- arch/mips/loongson2ef/lemote-2f/irq.c         |    1 -
- arch/mips/oprofile/Makefile                   |   18 -
- arch/mips/oprofile/backtrace.c                |  177 --
- arch/mips/oprofile/common.c                   |  147 --
- arch/mips/oprofile/op_impl.h                  |   41 -
- arch/mips/oprofile/op_model_loongson2.c       |  161 --
- arch/mips/oprofile/op_model_loongson3.c       |  213 --
- arch/mips/oprofile/op_model_mipsxx.c          |  479 -----
- arch/parisc/Kconfig                           |    1 -
- arch/parisc/Makefile                          |    2 -
- arch/parisc/oprofile/Makefile                 |   10 -
- arch/parisc/oprofile/init.c                   |   23 -
- arch/powerpc/Kconfig                          |    1 -
- arch/powerpc/Makefile                         |    2 -
- arch/powerpc/configs/44x/akebono_defconfig    |    1 -
- arch/powerpc/configs/44x/currituck_defconfig  |    1 -
- arch/powerpc/configs/44x/fsp2_defconfig       |    1 -
- arch/powerpc/configs/44x/iss476-smp_defconfig |    1 -
- arch/powerpc/configs/cell_defconfig           |    1 -
- arch/powerpc/configs/g5_defconfig             |    1 -
- arch/powerpc/configs/maple_defconfig          |    1 -
- arch/powerpc/configs/pasemi_defconfig         |    1 -
- arch/powerpc/configs/pmac32_defconfig         |    1 -
- arch/powerpc/configs/powernv_defconfig        |    1 -
- arch/powerpc/configs/ppc64_defconfig          |    1 -
- arch/powerpc/configs/ppc64e_defconfig         |    1 -
- arch/powerpc/configs/ppc6xx_defconfig         |    1 -
- arch/powerpc/configs/ps3_defconfig            |    1 -
- arch/powerpc/configs/pseries_defconfig        |    1 -
- arch/powerpc/include/asm/cputable.h           |   20 -
- arch/powerpc/include/asm/oprofile_impl.h      |  135 --
- arch/powerpc/include/asm/spu.h                |   33 -
- arch/powerpc/kernel/cputable.c                |   67 -
- arch/powerpc/kernel/dt_cpu_ftrs.c             |    2 -
- arch/powerpc/oprofile/Makefile                |   19 -
- arch/powerpc/oprofile/backtrace.c             |  120 --
- arch/powerpc/oprofile/cell/pr_util.h          |  110 --
- arch/powerpc/oprofile/cell/spu_profiler.c     |  248 ---
- arch/powerpc/oprofile/cell/spu_task_sync.c    |  657 -------
- arch/powerpc/oprofile/cell/vma_map.c          |  279 ---
- arch/powerpc/oprofile/common.c                |  243 ---
- arch/powerpc/oprofile/op_model_7450.c         |  207 --
- arch/powerpc/oprofile/op_model_cell.c         | 1709 -----------------
- arch/powerpc/oprofile/op_model_fsl_emb.c      |  380 ----
- arch/powerpc/oprofile/op_model_pa6t.c         |  227 ---
- arch/powerpc/oprofile/op_model_power4.c       |  438 -----
- arch/powerpc/platforms/cell/Kconfig           |    5 -
- arch/powerpc/platforms/cell/spu_notify.c      |   55 -
- arch/powerpc/platforms/cell/spufs/run.c       |    4 +-
- arch/powerpc/platforms/cell/spufs/sched.c     |    5 -
- arch/powerpc/platforms/cell/spufs/spufs.h     |    1 -
- arch/s390/Kconfig                             |    1 -
- arch/s390/Makefile                            |    3 -
- arch/s390/configs/debug_defconfig             |    1 -
- arch/s390/configs/defconfig                   |    1 -
- arch/s390/oprofile/Makefile                   |   10 -
- arch/s390/oprofile/init.c                     |   37 -
- arch/sh/Kconfig                               |    1 -
- arch/sh/Makefile                              |    1 -
- arch/sh/configs/espt_defconfig                |    1 -
- arch/sh/configs/migor_defconfig               |    1 -
- arch/sh/configs/r7780mp_defconfig             |    1 -
- arch/sh/configs/r7785rp_defconfig             |    1 -
- arch/sh/configs/rsk7201_defconfig             |    1 -
- arch/sh/configs/rsk7203_defconfig             |    1 -
- arch/sh/configs/rts7751r2d1_defconfig         |    1 -
- arch/sh/configs/rts7751r2dplus_defconfig      |    1 -
- arch/sh/configs/sdk7786_defconfig             |    1 -
- arch/sh/configs/se7206_defconfig              |    1 -
- arch/sh/configs/sh03_defconfig                |    1 -
- arch/sh/configs/sh7724_generic_defconfig      |    1 -
- arch/sh/configs/sh7763rdp_defconfig           |    1 -
- arch/sh/configs/sh7770_generic_defconfig      |    1 -
- arch/sh/configs/shx3_defconfig                |    1 -
- arch/sh/oprofile/Makefile                     |   16 -
- arch/sh/oprofile/backtrace.c                  |   80 -
- arch/sh/oprofile/common.c                     |   64 -
- arch/sparc/Kconfig                            |    1 -
- arch/sparc/Makefile                           |    1 -
- arch/sparc/configs/sparc64_defconfig          |    1 -
- arch/sparc/oprofile/Makefile                  |   10 -
- arch/sparc/oprofile/init.c                    |   87 -
- arch/x86/Kconfig                              |    1 -
- arch/x86/Makefile                             |    3 -
- arch/x86/include/asm/nmi.h                    |    1 -
- arch/x86/kernel/cpu/perfctr-watchdog.c        |   11 +-
- arch/x86/oprofile/Makefile                    |   12 -
- arch/x86/oprofile/backtrace.c                 |  127 --
- arch/x86/oprofile/init.c                      |   38 -
- arch/x86/oprofile/nmi_int.c                   |  780 --------
- arch/x86/oprofile/op_counter.h                |   30 -
- arch/x86/oprofile/op_model_amd.c              |  542 ------
- arch/x86/oprofile/op_model_p4.c               |  723 -------
- arch/x86/oprofile/op_model_ppro.c             |  245 ---
- arch/x86/oprofile/op_x86_model.h              |   90 -
- arch/xtensa/Kconfig                           |    1 -
- arch/xtensa/Makefile                          |    1 -
- arch/xtensa/configs/audio_kc705_defconfig     |    1 -
- arch/xtensa/configs/generic_kc705_defconfig   |    1 -
- arch/xtensa/configs/smp_lx200_defconfig       |    1 -
- arch/xtensa/configs/xip_kc705_defconfig       |    1 -
- arch/xtensa/kernel/stacktrace.c               |    2 +-
- arch/xtensa/oprofile/Makefile                 |   10 -
- arch/xtensa/oprofile/backtrace.c              |   27 -
- arch/xtensa/oprofile/init.c                   |   26 -
- drivers/oprofile/buffer_sync.c                |  591 ------
- drivers/oprofile/buffer_sync.h                |   22 -
- drivers/oprofile/cpu_buffer.c                 |  465 -----
- drivers/oprofile/cpu_buffer.h                 |  121 --
- drivers/oprofile/event_buffer.c               |  209 --
- drivers/oprofile/event_buffer.h               |   40 -
- drivers/oprofile/nmi_timer_int.c              |  157 --
- drivers/oprofile/oprof.c                      |  286 ---
- drivers/oprofile/oprof.h                      |   50 -
- drivers/oprofile/oprofile_files.c             |  201 --
- drivers/oprofile/oprofile_perf.c              |  328 ----
- drivers/oprofile/oprofile_stats.c             |   84 -
- drivers/oprofile/oprofile_stats.h             |   33 -
- drivers/oprofile/oprofilefs.c                 |  300 ---
- drivers/oprofile/timer_int.c                  |  122 --
- fs/Makefile                                   |    1 -
- fs/dcookies.c                                 |  356 ----
- include/linux/dcookies.h                      |   69 -
- include/linux/oprofile.h                      |  209 --
- init/Kconfig                                  |    2 +-
- kernel/sys.c                                  |    1 -
- usr/include/Makefile                          |    2 -
- 198 files changed, 8 insertions(+), 15566 deletions(-)
- delete mode 100644 arch/alpha/oprofile/Makefile
- delete mode 100644 arch/alpha/oprofile/common.c
- delete mode 100644 arch/alpha/oprofile/op_impl.h
- delete mode 100644 arch/alpha/oprofile/op_model_ev4.c
- delete mode 100644 arch/alpha/oprofile/op_model_ev5.c
- delete mode 100644 arch/alpha/oprofile/op_model_ev6.c
- delete mode 100644 arch/alpha/oprofile/op_model_ev67.c
- delete mode 100644 arch/arc/oprofile/Makefile
- delete mode 100644 arch/arc/oprofile/common.c
- delete mode 100644 arch/arm/oprofile/Makefile
- delete mode 100644 arch/arm/oprofile/common.c
- delete mode 100644 arch/ia64/include/asm/perfmon.h
- delete mode 100644 arch/ia64/include/uapi/asm/perfmon.h
- delete mode 100644 arch/ia64/include/uapi/asm/perfmon_default_smpl.h
- delete mode 100644 arch/ia64/kernel/perfmon_default_smpl.c
- delete mode 100644 arch/ia64/kernel/perfmon_generic.h
- delete mode 100644 arch/ia64/kernel/perfmon_mckinley.h
- delete mode 100644 arch/ia64/kernel/perfmon_montecito.h
- delete mode 100644 arch/ia64/oprofile/Makefile
- delete mode 100644 arch/ia64/oprofile/backtrace.c
- delete mode 100644 arch/ia64/oprofile/init.c
- delete mode 100644 arch/microblaze/oprofile/Makefile
- delete mode 100644 arch/microblaze/oprofile/microblaze_oprofile.c
- delete mode 100644 arch/mips/oprofile/Makefile
- delete mode 100644 arch/mips/oprofile/backtrace.c
- delete mode 100644 arch/mips/oprofile/common.c
- delete mode 100644 arch/mips/oprofile/op_impl.h
- delete mode 100644 arch/mips/oprofile/op_model_loongson2.c
- delete mode 100644 arch/mips/oprofile/op_model_loongson3.c
- delete mode 100644 arch/mips/oprofile/op_model_mipsxx.c
- delete mode 100644 arch/parisc/oprofile/Makefile
- delete mode 100644 arch/parisc/oprofile/init.c
- delete mode 100644 arch/powerpc/include/asm/oprofile_impl.h
- delete mode 100644 arch/powerpc/oprofile/Makefile
- delete mode 100644 arch/powerpc/oprofile/backtrace.c
- delete mode 100644 arch/powerpc/oprofile/cell/pr_util.h
- delete mode 100644 arch/powerpc/oprofile/cell/spu_profiler.c
- delete mode 100644 arch/powerpc/oprofile/cell/spu_task_sync.c
- delete mode 100644 arch/powerpc/oprofile/cell/vma_map.c
- delete mode 100644 arch/powerpc/oprofile/common.c
- delete mode 100644 arch/powerpc/oprofile/op_model_7450.c
- delete mode 100644 arch/powerpc/oprofile/op_model_cell.c
- delete mode 100644 arch/powerpc/oprofile/op_model_fsl_emb.c
- delete mode 100644 arch/powerpc/oprofile/op_model_pa6t.c
- delete mode 100644 arch/powerpc/oprofile/op_model_power4.c
- delete mode 100644 arch/powerpc/platforms/cell/spu_notify.c
- delete mode 100644 arch/s390/oprofile/Makefile
- delete mode 100644 arch/s390/oprofile/init.c
- delete mode 100644 arch/sh/oprofile/Makefile
- delete mode 100644 arch/sh/oprofile/backtrace.c
- delete mode 100644 arch/sh/oprofile/common.c
- delete mode 100644 arch/sparc/oprofile/Makefile
- delete mode 100644 arch/sparc/oprofile/init.c
- delete mode 100644 arch/x86/oprofile/Makefile
- delete mode 100644 arch/x86/oprofile/backtrace.c
- delete mode 100644 arch/x86/oprofile/init.c
- delete mode 100644 arch/x86/oprofile/nmi_int.c
- delete mode 100644 arch/x86/oprofile/op_counter.h
- delete mode 100644 arch/x86/oprofile/op_model_amd.c
- delete mode 100644 arch/x86/oprofile/op_model_p4.c
- delete mode 100644 arch/x86/oprofile/op_model_ppro.c
- delete mode 100644 arch/x86/oprofile/op_x86_model.h
- delete mode 100644 arch/xtensa/oprofile/Makefile
- delete mode 100644 arch/xtensa/oprofile/backtrace.c
- delete mode 100644 arch/xtensa/oprofile/init.c
- delete mode 100644 drivers/oprofile/buffer_sync.c
- delete mode 100644 drivers/oprofile/buffer_sync.h
- delete mode 100644 drivers/oprofile/cpu_buffer.c
- delete mode 100644 drivers/oprofile/cpu_buffer.h
- delete mode 100644 drivers/oprofile/event_buffer.c
- delete mode 100644 drivers/oprofile/event_buffer.h
- delete mode 100644 drivers/oprofile/nmi_timer_int.c
- delete mode 100644 drivers/oprofile/oprof.c
- delete mode 100644 drivers/oprofile/oprof.h
- delete mode 100644 drivers/oprofile/oprofile_files.c
- delete mode 100644 drivers/oprofile/oprofile_perf.c
- delete mode 100644 drivers/oprofile/oprofile_stats.c
- delete mode 100644 drivers/oprofile/oprofile_stats.h
- delete mode 100644 drivers/oprofile/oprofilefs.c
- delete mode 100644 drivers/oprofile/timer_int.c
- delete mode 100644 fs/dcookies.c
- delete mode 100644 include/linux/dcookies.h
- delete mode 100644 include/linux/oprofile.h
-
-
-base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
--- 
-2.25.0.rc1.19.g042ed3e048af
-
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h  |  38 -----
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.c  |  54 +------
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.h  |   5 +-
+ drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c   |   8 +-
+ drivers/gpu/drm/amd/display/dc/dcn10/dcn10_mpc.c   |   2 +-
+ .../gpu/drm/amd/display/dc/dcn10/dcn10_resource.c  |   4 +-
+ .../drm/amd/display/dc/dcn301/dcn301_resource.c    |   1 +
+ .../display/dc/dml/dcn20/display_mode_vba_20v2.c   |  11 +-
+ drivers/gpu/drm/drm_plane.c                        |   9 +-
+ drivers/gpu/drm/i915/Makefile                      |   1 +
+ drivers/gpu/drm/i915/display/icl_dsi.c             |   4 -
+ drivers/gpu/drm/i915/display/intel_panel.c         |   9 +-
+ drivers/gpu/drm/i915/display/vlv_dsi.c             |  16 ++-
+ drivers/gpu/drm/i915/gt/gen7_renderclear.c         | 157 ++++++++++++-----=
+----
+ drivers/gpu/drm/i915/gt/intel_ring_submission.c    |   6 +-
+ drivers/gpu/drm/i915/gvt/display.c                 |  81 +++++++----
+ drivers/gpu/drm/i915/gvt/vgpu.c                    |   5 +-
+ drivers/gpu/drm/i915/i915_drv.c                    |   4 +
+ drivers/gpu/drm/i915/i915_mitigations.c            | 146 +++++++++++++++++=
+++
+ drivers/gpu/drm/i915/i915_mitigations.h            |  13 ++
+ drivers/gpu/drm/nouveau/dispnv50/disp.c            |   4 +-
+ drivers/gpu/drm/nouveau/dispnv50/disp.h            |   2 +-
+ drivers/gpu/drm/nouveau/dispnv50/wimmc37b.c        |   2 +-
+ drivers/gpu/drm/nouveau/include/nvkm/subdev/i2c.h  |   1 +
+ drivers/gpu/drm/nouveau/nvkm/engine/device/base.c  |  12 +-
+ drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadow.c  |   2 +-
+ drivers/gpu/drm/nouveau/nvkm/subdev/i2c/Kbuild     |   1 +
+ drivers/gpu/drm/nouveau/nvkm/subdev/i2c/aux.h      |   7 +
+ drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c   |  10 +-
+ drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c |  17 ++-
+ drivers/gpu/drm/nouveau/nvkm/subdev/i2c/gk110.c    |  45 ++++++
+ drivers/gpu/drm/nouveau/nvkm/subdev/i2c/gm200.c    |   7 +
+ drivers/gpu/drm/nouveau/nvkm/subdev/i2c/pad.h      |   2 +-
+ drivers/gpu/drm/nouveau/nvkm/subdev/i2c/priv.h     |   4 +
+ drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gf100.c   |  10 +-
+ drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gk104.c   |  10 +-
+ drivers/gpu/drm/nouveau/nvkm/subdev/mmu/base.c     |   6 +-
+ drivers/gpu/drm/ttm/ttm_pool.c                     |  22 +--
+ 48 files changed, 598 insertions(+), 410 deletions(-)
+ create mode 100644 drivers/gpu/drm/i915/i915_mitigations.c
+ create mode 100644 drivers/gpu/drm/i915/i915_mitigations.h
+ create mode 100644 drivers/gpu/drm/nouveau/nvkm/subdev/i2c/gk110.c
