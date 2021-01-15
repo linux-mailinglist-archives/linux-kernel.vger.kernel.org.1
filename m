@@ -2,173 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6152F73EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CFD2F73EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732100AbhAOH7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 02:59:52 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10725 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731999AbhAOH7w (ORCPT
+        id S1732155AbhAOH76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 02:59:58 -0500
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:45847 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732129AbhAOH75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 02:59:52 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DHD7H0y3Nzl4xP;
-        Fri, 15 Jan 2021 15:57:47 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 15 Jan
- 2021 15:59:03 +0800
-Subject: Re: [PATCH v2] f2fs: fix to keep isolation of atomic write
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
-References: <20201230075557.108818-1-yuchao0@huawei.com>
- <YAC9a6quO2VOirLi@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <3923906d-f208-f6c2-f121-5e77e8fb6b28@huawei.com>
-Date:   Fri, 15 Jan 2021 15:59:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Fri, 15 Jan 2021 02:59:57 -0500
+Received: by mail-oi1-f173.google.com with SMTP id f132so8681206oib.12
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:59:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=whTBbbuwzuSuP44Iueajqp/PtjcefDAsRVDPTDd0OnA=;
+        b=OqDlHDR3t0S05tEFb7N52iGzHHM5yB6IoeGl36/WuTmP5f5Li7kAemTUWi6o9cDMlY
+         tc7u3G6pbgw7SS6dqooqBOTD6Eo2rqlqrF4vYyxVh68OVMbW0a8PaSGyHfyWycyHygsb
+         Pm57ByVTQlyjAYE4BSw2cXvYbaUgnQMobWPjj4qpvR8omZ+fMQGG1tIm2Y0uoJh/CXCk
+         TKV0hxx5UTUoGON2yz/ytc7UY77Fl/VmIS1JGYY8y/k4SvNtruF1znwT9EJ+O+Bfr6rt
+         hQJKzfSsh0tvwjuGYG+L4YjoS4U/cyrcjm9Ihu5o4xbyVgqre3llPuRP8Kl2ovYGPihb
+         U/nQ==
+X-Gm-Message-State: AOAM532vnXZfLYE0+sK7V4uVTs+ovmT8KX2qYRXReg9MH/XGKxdgE/JF
+        IRyWEGcIo2K0e+VWMluBSAqD+F2oIWtYSE7gXcw=
+X-Google-Smtp-Source: ABdhPJw4YHtZUQmyw3UW8zTcDJxg79aDbp8F9zJax8QDTZX46t+UYxWRQV9uM4jiNnSB6Rb1/7vVZmX9sliV1Ac3P/c=
+X-Received: by 2002:aca:ec09:: with SMTP id k9mr4937946oih.153.1610697555949;
+ Thu, 14 Jan 2021 23:59:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YAC9a6quO2VOirLi@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+References: <CAOnJCU+mCPwbeOQpmHmu3ar_17otmgftiKHLL+Z4_nExpj0=cA@mail.gmail.com>
+ <mhng-4458ef4d-9443-491e-9118-aec3596058ed@penguin> <CAOnJCUJON3B6ugWDY1=rcDOMS2+m=SVBsiAEnwV=QDL7omnsfA@mail.gmail.com>
+In-Reply-To: <CAOnJCUJON3B6ugWDY1=rcDOMS2+m=SVBsiAEnwV=QDL7omnsfA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 15 Jan 2021 08:59:04 +0100
+Message-ID: <CAMuHMdXQr-qNQ2aNVmgQFfs_dJ8=A-xzrhxRf9VUmzFXx+2o_w@mail.gmail.com>
+Subject: Re: [PATCH 3/4] RISC-V: Fix L1_CACHE_BYTES for RV32
+To:     Atish Patra <atishp@atishpatra.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/15 5:53, Jaegeuk Kim wrote:
-> On 12/30, Chao Yu wrote:
->> ThreadA					ThreadB
->> - f2fs_ioc_start_atomic_write
->> - write
->> - f2fs_ioc_commit_atomic_write
->>   - f2fs_commit_inmem_pages
->>   - f2fs_drop_inmem_pages
->>   - f2fs_drop_inmem_pages
->>    - __revoke_inmem_pages
->> 					- f2fs_vm_page_mkwrite
->> 					 - set_page_dirty
->> 					  - tag ATOMIC_WRITTEN_PAGE and add page
->> 					    to inmem_pages list
->>    - clear_inode_flag(FI_ATOMIC_FILE)
->> 					- f2fs_vm_page_mkwrite
->> 					  - set_page_dirty
->> 					   - f2fs_update_dirty_page
->> 					    - f2fs_trace_pid
->> 					     - tag inmem page private to pid
-> 
-> Hmm, how about removing fs/f2fs/trace.c to make private more complicated
-> like this? I think we can get IO traces from tracepoints.
+Hi Atish,
 
-Hmm, actually, there is are issues, one is the trace IO, the other is the
-race issue (atomic_start,commit,drop vs mkwrite) which can make isolation
-semantics of transaction be broken.
+On Thu, Jan 14, 2021 at 10:11 PM Atish Patra <atishp@atishpatra.org> wrote:
+> On Thu, Jan 14, 2021 at 11:46 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> > On Thu, 14 Jan 2021 10:33:01 PST (-0800), atishp@atishpatra.org wrote:
+> > > On Wed, Jan 13, 2021 at 9:10 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> > >>
+> > >> On Thu, 07 Jan 2021 01:26:51 PST (-0800), Atish Patra wrote:
+> > >> > SMP_CACHE_BYTES/L1_CACHE_BYTES should be defined as 32 instead of
+> > >> > 64 for RV32. Otherwise, there will be hole of 32 bytes with each memblock
+> > >> > allocation if it is requested to be aligned with SMP_CACHE_BYTES.
+> > >> >
+> > >> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> > >> > ---
+> > >> >  arch/riscv/include/asm/cache.h | 4 ++++
+> > >> >  1 file changed, 4 insertions(+)
+> > >> >
+> > >> > diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
+> > >> > index 9b58b104559e..c9c669ea2fe6 100644
+> > >> > --- a/arch/riscv/include/asm/cache.h
+> > >> > +++ b/arch/riscv/include/asm/cache.h
+> > >> > @@ -7,7 +7,11 @@
+> > >> >  #ifndef _ASM_RISCV_CACHE_H
+> > >> >  #define _ASM_RISCV_CACHE_H
+> > >> >
+> > >> > +#ifdef CONFIG_64BIT
+> > >> >  #define L1_CACHE_SHIFT               6
+> > >> > +#else
+> > >> > +#define L1_CACHE_SHIFT               5
+> > >> > +#endif
+> > >> >
+> > >> >  #define L1_CACHE_BYTES               (1 << L1_CACHE_SHIFT)
+> > >>
+> > >> Should we not instead just
+> > >>
+> > >> #define SMP_CACHE_BYTES L1_CACHE_BYTES
+> > >>
+> > >> like a handful of architectures do?
+> > >>
+> > >
+> > > The generic code already defines it that way in include/linux/cache.h
+> > >
+> > >> The cache size is sort of fake here, as we don't have any non-coherent
+> > >> mechanisms, but IIRC we wrote somewhere that it's recommended to have 64-byte
+> > >> cache lines in RISC-V implementations as software may assume that for
+> > >> performance reasons.  Not really a strong reason, but I'd prefer to just make
+> > >> these match.
+> > >>
+> > >
+> > > If it is documented somewhere in the kernel, we should update that. I
+> > > think SMP_CACHE_BYTES being 64
+> > > actually degrades the performance as there will be a fragmented memory
+> > > blocks with 32 bit bytes gap wherever
+> > > SMP_CACHE_BYTES is used as an alignment requirement.
+> >
+> > I don't buy that: if you're trying to align to the cache size then the gaps are
+> > the whole point.  IIUC the 64-byte cache lines come from DDR, not XLEN, so
+> > there's really no reason for these to be different between the base ISAs.
+> >
+>
+> Got your point. I noticed this when fixing the resource tree issue
+> where the SMP_CACHE_BYTES
+> alignment was not intentional but causing the issue. The real issue
+> was solved via another patch in this series though.
+>
+> Just to clarify, if the allocation function intends to allocate
+> consecutive memory, it should use 32 instead of SMP_CACHE_BYTES.
+> This will lead to a #ifdef macro in the code.
+>
+> > > In addition to that, Geert Uytterhoeven mentioned some panic on vex32
+> > > without this patch.
+> > > I didn't see anything in Qemu though.
+> >
+> > Something like that is probably only going to show up on real hardware, QEMU
+> > doesn't really do anything with the cache line size.  That said, as there's
+> > nothing in our kernel now related to non-coherent memory there really should
+> > only be performance issue (at least until we have non-coherent systems).
+> >
+> > I'd bet that the change is just masking some other bug, either in the software
+> > or the hardware.  I'd prefer to root cause this rather than just working around
+> > it, as it'll probably come back later and in a more difficult way to find.
+> >
+>
+> Agreed. @Geert Uytterhoeven Can you do a further analysis of the panic
+> you were saying ?
+> We may need to change an alignment requirement to 32 for RV32 manually
+> at some place in code.
 
-Or can we avoid atomic file racing with file mmap?
+My findings were in
+https://lore.kernel.org/linux-riscv/CAMuHMdWf6K-5y02+WJ6Khu1cD6P0n5x1wYQikrECkuNtAA1pgg@mail.gmail.com/
 
-- atomic_start			- file_mmap
-				 - inode_lock
-				 - if (FI_ATOMIC_FILE) return
-  - inode_lock
-  - if (FI_MMAP_FILE) return
+Note that when the memblock.reserved list kept increasing, it kept on
+adding the same entry to the list.  But that was fixed by "[PATCH 1/4]
+RISC-V: Do not allocate memblock while iterating reserved memblocks".
 
-Thanks,
+After that, only the (reproducible) "Unable to handle kernel paging
+request at virtual address 61636473" was left, always at the same place.
+No idea where the actual corruption happened.
 
-> 
->> 					- truncate
->> 					 - f2fs_invalidate_page
->> 					 - set page->mapping to NULL
->> 					  then it will cause panic once we
->> 					  access page->mapping
->>
->> The root cause is we missed to keep isolation of atomic write in the case
->> of commit_atomic_write vs mkwrite, let commit_atomic_write helds i_mmap_sem
->> lock to avoid this issue.
->>
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->> ---
->> v2:
->> - use i_mmap_sem to avoid mkwrite racing with below flows:
->>   * f2fs_ioc_start_atomic_write
->>   * f2fs_drop_inmem_pages
->>   * f2fs_commit_inmem_pages
->>
->>   fs/f2fs/file.c    | 3 +++
->>   fs/f2fs/segment.c | 7 +++++++
->>   2 files changed, 10 insertions(+)
->>
->> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->> index 4e6d4b9120a8..a48ec650d691 100644
->> --- a/fs/f2fs/file.c
->> +++ b/fs/f2fs/file.c
->> @@ -2050,6 +2050,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->>   		goto out;
->>   
->>   	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->> +	down_write(&F2FS_I(inode)->i_mmap_sem);
->>   
->>   	/*
->>   	 * Should wait end_io to count F2FS_WB_CP_DATA correctly by
->> @@ -2060,6 +2061,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->>   			  inode->i_ino, get_dirty_pages(inode));
->>   	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
->>   	if (ret) {
->> +		up_write(&F2FS_I(inode)->i_mmap_sem);
->>   		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->>   		goto out;
->>   	}
->> @@ -2073,6 +2075,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->>   	/* add inode in inmem_list first and set atomic_file */
->>   	set_inode_flag(inode, FI_ATOMIC_FILE);
->>   	clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
->> +	up_write(&F2FS_I(inode)->i_mmap_sem);
->>   	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->>   
->>   	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
->> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->> index d8570b0359f5..dab870d9faf6 100644
->> --- a/fs/f2fs/segment.c
->> +++ b/fs/f2fs/segment.c
->> @@ -327,6 +327,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
->>   	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->>   	struct f2fs_inode_info *fi = F2FS_I(inode);
->>   
->> +	down_write(&F2FS_I(inode)->i_mmap_sem);
->> +
->>   	while (!list_empty(&fi->inmem_pages)) {
->>   		mutex_lock(&fi->inmem_lock);
->>   		__revoke_inmem_pages(inode, &fi->inmem_pages,
->> @@ -344,6 +346,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
->>   		sbi->atomic_files--;
->>   	}
->>   	spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
->> +
->> +	up_write(&F2FS_I(inode)->i_mmap_sem);
->>   }
->>   
->>   void f2fs_drop_inmem_page(struct inode *inode, struct page *page)
->> @@ -467,6 +471,7 @@ int f2fs_commit_inmem_pages(struct inode *inode)
->>   	f2fs_balance_fs(sbi, true);
->>   
->>   	down_write(&fi->i_gc_rwsem[WRITE]);
->> +	down_write(&F2FS_I(inode)->i_mmap_sem);
->>   
->>   	f2fs_lock_op(sbi);
->>   	set_inode_flag(inode, FI_ATOMIC_COMMIT);
->> @@ -478,6 +483,8 @@ int f2fs_commit_inmem_pages(struct inode *inode)
->>   	clear_inode_flag(inode, FI_ATOMIC_COMMIT);
->>   
->>   	f2fs_unlock_op(sbi);
->> +
->> +	up_write(&F2FS_I(inode)->i_mmap_sem);
->>   	up_write(&fi->i_gc_rwsem[WRITE]);
->>   
->>   	return err;
->> -- 
->> 2.29.2
-> .
-> 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
