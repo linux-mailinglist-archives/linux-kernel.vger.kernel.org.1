@@ -2,180 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C0D2F7622
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9B62F7608
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731404AbhAOJ7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:59:46 -0500
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.22]:29326 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730981AbhAOJ7p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:59:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1610704548;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Subject:Sender;
-        bh=pQJUbSnglx6jrVEG/uzEMF/4a7MagxWfC490ZSlRcXE=;
-        b=LwuonCwlR5oQhAfMTVYCA+JEmLvVXaqVXdgdKFVLwYPh64ilEne0HgAhbl/S7QuBfx
-        ajFniRu/GLR+r+okpTTJoRNMDO5zGcGm2RH2V814PVJtEztXS2Im5Z2e+V3RKA7GpqTe
-        FydKth6WxVV7H9fK3sn+G+GovvmumSnor+UDKoIp7ziG0W7EMddYeiLc40lG0lCADgHy
-        Aqk8JwBkPSbkuZq16s1kdwO9RwM6wzVuJTdFl/YnMWigMwB1cOcJp0RiIuo4I/V0X5Fc
-        fCQ7ZvwQd/wce3c97NW+QRmwL5AW64ANEA+y1n7AevmjzMQMny5ZYQVgLFJYSMwHrKfs
-        Iqbg==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j4IcrHBg=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
-        with ESMTPSA id R0a218x0F9tmpP8
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Fri, 15 Jan 2021 10:55:48 +0100 (CET)
-Date:   Fri, 15 Jan 2021 10:55:46 +0100
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Saravana Kannan <saravanak@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH] driver core: Extend device_is_dependent()
-Message-ID: <YAFmoinbKocE9Jf5@gerhold.net>
-References: <2073294.4OfjquceTg@kreacher>
- <CAGETcx980TXe_Jur3LqpWoMwt0wG9BBvVdXfhAo3jU8-tgv=kw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx980TXe_Jur3LqpWoMwt0wG9BBvVdXfhAo3jU8-tgv=kw@mail.gmail.com>
+        id S1727331AbhAOJ5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:57:45 -0500
+Received: from mga07.intel.com ([134.134.136.100]:10891 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726385AbhAOJ5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 04:57:44 -0500
+IronPort-SDR: JFibVVLp4NHdqqOkBeKLfBgjiUEYzGY+6M3xm4M3bCPFJklM5YAehUEUxHvTNxGTu7RVyZgoH6
+ WCDzwbltLObQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="242596624"
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="242596624"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 01:56:13 -0800
+IronPort-SDR: Y+vTJRvOtOnc2M9E1Luw/iV6NiGYPWPSNpYEk80Kx/2xifV2gRs9nalv9YsPi1rhzyPcJ3ixZh
+ ZD7jjQ8aFdTA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="352762493"
+Received: from sgsxdev004.isng.phoenix.local (HELO localhost) ([10.226.81.179])
+  by orsmga006.jf.intel.com with ESMTP; 15 Jan 2021 01:56:10 -0800
+From:   Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+To:     dmaengine@vger.kernel.org, vkoul@kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
+        chuanhua.lei@linux.intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, mallikarjunax.reddy@linux.intel.com,
+        malliamireddy009@gmail.com, rtanwar@maxlinear.com,
+        lchuanhua@maxlinear.com
+Subject: [PATCH v11 0/2]  Add Intel LGM SoC DMA support
+Date:   Fri, 15 Jan 2021 17:56:01 +0800
+Message-Id: <cover.1610703653.git.mallikarjunax.reddy@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add DMA controller driver for Lightning Mountain (LGM) family of SoCs.
 
-On Thu, Jan 14, 2021 at 11:31:12AM -0800, Saravana Kannan wrote:
-> On Thu, Jan 14, 2021 at 10:41 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> >
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > When adding a new device link, device_is_dependent() is used to
-> > check whether or not the prospective supplier device does not
-> > depend on the prospective consumer one to avoid adding loops
-> > to the graph of device dependencies.
-> >
-> > However, device_is_dependent() does not take the ancestors of
-> > the target device into account, so it may not detect an existing
-> > reverse dependency if, for example, the parent of the target
-> > device depends on the device passed as its first argument.
-> >
-> > For this reason, extend device_is_dependent() to also check if
-> > the device passed as its first argument is an ancestor of the
-> > target one and return 1 if that is the case.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > Reported-by: Stephan Gerhold <stephan@gerhold.net>
-> > ---
-> >  drivers/base/core.c |   12 +++++++++++-
-> >  1 file changed, 11 insertions(+), 1 deletion(-)
-> >
-> > Index: linux-pm/drivers/base/core.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/base/core.c
-> > +++ linux-pm/drivers/base/core.c
-> > @@ -208,6 +208,16 @@ int device_links_read_lock_held(void)
-> >  #endif
-> >  #endif /* !CONFIG_SRCU */
-> >
-> > +static bool device_is_ancestor(struct device *dev, struct device *target)
-> > +{
-> > +       while (target->parent) {
-> > +               target = target->parent;
-> > +               if (dev == target)
-> > +                       return true;
-> > +       }
-> > +       return false;
-> > +}
-> > +
-> >  /**
-> >   * device_is_dependent - Check if one device depends on another one
-> >   * @dev: Device to check dependencies for.
-> > @@ -221,7 +231,7 @@ int device_is_dependent(struct device *d
-> >         struct device_link *link;
-> >         int ret;
-> >
-> > -       if (dev == target)
-> > +       if (dev == target || device_is_ancestor(dev, target))
-> >                 return 1;
-> >
-> >         ret = device_for_each_child(dev, target, device_is_dependent);
-> >
-> 
+The main function of the DMA controller is the transfer of data from/to any
+peripheral to/from the memory. A memory to memory copy capability can also
+be configured. This ldma driver is used for configure the device and channnels
+for data and control paths.
 
-Thanks for the patch, Rafael! I tested it and it seems to avoid the
-circular device link (and therefore also the crash). FWIW:
+These controllers provide DMA capabilities for a variety of on-chip
+devices such as SSC, HSNAND and GSWIP (Gigabit Switch IP).
 
-Tested-by: Stephan Gerhold <stephan@gerhold.net>
+-------------
+Future Plans:
+-------------
+LGM SOC also supports Hardware Memory Copy engine.
+The role of the HW Memory copy engine is to offload memory copy operations
+from the CPU.
 
-> The code works, but it's not at all obvious what it's doing. Because,
-> at first glance, it's easy to mistakenly think that it's trying to
-> catch this case:
-> dev <- child1 <- child2 <- target
-> 
+Amireddy Mallikarjuna reddy (2):
+  dt-bindings: dma: Add bindings for Intel LGM SoC
+  Add Intel LGM SoC DMA support.
 
-Isn't this pretty much the case we are trying to catch? I have:
+ .../devicetree/bindings/dma/intel,ldma.yaml   |  116 ++
+ drivers/dma/Kconfig                           |    2 +
+ drivers/dma/Makefile                          |    1 +
+ drivers/dma/lgm/Kconfig                       |    9 +
+ drivers/dma/lgm/Makefile                      |    2 +
+ drivers/dma/lgm/lgm-dma.c                     | 1739 +++++++++++++++++
+ 6 files changed, 1869 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/intel,ldma.yaml
+ create mode 100644 drivers/dma/lgm/Kconfig
+ create mode 100644 drivers/dma/lgm/Makefile
+ create mode 100644 drivers/dma/lgm/lgm-dma.c
+---
+v1:
+- Initial version.
 
-  78d9000.usb <- ci_hdrc.0 <- ci_hdrc.0.ulpi <- phy-ci_hdrc.0.ulpi.0
+v2:
+- Fix device tree bot issues, correspondign driver changes done.
+- Fix kerntel test robot warnings.
+  --------------------------------------------------------
+  >> drivers/dma/lgm/lgm-dma.c:729:5: warning: no previous prototype for function 'intel_dma_chan_desc_cfg' [-Wmissing-prototypes]
+  int intel_dma_chan_desc_cfg(struct dma_chan *chan, dma_addr_t desc_base,
+  ^
+  drivers/dma/lgm/lgm-dma.c:729:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+  int intel_dma_chan_desc_cfg(struct dma_chan *chan, dma_addr_t desc_base,
+  ^
+  static
+  1 warning generated.
 
-then something attempts to create a device link with
-consumer = 78d9000.usb, supplier = phy-ci_hdrc.0.ulpi.0, and to check if
-that is allowed we call device_is_dependent() with dev = 78d9000.usb,
-target = phy-ci_hdrc.0.ulpi.0.
+  vim +/intel_dma_chan_desc_cfg +729 drivers/dma/lgm/lgm-dma.c
 
-Note that this case would normally be covered by the device_for_each_child().
-It's not in this case because the klist_children of 78d9000.usb
-is updated too late.
+    728
+  > 729 int intel_dma_chan_desc_cfg(struct dma_chan *chan, dma_addr_t desc_base,
+    730                             int desc_num)
+    731 {
+    732         return ldma_chan_desc_cfg(to_ldma_chan(chan), desc_base, desc_num);
+    733 }
+    734 EXPORT_SYMBOL_GPL(intel_dma_chan_desc_cfg);
+    735
 
-> Maybe it's clearer if we do this check inside the loop? Something like:
-> 
->                 if (link->consumer == target ||
-> device_is_ancestor(link->consumer, target))
->                         return 1;
-> 
+   Reported-by: kernel test robot <lkp@intel.com>
+   ---------------------------------------------------------------
 
-I tried to test this with the diff below (let me know if I got it wrong).
-It does not seem to make any difference though, the circular device link
-is still created and without the reorder commit reverted it crashes.
+v3:
+- Fix smatch warning.
+  ----------------------------------------------------------------
+  smatch warnings:
+  drivers/dma/lgm/lgm-dma.c:1306 ldma_cfg_init() error: uninitialized symbol 'ret'.
 
-Thanks!
-Stephan
+  Reported-by: kernel test robot <lkp@intel.com>
+  Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+  ----------------------------------------------------------------
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 14f165816742..7af4ef5f89e7 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -208,6 +208,16 @@ int device_links_read_lock_held(void)
- #endif
- #endif /* !CONFIG_SRCU */
- 
-+static bool device_is_ancestor(struct device *dev, struct device *target)
-+{
-+	while (target->parent) {
-+		target = target->parent;
-+		if (dev == target)
-+			return true;
-+	}
-+	return false;
-+}
-+
- /**
-  * device_is_dependent - Check if one device depends on another one
-  * @dev: Device to check dependencies for.
-@@ -232,7 +242,7 @@ int device_is_dependent(struct device *dev, void *target)
- 		if (link->flags == (DL_FLAG_SYNC_STATE_ONLY | DL_FLAG_MANAGED))
- 			continue;
- 
--		if (link->consumer == target)
-+		if (link->consumer == target || device_is_ancestor(link->consumer, target))
- 			return 1;
- 
- 		ret = device_is_dependent(link->consumer, target);
+v4:
+- Address Thomas Langer comments in dtbinding and corresponding driver side changes.
+- Driver side changes to corresponding device tree changes.
+
+v5:
+- Add changes to read 'dmas' properties and update the config properties driver side.
+- Add virt_dma_desc utilizes virt-dma API.
+
+v6:
+- Driver changes corresponding to the device tree changes.
+- Restructure things to have less activity with the spinlock.
+- Save the slave config in dma_slave_config() and used in prepare time.
+- Addressed & fixed issues related to desc_free callback _free_ up the memory.
+- Addressed peter review comments.
+
+v7:
+- Change bool to tristate in Kconfig
+- Explained the _initcall()
+- change of_property*() to device_property_*()
+- split the code to functions at version checks
+- Remove the dma caller capability restrictions
+- used for_each_set_bit()
+- Addressed minor comments and fine tune the code.
+
+v7-resend:
+- rebase to 5.10-rc1
+- No change.
+
+v8:
+- rebase to 5.10-rc3
+- Addressed structural things and fine tune the code.
+
+v9:
+- No change.
+
+v10:
+- rebase to 5.10-rc6
+- Used helpers in bitfield.h (FIELD_PREP ()) instead of bit fields to set the descriptor fields.
+- Removed local copy of dmaengine ops.
+- Removed custom API and used dmaengine callback & remove include/linux/dma/lgm_dma.h file
+- Moved dt properties to driver data.
+- Fine tune the code.
+
+v10-resend:
+- rebased to 5.10
+- No change.
+
+v11:
+- No change
+
+-- 
+2.17.1
 
