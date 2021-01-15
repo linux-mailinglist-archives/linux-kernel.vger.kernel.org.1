@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2942F7B68
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:02:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 199E42F7BED
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387970AbhAONCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:02:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39354 "EHLO mail.kernel.org"
+        id S2387652AbhAONHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:07:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731599AbhAOMc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:32:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC3F12333E;
-        Fri, 15 Jan 2021 12:32:39 +0000 (UTC)
+        id S1732414AbhAOMbE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFDA0238EE;
+        Fri, 15 Jan 2021 12:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713960;
-        bh=7ZpCsSK2RVJ+ZQfyxTBYcdk3EMLC1D20DrcLXb0mkK0=;
+        s=korg; t=1610713826;
+        bh=oTIMEgADXE5rmaKDnaLvfvXiDdPdjY/kKrURKEtwBX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I32R426q0z8+sCMO9doLFkR9HTo6yV6Ijw1IFiVNunkLX1qjcQXQi4s4/VjNC2DbZ
-         c+b701JH/xxdwys+JmQcrjz+AcFMQF4EzH7/yDsKjViBQc4ecbH1O449AzDudHn6HW
-         7Zk65gtLhYDUVdfSi6Dyr9b49ksGlDLfDj2RVUAk=
+        b=EHxof7R0+DyZH29ZxpuFLQiGFlDkt0PVlHaMW4h1eAmgFSIe4qc/JO6huvoQjRWzO
+         u0X50oOGse4pACozfAceN50+YRQtDxSpJRyJ/Yd/TSB/5FbwO5QCNG6Elq/61K+yJY
+         nyPn11tFiO0A3wjCir+uT5Txt4p+gBkFvrq4LnEI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 04/43] net: stmmac: dwmac-sun8i: Balance internal PHY power
+        stable@vger.kernel.org, David Disseldorp <ddiss@suse.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bart.vanassche@sandisk.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 03/25] target: use XCOPY segment descriptor CSCD IDs
 Date:   Fri, 15 Jan 2021 13:27:34 +0100
-Message-Id: <20210115121957.263251610@linuxfoundation.org>
+Message-Id: <20210115121956.855001713@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
-References: <20210115121957.037407908@linuxfoundation.org>
+In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
+References: <20210115121956.679956165@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,114 +41,221 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Holland <samuel@sholland.org>
+From: David Disseldorp <ddiss@suse.de>
 
-[ Upstream commit b8239638853e3e37b287e4bd4d57b41f14c78550 ]
+[ Upstream commit 66640d35c1e4ef3c96ba5edb3c5e2ff8ab812e7a ]
 
-sun8i_dwmac_exit calls sun8i_dwmac_unpower_internal_phy, but
-sun8i_dwmac_init did not call sun8i_dwmac_power_internal_phy. This
-caused PHY power to remain off after a suspend/resume cycle. Fix this by
-recording if PHY power should be restored, and if so, restoring it.
+The XCOPY specification in SPC4r37 states that the XCOPY source and
+destination device(s) should be derived from the copy source and copy
+destination (CSCD) descriptor IDs in the XCOPY segment descriptor.
 
-Fixes: 634db83b8265 ("net: stmmac: dwmac-sun8i: Handle integrated/external MDIOs")
-Signed-off-by: Samuel Holland <samuel@sholland.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The CSCD IDs are generally (for block -> block copies), indexes into
+the corresponding CSCD descriptor list, e.g.
+=================================
+EXTENDED COPY Header
+=================================
+CSCD Descriptor List
+- entry 0
+  + LU ID <--------------<------------------\
+- entry 1                                   |
+  + LU ID <______________<_____________     |
+=================================      |    |
+Segment Descriptor List                |    |
+- segment 0                            |    |
+  + src CSCD ID = 0 --------->---------+----/
+  + dest CSCD ID = 1 ___________>______|
+  + len
+  + src lba
+  + dest lba
+=================================
+
+Currently LIO completely ignores the src and dest CSCD IDs in the
+Segment Descriptor List, and instead assumes that the first entry in the
+CSCD list corresponds to the source, and the second to the destination.
+
+This commit removes this assumption, by ensuring that the Segment
+Descriptor List is parsed prior to processing the CSCD Descriptor List.
+CSCD Descriptor List processing is modified to compare the current list
+index with the previously obtained src and dest CSCD IDs.
+
+Additionally, XCOPY requests where the src and dest CSCD IDs refer to
+the CSCD Descriptor List entry can now be successfully processed.
+
+Fixes: cbf031f ("target: Add support for EXTENDED_COPY copy offload")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=191381
+Signed-off-by: David Disseldorp <ddiss@suse.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Bart Van Assche <bart.vanassche@sandisk.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c |   31 ++++++++++++++++------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+ drivers/target/target_core_xcopy.c | 79 ++++++++++++++++++------------
+ 1 file changed, 48 insertions(+), 31 deletions(-)
 
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-@@ -73,6 +73,7 @@ struct emac_variant {
-  * @variant:	reference to the current board variant
-  * @regmap:	regmap for using the syscon
-  * @internal_phy_powered: Does the internal PHY is enabled
-+ * @use_internal_phy: Is the internal PHY selected for use
-  * @mux_handle:	Internal pointer used by mdio-mux lib
-  */
- struct sunxi_priv_data {
-@@ -83,6 +84,7 @@ struct sunxi_priv_data {
- 	const struct emac_variant *variant;
- 	struct regmap_field *regmap_field;
- 	bool internal_phy_powered;
-+	bool use_internal_phy;
- 	void *mux_handle;
- };
- 
-@@ -518,8 +520,11 @@ static const struct stmmac_dma_ops sun8i
- 	.dma_interrupt = sun8i_dwmac_dma_interrupt,
- };
- 
-+static int sun8i_dwmac_power_internal_phy(struct stmmac_priv *priv);
-+
- static int sun8i_dwmac_init(struct platform_device *pdev, void *priv)
- {
-+	struct net_device *ndev = platform_get_drvdata(pdev);
- 	struct sunxi_priv_data *gmac = priv;
- 	int ret;
- 
-@@ -533,13 +538,25 @@ static int sun8i_dwmac_init(struct platf
- 
- 	ret = clk_prepare_enable(gmac->tx_clk);
- 	if (ret) {
--		if (gmac->regulator)
--			regulator_disable(gmac->regulator);
- 		dev_err(&pdev->dev, "Could not enable AHB clock\n");
--		return ret;
-+		goto err_disable_regulator;
-+	}
-+
-+	if (gmac->use_internal_phy) {
-+		ret = sun8i_dwmac_power_internal_phy(netdev_priv(ndev));
-+		if (ret)
-+			goto err_disable_clk;
- 	}
- 
- 	return 0;
-+
-+err_disable_clk:
-+	clk_disable_unprepare(gmac->tx_clk);
-+err_disable_regulator:
-+	if (gmac->regulator)
-+		regulator_disable(gmac->regulator);
-+
-+	return ret;
+diff --git a/drivers/target/target_core_xcopy.c b/drivers/target/target_core_xcopy.c
+index c4bd86976e450..b380f5e2af47d 100644
+--- a/drivers/target/target_core_xcopy.c
++++ b/drivers/target/target_core_xcopy.c
+@@ -97,7 +97,7 @@ static int target_xcopy_locate_se_dev_e4(const unsigned char *dev_wwn,
  }
  
- static void sun8i_dwmac_core_init(struct mac_device_info *hw,
-@@ -809,7 +826,6 @@ static int mdio_mux_syscon_switch_fn(int
- 	struct sunxi_priv_data *gmac = priv->plat->bsp_priv;
- 	u32 reg, val;
- 	int ret = 0;
--	bool need_power_ephy = false;
+ static int target_xcopy_parse_tiddesc_e4(struct se_cmd *se_cmd, struct xcopy_op *xop,
+-				unsigned char *p, bool src)
++				unsigned char *p, unsigned short cscd_index)
+ {
+ 	unsigned char *desc = p;
+ 	unsigned short ript;
+@@ -142,7 +142,13 @@ static int target_xcopy_parse_tiddesc_e4(struct se_cmd *se_cmd, struct xcopy_op
+ 		return -EINVAL;
+ 	}
  
- 	if (current_child ^ desired_child) {
- 		regmap_field_read(gmac->regmap_field, &reg);
-@@ -817,13 +833,12 @@ static int mdio_mux_syscon_switch_fn(int
- 		case DWMAC_SUN8I_MDIO_MUX_INTERNAL_ID:
- 			dev_info(priv->device, "Switch mux to internal PHY");
- 			val = (reg & ~H3_EPHY_MUX_MASK) | H3_EPHY_SELECT;
--
--			need_power_ephy = true;
-+			gmac->use_internal_phy = true;
- 			break;
- 		case DWMAC_SUN8I_MDIO_MUX_EXTERNAL_ID:
- 			dev_info(priv->device, "Switch mux to external PHY");
- 			val = (reg & ~H3_EPHY_MUX_MASK) | H3_EPHY_SHUTDOWN;
--			need_power_ephy = false;
-+			gmac->use_internal_phy = false;
+-	if (src) {
++	if (cscd_index != xop->stdi && cscd_index != xop->dtdi) {
++		pr_debug("XCOPY 0xe4: ignoring CSCD entry %d - neither src nor "
++			 "dest\n", cscd_index);
++		return 0;
++	}
++
++	if (cscd_index == xop->stdi) {
+ 		memcpy(&xop->src_tid_wwn[0], &desc[8], XCOPY_NAA_IEEE_REGEX_LEN);
+ 		/*
+ 		 * Determine if the source designator matches the local device
+@@ -154,10 +160,15 @@ static int target_xcopy_parse_tiddesc_e4(struct se_cmd *se_cmd, struct xcopy_op
+ 			pr_debug("XCOPY 0xe4: Set xop->src_dev %p from source"
+ 					" received xop\n", xop->src_dev);
+ 		}
+-	} else {
++	}
++
++	if (cscd_index == xop->dtdi) {
+ 		memcpy(&xop->dst_tid_wwn[0], &desc[8], XCOPY_NAA_IEEE_REGEX_LEN);
+ 		/*
+-		 * Determine if the destination designator matches the local device
++		 * Determine if the destination designator matches the local
++		 * device. If @cscd_index corresponds to both source (stdi) and
++		 * destination (dtdi), or dtdi comes after stdi, then
++		 * XCOL_DEST_RECV_OP wins.
+ 		 */
+ 		if (!memcmp(&xop->local_dev_wwn[0], &xop->dst_tid_wwn[0],
+ 				XCOPY_NAA_IEEE_REGEX_LEN)) {
+@@ -177,9 +188,9 @@ static int target_xcopy_parse_target_descriptors(struct se_cmd *se_cmd,
+ {
+ 	struct se_device *local_dev = se_cmd->se_dev;
+ 	unsigned char *desc = p;
+-	int offset = tdll % XCOPY_TARGET_DESC_LEN, rc, ret = 0;
++	int offset = tdll % XCOPY_TARGET_DESC_LEN, rc;
++	unsigned short cscd_index = 0;
+ 	unsigned short start = 0;
+-	bool src = true;
+ 
+ 	*sense_ret = TCM_INVALID_PARAMETER_LIST;
+ 
+@@ -202,25 +213,19 @@ static int target_xcopy_parse_target_descriptors(struct se_cmd *se_cmd,
+ 
+ 	while (start < tdll) {
+ 		/*
+-		 * Check target descriptor identification with 0xE4 type with
+-		 * use VPD 0x83 WWPN matching ..
++		 * Check target descriptor identification with 0xE4 type, and
++		 * compare the current index with the CSCD descriptor IDs in
++		 * the segment descriptor. Use VPD 0x83 WWPN matching ..
+ 		 */
+ 		switch (desc[0]) {
+ 		case 0xe4:
+ 			rc = target_xcopy_parse_tiddesc_e4(se_cmd, xop,
+-							&desc[0], src);
++							&desc[0], cscd_index);
+ 			if (rc != 0)
+ 				goto out;
+-			/*
+-			 * Assume target descriptors are in source -> destination order..
+-			 */
+-			if (src)
+-				src = false;
+-			else
+-				src = true;
+ 			start += XCOPY_TARGET_DESC_LEN;
+ 			desc += XCOPY_TARGET_DESC_LEN;
+-			ret++;
++			cscd_index++;
  			break;
  		default:
- 			dev_err(priv->device, "Invalid child ID %x\n",
-@@ -831,7 +846,7 @@ static int mdio_mux_syscon_switch_fn(int
- 			return -EINVAL;
+ 			pr_err("XCOPY unsupported descriptor type code:"
+@@ -229,12 +234,21 @@ static int target_xcopy_parse_target_descriptors(struct se_cmd *se_cmd,
  		}
- 		regmap_field_write(gmac->regmap_field, val);
--		if (need_power_ephy) {
-+		if (gmac->use_internal_phy) {
- 			ret = sun8i_dwmac_power_internal_phy(priv);
- 			if (ret)
- 				return ret;
+ 	}
+ 
+-	if (xop->op_origin == XCOL_SOURCE_RECV_OP)
++	switch (xop->op_origin) {
++	case XCOL_SOURCE_RECV_OP:
+ 		rc = target_xcopy_locate_se_dev_e4(xop->dst_tid_wwn,
+ 						&xop->dst_dev);
+-	else
++		break;
++	case XCOL_DEST_RECV_OP:
+ 		rc = target_xcopy_locate_se_dev_e4(xop->src_tid_wwn,
+ 						&xop->src_dev);
++		break;
++	default:
++		pr_err("XCOPY CSCD descriptor IDs not found in CSCD list - "
++			"stdi: %hu dtdi: %hu\n", xop->stdi, xop->dtdi);
++		rc = -EINVAL;
++		break;
++	}
+ 	/*
+ 	 * If a matching IEEE NAA 0x83 descriptor for the requested device
+ 	 * is not located on this node, return COPY_ABORTED with ASQ/ASQC
+@@ -251,7 +265,7 @@ static int target_xcopy_parse_target_descriptors(struct se_cmd *se_cmd,
+ 	pr_debug("XCOPY TGT desc: Dest dev: %p NAA IEEE WWN: 0x%16phN\n",
+ 		 xop->dst_dev, &xop->dst_tid_wwn[0]);
+ 
+-	return ret;
++	return cscd_index;
+ 
+ out:
+ 	return -EINVAL;
+@@ -892,6 +906,20 @@ sense_reason_t target_do_xcopy(struct se_cmd *se_cmd)
+ 		" tdll: %hu sdll: %u inline_dl: %u\n", list_id, list_id_usage,
+ 		tdll, sdll, inline_dl);
+ 
++	/*
++	 * skip over the target descriptors until segment descriptors
++	 * have been passed - CSCD ids are needed to determine src and dest.
++	 */
++	seg_desc = &p[16] + tdll;
++
++	rc = target_xcopy_parse_segment_descriptors(se_cmd, xop, seg_desc,
++						    sdll, &ret);
++	if (rc <= 0)
++		goto out;
++
++	pr_debug("XCOPY: Processed %d segment descriptors, length: %u\n", rc,
++				rc * XCOPY_SEGMENT_DESC_LEN);
++
+ 	rc = target_xcopy_parse_target_descriptors(se_cmd, xop, &p[16], tdll, &ret);
+ 	if (rc <= 0)
+ 		goto out;
+@@ -909,19 +937,8 @@ sense_reason_t target_do_xcopy(struct se_cmd *se_cmd)
+ 
+ 	pr_debug("XCOPY: Processed %d target descriptors, length: %u\n", rc,
+ 				rc * XCOPY_TARGET_DESC_LEN);
+-	seg_desc = &p[16];
+-	seg_desc += (rc * XCOPY_TARGET_DESC_LEN);
+-
+-	rc = target_xcopy_parse_segment_descriptors(se_cmd, xop, seg_desc,
+-						    sdll, &ret);
+-	if (rc <= 0) {
+-		xcopy_pt_undepend_remotedev(xop);
+-		goto out;
+-	}
+ 	transport_kunmap_data_sg(se_cmd);
+ 
+-	pr_debug("XCOPY: Processed %d segment descriptors, length: %u\n", rc,
+-				rc * XCOPY_SEGMENT_DESC_LEN);
+ 	INIT_WORK(&xop->xop_work, target_xcopy_do_work);
+ 	queue_work(xcopy_wq, &xop->xop_work);
+ 	return TCM_NO_SENSE;
+-- 
+2.27.0
+
 
 
