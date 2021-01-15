@@ -2,173 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3702F74F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 339692F7504
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729579AbhAOJLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:11:19 -0500
-Received: from smtp-bc08.mail.infomaniak.ch ([45.157.188.8]:43207 "EHLO
-        smtp-bc08.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728662AbhAOJLN (ORCPT
+        id S1727472AbhAOJOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:14:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726652AbhAOJOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:11:13 -0500
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DHFl51bMyzMprtq;
-        Fri, 15 Jan 2021 10:10:25 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4DHFl26L60zlppyv;
-        Fri, 15 Jan 2021 10:10:22 +0100 (CET)
-Subject: Re: [PATCH v26 07/12] landlock: Support filesystem access-control
-To:     Jann Horn <jannh@google.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20201209192839.1396820-1-mic@digikod.net>
- <20201209192839.1396820-8-mic@digikod.net>
- <CAG48ez1wbAQwU-eoC9DngHyUM_5F01MJQpRnLaJFvfRUrnXBdA@mail.gmail.com>
- <aeb3e152-8108-89d2-0577-4b130368f14f@digikod.net>
- <CAG48ez2HJCFvmFALDYDYnufE755Dqh3JquAMf-1mnzmRrdKaoQ@mail.gmail.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <9be6481f-9c03-dd32-378f-20bc7c52315c@digikod.net>
-Date:   Fri, 15 Jan 2021 10:10:36 +0100
-User-Agent: 
+        Fri, 15 Jan 2021 04:14:05 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25066C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 01:13:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SIFhfiL1Z14MrasYfZQFoTuOWX0kSO+EDmZivWAJL+Y=; b=Kzv0oyyN8iRAtbg02Mi9CDFixF
+        v5jLs4InC1GkjgDaLa/sIFLu13F4e0+6vldWXJO33U0fyh1eGwNuiFegTFI5gOoHe9lHUmkLpVI5b
+        12Kl7SFVZlB2dBACHI+tyLmBkcT4iuaxbKkNOCz8dDtXjD7Y2Z5F+DuKwF3s0TrcreW19mPuKNypV
+        IebG+hHy1PFCx8jOWcDlyZY+d9/KBES59NP25hgBaHIe4z/eFEOmMq9w/g+c7B3Mtx/dH9SL89yGV
+        ioODbl68y438EZ491aUsKm4WmLndwcYwfnCfbxGaqKuGCRRJlGW+69I1EwF9n5DRyK6sTNsrCw4Ya
+        Ywps2Jvw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l0L97-008iCQ-CA; Fri, 15 Jan 2021 09:11:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B9B20305815;
+        Fri, 15 Jan 2021 10:11:51 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 80C20200E0BD2; Fri, 15 Jan 2021 10:11:51 +0100 (CET)
+Date:   Fri, 15 Jan 2021 10:11:51 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
+Message-ID: <YAFcVy9wIezTa2mM@hirez.programming.kicks-ass.net>
+References: <20201226025117.2770-1-jiangshanlai@gmail.com>
+ <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
+ <87o8hv7pnd.fsf@nanos.tec.linutronix.de>
+ <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
+ <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net>
+ <20210111180907.GE2743@paulmck-ThinkPad-P72>
+ <20210111215052.GA19589@paulmck-ThinkPad-P72>
+ <20210112171411.GA22823@paulmck-ThinkPad-P72>
+ <20210112235324.GA17895@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <CAG48ez2HJCFvmFALDYDYnufE755Dqh3JquAMf-1mnzmRrdKaoQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112235324.GA17895@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 14/01/2021 23:43, Jann Horn wrote:
-> On Thu, Jan 14, 2021 at 7:54 PM Mickaël Salaün <mic@digikod.net> wrote:
->> On 14/01/2021 04:22, Jann Horn wrote:
->>> On Wed, Dec 9, 2020 at 8:28 PM Mickaël Salaün <mic@digikod.net> wrote:
->>>> Thanks to the Landlock objects and ruleset, it is possible to identify
->>>> inodes according to a process's domain.  To enable an unprivileged
->>>> process to express a file hierarchy, it first needs to open a directory
->>>> (or a file) and pass this file descriptor to the kernel through
->>>> landlock_add_rule(2).  When checking if a file access request is
->>>> allowed, we walk from the requested dentry to the real root, following
->>>> the different mount layers.  The access to each "tagged" inodes are
->>>> collected according to their rule layer level, and ANDed to create
->>>> access to the requested file hierarchy.  This makes possible to identify
->>>> a lot of files without tagging every inodes nor modifying the
->>>> filesystem, while still following the view and understanding the user
->>>> has from the filesystem.
->>>>
->>>> Add a new ARCH_EPHEMERAL_INODES for UML because it currently does not
->>>> keep the same struct inodes for the same inodes whereas these inodes are
->>>> in use.
->>>>
->>>> This commit adds a minimal set of supported filesystem access-control
->>>> which doesn't enable to restrict all file-related actions.  This is the
->>>> result of multiple discussions to minimize the code of Landlock to ease
->>>> review.  Thanks to the Landlock design, extending this access-control
->>>> without breaking user space will not be a problem.  Moreover, seccomp
->>>> filters can be used to restrict the use of syscall families which may
->>>> not be currently handled by Landlock.
->>> [...]
->>>> +static bool check_access_path_continue(
->>>> +               const struct landlock_ruleset *const domain,
->>>> +               const struct path *const path, const u32 access_request,
->>>> +               u64 *const layer_mask)
->>>> +{
->>> [...]
->>>> +       /*
->>>> +        * An access is granted if, for each policy layer, at least one rule
->>>> +        * encountered on the pathwalk grants the access, regardless of their
->>>> +        * position in the layer stack.  We must then check not-yet-seen layers
->>>> +        * for each inode, from the last one added to the first one.
->>>> +        */
->>>> +       for (i = 0; i < rule->num_layers; i++) {
->>>> +               const struct landlock_layer *const layer = &rule->layers[i];
->>>> +               const u64 layer_level = BIT_ULL(layer->level - 1);
->>>> +
->>>> +               if (!(layer_level & *layer_mask))
->>>> +                       continue;
->>>> +               if ((layer->access & access_request) != access_request)
->>>> +                       return false;
->>>> +               *layer_mask &= ~layer_level;
->>>
->>> Hmm... shouldn't the last 5 lines be replaced by the following?
->>>
->>> if ((layer->access & access_request) == access_request)
->>>     *layer_mask &= ~layer_level;
->>>
->>> And then, since this function would always return true, you could
->>> change its return type to "void".
->>>
->>>
->>> As far as I can tell, the current version will still, if a ruleset
->>> looks like this:
->>>
->>> /usr read+write
->>> /usr/lib/ read
->>>
->>> reject write access to /usr/lib, right?
->>
->> If these two rules are from different layers, then yes it would work as
->> intended. However, if these rules are from the same layer the path walk
->> will not stop at /usr/lib but go down to /usr, which grants write
->> access.
+On Tue, Jan 12, 2021 at 03:53:24PM -0800, Paul E. McKenney wrote:
+> An SRCU-P run on the new series reproduced the warning below.  Repeat-by:
 > 
-> I don't see why the code would do what you're saying it does. And an
-> experiment seems to confirm what I said; I checked out landlock-v26,
-> and the behavior I get is:
+> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10 --configs "112*SRCU-P" --bootargs "rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcutree.softirq=0" --trust-make
 
-There is a misunderstanding, I was responding to your proposition to
-modify check_access_path_continue(), not about the behavior of landlock-v26.
+Lemme go wake up an EX ;-)
 
-> 
-> user@vm:~/landlock$ dd if=/dev/null of=/tmp/aaa
-> 0+0 records in
-> 0+0 records out
-> 0 bytes copied, 0.00106365 s, 0.0 kB/s
-> user@vm:~/landlock$ LL_FS_RO='/lib' LL_FS_RW='/' ./sandboxer dd
-> if=/dev/null of=/tmp/aaa
-> 0+0 records in
-> 0+0 records out
-> 0 bytes copied, 0.000491814 s, 0.0 kB/s
-> user@vm:~/landlock$ LL_FS_RO='/tmp' LL_FS_RW='/' ./sandboxer dd
-> if=/dev/null of=/tmp/aaa
-> dd: failed to open '/tmp/aaa': Permission denied
-> user@vm:~/landlock$
-> 
-> Granting read access to /tmp prevents writing to it, even though write
-> access was granted to /.
-> 
+Anyway, I've folded my patch:
 
-It indeed works like this with landlock-v26. However, with your above
-proposition, it would work like this:
+  https://lkml.kernel.org/r/YABknAqDe4h35+GY@hirez.programming.kicks-ass.net
 
-$ LL_FS_RO='/tmp' LL_FS_RW='/' ./sandboxer dd if=/dev/null of=/tmp/aaa
-0+0 records in
-0+0 records out
-0 bytes copied, 0.000187265 s, 0.0 kB/s
+back into the series, so be found here:
 
-…which is not what users would expect I guess. :)
+  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/urgent
+
+and will start testing on that while I continue to ponder the rescuer
+mysteries.
