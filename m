@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2AD2F7BA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 503532F7BF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732727AbhAOMbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:31:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37324 "EHLO mail.kernel.org"
+        id S1732151AbhAOMan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:30:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732588AbhAOMbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:31:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F0E72371F;
-        Fri, 15 Jan 2021 12:30:03 +0000 (UTC)
+        id S1732001AbhAOMaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:30:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FFA122473;
+        Fri, 15 Jan 2021 12:29:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713804;
-        bh=wxqo/o/srS4sfRY5ZP26aqQVlpW2jzGmtsoQ8IahVf0=;
+        s=korg; t=1610713768;
+        bh=s5rdMnDuSkDqSsdKS3Kfx41GvoHWbEtG2/DA60iC/qQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RebGpyHNDXkSgvv1lWc50MgRzVUfnj9rkXMdUNE72leCVZbn6rV3vNuEPQ4stvZZe
-         L/0m7OQTauhSMqbGLbomy7qlZsce6gVBYl5KhAC3tVLtEoe3eFHF+TyaunW9zR70cc
-         rHcxErDNQTQ040LH4qVHDbFUdQBlaImucJ9FqAWQ=
+        b=vNg5+cAHechTxnfO40uPFO69Se0040sKAL7lrshqSxgmc+qrd7ppOR9t+w69V2Mg5
+         1ly3zdZVU1S94oNspMfV9lVQ/Oq4ChmMmWTuSaCbI4Tp2KFH2gLGrui/gTznlznA/R
+         KIUypP9SOkPWBF+eD/yz6FcPotPAp3zUCN0yUVFI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, CQ Tang <cq.tang@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 11/25] drm/i915: Fix mismatch between misplaced vma check and vma insert
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 14/18] wil6210: select CONFIG_CRC32
 Date:   Fri, 15 Jan 2021 13:27:42 +0100
-Message-Id: <20210115121957.234884708@linuxfoundation.org>
+Message-Id: <20210115121955.813751509@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
-References: <20210115121956.679956165@linuxfoundation.org>
+In-Reply-To: <20210115121955.112329537@linuxfoundation.org>
+References: <20210115121955.112329537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,54 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 0e53656ad8abc99e0a80c3de611e593ebbf55829 upstream
+commit e186620d7bf11b274b985b839c38266d7918cc05 upstream.
 
-When inserting a VMA, we restrict the placement to the low 4G unless the
-caller opts into using the full range. This was done to allow usersapce
-the opportunity to transition slowly from a 32b address space, and to
-avoid breaking inherent 32b assumptions of some commands.
+Without crc32, the driver fails to link:
 
-However, for insert we limited ourselves to 4G-4K, but on verification
-we allowed the full 4G. This causes some attempts to bind a new buffer
-to sporadically fail with -ENOSPC, but at other times be bound
-successfully.
+arm-linux-gnueabi-ld: drivers/net/wireless/ath/wil6210/fw.o: in function `wil_fw_verify':
+fw.c:(.text+0x74c): undefined reference to `crc32_le'
+arm-linux-gnueabi-ld: drivers/net/wireless/ath/wil6210/fw.o:fw.c:(.text+0x758): more undefined references to `crc32_le' follow
 
-commit 48ea1e32c39d ("drm/i915/gen9: Set PIN_ZONE_4G end to 4GB - 1
-page") suggests that there is a genuine problem with stateless addressing
-that cannot utilize the last page in 4G and so we purposefully excluded
-it. This means that the quick pin pass may cause us to utilize a buggy
-placement.
-
-Reported-by: CQ Tang <cq.tang@intel.com>
-Testcase: igt/gem_exec_params/larger-than-life-batch
-Fixes: 48ea1e32c39d ("drm/i915/gen9: Set PIN_ZONE_4G end to 4GB - 1 page")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: CQ Tang <cq.tang@intel.com>
-Reviewed-by: CQ Tang <cq.tang@intel.com>
-Reviewed-by: Matthew Auld <matthew.auld@intel.com>
-Cc: <stable@vger.kernel.org> # v4.5+
-Link: https://patchwork.freedesktop.org/patch/msgid/20201216092951.7124-1-chris@chris-wilson.co.uk
-(cherry picked from commit 5f22cc0b134ab702d7f64b714e26018f7288ffee)
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
-[sudip: use file from old path and adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Fixes: 151a9706503f ("wil6210: firmware download")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/gpu/drm/i915/i915_gem_execbuffer.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/i915/i915_gem_execbuffer.c
-+++ b/drivers/gpu/drm/i915/i915_gem_execbuffer.c
-@@ -882,7 +882,7 @@ eb_vma_misplaced(struct i915_vma *vma)
- 		return !only_mappable_for_reloc(entry->flags);
- 
- 	if ((entry->flags & EXEC_OBJECT_SUPPORTS_48B_ADDRESS) == 0 &&
--	    (vma->node.start + vma->node.size - 1) >> 32)
-+	    (vma->node.start + vma->node.size + 4095) >> 32)
- 		return true;
- 
- 	return false;
+---
+ drivers/net/wireless/ath/wil6210/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/drivers/net/wireless/ath/wil6210/Kconfig
++++ b/drivers/net/wireless/ath/wil6210/Kconfig
+@@ -1,6 +1,7 @@
+ config WIL6210
+ 	tristate "Wilocity 60g WiFi card wil6210 support"
+ 	select WANT_DEV_COREDUMP
++	select CRC32
+ 	depends on CFG80211
+ 	depends on PCI
+ 	default n
 
 
