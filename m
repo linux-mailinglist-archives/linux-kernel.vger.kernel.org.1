@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B62A2F7A07
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB582F7947
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732776AbhAOMoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:44:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45426 "EHLO mail.kernel.org"
+        id S1731770AbhAOMeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:34:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388164AbhAOMiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:38:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3059236FB;
-        Fri, 15 Jan 2021 12:38:09 +0000 (UTC)
+        id S2387444AbhAOMeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:34:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A29C02339D;
+        Fri, 15 Jan 2021 12:33:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714290;
-        bh=WKlYm6h0UNKbimFVNmrA4FQ36G3fzDbIf1QmBFHlYnQ=;
+        s=korg; t=1610714037;
+        bh=aoInMzShLeeeTg/+4PHS2tDkgza81v84yMhCYK+h/ec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xlHWwguh6EG1IqwEDFgy0xABUCeQB75E8YIvD1iMIyojiWpb54y+XmlbqMYsPKiWj
-         P6yeNtvD5Sdc09/rNdSRzu/DWsnNltykVYuH8rQ19PCM3u5AX/NAWLhJg1J502A7sF
-         06p4KPiSSsNb7Sw6wU6TPiv0WljNztCRJ3QFX43s=
+        b=DLoIjnRtjS0DK1B7wOzlWXWUoLaXkUZdZxBiohsD0AZ95c50KzXndvYsAkJXdjVME
+         AWgy1sjRFzsK6exdHbIG2ElLfvMfue2O56h7A5gNBxkdUcL09/UHf4splbs3SHJRi0
+         07TsUqlHtKMMIfsQwSxKvDyni8zHm9aruQLiEa6U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 038/103] nexthop: Unlink nexthop group entry in error path
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Chris Zankel <chris@zankel.net>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 09/62] net/sonic: Fix some resource leaks in error handling paths
 Date:   Fri, 15 Jan 2021 13:27:31 +0100
-Message-Id: <20210115122007.901310024@linuxfoundation.org>
+Message-Id: <20210115121958.849755936@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
-References: <20210115122006.047132306@linuxfoundation.org>
+In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
+References: <20210115121958.391610178@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +43,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@nvidia.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 7b01e53eee6dce7a8a6736e06b99b68cd0cc7a27 ]
+[ Upstream commit 0f7ba7bc46fa0b574ccacf5672991b321e028492 ]
 
-In case of error, remove the nexthop group entry from the list to which
-it was previously added.
+A call to dma_alloc_coherent() is wrapped by sonic_alloc_descriptors().
 
-Fixes: 430a049190de ("nexthop: Add support for nexthop groups")
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: Petr Machata <petrm@nvidia.com>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+This is correctly freed in the remove function, but not in the error
+handling path of the probe function. Fix this by adding the missing
+dma_free_coherent() call.
+
+While at it, rename a label in order to be slightly more informative.
+
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Chris Zankel <chris@zankel.net>
+Fixes: 74f2a5f0ef64 ("xtensa: Add support for the Sonic Ethernet device for the XT2000 board.")
+Fixes: efcce839360f ("[PATCH] macsonic/jazzsonic network drivers update")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/nexthop.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/natsemi/macsonic.c |   12 ++++++++++--
+ drivers/net/ethernet/natsemi/xtsonic.c  |    7 +++++--
+ 2 files changed, 15 insertions(+), 4 deletions(-)
 
---- a/net/ipv4/nexthop.c
-+++ b/net/ipv4/nexthop.c
-@@ -1277,8 +1277,10 @@ static struct nexthop *nexthop_create_gr
- 	return nh;
+--- a/drivers/net/ethernet/natsemi/macsonic.c
++++ b/drivers/net/ethernet/natsemi/macsonic.c
+@@ -540,10 +540,14 @@ static int mac_sonic_platform_probe(stru
  
- out_no_nh:
--	for (i--; i >= 0; --i)
-+	for (i--; i >= 0; --i) {
-+		list_del(&nhg->nh_entries[i].nh_list);
- 		nexthop_put(nhg->nh_entries[i].nh);
-+	}
+ 	err = register_netdev(dev);
+ 	if (err)
+-		goto out;
++		goto undo_probe;
  
- 	kfree(nhg->spare);
- 	kfree(nhg);
+ 	return 0;
+ 
++undo_probe:
++	dma_free_coherent(lp->device,
++			  SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
++			  lp->descriptors, lp->descriptors_laddr);
+ out:
+ 	free_netdev(dev);
+ 
+@@ -618,12 +622,16 @@ static int mac_sonic_nubus_probe(struct
+ 
+ 	err = register_netdev(ndev);
+ 	if (err)
+-		goto out;
++		goto undo_probe;
+ 
+ 	nubus_set_drvdata(board, ndev);
+ 
+ 	return 0;
+ 
++undo_probe:
++	dma_free_coherent(lp->device,
++			  SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
++			  lp->descriptors, lp->descriptors_laddr);
+ out:
+ 	free_netdev(ndev);
+ 	return err;
+--- a/drivers/net/ethernet/natsemi/xtsonic.c
++++ b/drivers/net/ethernet/natsemi/xtsonic.c
+@@ -265,11 +265,14 @@ int xtsonic_probe(struct platform_device
+ 	sonic_msg_init(dev);
+ 
+ 	if ((err = register_netdev(dev)))
+-		goto out1;
++		goto undo_probe1;
+ 
+ 	return 0;
+ 
+-out1:
++undo_probe1:
++	dma_free_coherent(lp->device,
++			  SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
++			  lp->descriptors, lp->descriptors_laddr);
+ 	release_region(dev->base_addr, SONIC_MEM_SIZE);
+ out:
+ 	free_netdev(dev);
 
 
