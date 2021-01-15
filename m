@@ -2,144 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB3D2F8210
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A24602F8213
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387538AbhAORUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:20:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387505AbhAORUT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:20:19 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E46C06179B
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:19:26 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id 30so6410374pgr.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:19:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2rPLKPt0VQ4+unsIKAUL2ccIFdgHScwBa0BHWtMeCaQ=;
-        b=fg1Of9Vjro2cfzgy+s6U/Y5YtzhGeyfXQxxEEyuTLVFvlxNs5UkieutRZUNDPs8xGL
-         +nLzyhj/egouWIH2eKVB/SsKq1kM4Bi1yM5TRJWk06iADOwzxNn/GS+HbQI3y5KRDgDx
-         8MNg0I3g4YEViiYx4ZNDxbm+WIWefyijuevLJqXWP7pWY5bueXd/fmE3Vu1wpHsUGPaY
-         e1v3CTbX4jPjqK30NmBO/X+yboY2/79Zpc2LXtnORozErDvFpl5Y7Dck5Nt1ivdRzKsx
-         mP5KYHzAs+bwDNFJpGgX4zWCnpJhOGej5kpwEIzxmH7Rer2WNpIDCP6G/rglJejSaeqx
-         RYFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2rPLKPt0VQ4+unsIKAUL2ccIFdgHScwBa0BHWtMeCaQ=;
-        b=m19LjpiDmttpqqZ7TuSImbY9AIMPYTzdcrVXE56h+ODeWRpJL8ug8SK/GwuG5+9sz1
-         vAmuG/BStB+F/Ak174jq1H/LpaqjtefzSrcJSRikc/yfIBG8IftXycgaezfD0unfAQ5w
-         QibrKPqK7bZx6uood8YsrNpxrEvUMNSnKxoy1VqVfbCNMvTkcHNL/bnoDqaDIpOvKJyR
-         Iz7SLgy2ocolnzIovbdJw6BHq6OUs2dLi25o5RhvgCAYz1FyXfwCKdJMphWWTaJnehKv
-         iXo+s6hy49n6/7FpxeVh1TGG+xNVGX1UGbfJ8q1UrAurYvuMPVqC9WwivkQb8WCIZbIl
-         MnBQ==
-X-Gm-Message-State: AOAM530vPtxjwauHIt55LFOZhHYWzUaBkUQOR9TnFe4dwa8ViBjc+TvJ
-        9HLzC6GzOhZJMgrxaXKyhAWWSw==
-X-Google-Smtp-Source: ABdhPJyZbsDt4afDbn1ZRQrnfAincv6Sl008N0zH+rF92bq/FDIMAxILr5SoMbayZ/XwpZDdP80EnQ==
-X-Received: by 2002:a63:1602:: with SMTP id w2mr13879083pgl.128.1610731166260;
-        Fri, 15 Jan 2021 09:19:26 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id bx17sm8897034pjb.12.2021.01.15.09.19.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 09:19:25 -0800 (PST)
-Date:   Fri, 15 Jan 2021 09:19:19 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v2 14/14] KVM: SVM: Skip SEV cache flush if no ASIDs have
- been used
-Message-ID: <YAHOl/ghOZKJcI1o@google.com>
-References: <20210114003708.3798992-1-seanjc@google.com>
- <20210114003708.3798992-15-seanjc@google.com>
- <fa048460-5517-b689-3b82-a269e1ff8ea6@amd.com>
+        id S2387562AbhAORU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:20:57 -0500
+Received: from ms.lwn.net ([45.79.88.28]:37762 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727049AbhAORU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 12:20:56 -0500
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 70EC26144;
+        Fri, 15 Jan 2021 17:20:15 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 70EC26144
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1610731215; bh=oqtY8FiVdPzSIv0x1ovYAKgJlnLzyaUv/KHtQfpJhDU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HgJpJDItOsE06j+N7/+v5CzKXdhMg+fmiAp+75mQuLLAEo4XtBRu9XfzZ8wZZr8Wj
+         4cgyjc29cdWDsZoRQDfZotmkLJgQvcDzSzZfdLcq8EtC8NdcPncQwJ/X5fj0a7rx9C
+         DOWTA5HRPxEk3wubj8BGe4ru76bpYx43A7XPud2tYowdjfNg+6CQ9vwz+xfaZLORjI
+         hfuDIyKlUax/4rnsS/K2sfrb80qrXVmlgE/LFcrPL6cerBjn1fC4OF4nN6AIJ/bO2m
+         4uBnGkTLXCP26Xn7RktdLtnLJ6aSvdkgC7Fyp2OhvG70adg1O5zeuxcOFETJCA1u+U
+         B+vv4YTqYjBTg==
+Date:   Fri, 15 Jan 2021 10:20:14 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
+        live-patching@vger.kernel.org, linux-doc@vgert.kernel.org
+Subject: Re: [PATCH v3] Documentation: livepatch: document reliable
+ stacktrace
+Message-ID: <20210115102014.76e51309@lwn.net>
+In-Reply-To: <20210115171251.GF4384@sirena.org.uk>
+References: <20210115142446.13880-1-broonie@kernel.org>
+        <20210115164718.GE44111@C02TD0UTHF1T.local>
+        <20210115171251.GF4384@sirena.org.uk>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fa048460-5517-b689-3b82-a269e1ff8ea6@amd.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021, Tom Lendacky wrote:
-> On 1/13/21 6:37 PM, Sean Christopherson wrote:
-> > Skip SEV's expensive WBINVD and DF_FLUSH if there are no SEV ASIDs
-> > waiting to be reclaimed, e.g. if SEV was never used.  This "fixes" an
-> > issue where the DF_FLUSH fails during hardware teardown if the original
-> > SEV_INIT failed.  Ideally, SEV wouldn't be marked as enabled in KVM if
-> > SEV_INIT fails, but that's a problem for another day.
-> > 
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >   arch/x86/kvm/svm/sev.c | 22 ++++++++++------------
-> >   1 file changed, 10 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> > index 23a4bead4a82..e71bc742d8da 100644
-> > --- a/arch/x86/kvm/svm/sev.c
-> > +++ b/arch/x86/kvm/svm/sev.c
-> > @@ -56,9 +56,14 @@ struct enc_region {
-> >   	unsigned long size;
-> >   };
-> > -static int sev_flush_asids(void)
-> > +static int sev_flush_asids(int min_asid, int max_asid)
-> >   {
-> > -	int ret, error = 0;
-> > +	int ret, pos, error = 0;
-> > +
-> > +	/* Check if there are any ASIDs to reclaim before performing a flush */
-> > +	pos = find_next_bit(sev_reclaim_asid_bitmap, max_sev_asid, min_asid);
-> > +	if (pos >= max_asid)
-> > +		return -EBUSY;
-> >   	/*
-> >   	 * DEACTIVATE will clear the WBINVD indicator causing DF_FLUSH to fail,
-> > @@ -80,14 +85,7 @@ static int sev_flush_asids(void)
-> >   /* Must be called with the sev_bitmap_lock held */
-> >   static bool __sev_recycle_asids(int min_asid, int max_asid)
-> >   {
-> > -	int pos;
-> > -
-> > -	/* Check if there are any ASIDs to reclaim before performing a flush */
-> > -	pos = find_next_bit(sev_reclaim_asid_bitmap, max_sev_asid, min_asid);
-> > -	if (pos >= max_asid)
-> > -		return false;
-> > -
-> > -	if (sev_flush_asids())
-> > +	if (sev_flush_asids(min_asid, max_asid))
-> >   		return false;
-> >   	/* The flush process will flush all reclaimable SEV and SEV-ES ASIDs */
-> > @@ -1323,10 +1321,10 @@ void sev_hardware_teardown(void)
-> >   	if (!sev_enabled)
-> >   		return;
-> > +	sev_flush_asids(0, max_sev_asid);
+On Fri, 15 Jan 2021 17:12:51 +0000
+Mark Brown <broonie@kernel.org> wrote:
+
+> On Fri, Jan 15, 2021 at 04:47:18PM +0000, Mark Rutland wrote:
+> > On Fri, Jan 15, 2021 at 02:24:46PM +0000, Mark Brown wrote:  
 > 
-> I guess you could have called __sev_recycle_asids(0, max_sev_asid) here and
-> left things unchanged up above. It would do the extra bitmap_xor() and
-> bitmap_zero() operations, though. What do you think?
+> > > +    3. Considerations
+> > > +       3.1 Identifying successful termination  
+> 
+> > It looks like we forgot to update this with the addition of the new
+> > section 3, so this needs a trivial update to add that and fix the
+> > numbering.  
+> 
+> Bah, I thought the point with structured documentation formats was that
+> tooling would handle stuff like this :/
 
-IMO, calling "recycle" from the teardown flow would be confusing without a
-comment to explain that it's the flush that we really care about, and at that
-point it's hard to argue against calling "flush" directly.
+The tooling *will* handle it if you let it, it's a simple matter of
+replacing the hand-generated table of contents with a Sphinx directive.  I
+think that's generally the right thing to do, but it does have the
+downside of only putting the TOC in the generated docs.
 
-The cost of the extra operations is almost certainly negligible, but similar to
-above it will leave readers wonder why the teardown flow bothers to xor/zero
-the bitmap, only to immediately free it.
+Thanks,
 
-> Also, maybe a comment about not needing the bitmap lock because this is
-> during teardown.
-
-Ya, I'll add that.
+jon
