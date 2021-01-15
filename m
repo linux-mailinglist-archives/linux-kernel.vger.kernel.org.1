@@ -2,113 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D821F2F6FD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:08:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442DF2F6FDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:11:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731409AbhAOBIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 20:08:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726125AbhAOBIa (ORCPT
+        id S1731471AbhAOBJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 20:09:08 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44730 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726125AbhAOBJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 20:08:30 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78134C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 17:07:50 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id p80so1390558ybg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 17:07:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=vegfqptpw1wNPtbTqAfiW5JhWvOgA4LdeJqD1gHWX4E=;
-        b=lOQmMFYv/aAziyh/CpnrmFrAuR95FZjxoihmzPKf5C20G5ryMDRKpfuRq8YbB7RmZ9
-         i7WQA/T7Gp4Annewc4jjMNWHnCq0u450OfGzqLyN6MR5kF+W5EBcECvrknNTLOTfoauK
-         LhvokVXMoCM0VyqXGrMpmFt8GQ097SpFiwuvKNiadmE61sYGAVaE7dYeTpXKGaJo4/Dd
-         rWFaK1EsooRQ8n5p3R2u4yuz9NVs2S5gCS8gk6LxELL46mzZs2R1YZ2yDT5/fzWOoo48
-         CMLCtq3nQ03KL0+WnQbb8EzeXKwa1dqxUSPfVD5/ALrfQrV9l/gnbtl25B+TqJiXIYHg
-         PfgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=vegfqptpw1wNPtbTqAfiW5JhWvOgA4LdeJqD1gHWX4E=;
-        b=KLuEDuqhJQMRuOVLWIPHuIv+5G9/sLeq4HXbETh5hx1uXivEBUf8pqk57hM7S+zyOD
-         6vMsvEdzv7VNwuKIrTkEFb57F7cBfIXJdvlTJA2xJLja8u75a22hhQLo/pP2LVIC6BwW
-         ktKfJuw6sFCPBhdIxau6a4OWrVviOFeAlT8m1VfbNlbBhqo8bNBspqguV+bEspi+xbFe
-         P7QKzwoHBqM3GfFM/UWkqOl6drwkcuc5sQTiCb0r6na2m/fkN7bVWtpx4k45U2F16dHP
-         53KwrSySBoiekC4zIDqYie4M20v+EU7BYMJXIGd3+XZOObk9G7HM14gpXp0N82su/NVS
-         Z86A==
-X-Gm-Message-State: AOAM530E7o2CEPfbewUDpZfV7Hr9wWsIIfR+/iAsGuTfja0CWA6pYnWL
-        F4LO4ZCX+bAgsnAHGSl6DilMwdFBtHEYVOcqd10=
-X-Google-Smtp-Source: ABdhPJxF5i0TbGLOYkGZ82ttxe9Qf3lU5+lSqU2BfXphVfUAUnBmPSlnU0vmlYu60m4pWXIfJluI9AxX3aNNbAPKUZs=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a25:d24a:: with SMTP id
- j71mr14341774ybg.13.1610672869563; Thu, 14 Jan 2021 17:07:49 -0800 (PST)
-Date:   Thu, 14 Jan 2021 17:07:46 -0800
-In-Reply-To: <1610500731-30960-1-git-send-email-jjohnson@codeaurora.org>
-Message-Id: <20210115010746.3839839-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <1610500731-30960-1-git-send-email-jjohnson@codeaurora.org>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: Re: [PATCH 1/2] kbuild: simplify cmd_mod
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     jjohnson@codeaurora.org
-Cc:     eberman@quicinc.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, masahiroy@kernel.org,
-        michal.lkml@markovi.net, mkalikot@codeaurora.org,
-        psodagud@quicinc.com, Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 14 Jan 2021 20:09:07 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10F13AVv167512;
+        Thu, 14 Jan 2021 20:08:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=XOeSzX9xb6InbeP9NV1F2CyB2AXbY0GV7E32ThriA+I=;
+ b=jBVtj1eod2YOMAruM741kW141nR2JmzIeE5Wb8L6pHWagOOov/+4Zo6wnHBhv27Ccl6n
+ wUppyGZWEBFK+cKqKKR8nzHz1Bcuu48Hk9VOiqbZHeubwzMDy1KgYvx1UnzgSQvrHGJ2
+ x6McXDUvF9Pribn9FJ2D3DVpkV/cfXCKLOdWC697yY5PVuD3GVr+ESTmYS0JGxQqP4mS
+ 6NEepd7pYUhwPuzCACCo4jgvgWcFs+VuZcmHvZHDVn3kZX5qu/nKGQ5tluOYANMXlJkP
+ U+ADFXceykHDhufxe6CO6mOuRhnuy4yr1WL+9Si4J1VMQI8NadxP9kc3ILpfZ5eyxrIM yA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3630rv8ey9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Jan 2021 20:08:26 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10F15WgP177099;
+        Thu, 14 Jan 2021 20:08:25 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3630rv8exf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Jan 2021 20:08:25 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10F16C7N023565;
+        Fri, 15 Jan 2021 01:08:23 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 35ydrdendd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Jan 2021 01:08:23 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10F18K2816515396
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 01:08:20 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 675E64C046;
+        Fri, 15 Jan 2021 01:08:20 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A4BD24C040;
+        Fri, 15 Jan 2021 01:08:19 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.66.6])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Fri, 15 Jan 2021 01:08:19 +0000 (GMT)
+Date:   Fri, 15 Jan 2021 02:08:16 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v13 06/15] s390/vfio-ap: allow assignment of unavailable
+ AP queues to mdev device
+Message-ID: <20210115020816.3e0226bd.pasic@linux.ibm.com>
+In-Reply-To: <270e192b-b88d-b072-428c-6cbfc0f9a280@linux.ibm.com>
+References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
+        <20201223011606.5265-7-akrowiak@linux.ibm.com>
+        <20210111214037.477f0f03.pasic@linux.ibm.com>
+        <270e192b-b88d-b072-428c-6cbfc0f9a280@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-14_10:2021-01-14,2021-01-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=990 adultscore=0
+ suspectscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0
+ malwarescore=0 phishscore=0 mlxscore=0 clxscore=1015 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101150003
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
-> 
-> Modules with a large number of compilation units can exceed execv
-> argument list resulting in E2BIG (Argument list too long) error.
-> 
-> Fix this by replacing shell 'echo > file' into a more native
-> $(file op filename[,text]) option.
-> 
-> Signed-off-by: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
-> Signed-off-by: Jeff Johnson <jjohnson@codeaurora.org>
-> ---
->  scripts/Makefile.build | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> index 4c058f1..252b7d2 100644
-> --- a/scripts/Makefile.build
-> +++ b/scripts/Makefile.build
-> @@ -279,10 +279,11 @@ $(obj)/%.o: $(src)/%.c $(recordmcount_source) $(objtool_dep) FORCE
->  	$(call if_changed_rule,cc_o_c)
->  	$(call cmd,force_checksrc)
->  
-> -cmd_mod = { \
-> -	echo $(if $($*-objs)$($*-y)$($*-m), $(addprefix $(obj)/, $($*-objs) $($*-y) $($*-m)), $(@:.mod=.o)); \
-> -	$(undefined_syms) echo; \
-> -	} > $@
-> +cmd_mod = $(file >$@,\
-> +		$(if $($*-objs)$($*-y)$($*-m), \
-> +			$(addprefix $(obj)/, $($*-objs) $($*-y) $($*-m)), \
-> +			$(@:.mod=.o))) \
-> +	$(undefined_syms) echo >> $@
+On Thu, 14 Jan 2021 12:54:39 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-I find the indendation to be a readability improvement. Thanks for the
-patch.
-
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-
->  
->  $(obj)/%.mod: $(obj)/%.o FORCE
->  	$(call if_changed,mod)
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+> On 1/11/21 3:40 PM, Halil Pasic wrote:
+> > On Tue, 22 Dec 2020 20:15:57 -0500
+> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >  
+> >> The current implementation does not allow assignment of an AP adapter or
+> >> domain to an mdev device if each APQN resulting from the assignment
+> >> does not reference an AP queue device that is bound to the vfio_ap device
+> >> driver. This patch allows assignment of AP resources to the matrix mdev as
+> >> long as the APQNs resulting from the assignment:
+> >>     1. Are not reserved by the AP BUS for use by the zcrypt device drivers.
+> >>     2. Are not assigned to another matrix mdev.
+> >>
+> >> The rationale behind this is twofold:
+> >>     1. The AP architecture does not preclude assignment of APQNs to an AP
+> >>        configuration that are not available to the system.
+> >>     2. APQNs that do not reference a queue device bound to the vfio_ap
+> >>        device driver will not be assigned to the guest's CRYCB, so the
+> >>        guest will not get access to queues not bound to the vfio_ap driver.  
+> > You didn't tell us about the changed error code.  
 > 
+> I am assuming you are talking about returning -EBUSY from
+> the vfio_ap_mdev_verify_no_sharing() function instead of
+> -EADDRINUSE. I'm going to change this back per your comments
+> below.
 > 
+> >
+> > Also notice that this point we don't have neither filtering nor in-use.
+> > This used to be patch 11, and most of that stuff used to be in place. But
+> > I'm going to trust you, if you say its fine to enable it this early.  
+> 
+> The patch order was changed due to your review comments in
+> in Message ID <20201126165431.6ef1457a.pasic@linux.ibm.com>,
+> patch 07/17 in the v12 series. In order to ensure that only queues
+> bound to the vfio_ap driver are given to the guest, I'm going to
+> create a patch that will preceded this one which introduces the
+> filtering code currently introduced in the patch 12/17, the hot
+> plug patch.
+> 
+
+I don't want to delay this any further, so it's up to you. I don't think
+we will get the in-between steps perfect anyway.
+
+I've re-readthe Message ID
+ <20201126165431.6ef1457a.pasic@linux.ibm.com> and I didn't
+ask for this change. I pointed out a problem, and said, maybe it can be
+solved by reordering, I didn't think it through.
+
+[..]
