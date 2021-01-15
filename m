@@ -2,113 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1302F7FCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E97002F7FD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732352AbhAOPje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:39:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
+        id S1733048AbhAOPkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:40:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728879AbhAOPjd (ORCPT
+        with ESMTP id S1731623AbhAOPj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:39:33 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CCDC061793;
-        Fri, 15 Jan 2021 07:38:53 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id v15so6050842wrx.4;
-        Fri, 15 Jan 2021 07:38:53 -0800 (PST)
+        Fri, 15 Jan 2021 10:39:59 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64ECCC0613D3;
+        Fri, 15 Jan 2021 07:39:18 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id n8so2041664ljg.3;
+        Fri, 15 Jan 2021 07:39:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/h5xi6JSFXxPDZmDPtNhEjnaFAoil7BDNGSWIjoSRoM=;
-        b=pJXdW7QQ6kBYF8E6jkwXjiwlpczTZMomcQ04mL60/18nqX0w5xWqKp0y6vjSsf20Wa
-         xIbJL8iFtWzN05rRIHBoqsUZ8faOtY+UUk6ef57PkuhmAmQvUBpbpa6t4sNYSM+nm6UL
-         Bb0O35QKgdIRGM0sjLb1wvxX3ELDT9vR51+63asVN2h2Ojv6GrKx9OXJyh7j75DhPBoY
-         2msMADcTGzf2fE0cIf8OckmCkLb+lMzG/QazjBxBNEYaJ3diYS5lTDUBesZLjUICo2X2
-         SpsRbYzCEVkFIWnvecE03UmhAIVnys86m9JAcE6ZGHa5zL/uFiIlXXne/9IdRTHhTnCv
-         4BKQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=srgjk5QVmLK3FqpIHac5AnRKp8slJiIMm3vehhv+DqU=;
+        b=rvx+H0Qmrb/n8UlxFo7AwfzpD8AvmON747N0xAQWZMOMoqQ0OL0/5baVgkHSaWmC/p
+         Mj1BV9d7TQG2L8lnoJfpvQTgZQJsx83QWH+CTBtp26ZXGJep7yS6qnq2uQcnxVIISGLh
+         bWK097qEVIUgDIO9Dxgkn5KRuMq+Dj0lsN6WDazstZSuanVzmWYxSHqxilmzB3GWefkk
+         TDa0CVDHzn/fuKj7oBfBR4i2EJuKFLh4igDaQ5TbxZ3gEDRNpxGrtuJCaE/AnmRa/utq
+         UcGEOA+//9WHn4LKCU/ASjfQ1OllFemiUb0sXAiMnbP5x086r7T+GzIXMwJUlTp8lbiO
+         QgLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/h5xi6JSFXxPDZmDPtNhEjnaFAoil7BDNGSWIjoSRoM=;
-        b=surN2dPvWGjxrCPmdycJfWDlAWrT2tIjq9ervgr3aoV3yQWEVhyiZn5JUBqfBBHvxF
-         vThnIo9gstNI6PagrlAEFOFnmsAsLKOp8n3HhhgdmjC2/Vvqi1yz1WBqGWVmHSehnSJu
-         HwYbBzsZEpzEIOc0QtBd3TrqPQezaGRXOO8ZYVhFFlBMP3XIeoV4ULoWJhjP9Z7Kaxl4
-         SZnIikBw526owmr8umuqjoh3u8OrMntWy+cYm1+OmWdpXeN4f90cN3NQzeRDR4pgoC9F
-         spMPTc7EwihAtZhJ/EmUYgG09qSQf3Usg7JTjAHrt/9qaTfjBPoTPiHQVDyl6P9SASLh
-         x8rw==
-X-Gm-Message-State: AOAM531wWzYU26EWQVhbIzTERW96YZ6gKPrVHHsJn1mRXc8kuoTRaZkN
-        q4b82tZIY+ZBKL4ehBNPLME=
-X-Google-Smtp-Source: ABdhPJyr5c/xCE7surzCbS9UR0ERv60lBS3fVhlOpAAjR/c6cgAhH+Fx7zLb4Yl0IABW5O9RArCdXQ==
-X-Received: by 2002:adf:e9d0:: with SMTP id l16mr13063091wrn.376.1610725131875;
-        Fri, 15 Jan 2021 07:38:51 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id a17sm15069939wrs.20.2021.01.15.07.38.50
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=srgjk5QVmLK3FqpIHac5AnRKp8slJiIMm3vehhv+DqU=;
+        b=opMux2KF1snd44aVyIulUlzT6EvewZ/T48hAOkXWmVR5znf0qJk+P2ap7geeT27KKE
+         slNPyTXujcIx0CAZgjPi9+5EqIwiwSz5iW4IvjzBLlBw/YjQVjdNAvtkyHK22AGb4EEJ
+         VvknW6qJFzrOVKlxXxA68c1A02KE+dUWe16MvYyGY3OR281bAPqHyf7iFbBh9PXcFULJ
+         Xpj3ViGufgmy6c/WM1wIKPDsu3W/UG2o0hJtYK5bgSgXdBWPiqXY7aajau19hfVLo81M
+         CHpU8Qdj9AVZ9yhhv5v7BsmeHlrgqibomsPcOqlap0rhyFGR8qbn8Amm8sJJrSMROWLI
+         VPQA==
+X-Gm-Message-State: AOAM531rs66SLFMVcQRXtCwhmDRZXXc7WTngyXpIyvdhI4iRXT3VYY95
+        fDV6cPHDa00VEEVx6fmddC8=
+X-Google-Smtp-Source: ABdhPJwZjsLS3nFSwGHZRWYqxl3I/ZmEVsseUeiRs/KOrZkYVTEFxEN9eg31UyjKv5J8wc64/oYLLA==
+X-Received: by 2002:a2e:8416:: with SMTP id z22mr5535221ljg.347.1610725155447;
+        Fri, 15 Jan 2021 07:39:15 -0800 (PST)
+Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.gmail.com with ESMTPSA id j2sm931567lfe.134.2021.01.15.07.39.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 07:38:50 -0800 (PST)
-Date:   Fri, 15 Jan 2021 16:38:49 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 4/5] ASoC: tegra: ahub: Use clk_bulk helpers
-Message-ID: <YAG3CeBI5h5VKqQL@ulmo>
-References: <20210112125834.21545-1-digetx@gmail.com>
- <20210112125834.21545-5-digetx@gmail.com>
+        Fri, 15 Jan 2021 07:39:14 -0800 (PST)
+From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH 1/3] dt-bindings: mtd: move partition binding to its own file
+Date:   Fri, 15 Jan 2021 16:38:59 +0100
+Message-Id: <20210115153901.31052-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="pLk3yZKzSBt2opqn"
-Content-Disposition: inline
-In-Reply-To: <20210112125834.21545-5-digetx@gmail.com>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rafał Miłecki <rafal@milecki.pl>
 
---pLk3yZKzSBt2opqn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Single partition binding is quite common and may be:
+1. Used by multiple parsers
+2. Extended for more specific cases
 
-On Tue, Jan 12, 2021 at 03:58:33PM +0300, Dmitry Osipenko wrote:
-> Use clk_bulk helpers to make code cleaner.
->=20
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  sound/soc/tegra/tegra30_ahub.c | 30 +++++++-----------------------
->  sound/soc/tegra/tegra30_ahub.h |  4 ++--
->  2 files changed, 9 insertions(+), 25 deletions(-)
+Move it to separated file to avoid code duplication.
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+ .../mtd/partitions/fixed-partitions.yaml      | 33 +------------
+ .../bindings/mtd/partitions/partition.yaml    | 47 +++++++++++++++++++
+ 2 files changed, 48 insertions(+), 32 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/partition.yaml
 
---pLk3yZKzSBt2opqn
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+index 6d4a3450e064..ea4cace6a955 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+@@ -27,38 +27,7 @@ properties:
+ 
+ patternProperties:
+   "@[0-9a-f]+$":
+-    description: node describing a single flash partition
+-    type: object
+-
+-    properties:
+-      reg:
+-        description: partition's offset and size within the flash
+-        maxItems: 1
+-
+-      label:
+-        description: The label / name for this partition. If omitted, the label
+-          is taken from the node name (excluding the unit address).
+-
+-      read-only:
+-        description: This parameter, if present, is a hint that this partition
+-          should only be mounted read-only. This is usually used for flash
+-          partitions containing early-boot firmware images or data which should
+-          not be clobbered.
+-        type: boolean
+-
+-      lock:
+-        description: Do not unlock the partition at initialization time (not
+-          supported on all devices)
+-        type: boolean
+-
+-      slc-mode:
+-        description: This parameter, if present, allows one to emulate SLC mode
+-          on a partition attached to an MLC NAND thus making this partition
+-          immune to paired-pages corruptions
+-        type: boolean
+-
+-    required:
+-      - reg
++    $ref: "partition.yaml#"
+ 
+ required:
+   - "#address-cells"
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+new file mode 100644
+index 000000000000..e1ac08064425
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+@@ -0,0 +1,47 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/partitions/partition.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Partition
++
++description: |
++  This binding describes a single flash partition. Each partition must have its
++  relative offset and size specified. Depending on partition function extra
++  properties can be used.
++
++maintainers:
++  - Rafał Miłecki <rafal@milecki.pl>
++
++properties:
++  reg:
++    description: partition's offset and size within the flash
++    maxItems: 1
++
++  label:
++    description: The label / name for this partition. If omitted, the label
++      is taken from the node name (excluding the unit address).
++
++  read-only:
++    description: This parameter, if present, is a hint that this partition
++      should only be mounted read-only. This is usually used for flash
++      partitions containing early-boot firmware images or data which should
++      not be clobbered.
++    type: boolean
++
++  lock:
++    description: Do not unlock the partition at initialization time (not
++      supported on all devices)
++    type: boolean
++
++  slc-mode:
++    description: This parameter, if present, allows one to emulate SLC mode
++      on a partition attached to an MLC NAND thus making this partition
++      immune to paired-pages corruptions
++    type: boolean
++
++required:
++  - reg
++
++additionalProperties: true
+-- 
+2.26.2
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmABtwkACgkQ3SOs138+
-s6F3FA/9HwpxJ6Gd0bLJNkzt97n9mABHQPT74u3ZzTK3+ubXqhb2oKBavGzauqv2
-TvkFVI4DevDVhC7Hx6DxSFXcqdScwUk25FPcnsQD7TztY/kHu99NnnZ2gd5xfmoh
-SgdxLNi70d/9t+6p96iTsVxURF3i7YxwtISUmxKnIPdShFJSRMaYu5ci+0vnobS0
-3RffcDPumaDF+kWY2ZRv8QNqAYpfXhl5z31GlWfcohS0G5QsEGmwK+leu9s62WXU
-DiNxytgaVMH2wnMTUxT0rdhfRlWN+alY9Aac9EMwVlAvlSP6KZTuk8kOtHgVwQXK
-ujJWO2n4UWRRyk7cm/euk+eyAtmcd1MM7CzRwWM8ezXZEi1qBsQqNH+zw7z3ZJTT
-dUMWDGWUIDCyTJoNZIOg+vJt/p1FXRsA5oeTlVqx5jrSOO1FAcuDdOu68jeoiTVU
-9Rtbh/gc0MpZEzQ6OUcQEfR1g3A/ojud4dkpVvpvrNTL/t09BpOxZAN5+QrmOXm3
-9WO5BCGAZoEp8trnBTYO9DTrelcp0r8iDpXjyhgSlXkQNFgY4j+pEfaBglTqr6zI
-LfQ0reT+3OuhxCgADYjRow9NSb0xc+a0pCYogu46O9mkk+gDsGE0IplviMqdo9LN
-QsYAK4mE2LFFqArbiJA9DvcuFs89Ma8CdQ4HBonIi+zpDVzX4JY=
-=MMnc
------END PGP SIGNATURE-----
-
---pLk3yZKzSBt2opqn--
