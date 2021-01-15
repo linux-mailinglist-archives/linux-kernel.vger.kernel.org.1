@@ -2,144 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E302F7E57
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E9E2F7E56
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729736AbhAOOeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 09:34:22 -0500
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:41972 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730505AbhAOOeV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1733164AbhAOOeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 15 Jan 2021 09:34:21 -0500
-Received: by mail-lf1-f51.google.com with SMTP id s26so13390750lfc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:34:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=EYynAAe01v0az5oN2AITmKdZxLEimEvKPrB2V3ro+Hs=;
-        b=K6Rz9/uPTW1x4ySLcdxoKas0X7DkBFosGcP8wsrFfKW07xsgGZ2e9VTR3z6axkgsc+
-         c+euxOWR6+mqD63e8TxdXFtY5Wg1U7TgmS/wCt/ttC9hVzy8w2rTrdRdF0c0ex9PAOaV
-         2qfpf38+bTXGy+i3BQKpyOKtLT23yHo3EgA08rp71U0t5oYZjgIfr7mtsN+P8UMNvUW5
-         vaMQYTNijoZrLX5SuRWliU6qkdzmJdn1FTESdlCSFbyms9HaANvOuxQuE8Cw6R0sNEX0
-         ZfZ6NgresJJzIo1NTk7c+9x1G4yPlffn3H1E21Wsob4fzjIFaspk5Ccmg8TAOJxc1tA2
-         REzw==
-X-Gm-Message-State: AOAM5306BdqEG2HsbGHTbt+N2v1JVI5m9vZhoLNp5hBdSePtzGjanvwG
-        xhoAOg/knhKKTlj06x8zvzs=
-X-Google-Smtp-Source: ABdhPJxYYwRXawHojiTYdTNzmA9TiK+cKjV7BVmhwMBT/jy0Qt49eeyRHJInLsJC2yRAu+8EHPQzLA==
-X-Received: by 2002:a19:88c3:: with SMTP id k186mr5471877lfd.276.1610721219340;
-        Fri, 15 Jan 2021 06:33:39 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id f23sm917092lfh.196.2021.01.15.06.33.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 06:33:38 -0800 (PST)
-Date:   Fri, 15 Jan 2021 16:33:32 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-power@fi.rohmeurope.com, linux-kernel@vger.kernel.org
-Subject: [PATCH] regulator: bd718x7, bd71828, Fix dvs voltage levels
-Message-ID: <20210115143332.GA721433@localhost.localdomain>
+Received: from mail.kernel.org ([198.145.29.99]:57470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729489AbhAOOeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 09:34:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06050224F9;
+        Fri, 15 Jan 2021 14:33:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610721219;
+        bh=JlKooYtElvoBMZ5GgPDQkCOzjeZLLHw0zI1ErnpiMME=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=n84OuihdpxPZSCEyu2+9PdEdvMGODoT7rfwGJKCJVQu+RWVvZv7kKTdyzVBwQHjER
+         /KgPuCh4t/3RrSVuGEFnO+43KiugUEQ+1pxhLEnOjG+VoqPXRith5tGebZky3XctZ7
+         9vr+OIFeQnvqJPT313tBjeqbN2pO1vMzzFVrgPd7G5/h/7GEARTEleX6E83tTcZX4s
+         f9LhQFOfAALetyeqoqT7wmf/2P/sel/bHB16EPXoStanCObOLhU3kP3C9tXWux6noH
+         zaIb/UlThPWSsDD5ji8nY7q/9pFPFO5YQXKqPfPQyHG3SJ7Exv3FapLkH54c1lrrKy
+         S1MzyvnqxCn9Q==
+Subject: Re: [f2fs-dev] [PATCH v2 1/2] f2fs: introduce checkpoint=merge mount
+ option
+To:     Daeho Jeong <daeho43@gmail.com>, Chao Yu <yuchao0@huawei.com>
+Cc:     Daeho Jeong <daehojeong@google.com>,
+        Sungjong Seo <sj1557.seo@samsung.com>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <20210114062302.3809664-1-daeho43@gmail.com>
+ <965dc435-c0a0-36ca-7e97-c3aaa3831bff@huawei.com>
+ <CACOAw_x4R+rWZbi4TQym_sWuyqOGRR5w3iOs1A+e+g=ZT5k7FQ@mail.gmail.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <b64dc9dd-9f22-cb91-c633-d7bbc74abf72@kernel.org>
+Date:   Fri, 15 Jan 2021 22:33:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <CACOAw_x4R+rWZbi4TQym_sWuyqOGRR5w3iOs1A+e+g=ZT5k7FQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ROHM BD718x7 and BD71828 drivers support setting HW state
-specific voltages from device-tree. This is used also by various
-in-tree DTS files.
+On 2021/1/15 22:00, Daeho Jeong wrote:
+>> ktime_get() returns time based ns unit, in extreme scenario, average
+>> time cp cost will overflow 32-bit variable, I doubt.
+>>
+> sum_diff is already turned into msec using ktime_ms_delta() above.
 
-These drivers do incorrectly try to compose bit-map using enum
-values. By a chance this works for first two valid levels having
-values 1 and 2 - but setting values for the rest of the levels
-do indicate capbility of setting values for first levels as
-well. Luckily the regulators which support settin values for
-SUSPEND/LPSR do usually also support setting values for RUN
-and IDLE too - thus this has not been such a fatal issue.
-
-Fix this by defining the old enum values as bits and using
-new enum in parsing code. This allows keeping existing IC
-specific drivers intact and only adding the defines and
-slightly changing the rohm-regulator.c
-
-Fixes: 21b72156ede8b ("regulator: bd718x7: Split driver to common and bd718x7 specific parts")
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-
-One more attempt today. I did test the driver is not causing a crash
-when load but no further tests concluded as I don't have BD71837/47/50
-at home. This looks now trivial though so I decided to give it a go.
-Sorry for all the trouble this far - and also for the mistakes to come.
-
- drivers/regulator/rohm-regulator.c |  9 ++++++---
- include/linux/mfd/rohm-generic.h   | 14 ++++++--------
- 2 files changed, 12 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/regulator/rohm-regulator.c b/drivers/regulator/rohm-regulator.c
-index 399002383b28..5c558b153d55 100644
---- a/drivers/regulator/rohm-regulator.c
-+++ b/drivers/regulator/rohm-regulator.c
-@@ -52,9 +52,12 @@ int rohm_regulator_set_dvs_levels(const struct rohm_dvs_config *dvs,
- 	char *prop;
- 	unsigned int reg, mask, omask, oreg = desc->enable_reg;
- 
--	for (i = 0; i < ROHM_DVS_LEVEL_MAX && !ret; i++) {
--		if (dvs->level_map & (1 << i)) {
--			switch (i + 1) {
-+	for (i = 0; i < ROHM_DVS_LEVEL_VALID_AMOUNT && !ret; i++) {
-+		int bit;
-+
-+		bit = BIT(i);
-+		if (dvs->level_map & bit) {
-+			switch (bit) {
- 			case ROHM_DVS_LEVEL_RUN:
- 				prop = "rohm,dvs-run-voltage";
- 				reg = dvs->run_reg;
-diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-generic.h
-index 4283b5b33e04..2b85b9deb03a 100644
---- a/include/linux/mfd/rohm-generic.h
-+++ b/include/linux/mfd/rohm-generic.h
-@@ -20,14 +20,12 @@ struct rohm_regmap_dev {
- 	struct regmap *regmap;
- };
- 
--enum {
--	ROHM_DVS_LEVEL_UNKNOWN,
--	ROHM_DVS_LEVEL_RUN,
--	ROHM_DVS_LEVEL_IDLE,
--	ROHM_DVS_LEVEL_SUSPEND,
--	ROHM_DVS_LEVEL_LPSR,
--	ROHM_DVS_LEVEL_MAX = ROHM_DVS_LEVEL_LPSR,
--};
-+#define ROHM_DVS_LEVEL_RUN		BIT(0)
-+#define ROHM_DVS_LEVEL_IDLE		BIT(1)
-+#define ROHM_DVS_LEVEL_SUSPEND		BIT(2)
-+#define ROHM_DVS_LEVEL_LPSR		BIT(3)
-+#define ROHM_DVS_LEVEL_VALID_AMOUNT	4
-+#define ROHM_DVS_LEVEL_UNKNOWN		0
- 
- /**
-  * struct rohm_dvs_config - dynamic voltage scaling register descriptions
-
-base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
--- 
-2.25.4
+Yup, I missed ktime_ms_delta().
 
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+On 2021/1/15 22:23, Daeho Jeong wrote:
+ >>> How about updating queued_ckpt and total_ckpt in batch, update atomic
+ >>> variable one by one is low efficient.
+ >>>
+ >> You mean like using spin_lock()?
+ >>
+ > Ah, you mean like updating these values as much as the count of the
+ > loop at once?
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+Correct. :)
+
+Thanks,
