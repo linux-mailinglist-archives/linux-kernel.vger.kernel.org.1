@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885482F7BEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 089772F7BCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732412AbhAOMbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:31:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36438 "EHLO mail.kernel.org"
+        id S2388531AbhAONF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:05:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732335AbhAOMbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:31:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1845D238A1;
-        Fri, 15 Jan 2021 12:30:16 +0000 (UTC)
+        id S1732613AbhAOMb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D407238D6;
+        Fri, 15 Jan 2021 12:30:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713817;
-        bh=LaiKbeaxpVHeaWg5MB49PRv5cDA81AaXYmPhwYSVYFA=;
+        s=korg; t=1610713819;
+        bh=s5rdMnDuSkDqSsdKS3Kfx41GvoHWbEtG2/DA60iC/qQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XY2ZkgsJfhxu5Ej+Rvif6A0ojNDIdRSdKgrQjZiFb8SK8wmaUZO1ID6R23gEm/m3N
-         6nsM1V4kcBaciUzs90d4sJuXXybaC6vr1jp7zYCmg+iQodcMDRMkaFp/NPlXMzbxRz
-         nZGC7kPBqeJI6NFQ2azZygCycBeTHLC4Nn2XUIsg=
+        b=SnOIjkL46ChIRzjgDCyWIeSR4wwnzbQnf16PJBf2zEW9LePuJkZ9QZpFX6tNXSTLl
+         HJztlLTnfiiol8E3dDrnOoXTdkcBE8q2/p1r6+N9GDOFyoKjuVgciChJcayBvbYVaP
+         m0ki4EYS/Gs3J8rl9Wb8WSfP1at7y87dCOqIhCH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Shravya Kumbham <shravya.kumbham@xilinx.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 4.9 17/25] dmaengine: xilinx_dma: fix mixed_enum_type coverity warning
-Date:   Fri, 15 Jan 2021 13:27:48 +0100
-Message-Id: <20210115121957.533272012@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 18/25] wil6210: select CONFIG_CRC32
+Date:   Fri, 15 Jan 2021 13:27:49 +0100
+Message-Id: <20210115121957.581983317@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
 References: <20210115121956.679956165@linuxfoundation.org>
@@ -41,35 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shravya Kumbham <shravya.kumbham@xilinx.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 2d5efea64472469117dc1a9a39530069e95b21e9 upstream.
+commit e186620d7bf11b274b985b839c38266d7918cc05 upstream.
 
-Typecast the fls(width -1) with (enum dmaengine_alignment) in
-xilinx_dma_chan_probe function to fix the coverity warning.
+Without crc32, the driver fails to link:
 
-Addresses-Coverity: Event mixed_enum_type.
-Fixes: 9cd4360de609 ("dma: Add Xilinx AXI Video Direct Memory Access Engine driver support")
-Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
-Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Link: https://lore.kernel.org/r/1608722462-29519-4-git-send-email-radhey.shyam.pandey@xilinx.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+arm-linux-gnueabi-ld: drivers/net/wireless/ath/wil6210/fw.o: in function `wil_fw_verify':
+fw.c:(.text+0x74c): undefined reference to `crc32_le'
+arm-linux-gnueabi-ld: drivers/net/wireless/ath/wil6210/fw.o:fw.c:(.text+0x758): more undefined references to `crc32_le' follow
+
+Fixes: 151a9706503f ("wil6210: firmware download")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/dma/xilinx/xilinx_dma.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/wil6210/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/dma/xilinx/xilinx_dma.c
-+++ b/drivers/dma/xilinx/xilinx_dma.c
-@@ -2357,7 +2357,7 @@ static int xilinx_dma_chan_probe(struct
- 		has_dre = false;
- 
- 	if (!has_dre)
--		xdev->common.copy_align = fls(width - 1);
-+		xdev->common.copy_align = (enum dmaengine_alignment)fls(width - 1);
- 
- 	if (of_device_is_compatible(node, "xlnx,axi-vdma-mm2s-channel") ||
- 	    of_device_is_compatible(node, "xlnx,axi-dma-mm2s-channel") ||
+--- a/drivers/net/wireless/ath/wil6210/Kconfig
++++ b/drivers/net/wireless/ath/wil6210/Kconfig
+@@ -1,6 +1,7 @@
+ config WIL6210
+ 	tristate "Wilocity 60g WiFi card wil6210 support"
+ 	select WANT_DEV_COREDUMP
++	select CRC32
+ 	depends on CFG80211
+ 	depends on PCI
+ 	default n
 
 
