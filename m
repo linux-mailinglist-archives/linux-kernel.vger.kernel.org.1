@@ -2,205 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FD12F858F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 458B32F8593
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:34:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388630AbhAOTcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 14:32:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35482 "EHLO mail.kernel.org"
+        id S2388291AbhAOTdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 14:33:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732707AbhAOTcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 14:32:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7998323A6C;
-        Fri, 15 Jan 2021 19:32:06 +0000 (UTC)
+        id S1728081AbhAOTdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 14:33:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BD6E23A6C;
+        Fri, 15 Jan 2021 19:32:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610739126;
-        bh=11rh+iGpci1MyV704b+unQYlIoGS+N6jdb7kdepDGkU=;
+        s=k20201202; t=1610739179;
+        bh=gScAWWsN0B1quqVQiE30mgPDdRq7TktH/lThBD3RjwE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XLTZ82iBMOc6gK9OUinI2DssqIiL6ypzPBpw4Jld7gs67MMzfMsiXCDGDZvjo+eEk
-         3ff7JKDB22UkHgqgAafjgtAmfm5j9tQfR/IPlMTxwr7II12L+CdFeZMqoNHOJjALUX
-         RdSXwsVAocOJEyi5IAdl1PVawTFMYhu/Dwtmq8nSCH9B0tpt7Rp/dHQSucDKpdsmI4
-         NCf4P46wsOHcsm9y4equ2s4LOPMhtIZ9rjYyGXTYjsoiLf/35vZHzRk5wEvSpopZ4R
-         PatqFf4eT0ivIrVYS+/P73ocG4CXqY88l6ruGzWr54SXz0wzosvlkY1ItxK4elWTM1
-         BnF7eIn++9zTQ==
+        b=JFRUycWSVXqVsku7Sim1aAi4N1ql2RxH6opRdTR7GScraWHKDliu1QqQw9MHy0t8c
+         ZYqqy/Omnun9NIdhXHC8+ECkNMlR/lBPI/SO4WxoUFNj0mA+D8wKynF6zBb7pgnJ6q
+         /81YhjE9E12f6+2NCyxaRHZOe9lPllR6PcF6h0UaDtSKc2LsNOVmbKm1qa2kgpfW6a
+         Uv+ZLxHIu2vxk8HNzoL0nUaUF+0lT1VHospGFwvqi9YGIkNsZRAI9CwJmcx/goBjTs
+         IQBqoHgm+dKri+hNjgftyRnbbCTCY5nN4VhZ6/E8mRafpoJicaLhG8Kn9l7ctylt9q
+         RTFLQOL4OKIMw==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B2DF240522; Fri, 15 Jan 2021 16:32:38 -0300 (-03)
-Date:   Fri, 15 Jan 2021 16:32:38 -0300
+        id B74D840522; Fri, 15 Jan 2021 16:33:32 -0300 (-03)
+Date:   Fri, 15 Jan 2021 16:33:32 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, jolsa@redhat.com,
-        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
-        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au
-Subject: Re: [PATCH V4 5/6] perf report: Add support for
- PERF_SAMPLE_CODE_PAGE_SIZE
-Message-ID: <20210115193238.GH457607@kernel.org>
-References: <20210105195752.43489-1-kan.liang@linux.intel.com>
- <20210105195752.43489-6-kan.liang@linux.intel.com>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf intel-pt: Fix 'CPU too large' error
+Message-ID: <20210115193332.GI457607@kernel.org>
+References: <20210107174159.24897-1-adrian.hunter@intel.com>
+ <225955df-f11f-d627-0690-6864f46151f5@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210105195752.43489-6-kan.liang@linux.intel.com>
+In-Reply-To: <225955df-f11f-d627-0690-6864f46151f5@linux.intel.com>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jan 05, 2021 at 11:57:51AM -0800, kan.liang@linux.intel.com escreveu:
-> From: Stephane Eranian <eranian@google.com>
+Em Thu, Jan 07, 2021 at 03:46:03PM -0500, Liang, Kan escreveu:
 > 
-> Add a new sort dimension "code_page_size" for common sort.
-> With this option applied, perf can sort and report by sample's code page
-> size.
+> 
+> On 1/7/2021 12:41 PM, Adrian Hunter wrote:
+> > In some cases, the number of cpus (nr_cpus_online) is confused with the
+> > maximum cpu number (nr_cpus_avail), which results in the error in the
+> > example below:
+> > 
+> > Example on system with 8 cpus:
+> > 
+> >   Before:
+> >     # echo 0 > /sys/devices/system/cpu/cpu2/online
+> >     # ./perf record --kcore -e intel_pt// taskset --cpu-list 7 uname
+> >     Linux
+> >     [ perf record: Woken up 1 times to write data ]
+> >     [ perf record: Captured and wrote 0.147 MB perf.data ]
+> >     # ./perf script --itrace=e
+> >     Requested CPU 7 too large. Consider raising MAX_NR_CPUS
+> >     0x25908 [0x8]: failed to process type: 68 [Invalid argument]
+> > 
+> >   After:
+> >     # ./perf script --itrace=e
+> >     #
+> > 
+> > Fixes: 8c7274691f0d ("perf machine: Replace MAX_NR_CPUS with perf_env::nr_cpus_online")
+> > Fixes: 7df4e36a4785 ("perf session: Replace MAX_NR_CPUS with perf_env::nr_cpus_online")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> 
+> 
+> Tested-by: Kan Liang <kan.liang@linux.intel.com>
 
-Ditto, adding your:
+Thanks, applied.
 
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+- Arnaldo
+
  
-> For example,
-> perf report --stdio --sort=comm,symbol,code_page_size
->  # To display the perf.data header info, please use
->  # --header/--header-only options.
->  #
->  #
->  # Total Lost Samples: 0
->  #
->  # Samples: 3K of event 'mem-loads:uP'
->  # Event count (approx.): 1470769
->  #
->  # Overhead  Command  Symbol                        Code Page Size IPC
->  # [IPC Coverage]
->  # ........  .......  ............................  ..............
->  # ....................
->  #
->      69.56%  dtlb     [.] GetTickCount              4K             -
+> Thanks,
+> Kan
 > 
->      17.93%  dtlb     [.] Calibrate                 4K             -
->  -
->      11.40%  dtlb     [.] __gettimeofday            4K             -
->  -
-> 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
-> Signed-off-by: Stephane Eranian <eranian@google.com>
-> ---
->  tools/perf/Documentation/perf-report.txt |  1 +
->  tools/perf/util/hist.c                   |  2 ++
->  tools/perf/util/hist.h                   |  1 +
->  tools/perf/util/sort.c                   | 26 ++++++++++++++++++++++++
->  tools/perf/util/sort.h                   |  2 ++
->  5 files changed, 32 insertions(+)
-> 
-> diff --git a/tools/perf/Documentation/perf-report.txt b/tools/perf/Documentation/perf-report.txt
-> index 8f7f4e9605d8..e44045842c5c 100644
-> --- a/tools/perf/Documentation/perf-report.txt
-> +++ b/tools/perf/Documentation/perf-report.txt
-> @@ -108,6 +108,7 @@ OPTIONS
->  	- period: Raw number of event count of sample
->  	- time: Separate the samples by time stamp with the resolution specified by
->  	--time-quantum (default 100ms). Specify with overhead and before it.
-> +	- code_page_size: the code page size of sampled code address (ip)
->  
->  	By default, comm, dso and symbol keys are used.
->  	(i.e. --sort comm,dso,symbol)
-> diff --git a/tools/perf/util/hist.c b/tools/perf/util/hist.c
-> index a08fb9ea411b..6d50379af90e 100644
-> --- a/tools/perf/util/hist.c
-> +++ b/tools/perf/util/hist.c
-> @@ -212,6 +212,7 @@ void hists__calc_col_len(struct hists *hists, struct hist_entry *h)
->  		hists__new_col_len(hists, HISTC_TIME, 16);
->  	else
->  		hists__new_col_len(hists, HISTC_TIME, 12);
-> +	hists__new_col_len(hists, HISTC_CODE_PAGE_SIZE, 6);
->  
->  	if (h->srcline) {
->  		len = MAX(strlen(h->srcline), strlen(sort_srcline.se_header));
-> @@ -718,6 +719,7 @@ __hists__add_entry(struct hists *hists,
->  		.cpumode = al->cpumode,
->  		.ip	 = al->addr,
->  		.level	 = al->level,
-> +		.code_page_size = sample->code_page_size,
->  		.stat = {
->  			.nr_events = 1,
->  			.period	= sample->period,
-> diff --git a/tools/perf/util/hist.h b/tools/perf/util/hist.h
-> index 14f66330923d..361108533a56 100644
-> --- a/tools/perf/util/hist.h
-> +++ b/tools/perf/util/hist.h
-> @@ -53,6 +53,7 @@ enum hist_column {
->  	HISTC_DSO_TO,
->  	HISTC_LOCAL_WEIGHT,
->  	HISTC_GLOBAL_WEIGHT,
-> +	HISTC_CODE_PAGE_SIZE,
->  	HISTC_MEM_DADDR_SYMBOL,
->  	HISTC_MEM_DADDR_DSO,
->  	HISTC_MEM_PHYS_DADDR,
-> diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
-> index 80907bc32683..c00934c91b58 100644
-> --- a/tools/perf/util/sort.c
-> +++ b/tools/perf/util/sort.c
-> @@ -1491,6 +1491,31 @@ struct sort_entry sort_mem_data_page_size = {
->  	.se_width_idx	= HISTC_MEM_DATA_PAGE_SIZE,
->  };
->  
-> +static int64_t
-> +sort__code_page_size_cmp(struct hist_entry *left, struct hist_entry *right)
-> +{
-> +	uint64_t l = left->code_page_size;
-> +	uint64_t r = right->code_page_size;
-> +
-> +	return (int64_t)(r - l);
-> +}
-> +
-> +static int hist_entry__code_page_size_snprintf(struct hist_entry *he, char *bf,
-> +					  size_t size, unsigned int width)
-> +{
-> +	char str[PAGE_SIZE_NAME_LEN];
-> +
-> +	return repsep_snprintf(bf, size, "%-*s", width,
-> +			       get_page_size_name(he->code_page_size, str));
-> +}
-> +
-> +struct sort_entry sort_code_page_size = {
-> +	.se_header	= "Code Page Size",
-> +	.se_cmp		= sort__code_page_size_cmp,
-> +	.se_snprintf	= hist_entry__code_page_size_snprintf,
-> +	.se_width_idx	= HISTC_CODE_PAGE_SIZE,
-> +};
-> +
->  static int64_t
->  sort__abort_cmp(struct hist_entry *left, struct hist_entry *right)
->  {
-> @@ -1735,6 +1760,7 @@ static struct sort_dimension common_sort_dimensions[] = {
->  	DIM(SORT_CGROUP_ID, "cgroup_id", sort_cgroup_id),
->  	DIM(SORT_SYM_IPC_NULL, "ipc_null", sort_sym_ipc_null),
->  	DIM(SORT_TIME, "time", sort_time),
-> +	DIM(SORT_CODE_PAGE_SIZE, "code_page_size", sort_code_page_size),
->  };
->  
->  #undef DIM
-> diff --git a/tools/perf/util/sort.h b/tools/perf/util/sort.h
-> index e50f2b695bc4..cab4172a6ec3 100644
-> --- a/tools/perf/util/sort.h
-> +++ b/tools/perf/util/sort.h
-> @@ -106,6 +106,7 @@ struct hist_entry {
->  	u64			transaction;
->  	s32			socket;
->  	s32			cpu;
-> +	u64			code_page_size;
->  	u8			cpumode;
->  	u8			depth;
->  
-> @@ -229,6 +230,7 @@ enum sort_type {
->  	SORT_CGROUP_ID,
->  	SORT_SYM_IPC_NULL,
->  	SORT_TIME,
-> +	SORT_CODE_PAGE_SIZE,
->  
->  	/* branch stack specific sort keys */
->  	__SORT_BRANCH_STACK,
-> -- 
-> 2.25.1
-> 
+> > ---
+> >   tools/perf/util/machine.c | 4 ++--
+> >   tools/perf/util/session.c | 2 +-
+> >   2 files changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> > index 1ae32a81639c..46844599d25d 100644
+> > --- a/tools/perf/util/machine.c
+> > +++ b/tools/perf/util/machine.c
+> > @@ -2977,7 +2977,7 @@ int machines__for_each_thread(struct machines *machines,
+> >   pid_t machine__get_current_tid(struct machine *machine, int cpu)
+> >   {
+> > -	int nr_cpus = min(machine->env->nr_cpus_online, MAX_NR_CPUS);
+> > +	int nr_cpus = min(machine->env->nr_cpus_avail, MAX_NR_CPUS);
+> >   	if (cpu < 0 || cpu >= nr_cpus || !machine->current_tid)
+> >   		return -1;
+> > @@ -2989,7 +2989,7 @@ int machine__set_current_tid(struct machine *machine, int cpu, pid_t pid,
+> >   			     pid_t tid)
+> >   {
+> >   	struct thread *thread;
+> > -	int nr_cpus = min(machine->env->nr_cpus_online, MAX_NR_CPUS);
+> > +	int nr_cpus = min(machine->env->nr_cpus_avail, MAX_NR_CPUS);
+> >   	if (cpu < 0)
+> >   		return -EINVAL;
+> > diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> > index 3b3c50b12791..2777c2df7d87 100644
+> > --- a/tools/perf/util/session.c
+> > +++ b/tools/perf/util/session.c
+> > @@ -2391,7 +2391,7 @@ int perf_session__cpu_bitmap(struct perf_session *session,
+> >   {
+> >   	int i, err = -1;
+> >   	struct perf_cpu_map *map;
+> > -	int nr_cpus = min(session->header.env.nr_cpus_online, MAX_NR_CPUS);
+> > +	int nr_cpus = min(session->header.env.nr_cpus_avail, MAX_NR_CPUS);
+> >   	for (i = 0; i < PERF_TYPE_MAX; ++i) {
+> >   		struct evsel *evsel;
+> > 
 
 -- 
 
