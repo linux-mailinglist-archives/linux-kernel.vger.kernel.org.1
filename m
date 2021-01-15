@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A21F62F73AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:25:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB30C2F73B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731226AbhAOHZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 02:25:04 -0500
-Received: from mga01.intel.com ([192.55.52.88]:20855 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729451AbhAOHZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 02:25:03 -0500
-IronPort-SDR: 2mquRg54P9JbPGC5P7rmf3gH1t3R0pji7sUtatJ/VILf8BwTorXaDT+uUnfQF1mPguYiegD/xy
- 19YmTQ0zcQSQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="197173954"
-X-IronPort-AV: E=Sophos;i="5.79,348,1602572400"; 
-   d="scan'208";a="197173954"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 23:23:11 -0800
-IronPort-SDR: rI+g70nMjeju82zmMHGK73x/doUFYZSAe2vGJuYhomHwkIvTWuVo0O7Ct7zsxNcIwXaSIhdfNP
- DZ8veDKLVzNw==
-X-IronPort-AV: E=Sophos;i="5.79,348,1602572400"; 
-   d="scan'208";a="382568970"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.255.30.191]) ([10.255.30.191])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 23:23:10 -0800
-To:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>, Tony <tony.luck@intel.com>,
-        Tim C Chen <tim.c.chen@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "Du, Julie" <julie.du@intel.com>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Test report for kernel direct mapping performance
-Message-ID: <213b4567-46ce-f116-9cdf-bbd0c884eb3c@linux.intel.com>
-Date:   Fri, 15 Jan 2021 15:23:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1731513AbhAOHbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 02:31:17 -0500
+Received: from mail-qt1-f175.google.com ([209.85.160.175]:44042 "EHLO
+        mail-qt1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731419AbhAOHbQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 02:31:16 -0500
+Received: by mail-qt1-f175.google.com with SMTP id r9so5420790qtp.11
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:31:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IC6nYnjWq4nKpkNfzmQBFmOCWxCpv8qHmwxuE4KKiAQ=;
+        b=nwOCjyw0zrqv+Abb4PRDiS5MaBv17+yyejzRpEjTk9lFxCAZCZqtsDFG8oj+HFogjl
+         cquCmTpbBb7qViw85BSyLBGJwejF+J/LQ2ZPQyPeHe6VoyjMJ4841/TvSCwr1F0eZamu
+         Kyz2ahZmHa+b5tfQsMswtYeb/Fljnmxpmp0CC3GhlYqwo6yGSCoCAJt8VKYthICxFU51
+         ljZs/H4L7g7qhzBTSo8WKHLwF3XGpenw9eXL3aUVoer8nhfAvTUaZQGgQuWaBzex1/sw
+         RHWqKxfiTDXP6757yvf7yNayN+igl2Pw6fZP0mZ+Igzb57hk4A+pYsk2j15RKR9yD8ms
+         L7rA==
+X-Gm-Message-State: AOAM533LQbSwhAFYGTCEn6crIb0T6i5UCFHrPN1mhhDGGknQyMrbZsP3
+        zPcPnIP4YFlmKwJgy/VAS+8tVEW0sIPuTns2JcA=
+X-Google-Smtp-Source: ABdhPJwomW6rTW7s4wID/Brjwniin9+SEXga2rV2ofQcEuXcTydW4AYrNoLcJll29YsWK0Y/dKiUzv9jueCoiOKsAqQ=
+X-Received: by 2002:ac8:4711:: with SMTP id f17mr2263591qtp.256.1610695834700;
+ Thu, 14 Jan 2021 23:30:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210114154646.209024-1-leo.yan@linaro.org>
+In-Reply-To: <20210114154646.209024-1-leo.yan@linaro.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 15 Jan 2021 16:30:23 +0900
+Message-ID: <CAM9d7cgXcvysJXZEWuskgB3ucdRkVg3OzUxcWvEcc2mrDpasBg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/6] perf c2c: Code refactoring
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Joe Mario <jmario@redhat.com>, David Ahern <dsahern@gmail.com>,
+        Don Zickus <dzickus@redhat.com>, Joe Perches <joe@perches.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-There is currently a bit of a debate about the kernel direct map. Does 
-using 2M/1G pages aggressively for the kernel direct map help 
-performance? Or, is it an old optimization which is not as helpful on 
-modern CPUs as it was in the old days? What is the penalty of a kernel 
-feature that heavily demotes this mapping from larger to smaller pages? 
-We did a set of runs with 1G and 2M pages enabled /disabled and saw the 
-changes.
+On Fri, Jan 15, 2021 at 12:46 AM Leo Yan <leo.yan@linaro.org> wrote:
+>
+> This patch series is for several minor code refactoring, which is
+> extracted from the patch series "perf c2c: Sort cacheline with all
+> loads" [1].
+>
+> There has a known issue for Arm SPE store operations and Arm SPE is
+> the only consumer for soring with all loads, this is the reason in this
+> series drops the changes for dimensions and sorting, and only extracts
+> the patches related with code refactoring.  So this series doesn't
+> introduce any functionality change.
+>
+> The patches have been tested on x86_64 and compared the result before
+> and after applying the patches, and confirmed no difference for the
+> output result.
+>
+> Changes from v3:
+> * Refined patch 03/06 to remove unnecessary parentheses and test and
+>   return early in the function filter_display() (Joe Perches);
+> * Added new patch 04/06 to make argument type as u32 for percent().
+>
+> Changes from v2:
+> * Changed to use static functions to replace macros (Namhyung);
+> * Added Jiri's Ack tags in the unchanged patches;
+> * Minor improvement in the commit logs.
+>
+> [1] https://lore.kernel.org/patchwork/cover/1353064/
+>
+>
+> Leo Yan (6):
+>   perf c2c: Rename for shared cache line stats
+>   perf c2c: Refactor hist entry validation
+>   perf c2c: Refactor display filter
+>   perf c2c: Fix argument type for percent()
+>   perf c2c: Refactor node display
+>   perf c2c: Add local variables for output metrics
 
-[Conclusions]
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Assuming that this was a good representative set of workloads and that 
-the data are good, for server usage, we conclude that the existing 
-aggressive use of 1G mappings is a good choice since it represents the 
-best in a plurality of the workloads. However, in a *majority* of cases, 
-another mapping size (2M or 4k) potentially offers a performance 
-improvement. This leads us to conclude that although 1G mappings are a 
-good default choice, there is no compelling evidence that it must be the 
-only choice, or that folks deriving benefits (like hardening) from 
-smaller mapping sizes should avoid the smaller mapping sizes.
-
-[Summary of results]
-
-1. The test was done on server platforms with 11 benchmarks. For the 4 
-different server platforms tested, each with three different maximums 
-kernel mapping sizes: 4k, 2M, and 1G. Each system has enough memory to 
-effectively deploy 1G mappings.  For the 11 different benchmarks were 
-used, not every benchmark was run on every system, there was a total of 
-259 tests.
-
-2. For each benchmark/system combination, the 1G mapping had the highest 
-performance for 45% of the tests, 2M for ~30%, and 4k for~20%.
-
-3. From the average delta, among 1G/2M/4K, 4K gets the lowest 
-performance in all the 4 test machines, while 1G gets the best 
-performance on 2 test machines and 2M gets the best performance on the 
-other 2 machines.
-
-4. By testing with machine memory from 256G to 512G, we observed that 
-the larger memory will lead to the performance better for 1G page size. 
-With Large memory, 
-Will-it-scale/vm-scalability/unixbench/reaim/hackbench shows 1G has the 
-best performance, while kbuild/memtier/netperf shows 4K has the best 
-performance.
-
-For more details please see the following web link:
-
-https://01.org/sites/default/files/documentation/test_report_for_kernel_direct_mapping_performance_0.pdf
-
--- 
-Zhengjun Xing
+Thanks,
+Namhyung
