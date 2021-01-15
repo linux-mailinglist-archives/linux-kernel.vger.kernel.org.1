@@ -2,77 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332752F8899
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:42:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9962F8890
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727531AbhAOWjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 17:39:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726442AbhAOWjx (ORCPT
+        id S1727760AbhAOWl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 17:41:28 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:54231 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726615AbhAOWl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 17:39:53 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA19AC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:39:12 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id c12so6390818pfo.10
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:39:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=Y+c9HS3HJQoqEUWQRXGWZKY5dKQmAKWSEZz8d5vX0FU=;
-        b=P0fiHh/oe3hWdW5Wx4pzUmfwyiQzjlFLEMallmyifhCooJCVq7w5B5NWF+ZAinmnba
-         xh805OL650c5mw8CBh7JLgvt8QcKl2prrZPuk+UgelMY0PH73TcezAl/aDjqDIW31Pp4
-         eIvv1fTiod+GgbZBkM4U3BwFzYsl/HO0sUbFI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=Y+c9HS3HJQoqEUWQRXGWZKY5dKQmAKWSEZz8d5vX0FU=;
-        b=l0Xl1FTaADHvj3V3H6lqY36VOs2xrCSd3D+aeIxFecR9+mxcKDOCQZp8Kd823pk/dD
-         coMe4A6xR6hR0VAuPb9gENGVB/4zZyGJp74x+eIEivxO/5KglD0JuJSFNdyXj6sJen8I
-         PaaC0kK3Le0EAKscRCUWUSeDojdmfeE/GzfHt/1CFeGDc/u+wt6mfg3GGJpsTshLtK0c
-         NX3506uGXah/gaQK8XN4ZRT+7wc9Eo7VUsncHBu1hB8oAy/dU7rzK4NQir3tuvTw76Td
-         sd3aa3ah+Vdeo1fhQwJVqaeVZs8TLsWlLCPe3tgTP9XsoDIA2D8lQp5KsiHK8Xm1W0WY
-         1bVw==
-X-Gm-Message-State: AOAM532her+xsL1hXbMCi7ajo7LHQ2oI6fqCwlLBSWNE7DUZ9pTMQVoa
-        xgYNTM+1X9rwXyoQhOvnx1EI1A==
-X-Google-Smtp-Source: ABdhPJwetKTrsYDO/MS3uQ/4bM25Gvzem9TMvE7hVpCR9+DEgOQIq0GoGhBZnQW4prM8us8FZ9T/gA==
-X-Received: by 2002:a62:15d2:0:b029:1a1:c2f2:e851 with SMTP id 201-20020a6215d20000b02901a1c2f2e851mr14981471pfv.7.1610750352548;
-        Fri, 15 Jan 2021 14:39:12 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id gv22sm736919pjb.56.2021.01.15.14.39.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 14:39:12 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 15 Jan 2021 17:41:27 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id uk-mta-8-lXDDyAc-MTCPOuhWUXC4Tg-1;
+ Fri, 15 Jan 2021 22:39:47 +0000
+X-MC-Unique: lXDDyAc-MTCPOuhWUXC4Tg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 15 Jan 2021 22:39:44 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 15 Jan 2021 22:39:44 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arnd Bergmann' <arnd@kernel.org>
+CC:     "sonicadvance1@gmail.com" <sonicadvance1@gmail.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        "Rich Felker" <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Andy Lutomirski" <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        David Rientjes <rientjes@google.com>,
+        "Willem de Bruijn" <willemb@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Oleg Nesterov" <oleg@redhat.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        "Suren Baghdasaryan" <surenb@google.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Brian Gerst" <brgerst@gmail.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Jan Kara <jack@suse.cz>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+Subject: RE: [PATCH] Adds a new ioctl32 syscall for backwards compatibility
+ layers
+Thread-Topic: [PATCH] Adds a new ioctl32 syscall for backwards compatibility
+ layers
+Thread-Index: AQHW6wzXd1V6Thk8U0iiUgMFo8hTJqopEBwAgAAyHoCAAARq4A==
+Date:   Fri, 15 Jan 2021 22:39:44 +0000
+Message-ID: <313c380c4b1b477fbd09aac66eed4505@AcuMS.aculab.com>
+References: <20210106064807.253112-1-Sonicadvance1@gmail.com>
+ <20210115070326.294332-1-Sonicadvance1@gmail.com>
+ <b15672b1caec4cf980f2753d06b03596@AcuMS.aculab.com>
+ <CAK8P3a1gqt-gBCPTdNeY+8SaG8eUGN4zkCrNKSjA=aEL-TkaUQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a1gqt-gBCPTdNeY+8SaG8eUGN4zkCrNKSjA=aEL-TkaUQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210115143555.v6.3.I96134907488f41f358d03f3c1b08194f9547e670@changeid>
-References: <20210115143555.v6.1.Iaa8a60cf2ed4b7ad5e2fbb4ad76a1c600ee36113@changeid> <20210115143555.v6.3.I96134907488f41f358d03f3c1b08194f9547e670@changeid>
-Subject: Re: [PATCH v6 3/3] dt-bindings: input: Fix the keymap for LOCK key
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     dianders@chromium.org, Philip Chen <philipchen@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Philip Chen <philipchen@chromium.org>,
-        dmitry.torokhov@gmail.com
-Date:   Fri, 15 Jan 2021 14:39:10 -0800
-Message-ID: <161075035048.3661239.6086252465678815045@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-01-15 14:36:17)
-> Decouple LOCK from F13 and directly map the LOCK key (KSI3/KSO9) to
-> KEY_SLEEP action key code.
->=20
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
-> ---
+Li4uDQo+IEhlJ3MgYWxyZWFkeSBkb2luZyB0aGUgc3lzdGVtIGNhbGwgZW11bGF0aW9uIGZvciBh
+bGwgdGhlIHN5c3RlbQ0KPiBjYWxscyBvdGhlciB0aGFuIGlvY3RsIGluIHVzZXIgc3BhY2UgdGhv
+dWdoLiBJbiBteSBleHBlcmllbmNlLA0KPiB0aGVyZSBhcmUgYWN0dWFsbHkgZmFpcmx5IGZldyBp
+b2N0bCBjb21tYW5kcyB0aGF0IGFyZSBkaWZmZXJlbnQNCj4gYmV0d2VlbiBhcmNoaXRlY3R1cmVz
+IC0tIG1vc3Qgb2YgdGhlbSBoYXZlIG5vIG1pc2FsaWduZWQNCj4gb3IgYXJjaGl0ZWN0dXJlLWRl
+ZmluZWQgc3RydWN0IG1lbWJlcnMgYXQgYWxsLg0KDQpBcmVuJ3QgdGhlcmUgYWxzbyBzb21lIGlu
+dHJhY3RhYmxlIGlzc3VlcyB3aXRoIHNvY2tldCBvcHRpb25zPw0KSUlSQyB0aGUga2VybmVsIGNv
+ZGUgdGhhdCB0cmllZCB0byBjaGFuZ2UgdGhlbSB0byA2NGJpdCB3YXMNCmhvcnJpYmx5IGJyb2tl
+biBpbiBzb21lIG9ic2N1cmUgY2FzZXMuDQoNClB1c2hpbmcgdGhlIGNvbnZlcnNpb24gZG93biB0
+aGUgc3RhY2sgbm90IG9ubHkgaWRlbnRpZmllZCB0aGUNCmlzc3VlcywgaXQgYWxzbyBtYWRlIHRo
+ZW0gZWFzaWVyIHRvIGZpeC4NCg0KSWYgeW91IGNoYW5nZSB0aGUga2VybmVsIHNvIGEgNjRiaXQg
+cHJvY2VzcyBjYW4gZXhlY3V0ZSAzMmJpdA0Kc3lzdGVtIGNhbGxzIHRoZW4gYSBsb3Qgb2YgdGhl
+IHByb2JsZW1zIGRvIGdvIGF3YXkuDQpUaGlzIGlzIHByb2JhYmx5IGVhc2llc3QgZG9uZSBieSBz
+ZXR0aW5nIGEgaGlnaCBiaXQgb24gdGhlDQpzeXN0ZW0gY2FsbCBudW1iZXIgLSBhcyB4ODZfNjQg
+ZG9lcyBmb3IgeDMyIGNhbGxzLg0KDQpZb3Ugc3RpbGwgaGF2ZSB0byBzb2x2ZSB0aGUgZGlmZmVy
+ZW50IGFsaWdubWVudCBvZiA2NGJpdCBkYXRhDQpvbiBpMzg2Lg0KDQpPZiBjb3Vyc2UgdGhlIHN5
+c3RlbSBjYWxsIG51bWJlcnMgYXJlIGRpZmZlcmVudCAtIGJ1dCB0aGF0IGlzDQpqdXN0IGEgbG9v
+a3VwLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5
+IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRp
+b24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
