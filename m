@@ -2,84 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5A72F7109
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9FD2F710B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730515AbhAODex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 22:34:53 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:34180 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726311AbhAODex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 22:34:53 -0500
-Received: from zhangzhijie.loongson.cn (unknown [10.20.41.29])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax1bweDQFgA60EAA--.5257S2;
-        Fri, 15 Jan 2021 11:33:50 +0800 (CST)
-From:   "ZhiJie.Zhang" <zhangzhijie@loongson.cn>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        zhangzhijie@loongson.cn
-Subject: [PATCH v2] drm: Improve the output_poll_changed description
-Date:   Fri, 15 Jan 2021 11:33:28 +0800
-Message-Id: <20210115033328.1799514-1-zhangzhijie@loongson.cn>
-X-Mailer: git-send-email 2.29.2
+        id S1732632AbhAODfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 22:35:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730600AbhAODfO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 22:35:14 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389D8C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 19:34:34 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id cq1so4288153pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 19:34:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=W07ZLPVszbueA12F97uxqmYwsZjLziE6s+z1n5bz+MA=;
+        b=wzlU1v608Bp/5Fbh2LlphjOSHK6mVDaFC9eNHaDC2tGh7ihu4qx096kwF8127c89Ll
+         jthd9Pm03WUosaLQezx/FRs71g/jon1IpEWnRmEIJEaa3/RqTfuKh6EMgw46I8CXq3D9
+         /yeQBRNBhq99IYpe4/dgheqrWnGGRqaYp/pD0KqlsmA1/e3f3WRIf+s3I5FSkj6zEi7s
+         mSj3ocJxC5OWg1FORIgSX/GK+xHgCI/Dhp8fJw5qax5XWl3Z/oGS5Gv9uAB9MWHMXIod
+         s7Jvto4y8yKloaXd1xK705vZEuAc5yfmVaCbXy26Vk1daNcozz+ePsuEWmbi/gaCCTJB
+         l6Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=W07ZLPVszbueA12F97uxqmYwsZjLziE6s+z1n5bz+MA=;
+        b=IWbnntyDZB2ItGu6NNQOkC53ybCHVQOfgbQM2Gs62cTFqhO9KN33sSypZSfnhCyy/P
+         VszkfEnArZG7Pb76w4IlP5+KPUzNEx4yIIppCNswrcwG6XReam8d0E8BYMZ+chnfAInh
+         buG7Qve/89FAZD0GB2Ux+QI3lSEZznQP2OkxnHovsV0XzPgvwQpkgh0RUDdwvbU6Z6pc
+         jNwuLD7qCCvoexPPHK98xUZYGp2lqFCfRBP8dpI5yXyXxwrdNPviP3jMy2mUfyGDkjqw
+         9mc1G9pQUSSpHj3POadfHnUAtQ8soXzRE6lmIdQulMFXeeQ/P223ADS1AvLhN7ynJyly
+         UYLQ==
+X-Gm-Message-State: AOAM532Swbt5n0VDlSyqV5noOqWbfnZzllTquJQU9b8QJan5aZdHcsCL
+        9of+Y8fJxvZuOCiaGsQHh1diQA==
+X-Google-Smtp-Source: ABdhPJyYdlMuN2pkKJ7RYKVFFcTi9PZ8+oVHWdgcn5YANMzdEyqNgbQgng2M+wNGbbyh/9Rvip/U2A==
+X-Received: by 2002:a17:90a:4cc5:: with SMTP id k63mr8252416pjh.202.1610681673757;
+        Thu, 14 Jan 2021 19:34:33 -0800 (PST)
+Received: from localhost ([122.172.85.111])
+        by smtp.gmail.com with ESMTPSA id w19sm6454293pgf.23.2021.01.14.19.34.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 14 Jan 2021 19:34:32 -0800 (PST)
+Date:   Fri, 15 Jan 2021 09:04:30 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Robert Richter <rric@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "oprofile-list@lists.sf.net" <oprofile-list@lists.sf.net>,
+        William Cohen <wcohen@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "anmar.oueja@linaro.org" <anmar.oueja@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 03/18] arch: arc: Remove CONFIG_OPROFILE support
+Message-ID: <20210115033430.rzyja2diwp7lbmni@vireshk-i7>
+References: <cover.1610622251.git.viresh.kumar@linaro.org>
+ <906d9d40746bb1b60823a288d00820cb50d29138.1610622251.git.viresh.kumar@linaro.org>
+ <16e1ec02-e6da-b49d-ee21-c98660605cf8@synopsys.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Ax1bweDQFgA60EAA--.5257S2
-X-Coremail-Antispam: 1UD129KBjvJXoWrtFW5CF43GFW7Kw15tr45GFg_yoW8JryUpr
-        sIkryFkr48tF93uF4UGrWIg3W8AanrGF40qFWkKw4SkwnxtwnIvF9Ygr45uFyrWFZxJF45
-        Xasa9r98A3Z5CrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
-        W0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE-syl
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: x2kd0wx2klyx3h6o00pqjv00gofq/1tbiAQACAF3QvM2fqQAAsJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <16e1ec02-e6da-b49d-ee21-c98660605cf8@synopsys.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangzhijie <zhangzhijie@loongson.cn>
+On 14-01-21, 17:51, Vineet Gupta wrote:
+> On 1/14/21 3:35 AM, Viresh Kumar wrote:
+> > The "oprofile" user-space tools don't use the kernel OPROFILE support
+> > any more, and haven't in a long time. User-space has been converted to
+> > the perf interfaces.
+> >
+> > Remove the old oprofile's architecture specific support.
+> >
+> > Suggested-by: Christoph Hellwig <hch@infradead.org>
+> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> 
+> Acked-by: Vineet Gupta <vgupta@synopsys.com>
+> 
+> I presume this doesn't need to go through ARC tree.
 
-this callback was used by drm_kms_helper_hotplug_event()
+Yes.
 
-V2: (Thanks for Daniel's suggestions)
-- remove the FIXME below.since with the drm_client
-- infrastructure and the generic fbdev emulation we've
-- resolved this all very neatly now.
-
-Signed-off-by: zhangzhijie <zhangzhijie@loongson.cn>
-Signed-off-by: ZhiJie.Zhang <zhangzhijie@loongson.cn>
----
- include/drm/drm_mode_config.h | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
-
-diff --git a/include/drm/drm_mode_config.h b/include/drm/drm_mode_config.h
-index ab424ddd7665..50541980f7f2 100644
---- a/include/drm/drm_mode_config.h
-+++ b/include/drm/drm_mode_config.h
-@@ -104,13 +104,8 @@ struct drm_mode_config_funcs {
- 	 * changes.
- 	 *
- 	 * Drivers implementing fbdev emulation with the helpers can call
--	 * drm_fb_helper_hotplug_changed from this hook to inform the fbdev
-+	 * drm_kms_helper_hotplug_event() from this hook to inform the fbdev
- 	 * helper of output changes.
--	 *
--	 * FIXME:
--	 *
--	 * Except that there's no vtable for device-level helper callbacks
--	 * there's no reason this is a core function.
- 	 */
- 	void (*output_poll_changed)(struct drm_device *dev);
- 
 -- 
-2.29.2
-
+viresh
