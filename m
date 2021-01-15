@@ -2,70 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259E82F7600
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C0D2F7622
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:00:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730986AbhAOJ4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:56:46 -0500
-Received: from smtp25.cstnet.cn ([159.226.251.25]:51334 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729182AbhAOJ4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:56:45 -0500
-Received: from localhost.localdomain (unknown [124.16.141.241])
-        by APP-05 (Coremail) with SMTP id zQCowACHUuOiZgFgPbtSAA--.13581S2;
-        Fri, 15 Jan 2021 17:55:48 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     vladimir.oltean@nxp.com, claudiu.manoil@nxp.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: mscc: ocelot: Remove unneeded semicolon
-Date:   Fri, 15 Jan 2021 09:55:44 +0000
-Message-Id: <20210115095544.33164-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: zQCowACHUuOiZgFgPbtSAA--.13581S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrJrWrKry8CF1kAw13tw48Crg_yoWxWFcEkr
-        9Fqw1SqFy5Gr9Yk398tanxC340vw1kWr97uF47Kayaqws7Gr18Aw1j9rnrXw18uF1xXFZr
-        Cw12gF1Iv3sFgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbwkYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWxJVW8Jr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC2
-        0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
-        0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
-        14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20x
-        vaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
-        xVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1I38UUUUUU==
-X-Originating-IP: [124.16.141.241]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCgkCA1z4jTKa4wAAsg
+        id S1731404AbhAOJ7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:59:46 -0500
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.22]:29326 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730981AbhAOJ7p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 04:59:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1610704548;
+        s=strato-dkim-0002; d=gerhold.net;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Subject:Sender;
+        bh=pQJUbSnglx6jrVEG/uzEMF/4a7MagxWfC490ZSlRcXE=;
+        b=LwuonCwlR5oQhAfMTVYCA+JEmLvVXaqVXdgdKFVLwYPh64ilEne0HgAhbl/S7QuBfx
+        ajFniRu/GLR+r+okpTTJoRNMDO5zGcGm2RH2V814PVJtEztXS2Im5Z2e+V3RKA7GpqTe
+        FydKth6WxVV7H9fK3sn+G+GovvmumSnor+UDKoIp7ziG0W7EMddYeiLc40lG0lCADgHy
+        Aqk8JwBkPSbkuZq16s1kdwO9RwM6wzVuJTdFl/YnMWigMwB1cOcJp0RiIuo4I/V0X5Fc
+        fCQ7ZvwQd/wce3c97NW+QRmwL5AW64ANEA+y1n7AevmjzMQMny5ZYQVgLFJYSMwHrKfs
+        Iqbg==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j4IcrHBg=="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
+        with ESMTPSA id R0a218x0F9tmpP8
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Fri, 15 Jan 2021 10:55:48 +0100 (CET)
+Date:   Fri, 15 Jan 2021 10:55:46 +0100
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Saravana Kannan <saravanak@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH] driver core: Extend device_is_dependent()
+Message-ID: <YAFmoinbKocE9Jf5@gerhold.net>
+References: <2073294.4OfjquceTg@kreacher>
+ <CAGETcx980TXe_Jur3LqpWoMwt0wG9BBvVdXfhAo3jU8-tgv=kw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx980TXe_Jur3LqpWoMwt0wG9BBvVdXfhAo3jU8-tgv=kw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix semicolon.cocci warnings:
-drivers/net/ethernet/mscc/ocelot_net.c:460:2-3: Unneeded semicolon
+Hi,
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/net/ethernet/mscc/ocelot_net.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Jan 14, 2021 at 11:31:12AM -0800, Saravana Kannan wrote:
+> On Thu, Jan 14, 2021 at 10:41 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> >
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > When adding a new device link, device_is_dependent() is used to
+> > check whether or not the prospective supplier device does not
+> > depend on the prospective consumer one to avoid adding loops
+> > to the graph of device dependencies.
+> >
+> > However, device_is_dependent() does not take the ancestors of
+> > the target device into account, so it may not detect an existing
+> > reverse dependency if, for example, the parent of the target
+> > device depends on the device passed as its first argument.
+> >
+> > For this reason, extend device_is_dependent() to also check if
+> > the device passed as its first argument is an ancestor of the
+> > target one and return 1 if that is the case.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Reported-by: Stephan Gerhold <stephan@gerhold.net>
+> > ---
+> >  drivers/base/core.c |   12 +++++++++++-
+> >  1 file changed, 11 insertions(+), 1 deletion(-)
+> >
+> > Index: linux-pm/drivers/base/core.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/base/core.c
+> > +++ linux-pm/drivers/base/core.c
+> > @@ -208,6 +208,16 @@ int device_links_read_lock_held(void)
+> >  #endif
+> >  #endif /* !CONFIG_SRCU */
+> >
+> > +static bool device_is_ancestor(struct device *dev, struct device *target)
+> > +{
+> > +       while (target->parent) {
+> > +               target = target->parent;
+> > +               if (dev == target)
+> > +                       return true;
+> > +       }
+> > +       return false;
+> > +}
+> > +
+> >  /**
+> >   * device_is_dependent - Check if one device depends on another one
+> >   * @dev: Device to check dependencies for.
+> > @@ -221,7 +231,7 @@ int device_is_dependent(struct device *d
+> >         struct device_link *link;
+> >         int ret;
+> >
+> > -       if (dev == target)
+> > +       if (dev == target || device_is_ancestor(dev, target))
+> >                 return 1;
+> >
+> >         ret = device_for_each_child(dev, target, device_is_dependent);
+> >
+> 
 
-diff --git a/drivers/net/ethernet/mscc/ocelot_net.c b/drivers/net/ethernet/mscc/ocelot_net.c
-index 2bd2840d88bd..2390c90922db 100644
---- a/drivers/net/ethernet/mscc/ocelot_net.c
-+++ b/drivers/net/ethernet/mscc/ocelot_net.c
-@@ -457,7 +457,7 @@ static void ocelot_mact_work(struct work_struct *work)
- 		break;
- 	default:
- 		break;
--	};
-+	}
+Thanks for the patch, Rafael! I tested it and it seems to avoid the
+circular device link (and therefore also the crash). FWIW:
+
+Tested-by: Stephan Gerhold <stephan@gerhold.net>
+
+> The code works, but it's not at all obvious what it's doing. Because,
+> at first glance, it's easy to mistakenly think that it's trying to
+> catch this case:
+> dev <- child1 <- child2 <- target
+> 
+
+Isn't this pretty much the case we are trying to catch? I have:
+
+  78d9000.usb <- ci_hdrc.0 <- ci_hdrc.0.ulpi <- phy-ci_hdrc.0.ulpi.0
+
+then something attempts to create a device link with
+consumer = 78d9000.usb, supplier = phy-ci_hdrc.0.ulpi.0, and to check if
+that is allowed we call device_is_dependent() with dev = 78d9000.usb,
+target = phy-ci_hdrc.0.ulpi.0.
+
+Note that this case would normally be covered by the device_for_each_child().
+It's not in this case because the klist_children of 78d9000.usb
+is updated too late.
+
+> Maybe it's clearer if we do this check inside the loop? Something like:
+> 
+>                 if (link->consumer == target ||
+> device_is_ancestor(link->consumer, target))
+>                         return 1;
+> 
+
+I tried to test this with the diff below (let me know if I got it wrong).
+It does not seem to make any difference though, the circular device link
+is still created and without the reorder commit reverted it crashes.
+
+Thanks!
+Stephan
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 14f165816742..7af4ef5f89e7 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -208,6 +208,16 @@ int device_links_read_lock_held(void)
+ #endif
+ #endif /* !CONFIG_SRCU */
  
- 	kfree(w);
- }
--- 
-2.17.1
++static bool device_is_ancestor(struct device *dev, struct device *target)
++{
++	while (target->parent) {
++		target = target->parent;
++		if (dev == target)
++			return true;
++	}
++	return false;
++}
++
+ /**
+  * device_is_dependent - Check if one device depends on another one
+  * @dev: Device to check dependencies for.
+@@ -232,7 +242,7 @@ int device_is_dependent(struct device *dev, void *target)
+ 		if (link->flags == (DL_FLAG_SYNC_STATE_ONLY | DL_FLAG_MANAGED))
+ 			continue;
+ 
+-		if (link->consumer == target)
++		if (link->consumer == target || device_is_ancestor(link->consumer, target))
+ 			return 1;
+ 
+ 		ret = device_is_dependent(link->consumer, target);
 
