@@ -2,204 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7902F7DE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 188B02F7DED
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733148AbhAOOOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 09:14:44 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:55073 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731651AbhAOOOm (ORCPT
+        id S1731796AbhAOOQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 09:16:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730027AbhAOOQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:14:42 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id CDECC580732;
-        Fri, 15 Jan 2021 09:13:55 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Fri, 15 Jan 2021 09:13:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=tj2SxXoSa96FfDtLrh9IpSrjSWA
-        c9uYGz+Dn9iyVoAo=; b=B7b719RQYKeJsatdvoMfftPaZ7yza1XeB2tdCt+EfXJ
-        lyEobF8ynRrdN7pxtUoPCNN3dfilyUknC7aTjyaF4oJihyfecKY12lq6IgiU5Cz1
-        Vra/Uwe7W13TjbG6KqN24oHHPrC1/88iYYfOg2wCPjrXLB0GDaNS3PDyATP1pXej
-        5HHLRWc0r29gZRdE1uLJv6pc5aMOPi8ZjLC6JAnQxX87d99PTR+kZ/k9Z6nQNm9V
-        x0WGFJchuLQni4XDfFsGtGRZ9mYyCjTdEq5nOBG8T+RIbswMnhUDy8bhLPUdPJvI
-        Ni7wAgdzO3zMr5uZO/F7sboexu5D3QU0T8Ed3vI5MfA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=tj2SxX
-        oSa96FfDtLrh9IpSrjSWAc9uYGz+Dn9iyVoAo=; b=kkT3T4zeweqWXIX/CZ1B6z
-        DqGsjahZcO/cZPAU9BLCMla6ymzdiSZ7ZJ35RgoZIA7tkknGLbm7K6HkmmyEtuM9
-        m7U9NkEy3eA3CEOyqx8bRrsvRBhizLBqsv+hShK8YQ8uMeerxHTPnHWmrZT6W0es
-        FCpGNCGdJWhmmOt1yxhfqpCXhhbQS7V+qp+UB1aKlqBuwhXYiNCI8VJ5DguNziG3
-        sV4dimLDsXpkSnoUlQhIt7Z0//+muuUO0gvpOjviJZQXUhsCiK2Npriy+Aj61tE8
-        4BgkQVmB0W+Y7dCtAftP+KRmtIM2szcqlPcQnNOYCpPvzfL+Flf5dJQZ2A0g6cMw
-        ==
-X-ME-Sender: <xms:H6MBYD0GSlkzCPJVYGpbR_ZNI06sWvUNPMDdZ6_eJm43rVMA2MrEXQ>
-    <xme:H6MBYCGSUXTu3NWdcNYsemiQeKDPcqwh30OHx6Fp4t9vJ_J6k4zoRtURvSopDsY2K
-    kZ4YOo4yGkimvhGq54>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtddvgdefjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:IKMBYD420Ru-_AznpbGVzQ0jU5qBuPPsrrNPdOFYs-JrU-4D9wCSAQ>
-    <xmx:IKMBYI0429guPeHHyjc0jgU-OS7U10edc0et5onZ_6Las_n_TZYJYQ>
-    <xmx:IKMBYGGGZe6Wkc688GCwHAOskyhRtgv4uvUdI5qJ4DXevueC4Uhobw>
-    <xmx:I6MBYFbypYhb5YdRA0eaNNYJaUXLGsvZhXSUB8usLISCNOSUVzP1ug>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 869AA1080059;
-        Fri, 15 Jan 2021 09:13:51 -0500 (EST)
-Date:   Fri, 15 Jan 2021 15:13:49 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "James (Qian) Wang" <james.qian.wang@arm.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Mihail Atanassov <mihail.atanassov@arm.com>,
-        Brian Starkey <brian.starkey@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Dave Airlie <airlied@redhat.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stefan Agner <stefan@agner.ch>,
-        Alison Wang <alison.wang@nxp.com>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Edmund Dea <edmund.j.dea@intel.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Tomi Valkeinen <tomba@kernel.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Vincent Abriou <vincent.abriou@st.com>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jyri Sarha <jyri.sarha@iki.fi>, Eric Anholt <eric@anholt.net>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Melissa Wen <melissa.srw@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 02/10] drm: Rename plane atomic_check state names
-Message-ID: <20210115141349.7oq5hwsj37qcpk5j@gilmour>
-References: <20210115125703.1315064-1-maxime@cerno.tech>
- <20210115125703.1315064-2-maxime@cerno.tech>
- <221e5626-d97c-9d4e-07cc-e696c92ceb65@suse.de>
+        Fri, 15 Jan 2021 09:16:46 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0DC8C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:16:05 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610720163;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xPi6fTcj3IVxsBPOSRmGWJff7Jf+U46uJ6tlls9bJWg=;
+        b=bJhF3AqsBHe8cSV/ZwgFZNa3yMWmZL0s/N9YcybooMrLYzpP3Ibn++du0g8G1etuGGLxc8
+        l3Z9NTQLFIfUtu1HNbe2uq1oUbhsZmpPUNPMiWbrXrZCsVONLxZl0wRKwRKU6WbC23P4bt
+        bjEp7HtkdNk2lhoaYwLO+MmczNb8nY/R6KiVj4jlTr4hnwVVpo5jqpuyyA6XF0+upiJQHw
+        ggD94kGxR8WVrz2YEtnomPJT0kGMSa9pHkOdbhqwt+ODiiSEXEc3LI4kgQeM0xALAZfCxO
+        tKY8ReOjy6bGk99myXjAB4jlqdC/zC+LCuFOHOKb9/cFqWDpF5iHmd0JQCHl6w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610720163;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xPi6fTcj3IVxsBPOSRmGWJff7Jf+U46uJ6tlls9bJWg=;
+        b=+Qko1N7vlyUz7BuHTXKGyx4U+EI++yyckEoCJGBpw64EJmVfsx2ckgjpIR0AMJdJY/ceKx
+        W2awZC0oblVz9zAA==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] printk: fix buffer overflow potential for print_text()
+In-Reply-To: <20210114170412.4819-1-john.ogness@linutronix.de>
+References: <20210114170412.4819-1-john.ogness@linutronix.de>
+Date:   Fri, 15 Jan 2021 15:22:03 +0106
+Message-ID: <878s8ujnfg.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="pc7g53zcvckyysz5"
-Content-Disposition: inline
-In-Reply-To: <221e5626-d97c-9d4e-07cc-e696c92ceb65@suse.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Petr,
 
---pc7g53zcvckyysz5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I noticed some minor errors in the commit log and comments...
 
-Hi,
+On 2021-01-14, John Ogness <john.ogness@linutronix.de> wrote:
+> Before commit b6cf8b3f3312 ("printk: add lockless ringbuffer"),
+> msg_print_text()
 
-On Fri, Jan 15, 2021 at 02:46:36PM +0100, Thomas Zimmermann wrote:
-> Hi
->=20
-> Am 15.01.21 um 13:56 schrieb Maxime Ripard:
-> > diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ip=
-uv3-plane.c
-> > index 8a4235d9d9f1..2cb09e9d9306 100644
-> > --- a/drivers/gpu/drm/imx/ipuv3-plane.c
-> > +++ b/drivers/gpu/drm/imx/ipuv3-plane.c
-> > @@ -344,12 +344,12 @@ static const struct drm_plane_funcs ipu_plane_fun=
-cs =3D {
-> >   };
-> >   static int ipu_plane_atomic_check(struct drm_plane *plane,
-> > -				  struct drm_plane_state *state)
-> > +				  struct drm_plane_state *new_state)
->=20
-> It's not 'new_plane_state' ?
+The correct commit where the change was made is: 896fbe20b4e2333fb55
+("printk: use the lockless ringbuffer")
 
-That function is using old_state for plane->state:
+> would only write up to size-1 bytes into the
+> provided buffer. Some callers expect this behavior and append
+> a terminator to returned string. In particular:
+>
+> arch/powerpc/xmon/xmon.c:dump_log_buf()
+> arch/um/kernel/kmsg_dump.c:kmsg_dumper_stdout()
+>
+> msg_print_text() has been replaced by record_print_text(), which
+> currently fills the full size of the buffer. This causes a
+> buffer overflow for the above callers.
+>
+> Change record_print_text() so that it will only use size-1 bytes
+> for text data. Also, for paranoia sakes, add a terminator after
+> the text data.
+>
+> And finally, document this behavior so that it is clear that only
+> size-1 bytes are used and a terminator is added.
+>
+> Fixes: b6cf8b3f3312 ("printk: add lockless ringbuffer")
 
-> >   {
-> >   	struct drm_plane_state *old_state =3D plane->state;
+Ditto for Fixes tag:
 
-Here ^
+896fbe20b4e2333fb55 ("printk: use the lockless ringbuffer")
 
-So it felt more natural to keep the convention in use in that driver
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> ---
+>  kernel/printk/printk.c | 35 +++++++++++++++++++++++++++--------
+>  1 file changed, 27 insertions(+), 8 deletions(-)
+>
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index ffdd0dc7ec6d..73f9eae19f05 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -1293,9 +1293,15 @@ static size_t info_print_prefix(const struct printk_info  *info, bool syslog,
+>   *   - Add prefix for each line.
+>   *   - Add the trailing newline that has been removed in vprintk_store().
+>   *   - Drop truncated lines that do not longer fit into the buffer.
+> + *   - Add a trailing newline.
+> + *   - Add a string terminator.
 
-Maxime
+I didn't realize that the newline was already listed (since it was out
+of order). I recommend these comments changing to:
 
---pc7g53zcvckyysz5
-Content-Type: application/pgp-signature; name="signature.asc"
+- Add prefix for each line.
+- Drop truncated lines that no longer fit into the buffer.
+- Add the trailing newline that has been removed in vprintk_store().
+- Add a string terminator.
 
------BEGIN PGP SIGNATURE-----
+Can you fixup the patch for the commit or do you need a v2?
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYAGjHQAKCRDj7w1vZxhR
-xRyQAP9z6jgYoVLN5O08Gfa2bipU5kwBoAnOqoWm5tZt0atb8QEA9iY4poTgz6cv
-u2lw2ErmnQLG6Rt10lvZcTmjIdOF5QI=
-=AOj1
------END PGP SIGNATURE-----
-
---pc7g53zcvckyysz5--
+John Ogness
