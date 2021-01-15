@@ -2,85 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FD82F7110
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7902F7113
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730618AbhAODmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 22:42:51 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:36446 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730161AbhAODmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 22:42:51 -0500
-Received: from zhangzhijie.loongson.cn (unknown [10.20.41.29])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxxbwADwFg4a0EAA--.5262S2;
-        Fri, 15 Jan 2021 11:41:52 +0800 (CST)
-From:   "ZhiJie.Zhang" <zhangzhijie@loongson.cn>
-To:     alexander.deucher@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        christian.koenig@amd.com
-Cc:     nicholas.kazlauskas@amd.com, mchehab+huawei@kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, zhangzhijie@loongson.cn
-Subject: [PATCH] drm/amdgpu:this forword declear  maybe  not used
-Date:   Fri, 15 Jan 2021 11:41:52 +0800
-Message-Id: <20210115034152.1800769-1-zhangzhijie@loongson.cn>
-X-Mailer: git-send-email 2.29.2
+        id S1732510AbhAODoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 22:44:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730649AbhAODoK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 22:44:10 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCB0C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 19:43:29 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id m5so4422258pjv.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 19:43:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8+6id4FMr4SPdv6wqygG4dWXcEsMutT0RtJWURXdQKM=;
+        b=V10CYWipJQsCu5sL5XCAnjC3haYwD730yz1qPpI8CgJA/+0ZkIm25SpKbytyd5Eues
+         /mCJQ97o2xb//yPshh7FIhKnN/6FefBBvmjMuWS3znBhqntTqaRKY4SxNbssBdcPRa8k
+         mqLwt1JqOao5miFB83brJrdPymg2cr/5n+HZ0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8+6id4FMr4SPdv6wqygG4dWXcEsMutT0RtJWURXdQKM=;
+        b=FDefGOQ35ZCOFaWBAr9mQP1Audw2kT1EKf19CJ+9jwtkDH9Ca6O07zV/zYK0w3jwLC
+         D0oGk38cwF5ZhgzpDTeu1gWQvvqRD0c3ygJgXYUuKU77IO45SXPL4hSkf03ftW1qDsdN
+         sa+nUODoPtJz0EQ1UV6aKRMRHoMD2F2P+FdePCvvZEDnp1UNCWGbCcNE6paTIcTnPTF0
+         jz5h2YAKuvDua6SpR4DMPi1JbxfaiW6nnQVzQ3Gi1RQaSXcALy9/5hdRujPMsS0ti8hH
+         Q2Wxanh6lKh8JKsxKD5MsJTeceU2sqKHoCNOic15zuJ2K5lkqEv9IRWJd3N1qAeiSKjF
+         VG3g==
+X-Gm-Message-State: AOAM5327SC74KaTqoLBHnWrWS89yf01xd/b5rQHavKegk1zM3eCCqrG5
+        yXIwX7CAmDCBsYrBeCWVn0hwPQ==
+X-Google-Smtp-Source: ABdhPJxTXrQGI8wE/h1KySTvszP44FQVjSR+Shglh1Xb9Br5YOFlis8sa2Vln82nmraLneI8skEAWA==
+X-Received: by 2002:a17:90b:e82:: with SMTP id fv2mr8325643pjb.164.1610682209502;
+        Thu, 14 Jan 2021 19:43:29 -0800 (PST)
+Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id u12sm6499062pfh.98.2021.01.14.19.43.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 19:43:28 -0800 (PST)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
+        alsa-devel@alsa-project.org,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+        Srinivasa Rao <srivasam@codeaurora.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH 0/4] ASoC: qcom: Minor code cleanups for lpass-cpu
+Date:   Thu, 14 Jan 2021 19:43:23 -0800
+Message-Id: <20210115034327.617223-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxxbwADwFg4a0EAA--.5262S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Wr1kuw1DWr13tF15KF4kWFg_yoWkGrX_Ca
-        y2qrn5Wr43JrnYqr12krWfWas2qrWrJr4kGr1xtF95t3srJry0yryDC3WxGa4ruw4Ig3W5
-        Z3WqgF1ay3ZxKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbVAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
-        8cxan2IY04v7MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF
-        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
-        VjvjDU0xZFpf9x0JUZa9-UUUUU=
-X-CM-SenderInfo: x2kd0wx2klyx3h6o00pqjv00gofq/1tbiAQACAF3QvM2fqgABsL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: ZhiJie.Zhang <zhangzhijie@loongson.cn>
----
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+Here's some minor code cleanups for the lpass-cpu driver. I noticed that
+it casts away const from the driver data from DT. That's not great but
+fixing it is a little more involved. I'll get to it later. There's also
+some questionable clk_get() usage that should probably be
+clk_get_optional(). For now this should help a little.
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-index 2ee6edb3df93..ef4acb1d4a80 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-@@ -58,10 +58,10 @@
- /* Forward declarations */
- struct amdgpu_device;
- struct drm_device;
--struct amdgpu_dm_irq_handler_data;
- struct dc;
- struct amdgpu_bo;
- struct dmub_srv;
-+struct dc_plane_state;
- 
- struct common_irq_params {
- 	struct amdgpu_device *adev;
-@@ -438,11 +438,6 @@ struct amdgpu_dm_connector {
- 
- extern const struct amdgpu_ip_block_version dm_ip_block;
- 
--struct amdgpu_framebuffer;
--struct amdgpu_display_manager;
--struct dc_validation_set;
--struct dc_plane_state;
--
- struct dm_plane_state {
- 	struct drm_plane_state base;
- 	struct dc_plane_state *dc_state;
+Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Cc: Srinivasa Rao <srivasam@codeaurora.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Cheng-Yi Chiang <cychiang@chromium.org>
+
+Stephen Boyd (4):
+  ASoC: qcom: Remove useless debug print
+  ASoC: qcom: Add some names to regmap configs
+  ASoC: qcom: Stop casting away __iomem for error pointers
+  ASoC: qcom: Remove duplicate error messages on ioremap
+
+ sound/soc/qcom/lpass-cpu.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
+
+base-commit: 5c8fe583cce542aa0b84adc939ce85293de36e5e
 -- 
-2.29.2
+https://chromeos.dev
 
