@@ -2,173 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B49D2F7139
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1FA2F7125
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732730AbhAODxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 22:53:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40554 "EHLO
+        id S1730899AbhAODsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 22:48:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730909AbhAODxw (ORCPT
+        with ESMTP id S1728452AbhAODsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 22:53:52 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947E0C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 19:53:11 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id q2so14058823iow.13
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 19:53:11 -0800 (PST)
+        Thu, 14 Jan 2021 22:48:14 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57D6C061575;
+        Thu, 14 Jan 2021 19:47:32 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id a12so11234878lfl.6;
+        Thu, 14 Jan 2021 19:47:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Zn/E5DSPd3qJg+DTv9IwC7Z6z2pECZsgPkasFqGe2mo=;
-        b=SlbAB2R28TVOPw4dT3y4+YKxnBvZIXRjddrKEDVYjmW3vvG3MDP0dEXICbitCBjDsh
-         shg/YaDMPSBJC8TmtKZMEExrMsM7sLlrF7dj4kE9P1DHob7nRhpZZQNoE756taUh2vVw
-         OwHAOHom27x10XansCH8DvCa2BNXVtylJjjRk=
+        bh=dUoYG1aQlB7dSe08I8qA9iZwXLLkDAhxs+3M3UA36LE=;
+        b=p8vwErNxhg9GD+Y1AJId3BabuPOkSjgH7fI8yIj9gFI3+0Clgm49cO3/TLYcD3tUt8
+         JUehVjlXRdr1OvEg4cLQa3Fv/5r7wHdlhzubI0aMZE4qV9NmX7WPibnJM7dDfyd3GR5J
+         eJCAS92nKTx8LLWsiHRa4+cAJWJzfZQ4BIOdT90H6o4wOAvnjGrVaJ6NpiAefsuxXNNV
+         CcgtDsK+QrGma6aYsCtXOA3yvb4ccGd/psy7cy/YyAY3JYvQ622ppJEBJHOJNBN10U7t
+         xscya8aWEnI4xDxwoE2LRuwvrXWURhbaG9rAFc4xJPxX6LlwiwfTBq1y0m18v4kKDx+z
+         byaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Zn/E5DSPd3qJg+DTv9IwC7Z6z2pECZsgPkasFqGe2mo=;
-        b=RC/cf5m1m2d+i3wquUaghWWT4nohzTF9l+L0bX0bwTJeZDeq3bIOI7hmxrZZNwpCX+
-         w44d8vPmIUUB7LG1E7W4atyWbJ5jlJMAEEOIxMVOECO4UHaMpWUQsTjcEOkYPqo5Qgvg
-         eMIz/rGi58p5ki4c2UTE9DX+I//tQaQwgbFN5kvW4ewdGw7oG/ak1esCpcIhVLn98KoN
-         mABr0YOTYJhsZkF47iw/tmMzrbcIWSv/PY8ZAL7b1UGRHeMiC1CSKpDbpNojqb8pUtre
-         15X2F85C3hnTLvpEs3bm52DJaT0nXfJaFQ96bh66VJmiu0CQk9jSujEb0k9oU747YktB
-         46Bg==
-X-Gm-Message-State: AOAM5304YkLcv4QoXhfyl9rlQJsCRsPhB1bAMWFWjS5jO3YbiN/e41/E
-        k5f2LHeqfyWxahbTPvxd9RH1k6PZeQ82XA==
-X-Google-Smtp-Source: ABdhPJyePeLi8yXUufZXtX5KzjMmH6kS86EJl3wVT5sCM4R31vFtXmh1zBULOXll1nlTQjcGEiTSgA==
-X-Received: by 2002:a92:b60a:: with SMTP id s10mr9304713ili.135.1610682790762;
-        Thu, 14 Jan 2021 19:53:10 -0800 (PST)
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com. [209.85.166.42])
-        by smtp.gmail.com with ESMTPSA id p25sm3496257ioj.21.2021.01.14.19.53.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jan 2021 19:53:10 -0800 (PST)
-Received: by mail-io1-f42.google.com with SMTP id d81so570597iof.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 19:53:10 -0800 (PST)
-X-Received: by 2002:a5d:9588:: with SMTP id a8mr2906589ioo.34.1610682391276;
- Thu, 14 Jan 2021 19:46:31 -0800 (PST)
+        bh=dUoYG1aQlB7dSe08I8qA9iZwXLLkDAhxs+3M3UA36LE=;
+        b=aevP+FBZcOzjoAiW9WhksGRjXmeyAFAvu0fEb3bDH3krO+/66iyxgpTVoM8EY+pros
+         R8lmSdYCwnN30S4wBf9CjVMPYZigZr+J1cocB6EgXw5jY4jUz1nWQHgprLgEAAUsowPp
+         jVthxi1p7WBuOJ3OyjJYRezka633Z7sA4ATOlQwQhCt6KxqRF5v2wTsAA0Sashm2x3CN
+         rQ68G4oGDzv+iN0mJS9g64sL6cuW5FLZEmMLqZ9uBY5kSsihSL4raEVDQ8kpASHD8Mpb
+         mg/xmEvRX9egj+jkpgYj5SjqaAHWI23eomUyqEfcbGuoP67gUipL2Mb5cR+anSMfYBF8
+         rbCQ==
+X-Gm-Message-State: AOAM5332XUb1srrliZlfpaWB7ojCeDbaOuLkOykM/J3ki/2kpRZY/i1z
+        o0D454P67Gqnx/KsNkq4n5+3RZ/R00BWVr5mggI=
+X-Google-Smtp-Source: ABdhPJxaCksTyq4bOT5eEDGSKAlBAo3nsrB6PORL+WNb1G1ykzz7e+2pr07NswDKLFqTuUmfTHjbssII6IV5tq1edMI=
+X-Received: by 2002:ac2:5b1e:: with SMTP id v30mr5129391lfn.540.1610682451359;
+ Thu, 14 Jan 2021 19:47:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20210106034124.30560-1-tientzu@chromium.org> <20210106034124.30560-7-tientzu@chromium.org>
- <95e6dd76-5e18-e445-c351-19fba18f36de@gmail.com> <CALiNf29+8Yi93RacsZHr=qYBhQRwqujW6KZVVD=9xPMhpLH5pA@mail.gmail.com>
- <5f276678-3ab2-ddc8-640c-6dbbe173463c@gmail.com>
-In-Reply-To: <5f276678-3ab2-ddc8-640c-6dbbe173463c@gmail.com>
-From:   Claire Chang <tientzu@chromium.org>
-Date:   Fri, 15 Jan 2021 11:46:20 +0800
-X-Gmail-Original-Message-ID: <CALiNf28nW0CKsBRw-HQmz=jBJ3vK6cjoQZPu8Zx=Yn=RWPdVWQ@mail.gmail.com>
-Message-ID: <CALiNf28nW0CKsBRw-HQmz=jBJ3vK6cjoQZPu8Zx=Yn=RWPdVWQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 6/6] of: Add plumbing for restricted DMA pool
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>, will@kernel.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
-        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
-        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        rdunlap@infradead.org, dan.j.williams@intel.com,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Tomasz Figa <tfiga@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
+References: <20210114134044.1418404-1-jolsa@kernel.org> <20210114134044.1418404-3-jolsa@kernel.org>
+ <19f16729-96d6-cc8e-5bd5-c3f5940365d4@fb.com> <20210114200120.GF1416940@krava>
+ <d90fd73f-b9a6-c436-f8ae-0833ce3926ef@fb.com> <20210114220234.GA1456269@krava>
+ <5043cef5-eda7-4373-dcb5-546f6192e1a9@fb.com>
+In-Reply-To: <5043cef5-eda7-4373-dcb5-546f6192e1a9@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 14 Jan 2021 19:47:20 -0800
+Message-ID: <CAADnVQLkM7+1+wzg=s8+zdKwYnmBRgvVK7K-qivu_a9mvaK7Yg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add size arg to build_id_parse function
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        lkml <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 2:52 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+On Thu, Jan 14, 2021 at 3:44 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> On 1/14/21 1:08 AM, Claire Chang wrote:
-> > On Wed, Jan 13, 2021 at 7:48 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+>
+> On 1/14/21 2:02 PM, Jiri Olsa wrote:
+> > On Thu, Jan 14, 2021 at 01:05:33PM -0800, Yonghong Song wrote:
 > >>
-> >> On 1/5/21 7:41 PM, Claire Chang wrote:
-> >>> If a device is not behind an IOMMU, we look up the device node and set
-> >>> up the restricted DMA when the restricted-dma-pool is presented.
+> >>
+> >> On 1/14/21 12:01 PM, Jiri Olsa wrote:
+> >>> On Thu, Jan 14, 2021 at 10:56:33AM -0800, Yonghong Song wrote:
+> >>>>
+> >>>>
+> >>>> On 1/14/21 5:40 AM, Jiri Olsa wrote:
+> >>>>> It's possible to have other build id types (other than default SHA1).
+> >>>>> Currently there's also ld support for MD5 build id.
+> >>>>
+> >>>> Currently, bpf build_id based stackmap does not returns the size of
+> >>>> the build_id. Did you see an issue here? I guess user space can check
+> >>>> the length of non-zero bits of the build id to decide what kind of
+> >>>> type it is, right?
 > >>>
-> >>> Signed-off-by: Claire Chang <tientzu@chromium.org>
-> >>> ---
+> >>> you can have zero bytes in the build id hash, so you need to get the size
+> >>>
+> >>> I never saw MD5 being used in practise just SHA1, but we added the
+> >>> size to be complete and make sure we'll fit with build id, because
+> >>> there's only limited space in mmap2 event
 > >>
-> >> [snip]
-> >>
-> >>> +int of_dma_set_restricted_buffer(struct device *dev)
-> >>> +{
-> >>> +     struct device_node *node;
-> >>> +     int count, i;
-> >>> +
-> >>> +     if (!dev->of_node)
-> >>> +             return 0;
-> >>> +
-> >>> +     count = of_property_count_elems_of_size(dev->of_node, "memory-region",
-> >>> +                                             sizeof(phandle));
-> >>
-> >> You could have an early check for count < 0, along with an error
-> >> message, if that is deemed useful.
-> >>
-> >>> +     for (i = 0; i < count; i++) {
-> >>> +             node = of_parse_phandle(dev->of_node, "memory-region", i);
-> >>> +             if (of_device_is_compatible(node, "restricted-dma-pool"))
-> >>
-> >> And you may want to add here an of_device_is_available(node). A platform
-> >> that provides the Device Tree firmware and try to support multiple
-> >> different SoCs may try to determine if an IOMMU is present, and if it
-> >> is, it could be marking the restriced-dma-pool region with a 'status =
-> >> "disabled"' property, or any variant of that scheme.
+> >> I am asking to check whether we should extend uapi struct
+> >> bpf_stack_build_id to include build_id_size as well. I guess
+> >> we can delay this until a real use case.
 > >
-> > This function is called only when there is no IOMMU present (check in
-> > drivers/of/device.c). I can still add of_device_is_available(node)
-> > here if you think it's helpful.
+> > right, we can try make some MD5 build id binaries and check if it
+> > explodes with some bcc tools, but I don't expect that.. I'll try
+> > to find some time for that
 >
-> I believe it is, since boot loader can have a shared Device Tree blob
-> skeleton and do various adaptations based on the chip (that's what we
-> do) and adding a status property is much simpler than insertion new
-> nodes are run time.
+> Thanks. We may have issues on bcc side. For build_id collected in
+> kernel, bcc always generates a length-20 string. But for user
+> binaries, the build_id string length is equal to actual size of
+> the build_id. They may not match (MD5 length is 16).
+> The fix is probably to append '0's (up to length 20) for user
+> binary build_id's.
 >
-> >
-> >>
-> >>> +                     return of_reserved_mem_device_init_by_idx(
-> >>> +                             dev, dev->of_node, i);
-> >>
-> >> This does not seem to be supporting more than one memory region, did not
-> >> you want something like instead:
-> >>
-> >>                 ret = of_reserved_mem_device_init_by_idx(...);
-> >>                 if (ret)
-> >>                         return ret;
-> >>
-> >
-> > Yes. This implement only supports one restriced-dma-pool memory region
-> > with the assumption that there is only one memory region with the
-> > compatible string, restricted-dma-pool, in the dts. IIUC, it's similar
-> > to shared-dma-pool.
->
-> Then if here is such a known limitation it should be both documented and
-> enforced here, you shouldn ot be iterating over all of the phandles that
-> you find, stop at the first one and issue a warning if count > 1?
+> I guess MD5 is very seldom used. I will wait if you can reproduce
+> the issue and then we might fix it.
 
-What I have in mind is there might be multiple memory regions, but
-only one is for restriced-dma-pool.
-Say, if you want a separated region for coherent DMA and only do
-streaming DMA in this restriced-dma-pool region, you can add another
-reserved-memory node with shared-dma-pool in dts and the current
-implementation will try to allocate the memory via
-dma_alloc_from_dev_coherent() first (see dma_alloc_attrs() in
-/kernel/dma/mapping.c).
-Or if you have vendor specific memory region, you can still set up
-restriced-dma-pool by adding another reserved-memory node in dts.
-Dose this make sense to you? I'll document this for sure.
+Indeed.
+Jiri, please check whether md5 is really an issue.
+Sounds like we have to do something on the kernel side.
+Hopefully zero padding will be enough.
+I would prefer to avoid extending uapi struct to cover rare case.
 
-> --
-> Florian
+I've applied the series, since this issue sounds orthogonal.
