@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25AC2F7934
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 233292F7A30
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733034AbhAOMdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:33:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39910 "EHLO mail.kernel.org"
+        id S1732888AbhAOMq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:46:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732069AbhAOMc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:32:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09E2E23359;
-        Fri, 15 Jan 2021 12:32:17 +0000 (UTC)
+        id S2388078AbhAOMhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:37:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3782D22473;
+        Fri, 15 Jan 2021 12:37:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713938;
-        bh=hRcoCfh9d6SyECfi+A1ndn0fRkrdz9XEX+CwrdN/SjY=;
+        s=korg; t=1610714259;
+        bh=+MOftX0eh6Va4502EDqSaY5br9ihD+GXizoor8nYNCU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=otr9f7FohN20bYuicTIX21Q4cNDxW9Xn84LxubPZKKO9O8ptcu0AoQ5irbVeh5QWC
-         NgXbEhltDeg9GcCmOzmJFPQXLmm/rOPTUIS8X3Z+mdCZzLvH72n9qiXEDtTZJrpOmQ
-         a5tZGfMicxOEJsyuipmbJICSG/i06E2iAawmio14=
+        b=WekirRlh/DEROwN05g/ZdXmobMHYgTbD1vOj5wMNTJ49Q036AADx9eNqydwO1b/ld
+         ygRQ1uiljx/FkXVhfamNfkOLQIc+JfDBMbOOhFk5yQT8gG/8u6JZslPQXBAktH8sW+
+         S93hlrGDrTIKTUzGAO4X3aitVISNPeOtZTFgocRc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH 4.19 17/43] x86/resctrl: Dont move a task to the same resource group
-Date:   Fri, 15 Jan 2021 13:27:47 +0100
-Message-Id: <20210115121957.882938474@linuxfoundation.org>
+        stable@vger.kernel.org, Kamal Mostafa <kamal@canonical.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH 5.10 055/103] selftests/bpf: Clarify build error if no vmlinux
+Date:   Fri, 15 Jan 2021 13:27:48 +0100
+Message-Id: <20210115122008.713997976@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
-References: <20210115121957.037407908@linuxfoundation.org>
+In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
+References: <20210115122006.047132306@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenghua Yu <fenghua.yu@intel.com>
+From: Kamal Mostafa <kamal@canonical.com>
 
-commit a0195f314a25582b38993bf30db11c300f4f4611 upstream
+commit 1a3449c19407a28f7019a887cdf0d6ba2444751a upstream.
 
-Shakeel Butt reported in [1] that a user can request a task to be moved
-to a resource group even if the task is already in the group. It just
-wastes time to do the move operation which could be costly to send IPI
-to a different CPU.
+If Makefile cannot find any of the vmlinux's in its VMLINUX_BTF_PATHS list,
+it tries to run btftool incorrectly, with VMLINUX_BTF unset:
 
-Add a sanity check to ensure that the move operation only happens when
-the task is not already in the resource group.
+    bpftool btf dump file $(VMLINUX_BTF) format c
 
-[1] https://lore.kernel.org/lkml/CALvZod7E9zzHwenzf7objzGKsdBmVwTgEJ0nPgs0LUFU3SN5Pw@mail.gmail.com/
+Such that the keyword 'format' is misinterpreted as the path to vmlinux.
+The resulting build error message is fairly cryptic:
 
-Backporting notes:
+      GEN      vmlinux.h
+    Error: failed to load BTF from format: No such file or directory
 
-Since upstream commit fa7d949337cc ("x86/resctrl: Rename and move rdt
-files to a separate directory"), the file
-arch/x86/kernel/cpu/intel_rdt_rdtgroup.c has been renamed and moved to
-arch/x86/kernel/cpu/resctrl/rdtgroup.c.
-Apply the change against file arch/x86/kernel/cpu/intel_rdt_rdtgroup.c
-for older stable trees.
+This patch makes the failure reason clearer by yielding this instead:
 
-Fixes: e02737d5b826 ("x86/intel_rdt: Add tasks files")
-Reported-by: Shakeel Butt <shakeelb@google.com>
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/962ede65d8e95be793cb61102cca37f7bb018e66.1608243147.git.reinette.chatre@intel.com
+    Makefile:...: *** Cannot find a vmlinux for VMLINUX_BTF at any of
+    "{paths}".  Stop.
+
+Fixes: acbd06206bbb ("selftests/bpf: Add vmlinux.h selftest exercising tracing of syscalls")
+Signed-off-by: Kamal Mostafa <kamal@canonical.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20201215182011.15755-1-kamal@canonical.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/x86/kernel/cpu/intel_rdt_rdtgroup.c |    7 +++++++
- 1 file changed, 7 insertions(+)
 
---- a/arch/x86/kernel/cpu/intel_rdt_rdtgroup.c
-+++ b/arch/x86/kernel/cpu/intel_rdt_rdtgroup.c
-@@ -554,6 +554,13 @@ static void update_task_closid_rmid(stru
- static int __rdtgroup_move_task(struct task_struct *tsk,
- 				struct rdtgroup *rdtgrp)
- {
-+	/* If the task is already in rdtgrp, no need to move the task. */
-+	if ((rdtgrp->type == RDTCTRL_GROUP && tsk->closid == rdtgrp->closid &&
-+	     tsk->rmid == rdtgrp->mon.rmid) ||
-+	    (rdtgrp->type == RDTMON_GROUP && tsk->rmid == rdtgrp->mon.rmid &&
-+	     tsk->closid == rdtgrp->mon.parent->closid))
-+		return 0;
-+
- 	/*
- 	 * Set the task's closid/rmid before the PQR_ASSOC MSR can be
- 	 * updated by them.
+---
+ tools/testing/selftests/bpf/Makefile |    3 +++
+ 1 file changed, 3 insertions(+)
+
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -146,6 +146,9 @@ VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmli
+ 		     /sys/kernel/btf/vmlinux				\
+ 		     /boot/vmlinux-$(shell uname -r)
+ VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
++ifeq ($(VMLINUX_BTF),)
++$(error Cannot find a vmlinux for VMLINUX_BTF at any of "$(VMLINUX_BTF_PATHS)")
++endif
+ 
+ DEFAULT_BPFTOOL := $(SCRATCH_DIR)/sbin/bpftool
+ 
 
 
