@@ -2,79 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6831A2F6F82
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2816A2F6F8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:36:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731307AbhAOAbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 19:31:31 -0500
-Received: from smtprelay0014.hostedemail.com ([216.40.44.14]:34532 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731129AbhAOAba (ORCPT
+        id S1731343AbhAOAcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 19:32:18 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:51304 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731328AbhAOAcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 19:31:30 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 136D7182CF665;
-        Fri, 15 Jan 2021 00:30:49 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3872:4321:5007:6119:6120:6742:7652:7901:7903:10004:10400:10848:11232:11658:11914:12297:12660:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21627:30054:30060:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: grip76_15176d22752b
-X-Filterd-Recvd-Size: 2538
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 15 Jan 2021 00:30:46 +0000 (UTC)
-Message-ID: <eabb211c3ba394845ec3258d86406137f4c23b33.camel@perches.com>
-Subject: Re: [PATCH] compiler.h: Raise minimum version of GCC to 5.1 for
- arm64
-From:   Joe Perches <joe@perches.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Florian Weimer <fweimer@redhat.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Theodore Ts'o <tytso@mit.edu>,
+        Thu, 14 Jan 2021 19:32:14 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F0FAJn024525;
+        Fri, 15 Jan 2021 00:31:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=tpp23TTcS905xSBNUJ3I3+T2xpc999AWSyIQrUjVakI=;
+ b=ttbobd2Rnzmgau77uQx5N4KO/UZKityrdKagicxXLHvE43cjOsh0BENxPOexSFUoALBe
+ 7OIqV7F81qFz1XOoUy1tzOVlMo2LS8jWk5as2bWomMLzQB+H0OeCnFU39xA79qT0Ay+q
+ VtVfu2+0PanU7Wo7BSlgotKwZZFEvoJUkFvplzVfYlMs2/DH3HxpG5Ti7rkjorlQus8U
+ RBmbZxaaqbAB31MKxksdvt5R5l/AuNH9qXDQyTj/mbq1rQTUI/CLy8uLt22WKVxwFj0Q
+ Bw5sUTmzUK9Cd4g+Dw2LNgaX0oQDlTU5zBjrQs+Q+EuBpQq7DdaCnI2mllBjQFZlWU5X aQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 360kd02u5v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 00:31:07 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F0GGro137727;
+        Fri, 15 Jan 2021 00:31:07 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 360kf2tkfp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 00:31:07 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10F0V5St004164;
+        Fri, 15 Jan 2021 00:31:05 GMT
+Received: from [10.39.240.226] (/10.39.240.226)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 14 Jan 2021 16:31:05 -0800
+Subject: Re: [PATCH 13/21] x86/xen: Support objtool validation in xen-asm.S
+To:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 14 Jan 2021 16:30:45 -0800
-In-Reply-To: <CAHk-=wjgvt1Ei72BTrEH5fgfqykVH-AYt56-7yBT8Lcprj7bEg@mail.gmail.com>
-References: <20210112224832.10980-1-will@kernel.org>
-         <161055398865.21762.12236232732054213928.b4-ty@arm.com>
-         <CAK7LNASs6dvU6D3jL2GG3jW58fXfaj6VNOe55NJnTB8UPuk2pA@mail.gmail.com>
-         <CAHk-=wiQ_tp8NmKV8PJ-6WMo3dTEZwDo3a0hYjcUFqMdviNTYw@mail.gmail.com>
-         <20210113214436.GL1551@shell.armlinux.org.uk>
-         <CAHk-=wjqGRXUp6KOdx-eHYEotGvY=a5tSY1mF-BkAcX2YAuBYw@mail.gmail.com>
-         <CAMj1kXFaDNRbDvr43VLEHFRHHS0sGGcF=iTfES4sxPg-rZ34NA@mail.gmail.com>
-         <CAHk-=wjHTpG+gMx9vqrZgo8Uw0NqA2kNjS87o63Zv3=WG2K3zA@mail.gmail.com>
-         <fd3f26b7a70d3b90f1368c55532e463ef2fb9fa4.camel@perches.com>
-         <CAHk-=wjgvt1Ei72BTrEH5fgfqykVH-AYt56-7yBT8Lcprj7bEg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        clang-built-linux@googlegroups.com,
+        Miroslav Benes <mbenes@suse.cz>,
+        Juergen Gross <jgross@suse.com>
+References: <cover.1610652862.git.jpoimboe@redhat.com>
+ <77629463ea258e47d8d53bc8947da24dd2923931.1610652862.git.jpoimboe@redhat.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <46bd6b10-6d8a-1065-069e-565c45af7128@oracle.com>
+Date:   Thu, 14 Jan 2021 19:31:03 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <77629463ea258e47d8d53bc8947da24dd2923931.1610652862.git.jpoimboe@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101150000
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1011 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101150000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-01-14 at 13:18 -0800, Linus Torvalds wrote:
-> On Thu, Jan 14, 2021 at 11:52 AM Joe Perches <joe@perches.com> wrote:
-> > 
-> > Given the upgrade requirement, and how clang version requirements
-> > constantly change, how much more difficult would it be for others
-> > to use gcc 7.1 or higher now instead of later?
-> 
-> What was the argument for jumping all the way to gcc-7.1?
-> 
-> I do think we want to have real reasons we can point to, rather than a
-> "just because".
 
-KASAN v5 instead of all the old versions
-gcc 7.1 supports fallthrough.
+On 1/14/21 2:40 PM, Josh Poimboeuf wrote:
+> The OBJECT_FILES_NON_STANDARD annotation is used to tell objtool to
+> ignore a file.  File-level ignores won't work when validating vmlinux.o.
+>
+> Tweak the ELF metadata and unwind hints to allow objtool to follow the
+> code.
+>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: Juergen Gross <jgross@suse.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-Probably more, but those might be sufficient.
 
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
