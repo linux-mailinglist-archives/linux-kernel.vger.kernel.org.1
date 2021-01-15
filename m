@@ -2,115 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32AE2F86BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 254122F86C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388025AbhAOUb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 15:31:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726467AbhAOUb1 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 15:31:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2A2F23A5A;
-        Fri, 15 Jan 2021 20:30:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610742646;
-        bh=pBJybeyb9dtJbpJVNW+yRCO6JbuqCDAgA9WZSvcUr7k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VraRXpQORvQB+RBjkPBNBTXMCqHVaclwz1+zCgrmdpbprX/T4mq+HUSC4JItvLrJQ
-         WqSA9M5TnhNVgYubZbUKzjv6rnv3i1HALdnVL8s0z4A9Nu4ShAPBkM6UP6iMdY3loj
-         nikREI6LNqqwOssIKFSOQwvoTlZV3Y/6cwqC0OI5HpYQQPJ2jnrst1DOgg43KW18pt
-         mGHQYl+cbcloG4m9ov87By67/Wcb9ErhxXYj5KBtRLT0Xxr68ONr8B2hjsSMgEak89
-         U+m3uiZs/TvZFufHsa9IkfFWqBHNeWzU1zL2t5stTCmqYtxZ0qIZrGSdIy19RGbQZU
-         x/YGMRXAUptLA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 29C6140522; Fri, 15 Jan 2021 17:31:19 -0300 (-03)
-Date:   Fri, 15 Jan 2021 17:31:19 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, jolsa@kernel.org,
-        peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
-        ying.huang@intel.com
-Subject: Re: [PATCH v6] perf stat: Fix wrong skipping for per-die aggregation
-Message-ID: <20210115203119.GN457607@kernel.org>
-References: <20210114012755.1106-1-yao.jin@linux.intel.com>
- <20210114190032.GC1416940@krava>
- <20210115202814.GM457607@kernel.org>
+        id S1730562AbhAOUdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 15:33:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727204AbhAOUdO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 15:33:14 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B372C0613C1;
+        Fri, 15 Jan 2021 12:32:34 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id 186so12989107qkj.3;
+        Fri, 15 Jan 2021 12:32:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=DZutw0Fwx8a+IIzb1YBWXpa8GKgVuQAFbe/fVJQB0Ps=;
+        b=jVJdbkknWSYllAadoPc9Oy1txnskyomnVDMqBHvc2sZDhifPs0SUcyQf2fk9LvmiFo
+         0orrMluvStZK49mX/Vn0roCZHVneqQt5UXix5BVwB1bdpUcmsO0pvx/9R4u5ACiL+xX8
+         Cx99+k0xhFvAa6davOP6vhdJ07pKYsZ6raS7j4mb0gKnyQkN9WWXe4/3AidyzfSX+s1s
+         fTRnLIu5nwcKx0vE3HZB6lyqH0kMIyFrTOoAb3Tb5kDJBy9VnTqKBj7+TL9mrfxZ5vr0
+         v1u2xbqatdluGdM478vbBXnN6QhFnlPAKEbxVHXBhgJGxf7X3871nTvXe1n0frlSroRl
+         iGeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=DZutw0Fwx8a+IIzb1YBWXpa8GKgVuQAFbe/fVJQB0Ps=;
+        b=rOdTZHVXaq771xjdAk190lFKcDO7FaYDlpvq+pUnJDNLS4V3GOS5cGb/doK2eB5rQm
+         vD4XAuA30S86azyN9MamBUXjPnMN30mNgtuaN5UVltp8ay9USkcm2hqtr2yGZSQ52Asv
+         XwEAUszUAQlqsXJmRojO2hY3VU6zMLEPrr9uUXG7jNVhiRYDEMHw+4LmQV7IU7EMXfmA
+         lH2pukCTaM8MSVgELxJUPNlsSpbDPVH44sR9Wve96F+CSq8hmj/MqXi5g3k2oDY3dME7
+         0Rx1v1k04h8s//HB9QoPgWKs73kKsrLeMSruVANF61JLqngqZZHElVk5KiF3QoGz4kyR
+         pgEA==
+X-Gm-Message-State: AOAM5311TZCHZvNn6aZSskzBflGFiCbfe+2AexSH/bodR6Y9nJPenzNH
+        DfGhMp+u7OhKZxYS7yc0x3c=
+X-Google-Smtp-Source: ABdhPJx92D8iiN5sSjvzqpFf9NdIEL/hiHJtZ9wHqT4F30AjuaYj6vToFtYZCgLagNaAD7kvA+3ekA==
+X-Received: by 2002:a37:8485:: with SMTP id g127mr14147073qkd.233.1610742753543;
+        Fri, 15 Jan 2021 12:32:33 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:97cc])
+        by smtp.gmail.com with ESMTPSA id n36sm5361265qte.71.2021.01.15.12.32.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 12:32:32 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 15 Jan 2021 15:31:48 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     Hao Lee <haolee.swjtu@gmail.com>, lizefan@huawei.com,
+        hannes@cmpxchg.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: Remove unnecessary call to strstrip()
+Message-ID: <YAH7tIWhfolU6EzM@mtj.duckdns.org>
+References: <20210103024846.GA15337@haolee.github.io>
+ <YAA8qyBUAurgCeEz@blackbook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210115202814.GM457607@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YAA8qyBUAurgCeEz@blackbook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jan 15, 2021 at 05:28:14PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Thu, Jan 14, 2021 at 08:00:32PM +0100, Jiri Olsa escreveu:
-> > On Thu, Jan 14, 2021 at 09:27:55AM +0800, Jin Yao wrote:
-> > 
-> > SNIP
-> > 
-> > >      2.003776312 S1-D0           1             855616 Bytes llc_misses.mem_read
-> > >      2.003776312 S1-D1           1             949376 Bytes llc_misses.mem_read
-> > >      3.006512788 S0-D0           1            1338880 Bytes llc_misses.mem_read
-> > >      3.006512788 S0-D1           1             920064 Bytes llc_misses.mem_read
-> > >      3.006512788 S1-D0           1             877184 Bytes llc_misses.mem_read
-> > >      3.006512788 S1-D1           1            1020736 Bytes llc_misses.mem_read
-> > >      4.008895291 S0-D0           1             926592 Bytes llc_misses.mem_read
-> > >      4.008895291 S0-D1           1             906368 Bytes llc_misses.mem_read
-> > >      4.008895291 S1-D0           1             892224 Bytes llc_misses.mem_read
-> > >      4.008895291 S1-D1           1             987712 Bytes llc_misses.mem_read
-> > >      5.001590993 S0-D0           1             962624 Bytes llc_misses.mem_read
-> > >      5.001590993 S0-D1           1             912512 Bytes llc_misses.mem_read
-> > >      5.001590993 S1-D0           1             891200 Bytes llc_misses.mem_read
-> > >      5.001590993 S1-D1           1             978432 Bytes llc_misses.mem_read
-> > > 
-> > > On no-die system, die_id is 0, actually it's hashmap(socket,0), original behavior
-> > > is not changed.
-> > > 
-> > > Reported-by: Huang Ying <ying.huang@intel.com>
-> > > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> > > ---
-> > > v6:
-> > >  Fix the perf test python failure by adding hashmap.c to python-ext-sources.
-> > > 
-> > >  root@kbl-ppc:~# ./perf test python
-> > >  19: 'import perf' in python                                         : Ok
-> > 
-> > Acked-by: Jiri Olsa <jolsa@redhat.com>
+On Thu, Jan 14, 2021 at 01:44:27PM +0100, Michal Koutný wrote:
+> Hello.
 > 
-> Jin, this is breaking the build in some 32-bit system, can you please
-> take a look to validate these warnings?
+> On Sun, Jan 03, 2021 at 02:50:01AM +0000, Hao Lee <haolee.swjtu@gmail.com> wrote:
+> > The string buf will be stripped in cgroup_procs_write_start() before it
+> > is converted to int, so remove this unnecessary call to strstrip().
+> Good catch, Hao.
+> 
+> Perhaps the code be then simplified a bit
+> 
+> -- >8 --
+> From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+> Date: Thu, 14 Jan 2021 13:23:39 +0100
+> Subject: [PATCH] cgroup: cgroup.{procs,threads} factor out common parts
+> MIME-Version: 1.0
+> Content-Type: text/plain; charset=UTF-8
+> Content-Transfer-Encoding: 8bit
+> 
+> The functions cgroup_threads_start and cgroup_procs_start are almost
+> identical. In order to reduce duplication, factor out the common code in
+> similar fashion we already do for other threadgroup/task functions. No
+> functional changes are intended.
+> 
+> Suggested-by: Hao Lee <haolee.swjtu@gmail.com>
+> Signed-off-by: Michal Koutný <mkoutny@suse.com>
 
-One such system:
+Applied to cgroup/for-5.12 w/ minor description update suggested by Daniel.
 
-  28    13.75 debian:experimental-x-mipsel  : FAIL mipsel-linux-gnu-gcc (Debian 10.2.1-3) 10.2.1 20201224
-
- 
->   CC       /tmp/build/perf/util/srcline.o
-> util/stat.c: In function 'pkg_id_hash':
-> util/stat.c:285:9: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
->   return (int64_t)key & 0xffffffff;
->          ^
-> util/stat.c: In function 'pkg_id_equal':
-> util/stat.c:291:9: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
->   return (int64_t)key1 == (int64_t)key2;
->          ^
-> util/stat.c:291:26: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
->   return (int64_t)key1 == (int64_t)key2;
->                           ^
-> util/stat.c: In function 'check_per_pkg':
-> util/stat.c:342:26: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
->   if (hashmap__find(mask, (void *)key, NULL))
->                           ^
-> util/stat.c:345:28: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
->    ret = hashmap__add(mask, (void *)key, (void *)1);
->                             ^
->   CC       /tmp/build/perf/tests/expand-cgroup.o
+Thanks.
 
 -- 
-
-- Arnaldo
+tejun
