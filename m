@@ -2,64 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036A52F763C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B06E92F764C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726439AbhAOKJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 05:09:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725910AbhAOKI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 05:08:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7422E235F9;
-        Fri, 15 Jan 2021 10:08:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610705299;
-        bh=nA4wC43S56EOwm9vQj9uFLi+XUwkcBKjBZHffULpMnA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SBB0THer+zQoEo8RlTQoXT2rquhunv1xAZZiRk/3JhXra0qWNmwvJSMMlSy+zWN6w
-         vPyMzaeh3P81KVLSGHMcBaLM0Z/hIQPZRdL6TApHDNWcnm36BA7ZO19aqGShUUjL6g
-         Q1FmCsUCj7rP6f4vUFNS1G0JuAzOHwepXjfkI4w/8kRgYoPi/GN06pgEBjvujPcD5r
-         9JN9PDS74Mbx9jRhLvI4nHqLO+5p/EhpmMuy0/gbyFMrdJSDRcOdWWUf2K6V4RvAlF
-         fsZuXj1zYsx7asWrt2JT/6kJ2xCOUMh+ytIMVlRBmtYXmrebb9yKyvKFnEFJme9Pwf
-         qIskL7KJuM8vg==
-Date:   Fri, 15 Jan 2021 12:08:13 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Sami Tolvanen <samitolvanen@google.com>, sfr@canb.auug.org.au
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/sgx: fix the return type of sgx_init
-Message-ID: <YAFpjSegNiP+Vge2@kernel.org>
-References: <20210113232311.277302-1-samitolvanen@google.com>
+        id S1731443AbhAOKKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 05:10:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20007 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726484AbhAOKKF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 05:10:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610705318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0H6FRAzGkQ+YmvRRrLcGZORaAK/rqd8MdD3CZsENJzY=;
+        b=GZLoQbWcM5DhdPc9SoZM5bWed39JXUF4/0ZDDD3AjlGfiGphbm7vRyrHmFCs0QUEVwX0wK
+        sbkUjrBsAGDp2AcT1hmrWKEp/Fn6RT23gV7HYbHAUgVfhyeApv9OXJmHLboUuxPkBpifpo
+        a0BTvcYurXBMK80vEZ6fAdgo5am17i4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-531-LHZ11OHKPTeZmEzckqrVgg-1; Fri, 15 Jan 2021 05:08:37 -0500
+X-MC-Unique: LHZ11OHKPTeZmEzckqrVgg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D49E4800C7A;
+        Fri, 15 Jan 2021 10:08:34 +0000 (UTC)
+Received: from krava (unknown [10.40.194.69])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CD5F860BF3;
+        Fri, 15 Jan 2021 10:08:30 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 11:08:29 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Sandeep Dasgupta <sdasgup@google.com>
+Subject: Re: [PATCH v7 5/5] perf metric: Don't compute unused events.
+Message-ID: <20210115100829.GA1478666@krava>
+References: <20210112230434.2631593-1-irogers@google.com>
+ <20210112230434.2631593-6-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210113232311.277302-1-samitolvanen@google.com>
+In-Reply-To: <20210112230434.2631593-6-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 03:23:11PM -0800, Sami Tolvanen wrote:
-> device_initcall() expects a function of type initcall_t, which returns
-> an integer. Change the signature of sgx_init() to match.
+On Tue, Jan 12, 2021 at 03:04:34PM -0800, Ian Rogers wrote:
+> For a metric like:
+>   EVENT1 if #smt_on else EVENT2
 > 
-> Fixes: e7e0545299d8c ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> currently EVENT1 and EVENT2 will be measured and then when the metric is
+> reported EVENT1 or EVENT2 will be printed depending on the value from
+> smt_on() during the expr parsing. Computing both events is unnecessary and
+> can lead to multiplexing as discussed in this thread:
+> https://lore.kernel.org/lkml/20201110100346.2527031-1-irogers@google.com/
+> 
+> This change modifies the expression parsing code by:
+>  - getting rid of the "other" parsing and introducing a boolean argument
+>    to say whether ids should be computed or not.
+>  - expressions are changed so that a pair of value and ids are returned.
+>  - when computing the metric value the ids are unused.
+>  - when computing the ids, constant values and smt_on are assigned to
+>    the value.
+>  - If the value is from an event ID then the event is added to the ids
+>    hashmap and the value set to bottom (encoded as NAN).
+>  - Typically operators union IDs for their inputs and set the value to
+>    bottom, however, if the inputs are constant then these are computed and
+>    propagated as the value.
+>  - If the input is constant to certain operators like:
+>  IDS1 if CONST else IDS2
+>    then the result will be either IDS1 or IDS2 depending on CONST (which
+>    may be evaluated from an entire expression), and so IDS1 or IDS2 may
+>    be discarded avoiding events from being programmed.
+>  - The ids at the end of parsing are added to the context.
 
-Thank you.
+there's lot of refactoring going on, any chance this could be broken
+down to more patches?
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+thanks,
+jirka
 
-I applied this to the master and next of
-
-git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-sgx.git
-
-Including to the v5.12 PR, actually is the first commit included to that.
-That reminds that I should get the next branch mirrored to linux-next.
-
-Stephen, can you start picking the next branch?
-
-/Jarkko
