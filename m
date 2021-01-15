@@ -2,75 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE762F75FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:55:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 259E82F7600
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730858AbhAOJzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:55:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727331AbhAOJzg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:55:36 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171D5C0613C1;
-        Fri, 15 Jan 2021 01:54:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+qwvdXSYgyEgRau9DmchwE0hXYTfWp9M4Nhh0Zzmg14=; b=uxPgEfQTkCbUJaxvMEGGxbso3B
-        /94EZ2jymszYzZKI4cVZdAYLzWYdSvul69hngM7JSgZl5rfErciPYks19aNv90ML6TJW/6bwx3P3f
-        iQ2Qcq4qsvE1BGgOQSXKWOABcLs2xWkdMV6JhVT9VyhoKfT869i/+VrIpE+zjdUDL281saU52Ho5L
-        JA3EvW1Z48s1ECMzkFYuYdNGthkW9lfUxsmAew+xcyRfDJ3XVooTa5IuWHkNjxLNZ/KAd/rEwpYaW
-        04/H02g69aheYnemQjGrZYMkxJx+edF3xzxFV9fzdVFNXT4cmX3dWjq7kRNGAn6oFGp4X9vIgICp5
-        7uJTLnVA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l0Log-0007UG-4p; Fri, 15 Jan 2021 09:54:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CB7D730377D;
-        Fri, 15 Jan 2021 10:54:48 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BC3DD2C01E6E3; Fri, 15 Jan 2021 10:54:48 +0100 (CET)
-Date:   Fri, 15 Jan 2021 10:54:48 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jason Baron <jbaron@akamai.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH v2 3/3] KVM: x86: use static calls to reduce kvm_x86_ops
- overhead
-Message-ID: <YAFmaMhROa9obFQv@hirez.programming.kicks-ass.net>
-References: <cover.1610680941.git.jbaron@akamai.com>
- <e057bf1b8a7ad15652df6eeba3f907ae758d3399.1610680941.git.jbaron@akamai.com>
- <YAFkTSnSut1h/jWt@hirez.programming.kicks-ass.net>
- <YAFmLzVnVzzUit4T@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAFmLzVnVzzUit4T@hirez.programming.kicks-ass.net>
+        id S1730986AbhAOJ4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:56:46 -0500
+Received: from smtp25.cstnet.cn ([159.226.251.25]:51334 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729182AbhAOJ4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 04:56:45 -0500
+Received: from localhost.localdomain (unknown [124.16.141.241])
+        by APP-05 (Coremail) with SMTP id zQCowACHUuOiZgFgPbtSAA--.13581S2;
+        Fri, 15 Jan 2021 17:55:48 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     vladimir.oltean@nxp.com, claudiu.manoil@nxp.com,
+        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: mscc: ocelot: Remove unneeded semicolon
+Date:   Fri, 15 Jan 2021 09:55:44 +0000
+Message-Id: <20210115095544.33164-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowACHUuOiZgFgPbtSAA--.13581S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrJrWrKry8CF1kAw13tw48Crg_yoWxWFcEkr
+        9Fqw1SqFy5Gr9Yk398tanxC340vw1kWr97uF47Kayaqws7Gr18Aw1j9rnrXw18uF1xXFZr
+        Cw12gF1Iv3sFgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbwkYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWxJVW8Jr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC2
+        0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
+        0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
+        14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20x
+        vaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
+        xVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1I38UUUUUU==
+X-Originating-IP: [124.16.141.241]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCgkCA1z4jTKa4wAAsg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 10:53:51AM +0100, Peter Zijlstra wrote:
-> @@ -190,6 +191,7 @@ extern int static_call_text_reserved(voi
->  #elif defined(CONFIG_HAVE_STATIC_CALL)
->  
->  static inline long __static_call_return0(void) { return 0; }
-> +static inline long __static_call_return0(void) { return 1; }
->  
->  static inline int static_call_init(void) { return 0; }
->  
-> @@ -239,6 +241,7 @@ static inline int static_call_text_reser
->  #else /* Generic implementation */
->  
->  static inline long __static_call_return0(void) { return 0; }
-> +static inline long __static_call_return0(void) { return 1; }
+fix semicolon.cocci warnings:
+drivers/net/ethernet/mscc/ocelot_net.c:460:2-3: Unneeded semicolon
 
-Too much copy-fail... Lemme go make more tea :-)
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/net/ethernet/mscc/ocelot_net.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mscc/ocelot_net.c b/drivers/net/ethernet/mscc/ocelot_net.c
+index 2bd2840d88bd..2390c90922db 100644
+--- a/drivers/net/ethernet/mscc/ocelot_net.c
++++ b/drivers/net/ethernet/mscc/ocelot_net.c
+@@ -457,7 +457,7 @@ static void ocelot_mact_work(struct work_struct *work)
+ 		break;
+ 	default:
+ 		break;
+-	};
++	}
+ 
+ 	kfree(w);
+ }
+-- 
+2.17.1
+
