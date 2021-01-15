@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BABFB2F7BCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B66262F7BEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388529AbhAONFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:05:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36296 "EHLO mail.kernel.org"
+        id S1732446AbhAOMbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:31:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732647AbhAOMba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:31:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45B1723370;
-        Fri, 15 Jan 2021 12:31:03 +0000 (UTC)
+        id S1732377AbhAOMbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FF43238D7;
+        Fri, 15 Jan 2021 12:30:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713863;
-        bh=nuIHiwNqJXh2xY9skYdyFQFpAYUgosbDWknWX8Xop+Q=;
+        s=korg; t=1610713822;
+        bh=c7YoAYFw9/3c0BZbm9F13wPZE3g2L/aPRDghzHqjyf0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=07ZESMtFalBz/1TyooNfdSwG3idb4XlTz4FDplTKcmBd7d1ORtWjY6LireNxcjwwR
-         IXiRF0+O8SAeHLsykoFsZmGClC2DTb7S5aGMxRK8mKBBJKlbLkTrIuf8CjMOMmqtQ0
-         jxiJgKadgpIyZGsAMIlEGSFzSyLGucEfqusH0RSE=
+        b=f04XYwKHV9NcAz9HiL15Lb0/4ItaHAqsIQuelV98ISz96V9L8rjHs5Ca1eRxUZVLY
+         1Z8TCUUwC55RKwT4hBeX7Yc2Keea5aNxTsGdDaCe+zQjIbpLCZ/6lJTpaOhNT+pu27
+         fDgjawbXjAXqMN0nxH3nFv0K414UtBek3kZmfqz0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Nyekjaer <sean@geanix.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 12/28] iio: imu: st_lsm6dsx: flip irq return logic
-Date:   Fri, 15 Jan 2021 13:27:49 +0100
-Message-Id: <20210115121957.363993114@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.9 19/25] block: rsxx: select CONFIG_CRC32
+Date:   Fri, 15 Jan 2021 13:27:50 +0100
+Message-Id: <20210115121957.630140417@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121956.731354372@linuxfoundation.org>
-References: <20210115121956.731354372@linuxfoundation.org>
+In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
+References: <20210115121956.679956165@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,31 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit ec76d918f23034f9f662539ca9c64e2ae3ba9fba upstream
+commit 36a106a4c1c100d55ba3d32a21ef748cfcd4fa99 upstream.
 
-No need for using reverse logic in the irq return,
-fix this by flip things around.
+Without crc32, the driver fails to link:
 
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+arm-linux-gnueabi-ld: drivers/block/rsxx/config.o: in function `rsxx_load_config':
+config.c:(.text+0x124): undefined reference to `crc32_le'
+
+Fixes: 8722ff8cdbfa ("block: IBM RamSan 70/80 device driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c
-+++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c
-@@ -401,7 +401,7 @@ static irqreturn_t st_lsm6dsx_handler_th
- 	count = st_lsm6dsx_read_fifo(hw);
- 	mutex_unlock(&hw->fifo_lock);
- 
--	return !count ? IRQ_NONE : IRQ_HANDLED;
-+	return count ? IRQ_HANDLED : IRQ_NONE;
- }
- 
- static int st_lsm6dsx_buffer_preenable(struct iio_dev *iio_dev)
+---
+ drivers/block/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/drivers/block/Kconfig
++++ b/drivers/block/Kconfig
+@@ -530,6 +530,7 @@ config BLK_DEV_RBD
+ config BLK_DEV_RSXX
+ 	tristate "IBM Flash Adapter 900GB Full Height PCIe Device Driver"
+ 	depends on PCI
++	select CRC32
+ 	help
+ 	  Device driver for IBM's high speed PCIe SSD
+ 	  storage device: Flash Adapter 900GB Full Height.
 
 
