@@ -2,211 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5DC2F7425
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D9F2F7423
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732493AbhAOIQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 03:16:04 -0500
-Received: from mga03.intel.com ([134.134.136.65]:36044 "EHLO mga03.intel.com"
+        id S1732281AbhAOIPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 03:15:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726734AbhAOIQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 03:16:04 -0500
-IronPort-SDR: 2bJuAKcR0JQK5BuL7bSmuYGEJ7JfBQRGTw5WctheSAbp/JPxRRIBs8B0LfoiKTlR5k4nxan+kM
- PwOx+h3JHIbA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="178603215"
-X-IronPort-AV: E=Sophos;i="5.79,348,1602572400"; 
-   d="scan'208";a="178603215"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 00:14:17 -0800
-IronPort-SDR: IcW7Q/7dF5CWg7RPFXT79PGarzBvNvxUTslQbt8aH2GHM+sOzKOij2MOIFsCHdD+aPh+vzpQEo
- f8tRWZA8oahw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,348,1602572400"; 
-   d="scan'208";a="349422131"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga003.jf.intel.com with ESMTP; 15 Jan 2021 00:14:17 -0800
-Received: from [10.214.162.122] (mreddy3x-MOBL.gar.corp.intel.com [10.214.162.122])
-        by linux.intel.com (Postfix) with ESMTP id B450B580908;
-        Fri, 15 Jan 2021 00:14:14 -0800 (PST)
-Subject: Re: [RESEND PATCH v10 1/2] dt-bindings: dma: Add bindings for Intel
- LGM SoC
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" 
-        <dmaengine@vger.kernel.org>, Vinod <vkoul@kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        chuanhua.lei@linux.intel.com,
-        "Kim, Cheol Yong" <cheol.yong.kim@intel.com>,
-        "Wu, Qiming" <qi-ming.wu@intel.com>, malliamireddy009@gmail.com,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>
-References: <cover.1608090736.git.mallikarjunax.reddy@linux.intel.com>
- <dee2d43dff26f7d5b6eaa0006659da254f1093d3.1608090736.git.mallikarjunax.reddy@linux.intel.com>
- <CAL_JsqJE59nA_Bvt1rL95WfeXjQkOSPiTZk8zAbdHSkujmS3gQ@mail.gmail.com>
-From:   "Reddy, MallikarjunaX" <mallikarjunax.reddy@linux.intel.com>
-Message-ID: <b78a503b-2dca-3f5c-050e-b7c92a215842@linux.intel.com>
-Date:   Fri, 15 Jan 2021 16:14:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727679AbhAOIP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 03:15:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 513C52072D;
+        Fri, 15 Jan 2021 08:14:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610698487;
+        bh=VDBSNkhjih0ytWUhVsQuY2EtZRagprXKw9fTDS9CCDs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j3lziUWJc66mIc65O04sk7hiw5QKBQL2GnpTYf7OeJhH83aiZdrSjYpLSQChdhI/D
+         N/2QP9z8AnLTX2s+diTRuSWpiSahvJJes6J7PDPmp+SuctM1tpkr+IZkjvdPkGDDKF
+         tGF60IlD3kaGZMWWzIqB3xN0ZRj8SduaI5Wywp4qdbLtYirNlth9b12GmSR/Gxm2kA
+         z4Uzsfm6h94mYE9ioqzRbbtvkIsT0lVfKJGdSICvuRKCt0c2WpA9HVwHZWWWM/elI9
+         upDpmBtLAyLmLDRuoP7QKdVGe+Muej35iQ2jTrApVOxtxUhieE5YjKH/vc1hR9PZll
+         kPhuUrP33HRTw==
+Date:   Fri, 15 Jan 2021 09:14:42 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Fangrui Song <maskray@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH v2] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
+ undefined symbols
+Message-ID: <20210115081442.GB9637@linux-8ccs>
+References: <20210114211840.GA5617@linux-8ccs>
+ <20210114215416.993167-1-maskray@google.com>
+ <CANpmjNOrD76O2_Zpwo5RJ2d12gczuQpG9bJkXYLY_sOVeEVZGQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJE59nA_Bvt1rL95WfeXjQkOSPiTZk8zAbdHSkujmS3gQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CANpmjNOrD76O2_Zpwo5RJ2d12gczuQpG9bJkXYLY_sOVeEVZGQ@mail.gmail.com>
+X-OS:   Linux linux-8ccs 5.8.0-rc6-lp150.12.61-default+ x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sure Rob.
-
-Thanks,
-Mallikarjuna reddy A
-
-On 1/15/2021 4:25 AM, Rob Herring wrote:
-> On Tue, Dec 15, 2020 at 10:08 PM Amireddy Mallikarjuna reddy
-> <mallikarjunax.reddy@linux.intel.com> wrote:
->> Add DT bindings YAML schema for DMA controller driver
->> of Lightning Mountain (LGM) SoC.
++++ Marco Elver [15/01/21 08:03 +0100]:
+>On Thu, 14 Jan 2021 at 22:54, Fangrui Song <maskray@google.com> wrote:
+>> clang-12 -fno-pic (since
+>> https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6)
+>> can emit `call __stack_chk_fail@PLT` instead of `call __stack_chk_fail`
+>> on x86.  The two forms should have identical behaviors on x86-64 but the
+>> former causes GNU as<2.37 to produce an unreferenced undefined symbol
+>> _GLOBAL_OFFSET_TABLE_.
 >>
->> Signed-off-by: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
->> Reviewed-by: Rob Herring <robh@kernel.org>
+>> (On x86-32, there is an R_386_PC32 vs R_386_PLT32 difference but the
+>> linker behavior is identical as far as Linux kernel is concerned.)
+>>
+>> Simply ignore _GLOBAL_OFFSET_TABLE_ for now, like what
+>> scripts/mod/modpost.c:ignore_undef_symbol does. This also fixes the
+>> problem for gcc/clang -fpie and -fpic, which may emit `call foo@PLT` for
+>> external function calls on x86.
+>>
+>> Note: ld -z defs and dynamic loaders do not error for unreferenced
+>> undefined symbols so the module loader is reading too much.  If we ever
+>> need to ignore more symbols, the code should be refactored to ignore
+>> unreferenced symbols.
+>>
+>> Reported-by: Marco Elver <elver@google.com>
+>> Link: https://github.com/ClangBuiltLinux/linux/issues/1250
+>> Signed-off-by: Fangrui Song <maskray@google.com>
+>
+>Tested-by: Marco Elver <elver@google.com>
+>
+>Thank you for the patch!
+>
 >> ---
->> v1:
->> - Initial version.
->>
->> v2:
->> - Fix bot errors.
->>
->> v3:
->> - No change.
->>
->> v4:
->> - Address Thomas langer comments
->>    - use node name pattern as dma-controller as in common binding.
->>    - Remove "_" (underscore) in instance name.
->>    - Remove "port-" and "chan-" in attribute name for both 'dma-ports' & 'dma-channels' child nodes.
->>
->> v5:
->> - Moved some of the attributes in 'dma-ports' & 'dma-channels' child nodes to dma client/consumer side as cells in 'dmas' properties.
->>
->> v6:
->> - Add additionalProperties: false
->> - completely removed 'dma-ports' and 'dma-channels' child nodes.
->> - Moved channel dt properties to client side dmas.
->> - Use standard dma-channels and dma-channel-mask properties.
->> - Documented reset-names
->> - Add description for dma-cells
->>
->> v7:
->> - modified compatible to oneof
->> - Reduced number of dma-cells to 3
->> - Fine tune the description of some properties.
->>
->> v7-resend:
->> - rebase to 5.10-rc1
->> - No change.
->>
->> v8:
->> - rebased to 5.10-rc3
->> - Fixing the bot issues (wrong indentation)
->>
->> v9:
->> - Use 'enum' instead of oneOf+const
->> - Drop '#dma-cells' in required:, already covered in dma-common.yaml
->> - Drop nodename Already covered by dma-controller.yaml
->>
->> v10:
->> - rebased to 5.10-rc6
->> - Add Reviewed-by: Rob Herring <robh@kernel.org>
->> - Fixed typo.
->> - moved property dma-desc-in-sram to driver side.
->> - Moved property dma-orrc to driver side.
->>
->> v10-resend:
->> - rebased to 5.10
->> - No change
+>>  kernel/module.c | 20 ++++++++++++++++++--
+>>  1 file changed, 18 insertions(+), 2 deletions(-)
 >> ---
->>   .../devicetree/bindings/dma/intel,ldma.yaml   | 116 ++++++++++++++++++
->>   1 file changed, 116 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/dma/intel,ldma.yaml
+>> Changes in v2:
+>> * Fix Marco's email address
+>> * Add a function ignore_undef_symbol similar to scripts/mod/modpost.c:ignore_undef_symbol
 >>
->> diff --git a/Documentation/devicetree/bindings/dma/intel,ldma.yaml b/Documentation/devicetree/bindings/dma/intel,ldma.yaml
->> new file mode 100644
->> index 000000000000..866d4c758a7a
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/dma/intel,ldma.yaml
->> @@ -0,0 +1,116 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/dma/intel,ldma.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Lightning Mountain centralized DMA controllers.
->> +
->> +maintainers:
->> +  - chuanhua.lei@intel.com
->> +  - mallikarjunax.reddy@intel.com
->> +
->> +allOf:
->> +  - $ref: "dma-controller.yaml#"
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - intel,lgm-cdma
->> +      - intel,lgm-dma2tx
->> +      - intel,lgm-dma1rx
->> +      - intel,lgm-dma1tx
->> +      - intel,lgm-dma0tx
->> +      - intel,lgm-dma3
->> +      - intel,lgm-toe-dma30
->> +      - intel,lgm-toe-dma31
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  "#dma-cells":
->> +    const: 3
->> +    description:
->> +      The first cell is the peripheral's DMA request line.
->> +      The second cell is the peripheral's (port) number corresponding to the channel.
->> +      The third cell is the burst length of the channel.
->> +
->> +  dma-channels:
->> +    minimum: 1
->> +    maximum: 16
->> +
->> +  dma-channel-mask:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +  resets:
->> +    maxItems: 1
->> +
->> +  reset-names:
->> +    items:
->> +      - const: ctrl
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  intel,dma-poll-cnt:
->> +    $ref: /schemas/types.yaml#definitions/uint32
-> Since this was sent, there have been some fixes for JSON pointers and
-> this is missing a '/'. The tools now check:
+>> diff --git a/kernel/module.c b/kernel/module.c
+>> index 4bf30e4b3eaa..278f5129bde2 100644
+>> --- a/kernel/module.c
+>> +++ b/kernel/module.c
+>> @@ -2348,6 +2348,20 @@ static int verify_exported_symbols(struct module *mod)
+>>         return 0;
+>>  }
+>>
+>> +static int ignore_undef_symbol(Elf_Half emachine, const char *name)
 >
-> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/dma/intel,ldma.yaml:
-> properties:intel,dma-poll-cnt: 'oneOf' conditional failed, one must be
-> fixed:
->   'enum' is a required property
->   'const' is a required property
->   '/schemas/types.yaml#definitions/uint32' does not match
-> 'types.yaml#/definitions/'
+>Why not 'bool' return-type?
 >
-> Please send a fix for this.
+>> +{
+>> +       /* On x86, PIC code and Clang non-PIC code may have call foo@PLT. GNU as
 >
-> Thanks,
-> Rob
+>Not sure if checkpatch.pl warns about this, but this multi-line
+>comment does not follow the normal kernel-style (see elsewhere in
+>file):
+>
+>/*
+> * ...
+> */
+
++1 to Marco's comments. Otherwise, patch looks good to me.
+
+Thanks Fangrui!
+
+Jessica
+
