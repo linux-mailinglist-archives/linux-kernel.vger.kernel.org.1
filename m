@@ -2,213 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA7A2F887A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:32:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0292F887E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:33:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727227AbhAOWbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 17:31:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        id S1727395AbhAOWcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 17:32:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726172AbhAOWbm (ORCPT
+        with ESMTP id S1726172AbhAOWcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 17:31:42 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43EBC061757;
-        Fri, 15 Jan 2021 14:31:01 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id s2so11196445oij.2;
-        Fri, 15 Jan 2021 14:31:01 -0800 (PST)
+        Fri, 15 Jan 2021 17:32:45 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B053C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:32:05 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id g15so6908325pgu.9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:32:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=uzyWBS9+DxY8uhv4N5qWwxPq4n3dlQKk79o209HF7qM=;
-        b=qN/FQhS0w1u3aZA9oC/wA0Ps+ZJLw0oY9K4x03U4hqEpZFSgwxRLX6POaELg8A9orM
-         s35OWpvnzjpM0TKdupzixGBSQ5Iy7L2+SAqPuPLzIAJkL0z/VTtgC93sBoTldU5cfkaT
-         hwZ7/bEjC80k8ZMon5/dB8dsbPEFlLCJCnKoMmIhBiuTf3mP8PxtdlKZ2eNNCZ4y8Yls
-         /F5dVgmzQYT0UG4bNysOPuVCM/jcFxI/s4e0fAMtcll1kOeL5giWssyOkonfTCZfUNHI
-         jl64hzIq9Hct70PU+kgeClSiFBTa2DtTMKYqKFff8v+lG1e1WxpaxHOvfox8/hEVzqrx
-         SYbQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ooOPbSdn2JKfhlBwxZ7D3PM2/XriIVf1HYoBmF9K00g=;
+        b=oQVolH9tri0XcGLaGNVO5l+bUWdV7hmgvZsCPUdMKTKaWe5ApiqR92YewV8yvUEOQx
+         VssCa4fu80HFbsqHdy5uc7/70gWkYeXpWiZ2SMgdum58EXspGSQmEYZ4JH/Mq/dp4dXK
+         ekU12eRbwW/MSggLvGAFDpz2urm2SNV0F8Qy7mI+v5965LqgedPDh7tBFZeEZUYdMPEI
+         D4YcraAaFPFRGWiMXAPS71GqFbrIHJ4NFtlKveP3tMsLPxiSCceoPNOSHIHUhtY6P0zH
+         Wj7SnlJCattg18e8x3rmoIwlsMm3CY48Pt1C8MB8E5ZR+D2duoNg7BjU+caafqyYmhQu
+         FnFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=uzyWBS9+DxY8uhv4N5qWwxPq4n3dlQKk79o209HF7qM=;
-        b=pJ5lrAUtn3gjbVtQDd2X7/Ce3iifCl7TwAVysJS+4z5yKEd4Xe4o0A1W+V3IRAgtAt
-         Tc7cBlTlGNmllkZpVRj6LrWfL6aL0fr6G9l5tsZgnIyfWs60vp3MFr0XaJV1mwr4Q7/D
-         cRyfUBCrULEAByZVjKHSq17lJZi7wcN15apn4BBDkzsjgi81hZTo4g0WFm73jFr/Rh5o
-         MADlzKtpPzP5lbGDV34DBoLVX0yoTkM9UATrB1mCXLQ7ldAsMHqHMglpDR3Az5LcDplA
-         Y4WXrFq9jywTpttqChV4F/QIGJLYQ8uiec86bAzVhaUxDHYFjdmH3WTQD3h9UxIGldYf
-         tSrg==
-X-Gm-Message-State: AOAM530ThJfLgV09CnN6OcGhCCdDk/j6h0K21j5jtWVfoMGVvfbA1G6z
-        zk7hM7Pf75SxzeuS+UueLek=
-X-Google-Smtp-Source: ABdhPJxOSxyknU5H1+hGzk42MaCsfeuBp3VxoQl5sglarkpy5nwc1kAggFMGrk2ICqJ4ZRylE3etOg==
-X-Received: by 2002:aca:4ec9:: with SMTP id c192mr7423302oib.115.1610749861241;
-        Fri, 15 Jan 2021 14:31:01 -0800 (PST)
-Received: from localhost.localdomain (99-6-134-177.lightspeed.snmtca.sbcglobal.net. [99.6.134.177])
-        by smtp.gmail.com with ESMTPSA id c12sm1921643oig.35.2021.01.15.14.30.59
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ooOPbSdn2JKfhlBwxZ7D3PM2/XriIVf1HYoBmF9K00g=;
+        b=C+rm3khKKfS+BIPZKcGtC8zMhDtYCf+NKjDdGTELpiCjtwF1+3OihMsw6EjTWBJa42
+         IwgJT7BMUlyH8bRYijTpPcWzX5ruOWvhbwh4qQrr3CM6YJR8t7K4UdGGkadDZhX5Mnu0
+         3QMzO7kaxO4OL1sWa2fxepNwleGrg/57h9G1dyHMBXsiBUaxjlDOk5SigTvbZ+jevwMY
+         OUSdDePaaZRDy+GKRtloXFCgwrlUiR/dThVYVeu5dT7oikfPhWIl24rRdAcSVb2+ufWK
+         2x3+M3bZJ8pzEHtq3NUvfQhqrvTt18Ci390lpvMzcA3RY4u7JlmhxX7WdbECOVRT4Iao
+         oyOg==
+X-Gm-Message-State: AOAM530w86l6amb65Es3yvlF39dy1chRegkx0vtxjvEbD6wwg6QXgbri
+        Vca7nvecLjGzK/QdefLP0/X4dA==
+X-Google-Smtp-Source: ABdhPJy4xjBVHQad+LyI5n5tByZ0GKF5AwVOUQYdkNv+HctNbFa1PPbfz6/rcZSlGFplBtUzgVQgeA==
+X-Received: by 2002:a63:d855:: with SMTP id k21mr14754815pgj.399.1610749924356;
+        Fri, 15 Jan 2021 14:32:04 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id a131sm9375775pfd.171.2021.01.15.14.32.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 14:31:00 -0800 (PST)
-Date:   Fri, 15 Jan 2021 14:30:58 -0800
-From:   Enke Chen <enkechen2020@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Neal Cardwell <ncardwell@google.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Maxwell <jmaxwell37@gmail.com>,
-        William McCall <william.mccall@gmail.com>,
-        enkechen2020@gmail.com
-Subject: [PATCH net v2] tcp: fix TCP_USER_TIMEOUT with zero window
-Message-ID: <20210115223058.GA39267@localhost.localdomain>
+        Fri, 15 Jan 2021 14:32:03 -0800 (PST)
+Date:   Fri, 15 Jan 2021 14:31:57 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Quentin Perret <qperret@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:KERNEL VIRTUAL MACHINE (KVM)" <kvm@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        android-kvm@google.com, kernel-team@android.com
+Subject: Re: [PATCH] KVM: Documentation: Fix spec for KVM_CAP_ENABLE_CAP_VM
+Message-ID: <YAIX3WkXSURLyj0S@google.com>
+References: <20210108165349.747359-1-qperret@google.com>
+ <20210115165004.GA14556@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210115165004.GA14556@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Enke Chen <enchen@paloaltonetworks.com>
+On Fri, Jan 15, 2021, Will Deacon wrote:
+> On Fri, Jan 08, 2021 at 04:53:49PM +0000, Quentin Perret wrote:
+> > The documentation classifies KVM_ENABLE_CAP with KVM_CAP_ENABLE_CAP_VM
+> > as a vcpu ioctl, which is incorrect. Fix it by specifying it as a VM
+> > ioctl.
 
-The TCP session does not terminate with TCP_USER_TIMEOUT when data
-remain untransmitted due to zero window.
+On a related topic, x86 should report KVM_CAP_ENABLE_CAP as supported, it's had
+a vCPU version since commit 5c919412fe61 ("kvm/x86: Hyper-V synthetic interrupt
+controller").  I'll send a patch.
 
-The number of unanswered zero-window probes (tcp_probes_out) is
-reset to zero with incoming acks irrespective of the window size,
-as described in tcp_probe_timer():
+> > Fixes: e5d83c74a580 ("kvm: make KVM_CAP_ENABLE_CAP_VM architecture agnostic")
+> > Signed-off-by: Quentin Perret <qperret@google.com>
+> > ---
+> >  Documentation/virt/kvm/api.rst | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> > index 70254eaa5229..68898b623d86 100644
+> > --- a/Documentation/virt/kvm/api.rst
+> > +++ b/Documentation/virt/kvm/api.rst
+> > @@ -1328,7 +1328,7 @@ documentation when it pops into existence).
+> >  
+> >  :Capability: KVM_CAP_ENABLE_CAP_VM
+> >  :Architectures: all
+> > -:Type: vcpu ioctl
+> > +:Type: vm ioctl
+> >  :Parameters: struct kvm_enable_cap (in)
+> >  :Returns: 0 on success; -1 on error
+> 
+> I tripped over this as well, so:
+> 
+> Acked-by: Will Deacon <will@kernel.org>
 
-    RFC 1122 4.2.2.17 requires the sender to stay open indefinitely
-    as long as the receiver continues to respond probes. We support
-    this by default and reset icsk_probes_out with incoming ACKs.
+The problem is that you read the documentation.  Who does that?
 
-This counter, however, is the wrong one to be used in calculating the
-duration that the window remains closed and data remain untransmitted.
-Thanks to Jonathan Maxwell <jmaxwell37@gmail.com> for diagnosing the
-actual issue.
-
-In this patch a new timestamp is introduced for the socket in order to
-track the elapsed time for the zero-window probes that have not been
-answered with any non-zero window ack.
-
-Fixes: 9721e709fa68 ("tcp: simplify window probe aborting on USER_TIMEOUT")
-Reported-by: William McCall <william.mccall@gmail.com>
-Co-developed-by: Neal Cardwell <ncardwell@google.com>
-Signed-off-by: Neal Cardwell <ncardwell@google.com>
-Signed-off-by: Enke Chen <enchen@paloaltonetworks.com>
-Reviewed-by: Yuchung Cheng <ycheng@google.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
----
- include/net/inet_connection_sock.h |  3 +++
- net/ipv4/inet_connection_sock.c    |  1 +
- net/ipv4/tcp.c                     |  1 +
- net/ipv4/tcp_input.c               |  1 +
- net/ipv4/tcp_output.c              |  1 +
- net/ipv4/tcp_timer.c               | 14 +++++++-------
- 6 files changed, 14 insertions(+), 7 deletions(-)
-
-diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
-index 7338b3865a2a..111d7771b208 100644
---- a/include/net/inet_connection_sock.h
-+++ b/include/net/inet_connection_sock.h
-@@ -76,6 +76,8 @@ struct inet_connection_sock_af_ops {
-  * @icsk_ext_hdr_len:	   Network protocol overhead (IP/IPv6 options)
-  * @icsk_ack:		   Delayed ACK control data
-  * @icsk_mtup;		   MTU probing control data
-+ * @icsk_probes_tstamp:    Probe timestamp (cleared by non-zero window ack)
-+ * @icsk_user_timeout:	   TCP_USER_TIMEOUT value
-  */
- struct inet_connection_sock {
- 	/* inet_sock has to be the first member! */
-@@ -129,6 +131,7 @@ struct inet_connection_sock {
- 
- 		u32		  probe_timestamp;
- 	} icsk_mtup;
-+	u32			  icsk_probes_tstamp;
- 	u32			  icsk_user_timeout;
- 
- 	u64			  icsk_ca_priv[104 / sizeof(u64)];
-diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-index fd8b8800a2c3..6bd7ca09af03 100644
---- a/net/ipv4/inet_connection_sock.c
-+++ b/net/ipv4/inet_connection_sock.c
-@@ -851,6 +851,7 @@ struct sock *inet_csk_clone_lock(const struct sock *sk,
- 		newicsk->icsk_retransmits = 0;
- 		newicsk->icsk_backoff	  = 0;
- 		newicsk->icsk_probes_out  = 0;
-+		newicsk->icsk_probes_tstamp = 0;
- 
- 		/* Deinitialize accept_queue to trap illegal accesses. */
- 		memset(&newicsk->icsk_accept_queue, 0, sizeof(newicsk->icsk_accept_queue));
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index ed42d2193c5c..32545ecf2ab1 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -2937,6 +2937,7 @@ int tcp_disconnect(struct sock *sk, int flags)
- 
- 	icsk->icsk_backoff = 0;
- 	icsk->icsk_probes_out = 0;
-+	icsk->icsk_probes_tstamp = 0;
- 	icsk->icsk_rto = TCP_TIMEOUT_INIT;
- 	icsk->icsk_rto_min = TCP_RTO_MIN;
- 	icsk->icsk_delack_max = TCP_DELACK_MAX;
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index c7e16b0ed791..bafcab75f425 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -3384,6 +3384,7 @@ static void tcp_ack_probe(struct sock *sk)
- 		return;
- 	if (!after(TCP_SKB_CB(head)->end_seq, tcp_wnd_end(tp))) {
- 		icsk->icsk_backoff = 0;
-+		icsk->icsk_probes_tstamp = 0;
- 		inet_csk_clear_xmit_timer(sk, ICSK_TIME_PROBE0);
- 		/* Socket must be waked up by subsequent tcp_data_snd_check().
- 		 * This function is not for random using!
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index f322e798a351..ab458697881e 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -4084,6 +4084,7 @@ void tcp_send_probe0(struct sock *sk)
- 		/* Cancel probe timer, if it is not required. */
- 		icsk->icsk_probes_out = 0;
- 		icsk->icsk_backoff = 0;
-+		icsk->icsk_probes_tstamp = 0;
- 		return;
- 	}
- 
-diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
-index 6c62b9ea1320..454732ecc8f3 100644
---- a/net/ipv4/tcp_timer.c
-+++ b/net/ipv4/tcp_timer.c
-@@ -349,6 +349,7 @@ static void tcp_probe_timer(struct sock *sk)
- 
- 	if (tp->packets_out || !skb) {
- 		icsk->icsk_probes_out = 0;
-+		icsk->icsk_probes_tstamp = 0;
- 		return;
- 	}
- 
-@@ -360,13 +361,12 @@ static void tcp_probe_timer(struct sock *sk)
- 	 * corresponding system limit. We also implement similar policy when
- 	 * we use RTO to probe window in tcp_retransmit_timer().
- 	 */
--	if (icsk->icsk_user_timeout) {
--		u32 elapsed = tcp_model_timeout(sk, icsk->icsk_probes_out,
--						tcp_probe0_base(sk));
--
--		if (elapsed >= icsk->icsk_user_timeout)
--			goto abort;
--	}
-+	if (!icsk->icsk_probes_tstamp)
-+		icsk->icsk_probes_tstamp = tcp_jiffies32;
-+	else if (icsk->icsk_user_timeout &&
-+		 (s32)(tcp_jiffies32 - icsk->icsk_probes_tstamp) >=
-+		 msecs_to_jiffies(icsk->icsk_user_timeout))
-+		goto abort;
- 
- 	max_probes = sock_net(sk)->ipv4.sysctl_tcp_retries2;
- 	if (sock_flag(sk, SOCK_DEAD)) {
--- 
-2.29.2
-
+Reviewed-by: Sean Christopherson <seanjc@google.com> 
