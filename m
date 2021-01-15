@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8F12F7B74
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:04:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D50F2F7B6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:02:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732921AbhAOMcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:32:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37452 "EHLO mail.kernel.org"
+        id S1731593AbhAOMcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:32:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732787AbhAOMbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:31:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A882C23136;
-        Fri, 15 Jan 2021 12:31:29 +0000 (UTC)
+        id S1733017AbhAOMcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:32:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52EB8235F8;
+        Fri, 15 Jan 2021 12:32:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713890;
-        bh=tC6JJM1vmnXYySKfv9b0mXJx7CTs1lpaCXJ6pG71VEA=;
+        s=korg; t=1610713931;
+        bh=earb/xTFB38cqQE7OvLBkid4oTdP+Gzcbt67FueACao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zd9q0MD00j7HtiBLIwvzxxSOYv54HMpWh2TQzp04uRJW3dPBUqaG/4z4CtJlooXU0
-         CdO3VJnaHsdjUwI3KKD3HYtaS0AqB5nY4Anm8T6k/f/YSX7q6mU/CtO8Ggolw+CJOP
-         8qrr0EzaN1fHElPjv/vd8+/NWcPowljtoIhAs3dw=
+        b=wxvI6G8pmfuAK2Y5raGEiSJu/wmw0rr1235FliVEia6EvPG2vemvZxWHs54APb/P6
+         oDTeOpp9ODk1XjbhEFW7z7N7OWxXITd1kdA/K5u5SDILcX1g4Os/B4SIN4r/wD37h/
+         9Wr93OOAxKHdTou+NHAKJ2BQR5H++f2GHnx7qQzA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH 4.14 07/28] x86/resctrl: Dont move a task to the same resource group
+        stable@vger.kernel.org,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 14/43] chtls: Added a check to avoid NULL pointer dereference
 Date:   Fri, 15 Jan 2021 13:27:44 +0100
-Message-Id: <20210115121957.106181858@linuxfoundation.org>
+Message-Id: <20210115121957.733857231@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121956.731354372@linuxfoundation.org>
-References: <20210115121956.731354372@linuxfoundation.org>
+In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
+References: <20210115121957.037407908@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenghua Yu <fenghua.yu@intel.com>
+From: Ayush Sawal <ayush.sawal@chelsio.com>
 
-commit a0195f314a25582b38993bf30db11c300f4f4611 upstream
+[ Upstream commit eade1e0a4fb31d48eeb1589d9bb859ae4dd6181d ]
 
-Shakeel Butt reported in [1] that a user can request a task to be moved
-to a resource group even if the task is already in the group. It just
-wastes time to do the move operation which could be costly to send IPI
-to a different CPU.
+In case of server removal lookup_stid() may return NULL pointer, which
+is used as listen_ctx. So added a check before accessing this pointer.
 
-Add a sanity check to ensure that the move operation only happens when
-the task is not already in the resource group.
-
-[1] https://lore.kernel.org/lkml/CALvZod7E9zzHwenzf7objzGKsdBmVwTgEJ0nPgs0LUFU3SN5Pw@mail.gmail.com/
-
-Backporting notes:
-
-Since upstream commit fa7d949337cc ("x86/resctrl: Rename and move rdt
-files to a separate directory"), the file
-arch/x86/kernel/cpu/intel_rdt_rdtgroup.c has been renamed and moved to
-arch/x86/kernel/cpu/resctrl/rdtgroup.c.
-Apply the change against file arch/x86/kernel/cpu/intel_rdt_rdtgroup.c
-for older stable trees.
-
-Fixes: e02737d5b826 ("x86/intel_rdt: Add tasks files")
-Reported-by: Shakeel Butt <shakeelb@google.com>
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/962ede65d8e95be793cb61102cca37f7bb018e66.1608243147.git.reinette.chatre@intel.com
+Fixes: cc35c88ae4db ("crypto : chtls - CPL handler definition")
+Signed-off-by: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/cpu/intel_rdt_rdtgroup.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/crypto/chelsio/chtls/chtls_cm.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/arch/x86/kernel/cpu/intel_rdt_rdtgroup.c
-+++ b/arch/x86/kernel/cpu/intel_rdt_rdtgroup.c
-@@ -432,6 +432,13 @@ static void update_task_closid_rmid(stru
- static int __rdtgroup_move_task(struct task_struct *tsk,
- 				struct rdtgroup *rdtgrp)
- {
-+	/* If the task is already in rdtgrp, no need to move the task. */
-+	if ((rdtgrp->type == RDTCTRL_GROUP && tsk->closid == rdtgrp->closid &&
-+	     tsk->rmid == rdtgrp->mon.rmid) ||
-+	    (rdtgrp->type == RDTMON_GROUP && tsk->rmid == rdtgrp->mon.rmid &&
-+	     tsk->closid == rdtgrp->mon.parent->closid))
-+		return 0;
-+
- 	/*
- 	 * Set the task's closid/rmid before the PQR_ASSOC MSR can be
- 	 * updated by them.
+--- a/drivers/crypto/chelsio/chtls/chtls_cm.c
++++ b/drivers/crypto/chelsio/chtls/chtls_cm.c
+@@ -1432,6 +1432,11 @@ static int chtls_pass_establish(struct c
+ 			sk_wake_async(sk, 0, POLL_OUT);
+ 
+ 		data = lookup_stid(cdev->tids, stid);
++		if (!data) {
++			/* listening server close */
++			kfree_skb(skb);
++			goto unlock;
++		}
+ 		lsk = ((struct listen_ctx *)data)->lsk;
+ 
+ 		bh_lock_sock(lsk);
 
 
