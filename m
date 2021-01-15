@@ -2,199 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E228D2F7035
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:49:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4271B2F7037
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:50:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731698AbhAOBtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 20:49:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40735 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731674AbhAOBtV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 20:49:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610675273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=745y7uGhO854SzSG2eWw+5j0w9RrdvtHtF4bo9p7MY4=;
-        b=G7MVo4HwJEYiTvDqLJ2aiep/Mgva0ofEwUX8+6ERcMK3iUCJ6VoqhSD8WJ1IyNDYTjyMgA
-        ytG1OdnbrZOeVa2dPJ8DWCtORE2IVu8HdrYKZRHUXf9hp9AkAP5aoIwrM0Dm6/SkcZn2jQ
-        ViwnFRYumedrxxujPeGBZYDyp5ACTzI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-330-MwVlbs6AOnyGT9m0sxjNkQ-1; Thu, 14 Jan 2021 20:47:49 -0500
-X-MC-Unique: MwVlbs6AOnyGT9m0sxjNkQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BD44100C601;
-        Fri, 15 Jan 2021 01:47:48 +0000 (UTC)
-Received: from T590 (ovpn-13-85.pek2.redhat.com [10.72.13.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 71F531042A83;
-        Fri, 15 Jan 2021 01:47:39 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 09:47:33 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Brian King <brking@linux.vnet.ibm.com>
-Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, brking@linux.ibm.com,
-        james.smart@broadcom.com
-Subject: Re: [PATCH v4 01/21] ibmvfc: add vhost fields and defaults for MQ
- enablement
-Message-ID: <20210115014733.GB277536@T590>
-References: <20210111231225.105347-1-tyreld@linux.ibm.com>
- <20210111231225.105347-2-tyreld@linux.ibm.com>
- <0525bee7-433f-dcc7-9e35-e8706d6edee5@linux.vnet.ibm.com>
- <a8623705-6d49-2056-09bb-80190e0b6f52@linux.ibm.com>
- <51bfc34b-c2c4-bf14-c903-d37015f65361@linux.vnet.ibm.com>
- <20210114012738.GA237540@T590>
- <9c5f7786-cd13-6a49-2d71-d0c438318bcb@linux.vnet.ibm.com>
+        id S1731724AbhAOBtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 20:49:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729601AbhAOBtw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 20:49:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B54A823A5A;
+        Fri, 15 Jan 2021 01:49:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610675351;
+        bh=7m6gXGQB9GOS78uHlv9N5feImSkuY1+rzKX0l0JfpR8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CAs326EQW1JQPYuPjZlrVu+5mW73LrxeT41HHx2Wy5W/vKNpIEppUeoagn82sIAZa
+         z8jIPr0K9aY6FMvK/w+bKuSi5SEhYs7zP1IJFmWV3Ib9HqnJZiF0Ho9QHmIGrSp8LR
+         mGhIqd1ZmXI9PsOiPHrv3Jyq05eVU8WXHijWQHSm93NZ8ypqSp2zMd49MWgYzSBrry
+         1v273ZiiJp7LB6RZGbxGlGnoShWvf/xmYl8PT09sAn6yXiLd+oEs2A50CtOlxuloJS
+         4TnBy0tVc74g5bbqw/nFkiskRJcwQ80PiiUNIfBwaxhIul0lKEtcvqi/DZqLYGB8Xv
+         g5WirPbwIlAMQ==
+Date:   Fri, 15 Jan 2021 03:49:05 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>
+Subject: Re: [PATCH v3] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
+Message-ID: <YAD0kVGXBxW5W2pw@kernel.org>
+References: <20201216134920.21161-1-jarkko@kernel.org>
+ <20210105145749.GF28649@zn.tnic>
+ <X/zoarV7gd/LNo4A@kernel.org>
+ <20210112183550.GK13086@zn.tnic>
+ <X/8rX1yFxiN79QCn@kernel.org>
+ <20210113174602.GV2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9c5f7786-cd13-6a49-2d71-d0c438318bcb@linux.vnet.ibm.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210113174602.GV2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 11:24:35AM -0600, Brian King wrote:
-> On 1/13/21 7:27 PM, Ming Lei wrote:
-> > On Wed, Jan 13, 2021 at 11:13:07AM -0600, Brian King wrote:
-> >> On 1/12/21 6:33 PM, Tyrel Datwyler wrote:
-> >>> On 1/12/21 2:54 PM, Brian King wrote:
-> >>>> On 1/11/21 5:12 PM, Tyrel Datwyler wrote:
-> >>>>> Introduce several new vhost fields for managing MQ state of the adapter
-> >>>>> as well as initial defaults for MQ enablement.
-> >>>>>
-> >>>>> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-> >>>>> ---
-> >>>>>  drivers/scsi/ibmvscsi/ibmvfc.c | 8 ++++++++
-> >>>>>  drivers/scsi/ibmvscsi/ibmvfc.h | 9 +++++++++
-> >>>>>  2 files changed, 17 insertions(+)
-> >>>>>
-> >>>>> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-> >>>>> index ba95438a8912..9200fe49c57e 100644
-> >>>>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
-> >>>>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-> >>>>> @@ -3302,6 +3302,7 @@ static struct scsi_host_template driver_template = {
-> >>>>>  	.max_sectors = IBMVFC_MAX_SECTORS,
-> >>>>>  	.shost_attrs = ibmvfc_attrs,
-> >>>>>  	.track_queue_depth = 1,
-> >>>>> +	.host_tagset = 1,
-> >>>>
-> >>>> This doesn't seem right. You are setting host_tagset, which means you want a
-> >>>> shared, host wide, tag set for commands. It also means that the total
-> >>>> queue depth for the host is can_queue. However, it looks like you are allocating
-> >>>> max_requests events for each sub crq, which means you are over allocating memory.
-> >>>
-> >>> With the shared tagset yes the queue depth for the host is can_queue, but this
-> >>> also implies that the max queue depth for each hw queue is also can_queue. So,
-> >>> in the worst case that all commands are queued down the same hw queue we need an
-> >>> event pool with can_queue commands.
-> >>>
-> >>>>
-> >>>> Looking at this closer, we might have bigger problems. There is a host wide
-> >>>> max number of commands that the VFC host supports, which gets returned on
-> >>>> NPIV Login. This value can change across a live migration event.
-> >>>
-> >>> From what I understand the max commands can only become less.
-> >>>
-> >>>>
-> >>>> The ibmvfc driver, which does the same thing the lpfc driver does, modifies
-> >>>> can_queue on the scsi_host *after* the tag set has been allocated. This looks
-> >>>> to be a concern with ibmvfc, not sure about lpfc, as it doesn't look like
-> >>>> we look at can_queue once the tag set is setup, and I'm not seeing a good way
-> >>>> to dynamically change the host queue depth once the tag set is setup. 
-> >>>>
-> >>>> Unless I'm missing something, our best options appear to either be to implement
-> >>>> our own host wide busy reference counting, which doesn't sound very good, or
-> >>>> we need to add some API to block / scsi that allows us to dynamically change
-> >>>> can_queue.
-> >>>
-> >>> Changing can_queue won't do use any good with the shared tagset becasue each
-> >>> queue still needs to be able to queue can_queue number of commands in the worst
-> >>> case.
-> >>
-> >> The issue I'm trying to highlight here is the following scenario:
-> >>
-> >> 1. We set shost->can_queue, then call scsi_add_host, which allocates the tag set.
-> >>
-> >> 2. On our NPIV login response from the VIOS, we might get a lower value than we
-> >> initially set in shost->can_queue, so we update it, but nobody ever looks at it
-> >> again, and we don't have any protection against sending too many commands to the host.
-> >>
-> >>
-> >> Basically, we no longer have any code that ensures we don't send more
-> >> commands to the VIOS than we are told it supports. According to the architecture,
-> >> if we actually do this, the VIOS will do an h_free_crq, which would be a bit
-> >> of a bug on our part.
-> >>
-> >> I don't think it was ever clearly defined in the API that a driver can
-> >> change shost->can_queue after calling scsi_add_host, but up until
-> >> commit 6eb045e092efefafc6687409a6fa6d1dabf0fb69, this worked and now
-> >> it doesn't. 
+On Wed, Jan 13, 2021 at 09:46:02AM -0800, Paul E. McKenney wrote:
+> On Wed, Jan 13, 2021 at 07:18:23PM +0200, Jarkko Sakkinen wrote:
+> > On Tue, Jan 12, 2021 at 07:35:50PM +0100, Borislav Petkov wrote:
+> > > + paulmck.
+> > > 
+> > > On Tue, Jan 12, 2021 at 02:08:10AM +0200, Jarkko Sakkinen wrote:
+> > > > On Tue, Jan 05, 2021 at 03:57:49PM +0100, Borislav Petkov wrote:
+> > > > > On Wed, Dec 16, 2020 at 03:49:20PM +0200, Jarkko Sakkinen wrote:
+> > > > > > Add synchronize_srcu_expedited() to sgx_encl_release() to catch a grace
+> > > > > > period initiated by sgx_mmu_notifier_release().
+> > > > > > 
+> > > > > > A trivial example of a failing sequence with tasks A and B:
+> > > > > > 
+> > > > > > 1. A: -> sgx_release()
+> > > > > > 2. B: -> sgx_mmu_notifier_release()
+> > > > > > 3. B: -> list_del_rcu()
+> > > > > > 3. A: -> sgx_encl_release()
+> > > > > > 4. A: -> cleanup_srcu_struct()
+> > > > > > 
+> > > > > > The loop in sgx_release() observes an empty list because B has removed its
+> > > > > > entry in the middle, and calls cleanup_srcu_struct() before B has a chance
+> > > > > > to calls synchronize_srcu().
+> > > > > 
+> > > > > Leading to what? NULL ptr?
+> > > > > 
+> > > > > https://lkml.kernel.org/r/X9e2jOWz1hfXVpQ5@google.com
+> > > > > 
+> > > > > already suggested that you should explain the bug better and add the
+> > > > > splat but I'm still missing that explanation.
+> > > > 
+> > > > OK, I'll try to explain it how I understand the issue.
+> > > > 
+> > > > Consider this loop in the VFS release hook (sgx_release):
+> > > > 
+> > > > 	/*
+> > > > 	 * Drain the remaining mm_list entries. At this point the list contains
+> > > > 	 * entries for processes, which have closed the enclave file but have
+> > > > 	 * not exited yet. The processes, which have exited, are gone from the
+> > > > 	 * list by sgx_mmu_notifier_release().
+> > > > 	 */
+> > > > 	for ( ; ; )  {
+> > > > 		spin_lock(&encl->mm_lock);
+> > > > 
+> > > > 		if (list_empty(&encl->mm_list)) {
+> > > > 			encl_mm = NULL;
+> > > > 		} else {
+> > > > 			encl_mm = list_first_entry(&encl->mm_list,
+> > > > 						   struct sgx_encl_mm, list);
+> > > > 			list_del_rcu(&encl_mm->list);
+> > > > 		}
+> > > > 
+> > > > 		spin_unlock(&encl->mm_lock);
+> > > > 
+> > > > 		/* The enclave is no longer mapped by any mm. */
+> > > > 		if (!encl_mm)
+> > > > 			break;
+> > > > 
+> > > > 		synchronize_srcu(&encl->srcu);
+> > > > 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
+> > > > 		kfree(encl_mm);
+> > > > 	}
+> > > > 
+> > > > 
+> > > > At this point all processes have closed the enclave file, but that doesn't
+> > > > mean that they all have exited yet.
+> > > > 
+> > > > Now, let's imagine that there is exactly one entry in the encl->mm_list.
+> > > > and sgx_release() execution gets scheduled right after returning from
+> > > > synchronize_srcu().
+> > > > 
+> > > > With some bad luck, some process comes and removes that last entry befoe
+> > > > sgx_release() acquires mm_lock. The loop in sgx_release() just leaves
+> > > > 
+> > > > 		/* The enclave is no longer mapped by any mm. */
+> > > > 		if (!encl_mm)
+> > > > 			break;
+> > > > 
+> > > > No synchronize_srcu().
+> > > > 
+> > > > After writing this, I think that the placement for synchronize_srcu()
+> > > > in this patch is not best possible. It should be rather that the
+> > > > above loop would also call synchronize_srcu() when leaving.
+> > > > 
+> > > > I.e. the code change would result:
+> > > > 
+> > > > 	for ( ; ; )  {
+> > > > 		spin_lock(&encl->mm_lock);
+> > > > 
+> > > > 		if (list_empty(&encl->mm_list)) {
+> > > > 			encl_mm = NULL;
+> > > > 		} else {
+> > > > 			encl_mm = list_first_entry(&encl->mm_list,
+> > > > 						   struct sgx_encl_mm, list);
+> > > > 			list_del_rcu(&encl_mm->list);
+> > > > 		}
+> > > > 
+> > > > 		spin_unlock(&encl->mm_lock);
+> > > > 
+> > > >                 /* 
+> > > >                  * synchronize_srcu() is mandatory *even* when the list was
+> > > >                  * empty, in order make sure that grace periods stays in
+> > > >                  * sync even when another task took away the last entry
+> > > >                  * (i.e. exiting process when it deletes its mm_list).
+> > > >                  */
+> > > > 		synchronize_srcu(&encl->srcu);
+> > > > 
+> > > > 		/* The enclave is no longer mapped by any mm. */
+> > > > 		if (!encl_mm)
+> > > > 			break;
+> > > > 
+> > > > 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
+> > > > 		kfree(encl_mm);
+> > > > 	}
+> > > > 
+> > > > What do you think? Does this start to make more sense now?
+> > > > I don't have logs for this but the bug can be also reasoned.
+> > > 
+> > > It does. Now you need to write it up in a detailed form so that it is
+> > > clear to readers months/years from now what exactly can happen. You can
+> > > use a two-column format like
+> > > 
+> > > 	CPU A				CPU B
+> > > 
+> > > Bla
+> > > 					Blu
+> > > 
+> > > This happens now here
+> > > 					But this needs to happen there
+> > > 
+> > > and so on.
+> > > 
+> > > Also, from reading up a bit on this, Documentation/RCU/checklist.rst says
+> > > 
+> > > "Use of the expedited primitives should be restricted to rare
+> > > configuration-change operations that would not normally be undertaken
+> > > while a real-time workload is running."
+> > > 
+> > > so why are you using synchronize_srcu_expedited()? Grepping the tree
+> > > reveals only a couple of call sites only... but I've almost no clue of
+> > > RCU so lemme CC Paul.
 > > 
-> > Actually it isn't related with commit 6eb045e092ef, because blk_mq_alloc_tag_set()
-> > uses .can_queue to create driver tag sbitmap and request pool.
+> > It spun out of this discussion:
 > > 
-> > So even thought without 6eb045e092ef, the updated .can_queue can't work
-> > as expected because the max driver tag depth has been fixed by blk-mq already.
-> 
-> There are two scenarios here. In the scenario of someone increasing can_queue
-> after the tag set is allocated, I agree, blk-mq will never take advantage
-> of this. However, in the scenario of someone *decreasing* can_queue after the
-> tag set is allocated, prior to 6eb045e092ef, the shost->host_busy code provided
-> this protection.
-
-When .can_queue is decreased, blk-mq still may allocate driver tag which is >
-.can_queue, this way might break driver/device too, but it depends on how driver
-uses req->tag.
-
-> 
+> > https://lore.kernel.org/linux-sgx/20201215213517.GA34761@kernel.org/raw
 > > 
-> > What 6eb045e092ef does is just to remove the double check on max
-> > host-wide allowed commands because that has been respected by blk-mq
-> > driver tag allocation already.
-> > 
-> >>
-> >> I started looking through drivers that do this, and so far, it looks like the
-> >> following drivers do: ibmvfc, lpfc, aix94xx, libfc, BusLogic, and likely others...
-> >>
-> >> We probably need an API that lets us change shost->can_queue dynamically.
-> > 
-> > I'd suggest to confirm changing .can_queue is one real usecase.
+> > My reasoning was that this is not a common case. The main loop
+> > that uses synchronize_srcu().
 > 
-> For ibmvfc, the total number of commands that the scsi host supports is very
-> much a dynamic value. It can increase and it can decrease. Live migrating
-> a logical partition from one system to another is the usual cause of
-> such a capability change. For ibmvfc, at least, this only ever happens
-> when we've self blocked the host and have sent back all outstanding I/O.
-
-This one looks a good use case, and the new API may have to freeze request
-queues of all LUNs, and the operation is very expensive and slow. 
-
+> It seems to me that loading and unloading SGX enclaves qualifies as a
+> configuration operation, so use of synchronize_srcu_expedited() should be
+> just fine in that case.  This of course implies that SGX enclaves should
+> not be loaded or unloaded while an aggressive real-time application
+> is running.  Which might well be the case for other reasons.
 > 
-> However, looking at other drivers that modify can_queue dynamically, this
-> doesn't always hold true. Looking at libfc, it looks to dynamically ramp
-> up and ramp down can_queue based on its ability to handle requests.
-
-This one looks hard to use the new API which isn't supposed to be called
-in fast path. And changing host wide resource is really not good in fast
-path, IMO.
-
+> So I believe synchronize_srcu_expedited() should be fine in this case.
 > 
-> There are certainly a number of other drivers that change can_queue
-> after the tag set has been allocated. Some of these drivers could
-> likely be changed to avoid doing this, but changing them all will likely
-> be difficult.
+> 							Thanx, Paul
 
-It is still better to understand why these drivers have to update
-.can_queue dynamically.
+Thank you for explaining this in detail.
 
+I'll leave it out of the bug fix, and reconsider as a separate patch. I
+think it should be fine to use it here but is really out-of-scope for the
+change.
 
-Thanks,
-Ming
-
+/Jarkko
