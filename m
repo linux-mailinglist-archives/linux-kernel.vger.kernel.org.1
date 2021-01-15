@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8A62F77DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:44:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4212F77E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbhAOLoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:44:09 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:49822 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726375AbhAOLoI (ORCPT
+        id S1727966AbhAOLoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:44:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726983AbhAOLoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:44:08 -0500
-Received: by mail-io1-f70.google.com with SMTP id v7so13994814ioj.16
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 03:43:53 -0800 (PST)
+        Fri, 15 Jan 2021 06:44:20 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3055AC061757;
+        Fri, 15 Jan 2021 03:43:40 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id r12so1494148ejb.9;
+        Fri, 15 Jan 2021 03:43:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=/9sksIUuZatO+aX8p4iLJ2mKZetuSFmDz0PF+YiOHOI=;
+        b=YEJANZ1/9r+EPbKaQQTb3YhWamtM4DH9to+g8PWbIoYfCC2B9io/PF88pVRzv8fh61
+         Wapvntn5ABjZ4BADq3kEhzYrfLziVhaprSzQD1mSf1hjsxKCDAxUsCWMtzTpTyJwZ/Ql
+         2OKtFYFS//RkJM5MTRb5VHYlKtLi9PAgP2o50L/4C4rwV7bn6D8U0duHKDpPSdNh6r8E
+         fybYpMd8V3cr0MKirGnUYPOuP/QV5wYCu0q7b9Pr2IZ35zwJ6tnVquuJfw/sbV7u9O9h
+         oxFe7U6FfWf/79W+zxcUMZshS+fHCd56UJ7c8Y63FqlccwNeRBJ3ePAYCGUunR7p5scq
+         zUsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=hpftx0jAbEhydpZgk9H3QZlGfFkysavuEi8adv7RKds=;
-        b=iN//9+qjRUKxrZv3njxot4IzdI0TEQb2e+U1XOAxKJHqnsBjET2YBfa+RLfokxk3NG
-         aoqxt6a5G3PpsCwg26yRuJPlFL8CWUqiSJb+iLkcW2Lt+630Gb+hmmTG7PliN7gFDDuw
-         aABZm35dIcwgHdEjVWtFM4JHtS7CFeNr12UOclIoZG9yN/bFFBaWm3HTSmYxBfo2mTz/
-         DC58ZBam4Zu4kR1sNan5qOpbyC80EFs53fTI8n91KJJ22FVR9qA2rbOiw+YqA0MyTSGQ
-         q+JFgt6XSnvwNwmbuzVfmnOM6Z8nnEaLIjbTtxGbOk0MmKryd8F1BGsMHCRBAHt1LMx8
-         fwuw==
-X-Gm-Message-State: AOAM533/ECzaLEZRvEuSY0kMSLf9MnXEGC6OSpGpDfu3tE8R5VqgEy2G
-        7QlyMh4YPDn4s9eJ+BKllUV3dl+WAd30V91e4s+X0OlPEqYB
-X-Google-Smtp-Source: ABdhPJwjmrFwQlb+qBOZ4wN2CHp7/cgF51rpj0BMoV9EtlktQh2agcShFwn5uuexu5w0lSeAfNKLkN66mJghx+oA5rrFkXV6oj4n
-MIME-Version: 1.0
-X-Received: by 2002:a92:b6ca:: with SMTP id m71mr10328318ill.232.1610711007730;
- Fri, 15 Jan 2021 03:43:27 -0800 (PST)
-Date:   Fri, 15 Jan 2021 03:43:27 -0800
-In-Reply-To: <00000000000077819e05b8e0acc8@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000073a06905b8eee114@google.com>
-Subject: Re: WARNING in smk_write_relabel_self
-From:   syzbot <syzbot+670d1a1e6b6face0440a@syzkaller.appspotmail.com>
-To:     casey@schaufler-ca.com, jmorris@namei.org,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/9sksIUuZatO+aX8p4iLJ2mKZetuSFmDz0PF+YiOHOI=;
+        b=gglOrfA+8I24DrHzvEuG6tbrJE/4edqiRfnuKV92TRYxAVfDCJwn8cTirP1TFn82y6
+         xmRuQByCZw5VmlbxcI18DK2Xip3ONmUUoh7xGPA/FU8a3E84lGZ9nwA5QeySGv8YTQtr
+         3uRKeEu9le1gJ3e2vPqMvEAS1CeEdFvLO+VWCD4VDo5a3dsgf3AwXeZllGfdE+JRgqtw
+         1t56gfFmSJrVfIcXkaRHSPfGIAm/OJEKVBVfyY+tOtkDeKGiuUsp4ricc3DgUF7UiMNn
+         +PWh3LlNTtdNIejxTE64Mf8G50NJzEIG1mFvMAj/WO5PA9jhkhB/v8jDdnzHl/zUmz5W
+         cy/g==
+X-Gm-Message-State: AOAM533Oyl9Qcbs11KD2TLq1soIUl5OwbRm346SE8adn64O0cIAiC52j
+        DfudEo7spc8lxxBee0Zn/k8=
+X-Google-Smtp-Source: ABdhPJwET0Z8ZFGqMNHwdHfY36RdnFX6xRQgu56Fz+Cxj0NantVxngAd4EdKk1sELCE/DGiWkoU/OQ==
+X-Received: by 2002:a17:906:48c:: with SMTP id f12mr3397945eja.431.1610711018663;
+        Fri, 15 Jan 2021 03:43:38 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d39:a000:7c85:8e80:b862:a8bf])
+        by smtp.gmail.com with ESMTPSA id a2sm3184105ejt.46.2021.01.15.03.43.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 03:43:37 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        intel-gfx@lists.freedesktop.org
+Cc:     David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, serge@hallyn.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] drm/dp_helper: tweak kerneldoc to address warning
+Date:   Fri, 15 Jan 2021 12:43:29 +0100
+Message-Id: <20210115114329.27152-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Commit 07c9b8634fb6 ("drm/dp_helper: Add helpers to configure PCONs
+RGB-YCbCr Conversion") introduces a warning with make htmldocs in
+./drivers/gpu/drm/drm_dp_helper.c:965 for
+drm_dp_downstream_rgb_to_ycbcr_conversion():
 
-HEAD commit:    5ee88057 Merge tag 'drm-fixes-2021-01-15' of git://anongit..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16a68ee7500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ee2266946ed36986
-dashboard link: https://syzkaller.appspot.com/bug?extid=670d1a1e6b6face0440a
-compiler:       clang version 11.0.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ec309f500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15d8889f500000
+  warning: Excess function parameter 'colorspc' description
+  warning: Function parameter or member 'color_spc' not described
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+670d1a1e6b6face0440a@syzkaller.appspotmail.com
+Tweak the kerneldoc for drm_dp_downstream_rgb_to_ycbcr_conversion().
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8457 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5020
-Modules linked in:
-CPU: 0 PID: 8457 Comm: syz-executor864 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5020
-Code: aa 09 00 e9 dd fd ff ff 44 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c eb fd ff ff 4c 89 ef e8 54 aa 09 00 8b 74 24 18 e9 da fd ff ff <0f> 0b e9 f3 fd ff ff a9 00 00 08 00 75 16 8b 4c 24 1c 89 cb 81 e3
-RSP: 0018:ffffc900012ef9a0 EFLAGS: 00010246
-RAX: ffffc900012efa20 RBX: ffffc900012efa20 RCX: 0000000000000000
-RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc900012efa48
-RBP: ffffc900012efae0 R08: dffffc0000000000 R09: ffffc900012efa20
-R10: fffff5200025df49 R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000012 R14: 1ffff9200025df40 R15: 0000000000040cc0
-FS:  00000000023a2880(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8e9dc94000 CR3: 0000000014b8a000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- alloc_pages include/linux/gfp.h:547 [inline]
- kmalloc_order+0x40/0x130 mm/slab_common.c:837
- kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
- kmalloc_large include/linux/slab.h:481 [inline]
- __kmalloc_track_caller+0x246/0x330 mm/slub.c:4457
- memdup_user_nul+0x26/0xf0 mm/util.c:260
- smk_write_relabel_self+0x17a/0x510 security/smack/smackfs.c:2748
- vfs_write+0x289/0xc90 fs/read_write.c:603
- ksys_write+0x171/0x2a0 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440389
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffd61b9f558 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440389
-RDX: 0000000020000398 RSI: 0000000020000340 RDI: 0000000000000003
-RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401b90
-R13: 0000000000401c20 R14: 0000000000000000 R15: 0000000000000000
+Fixes: 07c9b8634fb6 ("drm/dp_helper: Add helpers to configure PCONs RGB-YCbCr Conversion")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on next-20210115
+
+Jani, please pick this minor doc warning fixup.
+
+ drivers/gpu/drm/drm_dp_helper.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
+index 3ecde451f523..d60e94ac6fdd 100644
+--- a/drivers/gpu/drm/drm_dp_helper.c
++++ b/drivers/gpu/drm/drm_dp_helper.c
+@@ -954,7 +954,7 @@ EXPORT_SYMBOL(drm_dp_downstream_444_to_420_conversion);
+  *                                               RGB->YCbCr conversion capability
+  * @dpcd: DisplayPort configuration data
+  * @port_cap: downstream facing port capabilities
+- * @colorspc: Colorspace for which conversion cap is sought
++ * @color_spc: Colorspace for which conversion cap is sought
+  *
+  * Returns: whether the downstream facing port can convert RGB->YCbCr for a given
+  * colorspace.
+@@ -3134,7 +3134,7 @@ int drm_dp_pcon_pps_override_param(struct drm_dp_aux *aux, u8 pps_param[6])
+ }
+ EXPORT_SYMBOL(drm_dp_pcon_pps_override_param);
+ 
+-/*
++/**
+  * drm_dp_pcon_convert_rgb_to_ycbcr() - Configure the PCon to convert RGB to Ycbcr
+  * @aux: displayPort AUX channel
+  * @color_spc: Color-space/s for which conversion is to be enabled, 0 for disable.
+-- 
+2.17.1
 
