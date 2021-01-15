@@ -2,162 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C48E42F71A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 05:41:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 730E22F71AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 05:46:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729392AbhAOElB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 23:41:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50602 "EHLO
+        id S1730105AbhAOEpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 23:45:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726509AbhAOElA (ORCPT
+        with ESMTP id S1728668AbhAOEpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 23:41:00 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6B2C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 20:40:19 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id l207so8398265oib.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 20:40:19 -0800 (PST)
+        Thu, 14 Jan 2021 23:45:09 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663C4C061575;
+        Thu, 14 Jan 2021 20:44:28 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id k10so6244975wmi.3;
+        Thu, 14 Jan 2021 20:44:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WvxX8eMBKQeiOYu3rBDxAoazeGoPgEH+0ctDwdLMVo0=;
-        b=W2HgaemMy4iB1sZmL7hLe9+by+EyQ1kr1/vQL3BGusbPuIIJ2iOYmza+iCfiyeM0PN
-         pgf3sams192fZsdXo/DiVBJjsvd6Y04x64qMcm4A5FurpHj+vuMAEhgdyaYgUTywuSEq
-         qyAvZN9KtI2OeeRIueDYuo7XJBaRf6XSBSOJSgFOtfCRy3GBxbkqb+byDIND53Zyn5wI
-         vuQfUnHVkCnnyQAQhMWVA8N22IR971nj/WjhxirsSOU394SZACZ4PgSH30KTsdmximye
-         xy8VKkVBfsDoEZVWjGNDV2+KivufmzY+XCzQK+R1A5eoipU+Su+DhNRNofwbEcFNJAi0
-         SCnA==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oMMv5S4CfKPC/nDBxjQsaxRQfrFMKm4a2sZxLMk7C9o=;
+        b=EywqEU1iMi2yxP4kRHfmspXPBsyQ0TM/o3SaAdkqbaioj9rwj73YUIRLQxSuvYBhoK
+         9F6U5GIhIN0Exa7+rNXNGgmjFH6CievRGcnRgwOLffze+XMJbyEKPdb0yB+SJD2NEk6Y
+         oSzPDj4tPOYFrmJiBMbwISpUSilQxIZYzIBm3pwF6E/5TRm9pAjjf+N1X4qO+50Qoi8I
+         aK37n2bzLGtah1FhQpYZzwSOJzqPivJ7djVNA5lcKK8p4Nqi+c3RmJaaOI7paW0SzKU4
+         nrABk2JcyfpB3F62x0JXnhFomilbfh5UTXsvR0VMJ/Ue+HltK6YLVrz+VO7NIeKLgvEt
+         +ncw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WvxX8eMBKQeiOYu3rBDxAoazeGoPgEH+0ctDwdLMVo0=;
-        b=VzGrvKHKnmbPOL+ptOlaOYaMOmDQNr+opvpzI8vDyVD1lJJhjN6gV6ADj6PpFLT89T
-         kgbUdILE8Gkf95xy/Urnd91GpWBSsSjXjGyUdNjfAbcPzyp3ou3WGUWVmIgAeaM/01BT
-         5DHw2rjZgsOpAjR2HDlmLSyVreiEHbPl8g5nsd6X0PeHeBINA609Kz1/4RgFKf3+467D
-         mGyHO36SI8BKydsNcQIpCLp75Yx9+WXCAF/0dKe+Pp9Bb83OOS88xkGxrf/+NdLWV4qS
-         CeZzOWleP2Qg79v1Lb11uIHAXmUHfuXaiIx8A4GZcLyIoz/Qge4lLkYMJa7+Kp0GZKPX
-         i51Q==
-X-Gm-Message-State: AOAM532cdGof0s5gDyJLc08t4g8ugiBg47BkiaFxe+Vu4wYgIjZQqcBj
-        4z2AXQS0CM45a+I38fj2i8xxmP6zRC/80g==
-X-Google-Smtp-Source: ABdhPJwjB9VsEmpjfnUvly0rRpkB9ZsEiqGnVoDB20LOGXKbkVbwxBmIp48WVJyz/GAsnZ0CwxPhTQ==
-X-Received: by 2002:aca:b03:: with SMTP id 3mr4657072oil.157.1610685619237;
-        Thu, 14 Jan 2021 20:40:19 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z38sm1547056ooi.34.2021.01.14.20.40.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 20:40:18 -0800 (PST)
-Date:   Thu, 14 Jan 2021 22:40:16 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        sumit.semwal@linaro.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org
-Subject: Re: [PATCH v2 1/7] regulator: qcom-labibb: Implement voltage
- selector ops
-Message-ID: <YAEcsNmsPsi11kkM@builder.lan>
-References: <20210113194214.522238-1-angelogioacchino.delregno@somainline.org>
- <20210113194214.522238-2-angelogioacchino.delregno@somainline.org>
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oMMv5S4CfKPC/nDBxjQsaxRQfrFMKm4a2sZxLMk7C9o=;
+        b=ulexB0BzUsw9IAqfhT9KTsKgeQEy3trAmlzVoMypZCto8JlzrAYV7fhZ/kMUAdvI9Q
+         B3UOmaB6rcxyVvlcnxKZ0KAs2wnoab74713XvY+Rl2nWNE04xYM7jcdZ4iCiJJI41iwE
+         nanfheWqgE8tik/gLBtoNTP4QgavlNxYqvXApf6gLc3awN0SyJtSCdOHGzF8q15s0tTw
+         EtrxUPETYEUXnK6IJ+mu16QI9qbkzrRbApBBp0gYMDfaicRWbskVaELVa3pYFI5GtxMr
+         8aFWBeqnROyJdvYhkAVXBtremgc76rIIi3xZ9YlBMswyApDfTsVMc3YJw5BD48C6hJiN
+         s+Dg==
+X-Gm-Message-State: AOAM530bfxkb5qkCQEjjmWKOOu61V7sC7qK84ikyGNPxdukkiYWyTQxU
+        6o8mJR0cSU5HiBCqMnipItpXiIdhpqltyg==
+X-Google-Smtp-Source: ABdhPJyI1P1vuu2kiSih/uXZQHIdK005QyG0oHSE8nQWm3t9UH3T13bJfLhIFREr9LWptcyTPBotTg==
+X-Received: by 2002:a1c:984a:: with SMTP id a71mr167078wme.175.1610685867181;
+        Thu, 14 Jan 2021 20:44:27 -0800 (PST)
+Received: from [192.168.8.122] ([85.255.233.192])
+        by smtp.gmail.com with ESMTPSA id b132sm11748668wmh.21.2021.01.14.20.44.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Jan 2021 20:44:26 -0800 (PST)
+Subject: Re: general protection fault in io_uring_setup
+To:     syzbot <syzbot+06b7d55a62acca161485@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <0000000000000a65ee05b8e6adc1@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Message-ID: <221d0220-1b12-ba5f-af0e-b4563d122ef4@gmail.com>
+Date:   Fri, 15 Jan 2021 04:40:51 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113194214.522238-2-angelogioacchino.delregno@somainline.org>
+In-Reply-To: <0000000000000a65ee05b8e6adc1@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 13 Jan 13:42 CST 2021, AngeloGioacchino Del Regno wrote:
-
-> Implement {get,set}_voltage_sel, list_voltage, map_voltage with
-> the useful regulator regmap helpers in order to be able to manage
-> the voltage of LAB (positive) and IBB (negative) regulators.
+On 15/01/2021 01:56, syzbot wrote:
+> Hello,
 > 
-> In particular, the supported ranges are the following:
-> - LAB (pos):  4600mV to  6100mV with 100mV stepping,
-> - IBB (neg): -7700mV to -1400mV with 100mV stepping.
+> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> 
+> Reported-and-tested-by: syzbot+06b7d55a62acca161485@syzkaller.appspotmail.com
+
+#syz dup: general protection fault in io_disable_sqo_submit
+
+> 
+> Tested on:
+> 
+> commit:         06585c49 io_uring: do sqo disable on install_fd error
+> git tree:       git://git.kernel.dk/linux-block
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=54595eacbd613c0d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=06b7d55a62acca161485
+> compiler:       clang version 11.0.1
+> 
+> Note: testing is done by a robot and is best-effort only.
 > 
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> ---
->  drivers/regulator/qcom-labibb-regulator.c | 28 +++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
-> 
-> diff --git a/drivers/regulator/qcom-labibb-regulator.c b/drivers/regulator/qcom-labibb-regulator.c
-> index 8ccf572394a2..9f51c96f16fb 100644
-> --- a/drivers/regulator/qcom-labibb-regulator.c
-> +++ b/drivers/regulator/qcom-labibb-regulator.c
-> @@ -19,6 +19,12 @@
->  #define PMI8998_IBB_REG_BASE		0xdc00
->  
->  #define REG_LABIBB_STATUS1		0x08
-> +
-> +#define REG_LABIBB_VOLTAGE		0x41
-> + #define LABIBB_VOLTAGE_OVERRIDE_EN	BIT(7)
-> + #define LAB_VOLTAGE_SET_MASK		GENMASK(3, 0)
-> + #define IBB_VOLTAGE_SET_MASK		GENMASK(5, 0)
-> +
->  #define REG_LABIBB_ENABLE_CTL		0x46
->  #define LABIBB_STATUS1_VREG_OK_BIT	BIT(7)
->  #define LABIBB_CONTROL_ENABLE		BIT(7)
-> @@ -51,6 +57,10 @@ static const struct regulator_ops qcom_labibb_ops = {
->  	.enable			= regulator_enable_regmap,
->  	.disable		= regulator_disable_regmap,
->  	.is_enabled		= regulator_is_enabled_regmap,
-> +	.set_voltage_sel	= regulator_set_voltage_sel_regmap,
-> +	.get_voltage_sel	= regulator_get_voltage_sel_regmap,
-> +	.list_voltage		= regulator_list_voltage_linear_range,
-> +	.map_voltage		= regulator_map_voltage_linear_range,
->  };
->  
->  static const struct regulator_desc pmi8998_lab_desc = {
-> @@ -59,9 +69,18 @@ static const struct regulator_desc pmi8998_lab_desc = {
->  	.enable_val		= LABIBB_CONTROL_ENABLE,
->  	.enable_time		= LAB_ENABLE_TIME,
->  	.poll_enabled_time	= LABIBB_POLL_ENABLED_TIME,
-> +	.vsel_reg		= (PMI8998_LAB_REG_BASE + REG_LABIBB_VOLTAGE),
-> +	.vsel_mask		= LAB_VOLTAGE_SET_MASK,
-> +	.apply_reg		= (PMI8998_LAB_REG_BASE + REG_LABIBB_VOLTAGE),
-> +	.apply_bit		= LABIBB_VOLTAGE_OVERRIDE_EN,
->  	.off_on_delay		= LABIBB_OFF_ON_DELAY,
->  	.owner			= THIS_MODULE,
->  	.type			= REGULATOR_VOLTAGE,
-> +	.linear_ranges		= (struct linear_range[]) {
-> +		REGULATOR_LINEAR_RANGE(4600000, 0, 15, 100000),
-> +	},
-> +	.n_linear_ranges	= 1,
-> +	.n_voltages		= 16,
->  	.ops			= &qcom_labibb_ops,
->  };
->  
-> @@ -71,9 +90,18 @@ static const struct regulator_desc pmi8998_ibb_desc = {
->  	.enable_val		= LABIBB_CONTROL_ENABLE,
->  	.enable_time		= IBB_ENABLE_TIME,
->  	.poll_enabled_time	= LABIBB_POLL_ENABLED_TIME,
-> +	.vsel_reg		= (PMI8998_IBB_REG_BASE + REG_LABIBB_VOLTAGE),
-> +	.vsel_mask		= IBB_VOLTAGE_SET_MASK,
-> +	.apply_reg		= (PMI8998_IBB_REG_BASE + REG_LABIBB_VOLTAGE),
-> +	.apply_bit		= LABIBB_VOLTAGE_OVERRIDE_EN,
->  	.off_on_delay		= LABIBB_OFF_ON_DELAY,
->  	.owner			= THIS_MODULE,
->  	.type			= REGULATOR_VOLTAGE,
-> +	.linear_ranges		= (struct linear_range[]) {
-> +		REGULATOR_LINEAR_RANGE(1400000, 0, 63, 100000),
-> +	},
-> +	.n_linear_ranges	= 1,
-> +	.n_voltages		= 64,
->  	.ops			= &qcom_labibb_ops,
->  };
->  
-> -- 
-> 2.29.2
-> 
+-- 
+Pavel Begunkov
