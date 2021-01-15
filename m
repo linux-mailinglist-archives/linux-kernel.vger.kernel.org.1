@@ -2,88 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FDA2F7AB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 872BD2F7AA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733197AbhAOMxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:53:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37476 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387599AbhAOMvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:51:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6059CAC95;
-        Fri, 15 Jan 2021 12:50:53 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 13:50:48 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc:     luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
-        x86@kernel.org, len.brown@intel.com, dave.hansen@intel.com,
-        jing2.liu@intel.com, ravi.v.shankar@intel.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 02/21] x86/fpu/xstate: Modify state copy helpers to
- handle both static and dynamic buffers
-Message-ID: <20210115125048.GB11337@zn.tnic>
-References: <20201223155717.19556-1-chang.seok.bae@intel.com>
- <20201223155717.19556-3-chang.seok.bae@intel.com>
+        id S2388478AbhAOMwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:52:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388445AbhAOMwR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:52:17 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79ED7C0617A0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:51:00 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id q1so17814396ion.8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:51:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=KhAlEdXMThb5bBjxNUO0atbOyb0X5NmtnPbjigJcPX0=;
+        b=XcbVNYnFm0Q9tvSFgVmPHnqvdtAxNA22pBZ5BXkb2H+gC5jMUcWwpP5qeY4iklbQHf
+         CTt4VBlYHS+mu7cVqsu4OU71L3kgcUfIdcjpeF9/X3L0P/qHpETRfcH8j87OewHV5o0t
+         m8Va+Ma8b+yJTHUt42VHWxho9bcQoPeVHVcawWx+uxC9R2fewQgolehSuDVaedVa4Cik
+         VNU2InwbKumw0SsC9Bc6je3etvuCZLxXyY90SWPA+qhEbKhfL3pNOlGRg7qTaHkUr0T2
+         bdDm+fbT1+MYYpXrQsy7auKMO4DyIN8hVJAsaF1FMGxAKQs9GQEvX7tXI0/x3FSTiteR
+         APEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KhAlEdXMThb5bBjxNUO0atbOyb0X5NmtnPbjigJcPX0=;
+        b=gB1MxId8qvrZIHQ+GnsKxDHXFQvewaY+rc+v/SeAbEbrBBmDmop3Fv2Wx55OmjXG+Y
+         5CB+gCVKpT6yOv16YqZEM5NxP691aVcVIObwEDuXfCqUt8A/niMf7mUL8vpdwaGyQxOe
+         RHO/vfPkLRzIiPj45MyW6E0eN8tGJuvA090dj2Tgfmv3d2qFVfj+a+3/IfGgJ1lfZ/J5
+         qKrbRlg5gk0w7gtqVCEoNF1mlPAGYLvYARmX3jbdGeBLNYXiFN8HeWdI+7X107l8NxKk
+         MPEqz53UiamQqJuZz5lJ/a2OOu8G9z1/TqXODCVIx+JJDHC3BntYikdJJRwwBx9SFnEt
+         Uvyg==
+X-Gm-Message-State: AOAM531yYzjVdpq7NyPoSB5bkX7Sn1u//LxCV/iexsm0oSCpkhonpb2X
+        fMMxToAA81eK7T/smuFW5KTQLw==
+X-Google-Smtp-Source: ABdhPJzKNuhVY7M0oRkC1Tz5ZwgRD4935+9kSx5M5/DiP8+KV/R8CnFcT5MBzeQ/78v7rwou8bPavQ==
+X-Received: by 2002:a92:c006:: with SMTP id q6mr10812282ild.115.1610715059855;
+        Fri, 15 Jan 2021 04:50:59 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id f13sm3952450iog.18.2021.01.15.04.50.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 04:50:59 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 6/7] net: ipa: clean up interconnect initialization
+Date:   Fri, 15 Jan 2021 06:50:49 -0600
+Message-Id: <20210115125050.20555-7-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210115125050.20555-1-elder@linaro.org>
+References: <20210115125050.20555-1-elder@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201223155717.19556-3-chang.seok.bae@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 07:56:58AM -0800, Chang S. Bae wrote:
-> In preparation for dynamic xstate buffer expansion, update the xstate
-> copy function parameters to equally handle static in-line buffer, as well
-> as dynamically allocated xstate buffer.
+Pass an the address of an IPA interconnect structure and its
+configuration data to ipa_interconnect_init_one() and have that
+function initialize all the structure's fields.  Change the function
+to simply return an error code.
 
-This is repeated from the previous patch. I'm sure you can think of text
-which fits here.
+Introduce ipa_interconnect_exit_one() to encapsulate the cleanup of
+an IPA interconnect structure.
 
-> 
-> No functional change.
-> 
-> Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-> Reviewed-by: Len Brown <len.brown@intel.com>
-> Cc: x86@kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
-> Changes from v2:
-> * Updated the changelog with task->fpu removed. (Boris Petkov)
-> ---
->  arch/x86/include/asm/fpu/xstate.h |  8 ++++----
->  arch/x86/kernel/fpu/regset.c      |  6 +++---
->  arch/x86/kernel/fpu/signal.c      | 16 +++++++---------
->  arch/x86/kernel/fpu/xstate.c      | 19 +++++++++++++++----
->  4 files changed, 29 insertions(+), 20 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-> index 47a92232d595..e0f1b22f53ce 100644
-> --- a/arch/x86/include/asm/fpu/xstate.h
-> +++ b/arch/x86/include/asm/fpu/xstate.h
-> @@ -105,10 +105,10 @@ const void *get_xsave_field_ptr(int xfeature_nr);
->  int using_compacted_format(void);
->  int xfeature_size(int xfeature_nr);
->  struct membuf;
-> -void copy_xstate_to_kernel(struct membuf to, struct xregs_state *xsave);
-> -int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
-> -int copy_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf);
-> -void copy_supervisor_to_kernel(struct xregs_state *xsave);
-> +void copy_xstate_to_kernel(struct membuf to, struct fpu *fpu);
-> +int copy_kernel_to_xstate(struct fpu *fpu, const void *kbuf);
-> +int copy_user_to_xstate(struct fpu *fpu, const void __user *ubuf);
-> +void copy_supervisor_to_kernel(struct fpu *fpu);
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/ipa_clock.c | 83 +++++++++++++++++++++----------------
+ 1 file changed, 47 insertions(+), 36 deletions(-)
 
-Hmm, so those functions have "xstate" in the name because they took and
-@xstate parameter. I guess not such a big deal you changing them, just
-pointing out what the naming logic was.
-
+diff --git a/drivers/net/ipa/ipa_clock.c b/drivers/net/ipa/ipa_clock.c
+index 07069dbc6d033..fbe42106fc2a8 100644
+--- a/drivers/net/ipa/ipa_clock.c
++++ b/drivers/net/ipa/ipa_clock.c
+@@ -56,17 +56,33 @@ struct ipa_clock {
+ 	struct ipa_interconnect interconnect[IPA_INTERCONNECT_COUNT];
+ };
+ 
+-static struct icc_path *
+-ipa_interconnect_init_one(struct device *dev, const char *name)
++static int ipa_interconnect_init_one(struct device *dev,
++				     struct ipa_interconnect *interconnect,
++				     const struct ipa_interconnect_data *data)
+ {
+ 	struct icc_path *path;
+ 
+-	path = of_icc_get(dev, name);
+-	if (IS_ERR(path))
+-		dev_err(dev, "error %d getting %s interconnect\n",
+-			(int)PTR_ERR(path), name);
++	path = of_icc_get(dev, data->name);
++	if (IS_ERR(path)) {
++		int ret = PTR_ERR(path);
+ 
+-	return path;
++		dev_err(dev, "error %d getting %s interconnect\n", ret,
++			data->name);
++
++		return ret;
++	}
++
++	interconnect->path = path;
++	interconnect->average_bandwidth = data->average_bandwidth;
++	interconnect->peak_bandwidth = data->peak_bandwidth;
++
++	return 0;
++}
++
++static void ipa_interconnect_exit_one(struct ipa_interconnect *interconnect)
++{
++	icc_put(interconnect->path);
++	memset(interconnect, 0, sizeof(*interconnect));
+ }
+ 
+ /* Initialize interconnects required for IPA operation */
+@@ -74,51 +90,46 @@ static int ipa_interconnect_init(struct ipa_clock *clock, struct device *dev,
+ 				 const struct ipa_interconnect_data *data)
+ {
+ 	struct ipa_interconnect *interconnect;
+-	struct icc_path *path;
++	int ret;
+ 
+-	path = ipa_interconnect_init_one(dev, data->name);
+-	if (IS_ERR(path))
+-		goto err_return;
+ 	interconnect = &clock->interconnect[IPA_INTERCONNECT_MEMORY];
+-	interconnect->path = path;
+-	interconnect->average_bandwidth = data->average_bandwidth;
+-	interconnect->peak_bandwidth = data->peak_bandwidth;
+-	data++;
++	ret = ipa_interconnect_init_one(dev, interconnect, data++);
++	if (ret)
++		return ret;
+ 
+-	path = ipa_interconnect_init_one(dev, data->name);
+-	if (IS_ERR(path))
++	interconnect = &clock->interconnect[IPA_INTERCONNECT_IMEM];
++	ret = ipa_interconnect_init_one(dev, interconnect, data++);
++	if (ret)
+ 		goto err_memory_path_put;
+-	interconnect = &clock->interconnect[IPA_INTERCONNECT_IMEM];
+-	interconnect->path = path;
+-	interconnect->average_bandwidth = data->average_bandwidth;
+-	interconnect->peak_bandwidth = data->peak_bandwidth;
+-	data++;
+ 
+-	path = ipa_interconnect_init_one(dev, data->name);
+-	if (IS_ERR(path))
++	interconnect = &clock->interconnect[IPA_INTERCONNECT_IMEM];
++	ret = ipa_interconnect_init_one(dev, interconnect, data++);
++	if (ret)
+ 		goto err_imem_path_put;
+-	interconnect = &clock->interconnect[IPA_INTERCONNECT_CONFIG];
+-	interconnect->path = path;
+-	interconnect->average_bandwidth = data->average_bandwidth;
+-	interconnect->peak_bandwidth = data->peak_bandwidth;
+-	data++;
+ 
+ 	return 0;
+ 
+ err_imem_path_put:
+-	icc_put(clock->interconnect[IPA_INTERCONNECT_IMEM].path);
++	interconnect = &clock->interconnect[IPA_INTERCONNECT_IMEM];
++	ipa_interconnect_exit_one(interconnect);
+ err_memory_path_put:
+-	icc_put(clock->interconnect[IPA_INTERCONNECT_MEMORY].path);
+-err_return:
+-	return PTR_ERR(path);
++	interconnect = &clock->interconnect[IPA_INTERCONNECT_MEMORY];
++	ipa_interconnect_exit_one(interconnect);
++
++	return ret;
+ }
+ 
+ /* Inverse of ipa_interconnect_init() */
+ static void ipa_interconnect_exit(struct ipa_clock *clock)
+ {
+-	icc_put(clock->interconnect[IPA_INTERCONNECT_CONFIG].path);
+-	icc_put(clock->interconnect[IPA_INTERCONNECT_IMEM].path);
+-	icc_put(clock->interconnect[IPA_INTERCONNECT_MEMORY].path);
++	struct ipa_interconnect *interconnect;
++
++	interconnect = &clock->interconnect[IPA_INTERCONNECT_CONFIG];
++	ipa_interconnect_exit_one(interconnect);
++	interconnect = &clock->interconnect[IPA_INTERCONNECT_IMEM];
++	ipa_interconnect_exit_one(interconnect);
++	interconnect = &clock->interconnect[IPA_INTERCONNECT_MEMORY];
++	ipa_interconnect_exit_one(interconnect);
+ }
+ 
+ /* Currently we only use one bandwidth level, so just "enable" interconnects */
 -- 
-Regards/Gruss,
-    Boris.
+2.20.1
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
