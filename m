@@ -2,127 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6A72F8060
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A22322F8065
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729298AbhAOQNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:13:38 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17173 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727383AbhAOQNi (ORCPT
+        id S1731063AbhAOQPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:15:23 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:47205 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726669AbhAOQPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:13:38 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6001bf090000>; Fri, 15 Jan 2021 08:12:57 -0800
-Received: from [10.26.73.78] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 15 Jan
- 2021 16:12:54 +0000
-Subject: Re: [PATCH v1 0/5] Enable fw_devlink=on by default
-To:     Saravana Kannan <saravanak@google.com>
-CC:     Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20201218031703.3053753-1-saravanak@google.com>
- <X/dpkgTnUk+inKHK@kroah.com> <e28e1f38d87c12a3c714a6573beba6e1@kernel.org>
- <ba2fcbfb-d714-2f73-3bd0-962f49363b62@nvidia.com>
- <CAGETcx8pdPnH1ndOCoi7Qyz8DDshCfMTzDLQM=oEaCjyds9reA@mail.gmail.com>
- <17703ac8-2238-0b64-3c98-ddadc7ae8a36@nvidia.com>
- <CAGETcx-=y4Ps41Lb0b_MTCbNTC_ah0cJTmPP+GajywFBc7kEfw@mail.gmail.com>
- <f0240065-a4a0-d985-a696-eba4d42ea580@nvidia.com>
- <CAGETcx_QmbOcof5T8Wo_zFXKB+qswPN3Cbwz5a6A+m+VrnWg0A@mail.gmail.com>
- <a38c0566-a58e-aaf7-ef57-dc294c4e71b4@nvidia.com>
- <CAGETcx9szf-=JjFNp0p-0LmOfOU1MWE3QqDNe-bAn2wXPH9pEQ@mail.gmail.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <f3683601-66db-ffe3-9066-ac94a9372727@nvidia.com>
-Date:   Fri, 15 Jan 2021 16:12:52 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 15 Jan 2021 11:15:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1610727321; x=1642263321;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=U6Yns/fScwCLTy8KUEUsiROmPYCAVzDaghvDoJYoAwI=;
+  b=iNsIHdaUgAwjgujsvvNFXS46V6NUkbh+jFNx8e6soWMiF93urasXs0Dg
+   Ut6j/jiFUZJdxkPSSjzKDSO/AeNrUbpsWIGdc+kdQNLYc1wXWqp8JL/Al
+   5TfxoUFQpD5rbPA1Q4GkRsqoWnV6LVdIBMwSLM1IBUNYsLKo+hnaXVkNa
+   rOHR/UWZdScQPKD75wMW7NrCZc/tVPsZ6RBPjdxZb0AbOUvaZcyqiU534
+   /gz5NWw2udceWjZfEvouhvttZYfpcfMvLtkE/Tjk9n3G5G6o0ByF19gW3
+   tTfRM8V9Jf34NaF6FVEExxBlnaPdKqEf65+I/DghkU2cficQt3aC5V7DJ
+   w==;
+IronPort-SDR: cd78FlAEDaZ2Fw8OdlabZqG5BMVwsRjVhQ5IupxFe7QQz6ozLpAKAR8LfDv4qepB0lH3c0i26v
+ peHUhZf/yYb9+Js8i+em3l8OmbccUR8D0kpGYwumlkednBdwMEt1SeUbt1Dtt3R48ygN7q+FPF
+ MlTD/eZEWUkUm8UeqH4LowT+DEn2Xq0A7ZrF/TNw5MlA7bQUVxc0e97nV6uoef5ukPBsFEM/U5
+ de3fCa3TTFLDByjAgMOT+ApzUpfVVEJ1wB70CVNShonyt99V6cHAxyRGkFgR1YgidNpn5x3vwt
+ g64=
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="100226554"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Jan 2021 09:14:03 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 15 Jan 2021 09:14:03 -0700
+Received: from tyr.hegelund-hansen.dk (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Fri, 15 Jan 2021 09:14:01 -0700
+Message-ID: <f35e3c33f011b6aabd96d3b6de3750bf3d04b699.camel@microchip.com>
+Subject: Re: [PATCH v12 2/4] phy: Add ethernet serdes configuration option
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>
+Date:   Fri, 15 Jan 2021 17:14:00 +0100
+In-Reply-To: <92a943cc-b332-4ac6-42a8-bb3cdae13bc0@ti.com>
+References: <20210107091924.1569575-1-steen.hegelund@microchip.com>
+         <20210107091924.1569575-3-steen.hegelund@microchip.com>
+         <92a943cc-b332-4ac6-42a8-bb3cdae13bc0@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 
 MIME-Version: 1.0
-In-Reply-To: <CAGETcx9szf-=JjFNp0p-0LmOfOU1MWE3QqDNe-bAn2wXPH9pEQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610727177; bh=c2f56oAIuPvnccFuxorIRvCzWCtWaZTs/1xK7y8H1i4=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=NuuOySC3OSfMOloaTwT4aAgns9+FMrdwL9TfphWEKU9N7wnEpNkT47/MO2DmQA8r0
-         mnI/86Pvua6nDgisyLZmty9PEsj41w7Q0/qT6NywBNgSXZQMCFMXPr/idFNvlwgyOK
-         ASjwp8jAgnA3RjD9HbiV5AzgTuCoKvfA9Rj00H3ucYMVJltUWBHIe2n/12t8tBfCCU
-         JEepgXxBPCJmLptfcsE6qW20R9suKTuSmplSndy0ioNyncrebbj2S6cF9JP5Kx233t
-         qEuGC9iN9X5JXcXj9iSc6J5b21D8MFBSbTBN3TgBbT5yECLnBudUnj8saluRTGHljm
-         A/c6hPditQqIg==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kishon,
 
-On 14/01/2021 21:50, Saravana Kannan wrote:
-> On Thu, Jan 14, 2021 at 10:55 AM Jon Hunter <jonathanh@nvidia.com> wrote:
->>
->>
->> On 14/01/2021 16:52, Saravana Kannan wrote:
->>
->> ...
->>
->>> Thanks! I think you forgot to enable those logs though. Also, while
->>> you are at it, maybe enable the logs in device_link_add() too please?
->>
->>
->> Sorry try this one.
->>
->> Cheers
->> Jon
+On Fri, 2021-01-15 at 21:22 +0530, Kishon Vijay Abraham I wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you
+> know the content is safe
 > 
-> Phew! That took almost 4 hours to debug on the side! I think I figured
-> it out. Can you try this patch? If it works or improves things, I'll
-> explain why it helps.
+> Hi,
 > 
-> -Saravana
+> On 07/01/21 2:49 pm, Steen Hegelund wrote:
+> > Provide a new ethernet phy configuration structure, that
+> > allow PHYs used for ethernet to be configured with
+> > speed, media type and clock information.
+> > 
+> > Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> > Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> > ---
+> >  include/linux/phy/phy-ethernet-serdes.h | 30
+> > +++++++++++++++++++++++++
+> >  include/linux/phy/phy.h                 |  4 ++++
+> >  2 files changed, 34 insertions(+)
+> >  create mode 100644 include/linux/phy/phy-ethernet-serdes.h
+> > 
+> > diff --git a/include/linux/phy/phy-ethernet-serdes.h
+> > b/include/linux/phy/phy-ethernet-serdes.h
+> > new file mode 100644
+> > index 000000000000..d2462fadf179
+> > --- /dev/null
+> > +++ b/include/linux/phy/phy-ethernet-serdes.h
+> > @@ -0,0 +1,30 @@
+> > +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
+> > +/*
+> > + * Microchip Sparx5 Ethernet SerDes driver
+> > + *
+> > + * Copyright (c) 2020 Microschip Inc
+> > + */
+> > +#ifndef __PHY_ETHERNET_SERDES_H_
+> > +#define __PHY_ETHERNET_SERDES_H_
+> > +
+> > +#include <linux/types.h>
+> > +
+> > +enum ethernet_media_type {
+> > +     ETH_MEDIA_DEFAULT,
+> > +     ETH_MEDIA_SR,
+> > +     ETH_MEDIA_DAC,
+> > +};
 > 
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> index 5f9eed79a8aa..1c8c65c4a887 100644
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -1258,6 +1258,8 @@ DEFINE_SIMPLE_PROP(pinctrl5, "pinctrl-5", NULL)
->  DEFINE_SIMPLE_PROP(pinctrl6, "pinctrl-6", NULL)
->  DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
->  DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
-> +DEFINE_SIMPLE_PROP(gpio_compat, "gpio", "#gpio-cells")
-> +DEFINE_SIMPLE_PROP(gpios_compat, "gpios", "#gpio-cells")
->  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
->  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
->  DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
-> @@ -1296,6 +1298,8 @@ static const struct supplier_bindings
-> of_supplier_bindings[] = {
->         { .parse_prop = parse_pinctrl6, },
->         { .parse_prop = parse_pinctrl7, },
->         { .parse_prop = parse_pinctrl8, },
-> +       { .parse_prop = parse_gpio_compat, },
-> +       { .parse_prop = parse_gpios_compat, },
->         { .parse_prop = parse_regulators, },
->         { .parse_prop = parse_gpio, },
->         { .parse_prop = parse_gpios, },
+> I'm not familiar with Ethernet. Are these generic media types? what
+> does
+> SR or DAC refer to? 
+
+The SR stands for Short Reach and is a fiber type connection used by
+SFPs.  There also other "reach" variants.
+
+DAC stands for Direct Attach Copper and is a type of cable that plugs
+into an SFP cage and provides information back to the user via its
+EEPROM regarding supported speed and capabilities in general.  These
+typically supports speed of 5G or more.
+
+The SFP/Phylink is the "out-of-band" method that provides the type of
+connection: speed and media type that allows the client to adapt the
+SerDes configuration to the type of media selected by the user.
+
+> Are there other media types? What is the out-of-band
+> mechanism by which the controller gets the media type? Why was this
+> not
+> required for other existing Ethernet SERDES? 
+
+This is probably a matter of the interface speed are now getting higher
+and the amount of configuration needed for the SerDes have increased,
+at the same time as this is not being a static setup, because the user
+an plug and unplug media to the SFP cage.
+
+> Are you aware of any other
+> vendors who might require this?
+
+I suspect that going forward it will become more widespread, at least
+we have more chips in the pipeline that need this SerDes for high speed
+connectivity.
+
+
 > 
+> Thanks
+> Kishon
+> > +
+> > +/**
+> > + * struct phy_configure_opts_eth_serdes - Ethernet SerDes This
+> > structure is used
+> > + * to represent the configuration state of a Ethernet Serdes PHY.
+> > + * @speed: Speed of the serdes interface in Mbps
+> > + * @media_type: Specifies which media the serdes will be using
+> > + */
+> > +struct phy_configure_opts_eth_serdes {
+> > +     u32                        speed;
+> > +     enum ethernet_media_type   media_type;
+> > +};
+> > +
+> > +#endif
+> > +
+> > diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+> > index e435bdb0bab3..78ecb375cede 100644
+> > --- a/include/linux/phy/phy.h
+> > +++ b/include/linux/phy/phy.h
+> > @@ -18,6 +18,7 @@
+> > 
+> >  #include <linux/phy/phy-dp.h>
+> >  #include <linux/phy/phy-mipi-dphy.h>
+> > +#include <linux/phy/phy-ethernet-serdes.h>
+> > 
+> >  struct phy;
+> > 
+> > @@ -49,11 +50,14 @@ enum phy_mode {
+> >   *
+> >   * @mipi_dphy:       Configuration set applicable for phys
+> > supporting
+> >   *           the MIPI_DPHY phy mode.
+> > + * @eth_serdes: Configuration set applicable for phys supporting
+> > + *           the ethernet serdes.
+> >   * @dp:              Configuration set applicable for phys
+> > supporting
+> >   *           the DisplayPort protocol.
+> >   */
+> >  union phy_configure_opts {
+> >       struct phy_configure_opts_mipi_dphy     mipi_dphy;
+> > +     struct phy_configure_opts_eth_serdes    eth_serdes;
+> >       struct phy_configure_opts_dp            dp;
+> >  };
+> > 
+> > 
 
-Thanks, that worked!
+Best Regards
+Steen
 
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-
-Thanks for digging into that one. Would have taken me more than 4 hours!
-
-Jon
-
--- 
-nvpublic
