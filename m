@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E99E92F791B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D17922F7A3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbhAOMb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:31:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36440 "EHLO mail.kernel.org"
+        id S2387838AbhAOMrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:47:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732558AbhAOMbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:31:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1143B22473;
-        Fri, 15 Jan 2021 12:30:49 +0000 (UTC)
+        id S2388006AbhAOMhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:37:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A6D5235F8;
+        Fri, 15 Jan 2021 12:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713850;
-        bh=+naoE5RLeCxDZeFBlgzO+70Duj3VqGSf3t05YwDSO3E=;
+        s=korg; t=1610714239;
+        bh=3D4ZQwUCjpcedf9bq0LqV2BCy9wTjj+qzk1kRdItDlw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FCVwD7TO1fxBGerG4c+y2v4p8enGs+Nqb6mIE+Y/EWIfmbrNm1bY6EfKU2a+M9XFn
-         A9yWGKgpcZhrBKZUMK/rblSKtxSlp1+jpVVMwxD9ZauBxG3r5HGwqJVxXakWmtTvWy
-         QWkG1IglRLXz+fon+OiH2hqAfmqQ7ShQ66iYKca4=
+        b=T3USV0UeUKqEEccwjP4vdH8c3bynglciE6yZZ/g0AKco/jVKl8jRh+muSZ5NtZTIG
+         jyGM4ph08LfMBzV0C5EvOO4e78G59eKxxqau1AZgP1RCKwf7HQhqO8FFR2Atvs1q9x
+         vUHa8UKhzsqhWU7PYUMC2mPe2bg0V1CeNxB+vTdQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefano Brivio <sbrivio@redhat.com>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 09/25] net: fix pmtu check in nopmtudisc mode
+        stable@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH 5.10 047/103] net/mlx5: Check if lag is supported before creating one
 Date:   Fri, 15 Jan 2021 13:27:40 +0100
-Message-Id: <20210115121957.144368290@linuxfoundation.org>
+Message-Id: <20210115122008.334524406@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
-References: <20210115121956.679956165@linuxfoundation.org>
+In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
+References: <20210115122006.047132306@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,61 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Mark Zhang <markzhang@nvidia.com>
 
-[ Upstream commit 50c661670f6a3908c273503dfa206dfc7aa54c07 ]
+[ Upstream commit abf8ef953a43e74aac3c54a94975f21bd483199b ]
 
-For some reason ip_tunnel insist on setting the DF bit anyway when the
-inner header has the DF bit set, EVEN if the tunnel was configured with
-'nopmtudisc'.
+This patch fixes a memleak issue by preventing to create a lag and
+add PFs if lag is not supported.
 
-This means that the script added in the previous commit
-cannot be made to work by adding the 'nopmtudisc' flag to the
-ip tunnel configuration. Doing so breaks connectivity even for the
-without-conntrack/netfilter scenario.
+comm “python3”, pid 349349, jiffies 4296985507 (age 1446.976s)
+hex dump (first 32 bytes):
+  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  …………….
+  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  …………….
+ backtrace:
+  [<000000005b216ae7>] mlx5_lag_add+0x1d5/0×3f0 [mlx5_core]
+  [<000000000445aa55>] mlx5e_nic_enable+0x66/0×1b0 [mlx5_core]
+  [<00000000c56734c3>] mlx5e_attach_netdev+0x16e/0×200 [mlx5_core]
+  [<0000000030439d1f>] mlx5e_attach+0x5c/0×90 [mlx5_core]
+  [<0000000018fd8615>] mlx5e_add+0x1a4/0×410 [mlx5_core]
+  [<0000000068bc504b>] mlx5_add_device+0x72/0×120 [mlx5_core]
+  [<000000009fce51f9>] mlx5_register_device+0x77/0xb0 [mlx5_core]
+  [<00000000d0d81ff3>] mlx5_load_one+0xc58/0×1eb0 [mlx5_core]
+  [<0000000045077adc>] init_one+0x3ea/0×920 [mlx5_core]
+  [<0000000043287674>] pci_device_probe+0xcd/0×150
+  [<00000000dafd3279>] really_probe+0x1c9/0×4b0
+  [<00000000f06bdd84>] driver_probe_device+0x5d/0×140
+  [<00000000e3d508b6>] device_driver_attach+0x4f/0×60
+  [<0000000084fba0f0>] bind_store+0xbf/0×120
+  [<00000000bf6622b3>] kernfs_fop_write+0x114/0×1b0
 
-When nopmtudisc is set, the tunnel will skip the mtu check, so no
-icmp error is sent to client. Then, because inner header has DF set,
-the outer header gets added with DF bit set as well.
-
-IP stack then sends an error to itself because the packet exceeds
-the device MTU.
-
-Fixes: 23a3647bc4f93 ("ip_tunnels: Use skb-len to PMTU check.")
-Cc: Stefano Brivio <sbrivio@redhat.com>
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 9b412cc35f00 ("net/mlx5e: Add LAG warning if bond slave is not lag master")
+Signed-off-by: Mark Zhang <markzhang@nvidia.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/ip_tunnel.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/lag.c |   11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
---- a/net/ipv4/ip_tunnel.c
-+++ b/net/ipv4/ip_tunnel.c
-@@ -743,7 +743,11 @@ void ip_tunnel_xmit(struct sk_buff *skb,
- 		goto tx_error;
- 	}
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lag.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lag.c
+@@ -556,7 +556,9 @@ void mlx5_lag_add(struct mlx5_core_dev *
+ 	struct mlx5_core_dev *tmp_dev;
+ 	int i, err;
  
--	if (tnl_update_pmtu(dev, skb, rt, tnl_params->frag_off, inner_iph)) {
-+	df = tnl_params->frag_off;
-+	if (skb->protocol == htons(ETH_P_IP) && !tunnel->ignore_df)
-+		df |= (inner_iph->frag_off & htons(IP_DF));
-+
-+	if (tnl_update_pmtu(dev, skb, rt, df, inner_iph)) {
- 		ip_rt_put(rt);
- 		goto tx_error;
- 	}
-@@ -771,10 +775,6 @@ void ip_tunnel_xmit(struct sk_buff *skb,
- 			ttl = ip4_dst_hoplimit(&rt->dst);
- 	}
+-	if (!MLX5_CAP_GEN(dev, vport_group_manager))
++	if (!MLX5_CAP_GEN(dev, vport_group_manager) ||
++	    !MLX5_CAP_GEN(dev, lag_master) ||
++	    MLX5_CAP_GEN(dev, num_lag_ports) != MLX5_MAX_PORTS)
+ 		return;
  
--	df = tnl_params->frag_off;
--	if (skb->protocol == htons(ETH_P_IP) && !tunnel->ignore_df)
--		df |= (inner_iph->frag_off&htons(IP_DF));
--
- 	max_headroom = LL_RESERVED_SPACE(rt->dst.dev) + sizeof(struct iphdr)
- 			+ rt->dst.header_len + ip_encap_hlen(&tunnel->encap);
- 	if (max_headroom > dev->needed_headroom)
+ 	tmp_dev = mlx5_get_next_phys_dev(dev);
+@@ -574,12 +576,9 @@ void mlx5_lag_add(struct mlx5_core_dev *
+ 	if (mlx5_lag_dev_add_pf(ldev, dev, netdev) < 0)
+ 		return;
+ 
+-	for (i = 0; i < MLX5_MAX_PORTS; i++) {
+-		tmp_dev = ldev->pf[i].dev;
+-		if (!tmp_dev || !MLX5_CAP_GEN(tmp_dev, lag_master) ||
+-		    MLX5_CAP_GEN(tmp_dev, num_lag_ports) != MLX5_MAX_PORTS)
++	for (i = 0; i < MLX5_MAX_PORTS; i++)
++		if (!ldev->pf[i].dev)
+ 			break;
+-	}
+ 
+ 	if (i >= MLX5_MAX_PORTS)
+ 		ldev->flags |= MLX5_LAG_FLAG_READY;
 
 
