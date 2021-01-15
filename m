@@ -2,74 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9B02F7042
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9CC2F7044
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729451AbhAOB4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 20:56:30 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10723 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbhAOB43 (ORCPT
+        id S1731757AbhAOB4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 20:56:50 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:32782 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731698AbhAOB4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 20:56:29 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DH4444R7pzl5Kw;
-        Fri, 15 Jan 2021 09:54:28 +0800 (CST)
-Received: from [10.174.176.61] (10.174.176.61) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 15 Jan 2021 09:55:44 +0800
-Subject: Re: [PATCH v2] cgroup-v1: add disabled controller check in
- cgroup1_parse_param()
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20201218061755.121205-1-chenzhou10@huawei.com>
- <YABDWvI2PWQpnv59@blackbook>
- <d4ba14b0-ee06-b793-a840-2c2ff369d890@huawei.com>
- <YAB3Wuu+hFpN698N@blackbook>
-CC:     <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   chenzhou <chenzhou10@huawei.com>
-Message-ID: <7804658e-7644-8edb-5ca8-0c97389c8c62@huawei.com>
-Date:   Fri, 15 Jan 2021 09:55:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Thu, 14 Jan 2021 20:56:49 -0500
+Received: by mail-io1-f72.google.com with SMTP id m3so11460703ioy.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 17:56:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=ncZ/WzJQUIaZu3+7m5TtE1ri5ZOaqLZKDq6RjJFvj+w=;
+        b=rBDVcj/JrDmlZcTj9w0VaSe1+RC0ciChgeibuS+hbZMLJrgX5gyOOZjpYtvbirTVFh
+         +FG+oozzckjN/LZ+hAdyYKCipRkvZz1GsIM23ohkgnSJfARj8OpW+oE+1IfWYYLEgtXC
+         fotYwu9vNHpqflyKKf8rGryw11ebdJKRrU2nMncmFeLys5w7ThG3ECzBg/eOMQRjOQNm
+         1fQT9ugRHTwifwPxJ3VBiJe3oK/oKG7zp89trWzmS7oxXuxKjrTMxdKXnb/cu46Sv/Q2
+         hFPnN72qkkodGCdy9wp6lQaWARI6Pz6Tp8OakjZ/V6NU+nbCgTK4DlZXy8YYqd8Mj25E
+         5BiQ==
+X-Gm-Message-State: AOAM532YPI1TjE2KcoBIb7Hc9HiGYSA1S8Wc4Pf9GwO38HeJ97+ssbHM
+        ixnoSQxd8qhBWaGvNGIltMrPynO0z225CSb0w5ok/Q7Qgr/b
+X-Google-Smtp-Source: ABdhPJzcQ8wyRdLc8a7inJRiioJ0+IrT14u7jjxP9VGFzlE0bTFYJ0MvV9pxct46dDj7tGP4U7c/A90KqTlPUY7sdjqxkbRGNE+f
 MIME-Version: 1.0
-In-Reply-To: <YAB3Wuu+hFpN698N@blackbook>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.61]
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a92:1589:: with SMTP id 9mr8729309ilv.39.1610675768680;
+ Thu, 14 Jan 2021 17:56:08 -0800 (PST)
+Date:   Thu, 14 Jan 2021 17:56:08 -0800
+In-Reply-To: <f45bb2df-5ef0-bc36-8afb-2c03257cc2c1@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000a65ee05b8e6adc1@google.com>
+Subject: Re: general protection fault in io_uring_setup
+From:   syzbot <syzbot+06b7d55a62acca161485@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On 2021/1/15 0:54, Michal Koutný wrote:
-> On Thu, Jan 14, 2021 at 10:08:19PM +0800, chenzhou <chenzhou10@huawei.com> wrote:
->> In this case, at the beginning of function check_cgroupfs_options(), the mask
->> ctx->subsys_mask will be 0. And if we mount without 'none' and 'name=' options,
->> then in check_cgroupfs_options(), the flag ctx->all_ss will be set, that is, select all the subsystems.
-> But even then, the line
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/cgroup/cgroup-v1.c?h=v5.11-rc3#n1012
-> would select only 'enabled' controllers, wouldn't it?
-Yeah, this will select all enabled controllers, but which doesn't the behavior we want.
-I think the case should return error with information "Disabled controller xx" rather than
-attaching all the other enabled controllers.
+Reported-and-tested-by: syzbot+06b7d55a62acca161485@syzkaller.appspotmail.com
 
-For example, boot with cgroup_no_v1=cpu, and then mount with
-"mount -t cgroup -o cpu cpu /sys/fs/cgroup/cpu", then all enabled controllers will
-be attached expect cpu.
->
-> It's possible I missed something but if this means that cgroup_no_v1=
-> doesn't hold to its expectations, I'd suggest adding proper Fixes: tag
-> to the patch.
-See above. Just the mount behavior isn't what we what.
-The behavior was changed since commit f5dfb5315d34 ("cgroup: take options parsing into ->parse_monolithic()"),
-will add this as Fixes.
+Tested on:
 
-Thanks,
-Chen Zhou
->
-> Thanks,
-> Michal
+commit:         06585c49 io_uring: do sqo disable on install_fd error
+git tree:       git://git.kernel.dk/linux-block
+kernel config:  https://syzkaller.appspot.com/x/.config?x=54595eacbd613c0d
+dashboard link: https://syzkaller.appspot.com/bug?extid=06b7d55a62acca161485
+compiler:       clang version 11.0.1
 
+Note: testing is done by a robot and is best-effort only.
