@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9F52F8420
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F055A2F8431
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388555AbhAOSVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:21:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43598 "EHLO mail.kernel.org"
+        id S2388743AbhAOSVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:21:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388494AbhAOSVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:21:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF08323A7C;
-        Fri, 15 Jan 2021 18:20:25 +0000 (UTC)
+        id S1726434AbhAOSVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 13:21:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13EE923AA7;
+        Fri, 15 Jan 2021 18:20:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610734826;
-        bh=QE9Yei7sjCPLtHD7KESy7qt2oI0VHOCi99x9kBzhGm4=;
+        s=k20201202; t=1610734836;
+        bh=yywxwDqzhCGsowbf6Lp1h6NAOX0mTHDYPddZyQTe1ZA=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=LOCfWv9+OJgUcC9jZyzEeryRATTuy8ZH8TJZnFyAkAnfrJbHqjDO7KeJ0HoEHsOiL
-         xqhBJaSUrFfF94H5ZCpAV9Bovzzth0S+TOD5/+DQfgbHV4Tm8YCP3Y0UdsampMrBp6
-         6pTw3UD0rgQ2PZcmm0L5Ohx3HSjGXsDBRmPL1KqHSm2CBOIyN9iaLCsMJBMp5FJqG8
-         PaiqUNuOD7TOOENoApJiPDw0tjg0cqdJNkMYZIne+BDgPiFZZpq79IK+Uo6GIyKIhQ
-         MirzVnbamnsriQCHgt56OSR5YJJ7FPJjIK/ae+iZFf7W+tesGxH6/Gao2XnRxfCBl8
-         iOl/uDJucnULw==
+        b=HVtOaB4YVRF7tyEqDy4FPLguR4hJxrNBUgjNdbrKtR51R6rZp0c9OY9pednANeGcZ
+         5eqpEZf6JRVve4q1AETTslDOCyOeqhJcO2QO1Tvd2GziUQ8yM8HWMz7iQT9a1OKMwV
+         tsHBqxLf+RRRogOXIebyHFv3QdnUQ9xWC3Iuk09c2ekCbm80REl0Rjyf97b0lH2/WZ
+         i1ZVPmjook3gxY+0c3LjT5bZVT+xkXDlQ0HPK7K6XaCGum6ySerJA0z2bzpvzzbg1x
+         kj2zMV8Y9KNYOXWCuTZuPvmcFkeTndukZ76VcYBWfRiGGwUQhaTUH6PQ/OgEu39j3b
+         dR/elNyIMXQug==
 From:   Mark Brown <broonie@kernel.org>
 To:     Adrien Grassein <adrien.grassein@gmail.com>
 Cc:     robh+dt@kernel.org, linux-kernel@vger.kernel.org,
         jagan@amarulasolutions.com, devicetree@vger.kernel.org,
         lgirdwood@gmail.com
-In-Reply-To: <20210114174714.122561-1-adrien.grassein@gmail.com>
-References: <20210114174714.122561-1-adrien.grassein@gmail.com>
-Subject: Re: [PATCH v5 0/6] Fix issues on pf8x00 driver
-Message-Id: <161073479107.12431.4350059208898304988.b4-ty@kernel.org>
+In-Reply-To: <20210113222016.1915993-1-adrien.grassein@gmail.com>
+References: <20210113222016.1915993-1-adrien.grassein@gmail.com>
+Subject: Re: [PATCH v4 0/6] Fix issues on pf8x00 driver
+Message-Id: <161073479107.12431.7161364443941484976.b4-ty@kernel.org>
 Date:   Fri, 15 Jan 2021 18:19:51 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -40,7 +40,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 18:47:08 +0100, Adrien Grassein wrote:
+On Wed, 13 Jan 2021 23:20:10 +0100, Adrien Grassein wrote:
 > this patch set aims is to fix some issues contains in the pf8x00 driver.
 > Some issues are documentation ones, some others are in code.
 > 
