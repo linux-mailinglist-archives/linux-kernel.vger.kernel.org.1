@@ -2,109 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBAE2F7E5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 443F02F7E5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732792AbhAOOgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 09:36:51 -0500
-Received: from mga02.intel.com ([134.134.136.20]:7609 "EHLO mga02.intel.com"
+        id S1731569AbhAOOhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 09:37:24 -0500
+Received: from foss.arm.com ([217.140.110.172]:41974 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731576AbhAOOgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:36:50 -0500
-IronPort-SDR: gjHZIlOCddXYaurNM9Kjmg87YbKOH1MfruPil6OgMSAmZzTIc3AA3kdU+D9JbpRV87nnTpk3zc
- vkHWXG7XqwZw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="165640361"
-X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="165640361"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 06:35:04 -0800
-IronPort-SDR: ATa+yG739o+UtxOSWB/MgrBB0TUM9LSfvWVeKqlrrE5nVfKvCtSMtNC35DvNZsEjGIQxu8qKy+
- gC/zzNxfiqTg==
-X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="382682114"
-Received: from aantonov-mobl.ccr.corp.intel.com (HELO [10.249.226.58]) ([10.249.226.58])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 06:35:02 -0800
-Subject: Re: [PATCH v2 5/6] perf stat: Enable iiostat mode for x86 platforms
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ian Rogers <irogers@google.com>,
+        id S1728974AbhAOOhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 09:37:23 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A9254ED1;
+        Fri, 15 Jan 2021 06:36:37 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B801B3F70D;
+        Fri, 15 Jan 2021 06:36:34 -0800 (PST)
+Subject: Re: [PATCH 6/6] sched/deadline: Fixes cpu/rd/dl_bw references for
+ suspended tasks
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Marco Perronet <perronet@mpi-sws.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20201223130320.3930-1-alexander.antonov@linux.intel.com>
- <20201223130320.3930-6-alexander.antonov@linux.intel.com>
- <CAM9d7cgQC7ap6sDympEoNAtFxNy_ibtW3phMDLh-VmzSDB7FXQ@mail.gmail.com>
- <358dd76f-c6ec-b894-14be-659df0802c87@linux.intel.com>
- <CAM9d7cjuX8AHpL6hs5AHObOPCjExLg1_GHN-vDdi4hYQmrC5dQ@mail.gmail.com>
- <20f98862-9087-0368-7124-19a8f2b54db9@linux.intel.com>
- <CAM9d7cjueVS_MJZxuADi-xw=EWXgncZ++jGDewamxZF8CkvhRw@mail.gmail.com>
-From:   Alexander Antonov <alexander.antonov@linux.intel.com>
-Message-ID: <913f2743-b5dd-f7e0-1bd0-d3c1d2ad1c7c@linux.intel.com>
-Date:   Fri, 15 Jan 2021 17:34:59 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        cgroups@vger.kernel.org
+References: <cover.1610463999.git.bristot@redhat.com>
+ <8c1cb0c850e2f3ab1d7a533aa4b33a30f9dbeda5.1610463999.git.bristot@redhat.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <97875017-a6bb-98ea-83f9-82e95db58aca@arm.com>
+Date:   Fri, 15 Jan 2021 15:36:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7cjueVS_MJZxuADi-xw=EWXgncZ++jGDewamxZF8CkvhRw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <8c1cb0c850e2f3ab1d7a533aa4b33a30f9dbeda5.1610463999.git.bristot@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/01/2021 16:53, Daniel Bristot de Oliveira wrote:
 
-On 1/15/2021 10:33 AM, Namhyung Kim wrote:
-> On Fri, Jan 15, 2021 at 1:41 AM Alexander Antonov
-> <alexander.antonov@linux.intel.com> wrote:
->> On 1/14/2021 6:39 AM, Namhyung Kim wrote:
->>> On Wed, Jan 13, 2021 at 9:08 PM Alexander Antonov
->>> <alexander.antonov@linux.intel.com> wrote:
->>>> On 1/6/2021 12:02 PM, Namhyung Kim wrote:
->>>>> On Wed, Dec 23, 2020 at 10:03 PM Alexander Antonov
->>>>>> diff --git a/tools/perf/perf-iiostat.sh b/tools/perf/perf-iiostat.sh
->>>>>> new file mode 100644
->>>>>> index 000000000000..2c5168d2550b
->>>>>> --- /dev/null
->>>>>> +++ b/tools/perf/perf-iiostat.sh
->>>>>> @@ -0,0 +1,12 @@
->>>>>> +#!/bin/bash
->>>>>> +# SPDX-License-Identifier: GPL-2.0
->>>>>> +# perf iiostat
->>>>>> +# Alexander Antonov <alexander.antonov@linux.intel.com>
->>>>>> +
->>>>>> +if [[ "$1" == "show" ]] || [[ "$1" =~ ([a-f0-9A-F]{1,}):([a-f0-9A-F]{1,2})(,)? ]]; then
->>>>>> +        DELIMITER="="
->>>>>> +else
->>>>>> +        DELIMITER=" "
->>>>>> +fi
->>>>>> +
->>>>>> +perf stat --iiostat$DELIMITER$*
->>>>> Why is this needed?
->>>>>
->>>>> Thanks,
->>>>> Namhyung
->>>> Arnaldo raised question relates to format of 'perf stat --iiostat'
->>>> subcommand
->>>> and explained how it can be changed to 'perf iiostat' through the aliases
->>>> mechanism in perf.
->>> Yeah, I know that.  What I'm asking is the DELIMITER part.
->>>
->>> Thanks,
->>> Namhyung
->> I'm using DELIMITER to resolve two different cases for format of iiostat
->> command:
->> The first one is the command with an option for iiostat mode, for example:
->> 'perf iiostat show' which should be converted to 'perf stat
->> --iiostat=show' or
->> 'perf iiostat 0000:ae,0000:5d' to 'perf stat --iiostat=0000:ae,0000:5d'.
->> The second is the command without any option for iiostat: 'perf iiostat
->> -I 1000'
->> should be converted to 'perf stat --iiostat -I 1000'.
-> Can't we simply use a whitespace ?
-We need to use the equal sign to pass arguments to iiostat mode.
+[...]
 
-Thanks,
-Alexander
+> ----- %< -----
+>   #!/bin/bash
+>   # Enter on the cgroup directory
+>   cd /sys/fs/cgroup/
+> 
+>   # Check it if is cgroup v2 and enable cpuset
+>   if [ -e cgroup.subtree_control ]; then
+>   	# Enable cpuset controller on cgroup v2
+>   	echo +cpuset > cgroup.subtree_control
+>   fi
+> 
+>   echo LOG: create an exclusive cpuset and assigned the CPU 0 to it
+>   # Create cpuset groups
+>   rmdir dl-group &> /dev/null
+>   mkdir dl-group
+> 
+>   # Restrict the task to the CPU 0
+>   echo 0 > dl-group/cpuset.mems
+>   echo 0 > dl-group/cpuset.cpus
+>   echo root >  dl-group/cpuset.cpus.partition
+> 
+>   echo LOG: dispatching a regular task
+>   sleep 100 &
+>   CPUSET_PID="$!"
+> 
+>   # let it settle down
+>   sleep 1
+> 
+>   # Assign the second task to the cgroup
+
+There is only one task 'CPUSET_PID' involved here?
+
+>   echo LOG: moving the second DL task to the cpuset
+>   echo "$CPUSET_PID" > dl-group/cgroup.procs 2> /dev/null
+> 
+>   CPUSET_ALLOWED=`cat /proc/$CPUSET_PID/status | grep Cpus_allowed_list | awk '{print $2}'`
+> 
+>   chrt -p -d --sched-period 1000000000 --sched-runtime 100000000 0 $CPUSET_PID
+>   ACCEPTED=$?
+> 
+>   if [ $ACCEPTED == 0 ]; then
+>   	echo PASS: the task became DL
+>   else
+>   	echo FAIL: the task was rejected as DL
+>   fi
+
+[...]
+
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 5961a97541c2..3c2775e6869f 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -5905,15 +5905,15 @@ static int __sched_setscheduler(struct task_struct *p,
+>  #ifdef CONFIG_SMP
+>  		if (dl_bandwidth_enabled() && dl_policy(policy) &&
+>  				!(attr->sched_flags & SCHED_FLAG_SUGOV)) {
+> -			cpumask_t *span = rq->rd->span;
+> +			struct root_domain *rd = dl_task_rd(p);
+>  
+>  			/*
+>  			 * Don't allow tasks with an affinity mask smaller than
+>  			 * the entire root_domain to become SCHED_DEADLINE. We
+>  			 * will also fail if there's no bandwidth available.
+>  			 */
+> -			if (!cpumask_subset(span, p->cpus_ptr) ||
+> -			    rq->rd->dl_bw.bw == 0) {
+> +			if (!cpumask_subset(rd->span, p->cpus_ptr) ||
+> +			    rd->dl_bw.bw == 0) {
+>  				retval = -EPERM;
+>  				goto unlock;
+>  			}
+> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> index c221e14d5b86..1f6264cb8867 100644
+> --- a/kernel/sched/deadline.c
+> +++ b/kernel/sched/deadline.c
+> @@ -2678,8 +2678,8 @@ int sched_dl_overflow(struct task_struct *p, int policy,
+>  	u64 period = attr->sched_period ?: attr->sched_deadline;
+>  	u64 runtime = attr->sched_runtime;
+>  	u64 new_bw = dl_policy(policy) ? to_ratio(period, runtime) : 0;
+> -	int cpus, err = -1, cpu = task_cpu(p);
+> -	struct dl_bw *dl_b = dl_bw_of(cpu);
+> +	int cpus, err = -1, cpu = dl_task_cpu(p);
+> +	struct dl_bw *dl_b = dl_task_root_bw(p);
+>  	unsigned long cap;
+>  
+>  	if (attr->sched_flags & SCHED_FLAG_SUGOV)
+> 
+
+Wouldn't it be sufficient to just introduce dl_task_cpu() and use the
+correct cpu to get rd->span or struct dl_bw in __sched_setscheduler()
+-> sched_dl_overflow()?
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5961a97541c2..0573f676696a 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5905,7 +5905,8 @@ static int __sched_setscheduler(struct task_struct *p,
+ #ifdef CONFIG_SMP
+                if (dl_bandwidth_enabled() && dl_policy(policy) &&
+                                !(attr->sched_flags & SCHED_FLAG_SUGOV)) {
+-                       cpumask_t *span = rq->rd->span;
++                       int cpu = dl_task_cpu(p);
++                       cpumask_t *span = cpu_rq(cpu)->rd->span;
+ 
+                        /*
+                         * Don't allow tasks with an affinity mask smaller than
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index c221e14d5b86..308ecaaf3d28 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -2678,7 +2678,7 @@ int sched_dl_overflow(struct task_struct *p, int policy,
+        u64 period = attr->sched_period ?: attr->sched_deadline;
+        u64 runtime = attr->sched_runtime;
+        u64 new_bw = dl_policy(policy) ? to_ratio(period, runtime) : 0;
+-       int cpus, err = -1, cpu = task_cpu(p);
++       int cpus, err = -1, cpu = dl_task_cpu(p);
+        struct dl_bw *dl_b = dl_bw_of(cpu);
+        unsigned long cap;
