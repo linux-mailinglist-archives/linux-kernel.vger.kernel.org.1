@@ -2,109 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4428C2F75A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4532F75A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730067AbhAOJlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:41:22 -0500
-Received: from smtp180.sjtu.edu.cn ([202.120.2.180]:33668 "EHLO
-        smtp180.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbhAOJlV (ORCPT
+        id S1730242AbhAOJmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:42:03 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11537 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727294AbhAOJmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:41:21 -0500
-Received: from mta03.sjtu.edu.cn (mta03.sjtu.edu.cn [202.121.179.7])
-        by smtp180.sjtu.edu.cn (Postfix) with ESMTPS id A46401008D5CB;
-        Fri, 15 Jan 2021 17:40:43 +0800 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by mta03.sjtu.edu.cn (Postfix) with ESMTP id 9470F10DC2F;
-        Fri, 15 Jan 2021 17:40:43 +0800 (CST)
-X-Virus-Scanned: amavisd-new at mta03.sjtu.edu.cn
-Received: from mta03.sjtu.edu.cn ([127.0.0.1])
-        by localhost (mta03.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Z5wh27GCjnkf; Fri, 15 Jan 2021 17:40:43 +0800 (CST)
-Received: from mstore107.sjtu.edu.cn (unknown [10.118.0.107])
-        by mta03.sjtu.edu.cn (Postfix) with ESMTP id 7040710DC2C;
-        Fri, 15 Jan 2021 17:40:43 +0800 (CST)
-Date:   Fri, 15 Jan 2021 17:40:43 +0800 (CST)
-From:   Zhongwei Cai <sunrise_l@sjtu.edu.cn>
-To:     Mikulas Patocka <mpatocka@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Laight <David.Laight@ACULAB.COM>
-Cc:     Mingkai Dong <mingkaidong@gmail.com>,
+        Fri, 15 Jan 2021 04:42:00 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DHGPK70jLzMKDl;
+        Fri, 15 Jan 2021 17:40:05 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 15 Jan 2021 17:41:19 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Subject: Re: [PATCH 1/5] vfio/iommu_type1: Fixes vfio_dma_populate_bitmap to
+ avoid dirty lose
+To:     Alex Williamson <alex.williamson@redhat.com>
+References: <20210107092901.19712-1-zhukeqian1@huawei.com>
+ <20210107092901.19712-2-zhukeqian1@huawei.com>
+ <20210112142059.074c1b0f@omen.home.shazbot.org>
+ <8bf8a12c-f3ae-dc52-c963-f9eb447f973b@huawei.com>
+ <20210114101434.6092e43a@omen.home.shazbot.org>
+CC:     Kirti Wankhede <kwankhede@nvidia.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Cornelia Huck <cohuck@redhat.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Wang Jianchao <jianchao.wan9@gmail.com>,
-        Rajesh Tadakamadla <rajesh.tadakamadla@hpe.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Message-ID: <1224425872.715547.1610703643424.JavaMail.zimbra@sjtu.edu.cn>
-In-Reply-To: <alpine.LRH.2.02.2101131008530.27448@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com> <20210107151125.GB5270@casper.infradead.org> <17045315-CC1F-4165-B8E3-BA55DD16D46B@gmail.com> <2041983017.5681521.1610459100858.JavaMail.zimbra@sjtu.edu.cn> <alpine.LRH.2.02.2101131008530.27448@file01.intranet.prod.int.rdu2.redhat.com>
-Subject: Re: Expense of read_iter
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+Message-ID: <1f623316-7d4a-62da-e076-f238f3100237@huawei.com>
+Date:   Fri, 15 Jan 2021 17:41:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=GB2312
+In-Reply-To: <20210114101434.6092e43a@omen.home.shazbot.org>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [58.196.139.16]
-X-Mailer: Zimbra 8.8.15_GA_3980 (ZimbraWebClient - FF84 (Win)/8.8.15_GA_3928)
-Thread-Topic: Expense of read_iter
-Thread-Index: 9NnrXaYD9vcYqWdfzl2jIg65GnvJ6A==
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021, Mikulas wrote:
 
->> I'm working with Mingkai on optimizations for Ext4-dax.
+
+On 2021/1/15 1:14, Alex Williamson wrote:
+> On Thu, 14 Jan 2021 21:05:23 +0800
+> Keqian Zhu <zhukeqian1@huawei.com> wrote:
+> 
+>> Hi Alex,
+>>
+>> On 2021/1/13 5:20, Alex Williamson wrote:
+>>> On Thu, 7 Jan 2021 17:28:57 +0800
+>>> Keqian Zhu <zhukeqian1@huawei.com> wrote:
+>>>   
+>>>> Defer checking whether vfio_dma is of fully-dirty in update_user_bitmap
+>>>> is easy to lose dirty log. For example, after promoting pinned_scope of
+>>>> vfio_iommu, vfio_dma is not considered as fully-dirty, then we may lose
+>>>> dirty log that occurs before vfio_iommu is promoted.
+>>>>
+>>>> The key point is that pinned-dirty is not a real dirty tracking way, it
+>>>> can't continuously track dirty pages, but just restrict dirty scope. It
+>>>> is essentially the same as fully-dirty. Fully-dirty is of full-scope and
+>>>> pinned-dirty is of pinned-scope.
+>>>>
+>>>> So we must mark pinned-dirty or fully-dirty after we start dirty tracking
+>>>> or clear dirty bitmap, to ensure that dirty log is marked right away.  
+>>>
+>>> I was initially convinced by these first three patches, but upon
+>>> further review, I think the premise is wrong.  AIUI, the concern across
+>>> these patches is that our dirty bitmap is only populated with pages
+>>> dirtied by pinning and we only take into account the pinned page dirty
+>>> scope at the time the bitmap is retrieved by the user.  You suppose
+>>> this presents a gap where if a vendor driver has not yet identified
+>>> with a page pinning scope that the entire bitmap should be considered
+>>> dirty regardless of whether that driver later pins pages prior to the
+>>> user retrieving the dirty bitmap.  
+>> Yes, this is my concern. And there are some other scenarios.
+>>
+>> 1. If a non-pinned iommu-backed domain is detached between starting
+>> dirty log and retrieving dirty bitmap, then the dirty log is missed
+>> (As you said in the last paragraph).
+>>
+>> 2. If all vendor drivers pinned (means iommu pinned_scope is true),
+>> and an vendor driver do pin/unpin pair between starting dirty log and
+>> retrieving dirty bitmap, then the dirty log of these unpinned pages
+>> are missed.
+> 
+> Can you identity where this happen?  I believe this assertion is
+> incorrect.  When dirty logging is enabled vfio_dma_populate_bitmap()
+> marks all existing pinned pages as dirty.  In the scenario you
+> describe, the iommu pinned page dirty scope is irrelevant.  We only
+> track pinned or external DMA access pages for exactly this reason.
+> Unpinning a page never clears the dirty bitmap, only the user
+> retrieving the bitmap or disabling dirty logging clears the bitmap.  A
+> page that has been unpinned is transiently dirty, it is not repopulated
+> in the bitmap after the user has retrieved the bitmap because the
+> device no longer has access to it to consider it perpetually dirty.
+Right, thanks for making the logic more clear to me ;-). Then just one issue to fix.
+
+> 
+>>> I don't think this is how we intended the cooperation between the
+>>> iommu driver and vendor driver to work.  By pinning pages a vendor
+>>> driver is not declaring that only their future dirty page scope is
+>>> limited to pinned pages, instead they're declaring themselves as a
+>>> participant in dirty page tracking and take responsibility for
+>>> pinning any necessary pages.  For example we might extend
+>>> VFIO_IOMMU_DIRTY_PAGES_FLAG_START to trigger a blocking
+>>> notification to groups to not only begin dirty tracking, but also
+>>> to synchronously register their current device DMA footprint.  This
+>>> patch would require a vendor driver to possibly perform a
+>>> gratuitous page pinning in order to set the scope prior to dirty
+>>> logging being enabled, or else the initial bitmap will be fully
+>>> dirty.  
+>> I get what you mean ;-). You said that there is time gap between we
+>> attach a device and this device declares itself is dirty traceable.
+>>
+>> However, this makes it difficult to management dirty log tracking (I
+>> list two bugs). If the vfio devices can declare themselves dirty
+>> traceable when attach to container, then the logic of dirty tracking
+>> is much more clear ;-) .
+> 
+> There's only one bug above afaict, which should be easily fixed.  I
+> think if you actually dig into the problem of a device declaring
+> themselves as dirty tracking capable, when the IOMMU backend works on
+> group, not devices, and it's groups that are attached to containers,
+> you might see that the logic is not so clear.  I also don't see this as
+> a significant issue, you're focusing on a niche scenario where a device
+> is hot-added to a VM, which is immediately migrated before the device
+> identifies itself by pinning pages.  In that scenario the iommu dirty
+> scope would be overly broad and we'd indicate all pages are dirty.
+> This errors on the side of reporting too much is dirty, which still
+> provides a correct result to the user.  The more common scenario would
+> be migration of a "long" running, stable VM, where drivers are active
+> and devices have already pinned pages if they intend to.
 >
-> What specific patch are you working on? Please, post it somewhere.
+OK ;-)
 
-Here is the work-in-progress patch: https://ipads.se.sjtu.edu.cn:1312/opensource/linux/-/tree/ext4-read
-It only contains the "read" implementation for Ext4-dax now, though, we
-will put other optimizations on it later.
+Now I am thinking about how we handle the situation that if other dirty tracking
+way is added, such as smmu httu? If we can track dirty pages precisely, then populate
+all pinned scope is not suitable, or the vendor drive knows that iommu can track dirty
+pages, so it doesn't use the pin interface to give vfio_iommu the pinned dirty hint?
 
-> What happens if you use this trick ( https://lkml.org/lkml/2021/1/11/1612 )
-> - detect in the "read_iter" method that there is just one segment and 
-> treat it like a "read" method. I think that it should improve performance 
-> for your case.
+>>> Therefore, I don't see that this series is necessary or correct.
+>>> Kirti, does this match your thinking?
+>>>
+>>> Thinking about these semantics, it seems there might still be an
+>>> issue if a group with non-pinned-page dirty scope is detached with
+>>> dirty logging enabled.  It seems this should in fact fully populate
+>>> the dirty bitmaps at the time it's removed since we don't know the
+>>> extent of its previous DMA, nor will the group be present to
+>>> trigger the full bitmap when the user retrieves the dirty bitmap.
+>>> Creating fully populated bitmaps at the time tracking is enabled
+>>> negates our ability to take advantage of later enlightenment
+>>> though.  Thanks, 
+>> Since that you want to allow the time gap between we attach device
+>> and the device declare itself dirty traceable, I am going to fix
+>> these two bugs in patch v2. Do you agree?
+> 
+> I would consider a patch that fully populates the dirty bitmap if a
+> non-pinned page scope group is removed from the container while dirty
+> logging is enabled.  Thanks,
+I have send it, thanks.
 
-Note that the original Ext4-dax does not implement the "read" method. Instead, it
-calls the "dax_iomap_rw" method provided by VFS. So we firstly rewrite
-the "read-iter" method which iterates struct iov_iter and calls our
-"read" method as a baseline for comparison.
+Keqian
 
-Overall time of 2^26 4KB read:
-"read-iter" method with dax-iomap-rw (original)              - 36.477s
-"read_iter" method wraps our "read" method                   - 28.950s
-"read_iter" method tests for one entry proposed by Mikulas   - 27.947s
-"read" method                                                - 26.899s
-
-As we mentioned in the previous email (https://lkml.org/lkml/2021/1/12/710),
-the overhead mainly consists of two parts. The first is constructing
-struct iov_iter and iterating it (i.e., new_sync, _copy_mc_to_iter and
-iov_iter_init). The second is the dax io mechanism provided by VFS (i.e.,
-dax_iomap_rw, iomap_apply and ext4_iomap_begin).
-
-For Ext4-dax, the overhead of dax_iomap_rw is significant
-compared to the overhead of struct iov_iter. Although methods
-proposed by Mikulas can eliminate the overhead of iov_iter
-well, they can not be applied in Ext4-dax unless we implement an
-internal "read" method in Ext4-dax.
-
-For Ext4-dax, there could be two approaches to optimizing:
-1) implementing the internal "read" method without the complexity
-of iterators and dax_iomap_rw; 2) optimizing how dax_iomap_rw works.
-Since dax_iomap_rw requires ext4_iomap_begin, which further involves
-the iomap structure and others (e.g., journaling status locks in Ext4),
-we think implementing the internal "read" method would be easier.
-
-As for whether the external .read interface in VFS should be reserved,
-since there is still a performance gap (3.9%) between the "read" method
-and the optimized "read_iter" method, we think reserving it is better.
-
-Thanks,
-Zhongwei
+> 
+> Alex
+> 
+>>>> Fixes: d6a4c185660c ("vfio iommu: Implementation of ioctl for
+>>>> dirty pages tracking") Signed-off-by: Keqian Zhu
+>>>> <zhukeqian1@huawei.com> ---
+>>>>  drivers/vfio/vfio_iommu_type1.c | 33
+>>>> ++++++++++++++++++++++----------- 1 file changed, 22
+>>>> insertions(+), 11 deletions(-)
+>>>>
+>>>> diff --git a/drivers/vfio/vfio_iommu_type1.c
+>>>> b/drivers/vfio/vfio_iommu_type1.c index bceda5e8baaa..b0a26e8e0adf
+>>>> 100644 --- a/drivers/vfio/vfio_iommu_type1.c
+>>>> +++ b/drivers/vfio/vfio_iommu_type1.c
+>>>> @@ -224,7 +224,7 @@ static void vfio_dma_bitmap_free(struct
+>>>> vfio_dma *dma) dma->bitmap = NULL;
+>>>>  }
+>>>>  
+>>>> -static void vfio_dma_populate_bitmap(struct vfio_dma *dma, size_t
+>>>> pgsize) +static void vfio_dma_populate_bitmap_pinned(struct
+>>>> vfio_dma *dma, size_t pgsize) {
+>>>>  	struct rb_node *p;
+>>>>  	unsigned long pgshift = __ffs(pgsize);
+>>>> @@ -236,6 +236,25 @@ static void vfio_dma_populate_bitmap(struct
+>>>> vfio_dma *dma, size_t pgsize) }
+>>>>  }
+>>>>  
+>>>> +static void vfio_dma_populate_bitmap_full(struct vfio_dma *dma,
+>>>> size_t pgsize) +{
+>>>> +	unsigned long pgshift = __ffs(pgsize);
+>>>> +	unsigned long nbits = dma->size >> pgshift;
+>>>> +
+>>>> +	bitmap_set(dma->bitmap, 0, nbits);
+>>>> +}
+>>>> +
+>>>> +static void vfio_dma_populate_bitmap(struct vfio_iommu *iommu,
+>>>> +				     struct vfio_dma *dma)
+>>>> +{
+>>>> +	size_t pgsize = (size_t)1 << __ffs(iommu->pgsize_bitmap);
+>>>> +
+>>>> +	if (iommu->pinned_page_dirty_scope)
+>>>> +		vfio_dma_populate_bitmap_pinned(dma, pgsize);
+>>>> +	else if (dma->iommu_mapped)
+>>>> +		vfio_dma_populate_bitmap_full(dma, pgsize);
+>>>> +}
+>>>> +
+>>>>  static int vfio_dma_bitmap_alloc_all(struct vfio_iommu *iommu)
+>>>>  {
+>>>>  	struct rb_node *n;
+>>>> @@ -257,7 +276,7 @@ static int vfio_dma_bitmap_alloc_all(struct
+>>>> vfio_iommu *iommu) }
+>>>>  			return ret;
+>>>>  		}
+>>>> -		vfio_dma_populate_bitmap(dma, pgsize);
+>>>> +		vfio_dma_populate_bitmap(iommu, dma);
+>>>>  	}
+>>>>  	return 0;
+>>>>  }
+>>>> @@ -987,13 +1006,6 @@ static int update_user_bitmap(u64 __user
+>>>> *bitmap, struct vfio_iommu *iommu, unsigned long shift =
+>>>> bit_offset % BITS_PER_LONG; unsigned long leftover;
+>>>>  
+>>>> -	/*
+>>>> -	 * mark all pages dirty if any IOMMU capable device is
+>>>> not able
+>>>> -	 * to report dirty pages and all pages are pinned and
+>>>> mapped.
+>>>> -	 */
+>>>> -	if (!iommu->pinned_page_dirty_scope && dma->iommu_mapped)
+>>>> -		bitmap_set(dma->bitmap, 0, nbits);
+>>>> -
+>>>>  	if (shift) {
+>>>>  		bitmap_shift_left(dma->bitmap, dma->bitmap, shift,
+>>>>  				  nbits + shift);
+>>>> @@ -1019,7 +1031,6 @@ static int vfio_iova_dirty_bitmap(u64 __user
+>>>> *bitmap, struct vfio_iommu *iommu, struct vfio_dma *dma;
+>>>>  	struct rb_node *n;
+>>>>  	unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
+>>>> -	size_t pgsize = (size_t)1 << pgshift;
+>>>>  	int ret;
+>>>>  
+>>>>  	/*
+>>>> @@ -1055,7 +1066,7 @@ static int vfio_iova_dirty_bitmap(u64 __user
+>>>> *bitmap, struct vfio_iommu *iommu,
+>>>>  		 * pages which are marked dirty by vfio_dma_rw()
+>>>>  		 */
+>>>>  		bitmap_clear(dma->bitmap, 0, dma->size >>
+>>>> pgshift);
+>>>> -		vfio_dma_populate_bitmap(dma, pgsize);
+>>>> +		vfio_dma_populate_bitmap(iommu, dma);
+>>>>  	}
+>>>>  	return 0;
+>>>>  }  
+>>>
+>>> .
+>>>   
+>>
+> 
+> .
+> 
