@@ -2,69 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1732B2F8107
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:42:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0D62F81FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:19:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727332AbhAOQlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:41:35 -0500
-Received: from mga01.intel.com ([192.55.52.88]:47243 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726560AbhAOQle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:41:34 -0500
-IronPort-SDR: X61q8rdyMaBJMgQGl8judovh7+fqShB3BxGyzrAn6o5dujqVj/CPg8fVHGFge5kW7uVOoeKOIc
- Br3XY1gCx+KQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="197242510"
-X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="197242510"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 08:39:47 -0800
-IronPort-SDR: RrEB2VPQ6fmVivwsyoWos3bubN3OdgSMLVj/pIs2xh2DeSGw07aXxNksiS65+g4n7oEugX9lyP
- uJmyM3VgL68w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="354358704"
-Received: from zhangyu-optiplex-7040.bj.intel.com ([10.238.154.148])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Jan 2021 08:39:45 -0800
-From:   Yu Zhang <yu.c.zhang@linux.intel.com>
-To:     pbonzini@redhat.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org
-Subject: [PATCH] KVM: x86/MMU: Do not check unsync status for root SP.
-Date:   Sat, 16 Jan 2021 08:21:00 +0800
-Message-Id: <20210116002100.17339-1-yu.c.zhang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S1728695AbhAORRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:17:25 -0500
+Received: from mail-m964.mail.126.com ([123.126.96.4]:55906 "EHLO
+        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726065AbhAORRY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 12:17:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=bWFFo4adEeRjhOoRH4
+        Jacj17hKzJ2ydg4soThbYz5qA=; b=WvvnIAmUTeu9pCqhZ47vTHqDCnRwpQ9tZ7
+        PTTB+d4L4D+HSPtUsAoxEy2LHew0CDOePzzv7I8EmsgGPMsTZR/1EXDp8geeW30y
+        oEBrtK0uBhSacQE3oFXz+lA7u2VDp5KKjg+9ymaXUJFVmSk8b8S6ddvQK4AL9kYL
+        iw3d6fy0c=
+Received: from localhost.localdomain (unknown [116.162.2.41])
+        by smtp9 (Coremail) with SMTP id NeRpCgBndpc_ogFgm_vTQw--.4290S2;
+        Fri, 15 Jan 2021 22:10:08 +0800 (CST)
+From:   wangyingjie55@126.com
+To:     davem@davemloft.net, kuba@kernel.org, vraman@marvell.com,
+        skardach@marvell.com
+Cc:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
+        jerinj@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yingjie Wang <wangyingjie55@126.com>
+Subject: [PATCH v3] octeontx2-af: Fix missing check bugs in rvu_cgx.c
+Date:   Fri, 15 Jan 2021 06:10:04 -0800
+Message-Id: <1610719804-35230-1-git-send-email-wangyingjie55@126.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: NeRpCgBndpc_ogFgm_vTQw--.4290S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Aw13Cr4xJryDtFW7XF4xWFg_yoW8Xw4Up3
+        y0yryrZrn2ka1xCw4DJa18JrWUta1Dtaykt34UC3s5uFn5WF13XF4DKa1UK3WUCrWrC3y7
+        tF1jk393uF1DJFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j-0edUUUUU=
+X-Originating-IP: [116.162.2.41]
+X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbiVwEbp1pECd3elgAAso
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In shadow page table, only leaf SPs may be marked as unsync.
-And for non-leaf SPs, we use unsync_children to keep the number
-of the unsynced children. In kvm_mmu_sync_root(), sp->unsync
-shall always be zero for the root SP, hence no need to check it.
+From: Yingjie Wang <wangyingjie55@126.com>
 
-Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+In rvu_mbox_handler_cgx_mac_addr_get()
+and rvu_mbox_handler_cgx_mac_addr_set(),
+the msg is expected only from PFs that are mapped to CGX LMACs.
+It should be checked before mapping,
+so we add the is_cgx_config_permitted() in the functions.
+
+Fixes: 96be2e0da85e ("octeontx2-af: Support for MAC address filters in CGX")
+Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
+Reviewed-by: Geetha sowjanya<gakula@marvell.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 6d16481a..1a6bb03 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3412,8 +3412,7 @@ void kvm_mmu_sync_roots(struct kvm_vcpu *vcpu)
- 		 * mmu_need_write_protect() describe what could go wrong if this
- 		 * requirement isn't satisfied.
- 		 */
--		if (!smp_load_acquire(&sp->unsync) &&
--		    !smp_load_acquire(&sp->unsync_children))
-+		if (!smp_load_acquire(&sp->unsync_children))
- 			return;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+index d298b9357177..6c6b411e78fd 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+@@ -469,6 +469,9 @@ int rvu_mbox_handler_cgx_mac_addr_set(struct rvu *rvu,
+ 	int pf = rvu_get_pf(req->hdr.pcifunc);
+ 	u8 cgx_id, lmac_id;
  
- 		spin_lock(&vcpu->kvm->mmu_lock);
++	if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
++		return -EPERM;
++
+ 	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
+ 
+ 	cgx_lmac_addr_set(cgx_id, lmac_id, req->mac_addr);
+@@ -485,6 +488,9 @@ int rvu_mbox_handler_cgx_mac_addr_get(struct rvu *rvu,
+ 	int rc = 0, i;
+ 	u64 cfg;
+ 
++	if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
++		return -EPERM;
++
+ 	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
+ 
+ 	rsp->hdr.rc = rc;
 -- 
-1.9.1
+2.7.4
 
