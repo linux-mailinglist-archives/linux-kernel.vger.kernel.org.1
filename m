@@ -2,199 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49ADB2F85CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F142F85C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388463AbhAOTzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 14:55:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726970AbhAOTzf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 14:55:35 -0500
-Received: from mail.dr-lotz.de (mail.dr-lotz.de [IPv6:2a01:4f8:161:6ffe::5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D490BC061757;
-        Fri, 15 Jan 2021 11:54:54 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.dr-lotz.de (Postfix) with ESMTP id 71F5F5AE08;
-        Fri, 15 Jan 2021 20:54:50 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at mail.dr-lotz.de
-Received: from mail.dr-lotz.de ([127.0.0.1])
-        by localhost (mail.dr-lotz.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id B8Y0Tjl29kUU; Fri, 15 Jan 2021 20:54:46 +0100 (CET)
-Received: from linus-pc.. (ipb21b6623.dynamic.kabel-deutschland.de [178.27.102.35])
-        by mail.dr-lotz.de (Postfix) with ESMTPSA id 0929C5AE07;
-        Fri, 15 Jan 2021 20:54:44 +0100 (CET)
-From:   Linus Lotz <linus@lotz.li>
-Cc:     Linus Lotz <linus@lotz.li>, kernel test robot <lkp@intel.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, wireguard@lists.zx2c4.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] wireguard: netlink: add multicast notification for peer changes
-Date:   Fri, 15 Jan 2021 20:53:51 +0100
-Message-Id: <20210115195353.11483-1-linus@lotz.li>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210109210056.160597-1-linus@lotz.li>
-References: <20210109210056.160597-1-linus@lotz.li>
+        id S2388401AbhAOTzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 14:55:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726970AbhAOTzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 14:55:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9504235F8;
+        Fri, 15 Jan 2021 19:54:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610740477;
+        bh=3P6UzwvfBE7I8FHg+VBGNcbWcvpdD9Wa7p1LGDVMHzg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=og1RkAf/ZcgBndINyfwmX4RYO3dOBLwN6SlYxgJiU4oMjg0HBBGUJoMLyIeU0CgYI
+         Cnsbu8mCZqrmuclUYI2ux3344/nhnWWLBgz0IaWPW9nATckk5GAPYlR7owO8GS0yYE
+         EP14qQPGEiDmW/j/86ytD7xoJa8sZuthlSDJJRR3nwuyAhX/Qo443hargiPv2iuHJb
+         BP1wDuqPL/qvN5l1k4YoE+rA4iQyorvMuRy1E0cCsD01euH4MJKL9oaNGlbb/cyawX
+         8TTD4Y4N34jwHqydzHcejAaQeRBSq1e4HCHbDTU70B+jLaqli5kz6f8aX+cDD3b95o
+         LDMH2HBjO5ziQ==
+Received: by mail-ot1-f46.google.com with SMTP id d8so9705610otq.6;
+        Fri, 15 Jan 2021 11:54:36 -0800 (PST)
+X-Gm-Message-State: AOAM53002x0NM45XOpdxuPBCEaeYQCBu2zIE8bJCbsSPJMiG0SyXLP8a
+        /u5S8jWhB7DtliW0pQ2dFitYbS4Xc2MrYLxmGMs=
+X-Google-Smtp-Source: ABdhPJxQE2QUt8HCjVvyUcq6bQG9A+Jwffvpto1nf8XVkIzv0pvcaSdwa5eDX784wCKpffGC+37VqQhsxqGdle7ekeg=
+X-Received: by 2002:a9d:741a:: with SMTP id n26mr2326419otk.210.1610740476133;
+ Fri, 15 Jan 2021 11:54:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210107223424.4135538-1-arnd@kernel.org> <20210115182300.GD9138@zn.tnic>
+ <20210115183203.GA1991122@ubuntu-m3-large-x86> <20210115190729.GE9138@zn.tnic>
+ <YAHo3ZEMu+6mESZA@rani.riverdale.lan> <20210115191833.GF9138@zn.tnic>
+In-Reply-To: <20210115191833.GF9138@zn.tnic>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 15 Jan 2021 20:54:18 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a39vtF8GvRVQtEYssc+GvX-75j9-4pwXj4qhc7LK2RgNw@mail.gmail.com>
+Message-ID: <CAK8P3a39vtF8GvRVQtEYssc+GvX-75j9-4pwXj4qhc7LK2RgNw@mail.gmail.com>
+Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds a new multicast group to the netlink api for wireguard.
-The purpose of this multicast group is to notify userspace when the
-peers of an interface change. Right now this is only done when the
-endpoint is changed by whatever means.
+On Fri, Jan 15, 2021 at 8:18 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Fri, Jan 15, 2021 at 02:11:25PM -0500, Arvind Sankar wrote:
+> > That's how build-time assertions work: they are _supposed_ to be
+> > optimized away completely when the assertion is true. If they're
+> > _not_ optimized away, the build will fail.
+>
+> Yah, that I know, thanks.
+>
+> If gcc really inlines p4d_index() and does a lot more aggressive
+> optimization to determine that the condition is false and thus optimize
+> everything away (and clang doesn't), then that would explain the
+> observation.
 
-An example for an consumer of this API would be a service that keeps
-track of all peer endpoints and sends this information to the peers.
-This would allow NAT-to-NAT connections without the need of using
-STUN on each client.
+One difference is that gcc does not have
+-fsanitize=unsigned-integer-overflow at all, and I don't see the
+assertion without that on clang either, so it's possible that clang
+behaves as designed here.
 
-In v2 I fixed a possible uninitialized use.
+The description is:
+    -fsanitize=unsigned-integer-overflow: Unsigned integer overflow, where
+     the result of an unsigned integer computation cannot be represented in
+     its type. Unlike signed integer overflow, this is not undefined behavior,
+     but it is often unintentional. This sanitizer does not check for
+lossy implicit
+     conversions performed before such a computation (see
+    -fsanitize=implicit-conversion).
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Linus Lotz <linus@lotz.li>
----
- drivers/net/wireguard/netlink.c | 52 ++++++++++++++++++++++++++++++++-
- drivers/net/wireguard/netlink.h |  4 +++
- drivers/net/wireguard/socket.c  |  4 +++
- include/uapi/linux/wireguard.h  |  3 ++
- 4 files changed, 62 insertions(+), 1 deletion(-)
+The "-68 * ((1UL) << 30" computation does overflow an unsigned long
+as intended, right? Maybe this is enough for the ubsan code in clang to
+just disable some of the optimization steps that the assertion relies on.
 
-diff --git a/drivers/net/wireguard/netlink.c b/drivers/net/wireguard/netlink.c
-index d0f3b6d7f408..e9bb2a3a7b79 100644
---- a/drivers/net/wireguard/netlink.c
-+++ b/drivers/net/wireguard/netlink.c
-@@ -618,6 +618,12 @@ static const struct genl_ops genl_ops[] = {
- 	}
- };
- 
-+static struct genl_multicast_group genl_mcgrps[] = {
-+	{
-+		.name = WG_MULTICAST_GROUP_PEER_CHANGE
-+	}
-+};
-+
- static struct genl_family genl_family __ro_after_init = {
- 	.ops = genl_ops,
- 	.n_ops = ARRAY_SIZE(genl_ops),
-@@ -626,7 +632,9 @@ static struct genl_family genl_family __ro_after_init = {
- 	.maxattr = WGDEVICE_A_MAX,
- 	.module = THIS_MODULE,
- 	.policy = device_policy,
--	.netnsok = true
-+	.netnsok = true,
-+	.mcgrps = genl_mcgrps,
-+	.n_mcgrps = ARRAY_SIZE(genl_mcgrps)
- };
- 
- int __init wg_genetlink_init(void)
-@@ -638,3 +646,45 @@ void __exit wg_genetlink_uninit(void)
- {
- 	genl_unregister_family(&genl_family);
- }
-+
-+int wg_genl_mcast_peer_endpoint_change(struct wg_peer *peer)
-+{
-+	struct sk_buff *skb;
-+	void *hdr, *peer_nest, *peer_array_nest;
-+	int fail = 0;
-+
-+	skb = genlmsg_new(NLMSG_GOODSIZE, GFP_KERNEL);
-+	hdr = genlmsg_put(skb, 0, 0,
-+			  &genl_family, 0, WG_CMD_CHANGED_PEER);
-+
-+	nla_put_u32(skb, WGDEVICE_A_IFINDEX, peer->device->dev->ifindex);
-+	nla_put_string(skb, WGDEVICE_A_IFNAME, peer->device->dev->name);
-+
-+	peer_nest = nla_nest_start(skb, WGDEVICE_A_PEERS);
-+	peer_array_nest = nla_nest_start(skb, 0);
-+	down_read(&peer->handshake.lock);
-+	nla_put(skb, WGPEER_A_PUBLIC_KEY, NOISE_PUBLIC_KEY_LEN,
-+		peer->handshake.remote_static);
-+	up_read(&peer->handshake.lock);
-+
-+	read_lock_bh(&peer->endpoint_lock);
-+	if (peer->endpoint.addr.sa_family == AF_INET)
-+		fail = nla_put(skb, WGPEER_A_ENDPOINT,
-+			       sizeof(peer->endpoint.addr4),
-+			       &peer->endpoint.addr4);
-+	else if (peer->endpoint.addr.sa_family == AF_INET6)
-+		fail = nla_put(skb, WGPEER_A_ENDPOINT,
-+			       sizeof(peer->endpoint.addr6),
-+			       &peer->endpoint.addr6);
-+	read_unlock_bh(&peer->endpoint_lock);
-+	if (fail)
-+		return fail;
-+
-+	nla_nest_end(skb, peer_array_nest);
-+	nla_nest_end(skb, peer_nest);
-+	genlmsg_end(skb, hdr);
-+
-+	fail = genlmsg_multicast_netns(&genl_family, dev_net(peer->device->dev),
-+				       skb, 0, 0, GFP_KERNEL);
-+	return fail;
-+}
-diff --git a/drivers/net/wireguard/netlink.h b/drivers/net/wireguard/netlink.h
-index 15100d92e2e3..74ecc72a79a6 100644
---- a/drivers/net/wireguard/netlink.h
-+++ b/drivers/net/wireguard/netlink.h
-@@ -6,6 +6,10 @@
- #ifndef _WG_NETLINK_H
- #define _WG_NETLINK_H
- 
-+#include "peer.h"
-+
-+int wg_genl_mcast_peer_endpoint_change(struct wg_peer *peer);
-+
- int wg_genetlink_init(void);
- void wg_genetlink_uninit(void);
- 
-diff --git a/drivers/net/wireguard/socket.c b/drivers/net/wireguard/socket.c
-index 410b318e57fb..d826e1f2b51c 100644
---- a/drivers/net/wireguard/socket.c
-+++ b/drivers/net/wireguard/socket.c
-@@ -8,6 +8,7 @@
- #include "socket.h"
- #include "queueing.h"
- #include "messages.h"
-+#include "netlink.h"
- 
- #include <linux/ctype.h>
- #include <linux/net.h>
-@@ -293,6 +294,9 @@ void wg_socket_set_peer_endpoint(struct wg_peer *peer,
- 	dst_cache_reset(&peer->endpoint_cache);
- out:
- 	write_unlock_bh(&peer->endpoint_lock);
-+
-+	/* We need to notify the netlink listeners for about this change */
-+	wg_genl_mcast_peer_endpoint_change(peer);
- }
- 
- void wg_socket_set_peer_endpoint_from_skb(struct wg_peer *peer,
-diff --git a/include/uapi/linux/wireguard.h b/include/uapi/linux/wireguard.h
-index ae88be14c947..22a012644d71 100644
---- a/include/uapi/linux/wireguard.h
-+++ b/include/uapi/linux/wireguard.h
-@@ -136,9 +136,12 @@
- 
- #define WG_KEY_LEN 32
- 
-+#define WG_MULTICAST_GROUP_PEER_CHANGE          "wg_peer_change"
-+
- enum wg_cmd {
- 	WG_CMD_GET_DEVICE,
- 	WG_CMD_SET_DEVICE,
-+	WG_CMD_CHANGED_PEER,
- 	__WG_CMD_MAX
- };
- #define WG_CMD_MAX (__WG_CMD_MAX - 1)
-
-base-commit: 65f0d2414b7079556fbbcc070b3d1c9f9587606d
--- 
-2.26.2
-
+        Arnd
