@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8293B2F866E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDE92F8671
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388549AbhAOUOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 15:14:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbhAOUOq (ORCPT
+        id S2388402AbhAOUQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 15:16:26 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:37698 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728049AbhAOUQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 15:14:46 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41EAC061793
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:14:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=IE4MAbc5BExZ5lhJ69oVQ1CIYy1AXCTv7sW0YbYZvPk=; b=LHCsF//Ks8fOXNsa605p/03dlB
-        DamAIJxZmxFjGHn/CRcw1+p1/EMQLm1Nci7pqE1bWjnpJXBjR8vVFrPLQXrshwBvEPCcIGFChz+gK
-        URZNWHD/Crke1T/3l3/5iD81ryyxmSmrs+8b7xVRTfqJ+TSgk9ijsePQzncgSHxzwwCoN6v0Dbp1j
-        l+wX/zGHmkGlQMnjK0bvaUbnFAMU3v0h8EFYO6hNGgQ7x2AjPxqkuzYJan9aZfQy1M3D94V/rXMe7
-        jeSv/czkp3qbl5acJsC6q3ENWg8zPuLxLMRQleJv0THg1UXpnf6maohWGbDUrEypaHWeaRbnUSD7o
-        CtsEIJzw==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l0VTv-0006js-DO; Fri, 15 Jan 2021 20:14:03 +0000
-Subject: Re: [PATCH] firmware: Kconfig: fix indentions
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org
-References: <20210115194234.6328-1-info@metux.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <38a148d8-8390-bd08-7caf-69d505387169@infradead.org>
-Date:   Fri, 15 Jan 2021 12:13:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 15 Jan 2021 15:16:25 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610741767; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=mBXeczvmNbWOnHiothAx6TK2fNcMOH0snmzHQ8eDIS4=;
+ b=HFl6g+88iQztgPTSWNt6dfVYif+l6q42E51hZFDjrWVWvi9ZsZuyvOr7H/rq15kxjfFDIDE+
+ FRuk1UdwmQWAuNja/DhcBjY2hSPVp4ttXgMN7voqz20b+wqGDd9MpkvKFylXJMJfq8yk3YlC
+ puCvNEmqB9e2r7IM1ASLk2PvV1k=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6001f7df21210999ed0f3b6b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 Jan 2021 20:15:27
+ GMT
+Sender: jjohnson=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 29F1AC43461; Fri, 15 Jan 2021 20:15:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: jjohnson)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3950DC433ED;
+        Fri, 15 Jan 2021 20:15:26 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210115194234.6328-1-info@metux.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 15 Jan 2021 12:15:26 -0800
+From:   jjohnson@codeaurora.org
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Prasad Sodagudi <psodagud@quicinc.com>, eberman@quicinc.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] kbuild: handle excessively long argument lists
+In-Reply-To: <CAK7LNASHC5sNWxL0Ve8=f6=Gpf8ekVS41ETacBCTv5p72SVkNA@mail.gmail.com>
+References: <1610500731-30960-2-git-send-email-jjohnson@codeaurora.org>
+ <1610660990-18812-1-git-send-email-jjohnson@codeaurora.org>
+ <CAK7LNASHC5sNWxL0Ve8=f6=Gpf8ekVS41ETacBCTv5p72SVkNA@mail.gmail.com>
+Message-ID: <4c02050c4e95e4cb8cc04282695f8404@codeaurora.org>
+X-Sender: jjohnson@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/15/21 11:42 AM, Enrico Weigelt, metux IT consult wrote:
-> Make the indentions consistent with everywhere else in the kernel.
+On 2021-01-14 17:12, Masahiro Yamada wrote:
+> On Fri, Jan 15, 2021 at 6:50 AM Jeff Johnson <jjohnson@codeaurora.org> 
+> wrote:
+>> 
+>> From: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
+>> 
+>> Modules with a large number of compilation units may be
+>> exceeding AR and LD command argument list. Handle this gracefully by
+>> writing the long argument list in a file. The command line options
+>> read from file are inserted in place of the original @file option.
+>> 
+>> The usage is well documented at
+>> https://www.gnu.org/software/make/manual/html_node/File-Function.html
+>> 
+>> Signed-off-by: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
+>> Signed-off-by: Jeff Johnson <jjohnson@codeaurora.org>
+>> ---
 > 
-> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
-
-LGTM. Thanks.
-
-But you need to send it To: or Cc: some maintainer(s).
-They don't generally graze on lkml for patches.
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-> ---
->  drivers/firmware/Kconfig | 26 +++++++++++++-------------
->  1 file changed, 13 insertions(+), 13 deletions(-)
 > 
-> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-> index 3f14dffb9669..490931b800ee 100644
-> --- a/drivers/firmware/Kconfig
-> +++ b/drivers/firmware/Kconfig
-> @@ -86,8 +86,8 @@ config EDD
->  	  BIOS tries boot from.  This information is then exported via sysfs.
->  
->  	  This option is experimental and is known to fail to boot on some
-> -          obscure configurations. Most disk controller BIOS vendors do
-> -          not yet implement this feature.
-> +	  obscure configurations. Most disk controller BIOS vendors do
-> +	  not yet implement this feature.
->  
->  config EDD_OFF
->  	bool "Sets default behavior for EDD detection to off"
-> @@ -99,14 +99,14 @@ config EDD_OFF
->  	  using the kernel parameter 'edd={on|skipmbr|off}'.
->  
->  config FIRMWARE_MEMMAP
-> -    bool "Add firmware-provided memory map to sysfs" if EXPERT
-> -    default X86
-> -    help
-> -      Add the firmware-provided (unmodified) memory map to /sys/firmware/memmap.
-> -      That memory map is used for example by kexec to set up parameter area
-> -      for the next kernel, but can also be used for debugging purposes.
-> +	bool "Add firmware-provided memory map to sysfs" if EXPERT
-> +	default X86
-> +	help
-> +	  Add the firmware-provided (unmodified) memory map to /sys/firmware/memmap.
-> +	  That memory map is used for example by kexec to set up parameter area
-> +	  for the next kernel, but can also be used for debugging purposes.
->  
-> -      See also Documentation/ABI/testing/sysfs-firmware-memmap.
-> +	  See also Documentation/ABI/testing/sysfs-firmware-memmap.
->  
->  config EFI_PCDP
->  	bool "Console device selection via EFI PCDP or HCDP table"
-> @@ -133,9 +133,9 @@ config EFI_PCDP
->  	  <http://www.dig64.org/specifications/> 
->  
->  config DMIID
-> -    bool "Export DMI identification via sysfs to userspace"
-> -    depends on DMI
-> -    default y
-> +	bool "Export DMI identification via sysfs to userspace"
-> +	depends on DMI
-> +	default y
->  	help
->  	  Say Y here if you want to query SMBIOS/DMI system identification
->  	  information from userspace through /sys/class/dmi/id/ or if you want
-> @@ -170,7 +170,7 @@ config ISCSI_IBFT
->  	select ISCSI_BOOT_SYSFS
->  	select ISCSI_IBFT_FIND if X86
->  	depends on ACPI && SCSI && SCSI_LOWLEVEL
-> -	default	n
-> +	default n
->  	help
->  	  This option enables support for detection and exposing of iSCSI
->  	  Boot Firmware Table (iBFT) via sysfs to userspace. If you wish to
 > 
+> 
+> First, is this a real problem?
+> If so, which module is exceeding the command line limit?
 
+On 2021-01-14 17:12, Masahiro Yamada wrote:
+> First, is this a real problem?
+> If so, which module is exceeding the command line limit?
 
--- 
-~Randy
-You can't do anything without having to do something else first.
--- Belefant's Law
+Mahesh & I appreciate all of the feedback.
+
+The issue is seen in an Android environment with an out-of-tree
+driver. The combination of long path names and a large number
+of source files is leading to the issue.
+
+Since Mahesh & I are not Kbuild gurus, is there an alternative
+solution to this issue?
+
+Jeff
+
+--
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
