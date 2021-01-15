@@ -2,81 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC62E2F760B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:58:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D17DC2F760D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729895AbhAOJ5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:57:51 -0500
-Received: from comms.puri.sm ([159.203.221.185]:39662 "EHLO comms.puri.sm"
+        id S1730627AbhAOJ5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:57:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726652AbhAOJ5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:57:49 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id D2699E019A;
-        Fri, 15 Jan 2021 01:57:09 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id cRSiXQdmOZD0; Fri, 15 Jan 2021 01:57:09 -0800 (PST)
-Subject: Re: [PATCH v4 4/5] arm64: dts: imx8mq: Add interconnect for lcdif
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     robh@kernel.org, festevam@gmail.com, catalin.marinas@arm.com,
-        will@kernel.org, georgi.djakov@linaro.org, cdleonard@gmail.com,
-        gregkh@linuxfoundation.org, kernel@pengutronix.de,
-        linux-imx@nxp.com, kernel@puri.sm, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210107121754.3295-1-martin.kepplinger@puri.sm>
- <20210107121754.3295-5-martin.kepplinger@puri.sm>
- <20210115094738.GL28365@dragon>
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-Message-ID: <71f61d0b-b09e-84e9-dd6e-77b89b09ba42@puri.sm>
-Date:   Fri, 15 Jan 2021 10:57:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-In-Reply-To: <20210115094738.GL28365@dragon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1728971AbhAOJ5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 04:57:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B46A523772;
+        Fri, 15 Jan 2021 09:57:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610704631;
+        bh=yeOWo8C3eKT6mSb+i4/tuEN2cQzZwDlH6c7HfpvI7S0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aMuufcOcIvdZ63FsK9gD320B2w2aKuWLZzNQc+dgLs67s+TnBi8rFAqKSOVELZTEO
+         lLHR0eNkmRbd9j/LAQds20iF06STgLm5j14Y8IDKByBTMn+Si5MOo4yiV6OMBngcyx
+         fc13e3jHMuwXWCnbEb0WvbpKMHvy2+TiW7shU7Cry/pBNY0V64gX3IctYirotA9Jc2
+         Pr93W0oVBbv2/OHmOFkrNIufhEzBJbLuT2JYHkAwPNWO5/LUqB6NDEwRpixjvrfrkz
+         PMbO5x1sCfGuIT3xDHdIaIYf1I6a55SDjOwWcKb5EWdrNAjCSH+O2QNe65QxvvBOC3
+         rJEaY5pGWlJyg==
+Date:   Fri, 15 Jan 2021 17:57:06 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, Li Yang <leoyang.li@nxp.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: fsl: add Kontron sl28 variant 1
+Message-ID: <20210115095705.GM28365@dragon>
+References: <20210111082134.24704-1-michael@walle.cc>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111082134.24704-1-michael@walle.cc>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 15.01.21 10:47, Shawn Guo wrote:
-> On Thu, Jan 07, 2021 at 01:17:53PM +0100, Martin Kepplinger wrote:
->> Add interconnect ports for lcdif to set bus capabilities.
->>
->> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
->> ---
->>   arch/arm64/boot/dts/freescale/imx8mq.dtsi | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
->> index 89e7de2e7f7a..9300be8c9b53 100644
->> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
->> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
->> @@ -11,6 +11,7 @@
->>   #include "dt-bindings/input/input.h"
->>   #include <dt-bindings/interrupt-controller/arm-gic.h>
->>   #include <dt-bindings/thermal/thermal.h>
->> +#include <dt-bindings/interconnect/imx8mq.h>
->>   #include "imx8mq-pinfunc.h"
->>   
->>   / {
->> @@ -522,6 +523,8 @@
->>   						  <&clk IMX8MQ_VIDEO_PLL1>,
->>   						  <&clk IMX8MQ_VIDEO_PLL1_OUT>;
->>   				assigned-clock-rates = <0>, <0>, <0>, <594000000>;
->> +				interconnects = <&noc IMX8MQ_ICM_LCDIF &noc IMX8MQ_ICS_DRAM>;
->> +				interconnect-names = "dram";
+On Mon, Jan 11, 2021 at 09:21:33AM +0100, Michael Walle wrote:
+> Add the a new variant for the Kontron SMARC-sAL28 board.
 > 
-> Hmm, two interconnect phandles but only one name?
-> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-Well it's one interconnect path that would more accurately be named 
-"lcdif-dram" if that's what you mean. I removed "lcdif-" because it's 
-the lcdif node, but maybe we should name it lcdif-dram after all. at 
-least that's how others describe it.
-
-                               martin
+Applied both, thanks.
