@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C869C2F831B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6961F2F8327
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387766AbhAORzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:55:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52296 "EHLO
+        id S1727599AbhAOR6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:58:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731791AbhAORzB (ORCPT
+        with ESMTP id S1725818AbhAOR6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:55:01 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8049EC0617A2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:53:37 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id w8so4465521wrv.18
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:53:37 -0800 (PST)
+        Fri, 15 Jan 2021 12:58:05 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FCADC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:57:25 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id n2so2608165iom.7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:57:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=2dy0JKUm8Du/4wd3SX5MxOAJub1HPeeRj+5dAQlPBLw=;
-        b=SmjPm6FsW6rI2GtXZD+Me7Hcyqy6ZeO5c7Ch1XxpfvE4CoGPdDUekkC1XvFdUq/VU/
-         55q1xclB04xecgUZEyOpy8ALlLH5r4q6JI24KDxQyQOzwEhjZNxIQ8FdfuX+vuQed4HZ
-         dqDhv7md5aQ4nebIWi1pur8eKObjTL9eZpwI4TGTtMReh0dN1inqr9MM+OfR1wpKDjXB
-         FEBGQJPwIfgFUyo7qLD3JY/j799yCZX3OYdi7wTVNrNX5UufE9tVRjgNej49yKTcbcEx
-         TzXJAtwdUSoaMxZTurgFNvTmwq0xSiZBoSzg4IBmgq6CyfNJS9mmPew8oRBYdKLXJMLn
-         d14Q==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=M5BcvnzgflJduEgKE2tu+RY63yJ/WtPEtTDr/c+TeE0=;
+        b=ZW5wj3+U+c90HGP5GaNhKJ2gsEvMj6pxKQrrnVzHqrsKDGbvbXy+wgKbBTxWeo0g/f
+         FZjdRxhnICm0GU8xIzBOydRTChXCzMLS9/aGuruWEJ/Ik0BUM+3llZlxz3xcwWenwfSo
+         ObeznzDrdtzgT/B1NaSsHrLyytHz9VkfwVEio=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=2dy0JKUm8Du/4wd3SX5MxOAJub1HPeeRj+5dAQlPBLw=;
-        b=gSxeSG/0DUpDggA4p5hMTwyUWUPl90t+owfR2v+5pWoyUsZnkoaIqxGxueCzZvEAfZ
-         B/P+7Ip9EFOdXWuVQ6s7Z9v1ikGoqppFfZ2fWQshtoxl1iskQiSCb/R2GWEiBJaWuDAx
-         ZNel98+VhCoOU+sUtk/XWn1aSRyvhV6K7bPc/BiCwopVd93fgBQ6MHQFc22OmaaPZOQ6
-         VbeN2+jn93qGt6uJH7PyOcXxJaPjTdDTf1755kqaWIB14FRlkfYpddroDvteqKCo8TLl
-         FjJI4qfTFdHTqp3OyaFr/mjl8RbO2LxuZ9QL6bGaIySraN2YGYbrAAga14yS8+ojA4P0
-         wPxQ==
-X-Gm-Message-State: AOAM532AB8isDy+89jndDnqfb49Tw4SLRF+/czHaKKYzwZk2DPuRDnfn
-        X2oos8SO0wfF2dxx06U083QLs090+ur3XQsc
-X-Google-Smtp-Source: ABdhPJzCwtvOzxt74tFT0Nofq6kJnl4VHr6DR4YDhi+J5CSjZSYFoWpWz8biVKm8VdLbGd8ieXVnEegP7FeBV4Rj
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a5d:51cc:: with SMTP id
- n12mr13912569wrv.375.1610733216075; Fri, 15 Jan 2021 09:53:36 -0800 (PST)
-Date:   Fri, 15 Jan 2021 18:52:52 +0100
-In-Reply-To: <cover.1610733117.git.andreyknvl@google.com>
-Message-Id: <25bd4fb5cae7b421d806a1f33fb633edd313f0c7.1610733117.git.andreyknvl@google.com>
-Mime-Version: 1.0
-References: <cover.1610733117.git.andreyknvl@google.com>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v4 15/15] kasan: don't run tests when KASAN is not enabled
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=M5BcvnzgflJduEgKE2tu+RY63yJ/WtPEtTDr/c+TeE0=;
+        b=iumzDpuSufLmHbyLQLI6Az9n3oYpIoaVomehxgZwIDQYbUMW82QU4UIZbElr636Hxb
+         ImI5m3HA2capkn1k7Mir1DrlckBNMN1ifumAqLeTdCsZt96UjoGBJf3HNQiyfHO+7KJE
+         pZpUIDYk8FnJeYit9Zh+J49tMmE6Jaipkcmxxt/r+JVG1SYh/frfq016ptEW8Xn2+kIT
+         8ENEXuSnQWba747Z6dJhNoAzV+9CPgXPsqDRfQ4Q2DJUHEYEF5MkUEfnCWTQZK974K9k
+         QJHR6358GsyBkqFxVT1q2aN7/WxUNItNDtgld4RXO+Cc+zkg6lFStXKz6tU0qsad1wCt
+         fVTg==
+X-Gm-Message-State: AOAM530QRtAcle+1qsTKXrdpmj5gvleDVnhjTxalMos4A+6zCbSLXVfG
+        eedo0mVkw1t3+pJoYP8j9BNGEQ==
+X-Google-Smtp-Source: ABdhPJwojGycUje7NlW8TGiVdxup+AVmyN/RuH9EDoAAE6grjW/n8pvUKxk7ZASjnBeUQ9Lu6ewI0Q==
+X-Received: by 2002:a92:4101:: with SMTP id o1mr12217020ila.82.1610733444929;
+        Fri, 15 Jan 2021 09:57:24 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id i4sm1610172ios.54.2021.01.15.09.57.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Jan 2021 09:57:24 -0800 (PST)
+Subject: Re: [PATCH -next] usb: usbip: Use DEFINE_SPINLOCK() for spinlock
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        valentina.manea.m@gmail.com, shuah@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201223141431.835-1-zhengyongjun3@huawei.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <de699446-4f00-ce6a-4dfb-1f95669325f1@linuxfoundation.org>
+Date:   Fri, 15 Jan 2021 10:57:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20201223141431.835-1-zhengyongjun3@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't run KASAN tests when it's disabled with kasan.mode=off to avoid
-corrupting kernel memory.
+On 12/23/20 7:14 AM, Zheng Yongjun wrote:
+> spinlock can be initialized automatically with DEFINE_SPINLOCK()
+> rather than explicitly calling spin_lock_init().
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>   drivers/usb/usbip/stub_main.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/usbip/stub_main.c b/drivers/usb/usbip/stub_main.c
+> index c1c0bbc9f8b1..77a5b3f8736a 100644
+> --- a/drivers/usb/usbip/stub_main.c
+> +++ b/drivers/usb/usbip/stub_main.c
+> @@ -23,7 +23,7 @@ struct kmem_cache *stub_priv_cache;
+>    */
+>   #define MAX_BUSID 16
+>   static struct bus_id_priv busid_table[MAX_BUSID];
+> -static spinlock_t busid_table_lock;
+> +static DEFINE_SPINLOCK(busid_table_lock);
+>   
+>   static void init_busid_table(void)
+>   {
+> @@ -35,8 +35,6 @@ static void init_busid_table(void)
+>   	 */
+>   	memset(busid_table, 0, sizeof(busid_table));
+>   
+> -	spin_lock_init(&busid_table_lock);
+> -
+>   	for (i = 0; i < MAX_BUSID; i++)
+>   		spin_lock_init(&busid_table[i].busid_lock);
+>   }
+> 
 
-Link: https://linux-review.googlesource.com/id/I6447af436a69a94bfc35477f6bf4e2122948355e
-Reviewed-by: Marco Elver <elver@google.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- lib/test_kasan.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 4ba7461210fd..d16ec9e66806 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -47,6 +47,11 @@ static bool multishot;
-  */
- static int kasan_test_init(struct kunit *test)
- {
-+	if (!kasan_enabled()) {
-+		kunit_err(test, "can't run KASAN tests with KASAN disabled");
-+		return -1;
-+	}
-+
- 	multishot = kasan_save_enable_multi_shot();
- 	hw_set_tagging_report_once(false);
- 	return 0;
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
+Sorry for the delay on this.
 
+Looks good to me.
+
+Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
