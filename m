@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657EA2F7A6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8EBD2F7AA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:52:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388055AbhAOMte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:49:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
+        id S2388484AbhAOMwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:52:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387878AbhAOMta (ORCPT
+        with ESMTP id S2388464AbhAOMwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:49:30 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A459C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:48:50 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id cq1so4999732pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:48:50 -0800 (PST)
+        Fri, 15 Jan 2021 07:52:21 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDF2C0617A2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:51:11 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id y12so5012065pji.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:51:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IwEZ0vJjMhibVYpx1I3U5rxwVwXQCQH8qptIRt+vn6E=;
-        b=Nf+g+CufTKuWQeJMV9uHdSlZksBUQk17DZIgfQCyiWAqye1BgqcFBpCzSjIXheeO0h
-         cSp343LeRF+qD7fG5DZ6x4DOUcSJ8p/QXc9yl16Qy26PXHZa+Dd3UJHqIkXXJeutXsdP
-         50g7slIbR+WAKAPoyAHAYZkNEHB42kapJINggrprDYbe1f/dnNPXsV1IYoOSbopM4N9m
-         mjaRSuiawq0qxVFMPn4KYG/LAEtOwXIh1b9uBLPJ4zujCvyDvnFNF5ltQFGusVXO5FIb
-         oUpR6ggYs7WWdp978cZgRrK5Hw/W/iAUxp7QfmtlHCdeDKDo47nQVYgr2EaM4Zz+LS2M
-         lsUg==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IPCzXvOwrnZkqLvyZVOoqWzerct2EqEDkQMCnuc7Cu8=;
+        b=0x7cx/5dC8pxmoxDsnIUUf+gNFBkMpJdkaTqyfYvreAwfVxnXYgd9JdJzP/sHvAq1L
+         rYlCgzbbOUMCfL56+z/cA8dR6hPsj9dNJW4hhQPdRZ4Uj8Mg8pFQx9K1wL4xNzcyDReD
+         ziXP3lMegKhcoawHbff5j7bg/HKBeKSy85x2kDwxrZ7s7tl3Z/srzjCv207p2Q5F/+k4
+         0cVoCzVXdkcJzy1BO5cSPv4NqEwrc4qUwWyOvwTQG83m1cthhwt8FfNgghSCEz38gFhp
+         w+vPkJ9uD8UKuhCyLliR1FADPvZqXe+SCZ+xSW/JrL2dZcR6H0BNr8SeCk9SfN1d7YV8
+         QknQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IwEZ0vJjMhibVYpx1I3U5rxwVwXQCQH8qptIRt+vn6E=;
-        b=FUHAPYiMq5DQzS5fk5Lu+tH+EAp4CnOKojvSQeHYFMiRSz0dyutp7U5GEwtOadyoyo
-         YbLAzf2lGoPfc85u5h2SaDS/RTMhN1/jbH01lqs3gmbxtNEa8tZL3x36Ig5MednCJapP
-         Fu905snG6FME9slQv3MrQ6twvDrq/dabprN3nZEysVZFVBEtGwoaEpOnDGbtMlHTBkxl
-         pTqn7V0LQ3K3rDqfxMU3vfy146G1b3twEUWvTyeEYG+Bm27pzCvBLYRDrXhSxky+VPXY
-         XomA610SHZKmAwyP+eIAdUA+3g6kv5/ODsWAevw/PCLBi1yNpbBserQUtr/xXEugi57D
-         BSiA==
-X-Gm-Message-State: AOAM532yJlct9frydT4h5ABkFqKx9RWxYbOvsiBDU3vn1db7f7/ripZe
-        J4FmgTyFsB5jvL5uLiPsypjzBhbX1She5+Z60VIOaA==
-X-Google-Smtp-Source: ABdhPJxHhwtCYNkaIcLQzrs1mT8U40yWsSHAGn1Ly0f4oZqippoLTkuqzC11rJfiFXZYQ9/Ni2wegco99FQ/U0bJ4Ew=
-X-Received: by 2002:a17:902:ff06:b029:de:362c:bd0b with SMTP id
- f6-20020a170902ff06b02900de362cbd0bmr11764451plj.13.1610714929783; Fri, 15
- Jan 2021 04:48:49 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IPCzXvOwrnZkqLvyZVOoqWzerct2EqEDkQMCnuc7Cu8=;
+        b=bEEiys2v5Wc4OBD8T1KAKlzgYUpIykEoFKEtuyHA05hPHLLwkS2DVCD+st/+b1r3NR
+         kTn2Ykf7sy+4VhzZcAvGrgWpOlLhx8PszTgGiYrsN84LgQ7AeSVt4APl+zvmYUAxEZf+
+         1EvEmAAV+ccSay+gvQPp6/hyFkGI67hmeMVmI4BG5C7/EPtPeK277N5PqmHWpN+c1SM4
+         o9JBUBGO7jWgFRkLHNSBIqd5l8bpsLzgjU3tjFrQwdUtOv5H6JPLBwMg2aUjXhGtU/nK
+         7lLn9eqjcHNPZPLvkWyJsWKART4GQE7K3KFZToOAvBHGnGCO33myeBw+zF29w8qgqFhl
+         w4UQ==
+X-Gm-Message-State: AOAM531LTca8kFTYIP5NfDVZrya4BnyV8MqpkY9XGbdOTxU3QKsSUq3D
+        WuTXe0p7YYpVrApvkSwaBTJPzQ==
+X-Google-Smtp-Source: ABdhPJy9y+rHRzFwuqeeRQZ7KcDvmHYHqAhEJk4exk+lxWw0lhRz9aav80LU7wYxEk8u9XgAVwRCCg==
+X-Received: by 2002:a17:902:8c89:b029:dc:1e79:e74b with SMTP id t9-20020a1709028c89b02900dc1e79e74bmr12378937plo.58.1610715070775;
+        Fri, 15 Jan 2021 04:51:10 -0800 (PST)
+Received: from localhost.localdomain ([139.177.225.247])
+        by smtp.gmail.com with ESMTPSA id c5sm8193600pjo.4.2021.01.15.04.51.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 15 Jan 2021 04:51:09 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
+Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v6 0/5] Fix some bugs about HugeTLB code
+Date:   Fri, 15 Jan 2021 20:49:37 +0800
+Message-Id: <20210115124942.46403-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-References: <cover.1610652791.git.andreyknvl@google.com> <3d9e6dece676e9da49d9913c78fd647db7dad552.1610652791.git.andreyknvl@google.com>
- <20210115104945.GB16707@gaia>
-In-Reply-To: <20210115104945.GB16707@gaia>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 15 Jan 2021 13:48:38 +0100
-Message-ID: <CAAeHK+w49og7TTfwA3MdySkXsc0ndNYDNTO2o2YTo=kqb7U3Fw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] kasan, arm64: fix pointer tags in KASAN reports
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 11:49 AM Catalin Marinas
-<catalin.marinas@arm.com> wrote:
->
-> On Thu, Jan 14, 2021 at 08:33:57PM +0100, Andrey Konovalov wrote:
-> > As of the "arm64: expose FAR_EL1 tag bits in siginfo" patch, the address
-> > that is passed to report_tag_fault has pointer tags in the format of 0x0X,
-> > while KASAN uses 0xFX format (note the difference in the top 4 bits).
-> >
-> > Fix up the pointer tag before calling kasan_report.
-> >
-> > Link: https://linux-review.googlesource.com/id/I9ced973866036d8679e8f4ae325de547eb969649
-> > Fixes: dceec3ff7807 ("arm64: expose FAR_EL1 tag bits in siginfo")
-> > Fixes: 4291e9ee6189 ("kasan, arm64: print report from tag fault handler")
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > ---
-> >  arch/arm64/mm/fault.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> > index 3c40da479899..a218f6f2fdc8 100644
-> > --- a/arch/arm64/mm/fault.c
-> > +++ b/arch/arm64/mm/fault.c
-> > @@ -304,6 +304,8 @@ static void report_tag_fault(unsigned long addr, unsigned int esr,
-> >  {
-> >       bool is_write  = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
-> >
-> > +     /* The format of KASAN tags is 0xF<x>. */
-> > +     addr |= (0xF0UL << MTE_TAG_SHIFT);
-> >       /*
-> >        * SAS bits aren't set for all faults reported in EL1, so we can't
-> >        * find out access size.
->
-> I already replied here but I don't see any change in v2:
->
-> https://lore.kernel.org/linux-arm-kernel/20210113165441.GC27045@gaia/
+This patch series aims to fix some bugs and add some improvements.
 
-Hi Catalin,
+Changelog since v5 -> v6:
+ - Simplify patch #3 and update commit changelog.
 
-Sorry, Gmail decided to mark all your emails as spam for some reason,
-so I didn't see any of them :(
+Changelog since v4 -> v5:
+ - Squash "mm: hugetlb: retry dissolve page when hitting race"
+   to "mm: hugetlb: fix a race between freeing and dissolving the page"
 
-I'll fix this in v3.
+Changelog since v3 -> v4:
+  - Update commit log of patch #1.
+  - Drop "mm: hugetlb: add return -EAGAIN for dissolve_free_huge_page"
+  - Add "mm: hugetlb: retry dissolve page when hitting race"
 
-Thanks!
+Changelog since v2 -> v3:
+  - Update commit log.
+  - Using head[3].private to indicate the page is freed in patch #3.
+
+Changelog since v1 -> v2:
+  - Export set_page_huge_active() in patch #2 to fix.
+  - Using head[3].mapping to indicate the page is freed in patch #3.
+  - Flush @free_hpage_work in patch #4.
+
+Muchun Song (5):
+  mm: migrate: do not migrate HugeTLB page whose refcount is one
+  mm: hugetlbfs: fix cannot migrate the fallocated HugeTLB page
+  mm: hugetlb: fix a race between freeing and dissolving the page
+  mm: hugetlb: fix a race between isolating and freeing page
+  mm: hugetlb: remove VM_BUG_ON_PAGE from page_huge_active
+
+ fs/hugetlbfs/inode.c    |  3 ++-
+ include/linux/hugetlb.h |  2 ++
+ mm/hugetlb.c            | 48 +++++++++++++++++++++++++++++++++++++++++++-----
+ mm/migrate.c            |  6 ++++++
+ 4 files changed, 53 insertions(+), 6 deletions(-)
+
+-- 
+2.11.0
+
