@@ -2,139 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AE12F870A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6ED2F871C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388058AbhAOVBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 16:01:03 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:59434 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733195AbhAOVBA (ORCPT
+        id S2388653AbhAOVCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 16:02:39 -0500
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:17836 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388647AbhAOVCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 16:01:00 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10FKwSrX040711;
-        Fri, 15 Jan 2021 14:58:28 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1610744308;
-        bh=Sc+E12C0KeMsBR6ZQgAShxwFlyogleIJrGrKpJQw9+I=;
-        h=From:To:CC:Subject:Date;
-        b=hAMQdGnvcb+3/Pvup+bHNMIKe6CD91W4IfLTwa0vehyzv+7A0+jJ3V5ZPwVva9WU0
-         0F59yFvUzIPWjpaXMSBSTPxuwOzMWAgu9bEJLhHBfy7V/EHerB2wsLJZYqnxRfrFIG
-         qcj5rMx0D804of+T5c8Jy29RitVo/nGntMGo5h+U=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10FKwSQs041781
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 15 Jan 2021 14:58:28 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
- Jan 2021 14:58:28 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 15 Jan 2021 14:58:28 -0600
-Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10FKwSCL042823;
-        Fri, 15 Jan 2021 14:58:28 -0600
-Received: from localhost ([10.250.34.42])
-        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 10FKwRS9077904;
-        Fri, 15 Jan 2021 14:58:28 -0600
-From:   Suman Anna <s-anna@ti.com>
-To:     Rob Herring <robh+dt@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-CC:     Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        David Lechner <david@lechnology.com>,
-        <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Suman Anna <s-anna@ti.com>
-Subject: [PATCH] dt-bindings: irqchip: Add #address-cells to PRUSS INTC
-Date:   Fri, 15 Jan 2021 14:58:19 -0600
-Message-ID: <20210115205819.19426-1-s-anna@ti.com>
-X-Mailer: git-send-email 2.29.2
+        Fri, 15 Jan 2021 16:02:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1610744308;
+        s=strato-dkim-0002; d=gerhold.net;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Subject:Sender;
+        bh=uB/tpfMBdiRL3si0IpHoGQcyStjWnMUZmLDyQ3lyu3U=;
+        b=mJikrieCu/bAMJmAWhKnSnOPz89vFTkHNwMJSoyMUgYBVv1P51qTGocjxR6pf0p8Xv
+        09JsTOwgCkqywtICVmSbNAPt6Gcs7svqJWh0Mvo7jDEPxKBUbpUhkBtFk06fOdzLzlvC
+        1aKRSB9J1TJ0QyAoAD+hPfvmRdSsPacWn4+5UkhFrqMPePXqCRLOFJjTGkJgpuMBKcoW
+        Yi1vSxYNuLTRns1Nw2zwlZHDNG22OOcCotarmn5Xd/M2b0Zew+4GUCWO+S5qu5bydNvW
+        sPLhc6kFeFV58sBRGliKn6xxLOdC9bEZNpEQOVOpI2HBHhn3Trk/v11OtJNjCZX4vbaR
+        uisA==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j9Ic/Cboo="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
+        with ESMTPSA id R0a218x0FKwSsMX
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Fri, 15 Jan 2021 21:58:28 +0100 (CET)
+Date:   Fri, 15 Jan 2021 21:58:21 +0100
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH] driver core: Extend device_is_dependent()
+Message-ID: <YAIB7QYibwwRZ039@gerhold.net>
+References: <2073294.4OfjquceTg@kreacher>
+ <CAGETcx980TXe_Jur3LqpWoMwt0wG9BBvVdXfhAo3jU8-tgv=kw@mail.gmail.com>
+ <YAFmoinbKocE9Jf5@gerhold.net>
+ <CAJZ5v0hgmrN_zWBrX7FsfP=7mZHf_BYm+Qe+E3Ti4k0mK7t2MA@mail.gmail.com>
+ <CAGETcx_A9YLmiMeizsrJEcdTMSZpJU03twAdRSdGeco83Z5uCQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx_A9YLmiMeizsrJEcdTMSZpJU03twAdRSdGeco83Z5uCQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The '#address-cells' property looks to be a required property for
-interrupt controller nodes as indicated by a warning message seen
-when building dtbs with W=2. Adding the property to the PRUSS INTC
-dts nodes though fails the dtbs_check. Add this property to the
-PRUSS INTC binding to make it compliant with both dtbs_check and
-building dtbs.
+On Fri, Jan 15, 2021 at 09:20:54AM -0800, Saravana Kannan wrote:
+> On Fri, Jan 15, 2021 at 5:03 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > On Fri, Jan 15, 2021 at 11:03 AM Stephan Gerhold <stephan@gerhold.net> wrote:
+> > > On Thu, Jan 14, 2021 at 11:31:12AM -0800, Saravana Kannan wrote:
+> > > > On Thu, Jan 14, 2021 at 10:41 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> > > > >
+> > > > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > > >
+> > > > > When adding a new device link, device_is_dependent() is used to
+> > > > > check whether or not the prospective supplier device does not
+> > > > > depend on the prospective consumer one to avoid adding loops
+> > > > > to the graph of device dependencies.
+> > > > >
+> > > > > However, device_is_dependent() does not take the ancestors of
+> > > > > the target device into account, so it may not detect an existing
+> > > > > reverse dependency if, for example, the parent of the target
+> > > > > device depends on the device passed as its first argument.
+> > > > >
+> > > > > For this reason, extend device_is_dependent() to also check if
+> > > > > the device passed as its first argument is an ancestor of the
+> > > > > target one and return 1 if that is the case.
+> > > > >
+> > > > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > > > Reported-by: Stephan Gerhold <stephan@gerhold.net>
+> > > > > ---
+> > > > >  drivers/base/core.c |   12 +++++++++++-
+> > > > >  1 file changed, 11 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > Index: linux-pm/drivers/base/core.c
+> > > > > ===================================================================
+> > > > > --- linux-pm.orig/drivers/base/core.c
+> > > > > +++ linux-pm/drivers/base/core.c
+> > > > > @@ -208,6 +208,16 @@ int device_links_read_lock_held(void)
+> > > > >  #endif
+> > > > >  #endif /* !CONFIG_SRCU */
+> > > > >
+> > > > > +static bool device_is_ancestor(struct device *dev, struct device *target)
+> > > > > +{
+> > > > > +       while (target->parent) {
+> > > > > +               target = target->parent;
+> > > > > +               if (dev == target)
+> > > > > +                       return true;
+> > > > > +       }
+> > > > > +       return false;
+> > > > > +}
+> > > > > +
+> > > > >  /**
+> > > > >   * device_is_dependent - Check if one device depends on another one
+> > > > >   * @dev: Device to check dependencies for.
+> > > > > @@ -221,7 +231,7 @@ int device_is_dependent(struct device *d
+> > > > >         struct device_link *link;
+> > > > >         int ret;
+> > > > >
+> > > > > -       if (dev == target)
+> > > > > +       if (dev == target || device_is_ancestor(dev, target))
+> > > > >                 return 1;
+> > > > >
+> > > > >         ret = device_for_each_child(dev, target, device_is_dependent);
+> > > > >
+> > > >
+> > > > The code works, but it's not at all obvious what it's doing. Because,
+> > > > at first glance, it's easy to mistakenly think that it's trying to
+> > > > catch this case:
+> > > > dev <- child1 <- child2 <- target
+> > > >
+> > >
+> > > Isn't this pretty much the case we are trying to catch? I have:
+> > >
+> > >   78d9000.usb <- ci_hdrc.0 <- ci_hdrc.0.ulpi <- phy-ci_hdrc.0.ulpi.0
+> > >
+> > > then something attempts to create a device link with
+> > > consumer = 78d9000.usb, supplier = phy-ci_hdrc.0.ulpi.0, and to check if
+> > > that is allowed we call device_is_dependent() with dev = 78d9000.usb,
+> > > target = phy-ci_hdrc.0.ulpi.0.
+> > >
+> > > Note that this case would normally be covered by the device_for_each_child().
+> > > It's not in this case because the klist_children of 78d9000.usb
+> > > is updated too late.
+> >
+> > Exactly.
+> 
+> Stephan,
+> 
+> What device/driver is this? Is this a dwc3 device/driver? That driver
+> does some weird/incorrect stuff the last time I checked.
+> 
 
-Signed-off-by: Suman Anna <s-anna@ti.com>
----
-Hi Rob,
+I described my situation in this mail thread:
+https://lore.kernel.org/lkml/X%2FycQpu7NIGI969v@gerhold.net/
 
-This patch is also part of our effort to get rid of the warnings seen
-around interrupt providers on TI K3 dtbs [1]. I needed this in the PRUSS
-INTC bindings to not get a warning with dtbs_check while also ensuring
-no warnings while building dtbs with W=2.
+It's USB, but chipidea on apq8016-sbc in this case. The situation is
+definitely kind of weird, but not sure if it is wrong per-se.
 
-I would have expected the '#address-cells' requirement to be inherited
-automatically. And looking through the schema files, I actually do not
-see the interrupt-controller.yaml included automatically anywhere. You
-had asked us to drop the inclusion in this binding in our first version
-with YAML [3]. Am I missing something, and how do we ensure that this
-is enforced automatically for everyone?
-
-regards
-Suman
-
-[1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210115083003.27387-1-lokeshvutla@ti.com/
-[2] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210114194805.8231-1-s-anna@ti.com/
-[3] https://patchwork.kernel.org/comment/23484523/
-
- .../bindings/interrupt-controller/ti,pruss-intc.yaml        | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml b/Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
-index c2ce215501a5..dcbfe08e997d 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
-@@ -79,6 +79,9 @@ properties:
-       mapping and channels to host interrupts so through this property entire
-       mapping is provided.
- 
-+  "#address-cells":
-+    const: 0
-+
-   ti,irqs-reserved:
-     $ref: /schemas/types.yaml#/definitions/uint8
-     description: |
-@@ -100,6 +103,7 @@ required:
-   - interrupt-names
-   - interrupt-controller
-   - "#interrupt-cells"
-+  - "#address-cells"
- 
- additionalProperties: false
- 
-@@ -123,6 +127,7 @@ examples:
-                               "host_intr6", "host_intr7";
-             interrupt-controller;
-             #interrupt-cells = <3>;
-+            #address-cells = <0>;
-         };
-     };
- 
-@@ -142,6 +147,7 @@ examples:
-             reg = <0x20000 0x2000>;
-             interrupt-controller;
-             #interrupt-cells = <3>;
-+            #address-cells = <0>;
-             interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>,
-                    <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>,
-                    <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>,
--- 
-2.29.2
-
+Thanks,
+Stephan
