@@ -2,65 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300D92F7658
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:13:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 564AC2F7664
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729398AbhAOKMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 05:12:10 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:36679 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbhAOKMI (ORCPT
+        id S1729896AbhAOKOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 05:14:35 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10661 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728260AbhAOKOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 05:12:08 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l0M4k-0001qH-O4; Fri, 15 Jan 2021 10:11:26 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] media: venus: Fix uninitialized variable count being checked for zero
-Date:   Fri, 15 Jan 2021 10:11:26 +0000
-Message-Id: <20210115101126.9668-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        Fri, 15 Jan 2021 05:14:35 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DHH744pPGz15tPQ;
+        Fri, 15 Jan 2021 18:12:48 +0800 (CST)
+Received: from DESKTOP-5IS4806.china.huawei.com (10.174.184.42) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 15 Jan 2021 18:13:40 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+CC:     Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+Subject: [RESEND PATCH v2 0/2] vfio/iommu_type1: some fixes
+Date:   Fri, 15 Jan 2021 18:13:19 +0800
+Message-ID: <20210115101321.12084-1-zhukeqian1@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+changelog:
 
-In the case where plat->codecs is NULL the variable count is uninitialized
-but is being checked to see if it is 0. Fix this by initializing
-count to 0.
+v2:
+ - Address suggestions from Alex.
+ - Remove unnecessary patches.
 
-Addresses-Coverity: ("Uninitialized scalar variable")
-Fixes: e29929266be1 ("media: venus: Get codecs and capabilities from hfi platform")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/media/platform/qcom/venus/hfi_parser.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Keqian Zhu (2):
+  vfio/iommu_type1: Populate full dirty when detach non-pinned group
+  vfio/iommu_type1: Sanity check pfn_list when remove vfio_dma
 
-diff --git a/drivers/media/platform/qcom/venus/hfi_parser.c b/drivers/media/platform/qcom/venus/hfi_parser.c
-index 2c63988cb321..7263c0c32695 100644
---- a/drivers/media/platform/qcom/venus/hfi_parser.c
-+++ b/drivers/media/platform/qcom/venus/hfi_parser.c
-@@ -232,7 +232,7 @@ static int hfi_platform_parser(struct venus_core *core, struct venus_inst *inst)
- {
- 	const struct hfi_platform *plat;
- 	const struct hfi_plat_caps *caps = NULL;
--	u32 enc_codecs, dec_codecs, count;
-+	u32 enc_codecs, dec_codecs, count = 0;
- 	unsigned int entries;
- 
- 	if (inst)
+ drivers/vfio/vfio_iommu_type1.c | 42 +++++++++++++++++----------------
+ 1 file changed, 22 insertions(+), 20 deletions(-)
+
 -- 
-2.29.2
+2.19.1
 
