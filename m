@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158FD2F6FCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:02:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7888A2F6FD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbhAOBBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 20:01:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60186 "EHLO
+        id S1731340AbhAOBFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 20:05:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726215AbhAOBBs (ORCPT
+        with ESMTP id S1725601AbhAOBFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 20:01:48 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A333C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 17:01:08 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id i7so4941536pgc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 17:01:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l3WeFaKNJEz4OecO9N42Dpu4fB89NTF5qv7y1AdEYTM=;
-        b=tSNS1CnMXMY4MD92ZyP8uZtFqK6+/HTf0XPlBgegGtQ9XePOsTqRlN7z6ukXZLrTF+
-         vo6nqJpSDJu2YaS/EfmTWPumeIlAl6mQZBpvsEWZHm721/C2DwEs6VneiFjx3bLmb49i
-         xYQ+oyNKFiPzgci073pFC6IeUn8YYJWCkQBdOJu3AMk6Jfok4VCGLgMnP2mFOCQU9o61
-         02QLwfK8Tov9cBFW/fdWSya9NPrqk0r7EcAtCIl3zZnCMmviFTK1GrhKkfs0u9iGmpOV
-         Oi0sA0UlMK3WcFDUReNKxZxWWgFF2ejJE1DkxrTAyD2Hf4/bxSuAl/eDKxlFCojxjtWQ
-         dD3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l3WeFaKNJEz4OecO9N42Dpu4fB89NTF5qv7y1AdEYTM=;
-        b=UJq/nWb4HWnU0+dDQCZuglr2JPGUoToAEHYx0f4NjetTS/btt7GLEnC9duvineClSF
-         naZ/d+5AbVPSpLaYLYLeva0MRKEmlgDdJMYCL4TUkksH1wUC/9vSxX9A7i9ZsPou/Dvj
-         jvW5Q9exVF3zqLEs4R/xThAL4yjMsjalwEcAfd0dNfHjikVwLZV7n3TpWzhI6AF1sePu
-         f+2cscml4iMCUCBprp19QtxudQQ1d+F4r2PwIBoTvGffH3N8j7QifMKxxkbqwng97zgr
-         UeYuNH66WWCMT/8K4ewN5aieQK0m3Z4/vorwozMTZYrPPnizmKoqm8QhW90SSEYThTqP
-         NYhA==
-X-Gm-Message-State: AOAM532SMWVUlNsmulM8YXbovGV0VZ4OfQr/T4CYnAPWl1nhL6N/cSnO
-        0ELNyU0tG/hfLRnrR4XDBzwPc1028/NUy1Bn1EMLUQ==
-X-Google-Smtp-Source: ABdhPJzfndZUuw1upmwGox7mHE72uLgE5zPIjFF+9u35KdDGolzTQHRIumBQs7SsVzvAJ81KsLR9Qgvi/6jR4L1Ftcw=
-X-Received: by 2002:a63:1f47:: with SMTP id q7mr10190029pgm.10.1610672467320;
- Thu, 14 Jan 2021 17:01:07 -0800 (PST)
+        Thu, 14 Jan 2021 20:05:20 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA94C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 17:04:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=qY+CkCHRGl9LOcAvXik6WpT34BRPumsfSy89odTjTik=; b=WSFv3EaezNQQhb/outZsk18btJ
+        kVHSbOkvBaXJJXQFxWOHD2IYWVsxc3SWBcd/buW+tNfWjfeAd0x8fKMRundLB4sfcifyXLIY4kWuJ
+        qkueyzna1TC6zGWppzppMFb3qCYe3cAQs0u1R/kFmhQ/eTaUeYpzyJ31PuTcgTTpuaimNnfZsJtMH
+        P0h1gVhaMa6KhmztAl+uP6sUZVRH53ifhpkUrreSZ3S4MHxTXG/Y/nbtj95Hv9Tshyu3M7dgX9xYq
+        Ecehl3wRO1U7DdF7vOpAeSCVTgF7eJ1Qbww6C8qYL+JJt5W5RQGUc7bMwDu2Ojy1q+VDSsqYmogy7
+        nmkT1Tbw==;
+Received: from [2601:1c0:6280:3f0::9abc] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l0DXR-0002pq-F4; Fri, 15 Jan 2021 01:04:30 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH] arm: OABI compat: fix build when EPOLL is not enabled
+Date:   Thu, 14 Jan 2021 17:04:23 -0800
+Message-Id: <20210115010423.30127-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <1610500731-30960-2-git-send-email-jjohnson@codeaurora.org> <1610660990-18812-1-git-send-email-jjohnson@codeaurora.org>
-In-Reply-To: <1610660990-18812-1-git-send-email-jjohnson@codeaurora.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 14 Jan 2021 17:00:56 -0800
-Message-ID: <CAKwvOdnfm9XvKsgn30HSUYoCSibHND-JSTqNH0yU7bfpYog_3w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] kbuild: handle excessively long argument lists
-To:     Jeff Johnson <jjohnson@codeaurora.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Elliot Berman <eberman@quicinc.com>,
-        Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 1:50 PM Jeff Johnson <jjohnson@codeaurora.org> wrote:
->
-> From: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
->
-> Modules with a large number of compilation units may be
-> exceeding AR and LD command argument list. Handle this gracefully by
-> writing the long argument list in a file. The command line options
-> read from file are inserted in place of the original @file option.
->
-> The usage is well documented at
-> https://www.gnu.org/software/make/manual/html_node/File-Function.html
->
-> Signed-off-by: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
-> Signed-off-by: Jeff Johnson <jjohnson@codeaurora.org>
-> ---
->
-> Changes in v2:
->   - Remove spurious endif
->
-> scripts/Makefile.build | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> index 252b7d2..787dca2 100644
-> --- a/scripts/Makefile.build
-> +++ b/scripts/Makefile.build
-> @@ -425,7 +425,10 @@ $(obj)/lib.a: $(lib-y) FORCE
->  # module is turned into a multi object module, $^ will contain header file
->  # dependencies recorded in the .*.cmd file.
->  quiet_cmd_link_multi-m = LD [M]  $@
-> -      cmd_link_multi-m = $(LD) $(ld_flags) -r -o $@ $(filter %.o,$^)
-> +      cmd_link_multi-m =                                       \
-> +       $(file >$@.in,$(filter %.o,$^))                         \
-> +       $(LD) $(ld_flags) -r -o $@ @$@.in;                      \
-> +       rm -f $@.in
+When CONFIG_EPOLL is not set/enabled, sys_oabi-compat.c has build
+errors. Fix these by surrounding them with ifdef CONFIG_EPOLL/endif
+and providing stubs for the "EPOLL is not set" case.
 
-The GNU Make docs linked above use an `@` before the invocation of
-`rm`. I don't know what that's about, but that or even this patch
-doesn't affect my ability to build negatively. LGTM
+../arch/arm/kernel/sys_oabi-compat.c: In function 'sys_oabi_epoll_ctl':
+../arch/arm/kernel/sys_oabi-compat.c:257:6: error: implicit declaration of function 'ep_op_has_event' [-Werror=implicit-function-declaration]
+  257 |  if (ep_op_has_event(op) &&
+      |      ^~~~~~~~~~~~~~~
+../arch/arm/kernel/sys_oabi-compat.c:264:9: error: implicit declaration of function 'do_epoll_ctl'; did you mean 'sys_epoll_ctl'? [-Werror=implicit-function-declaration]
+  264 |  return do_epoll_ctl(epfd, op, fd, &kernel, false);
+      |         ^~~~~~~~~~~~
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Fixes: c281634c8652 ("ARM: compat: remove KERNEL_DS usage in sys_oabi_epoll_ctl()")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com> # from an lkp .config file
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: Nicolas Pitre <nico@fluxnic.net>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+---
+v2: use correct Fixes: tag (thanks, rmk)
 
->
->  $(multi-used-m): FORCE
->         $(call if_changed,link_multi-m)
-> --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
->
+ arch/arm/kernel/sys_oabi-compat.c |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-
--- 
-Thanks,
-~Nick Desaulniers
+--- linux-next-20201214.orig/arch/arm/kernel/sys_oabi-compat.c
++++ linux-next-20201214/arch/arm/kernel/sys_oabi-compat.c
+@@ -248,6 +248,7 @@ struct oabi_epoll_event {
+ 	__u64 data;
+ } __attribute__ ((packed,aligned(4)));
+ 
++#ifdef CONFIG_EPOLL
+ asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
+ 				   struct oabi_epoll_event __user *event)
+ {
+@@ -298,6 +299,20 @@ asmlinkage long sys_oabi_epoll_wait(int
+ 	kfree(kbuf);
+ 	return err ? -EFAULT : ret;
+ }
++#else
++asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
++				   struct oabi_epoll_event __user *event)
++{
++	return -EINVAL;
++}
++
++asmlinkage long sys_oabi_epoll_wait(int epfd,
++				    struct oabi_epoll_event __user *events,
++				    int maxevents, int timeout)
++{
++	return -EINVAL;
++}
++#endif
+ 
+ struct oabi_sembuf {
+ 	unsigned short	sem_num;
