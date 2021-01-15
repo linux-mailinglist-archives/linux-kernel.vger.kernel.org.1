@@ -2,189 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19AE2F74CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FD42F74D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728678AbhAOJBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:01:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23685 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726455AbhAOJBI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:01:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610701182;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l2L9yzM5LJmwEO/nUBz4NvmNEiJLnioU/dsXzw7Xd5A=;
-        b=RuQstlgcLc/7ryGvfHGM4fPRXAq9csg75h1O316+mzGypkN6THz3/AzlA4A6O1dIxvD3QB
-        5mkFV5yPRTD5IPkWMniBBfhJn9/cLetGPa004LXE0SbHTAAkXWOF9UMKenWTOdAazz3L7y
-        BSnfscAuEwTXZbpViulDt6w6vk1XPUE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-128-MYXvcpmQPYq3qO-QYdWOdw-1; Fri, 15 Jan 2021 03:59:38 -0500
-X-MC-Unique: MYXvcpmQPYq3qO-QYdWOdw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 980ED1572D;
-        Fri, 15 Jan 2021 08:59:35 +0000 (UTC)
-Received: from [10.36.112.11] (ovpn-112-11.ams2.redhat.com [10.36.112.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 428FA77718;
-        Fri, 15 Jan 2021 08:59:24 +0000 (UTC)
-Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
-To:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Yu Zhao <yuzhao@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
-References: <20210110004435.26382-1-aarcange@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <bb071419-bf40-c5ed-4b2d-d5eb03031b0a@redhat.com>
-Date:   Fri, 15 Jan 2021 09:59:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1729040AbhAOJBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:01:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726652AbhAOJBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 04:01:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CB7E235DD;
+        Fri, 15 Jan 2021 09:01:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610701265;
+        bh=/A9+Zdj6TeXK+0F6O2x/uxJykl7caLwG9Gsbb99EJRA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=slpAOPtS7YCDBAgE41dzMlkAmNSstSYU6QgVZardVdQRETcPFnBhz638B9MfCX9JI
+         MdQA8a9ZaP0356QuNQNixM9RlXTSng99DVtQx+anK4/dziSRPwcw8N45+yhLuETEM9
+         886mtj2yOSvuCZ9xdjVHxcnQL5P9rDdeFWP03g3+i3PqQX3bDDgY2/86xrjgWioN6n
+         Iclf3LZ1NDz6EZ+1/OORQvNiPySLtX+xZFhAN4y3Z/KRIyNLJYCmpYExV2avR6gWHH
+         jU8FsUvGN1l0NzE6s3W1dtuSTJHb0/EvTJylkIFXsvvl42gP1yJyLgCzR/dqBxgBcV
+         ASNt2zWE3woQQ==
+Received: by mail-wr1-f44.google.com with SMTP id 6so1143432wri.3;
+        Fri, 15 Jan 2021 01:01:05 -0800 (PST)
+X-Gm-Message-State: AOAM531HTNGUdL4+vR/BWQoyILMjAi8NzZ6vBC/e+L+BNspeZMSV360k
+        qLrATk46YYYL+jUu4zetFO7JsZvA5Qy4HbzsV7c=
+X-Google-Smtp-Source: ABdhPJzCQLMfJc8/rJJcn23B9XcoACgRVHugAZAivO5b5vHr1dE7chj1zH27zmTIY5/fobqope9ovRY+ySLR+C9B87M=
+X-Received: by 2002:adf:fe05:: with SMTP id n5mr12248933wrr.9.1610701263721;
+ Fri, 15 Jan 2021 01:01:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210110004435.26382-1-aarcange@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210106064807.253112-1-Sonicadvance1@gmail.com>
+ <CAK8P3a2tV3HzPpbCR7mAeutx38_D2d-vfpEgpXv+GW_98w3VSQ@mail.gmail.com> <CABnRqDfQ5Qfa2ybut0qXcKuYnsMcG7+9gqjL-e7nZF1bkvhPRw@mail.gmail.com>
+In-Reply-To: <CABnRqDfQ5Qfa2ybut0qXcKuYnsMcG7+9gqjL-e7nZF1bkvhPRw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 15 Jan 2021 10:00:47 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2vfVfEWTk1ig349LGqt8bkK8YQWjE6PRyx+xvgYx7-gA@mail.gmail.com>
+Message-ID: <CAK8P3a2vfVfEWTk1ig349LGqt8bkK8YQWjE6PRyx+xvgYx7-gA@mail.gmail.com>
+Subject: Re: [PATCH] Adds a new ioctl32 syscall for backwards compatibility layers
+To:     Ryan Houdek <sonicadvance1@gmail.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        "Amanieu d'Antras" <amanieu@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Joe Perches <joe@perches.com>, Jan Kara <jack@suse.cz>,
+        David Rientjes <rientjes@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.01.21 01:44, Andrea Arcangeli wrote:
-> Hello Andrew and everyone,
-> 
-> Once we agree that COW page reuse requires full accuracy, the next
-> step is to re-apply 17839856fd588f4ab6b789f482ed3ffd7c403e1f and to
-> return going in that direction.
+On Fri, Jan 15, 2021 at 3:06 AM Ryan Houdek <sonicadvance1@gmail.com> wrote:
+> On Wed, Jan 6, 2021 at 12:49 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>> On Wed, Jan 6, 2021 at 7:48 AM <sonicadvance1@gmail.com> wrote:
+>> > From: Ryan Houdek <Sonicadvance1@gmail.com>
+>> ...
+>>
+>> For x86, this has another complication, as some ioctls also need to
+>> check whether they are in an ia32 task (with packed u64 and 32-bit
+>> __kernel_old_time_t) or an x32 task (with aligned u64 and 64-bit
+>> __kernel_old_time_t). If the new syscall gets wired up on x86 as well,
+>> you'd need to decide which of the two behaviors you want.
+>
+>
+> I can have a follow-up patch that makes this do ni-syscall on x86_64 since
+> we can go through the int 0x80 handler, or x32 handler path and choose
+> whichever one there.
 
+I'd say for consistency
 
-After stumbling over the heated discussion around this, I wanted to
-understand the details and the different opinions. I tried to summarize
-in my simple words (bear with me) what happened and how I think we can
-proceed from here. Maybe that helps.
+>> > 3a) Userspace consumes all VA space above 32bit. Forcing allocations to
+>> > occur in lower 32bits
+>> >   - This is the current implementation
+>> > 3b) Ensure any allocation in the ioctl handles ioctl entrypoint rather
+>> > than just allow generic memory allocations in full VA space
+>> >   - This is hard to guarantee
+>>
+>> What kind of allocation do you mean here? Can you give an example of
+>> an ioctl that does this?
+>>
+> My concern here would be something like DRM allocating memory and
+> returning a pointer to userspace that ends up in 64bit space.
+> I can see something like `drm_get_unmapped_area` calls in to
+>  `current->mm->get_unmapped_area` which I believe only ends up falling
+> down TASK_SIZE checks.
 
-====
+I see.
 
-What happened:
+> Which could potentially return pointers in the 64bit address space range
+> in this case. Theoretically can be resolved either by thieving the full 64bit
+> VA range, or doing something like the Tango layer patches that on
+> syscall entry changes the syscall to a "compat" syscall.
+> compat syscall flag like Tango might be nicer here?
 
-1) We simplified handling of faults on write-protected pages (page table
-entries): we changed the logic when we can reuse a page ("simply
-unprotecting it"), and when we have to copy it instead (COW). The
-essence of the simplification is, that we only reuse a page if we are
-the only single user of the page, meaning page_count(page) == 1, and the
-page is mapped into a single process (page_mapcount(page) == 1);
-otherwise we copy it. Simple.
+Not sure how that flag is best encoded, but yes, it would have to be
+somewhere that arch_get_unmapped_area() and
+arch_get_mmap_end() can find. Clearly we want a solution that works
+for both tango and for your work, as well as being portable to any
+architecture.
 
-2) The old code was complicated and there are GUP (e.g., RDMA, VFIO)
-cases that were broken in various ways in the old code already: most
-prominently fork(). As one example, it would have been possible for
-mprotect(READ) memory to still get modified by GUP users like RDMA.
-Write protection (AFAIU via any mechanism) after GUP pinned a page was
-not effective; the page was not copied.
+>> >  }
+>> > +
+>> > +COMPAT_SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsigned int, cmd,
+>> > +                       compat_ulong_t, arg)
+>> > +{
+>> > +       return do_ioctl32(fd, cmd, arg);
+>> > +}
+>> > +
+>> > +SYSCALL_DEFINE3(ioctl32, unsigned int, fd, unsigned int, cmd,
+>> > +                       compat_ulong_t, arg)
+>> > +{
+>> > +       return do_ioctl32(fd, cmd, arg);
+>> > +}
+>>
+>> These two look identical to me, I don't think you need to add a wrapper
+>> here at all, but can just use the normal compat_sys_ioctl entry point
+>> unless you want to add a 'flags' argument to control the struct padding.
+>
+>
+> I tried having the dispatch table call directly in to the COMPAT one and
+> the way things were lining up weren't allowing me to do this.
+> Since this is a bit unique in how it operates, I'm not quite sure if there is
+> another example I could pull from for this.
 
-3) Speculative pagecache reference can temporarily bump up the
-page_count(page), resulting in false positives. We could see
-page_count(page) > 1, although we're the single instance that actually
-uses a page. In the simplified code, we might copy a page although not
-necessary (I cannot tell how often that actually happens).
+For the asm-generic/unistd.h, you should be able to write htis as
 
-4) clear_refs(4) ("measure approximately how much memory a process is
-using"), uffd-wp (let's call it "lightweight write-protection, handling
-the actual fault in user space"), and mprotect(READ) all write-protect
-page table entries to generate faults on next write access. With the
-simplified code, we will COW whenever we find the page_count(page) > 1.
+#if __BITS_PER_LONG == 64
+__SC_COMP(__NR_ioctl32, compat_sys_ioctl, sys_ni_syscall)
+#endif
 
-The simplification seemed to regress clear_refs and uffdio-wp code
-(AFAIU in case of uffd-wp, it results in memory corruption). But looks
-like we can mostly fix it by adding more extensive locking.
+Which means that the native syscall in a 64-bit process always
+points to compat_sys_ioctl, while a 32-bit process always gets
+-ENOSYS.
 
-5) Mechanisms like GUP (AFAIU including Direct I/O) also takes
-references on pages, increasing page_count(). With the simplification,
-we might now end up copying a page, although there is "somewhat" only a
-single user/"process" involved.
+Similarly, the syscall_64.tbl file on x86 and the other 64-bit
+architectures would use
+442    64      ioctl32         compat_sys_ioctl
 
-One example is RDMA: if we read memory using RDMA and mprotect(READ)
-such memory, we might end up copying the underlying page on the next
-write: suddenly, RDMA is disconnected and will no longer read what is
-getting written. Not to mention, we consume more memory. AFAIU, other
-examples include direct I/O (e.g., write() with O_DIRECT).
+FWIW, I suppose you can rename compat_sys_ioctl to
+sys_ioctl32 treewide, if that name makes more sense.
 
-AFAIU, a more extreme case is probably VFIO: A VM with VFIO (e.g.,
-passthrough of a PCI device) can essentially be corrupted by "echo 4 >
-/proc/[pid]/clear_refs".
-
-6) While some people think it is okay to break GUP further, as it is
-already broken in various other ways, other people think this is
-changing something that used to work (AFAIU a user-visible change) with
-little benefit.
-
-7) There is no easy way to detect if a page really was pinned: we might
-have false positives. Further, there is no way to distinguish if it was
-pinned with FOLL_WRITE or not (R vs R/W). To perform reliable tracking
-we most probably would need more counters, which we cannot fit into
-struct page. (AFAIU, for huge pages it's easier).
-
-However, AFAIU, even being able to detect if (and how) a page was pinned
-would not completely help to solve the puzzle.
-
-8) We have a vmsplice security issue that has to be fixed by touching
-the code in question. A forked child process can read memory content of
-its parent, which was modified by the parent after fork. AFAIU, the fix
-will further lock us in into the direction of the code we are heading.
-
-9) The simplification is part of v5.10, which is a LTS release. AFAIU,
-that one needs fixing, too.
-
-
-
-I see the following possible directions we can head
-
-A) Keep the simplification. Try fixing the fallout. Keep the GUP cases
-broken or make mprotect() fail when detecting such a scenario;
-AFAIU, both are user-visible changes.
-
-B) Keep the simplification. Try fixing the fallout. Fix GUP cases that
-used to work; AFAIU fixing this is the hard/impossible part, and is
-undesired by some people..
-
-C) Revert the simplification for now. Go back to the drawing board and
-use what we learned to come up with a simplification that (all?  )
-people are happy with.
-
-D) Revert the simplification: turns out the code could not get
-simplified to this extend. We learned a lot, though.
-
-======
-
-Please let me know in case I messed up anything and/or missed important
-points.
-
--- 
-Thanks,
-
-David / dhildenb
-
+      Arnd
