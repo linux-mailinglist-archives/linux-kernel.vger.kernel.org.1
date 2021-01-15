@@ -2,172 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A052F70E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE302F70EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732478AbhAODVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 22:21:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726680AbhAODVP (ORCPT
+        id S1729971AbhAODXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 22:23:23 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:49308 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725950AbhAODXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 22:21:15 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467ABC061575;
-        Thu, 14 Jan 2021 19:20:34 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id n42so7276548ota.12;
-        Thu, 14 Jan 2021 19:20:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SU83BBg8Y1H95JuiTqGZ3fNuIYuLcUX0fHS1rihWLi4=;
-        b=rZlNSGjA1YQ2qw7TwVXt/cUdOg7S+mj1HUunG9kth86IYDSxzMCLdQHm4jZ69N3/Ix
-         bXB719+a8GKxyFS2WwuELprMbAy24BKZwMIers0Fx/DEOtMlOr8tR15B9M9ACPtNk86/
-         WMH0HdS6dzs3KMi8IHqbjWMl56uOlWkbSezMNJC3pxLsEiMUyjjvn9/ZnqzRbaYJmhpx
-         SUEVZsRGoeOihE1q/Ty5s031UKBObQhcGXnD3FNZDXM+zUMEeqYSax+Ifu0L1RRZc/i6
-         Pby8y9gLVibRu0icBI7pRsW2aE1vWZIyUeJa8HoM6ZXXWRtm6TlFlmq1GskVkWJFdQyR
-         iR5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SU83BBg8Y1H95JuiTqGZ3fNuIYuLcUX0fHS1rihWLi4=;
-        b=l7ZJiokjth6/68L1UJzSbCqZHmOTnri/0S68ZTCNZPyvmcJj9iIaCrDKy7CsklZXPg
-         AqSh9jZkQkVS62lMVnvvljtRrm9orOI8yOA/Ga3CtMBBBcUDHbfgp3SNAFQae7/QzWhA
-         B3m9b0NyLfeal08jS+Neokr1tdrr+FF4+5hvqwa3d+tC9zKM9UQgywvsCGpJeq81jHCb
-         TPobxIXaa9eJDxiw8JOI/twAW64N9bdb1mMfApYjaUmz5JuYmASi9v24KFVqi0q20T+i
-         W/Kg322PcyoRbV9pgA/bM117LXXxzoer7EJ1lbtBPIoRqJLvu9E8fQicZrOyg6rzsEYc
-         g2Hw==
-X-Gm-Message-State: AOAM530y+CNoS0HulBZ9rqLi0AJM1I7fm9c5SaJBxYg3FwJF5r2mvBxF
-        uX2U/JG4dw2tSRGBULjZ6PwFoKGNVQlAsQ58lUgTZQhpacY=
-X-Google-Smtp-Source: ABdhPJw/P6wMN/abg0NeerCMhwN6A3H1Y7cOcebaHPutrJx+eOpLdEedBBpf0mWTWjmZO9vMIobZ3yEj3097YtVTeII=
-X-Received: by 2002:a05:6830:4f:: with SMTP id d15mr6810088otp.185.1610680833710;
- Thu, 14 Jan 2021 19:20:33 -0800 (PST)
+        Thu, 14 Jan 2021 22:23:22 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F3KCLk168130;
+        Fri, 15 Jan 2021 03:22:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=IOXbYHXHreW/DM/cC1BlOLyDYYZQRT6FD474gUtPV4A=;
+ b=bEPJJSBKEY26381CteMXcM4TUtEgoNn7H/6Rj2Fypaq1KcWpgvxWwf+JT51UyPqMBfLU
+ z4XGtzk1ndfrc/YAierZRu8Y86WIPMsivOrf/Y0gSoD3VutNeQ14tbaclOeHXO6zDT2U
+ JDqZC1A1fdnzmxHZJY87mMZdb55T7Z+HczXUWTjsiU6OYzicqpmmTE6AtcFnknnwMjLg
+ aXWGjJkmveVKL93gWjnihgvAyIxdmP8K2uKCqQWMSRElLbNy3MpZZTbY6Hq3znlVDiy2
+ th6Uds65hwxEYViQeguOCfM9EEcXPWxXXjPogQle01Bu/mBImohggC0CRTiZiBXkdjVI /A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 360kd0355f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 03:22:05 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F3M1SL106622;
+        Fri, 15 Jan 2021 03:22:04 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 360keaps4r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 03:22:04 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10F3LUj3020589;
+        Fri, 15 Jan 2021 03:21:31 GMT
+Received: from parnassus (/98.229.125.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 14 Jan 2021 19:21:30 -0800
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Alexey Klimov <aklimov@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        yury.norov@gmail.com, tglx@linutronix.de, jobaker@redhat.com,
+        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+        rafael@kernel.org, tj@kernel.org, lizefan.x@bytedance.com,
+        qais.yousef@arm.com, hannes@cmpxchg.org, klimov.linux@gmail.com
+Subject: Re: [RFC][PATCH] cpu/hotplug: wait for cpuset_hotplug_work to
+ finish on cpu online
+In-Reply-To: <87k0tritvq.fsf@oracle.com>
+References: <20201203171431.256675-1-aklimov@redhat.com>
+ <20201207083827.GD3040@hirez.programming.kicks-ass.net>
+ <87k0tritvq.fsf@oracle.com>
+Date:   Thu, 14 Jan 2021 22:21:25 -0500
+Message-ID: <87im7yc2bu.fsf@oracle.com>
 MIME-Version: 1.0
-References: <20210105192844.296277-1-nitesh@redhat.com> <X/UIh1PqmSLNg8vM@google.com>
-In-Reply-To: <X/UIh1PqmSLNg8vM@google.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Fri, 15 Jan 2021 11:20:22 +0800
-Message-ID: <CANRm+Cz1nHkLm=hg-JN3j-s-w1_c0zWm=EYLJ7hzPW-2k_a2Gw@mail.gmail.com>
-Subject: Re: [PATCH] Revert "KVM: x86: Unconditionally enable irqs in guest context"
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        w90p710@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101150015
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1011 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101150015
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Jan 2021 at 08:51, Sean Christopherson <seanjc@google.com> wrote:
+Daniel Jordan <daniel.m.jordan@oracle.com> writes:
+> Peter Zijlstra <peterz@infradead.org> writes:
+>>> The nature of this bug is also described here (with different consequences):
+>>> https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/
+>>
+>> Yeah, pesky deadlocks.. someone was going to try again.
 >
-> +tglx
+> I dug up the synchronous patch
 >
-> On Tue, Jan 05, 2021, Nitesh Narayan Lal wrote:
-> > This reverts commit d7a08882a0a4b4e176691331ee3f492996579534.
-> >
-> > After the introduction of the patch:
-> >
-> >       87fa7f3e9: x86/kvm: Move context tracking where it belongs
-> >
-> > since we have moved guest_exit_irqoff closer to the VM-Exit, explicit
-> > enabling of irqs to process pending interrupts should not be required
-> > within vcpu_enter_guest anymore.
+>     https://lore.kernel.org/lkml/1579878449-10164-1-git-send-email-prsood@codeaurora.org/
 >
-> Ugh, except that commit completely broke tick-based accounting, on both Intel
-> and AMD.  With guest_exit_irqoff() being called immediately after VM-Exit, any
-> tick that happens after IRQs are disabled will be accounted to the host.  E.g.
-> on Intel, even an IRQ VM-Exit that has already been acked by the CPU isn't
-> processed until kvm_x86_ops.handle_exit_irqoff(), well after PF_VCPU has been
-> cleared.
+> but surprisingly wasn't able to reproduce the lockdep splat from
 >
+>     https://lore.kernel.org/lkml/F0388D99-84D7-453B-9B6B-EEFF0E7BE4CC@lca.pw/
+>
+> even though I could hit it a few weeks ago.
 
-This issue can be 100% reproduced.
-https://bugzilla.kernel.org/show_bug.cgi?id=204177
+oh okay, you need to mount a legacy cpuset hierarchy.
 
-> CONFIG_VIRT_CPU_ACCOUNTING_GEN=y should still work (I didn't bother to verify).
->
-> Thomas, any clever ideas?  Handling IRQs in {vmx,svm}_vcpu_enter_exit() isn't an
-> option as KVM hasn't restored enough state to handle an IRQ, e.g. PKRU and XCR0
-> are still guest values.  Is it too heinous to fudge PF_VCPU across KVM's
-> "pending" IRQ handling?  E.g. this god-awful hack fixes the accounting:
->
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 836912b42030..5a777fd35b4b 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9028,6 +9028,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->         vcpu->mode = OUTSIDE_GUEST_MODE;
->         smp_wmb();
->
-> +       current->flags |= PF_VCPU;
->         kvm_x86_ops.handle_exit_irqoff(vcpu);
->
->         /*
-> @@ -9042,6 +9043,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->         ++vcpu->stat.exits;
->         local_irq_disable();
->         kvm_after_interrupt(vcpu);
-> +       current->flags &= ~PF_VCPU;
->
->         if (lapic_in_kernel(vcpu)) {
->                 s64 delta = vcpu->arch.apic->lapic_timer.advance_expire_delta;
->
-> > Conflicts:
-> >       arch/x86/kvm/svm.c
-> >
-> > Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-> > ---
-> >  arch/x86/kvm/svm/svm.c |  9 +++++++++
-> >  arch/x86/kvm/x86.c     | 11 -----------
-> >  2 files changed, 9 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> > index cce0143a6f80..c9b2fbb32484 100644
-> > --- a/arch/x86/kvm/svm/svm.c
-> > +++ b/arch/x86/kvm/svm/svm.c
-> > @@ -4187,6 +4187,15 @@ static int svm_check_intercept(struct kvm_vcpu *vcpu,
-> >
-> >  static void svm_handle_exit_irqoff(struct kvm_vcpu *vcpu)
-> >  {
-> > +     kvm_before_interrupt(vcpu);
-> > +     local_irq_enable();
-> > +     /*
-> > +      * We must have an instruction with interrupts enabled, so
-> > +      * the timer interrupt isn't delayed by the interrupt shadow.
-> > +      */
-> > +     asm("nop");
-> > +     local_irq_disable();
-> > +     kvm_after_interrupt(vcpu);
-> >  }
-> >
-> >  static void svm_sched_in(struct kvm_vcpu *vcpu, int cpu)
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 3f7c1fc7a3ce..3e17c9ffcad8 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -9023,18 +9023,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
-> >
-> >       kvm_x86_ops.handle_exit_irqoff(vcpu);
-> >
-> > -     /*
-> > -      * Consume any pending interrupts, including the possible source of
-> > -      * VM-Exit on SVM and any ticks that occur between VM-Exit and now.
-> > -      * An instruction is required after local_irq_enable() to fully unblock
-> > -      * interrupts on processors that implement an interrupt shadow, the
-> > -      * stat.exits increment will do nicely.
-> > -      */
-> > -     kvm_before_interrupt(vcpu);
-> > -     local_irq_enable();
-> >       ++vcpu->stat.exits;
-> > -     local_irq_disable();
-> > -     kvm_after_interrupt(vcpu);
-> >
-> >       if (lapic_in_kernel(vcpu)) {
-> >               s64 delta = vcpu->arch.apic->lapic_timer.advance_expire_delta;
-> > --
-> > 2.27.0
-> >
+So as the above splat shows, making cpuset_hotplug_workfn() synchronous
+means cpu_hotplug_lock (and "cpuhp_state-down") can be acquired before
+cgroup_mutex.
+
+But there are at least four cgroup paths that take the locks in the
+opposite order.  They're all the same, they take cgroup_mutex and then
+cpu_hotplug_lock later on to modify one or more static keys.
+
+cpu_hotplug_lock should probably be ahead of cgroup_mutex because the
+latter is taken in a hotplug callback, and we should keep the static
+branches in cgroup, so the only way out I can think of is moving
+cpu_hotplug_lock to just before cgroup_mutex is taken and switching to
+_cpuslocked flavors of the static key calls.
+
+lockdep quiets down with that change everywhere, but it puts another big
+lock around a lot of cgroup paths.  Seems less heavyhanded to go with
+this RFC.  What do you all think?
+
+Absent further discussion, Alexey, do you plan to post another version?
