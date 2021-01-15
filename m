@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30ABC2F8397
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 536ED2F83D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387867AbhAOSO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:14:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
+        id S2388282AbhAOSPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:15:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387790AbhAOSOy (ORCPT
+        with ESMTP id S2388126AbhAOSPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:14:54 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A16C0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:58 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id y17so10190758wrr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:58 -0800 (PST)
+        Fri, 15 Jan 2021 13:15:19 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0113AC061793
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:14:00 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id d26so10188181wrb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YdGEIo0hl2Rfpl/h+Jq0+PenJy8U5mbtMlzqWbcxCkg=;
-        b=nn+YQQ3tBavKBlOFL7sT7bojtBwspT5MdJqIVfqTvMbPS+d2dEqAdBTVblOgzuynOQ
-         Olk3p9M/630y78Ld02C5b4c2E1yI/CegVOo0NaSyJtAcPz1l3o0q4R5R3R9iIRuOn77r
-         kxrI9Zwdd4q3BS9xicvx8dfaNIuzw3CoE9v2aObzi/BiIN8qVM6nCVaQXl+pIU9nxsya
-         O4/5uD8YtnZJ1rj3KZJsnJ8wHzNbOQfDmlS1/7bIW1dGKnk2aqMM/npcyjg7b6vVqE1S
-         jxW3enZtU+ZYPgAUpoXU9klmE3OVP67lIRz99VbnxcfhwDsy7TPk5Ojc3EAfpVqLU24B
-         5xCQ==
+        bh=Clem9oGlYEGrbDU0lDjY42b02EcBqg1/k29GPavGgpg=;
+        b=w7kJiKffb+UC6FN4MbUl3hcif4Ao5PrzLRGEJBPBjkUCSG9AJgdTwQm0TtB3bhU4eC
+         2E5zcBTxMAM9x7bVsuwBM4gxxzPdYkRkC9mJ7Yyl0LUZpwSFrevFqHUQ11rXy7O1CcjA
+         huRymOZyg36Fs7ojzhz66e0zhryoc5NCBAj+WSUBIsDLS4H2oemqmnZC3w+C/RYBvLdV
+         SYf6iz35K1ReS5FwE6GOuzYP0ISGJsazo9iwFUl/U0MJn9GPMmHZaK8HrTQbRNTbvaG1
+         do7wy1cbFdwiVT2Zns7YE2MWRne9n7I9qENsTVzKjBYzZL++G+XG6qXkQ6oykegTYwjj
+         eQ9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YdGEIo0hl2Rfpl/h+Jq0+PenJy8U5mbtMlzqWbcxCkg=;
-        b=qK9tFcgN2lSqD6RlaeTiHLNDuKZcMaLU3MU+9VCsmMJ2heh/VJBxWOqFiw+UUwvrnn
-         suicKqpnHszbqN3bMmuWdszP1v2+JcP/3oftvsui31U/qcKaPArwTEsYWpTflmWaZQ1L
-         mIcvpM2H2rQel1bhkT5QgCwv7u86sX+thXfeTpOzfZOjF7L7GrK4SZMsOSPQcP30cHDg
-         WF0ASyhxAGfdqcbsvhFOSaj8PTZX9Es3CedLb1od8onv9JxeGrZVXg+KgU/7xRvW+W+9
-         3pXrgrlcQRa0dd79Uep81bBqhMYYo4MycWfdEjFQLZ2Ds1xU1rfW7Mm+0iRElBjgeDSk
-         e1GQ==
-X-Gm-Message-State: AOAM530+xLfUG9YLshS0LUS/M15lmd0t7T9uBcr7TXwhOCdgFbFRBtvv
-        RAKOWlcUn+8ydWIalqmEk6s+VA==
-X-Google-Smtp-Source: ABdhPJwoFUexa7yf+5Xx+spu+w33pAquyESNB70QCWuq5Md9/k32C45VD2bWHG3JLcExMyxXr6tD3w==
-X-Received: by 2002:adf:eac7:: with SMTP id o7mr14553458wrn.23.1610734437578;
-        Fri, 15 Jan 2021 10:13:57 -0800 (PST)
+        bh=Clem9oGlYEGrbDU0lDjY42b02EcBqg1/k29GPavGgpg=;
+        b=kssPw4DsNwGlwj/5EDDxQGwsVgcl18pHh9aURTxN0NSr4zvmM73QdT+g1es0jjm6NW
+         OhSkdUjlPMEQmEwA1P1CRyLUFC5uK+RdJawHn5iMzxDDHaEqYHTrtsLepPMdkOT55KEX
+         KwQS4w0A7WeJNmKCqt9c026TFgNb7gGRuP/S8NJJsotm3AuPvSxVAUViRAiKXZBlonTR
+         4jVc/L3/HD9jY5RcMulxoLSWUPAsD3mixBEETBy2Ulcg4Hp6nFXqxRAxxvT3hSyAxcPY
+         Z9Jyn+dq6PDysoopXSUNwBa7dYv9oU/bO4hBn1MRbzYzukVrmqBcpndouAJDyFXyGydl
+         gVjQ==
+X-Gm-Message-State: AOAM533SaZeWxD8cyNXaCUPY4DfPa2rXI9jPJpMMv4HvuE6nbMITDdh7
+        bIex+qBj7M2YFUjDfMky3mf2fw==
+X-Google-Smtp-Source: ABdhPJyv/fDErsavQlK/fWf8PXQiUArsAlsCjCiC/JaSrC/YrLefouSMJ01A21nPnYQKjJDUWtgXCg==
+X-Received: by 2002:adf:d187:: with SMTP id v7mr73152wrc.50.1610734438759;
+        Fri, 15 Jan 2021 10:13:58 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.56
+        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:13:56 -0800 (PST)
+        Fri, 15 Jan 2021 10:13:58 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -55,18 +55,14 @@ Cc:     linux-kernel@vger.kernel.org,
         Roland Scheidegger <sroland@vmware.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 26/40] drm/vmwgfx/vmwgfx_fence: Add, remove and demote various documentation params/headers
-Date:   Fri, 15 Jan 2021 18:12:59 +0000
-Message-Id: <20210115181313.3431493-27-lee.jones@linaro.org>
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 27/40] drm/vmwgfx/vmwgfx_bo: Remove superfluous param description and supply another
+Date:   Fri, 15 Jan 2021 18:13:00 +0000
+Message-Id: <20210115181313.3431493-28-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210115181313.3431493-1-lee.jones@linaro.org>
 References: <20210115181313.3431493-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -74,97 +70,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:82: warning: Function parameter or member 'event' not described in 'vmw_event_fence_action'
- drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:113: warning: Function parameter or member 'f' not described in 'vmw_fence_obj_destroy'
- drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:261: warning: Function parameter or member 'work' not described in 'vmw_fence_work_func'
- drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:720: warning: Function parameter or member 'fman' not described in 'vmw_fence_fifo_down'
- drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:963: warning: Function parameter or member 'fence' not described in 'vmw_fence_obj_add_action'
- drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:963: warning: Function parameter or member 'action' not described in 'vmw_fence_obj_add_action'
- drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:1021: warning: Function parameter or member 'tv_sec' not described in 'vmw_event_fence_action_queue'
- drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:1021: warning: Function parameter or member 'tv_usec' not described in 'vmw_event_fence_action_queue'
+ drivers/gpu/drm/vmwgfx/vmwgfx_bo.c:142: warning: Excess function parameter 'pin' description in 'vmw_bo_pin_in_vram_or_gmr'
+ drivers/gpu/drm/vmwgfx/vmwgfx_bo.c:647: warning: Function parameter or member 'p_base' not described in 'vmw_user_bo_alloc'
 
 Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
 Cc: Roland Scheidegger <sroland@vmware.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: "Christian König" <christian.koenig@amd.com>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_fence.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_bo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_fence.c b/drivers/gpu/drm/vmwgfx/vmwgfx_fence.c
-index 378ec7600154b..23523eb3cac2a 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_fence.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_fence.c
-@@ -58,13 +58,11 @@ struct vmw_user_fence {
- /**
-  * struct vmw_event_fence_action - fence action that delivers a drm event.
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_bo.c b/drivers/gpu/drm/vmwgfx/vmwgfx_bo.c
+index 63dbc44eebe0b..ab0844b47d4d7 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_bo.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_bo.c
+@@ -131,7 +131,6 @@ int vmw_bo_pin_in_placement(struct vmw_private *dev_priv,
   *
-- * @e: A struct drm_pending_event that controls the event delivery.
-  * @action: A struct vmw_fence_action to hook up to a fence.
-+ * @event: A pointer to the pending event.
-  * @fence: A referenced pointer to the fence to keep it alive while @action
-  * hangs on it.
-  * @dev: Pointer to a struct drm_device so we can access the event stuff.
-- * @kref: Both @e and @action has destructors, so we need to refcount.
-- * @size: Size accounted for this object.
-  * @tv_sec: If non-null, the variable pointed to will be assigned
-  * current time tv_sec val when the fence signals.
-  * @tv_usec: Must be set if @tv_sec is set, and the variable pointed to will
-@@ -87,7 +85,7 @@ fman_from_fence(struct vmw_fence_obj *fence)
- 	return container_of(fence->base.lock, struct vmw_fence_manager, lock);
- }
- 
--/**
-+/*
-  * Note on fencing subsystem usage of irqs:
-  * Typically the vmw_fences_update function is called
-  *
-@@ -250,7 +248,7 @@ static const struct dma_fence_ops vmw_fence_ops = {
- };
- 
- 
--/**
-+/*
-  * Execute signal actions on fences recently signaled.
-  * This is done from a workqueue so we don't have to execute
-  * signal actions from atomic context.
-@@ -708,7 +706,7 @@ int vmw_wait_dma_fence(struct vmw_fence_manager *fman,
- }
- 
- 
--/**
-+/*
-  * vmw_fence_fifo_down - signal all unsignaled fence objects.
+  * @dev_priv:  Driver private.
+  * @buf:  DMA buffer to move.
+- * @pin:  Pin buffer if true.
+  * @interruptible:  Use interruptible wait.
+  * Return: Zero on success, Negative error code on failure. In particular
+  * -ERESTARTSYS if interrupted by a signal
+@@ -635,6 +634,7 @@ static void vmw_user_bo_ref_obj_release(struct ttm_base_object *base,
+  * @handle: Pointer to where the handle value should be assigned.
+  * @p_vbo: Pointer to where the refcounted struct vmw_buffer_object pointer
+  * should be assigned.
++ * @p_base: The TTM base object pointer about to be allocated.
+  * Return: Zero on success, negative error code on error.
   */
- 
-@@ -948,8 +946,8 @@ static void vmw_event_fence_action_cleanup(struct vmw_fence_action *action)
- /**
-  * vmw_fence_obj_add_action - Add an action to a fence object.
-  *
-- * @fence - The fence object.
-- * @action - The action to add.
-+ * @fence: The fence object.
-+ * @action: The action to add.
-  *
-  * Note that the action callbacks may be executed before this function
-  * returns.
-@@ -1001,6 +999,10 @@ static void vmw_fence_obj_add_action(struct vmw_fence_obj *fence,
-  * @fence: The fence object on which to post the event.
-  * @event: Event to be posted. This event should've been alloced
-  * using k[mz]alloc, and should've been completely initialized.
-+ * @tv_sec: If non-null, the variable pointed to will be assigned
-+ * current time tv_sec val when the fence signals.
-+ * @tv_usec: Must be set if @tv_sec is set, and the variable pointed to will
-+ * be assigned the current time tv_usec val when the fence signals.
-  * @interruptible: Interruptible waits if possible.
-  *
-  * As a side effect, the object pointed to by @event may have been
+ int vmw_user_bo_alloc(struct vmw_private *dev_priv,
 -- 
 2.25.1
 
