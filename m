@@ -2,197 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B132F7C37
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA67B2F7C3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732394AbhAONMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:12:48 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:35179 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730971AbhAONMr (ORCPT
+        id S1732564AbhAONNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:13:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731154AbhAONNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:12:47 -0500
-Date:   Fri, 15 Jan 2021 13:12:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610716324; bh=NguSqZkMHbDTllfHQVJGRNdK9JFA+eLh3q6gS3Z/Ceo=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=RyxOgHcW+HlYzCRFiPADCVIffFe/ZUMSorLLM5SalBq0urQpCtjwgasDsgLp3YW98
-         0eNDjhouY9j7KnRtqtfn/DgoomDz7qvs9R1tHOpa0AJ1us79bSFI/piOQkBc8bLfL3
-         LQZzGlvBCZ/PheCuYGd2eMmo96KYVgeSdy1H3MS8hoQ9AuZSOXYSphhICDukNxM36m
-         uGNuRs7dKtYv41BKiOOkx+V/XmTaF3JsUVTmT7cDaingay2wTd2j0q3Jgk4FV/mLWm
-         QDqdoCy9Pqqfc4OplLYK44KbQF1+yJXxLR/ziDGdxP1Ikk4d8h0ZiLtl6b7GNK3N/q
-         u5dSaa7BYA3pA==
-To:     Dongseok Yi <dseok.yi@samsung.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        "David S. Miller" <davem@davemloft.net>, namkyu78.kim@samsung.com,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: RE: [PATCH net] udp: ipv4: manipulate network header of NATed UDP GRO fraglist
-Message-ID: <20210115131126.60716-1-alobakin@pm.me>
-In-Reply-To: <020101d6eb30$84363170$8ca29450$@samsung.com>
-References: <CGME20210115061039epcas2p479bc5f3dd3dad5a250c4e0fc42896704@epcas2p4.samsung.com> <1610690304-167832-1-git-send-email-dseok.yi@samsung.com> <20210115081243.GM9390@gauss3.secunet.de> <01e801d6eb1c$2898c300$79ca4900$@samsung.com> <20210115092752.GN9390@gauss3.secunet.de> <20210115105048.2689-1-alobakin@pm.me> <020101d6eb30$84363170$8ca29450$@samsung.com>
+        Fri, 15 Jan 2021 08:13:16 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AB6C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:12:36 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id c79so5479103pfc.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:12:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y3t7IOxf9Vkdfiy1MFmpsGSvvf/wDyt1mm0FiJiJHkU=;
+        b=TgoQzblgqtKn/uwL88l5pcnNltSdtUN3pNbr/lY71Do+YJQPensFiSR5/ah564m4QF
+         Zdm8BQVTAFN8Zh+B5QtZJuyQ422wG3Bs/TfwzQQGuci398KLfOCKGeioJ41Hz2z0mdPF
+         k5J3sqENcm3poD3aY3WT6X1rbtlhXUZczU80YMiNMEK1qXfJCXYtvwtFDMwP4vQjXLG2
+         Hf+R43rSGYBomq0cT4yigyNQG78jPO+4Bi5/7S2Zog/mtUW+lDE+89EYw5qhwnxmsKSh
+         vQouaFKrGzDNQwoiUcRyc7dYpjUmzZqHVJyYvgXaWDWel8dz4Xx9hTrtG4KXM/kLXtp2
+         VVsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y3t7IOxf9Vkdfiy1MFmpsGSvvf/wDyt1mm0FiJiJHkU=;
+        b=Zvfv19Ak9wdBHgb3Zs0BGUbLeqJJbvbHnUbW4+KI8+FbQjsVyr45nxK7+tRwhNgyyb
+         0lg2XpWKMxKT2KnTY8MQIcRuCMtUVWiATEltD0zUrZWiOEREhA34qbRspGrDYJBSNxnA
+         PhDI5fMMJLo4G8hTzNMGNc5PeXNhnwKA2PP+qyDRUXRvxNeNxlNniatotaEenOnMJrDf
+         fYJ60Hw5nUAeFFuZiCll+lvArIE34rj1d3/jNfHU4UnBnFsGmVw3qEtvGy9b5o3IdyxE
+         P41BK3ibm4gxbQcfK8gxjpo2Pd4e9UYoUwQX42uGDpB9/hdUfTl3WUfeU99kNDHgUKmU
+         EqdA==
+X-Gm-Message-State: AOAM530KV7NQ51rglCeW8YsEr7NkWRG+N/cKLIlXXey6Hlf3kX+UuRjM
+        mML7rbvZ7ryc57v+znPVMEhj6bsBl5YGTPW1lbd8BA==
+X-Google-Smtp-Source: ABdhPJwFVrYjSsy2BLuWM4G5tBfKnbXV+mvCUg9g9CziKhY5Xquz+DAVF15CNEmxnJ73snI+ZrmcibNqVLMsqQ5tRVc=
+X-Received: by 2002:a62:115:0:b029:1b4:c593:acd4 with SMTP id
+ 21-20020a6201150000b02901b4c593acd4mr289508pfb.2.1610716355514; Fri, 15 Jan
+ 2021 05:12:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <cover.1610553773.git.andreyknvl@google.com> <1965508bcbec62699715d32bef91628ef55b4b44.1610553774.git.andreyknvl@google.com>
+ <20210113165441.GC27045@gaia>
+In-Reply-To: <20210113165441.GC27045@gaia>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Fri, 15 Jan 2021 14:12:24 +0100
+Message-ID: <CAAeHK+zThyq7ApsRTu-En7pL9yAAOrEpV45KOuJV3PCpdjVuiw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kasan, arm64: fix pointer tags in KASAN reports
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongseok Yi <dseok.yi@samsung.com>
-Date: Fri, 15 Jan 2021 20:21:06 +0900
-
-> On 2021-01-15 19:51, Alexander Lobakin wrote:
->> From: Steffen Klassert <steffen.klassert@secunet.com>
->> Date: Fri, 15 Jan 2021 10:27:52 +0100
->>
->>> On Fri, Jan 15, 2021 at 05:55:22PM +0900, Dongseok Yi wrote:
->>>> On 2021-01-15 17:12, Steffen Klassert wrote:
->>>>> On Fri, Jan 15, 2021 at 02:58:24PM +0900, Dongseok Yi wrote:
->>>>>> UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
->>>>>> forwarding. Only the header of head_skb from ip_finish_output_gso ->
->>>>>> skb_gso_segment is updated but following frag_skbs are not updated.
->>>>>>
->>>>>> A call path skb_mac_gso_segment -> inet_gso_segment ->
->>>>>> udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
->>>>>> does not try to update UDP/IP header of the segment list.
->>>>>
->>>>> We still need to find out why it works for Alexander, but not for you=
-.
->>>>> Different usecases?
->>>>
->>>> This patch is not for
->>>> https://lore.kernel.org/patchwork/patch/1364544/
->>>> Alexander might want to call udp_gro_receive_segment even when
->>>> !sk and ~NETIF_F_GRO_FRAGLIST.
->>>
->>> Yes, I know. But he said that fraglist GRO + NAT works for him.
->>> I want to find out why it works for him, but not for you.
->>
->> I found that it worked for me because I advertised fraglist GSO
->> support in my driver (and added actual support for xmitting
->> fraglists). If so, kernel won't resegment GSO into a list of
->> plain packets, so no __udp_gso_segment_list() will be called.
->>
->> I think it will break if I disable fraglist GSO feature through
->> Ethtool, so I could test your patches.
+On Wed, Jan 13, 2021 at 5:54 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
 >
-> Thanks for the reply. In my case I enabled NETIF_F_GRO_FRAGLIST on
-> my driver. It expected that NAT done on each skb of the forwarded
-> fraglist.
+> On Wed, Jan 13, 2021 at 05:03:30PM +0100, Andrey Konovalov wrote:
+> > As of the "arm64: expose FAR_EL1 tag bits in siginfo" patch, the address
+> > that is passed to report_tag_fault has pointer tags in the format of 0x0X,
+> > while KASAN uses 0xFX format (note the difference in the top 4 bits).
+> >
+> > Fix up the pointer tag before calling kasan_report.
+> >
+> > Link: https://linux-review.googlesource.com/id/I9ced973866036d8679e8f4ae325de547eb969649
+> > Fixes: dceec3ff7807 ("arm64: expose FAR_EL1 tag bits in siginfo")
+> > Fixes: 4291e9ee6189 ("kasan, arm64: print report from tag fault handler")
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > ---
+> >  arch/arm64/mm/fault.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+> > index 3c40da479899..a218f6f2fdc8 100644
+> > --- a/arch/arm64/mm/fault.c
+> > +++ b/arch/arm64/mm/fault.c
+> > @@ -304,6 +304,8 @@ static void report_tag_fault(unsigned long addr, unsigned int esr,
+> >  {
+> >       bool is_write  = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
+> >
+> > +     /* The format of KASAN tags is 0xF<x>. */
+> > +     addr |= (0xF0UL << MTE_TAG_SHIFT);
 >
->>
->>>>>
->>>>> I would not like to add this to a generic codepath. I think we can
->>>>> relatively easy copy the full headers in skb_segment_list().
->>>>
->>>> I tried to copy the full headers with the similar approach, but it
->>>> copies length too. Can we keep the length of each skb of the fraglist?
->>>
->>> Ah yes, good point.
->>>
->>> Then maybe you can move your approach into __udp_gso_segment_list()
->>> so that we dont touch generic code.
->>>
+> Ah, I see, that top 4 bits are zeroed by do_tag_check_fault(). When this
+> was added, the only tag faults were generated for user addresses.
 >
-> Okay, I will move it into __udp_gso_segment_list() on v3.
-
-I'll take this one. We also need to cover cases with altered headroom
-size, e.g. when the NIC is behind the switch and sends packets with
-CPU tags that is being added prior to resegmentation.
-The base suggested by Steffen in good enough, just needs a bit more
-handling. I'll publish a final fix soon.
-
->>>>
->>>>>
->>>>> I think about something like the (completely untested) patch below:
->>>>>
->>>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
->>>>> index f62cae3f75d8..63ae7f79fad7 100644
->>>>> --- a/net/core/skbuff.c
->>>>> +++ b/net/core/skbuff.c
->>>>> @@ -3651,13 +3651,14 @@ struct sk_buff *skb_segment_list(struct sk_bu=
-ff *skb,
->>>>>  =09=09=09=09 unsigned int offset)
->>>>>  {
->>>>>  =09struct sk_buff *list_skb =3D skb_shinfo(skb)->frag_list;
->>>>> +=09unsigned int doffset =3D skb->data - skb_mac_header(skb);
->>>>>  =09unsigned int tnl_hlen =3D skb_tnl_header_len(skb);
->>>>>  =09unsigned int delta_truesize =3D 0;
->>>>>  =09unsigned int delta_len =3D 0;
->>>>>  =09struct sk_buff *tail =3D NULL;
->>>>>  =09struct sk_buff *nskb;
->>>>>
->>>>> -=09skb_push(skb, -skb_network_offset(skb) + offset);
->>>>> +=09skb_push(skb, doffset);
->>>>>
->>>>>  =09skb_shinfo(skb)->frag_list =3D NULL;
->>>>>
->>>>> @@ -3675,7 +3676,7 @@ struct sk_buff *skb_segment_list(struct sk_buff=
- *skb,
->>>>>  =09=09delta_len +=3D nskb->len;
->>>>>  =09=09delta_truesize +=3D nskb->truesize;
->>>>>
->>>>> -=09=09skb_push(nskb, -skb_network_offset(nskb) + offset);
->>>>> +=09=09skb_push(nskb, doffset);
->>>>>
->>>>>  =09=09skb_release_head_state(nskb);
->>>>>  =09=09 __copy_skb_header(nskb, skb);
->>>>> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
->>>>> index ff39e94781bf..1181398378b8 100644
->>>>> --- a/net/ipv4/udp_offload.c
->>>>> +++ b/net/ipv4/udp_offload.c
->>>>> @@ -190,9 +190,22 @@ EXPORT_SYMBOL(skb_udp_tunnel_segment);
->>>>>  static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
->>>>>  =09=09=09=09=09      netdev_features_t features)
->>>>>  {
->>>>> +=09struct sk_buff *list_skb =3D skb_shinfo(skb)->frag_list;
->>>>>  =09unsigned int mss =3D skb_shinfo(skb)->gso_size;
->>>>> +=09unsigned int offset;
->>>>>
->>>>> -=09skb =3D skb_segment_list(skb, features, skb_mac_header_len(skb));
->>>>> +=09skb_headers_offset_update(list_skb, skb_headroom(list_skb) - skb_=
-headroom(skb));
->>>>> +
->>>>> +=09/* Check for header changes and copy the full header in that case=
-. */
->>>>> +=09if ((udp_hdr(skb)->dest =3D=3D udp_hdr(list_skb)->dest) &&
->>>>> +=09    (udp_hdr(skb)->source =3D=3D udp_hdr(list_skb)->source) &&
->>>>> +=09    (ip_hdr(skb)->daddr =3D=3D ip_hdr(list_skb)->daddr) &&
->>>>> +=09    (ip_hdr(skb)->saddr =3D=3D ip_hdr(list_skb)->saddr))
->>>>> +=09=09offset =3D skb_mac_header_len(skb);
->>>>> +=09else
->>>>> +=09=09offset =3D skb->data - skb_mac_header(skb);
->>>>> +
->>>>> +=09skb =3D skb_segment_list(skb, features, offset);
->>>>>  =09if (IS_ERR(skb))
->>>>>  =09=09return skb;
->>>>>
->>>>>
->>>>> After that you can apply the CSUM magic in __udp_gso_segment_list().
->>
->> I'll test and let you know if it works. If doesn't, I think I'll be
->> able to get a working one based on this.
->>
->>>> Sorry, I don't know CSUM magic well. Is it used for checksum
->>>> incremental update too?
->>>
->>> With that I meant the checksum updating you did in your patch.
+> Anyway, I'd rather fix it in there based on bit 55, something like (only
+> compile-tested):
 >
-> Ah, I see.
->
->>
->> Thanks,
->> Al
+> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+> index 3c40da479899..2b71079d2d32 100644
+> --- a/arch/arm64/mm/fault.c
+> +++ b/arch/arm64/mm/fault.c
+> @@ -709,10 +709,11 @@ static int do_tag_check_fault(unsigned long far, unsigned int esr,
+>                               struct pt_regs *regs)
+>  {
+>         /*
+> -        * The architecture specifies that bits 63:60 of FAR_EL1 are UNKNOWN for tag
+> -        * check faults. Mask them out now so that userspace doesn't see them.
+> +        * The architecture specifies that bits 63:60 of FAR_EL1 are UNKNOWN
+> +        * for tag check faults. Set them to the corresponding bits in the
+> +        * untagged address.
+>          */
+> -       far &= (1UL << 60) - 1;
+> +       far = (untagged_addr(far) & ~MTE_TAG_MASK) | (far & MTE_TAG_MASK) ;
+>         do_bad_area(far, esr, regs);
+>         return 0;
+>  }
 
-Al
-
+Sounds good, will do in v3, thanks!
