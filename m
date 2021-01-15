@@ -2,215 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2166A2F880B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0744D2F8825
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:06:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbhAOV67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 16:58:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726367AbhAOV67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 16:58:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37C22239FC;
-        Fri, 15 Jan 2021 21:58:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610747898;
-        bh=+6Vjjut+EQfcgIj8kOGhKBiQrdCG6BzSk78pb6dNlS0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IePHwf1EUmOFCcr9j2pITG4NKalVEzWutmAih/KgmvNVL6BKFlJFhrIrCJBz426BH
-         R9EbqUPIcBCdCOhFw2d0Jf6/h+79WoJTA8BKoe8ca8EFfesEwxvy/cJ0BeYqQGZJD0
-         pPMX0+JagfTlePwecFbKjvkCOAwR0IjjsHF/hpWccCtdUEQR+G06mh9PtAYQcbUOdV
-         VR06W2rfkqca0XNN47LsE046Or5MOuNM5LQxX12j3ZlMe5pbVonIo0XwRkoUY9VlJa
-         z1g8jILFiG7SiLYdnWDLffUgb2ADhpQrTtzwmjljUcPqMyEpsfkQs8HL5Dx5yrYa9o
-         RWc9gMj8PNlDQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 05CBA352162B; Fri, 15 Jan 2021 13:58:18 -0800 (PST)
-Date:   Fri, 15 Jan 2021 13:58:17 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     dvyukov@google.com, glider@google.com, andreyknvl@google.com,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kcsan: Add missing license and copyright headers
-Message-ID: <20210115215817.GN2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210115170953.3035153-1-elver@google.com>
-MIME-Version: 1.0
+        id S1727680AbhAOWFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 17:05:17 -0500
+Received: from m1534.mail.126.com ([220.181.15.34]:23954 "EHLO
+        m1534.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727242AbhAOWFQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 17:05:16 -0500
+X-Greylist: delayed 13798 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 Jan 2021 17:05:14 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=QWl1k
+        wxmlrAvmPs2BfGhX9V7ZRzLA6vNlVk4+GazSRo=; b=elI7USCuMpzGIdWktS/o+
+        M0Q8ypI8BUdMkkRF90pqvhDNbhs54hyho6NKTbfJLgRVSplJlQg1yPjd6lgpcfFU
+        wgjJGJdTHE4to1sijDQalxCEDzDp8JIEOZp90aEmWcAQ+xaFj21OEMdsZytFWNKC
+        5w/XknoqyWjcjH2YpDbzsY=
+Received: from wangyingjie55$126.com ( [116.162.2.41] ) by
+ ajax-webmail-wmsvr34 (Coremail) ; Fri, 15 Jan 2021 21:27:58 +0800 (CST)
+X-Originating-IP: [116.162.2.41]
+Date:   Fri, 15 Jan 2021 21:27:58 +0800 (CST)
+From:   "Yingjie Wang" <wangyingjie55@126.com>
+To:     "Geethasowjanya Akula" <gakula@marvell.com>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "Vidhya Vidhyaraman" <vraman@marvell.com>,
+        "Stanislaw Kardach [C]" <skardach@marvell.com>,
+        "Sunil Kovvuri Goutham" <sgoutham@marvell.com>,
+        "Linu Cherian" <lcherian@marvell.com>,
+        "Jerin Jacob Kollanukkaran" <jerinj@marvell.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re:Re: [EXT] [PATCH v3] octeontx2-af: Fix missing check bugs in
+ rvu_cgx.c
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
+ Copyright (c) 2002-2021 www.mailtech.cn 126com
+In-Reply-To: <DM6PR18MB26023B6D29E67754CDF8FB2FCDA71@DM6PR18MB2602.namprd18.prod.outlook.com>
+References: <1610602240-23404-1-git-send-email-wangyingjie55@126.com>
+ <DM6PR18MB26023B6D29E67754CDF8FB2FCDA71@DM6PR18MB2602.namprd18.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210115170953.3035153-1-elver@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+MIME-Version: 1.0
+Message-ID: <7378cece.54f3.177063b30b6.Coremail.wangyingjie55@126.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: IsqowEDpd0NemAFgx4IgAQ--.7761W
+X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbiVxUbp1pECd2i0AABsH
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 06:09:53PM +0100, Marco Elver wrote:
-> Adds missing license and/or copyright headers for KCSAN source files.
-> 
-> Signed-off-by: Marco Elver <elver@google.com>
-
-This one seemed straightforward and I heard no objections to the previous
-two-patch series, so I queued them for the v5.13 merge window, thank you!
-
-If any of them need adjustment, please send me the updated patch and
-tell me which one it replaces.  Something about -rcu being in heavy
-experimental mode at the moment.  ;-)
-
-							Thanx, Paul
-
-> ---
->  Documentation/dev-tools/kcsan.rst | 3 +++
->  include/linux/kcsan-checks.h      | 6 ++++++
->  include/linux/kcsan.h             | 7 +++++++
->  kernel/kcsan/atomic.h             | 5 +++++
->  kernel/kcsan/core.c               | 5 +++++
->  kernel/kcsan/debugfs.c            | 5 +++++
->  kernel/kcsan/encoding.h           | 5 +++++
->  kernel/kcsan/kcsan.h              | 3 ++-
->  kernel/kcsan/report.c             | 5 +++++
->  kernel/kcsan/selftest.c           | 5 +++++
->  10 files changed, 48 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
-> index be7a0b0e1f28..d85ce238ace7 100644
-> --- a/Documentation/dev-tools/kcsan.rst
-> +++ b/Documentation/dev-tools/kcsan.rst
-> @@ -1,3 +1,6 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +.. Copyright (C) 2019, Google LLC.
-> +
->  The Kernel Concurrency Sanitizer (KCSAN)
->  ========================================
->  
-> diff --git a/include/linux/kcsan-checks.h b/include/linux/kcsan-checks.h
-> index cf14840609ce..9fd0ad80fef6 100644
-> --- a/include/linux/kcsan-checks.h
-> +++ b/include/linux/kcsan-checks.h
-> @@ -1,4 +1,10 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * KCSAN access checks and modifiers. These can be used to explicitly check
-> + * uninstrumented accesses, or change KCSAN checking behaviour of accesses.
-> + *
-> + * Copyright (C) 2019, Google LLC.
-> + */
->  
->  #ifndef _LINUX_KCSAN_CHECKS_H
->  #define _LINUX_KCSAN_CHECKS_H
-> diff --git a/include/linux/kcsan.h b/include/linux/kcsan.h
-> index 53340d8789f9..fc266ecb2a4d 100644
-> --- a/include/linux/kcsan.h
-> +++ b/include/linux/kcsan.h
-> @@ -1,4 +1,11 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * The Kernel Concurrency Sanitizer (KCSAN) infrastructure. Public interface and
-> + * data structures to set up runtime. See kcsan-checks.h for explicit checks and
-> + * modifiers. For more info please see Documentation/dev-tools/kcsan.rst.
-> + *
-> + * Copyright (C) 2019, Google LLC.
-> + */
->  
->  #ifndef _LINUX_KCSAN_H
->  #define _LINUX_KCSAN_H
-> diff --git a/kernel/kcsan/atomic.h b/kernel/kcsan/atomic.h
-> index 75fe701f4127..530ae1bda8e7 100644
-> --- a/kernel/kcsan/atomic.h
-> +++ b/kernel/kcsan/atomic.h
-> @@ -1,4 +1,9 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Rules for implicitly atomic memory accesses.
-> + *
-> + * Copyright (C) 2019, Google LLC.
-> + */
->  
->  #ifndef _KERNEL_KCSAN_ATOMIC_H
->  #define _KERNEL_KCSAN_ATOMIC_H
-> diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-> index 3bf98db9c702..8c3867640c21 100644
-> --- a/kernel/kcsan/core.c
-> +++ b/kernel/kcsan/core.c
-> @@ -1,4 +1,9 @@
->  // SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * KCSAN core runtime.
-> + *
-> + * Copyright (C) 2019, Google LLC.
-> + */
->  
->  #define pr_fmt(fmt) "kcsan: " fmt
->  
-> diff --git a/kernel/kcsan/debugfs.c b/kernel/kcsan/debugfs.c
-> index 3c8093a371b1..c837ce6c52e6 100644
-> --- a/kernel/kcsan/debugfs.c
-> +++ b/kernel/kcsan/debugfs.c
-> @@ -1,4 +1,9 @@
->  // SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * KCSAN debugfs interface.
-> + *
-> + * Copyright (C) 2019, Google LLC.
-> + */
->  
->  #define pr_fmt(fmt) "kcsan: " fmt
->  
-> diff --git a/kernel/kcsan/encoding.h b/kernel/kcsan/encoding.h
-> index 7ee405524904..170a2bb22f53 100644
-> --- a/kernel/kcsan/encoding.h
-> +++ b/kernel/kcsan/encoding.h
-> @@ -1,4 +1,9 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * KCSAN watchpoint encoding.
-> + *
-> + * Copyright (C) 2019, Google LLC.
-> + */
->  
->  #ifndef _KERNEL_KCSAN_ENCODING_H
->  #define _KERNEL_KCSAN_ENCODING_H
-> diff --git a/kernel/kcsan/kcsan.h b/kernel/kcsan/kcsan.h
-> index 8d4bf3431b3c..594a5dd4842a 100644
-> --- a/kernel/kcsan/kcsan.h
-> +++ b/kernel/kcsan/kcsan.h
-> @@ -1,8 +1,9 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> -
->  /*
->   * The Kernel Concurrency Sanitizer (KCSAN) infrastructure. For more info please
->   * see Documentation/dev-tools/kcsan.rst.
-> + *
-> + * Copyright (C) 2019, Google LLC.
->   */
->  
->  #ifndef _KERNEL_KCSAN_KCSAN_H
-> diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
-> index d3bf87e6007c..13dce3c664d6 100644
-> --- a/kernel/kcsan/report.c
-> +++ b/kernel/kcsan/report.c
-> @@ -1,4 +1,9 @@
->  // SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * KCSAN reporting.
-> + *
-> + * Copyright (C) 2019, Google LLC.
-> + */
->  
->  #include <linux/debug_locks.h>
->  #include <linux/delay.h>
-> diff --git a/kernel/kcsan/selftest.c b/kernel/kcsan/selftest.c
-> index 9014a3a82cf9..7f29cb0f5e63 100644
-> --- a/kernel/kcsan/selftest.c
-> +++ b/kernel/kcsan/selftest.c
-> @@ -1,4 +1,9 @@
->  // SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * KCSAN short boot-time selftests.
-> + *
-> + * Copyright (C) 2019, Google LLC.
-> + */
->  
->  #define pr_fmt(fmt) "kcsan: " fmt
->  
-> -- 
-> 2.30.0.284.gd98b1dd5eaa7-goog
-> 
+VGhhbmtzIGZvciB5b3VyIHJlcGx5LiBJIGhhdmUgcmVzZW5kZWQgdGhlIGVtYWlsIHdpdGggdGhl
+IFJldmlld2VkLWJ5IHRhZy4KQXQgMjAyMS0wMS0xNSAxODo1ODo0OSwgIkdlZXRoYXNvd2phbnlh
+IEFrdWxhIiA8Z2FrdWxhQG1hcnZlbGwuY29tPiB3cm90ZToKPlRoZSBjaGFuZ2VzIGxvb2sgZ29v
+ZCB0byBtZS4NCj4NCj5Zb3UgY2FuIGFkZDoNCj5SZXZpZXdlZC1ieTogR2VldGhhIHNvd2phbnlh
+PGdha3VsYUBtYXJ2ZWxsLmNvbT4NCj4NCj5fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fDQo+RnJvbTogd2FuZ3lpbmdqaWU1NUAxMjYuY29tIDx3YW5neWluZ2ppZTU1QDEy
+Ni5jb20+DQo+U2VudDogVGh1cnNkYXksIEphbnVhcnkgMTQsIDIwMjEgMTE6MDAgQU0NCj5Ubzog
+ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsga3ViYUBrZXJuZWwub3JnOyBWaWRoeWEgVmlkaHlhcmFtYW47
+IFN0YW5pc2xhdyBLYXJkYWNoIFtDXQ0KPkNjOiBTdW5pbCBLb3Z2dXJpIEdvdXRoYW07IExpbnUg
+Q2hlcmlhbjsgR2VldGhhc293amFueWEgQWt1bGE7IEplcmluIEphY29iIEtvbGxhbnVra2FyYW47
+IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IFlp
+bmdqaWUgV2FuZw0KPlN1YmplY3Q6IFtFWFRdIFtQQVRDSCB2M10gb2N0ZW9udHgyLWFmOiBGaXgg
+bWlzc2luZyBjaGVjayBidWdzIGluIHJ2dV9jZ3guYw0KPg0KPkV4dGVybmFsIEVtYWlsDQo+DQo+
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLQ0KPkZyb206IFlpbmdqaWUgV2FuZyA8d2FuZ3lpbmdqaWU1NUAxMjYuY29t
+Pg0KPg0KPkluIHJ2dV9tYm94X2hhbmRsZXJfY2d4X21hY19hZGRyX2dldCgpDQo+YW5kIHJ2dV9t
+Ym94X2hhbmRsZXJfY2d4X21hY19hZGRyX3NldCgpLA0KPnRoZSBtc2cgaXMgZXhwZWN0ZWQgb25s
+eSBmcm9tIFBGcyB0aGF0IGFyZSBtYXBwZWQgdG8gQ0dYIExNQUNzLg0KPkl0IHNob3VsZCBiZSBj
+aGVja2VkIGJlZm9yZSBtYXBwaW5nLA0KPnNvIHdlIGFkZCB0aGUgaXNfY2d4X2NvbmZpZ19wZXJt
+aXR0ZWQoKSBpbiB0aGUgZnVuY3Rpb25zLg0KPg0KPkZpeGVzOiA5NmJlMmUwZGE4NWUgKCJvY3Rl
+b250eDItYWY6IFN1cHBvcnQgZm9yIE1BQyBhZGRyZXNzIGZpbHRlcnMgaW4gQ0dYIikNCj5TaWdu
+ZWQtb2ZmLWJ5OiBZaW5namllIFdhbmcgPHdhbmd5aW5namllNTVAMTI2LmNvbT4NCj4tLS0NCj4g
+ZHJpdmVycy9uZXQvZXRoZXJuZXQvbWFydmVsbC9vY3Rlb250eDIvYWYvcnZ1X2NneC5jIHwgNiAr
+KysrKysNCj4gMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKQ0KPg0KPmRpZmYgLS1naXQg
+YS9kcml2ZXJzL25ldC9ldGhlcm5ldC9tYXJ2ZWxsL29jdGVvbnR4Mi9hZi9ydnVfY2d4LmMgYi9k
+cml2ZXJzL25ldC9ldGhlcm5ldC9tYXJ2ZWxsL29jdGVvbnR4Mi9hZi9ydnVfY2d4LmMNCj5pbmRl
+eCBkMjk4YjkzNTcxNzcuLjZjNmI0MTFlNzhmZCAxMDA2NDQNCj4tLS0gYS9kcml2ZXJzL25ldC9l
+dGhlcm5ldC9tYXJ2ZWxsL29jdGVvbnR4Mi9hZi9ydnVfY2d4LmMNCj4rKysgYi9kcml2ZXJzL25l
+dC9ldGhlcm5ldC9tYXJ2ZWxsL29jdGVvbnR4Mi9hZi9ydnVfY2d4LmMNCj5AQCAtNDY5LDYgKzQ2
+OSw5IEBAIGludCBydnVfbWJveF9oYW5kbGVyX2NneF9tYWNfYWRkcl9zZXQoc3RydWN0IHJ2dSAq
+cnZ1LA0KPiAgICAgICAgaW50IHBmID0gcnZ1X2dldF9wZihyZXEtPmhkci5wY2lmdW5jKTsNCj4g
+ICAgICAgIHU4IGNneF9pZCwgbG1hY19pZDsNCj4NCj4rICAgICAgIGlmICghaXNfY2d4X2NvbmZp
+Z19wZXJtaXR0ZWQocnZ1LCByZXEtPmhkci5wY2lmdW5jKSkNCj4rICAgICAgICAgICAgICAgcmV0
+dXJuIC1FUEVSTTsNCj4rDQo+ICAgICAgICBydnVfZ2V0X2NneF9sbWFjX2lkKHJ2dS0+cGYyY2d4
+bG1hY19tYXBbcGZdLCAmY2d4X2lkLCAmbG1hY19pZCk7DQo+DQo+ICAgICAgICBjZ3hfbG1hY19h
+ZGRyX3NldChjZ3hfaWQsIGxtYWNfaWQsIHJlcS0+bWFjX2FkZHIpOw0KPkBAIC00ODUsNiArNDg4
+LDkgQEAgaW50IHJ2dV9tYm94X2hhbmRsZXJfY2d4X21hY19hZGRyX2dldChzdHJ1Y3QgcnZ1ICpy
+dnUsDQo+ICAgICAgICBpbnQgcmMgPSAwLCBpOw0KPiAgICAgICAgdTY0IGNmZzsNCj4NCj4rICAg
+ICAgIGlmICghaXNfY2d4X2NvbmZpZ19wZXJtaXR0ZWQocnZ1LCByZXEtPmhkci5wY2lmdW5jKSkN
+Cj4rICAgICAgICAgICAgICAgcmV0dXJuIC1FUEVSTTsNCj4rDQo+ICAgICAgICBydnVfZ2V0X2Nn
+eF9sbWFjX2lkKHJ2dS0+cGYyY2d4bG1hY19tYXBbcGZdLCAmY2d4X2lkLCAmbG1hY19pZCk7DQo+
+DQo+ICAgICAgICByc3AtPmhkci5yYyA9IHJjOw0KPi0tDQo+Mi43LjQNCg==
