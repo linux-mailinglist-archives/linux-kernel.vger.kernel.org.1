@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AD72F7944
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B5C2F7960
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:37:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387412AbhAOMeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:34:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40886 "EHLO mail.kernel.org"
+        id S2387701AbhAOMfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:35:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733303AbhAOMeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:34:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72133223E0;
-        Fri, 15 Jan 2021 12:33:19 +0000 (UTC)
+        id S1732956AbhAOMfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:35:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F66E23356;
+        Fri, 15 Jan 2021 12:34:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713999;
-        bh=rSih70okvAofANG/VIkYzxE2fl9zFMm++0vCfDGt0EQ=;
+        s=korg; t=1610714078;
+        bh=xxXoBY5nHnpv7/2YhjLVgSeywH1zqfCy2mWXgAox8TA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fZ7ZVN+oKKeY4Gw/PC0yxDh0KCaxmd1k3s1tvms/EB9pjTljUTavMr6BHSNPIiKoj
-         hSLh0OTFNc4Kxk45q+v9rMiFhnMUc18Oy2XsNT7BnRZx+bj74/hEH+mzUyjo3AaBUZ
-         EAxgVCbR+It+DCEuFirIJKLxJ2ig2SOMl5pdFVjI=
+        b=gZNHNU7EMC4ccrtqpBbB+qBWZTxNxuCelvZ5/U/9GRBSunsRJwYQPlnIwSFEAliYe
+         hdIDgLpmWxNElhZtiZYLzXGipQBS0NDaw6qkKhTS7JJy37aq3GWkQeRUnz8P5msejy
+         HvzIKErFTFRKPbUVF5gW/ykXrTndz5keJLo1D0eg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 4.19 28/43] dmaengine: mediatek: mtk-hsdma: Fix a resource leak in the error handling path of the probe function
+        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        Sean Nyekjaer <sean@geanix.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.4 36/62] can: tcan4x5x: fix bittiming const, use common bittiming from m_can driver
 Date:   Fri, 15 Jan 2021 13:27:58 +0100
-Message-Id: <20210115121958.409018412@linuxfoundation.org>
+Message-Id: <20210115122000.140930399@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
-References: <20210115121957.037407908@linuxfoundation.org>
+In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
+References: <20210115121958.391610178@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-commit 33cbd54dc515cc04b5a603603414222b4bb1448d upstream.
+commit aee2b3ccc8a63d1cd7da6a8a153d1f3712d40826 upstream.
 
-'mtk_hsdma_hw_deinit()' should be called in the error handling path of the
-probe function to undo a previous 'mtk_hsdma_hw_init()' call, as already
-done in the remove function.
+According to the TCAN4550 datasheet "SLLSF91 - DECEMBER 2018" the tcan4x5x has
+the same bittiming constants as a m_can revision 3.2.x/3.3.0.
 
-Fixes: 548c4597e984 ("dmaengine: mediatek: Add MediaTek High-Speed DMA controller for MT7622 and MT7623 SoC")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201219124718.182664-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+The tcan4x5x chip I'm using identifies itself as m_can revision 3.2.1, so
+remove the tcan4x5x specific bittiming values and rely on the values in the
+m_can driver, which are selected according to core revision.
+
+Fixes: 5443c226ba91 ("can: tcan4x5x: Add tcan4x5x driver to the kernel")
+Cc: Dan Murphy <dmurphy@ti.com>
+Reviewed-by: Sean Nyekjaer <sean@geanix.com>
+Link: https://lore.kernel.org/r/20201215103238.524029-3-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/dma/mediatek/mtk-hsdma.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/m_can/tcan4x5x.c |   26 --------------------------
+ 1 file changed, 26 deletions(-)
 
---- a/drivers/dma/mediatek/mtk-hsdma.c
-+++ b/drivers/dma/mediatek/mtk-hsdma.c
-@@ -1007,6 +1007,7 @@ static int mtk_hsdma_probe(struct platfo
- 	return 0;
+--- a/drivers/net/can/m_can/tcan4x5x.c
++++ b/drivers/net/can/m_can/tcan4x5x.c
+@@ -126,30 +126,6 @@ struct tcan4x5x_priv {
+ 	int reg_offset;
+ };
  
- err_free:
-+	mtk_hsdma_hw_deinit(hsdma);
- 	of_dma_controller_free(pdev->dev.of_node);
- err_unregister:
- 	dma_async_device_unregister(dd);
+-static struct can_bittiming_const tcan4x5x_bittiming_const = {
+-	.name = DEVICE_NAME,
+-	.tseg1_min = 2,
+-	.tseg1_max = 31,
+-	.tseg2_min = 2,
+-	.tseg2_max = 16,
+-	.sjw_max = 16,
+-	.brp_min = 1,
+-	.brp_max = 32,
+-	.brp_inc = 1,
+-};
+-
+-static struct can_bittiming_const tcan4x5x_data_bittiming_const = {
+-	.name = DEVICE_NAME,
+-	.tseg1_min = 1,
+-	.tseg1_max = 32,
+-	.tseg2_min = 1,
+-	.tseg2_max = 16,
+-	.sjw_max = 16,
+-	.brp_min = 1,
+-	.brp_max = 32,
+-	.brp_inc = 1,
+-};
+-
+ static void tcan4x5x_check_wake(struct tcan4x5x_priv *priv)
+ {
+ 	int wake_state = 0;
+@@ -449,8 +425,6 @@ static int tcan4x5x_can_probe(struct spi
+ 	mcan_class->dev = &spi->dev;
+ 	mcan_class->ops = &tcan4x5x_ops;
+ 	mcan_class->is_peripheral = true;
+-	mcan_class->bit_timing = &tcan4x5x_bittiming_const;
+-	mcan_class->data_timing = &tcan4x5x_data_bittiming_const;
+ 	mcan_class->net->irq = spi->irq;
+ 
+ 	spi_set_drvdata(spi, priv);
 
 
