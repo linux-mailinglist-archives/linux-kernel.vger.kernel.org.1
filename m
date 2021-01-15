@@ -2,154 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19142F7576
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 314EE2F7587
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728929AbhAOJbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:31:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726375AbhAOJaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:30:55 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6144323436;
-        Fri, 15 Jan 2021 09:30:12 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l0LQo-007hoL-BW; Fri, 15 Jan 2021 09:30:10 +0000
+        id S1728913AbhAOJdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:33:42 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:10972 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727845AbhAOJdj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 04:33:39 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DHGDG1pPrzj6s3;
+        Fri, 15 Jan 2021 17:32:14 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 15 Jan
+ 2021 17:33:00 +0800
+Subject: Re: [f2fs-dev] [PATCH v3 1/5] f2fs: compress: add compress_inode to
+ cache compressed blocks
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <X/we0NoUqAwuW82+@google.com>
+ <6b0060b9-460a-617a-3778-e67f35d551f0@huawei.com>
+ <cdd681ad-462d-cb37-2b4b-8f9d547bc718@huawei.com>
+ <b44c2af4-d142-baff-387c-6b967f76065c@huawei.com>
+ <X/0DxG+AcX54730W@google.com>
+ <160f2cf9-73ca-18cd-6ad0-2498821b8db6@huawei.com>
+ <X/4kYf11oyoMY8P+@google.com>
+ <abc09f9f-561d-df8a-b835-6b5d7a15232c@huawei.com>
+ <X/8UtJU9Dy30kC7I@google.com>
+ <37ba41db-2589-e155-c416-d0c8832026cb@huawei.com>
+ <X//DPI10+ZXvHkYH@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <8e88b1e2-0176-9487-b925-9c7a31a7e5cd@huawei.com>
+Date:   Fri, 15 Jan 2021 17:32:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <X//DPI10+ZXvHkYH@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 15 Jan 2021 09:30:10 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 03/10] irqchip/sun6i-r: Use a stacked irqchip driver
-In-Reply-To: <495f71d0-9dbf-23d2-45a1-f27b15138bb2@sholland.org>
-References: <20210112055950.21209-1-samuel@sholland.org>
- <20210112055950.21209-4-samuel@sholland.org> <87turjjkjr.wl-maz@kernel.org>
- <495f71d0-9dbf-23d2-45a1-f27b15138bb2@sholland.org>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <36edee16d9ee630d9f0034fb824b1b52@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: samuel@sholland.org, tglx@linutronix.de, robh+dt@kernel.org, mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net, megous@megous.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-15 04:01, Samuel Holland wrote:
-> Hello,
+On 2021/1/14 12:06, Jaegeuk Kim wrote:
+> On 01/14, Chao Yu wrote:
+>> On 2021/1/13 23:41, Jaegeuk Kim wrote:
+>>> [58690.961685] F2FS-fs (vdb) : inject page get in f2fs_pagecache_get_page of f2fs_quota_write+0x150/0x1f0 [f2fs]
+>>> [58691.071481] F2FS-fs (vdb): Inconsistent error blkaddr:31058, sit bitmap:0
+>>> [58691.077338] ------------[ cut here ]------------
+>>> [58691.081461] WARNING: CPU: 5 PID: 8308 at fs/f2fs/checkpoint.c:151 f2fs_is_valid_blkaddr+0x1e9/0x280 [f2fs]
+>>> [58691.086734] Modules linked in: f2fs(O) quota_v2 quota_tree dm_multipath scsi_dh_rdac scsi_dh_emc scsi_dh_alua ppdev intel_rapl_msr intel_rapl_common sb_edac kvm_intel kvm irqbypass joydev parport_pc parport input_leds serio_raw mac_hid qemu_fw_cfg sch_fq_codel ip_tables x_tables autofs4 btrfs blake2b_generic raid10 raid456 async_raid6_recov async_memcpy asy
+>>> [58691.120632] CPU: 5 PID: 8308 Comm: kworker/u17:5 Tainted: G      D    O      5.11.0-rc3-custom #1
+>>> [58691.125438] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
+>>> [58691.129625] Workqueue: f2fs_post_read_wq f2fs_post_read_work [f2fs]
+>>> [58691.133142] RIP: 0010:f2fs_is_valid_blkaddr+0x1e9/0x280 [f2fs]
+>>> [58691.136221] Code: 3c 07 b8 01 00 00 00 d3 e0 21 f8 75 57 83 fa 07 75 52 89 f2 31 c9 48 c7 c6 20 6a a7 c0 48 89 df e8 bc d6 03 00 f0 80 4b 48 04 <0f> 0b 31 c0 e9 5e fe ff ff 48 8b 57 10 8b 42 30 d3 e0 03 42 48 39
+>>> [58691.143142] RSP: 0018:ffffb429047afd40 EFLAGS: 00010206
+>>> [58691.145639] RAX: 0000000000000000 RBX: ffff9c3b84041000 RCX: 0000000000000000
+>>> [58691.148899] RDX: 0000000000000000 RSI: ffff9c3bbbd58940 RDI: ffff9c3bbbd58940
+>>> [58691.152130] RBP: ffffb429047afd48 R08: ffff9c3bbbd58940 R09: ffffb429047afaa8
+>>> [58691.155266] R10: 00000000001ba090 R11: 0000000000000003 R12: 0000000000007952
+>>> [58691.158304] R13: fffff5cc81266ac0 R14: 00000000000000db R15: 0000000000000000
+>>> [58691.161160] FS:  0000000000000000(0000) GS:ffff9c3bbbd40000(0000) knlGS:0000000000000000
+>>> [58691.164286] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> [58691.166869] CR2: 00007f0fee9d3000 CR3: 000000005ee76001 CR4: 0000000000370ee0
+>>> [58691.169714] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>> [58691.173102] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>> [58691.176163] Call Trace:
+>>> [58691.177948]  f2fs_cache_compressed_page+0x69/0x280 [f2fs]
+>>> [58691.180549]  ? newidle_balance+0x253/0x3d0
+>>> [58691.183238]  f2fs_end_read_compressed_page+0x5a/0x70 [f2fs]
+>>> [58691.188205]  f2fs_post_read_work+0x11d/0x120 [f2fs]
+>>> [58691.192489]  process_one_work+0x221/0x3a0
+>>> [58691.194482]  worker_thread+0x4d/0x3f0
+>>> [58691.198867]  kthread+0x114/0x150
+>>> [58691.202243]  ? process_one_work+0x3a0/0x3a0
+>>> [58691.205367]  ? kthread_park+0x90/0x90
+>>> [58691.208244]  ret_from_fork+0x22/0x30
+>>
+>> Below patch fixes two issues, I expect this can fix above warning at least.
 > 
-> On 1/14/21 3:06 PM, Marc Zyngier wrote:
->> Hi Samuel,
->> 
->> On 2021-01-12 05:59, Samuel Holland wrote:
->> 
->> [...]
->> 
->>> +static void sun6i_r_intc_ack_nmi(void)
->>> +{
->>> +	writel(SUN6I_NMI_BIT, base + SUN6I_IRQ_PENDING(0));
->> 
->> writel_relaxed()
-> 
-> irq_chip_unmask_parent(), which calls gic_unmask_irq(), is called
-> immediately after this in .irq_unmask. Since gic_unmask_irq() also uses
-> writel_relaxed(), the GIC write could be ordered before the write here.
+> [106115.591837] general protection fault, probably for non-canonical address 0x6b6b6b6b6b6b6b73: 0000 [#1] SMP PTI
+> [106115.595584] CPU: 3 PID: 10109 Comm: fsstress Tainted: G           O      5.11.0-rc3-custom #1
+> [106115.601087] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
+> [106115.601087] RIP: 0010:f2fs_read_multi_pages+0x415/0xa70 [f2fs]
 
-That's odd. writel() places a barrier *before* the actual write,
-ensuring that this write is ordered w.r.t. previous accesses.
-If you are trying to ensure ordering with what follows, you need
-an explicit barrier after this access.
+Jaegeuk,
 
-I guess that in the end, you may need both, as what you have orders
-the access to GICC_AIR to take place before the write to this pending
-register, and you also need to provide the ordering you just described.
+Could you please help to run:
 
-> 
-> I was getting occasional spurious interrupts (1 out of each 20-25) when
-> using a level trigger, which were resolved by switching to writel() 
-> here.
-> 
-> I mentioned this in the changelog, but it probably deserves a comment 
-> in
-> the code as well. Or maybe I should use an explicit barrier somewhere?
+gdb f2fs.ko
+(gdb) l *(f2fs_read_multi_pages+0x415)
 
-Please document it in the code. This is subtle enough to warrant a good
-description.
-
->>> +}
->>> +
->>> +static void sun6i_r_intc_nmi_ack(struct irq_data *data)
->>> +{
->>> +	if (irqd_get_trigger_type(data) & IRQ_TYPE_EDGE_BOTH)
->>> +		sun6i_r_intc_ack_nmi();
->>> +	else
->>> +		data->chip_data = SUN6I_NMI_NEEDS_ACK;
->>> +}
->>> +
->>> +static void sun6i_r_intc_nmi_eoi(struct irq_data *data)
->>> +{
->>> +	/* For oneshot IRQs, delay the ack until the IRQ is unmasked. */
->>> +	if (data->chip_data == SUN6I_NMI_NEEDS_ACK && 
->>> !irqd_irq_masked(data))
->>> {
->>> +		sun6i_r_intc_ack_nmi();
->>> +		data->chip_data = 0;
->> 
->> nit: NULL rather than 0?
-> 
-> NULL seemed less appropriate since I'm not using the field as a 
-> pointer,
-> but I don't have a strong opinion about it.
-
-chip_data *is* a pointer, which is why we conventionally use NULL rather
-than an integer value. Up to you.
-
-> 
->> [...]
->> 
->>> +static struct irq_chip sun6i_r_intc_nmi_chip = {
->>> +	.name			= "sun6i-r-intc",
->>> +	.irq_ack		= sun6i_r_intc_nmi_ack,
->>> +	.irq_mask		= irq_chip_mask_parent,
->>> +	.irq_unmask		= sun6i_r_intc_nmi_unmask,
->>> +	.irq_eoi		= sun6i_r_intc_nmi_eoi,
->>> +	.irq_set_affinity	= irq_chip_set_affinity_parent,
->>> +	.irq_set_type		= sun6i_r_intc_nmi_set_type,
->>> +	.irq_set_irqchip_state	= sun6i_r_intc_nmi_set_irqchip_state,
->> 
->> You probably also want to wire irq_get_irqchip_state(), while
->> you're at it.
-> 
-> I thought if the interrupt was pending here, it would necessarily also
-> be pending at the GIC, so adding a separate layer would be redundant.
-> 
-> irq_set_vcpu_affinity(), __irq_get_irqchip_state(), and
-> irq_set_irqchip_state() [the functions, not the callbacks] have the
-> interesting property that they search up the irqdomain hierarchy for 
-> the
-> first irqdomain with the callback. So if all the callback would do is
-> defer to its parent, it doesn't need to be provided at all*.
-
-Ah, of course... I even wrote that code!
+to see where we hit the panic.
 
 Thanks,
 
-          M.
--- 
-Jazz is not dead. It just smells funny...
+> [106115.601087] Code: ff ff ff 45 31 ff f7 d0 25 00 00 08 00 89 45 80 48 8b 45 a0 48 83 c0 6c 48 89 85 78 ff ff ff 48 8b 7d a0 49 63 c7 48 8b 57 30 <48> 8b 1c c2 8b 45 c4 8d 50 01 48 8b 45 b8 48 2b 05 c6 55 92 dc 48
+> [106115.601087] RSP: 0018:ffffc0a4822f7710 EFLAGS: 00010206
+> [106115.620978] RAX: 0000000000000001 RBX: ffffe801820034c0 RCX: 0000000000200000
+> [106115.620978] RDX: 6b6b6b6b6b6b6b6b RSI: ffffffffc09487af RDI: ffff9bc1d87c4200
+> [106115.627351] RBP: ffffc0a4822f77c0 R08: 0000000000000000 R09: 0000000000000000
+> [106115.627351] R10: ffff9bc1d87c4200 R11: 0000000000000001 R12: 0000000000105343
+> [106115.627351] R13: ffff9bc2d2184000 R14: 0000000000000000 R15: 0000000000000001
+> [106115.635587] FS:  00007f188e909b80(0000) GS:ffff9bc2fbcc0000(0000) knlGS:0000000000000000
+> [106115.635587] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [106115.635587] CR2: 000056446d88b358 CR3: 00000000534b4002 CR4: 0000000000370ee0
+> [106115.635587] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [106115.635587] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [106115.635587] Call Trace:
+> [106115.635587]  f2fs_mpage_readpages+0x4e4/0xac0 [f2fs]
+> [106115.635587]  f2fs_readahead+0x47/0x90 [f2fs]
+> [106115.635587]  read_pages+0x8e/0x280
+> [106115.635587]  page_cache_ra_unbounded+0x11f/0x1f0
+> [106115.665909]  do_page_cache_ra+0x3d/0x40
+> [106115.670756]  ondemand_readahead+0x2c1/0x2e0
+> [106115.671682]  page_cache_sync_ra+0xd4/0xe0
+> [106115.675622]  generic_file_buffered_read_get_pages+0x126/0x8d0
+> [106115.679158]  generic_file_buffered_read+0x113/0x4a0
+> [106115.679158]  ? __filemap_fdatawrite_range+0xd8/0x110
+> [106115.685672]  ? __mark_inode_dirty+0x98/0x330
+> [106115.691168]  ? f2fs_direct_IO+0x80/0x6f0 [f2fs]
+> [106115.691168]  generic_file_read_iter+0xdf/0x140
+> [106115.691168]  f2fs_file_read_iter+0x34/0xb0 [f2fs]
+> [106115.699450]  aio_read+0xef/0x1b0
+> [106115.699450]  ? do_user_addr_fault+0x1b8/0x450
+> [106115.699450]  io_submit_one+0x217/0xbc0
+> [106115.699450]  ? io_submit_one+0x217/0xbc0
+> [106115.699450]  __x64_sys_io_submit+0x8d/0x180
+> [106115.699450]  ? __x64_sys_io_submit+0x8d/0x180
+> [106115.712018]  ? exit_to_user_mode_prepare+0x3d/0x1a0
+> [106115.717468]  do_syscall_64+0x38/0x90
+> [106115.723157]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+>>
+>> - detect truncation during f2fs_cache_compressed_page()
+>> - don't set PageUptodate for temporary page in f2fs_load_compressed_page()
+>>
+>> From: Chao Yu <yuchao0@huawei.com>
+>>
+>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>> ---
+>>   fs/f2fs/compress.c | 20 +++++++++++++-------
+>>   fs/f2fs/data.c     |  3 +--
+>>   fs/f2fs/f2fs.h     |  6 +++---
+>>   3 files changed, 17 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+>> index 0fec71e40001..f364c10c506c 100644
+>> --- a/fs/f2fs/compress.c
+>> +++ b/fs/f2fs/compress.c
+>> @@ -1741,7 +1741,7 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+>>   	if (!test_opt(sbi, COMPRESS_CACHE))
+>>   		return;
+>>
+>> -	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE))
+>> +	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
+>>   		return;
+>>
+>>   	si_meminfo(&si);
+>> @@ -1774,21 +1774,25 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+>>   		return;
+>>   	}
+>>
+>> -	memcpy(page_address(cpage), page_address(page), PAGE_SIZE);
+>> -	SetPageUptodate(cpage);
+>> -
+>>   	f2fs_set_page_private(cpage, ino);
+>>
+>> +	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
+>> +		goto out;
+>> +
+>> +	memcpy(page_address(cpage), page_address(page), PAGE_SIZE);
+>> +	SetPageUptodate(cpage);
+>> +out:
+>>   	f2fs_put_page(cpage, 1);
+>>   }
+>>
+>> -void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+>> +bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+>>   								block_t blkaddr)
+>>   {
+>>   	struct page *cpage;
+>> +	bool hitted = false;
+>>
+>>   	if (!test_opt(sbi, COMPRESS_CACHE))
+>> -		return;
+>> +		return false;
+>>
+>>   	cpage = f2fs_pagecache_get_page(COMPRESS_MAPPING(sbi),
+>>   				blkaddr, FGP_LOCK | FGP_NOWAIT, GFP_NOFS);
+>> @@ -1797,10 +1801,12 @@ void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+>>   			atomic_inc(&sbi->compress_page_hit);
+>>   			memcpy(page_address(page),
+>>   				page_address(cpage), PAGE_SIZE);
+>> -			SetPageUptodate(page);
+>> +			hitted = true;
+>>   		}
+>>   		f2fs_put_page(cpage, 1);
+>>   	}
+>> +
+>> +	return hitted;
+>>   }
+>>
+>>   void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino)
+>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+>> index b3973494b102..3705c272b76a 100644
+>> --- a/fs/f2fs/data.c
+>> +++ b/fs/f2fs/data.c
+>> @@ -2211,8 +2211,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+>>   		blkaddr = data_blkaddr(dn.inode, dn.node_page,
+>>   						dn.ofs_in_node + i + 1);
+>>
+>> -		f2fs_load_compressed_page(sbi, page, blkaddr);
+>> -		if (PageUptodate(page)) {
+>> +		if (f2fs_load_compressed_page(sbi, page, blkaddr)) {
+>>   			if (atomic_dec_and_test(&dic->remaining_pages))
+>>   				f2fs_decompress_cluster(dic);
+>>   			continue;
+>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>> index 9f79a6825f06..b807970d67b1 100644
+>> --- a/fs/f2fs/f2fs.h
+>> +++ b/fs/f2fs/f2fs.h
+>> @@ -3951,7 +3951,7 @@ struct address_space *COMPRESS_MAPPING(struct f2fs_sb_info *sbi);
+>>   void f2fs_invalidate_compress_page(struct f2fs_sb_info *sbi, block_t blkaddr);
+>>   void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+>>   						nid_t ino, block_t blkaddr);
+>> -void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+>> +bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+>>   								block_t blkaddr);
+>>   void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino);
+>>   #else
+>> @@ -3990,8 +3990,8 @@ static inline void f2fs_invalidate_compress_page(struct f2fs_sb_info *sbi,
+>>   				block_t blkaddr) { }
+>>   static inline void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi,
+>>   				struct page *page, nid_t ino, block_t blkaddr) { }
+>> -static inline void f2fs_load_compressed_page(struct f2fs_sb_info *sbi,
+>> -				struct page *page, block_t blkaddr) { }
+>> +static inline bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi,
+>> +				struct page *page, block_t blkaddr) { return false; }
+>>   static inline void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi,
+>>   							nid_t ino) { }
+>>   #endif
+>> -- 
+>> 2.29.2
+> .
+> 
