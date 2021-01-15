@@ -2,237 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F552F8549
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABF12F854F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387451AbhAOTWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 14:22:19 -0500
-Received: from foss.arm.com ([217.140.110.172]:52892 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726065AbhAOTWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 14:22:19 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B2ED7ED1;
-        Fri, 15 Jan 2021 11:21:32 -0800 (PST)
-Received: from [10.57.56.43] (unknown [10.57.56.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 652683F719;
-        Fri, 15 Jan 2021 11:21:31 -0800 (PST)
-Subject: Re: [PATCH v4 3/3] iommu/iova: Flush CPU rcache for when a depot
- fills
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        John Garry <john.garry@huawei.com>
-Cc:     joro@8bytes.org, will@kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, iommu@lists.linux-foundation.org
-References: <1607538189-237944-1-git-send-email-john.garry@huawei.com>
- <1607538189-237944-4-git-send-email-john.garry@huawei.com>
- <YAHRwZXoRZFJkgE8@larix.localdomain>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <7a4f3d74-2f0d-1ffa-95cf-cfeaa81d8c7e@arm.com>
-Date:   Fri, 15 Jan 2021 19:21:29 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2387907AbhAOTWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 14:22:24 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2600 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726065AbhAOTWX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 14:22:23 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6001eb470000>; Fri, 15 Jan 2021 11:21:43 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 15 Jan
+ 2021 19:21:43 +0000
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.109)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 15 Jan 2021 19:21:42 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ql318WnV6V6oKxLhwzRd0wFlyqsJ0y0tsjObXLLspsfRD4WGqqc0wdXptdLGjFJ7NG7GH98dyVQgSC7c9FQnmp6c616wiIK4um302R9xM1XieWrYBwY7TH1CRNz1b94qNC62aG7yNBJ8avbNHyCvye5OaiLvndXFKEUg7uA7ExPYtr0Zwt5yQSPo9vEfAKDKmK7vDw2OByPFWj0TNHfqDsi3uMPnix4CX/UzC5iY8A7ZBt2fK/wIsMoWuPz3oUGjvdnSiB7xtBC6c06x91/D6ICYptX1j/t09wGnwvygIkfR45or2LzlDH/r9nq4qGMODOWsiC17m3/jZmIfzfOu2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n/D3PUqldU5lR3YQKO/piSWwpCp7XwyRvE3VQgGm/DY=;
+ b=OyfnZu8t6d6Bdi9jYkcRZDCoUdutGcfflXzWYnpcb+vd+ZSbWut0p2Vbn3BJPi7D5aTEaC9Gq9fH4+PnNVF3xfE99yTNmedRkhTZIalhhC758K0eXr9io8RVLKcRahlh73QtsuWx/ujNqoe31PAwXuM9iCxm8+Rm4eoctXcTqiywpNdmizmhoQ9SbDndJIqAmJx4x+xOrIrUqkEIDhVlZMWIB8zGnmoac8Ve9oiRrrO0KMVuEMHpCz/apu8iUfFzypbWGu3eD6xwp9hHAPTKflL4olxU+0tURN43yDzB+zUXWukAe9G9rvKyQ+2RysqoUu/WrsCOP8aJYEa9LL/UcA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1148.namprd12.prod.outlook.com (2603:10b6:3:74::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.10; Fri, 15 Jan
+ 2021 19:21:41 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3742.012; Fri, 15 Jan 2021
+ 19:21:41 +0000
+Date:   Fri, 15 Jan 2021 15:21:40 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] Please pull RDMA subsystem changes
+Message-ID: <20210115192140.GA456837@nvidia.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ReaqsoxgOBHFXBhH"
+Content-Disposition: inline
+X-ClientProxiedBy: MN2PR10CA0012.namprd10.prod.outlook.com
+ (2603:10b6:208:120::25) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <YAHRwZXoRZFJkgE8@larix.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR10CA0012.namprd10.prod.outlook.com (2603:10b6:208:120::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Fri, 15 Jan 2021 19:21:41 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l0UfE-001urk-8U; Fri, 15 Jan 2021 15:21:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610738503; bh=n/D3PUqldU5lR3YQKO/piSWwpCp7XwyRvE3VQgGm/DY=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:Content-Type:Content-Disposition:
+         X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=RvMD1WZvza9PKrlFUoQ786R+OTaiSHPJXzRTNgskOOJek5jEOknU9IIfEWp89kV2b
+         uZTVgtxDPH3dcnBJldArPOrjDW5Knzn3rywhrSLDzFbAf824mq0H0Yn2Vvm8IF4TR7
+         SCTwk0YcVORhlYNT2UoVMI01tFNcjG5DE109PHNZKxaOBdXSPLYUzKVXp3i81kn609
+         Wv4XpG6qFLhdXwXqLJFSQ47qbmyF/AVWsui5uMnuGdE2wfg1IRqasWSbDQrCGclkzj
+         P1DKJyUo11n41F4P/I9v9IDhy0wCtGIAdQE+aQHTdQUcpw/X9NI+GqcaTSNhxY4fDY
+         tqXM0IWgaw/GQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-15 17:32, Jean-Philippe Brucker wrote:
-> On Thu, Dec 10, 2020 at 02:23:09AM +0800, John Garry wrote:
->> Leizhen reported some time ago that IOVA performance may degrade over time
->> [0], but unfortunately his solution to fix this problem was not given
->> attention.
->>
->> To summarize, the issue is that as time goes by, the CPU rcache and depot
->> rcache continue to grow. As such, IOVA RB tree access time also continues
->> to grow.
->>
->> At a certain point, a depot may become full, and also some CPU rcaches may
->> also be full when inserting another IOVA is attempted. For this scenario,
->> currently the "loaded" CPU rcache is freed and a new one is created. This
->> freeing means that many IOVAs in the RB tree need to be freed, which
->> makes IO throughput performance fall off a cliff in some storage scenarios:
->>
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6314MB/0KB/0KB /s] [1616K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [5669MB/0KB/0KB /s] [1451K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6673MB/0KB/0KB /s] [1708K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6761MB/0KB/0KB /s] [1731K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6685MB/0KB/0KB /s] [1711K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6178MB/0KB/0KB /s] [1582K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6731MB/0KB/0KB /s] [1723K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2387MB/0KB/0KB /s] [611K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2689MB/0KB/0KB /s] [688K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2278MB/0KB/0KB /s] [583K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1288MB/0KB/0KB /s] [330K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1632MB/0KB/0KB /s] [418K/0/0 iops]
->> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1765MB/0KB/0KB /s] [452K/0/0 iops]
->>
->> And continue in this fashion, without recovering. Note that in this
->> example it was required to wait 16 hours for this to occur. Also note that
->> IO throughput also becomes gradually becomes more unstable leading up to
->> this point.
->>
->> This problem is only seen for non-strict mode. For strict mode, the rcaches
->> stay quite compact.
-> 
-> It would be good to understand why the rcache doesn't stabilize. Could be
-> a bug, or just need some tuning
-> 
-> In strict mode, if a driver does Alloc-Free-Alloc and the first alloc
-> misses the rcache, the second allocation hits it. The same sequence in
-> non-strict mode misses the cache twice, because the IOVA is added to the
-> flush queue on Free.
-> 
-> So rather than AFAFAF.. we get AAA..FFF.., only once the fq_timer triggers
-> or the FQ is full. Interestingly the FQ size is 2x IOVA_MAG_SIZE, so we
-> could allocate 2 magazines worth of fresh IOVAs before alloc starts
-> hitting the cache. If a job allocates more than that, some magazines are
-> going to the depot, and with multi-CPU jobs those will get used on other
-> CPUs during the next alloc bursts, causing the progressive increase in
-> rcache consumption. I wonder if setting IOVA_MAG_SIZE > IOVA_FQ_SIZE helps
-> reuse of IOVAs?
-> 
-> Then again I haven't worked out the details, might be entirely wrong. I'll
-> have another look next week.
+--ReaqsoxgOBHFXBhH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I did start digging into the data (thanks for that!) before Christmas, 
-but between being generally frazzled and trying to remember how to write 
-Perl to massage the numbers out of the log dump I never got round to 
-responding, sorry.
+Hi Linus,
 
-The partial thoughts that I can recall right now are firstly that the 
-total numbers of IOVAs are actually pretty meaningless, it really needs 
-to be broken down by size (that's where my Perl-hacking stalled...); 
-secondly that the pattern is far more than just a steady increase - the 
-CPU rcache count looks to be heading asymptotically towards ~65K IOVAs 
-all the time, representing (IIRC) two sizes being in heavy rotation, 
-while the depot is happily ticking along in a steady state as expected, 
-until it suddenly explodes out of nowhere; thirdly, I'd really like to 
-see instrumentation of the flush queues at the same time, since I think 
-they're the real culprit.
+Bit later for the first rc pull request than normal due to the
+holidays, but a fairly modest set of bug fixes, nothing abnormal from
+the merge window
 
-My theory so far is that everyone is calling queue_iova() frequently 
-enough to keep the timer at bay and their own queues drained. Then at 
-the ~16H mark, *something* happens that pauses unmaps long enough for 
-the timer to fire, and at that point all hell breaks loose. The depot is 
-suddenly flooded with IOVAs of *all* sizes, indicative of all the queues 
-being flushed at once (note that the two most common sizes have been 
-hovering perilously close to "full" the whole time), but then, 
-crucially, *that keeps happening*. My guess is that the load of 
-fq_flush_timeout() slows things down enough that the the timer then 
-keeps getting the chance to expire and repeat the situation.
+The ucma patch is a bit on the larger side, but given the regression was
+recently added I've opted to forward it to the rc stream.
 
-The main conclusion I draw from this is the same one that was my initial 
-gut feeling; that MAX_GLOBAL_MAGS = 32 is utter bollocks. The CPU rcache 
-capacity scales with the number of CPUs; the flush queue capacity scales 
-with the number of CPUs; it is nonsensical that the depot size does not 
-correspondingly scale with the number of CPUs (I note that the testing 
-on the original patchset cites a 16-CPU system, where that depot 
-capacity is conveniently equal to the total rcache capacity).
+Thanks,
+Jason
 
-Now yes, purging the rcaches when the depot is full does indeed help 
-mitigate this scenario - I assume it provides enough of a buffer where 
-the regular free_iova_fast() calls don't hit queue_iova() for a while 
-(and gives fq_ring_free() some reprieve on the CPU handling the 
-timeout), giving enough leeway for the flood to finish before anyone 
-starts hitting queues/locks/etc. and stalling again, and thus break the 
-self-perpetuating timeout cycle. But that's still only a damage 
-limitation exercise! It's planning for failure to just lie down and 
-assume that the depot is going to be full if fq_flush_timeout() ever 
-fires because it's something like an order of magnitude smaller than the 
-flush queue capacity (even for a uniform distribution of IOVA sizes) on 
-super-large systems.
+The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
 
-I'm honestly tempted to move my position further towards a hard NAK on 
-this approach, because all the evidence so far points to it being a 
-bodge around a clear and easily-fixed scalability oversight. At the very 
-least I'd now want to hear a reasoned justification for why you want to 
-keep the depot at an arbitrary fixed size while the whole rest of the 
-system scales (I'm assuming that since my previous suggestion to try 
-changes in that area seems to have been ignored).
+  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
 
-Cheers,
-Robin.
+are available in the Git repository at:
 
-> 
-> Thanks,
-> Jean
-> 
->> As a solution to this issue, judge that the IOVA caches have grown too big
->> when cached magazines need to be free, and just flush all the CPUs rcaches
->> instead.
->>
->> The depot rcaches, however, are not flushed, as they can be used to
->> immediately replenish active CPUs.
->>
->> In future, some IOVA compaction could be implemented to solve the
->> instability issue, which I figure could be quite complex to implement.
->>
->> [0] https://lore.kernel.org/linux-iommu/20190815121104.29140-3-thunder.leizhen@huawei.com/
->>
->> Analyzed-by: Zhen Lei <thunder.leizhen@huawei.com>
->> Reported-by: Xiang Chen <chenxiang66@hisilicon.com>
->> Tested-by: Xiang Chen <chenxiang66@hisilicon.com>
->> Signed-off-by: John Garry <john.garry@huawei.com>
->> Reviewed-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>   drivers/iommu/iova.c | 16 ++++++----------
->>   1 file changed, 6 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
->> index 732ee687e0e2..39b7488de8bb 100644
->> --- a/drivers/iommu/iova.c
->> +++ b/drivers/iommu/iova.c
->> @@ -841,7 +841,6 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->>   				 struct iova_rcache *rcache,
->>   				 unsigned long iova_pfn)
->>   {
->> -	struct iova_magazine *mag_to_free = NULL;
->>   	struct iova_cpu_rcache *cpu_rcache;
->>   	bool can_insert = false;
->>   	unsigned long flags;
->> @@ -863,13 +862,12 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->>   				if (cpu_rcache->loaded)
->>   					rcache->depot[rcache->depot_size++] =
->>   							cpu_rcache->loaded;
->> -			} else {
->> -				mag_to_free = cpu_rcache->loaded;
->> +				can_insert = true;
->> +				cpu_rcache->loaded = new_mag;
->>   			}
->>   			spin_unlock(&rcache->lock);
->> -
->> -			cpu_rcache->loaded = new_mag;
->> -			can_insert = true;
->> +			if (!can_insert)
->> +				iova_magazine_free(new_mag);
->>   		}
->>   	}
->>   
->> @@ -878,10 +876,8 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->>   
->>   	spin_unlock_irqrestore(&cpu_rcache->lock, flags);
->>   
->> -	if (mag_to_free) {
->> -		iova_magazine_free_pfns(mag_to_free, iovad);
->> -		iova_magazine_free(mag_to_free);
->> -	}
->> +	if (!can_insert)
->> +		free_all_cpu_cached_iovas(iovad);
->>   
->>   	return can_insert;
->>   }
->> -- 
->> 2.26.2
->>
->> _______________________________________________
->> iommu mailing list
->> iommu@lists.linux-foundation.org
->> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+
+for you to fetch changes up to 7c7b3e5d9aeed31d35c5dab0bf9c0fd4c8923206:
+
+  RDMA/cma: Fix error flow in default_roce_mode_store (2021-01-14 12:53:13 -0400)
+
+----------------------------------------------------------------
+RDMA 5.11 first RC pull request
+
+Several bug fixes.
+
+- Fix a ucma memory leak introduced in v5.9 while fixing the Syzkaller
+  bugs
+
+- Don't fail when the xarray wraps for user verbs objects
+
+- User triggerable oops regression from the umem page size rework
+
+- Error unwind bugs in usnic, ocrdma, mlx5 and cma
+
+----------------------------------------------------------------
+Aharon Landau (1):
+      RDMA/umem: Avoid undefined behavior of rounddown_pow_of_two()
+
+Dinghao Liu (1):
+      RDMA/usnic: Fix memleak in find_free_vf_and_create_qp_grp
+
+Jason Gunthorpe (1):
+      RDMA/ucma: Do not miss ctx destruction steps in some cases
+
+Leon Romanovsky (1):
+      RDMA/restrack: Don't treat as an error allocation ID wrapping
+
+Mark Bloch (1):
+      RDMA/mlx5: Fix wrong free of blue flame register on error
+
+Neta Ostrovsky (1):
+      RDMA/cma: Fix error flow in default_roce_mode_store
+
+Parav Pandit (1):
+      IB/mlx5: Fix error unwinding when set_has_smi_cap fails
+
+Tom Rix (1):
+      RDMA/ocrdma: Fix use after free in ocrdma_dealloc_ucontext_pd()
+
+ drivers/infiniband/core/cma_configfs.c       |   4 +-
+ drivers/infiniband/core/restrack.c           |   1 +
+ drivers/infiniband/core/ucma.c               | 135 ++++++++++++++-------------
+ drivers/infiniband/core/umem.c               |   2 +-
+ drivers/infiniband/hw/mlx5/main.c            |   4 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c  |   2 +-
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c |   3 +
+ 7 files changed, 83 insertions(+), 68 deletions(-)
+
+--ReaqsoxgOBHFXBhH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEfB7FMLh+8QxL+6i3OG33FX4gmxoFAmAB60IACgkQOG33FX4g
+mxq51A/+P/qlzjw7ER/eaRpwLGx1IZ49zJUeQxAILG8h4DVu+Y+3DfxmqZEGY9Lq
+RP8ChRjw3aSKNik/5MJXMDWqqVAn+G/hddEzRG90yF+bTyag+hjw6ZCF6x+7S68S
+/ygjduxJ0OZNkFhIMDRm7GG5DZe/kWZv/gvE+5WboL3AaVuLVFEIgmu4QUvlg3aa
+SjxR+TVcjjUxPUUc1p/7Ndm0eFEKvnJSMC07Q2o4h9s9QKF0Cn39C1aRgAs7BWqd
+SxGqkZbAsytrg+7W/N2uxR3l3671+Z/0uxt665mMeoL0VVTsD+usVzvTKe/Ryz7q
+wiaGgASL7OW6Q3SwDjmY/8cGq7CV6NMwbK/kXuOkoTUktso/nlBtUWDD39KXY1lF
+Ohhe8u6iWvwjNN3DP45ilhaui0HFEnMbbvciQhLBIj2+EmwGggThxVdFYqM6urXK
+CRE9lYUXjSvzLx31YNUdgLplHioll3s0IvPJFAAVUdP1MyjhxxC81rYeDwOamVtB
+nP5eGgHMMA9GvciH2ehPxlmkhZT7VvHrR2yqO8lHeKKcbdxhkx+K1z7zdiLbo7m/
+7JUNWgm08DN2JlKyoe20OMUi6Z7sbWGYoWQXesahHoDOhtc2bKzCvwOji1zPKM6m
+dmxVEWvWIoFIkUYUa2bOornGTMncPf4k5uQl7LEnrv7S0G925og=
+=SvLN
+-----END PGP SIGNATURE-----
+
+--ReaqsoxgOBHFXBhH--
