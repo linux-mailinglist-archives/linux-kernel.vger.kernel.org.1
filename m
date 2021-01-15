@@ -2,375 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C5E2F873E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B0F2F8739
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387854AbhAOVHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 16:07:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729204AbhAOVHo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2387640AbhAOVHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 15 Jan 2021 16:07:44 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E86EC06179F;
-        Fri, 15 Jan 2021 13:06:34 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D77A258B;
-        Fri, 15 Jan 2021 22:06:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1610744792;
-        bh=T6hbV1O1oRjYL8zdng4qI1ulSsCeoFenYqaoA4x2R1U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p+HucoNHt8b2/xNw2SqwXz+mxRCAMPmim4GRd9N7lVM740JU7m+MeQeAmI23QbbZJ
-         5b2DgI1hHEzzRPPfkCkaIrro6c0Xzs3tmqlHK++ZReexfl/MjcWXoizCyFa49MR3MP
-         FeLurhztnooLUnIirndDiO8cTiqI3R4yaO82o0cg=
-Date:   Fri, 15 Jan 2021 23:06:14 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "James (Qian) Wang" <james.qian.wang@arm.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Mihail Atanassov <mihail.atanassov@arm.com>,
-        Brian Starkey <brian.starkey@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Dave Airlie <airlied@redhat.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stefan Agner <stefan@agner.ch>,
-        Alison Wang <alison.wang@nxp.com>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Edmund Dea <edmund.j.dea@intel.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marek Vasut <marex@denx.de>, Tomi Valkeinen <tomba@kernel.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Vincent Abriou <vincent.abriou@st.com>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Eric Anholt <eric@anholt.net>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Melissa Wen <melissa.srw@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 09/10] drm/atomic: Pass the full state to planes atomic
- disable and update
-Message-ID: <YAIDxoyUtQooCsET@pendragon.ideasonboard.com>
-References: <20210115125703.1315064-1-maxime@cerno.tech>
- <20210115125703.1315064-9-maxime@cerno.tech>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210115125703.1315064-9-maxime@cerno.tech>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729204AbhAOVHm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 16:07:42 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 495C5C061799
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:06:24 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id x17so8064968ybs.12
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:06:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=WwUdb2o6/JIc/+fz+e0NhIo1IFclKkxRZVZ3uFNIMcs=;
+        b=P98utPfE6V667LGwTk/IdGWWjs1i97DTxFXdD6FraJ/KKKWgNoEaRBbxZ5phN52hfH
+         nDeTjvnhKRW/+FmCsSU+a0ByuNJP2F+Io4jbDhySATDrrnQFLaYSR44keYYmmfBBJoYq
+         h+deIqj8r6oJ1KqkWf9euVm/PkBcINapnocm6aqqq6PRdVuUmS9zxAaXF//OAQHLJWi7
+         KuUvn19Vgodzjl78CtFaFVyCwJVmqRHjq6Mde/X8DTE4onvHWAqFcyFnB68qcHKONg9u
+         NDURrcYtPVIq9OWtnW3/9GnSF76L6hDE8KjAZd9WJ0v9ky5M3UOE1HFnEdUaUxpYvxT3
+         fo8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=WwUdb2o6/JIc/+fz+e0NhIo1IFclKkxRZVZ3uFNIMcs=;
+        b=unss1B6JW+r23XtVSRyHCxVq3tXRhrroY7jUB4LYszUaq6ADa/Z0NrGjTik21Tc71G
+         gASrXHmpfsUh0sRzRAhKKbq1UTdBuSl4ThT2zvFFoShX5bI7tBfr3MuRUSHW8RLobWdp
+         jdawq1pVI4jTTJvt1mo+88JRrRJiDADHCfuxn1D6RmP4Q8yrws4VEaViIdfUNJm92Zc4
+         Jb8umbAxfURSou7JmMyVsm9WMbxSZPb6Lye+O0UwyTvk4ZHChTLJUX9RysKF5SxeAmes
+         yW8Z80dRoyriYTRFFCiwtuWPsxV0euz1i9VhEvBY9uiFsb90/FxlfTZLmyMqIZZhxpCl
+         NjTw==
+X-Gm-Message-State: AOAM533bnBmi+pls3YB5CpAEOUeDPchfXPNQqD1vbuUySZm3DMJLNmwZ
+        TM41UyQ2/NO5jNsu0krGcDCVFVOZQYmnlVXPbD0=
+X-Google-Smtp-Source: ABdhPJwl7tCUSN0P/LCMkvXJn+0QmVuXApbC9wW8nC1jUNLza17eauSiMeqgT4K/PaLA6wvRmXPjX8w+C6i38FJPLDE=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:340c:: with SMTP id
+ b12mr4325908yba.474.1610744783536; Fri, 15 Jan 2021 13:06:23 -0800 (PST)
+Date:   Fri, 15 Jan 2021 13:06:15 -0800
+In-Reply-To: <20210115210616.404156-1-ndesaulniers@google.com>
+Message-Id: <20210115210616.404156-3-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <20210115210616.404156-1-ndesaulniers@google.com>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH v5 2/3] Kbuild: make DWARF version a choice
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
+explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
+way that's forward compatible with existing configs, and makes adding
+future versions more straightforward.
 
-Thank you for the patch.
+Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+Suggested-by: Fangrui Song <maskray@google.com>
+Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ Makefile          | 13 ++++++-------
+ lib/Kconfig.debug | 21 ++++++++++++++++-----
+ 2 files changed, 22 insertions(+), 12 deletions(-)
 
-On Fri, Jan 15, 2021 at 01:57:01PM +0100, Maxime Ripard wrote:
-> The current atomic helpers have either their object state being passed as
-> an argument or the full atomic state.
-> 
-> The former is the pattern that was done at first, before switching to the
-> latter for new hooks or when it was needed.
-> 
-> Let's start convert all the remaining helpers to provide a consistent
-
-s/start convert/convert/ ?
-
-> interface, starting with the planes atomic_update and atomic_disable.
-
-You're not starting anymore, its 09/10 already :-)
-
-> The conversion was done using the coccinelle script below, built tested on
-> all the drivers.
-> 
-> @@
-> identifier plane, plane_state;
-> symbol state;
-> @@
-> 
->  struct drm_plane_helper_funcs {
->  	...
-> 	void (*atomic_update)(struct drm_plane *plane,
-> -			      struct drm_plane_state *plane_state);
-> +			      struct drm_atomic_state *state);
->  	...
->  }
-> 
-> @@
-> identifier plane, plane_state;
-> symbol state;
-> @@
-> 
->  struct drm_plane_helper_funcs {
-> 	...
-> 	void (*atomic_disable)(struct drm_plane *plane,
-> -			       struct drm_plane_state *plane_state);
-> +			       struct drm_atomic_state *state);
-> 	...
->  }
-> 
-> @ plane_atomic_func @
-> identifier helpers;
-> identifier func;
-> @@
-> 
-> (
->  static const struct drm_plane_helper_funcs helpers = {
->  	...,
->  	.atomic_update = func,
-> 	...,
->  };
-> |
->  static const struct drm_plane_helper_funcs helpers = {
->  	...,
->  	.atomic_disable = func,
-> 	...,
->  };
-> )
-> 
-> @@
-> struct drm_plane_helper_funcs *FUNCS;
-> identifier f;
-> identifier crtc_state;
-> identifier plane, plane_state, state;
-> expression e;
-> @@
-> 
->  f(struct drm_crtc_state *crtc_state)
->  {
->  	...
->  	struct drm_atomic_state *state = e;
->  	<+...
-> (
-> -	FUNCS->atomic_disable(plane, plane_state)
-> +	FUNCS->atomic_disable(plane, state)
-> |
-> -	FUNCS->atomic_update(plane, plane_state)
-> +	FUNCS->atomic_update(plane, state)
-> )
->  	...+>
->  }
-> 
-> @@
-> identifier plane_atomic_func.func;
-> identifier plane;
-> symbol state;
-> @@
-> 
->  func(struct drm_plane *plane,
-> -    struct drm_plane_state *state)
-> +    struct drm_plane_state *old_plane_state)
->  {
-> 	<...
-> -	state
-> +	old_plane_state
-> 	...>
->  }
-> 
-> @ ignores_old_state @
-> identifier plane_atomic_func.func;
-> identifier plane, old_state;
-> @@
-> 
->  func(struct drm_plane *plane, struct drm_plane_state *old_state)
->  {
-> 	... when != old_state
->  }
-> 
-> @ adds_old_state depends on plane_atomic_func && !ignores_old_state @
-> identifier plane_atomic_func.func;
-> identifier plane, plane_state;
-> @@
-> 
->  func(struct drm_plane *plane, struct drm_plane_state *plane_state)
->  {
-> +	struct drm_plane_state *plane_state = drm_atomic_get_old_plane_state(state, plane);
->  	...
->  }
-> 
-> @ depends on plane_atomic_func @
-> identifier plane_atomic_func.func;
-> identifier plane, plane_state;
-> @@
-> 
->  func(struct drm_plane *plane,
-> -     struct drm_plane_state *plane_state
-> +     struct drm_atomic_state *state
->      )
->  { ... }
-> 
-> @ include depends on adds_old_state @
-> @@
-> 
->  #include <drm/drm_atomic.h>
-> 
-> @ no_include depends on !include && adds_old_state @
-> @@
-> 
-> + #include <drm/drm_atomic.h>
->   #include <drm/...>
-> 
-> @@
-> identifier plane_atomic_func.func;
-> identifier plane, state;
-> identifier plane_state;
-> @@
-> 
->  func(struct drm_plane *plane, struct drm_atomic_state *state) {
->  	...
->  	struct drm_plane_state *plane_state = drm_atomic_get_old_plane_state(state, plane);
->  	<+...
-> -	plane_state->state
-> +	state
->  	...+>
->  }
-> 
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
-
-[snip]
-
->  drivers/gpu/drm/drm_atomic_helper.c           |  8 ++++----
->  drivers/gpu/drm/drm_simple_kms_helper.c       |  4 +++-
->  drivers/gpu/drm/omapdrm/omap_plane.c          |  4 ++--
->  drivers/gpu/drm/rcar-du/rcar_du_plane.c       |  4 +++-
->  drivers/gpu/drm/rcar-du/rcar_du_vsp.c         |  4 +++-
->  include/drm/drm_modeset_helper_vtables.h      |  4 ++--
-
-For these,
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-For drivers/gpu/drm/xlnx/zynqmp_disp.c, please see below.
-
-[snip]
-
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> index e278680b7d5a..39f9e6e76064 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> @@ -1166,8 +1166,10 @@ zynqmp_disp_plane_atomic_check(struct drm_plane *plane,
->  
->  static void
->  zynqmp_disp_plane_atomic_disable(struct drm_plane *plane,
-> -				 struct drm_plane_state *old_state)
-> +				 struct drm_atomic_state *state)
->  {
-> +	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
-> +									   plane);
->  	struct zynqmp_disp_layer *layer = plane_to_layer(plane);
->  
->  	if (!old_state->fb)
-> @@ -1178,8 +1180,10 @@ zynqmp_disp_plane_atomic_disable(struct drm_plane *plane,
->  
->  static void
->  zynqmp_disp_plane_atomic_update(struct drm_plane *plane,
-> -				struct drm_plane_state *old_state)
-> +				struct drm_atomic_state *state)
->  {
-> +	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
-> +								           plane);
->  	struct drm_plane_state *new_state = plane->state;
->  	struct zynqmp_disp_layer *layer = plane_to_layer(plane);
->  	bool format_changed = false;
-> @@ -1485,20 +1489,12 @@ static void
->  zynqmp_disp_crtc_atomic_disable(struct drm_crtc *crtc,
->  				struct drm_atomic_state *state)
->  {
-> -	struct drm_crtc_state *old_crtc_state = drm_atomic_get_old_crtc_state(state,
-> -									      crtc);
->  	struct zynqmp_disp *disp = crtc_to_disp(crtc);
-> -	struct drm_plane_state *old_plane_state;
->  
->  	/*
-> -	 * Disable the plane if active. The old plane state can be NULL in the
-> -	 * .shutdown() path if the plane is already disabled, skip
-> -	 * zynqmp_disp_plane_atomic_disable() in that case.
-> +	 * Disable the plane if active.
->  	 */
-> -	old_plane_state = drm_atomic_get_old_plane_state(old_crtc_state->state,
-> -							 crtc->primary);
-> -	if (old_plane_state)
-
-You're removing this check, but there's no safeguard in
-zynqmp_disp_plane_atomic_disable(). Can drm_atomic_get_old_plane_state()
-return NULL there ?
-
-> -		zynqmp_disp_plane_atomic_disable(crtc->primary, old_plane_state);
-> +	zynqmp_disp_plane_atomic_disable(crtc->primary, state);
->  
->  	zynqmp_disp_disable(disp);
->  
-
-[snip]
-> 
-
+diff --git a/Makefile b/Makefile
+index d49c3f39ceb4..4eb3bf7ee974 100644
+--- a/Makefile
++++ b/Makefile
+@@ -826,13 +826,12 @@ else
+ DEBUG_CFLAGS	+= -g
+ endif
+ 
+-ifneq ($(LLVM_IAS),1)
+-KBUILD_AFLAGS	+= -Wa,-gdwarf-2
+-endif
+-
+-ifdef CONFIG_DEBUG_INFO_DWARF4
+-DEBUG_CFLAGS	+= -gdwarf-4
+-endif
++dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
++dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
++DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
++# Binutils 2.35+ required for -gdwarf-4+ support.
++dwarf-aflag	:= $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-version-y))
++KBUILD_AFLAGS	+= $(dwarf-aflag)
+ 
+ ifdef CONFIG_DEBUG_INFO_REDUCED
+ DEBUG_CFLAGS	+= $(call cc-option, -femit-struct-debug-baseonly) \
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index dd7d8d35b2a5..e80770fac4f0 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -256,13 +256,24 @@ config DEBUG_INFO_SPLIT
+ 	  to know about the .dwo files and include them.
+ 	  Incompatible with older versions of ccache.
+ 
++choice
++	prompt "DWARF version"
++	help
++	  Which version of DWARF debug info to emit.
++
++config DEBUG_INFO_DWARF2
++	bool "Generate DWARF Version 2 debuginfo"
++	help
++	  Generate DWARF v2 debug info.
++
+ config DEBUG_INFO_DWARF4
+-	bool "Generate dwarf4 debuginfo"
++	bool "Generate DWARF Version 4 debuginfo"
+ 	help
+-	  Generate dwarf4 debug info. This requires recent versions
+-	  of gcc and gdb. It makes the debug information larger.
+-	  But it significantly improves the success of resolving
+-	  variables in gdb on optimized code.
++	  Generate DWARF v4 debug info. This requires gcc 4.5+ and gdb 7.0+.
++	  It makes the debug information larger, but it significantly
++	  improves the success of resolving variables in gdb on optimized code.
++
++endchoice # "DWARF version"
+ 
+ config DEBUG_INFO_BTF
+ 	bool "Generate BTF typeinfo"
 -- 
-Regards,
+2.30.0.284.gd98b1dd5eaa7-goog
 
-Laurent Pinchart
