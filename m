@@ -2,191 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9DA2F76C6
+	by mail.lfdr.de (Postfix) with ESMTP id C22622F76C8
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728173AbhAOKgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 05:36:25 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:61480 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727342AbhAOKgY (ORCPT
+        id S1728792AbhAOKgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 05:36:33 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41960 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728455AbhAOKgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 05:36:24 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10FAWmHZ026898;
-        Fri, 15 Jan 2021 04:35:26 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=LD+LiuwpWXTb1D5hCBKo7VpoiE2Ui0ocmHD3tcAefJc=;
- b=pVCP/0Kn6scEb6JF03auF0HVcxZ9dSUIjyQQz6HD/fCr/4xaiVxvqTeaykXMpo3s3K2d
- 2dyCsSW3bEqQk3X9CzSqLpY+vIrLVkBsmw478dK/88QrPfD+jb47NAi6YTzJeJwdqQJt
- Xcwn24q1DOHffZPUsmrBsofU/tkmRfh8laM5pUWaHIpijNu2sUm7ehcXkBEgaejrB0eD
- hmCdIobPSkr1lZDFJbJUIviVrrTXKIWxVki2K8JiMhJhLHrx6rPhwwMNQBnEgf+xro76
- F1Ljzl8rCIYk5+n7wBvDeDBT5uvfCzUtT/ExL4no1LBG99CtrkCQu07QjsAQi4Hne6O0 ow== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 35y9sryh9u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 15 Jan 2021 04:35:25 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 15 Jan
- 2021 10:35:23 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Fri, 15 Jan 2021 10:35:23 +0000
-Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.57])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6A48445;
-        Fri, 15 Jan 2021 10:35:23 +0000 (UTC)
-Subject: Re: [PATCH v4 2/6] dt-bindings: audio-graph-card: Add plls and
- sysclks properties
-To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>
-CC:     <kuninori.morimoto.gx@renesas.com>, <nsaenzjulienne@suse.de>,
-        <f.fainelli@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <patches@opensource.cirrus.com>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        <linux-rpi-kernel@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210108160501.7638-1-rf@opensource.cirrus.com>
- <20210108160501.7638-3-rf@opensource.cirrus.com>
- <20210113152225.GA2334778@robh.at.kernel.org>
- <20210113160917.GF4641@sirena.org.uk>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <ee3d0b75-dc2f-9994-19a4-a3c3f21a2c65@opensource.cirrus.com>
-Date:   Fri, 15 Jan 2021 10:35:23 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 15 Jan 2021 05:36:31 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10FAXIKY050288;
+        Fri, 15 Jan 2021 05:35:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=uMFKz03h1DX2pC5sxsmXxwVVWxuuWyUP4nN3/edQMuI=;
+ b=M47PKe4gtZbrCjLMNeyo+IzV3vyXdPWb5TD2OewNLbkchUgKtzQXISRxnxoYGHj58as0
+ TPSOf8gkQIyDELS2xN6rTLjLMxOIzLSlWH47P6BPrxcNFSXjQImjvcDUXUFPcb9GMq8J
+ WQVgZHCVD+/EoCeWNF4bvh+bdv463LA5uI0FHf3IuphS78vH+r1kqE6TLTbSNPfZq14U
+ 2PDyo2hKQ7J3aQN9IGmb5xBy31W7JSboBmo/7EsSzABrPNs3T6yFL3AWhnfc5WG2yXK4
+ td07nawRcrKAjehpc1A6o4h/YXAM/WyfjojKziJyoz//w7QXFcM0OzWBeO8Lg1ZFQNIg uQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3639cnr324-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Jan 2021 05:35:36 -0500
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10FAXMWG050701;
+        Fri, 15 Jan 2021 05:35:36 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3639cnr317-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Jan 2021 05:35:36 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10FAWVxY030484;
+        Fri, 15 Jan 2021 10:35:34 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 35y448fkg0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Jan 2021 10:35:33 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10FAZVKB45613484
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 10:35:31 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1AB2852054;
+        Fri, 15 Jan 2021 10:35:31 +0000 (GMT)
+Received: from osiris (unknown [9.171.39.233])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 86FC95204F;
+        Fri, 15 Jan 2021 10:35:30 +0000 (GMT)
+Date:   Fri, 15 Jan 2021 11:35:29 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Robert Richter <rric@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Arnd Bergmann <arnd@kernel.org>, oprofile-list@lists.sf.net,
+        William Cohen <wcohen@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        anmar.oueja@linaro.org, Christoph Hellwig <hch@infradead.org>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/18] arch: s390: Remove CONFIG_OPROFILE support
+Message-ID: <20210115103529.GA10194@osiris>
+References: <cover.1610622251.git.viresh.kumar@linaro.org>
+ <d898acaf9320125e9c23b18a16ecd88d70f24170.1610622251.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210113160917.GF4641@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
- phishscore=0 spamscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
- adultscore=0 mlxlogscore=999 impostorscore=0 clxscore=1015 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101150063
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d898acaf9320125e9c23b18a16ecd88d70f24170.1610622251.git.viresh.kumar@linaro.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-15_06:2021-01-15,2021-01-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 adultscore=0 spamscore=0 impostorscore=0
+ phishscore=0 bulkscore=0 clxscore=1011 priorityscore=1501 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101150063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/01/2021 16:09, Mark Brown wrote:
-> On Wed, Jan 13, 2021 at 09:22:25AM -0600, Rob Herring wrote:
+On Thu, Jan 14, 2021 at 05:05:25PM +0530, Viresh Kumar wrote:
+> The "oprofile" user-space tools don't use the kernel OPROFILE support
+> any more, and haven't in a long time. User-space has been converted to
+> the perf interfaces.
 > 
->> I'm not sure this makes sense to be generic, but if so, we already have
->> the clock binding and should use (and possibly extend) that.
+> Remove the old oprofile's architecture specific support.
 > 
->> This appears to all be configuration of clocks within the codec, so
->> these properties belong in the codec or cpu nodes.
-> 
-> Right, I think this should just be the clock binding.
-> 
+> Suggested-by: Christoph Hellwig <hch@infradead.org>
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  arch/s390/Kconfig                 |  1 -
+>  arch/s390/Makefile                |  3 ---
+>  arch/s390/configs/debug_defconfig |  1 -
+>  arch/s390/configs/defconfig       |  1 -
+>  arch/s390/oprofile/Makefile       | 10 ---------
+>  arch/s390/oprofile/init.c         | 37 -------------------------------
+>  6 files changed, 53 deletions(-)
+>  delete mode 100644 arch/s390/oprofile/Makefile
+>  delete mode 100644 arch/s390/oprofile/init.c
 
-Ok, so if the idea is to do this:
-
-sound {
-	clocks = <&audio_mclk>, <&pll>;
-	clock-names = "mclk", "pll";
-}
-
-some_codec {
-	pll: pll {
-		compatible = "fixed-clock";
-		clocks = <&audio_mclk>;
-		clock-frequency = <98304000>;
-	}
-};
-
-For this to work the clock binding must be a real clock object (so needs
-a valid compatible=). But I need to somehow specify the PLL ID and
-source pin for the PLL configuration. The schema for "fixed-clock" has
-"additionalProperties: false" so I can't add extra custom properties to
-the clock node.
-
-Of course if we were able to use the clock framework to provide real
-clock drivers for the plls and sysclks, the ID would be inherent in
-the binding, and it can define a custom property for the source pin.
-
-Some options:
-
-1) Remove "additionalProperties: false" from the "fixed-clock" binding.
-
-2) Add new core clock properties. Well, source-pin might legitimately be
-meaningful, but for a real clock provider the clock ID is implicit.
-
-3) Use 'reg' as fixed-clock doesn't use it. This works, but I suspect it
-will be seen as an abuse of reg.
-
-4) Put some extra properties in the sound node to define the <id,source>
-pair for each clock. But that's clumsy to have some of the config in a
-clock binding and a couple of extra elsewhere.
-
-5) Use a bare clock binding that isn't a real clock provider, like:
-
-sound {
-	plls = <&pll>;
-}
-
-some_codec {
-	pll: pll {
-		reg = <1>; /* PLL ID */
-	 	audio-graph-card,source-pin = <4>;
-		clocks = <&audio_mclk>;
-		clock-frequency = <98304000>;
-		
-	}
-};
-
-
->>> +      The PLL id and clock source id are specific to the particular component
->>> +      so see the relevant component driver for the ids. Typically the
-> 
-> This should refer to the bindings for components, not to their drivers.
-> 
->>> +      clock source id indicates the pin the source clock is connected to.
->>> +      The same phandle can appear in multiple entries so that several plls
->>> +      can be set in the same component.
->>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
->>> +
->>> +  plls-clocks:
->>> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
->>> +    description: |
->>> +      A list of clock names giving the source clock for each setting
->>> +      in the plls property.
->>> +
->>> +  sysclks:
->>> +    description: |
->>> +      A list of component sysclk settings. There are 4 cells per sysclk
->>> +      setting:
->>> +        - phandle to the node of the codec or cpu component,
->>> +        - component sysclk id,
->>> +        - component clock source id,
->>> +        - direction of the clock: 0 if the clock is an input to the component,
->>> +          1 if it is an output.
->>
->> A clock provider and consumer would provide the direction.
->>
->>> +      The sysclk id and clock source id are specific to the particular
->>> +      component so see the relevant component driver for the ids. Typically
->>> +      the clock source id indicates the pin the source clock is connected to.
->>> +      The same phandle can appear in multiple entries so that several sysclks
->>> +      can be set in the same component.
->>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
->>> +
->>> +  sysclks-clocks:
->>> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
->>> +    description: |
->>> +      A list of clock names giving the source clock for each setting
->>> +      in the sysclks property.
->>> +
->>> +dependencies:
->>> +  plls: [ plls-clocks ]
->>> +  sysclks: [ sysclks-clocks ]
->>> +
->>>   required:
->>>     - dais
->>>   
->>> -- 
->>> 2.20.1
->>>
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
