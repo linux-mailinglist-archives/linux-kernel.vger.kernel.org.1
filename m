@@ -2,119 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528642F8356
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:11:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8D92F835C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732290AbhAOSKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:10:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55662 "EHLO
+        id S1732762AbhAOSLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:11:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbhAOSKm (ORCPT
+        with ESMTP id S1726541AbhAOSLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:10:42 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98EEC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:10:01 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id 15so6506921pgx.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:10:01 -0800 (PST)
+        Fri, 15 Jan 2021 13:11:44 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70788C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:11:04 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id p22so10519584edu.11
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:11:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=A8HU57lnNGXivwjmV5hD7UIXYBjhrtMp5tMlgZSsho0=;
-        b=YgjCZxlUX8zIn6UUzJNeBbd/T6EBt4wgcjHLo6RzW50hLGTjG6rqz5Uq0SOCDcWT96
-         Co6Z1YZE5sY8El66WZy7CsA45bBR31DpKk5qD9dDCyEMvaCbZWhXIZkHMqYGA/wcVdTm
-         LwvWdURhcQYsNLp2TvpmD7fcKV+sMH1s/r0h3iI43hcSSIJDPQM+yie14SpuDeWUv1v+
-         Q2sJK5/rfaEiyEgI0XQ4Lb13GCGT3VY0oxSZMmqN/vgZXot9ySDK2KT+Y8Nsh/ERd5JX
-         g4QLmw2/TecEKSHYhFR3Ui/gpX+R1/stZlzDf52p46JLvyUuSkEM//RwrIxPq364c6Jo
-         fFQg==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8SVfCmLEiWAiL0R631NmKWHiEv5/3BnE+DWgN7tCTHc=;
+        b=LT7meLxfsN9ZJj1NVem9T3FdAJp7+fYnVVLGwj0ymfrrDwmC+Cp8fY2m76Y9p9ZOUY
+         DrG9gQkiUneL7meMDl40kir9wD+lupIwVSgT2zkgrec2qM8QF5wKiFCI0BYssd/bujN9
+         7e9y5wg/6fUxw5exORuFv1NOXcQFRNhRudlb01jPO/RYYfgfBwicm3NBR1mKkmC6ntNv
+         z/v07mXjdkt/D3ipAVODDI918IZEOqRT/nREaddodPRN7hV3O2l5iLCwEZy4fZx+txr4
+         cJXdRlrTKCp+YAQeB4+j3QawjuhXB/UMPof/CfB1SrHkgf8zxD8gBjDC+QBEcFFkE46k
+         leqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A8HU57lnNGXivwjmV5hD7UIXYBjhrtMp5tMlgZSsho0=;
-        b=M+oKNrcKU98yh2BxRdiHHoMimHuULZaB/PMViTV6WAV19xnetj+lclaW8CV4Lb/xif
-         c6BGYKFfnBlHZx6nGJ6NNmy03eapCrAwXV5JrhM4leea0gX8+UrwUoo43KqjYMozLbbF
-         KQgS6DFcUqGyYTYPjyiqrtoLSqqDZmF5bfDBnlcxlRTXrsiW1ffRWDgcbId0CmqGPAWS
-         /ApPtR9hxSOy2U3NbeZXGLogCtJriSvZYiF0SQ0T2zif6D8WDBeMg6r2/HWpGo5WMehG
-         ExX9Sn9DyXeYQsQat9tXFzZZfZPY4P0irhOs1oWBVvoFDpkaFKALNADP1ZX4b1iDkxud
-         iPQw==
-X-Gm-Message-State: AOAM532eKwwvPc3kad7D8IPyyw+rN3wlqCSmk59PDpQGuTD2XRsOqS+/
-        a7zG1CASgXM6Q6TJZrlRtPUvDA==
-X-Google-Smtp-Source: ABdhPJwPv/lvnonyIREFYeM8j+JUI2wrlGzj8IloDhV+QBYpX2nG/g0QM/KmYtg+wSyPkEnfC4YvNg==
-X-Received: by 2002:a62:d14f:0:b029:1ae:72f9:254c with SMTP id t15-20020a62d14f0000b02901ae72f9254cmr13740607pfl.38.1610734201153;
-        Fri, 15 Jan 2021 10:10:01 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id x23sm10738953pge.47.2021.01.15.10.09.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:10:00 -0800 (PST)
-Date:   Fri, 15 Jan 2021 10:09:53 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH 0/3] x86/KVM/VMX: Introduce and use try_cmpxchg64()
-Message-ID: <YAHaceikAK+xYxUg@google.com>
-References: <20201215182805.53913-1-ubizjak@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8SVfCmLEiWAiL0R631NmKWHiEv5/3BnE+DWgN7tCTHc=;
+        b=a8INncNc8Cr/txrf3tpAsFV+zPa0pJ6JPcMoK2Q/HI7GmezC6P2MMLNwRBa/NTnmbW
+         3zVbt9+k65k4pI+h/u6A1no7UjtQJJ5jTK2aVSsDaOdN4hRbrv2n45Drn8iUXWBJUX2a
+         4sJPXQrqnUfUzu9X2jo0hYjLJm2zhpNwFbT69IqttClKNbEADk9Hu+LhxgJEXGE3snSs
+         0muH6n0cHbZVuN5ReMrEXklpYfIr6psYzLExo2L9txAILL6VqYSnWZt5BdhNbouARpN3
+         EIED2PYzYOsn0xWEWoOr4+zdbBM1Dya5DeDPwwNZnMZdJ1dV/v7DEzs2LIGnVsarNu9c
+         svEw==
+X-Gm-Message-State: AOAM5329blMGEQrk2Ci9hgZkJr3Z1Zb4V3YOq8JYmqS1e3/iTM7xxOx2
+        E7gkxhcY/BedinX2QFOslrKOStOrzsJxSQpjoLMBiA==
+X-Google-Smtp-Source: ABdhPJxcm9uW7ZpupMY4AzchVg5VAJOLsBRme8D47yXaQiHft3XUpIVHGE9veIXESaC3fSpI9Az8dNQaliYFA4XPzxA=
+X-Received: by 2002:a05:6402:17:: with SMTP id d23mr10770454edu.341.1610734263068;
+ Fri, 15 Jan 2021 10:11:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201215182805.53913-1-ubizjak@gmail.com>
+References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
+ <20201217185243.3288048-9-pasha.tatashin@soleen.com> <20201217205048.GL5487@ziepe.ca>
+ <CA+CK2bA4F+SipkReJzFjCSC-8kZdK4yrwCQZM+TvCTrqV2CGHg@mail.gmail.com>
+ <20201218141927.GM5487@ziepe.ca> <CA+CK2bDULopw649ndBybA-ST5EoRMHULwcfQcSQVKT9r8zAtwQ@mail.gmail.com>
+ <20210113195528.GD4605@ziepe.ca> <CA+CK2bDDUMOeCH8rQBL7fBdHCAUZBOykyXNL2N=hmxq7xi0giQ@mail.gmail.com>
+In-Reply-To: <CA+CK2bDDUMOeCH8rQBL7fBdHCAUZBOykyXNL2N=hmxq7xi0giQ@mail.gmail.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 15 Jan 2021 13:10:27 -0500
+Message-ID: <CA+CK2bC=o1-qW5+d-Lud9qN1937PC4Jxf_oyxwVrKby=mH5WyQ@mail.gmail.com>
+Subject: Re: [PATCH v4 08/10] mm/gup: limit number of gup migration failures,
+ honor failures
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020, Uros Bizjak wrote:
-> This patch series introduces try_cmpxchg64() atomic locking function.
-> 
-> try_cmpxchg64() provides the same interface for 64 bit and 32 bit targets,
-> emits CMPXCHGQ for 64 bit targets and CMPXCHG8B for 32 bit targets,
-> and provides appropriate fallbacks when CMPXCHG8B is unavailable.
-> 
-> try_cmpxchg64() reuses flags from CMPXCHGQ/CMPXCHG8B instructions and
-> avoids unneeded CMP for 64 bit targets or XOR/XOR/OR sequence for
-> 32 bit targets.
-> 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Cc: Wanpeng Li <wanpengli@tencent.com>
-> Cc: Jim Mattson <jmattson@google.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> 
-> Uros Bizjak (3):
->   asm-generic/atomic: Add try_cmpxchg64() instrumentation
->   locking/atomic/x86: Introduce arch_try_cmpxchg64()
->   KVM/VMX: Use try_cmpxchg64() in posted_intr.c
+On Wed, Jan 13, 2021 at 3:05 PM Pavel Tatashin
+<pasha.tatashin@soleen.com> wrote:
+>
+> > > > Oh, that existing logic is wrong too :( Another bug.
+> > >
+> > > I do not think there is a bug.
+> > >
+> > > > You can't skip pages in the pages[] array under the assumption they
+> > > > are contiguous. ie the i+=step is wrong.
+> > >
+> > > If pages[i] is part of a compound page, the other parts of this page
+> > > must be sequential in this array for this compound page
+> >
+> > That is true only if the PMD points to the page. If the PTE points to
+> > a tail page then there is no requirement that other PTEs are
+> > contiguous with the compount page.
+> >
+> > At this point we have no idea if the GUP logic got this compound page
+> > as a head page in a PMD or as a tail page from a PTE, so we can't
+> > assume a contiguous run of addresses.
+>
+> I see, I will fix this bug in an upstream as a separate patch in my
+> series, and keep the fix when my fixes are applied.
+>
+> >
+> > Look at split_huge_pmd() - it doesn't break up the compound page it
+> > just converts the PMD to a PTE array and scatters the tail pages to
+> > the PTE.
 
-For anyone else trying to apply this, it depends on v5.11-rc1 (commit
-29f006fdefe6, "asm-generic/atomic: Add try_cmpxchg() fallbacks"), which hasn't
-yet been merged into Paolo's tree.
+Hi Jason,
 
->  arch/x86/include/asm/cmpxchg_32.h         | 62 +++++++++++++++++++----
->  arch/x86/include/asm/cmpxchg_64.h         |  6 +++
->  arch/x86/kvm/vmx/posted_intr.c            |  9 ++--
->  include/asm-generic/atomic-instrumented.h | 46 ++++++++++++++++-
->  scripts/atomic/gen-atomic-instrumented.sh |  2 +-
->  5 files changed, 108 insertions(+), 17 deletions(-)
-> 
-> -- 
-> 2.26.2
-> 
+I've been thinking about this some more. Again, I am not sure this is
+a bug. I understand split_huge_pmd() may split the PMD size page into
+PTEs and leave the compound page intact. However, in order for pages[]
+to have non sequential addresses in compound page, those PTEs must
+also be migrated after split_huge_pmd(), however when we migrate them
+we will either migrate the whole compound page or do
+split_huge_page_to_list() which will in turn do ClearPageCompound().
+Please let me know if I am missing something.
+
+Thank you,
+Pasha
+
+>
+> Got it, unfortunately the fix will deoptimize the code by having to
+> check every page if it is part of a previous compound page or not.
+>
+> >
+> > I understand Matt is pushing on this idea more by having compound
+> > pages in the page cache, but still mapping tail pages when required.
+> >
+> > > This is actually standard migration procedure, elsewhere in the kernel
+> > > we migrate pages in exactly the same fashion: isolate and later
+> > > migrate. The isolation works for LRU only pages.
+> >
+> > But do other places cause a userspace visible random failure when LRU
+> > isolation fails?
+>
+> Makes sense, I will remove maximum retries for isolation, and retry
+> indefinitely, the same as it is done during memory hot-remove. So, we
+> will fail only when migration fails.
+>
+> >
+> > I don't like it at all, what is the user supposed to do?
+> >
+> > Jason
