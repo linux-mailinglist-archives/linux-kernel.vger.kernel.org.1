@@ -2,336 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F66C2F73D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:49:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 960E72F73DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:51:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731952AbhAOHtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 02:49:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731868AbhAOHtb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 02:49:31 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F76EC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:48:51 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id x18so4280387pln.6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:48:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nBo7XGqS/8vdVXSfxJrsdvdJTDr73Y6Uapns8KjEp88=;
-        b=GmafHoXW8cpIa3au+brWxVSoyn+13XNBD5bZR7gBzBaZxZ4JfTzfubpQZbGZ40uDHk
-         S45RnczmSP8gFuwC49Q7A7cl1nYNW5W7YrcttAg5W7D94pAxdnWGI2Xb2yhsZhZIZXc6
-         GhXjyb1/vReH9sMhIEtmWbXJQvBQm11zJKoxE2zPWCCnPPLpctr5KmMSR/cvQ7i0Iw8j
-         xL2ewTcjvO2OXip+t7uV1T/o2A/8y/a9x+uZNpVxJ+6DlFB/4RrndVf7Ty5w+VS6BEdP
-         JT2rfdjKJbDGgZUbWVu1Bxikw0j+BdglPxERqGzh22fhwYApVCbye/Vw0codkehXPh6g
-         Nuzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nBo7XGqS/8vdVXSfxJrsdvdJTDr73Y6Uapns8KjEp88=;
-        b=aEde1aM5Y/YPmnnD1FNvioGCicVrn7FiZ1r6XP9ZBc6hV9Vo1pX044mLUNkjfUIhgv
-         +lIYb7dunu6cZ/VEalvIA6XjAB2H12ye/JrI4e2Nx/0GHy8R+dqWrSiZdX0vDP78s4ZY
-         F9WH3j69YjEGrTEH7VBSRy6GuIVnmmzCpAD2CNccwLJm9qRSpABf3pxsdiCjBYFzLXA0
-         yeuDhRiv5gS5JyTdfoXoclWruwmJKFNoUaxpdYz/UTXdrEyiHPOvSzVVHVokmS2E2FDh
-         rksA9S9GZYqgNJHtt9ASc941S9ZMl6ySfrrwDnizSVFfSFAuoduNSYQ9IyBTJ/tCKWpy
-         H0Ow==
-X-Gm-Message-State: AOAM532YCB2urojjc3b9V8PRPJ77HYfr5PNurAxlWrdLRNz96BQuUDzH
-        jS3eVEvHyBgQwyZqWFxzqRYBMThZJUYEgw==
-X-Google-Smtp-Source: ABdhPJwZrrlUydV/DMM4M+ipp2x7ATvQEhjurT1Ut/s+ENH6Ktl2v8RDt8pG2Mo+k0cmz5FvUB26CA==
-X-Received: by 2002:a17:902:8503:b029:dc:44f:62d8 with SMTP id bj3-20020a1709028503b02900dc044f62d8mr11422575plb.34.1610696930589;
-        Thu, 14 Jan 2021 23:48:50 -0800 (PST)
-Received: from localhost ([122.172.85.111])
-        by smtp.gmail.com with ESMTPSA id y190sm8045298pgb.36.2021.01.14.23.48.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Jan 2021 23:48:49 -0800 (PST)
-Date:   Fri, 15 Jan 2021 13:18:47 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Puhov <peter.puhov@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC V2 1/2] topology: Allow multiple entities to provide
- sched_freq_tick() callback
-Message-ID: <20210115074847.4a2udqcxbaoyrztv@vireshk-i7>
-References: <cover.1608030508.git.viresh.kumar@linaro.org>
- <28ade070dd80f6f22d6e8fce5db5f0142b428fa9.1608030508.git.viresh.kumar@linaro.org>
- <20210113161855.GA32402@arm.com>
+        id S1731978AbhAOHvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 02:51:15 -0500
+Received: from mga07.intel.com ([134.134.136.100]:8825 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730295AbhAOHvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 02:51:14 -0500
+IronPort-SDR: YxfGEA2f5Zz9Ab5i3K1hkwrKOT3i8sguTlAS1Wrmxv3AMyOIMVJK4aMpvMgFBbPFQpavFaJOc2
+ lmS+U7d3/qrg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="242582928"
+X-IronPort-AV: E=Sophos;i="5.79,348,1602572400"; 
+   d="scan'208";a="242582928"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 23:50:32 -0800
+IronPort-SDR: sE+wicejpdjwI5sz3rL5UivRYWPuYpz0Sz9m2SC0oCkt7LnNQVNXOCiFK41XEwO6phK9OHXeQ3
+ nR4jMXqTPgaA==
+X-IronPort-AV: E=Sophos;i="5.79,348,1602572400"; 
+   d="scan'208";a="382575810"
+Received: from bmkierna-mobl3.ger.corp.intel.com (HELO localhost) ([10.213.221.58])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 23:50:28 -0800
+From:   Jani Nikula <jani.nikula@intel.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        ville.syrjala@linux.intel.com, lukas@wunner.de,
+        chris@chris-wilson.co.uk
+Subject: Re: [BUG] on reboot: bisected to: drm/i915: Shut down displays gracefully on reboot
+In-Reply-To: <20210114163435.767ccbb0@gandalf.local.home>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210114163206.4a562d82@gandalf.local.home> <20210114163435.767ccbb0@gandalf.local.home>
+Date:   Fri, 15 Jan 2021 09:50:25 +0200
+Message-ID: <87mtxaprjy.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113161855.GA32402@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13-01-21, 16:18, Ionela Voinescu wrote:
-> On Tuesday 15 Dec 2020 at 16:46:35 (+0530), Viresh Kumar wrote:
-> > +void topology_scale_freq_tick(void)
-> > +{
-> > +	struct scale_freq_tick_data *sftd = *this_cpu_ptr(&sft_data);
-> > +
-> > +	if (sftd)
-> > +		sftd->scale_freq();
-> > +}
-> 
-> What do you think about having a single topology function that handles
-> all sources of invariance (cpufreq, arch counters, platform counters)?
+On Thu, 14 Jan 2021, Steven Rostedt <rostedt@goodmis.org> wrote:
+> [ Forgot to add those on the commit itself ]
+>
+> -- Steve
+>
+>
+> On Thu, 14 Jan 2021 16:32:06 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+>> On reboot, one of my test boxes now triggers the following warning:
+>> 
+>>  ------------[ cut here ]------------
+>>  RPM raw-wakeref not held
+>>  WARNING: CPU: 4 PID: 1 at drivers/gpu/drm/i915/intel_runtime_pm.h:106 gen6_write32+0x1bc/0x2a0 [i915]
+>>  Modules linked in: ebtable_filter ebtables bridge stp llc ip6t_REJECT nf_reject_ipv6 vsock vmw_vmci xt_state xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip6table_filter ip6_tables snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_generic le
+>> 15 snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hwdep i2c_algo_bit snd_hda_core snd_seq intel_rapl_msr snd_seq_device intel_rapl_common snd_pcm x86_pkg_temp_thermal intel_powerclamp snd_timer snd coretemp kvm_intel soundcore kvm mei_wdt irqbypass joydev 
+>> _pmc_bxt hp_wmi wmi_bmof sparse_keymap rfkill iTCO_vendor_support crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel drm_kms_helper i2c_i801 cec drm rapl intel_cstate intel_uncore mei_me i2c_smbus e1000e tpm_infineon wmi serio_raw mei video lpc_i
+>> 
+>>  CPU: 4 PID: 1 Comm: systemd-shutdow Not tainted 5.9.0-rc4-test+ #861
+>>  Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
+>>  RIP: 0010:gen6_write32+0x1bc/0x2a0 [i915]
+>>  Code: 5d 82 e0 0f 0b e9 b5 fe ff ff 80 3d 95 6b 22 00 00 0f 85 b2 fe ff ff 48 c7 c7 04 d2 a4 c0 c6 05 81 6b 22 00 01 e8 f6 5c 82 e0 <0f> 0b e9 98 fe ff ff 80 3d 6d 6b 22 00 00 0f 85 95 fe ff ff 48 c7
+>>  RSP: 0018:ffffb9c1c002fd08 EFLAGS: 00010296
+>>  RAX: 0000000000000018 RBX: ffff99aec8881010 RCX: ffff99aeda400000
+>>  RDX: 0000000000000000 RSI: ffffffffa115d9ef RDI: ffffffffa115d9ef
+>>  RBP: 0000000000044004 R08: 0000000000000001 R09: 0000000000000000
+>>  R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+>>  R13: 0000000000000001 R14: 00000000ffffffff R15: 0000000000000000
+>>  FS:  00007f91257a9940(0000) GS:ffff99aeda400000(0000) knlGS:0000000000000000
+>>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>  CR2: 00007f9126829400 CR3: 00000001088f0006 CR4: 00000000001706e0
+>>  Call Trace:
+>>   gen3_irq_reset+0x2e/0xd0 [i915]
+>>   intel_irq_reset+0x59/0x6a0 [i915]
+>>   intel_runtime_pm_disable_interrupts+0xe/0x30 [i915]
+>>   i915_driver_shutdown+0x2e/0x40 [i915]
+>>   pci_device_shutdown+0x34/0x60
+>>   device_shutdown+0x15d/0x1b3
+>>   kernel_restart+0xe/0x30
+>>   __do_sys_reboot+0x1d7/0x210
+>>   ? vfs_writev+0x9d/0xe0
+>>   ? syscall_enter_from_user_mode+0x1d/0x70
+>>   ? trace_hardirqs_on+0x2c/0xe0
+>>   do_syscall_64+0x33/0x40
+>>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>  RIP: 0033:0x7f912675f2d7
+>>  Code: 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 89 fa be 69 19 12 28 bf ad de e1 fe b8 a9 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 81 8b 0c 00 f7 d8 64 89 02 b8
+>>  RSP: 002b:00007ffeca28e148 EFLAGS: 00000206 ORIG_RAX: 00000000000000a9
+>>  RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f912675f2d7
+>>  RDX: 0000000001234567 RSI: 0000000028121969 RDI: 00000000fee1dead
+>>  RBP: 00007ffeca28e3d0 R08: 000000000000000a R09: 0000000000000000
+>>  R10: 0000000000000232 R11: 0000000000000206 R12: 0000000000000001
+>>  R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffeca28e4b8
+>>  ---[ end trace 2ed17eabd3ab6938 ]---
+>>  ------------[ cut here ]------------
+>> 
+>> The bisect came to this commit:
+>> 
+>>   fe0f1e3bfdfeb53e18f1206aea4f40b9bd1f291c
+>>   ("drm/i915: Shut down displays gracefully on reboot")
+>> 
+>> Which makes sense, as it happens on shutdown.
 
-I think keeping them separate is better, both of these are called from
-scheduler's context (hotpath) and adding any more unnecessary
-conditionals there should be rather avoided. We could have given a
-though to merging them if they were going to share some code, but that
-is not the case here clearly. They are quite different.
+Please try this pull, heading to -rc4, which cointains "drm/i915:
+Disable RPM wakeref assertions during driver shutdown":
 
-This is how it looks now:
+http://lore.kernel.org/r/87sg73pz42.fsf@intel.com
 
-diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
-index 3b8dca4eb08d..be6a53ba3e2d 100644
---- a/arch/arm64/include/asm/topology.h
-+++ b/arch/arm64/include/asm/topology.h
-@@ -17,15 +17,9 @@ int pcibus_to_node(struct pci_bus *bus);
- #include <linux/arch_topology.h>
- 
- void update_freq_counters_refs(void);
--void topology_scale_freq_tick(void);
- 
--#ifdef CONFIG_ARM64_AMU_EXTN
--/*
-- * Replace task scheduler's default counter-based
-- * frequency-invariance scale factor setting.
-- */
-+/* Replace task scheduler's default frequency-invariance scale factor setting */
- #define arch_scale_freq_tick topology_scale_freq_tick
--#endif /* CONFIG_ARM64_AMU_EXTN */
- 
- /* Replace task scheduler's default frequency-invariant accounting */
- #define arch_set_freq_scale topology_set_freq_scale
-diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-index e08a4126453a..1e47dfd465f8 100644
---- a/arch/arm64/kernel/topology.c
-+++ b/arch/arm64/kernel/topology.c
-@@ -199,8 +199,44 @@ static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
- 	return 0;
- }
- 
--static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
--#define amu_freq_invariant() static_branch_unlikely(&amu_fie_key)
-+static void amu_scale_freq_tick(void)
-+{
-+	u64 prev_core_cnt, prev_const_cnt;
-+	u64 core_cnt, const_cnt, scale;
-+
-+	prev_const_cnt = this_cpu_read(arch_const_cycles_prev);
-+	prev_core_cnt = this_cpu_read(arch_core_cycles_prev);
-+
-+	update_freq_counters_refs();
-+
-+	const_cnt = this_cpu_read(arch_const_cycles_prev);
-+	core_cnt = this_cpu_read(arch_core_cycles_prev);
-+
-+	if (unlikely(core_cnt <= prev_core_cnt ||
-+		     const_cnt <= prev_const_cnt))
-+		return;
-+
-+	/*
-+	 *	    /\core    arch_max_freq_scale
-+	 * scale =  ------- * --------------------
-+	 *	    /\const   SCHED_CAPACITY_SCALE
-+	 *
-+	 * See validate_cpu_freq_invariance_counters() for details on
-+	 * arch_max_freq_scale and the use of SCHED_CAPACITY_SHIFT.
-+	 */
-+	scale = core_cnt - prev_core_cnt;
-+	scale *= this_cpu_read(arch_max_freq_scale);
-+	scale = div64_u64(scale >> SCHED_CAPACITY_SHIFT,
-+			  const_cnt - prev_const_cnt);
-+
-+	scale = min_t(unsigned long, scale, SCHED_CAPACITY_SCALE);
-+	this_cpu_write(freq_scale, (unsigned long)scale);
-+}
-+
-+static struct scale_freq_data amu_sfd = {
-+	.source = SCALE_FREQ_SOURCE_ARCH,
-+	.set_freq_scale = amu_scale_freq_tick,
-+};
- 
- static void amu_fie_setup(const struct cpumask *cpus)
- {
-@@ -227,7 +263,7 @@ static void amu_fie_setup(const struct cpumask *cpus)
- 	if (!invariant && !cpumask_equal(amu_fie_cpus, cpu_present_mask))
- 		return;
- 
--	static_branch_enable(&amu_fie_key);
-+	topology_set_scale_freq_source(&amu_sfd, amu_fie_cpus);
- 
- 	pr_debug("CPUs[%*pbl]: counters will be used for FIE.",
- 		 cpumask_pr_args(cpus));
-@@ -283,53 +319,6 @@ static int __init init_amu_fie(void)
- }
- core_initcall(init_amu_fie);
- 
--bool arch_freq_counters_available(const struct cpumask *cpus)
--{
--	return amu_freq_invariant() &&
--	       cpumask_subset(cpus, amu_fie_cpus);
--}
--
--void topology_scale_freq_tick(void)
--{
--	u64 prev_core_cnt, prev_const_cnt;
--	u64 core_cnt, const_cnt, scale;
--	int cpu = smp_processor_id();
--
--	if (!amu_freq_invariant())
--		return;
--
--	if (!cpumask_test_cpu(cpu, amu_fie_cpus))
--		return;
--
--	prev_const_cnt = this_cpu_read(arch_const_cycles_prev);
--	prev_core_cnt = this_cpu_read(arch_core_cycles_prev);
--
--	update_freq_counters_refs();
--
--	const_cnt = this_cpu_read(arch_const_cycles_prev);
--	core_cnt = this_cpu_read(arch_core_cycles_prev);
--
--	if (unlikely(core_cnt <= prev_core_cnt ||
--		     const_cnt <= prev_const_cnt))
--		return;
--
--	/*
--	 *	    /\core    arch_max_freq_scale
--	 * scale =  ------- * --------------------
--	 *	    /\const   SCHED_CAPACITY_SCALE
--	 *
--	 * See validate_cpu_freq_invariance_counters() for details on
--	 * arch_max_freq_scale and the use of SCHED_CAPACITY_SHIFT.
--	 */
--	scale = core_cnt - prev_core_cnt;
--	scale *= this_cpu_read(arch_max_freq_scale);
--	scale = div64_u64(scale >> SCHED_CAPACITY_SHIFT,
--			  const_cnt - prev_const_cnt);
--
--	scale = min_t(unsigned long, scale, SCHED_CAPACITY_SCALE);
--	this_cpu_write(freq_scale, (unsigned long)scale);
--}
--
- #ifdef CONFIG_ACPI_CPPC_LIB
- #include <acpi/cppc_acpi.h>
- 
-diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-index de8587cc119e..e2115ea348dc 100644
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -21,17 +21,65 @@
- #include <linux/sched.h>
- #include <linux/smp.h>
- 
-+static DEFINE_PER_CPU(struct scale_freq_data *, sft_data);
-+static struct cpumask scale_freq_counters_mask;
-+
-+static bool supports_scale_freq_counters(const struct cpumask *cpus)
-+{
-+	return cpumask_subset(cpus, &scale_freq_counters_mask);
-+}
-+
- bool topology_scale_freq_invariant(void)
- {
- 	return cpufreq_supports_freq_invariance() ||
--	       arch_freq_counters_available(cpu_online_mask);
-+	       supports_scale_freq_counters(cpu_online_mask);
-+}
-+
-+void topology_set_scale_freq_source(struct scale_freq_data *data,
-+				  const struct cpumask *cpus)
-+{
-+	struct scale_freq_data *sfd;
-+	int cpu;
-+
-+	for_each_cpu(cpu, cpus) {
-+		sfd = per_cpu(sft_data, cpu);
-+
-+		/* Use ARCH provided counters whenever possible */
-+		if (!sfd || sfd->source != SCALE_FREQ_SOURCE_ARCH) {
-+			per_cpu(sft_data, cpu) = data;
-+			cpumask_set_cpu(cpu, &scale_freq_counters_mask);
-+		}
-+	}
- }
-+EXPORT_SYMBOL_GPL(topology_set_scale_freq_source);
- 
--__weak bool arch_freq_counters_available(const struct cpumask *cpus)
-+void topology_clear_scale_freq_source(enum scale_freq_source source,
-+				    const struct cpumask *cpus)
- {
--	return false;
-+	struct scale_freq_data *sfd;
-+	int cpu;
-+
-+	for_each_cpu(cpu, cpus) {
-+		sfd = per_cpu(sft_data, cpu);
-+
-+		if (sfd && sfd->source == source) {
-+			per_cpu(sft_data, cpu) = NULL;
-+			cpumask_clear_cpu(cpu, &scale_freq_counters_mask);
-+		}
-+	}
- }
-+EXPORT_SYMBOL_GPL(topology_clear_scale_freq_source);
-+
-+void topology_scale_freq_tick(void)
-+{
-+	struct scale_freq_data *sfd = *this_cpu_ptr(&sft_data);
-+
-+	if (sfd)
-+		sfd->set_freq_scale();
-+}
-+
- DEFINE_PER_CPU(unsigned long, freq_scale) = SCHED_CAPACITY_SCALE;
-+EXPORT_SYMBOL_GPL(freq_scale);
- 
- void topology_set_freq_scale(const struct cpumask *cpus, unsigned long cur_freq,
- 			     unsigned long max_freq)
-@@ -47,7 +95,7 @@ void topology_set_freq_scale(const struct cpumask *cpus, unsigned long cur_freq,
- 	 * want to update the scale factor with information from CPUFREQ.
- 	 * Instead the scale factor will be updated from arch_scale_freq_tick.
- 	 */
--	if (arch_freq_counters_available(cpus))
-+	if (supports_scale_freq_counters(cpus))
- 		return;
- 
- 	scale = (cur_freq << SCHED_CAPACITY_SHIFT) / max_freq;
-diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-index 0f6cd6b73a61..1bcbf8eff991 100644
---- a/include/linux/arch_topology.h
-+++ b/include/linux/arch_topology.h
-@@ -34,7 +34,18 @@ void topology_set_freq_scale(const struct cpumask *cpus, unsigned long cur_freq,
- 			     unsigned long max_freq);
- bool topology_scale_freq_invariant(void);
- 
--bool arch_freq_counters_available(const struct cpumask *cpus);
-+enum scale_freq_source {
-+	SCALE_FREQ_SOURCE_ARCH,
-+};
-+
-+struct scale_freq_data {
-+	enum scale_freq_source source;
-+	void (*set_freq_scale)(void);
-+};
-+
-+void topology_scale_freq_tick(void);
-+void topology_set_scale_freq_source(struct scale_freq_data *data, const struct cpumask *cpus);
-+void topology_clear_scale_freq_source(enum scale_freq_source source, const struct cpumask *cpus);
- 
- DECLARE_PER_CPU(unsigned long, thermal_pressure);
- 
+
+BR,
+Jani.
+
+>> 
+>> -- Steve
+>
 
 -- 
-viresh
+Jani Nikula, Intel Open Source Graphics Center
