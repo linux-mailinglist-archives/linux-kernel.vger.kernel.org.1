@@ -2,120 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475392F75A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B59112F75A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729549AbhAOJkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:40:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728622AbhAOJkG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:40:06 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA191C0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 01:39:33 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id o10so1538675wmc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 01:39:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=imaj/ctA3L/wlWp3n7QdUSQrNtHtAb2R0yMsutlcFPY=;
-        b=cgNHpF2O+P66n9VszplNB6gDRihOfYqmDe4a9OIAshp+cU/z6aXgBreHhneSyDALZB
-         BFYGYyGUabYUiTlTHxRBvbTeYEGj5y+kFZ5f8osmjYQjsw8koD7JA2Krcm+uU5ZdCOXL
-         6UPcAz0nGGLXfXm0bGER9yAs+cwACT/tfr1gxEPjNxsGj6M1OHAAKFSlXDLO/i73v669
-         z9Iy84NcAxp0HiERnGCV2OdGBbHfRI2cyESBg8jBGFPVcrJtjpKUD8n2PBChgYLQ4+N+
-         GmZdCzUZXwIvOg9O3aik1NfifD3b9uFRIEsjXiDJuW6HQpBfj2Sw6TVSc22OTr5CQlO6
-         PHOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=imaj/ctA3L/wlWp3n7QdUSQrNtHtAb2R0yMsutlcFPY=;
-        b=JUevpCxBUeTDJ5Aq9w66pMNzJGSwre0/lVfBguP2Nu4xHB8BeDelyvpBjEsJyA2l+w
-         /s5PS6v4jI3ohbfJxMNFa4Caz8AivsNPb8vMjz/UVRzA2kuJQqJLqLMbcfN8kqg1G/lx
-         cGJJRE7nPWC8skPnA9IHmjDxrR5Rqfu0qopyshnJmkDhTwQy48wIz7c9fHD3aUWcrTYt
-         839bopwqNaBSm7BpaBcsxRzP0Q35TzVrXE3pzZjqXeensMA4g6P288f4wnuV/Wkm0/HY
-         +PWGompponUPp5iJT3D86jWmbLxwS1zKGd7xKUQoaql+Wnven07YFvIrDsJZ6RCq2hp7
-         MgJw==
-X-Gm-Message-State: AOAM531sRivUOjGGDdN63Y72fkBUuf/Pf3jA+OzaPXzfmraCJ/kSJiN6
-        fvYAtJd0NungHU0u9zyHd5G2BnmIkPfk2eUjezUY7g==
-X-Google-Smtp-Source: ABdhPJzdRWu/TfyZ/Gd97tSU+o2o0bt1wD1y05MueGCvzmmH7EPSDgX4zaroWKovIWX7b3kAAonKNBo6s9Su7SNi1RQ=
-X-Received: by 2002:a1c:1fc2:: with SMTP id f185mr7918821wmf.134.1610703572400;
- Fri, 15 Jan 2021 01:39:32 -0800 (PST)
-MIME-Version: 1.0
-References: <20210111212031.2422-1-vitaly.wool@konsulko.com>
-In-Reply-To: <20210111212031.2422-1-vitaly.wool@konsulko.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Fri, 15 Jan 2021 15:09:21 +0530
-Message-ID: <CAAhSdy04Nm+ET3Oepe5zRyVWiWpZzmfe=0BrdOEPUHGEOF86Vw@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: simplify BUILTIN_DTB processing
-To:     Vitaly Wool <vitaly.wool@konsulko.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1729889AbhAOJlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:41:04 -0500
+Received: from smtp25.cstnet.cn ([159.226.251.25]:44602 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728020AbhAOJlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 04:41:02 -0500
+Received: from localhost.localdomain (unknown [124.16.141.241])
+        by APP-05 (Coremail) with SMTP id zQCowAB3eeL_YgFgfjhSAA--.20879S2;
+        Fri, 15 Jan 2021 17:40:16 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     dmitry.torokhov@gmail.com, andrzej.p@collabora.com,
+        Michael.Srba@seznam.cz
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: zinitix: fix semicolon.cocci warnings
+Date:   Fri, 15 Jan 2021 09:40:12 +0000
+Message-Id: <20210115094012.32773-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowAB3eeL_YgFgfjhSAA--.20879S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF13WF4xWryxJF4rWrW5Awb_yoW3AwcEk3
+        4rK3Z7Gr1UCrW2kwn8t3y3Zr92vF48Z34xCw1xtr45A34xursFvas3uws5ArWUCFy7Cr1D
+        CwnrWr92vw17ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVWxJVW8Jr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8uwCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcku4UUUUU
+X-Originating-IP: [124.16.141.241]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwkCA1z4jvCFFAAAsI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 2:51 AM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
->
-> Provide __dtb_start as a parameter to setup_vm() in case
-> CONFIG_BUILTIN_DTB is true, so we don't have to duplicate
-> BUILTIN_DTB specific processing in MMU-enabled and MMU-disabled
-> versions of setup_vm().
->
-> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
-> ---
->  arch/riscv/kernel/head.S | 4 ++++
->  arch/riscv/mm/init.c     | 4 ----
->  2 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
-> index 16e9941900c4..f5a9bad86e58 100644
-> --- a/arch/riscv/kernel/head.S
-> +++ b/arch/riscv/kernel/head.S
-> @@ -260,7 +260,11 @@ clear_bss_done:
->
->         /* Initialize page tables and relocate to virtual addresses */
->         la sp, init_thread_union + THREAD_SIZE
-> +#ifdef CONFIG_BUILTIN_DTB
-> +       la a0, __dtb_start
-> +#else
->         mv a0, s1
-> +#endif /* CONFIG_BUILTIN_DTB */
->         call setup_vm
->  #ifdef CONFIG_MMU
->         la a0, early_pg_dir
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 5b17f8d22f91..45faad7c4291 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -615,11 +615,7 @@ static void __init setup_vm_final(void)
->  #else
->  asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->  {
-> -#ifdef CONFIG_BUILTIN_DTB
-> -       dtb_early_va = (void *) __dtb_start;
-> -#else
->         dtb_early_va = (void *)dtb_pa;
-> -#endif
->         dtb_early_pa = dtb_pa;
->  }
->
-> --
-> 2.20.1
->
+drivers/input/touchscreen/zinitix.c:164:31-32: Unneeded semicolon
 
-We can avoid the early DTB mapping for MMU-enabled case when
-BUILTIN_DTB is enabled (same as previous discussion). Otherwise
-looks good to me.
+ Remove unneeded semicolon.
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+Generated by: scripts/coccinelle/misc/semicolon.cocci
 
-Regards,
-Anup
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/input/touchscreen/zinitix.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/input/touchscreen/zinitix.c b/drivers/input/touchscreen/zinitix.c
+index a3e3adbabc67..f64d88170fac 100644
+--- a/drivers/input/touchscreen/zinitix.c
++++ b/drivers/input/touchscreen/zinitix.c
+@@ -161,7 +161,7 @@ static int zinitix_read_data(struct i2c_client *client,
+ 
+ 	ret = i2c_master_recv(client, (u8 *)values, length);
+ 	if (ret != length)
+-		return ret < 0 ? ret : -EIO; ;
++		return ret < 0 ? ret : -EIO;
+ 
+ 	return 0;
+ }
+-- 
+2.17.1
+
