@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C622F7AC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:55:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2FC2F7948
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388140AbhAOMyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:54:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42628 "EHLO mail.kernel.org"
+        id S2387475AbhAOMe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:34:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387704AbhAOMff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:35:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A01223339;
-        Fri, 15 Jan 2021 12:34:53 +0000 (UTC)
+        id S2387448AbhAOMeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:34:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91E8D22473;
+        Fri, 15 Jan 2021 12:33:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714094;
-        bh=BSxJlYx/6c1s9QaRy1D+m8lDjzEWG/SvyAfpM9EsMyY=;
+        s=korg; t=1610714013;
+        bh=w/CCngwlvQXfR6R9z2V8zA7OSINpshvyHzofDEeKu5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q7iFy6Qk84TvvY49tqvhns001dq109aGwT7CV+xNt2golpSEjbKf3FTIafX7zctbq
-         TndIxJSGvjotCnfGobWfRBZtiw1v4+jhjsiHUsWUgGiI3z0XaC86tCTd0dXnX1tvfK
-         pG4oDLi1/365l6URRgLarqEwFCDFIYdKczA84jVM=
+        b=1QkeMuwb1QBMSkbknvItZSzDoCza6XJDf6Djf7K91VOinvL8pj0s83zysTm6Lhbu9
+         33ePCAWfkOmTRzRWbQ5+I1cWnDsmzSHVdIq1AdekFWjs0NXDukZ6WP3/a718isy57R
+         dNTgSXzgsQ/zoeXHQ3K3KmI4ilWEUtNpmTlzOkRs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 5.4 42/62] i2c: i801: Fix the i2c-mux gpiod_lookup_table not being properly terminated
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.19 34/43] lightnvm: select CONFIG_CRC32
 Date:   Fri, 15 Jan 2021 13:28:04 +0100
-Message-Id: <20210115122000.430414543@linuxfoundation.org>
+Message-Id: <20210115121958.694439807@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
+References: <20210115121957.037407908@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 0b3ea2a06de1f52ea30865e227e109a5fd3b6214 upstream.
+commit 19cd3403cb0d522dd5e10188eef85817de29e26e upstream.
 
-gpiod_add_lookup_table() expects the gpiod_lookup_table->table passed to
-it to be terminated with a zero-ed out entry.
+Without CRC32 support, this fails to link:
 
-So we need to allocate one more entry then we will use.
+arm-linux-gnueabi-ld: drivers/lightnvm/pblk-init.o: in function `pblk_init':
+pblk-init.c:(.text+0x2654): undefined reference to `crc32_le'
+arm-linux-gnueabi-ld: drivers/lightnvm/pblk-init.o: in function `pblk_exit':
+pblk-init.c:(.text+0x2a7c): undefined reference to `crc32_le'
 
-Fixes: d308dfbf62ef ("i2c: mux/i801: Switch to use descriptor passing")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Acked-by: Jean Delvare <jdelvare@suse.de>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: a4bd217b4326 ("lightnvm: physical block device (pblk) target")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/i2c/busses/i2c-i801.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/lightnvm/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/i2c/busses/i2c-i801.c
-+++ b/drivers/i2c/busses/i2c-i801.c
-@@ -1424,7 +1424,7 @@ static int i801_add_mux(struct i801_priv
+--- a/drivers/lightnvm/Kconfig
++++ b/drivers/lightnvm/Kconfig
+@@ -19,6 +19,7 @@ if NVM
  
- 	/* Register GPIO descriptor lookup table */
- 	lookup = devm_kzalloc(dev,
--			      struct_size(lookup, table, mux_config->n_gpios),
-+			      struct_size(lookup, table, mux_config->n_gpios + 1),
- 			      GFP_KERNEL);
- 	if (!lookup)
- 		return -ENOMEM;
+ config NVM_PBLK
+ 	tristate "Physical Block Device Open-Channel SSD target"
++	select CRC32
+ 	help
+ 	  Allows an open-channel SSD to be exposed as a block device to the
+ 	  host. The target assumes the device exposes raw flash and must be
 
 
