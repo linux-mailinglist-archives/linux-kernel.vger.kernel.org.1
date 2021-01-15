@@ -2,116 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4532F8329
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B594C2F832C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729026AbhAOR6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:58:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726779AbhAOR63 (ORCPT
+        id S1730880AbhAOR7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:59:23 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:46687 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727670AbhAOR7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:58:29 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAC0C061793
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:57:49 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id g15so1328546pjd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:57:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uEflp91SYEJEoNcnlfy5sa1fP5kmkuZCXVCSskOFlC0=;
-        b=ef0SziCCt1lkNSKK0R2jZx4Sw8hjm9L2wzdjpzq4IQaPH36hpLM5s0vnieW9z5ZpB9
-         da9hsXQ/zJ0+Fp/SUDT4O+0P2hwa5WfyUJz95cvFRn0X7CNpS0ru+U1zbSTNFaCyKYw+
-         98AxW3+SW3nz/e9ES33250BC6DW22qwOxZ2ou8zEPkuMTH3hPysZT+q0vrsdysHw9nG0
-         4Sn/BUxxHz1siIU8eDu3mPCJ7/RQ+wzC0kcr9xUnrbMwHg/HcmacvZ324eV9+u1s3ctN
-         mzYH9d56EYPctpqCa2ZmNJe7KimcbBfmKMrQ9rtT6WFM6U+rKMCXHJHgfzIbdu7IaFFh
-         VlGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uEflp91SYEJEoNcnlfy5sa1fP5kmkuZCXVCSskOFlC0=;
-        b=bl+2DRU8edg3HtVMFE6QVYJdpYDZjCDueP83oo71kRWKH9Q3iDJKfwgFGaVYQbIheo
-         QdaRqhnU5XGXW2jpwNfF4ReqYYltC+6DxLRORZsM+cV/z2I6KvjjxjW6EL3mDbc7gMlO
-         UOqbfRZKwRj1yiTn4e3x+n3rf/eXkE8pep7kbRD2eMpxeqMVYnh8RBXZ35U0iV4MBnRm
-         lwmL/gbx6DA1HPS0cXodMQ+S5CoNuXruGCqH5XpFWt4D6Urtts+Vho+HbDFqqUJNhRPU
-         F3vU3dDyEMR70pOdh7HNuLbkz5ToktWojwP9P8WafzxUNBP5lyvABURfHxjYdOnn6CVV
-         cXGQ==
-X-Gm-Message-State: AOAM531d0EBm854yGmnnG69jdDwVrZd/p5KUMw6ItGH2ShytK2883BCl
-        p77ySshoIJN0bbpZHtBaJzRSRg==
-X-Google-Smtp-Source: ABdhPJx5AHJi8xLqblPt4mK/T3MI+zTtlRSpgv7rxkVTIYJlnurw/CfsDVR0EzhgrGajzNlyYO8ZBg==
-X-Received: by 2002:a17:90a:9918:: with SMTP id b24mr11761239pjp.108.1610733468909;
-        Fri, 15 Jan 2021 09:57:48 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id f67sm8773844pfg.159.2021.01.15.09.57.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 09:57:48 -0800 (PST)
-Date:   Fri, 15 Jan 2021 09:57:41 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Xu, Like" <like.xu@intel.com>
-Cc:     Andi Kleen <andi@firstfloor.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, wei.w.wang@intel.com,
-        luwei.kang@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/17] KVM: x86/pmu: Add support to enable Guest PEBS
- via DS
-Message-ID: <YAHXlWmeR9p6JZm2@google.com>
-References: <20210104131542.495413-1-like.xu@linux.intel.com>
- <YACXQwBPI8OFV1T+@google.com>
- <f8a8e4e2-e0b1-8e68-81d4-044fb62045d5@intel.com>
+        Fri, 15 Jan 2021 12:59:23 -0500
+X-Originating-IP: 93.29.109.196
+Received: from localhost.localdomain (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 435151C0003;
+        Fri, 15 Jan 2021 17:58:40 +0000 (UTC)
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Subject: [PATCH 1/2] of: device: Allow DMA range map to be set before of_dma_configure_id
+Date:   Fri, 15 Jan 2021 18:58:30 +0100
+Message-Id: <20210115175831.1184260-1-paul.kocialkowski@bootlin.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f8a8e4e2-e0b1-8e68-81d4-044fb62045d5@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021, Xu, Like wrote:
-> Hi Sean,
-> 
-> Thanks for your comments !
-> 
-> On 2021/1/15 3:10, Sean Christopherson wrote:
-> > On Mon, Jan 04, 2021, Like Xu wrote:
-> > > 2) Slow path (part 3, patch 0012-0017)
-> > > 
-> > > This is when the host assigned physical PMC has a different index
-> > > from the virtual PMC (e.g. using physical PMC1 to emulate virtual PMC0)
-> > > In this case, KVM needs to rewrite the PEBS records to change the
-> > > applicable counter indexes to the virtual PMC indexes, which would
-> > > otherwise contain the physical counter index written by PEBS facility,
-> > > and switch the counter reset values to the offset corresponding to
-> > > the physical counter indexes in the DS data structure.
-> > > 
-> > > Large PEBS needs to be disabled by KVM rewriting the
-> > > pebs_interrupt_threshold filed in DS to only one record in
-> > > the slow path.  This is because a guest may implicitly drain PEBS buffer,
-> > > e.g., context switch. KVM doesn't get a chance to update the PEBS buffer.
-> > Are the PEBS record write, PEBS index update, and subsequent PMI atomic with
-> > respect to instruction execution?  If not, doesn't this approach still leave a
-> > window where the guest could see the wrong counter?
-> 
-> First, KVM would limit/rewrite guest DS pebs_interrupt_threshold to one
-> record before vm-entry,
-> (see patch [PATCH v3 14/17] KVM: vmx/pmu: Limit pebs_interrupt_threshold in
-> the guest DS area)
-> which means once a PEBS record is written into the guest pebs buffer,
-> a PEBS PMI will be generated immediately and thus vm-exit.
+A mechanism was recently introduced for the sunxi architecture where
+the DMA offset for specific devices (under the MBUS) is set by a common
+driver (sunxi_mbus). This driver calls dma_direct_set_offset to set
+the device's dma_range_map manually.
 
-I'm asking about ucode/hardare.  Is the "guest pebs buffer write -> PEBS PMI"
-guaranteed to be atomic?
+However this information was overwritten by of_dma_configure_id, which
+obtains the map from of_dma_get_range (or keeps it NULL when it fails
+and the force_dma argument is true, which is the case for platform
+devices).
 
-In practice, under what scenarios will guest counters get cross-mapped?  And,
-how does this support affect guest accuracy?  I.e. how bad do things get for the
-guest if we simply disable guest counters if they can't have a 1:1 association
-with their physical counter?
+As a result, the dma_range_map was always overwritten and the mechanism
+could not correctly take effect.
+
+This adds a check to ensure that no previous DMA range map is
+overwritten and prints a warning when the map was already set while
+also being available from dt. In this case, the map that was already
+set is kept.
+
+Fixes: b4bdc4fbf8d0 ("soc: sunxi: Deal with the MBUS DMA offsets in a central place")
+Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+---
+ drivers/of/device.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/of/device.c b/drivers/of/device.c
+index aedfaaafd3e7..db1b8634c2c7 100644
+--- a/drivers/of/device.c
++++ b/drivers/of/device.c
+@@ -181,7 +181,14 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+ 
+ 	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
+ 
+-	dev->dma_range_map = map;
++	if (!dev->dma_range_map) {
++		dev->dma_range_map = map;
++	} else if (map) {
++		dev_warn(dev,
++			 "DMA range map was already set, ignoring range map from dt\n");
++		kfree(map);
++	}
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(of_dma_configure_id);
+-- 
+2.30.0
+
