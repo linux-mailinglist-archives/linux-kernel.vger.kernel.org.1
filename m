@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651E62F709C
+	by mail.lfdr.de (Postfix) with ESMTP id D31392F709D
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732157AbhAOCdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 21:33:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
+        id S1732180AbhAOCd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 21:33:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732041AbhAOCdX (ORCPT
+        with ESMTP id S1732041AbhAOCd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 21:33:23 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83721C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:32:43 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id r63so3726725ybf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:32:43 -0800 (PST)
+        Thu, 14 Jan 2021 21:33:27 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731C5C0613C1;
+        Thu, 14 Jan 2021 18:32:47 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id q7so5073802pgm.5;
+        Thu, 14 Jan 2021 18:32:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SYPyMMtYoGmTpYo5uTF3sYMQrf2HJmyoPinqb7mUiZI=;
-        b=It3W7q21Lp2VJEpihDIjXsP05P+kRz+QzKILrRoncxpeI5cMnr8u/W3Kr122Z4lp6g
-         +qJF2Vwqpy1pHLLzKGearweZlWqVZeaqcDYnUlkRuocUNPb+pcm7hAQWWzoeVkOeYlQA
-         JIStW87/30JoU619posHpsslVhRz+dNU9DHLc=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Js7XzYqItBY+i0QhBsDA1F48BtZPIA6D0H3nxDg2jZQ=;
+        b=iTWaP9JCYE8VuqxHMB/fdhtdNQan3plzui0/bBJtEnF3NsZJ0fU3HKQftknaZ73+V0
+         DPyKVkAaYheuK8rHBALfOPFD6PMLRhdcAa+jC0XKipxtwDDT/tw2p+rlStYh6eZPoe/o
+         zviNrteGG+EqM3vNDaZ1TzFCIB//nEq8siH7OXzLClrNfYg1Yas8JXBVCTi9koHV0Ylf
+         BLLuhzaBz7BT37l3qR2Z6pMC9CGYUvzAJLdKTcG9jTrlzCbMTvWGXlCgrxdJSpDFpE3+
+         D1nELygi+K5bDDugp1AwFgrQ1ZYy5gUnorftW7YwxANkt0jFYEtQVXqU5mISy5A4dER2
+         9IqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SYPyMMtYoGmTpYo5uTF3sYMQrf2HJmyoPinqb7mUiZI=;
-        b=pZ+9jjz9cmQ6lRzfP3IYC9O1qj58cwrKByDnn6ZmTwzmtSNVsY1fZXa4LlPpkWMU1F
-         SndFzJiFG8QIn+yMSNM50l4E6+Vk5+hETepJNpl2Jtics/YEmMv+tNYNHOPk4TtlYCvx
-         jJ/zAuGPvpZylPtFr5UblYfZcEBYw51DCZ359HJLSiM/McuDkuDhFRWZSHHQMg/J/NxC
-         cCmRXdb9gO0W8yd/csoTW9FxRu4/vVpUBDVoVy3sLzn9mO+AuZZvoHun4XoaXf0/vXHx
-         gppdCcS+fzjYAHWhKJ9jEVRC86GEL971iEukiOmofvlhNxT2p/F4Tb1bljm6KFCaY059
-         issQ==
-X-Gm-Message-State: AOAM5317035/N5KOJMCoXHyXwBh0CsXfBXFuFwb+5CdFOT5+DCZh5Dz2
-        qiS95fldmAQnougTuwQRJ7xEFTskU2reqUOB6GQmFw==
-X-Google-Smtp-Source: ABdhPJx7dOcNbpBjdhf5MvxvoS8I1K8S+M1Qf5AvKL3Qi9UUOwCQrHsC7ihKS7kah7PHKEUc3p5r/+MfltMG6JQAU0w=
-X-Received: by 2002:a25:3a04:: with SMTP id h4mr14675417yba.285.1610677962683;
- Thu, 14 Jan 2021 18:32:42 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Js7XzYqItBY+i0QhBsDA1F48BtZPIA6D0H3nxDg2jZQ=;
+        b=BhiPeBvmN0lao0Oou9gOGWO+3QSdAZqLn9XEaLUruxVaFQMpITYbshxxYT4cKbFqEg
+         1z+mKeHh8wgUHlkhwij2wGrxj92m4FzivOx511dLgdHhk3MYf5mS8hyc5Vo1JY9Lhrl3
+         w4JylxzT7uDl2BZRKesvnSDbL8PfLNkXGj+uaEggVUErHjhjvnRe4su9oYmDnFgohEgA
+         vieaC6fc3Zc/4qbdsJahdWZyveNTEkHevD3wPGHDKl6/7tkpPj12JuE9Y8s9bBoRyMVg
+         Uai5aag/iOMmTtqZcVd/WWcQwN410Gv8RpKvFU6J1J9HM9pP1bvjEga3srgrWYYulHHt
+         woUQ==
+X-Gm-Message-State: AOAM5333ZdeA6G2+c8umLIw0KwRr4X4MZSWNSIdpelqOvsbAeeg3MlrA
+        DHfCsz7pHtM++xuweaPNig4=
+X-Google-Smtp-Source: ABdhPJwwtVMLJO6n2mOk8r73Bz2daX1Tru4uphSiBpryvFGidhNp3dYVV4+mExLgS9udWsqF6gYd0A==
+X-Received: by 2002:a65:51c8:: with SMTP id i8mr10374458pgq.81.1610677966920;
+        Thu, 14 Jan 2021 18:32:46 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id c3sm6720113pfi.135.2021.01.14.18.32.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 18:32:46 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH v2 net-next] net: tap: check vlan with eth_type_vlan() method
+Date:   Thu, 14 Jan 2021 18:32:38 -0800
+Message-Id: <20210115023238.4681-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210113172450.v5.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
- <20210113172450.v5.2.I38e90f114f0311b8aa3bcfff750ba381c09dd3b6@changeid> <161058820506.3661239.14441197324080899810@swboyd.mtv.corp.google.com>
-In-Reply-To: <161058820506.3661239.14441197324080899810@swboyd.mtv.corp.google.com>
-From:   Philip Chen <philipchen@chromium.org>
-Date:   Thu, 14 Jan 2021 18:32:31 -0800
-Message-ID: <CA+cxXh=FRy446k_Qs6AsQuzZKY7Y8cA+0ky=QO=ntryX8o5EJw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] Input: cros-ec-keyb - Expose function row physical
- map to userspace
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rajat Jain <rajatja@google.com>, linux-input@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 5:36 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Philip Chen (2021-01-13 17:25:13)
-> > diff --git a/drivers/input/keyboard/cros_ec_keyb.c b/drivers/input/keyboard/cros_ec_keyb.c
-> > index b379ed7628781..273e3c9ba0b03 100644
-> > --- a/drivers/input/keyboard/cros_ec_keyb.c
-> > +++ b/drivers/input/keyboard/cros_ec_keyb.c
-> > @@ -578,6 +590,19 @@ static int cros_ec_keyb_register_matrix(struct cros_ec_keyb *ckdev)
-> >         ckdev->idev = idev;
-> >         cros_ec_keyb_compute_valid_keys(ckdev);
-> >
-> > +       of_property_for_each_u32(dev->of_node, "function-row-physmap",
-> > +                                prop, p, key_pos) {
-> > +               if (i >= MAX_NUM_TOP_ROW_KEYS) {
-> > +                       dev_err(dev, "Only support up to %d top row keys.\n",
->
-> dev_warn? And drop the period please as we don't add them in the kernel
-> usually.
-Done.
->
-> > +                               MAX_NUM_TOP_ROW_KEYS);
-> > +                       break;
-> > +               }
-> > +               ckdev->function_row_physmap[i] = MATRIX_SCAN_CODE(
->
-> Maybe grow some more local variables, like for function_row_physmap so
-> this can fit on one line?
-Done. Please take a look at v6.
->
->                 row = KEY_ROW(key_pos);
->                 col = KEY_COL(key_pos);
->                 map[i] = MATRIX_SCAN_CODE(row, col, ckdev->row_shift);
->
-> > +                       KEY_ROW(key_pos), KEY_COL(key_pos), ckdev->row_shift);
-> > +               i++;
->
-> We could remove this and just increment num_function_row_keys instead.
-> Then that condition check may be a little longer but probably still ok.
-Done. Please take a look at v6.
->
->
-> > +       }
-> > +       ckdev->num_function_row_keys = i;
-> > +
-> >         err = input_register_device(ckdev->idev);
-> >         if (err) {
-> >                 dev_err(dev, "cannot register input device\n");
+From: Menglong Dong <dong.menglong@zte.com.cn>
+
+Replace some checks for ETH_P_8021Q and ETH_P_8021AD in
+drivers/net/tap.c with eth_type_vlan.
+
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+---
+v2:
+- use eth_type_vlan() in tap_get_user_xdp() too.
+---
+ drivers/net/tap.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/tap.c b/drivers/net/tap.c
+index 3c652c8ac5ba..ff4aa35979a1 100644
+--- a/drivers/net/tap.c
++++ b/drivers/net/tap.c
+@@ -713,8 +713,7 @@ static ssize_t tap_get_user(struct tap_queue *q, void *msg_control,
+ 	skb_probe_transport_header(skb);
+ 
+ 	/* Move network header to the right position for VLAN tagged packets */
+-	if ((skb->protocol == htons(ETH_P_8021Q) ||
+-	     skb->protocol == htons(ETH_P_8021AD)) &&
++	if (eth_type_vlan(skb->protocol) &&
+ 	    __vlan_get_protocol(skb, skb->protocol, &depth) != 0)
+ 		skb_set_network_header(skb, depth);
+ 
+@@ -1164,8 +1163,7 @@ static int tap_get_user_xdp(struct tap_queue *q, struct xdp_buff *xdp)
+ 	}
+ 
+ 	/* Move network header to the right position for VLAN tagged packets */
+-	if ((skb->protocol == htons(ETH_P_8021Q) ||
+-	     skb->protocol == htons(ETH_P_8021AD)) &&
++	if (eth_type_vlan(skb->protocol) &&
+ 	    __vlan_get_protocol(skb, skb->protocol, &depth) != 0)
+ 		skb_set_network_header(skb, depth);
+ 
+-- 
+2.25.1
+
