@@ -2,547 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A77C2F752C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:25:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 651132F752E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:25:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728478AbhAOJXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:23:41 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10726 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbhAOJXh (ORCPT
+        id S1728765AbhAOJXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:23:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726435AbhAOJXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:23:37 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DHFzw3SjSzl5MT;
-        Fri, 15 Jan 2021 17:21:32 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 15 Jan
- 2021 17:22:47 +0800
-Subject: Re: [f2fs-dev] [PATCH v2 1/2] f2fs: introduce checkpoint=merge mount
- option
-To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-CC:     Sungjong Seo <sj1557.seo@samsung.com>,
-        Daeho Jeong <daehojeong@google.com>
-References: <20210114062302.3809664-1-daeho43@gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <965dc435-c0a0-36ca-7e97-c3aaa3831bff@huawei.com>
-Date:   Fri, 15 Jan 2021 17:22:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Fri, 15 Jan 2021 04:23:44 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3CDC061794;
+        Fri, 15 Jan 2021 01:23:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LrJG/1orjdUo6w8aRSCvysSJq7gF6RZtVnTtika1jcc=; b=HSgSaSX+kvU7ktks1f+Hhm8KPv
+        KE8BhYgZNf+viYyHPk/hGi5zi4CF1f1BJ/1eqyU4vdbKskbjY22I8FomvDOQ3s6SOSryhnhlX4kj2
+        5m/lfTn6wf8l5Y6dR56RmgOK9z8J3o6MijEg6iTZu2UsOPkHmwFdiDkbKGviP5MIGrXINmRxZfzpD
+        Ib1Bp28gTjuovT8Y/u1pFjYm/KJFp0WXocgq1JBkK5IPxA9RfjffzCm2l/MusodBVqAH7sAxeYrSg
+        Z0DAMYhfUGlADVdPB9Kyrg76iEBt0hGNebejAvSrCQiDpTWhG+4iQJ4p/T3Zu5713W+UKshFRfRPt
+        f8JfMpFg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l0LJk-0001li-TU; Fri, 15 Jan 2021 09:22:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 36E37305815;
+        Fri, 15 Jan 2021 10:22:50 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0B385200E0BD2; Fri, 15 Jan 2021 10:22:50 +0100 (CET)
+Date:   Fri, 15 Jan 2021 10:22:49 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jason Baron <jbaron@akamai.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH v2 1/3] KVM: X86: append vmx/svm prefix to additional
+ kvm_x86_ops functions
+Message-ID: <YAFe6b/sSdDvXSM3@hirez.programming.kicks-ass.net>
+References: <cover.1610680941.git.jbaron@akamai.com>
+ <ed594696f8e2c2b2bfc747504cee9bbb2a269300.1610680941.git.jbaron@akamai.com>
 MIME-Version: 1.0
-In-Reply-To: <20210114062302.3809664-1-daeho43@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed594696f8e2c2b2bfc747504cee9bbb2a269300.1610680941.git.jbaron@akamai.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/14 14:23, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> We've added a new mount option "checkpoint=merge", which creates a
-> kernel daemon and makes it to merge concurrent checkpoint requests as
-> much as possible to eliminate redundant checkpoint issues. Plus, we
-> can eliminate the sluggish issue caused by slow checkpoint operation
-> when the checkpoint is done in a process context in a cgroup having
-> low i/o budget and cpu shares, and The below verification result
-> explains this.
-> The basic idea has come from https://opensource.samsung.com.
-> 
-> [Verification]
-> Android Pixel Device(ARM64, 7GB RAM, 256GB UFS)
-> Create two I/O cgroups (fg w/ weight 100, bg w/ wight 20)
-> Set "strict_guarantees" to "1" in BFQ tunables
-> 
-> In "fg" cgroup,
-> - thread A => trigger 1000 checkpoint operations
->    "for i in `seq 1 1000`; do touch test_dir1/file; fsync test_dir1;
->     done"
-> - thread B => gererating async. I/O
->    "fio --rw=write --numjobs=1 --bs=128k --runtime=3600 --time_based=1
->         --filename=test_img --name=test"
-> 
-> In "bg" cgroup,
-> - thread C => trigger repeated checkpoint operations
->    "echo $$ > /dev/blkio/bg/tasks; while true; do touch test_dir2/file;
->     fsync test_dir2; done"
-> 
-> We've measured thread A's execution time.
-> 
-> [ w/o patch ]
-> Elapsed Time: Avg. 68 seconds
-> [ w/  patch ]
-> Elapsed Time: Avg. 48 seconds
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> Signed-off-by: Sungjong Seo <sj1557.seo@samsung.com>
-> ---
-> v2:
-> - inlined ckpt_req_control into f2fs_sb_info and collected stastics
->    of checkpoint merge operations
-> ---
->   Documentation/filesystems/f2fs.rst |   6 ++
->   fs/f2fs/checkpoint.c               | 163 +++++++++++++++++++++++++++++
->   fs/f2fs/debug.c                    |  12 +++
->   fs/f2fs/f2fs.h                     |  27 +++++
->   fs/f2fs/super.c                    |  56 +++++++++-
->   5 files changed, 260 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-> index dae15c96e659..bccc021bf31a 100644
-> --- a/Documentation/filesystems/f2fs.rst
-> +++ b/Documentation/filesystems/f2fs.rst
-> @@ -247,6 +247,12 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
->   			 hide up to all remaining free space. The actual space that
->   			 would be unusable can be viewed at /sys/fs/f2fs/<disk>/unusable
->   			 This space is reclaimed once checkpoint=enable.
-> +			 Here is another option "merge", which creates a kernel daemon
-> +			 and makes it to merge concurrent checkpoint requests as much
-> +			 as possible to eliminate redundant checkpoint issues. Plus,
-> +			 we can eliminate the sluggish issue caused by slow checkpoint
-> +			 operation when the checkpoint is done in a process context in
-> +			 a cgroup having low i/o budget and cpu shares.
->   compress_algorithm=%s	 Control compress algorithm, currently f2fs supports "lzo",
->   			 "lz4", "zstd" and "lzo-rle" algorithm.
->   compress_log_size=%u	 Support configuring compress cluster size, the size will
-> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-> index 897edb7c951a..e0668cec3b80 100644
-> --- a/fs/f2fs/checkpoint.c
-> +++ b/fs/f2fs/checkpoint.c
-> @@ -13,6 +13,7 @@
->   #include <linux/f2fs_fs.h>
->   #include <linux/pagevec.h>
->   #include <linux/swap.h>
-> +#include <linux/kthread.h>
->   
->   #include "f2fs.h"
->   #include "node.h"
-> @@ -20,6 +21,8 @@
->   #include "trace.h"
->   #include <trace/events/f2fs.h>
->   
-> +#define DEFAULT_CHECKPOINT_IOPRIO (IOPRIO_PRIO_VALUE(IOPRIO_CLASS_BE, 3))
-> +
->   static struct kmem_cache *ino_entry_slab;
->   struct kmem_cache *f2fs_inode_entry_slab;
->   
-> @@ -1707,3 +1710,163 @@ void f2fs_destroy_checkpoint_caches(void)
->   	kmem_cache_destroy(ino_entry_slab);
->   	kmem_cache_destroy(f2fs_inode_entry_slab);
->   }
-> +
-> +static int __write_checkpoint_sync(struct f2fs_sb_info *sbi)
-> +{
-> +	struct cp_control cpc = { .reason = CP_SYNC, };
-> +	int err;
-> +
-> +	down_write(&sbi->gc_lock);
-> +	err = f2fs_write_checkpoint(sbi, &cpc);
-> +	up_write(&sbi->gc_lock);
-> +
-> +	return err;
-> +}
-> +
-> +static void __checkpoint_and_complete_reqs(struct f2fs_sb_info *sbi)
-> +{
-> +	struct ckpt_req_control *cprc = &sbi->cprc_info;
-> +	struct ckpt_req *req, *next;
-> +	struct llist_node *dispatch_list;
-> +	u64 sum_diff = 0, diff, count = 0;
-> +	int ret;
-> +
-> +	dispatch_list = llist_del_all(&cprc->issue_list);
-> +	if (!dispatch_list)
-> +		return;
-> +	dispatch_list = llist_reverse_order(dispatch_list);
-> +
-> +	ret = __write_checkpoint_sync(sbi);
-> +	atomic_inc(&cprc->issued_ckpt);
-> +
-> +	llist_for_each_entry_safe(req, next, dispatch_list, llnode) {
-> +		atomic_dec(&cprc->queued_ckpt);
-> +		atomic_inc(&cprc->total_ckpt);
-> +		diff = (u64)ktime_ms_delta(ktime_get(), req->queue_time);
-> +		req->ret = ret;
-> +		complete(&req->wait);
-> +
-> +		sum_diff += diff;
-> +		count++;
-> +	}
 
-How about updating queued_ckpt and total_ckpt in batch, update atomic
-variable one by one is low efficient.
+On Thu, Jan 14, 2021 at 10:27:54PM -0500, Jason Baron wrote:
 
-> +
-> +	spin_lock(&cprc->stat_lock);
-> +	cprc->cur_time = (unsigned int)div64_u64(sum_diff, count);
+> -static void update_exception_bitmap(struct kvm_vcpu *vcpu)
+> +static void svm_update_exception_bitmap(struct kvm_vcpu *vcpu)
 
-ktime_get() returns time based ns unit, in extreme scenario, average
-time cp cost will overflow 32-bit variable, I doubt.
-
-> +	if (cprc->peak_time < cprc->cur_time)
-> +		cprc->peak_time = cprc->cur_time;
-> +	spin_unlock(&cprc->stat_lock);
-> +}
-> +
-> +static int issue_checkpoint_thread(void *data)
-> +{
-> +	struct f2fs_sb_info *sbi = data;
-> +	struct ckpt_req_control *cprc = &sbi->cprc_info;
-> +	wait_queue_head_t *q = &cprc->ckpt_wait_queue;
-> +repeat:
-> +	if (kthread_should_stop())
-> +		return 0;
-> +
-> +	sb_start_intwrite(sbi->sb);
-> +
-> +	if (!llist_empty(&cprc->issue_list))
-> +		__checkpoint_and_complete_reqs(sbi);
-> +
-> +	sb_end_intwrite(sbi->sb);
-> +
-> +	wait_event_interruptible(*q,
-> +		kthread_should_stop() || !llist_empty(&cprc->issue_list));
-> +	goto repeat;
-> +}
-> +
-> +static void flush_remained_ckpt_reqs(struct f2fs_sb_info *sbi,
-> +		struct ckpt_req *wait_req)
-> +{
-> +	struct ckpt_req_control *cprc = &sbi->cprc_info;
-> +
-> +	if (!llist_empty(&cprc->issue_list)) {
-> +		__checkpoint_and_complete_reqs(sbi);
-> +	} else {
-> +		/* already dispatched by issue_checkpoint_thread */
-> +		if (wait_req)
-> +			wait_for_completion(&wait_req->wait);
-> +	}
-> +}
-> +
-> +static void init_ckpt_req(struct ckpt_req *req)
-> +{
-> +	memset(req, 0, sizeof(struct ckpt_req));
-> +
-> +	init_completion(&req->wait);
-> +	req->queue_time = ktime_get();
-> +}
-> +
-> +int f2fs_issue_checkpoint(struct f2fs_sb_info *sbi)
-> +{
-> +	struct ckpt_req_control *cprc = &sbi->cprc_info;
-> +	struct ckpt_req req;
-> +
-> +	if (!cprc || !cprc->f2fs_issue_ckpt)
-
-!cprc check is unneeded now.
-
-> +		return __write_checkpoint_sync(sbi);
-> +
-> +	init_ckpt_req(&req);
-> +
-> +	llist_add(&req.llnode, &cprc->issue_list);
-> +	atomic_inc(&cprc->queued_ckpt);
-> +
-> +	/* update issue_list before we wake up issue_checkpoint thread */
-> +	smp_mb();
-> +
-> +	if (waitqueue_active(&cprc->ckpt_wait_queue))
-> +		wake_up(&cprc->ckpt_wait_queue);
-> +
-> +	if (cprc->f2fs_issue_ckpt)
-> +		wait_for_completion(&req.wait);
-> +	else
-> +		flush_remained_ckpt_reqs(sbi, &req);
-> +
-> +	return req.ret;
-> +}
-> +
-> +int f2fs_start_ckpt_thread(struct f2fs_sb_info *sbi)
-> +{
-> +	dev_t dev = sbi->sb->s_bdev->bd_dev;
-> +	struct ckpt_req_control *cprc = &sbi->cprc_info;
-> +
-> +	if (cprc->f2fs_issue_ckpt)
-> +		return 0;
-
-         ^^^^^ here
-
-> +
-> +	cprc->f2fs_issue_ckpt = kthread_run(issue_checkpoint_thread, sbi,
-> +			"f2fs_ckpt-%u:%u", MAJOR(dev), MINOR(dev));
-> +	if (IS_ERR(cprc->f2fs_issue_ckpt))
-
-we should assign cprc->f2fs_issue_ckpt to NULL, this will more safer than
-keeping old error value left in this variable, to avoid checking the wrong
-value as in above position.
-
-> +		return PTR_ERR(cprc->f2fs_issue_ckpt);
-> +
-> +	set_task_ioprio(cprc->f2fs_issue_ckpt, DEFAULT_CHECKPOINT_IOPRIO);
-> +
-> +	return 0;
-> +}
-> +
-> +void f2fs_stop_ckpt_thread(struct f2fs_sb_info *sbi)
-> +{
-> +	struct ckpt_req_control *cprc = &sbi->cprc_info;
-> +
-> +	if (cprc->f2fs_issue_ckpt) {
-> +		struct task_struct *ckpt_task = cprc->f2fs_issue_ckpt;
-> +
-> +		cprc->f2fs_issue_ckpt = NULL;
-> +		kthread_stop(ckpt_task);
-> +
-> +		flush_remained_ckpt_reqs(sbi, NULL);
-> +	}
-> +}
-> +
-> +void f2fs_init_ckpt_req_control(struct f2fs_sb_info *sbi)
-> +{
-> +	struct ckpt_req_control *cprc = &sbi->cprc_info;
-> +
-> +	atomic_set(&cprc->issued_ckpt, 0);
-> +	atomic_set(&cprc->total_ckpt, 0);
-> +	atomic_set(&cprc->queued_ckpt, 0);
-> +	init_waitqueue_head(&cprc->ckpt_wait_queue);
-> +	init_llist_head(&cprc->issue_list);
-> +	spin_lock_init(&cprc->stat_lock);
-> +}
-> diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
-> index 197c914119da..91855d5721cd 100644
-> --- a/fs/f2fs/debug.c
-> +++ b/fs/f2fs/debug.c
-> @@ -120,6 +120,13 @@ static void update_general_status(struct f2fs_sb_info *sbi)
->   			atomic_read(&SM_I(sbi)->dcc_info->discard_cmd_cnt);
->   		si->undiscard_blks = SM_I(sbi)->dcc_info->undiscard_blks;
->   	}
-> +	si->nr_issued_ckpt = atomic_read(&sbi->cprc_info.issued_ckpt);
-> +	si->nr_total_ckpt = atomic_read(&sbi->cprc_info.total_ckpt);
-> +	si->nr_queued_ckpt = atomic_read(&sbi->cprc_info.queued_ckpt);
-> +	spin_lock(&sbi->cprc_info.stat_lock);
-> +	si->cur_ckpt_time = sbi->cprc_info.cur_time;
-> +	si->peak_ckpt_time = sbi->cprc_info.peak_time;
-> +	spin_unlock(&sbi->cprc_info.stat_lock);
->   	si->total_count = (int)sbi->user_block_count / sbi->blocks_per_seg;
->   	si->rsvd_segs = reserved_segments(sbi);
->   	si->overp_segs = overprovision_segments(sbi);
-> @@ -417,6 +424,11 @@ static int stat_show(struct seq_file *s, void *v)
->   				si->meta_count[META_NAT]);
->   		seq_printf(s, "  - ssa blocks : %u\n",
->   				si->meta_count[META_SSA]);
-> +		seq_printf(s, "CP merge (Queued: %4d, Issued: %4d, Total: %4d, "
-> +				"Cur time: %4d(ms), Peak time: %4d(ms))\n",
-> +				si->nr_queued_ckpt, si->nr_issued_ckpt,
-> +				si->nr_total_ckpt, si->cur_ckpt_time,
-> +				si->peak_ckpt_time);
->   		seq_printf(s, "GC calls: %d (BG: %d)\n",
->   			   si->call_count, si->bg_gc);
->   		seq_printf(s, "  - data segments : %d (%d)\n",
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index bb11759191dc..f2ae075aa723 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -97,6 +97,7 @@ extern const char *f2fs_fault_name[FAULT_MAX];
->   #define F2FS_MOUNT_DISABLE_CHECKPOINT	0x02000000
->   #define F2FS_MOUNT_NORECOVERY		0x04000000
->   #define F2FS_MOUNT_ATGC			0x08000000
-> +#define F2FS_MOUNT_MERGE_CHECKPOINT	0x10000000
->   
->   #define F2FS_OPTION(sbi)	((sbi)->mount_opt)
->   #define clear_opt(sbi, option)	(F2FS_OPTION(sbi).opt &= ~F2FS_MOUNT_##option)
-> @@ -266,6 +267,25 @@ struct fsync_node_entry {
->   	unsigned int seq_id;	/* sequence id */
->   };
->   
-> +struct ckpt_req {
-> +	struct completion wait;		/* completion for checkpoint done */
-> +	struct llist_node llnode;	/* llist_node to be linked in wait queue */
-> +	int ret;			/* return code of checkpoint */
-> +	ktime_t queue_time;		/* request queued time */
-> +};
-> +
-> +struct ckpt_req_control {
-> +	struct task_struct *f2fs_issue_ckpt;	/* checkpoint task */
-> +	wait_queue_head_t ckpt_wait_queue;	/* waiting queue for wake-up */
-> +	atomic_t issued_ckpt;		/* # of actually issued ckpts */
-> +	atomic_t total_ckpt;		/* # of total ckpts */
-> +	atomic_t queued_ckpt;		/* # of queued ckpts */
-> +	struct llist_head issue_list;	/* list for command issue */
-> +	spinlock_t stat_lock;		/* lock for below checkpoint time stats */
-> +	unsigned int cur_time;		/* cur wait time in msec for currently issued checkpoint */
-> +	unsigned int peak_time;		/* peak wait time in msec until now */
-> +};
-> +
->   /* for the bitmap indicate blocks to be discarded */
->   struct discard_entry {
->   	struct list_head list;	/* list head */
-> @@ -1404,6 +1424,7 @@ struct f2fs_sb_info {
->   	wait_queue_head_t cp_wait;
->   	unsigned long last_time[MAX_TIME];	/* to store time in jiffies */
->   	long interval_time[MAX_TIME];		/* to store thresholds */
-> +	struct ckpt_req_control cprc_info;	/* for checkpoint request control */
->   
->   	struct inode_management im[MAX_INO_ENTRY];	/* manage inode cache */
->   
-> @@ -3418,6 +3439,10 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc);
->   void f2fs_init_ino_entry_info(struct f2fs_sb_info *sbi);
->   int __init f2fs_create_checkpoint_caches(void);
->   void f2fs_destroy_checkpoint_caches(void);
-> +int f2fs_issue_checkpoint(struct f2fs_sb_info *sbi);
-> +int f2fs_start_ckpt_thread(struct f2fs_sb_info *sbi);
-> +void f2fs_stop_ckpt_thread(struct f2fs_sb_info *sbi);
-> +void f2fs_init_ckpt_req_control(struct f2fs_sb_info *sbi);
->   
->   /*
->    * data.c
-> @@ -3530,6 +3555,8 @@ struct f2fs_stat_info {
->   	int nr_discarding, nr_discarded;
->   	int nr_discard_cmd;
->   	unsigned int undiscard_blks;
-> +	int nr_issued_ckpt, nr_total_ckpt, nr_queued_ckpt;
-> +	unsigned int cur_ckpt_time, peak_ckpt_time;
->   	int inline_xattr, inline_inode, inline_dir, append, update, orphans;
->   	int compr_inode;
->   	unsigned long long compr_blocks;
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index b4a07fe62d1a..1c1771be8a16 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -143,6 +143,7 @@ enum {
->   	Opt_checkpoint_disable_cap,
->   	Opt_checkpoint_disable_cap_perc,
->   	Opt_checkpoint_enable,
-> +	Opt_checkpoint_merge,
->   	Opt_compress_algorithm,
->   	Opt_compress_log_size,
->   	Opt_compress_extension,
-> @@ -213,6 +214,7 @@ static match_table_t f2fs_tokens = {
->   	{Opt_checkpoint_disable_cap, "checkpoint=disable:%u"},
->   	{Opt_checkpoint_disable_cap_perc, "checkpoint=disable:%u%%"},
->   	{Opt_checkpoint_enable, "checkpoint=enable"},
-> +	{Opt_checkpoint_merge, "checkpoint=merge"},
->   	{Opt_compress_algorithm, "compress_algorithm=%s"},
->   	{Opt_compress_log_size, "compress_log_size=%u"},
->   	{Opt_compress_extension, "compress_extension=%s"},
-> @@ -872,6 +874,9 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->   		case Opt_checkpoint_enable:
->   			clear_opt(sbi, DISABLE_CHECKPOINT);
->   			break;
-> +		case Opt_checkpoint_merge:
-> +			set_opt(sbi, MERGE_CHECKPOINT);
-> +			break;
->   #ifdef CONFIG_F2FS_FS_COMPRESSION
->   		case Opt_compress_algorithm:
->   			if (!f2fs_sb_has_compression(sbi)) {
-> @@ -1040,6 +1045,12 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->   		return -EINVAL;
->   	}
->   
-> +	if (test_opt(sbi, DISABLE_CHECKPOINT) &&
-> +			test_opt(sbi, MERGE_CHECKPOINT)) {
-> +		f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
-> +		return -EINVAL;
-> +	}
-> +
->   	/* Not pass down write hints if the number of active logs is lesser
->   	 * than NR_CURSEG_PERSIST_TYPE.
->   	 */
-> @@ -1245,6 +1256,12 @@ static void f2fs_put_super(struct super_block *sb)
->   	/* prevent remaining shrinker jobs */
->   	mutex_lock(&sbi->umount_mutex);
->   
-> +	/*
-> +	 * flush all issued checkpoints and stop checkpoint issue thread.
-> +	 * after then, all checkpoints should be done by each process context.
-> +	 */
-> +	f2fs_stop_ckpt_thread(sbi);
-> +
->   	/*
->   	 * We don't need to do checkpoint when superblock is clean.
->   	 * But, the previous checkpoint was not done by umount, it needs to do
-> @@ -1347,10 +1364,13 @@ int f2fs_sync_fs(struct super_block *sb, int sync)
->   		struct cp_control cpc;
->   
->   		cpc.reason = __get_cp_reason(sbi);
-> -
-> -		down_write(&sbi->gc_lock);
-> -		err = f2fs_write_checkpoint(sbi, &cpc);
-> -		up_write(&sbi->gc_lock);
-> +		if (test_opt(sbi, MERGE_CHECKPOINT) && cpc.reason == CP_SYNC) {
-> +			err = f2fs_issue_checkpoint(sbi);
-> +		} else {
-> +			down_write(&sbi->gc_lock);
-> +			err = f2fs_write_checkpoint(sbi, &cpc);
-> +			up_write(&sbi->gc_lock);
-> +		}
-
-Why not merging above logic into f2fs_issue_checkpoint(), so here, we can just
-call f2fs_issue_checkpoint(), then the code would be more clean here.
-
-Thanks,
-
->   	}
->   	f2fs_trace_ios(NULL, 1);
->   
-> @@ -1674,6 +1694,8 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->   	if (test_opt(sbi, DISABLE_CHECKPOINT))
->   		seq_printf(seq, ",checkpoint=disable:%u",
->   				F2FS_OPTION(sbi).unusable_cap);
-> +	if (test_opt(sbi, MERGE_CHECKPOINT))
-> +		seq_puts(seq, ",checkpoint=merge");
->   	if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_POSIX)
->   		seq_printf(seq, ",fsync_mode=%s", "posix");
->   	else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT)
-> @@ -1954,6 +1976,18 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->   		}
->   	}
->   
-> +	if (!test_opt(sbi, MERGE_CHECKPOINT)) {
-> +		f2fs_stop_ckpt_thread(sbi);
-> +	} else {
-> +		err = f2fs_start_ckpt_thread(sbi);
-> +		if (err) {
-> +			f2fs_err(sbi,
-> +			    "Failed to start F2FS issue_checkpoint_thread (%d)",
-> +			    err);
-> +			goto restore_gc;
-> +		}
-> +	}
-> +
->   	/*
->   	 * We stop issue flush thread if FS is mounted as RO
->   	 * or if flush_merge is not passed in mount option.
-> @@ -3701,6 +3735,18 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->   
->   	f2fs_init_fsync_node_info(sbi);
->   
-> +	/* setup checkpoint request control and start checkpoint issue thread */
-> +	f2fs_init_ckpt_req_control(sbi);
-> +	if (test_opt(sbi, MERGE_CHECKPOINT)) {
-> +		err = f2fs_start_ckpt_thread(sbi);
-> +		if (err) {
-> +			f2fs_err(sbi,
-> +			    "Failed to start F2FS issue_checkpoint_thread (%d)",
-> +			    err);
-> +			goto stop_ckpt_thread;
-> +		}
-> +	}
-> +
->   	/* setup f2fs internal modules */
->   	err = f2fs_build_segment_manager(sbi);
->   	if (err) {
-> @@ -3910,6 +3956,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->   free_sm:
->   	f2fs_destroy_segment_manager(sbi);
->   	f2fs_destroy_post_read_wq(sbi);
-> +stop_ckpt_thread:
-> +	f2fs_stop_ckpt_thread(sbi);
->   free_devices:
->   	destroy_device_list(sbi);
->   	kvfree(sbi->ckpt);
-> 
+Just to be a total pendant: s/append/Prepend/ on $Subject
