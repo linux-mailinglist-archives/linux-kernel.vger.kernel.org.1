@@ -2,106 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B379B2F871E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 998BE2F872E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388808AbhAOVCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 16:02:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
+        id S1732580AbhAOVHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 16:07:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388647AbhAOVCn (ORCPT
+        with ESMTP id S1728800AbhAOVHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 16:02:43 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F98C061793
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:02:02 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id a11so8437893qto.16
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:02:02 -0800 (PST)
+        Fri, 15 Jan 2021 16:07:00 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE5BC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:06:20 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id p80so5847683ybg.10
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:06:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=HxQUFzxtkBI9IE2jZdisE7OWgiNmHacDc1aIpJob93c=;
-        b=fcry9Lnx+lFYwZJOSIFilMZOfFjtLVaUyqSqSmrqaaSK6S56bQsgMZmazbos/VfW+t
-         Bbm50u3Wh9ltZLSmEp5iioaxhc6efP45gT8eUmffMrrz/zt93VjuoF97MSLyBN5UqLFO
-         d+jw288OCReuJt2rx9EYVdbd/gXDD4xntD8A1bTuR52uyae6XYmkIVqgQRlzorbHQ5wX
-         J6PDnC2Ovx72pDJ6ZwtN0ms+WvcVePSlipcU5U8VhD9GMv0PU6BhQHtELx9tMPGeojKB
-         PPpWi2Qj+xF5CjIbFFDsgFVGiQm5iKQ5Q995ZUOahsQkch0WX9vV+j+9ZSjacaR4UsoS
-         +rpw==
+        bh=ZbInGrM8DQpEvZpcv+BH44NrN/in7NktHoThO/+hjn0=;
+        b=fTf4GrnRn3rHcZiqqJ3n4RDpL4htAC4GKILeEvMx9YIwYeaCdF0u0YZFa65oByW2MJ
+         vuebTsSmoY54pAF/stdeDILEdoVgV8y++f3KQ617fYgz9ufXJdX4v1clDE7VjOp3KnZp
+         Gpyzcpd300ndhov7N5kjnC+sr7nlXpM3k3wqes+fD0R9Da14q0KdxH/FN3xLAdIhiK1y
+         VkZdjPmq7AZ9m0yF3+Me+HN1A5UsShNPWWrHn3RPhY7UyUs7YA+mgaOE/hrPsQ3c88AA
+         EUVGL5n4F4wF2sv6YxNNtJ8pTdoqUmeUEwWrINqlCsn/NTunNo0d8b2RvtbH5ScxlTGP
+         z1iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
          :to:cc;
-        bh=HxQUFzxtkBI9IE2jZdisE7OWgiNmHacDc1aIpJob93c=;
-        b=DESJHBTQwmBMbdb+WYmafI+aUU52vZssn3o3EKdNDaNEbonehOHpb0T8LLH2Ykduz8
-         9OP0wbd7mm0Z2Qtf3fJLaqZVuyZKnLVW71a2zJf7rtzyNAz7J97FDEuz9fYZm798Y3mC
-         ytb5QGBERfDNLy0sNQW0EDOjJECz+sTAJlYnIHdXh3UW+zbNwbYSfkL14+QpeAdgdTeI
-         1WnMcbRRn4f54yHFMLeW4c7ofn0U4fOcllYl6sOhUwLWmToj0FLwAUwHfOf2kDBqnoOw
-         7G+RoypXd0yqqzXjf3jlVPK4FFDknOVCwKireK6Dr8Sy/tpMC8XYK5CCyirq1N5B1yL7
-         7Etw==
-X-Gm-Message-State: AOAM5323Cz08h3zb0u/Ye0JUXlQ7wkgWwjOYILAW5LzPF/8g4Th/2P1j
-        a+C1xq6yGkNkLXBGEEh1BIt0DckdQN9yBgU=
-X-Google-Smtp-Source: ABdhPJzzFJ4sVYqQ5ohkt/drFJVkon5uRFouk1OF5Nb7fuaqlAi3rQHoA9RR7PjoJKZvqMU0aWek0r3Q+y1UA0U=
-Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
- (user=saravanak job=sendgmr) by 2002:a0c:8642:: with SMTP id
- p60mr14075482qva.6.1610744522082; Fri, 15 Jan 2021 13:02:02 -0800 (PST)
-Date:   Fri, 15 Jan 2021 13:01:58 -0800
-Message-Id: <20210115210159.3090203-1-saravanak@google.com>
+        bh=ZbInGrM8DQpEvZpcv+BH44NrN/in7NktHoThO/+hjn0=;
+        b=rLd5R/Z5gCA1JTrGv6HCIr5L0GKEaoOomwFBcmLopEx6CV9h/9/nKCTaFcBszceMom
+         L8aR0VdRDGEQwVAvXaBh1n0tD2LD8B7qLFsh3qi4RAvtdk2t55sWhBy4MuzFneJwYRWN
+         3B24PcR12YF+twA/+/t5nvd8dEz4wz6w1Xs/Pe2LVEqkbhIM1LME2qZiDMSBwj7QIYCl
+         T+cP3c3whMn32zoyBw5HdS5PQmajKBSEaKk2Ix/7gGVtzIU2t2EW+Wg+KsjCdR1raE1o
+         iLuEh7PE9awl/3J7PJ8nm3Mwiuh8/Qgy8Y68XCD84albAzvd38WTrwYy4eMmlUB3w5Hi
+         OPXA==
+X-Gm-Message-State: AOAM533w7OLDrojPFjADKJYPefe3n5Ef3dV9EYKYrecbdajnG5CUxXNW
+        OOUW0uzNJRCFxABOa6PPsVAUME4G3dDv6BPVABk=
+X-Google-Smtp-Source: ABdhPJyCJsv5sa6GTOA0Ua9jGRg1Lvl3d6yJ4eg9TKI7QsjVEKnRO5iFLPKsu3uDFWveQhYCj5Tjl5TTMNn9uLPgTIQ=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:ef47:: with SMTP id
+ w7mr19625123ybm.509.1610744779507; Fri, 15 Jan 2021 13:06:19 -0800 (PST)
+Date:   Fri, 15 Jan 2021 13:06:13 -0800
+Message-Id: <20210115210616.404156-1-ndesaulniers@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v1] of: property: Add fw_devlink support for "gpio" and
- "gpios" binding
-From:   Saravana Kannan <saravanak@google.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-tegra <linux-tegra@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jon Hunter <jonathanh@nvidia.com>, kernel-team@android.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/3] Kbuild: DWARF v5 support
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To provide backward compatibility for boards that use deprecated DT
-bindings, we need to add fw_devlink support for "gpio" and "gpios".
+DWARF v5 is the latest standard of the DWARF debug info format.
 
-Cc: linux-tegra <linux-tegra@vger.kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/of/property.c | 4 ++++
- 1 file changed, 4 insertions(+)
+DWARF5 wins significantly in terms of size when mixed with compression
+(CONFIG_DEBUG_INFO_COMPRESSED).
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 5f9eed79a8aa..1c8c65c4a887 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1258,6 +1258,8 @@ DEFINE_SIMPLE_PROP(pinctrl5, "pinctrl-5", NULL)
- DEFINE_SIMPLE_PROP(pinctrl6, "pinctrl-6", NULL)
- DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
- DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
-+DEFINE_SIMPLE_PROP(gpio_compat, "gpio", "#gpio-cells")
-+DEFINE_SIMPLE_PROP(gpios_compat, "gpios", "#gpio-cells")
- DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
- DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
- DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
-@@ -1296,6 +1298,8 @@ static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_pinctrl6, },
- 	{ .parse_prop = parse_pinctrl7, },
- 	{ .parse_prop = parse_pinctrl8, },
-+	{ .parse_prop = parse_gpio_compat, },
-+	{ .parse_prop = parse_gpios_compat, },
- 	{ .parse_prop = parse_regulators, },
- 	{ .parse_prop = parse_gpio, },
- 	{ .parse_prop = parse_gpios, },
+Link: http://www.dwarfstd.org/doc/DWARF5.pdf
+
+Patch 1 is a cleanup from Masahiro and isn't DWARF v5 specific.
+Patch 2 is a cleanup that lays the ground work and isn't DWARF
+v5 specific.
+Patch 3 implements Kconfig and Kbuild support for DWARFv5.
+
+Changes from v4:
+* drop set -e from script as per Nathan.
+* add dependency on !CONFIG_DEBUG_INFO_BTF for DWARF v5 as per Sedat.
+* Move LLVM_IAS=1 complexity from patch 2 to patch 3 as per Arvind and
+  Masahiro. Sorry it took me a few tries to understand the point (I
+  might still not), but it looks much cleaner this way. Sorry Nathan, I
+  did not carry forward your previous reviews as a result, but I would
+  appreciate if you could look again.
+* Add Nathan's reviewed by tag to patch 1.
+* Reword commit message for patch 3 to mention LLVM_IAS=1 and -gdwarf-5
+  binutils addition later, and BTF issue.
+* I still happen to see a pahole related error spew for the combination
+  of:
+  * LLVM=1
+  * LLVM_IAS=1
+  * CONFIG_DEBUG_INFO_DWARF4
+  * CONFIG_DEBUG_INFO_BTF
+  Though they're non-fatal to the build. I'm not sure yet why removing
+  any one of the above prevents the warning spew. Maybe we'll need a v6.
+
+Changes from v3:
+
+Changes as per Arvind:
+* only add -Wa,-gdwarf-5 for (LLVM=1|CC=clang)+LLVM_IAS=0 builds.
+* add -gdwarf-5 to Kconfig shell script.
+* only run Kconfig shell script for Clang.
+
+Apologies to Sedat and Nathan; I appreciate previous testing/review, but
+I did no carry forward your Tested-by and Reviewed-by tags, as the
+patches have changed too much IMO.
+
+Changes from v2:
+* Drop two of the earlier patches that have been accepted already.
+* Add measurements with GCC 10.2 to commit message.
+* Update help text as per Arvind with help from Caroline.
+* Improve case/wording between DWARF Versions as per Masahiro.
+
+Changes from the RFC:
+* split patch in 3 patch series, include Fangrui's patch, too.
+* prefer `DWARF vX` format, as per Fangrui.
+* use spaces between assignment in Makefile as per Masahiro.
+* simplify setting dwarf-version-y as per Masahiro.
+* indent `prompt` in Kconfig change as per Masahiro.
+* remove explicit default in Kconfig as per Masahiro.
+* add comments to test_dwarf5_support.sh.
+* change echo in test_dwarf5_support.sh as per Masahiro.
+* remove -u from test_dwarf5_support.sh as per Masahiro.
+* add a -gdwarf-5 cc-option check to Kconfig as per Jakub.
+
+*** BLURB HERE ***
+
+Masahiro Yamada (1):
+  Remove $(cc-option,-gdwarf-4) dependency from CONFIG_DEBUG_INFO_DWARF4
+
+Nick Desaulniers (2):
+  Kbuild: make DWARF version a choice
+  Kbuild: implement support for DWARF v5
+
+ Makefile                          | 13 +++++++---
+ include/asm-generic/vmlinux.lds.h |  6 ++++-
+ lib/Kconfig.debug                 | 42 +++++++++++++++++++++++++------
+ scripts/test_dwarf5_support.sh    |  8 ++++++
+ 4 files changed, 57 insertions(+), 12 deletions(-)
+ create mode 100755 scripts/test_dwarf5_support.sh
+
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
