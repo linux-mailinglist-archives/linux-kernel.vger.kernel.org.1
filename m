@@ -2,210 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA692F889E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DC22F88B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbhAOWoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 17:44:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23867 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726282AbhAOWoR (ORCPT
+        id S1727610AbhAOWon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 17:44:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727271AbhAOWom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 17:44:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610750570;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EB7kXdoaDpBllJxSevGo6kiwu0Drr9UL6vk+q3d3RfU=;
-        b=A8AGXK775UiJVqKHpD2/mOMMfVsvkAX1uNIL5br7DoewEF7xg7We5hJP85SwxratYkuDUc
-        TgHOkNYOC9qDPOWxQUTrzS6kk8igeqPPtI94ZZ42TqrlLoA4pfuV6nAayqdiatz6Ak9WHA
-        6rR5pNkZEexrJzC10rFkeccX25XvN1s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-ZUP2g_LEO8uQpZeiFfHExg-1; Fri, 15 Jan 2021 17:42:46 -0500
-X-MC-Unique: ZUP2g_LEO8uQpZeiFfHExg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DEA5F806666;
-        Fri, 15 Jan 2021 22:42:42 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 02A635D9C6;
-        Fri, 15 Jan 2021 22:42:40 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 15:42:40 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, Cornelia Huck <cohuck@redhat.com>,
-        Will Deacon <will@kernel.org>, "Marc Zyngier" <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-Subject: Re: [PATCH 1/6] vfio/iommu_type1: Make an explicit "promote"
- semantic
-Message-ID: <20210115154240.0d3ee455@omen.home.shazbot.org>
-In-Reply-To: <20210107044401.19828-2-zhukeqian1@huawei.com>
-References: <20210107044401.19828-1-zhukeqian1@huawei.com>
-        <20210107044401.19828-2-zhukeqian1@huawei.com>
+        Fri, 15 Jan 2021 17:44:42 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FCEC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:44:02 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id ce17so3730350pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:44:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=mjmhzCxq5pbVH4bXG4GaoLE2im/d0NYMiaeqGM/Vh2A=;
+        b=hLycDkMDchQHlWdWsrjWr3UBgejQQ3Ovk8nornlDD52lqrCiK77f7aitNbbqbKt7Cv
+         avjW2Y+KJn3LiUOxOufNxg8syfmnlcjZctPH5p7IRilKaC0kSn8ay95ZJVniIZPbnbqT
+         5IHjyo37QtwESsJOqNEXSrR3/LksjN3X7Yh2w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=mjmhzCxq5pbVH4bXG4GaoLE2im/d0NYMiaeqGM/Vh2A=;
+        b=aDZd5Tbbw1t+D9I4R/cAX5HiX9eJHZCEpc03lcWVukPP8z6SOYduRs4jDied+Oqtj3
+         tzeKoR85QtwyGhaUnx25jPRwejc85MlzR8msYqFuuH5PCDwEaaBO9/lkwOz5YDCkzQbt
+         /SvpDNs6YV9JM1W26Wu1dPDlvEcJzi/VTxTJGHuo7/r+svSgqn73/SU89VpEBmbLCXtT
+         hfVFyBetvRgRGkAcHL91GOOu325AAn4xk5hLtnzuOyjgPxpvMgDvzC/G5iBeqJFWNHyp
+         EKH1YC75HH6L59/qpNIi6yqgUi7DO4h24JpwBhtAG3/rBwf5Jef7OhM/NyQiedAiUe5G
+         q0Dw==
+X-Gm-Message-State: AOAM530J7b9ctgiJo30KvEARyQHtyIlIESU7yOza8t6IXwViVChAxjV3
+        iPAVK38QDeKMLIiOMF465YAXag==
+X-Google-Smtp-Source: ABdhPJwczw73/caLQt7NVwLFlyBdc8k0alhRhk2B56jvp6W/r2+VdYKjWodeNOfZnahuoJ9c5ztJTQ==
+X-Received: by 2002:a17:902:6bca:b029:dc:34e1:26b1 with SMTP id m10-20020a1709026bcab02900dc34e126b1mr14829023plt.52.1610750641561;
+        Fri, 15 Jan 2021 14:44:01 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id l7sm8745699pjy.29.2021.01.15.14.44.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 14:44:00 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CABXOdTcT4f_mg=ukPd0sD90o-aKg3qgiuLDRNPU8SUuFnFbRxA@mail.gmail.com>
+References: <20201205004709.3126266-1-swboyd@chromium.org> <CAD=FV=XjzBLTPMqOf1NK0pjXiZWrLT227nksxhMqaFG6GxAqjQ@mail.gmail.com> <CABXOdTcT4f_mg=ukPd0sD90o-aKg3qgiuLDRNPU8SUuFnFbRxA@mail.gmail.com>
+Subject: Re: [PATCH] Input: cros_ec_keyb: Add support for a front proximity switch
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Benson Leung <bleung@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, open list:
+        HID CORE LAYER <linux-input@vger.kernel.org>,
+        Guenter Roeck <groeck@chromium.org>, ;
+Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
+        Cc:     ;
+                        ^-missing semicolon to end mail group, extraneous tokens in mailbox, missing end of mailbox
+To:     Doug Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>
+Date:   Fri, 15 Jan 2021 14:43:58 -0800
+Message-ID: <161075063876.3661239.2601657304680031525@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Jan 2021 12:43:56 +0800
-Keqian Zhu <zhukeqian1@huawei.com> wrote:
+Quoting Guenter Roeck (2021-01-06 18:30:20)
+> On Wed, Jan 6, 2021 at 5:16 PM Doug Anderson <dianders@chromium.org> wrot=
+e:
+>=20
+>     Hi,
+>=20
+>     On Fri, Dec 4, 2020 at 4:48 PM Stephen Boyd <swboyd@chromium.org> wro=
+te:
+>     >
+>     > Some cros ECs support a front proximity MKBP event via
+>     > 'EC_MKBP_FRONT_PROXIMITY'. Map this to the 'SW_FRONT_PROXIMITY' inp=
+ut
+>     > event code so it can be reported up to userspace.
+>     >
+>     > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+>     > Cc: Benson Leung <bleung@chromium.org>
+>     > Cc: Guenter Roeck <groeck@chromium.org>
+>     > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+>     > ---
+>     >=C2=A0 drivers/input/keyboard/cros_ec_keyb.c=C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 | 5 +++++
+>     >=C2=A0 include/linux/platform_data/cros_ec_commands.h | 1 +
+>=20
+>=20
+> For a year or two people kept changes to=C2=A0cros_ec_commands.h separate=
+ from
+> functional changes. Unfortunately, we are now reverting to the old
+> "change=C2=A0cros_ec_commands.h together with some functional change" app=
+roach which
+> caused an endless amount of trouble and pain for Chrome OS rebases a coup=
+le of
+> years ago.
+>=20
+> I won't NACK this patch, but it is close.
 
-> When we want to promote the pinned_page_dirty_scope of vfio_iommu,
-> we call the "update" function to visit all vfio_group, but when we
-> want to downgrade this, we can set the flag as false directly.
-
-I agree that the transition can only go in one direction, but it's
-still conditional on the scope of all groups involved.  We are
-"updating" the iommu state based on the change of a group.  Renaming
-this to "promote" seems like a matter of personal preference.
-
-> So we'd better make an explicit "promote" semantic to the "update"
-> function. BTW, if vfio_iommu already has been promoted, then return
-> early.
-
-Currently it's the caller that avoids using this function when the
-iommu scope is already correct.  In fact the changes induces a
-redundant test in the pin_pages code path, we're changing a group from
-non-pinned-page-scope to pinned-page-scope, therefore the iommu scope
-cannot initially be scope limited.  In the attach_group call path,
-we're moving that test from the caller, so at best we've introduced an
-additional function call.
-
-The function as it exists today is also more versatile whereas the
-"promote" version here forces it to a single task with no appreciable
-difference in complexity or code.  This seems like a frivolous change.
-Thanks,
-
-Alex
-
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> ---
->  drivers/vfio/vfio_iommu_type1.c | 30 ++++++++++++++----------------
->  1 file changed, 14 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 0b4dedaa9128..334a8240e1da 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -148,7 +148,7 @@ static int put_pfn(unsigned long pfn, int prot);
->  static struct vfio_group *vfio_iommu_find_iommu_group(struct vfio_iommu *iommu,
->  					       struct iommu_group *iommu_group);
->  
-> -static void update_pinned_page_dirty_scope(struct vfio_iommu *iommu);
-> +static void promote_pinned_page_dirty_scope(struct vfio_iommu *iommu);
->  /*
->   * This code handles mapping and unmapping of user data buffers
->   * into DMA'ble space using the IOMMU
-> @@ -714,7 +714,7 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
->  	group = vfio_iommu_find_iommu_group(iommu, iommu_group);
->  	if (!group->pinned_page_dirty_scope) {
->  		group->pinned_page_dirty_scope = true;
-> -		update_pinned_page_dirty_scope(iommu);
-> +		promote_pinned_page_dirty_scope(iommu);
->  	}
->  
->  	goto pin_done;
-> @@ -1622,27 +1622,26 @@ static struct vfio_group *vfio_iommu_find_iommu_group(struct vfio_iommu *iommu,
->  	return group;
->  }
->  
-> -static void update_pinned_page_dirty_scope(struct vfio_iommu *iommu)
-> +static void promote_pinned_page_dirty_scope(struct vfio_iommu *iommu)
->  {
->  	struct vfio_domain *domain;
->  	struct vfio_group *group;
->  
-> +	if (iommu->pinned_page_dirty_scope)
-> +		return;
-> +
->  	list_for_each_entry(domain, &iommu->domain_list, next) {
->  		list_for_each_entry(group, &domain->group_list, next) {
-> -			if (!group->pinned_page_dirty_scope) {
-> -				iommu->pinned_page_dirty_scope = false;
-> +			if (!group->pinned_page_dirty_scope)
->  				return;
-> -			}
->  		}
->  	}
->  
->  	if (iommu->external_domain) {
->  		domain = iommu->external_domain;
->  		list_for_each_entry(group, &domain->group_list, next) {
-> -			if (!group->pinned_page_dirty_scope) {
-> -				iommu->pinned_page_dirty_scope = false;
-> +			if (!group->pinned_page_dirty_scope)
->  				return;
-> -			}
->  		}
->  	}
->  
-> @@ -2057,8 +2056,7 @@ static int vfio_iommu_type1_attach_group(void *iommu_data,
->  			 * addition of a dirty tracking group.
->  			 */
->  			group->pinned_page_dirty_scope = true;
-> -			if (!iommu->pinned_page_dirty_scope)
-> -				update_pinned_page_dirty_scope(iommu);
-> +			promote_pinned_page_dirty_scope(iommu);
->  			mutex_unlock(&iommu->lock);
->  
->  			return 0;
-> @@ -2341,7 +2339,7 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->  	struct vfio_iommu *iommu = iommu_data;
->  	struct vfio_domain *domain;
->  	struct vfio_group *group;
-> -	bool update_dirty_scope = false;
-> +	bool promote_dirty_scope = false;
->  	LIST_HEAD(iova_copy);
->  
->  	mutex_lock(&iommu->lock);
-> @@ -2349,7 +2347,7 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->  	if (iommu->external_domain) {
->  		group = find_iommu_group(iommu->external_domain, iommu_group);
->  		if (group) {
-> -			update_dirty_scope = !group->pinned_page_dirty_scope;
-> +			promote_dirty_scope = !group->pinned_page_dirty_scope;
->  			list_del(&group->next);
->  			kfree(group);
->  
-> @@ -2379,7 +2377,7 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->  			continue;
->  
->  		vfio_iommu_detach_group(domain, group);
-> -		update_dirty_scope = !group->pinned_page_dirty_scope;
-> +		promote_dirty_scope = !group->pinned_page_dirty_scope;
->  		list_del(&group->next);
->  		kfree(group);
->  		/*
-> @@ -2415,8 +2413,8 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->  	 * Removal of a group without dirty tracking may allow the iommu scope
->  	 * to be promoted.
->  	 */
-> -	if (update_dirty_scope)
-> -		update_pinned_page_dirty_scope(iommu);
-> +	if (promote_dirty_scope)
-> +		promote_pinned_page_dirty_scope(iommu);
->  	mutex_unlock(&iommu->lock);
->  }
->  
-
+I'm fine to split it into two, or keep it together. Just let me know
+what is preferred. Thanks!
