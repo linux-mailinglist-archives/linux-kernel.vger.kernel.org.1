@@ -2,79 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8632F7581
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 433752F759A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729971AbhAOJcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:32:48 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10659 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727865AbhAOJcp (ORCPT
+        id S1728106AbhAOJi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:38:29 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:35492 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725910AbhAOJi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:32:45 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DHGBm3z4gz15pqt;
-        Fri, 15 Jan 2021 17:30:56 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 15 Jan 2021 17:31:51 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>
-CC:     <mkoutny@suse.com>, <viro@zeniv.linux.org.uk>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chenzhou10@huawei.com>, <huawei.libin@huawei.com>
-Subject: [PATCH v3] cgroup-v1: add disabled controller check in cgroup1_parse_param()
-Date:   Fri, 15 Jan 2021 17:37:17 +0800
-Message-ID: <20210115093717.79474-1-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 15 Jan 2021 04:38:27 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1l0LYH-0007Sv-Je; Fri, 15 Jan 2021 09:37:53 +0000
+Subject: Re: [PATCH][next] drm/amdgpu: Add missing BOOTUP_DEFAULT to
+ profile_name[]
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210111114638.16530-1-colin.king@canonical.com>
+ <20210112100706.GF5083@kadam>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <51efd2a7-f2cf-dc28-4b86-5e89d13564ca@canonical.com>
+Date:   Fri, 15 Jan 2021 09:37:53 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210112100706.GF5083@kadam>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When mounting a cgroup hierarchy with disabled controller in cgroup v1,
-all available controllers will be attached.
-For example, boot with cgroup_no_v1=cpu or cgroup_disable=cpu, and then
-mount with "mount -t cgroup -ocpu cpu /sys/fs/cgroup/cpu", then all
-enabled controllers will be attached except cpu.
+On 12/01/2021 10:07, Dan Carpenter wrote:
+> On Mon, Jan 11, 2021 at 11:46:38AM +0000, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> A recent change added a new BOOTUP_DEFAULT power profile mode
+>> to the PP_SMC_POWER_PROFILE enum but omitted updating the
+>> corresponding profile_name array.  Fix this by adding in the
+>> missing BOOTUP_DEFAULT to profile_name[].
+>>
+> 
+> Still not enough to prevent the array overflow.  It needs POWERSAVE as
+> well.
 
-Fix this by adding disabled controller check in cgroup1_parse_param().
-If the specified controller is disabled, just return error with information
-"Disabled controller xx" rather than attaching all the other enabled
-controllers.
+Thanks for checking, but there is a 1-to-1 relation ship now:
 
-Fixes: f5dfb5315d34 ("cgroup: take options parsing into ->parse_monolithic()")
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-Reviewed-by: Zefan Li <lizefan.x@bytedance.com>
----
-Changes in v3:
-- Update the description of commit message.
-- Add Reviewed-by from Zefan.
+enum PP_SMC_POWER_PROFILE {
+        PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT = 0x0,
+        PP_SMC_POWER_PROFILE_FULLSCREEN3D = 0x1,
+        PP_SMC_POWER_PROFILE_POWERSAVING  = 0x2,
+        PP_SMC_POWER_PROFILE_VIDEO        = 0x3,
+        PP_SMC_POWER_PROFILE_VR           = 0x4,
+        PP_SMC_POWER_PROFILE_COMPUTE      = 0x5,
+        PP_SMC_POWER_PROFILE_CUSTOM       = 0x6,
+        PP_SMC_POWER_PROFILE_COUNT,
+};
 
-Changes in v2:
-- Fix line over 80 characters warning.
----
- kernel/cgroup/cgroup-v1.c | 3 +++
- 1 file changed, 3 insertions(+)
+vs
 
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index 32596fdbcd5b..a5751784ad74 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -917,6 +917,9 @@ int cgroup1_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 		for_each_subsys(ss, i) {
- 			if (strcmp(param->key, ss->legacy_name))
- 				continue;
-+			if (!cgroup_ssid_enabled(i) || cgroup1_ssid_disabled(i))
-+				return invalfc(fc, "Disabled controller '%s'",
-+					       param->key);
- 			ctx->subsys_mask |= (1 << i);
- 			return 0;
- 		}
--- 
-2.20.1
+        static const char *profile_name[] = {
+                                        "BOOTUP_DEFAULT",
+                                        "3D_FULL_SCREEN",
+                                        "POWER_SAVING",
+                                        "VIDEO",
+                                        "VR",
+                                        "COMPUTE",
+                                        "CUSTOM"};
+
+
+unless I'm missing something because I've not had enough coffee.
+
+Colin
+
+> 
+> regards,
+> dan carpenter
+> 
 
