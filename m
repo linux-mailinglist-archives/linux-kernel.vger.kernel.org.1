@@ -2,181 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7BE62F86F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1994E2F86F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:56:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730345AbhAOUvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 15:51:49 -0500
-Received: from mga06.intel.com ([134.134.136.31]:1033 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726434AbhAOUvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 15:51:47 -0500
-IronPort-SDR: 30qAGI3IYT/LV5E1t1v6WQXJ40Ah/eMKCLoi4PAmDtlirTnwaFkGxd+HH//FQr/wL89Q9EtiJR
- F0ga0z1/F9LA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9865"; a="240148690"
-X-IronPort-AV: E=Sophos;i="5.79,350,1602572400"; 
-   d="scan'208";a="240148690"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 12:51:06 -0800
-IronPort-SDR: uzNFJ4xaYcddHJLZeG2GHbtIt1lwBJJrdxqFfb2wOSSl8Nd6Ob3tkn/NsLFQdJtmNFs3iGw6dk
- sh7RLI6GPk3A==
-X-IronPort-AV: E=Sophos;i="5.79,350,1602572400"; 
-   d="scan'208";a="352918036"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 12:51:06 -0800
-Date:   Fri, 15 Jan 2021 12:51:03 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v4] x86/mce: Avoid infinite loop for copy from user recovery
-Message-ID: <20210115205103.GA5920@agluck-desk2.amr.corp.intel.com>
-References: <20210111214452.1826-1-tony.luck@intel.com>
- <20210115003817.23657-1-tony.luck@intel.com>
- <20210115152754.GC9138@zn.tnic>
- <20210115193435.GA4663@agluck-desk2.amr.corp.intel.com>
+        id S1730065AbhAOU4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 15:56:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726286AbhAOU4T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 15:56:19 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E14DC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:55:39 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id z20so7053043qtq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:55:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SlNlvcKcVOLSQ+6ubVv+zQmNdKKd35YVKlEcU4lZbR0=;
+        b=08diUBE1TRDu8jkonn5T7HGIPR4ggImv2F40SdRk2Vj2uUcUYhKHWt3hXjiCtm3yKM
+         ktR2KdE6uaQ1EEo4scHUcpcm3q/u8L3zD02rEv+YWZ+/RjgfnSCX4igqLCJNqbP8JkhD
+         wuai1GglPwLSYmuoHuc7NqKeNnvJ1fFTjed821X7BinBBXs30qDK83vV98QDudCTf35I
+         B+3ADJAZ0QlHeLaozMOEt0o3EiMZpPbbLotoxVgV/V9yQv0oW9G4KO4F/FfwPOppPk8E
+         Mq/xHc64yoKMTsKPSzaN74uXJU7RrcYKPM1MYdxLZUTxaZ/NPHUWglckARwnmnDXyPCl
+         4wIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SlNlvcKcVOLSQ+6ubVv+zQmNdKKd35YVKlEcU4lZbR0=;
+        b=L0vU8cZo/1a3bEyq+ZcaMxWnrAwJL//OmG5hPK/ylr8snnfrj0iCfnifmiYOA3yrEb
+         X/BzcxrxzElZqFBO5J6iyvL9+390zVgkrI/6LbfTwQC7NaVqAEjaByEevVfIRVNsKUF8
+         /n05wFq5IO3tcG8gVTBA4IcRiVYZVsrNvHtahDfu5EYzaB1yyikJAEcX84ioLapVqynW
+         vK+TZkJlPnW7D8lxB3uVg3R7Fbju8XAGPrWzFG8zoaioKJmhgXpemhT2EuzbLS4tqqbi
+         sgEkZwqSqg5++izM8yPJ8u05wj/ZyP2ueKaETgG1mEAr2nONRbB2zpCSIRhndaPMStYy
+         M6ag==
+X-Gm-Message-State: AOAM532YW3GwBFLozgag7sz09QZRepZSxjZHvg5bCKRjVJH7CXbH3278
+        zQXzEgixn7X4ZBMcS9U0Excx8pKJOwrZ3A==
+X-Google-Smtp-Source: ABdhPJwk80MpECSM3D92ftFoulMk04vWZTvZa9AnLWrgNQu5NlTm9g0uQg+Mlh5ocsoZenQ38JBsLw==
+X-Received: by 2002:ac8:45d7:: with SMTP id e23mr13629017qto.149.1610744138477;
+        Fri, 15 Jan 2021 12:55:38 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:dbed])
+        by smtp.gmail.com with ESMTPSA id 190sm5870540qkf.61.2021.01.15.12.55.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 12:55:37 -0800 (PST)
+Date:   Fri, 15 Jan 2021 15:55:36 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing
+ memory.high
+Message-ID: <YAIBSJg3btQ+2CNZ@cmpxchg.org>
+References: <20210112163011.127833-1-hannes@cmpxchg.org>
+ <20210113144654.GD22493@dhcp22.suse.cz>
+ <YAHA4uBSLlnxxAbu@cmpxchg.org>
+ <20210115170341.GA631549@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115193435.GA4663@agluck-desk2.amr.corp.intel.com>
+In-Reply-To: <20210115170341.GA631549@carbon.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recovery action when get_user() triggers a machine check uses the fixup
-path to make get_user() return -EFAULT.  Also queue_task_work() sets up
-so that kill_me_maybe() will be called on return to user mode to send a
-SIGBUS to the current process.
+On Fri, Jan 15, 2021 at 09:03:41AM -0800, Roman Gushchin wrote:
+> On Fri, Jan 15, 2021 at 11:20:50AM -0500, Johannes Weiner wrote:
+> > On Wed, Jan 13, 2021 at 03:46:54PM +0100, Michal Hocko wrote:
+> > > On Tue 12-01-21 11:30:11, Johannes Weiner wrote:
+> > > > When a value is written to a cgroup's memory.high control file, the
+> > > > write() context first tries to reclaim the cgroup to size before
+> > > > putting the limit in place for the workload. Concurrent charges from
+> > > > the workload can keep such a write() looping in reclaim indefinitely.
+> > > > 
+> > > > In the past, a write to memory.high would first put the limit in place
+> > > > for the workload, then do targeted reclaim until the new limit has
+> > > > been met - similar to how we do it for memory.max. This wasn't prone
+> > > > to the described starvation issue. However, this sequence could cause
+> > > > excessive latencies in the workload, when allocating threads could be
+> > > > put into long penalty sleeps on the sudden memory.high overage created
+> > > > by the write(), before that had a chance to work it off.
+> > > > 
+> > > > Now that memory_high_write() performs reclaim before enforcing the new
+> > > > limit, reflect that the cgroup may well fail to converge due to
+> > > > concurrent workload activity. Bail out of the loop after a few tries.
+> > > 
+> > > I can see that you have provided some more details in follow up replies
+> > > but I do not see any explicit argument why an excessive time for writer
+> > > is an actual problem. Could you be more specific?
+> > 
+> > Our writer isn't necessarily time sensitive, but there is a difference
+> > between a) the write taking a few seconds to reclaim down the
+> > requested delta and b) the writer essentially turning into kswapd for
+> > the workload and busy-spinning inside the kernel indefinitely.
+> > 
+> > We've seen the writer stuck in this function for minutes, long after
+> > the requested delta has been reclaimed, consuming alarming amounts of
+> > CPU cycles - CPU time that should really be accounted to the workload,
+> > not the system software performing the write.
+> > 
+> > Obviously, we could work around it using timeouts and signals. In
+> > fact, we may have to until the new kernel is deployed everywhere. But
+> > this is the definition of an interface change breaking userspace, so
+> > I'm a bit surprised by your laid-back response.
+> > 
+> > > > Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
+> > > > Cc: <stable@vger.kernel.org> # 5.8+
+> > > 
+> > > Why is this worth backporting to stable? The behavior is different but I
+> > > do not think any of them is harmful.
+> > 
+> > The referenced patch changed user-visible behavior in a way that is
+> > causing real production problems for us. From stable-kernel-rules:
+> > 
+> >  - It must fix a real bug that bothers people (not a, "This could be a
+> >    problem..." type thing).
+> > 
+> > > > Reported-by: Tejun Heo <tj@kernel.org>
+> > > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> > > 
+> > > I am not against the patch. The existing interface doesn't provide any
+> > > meaningful feedback to the userspace anyway. User would have to re check
+> > > to see the result of the operation. So how hard we try is really an
+> > > implementation detail.
+> > 
+> > Yeah, I wish it was a bit more consistent from an interface POV.
+> > 
+> > Btw, if you have noticed, Roman's patch to enforce memcg->high *after*
+> > trying to reclaim went into the tree at the same exact time as Chris's
+> > series "mm, memcg: reclaim harder before high throttling" (commit
+> > b3ff92916af3b458712110bb83976a23471c12fa). It's likely they overlap.
+> > 
+> > Chris's patch changes memory.high reclaim on the allocation side from
+> > 
+> > 	reclaim once, sleep if there is still overage
+> > 
+> > to
+> > 
+> > 	reclaim the overage as long as you make forward progress;
+> > 	sleep after 16 no-progress loops if there is still overage
+> > 
+> > Roman's patch describes a problem where allocating threads go to sleep
+> > when memory.high is lowered by a wider step. This is exceedingly
+> > unlikely after Chris's change.
+> > 
+> > Because after Chris's change, memory.high is reclaimed on the
+> > allocation side as aggressively as memory.max. The only difference is
+> > that upon failure, one sleeps and the other OOMs.
+> > 
+> > If Roman's issue were present after Chris's change, then we'd also see
+> > premature OOM kills when memory.max is lowered by a large step. And I
+> > have never seen that happening.
+> > 
+> > So I suggest instead of my fix here, we revert Roman's patch instead,
+> > as it should no longer be needed. Thoughts?
+> 
+> Chris's patch was merged way earlier than mine into the kernel tree which
+> was used when I observed the problem in the production. So likely it was there.
 
-But there are places in the kernel where the code assumes that this
-EFAULT return was simply because of a page fault. The code takes some
-action to fix that, and then retries the access. This results in a second
-machine check.
+Chris's patch was in the tree earlier, but the first release
+containing it was tagged a day before you put in your change, so I
+doubt it was on the production system where you observed the issue.
 
-While processing this second machine check queue_task_work() is called
-again. But since this uses the same callback_head structure that
-was used in the first call, the net result is an entry on the
-current->task_works list that points to itself. When task_work_run()
-is called it loops forever in this code:
+As per above, it'd be very surprising to see premature sleeps when
+lowering memory.high, when allocation-side reclaim keeps going until
+the cgroup meets the definition of OOM.
 
-		do {
-			next = work->next;
-			work->func(work);
-			work = next;
-			cond_resched();
-		} while (work);
+> I think it makes sense to try to reclaim memory first before putting
+> all processes in the cgroup into reclaim mode. Even without artificial delays
+> it creates some latency and btw doesn't make the reclaim process more efficient.
 
-Add a counter (current->mce_count) to keep track of repeated machine checks
-before task_work() is called. First machine check saves the address information
-and calls task_work_add(). Subsequent machine checks before that task_work
-call back is executed check that the address is in the same page as the first
-machine check (since the callback will offline exactly one page).
+It's not obvious that this is a practical problem. It certainly isn't
+for memory.max, and there should be a good reason why the two should
+be different aside from the documented OOM vs sleep behavior.
 
-Expected worst case is two machine checks before moving on (e.g. one user
-access with page faults disabled, then a repeat to the same addrsss with
-page faults enabled). Just in case there is some code that loops forever
-enforce a limit of 10.
-
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
-
-V4:
-	Fix bug with "||" where I meant "&&"
-	Update stale commit comment referring to mce_busy field
-	in task structure (now called mce_count).
-	Add some comments to queue_task_work()
-
- arch/x86/kernel/cpu/mce/core.c | 31 ++++++++++++++++++++++++-------
- include/linux/sched.h          |  1 +
- 2 files changed, 25 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 13d3f1cbda17..5460c146edb5 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1238,6 +1238,7 @@ static void __mc_scan_banks(struct mce *m, struct pt_regs *regs, struct mce *fin
- 
- static void kill_me_now(struct callback_head *ch)
- {
-+	p->mce_count = 0;
- 	force_sig(SIGBUS);
- }
- 
-@@ -1246,6 +1247,7 @@ static void kill_me_maybe(struct callback_head *cb)
- 	struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
- 	int flags = MF_ACTION_REQUIRED;
- 
-+	p->mce_count = 0;
- 	pr_err("Uncorrected hardware memory error in user-access at %llx", p->mce_addr);
- 
- 	if (!p->mce_ripv)
-@@ -1266,12 +1268,27 @@ static void kill_me_maybe(struct callback_head *cb)
- 	}
- }
- 
--static void queue_task_work(struct mce *m, int kill_current_task)
-+static void queue_task_work(struct mce *m, char *msg, int kill_current_task)
- {
--	current->mce_addr = m->addr;
--	current->mce_kflags = m->kflags;
--	current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
--	current->mce_whole_page = whole_page(m);
-+	/* First call, save all the details */
-+	if (current->mce_count++ == 0) {
-+		current->mce_addr = m->addr;
-+		current->mce_kflags = m->kflags;
-+		current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
-+		current->mce_whole_page = whole_page(m);
-+	}
-+
-+	/* Ten is likley overkill. Don't expect more than two faults before task_work() */
-+	if (current->mce_count > 10)
-+		mce_panic("Too many machine checks while accessing user data", m, msg);
-+
-+	/* Second or later call, make sure page address matches the one from first call */
-+	if (current->mce_count > 1 && (current->mce_addr >> PAGE_SHIFT) != (m->addr >> PAGE_SHIFT))
-+		mce_panic("Machine checks to different user pages", m, msg);
-+
-+	/* Do not call task_work_add() more than once */
-+	if (current->mce_count > 1)
-+		return;
- 
- 	if (kill_current_task)
- 		current->mce_kill_me.func = kill_me_now;
-@@ -1414,7 +1431,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 		/* If this triggers there is no way to recover. Die hard. */
- 		BUG_ON(!on_thread_stack() || !user_mode(regs));
- 
--		queue_task_work(&m, kill_current_task);
-+		queue_task_work(&m, msg, kill_current_task);
- 
- 	} else {
- 		/*
-@@ -1432,7 +1449,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 		}
- 
- 		if (m.kflags & MCE_IN_KERNEL_COPYIN)
--			queue_task_work(&m, kill_current_task);
-+			queue_task_work(&m, msg, kill_current_task);
- 	}
- out:
- 	mce_wrmsrl(MSR_IA32_MCG_STATUS, 0);
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 6e3a5eeec509..386366c9c757 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1362,6 +1362,7 @@ struct task_struct {
- 					mce_whole_page : 1,
- 					__mce_reserved : 62;
- 	struct callback_head		mce_kill_me;
-+	int				mce_count;
- #endif
- 
- #ifdef CONFIG_KRETPROBES
--- 
-2.21.1
-
+Absent any concrete evidence to the contrary, I'd make the behavior
+the same again for those two.
