@@ -2,143 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC622F775A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1467D2F775C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:15:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728622AbhAOLOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:14:46 -0500
-Received: from mail-ej1-f50.google.com ([209.85.218.50]:36251 "EHLO
-        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbhAOLOo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:14:44 -0500
-Received: by mail-ej1-f50.google.com with SMTP id l9so7018642ejx.3;
-        Fri, 15 Jan 2021 03:14:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=fYfrPYooDlKQvChf2iGvBkaRlU3LPV6MR7txq90KWBk=;
-        b=I/7l33RhaKERqtzhytN8bySpnRlA2Yatp0A6HZOPb34vOEtqlWGIrLdUZSd7Hu1aQk
-         gyV9xfTW2FvC4SXbhRcEj6PABL/e9MaNDqaNAd/tZdR0TkQAn0J0dA6FKqLP9f9XoPBT
-         nb/A8wMypfp7cSq89rF3WSHqQRMTMUPTngP5n//wW7deXcNRd5nHJpjnGIEvpZB8wPaM
-         sLnAXCrNSsieqk6j1HeXklBhmrC3pxPNWgOZnUzfP23LJb8Ihf8ovyBC2QAAijPQM2pt
-         JtRc1C+LJPROr3qwSaJsIHPvQ7mLx9MHX6pRlGEugaRtBVnlnKacfY/GARNiGDceJ530
-         v3Qg==
-X-Gm-Message-State: AOAM530hZVVZALCcP5ys4zDywz1PiG1EpLo/kp/bjygrd3djkVYotHmJ
-        FbbtGTAs8lc82Svf3XsgnSU=
-X-Google-Smtp-Source: ABdhPJz/USrPF/RnaYPh8VMLYj/NOiiXy0R/L0GyNNeU3PSQ1tpBDFVjKd7vCzVI1c+o9LoXFFcYYg==
-X-Received: by 2002:a17:906:cec7:: with SMTP id si7mr8201024ejb.123.1610709242119;
-        Fri, 15 Jan 2021 03:14:02 -0800 (PST)
-Received: from ingrassia.epigenesys.com ([2.236.81.180])
-        by smtp.gmail.com with ESMTPSA id o13sm3409869edr.94.2021.01.15.03.14.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 03:14:01 -0800 (PST)
-Date:   Fri, 15 Jan 2021 12:13:59 +0100
-From:   Emiliano Ingrassia <ingrassia@epigenesys.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: perf tools build broken for RISCV 32 bit
-Message-ID: <YAF499fI3dLgKjri@ingrassia.epigenesys.com>
-References: <YACPie55ArIHu3mI@ingrassia.epigenesys.com>
- <CAK8P3a0dJnKiX5minsUNdAcNnxPvZkyK363f1ibj_x0L2MQiPQ@mail.gmail.com>
+        id S1728920AbhAOLPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:15:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726981AbhAOLPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 06:15:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D629D235F9;
+        Fri, 15 Jan 2021 11:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610709266;
+        bh=5lyd6863Ma27pfAieJ1TVSBg4uSrd4TdeURetyMDZ5s=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=JgLoSKVFZXEFLeQ9VJ6doX1KcvL+dKiPZU9EI2ux/xHVxXAM8Wa+aE15bjHoQaYYW
+         Ni2tuj4Ss0tEMlWy1MvpICkTxMNV719fsug7BBFZ2pkt5TbV4/uZ1eGpHj7y0bNGmR
+         gM4QRu7BOGqdp1ZBG5xzoeqWH+rUS0OztIQhO6zKxMQaAihYyKEjIqz6RODX5mtcCp
+         vcg64mWL9p8mIgAmANGKAVOeDqqC1F+JEvaMplAXiq7DDoQDuEaPCIY0xNXDkpQc4X
+         E5NG/Pkl9QVFpNNMcgXxqoAXrIS59v10bGgympBE9y6NjhHuZjyMlnQTyMZvyQkkTM
+         20SIB5W08XuBg==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg KH <greg@kroah.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] usb: dwc3: pci: add support for the Intel Alder
+ Lake-P
+In-Reply-To: <20210115094914.88401-5-heikki.krogerus@linux.intel.com>
+References: <20210115094914.88401-1-heikki.krogerus@linux.intel.com>
+ <20210115094914.88401-5-heikki.krogerus@linux.intel.com>
+Date:   Fri, 15 Jan 2021 13:14:19 +0200
+Message-ID: <87sg721mgk.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK8P3a0dJnKiX5minsUNdAcNnxPvZkyK363f1ibj_x0L2MQiPQ@mail.gmail.com>
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-thank you for the quick reply and support.
+Heikki Krogerus <heikki.krogerus@linux.intel.com> writes:
 
-On Thu, Jan 14, 2021 at 08:16:28PM +0100, Arnd Bergmann wrote:
-> On Thu, Jan 14, 2021 at 7:38 PM Emiliano Ingrassia
-> <ingrassia@epigenesys.com> wrote:
-> >
-> > Hi,
-> >
-> > When building perf for RISCV 32 bit (v5.10.7) I got the following
-> >
-> > | In file included from bench/futex-hash.c:29:
-> > | bench/futex.h: In function ‘futex_wait’:
-> > | bench/futex.h:37:10: error: ‘SYS_futex’ undeclared (first use in this function); did you mean ‘SYS_tee’?
-> >
-> > This issue is similar to the one reported in https://lkml.org/lkml/2019/4/19/631
-> >
-> > I found that patching tools/arch/riscv/include/uapi/asm/unistd.h as following:
-> >
-> >  #ifdef __LP64__
-> >  #define __ARCH_WANT_NEW_STAT
-> >  #define __ARCH_WANT_SET_GET_RLIMIT
-> > +#else
-> > +#define __ARCH_WANT_TIME32_SYSCALLS
-> >  #endif /* __LP64__ */
-> >
-> > solved the problem.
-> >
-> > I also found that a similar patch for arch/riscv/include/uapi/asm/unistd.h
-> > was removed in commit d4c08b9776b3, so probably this is not the right way(?).
+> This patch adds the necessary PCI ID for Intel Alder Lake-P
+> devices.
 >
-> In short, it won't work, as rv32 does not provide the time32 syscalls.
-> Your patch will make the application build, but it will not be able to
-> call futex().
->
-> You will in fact run into a related problem on any 32-bit architecture
-> if CONFIG_COMPAT_32BIT_TIME is disabled, or if you pass a non-NULL
-> timeout parameter and build with a time64-enabled libc.
->
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-I'm using glibc 2.32 which supports 64 bit time_t on RISCV 32.
+The only missing my ack:
 
-In particular, searching for __NR_futex in glibc RISCV source code I got:
+Acked-by: Felipe Balbi <balbi@kernel.org>
 
-sysdeps/unix/sysv/linux/riscv/rv32/arch-syscall.h: #define __NR_futex_time64 422
-sysdeps/unix/sysv/linux/riscv/sysdep.h: #define __NR_futex __NR_futex_time64
-sysdeps/unix/sysv/linux/riscv/rv64/arch-syscall.h: #define __NR_futex 98
+=2D-=20
+balbi
 
-but in the generated bits/syscall.h, included in bench/futex.h, I found:
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-#ifdef __NR_futex
-# define SYS_futex __NR_futex
-#endif
+-----BEGIN PGP SIGNATURE-----
 
-#ifdef __NR_futex_time64
-# define SYS_futex_time64 __NR_futex_time64
-#endif
-
-So the problem is that userspace applications can't see the definition
-of __NR_futex which is in sysdep.h, but there are no problems in calling
-futex() libc wrapper because glibc syscall.c includes that header.
-
-A possible fix for the perf tool would be to use futex() libc wrapper
-in tools/perf/bench/futex.h instead of syscall(), but, if I understand correctly,
-there are some drawbacks that does not permit it.
-
-So what should be the right solution?
-
-> The fix in the application is to call either __NR_futex or __NR_futex64
-> depending on the definition of time_t in the C library. I would recommend
-> doing it like
->
-> #ifdef __NR_futex
-> #define do_futex (sizeof(time_t) == sizeof(__kernel_long_t)) ? \
->          __NR_futex : __NR_futex_time64
-> #else
-> #define do_futex __NR_futex
-> #done
->
->        Arnd
-
-Where should be this fix applied? To perf code?
-
-Thank you,
-
-Emiliano
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmABeQsRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQbrIQ//ZAxEwchAfysHEqsi/Ie4N1H323D8J3HA
+jkOYCv20KTb+uja9TWcp0r5Ef1yQ6ATqc5mheL+R+mVdVQQVpb0rotECK81fArur
+BGYPLoR/wRe4yFMff+WuzG3idKaZEcY2lKwQOyClApU4PJpzdg6n36WfQJTzEx6s
+WMaQETXakRACSdKY1mop6oMvbElG3Fgd2Da8posUBO00NKVkRpnSd0L339JDrf34
+2WH9T/Lc94d1937xM/y4/PrC255vIkwtSYxS1ZwKcCpPIz9/HPpXNAMui2nXjTXT
+NuFQ85oIU5R/kMdx3aDvIJ5d2t/vxxHDu6KN7AKdoGsJv+KH35XckCGKMPNl31AU
+jei0Eseg20HZyi5aJEQoMLApzCGdLw7IBaDqvTujG9GJZfIJzqX3E5FavepZeO8v
+vHT5jqKrzOvKDlSrm8Y53dAjyI+5iKVHXvsYr1vQxVzvp/ocK8SsOfBikEHcFwib
+fLCXpg8o2iZ1Z5+MjULUQWVGkr3n8nQA703Ly/8pTWfiFZvfRMb7njxuHONhav4s
+Fp3OcHrMmxGRalvVSLu3ngmPDdOiKZZ2ywiCZExF8wx8qWEs2oeywkXXTroEcx1l
+7Wmj9UOMKdHhV9+xXOrTeyqr5kAqpO1vcTQ4RNaWYHtWMK1yO517ZmQAzFWBozno
+DZcUEyRBYDM=
+=ZzEF
+-----END PGP SIGNATURE-----
+--=-=-=--
