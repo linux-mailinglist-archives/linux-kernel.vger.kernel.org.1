@@ -2,130 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA67B2F7C3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FF62F7C43
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:15:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732564AbhAONNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:13:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47732 "EHLO
+        id S1732595AbhAONOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:14:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731154AbhAONNQ (ORCPT
+        with ESMTP id S1731646AbhAONOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:13:16 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AB6C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:12:36 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id c79so5479103pfc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:12:36 -0800 (PST)
+        Fri, 15 Jan 2021 08:14:35 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E77C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:13:55 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id u14so3370725wmq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:13:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y3t7IOxf9Vkdfiy1MFmpsGSvvf/wDyt1mm0FiJiJHkU=;
-        b=TgoQzblgqtKn/uwL88l5pcnNltSdtUN3pNbr/lY71Do+YJQPensFiSR5/ah564m4QF
-         Zdm8BQVTAFN8Zh+B5QtZJuyQ422wG3Bs/TfwzQQGuci398KLfOCKGeioJ41Hz2z0mdPF
-         k5J3sqENcm3poD3aY3WT6X1rbtlhXUZczU80YMiNMEK1qXfJCXYtvwtFDMwP4vQjXLG2
-         Hf+R43rSGYBomq0cT4yigyNQG78jPO+4Bi5/7S2Zog/mtUW+lDE+89EYw5qhwnxmsKSh
-         vQouaFKrGzDNQwoiUcRyc7dYpjUmzZqHVJyYvgXaWDWel8dz4Xx9hTrtG4KXM/kLXtp2
-         VVsQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=2g4u3xNSMK8ghZXqKFL1R16HFSl2YerHraRE1h1ytpo=;
+        b=NJnjEoGtqvon0egRK9YDpRFtOVbouVzaWgRbvYfVii+pcX8Ains4e8W1vQK2TqkAOX
+         yJ+CaqAjsp/dYPpBhRRVqsJ50qnOF64iyVZz5gsAoZiYdsB7AJsJ86Dk/jIiH9jdAW7u
+         S2lpxb2tRpaTTc94ebf7nepCVudFXT9rCksZcU/vPJ4mU/wq06zc03tPavGYoFzj48OD
+         mf090vFhbR24JxJnLVx/wcDpnu4RWfAArLaMzN5z0plP5un+8hjwky/AjLPZrND5ddd6
+         hdqWlLONDBuo3ylfSdJ1j/zS/5DgBHxK/D1fJlkWcQIlg6TjqIfMSzGRac6mDARTo+FP
+         h/Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y3t7IOxf9Vkdfiy1MFmpsGSvvf/wDyt1mm0FiJiJHkU=;
-        b=Zvfv19Ak9wdBHgb3Zs0BGUbLeqJJbvbHnUbW4+KI8+FbQjsVyr45nxK7+tRwhNgyyb
-         0lg2XpWKMxKT2KnTY8MQIcRuCMtUVWiATEltD0zUrZWiOEREhA34qbRspGrDYJBSNxnA
-         PhDI5fMMJLo4G8hTzNMGNc5PeXNhnwKA2PP+qyDRUXRvxNeNxlNniatotaEenOnMJrDf
-         fYJ60Hw5nUAeFFuZiCll+lvArIE34rj1d3/jNfHU4UnBnFsGmVw3qEtvGy9b5o3IdyxE
-         P41BK3ibm4gxbQcfK8gxjpo2Pd4e9UYoUwQX42uGDpB9/hdUfTl3WUfeU99kNDHgUKmU
-         EqdA==
-X-Gm-Message-State: AOAM530KV7NQ51rglCeW8YsEr7NkWRG+N/cKLIlXXey6Hlf3kX+UuRjM
-        mML7rbvZ7ryc57v+znPVMEhj6bsBl5YGTPW1lbd8BA==
-X-Google-Smtp-Source: ABdhPJwFVrYjSsy2BLuWM4G5tBfKnbXV+mvCUg9g9CziKhY5Xquz+DAVF15CNEmxnJ73snI+ZrmcibNqVLMsqQ5tRVc=
-X-Received: by 2002:a62:115:0:b029:1b4:c593:acd4 with SMTP id
- 21-20020a6201150000b02901b4c593acd4mr289508pfb.2.1610716355514; Fri, 15 Jan
- 2021 05:12:35 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1610553773.git.andreyknvl@google.com> <1965508bcbec62699715d32bef91628ef55b4b44.1610553774.git.andreyknvl@google.com>
- <20210113165441.GC27045@gaia>
-In-Reply-To: <20210113165441.GC27045@gaia>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 15 Jan 2021 14:12:24 +0100
-Message-ID: <CAAeHK+zThyq7ApsRTu-En7pL9yAAOrEpV45KOuJV3PCpdjVuiw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kasan, arm64: fix pointer tags in KASAN reports
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2g4u3xNSMK8ghZXqKFL1R16HFSl2YerHraRE1h1ytpo=;
+        b=CCT6aaK6WTA+ibke0vK4bYp9cq2Cr/4z+5VOi1jgXml2WA4FtVLgt/NVgo2Ob8oQEz
+         9u/oo9+aOa/mOiHxotYmRN9TkiqvebCebCQCQD4yeJqBiC9UixaENuNObEvtUfdIb+5U
+         9PMEPRmLHJ2ELkc2kuTOMLt7VRbeGk8pw+ZLo51P2o7deStg7vT3PKGs3hEKuF6wFF1t
+         UJw+8Xo3/eq2A4nK4J+Mi9AhVMry+kc+HXCvPEYy9VSNyb+HGqDGUHjjJ5J/R65Tc5Io
+         Rxrr/pxuf2NYl+E00crC1KQihew7pHptEKsrsHxkXFqXRnmIJ/k2r9mokObNSM+7386Z
+         lKsQ==
+X-Gm-Message-State: AOAM530sDM9sTB1KYwrqCWAWsSKdT5CzBmM2dUjdy8/LMseuW5JEWuwv
+        NIqT2/mMAM5lxhX+BSZXsy0h9Q==
+X-Google-Smtp-Source: ABdhPJxfOZhdwQYrDchMipN1IZpHmQWkJDk+mAZz8JHVlnN1ck11zGlbUHx0lY6QrlOT4n4wgqVJvA==
+X-Received: by 2002:a1c:9acb:: with SMTP id c194mr8510839wme.43.1610716433539;
+        Fri, 15 Jan 2021 05:13:53 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id x17sm14605648wro.40.2021.01.15.05.13.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 05:13:52 -0800 (PST)
+Date:   Fri, 15 Jan 2021 14:13:47 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Dmitry Vyukov <dvyukov@google.com>,
         Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
         Will Deacon <will.deacon@arm.com>,
         Andrey Ryabinin <aryabinin@virtuozzo.com>,
         Peter Collingbourne <pcc@google.com>,
         Evgenii Stepanov <eugenis@google.com>,
         Branislav Rankov <Branislav.Rankov@arm.com>,
         Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 15/15] kasan: don't run tests when KASAN is not enabled
+Message-ID: <YAGVCxWTBlv4ZITG@elver.google.com>
+References: <cover.1610652890.git.andreyknvl@google.com>
+ <da60f1848b42dd04a4977e156715c8d0382a1ecd.1610652890.git.andreyknvl@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <da60f1848b42dd04a4977e156715c8d0382a1ecd.1610652890.git.andreyknvl@google.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 5:54 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Wed, Jan 13, 2021 at 05:03:30PM +0100, Andrey Konovalov wrote:
-> > As of the "arm64: expose FAR_EL1 tag bits in siginfo" patch, the address
-> > that is passed to report_tag_fault has pointer tags in the format of 0x0X,
-> > while KASAN uses 0xFX format (note the difference in the top 4 bits).
-> >
-> > Fix up the pointer tag before calling kasan_report.
-> >
-> > Link: https://linux-review.googlesource.com/id/I9ced973866036d8679e8f4ae325de547eb969649
-> > Fixes: dceec3ff7807 ("arm64: expose FAR_EL1 tag bits in siginfo")
-> > Fixes: 4291e9ee6189 ("kasan, arm64: print report from tag fault handler")
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > ---
-> >  arch/arm64/mm/fault.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> > index 3c40da479899..a218f6f2fdc8 100644
-> > --- a/arch/arm64/mm/fault.c
-> > +++ b/arch/arm64/mm/fault.c
-> > @@ -304,6 +304,8 @@ static void report_tag_fault(unsigned long addr, unsigned int esr,
-> >  {
-> >       bool is_write  = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
-> >
-> > +     /* The format of KASAN tags is 0xF<x>. */
-> > +     addr |= (0xF0UL << MTE_TAG_SHIFT);
->
-> Ah, I see, that top 4 bits are zeroed by do_tag_check_fault(). When this
-> was added, the only tag faults were generated for user addresses.
->
-> Anyway, I'd rather fix it in there based on bit 55, something like (only
-> compile-tested):
->
-> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> index 3c40da479899..2b71079d2d32 100644
-> --- a/arch/arm64/mm/fault.c
-> +++ b/arch/arm64/mm/fault.c
-> @@ -709,10 +709,11 @@ static int do_tag_check_fault(unsigned long far, unsigned int esr,
->                               struct pt_regs *regs)
->  {
->         /*
-> -        * The architecture specifies that bits 63:60 of FAR_EL1 are UNKNOWN for tag
-> -        * check faults. Mask them out now so that userspace doesn't see them.
-> +        * The architecture specifies that bits 63:60 of FAR_EL1 are UNKNOWN
-> +        * for tag check faults. Set them to the corresponding bits in the
-> +        * untagged address.
->          */
-> -       far &= (1UL << 60) - 1;
-> +       far = (untagged_addr(far) & ~MTE_TAG_MASK) | (far & MTE_TAG_MASK) ;
->         do_bad_area(far, esr, regs);
->         return 0;
->  }
+On Thu, Jan 14, 2021 at 08:36PM +0100, Andrey Konovalov wrote:
+> Don't run KASAN tests when it's disabled with kasan.mode=off to avoid
+> corrupting kernel memory.
+> 
+> Link: https://linux-review.googlesource.com/id/I6447af436a69a94bfc35477f6bf4e2122948355e
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Sounds good, will do in v3, thanks!
+Reviewed-by: Marco Elver <elver@google.com>
+
+> ---
+>  lib/test_kasan.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+> index a96376aa7293..6238b56127f8 100644
+> --- a/lib/test_kasan.c
+> +++ b/lib/test_kasan.c
+> @@ -47,6 +47,11 @@ static bool multishot;
+>   */
+>  static int kasan_test_init(struct kunit *test)
+>  {
+> +	if (!kasan_enabled()) {
+> +		kunit_err(test, "can't run KASAN tests with KASAN disabled");
+> +		return -1;
+> +	}
+> +
+>  	multishot = kasan_save_enable_multi_shot();
+>  	hw_set_tagging_report_once(false);
+>  	return 0;
+> -- 
+> 2.30.0.284.gd98b1dd5eaa7-goog
+> 
