@@ -2,111 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC072F73E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:54:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6152F73EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732094AbhAOHx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 02:53:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730295AbhAOHx5 (ORCPT
+        id S1732100AbhAOH7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 02:59:52 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10725 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731999AbhAOH7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 02:53:57 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A906C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:53:17 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id d4so4288693plh.5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:53:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MbBZrDP4IrIPZxUvjAYid9N/Fa9d/bofmIE0flpsVB0=;
-        b=Dmse58G/vKR25BWNNFJR75Iv5H2awuqE5/NF6KzNjEV+sQ0TtwrrDNUZ9dtpcBTOIi
-         IHSQ7Uqlkr3OHOrWjHL0e17tkDBCrnj7zEj32Uh5tLtCJ8DLoCTj5yCtpVy2hQPKMo5G
-         u9eSOHRju7b4ZwwQnSSPyWb3ltRx+vN/AjDIc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MbBZrDP4IrIPZxUvjAYid9N/Fa9d/bofmIE0flpsVB0=;
-        b=GPE56jTKgLRMJAkUBcvKcb70r4mwsrmO6XAeGyhcNoUonjnIELgddipPb5cBYbwNUl
-         +0P1WKkwDrNm30EwL5GcYVkFzPwQo49Nzm+PSD4fM05kqxlYmgUPrHGfnwauQEIwz/sT
-         fIvWl9yhGvG4AyANPwy0UlJHHEU0vWBvC6SKaqK/4VvH/8OeiyI6sGQvcNBk9OIGLHZz
-         hogHL/EEvfApYcp/7d6JacMp4hOXPLrWiUh2DKFxhKMOn6/VK6b5RsKZWP9ilDd3vN2b
-         6GksrYV9OeK5Xu7RGAJDMgxZtzsgqAmzgEQRnfPD7Skwz77azZxqBZayWcCeVs69YqP/
-         uZKQ==
-X-Gm-Message-State: AOAM533WZkqIq5faer+sKwHqLEojD6B9DDXRIUZWBs4C9HNi7niqMQ9T
-        ZkO5uSvP6KWspmCCa5Mxj906oyqevvZmaWch
-X-Google-Smtp-Source: ABdhPJwwaXkf6UapnuX17hkLlro4eGY9ncbgFIiB2O6mEloQCt26637wgpmH7rEeVUtD0YWCLmTgGQ==
-X-Received: by 2002:a17:90b:78f:: with SMTP id l15mr353390pjz.234.1610697196496;
-        Thu, 14 Jan 2021 23:53:16 -0800 (PST)
-Received: from localhost ([2401:fa00:1:10:725a:fff:fe46:44eb])
-        by smtp.gmail.com with ESMTPSA id e5sm7531175pjs.0.2021.01.14.23.53.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jan 2021 23:53:15 -0800 (PST)
-From:   Yu-Hsuan Hsu <yuhsuan@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        alsa-devel@alsa-project.org
-Subject: [PATCH v7 2/2] ASoC: cros_ec_codec: Reset I2S RX when probing
-Date:   Fri, 15 Jan 2021 15:53:01 +0800
-Message-Id: <20210115075301.47995-2-yuhsuan@chromium.org>
-X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
-In-Reply-To: <20210115075301.47995-1-yuhsuan@chromium.org>
-References: <20210115075301.47995-1-yuhsuan@chromium.org>
+        Fri, 15 Jan 2021 02:59:52 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DHD7H0y3Nzl4xP;
+        Fri, 15 Jan 2021 15:57:47 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 15 Jan
+ 2021 15:59:03 +0800
+Subject: Re: [PATCH v2] f2fs: fix to keep isolation of atomic write
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20201230075557.108818-1-yuchao0@huawei.com>
+ <YAC9a6quO2VOirLi@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <3923906d-f208-f6c2-f121-5e77e8fb6b28@huawei.com>
+Date:   Fri, 15 Jan 2021 15:59:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YAC9a6quO2VOirLi@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not guaranteed that I2S RX is disabled when the kernel booting.
-For example, if the kernel crashes while it is enabled, it will keep
-enabled until the next time EC reboots. Reset I2S RX when probing to
-fix this issue.
+On 2021/1/15 5:53, Jaegeuk Kim wrote:
+> On 12/30, Chao Yu wrote:
+>> ThreadA					ThreadB
+>> - f2fs_ioc_start_atomic_write
+>> - write
+>> - f2fs_ioc_commit_atomic_write
+>>   - f2fs_commit_inmem_pages
+>>   - f2fs_drop_inmem_pages
+>>   - f2fs_drop_inmem_pages
+>>    - __revoke_inmem_pages
+>> 					- f2fs_vm_page_mkwrite
+>> 					 - set_page_dirty
+>> 					  - tag ATOMIC_WRITTEN_PAGE and add page
+>> 					    to inmem_pages list
+>>    - clear_inode_flag(FI_ATOMIC_FILE)
+>> 					- f2fs_vm_page_mkwrite
+>> 					  - set_page_dirty
+>> 					   - f2fs_update_dirty_page
+>> 					    - f2fs_trace_pid
+>> 					     - tag inmem page private to pid
+> 
+> Hmm, how about removing fs/f2fs/trace.c to make private more complicated
+> like this? I think we can get IO traces from tracepoints.
 
-Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
----
-Updated the info message.
+Hmm, actually, there is are issues, one is the trace IO, the other is the
+race issue (atomic_start,commit,drop vs mkwrite) which can make isolation
+semantics of transaction be broken.
 
- sound/soc/codecs/cros_ec_codec.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Or can we avoid atomic file racing with file mmap?
 
-diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-index f33a2a9654e7..c4772f82485a 100644
---- a/sound/soc/codecs/cros_ec_codec.c
-+++ b/sound/soc/codecs/cros_ec_codec.c
-@@ -1011,6 +1011,18 @@ static int cros_ec_codec_platform_probe(struct platform_device *pdev)
- 	}
- 	priv->ec_capabilities = r.capabilities;
- 
-+	/* Reset EC codec i2s rx. */
-+	p.cmd = EC_CODEC_I2S_RX_RESET;
-+	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
-+				   (uint8_t *)&p, sizeof(p), NULL, 0);
-+	if (ret == -ENOPROTOOPT) {
-+		dev_info(dev,
-+			 "Missing reset command. Please update EC firmware.\n");
-+	} else if (ret) {
-+		dev_err(dev, "failed to EC_CODEC_I2S_RESET: %d\n", ret);
-+		return ret;
-+	}
-+
- 	platform_set_drvdata(pdev, priv);
- 
- 	ret = devm_snd_soc_register_component(dev, &i2s_rx_component_driver,
--- 
-2.30.0.296.g2bfb1c46d8-goog
+- atomic_start			- file_mmap
+				 - inode_lock
+				 - if (FI_ATOMIC_FILE) return
+  - inode_lock
+  - if (FI_MMAP_FILE) return
 
+Thanks,
+
+> 
+>> 					- truncate
+>> 					 - f2fs_invalidate_page
+>> 					 - set page->mapping to NULL
+>> 					  then it will cause panic once we
+>> 					  access page->mapping
+>>
+>> The root cause is we missed to keep isolation of atomic write in the case
+>> of commit_atomic_write vs mkwrite, let commit_atomic_write helds i_mmap_sem
+>> lock to avoid this issue.
+>>
+>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>> ---
+>> v2:
+>> - use i_mmap_sem to avoid mkwrite racing with below flows:
+>>   * f2fs_ioc_start_atomic_write
+>>   * f2fs_drop_inmem_pages
+>>   * f2fs_commit_inmem_pages
+>>
+>>   fs/f2fs/file.c    | 3 +++
+>>   fs/f2fs/segment.c | 7 +++++++
+>>   2 files changed, 10 insertions(+)
+>>
+>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>> index 4e6d4b9120a8..a48ec650d691 100644
+>> --- a/fs/f2fs/file.c
+>> +++ b/fs/f2fs/file.c
+>> @@ -2050,6 +2050,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+>>   		goto out;
+>>   
+>>   	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>> +	down_write(&F2FS_I(inode)->i_mmap_sem);
+>>   
+>>   	/*
+>>   	 * Should wait end_io to count F2FS_WB_CP_DATA correctly by
+>> @@ -2060,6 +2061,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+>>   			  inode->i_ino, get_dirty_pages(inode));
+>>   	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
+>>   	if (ret) {
+>> +		up_write(&F2FS_I(inode)->i_mmap_sem);
+>>   		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>>   		goto out;
+>>   	}
+>> @@ -2073,6 +2075,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+>>   	/* add inode in inmem_list first and set atomic_file */
+>>   	set_inode_flag(inode, FI_ATOMIC_FILE);
+>>   	clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
+>> +	up_write(&F2FS_I(inode)->i_mmap_sem);
+>>   	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>>   
+>>   	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
+>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>> index d8570b0359f5..dab870d9faf6 100644
+>> --- a/fs/f2fs/segment.c
+>> +++ b/fs/f2fs/segment.c
+>> @@ -327,6 +327,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
+>>   	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>>   	struct f2fs_inode_info *fi = F2FS_I(inode);
+>>   
+>> +	down_write(&F2FS_I(inode)->i_mmap_sem);
+>> +
+>>   	while (!list_empty(&fi->inmem_pages)) {
+>>   		mutex_lock(&fi->inmem_lock);
+>>   		__revoke_inmem_pages(inode, &fi->inmem_pages,
+>> @@ -344,6 +346,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
+>>   		sbi->atomic_files--;
+>>   	}
+>>   	spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
+>> +
+>> +	up_write(&F2FS_I(inode)->i_mmap_sem);
+>>   }
+>>   
+>>   void f2fs_drop_inmem_page(struct inode *inode, struct page *page)
+>> @@ -467,6 +471,7 @@ int f2fs_commit_inmem_pages(struct inode *inode)
+>>   	f2fs_balance_fs(sbi, true);
+>>   
+>>   	down_write(&fi->i_gc_rwsem[WRITE]);
+>> +	down_write(&F2FS_I(inode)->i_mmap_sem);
+>>   
+>>   	f2fs_lock_op(sbi);
+>>   	set_inode_flag(inode, FI_ATOMIC_COMMIT);
+>> @@ -478,6 +483,8 @@ int f2fs_commit_inmem_pages(struct inode *inode)
+>>   	clear_inode_flag(inode, FI_ATOMIC_COMMIT);
+>>   
+>>   	f2fs_unlock_op(sbi);
+>> +
+>> +	up_write(&F2FS_I(inode)->i_mmap_sem);
+>>   	up_write(&fi->i_gc_rwsem[WRITE]);
+>>   
+>>   	return err;
+>> -- 
+>> 2.29.2
+> .
+> 
