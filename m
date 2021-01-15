@@ -2,501 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218762F7D49
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC1E2F7CBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732650AbhAONyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:54:31 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11412 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731147AbhAONya (ORCPT
+        id S1732134AbhAONca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:32:30 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:16567 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729568AbhAONc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:54:30 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DHM54117Nzj6H3;
-        Fri, 15 Jan 2021 21:11:20 +0800 (CST)
-Received: from [10.174.177.244] (10.174.177.244) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 15 Jan 2021 21:12:08 +0800
-Subject: Re: drivers/scsi/myrs.c:2449:13: sparse: sparse: incorrect type in
- assignment (different base types)
-To:     kernel test robot <lkp@intel.com>
-CC:     <kbuild-all@lists.01.org>, <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-References: <202101151657.pWIXmPAS-lkp@intel.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <4d577845-9f24-e0e4-aba7-ec368646f8c3@huawei.com>
-Date:   Fri, 15 Jan 2021 21:12:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <202101151657.pWIXmPAS-lkp@intel.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.244]
+        Fri, 15 Jan 2021 08:32:29 -0500
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210115133203epoutp0226c10eee5dd7c9fe84cf63c21bc293d8~aaw2yYbMy2315323153epoutp02z
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:32:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210115133203epoutp0226c10eee5dd7c9fe84cf63c21bc293d8~aaw2yYbMy2315323153epoutp02z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1610717523;
+        bh=mkzX2Z7+8QKr2X7xIAP/6icPPC1yyAT/i04pPJ5qkFE=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=NPjFOSNOqGWnrexkABw5IVDJeJBh6do/NOU3+/Yd1b4mL2102HSCrCs3+GiKQok+A
+         TWlR/cx+M5jz0kmCIk0fr8zSBkhVcsDM2eAfQ9D39KntolJrCcxkZPo6lONGlZ1TSP
+         OVv+NjNXJ6flLgpRNIwgeiwKDEes0SMP2EesnZJs=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20210115133202epcas2p14ef596c8a20f2a972cba38efa311fea8~aaw2CpW2R1427714277epcas2p1U;
+        Fri, 15 Jan 2021 13:32:02 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.190]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DHMXw51KLz4x9Pp; Fri, 15 Jan
+        2021 13:32:00 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D6.9B.52511.05991006; Fri, 15 Jan 2021 22:32:00 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2~aawz7kFkm1427714277epcas2p1O;
+        Fri, 15 Jan 2021 13:32:00 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210115133200epsmtrp155b483b6507b823dc904f4db30d938a6~aawz6zgY50635706357epsmtrp1I;
+        Fri, 15 Jan 2021 13:32:00 +0000 (GMT)
+X-AuditID: b6c32a48-4f9ff7000000cd1f-b5-600199504370
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        93.4C.13470.05991006; Fri, 15 Jan 2021 22:32:00 +0900 (KST)
+Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210115133159epsmtip17d9781d744e425e76a0be994756589ce~aawzp9fl90875308753epsmtip1Z;
+        Fri, 15 Jan 2021 13:31:59 +0000 (GMT)
+From:   Dongseok Yi <dseok.yi@samsung.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alexander Lobakin <alobakin@pm.me>
+Cc:     namkyu78.kim@samsung.com, Dongseok Yi <dseok.yi@samsung.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Willem de Bruijn <willemb@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net v2] udp: ipv4: manipulate network header of NATed UDP
+ GRO fraglist
+Date:   Fri, 15 Jan 2021 22:20:35 +0900
+Message-Id: <1610716836-140533-1-git-send-email-dseok.yi@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFKsWRmVeSWpSXmKPExsWy7bCmuW7ATMYEg01XVS1WPd7OYjHnfAuL
+        xZVpfxgtLmzrY7W4vGsOm0XDnWY2i2MLxCx2d/5gt3i35Qi7xde9XSwOXB5bVt5k8liwqdRj
+        06pONo+2a6uYPI7uOcfm0bdlFaPHptYlrB6fN8kFcETl2GSkJqakFimk5iXnp2TmpdsqeQfH
+        O8ebmhkY6hpaWpgrKeQl5qbaKrn4BOi6ZeYAnaikUJaYUwoUCkgsLlbSt7Mpyi8tSVXIyC8u
+        sVVKLUjJKTA0LNArTswtLs1L10vOz7UyNDAwMgWqTMjJmN//j7FgilbFrpPzGBsYtyl1MXJy
+        SAiYSEz5+Iexi5GLQ0hgB6PEv8YZ7CAJIYFPjBLvL2dCJL4xSszeuYmpi5EDrOPPOVaI+F5G
+        iTk/b7NDOD8YJU43bwLrZhPQkNj/7gVYlYhAE6PEtM9HWEAcZpCxX6f3MoNUCQtESNw53swC
+        YrMIqEpMmTiXGWQFr4CrxIrXthD3yUncPNfJDNIrIXCLXeLe/n9sEAkXiXeNS6FsYYlXx7ew
+        Q9hSEi/729ghTq2XaO2OgejtYZS4su8JC0SNscSsZ+2MIDXMApoS63fpQ5QrSxy5BVbBLMAn
+        0XH4L9QUXomONiEIU0li4pd4iBkSEi9OToaa5yHxbG0XNNxiJf4+2cw4gVF2FsL4BYyMqxjF
+        UguKc9NTi40KTJCjaBMjONFpeexgnP32g94hRiYOxkOMEhzMSiK8+coMCUK8KYmVValF+fFF
+        pTmpxYcYTYGBNZFZSjQ5H5hq80riDU2NzMwMLE0tTM2MLJTEeYsMHsQLCaQnlqRmp6YWpBbB
+        9DFxcEo1MJXun1eZKeM413ON+W3zB4u37Z8Vqyzk/md76Vq/89zJi/Kc0nwNSq1+yfk9qeVX
+        i1V3bzTO1s40rZxr7Tot7lyX56ZXYlxM5xwND5z4rDZ5xrti9fv/nSdJG25eZjzd2ezoLeV5
+        +/oefzh6xejHiagLOd8f8xZOKPU7t+LrBtn3f81ci6oX3Xis7/PwMnOw3ZLEU5cd7zcoKsev
+        CZyi3iuw4lc8S4Tzr4WBl6aLL4xdtiD762uRIwXnLvn7B+UWa3yLMs5pEy9bZPP6aaG5FKM3
+        n2iCXWbchLsRG85mbGr1dlHcX3j6qKVJqFdiyGenONVTG/vfbXJcIitokJETvFEiopJ9439v
+        J/+1s+3mKLEUZyQaajEXFScCAKffPmn9AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFLMWRmVeSWpSXmKPExsWy7bCSnG7ATMYEg2ebWS1WPd7OYjHnfAuL
+        xZVpfxgtLmzrY7W4vGsOm0XDnWY2i2MLxCx2d/5gt3i35Qi7xde9XSwOXB5bVt5k8liwqdRj
+        06pONo+2a6uYPI7uOcfm0bdlFaPHptYlrB6fN8kFcERx2aSk5mSWpRbp2yVwZczv/8dYMEWr
+        YtfJeYwNjNuUuhg5OCQETCT+nGPtYuTiEBLYzShxeccyFoi4hMSuza5djJxAprDE/ZYjUDXf
+        GCVWP+tiB0mwCWhI7H/3AiwhItDCKLH16EFmEIdZ4AejxMn270wgVcICYRJP3twE62ARUJWY
+        MnEuM8gGXgFXiRWvbSE2yEncPNfJPIGRZwEjwypGydSC4tz03GLDAsO81HK94sTc4tK8dL3k
+        /NxNjODg09Lcwbh91Qe9Q4xMHIyHGCU4mJVEePOVGRKEeFMSK6tSi/Lji0pzUosPMUpzsCiJ
+        817oOhkvJJCeWJKanZpakFoEk2Xi4JRqYDp73uhRXf/fq/LV11Q/H1n5a56FxlaHxAYdNqPp
+        LZZGSwLT+8LdDbJfRziefe/l8vryVIUfDOz3JhznLvPJnGN4z6Tn8GNTlqRvCzJnbXB68Y2n
+        K/vz6/jltx5W3JweoFu43nVjLOOqzWcKKhVq8yY539qoneA/38tl01yzRVeXNKnH1Pzij940
+        wXnOptrwuzPys9fuOSunLdFcav3rgW79g/l2zLcOV6k/Xt87a+u6sGJOl1dL3i2M9+0VnPk3
+        WLHm4g9B/iol55RDpv5yKze4TS269fbzyS2X3k46XFX6Z/GfQq81Z+aXBEhZlBzm1fuVefy1
+        F6+Z+aSiVzM39mU/arU1XaB9ee3jtD+Vj5WVWIozEg21mIuKEwGCIk/UrQIAAA==
+X-CMS-MailID: 20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
 X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2
+References: <CGME20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2@epcas2p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
+forwarding. Only the header of head_skb from ip_finish_output_gso ->
+skb_gso_segment is updated but following frag_skbs are not updated.
 
-On 2021/1/15 16:50, kernel test robot wrote:
-> Hi Kefeng,
->
-> First bad commit (maybe != root cause):
+A call path skb_mac_gso_segment -> inet_gso_segment ->
+udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
+does not try to update UDP/IP header of the segment list but copy
+only the MAC header.
 
-Hi, the commit in patchset[1], which make riscv random build happier, 
-won't lead to the following problem.
+Update dport, daddr and checksums of each skb of the segment list
+in __udp_gso_segment_list. It covers both SNAT and DNAT.
 
-I think the driver should fix the sparse error.
+Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
+Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+---
+v1:
+Steffen Klassert said, there could be 2 options.
+https://lore.kernel.org/patchwork/patch/1362257/
+I was trying to write a quick fix, but it was not easy to forward
+segmented list. Currently, assuming DNAT only.
 
+v2:
+Per Steffen Klassert request, move the procedure from
+udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
 
-[1] https://lkml.org/lkml/2020/5/10/456
+To Alexander Lobakin, I've checked your email late. Just use this
+patch as a reference. It support SNAT too, but does not support IPv6
+yet. I cannot make IPv6 header changes in __udp_gso_segment_list due
+to the file is in IPv4 directory.
 
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   5ee88057889bbca5f5bb96031b62b3756b33e164
-> commit: ed1ed4c0da5447c5e322481ce2ef9f03336c6ffb riscv: mmiowb: Fix implicit declaration of function 'smp_processor_id'
-> date:   8 months ago
-> config: riscv-randconfig-s032-20210115 (attached as .config)
-> compiler: riscv32-linux-gcc (GCC) 9.3.0
-> reproduce:
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # apt-get install sparse
->          # sparse version: v0.6.3-208-g46a52ca4-dirty
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ed1ed4c0da5447c5e322481ce2ef9f03336c6ffb
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout ed1ed4c0da5447c5e322481ce2ef9f03336c6ffb
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=riscv
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
->
-> "sparse warnings: (new ones prefixed by >>)"
->     drivers/scsi/myrs.c:1532:5: sparse: sparse: symbol 'myrs_host_reset' was not declared. Should it be static?
->     drivers/scsi/myrs.c:1922:27: sparse: sparse: symbol 'myrs_template' was not declared. Should it be static?
->     drivers/scsi/myrs.c:2036:31: sparse: sparse: symbol 'myrs_raid_functions' was not declared. Should it be static?
->     drivers/scsi/myrs.c:2046:6: sparse: sparse: symbol 'myrs_flush_cache' was not declared. Should it be static?
->     drivers/scsi/myrs.c:2275:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] <asn:2> *base @@     got struct myrs_hba *cs @@
->     drivers/scsi/myrs.c:2275:34: sparse:     expected void [noderef] <asn:2> *base
->     drivers/scsi/myrs.c:2275:34: sparse:     got struct myrs_hba *cs
->     drivers/scsi/myrs.c:2434:9: sparse: sparse: cast from restricted __le32
->     drivers/scsi/myrs.c:2502:9: sparse: sparse: cast from restricted __le32
->     drivers/scsi/myrs.c:2427:9: sparse: sparse: cast from restricted __le32
->     drivers/scsi/myrs.c:2502:9: sparse: sparse: cast from restricted __le32
->     drivers/scsi/myrs.c:2413:9: sparse: sparse: cast from restricted __le32
->>> drivers/scsi/myrs.c:2449:13: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] val @@     got unsigned int [assigned] [usertype] __v @@
->     drivers/scsi/myrs.c:2449:13: sparse:     expected restricted __le32 [usertype] val
->     drivers/scsi/myrs.c:2449:13: sparse:     got unsigned int [assigned] [usertype] __v
->     drivers/scsi/myrs.c:2549:13: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] val @@     got unsigned int [assigned] [usertype] __v @@
->     drivers/scsi/myrs.c:2549:13: sparse:     expected restricted __le32 [usertype] val
->     drivers/scsi/myrs.c:2549:13: sparse:     got unsigned int [assigned] [usertype] __v
->     drivers/scsi/myrs.c:2552:18: sparse: sparse: restricted __le32 degrades to integer
->     drivers/scsi/myrs.c:2427:9: sparse: sparse: cast from restricted __le32
->     drivers/scsi/myrs.c:2495:9: sparse: sparse: cast from restricted __le32
->     drivers/scsi/myrs.c:2472:9: sparse: sparse: cast from restricted __le32
->     drivers/scsi/myrs.c:2441:13: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] val @@     got unsigned int [assigned] [usertype] __v @@
->     drivers/scsi/myrs.c:2441:13: sparse:     expected restricted __le32 [usertype] val
->     drivers/scsi/myrs.c:2441:13: sparse:     got unsigned int [assigned] [usertype] __v
->     drivers/scsi/myrs.c:2406:9: sparse: sparse: cast from restricted __le32
->     drivers/scsi/myrs.c:2479:13: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] val @@     got unsigned int [assigned] [usertype] __v @@
->     drivers/scsi/myrs.c:2479:13: sparse:     expected restricted __le32 [usertype] val
->     drivers/scsi/myrs.c:2479:13: sparse:     got unsigned int [assigned] [usertype] __v
->     drivers/scsi/myrs.c:2457:9: sparse: sparse: cast from restricted __le32
->     drivers/scsi/myrs.c:2413:9: sparse: sparse: cast from restricted __le32
-> --
->     drivers/isdn/hardware/mISDN/avmfritz.c:175:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:175:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:175:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:175:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:176:16: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:176:16: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:176:16: sparse:     expected void const volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:176:16: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:185:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:185:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:185:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:185:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:186:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:186:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:186:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:186:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:194:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:194:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:194:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:194:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:203:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:203:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:203:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:203:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:212:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:212:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:212:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:212:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:213:23: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:213:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:213:23: sparse:     expected void const volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:213:23: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:221:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:221:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:221:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:221:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:222:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:222:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:222:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:222:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:231:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:231:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:231:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:231:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:233:34: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:233:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:233:34: sparse:     expected void const volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:233:34: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:242:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:242:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:242:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:242:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:244:17: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:244:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:244:17: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:244:17: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:325:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:325:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:325:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:325:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:332:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:332:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:332:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:332:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:417:17: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:417:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:417:17: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:417:17: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:421:23: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:421:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:421:23: sparse:     expected void const volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:421:23: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:421:23: sparse: sparse: cast to restricted __le32
->     drivers/isdn/hardware/mISDN/avmfritz.c:488:25: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:488:25: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:488:25: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:488:25: sparse:     got void *
->>> drivers/isdn/hardware/mISDN/avmfritz.c:494:25: sparse: sparse: cast from restricted __le32
->     drivers/isdn/hardware/mISDN/avmfritz.c:494:25: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:494:25: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:494:25: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:494:25: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:627:16: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:627:16: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:627:16: sparse:     expected void const volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:627:16: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:654:16: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:654:16: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:654:16: sparse:     expected void const volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:654:16: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:671:17: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:671:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:671:17: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:671:17: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:673:17: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:673:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:673:17: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:673:17: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:761:17: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:761:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:761:17: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:761:17: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:770:17: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:770:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:770:17: sparse:     expected void const volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:770:17: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:770:17: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:770:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:770:17: sparse:     expected void const volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:770:17: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:964:23: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:964:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:964:23: sparse:     expected void const volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:964:23: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:965:17: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:965:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:965:17: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:965:17: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:966:23: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:966:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:966:23: sparse:     expected void const volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:966:23: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:977:23: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:977:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:977:23: sparse:     expected void const volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:977:23: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:978:23: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:978:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:978:23: sparse:     expected void const volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:978:23: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:270:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:270:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:270:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:270:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:264:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:264:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:264:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:264:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:265:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:265:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:265:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:265:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:303:16: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:303:16: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:303:16: sparse:     expected void const volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:303:16: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:296:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:296:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:296:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:296:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:297:16: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:297:16: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:297:16: sparse:     expected void const volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:297:16: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:270:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:270:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:270:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:270:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:264:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:264:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:264:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:264:9: sparse:     got void *
->     drivers/isdn/hardware/mISDN/avmfritz.c:265:9: sparse: sparse: cast removes address space '<asn:2>' of expression
->     drivers/isdn/hardware/mISDN/avmfritz.c:265:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
->     drivers/isdn/hardware/mISDN/avmfritz.c:265:9: sparse:     expected void volatile [noderef] <asn:2> *addr
->     drivers/isdn/hardware/mISDN/avmfritz.c:265:9: sparse:     got void *
-> --
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:87:41: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:88:41: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] dummy_buffer_addr_hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:88:41: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] dummy_buffer_addr_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:88:41: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:89:42: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] task_list_pbl_addr_lo @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:89:42: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] task_list_pbl_addr_lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:89:42: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:90:42: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] task_list_pbl_addr_hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:90:42: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] task_list_pbl_addr_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:90:42: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:92:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [addressable] [assigned] [usertype] mtu @@     got int @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:92:24: sparse:     expected restricted __le16 [addressable] [assigned] [usertype] mtu
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:92:24: sparse:     got int
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:109:41: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] hash_tbl_pbl_addr_lo @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:109:41: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] hash_tbl_pbl_addr_lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:109:41: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:110:41: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] hash_tbl_pbl_addr_hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:110:41: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] hash_tbl_pbl_addr_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:110:41: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:113:40: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] t2_hash_tbl_addr_lo @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:113:40: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] t2_hash_tbl_addr_lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:113:40: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:114:40: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] t2_hash_tbl_addr_hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:114:40: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] t2_hash_tbl_addr_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:114:40: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:117:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] t2_ptr_hash_tbl_addr_lo @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:117:44: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] t2_ptr_hash_tbl_addr_lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:117:44: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:118:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] t2_ptr_hash_tbl_addr_hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:118:44: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] t2_ptr_hash_tbl_addr_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:118:44: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:121:36: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] free_list_count @@     got int @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:121:36: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] free_list_count
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:121:36: sparse:     got int
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:128:37: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] error_bit_map_lo @@     got unsigned int @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:128:37: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] error_bit_map_lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:128:37: sparse:     got unsigned int
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:129:37: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] error_bit_map_hi @@     got unsigned int @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:129:37: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] error_bit_map_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:129:37: sparse:     got unsigned int
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:199:32: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [addressable] [assigned] [usertype] fcoe_conn_id @@     got unsigned short [assigned] [usertype] conn_id @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:199:32: sparse:     expected restricted __le16 [addressable] [assigned] [usertype] fcoe_conn_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:199:32: sparse:     got unsigned short [assigned] [usertype] conn_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:202:30: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] sq_addr_lo @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:202:30: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] sq_addr_lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:202:30: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:203:30: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] sq_addr_hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:203:30: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] sq_addr_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:203:30: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:205:34: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] rq_pbl_addr_lo @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:205:34: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] rq_pbl_addr_lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:205:34: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:206:34: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] rq_pbl_addr_hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:206:34: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] rq_pbl_addr_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:206:34: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:208:40: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] rq_first_pbe_addr_lo @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:208:40: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] rq_first_pbe_addr_lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:208:40: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:209:40: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] rq_first_pbe_addr_hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:209:40: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] rq_first_pbe_addr_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:209:40: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:212:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [addressable] [assigned] [usertype] rq_prod @@     got int @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:212:27: sparse:     expected restricted __le16 [addressable] [assigned] [usertype] rq_prod
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:212:27: sparse:     got int
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:221:37: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [addressable] [assigned] [usertype] tx_max_fc_pay_len @@     got unsigned short [usertype] maxframe_size @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:221:37: sparse:     expected restricted __le16 [addressable] [assigned] [usertype] tx_max_fc_pay_len
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:221:37: sparse:     got unsigned short [usertype] maxframe_size
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:223:30: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] cq_addr_lo @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:223:30: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] cq_addr_lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:223:30: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:224:30: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] cq_addr_hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:224:30: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] cq_addr_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:224:30: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:226:33: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] xferq_addr_lo @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:226:33: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] xferq_addr_lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:226:33: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:227:33: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] xferq_addr_hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:227:33: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] xferq_addr_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:227:33: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:229:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] conn_db_addr_lo @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:229:35: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] conn_db_addr_lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:229:35: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:230:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] conn_db_addr_hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:230:35: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] conn_db_addr_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:230:35: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:239:28: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [addressable] [assigned] [usertype] vlan_tag @@     got int @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:239:28: sparse:     expected restricted __le16 [addressable] [assigned] [usertype] vlan_tag
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:239:28: sparse:     got int
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:241:28: sparse: sparse: invalid assignment: |=
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:241:28: sparse:    left side has type restricted __le16
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:241:28: sparse:    right side has type int
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:264:38: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [addressable] [assigned] [usertype] tx_total_conc_seqs @@     got unsigned short [usertype] max_seq @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:264:38: sparse:     expected restricted __le16 [addressable] [assigned] [usertype] tx_total_conc_seqs
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:264:38: sparse:     got unsigned short [usertype] max_seq
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:267:38: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [addressable] [assigned] [usertype] rx_max_fc_pay_len @@     got unsigned int [usertype] mfs @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:267:38: sparse:     expected restricted __le16 [addressable] [assigned] [usertype] rx_max_fc_pay_len
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:267:38: sparse:     got unsigned int [usertype] mfs
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:269:38: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [addressable] [assigned] [usertype] rx_total_conc_seqs @@     got int @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:269:38: sparse:     expected restricted __le16 [addressable] [assigned] [usertype] rx_total_conc_seqs
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:269:38: sparse:     got int
->>> drivers/scsi/bnx2fc/bnx2fc_hwi.c:273:43: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] confq_first_pbe_addr_lo @@     got unsigned int [usertype] confq_dma @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:273:43: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] confq_first_pbe_addr_lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:273:43: sparse:     got unsigned int [usertype] confq_dma
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:274:43: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] confq_first_pbe_addr_hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:274:43: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] confq_first_pbe_addr_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:274:43: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:332:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] lcq_addr_lo @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:332:31: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] lcq_addr_lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:332:31: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:333:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] lcq_addr_hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:333:31: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] lcq_addr_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:333:31: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:335:42: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] confq_pbl_base_addr_lo @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:335:42: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] confq_pbl_base_addr_lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:335:42: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:336:42: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] confq_pbl_base_addr_hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:336:42: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] confq_pbl_base_addr_hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:336:42: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:410:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] context_id @@     got unsigned int [usertype] context_id @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:410:29: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] context_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:410:29: sparse:     got unsigned int [usertype] context_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:411:26: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] conn_id @@     got unsigned int [usertype] fcoe_conn_id @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:411:26: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] conn_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:411:26: sparse:     got unsigned int [usertype] fcoe_conn_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:469:32: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] context_id @@     got unsigned int [usertype] context_id @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:469:32: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] context_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:469:32: sparse:     got unsigned int [usertype] context_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:470:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] conn_id @@     got unsigned int [usertype] fcoe_conn_id @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:470:29: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] conn_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:470:29: sparse:     got unsigned int [usertype] fcoe_conn_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:504:32: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] context_id @@     got unsigned int [usertype] context_id @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:504:32: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] context_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:504:32: sparse:     got unsigned int [usertype] context_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:505:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [addressable] [assigned] [usertype] conn_id @@     got unsigned int [usertype] fcoe_conn_id @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:505:29: sparse:     expected restricted __le32 [addressable] [assigned] [usertype] conn_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:505:29: sparse:     got unsigned int [usertype] fcoe_conn_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:613:28: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] fr_crc @@     got restricted __le32 [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:613:28: sparse:     expected unsigned int [usertype] fr_crc
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:613:28: sparse:     got restricted __le32 [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:696:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] xid @@     got restricted __le16 [usertype] ox_id @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:696:21: sparse:     expected unsigned short [usertype] xid
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:696:21: sparse:     got restricted __le16 [usertype] ox_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:731:27: sparse: sparse: cast from restricted __le32
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:732:26: sparse: sparse: cast from restricted __le32
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:812:23: sparse: sparse: cast from restricted __le16
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:812:23: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] ox_id @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:812:23: sparse:     expected unsigned short [usertype] val
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:812:23: sparse:     got restricted __le16 [usertype] ox_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:812:23: sparse: sparse: cast from restricted __le16
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:812:23: sparse: sparse: cast from restricted __le16
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:812:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] xid @@     got restricted __be16 [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:812:21: sparse:     expected unsigned short [usertype] xid
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:812:21: sparse:     got restricted __be16 [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:826:27: sparse: sparse: cast from restricted __le32
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:827:26: sparse: sparse: cast from restricted __le32
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:893:45: sparse: sparse: restricted __le16 degrades to integer
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:970:33: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] doorbell_cq_cons @@     got int @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:970:33: sparse:     expected restricted __le16 [usertype] doorbell_cq_cons
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:970:33: sparse:     got int
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:973:9: sparse: sparse: cast from restricted __le32
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1027:43: sparse: sparse: restricted __le16 degrades to integer
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1097:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] wqe @@     got restricted __le16 [usertype] wqe @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1097:22: sparse:     expected unsigned short [usertype] wqe
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1097:22: sparse:     got restricted __le16 [usertype] wqe
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1261:17: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] conn_id @@     got restricted __le32 [usertype] fcoe_conn_id @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1261:17: sparse:     expected unsigned int [usertype] conn_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1261:17: sparse:     got restricted __le32 [usertype] fcoe_conn_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1377:53: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned int [usertype] err_code @@     got restricted __le32 [usertype] completion_status @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1377:53: sparse:     expected unsigned int [usertype] err_code
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1377:53: sparse:     got restricted __le32 [usertype] completion_status
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1429:18: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] wqe @@     got int @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1429:18: sparse:     expected restricted __le16 [usertype] wqe
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1429:18: sparse:     got int
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1430:18: sparse: sparse: invalid assignment: |=
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1430:18: sparse:    left side has type restricted __le16
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1430:18: sparse:    right side has type int
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1448:9: sparse: sparse: cast from restricted __le32
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1532:46: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] init_flags @@     got unsigned int @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1532:46: sparse:     expected restricted __le32 [usertype] init_flags
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1532:46: sparse:     got unsigned int
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1534:46: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] init_flags @@     got unsigned int @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1534:46: sparse:     expected restricted __le32 [usertype] init_flags
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1534:46: sparse:     got unsigned int
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1537:63: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] cleaned_task_id @@     got unsigned short [usertype] orig_xid @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1537:63: sparse:     expected restricted __le16 [usertype] cleaned_task_id
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1537:63: sparse:     got unsigned short [usertype] orig_xid
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1540:69: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] rolled_tx_data_offset @@     got unsigned int [usertype] offset @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1540:69: sparse:     expected restricted __le32 [usertype] rolled_tx_data_offset
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1540:69: sparse:     got unsigned int [usertype] offset
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1546:35: sparse: sparse: restricted __le16 degrades to integer
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1548:24: sparse: sparse: invalid assignment: -=
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1548:24: sparse:    left side has type unsigned int
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1548:24: sparse:    right side has type restricted __le16
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1553:69: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] lo @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1553:69: sparse:     expected restricted __le32 [usertype] lo
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1553:69: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1555:69: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] hi @@     got unsigned int [usertype] @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1555:69: sparse:     expected restricted __le32 [usertype] hi
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1555:69: sparse:     got unsigned int [usertype]
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1559:65: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] cur_sge_off @@     got unsigned int [usertype] offset @@
->     drivers/scsi/bnx2fc/bnx2fc_hwi.c:1559:65: sparse:     expected restricted __le16 [usertype] cur_sge_off
->
-> vim +2449 drivers/scsi/myrs.c
->
-> 77266186397c6c78 Hannes Reinecke 2018-10-17  2444
-> 77266186397c6c78 Hannes Reinecke 2018-10-17  2445  static inline bool DAC960_GEM_init_in_progress(void __iomem *base)
-> 77266186397c6c78 Hannes Reinecke 2018-10-17  2446  {
-> 77266186397c6c78 Hannes Reinecke 2018-10-17  2447  	__le32 val;
-> 77266186397c6c78 Hannes Reinecke 2018-10-17  2448
-> 77266186397c6c78 Hannes Reinecke 2018-10-17 @2449  	val = readl(base + DAC960_GEM_IDB_READ_OFFSET);
-> 77266186397c6c78 Hannes Reinecke 2018-10-17  2450  	return (le32_to_cpu(val) >> 24) & DAC960_GEM_IDB_INIT_IN_PROGRESS;
-> 77266186397c6c78 Hannes Reinecke 2018-10-17  2451  }
-> 77266186397c6c78 Hannes Reinecke 2018-10-17  2452
->
-> :::::: The code at line 2449 was first introduced by commit
-> :::::: 77266186397c6c782a3f670d32808a9671806ec5 scsi: myrs: Add Mylex RAID controller (SCSI interface)
->
-> :::::: TO: Hannes Reinecke <hare@suse.com>
-> :::::: CC: Martin K. Petersen <martin.petersen@oracle.com>
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ include/net/udp.h      |  2 +-
+ net/ipv4/udp_offload.c | 62 ++++++++++++++++++++++++++++++++++++++++++++++----
+ net/ipv6/udp_offload.c |  2 +-
+ 3 files changed, 59 insertions(+), 7 deletions(-)
+
+diff --git a/include/net/udp.h b/include/net/udp.h
+index 877832b..01351ba 100644
+--- a/include/net/udp.h
++++ b/include/net/udp.h
+@@ -178,7 +178,7 @@ struct sk_buff *udp_gro_receive(struct list_head *head, struct sk_buff *skb,
+ int udp_gro_complete(struct sk_buff *skb, int nhoff, udp_lookup_t lookup);
+ 
+ struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+-				  netdev_features_t features);
++				  netdev_features_t features, bool is_ipv6);
+ 
+ static inline struct udphdr *udp_gro_udphdr(struct sk_buff *skb)
+ {
+diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+index ff39e94..c532d3b 100644
+--- a/net/ipv4/udp_offload.c
++++ b/net/ipv4/udp_offload.c
+@@ -187,8 +187,57 @@ struct sk_buff *skb_udp_tunnel_segment(struct sk_buff *skb,
+ }
+ EXPORT_SYMBOL(skb_udp_tunnel_segment);
+ 
++static void __udpv4_gso_segment_csum(struct sk_buff *seg,
++				     __be32 *oldip, __be32 *newip,
++				     __be16 *oldport, __be16 *newport)
++{
++	struct udphdr *uh = udp_hdr(seg);
++	struct iphdr *iph = ip_hdr(seg);
++
++	if (uh->check) {
++		inet_proto_csum_replace4(&uh->check, seg, *oldip, *newip,
++					 true);
++		inet_proto_csum_replace2(&uh->check, seg, *oldport, *newport,
++					 false);
++		if (!uh->check)
++			uh->check = CSUM_MANGLED_0;
++	}
++	uh->dest = *newport;
++
++	csum_replace4(&iph->check, *oldip, *newip);
++	iph->daddr = *newip;
++}
++
++static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
++{
++	struct sk_buff *seg;
++	struct udphdr *uh, *uh2;
++	struct iphdr *iph, *iph2;
++
++	seg = segs;
++	uh = udp_hdr(seg);
++	iph = ip_hdr(seg);
++
++	while ((seg = seg->next)) {
++		uh2 = udp_hdr(seg);
++		iph2 = ip_hdr(seg);
++
++		if (uh->source != uh2->source || iph->saddr != iph2->saddr)
++			__udpv4_gso_segment_csum(seg,
++						 &iph2->saddr, &iph->saddr,
++						 &uh2->source, &uh->source);
++
++		if (uh->dest != uh2->dest || iph->daddr != iph2->daddr)
++			__udpv4_gso_segment_csum(seg,
++						 &iph2->daddr, &iph->daddr,
++						 &uh2->dest, &uh->dest);
++	}
++
++	return segs;
++}
++
+ static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
+-					      netdev_features_t features)
++					      netdev_features_t features, bool is_ipv6)
+ {
+ 	unsigned int mss = skb_shinfo(skb)->gso_size;
+ 
+@@ -198,11 +247,14 @@ static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
+ 
+ 	udp_hdr(skb)->len = htons(sizeof(struct udphdr) + mss);
+ 
+-	return skb;
++	if (is_ipv6)
++		return skb;
++	else
++		return __udpv4_gso_segment_list_csum(skb);
+ }
+ 
+ struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+-				  netdev_features_t features)
++				  netdev_features_t features, bool is_ipv6)
+ {
+ 	struct sock *sk = gso_skb->sk;
+ 	unsigned int sum_truesize = 0;
+@@ -214,7 +266,7 @@ struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+ 	__be16 newlen;
+ 
+ 	if (skb_shinfo(gso_skb)->gso_type & SKB_GSO_FRAGLIST)
+-		return __udp_gso_segment_list(gso_skb, features);
++		return __udp_gso_segment_list(gso_skb, features, is_ipv6);
+ 
+ 	mss = skb_shinfo(gso_skb)->gso_size;
+ 	if (gso_skb->len <= sizeof(*uh) + mss)
+@@ -328,7 +380,7 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
+ 		goto out;
+ 
+ 	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
+-		return __udp_gso_segment(skb, features);
++		return __udp_gso_segment(skb, features, false);
+ 
+ 	mss = skb_shinfo(skb)->gso_size;
+ 	if (unlikely(skb->len <= mss))
+diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
+index c7bd7b1..faa823c 100644
+--- a/net/ipv6/udp_offload.c
++++ b/net/ipv6/udp_offload.c
+@@ -42,7 +42,7 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff *skb,
+ 			goto out;
+ 
+ 		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
+-			return __udp_gso_segment(skb, features);
++			return __udp_gso_segment(skb, features, true);
+ 
+ 		mss = skb_shinfo(skb)->gso_size;
+ 		if (unlikely(skb->len <= mss))
+-- 
+2.7.4
+
