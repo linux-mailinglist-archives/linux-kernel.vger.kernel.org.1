@@ -2,416 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69EC2F7143
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:56:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2E52F7145
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732767AbhAODzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 22:55:53 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:20401 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726431AbhAODzw (ORCPT
+        id S1732781AbhAODz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 22:55:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731139AbhAODzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Jan 2021 22:55:52 -0500
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 10F3spac023891;
-        Fri, 15 Jan 2021 12:54:51 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 10F3spac023891
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1610682892;
-        bh=dvrxZUq6ijykTnD91sHJvb7lCcdoTSyu0O0fWTAIYoM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XpGecBRfbzNDU1XRdw1oyaJIK3vWxD6xDaUs+7+0sPJwF1P4Top3cwMgfEEOEXrbZ
-         g69CJGtjw7ZznqUCcJaDndISi97C5zZV3fynAWMCKXv2Yft+cRH7wYu1AH8F0h5/69
-         xG2eEptBC+ocQN7fjNW9Vm2WIrITAeNoUQ2Dv6KmT/pQRneRK88xVLwGZo6KT98MLe
-         uIOLlw50mRZTTex7a9YuJKI7Org7OZ1oGs6VP4FHU8o1JjZLfHLM1cpirKQvRDhBkK
-         mlC0LaFoLs/OVjj8RlNOEbMnkE61ByFYAewT7jC0xTA2MvaMz6qundc0HyguKEbYww
-         xNJdG6fWFrZRw==
-X-Nifty-SrcIP: [209.85.216.50]
-Received: by mail-pj1-f50.google.com with SMTP id w1so5590902pjc.0;
-        Thu, 14 Jan 2021 19:54:51 -0800 (PST)
-X-Gm-Message-State: AOAM533yT2HQsa6AohArVXyUrnknzarNJJ3rBrXjcNU89W50kHzplvIj
-        pBgKGvDbxwYKleXs/UGOxIga82Wysr4nB0Lz46s=
-X-Google-Smtp-Source: ABdhPJw+5aw6ebzdJ+mKRENfXlgdBo73zbYuYnZY3ng8MDzKIn4MxHq2U55gy6kd0YoA6Fb27j1lfF6zZQETnpBdjhs=
-X-Received: by 2002:a17:90a:c910:: with SMTP id v16mr8357377pjt.198.1610682890563;
- Thu, 14 Jan 2021 19:54:50 -0800 (PST)
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30998C061575;
+        Thu, 14 Jan 2021 19:55:12 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id j12so7363044ota.7;
+        Thu, 14 Jan 2021 19:55:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=P1pE3SlC44ai1ckIdueI94VlVgFy9zu5zhNWEKBjxuQ=;
+        b=Tg1Uvl8gK/EKXgNwP6EqowAB4+ptGN9J8bRToi75GZ9OVHhY+DNTjWDgSnLve60V1W
+         p4SBj67qBAcI5V7c1ECEXI9BADrVtA/kqdWUZ8wrmvkZLq80wPK1P9aOcxi9jP+t1o1Y
+         KJr9TmA3Emi2eYjvaTNmfYa78wa2J7E/MtSKH1w0D1ZFiY9+trEAB+Lk/sB78j34+U6Q
+         QByhUNBgx9QoaEVsdVJXJ9oc7L+Wzpj2rRZf3GGKLUd6e994kaH+aTmFouM/T+5YkMor
+         B9vA+ZyssFr4nIV+q9jMInF47uDkXYY8FgOjmCO1Gda/s+Pg2GpJG7kq0nmsH76Du8lk
+         AUMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=P1pE3SlC44ai1ckIdueI94VlVgFy9zu5zhNWEKBjxuQ=;
+        b=Tg65Etht3bOsVE/Da3JOQpYk0/09e/TZQZMEK6ek8+oFckRW8X02NsmShSOrpKU6FV
+         C6FqnJVdlKoD0PRou93UijGp3/StuMDVF/igVl+byxm+BqW6/I2IeVN7F47tDDlhfcyM
+         OjLP9g8oozujm28Ssq8BkgBYMC+PuwLMu4M4xkrCHHIXkE4CaLa1xM+H5K0zcId4uJ/R
+         8xhCEKPB8J//xxNmHfl7wNZoygR4Gj0Frb/GyThPnEzar7MX5BZQ/27KtnqWd1HxZAxI
+         7hxEzypZRRrlHqhDSiG/K3B/tuPu6DwH76DVPabWb7wlZzVOtCw3afJSnXP08uu7tfBc
+         8e3A==
+X-Gm-Message-State: AOAM530BoLtC4msCNF1bt/55JOfBPWDvARhjAiFrjhFKg2D+TxPw4/qQ
+        C6GNqfkqAabeOB31U6S2iFmF5vZk+DENy6RcJSA=
+X-Google-Smtp-Source: ABdhPJycmwChvFy+e4H9mlLdITjI5zgt1vFrzcRWChV7FXDg5tJwdGl+uV3O3z94glc+CC6FWc8S3nIDWhJ/O4Ph/I0=
+X-Received: by 2002:a05:6830:160f:: with SMTP id g15mr6975275otr.129.1610682911620;
+ Thu, 14 Jan 2021 19:55:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20210113003235.716547-1-ndesaulniers@google.com>
- <20210113003235.716547-3-ndesaulniers@google.com> <CA+icZUV6pNP1AN_JEhqon6Hgk3Yfq0_VNghvRX0N9mw6pGtpVw@mail.gmail.com>
- <CAKwvOdm40Z3YutxwWyV922XdchN7Dz+v9kJNjF13vKxNUXrJnQ@mail.gmail.com>
-In-Reply-To: <CAKwvOdm40Z3YutxwWyV922XdchN7Dz+v9kJNjF13vKxNUXrJnQ@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 15 Jan 2021 12:54:13 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASkCbm-075tPrNgR8s-fQ5y4MTjPQXhKO04JT+2X6R-GQ@mail.gmail.com>
-Message-ID: <CAK7LNASkCbm-075tPrNgR8s-fQ5y4MTjPQXhKO04JT+2X6R-GQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] Kbuild: make DWARF version a choice
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>
+References: <1605177598-23501-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1605177598-23501-5-git-send-email-gene.chen.richtek@gmail.com> <74b127eb-9a3c-20c9-5692-b00b982f4da3@gmail.com>
+In-Reply-To: <74b127eb-9a3c-20c9-5692-b00b982f4da3@gmail.com>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Fri, 15 Jan 2021 11:55:00 +0800
+Message-ID: <CAE+NS34qR9f2LOpvxTBDF4OR=Xq-SFP+uHdWe3dZ5x8xggS8kA@mail.gmail.com>
+Subject: Re: [PATCH v7 04/11] mfd: mt6360: Combine mt6360 pmic/ldo resources
+ into mt6360 regulator resources
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     sre@kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-pm@vger.kernel.org, devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, ChiYuan Huang <cy_huang@richtek.com>,
+        benjamin.chao@mediatek.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 8:27 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+Matthias Brugger <matthias.bgg@gmail.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=88=
+12=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:32=E5=AF=AB=E9=81=93=EF=
+=BC=9A
 >
-> Sedat,
-> Thanks for testing, and congrats on https://lwn.net/Articles/839772/.
-> I always appreciate you taking the time to help test my work, and
-> other Clang+Linux kernel patches!
 >
-> On Wed, Jan 13, 2021 at 1:24 PM Sedat Dilek <sedat.dilek@gmail.com> wrote=
-:
+>
+> On 12/11/2020 11:39, Gene Chen wrote:
+> > From: Gene Chen <gene_chen@richtek.com>
 > >
-> > On Wed, Jan 13, 2021 at 1:32 AM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > >
-> > > --- a/Makefile
-> > > +++ b/Makefile
-> > > @@ -826,12 +826,16 @@ else
-> > >  DEBUG_CFLAGS   +=3D -g
-> > >  endif
-> > >
-> > > -ifneq ($(LLVM_IAS),1)
-> > > -KBUILD_AFLAGS  +=3D -Wa,-gdwarf-2
-> > > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) :=3D 2
-> > > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) :=3D 4
-> > > +DEBUG_CFLAGS   +=3D -gdwarf-$(dwarf-version-y)
->
-> ^ DEBUG_CFLAGS are set for everyone (all toolchains) if
-> CONFIG_DEBUG_INFO is defined.
->
-> > > +ifneq ($(dwarf-version-y)$(LLVM_IAS),21)
->
-> ^ "If not using dwarf 2 and LLVM_IAS=3D1", ie. CONFIG_DEBUG_INFO_DWARF5
-> && CONFIG_CC_IS_GCC
->
-> > > +# Binutils 2.35+ required for -gdwarf-4+ support.
-> > > +dwarf-aflag    :=3D $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-vers=
-ion-y))
-> > > +ifdef CONFIG_CC_IS_CLANG
->
-> ^ "if clang"
->
-> > > +DEBUG_CFLAGS   +=3D $(dwarf-aflag)
-> > >  endif
+> > Combine mt6360 pmic/ldo resources into mt6360 regulator resources
+> > to simplify the similar resources object.
 > >
-> > Why is that "ifdef CONFIG_CC_IS_CLANG"?
+> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/mfd/mt6360-core.c | 11 +++--------
+> >  1 file changed, 3 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
+> > index 692e47b..5119e51 100644
+> > --- a/drivers/mfd/mt6360-core.c
+> > +++ b/drivers/mfd/mt6360-core.c
+> > @@ -265,7 +265,7 @@ static const struct resource mt6360_led_resources[]=
+ =3D {
+> >       DEFINE_RES_IRQ_NAMED(MT6360_FLED1_STRB_TO_EVT, "fled1_strb_to_evt=
+"),
+> >  };
+> >
+> > -static const struct resource mt6360_pmic_resources[] =3D {
+> > +static const struct resource mt6360_regulator_resources[] =3D {
+> >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_PGB_EVT, "buck1_pgb_evt"),
+> >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OC_EVT, "buck1_oc_evt"),
+> >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OV_EVT, "buck1_ov_evt"),
+> > @@ -278,9 +278,6 @@ static const struct resource mt6360_pmic_resources[=
+] =3D {
+> >       DEFINE_RES_IRQ_NAMED(MT6360_LDO7_OC_EVT, "ldo7_oc_evt"),
+> >       DEFINE_RES_IRQ_NAMED(MT6360_LDO6_PGB_EVT, "ldo6_pgb_evt"),
+> >       DEFINE_RES_IRQ_NAMED(MT6360_LDO7_PGB_EVT, "ldo7_pgb_evt"),
+> > -};
+> > -
+> > -static const struct resource mt6360_ldo_resources[] =3D {
+> >       DEFINE_RES_IRQ_NAMED(MT6360_LDO1_OC_EVT, "ldo1_oc_evt"),
+> >       DEFINE_RES_IRQ_NAMED(MT6360_LDO2_OC_EVT, "ldo2_oc_evt"),
+> >       DEFINE_RES_IRQ_NAMED(MT6360_LDO3_OC_EVT, "ldo3_oc_evt"),
+> > @@ -298,10 +295,8 @@ static const struct mfd_cell mt6360_devs[] =3D {
+> >                   NULL, 0, 0, "mediatek,mt6360-chg"),
+> >       OF_MFD_CELL("mt6360-led", mt6360_led_resources,
+> >                   NULL, 0, 0, "mediatek,mt6360-led"),
+> > -     OF_MFD_CELL("mt6360-pmic", mt6360_pmic_resources,
+> > -                 NULL, 0, 0, "mediatek,mt6360-pmic"),
+> > -     OF_MFD_CELL("mt6360-ldo", mt6360_ldo_resources,
+> > -                 NULL, 0, 0, "mediatek,mt6360-ldo"),
+> > +     OF_MFD_CELL("mt6360-regulator", mt6360_regulator_resources,
+> > +                 NULL, 0, 0, "mediatek,mt6360-regulator"),
 >
-> That's what Arvind requested on v2, IIUC:
-> https://lore.kernel.org/lkml/X8psgMuL4jMjP%2FOy@rani.riverdale.lan/
-
-
-
-If CONFIG_CC_IS_CLANG is set,
-both -gdwarf and -Wa,-gdwarf-4 are passed to DEBUG_CFLAGS.
-
-Is it necessary?
-
-
-
-IIUC, -Wa,-gdwarf is meaningless
-when you build *.c files.
-
-
-I passed -v option to see
-how gas is invoked behind the scene.
-
-
-See the following results
-for [1] GCC + GAS and [2] Clang + GAS cases
-
-
-
-
-[1] GCC + GAS
-
-
-masahiro@grover:~$ cat test.c
-int main(void) { return 0; }
-masahiro@grover:~$ gcc -v -gdwarf-4 -c -o test.o test.c
-Using built-in specs.
-COLLECT_GCC=3Dgcc
-OFFLOAD_TARGET_NAMES=3Dnvptx-none:amdgcn-amdhsa:hsa
-OFFLOAD_TARGET_DEFAULT=3D1
-Target: x86_64-linux-gnu
-Configured with: ../src/configure -v --with-pkgversion=3D'Ubuntu
-10.2.0-13ubuntu1'
---with-bugurl=3Dfile:///usr/share/doc/gcc-10/README.Bugs
---enable-languages=3Dc,ada,c++,go,brig,d,fortran,objc,obj-c++,m2
---prefix=3D/usr --with-gcc-major-version-only --program-suffix=3D-10
---program-prefix=3Dx86_64-linux-gnu- --enable-shared
---enable-linker-build-id --libexecdir=3D/usr/lib
---without-included-gettext --enable-threads=3Dposix --libdir=3D/usr/lib
---enable-nls --enable-clocale=3Dgnu --enable-libstdcxx-debug
---enable-libstdcxx-time=3Dyes --with-default-libstdcxx-abi=3Dnew
---enable-gnu-unique-object --disable-vtable-verify --enable-plugin
---enable-default-pie --with-system-zlib
---enable-libphobos-checking=3Drelease --with-target-system-zlib=3Dauto
---enable-objc-gc=3Dauto --enable-multiarch --disable-werror
---with-arch-32=3Di686 --with-abi=3Dm64 --with-multilib-list=3Dm32,m64,mx32
---enable-multilib --with-tune=3Dgeneric
---enable-offload-targets=3Dnvptx-none=3D/build/gcc-10-JvwpWM/gcc-10-10.2.0/=
-debian/tmp-nvptx/usr,amdgcn-amdhsa=3D/build/gcc-10-JvwpWM/gcc-10-10.2.0/deb=
-ian/tmp-gcn/usr,hsa
---without-cuda-driver --enable-checking=3Drelease
---build=3Dx86_64-linux-gnu --host=3Dx86_64-linux-gnu
---target=3Dx86_64-linux-gnu
-Thread model: posix
-Supported LTO compression algorithms: zlib zstd
-gcc version 10.2.0 (Ubuntu 10.2.0-13ubuntu1)
-COLLECT_GCC_OPTIONS=3D'-v' '-gdwarf-4' '-c' '-o' 'test.o'
-'-mtune=3Dgeneric' '-march=3Dx86-64'
- /usr/lib/gcc/x86_64-linux-gnu/10/cc1 -quiet -v -imultiarch
-x86_64-linux-gnu test.c -quiet -dumpbase test.c -mtune=3Dgeneric
--march=3Dx86-64 -auxbase-strip test.o -gdwarf-4 -version
--fasynchronous-unwind-tables -fstack-protector-strong -Wformat
--Wformat-security -fstack-clash-protection -fcf-protection -o
-/tmp/cc4hKJeo.s
-GNU C17 (Ubuntu 10.2.0-13ubuntu1) version 10.2.0 (x86_64-linux-gnu)
-compiled by GNU C version 10.2.0, GMP version 6.2.0, MPFR version
-4.1.0, MPC version 1.2.0-rc1, isl version isl-0.22.1-GMP
-
-GGC heuristics: --param ggc-min-expand=3D100 --param ggc-min-heapsize=3D131=
-072
-ignoring nonexistent directory "/usr/local/include/x86_64-linux-gnu"
-ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/10/include-fi=
-xed"
-ignoring nonexistent directory
-"/usr/lib/gcc/x86_64-linux-gnu/10/../../../../x86_64-linux-gnu/include"
-#include "..." search starts here:
-#include <...> search starts here:
- /usr/lib/gcc/x86_64-linux-gnu/10/include
- /usr/local/include
- /usr/include/x86_64-linux-gnu
- /usr/include
-End of search list.
-GNU C17 (Ubuntu 10.2.0-13ubuntu1) version 10.2.0 (x86_64-linux-gnu)
-compiled by GNU C version 10.2.0, GMP version 6.2.0, MPFR version
-4.1.0, MPC version 1.2.0-rc1, isl version isl-0.22.1-GMP
-
-GGC heuristics: --param ggc-min-expand=3D100 --param ggc-min-heapsize=3D131=
-072
-Compiler executable checksum: 4831429547eb0be4fec215fca56ed5cf
-COLLECT_GCC_OPTIONS=3D'-v' '-gdwarf-4' '-c' '-o' 'test.o'
-'-mtune=3Dgeneric' '-march=3Dx86-64'
- as -v --64 -o test.o /tmp/cc4hKJeo.s
-GNU assembler version 2.35.1 (x86_64-linux-gnu) using BFD version (GNU
-Binutils for Ubuntu) 2.35.1
-COMPILER_PATH=3D/usr/lib/gcc/x86_64-linux-gnu/10/:/usr/lib/gcc/x86_64-linux=
--gnu/10/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/10/:/=
-usr/lib/gcc/x86_64-linux-gnu/
-LIBRARY_PATH=3D/usr/lib/gcc/x86_64-linux-gnu/10/:/usr/lib/gcc/x86_64-linux-=
-gnu/10/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/10/../../..=
-/../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/us=
-r/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/10/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS=3D'-v' '-gdwarf-4' '-c' '-o' 'test.o'
-'-mtune=3Dgeneric' '-march=3Dx86-64'
-masahiro@grover:~$ readelf  --debug-dump=3Dinfo test.o
-Contents of the .debug_info section:
-
-  Compilation Unit @ offset 0x0:
-   Length:        0x4f (32-bit)
-   Version:       4
-   Abbrev Offset: 0x0
-   Pointer Size:  8
- <0><b>: Abbrev Number: 1 (DW_TAG_compile_unit)
-    <c>   DW_AT_producer    : (indirect string, offset: 0x16): GNU C17
-10.2.0 -mtune=3Dgeneric -march=3Dx86-64 -gdwarf-4
--fasynchronous-unwind-tables -fstack-protector-strong
--fstack-clash-protection -fcf-protection
-    <10>   DW_AT_language    : 12 (ANSI C99)
-    <11>   DW_AT_name        : (indirect string, offset: 0xf): test.c
-    <15>   DW_AT_comp_dir    : (indirect string, offset: 0x0): /home/masahi=
-ro
-    <19>   DW_AT_low_pc      : 0x0
-    <21>   DW_AT_high_pc     : 0xf
-    <29>   DW_AT_stmt_list   : 0x0
- <1><2d>: Abbrev Number: 2 (DW_TAG_subprogram)
-    <2e>   DW_AT_external    : 1
-    <2e>   DW_AT_name        : (indirect string, offset: 0xab): main
-    <32>   DW_AT_decl_file   : 1
-    <33>   DW_AT_decl_line   : 1
-    <34>   DW_AT_decl_column : 5
-    <35>   DW_AT_prototyped  : 1
-    <35>   DW_AT_type        : <0x4b>
-    <39>   DW_AT_low_pc      : 0x0
-    <41>   DW_AT_high_pc     : 0xf
-    <49>   DW_AT_frame_base  : 1 byte block: 9c (DW_OP_call_frame_cfa)
-    <4b>   DW_AT_GNU_all_call_sites: 1
- <1><4b>: Abbrev Number: 3 (DW_TAG_base_type)
-    <4c>   DW_AT_byte_size   : 4
-    <4d>   DW_AT_encoding    : 5 (signed)
-    <4e>   DW_AT_name        : int
- <1><52>: Abbrev Number: 0
-
-
-
-
-
-[2] Clang + GAS
-
-masahiro@grover:~$ clang -v -fno-integrated-as -gdwarf-4 -c -o test.o test.=
-c
-Ubuntu clang version 11.0.0-2
-Target: x86_64-pc-linux-gnu
-Thread model: posix
-InstalledDir: /usr/bin
-Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/10
-Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/8
-Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/9
-Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/10
-Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/8
-Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/9
-Selected GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/10
-Candidate multilib: .;@m64
-Selected multilib: .;@m64
- "/usr/lib/llvm-11/bin/clang" -cc1 -triple x86_64-pc-linux-gnu -S
--disable-free -disable-llvm-verifier -discard-value-names
--main-file-name test.c -mrelocation-model static -mframe-pointer=3Dall
--fmath-errno -fno-rounding-math -no-integrated-as
--mconstructor-aliases -munwind-tables -target-cpu x86-64
--fno-split-dwarf-inlining -debug-info-kind=3Dlimited -dwarf-version=3D4
--debugger-tuning=3Dgdb -v -resource-dir
-/usr/lib/llvm-11/lib/clang/11.0.0 -internal-isystem /usr/local/include
--internal-isystem /usr/lib/llvm-11/lib/clang/11.0.0/include
--internal-externc-isystem /usr/include/x86_64-linux-gnu
--internal-externc-isystem /include -internal-externc-isystem
-/usr/include -fno-dwarf-directory-asm -fdebug-compilation-dir
-/home/masahiro -ferror-limit 19 -fgnuc-version=3D4.2.1
--fcolor-diagnostics -o /tmp/test-f43580.s -x c test.c
-clang -cc1 version 11.0.0 based upon LLVM 11.0.0 default target
-x86_64-pc-linux-gnu
-ignoring nonexistent directory "/include"
-#include "..." search starts here:
-#include <...> search starts here:
- /usr/local/include
- /usr/lib/llvm-11/lib/clang/11.0.0/include
- /usr/include/x86_64-linux-gnu
- /usr/include
-End of search list.
- "/usr/bin/as" --64 -o test.o /tmp/test-f43580.s
-masahiro@grover:~$ readelf  --debug-dump=3Dinfo test.o
-Contents of the .debug_info section:
-
-  Compilation Unit @ offset 0x0:
-   Length:        0x47 (32-bit)
-   Version:       4
-   Abbrev Offset: 0x0
-   Pointer Size:  8
- <0><b>: Abbrev Number: 1 (DW_TAG_compile_unit)
-    <c>   DW_AT_producer    : (indirect string, offset: 0x0): Ubuntu
-clang version 11.0.0-2
-    <10>   DW_AT_language    : 12 (ANSI C99)
-    <12>   DW_AT_name        : (indirect string, offset: 0x1e): test.c
-    <16>   DW_AT_stmt_list   : 0x0
-    <1a>   DW_AT_comp_dir    : (indirect string, offset: 0x25): /home/masah=
-iro
-    <1e>   DW_AT_low_pc      : 0x0
-    <26>   DW_AT_high_pc     : 0xf
- <1><2a>: Abbrev Number: 2 (DW_TAG_subprogram)
-    <2b>   DW_AT_low_pc      : 0x0
-    <33>   DW_AT_high_pc     : 0xf
-    <37>   DW_AT_frame_base  : 1 byte block: 56 (DW_OP_reg6 (rbp))
-    <39>   DW_AT_name        : (indirect string, offset: 0x34): main
-    <3d>   DW_AT_decl_file   : 1
-    <3e>   DW_AT_decl_line   : 1
-    <3f>   DW_AT_prototyped  : 1
-    <3f>   DW_AT_type        : <0x43>
-    <43>   DW_AT_external    : 1
- <1><43>: Abbrev Number: 3 (DW_TAG_base_type)
-    <44>   DW_AT_name        : (indirect string, offset: 0x39): int
-    <48>   DW_AT_encoding    : 5 (signed)
-    <49>   DW_AT_byte_size   : 4
- <1><4a>: Abbrev Number: 0
-
-
-
-
-
-
-In [1],  "as -v --64 -o test.o /tmp/cc4hKJeo.s"
-is the command that invoked gas.
-
-There is no -gdwarf-4 option passed to gas here,
-but the produced object has the correct dwarf4 info.
-
-
-
-
-In [2],   "/usr/bin/as" --64 -o test.o /tmp/test-f43580.s
-is the command that invoked gas.
-
-Again, no -gdwarf-4 option here,
-but the produced object has the correct dwarf4 info.
-
-
-
-
-So, when you build *.c -> *.o,
-passing -gdwarf-* is enough.
-
-The debug info is generated in the compile stage (i.e. by cc1)
-and included in the intermediate /tmp/*.s file.
-
-All gas needs to do is to transform the debug sections
-in the intermediate /tmp/*.s file
-into the binary stream in the .o file.
-GAS does it without being instructed by the
-explicit -Wa,-gdwarf-* option.
-
-
-In my understanding, passing -Wa,-gdwarf
-makes sense only when you build *.S -> *.o
-
-
-This is why I think
-  DEBUG_CFLAGS +=3D -gdwarf-4   (for source debug of .c files)
-and
-  KBUILD_AFLAGS +=3D -Wa,gdwarf-4  (for source debug of .S files)
-
-are basically orthogonal (and they can be even controlled by
-separate CONFIG options).
-
-
-As stated above,  DEBUG_CFLAGS +=3D -Wa,gdward-4
-does not make sense.
-
-
-I am not a compiler expert, but
-that is what I understood from some experiments.
-
-Please correct me if I am wrong.
-
-
-
-
-
-
-> > When I use GCC v10.2.1 DEBUG_CFLAGS are not set.
+> As discussed with the MFD maintainer [1], the regulator (and probably all=
+ cells)
+> shouldn't have a DT binding.
 >
-> You should have -gdwarf-4 (and not -Wa,-gwarf-4) set for DEBUG_CFLAGS
-> when compiling with GCC and enabling CONFIG_DEBUG_INFO_DWARF4. Can you
-> please confirm? (Perhaps you may have accidentally disabled
-> CONFIG_DEBUG_INFO by rerunning `make defconfig`?)
-> --
-> Thanks,
-> ~Nick Desaulniers
+> So please send a new version which fixes that.
+>
+> Regards,
+> Matthias
+>
+> [1] https://lore.kernel.org/linux-mediatek/20210111164118.GE4728@sirena.o=
+rg.uk/
+>
 
+Should I use parent's device to find sub-devices of_node if without
+compatible name?
+I trace the function mfd_add_device,
 
+if (IS_ENABLED(CONFIG_OF) && parent->of_node && cell->of_compatible) {
+    .....
+    ret =3D mfd_match_of_node_to_dev(pdev, np, cell);
+    .....
+}
 
---
-Best Regards
+which is binding mfd sub-device with compatible. Does it be removed in
+the feature?
 
-
-Masahiro Yamada
+> >       OF_MFD_CELL("mt6360-tcpc", NULL,
+> >                   NULL, 0, 0, "mediatek,mt6360-tcpc"),
+> >  };
+> >
