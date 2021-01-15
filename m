@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBC62F8654
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C951A2F8653
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388709AbhAOUKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 15:10:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53178 "EHLO
+        id S2388336AbhAOUKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 15:10:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728081AbhAOUJ5 (ORCPT
+        with ESMTP id S2388013AbhAOUKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 15:09:57 -0500
+        Fri, 15 Jan 2021 15:10:01 -0500
 Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 111D1C061795
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:09:17 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id g10so8645788wmh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:09:16 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF554C061798
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:09:18 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id r4so8623247wmh.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:09:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ruuzqVcibszll2eFO33TUxrB4tXdgXcWaZZEtfFtK0U=;
-        b=K0QIJJrtbTVVGnm0417IN5WqEh5ppaxUlhR0OqXfdBdbiKbbRwer5uHYKYJTtXAktz
-         gZZZbU8CVeAvuoa7EVilbQ8aU8UYprMBp5p4uFXlXWES8OaLPrh/7vL3XPX0+52nQF+u
-         q9GKE9sELVG7doX8KkvQ0b023p8qEDOF8KJPtEERAgZnhE+A5t0UHh15EIcRYASV5oix
-         HLry1ARTaBQiDDOB3mDQuMcltIu00Xjswrs8gGEQTjmXfkBz65sq1E82JK49LYpUh5wE
-         QkXeVB5s/d03vawDvs/XAtoNa5DI0QNCH8+HYQTP2g5sg1Xt+5qJ2XKUJfHyxCQkhMX5
-         WKzg==
+        bh=aiJUe/D+M6zdYoqU8/tCGnMlqOxFrCNb2GHwWBgB6XE=;
+        b=dSqWxy5oJbUPhoGZ0kJkRd2cNEx5u2GKs2BvohoeKfNCcPJhr2Eu60z6vjzxq/40aN
+         glgoqChgxqONYcrADHOUNx2SAbmIdyugzHGjcwAfK+IGJbWjyqOFoCOnNrJsRyuZ73GM
+         ajB7yxsGQvusQMPlxvi6EQSO7extZO99Jze3AkqqxSQlrR9cBUH7LFx9BHVjWO4NVWZI
+         EiRX3iCscVdNpnfjJCMuIQEvt/MdUGmvt9JbNZuSoBP+A2j09IlgIriYQv58JVaXSLpB
+         eWTUAgMgNSZG8vtSDnHBneQoIxOiEZXrirrBiXBWfYRfCWc7r1+5ZlnwZDhU1hIS7a/5
+         b5Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ruuzqVcibszll2eFO33TUxrB4tXdgXcWaZZEtfFtK0U=;
-        b=UqEIa2aRIMuxBC115rIOCGQWk+z0269MPckqWjlXxY6BYO3sI7vP3GCSz/nEeC4ryl
-         zSCDFhfjTlsJlXZz3UmjYXwT4c3vh462BvoDcf3DzROxIHclupX3Da8yYwVJgz3UXVsR
-         eqOmGg7DK5pziion3aKdDuZue2WFQRfgnTS0gawQGJzElvoLFJuBWzXQX345m4uttVCH
-         BPKkHVa3NJxcjzEJOSqqpKkpOeah0yFyOSFkHPr4F/7UCMI8sFp/1hyW2PcNEACTtgol
-         riKmjMyhj7DJY8IwJvO5rNM2jqvSK2+WcBYrKVZxwHyLTiKbWPsfiEwYPNr33qok1Trw
-         M76Q==
-X-Gm-Message-State: AOAM530XO8MB0UdJW+5RM4YMKGH94GS6oYdDyyvhCKizCPYb3YhqJHTa
-        dwP91IB+RaDywg5dUgv9KvT4jg==
-X-Google-Smtp-Source: ABdhPJyIVEMVjS5hMhLba5F7K9JoJZEJMSH0rgqKM8y1qiS+nYVk9WQFhlY8h5yAtTzIG7AtQI2JNg==
-X-Received: by 2002:a7b:c415:: with SMTP id k21mr8222932wmi.96.1610741355781;
-        Fri, 15 Jan 2021 12:09:15 -0800 (PST)
+        bh=aiJUe/D+M6zdYoqU8/tCGnMlqOxFrCNb2GHwWBgB6XE=;
+        b=ZcQHeGA3ayQzUFlQw4Ef9K1N7vNRCaxhL+yEjaj2tVhlGuoWSQp70jvXNkkgRtVMtF
+         QCW4N3ModTvX+djD/abEA+j9YqzZOxD+Lq+9X2ixgvFmcMCjDBZs3gK6vaVQzmvnyNFI
+         9XltYj0Eaeh7qDfwzOLvyNpm/cNg1y1j/PLq3qJFPsZ1+asg5AKjRDhdJ1d957KSvo5e
+         /DAYN9lg+Wh0BqVaYU8T66gG4crUL0vgwdakEXm4A92QjY+/CcbWVTERloi1tfmYhlsx
+         +eEjydgUIaFO3NLiptb24xwcvaFG3s0JieFIAKEAcq4xjJqUGmAp1WehyKzLwGEuuPRE
+         E/ZA==
+X-Gm-Message-State: AOAM532S8EZMqbeCdFX5KSgMIcC434RflPaNgCYUaM0ikuI+efHbKa4j
+        ZvSvT9KtQzW0JZM96c27pldelA==
+X-Google-Smtp-Source: ABdhPJz6z8ooRqEJMuEtAZ3z0VQGV3ToTw4T17vOw6fkh1inINUIw2LGxPtLCYYvw9uakPUqYWmMKw==
+X-Received: by 2002:a7b:cb54:: with SMTP id v20mr10484579wmj.148.1610741357695;
+        Fri, 15 Jan 2021 12:09:17 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id d85sm9187863wmd.2.2021.01.15.12.09.14
+        by smtp.gmail.com with ESMTPSA id d85sm9187863wmd.2.2021.01.15.12.09.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 12:09:15 -0800 (PST)
+        Fri, 15 Jan 2021 12:09:16 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
+Cc:     linux-kernel@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
+        Paul Durrant <paul@xen.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Erik Stahlman <erik@vt.edu>,
-        Peter Cammaert <pc@denkart.be>,
-        Daris A Nevil <dnevil@snmc.com>,
-        Russell King <rmk@arm.linux.org.uk>, netdev@vger.kernel.org
-Subject: [PATCH 1/7] net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
-Date:   Fri, 15 Jan 2021 20:08:59 +0000
-Message-Id: <20210115200905.3470941-2-lee.jones@linaro.org>
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Rusty Russell <rusty@rustcorp.com.au>,
+        xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>
+Subject: [PATCH 2/7] net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
+Date:   Fri, 15 Jan 2021 20:09:00 +0000
+Message-Id: <20210115200905.3470941-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210115200905.3470941-1-lee.jones@linaro.org>
 References: <20210115200905.3470941-1-lee.jones@linaro.org>
@@ -70,39 +75,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/ethernet/smsc/smc91x.c:2200: warning: Function parameter or member 'dev' not described in 'try_toggle_control_gpio'
- drivers/net/ethernet/smsc/smc91x.c:2200: warning: Function parameter or member 'desc' not described in 'try_toggle_control_gpio'
- drivers/net/ethernet/smsc/smc91x.c:2200: warning: Function parameter or member 'name' not described in 'try_toggle_control_gpio'
- drivers/net/ethernet/smsc/smc91x.c:2200: warning: Function parameter or member 'index' not described in 'try_toggle_control_gpio'
- drivers/net/ethernet/smsc/smc91x.c:2200: warning: Function parameter or member 'value' not described in 'try_toggle_control_gpio'
- drivers/net/ethernet/smsc/smc91x.c:2200: warning: Function parameter or member 'nsdelay' not described in 'try_toggle_control_gpio'
+ drivers/net/xen-netback/xenbus.c:419: warning: Function parameter or member 'dev' not described in 'frontend_changed'
+ drivers/net/xen-netback/xenbus.c:419: warning: Function parameter or member 'frontend_state' not described in 'frontend_changed'
+ drivers/net/xen-netback/xenbus.c:1001: warning: Function parameter or member 'dev' not described in 'netback_probe'
+ drivers/net/xen-netback/xenbus.c:1001: warning: Function parameter or member 'id' not described in 'netback_probe'
 
-Cc: Nicolas Pitre <nico@fluxnic.net>
+Cc: Wei Liu <wei.liu@kernel.org>
+Cc: Paul Durrant <paul@xen.org>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Erik Stahlman <erik@vt.edu>
-Cc: Peter Cammaert <pc@denkart.be>
-Cc: Daris A Nevil <dnevil@snmc.com>
-Cc: Russell King <rmk@arm.linux.org.uk>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Rusty Russell <rusty@rustcorp.com.au>
+Cc: xen-devel@lists.xenproject.org
 Cc: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/ethernet/smsc/smc91x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/xen-netback/xenbus.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
-index 742a1f7a838c9..891b49281bc64 100644
---- a/drivers/net/ethernet/smsc/smc91x.c
-+++ b/drivers/net/ethernet/smsc/smc91x.c
-@@ -2191,7 +2191,7 @@ static const struct of_device_id smc91x_match[] = {
- MODULE_DEVICE_TABLE(of, smc91x_match);
+diff --git a/drivers/net/xen-netback/xenbus.c b/drivers/net/xen-netback/xenbus.c
+index 6f10e0998f1ce..a5439c130130f 100644
+--- a/drivers/net/xen-netback/xenbus.c
++++ b/drivers/net/xen-netback/xenbus.c
+@@ -411,7 +411,7 @@ static void read_xenbus_frontend_xdp(struct backend_info *be,
+ 	vif->xdp_headroom = headroom;
+ }
  
- /**
-- * of_try_set_control_gpio - configure a gpio if it exists
-+ * try_toggle_control_gpio - configure a gpio if it exists
-  * @dev: net device
-  * @desc: where to store the GPIO descriptor, if it exists
-  * @name: name of the GPIO in DT
+-/**
++/*
+  * Callback received when the frontend's state changes.
+  */
+ static void frontend_changed(struct xenbus_device *dev,
+@@ -996,7 +996,7 @@ static int netback_remove(struct xenbus_device *dev)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * Entry point to this code when a new device is created.  Allocate the basic
+  * structures and switch to InitWait.
+  */
 -- 
 2.25.1
 
