@@ -2,86 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5252F703C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9B02F7042
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731750AbhAOBwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 20:52:38 -0500
-Received: from foss.arm.com ([217.140.110.172]:58922 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727152AbhAOBwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 20:52:37 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ADFF6D6E;
-        Thu, 14 Jan 2021 17:51:51 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9521E3F66E;
-        Thu, 14 Jan 2021 17:51:49 -0800 (PST)
-Subject: Re: [PATCH V2 07/11] arm64: Add TRBE definitions
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org
-References: <1610511498-4058-1-git-send-email-anshuman.khandual@arm.com>
- <1610511498-4058-8-git-send-email-anshuman.khandual@arm.com>
- <d6af6dae-f3ba-cd35-2ffb-cfbc9d222469@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <cb73f274-c8d0-a069-e274-f8994f007315@arm.com>
-Date:   Fri, 15 Jan 2021 07:22:09 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729451AbhAOB4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 20:56:30 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10723 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726081AbhAOB43 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 20:56:29 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DH4444R7pzl5Kw;
+        Fri, 15 Jan 2021 09:54:28 +0800 (CST)
+Received: from [10.174.176.61] (10.174.176.61) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 15 Jan 2021 09:55:44 +0800
+Subject: Re: [PATCH v2] cgroup-v1: add disabled controller check in
+ cgroup1_parse_param()
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20201218061755.121205-1-chenzhou10@huawei.com>
+ <YABDWvI2PWQpnv59@blackbook>
+ <d4ba14b0-ee06-b793-a840-2c2ff369d890@huawei.com>
+ <YAB3Wuu+hFpN698N@blackbook>
+CC:     <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <7804658e-7644-8edb-5ca8-0c97389c8c62@huawei.com>
+Date:   Fri, 15 Jan 2021 09:55:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-In-Reply-To: <d6af6dae-f3ba-cd35-2ffb-cfbc9d222469@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <YAB3Wuu+hFpN698N@blackbook>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.61]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 1/13/21 2:51 PM, Suzuki K Poulose wrote:
-> On 1/13/21 4:18 AM, Anshuman Khandual wrote:
->> This adds TRBE related registers and corresponding feature macros.
->>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>   arch/arm64/include/asm/sysreg.h | 49 +++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 49 insertions(+)
->>
->> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
->> index 4acff97..d60750e7 100644
->> --- a/arch/arm64/include/asm/sysreg.h
->> +++ b/arch/arm64/include/asm/sysreg.h
->> @@ -329,6 +329,55 @@
->>     /*** End of Statistical Profiling Extension ***/
->>   +/*
->> + * TRBE Registers
->> + */
->> +#define SYS_TRBLIMITR_EL1        sys_reg(3, 0, 9, 11, 0)
->> +#define SYS_TRBPTR_EL1            sys_reg(3, 0, 9, 11, 1)
->> +#define SYS_TRBBASER_EL1        sys_reg(3, 0, 9, 11, 2)
->> +#define SYS_TRBSR_EL1            sys_reg(3, 0, 9, 11, 3)
->> +#define SYS_TRBMAR_EL1            sys_reg(3, 0, 9, 11, 4)
->> +#define SYS_TRBTRG_EL1            sys_reg(3, 0, 9, 11, 6)
->> +#define SYS_TRBIDR_EL1            sys_reg(3, 0, 9, 11, 7)
->> +
->> +#define TRBLIMITR_LIMIT_MASK        GENMASK_ULL(51, 0)
->> +#define TRBLIMITR_LIMIT_SHIFT        12
->> +#define TRBLIMITR_NVM            BIT(5)
->> +#define TRBLIMITR_TRIG_MODE_MASK    GENMASK(1, 0)
->> +#define TRBLIMITR_TRIG_MODE_SHIFT    2
-> 
-> This must be 3.
+On 2021/1/15 0:54, Michal Koutn� wrote:
+> On Thu, Jan 14, 2021 at 10:08:19PM +0800, chenzhou <chenzhou10@huawei.com> wrote:
+>> In this case, at the beginning of function check_cgroupfs_options(), the mask
+>> ctx->subsys_mask will be 0. And if we mount without 'none' and 'name=' options,
+>> then in check_cgroupfs_options(), the flag ctx->all_ss will be set, that is, select all the subsystems.
+> But even then, the line
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/cgroup/cgroup-v1.c?h=v5.11-rc3#n1012
+> would select only 'enabled' controllers, wouldn't it?
+Yeah, this will select all enabled controllers, but which doesn't the behavior we want.
+I think the case should return error with information "Disabled controller xx" rather than
+attaching all the other enabled controllers.
 
-Changed.
+For example, boot with cgroup_no_v1=cpu, and then mount with
+"mount -t cgroup -o cpu cpu /sys/fs/cgroup/cpu", then all enabled controllers will
+be attached expect cpu.
+>
+> It's possible I missed something but if this means that cgroup_no_v1=
+> doesn't hold to its expectations, I'd suggest adding proper Fixes: tag
+> to the patch.
+See above. Just the mount behavior isn't what we what.
+The behavior was changed since commit f5dfb5315d34 ("cgroup: take options parsing into ->parse_monolithic()"),
+will add this as Fixes.
 
-> 
-> Rest looks fine to me
-> 
-> Suzuki
+Thanks,
+Chen Zhou
+>
+> Thanks,
+> Michal
+
