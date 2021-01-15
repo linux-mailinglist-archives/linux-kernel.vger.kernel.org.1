@@ -2,90 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C652F8660
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713442F8664
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388702AbhAOUMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 15:12:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
+        id S2388525AbhAOUNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 15:13:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728895AbhAOUMp (ORCPT
+        with ESMTP id S2388267AbhAOUNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 15:12:45 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5EFC061757;
-        Fri, 15 Jan 2021 12:12:05 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id c14so6966116qtn.0;
-        Fri, 15 Jan 2021 12:12:05 -0800 (PST)
+        Fri, 15 Jan 2021 15:13:09 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41512C0613D3;
+        Fri, 15 Jan 2021 12:12:29 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id c7so12936782qke.1;
+        Fri, 15 Jan 2021 12:12:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=nwZUHOzxfZQxlqIcBZBTaBRxR48aAaQTr4GFdmPla/o=;
-        b=XhLNFQOaif4Y0uy7rduwG0XPxHM3IWWhRsuje0KoDdBE8uyJjD3QVeA58vUc3LdWfP
-         b65+6MLKVmTZ7UsyoV79W6/2QXcm19ftztAQLLz2002HxEM8IBdLvcT7Psohbt2lFbqS
-         eqosBwYIzo2vLv6x7VB7ikPkwDmwWigAXzDsvkZ1njY9RnZ2w5CDDbFiuKZdOrGPdf7o
-         qtTCflIqyndRj+7jhG5/mY9YqxW5jt1YHfn69lFvp78EL7NfkZqUQYt1eGjpqXrpmnjM
-         CgsUeuvmMvLIVdJ8hqKTUBYdMSdgJQd34V9/7oJ2LXUOeoC1g23usnGLC+x/Wpph1ykg
-         NCrQ==
+        bh=sgKqk97F3LXGs0WSJk0LyPnfv9O5wcmbABf8xVSL5kI=;
+        b=G1axieAIDZYJb/tACg7H+z3hU6I9eitIAKgpcmXudF5DwDTZF/rfFRTRvdqviR+RbR
+         Qd6VvLGY2+iXdDAz+5LzYGnZbpbC62t61Sp/vzjlntkyuiPl9oyyjs9ukhgvzp+2/Z8h
+         h+ay66e2tDvrPJON9NnW3/6jmOZRIb39E7GeLAZGVoaGDZ2tmwkSD96bPzU0/d0CUBNP
+         kYDlDsfKrO+1MRlNr0M/pmDoZ0cC8fKygSfG3HzOsuQP4YYj+D8cUxiPAAlcJtaxJ+/5
+         dGs6y1n1Lp+3sdW0CsA5awISJryBEnJTcNQ4u2p1atPkfscOnlBb7wqTAItDWDqNb4CK
+         lwgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=nwZUHOzxfZQxlqIcBZBTaBRxR48aAaQTr4GFdmPla/o=;
-        b=gg86DDZ75iUfr5tlU1ghNnUR0wQTER8RTx7zQgZmuHU0PtZZKOdQFprRB/2nh22jDg
-         eaPFXS9SmWzrP1EPSZ8np4FGXzN4pmc/8qVMCus7EeWyTIC/V0xYZzjEhVk6RYdjlPHR
-         EQ5nHHsXGGuds99ITb7ImExfjc15n5ElHrmuDLCw5ebeDZK2XFGu+UFjFzwBOtS6lBpi
-         PR5BInC5NZSmA4/3oLzDH3Cit2LtGKb+oZr2bUWxT8/Ee6/xmiJfT1FSIfsdy79pbCmg
-         hE+W7iQo+rlGBZNlZU0oV0Yjtu0BeeyTRc+svJzdxtDyOObJaBJDzAPUbJ2WN73dY+O1
-         k14A==
-X-Gm-Message-State: AOAM5320JHg1DH3iGc+MCoTUmQdjfzWp9UVBQ1SDeK5sYCZK/SrGRSXv
-        VCyMTVK9acbmLtWSjy7U5eCpi0Dkbpk+Wg==
-X-Google-Smtp-Source: ABdhPJwsbU2azBDgaKkkpQwzolx2xrDYuX//3qh+cXJ0virsJgqbV+U86uyLmEqlA8WI4BN6HCHttw==
-X-Received: by 2002:ac8:1386:: with SMTP id h6mr13313729qtj.95.1610741524460;
-        Fri, 15 Jan 2021 12:12:04 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:97cc])
-        by smtp.gmail.com with ESMTPSA id v5sm5699753qkv.64.2021.01.15.12.12.03
+        bh=sgKqk97F3LXGs0WSJk0LyPnfv9O5wcmbABf8xVSL5kI=;
+        b=Qs04ndxjh+8FXNJzwtf+WoDvdvtYHrgky3Nj98RAQCNxATbOXCNzYn2knJ7sSOb7mK
+         rQuJgJLGLtILMdmSp0LP9j2Lb+jQNIzCLT6kslPdexbijKowqtzNZLCFFKH1W02umWcK
+         BEXjF+2HcH/DCN82zUmJeWNAz0ohmS5xuJvC1ZNP6SN+r38Ho0fe+Ymb/z6w21xbkPyR
+         MKlwFWei6j5KUkI4g5kmTwtWyI0PzAhhEAtbkekI/2wegqDmHGEp1R/MZJre7PDh1kqC
+         yVtkROt675bkCTcU5Rvoybq+dojgsBmdHrRRkpdJ6t8zSogJKvefoWpsRsNA+ugwpwBh
+         PekA==
+X-Gm-Message-State: AOAM531FWsT4RRlWAmDeDtL9KhsVbpn0ETXX5PXeYkorQ6zOzdupaYDt
+        ctURH6LlOtZoFIb1DCVA/w0=
+X-Google-Smtp-Source: ABdhPJwgph2DdHibMe0SsUoCZumwuGVmjzafKDzTeUOjtCCsIUPivtc6SNEITdNCiF1QSpqVQN0RAA==
+X-Received: by 2002:a05:620a:a9c:: with SMTP id v28mr13984822qkg.107.1610741548418;
+        Fri, 15 Jan 2021 12:12:28 -0800 (PST)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id v5sm5700419qkv.64.2021.01.15.12.12.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 12:12:03 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 15 Jan 2021 15:11:18 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
-        viro@zeniv.linux.org.uk, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, huawei.libin@huawei.com
-Subject: Re: [PATCH v3] cgroup-v1: add disabled controller check in
- cgroup1_parse_param()
-Message-ID: <YAH25uulZr1BiQVc@mtj.duckdns.org>
-References: <20210115093717.79474-1-chenzhou10@huawei.com>
+        Fri, 15 Jan 2021 12:12:27 -0800 (PST)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Fri, 15 Jan 2021 15:12:25 -0500
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
+Message-ID: <YAH3KY0I2AWudkc9@rani.riverdale.lan>
+References: <20210107223424.4135538-1-arnd@kernel.org>
+ <20210115182300.GD9138@zn.tnic>
+ <20210115183203.GA1991122@ubuntu-m3-large-x86>
+ <20210115190729.GE9138@zn.tnic>
+ <YAHo3ZEMu+6mESZA@rani.riverdale.lan>
+ <20210115191833.GF9138@zn.tnic>
+ <CAK8P3a39vtF8GvRVQtEYssc+GvX-75j9-4pwXj4qhc7LK2RgNw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210115093717.79474-1-chenzhou10@huawei.com>
+In-Reply-To: <CAK8P3a39vtF8GvRVQtEYssc+GvX-75j9-4pwXj4qhc7LK2RgNw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 05:37:17PM +0800, Chen Zhou wrote:
-> When mounting a cgroup hierarchy with disabled controller in cgroup v1,
-> all available controllers will be attached.
-> For example, boot with cgroup_no_v1=cpu or cgroup_disable=cpu, and then
-> mount with "mount -t cgroup -ocpu cpu /sys/fs/cgroup/cpu", then all
-> enabled controllers will be attached except cpu.
+On Fri, Jan 15, 2021 at 08:54:18PM +0100, Arnd Bergmann wrote:
+> On Fri, Jan 15, 2021 at 8:18 PM Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Fri, Jan 15, 2021 at 02:11:25PM -0500, Arvind Sankar wrote:
+> > > That's how build-time assertions work: they are _supposed_ to be
+> > > optimized away completely when the assertion is true. If they're
+> > > _not_ optimized away, the build will fail.
+> >
+> > Yah, that I know, thanks.
+> >
+> > If gcc really inlines p4d_index() and does a lot more aggressive
+> > optimization to determine that the condition is false and thus optimize
+> > everything away (and clang doesn't), then that would explain the
+> > observation.
 > 
-> Fix this by adding disabled controller check in cgroup1_parse_param().
-> If the specified controller is disabled, just return error with information
-> "Disabled controller xx" rather than attaching all the other enabled
-> controllers.
+> One difference is that gcc does not have
+> -fsanitize=unsigned-integer-overflow at all, and I don't see the
+> assertion without that on clang either, so it's possible that clang
+> behaves as designed here.
 > 
-> Fixes: f5dfb5315d34 ("cgroup: take options parsing into ->parse_monolithic()")
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> Reviewed-by: Zefan Li <lizefan.x@bytedance.com>
+> The description is:
+>     -fsanitize=unsigned-integer-overflow: Unsigned integer overflow, where
+>      the result of an unsigned integer computation cannot be represented in
+>      its type. Unlike signed integer overflow, this is not undefined behavior,
+>      but it is often unintentional. This sanitizer does not check for
+> lossy implicit
+>      conversions performed before such a computation (see
+>     -fsanitize=implicit-conversion).
+> 
+> The "-68 * ((1UL) << 30" computation does overflow an unsigned long
+> as intended, right? Maybe this is enough for the ubsan code in clang to
+> just disable some of the optimization steps that the assertion relies on.
+> 
+>         Arnd
 
-Applied to cgroup/for-5.11-fixes.
+That does seem to be an overflow, but that happens at compile-time.
+Maybe
+	AC(-68, UL) << 30
+would be a better definition to avoid overflow.
 
-Thanks.
-
--- 
-tejun
+The real issue might be (ptrs_per_p4d - 1) which can overflow at
+run-time, and maybe the added ubsan code makes p4d_index() not worth
+inlining according to clang?
