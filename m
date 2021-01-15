@@ -2,113 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149E82F802C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE382F803A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731281AbhAOP6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:58:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728020AbhAOP6V (ORCPT
+        id S1730055AbhAOQEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:04:54 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:39913 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726046AbhAOQEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:58:21 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B12C061757;
-        Fri, 15 Jan 2021 07:57:40 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id n142so12106467qkn.2;
-        Fri, 15 Jan 2021 07:57:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wUihvIYTO+c9XI3nDxsZDkyRWMVzMrDyYmjZV2/Hb7w=;
-        b=Y7lA0ZiX7v5y57tlhFjW/SGGhaFXGCVUR3zuOYmxIrpk7M2p+1q4jio2oPEV09AQs0
-         gEfX6z2yV/NHWHXHK94KbBlSrCPOTUuPiMr9+nQqfAOgvwdHq6vo9iZ5AbwAYFKMtQVu
-         q4Js7SrKZavTor2/7rRqeIxLrTf4CgwSvDEleERjezWNqOjaAT/1K4qxlkOz8xw4FD5s
-         1Th1Z0pdll8vKzOS8nIArQBidu9uBplQnPgEUMzti0FO/7D/Jc3DhPuJiGtgDyOtB8sg
-         opk4T4Az3A9+xwborNXjr2I1kH3dRgy3hp/nQpUjVS5Zps+voey7MDmDu3137YnjhrK/
-         61pA==
+        Fri, 15 Jan 2021 11:04:53 -0500
+Received: by mail-oi1-f177.google.com with SMTP id w124so10029523oia.6;
+        Fri, 15 Jan 2021 08:04:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wUihvIYTO+c9XI3nDxsZDkyRWMVzMrDyYmjZV2/Hb7w=;
-        b=TYqbSd7vXAqrW6EJUUm8aYTsDq8DlJ+feDrJJy6jfaNAwfP84ikZdJvEN1mZzCWY7e
-         QMC/i+46Q+9OEJjfDxElMyUBCh1E63sgBVabLeNE+lSG14yqaSr1F84vTX1b4ba2Vlk+
-         nFDbE/bJpCqSXUNob31tB8B5bM5TqyU7vxpjQcJGyYbZ/1Xc+RWaj1UpCeabJtixO/NA
-         dZ/XZ2YFbqsy6GBC8mifU+1xKK34WeLdB51ftLUygT+KWi3I/0yA5LiA1R7CozX304ns
-         CHCDZotVq8aaqJP3IFDLwSbzEdV4gfRe2PEzTHrAFQ+3v9CjSdbUCeIJwFqxZajVW2Ri
-         VCsA==
-X-Gm-Message-State: AOAM531dzW8IIGUSHsUjdWz+v5JFMsCyoeyFgZX2mZmocK2/SDbMbWDY
-        SKBdulS4AJilvxEFKT6Krjw=
-X-Google-Smtp-Source: ABdhPJz003YQOkYa4cIkwmcrgTOTizyV483ds/v1vxy/GMCLv2tXnW0h7AgWE//d4qMoLd2/Q/TDtQ==
-X-Received: by 2002:a37:27ce:: with SMTP id n197mr12952414qkn.220.1610726260200;
-        Fri, 15 Jan 2021 07:57:40 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id t5sm5053412qte.20.2021.01.15.07.57.38
+         :mime-version:content-disposition:in-reply-to;
+        bh=ShSnUe+9WTImJyQhOT5uKGsicu6ArTHKSvqTEazVYd8=;
+        b=WYdiavOw66MkPMpIdzesRGzBE3cy7yoVdvHUNULdgX3gy49+DkIJIKrRQBgM+IpHGW
+         +xfhy6tFcfH7x4UshIimk7/ltKDTGcISs14feMkNSrdFm60fAU2CG8RcTysXIDM/JQU8
+         mK1Wd2SgGLd5JTCMFu32gaWtT8rL0uV2/aN2XS7rAvG9xB1dwqWmi5H1PCnUEXSTU1ni
+         lSl1jppgEFa/BGErr+/4vTEGzae8v/Xdn33edeJ4WWi0zQIs1jlUR8CbaoQhPNNA44r3
+         YpL4rxlc2qQLHFWLiI7cCLpI7Vl/3wl8ljvpIM/PVcP2rNuXdb4LEcy4eysmnWMGXM9n
+         sYtQ==
+X-Gm-Message-State: AOAM533VyKPnO6NppvjDy/nvqvcQbPRUKrP/8X4qPxdjNK1Fw7odx7xW
+        lTjE+tzTtjjmCrbinUk1jlZAFcBMMQ==
+X-Google-Smtp-Source: ABdhPJx55jPXIZn1uAJZRoWflJzeNMatDGVWwgmelR8lnL13eYi7gg8hX86jpxTEE5hHF5aO/oJKaw==
+X-Received: by 2002:aca:4ad8:: with SMTP id x207mr6149985oia.173.1610726652236;
+        Fri, 15 Jan 2021 08:04:12 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h93sm1868318otb.29.2021.01.15.08.04.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 07:57:39 -0800 (PST)
-Date:   Fri, 15 Jan 2021 16:57:36 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     jonathanh@nvidia.com, digetx@gmail.com, wsa@the-dreams.de,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Subject: Re: [PATCH v3] i2c: tegra: Create i2c_writesl_vi() to use with VI
- I2C for filling TX FIFO
-Message-ID: <YAG7cJb2y3Yym1xy@ulmo>
-References: <1610478161-4877-1-git-send-email-skomatineni@nvidia.com>
- <1610478161-4877-2-git-send-email-skomatineni@nvidia.com>
+        Fri, 15 Jan 2021 08:04:10 -0800 (PST)
+Received: (nullmailer pid 1352888 invoked by uid 1000);
+        Fri, 15 Jan 2021 16:04:09 -0000
+Date:   Fri, 15 Jan 2021 10:04:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Device Tree List <devicetree@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH v3 1/8] dt-bindings: net: sparx5: Add sparx5-switch
+ bindings
+Message-ID: <20210115160409.GA1330811@robh.at.kernel.org>
+References: <20210115135339.3127198-1-steen.hegelund@microchip.com>
+ <20210115135339.3127198-2-steen.hegelund@microchip.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="oAZvG9Hbx9gUz+i6"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1610478161-4877-2-git-send-email-skomatineni@nvidia.com>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+In-Reply-To: <20210115135339.3127198-2-steen.hegelund@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---oAZvG9Hbx9gUz+i6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jan 12, 2021 at 11:02:41AM -0800, Sowjanya Komatineni wrote:
-> VI I2C controller has known hardware bug where immediate multiple
-> writes to TX_FIFO register gets stuck.
->=20
-> Recommended software work around is to read I2C register after
-> each write to TX_FIFO register to flush out the data.
->=20
-> This patch implements this work around for VI I2C controller.
->=20
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+On Fri, Jan 15, 2021 at 02:53:32PM +0100, Steen Hegelund wrote:
+> Document the Sparx5 switch device driver bindings
+> 
+> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
 > ---
->  drivers/i2c/busses/i2c-tegra.c | 22 +++++++++++++++++++++-
->  1 file changed, 21 insertions(+), 1 deletion(-)
+>  .../bindings/net/microchip,sparx5-switch.yaml | 211 ++++++++++++++++++
+>  1 file changed, 211 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/microchip,sparx5-switch.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/microchip,sparx5-switch.yaml b/Documentation/devicetree/bindings/net/microchip,sparx5-switch.yaml
+> new file mode 100644
+> index 000000000000..479a36874fe5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/microchip,sparx5-switch.yaml
+> @@ -0,0 +1,211 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/microchip,sparx5-switch.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip Sparx5 Ethernet switch controller
+> +
+> +maintainers:
+> +  - Lars Povlsen <lars.povlsen@microchip.com>
+> +  - Steen Hegelund <steen.hegelund@microchip.com>
+> +
+> +description: |
+> +  The SparX-5 Enterprise Ethernet switch family provides a rich set of
+> +  Enterprise switching features such as advanced TCAM-based VLAN and
+> +  QoS processing enabling delivery of differentiated services, and
+> +  security through TCAM-based frame processing using versatile content
+> +  aware processor (VCAP).
+> +
+> +  IPv4/IPv6 Layer 3 (L3) unicast and multicast routing is supported
+> +  with up to 18K IPv4/9K IPv6 unicast LPM entries and up to 9K IPv4/3K
+> +  IPv6 (S,G) multicast groups.
+> +
+> +  L3 security features include source guard and reverse path
+> +  forwarding (uRPF) tasks. Additional L3 features include VRF-Lite and
+> +  IP tunnels (IP over GRE/IP).
+> +
+> +  The SparX-5 switch family targets managed Layer 2 and Layer 3
+> +  equipment in SMB, SME, and Enterprise where high port count
+> +  1G/2.5G/5G/10G switching with 10G/25G aggregation links is required.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^switch@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    const: microchip,sparx5-switch
+> +
+> +  reg:
+> +    minItems: 2
+> +
+> +  reg-names:
+> +    items:
+> +      - const: devices
+> +      - const: gcb
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description: Interrupt used for reception of packets to the CPU
+> +
+> +  mac-address:
+> +    maxItems: 1
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+The MAC address is 1 byte?
 
---oAZvG9Hbx9gUz+i6
-Content-Type: application/pgp-signature; name="signature.asc"
+> +    description:
+> +      Specifies the MAC address that is used as the template for the MAC
+> +      addresses assigned to the ports provided by the driver.  If not provided
+> +      a randomly generated MAC address will be used.
+> +
+> +  ethernet-ports:
+> +    type: object
+> +    properties:
+> +      '#address-cells':
+> +        const: 1
+> +      '#size-cells':
+> +        const: 0
+> +
+> +    patternProperties:
+> +      "^port@[0-9]+$":
 
------BEGIN PGP SIGNATURE-----
+Unit-addresses are hex.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmABu24ACgkQ3SOs138+
-s6FI+g//bK107HZ6P4WEwIsk6ntl3FeTnn4J/0XajD+VkUp4bMoZHOtqBHBEdl4R
-dzSIz0B37wVyr2uS4/MvRcdU5WndLpwOG9ZsiUvhR9BI86AlWiqqrTNjzq4ddQ1a
-Aj/mue6Q/Zdgzx5T7Hfs6KnpZcHlz+nGGIK878fUqmKKMtFScyoPuN1wk+FI6ljU
-Fj40ZPjZxMIP/YGosv2W9+m3rYYvksh/87iDF2GnH9BWzPppA4Y2OqeYNiXKblbp
-Cq9xZAo/ilsADBPSJ9sS5fNVsLTh7qg/gGOumoenyox9J1xKk1WkVj0TLUbQOxmx
-+xodXVEJ0yhymRbKxJgioziMPspGXrPz33LHMeIYaI0uVw1NIEOfN6ems2lxyWtY
-DhZ0Vy1FOWOacvyq+tBs/Hg1AVaeB60fC98V9gTcXLr/DcF1V9Nxg+hxMugrKjqp
-aN10FpurrmMLQxZsdO3OoIBNae3Ti0c6QYdjsIohPB4hh+0teRXXPGOhjHxmYbE8
-cqWI1BovSlfL7bMMzH7LBKn6MaHsud2hb3G5WH/HheEk5wnrSVXFn64m6+UCVSKk
-3O1ymLtEv9ukBpllHDEibseHNi3/UeVB0Oai4v5durVoJWRQQnNUlCi89Dpj2r4b
-alLWfd1JyBSDBJXg2KyxbePzyvTZX6dFMDc9V7QJ9C5J7ZIQ9eM=
-=X1yL
------END PGP SIGNATURE-----
+> +        type: object
+> +        description: Switch ports
+> +
+> +        allOf:
+> +          - $ref: ethernet-controller.yaml#
+> +
+> +        properties:
+> +          reg:
+> +            description: Switch port number
+> +
+> +          bandwidth:
 
---oAZvG9Hbx9gUz+i6--
+Needs a vendor prefix.
+
+> +            maxItems: 1
+
+Not an array. Drop.
+
+> +            $ref: /schemas/types.yaml#definitions/uint32
+> +            description: Specifies bandwidth in Mbit/s allocated to the port.
+
+0-2^32 allowed?
+
+> +
+> +          phys:
+> +            maxItems: 1
+> +            description:
+> +              phandle of a Ethernet SerDes PHY.  This defines which SerDes
+> +              instance will handle the Ethernet traffic.
+> +
+> +          phy-handle:
+> +            maxItems: 1
+
+Always a single item. (Note phys is not, so that's correct.)
+
+> +            description:
+> +               phandle of a Ethernet PHY.  This is optional and if provided it
+> +               points to the cuPHY used by the Ethernet SerDes.
+> +
+> +          phy-mode:
+> +            maxItems: 1
+
+Not an array. Drop.
+
+I'd assume it's some subset of modes?
+
+> +            description:
+> +              This specifies the interface used by the Ethernet SerDes towards the
+> +              phy or SFP.
+> +
+> +          sfp:
+> +            maxItems: 1
+
+'sfp' is already defined as a single item. Drop
+
+> +            description:
+> +              phandle of an SFP.  This is optional and used when not specifying
+> +              a cuPHY.  It points to the SFP node that describes the SFP used by
+> +              the Ethernet SerDes.
+> +
+> +          managed:
+> +            maxItems: 1
+> +            description:
+> +              SFP management. This must be provided when specifying an SFP.
+
+'managed: true' is sufficient. It's already described in 
+ethernet-controller.yaml and the schema expresses the 2nd sentence.
+
+> +
+> +          sd_sgpio:
+
+Vendor specific? Then needs a vendor prefix.
+
+s/_/-/
+
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            maxItems: 1
+
+A uint32 is always 1 item. Drop.
+
+> +            description:
+> +              Index of the ports Signal Detect SGPIO in the set of 384 SGPIOs
+> +              This is optional, and only needed if the default used index is
+> +              is not correct.
+
+Sounds like constraints?:
+
+minimum: 0
+maximum: 383
+
+> +
+> +        required:
+> +          - reg
+> +          - bandwidth
+> +          - phys
+> +          - phy-mode
+> +
+> +        oneOf:
+> +          - required:
+> +              - phy-handle
+> +          - required:
+> +              - sfp
+> +              - managed
+> +
+> +        additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - ethernet-ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    switch: switch@600000000 {
+> +      compatible = "microchip,sparx5-switch";
+> +      reg =  <0x10000000 0x800000>,
+> +             <0x11010000 0x1b00000>;
+> +      reg-names = "devices", "gcb";
+> +
+> +      interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
+> +      ethernet-ports {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        port0: port@0 {
+> +          reg = <0>;
+> +          bandwidth = <1000>;
+> +          phys = <&serdes 13>;
+> +          phy-handle = <&phy0>;
+> +          phy-mode = "qsgmii";
+> +        };
+> +        /* ... */
+> +        /* Then the 25G interfaces */
+> +        port60: port@60 {
+> +          reg = <60>;
+> +          bandwidth = <25000>;
+> +          phys = <&serdes 29>;
+> +          phy-mode = "10gbase-r";
+> +          sfp = <&sfp_eth60>;
+> +          managed = "in-band-status";
+> +        };
+> +        port61: port@61 {
+> +          reg = <61>;
+> +          bandwidth = <25000>;
+> +          phys = <&serdes 30>;
+> +          phy-mode = "10gbase-r";
+> +          sfp = <&sfp_eth61>;
+> +          managed = "in-band-status";
+> +        };
+> +        port62: port@62 {
+> +          reg = <62>;
+> +          bandwidth = <25000>;
+> +          phys = <&serdes 31>;
+> +          phy-mode = "10gbase-r";
+> +          sfp = <&sfp_eth62>;
+> +          managed = "in-band-status";
+> +        };
+> +        port63: port@63 {
+> +          reg = <63>;
+> +          bandwidth = <25000>;
+> +          phys = <&serdes 32>;
+> +          phy-mode = "10gbase-r";
+> +          sfp = <&sfp_eth63>;
+> +          managed = "in-band-status";
+> +        };
+> +        /* Finally the Management interface */
+> +        port64: port@64 {
+> +          reg = <64>;
+> +          bandwidth = <1000>;
+> +          phys = <&serdes 0>;
+> +          phy-handle = <&phy64>;
+> +          phy-mode = "sgmii";
+> +        };
+> +      };
+> +    };
+> +
+> +...
+> -- 
+> 2.29.2
+> 
