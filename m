@@ -2,192 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1263C2F7F6C
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBB42F7F6D
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731501AbhAOPWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:22:31 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:12973 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726182AbhAOPWa (ORCPT
+        id S1732005AbhAOPW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:22:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731334AbhAOPW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:22:30 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610724125; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=4kOGYe/Vih3B8yN/uLa3ELAeVENaldnb22XtkAgp3wM=; b=RxjHPBhgkRM/Av9xcwRIVaq1fSw8/Yp6RxKZ+u4X/fSsaKuppidG20c8S6ynwCVUf9uiSjdc
- VNKCv8eM/ef++PDI73TgNsWU9iDeZkG0gZZG9V/DMSqIlWVykHuJHU1GmcrW1HX9q+m6LjCz
- q7547s84xspICPaIKBCKYRMX+2s=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6001b2f51e3bf9b669671818 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 Jan 2021 15:21:25
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1E2F0C43462; Fri, 15 Jan 2021 15:21:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.110] (unknown [49.37.144.144])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 238E1C43461;
-        Fri, 15 Jan 2021 15:21:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 238E1C43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-Subject: Re: [PATCH] mm/compaction: return proper state in
- should_proactive_compact_node
-To:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
-        mhocko@suse.com, khalid.aziz@oracle.com, ngupta@nitingupta.dev,
-        vinmenon@codeaurora.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <1610546586-18998-1-git-send-email-charante@codeaurora.org>
- <bc3eeda2-ffcc-4f86-a24a-3c194102df47@suse.cz>
-From:   Charan Teja Kalla <charante@codeaurora.org>
-Message-ID: <f00b3812-a99c-8e96-2e5c-ee90ba632fab@codeaurora.org>
-Date:   Fri, 15 Jan 2021 20:51:18 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Fri, 15 Jan 2021 10:22:57 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB22C0613C1;
+        Fri, 15 Jan 2021 07:22:16 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id d26so9637090wrb.12;
+        Fri, 15 Jan 2021 07:22:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Tnfm7gtEx0dAkvKQ5TuqitkxF+T0R813w6cmMs8GDJo=;
+        b=utqjm9qz9J3H29otHUpKGdu8lVrAt8+InF3X8ZZ/LGCQ0AV83RVue+M0xUaRGbiLXq
+         u0aTdRK8SX3cLjGzLe+CVUzoON1DTM8vSFJCljdw1DDF0+yNdx4Id5OgYn8K7NI6CEsM
+         64JdJkwMlsrHUrcxzrF3CvrySSprZfrw+bl3X4ZBwthSVtWFeXRhY9b3+ejEwwJcutPv
+         B5udzGuwhebNP2LAawPaz0Xh5bqwOcikTQTKp12SKL/MGfHuXgjXYZUbXIu3ZH3OPCVH
+         +K/m3Iw618n5JXyp8mmkum8DktQ9U9I+Y3RDY2c+oQ7iFP4cXs1t5EP3WVa/5aHRwBxJ
+         d8PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Tnfm7gtEx0dAkvKQ5TuqitkxF+T0R813w6cmMs8GDJo=;
+        b=EEBeJ+iKqy61bf41m4qY7D8QunSHoccEvDP3ZsSuBywsS10neyGN7kmxhpbSMmYkW5
+         GqxQvAYkSTIOxncyloIESgOcdrAFroMFt0ndTNERxIHado2vvg8rtu0ltZYUD8ERMW4x
+         P3WZI3Mc0PwaDRb8FhBOpIutD8AOlktvfWpzKo3XORnwYwNtxTcXgcrXy+k8/7Q0Dht1
+         vbM/MZZP5FQkUIxJwYBrAf09U5O0rSeXuOhaVj1YqRddWcxVNxTst7pDgahhKv30A7mt
+         gk393lpJFmON35co9eyjNgy76QKcpa7BCOyL4kOp+bk1DHAYrCIsLQ1iI2u6AYlHbiBG
+         2QdA==
+X-Gm-Message-State: AOAM530dmbhhBDgcC7vYw5ntKEwc86v8Q0PH1g7M4Co7w9YoS/2g6NBe
+        jbuiYGE6Wa2aYqM3goCMv78=
+X-Google-Smtp-Source: ABdhPJypwvseEG8WGwKHgyd9YL/CM33D3wv7YiExANdkO1CSjgs9Zmr28/I0ns+6zYRhg0NAKWT7Aw==
+X-Received: by 2002:a5d:5049:: with SMTP id h9mr14168287wrt.404.1610724135173;
+        Fri, 15 Jan 2021 07:22:15 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id f9sm17020621wrw.81.2021.01.15.07.22.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 07:22:14 -0800 (PST)
+Date:   Fri, 15 Jan 2021 16:22:12 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/5] ALSA: hda/tegra: Use clk_bulk helpers
+Message-ID: <YAGzJM7BJqLV0xxY@ulmo>
+References: <20210112125834.21545-1-digetx@gmail.com>
+ <20210112125834.21545-2-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <bc3eeda2-ffcc-4f86-a24a-3c194102df47@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Au/hUgr6VFbvitZL"
+Content-Disposition: inline
+In-Reply-To: <20210112125834.21545-2-digetx@gmail.com>
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you Vlastimil!!
 
-On 1/15/2021 6:15 PM, Vlastimil Babka wrote:
-> On 1/13/21 3:03 PM, Charan Teja Reddy wrote:
->> should_proactive_compact_node() returns true when sum of the
->> fragmentation score of all the zones in the node is greater than the
->> wmark_high of compaction which then triggers the proactive compaction
->> that operates on the individual zones of the node. But proactive
->> compaction runs on the zone only when the fragmentation score of the
->> zone is greater than wmark_low(=wmark_high - 10).
->>
->> This means that the sum of the fragmentation scores of all the zones can
->> exceed the wmark_high but individual zone scores can still be less than
->> the wmark_low which makes the unnecessary trigger of the proactive
->> compaction only to return doing nothing.
->>
->> Another issue with the return of proactive compaction with out even
->> trying is its deferral. It is simply deferred for 1 <<
->> COMPACT_MAX_DEFER_SHIFT if the scores across the proactive compaction is
->> same, thinking that compaction didn't make any progress but in reality
->> it didn't even try. With the delay between successive retries for
->> proactive compaction is 500msec, it can result into the deferral for
->> ~30sec with out even trying the proactive compaction.
->>
->> Test scenario is that: compaction_proactiveness=50 thus the wmark_low =
->> 50 and wmark_high = 60. System have 2 zones(Normal and Movable) with
->> sizes 5GB and 6GB respectively. After opening some apps on the android,
->> the fragmentation scores of these zones are 47 and 49 respectively.
->> Since the sum of these fragmentation scores are above the wmark_high
->> which triggers the proactive compaction and there since the individual
->> zone scores are below wmark_low, it returns without trying the
->> compaction. As a result the fragmentation scores of the zones are still
->> 47 and 49 which makes the existing logic to defer the compaction
->> thinking that noprogress is made across the compaction.
->>
->> So, run the proactive compaction on the node zones only when atleast one
->> of the zones fragmentation score is greater than wmark_low. This avoids
->> the unnecessary deferral and retries of the compaction.
->>
->> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-> 
-> Good catch about the problem, but I wonder if the solution could be better.
-> 
-> fragmentation_score_node() is a weighted average of scores of all zones, that's
-> why fragmentation_score_zone() adjusts the score by zone_present/node_present.
-> 
-> But when considering an individual zone in __compact_finished(), we shouldn't be
-> using fragmentation_score_zone() with the adjustment. We are not calculating the
-> weighted average for the whole node there, so it doesn't make sense to do the
-> adjustment by size. So if it simply took extfrag_for_order(...) as the score, it
-> should work as expected. In your example above, the score of each zone would be
-> above 60. If the weighted average is above wmark_high, then individual score
-> (not adjusted) of at least one zone has to be above wmark_high, and the extra
-> check using max() is not necessary.
-> 
-> So I would split fragmentation_score_zone() to e.g. fragmentation_score_zone()
-> and fragmentation_score_zone_weighted() and call the latter only from
-> fragmentation_score_node(), and not from __compact_finished().
+--Au/hUgr6VFbvitZL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This suggestion looks good and much cleaner. Will raise V2 in couple of
-days. Thanks.
+On Tue, Jan 12, 2021 at 03:58:30PM +0300, Dmitry Osipenko wrote:
+> Use clk_bulk helpers to make code cleaner.
+>=20
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  sound/pci/hda/hda_tegra.c | 68 ++++++---------------------------------
+>  1 file changed, 9 insertions(+), 59 deletions(-)
 
-> 
-> Vlastimil
-> 
->> ---
->>  mm/compaction.c | 27 +++++++++++++++++++++++++--
->>  1 file changed, 25 insertions(+), 2 deletions(-)
->>
->> diff --git a/mm/compaction.c b/mm/compaction.c
->> index e5acb97..f7a772a 100644
->> --- a/mm/compaction.c
->> +++ b/mm/compaction.c
->> @@ -1964,6 +1964,26 @@ static unsigned int fragmentation_score_node(pg_data_t *pgdat)
->>  	return score;
->>  }
->>  
->> +/*
->> + * Returns the maximum of fragmentation scores of zones in a node. This is
->> + * used in taking the decission of whether to trigger the proactive compaction
->> + * on the zones of this node.
->> + */
->> +static unsigned int fragmentation_score_node_zones_max(pg_data_t *pgdat)
->> +{
->> +	int zoneid;
->> +	unsigned int max = 0;
->> +
->> +	for (zoneid = 0; zoneid < MAX_NR_ZONES; zoneid++) {
->> +		struct zone *zone;
->> +
->> +		zone = &pgdat->node_zones[zoneid];
->> +		max = max_t(unsigned int, fragmentation_score_zone(zone), max);
->> +	}
->> +
->> +	return max;
->> +}
->> +
->>  static unsigned int fragmentation_score_wmark(pg_data_t *pgdat, bool low)
->>  {
->>  	unsigned int wmark_low;
->> @@ -1979,13 +1999,16 @@ static unsigned int fragmentation_score_wmark(pg_data_t *pgdat, bool low)
->>  
->>  static bool should_proactive_compact_node(pg_data_t *pgdat)
->>  {
->> -	int wmark_high;
->> +	int wmark_low, wmark_high;
->>  
->>  	if (!sysctl_compaction_proactiveness || kswapd_is_running(pgdat))
->>  		return false;
->>  
->>  	wmark_high = fragmentation_score_wmark(pgdat, false);
->> -	return fragmentation_score_node(pgdat) > wmark_high;
->> +	wmark_low = fragmentation_score_wmark(pgdat, true);
->> +
->> +	return fragmentation_score_node(pgdat) > wmark_high &&
->> +		fragmentation_score_node_zones_max(pgdat) > wmark_low;
->>  }
->>  
->>  static enum compact_result __compact_finished(struct compact_control *cc)
->>
-> 
+Heh... I have a branch samewhere with this same patch. Glad I can cross
+that off my list. One thing jumped out at me, see below.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-Forum, a Linux Foundation Collaborative Project
+> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+> index 70164d1428d4..4c799661c2f6 100644
+> --- a/sound/pci/hda/hda_tegra.c
+> +++ b/sound/pci/hda/hda_tegra.c
+> @@ -70,9 +70,8 @@
+>  struct hda_tegra {
+>  	struct azx chip;
+>  	struct device *dev;
+> -	struct clk *hda_clk;
+> -	struct clk *hda2codec_2x_clk;
+> -	struct clk *hda2hdmi_clk;
+> +	struct clk_bulk_data clocks[3];
+> +	unsigned int nclocks;
+>  	void __iomem *regs;
+>  	struct work_struct probe_work;
+>  };
+> @@ -113,36 +112,6 @@ static void hda_tegra_init(struct hda_tegra *hda)
+>  	writel(v, hda->regs + HDA_IPFS_INTR_MASK);
+>  }
+> =20
+> -static int hda_tegra_enable_clocks(struct hda_tegra *data)
+> -{
+> -	int rc;
+> -
+> -	rc =3D clk_prepare_enable(data->hda_clk);
+> -	if (rc)
+> -		return rc;
+> -	rc =3D clk_prepare_enable(data->hda2codec_2x_clk);
+> -	if (rc)
+> -		goto disable_hda;
+> -	rc =3D clk_prepare_enable(data->hda2hdmi_clk);
+> -	if (rc)
+> -		goto disable_codec_2x;
+> -
+> -	return 0;
+> -
+> -disable_codec_2x:
+> -	clk_disable_unprepare(data->hda2codec_2x_clk);
+> -disable_hda:
+> -	clk_disable_unprepare(data->hda_clk);
+> -	return rc;
+> -}
+> -
+> -static void hda_tegra_disable_clocks(struct hda_tegra *data)
+> -{
+> -	clk_disable_unprepare(data->hda2hdmi_clk);
+> -	clk_disable_unprepare(data->hda2codec_2x_clk);
+> -	clk_disable_unprepare(data->hda_clk);
+> -}
+> -
+>  /*
+>   * power management
+>   */
+> @@ -186,7 +155,7 @@ static int __maybe_unused hda_tegra_runtime_suspend(s=
+truct device *dev)
+>  		azx_stop_chip(chip);
+>  		azx_enter_link_reset(chip);
+>  	}
+> -	hda_tegra_disable_clocks(hda);
+> +	clk_bulk_disable_unprepare(hda->nclocks, hda->clocks);
+> =20
+>  	return 0;
+>  }
+> @@ -198,7 +167,7 @@ static int __maybe_unused hda_tegra_runtime_resume(st=
+ruct device *dev)
+>  	struct hda_tegra *hda =3D container_of(chip, struct hda_tegra, chip);
+>  	int rc;
+> =20
+> -	rc =3D hda_tegra_enable_clocks(hda);
+> +	rc =3D clk_bulk_prepare_enable(hda->nclocks, hda->clocks);
+>  	if (rc !=3D 0)
+>  		return rc;
+>  	if (chip && chip->running) {
+> @@ -268,29 +237,6 @@ static int hda_tegra_init_chip(struct azx *chip, str=
+uct platform_device *pdev)
+>  	return 0;
+>  }
+> =20
+> -static int hda_tegra_init_clk(struct hda_tegra *hda)
+> -{
+> -	struct device *dev =3D hda->dev;
+> -
+> -	hda->hda_clk =3D devm_clk_get(dev, "hda");
+> -	if (IS_ERR(hda->hda_clk)) {
+> -		dev_err(dev, "failed to get hda clock\n");
+> -		return PTR_ERR(hda->hda_clk);
+> -	}
+> -	hda->hda2codec_2x_clk =3D devm_clk_get(dev, "hda2codec_2x");
+> -	if (IS_ERR(hda->hda2codec_2x_clk)) {
+> -		dev_err(dev, "failed to get hda2codec_2x clock\n");
+> -		return PTR_ERR(hda->hda2codec_2x_clk);
+> -	}
+> -	hda->hda2hdmi_clk =3D devm_clk_get(dev, "hda2hdmi");
+> -	if (IS_ERR(hda->hda2hdmi_clk)) {
+> -		dev_err(dev, "failed to get hda2hdmi clock\n");
+> -		return PTR_ERR(hda->hda2hdmi_clk);
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+>  static int hda_tegra_first_init(struct azx *chip, struct platform_device=
+ *pdev)
+>  {
+>  	struct hda_tegra *hda =3D container_of(chip, struct hda_tegra, chip);
+> @@ -495,7 +441,11 @@ static int hda_tegra_probe(struct platform_device *p=
+dev)
+>  		return err;
+>  	}
+> =20
+> -	err =3D hda_tegra_init_clk(hda);
+> +	hda->clocks[hda->nclocks++].id =3D "hda";
+> +	hda->clocks[hda->nclocks++].id =3D "hda2hdmi";
+> +	hda->clocks[hda->nclocks++].id =3D "hda2codec_2x";
+
+Originally the code did this in this order: "hda", "hda2codec_2x" and
+"hda2hdmi". I don't expect the exact order to be very relevant, but was
+there any particular reason to change it?
+
+In either case, this should be fine:
+
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+--Au/hUgr6VFbvitZL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmABsyQACgkQ3SOs138+
+s6FoyRAAkCUvQ9bydbIYbQCgIODgmtk4NEpFc9gLUNSaSU1q6Rosi0xLJ73jJw2q
+8w4X6TL9a1kc91y4DuIt+iMfP35eG/OY1fz5FsWfHZkGSwytqKZeiOZWq6mlOJ47
+KT2LXeqiuDao04vW5USXuhvp9kNLlGOwDFZ32suVw1cOfKZYBG3gYTzMZetHfd2g
+Ey+/quceJjpaOOPqCja7Fzysz0xTMfPuLZjy533q/qOwpLH1HSiiOQZXlEzruU1w
+niOa7lo9z5kYplb+ubMq2JD3nP2oFMQ1BjZxPQeaZwFWtrCKUTDRa4upv3fEyDB1
+l+v9loObsYuLxJrVTTIKaOh1vXr875Lv2DItLCXj+qPd1r+dvHwz3Ccf7XxlK0/n
+XdWXa+CTUHY6DAGHlg3EWaaeYUcRfLP/v8Kw1Ydm6SCKIh8XapVNrfxqaEmDRSV9
+yzJI0VTQw8ZHDAJ4W9Rb+vRiUcOeXiuJSbvoEW+72/5asspEiJIMyQfUtQUyibqS
+eYgLmYk9Lp88dobozS9DexoP7xVwE9S66+alZ7k3+MxymWimmBoyRDwFUh2NatxB
+9f3/aGwQ1+q0PZti2vpmUZfpPbB3xJxv1w1WnNAvA6Rpcef1RoRpkwXXiTt4lFVs
+1OTsiV1mbKlCRos1I7DR+d7BIG8UhtBEBFw/EK2wBEA/J1uM7Ic=
+=AaZO
+-----END PGP SIGNATURE-----
+
+--Au/hUgr6VFbvitZL--
