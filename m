@@ -2,276 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298202F8809
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2166A2F880B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:00:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbhAOV6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 16:58:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbhAOV6N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 16:58:13 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB4FC061757;
-        Fri, 15 Jan 2021 13:57:33 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id z5so20990986iob.11;
-        Fri, 15 Jan 2021 13:57:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=FBVMRQdBC9ScDW4bAdh6zPVr4kliTneT+ezPPvG5nok=;
-        b=You9Bm0li6MgFfVhMHXqZ2DqgNVwXoPx/W5xKy89L/ePxiAdjKb5686doRj85u0g1I
-         O/WAKbUCujypZ713Gz8c1sMXtYYtmAzbqCkJkn8WN7qpKuD8/ZPs0XqXBBq34mAeZdox
-         mnffpCLyz+Ih+k48byEusGW7SDTe6WNjoqQago/i5DVlsVFA4tF3IBpvpT+EXEpZZz9x
-         9kNxB80UGCkXANcvRCAr5v0ugDIG+WUheX8ikeTI60rTwuk9NF1HHgvPt7I5IEjTgZ1c
-         yoKC+bNry+uVyKacm1oZGb5Ind/5i7vvDUoPXXEa24BeAIJIyp/JZqgMbmmuQYLTjMd1
-         k+GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=FBVMRQdBC9ScDW4bAdh6zPVr4kliTneT+ezPPvG5nok=;
-        b=AnthSqZBSV9yvwWdB3F44qZU7QMknTXBl9wJeTuyZ1VFEmiazYggJ3E7VXWyx6WMv1
-         9rFzRYKyrht4BEegfkSLlklvUeTRZT2kgCkJbNFnsGGZA9XO0TyTWZi71U5vL6vyMowA
-         A9ei9lTmqcSg3mIA70477hbM6Zgml3dNWTStTN2dBJ6cMXuAk+khDQVmdl1eVcB9ErC/
-         HW4NKpN6kTQ7hK6jYPHbfYOGAsLUXSOZI7x46S24+PfPiqn1vJ33BGmQbGYmHt+FB78c
-         DGDeXpVcU3x4jblrthY1Z0DnhBG9Kg2oUvjPJykn4mR+yrFpxuV9CJwOKzkgR73zykRc
-         ntrg==
-X-Gm-Message-State: AOAM5311TUWJlIct+earoyIBA/V/SHnjtWg+kHRxq0qNJ8vgiT9VSAS/
-        NJz7IPfjRDCcXj2b/olD4RGXfIXgWWZwMGAJDeA=
-X-Google-Smtp-Source: ABdhPJw+fBVQq9bKd8eGxl1VNEOmQ+nmjVRTD6rtfvIE/yClPeTLnf+tP6nC7L3/ZqiRySBU67l59heXGuCGJPADQNo=
-X-Received: by 2002:a5e:9b06:: with SMTP id j6mr10090198iok.171.1610747852337;
- Fri, 15 Jan 2021 13:57:32 -0800 (PST)
+        id S1727056AbhAOV67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 16:58:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726367AbhAOV67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 16:58:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37C22239FC;
+        Fri, 15 Jan 2021 21:58:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610747898;
+        bh=+6Vjjut+EQfcgIj8kOGhKBiQrdCG6BzSk78pb6dNlS0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=IePHwf1EUmOFCcr9j2pITG4NKalVEzWutmAih/KgmvNVL6BKFlJFhrIrCJBz426BH
+         R9EbqUPIcBCdCOhFw2d0Jf6/h+79WoJTA8BKoe8ca8EFfesEwxvy/cJ0BeYqQGZJD0
+         pPMX0+JagfTlePwecFbKjvkCOAwR0IjjsHF/hpWccCtdUEQR+G06mh9PtAYQcbUOdV
+         VR06W2rfkqca0XNN47LsE046Or5MOuNM5LQxX12j3ZlMe5pbVonIo0XwRkoUY9VlJa
+         z1g8jILFiG7SiLYdnWDLffUgb2ADhpQrTtzwmjljUcPqMyEpsfkQs8HL5Dx5yrYa9o
+         RWc9gMj8PNlDQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 05CBA352162B; Fri, 15 Jan 2021 13:58:18 -0800 (PST)
+Date:   Fri, 15 Jan 2021 13:58:17 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     dvyukov@google.com, glider@google.com, andreyknvl@google.com,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kcsan: Add missing license and copyright headers
+Message-ID: <20210115215817.GN2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210115170953.3035153-1-elver@google.com>
 MIME-Version: 1.0
-References: <20210115210616.404156-1-ndesaulniers@google.com>
- <20210115210616.404156-4-ndesaulniers@google.com> <CA+icZUVWPgbMQAgHaRa7emxyzN+SMc6hZ1UNtkkO80-RH6-yNg@mail.gmail.com>
- <CAKwvOdmR_g7R3wEngsTReAmTZTP9s5PBPg-QC5339FMUVeLfJw@mail.gmail.com>
-In-Reply-To: <CAKwvOdmR_g7R3wEngsTReAmTZTP9s5PBPg-QC5339FMUVeLfJw@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 15 Jan 2021 22:57:21 +0100
-Message-ID: <CA+icZUVYgRZ7V6FiE2xUGAMz7_ozULdL0zqZAipo4KRAd0_Q+A@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] Kbuild: implement support for DWARF v5
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210115170953.3035153-1-elver@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 10:49 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Fri, Jan 15, 2021 at 1:46 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > On Fri, Jan 15, 2021 at 10:06 PM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > >
-> > > DWARF v5 is the latest standard of the DWARF debug info format.
-> > >
-> > > Feature detection of DWARF5 is onerous, especially given that we've
-> > > removed $(AS), so we must query $(CC) for DWARF5 assembler directive
-> > > support.
-> > >
-> > > The DWARF version of a binary can be validated with:
-> > > $ llvm-dwarfdump vmlinux | head -n 4 | grep version
-> > > or
-> > > $ readelf --debug-dump=info vmlinux 2>/dev/null | grep Version
-> > >
-> > > DWARF5 wins significantly in terms of size when mixed with compression
-> > > (CONFIG_DEBUG_INFO_COMPRESSED).
-> > >
-> > > 363M    vmlinux.clang12.dwarf5.compressed
-> > > 434M    vmlinux.clang12.dwarf4.compressed
-> > > 439M    vmlinux.clang12.dwarf2.compressed
-> > > 457M    vmlinux.clang12.dwarf5
-> > > 536M    vmlinux.clang12.dwarf4
-> > > 548M    vmlinux.clang12.dwarf2
-> > >
-> > > 515M    vmlinux.gcc10.2.dwarf5.compressed
-> > > 599M    vmlinux.gcc10.2.dwarf4.compressed
-> > > 624M    vmlinux.gcc10.2.dwarf2.compressed
-> > > 630M    vmlinux.gcc10.2.dwarf5
-> > > 765M    vmlinux.gcc10.2.dwarf4
-> > > 809M    vmlinux.gcc10.2.dwarf2
-> > >
-> > > Though the quality of debug info is harder to quantify; size is not a
-> > > proxy for quality.
-> > >
-> > > Jakub notes:
-> > >   All [GCC] 5.1 - 6.x did was start accepting -gdwarf-5 as experimental
-> > >   option that enabled some small DWARF subset (initially only a few
-> > >   DW_LANG_* codes newly added to DWARF5 drafts).  Only GCC 7 (released
-> > >   after DWARF 5 has been finalized) started emitting DWARF5 section
-> > >   headers and got most of the DWARF5 changes in...
-> > >
-> > > Version check GCC so that we don't need to worry about the difference in
-> > > command line args between GNU readelf and llvm-readelf/llvm-dwarfdump to
-> > > validate the DWARF Version in the assembler feature detection script.
-> > >
-> > > GNU `as` only recently gained support for specifying -gdwarf-5, so when
-> > > compiling with Clang but without Clang's integrated assembler
-> > > (LLVM_IAS=1 is not set), explicitly add -Wa,-gdwarf-5 to DEBUG_CFLAGS.
-> > >
-> > > Disabled for now if CONFIG_DEBUG_INFO_BTF is set; pahole doesn't yet
-> > > recognize the new additions to the DWARF debug info. Thanks to Sedat for
-> > > the report.
-> > >
-> > > Link: http://www.dwarfstd.org/doc/DWARF5.pdf
-> > > Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> > > Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> > > Suggested-by: Caroline Tice <cmtice@google.com>
-> > > Suggested-by: Fangrui Song <maskray@google.com>
-> > > Suggested-by: Jakub Jelinek <jakub@redhat.com>
-> > > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
-> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > ---
-> > >  Makefile                          |  6 ++++++
-> > >  include/asm-generic/vmlinux.lds.h |  6 +++++-
-> > >  lib/Kconfig.debug                 | 18 ++++++++++++++++++
-> > >  scripts/test_dwarf5_support.sh    |  8 ++++++++
-> > >  4 files changed, 37 insertions(+), 1 deletion(-)
-> > >  create mode 100755 scripts/test_dwarf5_support.sh
-> > >
-> > > diff --git a/Makefile b/Makefile
-> > > index 4eb3bf7ee974..1dcea03861ef 100644
-> > > --- a/Makefile
-> > > +++ b/Makefile
-> > > @@ -828,10 +828,16 @@ endif
-> > >
-> > >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
-> > >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-> > > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
-> > >  DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
-> > >  # Binutils 2.35+ required for -gdwarf-4+ support.
-> > >  dwarf-aflag    := $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-version-y))
-> > >  KBUILD_AFLAGS  += $(dwarf-aflag)
-> > > +ifdef CONFIG_CC_IS_CLANG
-> > > +ifneq ($(LLVM_IAS),1)
-> > > +DEBUG_CFLAGS   += $(dwarf-aflag)
-> > > +endif
-> > > +endif
-> > >
-> > >  ifdef CONFIG_DEBUG_INFO_REDUCED
-> > >  DEBUG_CFLAGS   += $(call cc-option, -femit-struct-debug-baseonly) \
-> > > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> > > index 49944f00d2b3..37dc4110875e 100644
-> > > --- a/include/asm-generic/vmlinux.lds.h
-> > > +++ b/include/asm-generic/vmlinux.lds.h
-> > > @@ -843,7 +843,11 @@
-> > >                 .debug_types    0 : { *(.debug_types) }                 \
-> > >                 /* DWARF 5 */                                           \
-> > >                 .debug_macro    0 : { *(.debug_macro) }                 \
-> > > -               .debug_addr     0 : { *(.debug_addr) }
-> > > +               .debug_addr     0 : { *(.debug_addr) }                  \
-> > > +               .debug_line_str 0 : { *(.debug_line_str) }              \
-> > > +               .debug_loclists 0 : { *(.debug_loclists) }              \
-> > > +               .debug_rnglists 0 : { *(.debug_rnglists) }              \
-> > > +               .debug_str_offsets      0 : { *(.debug_str_offsets) }
-> > >
-> > >  /* Stabs debugging sections. */
-> > >  #define STABS_DEBUG                                                    \
-> > > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > > index e80770fac4f0..658f32ec0c05 100644
-> > > --- a/lib/Kconfig.debug
-> > > +++ b/lib/Kconfig.debug
-> > > @@ -273,6 +273,24 @@ config DEBUG_INFO_DWARF4
-> > >           It makes the debug information larger, but it significantly
-> > >           improves the success of resolving variables in gdb on optimized code.
-> > >
-> > > +config DEBUG_INFO_DWARF5
-> > > +       bool "Generate DWARF Version 5 debuginfo"
-> > > +       depends on GCC_VERSION >= 50000 || CC_IS_CLANG
-> > > +       depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
-> >
-> > Better keep GCC depends in one line:
-> >
-> > +       depends on CC_IS_GCC && GCC_VERSION >= 50000 || CC_IS_CLANG
-> > +       depends on $(success,$(srctree)/scripts/test_dwarf5_support.sh
-> > $(CC) $(CLANG_FLAGS))
->
-> It's intentional, if a bit obtuse:
-> We don't want to check the assembler support for -Wa,-gdwarf-5 via
-> compiler driver when CC=gcc; instead, we'll rely on how GCC was
-> configured as per Arvind.
->
+On Fri, Jan 15, 2021 at 06:09:53PM +0100, Marco Elver wrote:
+> Adds missing license and/or copyright headers for KCSAN source files.
+> 
+> Signed-off-by: Marco Elver <elver@google.com>
 
-Hmm, OK.
-I have not tested my diff in diverse setup/combination of compiler and
-"bin"utils.
-So, I did not want to have a different behaviour.
-Can you comment on this intentional setting in v6?
+This one seemed straightforward and I heard no objections to the previous
+two-patch series, so I queued them for the v5.13 merge window, thank you!
 
-Thanks.
+If any of them need adjustment, please send me the updated patch and
+tell me which one it replaces.  Something about -rcu being in heavy
+experimental mode at the moment.  ;-)
 
-- Sedat -
+							Thanx, Paul
 
-> >
-> > As said in the other patch:
-> >
-> > Use consistently: s/DWARF Version/DWARF version/g
->
-> Ah right, and I forget your point about kbuild/Kbuild.  Will wait for
-> more feedback then send a v6 next week.  Thanks as always for the
-> feedback.
->
-> >
-> > - Sedat -
-> >
-> > > +       depends on !DEBUG_INFO_BTF
-> > > +       help
-> > > +         Generate DWARF v5 debug info. Requires binutils 2.35, gcc 5.0+ (gcc
-> > > +         5.0+ accepts the -gdwarf-5 flag but only had partial support for some
-> > > +         draft features until 7.0), and gdb 8.0+.
-> > > +
-> > > +         Changes to the structure of debug info in Version 5 allow for around
-> > > +         15-18% savings in resulting image and debug info section sizes as
-> > > +         compared to DWARF Version 4. DWARF Version 5 standardizes previous
-> > > +         extensions such as accelerators for symbol indexing and the format
-> > > +         for fission (.dwo/.dwp) files. Users may not want to select this
-> > > +         config if they rely on tooling that has not yet been updated to
-> > > +         support DWARF Version 5.
-> > > +
-> > >  endchoice # "DWARF version"
-> > >
-> > >  config DEBUG_INFO_BTF
-> > > diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
-> > > new file mode 100755
-> > > index 000000000000..1a00484d0b2e
-> > > --- /dev/null
-> > > +++ b/scripts/test_dwarf5_support.sh
-> > > @@ -0,0 +1,8 @@
-> > > +#!/bin/sh
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +# Test that assembler accepts -gdwarf-5 and .file 0 directives, which were bugs
-> > > +# in binutils < 2.35.
-> > > +# https://sourceware.org/bugzilla/show_bug.cgi?id=25612
-> > > +# https://sourceware.org/bugzilla/show_bug.cgi?id=25614
-> > > +echo '.file 0 "filename"' | $* -gdwarf-5 -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
-> > > --
-> > > 2.30.0.284.gd98b1dd5eaa7-goog
-> > >
->
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+> ---
+>  Documentation/dev-tools/kcsan.rst | 3 +++
+>  include/linux/kcsan-checks.h      | 6 ++++++
+>  include/linux/kcsan.h             | 7 +++++++
+>  kernel/kcsan/atomic.h             | 5 +++++
+>  kernel/kcsan/core.c               | 5 +++++
+>  kernel/kcsan/debugfs.c            | 5 +++++
+>  kernel/kcsan/encoding.h           | 5 +++++
+>  kernel/kcsan/kcsan.h              | 3 ++-
+>  kernel/kcsan/report.c             | 5 +++++
+>  kernel/kcsan/selftest.c           | 5 +++++
+>  10 files changed, 48 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
+> index be7a0b0e1f28..d85ce238ace7 100644
+> --- a/Documentation/dev-tools/kcsan.rst
+> +++ b/Documentation/dev-tools/kcsan.rst
+> @@ -1,3 +1,6 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +.. Copyright (C) 2019, Google LLC.
+> +
+>  The Kernel Concurrency Sanitizer (KCSAN)
+>  ========================================
+>  
+> diff --git a/include/linux/kcsan-checks.h b/include/linux/kcsan-checks.h
+> index cf14840609ce..9fd0ad80fef6 100644
+> --- a/include/linux/kcsan-checks.h
+> +++ b/include/linux/kcsan-checks.h
+> @@ -1,4 +1,10 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * KCSAN access checks and modifiers. These can be used to explicitly check
+> + * uninstrumented accesses, or change KCSAN checking behaviour of accesses.
+> + *
+> + * Copyright (C) 2019, Google LLC.
+> + */
+>  
+>  #ifndef _LINUX_KCSAN_CHECKS_H
+>  #define _LINUX_KCSAN_CHECKS_H
+> diff --git a/include/linux/kcsan.h b/include/linux/kcsan.h
+> index 53340d8789f9..fc266ecb2a4d 100644
+> --- a/include/linux/kcsan.h
+> +++ b/include/linux/kcsan.h
+> @@ -1,4 +1,11 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * The Kernel Concurrency Sanitizer (KCSAN) infrastructure. Public interface and
+> + * data structures to set up runtime. See kcsan-checks.h for explicit checks and
+> + * modifiers. For more info please see Documentation/dev-tools/kcsan.rst.
+> + *
+> + * Copyright (C) 2019, Google LLC.
+> + */
+>  
+>  #ifndef _LINUX_KCSAN_H
+>  #define _LINUX_KCSAN_H
+> diff --git a/kernel/kcsan/atomic.h b/kernel/kcsan/atomic.h
+> index 75fe701f4127..530ae1bda8e7 100644
+> --- a/kernel/kcsan/atomic.h
+> +++ b/kernel/kcsan/atomic.h
+> @@ -1,4 +1,9 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Rules for implicitly atomic memory accesses.
+> + *
+> + * Copyright (C) 2019, Google LLC.
+> + */
+>  
+>  #ifndef _KERNEL_KCSAN_ATOMIC_H
+>  #define _KERNEL_KCSAN_ATOMIC_H
+> diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+> index 3bf98db9c702..8c3867640c21 100644
+> --- a/kernel/kcsan/core.c
+> +++ b/kernel/kcsan/core.c
+> @@ -1,4 +1,9 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * KCSAN core runtime.
+> + *
+> + * Copyright (C) 2019, Google LLC.
+> + */
+>  
+>  #define pr_fmt(fmt) "kcsan: " fmt
+>  
+> diff --git a/kernel/kcsan/debugfs.c b/kernel/kcsan/debugfs.c
+> index 3c8093a371b1..c837ce6c52e6 100644
+> --- a/kernel/kcsan/debugfs.c
+> +++ b/kernel/kcsan/debugfs.c
+> @@ -1,4 +1,9 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * KCSAN debugfs interface.
+> + *
+> + * Copyright (C) 2019, Google LLC.
+> + */
+>  
+>  #define pr_fmt(fmt) "kcsan: " fmt
+>  
+> diff --git a/kernel/kcsan/encoding.h b/kernel/kcsan/encoding.h
+> index 7ee405524904..170a2bb22f53 100644
+> --- a/kernel/kcsan/encoding.h
+> +++ b/kernel/kcsan/encoding.h
+> @@ -1,4 +1,9 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * KCSAN watchpoint encoding.
+> + *
+> + * Copyright (C) 2019, Google LLC.
+> + */
+>  
+>  #ifndef _KERNEL_KCSAN_ENCODING_H
+>  #define _KERNEL_KCSAN_ENCODING_H
+> diff --git a/kernel/kcsan/kcsan.h b/kernel/kcsan/kcsan.h
+> index 8d4bf3431b3c..594a5dd4842a 100644
+> --- a/kernel/kcsan/kcsan.h
+> +++ b/kernel/kcsan/kcsan.h
+> @@ -1,8 +1,9 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> -
+>  /*
+>   * The Kernel Concurrency Sanitizer (KCSAN) infrastructure. For more info please
+>   * see Documentation/dev-tools/kcsan.rst.
+> + *
+> + * Copyright (C) 2019, Google LLC.
+>   */
+>  
+>  #ifndef _KERNEL_KCSAN_KCSAN_H
+> diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
+> index d3bf87e6007c..13dce3c664d6 100644
+> --- a/kernel/kcsan/report.c
+> +++ b/kernel/kcsan/report.c
+> @@ -1,4 +1,9 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * KCSAN reporting.
+> + *
+> + * Copyright (C) 2019, Google LLC.
+> + */
+>  
+>  #include <linux/debug_locks.h>
+>  #include <linux/delay.h>
+> diff --git a/kernel/kcsan/selftest.c b/kernel/kcsan/selftest.c
+> index 9014a3a82cf9..7f29cb0f5e63 100644
+> --- a/kernel/kcsan/selftest.c
+> +++ b/kernel/kcsan/selftest.c
+> @@ -1,4 +1,9 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * KCSAN short boot-time selftests.
+> + *
+> + * Copyright (C) 2019, Google LLC.
+> + */
+>  
+>  #define pr_fmt(fmt) "kcsan: " fmt
+>  
+> -- 
+> 2.30.0.284.gd98b1dd5eaa7-goog
+> 
