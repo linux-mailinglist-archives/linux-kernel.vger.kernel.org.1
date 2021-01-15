@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5981A2F7A48
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:50:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1902F7A8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732474AbhAOMgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:36:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42934 "EHLO mail.kernel.org"
+        id S2387915AbhAOMuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:50:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387815AbhAOMgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:36:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2774F221FA;
-        Fri, 15 Jan 2021 12:35:49 +0000 (UTC)
+        id S2387823AbhAOMgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:36:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56A00207C4;
+        Fri, 15 Jan 2021 12:35:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714149;
-        bh=IsMOhJZgaQ8xgAglxugKq3jDm3BwXHDoowige6vSB/k=;
+        s=korg; t=1610714151;
+        bh=DI5UL3pn0UfozUlu804hzO6HXm4kw6L72vj/b0BHaxA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dA5B8Arvkdl1E+jIW3n3DCgDZ8XcnVkhB5zr/lP++kc8+ySG8bxLACbsscmJuWSBx
-         PORBofmU3O0hAYE+nvDejafVkF1TIoPThX6hc6r/mJ6MuY1mKY4zqXoy/7qdGndsEs
-         1/0UwxuCyjuUp6xY7uGXGTbH88NHfNt/l+Pm3E4Q=
+        b=iJcU0l7mGO3hV2YL8Vhvtnb/aszROTq20G4Zm+lBGB4wdubDnOb2SETzjzt373NxE
+         GVeGT/kj/2eQCJf8f0bx1PavGRQgSY65B80MeoD3mbqeVEvN1ZJmCisa9DM+HyqaSi
+         +8XLDRNWv7rJ8bNp0vD9kAmdxQW5sZ5wcK6YO6YI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH 5.4 52/62] bpftool: Fix compilation failure for net.o with older glibc
-Date:   Fri, 15 Jan 2021 13:28:14 +0100
-Message-Id: <20210115122000.903449640@linuxfoundation.org>
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH 5.4 53/62] net/mlx5e: Fix memleak in mlx5e_create_l2_table_groups
+Date:   Fri, 15 Jan 2021 13:28:15 +0100
+Message-Id: <20210115122000.953360322@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
 References: <20210115121958.391610178@linuxfoundation.org>
@@ -40,49 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Maguire <alan.maguire@oracle.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit 6f02b540d7597f357bc6ee711346761045d4e108 upstream.
+commit 5b0bb12c58ac7d22e05b5bfdaa30a116c8c32e32 upstream.
 
-For older glibc ~2.17, #include'ing both linux/if.h and net/if.h
-fails due to complaints about redefinition of interface flags:
+When mlx5_create_flow_group() fails, ft->g should be
+freed just like when kvzalloc() fails. The caller of
+mlx5e_create_l2_table_groups() does not catch this
+issue on failure, which leads to memleak.
 
-  CC       net.o
-In file included from net.c:13:0:
-/usr/include/linux/if.h:71:2: error: redeclaration of enumerator ‘IFF_UP’
-  IFF_UP    = 1<<0,  /* sysfs */
-  ^
-/usr/include/net/if.h:44:5: note: previous definition of ‘IFF_UP’ was here
-     IFF_UP = 0x1,  /* Interface is up.  */
-
-The issue was fixed in kernel headers in [1], but since compilation
-of net.c picks up system headers the problem can recur.
-
-Dropping #include <linux/if.h> resolves the issue and it is
-not needed for compilation anyhow.
-
-[1] https://lore.kernel.org/netdev/1461512707-23058-1-git-send-email-mikko.rapeli__34748.27880641$1462831734$gmane$org@iki.fi/
-
-Fixes: f6f3bac08ff9 ("tools/bpf: bpftool: add net support")
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Link: https://lore.kernel.org/bpf/1609948746-15369-1-git-send-email-alan.maguire@oracle.com
+Fixes: 33cfaaa8f36f ("net/mlx5e: Split the main flow steering table")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/bpf/bpftool/net.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_fs.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/tools/bpf/bpftool/net.c
-+++ b/tools/bpf/bpftool/net.c
-@@ -9,7 +9,6 @@
- #include <unistd.h>
- #include <libbpf.h>
- #include <net/if.h>
--#include <linux/if.h>
- #include <linux/rtnetlink.h>
- #include <linux/tc_act/tc_bpf.h>
- #include <sys/socket.h>
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
+@@ -1346,6 +1346,7 @@ err_destroy_groups:
+ 	ft->g[ft->num_groups] = NULL;
+ 	mlx5e_destroy_groups(ft);
+ 	kvfree(in);
++	kfree(ft->g);
+ 
+ 	return err;
+ }
 
 
