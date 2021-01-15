@@ -2,99 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FD82F6F53
+	by mail.lfdr.de (Postfix) with ESMTP id C99C82F6F54
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731207AbhAOAOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 19:14:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46042 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729277AbhAOAOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 19:14:33 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D0993AC24;
-        Fri, 15 Jan 2021 00:13:51 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     jason.wessel@windriver.com
-Cc:     daniel.thompson@linaro.org, kgdb-bugreport@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, dave@stgolabs.net,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH] kgdb: Schedule breakpoints via workqueue
-Date:   Thu, 14 Jan 2021 16:13:44 -0800
-Message-Id: <20210115001344.117108-1-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
+        id S1731254AbhAOAO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 19:14:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731213AbhAOAO4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 19:14:56 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F05C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:14:15 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id cq1so4048080pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:14:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KjTgwkzBYZCLbovtrDF6F+LwwNKyLuyTRzFitWMOVgM=;
+        b=kmz19A6Q2anZ421GIf4Df+T/bqdUhKy2kjKUBzGJgsH/+MwUHlWSioY0qSBDOFC8kW
+         cGgZ6VFOxZsKIndEO8y6JS4njUbbMVw6OpOPW9F2jsWhaewrJXKRN9UYEzFJutIcR+eK
+         BT4dKftc63ByI3bqYcHWHnAjdXGgxOQmyCVme7rMFbdz0R/CV0HL4/9n2Vvwg0b03sSO
+         Ndk4+pkWd5OvfdZrbIY6PERF2+kVQCzBWcxBFf5Ia+W5fXi160lAfwLZIlJm4oTQuwvV
+         CvkuBAOo8cNTzZ0VfBKeFwbS12RzRhEdDByQot0xLrOslbA7QjPmfwddHwuDGcppiOWi
+         /XmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KjTgwkzBYZCLbovtrDF6F+LwwNKyLuyTRzFitWMOVgM=;
+        b=L2sOc6iu6DcwSLD6KHPDLRgZ10MCZAHBV7+Q5qIJaI4A/qOPxHNF92wxZsv9Ct9kim
+         kHsOAgVK94ETOipETk6FQRmEKBqX9DC0VOdA2ZC6Tf+LUEcf9gKVAcH4QorqiHUoSb8b
+         iyRvdkyr6uV4pnYOITM0mQGLksBKTR13nG9pANSBkoR8cSMBaWhVepyABhq2PSylHvXu
+         GeQ1XHjEFgA9dG6hNJY16ErLQUvEdWqlkLGc/r8ygnySWTcUVS0lUkLhy+vkhQ6OOghX
+         xFKgf5Df+l9o7Vv8VmyZ6rT8nJIqWsws79JtUDnqse8cfvpF5B6C1/7m/XP9JDhVvwlw
+         X/2w==
+X-Gm-Message-State: AOAM530PmEpVGAsjFP7WtoDTMgIwCgHOkcfIHB2KYotElwNH0zIIo+gC
+        deZSKDfU8KRQpy58f8+9gCHXtA==
+X-Google-Smtp-Source: ABdhPJyXekExfB/xC+XO2x4zmoeOIqZGeJ7KQJUOGmd5mznVwinXbQxKa+BjzmbikCYFWIWU1uoJ7g==
+X-Received: by 2002:a17:902:eb53:b029:da:da92:c187 with SMTP id i19-20020a170902eb53b02900dada92c187mr9862639pli.34.1610669655265;
+        Thu, 14 Jan 2021 16:14:15 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id n7sm6299616pfn.141.2021.01.14.16.14.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 16:14:14 -0800 (PST)
+Date:   Thu, 14 Jan 2021 16:14:07 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Jim Mattson <jmattson@google.com>
+Subject: Re: [PATCH v2 2/3] KVM: nVMX: add kvm_nested_vmlaunch_resume
+ tracepoint
+Message-ID: <YADeT8+fssKw3SSi@google.com>
+References: <20210114205449.8715-1-mlevitsk@redhat.com>
+ <20210114205449.8715-3-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210114205449.8715-3-mlevitsk@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original functionality was added back in:
+On Thu, Jan 14, 2021, Maxim Levitsky wrote:
+> This is very helpful for debugging nested VMX issues.
+> 
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>  arch/x86/kvm/trace.h      | 30 ++++++++++++++++++++++++++++++
+>  arch/x86/kvm/vmx/nested.c |  6 ++++++
+>  arch/x86/kvm/x86.c        |  1 +
+>  3 files changed, 37 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
+> index 2de30c20bc264..663d1b1d8bf64 100644
+> --- a/arch/x86/kvm/trace.h
+> +++ b/arch/x86/kvm/trace.h
+> @@ -554,6 +554,36 @@ TRACE_EVENT(kvm_nested_vmrun,
+>  		__entry->npt ? "on" : "off")
+>  );
+>  
+> +
+> +/*
+> + * Tracepoint for nested VMLAUNCH/VMRESUME
 
-    1cee5e35f15 (kgdb: Add the ability to schedule a breakpoint via a tasklet)
+VM-Enter, as below.
 
-However tasklets have long been deprecated as being too heavy on
-the system by running in irq context - and this is not a performance
-critical path. If a higher priority process wants to run, it must
-wait for the tasklet to finish before doing so. Instead, generate
-the breakpoint exception in process context.
+> + */
+> +TRACE_EVENT(kvm_nested_vmlaunch_resume,
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
-Compile-tested only.
+s/vmlaunc_resume/vmenter, both for consistency with other code and so that it
+can sanely be reused by SVM.  IMO, trace_kvm_entry is wrong :-).
 
- kernel/debug/debug_core.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+> +	    TP_PROTO(__u64 rip, __u64 vmcs, __u64 nested_rip,
+> +		     __u32 entry_intr_info),
+> +	    TP_ARGS(rip, vmcs, nested_rip, entry_intr_info),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(	__u64,		rip		)
+> +		__field(	__u64,		vmcs		)
+> +		__field(	__u64,		nested_rip	)
+> +		__field(	__u32,		entry_intr_info	)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->rip			= rip;
+> +		__entry->vmcs			= vmcs;
+> +		__entry->nested_rip		= nested_rip;
+> +		__entry->entry_intr_info	= entry_intr_info;
+> +	),
+> +
+> +	TP_printk("rip: 0x%016llx vmcs: 0x%016llx nrip: 0x%016llx "
+> +		  "entry_intr_info: 0x%08x",
+> +		__entry->rip, __entry->vmcs, __entry->nested_rip,
+> +		__entry->entry_intr_info)
+> +);
+> +
+> +
+>  TRACE_EVENT(kvm_nested_intercepts,
+>  	    TP_PROTO(__u16 cr_read, __u16 cr_write, __u32 exceptions,
+>  		     __u32 intercept1, __u32 intercept2, __u32 intercept3),
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 776688f9d1017..cd51b66480d52 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -3327,6 +3327,12 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
+>  		!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
+>  		vmx->nested.vmcs01_guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
+>  
+> +	trace_kvm_nested_vmlaunch_resume(kvm_rip_read(vcpu),
 
-diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-index af6e8b4fb359..e1ff974c6b6f 100644
---- a/kernel/debug/debug_core.c
-+++ b/kernel/debug/debug_core.c
-@@ -119,7 +119,7 @@ static DEFINE_RAW_SPINLOCK(dbg_slave_lock);
-  */
- static atomic_t			masters_in_kgdb;
- static atomic_t			slaves_in_kgdb;
--static atomic_t			kgdb_break_tasklet_var;
-+static atomic_t			kgdb_break_work_var;
- atomic_t			kgdb_setting_breakpoint;
- 
- struct task_struct		*kgdb_usethread;
-@@ -1085,27 +1085,27 @@ static void kgdb_unregister_callbacks(void)
- }
- 
- /*
-- * There are times a tasklet needs to be used vs a compiled in
-+ * There are times a workqueue needs to be used vs a compiled in
-  * break point so as to cause an exception outside a kgdb I/O module,
-  * such as is the case with kgdboe, where calling a breakpoint in the
-  * I/O driver itself would be fatal.
-  */
--static void kgdb_tasklet_bpt(unsigned long ing)
-+static void kgdb_work_bpt(struct work_struct *unused)
- {
- 	kgdb_breakpoint();
--	atomic_set(&kgdb_break_tasklet_var, 0);
-+	atomic_set(&kgdb_break_work_var, 0);
- }
- 
--static DECLARE_TASKLET_OLD(kgdb_tasklet_breakpoint, kgdb_tasklet_bpt);
-+static DECLARE_WORK(kgdb_async_breakpoint, kgdb_work_bpt);
- 
- void kgdb_schedule_breakpoint(void)
- {
--	if (atomic_read(&kgdb_break_tasklet_var) ||
-+	if (atomic_read(&kgdb_break_work_var) ||
- 		atomic_read(&kgdb_active) != -1 ||
- 		atomic_read(&kgdb_setting_breakpoint))
- 		return;
--	atomic_inc(&kgdb_break_tasklet_var);
--	tasklet_schedule(&kgdb_tasklet_breakpoint);
-+	atomic_inc(&kgdb_break_work_var);
-+	schedule_work(&kgdb_async_breakpoint);
- }
- EXPORT_SYMBOL_GPL(kgdb_schedule_breakpoint);
- 
--- 
-2.26.2
+Hmm, won't this RIP be wrong for the migration case?  I.e. it'll be L2, not L1
+as is the case for the "true" nested VM-Enter path.
 
+> +					 vmx->nested.current_vmptr,
+> +					 vmcs12->guest_rip,
+> +					 vmcs12->vm_entry_intr_info_field);
+
+The placement is a bit funky.  I assume you put it here so that calls from
+vmx_set_nested_state() also get traced.  But, that also means
+vmx_pre_leave_smm() will get traced, and it also creates some weirdness where
+some nested VM-Enters that VM-Fail will get traced, but others will not.
+
+Tracing vmx_pre_leave_smm() isn't necessarily bad, but it could be confusing,
+especially if the debugger looks up the RIP and sees RSM.  Ditto for the
+migration case.
+
+Not sure what would be a good answer.
+
+> +
+> +
+>  	/*
+>  	 * Overwrite vmcs01.GUEST_CR3 with L1's CR3 if EPT is disabled *and*
+>  	 * nested early checks are disabled.  In the event of a "late" VM-Fail,
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index a480804ae27a3..7c6e94e32100e 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -11562,6 +11562,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_inj_virq);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_page_fault);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_msr);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_cr);
+> +EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmlaunch_resume);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmrun);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmexit);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmexit_inject);
+> -- 
+> 2.26.2
+> 
