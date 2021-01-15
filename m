@@ -2,167 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4865E2F7C08
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB422F7C15
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732721AbhAONIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:08:15 -0500
-Received: from mga12.intel.com ([192.55.52.136]:30033 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731957AbhAONIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:08:12 -0500
-IronPort-SDR: FXqdTMvEsB93t+kcUR+4gI49aL9UY1mLGegMDCg2VPphywYKtTytvpOLEEprFnuKV7CbKD+7x0
- ZwXQZ1zxmsKg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="157724043"
-X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="157724043"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 05:07:31 -0800
-IronPort-SDR: 6YR778+hus2fU+STJcThOeRRIhWnhQOy3bMSti4spS1Bi8wSghUjWZHFSBgH0DeF2nXcMyH6ya
- bd1FvZt8ozZA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="354299548"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Jan 2021 05:07:26 -0800
-Subject: Re: [PATCH v2 1/2] scsi: ufs: Fix a possible NULL pointer issue
-To:     Can Guo <cang@codeaurora.org>, Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1609479893-8889-1-git-send-email-cang@codeaurora.org>
- <1609479893-8889-2-git-send-email-cang@codeaurora.org>
- <7cff30c3-6df8-7b8c-0f5b-a95980b8f706@acm.org>
- <b2385bdf0ce1ac799ccf77c2e952d9bf@codeaurora.org>
- <204e13398c0b4c3d61786815e757e0bf@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <8dea503d-9ab7-c003-9ade-3470def21764@intel.com>
-Date:   Fri, 15 Jan 2021 15:07:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2387882AbhAONJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:09:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732697AbhAONJH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 08:09:07 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746F2C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:08:27 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id b19so15428915ioa.9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:08:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RTaj+kQTI0f7LZEXnhvKOz2cpPUJhSCbtgTVKj7/e7M=;
+        b=EH9Lf/Qh5uutAxEfsjPu9Tu0c9s5EADzA4pymQanveSRfO8osic1lzoqlLFpKqmKgM
+         ePUT9SwlH1pgv9q9fuQy6uxulz1L+MdF/UTIPxzPc9vEm7feTrhKPS0IT9sN69GG/h/D
+         8x/BZqmWKrCkVwyxr6q7Or83KJQbyw2b5IrvU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RTaj+kQTI0f7LZEXnhvKOz2cpPUJhSCbtgTVKj7/e7M=;
+        b=OqHjap5rs2nKt60/yPRnUKbsdh2OPxgbDEghBgNGEN4l6mfEEJvIyQ3f0LM+8mjqgM
+         eXFd46EiF8fb5cuNZD2pDs+bYgIGBVpIoTPLUgVJ/bucpzO7XxFmoN5u7YPvB9BnRCZL
+         IgsseXqN0TI+nurtPwdAmkN0xBtQoJa+hQagEMY0Ummhchcl8NOyDd4gQFIPtds/LfM2
+         B3fnLUJqkORdMd7T/P2vUIPuj+oypQkpGsVaq//Lx5L094EB5E21zxspvYBtQGdMWdge
+         tZzSDeo/jNuCLAgn67uejQHbntr4nHvJr5TwN9iWhCr/kD6O5VzXxycq58xruD6KuiKa
+         b+2g==
+X-Gm-Message-State: AOAM530AlqMoGjmPfeJ+SCsatl8rvkfy5YJDYNeP4+JcKIupZ4OFmwpE
+        9K/5zrWZa6gLs/dmGyT10s4vLb6ZXw6u6Q==
+X-Google-Smtp-Source: ABdhPJwxJdQXPlChskqWqsW7NIfFG2Fz0B2mnDZI8GKPschTSIWizKqgplzmjDjIk6gRb4uRhv6CJQ==
+X-Received: by 2002:a05:6e02:194a:: with SMTP id x10mr10369689ilu.165.1610716106648;
+        Fri, 15 Jan 2021 05:08:26 -0800 (PST)
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com. [209.85.166.50])
+        by smtp.gmail.com with ESMTPSA id f80sm476666ilg.8.2021.01.15.05.08.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Jan 2021 05:08:26 -0800 (PST)
+Received: by mail-io1-f50.google.com with SMTP id y19so17981935iov.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:08:25 -0800 (PST)
+X-Received: by 2002:a05:6e02:cc7:: with SMTP id c7mr10850857ilj.218.1610716105308;
+ Fri, 15 Jan 2021 05:08:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <204e13398c0b4c3d61786815e757e0bf@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201125221917.150463-1-ribalda@chromium.org> <20201130083410.GD32234@lst.de>
+ <20201201033658.GE3723071@google.com> <20201201144916.GA14682@lst.de>
+ <CAAFQd5BBEbmENrrZ-vMK9cKOap19XWmfcxwrxKfjWx-wEew8rg@mail.gmail.com>
+ <20201208071320.GA1667627@google.com> <20201209111639.GB22806@lst.de>
+ <CANiDSCtsOdJUK3r_t8UNKhh7Px0ANNFJkuwM1fBgZ7wnVh0JFA@mail.gmail.com> <20210111083614.GA27589@lst.de>
+In-Reply-To: <20210111083614.GA27589@lst.de>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Fri, 15 Jan 2021 14:08:14 +0100
+X-Gmail-Original-Message-ID: <CANiDSCvuvj47=nhoWhvzc5raMxM60w+JYRWjd0YepcbcbkrUjA@mail.gmail.com>
+Message-ID: <CANiDSCvuvj47=nhoWhvzc5raMxM60w+JYRWjd0YepcbcbkrUjA@mail.gmail.com>
+Subject: Re: [PATCH v3 5/6] media: uvcvideo: Use dma_alloc_noncontiguos API
+To:     ". Christoph Hellwig" <hch@lst.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/01/21 3:10 pm, Can Guo wrote:
-> On 2021-01-02 20:29, Can Guo wrote:
->> On 2021-01-02 00:05, Bart Van Assche wrote:
->>> On 12/31/20 9:44 PM, Can Guo wrote:
->>>> During system resume/suspend, hba could be NULL. In this case, do not touch
->>>> eh_sem.
->>>>
->>>> Fixes: 88a92d6ae4fe ("scsi: ufs: Serialize eh_work with system PM events
->>>> and async scan")
->>>>
->>>> Signed-off-by: Can Guo <cang@codeaurora.org>
->>>> ---
->>>>  drivers/scsi/ufs/ufshcd.c | 9 +++++----
->>>>  1 file changed, 5 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->>>> index e221add..34e2541 100644
->>>> --- a/drivers/scsi/ufs/ufshcd.c
->>>> +++ b/drivers/scsi/ufs/ufshcd.c
->>>> @@ -8896,8 +8896,11 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
->>>>      int ret = 0;
->>>>      ktime_t start = ktime_get();
->>>>
->>>> +    if (!hba)
->>>> +        return 0;
->>>> +
->>>>      down(&hba->eh_sem);
->>>> -    if (!hba || !hba->is_powered)
->>>> +    if (!hba->is_powered)
->>>>          return 0;
->>>>
->>>>      if ((ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl) ==
->>>> @@ -8945,10 +8948,8 @@ int ufshcd_system_resume(struct ufs_hba *hba)
->>>>      int ret = 0;
->>>>      ktime_t start = ktime_get();
->>>>
->>>> -    if (!hba) {
->>>> -        up(&hba->eh_sem);
->>>> +    if (!hba)
->>>>          return -EINVAL;
->>>> -    }
->>>>
->>>>      if (!hba->is_powered || pm_runtime_suspended(hba->dev))
->>>>          /*
->>>
->>> Hi Can,
->>>
->>> How can ufshcd_system_suspend() or ufshcd_system_resume() be called with a
->>> NULL argument? In ufshcd_pci_probe() I see that pci_set_drvdata() is called
->>> before pm_runtime_allow(). ufshcd_pci_remove() calls pm_runtime_forbid().
->>>
->>> Thanks,
->>>
->>> Bart.
->>
->> Hi Bart,
->>
->> You are right about ufshcd_RUNTIME_suspend/resume() - platform_set_drvdata()
->> is called before pm_runtime_enable(), so runtime suspend/resume cannot happen
->> before pm_runtime_enable() is called. We can remove the sanity checks of
->> !hba there, they are outdated.
-> 
-> Add more history here - before Stanley's change (see below),
-> platform_set_drvdata()
-> is called AFTER pm_runtime_enable(), which was why we needed sanity checks
-> of !hba.
-> But now the sanity checks are unnecessary in
-> ufshcd_RUNTIME_suspend/resume(), so
-> feel free to remove them.
-> 
-> But still, things are a bit different for ufshcd_SYSTEM_suspend/resume(), we
-> need
-> the sanity checks of !hba there if my understanding is correct.
-> 
-> commit 24e2e7a19f7e4b83d0d5189040d997bce3596473
-> Author: Stanley Chu <stanley.chu@mediatek.com>
-> Date:   Wed Jun 12 23:19:05 2019 +0800
-> 
->     scsi: ufs: Avoid runtime suspend possibly being blocked forever
-> 
-> Thanks,
-> Can Guo.
-> 
->>
->> But for ufshcd_SYSTEM_suspend/resume() callbacks (not runtime ones), my
->> understanding is that system suspend/resume may happen after probe (vendor
->> driver probe calls ufshcd_pltfrm_init()) starts but before
->> platform_set_drvdata()
->> is called, in this case hba is NULL.
->>
->> int ufshcd_pltfrm_init(struct platform_device *pdev,
->>                const struct ufs_hba_variant_ops *vops)
->> {
->> ...
->>      platform_set_drvdata(pdev, hba);
->>
->>     pm_runtime_set_active(&pdev->dev);
->>     pm_runtime_enable(&pdev->dev);
->> }
+On Mon, Jan 11, 2021 at 9:36 AM . Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Thu, Jan 07, 2021 at 03:14:08PM +0100, Ricardo Ribalda wrote:
+> > > So I think we do want these branches for coherent vs non-coherent as they
+> > > have very different semantics and I do not think that hiding them under
+> > > the same API helps people to understand those vastly different semantics.
+> > >
+> > > OTOH we should look into a fallback for DMA API instances that do not
+> > > support the discontigous allocations.
+> > >
+> > > I think between your comments and those from Ricardo I have a good idea
+> > > for a somewhat updated API.  I'll try to post something in the next days.
+> >
+> > Did you have time to look into this?
+> >
+> > No hurry, I just want to make sure that I didn't miss anything ;)
+>
+> Haven't managed to get to it, sorry.
 
-Hi Can
+No worries!, is there something we can do to help you with this?
 
-I expect probe and system suspend are synchronized e.g. by device_lock(), so
-hba would not be NULL.  Is there any example of it being NULL in system suspend?
+>
+> >
+> > Best regards!
+> >
+> >
+> >
+> > --
+> > Ricardo Ribalda
+> ---end quoted text---
 
-Regards
-Adrian
+
+
+-- 
+Ricardo Ribalda
