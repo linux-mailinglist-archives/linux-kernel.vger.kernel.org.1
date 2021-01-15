@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0282F7B1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7452F799F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:40:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387764AbhAOM6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:58:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40840 "EHLO mail.kernel.org"
+        id S2388227AbhAOMiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:38:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733276AbhAOMd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:33:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 238B42339D;
-        Fri, 15 Jan 2021 12:33:14 +0000 (UTC)
+        id S2387616AbhAOMis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:38:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 370322333E;
+        Fri, 15 Jan 2021 12:38:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713995;
-        bh=HOMMljAQbrtWX7BrNOOUd9SCAbrtwXebLt/Nq+6RD4M=;
+        s=korg; t=1610714312;
+        bh=pYvsIQ3m+v4HkQIbMDv6EVsgtV4Q99P4GNDs7iJxQUU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SXuBl/cCZJFgTlySAEb0bGKsvWSnwTPT74C4Z83e86jSjIWdsH3TgcFQqumBX3tNg
-         n2aJt/rcfNYAoTej8brKDnjHr16DnHohbBvX94VPbyWveIsfB6wTrezOqgCTWEL6dh
-         HA6S8MxI0HGbHCVxPRG/2I6kowq361PgWEYjxGvU=
+        b=hz8xbvHh6po6NY4ixLxU7d8KxlvItIbg4MGBGQqEq7JRJxBjToehupA+TJayL0pQV
+         YEAAfsbt9/xRsZL7rge8AZBvOgo9WuHhrGFb4G1vSR1cS2cU2aG2zT1VVEoF3IKHtd
+         EjjEceTk5JYSREWzkubrxx0w2/fuWIEcJ+JcYu8s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.19 43/43] regmap: debugfs: Fix a reversed if statement in regmap_debugfs_init()
+        stable@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 5.10 080/103] iommu/vt-d: Fix misuse of ALIGN in qi_flush_piotlb()
 Date:   Fri, 15 Jan 2021 13:28:13 +0100
-Message-Id: <20210115121959.128064955@linuxfoundation.org>
+Message-Id: <20210115122009.894424636@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
-References: <20210115121957.037407908@linuxfoundation.org>
+In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
+References: <20210115122006.047132306@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Lu Baolu <baolu.lu@linux.intel.com>
 
-commit f6bcb4c7f366905b66ce8ffca7190118244bb642 upstream.
+commit 1efd17e7acb6692bffc6c58718f41f27fdfd62f5 upstream.
 
-This code will leak "map->debugfs_name" because the if statement is
-reversed so it only frees NULL pointers instead of non-NULL.  In
-fact the if statement is not required and should just be removed
-because kfree() accepts NULL pointers.
+Use IS_ALIGNED() instead. Otherwise, an unaligned address will be ignored.
 
-Fixes: cffa4b2122f5 ("regmap: debugfs: Fix a memory leak when calling regmap_attach_dev")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/X/RQpfAwRdLg0GqQ@mwanda
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 33cd6e642d6a ("iommu/vt-d: Flush PASID-based iotlb for iova over first level")
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Link: https://lore.kernel.org/r/20201231005323.2178523-1-baolu.lu@linux.intel.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/base/regmap/regmap-debugfs.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/iommu/intel/dmar.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/base/regmap/regmap-debugfs.c
-+++ b/drivers/base/regmap/regmap-debugfs.c
-@@ -591,9 +591,7 @@ void regmap_debugfs_init(struct regmap *
- 	}
+--- a/drivers/iommu/intel/dmar.c
++++ b/drivers/iommu/intel/dmar.c
+@@ -1461,8 +1461,8 @@ void qi_flush_piotlb(struct intel_iommu
+ 		int mask = ilog2(__roundup_pow_of_two(npages));
+ 		unsigned long align = (1ULL << (VTD_PAGE_SHIFT + mask));
  
- 	if (!strcmp(name, "dummy")) {
--		if (!map->debugfs_name)
--			kfree(map->debugfs_name);
--
-+		kfree(map->debugfs_name);
- 		map->debugfs_name = kasprintf(GFP_KERNEL, "dummy%d",
- 						dummy_index);
- 		if (!map->debugfs_name)
+-		if (WARN_ON_ONCE(!ALIGN(addr, align)))
+-			addr &= ~(align - 1);
++		if (WARN_ON_ONCE(!IS_ALIGNED(addr, align)))
++			addr = ALIGN_DOWN(addr, align);
+ 
+ 		desc.qw0 = QI_EIOTLB_PASID(pasid) |
+ 				QI_EIOTLB_DID(did) |
 
 
