@@ -2,178 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2941A2F7FBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:38:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D81742F7FB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731880AbhAOPhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:37:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50598 "EHLO
+        id S1731632AbhAOPfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:35:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730505AbhAOPhg (ORCPT
+        with ESMTP id S1726402AbhAOPfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:37:36 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05936C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 07:36:55 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id j26so6247269qtq.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 07:36:55 -0800 (PST)
+        Fri, 15 Jan 2021 10:35:52 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A160EC0613C1;
+        Fri, 15 Jan 2021 07:35:11 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id q18so9717485wrn.1;
+        Fri, 15 Jan 2021 07:35:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QRf6Q1+nAKg/5f3LQqDa/bSVIz2h6VIL5CFQ4uJbSKg=;
-        b=RQqXcuplX7hvIugdsKL/m6CF0vKoc/OtlFxaUyNU+nUQK2YWyNQpOlqq06UED+mvwR
-         OyraygDJmmJRgkyuYnC4qpcTt5BLl2xbq9D7SgHR00MnhZVvd31NJyQ25fgSTSSAnP6x
-         IUDhlsy8pMJn+PyoyGirpBmEyiZiAnfhIh0rmJPFkAJ/fHYwlDaCtIebujOloliqRbRe
-         pM8jNVEvGekZTIjleM2S3PhCpUZczs8erW4E5I0QyJ/A1yX/d9NHuOWoMqWQ/16dcSJB
-         5LD54jP5gG9TvZp1Z5/6AlWA40cKwd7uwCAqMwAMyx/hN0BmOgHUO5oeeYkJMYwjhx0t
-         Nw9w==
+         :content-disposition:in-reply-to:user-agent;
+        bh=ESX6noLsCkIO+iwpxKWPA2ym8CNQ0B0VrfopXTaNMvE=;
+        b=FKX7N3zPinoMooJcVVc0Sul+W4MuG3BE0bFE6iGvHrfIiOqkaREXyINpMin1far4Id
+         E04bd3N5MYIdx6u8wDKioAevVfC3CvXnTJHsha8bOmtKvjrKlyvzEBpLkie0yoXzeHaL
+         w0CV0nBGKymAWXZZQ90gTHGyiwdnAe17/+rAAHKUVkPjN4luBy42B6HAz+1mba5Pn0EQ
+         gY5jTM+y/PWCPX4Ex1nS7DDHk4zHyJTVTWJRP9czrQiW7WR3CQuic/cRSl+x9WAXjbrA
+         ZdlFr+CO2VKtvapR/Mmgt3Z4YegfYZ2x3GtRD9zDMtK7n6j1oixFpJdfVklhyDlPZMkO
+         RN9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QRf6Q1+nAKg/5f3LQqDa/bSVIz2h6VIL5CFQ4uJbSKg=;
-        b=tSwro6e60hR4VGfDADdjlEeLSsKalaSBJIXXZPXeY37BEv51e46vtsZ0TKqyHgpcYl
-         tkMfQS2F5M00TXu6KFIyiIokyMau+v3+QzylCDCMe2p6gRNLFfva2Iuaj9uvEadaZ8ST
-         1v4i6OF74tR2R0D707+9CqUv1za5yj7VC46GjIR+Thecwfb97QmqpuNyFTGboKpIrEwS
-         dDQxfaF82slVSuSoqO22BK7O+Jj9g6b1emXi5cZtTKkeJjXQqW7oK+8TUvZ3H5RLtLxc
-         WFLn7G0X0Esxp3BQC69uCwI4Zi/LDCPAHiRkGbx4VK5YAPNoZ6+0EjC4FYLA7nynLe+r
-         MYKA==
-X-Gm-Message-State: AOAM531spmrceQfPWLGWJenXqBakcrluKj23vIYPTWpQjFRHwRCpWc8M
-        wMpZ6l5nzIhrqmhNuz9iU5cKnw==
-X-Google-Smtp-Source: ABdhPJzoMLylCnooro2BEl4UPjBH+4ehIXHZ9uSRvZnOB4HkTVXPtCl5dY0BcocScW2JrQZZQYFGsQ==
-X-Received: by 2002:ac8:4553:: with SMTP id z19mr12182190qtn.278.1610725015164;
-        Fri, 15 Jan 2021 07:36:55 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:dbed])
-        by smtp.gmail.com with ESMTPSA id 141sm5121111qkn.53.2021.01.15.07.36.53
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ESX6noLsCkIO+iwpxKWPA2ym8CNQ0B0VrfopXTaNMvE=;
+        b=qL772CTezKnCvJiXjBnYWvVaoSeS+9EhEcQI9lMgzHMVIUwTDfTHvW0VJZwWzldbPy
+         dsjdLeT7gq09zyymGmfhr4hWgJi0tDfNdAzEn/iBfCzL1hdh/IT0BFgqrPiHsnTQ3BM6
+         10yPPJGSvM2cXaQ+O0Uj9MnyQ+YOiiDA+Pb97Rh3MgR8h9hYhSq38A8c6qUUMRjIHppq
+         eAoh4Kb1CfcMnPJOnITrQsEGUHbOzEvIj69HQYe/TPShFCzrFnReoB+8CX+QTwk2JnSX
+         eKNN77dqYm/hMOC+sUkGR861hqfMbwpoQkduAasH5/N+2u+J2SlYv5mqvIBMdh+OkfYn
+         G5yA==
+X-Gm-Message-State: AOAM532pC2d02R9mY0NmjRLmmftcyhrgcJAPndwEnpkHxQ41Esra+9Dj
+        i03G1jaJv68wq2NpIRalMdU=
+X-Google-Smtp-Source: ABdhPJz/Wu7xnv0xzKek8K70k69xs98gJ80/O6x3djJk4M+rXGYYY30sfdUBjoGV41dBshMXS9edJw==
+X-Received: by 2002:adf:fad0:: with SMTP id a16mr14302085wrs.390.1610724910415;
+        Fri, 15 Jan 2021 07:35:10 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id w13sm14787841wrt.52.2021.01.15.07.35.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 07:36:53 -0800 (PST)
-Date:   Fri, 15 Jan 2021 10:34:26 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing
- memory.high
-Message-ID: <YAG2Am9YaohQ4YWS@cmpxchg.org>
-References: <20210112163011.127833-1-hannes@cmpxchg.org>
- <20210112170322.GA99586@carbon.dhcp.thefacebook.com>
- <X/38ZwyOE96SAfa9@cmpxchg.org>
- <20210112201237.GB99586@carbon.dhcp.thefacebook.com>
- <X/4Qfxe1OKXACDLM@cmpxchg.org>
- <20210112214512.GC99586@carbon.dhcp.thefacebook.com>
+        Fri, 15 Jan 2021 07:35:09 -0800 (PST)
+Date:   Fri, 15 Jan 2021 16:35:07 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/5] ALSA: hda/tegra: Reset hardware
+Message-ID: <YAG2K4CjtCdSs6P2@ulmo>
+References: <20210112125834.21545-1-digetx@gmail.com>
+ <20210112125834.21545-3-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="uOznnLuw98Lbh+eo"
 Content-Disposition: inline
-In-Reply-To: <20210112214512.GC99586@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20210112125834.21545-3-digetx@gmail.com>
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 01:45:12PM -0800, Roman Gushchin wrote:
-> On Tue, Jan 12, 2021 at 04:11:27PM -0500, Johannes Weiner wrote:
-> > On Tue, Jan 12, 2021 at 12:12:37PM -0800, Roman Gushchin wrote:
-> > > On Tue, Jan 12, 2021 at 02:45:43PM -0500, Johannes Weiner wrote:
-> > > > On Tue, Jan 12, 2021 at 09:03:22AM -0800, Roman Gushchin wrote:
-> > > > > On Tue, Jan 12, 2021 at 11:30:11AM -0500, Johannes Weiner wrote:
-> > > > > > When a value is written to a cgroup's memory.high control file, the
-> > > > > > write() context first tries to reclaim the cgroup to size before
-> > > > > > putting the limit in place for the workload. Concurrent charges from
-> > > > > > the workload can keep such a write() looping in reclaim indefinitely.
-> > > > > > 
-> > > > > > In the past, a write to memory.high would first put the limit in place
-> > > > > > for the workload, then do targeted reclaim until the new limit has
-> > > > > > been met - similar to how we do it for memory.max. This wasn't prone
-> > > > > > to the described starvation issue. However, this sequence could cause
-> > > > > > excessive latencies in the workload, when allocating threads could be
-> > > > > > put into long penalty sleeps on the sudden memory.high overage created
-> > > > > > by the write(), before that had a chance to work it off.
-> > > > > > 
-> > > > > > Now that memory_high_write() performs reclaim before enforcing the new
-> > > > > > limit, reflect that the cgroup may well fail to converge due to
-> > > > > > concurrent workload activity. Bail out of the loop after a few tries.
-> > > > > > 
-> > > > > > Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
-> > > > > > Cc: <stable@vger.kernel.org> # 5.8+
-> > > > > > Reported-by: Tejun Heo <tj@kernel.org>
-> > > > > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > > > > > ---
-> > > > > >  mm/memcontrol.c | 7 +++----
-> > > > > >  1 file changed, 3 insertions(+), 4 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > > > > index 605f671203ef..63a8d47c1cd3 100644
-> > > > > > --- a/mm/memcontrol.c
-> > > > > > +++ b/mm/memcontrol.c
-> > > > > > @@ -6275,7 +6275,6 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
-> > > > > >  
-> > > > > >  	for (;;) {
-> > > > > >  		unsigned long nr_pages = page_counter_read(&memcg->memory);
-> > > > > > -		unsigned long reclaimed;
-> > > > > >  
-> > > > > >  		if (nr_pages <= high)
-> > > > > >  			break;
-> > > > > > @@ -6289,10 +6288,10 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
-> > > > > >  			continue;
-> > > > > >  		}
-> > > > > >  
-> > > > > > -		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> > > > > > -							 GFP_KERNEL, true);
-> > > > > > +		try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> > > > > > +					     GFP_KERNEL, true);
-> > > > > >  
-> > > > > > -		if (!reclaimed && !nr_retries--)
-> > > > > > +		if (!nr_retries--)
-> > > > > 
-> > > > > Shouldn't it be (!reclaimed || !nr_retries) instead?
-> > > > > 
-> > > > > If reclaimed == 0, it probably doesn't make much sense to retry.
-> > > > 
-> > > > We usually allow nr_retries worth of no-progress reclaim cycles to
-> > > > make up for intermittent reclaim failures.
-> > > > 
-> > > > The difference to OOMs/memory.max is that we don't want to loop
-> > > > indefinitely on forward progress, but we should allow the usual number
-> > > > of no-progress loops.
-> > > 
-> > > Re memory.max: trying really hard makes sense because we are OOMing otherwise.
-> > > With memory.high such an idea is questionable: if were not able to reclaim
-> > > a single page from the first attempt, it's unlikely that we can reclaim many
-> > > from repeating 16 times.
-> > > 
-> > > My concern here is that we can see CPU regressions in some cases when there is
-> > > no reclaimable memory. Do you think we can win something by trying harder?
-> > > If so, it's worth mentioning in the commit log. Because it's really a separate
-> > > change to what's described in the log, to some extent it's a move into an opposite
-> > > direction.
-> > 
-> > Hm, I'm confused what change you are referring to.
-> > 
-> > Current upstream allows:
-> > 
-> >     a. unlimited progress loops
-> >     b. 16 no-progress loops
-> > 
-> > My patch is fixing the issue resulting from the unlimited progress
-> > loops in a). This is described in the changelog.
-> > 
-> > You seem to be advocating for an unrelated change to the no-progress
-> > loops condition in b).
-> 
-> Fair enough.
-> 
-> But still the question remains: what are we gaining by trying again after not
-> being able to reclaim a single page? If you want, it can be done separately,
-> but it looks like a good idea to me to bail out if we can't reclaim a single
-> page.
 
-You lost me there.
+--uOznnLuw98Lbh+eo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If memory.max retries before declaring oom, why shouldn't memory.high
-retry before returning to userspace? If there is intermittent reclaim
-failure, then returning from the memory.high write before the limit is
-enforced in such rare situations saves very little, but makes the user
-visible behavior unpredictable and inconsistent. It's extra code and a
-special case that needs to be documented.
+On Tue, Jan 12, 2021 at 03:58:31PM +0300, Dmitry Osipenko wrote:
+> Reset hardware in order to bring it into a predictable state.
+>=20
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  sound/pci/hda/hda_tegra.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>=20
+> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+> index 4c799661c2f6..e406b7980f31 100644
+> --- a/sound/pci/hda/hda_tegra.c
+> +++ b/sound/pci/hda/hda_tegra.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/moduleparam.h>
+>  #include <linux/mutex.h>
+>  #include <linux/of_device.h>
+> +#include <linux/reset.h>
+>  #include <linux/slab.h>
+>  #include <linux/time.h>
+>  #include <linux/string.h>
+> @@ -70,6 +71,7 @@
+>  struct hda_tegra {
+>  	struct azx chip;
+>  	struct device *dev;
+> +	struct reset_control *reset;
+>  	struct clk_bulk_data clocks[3];
+>  	unsigned int nclocks;
+>  	void __iomem *regs;
+> @@ -167,6 +169,12 @@ static int __maybe_unused hda_tegra_runtime_resume(s=
+truct device *dev)
+>  	struct hda_tegra *hda =3D container_of(chip, struct hda_tegra, chip);
+>  	int rc;
+> =20
+> +	if (!(chip && chip->running)) {
+
+Isn't that check for !chip a bit redundant? If that pointer isn't valid,
+we're just going to go crash when dereferencing hda later on, so I think
+this can simply be:
+
+	if (!chip->running)
+
+I guess you took this from the inverse check below, but I think we can
+also drop it from there, perhaps in a separate patch.
+
+> +		rc =3D reset_control_assert(hda->reset);
+> +		if (rc)
+> +			return rc;
+> +	}
+> +
+>  	rc =3D clk_bulk_prepare_enable(hda->nclocks, hda->clocks);
+>  	if (rc !=3D 0)
+>  		return rc;
+> @@ -176,6 +184,10 @@ static int __maybe_unused hda_tegra_runtime_resume(s=
+truct device *dev)
+>  		/* disable controller wake up event*/
+>  		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
+>  			   ~STATESTS_INT_MASK);
+> +	} else {
+> +		rc =3D reset_control_reset(hda->reset);
+
+The "if (chip)" part definitely doesn't make sense after this anymore
+because now if chip =3D=3D NULL, then we end up in here and dereference an
+invalid "hda" pointer.
+
+Also, why reset_control_reset() here? We'll reach this if we ran
+reset_control_assert() above, so this should just be
+reset_control_deassert() to undo that, right? I suppose it wouldn't hurt
+to put throw that standard usleep_range() in there as well that we use
+to wait between reset assert and deassert to make sure the clocks have
+stabilized and the reset has indeed propagated through the whole IP.
+
+Thierry
+
+--uOznnLuw98Lbh+eo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmABtigACgkQ3SOs138+
+s6FeaRAAsz1n0eikp0rj/uwYC3OvRDA8cLTe9YBU9D16waXKHN4oJ+gx0zWhCVj1
+9yQQOfnF335Xke/RTeCrv+9Powa81YgGqPdveTuj3MmaP58PsHvIC/22XFnjw2zK
+ott21GlSMITx0JMrGjYI3dTSq6rSzRWMAr7YADDgahbpoN/AMnI7Dxh6Inqmu8F0
+NdGSS6WPqZ6rDf+ICY0nSd06BjQB5sPuqUleMIK1RGxGWYH7rq5gj51Ovc98z+B4
+NfCMZHB1LFI9v/soLABPeTbCRn6SXOyfaLeZFn3a/H34xPF0BZw9CCYWzJq8PWBH
+j89p364+whgu210XuppIcGL58u/T2BtjayTJSr1H4YgP2MbUZw1rw5ZvX+KxYdhf
+fYr/lkmUvSha4VjBJOM+kymJaVHNWwheHwX9VJtJRiAzet7oKqto4p0X2wWFjztn
+mi8ZUngUTKYczi0gXP3Mvy/+95/HVwmW+9qmJQ1gBA9IrWvENmhimH3qa8kQP2/5
+1yns9vqGx/N+IAdANR7gzBfyf2rjQxIo1ritAlPiHa0/U+fSPjwp8IeHdJgtpziV
+bWRfvo0emWaj8cbZsB4/inTPyiCfhk+hQeYtpYRp9HJodO/1LbE1n/fvwATlMIdA
+epFJUgIuI4OlFQ5vGY5Cl73pxHnrJOJjLmOBj/CNjZmgoHoQT9g=
+=bc5e
+-----END PGP SIGNATURE-----
+
+--uOznnLuw98Lbh+eo--
