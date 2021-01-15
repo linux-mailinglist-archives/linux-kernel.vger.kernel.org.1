@@ -2,159 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8712F71B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 05:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A579B2F71BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 05:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731452AbhAOEs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 23:48:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35953 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728445AbhAOEs1 (ORCPT
+        id S1731477AbhAOEwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 23:52:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbhAOEwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 23:48:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610686019;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5qlVp+V62hJFOmojeKBtO6bnSDZxjgJebYHvIlsbcQM=;
-        b=B+w76z7Lex0cFEQnQSBvlE5nhM3X4NJTL6P5z1S9MHhVZs4pBJ6dAoGY0CD6+X8766LHNz
-        ajJUoJk6hEALN/Me+X0sQ0h9kyX1sqFeOUCbV/EPN+ZEcHROClAMEyINgRZFBGXbe5IH9f
-        S03kvOhYh3moKlUpOJiCSIXqFJ3ubm0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-438-WfDJ3MOTPVeX0K0c1Yjy4Q-1; Thu, 14 Jan 2021 23:46:55 -0500
-X-MC-Unique: WfDJ3MOTPVeX0K0c1Yjy4Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A6E30802B45;
-        Fri, 15 Jan 2021 04:46:51 +0000 (UTC)
-Received: from [10.72.13.19] (ovpn-13-19.pek2.redhat.com [10.72.13.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A958771D52;
-        Fri, 15 Jan 2021 04:46:29 +0000 (UTC)
-Subject: Re: [RFC PATCH v3 1/2] iommu: Add capability IOMMU_CAP_VIOMMU
-To:     Lu Baolu <baolu.lu@linux.intel.com>, tglx@linutronix.de,
-        ashok.raj@intel.com, kevin.tian@intel.com, dave.jiang@intel.com,
-        megha.dey@intel.com, dwmw2@infradead.org
-Cc:     alex.williamson@redhat.com, bhelgaas@google.com,
-        dan.j.williams@intel.com, will@kernel.org, joro@8bytes.org,
-        dmaengine@vger.kernel.org, eric.auger@redhat.com,
-        jacob.jun.pan@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
-        kwankhede@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org,
-        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
-        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
-        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
-        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
-        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com, leon@kernel.org
-References: <20210114013003.297050-1-baolu.lu@linux.intel.com>
- <20210114013003.297050-2-baolu.lu@linux.intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <f2a50326-58de-919a-5992-130224c5725a@redhat.com>
-Date:   Fri, 15 Jan 2021 12:46:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 14 Jan 2021 23:52:16 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16727C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 20:51:36 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id z5so15844770iob.11
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 20:51:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=QBJgA4HNYXN/XW/YtH3zS5vGCt3KtxYhfozKpWDh0/Y=;
+        b=mIBaiyCa3l9zHhwvjFtxfvSPcdm/NcqRL+gd/jcttVD9dz/JXV//nh1BrwqTyfPP0S
+         suLzCStfuqNUEoOG+xmti8BSpyp3i/7YWNT5EUFlHV0uL6Cli3QU7pf9mKXQsHk/FEEL
+         fQbY6a/mEZTXu2KgZKvEbBOqF97xJ6l1TBDjflyprqY2S9RB5/EGA8O4i9k2E94aSTPq
+         ZxvPiihBYGiH0cSXYOphQ3FQBjI+UELaTgGpvQ8u/LX1gv2Go42H3/7AtyHKQYb6lWy2
+         FaXKcIANQH40Wfqy588nhaHGr2b38xF87CLGGYecRkqPeoL1f+oRtU6iiS7akMm0paiz
+         XhJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=QBJgA4HNYXN/XW/YtH3zS5vGCt3KtxYhfozKpWDh0/Y=;
+        b=nQkZCNbmWu8m/z3ZW/9sMPrOnmU4a0puyc8qdMUYGWKNuKT75WAgFT8bfnN8ZLRRc2
+         XqDub4D/u8iBDai90oxlL4JjuP/vQ0nznZYB/t112//UV5GXE3TToe2WiCs9qrknI6uY
+         QSioMxVzOarDqXkPUkBKiZnhcuAxB0XXef+qqpUtSNXxanQr/H2VhaYqfxpM/X9uu4qz
+         qoIIAu7D19nc1bn8lZHZRGZphkcDtKzQCNvtd2tTwR8NCuVLFhTVeptVrdNQ9axwAoSq
+         LYHmMn3SQYSifoMnvtNw3kE+d929nzeUuoaxf7Tl8NYGkUw+W2/w6j77RtdovVvNCqRB
+         dWAA==
+X-Gm-Message-State: AOAM533+Cf55NAw7pobcZE/Fwck9cWKubeJWfTFc/w+AQkncmAmDFojZ
+        CknOgXUflz6dqlSqfK90uDFeqEANhZQd7WOUr70=
+X-Google-Smtp-Source: ABdhPJycvSRZq56+vQBfSbxRGXmlQmhyk5z093LgJuTqenfCC03PbeLRdDQGMbtzCGdnzxJ+IH0Fi0Ge4ieKSfpyMu4=
+X-Received: by 2002:a05:6e02:eb0:: with SMTP id u16mr9293810ilj.209.1610686295416;
+ Thu, 14 Jan 2021 20:51:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210114013003.297050-2-baolu.lu@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <cover.1610652862.git.jpoimboe@redhat.com>
+In-Reply-To: <cover.1610652862.git.jpoimboe@redhat.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 15 Jan 2021 05:51:24 +0100
+Message-ID: <CA+icZUV1a-DEf-dTm8MyyBbp_VYmW5WwJPF9DQb=yJHPykJASQ@mail.gmail.com>
+Subject: Re: [PATCH 00/21] objtool: vmlinux.o and CLANG LTO support
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Miroslav Benes <mbenes@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/1/14 上午9:30, Lu Baolu wrote:
-> Some vendor IOMMU drivers are able to declare that it is running in a VM
-> context. This is very valuable for the features that only want to be
-> supported on bare metal. Add a capability bit so that it could be used.
+On Thu, Jan 14, 2021 at 8:40 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 >
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->   drivers/iommu/intel/iommu.c  | 20 ++++++++++++++++++++
->   drivers/iommu/virtio-iommu.c |  9 +++++++++
->   include/linux/iommu.h        |  1 +
->   3 files changed, 30 insertions(+)
+> Add support for proper vmlinux.o validation, which will be needed for
+> Sami's upcoming x86 LTO set.  (And vmlinux validation is the future for
+> objtool anyway, for other reasons.)
 >
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index cb205a04fe4c..8eb022d0e8aa 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -5738,12 +5738,32 @@ static inline bool nested_mode_support(void)
->   	return ret;
->   }
->   
-> +static inline bool caching_mode_enabled(void)
-> +{
-> +	struct dmar_drhd_unit *drhd;
-> +	struct intel_iommu *iommu;
-> +	bool ret = false;
-> +
-> +	rcu_read_lock();
-> +	for_each_active_iommu(iommu, drhd) {
-> +		if (cap_caching_mode(iommu->cap)) {
-> +			ret = true;
-> +			break;
-> +		}
-> +	}
-> +	rcu_read_unlock();
-> +
-> +	return ret;
-> +}
-> +
->   static bool intel_iommu_capable(enum iommu_cap cap)
->   {
->   	if (cap == IOMMU_CAP_CACHE_COHERENCY)
->   		return domain_update_iommu_snooping(NULL) == 1;
->   	if (cap == IOMMU_CAP_INTR_REMAP)
->   		return irq_remapping_enabled == 1;
-> +	if (cap == IOMMU_CAP_VIOMMU)
-> +		return caching_mode_enabled();
+> This isn't 100% done -- most notably, crypto still needs to be supported
+> -- but I think this gets us most of the way there.
+>
+> This can also be found at
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git objtool-vmlinux
+>
+> And for more testing it can be combined with Sami's x86 LTO patches:
+>
+>   https://github.com/samitolvanen/linux clang-lto
+>
+>
+>
+> Josh Poimboeuf (21):
+>   objtool: Fix seg fault in BT_FUNC() with fake jump
+>   objtool: Fix error handling for STD/CLD warnings
+>   objtool: Fix retpoline detection in asm code
+>   objtool: Fix ".cold" section suffix check for newer versions of GCC
+>   objtool: Support retpoline jump detection for vmlinux.o
+>   x86/ftrace: Add UNWIND_HINT_FUNC annotation for ftrace_stub
+>   objtool: Assume only ELF functions do sibling calls
+>   objtool: Add asm version of STACK_FRAME_NON_STANDARD
+>   objtool: Combine UNWIND_HINT_RET_OFFSET and UNWIND_HINT_FUNC
+>   objtool: Add xen_start_kernel() to noreturn list
+>   objtool: Move unsuffixed symbol conversion to a helper function
+>   objtool: Add CONFIG_CFI_CLANG support
+>   x86/xen: Support objtool validation in xen-asm.S
+>   x86/xen: Support objtool vmlinux.o validation in xen-head.S
+>   x86/xen/pvh: Convert indirect jump to retpoline
+>   x86/ftrace: Support objtool vmlinux.o validation in ftrace_64.S
+>   x86/acpi: Convert indirect jump to retpoline
+>   x86/acpi: Support objtool validation in wakeup_64.S
+>   x86/power: Convert indirect jumps to retpolines
+>   x86/power: Move restore_registers() to top of the file
+>   x86/power: Support objtool validation in hibernate_asm_64.S
+>
+>  arch/x86/include/asm/unwind_hints.h |  13 +---
+>  arch/x86/kernel/acpi/Makefile       |   1 -
+>  arch/x86/kernel/acpi/wakeup_64.S    |   5 +-
+>  arch/x86/kernel/ftrace_64.S         |   8 +--
+>  arch/x86/lib/retpoline.S            |   2 +-
+>  arch/x86/platform/pvh/head.S        |   3 +-
+>  arch/x86/power/Makefile             |   1 -
+>  arch/x86/power/hibernate_asm_64.S   | 105 ++++++++++++++--------------
+>  arch/x86/xen/Makefile               |   1 -
+>  arch/x86/xen/xen-asm.S              |  29 +++++---
+>  arch/x86/xen/xen-head.S             |   5 +-
+>  include/linux/objtool.h             |  13 +++-
+>  tools/include/linux/objtool.h       |  13 +++-
+>  tools/objtool/arch/x86/decode.c     |   4 +-
+>  tools/objtool/arch/x86/special.c    |   2 +-
+>  tools/objtool/check.c               |  91 +++++++++++++-----------
+>  tools/objtool/check.h               |  12 +++-
+>  tools/objtool/elf.c                 |  87 +++++++++++++++++------
+>  tools/objtool/elf.h                 |   2 +-
+>  19 files changed, 241 insertions(+), 156 deletions(-)
+>
+> --
+> 2.29.2
+>
 
+I tried this series on top of clang-cfi and it segfaults here.
 
-This part I don't understand. Does it mean Intel IOMMU can't be used in 
-VM without caching mode?
++ info OBJTOOL vmlinux.o
++ [  != silent_ ]
++ printf   %-7s %s\n OBJTOOL vmlinux.o
+ OBJTOOL vmlinux.o
++ tools/objtool/objtool orc generate --duplicate --mcount --vmlinux
+--no-fp --no-unreachable --retpoline --uaccess vmlinux.o
+Segmentation fault
++ on_exit
++ [ 139 -ne 0 ]
++ cleanup
++ rm -f .btf.*
++ rm -f .tmp_System.map
++ rm -f .tmp_initcalls.lds
++ rm -f .tmp_symversions.lds
++ rm -f .tmp_vmlinux*
++ rm -f System.map
++ rm -f vmlinux
++ rm -f vmlinux.o
+make[3]: *** [Makefile:1213: vmlinux] Error 139
 
-Thanks
-
-
->   
->   	return false;
->   }
-> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
-> index 2bfdd5734844..719793e103db 100644
-> --- a/drivers/iommu/virtio-iommu.c
-> +++ b/drivers/iommu/virtio-iommu.c
-> @@ -931,7 +931,16 @@ static int viommu_of_xlate(struct device *dev, struct of_phandle_args *args)
->   	return iommu_fwspec_add_ids(dev, args->args, 1);
->   }
->   
-> +static bool viommu_capable(enum iommu_cap cap)
-> +{
-> +	if (cap == IOMMU_CAP_VIOMMU)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
->   static struct iommu_ops viommu_ops = {
-> +	.capable		= viommu_capable,
->   	.domain_alloc		= viommu_domain_alloc,
->   	.domain_free		= viommu_domain_free,
->   	.attach_dev		= viommu_attach_dev,
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index b95a6f8db6ff..1d24be667a03 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -94,6 +94,7 @@ enum iommu_cap {
->   					   transactions */
->   	IOMMU_CAP_INTR_REMAP,		/* IOMMU supports interrupt isolation */
->   	IOMMU_CAP_NOEXEC,		/* IOMMU_NOEXEC flag */
-> +	IOMMU_CAP_VIOMMU,		/* IOMMU can declar running in a VM */
->   };
->   
->   /*
-
+- Sedat -
