@@ -2,76 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814F12F7BE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9BE2F7C04
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388606AbhAONHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:07:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53642 "EHLO mx2.suse.de"
+        id S2387799AbhAONHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:07:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54768 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388602AbhAONG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:06:57 -0500
+        id S1732721AbhAONHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 08:07:41 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1692EAC8F;
-        Fri, 15 Jan 2021 13:06:15 +0000 (UTC)
-Subject: Re: [PATCH v2 0/5] Add sysfs interface to collect reports from
- debugging tools
-To:     Alexander Potapenko <glider@google.com>,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        Linux API <linux-api@vger.kernel.org>
-Cc:     andreyknvl@google.com, dvyukov@google.com, mingo@redhat.com,
-        elver@google.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux-mm@kvack.org
-References: <20210115130336.2520663-1-glider@google.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <5ae22590-752e-7ea2-5341-a49a99e7507d@suse.cz>
-Date:   Fri, 15 Jan 2021 14:06:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        by mx2.suse.de (Postfix) with ESMTP id A5458B91D;
+        Fri, 15 Jan 2021 13:06:58 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 14:06:53 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
+        x86@kernel.org, len.brown@intel.com, dave.hansen@intel.com,
+        jing2.liu@intel.com, ravi.v.shankar@intel.com,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v3 03/21] x86/fpu/xstate: Modify address finders to
+ handle both static and dynamic buffers
+Message-ID: <20210115130653.GC11337@zn.tnic>
+References: <20201223155717.19556-1-chang.seok.bae@intel.com>
+ <20201223155717.19556-4-chang.seok.bae@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210115130336.2520663-1-glider@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201223155717.19556-4-chang.seok.bae@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Should have CCd linux-api@, please do next time
+On Wed, Dec 23, 2020 at 07:56:59AM -0800, Chang S. Bae wrote:
+> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+> index 6156dad0feb6..2010c31d25e1 100644
+> --- a/arch/x86/kernel/fpu/xstate.c
+> +++ b/arch/x86/kernel/fpu/xstate.c
+> @@ -894,15 +894,24 @@ void fpu__resume_cpu(void)
+>   * Given an xstate feature nr, calculate where in the xsave
+>   * buffer the state is.  Callers should ensure that the buffer
+>   * is valid.
+> + *
+> + * A null pointer parameter indicates to use init_fpstate.
+>   */
 
-On 1/15/21 2:03 PM, Alexander Potapenko wrote:
-> This patchset adds a library that captures error reports from debugging
-> tools like KASAN or KFENCE and exposes those reports to userspace via
-> sysfs. Report capturing is controlled by two new types of tracepoints:
-> error_report_start and error_report_end, that must be added to the tools
-> that want to use this new feature.
-> 
-> v2:
->  - added ABI documentation for /sys/kernel/error_report/
->  - changed error_report_start and error_report end tracepoints to take
->    a fixed set of values for the error detector
-> 
-> Alexander Potapenko (5):
->   tracing: add error_report trace points
->   lib: add error_report_notify to collect debugging tools' reports
->   docs: ABI: add /sys/kernel/error_report/ documentation
->   kfence: use error_report_start and error_report_end tracepoints
->   kasan: use error_report_start and error_report_end tracepoints
-> 
->  .../ABI/testing/sysfs-kernel-error_report     |  41 +++
->  include/trace/events/error_report.h           |  84 ++++++
->  kernel/trace/Makefile                         |   1 +
->  kernel/trace/error_report-traces.c            |  11 +
->  lib/Kconfig.debug                             |  14 +
->  lib/Makefile                                  |   2 +
->  lib/error_report_notify.c                     | 278 ++++++++++++++++++
->  mm/kasan/report.c                             |  15 +-
->  mm/kfence/report.c                            |   3 +
->  9 files changed, 443 insertions(+), 6 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-kernel-error_report
->  create mode 100644 include/trace/events/error_report.h
->  create mode 100644 kernel/trace/error_report-traces.c
->  create mode 100644 lib/error_report_notify.c
-> 
+kernel-doc style comment pls.
 
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
