@@ -2,168 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640692F8846
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7B82F8851
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:19:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbhAOWSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 17:18:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725863AbhAOWSI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 17:18:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72CA423B1C;
-        Fri, 15 Jan 2021 22:17:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610749047;
-        bh=51AgOraSDUgeKFnzRXPrgQAF8UQsqnNhAJF/wHnUnuA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=W/+YhIqhwKpXMR1YHjsUDC/1vi3AWO14SB7s0CrInE/m/l9jIXs2gKoWQtGg6DRi1
-         mf4Us2McffrGNfxp4IKqE9Krhk9PJ6mRw52FrXdnWRw8t7OGbutqFJFImF//XaAK3B
-         k296fxiI4dCA4u0e733GVj0Fpxayev4L71aTiRKsi0yNHKw3Gn80vLuK3OmBZXWmyw
-         oknAsGz6IZ87kZfT4BR2bsmLOb9d+uOeSqnk8nhAisGl7bkTC8POoU9m8/KrTzm54l
-         klHJ4yfGG8GXfWeMFLvQaAf6u+lkXxtZwfx2ZfsR0uBSzeGhBbnktJm2piA7XJhISW
-         g81QIgbXjkJ+w==
-Received: by mail-ot1-f45.google.com with SMTP id i6so10089561otr.2;
-        Fri, 15 Jan 2021 14:17:27 -0800 (PST)
-X-Gm-Message-State: AOAM531wQ7MD+YQyIxDlZLa3XX50C34/yuPr2NlM290VqK70kyaIQa4/
-        JQLg5v0E45RQGGRcM0NlLlG+ON39+2PaRgniB6o=
-X-Google-Smtp-Source: ABdhPJzHJByccZmsXaGOr/S4V/q8avY6+thC6kueUHGkctW9f6W31ifVaDPG/I+0qa2z+2m2Zdjz/ZATG5ejh/XajAM=
-X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr10338611ots.251.1610749045821;
- Fri, 15 Jan 2021 14:17:25 -0800 (PST)
+        id S1727194AbhAOWT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 17:19:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726442AbhAOWT0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 17:19:26 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699D8C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:18:46 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id c13so6344264pfi.12
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:18:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lK6irOIZuEqc0zZFe+eyBQRg0ctV5nEW+XvBTkrNvKg=;
+        b=at3c+r+iqECyp24pqx4JptLnOdrvWe9hS8lLSd/ZbOfo/J9YDXju5d5ikRzyPu6Pnh
+         3LWU/Da1lR2ZP6ZC1rm4eyV/jn97tmRaAn4hWZDtgPbsthjMbmy1S8aZP8E3/qj5Q5Fe
+         3tGiWAqj7oH525wRpVg3rIsRXg29OYyxAaHKSe6qOiSLivwUHgLuzfq+MLSTYg6AmmSz
+         9QrJe7TThrxfWjtxfT93Sc6s2799TAMXNBdQz023ksijibSI65YPbpZFrSP1/lg0xGTI
+         pvVTw3+PKC7QUzphRtzDOzB6ksqBE3q7mkxLY3ui37AifjWf4tzxXrZoVf899HdmKAjo
+         R13g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lK6irOIZuEqc0zZFe+eyBQRg0ctV5nEW+XvBTkrNvKg=;
+        b=EXnXkNpge6OFCh0iXvfZeaRxy5tYW8XK5AYvfNzfWoesMXJvn2vNFjuVVbbk5qQKVY
+         7nRQ81gfEJGzY1/9kAxWgjQQU3+3u8Q9SEU2XRFO0zvfrFlv2dDs3QqkNg168EZr0cnV
+         MratYS1m9V4J4OvzXAgRPcdVvb5Fb1fzqKJebmKggGFVsIKI+CC6rrzaNXQFBAJdCNN5
+         O4KuU1chbedhmCgCSz7O2MPjU0mn72yYuJOjWKD3e4f7eoR+P9W+jewr3Z+31Vkf0hBl
+         sR5WchXcp+zHEGX0m7DRIsDwxu4U3UmqCssMEKOhryrs/BW96nzDpEIjQyWII3KQhB2S
+         vtjw==
+X-Gm-Message-State: AOAM5305+SyCribb6ZhjKkQaCQQ6XqyWkdMFY+g8DXgVTedByd276D58
+        MX6fJBO5yz9rsQTBykO2xufnpA==
+X-Google-Smtp-Source: ABdhPJy2asxDxEdSZv3zuGSAVsZ9/dStbHstvsUeXsl4p2TVqleXD7JLhhltkUYwhvCqRpbwlfhlCQ==
+X-Received: by 2002:a63:db57:: with SMTP id x23mr14564215pgi.131.1610749125569;
+        Fri, 15 Jan 2021 14:18:45 -0800 (PST)
+Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
+        by smtp.gmail.com with ESMTPSA id y26sm3823634pgk.42.2021.01.15.14.18.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 14:18:44 -0800 (PST)
+Date:   Fri, 15 Jan 2021 14:18:40 -0800
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
+Message-ID: <YAIUwGUPDmYfUm/a@google.com>
+References: <20210108012846.4134815-1-vipinsh@google.com>
+ <20210108012846.4134815-2-vipinsh@google.com>
+ <YAICLR8PBXxAcOMz@mtj.duckdns.org>
 MIME-Version: 1.0
-References: <20210106064807.253112-1-Sonicadvance1@gmail.com>
- <20210115070326.294332-1-Sonicadvance1@gmail.com> <b15672b1caec4cf980f2753d06b03596@AcuMS.aculab.com>
-In-Reply-To: <b15672b1caec4cf980f2753d06b03596@AcuMS.aculab.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 15 Jan 2021 23:17:09 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1gqt-gBCPTdNeY+8SaG8eUGN4zkCrNKSjA=aEL-TkaUQ@mail.gmail.com>
-Message-ID: <CAK8P3a1gqt-gBCPTdNeY+8SaG8eUGN4zkCrNKSjA=aEL-TkaUQ@mail.gmail.com>
-Subject: Re: [PATCH] Adds a new ioctl32 syscall for backwards compatibility layers
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "sonicadvance1@gmail.com" <sonicadvance1@gmail.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oleg Nesterov <oleg@redhat.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Jan Kara <jack@suse.cz>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAICLR8PBXxAcOMz@mtj.duckdns.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 9:01 PM David Laight <David.Laight@aculab.com> wrote:
->
-> From: sonicadvance1@gmail.com
-> > Sent: 15 January 2021 07:03
-> > Problem presented:
-> > A backwards compatibility layer that allows running x86-64 and x86
-> > processes inside of an AArch64 process.
-> >   - CPU is emulated
-> >   - Syscall interface is mostly passthrough
-> >   - Some syscalls require patching or emulation depending on behaviour
-> >   - Not viable from the emulator design to use an AArch32 host process
-> >
->
-> You are going to need to add all the x86 compatibility code into
-> your arm64 kernel.
-> This is likely to be different from the 32bit arm compatibility
-> because 64bit items are only aligned on 32bit boundaries.
-> The x86 x32 compatibility will be more like the 32bit arm 'compat'
-> code - I'm pretty sure arm32 64bit aligned 64bit data.
+On Fri, Jan 15, 2021 at 03:59:25PM -0500, Tejun Heo wrote:
+> Hello,
+> 
+> On Thu, Jan 07, 2021 at 05:28:45PM -0800, Vipin Sharma wrote:
+> > 1. encrpytion_ids.sev.max
+> > 	Sets the maximum usage of SEV IDs in the cgroup.
+> > 2. encryption_ids.sev.current
+> > 	Current usage of SEV IDs in the cgroup and its children.
+> > 3. encryption_ids.sev.stat
+> > 	Shown only at the root cgroup. Displays total SEV IDs available
+> > 	on the platform and current usage count.
+> 
+> Sorry, should have raised these earlier:
+> 
+> * Can we shorten the name to encids?
 
-All other architectures that have both 32-bit and 64-bit variants
-use the same alignment for all types, except for x86.
+Sure.
 
-There are additional differences though, especially if one
-were to try to generalize the interface to all architectures.
-A subset of the issues includes
+> 
+> * Why is .sev a separate namespace? Isn't the controller supposed to cover
+>   encryption ids across different implementations? It's not like multiple
+>   types of IDs can be in use on the same machine, right?
+> 
 
-- x32 has 64-bit types in places of some types that are
-  32 bit everywhere else (time_t, ino_t, off_t, clock_t, ...)
+On AMD platform we have two types SEV and SEV-ES which can exists
+simultaneously and they have their own quota.
 
-- m68k aligns struct members to at most 16 bits
+> > Other ID types can be easily added in the controller in the same way.
+> 
+> I'm not sure this is necessarily a good thing.
 
-- uid_t/gid_t/ino_t/dev_t/... are
+This is to just say that when Intel and PowerPC changes are ready it
+won't be difficult for them to add their controller.
 
-> You'll then need to remember how the process entered the kernel
-> to work out which compatibility code to invoke.
-> This is what x86 does.
-> It allows a single process to do all three types of system call.
->
-> Trying to 'patch up' structures outside the kernel, or in the
-> syscall interface code will always cause grief somewhere.
-> The only sane place is in the code that uses the structures.
-> Which, for ioctls, means inside the driver that parses them.
+> 
+> > +/**
+> > + * enc_id_cg_uncharge_hierarchy() - Uncharge the enryption ID cgroup hierarchy.
+> > + * @start_cg: Starting cgroup.
+> > + * @stop_cg: cgroup at which uncharge stops.
+> > + * @type: type of encryption ID to uncharge.
+> > + * @amount: Charge amount.
+> > + *
+> > + * Uncharge the cgroup tree from the given start cgroup to the stop cgroup.
+> > + *
+> > + * Context: Any context. Expects enc_id_cg_lock to be held by the caller.
+> > + */
+> > +static void enc_id_cg_uncharge_hierarchy(struct encryption_id_cgroup *start_cg,
+> > +					 struct encryption_id_cgroup *stop_cg,
+> > +					 enum encryption_id_type type,
+> > +					 unsigned int amount)
+> > +{
+> > +	struct encryption_id_cgroup *i;
+> > +
+> > +	lockdep_assert_held(&enc_id_cg_lock);
+> > +
+> > +	for (i = start_cg; i != stop_cg; i = parent_enc(i)) {
+> > +		WARN_ON_ONCE(i->res[type].usage < amount);
+> > +		i->res[type].usage -= amount;
+> > +	}
+> > +	css_put(&start_cg->css);
+> 
+> I'm curious whether this is necessary given that a css can't be destroyed
+> while tasks are attached. Are there cases where this wouldn't hold true? If
+> so, it'd be great to have some comments on how that can happen.
 
-He's already doing the system call emulation for all the system
-calls other than ioctl in user space though. In my experience,
-there are actually fairly few ioctl commands that are different
-between architectures -- most of them have no misaligned
-or architecture-defined struct members at all.
+We are not moving charges when a task moves out. This can lead us to the
+cases where all of the tasks in the cgroup have moved out but it
+still has charges. In that scenarios cgroup can be deleted. Taking a
+reference will make sure cgroup is atleast present internally.
 
-Once you have conversion functions to deal with the 32/64-bit
-interface differences and architecture specifics of sockets,
-sysvipc, signals, stat, and input_event, handling the
-x86-32 specific ioctl commands is comparably easy.
+Also, struct encryption_ic_cgroup has a reference to the cgroup which is
+used during uncharge call to correctly identify from which cgroup charge
+should be deducted.
 
-         Arnd
+> 
+> > +/**
+> > + * enc_id_cg_max_write() - Update the maximum limit of the cgroup.
+> > + * @of: Handler for the file.
+> > + * @buf: Data from the user. It should be either "max", 0, or a positive
+> > + *	 integer.
+> > + * @nbytes: Number of bytes of the data.
+> > + * @off: Offset in the file.
+> > + *
+> > + * Uses cft->private value to determine for which enryption ID type results be
+> > + * shown.
+> > + *
+> > + * Context: Any context. Takes and releases enc_id_cg_lock.
+> > + * Return:
+> > + * * >= 0 - Number of bytes processed in the input.
+> > + * * -EINVAL - If buf is not valid.
+> > + * * -ERANGE - If number is bigger than unsigned int capacity.
+> > + * * -EBUSY - If usage can become more than max limit.
+> 
+> The aboves are stale, right?
+
+-EBUSY is not valid anymore. We can now set max to be less than the usage. I
+will remove it in the next patch.
+
+> 
+> > +static int enc_id_cg_stat_show(struct seq_file *sf, void *v)
+> > +{
+> > +	unsigned long flags;
+> > +	enum encryption_id_type type = seq_cft(sf)->private;
+> > +
+> > +	spin_lock_irqsave(&enc_id_cg_lock, flags);
+> > +
+> > +	seq_printf(sf, "total %u\n", enc_id_capacity[type]);
+> > +	seq_printf(sf, "used %u\n", root_cg.res[type].usage);
+> 
+> Dup with .current and no need to show total on every cgroup, right?
+
+This is for the stat file which will only be seen in the root cgroup
+directory.  It is to know overall picture for the resource, what is the
+total capacity and what is the current usage. ".current" file is not
+shown on the root cgroup.
+
+This information is good for resource allocation in the cloud
+infrastructure.
+
+> 
+> Thanks.
+> 
+> -- 
+> tejun
