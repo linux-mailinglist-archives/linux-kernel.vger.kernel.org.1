@@ -2,136 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8E82F73CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:45:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 548272F73CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:46:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731802AbhAOHol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 02:44:41 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:56422 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731680AbhAOHok (ORCPT
+        id S1731864AbhAOHpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 02:45:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731827AbhAOHpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 02:44:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1610697149; x=1642233149;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=HcBXmKW4OBQmnVfbBD4pSik7wx3o7MmMCp9HUTi5bVU=;
-  b=mQp+NLh2GxkmX9j8qD5ZxQO+aCnGRBTOY3QrwfRm3ccKNxFYusEfbOh0
-   gElXzJvxFh4SznjzXXhaStloJDdzhMrtzfZr9k6802uplJj4BfprVr8Qa
-   BGkDgrHgrk21Jzmq6/v0BxG2rzjt1lCE5JDtTpIvT1WZqOVempOcDJJCN
-   VFEJiY1PVnJezxDSSL+sLwlQ9U8t27svcHruBor/aY3gjClSjJFjEH5Tl
-   JonIi2HwKL1hllsm6K3EwiQzExXyPvMj/TE+MD6mS4+1enzwbN/EeJ295
-   JMm0P5Gm7l3Qkzm6t+tzgzpOqr1QCXKpi5hpmENfi9ytUKNJSk+nH7wxk
-   A==;
-IronPort-SDR: WBFFzWRuTciZzfj6nI3fVyEIrne+dY90X2/1eVycG1YJU6eaS0Nyy54BKVbZOvmY9U0etLwn03
- iMwMjaYYSM1WGLWjxMs5vDaQNgg6x/b1YqmtedtPMUU/iSnldBbzQ/Hzat/DsZMJPnEBXv3ZPN
- D47X8L1tbdQmvbbi8F4a7eaX/ntymBaqNcN5FrYq+w8nLimxAYcszcUtHFkq2pqM/BK92bpbvd
- xvXs8l7WjXqJ4hUX4kEVkFJFp9Jxpc/3KLvrYLrF1ovSF8TEL1Q0pOxjY/LE+5T3eyaiLXUfCi
- qAk=
-X-IronPort-AV: E=Sophos;i="5.79,348,1602518400"; 
-   d="scan'208";a="261422638"
-Received: from mail-mw2nam10lp2100.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.100])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Jan 2021 15:50:49 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MIaTMIMClZpdlUOE5CphyQIOX6gWAp5M6En+/TCV18UaAQRi1FYPpywsRkvjsrbaU8Os+VYBHYjwnA8UCU3lV23J9H3cq+mH1z221KNTpf5UKpOyb3x9YTrOtANkK0ZPJUjf080Ekh6NsDFEsn/g0QooE5fXKzYtph8DpN6ZT2t1FzP0Ro7YBSeC9g6I8xdl5bB4RP9cpkl2V19xSaZrsuIIIhuE1VPNZl0cNOw+ZRem/0NcZOkzpVwolv8PZhlqcw0ZwQ7yyZU6RQOwYnOYQ/ScTw40opkHt+DKHQrUEUQcBjvE0jVSWSf6gSyuPDHbXmpuGfRjYDrXljNb33Onkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HcBXmKW4OBQmnVfbBD4pSik7wx3o7MmMCp9HUTi5bVU=;
- b=kuWu+o6/xYP3tVD03uZuSzNnRub+6WB39zhCWNYp8R4CGXEooWk8WbmHFTTIC7c6sP3DEGkFsfyVyOhZDr43Ns2DnauyO9jusHNJXYZPvb0588roMBZQ5J7WwIr+JkC9Q+0/k+KSMRIauEnx7tQ1H2J/owQr0AVd2ROafA3wQcVO6WIHya2uzdqViFC9RtVzXIz+bHvPmsF6yH4oYd/KvaQ//P5s8OduS+7QSX4u8vncJaCCmmUdoGYRQVv0CuaAxS3xtgUnkxIxaV2STPFgiA+pNBHzkKCo7F7MF5OmafrxxXv7lBpW5t5sYDCJBMcU10E+3JcvkzBcoNqyc9Hbhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Fri, 15 Jan 2021 02:45:15 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBB3C061575;
+        Thu, 14 Jan 2021 23:44:34 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id 11so4965399pfu.4;
+        Thu, 14 Jan 2021 23:44:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HcBXmKW4OBQmnVfbBD4pSik7wx3o7MmMCp9HUTi5bVU=;
- b=LDkraOqABQhnNtKYC76iykeLxKVd47H2aWaijEgDci4usuH6nAPNZosLmfSl61xOs3ta2VAfmY73NAkcOcxc9YBrkr/diVUcMrkBs4GKOz8YQi+X3xICidCWK91kR/ZuC20ZERJBEvMz+LuvJPZQtl20dcQFKCGA/Xz3aFqeLsI=
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
- by BYAPR04MB5591.namprd04.prod.outlook.com (2603:10b6:a03:101::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Fri, 15 Jan
- 2021 07:43:31 +0000
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::716c:4e0c:c6d1:298a]) by BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::716c:4e0c:c6d1:298a%6]) with mapi id 15.20.3742.012; Fri, 15 Jan 2021
- 07:43:31 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     =?iso-8859-4?Q?Valdis_Kl=BAtnieks?= <valdis.kletnieks@vt.edu>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: target: iscsi: Fix typo in comment
-Thread-Topic: [PATCH] scsi: target: iscsi: Fix typo in comment
-Thread-Index: AQHW6w2J+ggJgxd38EOuf8hCGItS4g==
-Date:   Fri, 15 Jan 2021 07:43:31 +0000
-Message-ID: <BYAPR04MB496509208A16D378EBCF5A4186A70@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <2921.1610694423@turing-police>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: vt.edu; dkim=none (message not signed)
- header.d=none;vt.edu; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [75.54.103.196]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 0e50f99d-4e00-487b-7016-08d8b9294199
-x-ms-traffictypediagnostic: BYAPR04MB5591:
-x-microsoft-antispam-prvs: <BYAPR04MB5591D92FC56A73D7CEB8B61886A70@BYAPR04MB5591.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:2657;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: I+q4KOXEcYQryCZSMlWNjPoeC9r4NrLpEAAyKlp7Z4/1P3yJIbjsjLhHCw/IzQJdgnG9SdyRZBK+p4YNk+hG2gJwpLvFcBYjJOy4zEYaZSSfeC47svi2fWCfLdvRDgyS5Y+/8jHQ55H3KP07TyhT6yJuyhG3bmiqMA1aVtXZ0NmRwT5RdB12Ivn8MuXeb2kpqWnIBQ3B0kpsV3A3ccJfDqFWdige8zgRvVlKLfKVfHXQki+MpVhdMCWsxAiOqMzZA3im6kcyUE7GuwxMNbZn8q1TOcYDftDOzcZjLcryU+0yqFrRirNcE15aJ4u0KYFxqAhxFXmb0lZ4EbZar4eunDAiTcIKMT+Lj/UtspF/vC5g2JhGJqnMniTqAOVTJjTb348GYBPdyXBa33oJHN4sGg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39860400002)(376002)(136003)(396003)(6506007)(186003)(4326008)(54906003)(66476007)(33656002)(2906002)(66556008)(76116006)(66946007)(52536014)(55016002)(478600001)(26005)(110136005)(8936002)(7696005)(86362001)(5660300002)(558084003)(8676002)(71200400001)(316002)(53546011)(64756008)(9686003)(66446008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?iso-8859-4?Q?myF59c4XUc7sbHGJXrntx6hd92Wcf+AqxNBQD4yMKbJZvJscJBkEmgZCFj?=
- =?iso-8859-4?Q?2KEq7NrnHanENTP6LDbBV1gnFDH/GoCxySHLYC02LiHyoD24L/tlNEJ8PZ?=
- =?iso-8859-4?Q?xWcGaOLTIqB/ZREFgul2/HZ5kHtJ/yVTW9+1btMHdOD2pMsox9MgI6jMOQ?=
- =?iso-8859-4?Q?3AQwtMcu+mmhQSOKBNZ/EvVlYaf5Hzj21SEc1cdnyMC9v5KkQgOgsSxtLR?=
- =?iso-8859-4?Q?xtnRD2d1wARielKX3mSb7sz+BXtYl9/eTzKg1wKZxfSVmkgXAaU6Xr1fSy?=
- =?iso-8859-4?Q?3abgkHSJe/1i8bQjBcvQGJ7dreffjQHpHROfhVzJgdDCnsJGqyvI9BMSAn?=
- =?iso-8859-4?Q?jtDFxtjEy6CoSR6qy7sZzUYCjjtLBsf0kgdSK7jbQYinHxtXcIwhERYK3Q?=
- =?iso-8859-4?Q?slb3QafKHvmu1JHlzYEy3e3lxzD77BU7EntDRRJCVcNa3Mi/6gcjIPFyub?=
- =?iso-8859-4?Q?dCYzYeC8FEDECfP/so/HRraLrLMVHcQlmSTFLJahh3yQ1JrGsIVxADlx5+?=
- =?iso-8859-4?Q?kEH4fmCEeV0RuyV0sqplmvB9T9a9vi2QeJUFIfCj667H6qMs+Gf6H/vJ73?=
- =?iso-8859-4?Q?O6NvN09/qStwtj8PmYm9DGMT7Q99xx3RNXtrnTm9twB85t8LsoRhZrszg5?=
- =?iso-8859-4?Q?gX3LvXlKIJt8BMbWmIjrBP+y8r8s28zfrT6+orq9rKGFvAnffmlV9JX0TR?=
- =?iso-8859-4?Q?ko1I3+60GrDh6sjD/AZu+Z74Jw0C0ZF6IJyQ9Phrmme/dmRV0ryxqQy9gN?=
- =?iso-8859-4?Q?Qsy6g2sw0jdRjWVdIri50xyol+nTd+Cb2YKlM1PnEzPoIZDKfS9GXVUxsQ?=
- =?iso-8859-4?Q?fXfbPjq1B7jPiI6rt+QXg87sC9oY9GnEMf5VTpVm8B/cpK8GLwcYjYF107?=
- =?iso-8859-4?Q?FwNcpLVH9MLiRacoNEeEYlCY5/98RR4RYOt6Hfki3OzF/pgHw+et0Qd431?=
- =?iso-8859-4?Q?XiakqArjQAdghgO9PAISFkKgyIIZz0V2cQDdAD3UQJzcvgswtUKq2b4qZm?=
- =?iso-8859-4?Q?HS4uQEb161cmGfb/P76OX5hv7thFQVdRnX+N5o?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-4"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=RSUcZOUYDHjygfK1QSy+jp5s+BrbUL+dlNwmT8GQw1w=;
+        b=ZwuSSIKHJiI1sHVTdL7H8XYDfqijJG0hhQrmHfTd4uksDZccNDCrDh5bStIhowCZqb
+         NKGXyPEtkYS9yM/EKrfMkARoRkxtU/aIeQ2SK70kyPJBfEp5MnVucOSEpnihvKCk/Xl3
+         zp2jZzcm0/JK3oje2nd0euaEXB8Kv3Etzs9p8yYFUA0QEDx4sz1xaWzSMPIFfRjY9wZA
+         M3zfEwojmDwTg/brWyXVKpbPFclkm+/hDu1hsGpz3YKTWUI6Hge1tv74UeuB7wKTn+yD
+         qCFO2KXfGAXZyT5bu+TdtWh8GYSgIqL+ox0VnpIDAGv/wyh/3/uPdYo8Jzv/BHZ/dyDN
+         jXhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=RSUcZOUYDHjygfK1QSy+jp5s+BrbUL+dlNwmT8GQw1w=;
+        b=SToAUfNx0917WWp9bLw7wsi2ZgaEWPfwwvY6ydDoggPZQrsG+s+EaBCU/IA3K8m9ro
+         lHgaIfHSFDZ466NngybRZkRkBQ5kYotfuKJtIs457/TVbN+slu/QCkaLWc53z23Mc8m+
+         QS4M7nIG0zcknzRHzG8PtfMvRdQAeupLOulB24R9PhMr2eyDDXxJboIDdMVfQH9Sn+x+
+         y2iW9UNIkv8E2Hx+C4xZVNUlJpdHRrb3u6bONJJv/gQizQa1EBgeA2sKKsQiCxkf8F0B
+         mcMUM6aNnMjvf3XVnZcUzJFnhKdbGojW6gopDsXK1yCYuPUD2pYl3esv+IsdYHny5mRk
+         hpog==
+X-Gm-Message-State: AOAM53057w20hDsJbp/uowae3uXMXQPsX2drlaiucIlOeNV052A77X/T
+        TIUOi9MF8TWEdfJff3YBS+U=
+X-Google-Smtp-Source: ABdhPJwd863AHDzeAXfeQW0QLgSK+zvfW8TK+L0XEjuEWl6LDlSGvpiMNpfHbAi8oXBEA/JUxRCHEQ==
+X-Received: by 2002:a63:a556:: with SMTP id r22mr11487744pgu.296.1610696674401;
+        Thu, 14 Jan 2021 23:44:34 -0800 (PST)
+Received: from [0.0.0.0] (n218250008152.netvigator.com. [218.250.8.152])
+        by smtp.gmail.com with ESMTPSA id b18sm7381358pfi.173.2021.01.14.23.44.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Jan 2021 23:44:33 -0800 (PST)
+Subject: Re: [PATCH v2 1/2] platform/x86: dell-privacy: Add support for Dell
+ hardware privacy
+To:     Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>,
+        Perry Yuan <Perry.Yuan@dell.com>
+Cc:     "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Limonciello Mario <Mario.Limonciello@dell.com>
+References: <20201228132855.17544-1-Perry_Yuan@Dell.com>
+ <mXtNUreCVsPKizG-fnNKPId9_lQGit0S6pYEpk-aNT1hGQjVwblZDiO4E-YX3hxnrbbNN1-6hSntiv13wz66RxbhXjPJhpAVOIlZmmwUI7w=@protonmail.com>
+ <7def1cdc-e275-9ae6-4941-55517359bb1e@gmail.com>
+ <ce598a92-73ef-e9a6-d772-59f5da3d251e@redhat.com>
+From:   Perry Yuan <perry979106@gmail.com>
+Message-ID: <1f72244c-4510-f945-6997-baa3fcdf9d7b@gmail.com>
+Date:   Fri, 15 Jan 2021 15:44:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e50f99d-4e00-487b-7016-08d8b9294199
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jan 2021 07:43:31.7054
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZE5r5buK/jyrGxR0dZq9CySsU96r4ui8uJp7B9JXXYD3aolnvq2kGwmwCxGWHnH6TPSVw3z6T88YF3FMXV9ntiqYuRCrvcPiyJN92rSKKOQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5591
+In-Reply-To: <ce598a92-73ef-e9a6-d772-59f5da3d251e@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/14/21 11:10 PM, Valdis Kl=BAtnieks wrote:=0A=
-> Correct the spelling of Nagle's name in a comment.=0A=
->=0A=
-> Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>=0A=
-=0A=
-Looks good.=0A=
-=0A=
-Reviewed-by: Chaitanya Kulkarni <chiatanya.kulkarni@wdc.com>=0A=
-=0A=
+On 2021/1/13 2:37, Hans de Goede wrote:
+
+> Hi,
+>
+> I know there already is a v3 out and I will try to get around to reviewing
+> that soon, still 1 remark about the discussion surrounding v2:
+>
+> On 1/11/21 2:42 PM, Perry Yuan wrote:
+>
+> <snip>
+>
+>>>> *The flow is like this:
+>>>> 1) User presses key. HW does stuff with this key (timeout is started)
+>>>> 2) Event is emitted from FW
+>>>> 3) Event received by dell-privacy
+>>>> 4) KEY_MICMUTE emitted from dell-privacy
+>>>> 5) Userland picks up key and modifies kcontrol for SW mute
+>>>> 6) Codec kernel driver catches and calls ledtrig_audio_set, like this:
+>>>> 	ledtrig_audio_set(LED_AUDIO_MICMUTE,
+>>>> 		rt715->micmute_led ? LED_ON :LED_OFF);
+>>>> 7) If "LED" is set to on dell-privacy notifies ec,
+>>>>    and timeout is cancelled,HW mic mute activated.
+>>>>
+>>> Please proofread the commit message again, and pay attention to capitalization
+>>> and spacing.
+>> I want to reformat it and move the commit info to cover letter.
+> Please also put a copy of this as a comment in either the wmi or the
+> acpi driver (with a comment pointing to the comment in the other) this is
+> important info to have for someone reading the code and trying to understand
+> how this all fits together.
+>
+> Regards,
+>
+> Hans
+
+Hi Hans:
+
+Agreed.
+
+I will add this to the driver comments and explain how the acpi/wmi 
+driver associated.
+
