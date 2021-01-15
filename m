@@ -2,136 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4B62F7E9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5FCB2F7EAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731425AbhAOOwR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Jan 2021 09:52:17 -0500
-Received: from mail-io1-f41.google.com ([209.85.166.41]:41213 "EHLO
-        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726849AbhAOOwR (ORCPT
+        id S1729655AbhAOO52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 09:57:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726402AbhAOO52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:52:17 -0500
-Received: by mail-io1-f41.google.com with SMTP id q1so18545017ion.8;
-        Fri, 15 Jan 2021 06:52:01 -0800 (PST)
+        Fri, 15 Jan 2021 09:57:28 -0500
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7546C061757;
+        Fri, 15 Jan 2021 06:56:47 -0800 (PST)
+Received: by mail-oo1-xc2d.google.com with SMTP id x203so2253086ooa.9;
+        Fri, 15 Jan 2021 06:56:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NO0K0dXCtZelpuNUhec8CuaDzfXTrQY8G8j/RO4RKUQ=;
+        b=FmdnjoGeom+NzYjZMF8xspzWt7P4wbaYEKKf4CoWFs3Kdkd0A87H5cVKvHJ0Bte5sR
+         RBoMKG6eibhcoufqOS9aUBHTUScKunWrFdK73ZroK4w/fgwm64bAWF680q3D5t4uH69j
+         Pz7K5AlL8RflekVrpU5iwcyz8uhTibWljAJ9HJOHIRD1JuY8isVS9AesQAt4K+zpoonY
+         naozFAfBXLDWh/l6aLqCxrLMZ3TuWwEe0zESi4qRkY12Plo5Kx4MkaHW9Y8lf6QWMd0E
+         LbUtjaqLnBBtFQC+iLKe5UaVEBAVJV1o72PeVwDDCLsJr2nJzNJPGA5MScBQ+ZcmyC1/
+         DeYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rEerV/vcl1qkZpTEt+4g7qD9epDZ/0Mu+8gvRFbU6/g=;
-        b=FumE1ZEazBxUjr6Sua8NXWqOt/F8DGECWbNOmZgbHcYb9TX65vWjKYmTNS0bdw2y/i
-         iuWAy1PlyVgD94IeGLBXwBBVgz53ezY985PyOMhmrVWbj1a+j4Ce20h4Q1B0YJAvWL5n
-         jTCfspLelPVnNHn2VYwVncYIoBkE+/peXNCMqikpJimk/EILUB6ADdhsMNRxjS93YJ+7
-         9nhkbiVnpyh/XL9pPqUvZsCZSehwum7rHWEEE9xnRSy2XkgKBtVBz7Ptn4tSRs/SQmbg
-         kCHPmKxPYjI0xWWAv3I7fqKI8sXHmYLUkqGITMNrqHqf95YyV8Xgry9z9HItFIUJIIy+
-         +fjA==
-X-Gm-Message-State: AOAM533m40jl3lyJ1kvrTYYzNuPivdvsZDnVcgZ4QCs8tcS0A9PfMoYp
-        ZwmybBYnbStI8ZEPQbfgFCOeJy1Tfg2Koyv5
-X-Google-Smtp-Source: ABdhPJy8oIk/QSYS2fUh5RXvSBaKbkrDG4zhARlrROH85BXMh+b7rAIrz3y4E3LFc9DObVdfDvzGyQ==
-X-Received: by 2002:a5d:8704:: with SMTP id u4mr8798550iom.3.1610722295848;
-        Fri, 15 Jan 2021 06:51:35 -0800 (PST)
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com. [209.85.166.47])
-        by smtp.gmail.com with ESMTPSA id h6sm269637iog.47.2021.01.15.06.51.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Jan 2021 06:51:35 -0800 (PST)
-Received: by mail-io1-f47.google.com with SMTP id x21so365445iog.10;
-        Fri, 15 Jan 2021 06:51:34 -0800 (PST)
-X-Received: by 2002:a02:bb99:: with SMTP id g25mr10638694jan.11.1610722294668;
- Fri, 15 Jan 2021 06:51:34 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=NO0K0dXCtZelpuNUhec8CuaDzfXTrQY8G8j/RO4RKUQ=;
+        b=n2o1N2DmJzRlC/6mfJqorOF8K/K8AeVoqVBYcFKViRE8pwGeinjrY+R9FvX7gW/Ezh
+         zF/WnfYq/d2dUBCMtZk25PEvkvRbacI39PyopcPh3ukXjVbYI/2fk9D/q25Bmf+cOFCS
+         3LPxnE8akHgj8JUZqoDsBveWyo5MWYhbPX2vk3OkbQc8zsQoTAgAvHbV+dsEWt6BTK9o
+         urWcUyWpV/uyt7bJV+IfP+NUGmt7ZgSyNmvVT/LBiWxopm0aGDlKKwGOM39f9NcVH6ZM
+         vvjihAwF/CDxlTAwB1vchx2niwSw3cVjrRxMPNx616tBXVFCXTwNkH/HbLiXxufAWpxa
+         t8zw==
+X-Gm-Message-State: AOAM531D6a9kiSpDtMjJT1SQUEu5YHQQFg2PWzfxQnl9g1Mboy51f8bn
+        8ZA2UJ5PayWuV4GHu/OnVdHJ7enCE+7gjD1OZVk=
+X-Google-Smtp-Source: ABdhPJzgaiG/3gsS8pa90VDlTf938WbevA6Pure/5BnlbJkOOiwQbElE6ZbMNYsLwSg7BYtcN/GEmRXgm2aCIvqR4R4=
+X-Received: by 2002:a4a:a2c5:: with SMTP id r5mr8405442ool.72.1610722606624;
+ Fri, 15 Jan 2021 06:56:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20210114163641.2427591-1-alsi@bang-olufsen.dk> <2adec5d6-fbc9-680c-01d6-25f83327bf21@broadcom.com>
-In-Reply-To: <2adec5d6-fbc9-680c-01d6-25f83327bf21@broadcom.com>
-From:   Andrew Zaborowski <andrew.zaborowski@intel.com>
-Date:   Fri, 15 Jan 2021 15:51:23 +0100
-X-Gmail-Original-Message-ID: <CAOq732KGRmQ0eq46cqkF-EW-A8W6QiOb02NZEq6H7K_28YSstA@mail.gmail.com>
-Message-ID: <CAOq732KGRmQ0eq46cqkF-EW-A8W6QiOb02NZEq6H7K_28YSstA@mail.gmail.com>
-Subject: Re: [PATCH v2] brcmfmac: add support for CQM RSSI notifications
-To:     Arend Van Spriel <arend.vanspriel@broadcom.com>
-Cc:     =?UTF-8?Q?Alvin_=C5=A0ipraga?= <ALSI@bang-olufsen.dk>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "brcm80211-dev-list.pdl@broadcom.com" 
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        "SHA-cyfmac-dev-list@infineon.com" <SHA-cyfmac-dev-list@infineon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210115163505.4132a5b3@canb.auug.org.au> <20210115055703.GA1258199@hr-amd>
+ <MWHPR12MB12481AE693629C4F60368519ECA70@MWHPR12MB1248.namprd12.prod.outlook.com>
+In-Reply-To: <MWHPR12MB12481AE693629C4F60368519ECA70@MWHPR12MB1248.namprd12.prod.outlook.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 15 Jan 2021 09:56:35 -0500
+Message-ID: <CADnq5_NqvfQZLfuYFqz7rimPA82qGxA2RUP=gyzt-mqSFrVyTw@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the amdgpu tree
+To:     "Huang, Ray" <Ray.Huang@amd.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 at 15:12, Arend Van Spriel
-<arend.vanspriel@broadcom.com> wrote:>
-> + Johannes
-> - netdevs
+On Fri, Jan 15, 2021 at 3:46 AM Huang, Ray <Ray.Huang@amd.com> wrote:
 >
-> On 1/14/2021 5:36 PM, 'Alvin Šipraga' via BRCM80211-DEV-LIST,PDL wrote:
-> > Add support for CQM RSSI measurement reporting and advertise the
-> > NL80211_EXT_FEATURE_CQM_RSSI_LIST feature. This enables a userspace
-> > supplicant such as iwd to be notified of changes in the RSSI for roaming
-> > and signal monitoring purposes.
+> [AMD Public Use]
 >
-> The more I am looking into this API the less I understand it or at least
-> it raises a couple of questions. Looking into nl80211_set_cqm_rssi() [1]
-> two behaviors are supported: 1) driver is provisioned with a threshold
-> and hysteresis, or 2) driver is provisioned with high and low threshold.
+> Could you please help to check whether this patch can fix the issue?
 
-Right.
+Looks good.  Might want to add a comment where you set cpu_core_num
+that this is only used on APUs which are x86 only.
+
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
 
 >
-> The second behavior is used when the driver advertises
-> NL80211_EXT_FEATURE_CQM_RSSI_LIST *and* user-space provides more than
-> one RSSI threshold.
-
-Or, when the driver doesn't implement set_cqm_rssi_config (the old
-method).  So the driver can stop supporting set_cqm_rssi_config when
-it implements set_cqm_rssi_range_config.
-
-> In both cases the same driver callback is being used
-> so I wonder what is expected from the driver. Seems to me the driver
-> would need to be able to distinguish between the two behavioral
-> scenarios. As there is no obvious way I assume the driver should behave
-> the same for both cases, but again it is unclear to me what that
-> expected/required behavior is.
-
-When the driver wants to implement both methods it may be because the
-hardware has a better method of handling the hysteresis than what is
-implemented nl80211.c.  In that case, yes, it'd need to remember which
-method was used and the parameters.  If set_cqm_rssi_range_config was
-used the driver is expected to report when a momentary rssi
-measurement goes out of the configured range.
-
+> Thanks,
+> Ray
 >
-> With behavior 2) some processing is done in cfg80211 itself by
-> cfg80211_cqm_rssi_update() which is called from nl80211_set_cqm_rssi()
-> upon NL80211_CMD_SET_CQM and cfg80211_cqm_rssi_notify() called by
-> driver. If I look at that it matches pretty close what our firmware is
-> doing. The difference is that our firmware avoids RSSI oscillation with
-> a time constraint between RSSI events whereas cfg80211 uses the hysteresis.
-
-That may be a good reason to keep supporting both methods.
-
+> -----Original Message-----
+> From: Huang, Ray <ray.huang@amd.com>
+> Sent: Friday, January 15, 2021 1:57 PM
+> To: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Alex Deucher <alexdeucher@gmail.com>; Linux Kernel Mailing List <linux-kernel@vger.kernel.org>; Linux Next Mailing List <linux-next@vger.kernel.org>
+> Subject: Re: linux-next: build failure after merge of the amdgpu tree
 >
-> So before moving forward, I hope Johannes can chime in and clarify
-> things. Added the commit message introducing the extended feature below.
-> It mentions backward compatibility, but it only considers the extended
-> feature setting when user-space provides more than one threshold.
-
-Right, with one threshold the behaviour is unchanged.
-
-> However, when the drivers set the extended feature is expects (low,
-> high) and (threshold, hysteresis) if not. So it seems the extended
-> feature should have precedence over the number of thresholds provided by
-> user-space.
-
-I guess the answer is that if the driver implements both methods it is
-expected to report threshold crossings according to the method that
-was called last.
-
-Best regards
+> On Fri, Jan 15, 2021 at 01:35:05PM +0800, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > After merging the amdgpu tree, today's linux-next build (powerpc
+> > allyesconfig) failed like this:
+> >
+> > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c: In function 'vangogh_get_smu_metrics_data':
+> > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:300:10: error: 'boot_cpu_data' undeclared (first use in this function); did you mean 'boot_cpuid'?
+>
+> Ah, vangogh is an x86 cpu, let me look at this issue.
+>
+> Could you share me the config file you tested?
+>
+> Thanks,
+> Ray
+>
+> >   300 |          boot_cpu_data.x86_max_cores * sizeof(uint16_t));
+> >       |          ^~~~~~~~~~~~~
+> >       |          boot_cpuid
+> > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c: In function 'vangogh_read_sensor':
+> > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:1320:11: error: 'boot_cpu_data' undeclared (first use in this function); did you mean 'boot_cpuid'?
+> >  1320 |   *size = boot_cpu_data.x86_max_cores * sizeof(uint16_t);
+> >       |           ^~~~~~~~~~~~~
+> >       |           boot_cpuid
+> > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c: In function 'vangogh_od_edit_dpm_table':
+> > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:1460:19: error: 'boot_cpu_data' undeclared (first use in this function); did you mean 'boot_cpuid'?
+> >  1460 |   if (input[0] >= boot_cpu_data.x86_max_cores) {
+> >       |                   ^~~~~~~~~~~~~
+> >       |                   boot_cpuid
+> >
+> > Caused by commits
+> >
+> >   517cb957c43b ("drm/amd/pm: implement the processor clocks which read by metric")
+> >   0d90d0ddd10e ("drm/amd/pm: implement processor fine grain feature for vangogh (v3)")
+> >
+> > The only thing I could do easily is to disable CONFIG_DRM_AMDGPU for today.
+> >
+> > --
+> > Cheers,
+> > Stephen Rothwell
+>
