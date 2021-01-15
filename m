@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5EE42F7AAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A722F79C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387649AbhAOMfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:35:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41338 "EHLO mail.kernel.org"
+        id S1731886AbhAOMkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:40:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387586AbhAOMfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:35:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E64C2256F;
-        Fri, 15 Jan 2021 12:34:47 +0000 (UTC)
+        id S1732208AbhAOMkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:40:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DCA2238A1;
+        Fri, 15 Jan 2021 12:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714087;
-        bh=e+Ad1xVCP6360ODNJ3AXbV2DBzNaz5/GhxxnnKuCGgw=;
+        s=korg; t=1610714359;
+        bh=hoCrFzh6EESKRBypPYfJr0YrjNQOPJqIhwUSn0MGLhU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vh46HN7mZGcDbts5wPRWAjVkzi1gl+zzUowT1NFCnPa1w9lA4T4lNGNoMqS8J5Qc3
-         0PfgZbhV4k6RP1pV2dfaUagMKlL6uXRzc8wHAAmTinWPpcV1umBATad/s2E0+Ze0WY
-         J/DXBZhR4WZpvS6jNCoGhRmigT7DfvM5q3n3ZXGQ=
+        b=Nr81wN5Y+bwg6Od0mfzWN9OS1Dfe7GNbGfMEMIuAE4+2knSdnFrjBmtXkD0apgsWR
+         vJLOXCHcAvCxRfm78/dqZqN7+qa7LBjfjo3s/e9AAGK90BBX7WFKTKNjTr9DZfrp0i
+         l900VKEPHbWhhVhBXi+hTatfv1d7fS+RkG9MLswk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 40/62] spi: spi-geni-qcom: Fix geni_spi_isr() NULL dereference in timeout case
-Date:   Fri, 15 Jan 2021 13:28:02 +0100
-Message-Id: <20210115122000.333323971@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Shravya Kumbham <shravya.kumbham@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 5.10 070/103] dmaengine: xilinx_dma: check dma_async_device_register return value
+Date:   Fri, 15 Jan 2021 13:28:03 +0100
+Message-Id: <20210115122009.425384659@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
+References: <20210115122006.047132306@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,90 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Shravya Kumbham <shravya.kumbham@xilinx.com>
 
-commit 4aa1464acbe3697710279a4bd65cb4801ed30425 upstream.
+commit 99974aedbd73523969afb09f33c6e3047cd0ddae upstream.
 
-In commit 7ba9bdcb91f6 ("spi: spi-geni-qcom: Don't keep a local state
-variable") we changed handle_fifo_timeout() so that we set
-"mas->cur_xfer" to NULL to make absolutely sure that we don't mess
-with the buffers from the previous transfer in the timeout case.
+dma_async_device_register() can return non-zero error code. Add
+condition to check the return value of dma_async_device_register
+function and handle the error path.
 
-Unfortunately, this caused the IRQ handler to dereference NULL in some
-cases.  One case:
-
-  CPU0                           CPU1
-  ----                           ----
-                                 setup_fifo_xfer()
-                                  geni_se_setup_m_cmd()
-                                 <hardware starts transfer>
-                                 <transfer completes in hardware>
-                                 <hardware sets M_RX_FIFO_WATERMARK_EN in m_irq>
-                                 ...
-                                 handle_fifo_timeout()
-                                  spin_lock_irq(mas->lock)
-                                  mas->cur_xfer = NULL
-                                  geni_se_cancel_m_cmd()
-                                  spin_unlock_irq(mas->lock)
-
-  geni_spi_isr()
-   spin_lock(mas->lock)
-   if (m_irq & M_RX_FIFO_WATERMARK_EN)
-    geni_spi_handle_rx()
-     mas->cur_xfer NULL dereference!
-
-tl;dr: Seriously delayed interrupts for RX/TX can lead to timeout
-handling setting mas->cur_xfer to NULL.
-
-Let's check for the NULL transfer in the TX and RX cases and reset the
-watermark or clear out the fifo respectively to put the hardware back
-into a sane state.
-
-NOTE: things still could get confused if we get timeouts all the way
-through handle_fifo_timeout() and then start a new transfer because
-interrupts from the old transfer / cancel / abort could still be
-pending.  A future patch will help this corner case.
-
-Fixes: 561de45f72bd ("spi: spi-geni-qcom: Add SPI driver support for GENI based QUP")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/20201217142842.v3.1.I99ee04f0cb823415df59bd4f550d6ff5756e43d6@changeid
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Addresses-Coverity: Event check_return.
+Fixes: 9cd4360de609 ("dma: Add Xilinx AXI Video Direct Memory Access Engine driver support")
+Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
+Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Link: https://lore.kernel.org/r/1608722462-29519-2-git-send-email-radhey.shyam.pandey@xilinx.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-geni-qcom.c |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/dma/xilinx/xilinx_dma.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/spi/spi-geni-qcom.c
-+++ b/drivers/spi/spi-geni-qcom.c
-@@ -415,6 +415,12 @@ static void geni_spi_handle_tx(struct sp
- 	unsigned int bytes_per_fifo_word = geni_byte_per_fifo_word(mas);
- 	unsigned int i = 0;
- 
-+	/* Stop the watermark IRQ if nothing to send */
-+	if (!mas->cur_xfer) {
-+		writel(0, se->base + SE_GENI_TX_WATERMARK_REG);
-+		return false;
-+	}
-+
- 	max_bytes = (mas->tx_fifo_depth - mas->tx_wm) * bytes_per_fifo_word;
- 	if (mas->tx_rem_bytes < max_bytes)
- 		max_bytes = mas->tx_rem_bytes;
-@@ -454,6 +460,14 @@ static void geni_spi_handle_rx(struct sp
- 		if (rx_last_byte_valid && rx_last_byte_valid < 4)
- 			rx_bytes -= bytes_per_fifo_word - rx_last_byte_valid;
+--- a/drivers/dma/xilinx/xilinx_dma.c
++++ b/drivers/dma/xilinx/xilinx_dma.c
+@@ -3112,7 +3112,11 @@ static int xilinx_dma_probe(struct platf
  	}
-+
-+	/* Clear out the FIFO and bail if nowhere to put it */
-+	if (!mas->cur_xfer) {
-+		for (i = 0; i < DIV_ROUND_UP(rx_bytes, bytes_per_fifo_word); i++)
-+			readl(se->base + SE_GENI_RX_FIFOn);
-+		return;
-+	}
-+
- 	if (mas->rx_rem_bytes < rx_bytes)
- 		rx_bytes = mas->rx_rem_bytes;
  
+ 	/* Register the DMA engine with the core */
+-	dma_async_device_register(&xdev->common);
++	err = dma_async_device_register(&xdev->common);
++	if (err) {
++		dev_err(xdev->dev, "failed to register the dma device\n");
++		goto error;
++	}
+ 
+ 	err = of_dma_controller_register(node, of_dma_xilinx_xlate,
+ 					 xdev);
 
 
