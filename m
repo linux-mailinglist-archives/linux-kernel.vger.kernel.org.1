@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB0F2F7D22
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6C82F7D25
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:52:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732855AbhAONuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:50:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55726 "EHLO
+        id S1732971AbhAONui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:50:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731945AbhAONuR (ORCPT
+        with ESMTP id S1729498AbhAONuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:50:17 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501C2C0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:49:37 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id v5so5981915qtv.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:49:37 -0800 (PST)
+        Fri, 15 Jan 2021 08:50:37 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC35C061793
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:49:51 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id d26so9331833wrb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:49:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ImoEwuTdQjAc7TacOKy8igwa8R9Q6yFQgZN+WOt6oC8=;
-        b=T9JdoQa+nKsCU/4kHeUpVWJSPmU9sgyVefju9am+d+6193DbcDOumSSSg6O0vIpHiB
-         EANZKPxm8iRhVVUnocl99voUP0Z0g3bhg+uZw5cBhHYYBR10kCqZFU3t6qe+mPGMS8jZ
-         Z1TG8o1hFqeG77v3TY3Uy8lpfeIWTro0hnAL81MjGuBP1wj/T+dt6UL4I4bcvd0PFOoY
-         8mc9OSbJuYq29bm/l1vzCrw9w7nzpcRmeLrswYDJzN4cM4uo5wTLK56PNL7/aAigpYvg
-         KgABbZUZ0tZJMgm853J+/Wl90wVK+kZm41dklNCMXUZrreEbXFb3+7M9NVlfog3lOdpB
-         sW4g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MwCX+/EyTCSrIqzhCqb0Nu6BiuSsXwge34YVzpiECe0=;
+        b=VjcRitv3CMagFa+Y7oRVGMasNu01QTKQOEf0nTvP/3Gf7ptnuYGCzLsSwd4RgU49js
+         Hbayh4yJok2iWQK0tnOUUxD1sCExux557Y6uSOFgciPZT2WdibqllBlaw5Ozc/Gux4RY
+         0zK1YMhvvRHRuG7I5gh/9rOF5S1jL2u3SzCt9Guvcn4cNGRmKLLcp5y03BqiLej5joDJ
+         csyWpzfB2gbMbiSmuQy+tSiqIshEK2RoKzOKo6Qrl/n5bVn+GyOgPtDQvJqaRG3TI+ZA
+         RYGWC8y0itpOLoOLuBRTTo47SoYe2e3Vkg53qQHpN93jQM5SUom5gl/w0C3X+mvityFc
+         3row==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ImoEwuTdQjAc7TacOKy8igwa8R9Q6yFQgZN+WOt6oC8=;
-        b=QsBd3f2mH0EUqMlKbms9IPf9g0T7Pzv2M3R1i42IWNH+IaDFQSz+vCklJ+ShNIOrMa
-         NuS6tYsd7+IsgRpW1GzYguRYnbTTom94s5B3UxjjgQL+CR3a6c7uX07ds8WrfVUjjNee
-         zZjEZ0dDmOwM5qsWge4MBKwdfVY57BeBOVlurZiFAn1oDBM9491HKvHv8dPBKKeD6dq2
-         3RSNhMPpWOZvgSrEPalVgGO+5HGPVl7Hb5ZmEjfrPKR0t/INdh9q7MfDNGJAe2Y8pdGP
-         6/UIHK7rAQlaEFoRZEba4BTqgu+BlcVbYgsqjBsF1GTX27SaF8gbWbcttuFZI/pPW1pr
-         CjxA==
-X-Gm-Message-State: AOAM530lEAqN8/RV0NR4SJ8HMjpEj0a5mctUN0TKR6T8iNkVUi/cWSH2
-        9Hg0TEry8vw0DwIE3EykpddEC3qubaXZS2BlAWy18w==
-X-Google-Smtp-Source: ABdhPJzV0cIgOgJIpi4NAFcfV4w1qu/54yP4I68IAk+60nCrAPVL/XnF7a15uKcRtuNT/1MDUc0JpmMFdXy/e066LFs=
-X-Received: by 2002:ac8:6cf:: with SMTP id j15mr11672543qth.180.1610718576341;
- Fri, 15 Jan 2021 05:49:36 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MwCX+/EyTCSrIqzhCqb0Nu6BiuSsXwge34YVzpiECe0=;
+        b=mp+jyxANBFctv5WfkL7I52CGppv3Ld81nMtNuY/bOj0MicHsyACbqcXwK59a9jHQY+
+         vBXeVpNf0h/AEs3bn9/1eRS8xznQU+qI2WalzCua1WvvAx8OUOyXxtu+Dc9vZun5JJeu
+         13ua8SS6yxIi08yrWSpwFOjClkPiDjb8S/7fu/ndzKymZBRNQv+d/wY51Fb/le+xRylM
+         /3z7+KUorjjwFwjBwCfx7TAQ2vhV2ykf/Rq6ICBEh1GVWHUE7C4LqkdW95iJ8YTwO7tZ
+         9tMM1Z0DfBHy76exFWoj374j7nIrgl7XkAeTS229OYTQ2uSZvPQwIpJSypExXTpAKVaS
+         MGCg==
+X-Gm-Message-State: AOAM5329ed4dzx2UDCHeRJO/wfEDURqRsx0u2Mp8BnUDq/b3tW18U7JL
+        bw2T+JWKr0d4LdRU4oExnbKKDw==
+X-Google-Smtp-Source: ABdhPJx47DQQ53eBz7+PoVimJvsC9mL4EpotLvljQhU4GRwnkF9psc1KK7JJxJzzrvfpgYnJnct4xQ==
+X-Received: by 2002:adf:f707:: with SMTP id r7mr13767163wrp.113.1610718590179;
+        Fri, 15 Jan 2021 05:49:50 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id g192sm12929770wme.48.2021.01.15.05.49.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 05:49:49 -0800 (PST)
+Date:   Fri, 15 Jan 2021 13:49:46 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:KERNEL VIRTUAL MACHINE (KVM)" <kvm@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     android-kvm@google.com, kernel-team@android.com
+Subject: Re: [PATCH] KVM: Documentation: Fix spec for KVM_CAP_ENABLE_CAP_VM
+Message-ID: <YAGdek8Ns9nRU478@google.com>
+References: <20210108165349.747359-1-qperret@google.com>
 MIME-Version: 1.0
-References: <cover.1610652890.git.andreyknvl@google.com> <b75320408b90f18e369a464c446b6969c2afb06c.1610652890.git.andreyknvl@google.com>
- <YAGVqisrGwZfRRQU@elver.google.com>
-In-Reply-To: <YAGVqisrGwZfRRQU@elver.google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 15 Jan 2021 14:49:24 +0100
-Message-ID: <CAG_fn=XnF1GmOsJbHNtH0nn3yXq5bghYDXDkeqawEXTzom8+sg@mail.gmail.com>
-Subject: Re: [PATCH v3 14/15] kasan: add a test for kmem_cache_alloc/free_bulk
-To:     Marco Elver <elver@google.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108165349.747359-1-qperret@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 2:16 PM Marco Elver <elver@google.com> wrote:
->
-> On Thu, Jan 14, 2021 at 08:36PM +0100, Andrey Konovalov wrote:
-> > Add a test for kmem_cache_alloc/free_bulk to make sure there are no
-> > false-positives when these functions are used.
-> >
-> > Link: https://linux-review.googlesource.com/id/I2a8bf797aecf81baeac61380c567308f319e263d
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
->
-> Reviewed-by: Marco Elver <elver@google.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+On Friday 08 Jan 2021 at 16:53:49 (+0000), Quentin Perret wrote:
+> The documentation classifies KVM_ENABLE_CAP with KVM_CAP_ENABLE_CAP_VM
+> as a vcpu ioctl, which is incorrect. Fix it by specifying it as a VM
+> ioctl.
 
-(see a nit below)
+Anything I should do on this one?
 
-> > +     cache = kmem_cache_create("test_cache", size, 0, 0, NULL);
-Looks like there's a tab between "test_cache" and size, please double-check.
+Thanks,
+Quentin
