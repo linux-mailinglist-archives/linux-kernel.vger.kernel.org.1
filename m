@@ -2,67 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA3F2F7C9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8322F7CA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:30:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732732AbhAON10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:27:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46762 "EHLO mx2.suse.de"
+        id S1732779AbhAON2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:28:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47550 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730617AbhAON1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:27:25 -0500
+        id S1731632AbhAON2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 08:28:21 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BE98FAC8F;
-        Fri, 15 Jan 2021 13:27:00 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 14:26:58 +0100
+        by mx2.suse.de (Postfix) with ESMTP id 7A8A6AC63;
+        Fri, 15 Jan 2021 13:27:56 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 14:27:53 +0100
 From:   Oscar Salvador <osalvador@suse.de>
 To:     Muchun Song <songmuchun@bytedance.com>
 Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
         n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Michal Hocko <mhocko@suse.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v6 4/5] mm: hugetlb: fix a race between isolating and
- freeing page
-Message-ID: <20210115132658.GB10102@linux>
+Subject: Re: [PATCH v6 5/5] mm: hugetlb: remove VM_BUG_ON_PAGE from
+ page_huge_active
+Message-ID: <20210115132753.GC10102@linux>
 References: <20210115124942.46403-1-songmuchun@bytedance.com>
- <20210115124942.46403-5-songmuchun@bytedance.com>
+ <20210115124942.46403-6-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115124942.46403-5-songmuchun@bytedance.com>
+In-Reply-To: <20210115124942.46403-6-songmuchun@bytedance.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 08:49:41PM +0800, Muchun Song wrote:
-> There is a race between isolate_huge_page() and __free_huge_page().
+On Fri, Jan 15, 2021 at 08:49:42PM +0800, Muchun Song wrote:
+> The page_huge_active() can be called from scan_movable_pages() which
+> do not hold a reference count to the HugeTLB page. So when we call
+> page_huge_active() from scan_movable_pages(), the HugeTLB page can
+> be freed parallel. Then we will trigger a BUG_ON which is in the
+> page_huge_active() when CONFIG_DEBUG_VM is enabled. Just remove the
+> VM_BUG_ON_PAGE.
 > 
-> CPU0:                                       CPU1:
-> 
-> if (PageHuge(page))
->                                             put_page(page)
->                                               __free_huge_page(page)
->                                                   spin_lock(&hugetlb_lock)
->                                                   update_and_free_page(page)
->                                                     set_compound_page_dtor(page,
->                                                       NULL_COMPOUND_DTOR)
->                                                   spin_unlock(&hugetlb_lock)
->   isolate_huge_page(page)
->     // trigger BUG_ON
->     VM_BUG_ON_PAGE(!PageHead(page), page)
->     spin_lock(&hugetlb_lock)
->     page_huge_active(page)
->       // trigger BUG_ON
->       VM_BUG_ON_PAGE(!PageHuge(page), page)
->     spin_unlock(&hugetlb_lock)
-> 
-> When we isolate a HugeTLB page on CPU0. Meanwhile, we free it to the
-> buddy allocator on CPU1. Then, we can trigger a BUG_ON on CPU0. Because
-> it is already freed to the buddy allocator.
-> 
-> Fixes: c8721bbbdd36 ("mm: memory-hotplug: enable memory hotplug to handle hugepage")
+> Fixes: 7e1f049efb86 ("mm: hugetlb: cleanup using paeg_huge_active()")
 > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 > Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 > Acked-by: Michal Hocko <mhocko@suse.com>
