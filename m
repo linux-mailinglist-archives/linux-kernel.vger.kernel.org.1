@@ -2,141 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A552F7D18
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B232F7D1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732743AbhAONso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:48:44 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2357 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731315AbhAONsn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:48:43 -0500
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DHMpp4qRHz67bvp;
-        Fri, 15 Jan 2021 21:44:02 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 15 Jan 2021 14:48:00 +0100
-Received: from localhost (10.47.77.110) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 15 Jan
- 2021 13:48:00 +0000
-Date:   Fri, 15 Jan 2021 13:47:20 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     Lukas Bulwahn <lukas.bulwahn@gmail.com>, <corbet@lwn.net>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jic23@kernel.org>
-Subject: Re: [PATCH 00/10] Fix documentation warnings at linux-next
-Message-ID: <20210115134720.000011f9@Huawei.com>
-In-Reply-To: <20210115104947.71d99e87@coco.lan>
-References: <CAKXUXMziQ2H7_oiVSxbt1=bDFkjLQYOiOgd00YGyDnCTVDhbqA@mail.gmail.com>
-        <20210115104947.71d99e87@coco.lan>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1732753AbhAONtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:49:15 -0500
+Received: from mga04.intel.com ([192.55.52.120]:39849 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726381AbhAONtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 08:49:14 -0500
+IronPort-SDR: CaeBc8eqK62tybvnZIsxnHkf5MSObIalfDoNIGUSkgqiPtSEIpHGDcWGzg8aOay2L9ZVHOqg8b
+ El8uFfWrYlZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="175968434"
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="175968434"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 05:48:32 -0800
+IronPort-SDR: zOIWh6gHEjPDYHR8fMNQFv1tUPOo/S/TDp1mcZCkkr1sPLx4eqhLT6FA3s0N7o7JW9VOa+MU8r
+ rk1ft05pTxFg==
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="354310399"
+Received: from bmkierna-mobl3.ger.corp.intel.com (HELO localhost) ([10.213.221.58])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 05:48:26 -0800
+From:   Jani Nikula <jani.nikula@intel.com>
+To:     Lyude Paul <lyude@redhat.com>, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Anshuman Gupta <anshuman.gupta@intel.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Dave Airlie <airlied@redhat.com>
+Subject: Re: [PATCH v7 1/5] drm/i915: Pass port to intel_panel_bl_funcs.get()
+In-Reply-To: <20210114221709.2261452-2-lyude@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210114221709.2261452-1-lyude@redhat.com> <20210114221709.2261452-2-lyude@redhat.com>
+Date:   Fri, 15 Jan 2021 15:48:23 +0200
+Message-ID: <8735z2pazc.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.77.110]
-X-ClientProxiedBy: lhreml735-chm.china.huawei.com (10.201.108.86) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 10:49:47 +0100
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+On Thu, 14 Jan 2021, Lyude Paul <lyude@redhat.com> wrote:
+> In the next commit where we split PWM related backlight functions from
+> higher-level backlight functions, we'll want to be able to retrieve the
+> backlight level for the current display panel from the
+> intel_panel_bl_funcs->setup() function using pwm_funcs->get(). Since
+> intel_panel_bl_funcs->setup() is called before we've fully read in the
+> current hardware state into our atomic state, we can't grab atomic
+> modesetting locks safely anyway in intel_panel_bl_funcs->setup(), and some
+> PWM backlight functions (vlv_get_backlight() in particular) require knowing
+> the currently used pipe we need to be able to discern the current display
+> pipe through other means. Luckily, we're already passing the current
+> display pipe to intel_panel_bl_funcs->setup() so all we have to do in order
+> to achieve this is pass down that parameter to intel_panel_bl_funcs->get().
+>
+> So, fix this by accepting an additional pipe parameter in
+> intel_panel_bl_funcs->get(), and leave figuring out the current display
+> pipe up to the caller.
+>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
 
-> Hi Lukas,
-> 
-> Em Fri, 15 Jan 2021 07:12:38 +0100
-> Lukas Bulwahn <lukas.bulwahn@gmail.com> escreveu:
-> 
-> > [reduced the recipient list to the main responsible ones and list]
-> > 
-> > Hi Mauro, hi Jonathan,
-> > 
-> > We both, Mauro and I, have been submitting patches to address the
-> > documentation warnings on linux-next. If it is okay with you, Mauro, I
-> > would like to take responsibility for the task to send out the patches
-> > to address all warnings on linux-next in make htmldocs and follow up
-> > with all the discussions. I can also provide a short weekly summary
-> > (probably always on Friday) on what is pending where and what I could
-> > not resolve by myself.
-> > 
-> > Is that okay for you?
-> > 
-> > If at some point I do not have the time to take care anymore, I will
-> > let you know.  
-> 
-> Yeah, sure!
-> 
-> Anyway, after applying the patches I sent this week, the warnings
-> I'm getting are all due to the validation scripts I wrote. So, if 
-> everything gets merged (either yours or my version), we'll have zero
-> Sphinx/kernel-doc warnings again.
-> 
-> The script-validation warnings are:
-> 
-> 1. Broken cross references
-> --------------------------
-> 
-> $ scripts/documentation-file-ref-check
-> Warning: Documentation/arm/booting.rst references a file that doesn't exist: Documentation/devicetree/booting-without-of.rst
-> Warning: Documentation/devicetree/bindings/hwmon/ntc_thermistor.txt references a file that doesn't exist: Documentation/devicetree/bindings/iio/iio-bindings.txt
-> Warning: Documentation/devicetree/bindings/input/adc-joystick.yaml references a file that doesn't exist: Documentation/devicetree/bindings/iio/iio-bindings.txt
-> Warning: Documentation/devicetree/bindings/power/supply/da9150-charger.txt references a file that doesn't exist: Documentation/devicetree/bindings/iio/iio-bindings.txt
-> Warning: Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml references a file that doesn't exist: Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
-> Warning: Documentation/translations/zh_CN/arm/Booting references a file that doesn't exist: Documentation/devicetree/booting-without-of.rst
-> Warning: Documentation/virt/kvm/vcpu-requests.rst references a file that doesn't exist: Documentation/core-api/atomic_ops.rst
-> Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/pinctrl/toshiba,tmpv7700-pinctrl.yaml
-> Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/misc/hisilicon-hikey-usb.yaml
-> Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/display/intel,kmb_display.yaml
-> Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/media/i2c/ov2680.yaml
-> Warning: include/linux/rculist_nulls.h references a file that doesn't exist: Documentation/core-api/atomic_ops.rst
-> Warning: tools/memory-model/Documentation/simple.txt references a file that doesn't exist: Documentation/core-api/atomic_ops.rst
-> 
-> It sounds that part of the above is due to DT patches that weren't
-> merged yet, but there are a few others that can be solved, but may
-> require discussions with some Kernel developers/maintainers.
-> 
-> 2. Duplicated ABI definitions
-> -----------------------------
-> 
-> $ scripts/get_abi.pl validate
-> Warning: /sys/bus/iio/devices/iio:deviceX/in_accel_x_calibbias is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-icm42600:0  ./Documentation/ABI/testing/sysfs-bus-iio:394
-> Warning: /sys/bus/iio/devices/iio:deviceX/in_accel_y_calibbias is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-icm42600:1  ./Documentation/ABI/testing/sysfs-bus-iio:395
-> Warning: /sys/bus/iio/devices/iio:deviceX/in_accel_z_calibbias is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-icm42600:2  ./Documentation/ABI/testing/sysfs-bus-iio:396
-> Warning: /sys/bus/iio/devices/iio:deviceX/in_anglvel_x_calibbias is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-icm42600:3  ./Documentation/ABI/testing/sysfs-bus-iio:397
-> Warning: /sys/bus/iio/devices/iio:deviceX/in_anglvel_y_calibbias is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-icm42600:4  ./Documentation/ABI/testing/sysfs-bus-iio:398
-> Warning: /sys/bus/iio/devices/iio:deviceX/in_anglvel_z_calibbias is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-icm42600:5  ./Documentation/ABI/testing/sysfs-bus-iio:399
-> Warning: /sys/bus/iio/devices/iio:deviceX/in_count0_preset is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-timer-stm32:100  ./Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32:0
-> Warning: /sys/bus/iio/devices/iio:deviceX/in_count_quadrature_mode_available is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-counter-104-quad-8:2  ./Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32:8
-> Warning: /sys/bus/iio/devices/iio:deviceX/out_altvoltageY_frequency is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-frequency-adf4371:0  ./Documentation/ABI/testing/sysfs-bus-iio:599
-> Warning: /sys/bus/iio/devices/iio:deviceX/out_altvoltageY_powerdown is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-frequency-adf4371:36  ./Documentation/ABI/testing/sysfs-bus-iio:588
-> Warning: /sys/bus/iio/devices/iio:deviceX/out_currentY_raw is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-light-lm3533-als:43  ./Documentation/ABI/testing/sysfs-bus-iio-health-afe440x:38
-> Warning: /sys/bus/iio/devices/iio:deviceX/out_current_heater_raw is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc2010:0  ./Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc100x:0
-> Warning: /sys/bus/iio/devices/iio:deviceX/out_current_heater_raw_available is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc2010:1  ./Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc100x:1
-> Warning: /sys/bus/iio/devices/iio:deviceX/sensor_sensitivity is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-distance-srf08:0  ./Documentation/ABI/testing/sysfs-bus-iio-proximity-as3935:8
-> Warning: /sys/bus/iio/devices/triggerX/sampling_frequency is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-timer-stm32:92  ./Documentation/ABI/testing/sysfs-bus-iio:45
-> Warning: /sys/class/backlight/<backlight>/l1_daylight_max is defined 2 times:  ./Documentation/ABI/testing/sysfs-class-backlight-adp8860:12  ./Documentation/ABI/testing/sysfs-class-backlight-driver-adp8870:4
-> Warning: /sys/class/leds/<led>/repeat is defined 2 times:  ./Documentation/ABI/testing/sysfs-class-led-trigger-pattern:28  ./Documentation/ABI/testing/sysfs-class-led-driver-el15203000:0
-> Warning: /sys/kernel/iommu_groups/reserved_regions is defined 2 times:  ./Documentation/ABI/testing/sysfs-kernel-iommu_groups:15  ./Documentation/ABI/testing/sysfs-kernel-iommu_groups:27
-> 
-> Perhaps you could check with Jonathan Cameron some strategy to address
-> the IIO warnings.
+Much neater than anything I suggested!
 
-I'm being a bit rubbish on those ones. All need a bit of thought...
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
 
-I'll try to kill off a few of them this weekend as *touch wood* my
-review queue is looking fairly short.
+> ---
+>  .../drm/i915/display/intel_display_types.h    |  2 +-
+>  .../drm/i915/display/intel_dp_aux_backlight.c |  4 +-
+>  .../i915/display/intel_dsi_dcs_backlight.c    |  2 +-
+>  drivers/gpu/drm/i915/display/intel_panel.c    | 40 ++++++++-----------
+>  4 files changed, 21 insertions(+), 27 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/i915/display/intel_display_types.h b/drivers/gpu/drm/i915/display/intel_display_types.h
+> index 585bb1edea04..b1f4ec144207 100644
+> --- a/drivers/gpu/drm/i915/display/intel_display_types.h
+> +++ b/drivers/gpu/drm/i915/display/intel_display_types.h
+> @@ -228,7 +228,7 @@ struct intel_encoder {
+>  struct intel_panel_bl_funcs {
+>  	/* Connector and platform specific backlight functions */
+>  	int (*setup)(struct intel_connector *connector, enum pipe pipe);
+> -	u32 (*get)(struct intel_connector *connector);
+> +	u32 (*get)(struct intel_connector *connector, enum pipe pipe);
+>  	void (*set)(const struct drm_connector_state *conn_state, u32 level);
+>  	void (*disable)(const struct drm_connector_state *conn_state, u32 level);
+>  	void (*enable)(const struct intel_crtc_state *crtc_state,
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> index 9775f33d1aac..de764dae1e66 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> @@ -128,7 +128,7 @@ static bool intel_dp_aux_vesa_backlight_dpcd_mode(struct intel_connector *connec
+>   * Read the current backlight value from DPCD register(s) based
+>   * on if 8-bit(MSB) or 16-bit(MSB and LSB) values are supported
+>   */
+> -static u32 intel_dp_aux_vesa_get_backlight(struct intel_connector *connector)
+> +static u32 intel_dp_aux_vesa_get_backlight(struct intel_connector *connector, enum pipe unused)
+>  {
+>  	struct intel_dp *intel_dp = intel_attached_dp(connector);
+>  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+> @@ -381,7 +381,7 @@ static int intel_dp_aux_vesa_setup_backlight(struct intel_connector *connector,
+>  		return -ENODEV;
+>  
+>  	panel->backlight.min = 0;
+> -	panel->backlight.level = intel_dp_aux_vesa_get_backlight(connector);
+> +	panel->backlight.level = intel_dp_aux_vesa_get_backlight(connector, pipe);
+>  	panel->backlight.enabled = intel_dp_aux_vesa_backlight_dpcd_mode(connector) &&
+>  				   panel->backlight.level != 0;
+>  
+> diff --git a/drivers/gpu/drm/i915/display/intel_dsi_dcs_backlight.c b/drivers/gpu/drm/i915/display/intel_dsi_dcs_backlight.c
+> index 88628764956d..584c14c4cbd0 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dsi_dcs_backlight.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dsi_dcs_backlight.c
+> @@ -43,7 +43,7 @@
+>  
+>  #define PANEL_PWM_MAX_VALUE		0xFF
+>  
+> -static u32 dcs_get_backlight(struct intel_connector *connector)
+> +static u32 dcs_get_backlight(struct intel_connector *connector, enum pipe unused)
+>  {
+>  	struct intel_encoder *encoder = intel_attached_encoder(connector);
+>  	struct intel_dsi *intel_dsi = enc_to_intel_dsi(encoder);
+> diff --git a/drivers/gpu/drm/i915/display/intel_panel.c b/drivers/gpu/drm/i915/display/intel_panel.c
+> index 7a4239d1c241..7587aaefc7a0 100644
+> --- a/drivers/gpu/drm/i915/display/intel_panel.c
+> +++ b/drivers/gpu/drm/i915/display/intel_panel.c
+> @@ -530,21 +530,21 @@ static u32 intel_panel_compute_brightness(struct intel_connector *connector,
+>  	return val;
+>  }
+>  
+> -static u32 lpt_get_backlight(struct intel_connector *connector)
+> +static u32 lpt_get_backlight(struct intel_connector *connector, enum pipe unused)
+>  {
+>  	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+>  
+>  	return intel_de_read(dev_priv, BLC_PWM_PCH_CTL2) & BACKLIGHT_DUTY_CYCLE_MASK;
+>  }
+>  
+> -static u32 pch_get_backlight(struct intel_connector *connector)
+> +static u32 pch_get_backlight(struct intel_connector *connector, enum pipe unused)
+>  {
+>  	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+>  
+>  	return intel_de_read(dev_priv, BLC_PWM_CPU_CTL) & BACKLIGHT_DUTY_CYCLE_MASK;
+>  }
+>  
+> -static u32 i9xx_get_backlight(struct intel_connector *connector)
+> +static u32 i9xx_get_backlight(struct intel_connector *connector, enum pipe unused)
+>  {
+>  	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+>  	struct intel_panel *panel = &connector->panel;
+> @@ -564,23 +564,17 @@ static u32 i9xx_get_backlight(struct intel_connector *connector)
+>  	return val;
+>  }
+>  
+> -static u32 _vlv_get_backlight(struct drm_i915_private *dev_priv, enum pipe pipe)
+> +static u32 vlv_get_backlight(struct intel_connector *connector, enum pipe pipe)
+>  {
+> +	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+> +
+>  	if (drm_WARN_ON(&dev_priv->drm, pipe != PIPE_A && pipe != PIPE_B))
+>  		return 0;
+>  
+>  	return intel_de_read(dev_priv, VLV_BLC_PWM_CTL(pipe)) & BACKLIGHT_DUTY_CYCLE_MASK;
+>  }
+>  
+> -static u32 vlv_get_backlight(struct intel_connector *connector)
+> -{
+> -	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+> -	enum pipe pipe = intel_connector_get_pipe(connector);
+> -
+> -	return _vlv_get_backlight(dev_priv, pipe);
+> -}
+> -
+> -static u32 bxt_get_backlight(struct intel_connector *connector)
+> +static u32 bxt_get_backlight(struct intel_connector *connector, enum pipe unused)
+>  {
+>  	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+>  	struct intel_panel *panel = &connector->panel;
+> @@ -589,7 +583,7 @@ static u32 bxt_get_backlight(struct intel_connector *connector)
+>  			     BXT_BLC_PWM_DUTY(panel->backlight.controller));
+>  }
+>  
+> -static u32 ext_pwm_get_backlight(struct intel_connector *connector)
+> +static u32 ext_pwm_get_backlight(struct intel_connector *connector, enum pipe unused)
+>  {
+>  	struct intel_panel *panel = &connector->panel;
+>  	struct pwm_state state;
+> @@ -1233,7 +1227,7 @@ static u32 intel_panel_get_backlight(struct intel_connector *connector)
+>  	mutex_lock(&dev_priv->backlight_lock);
+>  
+>  	if (panel->backlight.enabled) {
+> -		val = panel->backlight.funcs->get(connector);
+> +		val = panel->backlight.funcs->get(connector, intel_connector_get_pipe(connector));
+>  		val = intel_panel_compute_brightness(connector, val);
+>  	}
+>  
+> @@ -1646,9 +1640,9 @@ static int lpt_setup_backlight(struct intel_connector *connector, enum pipe unus
+>  		   !(pch_ctl1 & BLM_PCH_OVERRIDE_ENABLE) &&
+>  		   (cpu_ctl2 & BLM_PWM_ENABLE);
+>  	if (cpu_mode)
+> -		val = pch_get_backlight(connector);
+> +		val = pch_get_backlight(connector, unused);
+>  	else
+> -		val = lpt_get_backlight(connector);
+> +		val = lpt_get_backlight(connector, unused);
+>  
+>  	if (cpu_mode) {
+>  		drm_dbg_kms(&dev_priv->drm,
+> @@ -1690,7 +1684,7 @@ static int pch_setup_backlight(struct intel_connector *connector, enum pipe unus
+>  
+>  	panel->backlight.min = get_backlight_min_vbt(connector);
+>  
+> -	val = pch_get_backlight(connector);
+> +	val = pch_get_backlight(connector, unused);
+>  	val = intel_panel_compute_brightness(connector, val);
+>  	panel->backlight.level = clamp(val, panel->backlight.min,
+>  				       panel->backlight.max);
+> @@ -1731,7 +1725,7 @@ static int i9xx_setup_backlight(struct intel_connector *connector, enum pipe unu
+>  
+>  	panel->backlight.min = get_backlight_min_vbt(connector);
+>  
+> -	val = i9xx_get_backlight(connector);
+> +	val = i9xx_get_backlight(connector, unused);
+>  	val = intel_panel_compute_brightness(connector, val);
+>  	panel->backlight.level = clamp(val, panel->backlight.min,
+>  				       panel->backlight.max);
+> @@ -1765,7 +1759,7 @@ static int i965_setup_backlight(struct intel_connector *connector, enum pipe unu
+>  
+>  	panel->backlight.min = get_backlight_min_vbt(connector);
+>  
+> -	val = i9xx_get_backlight(connector);
+> +	val = i9xx_get_backlight(connector, unused);
+>  	val = intel_panel_compute_brightness(connector, val);
+>  	panel->backlight.level = clamp(val, panel->backlight.min,
+>  				       panel->backlight.max);
+> @@ -1798,7 +1792,7 @@ static int vlv_setup_backlight(struct intel_connector *connector, enum pipe pipe
+>  
+>  	panel->backlight.min = get_backlight_min_vbt(connector);
+>  
+> -	val = _vlv_get_backlight(dev_priv, pipe);
+> +	val = vlv_get_backlight(connector, pipe);
+>  	val = intel_panel_compute_brightness(connector, val);
+>  	panel->backlight.level = clamp(val, panel->backlight.min,
+>  				       panel->backlight.max);
+> @@ -1840,7 +1834,7 @@ bxt_setup_backlight(struct intel_connector *connector, enum pipe unused)
+>  
+>  	panel->backlight.min = get_backlight_min_vbt(connector);
+>  
+> -	val = bxt_get_backlight(connector);
+> +	val = bxt_get_backlight(connector, unused);
+>  	val = intel_panel_compute_brightness(connector, val);
+>  	panel->backlight.level = clamp(val, panel->backlight.min,
+>  				       panel->backlight.max);
+> @@ -1880,7 +1874,7 @@ cnp_setup_backlight(struct intel_connector *connector, enum pipe unused)
+>  
+>  	panel->backlight.min = get_backlight_min_vbt(connector);
+>  
+> -	val = bxt_get_backlight(connector);
+> +	val = bxt_get_backlight(connector, unused);
+>  	val = intel_panel_compute_brightness(connector, val);
+>  	panel->backlight.level = clamp(val, panel->backlight.min,
+>  				       panel->backlight.max);
 
-Jonathan
-
-> 
-> Thanks,
-> Mauro
-
+-- 
+Jani Nikula, Intel Open Source Graphics Center
