@@ -2,69 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F71F2F78E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 865D62F78EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727645AbhAOM3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:29:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38026 "EHLO
+        id S1729153AbhAOM3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:29:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725880AbhAOM3G (ORCPT
+        with ESMTP id S1728439AbhAOM3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:29:06 -0500
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77673C0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:28:09 -0800 (PST)
-Received: from [192.168.1.101] (abaf224.neoplus.adsl.tpnet.pl [83.6.169.224])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 9F72A3EF0F;
-        Fri, 15 Jan 2021 13:28:06 +0100 (CET)
-Subject: Re: [PATCH v4 1/2] arm64: dts: sdm845: add oneplus6/6t devices
-To:     Caleb Connolly <caleb@connolly.tech>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210114203057.64541-1-caleb@connolly.tech>
- <20210114203057.64541-2-caleb@connolly.tech>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <061f8c37-533f-b694-f9a8-393cb9a34e01@somainline.org>
-Date:   Fri, 15 Jan 2021 13:28:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 15 Jan 2021 07:29:41 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7387C061793
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:29:00 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id d81so2587978iof.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:29:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vc09DY2r3H1y9mxbKEtSIgPLT8cjCGScO9uOxFbsFz8=;
+        b=W8uDvDshnOankE0iaEopM58bGH79S1yK2wmxrIC7+A5LkBT2DE+JjlH4SMUbgrtNKV
+         j8vhbpQif7AepucBkDTaKNCWaguR5bRs3Rrb4FaUiNOqnUbiiIw0E4K5n1iWDvac21+W
+         uRP5wYmE46IZKdL5BzcrD01BO4QgsUl019WdWvZc/jusfaAo1lSaywBdCgNZb6jzkzG1
+         udJPGxMEABDQL15QBKSKair2l8xy5d8vmvU7Vytmvs1AUiZsrXNxg6XGyejQkz/40Esr
+         lpXis2uop0d4sNZPK0f7oFpriDslhnMpUdWf3IDeR24D6l9o53ZO9Q3EXj2Mfw1fHySr
+         Eogg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vc09DY2r3H1y9mxbKEtSIgPLT8cjCGScO9uOxFbsFz8=;
+        b=N5bHYqO/W+dxm4jfj3IC6BTqKbiEteNzNl0XwhZW7IomzzTdZfobyXjnV3P9scVQRZ
+         O8UZRrd1GLdK2NcK4bUIUuv165eENBLlIaXNuYHRsnyjwkD3O6usGOgJRzzVEOtsI8aJ
+         7yhyyh5HTyfMd+gECgVS84DVDeq2yuIRujMfplkX/pQQdorXDvrsHFxUlotCasG+VblO
+         L0IZsgCDCdZuvKD/Zk7Upj6aGb2HFTpbcp3z4Zhec83uScJml5LeYKp+bhtwnr/l5bBW
+         xNpLiXMlR84EFgh3QCxqpM3jfIRaCzoZ7r15Fwze9cDbVcAR0J7FJvnAOMVLMEGbf2fS
+         vUmA==
+X-Gm-Message-State: AOAM532UiwQ73/Pxt9L1J/PikRRZ0/4N004TAIvJiIiCcU5yOep3393V
+        OiE72er1NLv73pa39ku3UWOwsA==
+X-Google-Smtp-Source: ABdhPJxJ8D0/NMCx8evr3t9mxKbCWncCYnD55AjoQ6M4fuxAcG4eITrhWSrc1msB6iYZJYk9HnSTVA==
+X-Received: by 2002:a02:caac:: with SMTP id e12mr9845527jap.45.1610713740070;
+        Fri, 15 Jan 2021 04:29:00 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id a9sm3828509ion.53.2021.01.15.04.28.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 04:28:59 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        robh+dt@kernel.org, rdunlap@infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v2 net-next 0/4] net: ipa: remove a build dependency
+Date:   Fri, 15 Jan 2021 06:28:51 -0600
+Message-Id: <20210115122855.19928-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210114203057.64541-2-caleb@connolly.tech>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Rob, for some reason I can't find in my mailbox your report that
+the binding caused a problem.  I only discovered it when looking
+into why the series was not accepted yet.
 
-Please move gpio-keys before reserved-memory to keep things sorted.
+Version 2 includes <.../arm-gic.h> rather than <.../irq.h> in the
+example section of the binding, to ensure GIC_SPI is defined.
+I verified this passes "make dt_bindings_check".
+
+The rest of the series is unchanged.  Below is the original cover
+letter.
+
+---
+
+Unlike the original (temporary) IPA notification mechanism, the
+generic remoteproc SSR notification code does not require the IPA
+driver to maintain a pointer to the modem subsystem remoteproc
+structure.
+
+The IPA driver was converted to use the newer SSR notifiers, but the
+specification and use of a phandle for the modem subsystem was never
+removed.
+
+This series removes the lookup of the remoteproc pointer, and that
+removes the need for the modem DT property.  It also removes the
+reference to the "modem-remoteproc" property from the DT binding,
+and from the DT files that specified them.
+
+David/Jakub, please take these all through net-next if they are
+acceptable to you, once Rob has acked the binding and DT patches.
+
+Thanks.
+
+					-Alex
 
 
-> +		vreg_l25a_3p3: ldo25 {
-> +			regulator-min-microvolt = <3300000>;
-> +			regulator-max-microvolt = <3312000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +		vdda_mipi_dsi0_1p2:
+Alex Elder (4):
+  net: ipa: remove a remoteproc dependency
+  dt-bindings: net: remove modem-remoteproc property
+  arm64: dts: qcom: sc7180: kill IPA modem-remoteproc property
+  arm64: dts: qcom: sdm845: kill IPA modem-remoteproc property
 
+ .../devicetree/bindings/net/qcom,ipa.yaml     | 15 ++------
+ arch/arm64/boot/dts/qcom/sc7180.dtsi          |  2 -
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          |  2 -
+ drivers/net/ipa/ipa.h                         |  2 -
+ drivers/net/ipa/ipa_main.c                    | 38 +------------------
+ 5 files changed, 5 insertions(+), 54 deletions(-)
 
-Add a newline between the "};" and "vdda_mipi_dsi0_1p2:" to keep it consistent.
-
-
-After that, you can add:
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+-- 
+2.20.1
 
