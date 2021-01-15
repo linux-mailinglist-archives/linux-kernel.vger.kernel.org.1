@@ -2,128 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBD72F87B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 950922F87B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726301AbhAOVd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 16:33:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbhAOVd6 (ORCPT
+        id S1726434AbhAOVfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 16:35:46 -0500
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:28587 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725772AbhAOVfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 16:33:58 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8700DC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:33:18 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id u25so15288770lfc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:33:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BQxUP24hpiBqEtJYhYwHk6U8ZAm2WakN0TBfaYLNdRc=;
-        b=UwkikTy66sWmdnraVWEJ+LlzCNJYBCKbswTcMKOsHurlf1pkecqJjGDUv8bqcK2d1h
-         x0Xtu+z3jgU8oB3RtulGryrnGgO1d4IxAVK+rusX5EUub8DSi2y8MoQmAHvHu+ai3IG0
-         E6lROXLPXv4yp3z0MlDnv1aLo+5QU1+6Z+sCE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BQxUP24hpiBqEtJYhYwHk6U8ZAm2WakN0TBfaYLNdRc=;
-        b=HggjzwqNGauDsVL5PUamCFyGxK1VV2IFurie8VY9jTyd88TsCGPIOYAKFyQ4byG/bG
-         TPUsFFH3caBjuLfwXc4WLMueoKQozvqbs9ZiSYRTyxq64tQe3IbrPfYlQAH9cU5oNb2T
-         CS4aewCu7+L+vd9RqGg3l2YF7VDqpq1jJM7alJ6GZ2T5cdP4atAHl3LDr3QbdCNs3Xe7
-         ljWTXI8zr8jiH7RDkRmbCA268NVjEWDCojCllstgZ7DwqKFUga5FJ1FK04fdmuYhP+1S
-         idOS6lFKzH2fBN7TXJGlZsL847Td4efcnK2rw/j2dXJ5XFx41Sa/BltH7E6E5u+JTEgI
-         KDtQ==
-X-Gm-Message-State: AOAM532Od+02e19DV2iegiRIni9fNb6n11LTgdAHMV0YzZiaRmNnZfvq
-        fFRVWbBtGcp21s+9zyWzr/pvjc6MMs/+Lw==
-X-Google-Smtp-Source: ABdhPJwfoPzskVEyPENBNMn+LnLR2QU2hnp7MDf3GJqgFzBDLaDiWEQtXyCMuhYjeTbxmm4nfcBVjg==
-X-Received: by 2002:ac2:51ab:: with SMTP id f11mr6907101lfk.510.1610746396206;
-        Fri, 15 Jan 2021 13:33:16 -0800 (PST)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id e6sm1028948lfc.23.2021.01.15.13.33.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Jan 2021 13:33:14 -0800 (PST)
-Received: by mail-lf1-f50.google.com with SMTP id o10so15232867lfl.13
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:33:13 -0800 (PST)
-X-Received: by 2002:a05:6512:789:: with SMTP id x9mr6054405lfr.487.1610746393145;
- Fri, 15 Jan 2021 13:33:13 -0800 (PST)
+        Fri, 15 Jan 2021 16:35:45 -0500
+Received: from localhost.localdomain ([92.131.99.25])
+        by mwinf5d04 with ME
+        id H9a1240040Ys01Y039a1aa; Fri, 15 Jan 2021 22:34:01 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 15 Jan 2021 22:34:01 +0100
+X-ME-IP: 92.131.99.25
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     mchehab@kernel.org, romain.perier@gmail.com, allen.lkml@gmail.com,
+        hverkuil-cisco@xs4all.nl
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] media: smipcie: switch from 'pci_' to 'dma_' API
+Date:   Fri, 15 Jan 2021 22:34:03 +0100
+Message-Id: <20210115213403.498637-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210114175934.13070-1-will@kernel.org> <20210114175934.13070-5-will@kernel.org>
- <CAHk-=wixsPuT5ingsEqj2a1PKuc+rTS_oeD_VL0p8G_3oRiJhA@mail.gmail.com>
- <20210114190021.GB13135@willie-the-truck> <CAHk-=wjdJmL22+zk3_rWAfEJJCf=oDxiJ530qk-WNk_Ji0qhxw@mail.gmail.com>
- <20210114194129.GA13314@willie-the-truck> <CAHk-=wixswKjAPt0eEVSHqOQB9tBuO5FeqfyKyxFWyBLEG6EcQ@mail.gmail.com>
- <20210115092313.GA13700@willie-the-truck>
-In-Reply-To: <20210115092313.GA13700@willie-the-truck>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 15 Jan 2021 13:32:57 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjWQFSZci+By4wXAEx6EDH4nss7tf5QimQpF53rnHa7Wg@mail.gmail.com>
-Message-ID: <CAHk-=wjWQFSZci+By4wXAEx6EDH4nss7tf5QimQpF53rnHa7Wg@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/8] mm: Separate fault info out of 'struct vm_fault'
-To:     Will Deacon <will@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Hugh Dickins <hughd@google.com>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 1:23 AM Will Deacon <will@kernel.org> wrote:
->
-> Hmm. The feedback on the clang bug suggests that GCC is the one in the
-> wrong here (although the argument is based on C11 and I haven't trawled
-> through the standards to see how this has evolved):
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-Oh well.
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
 
-That writing is absolutely the _worst_ kind of weaselwording standards
-language reading, trying to make excuses for bad behavior by basically
-depending on "this language is unclear", and trying to say that the
-buggy behavior is required by C11.
+When memory is allocated in 'smi_port_init()' GFP_KERNEL can be used
+because this function is called only from the probe function and no lock
+is taken in between.
 
-What a disappointment.
+The call chain is:
+  smi_probe()
+    --> smi_port_attach()
+      --> smi_port_init()
 
-Absolutely nothing in the quoted C11 language says to me what that bug
-entry claims it says.
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
 
-The argument seems to hinge on
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
 
-   "The members of an anonymous structure or union are considered to
-be members of the containing structure or union"
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
 
-and then it makes the completely uncalled-for leap that that means
-that because it was "int" in the const struct, it must be "int" in the
-containing structure too.
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
 
-Which is complete BS, and doesn't follow logically _or_ grammatically.
-It would be a "member of the containing structure" even with the
-"const" qualifier, so the argument they make is just inane.
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
-In fact, the _other_ sentence they quote clearly points to this being
-just a clang bug:
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
- "A modifiable lvalue is [...] if it is a structure or union, does not
-have any member (including, recursively, any member or element of all
-contained aggregates or unions) with a const- qualified type"
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
 
-and clearly this recursively is an element with a const-qualified
-recursive struct.
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
 
-Whatever. It's one of those "read the documentation squint-eyed to
-avoid doing the right thing" arguments.
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
 
-It's not worth arguing with people like that, and let's just ignore
-the clang bug here.
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
 
-            Linus
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/media/pci/smipcie/smipcie-main.c | 26 ++++++++++++++----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/media/pci/smipcie/smipcie-main.c b/drivers/media/pci/smipcie/smipcie-main.c
+index e7604b7ecc8d..0c300d019d9c 100644
+--- a/drivers/media/pci/smipcie/smipcie-main.c
++++ b/drivers/media/pci/smipcie/smipcie-main.c
+@@ -351,13 +351,15 @@ static void smi_dma_xfer(struct tasklet_struct *t)
+ static void smi_port_dma_free(struct smi_port *port)
+ {
+ 	if (port->cpu_addr[0]) {
+-		pci_free_consistent(port->dev->pci_dev, SMI_TS_DMA_BUF_SIZE,
+-				    port->cpu_addr[0], port->dma_addr[0]);
++		dma_free_coherent(&port->dev->pci_dev->dev,
++				  SMI_TS_DMA_BUF_SIZE, port->cpu_addr[0],
++				  port->dma_addr[0]);
+ 		port->cpu_addr[0] = NULL;
+ 	}
+ 	if (port->cpu_addr[1]) {
+-		pci_free_consistent(port->dev->pci_dev, SMI_TS_DMA_BUF_SIZE,
+-				    port->cpu_addr[1], port->dma_addr[1]);
++		dma_free_coherent(&port->dev->pci_dev->dev,
++				  SMI_TS_DMA_BUF_SIZE, port->cpu_addr[1],
++				  port->dma_addr[1]);
+ 		port->cpu_addr[1] = NULL;
+ 	}
+ }
+@@ -398,9 +400,10 @@ static int smi_port_init(struct smi_port *port, int dmaChanUsed)
+ 	}
+ 
+ 	if (port->_dmaInterruptCH0) {
+-		port->cpu_addr[0] = pci_alloc_consistent(port->dev->pci_dev,
+-					SMI_TS_DMA_BUF_SIZE,
+-					&port->dma_addr[0]);
++		port->cpu_addr[0] = dma_alloc_coherent(&port->dev->pci_dev->dev,
++						       SMI_TS_DMA_BUF_SIZE,
++						       &port->dma_addr[0],
++						       GFP_KERNEL);
+ 		if (!port->cpu_addr[0]) {
+ 			dev_err(&port->dev->pci_dev->dev,
+ 				"Port[%d] DMA CH0 memory allocation failed!\n",
+@@ -410,9 +413,10 @@ static int smi_port_init(struct smi_port *port, int dmaChanUsed)
+ 	}
+ 
+ 	if (port->_dmaInterruptCH1) {
+-		port->cpu_addr[1] = pci_alloc_consistent(port->dev->pci_dev,
+-					SMI_TS_DMA_BUF_SIZE,
+-					&port->dma_addr[1]);
++		port->cpu_addr[1] = dma_alloc_coherent(&port->dev->pci_dev->dev,
++						       SMI_TS_DMA_BUF_SIZE,
++						       &port->dma_addr[1],
++						       GFP_KERNEL);
+ 		if (!port->cpu_addr[1]) {
+ 			dev_err(&port->dev->pci_dev->dev,
+ 				"Port[%d] DMA CH1 memory allocation failed!\n",
+@@ -963,7 +967,7 @@ static int smi_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	}
+ 
+ 	/* should we set to 32bit DMA? */
+-	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (ret < 0)
+ 		goto err_pci_iounmap;
+ 
+-- 
+2.27.0
+
