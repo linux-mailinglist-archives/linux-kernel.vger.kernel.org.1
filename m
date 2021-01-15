@@ -2,97 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0744D2F8825
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:06:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 962B32F8812
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727680AbhAOWFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 17:05:17 -0500
-Received: from m1534.mail.126.com ([220.181.15.34]:23954 "EHLO
-        m1534.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727242AbhAOWFQ (ORCPT
+        id S1727269AbhAOWAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 17:00:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725918AbhAOWAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 17:05:16 -0500
-X-Greylist: delayed 13798 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 Jan 2021 17:05:14 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=QWl1k
-        wxmlrAvmPs2BfGhX9V7ZRzLA6vNlVk4+GazSRo=; b=elI7USCuMpzGIdWktS/o+
-        M0Q8ypI8BUdMkkRF90pqvhDNbhs54hyho6NKTbfJLgRVSplJlQg1yPjd6lgpcfFU
-        wgjJGJdTHE4to1sijDQalxCEDzDp8JIEOZp90aEmWcAQ+xaFj21OEMdsZytFWNKC
-        5w/XknoqyWjcjH2YpDbzsY=
-Received: from wangyingjie55$126.com ( [116.162.2.41] ) by
- ajax-webmail-wmsvr34 (Coremail) ; Fri, 15 Jan 2021 21:27:58 +0800 (CST)
-X-Originating-IP: [116.162.2.41]
-Date:   Fri, 15 Jan 2021 21:27:58 +0800 (CST)
-From:   "Yingjie Wang" <wangyingjie55@126.com>
-To:     "Geethasowjanya Akula" <gakula@marvell.com>
-Cc:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "Vidhya Vidhyaraman" <vraman@marvell.com>,
-        "Stanislaw Kardach [C]" <skardach@marvell.com>,
-        "Sunil Kovvuri Goutham" <sgoutham@marvell.com>,
-        "Linu Cherian" <lcherian@marvell.com>,
-        "Jerin Jacob Kollanukkaran" <jerinj@marvell.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re:Re: [EXT] [PATCH v3] octeontx2-af: Fix missing check bugs in
- rvu_cgx.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
- Copyright (c) 2002-2021 www.mailtech.cn 126com
-In-Reply-To: <DM6PR18MB26023B6D29E67754CDF8FB2FCDA71@DM6PR18MB2602.namprd18.prod.outlook.com>
-References: <1610602240-23404-1-git-send-email-wangyingjie55@126.com>
- <DM6PR18MB26023B6D29E67754CDF8FB2FCDA71@DM6PR18MB2602.namprd18.prod.outlook.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=us-ascii
+        Fri, 15 Jan 2021 17:00:43 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE54EC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:00:02 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id q4so5391037plr.7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 14:00:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t+cXnlBFq8WTb5dbUuQjMhr2A9oyhYcZeyKpPnSTr6w=;
+        b=QLLEcyFZlJw4ynxsEl/y7diypFyFaKmWF4wjvz1MVPrhe8yqb7TUO+Ovl53eFy26Zv
+         Vyg5Vk3uZvPqK6588DPWboXivEXa3KNLyYY/5n2ObfYjdy4O8kNybJEOXXl4z31Wu3tg
+         WeoiETvHF9c1TpKB8iy6QCpos8IBMCYYU3wG2Vc8MjyO2spULnzUloAeRMeO6+qIeouz
+         d1Ichh/XhTrAxPSBVitupF2zoFqmu3mNARKz4godC+9BNADtNnj9GLukfhzs1afjTJw5
+         DwF4Syp3TUFPUuyh9EkhGKWCv+2155I4WZAM7aFVKXa79UtaLT6u/71833Pwz4pTBnli
+         4pkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t+cXnlBFq8WTb5dbUuQjMhr2A9oyhYcZeyKpPnSTr6w=;
+        b=Ani7cXALPgQQV/jLJLXZCVRzs5TKUM72kgHlHNSt61HjOSB/ZMGaUeqkn1CSvt2o6h
+         Ba2XzCxQSpg49tMBMih9bPCo+LuT0jkgb2BmCBGvmK7tt5+InHpj3vAO6JDqqrrcboQY
+         ciYtwKl9j33VgWjT6qHRjdOTdg6hn4hafYX700HMJaaXEyPgHj/U7PUOy4mO1428Clid
+         KH7OrtTaOa5rT5MgDfa9IH2fCKuhEW6DDNhuCnT1fPIKKrUMK2YnP5xM42Ygbf7093+n
+         404au3vkOf6Cdp8j+yOP4X4/Wgy8g5CaPIoIwpvelMAM9hXUu92HvozTD5JAWrc+WMk5
+         vlGg==
+X-Gm-Message-State: AOAM533x/hGhsETNlQZT/e9xEkWq37Hv55yeJVistysOf1j4RQXJNByr
+        53kkPJdmGI5+e2ZERHeFJAhFew==
+X-Google-Smtp-Source: ABdhPJzep3S44Y7zZ4tUZ7UjgW93naxrl5+2ShLyVoxK0xq3SG+/UcqzXcTgycoKPrvPPFwBliHnKg==
+X-Received: by 2002:a17:90a:5b:: with SMTP id 27mr12832398pjb.207.1610748002351;
+        Fri, 15 Jan 2021 14:00:02 -0800 (PST)
+Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
+        by smtp.gmail.com with ESMTPSA id 14sm8710459pfi.131.2021.01.15.14.00.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 14:00:01 -0800 (PST)
+Date:   Fri, 15 Jan 2021 13:59:58 -0800
+From:   Fangrui Song <maskray@google.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
+        Jakub Jelinek <jakub@redhat.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH v5 1/3] Remove $(cc-option,-gdwarf-4) dependency from
+ CONFIG_DEBUG_INFO_DWARF4
+Message-ID: <20210115215958.3cqewpk7hycfr3hm@google.com>
+References: <20210115210616.404156-1-ndesaulniers@google.com>
+ <20210115210616.404156-2-ndesaulniers@google.com>
 MIME-Version: 1.0
-Message-ID: <7378cece.54f3.177063b30b6.Coremail.wangyingjie55@126.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: IsqowEDpd0NemAFgx4IgAQ--.7761W
-X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbiVxUbp1pECd2i0AABsH
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210115210616.404156-2-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIGZvciB5b3VyIHJlcGx5LiBJIGhhdmUgcmVzZW5kZWQgdGhlIGVtYWlsIHdpdGggdGhl
-IFJldmlld2VkLWJ5IHRhZy4KQXQgMjAyMS0wMS0xNSAxODo1ODo0OSwgIkdlZXRoYXNvd2phbnlh
-IEFrdWxhIiA8Z2FrdWxhQG1hcnZlbGwuY29tPiB3cm90ZToKPlRoZSBjaGFuZ2VzIGxvb2sgZ29v
-ZCB0byBtZS4NCj4NCj5Zb3UgY2FuIGFkZDoNCj5SZXZpZXdlZC1ieTogR2VldGhhIHNvd2phbnlh
-PGdha3VsYUBtYXJ2ZWxsLmNvbT4NCj4NCj5fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fDQo+RnJvbTogd2FuZ3lpbmdqaWU1NUAxMjYuY29tIDx3YW5neWluZ2ppZTU1QDEy
-Ni5jb20+DQo+U2VudDogVGh1cnNkYXksIEphbnVhcnkgMTQsIDIwMjEgMTE6MDAgQU0NCj5Ubzog
-ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsga3ViYUBrZXJuZWwub3JnOyBWaWRoeWEgVmlkaHlhcmFtYW47
-IFN0YW5pc2xhdyBLYXJkYWNoIFtDXQ0KPkNjOiBTdW5pbCBLb3Z2dXJpIEdvdXRoYW07IExpbnUg
-Q2hlcmlhbjsgR2VldGhhc293amFueWEgQWt1bGE7IEplcmluIEphY29iIEtvbGxhbnVra2FyYW47
-IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IFlp
-bmdqaWUgV2FuZw0KPlN1YmplY3Q6IFtFWFRdIFtQQVRDSCB2M10gb2N0ZW9udHgyLWFmOiBGaXgg
-bWlzc2luZyBjaGVjayBidWdzIGluIHJ2dV9jZ3guYw0KPg0KPkV4dGVybmFsIEVtYWlsDQo+DQo+
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQ0KPkZyb206IFlpbmdqaWUgV2FuZyA8d2FuZ3lpbmdqaWU1NUAxMjYuY29t
-Pg0KPg0KPkluIHJ2dV9tYm94X2hhbmRsZXJfY2d4X21hY19hZGRyX2dldCgpDQo+YW5kIHJ2dV9t
-Ym94X2hhbmRsZXJfY2d4X21hY19hZGRyX3NldCgpLA0KPnRoZSBtc2cgaXMgZXhwZWN0ZWQgb25s
-eSBmcm9tIFBGcyB0aGF0IGFyZSBtYXBwZWQgdG8gQ0dYIExNQUNzLg0KPkl0IHNob3VsZCBiZSBj
-aGVja2VkIGJlZm9yZSBtYXBwaW5nLA0KPnNvIHdlIGFkZCB0aGUgaXNfY2d4X2NvbmZpZ19wZXJt
-aXR0ZWQoKSBpbiB0aGUgZnVuY3Rpb25zLg0KPg0KPkZpeGVzOiA5NmJlMmUwZGE4NWUgKCJvY3Rl
-b250eDItYWY6IFN1cHBvcnQgZm9yIE1BQyBhZGRyZXNzIGZpbHRlcnMgaW4gQ0dYIikNCj5TaWdu
-ZWQtb2ZmLWJ5OiBZaW5namllIFdhbmcgPHdhbmd5aW5namllNTVAMTI2LmNvbT4NCj4tLS0NCj4g
-ZHJpdmVycy9uZXQvZXRoZXJuZXQvbWFydmVsbC9vY3Rlb250eDIvYWYvcnZ1X2NneC5jIHwgNiAr
-KysrKysNCj4gMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKQ0KPg0KPmRpZmYgLS1naXQg
-YS9kcml2ZXJzL25ldC9ldGhlcm5ldC9tYXJ2ZWxsL29jdGVvbnR4Mi9hZi9ydnVfY2d4LmMgYi9k
-cml2ZXJzL25ldC9ldGhlcm5ldC9tYXJ2ZWxsL29jdGVvbnR4Mi9hZi9ydnVfY2d4LmMNCj5pbmRl
-eCBkMjk4YjkzNTcxNzcuLjZjNmI0MTFlNzhmZCAxMDA2NDQNCj4tLS0gYS9kcml2ZXJzL25ldC9l
-dGhlcm5ldC9tYXJ2ZWxsL29jdGVvbnR4Mi9hZi9ydnVfY2d4LmMNCj4rKysgYi9kcml2ZXJzL25l
-dC9ldGhlcm5ldC9tYXJ2ZWxsL29jdGVvbnR4Mi9hZi9ydnVfY2d4LmMNCj5AQCAtNDY5LDYgKzQ2
-OSw5IEBAIGludCBydnVfbWJveF9oYW5kbGVyX2NneF9tYWNfYWRkcl9zZXQoc3RydWN0IHJ2dSAq
-cnZ1LA0KPiAgICAgICAgaW50IHBmID0gcnZ1X2dldF9wZihyZXEtPmhkci5wY2lmdW5jKTsNCj4g
-ICAgICAgIHU4IGNneF9pZCwgbG1hY19pZDsNCj4NCj4rICAgICAgIGlmICghaXNfY2d4X2NvbmZp
-Z19wZXJtaXR0ZWQocnZ1LCByZXEtPmhkci5wY2lmdW5jKSkNCj4rICAgICAgICAgICAgICAgcmV0
-dXJuIC1FUEVSTTsNCj4rDQo+ICAgICAgICBydnVfZ2V0X2NneF9sbWFjX2lkKHJ2dS0+cGYyY2d4
-bG1hY19tYXBbcGZdLCAmY2d4X2lkLCAmbG1hY19pZCk7DQo+DQo+ICAgICAgICBjZ3hfbG1hY19h
-ZGRyX3NldChjZ3hfaWQsIGxtYWNfaWQsIHJlcS0+bWFjX2FkZHIpOw0KPkBAIC00ODUsNiArNDg4
-LDkgQEAgaW50IHJ2dV9tYm94X2hhbmRsZXJfY2d4X21hY19hZGRyX2dldChzdHJ1Y3QgcnZ1ICpy
-dnUsDQo+ICAgICAgICBpbnQgcmMgPSAwLCBpOw0KPiAgICAgICAgdTY0IGNmZzsNCj4NCj4rICAg
-ICAgIGlmICghaXNfY2d4X2NvbmZpZ19wZXJtaXR0ZWQocnZ1LCByZXEtPmhkci5wY2lmdW5jKSkN
-Cj4rICAgICAgICAgICAgICAgcmV0dXJuIC1FUEVSTTsNCj4rDQo+ICAgICAgICBydnVfZ2V0X2Nn
-eF9sbWFjX2lkKHJ2dS0+cGYyY2d4bG1hY19tYXBbcGZdLCAmY2d4X2lkLCAmbG1hY19pZCk7DQo+
-DQo+ICAgICAgICByc3AtPmhkci5yYyA9IHJjOw0KPi0tDQo+Mi43LjQNCg==
+On 2021-01-15, Nick Desaulniers wrote:
+>From: Masahiro Yamada <masahiroy@kernel.org>
+>
+>The -gdwarf-4 flag is supported by GCC 4.5+, and also by Clang.
+>
+>You can see it at https://godbolt.org/z/6ed1oW
+>
+>  For gcc 4.5.3 pane,    line 37:    .value 0x4
+>  For clang 10.0.1 pane, line 117:   .short 4
+>
+>Given Documentation/process/changes.rst stating GCC 4.9 is the minimal
+>version, this cc-option is unneeded.
+>
+>Note
+>----
+>
+>CONFIG_DEBUG_INFO_DWARF4 controls the DWARF version only for C files.
+>
+>As you can see in the top Makefile, -gdwarf-4 is only passed to CFLAGS.
+>
+>  ifdef CONFIG_DEBUG_INFO_DWARF4
+>  DEBUG_CFLAGS    += -gdwarf-4
+>  endif
+>
+>This flag is used when compiling *.c files.
+>
+>On the other hand, the assembler is always given -gdwarf-2.
+>
+>  KBUILD_AFLAGS   += -Wa,-gdwarf-2
+>
+>Hence, the debug info that comes from *.S files is always DWARF v2.
+>This is simply because GAS supported only -gdwarf-2 for a long time.
+>
+>Recently, GAS gained the support for --dwarf-[3|4|5] options. [1]
+
+The gas commit description has a typo. The supported options are -gdwarf-[345] or --gdwarf-[345].
+-gdwarf2 and --gdwarf2 are kept for compatibility.
+
+Looks good otherwise.
+
+>And, also we have Clang integrated assembler. So, the debug info
+>for *.S files might be improved if we want.
+>
+>In my understanding, the current code is intentional, not a bug.
+>
+>[1] https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=31bf18645d98b4d3d7357353be840e320649a67d
+>
+>Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+>Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+>Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>---
+> lib/Kconfig.debug | 1 -
+> 1 file changed, 1 deletion(-)
+>
+>diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+>index 78361f0abe3a..dd7d8d35b2a5 100644
+>--- a/lib/Kconfig.debug
+>+++ b/lib/Kconfig.debug
+>@@ -258,7 +258,6 @@ config DEBUG_INFO_SPLIT
+>
+> config DEBUG_INFO_DWARF4
+> 	bool "Generate dwarf4 debuginfo"
+>-	depends on $(cc-option,-gdwarf-4)
+> 	help
+> 	  Generate dwarf4 debug info. This requires recent versions
+> 	  of gcc and gdb. It makes the debug information larger.
+>-- 
+>2.30.0.284.gd98b1dd5eaa7-goog
+>
