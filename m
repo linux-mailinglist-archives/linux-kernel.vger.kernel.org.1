@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3A42F8311
+	by mail.lfdr.de (Postfix) with ESMTP id BAB1B2F8312
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:55:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733104AbhAORyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1732966AbhAORyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 15 Jan 2021 12:54:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52134 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728698AbhAORyV (ORCPT
+        with ESMTP id S1730047AbhAORyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 12:54:21 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4381C061796
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:53:12 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id b8so4462815wrv.14
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:53:12 -0800 (PST)
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3757C061798
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:53:14 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id u17so8733654qku.17
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:53:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=jfWJXOWlHJo7EltzDAfS0s8ib651kGruxNglu567YtE=;
-        b=UpDZIP6xR7ghSKnhzK0eRNfsLeyL8ZfbfdrS0ZbiXAREa4/3evrQBC1aIzqQ9uPRaK
-         vVDx5+guFDF2M60tFhWxTC1woCdY3Ezi3z80HIkXlN5A4QRMNh+us9qm3WvBz4r9xUAX
-         vEAGJhsJXcf8yq/65SZe1JFLuzjSlkMBF9WzIOAjE8C/oevNO9sxdMzCxd5wddJ/kDN+
-         9t+r4P24kGbGCAeo2xPmV1rZqyp078zmHZoPN+wLHN40Pe0Nxa6wDDbvBnCBuiIPX3nz
-         8SPXVztg5pBePTNl2c0MLwzMTfKqUuDsyxcShY8oKJqSH+0VXX9dD8lLPltgiEwTTtmt
-         yBvQ==
+        bh=9on6B0atcycuyeVrYw1IPAD/5QIL4ENYnqCtl+BcpGs=;
+        b=YGhs6+f0iwZVxk35JMh9LTSgWc72pAk1m3dthbZ5woy/R3j+rInGqhjM9h+9UfkaxX
+         kUdA7UCD9iKzesPFz6gzWcUqsox4B+rRICJrxNUbbvmgJmPtU2MIB/nSdsJNmrRA0Vks
+         YYWFC4mEZqfN/GNUW+FzvOc5FGzEYGbgByvzL/ixSNeIe+/tB8CYcQkRMj2k6G4My6RX
+         EDy8Iq0Ej33MdVki1ePlDKXtnT+GGz5UmhpMkTOEowsV8VSgKN10wGpMjZ301uofrVdi
+         v8IAeWFQFm9KyZBd7L4UnVogvZLoKIBZTU+g8lekkUwCjQ/e1KCeUsdMJ9kw3nPMatHL
+         FBfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=jfWJXOWlHJo7EltzDAfS0s8ib651kGruxNglu567YtE=;
-        b=HIBeOxs2fhDtreOFst8f5NSk49pG5PGsAJCM9FI0d9jHitxToGd6y8sqXODD77cnlT
-         QB6TSQ321q8O7bm+krb1agKUS01fdxDgVz/8tqjUN5NrOoxfQ8CO8IGE8rPV4I8uyCWZ
-         weaHyOG3AFc8SqpBVLnBuKbIr80AejgqRWcyTSaS+E3WtX3YDYvDzGd4Jd0Z0z7NGFyM
-         c22vtEfTO/ner9C6aF6NRmo4xwcnxLzCo+6Pu3V0tNgx/RGaJdOrpoWilzVskAsmevuz
-         GlFZYad/7LbFgcy4YYw3GwloRLxgrWzhimpDb5q24nD3Wp9W/s8kRS1Rxua6o3327s8V
-         LdaA==
-X-Gm-Message-State: AOAM531GSUOwpnvZ87yBJ53eDEHkdcJv9vlmRu14z/t8Cjq9RfkjR+mk
-        wdFxMeFZuNM66AWrvJ5Bw4suglKxbWsVOspZ
-X-Google-Smtp-Source: ABdhPJyTX+oi4bC453jP1Oba8mmIO/be705slN5QNgbNBVtZKN7OlSl3vgP/jlwXwIICnGDefo9UkGtGOwwhdtkR
+        bh=9on6B0atcycuyeVrYw1IPAD/5QIL4ENYnqCtl+BcpGs=;
+        b=hXBbrlrO8ZMUBwEnTKWHCi7udyHWMmVhyUns9FoM8goDVcQz/IDtQYrBT8uGIuSqp5
+         5zzwBBD8wXdaD5rT/iTiDlCJo15rtZbA43C3a+BL4XWcdjZ/13vdMGrVjbPmKBWqSAAb
+         4AlUz4I0Uv7U4ytnkK2ARwmDYrddVEx2yoIZdhFQVpwjq9E4UJX1faENtPvyJtkMEwNm
+         mOy8bMPaXhkmdqrWumSot2QPDoZLK7Vc3HFhbfUOE+NdU4siTiTpHW/jfABhWF/BMghW
+         5m7kXl+l3+MXjlmGiVXYE4Xm4dOn9MgLunateAM1ierdjF8Ttmxy3y0D1quIHl+1TmK1
+         6kMw==
+X-Gm-Message-State: AOAM53161dpxDxF6kX1/H2NLX3pBxMNmyug2NKjPpKw9OtN8nd4+ETht
+        kVNoENh+C66IVpNcijHHjBG9z8vnDj3YFw0S
+X-Google-Smtp-Source: ABdhPJw9+ayeN2pzG+ifeIn+iJe66JhsQlUghP/pJNUje82mr1D1Ziu+gzmKRv/Cbg3SdAF93FYNXOywpra0oSA7
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a1c:e919:: with SMTP id
- q25mr2033205wmc.57.1610733191375; Fri, 15 Jan 2021 09:53:11 -0800 (PST)
-Date:   Fri, 15 Jan 2021 18:52:42 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a0c:c211:: with SMTP id
+ l17mr12803811qvh.53.1610733193859; Fri, 15 Jan 2021 09:53:13 -0800 (PST)
+Date:   Fri, 15 Jan 2021 18:52:43 +0100
 In-Reply-To: <cover.1610733117.git.andreyknvl@google.com>
-Message-Id: <da841a5408e2204bf25f3b23f70540a65844e8a4.1610733117.git.andreyknvl@google.com>
+Message-Id: <51b23112cf3fd62b8f8e9df81026fa2b15870501.1610733117.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1610733117.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v4 05/15] kasan: add match-all tag tests
+Subject: [PATCH v4 06/15] kasan, arm64: allow using KUnit tests with HW_TAGS mode
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -74,158 +74,266 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 3 new tests for tag-based KASAN modes:
+On a high level, this patch allows running KUnit KASAN tests with the
+hardware tag-based KASAN mode.
 
-1. Check that match-all pointer tag is not assigned randomly.
-2. Check that 0xff works as a match-all pointer tag.
-3. Check that there are no match-all memory tags.
+Internally, this change reenables tag checking at the end of each KASAN
+test that triggers a tag fault and leads to tag checking being disabled.
 
-Note, that test #3 causes a significant number (255) of KASAN reports
-to be printed during execution for the SW_TAGS mode.
+Also simplify is_write calculation in report_tag_fault.
 
-Link: https://linux-review.googlesource.com/id/I78f1375efafa162b37f3abcb2c5bc2f3955dfd8e
-Reviewed-by: Marco Elver <elver@google.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+With this patch KASAN tests are still failing for the hardware tag-based
+mode; fixes come in the next few patches.
+
+Link: https://linux-review.googlesource.com/id/Id94dc9eccd33b23cda4950be408c27f879e474c8
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- lib/test_kasan.c | 92 ++++++++++++++++++++++++++++++++++++++++++++++++
- mm/kasan/kasan.h |  6 ++++
- 2 files changed, 98 insertions(+)
+ arch/arm64/include/asm/memory.h    |  1 +
+ arch/arm64/include/asm/mte-kasan.h | 12 +++++++++
+ arch/arm64/kernel/mte.c            | 12 +++++++++
+ arch/arm64/mm/fault.c              | 20 +++++++++-----
+ lib/Kconfig.kasan                  |  4 +--
+ lib/test_kasan.c                   | 42 +++++++++++++++++++++---------
+ mm/kasan/kasan.h                   |  9 +++++++
+ 7 files changed, 79 insertions(+), 21 deletions(-)
 
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 714ea27fcc3e..c344fe506ffc 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -13,6 +13,7 @@
- #include <linux/mman.h>
- #include <linux/module.h>
- #include <linux/printk.h>
-+#include <linux/random.h>
- #include <linux/slab.h>
- #include <linux/string.h>
- #include <linux/uaccess.h>
-@@ -754,6 +755,94 @@ static void vmalloc_oob(struct kunit *test)
- 	vfree(area);
+diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+index 18fce223b67b..cedfc9e97bcc 100644
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -232,6 +232,7 @@ static inline const void *__tag_set(const void *addr, u8 tag)
+ 
+ #ifdef CONFIG_KASAN_HW_TAGS
+ #define arch_enable_tagging()			mte_enable_kernel()
++#define arch_set_tagging_report_once(state)	mte_set_report_once(state)
+ #define arch_init_tags(max_tag)			mte_init_tags(max_tag)
+ #define arch_get_random_tag()			mte_get_random_tag()
+ #define arch_get_mem_tag(addr)			mte_get_mem_tag(addr)
+diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
+index 26349a4b5e2e..3748d5bb88c0 100644
+--- a/arch/arm64/include/asm/mte-kasan.h
++++ b/arch/arm64/include/asm/mte-kasan.h
+@@ -32,6 +32,9 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag);
+ void mte_enable_kernel(void);
+ void mte_init_tags(u64 max_tag);
+ 
++void mte_set_report_once(bool state);
++bool mte_report_once(void);
++
+ #else /* CONFIG_ARM64_MTE */
+ 
+ static inline u8 mte_get_ptr_tag(void *ptr)
+@@ -60,6 +63,15 @@ static inline void mte_init_tags(u64 max_tag)
+ {
  }
  
-+/*
-+ * Check that the assigned pointer tag falls within the [KASAN_TAG_MIN,
-+ * KASAN_TAG_KERNEL) range (note: excluding the match-all tag) for tag-based
-+ * modes.
-+ */
-+static void match_all_not_assigned(struct kunit *test)
++static inline void mte_set_report_once(bool state)
 +{
-+	char *ptr;
-+	struct page *pages;
-+	int i, size, order;
-+
-+	KASAN_TEST_NEEDS_CONFIG_OFF(test, CONFIG_KASAN_GENERIC);
-+
-+	for (i = 0; i < 256; i++) {
-+		size = (get_random_int() % 1024) + 1;
-+		ptr = kmalloc(size, GFP_KERNEL);
-+		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-+		KUNIT_EXPECT_GE(test, (u8)get_tag(ptr), (u8)KASAN_TAG_MIN);
-+		KUNIT_EXPECT_LT(test, (u8)get_tag(ptr), (u8)KASAN_TAG_KERNEL);
-+		kfree(ptr);
-+	}
-+
-+	for (i = 0; i < 256; i++) {
-+		order = (get_random_int() % 4) + 1;
-+		pages = alloc_pages(GFP_KERNEL, order);
-+		ptr = page_address(pages);
-+		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-+		KUNIT_EXPECT_GE(test, (u8)get_tag(ptr), (u8)KASAN_TAG_MIN);
-+		KUNIT_EXPECT_LT(test, (u8)get_tag(ptr), (u8)KASAN_TAG_KERNEL);
-+		free_pages((unsigned long)ptr, order);
-+	}
 +}
 +
-+/* Check that 0xff works as a match-all pointer tag for tag-based modes. */
-+static void match_all_ptr_tag(struct kunit *test)
++static inline bool mte_report_once(void)
 +{
-+	char *ptr;
-+	u8 tag;
-+
-+	KASAN_TEST_NEEDS_CONFIG_OFF(test, CONFIG_KASAN_GENERIC);
-+
-+	ptr = kmalloc(128, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-+
-+	/* Backup the assigned tag. */
-+	tag = get_tag(ptr);
-+	KUNIT_EXPECT_NE(test, tag, (u8)KASAN_TAG_KERNEL);
-+
-+	/* Reset the tag to 0xff.*/
-+	ptr = set_tag(ptr, KASAN_TAG_KERNEL);
-+
-+	/* This access shouldn't trigger a KASAN report. */
-+	*ptr = 0;
-+
-+	/* Recover the pointer tag and free. */
-+	ptr = set_tag(ptr, tag);
-+	kfree(ptr);
++	return false;
 +}
 +
-+/* Check that there are no match-all memory tags for tag-based modes. */
-+static void match_all_mem_tag(struct kunit *test)
-+{
-+	char *ptr;
-+	int tag;
-+
-+	KASAN_TEST_NEEDS_CONFIG_OFF(test, CONFIG_KASAN_GENERIC);
-+
-+	ptr = kmalloc(128, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-+	KUNIT_EXPECT_NE(test, (u8)get_tag(ptr), (u8)KASAN_TAG_KERNEL);
-+
-+	/* For each possible tag value not matching the pointer tag. */
-+	for (tag = KASAN_TAG_MIN; tag <= KASAN_TAG_KERNEL; tag++) {
-+		if (tag == get_tag(ptr))
-+			continue;
-+
-+		/* Mark the first memory granule with the chosen memory tag. */
-+		kasan_poison(ptr, KASAN_GRANULE_SIZE, (u8)tag);
-+
-+		/* This access must cause a KASAN report. */
-+		KUNIT_EXPECT_KASAN_FAIL(test, *ptr = 0);
-+	}
-+
-+	/* Recover the memory tag and free. */
-+	kasan_poison(ptr, KASAN_GRANULE_SIZE, get_tag(ptr));
-+	kfree(ptr);
-+}
-+
- static struct kunit_case kasan_kunit_test_cases[] = {
- 	KUNIT_CASE(kmalloc_oob_right),
- 	KUNIT_CASE(kmalloc_oob_left),
-@@ -793,6 +882,9 @@ static struct kunit_case kasan_kunit_test_cases[] = {
- 	KUNIT_CASE(kasan_bitops_tags),
- 	KUNIT_CASE(kmalloc_double_kzfree),
- 	KUNIT_CASE(vmalloc_oob),
-+	KUNIT_CASE(match_all_not_assigned),
-+	KUNIT_CASE(match_all_ptr_tag),
-+	KUNIT_CASE(match_all_mem_tag),
- 	{}
- };
+ #endif /* CONFIG_ARM64_MTE */
  
+ #endif /* __ASSEMBLY__ */
+diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+index dc9ada64feed..c63b3d7a3cd9 100644
+--- a/arch/arm64/kernel/mte.c
++++ b/arch/arm64/kernel/mte.c
+@@ -25,6 +25,8 @@
+ 
+ u64 gcr_kernel_excl __ro_after_init;
+ 
++static bool report_fault_once = true;
++
+ static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+ {
+ 	pte_t old_pte = READ_ONCE(*ptep);
+@@ -158,6 +160,16 @@ void mte_enable_kernel(void)
+ 	isb();
+ }
+ 
++void mte_set_report_once(bool state)
++{
++	WRITE_ONCE(report_fault_once, state);
++}
++
++bool mte_report_once(void)
++{
++	return READ_ONCE(report_fault_once);
++}
++
+ static void update_sctlr_el1_tcf0(u64 tcf0)
+ {
+ 	/* ISB required for the kernel uaccess routines */
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index 35d75c60e2b8..570c02671d19 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -302,12 +302,24 @@ static void die_kernel_fault(const char *msg, unsigned long addr,
+ static void report_tag_fault(unsigned long addr, unsigned int esr,
+ 			     struct pt_regs *regs)
+ {
+-	bool is_write  = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
++	static bool reported;
++	bool is_write;
++
++	if (READ_ONCE(reported))
++		return;
++
++	/*
++	 * This is used for KASAN tests and assumes that no MTE faults
++	 * happened before running the tests.
++	 */
++	if (mte_report_once())
++		WRITE_ONCE(reported, true);
+ 
+ 	/*
+ 	 * SAS bits aren't set for all faults reported in EL1, so we can't
+ 	 * find out access size.
+ 	 */
++	is_write = !!(esr & ESR_ELx_WNR);
+ 	kasan_report(addr, 0, is_write, regs->pc);
+ }
+ #else
+@@ -319,12 +331,8 @@ static inline void report_tag_fault(unsigned long addr, unsigned int esr,
+ static void do_tag_recovery(unsigned long addr, unsigned int esr,
+ 			   struct pt_regs *regs)
+ {
+-	static bool reported;
+ 
+-	if (!READ_ONCE(reported)) {
+-		report_tag_fault(addr, esr, regs);
+-		WRITE_ONCE(reported, true);
+-	}
++	report_tag_fault(addr, esr, regs);
+ 
+ 	/*
+ 	 * Disable MTE Tag Checking on the local CPU for the current EL.
+diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+index f5fa4ba126bf..3091432acb0a 100644
+--- a/lib/Kconfig.kasan
++++ b/lib/Kconfig.kasan
+@@ -190,11 +190,11 @@ config KASAN_KUNIT_TEST
+ 	  kernel debugging features like KASAN.
+ 
+ 	  For more information on KUnit and unit tests in general, please refer
+-	  to the KUnit documentation in Documentation/dev-tools/kunit
++	  to the KUnit documentation in Documentation/dev-tools/kunit.
+ 
+ config TEST_KASAN_MODULE
+ 	tristate "KUnit-incompatible tests of KASAN bug detection capabilities"
+-	depends on m && KASAN
++	depends on m && KASAN && !KASAN_HW_TAGS
+ 	help
+ 	  This is a part of the KASAN test suite that is incompatible with
+ 	  KUnit. Currently includes tests that do bad copy_from/to_user
+diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+index c344fe506ffc..ef663bcf83e5 100644
+--- a/lib/test_kasan.c
++++ b/lib/test_kasan.c
+@@ -41,16 +41,20 @@ static bool multishot;
+ 
+ /*
+  * Temporarily enable multi-shot mode. Otherwise, KASAN would only report the
+- * first detected bug and panic the kernel if panic_on_warn is enabled.
++ * first detected bug and panic the kernel if panic_on_warn is enabled. For
++ * hardware tag-based KASAN also allow tag checking to be reenabled for each
++ * test, see the comment for KUNIT_EXPECT_KASAN_FAIL().
+  */
+ static int kasan_test_init(struct kunit *test)
+ {
+ 	multishot = kasan_save_enable_multi_shot();
++	hw_set_tagging_report_once(false);
+ 	return 0;
+ }
+ 
+ static void kasan_test_exit(struct kunit *test)
+ {
++	hw_set_tagging_report_once(true);
+ 	kasan_restore_multi_shot(multishot);
+ }
+ 
+@@ -59,19 +63,31 @@ static void kasan_test_exit(struct kunit *test)
+  * KASAN report; causes a test failure otherwise. This relies on a KUnit
+  * resource named "kasan_data". Do not use this name for KUnit resources
+  * outside of KASAN tests.
++ *
++ * For hardware tag-based KASAN, when a tag fault happens, tag checking is
++ * normally auto-disabled. When this happens, this test handler reenables
++ * tag checking. As tag checking can be only disabled or enabled per CPU, this
++ * handler disables migration (preemption).
+  */
+-#define KUNIT_EXPECT_KASAN_FAIL(test, expression) do { \
+-	fail_data.report_expected = true; \
+-	fail_data.report_found = false; \
+-	kunit_add_named_resource(test, \
+-				NULL, \
+-				NULL, \
+-				&resource, \
+-				"kasan_data", &fail_data); \
+-	expression; \
+-	KUNIT_EXPECT_EQ(test, \
+-			fail_data.report_expected, \
+-			fail_data.report_found); \
++#define KUNIT_EXPECT_KASAN_FAIL(test, expression) do {		\
++	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS))			\
++		migrate_disable();				\
++	fail_data.report_expected = true;			\
++	fail_data.report_found = false;				\
++	kunit_add_named_resource(test,				\
++				NULL,				\
++				NULL,				\
++				&resource,			\
++				"kasan_data", &fail_data);	\
++	expression;						\
++	KUNIT_EXPECT_EQ(test,					\
++			fail_data.report_expected,		\
++			fail_data.report_found);		\
++	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {			\
++		if (fail_data.report_found)			\
++			hw_enable_tagging();			\
++		migrate_enable();				\
++	}							\
+ } while (0)
+ 
+ #define KASAN_TEST_NEEDS_CONFIG_ON(test, config) do {			\
 diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 3b38baddec47..c3fb9bf241d3 100644
+index c3fb9bf241d3..292dfbc37deb 100644
 --- a/mm/kasan/kasan.h
 +++ b/mm/kasan/kasan.h
-@@ -36,6 +36,12 @@ extern bool kasan_flag_panic __ro_after_init;
- #define KASAN_TAG_INVALID	0xFE /* inaccessible memory tag */
- #define KASAN_TAG_MAX		0xFD /* maximum value for random tags */
- 
-+#ifdef CONFIG_KASAN_HW_TAGS
-+#define KASAN_TAG_MIN		0xF0 /* mimimum value for random tags */
-+#else
-+#define KASAN_TAG_MIN		0x00 /* mimimum value for random tags */
+@@ -280,6 +280,9 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
+ #ifndef arch_init_tags
+ #define arch_init_tags(max_tag)
+ #endif
++#ifndef arch_set_tagging_report_once
++#define arch_set_tagging_report_once(state)
 +#endif
+ #ifndef arch_get_random_tag
+ #define arch_get_random_tag()	(0xFF)
+ #endif
+@@ -292,10 +295,16 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
+ 
+ #define hw_enable_tagging()			arch_enable_tagging()
+ #define hw_init_tags(max_tag)			arch_init_tags(max_tag)
++#define hw_set_tagging_report_once(state)	arch_set_tagging_report_once(state)
+ #define hw_get_random_tag()			arch_get_random_tag()
+ #define hw_get_mem_tag(addr)			arch_get_mem_tag(addr)
+ #define hw_set_mem_tag_range(addr, size, tag)	arch_set_mem_tag_range((addr), (size), (tag))
+ 
++#else /* CONFIG_KASAN_HW_TAGS */
 +
- #ifdef CONFIG_KASAN_GENERIC
- #define KASAN_FREE_PAGE         0xFF  /* page was freed */
- #define KASAN_PAGE_REDZONE      0xFE  /* redzone for kmalloc_large allocations */
++#define hw_enable_tagging()
++#define hw_set_tagging_report_once(state)
++
+ #endif /* CONFIG_KASAN_HW_TAGS */
+ 
+ #ifdef CONFIG_KASAN_SW_TAGS
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
