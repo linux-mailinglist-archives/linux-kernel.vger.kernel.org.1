@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03DD2F7938
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 557572F7A71
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733196AbhAOMdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:33:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39656 "EHLO mail.kernel.org"
+        id S2388054AbhAOMtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:49:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733147AbhAOMd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:33:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B88DC23359;
-        Fri, 15 Jan 2021 12:33:10 +0000 (UTC)
+        id S1732459AbhAOMgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:36:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B56023884;
+        Fri, 15 Jan 2021 12:35:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713991;
-        bh=NV5wkySH4VnUgK2tzF+GQZE4gy+uyLRbMXb4TMmlVpg=;
+        s=korg; t=1610714143;
+        bh=waAsZ4MKkYqNu+lCbaMvO1fKdOJNoyQJSMdZT95USng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i7bA25RyK5/UZHBONB7ijhbIJWv+LthNoNb6bwYAQuaZVeE4ZHWNRT2gi7VNhkk6P
-         pAKGczvBSqF2wfko1KrpdJDswDfIdiXunFLd2cvmhtNYB3FQEXm6LZ0yOSiP97errK
-         WA/FpMs1cCs23+Jz2AtShSfi1CV1ZEM/DmsFFMQ0=
+        b=hu5+qlb4ypcybBfxdnZSyJLuT37Gk9CxPsbhKDVo7lPHVkb0xCRrytLEU0U6cAvcX
+         y1oOqKQO/U+ISOedxQIqMxdmS0eHTxwog2Atl0SUyXoou9MXKdmdvT9bQ/ENDXj89e
+         ehhTdZrXRwZjP6tXSaBYz26iI72gVjBaGSKkvuQI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+825f0f9657d4e528046e@syzkaller.appspotmail.com,
-        Ming Lei <ming.lei@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.19 41/43] block: fix use-after-free in disk_part_iter_next
+Subject: [PATCH 5.4 49/62] block: rsxx: select CONFIG_CRC32
 Date:   Fri, 15 Jan 2021 13:28:11 +0100
-Message-Id: <20210115121959.034428248@linuxfoundation.org>
+Message-Id: <20210115122000.760483504@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
-References: <20210115121957.037407908@linuxfoundation.org>
+In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
+References: <20210115121958.391610178@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit aebf5db917055b38f4945ed6d621d9f07a44ff30 upstream.
+commit 36a106a4c1c100d55ba3d32a21ef748cfcd4fa99 upstream.
 
-Make sure that bdgrab() is done on the 'block_device' instance before
-referring to it for avoiding use-after-free.
+Without crc32, the driver fails to link:
 
-Cc: <stable@vger.kernel.org>
-Reported-by: syzbot+825f0f9657d4e528046e@syzkaller.appspotmail.com
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+arm-linux-gnueabi-ld: drivers/block/rsxx/config.o: in function `rsxx_load_config':
+config.c:(.text+0x124): undefined reference to `crc32_le'
+
+Fixes: 8722ff8cdbfa ("block: IBM RamSan 70/80 device driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- block/genhd.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/block/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -208,14 +208,17 @@ struct hd_struct *disk_part_iter_next(st
- 		part = rcu_dereference(ptbl->part[piter->idx]);
- 		if (!part)
- 			continue;
-+		get_device(part_to_dev(part));
-+		piter->part = part;
- 		if (!part_nr_sects_read(part) &&
- 		    !(piter->flags & DISK_PITER_INCL_EMPTY) &&
- 		    !(piter->flags & DISK_PITER_INCL_EMPTY_PART0 &&
--		      piter->idx == 0))
-+		      piter->idx == 0)) {
-+			put_device(part_to_dev(part));
-+			piter->part = NULL;
- 			continue;
-+		}
- 
--		get_device(part_to_dev(part));
--		piter->part = part;
- 		piter->idx += inc;
- 		break;
- 	}
+--- a/drivers/block/Kconfig
++++ b/drivers/block/Kconfig
+@@ -461,6 +461,7 @@ config BLK_DEV_RBD
+ config BLK_DEV_RSXX
+ 	tristate "IBM Flash Adapter 900GB Full Height PCIe Device Driver"
+ 	depends on PCI
++	select CRC32
+ 	help
+ 	  Device driver for IBM's high speed PCIe SSD
+ 	  storage device: Flash Adapter 900GB Full Height.
 
 
