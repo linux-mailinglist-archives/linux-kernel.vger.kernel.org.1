@@ -2,139 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0B52F83F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0862F8404
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:21:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388671AbhAOSSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:18:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388651AbhAOSSI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:18:08 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9946BC061381
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:47 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id d13so10176973wrc.13
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8ouoNyIGf3M12ncW8jNmga8ZhB/umTlAexno2+hm9vw=;
-        b=PN4ofpG3AFQIY2HDhtrxDHd3v0+xd4onwEz7G2/zC+rhfE4HirmzmL3jcXLpUYXBOi
-         1hKzvGAxrSr6Dv8cDtBOLdA7LW3HUMbsDnWopgDjwrGvgzeyJHyJwJWkktXJjDTKYn5x
-         6sdobPOvJJIR/TrcLU+En4Nb4Sqr3ym2MpFPjZERoM0EqXn73uEydbCIdma4dh+mEVpS
-         9T/msFV3PGGbNj49yLhdVehCCKoHHScJgdSAS89oR4U37UhK/tfSoY4zcAxgsB3IEg6M
-         gagHknlc1GH0nljzwa8FvQWUO/kBx3xMgu49tE3RqzKT+TqiG4u92puwvRgzcDEP2/vs
-         8tag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8ouoNyIGf3M12ncW8jNmga8ZhB/umTlAexno2+hm9vw=;
-        b=Nnntc0ngCNWxyEA8r/K0mKG0Ao9ajJGKFI9aUuHVOz8xTzqQlcPfLp6w18K+FkFsKq
-         m5qIOkIF3iM9kBg9HyVAmc+kdLzWUv40OL0D/PY01xqy2ybRtLbrB5j4M5ks0SOT2AcZ
-         1fpd36salz6R2Yl11s+xmgerqSf0XO6W7k9wKk8ecLJsIzBMNWXBfvwB634VzGtZpfSU
-         zXv9+jE2BqLDAIGzkI2VIRtjatT6IJGXm/1BLZtIaTFW0WqmFq+rO5dWiEw4HwBNPz+Y
-         jGBbrZ8o8NLABuoczw9mb0mbQY+XiO2jQLyxsDi+Qjpc63xytktFEn+DlMHC53OhD/ME
-         BrJg==
-X-Gm-Message-State: AOAM531LvxNZVrHwzlzuMdC8ILakDwi24N9dQwHwYB9M+qctt9UYSE57
-        AvgqtPZ/iHuxZXsCn2SpmkLnMA==
-X-Google-Smtp-Source: ABdhPJypPfWiZJEwtJ8E9isJbQjNIe0ev/rxFYQX2OcbRtBc5hQl2j1aWEaiYzfS5p/hRAPbYrpcgA==
-X-Received: by 2002:adf:ef49:: with SMTP id c9mr10087109wrp.172.1610734606342;
-        Fri, 15 Jan 2021 10:16:46 -0800 (PST)
-Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id b133sm14405979wme.33.2021.01.15.10.16.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:16:45 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Zack Rusin <zackr@vmware.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 29/29] drm/vmwgfx/ttm_object: Reorder header to immediately precede its struct
-Date:   Fri, 15 Jan 2021 18:16:01 +0000
-Message-Id: <20210115181601.3432599-30-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210115181601.3432599-1-lee.jones@linaro.org>
-References: <20210115181601.3432599-1-lee.jones@linaro.org>
+        id S2388270AbhAOSUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:20:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388063AbhAOSUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 13:20:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16925222B3;
+        Fri, 15 Jan 2021 18:19:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610734771;
+        bh=3rRDT+rU1u3GZvGDwrSbAniCXS09VSj6vZ/alOvP+cQ=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=luOgCmD3g2dKfofk01BU11o3YgKeJEe3zxEpjOWvZE6xhZ2FNIp6iDzXBui8Ddpkr
+         FTLKNceUkIIn1qaztis+xvtvdPg28RuRE4MNtn4YHszzRMJrJZroQ/ZOS5G8iqAQzk
+         e0xICRheUSWsmLwKu6crP6LKCy6InUrnn37H69KQAXpor429zGr5ExC7WdTppkykhI
+         X+kGcc3GOzhT1YWzszmzZVJ6vpRt+6T0IiLrKjn1jveDn1gAZ4YgfFJjrbrVGlzuqk
+         yae8KH7K8lFIGxY2M46zqR1j7aI/nc8vXDrBRp+nbzcB6Qin0OOLwHEq8JzZVw7UsY
+         vrIAZCrtmXJCw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Cheng-Yi Chiang <cychiang@chromium.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-msm@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+        Srinivasa Rao <srivasam@codeaurora.org>
+In-Reply-To: <20210115034327.617223-1-swboyd@chromium.org>
+References: <20210115034327.617223-1-swboyd@chromium.org>
+Subject: Re: [PATCH 0/4] ASoC: qcom: Minor code cleanups for lpass-cpu
+Message-Id: <161073473698.12268.9934599691128446500.b4-ty@kernel.org>
+Date:   Fri, 15 Jan 2021 18:18:56 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also add missing description for 'refcount'
+On Thu, 14 Jan 2021 19:43:23 -0800, Stephen Boyd wrote:
+> Here's some minor code cleanups for the lpass-cpu driver. I noticed that
+> it casts away const from the driver data from DT. That's not great but
+> fixing it is a little more involved. I'll get to it later. There's also
+> some questionable clk_get() usage that should probably be
+> clk_get_optional(). For now this should help a little.
+> 
+> Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+> Cc: Srinivasa Rao <srivasam@codeaurora.org>
+> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
+> 
+> [...]
 
-Fixes the following W=1 kernel build warning(s):
+Applied to
 
- drivers/gpu/drm/vmwgfx/ttm_object.c:60: error: Cannot parse struct or union!
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
-Cc: Roland Scheidegger <sroland@vmware.com>
-Cc: Zack Rusin <zackr@vmware.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: Dave Airlie <airlied@redhat.com>
-Cc: Rob Clark <rob.clark@linaro.org>
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/gpu/drm/vmwgfx/ttm_object.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+Thanks!
 
-diff --git a/drivers/gpu/drm/vmwgfx/ttm_object.c b/drivers/gpu/drm/vmwgfx/ttm_object.c
-index b3fdc630497cb..112394dd0ab6a 100644
---- a/drivers/gpu/drm/vmwgfx/ttm_object.c
-+++ b/drivers/gpu/drm/vmwgfx/ttm_object.c
-@@ -42,6 +42,14 @@
-  */
- 
- 
-+#define pr_fmt(fmt) "[TTM] " fmt
-+
-+#include <linux/list.h>
-+#include <linux/spinlock.h>
-+#include <linux/slab.h>
-+#include <linux/atomic.h>
-+#include "ttm_object.h"
-+
- /**
-  * struct ttm_object_file
-  *
-@@ -55,16 +63,9 @@
-  *
-  * @ref_hash: Hash tables of ref objects, one per ttm_ref_type,
-  * for fast lookup of ref objects given a base object.
-+ *
-+ * @refcount: reference/usage count
-  */
--
--#define pr_fmt(fmt) "[TTM] " fmt
--
--#include <linux/list.h>
--#include <linux/spinlock.h>
--#include <linux/slab.h>
--#include <linux/atomic.h>
--#include "ttm_object.h"
--
- struct ttm_object_file {
- 	struct ttm_object_device *tdev;
- 	spinlock_t lock;
--- 
-2.25.1
+[1/4] ASoC: qcom: Remove useless debug print
+      commit: 16117beb16f01a470d40339960ffae1e287c03be
+[2/4] ASoC: qcom: Add some names to regmap configs
+      commit: 03b49bf9a92b18bbfcc3b5eb206cca8447e9f2cb
+[3/4] ASoC: qcom: Stop casting away __iomem for error pointers
+      commit: e697df66876c182927899950971c3b4888df3e6e
+[4/4] ASoC: qcom: Remove duplicate error messages on ioremap
+      commit: 4e15f5060d34dd28591cf3af43d3086a4b76c965
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
