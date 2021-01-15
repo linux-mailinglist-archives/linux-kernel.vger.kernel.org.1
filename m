@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6A52F859B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5582F85A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388256AbhAOTgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 14:36:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45970 "EHLO
+        id S2388358AbhAOTg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 14:36:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388679AbhAOTgY (ORCPT
+        with ESMTP id S1728895AbhAOTgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 14:36:24 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC42C0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 11:35:43 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id s26so14789449lfc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 11:35:43 -0800 (PST)
+        Fri, 15 Jan 2021 14:36:37 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FB3C061794
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 11:35:54 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id i20so1841755otl.7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 11:35:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tgVsYmSCdgmeuL9qYmhROq6jdCnyLmcDJlct14eS4/U=;
-        b=T4ZP2fit5hD7OMKVpQmKducPUz6KHQC5Sm7FPYbm11nfGkvIq2pZ44EDsML2HNDvSd
-         CClAfue4Y4DZ1S+KfNvk//2nKGQhvrtUbr7AkN34pbwZljJLJt0SbKmJTgx9UjIYE73A
-         51oS9BzN9T5zvLV49js4998Gj0+DfoVJkPdcyIlmo+eZDGieIaj4aj9OFMviHWBn3otR
-         CfTsNTqCe2utFSdrZ/mOws/Z8mFRi3xNPeQqAScH6Aef5es6vvNiQiK1HG7F60GfJ15D
-         S4ZFwQ/tnAgwlrYeR2PgE+Vfnzg+z3/kvgOj3wStKS7Ct4ygPBVY5Hucalr3otLPJ2U6
-         mxxw==
+        bh=L6A2UzRCRt8w1pfam8I4qqQpYsRwRHB2ucWTZwYFSKQ=;
+        b=lctjjCHd0mRY2yIaitglAwYI2VLnEOj7PX0bK0OAUF2luT4iEjTsICtK2KkRrobrDz
+         +UMXUqT0SsGRUFWtMrnoRTv5kCN0WWPxzs5WEswE/gTHrQox0PquyzX9Ll31YnzImFzN
+         som/A3BEKakMzIl+N4OImMr9U7k0W1se4y2pfU9YRY86xFGZuyVIaQJx+2yBNdAJRH2o
+         8Um304ttLN0u2hpXrctJrKwoKC87rCJIj8TsmoBV/GdRxcldGOMTqLQj9f+yru66x3tS
+         fTxBbX9rLrEb9EqV+QfXErsh3Bl1qN4x8EMZAMh5zyRUhkZMr4Yucb833V4S/R9lFXun
+         SEJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tgVsYmSCdgmeuL9qYmhROq6jdCnyLmcDJlct14eS4/U=;
-        b=S3j8G7SE3hu6Myka9pXK1ANZQNekEmye0dDSQJWHkmPo3sNkNpcoBy6jz2FUzCEfNY
-         6dooF4qD/kh9DIch2JY4T8c77uR+A0DcCjPbRqkRzzpx9B2A5Bpzyy25pAJlCAqZiXZK
-         zPvV668wnkMgQFP5V0WDqPbac+DqCdybTUF/lc3fPSvGAR0adsu7kbgU3DuY3auVpk0h
-         DsSg5pab1OjIhh5cgowFKSHmwkb/K4TAil8ertnSQYiv/qQIhMamnJRGqwWrZ5B6XCea
-         3Q/JjicLEG+eB793wJ7iWIqBvsyAcnlKl/bHQRvTso9G7qJ2dhmD+jLTd3xqWzpWzXGE
-         4kZQ==
-X-Gm-Message-State: AOAM530SiDVcWR7JUB5Oq8fhkMFNyvxhYACkPJ5HgZYiDxJlrvgxoEtv
-        pUfRgKVIckbFedWmT9k0WXhroFO5IsCHmq7VS646sw==
-X-Google-Smtp-Source: ABdhPJyhFoOTxylP4e5FGRGV+lMzUT21G2lSnhLCVro7NYTd7z4lQkUiESOjEHgsHZPDk3VnIgjOUDur68g+NZeothk=
-X-Received: by 2002:a19:4107:: with SMTP id o7mr5912867lfa.512.1610739342289;
- Fri, 15 Jan 2021 11:35:42 -0800 (PST)
+        bh=L6A2UzRCRt8w1pfam8I4qqQpYsRwRHB2ucWTZwYFSKQ=;
+        b=n66fCHVdHle2lq52HK9nLbK23Ee/IU3H8P9tlCmHZ3TfBxYxa3P7XWDQcPSATpyIHS
+         kKEI5HQ9dnfUSfp9DtamXo7dOGcPd1uSvQn2wcxh5y3hBokMFYAdWb0e+1pLRXVv7kWW
+         VV2kljl5hsSNA3jHPPpgxzBjLnSChh8SyRMmP/aywAm1Qfq3SV6Ae78oP0Bn0YnM4Dvy
+         jkc4M4IyK6OfQamzKNWzkbcjTQxPC7So7jLvfyZxXr8kGmVwq9dW/GGWEGyWcyN3VZYT
+         CoFO7S+YQYzcfEQXdejeL/rfqud6KIggH9BVmU361JUdp/ZI9HEhzyOSALsdJoLlTNOl
+         S1AQ==
+X-Gm-Message-State: AOAM531E68C2BprxW3ASDGxi4qShu/5RrCaWscFfSOXYegsmO8p7oZ/z
+        xzv/pwJpu4baMiag146VsLqgbanm/lu5H6oPQrLRzA==
+X-Google-Smtp-Source: ABdhPJz6/ji210QtYTzusmDKOUSnUYJNxbMjIE8TQfSbsP9cr+trdik/Pj8x6e+RFKb3K+ufVbrmYs2Nx2IqGa4wwjw=
+X-Received: by 2002:a9d:5f9a:: with SMTP id g26mr9622406oti.241.1610739354185;
+ Fri, 15 Jan 2021 11:35:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20210115191330.2319352-1-anders.roxell@linaro.org> <20210115192803.GA3828660@ubuntu-m3-large-x86>
-In-Reply-To: <20210115192803.GA3828660@ubuntu-m3-large-x86>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Fri, 15 Jan 2021 20:35:31 +0100
-Message-ID: <CADYN=9Kt597LsfW=Aq6v+kWr+ja+55_+Z3s5mFaJULa+9J4EfA@mail.gmail.com>
-Subject: Re: [PATCH] mips: vdso: fix DWARF2 warning
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        stable@vger.kernel.org
+References: <20200710154811.418214-1-mgamal@redhat.com> <20200710154811.418214-8-mgamal@redhat.com>
+ <CALMp9eSbY6FjZAXt7ojQrX_SC_Lyg24dTGFZdKZK7fARGA=3hg@mail.gmail.com>
+ <CALMp9eTFzQMpsrGhN4uJxyUHMKd5=yFwxLoBy==2BTHwmv_UGQ@mail.gmail.com>
+ <20201023031433.GF23681@linux.intel.com> <498cfe12-f3e4-c4a2-f36b-159ccc10cdc4@redhat.com>
+ <CALMp9eQ8C0pp5yP4tLsckVWq=j3Xb=e4M7UVZz67+pngaXJJUw@mail.gmail.com>
+ <f40e5d23-88b6-01c0-60f9-5419dac703a2@redhat.com> <CALMp9eRGBiQDPr1wpAY34V=T6Jjij_iuHOX+_-QQPP=5SEw3GQ@mail.gmail.com>
+ <4463f391-0a25-017e-f913-69c297e13c5e@redhat.com>
+In-Reply-To: <4463f391-0a25-017e-f913-69c297e13c5e@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 15 Jan 2021 11:35:42 -0800
+Message-ID: <CALMp9eRnjdJtmU9bBosGNAxa2pvMzB8mHjtbYa-yb2uNoAkgdA@mail.gmail.com>
+Subject: Re: [PATCH v3 7/9] KVM: VMX: Add guest physical address check in EPT
+ violation and misconfig
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Mohammed Gamal <mgamal@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Aaron Lewis <aaronlewis@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 at 20:28, Nathan Chancellor
-<natechancellor@gmail.com> wrote:
+On Fri, Oct 23, 2020 at 10:43 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
 >
-> On Fri, Jan 15, 2021 at 08:13:30PM +0100, Anders Roxell wrote:
-> > When building mips tinyconifg the following warning show up
-> >
-> > make --silent --keep-going --jobs=8 O=/home/anders/src/kernel/next/out/builddir ARCH=mips CROSS_COMPILE=mips-linux-gnu- HOSTCC=clang CC=clang
-> > /srv/src/kernel/next/arch/mips/vdso/elf.S:14:1: warning: DWARF2 only supports one section per compilation unit
-> > .pushsection .note.Linux, "a",@note ; .balign 4 ; .long 2f - 1f ; .long 4484f - 3f ; .long 0 ; 1:.asciz "Linux" ; 2:.balign 4 ; 3:
-> > ^
-> > /srv/src/kernel/next/arch/mips/vdso/elf.S:34:2: warning: DWARF2 only supports one section per compilation unit
-> >  .section .mips_abiflags, "a"
-> >  ^
-> >
-> > Rework so the mips vdso Makefile adds flag '-no-integrated-as' unless
-> > LLVM_IAS is defined.
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1256
-> > Cc: stable@vger.kernel.org # v4.19+
-> > Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> On 23/10/20 19:23, Jim Mattson wrote:
+> >> The information that we need is _not_ that provided by the advanced
+> >> VM-exit information (or by a page walk).  If a page is neither writable
+> >> nor executable, the advanced information doesn't say if the injected #PF
+> >> should be a W=1 or a F=1 fault.  We need the information in bits 0..2 of
+> >> the exit qualification for the final access, which however is not
+> >> available for the paging-structure access.
+> >>
+> > Are you planning to extend the emulator, then, to support all
+> > instructions? I'm not sure where you are going with this.
 >
-> I believe this is the better solution:
->
-> https://lore.kernel.org/r/20210115192622.3828545-1-natechancellor@gmail.com/
+> I'm going to fix the bit 8=1 case, but for bit 8=0 there's not much that
+> you can do.  In all likelihood the guest is buggy anyway.
 
-Yes, I agree.
+Did this drop off your radar? Are you still planning to fix the bit8=1
+case to use advanced EPT exit qualification information? Or did I just
+miss it?
 
-Cheers,
-Anders
+> It would be possible to only do the decode part of the emulator to get
+> the PFEC (matching the GVA from the vmexit to the memory operand, for
+> example, and retrying if the instruction is unexpected).  Then one would
+> only need enough VEX/EVEX parsing to process the decoding.
+>
+> Paolo
+>
