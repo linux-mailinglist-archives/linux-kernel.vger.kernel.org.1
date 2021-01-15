@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D832B2F7B94
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E13C42F7BA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733083AbhAONDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:03:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
+        id S2387983AbhAONE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:04:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733115AbhAONDe (ORCPT
+        with ESMTP id S2387579AbhAONEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:03:34 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E458C061757;
-        Fri, 15 Jan 2021 05:02:53 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id p13so10320188ljg.2;
-        Fri, 15 Jan 2021 05:02:53 -0800 (PST)
+        Fri, 15 Jan 2021 08:04:21 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D8CC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:03:41 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id k67so2965031wmk.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:03:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ced3NxvYK3fUREKoo4RuGKO8nItMO6rbOL9yPMeNSOA=;
-        b=hucXtmX2CLjSjXIeLSPOZ5kLbLG4UtSP8wR/Weha9hA+jClqCuD1CGIg1DAS4NAIVS
-         8b+lrciqxAGBr2MJnz5JrRaUc9cGb7AY9E+XRihDqQd/5EYG8xoJ5BJY9Dk4/u4OiEp5
-         Udo5JPNQiHQbdP63KJGNhSvQ2pKNCvLiWshOj2XZjFk/73ulW9g5YglPv9n3KQhSd6fR
-         GOtp9b/ALqb5L5zm+1ZTYylQeGnuAkanfAjdke63gsHywW70CWSr3eH76r8akVfzhLbw
-         N5GHY8YaabL2Apmh50ZOKiMWw6zlZ/oG1djh1V3GSqJl3Of8/hBsww2uW7PuN/il7FUb
-         80jg==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=8pVBeAmHPVH4sqJoIpZrjNUbTTeWSJqiF6QuBFFBEnk=;
+        b=ccJ5Z7VTBZPDX9JXev9i/OkwG95wzB3NCH8osolNVfLSMNex77i24yMeYluWI570PJ
+         Ztx+IYoIByjgjWR1EYhlJ5+vQo8SExAPpe6rwX6eQLSyWesAeMwp+LApKK2ACATBLGEB
+         LKABYbNC7cUSleQvufFz2DxsJ/hFHdd1QHpOh3yH6K4+z+cIpvFi2hGQ0hXOl3kTVzEB
+         QY0yPFKjdDXAAduUGb6gPLUxMBzd671MQSORe2QjgzvbhAiR89bvtcneajK2teINgXyX
+         VxGBs0yr0meKUdterygUTx0hUe4K12rZ/d+YGSR3tiH0jlpxvy/1mTEp6m+A8FJyhv8p
+         3f2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ced3NxvYK3fUREKoo4RuGKO8nItMO6rbOL9yPMeNSOA=;
-        b=HnGdCL1q6PTVJl7YTlLknq3Q4tbH+OF1+ns88xtkv+EZpiDpfdAtAY4fZ8q+3OAeDm
-         AC105dA04O6rERCd/+nKbkJ5bn3dwxLXG2N6MZry+gW5PaKNBKuiUBjch36+E1Ae8ziW
-         axqACP9NnDURDTQ1YC6gN3sWnFHkz0XBS8fUwax2QBqy54KPmnp/3OVJg7TXpajo4+AI
-         hLPz6FxMCidd0dg399GgIN6cbYq70XZSXwj7NgFvdSPRh8d7j1mTsUXntzpLFyIyeV4Y
-         5zRMZ4YiVZUTf/YCgnialx0ZnQbG8AleT9wv5QhmS7lSb36u2LHfqiN1BD0wUfPNztnH
-         EejA==
-X-Gm-Message-State: AOAM5311dnygnv6SoSJ6e8FEDqMm27aLQC1Z0bGBaEk61yqr3QLJx3pW
-        M+By8ndST/UqLC5Clp6VBKILiC2eGng=
-X-Google-Smtp-Source: ABdhPJy1VyYGCB2G9pvcPq97w0TzAlqZ2ViCpO83g6XVhyil0OoITD43h7+sCiO7pF/mO4Td/ZQ4wQ==
-X-Received: by 2002:a05:651c:1282:: with SMTP id 2mr5260045ljc.383.1610715771914;
-        Fri, 15 Jan 2021 05:02:51 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id z9sm892667lfs.183.2021.01.15.05.02.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Jan 2021 05:02:51 -0800 (PST)
-Subject: Re: [PATCH v1 5/5] ASoC: tegra: ahub: Reset hardware properly
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
-Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210112125834.21545-1-digetx@gmail.com>
- <20210112125834.21545-6-digetx@gmail.com>
-Message-ID: <5d99eba8-a169-1dc1-c7ab-0734c67c50b7@gmail.com>
-Date:   Fri, 15 Jan 2021 16:02:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
-MIME-Version: 1.0
-In-Reply-To: <20210112125834.21545-6-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=8pVBeAmHPVH4sqJoIpZrjNUbTTeWSJqiF6QuBFFBEnk=;
+        b=NovLi9rY4MjVtniXPLDz35rqxPJYsVlU6QdRNalm9crSnP3BAcD9VvksLxfl0/o9Q0
+         SvnxX25MrfnS+UBAIVsNkajAbHUAUMJM2LEYp5ngkSWaaeAE1guhOfmsNX2ZEVaMNqx4
+         pQ1cRzljU7cSCWhcGfi7RNVcaRKNj1kSlr91uAYeguCvmzYW/y4i9poOH/I8yt2X02Jb
+         oQsqlMbMC5aJj9wayfbI5BvoQaTnuqxHZCD4Wr+otg7axRwEPDBEmZHvxW5ChBHgMel0
+         k/6VLofDbSv2syC5bf3eQZxEbZWtBLN0olqtFZXdARCyXiohcVVnVQGFjR6X1y0ZIk+b
+         GVOA==
+X-Gm-Message-State: AOAM532ndFCLauF+jSksDUiCQkPIGUzr+bagtc2GKiU1nqTkzrmz40U8
+        mf73AbBor/lAc+qXaZI6m8FyrZXF/ogkVI2D6bFCe08jQiq9+82aNF7kbG0Xv3jTkpaNkFUToxK
+        0OVMY0xifmxLb7zaw3ewy19FKKP/s+KHvd5Y8dOugBXPKNZqdRNCCRuW7uXcaftkhgYcCZg==
+X-Google-Smtp-Source: ABdhPJxUvIPL0i29Yl8JtZjMDJ/eXdCqsve6tD+d3QCJyO9+vAeeTKUGu85ayMrOb0A4kaU2HyWSQ25LC2w=
+Sender: "glider via sendgmr" <glider@glider.muc.corp.google.com>
+X-Received: from glider.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:9ff])
+ (user=glider job=sendgmr) by 2002:adf:fdce:: with SMTP id i14mr13164778wrs.58.1610715819702;
+ Fri, 15 Jan 2021 05:03:39 -0800 (PST)
+Date:   Fri, 15 Jan 2021 14:03:31 +0100
+Message-Id: <20210115130336.2520663-1-glider@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH v2 0/5] Add sysfs interface to collect reports from debugging tools
+From:   Alexander Potapenko <glider@google.com>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org
+Cc:     andreyknvl@google.com, dvyukov@google.com, mingo@redhat.com,
+        elver@google.com, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, glider@google.com, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-12.01.2021 15:58, Dmitry Osipenko пишет:
-> Assert hardware reset before clocks are enabled and then de-assert it
-> after clocks are enabled. This brings hardware into a predictable state
-> and removes relying on implicit de-assertion of resets which is done by
-> the clk driver.
-> 
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  sound/soc/tegra/tegra30_ahub.c | 33 ++++++++++++++++-----------------
->  sound/soc/tegra/tegra30_ahub.h |  1 +
->  2 files changed, 17 insertions(+), 17 deletions(-)
-> 
-> diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-> index 4dbb58f7ea36..246cf6a373a1 100644
-> --- a/sound/soc/tegra/tegra30_ahub.c
-> +++ b/sound/soc/tegra/tegra30_ahub.c
-> @@ -65,10 +65,20 @@ static int tegra30_ahub_runtime_resume(struct device *dev)
->  {
->  	int ret;
->  
-> +	ret = reset_control_assert(ahub->reset);
-> +	if (ret)
-> +		return ret;
-> +
->  	ret = clk_bulk_prepare_enable(ahub->nclocks, ahub->clocks);
->  	if (ret)
->  		return ret;
->  
-> +	ret = reset_control_reset(ahub->reset);
-> +	if (ret) {
-> +		clk_bulk_disable_unprepare(ahub->nclocks, ahub->clocks);
-> +		return ret;
-> +	}
-> +
->  	regcache_cache_only(ahub->regmap_apbif, false);
->  	regcache_cache_only(ahub->regmap_ahub, false);
+This patchset adds a library that captures error reports from debugging
+tools like KASAN or KFENCE and exposes those reports to userspace via
+sysfs. Report capturing is controlled by two new types of tracepoints:
+error_report_start and error_report_end, that must be added to the tools
+that want to use this new feature.
 
-I just realized that this is incorrect version of the patch which misses
-the regcache syncing after the h/w reset. I'll make a v2.
+v2:
+ - added ABI documentation for /sys/kernel/error_report/
+ - changed error_report_start and error_report end tracepoints to take
+   a fixed set of values for the error detector
+
+Alexander Potapenko (5):
+  tracing: add error_report trace points
+  lib: add error_report_notify to collect debugging tools' reports
+  docs: ABI: add /sys/kernel/error_report/ documentation
+  kfence: use error_report_start and error_report_end tracepoints
+  kasan: use error_report_start and error_report_end tracepoints
+
+ .../ABI/testing/sysfs-kernel-error_report     |  41 +++
+ include/trace/events/error_report.h           |  84 ++++++
+ kernel/trace/Makefile                         |   1 +
+ kernel/trace/error_report-traces.c            |  11 +
+ lib/Kconfig.debug                             |  14 +
+ lib/Makefile                                  |   2 +
+ lib/error_report_notify.c                     | 278 ++++++++++++++++++
+ mm/kasan/report.c                             |  15 +-
+ mm/kfence/report.c                            |   3 +
+ 9 files changed, 443 insertions(+), 6 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-kernel-error_report
+ create mode 100644 include/trace/events/error_report.h
+ create mode 100644 kernel/trace/error_report-traces.c
+ create mode 100644 lib/error_report_notify.c
+
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
+
