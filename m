@@ -2,104 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0EE2F6F4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BC42F6F4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731217AbhAOAKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 19:10:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731040AbhAOAKc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 19:10:32 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A5CC061575;
-        Thu, 14 Jan 2021 16:09:52 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id w18so14958232iot.0;
-        Thu, 14 Jan 2021 16:09:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s5ahcu3v2MVuo3zeW5uMRThAdBUDPKXNvYYU61ViJ9I=;
-        b=VKBPrIpYnYXWPv2Gi/XJn25zjX8+K8yazAvNQnEkXwlGFYOyh6/KQSRP0AI2MGyLti
-         aPfHueYC2xldLbkHLQSMhnf4Qdl8buhcjOvkyFDXC/9SJ/BxVjJuM/WAhlrjmnAJ+HnF
-         tkIfXxW77kjRqKHitJukz0NhjUFukfMC6yImosyDrP7EGfTMo7lzjNC3FiTWzPDkgq63
-         CZLsK1v6uSsxQFrkCFJNpdGgi24I83Gf1c1XcBuWqgbIfUhC5GR9g0cBRRdVTNwVokHK
-         fJKi3u1hVaAr7n3XZXd5jU51YC19YMm3rFLtMPArp+Swo1Jufxqf3SdCMBxegpHTNTcl
-         SkQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s5ahcu3v2MVuo3zeW5uMRThAdBUDPKXNvYYU61ViJ9I=;
-        b=W+nFBpZKBjfe0RuiLYNJP1iE/nF+YM0lnD6IMLfiwBUUDiMb+hvzqJlBXeznOLzoHA
-         7xEGp/IrI4QsW5kuAJXQ+1Yg5fNdAQvwydcczPpA0Lfqd/psOZOowIlR1QUpYHvj3wZ3
-         WzfShiokgRgZBMw3bPN3qA6a4pgtcFGQBFpEX0nYD0kAc9EqY/gMXP49UNIDfokbom/h
-         Tb+iSKnGvR9OrGD1mafQQSynSZWBcNBLLWnJ74lDrRShrPUGa0AGXAihUZGHSo+sTVj5
-         u11CmAhsbsbPWmjUn/3Jr32PA1nU3ZkAXCfw1T9PJQQxU4QOKIvlq1Eg4UDFDbLmFSPq
-         +Z8w==
-X-Gm-Message-State: AOAM5313XUTSdE2d0zN2bYIWUDx5aslluwFEDYFZTGQY5KP7j8YXxo/+
-        7dUKEDYRofcnHcCQRbUpMWCsjWasa+DWKrAtFDk=
-X-Google-Smtp-Source: ABdhPJzJv2544H8hyL4xbmLEwbu03dvdhy7FZ5hh2Q0NWYCYKcpC+vBm12AIw7aDElnq7AmtXJ6U36Y6ToWNJC6lt5E=
-X-Received: by 2002:a92:1f09:: with SMTP id i9mr8738065ile.288.1610669392008;
- Thu, 14 Jan 2021 16:09:52 -0800 (PST)
+        id S1731239AbhAOAKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 19:10:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731129AbhAOAKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 19:10:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 34B3C23A9D;
+        Fri, 15 Jan 2021 00:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610669409;
+        bh=kVEUHIxff0phQc9DnNmH/bx74FiuNiWN3pgt2uBNmBM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Tv6goNAL9QR+v+4IK6QcTi/TtSz26CIhhjajmCvkP2Z9MCMIeRF2FOWAchWapLtjK
+         heh5W8vaGNt88MSClP+T03Lo1g3Q2UFz57hkVAxGPa2kTiOYqOr3Uv1V36lICjNi1H
+         Dsm9ZzcGEAjvfZmfsP14f/pwFZ0LTlSWXQ8oWM2qQOF/feeYSq2YGAK8EKoM7HZXS4
+         PVLO3QTYnjGExCbY6w3EvnYLY8fXhXYVQRFy7WKKl7EbDcVk2GKgJwf14Tbvd1FvL5
+         KfCfBjU7fUCOkYtCPe9Fce8CQiWFAjZmVHu0IVvg8Tyd98XnaQ5XRA4uRXAVYvbapH
+         Y/pseClPrPr9w==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 25DE36017C;
+        Fri, 15 Jan 2021 00:10:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210114221059.483390-1-angelogioacchino.delregno@somainline.org>
- <20210114221059.483390-6-angelogioacchino.delregno@somainline.org>
- <CAOCk7NoVts21FjhhLtZp-0Xdw6-BnrKio_-tuZBRsgapsUdwfw@mail.gmail.com> <25d40e7d-fbd6-697f-7d4d-a7233aeb652c@somainline.org>
-In-Reply-To: <25d40e7d-fbd6-697f-7d4d-a7233aeb652c@somainline.org>
-From:   Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Date:   Thu, 14 Jan 2021 17:09:41 -0700
-Message-ID: <CAOCk7NoGPSsimtM03jPAGx9deXWmOFYR=nNBsfO6o-YZ6z8OBg@mail.gmail.com>
-Subject: Re: [PATCH v2 05/11] clk: qcom: gcc-msm8998: Mark gpu_cfg_ahb_clk as critical
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        phone-devel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        DTML <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v2 0/2] Add 100 base-x mode
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161066940915.21117.2897572607965003813.git-patchwork-notify@kernel.org>
+Date:   Fri, 15 Jan 2021 00:10:09 +0000
+References: <20210113115626.17381-1-bjarni.jonasson@microchip.com>
+In-Reply-To: <20210113115626.17381-1-bjarni.jonasson@microchip.com>
+To:     Bjarni Jonasson <bjarni.jonasson@microchip.com>
+Cc:     linux@armlinux.org.uk, andrew@lunn.ch, hkallweit1@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 4:05 PM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@somainline.org> wrote:
->
-> Il 14/01/21 23:37, Jeffrey Hugo ha scritto:
-> > On Thu, Jan 14, 2021 at 3:13 PM AngeloGioacchino Del Regno
-> > <angelogioacchino.delregno@somainline.org> wrote:
-> >>
-> >> The GPU IOMMU depends on this clock and the hypervisor will crash
-> >> the SoC if this clock gets disabled because the secure contexts
-> >> that have been set on this IOMMU by the bootloader will become
-> >> unaccessible (or they get reset).
-> >> Mark this clock as critical to avoid this issue when the Adreno
-> >> GPU is enabled.
-> >>
-> >
-> > You should go review the last attempt to do this -
-> > https://lkml.org/lkml/2019/12/17/881
-> >
->
-> Thanks for the tip, but unfortunately this isn't possible on the
-> gpu_cfg_ahb_clk, as it is also needed for the Adreno IOMMU, which has
-> secure contexts that are set up from one of the bootloader stages and if
-> you reset/"mess up" one of them (by - in this case - un-clocking the
-> MMU), then the hypervisor will kick in and generate a fault, rebooting
-> the SoC.
->
-> Of course, this scenario is for the case in which you want to boot the
-> device without any gpucc nor any runtime pm user of that.. and the
-> aforementioned issue makes that solution not really usable.
->
-> Again, unfortunately.
+Hello:
 
-Intresting, that's not true on all devices, but presumably you have
-devices where it is.  Fun.
+This series was applied to netdev/net-next.git (refs/heads/master):
+
+On Wed, 13 Jan 2021 12:56:24 +0100 you wrote:
+> Adding support for 100 base-x in phylink.
+> The Sparx5 switch supports 100 base-x pcs (IEEE 802.3 Clause 24) 4b5b encoded.
+> These patches adds phylink support for that mode.
+> 
+> Tested in Sparx5, using sfp modules:
+> Axcen 100fx AXFE-1314-0521 (base-fx)
+> Axcen 100lx AXFE-1314-0551 (base-lx)
+> HP SFP 100FX J9054C (bx-10)
+> Excom SFP-SX-M1002 (base-lx)
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v2,1/2] net: phy: Add 100 base-x mode
+    https://git.kernel.org/netdev/net-next/c/b1ae3587d16a
+  - [net-next,v2,2/2] sfp: add support for 100 base-x SFPs
+    https://git.kernel.org/netdev/net-next/c/6e12f35cef6b
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
