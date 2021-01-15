@@ -2,193 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB072F70B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E102F70BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732271AbhAOCuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 21:50:37 -0500
-Received: from mga09.intel.com ([134.134.136.24]:17228 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732212AbhAOCug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 21:50:36 -0500
-IronPort-SDR: Y2++N2Yeu2m13DuBDWqs7CyOWCgiWUXL231IC7i77gfE8RxMuYYpXc/k7FZJqPIxSJ+L2aMPzq
- hYvStdZMhU/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="178635431"
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="178635431"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 18:49:55 -0800
-IronPort-SDR: ebdsqn0PweN4mbAiiVH2+aBu4aCNwJUh55v11gyEc/C0igEvDoqF0d+FuJ83QciAKNOEvIpx70
- Rh9aRKnE22Uw==
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
-   d="scan'208";a="354131970"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 18:49:51 -0800
-Subject: Re: [PATCH v3 04/17] perf: x86/ds: Handle guest PEBS overflow PMI and
- inject it to guest
-To:     Sean Christopherson <seanjc@google.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <andi@firstfloor.org>, wei.w.wang@intel.com,
-        luwei.kang@intel.com, linux-kernel@vger.kernel.org
-References: <20210104131542.495413-1-like.xu@linux.intel.com>
- <20210104131542.495413-5-like.xu@linux.intel.com>
- <YACTnkdi1rxfrRCg@google.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <a0b5dc29-e63f-6ec9-a03f-6435cb3373c6@intel.com>
-Date:   Fri, 15 Jan 2021 10:49:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1732302AbhAOCv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 21:51:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732180AbhAOCvz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 21:51:55 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E93C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:51:14 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id 11so4581176pfu.4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:51:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JC7oohfALujgMdyPvPz4HUk+eyvN9WaqpC/oTBTunFI=;
+        b=PrktYQGnOhf6EonDJAl8crgFkgsS7LCIJaR7PlQ1E+Uy0kyhg5qSosGhtYPiiq7b6V
+         5xz5WW/SyAckeqPvTvrSqmIrAy51BY6+mPjJn45FCtc7F53DB5wiDx/DJjJHzHeQm65j
+         FyZsL2UAupewpdTXTuV65l3UjDbXMI1QzA7kQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JC7oohfALujgMdyPvPz4HUk+eyvN9WaqpC/oTBTunFI=;
+        b=OSG6yzJZyfKzFw7vKFY2MLmztnOyjDnoIHcSGaIOFvfphe6e9B3M/kXSShMr06H/wo
+         lGWRp3biOtay/MVYKecJoqS9dCw9kFLqIUhFfLMjKrK7AHqTDb/JyI2hn8fwpApAsJtZ
+         amGUinLUzEsTRbzg8YKRJCmjRAP9vlvaY9v9iG0BeN98j6nqDssfkMge5SimrSCFqYdi
+         PNclNNLex6fQVg7q6QGu26CBMFTcELkxfZWlKCc4gWDMb4fM//H5KxqSARhPlck51hak
+         Y1G1kvf0pVplLPxbyEKkzF5WgQtqHjXhS34l/LegaMJdYspVTBza1fifALrmC7z91fNn
+         tV+w==
+X-Gm-Message-State: AOAM5313K98doNI+Xp1rrFmH/DUSwWKugoFDUwaOZ3vSj3GFEGPS8yrC
+        kfRRmrSptBzru8fH6BrCZAK0AfRoDfw9X6sftlscZw==
+X-Google-Smtp-Source: ABdhPJwEr7vgyC+XwBFfX12iNXroO8R+0dGE9jOmm8CmOWVFx0OdWCdNJ4jSrTu1mfkC1rQ3Zt0rCf+jrGnngfKGlzg=
+X-Received: by 2002:a63:1a10:: with SMTP id a16mr10165921pga.317.1610679074288;
+ Thu, 14 Jan 2021 18:51:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YACTnkdi1rxfrRCg@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20201229142406.v5.1.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
+ <2aea44f0-85e7-fd55-2c35-c1d994f20e03@linux.intel.com> <1610086308.24856.30.camel@mhfsdcap03>
+ <e43632e2-08b3-7a1a-8272-1d493e25fc67@linux.intel.com> <CAATdQgD2OAmf7_NWSVwzyJE7mF0vngzE=QeE79PS7MJsgPhbtA@mail.gmail.com>
+ <1610612988.30053.15.camel@mhfsdcap03>
+In-Reply-To: <1610612988.30053.15.camel@mhfsdcap03>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Fri, 15 Jan 2021 10:51:03 +0800
+Message-ID: <CAATdQgCb254YJ2tpiqWZ0RDHRiN59NuuHBuhavoYQT3STh=jkg@mail.gmail.com>
+Subject: Re: [PATCH v5] usb: xhci-mtk: fix unreleased bandwidth data
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, linux-usb@vger.kernel.org,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        Zhanyong Wang <zhanyong.wang@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/15 2:55, Sean Christopherson wrote:
-> On Mon, Jan 04, 2021, Like Xu wrote:
->> ---
->>   arch/x86/events/intel/ds.c | 62 ++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 62 insertions(+)
->>
->> diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
->> index b47cc4226934..c499bdb58373 100644
->> --- a/arch/x86/events/intel/ds.c
->> +++ b/arch/x86/events/intel/ds.c
->> @@ -1721,6 +1721,65 @@ intel_pmu_save_and_restart_reload(struct perf_event *event, int count)
->>   	return 0;
->>   }
->>   
->> +/*
->> + * We may be running with guest PEBS events created by KVM, and the
->> + * PEBS records are logged into the guest's DS and invisible to host.
->> + *
->> + * In the case of guest PEBS overflow, we only trigger a fake event
->> + * to emulate the PEBS overflow PMI for guest PBES counters in KVM.
->> + * The guest will then vm-entry and check the guest DS area to read
->> + * the guest PEBS records.
->> + *
->> + * The guest PEBS overflow PMI may be dropped when both the guest and
->> + * the host use PEBS. Therefore, KVM will not enable guest PEBS once
->> + * the host PEBS is enabled since it may bring a confused unknown NMI.
->> + *
->> + * The contents and other behavior of the guest event do not matter.
->> + */
->> +static int intel_pmu_handle_guest_pebs(struct cpu_hw_events *cpuc,
->> +				       struct pt_regs *iregs,
->> +				       struct debug_store *ds)
->> +{
->> +	struct perf_sample_data data;
->> +	struct perf_event *event = NULL;
->> +	u64 guest_pebs_idxs = cpuc->pebs_enabled & ~cpuc->intel_ctrl_host_mask;
->> +	int bit;
->> +
->> +	/*
->> +	 * Ideally, we should check guest DS to understand if it's
->> +	 * a guest PEBS overflow PMI from guest PEBS counters.
->> +	 * However, it brings high overhead to retrieve guest DS in host.
->> +	 * So we check host DS instead for performance.
->> +	 *
->> +	 * If PEBS interrupt threshold on host is not exceeded in a NMI, there
->> +	 * must be a PEBS overflow PMI generated from the guest PEBS counters.
->> +	 * There is no ambiguity since the reported event in the PMI is guest
->> +	 * only. It gets handled correctly on a case by case base for each event.
->> +	 *
->> +	 * Note: KVM disables the co-existence of guest PEBS and host PEBS.
-> By "KVM", do you mean KVM's loading of the MSRs provided by intel_guest_get_msrs()?
-> Because the PMU should really be the entity that controls guest vs. host.  KVM
-> should just be a dumb pipe that handles the mechanics of how values are context
-> switch.
+On Thu, Jan 14, 2021 at 4:30 PM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
+>
+> Hi Ikjoon,
+>
+> On Tue, 2021-01-12 at 13:48 +0800, Ikjoon Jang wrote:
+> > On Fri, Jan 8, 2021 at 10:44 PM Mathias Nyman
+> > <mathias.nyman@linux.intel.com> wrote:
+> > >
+> > > On 8.1.2021 8.11, Chunfeng Yun wrote:
+> > > > On Thu, 2021-01-07 at 13:09 +0200, Mathias Nyman wrote:
+> > > >> On 29.12.2020 8.24, Ikjoon Jang wrote:
+> > > >>> xhci-mtk has hooks on add_endpoint() and drop_endpoint() from xhci
+> > > >>> to handle its own sw bandwidth managements and stores bandwidth data
+> > > >>> into internal table every time add_endpoint() is called,
+> > > >>> so when bandwidth allocation fails at one endpoint, all earlier
+> > > >>> allocation from the same interface could still remain at the table.
+> > > >>>
+> > > >>> This patch adds two more hooks from check_bandwidth() and
+> > > >>> reset_bandwidth(), and make mtk-xhci to releases all failed endpoints
+> > > >>> from reset_bandwidth().
+> > > >>>
+> > > >>> Fixes: 08e469de87a2 ("usb: xhci-mtk: supports bandwidth scheduling with multi-TT")
+> > > >>> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> > > >>>
+> > > >>
+> > > >> ...
+> > > >>
+> > > >>>
+> > > >>> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> > > >>> index d4a8d0efbbc4..e1fcd3cf723f 100644
+> > > >>> --- a/drivers/usb/host/xhci.c
+> > > >>> +++ b/drivers/usb/host/xhci.c
+> > > >>> @@ -2882,6 +2882,12 @@ static int xhci_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+> > > >>>     xhci_dbg(xhci, "%s called for udev %p\n", __func__, udev);
+> > > >>>     virt_dev = xhci->devs[udev->slot_id];
+> > > >>>
+> > > >>> +   if (xhci->quirks & XHCI_MTK_HOST) {
+> > > >>> +           ret = xhci_mtk_check_bandwidth(hcd, udev);
+> > > >>> +           if (ret < 0)
+> > > >>> +                   return ret;
+> > > >>> +   }
+> > > >>> +
+> > > >>
+> > > >> Just noticed that XHCI_MTK_HOST quirk is only set in xhci-mtk.c.
+> > > >> xhci-mtk.c calls xhci_init_driver(..., xhci_mtk_overrides) with a .reset override function.
+> > > >>
+> > > >> why not add override functions for .check_bandwidth and .reset_bandwidth to xhci_mtk_overrides instead?
+> > > >>
+> > > >> Another patch to add similar overrides for .add_endpoint and .drop_endpoint should probably be
+> > > >> done so that we can get rid of the xhci_mtk_add/drop_ep_quirk() calls in xhci.c as well
+> > > > You mean, we can export xhci_add/drop_endpoint()?
+> > >
+> > > I think so, unless you have a better idea.
+> > > I prefer exporting the generic add/drop_endpoint functions rather than the vendor specific quirk functions.
+> > >
+> >
+> > When moving out all MTK_HOST quirks and unlink xhci-mtk-sch from xhci,
+> > xhci-mtk-sch still needs to touch the xhci internals, at least struct
+> > xhci_ep_ctx.
+> >
+> > My naive idea is just let xhci export one more function to expose xhci_ep_ctx.
+> > But I'm not sure whether this is acceptable:
+> I find that xhci_add_endpoint() ignores some errors with return 0, for
+> these cases we needn't call xhci_mtk_add_ep-quirk(), so may be not a
+> good way to just export xhci_add_endpoint().
 
-The intel_guest_get_msrs() and atomic_switch_perf_msrs()
-will work together to disable the co-existence of guest PEBS and host PEBS:
+yeah, maybe that's from ep0 case?
 
-https://lore.kernel.org/kvm/961e6135-ff6d-86d1-3b7b-a1846ad0e4c4@intel.com/
+And I've thought that we could also unlink xhci-mtk-sch from the xhci module
+if MTK_HOST quirk functions are moved out to mtk platform driver's overrides.
+I guess I've gone too far.
 
-+
-
-static void atomic_switch_perf_msrs(struct vcpu_vmx *vmx)
-...
-     if (nr_msrs > 2 && (msrs[1].guest & msrs[0].guest)) {
-         msrs[2].guest = pmu->ds_area;
-         if (nr_msrs > 3)
-             msrs[3].guest = pmu->pebs_data_cfg;
-     }
-
-    for (i = 0; i < nr_msrs; i++)
-...
+If we keep xhci-mtk-sch being built with the xhci module,
+xhci-mtk-sch can directly access input control context and its drop/add flags,
+so I think we can simply remove {add|drop}_endpoint() quirks and just handle
+them all in {check|reset}_bandwidth() overrides.
 
 >
-> For example, commit 7099e2e1f4d9 ("KVM: VMX: disable PEBS before a guest entry"),
-> where KVM does an explicit WRMSR(PEBS_ENABLE) to (attempt to) force PEBS
-> quiescence, is flawed in that the PMU can re-enable PEBS after the WRMSR if a
-> PMI arrives between the WRMSR and VM-Enter (because VMX can't block NMIs).  The
-> PMU really needs to be involved in the WRMSR workaround.
-
-Thanks, I will carefully confirm the PEBS quiescent behavior on the ICX.
-But we're fine to keep "wrmsrl(MSR_IA32_PEBS_ENABLE, 0);" here
-since we will load a new guest value (if any) for this msr later.
-
+> >
+> > +struct xhci_ep_ctx* xhci_get_ep_contex(struct xhci_hcd *xhci, struct
+> > usb_host_endpoint *ep)
+> > +{ ... }
+> > +EXPORT_SYMBOL(xhci_get_ep_context);
+> >
+> > But for v6, I'm going to submit a patch with {check|reset}_bandwidth()
+> > quirk function
+> >  switched into xhci_driver_overrides first. (and preserve existing
+> > MTK_HOST quirk functions).
+> >
+> > Thanks!
+> >
+> > > -Mathias
+> > >
 >
->> +	 */
->> +	if (!guest_pebs_idxs || !in_nmi() ||
-> Are PEBS updates guaranteed to be isolated in both directions on relevant
-> hardware?
-
-I think it's true on the ICX.
-
-> By that I mean, will host updates be fully processed before VM-Enter
-> compeletes, and guest updates before VM-Exit completes?
-
-The situation is more complicated.
-
-> If that's the case,
-> then this path could be optimized to change the KVM invocation of the NMI
-> handler so that the "is this a guest PEBS PMI" check is done if and only if the
-> PMI originated from with the guest.
-
-When we have a PEBS PMI due to guest workload and vm-exits,
-the code path from vm-exit to the host PEBS PMI handler may also
-bring PEBS PMI and mark the status bit. The current PMI handler
-can't distinguish them and would treat the later one as a suspicious
-PMI and output a warning.
-
-This is the main reason why we choose to disable the co-existence
-of guest PEBS and host PEBS, and future hardware enhancements
-may break this limitation.
-
----
-thx, likexu
->
->> +		ds->pebs_index >= ds->pebs_interrupt_threshold)
->> +		return 0;
->> +
->> +	for_each_set_bit(bit, (unsigned long *)&guest_pebs_idxs,
->> +			INTEL_PMC_IDX_FIXED + x86_pmu.num_counters_fixed) {
->> +
->> +		event = cpuc->events[bit];
->> +		if (!event->attr.precise_ip)
->> +			continue;
->> +
->> +		perf_sample_data_init(&data, 0, event->hw.last_period);
->> +		if (perf_event_overflow(event, &data, iregs))
->> +			x86_pmu_stop(event, 0);
->> +
->> +		/* Inject one fake event is enough. */
->> +		return 1;
->> +	}
->> +
->> +	return 0;
->> +}
-
