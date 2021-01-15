@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084AB2F83E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC022F83E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388578AbhAOSRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:17:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57106 "EHLO
+        id S2388591AbhAOSRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:17:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388562AbhAOSRm (ORCPT
+        with ESMTP id S2388563AbhAOSRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 13:17:42 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7140C0617AA
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:34 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id y17so10197495wrr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:34 -0800 (PST)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A92C0617AB
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:36 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id a12so10186503wrv.8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KHlPUbSx+S7HaZ3WBED5ORmcl4UG0ks+269HCulT/zo=;
-        b=bZYtpfaz0DYpixFzW6Nzd+4F9hPJRMtojlCsMlY2KnHYpvFtgakrDpSvM5GYx5XYZL
-         asdSBMrkKKcnALNec1t0ZNf8pxjFeMP9dWq9N4KH0VSopwM8kPWS0muwwIdLg3Z+nju8
-         9slBiFnMdBmq5jZuQDSC9HAa5lU9d3tnywip2BURw0o8huKwWcetZNKpDVe3S1YfrL7u
-         BKWnyQpECfsuEeTK6L6KgDmpTsDk8ubHBXnnaPHpeEYGZ8m6FBZQxUowWVFCz6+Bcs8C
-         chRz5cw3Lg1/XaDVsudrPmPiW1ZIo7n09RV7QDTU7fm+mgOcaCqSTlno8rErPuIICv7C
-         hFzw==
+        bh=y5b57SoAxHtBE8fuD7PasHO1SZ3n/WAQuB51kpZs09g=;
+        b=rriSdpC5fDLxemjS3Am2r2KffU43TkGCeJu9m8OdsMcm8y/ebVSkzBUDFHfnkwR4uB
+         aSwnLRROSDfnEeTaY2WBCoa7R1qbBcx5INFxovhPXjtBX5DnbVU1v+mupaoFEIt0m+sy
+         DJZ3y71XrUAQoaZSNILkrHfh/zcD1yUmuyRku1oNv8+BpPJgMtik8tWYS1sf28+mQxoL
+         K0gzlkodsZGeISrc+POlP3bp9lhge6TCYbk7XyCAKCqpxd1uhkUSuvrpduXACfSPE5Xs
+         7Wp7mczt8u7BWMZYdq05c11wjz4a7cF4k2vFYRa5/EPSZ6cnb2CwCXkcenb8rtowZ5nZ
+         NC3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KHlPUbSx+S7HaZ3WBED5ORmcl4UG0ks+269HCulT/zo=;
-        b=G080TEPqlQ+jzkcvUr2NUXhTKctkSeRB8VhGM0FmkFzx2TUT61/hJ0K1NnBwHjnAhE
-         ICIRbniWgVYb7wxTmpSBkeMNiiqjTdkxIa3e7QQVW7PEOHef8Jw8rKMwm7LAloNHfpIQ
-         dQp6AkCcdPGjmHZoKPVMKdmcjBng0zwa3+3Rykee3KXs60OJdqsJDQBeTnxJ5eUCLz63
-         IV8CQ4H+pLEwRlFQ7luxfGt81N6Uws9UN0gAe0YKj/Kqwj/viy/JSnTw+24VCWRw3a2v
-         BcliYvC7YbLdrAWXu80xNhnYLPNz3GvxbzeMxxftZx/BoKKWzXwemLJvF0wffmKzYPyU
-         L8xw==
-X-Gm-Message-State: AOAM5326A8bYfmT9nfVLZ864DXihtD/47sp5bEdcAesG92OMHBqmxmgs
-        jbefyAvHJ47ni85dSsbo9oYGmg==
-X-Google-Smtp-Source: ABdhPJyhWz+GaUNosLHdwGA3LiH/FmN+J7ZpAI3lFu2pFreiu9/b2FNhjvUQAAukANQoSXVXodQXew==
-X-Received: by 2002:adf:8285:: with SMTP id 5mr14064349wrc.289.1610734593666;
-        Fri, 15 Jan 2021 10:16:33 -0800 (PST)
+        bh=y5b57SoAxHtBE8fuD7PasHO1SZ3n/WAQuB51kpZs09g=;
+        b=XPSPhy5j0dqFQTnFvs4A5DHT/kg543R4cQFu/mjmzYcM0nTJCw6hM5PSJC0N0WIVkh
+         K+XlJrbLbp2DS3V+SpCMNv3K+2t0M8Cpev3bTpH8bkkHFxZPpXR48xSDKfPT3xiX93/0
+         b8IEhJDd5HyQc6pLkH9FqnDkFgX6C37rxYvC5CfwXDfpIv7w4PkzR5VW0rZbP3a9WGJ1
+         OcV1tsUbELxcN5SxrVe8fMyPageFjV8pC72Htx5tSS9zv08cIYiYZbI+NPHwfVcTVNd+
+         Wvr6odtZT+TPKD/CJpSzlBmzfjVcsQGdhFhfQYS+L9YpYxHXm5OFUI7CpILoC/sQcqrC
+         KgDw==
+X-Gm-Message-State: AOAM53099nuV5uOM98QBY3W6xrjxRunokqIZAXFxoQJPso4WVPPVb1wf
+        A8h3FcVdkPmUtS07vXKsg/kHrg==
+X-Google-Smtp-Source: ABdhPJyvzvw/m3xAKhEScihwt0ijVEjC0hHVLK7eHUfHVxiZ87NT0kkWWVNCXymnBq6TGY1atX1JMw==
+X-Received: by 2002:adf:92a4:: with SMTP id 33mr14243233wrn.347.1610734595212;
+        Fri, 15 Jan 2021 10:16:35 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id b133sm14405979wme.33.2021.01.15.10.16.32
+        by smtp.gmail.com with ESMTPSA id b133sm14405979wme.33.2021.01.15.10.16.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:16:32 -0800 (PST)
+        Fri, 15 Jan 2021 10:16:34 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Vetter <daniel@ffwll.ch>, jim liu <jim.liu@intel.com>,
+        Jackie Li <yaodong.li@intel.com>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 20/29] drm/gma500/oaktrail_crtc: Demote unworthy kernel-doc headers
-Date:   Fri, 15 Jan 2021 18:15:52 +0000
-Message-Id: <20210115181601.3432599-21-lee.jones@linaro.org>
+Subject: [PATCH 21/29] drm/gma500/mdfld_dsi_output: Demote a couple of kernel-doc formatting abuses
+Date:   Fri, 15 Jan 2021 18:15:53 +0000
+Message-Id: <20210115181601.3432599-22-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210115181601.3432599-1-lee.jones@linaro.org>
 References: <20210115181601.3432599-1-lee.jones@linaro.org>
@@ -69,55 +70,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/gma500/oaktrail_crtc.c:184: warning: Function parameter or member 'limit' not described in 'mrst_lvds_find_best_pll'
- drivers/gpu/drm/gma500/oaktrail_crtc.c:184: warning: Function parameter or member 'crtc' not described in 'mrst_lvds_find_best_pll'
- drivers/gpu/drm/gma500/oaktrail_crtc.c:184: warning: Function parameter or member 'target' not described in 'mrst_lvds_find_best_pll'
- drivers/gpu/drm/gma500/oaktrail_crtc.c:184: warning: Function parameter or member 'refclk' not described in 'mrst_lvds_find_best_pll'
- drivers/gpu/drm/gma500/oaktrail_crtc.c:184: warning: Function parameter or member 'best_clock' not described in 'mrst_lvds_find_best_pll'
- drivers/gpu/drm/gma500/oaktrail_crtc.c:215: warning: Function parameter or member 'crtc' not described in 'oaktrail_crtc_dpms'
- drivers/gpu/drm/gma500/oaktrail_crtc.c:215: warning: Function parameter or member 'mode' not described in 'oaktrail_crtc_dpms'
- drivers/gpu/drm/gma500/oaktrail_crtc.c:345: warning: Function parameter or member 'dev' not described in 'oaktrail_panel_fitter_pipe'
+ drivers/gpu/drm/gma500/mdfld_dsi_output.c:71: warning: Function parameter or member 'dev' not described in 'mdfld_dsi_gen_fifo_ready'
+ drivers/gpu/drm/gma500/mdfld_dsi_output.c:71: warning: Function parameter or member 'gen_fifo_stat_reg' not described in 'mdfld_dsi_gen_fifo_ready'
+ drivers/gpu/drm/gma500/mdfld_dsi_output.c:71: warning: Function parameter or member 'fifo_stat' not described in 'mdfld_dsi_gen_fifo_ready'
+ drivers/gpu/drm/gma500/mdfld_dsi_output.c:95: warning: Function parameter or member 'dsi_config' not described in 'mdfld_dsi_brightness_init'
+ drivers/gpu/drm/gma500/mdfld_dsi_output.c:95: warning: Function parameter or member 'pipe' not described in 'mdfld_dsi_brightness_init'
 
 Cc: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: jim liu <jim.liu@intel.com>
+Cc: Jackie Li <yaodong.li@intel.com>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/gma500/oaktrail_crtc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/gma500/mdfld_dsi_output.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/gma500/oaktrail_crtc.c b/drivers/gpu/drm/gma500/oaktrail_crtc.c
-index 900e5499249d5..129f879710022 100644
---- a/drivers/gpu/drm/gma500/oaktrail_crtc.c
-+++ b/drivers/gpu/drm/gma500/oaktrail_crtc.c
-@@ -174,7 +174,7 @@ static bool mrst_sdvo_find_best_pll(const struct gma_limit_t *limit,
- 	return min_error == 0;
- }
+diff --git a/drivers/gpu/drm/gma500/mdfld_dsi_output.c b/drivers/gpu/drm/gma500/mdfld_dsi_output.c
+index 4aab76613bd9e..24105f45c1c4b 100644
+--- a/drivers/gpu/drm/gma500/mdfld_dsi_output.c
++++ b/drivers/gpu/drm/gma500/mdfld_dsi_output.c
+@@ -63,7 +63,7 @@ static int __init parse_LABC_control(char *arg)
+ early_param("LABC", parse_LABC_control);
+ #endif
  
 -/**
 +/*
-  * Returns a set of divisors for the desired target clock with the given refclk,
-  * or FALSE.  Divisor values are the actual divisors for
+  * Check and see if the generic control or data buffer is empty and ready.
   */
-@@ -205,7 +205,7 @@ static bool mrst_lvds_find_best_pll(const struct gma_limit_t *limit,
- 	return err != target;
+ void mdfld_dsi_gen_fifo_ready(struct drm_device *dev, u32 gen_fifo_stat_reg,
+@@ -85,7 +85,7 @@ void mdfld_dsi_gen_fifo_ready(struct drm_device *dev, u32 gen_fifo_stat_reg,
+ 					gen_fifo_stat_reg);
  }
  
 -/**
 +/*
-  * Sets the power management mode of the pipe and plane.
-  *
-  * This code should probably grow support for turning the cursor off and back
-@@ -337,7 +337,7 @@ static void oaktrail_crtc_dpms(struct drm_crtc *crtc, int mode)
- 	gma_power_end(dev);
- }
- 
--/**
-+/*
-  * Return the pipe currently connected to the panel fitter,
-  * or -1 if the panel fitter is not present or not in use
-  */
+  * Manage the DSI MIPI keyboard and display brightness.
+  * FIXME: this is exported to OSPM code. should work out an specific
+  * display interface to OSPM.
 -- 
 2.25.1
 
