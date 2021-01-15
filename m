@@ -2,218 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0B42F87FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 298202F8809
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:00:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727048AbhAOV4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 16:56:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47832 "EHLO
+        id S1726693AbhAOV6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 16:58:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbhAOV4E (ORCPT
+        with ESMTP id S1725933AbhAOV6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 16:56:04 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AABC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:55:24 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id i7so6866363pgc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:55:24 -0800 (PST)
+        Fri, 15 Jan 2021 16:58:13 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB4FC061757;
+        Fri, 15 Jan 2021 13:57:33 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id z5so20990986iob.11;
+        Fri, 15 Jan 2021 13:57:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc:message-id:references
-         :to;
-        bh=iuYOuxzRIZhnGs5rPmpjf/3pmv0yomzoKCb5UzD5W7I=;
-        b=h0bDkPR9jVLPitwlUQJHelmcPU/OpX010FQM94uZVvQSp8iUdtSW+XBHtvu5lQ4Jc0
-         MD/ka1UUtQxVXaAWgTqq0Ehf6r1WiMVwiYo60oRMpIA7Cc4Uynbe/E2FW6PTzwm0D1pO
-         9FUL03zc8sCU2RId7q7oV+77K6deMLM+Qu7TA=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=FBVMRQdBC9ScDW4bAdh6zPVr4kliTneT+ezPPvG5nok=;
+        b=You9Bm0li6MgFfVhMHXqZ2DqgNVwXoPx/W5xKy89L/ePxiAdjKb5686doRj85u0g1I
+         O/WAKbUCujypZ713Gz8c1sMXtYYtmAzbqCkJkn8WN7qpKuD8/ZPs0XqXBBq34mAeZdox
+         mnffpCLyz+Ih+k48byEusGW7SDTe6WNjoqQago/i5DVlsVFA4tF3IBpvpT+EXEpZZz9x
+         9kNxB80UGCkXANcvRCAr5v0ugDIG+WUheX8ikeTI60rTwuk9NF1HHgvPt7I5IEjTgZ1c
+         yoKC+bNry+uVyKacm1oZGb5Ind/5i7vvDUoPXXEa24BeAIJIyp/JZqgMbmmuQYLTjMd1
+         k+GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :message-id:references:to;
-        bh=iuYOuxzRIZhnGs5rPmpjf/3pmv0yomzoKCb5UzD5W7I=;
-        b=sGV5dkEDq7cZdJXrOXvxQ1ynoQpnnzhfOkAlRmmqY12hkHv2WDIaEjt0e38/hPPzkp
-         I2FRYsBoxOO82CXoA6gmx4cgJrDdSRJEXn557U9o6fTGM1iNTBHJXmbpjdoUWOHEWoUu
-         VLy8FiTnVkC0spvcNULgB1wFhSs28nqXt0TY+6nUtS0AflQCQbgxFJZEhXgHSmRo10Qt
-         zRBmP4/ASLjrWerOCAHKpT0UsnogGj6syj/5BFLICOZycGWrF/J9JU5S2AZ2k4vUCQQA
-         SKjBotyTx8Sm07qXcSMxCO60B6f6wqORYBBEUnT/ALgOEO4ZG1vrrbW3E0cRZA2OVhXU
-         RVkA==
-X-Gm-Message-State: AOAM533itHXyq0LgqLqvkJsnEQav8O3fuZ2I67c2WmzdUhvPztpDgl1P
-        E9dkSjxp1fIRPgQjvFrzfhMMvSen3vNMdRgyLfHttR2aNeRmRxTsrurvI1Gxjpm8GNGNQf0GnAO
-        z6C0Ovl5sMftx77r6CTv2gAc=
-X-Google-Smtp-Source: ABdhPJwyB60E1ZyJEl94z/J3lCuLtfI2GphQyHKlWMrltGUowuym1gyhs3DVZhIU9beabzYI/nr/xw==
-X-Received: by 2002:a63:1863:: with SMTP id 35mr14978339pgy.191.1610747723694;
-        Fri, 15 Jan 2021 13:55:23 -0800 (PST)
-Received: from c02z85t5lvdr.dhcp.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id b18sm9214833pfi.173.2021.01.15.13.55.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 15 Jan 2021 13:55:23 -0800 (PST)
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH] mailbox: bcm: Replace tasklet with threaded irq
-From:   Rob Rice <rob.rice@broadcom.com>
-In-Reply-To: <20210115035327.xckiigalv3qps7ke@offworld>
-Date:   Fri, 15 Jan 2021 16:55:21 -0500
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Davidlohr Bueso <dbueso@suse.de>
-Message-Id: <900BDAE9-8FF1-41C8-B909-D897BCAF3445@broadcom.com>
-References: <20210115002134.117637-1-dave@stgolabs.net>
- <CABb+yY381GYcfAkLuzSTvNz2yHGs4Ap7Kgwiy9r0pXGGQt+ozg@mail.gmail.com>
- <20210115035327.xckiigalv3qps7ke@offworld>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000eaa17b05b8f76d4e"
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=FBVMRQdBC9ScDW4bAdh6zPVr4kliTneT+ezPPvG5nok=;
+        b=AnthSqZBSV9yvwWdB3F44qZU7QMknTXBl9wJeTuyZ1VFEmiazYggJ3E7VXWyx6WMv1
+         9rFzRYKyrht4BEegfkSLlklvUeTRZT2kgCkJbNFnsGGZA9XO0TyTWZi71U5vL6vyMowA
+         A9ei9lTmqcSg3mIA70477hbM6Zgml3dNWTStTN2dBJ6cMXuAk+khDQVmdl1eVcB9ErC/
+         HW4NKpN6kTQ7hK6jYPHbfYOGAsLUXSOZI7x46S24+PfPiqn1vJ33BGmQbGYmHt+FB78c
+         DGDeXpVcU3x4jblrthY1Z0DnhBG9Kg2oUvjPJykn4mR+yrFpxuV9CJwOKzkgR73zykRc
+         ntrg==
+X-Gm-Message-State: AOAM5311TUWJlIct+earoyIBA/V/SHnjtWg+kHRxq0qNJ8vgiT9VSAS/
+        NJz7IPfjRDCcXj2b/olD4RGXfIXgWWZwMGAJDeA=
+X-Google-Smtp-Source: ABdhPJw+fBVQq9bKd8eGxl1VNEOmQ+nmjVRTD6rtfvIE/yClPeTLnf+tP6nC7L3/ZqiRySBU67l59heXGuCGJPADQNo=
+X-Received: by 2002:a5e:9b06:: with SMTP id j6mr10090198iok.171.1610747852337;
+ Fri, 15 Jan 2021 13:57:32 -0800 (PST)
+MIME-Version: 1.0
+References: <20210115210616.404156-1-ndesaulniers@google.com>
+ <20210115210616.404156-4-ndesaulniers@google.com> <CA+icZUVWPgbMQAgHaRa7emxyzN+SMc6hZ1UNtkkO80-RH6-yNg@mail.gmail.com>
+ <CAKwvOdmR_g7R3wEngsTReAmTZTP9s5PBPg-QC5339FMUVeLfJw@mail.gmail.com>
+In-Reply-To: <CAKwvOdmR_g7R3wEngsTReAmTZTP9s5PBPg-QC5339FMUVeLfJw@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 15 Jan 2021 22:57:21 +0100
+Message-ID: <CA+icZUVYgRZ7V6FiE2xUGAMz7_ozULdL0zqZAipo4KRAd0_Q+A@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] Kbuild: implement support for DWARF v5
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000eaa17b05b8f76d4e
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jan 15, 2021 at 10:49 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Fri, Jan 15, 2021 at 1:46 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >
+> > On Fri, Jan 15, 2021 at 10:06 PM Nick Desaulniers
+> > <ndesaulniers@google.com> wrote:
+> > >
+> > > DWARF v5 is the latest standard of the DWARF debug info format.
+> > >
+> > > Feature detection of DWARF5 is onerous, especially given that we've
+> > > removed $(AS), so we must query $(CC) for DWARF5 assembler directive
+> > > support.
+> > >
+> > > The DWARF version of a binary can be validated with:
+> > > $ llvm-dwarfdump vmlinux | head -n 4 | grep version
+> > > or
+> > > $ readelf --debug-dump=info vmlinux 2>/dev/null | grep Version
+> > >
+> > > DWARF5 wins significantly in terms of size when mixed with compression
+> > > (CONFIG_DEBUG_INFO_COMPRESSED).
+> > >
+> > > 363M    vmlinux.clang12.dwarf5.compressed
+> > > 434M    vmlinux.clang12.dwarf4.compressed
+> > > 439M    vmlinux.clang12.dwarf2.compressed
+> > > 457M    vmlinux.clang12.dwarf5
+> > > 536M    vmlinux.clang12.dwarf4
+> > > 548M    vmlinux.clang12.dwarf2
+> > >
+> > > 515M    vmlinux.gcc10.2.dwarf5.compressed
+> > > 599M    vmlinux.gcc10.2.dwarf4.compressed
+> > > 624M    vmlinux.gcc10.2.dwarf2.compressed
+> > > 630M    vmlinux.gcc10.2.dwarf5
+> > > 765M    vmlinux.gcc10.2.dwarf4
+> > > 809M    vmlinux.gcc10.2.dwarf2
+> > >
+> > > Though the quality of debug info is harder to quantify; size is not a
+> > > proxy for quality.
+> > >
+> > > Jakub notes:
+> > >   All [GCC] 5.1 - 6.x did was start accepting -gdwarf-5 as experimental
+> > >   option that enabled some small DWARF subset (initially only a few
+> > >   DW_LANG_* codes newly added to DWARF5 drafts).  Only GCC 7 (released
+> > >   after DWARF 5 has been finalized) started emitting DWARF5 section
+> > >   headers and got most of the DWARF5 changes in...
+> > >
+> > > Version check GCC so that we don't need to worry about the difference in
+> > > command line args between GNU readelf and llvm-readelf/llvm-dwarfdump to
+> > > validate the DWARF Version in the assembler feature detection script.
+> > >
+> > > GNU `as` only recently gained support for specifying -gdwarf-5, so when
+> > > compiling with Clang but without Clang's integrated assembler
+> > > (LLVM_IAS=1 is not set), explicitly add -Wa,-gdwarf-5 to DEBUG_CFLAGS.
+> > >
+> > > Disabled for now if CONFIG_DEBUG_INFO_BTF is set; pahole doesn't yet
+> > > recognize the new additions to the DWARF debug info. Thanks to Sedat for
+> > > the report.
+> > >
+> > > Link: http://www.dwarfstd.org/doc/DWARF5.pdf
+> > > Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > > Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > > Suggested-by: Caroline Tice <cmtice@google.com>
+> > > Suggested-by: Fangrui Song <maskray@google.com>
+> > > Suggested-by: Jakub Jelinek <jakub@redhat.com>
+> > > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
+> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > > ---
+> > >  Makefile                          |  6 ++++++
+> > >  include/asm-generic/vmlinux.lds.h |  6 +++++-
+> > >  lib/Kconfig.debug                 | 18 ++++++++++++++++++
+> > >  scripts/test_dwarf5_support.sh    |  8 ++++++++
+> > >  4 files changed, 37 insertions(+), 1 deletion(-)
+> > >  create mode 100755 scripts/test_dwarf5_support.sh
+> > >
+> > > diff --git a/Makefile b/Makefile
+> > > index 4eb3bf7ee974..1dcea03861ef 100644
+> > > --- a/Makefile
+> > > +++ b/Makefile
+> > > @@ -828,10 +828,16 @@ endif
+> > >
+> > >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
+> > >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
+> > > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
+> > >  DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
+> > >  # Binutils 2.35+ required for -gdwarf-4+ support.
+> > >  dwarf-aflag    := $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-version-y))
+> > >  KBUILD_AFLAGS  += $(dwarf-aflag)
+> > > +ifdef CONFIG_CC_IS_CLANG
+> > > +ifneq ($(LLVM_IAS),1)
+> > > +DEBUG_CFLAGS   += $(dwarf-aflag)
+> > > +endif
+> > > +endif
+> > >
+> > >  ifdef CONFIG_DEBUG_INFO_REDUCED
+> > >  DEBUG_CFLAGS   += $(call cc-option, -femit-struct-debug-baseonly) \
+> > > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> > > index 49944f00d2b3..37dc4110875e 100644
+> > > --- a/include/asm-generic/vmlinux.lds.h
+> > > +++ b/include/asm-generic/vmlinux.lds.h
+> > > @@ -843,7 +843,11 @@
+> > >                 .debug_types    0 : { *(.debug_types) }                 \
+> > >                 /* DWARF 5 */                                           \
+> > >                 .debug_macro    0 : { *(.debug_macro) }                 \
+> > > -               .debug_addr     0 : { *(.debug_addr) }
+> > > +               .debug_addr     0 : { *(.debug_addr) }                  \
+> > > +               .debug_line_str 0 : { *(.debug_line_str) }              \
+> > > +               .debug_loclists 0 : { *(.debug_loclists) }              \
+> > > +               .debug_rnglists 0 : { *(.debug_rnglists) }              \
+> > > +               .debug_str_offsets      0 : { *(.debug_str_offsets) }
+> > >
+> > >  /* Stabs debugging sections. */
+> > >  #define STABS_DEBUG                                                    \
+> > > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > > index e80770fac4f0..658f32ec0c05 100644
+> > > --- a/lib/Kconfig.debug
+> > > +++ b/lib/Kconfig.debug
+> > > @@ -273,6 +273,24 @@ config DEBUG_INFO_DWARF4
+> > >           It makes the debug information larger, but it significantly
+> > >           improves the success of resolving variables in gdb on optimized code.
+> > >
+> > > +config DEBUG_INFO_DWARF5
+> > > +       bool "Generate DWARF Version 5 debuginfo"
+> > > +       depends on GCC_VERSION >= 50000 || CC_IS_CLANG
+> > > +       depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
+> >
+> > Better keep GCC depends in one line:
+> >
+> > +       depends on CC_IS_GCC && GCC_VERSION >= 50000 || CC_IS_CLANG
+> > +       depends on $(success,$(srctree)/scripts/test_dwarf5_support.sh
+> > $(CC) $(CLANG_FLAGS))
+>
+> It's intentional, if a bit obtuse:
+> We don't want to check the assembler support for -Wa,-gdwarf-5 via
+> compiler driver when CC=gcc; instead, we'll rely on how GCC was
+> configured as per Arvind.
+>
 
-Davidlohr,
+Hmm, OK.
+I have not tested my diff in diverse setup/combination of compiler and
+"bin"utils.
+So, I did not want to have a different behaviour.
+Can you comment on this intentional setting in v6?
 
-I haven=E2=80=99t worked on this driver for 4 years. So my memory is a litt=
-le vague. But I have notes that we found using the tasklet was 40% faster t=
-han threaded IRQ. We were trying to get performance up. So that seemed impo=
-rtant at the time. I=E2=80=99m not prepared to defend that now. :-)
+Thanks.
 
-Rob
+- Sedat -
 
-> On Jan 14, 2021, at 10:53 PM, Davidlohr Bueso <dave@stgolabs.net> wrote:
->=20
-> On Thu, 14 Jan 2021, Jassi Brar wrote:
->=20
->> On Thu, Jan 14, 2021 at 6:21 PM Davidlohr Bueso <dave@stgolabs.net> wrot=
-e:
->>>=20
->>> Tasklets have long been deprecated as being too heavy on the system
->>> by running in irq context - and this is not a performance critical
->>> path. If a higher priority process wants to run, it must wait for
->>> the tasklet to finish before doing so.
->>>=20
->>> Use a more suitable alternative such as threaded irqs and do the
->>> async work in process context.
->>>=20
->>> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
->>> ---
->> Please cc the author and other contributors to this file, esp when
->> this is vendor specific code.
->=20
-> So looking at who to Cc I noticed:
->=20
-> commit 8aef00f090bcbe5237c5a6628e7c000890267efe
-> Author: Rob Rice <rob.rice@broadcom.com>
-> Date:   Mon Nov 14 13:26:01 2016 -0500
->=20
->    mailbox: bcm-pdc: Convert from threaded IRQ to tasklet
->=20
->    Previously used threaded IRQs in the PDC driver to defer
->    processing the rx DMA ring after getting an rx done interrupt.
->    Instead, use a tasklet at normal priority for deferred processing.
->=20
-> ... which is exactly the opposite of what modern Linux should be
-> doing. Rob, could this not be done in process context?
->=20
+> >
+> > As said in the other patch:
+> >
+> > Use consistently: s/DWARF Version/DWARF version/g
+>
+> Ah right, and I forget your point about kbuild/Kbuild.  Will wait for
+> more feedback then send a v6 next week.  Thanks as always for the
+> feedback.
+>
+> >
+> > - Sedat -
+> >
+> > > +       depends on !DEBUG_INFO_BTF
+> > > +       help
+> > > +         Generate DWARF v5 debug info. Requires binutils 2.35, gcc 5.0+ (gcc
+> > > +         5.0+ accepts the -gdwarf-5 flag but only had partial support for some
+> > > +         draft features until 7.0), and gdb 8.0+.
+> > > +
+> > > +         Changes to the structure of debug info in Version 5 allow for around
+> > > +         15-18% savings in resulting image and debug info section sizes as
+> > > +         compared to DWARF Version 4. DWARF Version 5 standardizes previous
+> > > +         extensions such as accelerators for symbol indexing and the format
+> > > +         for fission (.dwo/.dwp) files. Users may not want to select this
+> > > +         config if they rely on tooling that has not yet been updated to
+> > > +         support DWARF Version 5.
+> > > +
+> > >  endchoice # "DWARF version"
+> > >
+> > >  config DEBUG_INFO_BTF
+> > > diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
+> > > new file mode 100755
+> > > index 000000000000..1a00484d0b2e
+> > > --- /dev/null
+> > > +++ b/scripts/test_dwarf5_support.sh
+> > > @@ -0,0 +1,8 @@
+> > > +#!/bin/sh
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +
+> > > +# Test that assembler accepts -gdwarf-5 and .file 0 directives, which were bugs
+> > > +# in binutils < 2.35.
+> > > +# https://sourceware.org/bugzilla/show_bug.cgi?id=25612
+> > > +# https://sourceware.org/bugzilla/show_bug.cgi?id=25614
+> > > +echo '.file 0 "filename"' | $* -gdwarf-5 -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
+> > > --
+> > > 2.30.0.284.gd98b1dd5eaa7-goog
+> > >
+>
+>
+>
+> --
 > Thanks,
-> Davidlohr
-
-
---=20
-This electronic communication and the information and any files transmitted=
-=20
-with it, or attached to it, are confidential and are intended solely for=20
-the use of the individual or entity to whom it is addressed and may contain=
-=20
-information that is confidential, legally privileged, protected by privacy=
-=20
-laws, or otherwise restricted from disclosure to anyone else. If you are=20
-not the intended recipient or the person responsible for delivering the=20
-e-mail to the intended recipient, you are hereby notified that any use,=20
-copying, distributing, dissemination, forwarding, printing, or copying of=
-=20
-this e-mail is strictly prohibited. If you received this e-mail in error,=
-=20
-please return the e-mail to the sender, delete it from your computer, and=
-=20
-destroy any printed copy of it.
-
---000000000000eaa17b05b8f76d4e
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-lUReXD6ch7MiIr8fnwB1L8YDGzV/z06h7ddxgv/5C707N5UQAjL3cZ1CWhhK/QIDAQABo4IBzDCC
-AcgwDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggrBgEFBQcwAoZBaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNpZ24yc2hhMmczb2NzcC5j
-cnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2ln
-bjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8v
-d3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwRAYDVR0fBD0wOzA5oDeg
-NYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMuY3JsMCAG
-A1UdEQQZMBeBFXJvYi5yaWNlQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
-HSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUeeWPL7OYddruQwa9eoQqPZqp
-9SwwDQYJKoZIhvcNAQELBQADggEBAB01BGF8+niBxyE2AFtFvz779RwbCf2EwxfxWF5dhKr4m5o9
-bd7yGjSb1IIYGk+k7rJp6Mjc6W4yG1HdHk7hAe05QKM7P+AVNQISeDArwCposXjY+kM+Kcu1ohJ7
-4gmrEWMf38bOjSoW/jMtJNT3g5a9J1PlyWXNf8vS2GCq4FDNhmaaj5yUQBE+9DuFEE5NaVFMDR93
-TX7px/fvQ8glYrckirqQej+CsP1vPuJc5VUwxDeSF8G1wZAk+KX+QlU3YMlt8ecUn+uZu/kWp/2I
-byfxL9iDdQT7v+j5FoRcECCKjir57K4WggCS3cetD/DWylqSEHKXyB0dOpAXkctgTMAxggJvMIIC
-awIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQD
-EypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDEErCbDJIsqS1w34
-VzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQg844RCwIlDk2i0JBOnTnx//MW/jUc
-emZq+0LRnmYm+6MwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEw
-MTE1MjE1NTI0WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJ
-YIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUD
-BAIBMA0GCSqGSIb3DQEBAQUABIIBAJjVOkekNm5U8LDBnKOlM/uqacJ/29zOesFgZBGeJug46QcP
-We5dqzIRgoT6CVn/Q/lPTEG+XROqXf3xNiuZq1DnEGP4DvrylNZoXITUjplyo7jxZlm5DwSBOXOh
-NUYrif3scr7jQ+SgPqwv1uQ42cSlz6/VUSJb33zpDScfBSnNRsQq7PTFgrHbKP0YVuYLObXRanBe
-8mQQQQRXZbCk6IVSogAv/uBkCfVGHsoCe5k0j6l/c4nBB/P3OvzcFbODrN9bmDTeFmRU3awfr0LY
-1rCD6pUkSnRzukqitDG5DLILZXTRT1yHlJaE5OTDCUtRgNjNyOuTPr4/DdbyWwxL0g0=
---000000000000eaa17b05b8f76d4e--
+> ~Nick Desaulniers
