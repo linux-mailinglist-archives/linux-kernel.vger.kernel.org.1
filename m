@@ -2,103 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62332F853B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB182F8540
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388438AbhAOTQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 14:16:24 -0500
-Received: from relay01.th.seeweb.it ([5.144.164.162]:49115 "EHLO
-        relay01.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727670AbhAOTQX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 14:16:23 -0500
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S2387704AbhAOTTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 14:19:20 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:50354 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728324AbhAOTTU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 14:19:20 -0500
+Received: from zn.tnic (p200300ec2f0acf007cb1195bb528937a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:cf00:7cb1:195b:b528:937a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 420891F518;
-        Fri, 15 Jan 2021 20:15:26 +0100 (CET)
-Subject: Re: (subset) [PATCH v2 0/7] Really implement Qualcomm LAB/IBB
- regulators
-To:     Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org
-Cc:     bjorn.andersson@linaro.org, sumit.semwal@linaro.org,
-        martin.botka@somainline.org, robh+dt@kernel.org, agross@kernel.org,
-        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
-        phone-devel@vger.kernel.org, marijn.suijten@somainline.org,
-        devicetree@vger.kernel.org, lgirdwood@gmail.com
-References: <20210113194214.522238-1-angelogioacchino.delregno@somainline.org>
- <161073479108.12431.17135576809621290489.b4-ty@kernel.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <93eedc72-e269-a67e-12f6-e391337a5c67@somainline.org>
-Date:   Fri, 15 Jan 2021 20:15:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CE2441EC041D;
+        Fri, 15 Jan 2021 20:18:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610738318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=vRaLSxM+z9kh51zGEHjPKubHQKF9CpJm494sShQUxrA=;
+        b=a4/U7CvDSqbu111l2vSbwdyJn6bNIhbDvBudnYVeDkOiawxRfoZE+O4onBapZXNhghMypT
+        RoXgibSW7KMHWZdAHMUGOgKcIc7CHreUzLpM/4Mhi9wScv64BbiNkY7wHijyTYTchyc5FS
+        dV3uDP1JAkoR66sJvRC4Dz0YeaPjNE8=
+Date:   Fri, 15 Jan 2021 20:18:33 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-efi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
+Message-ID: <20210115191833.GF9138@zn.tnic>
+References: <20210107223424.4135538-1-arnd@kernel.org>
+ <20210115182300.GD9138@zn.tnic>
+ <20210115183203.GA1991122@ubuntu-m3-large-x86>
+ <20210115190729.GE9138@zn.tnic>
+ <YAHo3ZEMu+6mESZA@rani.riverdale.lan>
 MIME-Version: 1.0
-In-Reply-To: <161073479108.12431.17135576809621290489.b4-ty@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YAHo3ZEMu+6mESZA@rani.riverdale.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 15/01/21 19:19, Mark Brown ha scritto:
-> On Wed, 13 Jan 2021 20:42:07 +0100, AngeloGioacchino Del Regno wrote:
->> Okay, the title may be a little "aggressive"? However, the qcom-labibb
->> driver wasn't really .. doing much.
->> The current form of this driver is only taking care of enabling or
->> disabling the regulators, which is pretty useless if they were not
->> pre-set from the bootloader, which sets them only if continuous
->> splash is enabled.
->> Moreover, some bootloaders are setting a higher voltage and/or a higher
->> current limit compared to what's actually required by the attached
->> hardware (which is, in 99.9% of the cases, a display) and this produces
->> a higher power consumption, higher heat output and a risk of actually
->> burning the display if kept up for a very long time: for example, this
->> is true on at least some Sony Xperia MSM8998 (Yoshino platform) and
->> especially on some Sony Xperia SDM845 (Tama platform) smartphones.
->>
->> [...]
-> 
-> Applied to
-> 
->     https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-> 
-> Thanks!
-> 
-> [1/7] regulator: qcom-labibb: Implement voltage selector ops
->        commit: dd582369c6c1f39ec475af6191a934f3e57fda35
-> 
-> All being well this means that it will be integrated into the linux-next
-> tree (usually sometime in the next 24 hours) and sent to Linus during
-> the next merge window (or sooner if it is a bug fix), however if
-> problems are discovered then the patch may be dropped or reverted.
-> 
-> You may get further e-mails resulting from automated or manual testing
-> and review of the tree, please engage with people reporting problems and
-> send followup patches addressing any issues that are reported if needed.
-> 
-> If any updates are required or you are submitting further changes they
-> should be sent as incremental updates against current git, existing
-> patches will not be replaced.
-> 
-> Please add any relevant lists and maintainers to the CCs when replying
-> to this mail.
-> 
-> Thanks,
-> Mark
-> 
+On Fri, Jan 15, 2021 at 02:11:25PM -0500, Arvind Sankar wrote:
+> That's how build-time assertions work: they are _supposed_ to be
+> optimized away completely when the assertion is true. If they're
+> _not_ optimized away, the build will fail.
 
-Hello Mark,
+Yah, that I know, thanks.
 
-Thanks for applying the commit, however, I feel like reminding you that 
-setting voltage on this regulator without setting a current limit is 
-really unsafe (at least, from many, many experiments) so, to ensure the 
-entire safety of this code and the hardware that's attached to these 
-regulators you should, please, either apply the entire series, or nothing.
+If gcc really inlines p4d_index() and does a lot more aggressive
+optimization to determine that the condition is false and thus optimize
+everything away (and clang doesn't), then that would explain the
+observation.
 
-My concerns are only about keeping LAB and IBB safe for everyone's hardware.
+-- 
+Regards/Gruss,
+    Boris.
 
-Thank you again
--- Angelo
+https://people.kernel.org/tglx/notes-about-netiquette
