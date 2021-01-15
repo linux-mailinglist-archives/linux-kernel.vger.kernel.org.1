@@ -2,270 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC1E2F7CBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02AD92F7CAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732134AbhAONca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:32:30 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:16567 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729568AbhAONc3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:32:29 -0500
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210115133203epoutp0226c10eee5dd7c9fe84cf63c21bc293d8~aaw2yYbMy2315323153epoutp02z
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 13:32:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210115133203epoutp0226c10eee5dd7c9fe84cf63c21bc293d8~aaw2yYbMy2315323153epoutp02z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1610717523;
-        bh=mkzX2Z7+8QKr2X7xIAP/6icPPC1yyAT/i04pPJ5qkFE=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=NPjFOSNOqGWnrexkABw5IVDJeJBh6do/NOU3+/Yd1b4mL2102HSCrCs3+GiKQok+A
-         TWlR/cx+M5jz0kmCIk0fr8zSBkhVcsDM2eAfQ9D39KntolJrCcxkZPo6lONGlZ1TSP
-         OVv+NjNXJ6flLgpRNIwgeiwKDEes0SMP2EesnZJs=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210115133202epcas2p14ef596c8a20f2a972cba38efa311fea8~aaw2CpW2R1427714277epcas2p1U;
-        Fri, 15 Jan 2021 13:32:02 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.190]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4DHMXw51KLz4x9Pp; Fri, 15 Jan
-        2021 13:32:00 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D6.9B.52511.05991006; Fri, 15 Jan 2021 22:32:00 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2~aawz7kFkm1427714277epcas2p1O;
-        Fri, 15 Jan 2021 13:32:00 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210115133200epsmtrp155b483b6507b823dc904f4db30d938a6~aawz6zgY50635706357epsmtrp1I;
-        Fri, 15 Jan 2021 13:32:00 +0000 (GMT)
-X-AuditID: b6c32a48-4f9ff7000000cd1f-b5-600199504370
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        93.4C.13470.05991006; Fri, 15 Jan 2021 22:32:00 +0900 (KST)
-Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210115133159epsmtip17d9781d744e425e76a0be994756589ce~aawzp9fl90875308753epsmtip1Z;
-        Fri, 15 Jan 2021 13:31:59 +0000 (GMT)
-From:   Dongseok Yi <dseok.yi@samsung.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Alexander Lobakin <alobakin@pm.me>
-Cc:     namkyu78.kim@samsung.com, Dongseok Yi <dseok.yi@samsung.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Willem de Bruijn <willemb@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net v2] udp: ipv4: manipulate network header of NATed UDP
- GRO fraglist
-Date:   Fri, 15 Jan 2021 22:20:35 +0900
-Message-Id: <1610716836-140533-1-git-send-email-dseok.yi@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFKsWRmVeSWpSXmKPExsWy7bCmuW7ATMYEg01XVS1WPd7OYjHnfAuL
-        xZVpfxgtLmzrY7W4vGsOm0XDnWY2i2MLxCx2d/5gt3i35Qi7xde9XSwOXB5bVt5k8liwqdRj
-        06pONo+2a6uYPI7uOcfm0bdlFaPHptYlrB6fN8kFcETl2GSkJqakFimk5iXnp2TmpdsqeQfH
-        O8ebmhkY6hpaWpgrKeQl5qbaKrn4BOi6ZeYAnaikUJaYUwoUCkgsLlbSt7Mpyi8tSVXIyC8u
-        sVVKLUjJKTA0LNArTswtLs1L10vOz7UyNDAwMgWqTMjJmN//j7FgilbFrpPzGBsYtyl1MXJy
-        SAiYSEz5+Iexi5GLQ0hgB6PEv8YZ7CAJIYFPjBLvL2dCJL4xSszeuYmpi5EDrOPPOVaI+F5G
-        iTk/b7NDOD8YJU43bwLrZhPQkNj/7gVYlYhAE6PEtM9HWEAcZpCxX6f3MoNUCQtESNw53swC
-        YrMIqEpMmTiXGWQFr4CrxIrXthD3yUncPNfJDNIrIXCLXeLe/n9sEAkXiXeNS6FsYYlXx7ew
-        Q9hSEi/729ghTq2XaO2OgejtYZS4su8JC0SNscSsZ+2MIDXMApoS63fpQ5QrSxy5BVbBLMAn
-        0XH4L9QUXomONiEIU0li4pd4iBkSEi9OToaa5yHxbG0XNNxiJf4+2cw4gVF2FsL4BYyMqxjF
-        UguKc9NTi40KTJCjaBMjONFpeexgnP32g94hRiYOxkOMEhzMSiK8+coMCUK8KYmVValF+fFF
-        pTmpxYcYTYGBNZFZSjQ5H5hq80riDU2NzMwMLE0tTM2MLJTEeYsMHsQLCaQnlqRmp6YWpBbB
-        9DFxcEo1MJXun1eZKeM413ON+W3zB4u37Z8Vqyzk/md76Vq/89zJi/Kc0nwNSq1+yfk9qeVX
-        i1V3bzTO1s40rZxr7Tot7lyX56ZXYlxM5xwND5z4rDZ5xrti9fv/nSdJG25eZjzd2ezoLeV5
-        +/oefzh6xejHiagLOd8f8xZOKPU7t+LrBtn3f81ci6oX3Xis7/PwMnOw3ZLEU5cd7zcoKsev
-        CZyi3iuw4lc8S4Tzr4WBl6aLL4xdtiD762uRIwXnLvn7B+UWa3yLMs5pEy9bZPP6aaG5FKM3
-        n2iCXWbchLsRG85mbGr1dlHcX3j6qKVJqFdiyGenONVTG/vfbXJcIitokJETvFEiopJ9439v
-        J/+1s+3mKLEUZyQaajEXFScCAKffPmn9AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFLMWRmVeSWpSXmKPExsWy7bCSnG7ATMYEg2ebWS1WPd7OYjHnfAuL
-        xZVpfxgtLmzrY7W4vGsOm0XDnWY2i2MLxCx2d/5gt3i35Qi7xde9XSwOXB5bVt5k8liwqdRj
-        06pONo+2a6uYPI7uOcfm0bdlFaPHptYlrB6fN8kFcERx2aSk5mSWpRbp2yVwZczv/8dYMEWr
-        YtfJeYwNjNuUuhg5OCQETCT+nGPtYuTiEBLYzShxeccyFoi4hMSuza5djJxAprDE/ZYjUDXf
-        GCVWP+tiB0mwCWhI7H/3AiwhItDCKLH16EFmEIdZ4AejxMn270wgVcICYRJP3twE62ARUJWY
-        MnEuM8gGXgFXiRWvbSE2yEncPNfJPIGRZwEjwypGydSC4tz03GLDAsO81HK94sTc4tK8dL3k
-        /NxNjODg09Lcwbh91Qe9Q4xMHIyHGCU4mJVEePOVGRKEeFMSK6tSi/Lji0pzUosPMUpzsCiJ
-        817oOhkvJJCeWJKanZpakFoEk2Xi4JRqYDp73uhRXf/fq/LV11Q/H1n5a56FxlaHxAYdNqPp
-        LZZGSwLT+8LdDbJfRziefe/l8vryVIUfDOz3JhznLvPJnGN4z6Tn8GNTlqRvCzJnbXB68Y2n
-        K/vz6/jltx5W3JweoFu43nVjLOOqzWcKKhVq8yY539qoneA/38tl01yzRVeXNKnH1Pzij940
-        wXnOptrwuzPys9fuOSunLdFcav3rgW79g/l2zLcOV6k/Xt87a+u6sGJOl1dL3i2M9+0VnPk3
-        WLHm4g9B/iol55RDpv5yKze4TS269fbzyS2X3k46XFX6Z/GfQq81Z+aXBEhZlBzm1fuVefy1
-        F6+Z+aSiVzM39mU/arU1XaB9ee3jtD+Vj5WVWIozEg21mIuKEwGCIk/UrQIAAA==
-X-CMS-MailID: 20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2
-References: <CGME20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2@epcas2p1.samsung.com>
+        id S1731418AbhAONcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:32:06 -0500
+Received: from mga02.intel.com ([134.134.136.20]:4203 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727198AbhAONcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 08:32:05 -0500
+IronPort-SDR: O55sX5ETQxJsZPkYlCr7P8nF5NRrMBmJ2vZHSZITNE6gZDdoxx3rY/HAZtDLGtuj9CTgwLgqb2
+ b/GDwF9ZjzZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="165632800"
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="165632800"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 05:30:34 -0800
+IronPort-SDR: rkuGIN6PyV/OIl9tLX8fMuB71hxEhDyCqOQV8o22rtlXLRozEx++TRMRSr8fDCq7JXduWKXAYK
+ N4h9wUCk8q8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="346200160"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
+  by fmsmga007.fm.intel.com with ESMTP; 15 Jan 2021 05:30:32 -0800
+Subject: Re: [PATCH v2] usb: host: xhci-plat: fix support for
+ XHCI_SKIP_PHY_INIT quirk
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Peter Chen <peter.chen@nxp.com>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jun Li <jun.li@nxp.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+References: <20201221150903.26630-1-pali@kernel.org>
+ <20201223161847.10811-1-pali@kernel.org>
+ <20201224055836.GB27629@b29397-desktop>
+ <20210113232057.niqamgsqlaw7gojw@pali>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
+ mQINBFMB0ccBEADd+nZnZrFDsIjQtclVz6OsqFOQ6k0nQdveiDNeBuwyFYykkBpaGekoHZ6f
+ lH4ogPZzQ+pzoJEMlRGXc881BIggKMCMH86fYJGfZKWdfpg9O6mqSxyEuvBHKe9eZCBKPvoC
+ L2iwygtO8TcXXSCynvXSeZrOwqAlwnxWNRm4J2ikDck5S5R+Qie0ZLJIfaId1hELofWfuhy+
+ tOK0plFR0HgVVp8O7zWYT2ewNcgAzQrRbzidA3LNRfkL7jrzyAxDapuejuK8TMrFQT/wW53e
+ uegnXcRJaibJD84RUJt+mJrn5BvZ0MYfyDSc1yHVO+aZcpNr+71yZBQVgVEI/AuEQ0+p9wpt
+ O9Wt4zO2KT/R5lq2lSz1MYMJrtfFRKkqC6PsDSB4lGSgl91XbibK5poxrIouVO2g9Jabg04T
+ MIPpVUlPme3mkYHLZUsboemRQp5/pxV4HTFR0xNBCmsidBICHOYAepCzNmfLhfo1EW2Uf+t4
+ L8IowAaoURKdgcR2ydUXjhACVEA/Ldtp3ftF4hTQ46Qhba/p4MUFtDAQ5yeA5vQVuspiwsqB
+ BoL/298+V119JzM998d70Z1clqTc8fiGMXyVnFv92QKShDKyXpiisQn2rrJVWeXEIVoldh6+
+ J8M3vTwzetnvIKpoQdSFJ2qxOdQ8iYRtz36WYl7hhT3/hwkHuQARAQABtCdNYXRoaWFzIE55
+ bWFuIDxtYXRoaWFzLm55bWFuQGdtYWlsLmNvbT6JAjsEEwECACUCGwMGCwkIBwMCBhUIAgkK
+ CwQWAgMBAh4BAheABQJTAeo1AhkBAAoJEFiDn/uYk8VJOdIP/jhA+RpIZ7rdUHFIYkHEKzHw
+ tkwrJczGA5TyLgQaI8YTCTPSvdNHU9Rj19mkjhUO/9MKvwfoT2RFYqhkrtk0K92STDaBNXTL
+ JIi4IHBqjXOyJ/dPADU0xiRVtCHWkBgjEgR7Wihr7McSdVpgupsaXhbZjXXgtR/N7PE0Wltz
+ hAL2GAnMuIeJyXhIdIMLb+uyoydPCzKdH6znfu6Ox76XfGWBCqLBbvqPXvk4oH03jcdt+8UG
+ 2nfSeti/To9ANRZIlSKGjddCGMa3xzjtTx9ryf1Xr0MnY5PeyNLexpgHp93sc1BKxKKtYaT0
+ lR6p0QEKeaZ70623oB7Sa2Ts4IytqUVxkQKRkJVWeQiPJ/dZYTK5uo15GaVwufuF8VTwnMkC
+ 4l5X+NUYNAH1U1bpRtlT40aoLEUhWKAyVdowxW4yGCP3nL5E69tZQQgsag+OnxBa6f88j63u
+ wxmOJGNXcwCerkCb+wUPwJzChSifFYmuV5l89LKHgSbv0WHSN9OLkuhJO+I9fsCNvro1Y7dT
+ U/yq4aSVzjaqPT3yrnQkzVDxrYT54FLWO1ssFKAOlcfeWzqrT9QNcHIzHMQYf5c03Kyq3yMI
+ Xi91hkw2uc/GuA2CZ8dUD3BZhUT1dm0igE9NViE1M7F5lHQONEr7MOCg1hcrkngY62V6vh0f
+ RcDeV0ISwlZWuQINBFMB0ccBEACXKmWvojkaG+kh/yipMmqZTrCozsLeGitxJzo5hq9ev31N
+ 2XpPGx4AGhpccbco63SygpVN2bOd0W62fJJoxGohtf/g0uVtRSuK43OTstoBPqyY/35+VnAV
+ oA5cnfvtdx5kQPIL6LRcxmYKgN4/3+A7ejIxbOrjWFmbWCC+SgX6mzHHBrV0OMki8R+NnrNa
+ NkUmMmosi7jBSKdoi9VqDqgQTJF/GftvmaZHqgmVJDWNrCv7UiorhesfIWPt1O/AIk9luxlE
+ dHwkx5zkWa9CGYvV6LfP9BznendEoO3qYZ9IcUlW727Le80Q1oh69QnHoI8pODDBBTJvEq1h
+ bOWcPm/DsNmDD8Rwr/msRmRyIoxjasFi5WkM/K/pzujICKeUcNGNsDsEDJC5TCmRO/TlvCvm
+ 0X+vdfEJRZV6Z+QFBflK1asUz9QHFre5csG8MyVZkwTR9yUiKi3KiqQdaEu+LuDD2CGF5t68
+ xEl66Y6mwfyiISkkm3ETA4E8rVZP1rZQBBm83c5kJEDvs0A4zrhKIPTcI1smK+TWbyVyrZ/a
+ mGYDrZzpF2N8DfuNSqOQkLHIOL3vuOyx3HPzS05lY3p+IIVmnPOEdZhMsNDIGmVorFyRWa4K
+ uYjBP/W3E5p9e6TvDSDzqhLoY1RHfAIadM3I8kEx5wqco67VIgbIHHB9DbRcxQARAQABiQIf
+ BBgBAgAJBQJTAdHHAhsMAAoJEFiDn/uYk8VJb7AQAK56tgX8V1Wa6RmZDmZ8dmBC7W8nsMRz
+ PcKWiDSMIvTJT5bygMy1lf7gbHXm7fqezRtSfXAXr/OJqSA8LB2LWfThLyuuCvrdNsQNrI+3
+ D+hjHJjhW/4185y3EdmwwHcelixPg0X9EF+lHCltV/w29Pv3PiGDkoKxJrnOpnU6jrwiBebz
+ eAYBfpSEvrCm4CR4hf+T6MdCs64UzZnNt0nxL8mLCCAGmq1iks9M4bZk+LG36QjCKGh8PDXz
+ 9OsnJmCggptClgjTa7pO6040OW76pcVrP2rZrkjo/Ld/gvSc7yMO/m9sIYxLIsR2NDxMNpmE
+ q/H7WO+2bRG0vMmsndxpEYS4WnuhKutoTA/goBEhtHu1fg5KC+WYXp9wZyTfeNPrL0L8F3N1
+ BCEYefp2JSZ/a355X6r2ROGSRgIIeYjAiSMgGAZMPEVsdvKsYw6BH17hDRzltNyIj5S0dIhb
+ Gjynb3sXforM/GVbr4mnuxTdLXQYlj2EJ4O4f0tkLlADT7podzKSlSuZsLi2D+ohKxtP3U/r
+ 42i8PBnX2oAV0UIkYk7Oel/3hr0+BP666SnTls9RJuoXc7R5XQVsomqXID6GmjwFQR5Wh/RE
+ IJtkiDAsk37cfZ9d1kZ2gCQryTV9lmflSOB6AFZkOLuEVSC5qW8M/s6IGDfYXN12YJaZPptJ fiD/
+Message-ID: <88b48c61-65e4-cc24-d90d-5fba92f05f27@linux.intel.com>
+Date:   Fri, 15 Jan 2021 15:32:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210113232057.niqamgsqlaw7gojw@pali>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
-forwarding. Only the header of head_skb from ip_finish_output_gso ->
-skb_gso_segment is updated but following frag_skbs are not updated.
+On 14.1.2021 1.20, Pali Rohár wrote:
+> On Thursday 24 December 2020 05:59:05 Peter Chen wrote:
+>> On 20-12-23 17:18:47, Pali Rohár wrote:
+>>> Currently init_quirk callbacks for xhci platform drivers are called
+>>> xhci_plat_setup() function which is called after chip reset completes.
+>>> It happens in the middle of the usb_add_hcd() function.
+>>>
+>>> But XHCI_SKIP_PHY_INIT quirk is checked in the xhci_plat_probe() function
+>>> prior calling usb_add_hcd() function. Therefore this XHCI_SKIP_PHY_INIT
+>>> currently does nothing as prior xhci_plat_setup() it is not set.
+>>>
+>>> Quirk XHCI_SKIP_PHY_INIT is only setting hcd->skip_phy_initialization value
+>>> which really needs to be set prior calling usb_add_hcd() as this function
+>>> at its beginning skips PHY init if this member is set.
+>>>
+>>> This patch fixes implementation of the XHCI_SKIP_PHY_INIT quirk by calling
+>>> init_quirk callbacks (via xhci_priv_init_quirk()) prior checking if
+>>> XHCI_SKIP_PHY_INIT is set. Also checking if either xhci->quirks or
+>>> priv->quirks contains this XHCI_SKIP_PHY_INIT quirk.
+>>>
+>>> Signed-off-by: Pali Rohár <pali@kernel.org>
+>>>
+>>> ---
+>>> Changes in v2:
+>>> * Check also xhci->quirks as xhci_priv_init_quirk() callbacks are setting xhci->quirks
+>>> * Tested with "usb: host: xhci: mvebu: make USB 3.0 PHY optional for Armada 3720" patch
+>>> * Removed Fixes: line
+>>> ---
+>>>  drivers/usb/host/xhci-plat.c | 16 ++++++++--------
+>>>  1 file changed, 8 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
+>>> index 4d34f6005381..0eab7cb5a767 100644
+>>> --- a/drivers/usb/host/xhci-plat.c
+>>> +++ b/drivers/usb/host/xhci-plat.c
+>>> @@ -89,13 +89,6 @@ static void xhci_plat_quirks(struct device *dev, struct xhci_hcd *xhci)
+>>>  /* called during probe() after chip reset completes */
+>>>  static int xhci_plat_setup(struct usb_hcd *hcd)
+>>>  {
+>>> -	int ret;
+>>> -
+>>> -
+>>> -	ret = xhci_priv_init_quirk(hcd);
+>>> -	if (ret)
+>>> -		return ret;
+>>> -
+>>>  	return xhci_gen_setup(hcd, xhci_plat_quirks);
+>>>  }
+>>>  
+>>> @@ -330,7 +323,14 @@ static int xhci_plat_probe(struct platform_device *pdev)
+>>>  
+>>>  	hcd->tpl_support = of_usb_host_tpl_support(sysdev->of_node);
+>>>  	xhci->shared_hcd->tpl_support = hcd->tpl_support;
+>>> -	if (priv && (priv->quirks & XHCI_SKIP_PHY_INIT))
+>>> +
+>>> +	if (priv) {
+>>> +		ret = xhci_priv_init_quirk(hcd);
+>>> +		if (ret)
+>>> +			goto disable_usb_phy;
+>>> +	}
+>>> +
+>>> +	if ((xhci->quirks & XHCI_SKIP_PHY_INIT) || (priv && (priv->quirks & XHCI_SKIP_PHY_INIT)))
+>>>  		hcd->skip_phy_initialization = 1;
+>>
+>> I am not sure if others agree with you move the position of
+>> xhci_priv_init_quirk, Let's see Mathias opinion.
+> 
+> Hello! Do you have an opinion how to handle this issue? As currently it
+> is needed for another patch which is fixing issue/regression in xhci-mvebu:
+> https://lore.kernel.org/linux-usb/20201223162403.10897-1-pali@kernel.org/
+> 
 
-A call path skb_mac_gso_segment -> inet_gso_segment ->
-udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
-does not try to update UDP/IP header of the segment list but copy
-only the MAC header.
+I can see the benefit in this. 
+In the xhci-plat case usb_create_hcd and usb_add_hcd are separate steps, and
+we could both copy the xhci_plat_priv .quirks and run the .init_qurks before
+adding the hcd.
+I guess the current way is inherited from pci case where the earliest place
+to do this after hcd is created is the hcd->driver->reset callback (which is
+set to xhci_pci_setup() or xhci_plat_setup()).
 
-Update dport, daddr and checksums of each skb of the segment list
-in __udp_gso_segment_list. It covers both SNAT and DNAT.
+xhci-rcar.c is using the .init_quirk to load firmware, we need to check with
+them if this change is ok. (added Yoshihiro Shimoda to cc)
+Their firmware would be loaded before phy parts are initialized, usb bus
+registered, or roothub device allocated.
 
-Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
-Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
----
-v1:
-Steffen Klassert said, there could be 2 options.
-https://lore.kernel.org/patchwork/patch/1362257/
-I was trying to write a quick fix, but it was not easy to forward
-segmented list. Currently, assuming DNAT only.
-
-v2:
-Per Steffen Klassert request, move the procedure from
-udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
-
-To Alexander Lobakin, I've checked your email late. Just use this
-patch as a reference. It support SNAT too, but does not support IPv6
-yet. I cannot make IPv6 header changes in __udp_gso_segment_list due
-to the file is in IPv4 directory.
-
- include/net/udp.h      |  2 +-
- net/ipv4/udp_offload.c | 62 ++++++++++++++++++++++++++++++++++++++++++++++----
- net/ipv6/udp_offload.c |  2 +-
- 3 files changed, 59 insertions(+), 7 deletions(-)
-
-diff --git a/include/net/udp.h b/include/net/udp.h
-index 877832b..01351ba 100644
---- a/include/net/udp.h
-+++ b/include/net/udp.h
-@@ -178,7 +178,7 @@ struct sk_buff *udp_gro_receive(struct list_head *head, struct sk_buff *skb,
- int udp_gro_complete(struct sk_buff *skb, int nhoff, udp_lookup_t lookup);
- 
- struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
--				  netdev_features_t features);
-+				  netdev_features_t features, bool is_ipv6);
- 
- static inline struct udphdr *udp_gro_udphdr(struct sk_buff *skb)
- {
-diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index ff39e94..c532d3b 100644
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -187,8 +187,57 @@ struct sk_buff *skb_udp_tunnel_segment(struct sk_buff *skb,
- }
- EXPORT_SYMBOL(skb_udp_tunnel_segment);
- 
-+static void __udpv4_gso_segment_csum(struct sk_buff *seg,
-+				     __be32 *oldip, __be32 *newip,
-+				     __be16 *oldport, __be16 *newport)
-+{
-+	struct udphdr *uh = udp_hdr(seg);
-+	struct iphdr *iph = ip_hdr(seg);
-+
-+	if (uh->check) {
-+		inet_proto_csum_replace4(&uh->check, seg, *oldip, *newip,
-+					 true);
-+		inet_proto_csum_replace2(&uh->check, seg, *oldport, *newport,
-+					 false);
-+		if (!uh->check)
-+			uh->check = CSUM_MANGLED_0;
-+	}
-+	uh->dest = *newport;
-+
-+	csum_replace4(&iph->check, *oldip, *newip);
-+	iph->daddr = *newip;
-+}
-+
-+static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
-+{
-+	struct sk_buff *seg;
-+	struct udphdr *uh, *uh2;
-+	struct iphdr *iph, *iph2;
-+
-+	seg = segs;
-+	uh = udp_hdr(seg);
-+	iph = ip_hdr(seg);
-+
-+	while ((seg = seg->next)) {
-+		uh2 = udp_hdr(seg);
-+		iph2 = ip_hdr(seg);
-+
-+		if (uh->source != uh2->source || iph->saddr != iph2->saddr)
-+			__udpv4_gso_segment_csum(seg,
-+						 &iph2->saddr, &iph->saddr,
-+						 &uh2->source, &uh->source);
-+
-+		if (uh->dest != uh2->dest || iph->daddr != iph2->daddr)
-+			__udpv4_gso_segment_csum(seg,
-+						 &iph2->daddr, &iph->daddr,
-+						 &uh2->dest, &uh->dest);
-+	}
-+
-+	return segs;
-+}
-+
- static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
--					      netdev_features_t features)
-+					      netdev_features_t features, bool is_ipv6)
- {
- 	unsigned int mss = skb_shinfo(skb)->gso_size;
- 
-@@ -198,11 +247,14 @@ static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
- 
- 	udp_hdr(skb)->len = htons(sizeof(struct udphdr) + mss);
- 
--	return skb;
-+	if (is_ipv6)
-+		return skb;
-+	else
-+		return __udpv4_gso_segment_list_csum(skb);
- }
- 
- struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
--				  netdev_features_t features)
-+				  netdev_features_t features, bool is_ipv6)
- {
- 	struct sock *sk = gso_skb->sk;
- 	unsigned int sum_truesize = 0;
-@@ -214,7 +266,7 @@ struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
- 	__be16 newlen;
- 
- 	if (skb_shinfo(gso_skb)->gso_type & SKB_GSO_FRAGLIST)
--		return __udp_gso_segment_list(gso_skb, features);
-+		return __udp_gso_segment_list(gso_skb, features, is_ipv6);
- 
- 	mss = skb_shinfo(gso_skb)->gso_size;
- 	if (gso_skb->len <= sizeof(*uh) + mss)
-@@ -328,7 +380,7 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
- 		goto out;
- 
- 	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
--		return __udp_gso_segment(skb, features);
-+		return __udp_gso_segment(skb, features, false);
- 
- 	mss = skb_shinfo(skb)->gso_size;
- 	if (unlikely(skb->len <= mss))
-diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
-index c7bd7b1..faa823c 100644
---- a/net/ipv6/udp_offload.c
-+++ b/net/ipv6/udp_offload.c
-@@ -42,7 +42,7 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff *skb,
- 			goto out;
- 
- 		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
--			return __udp_gso_segment(skb, features);
-+			return __udp_gso_segment(skb, features, true);
- 
- 		mss = skb_shinfo(skb)->gso_size;
- 		if (unlikely(skb->len <= mss))
--- 
-2.7.4
-
+Thanks
+-Mathias
