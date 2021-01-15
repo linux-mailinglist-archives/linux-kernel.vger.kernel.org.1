@@ -2,208 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5155C2F726E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 06:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B882F7270
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 06:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733278AbhAOFnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 00:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732046AbhAOFnC (ORCPT
+        id S1733287AbhAOFn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 00:43:26 -0500
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:61427 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732093AbhAOFnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 00:43:02 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69461C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 21:42:22 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id i7so5315859pgc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 21:42:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YXTbsaS6H4Ghx0J+qaw9xAaaRN5cjVy0tgXARVSG3ps=;
-        b=etC/qhNNiWp7kRSZcd6MqutX0gjJbzqY9zEpb5gF0MXS+DecsJD/m0Fw7esVhHDtix
-         YpbzlnKiW6JWyeWnMvEbmrHqg7/obf8grcLPmbk6KId1yBnU+TLAyYGsNvXH2mvyQvon
-         x9o+/EUvesBOjyvWaBjHe1GB/k8cOhsuziF7M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YXTbsaS6H4Ghx0J+qaw9xAaaRN5cjVy0tgXARVSG3ps=;
-        b=FU1okWHnvHfjR+LtzOg1fPmAjoxYMkT+H/lf7SLrROf6Hf+kjrJNrS/fZOkp8QQnqK
-         7S099ipi3dqBbt5pPIF/bmaKoiW5fz1jlYq0SjzeeJ7q3UvysZy5FeMa6SveVsluXJ7U
-         7LE3dl+fumnyaiGZC2OOQa6v3lfEX7AzqipqOzdK1NJJEChZsbjePSFzWFYkfY7tFHW4
-         tFsIdVDC2wlfDwkc3iQCcs/Mbhs7ejMl7HL46PEdgJTH9KC2fWWCmIPA7NS+QE29At/I
-         19cNe43aU4oknNzg4PbRE7YsphjzwpjB5V4pkbKQQdFb7oOzeT4SzNXMt1AxW6O/MStZ
-         cIog==
-X-Gm-Message-State: AOAM533zB6His7R1h/1iC5Cw8LnR5rPbX5Lax01qwmdF7TdTHw7dADeh
-        JbSirO64gWaGDeMxcLzbRfv7Yg==
-X-Google-Smtp-Source: ABdhPJzk/19Q9XsN+7SxwD9L8IiVCttvSzbCek/YwL2sB0OpDh89eChVdjVoU0wfcOtmqstCewbc7w==
-X-Received: by 2002:a63:520d:: with SMTP id g13mr11007316pgb.289.1610689341942;
-        Thu, 14 Jan 2021 21:42:21 -0800 (PST)
-Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:7220:84ff:fe09:41dc])
-        by smtp.gmail.com with ESMTPSA id w2sm6885852pfj.110.2021.01.14.21.42.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 21:42:21 -0800 (PST)
-From:   Nicolas Boichat <drinkcat@chromium.org>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Dmitry Torokhov <dtor@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] HID: google: Get HID report on probe to confirm tablet switch state
-Date:   Fri, 15 Jan 2021 13:42:16 +0800
-Message-Id: <20210115134212.v2.1.I41b9795e4b5bda7209eb9099aebdc6a29677391e@changeid>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+        Fri, 15 Jan 2021 00:43:23 -0500
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 2BC3875F1E;
+        Fri, 15 Jan 2021 08:42:38 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail; t=1610689358;
+        bh=0/Rd09doNafb1GzsBb/ZiK/cvnJ0V4qaIqeOwSe6J1U=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=UrAAF/ZffApCuHAUyivhX2MuchbmfyWHOOdL4ad0ei5MQBZE48HjbsYnJZRtcx+Uw
+         MGXEeAhlMLprxjPMAnhYBiPL7TvNFHAiEnrBeTq/dnFtreFO1a6lzRcF75+fkm/ZhB
+         lnaiSJMNXZyA1bdwZpWhl+HQt5yHR908wrJN7LEI=
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id D3FB475F1C;
+        Fri, 15 Jan 2021 08:42:37 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.68.129) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Fri, 15
+ Jan 2021 08:42:37 +0300
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Jeff Vander Stoep <jeffv@google.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stsp2@yandex.ru>, <oxffffaa@gmail.com>
+Subject: [RFC PATCH v2 05/13] af_vsock: implement send logic for SOCK_SEQPACKET
+Date:   Fri, 15 Jan 2021 08:42:27 +0300
+Message-ID: <20210115054230.1456257-1-arseny.krasnov@kaspersky.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210115053553.1454517-1-arseny.krasnov@kaspersky.com>
+References: <20210115053553.1454517-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.68.129]
+X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 01/15/2021 05:18:27
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 161159 [Jan 15 2021]
+X-KSE-AntiSpam-Info: LuaCore: 420 420 0b339e70b2b1bb108f53ec9b40aa316bba18ceea
+X-KSE-AntiSpam-Info: Version: 5.9.16.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_date, moscow}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/15/2021 05:21:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 15.01.2021 2:12:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/01/15 05:03:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/01/15 02:12:00 #16041563
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This forces reading the base folded state anytime the device is
-probed, to make sure it's in sync.
+This adds some logic to current stream enqueue function for SEQPACKET
+support:
+1) Send record begin marker with length of record.
+2) Return value from enqueue function is wholevrecord length or error for
+   SOCK_SEQPACKET.
 
-This is useful after a reboot, if the device re-enumerates for
-any reason (e.g. ESD shock), or if the driver is unbound/rebound
-(debugging/testing).
-
-Without this, the tablet switch state is only synchronized after a
-key is pressed (since the device would then send a report that
-includes the switch state), leading to strange UX (e.g. UI
-mode changes when a key is pressed after reboot).
-
-This is not a problem on detachable base attach, as the device,
-by itself, sends a report after it is booted up.
-
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
 ---
-Instead of all this manual parsing, it'd be easier to just call:
-hid_hw_request(hdev, report, HID_REQ_GET_REPORT);
-However, that fails silently as hdev->driver_input_lock is held
-during probe (or even some callbacks like input_configured.
+ include/net/af_vsock.h   |  1 +
+ net/vmw_vsock/af_vsock.c | 32 ++++++++++++++++++++++++++++----
+ 2 files changed, 29 insertions(+), 4 deletions(-)
 
-Changes in v2:
- - Improve commit message description.
-
- drivers/hid/hid-google-hammer.c | 85 +++++++++++++++++++++++++--------
- 1 file changed, 66 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/hid/hid-google-hammer.c b/drivers/hid/hid-google-hammer.c
-index 85a054f1ce38..d9319622da44 100644
---- a/drivers/hid/hid-google-hammer.c
-+++ b/drivers/hid/hid-google-hammer.c
-@@ -392,30 +392,34 @@ static int hammer_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+index 46073842d489..ec6bf4600ef8 100644
+--- a/include/net/af_vsock.h
++++ b/include/net/af_vsock.h
+@@ -136,6 +136,7 @@ struct vsock_transport {
+ 	bool (*stream_allow)(u32 cid, u32 port);
+ 
+ 	/* SEQ_PACKET. */
++	bool (*seqpacket_seq_send_len)(struct vsock_sock *, size_t len);
+ 	size_t (*seqpacket_seq_get_len)(struct vsock_sock *);
+ 	ssize_t (*seqpacket_dequeue)(struct vsock_sock *, struct msghdr *,
+ 				     size_t len, int flags);
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index 5bf887190881..4a7cdf7756c0 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -1683,8 +1683,8 @@ static int vsock_stream_getsockopt(struct socket *sock,
  	return 0;
  }
  
--static int hammer_event(struct hid_device *hid, struct hid_field *field,
--			struct hid_usage *usage, __s32 value)
-+static void hammer_folded_event(struct hid_device *hdev, bool folded)
+-static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+-				size_t len)
++static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
++				     size_t len)
  {
- 	unsigned long flags;
+ 	struct sock *sk;
+ 	struct vsock_sock *vsk;
+@@ -1737,6 +1737,12 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+ 	if (err < 0)
+ 		goto out;
  
--	if (usage->hid == HID_USAGE_KBD_FOLDED) {
--		spin_lock_irqsave(&cbas_ec_lock, flags);
-+	spin_lock_irqsave(&cbas_ec_lock, flags);
- 
--		/*
--		 * If we are getting events from Whiskers that means that it
--		 * is attached to the lid.
--		 */
--		cbas_ec.base_present = true;
--		cbas_ec.base_folded = value;
--		hid_dbg(hid, "%s: base: %d, folded: %d\n", __func__,
--			cbas_ec.base_present, cbas_ec.base_folded);
--
--		if (cbas_ec.input) {
--			input_report_switch(cbas_ec.input,
--					    SW_TABLET_MODE, value);
--			input_sync(cbas_ec.input);
--		}
-+	/*
-+	 * If we are getting events from Whiskers that means that it
-+	 * is attached to the lid.
-+	 */
-+	cbas_ec.base_present = true;
-+	cbas_ec.base_folded = folded;
-+	hid_dbg(hdev, "%s: base: %d, folded: %d\n", __func__,
-+		cbas_ec.base_present, cbas_ec.base_folded);
- 
--		spin_unlock_irqrestore(&cbas_ec_lock, flags);
-+	if (cbas_ec.input) {
-+		input_report_switch(cbas_ec.input, SW_TABLET_MODE, folded);
-+		input_sync(cbas_ec.input);
++	if (sk->sk_type == SOCK_SEQPACKET) {
++		err = transport->seqpacket_seq_send_len(vsk, len);
++		if (err < 0)
++			goto out;
 +	}
 +
-+	spin_unlock_irqrestore(&cbas_ec_lock, flags);
-+}
-+
-+static int hammer_event(struct hid_device *hid, struct hid_field *field,
-+			struct hid_usage *usage, __s32 value)
-+{
-+	if (usage->hid == HID_USAGE_KBD_FOLDED) {
-+		hammer_folded_event(hid, value);
- 		return 1; /* We handled this event */
+ 	while (total_written < len) {
+ 		ssize_t written;
+ 
+@@ -1815,13 +1821,31 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
  	}
  
-@@ -457,6 +461,47 @@ static bool hammer_has_backlight_control(struct hid_device *hdev)
- 				HID_GD_KEYBOARD, HID_AD_BRIGHTNESS);
+ out_err:
+-	if (total_written > 0)
+-		err = total_written;
++	if (total_written > 0) {
++		/* Return number of written bytes only if:
++		 * 1) SOCK_STREAM socket.
++		 * 2) SOCK_SEQPACKET socket when whole buffer is sent.
++		 */
++		if (sk->sk_type == SOCK_STREAM || total_written == len)
++			err = total_written;
++	}
+ out:
+ 	release_sock(sk);
+ 	return err;
  }
  
-+static void hammer_get_folded_state(struct hid_device *hdev)
++static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
++				size_t len)
 +{
-+	struct hid_report *report;
-+	char *buf;
-+	int len, rlen;
-+	int a;
-+
-+	report = hdev->report_enum[HID_INPUT_REPORT].report_id_hash[0x0];
-+
-+	if (!report || report->maxfield < 1)
-+		return;
-+
-+	len = hid_report_len(report) + 1;
-+
-+	buf = kmalloc(len, GFP_KERNEL);
-+	if (!buf)
-+		return;
-+
-+	rlen = hid_hw_raw_request(hdev, report->id, buf, len, report->type, HID_REQ_GET_REPORT);
-+
-+	if (rlen != len) {
-+		hid_warn(hdev, "Unable to read base folded state: %d (expected %d)\n", rlen, len);
-+		goto out;
-+	}
-+
-+	for (a = 0; a < report->maxfield; a++) {
-+		struct hid_field *field = report->field[a];
-+
-+		if (field->usage->hid == HID_USAGE_KBD_FOLDED) {
-+			u32 value = hid_field_extract(hdev, buf+1,
-+					field->report_offset, field->report_size);
-+
-+			hammer_folded_event(hdev, value);
-+			break;
-+		}
-+	}
-+
-+out:
-+	kfree(buf);
++	return vsock_connectible_sendmsg(sock, msg, len);
 +}
 +
- static int hammer_probe(struct hid_device *hdev,
- 			const struct hid_device_id *id)
- {
-@@ -481,6 +526,8 @@ static int hammer_probe(struct hid_device *hdev,
- 		error = hid_hw_open(hdev);
- 		if (error)
- 			return error;
++static int vsock_seqpacket_sendmsg(struct socket *sock, struct msghdr *msg,
++				   size_t len)
++{
++	return vsock_connectible_sendmsg(sock, msg, len);
++}
 +
-+		hammer_get_folded_state(hdev);
- 	}
- 
- 	if (hammer_has_backlight_control(hdev)) {
+ static int vsock_wait_data(struct sock *sk, struct wait_queue_entry *wait,
+ 			   long timeout,
+ 			   struct vsock_transport_recv_notify_data *recv_data,
 -- 
-2.30.0.284.gd98b1dd5eaa7-goog
+2.25.1
 
