@@ -2,71 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939552F6FCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:02:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7E32F6FCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:02:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731325AbhAOBBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 20:01:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726159AbhAOBBA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 20:01:00 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2287EC061757;
-        Thu, 14 Jan 2021 17:00:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=mKArbqAdruvusNEdubHVBDte/InN/eE7UtRBk4Ibo+o=; b=pw7EtUQlW5tWIh5NmsZiQEO+yQ
-        1boh8Wgmg0sv/AVXEH2cqMUMyC8iYIvetyMnymjlXxtOSYgS4xEcWu/uI/wXPakdbAHAmeN0xbU/y
-        F1VUkE5i5iCrUIC7XGbnmZH0OzXC/YLwBoOzM4pOcJhvosTt0bvDRftjgIOPpfBvLwM5IUYkn6eHw
-        tZgscXDl+sjagGTqVhLhqzuLTSFbnoERYE7i4qZ1oEV64HM8blf1Lih7GWtbVaGyuoe8aQey8dY12
-        4Gjzjr5jjz3QGUH7ZNjGuCl+/pwCIEsXOU3SJjQeZOC8dF1Ruiud7CpDP29ZC6KDLHFjB44kEgJDl
-        y2eKyOZw==;
-Received: from [2601:1c0:6280:3f0::9abc] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l0DTN-0002g1-D7; Fri, 15 Jan 2021 01:00:17 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        linux-hexagon@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] hexagon: remove CONFIG_EXPERIMENTAL from defconfigs
-Date:   Thu, 14 Jan 2021 17:00:11 -0800
-Message-Id: <20210115010011.29483-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S1729772AbhAOBA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 20:00:58 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:43127 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726159AbhAOBA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 20:00:57 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DH2sW2ltrz9sBy;
+        Fri, 15 Jan 2021 12:00:15 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610672415;
+        bh=pFZtsSKV3VID14I9NxcVzyczo37+sO1HzkPktURB6Dw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=SZ7Z1qgHppuwW9l+Cvh+nPManb1LR1MQ/Lwne0kRh4TWfj8oiUEnO8GehW9NfsL5F
+         N+nenJTQ/UfcTvlf7mNfWalgeDcUCVTxWuipr6hDmzy8I/SatMuhs6nJ4l3SV0aObO
+         90wrFboOeSM8n3bStB0oIjaekno2NsNgqjIYGceUNkCpTf28ZgfZglEGuK5rU6dOPY
+         vgWFf96ZQixkZNfCxd1Xzslv6pALxgFQzv0N31GyDvRfZMk3EbmV3+QcUbCpoh5sfw
+         TPy40wQ+wwcjsxMvSDfg/u06k4qlR1vaYHc6UeoxI8pZA/COV/aiHZqmMOCaOxgGSi
+         176+7G/rdmmuA==
+Date:   Fri, 15 Jan 2021 12:00:14 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the amdgpu tree
+Message-ID: <20210115120014.4211dec6@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/rUleKG7Uah2E5vgc_m5JP0k";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since CONFIG_EXPERIMENTAL was removed in 2013, go ahead and drop it
-from any defconfig files.
+--Sig_/rUleKG7Uah2E5vgc_m5JP0k
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 3d374d09f16f ("final removal of CONFIG_EXPERIMENTAL")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Brian Cain <bcain@codeaurora.org>
-Cc: linux-hexagon@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
- arch/hexagon/configs/comet_defconfig |    1 -
- 1 file changed, 1 deletion(-)
+Hi all,
 
---- linux-next-20210114.orig/arch/hexagon/configs/comet_defconfig
-+++ linux-next-20210114/arch/hexagon/configs/comet_defconfig
-@@ -1,7 +1,6 @@
- CONFIG_SMP=y
- CONFIG_DEFAULT_MMAP_MIN_ADDR=0
- CONFIG_HZ_100=y
--CONFIG_EXPERIMENTAL=y
- CONFIG_CROSS_COMPILE="hexagon-"
- CONFIG_LOCALVERSION="-smp"
- # CONFIG_LOCALVERSION_AUTO is not set
+After merging the amdgpu tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
+
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function 'd=
+m_set_vblank':
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5380:33: warnin=
+g: unused variable 'dm' [-Wunused-variable]
+ 5380 |  struct amdgpu_display_manager *dm =3D &adev->dm;
+      |                                 ^~
+
+Caused by commit
+
+  98ab5f3513f9 ("drm/amd/display: Fix deadlock during gpu reset v3")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/rUleKG7Uah2E5vgc_m5JP0k
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAA6R4ACgkQAVBC80lX
+0GxAaAgAn2klmAI0wOutSvxHjuCLfjTb6qLSJXnQdYr8NiPYY3xbb4rsvbSI7S48
+uBgKFHfO6w8bjiwAQZr972q+DZ140tqKq+4adiI+A1PI7L//dp6vKSpbOv3ckI3M
+3kssZn48TnrCUojPCVgm8NycYywDPR2wufnyT+MQ8BQ2spXg9KtxwM7H26fhPpQi
+5wBOZpv/ZoTtRTokClGH9Z4352yYJvU+/y2yd9NphsVEu2emUaLhzpceNjDIp8JT
+YkRIcR0iwk61233g3xN2FRS8N/znXRdtqhrVXfAT+4HrybxrMYWlOPoQQvBiIEAw
+HMQMu7bzqeQxgSjVODvs64GDmj+9UQ==
+=rt4T
+-----END PGP SIGNATURE-----
+
+--Sig_/rUleKG7Uah2E5vgc_m5JP0k--
