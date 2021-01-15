@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9232F7491
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F432F748C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730602AbhAOItX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 03:49:23 -0500
-Received: from mga03.intel.com ([134.134.136.65]:38651 "EHLO mga03.intel.com"
+        id S1731179AbhAOIs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 03:48:26 -0500
+Received: from mga06.intel.com ([134.134.136.31]:22645 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728177AbhAOItV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 03:49:21 -0500
-IronPort-SDR: 1yQsMf2+rXVk2nhEDkx6zpgh2NlnhfG/5QZhhi7/ny8fT+0mWZ6AGXsrqhTV7nVqAMZpkeKe9O
- C8F8YiU16Tpw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="178606984"
+        id S1730254AbhAOIsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 03:48:24 -0500
+IronPort-SDR: otUwOAszHYWRxGY+bfkDb+r+kJnozbTdyqLaFkYXt5+pGT8E4ysiYJTl1VhELzH7Z4UcwzBohT
+ i6oPGt2qlYcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="240064778"
 X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="178606984"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 00:47:32 -0800
-IronPort-SDR: SHjVl41aTEVTO4rZxJx/ZKZScPvojw/NwJWqsSTros8GW98FNsywtZOvvFgy+0mGkf33kx9IhG
- cctqxceHsKRg==
+   d="scan'208";a="240064778"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 00:47:41 -0800
+IronPort-SDR: on8+Bxc11wN/xt986f7vAgSqLFvRKTLK70zFKK8TkcK1dLMvz+SQfPzAnK97FPsY7Z2ZFHm+Gz
+ 7AewwwY1uGYw==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="382590373"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 00:47:29 -0800
-Subject: Re: [PATCH] KVM: x86/pmu: Fix UBSAN shift-out-of-bounds warning in
- intel_pmu_refresh()
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     syzkaller-bugs@googlegroups.com,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        linux-kernel@vger.kernel.org
-References: <20201229071144.85418-1-like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <fb60e9b1-0d96-a1a7-1828-80d6e2c21e0c@linux.intel.com>
-Date:   Fri, 15 Jan 2021 16:47:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+   d="scan'208";a="354226722"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.145])
+  by fmsmga008.fm.intel.com with ESMTP; 15 Jan 2021 00:47:38 -0800
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     huang ying <huang.ying.caritas@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH] mm: Free unused swap cache page in write protection fault handler
+References: <20210113024241.179113-1-ying.huang@intel.com>
+        <CAHk-=whn5kVxEitkC0AyzvWRyxbF91rMrO9ZG6JHBNYLckpDDw@mail.gmail.com>
+        <CAC=cRTNpoqHpbtZM1uDvVQYQZVyRbfPh+Dirb=-Xgoh22u_W1A@mail.gmail.com>
+        <20210113031142.GM35215@casper.infradead.org>
+        <CAC=cRTNMN5Pmz2PC8p3N2-uJkqLUCW95wr=VWTZmodoECmj6nQ@mail.gmail.com>
+        <CAHk-=wh3nL28QfkKV6gpVGjh5iPjoEZtEQYPDvwPgscm-yMAfA@mail.gmail.com>
+Date:   Fri, 15 Jan 2021 16:47:37 +0800
+In-Reply-To: <CAHk-=wh3nL28QfkKV6gpVGjh5iPjoEZtEQYPDvwPgscm-yMAfA@mail.gmail.com>
+        (Linus Torvalds's message of "Wed, 13 Jan 2021 13:09:31 -0800")
+Message-ID: <87sg72vb6e.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20201229071144.85418-1-like.xu@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping ?
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-On 2020/12/29 15:11, Like Xu wrote:
-> Since we know vPMU will not work properly when the guest bit_width(s) of
-> the [gp|fixed] counters are greater than the host ones, so we can setup a
-> smaller left shift value and refresh the guest pmu cpuid entry, thus fixing
-> the following UBSAN shift-out-of-bounds warning:
+> On Tue, Jan 12, 2021 at 9:24 PM huang ying <huang.ying.caritas@gmail.com> wrote:
+>> >
+>> > Couldn't we just move it to the tail of the LRU list so it's reclaimed
+>> > first?  Or is locking going to be a problem here?
+>>
+>> Yes.  That's a way to reduce the disturbance to the page reclaiming.
+>> For LRU lock contention, is it sufficient to use another pagevec?
 >
-> shift exponent 197 is too large for 64-bit type 'long long unsigned int'
+> I wonder if this is really worth it. I'd like to see numbers.
 >
-> Call Trace:
->   __dump_stack lib/dump_stack.c:79 [inline]
->   dump_stack+0x107/0x163 lib/dump_stack.c:120
->   ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
->   __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
->   intel_pmu_refresh.cold+0x75/0x99 arch/x86/kvm/vmx/pmu_intel.c:348
->   kvm_vcpu_after_set_cpuid+0x65a/0xf80 arch/x86/kvm/cpuid.c:177
->   kvm_vcpu_ioctl_set_cpuid2+0x160/0x440 arch/x86/kvm/cpuid.c:308
->   kvm_arch_vcpu_ioctl+0x11b6/0x2d70 arch/x86/kvm/x86.c:4709
->   kvm_vcpu_ioctl+0x7b9/0xdb0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3386
->   vfs_ioctl fs/ioctl.c:48 [inline]
->   __do_sys_ioctl fs/ioctl.c:753 [inline]
->   __se_sys_ioctl fs/ioctl.c:739 [inline]
->   __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
->   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> Because in probably 99%+ of all cases, that LRU dance is only going to
+> hurt and add extra locking overhead and dirty caches.
 >
-> Reported-by: syzbot+ae488dc136a4cc6ba32b@syzkaller.appspotmail.com
-> Signed-off-by: Like Xu <like.xu@linux.intel.com>
-> ---
->   arch/x86/kvm/vmx/pmu_intel.c | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-> index a886a47daebd..a86a1690e75c 100644
-> --- a/arch/x86/kvm/vmx/pmu_intel.c
-> +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> @@ -345,6 +345,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
->   
->   	pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
->   					 x86_pmu.num_counters_gp);
-> +	eax.split.bit_width = min_t(int, eax.split.bit_width, x86_pmu.bit_width_gp);
->   	pmu->counter_bitmask[KVM_PMC_GP] = ((u64)1 << eax.split.bit_width) - 1;
->   	pmu->available_event_types = ~entry->ebx &
->   					((1ull << eax.split.mask_length) - 1);
-> @@ -355,6 +356,8 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
->   		pmu->nr_arch_fixed_counters =
->   			min_t(int, edx.split.num_counters_fixed,
->   			      x86_pmu.num_counters_fixed);
-> +		edx.split.bit_width_fixed = min_t(int,
-> +			edx.split.bit_width_fixed, x86_pmu.bit_width_fixed);
->   		pmu->counter_bitmask[KVM_PMC_FIXED] =
->   			((u64)1 << edx.split.bit_width_fixed) - 1;
->   	}
+> So I'd like to see some numbers that it actually helps measurably in
+> whatever paging-heavy case...
 
+OK.  I will start from a simpler version and only use a pagevec if
+there's measurable difference.
+
+Best Regards,
+Huang, Ying
