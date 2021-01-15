@@ -2,101 +2,513 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9E02F8241
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD232F8244
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728898AbhAOR1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:27:40 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:55854 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbhAOR1k (ORCPT
+        id S1729885AbhAOR1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:27:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726751AbhAOR1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:27:40 -0500
-Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C7DDE20B7192;
-        Fri, 15 Jan 2021 09:26:58 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C7DDE20B7192
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1610731619;
-        bh=+VJnsF4kFMO6bAfGl4TRzpeiil80GFM1LYOrc/fFgg4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=GcDkztX85xILiONq+dpyAyykK0sFFW73ywn6s2xpmwl+hgv6cCI5ts1pRJpXdOIUf
-         WJ8NdCyON6431Nmj0nJTdrsP53FIjNu/ynst/WTe54A0goPkQX95QdQJZKN3f1ulUi
-         djxo3L4EWQJu9LE92YwHmOGZg1RKdfNDumLiUWvc=
-Subject: Re: [PATCH v10 0/8] IMA: support for measuring kernel integrity
- critical data
-To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20210108040708.8389-1-tusharsu@linux.microsoft.com>
- <5189c15054885863b1b5cb86a43bec09725d8650.camel@linux.ibm.com>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <e3deb1a0-a624-f85f-e2d2-3206fa609b64@linux.microsoft.com>
-Date:   Fri, 15 Jan 2021 09:26:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <5189c15054885863b1b5cb86a43bec09725d8650.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 15 Jan 2021 12:27:48 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8570C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:27:07 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id g10so8272436wmh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:27:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=ht1PkoxNopTrB2KUiRXEdO49tzT3MIa2M7zvXnBpifM=;
+        b=MAA4VTsxDwm5Uado9jk4Fy+I2zA8FQ5sLSQlWDRjM9aUtk3EUylFAA/qRCuFVWg9sl
+         aaEGNGIRJAM5oTKfMEaXLpYTwL7UPTjE41crYIoycZNBGBQaizCGbv1wy51dOuexZKb2
+         QXys2mk0OiVEFNeGbBciD+2M0QWCvdA8fDli6b5AsK2IbER277+AaAJVXLPlJdFaL1fG
+         Hh2zEI34gL1u0Km0i35VWTFR11m1RNZ8RZvzTTLENyqVeMTOo+uSKnYH/8SLNGP0cu+r
+         Fbhwlsu8c/dhAv2Sd3D6XwgQhZ/prEb4Kl2df1sxQzcxec7yzh7QGB/VbEcCU2GQv8LV
+         qiow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ht1PkoxNopTrB2KUiRXEdO49tzT3MIa2M7zvXnBpifM=;
+        b=VropRD7uxN15VpRqmUmIJesTrlR2BtdGWltKgRQrGqNll7XrrecghTX8wdqO9KqZt2
+         vjyXULlHr2gYIfnnjV9AJ+/ledhWW6M4alvp5XFQ8QtUL2AQJAIwrNZT4GBnDTXENnXu
+         Oh8LHlD8sawa9ATMiIjjJkSopbMzh6qc2ZQaOwOxMmxdXq0QaTWuC7rHWEPjBO5vyEK9
+         fAGDjB5IF8n04XtsloucJ7cMqvG9rkBvCLg6cpbNpcZWWG4PRaPPWKj6PDw0xUmdB7Un
+         dRcgSZ4pc7E4yTvqvzp5kikcjFA1oHTXWRcah/qcbSxe3ZxbtuGRmszA1X9fBMcDU6Yb
+         JV5A==
+X-Gm-Message-State: AOAM530lpKEgwADo1J0OoCxiqvmLOG3APvedCPlTcP/rUNtvmi15lbrx
+        3ENmnTEau/EruqroTTHrS3+Wjw==
+X-Google-Smtp-Source: ABdhPJxHgRdc6Xwaks00HLEZJ5Oag18gFCSZB7oz9dvvz78U9IeKlD7Ex3+SyO05/qV26DhD31+tPA==
+X-Received: by 2002:a7b:c7c8:: with SMTP id z8mr9686738wmk.87.1610731626169;
+        Fri, 15 Jan 2021 09:27:06 -0800 (PST)
+Received: from linaro.org ([2a00:23c5:6801:1801:907f:f532:9ca8:e5f3])
+        by smtp.gmail.com with ESMTPSA id l5sm15611289wrv.44.2021.01.15.09.27.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 09:27:05 -0800 (PST)
+From:   Mike Leach <mike.leach@linaro.org>
+To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        leo.yan@linaro.org, linux-kernel@vger.kernel.org
+Cc:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
+        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        will@kernel.org, john.garry@huawei.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, Mike Leach <mike.leach@linaro.org>
+Subject: [PATCH v2] perf: cs-etm: update ETM metadata format
+Date:   Fri, 15 Jan 2021 17:27:02 +0000
+Message-Id: <20210115172702.11460-1-mike.leach@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The current fixed metadata version format (version 0), means that adding
+metadata parameter items renders files from a previous version of perf
+unreadable. Per CPU parameters appear in a fixed order, but there is no
+field to indicate the number of ETM parameters per CPU.
 
+This patch updates the per CPU parameter blocks to include a NR_PARAMs
+value which indicates the number of parameters in the block.
 
-On 2021-01-15 4:54 a.m., Mimi Zohar wrote:
-> On Thu, 2021-01-07 at 20:07 -0800, Tushar Sugandhi wrote:
->> IMA measures files and buffer data such as keys, command-line arguments
->> passed to the kernel on kexec system call, etc.  While these measurements
->> are necessary for monitoring and validating the integrity of the system,
->> they are not sufficient.  Various data structures, policies, and states
->> stored in kernel memory also impact the integrity of the system.
->> Several kernel subsystems contain such integrity critical data -
->> e.g.  LSMs like SELinux, AppArmor etc.  or device-mapper targets like
->> dm-crypt, dm-verity, dm-integrity etc.  These kernel subsystems help
->> protect the integrity of a system.  Their integrity critical data is not
->> expected to change frequently during run-time.  Some of these structures
->> cannot be defined as __ro_after_init, because they are initialized later.
->>
->> For a given system, various external services/infrastructure tools
->> (including the attestation service) interact with it - both during the
->> setup and during rest of the system run-time.  They share sensitive data
->> and/or execute critical workload on that system.  The external services
->> may want to verify the current run-time state of the relevant kernel
->> subsystems before fully trusting the system with business critical
->> data/workload.  For instance, verifying that SELinux is in "enforce" mode
->> along with the expected policy, disks are encrypted with a certain
->> configuration, secure boot is enabled etc.
->>
->> This series provides the necessary IMA functionality for kernel
->> subsystems to ensure their configuration can be measured:
->>    - by kernel subsystems themselves,
->>    - in a tamper resistant way,
->>    - and re-measured - triggered on state/configuration change.
->>
->> This patch set:
->>    - defines a new IMA hook ima_measure_critical_data() to measure
->>      integrity critical data,
->>    - limits the critical data being measured based on a label,
->>    - defines a builtin critical data measurement policy,
->>    - and includes an SELinux consumer of the new IMA critical data hook.
-> 
-> Thanks Tushar, Lakshmi.  This patch set is queued in the next-
-> integrity-testing branch.
-> 
-> Mimi
-> 
-Hello Mimi, Paul, Stephen, Tyler,
-Thanks a lot for reviewing this series and providing all the valuable 
-feedback over the last few months.
+The header version is incremented to 1. Fixed ordering is retained,
+new ETM parameters are added to the end of the list.
 
-We really really appreciate it.
+The reader code is updated to be able to read current version 0 files,
+For version 1, the reader will read the number of parameters in the
+per CPU block. This allows the reader to process older or newer files
+that may have different numbers of parameters than in use at the
+time perf was built.
 
-Thanks,
-Tushar
+Changes since v1 (from Review by Leo):
+1. Split printing routine into sub functions per version
+2. Renamed NR_PARAMs to NR_TRC_PARAMs to emphasise use as count of trace
+related parameters, not total block parameter.
+3. Misc other fixes.
+
+Signed-off-by: Mike Leach <mike.leach@linaro.org>
+---
+ tools/perf/arch/arm/util/cs-etm.c |   7 +-
+ tools/perf/util/cs-etm.c          | 212 ++++++++++++++++++++++++------
+ tools/perf/util/cs-etm.h          |  30 ++++-
+ 3 files changed, 200 insertions(+), 49 deletions(-)
+
+diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+index bd446aba64f7..b0470f2a955a 100644
+--- a/tools/perf/arch/arm/util/cs-etm.c
++++ b/tools/perf/arch/arm/util/cs-etm.c
+@@ -572,7 +572,7 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
+ 				struct auxtrace_record *itr,
+ 				struct perf_record_auxtrace_info *info)
+ {
+-	u32 increment;
++	u32 increment, nr_trc_params;
+ 	u64 magic;
+ 	struct cs_etm_recording *ptr =
+ 			container_of(itr, struct cs_etm_recording, itr);
+@@ -607,6 +607,7 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
+ 
+ 		/* How much space was used */
+ 		increment = CS_ETMV4_PRIV_MAX;
++		nr_trc_params = CS_ETMV4_PRIV_MAX - CS_ETMV4_TRCCONFIGR;
+ 	} else {
+ 		magic = __perf_cs_etmv3_magic;
+ 		/* Get configuration register */
+@@ -624,11 +625,13 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
+ 
+ 		/* How much space was used */
+ 		increment = CS_ETM_PRIV_MAX;
++		nr_trc_params = CS_ETM_PRIV_MAX - CS_ETM_ETMCR;
+ 	}
+ 
+ 	/* Build generic header portion */
+ 	info->priv[*offset + CS_ETM_MAGIC] = magic;
+ 	info->priv[*offset + CS_ETM_CPU] = cpu;
++	info->priv[*offset + CS_ETM_NR_TRC_PARAMS] = nr_trc_params;
+ 	/* Where the next CPU entry should start from */
+ 	*offset += increment;
+ }
+@@ -674,7 +677,7 @@ static int cs_etm_info_fill(struct auxtrace_record *itr,
+ 
+ 	/* First fill out the session header */
+ 	info->type = PERF_AUXTRACE_CS_ETM;
+-	info->priv[CS_HEADER_VERSION_0] = 0;
++	info->priv[CS_HEADER_VERSION] = CS_HEADER_CURRENT_VERSION;
+ 	info->priv[CS_PMU_TYPE_CPUS] = type << 32;
+ 	info->priv[CS_PMU_TYPE_CPUS] |= nr_cpu;
+ 	info->priv[CS_ETM_SNAPSHOT] = ptr->snapshot_mode;
+diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+index a2a369e2fbb6..23115f9633dc 100644
+--- a/tools/perf/util/cs-etm.c
++++ b/tools/perf/util/cs-etm.c
+@@ -2435,7 +2435,7 @@ static bool cs_etm__is_timeless_decoding(struct cs_etm_auxtrace *etm)
+ }
+ 
+ static const char * const cs_etm_global_header_fmts[] = {
+-	[CS_HEADER_VERSION_0]	= "	Header version		       %llx\n",
++	[CS_HEADER_VERSION]	= "	Header version		       %llx\n",
+ 	[CS_PMU_TYPE_CPUS]	= "	PMU type/num cpus	       %llx\n",
+ 	[CS_ETM_SNAPSHOT]	= "	Snapshot		       %llx\n",
+ };
+@@ -2443,6 +2443,7 @@ static const char * const cs_etm_global_header_fmts[] = {
+ static const char * const cs_etm_priv_fmts[] = {
+ 	[CS_ETM_MAGIC]		= "	Magic number		       %llx\n",
+ 	[CS_ETM_CPU]		= "	CPU			       %lld\n",
++	[CS_ETM_NR_TRC_PARAMS]	= "	NR_TRC_PARAMS		       %llx\n",
+ 	[CS_ETM_ETMCR]		= "	ETMCR			       %llx\n",
+ 	[CS_ETM_ETMTRACEIDR]	= "	ETMTRACEIDR		       %llx\n",
+ 	[CS_ETM_ETMCCER]	= "	ETMCCER			       %llx\n",
+@@ -2452,6 +2453,7 @@ static const char * const cs_etm_priv_fmts[] = {
+ static const char * const cs_etmv4_priv_fmts[] = {
+ 	[CS_ETM_MAGIC]		= "	Magic number		       %llx\n",
+ 	[CS_ETM_CPU]		= "	CPU			       %lld\n",
++	[CS_ETM_NR_TRC_PARAMS]	= "	NR_TRC_PARAMS		       %llx\n",
+ 	[CS_ETMV4_TRCCONFIGR]	= "	TRCCONFIGR		       %llx\n",
+ 	[CS_ETMV4_TRCTRACEIDR]	= "	TRCTRACEIDR		       %llx\n",
+ 	[CS_ETMV4_TRCIDR0]	= "	TRCIDR0			       %llx\n",
+@@ -2461,24 +2463,152 @@ static const char * const cs_etmv4_priv_fmts[] = {
+ 	[CS_ETMV4_TRCAUTHSTATUS] = "	TRCAUTHSTATUS		       %llx\n",
+ };
+ 
+-static void cs_etm__print_auxtrace_info(__u64 *val, int num)
++static const char * const param_unk_fmt =
++	"	Unknown parameter [%d]	       %llx\n";
++static const char * const magic_unk_fmt =
++	"	Magic number Unknown	       %llx\n";
++
++static void cs_etm__print_cpu_metadata_v0(__u64 *val, int *offset)
++{
++	int i = *offset, j, nr_params = 0;
++	__u64 magic;
++
++	/* common header block */
++	magic = val[i];
++	fprintf(stdout, cs_etm_priv_fmts[0], val[i++]);
++	fprintf(stdout, cs_etm_priv_fmts[1], val[i++]);
++
++	if (magic == __perf_cs_etmv3_magic) {
++		nr_params = CS_ETM_NR_TRC_PARAMS_V0;
++		/* after common block, offset format index past NR_PARAMS */
++		for (j = 3; j < nr_params + 3; j++, i++)
++			fprintf(stdout, cs_etm_priv_fmts[j], val[i]);
++	} else if (magic == __perf_cs_etmv4_magic) {
++		nr_params = CS_ETMV4_NR_TRC_PARAMS_V0;
++		/* after common block, offset format index past NR_PARAMS */
++		for (j = 3; j < nr_params + 3; j++, i++)
++			fprintf(stdout, cs_etmv4_priv_fmts[j], val[i]);
++	} else {
++		/* failure - note bad magic value */
++		fprintf(stdout, magic_unk_fmt, magic);
++	}
++	*offset = i;
++}
++
++static void cs_etm__print_cpu_metadata_v1(__u64 *val, int *offset)
+ {
+-	int i, j, cpu = 0;
++	int i = *offset, j, total_params = 0;
++	__u64 magic;
+ 
+-	for (i = 0; i < CS_HEADER_VERSION_0_MAX; i++)
+-		fprintf(stdout, cs_etm_global_header_fmts[i], val[i]);
++	magic = val[i + CS_ETM_MAGIC];
++	/* total params to print is NR_PARAMS + common block size for v1 */
++	total_params = val[i + CS_ETM_NR_TRC_PARAMS] + CS_ETM_COMMON_BLK_MAX_V1;
+ 
+-	for (i = CS_HEADER_VERSION_0_MAX; cpu < num; cpu++) {
+-		if (val[i] == __perf_cs_etmv3_magic)
+-			for (j = 0; j < CS_ETM_PRIV_MAX; j++, i++)
++	if (magic == __perf_cs_etmv3_magic) {
++		for (j = 0; j < total_params; j++, i++) {
++			/* if newer record - could be excess params */
++			if (j >= CS_ETM_PRIV_MAX)
++				fprintf(stdout, param_unk_fmt, j, val[i]);
++			else
+ 				fprintf(stdout, cs_etm_priv_fmts[j], val[i]);
+-		else if (val[i] == __perf_cs_etmv4_magic)
+-			for (j = 0; j < CS_ETMV4_PRIV_MAX; j++, i++)
++		}
++	} else if (magic == __perf_cs_etmv4_magic) {
++		/* after common block */
++		for (j = 0; j < total_params; j++, i++) {
++			/* if newer record - could be excess params */
++			if (j >= CS_ETMV4_PRIV_MAX)
++				fprintf(stdout, param_unk_fmt, j, val[i]);
++			else
+ 				fprintf(stdout, cs_etmv4_priv_fmts[j], val[i]);
+-		else
+-			/* failure.. return */
+-			return;
++		}
++	} else {
++		/* failure - note bad magic value */
++		fprintf(stdout, magic_unk_fmt, magic);
+ 	}
++	*offset = i;
++}
++
++static void cs_etm__print_auxtrace_info(__u64 *val, int num)
++{
++	int i, cpu = 0, version;
++
++	for (i = 0; i < CS_HEADER_VERSION_MAX; i++)
++		fprintf(stdout, cs_etm_global_header_fmts[i], val[i]);
++	version = val[0];
++	if (version > CS_HEADER_CURRENT_VERSION) {
++		/* failure.. return */
++		fprintf(stdout, "	Unknown Header Version = %x, ", version);
++		fprintf(stdout, "Version supported <= %x\n", CS_HEADER_CURRENT_VERSION);
++		return;
++	}
++
++	for (i = CS_HEADER_VERSION_MAX; cpu < num; cpu++) {
++		if (version == 0)
++			cs_etm__print_cpu_metadata_v0(val, &i);
++		else if (version == 1)
++			cs_etm__print_cpu_metadata_v1(val, &i);
++	}
++}
++
++/*
++ * Read a single cpu parameter block from the auxtrace_info priv block.
++ *
++ * For version 1 there is a per cpu nr_params entry. If we are handling
++ * version 1 file, then there may be less, the same, or more params
++ * indicated by this value than the compile time number we understand.
++ *
++ * For a version 0 info block, there are a fixed number, and we need to
++ * fill out the nr_param value in the metadata we create.
++ */
++static u64 *cs_etm__create_meta_blk(u64 *buff_in, int *buff_in_offset,
++				    int out_blk_size, int nr_params_v0)
++{
++	u64 *metadata = NULL;
++	int hdr_version;
++	int nr_in_params, nr_out_params, nr_cmn_params;
++	int i, k;
++
++	metadata = zalloc(sizeof(*metadata) * out_blk_size);
++	if (!metadata)
++		return NULL;
++
++	/* read block current index & version */
++	i = *buff_in_offset;
++	hdr_version = buff_in[CS_HEADER_VERSION];
++
++	if (!hdr_version) {
++	/* read version 0 info block into a version 1 metadata block  */
++		nr_in_params = nr_params_v0;
++		metadata[CS_ETM_MAGIC] = buff_in[i + CS_ETM_MAGIC];
++		metadata[CS_ETM_CPU] = buff_in[i + CS_ETM_CPU];
++		metadata[CS_ETM_NR_TRC_PARAMS] = nr_in_params;
++		/* remaining block params at offset +1 from source */
++		for (k = 2; k < nr_in_params; k++)
++			metadata[k+1] = buff_in[i + k];
++		/* version 0 has 2 common params */
++		nr_cmn_params = 2;
++	} else {
++	/* read version 1 info block - input and output nr_params may differ */
++		/* version 1 has 3 common params */
++		nr_cmn_params = 3;
++		nr_in_params = buff_in[i + CS_ETM_NR_TRC_PARAMS];
++
++		/* if input has more params than output - skip excess */
++		nr_out_params = nr_in_params + nr_cmn_params;
++		if (nr_out_params > out_blk_size)
++			nr_out_params = out_blk_size;
++
++		for (k = 0; k < nr_out_params; k++)
++			metadata[k] = buff_in[i + k];
++
++		/* record the actual nr params we copied */
++		metadata[CS_ETM_NR_TRC_PARAMS] = nr_out_params - nr_cmn_params;
++	}
++
++	/* adjust in offset by number of in params used */
++	i += nr_in_params + nr_cmn_params;
++	*buff_in_offset = i;
++	return metadata;
+ }
+ 
+ int cs_etm__process_auxtrace_info(union perf_event *event,
+@@ -2492,11 +2622,12 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+ 	int info_header_size;
+ 	int total_size = auxtrace_info->header.size;
+ 	int priv_size = 0;
+-	int num_cpu;
+-	int err = 0, idx = -1;
+-	int i, j, k;
++	int num_cpu, trcidr_idx;
++	int err = 0;
++	int i, j;
+ 	u64 *ptr, *hdr = NULL;
+ 	u64 **metadata = NULL;
++	u64 hdr_version;
+ 
+ 	/*
+ 	 * sizeof(auxtrace_info_event::type) +
+@@ -2512,16 +2643,17 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+ 	/* First the global part */
+ 	ptr = (u64 *) auxtrace_info->priv;
+ 
+-	/* Look for version '0' of the header */
+-	if (ptr[0] != 0)
++	/* Look for version of the header */
++	hdr_version = ptr[0];
++	if (hdr_version > CS_HEADER_CURRENT_VERSION)
+ 		return -EINVAL;
+ 
+-	hdr = zalloc(sizeof(*hdr) * CS_HEADER_VERSION_0_MAX);
++	hdr = zalloc(sizeof(*hdr) * CS_HEADER_VERSION_MAX);
+ 	if (!hdr)
+ 		return -ENOMEM;
+ 
+ 	/* Extract header information - see cs-etm.h for format */
+-	for (i = 0; i < CS_HEADER_VERSION_0_MAX; i++)
++	for (i = 0; i < CS_HEADER_VERSION_MAX; i++)
+ 		hdr[i] = ptr[i];
+ 	num_cpu = hdr[CS_PMU_TYPE_CPUS] & 0xffffffff;
+ 	pmu_type = (unsigned int) ((hdr[CS_PMU_TYPE_CPUS] >> 32) &
+@@ -2552,35 +2684,31 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+ 	 */
+ 	for (j = 0; j < num_cpu; j++) {
+ 		if (ptr[i] == __perf_cs_etmv3_magic) {
+-			metadata[j] = zalloc(sizeof(*metadata[j]) *
+-					     CS_ETM_PRIV_MAX);
+-			if (!metadata[j]) {
+-				err = -ENOMEM;
+-				goto err_free_metadata;
+-			}
+-			for (k = 0; k < CS_ETM_PRIV_MAX; k++)
+-				metadata[j][k] = ptr[i + k];
++			metadata[j] =
++				cs_etm__create_meta_blk(ptr, &i,
++							CS_ETM_PRIV_MAX,
++							CS_ETM_NR_TRC_PARAMS_V0);
+ 
+ 			/* The traceID is our handle */
+-			idx = metadata[j][CS_ETM_ETMTRACEIDR];
+-			i += CS_ETM_PRIV_MAX;
++			trcidr_idx = CS_ETM_ETMTRACEIDR;
++
+ 		} else if (ptr[i] == __perf_cs_etmv4_magic) {
+-			metadata[j] = zalloc(sizeof(*metadata[j]) *
+-					     CS_ETMV4_PRIV_MAX);
+-			if (!metadata[j]) {
+-				err = -ENOMEM;
+-				goto err_free_metadata;
+-			}
+-			for (k = 0; k < CS_ETMV4_PRIV_MAX; k++)
+-				metadata[j][k] = ptr[i + k];
++			metadata[j] =
++				cs_etm__create_meta_blk(ptr, &i,
++							CS_ETMV4_PRIV_MAX,
++							CS_ETMV4_NR_TRC_PARAMS_V0);
+ 
+ 			/* The traceID is our handle */
+-			idx = metadata[j][CS_ETMV4_TRCTRACEIDR];
+-			i += CS_ETMV4_PRIV_MAX;
++			trcidr_idx = CS_ETMV4_TRCTRACEIDR;
++		}
++
++		if (!metadata[j]) {
++			err = -ENOMEM;
++			goto err_free_metadata;
+ 		}
+ 
+ 		/* Get an RB node for this CPU */
+-		inode = intlist__findnew(traceid_list, idx);
++		inode = intlist__findnew(traceid_list, metadata[j][trcidr_idx]);
+ 
+ 		/* Something went wrong, no need to continue */
+ 		if (!inode) {
+@@ -2601,7 +2729,7 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+ 	}
+ 
+ 	/*
+-	 * Each of CS_HEADER_VERSION_0_MAX, CS_ETM_PRIV_MAX and
++	 * Each of CS_HEADER_VERSION_MAX, CS_ETM_PRIV_MAX and
+ 	 * CS_ETMV4_PRIV_MAX mark how many double words are in the
+ 	 * global metadata, and each cpu's metadata respectively.
+ 	 * The following tests if the correct number of double words was
+diff --git a/tools/perf/util/cs-etm.h b/tools/perf/util/cs-etm.h
+index 4ad925d6d799..e153d02df0de 100644
+--- a/tools/perf/util/cs-etm.h
++++ b/tools/perf/util/cs-etm.h
+@@ -17,23 +17,37 @@ struct perf_session;
+  */
+ enum {
+ 	/* Starting with 0x0 */
+-	CS_HEADER_VERSION_0,
++	CS_HEADER_VERSION,
+ 	/* PMU->type (32 bit), total # of CPUs (32 bit) */
+ 	CS_PMU_TYPE_CPUS,
+ 	CS_ETM_SNAPSHOT,
+-	CS_HEADER_VERSION_0_MAX,
++	CS_HEADER_VERSION_MAX,
+ };
+ 
++/*
++ * Update the version for new format.
++ *
++ * New version 1 format adds a param count to the per cpu metadata.
++ * This allows easy adding of new metadata parameters.
++ * Requires that new params always added after current ones.
++ * Also allows client reader to handle file versions that are different by
++ * checking the number of params in the file vs the number expected.
++ */
++#define CS_HEADER_CURRENT_VERSION 1
++
+ /* Beginning of header common to both ETMv3 and V4 */
+ enum {
+ 	CS_ETM_MAGIC,
+ 	CS_ETM_CPU,
++	/* Number of trace config params in following ETM specific block */
++	CS_ETM_NR_TRC_PARAMS,
++	CS_ETM_COMMON_BLK_MAX_V1,
+ };
+ 
+ /* ETMv3/PTM metadata */
+ enum {
+ 	/* Dynamic, configurable parameters */
+-	CS_ETM_ETMCR = CS_ETM_CPU + 1,
++	CS_ETM_ETMCR = CS_ETM_COMMON_BLK_MAX_V1,
+ 	CS_ETM_ETMTRACEIDR,
+ 	/* RO, taken from sysFS */
+ 	CS_ETM_ETMCCER,
+@@ -41,10 +55,13 @@ enum {
+ 	CS_ETM_PRIV_MAX,
+ };
+ 
++/* define fixed version 0 length - allow new format reader to read old files. */
++#define CS_ETM_NR_TRC_PARAMS_V0 (CS_ETM_ETMIDR - CS_ETM_ETMCR + 1)
++
+ /* ETMv4 metadata */
+ enum {
+ 	/* Dynamic, configurable parameters */
+-	CS_ETMV4_TRCCONFIGR = CS_ETM_CPU + 1,
++	CS_ETMV4_TRCCONFIGR = CS_ETM_COMMON_BLK_MAX_V1,
+ 	CS_ETMV4_TRCTRACEIDR,
+ 	/* RO, taken from sysFS */
+ 	CS_ETMV4_TRCIDR0,
+@@ -55,6 +72,9 @@ enum {
+ 	CS_ETMV4_PRIV_MAX,
+ };
+ 
++/* define fixed version 0 length - allow new format reader to read old files. */
++#define CS_ETMV4_NR_TRC_PARAMS_V0 (CS_ETMV4_TRCAUTHSTATUS - CS_ETMV4_TRCCONFIGR + 1)
++
+ /*
+  * ETMv3 exception encoding number:
+  * See Embedded Trace Macrocell spcification (ARM IHI 0014Q)
+@@ -162,7 +182,7 @@ struct cs_etm_packet_queue {
+ 
+ #define BMVAL(val, lsb, msb)	((val & GENMASK(msb, lsb)) >> lsb)
+ 
+-#define CS_ETM_HEADER_SIZE (CS_HEADER_VERSION_0_MAX * sizeof(u64))
++#define CS_ETM_HEADER_SIZE (CS_HEADER_VERSION_MAX * sizeof(u64))
+ 
+ #define __perf_cs_etmv3_magic 0x3030303030303030ULL
+ #define __perf_cs_etmv4_magic 0x4040404040404040ULL
+-- 
+2.17.1
+
