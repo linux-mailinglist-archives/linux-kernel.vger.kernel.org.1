@@ -2,78 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206642F723A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 06:36:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 057ED2F723C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 06:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731810AbhAOFfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 00:35:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
+        id S1731850AbhAOFfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 00:35:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731537AbhAOFex (ORCPT
+        with ESMTP id S1731816AbhAOFfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 00:34:53 -0500
-Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119A6C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 21:34:13 -0800 (PST)
-Received: by mail-vk1-xa2b.google.com with SMTP id p128so1910849vkf.12
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 21:34:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ax6mB1CqVZukWAU1tjWp4UeICbzmILWOckaiTff+GZw=;
-        b=Mmtw+vEcv+96LHq4ptHZUUyiqiIgq5C9cQJcctXZ374b2ayb8Mom4B0adLtxi0/JzC
-         PDOyEprhCkCrq9EBxz6EGLRSMCcykPuujhFRdP5OsGMRnsDTh/maCmyMAC6KyQtZIsCw
-         rFHTzAqycEp8n/+BJ12KRio0oK2m67UjX9iV0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ax6mB1CqVZukWAU1tjWp4UeICbzmILWOckaiTff+GZw=;
-        b=m0fvXRX+fQpsZlYhnPuaiK5/nMl28HOBEO94rvbbt0Ts+kHOGGnQTHV/7XVO7B5OC2
-         dQ4PkKeZYHUIhTkaY4d03n00CyMkhwzW6qcHtGtuu4sRmfiBxxlKvQN98KXfxY4/lstG
-         9WxKTDtI6vOxS9XR9E1E0KyzeuaBF5dOXZ2jWwzTzU9ewBANuTj9xWOBmLIzHYY3jjoX
-         +Zx12HxB8Ylfn3lsYN6TNjbLM+tqVh33PHyctAazMw9WJQssLtBl28EFCT4xA6Q33F4M
-         +3yD2wl4+qZCU5rnPgq4v0O0J+qcEPkUcC4xQayeTyHToXuDsEEBpfFZwNekbzmiA7ux
-         zW2g==
-X-Gm-Message-State: AOAM531lAKylR9Bztihf/zo9hKb+xQVStGZko9h4IMM0lyKazGGqYbjG
-        lYnQ3eoqjFg1I0U8s67sp/gAXosrsYYynE/xWDWEeQ==
-X-Google-Smtp-Source: ABdhPJwXNJSYdQjNrt7NEv4DcVveYiDrfEBOv25u+SOwBxLVCXD5muGOkDS70HOyAVKN2oIN7ef1Aim9049JarUf4T8=
-X-Received: by 2002:ac5:c5b5:: with SMTP id f21mr8986198vkl.13.1610688852162;
- Thu, 14 Jan 2021 21:34:12 -0800 (PST)
+        Fri, 15 Jan 2021 00:35:52 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F735C061575;
+        Thu, 14 Jan 2021 21:35:11 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DH8yh12K5z9sVw;
+        Fri, 15 Jan 2021 16:35:08 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610688908;
+        bh=emPXlB/8XFwtYHEnzgQ3UY9TP5R8bJvzm3zmq4Ffy3I=;
+        h=Date:From:To:Cc:Subject:From;
+        b=sM3n04L2wT+fjXCmz7ZB4qnGvtfW6zWjzrR186OUjATl8zYxWuNTyd8yaVbFCQMQg
+         xaSZDr3ig44aihz9IZMifO+shqpGCs6iPtBSEhJjPP5WWGwNQLyTrs5McBia0CxUTJ
+         X0PRCdv8mAXjQYETrPtSSecesTaGOWTzAamnIrKbJZgk/OJoRdoUg8LNlAcKwMLfAl
+         9XHlXEPwattzfhy+uQ1uxIJPvWivbDUCN1OcIZv1IgFPEAT394zKDgY4AbAlweKR08
+         TYCcTgz279s3O4Jvdd6czAfzkAXQ/fHJUjvKN6I4LMos1Wb2IlvYcwtyMDKbx0CvQ8
+         YhPBh57wGof7g==
+Date:   Fri, 15 Jan 2021 16:35:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Huang Rui <ray.huang@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the amdgpu tree
+Message-ID: <20210115163505.4132a5b3@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201224114502.1.I41b9795e4b5bda7209eb9099aebdc6a29677391e@changeid>
- <nycvar.YFH.7.76.2101141314410.13752@cbobk.fhfr.pm>
-In-Reply-To: <nycvar.YFH.7.76.2101141314410.13752@cbobk.fhfr.pm>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Fri, 15 Jan 2021 13:34:01 +0800
-Message-ID: <CANMq1KC84MykRrKROQdVUmFZerpw4okEb1dLfVhAu-JXw5=Yfg@mail.gmail.com>
-Subject: Re: [PATCH] HID: google: Get HID report on probe to confirm tablet
- switch state
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Dmitry Torokhov <dtor@chromium.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/H2fiLh1ghCTXHVqBaUO8Y2g";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 8:15 PM Jiri Kosina <jikos@kernel.org> wrote:
->
-> On Thu, 24 Dec 2020, Nicolas Boichat wrote:
->
-> > This forces reading the base folded status anytime the device is
-> > probed.
->
-> Could you please provide a little bit more verbose changelog (namely what
-> is the actual problem this patch is fixing)? Thanks.
+--Sig_/H2fiLh1ghCTXHVqBaUO8Y2g
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Sure, I should have done this in the first place... v2 on the way.
+Hi all,
 
->
-> --
-> Jiri Kosina
-> SUSE Labs
->
+After merging the amdgpu tree, today's linux-next build (powerpc
+allyesconfig) failed like this:
+
+drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c: In function 'va=
+ngogh_get_smu_metrics_data':
+drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:300:10: error: '=
+boot_cpu_data' undeclared (first use in this function); did you mean 'boot_=
+cpuid'?
+  300 |          boot_cpu_data.x86_max_cores * sizeof(uint16_t));
+      |          ^~~~~~~~~~~~~
+      |          boot_cpuid
+drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c: In function 'va=
+ngogh_read_sensor':
+drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:1320:11: error: =
+'boot_cpu_data' undeclared (first use in this function); did you mean 'boot=
+_cpuid'?
+ 1320 |   *size =3D boot_cpu_data.x86_max_cores * sizeof(uint16_t);
+      |           ^~~~~~~~~~~~~
+      |           boot_cpuid
+drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c: In function 'va=
+ngogh_od_edit_dpm_table':
+drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:1460:19: error: =
+'boot_cpu_data' undeclared (first use in this function); did you mean 'boot=
+_cpuid'?
+ 1460 |   if (input[0] >=3D boot_cpu_data.x86_max_cores) {
+      |                   ^~~~~~~~~~~~~
+      |                   boot_cpuid
+
+Caused by commits
+
+  517cb957c43b ("drm/amd/pm: implement the processor clocks which read by m=
+etric")
+  0d90d0ddd10e ("drm/amd/pm: implement processor fine grain feature for van=
+gogh (v3)")
+
+The only thing I could do easily is to disable CONFIG_DRM_AMDGPU for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/H2fiLh1ghCTXHVqBaUO8Y2g
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmABKYkACgkQAVBC80lX
+0Gzcvwf9FMxLyUAQnhew3amfypq9a3ESOn7cq8a2BdIgt7wJjJ3OlXp4/0QkBnql
+2Ee5mGx4EkNHeFUl9AmrfCnlkWNmEoqU2WSKMCS7J2PwvRimzMo2O6h2FAd2xjea
+N2+cpkMvh6ChQxwoMRLn7lsjk7mJSc4SExc9T0qEQRTKozujv4rTiPPwP4ejbKBS
+bK/4XaJK9UJP0QsWwboXmd39NNIvHIL+etT3ilDnyzSyC78M7rwGfmcaGTKdeSAj
+PFyu3NU+Cbse9K2Vm0qqVIifxqyg43gZqw3wbxWQJ1nY+amjQrTzUgRQ+eWv5gnZ
+o5p9InibKdzZrhQoFUiSB0DcI5u7OA==
+=2hcq
+-----END PGP SIGNATURE-----
+
+--Sig_/H2fiLh1ghCTXHVqBaUO8Y2g--
