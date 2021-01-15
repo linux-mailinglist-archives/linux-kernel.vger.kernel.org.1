@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4862F762A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:03:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4172F762E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:03:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731554AbhAOKBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 05:01:37 -0500
-Received: from smtp25.cstnet.cn ([159.226.251.25]:53784 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731351AbhAOKBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 05:01:36 -0500
-Received: from localhost.localdomain (unknown [124.16.141.241])
-        by APP-05 (Coremail) with SMTP id zQCowACHUuPLZwFgY8pSAA--.13705S2;
-        Fri, 15 Jan 2021 18:00:43 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, vkoul@kernel.org,
-        dan.j.williams@intel.com
-Cc:     linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dmaengine: qcom: gpi: Remove unneeded semicolon
-Date:   Fri, 15 Jan 2021 10:00:40 +0000
-Message-Id: <20210115100040.33364-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: zQCowACHUuPLZwFgY8pSAA--.13705S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gw4fXw1DKF1xuw4rCw1fXrb_yoW3GFbEkF
-        4UZryxXr4YkF1q9rnxCrZrAryqv3WUur1ruF4vqrZxtws8Xr90q39rXr1vyw18urZrGFnI
-        kryUXr48JF4SkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2xYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWxJVW8Jr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8twCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIx
-        AIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU75l1DUUUU
-X-Originating-IP: [124.16.141.241]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQcCA102Z3uUPQAAsR
+        id S1730598AbhAOKCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 05:02:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728020AbhAOKCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 05:02:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B37F9224F9;
+        Fri, 15 Jan 2021 10:01:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610704912;
+        bh=wv8ySCdCXULDYKAIbJev8yhBQxUDdYmctzFeIbE6JIQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FrvA5gVmAWWSK8h3wOyiXvdkOKf5i9J8FzvM7tH/j9tiADm2FuM0U3AosQ/mS4eEv
+         r0lTVZvBgmdXhhI7ChU2XdoyP4XYoPIMQQSGRUClfsWGAB9UK4HSe4WvdgREIABUGF
+         7HtrElBNsFQkGOqy6z1u4nJUShH6K6Ln7I1StVnvfCQq+vixOfv387EL+4h2HVLP9B
+         ZEoalEjQk7OK7N8YJvAtbDMoPxkKT79Ms6acp3U51GYtZ+AI4eSoE+eTJbT7SUmQBn
+         3CC+676aFhDm0Xto7Qvbkp0izs2mQjkWvQeJbLuVgcUY5jhs2/GHzwkHbxdljqvOew
+         LD6h4yZK3xHQQ==
+Date:   Fri, 15 Jan 2021 18:01:37 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     robh@kernel.org, festevam@gmail.com, catalin.marinas@arm.com,
+        will@kernel.org, georgi.djakov@linaro.org, cdleonard@gmail.com,
+        gregkh@linuxfoundation.org, kernel@pengutronix.de,
+        linux-imx@nxp.com, kernel@puri.sm, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v4 4/5] arm64: dts: imx8mq: Add interconnect for lcdif
+Message-ID: <20210115100136.GN28365@dragon>
+References: <20210107121754.3295-1-martin.kepplinger@puri.sm>
+ <20210107121754.3295-5-martin.kepplinger@puri.sm>
+ <20210115094738.GL28365@dragon>
+ <71f61d0b-b09e-84e9-dd6e-77b89b09ba42@puri.sm>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71f61d0b-b09e-84e9-dd6e-77b89b09ba42@puri.sm>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix semicolon.cocci warning:
-drivers/dma/qcom/gpi.c:1703:2-3: Unneeded semicolon
+On Fri, Jan 15, 2021 at 10:57:02AM +0100, Martin Kepplinger wrote:
+> 
+> 
+> On 15.01.21 10:47, Shawn Guo wrote:
+> > On Thu, Jan 07, 2021 at 01:17:53PM +0100, Martin Kepplinger wrote:
+> > > Add interconnect ports for lcdif to set bus capabilities.
+> > > 
+> > > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> > > ---
+> > >   arch/arm64/boot/dts/freescale/imx8mq.dtsi | 3 +++
+> > >   1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > > index 89e7de2e7f7a..9300be8c9b53 100644
+> > > --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > > @@ -11,6 +11,7 @@
+> > >   #include "dt-bindings/input/input.h"
+> > >   #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > >   #include <dt-bindings/thermal/thermal.h>
+> > > +#include <dt-bindings/interconnect/imx8mq.h>
+> > >   #include "imx8mq-pinfunc.h"
+> > >   / {
+> > > @@ -522,6 +523,8 @@
+> > >   						  <&clk IMX8MQ_VIDEO_PLL1>,
+> > >   						  <&clk IMX8MQ_VIDEO_PLL1_OUT>;
+> > >   				assigned-clock-rates = <0>, <0>, <0>, <594000000>;
+> > > +				interconnects = <&noc IMX8MQ_ICM_LCDIF &noc IMX8MQ_ICS_DRAM>;
+> > > +				interconnect-names = "dram";
+> > 
+> > Hmm, two interconnect phandles but only one name?
+> > 
+> 
+> Well it's one interconnect path that would more accurately be named
+> "lcdif-dram" if that's what you mean. I removed "lcdif-" because it's the
+> lcdif node, but maybe we should name it lcdif-dram after all. at least
+> that's how others describe it.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/dma/qcom/gpi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ha, sorry, I misunderstood the interconnects property.
 
-diff --git a/drivers/dma/qcom/gpi.c b/drivers/dma/qcom/gpi.c
-index 1a0bf6b0567a..f20b5573fc67 100644
---- a/drivers/dma/qcom/gpi.c
-+++ b/drivers/dma/qcom/gpi.c
-@@ -1700,7 +1700,7 @@ static int gpi_create_i2c_tre(struct gchan *chan, struct gpi_desc *desc,
- 
- 		tre->dword[3] = u32_encode_bits(TRE_TYPE_DMA, TRE_FLAGS_TYPE);
- 		tre->dword[3] |= u32_encode_bits(1, TRE_FLAGS_IEOT);
--	};
-+	}
- 
- 	for (i = 0; i < tre_idx; i++)
- 		dev_dbg(dev, "TRE:%d %x:%x:%x:%x\n", i, desc->tre[i].dword[0],
--- 
-2.17.1
-
+Shawn
