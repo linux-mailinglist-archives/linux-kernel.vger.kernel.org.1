@@ -2,95 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B592F7480
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6572F7485
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730194AbhAOIk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 03:40:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbhAOIk0 (ORCPT
+        id S1730655AbhAOIpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 03:45:13 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:59470 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725797AbhAOIpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 03:40:26 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7B9C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 00:39:46 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id i5so5590295pgo.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 00:39:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GdUo99yy+lDCOxyAfmzMI+HeO6P2enB582eqYiApOdk=;
-        b=jSw9LxUKrUj2kbaPKLxS/gYrb3WsayE4NlYAoSvB4z6jelQawNh9zMdwNe30Z7TR9P
-         g8lvFUwxNcfhEwbCgXlgatuE89YY4DVEjoyUbW1Q6vGEs0y1wNEO2knLMKuXfUE20YNW
-         pq/OeXTiHQ4YDhLdCAGOKxarz+gWkZ/Obok3alDL3ykM5p6IidOpdsj8rMMgolA3ooX5
-         5THgYnv7cJ9aPbh7w9xcZiLEyA82nF8q8bRiGdXDZkYZ2E82dIMOKujStRjuw3HNGAAK
-         TPQDcf4yZ99Qu08Iox8qtJIQ6PmTcDChsuaCRCjmJ6Y2Dg0sBXhnirAqTCLE49cbovq3
-         wizg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GdUo99yy+lDCOxyAfmzMI+HeO6P2enB582eqYiApOdk=;
-        b=clRjPxd/aKpCTh6wLUm4QtrZFg3kPJAuTcG4RjLz8/ml2OdixTwpCUmPoHsuF5+Vib
-         Zf2NsI4+EGGnMlK5MsI1ixdmI9BJ/V7ekwG57E78ikoHuSf/EFdZxCbca7/dTtTzQeab
-         fporNGycX/ZesOoJadeLYCo7Of2r727m55xsvrwuOj8L0Chvp/aiNWVwAjoSeNiHGa33
-         U3ZKXSHKaOaoR6gLjEeUvgxnRvEI6Ap07UO3U2yDNbX7Dy5myYpjc6OiRs0PTNcdLsBa
-         2j5DSglVoqXu96U2dy8YcPy9Xhw07Icw1lCKvg/ESm1odeFmBkGyTbn9W+xcJfXEqb7Q
-         2shg==
-X-Gm-Message-State: AOAM532SjtevxxqwrFddFA8/VB6wE3kGz8F7ZwVKmiH9zjaD/9nTHvRH
-        DCJikVWSssNIs4+WvtpW6sI=
-X-Google-Smtp-Source: ABdhPJx5/dfGixRN8PJ4qEk6Qpzlq7ob9ic3OOtrs18wKDnHhuItn/p77FtFOrj+WChSaK5t73nWjQ==
-X-Received: by 2002:a62:8683:0:b029:1a3:9879:c326 with SMTP id x125-20020a6286830000b02901a39879c326mr11654251pfd.72.1610699985843;
-        Fri, 15 Jan 2021 00:39:45 -0800 (PST)
-Received: from ubt.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id e13sm7748155pfj.63.2021.01.15.00.39.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 00:39:45 -0800 (PST)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        Bin Ji <bin.ji@unisoc.com>, linux-kernel@vger.kernel.org,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Subject: [PATCH] coresight: etm4x: add AMBA id for Cortex-A55 and Cortex-A75
-Date:   Fri, 15 Jan 2021 16:39:33 +0800
-Message-Id: <20210115083933.50522-1-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 15 Jan 2021 03:45:12 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10F8iMkr085444;
+        Fri, 15 Jan 2021 02:44:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610700262;
+        bh=T5opbELEPVZD8CSZzRFeTmLVA03iXY5+DsRAa8s1kHQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=AVYlVE7GrP/tJDkO+Whhk4i7peL7BwcmeMokLuct5EMCSz2zVUYf51NODsKIIUrUX
+         oAIxlvaawOYbcGO7CdldiKkJfP03CDq7MIdpM9QiRK3hCFd/rghOt5gB9E45g5GWI9
+         r0RiMVxKwe7H/AHaD+Ip98LgTAtCiEpJjpaJlaMc=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10F8iM0m037004
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 Jan 2021 02:44:22 -0600
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
+ Jan 2021 02:44:22 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 15 Jan 2021 02:44:22 -0600
+Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10F8iIeq086209;
+        Fri, 15 Jan 2021 02:44:19 -0600
+Subject: Re: [PATCH v12 2/4] phy: Add ethernet serdes configuration option
+To:     Steen Hegelund <steen.hegelund@microchip.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>
+References: <20210107091924.1569575-1-steen.hegelund@microchip.com>
+ <20210107091924.1569575-3-steen.hegelund@microchip.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <41e40e7b-6a3a-cdb9-adfc-e42f6627ea7b@ti.com>
+Date:   Fri, 15 Jan 2021 14:14:17 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210107091924.1569575-3-steen.hegelund@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bin Ji <bin.ji@unisoc.com>
+Hi,
 
-Add ETM amba id to support Cortex-A55(Ananke) and Cortex-A75(Promethus).
+On 07/01/21 2:49 pm, Steen Hegelund wrote:
+> Provide a new ethernet phy configuration structure, that
+> allow PHYs used for ethernet to be configured with
+> speed, media type and clock information.
+> 
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> ---
+>  include/linux/phy/phy-ethernet-serdes.h | 30 +++++++++++++++++++++++++
+>  include/linux/phy/phy.h                 |  4 ++++
+>  2 files changed, 34 insertions(+)
+>  create mode 100644 include/linux/phy/phy-ethernet-serdes.h
+> 
+> diff --git a/include/linux/phy/phy-ethernet-serdes.h b/include/linux/phy/phy-ethernet-serdes.h
+> new file mode 100644
+> index 000000000000..d2462fadf179
+> --- /dev/null
+> +++ b/include/linux/phy/phy-ethernet-serdes.h
+> @@ -0,0 +1,30 @@
+> +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
+> +/*
+> + * Microchip Sparx5 Ethernet SerDes driver
+> + *
+> + * Copyright (c) 2020 Microschip Inc
+> + */
+> +#ifndef __PHY_ETHERNET_SERDES_H_
+> +#define __PHY_ETHERNET_SERDES_H_
+> +
+> +#include <linux/types.h>
+> +
+> +enum ethernet_media_type {
+> +	ETH_MEDIA_DEFAULT,
+> +	ETH_MEDIA_SR,
+> +	ETH_MEDIA_DAC,
+> +};
+> +
+> +/**
+> + * struct phy_configure_opts_eth_serdes - Ethernet SerDes This structure is used
+> + * to represent the configuration state of a Ethernet Serdes PHY.
+> + * @speed: Speed of the serdes interface in Mbps
+> + * @media_type: Specifies which media the serdes will be using
+> + */
+> +struct phy_configure_opts_eth_serdes {
+> +	u32                        speed;
+> +	enum ethernet_media_type   media_type;
+> +};
 
-Signed-off-by: Bin Ji <bin.ji@unisoc.com>
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
----
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+Is media type going to be determined dynamically by the Ethernet
+controller. If it's not determined dynamically, it shouldn't be in PHY
+ops but rather as a DT parameter.
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index b20b6ff17cf6..66c6641c71ea 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -1709,9 +1709,11 @@ static int etm4_remove(struct amba_device *adev)
- 
- static const struct amba_id etm4_ids[] = {
- 	CS_AMBA_ID(0x000bb95d),			/* Cortex-A53 */
-+	CS_AMBA_ID(0x000bbd05),			/* Cortex-A55 */
- 	CS_AMBA_ID(0x000bb95e),			/* Cortex-A57 */
- 	CS_AMBA_ID(0x000bb95a),			/* Cortex-A72 */
- 	CS_AMBA_ID(0x000bb959),			/* Cortex-A73 */
-+	CS_AMBA_ID(0x000bbd0a),			/* Cortex-A75 */
- 	CS_AMBA_UCI_ID(0x000bb9da, uci_id_etm4),/* Cortex-A35 */
- 	CS_AMBA_UCI_ID(0x000bbd0c, uci_id_etm4),/* Neoverse N1 */
- 	CS_AMBA_UCI_ID(0x000f0205, uci_id_etm4),/* Qualcomm Kryo */
--- 
-2.25.1
+phy_configure_opts is mostly used with things like DP where the
+controller probes the configurations supported by SERDES using the
+configure and validate ops. I don't think for Ethernet it is required.
 
+Thanks
+Kishon
+
+> +
+> +#endif
+> +
+> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+> index e435bdb0bab3..78ecb375cede 100644
+> --- a/include/linux/phy/phy.h
+> +++ b/include/linux/phy/phy.h
+> @@ -18,6 +18,7 @@
+>  
+>  #include <linux/phy/phy-dp.h>
+>  #include <linux/phy/phy-mipi-dphy.h>
+> +#include <linux/phy/phy-ethernet-serdes.h>
+>  
+>  struct phy;
+>  
+> @@ -49,11 +50,14 @@ enum phy_mode {
+>   *
+>   * @mipi_dphy:	Configuration set applicable for phys supporting
+>   *		the MIPI_DPHY phy mode.
+> + * @eth_serdes: Configuration set applicable for phys supporting
+> + *		the ethernet serdes.
+>   * @dp:		Configuration set applicable for phys supporting
+>   *		the DisplayPort protocol.
+>   */
+>  union phy_configure_opts {
+>  	struct phy_configure_opts_mipi_dphy	mipi_dphy;
+> +	struct phy_configure_opts_eth_serdes	eth_serdes;
+>  	struct phy_configure_opts_dp		dp;
+>  };
+>  
+> 
