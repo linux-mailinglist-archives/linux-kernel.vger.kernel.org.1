@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982652F7ACF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:56:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CFE2F793A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388128AbhAOMzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:55:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42472 "EHLO mail.kernel.org"
+        id S1733227AbhAOMdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:33:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387643AbhAOMfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:35:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B1B823136;
-        Fri, 15 Jan 2021 12:34:40 +0000 (UTC)
+        id S1733154AbhAOMdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:33:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 962DC235F8;
+        Fri, 15 Jan 2021 12:33:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714081;
-        bh=DXpiEc4h0HVA5+YwnioI9uEatc1ccXvj7bk9fvpLlrc=;
+        s=korg; t=1610714002;
+        bh=TDDpXuBgLVCiAQrY2XBfhsvvI8CTbty4gxeGpYh89g8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f/JCSH/yZzCKovKAWjcDghj9JzL4NOt1ynnAzPmE6+89vrPJx9NN/lX93JUBTTPYr
-         3Y1pi8E7HRv5HmZS8vDKDNJADTUJeB6qRLP+7URpS8SerW2N/7dzCTmn4mLrjRg8Tz
-         FS3Qlk6wyPypZUFmMTomay81MvA7ZyTYA5rFZiD0=
+        b=BSOeeDcJkX+BFZb3fmsDKNlFzJiq9T/8CTPqwU1SiIEUaogL3b/Hjq6nWAEin2U+C
+         CGGh22iNFBMGMYHjZ1eYcpk33d2G5Bqv6T2Um9y6uccdCA4ZxUvDJCDenia6yGV8+s
+         0d9b5gUms6FFJIkuGkfC807lv0htZvZPEyDlu+ns=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
-        Sriram Dash <sriram.dash@samsung.com>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.4 37/62] can: m_can: m_can_class_unregister(): remove erroneous m_can_clk_stop()
+        stable@vger.kernel.org,
+        Shravya Kumbham <shravya.kumbham@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 4.19 29/43] dmaengine: xilinx_dma: check dma_async_device_register return value
 Date:   Fri, 15 Jan 2021 13:27:59 +0100
-Message-Id: <20210115122000.190143068@linuxfoundation.org>
+Message-Id: <20210115121958.458407619@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
+References: <20210115121957.037407908@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Shravya Kumbham <shravya.kumbham@xilinx.com>
 
-commit c4aec381ab98c9189d47b935832541d520f1f67f upstream.
+commit 99974aedbd73523969afb09f33c6e3047cd0ddae upstream.
 
-In m_can_class_register() the clock is started, but stopped on exit. When
-calling m_can_class_unregister(), the clock is stopped a second time.
+dma_async_device_register() can return non-zero error code. Add
+condition to check the return value of dma_async_device_register
+function and handle the error path.
 
-This patch removes the erroneous m_can_clk_stop() in  m_can_class_unregister().
-
-Fixes: f524f829b75a ("can: m_can: Create a m_can platform framework")
-Cc: Dan Murphy <dmurphy@ti.com>
-Cc: Sriram Dash <sriram.dash@samsung.com>
-Reviewed-by: Sean Nyekjaer <sean@geanix.com>
-Link: https://lore.kernel.org/r/20201215103238.524029-2-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Addresses-Coverity: Event check_return.
+Fixes: 9cd4360de609 ("dma: Add Xilinx AXI Video Direct Memory Access Engine driver support")
+Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
+Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Link: https://lore.kernel.org/r/1608722462-29519-2-git-send-email-radhey.shyam.pandey@xilinx.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/can/m_can/m_can.c |    2 --
- 1 file changed, 2 deletions(-)
+ drivers/dma/xilinx/xilinx_dma.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1868,8 +1868,6 @@ void m_can_class_unregister(struct m_can
- {
- 	unregister_candev(m_can_dev->net);
+--- a/drivers/dma/xilinx/xilinx_dma.c
++++ b/drivers/dma/xilinx/xilinx_dma.c
+@@ -2713,7 +2713,11 @@ static int xilinx_dma_probe(struct platf
+ 	}
  
--	m_can_clk_stop(m_can_dev);
--
- 	free_candev(m_can_dev->net);
- }
- EXPORT_SYMBOL_GPL(m_can_class_unregister);
+ 	/* Register the DMA engine with the core */
+-	dma_async_device_register(&xdev->common);
++	err = dma_async_device_register(&xdev->common);
++	if (err) {
++		dev_err(xdev->dev, "failed to register the dma device\n");
++		goto error;
++	}
+ 
+ 	err = of_dma_controller_register(node, of_dma_xilinx_xlate,
+ 					 xdev);
 
 
