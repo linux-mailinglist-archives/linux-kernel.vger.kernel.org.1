@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D370F2F7BE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CDF2F7BDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388598AbhAONGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:06:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36412 "EHLO mail.kernel.org"
+        id S2388582AbhAONGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:06:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732513AbhAOMbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:31:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B1EE224F9;
-        Fri, 15 Jan 2021 12:30:43 +0000 (UTC)
+        id S1732564AbhAOMbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B836C23403;
+        Fri, 15 Jan 2021 12:29:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713843;
-        bh=ibyoc2rBqcrmn0fTDfCqzTf+/6rTCjCX10lhVzwFgL8=;
+        s=korg; t=1610713795;
+        bh=etPUrUNQhuJ0dyxHGJHRstf6/2h+tsqNure8SU6DifI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B9GOKv76a0W5xsdeFMa3dJw+cZCReG1j7+YbRJ/67YAb70FU8cy40Vg0qSuKb8Nro
-         Cb6CMcONzReyK5U4isydk+41YvLjQL0rhxV0Aj3Z29jvy2eb0udwObP8f3UuqxZ9F0
-         uG7THeOd9HtpipHHg3xTwpds9IbT2hXsoPUtyXeA=
+        b=I9Fit96RDFF+Rq8HDO9Rn2O8Y0PwEba5iyhyYw3TlLKSWeWnXmXvtCt8Csva5TlAA
+         8nyu395/OHoTji20u6P2GHsG545DNEXpu9tM6jDybbRsKqr0CZVnDTG5CS+rZvck//
+         bBgYCm0x6/d7kxvY/MznkZmlIzCUsTV0NHSUxeGI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Disseldorp <ddiss@suse.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Bart Van Assche <bart.vanassche@sandisk.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 06/25] target: add XCOPY target/segment desc sense codes
+        stable@vger.kernel.org, Stefano Brivio <sbrivio@redhat.com>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.4 09/18] net: fix pmtu check in nopmtudisc mode
 Date:   Fri, 15 Jan 2021 13:27:37 +0100
-Message-Id: <20210115121956.996737941@linuxfoundation.org>
+Message-Id: <20210115121955.568213908@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
-References: <20210115121956.679956165@linuxfoundation.org>
+In-Reply-To: <20210115121955.112329537@linuxfoundation.org>
+References: <20210115121955.112329537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,81 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Disseldorp <ddiss@suse.de>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit e864212078ded276bdb272b2e0ee6a979357ca8a ]
+[ Upstream commit 50c661670f6a3908c273503dfa206dfc7aa54c07 ]
 
-As defined in http://www.t10.org/lists/asc-num.htm. To be used during
-validation of XCOPY target and segment descriptor lists.
+For some reason ip_tunnel insist on setting the DF bit anyway when the
+inner header has the DF bit set, EVEN if the tunnel was configured with
+'nopmtudisc'.
 
-Signed-off-by: David Disseldorp <ddiss@suse.de>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Bart Van Assche <bart.vanassche@sandisk.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This means that the script added in the previous commit
+cannot be made to work by adding the 'nopmtudisc' flag to the
+ip tunnel configuration. Doing so breaks connectivity even for the
+without-conntrack/netfilter scenario.
+
+When nopmtudisc is set, the tunnel will skip the mtu check, so no
+icmp error is sent to client. Then, because inner header has DF set,
+the outer header gets added with DF bit set as well.
+
+IP stack then sends an error to itself because the packet exceeds
+the device MTU.
+
+Fixes: 23a3647bc4f93 ("ip_tunnels: Use skb-len to PMTU check.")
+Cc: Stefano Brivio <sbrivio@redhat.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/target/target_core_transport.c | 24 ++++++++++++++++++++++++
- include/target/target_core_base.h      |  4 ++++
- 2 files changed, 28 insertions(+)
+ net/ipv4/ip_tunnel.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index e738b4621cbba..ecd707f74ddcb 100644
---- a/drivers/target/target_core_transport.c
-+++ b/drivers/target/target_core_transport.c
-@@ -1736,6 +1736,10 @@ void transport_generic_request_failure(struct se_cmd *cmd,
- 	case TCM_LOGICAL_BLOCK_APP_TAG_CHECK_FAILED:
- 	case TCM_LOGICAL_BLOCK_REF_TAG_CHECK_FAILED:
- 	case TCM_COPY_TARGET_DEVICE_NOT_REACHABLE:
-+	case TCM_TOO_MANY_TARGET_DESCS:
-+	case TCM_UNSUPPORTED_TARGET_DESC_TYPE_CODE:
-+	case TCM_TOO_MANY_SEGMENT_DESCS:
-+	case TCM_UNSUPPORTED_SEGMENT_DESC_TYPE_CODE:
- 		break;
- 	case TCM_OUT_OF_RESOURCES:
- 		sense_reason = TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
-@@ -2886,6 +2890,26 @@ static const struct sense_info sense_info_table[] = {
- 		.key = ILLEGAL_REQUEST,
- 		.asc = 0x26, /* INVALID FIELD IN PARAMETER LIST */
- 	},
-+	[TCM_TOO_MANY_TARGET_DESCS] = {
-+		.key = ILLEGAL_REQUEST,
-+		.asc = 0x26,
-+		.ascq = 0x06, /* TOO MANY TARGET DESCRIPTORS */
-+	},
-+	[TCM_UNSUPPORTED_TARGET_DESC_TYPE_CODE] = {
-+		.key = ILLEGAL_REQUEST,
-+		.asc = 0x26,
-+		.ascq = 0x07, /* UNSUPPORTED TARGET DESCRIPTOR TYPE CODE */
-+	},
-+	[TCM_TOO_MANY_SEGMENT_DESCS] = {
-+		.key = ILLEGAL_REQUEST,
-+		.asc = 0x26,
-+		.ascq = 0x08, /* TOO MANY SEGMENT DESCRIPTORS */
-+	},
-+	[TCM_UNSUPPORTED_SEGMENT_DESC_TYPE_CODE] = {
-+		.key = ILLEGAL_REQUEST,
-+		.asc = 0x26,
-+		.ascq = 0x09, /* UNSUPPORTED SEGMENT DESCRIPTOR TYPE CODE */
-+	},
- 	[TCM_PARAMETER_LIST_LENGTH_ERROR] = {
- 		.key = ILLEGAL_REQUEST,
- 		.asc = 0x1a, /* PARAMETER LIST LENGTH ERROR */
-diff --git a/include/target/target_core_base.h b/include/target/target_core_base.h
-index 30f99ce4c6cea..8a70d38f13329 100644
---- a/include/target/target_core_base.h
-+++ b/include/target/target_core_base.h
-@@ -178,6 +178,10 @@ enum tcm_sense_reason_table {
- 	TCM_LOGICAL_BLOCK_APP_TAG_CHECK_FAILED	= R(0x16),
- 	TCM_LOGICAL_BLOCK_REF_TAG_CHECK_FAILED	= R(0x17),
- 	TCM_COPY_TARGET_DEVICE_NOT_REACHABLE	= R(0x18),
-+	TCM_TOO_MANY_TARGET_DESCS		= R(0x19),
-+	TCM_UNSUPPORTED_TARGET_DESC_TYPE_CODE	= R(0x1a),
-+	TCM_TOO_MANY_SEGMENT_DESCS		= R(0x1b),
-+	TCM_UNSUPPORTED_SEGMENT_DESC_TYPE_CODE	= R(0x1c),
- #undef R
- };
+--- a/net/ipv4/ip_tunnel.c
++++ b/net/ipv4/ip_tunnel.c
+@@ -708,7 +708,11 @@ void ip_tunnel_xmit(struct sk_buff *skb,
+ 		goto tx_error;
+ 	}
  
--- 
-2.27.0
-
+-	if (tnl_update_pmtu(dev, skb, rt, tnl_params->frag_off, inner_iph)) {
++	df = tnl_params->frag_off;
++	if (skb->protocol == htons(ETH_P_IP))
++		df |= (inner_iph->frag_off & htons(IP_DF));
++
++	if (tnl_update_pmtu(dev, skb, rt, df, inner_iph)) {
+ 		ip_rt_put(rt);
+ 		goto tx_error;
+ 	}
+@@ -736,10 +740,6 @@ void ip_tunnel_xmit(struct sk_buff *skb,
+ 			ttl = ip4_dst_hoplimit(&rt->dst);
+ 	}
+ 
+-	df = tnl_params->frag_off;
+-	if (skb->protocol == htons(ETH_P_IP))
+-		df |= (inner_iph->frag_off&htons(IP_DF));
+-
+ 	max_headroom = LL_RESERVED_SPACE(rt->dst.dev) + sizeof(struct iphdr)
+ 			+ rt->dst.header_len + ip_encap_hlen(&tunnel->encap);
+ 	if (max_headroom > dev->needed_headroom)
 
 
