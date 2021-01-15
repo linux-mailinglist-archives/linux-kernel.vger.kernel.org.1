@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 049D62F7F27
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FFE2F7F2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732804AbhAOPNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:13:13 -0500
-Received: from mga06.intel.com ([134.134.136.31]:40521 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727719AbhAOPNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:13:12 -0500
-IronPort-SDR: 9hF5RDPqv+L5bMA891vlFdV1fpVpa/68mjZnTywI/vkMgxqv6b8jFaGDsU9G66fgj3QLXXyCj8
- Z2gYKW5PqVyA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="240104676"
-X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="240104676"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 07:12:32 -0800
-IronPort-SDR: YMRvbCJfBgNMtsfli4winv39sw8mvETNYSyyFo7Vc/HVBypP1QY3aFIOoXdd4lvX71KuFz+uVO
- 5Uam87Dptpag==
-X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="382694568"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.249.174.174]) ([10.249.174.174])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 07:12:28 -0800
-Subject: Re: [PATCH v3 04/17] perf: x86/ds: Handle guest PEBS overflow PMI and
- inject it to guest
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Like Xu <like.xu@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <andi@firstfloor.org>, wei.w.wang@intel.com,
-        luwei.kang@intel.com, linux-kernel@vger.kernel.org
-References: <20210104131542.495413-1-like.xu@linux.intel.com>
- <20210104131542.495413-5-like.xu@linux.intel.com>
- <X/86UWuV/9yt14hQ@hirez.programming.kicks-ass.net>
- <9c343e40-bbdf-8af0-3307-5274070ee3d2@intel.com>
- <YAGEFgqQv281jVHc@hirez.programming.kicks-ass.net>
- <2c197d5a-09a8-968c-a942-c95d18983c9d@intel.com>
- <YAGqWNl2FKxVussV@hirez.programming.kicks-ass.net>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <18715b60-9510-566d-f533-d722d50145d1@intel.com>
-Date:   Fri, 15 Jan 2021 23:12:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1730855AbhAOPON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:14:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbhAOPOM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 10:14:12 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 294C9C061757;
+        Fri, 15 Jan 2021 07:13:32 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id c124so7662416wma.5;
+        Fri, 15 Jan 2021 07:13:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=irur51P18g2I48b5I3skM0768y5U1g5aOmBI7pxut84=;
+        b=E/FfNFTzs/quk+ZPm6VtHMmGcgM2GUmKOBG/v5TKNANXHwCOfkRifJlFB6d/41+kRc
+         dxcDDp8pJEQkRZz+Y+kyeczJfPLvFgb9W3kOQHJLgfX8aBNKGo+ZIgpZr0qlWxNvxEJT
+         uX55ePuI6SuvNLU6Xp5MgrREGDd+zTZBaywlSqhUmXLvii9PVxZzSdOTXTn0ond+Ua7w
+         T8TRjAOqfEJJoD/ZRNzC7FUYzp5C8LMe9yrfN5bt2/tEWqAyWtxzLb1pROVv5qz2Rkqz
+         Us6pzJTJZwpaZ/upiRonARwtJiVOPGrPJ3fYqb3wWpnCwuSQQrPK0l4u4p7tnC5kpAaZ
+         Xx9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=irur51P18g2I48b5I3skM0768y5U1g5aOmBI7pxut84=;
+        b=bAXkOSYywi7taZB8NuYeAqZwUNtZmlHkG8NaE3ZjZzpyVB6QonVSbw7aO071ulj0OL
+         IX1unF3eE215gEi7SNUdkuhaS8CqGYcj4IybuD/jRdjiTwl3bLUvH/X3FrC2zVkfcF0q
+         3pVodDKC/0tSk128Y7UEcab+FUbhLfp/axeV+wHpBlL3xlPZUVgLtt9JC/BmKq2g+JXF
+         Zi/yaCn8SxcdA7vQiIM+VNroVduq/OqQeL7zlusS98MTg9DblPsVh1WTMSnq6I1nwGAD
+         s2kymE52E5F6nOl4zK2n+r6BoCTV4TGskDGZOE/LAH2FVZ9nmfI9Jkw4FQpwB+X2Nrni
+         NiEQ==
+X-Gm-Message-State: AOAM532n44zcbql1hwy5S1UI1jpiQTR/+uhHubD49NeI/MaHnNa7APWp
+        z9w/54/0iLT9Ru9WkHmPS3Q=
+X-Google-Smtp-Source: ABdhPJzKPIPaVow9bEsAwPw+A6IcddP49ANR495ciH2+Hc4t9bBLEbcMWgLrdKSx5wTo3T9bqcA+zQ==
+X-Received: by 2002:a1c:de04:: with SMTP id v4mr7633175wmg.84.1610723610822;
+        Fri, 15 Jan 2021 07:13:30 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id h9sm12367651wme.11.2021.01.15.07.13.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 07:13:29 -0800 (PST)
+Date:   Fri, 15 Jan 2021 16:13:25 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] clk: tegra: Ensure that PLLU configuration is
+ applied properly
+Message-ID: <YAGxFbvrHHcOCZIW@ulmo>
+References: <20210112122724.1712-1-digetx@gmail.com>
+ <20210112122724.1712-4-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YAGqWNl2FKxVussV@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7yeVzujnbvx3IEge"
+Content-Disposition: inline
+In-Reply-To: <20210112122724.1712-4-digetx@gmail.com>
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/15 22:44, Peter Zijlstra wrote:
-> On Fri, Jan 15, 2021 at 10:30:13PM +0800, Xu, Like wrote:
->
->>> Are you sure? Spurious NMI/PMIs are known to happen anyway. We have far
->>> too much code to deal with them.
->> https://lore.kernel.org/lkml/20170628130748.GI5981@leverpostej/T/
->>
->> In the rr workload, the commit change "the PMI interrupts in skid region
->> should be dropped"
->> is reverted since some users complain that:
->>
->>> It seems to me that it might be reasonable to ignore the interrupt if
->>> the purpose of the interrupt is to trigger sampling of the CPUs
->>> register state.  But if the interrupt will trigger some other
->>> operation, such as a signal on an fd, then there's no reason to drop
->>> it.
->> I assume that if the PMI drop is unacceptable, either will spurious PMI
->> injection.
->>
->> I'm pretty open if you insist that we really need to do this for guest PEBS
->> enabling.
-> That was an entirely different issue. We were dropping events on the
-> floor because they'd passed priv boundaries. So there was an actual
-> event, and we made it go away.
 
-Thanks for your clarification and support.
+--7yeVzujnbvx3IEge
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> What we're talking about here is raising an PMI with BUFFER_OVF set,
-> even if the DS is empty. That should really be harmless. We'll take the
-> PMI, find there's nothing there, and do nothing.
+On Tue, Jan 12, 2021 at 03:27:22PM +0300, Dmitry Osipenko wrote:
+> The PLLU (USB) consists of the PLL configuration itself and configuration
+> of the PLLU outputs. The PLLU programming is inconsistent on T30 vs T114,
+> where T114 immediately bails out if PLLU is enabled and T30 re-enables
+> a potentially already enabled PLL (left after bootloader) and then fully
+> reprograms it, which could be unsafe to do. The correct way should be to
+> skip enabling of the PLL if it's already enabled and then apply
+> configuration to the outputs. This patch doesn't fix any known problems,
+> it's a minor improvement.
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/clk/tegra/clk-pll.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 
-The only harm point is confusing the guest PEBS user with
-the behavior of pebs_interrupt_threshold.
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-Now that KVM has to break it due to cross-mapping issue,
-Let me implement this idea in the next version w/ relevant performance data.
+--7yeVzujnbvx3IEge
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmABsQ0ACgkQ3SOs138+
+s6GZsRAAgsv/3+AZW5dZumiEFjvucSieXeYaUb7FmlrlX/RK+kCNKErnyQCakAeM
+Cc6hxFVnCOkjdWhBvnb64mxVb9l9wUHKMOBiL4Hj54jcf6bBrwvHFhVPvfWn/fEZ
+xUFN/QLj2G0+sNcpBp751VohUEVt2RLV1KcQgzzUDSwUWL8r8JqAxcYGNU9y1kkd
+NynNEBT4JxnmaTMPSni8rsftdzObR89oERg1eaf8IZFhlE0jboeUIOcznUm+wOd3
+TdUTKThNhMiQ5WsIdnwXVHN5T3n7eDjBGmN4X9cyFaoxDF1emlHB7rFW8/lUyZzk
+jqaJnUtJOz+E3GKQO3Kvu+HXhywWItC5KYw2tiphPtV8QY4hUN6L8KEn2jSwLL4L
+H1hIu+3ze9mCqlOYZouOUmnoxPsP0c0+HoaDR/0l/asqxRc+4JeehNGPtEX2v3MT
+h72Ny4YDe4YUT9SIJR2i6wrUxZQkDkciJ3vigGrZw+MKVmk928Q7uUih+afYTH6i
+GHCu8kDySfkyCcZ5Islt5DIU4o9kv5AffJ/L0ng1A7xVOw+TqZYMPPkZCwQkUSRh
+pX6fKxY0XMpKySdG3QVtKi6e4vKsBfkig3jLFPLvjIpJyq1JVaTPDTP5vv3+iSUU
+duHC9R8TG5q8Y09pRMThNYF0GkDsn/dRTvNK9j+lviYBoLthX9Q=
+=oymk
+-----END PGP SIGNATURE-----
+
+--7yeVzujnbvx3IEge--
