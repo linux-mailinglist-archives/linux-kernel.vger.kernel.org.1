@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904F82F8316
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 762622F8318
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387478AbhAORy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:54:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
+        id S2387555AbhAORyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:54:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387433AbhAORy2 (ORCPT
+        with ESMTP id S1729073AbhAORyg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:54:28 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5F9C0617A0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:53:32 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id z8so4481327wrh.5
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:53:32 -0800 (PST)
+        Fri, 15 Jan 2021 12:54:36 -0500
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F53C0617A1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:53:35 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id q18so4470667wrc.20
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:53:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=dVTMart08UEQbM+6MiYEncY10URoyB/dLUX7v9OKI+o=;
-        b=VQk6OorMUwLDaqyBJFKoPy2yn3wwkSkoZL+2P8uj4DcKBFvi6k8GNQdU1DS2/rkrYw
-         lKR/egnmlfGdROt2C1EVSe2C4PDZ3AcYEDSefZ/Y8gtSweY+Bw4BJzQTz8Bn5bfCNmn1
-         UEJJO5gX14yaq9s0wNv9Zs1qsa55y+unS+yna7FUJef9Ah70JPs4Jczj4JWxM1orNbFk
-         wMzGo+Hbkm43oCtOPZFqAWn7+QjtXmvNPUhjl075iBILoiPwYcmf+i9wLtobiLSS4433
-         i0z73npM9/vUPyyLajdKPDlXxkrvAP5YrwEJ7zOtd6OorNHwf51+fp0gE5V+sDVWznTx
-         kAWQ==
+        bh=KKvTna9pOG94VdqPVmZRxWtkege1Cyuqg2hRO1ClK+0=;
+        b=ed3FebypFmJx/L1iuiWNaLMG07hyk3w2HThAWfe4DA6P0l6iiWWdLglY+RugS8O3x2
+         8wi5BH/PlnIMZ7Za8gNVHK59XI0kibCPJPsviTht+qATHJv+zUQaQAOo4AMD6J+aPFtx
+         yT/cXmmvlg3q4J4t4N8foKtC82zZnW55Z9nKA0gh4TuEjuwv1C+94wUT5NhDamdRO0kJ
+         yxabOTkDgEjUXjdBoGIDsRBVJNzXwSDA5vTrytu6Lb7+7VfDbXJeAQIgn8QFGWywwIzt
+         tqV9KJl4xrtHmGlFext79AI3i47CDDdRBBENU5OfB7CZGAc363k/tr6ZNqAgeQ3MMZ3F
+         qDNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=dVTMart08UEQbM+6MiYEncY10URoyB/dLUX7v9OKI+o=;
-        b=iDszDsuzeuSio+mZksHSQYHXtE1ITCUH5Wp4v02K1XcbMd3aOo9n5SxnSBFx1/3z4a
-         7Skh1jpcenbx6TGQeXkovxem5sB+fISTzErVfb/9zX2CcFu9EcoprOlMt5Rj4Aqm7mgW
-         B+/Ocm1NdDwgEyWCd8Xm5pTmEsRJCjhqem7Ra+1tAjHkzHB9mMhDzHr0j1r5rjX3uYZ1
-         IYiVEfRYKtRaAk+cu39HF5pcr3ECv1Q+3hoHDACeoxvMI7liHP/7yhpjeqwONjQ3Xcd2
-         4qI800pLlST1/R+2vxwtF04K2XY2Bu6Bk2W2RL3cGiVQtLIzBEkssnF1lkg48ku/TDHZ
-         mB8A==
-X-Gm-Message-State: AOAM5337ZCnkbqU7U50WiDrxeqFweU6BIa7c2V9lSM7Zc2NllytUp6Xt
-        s5M+rRR/VX3myV9HbQBWdxLCPayxAtyhuS4O
-X-Google-Smtp-Source: ABdhPJyiP0xfxuJorgfNcS/SzzY+dqgDVclJHqnyM06UFQIeqr1SY2r9Ft2/DzbR8zcOYQFUegFFjF1miXPPoxGW
+        bh=KKvTna9pOG94VdqPVmZRxWtkege1Cyuqg2hRO1ClK+0=;
+        b=U3RDD6hBpPKJIo1ayP3BJ0qh2k0xSLWcZOhtC1Iu1x03CPvpYY1d1XkdG+OwLdkaL2
+         CGhX63pbWCVKXWsw5oFPvj5jowWjIBJX8gyAJNFumIVwS5U0eG+To0nbIi0Y5Fvz3jQ3
+         54yQgdyNqfzFDv8Z/OrsBVncLBWRgXO3LJtPk3Mi2zI1RzJtSPodtj/1ZuM0CR45G25j
+         qNBDdN9W6ajkA0OVnCTqC1DJAHMtUn2EHWSM2Jf0Y5mGz/hHk4sSAm2nVbI+iQO2QB0r
+         Q9Ewa6VQVNqot0PvdUiWWOCi/N5qsIN2LgkCxdi1BzxviUgV5QrzK/71ZcqdNABXXB3z
+         yV6g==
+X-Gm-Message-State: AOAM530uDM/+GpwTxUO4OpzP1OuZfMKPqZem9enps8mcIPUPJ95CLWx6
+        4G3JfCO/POYP/cqzmJ00D3ACmNCJbFgVgvS+
+X-Google-Smtp-Source: ABdhPJyVftmTjOwG8sQ/qHZqkBUIVpPntUaupbXGD/60w3ULfDb6BFCbT5DhRAHKYT1DG0qLEs4DoB2QgTHuIzaj
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a05:600c:40ca:: with SMTP id
- m10mr9700946wmh.54.1610733211307; Fri, 15 Jan 2021 09:53:31 -0800 (PST)
-Date:   Fri, 15 Jan 2021 18:52:50 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a05:6000:11c1:: with SMTP id
+ i1mr14588719wrx.16.1610733213887; Fri, 15 Jan 2021 09:53:33 -0800 (PST)
+Date:   Fri, 15 Jan 2021 18:52:51 +0100
 In-Reply-To: <cover.1610733117.git.andreyknvl@google.com>
-Message-Id: <a2648930e55ff75b8e700f2e0d905c2b55a67483.1610733117.git.andreyknvl@google.com>
+Message-Id: <418122ebe4600771ac81e9ca6eab6740cf8dcfa1.1610733117.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1610733117.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v4 13/15] kasan: add proper page allocator tests
+Subject: [PATCH v4 14/15] kasan: add a test for kmem_cache_alloc/free_bulk
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -74,113 +74,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The currently existing page allocator tests rely on kmalloc fallback
-with large sizes that is only present for SLUB. Add proper tests that
-use alloc/free_pages().
+Add a test for kmem_cache_alloc/free_bulk to make sure there are no
+false-positives when these functions are used.
 
-Link: https://linux-review.googlesource.com/id/Ia173d5a1b215fe6b2548d814ef0f4433cf983570
+Link: https://linux-review.googlesource.com/id/I2a8bf797aecf81baeac61380c567308f319e263d
 Reviewed-by: Marco Elver <elver@google.com>
 Reviewed-by: Alexander Potapenko <glider@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- lib/test_kasan.c | 51 +++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 46 insertions(+), 5 deletions(-)
+ lib/test_kasan.c | 38 +++++++++++++++++++++++++++++++++-----
+ 1 file changed, 33 insertions(+), 5 deletions(-)
 
 diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 566d894ba20b..ab22a653762e 100644
+index ab22a653762e..4ba7461210fd 100644
 --- a/lib/test_kasan.c
 +++ b/lib/test_kasan.c
-@@ -147,6 +147,12 @@ static void kmalloc_node_oob_right(struct kunit *test)
- 	kfree(ptr);
- }
- 
-+/*
-+ * These kmalloc_pagealloc_* tests try allocating a memory chunk that doesn't
-+ * fit into a slab cache and therefore is allocated via the page allocator
-+ * fallback. Since this kind of fallback is only implemented for SLUB, these
-+ * tests are limited to that allocator.
-+ */
- static void kmalloc_pagealloc_oob_right(struct kunit *test)
+@@ -479,10 +479,11 @@ static void kmem_cache_oob(struct kunit *test)
  {
- 	char *ptr;
-@@ -154,14 +160,11 @@ static void kmalloc_pagealloc_oob_right(struct kunit *test)
- 
- 	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_SLUB);
- 
--	/*
--	 * Allocate a chunk that does not fit into a SLUB cache to trigger
--	 * the page allocator fallback.
--	 */
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
- 	KUNIT_EXPECT_KASAN_FAIL(test, ptr[size + OOB_TAG_OFF] = 0);
+ 	char *p;
+ 	size_t size = 200;
+-	struct kmem_cache *cache = kmem_cache_create("test_cache",
+-						size, 0,
+-						0, NULL);
++	struct kmem_cache *cache;
 +
- 	kfree(ptr);
- }
- 
-@@ -174,8 +177,8 @@ static void kmalloc_pagealloc_uaf(struct kunit *test)
- 
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
--
- 	kfree(ptr);
++	cache = kmem_cache_create("test_cache", size, 0, 0, NULL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, cache);
 +
- 	KUNIT_EXPECT_KASAN_FAIL(test, ptr[0] = 0);
+ 	p = kmem_cache_alloc(cache, GFP_KERNEL);
+ 	if (!p) {
+ 		kunit_err(test, "Allocation failed: %s\n", __func__);
+@@ -491,11 +492,12 @@ static void kmem_cache_oob(struct kunit *test)
+ 	}
+ 
+ 	KUNIT_EXPECT_KASAN_FAIL(test, *p = p[size + OOB_TAG_OFF]);
++
+ 	kmem_cache_free(cache, p);
+ 	kmem_cache_destroy(cache);
  }
  
-@@ -192,6 +195,42 @@ static void kmalloc_pagealloc_invalid_free(struct kunit *test)
- 	KUNIT_EXPECT_KASAN_FAIL(test, kfree(ptr + 1));
+-static void memcg_accounted_kmem_cache(struct kunit *test)
++static void kmem_cache_accounted(struct kunit *test)
+ {
+ 	int i;
+ 	char *p;
+@@ -522,6 +524,31 @@ static void memcg_accounted_kmem_cache(struct kunit *test)
+ 	kmem_cache_destroy(cache);
  }
  
-+static void pagealloc_oob_right(struct kunit *test)
++static void kmem_cache_bulk(struct kunit *test)
 +{
-+	char *ptr;
-+	struct page *pages;
-+	size_t order = 4;
-+	size_t size = (1UL << (PAGE_SHIFT + order));
++	struct kmem_cache *cache;
++	size_t size = 200;
++	char *p[10];
++	bool ret;
++	int i;
 +
-+	/*
-+	 * With generic KASAN page allocations have no redzones, thus
-+	 * out-of-bounds detection is not guaranteed.
-+	 * See https://bugzilla.kernel.org/show_bug.cgi?id=210503.
-+	 */
-+	KASAN_TEST_NEEDS_CONFIG_OFF(test, CONFIG_KASAN_GENERIC);
++	cache = kmem_cache_create("test_cache", size, 0, 0, NULL);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, cache);
 +
-+	pages = alloc_pages(GFP_KERNEL, order);
-+	ptr = page_address(pages);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
++	ret = kmem_cache_alloc_bulk(cache, GFP_KERNEL, ARRAY_SIZE(p), (void **)&p);
++	if (!ret) {
++		kunit_err(test, "Allocation failed: %s\n", __func__);
++		kmem_cache_destroy(cache);
++		return;
++	}
 +
-+	KUNIT_EXPECT_KASAN_FAIL(test, ptr[size] = 0);
-+	free_pages((unsigned long)ptr, order);
++	for (i = 0; i < ARRAY_SIZE(p); i++)
++		p[i][0] = p[i][size - 1] = 42;
++
++	kmem_cache_free_bulk(cache, ARRAY_SIZE(p), (void **)&p);
++	kmem_cache_destroy(cache);
 +}
 +
-+static void pagealloc_uaf(struct kunit *test)
-+{
-+	char *ptr;
-+	struct page *pages;
-+	size_t order = 4;
-+
-+	pages = alloc_pages(GFP_KERNEL, order);
-+	ptr = page_address(pages);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-+	free_pages((unsigned long)ptr, order);
-+
-+	KUNIT_EXPECT_KASAN_FAIL(test, ptr[0] = 0);
-+}
-+
- static void kmalloc_large_oob_right(struct kunit *test)
- {
- 	char *ptr;
-@@ -903,6 +942,8 @@ static struct kunit_case kasan_kunit_test_cases[] = {
- 	KUNIT_CASE(kmalloc_pagealloc_oob_right),
- 	KUNIT_CASE(kmalloc_pagealloc_uaf),
- 	KUNIT_CASE(kmalloc_pagealloc_invalid_free),
-+	KUNIT_CASE(pagealloc_oob_right),
-+	KUNIT_CASE(pagealloc_uaf),
- 	KUNIT_CASE(kmalloc_large_oob_right),
- 	KUNIT_CASE(kmalloc_oob_krealloc_more),
- 	KUNIT_CASE(kmalloc_oob_krealloc_less),
+ static char global_array[10];
+ 
+ static void kasan_global_oob(struct kunit *test)
+@@ -961,7 +988,8 @@ static struct kunit_case kasan_kunit_test_cases[] = {
+ 	KUNIT_CASE(kfree_via_page),
+ 	KUNIT_CASE(kfree_via_phys),
+ 	KUNIT_CASE(kmem_cache_oob),
+-	KUNIT_CASE(memcg_accounted_kmem_cache),
++	KUNIT_CASE(kmem_cache_accounted),
++	KUNIT_CASE(kmem_cache_bulk),
+ 	KUNIT_CASE(kasan_global_oob),
+ 	KUNIT_CASE(kasan_stack_oob),
+ 	KUNIT_CASE(kasan_alloca_oob_left),
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
