@@ -2,160 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4D42F85D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBF62F85D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388468AbhAOT4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 14:56:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726970AbhAOT4O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 14:56:14 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5118C0613C1;
-        Fri, 15 Jan 2021 11:55:33 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id z20so6920606qtq.3;
-        Fri, 15 Jan 2021 11:55:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IGs2HkGiaxO0w74PW3RRJejo5AsHL0mLZAB29K0969g=;
-        b=NVa21p5g1DiYyhwL0/547ZzJOdy0nx8VxQE/C8A50Ogs1TeZYYvCM22N96jXQ2CpgV
-         /dl7/WLWSLQ0GeV3L9LojLF7EVCveCMY15HGDXnmMsOYiI8vJpNuJc9suZHByZVv9V9m
-         L4+QEYfxKdKu6iHqL4742ikdbAyRMTO4tK8sPCpxNLKwAMC89U4VpR6BkjLhQGu9+xOY
-         jrkTpUuHRhd0NAQeqvhXWOYGw6DnugyEhvpP/cehl5GESA6kM79rCuJ1B9qsz/0WNaxX
-         CoPlrcmHRFFvKDs2bWv9gHBMGT34JmhRocw/vDTr2euEIxCYL0INNWnm5+LLHCoPIGAR
-         0x5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IGs2HkGiaxO0w74PW3RRJejo5AsHL0mLZAB29K0969g=;
-        b=UgkBLkXWX2RhZ3ojHadL4V8bnwNBR8yHsCl1hMFLOge1DTNu8UfMmrrh6S5PiVOF6/
-         QFIXI3cdJBYJHJABwXR4q3FHZeLpeCnpHOf3012ZuETvnBEGA7Yop3Xbssv4nUBQkWcY
-         P9qksIoCrm5oYVApSeGXcQ/TWJcwQaT2lAbpFNY2FDgHzBwH/+odQbA0HZ/YPR8OAdt2
-         OVjZMV//eg9Ja6RvKjQMm9I5C4/qJ4Kx6CxI5+Aj0iFRp8LcA5Fy6AHcqMOx+ghOzmwP
-         H2o+qZDRmJxynBGlnZHjML5JktQc1OdYia1ZJPDx6FlVejw+AFT588LhrngBeQULnIGT
-         GSpA==
-X-Gm-Message-State: AOAM533Qp8bgDj885wi4uhLf7qQz2EKbf4P+PXqPM7HHRww23MI5mO3x
-        XaKiVJJRXqFvzWlNTqnJlFHg3tzP2z4=
-X-Google-Smtp-Source: ABdhPJzlcqg0ByCj56goYvg+A0tTero/MfIfcJ7PhDPNspgtPvpTBEbIzy0FLRavdmtH5XstDS3HEQ==
-X-Received: by 2002:ac8:c2:: with SMTP id d2mr13697639qtg.207.1610740532868;
-        Fri, 15 Jan 2021 11:55:32 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id q6sm5673360qkd.41.2021.01.15.11.55.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 11:55:32 -0800 (PST)
-Date:   Fri, 15 Jan 2021 12:55:30 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Fangrui Song <maskray@google.com>
-Cc:     linux-kernel@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
-        clang-built-linux@googlegroups.com,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Marco Elver <elver@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v3] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
- undefined symbols
-Message-ID: <20210115195530.GA3843886@ubuntu-m3-large-x86>
-References: <20210114211840.GA5617@linux-8ccs>
- <20210115195222.3453262-1-maskray@google.com>
+        id S2388217AbhAOT57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 14:57:59 -0500
+Received: from mga05.intel.com ([192.55.52.43]:56609 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733119AbhAOT55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 14:57:57 -0500
+IronPort-SDR: t9j2Eer/vqToew0e3FotXJ0qPk+Bs8JzuoLtjJkTEjDevpOhxmeKx2rfD+uwJIOVdByziDcfVT
+ gevXOi7NMlCw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9865"; a="263395644"
+X-IronPort-AV: E=Sophos;i="5.79,350,1602572400"; 
+   d="scan'208";a="263395644"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 11:57:16 -0800
+IronPort-SDR: jh9wUPlwJdgNY7iokT0+w3hK0wdVmD/1af31DWuTA21ukm5ACYQ5q+ccQMfGnw40VYacII6HyD
+ tbPWP8N6YejQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,350,1602572400"; 
+   d="scan'208";a="401398810"
+Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 15 Jan 2021 11:57:15 -0800
+Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l0VDe-0000Vt-Re; Fri, 15 Jan 2021 19:57:14 +0000
+Date:   Sat, 16 Jan 2021 03:56:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ b86cb29287be07041b81f5611e37ae9ffabff876
+Message-ID: <6001f360.pTRgQ7MYWHswa6XL%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210115195222.3453262-1-maskray@google.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 11:52:22AM -0800, 'Fangrui Song' via Clang Built Linux wrote:
-> clang-12 -fno-pic (since
-> https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6)
-> can emit `call __stack_chk_fail@PLT` instead of `call __stack_chk_fail`
-> on x86.  The two forms should have identical behaviors on x86-64 but the
-> former causes GNU as<2.37 to produce an unreferenced undefined symbol
-> _GLOBAL_OFFSET_TABLE_.
-> 
-> (On x86-32, there is an R_386_PC32 vs R_386_PLT32 difference but the
-> linker behavior is identical as far as Linux kernel is concerned.)
-> 
-> Simply ignore _GLOBAL_OFFSET_TABLE_ for now, like what
-> scripts/mod/modpost.c:ignore_undef_symbol does. This also fixes the
-> problem for gcc/clang -fpie and -fpic, which may emit `call foo@PLT` for
-> external function calls on x86.
-> 
-> Note: ld -z defs and dynamic loaders do not error for unreferenced
-> undefined symbols so the module loader is reading too much.  If we ever
-> need to ignore more symbols, the code should be refactored to ignore
-> unreferenced symbols.
-> 
-> Reported-by: Marco Elver <elver@google.com>
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1250
-> Signed-off-by: Fangrui Song <maskray@google.com>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Tested-by: Marco Elver <elver@google.com>
-> Cc: <stable@vger.kernel.org>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
+branch HEAD: b86cb29287be07041b81f5611e37ae9ffabff876  x86: Remove definition of DEBUG
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+i386-tinyconfig vmlinux size:
 
-> 
-> ---
-> Changes in v2:
-> * Fix Marco's email address
-> * Add a function ignore_undef_symbol similar to scripts/mod/modpost.c:ignore_undef_symbol
-> ---
-> Changes in v3:
-> * Fix the style of a multi-line comment.
-> * Use static bool ignore_undef_symbol.
-> ---
->  kernel/module.c | 21 +++++++++++++++++++--
->  1 file changed, 19 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/module.c b/kernel/module.c
-> index 4bf30e4b3eaa..805c49d1b86d 100644
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -2348,6 +2348,21 @@ static int verify_exported_symbols(struct module *mod)
->  	return 0;
->  }
->  
-> +static bool ignore_undef_symbol(Elf_Half emachine, const char *name)
-> +{
-> +	/*
-> +	 * On x86, PIC code and Clang non-PIC code may have call foo@PLT. GNU as
-> +	 * before 2.37 produces an unreferenced _GLOBAL_OFFSET_TABLE_ on x86-64.
-> +	 * i386 has a similar problem but may not deserve a fix.
-> +	 *
-> +	 * If we ever have to ignore many symbols, consider refactoring the code to
-> +	 * only warn if referenced by a relocation.
-> +	 */
-> +	if (emachine == EM_386 || emachine == EM_X86_64)
-> +		return !strcmp(name, "_GLOBAL_OFFSET_TABLE_");
-> +	return false;
-> +}
-> +
->  /* Change all symbols so that st_value encodes the pointer directly. */
->  static int simplify_symbols(struct module *mod, const struct load_info *info)
->  {
-> @@ -2395,8 +2410,10 @@ static int simplify_symbols(struct module *mod, const struct load_info *info)
->  				break;
->  			}
->  
-> -			/* Ok if weak.  */
-> -			if (!ksym && ELF_ST_BIND(sym[i].st_info) == STB_WEAK)
-> +			/* Ok if weak or ignored.  */
-> +			if (!ksym &&
-> +			    (ELF_ST_BIND(sym[i].st_info) == STB_WEAK ||
-> +			     ignore_undef_symbol(info->hdr->e_machine, name)))
->  				break;
->  
->  			ret = PTR_ERR(ksym) ?: -ENOENT;
-> -- 
-> 2.30.0.296.g2bfb1c46d8-goog
-> 
-> -- 
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210115195222.3453262-1-maskray%40google.com.
+====================================================================================================================
+ TOTAL  TEXT  init.text  check_iommu_entries()                                                                      
+====================================================================================================================
+     0     0          0                      0  4af0e6e39b7e x86/mm: Remove duplicate definition of _PAGE_PAT_LARGE 
+    +1     0          0                      0  11aa1415d8bd x86/entry: Remove now unused do_IRQ() declaration      
+   -76   -76        -76                    -76  b86cb29287be x86: Remove definition of DEBUG                        
+   -75   -76        -76                    -76  5c8fe583cce5..b86cb29287be (ALL COMMITS)                            
+====================================================================================================================
+
+elapsed time: 728m
+
+configs tested: 117
+configs skipped: 80
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                             alldefconfig
+powerpc                   bluestone_defconfig
+sh                          urquell_defconfig
+arm                             mxs_defconfig
+ia64                            zx1_defconfig
+arm                          ixp4xx_defconfig
+powerpc               mpc834x_itxgp_defconfig
+um                             i386_defconfig
+mips                      malta_kvm_defconfig
+sh                ecovec24-romimage_defconfig
+arm                           viper_defconfig
+sh                          rsk7201_defconfig
+arm                         bcm2835_defconfig
+sh                             sh03_defconfig
+powerpc                     tqm8555_defconfig
+mips                           ip32_defconfig
+sh                                  defconfig
+mips                           ip27_defconfig
+m68k                       m5249evb_defconfig
+powerpc                       ppc64_defconfig
+arm                        multi_v5_defconfig
+arm                         s3c2410_defconfig
+arm                       imx_v4_v5_defconfig
+arm                         socfpga_defconfig
+m68k                         amcore_defconfig
+powerpc                     sbc8548_defconfig
+s390                                defconfig
+arm                        vexpress_defconfig
+powerpc                 canyonlands_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                           ci20_defconfig
+openrisc                    or1ksim_defconfig
+xtensa                  nommu_kc705_defconfig
+powerpc                     tqm8541_defconfig
+arm                         lpc18xx_defconfig
+sh                          kfr2r09_defconfig
+sh                             espt_defconfig
+m68k                           sun3_defconfig
+powerpc                     ksi8560_defconfig
+arm                       mainstone_defconfig
+arm                            xcep_defconfig
+mips                      maltaaprp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210115
+x86_64               randconfig-a006-20210115
+x86_64               randconfig-a001-20210115
+x86_64               randconfig-a003-20210115
+x86_64               randconfig-a005-20210115
+x86_64               randconfig-a002-20210115
+i386                 randconfig-a002-20210115
+i386                 randconfig-a005-20210115
+i386                 randconfig-a006-20210115
+i386                 randconfig-a001-20210115
+i386                 randconfig-a003-20210115
+i386                 randconfig-a004-20210115
+i386                 randconfig-a012-20210115
+i386                 randconfig-a011-20210115
+i386                 randconfig-a016-20210115
+i386                 randconfig-a015-20210115
+i386                 randconfig-a013-20210115
+i386                 randconfig-a014-20210115
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a015-20210115
+x86_64               randconfig-a012-20210115
+x86_64               randconfig-a013-20210115
+x86_64               randconfig-a016-20210115
+x86_64               randconfig-a014-20210115
+x86_64               randconfig-a011-20210115
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
