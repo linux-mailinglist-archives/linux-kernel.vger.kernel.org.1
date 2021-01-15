@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399462F7B30
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C202F7B90
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726981AbhAOMdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:33:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39676 "EHLO mail.kernel.org"
+        id S2387477AbhAONDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:03:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733075AbhAOMdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:33:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50AA723356;
-        Fri, 15 Jan 2021 12:32:55 +0000 (UTC)
+        id S1729039AbhAOMby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:31:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C21C22473;
+        Fri, 15 Jan 2021 12:31:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713975;
-        bh=RrzrU55MdqYkXPCVEyn7aQX+cGvKgK9aqbEhIt56lJk=;
+        s=korg; t=1610713898;
+        bh=s5rdMnDuSkDqSsdKS3Kfx41GvoHWbEtG2/DA60iC/qQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iT9MP+gemSoUXc25+PJJGm6LSmGspBvaKK6oDMBNiTFRE9wYehPNlNy7uYj+gzfTZ
-         jfhF6nEOT1jW8CjMFLyLfuRmQiQu2EgJMe5twhQT//OBrRD9y2bli6dTacU7NulV8t
-         z7OsAaAWzeEFIBXSQLjrZY+weAHX3LHTGLc1soLw=
+        b=Vt3PNE/uGE7MXuZCWeAas6aL1p/7M2JUshXvc5vXTcUGCxNP0vn4XGxKlQcmuiC6B
+         wiHeLgQObBlNx7KC45pN2nP2yUx0XL9njuiUEZxoTWVfnLBW9WpfSpyHtZWx48j3VB
+         h4JW15au0iSKnvEjR/wc5VcyjkhdWN2zSKC4v9Mk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.19 26/43] cpufreq: powernow-k8: pass policy rather than use cpufreq_cpu_get()
-Date:   Fri, 15 Jan 2021 13:27:56 +0100
-Message-Id: <20210115121958.311172846@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 20/28] wil6210: select CONFIG_CRC32
+Date:   Fri, 15 Jan 2021 13:27:57 +0100
+Message-Id: <20210115121957.760189683@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
-References: <20210115121957.037407908@linuxfoundation.org>
+In-Reply-To: <20210115121956.731354372@linuxfoundation.org>
+References: <20210115121956.731354372@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 943bdd0cecad06da8392a33093230e30e501eccc upstream.
+commit e186620d7bf11b274b985b839c38266d7918cc05 upstream.
 
-Currently there is an unlikely case where cpufreq_cpu_get() returns a
-NULL policy and this will cause a NULL pointer dereference later on.
+Without crc32, the driver fails to link:
 
-Fix this by passing the policy to transition_frequency_fidvid() from
-the caller and hence eliminating the need for the cpufreq_cpu_get()
-and cpufreq_cpu_put().
+arm-linux-gnueabi-ld: drivers/net/wireless/ath/wil6210/fw.o: in function `wil_fw_verify':
+fw.c:(.text+0x74c): undefined reference to `crc32_le'
+arm-linux-gnueabi-ld: drivers/net/wireless/ath/wil6210/fw.o:fw.c:(.text+0x758): more undefined references to `crc32_le' follow
 
-Thanks to Viresh Kumar for suggesting the fix.
-
-Addresses-Coverity: ("Dereference null return")
-Fixes: b43a7ffbf33b ("cpufreq: Notify all policy->cpus in cpufreq_notify_transition()")
-Suggested-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 151a9706503f ("wil6210: firmware download")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/cpufreq/powernow-k8.c |    9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/wil6210/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/cpufreq/powernow-k8.c
-+++ b/drivers/cpufreq/powernow-k8.c
-@@ -881,9 +881,9 @@ static int get_transition_latency(struct
- 
- /* Take a frequency, and issue the fid/vid transition command */
- static int transition_frequency_fidvid(struct powernow_k8_data *data,
--		unsigned int index)
-+		unsigned int index,
-+		struct cpufreq_policy *policy)
- {
--	struct cpufreq_policy *policy;
- 	u32 fid = 0;
- 	u32 vid = 0;
- 	int res;
-@@ -915,9 +915,6 @@ static int transition_frequency_fidvid(s
- 	freqs.old = find_khz_freq_from_fid(data->currfid);
- 	freqs.new = find_khz_freq_from_fid(fid);
- 
--	policy = cpufreq_cpu_get(smp_processor_id());
--	cpufreq_cpu_put(policy);
--
- 	cpufreq_freq_transition_begin(policy, &freqs);
- 	res = transition_fid_vid(data, fid, vid);
- 	cpufreq_freq_transition_end(policy, &freqs, res);
-@@ -972,7 +969,7 @@ static long powernowk8_target_fn(void *a
- 
- 	powernow_k8_acpi_pst_values(data, newstate);
- 
--	ret = transition_frequency_fidvid(data, newstate);
-+	ret = transition_frequency_fidvid(data, newstate, pol);
- 
- 	if (ret) {
- 		pr_err("transition frequency failed\n");
+--- a/drivers/net/wireless/ath/wil6210/Kconfig
++++ b/drivers/net/wireless/ath/wil6210/Kconfig
+@@ -1,6 +1,7 @@
+ config WIL6210
+ 	tristate "Wilocity 60g WiFi card wil6210 support"
+ 	select WANT_DEV_COREDUMP
++	select CRC32
+ 	depends on CFG80211
+ 	depends on PCI
+ 	default n
 
 
