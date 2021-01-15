@@ -2,103 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8363F2F8353
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:09:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 555EA2F8340
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729000AbhAOSJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:09:25 -0500
-Received: from mx.blih.net ([212.83.155.74]:46812 "EHLO mx.blih.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725818AbhAOSJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:09:25 -0500
-X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 Jan 2021 13:09:23 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bidouilliste.com;
-        s=mx; t=1610733721;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S1728975AbhAOSEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:04:13 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:40674 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726404AbhAOSEM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 13:04:12 -0500
+Date:   Fri, 15 Jan 2021 18:03:28 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610733810;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/ukk1KmMKOjY989GVPIe8alQEeaLXXaWWupQX1f4jk4=;
-        b=fI90d3/3h1q91CxwjnZxFLdnBD8nAaoOfyiAg+keL20VrXYOgJ24HaPHb2lrecBjOqU9pT
-        OqdDrnBC2O6divMS/3ZjgATR9MnlTQ0uLYpFSj3jwYz3ky0lpa4zsqfN79jeImfHz/0aF+
-        /3oA5rXvBDodNhSbCJaanO7u0ClqEL8=
-Received: from skull.home.blih.net (lfbn-idf2-1-745-114.w86-247.abo.wanadoo.fr [86.247.192.114])
-        by mx.blih.net (OpenSMTPD) with ESMTPSA id e912b7b2 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Fri, 15 Jan 2021 18:02:01 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 19:02:01 +0100
-From:   Emmanuel Vadot <manu@bidouilliste.com>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        devicetree@vger.kernel.org, bcousson@baylibre.com,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>
-Subject: Re: [PATCH v4 2/2] ARM: dts: am33xx-l4: change #pinctrl-cells from
- 1 to 2
-Message-Id: <20210115190201.9273b637a7f967e7e55bc740@bidouilliste.com>
-In-Reply-To: <20200701013320.130441-3-drew@beagleboard.org>
-References: <20200701013320.130441-1-drew@beagleboard.org>
-        <20200701013320.130441-3-drew@beagleboard.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; amd64-portbld-freebsd13.0)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        bh=W4BPOc4S2sdSSWBpTWKb2Ju5xAfxfSnO2Ne2If1bszU=;
+        b=mAUd+HR0k0RZrme1tjkSgTfgvUm428T1IHOQkCVBFftILzfVsJ1VZnVR8HVYX0zwJBSj8b
+        /5QU1uEw3CDS+YHI+piO6oqG0lcwVUSqUy+dvgrnybIetaXDqn8ja2N7AaLnoscgBTT8pQ
+        0+wIAm2QNmcRiT0Nydv1IIHnKGPTy1wi8K7ZQWH76DyHUawOmjgxt9b4jsnIzXn8LefhOJ
+        Jwn2cxvilwCJvogaIPh45uskAF720Wy8AkBU68l9oLOKg3OrNyDOhtyNDX0bG1ExhrRW2D
+        D4OzJwhfs+eKCDcCzYyWdt0eY1b8HWh12hSt70WlpoaI4KBJfyT/owgoWaAZSw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610733810;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W4BPOc4S2sdSSWBpTWKb2Ju5xAfxfSnO2Ne2If1bszU=;
+        b=vJef5Vp/EjekYMZ4UGoSiv7dFKIjmfAa1jG1r5cuYNHcXym+6On5R0b+slQi+kuLMbDpbp
+        E/wlvl01+zaqCoAg==
+From:   "tip-bot2 for Linus Walleij" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/platform] x86/platform/geode: Convert alix LED to GPIO
+ machine descriptor
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Borislav Petkov <bp@suse.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201124085339.6181-3-linus.walleij@linaro.org>
+References: <20201124085339.6181-3-linus.walleij@linaro.org>
+MIME-Version: 1.0
+Message-ID: <161073380900.414.10975437601520958385.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/platform branch of tip:
 
- Hello Drew,
+Commit-ID:     604303018221d00b58422e1d117ba29ce84295cb
+Gitweb:        https://git.kernel.org/tip/604303018221d00b58422e1d117ba29ce84295cb
+Author:        Linus Walleij <linus.walleij@linaro.org>
+AuthorDate:    Tue, 24 Nov 2020 09:53:39 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 15 Jan 2021 18:55:53 +01:00
 
-On Wed,  1 Jul 2020 03:33:20 +0200
-Drew Fustini <drew@beagleboard.org> wrote:
+x86/platform/geode: Convert alix LED to GPIO machine descriptor
 
-> Increase #pinctrl-cells to 2 so that mux and conf be kept separate. This
-> requires the AM33XX_PADCONF macro in omap.h to also be modified to keep pin
-> conf and pin mux values separate.
-> 
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> ---
->  arch/arm/boot/dts/am33xx-l4.dtsi   | 2 +-
->  include/dt-bindings/pinctrl/omap.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/am33xx-l4.dtsi b/arch/arm/boot/dts/am33xx-l4.dtsi
-> index a9cbefc80c0c..3141590e5889 100644
-> --- a/arch/arm/boot/dts/am33xx-l4.dtsi
-> +++ b/arch/arm/boot/dts/am33xx-l4.dtsi
-> @@ -278,7 +278,7 @@ scm: scm@0 {
->  				am33xx_pinmux: pinmux@800 {
->  					compatible = "pinctrl-single";
->  					reg = <0x800 0x238>;
-> -					#pinctrl-cells = <1>;
-> +					#pinctrl-cells = <2>;
->  					pinctrl-single,register-width = <32>;
->  					pinctrl-single,function-mask = <0x7f>;
->  				};
-> diff --git a/include/dt-bindings/pinctrl/omap.h b/include/dt-bindings/pinctrl/omap.h
-> index 625718042413..2d2a8c737822 100644
-> --- a/include/dt-bindings/pinctrl/omap.h
-> +++ b/include/dt-bindings/pinctrl/omap.h
-> @@ -65,7 +65,7 @@
->  #define DM814X_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
->  #define DM816X_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
->  #define AM33XX_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
-> -#define AM33XX_PADCONF(pa, dir, mux)	OMAP_IOPAD_OFFSET((pa), 0x0800) ((dir) | (mux))
-> +#define AM33XX_PADCONF(pa, conf, mux)	OMAP_IOPAD_OFFSET((pa), 0x0800) (conf) (mux)
->  
->  /*
->   * Macros to allow using the offset from the padconf physical address
-> -- 
-> 2.25.1
+Look up the LED from a GPIO machine descriptor table. The Geode LEDs
+should be on the CS5535 companion chip.
 
- Based on the bindings doc a value of 2 is only acceptable if one uses
-pinctrl-single,bits but all the am33xx pins still uses
-pinctrl-single,pins.
- I noticed this because this breaks FreeBSD when I tried with 5.9 dts.
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lkml.kernel.org/r/20201124085339.6181-3-linus.walleij@linaro.org
+---
+ arch/x86/platform/geode/alix.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
--- 
-Emmanuel Vadot <manu@bidouilliste.com> <manu@freebsd.org>
+diff --git a/arch/x86/platform/geode/alix.c b/arch/x86/platform/geode/alix.c
+index c33f744..b39bf3b 100644
+--- a/arch/x86/platform/geode/alix.c
++++ b/arch/x86/platform/geode/alix.c
+@@ -22,6 +22,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/input.h>
+ #include <linux/gpio_keys.h>
++#include <linux/gpio/machine.h>
+ #include <linux/dmi.h>
+ 
+ #include <asm/geode.h>
+@@ -69,21 +70,15 @@ static struct platform_device alix_buttons_dev = {
+ static struct gpio_led alix_leds[] = {
+ 	{
+ 		.name = "alix:1",
+-		.gpio = 6,
+ 		.default_trigger = "default-on",
+-		.active_low = 1,
+ 	},
+ 	{
+ 		.name = "alix:2",
+-		.gpio = 25,
+ 		.default_trigger = "default-off",
+-		.active_low = 1,
+ 	},
+ 	{
+ 		.name = "alix:3",
+-		.gpio = 27,
+ 		.default_trigger = "default-off",
+-		.active_low = 1,
+ 	},
+ };
+ 
+@@ -92,6 +87,17 @@ static struct gpio_led_platform_data alix_leds_data = {
+ 	.leds = alix_leds,
+ };
+ 
++static struct gpiod_lookup_table alix_leds_gpio_table = {
++	.dev_id = "leds-gpio",
++	.table = {
++		/* The Geode GPIOs should be on the CS5535 companion chip */
++		GPIO_LOOKUP_IDX("cs5535-gpio", 6, NULL, 0, GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP_IDX("cs5535-gpio", 25, NULL, 1, GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP_IDX("cs5535-gpio", 27, NULL, 2, GPIO_ACTIVE_LOW),
++		{ }
++	},
++};
++
+ static struct platform_device alix_leds_dev = {
+ 	.name = "leds-gpio",
+ 	.id = -1,
+@@ -106,6 +112,7 @@ static struct platform_device *alix_devs[] __initdata = {
+ static void __init register_alix(void)
+ {
+ 	/* Setup LED control through leds-gpio driver */
++	gpiod_add_lookup_table(&alix_leds_gpio_table);
+ 	platform_add_devices(alix_devs, ARRAY_SIZE(alix_devs));
+ }
+ 
