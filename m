@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694B32F7AE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A96CE2F799D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387431AbhAOMeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:34:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40776 "EHLO mail.kernel.org"
+        id S2387606AbhAOMit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:38:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387403AbhAOMeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:34:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0299F235F9;
-        Fri, 15 Jan 2021 12:33:49 +0000 (UTC)
+        id S2387580AbhAOMiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:38:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 990F6235F8;
+        Fri, 15 Jan 2021 12:38:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714030;
-        bh=FTMobUVduluWZNTAB/xCqcTBSLOxKrQF28PrROB1VKU=;
+        s=korg; t=1610714286;
+        bh=N9q92FrRB1jJ3kdALnSC8g8Ed6wovnglZx7Ms+oJL98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x3/4PczrO9WLHQgjjnEYxetgNvnUJpXODuGlGABDNTGxIRYYzV1nStCnmJp4eH9B9
-         05Ebll852PUJiF3yyY8FhtlKkAlY7oeG9ARa35UxwqPnwV9bUKw4DSMcntZS108CXr
-         bEGQ8D2kfxDZEaGDKuUtgWlQGy7FudcOJCZnHy7M=
+        b=vB37LPBlO4JnOeWk3QuQxpkW+MpuBJ15ql5oIgGvNYuEJa6vALKb1KpGQV/L7o4i4
+         XBkTeI+GR4uxv1QeObwNFOOX3VVcz9e6NSAO7d8Jz9xuV8k0wMhnasOGuWlCYjkf9F
+         gL89LA/9Rbbf046lvMyFK093qss9v5bFS4xvhR/M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 06/62] net: stmmac: dwmac-sun8i: Balance internal PHY resource references
-Date:   Fri, 15 Jan 2021 13:27:28 +0100
-Message-Id: <20210115121958.712079897@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 036/103] octeontx2-af: fix memory leak of lmac and lmac->name
+Date:   Fri, 15 Jan 2021 13:27:29 +0100
+Message-Id: <20210115122007.805095702@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
+References: <20210115122006.047132306@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,91 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Holland <samuel@sholland.org>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 529254216773acd5039c07aa18cf06fd1f9fccdd ]
+[ Upstream commit ac7996d680d8b4a51bb99bbdcee3dc838b985498 ]
 
-While stmmac_pltfr_remove calls sun8i_dwmac_exit, the sun8i_dwmac_init
-and sun8i_dwmac_exit functions are also called by the stmmac_platform
-suspend/resume callbacks. They may be called many times during the
-device's lifetime and should not release resources used by the driver.
+Currently the error return paths don't kfree lmac and lmac->name
+leading to some memory leaks.  Fix this by adding two error return
+paths that kfree these objects
 
-Furthermore, there was no error handling in case registering the MDIO
-mux failed during probe, and the EPHY clock was never released at all.
-
-Fix all of these issues by moving the deinitialization code to a driver
-removal callback. Also ensure the EPHY is powered down before removal.
-
-Fixes: 634db83b8265 ("net: stmmac: dwmac-sun8i: Handle integrated/external MDIOs")
-Signed-off-by: Samuel Holland <samuel@sholland.org>
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Addresses-Coverity: ("Resource leak")
+Fixes: 1463f382f58d ("octeontx2-af: Add support for CGX link management")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20210107123916.189748-1-colin.king@canonical.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c |   27 +++++++++++++++++-----
- 1 file changed, 21 insertions(+), 6 deletions(-)
+ drivers/net/ethernet/marvell/octeontx2/af/cgx.c |   14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-@@ -988,17 +988,12 @@ static void sun8i_dwmac_exit(struct plat
- 	struct sunxi_priv_data *gmac = priv;
+--- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+@@ -862,8 +862,10 @@ static int cgx_lmac_init(struct cgx *cgx
+ 		if (!lmac)
+ 			return -ENOMEM;
+ 		lmac->name = kcalloc(1, sizeof("cgx_fwi_xxx_yyy"), GFP_KERNEL);
+-		if (!lmac->name)
+-			return -ENOMEM;
++		if (!lmac->name) {
++			err = -ENOMEM;
++			goto err_lmac_free;
++		}
+ 		sprintf(lmac->name, "cgx_fwi_%d_%d", cgx->cgx_id, i);
+ 		lmac->lmac_id = i;
+ 		lmac->cgx = cgx;
+@@ -874,7 +876,7 @@ static int cgx_lmac_init(struct cgx *cgx
+ 						 CGX_LMAC_FWI + i * 9),
+ 				   cgx_fwi_event_handler, 0, lmac->name, lmac);
+ 		if (err)
+-			return err;
++			goto err_irq;
  
- 	if (gmac->variant->soc_has_internal_phy) {
--		/* sun8i_dwmac_exit could be called with mdiomux uninit */
--		if (gmac->mux_handle)
--			mdio_mux_uninit(gmac->mux_handle);
- 		if (gmac->internal_phy_powered)
- 			sun8i_dwmac_unpower_internal_phy(gmac);
+ 		/* Enable interrupt */
+ 		cgx_write(cgx, lmac->lmac_id, CGXX_CMRX_INT_ENA_W1S,
+@@ -886,6 +888,12 @@ static int cgx_lmac_init(struct cgx *cgx
  	}
  
- 	sun8i_dwmac_unset_syscon(gmac);
- 
--	reset_control_put(gmac->rst_ephy);
--
- 	clk_disable_unprepare(gmac->tx_clk);
- 
- 	if (gmac->regulator)
-@@ -1227,12 +1222,32 @@ static int sun8i_dwmac_probe(struct plat
- 
- 	return ret;
- dwmac_mux:
-+	reset_control_put(gmac->rst_ephy);
-+	clk_put(gmac->ephy_clk);
- 	sun8i_dwmac_unset_syscon(gmac);
- dwmac_exit:
- 	stmmac_pltfr_remove(pdev);
- return ret;
+ 	return cgx_lmac_verify_fwi_version(cgx);
++
++err_irq:
++	kfree(lmac->name);
++err_lmac_free:
++	kfree(lmac);
++	return err;
  }
  
-+static int sun8i_dwmac_remove(struct platform_device *pdev)
-+{
-+	struct net_device *ndev = platform_get_drvdata(pdev);
-+	struct stmmac_priv *priv = netdev_priv(ndev);
-+	struct sunxi_priv_data *gmac = priv->plat->bsp_priv;
-+
-+	if (gmac->variant->soc_has_internal_phy) {
-+		mdio_mux_uninit(gmac->mux_handle);
-+		sun8i_dwmac_unpower_internal_phy(gmac);
-+		reset_control_put(gmac->rst_ephy);
-+		clk_put(gmac->ephy_clk);
-+	}
-+
-+	stmmac_pltfr_remove(pdev);
-+
-+	return 0;
-+}
-+
- static const struct of_device_id sun8i_dwmac_match[] = {
- 	{ .compatible = "allwinner,sun8i-h3-emac",
- 		.data = &emac_variant_h3 },
-@@ -1252,7 +1267,7 @@ MODULE_DEVICE_TABLE(of, sun8i_dwmac_matc
- 
- static struct platform_driver sun8i_dwmac_driver = {
- 	.probe  = sun8i_dwmac_probe,
--	.remove = stmmac_pltfr_remove,
-+	.remove = sun8i_dwmac_remove,
- 	.driver = {
- 		.name           = "dwmac-sun8i",
- 		.pm		= &stmmac_pltfr_pm_ops,
+ static int cgx_lmac_exit(struct cgx *cgx)
 
 
