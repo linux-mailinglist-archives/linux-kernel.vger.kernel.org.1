@@ -2,269 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E6B2F81A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:08:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A999B2F81A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731446AbhAORIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:08:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728560AbhAORI2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:08:28 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A760C06179E
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:07:13 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id v19so6358890pgj.12
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:07:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fP/r9rL0LAxiAFg8ShML1r0nBp2WbscJ4pPL3DzW824=;
-        b=cHrWchv8OtSjjqlD6eLyh0DPAVSO7I0yljkUtZ9IBhaAqssH1gWCiN8Wac5QzfKneu
-         qcJzwMnEPXwf3g3BzTA/Gx8mnCbmX5D1CqFk3W8XMluJRTb1XW2gXOYh4bbZLHl7kQF7
-         BcIShFXkQGp7T+GUsXxWvDxpn4sJUg3RSvRfc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fP/r9rL0LAxiAFg8ShML1r0nBp2WbscJ4pPL3DzW824=;
-        b=UrGWdv5xyFh5W8XBBIOe9o5UHEAgxHe020sZexRzyfyGcHd8B7Megtr57XW15IRV2G
-         u2T0arvxDLewfyynM4M8v9p0TfUY5EPRUzenDkSwgUufoORbpd6NoMk0LF5f5/z5G/O8
-         g0CQRfEA0qBoozp9lhGgDQDbqbBe6bdAiZjqkylpzXGSL9PJ3salxzaJLNhkxf6+Hzit
-         bxAkwEFNmYa9bfMfdrJZ//ZMMG+rr+7Q0ec6D0lSA/SzIQUEik/k6yF1p1Dx6Sd11g87
-         KeC/4bpn5z1G4pMnPn9asiMj1izJaZwiQ8SU5uIA1N7dBugVFMrotDkxDKVCaw1tsf58
-         iyxw==
-X-Gm-Message-State: AOAM532ByxpJzKoeOX1pxab+6k+ZsnBHolfHKGEf7FjgsI9JlRCcFThv
-        pQ8jlvc7wnqGf+F6c4b1c6AB0w==
-X-Google-Smtp-Source: ABdhPJwIhu1Zj19H8D7Z237E0sDU/xrNQuZyeXcbW/Ohy9pxPOjEYmLXmySMgO476s304FB0P41rxw==
-X-Received: by 2002:a62:8482:0:b029:1ae:6d04:bddb with SMTP id k124-20020a6284820000b02901ae6d04bddbmr13734429pfd.11.1610730432889;
-        Fri, 15 Jan 2021 09:07:12 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id t23sm8813329pfc.0.2021.01.15.09.07.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 09:07:12 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     jkosina@suse.cz, benjamin.tissoires@redhat.com,
-        gregkh@linuxfoundation.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     swboyd@chromium.org, linux-input@vger.kernel.org,
-        hdegoede@redhat.com, andrea@borgia.bo.it,
-        kai.heng.feng@canonical.com, robh+dt@kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v9 4/4] HID: i2c-hid: Introduce goodix-i2c-hid using i2c-hid core
-Date:   Fri, 15 Jan 2021 09:06:40 -0800
-Message-Id: <20210115090518.v9.4.If41b7d621633b94d56653c6d53f5f89c5274de7b@changeid>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-In-Reply-To: <20210115170641.903392-1-dianders@chromium.org>
-References: <20210115170641.903392-1-dianders@chromium.org>
+        id S1727513AbhAORIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:08:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725946AbhAORIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 12:08:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69460222B3;
+        Fri, 15 Jan 2021 17:08:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610730491;
+        bh=TTxGRW3tiG7LwSjTKZStrgp68+J+/ZsXQqui4SyalIY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gj5MA1QhIl6mv38/JorSQaBuTdgK7JhRQ8W4zqkwTY2LHofctJYuQC/F7ATNbm3q7
+         J4z7W/PZKj4xzlJ7DnKO8070MiSiVtC6o/vJbUPNn42rfa3iEJq5ZhcIum2t5RiRqG
+         WZ0J28wSu6CQtFLrZnKxueolRqXU0WBQYtqzXc/wDVQuftGXwKsQlG2bttiSIik1UV
+         DoKyndUiOV9u7prRSzT6D/ahQ3wRtTTkFaQutL1lc/URgSVKjkkm3AKdgsKON3GzpS
+         uf2xyFYGeD06X3z0195kB3GOim7nUK8uRoXRyHLuJRGVVT7cCWcG+GtEI1YnYd6Anr
+         GZfk7L3DWyYGg==
+Date:   Fri, 15 Jan 2021 17:07:37 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Argus Lin <argus.lin@mediatek.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jack Yu <jack.yu@realtek.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jiaxin Yu <jiaxin.yu@mediatek.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        "Shane.Chien" <shane.chien@mediatek.com>,
+        Chipeng Chang <chipeng.chang@mediatek.com>,
+        alsa-devel@alsa-project.org, wsd_upstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 2/2] ASoC: mediatek: mt6359: add MT6359 accdet driver
+Message-ID: <20210115170737.GE4384@sirena.org.uk>
+References: <1609935546-11722-1-git-send-email-argus.lin@mediatek.com>
+ <1609935546-11722-3-git-send-email-argus.lin@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="n+lFg1Zro7sl44OB"
+Content-Disposition: inline
+In-Reply-To: <1609935546-11722-3-git-send-email-argus.lin@mediatek.com>
+X-Cookie: Debug is human, de-fix divine.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Goodix i2c-hid touchscreens are mostly i2c-hid compliant but have some
-special power sequencing requirements, including the need to drive a
-reset line during the sequencing.
 
-Let's use the new rejiggering of i2c-hid to support this with a thin
-wrapper driver to support the first Goodix i2c-hid touchscreen:
-GT7375P
+--n+lFg1Zro7sl44OB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+On Wed, Jan 06, 2021 at 08:19:06PM +0800, Argus Lin wrote:
+> MT6359 audio codec support accessory detect features, adds MT6359
+> accdet driver to support plug detection and key detection.
 
-Changes in v9:
-- 120 ms delay => 180 ms delay
+> ---
+>  sound/soc/codecs/Kconfig         |    7 +
+>  sound/soc/codecs/Makefile        |    2 +
+>  sound/soc/codecs/mt6359-accdet.c | 1951 ++++++++++++++++++++++++++++++++++++++
+>  sound/soc/codecs/mt6359-accdet.h |  136 +++
+>  sound/soc/codecs/mt6359.h        | 1863 +++++++++++++++++++++++++++++++++---
 
-Changes in v6:
-- Suspend/resume are no longer exported from the core.
+This driver is *huge*.  Looking through the code it feels like there's a
+lot of things that are written with mostly duplicated code that differs
+only in data so you could shrink things down a lot by refactoring things
+to have one copy of the code and pass different data into it.
 
-Changes in v5:
-- i2chid_subclass_data => i2chid_ops.
-- power_up_device => power_up (same with power_down).
-- subclass => ops.
+>  	  Enable support for the platform which uses MT6359 as
+>  	  external codec device.
+> +config SND_SOC_MT6359_ACCDET
 
-Changes in v4:
-- Totally redid based on the new subclass system.
+Missing blank line here.
 
-Changes in v3:
-- Rework to use subclassing.
+> +++ b/sound/soc/codecs/mt6359-accdet.c
+> @@ -0,0 +1,1951 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2021 MediaTek Inc.
 
- drivers/hid/i2c-hid/Kconfig             |  19 +++-
- drivers/hid/i2c-hid/Makefile            |   1 +
- drivers/hid/i2c-hid/i2c-hid-of-goodix.c | 116 ++++++++++++++++++++++++
- 3 files changed, 134 insertions(+), 2 deletions(-)
- create mode 100644 drivers/hid/i2c-hid/i2c-hid-of-goodix.c
+Please make the entire comment a C++ one so things look more
+intentional.
 
-diff --git a/drivers/hid/i2c-hid/Kconfig b/drivers/hid/i2c-hid/Kconfig
-index 819b7521c182..a16c6a69680b 100644
---- a/drivers/hid/i2c-hid/Kconfig
-+++ b/drivers/hid/i2c-hid/Kconfig
-@@ -32,10 +32,25 @@ config I2C_HID_OF
- 	  will be called i2c-hid-of.  It will also build/depend on the
- 	  module i2c-hid.
- 
-+config I2C_HID_OF_GOODIX
-+	tristate "Driver for Goodix hid-i2c based devices on OF systems"
-+	default n
-+	depends on I2C && INPUT && OF
-+	help
-+	  Say Y here if you want support for Goodix i2c devices that use
-+	  the i2c-hid protocol on Open Firmware (Device Tree)-based
-+	  systems.
-+
-+	  If unsure, say N.
-+
-+	  This support is also available as a module.  If so, the module
-+	  will be called i2c-hid-of-goodix.  It will also build/depend on
-+	  the module i2c-hid.
-+
- endmenu
- 
- config I2C_HID_CORE
- 	tristate
--	default y if I2C_HID_ACPI=y || I2C_HID_OF=y
--	default m if I2C_HID_ACPI=m || I2C_HID_OF=m
-+	default y if I2C_HID_ACPI=y || I2C_HID_OF=y || I2C_HID_OF_GOODIX=y
-+	default m if I2C_HID_ACPI=m || I2C_HID_OF=m || I2C_HID_OF_GOODIX=m
- 	select HID
-diff --git a/drivers/hid/i2c-hid/Makefile b/drivers/hid/i2c-hid/Makefile
-index 9b4a73446841..302545a771f3 100644
---- a/drivers/hid/i2c-hid/Makefile
-+++ b/drivers/hid/i2c-hid/Makefile
-@@ -10,3 +10,4 @@ i2c-hid-$(CONFIG_DMI)				+= i2c-hid-dmi-quirks.o
- 
- obj-$(CONFIG_I2C_HID_ACPI)			+= i2c-hid-acpi.o
- obj-$(CONFIG_I2C_HID_OF)			+= i2c-hid-of.o
-+obj-$(CONFIG_I2C_HID_OF_GOODIX)			+= i2c-hid-of-goodix.o
-diff --git a/drivers/hid/i2c-hid/i2c-hid-of-goodix.c b/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-new file mode 100644
-index 000000000000..ee0225982a82
---- /dev/null
-+++ b/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-@@ -0,0 +1,116 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Driver for Goodix touchscreens that use the i2c-hid protocol.
-+ *
-+ * Copyright 2020 Google LLC
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/pm.h>
-+#include <linux/regulator/consumer.h>
-+
-+#include "i2c-hid.h"
-+
-+struct goodix_i2c_hid_timing_data {
-+	unsigned int post_gpio_reset_delay_ms;
-+	unsigned int post_power_delay_ms;
-+};
-+
-+struct i2c_hid_of_goodix {
-+	struct i2chid_ops ops;
-+
-+	struct regulator *vdd;
-+	struct gpio_desc *reset_gpio;
-+	const struct goodix_i2c_hid_timing_data *timings;
-+};
-+
-+static int goodix_i2c_hid_power_up(struct i2chid_ops *ops)
-+{
-+	struct i2c_hid_of_goodix *ihid_goodix =
-+		container_of(ops, struct i2c_hid_of_goodix, ops);
-+	int ret;
-+
-+	ret = regulator_enable(ihid_goodix->vdd);
-+	if (ret)
-+		return ret;
-+
-+	if (ihid_goodix->timings->post_power_delay_ms)
-+		msleep(ihid_goodix->timings->post_power_delay_ms);
-+
-+	gpiod_set_value_cansleep(ihid_goodix->reset_gpio, 0);
-+	if (ihid_goodix->timings->post_gpio_reset_delay_ms)
-+		msleep(ihid_goodix->timings->post_gpio_reset_delay_ms);
-+
-+	return 0;
-+}
-+
-+static void goodix_i2c_hid_power_down(struct i2chid_ops *ops)
-+{
-+	struct i2c_hid_of_goodix *ihid_goodix =
-+		container_of(ops, struct i2c_hid_of_goodix, ops);
-+
-+	gpiod_set_value_cansleep(ihid_goodix->reset_gpio, 1);
-+	regulator_disable(ihid_goodix->vdd);
-+}
-+
-+static int i2c_hid_of_goodix_probe(struct i2c_client *client,
-+				   const struct i2c_device_id *id)
-+{
-+	struct i2c_hid_of_goodix *ihid_goodix;
-+
-+	ihid_goodix = devm_kzalloc(&client->dev, sizeof(*ihid_goodix),
-+				   GFP_KERNEL);
-+	if (!ihid_goodix)
-+		return -ENOMEM;
-+
-+	ihid_goodix->ops.power_up = goodix_i2c_hid_power_up;
-+	ihid_goodix->ops.power_down = goodix_i2c_hid_power_down;
-+
-+	/* Start out with reset asserted */
-+	ihid_goodix->reset_gpio =
-+		devm_gpiod_get_optional(&client->dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(ihid_goodix->reset_gpio))
-+		return PTR_ERR(ihid_goodix->reset_gpio);
-+
-+	ihid_goodix->vdd = devm_regulator_get(&client->dev, "vdd");
-+	if (IS_ERR(ihid_goodix->vdd))
-+		return PTR_ERR(ihid_goodix->vdd);
-+
-+	ihid_goodix->timings = device_get_match_data(&client->dev);
-+
-+	return i2c_hid_core_probe(client, &ihid_goodix->ops, 0x0001);
-+}
-+
-+static const struct goodix_i2c_hid_timing_data goodix_gt7375p_timing_data = {
-+	.post_power_delay_ms = 10,
-+	.post_gpio_reset_delay_ms = 180,
-+};
-+
-+static const struct of_device_id goodix_i2c_hid_of_match[] = {
-+	{ .compatible = "goodix,gt7375p", .data = &goodix_gt7375p_timing_data },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, goodix_i2c_hid_of_match);
-+
-+static struct i2c_driver goodix_i2c_hid_ts_driver = {
-+	.driver = {
-+		.name	= "i2c_hid_of_goodix",
-+		.pm	= &i2c_hid_core_pm,
-+		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
-+		.of_match_table = of_match_ptr(goodix_i2c_hid_of_match),
-+	},
-+	.probe		= i2c_hid_of_goodix_probe,
-+	.remove		= i2c_hid_core_remove,
-+	.shutdown	= i2c_hid_core_shutdown,
-+};
-+module_i2c_driver(goodix_i2c_hid_ts_driver);
-+
-+MODULE_AUTHOR("Douglas Anderson <dianders@chromium.org>");
-+MODULE_DESCRIPTION("Goodix i2c-hid touchscreen driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
+> +#include "mt6359-accdet.h"
+> +#include "mt6359.h"
+> +/* grobal variable definitions */
 
+Spelling mistake and you need more blank lines here.
+
+> +#define REGISTER_VAL(x)	((x) - 1)
+> +#define HAS_CAP(_c, _x)	\
+> +	({typeof(_c)c = (_c); \
+> +	typeof(_x)x = (_x); \
+> +	(((c) & (x)) == (x)); })
+
+These need namepsacing.
+
+> +static struct mt63xx_accdet_data *accdet;
+> +
+> +static struct head_dts_data accdet_dts;
+> +struct pwm_deb_settings *cust_pwm_deb;
+
+You'd need a *very* good reason to be using global data rather than
+storing anything in the device's driver data like most drivers.  There's
+extensive use of global data here, and lots of raw pr_ prints rather
+than dev_ prints as well - this doesn't look like how a Linux driver is
+supposed to be written.
+
+> +
+> +const struct of_device_id mt6359_accdet_of_match[] = {
+> +	{
+> +		.compatible = "mediatek,mt6359-accdet",
+> +		.data = &mt6359_accdet,
+
+Given that this is specific to a particular PMIC why does this need a
+compatible string?
+
+> +/* global function declaration */
+> +
+> +static u64 mt6359_accdet_get_current_time(void)
+> +{
+> +	return sched_clock();
+> +}
+
+It is probably best to remove this wrapper.
+
+> +static bool mt6359_accdet_timeout_ns(u64 start_time_ns, u64 timeout_time_ns)
+> +{
+> +	u64 cur_time = 0;
+> +	u64 elapse_time = 0;
+> +
+> +	/* get current tick, ns */
+> +	cur_time = mt6359_accdet_get_current_time();
+> +	if (cur_time < start_time_ns) {
+> +		start_time_ns = cur_time;
+> +		/* 400us */
+> +		timeout_time_ns = 400 * 1000;
+> +	}
+> +	elapse_time = cur_time - start_time_ns;
+> +
+> +	/* check if timeout */
+> +	if (timeout_time_ns <= elapse_time)
+> +		return false;
+> +
+> +	return true;
+> +}
+
+There must be a generic implementation of this already surely?
+
+> +static unsigned int check_key(unsigned int v)
+> +{
+
+This looks a lot like open coding of the functionality of the extcon
+adc_jack functionality.
+
+> +static void send_key_event(unsigned int keycode, unsigned int flag)
+> +{
+> +	int report = 0;
+> +
+> +	switch (keycode) {
+> +	case DW_KEY:
+> +		if (flag != 0)
+> +			report = SND_JACK_BTN_1;
+
+What does flag mean?  At the very least it needs renaming.
+
+> +static void send_status_event(unsigned int cable_type, unsigned int status)
+> +{
+> +	int report = 0;
+
+This is one of those places that looks like it could be code with
+different data passed in.
+
+> +
+> +	switch (cable_type) {
+> +	case HEADSET_NO_MIC:
+> +		if (status)
+> +			report = SND_JACK_HEADPHONE;
+> +		else
+> +			report = 0;
+> +		snd_soc_jack_report(&accdet->jack, report, SND_JACK_HEADPHONE);
+> +		/* when plug 4-pole out, if both AB=3 AB=0 happen,3-pole plug
+> +		 * in will be incorrectly reported, then 3-pole plug-out is
+> +		 * reported,if no mantory 4-pole plug-out, icon would be
+> +		 * visible.
+> +		 */
+> +		if (status == 0) {
+> +			report = 0;
+> +			snd_soc_jack_report(&accdet->jack, report, SND_JACK_MICROPHONE);
+> +		}
+> +		pr_info("accdet HEADPHONE(3-pole) %s\n",
+> +			status ? "PlugIn" : "PlugOut");
+
+You shouldn't be spamming the logs for normal events like this.
+
+> +	regmap_read(accdet->regmap, ACCDET_IRQ_ADDR, &val);
+> +	while (val & ACCDET_IRQ_MASK_SFT &&
+> +	       mt6359_accdet_timeout_ns(cur_time, ACCDET_TIME_OUT))
+> +		;
+
+This is open coding regmap_read_poll_timeout(), this pattern is repeated
+in several places.
+
+> +static inline void clear_accdet_eint(unsigned int eintid)
+> +{
+> +	if ((eintid & PMIC_EINT0) == PMIC_EINT0) {
+
+The == part is redundant here, and again this is another place where it
+feels like there's duplicated code that should be using data.  All this
+interrupt handling code is really extremely difficult to follow, there's
+*lots* of functions all open coding many individual register bits
+sometimes redundantly and it's very hard to follow what it's supposed to
+be doing.  I can't help but think that in addition to making things data
+driven writing more linear code without these abstraction layers would
+help a lot with comprehensibility.
+
+> +static irqreturn_t mtk_accdet_irq_handler_thread(int irq, void *data)
+> +{
+> +	accdet_irq_handle();
+> +
+> +	return IRQ_HANDLED;
+> +}
+
+Why does this wrapper function exist - AFAICT it's just introducing a
+bug given that the called function is able to detect spurious interrupts
+but this unconditionally reports IRQ_HANDLED.
+
+> +int mt6359_accdet_init(struct snd_soc_component *component,
+> +		       struct snd_soc_card *card)
+> +{
+> +	int ret = 0;
+> +	struct mt63xx_accdet_data *priv =
+> +			snd_soc_card_get_drvdata(component->card);
+
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(mt6359_accdet_init);
+
+This is a weird interface, what's going on here?
+
+> +int mt6359_accdet_set_drvdata(struct snd_soc_card *card)
+> +{
+> +	snd_soc_card_set_drvdata(card, accdet);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(mt6359_accdet_set_drvdata);
+
+This is setting off *massive* alarm bells in that it seems to try to
+claim the card level driver data for this specific driver, again what's
+going on here?
+
+> +module_init(mt6359_accdet_soc_init);
+> +module_exit(mt6359_accdet_soc_exit);
+
+module_platform_driver()
+
+--n+lFg1Zro7sl44OB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmABy9gACgkQJNaLcl1U
+h9DY/gf/fHBtIfQbXuCCr1+QvKa57mk9zIvrlJKMEtVByp+AvZkXaTLoyMIg1JcO
+4rAyQrhsqr3HcLdUVrzQqljjDGREnMvwZOUB9EeEnREwj+vtYm/ogs4ccXmpmCES
+tIhNW4JpGfVxCVhM0XfUz8s86Y7mo4bv0pDy6aZMop4p2wG4lZvOcdXDdqVFXVyG
+YkT3A7fNgJ5Hi7K3BGViNNLEvCjkXt6KmFjNTPpyc4zUXoOJNkqHv5gUn/NhW9Lv
+BYOuUVlwjlJC4SANqXz/5WYI0aux1tFpgnkASGWV1K7TyFyjzEJklB1vmGHE/e+6
+WDE6B01vYILmCPElPN8uHzwXEYzv6Q==
+=azMJ
+-----END PGP SIGNATURE-----
+
+--n+lFg1Zro7sl44OB--
