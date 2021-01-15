@@ -2,107 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EC42F849A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A272F84A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387609AbhAOSku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:40:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbhAOSkt (ORCPT
+        id S1733105AbhAOSm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:42:56 -0500
+Received: from mail-wm1-f54.google.com ([209.85.128.54]:37816 "EHLO
+        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726347AbhAOSmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:40:49 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5D0C0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:40:09 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id d15so1300325qtw.12
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:40:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7iqMaLM5ngsObMfPwH4GTR7fbydas+V1RNx2qyihbRE=;
-        b=OhxHt8mmLJBsBMtZBFbnzLbxdAsOB8Ka3zQhmpOBvqIxz1zjBrp/a47AIXhKA0t3km
-         YlHhKjdWMqC7jNahlHbUlRUPmkRb6aO3yRCF+8ADRWKYCO7qd059e5vvQyc9p7FxMpRy
-         yK6aElGVEG1rRRoH4i0ELby/mv6XobYfm7NJGIKaJEA8DWYgI7JeHVHHJ5l69RwW2WVM
-         MNIBWcLwwew5ASqQAc7q4SYDX9xA6MsERsWIb//cqdNkvQpmcUggFcLkB3zoFQMDBzw9
-         T/XsBb0QSqYdbXf3XNPHdZZtNVQ/dL8ZHqC6DmEFhEVb5SB5csXt7sqriqrmopJy8BxM
-         omLA==
+        Fri, 15 Jan 2021 13:42:55 -0500
+Received: by mail-wm1-f54.google.com with SMTP id g10so8461518wmh.2;
+        Fri, 15 Jan 2021 10:42:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7iqMaLM5ngsObMfPwH4GTR7fbydas+V1RNx2qyihbRE=;
-        b=c+K9umHVNFN0K0Y+Byp6XoXLN323+tFWRFpL6sC1MjC+ezxKrrtue/fNoEbsT5L5qP
-         Lil/9BqXjmLWraSuHL08dE5LDTfaw7bKxKdPuNSv6Y/r+wRI+2dXMy14SOn4hmj46+Bd
-         iqoMbxy8y/AAGXo30o1mtTA1aQxrA23pUUPhvVw1mzu5anBEeTbN/bgaWJUTsVFN35LU
-         5k6EOmWX5LS7piNITPrtAvngsyVRcf5/YR7ZaEzdEw4scRRt8llWpO6yZf27XUaaKcNg
-         htzg+oq4bo3To4pvzaPrb1qNRhGfgYCiQkv0OfOs6xcyxDkgkps1Mshx4DPyWDRSx60i
-         Hdig==
-X-Gm-Message-State: AOAM532+Z/JJOB3Lq7EK5WQi6UL1TBilbAU2Nf8L3xLWA0lsssPnrQli
-        rfPDBMaJPysP9gUj+4ciWRy6rA==
-X-Google-Smtp-Source: ABdhPJwYvWXIvOLXd5qgmW2cmliLgAWyRNvV6PcZolMroOO0r5/CLLBELstEgOcEHd1noGRZeNtm8w==
-X-Received: by 2002:a05:622a:4d1:: with SMTP id q17mr7113455qtx.272.1610736008331;
-        Fri, 15 Jan 2021 10:40:08 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id u10sm1059825qtb.24.2021.01.15.10.40.07
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Rgp6HmZdsqwCwGp3tkj9iKIu0RyVYf4eF8x8ZYdMR0I=;
+        b=uElEs5HiNOP1itipL2k9WxRM50jMS+00b0UwMnTdTE6yspUpk8NA2bC5niHjtIrZMB
+         fnGn3Abf0aYGMSsLddW6wj/qCLzdcGibcFVpLiUqCx14s9sznTBLPgjw426p9KjWqDc8
+         awQEk61xUbggBgLSc9twKcnwkf4D45SqSvNyEdEMwiL1EZoXCEkM5NubnEODq7Ooykgy
+         c6iGYYtLvXKKG2yfYVDiUmvP4TTSos4Cb0p37IJ3lh3xpwhb6E/x0NAAuyH0Yo9lXDJ3
+         CexuzrV/wS4N2XsvOS2RpzNo2LKj14Gbhii+mv2YtluwmQqzH4YjWymwS9qWr+cVZGGG
+         MFPw==
+X-Gm-Message-State: AOAM533dBPfrjWRJ4lWI9x6cEv3hg3xAR41wpgoF/5mTVLuofP8Jg59s
+        ZtheS4F3bJ1yuOhvnAOdkuVKpgyplEg3Yw==
+X-Google-Smtp-Source: ABdhPJwaJ72EeFeh+UfpQUjB+WUAtm73FVCvaWLCwRTcAoAYJgoPaut80AKTWWGM/tmsTVuay9i2EQ==
+X-Received: by 2002:a05:600c:3510:: with SMTP id h16mr9854424wmq.156.1610736133611;
+        Fri, 15 Jan 2021 10:42:13 -0800 (PST)
+Received: from msft-t490s.fritz.box (host-80-116-27-12.pool80116.interbusiness.it. [80.116.27.12])
+        by smtp.gmail.com with ESMTPSA id z6sm12881529wmi.15.2021.01.15.10.42.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:40:07 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l0U10-001hs5-Uq; Fri, 15 Jan 2021 14:40:06 -0400
-Date:   Fri, 15 Jan 2021 14:40:06 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 08/10] mm/gup: limit number of gup migration failures,
- honor failures
-Message-ID: <20210115184006.GH4605@ziepe.ca>
-References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
- <20201217185243.3288048-9-pasha.tatashin@soleen.com>
- <20201217205048.GL5487@ziepe.ca>
- <CA+CK2bA4F+SipkReJzFjCSC-8kZdK4yrwCQZM+TvCTrqV2CGHg@mail.gmail.com>
- <20201218141927.GM5487@ziepe.ca>
- <CA+CK2bDULopw649ndBybA-ST5EoRMHULwcfQcSQVKT9r8zAtwQ@mail.gmail.com>
- <20210113195528.GD4605@ziepe.ca>
- <CA+CK2bDDUMOeCH8rQBL7fBdHCAUZBOykyXNL2N=hmxq7xi0giQ@mail.gmail.com>
- <CA+CK2bC=o1-qW5+d-Lud9qN1937PC4Jxf_oyxwVrKby=mH5WyQ@mail.gmail.com>
+        Fri, 15 Jan 2021 10:42:12 -0800 (PST)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH net 0/2] ipv6: fixes for the multicast routes
+Date:   Fri, 15 Jan 2021 19:42:07 +0100
+Message-Id: <20210115184209.78611-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bC=o1-qW5+d-Lud9qN1937PC4Jxf_oyxwVrKby=mH5WyQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 01:10:27PM -0500, Pavel Tatashin wrote:
+From: Matteo Croce <mcroce@microsoft.com>
 
-> I've been thinking about this some more. Again, I am not sure this is
-> a bug. I understand split_huge_pmd() may split the PMD size page into
-> PTEs and leave the compound page intact. However, in order for pages[]
-> to have non sequential addresses in compound page, those PTEs must
-> also be migrated after split_huge_pmd(), 
+Fix two wrong flags in the IPv6 multicast routes created
+by the autoconf code.
 
-Why focus on migrated? Anything could happen to those PTEs: they could
-be COW'd, they could be mmap/munmap'd, etc.
+Matteo Croce (2):
+  ipv6: create multicast route with RTPROT_KERNEL
+  ipv6: set multicast flag on the multicast route
 
-Jason
+ net/ipv6/addrconf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+-- 
+2.29.2
+
