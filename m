@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233292F7A30
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:47:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3342F7AEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732888AbhAOMq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:46:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44878 "EHLO mail.kernel.org"
+        id S2387531AbhAOMeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:34:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388078AbhAOMhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:37:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3782D22473;
-        Fri, 15 Jan 2021 12:37:39 +0000 (UTC)
+        id S2387494AbhAOMea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:34:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19D192339D;
+        Fri, 15 Jan 2021 12:34:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714259;
-        bh=+MOftX0eh6Va4502EDqSaY5br9ihD+GXizoor8nYNCU=;
+        s=korg; t=1610714054;
+        bh=wArVPqu7u4jdsB9XswA5aIzFktyXZOVFPjwD+o/DLG4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WekirRlh/DEROwN05g/ZdXmobMHYgTbD1vOj5wMNTJ49Q036AADx9eNqydwO1b/ld
-         ygRQ1uiljx/FkXVhfamNfkOLQIc+JfDBMbOOhFk5yQT8gG/8u6JZslPQXBAktH8sW+
-         S93hlrGDrTIKTUzGAO4X3aitVISNPeOtZTFgocRc=
+        b=PaJxwOf0vP4JW3IyCqeTeWbR1mtmnr8R/iDz9eWs9ZbwtpY9rf+rZHwl0MGGzLEI5
+         RyROwzNNZXZCOzpub4OC5tYT5z+TD9/a1BN1iBuwh6KoNPKd1AdqJCTUlwBfG4ECED
+         7ryQSNnnc50n3Kcy/FObySKi7uURza30ZiabI27g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kamal Mostafa <kamal@canonical.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH 5.10 055/103] selftests/bpf: Clarify build error if no vmlinux
+        stable@vger.kernel.org,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 26/62] chtls: Fix chtls resources release sequence
 Date:   Fri, 15 Jan 2021 13:27:48 +0100
-Message-Id: <20210115122008.713997976@linuxfoundation.org>
+Message-Id: <20210115121959.667437476@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
-References: <20210115122006.047132306@linuxfoundation.org>
+In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
+References: <20210115121958.391610178@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kamal Mostafa <kamal@canonical.com>
+From: Ayush Sawal <ayush.sawal@chelsio.com>
 
-commit 1a3449c19407a28f7019a887cdf0d6ba2444751a upstream.
+[ Upstream commit 15ef6b0e30b354253e2c10b3836bc59767eb162b ]
 
-If Makefile cannot find any of the vmlinux's in its VMLINUX_BTF_PATHS list,
-it tries to run btftool incorrectly, with VMLINUX_BTF unset:
+CPL_ABORT_RPL is sent after releasing the resources by calling
+chtls_release_resources(sk); and chtls_conn_done(sk);
+eventually causing kernel panic. Fixing it by calling release
+in appropriate order.
 
-    bpftool btf dump file $(VMLINUX_BTF) format c
-
-Such that the keyword 'format' is misinterpreted as the path to vmlinux.
-The resulting build error message is fairly cryptic:
-
-      GEN      vmlinux.h
-    Error: failed to load BTF from format: No such file or directory
-
-This patch makes the failure reason clearer by yielding this instead:
-
-    Makefile:...: *** Cannot find a vmlinux for VMLINUX_BTF at any of
-    "{paths}".  Stop.
-
-Fixes: acbd06206bbb ("selftests/bpf: Add vmlinux.h selftest exercising tracing of syscalls")
-Signed-off-by: Kamal Mostafa <kamal@canonical.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20201215182011.15755-1-kamal@canonical.com
+Fixes: cc35c88ae4db ("crypto : chtls - CPL handler definition")
+Signed-off-by: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- tools/testing/selftests/bpf/Makefile |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/crypto/chelsio/chtls/chtls_cm.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -146,6 +146,9 @@ VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmli
- 		     /sys/kernel/btf/vmlinux				\
- 		     /boot/vmlinux-$(shell uname -r)
- VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
-+ifeq ($(VMLINUX_BTF),)
-+$(error Cannot find a vmlinux for VMLINUX_BTF at any of "$(VMLINUX_BTF_PATHS)")
-+endif
+--- a/drivers/crypto/chelsio/chtls/chtls_cm.c
++++ b/drivers/crypto/chelsio/chtls/chtls_cm.c
+@@ -1905,9 +1905,9 @@ static void bl_abort_syn_rcv(struct sock
+ 	queue = csk->txq_idx;
  
- DEFAULT_BPFTOOL := $(SCRATCH_DIR)/sbin/bpftool
+ 	skb->sk	= NULL;
+-	do_abort_syn_rcv(child, lsk);
+ 	chtls_send_abort_rpl(child, skb, BLOG_SKB_CB(skb)->cdev,
+ 			     CPL_ABORT_NO_RST, queue);
++	do_abort_syn_rcv(child, lsk);
+ }
  
+ static int abort_syn_rcv(struct sock *sk, struct sk_buff *skb)
+@@ -1937,8 +1937,8 @@ static int abort_syn_rcv(struct sock *sk
+ 	if (!sock_owned_by_user(psk)) {
+ 		int queue = csk->txq_idx;
+ 
+-		do_abort_syn_rcv(sk, psk);
+ 		chtls_send_abort_rpl(sk, skb, cdev, CPL_ABORT_NO_RST, queue);
++		do_abort_syn_rcv(sk, psk);
+ 	} else {
+ 		skb->sk = sk;
+ 		BLOG_SKB_CB(skb)->backlog_rcv = bl_abort_syn_rcv;
+@@ -1981,12 +1981,11 @@ static void chtls_abort_req_rss(struct s
+ 
+ 		if (sk->sk_state == TCP_SYN_RECV && !abort_syn_rcv(sk, skb))
+ 			return;
+-
+-		chtls_release_resources(sk);
+-		chtls_conn_done(sk);
+ 	}
+ 
+ 	chtls_send_abort_rpl(sk, skb, csk->cdev, rst_status, queue);
++	chtls_release_resources(sk);
++	chtls_conn_done(sk);
+ }
+ 
+ static void chtls_abort_rpl_rss(struct sock *sk, struct sk_buff *skb)
 
 
