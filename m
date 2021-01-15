@@ -2,255 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4542F7756
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC622F775A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:15:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728515AbhAOLOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:14:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727716AbhAOLOW (ORCPT
+        id S1728622AbhAOLOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:14:46 -0500
+Received: from mail-ej1-f50.google.com ([209.85.218.50]:36251 "EHLO
+        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725950AbhAOLOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:14:22 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE301C06179B
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 03:13:27 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id 7so1624579wrz.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 03:13:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TDB5szcqlcCXwZI0QnUXTFV9ZQzED5fqjVoMB5Cr/nI=;
-        b=aS8l0JDCTL2NZRL+TZeWFzLmqoP4h+BZfb0Y4Dw02SQsZ8B1Tj86PaBCBeQQ4jdv+S
-         V5wX+wyRNbkGiZjmvXmrtzYjbb811gAPssqhKGY5jh8AYkZJCFq4/Av+hQVP1BM+uyQx
-         pnJwhwZJoyH+zeQfDmPOJI0Tux9gv715MLyGS02ARsOTUcTlJ+8n6KARYe4GhcI9ojp4
-         8EmyWvITl08XM0kV8/ycRm3rhHf56cUIhZUFvLMHqU2zG3wagv3UQhwAdKfnSudrzo8N
-         hsjtScB2DgFGt/0g2tpcLg71bLIwOrgiO7ar/2lB6vDtuHXT/SXJNbZ2i6QKb6B+hDDg
-         GrEw==
+        Fri, 15 Jan 2021 06:14:44 -0500
+Received: by mail-ej1-f50.google.com with SMTP id l9so7018642ejx.3;
+        Fri, 15 Jan 2021 03:14:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TDB5szcqlcCXwZI0QnUXTFV9ZQzED5fqjVoMB5Cr/nI=;
-        b=APZWydDP6CjZ+HtOeUz79XYhA4uVMnPlEtMzgu9apWChVi7LCVwzQWwXjYwyppNqvw
-         Z9hvJOwz4USRnh/1j24zY/Jz9kRsVmVWPtuEzWEkIaf0IQIUlDpXlis3BtJVkfRxEhTV
-         bWMdSX9vJjIkv2QsVOni+3cvhPsGjN0vKcggzpUlDjV36KdV3L338dRUGIu9AUBrve/S
-         c/99315VgH2ywmKX8HitkalqddDvTu47q4UZNu/tposRX4//vf8mXSP+Ox4TNyMuXlfe
-         Q0tQhFyYJ1MuKxkC5Hy8Fnv+TrTKPH5PSeZNqCuWMuc8bJL7YBU5Drfmo+poRrqLGAUg
-         d+zA==
-X-Gm-Message-State: AOAM531c/u4fwZVffTAcjiLgoHL/w3xTDNDqRRKM8K7W8dA5QnTHzNB8
-        8drR0AQSlUemVlVNdZi3WZmCjg==
-X-Google-Smtp-Source: ABdhPJyu5s7qiByOputlrlfGxuBJ9K3excZDYhzaaOZ32OvpjzHa5dShedfu6+qNOiJSlSSvbF0f4w==
-X-Received: by 2002:a5d:62c8:: with SMTP id o8mr12846525wrv.51.1610709206500;
-        Fri, 15 Jan 2021 03:13:26 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id l1sm15048822wrq.64.2021.01.15.03.13.25
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=fYfrPYooDlKQvChf2iGvBkaRlU3LPV6MR7txq90KWBk=;
+        b=I/7l33RhaKERqtzhytN8bySpnRlA2Yatp0A6HZOPb34vOEtqlWGIrLdUZSd7Hu1aQk
+         gyV9xfTW2FvC4SXbhRcEj6PABL/e9MaNDqaNAd/tZdR0TkQAn0J0dA6FKqLP9f9XoPBT
+         nb/A8wMypfp7cSq89rF3WSHqQRMTMUPTngP5n//wW7deXcNRd5nHJpjnGIEvpZB8wPaM
+         sLnAXCrNSsieqk6j1HeXklBhmrC3pxPNWgOZnUzfP23LJb8Ihf8ovyBC2QAAijPQM2pt
+         JtRc1C+LJPROr3qwSaJsIHPvQ7mLx9MHX6pRlGEugaRtBVnlnKacfY/GARNiGDceJ530
+         v3Qg==
+X-Gm-Message-State: AOAM530hZVVZALCcP5ys4zDywz1PiG1EpLo/kp/bjygrd3djkVYotHmJ
+        FbbtGTAs8lc82Svf3XsgnSU=
+X-Google-Smtp-Source: ABdhPJz/USrPF/RnaYPh8VMLYj/NOiiXy0R/L0GyNNeU3PSQ1tpBDFVjKd7vCzVI1c+o9LoXFFcYYg==
+X-Received: by 2002:a17:906:cec7:: with SMTP id si7mr8201024ejb.123.1610709242119;
+        Fri, 15 Jan 2021 03:14:02 -0800 (PST)
+Received: from ingrassia.epigenesys.com ([2.236.81.180])
+        by smtp.gmail.com with ESMTPSA id o13sm3409869edr.94.2021.01.15.03.14.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 03:13:26 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
-Cc:     linux-kernel@vger.kernel.org, Kent Gibson <warthog618@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v4 4/4] samples: configfs: add a committable group
-Date:   Fri, 15 Jan 2021 12:13:11 +0100
-Message-Id: <20210115111311.31601-5-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20210115111311.31601-1-brgl@bgdev.pl>
-References: <20210115111311.31601-1-brgl@bgdev.pl>
+        Fri, 15 Jan 2021 03:14:01 -0800 (PST)
+Date:   Fri, 15 Jan 2021 12:13:59 +0100
+From:   Emiliano Ingrassia <ingrassia@epigenesys.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: Re: perf tools build broken for RISCV 32 bit
+Message-ID: <YAF499fI3dLgKjri@ingrassia.epigenesys.com>
+References: <YACPie55ArIHu3mI@ingrassia.epigenesys.com>
+ <CAK8P3a0dJnKiX5minsUNdAcNnxPvZkyK363f1ibj_x0L2MQiPQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK8P3a0dJnKiX5minsUNdAcNnxPvZkyK363f1ibj_x0L2MQiPQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Hi Arnd,
 
-Add an example of using committable items to configfs samples. Each
-config item has two attributes: read-write 'storeme' which works
-similarly to other examples in this file and a read-only 'committed'
-attribute which changes its value between false and true depending on
-whether it's committed or not at the moment.
+thank you for the quick reply and support.
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- samples/configfs/configfs_sample.c | 153 +++++++++++++++++++++++++++++
- 1 file changed, 153 insertions(+)
+On Thu, Jan 14, 2021 at 08:16:28PM +0100, Arnd Bergmann wrote:
+> On Thu, Jan 14, 2021 at 7:38 PM Emiliano Ingrassia
+> <ingrassia@epigenesys.com> wrote:
+> >
+> > Hi,
+> >
+> > When building perf for RISCV 32 bit (v5.10.7) I got the following
+> >
+> > | In file included from bench/futex-hash.c:29:
+> > | bench/futex.h: In function ‘futex_wait’:
+> > | bench/futex.h:37:10: error: ‘SYS_futex’ undeclared (first use in this function); did you mean ‘SYS_tee’?
+> >
+> > This issue is similar to the one reported in https://lkml.org/lkml/2019/4/19/631
+> >
+> > I found that patching tools/arch/riscv/include/uapi/asm/unistd.h as following:
+> >
+> >  #ifdef __LP64__
+> >  #define __ARCH_WANT_NEW_STAT
+> >  #define __ARCH_WANT_SET_GET_RLIMIT
+> > +#else
+> > +#define __ARCH_WANT_TIME32_SYSCALLS
+> >  #endif /* __LP64__ */
+> >
+> > solved the problem.
+> >
+> > I also found that a similar patch for arch/riscv/include/uapi/asm/unistd.h
+> > was removed in commit d4c08b9776b3, so probably this is not the right way(?).
+>
+> In short, it won't work, as rv32 does not provide the time32 syscalls.
+> Your patch will make the application build, but it will not be able to
+> call futex().
+>
+> You will in fact run into a related problem on any 32-bit architecture
+> if CONFIG_COMPAT_32BIT_TIME is disabled, or if you pass a non-NULL
+> timeout parameter and build with a time64-enabled libc.
+>
 
-diff --git a/samples/configfs/configfs_sample.c b/samples/configfs/configfs_sample.c
-index f9008be7a8a1..9bef74e4369d 100644
---- a/samples/configfs/configfs_sample.c
-+++ b/samples/configfs/configfs_sample.c
-@@ -315,6 +315,158 @@ static struct configfs_subsystem group_children_subsys = {
- 
- /* ----------------------------------------------------------------- */
- 
-+/*
-+ * 04-committable-children
-+ *
-+ * This is an example of a committable group.  It's similar to the simple
-+ * children example but each config_item has an additional 'committed'
-+ * attribute which is read-only and is only modified when the config_item
-+ * is moved from the 'pending' to the 'live' directory.
-+ */
-+
-+struct committable_child {
-+	struct config_item item;
-+	int storeme;
-+	bool committed;
-+};
-+
-+static inline struct committable_child *
-+to_committable_child(struct config_item *item)
-+{
-+	return container_of(item, struct committable_child, item);
-+}
-+
-+static ssize_t
-+committable_child_storeme_show(struct config_item *item, char *page)
-+{
-+	return sprintf(page, "%d\n", to_committable_child(item)->storeme);
-+}
-+
-+static ssize_t committable_child_storeme_store(struct config_item *item,
-+					       const char *page, size_t count)
-+{
-+	struct committable_child *child = to_committable_child(item);
-+	int ret;
-+
-+	if (child->committed)
-+		return -EPERM;
-+
-+	ret = kstrtoint(page, 10, &child->storeme);
-+	if (ret)
-+		return ret;
-+
-+	return count;
-+}
-+
-+CONFIGFS_ATTR(committable_child_, storeme);
-+
-+static ssize_t
-+committable_child_committed_show(struct config_item *item, char *page)
-+{
-+	return sprintf(page, "%s\n",
-+		to_committable_child(item)->committed ? "true" : "false");
-+}
-+
-+CONFIGFS_ATTR_RO(committable_child_, committed);
-+
-+static struct configfs_attribute *committable_child_attrs[] = {
-+	&committable_child_attr_storeme,
-+	&committable_child_attr_committed,
-+	NULL,
-+};
-+
-+static void committable_child_release(struct config_item *item)
-+{
-+	kfree(to_committable_child(item));
-+}
-+
-+static struct configfs_item_operations committable_child_item_ops = {
-+	.release	= committable_child_release,
-+};
-+
-+static const struct config_item_type committable_child_type = {
-+	.ct_item_ops	= &committable_child_item_ops,
-+	.ct_attrs	= committable_child_attrs,
-+	.ct_owner	= THIS_MODULE,
-+};
-+
-+struct committable_children {
-+	struct config_group group;
-+};
-+
-+static struct config_item *
-+committable_children_make_item(struct config_group *group, const char *name)
-+{
-+	struct committable_child *child;
-+
-+	child = kzalloc(sizeof(*child), GFP_KERNEL);
-+	if (!child)
-+		return ERR_PTR(-ENOMEM);
-+
-+	config_item_init_type_name(&child->item, name, &committable_child_type);
-+
-+	return &child->item;
-+}
-+
-+static ssize_t
-+committable_children_description_show(struct config_item *item, char *page)
-+{
-+	return sprintf(page,
-+"[04-committable-children]\n"
-+"\n"
-+"This subsystem allows creation of committable config_items.  The subsystem\n"
-+"has two subdirectories: pending and live.  New config_items can only be\n"
-+"created in pending/ and they have one writable and readable attribute as\n"
-+"well as a single read-only attribute.  The latter is only changed once the\n"
-+"item is 'committed'.  This is done by moving the config_item (using\n"
-+"rename()) to the live/ directory.  In this example, the storeme attribute\n"
-+"becomes 'read-only' once committed.\n");
-+}
-+
-+CONFIGFS_ATTR_RO(committable_children_, description);
-+
-+static struct configfs_attribute *committable_children_attrs[] = {
-+	&committable_children_attr_description,
-+	NULL,
-+};
-+
-+static int committable_children_commit_item(struct config_item *item)
-+{
-+	to_committable_child(item)->committed = true;
-+
-+	return 0;
-+}
-+
-+static int committable_children_uncommit_item(struct config_item *item)
-+{
-+	to_committable_child(item)->committed = false;
-+
-+	return 0;
-+}
-+
-+static struct configfs_group_operations committable_children_group_ops = {
-+	.make_item	= committable_children_make_item,
-+	.commit_item	= committable_children_commit_item,
-+	.uncommit_item	= committable_children_uncommit_item,
-+};
-+
-+static const struct config_item_type committable_children_type = {
-+	.ct_group_ops	= &committable_children_group_ops,
-+	.ct_attrs	= committable_children_attrs,
-+	.ct_owner	= THIS_MODULE,
-+};
-+
-+static struct configfs_subsystem committable_children_subsys = {
-+	.su_group = {
-+		.cg_item = {
-+			.ci_namebuf = "04-committable-children",
-+			.ci_type = &committable_children_type,
-+		},
-+	},
-+};
-+
-+/* ----------------------------------------------------------------- */
-+
- /*
-  * We're now done with our subsystem definitions.
-  * For convenience in this module, here's a list of them all.  It
-@@ -326,6 +478,7 @@ static struct configfs_subsystem *example_subsys[] = {
- 	&childless_subsys.subsys,
- 	&simple_children_subsys,
- 	&group_children_subsys,
-+	&committable_children_subsys,
- 	NULL,
- };
- 
--- 
-2.29.1
+I'm using glibc 2.32 which supports 64 bit time_t on RISCV 32.
 
+In particular, searching for __NR_futex in glibc RISCV source code I got:
+
+sysdeps/unix/sysv/linux/riscv/rv32/arch-syscall.h: #define __NR_futex_time64 422
+sysdeps/unix/sysv/linux/riscv/sysdep.h: #define __NR_futex __NR_futex_time64
+sysdeps/unix/sysv/linux/riscv/rv64/arch-syscall.h: #define __NR_futex 98
+
+but in the generated bits/syscall.h, included in bench/futex.h, I found:
+
+#ifdef __NR_futex
+# define SYS_futex __NR_futex
+#endif
+
+#ifdef __NR_futex_time64
+# define SYS_futex_time64 __NR_futex_time64
+#endif
+
+So the problem is that userspace applications can't see the definition
+of __NR_futex which is in sysdep.h, but there are no problems in calling
+futex() libc wrapper because glibc syscall.c includes that header.
+
+A possible fix for the perf tool would be to use futex() libc wrapper
+in tools/perf/bench/futex.h instead of syscall(), but, if I understand correctly,
+there are some drawbacks that does not permit it.
+
+So what should be the right solution?
+
+> The fix in the application is to call either __NR_futex or __NR_futex64
+> depending on the definition of time_t in the C library. I would recommend
+> doing it like
+>
+> #ifdef __NR_futex
+> #define do_futex (sizeof(time_t) == sizeof(__kernel_long_t)) ? \
+>          __NR_futex : __NR_futex_time64
+> #else
+> #define do_futex __NR_futex
+> #done
+>
+>        Arnd
+
+Where should be this fix applied? To perf code?
+
+Thank you,
+
+Emiliano
