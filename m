@@ -2,121 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BE62F7C36
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4452F7C3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732298AbhAONMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:12:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732113AbhAONM3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:12:29 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD65C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:11:49 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id m6so5469926pfk.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:11:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6umvCsAyn8LNlLKR4Gh0cZmveVk8fGwHsSK6SRMZEbU=;
-        b=SnDXl4aRWGAJQrgks0Grcn4RXlp7beT1MVhlVxEpU3TYCdsLusC3zjvFEdBUuJbxv9
-         voc4nnYlVMenWvl4emWLynQg+zP6dbg9orCRq6jch6Xo+bBEqF506NWzvkctVJt5RoXt
-         gnC48NAEujee9t3+ov6QKNCwmWWsfv8FKzMu8tM6nwCi2XgYtRdDuycsaKnU+f43+vzN
-         l5J0ux4ZYcJL1DWNpDSX+3O5LQiFQqs4O06LVTo9aEBm8GY2jy8s7s1bDiyn4LjH+RVp
-         4JR5HOFLoFUtEs9SLWWEeZIQERqV0NJe4sRXdgr05pMjVLS8WRsA/yMk8hhEsR4eQp/5
-         /kew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6umvCsAyn8LNlLKR4Gh0cZmveVk8fGwHsSK6SRMZEbU=;
-        b=UjBlZCSWic6DJQmGssDE72GTy4khpZ7IyPpFOkaFJs+holkIZClL8yjAVLPlNPM+ll
-         Zkh8Ou2hqF4oDG2hKwv80LPEd/fpcJ5QekOkolFFvNOTA63AycpKQPozrwl9mQbQgCDh
-         f78Tubkt2cMuZ9JFYFiNPbGmUIWgVuws4BUfdezGNjZUstntJYCrmBi0X32mo/Agd9Sd
-         ehSerEcv2U2JuDib/vBBATBtI3lCj9D8H8O/RnbKsqunEuIJNGMEBQquAPp3L3rNy4sd
-         C09pCe5LXcjGgypC+BwrlYUMz5oZas7mqXOmXtFKuv9AVAUu28hXMN6NSjE2TED+hoxw
-         dafw==
-X-Gm-Message-State: AOAM532VOI6GsYEyxu5gb9O78SNXJpWcKUjzDY4EFCtr01aZ/OTIZZZU
-        GByNgEy0BuUZVdw48mPSUQcS4Y98Bx6/WjSRTVV5PA==
-X-Google-Smtp-Source: ABdhPJxP4nRrKwZSBlUFpmikVpl6k4pzHnULL/yc60R1uCe8Ns1peu8s87V06K5tB60ue3skQrwX/CMP31Tu2zYjM9o=
-X-Received: by 2002:a62:e309:0:b029:1ae:5b4a:3199 with SMTP id
- g9-20020a62e3090000b02901ae5b4a3199mr12292780pfh.24.1610716308705; Fri, 15
- Jan 2021 05:11:48 -0800 (PST)
+        id S1732545AbhAONM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:12:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731209AbhAONM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 08:12:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC2D82256F;
+        Fri, 15 Jan 2021 13:12:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610716337;
+        bh=/pOnbiJh8C5AScCuERBndwrdoUImzTZwz+BjkazkJSk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W1A9eyEeghxG1xu1NXHmeM5jdKyYsMTWyjGjEPzU3Qt+zw820bLH01AR+pO3WHXlz
+         OPmNP8wlAovbpkvhjC5E1IriHEC7U+5sv45dDxR2t04sQVGzZ7OR4gg0lUb/hCxemR
+         QzGu52Bd9/Bq8BgZ4AEx8+44Tjxs66DH4dKM6ha3PWUjtITDHqXlV/q/qmQXL8PmqB
+         BLyjV7vXMmHlk37iFS7vTmGaS4sWhAlbR+eVRSY+207l5ljs1gdpeNjlMEUDWeXS8l
+         80pY0mJomBDIgeuNWjZLgQO9k0eUS94e0BfxbQmCzV+5jJpYtDaJ1UCH4LBMSM6X3V
+         m2RP42hyRiDFg==
+Date:   Fri, 15 Jan 2021 13:11:42 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     Rob Herring <robh@kernel.org>, kuninori.morimoto.gx@renesas.com,
+        nsaenzjulienne@suse.de, f.fainelli@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 2/6] dt-bindings: audio-graph-card: Add plls and
+ sysclks properties
+Message-ID: <20210115131142.GA4384@sirena.org.uk>
+References: <20210108160501.7638-1-rf@opensource.cirrus.com>
+ <20210108160501.7638-3-rf@opensource.cirrus.com>
+ <20210113152225.GA2334778@robh.at.kernel.org>
+ <20210113160917.GF4641@sirena.org.uk>
+ <ee3d0b75-dc2f-9994-19a4-a3c3f21a2c65@opensource.cirrus.com>
 MIME-Version: 1.0
-References: <cover.1609871239.git.andreyknvl@google.com> <dd061dfca76dbf86af13393edacd37e0c75b6f4a.1609871239.git.andreyknvl@google.com>
- <X/3yDGfTJ+ng+GJt@Catalins-MacBook-Air.local>
-In-Reply-To: <X/3yDGfTJ+ng+GJt@Catalins-MacBook-Air.local>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 15 Jan 2021 14:11:37 +0100
-Message-ID: <CAAeHK+ztACu-tU65a7iFfX+TaQixCUzi2fngypOYuaRhOcUcdg@mail.gmail.com>
-Subject: Re: [PATCH 05/11] kasan, arm64: allow using KUnit tests with HW_TAGS mode
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="LQksG6bCIzRHxTLp"
+Content-Disposition: inline
+In-Reply-To: <ee3d0b75-dc2f-9994-19a4-a3c3f21a2c65@opensource.cirrus.com>
+X-Cookie: Debug is human, de-fix divine.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 8:01 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Tue, Jan 05, 2021 at 07:27:49PM +0100, Andrey Konovalov wrote:
-> > diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> > index 3c40da479899..57d3f165d907 100644
-> > --- a/arch/arm64/mm/fault.c
-> > +++ b/arch/arm64/mm/fault.c
-> > @@ -302,12 +302,20 @@ static void die_kernel_fault(const char *msg, unsigned long addr,
-> >  static void report_tag_fault(unsigned long addr, unsigned int esr,
-> >                            struct pt_regs *regs)
-> >  {
-> > -     bool is_write  = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
-> > +     static bool reported;
-> > +     bool is_write;
-> > +
-> > +     if (READ_ONCE(reported))
-> > +             return;
-> > +
-> > +     if (mte_report_once())
-> > +             WRITE_ONCE(reported, true);
->
-> I guess the assumption here is that you don't get any report before the
-> tests start and temporarily set report_once to false. It's probably
-> fine, if we get a tag check failure we'd notice in the logs anyway.
 
-Good point. I'll add a note in a comment in v4.
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> >       /*
-> >        * SAS bits aren't set for all faults reported in EL1, so we can't
-> >        * find out access size.
-> >        */
-> > +     is_write = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
->
-> I now noticed, you could write this in a shorter way:
->
->         is_write = !!(esr & ESR_ELx_WNR);
->
-> >       kasan_report(addr, 0, is_write, regs->pc);
-> >  }
+On Fri, Jan 15, 2021 at 10:35:23AM +0000, Richard Fitzgerald wrote:
+> On 13/01/2021 16:09, Mark Brown wrote:
+> > On Wed, Jan 13, 2021 at 09:22:25AM -0600, Rob Herring wrote:
 
-Will do in v4.
+> some_codec {
+> 	pll: pll {
+> 		compatible = "fixed-clock";
+> 		clocks = <&audio_mclk>;
+> 		clock-frequency = <98304000>;
+> 	}
 
-> The patch looks fine to me.
->
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+A PLL is not a fixed clock, why would you define a fixed clock here?
+Are you confusing the selection of rates on existing clocks with the use
+of the assigned-* properties that the clock binding provides?
 
-Thanks!
+> For this to work the clock binding must be a real clock object (so needs
+> a valid compatible=). But I need to somehow specify the PLL ID and
+
+That seems like a *very* surprising requirement - why would the clock
+binding have that requirement?  It would seem to create issues for a
+single device providing multiple clocks which should be a pretty common
+coase.
+
+> > > > +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> > > > +    description: |
+> > > > +      A list of clock names giving the source clock for each setting
+> > > > +      in the sysclks property.
+> > > > +
+
+
+Please delete unneeded context from mails when replying.  Doing this
+makes it much easier to find your reply in the message, helping ensure
+it won't be missed by people scrolling through the irrelevant quoted
+material.
+
+--LQksG6bCIzRHxTLp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmABlI0ACgkQJNaLcl1U
+h9Ad4wf+NpbjhW4qXIhAE/mkqs7cQ7UrZ5RbD3y9XQxnUyiF4huBFqAnfcKRy+RU
+Rbv5BkqxDJm6VcvlGqzZ9Uq16JOFFXNxN9ovQItAl5T0UkIksMm8WHxYWC34ckaq
+cOrgHsEUvFsgRO0SwwBSl/0Miyndfy5kdppsML2bxC3bu+h/P/BX0dsAen67aNbG
+LbhemYBmgjMIU41DtfaKHd9qtKULmX8OUgB4h2aaHOQP3pXVdSs0FhYYazqgRHZJ
+7rUqEG4zvt7sJ9AsSZllA95Nqg2KQ2LYAuugSVER+GIIoWtVoqjgeBwKkNnu2dYo
+4RzIeg4/17T68RY72c0AmwGDOkFVTg==
+=klrm
+-----END PGP SIGNATURE-----
+
+--LQksG6bCIzRHxTLp--
