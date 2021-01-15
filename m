@@ -2,148 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2AE2F7BBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 751B82F7BF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387442AbhAONEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:04:43 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:34057 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733133AbhAONEj (ORCPT
+        id S1728795AbhAONHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:07:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732778AbhAONH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:04:39 -0500
-Received: by mail-ot1-f54.google.com with SMTP id a109so8460396otc.1;
-        Fri, 15 Jan 2021 05:04:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BfjWETeidop360v2z5Os9N6k2FYG3GkdQgvxI2qXOp8=;
-        b=o9t1brVVRaYLL1W5ScnK1HeleKDKYneZFpzFFHOiwapTJ2h9W3wa1s31kpzwBCxK5k
-         GMziTz0uT246G77owlTesQjwGQ7FXwByv9+WCC/GH28cW/yNgsP2DnRK/8ZVO8NVxEWv
-         PoKQrUGu8E62/Qc35alYbB+t/hucl5TarIiEF0P6xNa9qXdlRngO5fo1pLoEuU5/d//4
-         DtBWcp++8Cj+LelwRyCp2MrzTSBdw/rT/ygq0IprAQtkfZMK2CxS0etjXZJztojy3DTq
-         3zX/pXtsCATela/0CRVvJlulQ32cz+AH/25k+Y6Esgbt73LcmY63rTJcx1qlxQJY1fpk
-         WSew==
-X-Gm-Message-State: AOAM531ar1FC2czAVPAdSlR6DjkTrb1Ap8UxmsJoYsGXEJaSU5f1bEL3
-        1RhYMQTRL4AhnrGBgDO1MnRyzjZ3yjUO6oYm8r4=
-X-Google-Smtp-Source: ABdhPJy3GccdI1Kjl8kx1Dn1OnmG20hjMOUcdFuH32YzvaLbkZ3+5gfE/+FCicnfkuJQ5e8L2QyC9eda0GKJYtv8uds=
-X-Received: by 2002:a05:6830:4b5:: with SMTP id l21mr8351768otd.321.1610715838378;
- Fri, 15 Jan 2021 05:03:58 -0800 (PST)
+        Fri, 15 Jan 2021 08:07:28 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C48C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:06:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4hCJR1XpGxzoY7Z8SGdX7VVnmJPSGSe1Nv9um16SGP8=; b=AE05uDUwr/LXFSxo8iOKuv+SZY
+        W3+NTFISAtuSbotoa8GSl/lhs+843JIjrCtTFn/Vqe61GcALdaKJNe1fVRLBEfhsK83XYv4nEUUC+
+        VPG+oPy1ZYKru9wdepbl7eSEutue7qN1T3IAf8Sdfhig8ok25oRXKbaPxEGvwZXbbvoN35/gtlJYy
+        fXHAv4KZw/IOtkd3u+QHwo2ELtuTY4oFH/UN+0ijTR3VJJf81V6m9WEPlG7OcobuHWSz8+ICMDf1F
+        1at+Ao/ZVcJ9dFOsTbrGIOMPuJh0w1aBOx9B5gwpWHbUaSuqMhnO/kd8gGskFiNEYlo218OXmHBqd
+        U89qWqyg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l0OmD-008xXB-Rw; Fri, 15 Jan 2021 13:04:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2FC3530791E;
+        Fri, 15 Jan 2021 14:04:27 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0CC2823654448; Fri, 15 Jan 2021 14:04:27 +0100 (CET)
+Date:   Fri, 15 Jan 2021 14:04:26 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
+Message-ID: <YAGS2mulIw6o+sY5@hirez.programming.kicks-ass.net>
+References: <20201226025117.2770-1-jiangshanlai@gmail.com>
+ <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
+ <87o8hv7pnd.fsf@nanos.tec.linutronix.de>
+ <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
+ <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net>
+ <20210111180907.GE2743@paulmck-ThinkPad-P72>
+ <20210111215052.GA19589@paulmck-ThinkPad-P72>
+ <20210112171411.GA22823@paulmck-ThinkPad-P72>
+ <20210112235324.GA17895@paulmck-ThinkPad-P72>
+ <YAFcVy9wIezTa2mM@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <2073294.4OfjquceTg@kreacher> <CAGETcx980TXe_Jur3LqpWoMwt0wG9BBvVdXfhAo3jU8-tgv=kw@mail.gmail.com>
- <YAFmoinbKocE9Jf5@gerhold.net>
-In-Reply-To: <YAFmoinbKocE9Jf5@gerhold.net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 15 Jan 2021 14:03:47 +0100
-Message-ID: <CAJZ5v0hgmrN_zWBrX7FsfP=7mZHf_BYm+Qe+E3Ti4k0mK7t2MA@mail.gmail.com>
-Subject: Re: [PATCH] driver core: Extend device_is_dependent()
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAFcVy9wIezTa2mM@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 11:03 AM Stephan Gerhold <stephan@gerhold.net> wrote:
->
-> Hi,
->
-> On Thu, Jan 14, 2021 at 11:31:12AM -0800, Saravana Kannan wrote:
-> > On Thu, Jan 14, 2021 at 10:41 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> > >
-> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > >
-> > > When adding a new device link, device_is_dependent() is used to
-> > > check whether or not the prospective supplier device does not
-> > > depend on the prospective consumer one to avoid adding loops
-> > > to the graph of device dependencies.
-> > >
-> > > However, device_is_dependent() does not take the ancestors of
-> > > the target device into account, so it may not detect an existing
-> > > reverse dependency if, for example, the parent of the target
-> > > device depends on the device passed as its first argument.
-> > >
-> > > For this reason, extend device_is_dependent() to also check if
-> > > the device passed as its first argument is an ancestor of the
-> > > target one and return 1 if that is the case.
-> > >
-> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > Reported-by: Stephan Gerhold <stephan@gerhold.net>
-> > > ---
-> > >  drivers/base/core.c |   12 +++++++++++-
-> > >  1 file changed, 11 insertions(+), 1 deletion(-)
-> > >
-> > > Index: linux-pm/drivers/base/core.c
-> > > ===================================================================
-> > > --- linux-pm.orig/drivers/base/core.c
-> > > +++ linux-pm/drivers/base/core.c
-> > > @@ -208,6 +208,16 @@ int device_links_read_lock_held(void)
-> > >  #endif
-> > >  #endif /* !CONFIG_SRCU */
-> > >
-> > > +static bool device_is_ancestor(struct device *dev, struct device *target)
-> > > +{
-> > > +       while (target->parent) {
-> > > +               target = target->parent;
-> > > +               if (dev == target)
-> > > +                       return true;
-> > > +       }
-> > > +       return false;
-> > > +}
-> > > +
-> > >  /**
-> > >   * device_is_dependent - Check if one device depends on another one
-> > >   * @dev: Device to check dependencies for.
-> > > @@ -221,7 +231,7 @@ int device_is_dependent(struct device *d
-> > >         struct device_link *link;
-> > >         int ret;
-> > >
-> > > -       if (dev == target)
-> > > +       if (dev == target || device_is_ancestor(dev, target))
-> > >                 return 1;
-> > >
-> > >         ret = device_for_each_child(dev, target, device_is_dependent);
-> > >
-> >
->
-> Thanks for the patch, Rafael! I tested it and it seems to avoid the
-> circular device link (and therefore also the crash). FWIW:
->
-> Tested-by: Stephan Gerhold <stephan@gerhold.net>
+On Fri, Jan 15, 2021 at 10:11:51AM +0100, Peter Zijlstra wrote:
+> On Tue, Jan 12, 2021 at 03:53:24PM -0800, Paul E. McKenney wrote:
+> > An SRCU-P run on the new series reproduced the warning below.  Repeat-by:
+> > 
+> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10 --configs "112*SRCU-P" --bootargs "rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcutree.softirq=0" --trust-make
+> 
+> Lemme go wake up an EX ;-)
 
-Thanks!
+Whee, rescuer thread goes wobbly... took a few hours but there you have
+it.
 
-> > The code works, but it's not at all obvious what it's doing. Because,
-> > at first glance, it's easy to mistakenly think that it's trying to
-> > catch this case:
-> > dev <- child1 <- child2 <- target
-> >
->
-> Isn't this pretty much the case we are trying to catch? I have:
->
->   78d9000.usb <- ci_hdrc.0 <- ci_hdrc.0.ulpi <- phy-ci_hdrc.0.ulpi.0
->
-> then something attempts to create a device link with
-> consumer = 78d9000.usb, supplier = phy-ci_hdrc.0.ulpi.0, and to check if
-> that is allowed we call device_is_dependent() with dev = 78d9000.usb,
-> target = phy-ci_hdrc.0.ulpi.0.
->
-> Note that this case would normally be covered by the device_for_each_child().
-> It's not in this case because the klist_children of 78d9000.usb
-> is updated too late.
-
-Exactly.
-
-The supplier has been initialized, which is why device_is_dependent()
-is invoked at all, but it has not been fully registered yet, so
-device_for_each_child() cannot be relied on to catch all of the
-possible dependencies.
-
-And I say "possible", because the dependency in question is only
-partially recorded in the data structures, but IMV device_link_add()
-should refuse to create the device link in this case too.
+All I've got so far is fugly, gotta think harder.
