@@ -2,104 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C742F763D
+	by mail.lfdr.de (Postfix) with ESMTP id 036A52F763C
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728821AbhAOKJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 05:09:21 -0500
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:45000 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726507AbhAOKJV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 05:09:21 -0500
-Received: from [192.168.1.41] ([92.131.99.25])
-        by mwinf5d49 with ME
-        id Gy7a2400L0Ys01Y03y7agg; Fri, 15 Jan 2021 11:07:37 +0100
-X-ME-Helo: [192.168.1.41]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 15 Jan 2021 11:07:37 +0100
-X-ME-IP: 92.131.99.25
-Subject: Re: [PATCH][next] drm/amdgpu: Add missing BOOTUP_DEFAULT to
- profile_name[]
-To:     Colin Ian King <colin.king@canonical.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210111114638.16530-1-colin.king@canonical.com>
- <20210112100706.GF5083@kadam>
- <51efd2a7-f2cf-dc28-4b86-5e89d13564ca@canonical.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <f57062ac-499d-95bb-cf4f-bb7b5b1dea5b@wanadoo.fr>
-Date:   Fri, 15 Jan 2021 11:07:36 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1726439AbhAOKJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 05:09:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55058 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725910AbhAOKI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 05:08:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7422E235F9;
+        Fri, 15 Jan 2021 10:08:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610705299;
+        bh=nA4wC43S56EOwm9vQj9uFLi+XUwkcBKjBZHffULpMnA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SBB0THer+zQoEo8RlTQoXT2rquhunv1xAZZiRk/3JhXra0qWNmwvJSMMlSy+zWN6w
+         vPyMzaeh3P81KVLSGHMcBaLM0Z/hIQPZRdL6TApHDNWcnm36BA7ZO19aqGShUUjL6g
+         Q1FmCsUCj7rP6f4vUFNS1G0JuAzOHwepXjfkI4w/8kRgYoPi/GN06pgEBjvujPcD5r
+         9JN9PDS74Mbx9jRhLvI4nHqLO+5p/EhpmMuy0/gbyFMrdJSDRcOdWWUf2K6V4RvAlF
+         fsZuXj1zYsx7asWrt2JT/6kJ2xCOUMh+ytIMVlRBmtYXmrebb9yKyvKFnEFJme9Pwf
+         qIskL7KJuM8vg==
+Date:   Fri, 15 Jan 2021 12:08:13 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Sami Tolvanen <samitolvanen@google.com>, sfr@canb.auug.org.au
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Kees Cook <keescook@chromium.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: fix the return type of sgx_init
+Message-ID: <YAFpjSegNiP+Vge2@kernel.org>
+References: <20210113232311.277302-1-samitolvanen@google.com>
 MIME-Version: 1.0
-In-Reply-To: <51efd2a7-f2cf-dc28-4b86-5e89d13564ca@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113232311.277302-1-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 15/01/2021 à 10:37, Colin Ian King a écrit :
-> On 12/01/2021 10:07, Dan Carpenter wrote:
->> On Mon, Jan 11, 2021 at 11:46:38AM +0000, Colin King wrote:
->>> From: Colin Ian King <colin.king@canonical.com>
->>>
->>> A recent change added a new BOOTUP_DEFAULT power profile mode
->>> to the PP_SMC_POWER_PROFILE enum but omitted updating the
->>> corresponding profile_name array.  Fix this by adding in the
->>> missing BOOTUP_DEFAULT to profile_name[].
->>>
->>
->> Still not enough to prevent the array overflow.  It needs POWERSAVE as
->> well.
+On Wed, Jan 13, 2021 at 03:23:11PM -0800, Sami Tolvanen wrote:
+> device_initcall() expects a function of type initcall_t, which returns
+> an integer. Change the signature of sgx_init() to match.
 > 
-> Thanks for checking, but there is a 1-to-1 relation ship now:
-> 
-> enum PP_SMC_POWER_PROFILE {
->          PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT = 0x0,
->          PP_SMC_POWER_PROFILE_FULLSCREEN3D = 0x1,
->          PP_SMC_POWER_PROFILE_POWERSAVING  = 0x2,
->          PP_SMC_POWER_PROFILE_VIDEO        = 0x3,
->          PP_SMC_POWER_PROFILE_VR           = 0x4,
->          PP_SMC_POWER_PROFILE_COMPUTE      = 0x5,
->          PP_SMC_POWER_PROFILE_CUSTOM       = 0x6,
->          PP_SMC_POWER_PROFILE_COUNT,
-> };
-> 
-> vs
-> 
->          static const char *profile_name[] = {
->                                          "BOOTUP_DEFAULT",
->                                          "3D_FULL_SCREEN",
->                                          "POWER_SAVING",
+> Fixes: e7e0545299d8c ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-This line has been added yesterday in commit f727ebeb589d.
-So Dan was right when he sent his patch, but some else fixed it.
+Thank you.
 
-CJ
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
->                                          "VIDEO",
->                                          "VR",
->                                          "COMPUTE",
->                                          "CUSTOM"};
-> 
-> 
-> unless I'm missing something because I've not had enough coffee.
-> 
-> Colin
-> 
->>
->> regards,
->> dan carpenter
->>
-> 
-> 
+I applied this to the master and next of
 
+git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-sgx.git
+
+Including to the v5.12 PR, actually is the first commit included to that.
+That reminds that I should get the next branch mirrored to linux-next.
+
+Stephen, can you start picking the next branch?
+
+/Jarkko
