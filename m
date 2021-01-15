@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A17E2F8676
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:18:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA572F867D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:21:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387436AbhAOURM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 15:17:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbhAOURK (ORCPT
+        id S2387598AbhAOUTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 15:19:04 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:35108 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbhAOUTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 15:17:10 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86BCC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:16:29 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id u21so11770139lja.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:16:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ySs7CNTOqN5GXMFt8JleozKLbcnnMYl8h0GybHe3ovo=;
-        b=VlpCFPXBTVU5sv30ixD//eShTT4irKo27rhhyZGhIUsqmoxF6jwWVu3Quqs689I6zq
-         AHsvmwosR39IZhN5Eb64huoTv/7f1b7rIr7ogsXWFqkSAtrtra6wKPFDL6OixkbiQyOL
-         tz6ewYTX/eHAIBfWDy9YfcGq/ZxOFqTRMfA7TIhhouFbfaNN8gSJnq1BPNtLUwkdGfVC
-         zKQn3z03aTQxD0M2gvdoU+OMjzL0Zw1RGwpVkKhlpRQ8F7yPXZEv3gkHy0YsIBBmw1UO
-         6eixhRzN2DUNoCHBBB0xIWIwl8uN/v1ZbP8Pn9IfkMZYMnAfzmIYZEvL6nQEv/s8LYPr
-         OXSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ySs7CNTOqN5GXMFt8JleozKLbcnnMYl8h0GybHe3ovo=;
-        b=bEoLH8ktiP7DjiOMj6cc82MGhijhacWvpZhAxR+zqTkCgINcGbB10MJ40iaoDtadD3
-         rLMzrExxhB0DvSLK4R6kGQxjwSHmlVVTRum52SWfDK/lj9W8OWEHg6sUzpYtxgwrOpb2
-         Lmpi4vEHJ+lm2bNk4gtJ1Gq9bbE5XahlabS05MhgH8AweFOonzv98x03Bn7axcGYbys6
-         CC+6zzjGqsCbrkzMNjlcaf/GYhXGwYHUoV0+Rtnj6QPIdtAboj1MdGOposDUGC7lsJwB
-         rTNi36fRFb0bQkbYOs68svwkgZW34BMhrG4ESWTLwg+pe3LIhVDnr5aGDymqi13Gq9VB
-         JYjg==
-X-Gm-Message-State: AOAM532L9ROHZCYxPqy9ext9ao/6WzibY84P+p2JKZsYHHD6/tHXbw1e
-        eukHKQgnGB8FTMeBS3ggHkx1VuuxLzLt3w4npBh1Jw==
-X-Google-Smtp-Source: ABdhPJxDasIJIa/cY9hSw0yawfYbZ0GYp/23phEahsfz3evcWfJnDGxLtBqc+qw6GzB3pScGLudSyHgnR8FGw6dwkZM=
-X-Received: by 2002:a2e:9d87:: with SMTP id c7mr5897472ljj.43.1610741788004;
- Fri, 15 Jan 2021 12:16:28 -0800 (PST)
+        Fri, 15 Jan 2021 15:19:02 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id B0B661C0B7C; Fri, 15 Jan 2021 21:18:19 +0100 (CET)
+Date:   Fri, 15 Jan 2021 21:18:19 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Xiaolei Wang <xiaolei.wang@windriver.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 5.10 086/103] regmap: debugfs: Fix a memory leak when
+ calling regmap_attach_dev
+Message-ID: <20210115201819.GA8375@amd>
+References: <20210115122006.047132306@linuxfoundation.org>
+ <20210115122010.175920983@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210115183543.15097-1-vbabka@suse.cz>
-In-Reply-To: <20210115183543.15097-1-vbabka@suse.cz>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 15 Jan 2021 21:16:01 +0100
-Message-ID: <CAG48ez0NvKYdNX6H_jbe1p5KV5-O6-i5K1JCBM6GHcTC5HDFRg@mail.gmail.com>
-Subject: Re: [PATCH] mm, slub: splice cpu and page freelists in deactivate_slab()
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="rwEMma7ioTxnRzrJ"
+Content-Disposition: inline
+In-Reply-To: <20210115122010.175920983@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 7:35 PM Vlastimil Babka <vbabka@suse.cz> wrote:
-> In deactivate_slab() we currently move all but one objects on the cpu freelist
-> to the page freelist one by one using the costly cmpxchg_double() operation.
-> Then we unfreeze the page while moving the last object on page freelist, with
-> a final cmpxchg_double().
->
-> This can be optimized to avoid the cmpxchg_double() per object. Just count the
-> objects on cpu freelist (to adjust page->inuse properly) and also remember the
-> last object in the chain. Then splice page->freelist to the last object and
-> effectively add the whole cpu freelist to page->freelist while unfreezing the
-> page, with a single cmpxchg_double().
 
-This might have some more (good) effects, although these might well be
-too minuscule to notice:
+--rwEMma7ioTxnRzrJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- - The old code inverted the direction of the freelist, while the new
-code preserves the direction.
- - We're no longer dirtying the cachelines of objects in the middle of
-the freelist.
+Hi!
 
-In the current code it probably doesn't really matter, since I think
-we basically only take this path when handling NUMA mismatches,
-PFMEMALLOC stuff, racing new_slab(), and flush_slab() for handling
-flushing IPIs? But yeah, if we want to start automatically sending
-flush IPIs, it might be a good idea, given that the next accesses to
-the page will probably come from a different CPU (unless the page is
-entirely unused, in which case it may be freed to the page allocator's
-percpu list) and we don't want to create unnecessary cache/memory
-traffic. (And it's a good cleanup regardless, I think.)
+> From: Xiaolei Wang <xiaolei.wang@windriver.com>
+>=20
+> commit cffa4b2122f5f3e53cf3d529bbc74651f95856d5 upstream.
+>=20
+> After initializing the regmap through
+> syscon_regmap_lookup_by_compatible, then regmap_attach_dev to the
+> device, because the debugfs_name has been allocated, there is no
+> need to redistribute it again
 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+? redistribute?
 
-Reviewed-by: Jann Horn <jannh@google.com>
+Anyway, this patch is clearly buggy:
 
-[...]
->         /*
-> -        * Stage two: Ensure that the page is unfrozen while the
-> -        * list presence reflects the actual number of objects
-> -        * during unfreeze.
-> +        * Stage two: Unfreeze the page while splicing the per-cpu
-> +        * freelist to the head of page's freelist.
-> +        *
-> +        * Ensure that the page is unfrozen while the list presence
-> +        * reflects the actual number of objects during unfreeze.
+> =20
+>  	if (!strcmp(name, "dummy")) {
+> -		kfree(map->debugfs_name);
+> +		if (!map->debugfs_name)
+> +			kfree(map->debugfs_name);
+> =20
 
-(my computer complains about trailing whitespace here)
+It runs kfree only if the variable is NULL. That's clearly useless,
+kfree(NULL) is NOP, and this causes memory leak.
 
->          *
->          * We setup the list membership and then perform a cmpxchg
->          * with the count. If there is a mismatch then the page
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--rwEMma7ioTxnRzrJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmAB+IoACgkQMOfwapXb+vLViACgpdacOys2yM71cP77OxHTSrOq
+yqwAniNDk0BPuDzWSUugYjfTU/gU3Laf
+=9C1+
+-----END PGP SIGNATURE-----
+
+--rwEMma7ioTxnRzrJ--
