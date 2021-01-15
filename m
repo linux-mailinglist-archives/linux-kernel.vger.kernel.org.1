@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DE02F7263
+	by mail.lfdr.de (Postfix) with ESMTP id 849E92F7262
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 06:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733175AbhAOFlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 00:41:44 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11019 "EHLO
+        id S1733187AbhAOFlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 00:41:46 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11018 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733061AbhAOFlc (ORCPT
+        with ESMTP id S1733144AbhAOFlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 00:41:32 -0500
 Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DH9431tJJzj7ns;
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DH94309pJzj7Mx;
         Fri, 15 Jan 2021 13:39:47 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 15 Jan 2021 13:40:42 +0800
+ 14.3.498.0; Fri, 15 Jan 2021 13:40:43 +0800
 From:   Kefeng Wang <wangkefeng.wang@huawei.com>
 To:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
@@ -26,9 +26,9 @@ To:     <linux-arm-kernel@lists.infradead.org>,
 CC:     Palmer Dabbelt <palmer@dabbelt.com>, <guoren@kernel.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v3 3/4] ARM: Covert to reserve_initrd_mem()
-Date:   Fri, 15 Jan 2021 13:46:05 +0800
-Message-ID: <20210115054606.124502-4-wangkefeng.wang@huawei.com>
+Subject: [PATCH v3 4/4] riscv: Covert to reserve_initrd_mem()
+Date:   Fri, 15 Jan 2021 13:46:06 +0800
+Message-ID: <20210115054606.124502-5-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210115054606.124502-1-wangkefeng.wang@huawei.com>
 References: <20210115054606.124502-1-wangkefeng.wang@huawei.com>
@@ -45,28 +45,28 @@ Covert to the generic reserve_initrd_mem() function.
 
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- arch/arm/mm/init.c | 43 +------------------------------------------
- 1 file changed, 1 insertion(+), 42 deletions(-)
+ arch/riscv/mm/init.c | 54 +-------------------------------------------
+ 1 file changed, 1 insertion(+), 53 deletions(-)
 
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index 828a2561b229..a29e14cd626c 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -153,47 +153,6 @@ phys_addr_t __init arm_memblock_steal(phys_addr_t size, phys_addr_t align)
- 	return phys;
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index bf5379135e39..1eaae54c8ea1 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -105,55 +105,6 @@ void __init mem_init(void)
+ 	print_vm_layout();
  }
  
--static void __init arm_initrd_init(void)
--{
 -#ifdef CONFIG_BLK_DEV_INITRD
+-static void __init setup_initrd(void)
+-{
 -	phys_addr_t start;
 -	unsigned long size;
 -
+-	/* Ignore the virtul address computed during device tree parsing */
 -	initrd_start = initrd_end = 0;
 -
 -	if (!phys_initrd_size)
 -		return;
--
 -	/*
 -	 * Round the memory region to page boundaries as per free_initrd_mem()
 -	 * This allows us to detect whether the pages overlapping the initrd
@@ -78,37 +78,48 @@ index 828a2561b229..a29e14cd626c 100644
 -	size = round_up(size, PAGE_SIZE);
 -
 -	if (!memblock_is_region_memory(start, size)) {
--		pr_err("INITRD: 0x%08llx+0x%08lx is not a memory region - disabling initrd\n",
+-		pr_err("INITRD: 0x%08llx+0x%08lx is not a memory region",
 -		       (u64)start, size);
--		return;
+-		goto disable;
 -	}
 -
 -	if (memblock_is_region_reserved(start, size)) {
--		pr_err("INITRD: 0x%08llx+0x%08lx overlaps in-use memory region - disabling initrd\n",
+-		pr_err("INITRD: 0x%08llx+0x%08lx overlaps in-use memory region\n",
 -		       (u64)start, size);
--		return;
+-		goto disable;
 -	}
 -
 -	memblock_reserve(start, size);
--
 -	/* Now convert initrd to virtual addresses */
--	initrd_start = __phys_to_virt(phys_initrd_start);
+-	initrd_start = (unsigned long)__va(phys_initrd_start);
 -	initrd_end = initrd_start + phys_initrd_size;
--#endif
--}
+-	initrd_below_start_ok = 1;
 -
- #ifdef CONFIG_CPU_ICACHE_MISMATCH_WORKAROUND
- void check_cpu_icache_size(int cpuid)
+-	pr_info("Initial ramdisk at: 0x%p (%lu bytes)\n",
+-		(void *)(initrd_start), size);
+-	return;
+-disable:
+-	pr_cont(" - disabling initrd\n");
+-	initrd_start = 0;
+-	initrd_end = 0;
+-}
+-#endif /* CONFIG_BLK_DEV_INITRD */
+-
+ void __init setup_bootmem(void)
  {
-@@ -215,7 +174,7 @@ void __init arm_memblock_init(const struct machine_desc *mdesc)
- 	/* Register the kernel text, kernel data and initrd with memblock. */
- 	memblock_reserve(__pa(KERNEL_START), KERNEL_END - KERNEL_START);
+ 	phys_addr_t mem_start = 0;
+@@ -186,10 +137,7 @@ void __init setup_bootmem(void)
+ 	dma32_phys_limit = min(4UL * SZ_1G, (unsigned long)PFN_PHYS(max_low_pfn));
+ 	set_max_mapnr(max_low_pfn);
  
--	arm_initrd_init();
+-#ifdef CONFIG_BLK_DEV_INITRD
+-	setup_initrd();
+-#endif /* CONFIG_BLK_DEV_INITRD */
+-
 +	reserve_initrd_mem();
- 
- 	arm_mm_memblock_reserve();
- 
+ 	/*
+ 	 * Avoid using early_init_fdt_reserve_self() since __pa() does
+ 	 * not work for DTB pointers that are fixmap addresses
 -- 
 2.26.2
 
