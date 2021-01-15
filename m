@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA842F7ACB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:55:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B88802F799B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388177AbhAOMyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:54:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42222 "EHLO mail.kernel.org"
+        id S2388225AbhAOMip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:38:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387680AbhAOMf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:35:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2A55221FA;
-        Fri, 15 Jan 2021 12:35:13 +0000 (UTC)
+        id S2388200AbhAOMig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:38:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D048221F7;
+        Fri, 15 Jan 2021 12:38:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714114;
-        bh=RHSxbD25++s4zxRCAT48MXwswzAVHnPpqyvYZIo2iq8=;
+        s=korg; t=1610714301;
+        bh=kWfJGl5jZNZXUtHXPL9S0LFXMELg73Fctac7xDcDaz8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fHcE3Z9ySAewhunuwE7bcV1TXFbD0TmRQcV0QlqR7uLpPjPYobUD3zK54xhFBAHwp
-         cli9gzDMLJI0QeEvtju4TqSBRPyU7TTyWc4It8cNi8obPQhP94SyoPr35TjSerqdoQ
-         DC8sVTMcAz7M6I8UKM+yKRN89Ax6JBNC0VDtvfaM=
+        b=oQ9KTBoRedLKDaFD9E4bEtZjsIwhg3NFzu6aQ7wacrm/BlQtaRTCL/Aj4aJuXZEue
+         XYl6+pFp5mpkW/EOOeZYaVpleaXtwx26WGSUsmhPSnNJpStrPd9NyYtyb6LrICHgi0
+         iyr9P1zBX/Yhp9T2odyiXpsCBu3qWMNwyW37E0YU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Shravya Kumbham <shravya.kumbham@xilinx.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.4 45/62] dmaengine: xilinx_dma: fix incompatible param warning in _child_probe()
-Date:   Fri, 15 Jan 2021 13:28:07 +0100
-Message-Id: <20210115122000.569003983@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 075/103] phy: dp83640: select CONFIG_CRC32
+Date:   Fri, 15 Jan 2021 13:28:08 +0100
+Message-Id: <20210115122009.657296909@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
+References: <20210115122006.047132306@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shravya Kumbham <shravya.kumbham@xilinx.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit faeb0731be0a31e2246b21a85fa7dabbd750101d upstream.
+commit f9d6f94132f01d2a552dcbab54fa56496638186d upstream.
 
-In xilinx_dma_child_probe function, the nr_channels variable is
-passed to of_property_read_u32() which expects an u32 return value
-pointer. Modify the nr_channels variable type from int to u32 to
-fix the incompatible parameter coverity warning.
+Without crc32, this driver fails to link:
 
-Addresses-Coverity: Event incompatible_param.
-Fixes: 1a9e7a03c761 ("dmaengine: vdma: Add support for mulit-channel dma mode")
-Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
-Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Link: https://lore.kernel.org/r/1608722462-29519-3-git-send-email-radhey.shyam.pandey@xilinx.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+arm-linux-gnueabi-ld: drivers/net/phy/dp83640.o: in function `match':
+dp83640.c:(.text+0x476c): undefined reference to `crc32_le'
+
+Fixes: 539e44d26855 ("dp83640: Include hash in timestamp/packet matching")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Acked-by: Richard Cochran <richardcochran@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/dma/xilinx/xilinx_dma.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/ptp/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/dma/xilinx/xilinx_dma.c
-+++ b/drivers/dma/xilinx/xilinx_dma.c
-@@ -2543,7 +2543,8 @@ static int xilinx_dma_chan_probe(struct
- static int xilinx_dma_child_probe(struct xilinx_dma_device *xdev,
- 				    struct device_node *node)
- {
--	int ret, i, nr_channels = 1;
-+	int ret, i;
-+	u32 nr_channels = 1;
+--- a/drivers/ptp/Kconfig
++++ b/drivers/ptp/Kconfig
+@@ -64,6 +64,7 @@ config DP83640_PHY
+ 	depends on NETWORK_PHY_TIMESTAMPING
+ 	depends on PHYLIB
+ 	depends on PTP_1588_CLOCK
++	select CRC32
+ 	help
+ 	  Supports the DP83640 PHYTER with IEEE 1588 features.
  
- 	ret = of_property_read_u32(node, "dma-channels", &nr_channels);
- 	if ((ret < 0) && xdev->mcdma)
 
 
