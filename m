@@ -2,191 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27572F708F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A00C32F7093
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:28:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732102AbhAOCZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 21:25:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
+        id S1732108AbhAOC22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 21:28:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732085AbhAOCZD (ORCPT
+        with ESMTP id S1726182AbhAOC21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 21:25:03 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C33C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:24:22 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id j13so4334936pjz.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:24:22 -0800 (PST)
+        Thu, 14 Jan 2021 21:28:27 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A84C061575;
+        Thu, 14 Jan 2021 18:27:47 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id q25so7203624otn.10;
+        Thu, 14 Jan 2021 18:27:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Cu1r4kHEpk1ipx1WHIOmDfUVLP4Os78haqvXs5XVFiU=;
-        b=Zud2h77QBS795wG6yXJKYrE+EwcIZRELGrnX5yhmhtv4zDM0D/nOUTiAvTXeVP2sIO
-         L/GSnmxhC8D6JQ6YgphQ4pJjFpxOQa4SyVKkuilYcZlfavsyfqtFjm8plUrNEuW4slPm
-         /x528V9+0E7RU2i4JTSfp5f7gF2I1kCLUoqRjVWM0+kgzVnNnAt83iWDiO+sSUZVSbT4
-         Qg8dFew5Ph4PFw+zlDZKoZYpypd2Gf8TCDH/GUMIocKwriLl+Aodh9Fu7wl+/wjEjVmG
-         RNq7gTt489xXkC1FjodlAIF7iZ5Y5FjQq3VYhMFsFsiClZau/uySQ4uVQMw6vaoLRQXq
-         7v4w==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vsVE7oLZbgznex7yQ+E8rIoI4mqNZuXB4jx1JCYSde0=;
+        b=vXWaUc2TfmNg04SdepiuT8FQzqEbT+tch5lAlnfiNhOFjecqfhZlM9Y6uJsn7J1uOt
+         D4oMaUeixZgSvphD8cYOWhNi4Jz6sUlTw7osgSaeghumNIBIw3yBQnNjZrBGy4HVmg6+
+         BAlEOPRquIqXSxS83hXsmG7uTvEuM9K8pRy1lO1MCWphHytLtCUH3hVQIjAePGtnDmhj
+         P2g8PW6txWVBIeVdaamVk8OTr5JJEH0ldNRZ0Lqnu+809bAAnkQ7N6sd3qPWMrVVXI8g
+         9qLEuQvi3i9PYYpsT/Nmu+jsFJtBCq23I0XTuoLIpqXhFtVE5QAxgdvdxQ+D0x1sBg7v
+         0FFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Cu1r4kHEpk1ipx1WHIOmDfUVLP4Os78haqvXs5XVFiU=;
-        b=PAI0EK476EJbpwMpxsIcEEK+2FvCltetu+mVGlB64J8kkfmJclI9V5S64LGlpzLATt
-         GeyU7OzWeCyLjsccfYlN6jn/F2nA4Crf7rt9i56xmU28+CKMSKNyko7WIW1tGgSUjNBL
-         npIWbEs6wj434XFYpKsKIJT4Ro8TH5PUDDaNlWhT13hhfBo0icDnJm2h/PztlBw0DUJL
-         d1gTx7wuZY7ZsbPrxqQfqLs6E5xQ7G1MVQTCVzUh2ct4lWkFcJDjZcmHkPQE+PjamWBc
-         CyWqp+wpAa8lscMbiZGpdcz3bx8omEP8UVih2jPVJhKlzJJSlz1pF3NrqV0/eq5Bjerc
-         K64g==
-X-Gm-Message-State: AOAM533yPCm9aDJZqgoo4P1ETA3A1rFfW2izYWTpS1n+Rq2AghUDR/Nt
-        020Xa2j5y2ETXp/IPuKPIgaWWA==
-X-Google-Smtp-Source: ABdhPJwZH1E+fKAbcid8dzJLVB3v/Csakmz5hxoyrQbsXKM3WODJcZDSzmxxQFad2rYO5A2oXoftYA==
-X-Received: by 2002:a17:90b:a47:: with SMTP id gw7mr8102445pjb.1.1610677462419;
-        Thu, 14 Jan 2021 18:24:22 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id x12sm6401588pfj.25.2021.01.14.18.24.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 18:24:21 -0800 (PST)
-Date:   Thu, 14 Jan 2021 18:24:21 -0800 (PST)
-X-Google-Original-Date: Thu, 14 Jan 2021 18:24:20 PST (-0800)
-Subject:     Re: [PATCH 1/1] riscv/kasan: add KASAN_VMALLOC support
-In-Reply-To: <20210113022822.9230-2-nylon7@andestech.com>
-CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, aou@eecs.berkeley.edu,
-        Paul Walmsley <paul.walmsley@sifive.com>, dvyukov@google.com,
-        glider@google.com, aryabinin@virtuozzo.com, alankao@andestech.com,
-        nickhu@andestech.com, nylon7@andestech.com, nylon7717@gmail.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     nylon7@andestech.com
-Message-ID: <mhng-681abd1f-506e-4e1a-88e7-f48af7e6cc0e@penguin>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vsVE7oLZbgznex7yQ+E8rIoI4mqNZuXB4jx1JCYSde0=;
+        b=GZ9hko5uplqp59qxggQJOAjtJI8W2EtMGylYmoq6WxGLBc5h0XBp6DZpfsPwxxbwSn
+         M61wJJmnhjHcY/yYgg4t0sMSVrx26I1GSORam7tLVGwKOSVERU+08qD2Q5gmJdhlvMcZ
+         2LW5rIdtLbLqQ8Fk80xJcUQ7cP66bAM+84BrnVjT8A+8q/S1Wlbhxw3E8uLPAEVLzbxd
+         GJUpz0nHjsHhcqDWC4TbJMV3gGQ5Tdltcgc93fzR7uvnj+7AKqvcQvH/k7003mM+e3FB
+         xXnCMLLhRdNGWrDQIsLbwrl5YUYld07WDKXplR+J4E+KOHBTL683ZiO//dDtbsOuEgft
+         P78Q==
+X-Gm-Message-State: AOAM5320BvChumjsYNFtC1IJjO4jRSZLfDBwwGb88/PJpBFbIlvyVx5r
+        GYgMGRobBBf2HV7TH32zWgo=
+X-Google-Smtp-Source: ABdhPJzxJxWqrrMv9sRUQtacw7st+DP8TkLKHKnYiOpR18OW9HobSFKZKQXEWF9trfSao2Jm93fNbA==
+X-Received: by 2002:a9d:5ad:: with SMTP id 42mr6688954otd.154.1610677666777;
+        Thu, 14 Jan 2021 18:27:46 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.20.123.47])
+        by smtp.googlemail.com with ESMTPSA id j10sm1513219otn.63.2021.01.14.18.27.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Jan 2021 18:27:45 -0800 (PST)
+Subject: Re: [PATCH v1 net-next 1/1] Allow user to set metric on default route
+ learned via Router Advertisement.
+To:     Praveen Chaudhary <praveen5582@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, corbet@lwn.net, kuznet@ms2.inr.ac.ru,
+        yoshfuji@linux-ipv6.org, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Zhenggen Xu <zxu@linkedin.com>
+References: <20210113015036.17674-1-pchaudhary@linkedin.com>
+ <20210113015036.17674-2-pchaudhary@linkedin.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <e894509c-e081-3682-7cc4-a20812f41984@gmail.com>
+Date:   Thu, 14 Jan 2021 19:27:43 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210113015036.17674-2-pchaudhary@linkedin.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Jan 2021 18:28:22 PST (-0800), nylon7@andestech.com wrote:
-> It's reference x86/s390 architecture.
->
-> So, it's don't map the early shadow page to cover VMALLOC space.
->
-> Prepopulate top level page table for the range that would otherwise be
-> empty.
->
-> lower levels are filled dynamically upon memory allocation while
-> booting.
->
-> Signed-off-by: Nylon Chen <nylon7@andestech.com>
-> Signed-off-by: Nick Hu <nickhu@andestech.com>
-> ---
->  arch/riscv/Kconfig         |  1 +
->  arch/riscv/mm/kasan_init.c | 66 +++++++++++++++++++++++++++++++++++++-
->  2 files changed, 66 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 81b76d44725d..15a2c8088bbe 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -57,6 +57,7 @@ config RISCV
->  	select HAVE_ARCH_JUMP_LABEL
->  	select HAVE_ARCH_JUMP_LABEL_RELATIVE
->  	select HAVE_ARCH_KASAN if MMU && 64BIT
-> +	select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
->  	select HAVE_ARCH_KGDB
->  	select HAVE_ARCH_KGDB_QXFER_PKT
->  	select HAVE_ARCH_MMAP_RND_BITS if MMU
-> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-> index 12ddd1f6bf70..ee332513d728 100644
-> --- a/arch/riscv/mm/kasan_init.c
-> +++ b/arch/riscv/mm/kasan_init.c
-> @@ -9,6 +9,19 @@
->  #include <linux/pgtable.h>
->  #include <asm/tlbflush.h>
->  #include <asm/fixmap.h>
-> +#include <asm/pgalloc.h>
-> +
-> +static __init void *early_alloc(size_t size, int node)
-> +{
-> +        void *ptr = memblock_alloc_try_nid(size, size,
-> +                        __pa(MAX_DMA_ADDRESS), MEMBLOCK_ALLOC_ACCESSIBLE, node);
-> +
-> +        if (!ptr)
-> +                panic("%pS: Failed to allocate %zu bytes align=%zx nid=%d from=%llx\n",
-> +                      __func__, size, size, node, (u64)__pa(MAX_DMA_ADDRESS));
-> +
-> +        return ptr;
-> +}
->
->  extern pgd_t early_pg_dir[PTRS_PER_PGD];
->  asmlinkage void __init kasan_early_init(void)
-> @@ -83,6 +96,49 @@ static void __init populate(void *start, void *end)
->  	memset(start, 0, end - start);
->  }
->
-> +void __init kasan_shallow_populate(void *start, void *end)
-> +{
-> +	unsigned long vaddr = (unsigned long)start & PAGE_MASK;
-> +	unsigned long vend = PAGE_ALIGN((unsigned long)end);
-> +	unsigned long pfn;
-> +	int index;
-> +	void *p;
-> +	pud_t *pud_dir, *pud_k;
-> +	pmd_t *pmd_dir, *pmd_k;
-> +	pgd_t *pgd_dir, *pgd_k;
-> +	p4d_t *p4d_dir, *p4d_k;
-> +
-> +	while (vaddr < vend) {
-> +		index = pgd_index(vaddr);
-> +		pfn = csr_read(CSR_SATP) & SATP_PPN;
-> +		pgd_dir = (pgd_t *)pfn_to_virt(pfn) + index;
-> +		pgd_k = init_mm.pgd + index;
-> +		pgd_dir = pgd_offset_k(vaddr);
-> +		set_pgd(pgd_dir, *pgd_k);
-> +
-> +		p4d_dir = p4d_offset(pgd_dir, vaddr);
-> +		p4d_k  = p4d_offset(pgd_k,vaddr);
-> +
-> +		vaddr = (vaddr + PUD_SIZE) & PUD_MASK;
-> +		pud_dir = pud_offset(p4d_dir, vaddr);
-> +		pud_k = pud_offset(p4d_k,vaddr);
-> +
-> +		if (pud_present(*pud_dir)) {
-> +			p = early_alloc(PAGE_SIZE, NUMA_NO_NODE);
-> +			pud_populate(&init_mm, pud_dir, p);
-> +		}
-> +
-> +		pmd_dir = pmd_offset(pud_dir, vaddr);
-> +		pmd_k = pmd_offset(pud_k,vaddr);
-> +		set_pmd(pmd_dir, *pmd_k);
-> +		if (pmd_present(*pmd_dir)) {
-> +			p = early_alloc(PAGE_SIZE, NUMA_NO_NODE);
-> +			pmd_populate(&init_mm, pmd_dir, p);
-> +		}
-> +		vaddr += PAGE_SIZE;
-> +	}
-> +}
-> +
->  void __init kasan_init(void)
->  {
->  	phys_addr_t _start, _end;
-> @@ -90,7 +146,15 @@ void __init kasan_init(void)
->
->  	kasan_populate_early_shadow((void *)KASAN_SHADOW_START,
->  				    (void *)kasan_mem_to_shadow((void *)
-> -								VMALLOC_END));
-> +								VMEMMAP_END));
-> +	if (IS_ENABLED(CONFIG_KASAN_VMALLOC))
-> +		kasan_shallow_populate(
-> +			(void *)kasan_mem_to_shadow((void *)VMALLOC_START),
-> +			(void *)kasan_mem_to_shadow((void *)VMALLOC_END));
-> +	else
-> +		kasan_populate_early_shadow(
-> +			(void *)kasan_mem_to_shadow((void *)VMALLOC_START),
-> +			(void *)kasan_mem_to_shadow((void *)VMALLOC_END));
->
->  	for_each_mem_range(i, &_start, &_end) {
->  		void *start = (void *)_start;
+On 1/12/21 6:50 PM, Praveen Chaudhary wrote:
+> For IPv4, default route is learned via DHCPv4 and user is allowed to change
+> metric using config etc/network/interfaces. But for IPv6, default route can
+> be learned via RA, for which, currently a fixed metric value 1024 is used.
+> 
+> Ideally, user should be able to configure metric on default route for IPv6
+> similar to IPv4. This fix adds sysctl for the same.
 
-There are a bunch of checkpatch issues here.
+This is a single patch set, so the details you have in the cover letter
+should be in this description here. Also, please just 'ip' commands in
+the patch description; 'route' command is a dinosaur that needs to be
+retired.
+
+> 
+> Signed-off-by: Praveen Chaudhary<pchaudhary@linkedin.com>
+> Signed-off-by: Zhenggen Xu<zxu@linkedin.com>
+> 
+> Changes in v1.
+> ---
+> 1.) Correct the call to rt6_add_dflt_router.
+> ---
+> 
+> ---
+>  Documentation/networking/ip-sysctl.rst | 18 ++++++++++++++++++
+>  include/linux/ipv6.h                   |  1 +
+>  include/net/ip6_route.h                |  3 ++-
+>  include/uapi/linux/ipv6.h              |  1 +
+>  include/uapi/linux/sysctl.h            |  1 +
+>  net/ipv6/addrconf.c                    | 10 ++++++++++
+>  net/ipv6/ndisc.c                       | 14 ++++++++++----
+>  net/ipv6/route.c                       |  5 +++--
+>  8 files changed, 46 insertions(+), 7 deletions(-)
+> 
+> diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
+> index dd2b12a32b73..384159081d91 100644
+> --- a/Documentation/networking/ip-sysctl.rst
+> +++ b/Documentation/networking/ip-sysctl.rst
+> @@ -1871,6 +1871,24 @@ accept_ra_defrtr - BOOLEAN
+>  		- enabled if accept_ra is enabled.
+>  		- disabled if accept_ra is disabled.
+>  
+> +accept_ra_defrtr_metric - INTEGER
+
+Drop the 'accept' part; ra_defrtr_metric is sufficiently long. Since the
+value is not from the RA, it is not really about accepting data from the RA.
+
+> +	Route metric for default route learned in Router Advertisement. This
+> +	value will be assigned as metric for the route learned via IPv6 Router
+> +	Advertisement.
+> +
+> +	Possible values are:
+> +		0:
+> +			Use default value i.e. IP6_RT_PRIO_USER	1024.
+> +		0xFFFFFFFF to -1:
+> +			-ve values represent high route metric, value will be treated as
+> +			unsigned value. This behaviour is inline with current IPv4 metric
+> +			shown with commands such as "route -n" or "ip route list".
+> +		1 to 0x7FFFFFF:
+> +			+ve values will be used as is for route metric.
+
+route metric is a u32, so these ranges should not be needed. 'ip route
+list' shows metric as a positive number only.
+
+
+> +
+> +	Functional default: enabled if accept_ra_defrtr is enabled.
+> +				disabled if accept_ra_defrtr is disabled.
+
+Alignment problem, but I think this can be moved above to the
+description and changed to something like 'only takes affect if
+accept_ra_defrtr' is enabled.
+
+> +
+>  accept_ra_from_local - BOOLEAN
+>  	Accept RA with source-address that is found on local machine
+>  	if the RA is otherwise proper and able to be accepted.
+> diff --git a/include/linux/ipv6.h b/include/linux/ipv6.h
+> index dda61d150a13..19af90c77200 100644
+> --- a/include/linux/ipv6.h
+> +++ b/include/linux/ipv6.h
+> @@ -31,6 +31,7 @@ struct ipv6_devconf {
+>  	__s32		max_desync_factor;
+>  	__s32		max_addresses;
+>  	__s32		accept_ra_defrtr;
+> +	__s32		accept_ra_defrtr_metric;
+
+__u32 and drop the 'accept_' prefix.
+
+
+>  	__s32		accept_ra_min_hop_limit;
+>  	__s32		accept_ra_pinfo;
+>  	__s32		ignore_routes_with_linkdown;
+> diff --git a/include/net/ip6_route.h b/include/net/ip6_route.h
+> index 2a5277758379..a470bdab2420 100644
+> --- a/include/net/ip6_route.h
+> +++ b/include/net/ip6_route.h
+> @@ -174,7 +174,8 @@ struct fib6_info *rt6_get_dflt_router(struct net *net,
+>  				     struct net_device *dev);
+>  struct fib6_info *rt6_add_dflt_router(struct net *net,
+>  				     const struct in6_addr *gwaddr,
+> -				     struct net_device *dev, unsigned int pref);
+> +				     struct net_device *dev, unsigned int pref,
+> +				     unsigned int defrtr_usr_metric);
+
+u32 for consistency
+
+>  
+>  void rt6_purge_dflt_routers(struct net *net);
+>  
+> diff --git a/include/uapi/linux/ipv6.h b/include/uapi/linux/ipv6.h
+> index 13e8751bf24a..945de5de5144 100644
+> --- a/include/uapi/linux/ipv6.h
+> +++ b/include/uapi/linux/ipv6.h
+> @@ -189,6 +189,7 @@ enum {
+>  	DEVCONF_ACCEPT_RA_RT_INFO_MIN_PLEN,
+>  	DEVCONF_NDISC_TCLASS,
+>  	DEVCONF_RPL_SEG_ENABLED,
+> +	DEVCONF_ACCEPT_RA_DEFRTR_METRIC,
+
+Drop 'ACCEPT_'
+
+>  	DEVCONF_MAX
+>  };
+>  
+> diff --git a/include/uapi/linux/sysctl.h b/include/uapi/linux/sysctl.h
+> index 458179df9b27..5e79c196e33c 100644
+> --- a/include/uapi/linux/sysctl.h
+> +++ b/include/uapi/linux/sysctl.h
+> @@ -571,6 +571,7 @@ enum {
+>  	NET_IPV6_ACCEPT_SOURCE_ROUTE=25,
+>  	NET_IPV6_ACCEPT_RA_FROM_LOCAL=26,
+>  	NET_IPV6_ACCEPT_RA_RT_INFO_MIN_PLEN=27,
+> +	NET_IPV6_ACCEPT_RA_DEFRTR_METRIC=28,
+
+Drop 'ACCEPT_'
+
+>  	__NET_IPV6_MAX
+>  };
+>  
+> diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+> index eff2cacd5209..702ec4a33936 100644
+> --- a/net/ipv6/addrconf.c
+> +++ b/net/ipv6/addrconf.c
+> @@ -205,6 +205,7 @@ static struct ipv6_devconf ipv6_devconf __read_mostly = {
+>  	.max_desync_factor	= MAX_DESYNC_FACTOR,
+>  	.max_addresses		= IPV6_MAX_ADDRESSES,
+>  	.accept_ra_defrtr	= 1,
+> +	.accept_ra_defrtr_metric = 0,
+>  	.accept_ra_from_local	= 0,
+>  	.accept_ra_min_hop_limit= 1,
+>  	.accept_ra_pinfo	= 1,
+> @@ -260,6 +261,7 @@ static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
+>  	.max_desync_factor	= MAX_DESYNC_FACTOR,
+>  	.max_addresses		= IPV6_MAX_ADDRESSES,
+>  	.accept_ra_defrtr	= 1,
+> +	.accept_ra_defrtr_metric = 0,
+>  	.accept_ra_from_local	= 0,
+>  	.accept_ra_min_hop_limit= 1,
+>  	.accept_ra_pinfo	= 1,
+> @@ -5475,6 +5477,7 @@ static inline void ipv6_store_devconf(struct ipv6_devconf *cnf,
+>  	array[DEVCONF_MAX_DESYNC_FACTOR] = cnf->max_desync_factor;
+>  	array[DEVCONF_MAX_ADDRESSES] = cnf->max_addresses;
+>  	array[DEVCONF_ACCEPT_RA_DEFRTR] = cnf->accept_ra_defrtr;
+> +	array[DEVCONF_ACCEPT_RA_DEFRTR_METRIC] = cnf->accept_ra_defrtr_metric;
+>  	array[DEVCONF_ACCEPT_RA_MIN_HOP_LIMIT] = cnf->accept_ra_min_hop_limit;
+>  	array[DEVCONF_ACCEPT_RA_PINFO] = cnf->accept_ra_pinfo;
+>  #ifdef CONFIG_IPV6_ROUTER_PREF
+> @@ -6667,6 +6670,13 @@ static const struct ctl_table addrconf_sysctl[] = {
+>  		.mode		= 0644,
+>  		.proc_handler	= proc_dointvec,
+>  	},
+> +	{
+> +		.procname	= "accept_ra_defrtr_metric",
+> +		.data		= &ipv6_devconf.accept_ra_defrtr_metric,
+> +		.maxlen		= sizeof(int),
+> +		.mode		= 0644,
+> +		.proc_handler	= proc_dointvec,
+
+proc_douintvec
+
+
+> +	},
+>  	{
+>  		.procname	= "accept_ra_min_hop_limit",
+>  		.data		= &ipv6_devconf.accept_ra_min_hop_limit,
+> diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
+> index 76717478f173..96ab202e95f9 100644
+> --- a/net/ipv6/ndisc.c
+> +++ b/net/ipv6/ndisc.c
+> @@ -1180,6 +1180,7 @@ static void ndisc_router_discovery(struct sk_buff *skb)
+>  	unsigned int pref = 0;
+>  	__u32 old_if_flags;
+>  	bool send_ifinfo_notify = false;
+> +	unsigned int defrtr_usr_metric = 0;
+
+net coding style is reverse xmas tree - ie., longest to shortest. yes,
+this function is old school, but new entries can be added in the right
+place. Since you set before use, the initialization to 0 is not
+necessary. And u32 for consistency.
+
+>  
+>  	__u8 *opt = (__u8 *)(ra_msg + 1);
+>  
+> @@ -1303,18 +1304,23 @@ static void ndisc_router_discovery(struct sk_buff *skb)
+>  			return;
+>  		}
+>  	}
+> -	if (rt && lifetime == 0) {
+> +	/* Set default route metric if specified by user */
+> +	defrtr_usr_metric = in6_dev->cnf.accept_ra_defrtr_metric;
+> +	if (defrtr_usr_metric == 0)
+> +		defrtr_usr_metric = IP6_RT_PRIO_USER;
+> +	/* delete the route if lifetime is 0 or if metric needs change */
+> +	if (rt && ((lifetime == 0) || (rt->fib6_metric != defrtr_usr_metric)))  {
+>  		ip6_del_rt(net, rt, false);
+>  		rt = NULL;
+>  	}
+>  
+> -	ND_PRINTK(3, info, "RA: rt: %p  lifetime: %d, for dev: %s\n",
+> -		  rt, lifetime, skb->dev->name);
+> +	ND_PRINTK(3, info, "RA: rt: %p  lifetime: %d, metric: %d, for dev: %s\n",
+> +		  rt, lifetime, defrtr_usr_metric, skb->dev->name);
+>  	if (!rt && lifetime) {
+>  		ND_PRINTK(3, info, "RA: adding default router\n");
+>  
+>  		rt = rt6_add_dflt_router(net, &ipv6_hdr(skb)->saddr,
+> -					 skb->dev, pref);
+> +					 skb->dev, pref, defrtr_usr_metric);
+>  		if (!rt) {
+>  			ND_PRINTK(0, err,
+>  				  "RA: %s failed to add default route\n",
+> diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+> index 188e114b29b4..5f177ae97e42 100644
+> --- a/net/ipv6/route.c
+> +++ b/net/ipv6/route.c
+> @@ -4252,11 +4252,12 @@ struct fib6_info *rt6_get_dflt_router(struct net *net,
+>  struct fib6_info *rt6_add_dflt_router(struct net *net,
+>  				     const struct in6_addr *gwaddr,
+>  				     struct net_device *dev,
+> -				     unsigned int pref)
+> +				     unsigned int pref,
+> +				     unsigned int defrtr_usr_metric)
+
+u32
+
+>  {
+>  	struct fib6_config cfg = {
+>  		.fc_table	= l3mdev_fib_table(dev) ? : RT6_TABLE_DFLT,
+> -		.fc_metric	= IP6_RT_PRIO_USER,
+> +		.fc_metric	= defrtr_usr_metric ? defrtr_usr_metric : IP6_RT_PRIO_USER,
+
+you can abbreviate that as:
+		defrtr_usr_metric ? : IP6_RT_PRIO_USER,
+
+>  		.fc_ifindex	= dev->ifindex,
+>  		.fc_flags	= RTF_GATEWAY | RTF_ADDRCONF | RTF_DEFAULT |
+>  				  RTF_UP | RTF_EXPIRES | RTF_PREF(pref),
+> 
+
