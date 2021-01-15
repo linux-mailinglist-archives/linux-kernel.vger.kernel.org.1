@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 362952F7A90
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0282F7B1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388397AbhAOMvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:51:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42222 "EHLO mail.kernel.org"
+        id S2387764AbhAOM6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:58:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387778AbhAOMgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:36:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F07C622473;
-        Fri, 15 Jan 2021 12:35:46 +0000 (UTC)
+        id S1733276AbhAOMd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:33:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 238B42339D;
+        Fri, 15 Jan 2021 12:33:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714147;
-        bh=8X6I/2MBpox0hCLP6J9XLprleMfsCCAEUqUV+Fq+YEA=;
+        s=korg; t=1610713995;
+        bh=HOMMljAQbrtWX7BrNOOUd9SCAbrtwXebLt/Nq+6RD4M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WcADx9dcP7m4u6wrOH6TUI6E5t8J26MQHpFSMLRl2q6nxtXmpIXKwkikxwsHYBF+Y
-         8tI6QTFL9otmCIwRXjO71nK1i1ty4NwmL5A+GFmzPkn6Tyu+1/9I2Y62BaOPRHHsTS
-         ABblbRO3Y/cWBtfmQLm5HrB2Flg6uzF8UHR0iUiw=
+        b=SXuBl/cCZJFgTlySAEb0bGKsvWSnwTPT74C4Z83e86jSjIWdsH3TgcFQqumBX3tNg
+         n2aJt/rcfNYAoTej8brKDnjHr16DnHohbBvX94VPbyWveIsfB6wTrezOqgCTWEL6dh
+         HA6S8MxI0HGbHCVxPRG/2I6kowq361PgWEYjxGvU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 5.4 51/62] iommu/intel: Fix memleak in intel_irq_remapping_alloc
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.19 43/43] regmap: debugfs: Fix a reversed if statement in regmap_debugfs_init()
 Date:   Fri, 15 Jan 2021 13:28:13 +0100
-Message-Id: <20210115122000.855971473@linuxfoundation.org>
+Message-Id: <20210115121959.128064955@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
+References: <20210115121957.037407908@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit ff2b46d7cff80d27d82f7f3252711f4ca1666129 upstream.
+commit f6bcb4c7f366905b66ce8ffca7190118244bb642 upstream.
 
-When irq_domain_get_irq_data() or irqd_cfg() fails
-at i == 0, data allocated by kzalloc() has not been
-freed before returning, which leads to memleak.
+This code will leak "map->debugfs_name" because the if statement is
+reversed so it only frees NULL pointers instead of non-NULL.  In
+fact the if statement is not required and should just be removed
+because kfree() accepts NULL pointers.
 
-Fixes: b106ee63abcc ("irq_remapping/vt-d: Enhance Intel IR driver to support hierarchical irqdomains")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20210105051837.32118-1-dinghao.liu@zju.edu.cn
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: cffa4b2122f5 ("regmap: debugfs: Fix a memory leak when calling regmap_attach_dev")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/X/RQpfAwRdLg0GqQ@mwanda
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iommu/intel_irq_remapping.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/base/regmap/regmap-debugfs.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/iommu/intel_irq_remapping.c
-+++ b/drivers/iommu/intel_irq_remapping.c
-@@ -1400,6 +1400,8 @@ static int intel_irq_remapping_alloc(str
- 		irq_data = irq_domain_get_irq_data(domain, virq + i);
- 		irq_cfg = irqd_cfg(irq_data);
- 		if (!irq_data || !irq_cfg) {
-+			if (!i)
-+				kfree(data);
- 			ret = -EINVAL;
- 			goto out_free_data;
- 		}
+--- a/drivers/base/regmap/regmap-debugfs.c
++++ b/drivers/base/regmap/regmap-debugfs.c
+@@ -591,9 +591,7 @@ void regmap_debugfs_init(struct regmap *
+ 	}
+ 
+ 	if (!strcmp(name, "dummy")) {
+-		if (!map->debugfs_name)
+-			kfree(map->debugfs_name);
+-
++		kfree(map->debugfs_name);
+ 		map->debugfs_name = kasprintf(GFP_KERNEL, "dummy%d",
+ 						dummy_index);
+ 		if (!map->debugfs_name)
 
 
