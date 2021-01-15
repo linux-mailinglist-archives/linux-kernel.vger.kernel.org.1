@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132422F7BBA
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6CC2F7BBB
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388005AbhAONEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:04:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
+        id S2387471AbhAONEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:04:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387907AbhAONEZ (ORCPT
+        with ESMTP id S2387742AbhAONE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:04:25 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7A8C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:03:45 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id q7so7855276qki.16
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:03:45 -0800 (PST)
+        Fri, 15 Jan 2021 08:04:28 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B46C061794
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:03:48 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id g82so2961236wmg.6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 05:03:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=l8WxWOfr3FkIGE+fyTuz9WjeqQaz3VriJuPOeaywOdQ=;
-        b=iZHQRnZo5yHPWQJQQ/RFTuMLLyLkgnxzaVjarRzSNL4MQK9QhsbW4n7+F3xlNebd6m
-         0D2j8L3to0+gXx88UyC/XM3j8K+kBTCcJH9q9ACLU7x+PMFo0DDDIJAKxNo7yzo7j08H
-         3cM4iWyIVFZXReFo3na0oqpmfPzdatZtWr3On5W4YYIcaFJNiu10MEZi1Aglb4DYNaeY
-         FWSfIMtjU6OJKO/Ah16SdCLkY5jGXwd39W8VyoidVKGULcD3giGvju0cTHHOcd9IiZRY
-         3JXw8foHkE8rjiU9QoSR1EqJi5iatKpuLa7fgITxhDmoaxvfEuMvxECqP0eA+JUe+2kt
-         omhw==
+        bh=jOOfDKQx1+jPnbv33agbvLGtXZ2MbhOFvMWdPLPRW0k=;
+        b=Dlq9uaH+pIB75P7MKmxH+aUEe4eGD10sBNXqDWp/qunB8HR5dcReV4Z2eIviWjc/P6
+         Vt9jvadWbhJp0D/aZyhiP5wGE9wQUsQOTnCiPaeWNPQtfFPRCz03VlSdmi7ysHZYwIZI
+         5Xl/6HCkGZ4QSXNEmK3ER8XR4fdzYRouvHBhg/CCMlMVhbhHGQ8OiXqSWNCNhiWDwY44
+         tgRMA4O3D/h+Kl1w9S9GWC/D0XgVxFyq3CcgG+q4XB7UdyoFR1t7RCDatIifBKIzb2vg
+         m8QhBN3U2fPqoxqC4zcLDc26MpSEyLwLG/ezS0R+ihp/jH0mtIbqNBEKqNPZiYOjtcKL
+         RM8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=l8WxWOfr3FkIGE+fyTuz9WjeqQaz3VriJuPOeaywOdQ=;
-        b=UP9J4T5NtHVFSAHCPze565BJYQCE8yoR5sHBFo5SSWj8TwUZjdmxJYaW/YiEYflaxW
-         ce6Z1UF/flwIY66o0VN6d0/c76M1HBJncx7uWrCHeXucka5JBLtRWCMZ8D1UUQ73vWlj
-         MEtGvnLsJvamiU2Iuz0lmmiAtFm7dmiC5kFx2R5yTRTm2Lsr1cMTFWOxoQ4aSwQdim6P
-         cOUwQgJ4iEJvkIblNo8EosQzbmnZ3ikDnNZKxHG9t151yQCg9hTQvsu4QdA4/cZjpWxf
-         zBZEsKFRVHO41T6I6shRin8VVOjU9Fmr5/i8YVrLzfyoHw9D0yPtfxq/+5fpgD1hsbvH
-         YcUA==
-X-Gm-Message-State: AOAM533NBeWVucVwCpsgqUwRYYtaBVDJXt608uRutRUPDb6czbJQg58l
-        54N3dXDot+Qjm+stZoDAaFNOFhRUEz5D3lvYziT1RtEts8x5lnsfT2Ws5IocNfvH97Z7fxf9NLw
-        p3Yoy+JpfjCjZTyAqhIdOAu0FdL+hafz8Qmvt6yc8Y9s8TJZZgfnkiZqeNMEH5jPNdE0QZg==
-X-Google-Smtp-Source: ABdhPJwouldA38t9gpv7Z5+mrr7Mp/l02Mp5ahH0k0OxEVkX3ARckdOaLNJewW0gAVapzQnqbR9vgGrWG/g=
+        bh=jOOfDKQx1+jPnbv33agbvLGtXZ2MbhOFvMWdPLPRW0k=;
+        b=T809UibTB0r1pul1YuRPZs3nUIgVWRAEbAw4cEXAMr0Ea8ST9ONI1uOewRQgUvJikw
+         junhZ8MHo1hOcWd75lQFQCqNxvANjK3E6SKWT1mHH/f28iW4DDA8l3IjcaNyzrYPrzn9
+         HjX9cdZYWRZUZK/f5K3s+PGDDXY+Z6KSU8eyAT1BdlD1O4KbDSR+XFfW8SLO5U2VeCgE
+         3Xqcv0vLIhXbWbqRzhRS6cfFpJHPivyTotIIQecLxEUekaNyjJIRYfeyhwo+NDO5RZTR
+         FSXQBVdUvOidI39XCjEoep1Kbh8zACCPDA575SmJIcutfeY1U738pmJOHRq0LU87tNDj
+         O9kw==
+X-Gm-Message-State: AOAM5324PGW+EGjqSLAjS+mZvvj/nQyGcSKX0RCVsib1A0PZEVF/WCAC
+        BfnDejoEERDm26i0LonQQ4tNY02iHsGkPEi3gZtHzTdGtlUEmZAorakt9OwL5or6pIa8Jv6EVSM
+        7KTyzvrmAG55ZjGO0+gRLALUoXbCGGCRoHJF7IRLbR3YQLwOQ74mzv/iqLIX7ppILkuzaWQ==
+X-Google-Smtp-Source: ABdhPJxlZI7UXjDHh8f5aiGTii0hBsMm1kPklYbJotEJlDg6aIGyTVeSV+JktC6XgXB8pT4mP8GUISHL+JI=
 Sender: "glider via sendgmr" <glider@glider.muc.corp.google.com>
 X-Received: from glider.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:9ff])
- (user=glider job=sendgmr) by 2002:ad4:4b21:: with SMTP id s1mr12024258qvw.59.1610715824256;
- Fri, 15 Jan 2021 05:03:44 -0800 (PST)
-Date:   Fri, 15 Jan 2021 14:03:33 +0100
+ (user=glider job=sendgmr) by 2002:a1c:2c89:: with SMTP id s131mr934933wms.0.1610715826432;
+ Fri, 15 Jan 2021 05:03:46 -0800 (PST)
+Date:   Fri, 15 Jan 2021 14:03:34 +0100
 In-Reply-To: <20210115130336.2520663-1-glider@google.com>
-Message-Id: <20210115130336.2520663-3-glider@google.com>
+Message-Id: <20210115130336.2520663-4-glider@google.com>
 Mime-Version: 1.0
 References: <20210115130336.2520663-1-glider@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v2 2/5] lib: add error_report_notify to collect debugging
- tools' reports
+Subject: [PATCH v2 3/5] docs: ABI: add /sys/kernel/error_report/ documentation
 From:   Alexander Potapenko <glider@google.com>
 To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org
 Cc:     andreyknvl@google.com, dvyukov@google.com, mingo@redhat.com,
@@ -65,32 +64,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the introduction of various production error-detection tools, such as
-MTE-based KASAN and KFENCE, the need arises to efficiently notify the
-userspace OS components about kernel errors. Currently, no facility exists
-to notify userspace about a kernel error from such bug-detection tools.
-The problem is obviously not restricted to the above bug detection tools,
-and applies to any error reporting mechanism that does not panic the
-kernel; this series, however, will only add support for KASAN and KFENCE
-reporting.
+Add ABI documentation for files in /sys/kernel/error_report/
 
-All such error reports appear in the kernel log. But, when such errors
-occur, userspace would normally need to read the entire kernel log and
-parse the relevant errors. This is error prone and inefficient, as
-userspace needs to continuously monitor the kernel log for error messages.
-On certain devices, this is unfortunately not acceptable. Therefore, we
-need to revisit how reports are propagated to userspace.
-
-The library added, error_report_notify (CONFIG_ERROR_REPORT_NOTIFY),
-solves the above by using the error_report_start/error_report_end tracing
-events and exposing the last report and the total report count to the
-userspace via /sys/kernel/error_report/last_report and
-/sys/kernel/error_report/report_count.
-
-Userspace apps can call poll(POLLPRI) on those files to get notified about
-the new reports without having to watch dmesg in a loop.
-
-Suggested-by: Marco Elver <elver@google.com>
+Requested-by: Andrew Morton <akpm@linux-foundation.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Andrey Konovalov <andreyknvl@google.com>
 Cc: Dmitry Vyukov <dvyukov@google.com>
@@ -101,343 +77,58 @@ Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 Cc: linux-mm@kvack.org
 Signed-off-by: Alexander Potapenko <glider@google.com>
-
 ---
-v2:
- - s/memory error reports/error reports from debugging tools/
-   (per Andrew Morton's comment)
- - change error_report_start and error_report_end prototypes
-   to accept enum error_detector instead of char*
-   (as suggested by Steven Rostedt)
----
- lib/Kconfig.debug         |  14 ++
- lib/Makefile              |   2 +
- lib/error_report_notify.c | 278 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 294 insertions(+)
- create mode 100644 lib/error_report_notify.c
+ .../ABI/testing/sysfs-kernel-error_report     | 41 +++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-kernel-error_report
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 4b8f9e018f0f..b950bf21b15c 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -209,6 +209,20 @@ config DEBUG_BUGVERBOSE
- 	  of the BUG call as well as the EIP and oops trace.  This aids
- 	  debugging but costs about 70-100K of memory.
- 
-+config ERROR_REPORT_NOTIFY
-+	bool "Expose error reports from debugging tools to the userspace"
-+	depends on TRACING
-+	help
-+	  When enabled, captures error reports from debugging tools (such as
-+	  KFENCE or KASAN) using console tracing, and exposes reports in
-+	  /sys/kernel/error_report/: the file last_report contains the last
-+	  report (with maximum report length of PAGE_SIZE), and report_count,
-+	  the total report count.
-+
-+	  Userspace programs can call poll(POLLPRI) on those files to get
-+	  notified about the new reports without having to watch dmesg in a
-+	  loop.
-+
- endmenu # "printk and dmesg options"
- 
- menu "Compile-time checks and compiler options"
-diff --git a/lib/Makefile b/lib/Makefile
-index afeff05fa8c5..96ed8bc0cc5b 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -240,6 +240,8 @@ obj-$(CONFIG_CPU_RMAP) += cpu_rmap.o
- 
- obj-$(CONFIG_DQL) += dynamic_queue_limits.o
- 
-+obj-$(CONFIG_ERROR_REPORT_NOTIFY) += error_report_notify.o
-+
- obj-$(CONFIG_GLOB) += glob.o
- obj-$(CONFIG_GLOB_SELFTEST) += globtest.o
- 
-diff --git a/lib/error_report_notify.c b/lib/error_report_notify.c
+diff --git a/Documentation/ABI/testing/sysfs-kernel-error_report b/Documentation/ABI/testing/sysfs-kernel-error_report
 new file mode 100644
-index 000000000000..66176cd94ba0
+index 000000000000..666d039f93a9
 --- /dev/null
-+++ b/lib/error_report_notify.c
-@@ -0,0 +1,278 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/Documentation/ABI/testing/sysfs-kernel-error_report
+@@ -0,0 +1,41 @@
++What:		/sys/kernel/error_report/
++Date:		January 2021
++Contact:	Alexander Potapenko <glider@google.com>,
++		Marco Elver <elver@google.com>
++Description:
++		/sys/kernel/error_report/ contains two files: "report_count"
++		and "last_report". These files are used to notify userspace
++		about error reports from the enrolled kernel subsystems (those
++		that use error_report_start/error_report_end tracepoints).
 +
-+/*
-+ * Userspace notification interface for debugging tools.
-+ *
-+ * Provide two sysfs files:
-+ *  - /sys/kernel/error_report/last_report
-+ *  - /sys/kernel/error_report/report_count
-+ * that contain the last debugging tool report (taken from dmesg, delimited by
-+ * the error_report_start/error_report_end tracing events) and the total report
-+ * count.
-+ */
++		"report_count" contains the current number of reported errors.
++		This number is incremented every time the error_report_end
++		trace event occurs in the kernel.
 +
-+#include <linux/atomic.h>
-+#include <linux/fs.h>
-+#include <linux/kobject.h>
-+#include <linux/string.h>
-+#include <linux/sysfs.h>
-+#include <linux/tracepoint.h>
-+#include <linux/workqueue.h>
-+#include <trace/events/error_report.h>
-+#include <trace/events/printk.h>
++		"last_report" contains the most recent error report; concurrent
++		report generation results in collection of any one report
++		("last_report" may not be the last shown on the console).
++		A "report" is everything the task had printed to the console
++		between issuing the error_report_start and error_report_end
++		trace events.
 +
-+static struct kobject *error_report_kobj;
++		Due to sysfs limitations, the report size is truncated at
++		PAGE_SIZE. To save space, the leading info in square brackets
++		printed by CONFIG_PRINTK_TIME and CONFIG_PRINTK_CALLER is
++		trimmed from the output lines.
 +
-+/* sysfs files are capped at PAGE_SIZE. */
-+#define BUF_SIZE PAGE_SIZE
-+/* Two buffers to store the finished report and the report being recorded. */
-+static char report_buffer[2][BUF_SIZE];
-+/*
-+ * Total report count. Also serves as a latch for report_buffer:
-+ * report_buffer[num_reports % 2] is the currently available report,
-+ * report_buffer[(num_reports + 1) % 2] is the report being recorded.
-+ */
-+static atomic_t num_reports;
++		Both files use sysfs_notify() to notify userspace about
++		changes. Userspace programs can use poll() to block until an
++		error is reported:
 +
-+/*
-+ * PID of the task currently recording the report, as returned by
-+ * get_encoded_pid(), or -1. Used as a writer lock for report_buffer.
-+ * A regular spinlock couldn't be used here, as probe_console() can be called
-+ * from any thread, and it needs to know whether that thread is holding the
-+ * lock.
-+ */
-+static atomic_t current_pid = ATOMIC_INIT(-1);
++			pfd.fd = fd;
++			pfd.events = POLLPRI;
++			while (1) {
++				lseek(pfd.fd, 0, SEEK_SET);
++				poll(&pfd, 1, -1);
++				read(pfd.fd, buffer, PAGE_SIZE);
++				/* Process the report in @buffer. */
++			}
 +
-+static size_t current_pos;
-+static bool truncated;
-+static const char TRUNC_MSG[] = "<truncated>\n";
-+
-+static struct delayed_work reporting_done;
-+
-+static void error_report_notify(struct work_struct *work)
-+{
-+	sysfs_notify(error_report_kobj, NULL, "last_report");
-+	sysfs_notify(error_report_kobj, NULL, "report_count");
-+}
-+static DECLARE_DELAYED_WORK(reporting_done, error_report_notify);
-+
-+/*
-+ * Return the current PID combined together with in_task(). This lets us
-+ * distinguish between normal task context and IRQ context.
-+ */
-+static int get_encoded_pid(void)
-+{
-+	return (current->pid << 1) | (!!in_task());
-+}
-+
-+/*
-+ * Trace hook for the error_report_start event. In an unlikely case of another
-+ * task already printing a report bail out, otherwise save the current pid
-+ * together with in_task() return value.
-+ *
-+ * Because reporting code can be called from low-level routines (e.g. locking
-+ * primitives or allocator guts), report recording is implemented using a
-+ * seqlock lock-free algorithm.
-+ */
-+static void probe_report_start(void *ignore, enum error_detector detector,
-+			       unsigned long id)
-+{
-+	/*
-+	 * Acquire the writer lock. Any racing probe_report_start will not
-+	 * record anything. Pairs with the release in probe_report_end().
-+	 */
-+	if (atomic_cmpxchg_acquire(&current_pid, -1, get_encoded_pid()) != -1)
-+		return;
-+	current_pos = 0;
-+	truncated = false;
-+}
-+
-+/*
-+ * Trace hook for the error_report_end event. If an event from the mismatching
-+ * error_report_start is received, it is ignored. Otherwise, null-terminate the
-+ * buffer, increase the report count (effectively releasing the report to
-+ * last_report_show() and schedule a notification about a new report.
-+ */
-+static void probe_report_end(void *ignore, enum error_detector detector,
-+			     unsigned long id)
-+{
-+	pid_t pid = atomic_read(&current_pid);
-+	int idx;
-+
-+	if (pid != get_encoded_pid())
-+		return;
-+
-+	idx = (atomic_read(&num_reports) + 1) % 2;
-+	if (current_pos == BUF_SIZE)
-+		report_buffer[idx][current_pos - 1] = 0;
-+	else
-+		report_buffer[idx][current_pos] = 0;
-+
-+	/* Pairs with acquire in last_report_show(). */
-+	atomic_inc_return_release(&num_reports);
-+	schedule_delayed_work(&reporting_done, 0);
-+	/*
-+	 * Release the writer lock. Pairs with the acquire in
-+	 * probe_report_start().
-+	 */
-+	atomic_set_release(&current_pid, -1);
-+}
-+
-+/*
-+ * Skip one or two leading pair of brackets containing the log timestamp and
-+ * the task/CPU ID, plus the leading space, from the report line, e.g.:
-+ *   [    0.698431][    T7] BUG: KFENCE: use-after-free ...
-+ * becomes:
-+ *   BUG: KFENCE: use-after-free ...
-+ *
-+ * Report size is only 4K, and this boilerplate can easily account for half of
-+ * that amount.
-+ */
-+static void skip_extra_info(const char **buf, size_t *len)
-+{
-+	int num_brackets = IS_ENABLED(CONFIG_PRINTK_TIME) +
-+			   IS_ENABLED(CONFIG_PRINTK_CALLER);
-+	const char *found;
-+
-+	if (!buf || !len)
-+		return;
-+
-+	while (num_brackets--) {
-+		if (!*len || *buf[0] != '[')
-+			return;
-+		found = strnchr(*buf, *len, ']');
-+		if (!found)
-+			return;
-+		*len -= found - *buf + 1;
-+		*buf = found + 1;
-+	}
-+	if (*len && *buf[0] == ' ') {
-+		++*buf;
-+		--*len;
-+	}
-+}
-+
-+/*
-+ * Trace hook for the console event. If a line comes from a task/CPU that did
-+ * not send the error_report_start event, that line is ignored. Otherwise, it
-+ * is stored in the report_buffer[(num_reports + 1) % 2].
-+ *
-+ * To save space, the leading timestamps and (when enabled) CPU/task info is
-+ * stripped away. The buffer may contain newlines, so this procedure is
-+ * repeated for every line.
-+ */
-+static void probe_console(void *ignore, const char *buf, size_t len)
-+{
-+	int pid = atomic_read(&current_pid);
-+	size_t to_copy, cur_len;
-+	char *newline;
-+	int idx;
-+
-+	if (pid != get_encoded_pid() || truncated)
-+		return;
-+
-+	idx = (atomic_read(&num_reports) + 1) % 2;
-+	while (len) {
-+		newline = strnchr(buf, len, '\n');
-+		if (newline)
-+			cur_len = newline - buf + 1;
-+		else
-+			cur_len = len;
-+		/* Adjust len now, because skip_extra_info() may change cur_len. */
-+		len -= cur_len;
-+		skip_extra_info(&buf, &cur_len);
-+		to_copy = min(cur_len, BUF_SIZE - current_pos);
-+		memcpy(report_buffer[idx] + current_pos, buf, to_copy);
-+		current_pos += to_copy;
-+		if (cur_len > to_copy) {
-+			truncated = true;
-+			memcpy(report_buffer[idx] + current_pos - sizeof(TRUNC_MSG),
-+			       TRUNC_MSG, sizeof(TRUNC_MSG));
-+			break;
-+		}
-+		buf += cur_len;
-+	}
-+}
-+
-+static void register_tracepoints(void)
-+{
-+	register_trace_console(probe_console, NULL);
-+	register_trace_error_report_start(probe_report_start, NULL);
-+	register_trace_error_report_end(probe_report_end, NULL);
-+}
-+
-+/*
-+ * read() handler for /sys/kernel/error_report/last_report.
-+ * Because the number of reports can change under our feet, check it again
-+ * after copying the report, and retry if the numbers mismatch.
-+ */
-+static ssize_t last_report_show(struct kobject *kobj,
-+				struct kobj_attribute *attr, char *buf)
-+{
-+	ssize_t ret;
-+	int index;
-+
-+	do {
-+		/* Pairs with release in probe_report_end(). */
-+		index = atomic_read_acquire(&num_reports);
-+		/*
-+		 * If index and old_index mismatch, we might be accessing
-+		 * report_buffer concurrently with a writer thread. In that
-+		 * case the read data will be discarded.
-+		 */
-+		ret = data_race(strscpy(buf, report_buffer[index % 2], BUF_SIZE));
-+		/*
-+		 * Prevent reordering between the memcpy above and the atomic
-+		 * read below.
-+		 * See the comments in include/linux/seqlock.h for more
-+		 * details.
-+		 */
-+		smp_rmb();
-+	} while (index != atomic_read(&num_reports));
-+	return ret;
-+}
-+
-+/*
-+ * read() handler for /sys/kernel/error_report/report_count.
-+ */
-+static ssize_t report_count_show(struct kobject *kobj,
-+				 struct kobj_attribute *attr, char *buf)
-+{
-+	return scnprintf(buf, PAGE_SIZE, "%d\n", atomic_read(&num_reports));
-+}
-+
-+static struct kobj_attribute last_report_attr = __ATTR_RO(last_report);
-+static struct kobj_attribute report_count_attr = __ATTR_RO(report_count);
-+static struct attribute *error_report_sysfs_attrs[] = {
-+	&last_report_attr.attr,
-+	&report_count_attr.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group error_report_sysfs_attr_group = {
-+	.attrs = error_report_sysfs_attrs,
-+};
-+
-+/*
-+ * Set up report notification: register tracepoints and create
-+ * /sys/kernel/error_report/.
-+ */
-+static void error_report_notify_setup(void)
-+{
-+	int err;
-+
-+	register_tracepoints();
-+	error_report_kobj = kobject_create_and_add("error_report", kernel_kobj);
-+	if (!error_report_kobj)
-+		goto error;
-+	err = sysfs_create_group(error_report_kobj,
-+				 &error_report_sysfs_attr_group);
-+	if (err)
-+		goto error;
-+	return;
-+
-+error:
-+	if (error_report_kobj)
-+		kobject_del(error_report_kobj);
-+}
-+late_initcall(error_report_notify_setup);
++		Files in /sys/kernel/error_report/ are available when
++		CONFIG_ERROR_REPORT_NOTIFY is enabled.
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
