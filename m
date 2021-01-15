@@ -2,108 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432632F7296
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 06:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FC32F729F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 06:58:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732363AbhAOFs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 00:48:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730562AbhAOFsV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 00:48:21 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E72C061757;
-        Thu, 14 Jan 2021 21:47:41 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 30so5326389pgr.6;
-        Thu, 14 Jan 2021 21:47:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y/rucpAwNr7H7Sq+3iwOrm/3FZrRl2K/TF/QHTKwAl4=;
-        b=prBSjERD/4xhSmfN/LZoOMqYKPZB+MJkLRhzWQs5F0STCTA0EGz8La3vovPqyW09U+
-         0V5UcopJa0JAQc4QlD/63Z7KyF+aIrZ1+ptx7Hyjs0AUioVAll703qW2I2WBkJjuDsIh
-         GO3DNPR5sSYqxyfOkCF9i5dppF+1F5LRRA5D43PLGzS/MhExhVtV28gISLA8451qlTVn
-         6g9+mmM3q/7Yp1XIw5ro+AphxFA6gWlUXCAka99WybAsj6MN3QUJWKrXK6aHu8noux/S
-         i0binNhfywyIlez1DuUwWXPRY/1UFS3//J+CD6luClp1O70SUG1/Zi09uRk6mM9GqTRo
-         7NDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y/rucpAwNr7H7Sq+3iwOrm/3FZrRl2K/TF/QHTKwAl4=;
-        b=Ml2i03nsw7wIdlHEKykNyC8Yir5X8U62yEoNe/e8Ai/ldnF+z3/X/KDQjJYXumOq5c
-         TGLpY4mXaJpTxyyn0XtMkFvLfS+FEJXBBYfRVYIiwhfclCYzgdmOYyEiPiKGfX6msi+K
-         mZdAWbz0I47Wtjv4m/BBYCAeljp+ruLQXS1dOXLdC6WlkXTb/PSY8wFq4I97gNfxa5Az
-         daLudXzbILzek6DjMYwcYWm3WUKW8kbuigzOy5tl5J0f0rlzcAa7oonrXeuyva+ihO2R
-         +y87LrjIYsJLamB/HuTEohvqIM6ntF27tnIjtEDYca4OvM7qUiIh4/okq7IghZ1AnsEP
-         /pkQ==
-X-Gm-Message-State: AOAM531NBlZH9pHK9XvJOAF0B0FxXsUH630gfVPz5Hr/kVD6s5B2HNnp
-        A2T+ypSj64rggv/oi567nngc9S0LGf0Vow==
-X-Google-Smtp-Source: ABdhPJz3QaEPXYyvRtan7b9Ddu4rqqXDtp+0jZ0MB1Y1BA/TloVGN2WygeGPK0o7ogTp+Sp/OoHICg==
-X-Received: by 2002:a62:1d43:0:b029:1ab:7f7a:4ab8 with SMTP id d64-20020a621d430000b02901ab7f7a4ab8mr10960117pfd.43.1610689661151;
-        Thu, 14 Jan 2021 21:47:41 -0800 (PST)
-Received: from gli-System-Product-Name.genesyslogic.com.tw (60-251-58-169.HINET-IP.hinet.net. [60.251.58.169])
-        by smtp.gmail.com with ESMTPSA id t206sm6815854pgb.84.2021.01.14.21.47.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 21:47:40 -0800 (PST)
-From:   Renius Chen <reniuschengl@gmail.com>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw,
-        Renius Chen <reniuschengl@gmail.com>
-Subject: [PATCH] mmc: sdhci-pci-gli: Enlarge ASPM L1 entry delay of GL9763E (v2)
-Date:   Fri, 15 Jan 2021 13:47:36 +0800
-Message-Id: <20210115054736.27769-1-reniuschengl@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S1727120AbhAOF5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 00:57:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726019AbhAOF5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 00:57:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71192239EF;
+        Fri, 15 Jan 2021 05:57:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610690223;
+        bh=1nmZ8i/8wKH8oPQ6+f5znp4ICppZYRDs4o+6s2h3Rkk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NkedOrMRk3+x5MdhLl0BdjJjI00H3c81J1AdjoLI9T0/htTxpXmPsnN2dUHJ0MIEj
+         4wHCxCxwz+F8M7GzrY2XYeURGOSQAGs1/0Y81b/sQY2jyy+NjyVD3yIjL+CJPVwgZL
+         rsBcT3LA0kDKFd7n3xrtoNSwOFvCKUqtztFnIDxq3mLw+p0jyXA9qtNQEdun98+Xwq
+         A6caIjQmAOPVIEmsHszxl08o3cbJt/8FzRWzGbMvsFOKL48S2pp2EOckZR9qLjb1mg
+         Krs3XUrVvKSUlz72FhyPgobsRjfgrKz+NloQ9V4jelbdejG3nGYcmyxxMfPKAMWREl
+         kwx9c3/ezRunA==
+Date:   Fri, 15 Jan 2021 11:26:58 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Rajesh Gumasta <rgumasta@nvidia.com>, ldewangan@nvidia.com,
+        dan.j.williams@intel.com, thierry.reding@gmail.com,
+        p.zabel@pengutronix.de, dmaengine@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kyarlagadda@nvidia.com
+Subject: Re: [Patch v2 0/4] Add Nvidia Tegra GPC-DMA driver
+Message-ID: <20210115055658.GD2771@vkoul-mobl>
+References: <1596699006-9934-1-git-send-email-rgumasta@nvidia.com>
+ <2a99ca73-a6e8-bf7d-a5c1-fa64eee62e23@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2a99ca73-a6e8-bf7d-a5c1-fa64eee62e23@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GL9763E enters ASPM L1 state after a very short idle in default,
-even during a burst of request. So the R/W performance of GL9763E
-is low with some platforms, which support ASPM mechanism, due to
-entering ASPM L1 state very frequently in R/W process. Set the L1
-entry delay bits in vendor-specific register to 0x3FF to enlarge
-the idle period to 260us for improving the R/W performance
-of GL9763E.
+On 14-01-21, 10:11, Jon Hunter wrote:
+> 
+> On 06/08/2020 08:30, Rajesh Gumasta wrote:
+> > Changes in patch v2:
+> > Addressed review comments in patch v1
+> 
+> 
+> Is there any update on this series? Would be good to get this upstream.
 
-Signed-off-by: Renius Chen <reniuschengl@gmail.com>
----
- drivers/mmc/host/sdhci-pci-gli.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Not sure why, this is is not in my queue, can someone please resend this
+to me
 
-diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-index c6a107d7c742..fb14f70cb9a0 100644
---- a/drivers/mmc/host/sdhci-pci-gli.c
-+++ b/drivers/mmc/host/sdhci-pci-gli.c
-@@ -88,6 +88,10 @@
- #define PCIE_GLI_9763E_SCR	 0x8E0
- #define   GLI_9763E_SCR_AXI_REQ	   BIT(9)
- 
-+#define PCIE_GLI_9763E_CFG2      0x8A4
-+#define   GLI_9763E_CFG2_L1DLY     GENMASK(28, 19)
-+#define   GLI_9763E_CFG2_L1DLY_MAX 0x3FF
-+
- #define PCIE_GLI_9763E_MMC_CTRL  0x960
- #define   GLI_9763E_HS400_SLOW     BIT(3)
- 
-@@ -792,6 +796,12 @@ static void gli_set_gl9763e(struct sdhci_pci_slot *slot)
- 	value &= ~GLI_9763E_HS400_SLOW;
- 	pci_write_config_dword(pdev, PCIE_GLI_9763E_MMC_CTRL, value);
- 
-+	pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG2, &value);
-+	value &= ~GLI_9763E_CFG2_L1DLY;
-+	/* set ASPM L1 entry delay to 260us */
-+	value |= FIELD_PREP(GLI_9763E_CFG2_L1DLY, GLI_9763E_CFG2_L1DLY_MAX);
-+	pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG2, value);
-+
- 	pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
- 	value &= ~GLI_9763E_VHS_REV;
- 	value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
+Thanks
 -- 
-2.27.0
-
+~Vinod
