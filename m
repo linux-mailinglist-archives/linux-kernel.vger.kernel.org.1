@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 418892F7AA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:52:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0BFC2F7A9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:52:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732641AbhAOMwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:52:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43144 "EHLO
+        id S2388066AbhAOMwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:52:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388465AbhAOMwV (ORCPT
+        with ESMTP id S1733007AbhAOMwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:52:21 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0A6C0617A3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:51:16 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id c12so5418263pfo.10
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:51:16 -0800 (PST)
+        Fri, 15 Jan 2021 07:52:12 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6CFC0617A4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:51:20 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id y12so5012299pji.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 04:51:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wusSjLYakm6+Z6kCpNRodcZYujbXCjpbVczSV3qSR3o=;
-        b=b6lkShudiFwH3nXVrpZX+gqStufxvurJdvxqDVcsPwjtLMN2djbpgCbGywiWqyrga0
-         M+gaefZbiLj+89pB2Ym76UEVbWAtzoIKFtD9vcTv29FSbXO2UNvefzDUeC5iGKY/o/Zv
-         MFDBbzHCxL4A2Po1RducNPu56GgVGipGd0fA1OchQLbycyi7LY+WPaQfd5ntlO0bwOIV
-         AH6hPW1wqlcg4Wi/nrhzdDWzT1SCAjciK6n+CUEGiuyeET5sIJmZrS19/hpDoL125GAy
-         77LHlv69plegW8wOEDThn4B2DE2SL7hw1wb2rDt7Xeuv1vmmGCUt8YDIJRKHzEOTUmJ9
-         v55Q==
+        bh=en8qVXfeyVDqIIP8px6ejCNcDJPI30a78TjFLPR7Emo=;
+        b=gSveUx2iscz2XVqox7kgx2aC826PqbTW5LQGAxIMyQpp1IKFTUdQhSOL2xfJrz9tcN
+         mVbNIMy2wF24Yy0Crl8F9sdwYyMYe7OOkoZBLGaGqkH6HEoPHi/Z/K4whKyw8GHWgN64
+         3MMZMNnxzVeWl7xlHeRD/52qnh4l6ul6jMJHUki6yZZswJ/u2/GHCT54p2TCuj/3/ZKo
+         3CbjTZWuYIJFLmhVahvSyjfqHqVny9mJ05o36FtwR0lHUKa1U2ybhtXUAxTfQ36M9iB1
+         toYjk/EV3MFmIAGDvNnfF0vSER2eid/B3Qa0fdGZ4R0ZN53aGxq8xaE4trghArmB+nkw
+         AYTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wusSjLYakm6+Z6kCpNRodcZYujbXCjpbVczSV3qSR3o=;
-        b=P3jW88uqMAGpke9S7baJe4e8zq4bK3j3wLLcJ+v0G5krAm6u3MCZwdff9/aIZS4VJZ
-         eA1FBpTgpOoRX88rpKuwSqWRFnSilcZww0ffbelQeXkA3rwBu+C3DKeAS1+Db2L+lhZC
-         SV22ljoTJOGbyYVW3iPO/CCcOIIm+K3F6/e+/4oeANZPuI1Y3tIrpNsSV6W6fKJzHZxb
-         r9bsuWdFTnaUY5vhzQqPFjEVUdyn5sykKOXWFpEFDTHF1Jf7YaFbt3wwfsdZkCg1Wx1u
-         hXIT5L/5pkXyalP5KOuil5t+a20xYG2OocvLyurQbOWXpokSd5vLtoZCTpsS3/T62qQl
-         HB+w==
-X-Gm-Message-State: AOAM533bSSCV+8yxQKdoSJh0VIP6pcTl7OwN2PnEIRpsC7znv2JMNtbm
-        +shRWKeycYZUsdL0/8lC6N+e9A==
-X-Google-Smtp-Source: ABdhPJxGSYg/GU3hqllaplzUHovQRCfeeWtqx+DxFm1YmqgDcB1pUCRHVxptmFPNYm9/Rr6pzhq4hQ==
-X-Received: by 2002:a63:5fcf:: with SMTP id t198mr12329283pgb.226.1610715075683;
-        Fri, 15 Jan 2021 04:51:15 -0800 (PST)
+        bh=en8qVXfeyVDqIIP8px6ejCNcDJPI30a78TjFLPR7Emo=;
+        b=iLJW2UMOg0Iw7wab5Xt0mdWtczPK3Ziiuqiw/1M67sfbIV55IciTAU6xyrW+4lcsNE
+         T6nCuJ6oke7MvZH0g1fb29AwWdVwgyNHdfQrpFIe8iCa4vuFLcxyDrm5gqV6C/7ESsQl
+         8PueQ6p15+LTcUuTwfqety9hbBdX4RtxuCBYOMXH/JBxeG3j8PAz4uWOV+Sr7NFM2Yqi
+         ZdDz2MeAnFyc/PcZ+HmXSCEryRBTuJuD8J/GvkcUixbHtxuhwsvTXqQSh50FhIdy3/FJ
+         8oifZOV5MLeSe0L2NOYFcxTN+0FTtW6wssIZdyg9zPdGXw6LXaI6vUN2sBkTOtSaHBv9
+         dRuQ==
+X-Gm-Message-State: AOAM53129/D2znyXh6cKf78WAXLbqNfphbNNY+o/exWqSSYim9WDUrCB
+        6IA5SFfaFvMbTV/SXesANWlFtA==
+X-Google-Smtp-Source: ABdhPJxJPmVGEhmpm8RkxK2vrqONkxXaGgxb7wCpNiuTFdu5fvFVYrtOBP4aFoPAaOFsUeMFtez0Ww==
+X-Received: by 2002:a17:90a:17a5:: with SMTP id q34mr1679368pja.47.1610715080481;
+        Fri, 15 Jan 2021 04:51:20 -0800 (PST)
 Received: from localhost.localdomain ([139.177.225.247])
-        by smtp.gmail.com with ESMTPSA id c5sm8193600pjo.4.2021.01.15.04.51.11
+        by smtp.gmail.com with ESMTPSA id c5sm8193600pjo.4.2021.01.15.04.51.16
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 15 Jan 2021 04:51:15 -0800 (PST)
+        Fri, 15 Jan 2021 04:51:19 -0800 (PST)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
 Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Muchun Song <songmuchun@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v6 1/5] mm: migrate: do not migrate HugeTLB page whose refcount is one
-Date:   Fri, 15 Jan 2021 20:49:38 +0800
-Message-Id: <20210115124942.46403-2-songmuchun@bytedance.com>
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>, stable@vger.kernel.org
+Subject: [PATCH v6 2/5] mm: hugetlbfs: fix cannot migrate the fallocated HugeTLB page
+Date:   Fri, 15 Jan 2021 20:49:39 +0800
+Message-Id: <20210115124942.46403-3-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20210115124942.46403-1-songmuchun@bytedance.com>
 References: <20210115124942.46403-1-songmuchun@bytedance.com>
@@ -68,41 +67,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All pages isolated for the migration have an elevated reference count
-and therefore seeing a reference count equal to 1 means that the last
-user of the page has dropped the reference and the page has became
-unused and there doesn't make much sense to migrate it anymore. This has
-been done for regular pages and this patch does the same for hugetlb
-pages. Although the likelyhood of the race is rather small for hugetlb
-pages it makes sense the two code paths in sync.
+If a new hugetlb page is allocated during fallocate it will not be
+marked as active (set_page_huge_active) which will result in a later
+isolate_huge_page failure when the page migration code would like to
+move that page. Such a failure would be unexpected and wrong.
 
+Only export set_page_huge_active, just leave clear_page_huge_active
+as static. Because there are no external users.
+
+Fixes: 70c3547e36f5 (hugetlbfs: add hugetlbfs_fallocate())
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Acked-by: Yang Shi <shy828301@gmail.com>
 Acked-by: Michal Hocko <mhocko@suse.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Cc: stable@vger.kernel.org
 ---
- mm/migrate.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/hugetlbfs/inode.c    | 3 ++-
+ include/linux/hugetlb.h | 2 ++
+ mm/hugetlb.c            | 2 +-
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 4385f2fb5d18..a6631c4eb6a6 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
- 		return -ENOSYS;
- 	}
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index b5c109703daa..21c20fd5f9ee 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -735,9 +735,10 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
  
-+	if (page_count(hpage) == 1) {
-+		/* page was freed from under us. So we are done. */
-+		putback_active_hugepage(hpage);
-+		return MIGRATEPAGE_SUCCESS;
-+	}
+ 		mutex_unlock(&hugetlb_fault_mutex_table[hash]);
+ 
++		set_page_huge_active(page);
+ 		/*
+ 		 * unlock_page because locked by add_to_page_cache()
+-		 * page_put due to reference from alloc_huge_page()
++		 * put_page() due to reference from alloc_huge_page()
+ 		 */
+ 		unlock_page(page);
+ 		put_page(page);
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index ebca2ef02212..b5807f23caf8 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -770,6 +770,8 @@ static inline void huge_ptep_modify_prot_commit(struct vm_area_struct *vma,
+ }
+ #endif
+ 
++void set_page_huge_active(struct page *page);
 +
- 	new_hpage = get_new_page(hpage, private);
- 	if (!new_hpage)
- 		return -ENOMEM;
+ #else	/* CONFIG_HUGETLB_PAGE */
+ struct hstate {};
+ 
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 1f3bf1710b66..4741d60f8955 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1348,7 +1348,7 @@ bool page_huge_active(struct page *page)
+ }
+ 
+ /* never called for tail page */
+-static void set_page_huge_active(struct page *page)
++void set_page_huge_active(struct page *page)
+ {
+ 	VM_BUG_ON_PAGE(!PageHeadHuge(page), page);
+ 	SetPagePrivate(&page[1]);
 -- 
 2.11.0
 
