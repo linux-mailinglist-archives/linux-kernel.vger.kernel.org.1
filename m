@@ -2,73 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB182F8540
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 550382F8555
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 20:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387704AbhAOTTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 14:19:20 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:50354 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728324AbhAOTTU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 14:19:20 -0500
-Received: from zn.tnic (p200300ec2f0acf007cb1195bb528937a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:cf00:7cb1:195b:b528:937a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CE2441EC041D;
-        Fri, 15 Jan 2021 20:18:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610738318;
+        id S2388045AbhAOTXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 14:23:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40456 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729507AbhAOTXf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 14:23:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610738528;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=vRaLSxM+z9kh51zGEHjPKubHQKF9CpJm494sShQUxrA=;
-        b=a4/U7CvDSqbu111l2vSbwdyJn6bNIhbDvBudnYVeDkOiawxRfoZE+O4onBapZXNhghMypT
-        RoXgibSW7KMHWZdAHMUGOgKcIc7CHreUzLpM/4Mhi9wScv64BbiNkY7wHijyTYTchyc5FS
-        dV3uDP1JAkoR66sJvRC4Dz0YeaPjNE8=
-Date:   Fri, 15 Jan 2021 20:18:33 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-efi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
-Message-ID: <20210115191833.GF9138@zn.tnic>
-References: <20210107223424.4135538-1-arnd@kernel.org>
- <20210115182300.GD9138@zn.tnic>
- <20210115183203.GA1991122@ubuntu-m3-large-x86>
- <20210115190729.GE9138@zn.tnic>
- <YAHo3ZEMu+6mESZA@rani.riverdale.lan>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zL+Li1KAPklkXdld15i8COR7vDC6udkZ8kTzzchZaCg=;
+        b=BCxUy+71ECfUDyHkGwA0tKKGtspNMOo+dsPsQzgaladh1BulZ5AHNYPbUKE6KPVV3cMS5t
+        HxZMUfQJMEfPv1km4bTRm4ILAe6u0uehFGBDCGcZ6TUDvjRxEnLgrd/asa57kZlA3pft3c
+        w6XFgaAzCcw6S2odw4UwF6G54VicA64=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-344-Hb1M3MQuM1qJR1nKvBtmXg-1; Fri, 15 Jan 2021 14:22:04 -0500
+X-MC-Unique: Hb1M3MQuM1qJR1nKvBtmXg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00BDE180A09B;
+        Fri, 15 Jan 2021 19:22:03 +0000 (UTC)
+Received: from f33vm.wilsonet.com.wilsonet.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9EB125C276;
+        Fri, 15 Jan 2021 19:21:58 +0000 (UTC)
+From:   Jarod Wilson <jarod@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jarod Wilson <jarod@redhat.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: [PATCH net-next v3] bonding: add a vlan+srcmac tx hashing option
+Date:   Fri, 15 Jan 2021 14:21:03 -0500
+Message-Id: <20210115192103.1179450-1-jarod@redhat.com>
+In-Reply-To: <20210113223548.1171655-1-jarod@redhat.com>
+References: <20210113223548.1171655-1-jarod@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YAHo3ZEMu+6mESZA@rani.riverdale.lan>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 02:11:25PM -0500, Arvind Sankar wrote:
-> That's how build-time assertions work: they are _supposed_ to be
-> optimized away completely when the assertion is true. If they're
-> _not_ optimized away, the build will fail.
+This comes from an end-user request, where they're running multiple VMs on
+hosts with bonded interfaces connected to some interest switch topologies,
+where 802.3ad isn't an option. They're currently running a proprietary
+solution that effectively achieves load-balancing of VMs and bandwidth
+utilization improvements with a similar form of transmission algorithm.
 
-Yah, that I know, thanks.
+Basically, each VM has it's own vlan, so it always sends its traffic out
+the same interface, unless that interface fails. Traffic gets split
+between the interfaces, maintaining a consistent path, with failover still
+available if an interface goes down.
 
-If gcc really inlines p4d_index() and does a lot more aggressive
-optimization to determine that the condition is false and thus optimize
-everything away (and clang doesn't), then that would explain the
-observation.
+Unlike bond_eth_hash(), this hash function is using the full source MAC
+address instead of just the last byte, as there are so few components to
+the hash, and in the no-vlan case, we would be returning just the last
+byte of the source MAC as the hash value. It's entirely possible to have
+two NICs in a bond with the same last byte of their MAC, but not the same
+MAC, so this adjustment should guarantee distinct hashes in all cases.
 
+This has been rudimetarily tested to provide similar results to the
+proprietary solution it is aiming to replace. A patch for iproute2 is also
+posted, to properly support the new mode there as well.
+
+Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+Cc: Veaceslav Falico <vfalico@gmail.com>
+Cc: Andy Gospodarek <andy@greyhouse.net>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Thomas Davis <tadavis@lbl.gov>
+Cc: netdev@vger.kernel.org
+Signed-off-by: Jarod Wilson <jarod@redhat.com>
+---
+v2: verified netlink interfaces working, added Documentation, changed
+tx hash mode name to vlan+mac for consistency and clarity.
+v3: drop inline from hash function, use full source MAC, not just the
+last byte, expand explanation in patch description, extend hash name to
+vlan+srcmac.
+
+ Documentation/networking/bonding.rst | 13 +++++++++++
+ drivers/net/bonding/bond_main.c      | 34 ++++++++++++++++++++++++++--
+ drivers/net/bonding/bond_options.c   | 13 ++++++-----
+ include/linux/netdevice.h            |  1 +
+ include/uapi/linux/if_bonding.h      |  1 +
+ 5 files changed, 54 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/networking/bonding.rst b/Documentation/networking/bonding.rst
+index adc314639085..36562dcd3e1e 100644
+--- a/Documentation/networking/bonding.rst
++++ b/Documentation/networking/bonding.rst
+@@ -951,6 +951,19 @@ xmit_hash_policy
+ 		packets will be distributed according to the encapsulated
+ 		flows.
+ 
++	vlan+srcmac
++
++		This policy uses a very rudimentary vland ID and source mac
++		ID hash to load-balance traffic per-vlan, with failover
++		should one leg fail. The intended use case is for a bond
++		shared by multiple virtual machines, all configured to
++		use their own vlan, to give lacp-like functionality
++		without requiring lacp-capable switching hardware.
++
++		The formula for the hash is simply
++
++		hash = (vlan ID) XOR (source MAC vendor) XOR (source MAC dev)
++
+ 	The default value is layer2.  This option was added in bonding
+ 	version 2.6.3.  In earlier versions of bonding, this parameter
+ 	does not exist, and the layer2 policy is the only policy.  The
+diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+index 5fe5232cc3f3..d4bc4d4e953b 100644
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -164,7 +164,7 @@ module_param(xmit_hash_policy, charp, 0);
+ MODULE_PARM_DESC(xmit_hash_policy, "balance-alb, balance-tlb, balance-xor, 802.3ad hashing method; "
+ 				   "0 for layer 2 (default), 1 for layer 3+4, "
+ 				   "2 for layer 2+3, 3 for encap layer 2+3, "
+-				   "4 for encap layer 3+4");
++				   "4 for encap layer 3+4, 5 for vlan+srcmac");
+ module_param(arp_interval, int, 0);
+ MODULE_PARM_DESC(arp_interval, "arp interval in milliseconds");
+ module_param_array(arp_ip_target, charp, NULL, 0);
+@@ -1434,6 +1434,8 @@ static enum netdev_lag_hash bond_lag_hash_type(struct bonding *bond,
+ 		return NETDEV_LAG_HASH_E23;
+ 	case BOND_XMIT_POLICY_ENCAP34:
+ 		return NETDEV_LAG_HASH_E34;
++	case BOND_XMIT_POLICY_VLAN_SRCMAC:
++		return NETDEV_LAG_HASH_VLAN_SRCMAC;
+ 	default:
+ 		return NETDEV_LAG_HASH_UNKNOWN;
+ 	}
+@@ -3494,6 +3496,27 @@ static bool bond_flow_ip(struct sk_buff *skb, struct flow_keys *fk,
+ 	return true;
+ }
+ 
++static u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
++{
++	struct ethhdr *mac_hdr = (struct ethhdr *)skb_mac_header(skb);
++	u32 srcmac_vendor = 0, srcmac_dev = 0;
++	u16 vlan;
++	int i;
++
++	for (i = 0; i < 3; i++)
++		srcmac_vendor = (srcmac_vendor << 8) | mac_hdr->h_source[i];
++
++	for (i = 3; i < ETH_ALEN; i++)
++		srcmac_dev = (srcmac_dev << 8) | mac_hdr->h_source[i];
++
++	if (!skb_vlan_tag_present(skb))
++		return srcmac_vendor ^ srcmac_dev;
++
++	vlan = skb_vlan_tag_get(skb);
++
++	return vlan ^ srcmac_vendor ^ srcmac_dev;
++}
++
+ /* Extract the appropriate headers based on bond's xmit policy */
+ static bool bond_flow_dissect(struct bonding *bond, struct sk_buff *skb,
+ 			      struct flow_keys *fk)
+@@ -3501,10 +3524,14 @@ static bool bond_flow_dissect(struct bonding *bond, struct sk_buff *skb,
+ 	bool l34 = bond->params.xmit_policy == BOND_XMIT_POLICY_LAYER34;
+ 	int noff, proto = -1;
+ 
+-	if (bond->params.xmit_policy > BOND_XMIT_POLICY_LAYER23) {
++	switch (bond->params.xmit_policy) {
++	case BOND_XMIT_POLICY_ENCAP23:
++	case BOND_XMIT_POLICY_ENCAP34:
+ 		memset(fk, 0, sizeof(*fk));
+ 		return __skb_flow_dissect(NULL, skb, &flow_keys_bonding,
+ 					  fk, NULL, 0, 0, 0, 0);
++	default:
++		break;
+ 	}
+ 
+ 	fk->ports.ports = 0;
+@@ -3556,6 +3583,9 @@ u32 bond_xmit_hash(struct bonding *bond, struct sk_buff *skb)
+ 	    skb->l4_hash)
+ 		return skb->hash;
+ 
++	if (bond->params.xmit_policy == BOND_XMIT_POLICY_VLAN_SRCMAC)
++		return bond_vlan_srcmac_hash(skb);
++
+ 	if (bond->params.xmit_policy == BOND_XMIT_POLICY_LAYER2 ||
+ 	    !bond_flow_dissect(bond, skb, &flow))
+ 		return bond_eth_hash(skb);
+diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
+index a4e4e15f574d..c69400c5bf07 100644
+--- a/drivers/net/bonding/bond_options.c
++++ b/drivers/net/bonding/bond_options.c
+@@ -96,12 +96,13 @@ static const struct bond_opt_value bond_pps_tbl[] = {
+ };
+ 
+ static const struct bond_opt_value bond_xmit_hashtype_tbl[] = {
+-	{ "layer2",   BOND_XMIT_POLICY_LAYER2, BOND_VALFLAG_DEFAULT},
+-	{ "layer3+4", BOND_XMIT_POLICY_LAYER34, 0},
+-	{ "layer2+3", BOND_XMIT_POLICY_LAYER23, 0},
+-	{ "encap2+3", BOND_XMIT_POLICY_ENCAP23, 0},
+-	{ "encap3+4", BOND_XMIT_POLICY_ENCAP34, 0},
+-	{ NULL,       -1,                       0},
++	{ "layer2",      BOND_XMIT_POLICY_LAYER2,      BOND_VALFLAG_DEFAULT},
++	{ "layer3+4",    BOND_XMIT_POLICY_LAYER34,     0},
++	{ "layer2+3",    BOND_XMIT_POLICY_LAYER23,     0},
++	{ "encap2+3",    BOND_XMIT_POLICY_ENCAP23,     0},
++	{ "encap3+4",    BOND_XMIT_POLICY_ENCAP34,     0},
++	{ "vlan+srcmac", BOND_XMIT_POLICY_VLAN_SRCMAC, 0},
++	{ NULL,          -1,                           0},
+ };
+ 
+ static const struct bond_opt_value bond_arp_validate_tbl[] = {
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 5b949076ed23..a94ce80a2fe1 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -2615,6 +2615,7 @@ enum netdev_lag_hash {
+ 	NETDEV_LAG_HASH_L23,
+ 	NETDEV_LAG_HASH_E23,
+ 	NETDEV_LAG_HASH_E34,
++	NETDEV_LAG_HASH_VLAN_SRCMAC,
+ 	NETDEV_LAG_HASH_UNKNOWN,
+ };
+ 
+diff --git a/include/uapi/linux/if_bonding.h b/include/uapi/linux/if_bonding.h
+index 45f3750aa861..e8eb4ad03cf1 100644
+--- a/include/uapi/linux/if_bonding.h
++++ b/include/uapi/linux/if_bonding.h
+@@ -94,6 +94,7 @@
+ #define BOND_XMIT_POLICY_LAYER23	2 /* layer 2+3 (IP ^ MAC) */
+ #define BOND_XMIT_POLICY_ENCAP23	3 /* encapsulated layer 2+3 */
+ #define BOND_XMIT_POLICY_ENCAP34	4 /* encapsulated layer 3+4 */
++#define BOND_XMIT_POLICY_VLAN_SRCMAC	5 /* vlan + source MAC */
+ 
+ /* 802.3ad port state definitions (43.4.2.2 in the 802.3ad standard) */
+ #define LACP_STATE_LACP_ACTIVITY   0x1
 -- 
-Regards/Gruss,
-    Boris.
+2.29.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
