@@ -2,65 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05632F77B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9468E2F77BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727039AbhAOLe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:34:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726045AbhAOLe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:34:27 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        id S1726599AbhAOLgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:36:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbhAOLgi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 06:36:38 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530B6C061757;
+        Fri, 15 Jan 2021 03:35:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=n7b0j6ZnpjR0uvwKHqBC1yHKTSPAWtivnsJi023r8K0=; b=qNRd6LPZfN2CdKG5QAOhJagyVF
+        cPLXOcZm47U6c3wfPxXh9E9m5YyF9zFOHBHQgyrKXY/wc7YovPAXM0gKwIm/PHBjvQY3E2TdYaeKS
+        Ep7ZBLzdqMIOZ+DbNOEceKeXj2A5cbL5fnxjtNCh9BWyQQSYyIiiI4aZ0KEEtKHk0zUbKycAYvNkw
+        UV37TFJa/Mr/JAe6eKekEmRALKpWkPg8Dpcwh1gzbbFsSqsl6Jwuiz44luGK7pUzUquPKB8Riu1EW
+        nTGKa8IgDVu3N/5xK9YgEsZe73OeIkiIRM6uUHb1GESY+AQorfEfm+TBtpRZEFBGCY1pD9Fbjshne
+        rNHMPRww==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l0NMZ-008qrT-49; Fri, 15 Jan 2021 11:34:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49258221F7;
-        Fri, 15 Jan 2021 11:33:46 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l0NMO-007j6G-3L; Fri, 15 Jan 2021 11:33:44 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>, kvmarm@lists.cs.columbia.edu
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kernel-team@android.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-kernel@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH] KVM: arm64: Allow PSCI SYSTEM_OFF/RESET to return
-Date:   Fri, 15 Jan 2021 11:33:40 +0000
-Message-Id: <161071039698.2624485.5615829758205647389.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201229160059.64135-1-dbrazdil@google.com>
-References: <20201229160059.64135-1-dbrazdil@google.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E63A0301324;
+        Fri, 15 Jan 2021 12:33:46 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CA6622C9CD1CD; Fri, 15 Jan 2021 12:33:46 +0100 (CET)
+Date:   Fri, 15 Jan 2021 12:33:46 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Kan Liang <kan.liang@linux.intel.com>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 05/17] KVM: x86/pmu: Reprogram guest PEBS event to
+ emulate guest PEBS counter
+Message-ID: <YAF9mulfhGCIyNz+@hirez.programming.kicks-ass.net>
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <20210104131542.495413-6-like.xu@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, will@kernel.org, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, kernel-team@android.com, lorenzo.pieralisi@arm.com, linux-kernel@vger.kernel.org, sudeep.holla@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104131542.495413-6-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Dec 2020 16:00:59 +0000, David Brazdil wrote:
-> The KVM/arm64 PSCI relay assumes that SYSTEM_OFF and SYSTEM_RESET should
-> not return, as dictated by the PSCI spec. However, there is firmware out
-> there which breaks this assumption, leading to a hyp panic. Make KVM
-> more robust to broken firmware by allowing these to return.
+On Mon, Jan 04, 2021 at 09:15:30PM +0800, Like Xu wrote:
+> When a guest counter is configured as a PEBS counter through
+> IA32_PEBS_ENABLE, a guest PEBS event will be reprogrammed by
+> configuring a non-zero precision level in the perf_event_attr.
+> 
+> The guest PEBS overflow PMI bit would be set in the guest
+> GLOBAL_STATUS MSR when PEBS facility generates a PEBS
+> overflow PMI based on guest IA32_DS_AREA MSR.
+> 
+> The attr.precise_ip would be adjusted to a special precision
+> level when the new PEBS-PDIR feature is supported later which
+> would affect the host counters scheduling.
 
-Applied to next, thanks!
+This seems like a random collection of changes, all required, but
+loosely related.
 
-[1/1] KVM: arm64: Allow PSCI SYSTEM_OFF/RESET to return
-      commit: 2c91ef39216149df6703c3fa6a47dd9a1e6091c1
+> The guest PEBS event would not be reused for non-PEBS
+> guest event even with the same guest counter index.
 
-Cheers,
-
-	M.
--- 
-Without deviation from the norm, progress is not possible.
-
-
+/me rolls eyes at the whole destroy+create nonsense...
