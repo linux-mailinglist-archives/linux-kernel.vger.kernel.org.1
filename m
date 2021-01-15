@@ -2,67 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0D12F83BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30ABC2F8397
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387912AbhAOSPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:15:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
+        id S2387867AbhAOSO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:14:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387720AbhAOSOy (ORCPT
+        with ESMTP id S2387790AbhAOSOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 13:14:54 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C11C0617BA
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:57 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id u14so4192485wmq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:57 -0800 (PST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A16C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:58 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id y17so10190758wrr.10
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sVt/rdeEBQJxQhCHaNNlJJAtPDszt4A5bvtFCOyl0bM=;
-        b=Sc/GUxuyiRJdn91hjCasO8KQhK49SFIeOpJhYv2lzYtBvkAlPg1J9p06riSFlV52cg
-         eqjong14hahD5tYf/SWgSY7FTLqjwLxFVOQjhZ0A+bLdZoOhW2Rj0yBMVKNunVjwC99i
-         xCLJjxjHEERinfZ3cVdz25AdxZEv+UgtMEx58Klerqd/p/6PojbafmMNGuwavXsFq3gp
-         oJlKuBoiUgKuDAyMrUQCXNfEDG0G/PbqoiELOZ07j1YQtFVQF1VQKS+1m5/THHK3ORhh
-         4VnaEpCaBLqdVagjmeOKsx6g5zEOkqRVnilaL3kZpSR6ZuTJuVZQx8HHBuv0Ho6CTIHE
-         DG6g==
+        bh=YdGEIo0hl2Rfpl/h+Jq0+PenJy8U5mbtMlzqWbcxCkg=;
+        b=nn+YQQ3tBavKBlOFL7sT7bojtBwspT5MdJqIVfqTvMbPS+d2dEqAdBTVblOgzuynOQ
+         Olk3p9M/630y78Ld02C5b4c2E1yI/CegVOo0NaSyJtAcPz1l3o0q4R5R3R9iIRuOn77r
+         kxrI9Zwdd4q3BS9xicvx8dfaNIuzw3CoE9v2aObzi/BiIN8qVM6nCVaQXl+pIU9nxsya
+         O4/5uD8YtnZJ1rj3KZJsnJ8wHzNbOQfDmlS1/7bIW1dGKnk2aqMM/npcyjg7b6vVqE1S
+         jxW3enZtU+ZYPgAUpoXU9klmE3OVP67lIRz99VbnxcfhwDsy7TPk5Ojc3EAfpVqLU24B
+         5xCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sVt/rdeEBQJxQhCHaNNlJJAtPDszt4A5bvtFCOyl0bM=;
-        b=notFu0gcf3EkMEe9l460JOkohtQKBAh0XlYod2njxzQ3qg9ObHEhnEOKUxEKc95BJJ
-         3+3YN2s/e/MGB/hEAOVdNGDJbsfjUKGT0wHL6iIxkfXA4rJy4wPIC0mLaV9qB1ETF29u
-         fKVL2v8fvnm+KhFXBAhIx6xH1vdKvNw7awBTeMS3kaLoMlPXn32oW5Clum9/6Aa6pRr3
-         /TI9GVsTQ66TVqHApvlOP5vzVo7v69nsULHtHvkUH0oxn9wCnOXD8l6gcDK37WWirjIE
-         +b10PrNcf4S/jn160cG0cdIwdcaQPsQE+ENGNhh7EOY3iNSiKZw+whqNuglJ4/99zQu/
-         YN3g==
-X-Gm-Message-State: AOAM533gM9JMfszsIXiMA30VsRE21yFMHQsPSg9y0EnJfmpOGd7Hx2oe
-        TJ/ZP4Jd3tPG6DorTFxAJYPmNQ==
-X-Google-Smtp-Source: ABdhPJzNu8NawRYjrPv3ZUrXYULqlHq3ph+lO3U+klIyj/QTDgnxMgxhqUqT5ChkSfSse1V3ZfphXA==
-X-Received: by 2002:a7b:c2e8:: with SMTP id e8mr9708669wmk.103.1610734436402;
-        Fri, 15 Jan 2021 10:13:56 -0800 (PST)
+        bh=YdGEIo0hl2Rfpl/h+Jq0+PenJy8U5mbtMlzqWbcxCkg=;
+        b=qK9tFcgN2lSqD6RlaeTiHLNDuKZcMaLU3MU+9VCsmMJ2heh/VJBxWOqFiw+UUwvrnn
+         suicKqpnHszbqN3bMmuWdszP1v2+JcP/3oftvsui31U/qcKaPArwTEsYWpTflmWaZQ1L
+         mIcvpM2H2rQel1bhkT5QgCwv7u86sX+thXfeTpOzfZOjF7L7GrK4SZMsOSPQcP30cHDg
+         WF0ASyhxAGfdqcbsvhFOSaj8PTZX9Es3CedLb1od8onv9JxeGrZVXg+KgU/7xRvW+W+9
+         3pXrgrlcQRa0dd79Uep81bBqhMYYo4MycWfdEjFQLZ2Ds1xU1rfW7Mm+0iRElBjgeDSk
+         e1GQ==
+X-Gm-Message-State: AOAM530+xLfUG9YLshS0LUS/M15lmd0t7T9uBcr7TXwhOCdgFbFRBtvv
+        RAKOWlcUn+8ydWIalqmEk6s+VA==
+X-Google-Smtp-Source: ABdhPJwoFUexa7yf+5Xx+spu+w33pAquyESNB70QCWuq5Md9/k32C45VD2bWHG3JLcExMyxXr6tD3w==
+X-Received: by 2002:adf:eac7:: with SMTP id o7mr14553458wrn.23.1610734437578;
+        Fri, 15 Jan 2021 10:13:57 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.55
+        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:13:55 -0800 (PST)
+        Fri, 15 Jan 2021 10:13:56 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Roland Scheidegger <sroland@vmware.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Eric Anholt <eric@anholt.net>,
-        Jesse Barnes <jesse.barnes@intel.com>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 25/40] drm/gma500/psb_intel_lvds: Supply description for 'mode_dev'
-Date:   Fri, 15 Jan 2021 18:12:58 +0000
-Message-Id: <20210115181313.3431493-26-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 26/40] drm/vmwgfx/vmwgfx_fence: Add, remove and demote various documentation params/headers
+Date:   Fri, 15 Jan 2021 18:12:59 +0000
+Message-Id: <20210115181313.3431493-27-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210115181313.3431493-1-lee.jones@linaro.org>
 References: <20210115181313.3431493-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -70,31 +74,97 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/gma500/psb_intel_lvds.c:635: warning: Function parameter or member 'mode_dev' not described in 'psb_intel_lvds_init'
+ drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:82: warning: Function parameter or member 'event' not described in 'vmw_event_fence_action'
+ drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:113: warning: Function parameter or member 'f' not described in 'vmw_fence_obj_destroy'
+ drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:261: warning: Function parameter or member 'work' not described in 'vmw_fence_work_func'
+ drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:720: warning: Function parameter or member 'fman' not described in 'vmw_fence_fifo_down'
+ drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:963: warning: Function parameter or member 'fence' not described in 'vmw_fence_obj_add_action'
+ drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:963: warning: Function parameter or member 'action' not described in 'vmw_fence_obj_add_action'
+ drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:1021: warning: Function parameter or member 'tv_sec' not described in 'vmw_event_fence_action_queue'
+ drivers/gpu/drm/vmwgfx/vmwgfx_fence.c:1021: warning: Function parameter or member 'tv_usec' not described in 'vmw_event_fence_action_queue'
 
-Cc: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
+Cc: Roland Scheidegger <sroland@vmware.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Eric Anholt <eric@anholt.net>
-Cc: Jesse Barnes <jesse.barnes@intel.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: "Christian König" <christian.koenig@amd.com>
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/gma500/psb_intel_lvds.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/vmwgfx/vmwgfx_fence.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/gma500/psb_intel_lvds.c b/drivers/gpu/drm/gma500/psb_intel_lvds.c
-index f65a6f386caed..ace95d4bdb6f8 100644
---- a/drivers/gpu/drm/gma500/psb_intel_lvds.c
-+++ b/drivers/gpu/drm/gma500/psb_intel_lvds.c
-@@ -626,6 +626,7 @@ const struct drm_connector_funcs psb_intel_lvds_connector_funcs = {
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_fence.c b/drivers/gpu/drm/vmwgfx/vmwgfx_fence.c
+index 378ec7600154b..23523eb3cac2a 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_fence.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_fence.c
+@@ -58,13 +58,11 @@ struct vmw_user_fence {
  /**
-  * psb_intel_lvds_init - setup LVDS connectors on this device
-  * @dev: drm device
-+ * @mode_dev: mode device
+  * struct vmw_event_fence_action - fence action that delivers a drm event.
   *
-  * Create the connector, register the LVDS DDC bus, and try to figure out what
-  * modes we can display on the LVDS panel (if present).
+- * @e: A struct drm_pending_event that controls the event delivery.
+  * @action: A struct vmw_fence_action to hook up to a fence.
++ * @event: A pointer to the pending event.
+  * @fence: A referenced pointer to the fence to keep it alive while @action
+  * hangs on it.
+  * @dev: Pointer to a struct drm_device so we can access the event stuff.
+- * @kref: Both @e and @action has destructors, so we need to refcount.
+- * @size: Size accounted for this object.
+  * @tv_sec: If non-null, the variable pointed to will be assigned
+  * current time tv_sec val when the fence signals.
+  * @tv_usec: Must be set if @tv_sec is set, and the variable pointed to will
+@@ -87,7 +85,7 @@ fman_from_fence(struct vmw_fence_obj *fence)
+ 	return container_of(fence->base.lock, struct vmw_fence_manager, lock);
+ }
+ 
+-/**
++/*
+  * Note on fencing subsystem usage of irqs:
+  * Typically the vmw_fences_update function is called
+  *
+@@ -250,7 +248,7 @@ static const struct dma_fence_ops vmw_fence_ops = {
+ };
+ 
+ 
+-/**
++/*
+  * Execute signal actions on fences recently signaled.
+  * This is done from a workqueue so we don't have to execute
+  * signal actions from atomic context.
+@@ -708,7 +706,7 @@ int vmw_wait_dma_fence(struct vmw_fence_manager *fman,
+ }
+ 
+ 
+-/**
++/*
+  * vmw_fence_fifo_down - signal all unsignaled fence objects.
+  */
+ 
+@@ -948,8 +946,8 @@ static void vmw_event_fence_action_cleanup(struct vmw_fence_action *action)
+ /**
+  * vmw_fence_obj_add_action - Add an action to a fence object.
+  *
+- * @fence - The fence object.
+- * @action - The action to add.
++ * @fence: The fence object.
++ * @action: The action to add.
+  *
+  * Note that the action callbacks may be executed before this function
+  * returns.
+@@ -1001,6 +999,10 @@ static void vmw_fence_obj_add_action(struct vmw_fence_obj *fence,
+  * @fence: The fence object on which to post the event.
+  * @event: Event to be posted. This event should've been alloced
+  * using k[mz]alloc, and should've been completely initialized.
++ * @tv_sec: If non-null, the variable pointed to will be assigned
++ * current time tv_sec val when the fence signals.
++ * @tv_usec: Must be set if @tv_sec is set, and the variable pointed to will
++ * be assigned the current time tv_usec val when the fence signals.
+  * @interruptible: Interruptible waits if possible.
+  *
+  * As a side effect, the object pointed to by @event may have been
 -- 
 2.25.1
 
