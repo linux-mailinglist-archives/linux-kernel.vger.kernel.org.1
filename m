@@ -2,64 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6202F751E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:22:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FF12F7521
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbhAOJVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:21:14 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:10971 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbhAOJVN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:21:13 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DHFxl3l02zj6rd;
-        Fri, 15 Jan 2021 17:19:39 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Fri, 15 Jan 2021
- 17:20:20 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
-CC:     <david@redhat.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH v2] mm/hugetlb: avoid unnecessary hugetlb_acct_memory() call
-Date:   Fri, 15 Jan 2021 04:20:13 -0500
-Message-ID: <20210115092013.61012-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1727885AbhAOJWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:22:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54380 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725797AbhAOJWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 04:22:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610702494; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KT9EN3eX0+nSmx+nfrEJ3/uRnYd9p/NeYXSrly1MMiA=;
+        b=L/MTVtx3P3zxEKxzlkObD4LCPc826bfCW7jmXkBMSA96jr4SHJWxzxOJ8WMJ1BjFJD9DnR
+        N10BgNg+0eBsnH04HIwNrAO7hQ2yHEU9z1zub2fe76rkXqf0ndSjnXNLv2+bAT7qeIW64D
+        +HjLyvsWm3nT0yiSoRWWTwIypzUDwoU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1BA15AA6F;
+        Fri, 15 Jan 2021 09:21:34 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 10:21:33 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Timur Tabi <timur@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Roman Fietze <roman.fietze@magna.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] lib/hexdump: introduce DUMP_PREFIX_UNHASHED for unhashed
+ addresses
+Message-ID: <YAFenc9MHvPNrZ06@alley>
+References: <20210106213547.1077789-1-timur@tabi.org>
+ <X/wkMMiPPBAJb9+A@alley>
+ <20210111173009.fe2383539e5ca2c23b135262@linux-foundation.org>
+ <d067f15a-8816-8879-e575-b610707c5189@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d067f15a-8816-8879-e575-b610707c5189@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When gbl_reserve is 0, hugetlb_acct_memory() will do nothing except holding
-and releasing hugetlb_lock. We should avoid this unnecessary hugetlb_lock
-lock/unlock cycle which is happening on 'most' hugetlb munmap operations by
-check delta against 0 at the beginning of hugetlb_acct_memory.
+On Thu 2021-01-14 20:56:36, Timur Tabi wrote:
+> On 1/11/21 7:30 PM, Andrew Morton wrote:
+> > I doubt if Kees (or I or anyone else) can review this change because
+> > there are no callers which actually use the new DUMP_PREFIX_UNHASHED.
+> > Is it intended that some other places in the kernel be changed to use
+> > this?  If so, please describe where and why, so that others can better
+> > understand both the requirement and the security implications.
+> 
+> In my opinion, hashed addresses make no sense in a hexdump, so I would say
+> that ALL callers should change.  But none of the drivers I've written call
+> print_hex_dump(), so I can't make those changes myself.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/hugetlb.c | 3 +++
- 1 file changed, 3 insertions(+)
+I know that you probably know it because you introduced new mode
+instead of updating the existing one. But to be sure.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 4f67f6b159c7..da064cb8fd53 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3591,6 +3591,9 @@ static int hugetlb_acct_memory(struct hstate *h, long delta)
- {
- 	int ret = -ENOMEM;
- 
-+	if (!delta)
-+		return 0;
-+
- 	spin_lock(&hugetlb_lock);
- 	/*
- 	 * When cpuset is configured, it breaks the strict hugetlb page
--- 
-2.19.1
+We need to be careful here. The hashed pointer has been introduced for
+a reason. It prevents leaking pointers and helping bad guys.
 
+The original plan was to introduce %pK. It was supposed to prevent
+non-privileged users from seeing the real pointer value. It did not
+really worked because it was only rarely used. The plain %p was
+heavily used in historical and even in a new code.
+
+By other words, every print_hex_dump() used need to be reviewed in
+which context might be called.
+
+> > If it is intended that this be used mainly for developer debug and not
+> > to be shipped in the mainline kernel then let's get this info into the
+> > changelog as well.
+> 
+> I definitely want this patch included in the mainline kernel.  Just because
+> there aren't any users today doesn't mean that there won't be. In fact, I
+> suspect that most current users haven't noticed that the addresses have
+> changed or don't care any more, but if they were to write the code today,
+> they would use unhashed addresses.
+
+I am pretty sure that will look for this functionality sooner or
+later. The hashed pointers make debugging really complicated.
+
+> If you want, I can include a patch that changes a few callers of
+> print_hex_dump() to use DUMP_PREFIX_UNHASHED, based on what I think would be
+> useful.
+
+It would be nice.
+
+Best Regards,
+Petr
