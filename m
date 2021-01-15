@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDD82F80FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:40:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 844692F8108
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730150AbhAOQjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:39:22 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:50640 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726657AbhAOQjV (ORCPT
+        id S1727690AbhAOQlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:41:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727408AbhAOQlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:39:21 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10FGcXss005195;
-        Fri, 15 Jan 2021 10:38:33 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1610728713;
-        bh=wZQyTzD4KHELT+ZdhYxfwSJ38y+1CC1synxgDs8UPD8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=ngsAgzkoNdxHP9ir5eBRVRJn2QRI4cKo5lE073rNIcSJ5VEgv+HaOYjlgjr8DCmWh
-         VdEz2LCPFx4ehyBkNAszqYg3Y0DqjNFYuGiFsGZa4kPpIkRUKk2FBLx6rrv66Ym1Cj
-         yzdxcI1cNE0euuTbyGc1wj/paQ+KE+F8Kzznh42s=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10FGcXtr088735
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 15 Jan 2021 10:38:33 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
- Jan 2021 10:38:32 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 15 Jan 2021 10:38:32 -0600
-Received: from [10.250.34.42] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10FGcWG4069644;
-        Fri, 15 Jan 2021 10:38:32 -0600
-Subject: Re: [PATCH] dt-bindings: soc: ti: Update TI PRUSS bindings about
- schemas to include
-To:     <santosh.shilimkar@oracle.com>
-CC:     Rob Herring <robh@kernel.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        <tony@atomide.com>, <linux-omap@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>,
-        <ssantosh@kernel.org>, <praneeth@ti.com>, <lee.jones@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201216225027.2681-1-grzegorz.jaszczyk@linaro.org>
- <20201221213234.GA596829@robh.at.kernel.org>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <6f5b6609-bb9e-31f7-c0c2-3bb261a54d6a@ti.com>
-Date:   Fri, 15 Jan 2021 10:38:27 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 15 Jan 2021 11:41:50 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A5CC061757;
+        Fri, 15 Jan 2021 08:41:10 -0800 (PST)
+Date:   Fri, 15 Jan 2021 17:41:02 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610728868;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d8mjyhjGfj4NiGEQSD0Bw/n6kHPpFmLv4qkOT4y+QB8=;
+        b=U7BX1/kqOAVeXHrLPTZHULsGFqy/kAuFni5jhnoDwiDdp//c3Vtb2qMdce1ITECmtgpN4c
+        g5hAkXSw3UBLG0VgUY2FjdkeGu+zgh10nW7bpaRP6xlX1VRCa6JyFjDhab6emjKZk+Wd7c
+        So29CO1bX4HEsbbNjDVipjt4Lsmv/YBOayflxBADsxM//xtbNohanmn5XKGHA5Aco/8XUl
+        xogjse2Ai/gJ7AwdtM2RwbrxrIF8t6IqVtf4NDewnse3IqEkrSujmTtlc48cC2Im18wYhV
+        UiMrK5CoJ88IkKfPI7RW44heXwRE/T+QdEoXxgpa48Y3FZQulxzDEbswvVnAwQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610728868;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d8mjyhjGfj4NiGEQSD0Bw/n6kHPpFmLv4qkOT4y+QB8=;
+        b=pfzm7LPZy4TJ5zs9xLjfo019l+cHtdaoixYxNxCNaxMDAQTKapiVdy9uZyS5WKW1gvTHsi
+        uyvlXFysmkGJ5mCQ==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     John Garry <john.garry@huawei.com>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        linux-scsi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>
+Subject: Re: [PATCH v2 00/19] scsi: libsas: Remove in_interrupt() check
+Message-ID: <YAHFnk2r+islHd77@lx-t490>
+References: <20210112110647.627783-1-a.darwish@linutronix.de>
+ <8683f401-29b6-4067-af51-7b518ad3a10f@huawei.com>
+ <X/2h0yNqtmgoLIb+@lx-t490>
+ <e9bc0c89-a4d6-1e5b-793d-3c246882210e@huawei.com>
+ <X/3dUkPCC1SrLT4m@lx-t490>
+ <20e1034c-98af-a000-65ed-ae5f0e7a758f@huawei.com>
+ <YAHCbcNea47Zk+4w@lx-t490>
+ <869c00f4-a9a6-e124-3104-906957754dc5@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20201221213234.GA596829@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <869c00f4-a9a6-e124-3104-906957754dc5@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Santosh,
+On Fri, Jan 15, 2021 at 04:29:51PM +0000, John Garry wrote:
+> On 15/01/2021 16:27, Ahmed S. Darwish wrote:
+> > Thanks!
+> >
+> > Shall I add you r-b tag to the whole series then, or only to the ones
+> > which directly touch libsas (#3, #12, #16, and #19)?
+>
+> The whole series, if you like. But there was a nit about fitting some code
+> on a single line still, and I think Christoph also had some issue on that
+> related topic.
+>
 
-On 12/21/20 3:32 PM, Rob Herring wrote:
-> On Wed, 16 Dec 2020 23:50:27 +0100, Grzegorz Jaszczyk wrote:
->> Now after ti,pruss-intc.yaml and ti,pru-rproc.yaml are merged, include
->> them in proper property and extend the examples section.
->>
->> At the occasion extend the allowed property list about dma-ranges.
->>
->> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
->> ---
->>  .../devicetree/bindings/soc/ti/ti,pruss.yaml  | 76 +++++++++++++++++++
->>  1 file changed, 76 insertions(+)
->>
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> 
+Nice. Then I'll send a v3 to fixing these 80 col issues -- including in
+the intermediate patches.
 
-Gentle reminder, I haven't seen this patch yet on linux-next.
-Can you please pick this up for 5.12.
+> >
+> > > As an aside, your analysis showed some quite poor usage of spinlocks in some
+> > > drivers, specifically grabbing a lock and then calling into a depth of 3 or
+> > > 4 functions.
+> > >
+> > Correct.
+>
+> BTW, testing report looked all good.
+>
 
-Thanks,
-Suman
+Oh, that's good to hear :)
 
+Have a nice weekend,
 
+--
+Ahmed S. Darwish
+Linutronix GmbH
