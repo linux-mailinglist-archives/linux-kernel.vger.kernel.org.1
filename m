@@ -2,136 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09A62F86BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C806F2F86C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730157AbhAOUcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 15:32:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58096 "EHLO
+        id S1731252AbhAOUeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 15:34:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727289AbhAOUcu (ORCPT
+        with ESMTP id S1727180AbhAOUeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 15:32:50 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46D7C061757;
-        Fri, 15 Jan 2021 12:32:09 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id c1so6998453qtc.1;
-        Fri, 15 Jan 2021 12:32:09 -0800 (PST)
+        Fri, 15 Jan 2021 15:34:11 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95950C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:33:31 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id c13so6185100pfi.12
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 12:33:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BVIgSjuV976cGlpOjqUg4jAiYaTKabic/p9h6hRPsiU=;
-        b=XjSJapW79gC5VBIO3wCG7Te5A95WeoBeaPgoQmIiDvhayH8pCfmJlyK3s/C5g6CPXk
-         kH9E2Hjfwe3tL5pUBUAyW9gACVfifGuAJLYTYm7l83WOkwr0CDBL4JWxJV+G6XX/KYMP
-         FZ2s7A0FddkEdNgRjkvXGEHPxN9+yP3t5bdYbtcH1bpfVr+/E+Z/FGvLtnPslDIrOycs
-         1UMsCHUlrGOQK+3j9HjX/47X+7Osj8vMXSho7euePLrF9CMRVSfgclyv9UWoowMeOALO
-         JIr98GsN80UnhoXz21d4qSz9blnkfCX1VTNdGc/eF+MTYNho5feODwtiP7ayS7lTa4JN
-         0r9w==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GqxD38wi1JJRohChaeBwsmR53dcukE+p/w7TwS0FSts=;
+        b=CkwT6bjJqkLOsXTdw/T8MBbBtFDvEtMYBtJbQHRCcu1oFaZU20/hQuwPMmUbhXCA5x
+         DGqYdBxENIvj2W384heUTqHw2ndr8+jiEVq+nLkFL4G0ylyNuyX83gOvkz36L4brAKyQ
+         JL1QCBF5kaKH+KvcnscSbweVk//0796J3XF54=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=BVIgSjuV976cGlpOjqUg4jAiYaTKabic/p9h6hRPsiU=;
-        b=kEA+m3rnmdZNzmPdq+SX639HG8asimNiNwh3WHlYXGSnYAeZo9nuto6IxOnm0l9epD
-         wsnkoHuwhzDQjzDehW70cgLKSfBfMjGCHPXmatRdsATWu6PqMLTU9vIr2N/uQxAODegj
-         gW/rah5zEBwdJyZ0T5AxO5OjdMb7gaxR3WkhUipG4NMps8LhG/IxZbTQWuMFGcCcSE58
-         YY3N7ZNlMgFiXcocwvuKA6QYIlMFpfU3kmm/NNK1GAsXdPjGKRt2WtKS1Wx68/ONJ9fF
-         qCi2wsVdw/Q0YoWTRe0m9hTDiRJzbcpL+t1/EzJteUxAloDCNhh6aBSFYKNGXnKjkqV7
-         cDLA==
-X-Gm-Message-State: AOAM532CjAfwE9kLaHVhDf0IHbfOE9HUN5gKOuYDVR9+O6AN7vnByQlO
-        vj26w1jbLUagSOUopoiCMcY=
-X-Google-Smtp-Source: ABdhPJwaoV9e5of1oPbEIjlm/kN/Wkir46+iQh6aBIMe3yyvJ4EPDguKtg4d/vQX8KjkGPPch5/bFw==
-X-Received: by 2002:ac8:6c36:: with SMTP id k22mr13626091qtu.62.1610742728990;
-        Fri, 15 Jan 2021 12:32:08 -0800 (PST)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id c62sm5599633qkf.34.2021.01.15.12.32.07
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GqxD38wi1JJRohChaeBwsmR53dcukE+p/w7TwS0FSts=;
+        b=SkGAwRheZQtmUESlBTu2jnZ/HDhtYxLL51nWBVh7aMc39qoQPJ7M1WOFBjBau4iLM5
+         gCiWtgNwTycJle61vkJQvm4417VQUTQbqEl9BIH5ximwObc0gUev/x/cR8YZ6MRk6nDu
+         VgGbLh56YIFby3LVgTFreLlthJyFMoZ1raCRXB7CNkCkmL0OUHmK6f74fGCeZCKtEwDG
+         ezhgaBsApmCuHdRsVFAmPZ0GWBf3xwCk/kBQw+SLBfQXQncFjg0yakaBNLKoaOdO6KJW
+         DT/WdwJmystK2mCKQcCUyWH8mztBcOeoNWxCGmZSkpZMOPrRwGZC3ylRMkXwwQXqZkab
+         0HoQ==
+X-Gm-Message-State: AOAM532nF4dInbTSoaaJGMKWQ07VnS4zA7sUfjfzg60aLvFYo34ccM8s
+        Hc3Tj27WocmYL2ZVXva4j0MQhA==
+X-Google-Smtp-Source: ABdhPJzcSsMqa5rUofBB9lqWBS521VzYpKtt5TOM4l6thXDZOMMZP6qxBPxeyQUKgFM8w/civbgnjA==
+X-Received: by 2002:a63:e14a:: with SMTP id h10mr14560054pgk.297.1610742811065;
+        Fri, 15 Jan 2021 12:33:31 -0800 (PST)
+Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id r14sm9214808pgi.27.2021.01.15.12.33.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 12:32:08 -0800 (PST)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Fri, 15 Jan 2021 15:32:06 -0500
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
-Message-ID: <YAH7xlaHZN8i8ORK@rani.riverdale.lan>
-References: <20210107223424.4135538-1-arnd@kernel.org>
- <20210115182300.GD9138@zn.tnic>
- <20210115183203.GA1991122@ubuntu-m3-large-x86>
- <20210115190729.GE9138@zn.tnic>
- <YAHo3ZEMu+6mESZA@rani.riverdale.lan>
- <20210115191833.GF9138@zn.tnic>
- <CAK8P3a39vtF8GvRVQtEYssc+GvX-75j9-4pwXj4qhc7LK2RgNw@mail.gmail.com>
- <YAH3KY0I2AWudkc9@rani.riverdale.lan>
+        Fri, 15 Jan 2021 12:33:30 -0800 (PST)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
+        alsa-devel@alsa-project.org,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+        Srinivasa Rao <srivasam@codeaurora.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH] ASoC: qcom: Fix number of HDMI RDMA channels on sc7180
+Date:   Fri, 15 Jan 2021 12:33:29 -0800
+Message-Id: <20210115203329.846824-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YAH3KY0I2AWudkc9@rani.riverdale.lan>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 03:12:25PM -0500, Arvind Sankar wrote:
-> On Fri, Jan 15, 2021 at 08:54:18PM +0100, Arnd Bergmann wrote:
-> > On Fri, Jan 15, 2021 at 8:18 PM Borislav Petkov <bp@alien8.de> wrote:
-> > >
-> > > On Fri, Jan 15, 2021 at 02:11:25PM -0500, Arvind Sankar wrote:
-> > > > That's how build-time assertions work: they are _supposed_ to be
-> > > > optimized away completely when the assertion is true. If they're
-> > > > _not_ optimized away, the build will fail.
-> > >
-> > > Yah, that I know, thanks.
-> > >
-> > > If gcc really inlines p4d_index() and does a lot more aggressive
-> > > optimization to determine that the condition is false and thus optimize
-> > > everything away (and clang doesn't), then that would explain the
-> > > observation.
-> > 
-> > One difference is that gcc does not have
-> > -fsanitize=unsigned-integer-overflow at all, and I don't see the
-> > assertion without that on clang either, so it's possible that clang
-> > behaves as designed here.
-> > 
-> > The description is:
-> >     -fsanitize=unsigned-integer-overflow: Unsigned integer overflow, where
-> >      the result of an unsigned integer computation cannot be represented in
-> >      its type. Unlike signed integer overflow, this is not undefined behavior,
-> >      but it is often unintentional. This sanitizer does not check for
-> > lossy implicit
-> >      conversions performed before such a computation (see
-> >     -fsanitize=implicit-conversion).
-> > 
-> > The "-68 * ((1UL) << 30" computation does overflow an unsigned long
-> > as intended, right? Maybe this is enough for the ubsan code in clang to
-> > just disable some of the optimization steps that the assertion relies on.
-> > 
-> >         Arnd
-> 
-> That does seem to be an overflow, but that happens at compile-time.
-> Maybe
-> 	AC(-68, UL) << 30
-> would be a better definition to avoid overflow.
+Suspending/resuming with an HDMI dongle attached leads to crashes from
+an audio regmap.
 
-Eh, that's an overflow too, isn't it :( Is this option really useful
-with kernel code -- this sort of thing is probably done all over the
-place?
+ Unable to handle kernel paging request at virtual address ffffffc018068000
+ Mem abort info:
+   ESR = 0x96000047
+   EC = 0x25: DABT (current EL), IL = 32 bits
+   SET = 0, FnV = 0
+   EA = 0, S1PTW = 0
+ Data abort info:
+   ISV = 0, ISS = 0x00000047
+   CM = 0, WnR = 1
+ swapper pgtable: 4k pages, 39-bit VAs, pgdp=0000000081b12000
+ [ffffffc018068000] pgd=0000000275d14003, pud=0000000275d14003, pmd=000000026365d003, pte=0000000000000000
+ Internal error: Oops: 96000047 [#1] PREEMPT SMP
+ Call trace:
+  regmap_mmio_write32le+0x2c/0x40
+  regmap_mmio_write+0x48/0x6c
+  _regmap_bus_reg_write+0x34/0x44
+  _regmap_write+0x100/0x150
+  regcache_default_sync+0xc0/0x138
+  regcache_sync+0x188/0x26c
+  lpass_platform_pcmops_resume+0x48/0x54 [snd_soc_lpass_platform]
+  snd_soc_component_resume+0x28/0x40
+  soc_resume_deferred+0x6c/0x178
+  process_one_work+0x208/0x3c8
+  worker_thread+0x23c/0x3e8
+  kthread+0x144/0x178
+  ret_from_fork+0x10/0x18
+ Code: d503201f d50332bf f94002a8 8b344108 (b9000113)
 
-> 
-> The real issue might be (ptrs_per_p4d - 1) which can overflow at
-> run-time, and maybe the added ubsan code makes p4d_index() not worth
-> inlining according to clang?
+I can reliably reproduce this problem by running 'tail' on the registers
+file in debugfs for the hdmi regmap.
+
+ # tail /sys/kernel/debug/regmap/62d87000.lpass-lpass_hdmi/registers
+ [   84.658733] Unable to handle kernel paging request at virtual address ffffffd0128e800c
+
+This crash happens because we're trying to read registers from the
+regmap beyond the length of the mapping created by ioremap().
+
+The number of hdmi_rdma_channels determines the size of the regmap via
+this code in sound/soc/qcom/lpass-cpu.c:
+
+  lpass_hdmi_regmap_config.max_register = LPAIF_HDMI_RDMAPER_REG(variant, variant->hdmi_rdma_channels);
+
+According to debugfs the size of the regmap is 0x68010 but according to
+the DTS file posted in [1] the size is only 0x68000 (see the first reg
+property of the lpass_cpu node). Let's change the number of channels to
+be 3 instead of 4 so the math works out to have a max register of
+0x67010, nicely fitting inside of the region size of 0x68000.
+
+Note: I tried to bump up the size of the register region to the next
+page to include the 0x68010 register but then the tail command caused
+SErrors with an async abort, implying that the register region doesn't
+exist or it isn't clocked because the bus is telling us that the
+register read failed. I reduce the number of channels and played audio
+through the HDMI channel and it kept working so I think this is correct.
+
+Fixes: 2ad63dc8df6b ("ASoC: qcom: sc7180: Add support for audio over DP")
+Link: https://lore.kernel.org/r/1601448168-18396-2-git-send-email-srivasam@codeaurora.org [1]
+Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Cc: Srinivasa Rao <srivasam@codeaurora.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Cheng-Yi Chiang <cychiang@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ sound/soc/qcom/lpass-sc7180.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
+index 85db650c2169..3127b6022ea3 100644
+--- a/sound/soc/qcom/lpass-sc7180.c
++++ b/sound/soc/qcom/lpass-sc7180.c
+@@ -174,7 +174,7 @@ static struct lpass_variant sc7180_data = {
+ 	.rdma_channels		= 5,
+ 	.hdmi_rdma_reg_base		= 0x64000,
+ 	.hdmi_rdma_reg_stride	= 0x1000,
+-	.hdmi_rdma_channels		= 4,
++	.hdmi_rdma_channels		= 3,
+ 	.dmactl_audif_start	= 1,
+ 	.wrdma_reg_base		= 0x18000,
+ 	.wrdma_reg_stride	= 0x1000,
+
+base-commit: 5c8fe583cce542aa0b84adc939ce85293de36e5e
+-- 
+https://chromeos.dev
+
