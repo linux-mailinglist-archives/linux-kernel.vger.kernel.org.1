@@ -2,59 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FF92F8039
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A98942F804D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731806AbhAOQFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:05:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54258 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726046AbhAOQFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:05:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610726670; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=APlSiMxy880//SPeahM9qVbyxXBUGC7W6ghrfxK1EXQ=;
-        b=dC+8P8J+I05cbCmgte+TUiaPwRHu+cUCW3stSm1drUPXKjorEwbFIYottd869tEHz1zwJG
-        1Aj+33CWt0XUuflSJNVn8IRtYSL7WdRwoi3X4FQMC8Sdcd+uYdceTe022skxDqpi3aaBbX
-        3TCpYyv7L52IaBZZXVlGUnwtGm+GtYs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1B82AAC95;
-        Fri, 15 Jan 2021 16:04:30 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 17:04:29 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] printk: fix buffer overflow potential for print_text()
-Message-ID: <YAG9Df7ctLPLwucS@alley>
-References: <20210114170412.4819-1-john.ogness@linutronix.de>
- <878s8ujnfg.fsf@jogness.linutronix.de>
+        id S1732102AbhAOQKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:10:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729011AbhAOQKK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 11:10:10 -0500
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1F0C0613C1;
+        Fri, 15 Jan 2021 08:09:15 -0800 (PST)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4DHR2J0pZ0z1rspt;
+        Fri, 15 Jan 2021 17:09:08 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4DHR2D14rrz1tYWR;
+        Fri, 15 Jan 2021 17:09:08 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id 7kEKBGdiBY6k; Fri, 15 Jan 2021 17:09:06 +0100 (CET)
+X-Auth-Info: Vj8+/1od6rEBBzbfIm+0iNjQRk/UCqGp2M1lVqlesjY=
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri, 15 Jan 2021 17:09:06 +0100 (CET)
+Subject: Re: [PATCH] net: ks8851: remove definition of DEBUG
+To:     trix@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        andrew@lunn.ch, zhengyongjun3@huawei.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210115153128.131026-1-trix@redhat.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <e7844d89-b0af-53ce-c923-a1d91b4ec0cc@denx.de>
+Date:   Fri, 15 Jan 2021 17:09:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878s8ujnfg.fsf@jogness.linutronix.de>
+In-Reply-To: <20210115153128.131026-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-01-15 15:22:03, John Ogness wrote:
-> Hi Petr,
+On 1/15/21 4:31 PM, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
-> I noticed some minor errors in the commit log and comments...
+> Defining DEBUG should only be done in development.
+> So remove DEBUG.
 > 
-> On 2021-01-14, John Ogness <john.ogness@linutronix.de> wrote:
-> > Before commit b6cf8b3f3312 ("printk: add lockless ringbuffer"),
-> > msg_print_text()
-> 
-> Can you fixup the patch for the commit or do you need a v2?
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-I could fix these when pushing ;-)
+Reviewed-by: Marek Vasut <marex@denx.de>
 
-Best Regards,
-Petr
+Thanks
