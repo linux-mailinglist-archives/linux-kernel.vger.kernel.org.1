@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F82D2F79E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB402F7AD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:56:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388230AbhAOMmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:42:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46614 "EHLO mail.kernel.org"
+        id S2387622AbhAOMfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:35:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733000AbhAOMja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:39:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEEF122473;
-        Fri, 15 Jan 2021 12:39:14 +0000 (UTC)
+        id S2387580AbhAOMfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:35:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2697B207C4;
+        Fri, 15 Jan 2021 12:34:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714355;
-        bh=rSih70okvAofANG/VIkYzxE2fl9zFMm++0vCfDGt0EQ=;
+        s=korg; t=1610714085;
+        bh=+VgC4RuFlVvtY7YQhwl43Mq/hN6WhELEU5jkK0wrN88=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YMo5gx0CjDiPXotXSpenkIusfL12e6VvMQBQ64jw2YcolS5vhCsOG9F4riaSLyJQ9
-         w6sRdPQ3nFhVpiYEAVqjtqj4CFt/Ll82ZwPzNh7iWsIcED6ejajlDn7Fo76fepGnWO
-         G48Wt1V7MkUpkN2o+LDSOOQJjwDjmrQoqShKnxwg=
+        b=dXNmPg8mP+LnMzco2sL+ksWdnGK3utxLPWueO4HJbXc/vVtyEDPPCdC0B1ZdFvxnT
+         FRHLJcw91aRa2g3vJPFuf3INe+JTjvRNJOE5EWBaTSrxIYspmUEZE6Lot085NmoGdK
+         VUyx2uDRHy/stRI2DQmsLQeP1BrazUmPwh+mWutw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.10 068/103] dmaengine: mediatek: mtk-hsdma: Fix a resource leak in the error handling path of the probe function
+        stable@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.4 39/62] cpufreq: powernow-k8: pass policy rather than use cpufreq_cpu_get()
 Date:   Fri, 15 Jan 2021 13:28:01 +0100
-Message-Id: <20210115122009.331777361@linuxfoundation.org>
+Message-Id: <20210115122000.285260060@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
-References: <20210115122006.047132306@linuxfoundation.org>
+In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
+References: <20210115121958.391610178@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit 33cbd54dc515cc04b5a603603414222b4bb1448d upstream.
+commit 943bdd0cecad06da8392a33093230e30e501eccc upstream.
 
-'mtk_hsdma_hw_deinit()' should be called in the error handling path of the
-probe function to undo a previous 'mtk_hsdma_hw_init()' call, as already
-done in the remove function.
+Currently there is an unlikely case where cpufreq_cpu_get() returns a
+NULL policy and this will cause a NULL pointer dereference later on.
 
-Fixes: 548c4597e984 ("dmaengine: mediatek: Add MediaTek High-Speed DMA controller for MT7622 and MT7623 SoC")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201219124718.182664-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fix this by passing the policy to transition_frequency_fidvid() from
+the caller and hence eliminating the need for the cpufreq_cpu_get()
+and cpufreq_cpu_put().
+
+Thanks to Viresh Kumar for suggesting the fix.
+
+Addresses-Coverity: ("Dereference null return")
+Fixes: b43a7ffbf33b ("cpufreq: Notify all policy->cpus in cpufreq_notify_transition()")
+Suggested-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/dma/mediatek/mtk-hsdma.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/cpufreq/powernow-k8.c |    9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
---- a/drivers/dma/mediatek/mtk-hsdma.c
-+++ b/drivers/dma/mediatek/mtk-hsdma.c
-@@ -1007,6 +1007,7 @@ static int mtk_hsdma_probe(struct platfo
- 	return 0;
+--- a/drivers/cpufreq/powernow-k8.c
++++ b/drivers/cpufreq/powernow-k8.c
+@@ -878,9 +878,9 @@ static int get_transition_latency(struct
  
- err_free:
-+	mtk_hsdma_hw_deinit(hsdma);
- 	of_dma_controller_free(pdev->dev.of_node);
- err_unregister:
- 	dma_async_device_unregister(dd);
+ /* Take a frequency, and issue the fid/vid transition command */
+ static int transition_frequency_fidvid(struct powernow_k8_data *data,
+-		unsigned int index)
++		unsigned int index,
++		struct cpufreq_policy *policy)
+ {
+-	struct cpufreq_policy *policy;
+ 	u32 fid = 0;
+ 	u32 vid = 0;
+ 	int res;
+@@ -912,9 +912,6 @@ static int transition_frequency_fidvid(s
+ 	freqs.old = find_khz_freq_from_fid(data->currfid);
+ 	freqs.new = find_khz_freq_from_fid(fid);
+ 
+-	policy = cpufreq_cpu_get(smp_processor_id());
+-	cpufreq_cpu_put(policy);
+-
+ 	cpufreq_freq_transition_begin(policy, &freqs);
+ 	res = transition_fid_vid(data, fid, vid);
+ 	cpufreq_freq_transition_end(policy, &freqs, res);
+@@ -969,7 +966,7 @@ static long powernowk8_target_fn(void *a
+ 
+ 	powernow_k8_acpi_pst_values(data, newstate);
+ 
+-	ret = transition_frequency_fidvid(data, newstate);
++	ret = transition_frequency_fidvid(data, newstate, pol);
+ 
+ 	if (ret) {
+ 		pr_err("transition frequency failed\n");
 
 
