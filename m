@@ -2,131 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BB32F80D2
+	by mail.lfdr.de (Postfix) with ESMTP id C8FD52F80D3
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732130AbhAOQbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:31:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
+        id S1732304AbhAOQbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:31:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726765AbhAOQbc (ORCPT
+        with ESMTP id S1730569AbhAOQbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:31:32 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A810CC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 08:30:52 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id c132so6337940pga.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 08:30:52 -0800 (PST)
+        Fri, 15 Jan 2021 11:31:33 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE15C061793
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 08:30:53 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id x13so9045897oto.8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 08:30:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uEsRmwU2Zg9Pm7ZYfxs6cFkd37PnI+Hzer0Thh9MkrA=;
-        b=mjEuakf3LELUuf14yi0qZ2kkoyW78JDYiY2+E/aYX9liqbWOU+kVCGRcbmmqHnVZ4N
-         BZlHrO6wAh+v02tq2xVEgCgI/PIl66nBPHqZWmG+ZMJzcDLpSAMa3ykuW+SdkmHUMKvW
-         9PzSNMhzVAvfegD0kw2DeEtvQvhDpmmPm4TmUW+Xr5hhatxld3zRZPaOshOsQFkM73jV
-         OUpQE69cMn/aBjozPXVTURZfY7M1G9ZcO3qrOAbedHg2MI+JA1NTtD/e8RIFvrddBJ5C
-         XVp9YuGAzKdzWvAIm32jSU63V1tuPozCQ/DgK8cgiRvxAMPWkxsrRntUCJIJTz97F8N6
-         KPfw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3zlhE1VQoC0YQoOVBpqCppA99bsDhHzDe1MR/nnPda8=;
+        b=BbV4E43/1M1Vmn39MFeDNpZOcyiOIdxjYFAJXjgk6V9LN7JUmebkYjQqv9L4c9bk0B
+         Jh6LnqqDExgti8XlbpAURUR/LcR23gs+qC4qPzQRLSvIiJyc7XPoulVYQRQBPZhjWUmx
+         xojSbm70qMh7UW7LsrICI8aJtgl7u4vzHWlr4yZdP0zj7DYI2K6jH+WsWn1oTZqufRz4
+         boV+VXwlAnE3Qf+5C4AumEbZelr8GwHUEtN7vXDjaPdTYE0j6Dmx3pYySjbEKoXNONAe
+         1Hi2CPLC8sTzsgwtRiEyQ0QeplfkrlSZ14exg4Qi2XUxMV4q+8vSACZLU/eeIqxRijfy
+         pc4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uEsRmwU2Zg9Pm7ZYfxs6cFkd37PnI+Hzer0Thh9MkrA=;
-        b=YjoliHqGFrv/EtGlJbjdo0PkZX8/lJVMP8AAqL2eoqG08dBozRhjPY37RcTFKYniKV
-         NLgG63ITzDMXOlPJT+MdRhviK1u6UzvnayMqgbSJI/spFhoaF+BLZ15RQifeGAjrXfcG
-         x1RwO6u/cIr5D6eMz+5Yr00YYKQJOgipYMG1sHJnCjZ7auUCC7Oww/JwO0W7Ql84D4B5
-         34R05wgErgt7nL9+6xkI/qLwwDc5RcPIO8dShko1qvRct/QRwkGyfsw1iUslJtQ0PS3e
-         ARBzuS0MWwGPcenGkTUzbqfGY7S+ULOno+aUHnVXruflPZ3d2xjsFqXYQL6RfLDdI1Vp
-         u0fA==
-X-Gm-Message-State: AOAM533HFFRoSc41gd6Xu4iSmsBYRD05kAHb/mX4/zkYZSiPnSwwJ8La
-        CiPbHZJC1ufDpEcKGWfkd2hgkb31rFEzyobS7wvowA==
-X-Google-Smtp-Source: ABdhPJygTqWrqfXQl+LwpvjBXUDWBUPUCYqWkZlbDeDTV6dmnmVOHnwRaZEPJ9H/Thwpz1E6NBRIcAzspA7rzMSCRJM=
-X-Received: by 2002:a62:e309:0:b029:1ae:5b4a:3199 with SMTP id
- g9-20020a62e3090000b02901ae5b4a3199mr13127964pfh.24.1610728252059; Fri, 15
- Jan 2021 08:30:52 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3zlhE1VQoC0YQoOVBpqCppA99bsDhHzDe1MR/nnPda8=;
+        b=oKnh9KaY1Zrj49RzUP1zdvaJWOCoVWsrC3/cF4Hd8Ic84XjzMD8VXUxcYzDAyrLkFF
+         wWvGcNvJMJcIaK/jyGN3PCSoifogNLD2PZxhwUWIuuHHSOgQ2zm7bAL36yKQ9D9lTQv6
+         jmlkof2FQxfTJ8HH4LKwOt8hvaA0rQhk0xbgXtyXDodvBHgaYDcdMDkGVzdhc4l7tIKg
+         nyYf32fjdwuZjEePwuPZeMYkPLpXHZtv+/mWfSWRJRnFQZg9NiCh62jgG5lIznj4w/Os
+         IznM70CfU8jTjIRnon/bzWl3fNcETGi4MUCS+aEaxZ/K8G2L/diWrt3Vg91DAHHAGtNv
+         2v3w==
+X-Gm-Message-State: AOAM531gE/Zmufs/wgS0l0KQMxBbOZaz2fWfk6G2q3FM6jsDsAj+YWGc
+        jkTY8hs4bPU7XyVx+2EUxqi8AQ==
+X-Google-Smtp-Source: ABdhPJw9QuYGlWtxZKlmSYDACbI1/xs++9fTUIQlKrR2IpKC1dLXb4iCeDvN8vx4NykIIQRb44fzIQ==
+X-Received: by 2002:a9d:19cb:: with SMTP id k69mr8999620otk.75.1610728252325;
+        Fri, 15 Jan 2021 08:30:52 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w10sm1749903oic.44.2021.01.15.08.30.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 08:30:51 -0800 (PST)
+Date:   Fri, 15 Jan 2021 10:30:49 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Andy Gross <agross@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-arm-msm@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH 1/2] iio:adc:qcom-spmi-vadc: add default scale to
+ LR_MUX2_BAT_ID channel
+Message-ID: <YAHDOaZoSSGZexFa@builder.lan>
+References: <20210113151808.4628-1-jonathan.albrieux@gmail.com>
+ <20210113151808.4628-2-jonathan.albrieux@gmail.com>
 MIME-Version: 1.0
-References: <cover.1610553773.git.andreyknvl@google.com> <1965508bcbec62699715d32bef91628ef55b4b44.1610553774.git.andreyknvl@google.com>
- <20210113165441.GC27045@gaia>
-In-Reply-To: <20210113165441.GC27045@gaia>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 15 Jan 2021 17:30:40 +0100
-Message-ID: <CAAeHK+y8VyBnAmx_c6N6-40RqKSUKpn-vzfeOEhzAnij93hnqw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kasan, arm64: fix pointer tags in KASAN reports
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113151808.4628-2-jonathan.albrieux@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 5:54 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Wed, Jan 13, 2021 at 05:03:30PM +0100, Andrey Konovalov wrote:
-> > As of the "arm64: expose FAR_EL1 tag bits in siginfo" patch, the address
-> > that is passed to report_tag_fault has pointer tags in the format of 0x0X,
-> > while KASAN uses 0xFX format (note the difference in the top 4 bits).
-> >
-> > Fix up the pointer tag before calling kasan_report.
-> >
-> > Link: https://linux-review.googlesource.com/id/I9ced973866036d8679e8f4ae325de547eb969649
-> > Fixes: dceec3ff7807 ("arm64: expose FAR_EL1 tag bits in siginfo")
-> > Fixes: 4291e9ee6189 ("kasan, arm64: print report from tag fault handler")
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > ---
-> >  arch/arm64/mm/fault.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> > index 3c40da479899..a218f6f2fdc8 100644
-> > --- a/arch/arm64/mm/fault.c
-> > +++ b/arch/arm64/mm/fault.c
-> > @@ -304,6 +304,8 @@ static void report_tag_fault(unsigned long addr, unsigned int esr,
-> >  {
-> >       bool is_write  = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
-> >
-> > +     /* The format of KASAN tags is 0xF<x>. */
-> > +     addr |= (0xF0UL << MTE_TAG_SHIFT);
->
-> Ah, I see, that top 4 bits are zeroed by do_tag_check_fault(). When this
-> was added, the only tag faults were generated for user addresses.
->
-> Anyway, I'd rather fix it in there based on bit 55, something like (only
-> compile-tested):
->
-> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> index 3c40da479899..2b71079d2d32 100644
-> --- a/arch/arm64/mm/fault.c
-> +++ b/arch/arm64/mm/fault.c
-> @@ -709,10 +709,11 @@ static int do_tag_check_fault(unsigned long far, unsigned int esr,
->                               struct pt_regs *regs)
->  {
->         /*
-> -        * The architecture specifies that bits 63:60 of FAR_EL1 are UNKNOWN for tag
-> -        * check faults. Mask them out now so that userspace doesn't see them.
-> +        * The architecture specifies that bits 63:60 of FAR_EL1 are UNKNOWN
-> +        * for tag check faults. Set them to the corresponding bits in the
-> +        * untagged address.
->          */
-> -       far &= (1UL << 60) - 1;
-> +       far = (untagged_addr(far) & ~MTE_TAG_MASK) | (far & MTE_TAG_MASK) ;
->         do_bad_area(far, esr, regs);
->         return 0;
->  }
+On Wed 13 Jan 09:18 CST 2021, Jonathan Albrieux wrote:
 
-BTW, we can do "untagged_addr(far) | (far & MTE_TAG_MASK)" here, as
-untagged_addr() doesn't change kernel pointers.
+> Checking at both msm8909-pm8916.dtsi and msm8916.dtsi from downstream
+> it is indicated that "batt_id" channel has to be scaled with the default
+> function:
+> 
+> 	chan@31 {
+> 		label = "batt_id";
+> 		reg = <0x31>;
+> 		qcom,decimation = <0>;
+> 		qcom,pre-div-channel-scaling = <0>;
+> 		qcom,calibration-type = "ratiometric";
+> 		qcom,scale-function = <0>;
+> 		qcom,hw-settle-time = <0xb>;
+> 		qcom,fast-avg-setup = <0>;
+> 	};
+> 
+> Change LR_MUX2_BAT_ID scaling accordingly.
+> 
+
+Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Not entirely sure, but looking at the history I think this used to work
+- but it's obvious that no one has read this channel for a while...
+
+But I think below is a regression and should be mentioned:
+
+Fixes: 7c271eea7b8a ("iio: adc: spmi-vadc: Changes to support different scaling")
+
+> Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+
+Jonathan Cameron, if you merge this through your tree I can take the dts
+addition through the Qualcomm tree.
+
+Regards,
+Bjorn
+
+> ---
+>  drivers/iio/adc/qcom-spmi-vadc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/adc/qcom-spmi-vadc.c b/drivers/iio/adc/qcom-spmi-vadc.c
+> index b0388f8a69f4..7e7d408452ec 100644
+> --- a/drivers/iio/adc/qcom-spmi-vadc.c
+> +++ b/drivers/iio/adc/qcom-spmi-vadc.c
+> @@ -598,7 +598,7 @@ static const struct vadc_channels vadc_chans[] = {
+>  	VADC_CHAN_NO_SCALE(P_MUX16_1_3, 1)
+>  
+>  	VADC_CHAN_NO_SCALE(LR_MUX1_BAT_THERM, 0)
+> -	VADC_CHAN_NO_SCALE(LR_MUX2_BAT_ID, 0)
+> +	VADC_CHAN_VOLT(LR_MUX2_BAT_ID, 0, SCALE_DEFAULT)
+>  	VADC_CHAN_NO_SCALE(LR_MUX3_XO_THERM, 0)
+>  	VADC_CHAN_NO_SCALE(LR_MUX4_AMUX_THM1, 0)
+>  	VADC_CHAN_NO_SCALE(LR_MUX5_AMUX_THM2, 0)
+> -- 
+> 2.17.1
+> 
